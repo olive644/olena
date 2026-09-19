@@ -7,7 +7,6 @@ import { useWorkspace } from "./hooks/use-workspace";
 import { useCloudSync } from "./hooks/use-cloud-sync";
 import { HabitsView } from "./views/habits-view";
 import { TodayView } from "./views/today-view";
-import { ProfileView } from "./views/profile-view";
 
 const LearnView = lazy(() => import("./views/learn-view"));
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
@@ -20,6 +19,9 @@ const PlannerView = lazy(() =>
 );
 const FocusView = lazy(() =>
   import("./views/focus-view").then((module) => ({ default: module.FocusView })),
+);
+const ProfileView = lazy(() =>
+  import("./views/profile-view").then((module) => ({ default: module.ProfileView })),
 );
 
 function hasCompletedOnboarding() {
@@ -91,7 +93,7 @@ function AppContent({ signedOut = false }: { signedOut?: boolean }) {
           )}
           {view === "library" && <LibraryView workspace={workspace} dispatch={dispatch} />}
           {view === "activity-bank" && <ActivityBankView onBack={() => setView("today")} />}
-          {view === "profile" && <ProfileView />}
+          {view === "profile" && <ProfileView workspace={workspace} dispatch={dispatch} />}
         </Suspense>
         <MobileNavigation view={view} onNavigate={setView} />
       </div>

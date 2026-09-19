@@ -93,12 +93,12 @@ describe("App", () => {
     expect(within(main).queryByRole("button", { name: "Cadernos" })).toBeNull();
   });
 
-  it("organiza as ferramentas secundárias no menu móvel", () => {
+  it("organiza as ferramentas secundárias no menu móvel", async () => {
     render(<App />);
     const mobileNavigation = screen.getByRole("navigation", { name: "Navegação móvel" });
     expect(within(mobileNavigation).getAllByRole("button")).toHaveLength(5);
     fireEvent.click(within(mobileNavigation).getByRole("button", { name: "Perfil" }));
-    expect(screen.getByRole("heading", { name: "Em produção" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: "Em produção" })).toBeTruthy();
     expect(screen.getByText("Mais informações em breve.")).toBeTruthy();
     expect(
       within(mobileNavigation)
@@ -224,6 +224,23 @@ describe("App", () => {
 
   it("mostra a rosa que cresce com o temporizador de foco", async () => {
     render(<App />);
+
+    fireEvent.click(
+      within(screen.getByRole("navigation", { name: "Navegação móvel" })).getByRole("button", {
+        name: "Perfil",
+      }),
+    );
+    expect(
+      await screen.findByRole("heading", { name: /personalizar métodos de estudos/i }),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /50 minutos/i }));
+    const profileLongBreak = screen.getByRole("button", {
+      name: /pausa longa após 4 rodadas/i,
+    });
+    expect(profileLongBreak.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(profileLongBreak);
+    expect(profileLongBreak.getAttribute("aria-pressed")).toBe("false");
+
     navigate("Foco");
 
     expect(await screen.findByRole("img", { name: /rosa de foco crescendo/i })).toBeTruthy();
@@ -241,13 +258,10 @@ describe("App", () => {
     expect(screen.queryByText(/uma maçã/i)).toBeNull();
     expect(screen.getByRole("img", { name: /maçã pomodoro em papel recortado/i })).toBeTruthy();
     expect(document.querySelectorAll(".streak-apple")).toHaveLength(7);
-    expect(screen.getByText(/25 min de foco · 5 min de pausa/i)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "50 min" }));
+    expect(screen.getByText(/50 min de foco · 5 min de pausa · sem pausa longa/i)).toBeTruthy();
     expect(screen.getByRole("heading", { name: "50:00" })).toBeTruthy();
-    const longBreak = screen.getByRole("button", { name: /pausa longa após 4 rodadas/i });
-    expect(longBreak.getAttribute("aria-pressed")).toBe("true");
-    fireEvent.click(longBreak);
-    expect(longBreak.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.queryByRole("button", { name: /25 minutos/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /pausa longa após 4 rodadas/i })).toBeNull();
     expect(screen.getByLabelText(/escolha o prazo/i)).toBeTruthy();
     expect(screen.queryByRole("heading", { name: /um período de cada vez/i })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /começar/i }));

@@ -245,7 +245,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const [modeDirection, setModeDirection] = useState(1);
   const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>("focus");
   const [completedPomodoros, setCompletedPomodoros] = useState(0);
-  const [duration, setDuration] = useState<number>(25);
+  const [duration, setDuration] = useState<number>(workspace.focusPreferences.pomodoroMinutes);
   const [secondsRemaining, setSecondsRemaining] = useState(duration * 60);
   const [timerElapsedMilliseconds, setTimerElapsedMilliseconds] = useState(0);
   const timerStartedAt = useRef<number | null>(null);
@@ -348,24 +348,6 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   function slideMode(direction: -1 | 1) {
     setModeDirection(direction);
     chooseMode(mode === "timer" ? "pomodoro" : "timer");
-  }
-
-  function updatePomodoroMinutes(minutes: 25 | 50) {
-    dispatch({
-      type: "focus/preferences-updated",
-      preferences: { ...workspace.focusPreferences, pomodoroMinutes: minutes },
-    });
-    if (!running && pomodoroPhase === "focus") chooseDuration(minutes);
-  }
-
-  function toggleLongBreaks() {
-    dispatch({
-      type: "focus/preferences-updated",
-      preferences: {
-        ...workspace.focusPreferences,
-        longBreaks: !workspace.focusPreferences.longBreaks,
-      },
-    });
   }
 
   function reset() {
@@ -520,37 +502,6 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     )}
                   </div>
                 </div>
-                {mode === "pomodoro" && (
-                  <div className="pomodoro-settings" aria-label="Configurações do Pomodoro">
-                    <div>
-                      {([25, 50] as const).map((minutes) => (
-                        <button
-                          className={
-                            workspace.focusPreferences.pomodoroMinutes === minutes
-                              ? "is-active"
-                              : undefined
-                          }
-                          type="button"
-                          disabled={running || elapsedSeconds > 0}
-                          onClick={() => updatePomodoroMinutes(minutes)}
-                          key={minutes}
-                        >
-                          {minutes} min
-                        </button>
-                      ))}
-                    </div>
-                    <button
-                      className={`pomodoro-long-break${workspace.focusPreferences.longBreaks ? " is-active" : ""}`}
-                      type="button"
-                      disabled={running || elapsedSeconds > 0}
-                      aria-pressed={workspace.focusPreferences.longBreaks}
-                      onClick={toggleLongBreaks}
-                    >
-                      <i aria-hidden="true" />
-                      Pausa longa após 4 rodadas
-                    </button>
-                  </div>
-                )}
                 {mode === "timer" && (
                   <h2 id="focus-timer-title" className="timer timer--stopwatch" aria-live="off">
                     {formatStopwatch(timerElapsedMilliseconds)}

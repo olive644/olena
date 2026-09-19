@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Métodos de estudo no Perfil, 19/09/2026
+
+A aba Perfil reúne as configurações do método Pomodoro. O usuário escolhe rodadas de 25 ou 50 minutos e ativa ou desativa a pausa longa após quatro rodadas. A tela Foco usa a preferência sincronizada sem repetir esses controles junto ao temporizador. As maçãs do histórico semanal ficaram discretamente menores para equilibrar a composição no celular. A mensagem das pausas usa uma largura própria e quebra de texto equilibrada.
+
 ## Cabeçalho e foco móvel controlado, 19/09/2026
 
 A foto de perfil permanece no cabeçalho móvel e não volta para a gaveta Mais. Praticar usa o ícone grafite em repouso e a versão clara quando ativo. Os controles Começar do cronômetro e do Pomodoro usam play em papel grafite. A tela Foco bloqueia o excesso de deslocamento além dos limites da página, centraliza o conteúdo quando há altura disponível e preserva a rolagem necessária em telas menores sem esconder controles.
