@@ -168,39 +168,45 @@ function FocusRose({ progress, wilted }: { progress: number; wilted: boolean }) 
   );
 }
 
-function PomodoroApple({ progress }: { progress: number }) {
+function PomodoroTomato({ progress }: { progress: number }) {
   const outline =
-    "M 142 77 L 112 68 L 79 74 L 52 96 L 38 130 L 40 175 L 55 219 L 80 251 L 109 259 L 140 251 L 171 259 L 200 249 L 225 215 L 240 171 L 240 128 L 224 96 L 198 77 L 173 74";
+    "m140 78-32-11-35 9-29 23-17 34 1 41 17 36 30 29 65 15 65-15 30-29 17-36 1-41-17-34-29-23-35-9Z";
   const eaten = 1 - Math.max(0, Math.min(1, progress));
   return (
     <svg
-      className="pomodoro-apple"
+      className="pomodoro-tomato"
       viewBox="0 0 280 290"
       role="img"
-      aria-label="Maçã Pomodoro em papel recortado"
+      aria-label="Tomate Pomodoro em papel recortado"
     >
       <defs>
         <mask id="pomodoro-bites">
           <rect width="280" height="290" fill="white" />
           <path
-            className="pomodoro-apple__bites"
-            d="m249 105-22 22 19 22-23 22 12 24-26 18-22 18-30 20"
+            className="pomodoro-tomato__bites"
+            d="m258 108-23 24 24 24-23 24 12 23-24 21-26 18-31 15"
             pathLength="100"
             strokeDasharray={`${eaten * 100} 100`}
           />
         </mask>
       </defs>
       <g mask="url(#pomodoro-bites)">
-        <path className="pomodoro-apple__depth" d={outline} transform="translate(0 7)" />
-        <path className="pomodoro-apple__track" d={outline} />
-        <path className="pomodoro-apple__progress" d={outline} />
+        <path className="pomodoro-tomato__depth" d={outline} transform="translate(0 7)" />
+        <path className="pomodoro-tomato__track" d={outline} />
+        <path className="pomodoro-tomato__progress" d={outline} />
         <path
-          className="pomodoro-apple__facet"
-          d="m40 122 20-28 23-10-12 19Z M197 239l23-33 9-31 2 30-23 40Z"
+          className="pomodoro-tomato__facet"
+          d="m31 128 20-29 33-17-21 27Z M191 239l32-31 15-35-2 37-29 28Z"
         />
       </g>
-      <path className="pomodoro-apple__leaf" d="m142 54 12-29 30-12 34 6-13 28-32 15Z" />
-      <path className="pomodoro-apple__leaf-fold" d="m142 54 43-19 33-16-13 28-32 15Z" />
+      <path
+        className="pomodoro-tomato__leaf"
+        d="m140 66-35-20 9 25-43 9 42 13-15 25 42-24 39 24-13-26 44-12-42-9 8-25Z"
+      />
+      <path
+        className="pomodoro-tomato__leaf-fold"
+        d="m140 78-42 40 42-24 39 24-13-26 44-12-48 3 14-37Z"
+      />
     </svg>
   );
 }
@@ -439,7 +445,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     <FocusRose progress={bloomProgress} wilted={missedYesterday && !caredToday} />
                   ) : (
                     <div className="pomodoro-dial">
-                      <PomodoroApple progress={secondsRemaining / (duration * 60)} />
+                      <PomodoroTomato progress={secondsRemaining / (duration * 60)} />
                       <div className="pomodoro-dial__time">
                         <h2 id="focus-timer-title" className="timer">
                           {formatTimer(secondsRemaining)}
@@ -485,7 +491,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                           {weekDays().map((day) => (
                             <span className="pomodoro-week__day" key={day.key}>
                               <i
-                                className={`streak-apple${pomodoroDays.includes(day.key) ? " is-active" : ""}`}
+                                className={`streak-tomato${pomodoroDays.includes(day.key) ? " is-active" : ""}`}
                                 aria-hidden="true"
                               />
                               <small>{day.label}</small>

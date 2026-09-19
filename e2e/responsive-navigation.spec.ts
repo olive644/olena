@@ -76,11 +76,11 @@ for (const width of [320, 360, 390, 768, 1280]) {
         "rgb(41, 36, 50)",
       );
       if (mode === "Pomodoro") {
-        const apples = page.locator(".streak-apple");
-        await expect(apples).toHaveCount(7);
+        const tomatoes = page.locator(".streak-tomato");
+        await expect(tomatoes).toHaveCount(7);
         const week = await page.locator(".pomodoro-week").boundingBox();
-        for (const apple of await apples.all()) {
-          const box = await apple.boundingBox();
+        for (const tomato of await tomatoes.all()) {
+          const box = await tomato.boundingBox();
           expect(box!.width).toBeGreaterThan(20);
           expect(box!.x).toBeGreaterThanOrEqual(week!.x);
           expect(box!.x + box!.width).toBeLessThanOrEqual(week!.x + week!.width + 1);

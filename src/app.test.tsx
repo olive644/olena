@@ -256,8 +256,8 @@ describe("App", () => {
     expect(screen.queryByText("Tempo de foco", { exact: true })).toBeNull();
     expect(screen.queryByText("Modo sem distrações")).toBeNull();
     expect(screen.queryByText(/uma maçã/i)).toBeNull();
-    expect(screen.getByRole("img", { name: /maçã pomodoro em papel recortado/i })).toBeTruthy();
-    expect(document.querySelectorAll(".streak-apple")).toHaveLength(7);
+    expect(screen.getByRole("img", { name: /tomate pomodoro em papel recortado/i })).toBeTruthy();
+    expect(document.querySelectorAll(".streak-tomato")).toHaveLength(7);
     expect(screen.getByText(/50 min de foco · 5 min de pausa · sem pausa longa/i)).toBeTruthy();
     expect(screen.getByRole("heading", { name: "50:00" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /25 minutos/i })).toBeNull();
