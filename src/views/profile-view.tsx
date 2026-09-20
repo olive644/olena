@@ -1,6 +1,12 @@
 import type { Dispatch } from "react";
 import { PageHeader } from "../components/app-navigation";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
+import {
+  hasStudyModality,
+  studyModalities,
+  type StudyModality,
+  type StudyPreferences,
+} from "../domain/study-preferences";
 
 type ProfileViewProps = {
   workspace: WorkspaceState;
@@ -24,6 +30,27 @@ export function ProfileView({ workspace, dispatch }: ProfileViewProps) {
       },
     });
   }
+
+  function updateStudyPreferences(update: Partial<StudyPreferences>) {
+    dispatch({
+      type: "study/preferences-updated",
+      preferences: { ...workspace.studyPreferences, ...update },
+    });
+  }
+
+  function toggleModality(modality: StudyModality) {
+    const modalities = hasStudyModality(workspace.studyPreferences, modality)
+      ? workspace.studyPreferences.modalities.filter((item) => item !== modality)
+      : [...workspace.studyPreferences.modalities, modality];
+    updateStudyPreferences({ modalities });
+  }
+
+  const modalityLabels: Record<StudyModality, string> = {
+    visual: "Visual",
+    auditivo: "Ouvindo e conversando",
+    "leitura-escrita": "Lendo e escrevendo",
+    pratico: "Praticando",
+  };
 
   return (
     <main className="main-content profile-view" id="main-content">
@@ -71,6 +98,107 @@ export function ProfileView({ workspace, dispatch }: ProfileViewProps) {
             <small>15 minutos para descansar.</small>
           </span>
         </button>
+      </section>
+
+      <section className="study-preference-settings" aria-labelledby="study-preference-title">
+        <div className="study-method-settings__header">
+          <span className="section-label">Seu jeito de estudar</span>
+          <h2 id="study-preference-title">Preferências de estudo</h2>
+          <p>Estas escolhas organizam recomendações futuras. Você pode combinar modalidades.</p>
+        </div>
+
+        <fieldset className="study-preference-options">
+          <legend>Como você prefere aprender?</legend>
+          <div>
+            {studyModalities.map((modality) => (
+              <button
+                key={modality}
+                type="button"
+                aria-pressed={hasStudyModality(workspace.studyPreferences, modality)}
+                className={
+                  hasStudyModality(workspace.studyPreferences, modality) ? "is-active" : undefined
+                }
+                onClick={() => toggleModality(modality)}
+              >
+                {modalityLabels[modality]}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="study-preference-options">
+          <legend>Como organizar o estudo?</legend>
+          <div>
+            <button
+              type="button"
+              aria-pressed={workspace.studyPreferences.processing === "sequencial"}
+              className={
+                workspace.studyPreferences.processing === "sequencial" ? "is-active" : undefined
+              }
+              onClick={() => updateStudyPreferences({ processing: "sequencial" })}
+            >
+              Passo a passo
+            </button>
+            <button
+              type="button"
+              aria-pressed={workspace.studyPreferences.processing === "global"}
+              className={
+                workspace.studyPreferences.processing === "global" ? "is-active" : undefined
+              }
+              onClick={() => updateStudyPreferences({ processing: "global" })}
+            >
+              Visão geral primeiro
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset className="study-preference-options">
+          <legend>Qual ritmo combina com você?</legend>
+          <div>
+            <button
+              type="button"
+              aria-pressed={workspace.studyPreferences.rhythm === "focado"}
+              className={workspace.studyPreferences.rhythm === "focado" ? "is-active" : undefined}
+              onClick={() => updateStudyPreferences({ rhythm: "focado" })}
+            >
+              Foco contínuo
+            </button>
+            <button
+              type="button"
+              aria-pressed={workspace.studyPreferences.rhythm === "difuso"}
+              className={workspace.studyPreferences.rhythm === "difuso" ? "is-active" : undefined}
+              onClick={() => updateStudyPreferences({ rhythm: "difuso" })}
+            >
+              Alternar estudo e pausas
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset className="study-preference-options">
+          <legend>Programação</legend>
+          <div>
+            {(
+              [
+                ["nenhum", "Agora não"],
+                ["python", "Python"],
+                ["javascript", "JavaScript"],
+                ["python-javascript", "Python e JavaScript"],
+              ] as const
+            ).map(([programming, label]) => (
+              <button
+                key={programming}
+                type="button"
+                aria-pressed={workspace.studyPreferences.programming === programming}
+                className={
+                  workspace.studyPreferences.programming === programming ? "is-active" : undefined
+                }
+                onClick={() => updateStudyPreferences({ programming })}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
       </section>
 
       <section

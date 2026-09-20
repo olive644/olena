@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Preferências de estudo, 20/09/2026
+
+- O workspace local está na versão 6 e armazena modalidades, organização, ritmo e interesse em
+  programação em `studyPreferences`.
+- O onboarding usa perguntas textuais sem ícones para essas escolhas. As preferências podem ser
+  alteradas no Perfil, junto das configurações de Pomodoro.
+- Escolher Python, JavaScript ou ambos cria a matéria Programação se ela ainda não existir. Não há
+  trilhas, execução de código ou conteúdo de programação nesta entrega.
+- O roteiro completo para recomendações, mapas conceituais, desafios e trilhas futuras está em
+  `docs/STUDY_PREFERENCES_ROADMAP.md`.
+
 ## Tomate Pomodoro em papel, 19/09/2026
 
 O Pomodoro usa um tomate facetado, largo e arredondado, com cálice verde recortado. A animação de consumo acompanha o novo contorno e respeita movimento reduzido. Os sete marcadores semanais também usam tomates compactos.

@@ -3,8 +3,23 @@ import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import "./onboarding.css";
 import { GoogleLogin } from "./google-login";
+import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
 
-const questions = [
+type OnboardingAnswer = string | string[];
+
+type OnboardingSetup = {
+  preferences: StudyPreferences;
+};
+
+type OnboardingQuestion = {
+  title: string;
+  hint: string;
+  icon?: string;
+  options: readonly string[];
+  multiple?: boolean;
+};
+
+const questions: readonly OnboardingQuestion[] = [
   {
     title: "Em que fase dos estudos você está?",
     hint: "Cada jornada tem seu próprio ritmo.",
@@ -27,6 +42,7 @@ const questions = [
       "Ciências",
       "História e geografia",
       "Artes e tecnologia",
+      "Programação",
       "Ainda estou descobrindo",
     ],
   },
@@ -48,6 +64,27 @@ const questions = [
     ],
   },
   {
+    title: "Como você prefere aprender?",
+    hint: "Você pode escolher mais de uma opção.",
+    options: ["Visual", "Ouvindo e conversando", "Lendo e escrevendo", "Praticando"],
+    multiple: true,
+  },
+  {
+    title: "Como você gosta de organizar o estudo?",
+    hint: "Vamos preparar sua experiência inicial.",
+    options: ["Passo a passo", "Visão geral primeiro"],
+  },
+  {
+    title: "Qual ritmo combina mais com você?",
+    hint: "Você poderá mudar essa escolha nas configurações de Perfil.",
+    options: ["Foco contínuo", "Alternar estudo e pausas"],
+  },
+  {
+    title: "Quer incluir programação na sua jornada?",
+    hint: "Isso prepara seu espaço para futuras trilhas de código.",
+    options: ["Python", "JavaScript", "Python e JavaScript", "Agora não"],
+  },
+  {
     title: "Quanto tempo cabe no seu dia?",
     hint: "Um pouco de cada vez também faz diferença.",
     icon: "focus",
@@ -60,24 +97,65 @@ const onboardingIconNames = [
   ["chat", "calculator", "science", "globe", "art", "compass"],
   ["flag-us", "flag-br", "flag-es", "globe", "pause"],
   ["calendar", "exam", "bulb", "group"],
+  [],
+  [],
+  [],
+  [],
   ["clock-5", "clock-15", "clock-30", "calendar"],
 ] as const;
+
+const modalityByAnswer: Record<string, StudyModality> = {
+  Visual: "visual",
+  "Ouvindo e conversando": "auditivo",
+  "Lendo e escrevendo": "leitura-escrita",
+  Praticando: "pratico",
+};
+
+function selectedAnswer(answer: OnboardingAnswer | undefined, value: string): boolean {
+  return Array.isArray(answer) ? answer.includes(value) : answer === value;
+}
+
+function buildSetup(answers: OnboardingAnswer[]): OnboardingSetup {
+  const modalities = (Array.isArray(answers[4]) ? answers[4] : [])
+    .map((answer) => modalityByAnswer[answer])
+    .filter((modality): modality is StudyModality => Boolean(modality));
+  const programmingAnswer = answers[7];
+  const programming =
+    programmingAnswer === "Python"
+      ? "python"
+      : programmingAnswer === "JavaScript"
+        ? "javascript"
+        : programmingAnswer === "Python e JavaScript"
+          ? "python-javascript"
+          : answers[1] === "Programação"
+            ? "python-javascript"
+            : "nenhum";
+
+  return {
+    preferences: {
+      modalities,
+      processing: answers[5] === "Visão geral primeiro" ? "global" : "sequencial",
+      rhythm: answers[6] === "Alternar estudo e pausas" ? "difuso" : "focado",
+      programming,
+    },
+  };
+}
 
 export default function OnboardingView({
   onFinish,
   loginOnly = false,
 }: {
-  onFinish: () => void;
+  onFinish: (setup?: OnboardingSetup) => void;
   loginOnly?: boolean;
 }) {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<OnboardingAnswer[]>([]);
   const [showLogin, setShowLogin] = useState(
     () => loginOnly || new URLSearchParams(window.location.search).has("login"),
   );
   const title = useRef<HTMLHeadingElement>(null);
   const question = questions[step];
-  const poseIndex = question ? step : 3;
+  const poseIndex = question ? Math.min(step, 4) : 3;
   const poseDescriptions = [
     "Helena lendo um livro roxo",
     "Helena pensativa segurando um lápis",
@@ -86,7 +164,7 @@ export default function OnboardingView({
     "Helena segurando um relógio roxo com as duas patinhas",
   ];
   useEffect(() => {
-    if (step >= questions.length - 1) return;
+    if (step >= 4) return;
     const nextPose = new Image();
     nextPose.src =
       step === 3 ? "/helena-onboarding-step-5-v3.webp" : `/helena-onboarding-step-${step + 2}.webp`;
@@ -99,7 +177,7 @@ export default function OnboardingView({
     return (
       <GoogleLogin
         answers={answers}
-        onFinish={onFinish}
+        onFinish={() => onFinish(buildSetup(answers))}
         {...(!loginOnly && { onBack: () => setShowLogin(false) })}
       />
     );
@@ -159,20 +237,34 @@ export default function OnboardingView({
                 <fieldset className="onboarding__choices">
                   <legend className="sr-only">{question.title}</legend>
                   {question.options.map((option, index) => (
-                    <label key={option} className={answers[step] === option ? "is-selected" : ""}>
+                    <label
+                      key={option}
+                      className={selectedAnswer(answers[step], option) ? "is-selected" : ""}
+                    >
                       <input
-                        type="radio"
+                        type={question.multiple ? "checkbox" : "radio"}
                         name={`step-${step}`}
-                        checked={answers[step] === option}
+                        checked={selectedAnswer(answers[step], option)}
                         onChange={() =>
                           setAnswers((previous) => {
                             const next = [...previous];
-                            next[step] = option;
+                            if (question.multiple) {
+                              const selected = Array.isArray(previous[step]) ? previous[step] : [];
+                              next[step] = selected.includes(option)
+                                ? selected.filter((item) => item !== option)
+                                : [...selected, option];
+                            } else {
+                              next[step] = option;
+                            }
                             return next;
                           })
                         }
                       />
-                      <OnboardingPaperIcon name={onboardingIconNames[step]?.[index] ?? "compass"} />
+                      {question.icon && (
+                        <OnboardingPaperIcon
+                          name={onboardingIconNames[step]?.[index] ?? "compass"}
+                        />
+                      )}
                       <span>{option}</span>
                     </label>
                   ))}
@@ -195,7 +287,9 @@ export default function OnboardingView({
                 {question ? (
                   <button
                     type="button"
-                    disabled={!answers[step]}
+                    disabled={
+                      !answers[step] || (Array.isArray(answers[step]) && answers[step].length === 0)
+                    }
                     onClick={() => setStep((value) => value + 1)}
                   >
                     Continuar <PaperArrow />

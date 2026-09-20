@@ -1,4 +1,6 @@
-export const WORKSPACE_VERSION = 5 as const;
+import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences";
+
+export const WORKSPACE_VERSION = 6 as const;
 
 export type FocusPreferences = {
   pomodoroMinutes: 25 | 50;
@@ -136,6 +138,7 @@ export type WorkspaceState = {
   bingoBoards: BingoBoard[];
   homeworkLists: HomeworkList[];
   focusPreferences: FocusPreferences;
+  studyPreferences: StudyPreferences;
 };
 
 export type WorkspaceAction =
@@ -163,6 +166,7 @@ export type WorkspaceAction =
       completedAt: string;
     }
   | { type: "focus/preferences-updated"; preferences: FocusPreferences }
+  | { type: "study/preferences-updated"; preferences: StudyPreferences }
   | {
       type: "material/added";
       subjectId: string;
@@ -235,6 +239,7 @@ export function createInitialWorkspace(): WorkspaceState {
     bingoBoards: [],
     homeworkLists: [],
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
+    studyPreferences: defaultStudyPreferences,
   };
 }
 
@@ -392,6 +397,23 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
       };
     case "focus/preferences-updated":
       return { ...state, focusPreferences: action.preferences };
+    case "study/preferences-updated": {
+      const hasProgramming = action.preferences.programming !== "nenhum";
+      const alreadyHasProgramming = state.subjects.some(
+        (subject) => subject.name.toLocaleLowerCase("pt-BR") === "programação",
+      );
+      return {
+        ...state,
+        studyPreferences: action.preferences,
+        subjects:
+          hasProgramming && !alreadyHasProgramming
+            ? [
+                ...state.subjects,
+                { id: "subject-programming", name: "Programação", color: "#4070c9" },
+              ]
+            : state.subjects,
+      };
+    }
     case "material/added":
       return {
         ...state,

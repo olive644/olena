@@ -14,6 +14,11 @@ import {
   type Subject,
   type WorkspaceState,
 } from "../domain/workspace";
+import {
+  defaultStudyPreferences,
+  studyModalities,
+  type StudyPreferences,
+} from "../domain/study-preferences";
 
 export const WORKSPACE_STORAGE_KEY = "helenastudy.workspace.v1";
 export const MAX_NOTE_ASSET_DATA_URL_LENGTH = 1_000_000;
@@ -226,13 +231,31 @@ type WorkspaceV3 = Omit<WorkspaceState, "version" | "notes" | "homeworkLists"> &
   notes: StudyNote[];
 };
 
-type WorkspaceV4 = Omit<WorkspaceState, "version" | "focusPreferences"> & { version: 4 };
+type WorkspaceV4 = Omit<WorkspaceState, "version" | "focusPreferences" | "studyPreferences"> & {
+  version: 4;
+};
+type WorkspaceV5 = Omit<WorkspaceState, "version" | "studyPreferences"> & { version: 5 };
 
 function isFocusPreferences(value: unknown): value is FocusPreferences {
   return (
     isRecord(value) &&
     (value["pomodoroMinutes"] === 25 || value["pomodoroMinutes"] === 50) &&
     typeof value["longBreaks"] === "boolean"
+  );
+}
+
+function isStudyPreferences(value: unknown): value is StudyPreferences {
+  return (
+    isRecord(value) &&
+    Array.isArray(value["modalities"]) &&
+    value["modalities"].every(
+      (modality) =>
+        typeof modality === "string" &&
+        studyModalities.includes(modality as StudyPreferences["modalities"][number]),
+    ) &&
+    (value["processing"] === "sequencial" || value["processing"] === "global") &&
+    (value["rhythm"] === "focado" || value["rhythm"] === "difuso") &&
+    ["nenhum", "python", "javascript", "python-javascript"].includes(String(value["programming"]))
   );
 }
 
@@ -310,6 +333,27 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
     value["bingoBoards"].every(isBingoBoard) &&
     Array.isArray(value["homeworkLists"]) &&
     value["homeworkLists"].every(isHomeworkList) &&
+    isFocusPreferences(value["focusPreferences"]) &&
+    isStudyPreferences(value["studyPreferences"])
+  );
+}
+
+function isWorkspaceV5(value: unknown): value is WorkspaceV5 {
+  if (!isRecord(value) || value["version"] !== 5) return false;
+  return (
+    hasCoreCollections(value, isNote) &&
+    Array.isArray(value["materials"]) &&
+    value["materials"].every(isMaterial) &&
+    Array.isArray(value["flashcards"]) &&
+    value["flashcards"].every(isFlashcard) &&
+    Array.isArray(value["goals"]) &&
+    value["goals"].every(isGoal) &&
+    Array.isArray(value["quizAttempts"]) &&
+    value["quizAttempts"].every(isQuizAttempt) &&
+    Array.isArray(value["bingoBoards"]) &&
+    value["bingoBoards"].every(isBingoBoard) &&
+    Array.isArray(value["homeworkLists"]) &&
+    value["homeworkLists"].every(isHomeworkList) &&
     isFocusPreferences(value["focusPreferences"])
   );
 }
@@ -349,6 +393,7 @@ function migrateLegacyWorkspace(legacy: LegacyWorkspace): WorkspaceState {
     bingoBoards: [],
     homeworkLists: [],
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
+    studyPreferences: defaultStudyPreferences,
   };
 }
 
@@ -360,6 +405,7 @@ function migrateWorkspaceV2(workspace: WorkspaceV2): WorkspaceState {
     bingoBoards: [],
     homeworkLists: [],
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
+    studyPreferences: defaultStudyPreferences,
   };
 }
 
@@ -369,6 +415,7 @@ function migrateWorkspaceV3(workspace: WorkspaceV3): WorkspaceState {
     version: WORKSPACE_VERSION,
     homeworkLists: [],
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
+    studyPreferences: defaultStudyPreferences,
   };
 }
 
@@ -377,7 +424,12 @@ function migrateWorkspaceV4(workspace: WorkspaceV4): WorkspaceState {
     ...workspace,
     version: WORKSPACE_VERSION,
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
+    studyPreferences: defaultStudyPreferences,
   };
+}
+
+function migrateWorkspaceV5(workspace: WorkspaceV5): WorkspaceState {
+  return { ...workspace, version: WORKSPACE_VERSION, studyPreferences: defaultStudyPreferences };
 }
 
 export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState {
@@ -387,6 +439,7 @@ export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState
   try {
     const parsed: unknown = JSON.parse(serialized);
     if (isWorkspaceState(parsed)) return parsed;
+    if (isWorkspaceV5(parsed)) return migrateWorkspaceV5(parsed);
     if (isWorkspaceV4(parsed)) return migrateWorkspaceV4(parsed);
     if (isWorkspaceV3(parsed)) return migrateWorkspaceV3(parsed);
     if (isWorkspaceV2(parsed)) return migrateWorkspaceV2(parsed);
