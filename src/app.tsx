@@ -56,7 +56,12 @@ function AppContent({ signedOut = false }: { signedOut?: boolean }) {
       <Suspense fallback={<HelenaLoading label="Preparando sua jornada…" />}>
         <OnboardingView
           loginOnly={signedOut && hasCompletedOnboarding()}
-          onFinish={() => setOnboarding(false)}
+          onFinish={(setup) => {
+            if (setup) {
+              dispatch({ type: "study/preferences-updated", preferences: setup.preferences });
+            }
+            setOnboarding(false);
+          }}
         />
       </Suspense>
     );

@@ -95,4 +95,17 @@ describe("local workspace", () => {
       longBreaks: true,
     });
   });
+
+  it("migra o workspace v5 adicionando preferências de estudo", () => {
+    const workspaceV5 = { ...createInitialWorkspace(), version: 5 };
+    delete (workspaceV5 as Partial<typeof workspaceV5>).studyPreferences;
+    window.localStorage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(workspaceV5));
+
+    expect(loadWorkspace(window.localStorage).studyPreferences).toEqual({
+      modalities: [],
+      processing: "sequencial",
+      rhythm: "focado",
+      programming: "nenhum",
+    });
+  });
 });

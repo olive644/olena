@@ -7,8 +7,27 @@ import {
   minutesFocusedOn,
   workspaceReducer,
 } from "./workspace";
+import type { StudyPreferences } from "./study-preferences";
 
 describe("workspaceReducer", () => {
+  it("salva preferências de estudo e cria Programação uma única vez", () => {
+    const preferences: StudyPreferences = {
+      modalities: ["visual", "pratico"],
+      processing: "global",
+      rhythm: "difuso",
+      programming: "python-javascript",
+    };
+    const updated = workspaceReducer(createInitialWorkspace(), {
+      type: "study/preferences-updated",
+      preferences,
+    });
+    expect(updated.studyPreferences).toEqual(preferences);
+    expect(updated.subjects.filter((subject) => subject.name === "Programação")).toHaveLength(1);
+
+    const repeated = workspaceReducer(updated, { type: "study/preferences-updated", preferences });
+    expect(repeated.subjects.filter((subject) => subject.name === "Programação")).toHaveLength(1);
+  });
+
   it("salva preferências do Pomodoro no workspace sincronizado", () => {
     const updated = workspaceReducer(createInitialWorkspace(), {
       type: "focus/preferences-updated",

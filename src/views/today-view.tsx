@@ -9,6 +9,7 @@ import type { AppView } from "../components/app-navigation";
 import { PageHeader } from "../components/app-navigation";
 import { NavigationIcon } from "../components/navigation-icon";
 import { PaperArrow } from "../components/paper-arrow";
+import { buildStudyRoute } from "../domain/study-route";
 
 type TodayViewProps = {
   workspace: WorkspaceState;
@@ -35,6 +36,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
     habit.completedDates.includes(today),
   ).length;
   const focusMinutes = minutesFocusedOn(workspace, today);
+  const studyRoute = buildStudyRoute(workspace, today);
   const subjectName = (subjectId: string) =>
     workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? "Sem matéria";
 
@@ -81,6 +83,25 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           </strong>
           <small>concluídos hoje</small>
         </article>
+      </section>
+
+      <section className="study-route" aria-labelledby="study-route-title">
+        <div>
+          <span className="section-label">{studyRoute.label}</span>
+          <h2 id="study-route-title">{studyRoute.title}</h2>
+          <p>{studyRoute.description}</p>
+          <ol aria-label="Etapas da rota recomendada">
+            {studyRoute.steps.map((step, index) => (
+              <li key={step}>
+                <span aria-hidden="true">{index + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+        <button type="button" onClick={() => onNavigate(studyRoute.view)}>
+          {studyRoute.actionLabel} <PaperArrow />
+        </button>
       </section>
 
       <div className="dashboard-grid">

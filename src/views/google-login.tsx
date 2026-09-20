@@ -27,7 +27,7 @@ export function GoogleLogin({
   onFinish,
   onBack,
 }: {
-  answers: string[];
+  answers: readonly (string | string[])[];
   onFinish: () => void;
   onBack?: () => void;
 }) {

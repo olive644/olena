@@ -1,5 +1,11 @@
 # HelenaStudy: Second Brain
 
+## Preferências de estudo
+
+O onboarding coleta modalidades, organização, ritmo e interesse em programação. Esses dados vivem
+no workspace local e podem ser corrigidos no Perfil. Eles são preferências editáveis, não um
+diagnóstico. A evolução planejada está em `STUDY_PREFERENCES_ROADMAP.md`.
+
 O rail desktop usa papel creme e texto grafite no claro, papel grafite e texto creme no escuro. O Espaço do aluno não renderiza a antiga mascote do cartão inicial.
 
 No celular, Mais fica no cabeçalho ao lado do seletor de aparência e da foto circular. `MobileMenuContext` conecta esse acionador à gaveta; o quinto item inferior, Perfil, usa ícone próprio e fica desabilitado, reservado para configurações futuras de perfil, conta e aplicativo. O seletor de aparência é compartilhado com o desktop. Regressões de recorte e navegação são verificadas em `e2e/responsive-navigation.spec.ts`.
