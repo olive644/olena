@@ -109,12 +109,22 @@ describe("workspaceReducer", () => {
   });
 
   it("salva imagens na anotação e permite removê-las", () => {
-    const withNote = workspaceReducer(createInitialWorkspace(), {
+    const withNotebook = workspaceReducer(createInitialWorkspace(), {
+      type: "notebook/added",
+      id: "notebook-english",
+      title: "Caderno de Inglês",
+      subjectId: "subject-english",
+      createdAt: "2026-08-31T09:59:00.000Z",
+    });
+    const withNote = workspaceReducer(withNotebook, {
       type: "note/added",
+      id: "note-english-1",
+      notebookId: "notebook-english",
       subjectId: "subject-english",
       updatedAt: "2026-08-31T10:00:00.000Z",
     });
     const note = withNote.notes[0];
+    expect(withNote.notebooks[0]?.pageIds).toEqual(["note-english-1"]);
     if (!note) return;
 
     const withAsset = workspaceReducer(withNote, {

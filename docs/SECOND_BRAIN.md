@@ -225,3 +225,14 @@ transições curtas entre módulos e respeito à preferência de movimento reduz
 # Entrada do aplicativo
 
 App verifica helena.onboarding.v1 para apresentar o onboarding na primeira visita. GoogleLogin registra a conclusão após login bem-sucedido e guarda nome e foto Google em helena.profile.v1 para o perfil do cabeçalho. A mesma chave guarda a escolha entre os avatares oficiais Poliana, Oliver, Andreyna, Jairo e Helena. O parâmetro onboarding permite revisar o fluxo. Links de sala preservam acesso direto.
+
+# Organização dos Cadernos
+
+Cadernos são a unidade de organização e folhas são o conteúdo editável. `WorkspaceState.notebooks`
+guarda `id`, `title`, `subjectId`, `createdAt` e `pageIds`; as folhas continuam em
+`WorkspaceState.notes` para reutilizar captura de imagem, desenho e atualização automática. A criação
+de folha deve sempre adicionar o novo identificador em `pageIds` do caderno correspondente.
+
+O fluxo da interface tem três níveis: vitrine de cadernos, vitrine de folhas e editor. Trocas de nível
+retornam a rolagem ao topo. Dados v6 são migrados criando um caderno por anotação antiga, portanto
+qualquer evolução futura deve preservar a relação entre `notebooks.pageIds` e `notes.id`.

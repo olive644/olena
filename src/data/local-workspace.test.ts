@@ -40,6 +40,7 @@ describe("local workspace", () => {
     expect(migrated.materials).toEqual([]);
     expect(migrated.bingoBoards).toEqual([]);
     expect(migrated.homeworkLists).toEqual([]);
+    expect(migrated.notebooks).toEqual([]);
   });
 
   it("migra o workspace v2 adicionando imagens e bingos sem perder os dados", () => {
@@ -70,6 +71,10 @@ describe("local workspace", () => {
     });
     expect(migrated.bingoBoards).toEqual([]);
     expect(migrated.homeworkLists).toEqual([]);
+    expect(migrated.notebooks[0]).toMatchObject({
+      title: "Resumo antigo",
+      pageIds: ["note-old"],
+    });
   });
 
   it("migra o workspace v3 adicionando homeworkLists sem perder os dados", () => {
@@ -106,6 +111,31 @@ describe("local workspace", () => {
       processing: "sequencial",
       rhythm: "focado",
       programming: "nenhum",
+    });
+  });
+
+  it("migra folhas do workspace v6 para cadernos sem perder conteúdo", () => {
+    const note = {
+      id: "note-v6",
+      title: "Revisão de verbos",
+      content: "Conteúdo preservado",
+      subjectId: "subject-english",
+      updatedAt: "2026-09-20T10:00:00.000Z",
+      assets: [],
+    };
+    const workspaceV6: Record<string, unknown> = {
+      ...createInitialWorkspace(),
+      version: 6,
+      notes: [note],
+    };
+    delete workspaceV6["notebooks"];
+    window.localStorage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(workspaceV6));
+
+    const migrated = loadWorkspace(window.localStorage);
+    expect(migrated.notes[0]).toEqual(note);
+    expect(migrated.notebooks[0]).toMatchObject({
+      title: "Revisão de verbos",
+      pageIds: ["note-v6"],
     });
   });
 });

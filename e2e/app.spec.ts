@@ -346,7 +346,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
   await expect(toolsDialog).toBeHidden();
 
-  for (const label of ["Hábitos", "Notas", "Biblioteca", "Planos de aula"]) {
+  for (const label of ["Hábitos", "Cadernos", "Biblioteca", "Planos de aula"]) {
     await page.getByRole("button", { name: "Mais", exact: true }).click();
     const more = page.getByRole("dialog", { name: "Mais ferramentas" });
     await expect(more).toBeVisible();
@@ -411,7 +411,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
 
 test("abre digitalização, escrita à mão e completa um bingo", async ({ page }, testInfo) => {
   await page.evaluate(() => localStorage.setItem("helena.soloProgress", "4"));
-  await navigateToTool(page, testInfo.project.name, "Cadernos", "Notas");
+  await navigateToTool(page, testInfo.project.name, "Cadernos", "Cadernos");
   await page.getByRole("button", { name: /nova anotação/i }).click();
 
   await page.getByRole("button", { name: "Digitalizar" }).click();

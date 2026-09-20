@@ -142,7 +142,7 @@ export type StudentSpaceTool = {
 
 export const STUDENT_SPACE_TOOLS = [
   { view: "focus", title: "Iniciar foco", description: "Abrir temporizador", icon: "focus" },
-  { view: "notes", title: "Nova anotação", description: "Abrir cadernos", icon: "notes" },
+  { view: "notes", title: "Novo caderno", description: "Abrir cadernos", icon: "notes" },
   {
     view: "planner",
     title: "Planejar a semana",

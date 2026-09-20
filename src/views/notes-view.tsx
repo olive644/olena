@@ -1,8 +1,13 @@
-import { lazy, Suspense, useState, type Dispatch } from "react";
+import { lazy, Suspense, useEffect, useState, type CSSProperties, type Dispatch } from "react";
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
-import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
+import {
+  createWorkspaceId,
+  type StudyNotebook,
+  type WorkspaceAction,
+  type WorkspaceState,
+} from "../domain/workspace";
 
 const NoteCaptureTools = lazy(() => import("../components/note-capture-tools"));
 
@@ -11,32 +16,92 @@ type NotesViewProps = {
   dispatch: Dispatch<WorkspaceAction>;
 };
 
+function notebookTitle(workspace: WorkspaceState, subjectId: string): string {
+  const subject = workspace.subjects.find((item) => item.id === subjectId);
+  const base = `Caderno de ${subject?.name ?? "estudos"}`;
+  const matches = workspace.notebooks.filter((notebook) => notebook.title.startsWith(base)).length;
+  return matches === 0 ? base : `${base} ${matches + 1}`;
+}
+
+function NotebookArtwork({ subjectColor }: { subjectColor: string }) {
+  return (
+    <span
+      className="notebook-artwork"
+      style={{ "--notebook-accent": subjectColor } as CSSProperties}
+      aria-hidden="true"
+    >
+      <span className="notebook-artwork__back" />
+      <span className="notebook-artwork__page notebook-artwork__page--one" />
+      <span className="notebook-artwork__page notebook-artwork__page--two" />
+      <span className="notebook-artwork__page notebook-artwork__page--three" />
+      <span className="notebook-artwork__front" />
+      <span className="notebook-artwork__label">OLI</span>
+    </span>
+  );
+}
+
 export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const defaultSubject = workspace.subjects[0];
-  const [newNoteSubjectId, setNewNoteSubjectId] = useState(defaultSubject?.id ?? "");
-  const [activeNoteId, setActiveNoteId] = useState<string | null>(workspace.notes[0]?.id ?? null);
-  const resolvedActiveNoteId = activeNoteId ?? workspace.notes[0]?.id ?? null;
-  const activeNote = workspace.notes.find((note) => note.id === resolvedActiveNoteId) ?? null;
+  const [newNotebookSubjectId, setNewNotebookSubjectId] = useState(defaultSubject?.id ?? "");
+  const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
+  const [activePageId, setActivePageId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (navigator.userAgent.includes("jsdom")) return;
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [activeNotebookId, activePageId]);
 
   if (!defaultSubject) return null;
-  const activeSubject = activeNote
-    ? (workspace.subjects.find((item) => item.id === activeNote.subjectId) ?? defaultSubject)
+
+  const activeNotebook =
+    workspace.notebooks.find((notebook) => notebook.id === activeNotebookId) ?? null;
+  const notebookPages = activeNotebook
+    ? activeNotebook.pageIds.flatMap((id) => {
+        const page = workspace.notes.find((note) => note.id === id);
+        return page ? [page] : [];
+      })
+    : [];
+  const activePage = notebookPages.find((page) => page.id === activePageId) ?? null;
+  const activeSubject = activeNotebook
+    ? (workspace.subjects.find((item) => item.id === activeNotebook.subjectId) ?? defaultSubject)
     : defaultSubject;
 
-  function createNote() {
-    setActiveNoteId(null);
+  function createNotebook() {
+    const id = createWorkspaceId("notebook");
     dispatch({
-      type: "note/added",
-      subjectId: newNoteSubjectId,
-      updatedAt: new Date().toISOString(),
+      type: "notebook/added",
+      id,
+      title: notebookTitle(workspace, newNotebookSubjectId),
+      subjectId: newNotebookSubjectId,
+      createdAt: new Date().toISOString(),
     });
+    setActiveNotebookId(id);
+    setActivePageId(null);
   }
 
-  function updateNote(title: string, content: string) {
-    if (!activeNote) return;
+  function openNotebook(notebook: StudyNotebook) {
+    setActiveNotebookId(notebook.id);
+    setActivePageId(null);
+  }
+
+  function createPage() {
+    if (!activeNotebook) return;
+    const id = createWorkspaceId("note");
+    dispatch({
+      type: "note/added",
+      id,
+      notebookId: activeNotebook.id,
+      subjectId: activeNotebook.subjectId,
+      updatedAt: new Date().toISOString(),
+    });
+    setActivePageId(id);
+  }
+
+  function updatePage(title: string, content: string) {
+    if (!activePage) return;
     dispatch({
       type: "note/updated",
-      id: activeNote.id,
+      id: activePage.id,
       title,
       content,
       updatedAt: new Date().toISOString(),
@@ -44,10 +109,10 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   }
 
   function saveAsset(kind: "scan" | "drawing", name: string, dataUrl: string) {
-    if (!activeNote) return;
+    if (!activePage) return;
     dispatch({
       type: "note/asset-added",
-      noteId: activeNote.id,
+      noteId: activePage.id,
       kind,
       name,
       dataUrl,
@@ -58,130 +123,193 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   return (
     <main className="main-content" id="main-content">
       <PageHeader />
-      <header className="view-heading view-heading--with-action">
-        <div>
-          <span className="section-label">Cadernos</span>
-          <h1>Escreva antes de esquecer.</h1>
-          <p>Digite, digitalize uma página ou escreva à mão no mesmo caderno.</p>
-        </div>
-        <div className="new-note-action">
-          <label>
-            <span>Matéria da nova nota</span>
-            <select
-              value={newNoteSubjectId}
-              onChange={(event) => setNewNoteSubjectId(event.target.value)}
-            >
-              {workspace.subjects.map((item) => (
-                <option value={item.id} key={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button className="primary-button" type="button" onClick={createNote}>
-            <PaperActionIcon name="plus" /> <span>Nova anotação</span>
-          </button>
-        </div>
-      </header>
 
-      <div className="notes-layout">
-        <aside className="note-list" aria-label="Anotações">
-          {workspace.notes.length === 0 ? (
-            <div className="empty-state">
-              <span className="empty-mark" aria-hidden="true">
-                N
-              </span>
-              <p>Nenhuma anotação criada.</p>
+      {!activeNotebook ? (
+        <>
+          <header className="view-heading view-heading--with-action notebooks-heading">
+            <div>
+              <h1>Meus Cadernos</h1>
             </div>
-          ) : (
-            workspace.notes.map((note) => (
-              <button
-                className={
-                  note.id === resolvedActiveNoteId ? "note-list__item is-active" : "note-list__item"
-                }
-                type="button"
-                onClick={() => setActiveNoteId(note.id)}
-                key={note.id}
-              >
-                <strong>{note.title || "Sem título"}</strong>
-                <span>
-                  {note.content ||
-                    (note.assets.length > 0
-                      ? `${note.assets.length} imagem${note.assets.length === 1 ? "" : "s"}`
-                      : "Anotação vazia")}
-                </span>
+            <div className="new-note-action">
+              <label>
+                <span>Matéria do novo caderno</span>
+                <select
+                  value={newNotebookSubjectId}
+                  onChange={(event) => setNewNotebookSubjectId(event.target.value)}
+                >
+                  {workspace.subjects.map((item) => (
+                    <option value={item.id} key={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button className="primary-button" type="button" onClick={createNotebook}>
+                <PaperActionIcon name="plus" /> <span>Novo caderno</span>
               </button>
-            ))
-          )}
-        </aside>
-
-        <section className="note-editor" aria-label="Editor de anotação">
-          {activeNote ? (
-            <>
-              <div className="note-editor__meta">
-                <span>{activeSubject.name}</span>
-                <small>Salva automaticamente</small>
-              </div>
-              <Suspense fallback={<HelenaLoading label="Abrindo ferramentas…" compact />}>
-                <NoteCaptureTools onSave={saveAsset} />
-              </Suspense>
-              <input
-                className="note-title-input"
-                aria-label="Título da anotação"
-                value={activeNote.title}
-                onChange={(event) => updateNote(event.target.value, activeNote.content)}
-              />
-              <textarea
-                aria-label="Conteúdo da anotação"
-                value={activeNote.content}
-                onChange={(event) => updateNote(activeNote.title, event.target.value)}
-                placeholder="Comece a escrever..."
-              />
-              {activeNote.assets.length > 0 && (
-                <section className="note-assets" aria-label="Imagens da anotação">
-                  <h2>Imagens</h2>
-                  <div>
-                    {activeNote.assets.map((asset) => (
-                      <figure key={asset.id}>
-                        <img src={asset.dataUrl} alt={asset.name} />
-                        <figcaption>
-                          <span>
-                            <strong>{asset.name}</strong>
-                            <small>
-                              {asset.kind === "scan" ? "Digitalização" : "Escrita à mão"}
-                            </small>
-                          </span>
-                          <button
-                            type="button"
-                            aria-label={`Remover ${asset.name}`}
-                            onClick={() =>
-                              dispatch({
-                                type: "note/asset-removed",
-                                noteId: activeNote.id,
-                                assetId: asset.id,
-                                updatedAt: new Date().toISOString(),
-                              })
-                            }
-                          >
-                            Remover
-                          </button>
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
-                </section>
-              )}
-            </>
-          ) : (
-            <div className="note-editor__empty">
-              <span className="empty-mark" aria-hidden="true">
-                N
-              </span>
-              <h2>Selecione ou crie uma anotação</h2>
             </div>
-          )}
-        </section>
-      </div>
+          </header>
+
+          <section className="notebooks-showcase" aria-label="Meus cadernos">
+            {workspace.notebooks.length === 0 ? (
+              <div className="notebooks-empty">
+                <NotebookArtwork subjectColor={defaultSubject.color} />
+                <h2>Sua estante está pronta</h2>
+                <p>Crie o primeiro caderno e organize suas folhas por matéria.</p>
+              </div>
+            ) : (
+              <div className="notebook-grid">
+                {workspace.notebooks.map((notebook) => {
+                  const subject =
+                    workspace.subjects.find((item) => item.id === notebook.subjectId) ??
+                    defaultSubject;
+                  return (
+                    <button
+                      className="notebook-card"
+                      type="button"
+                      onClick={() => openNotebook(notebook)}
+                      aria-label={`Abrir ${notebook.title}`}
+                      key={notebook.id}
+                    >
+                      <NotebookArtwork subjectColor={subject.color} />
+                      <span className="notebook-card__copy">
+                        <strong>{notebook.title}</strong>
+                        <span>{subject.name}</span>
+                        <small>
+                          {notebook.pageIds.length} folha{notebook.pageIds.length === 1 ? "" : "s"}
+                        </small>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </>
+      ) : activePage ? (
+        <>
+          <header className="notebook-inner-heading">
+            <button className="back-button" type="button" onClick={() => setActivePageId(null)}>
+              <span aria-hidden="true">‹</span> Folhas do caderno
+            </button>
+            <div>
+              <span>{activeNotebook.title}</span>
+              <small>{activeSubject.name}</small>
+            </div>
+          </header>
+          <section className="note-editor note-editor--page" aria-label="Editor de folha">
+            <div className="note-editor__meta">
+              <span>{activeSubject.name}</span>
+              <small>Salva automaticamente</small>
+            </div>
+            <Suspense fallback={<HelenaLoading label="Abrindo ferramentas…" compact />}>
+              <NoteCaptureTools onSave={saveAsset} />
+            </Suspense>
+            <input
+              className="note-title-input"
+              aria-label="Título da folha"
+              value={activePage.title}
+              onChange={(event) => updatePage(event.target.value, activePage.content)}
+            />
+            <textarea
+              aria-label="Conteúdo da folha"
+              value={activePage.content}
+              onChange={(event) => updatePage(activePage.title, event.target.value)}
+              placeholder="Comece a escrever..."
+            />
+            {activePage.assets.length > 0 && (
+              <section className="note-assets" aria-label="Imagens da folha">
+                <h2>Imagens</h2>
+                <div>
+                  {activePage.assets.map((asset) => (
+                    <figure key={asset.id}>
+                      <img src={asset.dataUrl} alt={asset.name} />
+                      <figcaption>
+                        <span>
+                          <strong>{asset.name}</strong>
+                          <small>{asset.kind === "scan" ? "Digitalização" : "Escrita à mão"}</small>
+                        </span>
+                        <button
+                          type="button"
+                          aria-label={`Remover ${asset.name}`}
+                          onClick={() =>
+                            dispatch({
+                              type: "note/asset-removed",
+                              noteId: activePage.id,
+                              assetId: asset.id,
+                              updatedAt: new Date().toISOString(),
+                            })
+                          }
+                        >
+                          Remover
+                        </button>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            )}
+          </section>
+        </>
+      ) : (
+        <>
+          <header className="view-heading view-heading--with-action notebook-detail-heading">
+            <div>
+              <button
+                className="back-button"
+                type="button"
+                onClick={() => setActiveNotebookId(null)}
+              >
+                <span aria-hidden="true">‹</span> Meus Cadernos
+              </button>
+              <h1>{activeNotebook.title}</h1>
+              <p>{activeSubject.name}</p>
+            </div>
+            <button className="primary-button" type="button" onClick={createPage}>
+              <PaperActionIcon name="plus" /> <span>Nova folha</span>
+            </button>
+          </header>
+          <section className="notebook-pages" aria-label={`Folhas de ${activeNotebook.title}`}>
+            {notebookPages.length === 0 ? (
+              <div className="notebook-pages__empty">
+                <span className="paper-stack" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                <h2>Este caderno ainda está em branco</h2>
+                <p>Crie uma folha para começar a escrever, digitalizar ou desenhar.</p>
+                <button className="primary-button" type="button" onClick={createPage}>
+                  <PaperActionIcon name="plus" /> <span>Criar primeira folha</span>
+                </button>
+              </div>
+            ) : (
+              <div className="notebook-page-grid">
+                {notebookPages.map((page, index) => (
+                  <button
+                    className="notebook-page-card"
+                    type="button"
+                    onClick={() => setActivePageId(page.id)}
+                    key={page.id}
+                  >
+                    <span className="notebook-page-card__number">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <strong>{page.title || "Folha sem título"}</strong>
+                    <span>
+                      {page.content ||
+                        (page.assets.length > 0
+                          ? `${page.assets.length} imagem${page.assets.length === 1 ? "" : "s"}`
+                          : "Folha vazia")}
+                    </span>
+                    <small>Abrir folha</small>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
+      )}
     </main>
   );
 }

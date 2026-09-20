@@ -78,7 +78,7 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
     label: "Meus materiais",
     items: [
       { view: "library", label: "Biblioteca", icon: "library" },
-      { view: "notes", label: "Cadernos", mobileLabel: "Notas", icon: "notes" },
+      { view: "notes", label: "Cadernos", mobileLabel: "Cadernos", icon: "notes" },
       { view: "habits", label: "Hábitos", icon: "habits" },
     ],
   },
