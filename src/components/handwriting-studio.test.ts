@@ -35,4 +35,18 @@ describe("stabilizeHandwriting", () => {
     expect(stabilized[0]).toEqual(original[0]);
     expect(stabilized.at(-1)).toEqual(original.at(-1));
   });
+
+  it("smooths a curved stroke without incorrectly making it horizontal", () => {
+    const original = [
+      point(0, 100),
+      point(30, 108),
+      point(60, 125),
+      point(90, 107),
+      point(120, 100),
+    ];
+    const stabilized = stabilizeHandwriting(original);
+
+    expect(stabilized[2]?.y).toBeGreaterThan(112);
+    expect(stabilized[2]?.y).toBeLessThan(125);
+  });
 });

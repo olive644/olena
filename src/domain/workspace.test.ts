@@ -8,6 +8,7 @@ import {
   workspaceReducer,
 } from "./workspace";
 import type { StudyPreferences } from "./study-preferences";
+import type { HandwritingDocument } from "./handwriting";
 
 describe("workspaceReducer", () => {
   it("salva preferências de estudo e cria Programação uma única vez", () => {
@@ -139,7 +140,34 @@ describe("workspaceReducer", () => {
     expect(asset).toMatchObject({ kind: "drawing", name: "Mapa desenhado" });
     if (!asset) return;
 
-    const removed = workspaceReducer(withAsset, {
+    const handwriting: HandwritingDocument = {
+      version: 1,
+      paper: "ruled",
+      strokes: [
+        {
+          id: "stroke-1",
+          tool: "pen",
+          color: "#17151c",
+          width: 5,
+          points: [{ x: 20, y: 30, pressure: 0.5 }],
+        },
+      ],
+    };
+    const updated = workspaceReducer(withAsset, {
+      type: "note/asset-updated",
+      noteId: note.id,
+      assetId: asset.id,
+      dataUrl: "data:image/png;base64,BBBB",
+      handwriting,
+      updatedAt: "2026-08-31T10:05:30.000Z",
+    });
+    expect(updated.notes[0]?.assets[0]).toMatchObject({
+      id: asset.id,
+      handwriting,
+      dataUrl: "data:image/png;base64,BBBB",
+    });
+
+    const removed = workspaceReducer(updated, {
       type: "note/asset-removed",
       noteId: note.id,
       assetId: asset.id,

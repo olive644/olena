@@ -477,3 +477,12 @@ inclinação acidental de traços longos quase horizontais, sem alegar reconheci
 A folha final é rasterizada no navegador e anexada à folha atual usando o mesmo limite local das
 imagens digitalizadas. O modal é renderizado sobre o documento para não ficar atrás da navegação
 móvel ou ser recortado pelas animações da tela principal.
+
+As folhas manuscritas novas também guardam papel e traços vetoriais no próprio `NoteAsset`, sem
+alterar a versão do workspace porque o campo é opcional. A pessoa pode abrir a imagem na folha,
+continuar a escrita e salvar de novo no mesmo anexo. Imagens manuscritas antigas continuam
+consultáveis, mas não oferecem edição por traços porque esses dados nunca foram guardados. A lupa
+tem modos de ampliar e reduzir: cada toque no papel muda um nível de zoom no ponto tocado. O modo
+Mover desloca a folha sem marcar. A opção Só caneta faz o toque deslocar a folha enquanto a caneta
+continua escrevendo. O traço usa eventos de ponteiro coalescidos quando disponíveis, curvas suaves
+e estabilização local com detecção de linhas quase retas.

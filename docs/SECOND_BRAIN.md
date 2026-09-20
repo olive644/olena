@@ -254,3 +254,15 @@ O modal de captura usa um portal em `document.body`, garantindo que o estúdio e
 acima da barra móvel mesmo durante as animações do conteúdo. Os testes E2E incluem escrita e
 salvamento em desktop e mobile. Para testar uma prévia já aberta em outra porta, defina
 `PLAYWRIGHT_PORT`; o padrão continua sendo 4173.
+
+O campo opcional `NoteAsset.handwriting` guarda a versão 1 do documento com papel e traços. A
+imagem raster continua sendo miniatura e fallback de visualização. A ação `note/asset-updated`
+substitui imagem e traços do mesmo anexo, preservando seu identificador. A validação local aceita
+somente coordenadas, pressão, cores, largura e limites de tamanho conhecidos. Imagens anteriores
+sem documento vetorial abrem somente para consulta.
+
+Nos modos Lupa, tocar no canvas muda o zoom em passos de 15%, ancorado no local do toque. No modo
+Mover, arrastar altera a rolagem do viewport sem criar traços. Só caneta usa o mesmo movimento
+para toques e mantém a escrita com ponteiros do tipo caneta ou mouse. `getCoalescedEvents` é usado
+com fallback para o evento comum. A renderização usa curvas quadráticas por ponto e a
+estabilização mantém curvas e diagonais intencionais.

@@ -1,35 +1,43 @@
 import {
   Eraser,
+  Hand,
   Highlighter,
-  Minus,
   PenLine,
-  Plus,
   Redo2,
   RotateCcw,
   Trash2,
   Undo2,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
-import { stabilizeHandwriting, type HandwritingPoint } from "./handwriting-stabilization";
+import type {
+  HandwritingDocument,
+  HandwritingPaper,
+  HandwritingPoint,
+  HandwritingStroke,
+} from "../domain/handwriting";
+import { stabilizeHandwriting } from "./handwriting-stabilization";
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 1600;
 const BASE_DISPLAY_WIDTH = 760;
 
-type HandwritingTool = "pen" | "highlighter" | "eraser";
-type PaperStyle = "ruled" | "grid" | "dots" | "blank";
-type Stroke = {
-  id: string;
-  tool: Exclude<HandwritingTool, "eraser">;
-  color: string;
-  width: number;
-  points: HandwritingPoint[];
-};
+type HandwritingTool = "pen" | "highlighter" | "eraser" | "hand" | "zoom-in" | "zoom-out";
+type PaperStyle = HandwritingPaper;
+type Stroke = HandwritingStroke;
 
 type HandwritingStudioProps = {
   onClose: () => void;
-  onSave: (dataUrl: string) => void;
+  onSave: (dataUrl: string, document: HandwritingDocument) => void;
+  initialDocument?: HandwritingDocument;
 };
 
 function pointDistance(first: HandwritingPoint, second: HandwritingPoint): number {
@@ -38,12 +46,18 @@ function pointDistance(first: HandwritingPoint, second: HandwritingPoint): numbe
 
 function canvasPoint(
   canvas: HTMLCanvasElement,
-  event: ReactPointerEvent<HTMLCanvasElement>,
+  event: Pick<PointerEvent, "clientX" | "clientY" | "pressure">,
 ): HandwritingPoint {
   const bounds = canvas.getBoundingClientRect();
   return {
-    x: ((event.clientX - bounds.left) / bounds.width) * canvas.width,
-    y: ((event.clientY - bounds.top) / bounds.height) * canvas.height,
+    x: Math.max(
+      0,
+      Math.min(canvas.width, ((event.clientX - bounds.left) / bounds.width) * canvas.width),
+    ),
+    y: Math.max(
+      0,
+      Math.min(canvas.height, ((event.clientY - bounds.top) / bounds.height) * canvas.height),
+    ),
     pressure: event.pressure > 0 ? event.pressure : 0.5,
   };
 }
@@ -108,15 +122,24 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
     context.restore();
     return;
   }
-  for (let index = 1; index < stroke.points.length; index += 1) {
+  for (let index = 0; index < stroke.points.length; index += 1) {
     const previous = stroke.points[index - 1];
     const current = stroke.points[index];
-    if (!previous || !current) continue;
-    const pressure = stroke.tool === "pen" ? (previous.pressure + current.pressure) / 2 : 0.7;
+    const next = stroke.points[index + 1];
+    if (!current) continue;
+    const pressure = stroke.tool === "pen" ? current.pressure : 0.7;
     context.lineWidth = stroke.width * (0.72 + pressure * 0.55);
     context.beginPath();
-    context.moveTo(previous.x, previous.y);
-    context.lineTo(current.x, current.y);
+    context.moveTo(
+      previous ? (previous.x + current.x) / 2 : current.x,
+      previous ? (previous.y + current.y) / 2 : current.y,
+    );
+    context.quadraticCurveTo(
+      current.x,
+      current.y,
+      next ? (current.x + next.x) / 2 : current.x,
+      next ? (current.y + next.y) / 2 : current.y,
+    );
     context.stroke();
   }
   context.restore();
@@ -170,19 +193,28 @@ function strokeId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
 }
 
-export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
+export function HandwritingStudio({ onClose, onSave, initialDocument }: HandwritingStudioProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
+  const activePointerRef = useRef<number | null>(null);
+  const panRef = useRef<{
+    pointerId: number;
+    x: number;
+    y: number;
+    scrollLeft: number;
+    scrollTop: number;
+  } | null>(null);
   const eraserChangedRef = useRef(false);
-  const [strokes, setStrokes] = useState<Stroke[]>([]);
+  const [strokes, setStrokes] = useState<Stroke[]>(() => initialDocument?.strokes ?? []);
   const [undoStack, setUndoStack] = useState<Stroke[][]>([]);
   const [redoStack, setRedoStack] = useState<Stroke[][]>([]);
   const [tool, setTool] = useState<HandwritingTool>("pen");
-  const [paper, setPaper] = useState<PaperStyle>("ruled");
+  const [paper, setPaper] = useState<PaperStyle>(initialDocument?.paper ?? "ruled");
   const [color, setColor] = useState("#17151c");
   const [width, setWidth] = useState(5);
   const [stabilization, setStabilization] = useState(true);
+  const [penOnly, setPenOnly] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [fitWidth, setFitWidth] = useState(BASE_DISPLAY_WIDTH);
   const [error, setError] = useState("");
@@ -208,11 +240,49 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
     setRedoStack([]);
   }
 
+  function zoomAt(clientX: number, clientY: number, direction: 1 | -1) {
+    const canvas = canvasRef.current;
+    const viewport = viewportRef.current;
+    if (!canvas || !viewport) return;
+    const bounds = canvas.getBoundingClientRect();
+    const relativeX = (clientX - bounds.left) / bounds.width;
+    const relativeY = (clientY - bounds.top) / bounds.height;
+    const nextZoom = Math.max(0.7, Math.min(2, Math.round((zoom + direction * 0.15) * 100) / 100));
+    if (nextZoom === zoom) return;
+    setZoom(nextZoom);
+    requestAnimationFrame(() => {
+      const nextBounds = canvas.getBoundingClientRect();
+      viewport.scrollLeft += nextBounds.left + relativeX * nextBounds.width - clientX;
+      viewport.scrollTop += nextBounds.top + relativeY * nextBounds.height - clientY;
+    });
+  }
+
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (event.button !== 0) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (tool === "zoom-in" || tool === "zoom-out") {
+      zoomAt(event.clientX, event.clientY, tool === "zoom-in" ? 1 : -1);
+      return;
+    }
+    if (activePointerRef.current !== null) return;
     canvas.setPointerCapture(event.pointerId);
+    activePointerRef.current = event.pointerId;
+    if (tool === "hand" || (penOnly && event.pointerType === "touch")) {
+      const viewport = viewportRef.current;
+      if (!viewport) {
+        activePointerRef.current = null;
+        return;
+      }
+      panRef.current = {
+        pointerId: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        scrollLeft: viewport.scrollLeft,
+        scrollTop: viewport.scrollTop,
+      };
+      return;
+    }
     drawingRef.current = true;
     setError("");
     const point = canvasPoint(canvas, event);
@@ -234,13 +304,26 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
+    const viewport = viewportRef.current;
+    const pan = panRef.current;
+    if (pan && viewport && pan.pointerId === event.pointerId) {
+      viewport.scrollLeft = pan.scrollLeft - (event.clientX - pan.x);
+      viewport.scrollTop = pan.scrollTop - (event.clientY - pan.y);
+      return;
+    }
+    if (event.pointerId !== activePointerRef.current) return;
     if (!drawingRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const point = canvasPoint(canvas, event);
+    const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
+    const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map((point) =>
+      canvasPoint(canvas, point),
+    );
     if (tool === "eraser") {
       setStrokes((current) => {
-        const next = current.filter((stroke) => !strokeTouches(stroke, point, 30));
+        const next = current.filter(
+          (stroke) => !points.some((point) => strokeTouches(stroke, point, 30)),
+        );
         if (next.length !== current.length) eraserChangedRef.current = true;
         return next;
       });
@@ -249,13 +332,23 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
     setStrokes((current) => {
       const last = current.at(-1);
       if (!last) return current;
-      const previous = last.points.at(-1);
-      if (previous && pointDistance(previous, point) < 1.4) return current;
-      return [...current.slice(0, -1), { ...last, points: [...last.points, point] }];
+      const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
+        const previous = accepted.at(-1) ?? last.points.at(-1);
+        if (!previous || pointDistance(previous, point) >= 1.4) accepted.push(point);
+        return accepted;
+      }, []);
+      if (added.length === 0) return current;
+      return [...current.slice(0, -1), { ...last, points: [...last.points, ...added] }];
     });
   }
 
-  function finish() {
+  function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerId !== activePointerRef.current) return;
+    activePointerRef.current = null;
+    if (panRef.current) {
+      panRef.current = null;
+      return;
+    }
     if (!drawingRef.current) return;
     drawingRef.current = false;
     if (tool === "eraser") {
@@ -266,7 +359,17 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
     setStrokes((current) => {
       const last = current.at(-1);
       if (!last) return current;
-      return [...current.slice(0, -1), { ...last, points: stabilizeHandwriting(last.points) }];
+      return [
+        ...current.slice(0, -1),
+        {
+          ...last,
+          points: stabilizeHandwriting(last.points).map((point) => ({
+            ...point,
+            x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
+            y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
+          })),
+        },
+      ];
     });
   }
 
@@ -297,6 +400,34 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
     viewportRef.current?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
 
+  function handleCanvasKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
+    const viewport = viewportRef.current;
+    const canvas = canvasRef.current;
+    if (!viewport || !canvas) return;
+    if (
+      (tool === "zoom-in" || tool === "zoom-out") &&
+      (event.key === "Enter" || event.key === " ")
+    ) {
+      event.preventDefault();
+      const bounds = canvas.getBoundingClientRect();
+      zoomAt(
+        bounds.left + bounds.width / 2,
+        bounds.top + bounds.height / 2,
+        tool === "zoom-in" ? 1 : -1,
+      );
+    }
+    if (
+      tool === "hand" &&
+      ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
+    ) {
+      event.preventDefault();
+      viewport.scrollBy({
+        left: event.key === "ArrowLeft" ? -80 : event.key === "ArrowRight" ? 80 : 0,
+        top: event.key === "ArrowUp" ? -80 : event.key === "ArrowDown" ? 80 : 0,
+      });
+    }
+  }
+
   function save() {
     const canvas = canvasRef.current;
     if (!canvas || strokes.length === 0) {
@@ -304,8 +435,23 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
       return;
     }
     try {
+      const document: HandwritingDocument = {
+        version: 1,
+        paper,
+        strokes: strokes.map((stroke) => ({
+          ...stroke,
+          points: stroke.points.map((point) => ({
+            x: Math.round(point.x * 100) / 100,
+            y: Math.round(point.y * 100) / 100,
+            pressure: Math.round(point.pressure * 1000) / 1000,
+          })),
+        })),
+      };
+      if (JSON.stringify(document).length > 800_000) {
+        throw new Error("A folha tem traços demais. Divida as anotações em outra folha.");
+      }
       renderPage(canvas, strokes, paper);
-      onSave(exportPage(canvas));
+      onSave(exportPage(canvas), document);
       onClose();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível salvar a folha.");
@@ -345,6 +491,15 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
           >
             <Eraser size={18} /> <span>Borracha</span>
           </button>
+          <button
+            type="button"
+            className={tool === "hand" ? "is-active" : ""}
+            aria-label="Mover folha"
+            aria-pressed={tool === "hand"}
+            onClick={() => setTool("hand")}
+          >
+            <Hand size={18} /> <span>Mover</span>
+          </button>
         </div>
 
         <div className="handwriting-ink-options">
@@ -382,37 +537,47 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
               <small>Suaviza e endireita traços leves</small>
             </span>
           </label>
+          <label className="handwriting-pen-only">
+            <input
+              type="checkbox"
+              checked={penOnly}
+              onChange={(event) => setPenOnly(event.target.checked)}
+            />
+            <span>Só caneta, dedo move</span>
+          </label>
         </div>
 
         <div className="handwriting-history" aria-label="Histórico e zoom">
-          <button type="button" aria-label="Desfazer" disabled={!undoStack.length} onClick={undo}>
-            <Undo2 size={18} />
-          </button>
-          <button type="button" aria-label="Refazer" disabled={!redoStack.length} onClick={redo}>
-            <Redo2 size={18} />
-          </button>
-          <span className="handwriting-commandbar__divider" />
           <button
             type="button"
-            aria-label="Diminuir zoom"
-            disabled={zoom <= 0.7}
-            onClick={() => setZoom((value) => Math.max(0.7, value - 0.15))}
+            className={tool === "zoom-out" ? "is-active" : ""}
+            aria-label="Lupa para reduzir"
+            aria-pressed={tool === "zoom-out"}
+            onClick={() => setTool("zoom-out")}
           >
-            <Minus size={18} />
+            <ZoomOut size={18} />
           </button>
           <button className="handwriting-zoom-value" type="button" onClick={resetView}>
             {Math.round(zoom * 100)}%
           </button>
           <button
             type="button"
-            aria-label="Aumentar zoom"
-            disabled={zoom >= 2}
-            onClick={() => setZoom((value) => Math.min(2, value + 0.15))}
+            className={tool === "zoom-in" ? "is-active" : ""}
+            aria-label="Lupa para ampliar"
+            aria-pressed={tool === "zoom-in"}
+            onClick={() => setTool("zoom-in")}
           >
-            <Plus size={18} />
+            <ZoomIn size={18} />
           </button>
           <button type="button" aria-label="Redefinir visualização" onClick={resetView}>
             <RotateCcw size={18} />
+          </button>
+          <span className="handwriting-commandbar__divider" />
+          <button type="button" aria-label="Desfazer" disabled={!undoStack.length} onClick={undo}>
+            <Undo2 size={18} />
+          </button>
+          <button type="button" aria-label="Refazer" disabled={!redoStack.length} onClick={redo}>
+            <Redo2 size={18} />
           </button>
           <button
             type="button"
@@ -450,6 +615,15 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
         </aside>
 
         <div className="handwriting-viewport" ref={viewportRef}>
+          {(tool === "hand" || tool === "zoom-in" || tool === "zoom-out") && (
+            <span className="handwriting-viewport-hint" aria-hidden="true">
+              {tool === "hand"
+                ? "Arraste para mover"
+                : tool === "zoom-in"
+                  ? "Toque para ampliar"
+                  : "Toque para reduzir"}
+            </span>
+          )}
           <div
             className="handwriting-page-shell"
             style={{ width: displayWidth, height: (displayWidth / PAGE_WIDTH) * PAGE_HEIGHT }}
@@ -459,11 +633,22 @@ export function HandwritingStudio({ onClose, onSave }: HandwritingStudioProps) {
               className={`handwriting-canvas handwriting-canvas--${tool}`}
               width={PAGE_WIDTH}
               height={PAGE_HEIGHT}
-              aria-label="Folha para escrita à mão com dedo ou caneta"
+              role={tool === "hand" || tool === "zoom-in" || tool === "zoom-out" ? "button" : "img"}
+              tabIndex={0}
+              aria-label={
+                tool === "zoom-in"
+                  ? "Toque na folha para ampliar"
+                  : tool === "zoom-out"
+                    ? "Toque na folha para reduzir"
+                    : tool === "hand"
+                      ? "Arraste a folha para mover"
+                      : "Folha para escrita à mão com dedo ou caneta"
+              }
               onPointerDown={start}
               onPointerMove={move}
               onPointerUp={finish}
               onPointerCancel={finish}
+              onKeyDown={handleCanvasKeyDown}
             />
           </div>
         </div>

@@ -2,12 +2,21 @@ import { Camera, RotateCw, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
+import type { HandwritingDocument } from "../domain/handwriting";
 import type { NoteAsset } from "../domain/workspace";
 import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
 
 type NoteCaptureToolsProps = {
-  onSave: (kind: NoteAsset["kind"], name: string, dataUrl: string) => void;
+  onSave: (
+    kind: NoteAsset["kind"],
+    name: string,
+    dataUrl: string,
+    handwriting?: HandwritingDocument,
+  ) => void;
+  onUpdate?: (assetId: string, dataUrl: string, handwriting: HandwritingDocument) => void;
+  editingAsset?: NoteAsset | null;
+  onCloseEditing?: () => void;
 };
 
 async function loadImage(url: string): Promise<HTMLImageElement> {
@@ -167,22 +176,36 @@ function Scanner({ onSave, onClose }: NoteCaptureToolsProps & { onClose: () => v
   );
 }
 
-export function NoteCaptureTools({ onSave }: NoteCaptureToolsProps) {
+export function NoteCaptureTools({
+  onSave,
+  onUpdate,
+  editingAsset = null,
+  onCloseEditing,
+}: NoteCaptureToolsProps) {
   const [mode, setMode] = useState<"scan" | "drawing" | null>(null);
+  const currentMode = editingAsset ? "drawing" : mode;
+
+  function close() {
+    if (editingAsset) onCloseEditing?.();
+    else setMode(null);
+  }
 
   useEffect(() => {
-    if (!mode) return;
+    if (!currentMode) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") setMode(null);
+      if (event.key === "Escape") {
+        if (editingAsset) onCloseEditing?.();
+        else setMode(null);
+      }
     }
     document.addEventListener("keydown", closeOnEscape);
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
     };
-  }, [mode]);
+  }, [currentMode, editingAsset, onCloseEditing]);
 
   return (
     <>
@@ -195,18 +218,20 @@ export function NoteCaptureTools({ onSave }: NoteCaptureToolsProps) {
         </button>
       </div>
 
-      {mode &&
+      {currentMode &&
         createPortal(
           <div className="capture-layer">
             <button
               className="capture-backdrop"
               type="button"
               aria-label="Fechar ferramenta"
-              onClick={() => setMode(null)}
+              onClick={close}
             />
             <section
               className={
-                mode === "drawing" ? "capture-dialog capture-dialog--handwriting" : "capture-dialog"
+                currentMode === "drawing"
+                  ? "capture-dialog capture-dialog--handwriting"
+                  : "capture-dialog"
               }
               role="dialog"
               aria-modal="true"
@@ -216,24 +241,38 @@ export function NoteCaptureTools({ onSave }: NoteCaptureToolsProps) {
                 <div>
                   <span>Cadernos</span>
                   <h2 id="capture-title">
-                    {mode === "scan" ? "Digitalizar documento" : "Escrever à mão"}
+                    {currentMode === "scan"
+                      ? "Digitalizar documento"
+                      : editingAsset
+                        ? "Folha manuscrita"
+                        : "Escrever à mão"}
                   </h2>
                 </div>
-                <button
-                  className="sheet-close"
-                  type="button"
-                  aria-label="Fechar"
-                  onClick={() => setMode(null)}
-                >
+                <button className="sheet-close" type="button" aria-label="Fechar" onClick={close}>
                   <X size={20} />
                 </button>
               </header>
-              {mode === "scan" ? (
-                <Scanner onSave={onSave} onClose={() => setMode(null)} />
+              {currentMode === "scan" ? (
+                <Scanner onSave={onSave} onClose={close} />
+              ) : editingAsset && !editingAsset.handwriting ? (
+                <div className="handwriting-legacy-preview">
+                  <p>
+                    Esta folha antiga foi salva como imagem. Os traços não podem ser editados, mas
+                    você pode consultá-la aqui.
+                  </p>
+                  <img src={editingAsset.dataUrl} alt={editingAsset.name} />
+                </div>
               ) : (
                 <HandwritingStudio
-                  onSave={(dataUrl) => onSave("drawing", "Folha manuscrita", dataUrl)}
-                  onClose={() => setMode(null)}
+                  key={editingAsset?.id ?? "new"}
+                  {...(editingAsset?.handwriting
+                    ? { initialDocument: editingAsset.handwriting }
+                    : {})}
+                  onSave={(dataUrl, handwriting) => {
+                    if (editingAsset) onUpdate?.(editingAsset.id, dataUrl, handwriting);
+                    else onSave("drawing", "Folha manuscrita", dataUrl, handwriting);
+                  }}
+                  onClose={close}
                 />
               )}
             </section>
