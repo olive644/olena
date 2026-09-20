@@ -412,7 +412,8 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
 test("abre digitalização, escrita à mão e completa um bingo", async ({ page }, testInfo) => {
   await page.evaluate(() => localStorage.setItem("helena.soloProgress", "4"));
   await navigateToTool(page, testInfo.project.name, "Cadernos", "Cadernos");
-  await page.getByRole("button", { name: /nova anotação/i }).click();
+  await page.getByRole("button", { name: /novo caderno/i }).click();
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
 
   await page.getByRole("button", { name: "Digitalizar" }).click();
   await expect(page.getByRole("dialog", { name: "Digitalizar documento" })).toBeVisible();
