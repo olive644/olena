@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Cadernos e Perfil no desktop, 20/09/2026
+
+Digitalizar usa documento com marcas de captura e Escrever à mão usa lápis facetado, ambos com 32px e cores próprias. Perfil está também na Área do aluno da barra lateral, abre as mesmas configurações do celular e usa a variante creme no tema escuro ou quando ativo. Não é duplicado na gaveta Mais.
+
 ## Preferências de estudo, 20/09/2026
 
 - O workspace local está na versão 6 e armazena modalidades, organização, ritmo e interesse em

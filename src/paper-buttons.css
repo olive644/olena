@@ -1101,10 +1101,27 @@
   margin-right: 0.35rem;
 }
 
-.note-capture-actions .paper-action-icon {
-  flex: 0 0 28px;
-  width: 28px;
-  height: 28px;
+.app-shell .note-capture-actions .paper-action-icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+  stroke: none;
+}
+
+.navigation-icon--profile .profile-icon-dark-surface {
+  display: none;
+}
+
+:root[data-theme="dark"]
+  .sidebar
+  .navigation-icon--profile:has(.profile-icon-dark-surface)
+  > img:first-child {
+  display: none;
+}
+
+:root[data-theme="dark"] .sidebar .navigation-icon--profile .profile-icon-dark-surface {
+  display: block;
 }
 
 /* O rail desktop recebe as mesmas dobras de papel das barras móveis. */
