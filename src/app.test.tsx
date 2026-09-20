@@ -212,11 +212,12 @@ describe("App", () => {
     expect(habitButton.getAttribute("aria-pressed")).toBe("true");
 
     navigate("Cadernos");
-    fireEvent.click(await screen.findByRole("button", { name: /nova anotação/i }));
-    fireEvent.change(screen.getByLabelText(/título da anotação/i), {
+    fireEvent.click(await screen.findByRole("button", { name: /novo caderno/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Nova folha" }));
+    fireEvent.change(screen.getByLabelText(/título da folha/i), {
       target: { value: "Vocabulário" },
     });
-    fireEvent.change(screen.getByLabelText(/conteúdo da anotação/i), {
+    fireEvent.change(screen.getByLabelText(/conteúdo da folha/i), {
       target: { value: "Improve: melhorar" },
     });
     expect(screen.getByDisplayValue("Improve: melhorar")).toBeTruthy();
@@ -225,7 +226,8 @@ describe("App", () => {
   it("oferece digitalização e escrita à mão dentro de uma anotação", async () => {
     render(<App />);
     navigate("Cadernos");
-    fireEvent.click(await screen.findByRole("button", { name: /nova anotação/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /novo caderno/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Nova folha" }));
 
     expect(await screen.findByRole("button", { name: "Digitalizar" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Escrever à mão" })).toBeTruthy();

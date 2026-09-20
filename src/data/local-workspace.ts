@@ -9,6 +9,7 @@ import {
   type StudyGoal,
   type StudyMaterial,
   type StudyEvent,
+  type StudyNotebook,
   type StudyNote,
   type StudyTask,
   type Subject,
@@ -99,6 +100,18 @@ function isNote(value: unknown): boolean {
     isRecord(value) &&
     Array.isArray(value["assets"]) &&
     value["assets"].every(isNoteAsset)
+  );
+}
+
+function isNotebook(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    isString(value["id"]) &&
+    isString(value["title"]) &&
+    isString(value["subjectId"]) &&
+    isString(value["createdAt"]) &&
+    Array.isArray(value["pageIds"]) &&
+    value["pageIds"].every(isString)
   );
 }
 
@@ -226,15 +239,24 @@ type WorkspaceV2 = Omit<LegacyWorkspace, "version"> & {
   quizAttempts: QuizAttempt[];
 };
 
-type WorkspaceV3 = Omit<WorkspaceState, "version" | "notes" | "homeworkLists"> & {
+type WorkspaceV3 = Omit<
+  WorkspaceState,
+  "version" | "notebooks" | "notes" | "homeworkLists" | "focusPreferences" | "studyPreferences"
+> & {
   version: 3;
   notes: StudyNote[];
 };
 
-type WorkspaceV4 = Omit<WorkspaceState, "version" | "focusPreferences" | "studyPreferences"> & {
+type WorkspaceV4 = Omit<
+  WorkspaceState,
+  "version" | "notebooks" | "focusPreferences" | "studyPreferences"
+> & {
   version: 4;
 };
-type WorkspaceV5 = Omit<WorkspaceState, "version" | "studyPreferences"> & { version: 5 };
+type WorkspaceV5 = Omit<WorkspaceState, "version" | "notebooks" | "studyPreferences"> & {
+  version: 5;
+};
+type WorkspaceV6 = Omit<WorkspaceState, "version" | "notebooks"> & { version: 6 };
 
 function isFocusPreferences(value: unknown): value is FocusPreferences {
   return (
@@ -333,6 +355,8 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
     value["bingoBoards"].every(isBingoBoard) &&
     Array.isArray(value["homeworkLists"]) &&
     value["homeworkLists"].every(isHomeworkList) &&
+    Array.isArray(value["notebooks"]) &&
+    value["notebooks"].every(isNotebook) &&
     isFocusPreferences(value["focusPreferences"]) &&
     isStudyPreferences(value["studyPreferences"])
   );
@@ -355,6 +379,27 @@ function isWorkspaceV5(value: unknown): value is WorkspaceV5 {
     Array.isArray(value["homeworkLists"]) &&
     value["homeworkLists"].every(isHomeworkList) &&
     isFocusPreferences(value["focusPreferences"])
+  );
+}
+
+function isWorkspaceV6(value: unknown): value is WorkspaceV6 {
+  if (!isRecord(value) || value["version"] !== 6) return false;
+  return (
+    hasCoreCollections(value, isNote) &&
+    Array.isArray(value["materials"]) &&
+    value["materials"].every(isMaterial) &&
+    Array.isArray(value["flashcards"]) &&
+    value["flashcards"].every(isFlashcard) &&
+    Array.isArray(value["goals"]) &&
+    value["goals"].every(isGoal) &&
+    Array.isArray(value["quizAttempts"]) &&
+    value["quizAttempts"].every(isQuizAttempt) &&
+    Array.isArray(value["bingoBoards"]) &&
+    value["bingoBoards"].every(isBingoBoard) &&
+    Array.isArray(value["homeworkLists"]) &&
+    value["homeworkLists"].every(isHomeworkList) &&
+    isFocusPreferences(value["focusPreferences"]) &&
+    isStudyPreferences(value["studyPreferences"])
   );
 }
 
@@ -381,11 +426,23 @@ function migrateNotes(notes: LegacyStudyNote[]): StudyNote[] {
   return notes.map((note) => ({ ...note, assets: [] }));
 }
 
+function notebooksFromNotes(notes: StudyNote[]): StudyNotebook[] {
+  return notes.map((note) => ({
+    id: `notebook-${note.id}`,
+    title: note.title || "Caderno importado",
+    subjectId: note.subjectId,
+    createdAt: note.updatedAt,
+    pageIds: [note.id],
+  }));
+}
+
 function migrateLegacyWorkspace(legacy: LegacyWorkspace): WorkspaceState {
+  const notes = migrateNotes(legacy.notes);
   return {
     ...legacy,
     version: WORKSPACE_VERSION,
-    notes: migrateNotes(legacy.notes),
+    notes,
+    notebooks: notebooksFromNotes(notes),
     materials: [],
     flashcards: [],
     goals: [],
@@ -398,10 +455,12 @@ function migrateLegacyWorkspace(legacy: LegacyWorkspace): WorkspaceState {
 }
 
 function migrateWorkspaceV2(workspace: WorkspaceV2): WorkspaceState {
+  const notes = migrateNotes(workspace.notes);
   return {
     ...workspace,
     version: WORKSPACE_VERSION,
-    notes: migrateNotes(workspace.notes),
+    notes,
+    notebooks: notebooksFromNotes(notes),
     bingoBoards: [],
     homeworkLists: [],
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
@@ -413,6 +472,7 @@ function migrateWorkspaceV3(workspace: WorkspaceV3): WorkspaceState {
   return {
     ...workspace,
     version: WORKSPACE_VERSION,
+    notebooks: notebooksFromNotes(workspace.notes),
     homeworkLists: [],
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
     studyPreferences: defaultStudyPreferences,
@@ -423,13 +483,27 @@ function migrateWorkspaceV4(workspace: WorkspaceV4): WorkspaceState {
   return {
     ...workspace,
     version: WORKSPACE_VERSION,
+    notebooks: notebooksFromNotes(workspace.notes),
     focusPreferences: { pomodoroMinutes: 25, longBreaks: true },
     studyPreferences: defaultStudyPreferences,
   };
 }
 
 function migrateWorkspaceV5(workspace: WorkspaceV5): WorkspaceState {
-  return { ...workspace, version: WORKSPACE_VERSION, studyPreferences: defaultStudyPreferences };
+  return {
+    ...workspace,
+    version: WORKSPACE_VERSION,
+    notebooks: notebooksFromNotes(workspace.notes),
+    studyPreferences: defaultStudyPreferences,
+  };
+}
+
+function migrateWorkspaceV6(workspace: WorkspaceV6): WorkspaceState {
+  return {
+    ...workspace,
+    version: WORKSPACE_VERSION,
+    notebooks: notebooksFromNotes(workspace.notes),
+  };
 }
 
 export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState {
@@ -439,6 +513,7 @@ export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState
   try {
     const parsed: unknown = JSON.parse(serialized);
     if (isWorkspaceState(parsed)) return parsed;
+    if (isWorkspaceV6(parsed)) return migrateWorkspaceV6(parsed);
     if (isWorkspaceV5(parsed)) return migrateWorkspaceV5(parsed);
     if (isWorkspaceV4(parsed)) return migrateWorkspaceV4(parsed);
     if (isWorkspaceV3(parsed)) return migrateWorkspaceV3(parsed);

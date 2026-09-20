@@ -1,6 +1,6 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences";
 
-export const WORKSPACE_VERSION = 6 as const;
+export const WORKSPACE_VERSION = 7 as const;
 
 export type FocusPreferences = {
   pomodoroMinutes: 25 | 50;
@@ -42,6 +42,14 @@ export type StudyNote = {
   subjectId: string;
   updatedAt: string;
   assets: NoteAsset[];
+};
+
+export type StudyNotebook = {
+  id: string;
+  title: string;
+  subjectId: string;
+  createdAt: string;
+  pageIds: string[];
 };
 
 export type NoteAsset = {
@@ -129,6 +137,7 @@ export type WorkspaceState = {
   tasks: StudyTask[];
   events: StudyEvent[];
   habits: Habit[];
+  notebooks: StudyNotebook[];
   notes: StudyNote[];
   focusSessions: FocusSession[];
   materials: StudyMaterial[];
@@ -148,7 +157,14 @@ export type WorkspaceAction =
   | { type: "event/added"; title: string; subjectId: string; date: string; time: string }
   | { type: "habit/added"; title: string }
   | { type: "habit/toggled"; id: string; date: string }
-  | { type: "note/added"; subjectId: string; updatedAt: string }
+  | {
+      type: "notebook/added";
+      id: string;
+      title: string;
+      subjectId: string;
+      createdAt: string;
+    }
+  | { type: "note/added"; id: string; notebookId: string; subjectId: string; updatedAt: string }
   | { type: "note/updated"; id: string; title: string; content: string; updatedAt: string }
   | {
       type: "note/asset-added";
@@ -211,10 +227,12 @@ export type WorkspaceAction =
   | { type: "homework-item/toggled"; listId: string; itemId: string }
   | { type: "homework-item/removed"; listId: string; itemId: string };
 
-function createId(prefix: string): string {
+export function createWorkspaceId(prefix: string): string {
   const suffix = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
   return `${prefix}-${suffix}`;
 }
+
+const createId = createWorkspaceId;
 
 export function toDateKey(date: Date): string {
   const year = date.getFullYear();
@@ -230,6 +248,7 @@ export function createInitialWorkspace(): WorkspaceState {
     tasks: [],
     events: [],
     habits: [],
+    notebooks: [],
     notes: [],
     focusSessions: [],
     materials: [],
@@ -318,13 +337,32 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           };
         }),
       };
+    case "notebook/added":
+      return {
+        ...state,
+        notebooks: [
+          {
+            id: action.id,
+            title: action.title,
+            subjectId: action.subjectId,
+            createdAt: action.createdAt,
+            pageIds: [],
+          },
+          ...state.notebooks,
+        ],
+      };
     case "note/added":
       return {
         ...state,
+        notebooks: state.notebooks.map((notebook) =>
+          notebook.id === action.notebookId
+            ? { ...notebook, pageIds: [action.id, ...notebook.pageIds] }
+            : notebook,
+        ),
         notes: [
           {
-            id: createId("note"),
-            title: "Nova anotação",
+            id: action.id,
+            title: "Nova folha",
             content: "",
             subjectId: action.subjectId,
             updatedAt: action.updatedAt,

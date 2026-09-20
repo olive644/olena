@@ -13,7 +13,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // The three-way appearance preference (claro/escuro/sistema) and its
 // paper-cut picker sheet, replacing the mobile header's track toggle, add
 // ~0.9 KiB: measured 253.8 KiB.
-const MAX_INITIAL_JS_BYTES = 256 * 1024;
+// The versioned notebook-to-page relationship and its v6 migration bring the
+// measured initial entry to 259.8 KiB. Keep a small allowance for CI variance.
+const MAX_INITIAL_JS_BYTES = 262 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -36,7 +38,9 @@ const MAX_INITIAL_JS_BYTES = 256 * 1024;
 // Keep a narrow ceiling while allowing minor bundler variance across CI runners.
 // The three-way appearance picker (see MAX_INITIAL_JS_BYTES above) brings the
 // measured total to 611.1 KiB.
-const MAX_TOTAL_JS_BYTES = 613 * 1024;
+// The notebook showcase, page gallery and nested editor bring the measured
+// application total to 626.0 KiB.
+const MAX_TOTAL_JS_BYTES = 630 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));

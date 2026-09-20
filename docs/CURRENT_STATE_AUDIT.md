@@ -455,3 +455,15 @@ Temporizador e Pomodoro ocupam uma área aberta, sem cartão de fundo, e são es
 # Marca Pepopsia, setembro de 2026
 
 A marca exibida na interface, nos metadados e nos materiais públicos passou a ser Pepopsia. Helena continua sendo o nome da gatinha e da assistente; identificadores internos antigos foram preservados para não quebrar dados locais, links e integrações existentes.
+
+# Cadernos e folhas, setembro de 2026
+
+A área Cadernos abre em uma vitrine, sem a antiga lista lateral de anotações. Cada caderno pertence a
+uma matéria e usa uma capa facetada própria, com folhas que se movem no hover. Ao abrir o caderno, a
+pessoa pode criar uma folha ou entrar em uma folha existente; digitalização, escrita à mão, imagens e
+salvamento automático continuam disponíveis no editor.
+
+O workspace v7 mantém `notes` como coleção normalizada de folhas e acrescenta `notebooks`, que guarda
+metadados do caderno e a ordem dos identificadores de suas folhas. A migração de v6 cria um caderno para
+cada anotação existente, preservando título, texto e imagens. Novos cadernos começam vazios e recebem
+nomes baseados na matéria escolhida.
