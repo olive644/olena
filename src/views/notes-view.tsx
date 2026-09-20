@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState, type CSSProperties, type Dispatch 
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
+import type { HandwritingDocument } from "../domain/handwriting";
 import {
   createWorkspaceId,
   type StudyNotebook,
@@ -45,6 +46,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const [newNotebookSubjectId, setNewNotebookSubjectId] = useState(defaultSubject?.id ?? "");
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [activePageId, setActivePageId] = useState<string | null>(null);
+  const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
 
   useEffect(() => {
     if (navigator.userAgent.includes("jsdom")) return;
@@ -62,6 +64,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       })
     : [];
   const activePage = notebookPages.find((page) => page.id === activePageId) ?? null;
+  const editingAsset = activePage?.assets.find((asset) => asset.id === editingAssetId) ?? null;
   const activeSubject = activeNotebook
     ? (workspace.subjects.find((item) => item.id === activeNotebook.subjectId) ?? defaultSubject)
     : defaultSubject;
@@ -108,7 +111,12 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     });
   }
 
-  function saveAsset(kind: "scan" | "drawing", name: string, dataUrl: string) {
+  function saveAsset(
+    kind: "scan" | "drawing",
+    name: string,
+    dataUrl: string,
+    handwriting?: HandwritingDocument,
+  ) {
     if (!activePage) return;
     dispatch({
       type: "note/asset-added",
@@ -117,6 +125,19 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       name,
       dataUrl,
       createdAt: new Date().toISOString(),
+      ...(handwriting ? { handwriting } : {}),
+    });
+  }
+
+  function updateAsset(assetId: string, dataUrl: string, handwriting: HandwritingDocument) {
+    if (!activePage) return;
+    dispatch({
+      type: "note/asset-updated",
+      noteId: activePage.id,
+      assetId,
+      dataUrl,
+      handwriting,
+      updatedAt: new Date().toISOString(),
     });
   }
 
@@ -203,7 +224,12 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               <small>Salva automaticamente</small>
             </div>
             <Suspense fallback={<HelenaLoading label="Abrindo ferramentas…" compact />}>
-              <NoteCaptureTools onSave={saveAsset} />
+              <NoteCaptureTools
+                onSave={saveAsset}
+                onUpdate={updateAsset}
+                editingAsset={editingAsset}
+                onCloseEditing={() => setEditingAssetId(null)}
+              />
             </Suspense>
             <input
               className="note-title-input"
@@ -229,6 +255,15 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                           <strong>{asset.name}</strong>
                           <small>{asset.kind === "scan" ? "Digitalização" : "Escrita à mão"}</small>
                         </span>
+                        {asset.kind === "drawing" && (
+                          <button
+                            type="button"
+                            aria-label={`Abrir ${asset.name}`}
+                            onClick={() => setEditingAssetId(asset.id)}
+                          >
+                            {asset.handwriting ? "Continuar escrita" : "Abrir folha"}
+                          </button>
+                        )}
                         <button
                           type="button"
                           aria-label={`Remover ${asset.name}`}

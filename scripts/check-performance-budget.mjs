@@ -15,7 +15,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // ~0.9 KiB: measured 253.8 KiB.
 // The versioned notebook-to-page relationship and its v6 migration bring the
 // measured initial entry to 259.8 KiB. Keep a small allowance for CI variance.
-const MAX_INITIAL_JS_BYTES = 262 * 1024;
+// The editable handwriting asset flow adds about 1 KiB to the initial entry.
+// Measured entry is 260.8 KiB; retain a small allowance for CI variance.
+const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -43,7 +45,9 @@ const MAX_INITIAL_JS_BYTES = 262 * 1024;
 // The professional handwriting studio adds local stroke stabilization, paper
 // templates, pressure-aware tools and history inside the existing lazy notes
 // chunk. Measured total is 633.6 KiB; initial JavaScript remains unchanged.
-const MAX_TOTAL_JS_BYTES = 638 * 1024;
+// The edit and navigation tools bring the measured lazy-loaded total to
+// 639.2 KiB without adding a dependency or a new initial route import.
+const MAX_TOTAL_JS_BYTES = 645 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));

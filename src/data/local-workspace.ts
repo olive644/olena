@@ -81,6 +81,43 @@ function isLegacyNote(value: unknown): boolean {
   );
 }
 
+function isHandwritingDocument(value: unknown): boolean {
+  if (!isRecord(value) || value["version"] !== 1) return false;
+  if (!["ruled", "grid", "dots", "blank"].includes(String(value["paper"]))) return false;
+  if (!Array.isArray(value["strokes"]) || value["strokes"].length > 500) return false;
+  if (JSON.stringify(value).length > 800_000) return false;
+  return value["strokes"].every(
+    (stroke: unknown) =>
+      isRecord(stroke) &&
+      isString(stroke["id"]) &&
+      (stroke["tool"] === "pen" || stroke["tool"] === "highlighter") &&
+      isString(stroke["color"]) &&
+      /^#[0-9a-f]{6}$/i.test(stroke["color"]) &&
+      typeof stroke["width"] === "number" &&
+      stroke["width"] > 0 &&
+      stroke["width"] <= 100 &&
+      Array.isArray(stroke["points"]) &&
+      stroke["points"].length > 0 &&
+      stroke["points"].length <= 5000 &&
+      stroke["points"].every(
+        (point: unknown) =>
+          isRecord(point) &&
+          typeof point["x"] === "number" &&
+          Number.isFinite(point["x"]) &&
+          point["x"] >= 0 &&
+          point["x"] <= 1200 &&
+          typeof point["y"] === "number" &&
+          Number.isFinite(point["y"]) &&
+          point["y"] >= 0 &&
+          point["y"] <= 1600 &&
+          typeof point["pressure"] === "number" &&
+          Number.isFinite(point["pressure"]) &&
+          point["pressure"] >= 0 &&
+          point["pressure"] <= 1,
+      ),
+  );
+}
+
 function isNoteAsset(value: unknown): boolean {
   return (
     isRecord(value) &&
@@ -90,7 +127,9 @@ function isNoteAsset(value: unknown): boolean {
     isString(value["dataUrl"]) &&
     /^data:image\/(?:jpeg|png|webp);base64,/.test(value["dataUrl"]) &&
     value["dataUrl"].length <= MAX_NOTE_ASSET_DATA_URL_LENGTH &&
-    isString(value["createdAt"])
+    isString(value["createdAt"]) &&
+    (!("handwriting" in value) ||
+      (value["kind"] === "drawing" && isHandwritingDocument(value["handwriting"])))
   );
 }
 

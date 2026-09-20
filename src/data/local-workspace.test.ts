@@ -9,6 +9,43 @@ describe("local workspace", () => {
     expect(loadWorkspace(window.localStorage)).toEqual(workspace);
   });
 
+  it("recupera os traços de uma folha manuscrita para continuar a edição", () => {
+    const workspace = createInitialWorkspace();
+    workspace.notes.push({
+      id: "note-handwriting",
+      title: "Revisão",
+      content: "",
+      subjectId: workspace.subjects[0]!.id,
+      updatedAt: "2026-09-20T10:00:00.000Z",
+      assets: [
+        {
+          id: "drawing-1",
+          kind: "drawing",
+          name: "Folha manuscrita",
+          dataUrl: "data:image/png;base64,AAAA",
+          createdAt: "2026-09-20T10:00:00.000Z",
+          handwriting: {
+            version: 1,
+            paper: "grid",
+            strokes: [
+              {
+                id: "line-1",
+                tool: "pen",
+                color: "#17151c",
+                width: 5,
+                points: [{ x: 10, y: 20, pressure: 0.5 }],
+              },
+            ],
+          },
+        },
+      ],
+    });
+    saveWorkspace(window.localStorage, workspace);
+    expect(loadWorkspace(window.localStorage).notes[0]?.assets[0]?.handwriting).toEqual(
+      workspace.notes[0]?.assets[0]?.handwriting,
+    );
+  });
+
   it("ignora conteúdo inválido sem quebrar o aplicativo", () => {
     window.localStorage.setItem(WORKSPACE_STORAGE_KEY, "{conteudo-invalido");
     expect(loadWorkspace(window.localStorage)).toEqual(createInitialWorkspace());

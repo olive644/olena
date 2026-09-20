@@ -1,4 +1,5 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences";
+import type { HandwritingDocument } from "./handwriting";
 
 export const WORKSPACE_VERSION = 7 as const;
 
@@ -58,6 +59,7 @@ export type NoteAsset = {
   name: string;
   dataUrl: string;
   createdAt: string;
+  handwriting?: HandwritingDocument;
 };
 
 export type FocusSession = {
@@ -164,6 +166,14 @@ export type WorkspaceAction =
       subjectId: string;
       createdAt: string;
     }
+  | {
+      type: "note/asset-updated";
+      noteId: string;
+      assetId: string;
+      dataUrl: string;
+      handwriting: HandwritingDocument;
+      updatedAt: string;
+    }
   | { type: "note/added"; id: string; notebookId: string; subjectId: string; updatedAt: string }
   | { type: "note/updated"; id: string; title: string; content: string; updatedAt: string }
   | {
@@ -173,6 +183,7 @@ export type WorkspaceAction =
       name: string;
       dataUrl: string;
       createdAt: string;
+      handwriting?: HandwritingDocument;
     }
   | { type: "note/asset-removed"; noteId: string; assetId: string; updatedAt: string }
   | {
@@ -387,8 +398,26 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                     name: action.name,
                     dataUrl: action.dataUrl,
                     createdAt: action.createdAt,
+                    ...(action.handwriting ? { handwriting: action.handwriting } : {}),
                   },
                 ],
+              }
+            : note,
+        ),
+      };
+    case "note/asset-updated":
+      return {
+        ...state,
+        notes: state.notes.map((note) =>
+          note.id === action.noteId
+            ? {
+                ...note,
+                updatedAt: action.updatedAt,
+                assets: note.assets.map((asset) =>
+                  asset.id === action.assetId
+                    ? { ...asset, dataUrl: action.dataUrl, handwriting: action.handwriting }
+                    : asset,
+                ),
               }
             : note,
         ),
