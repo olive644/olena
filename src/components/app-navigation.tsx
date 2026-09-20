@@ -71,6 +71,7 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
       { view: "planner", label: "Agenda", icon: "planner" },
       { view: "focus", label: "Foco", icon: "focus" },
       { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "learn" },
+      { view: "profile", label: "Perfil", icon: "profile" },
     ],
   },
   {
@@ -98,7 +99,8 @@ const MOBILE_ITEMS: readonly NavigationItem[] = [
 ];
 
 const MORE_ITEMS = NAVIGATION_SECTIONS.flatMap((section) => section.items).filter(
-  (item) => !MOBILE_ITEMS.some((mobileItem) => mobileItem.view === item.view),
+  (item) =>
+    item.view !== "profile" && !MOBILE_ITEMS.some((mobileItem) => mobileItem.view === item.view),
 );
 
 function NavigationButton({
@@ -118,7 +120,11 @@ function NavigationButton({
       aria-label={item.label}
       aria-current={active ? "page" : undefined}
     >
-      <NavigationIcon name={item.icon} />
+      <NavigationIcon
+        name={item.icon}
+        profileActive={item.view === "profile" && active}
+        profileAdaptive
+      />
       <span>{item.label}</span>
     </button>
   );

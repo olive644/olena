@@ -1,5 +1,7 @@
 # HelenaStudy: Second Brain
 
+Perfil também é acessível pela navegação principal no desktop, com o mesmo componente de configurações do celular. Os ícones de captura nos Cadernos são SVGs de papel em `PaperActionIcon`, com tamanho explícito de 32px.
+
 ## Preferências de estudo
 
 O onboarding coleta modalidades, organização, ritmo e interesse em programação. Esses dados vivem

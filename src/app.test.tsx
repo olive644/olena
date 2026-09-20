@@ -231,6 +231,25 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Escrever à mão" })).toBeTruthy();
   });
 
+  it("abre as configurações pelo Perfil da navegação desktop", async () => {
+    render(<App />);
+    navigate("Perfil");
+    expect(await screen.findByRole("heading", { name: "Preferências de estudo" })).toBeTruthy();
+    const profile = within(
+      screen.getByRole("navigation", { name: "Navegação principal" }),
+    ).getByRole("button", { name: "Perfil" });
+    expect(profile.getAttribute("aria-current")).toBe("page");
+    expect(
+      profile.querySelector('img[src="/navigation-icons/paper/profile-active.svg"]'),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Mais" }));
+    expect(
+      within(screen.getByRole("dialog", { name: "Mais ferramentas" })).queryByRole("button", {
+        name: "Perfil",
+      }),
+    ).toBeNull();
+  });
+
   it("mostra a rosa que cresce com o temporizador de foco", async () => {
     render(<App />);
 

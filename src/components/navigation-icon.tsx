@@ -23,6 +23,7 @@ type NavigationIconProps = {
   name: NavigationIconName;
   paperVariant?: "claro" | "roxo" | "escuro";
   profileActive?: boolean;
+  profileAdaptive?: boolean;
 };
 
 const BRAND_ICON_NAMES = new Set<NavigationIconName>([
@@ -40,7 +41,12 @@ const BRAND_ICON_NAMES = new Set<NavigationIconName>([
   "theme-dark",
 ]);
 
-export function NavigationIcon({ name, paperVariant, profileActive = false }: NavigationIconProps) {
+export function NavigationIcon({
+  name,
+  paperVariant,
+  profileActive = false,
+  profileAdaptive = false,
+}: NavigationIconProps) {
   if (name === "profile") {
     return (
       <span
@@ -58,6 +64,15 @@ export function NavigationIcon({ name, paperVariant, profileActive = false }: Na
           width="34"
           height="34"
         />
+        {profileAdaptive && !profileActive && (
+          <img
+            className="profile-icon-dark-surface"
+            src="/navigation-icons/paper/profile-active.svg"
+            alt=""
+            width="34"
+            height="34"
+          />
+        )}
       </span>
     );
   }
