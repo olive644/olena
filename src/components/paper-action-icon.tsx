@@ -20,10 +20,10 @@ export function PaperActionIcon({ name }: { name: PaperActionIconName }) {
       )}
       {name === "scan" && (
         <>
-          <path fill="#292432" d="M13 8h18l6 7v25H13Z" />
-          <path fill="#FFF9EF" d="M11 6h18l6 7v25H11Z" />
-          <path fill="#CABDA5" d="m29 6 6 7h-6Z" />
-          <path fill="#51465D" d="M16 16h13v3H16Zm0 7h13v3H16Zm0 7h9v3h-9Z" />
+          <path fill="#17151C" d="M13 8h18l6 7v25H13Z" />
+          <path fill="#292432" d="M11 6h18l6 7v25H11Z" />
+          <path fill="#51465D" d="m29 6 6 7h-6Z" />
+          <path fill="#FFF9EF" d="M16 16h13v3H16Zm0 7h13v3H16Zm0 7h9v3h-9Z" />
           <path
             fill="#FACC15"
             d="M3 4h7v3H6v6H3Zm35 0h7v9h-3V7h-4ZM3 35h3v6h4v3H3Zm39 0h3v9h-7v-3h4Z"
@@ -32,13 +32,13 @@ export function PaperActionIcon({ name }: { name: PaperActionIconName }) {
       )}
       {name === "handwriting" && (
         <>
-          <path fill="#292432" d="m8 37 6-13L33 5l10 10-19 19Z" />
-          <path fill="#FFF9EF" d="m13 24 19-19 6 6-19 19Z" />
-          <path fill="#CABDA5" d="m19 30 19-19 4 4-19 19Z" />
+          <path fill="#17151C" d="m8 37 6-13L33 5l10 10-19 19Z" />
+          <path fill="#292432" d="m13 24 19-19 6 6-19 19Z" />
+          <path fill="#51465D" d="m19 30 19-19 4 4-19 19Z" />
           <path fill="#FFE88D" d="m13 24 10 10-15 5Z" />
           <path fill="#292432" d="m10 32 5 5-7 2Z" />
           <path fill="#FACC15" d="m32 5 4-3 9 9-3 4Z" />
-          <path fill="#FFF9EF" d="M19 41h23v3H19Z" />
+          <path fill="#292432" d="M19 41h23v3H19Z" />
         </>
       )}
       {name === "book" && (
