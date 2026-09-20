@@ -11,6 +11,39 @@ import type { StudyPreferences } from "./study-preferences";
 import type { HandwritingDocument } from "./handwriting";
 
 describe("workspaceReducer", () => {
+  it("reordena folhas dentro do caderno sem alterar o conteúdo", () => {
+    const initial = createInitialWorkspace();
+    const withNotebook = workspaceReducer(initial, {
+      type: "notebook/added",
+      id: "book",
+      title: "Caderno",
+      subjectId: initial.subjects[0]!.id,
+      createdAt: "2026-09-20",
+    });
+    const first = workspaceReducer(withNotebook, {
+      type: "note/added",
+      id: "first",
+      notebookId: "book",
+      subjectId: initial.subjects[0]!.id,
+      updatedAt: "2026-09-20",
+    });
+    const second = workspaceReducer(first, {
+      type: "note/added",
+      id: "second",
+      notebookId: "book",
+      subjectId: initial.subjects[0]!.id,
+      updatedAt: "2026-09-20",
+    });
+    expect(second.notebooks[0]?.pageIds).toEqual(["second", "first"]);
+    const reordered = workspaceReducer(second, {
+      type: "notebook/page-moved",
+      notebookId: "book",
+      pageId: "first",
+      direction: -1,
+    });
+    expect(reordered.notebooks[0]?.pageIds).toEqual(["first", "second"]);
+    expect(reordered.notes).toEqual(second.notes);
+  });
   it("salva preferências de estudo e cria Programação uma única vez", () => {
     const preferences: StudyPreferences = {
       modalities: ["visual", "pratico"],

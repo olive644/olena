@@ -47,7 +47,10 @@ const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // chunk. Measured total is 633.6 KiB; initial JavaScript remains unchanged.
 // The edit and navigation tools bring the measured lazy-loaded total to
 // 639.2 KiB without adding a dependency or a new initial route import.
-const MAX_TOTAL_JS_BYTES = 645 * 1024;
+// Draft recovery, stroke selection, sticky notes, the enlarged writing window
+// and local export bring the measured total to 652.0 KiB. These tools remain
+// inside the lazy notes route and add no dependency.
+const MAX_TOTAL_JS_BYTES = 658 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));

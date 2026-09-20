@@ -243,7 +243,9 @@ qualquer evolução futura deve preservar a relação entre `notebooks.pageIds` 
 somente durante a edição aberta, o que permite desfazer, refazer, apagar por traço, aplicar pressão e
 trocar o tipo de papel sem degradar o conteúdo. Ao salvar, o estúdio compõe papel e tinta em PNG, com
 fallback JPEG progressivo quando necessário, e entrega o resultado ao fluxo existente de
-`NoteAsset`. Fechar sem salvar descarta os traços da sessão.
+`NoteAsset`. Fechar com alterações mostra uma confirmação e preserva um rascunho local. O
+rascunho usa a chave da folha ou do anexo e é removido após salvar. Se o dispositivo não tiver
+espaço, o fechamento avisa que o rascunho não pôde ser guardado.
 
 A estabilização fica em `stabilizeHandwriting`: uma média móvel reduz oscilações entre pontos e uma
 correção parcial atua apenas em traços longos com inclinação de até sete graus. Essa regra preserva
@@ -266,3 +268,11 @@ Mover, arrastar altera a rolagem do viewport sem criar traços. Só caneta usa o
 para toques e mantém a escrita com ponteiros do tipo caneta ou mouse. `getCoalescedEvents` é usado
 com fallback para o evento comum. A renderização usa curvas quadráticas por ponto e a
 estabilização mantém curvas e diagonais intencionais.
+
+`HandwritingDocument.stickies` é opcional para continuar lendo documentos anteriores. Cada
+post-it tem posição fixa no papel, cor e texto limitado; sua camada HTML permite editar e mover,
+enquanto a rasterização em canvas o inclui na miniatura, no PNG e na impressão. A seleção
+retangular trabalha apenas com traços, não com post-its. A janela ampliada usa um segundo canvas
+que mapeia toques para as mesmas coordenadas da folha. `notebook/page-moved` altera somente
+`pageIds`, preservando o conteúdo de cada folha. A impressão abre uma janela local e depende do
+diálogo de impressão do navegador para gerar PDF.

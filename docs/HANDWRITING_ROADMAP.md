@@ -5,18 +5,27 @@ modo Só caneta evita marcas de dedo durante a escrita com stylus, mas não prom
 por geometria ou postura. Os eventos coalescidos melhoram a fidelidade em movimentos rápidos
 quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro normal.
 
+## Entregue nesta etapa
+
+- Rascunho local recuperável e confirmação ao fechar uma folha com alterações.
+- Seleção retangular de traços para mover, alinhar horizontalmente e apagar.
+- Janela de escrita ampliada com avanço manual e avanço ao atingir a borda direita.
+- Navegação e reordenação de folhas do caderno.
+- Exportação PNG e impressão com opção de salvar em PDF pelo navegador.
+- Post-its editáveis, com três cores e posição livre sobre o papel.
+
 ## Próximos incrementos recomendados
 
-1. **Seleção de traços:** laço ou retângulo para mover, redimensionar e alinhar trechos já escritos.
-   A seleção deve operar sobre os traços vetoriais, nunca inferir texto de uma imagem antiga.
-2. **Janela de escrita ampliada:** região de zoom para letra pequena, com avanço automático ao
-   atingir a borda e retorno para a próxima linha pautada. Exige cuidado especial com acessibilidade.
-3. **Proteção de escrita em andamento:** salvamento de rascunho ou confirmação antes de descartar
-   traços ao fechar. O armazenamento local precisa tratar quota esgotada sem perda silenciosa.
-4. **Mais de uma página manuscrita por sessão:** navegação e ordenação de páginas dentro do caderno,
-   preservando o vínculo com as folhas atuais do workspace.
-5. **Exportação portátil:** PDF ou imagem em resolução escolhida pela pessoa, com indicação clara
-   de que o resultado exportado não preserva a edição vetorial.
+1. **Laço livre e redimensionamento:** a seleção atual usa um retângulo. Laço desenhado e escala
+   proporcional de traços ficam para uma etapa própria.
+2. **Janela ampliada mais automática:** acompanhar a pauta e deslocar a área de escrita conforme a
+   caligrafia, com anúncio acessível da posição atual.
+3. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
+   modelo de privacidade antes de oferecer o recurso.
+4. **PDF direto e várias folhas:** gerar um arquivo único do caderno, com escolha de resolução e
+   margens. Hoje a opção Imprimir/PDF depende do navegador e exporta uma folha por vez.
+5. **Post-its avançados:** redimensionar, ordenar camadas e criar modelos de checklist sem perder
+   a legibilidade em telas pequenas.
 
 O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. Não devem ser
 apresentados como parte do ajuste local de traço nem enviar conteúdo para serviços externos sem
