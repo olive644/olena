@@ -33,6 +33,15 @@ describe("App", () => {
     expect(screen.queryByText(/by oli/i)).toBeNull();
   });
 
+  it("mostra uma rota de estudo recomendada e abre o próximo módulo", async () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { name: "Dê um ponto de partida ao seu estudo" }),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Abrir Biblioteca" }));
+    expect(await screen.findByRole("heading", { name: "Novo material" })).toBeTruthy();
+  });
+
   it("expande a navegação lateral para revelar categorias e nomes", () => {
     render(<App />);
     const sidebar = screen.getByRole("complementary");

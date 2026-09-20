@@ -10,6 +10,9 @@
   trilhas, execução de código ou conteúdo de programação nesta entrega.
 - O roteiro completo para recomendações, mapas conceituais, desafios e trilhas futuras está em
   `docs/STUDY_PREFERENCES_ROADMAP.md`.
+- O Espaço do aluno exibe uma rota recomendada sem bloquear a navegação. Revisões pendentes vêm
+  primeiro; sem conteúdo, a rota abre a Biblioteca; com conteúdo, usa a preferência para sugerir
+  Biblioteca, Cadernos ou Praticar.
 
 ## Tomate Pomodoro em papel, 19/09/2026
 

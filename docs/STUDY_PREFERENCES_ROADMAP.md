@@ -42,7 +42,8 @@ atividade, não como rótulos permanentes de pessoa:
 ## Ordem de entrega
 
 1. Concluído: onboarding, persistência local, edição no Perfil e matéria Programação quando escolhida.
-2. Espaço: cartão de rota recomendada que usa as preferências e o conteúdo que o usuário já possui.
+2. Concluído: Espaço com cartão de rota recomendada. Ele prioriza revisões pendentes, orienta o
+   primeiro material e sugere Biblioteca, Cadernos ou Praticar conforme o conteúdo e as preferências.
 3. Cadernos: templates de resumo e tabela. O mapa conceitual exige uma mudança própria de modelo de
    dados e interação por toque.
 4. Praticar: desafios de hipótese, comparação, aplicação e correção com base nos materiais locais.
