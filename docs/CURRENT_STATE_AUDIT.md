@@ -467,3 +467,13 @@ O workspace v7 mantém `notes` como coleção normalizada de folhas e acrescenta
 metadados do caderno e a ordem dos identificadores de suas folhas. A migração de v6 cria um caderno para
 cada anotação existente, preservando título, texto e imagens. Novos cadernos começam vazios e recebem
 nomes baseados na matéria escolhida.
+
+A ação Escrever à mão abre um estúdio de anotação em tela ampla, com papel pautado, quadriculado,
+pontilhado ou em branco. A ferramenta aceita mouse, toque e canetas compatíveis com Pointer Events,
+incluindo variação de espessura por pressão quando o navegador informa esse valor. Caneta,
+marca-texto, borracha por traço, histórico, limpeza e zoom ficam disponíveis no mesmo espaço de
+trabalho. O ajuste inteligente é local e determinístico: suaviza pequenas oscilações e reduz a
+inclinação acidental de traços longos quase horizontais, sem alegar reconhecimento de escrita ou IA.
+A folha final é rasterizada no navegador e anexada à folha atual usando o mesmo limite local das
+imagens digitalizadas. O modal é renderizado sobre o documento para não ficar atrás da navegação
+móvel ou ser recortado pelas animações da tela principal.

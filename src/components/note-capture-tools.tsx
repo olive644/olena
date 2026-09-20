@@ -1,42 +1,14 @@
-import { Camera, RotateCw, Trash2, X } from "lucide-react";
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { Camera, RotateCw, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
 import type { NoteAsset } from "../domain/workspace";
+import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
 
 type NoteCaptureToolsProps = {
   onSave: (kind: NoteAsset["kind"], name: string, dataUrl: string) => void;
 };
-
-type Point = { x: number; y: number };
-type Stroke = { color: string; width: number; points: Point[] };
-
-function canvasPoint(canvas: HTMLCanvasElement, event: PointerEvent<HTMLCanvasElement>): Point {
-  const bounds = canvas.getBoundingClientRect();
-  return {
-    x: ((event.clientX - bounds.left) / bounds.width) * canvas.width,
-    y: ((event.clientY - bounds.top) / bounds.height) * canvas.height,
-  };
-}
-
-function renderStrokes(canvas: HTMLCanvasElement, strokes: readonly Stroke[]) {
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  context.fillStyle = "#fffdf8";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.lineCap = "round";
-  context.lineJoin = "round";
-
-  for (const stroke of strokes) {
-    if (stroke.points.length === 0) continue;
-    context.beginPath();
-    context.strokeStyle = stroke.color;
-    context.lineWidth = stroke.width;
-    context.moveTo(stroke.points[0]?.x ?? 0, stroke.points[0]?.y ?? 0);
-    for (const point of stroke.points.slice(1)) context.lineTo(point.x, point.y);
-    context.stroke();
-  }
-}
 
 async function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -55,104 +27,6 @@ function exportWithinLimit(canvas: HTMLCanvasElement, kind: "image/jpeg" | "imag
   }
   throw new Error(
     "A imagem ainda ficou grande demais. Fotografe uma área menor e tente novamente.",
-  );
-}
-
-function DrawingPad({ onSave, onClose }: NoteCaptureToolsProps & { onClose: () => void }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const drawingRef = useRef(false);
-  const [strokes, setStrokes] = useState<Stroke[]>([]);
-  const [color, setColor] = useState("#17151c");
-  const [width, setWidth] = useState(5);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) renderStrokes(canvas, strokes);
-  }, [strokes]);
-
-  function start(event: PointerEvent<HTMLCanvasElement>) {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    canvas.setPointerCapture(event.pointerId);
-    drawingRef.current = true;
-    const point = canvasPoint(canvas, event);
-    setStrokes((current) => [...current, { color, width, points: [point] }]);
-  }
-
-  function move(event: PointerEvent<HTMLCanvasElement>) {
-    if (!drawingRef.current) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const point = canvasPoint(canvas, event);
-    setStrokes((current) => {
-      const last = current.at(-1);
-      if (!last) return current;
-      return [...current.slice(0, -1), { ...last, points: [...last.points, point] }];
-    });
-  }
-
-  function finish() {
-    drawingRef.current = false;
-  }
-
-  function save() {
-    const canvas = canvasRef.current;
-    if (!canvas || strokes.length === 0) {
-      setError("Escreva ou desenhe algo antes de salvar.");
-      return;
-    }
-    try {
-      onSave("drawing", "Escrita à mão", exportWithinLimit(canvas, "image/png"));
-      onClose();
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível salvar o desenho.");
-    }
-  }
-
-  return (
-    <>
-      <div className="capture-controls">
-        <label>
-          <span>Cor</span>
-          <input
-            aria-label="Cor da caneta"
-            type="color"
-            value={color}
-            onChange={(event) => setColor(event.target.value)}
-          />
-        </label>
-        <label>
-          <span>Espessura</span>
-          <select value={width} onChange={(event) => setWidth(Number(event.target.value))}>
-            <option value="3">Fina</option>
-            <option value="5">Média</option>
-            <option value="9">Grossa</option>
-          </select>
-        </label>
-        <button className="secondary-button" type="button" onClick={() => setStrokes([])}>
-          <Trash2 size={16} /> Limpar
-        </button>
-      </div>
-      <canvas
-        ref={canvasRef}
-        className="drawing-canvas"
-        width="1000"
-        height="600"
-        aria-label="Área de escrita à mão"
-        onPointerDown={start}
-        onPointerMove={move}
-        onPointerUp={finish}
-        onPointerCancel={finish}
-      />
-      {error && <p className="capture-error">{error}</p>}
-      <div className="capture-footer">
-        <small>O desenho fica salvo somente nesta anotação e neste dispositivo.</small>
-        <button className="primary-button" type="button" onClick={save}>
-          Salvar no caderno
-        </button>
-      </div>
-    </>
   );
 }
 
@@ -321,44 +195,51 @@ export function NoteCaptureTools({ onSave }: NoteCaptureToolsProps) {
         </button>
       </div>
 
-      {mode && (
-        <div className="capture-layer">
-          <button
-            className="capture-backdrop"
-            type="button"
-            aria-label="Fechar ferramenta"
-            onClick={() => setMode(null)}
-          />
-          <section
-            className="capture-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="capture-title"
-          >
-            <header>
-              <div>
-                <span>Cadernos</span>
-                <h2 id="capture-title">
-                  {mode === "scan" ? "Digitalizar documento" : "Escrever à mão"}
-                </h2>
-              </div>
-              <button
-                className="sheet-close"
-                type="button"
-                aria-label="Fechar"
-                onClick={() => setMode(null)}
-              >
-                <X size={20} />
-              </button>
-            </header>
-            {mode === "scan" ? (
-              <Scanner onSave={onSave} onClose={() => setMode(null)} />
-            ) : (
-              <DrawingPad onSave={onSave} onClose={() => setMode(null)} />
-            )}
-          </section>
-        </div>
-      )}
+      {mode &&
+        createPortal(
+          <div className="capture-layer">
+            <button
+              className="capture-backdrop"
+              type="button"
+              aria-label="Fechar ferramenta"
+              onClick={() => setMode(null)}
+            />
+            <section
+              className={
+                mode === "drawing" ? "capture-dialog capture-dialog--handwriting" : "capture-dialog"
+              }
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="capture-title"
+            >
+              <header>
+                <div>
+                  <span>Cadernos</span>
+                  <h2 id="capture-title">
+                    {mode === "scan" ? "Digitalizar documento" : "Escrever à mão"}
+                  </h2>
+                </div>
+                <button
+                  className="sheet-close"
+                  type="button"
+                  aria-label="Fechar"
+                  onClick={() => setMode(null)}
+                >
+                  <X size={20} />
+                </button>
+              </header>
+              {mode === "scan" ? (
+                <Scanner onSave={onSave} onClose={() => setMode(null)} />
+              ) : (
+                <HandwritingStudio
+                  onSave={(dataUrl) => onSave("drawing", "Folha manuscrita", dataUrl)}
+                  onClose={() => setMode(null)}
+                />
+              )}
+            </section>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

@@ -40,7 +40,10 @@ const MAX_INITIAL_JS_BYTES = 262 * 1024;
 // measured total to 611.1 KiB.
 // The notebook showcase, page gallery and nested editor bring the measured
 // application total to 626.0 KiB.
-const MAX_TOTAL_JS_BYTES = 630 * 1024;
+// The professional handwriting studio adds local stroke stabilization, paper
+// templates, pressure-aware tools and history inside the existing lazy notes
+// chunk. Measured total is 633.6 KiB; initial JavaScript remains unchanged.
+const MAX_TOTAL_JS_BYTES = 638 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));

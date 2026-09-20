@@ -3564,6 +3564,440 @@ body.local-room-active {
   cursor: crosshair;
 }
 
+.capture-dialog--handwriting {
+  display: grid;
+  width: min(1320px, calc(100% - 1.5rem));
+  height: min(920px, calc(100dvh - 1.5rem));
+  max-height: calc(100dvh - 1.5rem);
+  padding: 0;
+  overflow: hidden;
+  grid-template-rows: auto minmax(0, 1fr);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--violet) 12%, transparent) 0 76px,
+      transparent 77px
+    ),
+    var(--surface);
+  box-shadow: 10px 12px 0 rgb(23 21 28 / 28%);
+}
+
+.capture-dialog--handwriting > header {
+  min-height: 78px;
+  margin: 0;
+  padding: 0.85rem 1rem 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.capture-dialog--handwriting > header h2 {
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+}
+
+.handwriting-studio {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: color-mix(in srgb, var(--page) 84%, var(--violet) 16%);
+}
+
+.handwriting-commandbar {
+  display: grid;
+  grid-template-columns: auto minmax(320px, 1fr) auto;
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  gap: 0.75rem;
+  background: var(--surface);
+}
+
+.handwriting-tool-group,
+.handwriting-history,
+.handwriting-ink-options {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.handwriting-tool-group,
+.handwriting-history {
+  padding: 0.28rem;
+  border: 1px solid var(--line);
+  border-radius: 8px 12px 8px 10px;
+  background: var(--soft);
+}
+
+.handwriting-tool-group button,
+.handwriting-history button,
+.handwriting-paper-picker button {
+  display: inline-flex;
+  min-width: 40px;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid transparent;
+  color: var(--text);
+  background: transparent;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.handwriting-tool-group button:hover:not(:disabled),
+.handwriting-history button:hover:not(:disabled),
+.handwriting-paper-picker button:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+.handwriting-tool-group button.is-active,
+.handwriting-paper-picker button.is-active {
+  border-color: #7433e0;
+  color: #fff9ef;
+  background:
+    linear-gradient(135deg, #8a4ce5 0 13%, transparent 13%),
+    linear-gradient(315deg, #5924b4 0 15%, transparent 15%), #7433e0;
+  box-shadow: 0 3px 0 #4b209b;
+}
+
+.handwriting-tool-group button:disabled,
+.handwriting-history button:disabled {
+  opacity: 0.38;
+}
+
+.handwriting-ink-options {
+  justify-content: center;
+}
+
+.handwriting-ink-options > label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 7px 11px 7px 9px;
+  color: var(--muted);
+  background: var(--soft);
+  gap: 0.4rem;
+  font-size: 0.63rem;
+  font-weight: 800;
+}
+
+.handwriting-ink-options input[type="color"] {
+  width: 34px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.handwriting-ink-options select {
+  min-height: 32px;
+  padding: 0 1.5rem 0 0.45rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--surface);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.handwriting-ink-options .handwriting-assist {
+  color: var(--text);
+}
+
+.handwriting-assist > span {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.handwriting-assist strong,
+.handwriting-assist small {
+  display: block;
+}
+
+.handwriting-assist small {
+  color: var(--muted);
+  font-size: 0.54rem;
+  font-weight: 600;
+}
+
+.handwriting-commandbar__divider {
+  width: 1px;
+  height: 25px;
+  background: var(--line-strong);
+}
+
+.handwriting-history .handwriting-zoom-value {
+  min-width: 52px;
+  color: var(--violet-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.handwriting-workspace {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-columns: 146px minmax(0, 1fr);
+}
+
+.handwriting-paper-picker {
+  display: grid;
+  min-height: 0;
+  align-content: start;
+  padding: 0.9rem 0.75rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+  gap: 0.45rem;
+}
+
+.handwriting-paper-picker > strong {
+  margin: 0 0 0.25rem 0.2rem;
+  color: var(--muted);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.handwriting-paper-picker button {
+  display: grid;
+  min-height: 82px;
+  padding: 0.5rem;
+  grid-template-columns: 42px minmax(0, 1fr);
+  justify-content: stretch;
+  text-align: left;
+}
+
+.paper-preview {
+  display: block;
+  width: 42px;
+  height: 52px;
+  border: 1px solid #c9c4d4;
+  border-radius: 3px 6px 3px 4px;
+  background-color: #fffdf7;
+  box-shadow: 2px 3px 0 rgb(23 21 28 / 15%);
+}
+
+.paper-preview--ruled {
+  background-image: repeating-linear-gradient(to bottom, transparent 0 9px, #dcd8ee 9px 10px);
+}
+
+.paper-preview--grid {
+  background-image:
+    repeating-linear-gradient(to right, transparent 0 9px, #dcd8ee 9px 10px),
+    repeating-linear-gradient(to bottom, transparent 0 9px, #dcd8ee 9px 10px);
+}
+
+.paper-preview--dots {
+  background-image: radial-gradient(#bcb6ce 1px, transparent 1px);
+  background-size: 9px 9px;
+}
+
+.paper-preview--blank {
+  background-image: linear-gradient(135deg, #facc15 0 10px, transparent 11px);
+}
+
+.handwriting-paper-picker button.is-active .paper-preview {
+  border-color: #fff9ef;
+}
+
+.handwriting-viewport {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 1rem;
+  overscroll-behavior: contain;
+  background:
+    radial-gradient(
+        circle at 1px 1px,
+        color-mix(in srgb, var(--text) 8%, transparent) 1px,
+        transparent 0
+      )
+      0 0 / 18px 18px,
+    color-mix(in srgb, var(--page) 90%, var(--surface) 10%);
+}
+
+.handwriting-page-shell {
+  position: relative;
+  flex: 0 0 auto;
+  margin: 0 auto;
+  border: 1px solid #d5cdbd;
+  border-radius: 4px 10px 5px 6px;
+  background: #fffdf7;
+  box-shadow:
+    0 3px 0 #c8beab,
+    9px 12px 0 rgb(23 21 28 / 13%);
+}
+
+.handwriting-page-shell::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(225deg, var(--page) 50%, #d5cdbd 51%, #fffdf7 54%);
+  content: "";
+  pointer-events: none;
+}
+
+.handwriting-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  touch-action: none;
+}
+
+.handwriting-canvas--pen,
+.handwriting-canvas--highlighter {
+  cursor: crosshair;
+}
+
+.handwriting-canvas--eraser {
+  cursor: cell;
+}
+
+.handwriting-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 72px;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  gap: 1rem;
+}
+
+.handwriting-footer p {
+  display: grid;
+  margin: 0;
+  color: var(--muted);
+  gap: 0.12rem;
+  font-size: 0.62rem;
+}
+
+.handwriting-footer strong {
+  color: var(--text);
+  font-size: 0.68rem;
+}
+
+.handwriting-footer .primary-button {
+  min-width: 210px;
+}
+
+@media (max-width: 1050px) {
+  .handwriting-commandbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .handwriting-ink-options {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .capture-dialog.capture-dialog--handwriting {
+    inset: 0;
+    width: 100%;
+    height: calc(100dvh - env(safe-area-inset-top));
+    max-height: calc(100dvh - env(safe-area-inset-top));
+    padding: 0;
+    border-radius: 0;
+    transform: none;
+  }
+
+  .capture-dialog--handwriting > header {
+    min-height: 68px;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .handwriting-commandbar {
+    display: flex;
+    align-items: stretch;
+    padding: 0.55rem;
+    overflow-x: auto;
+    gap: 0.55rem;
+    scrollbar-width: thin;
+  }
+
+  .handwriting-tool-group,
+  .handwriting-history,
+  .handwriting-ink-options {
+    flex: 0 0 auto;
+  }
+
+  .handwriting-tool-group button span {
+    display: none;
+  }
+
+  .handwriting-ink-options > label > span:first-child {
+    display: none;
+  }
+
+  .handwriting-assist {
+    max-width: 165px;
+  }
+
+  .handwriting-workspace {
+    display: flex;
+    min-height: 0;
+    flex-direction: column-reverse;
+  }
+
+  .handwriting-paper-picker {
+    display: flex;
+    flex: 0 0 auto;
+    min-height: 92px;
+    padding: 0.45rem 0.55rem;
+    overflow-x: auto;
+    border-top: 1px solid var(--line);
+    border-right: 0;
+    gap: 0.35rem;
+  }
+
+  .handwriting-paper-picker > strong {
+    display: none;
+  }
+
+  .handwriting-paper-picker button {
+    display: flex;
+    flex: 0 0 auto;
+    min-width: 126px;
+    min-height: 72px;
+  }
+
+  .paper-preview {
+    width: 34px;
+    height: 44px;
+  }
+
+  .handwriting-viewport {
+    flex: 1 1 auto;
+    padding: 0.75rem;
+  }
+
+  .handwriting-footer {
+    align-items: stretch;
+    min-height: auto;
+    padding: 0.55rem calc(0.65rem + env(safe-area-inset-right))
+      calc(0.55rem + env(safe-area-inset-bottom)) calc(0.65rem + env(safe-area-inset-left));
+  }
+
+  .handwriting-footer p {
+    display: none;
+  }
+
+  .handwriting-footer .primary-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .scanner-drop {
   display: grid;
   width: 100%;

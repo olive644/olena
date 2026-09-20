@@ -236,3 +236,21 @@ de folha deve sempre adicionar o novo identificador em `pageIds` do caderno corr
 O fluxo da interface tem três níveis: vitrine de cadernos, vitrine de folhas e editor. Trocas de nível
 retornam a rolagem ao topo. Dados v6 são migrados criando um caderno por anotação antiga, portanto
 qualquer evolução futura deve preservar a relação entre `notebooks.pageIds` e `notes.id`.
+
+## Estúdio de escrita à mão
+
+`HandwritingStudio` substitui o canvas básico da captura manuscrita. Os traços permanecem vetoriais
+somente durante a edição aberta, o que permite desfazer, refazer, apagar por traço, aplicar pressão e
+trocar o tipo de papel sem degradar o conteúdo. Ao salvar, o estúdio compõe papel e tinta em PNG, com
+fallback JPEG progressivo quando necessário, e entrega o resultado ao fluxo existente de
+`NoteAsset`. Fechar sem salvar descarta os traços da sessão.
+
+A estabilização fica em `stabilizeHandwriting`: uma média móvel reduz oscilações entre pontos e uma
+correção parcial atua apenas em traços longos com inclinação de até sete graus. Essa regra preserva
+diagonais intencionais e pode evoluir de forma isolada, com testes puros, sem enviar escrita a um
+serviço externo.
+
+O modal de captura usa um portal em `document.body`, garantindo que o estúdio em tela cheia fique
+acima da barra móvel mesmo durante as animações do conteúdo. Os testes E2E incluem escrita e
+salvamento em desktop e mobile. Para testar uma prévia já aberta em outra porta, defina
+`PLAYWRIGHT_PORT`; o padrão continua sendo 4173.
