@@ -1,5 +1,5 @@
 import { Camera, RotateCw, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
 import type { HandwritingDocument } from "../domain/handwriting";
@@ -8,6 +8,7 @@ import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
 
 type NoteCaptureToolsProps = {
+  draftPageKey: string;
   onSave: (
     kind: NoteAsset["kind"],
     name: string,
@@ -39,7 +40,10 @@ function exportWithinLimit(canvas: HTMLCanvasElement, kind: "image/jpeg" | "imag
   );
 }
 
-function Scanner({ onSave, onClose }: NoteCaptureToolsProps & { onClose: () => void }) {
+function Scanner({
+  onSave,
+  onClose,
+}: Pick<NoteCaptureToolsProps, "onSave"> & { onClose: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [source, setSource] = useState<{ url: string; name: string } | null>(null);
@@ -177,18 +181,43 @@ function Scanner({ onSave, onClose }: NoteCaptureToolsProps & { onClose: () => v
 }
 
 export function NoteCaptureTools({
+  draftPageKey,
   onSave,
   onUpdate,
   editingAsset = null,
   onCloseEditing,
 }: NoteCaptureToolsProps) {
   const [mode, setMode] = useState<"scan" | "drawing" | null>(null);
+  const [handwritingDirty, setHandwritingDirty] = useState(false);
+  const [confirmClose, setConfirmClose] = useState(false);
+  const [draftWriteFailed, setDraftWriteFailed] = useState(false);
+  const latestDraftRef = useRef<HandwritingDocument | null>(null);
   const currentMode = editingAsset ? "drawing" : mode;
 
-  function close() {
-    if (editingAsset) onCloseEditing?.();
-    else setMode(null);
-  }
+  const close = useCallback(
+    (force = false) => {
+      if (!force && currentMode === "drawing" && handwritingDirty) {
+        try {
+          if (latestDraftRef.current) {
+            localStorage.setItem(
+              `helenastudy.handwriting.draft.${editingAsset?.id ?? `new-${draftPageKey}`}`,
+              JSON.stringify(latestDraftRef.current),
+            );
+          }
+          setDraftWriteFailed(false);
+        } catch {
+          setDraftWriteFailed(true);
+        }
+        setConfirmClose(true);
+        return;
+      }
+      setConfirmClose(false);
+      setHandwritingDirty(false);
+      if (editingAsset) onCloseEditing?.();
+      else setMode(null);
+    },
+    [currentMode, handwritingDirty, editingAsset, draftPageKey, onCloseEditing],
+  );
 
   useEffect(() => {
     if (!currentMode) return;
@@ -196,8 +225,8 @@ export function NoteCaptureTools({
     document.body.style.overflow = "hidden";
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        if (editingAsset) onCloseEditing?.();
-        else setMode(null);
+        if (confirmClose) setConfirmClose(false);
+        else close();
       }
     }
     document.addEventListener("keydown", closeOnEscape);
@@ -205,7 +234,7 @@ export function NoteCaptureTools({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
     };
-  }, [currentMode, editingAsset, onCloseEditing]);
+  }, [currentMode, confirmClose, close]);
 
   return (
     <>
@@ -225,7 +254,7 @@ export function NoteCaptureTools({
               className="capture-backdrop"
               type="button"
               aria-label="Fechar ferramenta"
-              onClick={close}
+              onClick={() => close()}
             />
             <section
               className={
@@ -248,12 +277,17 @@ export function NoteCaptureTools({
                         : "Escrever à mão"}
                   </h2>
                 </div>
-                <button className="sheet-close" type="button" aria-label="Fechar" onClick={close}>
+                <button
+                  className="sheet-close"
+                  type="button"
+                  aria-label="Fechar"
+                  onClick={() => close()}
+                >
                   <X size={20} />
                 </button>
               </header>
               {currentMode === "scan" ? (
-                <Scanner onSave={onSave} onClose={close} />
+                <Scanner onSave={onSave} onClose={() => close(true)} />
               ) : editingAsset && !editingAsset.handwriting ? (
                 <div className="handwriting-legacy-preview">
                   <p>
@@ -272,8 +306,34 @@ export function NoteCaptureTools({
                     if (editingAsset) onUpdate?.(editingAsset.id, dataUrl, handwriting);
                     else onSave("drawing", "Folha manuscrita", dataUrl, handwriting);
                   }}
-                  onClose={close}
+                  onClose={() => close(true)}
+                  onDirtyChange={setHandwritingDirty}
+                  onDraftChange={(document) => {
+                    latestDraftRef.current = document;
+                  }}
+                  draftKey={editingAsset?.id ?? `new-${draftPageKey}`}
                 />
+              )}
+              {confirmClose && (
+                <div
+                  className="handwriting-close-confirm"
+                  role="alertdialog"
+                  aria-label="Fechar folha com alterações"
+                >
+                  <p>
+                    {draftWriteFailed
+                      ? "Não foi possível guardar o rascunho. Salve a folha antes de sair ou feche sem salvar."
+                      : "Suas alterações estão no rascunho deste dispositivo. Deseja fechar a folha?"}
+                  </p>
+                  <div>
+                    <button type="button" onClick={() => setConfirmClose(false)}>
+                      Continuar editando
+                    </button>
+                    <button type="button" onClick={() => close(true)}>
+                      {draftWriteFailed ? "Fechar sem salvar" : "Fechar e manter rascunho"}
+                    </button>
+                  </div>
+                </div>
               )}
             </section>
           </div>,

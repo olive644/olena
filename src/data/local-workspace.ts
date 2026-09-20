@@ -81,11 +81,33 @@ function isLegacyNote(value: unknown): boolean {
   );
 }
 
-function isHandwritingDocument(value: unknown): boolean {
+export function isHandwritingDocument(value: unknown): boolean {
   if (!isRecord(value) || value["version"] !== 1) return false;
   if (!["ruled", "grid", "dots", "blank"].includes(String(value["paper"]))) return false;
   if (!Array.isArray(value["strokes"]) || value["strokes"].length > 500) return false;
   if (JSON.stringify(value).length > 800_000) return false;
+  if (
+    value["stickies"] !== undefined &&
+    (!Array.isArray(value["stickies"]) ||
+      value["stickies"].length > 40 ||
+      !value["stickies"].every(
+        (sticky: unknown) =>
+          isRecord(sticky) &&
+          isString(sticky["id"]) &&
+          typeof sticky["x"] === "number" &&
+          Number.isFinite(sticky["x"]) &&
+          sticky["x"] >= 0 &&
+          sticky["x"] <= 940 &&
+          typeof sticky["y"] === "number" &&
+          Number.isFinite(sticky["y"]) &&
+          sticky["y"] >= 0 &&
+          sticky["y"] <= 1380 &&
+          ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
+          isString(sticky["text"]) &&
+          sticky["text"].length <= 240,
+      ))
+  )
+    return false;
   return value["strokes"].every(
     (stroke: unknown) =>
       isRecord(stroke) &&

@@ -82,6 +82,14 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await dialog.getByRole("button", { name: "Desfazer" }).click();
   await expect(dialog.getByRole("button", { name: "Refazer" })).toBeEnabled();
   await dialog.getByRole("button", { name: "Refazer" }).click();
+  await dialog.getByRole("button", { name: "Selecionar traços" }).click();
+  await page.mouse.move(startX - 10, startY - 10);
+  await page.mouse.down();
+  await page.mouse.move(startX + 120, startY + 25, { steps: 8 });
+  await page.mouse.up();
+  await expect(dialog.getByRole("button", { name: "Apagar" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Apagar" }).click();
+  await dialog.getByRole("button", { name: "Desfazer" }).click();
   await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole("img", { name: /folha manuscrita/i })).toBeVisible();
@@ -120,4 +128,81 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.locator(".notebook-page-card").first().click();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
+});
+
+test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, testInfo) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+  });
+  await page.goto("/");
+  if (testInfo.project.name === "mobile") {
+    await page.getByRole("button", { name: "Mais", exact: true }).click();
+    await page
+      .getByRole("dialog", { name: "Mais ferramentas" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  } else {
+    await page
+      .getByRole("navigation", { name: "Navegação principal" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  }
+  await page.getByRole("button", { name: /novo caderno/i }).click();
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  let dialog = page.getByRole("dialog", { name: "Escrever à mão" });
+  await dialog.getByRole("button", { name: "Adicionar post-it" }).click();
+  await dialog.getByRole("textbox", { name: "Texto do post-it" }).fill("Revisar gramática");
+  await dialog.getByRole("button", { name: "Post-it azul" }).click();
+  await page.screenshot({ path: testInfo.outputPath("postit-no-caderno.png") });
+  await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
+  await expect(
+    dialog.getByRole("alertdialog", { name: "Fechar folha com alterações" }),
+  ).toBeVisible();
+  await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
+  await expect(dialog).not.toBeVisible();
+  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  dialog = page.getByRole("dialog", { name: "Escrever à mão" });
+  await expect(dialog.getByRole("textbox", { name: "Texto do post-it" })).toHaveValue(
+    "Revisar gramática",
+  );
+  await expect(dialog.getByText("Rascunho recuperado")).toBeVisible();
+  await dialog.getByRole("button", { name: "Janela de escrita ampliada" }).click();
+  await expect(dialog.getByRole("region", { name: "Janela de escrita ampliada" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Próxima linha" }).click();
+  const writingCanvas = dialog.getByLabel("Área ampliada para escrever com dedo ou caneta");
+  const bounds = await writingCanvas.boundingBox();
+  expect(bounds).not.toBeNull();
+  if (!bounds) return;
+  await page.mouse.move(bounds.x + 30, bounds.y + bounds.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(bounds.x + 100, bounds.y + bounds.height / 2, { steps: 6 });
+  await page.mouse.up();
+  await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
+  await expect(dialog).not.toBeVisible();
+  const saved = await page.evaluate(() => {
+    const raw = localStorage.getItem("helenastudy.workspace.v1");
+    if (!raw) return null;
+    const workspace = JSON.parse(raw) as {
+      notes: {
+        assets: {
+          handwriting?: { strokes: unknown[]; stickies?: { text: string; color: string }[] };
+        }[];
+      }[];
+    };
+    return workspace.notes[0]?.assets[0]?.handwriting ?? null;
+  });
+  expect(saved?.stickies?.[0]).toMatchObject({ text: "Revisar gramática", color: "blue" });
+  expect(saved?.strokes).toHaveLength(1);
+  await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
+  const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
+  const download = page.waitForEvent("download");
+  await reopened.getByRole("button", { name: "PNG" }).click();
+  expect((await download).suggestedFilename()).toBe("folha-do-caderno.png");
+  await reopened.getByRole("button", { name: "Fechar", exact: true }).click();
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Folhas do caderno" }).click();
+  await expect(page.locator(".notebook-page-card")).toHaveCount(2);
+  await page.getByRole("button", { name: "Mover Nova folha para depois" }).first().click();
+  await expect(page.locator(".notebook-page-card__number").first()).toHaveText("01");
 });

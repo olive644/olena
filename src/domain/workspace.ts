@@ -166,6 +166,7 @@ export type WorkspaceAction =
       subjectId: string;
       createdAt: string;
     }
+  | { type: "notebook/page-moved"; notebookId: string; pageId: string; direction: -1 | 1 }
   | {
       type: "note/asset-updated";
       noteId: string;
@@ -361,6 +362,19 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           },
           ...state.notebooks,
         ],
+      };
+    case "notebook/page-moved":
+      return {
+        ...state,
+        notebooks: state.notebooks.map((notebook) => {
+          if (notebook.id !== action.notebookId) return notebook;
+          const index = notebook.pageIds.indexOf(action.pageId);
+          const nextIndex = index + action.direction;
+          if (index < 0 || nextIndex < 0 || nextIndex >= notebook.pageIds.length) return notebook;
+          const pageIds = [...notebook.pageIds];
+          [pageIds[index], pageIds[nextIndex]] = [pageIds[nextIndex]!, pageIds[index]!];
+          return { ...notebook, pageIds };
+        }),
       };
     case "note/added":
       return {

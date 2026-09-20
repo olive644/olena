@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { WORKSPACE_VERSION, createInitialWorkspace } from "../domain/workspace";
-import { loadWorkspace, saveWorkspace, WORKSPACE_STORAGE_KEY } from "./local-workspace";
+import {
+  isHandwritingDocument,
+  loadWorkspace,
+  saveWorkspace,
+  WORKSPACE_STORAGE_KEY,
+} from "./local-workspace";
 
 describe("local workspace", () => {
   it("salva e recupera o estado versionado", () => {
@@ -44,6 +49,25 @@ describe("local workspace", () => {
     expect(loadWorkspace(window.localStorage).notes[0]?.assets[0]?.handwriting).toEqual(
       workspace.notes[0]?.assets[0]?.handwriting,
     );
+  });
+
+  it("aceita post-its válidos e rejeita texto ou posição fora dos limites", () => {
+    const document = {
+      version: 1,
+      paper: "ruled",
+      strokes: [],
+      stickies: [{ id: "sticky-1", x: 120, y: 150, color: "yellow", text: "Revisar amanhã" }],
+    };
+    expect(isHandwritingDocument(document)).toBe(true);
+    expect(
+      isHandwritingDocument({ ...document, stickies: [{ ...document.stickies[0], x: 1200 }] }),
+    ).toBe(false);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [{ ...document.stickies[0], text: "x".repeat(241) }],
+      }),
+    ).toBe(false);
   });
 
   it("ignora conteúdo inválido sem quebrar o aplicativo", () => {

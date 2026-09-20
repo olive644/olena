@@ -486,3 +486,13 @@ tem modos de ampliar e reduzir: cada toque no papel muda um nível de zoom no po
 Mover desloca a folha sem marcar. A opção Só caneta faz o toque deslocar a folha enquanto a caneta
 continua escrevendo. O traço usa eventos de ponteiro coalescidos quando disponíveis, curvas suaves
 e estabilização local com detecção de linhas quase retas.
+
+O estúdio agora guarda rascunhos manuscritos no armazenamento deste dispositivo e confirma o
+fechamento quando há alterações. Seleção retangular permite mover, alinhar e apagar grupos de
+traços, com histórico. A janela de escrita ampliada modifica a mesma folha e pode avançar pela
+linha ou descer para a próxima. Post-its de papel recortado ficam sobre a folha, com texto, cor,
+reposicionamento e exportação junto com a imagem. A versão 1 do documento manuscrito ganhou um
+campo opcional `stickies`, preservando a leitura de folhas anteriores. A navegação do caderno
+permite criar, percorrer e reordenar folhas. PNG é baixado localmente; Imprimir/PDF usa o diálogo
+do navegador, que oferece salvar como PDF quando disponível. Nenhum desses fluxos sincroniza
+rascunhos entre dispositivos.

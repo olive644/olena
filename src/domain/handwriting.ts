@@ -8,8 +8,17 @@ export type HandwritingStroke = {
   points: HandwritingPoint[];
 };
 
+export type HandwritingSticky = {
+  id: string;
+  x: number;
+  y: number;
+  color: "yellow" | "blue" | "lilac";
+  text: string;
+};
+
 export type HandwritingDocument = {
   version: 1;
   paper: HandwritingPaper;
   strokes: HandwritingStroke[];
+  stickies?: HandwritingSticky[];
 };
