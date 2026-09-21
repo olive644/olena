@@ -11,8 +11,10 @@ export async function getFirebaseAccountServices() {
   const app =
     appApi.getApps().find((item) => item.name === "helena-account") ??
     appApi.initializeApp({ apiKey, authDomain, projectId, databaseURL }, "helena-account");
+  const auth = authApi.getAuth(app);
+  await authApi.setPersistence(auth, authApi.browserLocalPersistence);
   return {
-    auth: authApi.getAuth(app),
+    auth,
     authApi,
     databaseURL,
   };

@@ -8,6 +8,7 @@ export const SYNCED_STORAGE_KEYS = [
 ] as const;
 
 export const SYNCED_STORAGE_EVENT = "helena:synced-storage-change";
+export const SYNCED_STORAGE_APPLIED_EVENT = "helena:synced-storage-applied";
 
 export function writeSyncedStorage(key: string, value: string) {
   window.localStorage.setItem(key, value);
@@ -29,4 +30,5 @@ export function applySyncedStorage(items: Record<string, string>) {
     if (typeof value === "string") window.localStorage.setItem(key, value);
     else window.localStorage.removeItem(key);
   }
+  window.dispatchEvent(new Event(SYNCED_STORAGE_APPLIED_EVENT));
 }

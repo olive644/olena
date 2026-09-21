@@ -7,13 +7,15 @@ import {
   type StudyModality,
   type StudyPreferences,
 } from "../domain/study-preferences";
+import type { CloudSyncState } from "../hooks/use-cloud-sync";
 
 type ProfileViewProps = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
+  cloud: CloudSyncState;
 };
 
-export function ProfileView({ workspace, dispatch }: ProfileViewProps) {
+export function ProfileView({ workspace, dispatch, cloud }: ProfileViewProps) {
   function updatePomodoroMinutes(pomodoroMinutes: 25 | 50) {
     dispatch({
       type: "focus/preferences-updated",
@@ -59,6 +61,72 @@ export function ProfileView({ workspace, dispatch }: ProfileViewProps) {
         <span className="section-label">Configurações</span>
         <h1>Personalizar métodos de estudos</h1>
       </header>
+
+      <section className="account-sync-settings" aria-labelledby="account-sync-title">
+        <div>
+          <span className="section-label">Conta e sincronização</span>
+          <h2 id="account-sync-title">Seus estudos em todos os dispositivos</h2>
+          <p>
+            {!cloud.enabled
+              ? "A nuvem ainda não está configurada. Seus estudos continuam salvos somente neste dispositivo."
+              : cloud.status === "offline"
+                ? "Sem conexão. Suas alterações ficam neste dispositivo e serão enviadas quando a internet voltar."
+                : cloud.status === "syncing" || cloud.status === "loading"
+                  ? "Sincronizando suas alterações com segurança…"
+                  : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>Conta</dt>
+            <dd>
+              {cloud.enabled
+                ? cloud.displayName || cloud.email || "Conta Google conectada"
+                : "Somente neste dispositivo"}
+            </dd>
+          </div>
+          <div>
+            <dt>Estado</dt>
+            <dd data-sync-status={cloud.status}>
+              {!cloud.enabled
+                ? "Nuvem indisponível"
+                : cloud.status === "offline"
+                  ? "Aguardando conexão"
+                  : cloud.status === "syncing" || cloud.status === "loading"
+                    ? "Sincronizando"
+                    : "Sincronizado"}
+            </dd>
+          </div>
+          <div>
+            <dt>Última atualização</dt>
+            <dd>
+              {cloud.lastSyncedAt
+                ? new Date(cloud.lastSyncedAt).toLocaleTimeString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Ainda não sincronizado"}
+            </dd>
+          </div>
+        </dl>
+        <div className="account-sync-settings__actions">
+          <button
+            type="button"
+            disabled={!cloud.syncNow || cloud.status === "syncing"}
+            onClick={cloud.syncNow}
+          >
+            Sincronizar agora
+          </button>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={!cloud.signOut}
+            onClick={() => void cloud.signOut?.()}
+          >
+            Sair desta conta
+          </button>
+        </div>
+      </section>
 
       <section className="study-method-settings" aria-labelledby="study-method-title">
         <div className="study-method-settings__header">

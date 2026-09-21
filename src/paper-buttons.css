@@ -247,6 +247,119 @@
   box-shadow: var(--shadow-float);
 }
 
+.account-sync-settings {
+  display: grid;
+  width: min(100%, 760px);
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 8px 18px 8px 14px;
+  margin: 0 auto 1rem;
+  color: var(--text);
+  background:
+    linear-gradient(135deg, #fff0c7 0 24px, transparent 24px),
+    linear-gradient(315deg, #eadfc8 0 28px, transparent 28px), var(--surface);
+  box-shadow: 0 5px 0 var(--line);
+  gap: 1rem;
+}
+
+:root[data-theme="dark"] .account-sync-settings {
+  background:
+    linear-gradient(135deg, #51465d 0 24px, transparent 24px),
+    linear-gradient(315deg, #17151c 0 28px, transparent 28px), #292432;
+}
+
+.account-sync-settings h2,
+.account-sync-settings p {
+  margin: 0.25rem 0 0;
+}
+
+.account-sync-settings dl,
+.account-sync-settings dl div,
+.account-sync-settings__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.account-sync-settings dl {
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.account-sync-settings dl div {
+  min-width: min(100%, 220px);
+  align-items: flex-start;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 6px 12px 6px 10px;
+  flex-direction: column;
+  background: var(--soft);
+  gap: 0.15rem;
+}
+
+.account-sync-settings dt {
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-sync-settings dd {
+  margin: 0;
+  font-weight: 800;
+}
+
+.account-sync-settings dd[data-sync-status="synced"]::before,
+.account-sync-settings dd[data-sync-status="syncing"]::before,
+.account-sync-settings dd[data-sync-status="loading"]::before,
+.account-sync-settings dd[data-sync-status="offline"]::before {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+  background: #2f936b;
+  content: "";
+}
+
+.account-sync-settings dd:is([data-sync-status="syncing"], [data-sync-status="loading"])::before {
+  background: #facc15;
+}
+
+.account-sync-settings dd[data-sync-status="offline"]::before {
+  background: #ef476f;
+}
+
+.account-sync-settings__actions {
+  flex-wrap: wrap;
+}
+
+.account-sync-settings__actions button {
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #a779ef;
+  border-radius: 6px 13px 6px 10px;
+  color: #fff9ef;
+  background:
+    linear-gradient(135deg, #8a4ce5 0 14%, transparent 14%),
+    linear-gradient(315deg, #5924b4 0 16%, transparent 16%), #7433e0;
+  box-shadow: 0 4px 0 #51259b;
+  font-weight: 800;
+}
+
+.account-sync-settings__actions .secondary-button {
+  border-color: var(--line);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 4px 0 var(--line);
+}
+
+.account-sync-settings__actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .study-method-settings__header {
   display: grid;
   gap: 0.2rem;

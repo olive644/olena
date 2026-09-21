@@ -156,6 +156,7 @@ export type WorkspaceState = {
 };
 
 export type WorkspaceAction =
+  | { type: "workspace/replaced"; workspace: WorkspaceState }
   | { type: "subject/added"; name: string; color: string }
   | { type: "task/added"; title: string; subjectId: string; dueDate: string }
   | { type: "task/toggled"; id: string }
@@ -297,6 +298,8 @@ function addDays(dateKey: string, days: number): string {
 
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
   switch (action.type) {
+    case "workspace/replaced":
+      return action.workspace;
     case "subject/added":
       return {
         ...state,

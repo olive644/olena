@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { writeSyncedStorage } from "../data/synced-storage";
+import { useEffect, useRef, useState } from "react";
+import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
 
 export type Theme = "light" | "dark";
 export type ThemePreference = Theme | "system";
@@ -21,6 +21,7 @@ function readInitialPreference(): ThemePreference {
 }
 
 export function useTheme() {
+  const remoteUpdate = useRef(false);
   const [preference, setPreference] = useState<ThemePreference>(readInitialPreference);
   const [systemDark, setSystemDark] = useState(systemPrefersDark);
 
@@ -38,12 +39,29 @@ export function useTheme() {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    if (remoteUpdate.current) {
+      remoteUpdate.current = false;
+      return;
+    }
     try {
       writeSyncedStorage(THEME_STORAGE_KEY, preference);
     } catch {
       // Preferência vale só para esta sessão se não der para salvar.
     }
   }, [theme, preference]);
+
+  useEffect(() => {
+    const refresh = () => {
+      const next = readInitialPreference();
+      setPreference((current) => {
+        if (current === next) return current;
+        remoteUpdate.current = true;
+        return next;
+      });
+    };
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+  }, []);
 
   function toggleTheme() {
     setPreference((current) => {

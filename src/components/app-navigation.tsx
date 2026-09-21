@@ -7,7 +7,11 @@ import {
 } from "react";
 import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
-import { SYNCED_STORAGE_EVENT, writeSyncedStorage } from "../data/synced-storage";
+import {
+  SYNCED_STORAGE_APPLIED_EVENT,
+  SYNCED_STORAGE_EVENT,
+  writeSyncedStorage,
+} from "../data/synced-storage";
 import { AppearanceToggle } from "./appearance-picker";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
 
@@ -58,7 +62,11 @@ function useStoredProfile() {
   useEffect(() => {
     const refresh = () => setProfile(readStoredProfile());
     window.addEventListener(SYNCED_STORAGE_EVENT, refresh);
-    return () => window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    return () => {
+      window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    };
   }, []);
   return [profile, setProfile] as const;
 }

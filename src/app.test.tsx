@@ -242,6 +242,10 @@ describe("App", () => {
     render(<App />);
     navigate("Perfil");
     expect(await screen.findByRole("heading", { name: "Preferências de estudo" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Seus estudos em todos os dispositivos" }),
+    ).toBeTruthy();
+    expect(screen.getByText("Somente neste dispositivo")).toBeTruthy();
     const profile = within(
       screen.getByRole("navigation", { name: "Navegação principal" }),
     ).getByRole("button", { name: "Perfil" });
