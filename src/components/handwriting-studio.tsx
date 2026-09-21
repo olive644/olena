@@ -357,6 +357,7 @@ export function HandwritingStudio({
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
+  const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
   const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
@@ -714,7 +715,7 @@ export function HandwritingStudio({
       {
         id: strokeId(),
         tool: tool === "ruler" ? "pen" : tool,
-        ...(tool === "pen" ? { brush: "fine" as const } : {}),
+        ...(tool === "pen" ? { brush } : {}),
         color,
         width: activeWidth,
         points: [point],
@@ -1008,7 +1009,7 @@ export function HandwritingStudio({
       {
         id: strokeId(),
         tool: "pen",
-        brush: "fine",
+        brush,
         color,
         width,
         points: [writingPoint(event)],
@@ -1459,7 +1460,7 @@ export function HandwritingStudio({
       )}
 
       <div
-        className={`handwriting-workspace${tool === "ruler" && !textMode ? " handwriting-workspace--brushes" : ""}`}
+        className={`handwriting-workspace${!textMode && (tool === "ruler" || (tool === "pen" && !writingWindowOpen)) ? " handwriting-workspace--brushes" : ""}`}
         inert={fileAction === "import"}
       >
         <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
@@ -1699,6 +1700,44 @@ export function HandwritingStudio({
             ))}
           </div>
         </div>
+        {tool === "pen" && !textMode && !writingWindowOpen && (
+          <aside className="handwriting-brush-panel" aria-label="Pincéis da caneta">
+            <header>
+              <div>
+                <small>SEU ESTOJO</small>
+                <h3>Canetas e pincéis</h3>
+              </div>
+            </header>
+            {(
+              [
+                ["fine", "Fineliner", "Ponta técnica · tinta uniforme", 2],
+                ["ink", "Caneta-tinteiro", "Tinta expressiva · responde à pressão", 7],
+                ["soft", "Pincel macio", "Cerdas suaves · camadas translúcidas", 14],
+              ] as const
+            ).map(([value, title, description, size]) => (
+              <button
+                type="button"
+                key={value}
+                aria-pressed={brush === value}
+                onClick={() => setBrush(value)}
+              >
+                <span className="brush-card-title">{title}</span>
+                <img className="brush-instrument" src={`/brushes/${value}.svg`} alt="" />
+                <svg className="brush-sample" viewBox="0 0 180 46" aria-hidden="true">
+                  <path
+                    d="M10 31C36 32 39 9 66 19S104 39 130 24 158 15 170 19"
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={size}
+                    strokeLinecap="round"
+                    opacity={value === "soft" ? 0.3 : 1}
+                  />
+                </svg>
+                <small>{description}</small>
+              </button>
+            ))}
+          </aside>
+        )}
         {tool === "ruler" && !textMode && (
           <aside className="handwriting-brush-panel" aria-label="Unidades da régua">
             <header>

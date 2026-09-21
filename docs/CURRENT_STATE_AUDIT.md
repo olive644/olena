@@ -2,7 +2,7 @@
 
 ## Régua, marca-texto e documentos importados
 
-Régua abre o estojo de unidades px/cm/in. A folha digital tem largura convencional de 21 cm; unidades não representam medidas físicas da tela, e seguem o zoom do documento. O estojo da caneta foi retirado a pedido do proprietário; novos traços usam fineliner, preservando estilos antigos ao reabrir.
+Régua abre o estojo de unidades px/cm/in. A folha digital tem largura convencional de 21 cm; unidades não representam medidas físicas da tela, e seguem o zoom do documento. Caneta abre o estojo ilustrado com Fineliner, Caneta-tinteiro e Pincel macio. A escolha permanece ao alternar entre ferramentas.
 
 Marca-texto inicia amarelo, desenha um caminho contínuo com transparência uniforme e é composto antes da escrita. Multiplicação preserva o texto de páginas importadas; na folha escura vazia usa screen. Exportar reúne PNG e impressão/PDF. Importar aceita PNG/JPEG/WebP e uma página selecionada de PDF, mantendo anotações existentes. A página é rasterizada localmente, ajustada sem distorção e persistida como background JPEG (até 500 mil caracteres), inclusive no rascunho, histórico e exportação. Não edita o conteúdo original do PDF; permite anotar por cima. Limpar folha apaga anotações, preservando a página de base.
 
@@ -16,7 +16,7 @@ A borracha substitui por espaços os caracteres tocados do texto integral, prese
 
 ## Compatibilidade de pincéis
 
-O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm seus estilos. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. A seleção de pincéis foi retirada da interface; o renderizador continua aceitando os documentos existentes.
+O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm seus estilos. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. O estojo foi restaurado após uma interpretação incorreta do pedido; seus três instrumentos continuam disponíveis no desktop e no celular.
 
 ## Instrumentos de papel e régua com medida
 

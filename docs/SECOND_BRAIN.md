@@ -1,10 +1,10 @@
 # HelenaStudy: Second Brain
 
-PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho. renderPage usa a mesma imagem base em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. Estojo da caneta removido, traços legados fine/ink/soft continuam renderizáveis. Importação nunca altera o arquivo original.
+PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho. renderPage usa a mesma imagem base em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. O painel lateral mostra o estojo ilustrado na caneta e as unidades na régua. Importação nunca altera o arquivo original.
 
 eraseAt centraliza a borracha para traços, pageText e caixas kind text. erasePageText usa a largura real de glifo monospace do canvas, margem 112/80, entrelinha 40 e raio 30 nas coordenadas do documento. Letras viram espaços para manter a posição; o snapshot existente inclui todo o texto. Caixas legadas recebem pointer-events none durante a borracha. Rótulos expansíveis do editor usam a mesma regra CSS em desktop e mobile.
 
-HandwritingStroke.brush aceita fine, ink e soft, opcional para compatibilidade com folhas anteriores. drawStroke preserva largura/pressão/transparência em todos os caminhos de renderização, mesmo após retirar o estojo de pincéis da interface.
+HandwritingStroke.brush aceita fine, ink e soft, opcional para compatibilidade com folhas anteriores. O estojo seleciona o estilo para novos traços no canvas principal e na janela ampliada. drawStroke preserva largura/pressão/transparência em todos os caminhos de renderização.
 
 Instrumentos do editor preservam cores próprias; ícones de ações herdam grafite/creme. Paletas de tinta e espessura substituem o seletor de traço nativo por amostras, preservando cor personalizada. rulerMeasure é transitório e usa pixels da folha para manter a medida independente do zoom. SVG sobreposto ao canvas mostra régua e medida somente durante o gesto, sem entrar na persistência/exportação.
 
