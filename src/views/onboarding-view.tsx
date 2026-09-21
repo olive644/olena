@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import "./onboarding.css";
-import { GoogleLogin } from "./google-login";
+import { GoogleLogin, hasPendingGoogleRedirect, readPendingGoogleAnswers } from "./google-login";
 import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
 
 type OnboardingAnswer = string | string[];
@@ -149,9 +149,14 @@ export default function OnboardingView({
   loginOnly?: boolean;
 }) {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<OnboardingAnswer[]>([]);
+  const [answers, setAnswers] = useState<OnboardingAnswer[]>(() =>
+    hasPendingGoogleRedirect() ? [...readPendingGoogleAnswers()] : [],
+  );
   const [showLogin, setShowLogin] = useState(
-    () => loginOnly || new URLSearchParams(window.location.search).has("login"),
+    () =>
+      loginOnly ||
+      new URLSearchParams(window.location.search).has("login") ||
+      hasPendingGoogleRedirect(),
   );
   const title = useRef<HTMLHeadingElement>(null);
   const question = questions[step];
