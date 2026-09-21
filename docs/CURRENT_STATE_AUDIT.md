@@ -4,7 +4,7 @@
 
 Trocar de ferramenta anima a elevação e o encaixe do ícone por 420 ms; o nome se expande por 320 ms. O estojo desloca e inclina o instrumento escolhido. prefers-reduced-motion desliga essas transições. Orçamento total de JavaScript ajustado a 677 KiB para a borracha de texto (medido 675,5 KiB); orçamento de entrada permanece em 264 KiB.
 
-A borracha substitui por espaços os caracteres tocados do texto integral, preservando a posição dos demais e o histórico de desfazer/refazer. Caixas de texto legadas são apagadas como objetos inteiros. Selecionar Borracha encerra a edição de texto e deixa o canvas receber o gesto. Salvar usa disquete redesenhado; PNG, PDF e espessuras usam papel roxo facetado. Ferramentas e ações revelam os nomes ao passar o mouse, focar pelo teclado ou selecionar, em todas as larguras. Ícones de ações são grafite, com suporte creme no tema escuro.
+A borracha substitui por espaços os caracteres tocados do texto integral, preservando a posição dos demais e o histórico de desfazer/refazer. Caixas de texto legadas são apagadas como objetos inteiros. Selecionar Borracha encerra a edição de texto e deixa o canvas receber o gesto. Salvar usa disquete redesenhado; PNG, PDF e espessuras usam papel roxo facetado. Ferramentas e ações revelam os nomes ao passar o mouse, focar pelo teclado ou selecionar, em todas as larguras. Ícones de ações são grafite, diretamente sobre os botões, sem fundos adicionais no tema escuro.
 
 ## Pincéis da caneta
 
