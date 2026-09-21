@@ -358,6 +358,7 @@ export function HandwritingStudio({
         ? "aged"
         : (startingDocument?.paperColor ?? "light");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const liveStrokeRef = useRef<Stroke | null>(null);
   const writingCanvasRef = useRef<HTMLCanvasElement>(null);
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -706,6 +707,7 @@ export function HandwritingStudio({
       return;
     }
     drawingRef.current = true;
+    liveStrokeRef.current = null;
     setError("");
     const point = canvasPoint(canvas, event);
     if (tool === "ruler") setRulerMeasure({ start: point, end: point });
@@ -734,17 +736,16 @@ export function HandwritingStudio({
       return;
     }
     const activeWidth = tool === "highlighter" ? Math.max(22, width * 4) : width;
-    setStrokes((current) => [
-      ...current,
-      {
-        id: strokeId(),
-        tool: tool === "ruler" ? "pen" : tool,
-        ...(tool === "pen" ? { brush } : {}),
-        color,
-        width: activeWidth,
-        points: [point],
-      },
-    ]);
+    const nextStroke: Stroke = {
+      id: strokeId(),
+      tool: tool === "ruler" ? "pen" : tool,
+      ...(tool === "pen" ? { brush } : {}),
+      color,
+      width: activeWidth,
+      points: [point],
+    };
+    if (tool !== "ruler") liveStrokeRef.current = nextStroke;
+    setStrokes((current) => [...current, nextStroke]);
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -804,10 +805,10 @@ export function HandwritingStudio({
       eraseAt(points);
       return;
     }
-    setStrokes((current) => {
-      const last = current.at(-1);
-      if (!last) return current;
-      if (tool === "ruler") {
+    if (tool === "ruler") {
+      setStrokes((current) => {
+        const last = current.at(-1);
+        if (!last) return current;
         const start = last.points[0];
         const end = points.at(-1);
         if (!start || !end) return current;
@@ -815,15 +816,21 @@ export function HandwritingStudio({
           ...current.slice(0, -1),
           { ...last, points: [start, { ...end, pressure: start.pressure }] },
         ];
-      }
-      const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
-        const previous = accepted.at(-1) ?? last.points.at(-1);
-        if (!previous || pointDistance(previous, point) >= 1.4) accepted.push(point);
-        return accepted;
-      }, []);
-      if (added.length === 0) return current;
-      return [...current.slice(0, -1), { ...last, points: [...last.points, ...added] }];
-    });
+      });
+      return;
+    }
+    const liveStroke = liveStrokeRef.current;
+    if (!liveStroke) return;
+    const previous = liveStroke.points.at(-1);
+    const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
+      const lastPoint = accepted.at(-1) ?? previous;
+      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+      return accepted;
+    }, []);
+    if (added.length === 0) return;
+    liveStroke.points.push(...added);
+    const context = canvas.getContext("2d");
+    if (context && previous) drawStroke(context, { ...liveStroke, points: [previous, ...added] });
   }
 
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -861,22 +868,20 @@ export function HandwritingStudio({
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
-    if (!stabilization || tool === "ruler") return;
-    setStrokes((current) => {
-      const last = current.at(-1);
-      if (!last) return current;
-      return [
-        ...current.slice(0, -1),
-        {
-          ...last,
-          points: stabilizeHandwriting(last.points).map((point) => ({
-            ...point,
-            x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
-            y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
-          })),
-        },
-      ];
-    });
+    if (tool === "ruler") return;
+    const liveStroke = liveStrokeRef.current;
+    liveStrokeRef.current = null;
+    if (!liveStroke) return;
+    const points = (
+      stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points
+    ).map((point) => ({
+      ...point,
+      x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
+      y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
+    }));
+    setStrokes((current) =>
+      current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
+    );
   }
 
   function undo() {
@@ -1011,7 +1016,9 @@ export function HandwritingStudio({
     drag.y = event.clientY;
   }
 
-  function writingPoint(event: ReactPointerEvent<HTMLCanvasElement>): HandwritingPoint {
+  function writingPoint(
+    event: Pick<PointerEvent, "clientX" | "clientY" | "pressure">,
+  ): HandwritingPoint {
     const canvas = writingCanvasRef.current;
     if (!canvas) return { x: writingWindowX, y: writingWindowY, pressure: 0.5 };
     const bounds = canvas.getBoundingClientRect();
@@ -1043,39 +1050,53 @@ export function HandwritingStudio({
     writingPointerRef.current = event.pointerId;
     event.currentTarget.setPointerCapture(event.pointerId);
     remember();
-    setStrokes((current) => [
-      ...current,
-      {
-        id: strokeId(),
-        tool: "pen",
-        brush,
-        color,
-        width,
-        points: [writingPoint(event)],
-      },
-    ]);
+    const nextStroke: Stroke = {
+      id: strokeId(),
+      tool: "pen",
+      brush,
+      color,
+      width,
+      points: [writingPoint(event.nativeEvent)],
+    };
+    liveStrokeRef.current = nextStroke;
+    setStrokes((current) => [...current, nextStroke]);
   }
 
   function moveWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (writingPointerRef.current !== event.pointerId) return;
-    const point = writingPoint(event);
-    setStrokes((current) => {
-      const last = current.at(-1);
-      if (!last || pointDistance(last.points.at(-1) ?? point, point) < 1.4) return current;
-      return [...current.slice(0, -1), { ...last, points: [...last.points, point] }];
-    });
+    const liveStroke = liveStrokeRef.current;
+    if (!liveStroke) return;
+    const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
+    const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map(writingPoint);
+    const previous = liveStroke.points.at(-1);
+    const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
+      const lastPoint = accepted.at(-1) ?? previous;
+      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+      return accepted;
+    }, []);
+    if (added.length === 0) return;
+    liveStroke.points.push(...added);
+    const canvas = writingCanvasRef.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context || !previous) return;
+    context.save();
+    context.scale(canvas.width / WRITING_WINDOW_WIDTH, canvas.height / WRITING_WINDOW_HEIGHT);
+    context.translate(-writingWindowX, -writingWindowY);
+    drawStroke(context, { ...liveStroke, points: [previous, ...added] });
+    context.restore();
   }
 
   function finishWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (writingPointerRef.current !== event.pointerId) return;
     writingPointerRef.current = null;
-    if (stabilization)
-      setStrokes((current) => {
-        const last = current.at(-1);
-        return last
-          ? [...current.slice(0, -1), { ...last, points: stabilizeHandwriting(last.points) }]
-          : current;
-      });
+    const liveStroke = liveStrokeRef.current;
+    liveStrokeRef.current = null;
+    if (liveStroke) {
+      const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
+      setStrokes((current) =>
+        current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
+      );
+    }
     const bounds = event.currentTarget.getBoundingClientRect();
     if ((event.clientX - bounds.left) / bounds.width > 0.88) advanceWritingWindow();
   }
