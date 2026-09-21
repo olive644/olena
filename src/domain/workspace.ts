@@ -47,6 +47,8 @@ export type StudyNote = {
 };
 
 export type StudyNotebook = {
+  kind?: "folder";
+  parentId?: string;
   id: string;
   title: string;
   subjectId: string;
@@ -162,12 +164,14 @@ export type WorkspaceAction =
   | { type: "habit/toggled"; id: string; date: string }
   | {
       type: "notebook/added";
+      kind?: "folder";
       id: string;
       title: string;
       subjectId: string;
       createdAt: string;
     }
   | { type: "notebook/removed"; ids: string[] }
+  | { type: "notebook/folder-moved"; id: string; parentId: string | null }
   | { type: "notebook/page-moved"; notebookId: string; pageId: string; direction: -1 | 1 }
   | {
       type: "note/asset-updated";
@@ -368,10 +372,31 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             subjectId: action.subjectId,
             createdAt: action.createdAt,
             pageIds: [],
+            ...(action.kind ? { kind: action.kind } : {}),
           },
           ...state.notebooks,
         ],
       };
+    case "notebook/folder-moved": {
+      const folder = state.notebooks.find(
+        (item) => item.id === action.id && item.kind === "folder",
+      );
+      if (
+        !folder ||
+        (action.parentId !== null &&
+          !state.notebooks.some((item) => item.id === action.parentId && item.kind !== "folder"))
+      )
+        return state;
+      return {
+        ...state,
+        notebooks: state.notebooks.map((item) => {
+          if (item.id !== folder.id) return item;
+          const { parentId: previousParent, ...rest } = item;
+          void previousParent;
+          return action.parentId ? { ...rest, parentId: action.parentId } : rest;
+        }),
+      };
+    }
     case "notebook/removed": {
       const ids = new Set(action.ids);
       const pageIds = new Set(
@@ -381,7 +406,14 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
       );
       return {
         ...state,
-        notebooks: state.notebooks.filter((notebook) => !ids.has(notebook.id)),
+        notebooks: state.notebooks
+          .filter((notebook) => !ids.has(notebook.id))
+          .map((notebook) => {
+            if (!notebook.parentId || !ids.has(notebook.parentId)) return notebook;
+            const { parentId, ...rest } = notebook;
+            void parentId;
+            return rest;
+          }),
         notes: state.notes.filter((note) => !pageIds.has(note.id)),
       };
     }

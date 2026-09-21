@@ -11,6 +11,55 @@ import type { StudyPreferences } from "./study-preferences";
 import type { HandwritingDocument } from "./handwriting";
 
 describe("workspaceReducer", () => {
+  it("guarda pastas em cadernos e preserva notas ao retirar ou excluir o caderno", () => {
+    let state = createInitialWorkspace();
+    state = workspaceReducer(state, {
+      type: "notebook/added",
+      id: "book",
+      title: "Caderno",
+      subjectId: "",
+      createdAt: "2026-09-20",
+    });
+    state = workspaceReducer(state, {
+      type: "notebook/added",
+      id: "folder",
+      title: "Notas",
+      kind: "folder",
+      subjectId: "",
+      createdAt: "2026-09-20",
+    });
+    state = workspaceReducer(state, {
+      type: "note/added",
+      id: "note",
+      notebookId: "folder",
+      subjectId: "",
+      kind: "note",
+      updatedAt: "2026-09-20",
+    });
+    expect(
+      workspaceReducer(state, { type: "notebook/folder-moved", id: "folder", parentId: "folder" }),
+    ).toBe(state);
+    state = workspaceReducer(state, {
+      type: "notebook/folder-moved",
+      id: "folder",
+      parentId: "book",
+    });
+    expect(state.notebooks.find((item) => item.id === "folder")?.parentId).toBe("book");
+    state = workspaceReducer(state, {
+      type: "notebook/folder-moved",
+      id: "folder",
+      parentId: null,
+    });
+    expect(state.notebooks.find((item) => item.id === "folder")?.parentId).toBeUndefined();
+    state = workspaceReducer(state, {
+      type: "notebook/folder-moved",
+      id: "folder",
+      parentId: "book",
+    });
+    state = workspaceReducer(state, { type: "notebook/removed", ids: ["book"] });
+    expect(state.notebooks[0]?.parentId).toBeUndefined();
+    expect(state.notes[0]?.id).toBe("note");
+  });
   it("reordena folhas dentro do caderno sem alterar o conteúdo", () => {
     const initial = createInitialWorkspace();
     const withNotebook = workspaceReducer(initial, {

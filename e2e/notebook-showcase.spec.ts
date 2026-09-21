@@ -26,19 +26,57 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
     "Pequenas descobertas",
     "Meu universo",
   ]) {
-    await page.getByLabel("Nome do novo caderno").fill(title);
-    await page.getByRole("button", { name: "Novo caderno", exact: true }).click();
+    await page.getByRole("button", { name: "Crie", exact: true }).click();
+    await page.getByLabel("Nome", { exact: true }).fill(title);
+    await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
     await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
   }
   await expect(page.locator(".book-cover")).toHaveCount(4);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: testInfo.outputPath("vitrine.png"), fullPage: true });
+  await page.screenshot({
+    path: testInfo.outputPath("vitrine.png"),
+    fullPage: true,
+    animations: "disabled",
+  });
   await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByLabel("Conteúdo da folha").fill("Uma ideia sem matéria.");
+  await page.getByLabel("Título da folha").fill("Uma ideia sem matéria.");
   await page.reload();
   await openShelf();
   await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
   await page.locator(".notebook-page-card").click();
-  await expect(page.getByLabel("Conteúdo da folha")).toHaveValue("Uma ideia sem matéria.");
+  await expect(page.getByLabel("Título da folha")).toHaveValue("Uma ideia sem matéria.");
+  await page.getByRole("button", { name: "Folhas do caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: /Anotações/ }).click();
+  await page.getByLabel("Nome", { exact: true }).fill("Ideias soltas");
+  await page.getByRole("button", { name: "Criar pasta" }).click();
+  await page.getByRole("button", { name: "Nova nota", exact: true }).click();
+  await page.getByLabel("Título da folha").fill("Meu primeiro rascunho");
+  await page.getByLabel("Conteúdo da folha").fill("Uma ideia guardada na pasta.");
+  await expect(page.getByRole("button", { name: "Escrever à mão" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Anotações", exact: true }).click();
+  await page.getByLabel("Guardar pasta em").selectOption({ label: "Meu universo" });
+  await page.reload();
+  await openShelf();
+  await expect(page.getByRole("button", { name: "Abrir Ideias soltas", exact: true })).toHaveCount(
+    0,
+  );
+  await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
+  await page.getByRole("tab", { name: /Anotações/ }).click();
+  await page.getByRole("button", { name: /Ideias soltas/ }).click();
+  await page.getByRole("button", { name: /Meu primeiro rascunho/ }).click();
+  await expect(page.getByLabel("Conteúdo da folha")).toHaveValue("Uma ideia guardada na pasta.");
+  await page.getByRole("button", { name: "Anotações", exact: true }).click();
+  await page.getByLabel("Guardar pasta em").selectOption("");
+  await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Abrir Ideias soltas", exact: true }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: testInfo.outputPath("vitrine-com-pasta.png"),
+    fullPage: true,
+    animations: "disabled",
+  });
 });
