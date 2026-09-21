@@ -47,14 +47,7 @@ const facets: Record<keyof typeof shapes, string> = {
 };
 
 export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
-  const body =
-    name === "pen"
-      ? "#FACC15"
-      : name === "highlighter"
-        ? "#6BBF59"
-        : name === "save"
-          ? "#292432"
-          : "currentColor";
+  const body = name === "pen" ? "#FACC15" : name === "highlighter" ? "#6BBF59" : "currentColor";
   const light =
     name === "pen"
       ? "#FFE88D"
@@ -116,8 +109,8 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
       {name === "trash" && <path d="M17 17h3v15h-3Zm7 0h3v15h-3Z" fill={detail} />}
       {name === "save" && (
         <>
-          <path d="M14 4h18v13H14Z M12 25h24v17H12Z" fill="#FFF9EF" />
-          <path d="M26 6h4v9h-4Z M16 29h16v2H16Zm0 5h16v2H16Z" fill="#292432" />
+          <path d="M14 4h18v13H14Z M12 25h24v17H12Z" fill={detail} />
+          <path d="M26 6h4v9h-4Z M16 29h16v2H16Zm0 5h16v2H16Z" fill="currentColor" />
         </>
       )}
       {(name === "zoomIn" || name === "zoomOut") && (

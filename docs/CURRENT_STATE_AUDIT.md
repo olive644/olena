@@ -2,7 +2,7 @@
 
 ## Régua, marca-texto e documentos importados
 
-A barra do editor acompanha o tema: papel branco no modo claro e grafite no escuro. Ícones de ação permanecem pretos, instrumentos conservam suas cores e somente a ferramenta ativa recebe papel roxo. A importação permite redimensionar imagens e páginas de PDF de 25% a 150% antes de centralizá-las na folha.
+A barra do editor acompanha o tema: papel branco no modo claro e grafite no escuro. Ícones de ação ficam brancos no escuro e pretos no claro; instrumentos conservam suas cores. Estojo e seletor de papel permanecem grafite em ambos os temas. A importação permite tamanho inicial de 25% a 100%. Selecionar permite mover a imagem e redimensioná-la proporcionalmente pelo canto, com mouse, toque ou setas do teclado. A posição participa de salvar, desfazer e exportar. Há uma imagem importada por folha; nova importação substitui a anterior. Post-its exportados ajustam a fonte para preservar todo o texto, inclusive quebras de linha.
 
 Régua abre o estojo de unidades px/cm/in. A folha digital tem largura convencional de 21 cm; unidades não representam medidas físicas da tela, e seguem o zoom do documento. Caneta abre o estojo ilustrado com Fineliner, Caneta-tinteiro e Pincel macio. A escolha permanece ao alternar entre ferramentas.
 

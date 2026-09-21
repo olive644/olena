@@ -8,6 +8,23 @@ import {
 } from "./local-workspace";
 
 describe("local workspace", () => {
+  it("valida posição e tamanho de imagens importadas", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    expect(
+      isHandwritingDocument({
+        ...document,
+        backgroundFrame: { x: 100, y: 100, width: 500, height: 800 },
+      }),
+    ).toBe(true);
+    for (const backgroundFrame of [
+      { x: -1, y: 0, width: 100, height: 100 },
+      { x: 1100, y: 0, width: 500, height: 100 },
+      { x: 0, y: 0, width: 0, height: 100 },
+      { x: 0, y: NaN, width: 100, height: 100 },
+    ]) {
+      expect(isHandwritingDocument({ ...document, backgroundFrame })).toBe(false);
+    }
+  });
   it("valida a imagem local de fundo sem aceitar URLs externas ou imagens grandes", () => {
     const document = { version: 1, paper: "blank", strokes: [] };
     expect(isHandwritingDocument({ ...document, background: "data:image/jpeg;base64,/9j/" })).toBe(

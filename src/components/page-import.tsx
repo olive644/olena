@@ -1,25 +1,27 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import { HelenaLoading } from "./helena-loading";
+import type { HandwritingDocument } from "../domain/handwriting";
 
 function prepareImportedPage(
   source: CanvasImageSource,
   width: number,
   height: number,
   sizePercent: number,
+  crop = false,
 ) {
   const canvas = document.createElement("canvas");
-  canvas.width = 1200;
-  canvas.height = 1600;
+  canvas.width = crop ? width : 1200;
+  canvas.height = crop ? height : 1600;
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Não foi possível abrir a página.");
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, 1200, 1600);
-  const scale = Math.min(1200 / width, 1600 / height) * (sizePercent / 100);
+  const scale = crop ? 1 : Math.min(1200 / width, 1600 / height) * (sizePercent / 100);
   context.drawImage(
     source,
-    (1200 - width * scale) / 2,
-    (1600 - height * scale) / 2,
+    (canvas.width - width * scale) / 2,
+    (canvas.height - height * scale) / 2,
     width * scale,
     height * scale,
   );
@@ -34,7 +36,7 @@ export function PageImport({
   onImport,
   onClose,
 }: {
-  onImport: (image: string) => void;
+  onImport: (image: string, frame: HandwritingDocument["backgroundFrame"]) => void;
   onClose: () => void;
 }) {
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
@@ -224,7 +226,7 @@ export function PageImport({
           <input
             type="range"
             min={25}
-            max={150}
+            max={100}
             step={5}
             value={size}
             aria-label="Tamanho da imagem"
@@ -235,7 +237,27 @@ export function PageImport({
       )}
       {preview && <img src={preview} alt="Prévia da página importada" />}
       <div>
-        <button type="button" disabled={!preview || busy} onClick={() => onImport(preview)}>
+        <button
+          type="button"
+          disabled={!preview || busy}
+          onClick={() => {
+            if (!source) return;
+            try {
+              const scale =
+                (Math.min(1200 / source.width, 1600 / source.height) * Math.min(size, 100)) / 100;
+              const width = source.width * scale;
+              const height = source.height * scale;
+              onImport(prepareImportedPage(source, source.width, source.height, 100, true), {
+                x: (1200 - width) / 2,
+                y: (1600 - height) / 2,
+                width,
+                height,
+              });
+            } catch (caught) {
+              setError(caught instanceof Error ? caught.message : "Não foi possível importar.");
+            }
+          }}
+        >
           Usar esta página
         </button>
         <button type="button" onClick={onClose}>

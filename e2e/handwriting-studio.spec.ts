@@ -73,6 +73,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       "rgb(23, 21, 28)",
     );
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await expect(dialog.locator('[data-paper-editor-icon="hand"]')).toHaveCSS(
+      "color",
+      "rgb(255, 249, 239)",
+    );
     await expect(dialog.locator(".handwriting-commandbar")).toHaveCSS(
       "background-color",
       "rgb(41, 36, 50)",
@@ -242,6 +246,33 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     )
     .toBeLessThan(50);
   await page.screenshot({ path: testInfo.outputPath("pagina-importada.png") });
+  const imported = reopened.locator(".handwriting-import-selection");
+  const beforeResize = await imported.boundingBox();
+  await reopened.getByRole("button", { name: "Redimensionar imagem importada" }).press("ArrowLeft");
+  await expect
+    .poll(async () => (await imported.boundingBox())!.width)
+    .toBeLessThan(beforeResize!.width);
+  const beforeMove = await imported.boundingBox();
+  await reopened.getByRole("button", { name: "Mover imagem importada" }).press("ArrowRight");
+  await expect.poll(async () => (await imported.boundingBox())!.x).toBeGreaterThan(beforeMove!.x);
+  await reopened
+    .getByRole("button", { name: "Redimensionar imagem importada" })
+    .scrollIntoViewIfNeeded();
+  const handle = await reopened
+    .getByRole("button", { name: "Redimensionar imagem importada" })
+    .boundingBox();
+  const oldWidth = (await imported.boundingBox())!.width;
+  await page.mouse.move(handle!.x + handle!.width / 2, handle!.y + handle!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handle!.x + handle!.width / 2 - 25, handle!.y + handle!.height / 2 - 25, {
+    steps: 5,
+  });
+  await page.mouse.up();
+  await expect.poll(async () => (await imported.boundingBox())!.width).toBeLessThan(oldWidth);
+  await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
+  await expect
+    .poll(async () => Math.round((await imported.boundingBox())!.width))
+    .toBe(Math.round(oldWidth));
   await expect(reopened.getByRole("button", { name: "Quadriculado" })).toHaveAttribute(
     "aria-pressed",
     "true",

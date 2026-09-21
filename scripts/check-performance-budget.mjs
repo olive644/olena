@@ -63,7 +63,9 @@ const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // 675.5 KiB. Allow CI variance while retaining the initial entry budget.
 // Import UI and persistent page background add ~6 KiB; PDF.js is loaded only
 // for PDF imports and tracked separately with its worker below.
-const MAX_TOTAL_JS_BYTES = 684 * 1024;
+// On-sheet image placement and complete sticky text layout add about 2.5 KiB
+// in the lazy editor. Measured total: 686 KiB; initial entry stays below 264 KiB.
+const MAX_TOTAL_JS_BYTES = 688 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
