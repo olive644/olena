@@ -5915,11 +5915,11 @@ body.local-room-active {
   min-width: 0;
   min-height: 285px;
   padding: 1.15rem;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 12px;
   color: var(--text);
-  background: color-mix(in srgb, var(--surface) 90%, var(--violet) 10%);
-  box-shadow: 5px 6px 0 color-mix(in srgb, var(--ink) 15%, transparent);
+  background: transparent;
+  box-shadow: none;
   place-items: center;
   gap: 0.8rem;
   text-align: left;
@@ -5930,7 +5930,125 @@ body.local-room-active {
 
 .notebook-card:hover {
   transform: translateY(-5px) rotate(-0.5deg);
-  box-shadow: 8px 10px 0 color-mix(in srgb, var(--ink) 18%, transparent);
+  box-shadow: none;
+}
+
+.book-cover {
+  position: relative;
+  display: block;
+  width: min(100%, 210px);
+  aspect-ratio: 3 / 4;
+  isolation: isolate;
+  text-align: left;
+  filter: drop-shadow(7px 12px 0 rgb(41 36 50 / 12%));
+}
+.notebooks-showcase .notebook-card {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+}
+.notebooks-heading .new-note-action input {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.book-cover__pages {
+  position: absolute;
+  inset: 8px -5px -6px 8px;
+  background: #fff9ef;
+  border: 2px solid #d6cbb8;
+  border-radius: 3px 15px 15px 3px;
+  box-shadow:
+    0 4px 0 #d6cbb8,
+    0 8px 0 var(--notebook-accent);
+}
+.book-cover__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 15px 18px 30px;
+  border-radius: 4px 14px 12px 4px;
+  background: var(--notebook-accent);
+  color: #fff9ef;
+  overflow: hidden;
+  border-top: 3px solid rgb(255 255 255 / 25%);
+}
+.book-cover__edition,
+.book-cover__footer {
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  line-height: 1.7;
+}
+.book-cover__title {
+  font-size: clamp(18px, 2vw, 25px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.book-cover__art {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  margin: 8px 0;
+}
+.book-cover__spine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 15px;
+  background: #292432;
+  border-right: 3px solid rgb(255 249 239 / 28%);
+  border-radius: 5px 0 0 4px;
+}
+.book-cover__ribbon {
+  position: absolute;
+  width: 20px;
+  height: 43px;
+  bottom: -22px;
+  right: 22px;
+  background: #facc15;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+}
+.notebook-card__copy {
+  width: 100%;
+  max-width: 210px;
+  padding-top: 20px;
+}
+.notebook-grid {
+  gap: 2.5rem 1.5rem;
+}
+.handwriting-canvas--ruler {
+  cursor: crosshair;
+}
+@media (max-width: 540px) {
+  .notebooks-showcase .notebook-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px 14px;
+  }
+  .notebooks-showcase .notebook-card {
+    padding: 0;
+    min-height: 0;
+  }
+  .book-cover__face {
+    padding: 12px 10px 12px 22px;
+  }
+  .book-cover__edition,
+  .book-cover__footer {
+    font-size: 6px;
+    letter-spacing: 0.5px;
+  }
+  .book-cover__title {
+    font-size: 17px;
+  }
 }
 
 .notebook-card:hover .notebook-artwork__page--one {

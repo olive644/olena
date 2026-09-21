@@ -21,7 +21,7 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
       await page.getByRole("button", { name: /Novo caderno/i }).click();
       await page.getByRole("button", { name: "Nova folha", exact: true }).click();
     } else {
-      await page.getByRole("button", { name: /Abrir Caderno de Inglês/i }).click();
+      await page.getByRole("button", { name: /Abrir Meu caderno/i }).click();
       await page.getByRole("button", { name: "Nova folha", exact: true }).click();
     }
     for (const name of ["Digitalizar", "Escrever à mão"]) {

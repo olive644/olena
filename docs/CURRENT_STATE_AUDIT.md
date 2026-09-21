@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Vitrine de cadernos e régua
+
+Cadernos exibem capas autorais de papel com lombada e marcador. O usuário informa um nome e abre as folhas dentro do caderno. Novos cadernos e suas folhas usam subjectId vazio, sem vínculo obrigatório com matérias; os registros anteriores são preservados.
+
+A régua do editor traça um segmento entre o início e o fim do gesto, salvo como traço de caneta com dois pontos. Participa do desfazer, da exportação e da reabertura existentes.
+
 ## Cadernos e Perfil no desktop, 20/09/2026
 
 Nos botões roxos dos Cadernos, documento e lápis usam corpo grafite nos dois temas, com facetas escuras e pequenos detalhes de contraste.

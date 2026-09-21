@@ -17,7 +17,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       .getByRole("button", { name: "Cadernos", exact: true })
       .click();
   }
+  await expect(page.getByText("Matéria do novo caderno")).toHaveCount(0);
+  await page.getByLabel("Nome do novo caderno").fill("Meu universo");
   await page.getByRole("button", { name: /novo caderno/i }).click();
+  await expect(page.getByRole("heading", { name: "Meu universo" })).toBeVisible();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
   await page.getByRole("button", { name: "Escrever à mão" }).click();
 
@@ -62,7 +65,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     .poll(() => dialog.locator(".handwriting-viewport").evaluate((node) => node.scrollTop))
     .toBeGreaterThan(initialScroll);
   await expect(dialog.getByRole("button", { name: "Limpar folha" })).toBeDisabled();
-  await dialog.getByRole("button", { name: "Caneta" }).click();
+  await dialog.getByRole("button", { name: "Régua", exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath("estudio-manuscrito.png") });
 
   const bounds = await canvas.boundingBox();
@@ -106,12 +109,13 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     const raw = localStorage.getItem("helenastudy.workspace.v1");
     if (!raw) return null;
     const workspace = JSON.parse(raw) as {
-      notes: { assets: { handwriting?: { paper: string; strokes: unknown[] } }[] }[];
+      notes: { assets: { handwriting?: { paper: string; strokes: { points: unknown[] }[] } }[] }[];
     };
     return workspace.notes[0]?.assets[0]?.handwriting ?? null;
   });
   expect(saved?.paper).toBe("grid");
   expect(saved?.strokes).toHaveLength(1);
+  expect(saved?.strokes[0]?.points).toHaveLength(2);
   if (testInfo.project.name === "mobile") {
     await page.getByRole("button", { name: "Mais", exact: true }).click();
     await page
@@ -124,6 +128,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       .getByRole("button", { name: "Cadernos", exact: true })
       .click();
   }
+  await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
   await page.locator(".notebook-page-card").first().click();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();

@@ -39,7 +39,7 @@ const WRITING_WINDOW_WIDTH = 500;
 const WRITING_WINDOW_HEIGHT = 185;
 
 type HandwritingTool =
-  "pen" | "highlighter" | "eraser" | "hand" | "select" | "zoom-in" | "zoom-out";
+  "pen" | "highlighter" | "eraser" | "hand" | "select" | "zoom-in" | "zoom-out" | "ruler";
 type PaperStyle = HandwritingPaper;
 type Stroke = HandwritingStroke;
 type Snapshot = { strokes: Stroke[]; stickies: HandwritingSticky[] };
@@ -517,7 +517,13 @@ export function HandwritingStudio({
     const activeWidth = tool === "highlighter" ? Math.max(22, width * 4) : width;
     setStrokes((current) => [
       ...current,
-      { id: strokeId(), tool, color, width: activeWidth, points: [point] },
+      {
+        id: strokeId(),
+        tool: tool === "ruler" ? "pen" : tool,
+        color,
+        width: activeWidth,
+        points: [point],
+      },
     ]);
   }
 
@@ -583,6 +589,15 @@ export function HandwritingStudio({
     setStrokes((current) => {
       const last = current.at(-1);
       if (!last) return current;
+      if (tool === "ruler") {
+        const start = last.points[0];
+        const end = points.at(-1);
+        if (!start || !end) return current;
+        return [
+          ...current.slice(0, -1),
+          { ...last, points: [start, { ...end, pressure: start.pressure }] },
+        ];
+      }
       const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
         const previous = accepted.at(-1) ?? last.points.at(-1);
         if (!previous || pointDistance(previous, point) >= 1.4) accepted.push(point);
@@ -627,7 +642,7 @@ export function HandwritingStudio({
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
-    if (!stabilization) return;
+    if (!stabilization || tool === "ruler") return;
     setStrokes((current) => {
       const last = current.at(-1);
       if (!last) return current;
@@ -946,6 +961,21 @@ export function HandwritingStudio({
     <div className="handwriting-studio">
       <div className="handwriting-commandbar" aria-label="Ferramentas de escrita">
         <div className="handwriting-tool-group" aria-label="Instrumentos">
+          <button
+            type="button"
+            className={tool === "ruler" ? "is-active" : ""}
+            aria-label="Régua"
+            title="Régua: arraste para traçar uma linha reta"
+            aria-pressed={tool === "ruler"}
+            onClick={() => setTool("ruler")}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#B88C13" d="m2 15 14-13 7 7-14 14Z" />
+              <path fill="#FACC15" d="m2 13 14-12 6 6L8 20Z" />
+              <path fill="#FFE88D" d="m2 13 14-12 2 2L4 15Z" />
+              <path stroke="#51465D" strokeWidth="1.5" d="m6 10 2 2m1-5 3 3m0-6 2 2m1-5 3 3" />
+            </svg>
+          </button>
           <button
             type="button"
             className={tool === "pen" ? "is-active" : ""}
