@@ -24,6 +24,7 @@ function twoPagePdf() {
 }
 
 test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) => {
+  test.slow();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
@@ -33,7 +34,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await page
       .getByRole("dialog", { name: "Mais ferramentas" })
       .getByRole("button", { name: "Cadernos", exact: true })
-      .evaluate((element) => (element as HTMLButtonElement).click());
+      .click();
   } else {
     await page
       .getByRole("navigation", { name: "Navegação principal" })
@@ -50,6 +51,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
 
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".handwriting-commandbar")).toHaveCSS(
+    "background-color",
+    "rgb(255, 255, 255)",
+  );
   await dialog.getByRole("button", { name: "Tela cheia", exact: true }).click();
   await expect(dialog).toHaveClass(/capture-dialog--expanded/);
   await dialog.getByRole("button", { name: "Sair da tela cheia" }).click();
@@ -62,14 +67,18 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
     await expect(eraser.locator("svg")).toHaveCSS("animation-name", "editor-tool-pick");
     await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
-    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
     await expect(dialog.locator('[data-paper-editor-icon="hand"]')).toHaveCSS(
       "color",
       "rgb(23, 21, 28)",
     );
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await expect(dialog.locator(".handwriting-commandbar")).toHaveCSS(
+      "background-color",
+      "rgb(41, 36, 50)",
+    );
     await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
-    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
     await page.screenshot({ path: testInfo.outputPath("ferramentas-contraste-escuro.png") });
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
@@ -201,6 +210,8 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     buffer: Buffer.from(png, "base64"),
   });
   await expect(reopened.getByRole("button", { name: "Usar esta página" })).toBeEnabled();
+  await reopened.getByLabel("Tamanho da imagem").fill("50");
+  await expect(reopened.locator(".editor-import-size output")).toHaveText("50%");
   await fileInput.setInputFiles({
     name: "paginas.pdf",
     mimeType: "application/pdf",
@@ -303,16 +314,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       .click();
   }
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
-  await page
-    .locator(".notebook-card")
-    .first()
-    .evaluate((element) => (element as HTMLButtonElement).click());
-  await page.getByRole("button", { name: "Ver todas as folhas" }).click({ force: true });
-  await page
-    .locator(".notebook-page-card")
-    .first()
-    .evaluate((element) => (element as HTMLButtonElement).click());
-  await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click({ force: true });
+  await page.locator(".notebook-card").first().click();
+  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
+  await page.locator(".notebook-page-card").first().click();
+  await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
   await expect
     .poll(() =>
