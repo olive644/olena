@@ -69,7 +69,10 @@ const MAX_INITIAL_JS_BYTES = 266 * 1024;
 // in the lazy editor. Measured total: 686 KiB; initial entry stays below 264 KiB.
 // Visible cloud state, retry handling and account controls add 3.4 KiB across
 // the entry and lazy Profile route. Measured total: 689.4 KiB.
-const MAX_TOTAL_JS_BYTES = 692 * 1024;
+// Keyboard shortcuts, tablet pen detection and tilt-aware ink width live
+// entirely inside the existing lazy handwriting studio chunk; no dependency
+// was added and the initial entry is unchanged. Measured total: 693.5 KiB.
+const MAX_TOTAL_JS_BYTES = 696 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
