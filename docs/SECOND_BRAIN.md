@@ -1,5 +1,7 @@
 # HelenaStudy: Second Brain
 
+Cadernos: vitrine de capas, nome livre, folhas internas e anotações gerais. O campo legado subjectId aceita string vazia para novos cadernos, preservando os dados existentes. HandwritingStudio oferece Régua para segmentos retos integrados ao histórico e à persistência de traços.
+
 Perfil também é acessível pela navegação principal no desktop, com o mesmo componente de configurações do celular. Os ícones de captura nos Cadernos são SVGs de papel em `PaperActionIcon`, com tamanho explícito de 32px.
 
 ## Preferências de estudo
