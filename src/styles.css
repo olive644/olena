@@ -3909,6 +3909,17 @@ body.local-room-active {
   background-image: linear-gradient(135deg, #facc15 0 10px, transparent 11px);
 }
 
+.paper-preview--tone-light {
+  background-color: #fffdf7;
+}
+.paper-preview--tone-aged {
+  background-color: #f3e6c8;
+}
+.paper-preview--tone-night {
+  background-color: #292432;
+  border-color: #51465d;
+}
+
 .handwriting-paper-picker button.is-active .paper-preview {
   border-color: #fff9ef;
 }
