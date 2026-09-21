@@ -57,9 +57,9 @@ describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
         GoogleAuthProvider: FakeGoogleAuthProvider,
         signInWithPopup,
         signInWithRedirect,
-        getRedirectResult: vi.fn().mockResolvedValue(null),
       },
       databaseURL: "https://project.firebaseio.com",
+      redirectResult: null,
     } as never);
 
     const finish = vi.fn();
@@ -80,29 +80,50 @@ describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
 
   it("completa o login ao voltar do redirecionamento com o resultado pendente", async () => {
     sessionStorage.setItem("helena.pending-google-answers", JSON.stringify(["Matemática"]));
-    const getRedirectResult = vi.fn().mockResolvedValue({
-      user: { displayName: "Ana" },
-    });
     vi.mocked(getFirebaseAccountServices).mockResolvedValue({
       auth: {},
       authApi: {
         GoogleAuthProvider: FakeGoogleAuthProvider,
         signInWithPopup: vi.fn(),
         signInWithRedirect: vi.fn(),
-        getRedirectResult,
       },
       databaseURL: "https://project.firebaseio.com",
+      redirectResult: { user: { displayName: "Ana" } },
     } as never);
 
     const finish = vi.fn();
     render(<GoogleLogin answers={[]} onFinish={finish} />);
 
     await waitFor(() => expect(finish).toHaveBeenCalledOnce());
-    expect(getRedirectResult).toHaveBeenCalledOnce();
     expect(sessionStorage.getItem("helena.pending-google-answers")).toBeNull();
     expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}")).toEqual({
       answers: ["Matemática"],
       completed: true,
     });
+  });
+
+  it("volta ao botão de login quando nao ha resultado de redirecionamento pendente", async () => {
+    sessionStorage.setItem("helena.pending-google-answers", JSON.stringify(["Matemática"]));
+    vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+      auth: {},
+      authApi: {
+        GoogleAuthProvider: FakeGoogleAuthProvider,
+        signInWithPopup: vi.fn(),
+        signInWithRedirect: vi.fn(),
+      },
+      databaseURL: "https://project.firebaseio.com",
+      redirectResult: null,
+    } as never);
+
+    const finish = vi.fn();
+    render(<GoogleLogin answers={[]} onFinish={finish} />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Entrar com Google" }).hasAttribute("disabled"),
+      ).toBe(false),
+    );
+    expect(finish).not.toHaveBeenCalled();
+    expect(sessionStorage.getItem("helena.pending-google-answers")).toBeNull();
   });
 });

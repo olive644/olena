@@ -73,21 +73,18 @@ export function GoogleLogin({
   useEffect(() => {
     let active = true;
     void getFirebaseAccountServices()
-      .then(async (loaded) => {
+      .then((loaded) => {
         // Retorno de um login que precisou de redirecionamento de página
         // inteira (pop-up bloqueado): completa o fluxo com as respostas que
-        // ficaram guardadas antes de sair da página.
+        // ficaram guardadas antes de sair da página. O resultado já vem
+        // resolvido de getFirebaseAccountServices (antes de mexer na
+        // persistência) porque o Firebase só entrega esse resultado uma vez.
         if (hasPendingGoogleRedirect()) {
-          try {
-            const result = await loaded.authApi.getRedirectResult(loaded.auth);
-            if (result) {
-              applyGoogleLogin(result.user.displayName, readPendingGoogleAnswers());
-              clearPendingAnswers();
-              if (active) onFinish();
-              return;
-            }
-          } catch {
-            /* Segue para o botão normal se o redirecionamento não confirmar o login. */
+          if (loaded.redirectResult) {
+            applyGoogleLogin(loaded.redirectResult.user.displayName, readPendingGoogleAnswers());
+            clearPendingAnswers();
+            if (active) onFinish();
+            return;
           }
           clearPendingAnswers();
         }
