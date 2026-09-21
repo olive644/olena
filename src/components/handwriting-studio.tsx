@@ -927,6 +927,13 @@ export function HandwritingStudio({
     setSelectedIds([]);
   }
 
+  function removeBackground() {
+    if (!background) return;
+    remember();
+    setBackground(undefined);
+    setBackgroundFrame(undefined);
+  }
+
   function alignSelection() {
     if (!selectedIds.length) return;
     remember();
@@ -1311,17 +1318,30 @@ export function HandwritingStudio({
           </button>
         </div>
 
-        {selectedIds.length > 0 && (
-          <div className="handwriting-selection-actions" aria-label="Traços selecionados">
-            <span>
-              {selectedIds.length} selecionado{selectedIds.length === 1 ? "" : "s"}
-            </span>
-            <button type="button" onClick={alignSelection}>
-              Alinhar
-            </button>
-            <button type="button" onClick={deleteSelection}>
-              Apagar
-            </button>
+        {(selectedIds.length > 0 || (tool === "select" && background)) && (
+          <div className="handwriting-selection-actions" aria-label="Itens selecionados">
+            {selectedIds.length > 0 && (
+              <>
+                <span>
+                  {selectedIds.length} traço{selectedIds.length === 1 ? "" : "s"} selecionado
+                  {selectedIds.length === 1 ? "" : "s"}
+                </span>
+                <button type="button" onClick={alignSelection}>
+                  Alinhar
+                </button>
+                <button type="button" onClick={deleteSelection}>
+                  Apagar traços
+                </button>
+              </>
+            )}
+            {tool === "select" && background && (
+              <>
+                <span>Imagem importada selecionada</span>
+                <button type="button" onClick={removeBackground}>
+                  Remover imagem
+                </button>
+              </>
+            )}
           </div>
         )}
 

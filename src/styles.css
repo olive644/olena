@@ -4113,12 +4113,26 @@ body.local-room-active {
 .handwriting-paper-picker,
 .handwriting-brush-panel,
 .handwriting-footer {
+  --surface: #ffffff;
+  --soft: #fff9ef;
+  --text: #17151c;
+  --muted: #51465d;
+  --line: #eadfc8;
+  background:
+    linear-gradient(135deg, #fff0c7 0 18px, transparent 18px),
+    linear-gradient(315deg, #eadfc8 0 20px, transparent 20px), #ffffff;
+  color: #17151c;
+}
+:root[data-theme="dark"]
+  :is(.handwriting-paper-picker, .handwriting-brush-panel, .handwriting-footer) {
   --surface: #292432;
   --soft: #292432;
   --text: #fff9ef;
   --muted: #c5c1c9;
   --line: #51465d;
-  background: #292432;
+  background:
+    linear-gradient(135deg, #51465d 0 18px, transparent 18px),
+    linear-gradient(315deg, #17151c 0 20px, transparent 20px), #292432;
   color: #fff9ef;
 }
 .editor-export-menu {
@@ -4189,6 +4203,14 @@ body.local-room-active {
 .editor-file-panel button:disabled {
   opacity: 0.45;
 }
+.editor-file-panel .editor-import-cancel {
+  border-color: #eadfc8;
+  color: #17151c;
+  background:
+    linear-gradient(135deg, #fff0c7 0 12px, transparent 12px),
+    linear-gradient(315deg, #eadfc8 0 14px, transparent 14px), #ffffff;
+  box-shadow: 0 3px #cfc3ae;
+}
 
 .handwriting-history .handwriting-zoom-value {
   min-width: 52px;
@@ -4209,7 +4231,6 @@ body.local-room-active {
   padding: 18px 12px;
   overflow-y: auto;
   border-left: 1px solid var(--line);
-  background: var(--surface);
   color: var(--text);
 }
 .handwriting-brush-panel header {
@@ -4336,7 +4357,6 @@ body.local-room-active {
   padding: 0.9rem 0.75rem;
   overflow-y: auto;
   border-right: 1px solid var(--line);
-  background: var(--surface);
   gap: 0.45rem;
 }
 
@@ -4638,7 +4658,6 @@ body.local-room-active {
   min-height: 72px;
   padding: 0.7rem 1rem;
   border-top: 1px solid var(--line);
-  background: var(--surface);
   gap: 1rem;
 }
 
