@@ -166,6 +166,7 @@ export type WorkspaceAction =
       subjectId: string;
       createdAt: string;
     }
+  | { type: "notebook/removed"; ids: string[] }
   | { type: "notebook/page-moved"; notebookId: string; pageId: string; direction: -1 | 1 }
   | {
       type: "note/asset-updated";
@@ -363,6 +364,19 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           ...state.notebooks,
         ],
       };
+    case "notebook/removed": {
+      const ids = new Set(action.ids);
+      const pageIds = new Set(
+        state.notebooks
+          .filter((notebook) => ids.has(notebook.id))
+          .flatMap((notebook) => notebook.pageIds),
+      );
+      return {
+        ...state,
+        notebooks: state.notebooks.filter((notebook) => !ids.has(notebook.id)),
+        notes: state.notes.filter((note) => !pageIds.has(note.id)),
+      };
+    }
     case "notebook/page-moved":
       return {
         ...state,

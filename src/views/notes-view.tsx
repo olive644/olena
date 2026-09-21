@@ -60,6 +60,8 @@ function NotebookArtwork({
 
 export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const [newNotebookName, setNewNotebookName] = useState("");
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [activePageId, setActivePageId] = useState<string | null>(null);
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
@@ -96,8 +98,21 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   }
 
   function openNotebook(notebook: StudyNotebook) {
+    if (selectionMode) {
+      setSelectedNotebookIds((ids) =>
+        ids.includes(notebook.id) ? ids.filter((id) => id !== notebook.id) : [...ids, notebook.id],
+      );
+      return;
+    }
     setActiveNotebookId(notebook.id);
     setActivePageId(null);
+  }
+
+  function removeSelectedNotebooks() {
+    if (selectedNotebookIds.length === 0) return;
+    dispatch({ type: "notebook/removed", ids: selectedNotebookIds });
+    setSelectedNotebookIds([]);
+    setSelectionMode(false);
   }
 
   function createPage() {
@@ -165,6 +180,18 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               <h1>Meus Cadernos</h1>
             </div>
             <div className="new-note-action">
+              {workspace.notebooks.length > 0 && (
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() => {
+                    setSelectionMode((enabled) => !enabled);
+                    setSelectedNotebookIds([]);
+                  }}
+                >
+                  {selectionMode ? "Concluir seleção" : "Selecionar"}
+                </button>
+              )}
               <label>
                 <span>Nome do novo caderno</span>
                 <input
@@ -180,6 +207,36 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               <button className="primary-button" type="button" onClick={createNotebook}>
                 <PaperActionIcon name="plus" /> <span>Novo caderno</span>
               </button>
+              {selectionMode && (
+                <div
+                  className="notebook-selection-actions"
+                  role="group"
+                  aria-label="Ações dos cadernos"
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedNotebookIds(
+                        selectedNotebookIds.length === workspace.notebooks.length
+                          ? []
+                          : workspace.notebooks.map((notebook) => notebook.id),
+                      )
+                    }
+                  >
+                    {selectedNotebookIds.length === workspace.notebooks.length
+                      ? "Limpar tudo"
+                      : "Selecionar tudo"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={selectedNotebookIds.length === 0}
+                    onClick={removeSelectedNotebooks}
+                  >
+                    Excluir{" "}
+                    {selectedNotebookIds.length > 0 ? `(${selectedNotebookIds.length})` : ""}
+                  </button>
+                </div>
+              )}
             </div>
           </header>
 
@@ -201,8 +258,19 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                       type="button"
                       onClick={() => openNotebook(notebook)}
                       aria-label={`Abrir ${notebook.title}`}
+                      aria-pressed={
+                        selectionMode ? selectedNotebookIds.includes(notebook.id) : undefined
+                      }
                       key={notebook.id}
                     >
+                      {selectionMode && (
+                        <span
+                          className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
+                          aria-hidden="true"
+                        >
+                          {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
+                        </span>
+                      )}
                       <NotebookArtwork
                         subjectColor={
                           ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ?? "#7C3AED"
