@@ -32,11 +32,12 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await dialog.getByRole("button", { name: "Sair da tela cheia" }).click();
   await expect(dialog).not.toHaveClass(/capture-dialog--expanded/);
   await expect(dialog.locator("svg.lucide")).toHaveCount(0);
-  if (testInfo.project.name === "mobile") {
+  {
     const eraser = dialog.getByRole("button", { name: "Borracha", exact: true });
     await expect(eraser.locator("span")).toHaveCSS("max-width", "0px");
     await eraser.click();
     await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
+    await expect(eraser.locator("svg")).toHaveCSS("animation-name", "editor-tool-pick");
     await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   }
   await expect(dialog.getByRole("button", { name: "Caneta", exact: true })).toHaveAttribute(
@@ -137,6 +138,28 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   expect(textSize!.width / pageSize!.width).toBeGreaterThan(0.8);
   expect(textSize!.height / pageSize!.height).toBeGreaterThan(0.85);
   await page.screenshot({ path: testInfo.outputPath("texto-pagina.png"), animations: "disabled" });
+  await reopened.getByRole("button", { name: "Borracha", exact: true }).click();
+  await expect(fullText).toHaveCount(0);
+  await reopened.locator(".handwriting-viewport").evaluate((node) => {
+    node.scrollTop = 0;
+    node.scrollLeft = 0;
+  });
+  const eraserCanvas = reopened.locator("canvas.handwriting-canvas");
+  const eraserBounds = await eraserCanvas.boundingBox();
+  await eraserCanvas.click({
+    position: { x: (128 * eraserBounds!.width) / 1200, y: (85 * eraserBounds!.height) / 1600 },
+  });
+  await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
+  await expect(fullText).toHaveValue(/^ +[a-z]* anotação pelo teclado\nSegunda linha da página$/u);
+  const erasedText = await fullText.inputValue();
+  await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
+  await expect(fullText).toHaveValue("Minha anotação pelo teclado\nSegunda linha da página");
+  await reopened.getByRole("button", { name: "Refazer", exact: true }).click();
+  await expect(fullText).toHaveValue(erasedText);
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "dark";
+  });
+  await page.screenshot({ path: testInfo.outputPath("editor-escuro.png"), animations: "disabled" });
   await reopened.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await page.reload();
   const saved = await page.evaluate(() => {
@@ -169,9 +192,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
   await page.getByRole("button", { name: "Texto na página inteira" }).click();
-  await expect(page.getByLabel("Texto da página inteira")).toHaveValue(
-    "Minha anotação pelo teclado\nSegunda linha da página",
-  );
+  await expect(page.getByLabel("Texto da página inteira")).toHaveValue(erasedText);
   await expect(page.getByRole("button", { name: "Escura", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",

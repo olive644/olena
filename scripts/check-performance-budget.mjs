@@ -59,7 +59,9 @@ const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // Initial entry is unchanged; these features remain in lazy-loaded chunks.
 // Detailed paper instruments, live ruler and ink/width swatches add 4.3 KiB
 // to the lazy editor; measured total 673.2 KiB, initial entry unchanged.
-const MAX_TOTAL_JS_BYTES = 675 * 1024;
+// Text erasure shares canvas coordinates and existing history; measured total
+// 675.5 KiB. Allow CI variance while retaining the initial entry budget.
+const MAX_TOTAL_JS_BYTES = 677 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));

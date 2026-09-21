@@ -3597,14 +3597,13 @@ body.local-room-active {
   width: 30px;
   height: 30px;
   flex: 0 0 30px;
-  color: var(--text);
-  --editor-icon-cutout: var(--surface);
+  color: #292432;
+  --editor-icon-cutout: #fff9ef;
+  --editor-icon-facet: #66616b;
+  border-radius: 4px;
 }
-.handwriting-studio button[aria-pressed="true"] .paper-editor-icon,
-.handwriting-save .paper-editor-icon {
-  color: #fff9ef;
-  --editor-icon-cutout: #292432;
-  --editor-icon-facet: #c5c1c9;
+[data-theme="dark"] .capture-dialog .paper-editor-icon {
+  background: #fff9ef;
 }
 .handwriting-ruler-overlay {
   position: absolute;
@@ -3691,11 +3690,6 @@ body.local-room-active {
   width: 48px;
   height: 22px;
 }
-.stroke-palette button[aria-pressed="true"] {
-  background: #7c3aed;
-  color: #fff9ef;
-  box-shadow: 0 3px 0 #51259b;
-}
 .handwriting-ink-options button:focus-visible {
   outline: 3px solid #facc15;
   outline-offset: 3px;
@@ -3726,11 +3720,50 @@ body.local-room-active {
   outline: 3px solid #facc15;
   outline-offset: 3px;
 }
-.editor-action-label {
-  display: none;
+.handwriting-tool-group button span,
+.handwriting-history button span {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 320ms ease,
+    opacity 240ms ease;
+}
+.handwriting-tool-group button:is([aria-pressed="true"], :hover, :focus-visible) span,
+.handwriting-history button:is([aria-pressed="true"], :hover, :focus-visible) span {
+  max-width: 150px;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .handwriting-tool-group button span,
+  .handwriting-history button span {
+    transition: none;
+  }
 }
 .handwriting-tool-group button > svg {
   flex-shrink: 0;
+  transform-origin: 50% 75%;
+  transition: transform 280ms ease;
+}
+.handwriting-tool-group button:hover > svg {
+  transform: translateY(-2px) rotate(-5deg);
+}
+.handwriting-tool-group button[aria-pressed="true"] > svg {
+  animation: editor-tool-pick 420ms ease-out;
+  transform: translateY(-2px);
+}
+@keyframes editor-tool-pick {
+  0% {
+    transform: translateY(3px) rotate(-12deg) scale(0.88);
+  }
+  55% {
+    transform: translateY(-5px) rotate(5deg) scale(1.12);
+  }
+  100% {
+    transform: translateY(-2px) rotate(0deg) scale(1);
+  }
 }
 .handwriting-tool-group button {
   white-space: nowrap;
@@ -3888,6 +3921,7 @@ body.local-room-active {
 }
 
 .handwriting-tool-group button.is-active,
+.handwriting-tool-group button[aria-pressed="true"],
 .handwriting-history button.is-active,
 .handwriting-paper-picker button.is-active {
   border-color: #7433e0;
@@ -3934,6 +3968,24 @@ body.local-room-active {
 
 .handwriting-ink-options {
   justify-content: center;
+}
+
+.handwriting-export-actions button,
+.stroke-palette button {
+  border: 1px solid #7433e0;
+  background:
+    linear-gradient(135deg, #8a4ce5 0 13%, transparent 13%),
+    linear-gradient(315deg, #5924b4 0 15%, transparent 15%), #7433e0;
+  box-shadow: 0 3px 0 #4b209b;
+  color: #fff9ef;
+}
+.stroke-palette button[aria-pressed="true"] {
+  outline: 2px solid #facc15;
+  outline-offset: 2px;
+}
+.handwriting-export-actions button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
 }
 
 .handwriting-ink-options > label {
@@ -4070,10 +4122,19 @@ body.local-room-active {
   width: 100%;
   height: 64px;
   background: transparent;
-  transition: transform 180ms ease;
+  transition: transform 320ms ease;
 }
 .handwriting-brush-panel button[aria-pressed="true"] .brush-instrument {
-  transform: translateX(5px);
+  transform: translateX(8px) rotate(-3deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .handwriting-tool-group button > svg,
+  .handwriting-tool-group button[aria-pressed="true"] > svg,
+  .handwriting-brush-panel button .brush-instrument {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
 }
 .handwriting-brush-panel button .brush-sample {
   height: 28px;
@@ -4517,31 +4578,6 @@ body.local-room-active {
 
   .handwriting-selection-actions {
     order: 3;
-  }
-
-  .handwriting-tool-group button span,
-  .handwriting-history button span {
-    display: inline-block;
-    max-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    transition:
-      max-width 200ms ease,
-      opacity 200ms ease;
-  }
-  .handwriting-tool-group button[aria-pressed="true"] span,
-  .handwriting-tool-group button:focus span,
-  .handwriting-history button[aria-pressed="true"] span,
-  .handwriting-history button:focus span {
-    max-width: 150px;
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .handwriting-tool-group button span,
-    .handwriting-history button span {
-      transition: none;
-    }
   }
 
   .handwriting-ink-options > label > span:first-child {

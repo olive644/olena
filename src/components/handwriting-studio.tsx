@@ -25,7 +25,7 @@ const BASE_DISPLAY_WIDTH = 760;
 const WRITING_WINDOW_WIDTH = 500;
 const WRITING_WINDOW_HEIGHT = 185;
 
-import { pageTextLines } from "../domain/handwriting";
+import { erasePageText, pageTextLines } from "../domain/handwriting";
 
 type HandwritingTool =
   "pen" | "highlighter" | "eraser" | "hand" | "select" | "zoom-in" | "zoom-out" | "ruler";
@@ -362,7 +362,11 @@ export function HandwritingStudio({
   const [redoStack, setRedoStack] = useState<Snapshot[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
-  const [tool, setTool] = useState<HandwritingTool>("pen");
+  const [tool, setActiveTool] = useState<HandwritingTool>("pen");
+  function setTool(next: HandwritingTool) {
+    setTextMode(false);
+    setActiveTool(next);
+  }
   const [paper, setPaper] = useState<PaperStyle>(
     storedPaper === "night" || storedPaper === "aged"
       ? "blank"
@@ -534,6 +538,43 @@ export function HandwritingStudio({
     });
   }
 
+  function eraseAt(points: HandwritingPoint[]) {
+    setStrokes((current) => {
+      const next = current.filter(
+        (stroke) => !points.some((point) => strokeTouches(stroke, point, 30)),
+      );
+      if (next.length !== current.length) eraserChangedRef.current = true;
+      return next;
+    });
+    const context = canvasRef.current?.getContext("2d");
+    if (context) {
+      context.save();
+      context.font = "28px monospace";
+      const glyphWidth = context.measureText("M").width;
+      context.restore();
+      setPageText((current) => {
+        const next = erasePageText(current, points, glyphWidth);
+        if (next !== current) eraserChangedRef.current = true;
+        return next;
+      });
+    }
+    setStickies((current) => {
+      const next = current.filter(
+        (sticky) =>
+          sticky.kind !== "text" ||
+          !points.some(
+            ({ x, y }) =>
+              x >= sticky.x - 30 &&
+              x <= sticky.x + 290 &&
+              y >= sticky.y - 30 &&
+              y <= sticky.y + 250,
+          ),
+      );
+      if (next.length !== current.length) eraserChangedRef.current = true;
+      return next;
+    });
+  }
+
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (event.button !== 0) return;
     const canvas = canvasRef.current;
@@ -585,11 +626,7 @@ export function HandwritingStudio({
     remember();
     if (tool === "eraser") {
       eraserChangedRef.current = false;
-      setStrokes((current) => {
-        const next = current.filter((stroke) => !strokeTouches(stroke, point, 30));
-        eraserChangedRef.current = next.length !== current.length;
-        return next;
-      });
+      eraseAt([point]);
       return;
     }
     const activeWidth = tool === "highlighter" ? Math.max(22, width * 4) : width;
@@ -660,13 +697,7 @@ export function HandwritingStudio({
       if (end) setRulerMeasure((measurement) => (measurement ? { ...measurement, end } : null));
     }
     if (tool === "eraser") {
-      setStrokes((current) => {
-        const next = current.filter(
-          (stroke) => !points.some((point) => strokeTouches(stroke, point, 30)),
-        );
-        if (next.length !== current.length) eraserChangedRef.current = true;
-        return next;
-      });
+      eraseAt(points);
       return;
     }
     setStrokes((current) => {
@@ -1054,14 +1085,11 @@ export function HandwritingStudio({
         <div className="handwriting-tool-group" aria-label="Instrumentos">
           <button
             type="button"
-            className={tool === "ruler" ? "is-active" : ""}
+            className={!textMode && tool === "ruler" ? "is-active" : ""}
             aria-label="Régua"
             title="Régua: arraste para traçar uma linha reta"
-            aria-pressed={tool === "ruler"}
-            onClick={() => {
-              setTextMode(false);
-              setTool("ruler");
-            }}
+            aria-pressed={!textMode && tool === "ruler"}
+            onClick={() => setTool("ruler")}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#B88C13" d="m2 15 14-13 7 7-14 14Z" />
@@ -1073,48 +1101,45 @@ export function HandwritingStudio({
           </button>
           <button
             type="button"
-            className={tool === "pen" ? "is-active" : ""}
+            className={!textMode && tool === "pen" ? "is-active" : ""}
             aria-label="Caneta"
-            aria-pressed={tool === "pen"}
-            onClick={() => {
-              setTextMode(false);
-              setTool("pen");
-            }}
+            aria-pressed={!textMode && tool === "pen"}
+            onClick={() => setTool("pen")}
           >
             <PaperEditorIcon name="pen" /> <span>Caneta</span>
           </button>
           <button
             type="button"
-            className={tool === "highlighter" ? "is-active" : ""}
+            className={!textMode && tool === "highlighter" ? "is-active" : ""}
             aria-label="Marca-texto"
-            aria-pressed={tool === "highlighter"}
+            aria-pressed={!textMode && tool === "highlighter"}
             onClick={() => setTool("highlighter")}
           >
             <PaperEditorIcon name="highlighter" /> <span>Marca-texto</span>
           </button>
           <button
             type="button"
-            className={tool === "eraser" ? "is-active" : ""}
+            className={!textMode && tool === "eraser" ? "is-active" : ""}
             aria-label="Borracha"
-            aria-pressed={tool === "eraser"}
+            aria-pressed={!textMode && tool === "eraser"}
             onClick={() => setTool("eraser")}
           >
             <PaperEditorIcon name="eraser" /> <span>Borracha</span>
           </button>
           <button
             type="button"
-            className={tool === "hand" ? "is-active" : ""}
+            className={!textMode && tool === "hand" ? "is-active" : ""}
             aria-label="Mover folha"
-            aria-pressed={tool === "hand"}
+            aria-pressed={!textMode && tool === "hand"}
             onClick={() => setTool("hand")}
           >
             <PaperEditorIcon name="hand" /> <span>Mover</span>
           </button>
           <button
             type="button"
-            className={tool === "select" ? "is-active" : ""}
+            className={!textMode && tool === "select" ? "is-active" : ""}
             aria-label="Selecionar traços"
-            aria-pressed={tool === "select"}
+            aria-pressed={!textMode && tool === "select"}
             onClick={() => setTool("select")}
           >
             <PaperEditorIcon name="select" /> <span>Selecionar</span>
@@ -1255,9 +1280,9 @@ export function HandwritingStudio({
           )}
           <button
             type="button"
-            className={tool === "zoom-out" ? "is-active" : ""}
+            className={!textMode && tool === "zoom-out" ? "is-active" : ""}
             aria-label="Lupa para reduzir"
-            aria-pressed={tool === "zoom-out"}
+            aria-pressed={!textMode && tool === "zoom-out"}
             onClick={() => setTool("zoom-out")}
           >
             <PaperEditorIcon name="zoomOut" />
@@ -1268,9 +1293,9 @@ export function HandwritingStudio({
           </button>
           <button
             type="button"
-            className={tool === "zoom-in" ? "is-active" : ""}
+            className={!textMode && tool === "zoom-in" ? "is-active" : ""}
             aria-label="Lupa para ampliar"
-            aria-pressed={tool === "zoom-in"}
+            aria-pressed={!textMode && tool === "zoom-in"}
             onClick={() => setTool("zoom-in")}
           >
             <PaperEditorIcon name="zoomIn" />
@@ -1503,6 +1528,7 @@ export function HandwritingStudio({
               <div
                 className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.color}`}
                 style={{
+                  pointerEvents: tool === "eraser" && sticky.kind === "text" ? "none" : undefined,
                   left: `${(sticky.x / PAGE_WIDTH) * 100}%`,
                   top: `${(sticky.y / PAGE_HEIGHT) * 100}%`,
                   width: `${(260 / PAGE_WIDTH) * 100}%`,
