@@ -1,10 +1,10 @@
 # HelenaStudy: Second Brain
 
+PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho. renderPage usa a mesma imagem base em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. Estojo da caneta removido, traços legados fine/ink/soft continuam renderizáveis. Importação nunca altera o arquivo original.
+
 eraseAt centraliza a borracha para traços, pageText e caixas kind text. erasePageText usa a largura real de glifo monospace do canvas, margem 112/80, entrelinha 40 e raio 30 nas coordenadas do documento. Letras viram espaços para manter a posição; o snapshot existente inclui todo o texto. Caixas legadas recebem pointer-events none durante a borracha. Rótulos expansíveis do editor usam a mesma regra CSS em desktop e mobile.
 
-Estojo ilustrado: fine = Fineliner uniforme; ink = Caneta-tinteiro com ponta inclinada por direção/pressão; soft = Pincel macio com cerdas translúcidas determinísticas. SVGs dos instrumentos são locais, sem dependências. writingWindowOpen recolhe o estojo preservando brush para evitar sobreposição no celular.
-
-HandwritingStroke.brush aceita fine, ink e soft, opcional para compatibilidade. drawStroke aplica largura/pressão/transparência em todos os caminhos de renderização. O painel de pincéis só aparece com Caneta e texto desativado; usa coluna direita no desktop e faixa horizontal no celular.
+HandwritingStroke.brush aceita fine, ink e soft, opcional para compatibilidade com folhas anteriores. drawStroke preserva largura/pressão/transparência em todos os caminhos de renderização, mesmo após retirar o estojo de pincéis da interface.
 
 Instrumentos do editor preservam cores próprias; ícones de ações herdam grafite/creme. Paletas de tinta e espessura substituem o seletor de traço nativo por amostras, preservando cor personalizada. rulerMeasure é transitório e usa pixels da folha para manter a medida independente do zoom. SVG sobreposto ao canvas mostra régua e medida somente durante o gesto, sem entrar na persistência/exportação.
 

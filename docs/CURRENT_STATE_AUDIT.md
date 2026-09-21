@@ -1,16 +1,22 @@
 # Auditoria do estado atual
 
+## Régua, marca-texto e documentos importados
+
+Régua abre o estojo de unidades px/cm/in. A folha digital tem largura convencional de 21 cm; unidades não representam medidas físicas da tela, e seguem o zoom do documento. O estojo da caneta foi retirado a pedido do proprietário; novos traços usam fineliner, preservando estilos antigos ao reabrir.
+
+Marca-texto inicia amarelo, desenha um caminho contínuo com transparência uniforme e é composto antes da escrita. Multiplicação preserva o texto de páginas importadas; na folha escura vazia usa screen. Exportar reúne PNG e impressão/PDF. Importar aceita PNG/JPEG/WebP e uma página selecionada de PDF, mantendo anotações existentes. A página é rasterizada localmente, ajustada sem distorção e persistida como background JPEG (até 500 mil caracteres), inclusive no rascunho, histórico e exportação. Não edita o conteúdo original do PDF; permite anotar por cima. Limpar folha apaga anotações, preservando a página de base.
+
+PDF.js 6.3.289 é a única dependência nova, necessária para rasterização de PDF no navegador. Carregada sob demanda com worker local, sem enviar documentos. Arquivos limitados a 20 MB, PDFs protegidos solicitam cópia desbloqueada. Auditoria de dependências sem vulnerabilidades. O orçamento de PDF + worker é separado (1800 KiB); entrada inicial mantém 264 KiB e aplicação 684 KiB. Barras e painéis usam grafite com ações roxas facetadas, sem quadrados claros atrás dos ícones.
+
 ## Borracha de texto e controles compactos
 
-Trocar de ferramenta anima a elevação e o encaixe do ícone por 420 ms; o nome se expande por 320 ms. O estojo desloca e inclina o instrumento escolhido. prefers-reduced-motion desliga essas transições. Orçamento total de JavaScript ajustado a 677 KiB para a borracha de texto (medido 675,5 KiB); orçamento de entrada permanece em 264 KiB.
+Trocar de ferramenta anima a elevação e o encaixe do ícone por 420 ms; o nome se expande por 320 ms. prefers-reduced-motion desliga essas transições.
 
-A borracha substitui por espaços os caracteres tocados do texto integral, preservando a posição dos demais e o histórico de desfazer/refazer. Caixas de texto legadas são apagadas como objetos inteiros. Selecionar Borracha encerra a edição de texto e deixa o canvas receber o gesto. Salvar usa disquete redesenhado; PNG, PDF e espessuras usam papel roxo facetado. Ferramentas e ações revelam os nomes ao passar o mouse, focar pelo teclado ou selecionar, em todas as larguras. Ícones de ações são grafite, diretamente sobre os botões, sem fundos adicionais no tema escuro.
+A borracha substitui por espaços os caracteres tocados do texto integral, preservando a posição dos demais e o histórico de desfazer/refazer. Caixas de texto legadas são apagadas como objetos inteiros. Selecionar Borracha encerra a edição de texto e deixa o canvas receber o gesto. Salvar usa disquete redesenhado; Exportar e espessuras usam papel roxo facetado. Ferramentas e ações revelam os nomes ao passar o mouse, focar pelo teclado ou selecionar, em todas as larguras. Ícones usam creme sobre as barras grafite, sem fundos adicionais.
 
-## Pincéis da caneta
+## Compatibilidade de pincéis
 
-O estojo agora ilustra os instrumentos inteiros em papel recortado: Fineliner, Caneta-tinteiro e Pincel macio. A tinteiro simula ponta inclinada conforme a direção e pressão; o pincel acrescenta marcas de cerdas translúcidas. Espessura continua no controle superior, separada do tipo de instrumento. O estojo recolhe ao abrir a janela ampliada para não sobrepor seus controles no celular.
-
-Selecionar Caneta exibe o estojo à direita. No celular, o painel vira uma faixa horizontal. O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm o renderizador anterior. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. O pincel acumula transparência ao sobrepor segmentos, sem simulação física de aquarela.
+O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm seus estilos. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. A seleção de pincéis foi retirada da interface; o renderizador continua aceitando os documentos existentes.
 
 ## Instrumentos de papel e régua com medida
 

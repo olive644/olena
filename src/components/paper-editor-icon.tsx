@@ -1,4 +1,5 @@
 const shapes = {
+  import: "M17 34h7V15h8L20 3 8 15h9Z M4 32h6v5h21v-5h6v11H4Z",
   pen: "M6 29 25 5l9 8-20 23-10 3Z M24 7l8 7",
   highlighter: "M6 28 22 8l12 10-16 20H5Z",
   eraser: "M4 26 22 7l14 13-17 18H15Z",
@@ -22,6 +23,7 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
+  import: "M20 3v31h-3V15H8Z",
   pen: "m6 29 5 4L30 9l-5-4Z",
   highlighter: "m6 28 6 5 16-20-6-5Z",
   eraser: "",
@@ -45,7 +47,14 @@ const facets: Record<keyof typeof shapes, string> = {
 };
 
 export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
-  const body = name === "pen" ? "#FACC15" : name === "highlighter" ? "#6BBF59" : "currentColor";
+  const body =
+    name === "pen"
+      ? "#FACC15"
+      : name === "highlighter"
+        ? "#6BBF59"
+        : name === "save"
+          ? "#292432"
+          : "currentColor";
   const light =
     name === "pen"
       ? "#FFE88D"

@@ -1,5 +1,7 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
 import {
+  lazy,
+  Suspense,
   useEffect,
   useMemo,
   useRef,
@@ -18,6 +20,10 @@ import type {
 } from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
+import { HelenaLoading } from "./helena-loading";
+const PageImport = lazy(() =>
+  import("./page-import").then((module) => ({ default: module.PageImport })),
+);
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 1600;
@@ -25,13 +31,18 @@ const BASE_DISPLAY_WIDTH = 760;
 const WRITING_WINDOW_WIDTH = 500;
 const WRITING_WINDOW_HEIGHT = 185;
 
-import { erasePageText, pageTextLines } from "../domain/handwriting";
+import { erasePageText, pageTextLines, rulerLength } from "../domain/handwriting";
 
 type HandwritingTool =
   "pen" | "highlighter" | "eraser" | "hand" | "select" | "zoom-in" | "zoom-out" | "ruler";
 type PaperStyle = HandwritingPaper;
 type Stroke = HandwritingStroke;
-type Snapshot = { strokes: Stroke[]; stickies: HandwritingSticky[]; pageText: string };
+type Snapshot = {
+  strokes: Stroke[];
+  stickies: HandwritingSticky[];
+  pageText: string;
+  background?: string | undefined;
+};
 type SelectionBox = { x: number; y: number; width: number; height: number };
 
 type HandwritingStudioProps = {
@@ -140,6 +151,16 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   context.globalAlpha = stroke.tool === "highlighter" ? 0.3 : stroke.brush === "soft" ? 0.16 : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
+  if (stroke.tool === "highlighter") {
+    context.lineWidth = stroke.width;
+    context.beginPath();
+    context.moveTo(first.x, first.y);
+    for (const point of stroke.points) context.lineTo(point.x, point.y);
+    if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
+    context.stroke();
+    context.restore();
+    return;
+  }
   if (stroke.points.length === 1) {
     context.beginPath();
     context.arc(
@@ -209,10 +230,16 @@ function renderPage(
   stickies: readonly HandwritingSticky[],
   editing = false,
   pageText = "",
+  background?: HTMLImageElement,
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
   drawPaper(context, paper, paperColor);
+  if (background) context.drawImage(background, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+  context.save();
+  context.globalCompositeOperation = paperColor === "night" && !background ? "screen" : "multiply";
+  for (const stroke of strokes) if (stroke.tool === "highlighter") drawStroke(context, stroke);
+  context.restore();
   if (pageText) {
     context.save();
     context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
@@ -221,7 +248,7 @@ function renderPage(
     pageTextLines(pageText).forEach((line, index) => context.fillText(line, 112, 80 + index * 40));
     context.restore();
   }
-  for (const stroke of strokes) drawStroke(context, stroke);
+  for (const stroke of strokes) if (stroke.tool !== "highlighter") drawStroke(context, stroke);
   for (const sticky of stickies) {
     if (editing && sticky.kind === "text") continue;
     context.save();
@@ -316,8 +343,8 @@ export function HandwritingStudio({
   onDirtyChange,
   onDraftChange,
 }: HandwritingStudioProps) {
-  const recovered = useRef(readDraft(draftKey));
-  const startingDocument = recovered.current ?? initialDocument;
+  const [recovered] = useState(() => readDraft(draftKey));
+  const startingDocument = recovered ?? initialDocument;
   const storedPaper = startingDocument?.paper as string | undefined;
   const legacyPaperColor: HandwritingPaperColor =
     storedPaper === "night"
@@ -330,7 +357,25 @@ export function HandwritingStudio({
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
-  const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
+  const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
+  const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
+  const importButtonRef = useRef<HTMLButtonElement>(null);
+  function closeImport() {
+    setFileAction(null);
+    requestAnimationFrame(() => importButtonRef.current?.focus());
+  }
+  const [background, setBackground] = useState(startingDocument?.background);
+  const [loadedImage, setBackgroundImage] = useState<HTMLImageElement>();
+  const backgroundImage = loadedImage?.src === background ? loadedImage : undefined;
+  useEffect(() => {
+    if (!background) return;
+    const image = new Image();
+    image.onload = () => setBackgroundImage(image);
+    image.src = background;
+    return () => {
+      image.onload = null;
+    };
+  }, [background]);
   const [rulerMeasure, setRulerMeasure] = useState<{
     start: HandwritingPoint;
     end: HandwritingPoint;
@@ -363,7 +408,13 @@ export function HandwritingStudio({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
+  const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
+    if (next === "highlighter" && tool !== "highlighter") {
+      penInk.current = color;
+      setColor("#facc15");
+    }
+    if (tool === "highlighter" && next !== "highlighter") setColor(penInk.current);
     setTextMode(false);
     setActiveTool(next);
   }
@@ -383,7 +434,7 @@ export function HandwritingStudio({
   const [writingWindowOpen, setWritingWindowOpen] = useState(false);
   const [writingWindowX, setWritingWindowX] = useState(100);
   const [writingWindowY, setWritingWindowY] = useState(110);
-  const [draftStatus, setDraftStatus] = useState(recovered.current ? "Rascunho recuperado" : "");
+  const [draftStatus, setDraftStatus] = useState(recovered ? "Rascunho recuperado" : "");
 
   function selectPaperColor(nextColor: HandwritingPaperColor) {
     setPaperColor(nextColor);
@@ -392,8 +443,8 @@ export function HandwritingStudio({
   }
 
   const currentDocument: HandwritingDocument = useMemo(
-    () => ({ version: 1, paper, paperColor, strokes, stickies, pageText }),
-    [paper, paperColor, strokes, stickies, pageText],
+    () => ({ version: 1, paper, paperColor, strokes, stickies, pageText, background }),
+    [paper, paperColor, strokes, stickies, pageText, background],
   );
   const baseline = JSON.stringify({
     version: 1,
@@ -411,6 +462,7 @@ export function HandwritingStudio({
     strokes: initialDocument?.strokes ?? [],
     stickies: initialDocument?.stickies ?? [],
     pageText: initialDocument?.pageText ?? "",
+    background: initialDocument?.background,
   });
   const dirty = JSON.stringify(currentDocument) !== baseline;
 
@@ -457,7 +509,16 @@ export function HandwritingStudio({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    renderPage(canvas, strokes, paper, paperColor, stickies, true, textMode ? "" : pageText);
+    renderPage(
+      canvas,
+      strokes,
+      paper,
+      paperColor,
+      stickies,
+      true,
+      textMode ? "" : pageText,
+      backgroundImage,
+    );
     const context = canvas.getContext("2d");
     if (!context) return;
     context.save();
@@ -475,7 +536,17 @@ export function HandwritingStudio({
       context.strokeRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
     }
     context.restore();
-  }, [paper, paperColor, selectedIds, selectionBox, stickies, strokes, pageText, textMode]);
+  }, [
+    paper,
+    paperColor,
+    selectedIds,
+    selectionBox,
+    stickies,
+    strokes,
+    pageText,
+    textMode,
+    backgroundImage,
+  ]);
 
   useEffect(() => {
     if (!writingWindowOpen) return;
@@ -497,7 +568,15 @@ export function HandwritingStudio({
     );
     context.fillStyle = "#7433e055";
     context.fillRect(target.width - 14, 0, 2, target.height);
-  }, [paper, stickies, strokes, writingWindowOpen, writingWindowX, writingWindowY]);
+  }, [
+    paper,
+    stickies,
+    strokes,
+    writingWindowOpen,
+    writingWindowX,
+    writingWindowY,
+    backgroundImage,
+  ]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -516,7 +595,7 @@ export function HandwritingStudio({
   ) {
     setUndoStack((history) => [
       ...history.slice(-39),
-      { strokes: currentStrokes, stickies: currentStickies, pageText },
+      { strokes: currentStrokes, stickies: currentStickies, pageText, background },
     ]);
     setRedoStack([]);
   }
@@ -635,7 +714,7 @@ export function HandwritingStudio({
       {
         id: strokeId(),
         tool: tool === "ruler" ? "pen" : tool,
-        ...(tool === "pen" ? { brush } : {}),
+        ...(tool === "pen" ? { brush: "fine" as const } : {}),
         color,
         width: activeWidth,
         points: [point],
@@ -778,10 +857,11 @@ export function HandwritingStudio({
   function undo() {
     const previous = undoStack.at(-1);
     if (!previous) return;
-    setRedoStack((history) => [...history, { strokes, stickies, pageText }]);
+    setRedoStack((history) => [...history, { strokes, stickies, pageText, background }]);
     setStrokes(previous.strokes);
     setStickies(previous.stickies);
     setPageText(previous.pageText);
+    setBackground(previous.background);
     setSelectedIds([]);
     setUndoStack((history) => history.slice(0, -1));
   }
@@ -789,10 +869,11 @@ export function HandwritingStudio({
   function redo() {
     const next = redoStack.at(-1);
     if (!next) return;
-    setUndoStack((history) => [...history, { strokes, stickies, pageText }]);
+    setUndoStack((history) => [...history, { strokes, stickies, pageText, background }]);
     setStrokes(next.strokes);
     setStickies(next.stickies);
     setPageText(next.pageText);
+    setBackground(next.background);
     setSelectedIds([]);
     setRedoStack((history) => history.slice(0, -1));
   }
@@ -927,7 +1008,7 @@ export function HandwritingStudio({
       {
         id: strokeId(),
         tool: "pen",
-        brush,
+        brush: "fine",
         color,
         width,
         points: [writingPoint(event)],
@@ -972,6 +1053,7 @@ export function HandwritingStudio({
     const document: HandwritingDocument = {
       version: 1,
       pageText,
+      background,
       paper,
       paperColor,
       strokes: strokes.map((stroke) => ({
@@ -991,17 +1073,19 @@ export function HandwritingStudio({
   }
 
   function pageImage(): string {
+    if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Não foi possível preparar a folha.");
-    renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText);
+    renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText, backgroundImage);
     return exportPage(canvas);
   }
 
   function exportPng() {
     try {
+      if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
-      renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText);
+      renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText, backgroundImage);
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "folha-do-caderno.png";
@@ -1063,7 +1147,10 @@ export function HandwritingStudio({
 
   function save() {
     const canvas = canvasRef.current;
-    if (!canvas || (strokes.length === 0 && stickies.length === 0 && !pageText.trim())) {
+    if (
+      !canvas ||
+      (strokes.length === 0 && stickies.length === 0 && !pageText.trim() && !background)
+    ) {
       setError("Escreva ou adicione um post-it antes de salvar.");
       return;
     }
@@ -1081,7 +1168,11 @@ export function HandwritingStudio({
 
   return (
     <div className="handwriting-studio">
-      <div className="handwriting-commandbar" aria-label="Ferramentas de escrita">
+      <div
+        className="handwriting-commandbar"
+        aria-label="Ferramentas de escrita"
+        inert={fileAction === "import"}
+      >
         <div className="handwriting-tool-group" aria-label="Instrumentos">
           <button
             type="button"
@@ -1368,7 +1459,8 @@ export function HandwritingStudio({
       )}
 
       <div
-        className={`handwriting-workspace${tool === "pen" && !textMode && !writingWindowOpen ? " handwriting-workspace--brushes" : ""}`}
+        className={`handwriting-workspace${tool === "ruler" && !textMode ? " handwriting-workspace--brushes" : ""}`}
+        inert={fileAction === "import"}
       >
         <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
           <strong>Tipo de papel</strong>
@@ -1430,6 +1522,8 @@ export function HandwritingStudio({
               (() => {
                 const { start, end } = rulerMeasure;
                 const length = pointDistance(start, end);
+                const step =
+                  rulerUnit === "px" ? 25 : rulerUnit === "cm" ? 1200 / 210 : (1200 * 2.54) / 168;
                 const angle = (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI;
                 return (
                   <svg
@@ -1440,10 +1534,10 @@ export function HandwritingStudio({
                     <g transform={`translate(${start.x} ${start.y}) rotate(${angle})`}>
                       <path d={`M0 -8V-38H${length}V-8Z`} fill="#FACC15" fillOpacity="0.88" />
                       <path d={`M0 -38H${length}V-32H0Z`} fill="#FFE88D" />
-                      {Array.from({ length: Math.floor(length / 25) + 1 }, (_, index) => (
+                      {Array.from({ length: Math.floor(length / step) + 1 }, (_, index) => (
                         <path
                           key={index}
-                          d={`M${index * 25} -8v${index % 4 === 0 ? -22 : -12}`}
+                          d={`M${index * step} -8v${index % 4 === 0 ? -22 : -12}`}
                           stroke="#292432"
                           strokeWidth="2"
                         />
@@ -1460,7 +1554,7 @@ export function HandwritingStudio({
                         fontWeight="800"
                         dominantBaseline="middle"
                       >
-                        {Math.round(length)} px
+                        {rulerLength(length, rulerUnit)}
                       </text>
                     </g>
                   </svg>
@@ -1605,65 +1699,123 @@ export function HandwritingStudio({
             ))}
           </div>
         </div>
-        {tool === "pen" && !textMode && !writingWindowOpen && (
-          <aside className="handwriting-brush-panel" aria-label="Pincéis da caneta">
+        {tool === "ruler" && !textMode && (
+          <aside className="handwriting-brush-panel" aria-label="Unidades da régua">
             <header>
               <div>
-                <small>SEU ESTOJO</small>
-                <h3>Canetas e pincéis</h3>
+                <small>MEDIR NA FOLHA</small>
+                <h3>Réguas</h3>
               </div>
             </header>
             {(
               [
-                ["fine", "Fineliner", "Ponta técnica · tinta uniforme", 2],
-                ["ink", "Caneta-tinteiro", "Tinta expressiva · responde à pressão", 7],
-                ["soft", "Pincel macio", "Cerdas suaves · camadas translúcidas", 14],
+                ["px", "Pixels"],
+                ["cm", "Centímetros"],
+                ["in", "Polegadas"],
               ] as const
-            ).map(([value, title, description, size]) => (
+            ).map(([unit, title]) => (
               <button
                 type="button"
-                key={value}
-                aria-pressed={brush === value}
-                onClick={() => setBrush(value)}
+                key={unit}
+                aria-pressed={rulerUnit === unit}
+                onClick={() => setRulerUnit(unit)}
               >
                 <span className="brush-card-title">{title}</span>
-                <img className="brush-instrument" src={`/brushes/${value}.svg`} alt="" />
-                <svg className="brush-sample" viewBox="0 0 180 46" aria-hidden="true">
+                <svg viewBox="0 0 180 44" aria-hidden="true">
                   <path
-                    d="M10 31C36 32 39 9 66 19S104 39 130 24 158 15 170 19"
-                    fill="none"
-                    stroke={color}
-                    strokeWidth={size}
-                    strokeLinecap="round"
-                    opacity={value === "soft" ? 0.3 : 1}
+                    d="M4 4H176V40H4Z"
+                    fill={unit === "px" ? "#FACC15" : unit === "cm" ? "#A779EF" : "#6BBF59"}
                   />
+                  {Array.from({ length: 17 }, (_, index) => (
+                    <path
+                      key={index}
+                      d={`M${10 + index * 10} 5v${index % 5 === 0 ? 20 : 10}`}
+                      stroke="#292432"
+                      strokeWidth="2"
+                    />
+                  ))}
                 </svg>
-                <small>{description}</small>
               </button>
             ))}
+            <p>
+              A folha digital mede 21 cm de largura. A medida acompanha o documento, não o tamanho
+              físico da tela.
+            </p>
           </aside>
         )}
       </div>
 
       {error && <p className="capture-error">{error}</p>}
-      <footer className="handwriting-footer">
+      <footer className="handwriting-footer" inert={fileAction === "import"}>
         <p>
           <strong>{draftStatus || "Escrita local e privada."}</strong>
           <span>Compatível com toque, mouse e pressão de canetas suportadas pelo navegador.</span>
         </p>
         <div className="handwriting-export-actions">
-          <button type="button" onClick={exportPng}>
-            <PaperEditorIcon name="download" /> <span>PNG</span>
+          <button
+            type="button"
+            aria-expanded={fileAction === "import"}
+            ref={importButtonRef}
+            onClick={() => setFileAction(fileAction === "import" ? null : "import")}
+          >
+            <PaperEditorIcon name="import" /> <span>Importar</span>
           </button>
-          <button type="button" onClick={printPage}>
-            <PaperEditorIcon name="print" /> <span>Imprimir/PDF</span>
-          </button>
+          <div className="editor-export-menu">
+            <button
+              type="button"
+              aria-expanded={fileAction === "export"}
+              onClick={() => setFileAction(fileAction === "export" ? null : "export")}
+            >
+              <PaperEditorIcon name="download" /> <span>Exportar</span>
+            </button>
+            {fileAction === "export" && (
+              <div
+                className="editor-export-options"
+                aria-label="Formatos de exportação"
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") setFileAction(null);
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    exportPng();
+                    setFileAction(null);
+                  }}
+                >
+                  PNG
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    printPage();
+                    setFileAction(null);
+                  }}
+                >
+                  Imprimir/PDF
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <button className="primary-button handwriting-save" type="button" onClick={save}>
           <PaperEditorIcon name="save" />
           Salvar folha no caderno
         </button>
       </footer>
+      {fileAction === "import" && (
+        <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
+          <PageImport
+            onClose={closeImport}
+            onImport={(image) => {
+              remember();
+              setBackground(image);
+              closeImport();
+              setError("");
+            }}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

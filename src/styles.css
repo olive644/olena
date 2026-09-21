@@ -3782,6 +3782,7 @@ body.local-room-active {
 }
 
 .handwriting-studio {
+  position: relative;
   display: grid;
   min-width: 0;
   min-height: 0;
@@ -3845,6 +3846,12 @@ body.local-room-active {
 }
 
 .handwriting-commandbar {
+  --surface: #292432;
+  --soft: #292432;
+  --text: #fff9ef;
+  --muted: #c5c1c9;
+  --line: #51465d;
+  --line-strong: #66616b;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -4045,6 +4052,93 @@ body.local-room-active {
   height: 25px;
   background: var(--line-strong);
 }
+.handwriting-commandbar .paper-editor-icon,
+.handwriting-footer .paper-editor-icon {
+  color: #fff9ef;
+  --editor-icon-cutout: #292432;
+  --editor-icon-facet: #c5c1c9;
+}
+.handwriting-commandbar .handwriting-assist,
+.handwriting-commandbar .handwriting-pen-only {
+  background:
+    linear-gradient(135deg, #8a4ce5 0 12%, transparent 12%),
+    linear-gradient(315deg, #5924b4 0 15%, transparent 15%), #7433e0;
+  color: #fff9ef;
+  box-shadow: 0 3px 0 #4b209b;
+  border-color: #7433e0;
+}
+.handwriting-assist small {
+  color: #fff9ef;
+}
+.handwriting-commandbar input[type="checkbox"] {
+  accent-color: #facc15;
+}
+.handwriting-history .handwriting-zoom-value {
+  color: #fff9ef;
+}
+.handwriting-paper-picker,
+.handwriting-brush-panel,
+.handwriting-footer {
+  --surface: #292432;
+  --soft: #292432;
+  --text: #fff9ef;
+  --muted: #c5c1c9;
+  --line: #51465d;
+  background: #292432;
+  color: #fff9ef;
+}
+.editor-export-menu {
+  position: relative;
+}
+.editor-export-options {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: #292432;
+  border: 1px solid #a779ef;
+  border-radius: 8px 14px 8px 12px;
+}
+.editor-file-panel {
+  position: absolute;
+  z-index: 12;
+  inset: 10px;
+  overflow: auto;
+  padding: 24px;
+  background: #292432;
+  color: #fff9ef;
+  border: 2px solid #a779ef;
+  border-radius: 8px 16px;
+}
+.editor-file-panel img {
+  display: block;
+  max-width: 100%;
+  max-height: 40vh;
+  margin: 16px auto;
+}
+.editor-file-panel label {
+  display: block;
+  margin: 16px 0;
+}
+.editor-file-panel input[type="number"] {
+  width: 80px;
+  padding: 8px;
+}
+.editor-file-panel button {
+  padding: 12px 16px;
+  margin: 8px;
+  background: #7433e0;
+  color: #fff9ef;
+  border: 1px solid #a779ef;
+  border-radius: 6px 12px;
+  box-shadow: 0 3px #51259b;
+}
+.editor-file-panel button:disabled {
+  opacity: 0.45;
+}
 
 .handwriting-history .handwriting-zoom-value {
   min-width: 52px;
@@ -4112,7 +4206,7 @@ body.local-room-active {
 .handwriting-brush-panel button svg {
   width: 100%;
   height: 42px;
-  background: #fff9ef;
+  background: transparent;
   border-radius: 4px;
 }
 .handwriting-brush-panel button .brush-instrument {

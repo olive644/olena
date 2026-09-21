@@ -61,7 +61,10 @@ const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // to the lazy editor; measured total 673.2 KiB, initial entry unchanged.
 // Text erasure shares canvas coordinates and existing history; measured total
 // 675.5 KiB. Allow CI variance while retaining the initial entry budget.
-const MAX_TOTAL_JS_BYTES = 677 * 1024;
+// Import UI and persistent page background add ~6 KiB; PDF.js is loaded only
+// for PDF imports and tracked separately with its worker below.
+const MAX_TOTAL_JS_BYTES = 684 * 1024;
+const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));
@@ -70,7 +73,7 @@ if (!entry?.file) throw new Error("Entrada principal ausente do manifesto do bui
 
 const initialBytes = (await stat(join(fileURLToPath(distDirectory), entry.file))).size;
 const files = await readdir(assetsDirectory);
-const javascriptFiles = files.filter((file) => file.endsWith(".js"));
+const javascriptFiles = files.filter((file) => /\.m?js$/.test(file));
 const sizes = await Promise.all(
   javascriptFiles.map(async (file) => ({
     file,
@@ -81,7 +84,10 @@ const ttsWorker = sizes.find(
   (item) => item.file.startsWith("piper-tts.worker-") || item.file.startsWith("kokoro-tts.worker-"),
 );
 const applicationTotal = sizes
-  .filter((item) => item !== ttsWorker)
+  .filter((item) => item !== ttsWorker && !/^pdf[-.]/.test(item.file))
+  .reduce((sum, item) => sum + item.bytes, 0);
+const pdfBytes = sizes
+  .filter((item) => /^pdf[-.]/.test(item.file))
   .reduce((sum, item) => sum + item.bytes, 0);
 const wasmFiles = files.filter((file) => file.endsWith(".wasm"));
 const wasmBytes = (
@@ -90,6 +96,8 @@ const wasmBytes = (
 
 console.log(`JavaScript inicial: ${(initialBytes / 1024).toFixed(1)} KiB`);
 console.log(`JavaScript da aplicação: ${(applicationTotal / 1024).toFixed(1)} KiB`);
+console.log(`Leitor PDF opcional e worker: ${(pdfBytes / 1024).toFixed(1)} KiB`);
+if (pdfBytes > MAX_PDF_JS_BYTES) throw new Error("Leitor PDF excedeu o orçamento de 1800 KiB.");
 console.log(`Worker TTS opcional: ${((ttsWorker?.bytes ?? 0) / 1024).toFixed(1)} KiB`);
 console.log(`WASM TTS opcional: ${(wasmBytes / 1024 / 1024).toFixed(1)} MiB`);
 if (initialBytes > MAX_INITIAL_JS_BYTES) {

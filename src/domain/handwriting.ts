@@ -21,6 +21,7 @@ export type HandwritingSticky = {
 };
 
 export type HandwritingDocument = {
+  background?: string | undefined;
   pageText?: string;
   version: 1;
   paper: HandwritingPaper;
@@ -28,6 +29,12 @@ export type HandwritingDocument = {
   strokes: HandwritingStroke[];
   stickies?: HandwritingSticky[];
 };
+
+export function rulerLength(pixels: number, unit: "px" | "cm" | "in") {
+  return unit === "px"
+    ? `${Math.round(pixels)} px`
+    : `${((pixels * 21) / 1200 / (unit === "in" ? 2.54 : 1)).toFixed(2)} ${unit}`;
+}
 
 export function pageTextLines(text: string): string[] {
   return text.split("\n").flatMap((line) => line.match(/.{1,58}/gu) ?? [""]);
