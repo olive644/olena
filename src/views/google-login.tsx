@@ -5,11 +5,19 @@ import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
 import "./google-login.css";
 
-async function prepareGoogle() {
-  const { auth, authApi } = await getFirebaseAccountServices();
-  const provider = new authApi.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-  return () => authApi.signInWithPopup(auth, provider);
+const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
+
+export function hasPendingGoogleRedirect(): boolean {
+  try {
+    return window.sessionStorage.getItem(PENDING_ANSWERS_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
+
+function isPopupBlockedError(cause: unknown): boolean {
+  const code = cause && typeof cause === "object" && "code" in cause ? cause.code : "";
+  return code === "auth/popup-blocked" || code === "auth/cancelled-popup-request";
 }
 
 function googleLoginError(cause: unknown): string {
@@ -22,6 +30,31 @@ function googleLoginError(cause: unknown): string {
   return "Não foi possível entrar agora. Tente novamente em instantes.";
 }
 
+function applyGoogleLogin(displayName: string | null, answers: readonly (string | string[])[]) {
+  writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ answers, completed: true }));
+  writeSyncedStorage(
+    "helena.profile.v1",
+    JSON.stringify({ name: displayName ?? undefined, photoUrl: "/profile-avatars/helena.webp" }),
+  );
+}
+
+export function readPendingGoogleAnswers(): readonly (string | string[])[] {
+  try {
+    const raw = window.sessionStorage.getItem(PENDING_ANSWERS_KEY);
+    return raw ? (JSON.parse(raw) as (string | string[])[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function clearPendingAnswers() {
+  try {
+    window.sessionStorage.removeItem(PENDING_ANSWERS_KEY);
+  } catch {
+    /* Nothing to clean up when storage is unavailable. */
+  }
+}
+
 export function GoogleLogin({
   answers,
   onFinish,
@@ -31,50 +64,80 @@ export function GoogleLogin({
   onFinish: () => void;
   onBack?: () => void;
 }) {
-  const [start, setStart] = useState<Awaited<ReturnType<typeof prepareGoogle>>>();
+  const [services, setServices] =
+    useState<Awaited<ReturnType<typeof getFirebaseAccountServices>>>();
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(true);
   const pending = useRef(false);
+
   useEffect(() => {
     let active = true;
-    void prepareGoogle()
-      .then((login) => {
-        if (active) setStart(() => login);
+    void getFirebaseAccountServices()
+      .then(async (loaded) => {
+        // Retorno de um login que precisou de redirecionamento de página
+        // inteira (pop-up bloqueado): completa o fluxo com as respostas que
+        // ficaram guardadas antes de sair da página.
+        if (hasPendingGoogleRedirect()) {
+          try {
+            const result = await loaded.authApi.getRedirectResult(loaded.auth);
+            if (result) {
+              applyGoogleLogin(result.user.displayName, readPendingGoogleAnswers());
+              clearPendingAnswers();
+              if (active) onFinish();
+              return;
+            }
+          } catch {
+            /* Segue para o botão normal se o redirecionamento não confirmar o login. */
+          }
+          clearPendingAnswers();
+        }
+        if (active) {
+          setServices(loaded);
+          setBusy(false);
+        }
       })
       .catch(() => {
-        if (active) setError("O login está sendo preparado. Tente novamente mais tarde.");
+        if (active) {
+          setError("O login está sendo preparado. Tente novamente mais tarde.");
+          setBusy(false);
+        }
       });
     return () => {
       active = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   async function login() {
-    if (!start || pending.current) return;
+    if (!services || pending.current) return;
     pending.current = true;
     setBusy(true);
     setError("");
+    const provider = new services.authApi.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
     try {
-      const credential = await start();
-      try {
-        writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ answers, completed: true }));
-        writeSyncedStorage(
-          "helena.profile.v1",
-          JSON.stringify({
-            name: credential.user.displayName ?? undefined,
-            photoUrl: "/profile-avatars/helena.webp",
-          }),
-        );
-      } catch {
-        /* Login remains valid when browser storage is unavailable. */
-      }
+      const credential = await services.authApi.signInWithPopup(services.auth, provider);
+      applyGoogleLogin(credential.user.displayName, answers);
       onFinish();
     } catch (cause) {
+      if (isPopupBlockedError(cause)) {
+        // Alguns navegadores (extensões, bloqueadores de pop-up) impedem a
+        // janela do Google mesmo em um clique legítimo. O redirecionamento
+        // de página inteira não depende de pop-up e funciona nesses casos.
+        try {
+          window.sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
+        } catch {
+          /* Sem sessionStorage, o redirecionamento ainda funciona, só perde as respostas do onboarding. */
+        }
+        await services.authApi.signInWithRedirect(services.auth, provider);
+        return;
+      }
       setError(googleLoginError(cause));
-    } finally {
       pending.current = false;
       setBusy(false);
     }
   }
+
   return (
     <main className="onboarding login-page" id="main-content" aria-label="Entrar na OliStudy">
       <h1 className="sr-only">
@@ -118,7 +181,7 @@ export function GoogleLogin({
             <br />
             Só falta você para essa jornada.
           </p>
-          {(busy || (!start && !error)) && (
+          {(busy || (!services && !error)) && (
             <HelenaLoading
               compact
               label={busy ? "Aguardando o Google…" : "Preparando seu login…"}
@@ -126,7 +189,7 @@ export function GoogleLogin({
           )}
           {error && <p role="alert">{error}</p>}
           <div className="onboarding__actions login-page__actions">
-            <button type="button" disabled={!start || busy} onClick={() => void login()}>
+            <button type="button" disabled={!services || busy} onClick={() => void login()}>
               Entrar com Google
               <PaperArrow />
             </button>
