@@ -21,6 +21,7 @@ export type HandwritingSticky = {
 };
 
 export type HandwritingDocument = {
+  backgroundFrame?: { x: number; y: number; width: number; height: number } | undefined;
   background?: string | undefined;
   pageText?: string;
   version: 1;

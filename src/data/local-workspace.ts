@@ -83,6 +83,23 @@ function isLegacyNote(value: unknown): boolean {
 
 export function isHandwritingDocument(value: unknown): boolean {
   if (!isRecord(value) || value["version"] !== 1) return false;
+  const frame = value["backgroundFrame"];
+  if (
+    frame !== undefined &&
+    (!isRecord(frame) ||
+      !["x", "y", "width", "height"].every(
+        (key) =>
+          typeof frame[key] === "number" &&
+          Number.isFinite(frame[key]) &&
+          frame[key] >= 0 &&
+          frame[key] <= 1600,
+      ) ||
+      Number(frame["width"]) <= 0 ||
+      Number(frame["height"]) <= 0 ||
+      Number(frame["x"]) + Number(frame["width"]) > 1200.01 ||
+      Number(frame["y"]) + Number(frame["height"]) > 1600.01)
+  )
+    return false;
   if (
     value["background"] !== undefined &&
     (typeof value["background"] !== "string" ||

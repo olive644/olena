@@ -1,4 +1,5 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { stickyTextLayout } from "./sticky-text-layout";
 import {
   lazy,
   Suspense,
@@ -38,6 +39,7 @@ type HandwritingTool =
 type PaperStyle = HandwritingPaper;
 type Stroke = HandwritingStroke;
 type Snapshot = {
+  backgroundFrame?: HandwritingDocument["backgroundFrame"];
   strokes: Stroke[];
   stickies: HandwritingSticky[];
   pageText: string;
@@ -231,11 +233,19 @@ function renderPage(
   editing = false,
   pageText = "",
   background?: HTMLImageElement,
+  backgroundFrame = { x: 0, y: 0, width: PAGE_WIDTH, height: PAGE_HEIGHT },
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
   drawPaper(context, paper, paperColor);
-  if (background) context.drawImage(background, 0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+  if (background)
+    context.drawImage(
+      background,
+      backgroundFrame.x,
+      backgroundFrame.y,
+      backgroundFrame.width,
+      backgroundFrame.height,
+    );
   context.save();
   context.globalCompositeOperation = paperColor === "night" && !background ? "screen" : "multiply";
   for (const stroke of strokes) if (stroke.tool === "highlighter") drawStroke(context, stroke);
@@ -259,20 +269,15 @@ function renderPage(
       context.fillRect(sticky.x, sticky.y, 260, 220);
     }
     context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
-    context.font = "bold 25px sans-serif";
-    const words = sticky.text.split(/\s+/);
-    let line = "";
-    let y = sticky.y + 54;
-    for (const word of words) {
-      const candidate = line ? `${line} ${word}` : word;
-      if (context.measureText(candidate).width > 224 && line) {
-        context.fillText(line, sticky.x + 18, y, 224);
-        y += 34;
-        line = word;
-      } else line = candidate;
-      if (y > sticky.y + 185) break;
-    }
-    if (y <= sticky.y + 185) context.fillText(line, sticky.x + 18, y, 224);
+    const { fontSize, lines } = stickyTextLayout(sticky.text, (text, size) => {
+      context.font = `bold ${size}px sans-serif`;
+      return context.measureText(text).width;
+    });
+    context.font = `bold ${fontSize}px sans-serif`;
+    context.textBaseline = "top";
+    lines.forEach((line, index) =>
+      context.fillText(line, sticky.x + 18, sticky.y + 28 + index * fontSize * 1.3),
+    );
     context.restore();
   }
 }
@@ -366,6 +371,13 @@ export function HandwritingStudio({
     requestAnimationFrame(() => importButtonRef.current?.focus());
   }
   const [background, setBackground] = useState(startingDocument?.background);
+  const [backgroundFrame, setBackgroundFrame] = useState(startingDocument?.backgroundFrame);
+  const imageDrag = useRef<{
+    x: number;
+    y: number;
+    frame: NonNullable<HandwritingDocument["backgroundFrame"]>;
+    resize: boolean;
+  } | null>(null);
   const [loadedImage, setBackgroundImage] = useState<HTMLImageElement>();
   const backgroundImage = loadedImage?.src === background ? loadedImage : undefined;
   useEffect(() => {
@@ -444,8 +456,17 @@ export function HandwritingStudio({
   }
 
   const currentDocument: HandwritingDocument = useMemo(
-    () => ({ version: 1, paper, paperColor, strokes, stickies, pageText, background }),
-    [paper, paperColor, strokes, stickies, pageText, background],
+    () => ({
+      version: 1,
+      paper,
+      paperColor,
+      strokes,
+      stickies,
+      pageText,
+      background,
+      backgroundFrame,
+    }),
+    [paper, paperColor, strokes, stickies, pageText, background, backgroundFrame],
   );
   const baseline = JSON.stringify({
     version: 1,
@@ -464,6 +485,7 @@ export function HandwritingStudio({
     stickies: initialDocument?.stickies ?? [],
     pageText: initialDocument?.pageText ?? "",
     background: initialDocument?.background,
+    backgroundFrame: initialDocument?.backgroundFrame,
   });
   const dirty = JSON.stringify(currentDocument) !== baseline;
 
@@ -519,6 +541,7 @@ export function HandwritingStudio({
       true,
       textMode ? "" : pageText,
       backgroundImage,
+      backgroundFrame,
     );
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -547,6 +570,7 @@ export function HandwritingStudio({
     pageText,
     textMode,
     backgroundImage,
+    backgroundFrame,
   ]);
 
   useEffect(() => {
@@ -596,7 +620,7 @@ export function HandwritingStudio({
   ) {
     setUndoStack((history) => [
       ...history.slice(-39),
-      { strokes: currentStrokes, stickies: currentStickies, pageText, background },
+      { strokes: currentStrokes, stickies: currentStickies, pageText, background, backgroundFrame },
     ]);
     setRedoStack([]);
   }
@@ -858,11 +882,15 @@ export function HandwritingStudio({
   function undo() {
     const previous = undoStack.at(-1);
     if (!previous) return;
-    setRedoStack((history) => [...history, { strokes, stickies, pageText, background }]);
+    setRedoStack((history) => [
+      ...history,
+      { strokes, stickies, pageText, background, backgroundFrame },
+    ]);
     setStrokes(previous.strokes);
     setStickies(previous.stickies);
     setPageText(previous.pageText);
     setBackground(previous.background);
+    setBackgroundFrame(previous.backgroundFrame);
     setSelectedIds([]);
     setUndoStack((history) => history.slice(0, -1));
   }
@@ -870,11 +898,15 @@ export function HandwritingStudio({
   function redo() {
     const next = redoStack.at(-1);
     if (!next) return;
-    setUndoStack((history) => [...history, { strokes, stickies, pageText, background }]);
+    setUndoStack((history) => [
+      ...history,
+      { strokes, stickies, pageText, background, backgroundFrame },
+    ]);
     setStrokes(next.strokes);
     setStickies(next.stickies);
     setPageText(next.pageText);
     setBackground(next.background);
+    setBackgroundFrame(next.backgroundFrame);
     setSelectedIds([]);
     setRedoStack((history) => history.slice(0, -1));
   }
@@ -1055,6 +1087,7 @@ export function HandwritingStudio({
       version: 1,
       pageText,
       background,
+      backgroundFrame,
       paper,
       paperColor,
       strokes: strokes.map((stroke) => ({
@@ -1077,7 +1110,17 @@ export function HandwritingStudio({
     if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Não foi possível preparar a folha.");
-    renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText, backgroundImage);
+    renderPage(
+      canvas,
+      strokes,
+      paper,
+      paperColor,
+      stickies,
+      false,
+      pageText,
+      backgroundImage,
+      backgroundFrame,
+    );
     return exportPage(canvas);
   }
 
@@ -1086,7 +1129,17 @@ export function HandwritingStudio({
       if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
-      renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText, backgroundImage);
+      renderPage(
+        canvas,
+        strokes,
+        paper,
+        paperColor,
+        stickies,
+        false,
+        pageText,
+        backgroundImage,
+        backgroundFrame,
+      );
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "folha-do-caderno.png";
@@ -1519,6 +1572,127 @@ export function HandwritingStudio({
             className="handwriting-page-shell"
             style={{ width: displayWidth, height: (displayWidth / PAGE_WIDTH) * PAGE_HEIGHT }}
           >
+            {background &&
+              tool === "select" &&
+              !textMode &&
+              (() => {
+                const frame = backgroundFrame ?? {
+                  x: 0,
+                  y: 0,
+                  width: PAGE_WIDTH,
+                  height: PAGE_HEIGHT,
+                };
+                return (
+                  <div
+                    className="handwriting-import-selection"
+                    style={{
+                      left: `${frame.x / 12}%`,
+                      top: `${frame.y / 16}%`,
+                      width: `${frame.width / 12}%`,
+                      height: `${frame.height / 16}%`,
+                    }}
+                    onPointerDown={(event) => {
+                      event.preventDefault();
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                      remember();
+                      imageDrag.current = {
+                        x: event.clientX,
+                        y: event.clientY,
+                        frame,
+                        resize: (event.target as HTMLElement).closest("[data-resize]") !== null,
+                      };
+                    }}
+                    onPointerMove={(event) => {
+                      const drag = imageDrag.current;
+                      if (!drag) return;
+                      const scale =
+                        PAGE_WIDTH /
+                        (canvasRef.current?.getBoundingClientRect().width || displayWidth);
+                      const dx = (event.clientX - drag.x) * scale;
+                      const dy = (event.clientY - drag.y) * scale;
+                      if (drag.resize) {
+                        const ratio = drag.frame.height / drag.frame.width;
+                        const width = Math.max(
+                          Math.min(40, drag.frame.width),
+                          Math.min(
+                            PAGE_WIDTH - drag.frame.x,
+                            (PAGE_HEIGHT - drag.frame.y) / ratio,
+                            drag.frame.width + dx,
+                          ),
+                        );
+                        setBackgroundFrame({ ...drag.frame, width, height: width * ratio });
+                      } else
+                        setBackgroundFrame({
+                          ...drag.frame,
+                          x: Math.max(
+                            0,
+                            Math.min(PAGE_WIDTH - drag.frame.width, drag.frame.x + dx),
+                          ),
+                          y: Math.max(
+                            0,
+                            Math.min(PAGE_HEIGHT - drag.frame.height, drag.frame.y + dy),
+                          ),
+                        });
+                    }}
+                    onPointerUp={() => {
+                      imageDrag.current = null;
+                    }}
+                    onPointerCancel={() => {
+                      imageDrag.current = null;
+                    }}
+                  >
+                    <button
+                      type="button"
+                      aria-label="Mover imagem importada"
+                      onKeyDown={(event) => {
+                        const delta = {
+                          ArrowLeft: [-10, 0],
+                          ArrowRight: [10, 0],
+                          ArrowUp: [0, -10],
+                          ArrowDown: [0, 10],
+                        }[event.key];
+                        if (!delta) return;
+                        event.preventDefault();
+                        remember();
+                        setBackgroundFrame({
+                          ...frame,
+                          x: Math.max(0, Math.min(PAGE_WIDTH - frame.width, frame.x + delta[0]!)),
+                          y: Math.max(0, Math.min(PAGE_HEIGHT - frame.height, frame.y + delta[1]!)),
+                        });
+                      }}
+                    >
+                      Arraste para mover
+                    </button>
+                    <button
+                      type="button"
+                      data-resize
+                      className="handwriting-import-resize"
+                      aria-label="Redimensionar imagem importada"
+                      onKeyDown={(event) => {
+                        if (
+                          !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
+                        )
+                          return;
+                        event.preventDefault();
+                        remember();
+                        const ratio = frame.height / frame.width;
+                        const width = Math.max(
+                          Math.min(40, frame.width),
+                          Math.min(
+                            PAGE_WIDTH - frame.x,
+                            (PAGE_HEIGHT - frame.y) / ratio,
+                            frame.width +
+                              (["ArrowRight", "ArrowDown"].includes(event.key) ? 10 : -10),
+                          ),
+                        );
+                        setBackgroundFrame({ ...frame, width, height: width * ratio });
+                      }}
+                    >
+                      ↘
+                    </button>
+                  </div>
+                );
+              })()}
             {rulerMeasure &&
               (() => {
                 const { start, end } = rulerMeasure;
@@ -1846,9 +2020,11 @@ export function HandwritingStudio({
         <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
           <PageImport
             onClose={closeImport}
-            onImport={(image) => {
+            onImport={(image, frame) => {
               remember();
               setBackground(image);
+              setBackgroundFrame(frame);
+              setTool("select");
               closeImport();
               setError("");
             }}

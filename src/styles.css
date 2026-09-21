@@ -4434,6 +4434,31 @@ body.local-room-active {
   pointer-events: none;
 }
 
+:root[data-theme="dark"] .capture-dialog--handwriting .paper-editor-icon {
+  color: #fff9ef;
+  --editor-icon-facet: #c9c3d1;
+  --editor-icon-cutout: #292432;
+}
+.handwriting-import-selection {
+  position: absolute;
+  z-index: 5;
+  border: 2px dashed #7c3aed;
+  cursor: move;
+  touch-action: none;
+}
+.handwriting-import-selection button {
+  background: #7c3aed;
+  color: white;
+  padding: 6px;
+}
+.handwriting-import-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: nwse-resize;
+  min-width: 44px;
+  min-height: 44px;
+}
 .handwriting-page-shell {
   position: relative;
   flex: 0 0 auto;
