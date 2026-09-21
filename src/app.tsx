@@ -4,7 +4,7 @@ import { HelenaLoading } from "./components/helena-loading";
 import { MobileMenuContext } from "./components/mobile-menu-context";
 import { readLocalRoomCodeFromUrl, readLocalRoomProjectorCodeFromUrl } from "./domain/room-code";
 import { useWorkspace } from "./hooks/use-workspace";
-import { useCloudSync } from "./hooks/use-cloud-sync";
+import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
 import { HabitsView } from "./views/habits-view";
 import { TodayView } from "./views/today-view";
 
@@ -32,7 +32,7 @@ function hasCompletedOnboarding() {
   }
 }
 
-function AppContent({ signedOut = false }: { signedOut?: boolean }) {
+function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signedOut?: boolean }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const [projectorCode] = useState(() => readLocalRoomProjectorCodeFromUrl(window.location.href));
   const [joinCode] = useState(
@@ -98,7 +98,9 @@ function AppContent({ signedOut = false }: { signedOut?: boolean }) {
           )}
           {view === "library" && <LibraryView workspace={workspace} dispatch={dispatch} />}
           {view === "activity-bank" && <ActivityBankView onBack={() => setView("today")} />}
-          {view === "profile" && <ProfileView workspace={workspace} dispatch={dispatch} />}
+          {view === "profile" && (
+            <ProfileView workspace={workspace} dispatch={dispatch} cloud={cloud} />
+          )}
         </Suspense>
         <MobileNavigation view={view} onNavigate={setView} />
       </div>
@@ -114,6 +116,10 @@ export function App() {
   // `key` remonta com os dados corretos (sincronizados ou anonimos).
   const cloud = useCloudSync();
   return (
-    <AppContent key={cloud.revision} signedOut={cloud.enabled && cloud.authenticated === false} />
+    <AppContent
+      key={cloud.revision}
+      cloud={cloud}
+      signedOut={cloud.enabled && cloud.authenticated === false}
+    />
   );
 }

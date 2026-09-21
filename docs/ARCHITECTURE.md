@@ -39,6 +39,12 @@ progresso das trilhas e o cache auxiliar de dificuldade. Cada usuário só pode 
 `users/<uid>` pelas regras do Firebase. A URL usa `VITE_FIREBASE_DATABASE_URL` quando definida e,
 caso contrário, o endereço padrão derivado de `VITE_FIREBASE_PROJECT_ID`.
 
+O envio mantém alterações locais como pendentes até a confirmação do Realtime Database. Uma falha
+de rede não avança a revisão confirmada; o próximo ciclo ou a ação manual no Perfil tenta novamente.
+O Perfil expõe carregando, sincronizando, sincronizado ou aguardando conexão, além do horário da
+última confirmação. O logout explícito encerra a sessão persistida e remove deste dispositivo as
+chaves sincronizadas da conta anterior.
+
 Biblioteca, Praticar e o planejador de aulas são carregados sob demanda. As ferramentas de
 captura do Caderno também usam um chunk separado. O manifesto do Vite
 permite medir separadamente o JavaScript inicial e o total assíncrono: 220 KiB para a entrada e 300

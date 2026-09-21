@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Conta e sincronização
+
+O login Google usa Firebase Authentication com persistência local explícita. Workspace, tema, perfil, onboarding, progresso Solo e cache de dificuldade são replicados no Realtime Database sob `users/<uid>/state`; as regras limitam leitura e escrita ao próprio UID. O Perfil mostra conta, estado, última confirmação, sincronização manual e logout. Alterações que falham por falta de rede permanecem pendentes e são tentadas novamente, sem serem marcadas como enviadas. O logout explícito remove do dispositivo as chaves sincronizadas da conta anterior.
+
 ## Régua, marca-texto e documentos importados
 
 A barra do editor acompanha o tema: papel branco no modo claro e grafite no escuro. Ícones de ação ficam brancos no escuro e pretos no claro; instrumentos conservam suas cores. Estojo, seletor de papel e rodapé usam papel branco recortado no modo claro e grafite recortado no modo escuro. A importação permite cancelar antes de concluir e escolher tamanho inicial de 25% a 100%. Selecionar permite mover, redimensionar proporcionalmente ou remover apenas a imagem importada, com suporte ao histórico. Há uma imagem importada por folha; nova importação substitui a anterior. Post-its exportados ajustam a fonte para preservar todo o texto, inclusive quebras de linha.

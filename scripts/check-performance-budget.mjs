@@ -17,7 +17,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // measured initial entry to 259.8 KiB. Keep a small allowance for CI variance.
 // The editable handwriting asset flow adds about 1 KiB to the initial entry.
 // Measured entry is 260.8 KiB; retain a small allowance for CI variance.
-const MAX_INITIAL_JS_BYTES = 264 * 1024;
+// Reliable retry and live account status add 1.1 KiB to the initial sync hook.
+// Measured entry: 263.8 KiB; retain the existing small CI allowance.
+const MAX_INITIAL_JS_BYTES = 266 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -65,7 +67,9 @@ const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // for PDF imports and tracked separately with its worker below.
 // On-sheet image placement and complete sticky text layout add about 2.5 KiB
 // in the lazy editor. Measured total: 686 KiB; initial entry stays below 264 KiB.
-const MAX_TOTAL_JS_BYTES = 688 * 1024;
+// Visible cloud state, retry handling and account controls add 3.4 KiB across
+// the entry and lazy Profile route. Measured total: 689.4 KiB.
+const MAX_TOTAL_JS_BYTES = 692 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
