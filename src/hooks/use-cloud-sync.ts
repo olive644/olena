@@ -103,11 +103,21 @@ export function useCloudSync() {
             if (!response.ok) throw new Error("sync");
             return (await response.json()) as CloudState | null;
           };
+          // O login com Google (GoogleLogin) grava localmente que o
+          // onboarding foi concluido assim que a autenticacao termina, no
+          // mesmo instante em que onAuthStateChanged dispara esta funcao.
+          // Como o GET abaixo e uma chamada de rede, ele pode demorar mais
+          // que essa gravacao local — sem essa checagem, um retorno de
+          // nuvem antigo (de uma sessao anterior) sobrescreveria a marca de
+          // onboarding concluido que acabou de ser salva, jogando a pessoa
+          // de volta pro onboarding mesmo apos o login funcionar.
+          const localBeforeGet = JSON.stringify(readSyncedStorage());
           const cloud = await request("GET");
           if (!active) return;
+          const localAfterGet = JSON.stringify(readSyncedStorage());
 
           let lastItems = "";
-          if (cloud?.items) {
+          if (cloud?.items && localAfterGet === localBeforeGet) {
             applySyncedStorage(cloud.items);
             lastItems = JSON.stringify(cloud.items);
           } else {
