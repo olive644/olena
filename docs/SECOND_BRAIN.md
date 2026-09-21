@@ -1,5 +1,11 @@
 # HelenaStudy: Second Brain
 
+Estojo ilustrado: fine = Fineliner uniforme; ink = Caneta-tinteiro com ponta inclinada por direção/pressão; soft = Pincel macio com cerdas translúcidas determinísticas. SVGs dos instrumentos são locais, sem dependências. writingWindowOpen recolhe o estojo preservando brush para evitar sobreposição no celular.
+
+HandwritingStroke.brush aceita fine, ink e soft, opcional para compatibilidade. drawStroke aplica largura/pressão/transparência em todos os caminhos de renderização. O painel de pincéis só aparece com Caneta e texto desativado; usa coluna direita no desktop e faixa horizontal no celular.
+
+Instrumentos do editor preservam cores próprias; ícones de ações herdam grafite/creme. Paletas de tinta e espessura substituem o seletor de traço nativo por amostras, preservando cor personalizada. rulerMeasure é transitório e usa pixels da folha para manter a medida independente do zoom. SVG sobreposto ao canvas mostra régua e medida somente durante o gesto, sem entrar na persistência/exportação.
+
 Editor manuscrito: PaperEditorIcon centraliza os símbolos de papel. Tela cheia em NoteCaptureTools usa a API nativa e fallback CSS, com estado sincronizado no fullscreenchange. Rótulos móveis expandem via foco ou aria-pressed, sem depender de hover.
 
 Entrada de cadernos mostra preview persistente, com Anterior/Próxima e clique direto na folha. A galeria abre somente por Ver todas as folhas. Rotação CSS na lombada adapta o exemplo fornecido de anand_4957, sem loop automático. pageText em HandwritingDocument representa escrita por teclado na página inteira. A área escala com o zoom e mantém quebras de linha na exportação. O limite visual de uma página exibe aviso para continuar em outra folha. Revisar texto usa regras locais conservadoras em domain/text-review.ts com histórico para desfazer; sugestões ortográficas e autocapitalização nativas dependem do navegador/teclado. Nenhum texto é enviado a um serviço de IA.

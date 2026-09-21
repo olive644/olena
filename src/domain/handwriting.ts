@@ -2,6 +2,7 @@ export type HandwritingPoint = { x: number; y: number; pressure: number };
 export type HandwritingPaper = "ruled" | "grid" | "dots" | "blank";
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
+  brush?: "fine" | "ink" | "soft";
   id: string;
   tool: "pen" | "highlighter";
   color: string;

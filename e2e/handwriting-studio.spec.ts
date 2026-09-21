@@ -39,7 +39,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
     await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   }
-  await expect(dialog.getByRole("button", { name: "Caneta" })).toHaveAttribute(
+  await expect(dialog.getByRole("button", { name: "Caneta", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
@@ -93,7 +93,14 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.mouse.move(startX, startY);
   await page.mouse.down();
   await page.mouse.move(startX + 100, startY + 7, { steps: 10 });
+  const measurement = dialog.getByLabel("Medição da régua");
+  await expect(measurement).toBeVisible();
+  await expect(measurement).toContainText(
+    `${Math.round((Math.hypot(100, 7) * 1200) / bounds.width)} px`,
+  );
+  await page.screenshot({ path: testInfo.outputPath("regua-medindo.png") });
   await page.mouse.up();
+  await expect(measurement).toHaveCount(0);
   await expect(dialog.getByRole("button", { name: "Desfazer" })).toBeEnabled();
   await dialog.getByRole("button", { name: "Desfazer" }).click();
   await expect(dialog.getByRole("button", { name: "Refazer" })).toBeEnabled();
@@ -209,6 +216,22 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
     "Revisar gramática",
   );
   await expect(dialog.getByText("Rascunho recuperado")).toBeVisible();
+  await expect(dialog.locator(".brush-instrument")).toHaveCount(3);
+  await expect
+    .poll(() =>
+      dialog
+        .locator(".brush-instrument")
+        .evaluateAll((images) =>
+          images.every((image) => image instanceof HTMLImageElement && image.naturalWidth > 0),
+        ),
+    )
+    .toBe(true);
+  await dialog.getByRole("button", { name: /Caneta-tinteiro/ }).click();
+  await expect(dialog.getByRole("button", { name: /Caneta-tinteiro/ })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await page.screenshot({ path: testInfo.outputPath("painel-pinceis.png") });
   await dialog.getByRole("button", { name: "Janela de escrita ampliada" }).click();
   await expect(dialog.getByRole("region", { name: "Janela de escrita ampliada" })).toBeVisible();
   await dialog.getByRole("button", { name: "Próxima linha" }).click();
@@ -236,6 +259,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   });
   expect(saved?.stickies?.[0]).toMatchObject({ text: "Revisar gramática", color: "blue" });
   expect(saved?.strokes).toHaveLength(1);
+  expect(saved?.strokes[0]).toMatchObject({ brush: "ink" });
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
   const download = page.waitForEvent("download");

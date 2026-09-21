@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Pincéis da caneta
+
+O estojo agora ilustra os instrumentos inteiros em papel recortado: Fineliner, Caneta-tinteiro e Pincel macio. A tinteiro simula ponta inclinada conforme a direção e pressão; o pincel acrescenta marcas de cerdas translúcidas. Espessura continua no controle superior, separada do tipo de instrumento. O estojo recolhe ao abrir a janela ampliada para não sobrepor seus controles no celular.
+
+Selecionar Caneta exibe o estojo à direita. No celular, o painel vira uma faixa horizontal. O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm o renderizador anterior. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. O pincel acumula transparência ao sobrepor segmentos, sem simulação física de aquarela.
+
+## Instrumentos de papel e régua com medida
+
+Borracha e post-it adaptam os SVGs fornecidos pelo proprietário. Lápis e marca-texto usam cores de objeto; ações usam grafite/creme conforme fundo e tema. Cor da tinta oferece amostras selecionáveis e cor personalizada. Espessura apresenta três amostras reais de traço. Salvar folha recebe as facetas e a base do botão roxo compartilhado, inclusive no portal do editor.
+
+A régua exibe graduação e comprimento em pixels da folha durante o arraste. O cálculo usa coordenadas do documento, independente do zoom, e a sobreposição desaparece em pointerup/pointercancel. Apenas o segmento desenhado é salvo ou exportado; a medida é transitória.
+
 ## Controles do editor manuscrito
 
 Tela cheia ao lado de Fechar usa Fullscreen API quando disponível, com alternativa CSS ocupando a janela. A saída restaura o editor sem perder a folha. PaperEditorIcon substitui os ícones de contorno das ferramentas, histórico e exportação por silhuetas em camadas de papel. No celular, rótulos dos instrumentos e histórico se expandem ao selecionar ou focar, com nomes acessíveis preservados e suporte a movimento reduzido.
