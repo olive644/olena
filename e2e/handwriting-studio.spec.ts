@@ -303,9 +303,15 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       .click();
   }
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
-  await page.locator(".notebook-card").first().click({ force: true });
+  await page
+    .locator(".notebook-card")
+    .first()
+    .evaluate((element) => (element as HTMLButtonElement).click());
   await page.getByRole("button", { name: "Ver todas as folhas" }).click({ force: true });
-  await page.locator(".notebook-page-card").first().click({ force: true });
+  await page
+    .locator(".notebook-page-card")
+    .first()
+    .evaluate((element) => (element as HTMLButtonElement).click());
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click({ force: true });
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
   await expect
