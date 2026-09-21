@@ -1,4 +1,5 @@
 const shapes = {
+  import: "M17 34h7V15h8L20 3 8 15h9Z M4 32h6v5h21v-5h6v11H4Z",
   pen: "M6 29 25 5l9 8-20 23-10 3Z M24 7l8 7",
   highlighter: "M6 28 22 8l12 10-16 20H5Z",
   eraser: "M4 26 22 7l14 13-17 18H15Z",
@@ -18,10 +19,11 @@ const shapes = {
   expand: "M3 3h14v6H9v8H3Z M25 3h14v14h-6V9h-8Z M3 25h6v8h8v6H3Z M33 25h6v14H25v-6h8Z",
   collapse: "M11 3h6v14H3v-6h8Z M25 3h6v8h8v6H25Z M3 25h14v14h-6v-8H3Z M25 25h14v6h-8v8h-6Z",
   review: "M5 4h25l7 7v27H5Z",
-  save: "M5 4h26l8 8v28H5Z",
+  save: "M6 4h29l7 7v31H6Z",
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
+  import: "M20 3v31h-3V15H8Z",
   pen: "m6 29 5 4L30 9l-5-4Z",
   highlighter: "m6 28 6 5 16-20-6-5Z",
   eraser: "",
@@ -41,11 +43,18 @@ const facets: Record<keyof typeof shapes, string> = {
   expand: "M3 3h14v3H6v11H3Z M25 3h14l-6 6V6h-8Z",
   collapse: "M11 3h3v11H3v-3h8Z M25 3h3v11h11v3H25Z",
   review: "M5 4h25l-9 7H11v27H5Z",
-  save: "M5 4h26l-5 5H10v31H5Z",
+  save: "M6 4h6v38H6Z M35 4l7 7h-7Z",
 };
 
 export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
-  const body = name === "pen" ? "#FACC15" : name === "highlighter" ? "#6BBF59" : "currentColor";
+  const body =
+    name === "pen"
+      ? "#FACC15"
+      : name === "highlighter"
+        ? "#6BBF59"
+        : name === "save"
+          ? "#292432"
+          : "currentColor";
   const light =
     name === "pen"
       ? "#FFE88D"
@@ -107,9 +116,8 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
       {name === "trash" && <path d="M17 17h3v15h-3Zm7 0h3v15h-3Z" fill={detail} />}
       {name === "save" && (
         <>
-          <path d="M13 4h14v12H13Z" fill={detail} />
-          <path d="M12 24h20v16H12Z" fill={detail} />
-          <path d="M17 28h10v3H17Zm0 6h10v3H17Z" fill="currentColor" />
+          <path d="M14 4h18v13H14Z M12 25h24v17H12Z" fill="#FFF9EF" />
+          <path d="M26 6h4v9h-4Z M16 29h16v2H16Zm0 5h16v2H16Z" fill="#292432" />
         </>
       )}
       {(name === "zoomIn" || name === "zoomOut") && (

@@ -8,6 +8,24 @@ import {
 } from "./local-workspace";
 
 describe("local workspace", () => {
+  it("valida a imagem local de fundo sem aceitar URLs externas ou imagens grandes", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    expect(isHandwritingDocument({ ...document, background: "data:image/jpeg;base64,/9j/" })).toBe(
+      true,
+    );
+    expect(isHandwritingDocument({ ...document, background: "https://example.com/page.jpg" })).toBe(
+      false,
+    );
+    expect(
+      isHandwritingDocument({ ...document, background: "data:image/svg+xml;base64,AAAA" }),
+    ).toBe(false);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        background: `data:image/jpeg;base64,${"A".repeat(500_000)}`,
+      }),
+    ).toBe(false);
+  });
   it("salva e recupera o estado versionado", () => {
     const workspace = createInitialWorkspace();
     saveWorkspace(window.localStorage, workspace);

@@ -26,6 +26,7 @@
     "firebase": "^12.19.0",
     "jose": "^6.2.12",
     "lucide-react": "^1.45.0",
+    "pdfjs-dist": "^6.3.289",
     "qrcode-generator": "^2.0.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

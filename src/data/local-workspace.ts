@@ -84,6 +84,13 @@ function isLegacyNote(value: unknown): boolean {
 export function isHandwritingDocument(value: unknown): boolean {
   if (!isRecord(value) || value["version"] !== 1) return false;
   if (
+    value["background"] !== undefined &&
+    (typeof value["background"] !== "string" ||
+      value["background"].length > 500_000 ||
+      !/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(value["background"]))
+  )
+    return false;
+  if (
     value["pageText"] !== undefined &&
     (typeof value["pageText"] !== "string" || value["pageText"].length > 5000)
   )
