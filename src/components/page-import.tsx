@@ -260,8 +260,8 @@ export function PageImport({
         >
           Usar esta página
         </button>
-        <button type="button" onClick={onClose}>
-          Cancelar importação
+        <button type="button" className="editor-import-cancel" onClick={onClose}>
+          Cancelar
         </button>
       </div>
     </section>

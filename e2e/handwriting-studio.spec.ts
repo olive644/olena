@@ -55,6 +55,13 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "background-color",
     "rgb(255, 255, 255)",
   );
+  for (const selector of [
+    ".handwriting-paper-picker",
+    ".handwriting-brush-panel",
+    ".handwriting-footer",
+  ]) {
+    await expect(dialog.locator(selector)).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  }
   await dialog.getByRole("button", { name: "Tela cheia", exact: true }).click();
   await expect(dialog).toHaveClass(/capture-dialog--expanded/);
   await dialog.getByRole("button", { name: "Sair da tela cheia" }).click();
@@ -81,6 +88,15 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       "background-color",
       "rgb(41, 36, 50)",
     );
+    for (const selector of [".handwriting-paper-picker", ".handwriting-footer"]) {
+      await expect(dialog.locator(selector)).toHaveCSS("background-color", "rgb(41, 36, 50)");
+    }
+    await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+    await expect(dialog.locator(".handwriting-brush-panel")).toHaveCSS(
+      "background-color",
+      "rgb(41, 36, 50)",
+    );
+    await eraser.click();
     await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
     await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
     await page.screenshot({ path: testInfo.outputPath("ferramentas-contraste-escuro.png") });
@@ -189,14 +205,17 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.mouse.down();
   await page.mouse.move(selectionX + 30, selectionY + 10, { steps: 8 });
   await page.mouse.up();
-  await expect(dialog.getByRole("button", { name: "Apagar" })).toBeVisible();
-  await dialog.getByRole("button", { name: "Apagar" }).click();
+  await expect(dialog.getByRole("button", { name: "Apagar traços" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Apagar traços" }).click();
   await dialog.getByRole("button", { name: "Desfazer" }).click();
   await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole("img", { name: /folha manuscrita/i })).toBeVisible();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
+  await reopened.getByRole("button", { name: "Importar", exact: true }).click();
+  await reopened.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await expect(reopened.getByLabel("Arquivo para importar")).toHaveCount(0);
   await reopened.getByRole("button", { name: "Importar", exact: true }).click();
   const fileInput = reopened.getByLabel("Arquivo para importar");
   const png = await page.evaluate(() => {
@@ -273,6 +292,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect
     .poll(async () => Math.round((await imported.boundingBox())!.width))
     .toBe(Math.round(oldWidth));
+  await reopened.getByRole("button", { name: "Remover imagem" }).click();
+  await expect(imported).toHaveCount(0);
+  await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
+  await expect(imported).toBeVisible();
   await expect(reopened.getByRole("button", { name: "Quadriculado" })).toHaveAttribute(
     "aria-pressed",
     "true",
