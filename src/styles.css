@@ -4009,6 +4009,103 @@ body.local-room-active {
   min-height: 0;
   grid-template-columns: 146px minmax(0, 1fr);
 }
+.handwriting-workspace--brushes {
+  grid-template-columns: 146px minmax(0, 1fr) 224px;
+}
+.handwriting-brush-panel {
+  padding: 18px 12px;
+  overflow-y: auto;
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+.handwriting-brush-panel header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.handwriting-brush-panel header small {
+  color: var(--violet);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.handwriting-brush-panel h3 {
+  margin: 3px 0;
+}
+.handwriting-brush-panel p,
+.brush-panel-tip {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.handwriting-brush-panel > button {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  margin: 14px 0;
+  padding: 13px;
+  border: 2px solid var(--line);
+  border-radius: 5px 16px 6px 12px;
+  background: var(--soft);
+  color: var(--text);
+  text-align: left;
+  box-shadow: 0 4px 0 var(--line);
+}
+.handwriting-brush-panel > button[aria-pressed="true"] {
+  border-color: #7c3aed;
+  box-shadow: 0 4px 0 #51259b;
+}
+.handwriting-brush-panel > button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+.handwriting-brush-panel button svg {
+  width: 100%;
+  height: 42px;
+  background: #fff9ef;
+  border-radius: 4px;
+}
+.brush-card-title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 800;
+}
+.brush-card-title > span {
+  color: var(--violet);
+}
+.handwriting-brush-panel button small {
+  font-size: 10px;
+  line-height: 1.5;
+}
+@media (max-width: 680px) {
+  .handwriting-brush-panel {
+    display: flex;
+    gap: 8px;
+    flex: 0 0 auto;
+    max-height: 114px;
+    padding: 7px;
+    overflow-x: auto;
+    order: 1;
+    border-bottom: 1px solid var(--line);
+  }
+  .handwriting-brush-panel > button {
+    min-width: 145px;
+    width: 145px;
+    margin: 0 0 4px;
+    padding: 8px;
+    gap: 3px;
+  }
+  .handwriting-brush-panel button svg {
+    height: 24px;
+  }
+  .handwriting-brush-panel header,
+  .handwriting-brush-panel > p,
+  .brush-panel-tip {
+    display: none;
+  }
+}
 
 .handwriting-paper-picker {
   display: grid;

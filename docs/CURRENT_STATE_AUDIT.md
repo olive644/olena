@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Pincéis da caneta
+
+Selecionar Caneta exibe um estojo à direita com Linha fina (largura uniforme), Tinta expressiva (largura por pressão) e Pincel suave (largo e translúcido). No celular, o painel vira uma faixa horizontal. O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm o renderizador anterior. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. O pincel suave acumula transparência ao sobrepor segmentos, sem simulação física de aquarela.
+
 ## Instrumentos de papel e régua com medida
 
 Borracha e post-it adaptam os SVGs fornecidos pelo proprietário. Lápis e marca-texto usam cores de objeto; ações usam grafite/creme conforme fundo e tema. Cor da tinta oferece amostras selecionáveis e cor personalizada. Espessura apresenta três amostras reais de traço. Salvar folha recebe as facetas e a base do botão roxo compartilhado, inclusive no portal do editor.

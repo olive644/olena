@@ -1,5 +1,7 @@
 # HelenaStudy: Second Brain
 
+HandwritingStroke.brush aceita fine, ink e soft, opcional para compatibilidade. drawStroke aplica largura/pressão/transparência em todos os caminhos de renderização. O painel de pincéis só aparece com Caneta e texto desativado; usa coluna direita no desktop e faixa horizontal no celular.
+
 Instrumentos do editor preservam cores próprias; ícones de ações herdam grafite/creme. Paletas de tinta e espessura substituem o seletor de traço nativo por amostras, preservando cor personalizada. rulerMeasure é transitório e usa pixels da folha para manter a medida independente do zoom. SVG sobreposto ao canvas mostra régua e medida somente durante o gesto, sem entrar na persistência/exportação.
 
 Editor manuscrito: PaperEditorIcon centraliza os símbolos de papel. Tela cheia em NoteCaptureTools usa a API nativa e fallback CSS, com estado sincronizado no fullscreenchange. Rótulos móveis expandem via foco ou aria-pressed, sem depender de hover.
