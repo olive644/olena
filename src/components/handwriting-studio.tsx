@@ -1,19 +1,4 @@
-import {
-  Download,
-  Eraser,
-  Hand,
-  Highlighter,
-  MousePointer2,
-  PenLine,
-  Printer,
-  Redo2,
-  RotateCcw,
-  StickyNote,
-  Trash2,
-  Undo2,
-  ZoomIn,
-  ZoomOut,
-} from "lucide-react";
+import { PaperEditorIcon } from "./paper-editor-icon";
 import {
   useEffect,
   useMemo,
@@ -32,6 +17,7 @@ import type {
   HandwritingSticky,
 } from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
+import { reviewPortugueseText } from "../domain/text-review";
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 1600;
@@ -1039,6 +1025,7 @@ export function HandwritingStudio({
               <path fill="#FFE88D" d="m2 13 14-12 2 2L4 15Z" />
               <path stroke="#51465D" strokeWidth="1.5" d="m6 10 2 2m1-5 3 3m0-6 2 2m1-5 3 3" />
             </svg>
+            <span>Régua</span>
           </button>
           <button
             type="button"
@@ -1050,7 +1037,7 @@ export function HandwritingStudio({
               setTool("pen");
             }}
           >
-            <PenLine size={18} /> <span>Caneta</span>
+            <PaperEditorIcon name="pen" /> <span>Caneta</span>
           </button>
           <button
             type="button"
@@ -1059,7 +1046,7 @@ export function HandwritingStudio({
             aria-pressed={tool === "highlighter"}
             onClick={() => setTool("highlighter")}
           >
-            <Highlighter size={18} /> <span>Marca-texto</span>
+            <PaperEditorIcon name="highlighter" /> <span>Marca-texto</span>
           </button>
           <button
             type="button"
@@ -1068,7 +1055,7 @@ export function HandwritingStudio({
             aria-pressed={tool === "eraser"}
             onClick={() => setTool("eraser")}
           >
-            <Eraser size={18} /> <span>Borracha</span>
+            <PaperEditorIcon name="eraser" /> <span>Borracha</span>
           </button>
           <button
             type="button"
@@ -1077,7 +1064,7 @@ export function HandwritingStudio({
             aria-pressed={tool === "hand"}
             onClick={() => setTool("hand")}
           >
-            <Hand size={18} /> <span>Mover</span>
+            <PaperEditorIcon name="hand" /> <span>Mover</span>
           </button>
           <button
             type="button"
@@ -1086,7 +1073,7 @@ export function HandwritingStudio({
             aria-pressed={tool === "select"}
             onClick={() => setTool("select")}
           >
-            <MousePointer2 size={18} /> <span>Selecionar</span>
+            <PaperEditorIcon name="select" /> <span>Selecionar</span>
           </button>
           <button
             type="button"
@@ -1094,10 +1081,10 @@ export function HandwritingStudio({
             aria-pressed={textMode}
             onClick={() => setTextMode((active) => !active)}
           >
-            <strong aria-hidden="true">T</strong> <span>Texto</span>
+            <PaperEditorIcon name="text" /> <span>Texto</span>
           </button>
           <button type="button" aria-label="Adicionar post-it" onClick={() => addSticky()}>
-            <StickyNote size={18} /> <span>Post-it</span>
+            <PaperEditorIcon name="sticky" /> <span>Post-it</span>
           </button>
           <button
             type="button"
@@ -1106,7 +1093,7 @@ export function HandwritingStudio({
             aria-pressed={writingWindowOpen}
             onClick={() => setWritingWindowOpen((open) => !open)}
           >
-            <ZoomIn size={18} /> <span>Janela de escrita</span>
+            <PaperEditorIcon name="zoomIn" /> <span>Janela de escrita</span>
           </button>
         </div>
 
@@ -1170,6 +1157,19 @@ export function HandwritingStudio({
         </div>
 
         <div className="handwriting-history" aria-label="Histórico e zoom">
+          {textMode && (
+            <button
+              type="button"
+              title="Ajusta acentos comuns e início de frases. Use Desfazer para reverter."
+              onClick={() => {
+                remember();
+                setPageText(reviewPortugueseText(pageText));
+                setRedoStack([]);
+              }}
+            >
+              <PaperEditorIcon name="review" /> <span>Revisar texto</span>
+            </button>
+          )}
           <button
             type="button"
             className={tool === "zoom-out" ? "is-active" : ""}
@@ -1177,7 +1177,8 @@ export function HandwritingStudio({
             aria-pressed={tool === "zoom-out"}
             onClick={() => setTool("zoom-out")}
           >
-            <ZoomOut size={18} />
+            <PaperEditorIcon name="zoomOut" />
+            <span className="editor-action-label">Reduzir</span>
           </button>
           <button className="handwriting-zoom-value" type="button" onClick={resetView}>
             {Math.round(zoom * 100)}%
@@ -1189,17 +1190,21 @@ export function HandwritingStudio({
             aria-pressed={tool === "zoom-in"}
             onClick={() => setTool("zoom-in")}
           >
-            <ZoomIn size={18} />
+            <PaperEditorIcon name="zoomIn" />
+            <span className="editor-action-label">Ampliar</span>
           </button>
           <button type="button" aria-label="Redefinir visualização" onClick={resetView}>
-            <RotateCcw size={18} />
+            <PaperEditorIcon name="reset" />
+            <span className="editor-action-label">Redefinir</span>
           </button>
           <span className="handwriting-commandbar__divider" />
           <button type="button" aria-label="Desfazer" disabled={!undoStack.length} onClick={undo}>
-            <Undo2 size={18} />
+            <PaperEditorIcon name="undo" />
+            <span className="editor-action-label">Desfazer</span>
           </button>
           <button type="button" aria-label="Refazer" disabled={!redoStack.length} onClick={redo}>
-            <Redo2 size={18} />
+            <PaperEditorIcon name="redo" />
+            <span className="editor-action-label">Refazer</span>
           </button>
           <button
             type="button"
@@ -1207,7 +1212,8 @@ export function HandwritingStudio({
             disabled={!strokes.length && !stickies.length && !pageText}
             onClick={clearPage}
           >
-            <Trash2 size={18} />
+            <PaperEditorIcon name="trash" />
+            <span className="editor-action-label">Limpar</span>
           </button>
         </div>
       </div>
@@ -1341,6 +1347,9 @@ export function HandwritingStudio({
                 placeholder="Escreva aqui. Esta área ocupa a folha inteira."
                 value={pageText}
                 spellCheck
+                lang="pt-BR"
+                autoCorrect="on"
+                autoCapitalize="sentences"
                 wrap="off"
                 style={{
                   left: `${(112 / PAGE_WIDTH) * 100}%`,
@@ -1405,14 +1414,14 @@ export function HandwritingStudio({
                       stickyDragRef.current = null;
                     }}
                   >
-                    <Hand size={14} />
+                    <PaperEditorIcon name="hand" />
                   </button>
                   <button
                     type="button"
                     aria-label={sticky.kind === "text" ? "Remover texto" : "Remover post-it"}
                     onClick={() => removeSticky(sticky.id)}
                   >
-                    ×
+                    <PaperEditorIcon name="close" />
                   </button>
                 </div>
                 <textarea
@@ -1454,10 +1463,10 @@ export function HandwritingStudio({
         </p>
         <div className="handwriting-export-actions">
           <button type="button" onClick={exportPng}>
-            <Download size={16} /> PNG
+            <PaperEditorIcon name="download" /> <span>PNG</span>
           </button>
           <button type="button" onClick={printPage}>
-            <Printer size={16} /> Imprimir/PDF
+            <PaperEditorIcon name="print" /> <span>Imprimir/PDF</span>
           </button>
         </div>
         <button className="primary-button" type="button" onClick={save}>

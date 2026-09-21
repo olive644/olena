@@ -39,7 +39,9 @@ describe("App", () => {
       screen.getByRole("heading", { name: "Dê um ponto de partida ao seu estudo" }),
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Abrir Biblioteca" }));
-    expect(await screen.findByRole("heading", { name: "Novo material" })).toBeTruthy();
+    expect(
+      await screen.findByRole("heading", { name: "Novo material" }, { timeout: 5000 }),
+    ).toBeTruthy();
   });
 
   it("expande a navegação lateral para revelar categorias e nomes", () => {

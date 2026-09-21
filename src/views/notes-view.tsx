@@ -14,11 +14,25 @@ import type { HandwritingDocument } from "../domain/handwriting";
 import {
   createWorkspaceId,
   type StudyNotebook,
+  type StudyNote,
   type WorkspaceAction,
   type WorkspaceState,
 } from "../domain/workspace";
 
 const NoteCaptureTools = lazy(() => import("../components/note-capture-tools"));
+
+function PreviewContent({ page }: { page: StudyNote }) {
+  return (
+    <>
+      {page.assets[0] ? (
+        <img src={page.assets[0].dataUrl} alt="" />
+      ) : (
+        <p>{page.content || "Folha em branco"}</p>
+      )}
+      <strong>{page.title}</strong>
+    </>
+  );
+}
 
 type NotesViewProps = {
   workspace: WorkspaceState;
@@ -70,11 +84,10 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
   const [previewOpen, setPreviewOpen] = useState(false);
-  useEffect(() => {
-    if (!previewOpen) return;
-    const timer = window.setTimeout(() => setPreviewOpen(false), 2400);
-    return () => window.clearTimeout(timer);
-  }, [previewOpen]);
+  const [previewPageIndex, setPreviewPageIndex] = useState(0);
+  const [turningPage, setTurningPage] = useState<{ page: StudyNote; direction: number } | null>(
+    null,
+  );
   const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
   const [moveMessage, setMoveMessage] = useState("");
@@ -139,6 +152,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       createdAt: new Date().toISOString(),
     });
     setActiveNotebookId(id);
+    setPreviewOpen(false);
     setNotebookSection(createKind === "folder" ? "notes" : "pages");
     createDialog.current?.close();
     setNewNotebookName("");
@@ -164,6 +178,8 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
     setPreviewOpen(notebook.kind !== "folder");
+    setPreviewPageIndex(0);
+    setTurningPage(null);
   }
 
   function removeSelectedNotebooks() {
@@ -531,14 +547,23 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
         </>
       ) : previewOpen && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label="Preview do caderno">
+          <button
+            className="secondary-button"
+            type="button"
+            onClick={() => setActiveNotebookId(null)}
+          >
+            Meus Cadernos
+          </button>
           <h1>{activeNotebook.title}</h1>
           <p>
             {notebookPages.length}{" "}
             {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}
           </p>
           <div className="notebook-preview-book">
-            <div className="notebook-preview-cover" aria-hidden="true">
-              <NotebookArtwork subjectColor="#7c3aed" title={activeNotebook.title} />
+            <div className="notebook-preview-inside" aria-hidden="true">
+              <span>MEU UNIVERSO PARTICULAR</span>
+              <strong>{activeNotebook.title}</strong>
+              <span>Escolha uma folha para continuar suas ideias.</span>
             </div>
             <div className="notebook-preview-leaves">
               {notebookPages.length === 0 ? (
@@ -547,29 +572,67 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                   <p>Uma folha em branco esperando suas ideias.</p>
                 </div>
               ) : (
-                notebookPages.slice(0, 3).map((page, index) => (
+                notebookPages.slice(previewPageIndex, previewPageIndex + 1).map((page) => (
                   <button
                     className="notebook-preview-leaf"
                     type="button"
+                    disabled={!!turningPage}
                     key={page.id}
-                    style={{ "--leaf-index": index } as CSSProperties}
                     onClick={() => {
                       setActivePageId(page.id);
                       setPreviewOpen(false);
                     }}
                     aria-label={`Abrir preview de ${page.title}`}
                   >
-                    {page.assets[0] ? (
-                      <img src={page.assets[0].dataUrl} alt="" />
-                    ) : (
-                      <p>{page.content || "Folha em branco"}</p>
-                    )}
-                    <strong>{page.title}</strong>
+                    <PreviewContent page={page} />
                   </button>
                 ))
               )}
+              {turningPage && (
+                <div
+                  className={`notebook-turning-leaf ${turningPage.direction < 0 ? "notebook-turning-leaf--back" : ""}`}
+                  aria-hidden="true"
+                  onAnimationEnd={() => setTurningPage(null)}
+                >
+                  <div className="notebook-preview-leaf notebook-turning-front">
+                    <PreviewContent page={turningPage.page} />
+                  </div>
+                  <div className="notebook-preview-leaf notebook-turning-back" />
+                </div>
+              )}
             </div>
           </div>
+          <nav className="notebook-preview-controls" aria-label="Folhear caderno">
+            <button
+              className="secondary-button"
+              type="button"
+              disabled={previewPageIndex === 0 || !!turningPage}
+              onClick={() => {
+                const page = notebookPages[previewPageIndex - 1];
+                if (page) setTurningPage({ page, direction: -1 });
+                setPreviewPageIndex((index) => index - 1);
+              }}
+            >
+              ‹ Anterior
+            </button>
+            <span aria-live="polite">
+              {notebookPages.length
+                ? `Folha ${previewPageIndex + 1} de ${notebookPages.length}`
+                : "Nenhuma folha ainda"}
+            </span>
+            <button
+              className="secondary-button"
+              type="button"
+              disabled={previewPageIndex >= notebookPages.length - 1 || !!turningPage}
+              onClick={() => {
+                const page = notebookPages[previewPageIndex];
+                if (page) setTurningPage({ page, direction: 1 });
+                setPreviewPageIndex((index) => index + 1);
+              }}
+            >
+              Próxima ›
+            </button>
+          </nav>
           <button className="primary-button" type="button" onClick={() => setPreviewOpen(false)}>
             Ver todas as folhas
           </button>

@@ -3593,6 +3593,36 @@ body.local-room-active {
   font-size: clamp(1.3rem, 3vw, 1.9rem);
 }
 
+.paper-editor-icon {
+  width: 24px;
+  height: 26px;
+  flex: 0 0 24px;
+}
+.editor-action-label {
+  display: none;
+}
+.handwriting-tool-group button > svg {
+  flex-shrink: 0;
+}
+.handwriting-tool-group button {
+  white-space: nowrap;
+}
+.capture-header-actions {
+  display: flex;
+  gap: 8px;
+}
+.capture-dialog.capture-dialog--expanded,
+.capture-dialog:fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  border-radius: 0;
+  transform: none;
+}
+
 .handwriting-studio {
   display: grid;
   min-width: 0;
@@ -4244,8 +4274,29 @@ body.local-room-active {
     order: 3;
   }
 
-  .handwriting-tool-group button span {
-    display: none;
+  .handwriting-tool-group button span,
+  .handwriting-history button span {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition:
+      max-width 200ms ease,
+      opacity 200ms ease;
+  }
+  .handwriting-tool-group button[aria-pressed="true"] span,
+  .handwriting-tool-group button:focus span,
+  .handwriting-history button[aria-pressed="true"] span,
+  .handwriting-history button:focus span {
+    max-width: 150px;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .handwriting-tool-group button span,
+    .handwriting-history button span {
+      transition: none;
+    }
   }
 
   .handwriting-ink-options > label > span:first-child {
@@ -6342,27 +6393,42 @@ body.local-room-active {
 }
 .notebook-preview-book {
   position: relative;
-  width: min(420px, 85%);
-  height: 340px;
+  width: min(680px, 100%);
+  height: clamp(240px, 48vw, 420px);
   margin: 40px auto;
-  perspective: 900px;
+  perspective: 1400px;
+  border: 8px solid #7c3aed;
+  border-radius: 8px 16px 16px 8px;
+  background: #fff9ef;
+  box-shadow:
+    0 6px 0 #51259b,
+    0 12px 0 #51465d33;
 }
-.notebook-preview-cover {
+.notebook-preview-inside {
   position: absolute;
-  inset: 0 auto 0 4%;
-  width: 180px;
-  z-index: 4;
-  pointer-events: none;
-  transform-origin: left;
-  animation: preview-cover-open 900ms ease forwards;
+  inset: 0 50% 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding: clamp(12px, 3vw, 32px);
+  border-right: 4px solid #d6cbb8;
+  color: #51465d;
+  overflow-wrap: anywhere;
+  font-size: clamp(10px, 2vw, 14px);
+}
+.notebook-preview-inside strong {
+  font-size: clamp(18px, 3vw, 30px);
 }
 .notebook-preview-leaves {
   position: absolute;
-  inset: 5% 10%;
+  inset: 0 0 0 50%;
+  transform-style: preserve-3d;
 }
 .notebook-preview-leaf {
   position: absolute;
-  inset: 0 15%;
+  inset: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -6372,8 +6438,8 @@ body.local-room-active {
   background: #fff9ef;
   color: #292432;
   box-shadow: 5px 6px 0 #51465d33;
-  animation: preview-leaf-open 900ms ease both;
-  animation-delay: calc(var(--leaf-index, 0) * 100ms);
+  transform-origin: left center;
+  backface-visibility: hidden;
 }
 .notebook-preview-leaf img {
   width: 100%;
@@ -6384,24 +6450,40 @@ body.local-room-active {
   overflow: hidden;
   white-space: pre-wrap;
 }
-@keyframes preview-cover-open {
-  to {
-    transform: rotateY(-78deg);
-    opacity: 1;
-  }
+.notebook-preview-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;
+}
+/* Rotation around the spine inspired by anand_4957 on Uiverse.io. */
+.notebook-turning-leaf {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  animation: preview-leaf-open 650ms ease-in-out both;
+}
+.notebook-turning-leaf--back {
+  animation-direction: reverse;
+}
+.notebook-turning-back {
+  transform-origin: center;
+  transform: rotateY(180deg);
 }
 @keyframes preview-leaf-open {
   from {
-    transform: none;
+    transform: rotateY(0);
   }
   to {
-    transform: translateX(calc((var(--leaf-index, 0) - 1) * 45px))
-      rotate(calc((var(--leaf-index, 0) - 1) * 8deg));
+    transform: rotateY(-180deg);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .notebook-preview-cover,
-  .notebook-preview-leaf {
+  .notebook-turning-leaf {
     animation-duration: 1ms;
     animation-delay: 0ms;
   }
