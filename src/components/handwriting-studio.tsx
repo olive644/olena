@@ -77,7 +77,8 @@ function pointDistance(first: HandwritingPoint, second: HandwritingPoint): numbe
 
 function canvasPoint(
   canvas: HTMLCanvasElement,
-  event: Pick<PointerEvent, "clientX" | "clientY" | "pressure">,
+  event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
+    Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
 ): HandwritingPoint {
   const bounds = canvas.getBoundingClientRect();
   return {
@@ -90,7 +91,19 @@ function canvasPoint(
       Math.min(canvas.height, ((event.clientY - bounds.top) / bounds.height) * canvas.height),
     ),
     pressure: event.pressure > 0 ? event.pressure : 0.5,
+    ...(event.tiltX ? { tiltX: event.tiltX } : {}),
+    ...(event.tiltY ? { tiltY: event.tiltY } : {}),
   };
+}
+
+function tiltShading(point: HandwritingPoint): number {
+  // Inclinacao da caneta (graus, -90 a 90) simula uma ponta caligrafica: mais
+  // deitada = traco mais largo, em pe = mais fino. Mouse/toque nao reportam
+  // tilt, entao o efeito fica neutro (1) para esses dispositivos.
+  const tiltX = point.tiltX ?? 0;
+  const tiltY = point.tiltY ?? 0;
+  const magnitude = Math.min(1, Math.hypot(tiltX, tiltY) / 90);
+  return 1 + magnitude * 0.6;
 }
 
 function drawPaper(
@@ -190,7 +203,9 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
       (stroke.brush === "fine"
         ? 0.65
         : stroke.brush === "ink"
-          ? (0.5 + pressure * 3) * (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4)))
+          ? (0.5 + pressure * 3) *
+            (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4))) *
+            tiltShading(current)
           : stroke.brush === "soft"
             ? 2 + pressure * 4
             : 0.72 + pressure * 0.55);
@@ -403,6 +418,9 @@ export function HandwritingStudio({
     scrollTop: number;
   } | null>(null);
   const eraserChangedRef = useRef(false);
+  const activeToolRef = useRef<HandwritingTool>("pen");
+  const spaceToolRef = useRef<HandwritingTool | null>(null);
+  const penDetectedRef = useRef(false);
   const selectionRef = useRef<{
     pointerId: number;
     start: HandwritingPoint;
@@ -615,6 +633,139 @@ export function HandwritingStudio({
     return () => observer.disconnect();
   }, []);
 
+  const shortcutStateRef = useRef({
+    tool,
+    fileAction,
+    writingWindowOpen,
+    undo,
+    redo,
+    zoomAt,
+    resetView,
+    setTool,
+  });
+  useEffect(() => {
+    shortcutStateRef.current = {
+      tool,
+      fileAction,
+      writingWindowOpen,
+      undo,
+      redo,
+      zoomAt,
+      resetView,
+      setTool,
+    };
+  });
+
+  // Atalhos de teclado no estilo Xournal++/apps de mesa digitalizadora:
+  // Ctrl+Z / Ctrl+Shift+Z (desfazer/refazer), P/E/H (trocar ferramenta),
+  // Ctrl +/-/0 (zoom) e Espaco segurado para pan temporario. Usamos uma ref
+  // para o handler ler sempre o estado mais recente sem precisar recriar o
+  // listener a cada render.
+  useEffect(() => {
+    function isEditableTarget(target: EventTarget | null): boolean {
+      if (!(target instanceof HTMLElement)) return false;
+      return (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable
+      );
+    }
+    function centerZoom(direction: 1 | -1) {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const bounds = canvas.getBoundingClientRect();
+      shortcutStateRef.current.zoomAt(
+        bounds.left + bounds.width / 2,
+        bounds.top + bounds.height / 2,
+        direction,
+      );
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      const current = shortcutStateRef.current;
+      if (current.fileAction || current.writingWindowOpen || isEditableTarget(event.target)) return;
+      const ctrlOrCmd = event.ctrlKey || event.metaKey;
+      if (ctrlOrCmd && event.key.toLowerCase() === "z") {
+        event.preventDefault();
+        if (event.shiftKey) current.redo();
+        else current.undo();
+        return;
+      }
+      if (ctrlOrCmd && event.key.toLowerCase() === "y") {
+        event.preventDefault();
+        current.redo();
+        return;
+      }
+      if (ctrlOrCmd && (event.key === "+" || event.key === "=")) {
+        event.preventDefault();
+        centerZoom(1);
+        return;
+      }
+      if (ctrlOrCmd && event.key === "-") {
+        event.preventDefault();
+        centerZoom(-1);
+        return;
+      }
+      if (ctrlOrCmd && event.key === "0") {
+        event.preventDefault();
+        current.resetView();
+        return;
+      }
+      if (ctrlOrCmd || event.altKey) return;
+      if (event.code === "Space") {
+        if (!event.repeat && spaceToolRef.current === null && current.tool !== "hand") {
+          spaceToolRef.current = current.tool;
+          current.setTool("hand");
+        }
+        event.preventDefault();
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if (key === "p") {
+        event.preventDefault();
+        current.setTool("pen");
+      } else if (key === "e") {
+        event.preventDefault();
+        current.setTool("eraser");
+      } else if (key === "h") {
+        event.preventDefault();
+        current.setTool("hand");
+      } else if (key === "v") {
+        event.preventDefault();
+        current.setTool("select");
+      }
+    }
+    function onKeyUp(event: KeyboardEvent) {
+      if (event.code !== "Space") return;
+      const previous = spaceToolRef.current;
+      if (previous === null) return;
+      spaceToolRef.current = null;
+      shortcutStateRef.current.setTool(previous);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
+  // Ctrl/Cmd+scroll para zoom centralizado no cursor, como em apps de desenho
+  // profissionais. Precisa de um listener nativo (nao onWheel do React): o
+  // React trata wheel como passivo por padrao, entao preventDefault() dentro
+  // de onWheel falha silenciosamente e a pagina ainda rolaria junto do zoom.
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    function onWheel(event: WheelEvent) {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      shortcutStateRef.current.zoomAt(event.clientX, event.clientY, event.deltaY < 0 ? 1 : -1);
+    }
+    viewport.addEventListener("wheel", onWheel, { passive: false });
+    return () => viewport.removeEventListener("wheel", onWheel);
+  }, []);
+
   function remember(
     currentStrokes: Stroke[] = strokes,
     currentStickies: HandwritingSticky[] = stickies,
@@ -681,17 +832,34 @@ export function HandwritingStudio({
   }
 
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
-    if (event.button !== 0) return;
+    // Ponta de borracha invertida e botao de barril sao comuns em mesas
+    // digitalizadoras (Wacom, Huion, Surface Pen). O navegador reporta a
+    // ponta de borracha como button 5 e o botao de barril como button 2 em
+    // pointerType "pen" — tratamos os dois sem exigir que a pessoa troque de
+    // ferramenta manualmente.
+    const isPenEraserTip = event.pointerType === "pen" && event.button === 5;
+    const isPenBarrelButton = event.pointerType === "pen" && event.button === 2;
+    if (event.button !== 0 && !isPenEraserTip && !isPenBarrelButton) return;
+    if (event.pointerType === "pen" && !penDetectedRef.current) {
+      penDetectedRef.current = true;
+      setPenOnly(true);
+    }
+    const effectiveTool: HandwritingTool = isPenEraserTip
+      ? "eraser"
+      : isPenBarrelButton
+        ? "hand"
+        : tool;
+    activeToolRef.current = effectiveTool;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    if (tool === "zoom-in" || tool === "zoom-out") {
-      zoomAt(event.clientX, event.clientY, tool === "zoom-in" ? 1 : -1);
+    if (effectiveTool === "zoom-in" || effectiveTool === "zoom-out") {
+      zoomAt(event.clientX, event.clientY, effectiveTool === "zoom-in" ? 1 : -1);
       return;
     }
     if (activePointerRef.current !== null) return;
     canvas.setPointerCapture(event.pointerId);
     activePointerRef.current = event.pointerId;
-    if (tool === "hand" || (penOnly && event.pointerType === "touch")) {
+    if (effectiveTool === "hand" || (penOnly && event.pointerType === "touch")) {
       const viewport = viewportRef.current;
       if (!viewport) {
         activePointerRef.current = null;
@@ -710,8 +878,8 @@ export function HandwritingStudio({
     liveStrokeRef.current = null;
     setError("");
     const point = canvasPoint(canvas, event);
-    if (tool === "ruler") setRulerMeasure({ start: point, end: point });
-    if (tool === "select") {
+    if (effectiveTool === "ruler") setRulerMeasure({ start: point, end: point });
+    if (effectiveTool === "select") {
       const hitSelected = strokes.some(
         (stroke) => selectedIds.includes(stroke.id) && strokeTouches(stroke, point, 24),
       );
@@ -730,21 +898,21 @@ export function HandwritingStudio({
       return;
     }
     remember();
-    if (tool === "eraser") {
+    if (effectiveTool === "eraser") {
       eraserChangedRef.current = false;
       eraseAt([point]);
       return;
     }
-    const activeWidth = tool === "highlighter" ? Math.max(22, width * 4) : width;
+    const activeWidth = effectiveTool === "highlighter" ? Math.max(22, width * 4) : width;
     const nextStroke: Stroke = {
       id: strokeId(),
-      tool: tool === "ruler" ? "pen" : tool,
-      ...(tool === "pen" ? { brush } : {}),
+      tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
+      ...(effectiveTool === "pen" ? { brush } : {}),
       color,
       width: activeWidth,
       points: [point],
     };
-    if (tool !== "ruler") liveStrokeRef.current = nextStroke;
+    if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     setStrokes((current) => [...current, nextStroke]);
   }
 
@@ -797,15 +965,15 @@ export function HandwritingStudio({
     const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map((point) =>
       canvasPoint(canvas, point),
     );
-    if (tool === "ruler") {
+    if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
       if (end) setRulerMeasure((measurement) => (measurement ? { ...measurement, end } : null));
     }
-    if (tool === "eraser") {
+    if (activeToolRef.current === "eraser") {
       eraseAt(points);
       return;
     }
-    if (tool === "ruler") {
+    if (activeToolRef.current === "ruler") {
       setStrokes((current) => {
         const last = current.at(-1);
         if (!last) return current;
@@ -864,11 +1032,11 @@ export function HandwritingStudio({
     }
     if (!drawingRef.current) return;
     drawingRef.current = false;
-    if (tool === "eraser") {
+    if (activeToolRef.current === "eraser") {
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
-    if (tool === "ruler") return;
+    if (activeToolRef.current === "ruler") return;
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (!liveStroke) return;
