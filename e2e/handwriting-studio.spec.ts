@@ -18,8 +18,9 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       .click();
   }
   await expect(page.getByText("Matéria do novo caderno")).toHaveCount(0);
-  await page.getByLabel("Nome do novo caderno").fill("Meu universo");
-  await page.getByRole("button", { name: /novo caderno/i }).click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByLabel("Nome", { exact: true }).fill("Meu universo");
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Meu universo" })).toBeVisible();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
   await page.getByRole("button", { name: "Escrever à mão" }).click();
@@ -152,7 +153,8 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
       .getByRole("button", { name: "Cadernos", exact: true })
       .click();
   }
-  await page.getByRole("button", { name: /novo caderno/i }).click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
   await page.getByRole("button", { name: "Escrever à mão" }).click();
   let dialog = page.getByRole("dialog", { name: "Escrever à mão" });

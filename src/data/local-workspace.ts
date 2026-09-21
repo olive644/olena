@@ -173,6 +173,8 @@ function isNote(value: unknown): boolean {
 function isNotebook(value: unknown): boolean {
   return (
     isRecord(value) &&
+    (value["kind"] === undefined || value["kind"] === "folder") &&
+    (value["parentId"] === undefined || isString(value["parentId"])) &&
     isString(value["id"]) &&
     isString(value["title"]) &&
     isString(value["subjectId"]) &&

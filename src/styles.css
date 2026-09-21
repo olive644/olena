@@ -6023,6 +6023,7 @@ body.local-room-active {
     0 8px 0 var(--notebook-accent);
 }
 .book-cover__face {
+  z-index: 2;
   position: absolute;
   inset: 0;
   display: flex;
@@ -6058,6 +6059,7 @@ body.local-room-active {
   margin: 8px 0;
 }
 .book-cover__spine {
+  z-index: 3;
   position: absolute;
   inset: 0 auto 0 0;
   width: 15px;
@@ -6069,7 +6071,8 @@ body.local-room-active {
   position: absolute;
   width: 20px;
   height: 43px;
-  bottom: -22px;
+  bottom: -30px;
+  z-index: 1;
   right: 22px;
   background: #facc15;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
@@ -6077,7 +6080,7 @@ body.local-room-active {
 .notebook-card__copy {
   width: 100%;
   max-width: 210px;
-  padding-top: 20px;
+  padding-top: 40px;
 }
 .notebook-grid {
   gap: 2.5rem 1.5rem;
@@ -6100,13 +6103,149 @@ body.local-room-active {
   text-transform: uppercase;
 }
 .notebook-shelf__rail {
-  height: 13px;
-  margin: -0.1rem 0.4rem 0;
-  border-radius: 3px;
-  background: #51465d;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 93px;
+  height: 22px;
+  border-radius: 3px 8px 4px 3px;
+  border-top: 7px solid #a779ef;
+  background: #51259b;
+  pointer-events: none;
   box-shadow:
     0 5px 0 #292432,
     0 9px 0 rgb(41 36 50 / 12%);
+}
+
+.notebooks-showcase .notebook-shelf .notebook-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 210px));
+  gap: 32px;
+  padding: 24px 24px 0;
+}
+.notebook-shelf .notebook-card {
+  min-width: 0;
+  padding: 0;
+}
+.notebook-shelf .notebook-card__copy {
+  height: 96px;
+}
+.notebook-shelf .notebook-card__copy strong {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.notebook-shelf .book-cover {
+  z-index: 1;
+  width: 100%;
+}
+.annotation-folder {
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  isolation: isolate;
+}
+.annotation-folder__paper {
+  position: absolute;
+  inset: 28% 6% 0;
+  border: 5px solid #d6cbb8;
+  background: #fff9ef;
+  transform: rotate(-4deg);
+}
+.annotation-folder__front {
+  position: absolute;
+  inset: 34% 0 -8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px 18px;
+  color: #fff9ef;
+  background: #7c3aed;
+  border-bottom: 8px solid #51259b;
+  clip-path: polygon(0 0, 42% 0, 52% 10%, 100% 10%, 100% 100%, 0 100%);
+}
+.annotation-folder__front strong {
+  overflow-wrap: anywhere;
+  font-size: clamp(14px, 2vw, 22px);
+}
+.annotation-folder__front small {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+.notebook-create-dialog {
+  width: min(560px, calc(100% - 32px));
+  max-height: calc(100dvh - 40px);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 20px 12px 20px 12px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 8px 0 #51465d;
+}
+.notebook-create-dialog::backdrop {
+  background: rgb(23 21 28 / 65%);
+}
+.notebook-create-dialog form,
+.notebook-create-dialog label,
+.folder-destination {
+  display: grid;
+  gap: 16px;
+}
+.notebook-create-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.notebook-create-choices button {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  text-align: left;
+  min-height: 100px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+.notebook-create-choices button[aria-pressed="true"] {
+  border-color: #a779ef;
+  box-shadow: 0 3px 0 #7c3aed;
+}
+.notebook-create-choices span {
+  font-size: 12px;
+}
+.notebook-create-dialog input,
+.folder-destination select {
+  min-height: 44px;
+  padding: 10px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  width: 100%;
+}
+.folder-link {
+  border-left: 8px solid #7c3aed;
+}
+@media (max-width: 700px) {
+  .notebooks-showcase .notebook-shelf .notebook-grid {
+    grid-template-columns: repeat(4, minmax(140px, 160px));
+    gap: 24px;
+    padding: 20px 12px 0;
+    width: max-content;
+  }
+  .notebook-shelf {
+    overflow-x: auto;
+  }
+  .notebook-shelf__rail {
+    width: max(100%, 750px);
+  }
+  .notebook-create-choices {
+    grid-template-columns: 1fr;
+  }
 }
 .notebook-detail-actions {
   display: flex;

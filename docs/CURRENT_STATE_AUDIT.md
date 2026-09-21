@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Pastas interligadas e criação unificada
+
+A vitrine oferece Crie, com escolha entre caderno e pasta de anotações. StudyNotebook aceita kind opcional folder e parentId opcional, mantendo compatibilidade com dados anteriores. Pastas guardam notas de texto e podem ser movidas entre a vitrine e cadernos. Excluir o caderno devolve suas pastas à vitrine, preservando as notas. Folhas novas oferecem digitalização e escrita à mão; conteúdo digitado antigo permanece acessível. O editor resolve notas e folhas para corrigir a abertura das notas. Capas possuem lua crescente facetada e fita atrás da capa, saindo do bloco de páginas. Prateleiras têm base de papel roxo e rolagem horizontal no celular.
+
 ## Vitrine de cadernos e régua
 
 Cadernos exibem capas autorais de papel com lombada e marcador. O usuário informa um nome e abre as folhas dentro do caderno. Novos cadernos e suas folhas usam subjectId vazio, sem vínculo obrigatório com matérias; os registros anteriores são preservados.

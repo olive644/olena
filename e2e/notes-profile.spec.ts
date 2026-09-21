@@ -18,7 +18,8 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
     );
     await navigation.getByRole("button", { name: "Cadernos", exact: true }).click();
     if (theme === "Claro") {
-      await page.getByRole("button", { name: /Novo caderno/i }).click();
+      await page.getByRole("button", { name: "Crie", exact: true }).click();
+      await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
       await page.getByRole("button", { name: "Nova folha", exact: true }).click();
     } else {
       await page.getByRole("button", { name: /Abrir Meu caderno/i }).click();
