@@ -391,14 +391,16 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               value={activePage.title}
               onChange={(event) => updatePage(event.target.value, activePage.content)}
             />
-            {activePage.kind === "note" && (
-              <textarea
-                aria-label="Conteúdo da folha"
-                value={activePage.content}
-                onChange={(event) => updatePage(activePage.title, event.target.value)}
-                placeholder="Comece a escrever..."
-              />
-            )}
+            <textarea
+              aria-label="Conteúdo da folha"
+              value={activePage.content}
+              onChange={(event) => updatePage(activePage.title, event.target.value)}
+              placeholder={
+                activePage.kind === "note"
+                  ? "Comece a escrever..."
+                  : "Adicione uma descrição ou referência para esta folha..."
+              }
+            />
             {activePage.assets.length > 0 && (
               <section className="note-assets" aria-label="Imagens da folha">
                 <h2>Imagens</h2>
