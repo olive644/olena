@@ -3594,9 +3594,137 @@ body.local-room-active {
 }
 
 .paper-editor-icon {
-  width: 24px;
-  height: 26px;
-  flex: 0 0 24px;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  color: var(--text);
+  --editor-icon-cutout: var(--surface);
+}
+.handwriting-studio button[aria-pressed="true"] .paper-editor-icon,
+.handwriting-save .paper-editor-icon {
+  color: #fff9ef;
+  --editor-icon-cutout: #292432;
+  --editor-icon-facet: #c5c1c9;
+}
+.handwriting-ruler-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  overflow: visible;
+}
+.handwriting-ink-options fieldset {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px 14px 5px 10px;
+  background: var(--surface);
+  box-shadow: 0 3px 0 var(--line);
+}
+.handwriting-ink-options legend {
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.ink-palette .ink-swatch {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--surface);
+  border-radius: 5px 12px 5px 10px;
+  box-shadow: 0 3px 0 #292432;
+  color: white;
+  position: relative;
+}
+.ink-swatch::before {
+  content: "";
+  position: absolute;
+  inset: 2px auto auto 2px;
+  width: 14px;
+  height: 14px;
+  background: #fff9ef;
+  opacity: 0.4;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.ink-swatch[aria-pressed="true"] {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+.ink-swatch span {
+  background: #292432;
+  border-radius: 50%;
+}
+.ink-swatch span:empty {
+  background: none;
+}
+.handwriting-ink-options .ink-custom {
+  display: grid;
+  gap: 2px;
+  font-size: 10px;
+  text-align: center;
+}
+.ink-custom input {
+  width: 44px;
+  height: 32px;
+  cursor: pointer;
+}
+.stroke-palette button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 62px;
+  min-height: 48px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 5px 12px 5px 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 10px;
+}
+.stroke-palette svg {
+  width: 48px;
+  height: 22px;
+}
+.stroke-palette button[aria-pressed="true"] {
+  background: #7c3aed;
+  color: #fff9ef;
+  box-shadow: 0 3px 0 #51259b;
+}
+.handwriting-ink-options button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+.handwriting-ink-options button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.capture-dialog .handwriting-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #7433e0;
+  border-radius: 5px 13px 6px 11px;
+  background-color: #7433e0;
+  background-image:
+    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
+  box-shadow: 0 4px 0 #4b209b;
+  color: #fff9ef;
+  min-height: 48px;
+}
+.handwriting-save:active {
+  translate: 0 2px;
+}
+.handwriting-save:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
 }
 .editor-action-label {
   display: none;

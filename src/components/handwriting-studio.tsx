@@ -299,6 +299,10 @@ export function HandwritingStudio({
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
+  const [rulerMeasure, setRulerMeasure] = useState<{
+    start: HandwritingPoint;
+    end: HandwritingPoint;
+  } | null>(null);
   const activePointerRef = useRef<number | null>(null);
   const panRef = useRef<{
     pointerId: number;
@@ -527,6 +531,7 @@ export function HandwritingStudio({
     drawingRef.current = true;
     setError("");
     const point = canvasPoint(canvas, event);
+    if (tool === "ruler") setRulerMeasure({ start: point, end: point });
     if (tool === "select") {
       const hitSelected = strokes.some(
         (stroke) => selectedIds.includes(stroke.id) && strokeTouches(stroke, point, 24),
@@ -617,6 +622,10 @@ export function HandwritingStudio({
     const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map((point) =>
       canvasPoint(canvas, point),
     );
+    if (tool === "ruler") {
+      const end = points.at(-1);
+      if (end) setRulerMeasure((measurement) => (measurement ? { ...measurement, end } : null));
+    }
     if (tool === "eraser") {
       setStrokes((current) => {
         const next = current.filter(
@@ -651,6 +660,7 @@ export function HandwritingStudio({
 
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (event.pointerId !== activePointerRef.current) return;
+    setRulerMeasure(null);
     activePointerRef.current = null;
     if (selectionRef.current) {
       const selection = selectionRef.current;
@@ -1112,29 +1122,68 @@ export function HandwritingStudio({
         )}
 
         <div className="handwriting-ink-options">
-          <label>
-            <span>Cor da tinta</span>
-            <input
-              type="color"
-              aria-label="Cor da tinta"
-              value={color}
-              disabled={tool === "eraser"}
-              onChange={(event) => setColor(event.target.value)}
-            />
-          </label>
-          <label>
-            <span>Traço</span>
-            <select
-              aria-label="Espessura do traço"
-              value={width}
-              disabled={tool === "eraser"}
-              onChange={(event) => setWidth(Number(event.target.value))}
-            >
-              <option value="3">Fino</option>
-              <option value="5">Regular</option>
-              <option value="8">Forte</option>
-            </select>
-          </label>
+          <fieldset className="ink-palette" disabled={tool === "eraser"}>
+            <legend>Cor da tinta</legend>
+            {[
+              ["#17151c", "Grafite"],
+              ["#7c3aed", "Roxo"],
+              ["#ef476f", "Rosa"],
+              ["#2d8a67", "Verde"],
+              ["#facc15", "Amarelo"],
+              ["#fff9ef", "Creme"],
+            ].map(([ink, label]) => (
+              <button
+                key={ink}
+                type="button"
+                className="ink-swatch"
+                aria-label={`Tinta ${label}`}
+                aria-pressed={color.toLowerCase() === ink}
+                style={{ backgroundColor: ink }}
+                onClick={() => ink && setColor(ink)}
+              >
+                <span aria-hidden="true">{color.toLowerCase() === ink ? "✓" : ""}</span>
+              </button>
+            ))}
+            <label className="ink-custom" title="Escolher outra cor">
+              <span>Outra</span>
+              <input
+                type="color"
+                aria-label="Cor da tinta"
+                value={color}
+                disabled={tool === "eraser"}
+                onChange={(event) => setColor(event.target.value)}
+              />
+            </label>
+          </fieldset>
+          <fieldset className="stroke-palette" disabled={tool === "eraser"}>
+            <legend>Espessura do traço</legend>
+            {(
+              [
+                [3, "Fino"],
+                [5, "Regular"],
+                [8, "Forte"],
+              ] as const
+            ).map(([size, label]) => (
+              <button
+                type="button"
+                key={size}
+                aria-label={`Traço ${label}`}
+                aria-pressed={width === size}
+                onClick={() => setWidth(size)}
+              >
+                <svg viewBox="0 0 64 24" aria-hidden="true">
+                  <path
+                    d="M5 17C16 2 19 23 31 10S43 23 59 7"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={size}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span>{label}</span>
+              </button>
+            ))}
+          </fieldset>
           <label className="handwriting-assist">
             <input
               type="checkbox"
@@ -1316,6 +1365,46 @@ export function HandwritingStudio({
             className="handwriting-page-shell"
             style={{ width: displayWidth, height: (displayWidth / PAGE_WIDTH) * PAGE_HEIGHT }}
           >
+            {rulerMeasure &&
+              (() => {
+                const { start, end } = rulerMeasure;
+                const length = pointDistance(start, end);
+                const angle = (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI;
+                return (
+                  <svg
+                    className="handwriting-ruler-overlay"
+                    viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
+                    aria-label="Medição da régua"
+                  >
+                    <g transform={`translate(${start.x} ${start.y}) rotate(${angle})`}>
+                      <path d={`M0 -8V-38H${length}V-8Z`} fill="#FACC15" fillOpacity="0.88" />
+                      <path d={`M0 -38H${length}V-32H0Z`} fill="#FFE88D" />
+                      {Array.from({ length: Math.floor(length / 25) + 1 }, (_, index) => (
+                        <path
+                          key={index}
+                          d={`M${index * 25} -8v${index % 4 === 0 ? -22 : -12}`}
+                          stroke="#292432"
+                          strokeWidth="2"
+                        />
+                      ))}
+                    </g>
+                    <g
+                      transform={`translate(${Math.max(66, Math.min(PAGE_WIDTH - 66, (start.x + end.x) / 2))} ${Math.max(28, (start.y + end.y) / 2 - 56)})`}
+                    >
+                      <rect x="-64" y="-22" width="128" height="40" rx="6" fill="#292432" />
+                      <text
+                        textAnchor="middle"
+                        fill="#FFF9EF"
+                        fontSize="24"
+                        fontWeight="800"
+                        dominantBaseline="middle"
+                      >
+                        {Math.round(length)} px
+                      </text>
+                    </g>
+                  </svg>
+                );
+              })()}
             <canvas
               ref={canvasRef}
               className={`handwriting-canvas handwriting-canvas--${tool}`}
@@ -1338,6 +1427,7 @@ export function HandwritingStudio({
               onPointerMove={move}
               onPointerUp={finish}
               onPointerCancel={finish}
+              onLostPointerCapture={finish}
               onKeyDown={handleCanvasKeyDown}
             />
             {textMode && (
@@ -1469,7 +1559,8 @@ export function HandwritingStudio({
             <PaperEditorIcon name="print" /> <span>Imprimir/PDF</span>
           </button>
         </div>
-        <button className="primary-button" type="button" onClick={save}>
+        <button className="primary-button handwriting-save" type="button" onClick={save}>
+          <PaperEditorIcon name="save" />
           Salvar folha no caderno
         </button>
       </footer>

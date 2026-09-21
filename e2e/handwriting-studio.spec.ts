@@ -93,7 +93,14 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.mouse.move(startX, startY);
   await page.mouse.down();
   await page.mouse.move(startX + 100, startY + 7, { steps: 10 });
+  const measurement = dialog.getByLabel("Medição da régua");
+  await expect(measurement).toBeVisible();
+  await expect(measurement).toContainText(
+    `${Math.round((Math.hypot(100, 7) * 1200) / bounds.width)} px`,
+  );
+  await page.screenshot({ path: testInfo.outputPath("regua-medindo.png") });
   await page.mouse.up();
+  await expect(measurement).toHaveCount(0);
   await expect(dialog.getByRole("button", { name: "Desfazer" })).toBeEnabled();
   await dialog.getByRole("button", { name: "Desfazer" }).click();
   await expect(dialog.getByRole("button", { name: "Refazer" })).toBeEnabled();

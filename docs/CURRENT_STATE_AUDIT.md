@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Instrumentos de papel e régua com medida
+
+Borracha e post-it adaptam os SVGs fornecidos pelo proprietário. Lápis e marca-texto usam cores de objeto; ações usam grafite/creme conforme fundo e tema. Cor da tinta oferece amostras selecionáveis e cor personalizada. Espessura apresenta três amostras reais de traço. Salvar folha recebe as facetas e a base do botão roxo compartilhado, inclusive no portal do editor.
+
+A régua exibe graduação e comprimento em pixels da folha durante o arraste. O cálculo usa coordenadas do documento, independente do zoom, e a sobreposição desaparece em pointerup/pointercancel. Apenas o segmento desenhado é salvo ou exportado; a medida é transitória.
+
 ## Controles do editor manuscrito
 
 Tela cheia ao lado de Fechar usa Fullscreen API quando disponível, com alternativa CSS ocupando a janela. A saída restaura o editor sem perder a folha. PaperEditorIcon substitui os ícones de contorno das ferramentas, histórico e exportação por silhuetas em camadas de papel. No celular, rótulos dos instrumentos e histórico se expandem ao selecionar ou focar, com nomes acessíveis preservados e suporte a movimento reduzido.
