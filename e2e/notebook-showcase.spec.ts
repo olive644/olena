@@ -44,6 +44,16 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
   await page.reload();
   await openShelf();
   await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Preview do caderno" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Abrir preview de Uma ideia sem matéria." }),
+  ).toBeVisible();
+  await expect(page.locator(".notebook-page-grid")).toHaveCount(0);
+  await page.screenshot({
+    path: testInfo.outputPath("preview-folhas.png"),
+    animations: "disabled",
+  });
+  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
   await page.locator(".notebook-page-card").click();
   await expect(page.getByLabel("Título da folha")).toHaveValue("Uma ideia sem matéria.");
   await page.getByRole("button", { name: "Folhas do caderno", exact: true }).click();

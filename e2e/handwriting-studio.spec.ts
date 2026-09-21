@@ -105,8 +105,14 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   );
   await expect(reopened.getByRole("button", { name: "Limpar folha" })).toBeEnabled();
   await reopened.getByRole("button", { name: "Escura", exact: true }).click();
-  await reopened.getByRole("button", { name: "Adicionar texto" }).click();
-  await reopened.getByLabel("Texto na folha").fill("Minha anotação pelo teclado");
+  await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
+  const fullText = reopened.getByLabel("Texto da página inteira");
+  await fullText.fill("Minha anotação pelo teclado\nSegunda linha da página");
+  const textSize = await fullText.boundingBox();
+  const pageSize = await reopened.locator("canvas.handwriting-canvas").boundingBox();
+  expect(textSize!.width / pageSize!.width).toBeGreaterThan(0.8);
+  expect(textSize!.height / pageSize!.height).toBeGreaterThan(0.85);
+  await page.screenshot({ path: testInfo.outputPath("texto-pagina.png"), animations: "disabled" });
   await reopened.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await page.reload();
   const saved = await page.evaluate(() => {
@@ -137,7 +143,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.locator(".notebook-page-card").first().click();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
-  await expect(page.getByLabel("Texto na folha")).toHaveValue("Minha anotação pelo teclado");
+  await page.getByRole("button", { name: "Texto na página inteira" }).click();
+  await expect(page.getByLabel("Texto da página inteira")).toHaveValue(
+    "Minha anotação pelo teclado\nSegunda linha da página",
+  );
   await expect(page.getByRole("button", { name: "Escura", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",

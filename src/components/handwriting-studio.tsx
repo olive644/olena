@@ -39,11 +39,13 @@ const BASE_DISPLAY_WIDTH = 760;
 const WRITING_WINDOW_WIDTH = 500;
 const WRITING_WINDOW_HEIGHT = 185;
 
+import { pageTextLines } from "../domain/handwriting";
+
 type HandwritingTool =
   "pen" | "highlighter" | "eraser" | "hand" | "select" | "zoom-in" | "zoom-out" | "ruler";
 type PaperStyle = HandwritingPaper;
 type Stroke = HandwritingStroke;
-type Snapshot = { strokes: Stroke[]; stickies: HandwritingSticky[] };
+type Snapshot = { strokes: Stroke[]; stickies: HandwritingSticky[]; pageText: string };
 type SelectionBox = { x: number; y: number; width: number; height: number };
 
 type HandwritingStudioProps = {
@@ -189,10 +191,19 @@ function renderPage(
   paperColor: HandwritingPaperColor,
   stickies: readonly HandwritingSticky[],
   editing = false,
+  pageText = "",
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
   drawPaper(context, paper, paperColor);
+  if (pageText) {
+    context.save();
+    context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
+    context.font = "28px monospace";
+    context.textBaseline = "top";
+    pageTextLines(pageText).forEach((line, index) => context.fillText(line, 112, 80 + index * 40));
+    context.restore();
+  }
   for (const stroke of strokes) drawStroke(context, stroke);
   for (const sticky of stickies) {
     if (editing && sticky.kind === "text") continue;
@@ -320,6 +331,8 @@ export function HandwritingStudio({
   } | null>(null);
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const [strokes, setStrokes] = useState<Stroke[]>(() => startingDocument?.strokes ?? []);
+  const [pageText, setPageText] = useState(startingDocument?.pageText ?? "");
+  const [textMode, setTextMode] = useState(false);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
     () => startingDocument?.stickies ?? [],
   );
@@ -353,8 +366,8 @@ export function HandwritingStudio({
   }
 
   const currentDocument: HandwritingDocument = useMemo(
-    () => ({ version: 1, paper, paperColor, strokes, stickies }),
-    [paper, paperColor, strokes, stickies],
+    () => ({ version: 1, paper, paperColor, strokes, stickies, pageText }),
+    [paper, paperColor, strokes, stickies, pageText],
   );
   const baseline = JSON.stringify({
     version: 1,
@@ -371,6 +384,7 @@ export function HandwritingStudio({
           : (initialDocument?.paperColor ?? "light"),
     strokes: initialDocument?.strokes ?? [],
     stickies: initialDocument?.stickies ?? [],
+    pageText: initialDocument?.pageText ?? "",
   });
   const dirty = JSON.stringify(currentDocument) !== baseline;
 
@@ -417,7 +431,7 @@ export function HandwritingStudio({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    renderPage(canvas, strokes, paper, paperColor, stickies, true);
+    renderPage(canvas, strokes, paper, paperColor, stickies, true, textMode ? "" : pageText);
     const context = canvas.getContext("2d");
     if (!context) return;
     context.save();
@@ -435,7 +449,7 @@ export function HandwritingStudio({
       context.strokeRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
     }
     context.restore();
-  }, [paper, paperColor, selectedIds, selectionBox, stickies, strokes]);
+  }, [paper, paperColor, selectedIds, selectionBox, stickies, strokes, pageText, textMode]);
 
   useEffect(() => {
     if (!writingWindowOpen) return;
@@ -476,7 +490,7 @@ export function HandwritingStudio({
   ) {
     setUndoStack((history) => [
       ...history.slice(-39),
-      { strokes: currentStrokes, stickies: currentStickies },
+      { strokes: currentStrokes, stickies: currentStickies, pageText },
     ]);
     setRedoStack([]);
   }
@@ -704,9 +718,10 @@ export function HandwritingStudio({
   function undo() {
     const previous = undoStack.at(-1);
     if (!previous) return;
-    setRedoStack((history) => [...history, { strokes, stickies }]);
+    setRedoStack((history) => [...history, { strokes, stickies, pageText }]);
     setStrokes(previous.strokes);
     setStickies(previous.stickies);
+    setPageText(previous.pageText);
     setSelectedIds([]);
     setUndoStack((history) => history.slice(0, -1));
   }
@@ -714,18 +729,20 @@ export function HandwritingStudio({
   function redo() {
     const next = redoStack.at(-1);
     if (!next) return;
-    setUndoStack((history) => [...history, { strokes, stickies }]);
+    setUndoStack((history) => [...history, { strokes, stickies, pageText }]);
     setStrokes(next.strokes);
     setStickies(next.stickies);
+    setPageText(next.pageText);
     setSelectedIds([]);
     setRedoStack((history) => history.slice(0, -1));
   }
 
   function clearPage() {
-    if (strokes.length === 0 && stickies.length === 0) return;
+    if (strokes.length === 0 && stickies.length === 0 && !pageText) return;
     remember();
     setStrokes([]);
     setStickies([]);
+    setPageText("");
     setSelectedIds([]);
   }
 
@@ -893,6 +910,7 @@ export function HandwritingStudio({
   function buildDocument(): HandwritingDocument {
     const document: HandwritingDocument = {
       version: 1,
+      pageText,
       paper,
       paperColor,
       strokes: strokes.map((stroke) => ({
@@ -914,7 +932,7 @@ export function HandwritingStudio({
   function pageImage(): string {
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Não foi possível preparar a folha.");
-    renderPage(canvas, strokes, paper, paperColor, stickies);
+    renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText);
     return exportPage(canvas);
   }
 
@@ -922,7 +940,7 @@ export function HandwritingStudio({
     try {
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
-      renderPage(canvas, strokes, paper, paperColor, stickies);
+      renderPage(canvas, strokes, paper, paperColor, stickies, false, pageText);
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "folha-do-caderno.png";
@@ -984,7 +1002,7 @@ export function HandwritingStudio({
 
   function save() {
     const canvas = canvasRef.current;
-    if (!canvas || (strokes.length === 0 && stickies.length === 0)) {
+    if (!canvas || (strokes.length === 0 && stickies.length === 0 && !pageText.trim())) {
       setError("Escreva ou adicione um post-it antes de salvar.");
       return;
     }
@@ -1010,7 +1028,10 @@ export function HandwritingStudio({
             aria-label="Régua"
             title="Régua: arraste para traçar uma linha reta"
             aria-pressed={tool === "ruler"}
-            onClick={() => setTool("ruler")}
+            onClick={() => {
+              setTextMode(false);
+              setTool("ruler");
+            }}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#B88C13" d="m2 15 14-13 7 7-14 14Z" />
@@ -1024,7 +1045,10 @@ export function HandwritingStudio({
             className={tool === "pen" ? "is-active" : ""}
             aria-label="Caneta"
             aria-pressed={tool === "pen"}
-            onClick={() => setTool("pen")}
+            onClick={() => {
+              setTextMode(false);
+              setTool("pen");
+            }}
           >
             <PenLine size={18} /> <span>Caneta</span>
           </button>
@@ -1064,7 +1088,12 @@ export function HandwritingStudio({
           >
             <MousePointer2 size={18} /> <span>Selecionar</span>
           </button>
-          <button type="button" aria-label="Adicionar texto" onClick={() => addSticky("text")}>
+          <button
+            type="button"
+            aria-label="Texto na página inteira"
+            aria-pressed={textMode}
+            onClick={() => setTextMode((active) => !active)}
+          >
             <strong aria-hidden="true">T</strong> <span>Texto</span>
           </button>
           <button type="button" aria-label="Adicionar post-it" onClick={() => addSticky()}>
@@ -1175,7 +1204,7 @@ export function HandwritingStudio({
           <button
             type="button"
             aria-label="Limpar folha"
-            disabled={!strokes.length}
+            disabled={!strokes.length && !stickies.length && !pageText}
             onClick={clearPage}
           >
             <Trash2 size={18} />
@@ -1305,6 +1334,36 @@ export function HandwritingStudio({
               onPointerCancel={finish}
               onKeyDown={handleCanvasKeyDown}
             />
+            {textMode && (
+              <textarea
+                className="handwriting-full-page-text"
+                aria-label="Texto da página inteira"
+                placeholder="Escreva aqui. Esta área ocupa a folha inteira."
+                value={pageText}
+                spellCheck
+                wrap="off"
+                style={{
+                  left: `${(112 / PAGE_WIDTH) * 100}%`,
+                  top: `${(80 / PAGE_HEIGHT) * 100}%`,
+                  width: `${(980 / PAGE_WIDTH) * 100}%`,
+                  height: `${(1440 / PAGE_HEIGHT) * 100}%`,
+                  fontSize: `${(28 * displayWidth) / PAGE_WIDTH}px`,
+                  lineHeight: `${(40 * displayWidth) / PAGE_WIDTH}px`,
+                  color: paperColor === "night" ? "#fff9ef" : "#17151c",
+                }}
+                onFocus={() => remember()}
+                onChange={(event) => {
+                  const lines = pageTextLines(event.target.value.replace(/\t/g, "    "));
+                  if (lines.length > 36) {
+                    setError("Esta folha está completa. Crie outra folha para continuar.");
+                    return;
+                  }
+                  setError("");
+                  setPageText(lines.join("\n"));
+                  setRedoStack([]);
+                }}
+              />
+            )}
             {stickies.map((sticky) => (
               <div
                 className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.color}`}

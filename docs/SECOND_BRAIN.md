@@ -1,5 +1,7 @@
 # HelenaStudy: Second Brain
 
+Entrada de cadernos mostra preview temporário das folhas existentes, seguido da galeria. pageText em HandwritingDocument representa escrita por teclado na página inteira. A área escala com o zoom e mantém quebras de linha na exportação. O limite visual de uma página exibe aviso para continuar em outra folha.
+
 Pastas são guardadas por arraste sobre cadernos na vitrine, ou por espaço e Enter com teclado. Removido o seletor Guardar em dentro da pasta. Devolver à vitrine fica junto à pasta no caderno. O código FolderComponent fornecido orienta a aba inclinável e as três folhas animadas, adaptadas à paleta sólida. HandwritingSticky aceita kind text e ink para caixas de texto sem fundo no editor manual; reutiliza histórico e persistência dos objetos posicionáveis.
 
 Crie abre a escolha Cadernos ou Anotações. Anotações são pastas (StudyNotebook.kind = folder), com parentId opcional para guardar dentro de um caderno. Guardar em também permite devolver à vitrine. O reducer valida o destino e preserva pastas ao excluir seu caderno. Notas antigas diretamente em cadernos continuam acessíveis na aba Anotações. Testes de vitrine verificam criação, edição, movimentação e persistência de pastas no desktop e celular.
