@@ -65,6 +65,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [activePageId, setActivePageId] = useState<string | null>(null);
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
+  const [notebookSection, setNotebookSection] = useState<"pages" | "notes">("pages");
 
   useEffect(() => {
     if (navigator.userAgent.includes("jsdom")) return;
@@ -76,7 +77,13 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const notebookPages = activeNotebook
     ? activeNotebook.pageIds.flatMap((id) => {
         const page = workspace.notes.find((note) => note.id === id);
-        return page ? [page] : [];
+        return page && page.kind !== "note" ? [page] : [];
+      })
+    : [];
+  const notebookNotes = activeNotebook
+    ? activeNotebook.pageIds.flatMap((id) => {
+        const note = workspace.notes.find((item) => item.id === id);
+        return note?.kind === "note" ? [note] : [];
       })
     : [];
   const activePage = notebookPages.find((page) => page.id === activePageId) ?? null;
@@ -106,6 +113,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     }
     setActiveNotebookId(notebook.id);
     setActivePageId(null);
+    setNotebookSection("pages");
   }
 
   function removeSelectedNotebooks() {
@@ -125,6 +133,21 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       subjectId: activeNotebook.subjectId,
       updatedAt: new Date().toISOString(),
     });
+    setActivePageId(id);
+  }
+
+  function createTextNote() {
+    if (!activeNotebook) return;
+    const id = createWorkspaceId("note");
+    dispatch({
+      type: "note/added",
+      id,
+      notebookId: activeNotebook.id,
+      subjectId: "",
+      updatedAt: new Date().toISOString(),
+      kind: "note",
+    });
+    setNotebookSection("notes");
     setActivePageId(id);
   }
 
@@ -248,44 +271,68 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                 <p>Um lugar para suas ideias. Crie um caderno e preencha suas primeiras folhas.</p>
               </div>
             ) : (
-              <div className="notebook-grid">
-                {workspace.notebooks.map((notebook) => {
-                  const coverIndex =
-                    [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4;
-                  return (
-                    <button
-                      className="notebook-card"
-                      type="button"
-                      onClick={() => openNotebook(notebook)}
-                      aria-label={`Abrir ${notebook.title}`}
-                      aria-pressed={
-                        selectionMode ? selectedNotebookIds.includes(notebook.id) : undefined
-                      }
-                      key={notebook.id}
+              <div className="notebook-shelves">
+                {Array.from(
+                  { length: Math.ceil(workspace.notebooks.length / 4) },
+                  (_, shelfIndex) => (
+                    <section
+                      className="notebook-shelf"
+                      key={shelfIndex}
+                      aria-label={`Prateleira ${shelfIndex + 1}`}
                     >
-                      {selectionMode && (
-                        <span
-                          className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
-                          aria-hidden="true"
-                        >
-                          {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
-                        </span>
-                      )}
-                      <NotebookArtwork
-                        subjectColor={
-                          ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ?? "#7C3AED"
-                        }
-                        title={notebook.title}
-                      />
-                      <span className="notebook-card__copy">
-                        <strong>{notebook.title}</strong>
-                        <small>
-                          {notebook.pageIds.length} folha{notebook.pageIds.length === 1 ? "" : "s"}
-                        </small>
+                      <span className="notebook-shelf__label">
+                        Coleção {String(shelfIndex + 1).padStart(2, "0")}
                       </span>
-                    </button>
-                  );
-                })}
+                      <div className="notebook-grid">
+                        {workspace.notebooks
+                          .slice(shelfIndex * 4, shelfIndex * 4 + 4)
+                          .map((notebook) => {
+                            const coverIndex =
+                              [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) %
+                              4;
+                            return (
+                              <button
+                                className="notebook-card"
+                                type="button"
+                                onClick={() => openNotebook(notebook)}
+                                aria-label={`Abrir ${notebook.title}`}
+                                aria-pressed={
+                                  selectionMode
+                                    ? selectedNotebookIds.includes(notebook.id)
+                                    : undefined
+                                }
+                                key={notebook.id}
+                              >
+                                {selectionMode && (
+                                  <span
+                                    className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
+                                    aria-hidden="true"
+                                  >
+                                    {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
+                                  </span>
+                                )}
+                                <NotebookArtwork
+                                  subjectColor={
+                                    ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ??
+                                    "#7C3AED"
+                                  }
+                                  title={notebook.title}
+                                />
+                                <span className="notebook-card__copy">
+                                  <strong>{notebook.title}</strong>
+                                  <small>
+                                    {notebook.pageIds.length} folha
+                                    {notebook.pageIds.length === 1 ? "" : "s"}
+                                  </small>
+                                </span>
+                              </button>
+                            );
+                          })}
+                      </div>
+                      <div className="notebook-shelf__rail" aria-hidden="true" />
+                    </section>
+                  ),
+                )}
               </div>
             )}
           </section>
@@ -327,27 +374,31 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               <span>Suas anotações</span>
               <small>Salva automaticamente</small>
             </div>
-            <Suspense fallback={<HelenaLoading label="Abrindo ferramentas…" compact />}>
-              <NoteCaptureTools
-                draftPageKey={activePage.id}
-                onSave={saveAsset}
-                onUpdate={updateAsset}
-                editingAsset={editingAsset}
-                onCloseEditing={() => setEditingAssetId(null)}
-              />
-            </Suspense>
+            {activePage.kind !== "note" && (
+              <Suspense fallback={<HelenaLoading label="Abrindo ferramentas…" compact />}>
+                <NoteCaptureTools
+                  draftPageKey={activePage.id}
+                  onSave={saveAsset}
+                  onUpdate={updateAsset}
+                  editingAsset={editingAsset}
+                  onCloseEditing={() => setEditingAssetId(null)}
+                />
+              </Suspense>
+            )}
             <input
               className="note-title-input"
               aria-label="Título da folha"
               value={activePage.title}
               onChange={(event) => updatePage(event.target.value, activePage.content)}
             />
-            <textarea
-              aria-label="Conteúdo da folha"
-              value={activePage.content}
-              onChange={(event) => updatePage(activePage.title, event.target.value)}
-              placeholder="Comece a escrever..."
-            />
+            {activePage.kind === "note" && (
+              <textarea
+                aria-label="Conteúdo da folha"
+                value={activePage.content}
+                onChange={(event) => updatePage(activePage.title, event.target.value)}
+                placeholder="Comece a escrever..."
+              />
+            )}
             {activePage.assets.length > 0 && (
               <section className="note-assets" aria-label="Imagens da folha">
                 <h2>Imagens</h2>
@@ -405,82 +456,137 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               <h1>{activeNotebook.title}</h1>
               <p>Suas ideias, folha por folha.</p>
             </div>
-            <button className="primary-button" type="button" onClick={createPage}>
-              <PaperActionIcon name="plus" /> <span>Nova folha</span>
-            </button>
+            <div className="notebook-detail-actions">
+              <button className="secondary-button" type="button" onClick={createTextNote}>
+                <PaperActionIcon name="plus" /> <span>Nova nota</span>
+              </button>
+              <button className="primary-button" type="button" onClick={createPage}>
+                <PaperActionIcon name="plus" /> <span>Nova folha</span>
+              </button>
+            </div>
           </header>
-          <section className="notebook-pages" aria-label={`Folhas de ${activeNotebook.title}`}>
-            {notebookPages.length === 0 ? (
-              <div className="notebook-pages__empty">
-                <span className="paper-stack" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </span>
-                <h2>Este caderno ainda está em branco</h2>
-                <p>Crie uma folha para começar a escrever, digitalizar ou desenhar.</p>
-                <button className="primary-button" type="button" onClick={createPage}>
-                  <PaperActionIcon name="plus" /> <span>Criar primeira folha</span>
-                </button>
-              </div>
-            ) : (
-              <div className="notebook-page-grid">
-                {notebookPages.map((page, index) => (
-                  <div className="notebook-page-tile" key={page.id}>
-                    <button
-                      className="notebook-page-card"
-                      type="button"
-                      onClick={() => setActivePageId(page.id)}
-                    >
-                      <span className="notebook-page-card__number">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <strong>{page.title || "Folha sem título"}</strong>
-                      <span>
-                        {page.content ||
-                          (page.assets.length > 0
-                            ? `${page.assets.length} imagem${page.assets.length === 1 ? "" : "s"}`
-                            : "Folha vazia")}
-                      </span>
-                      <small>Abrir folha</small>
-                    </button>
-                    <div className="notebook-page-order" aria-label={`Ordem de ${page.title}`}>
+          <div className="notebook-section-tabs" role="tablist" aria-label="Conteúdo do caderno">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={notebookSection === "pages"}
+              onClick={() => setNotebookSection("pages")}
+            >
+              Folhas <small>{notebookPages.length}</small>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={notebookSection === "notes"}
+              onClick={() => setNotebookSection("notes")}
+            >
+              Notas <small>{notebookNotes.length}</small>
+            </button>
+          </div>
+          {notebookSection === "pages" ? (
+            <section className="notebook-pages" aria-label={`Folhas de ${activeNotebook.title}`}>
+              {notebookPages.length === 0 ? (
+                <div className="notebook-pages__empty">
+                  <span className="paper-stack" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                  <h2>Este caderno ainda está em branco</h2>
+                  <p>Crie uma folha para começar a escrever, digitalizar ou desenhar.</p>
+                  <button className="primary-button" type="button" onClick={createPage}>
+                    <PaperActionIcon name="plus" /> <span>Criar primeira folha</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="notebook-page-grid">
+                  {notebookPages.map((page, index) => (
+                    <div className="notebook-page-tile" key={page.id}>
                       <button
+                        className="notebook-page-card"
                         type="button"
-                        disabled={index === 0}
-                        aria-label={`Mover ${page.title} para antes`}
-                        onClick={() =>
-                          dispatch({
-                            type: "notebook/page-moved",
-                            notebookId: activeNotebook.id,
-                            pageId: page.id,
-                            direction: -1,
-                          })
-                        }
+                        onClick={() => setActivePageId(page.id)}
                       >
-                        ↑ Antes
+                        <span className="notebook-page-card__number">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <strong>{page.title || "Folha sem título"}</strong>
+                        <span>
+                          {page.content ||
+                            (page.assets.length > 0
+                              ? `${page.assets.length} imagem${page.assets.length === 1 ? "" : "s"}`
+                              : "Folha vazia")}
+                        </span>
+                        <small>Abrir folha</small>
                       </button>
-                      <button
-                        type="button"
-                        disabled={index === notebookPages.length - 1}
-                        aria-label={`Mover ${page.title} para depois`}
-                        onClick={() =>
-                          dispatch({
-                            type: "notebook/page-moved",
-                            notebookId: activeNotebook.id,
-                            pageId: page.id,
-                            direction: 1,
-                          })
-                        }
-                      >
-                        ↓ Depois
-                      </button>
+                      <div className="notebook-page-order" aria-label={`Ordem de ${page.title}`}>
+                        <button
+                          type="button"
+                          disabled={index === 0}
+                          aria-label={`Mover ${page.title} para antes`}
+                          onClick={() =>
+                            dispatch({
+                              type: "notebook/page-moved",
+                              notebookId: activeNotebook.id,
+                              pageId: page.id,
+                              direction: -1,
+                            })
+                          }
+                        >
+                          ↑ Antes
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === notebookPages.length - 1}
+                          aria-label={`Mover ${page.title} para depois`}
+                          onClick={() =>
+                            dispatch({
+                              type: "notebook/page-moved",
+                              notebookId: activeNotebook.id,
+                              pageId: page.id,
+                              direction: 1,
+                            })
+                          }
+                        >
+                          ↓ Depois
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+                  ))}
+                </div>
+              )}
+            </section>
+          ) : (
+            <section
+              className="notebook-text-notes"
+              aria-label={`Notas de ${activeNotebook.title}`}
+            >
+              {notebookNotes.length === 0 ? (
+                <div className="notebook-pages__empty">
+                  <h2>Este caderno ainda não tem notas</h2>
+                  <p>Crie uma nota para guardar ideias rápidas em texto.</p>
+                  <button className="primary-button" type="button" onClick={createTextNote}>
+                    Criar primeira nota
+                  </button>
+                </div>
+              ) : (
+                notebookNotes.map((note) => (
+                  <button
+                    className="text-note-card"
+                    type="button"
+                    key={note.id}
+                    onClick={() => {
+                      setNotebookSection("notes");
+                      setActivePageId(note.id);
+                    }}
+                  >
+                    <strong>{note.title || "Nota sem título"}</strong>
+                    <span>{note.content || "Comece a escrever..."}</span>
+                  </button>
+                ))
+              )}
+            </section>
+          )}
         </>
       )}
     </main>

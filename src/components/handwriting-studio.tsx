@@ -26,6 +26,7 @@ import { isHandwritingDocument, MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/l
 import type {
   HandwritingDocument,
   HandwritingPaper,
+  HandwritingPaperColor,
   HandwritingPoint,
   HandwritingStroke,
   HandwritingSticky,
@@ -91,15 +92,22 @@ function canvasPoint(
   };
 }
 
-function drawPaper(context: CanvasRenderingContext2D, paper: PaperStyle) {
-  context.fillStyle = paper === "night" ? "#292432" : paper === "aged" ? "#f3e6c8" : "#fffdf7";
+function drawPaper(
+  context: CanvasRenderingContext2D,
+  paper: PaperStyle,
+  paperColor: HandwritingPaperColor,
+) {
+  context.fillStyle =
+    paperColor === "night" ? "#292432" : paperColor === "aged" ? "#f3e6c8" : "#fffdf7";
   context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
   context.save();
-  context.strokeStyle = paper === "night" ? "#51465d" : paper === "aged" ? "#d4bd91" : "#dcd8ee";
-  context.fillStyle = paper === "night" ? "#6d5f78" : paper === "aged" ? "#d4bd91" : "#d5d0e8";
+  context.strokeStyle =
+    paperColor === "night" ? "#51465d" : paperColor === "aged" ? "#d4bd91" : "#dcd8ee";
+  context.fillStyle =
+    paperColor === "night" ? "#6d5f78" : paperColor === "aged" ? "#d4bd91" : "#d5d0e8";
   context.lineWidth = 1.4;
   const gap = 48;
-  if (paper === "ruled" || paper === "grid" || paper === "night" || paper === "aged") {
+  if (paper === "ruled" || paper === "grid") {
     for (let y = 112; y < PAGE_HEIGHT; y += gap) {
       context.beginPath();
       context.moveTo(0, y);
@@ -124,8 +132,8 @@ function drawPaper(context: CanvasRenderingContext2D, paper: PaperStyle) {
       }
     }
   }
-  if (paper !== "blank" && paper !== "night") {
-    context.strokeStyle = paper === "aged" ? "#c78f78" : "#e9b9b1";
+  if (paper !== "blank" && paperColor !== "night") {
+    context.strokeStyle = paperColor === "aged" ? "#c78f78" : "#e9b9b1";
     context.lineWidth = 2;
     context.beginPath();
     context.moveTo(104, 0);
@@ -178,11 +186,12 @@ function renderPage(
   canvas: HTMLCanvasElement,
   strokes: readonly Stroke[],
   paper: PaperStyle,
+  paperColor: HandwritingPaperColor,
   stickies: readonly HandwritingSticky[],
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
-  drawPaper(context, paper);
+  drawPaper(context, paper, paperColor);
   for (const stroke of strokes) drawStroke(context, stroke);
   for (const sticky of stickies) {
     context.save();
@@ -277,6 +286,13 @@ export function HandwritingStudio({
 }: HandwritingStudioProps) {
   const recovered = useRef(readDraft(draftKey));
   const startingDocument = recovered.current ?? initialDocument;
+  const storedPaper = startingDocument?.paper as string | undefined;
+  const legacyPaperColor: HandwritingPaperColor =
+    storedPaper === "night"
+      ? "night"
+      : storedPaper === "aged"
+        ? "aged"
+        : (startingDocument?.paperColor ?? "light");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const writingCanvasRef = useRef<HTMLCanvasElement>(null);
   const writingPointerRef = useRef<number | null>(null);
@@ -308,8 +324,13 @@ export function HandwritingStudio({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [tool, setTool] = useState<HandwritingTool>("pen");
-  const [paper, setPaper] = useState<PaperStyle>(startingDocument?.paper ?? "ruled");
-  const [color, setColor] = useState("#17151c");
+  const [paper, setPaper] = useState<PaperStyle>(
+    storedPaper === "night" || storedPaper === "aged"
+      ? "blank"
+      : (startingDocument?.paper ?? "ruled"),
+  );
+  const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
+  const [color, setColor] = useState(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   const [width, setWidth] = useState(5);
   const [stabilization, setStabilization] = useState(true);
   const [penOnly, setPenOnly] = useState(false);
@@ -321,19 +342,29 @@ export function HandwritingStudio({
   const [writingWindowY, setWritingWindowY] = useState(110);
   const [draftStatus, setDraftStatus] = useState(recovered.current ? "Rascunho recuperado" : "");
 
-  function selectPaper(nextPaper: PaperStyle) {
-    setPaper(nextPaper);
-    if (nextPaper === "night" && color === "#17151c") setColor("#fff9ef");
-    if (nextPaper !== "night" && color === "#fff9ef") setColor("#17151c");
+  function selectPaperColor(nextColor: HandwritingPaperColor) {
+    setPaperColor(nextColor);
+    if (nextColor === "night" && color === "#17151c") setColor("#fff9ef");
+    if (nextColor !== "night" && color === "#fff9ef") setColor("#17151c");
   }
 
   const currentDocument: HandwritingDocument = useMemo(
-    () => ({ version: 1, paper, strokes, stickies }),
-    [paper, strokes, stickies],
+    () => ({ version: 1, paper, paperColor, strokes, stickies }),
+    [paper, paperColor, strokes, stickies],
   );
   const baseline = JSON.stringify({
     version: 1,
-    paper: initialDocument?.paper ?? "ruled",
+    paper:
+      (initialDocument?.paper as string | undefined) === "night" ||
+      (initialDocument?.paper as string | undefined) === "aged"
+        ? "blank"
+        : (initialDocument?.paper ?? "ruled"),
+    paperColor:
+      (initialDocument?.paper as string | undefined) === "night"
+        ? "night"
+        : (initialDocument?.paper as string | undefined) === "aged"
+          ? "aged"
+          : (initialDocument?.paperColor ?? "light"),
     strokes: initialDocument?.strokes ?? [],
     stickies: initialDocument?.stickies ?? [],
   });
@@ -382,7 +413,7 @@ export function HandwritingStudio({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    renderPage(canvas, strokes, paper, stickies);
+    renderPage(canvas, strokes, paper, paperColor, stickies);
     const context = canvas.getContext("2d");
     if (!context) return;
     context.save();
@@ -400,7 +431,7 @@ export function HandwritingStudio({
       context.strokeRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
     }
     context.restore();
-  }, [paper, selectedIds, selectionBox, stickies, strokes]);
+  }, [paper, paperColor, selectedIds, selectionBox, stickies, strokes]);
 
   useEffect(() => {
     if (!writingWindowOpen) return;
@@ -877,7 +908,7 @@ export function HandwritingStudio({
   function pageImage(): string {
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Não foi possível preparar a folha.");
-    renderPage(canvas, strokes, paper, stickies);
+    renderPage(canvas, strokes, paper, paperColor, stickies);
     return exportPage(canvas);
   }
 
@@ -885,7 +916,7 @@ export function HandwritingStudio({
     try {
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
-      renderPage(canvas, strokes, paper, stickies);
+      renderPage(canvas, strokes, paper, paperColor, stickies);
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "folha-do-caderno.png";
@@ -1185,26 +1216,43 @@ export function HandwritingStudio({
       )}
 
       <div className="handwriting-workspace">
-        <aside className="handwriting-paper-picker" aria-label="Tipo de papel">
-          <strong>Papel</strong>
+        <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
+          <strong>Tipo de papel</strong>
           {(
             [
               ["ruled", "Pautado"],
               ["grid", "Quadriculado"],
               ["dots", "Pontilhado"],
               ["blank", "Em branco"],
-              ["aged", "Papel de livro"],
-              ["night", "Escuro, tinta branca"],
             ] as const
           ).map(([value, label]) => (
             <button
               type="button"
               className={paper === value ? "is-active" : ""}
               aria-pressed={paper === value}
-              onClick={() => selectPaper(value)}
+              onClick={() => setPaper(value)}
               key={value}
             >
               <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
+              <span>{label}</span>
+            </button>
+          ))}
+          <strong>Cor da folha</strong>
+          {(
+            [
+              ["light", "Clara"],
+              ["aged", "Papel de livro"],
+              ["night", "Escura"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              type="button"
+              className={paperColor === value ? "is-active" : ""}
+              aria-pressed={paperColor === value}
+              onClick={() => selectPaperColor(value)}
+              key={value}
+            >
+              <span className={`paper-preview paper-preview--tone-${value}`} aria-hidden="true" />
               <span>{label}</span>
             </button>
           ))}

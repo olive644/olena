@@ -43,6 +43,7 @@ export type StudyNote = {
   subjectId: string;
   updatedAt: string;
   assets: NoteAsset[];
+  kind?: "note";
 };
 
 export type StudyNotebook = {
@@ -176,7 +177,14 @@ export type WorkspaceAction =
       handwriting: HandwritingDocument;
       updatedAt: string;
     }
-  | { type: "note/added"; id: string; notebookId: string; subjectId: string; updatedAt: string }
+  | {
+      type: "note/added";
+      id: string;
+      notebookId: string;
+      subjectId: string;
+      updatedAt: string;
+      kind?: "note";
+    }
   | { type: "note/updated"; id: string; title: string; content: string; updatedAt: string }
   | {
       type: "note/asset-added";
@@ -406,6 +414,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             subjectId: action.subjectId,
             updatedAt: action.updatedAt,
             assets: [],
+            ...(action.kind ? { kind: action.kind } : {}),
           },
           ...state.notes,
         ],

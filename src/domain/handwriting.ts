@@ -1,5 +1,6 @@
 export type HandwritingPoint = { x: number; y: number; pressure: number };
-export type HandwritingPaper = "ruled" | "grid" | "dots" | "blank" | "night" | "aged";
+export type HandwritingPaper = "ruled" | "grid" | "dots" | "blank";
+export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
   id: string;
   tool: "pen" | "highlighter";
@@ -19,6 +20,7 @@ export type HandwritingSticky = {
 export type HandwritingDocument = {
   version: 1;
   paper: HandwritingPaper;
+  paperColor?: HandwritingPaperColor;
   strokes: HandwritingStroke[];
   stickies?: HandwritingSticky[];
 };
