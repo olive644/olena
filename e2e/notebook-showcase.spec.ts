@@ -57,7 +57,20 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
   await page.getByLabel("Conteúdo da folha").fill("Uma ideia guardada na pasta.");
   await expect(page.getByRole("button", { name: "Escrever à mão" })).toHaveCount(0);
   await page.getByRole("button", { name: "Anotações", exact: true }).click();
-  await page.getByLabel("Guardar pasta em").selectOption({ label: "Meu universo" });
+  await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  const folder = page.getByRole("button", { name: "Abrir Ideias soltas", exact: true });
+  const book = page.getByRole("button", { name: "Abrir Meu universo", exact: true });
+  await folder.scrollIntoViewIfNeeded();
+  const from = await folder.boundingBox();
+  const to = await book.boundingBox();
+  expect(from).not.toBeNull();
+  expect(to).not.toBeNull();
+  if (!from || !to) throw new Error("Capas ausentes");
+  await page.mouse.move(from.x + 40, from.y + 80);
+  await page.mouse.down();
+  await page.mouse.move(to.x + 20, to.y + 80, { steps: 12 });
+  await page.mouse.up();
+  await expect(page.getByRole("status")).toContainText("Pasta guardada");
   await page.reload();
   await openShelf();
   await expect(page.getByRole("button", { name: "Abrir Ideias soltas", exact: true })).toHaveCount(
@@ -69,7 +82,8 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
   await page.getByRole("button", { name: /Meu primeiro rascunho/ }).click();
   await expect(page.getByLabel("Conteúdo da folha")).toHaveValue("Uma ideia guardada na pasta.");
   await page.getByRole("button", { name: "Anotações", exact: true }).click();
-  await page.getByLabel("Guardar pasta em").selectOption("");
+  await page.getByRole("button", { name: "Abrir caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Devolver à vitrine" }).click();
   await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Abrir Ideias soltas", exact: true }),

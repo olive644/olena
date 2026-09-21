@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Arraste de pastas e texto manuscrito
+
+Pastas usam a estrutura em camadas e os movimentos do FolderComponent fornecido pelo proprietário, adaptados em CSS para papel recortado, sem transparência de vidro nem dependência nova. Pointer Events permitem arrastar a pasta sobre a capa na vitrine, com indicação de destino. Teclado: espaço seleciona a pasta, Enter no caderno move, Escape cancela. O caderno apresenta abertura da capa e entrada de folhas com respeito a movimento reduzido. Texto no editor usa objetos posicionáveis (stickies com kind text, ink), com edição, movimentação, desfazer, rascunho e exportação. paperColor também é preservado no salvamento final, corrigindo a perda da cor ao reabrir.
+
 ## Pastas interligadas e criação unificada
 
 A vitrine oferece Crie, com escolha entre caderno e pasta de anotações. StudyNotebook aceita kind opcional folder e parentId opcional, mantendo compatibilidade com dados anteriores. Pastas guardam notas de texto e podem ser movidas entre a vitrine e cadernos. Excluir o caderno devolve suas pastas à vitrine, preservando as notas. Folhas novas oferecem digitalização e escrita à mão; conteúdo digitado antigo permanece acessível. O editor resolve notas e folhas para corrigir a abertura das notas. Capas possuem lua crescente facetada e fita atrás da capa, saindo do bloco de páginas. Prateleiras têm base de papel roxo e rolagem horizontal no celular.

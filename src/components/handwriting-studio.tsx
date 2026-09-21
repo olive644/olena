@@ -188,18 +188,22 @@ function renderPage(
   paper: PaperStyle,
   paperColor: HandwritingPaperColor,
   stickies: readonly HandwritingSticky[],
+  editing = false,
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
   drawPaper(context, paper, paperColor);
   for (const stroke of strokes) drawStroke(context, stroke);
   for (const sticky of stickies) {
+    if (editing && sticky.kind === "text") continue;
     context.save();
-    context.fillStyle = "#bfb7a7";
-    context.fillRect(sticky.x + 8, sticky.y + 9, 260, 220);
-    context.fillStyle = stickyColor(sticky.color);
-    context.fillRect(sticky.x, sticky.y, 260, 220);
-    context.fillStyle = "#17151c";
+    if (sticky.kind !== "text") {
+      context.fillStyle = "#bfb7a7";
+      context.fillRect(sticky.x + 8, sticky.y + 9, 260, 220);
+      context.fillStyle = stickyColor(sticky.color);
+      context.fillRect(sticky.x, sticky.y, 260, 220);
+    }
+    context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
     context.font = "bold 25px sans-serif";
     const words = sticky.text.split(/\s+/);
     let line = "";
@@ -413,7 +417,7 @@ export function HandwritingStudio({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    renderPage(canvas, strokes, paper, paperColor, stickies);
+    renderPage(canvas, strokes, paper, paperColor, stickies, true);
     const context = canvas.getContext("2d");
     if (!context) return;
     context.save();
@@ -757,7 +761,7 @@ export function HandwritingStudio({
     );
   }
 
-  function addSticky() {
+  function addSticky(kind?: "text") {
     if (stickies.length >= 40) {
       setError("Esta folha chegou ao limite de 40 post-its.");
       return;
@@ -771,6 +775,7 @@ export function HandwritingStudio({
         y: 160 + (current.length % 4) * 55,
         color: "yellow",
         text: "",
+        ...(kind ? { kind, ink: color } : {}),
       },
     ]);
   }
@@ -889,6 +894,7 @@ export function HandwritingStudio({
     const document: HandwritingDocument = {
       version: 1,
       paper,
+      paperColor,
       strokes: strokes.map((stroke) => ({
         ...stroke,
         points: stroke.points.map((point) => ({
@@ -1058,7 +1064,10 @@ export function HandwritingStudio({
           >
             <MousePointer2 size={18} /> <span>Selecionar</span>
           </button>
-          <button type="button" aria-label="Adicionar post-it" onClick={addSticky}>
+          <button type="button" aria-label="Adicionar texto" onClick={() => addSticky("text")}>
+            <strong aria-hidden="true">T</strong> <span>Texto</span>
+          </button>
+          <button type="button" aria-label="Adicionar post-it" onClick={() => addSticky()}>
             <StickyNote size={18} /> <span>Post-it</span>
           </button>
           <button
@@ -1298,19 +1307,36 @@ export function HandwritingStudio({
             />
             {stickies.map((sticky) => (
               <div
-                className={`handwriting-sticky handwriting-sticky--${sticky.color}`}
+                className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.color}`}
                 style={{
                   left: `${(sticky.x / PAGE_WIDTH) * 100}%`,
                   top: `${(sticky.y / PAGE_HEIGHT) * 100}%`,
                   width: `${(260 / PAGE_WIDTH) * 100}%`,
                   height: `${(220 / PAGE_HEIGHT) * 100}%`,
+                  ...(sticky.kind === "text" ? { color: sticky.ink ?? "#17151c" } : {}),
                 }}
                 key={sticky.id}
               >
                 <div className="handwriting-sticky__bar">
                   <button
                     type="button"
-                    aria-label="Mover post-it"
+                    aria-label={sticky.kind === "text" ? "Mover texto" : "Mover post-it"}
+                    onKeyDown={(event) => {
+                      const movement: Record<string, [number, number]> = {
+                        ArrowLeft: [-10, 0],
+                        ArrowRight: [10, 0],
+                        ArrowUp: [0, -10],
+                        ArrowDown: [0, 10],
+                      };
+                      const delta = movement[event.key];
+                      if (!delta) return;
+                      event.preventDefault();
+                      remember();
+                      updateSticky(sticky.id, {
+                        x: Math.max(0, Math.min(940, sticky.x + delta[0])),
+                        y: Math.max(0, Math.min(1380, sticky.y + delta[1])),
+                      });
+                    }}
                     onPointerDown={(event) => startStickyDrag(event, sticky)}
                     onPointerMove={(event) => moveSticky(event, sticky)}
                     onPointerUp={() => {
@@ -1324,35 +1350,37 @@ export function HandwritingStudio({
                   </button>
                   <button
                     type="button"
-                    aria-label="Remover post-it"
+                    aria-label={sticky.kind === "text" ? "Remover texto" : "Remover post-it"}
                     onClick={() => removeSticky(sticky.id)}
                   >
                     ×
                   </button>
                 </div>
                 <textarea
-                  aria-label="Texto do post-it"
+                  aria-label={sticky.kind === "text" ? "Texto na folha" : "Texto do post-it"}
                   value={sticky.text}
                   maxLength={240}
                   onFocus={() => remember()}
                   onChange={(event) => updateSticky(sticky.id, { text: event.target.value })}
                   placeholder="Sua ideia aqui"
                 />
-                <div className="handwriting-sticky__colors" aria-label="Cor do post-it">
-                  {(["yellow", "blue", "lilac"] as const).map((color) => (
-                    <button
-                      type="button"
-                      className={sticky.color === color ? "is-active" : ""}
-                      aria-label={`Post-it ${color === "yellow" ? "amarelo" : color === "blue" ? "azul" : "lilás"}`}
-                      aria-pressed={sticky.color === color}
-                      onClick={() => {
-                        remember();
-                        updateSticky(sticky.id, { color });
-                      }}
-                      key={color}
-                    />
-                  ))}
-                </div>
+                {sticky.kind !== "text" && (
+                  <div className="handwriting-sticky__colors" aria-label="Cor do post-it">
+                    {(["yellow", "blue", "lilac"] as const).map((color) => (
+                      <button
+                        type="button"
+                        className={sticky.color === color ? "is-active" : ""}
+                        aria-label={`Post-it ${color === "yellow" ? "amarelo" : color === "blue" ? "azul" : "lilás"}`}
+                        aria-pressed={sticky.color === color}
+                        onClick={() => {
+                          remember();
+                          updateSticky(sticky.id, { color });
+                        }}
+                        key={color}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -99,6 +99,9 @@ export function isHandwritingDocument(value: unknown): boolean {
       !value["stickies"].every(
         (sticky: unknown) =>
           isRecord(sticky) &&
+          (sticky["kind"] === undefined || sticky["kind"] === "text") &&
+          (sticky["ink"] === undefined ||
+            (typeof sticky["ink"] === "string" && /^#[0-9a-f]{6}$/i.test(sticky["ink"]))) &&
           isString(sticky["id"]) &&
           typeof sticky["x"] === "number" &&
           Number.isFinite(sticky["x"]) &&
