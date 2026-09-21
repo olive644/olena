@@ -39,7 +39,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
     await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   }
-  await expect(dialog.getByRole("button", { name: "Caneta" })).toHaveAttribute(
+  await expect(dialog.getByRole("button", { name: "Caneta", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
@@ -216,8 +216,18 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
     "Revisar gramática",
   );
   await expect(dialog.getByText("Rascunho recuperado")).toBeVisible();
-  await dialog.getByRole("button", { name: /Tinta expressiva/ }).click();
-  await expect(dialog.getByRole("button", { name: /Tinta expressiva/ })).toHaveAttribute(
+  await expect(dialog.locator(".brush-instrument")).toHaveCount(3);
+  await expect
+    .poll(() =>
+      dialog
+        .locator(".brush-instrument")
+        .evaluateAll((images) =>
+          images.every((image) => image instanceof HTMLImageElement && image.naturalWidth > 0),
+        ),
+    )
+    .toBe(true);
+  await dialog.getByRole("button", { name: /Caneta-tinteiro/ }).click();
+  await expect(dialog.getByRole("button", { name: /Caneta-tinteiro/ })).toHaveAttribute(
     "aria-pressed",
     "true",
   );

@@ -4066,6 +4066,18 @@ body.local-room-active {
   background: #fff9ef;
   border-radius: 4px;
 }
+.handwriting-brush-panel button .brush-instrument {
+  width: 100%;
+  height: 64px;
+  background: transparent;
+  transition: transform 180ms ease;
+}
+.handwriting-brush-panel button[aria-pressed="true"] .brush-instrument {
+  transform: translateX(5px);
+}
+.handwriting-brush-panel button .brush-sample {
+  height: 28px;
+}
 .brush-card-title {
   display: flex;
   justify-content: space-between;
@@ -4084,7 +4096,7 @@ body.local-room-active {
     display: flex;
     gap: 8px;
     flex: 0 0 auto;
-    max-height: 114px;
+    max-height: 100px;
     padding: 7px;
     overflow-x: auto;
     order: 1;
@@ -4100,8 +4112,16 @@ body.local-room-active {
   .handwriting-brush-panel button svg {
     height: 24px;
   }
+  .handwriting-brush-panel button .brush-instrument {
+    height: 36px;
+  }
+  .handwriting-brush-panel button .brush-sample {
+    height: 20px;
+  }
   .handwriting-brush-panel header,
   .handwriting-brush-panel > p,
+  .handwriting-brush-panel button small,
+  .handwriting-brush-panel button .brush-sample,
   .brush-panel-tip {
     display: none;
   }

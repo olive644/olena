@@ -2,7 +2,9 @@
 
 ## Pincéis da caneta
 
-Selecionar Caneta exibe um estojo à direita com Linha fina (largura uniforme), Tinta expressiva (largura por pressão) e Pincel suave (largo e translúcido). No celular, o painel vira uma faixa horizontal. O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm o renderizador anterior. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. O pincel suave acumula transparência ao sobrepor segmentos, sem simulação física de aquarela.
+O estojo agora ilustra os instrumentos inteiros em papel recortado: Fineliner, Caneta-tinteiro e Pincel macio. A tinteiro simula ponta inclinada conforme a direção e pressão; o pincel acrescenta marcas de cerdas translúcidas. Espessura continua no controle superior, separada do tipo de instrumento. O estojo recolhe ao abrir a janela ampliada para não sobrepor seus controles no celular.
+
+Selecionar Caneta exibe o estojo à direita. No celular, o painel vira uma faixa horizontal. O campo opcional brush fica em cada traço e é validado na leitura; folhas antigas mantêm o renderizador anterior. Canvas principal, janela ampliada, rascunho, histórico, PNG e impressão compartilham esse estilo. O pincel acumula transparência ao sobrepor segmentos, sem simulação física de aquarela.
 
 ## Instrumentos de papel e régua com medida
 

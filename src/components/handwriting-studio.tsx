@@ -159,12 +159,15 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
     const next = stroke.points[index + 1];
     if (!current) continue;
     const pressure = stroke.tool === "pen" ? current.pressure : 0.7;
+    const direction = previous
+      ? Math.atan2(current.y - previous.y, current.x - previous.x)
+      : Math.PI / 4;
     context.lineWidth =
       stroke.width *
       (stroke.brush === "fine"
         ? 0.65
         : stroke.brush === "ink"
-          ? 0.5 + pressure * 3
+          ? (0.5 + pressure * 3) * (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4)))
           : stroke.brush === "soft"
             ? 2 + pressure * 4
             : 0.72 + pressure * 0.55);
@@ -180,6 +183,20 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
       next ? (current.y + next.y) / 2 : current.y,
     );
     context.stroke();
+    if (stroke.brush === "soft" && previous) {
+      const spread = stroke.width * (1 + pressure);
+      context.save();
+      context.globalAlpha = 0.1;
+      context.lineWidth = Math.max(0.5, stroke.width * 0.18);
+      for (let bristle = -2; bristle <= 2; bristle += 1) {
+        const offset = bristle * spread * 0.55;
+        context.beginPath();
+        context.moveTo(previous.x + offset, previous.y + offset * 0.4);
+        context.lineTo(current.x + offset, current.y + offset * 0.4);
+        context.stroke();
+      }
+      context.restore();
+    }
   }
   context.restore();
 }
@@ -1326,7 +1343,7 @@ export function HandwritingStudio({
       )}
 
       <div
-        className={`handwriting-workspace${tool === "pen" && !textMode ? " handwriting-workspace--brushes" : ""}`}
+        className={`handwriting-workspace${tool === "pen" && !textMode && !writingWindowOpen ? " handwriting-workspace--brushes" : ""}`}
       >
         <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
           <strong>Tipo de papel</strong>
@@ -1562,21 +1579,19 @@ export function HandwritingStudio({
             ))}
           </div>
         </div>
-        {tool === "pen" && !textMode && (
+        {tool === "pen" && !textMode && !writingWindowOpen && (
           <aside className="handwriting-brush-panel" aria-label="Pincéis da caneta">
             <header>
-              <PaperEditorIcon name="pen" />
               <div>
                 <small>SEU ESTOJO</small>
-                <h3>Pincéis</h3>
+                <h3>Canetas e pincéis</h3>
               </div>
             </header>
-            <p>Escolha o toque da sua escrita.</p>
             {(
               [
-                ["fine", "Linha fina", "Precisão para escrever e contornar", 2],
-                ["ink", "Tinta expressiva", "Espessura que acompanha a pressão", 7],
-                ["soft", "Pincel suave", "Camadas translúcidas para sombrear", 14],
+                ["fine", "Fineliner", "Ponta técnica · tinta uniforme", 2],
+                ["ink", "Caneta-tinteiro", "Tinta expressiva · responde à pressão", 7],
+                ["soft", "Pincel macio", "Cerdas suaves · camadas translúcidas", 14],
               ] as const
             ).map(([value, title, description, size]) => (
               <button
@@ -1585,11 +1600,9 @@ export function HandwritingStudio({
                 aria-pressed={brush === value}
                 onClick={() => setBrush(value)}
               >
-                <span className="brush-card-title">
-                  {title}
-                  <span aria-hidden="true">{brush === value ? "✓" : ""}</span>
-                </span>
-                <svg viewBox="0 0 180 46" aria-hidden="true">
+                <span className="brush-card-title">{title}</span>
+                <img className="brush-instrument" src={`/brushes/${value}.svg`} alt="" />
+                <svg className="brush-sample" viewBox="0 0 180 46" aria-hidden="true">
                   <path
                     d="M10 31C36 32 39 9 66 19S104 39 130 24 158 15 170 19"
                     fill="none"
@@ -1602,10 +1615,6 @@ export function HandwritingStudio({
                 <small>{description}</small>
               </button>
             ))}
-            <div className="brush-panel-tip">
-              Combine com as cores e espessuras do estojo. A pressão varia com a caneta; mouse e
-              toque usam pressão uniforme.
-            </div>
           </aside>
         )}
       </div>
