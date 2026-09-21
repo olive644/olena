@@ -92,14 +92,14 @@ function canvasPoint(
 }
 
 function drawPaper(context: CanvasRenderingContext2D, paper: PaperStyle) {
-  context.fillStyle = "#fffdf7";
+  context.fillStyle = paper === "night" ? "#292432" : paper === "aged" ? "#f3e6c8" : "#fffdf7";
   context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
   context.save();
-  context.strokeStyle = "#dcd8ee";
-  context.fillStyle = "#d5d0e8";
+  context.strokeStyle = paper === "night" ? "#51465d" : paper === "aged" ? "#d4bd91" : "#dcd8ee";
+  context.fillStyle = paper === "night" ? "#6d5f78" : paper === "aged" ? "#d4bd91" : "#d5d0e8";
   context.lineWidth = 1.4;
   const gap = 48;
-  if (paper === "ruled" || paper === "grid") {
+  if (paper === "ruled" || paper === "grid" || paper === "night" || paper === "aged") {
     for (let y = 112; y < PAGE_HEIGHT; y += gap) {
       context.beginPath();
       context.moveTo(0, y);
@@ -124,8 +124,8 @@ function drawPaper(context: CanvasRenderingContext2D, paper: PaperStyle) {
       }
     }
   }
-  if (paper !== "blank") {
-    context.strokeStyle = "#e9b9b1";
+  if (paper !== "blank" && paper !== "night") {
+    context.strokeStyle = paper === "aged" ? "#c78f78" : "#e9b9b1";
     context.lineWidth = 2;
     context.beginPath();
     context.moveTo(104, 0);
@@ -320,6 +320,12 @@ export function HandwritingStudio({
   const [writingWindowX, setWritingWindowX] = useState(100);
   const [writingWindowY, setWritingWindowY] = useState(110);
   const [draftStatus, setDraftStatus] = useState(recovered.current ? "Rascunho recuperado" : "");
+
+  function selectPaper(nextPaper: PaperStyle) {
+    setPaper(nextPaper);
+    if (nextPaper === "night" && color === "#17151c") setColor("#fff9ef");
+    if (nextPaper !== "night" && color === "#fff9ef") setColor("#17151c");
+  }
 
   const currentDocument: HandwritingDocument = useMemo(
     () => ({ version: 1, paper, strokes, stickies }),
@@ -1187,13 +1193,15 @@ export function HandwritingStudio({
               ["grid", "Quadriculado"],
               ["dots", "Pontilhado"],
               ["blank", "Em branco"],
+              ["aged", "Papel de livro"],
+              ["night", "Escuro, tinta branca"],
             ] as const
           ).map(([value, label]) => (
             <button
               type="button"
               className={paper === value ? "is-active" : ""}
               aria-pressed={paper === value}
-              onClick={() => setPaper(value)}
+              onClick={() => selectPaper(value)}
               key={value}
             >
               <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />

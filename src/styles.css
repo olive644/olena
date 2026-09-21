@@ -5946,6 +5946,51 @@ body.local-room-active {
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
 }
+.notebook-card[aria-pressed="true"] .book-cover {
+  transform: translateY(-5px) rotate(-1deg);
+  filter: drop-shadow(0 0 0.35rem #7c3aed) drop-shadow(7px 12px 0 rgb(41 36 50 / 12%));
+}
+.notebook-card__check {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid #fff9ef;
+  border-radius: 50%;
+  background: #292432;
+  color: #fff9ef;
+  font-weight: 900;
+  box-shadow: 0 2px 0 rgb(41 36 50 / 25%);
+}
+.notebook-card__check.is-selected {
+  background: #7c3aed;
+}
+.notebook-selection-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.notebook-selection-actions button {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+}
+.notebook-selection-actions button:last-child:not(:disabled) {
+  border-color: #a44050;
+  color: #a44050;
+}
+.notebook-selection-actions button:disabled {
+  opacity: 0.45;
+}
 .notebooks-heading .new-note-action input {
   width: 100%;
   min-height: 44px;
