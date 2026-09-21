@@ -27,6 +27,18 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
 
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "Tela cheia", exact: true }).click();
+  await expect(dialog).toHaveClass(/capture-dialog--expanded/);
+  await dialog.getByRole("button", { name: "Sair da tela cheia" }).click();
+  await expect(dialog).not.toHaveClass(/capture-dialog--expanded/);
+  await expect(dialog.locator("svg.lucide")).toHaveCount(0);
+  if (testInfo.project.name === "mobile") {
+    const eraser = dialog.getByRole("button", { name: "Borracha", exact: true });
+    await expect(eraser.locator("span")).toHaveCSS("max-width", "0px");
+    await eraser.click();
+    await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
+    await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  }
   await expect(dialog.getByRole("button", { name: "Caneta" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -107,6 +119,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await reopened.getByRole("button", { name: "Escura", exact: true }).click();
   await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
   const fullText = reopened.getByLabel("Texto da página inteira");
+  await fullText.fill("voce nao sabe. tambem estudo portugues");
+  await reopened.getByRole("button", { name: "Revisar texto" }).click();
+  await expect(fullText).toHaveValue("Você não sabe. Também estudo português");
+  await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
+  await expect(fullText).toHaveValue("voce nao sabe. tambem estudo portugues");
   await fullText.fill("Minha anotação pelo teclado\nSegunda linha da página");
   const textSize = await fullText.boundingBox();
   const pageSize = await reopened.locator("canvas.handwriting-canvas").boundingBox();
@@ -140,6 +157,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   }
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
+  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
   await page.locator(".notebook-page-card").first().click();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();

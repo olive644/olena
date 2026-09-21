@@ -1,8 +1,14 @@
 # Auditoria do estado atual
 
+## Controles do editor manuscrito
+
+Tela cheia ao lado de Fechar usa Fullscreen API quando disponível, com alternativa CSS ocupando a janela. A saída restaura o editor sem perder a folha. PaperEditorIcon substitui os ícones de contorno das ferramentas, histórico e exportação por silhuetas em camadas de papel. No celular, rótulos dos instrumentos e histórico se expandem ao selecionar ou focar, com nomes acessíveis preservados e suporte a movimento reduzido.
+
 ## Preview de entrada e texto integral
 
-Ao abrir um caderno, uma etapa breve mostra até três folhas reais antes da galeria. Ver todas as folhas avança imediatamente, e clicar no preview abre a folha. Texto ativa uma área com as margens da página, persistida como pageText opcional. Quebras de linha são compartilhadas entre edição e exportação, com aviso ao atingir a capacidade física da folha. Rascunho, histórico, limpeza e exportação incluem pageText; caixas legadas permanecem editáveis.
+Ao abrir um caderno, o preview permanece até uma ação do usuário. Anterior e Próxima percorrem todas as folhas reais, uma por vez, com rotação na lombada inspirada no exemplo de anand_4957 (Uiverse.io) fornecido pelo proprietário. Clicar na folha abre o editor; Ver todas as folhas abre a galeria. Não há temporizador nem leque de páginas sobrepostas. Movimento reduzido mantém a navegação sem animação perceptível.
+
+Texto ativa uma área com as margens da página, persistida como pageText opcional. Quebras de linha são compartilhadas entre edição e exportação, com aviso ao atingir a capacidade física da folha. Rascunho, histórico, limpeza e exportação incluem pageText; caixas legadas permanecem editáveis. O corretor nativo recebe pt-BR, autocorreção e capitalização de frases, conforme suporte do navegador/teclado. Revisar texto é uma ação local reversível para acentos comuns e início de frases, não IA nem revisão gramatical completa. Links, emails e código delimitado são preservados; palavras ambíguas não recebem acentos automáticos.
 
 ## Arraste de pastas e texto manuscrito
 

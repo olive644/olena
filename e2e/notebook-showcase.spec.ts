@@ -39,22 +39,32 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
     animations: "disabled",
   });
   await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
+  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
   await page.getByLabel("Título da folha").fill("Uma ideia sem matéria.");
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByLabel("Título da folha").fill("Segunda ideia");
   await page.reload();
   await openShelf();
   await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
   await expect(page.getByRole("region", { name: "Preview do caderno" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Abrir preview de Segunda ideia" })).toBeVisible();
+  await expect(page.locator(".notebook-page-grid")).toHaveCount(0);
+  await page.waitForTimeout(2700);
+  await expect(page.getByRole("region", { name: "Preview do caderno" })).toBeVisible();
+  await page.getByRole("button", { name: "Próxima ›" }).click();
   await expect(
     page.getByRole("button", { name: "Abrir preview de Uma ideia sem matéria." }),
   ).toBeVisible();
-  await expect(page.locator(".notebook-page-grid")).toHaveCount(0);
+  await page.getByRole("button", { name: "‹ Anterior" }).click();
+  await expect(page.getByRole("button", { name: "Abrir preview de Segunda ideia" })).toBeVisible();
+  await page.getByRole("button", { name: "Próxima ›" }).click();
+  await expect(page.getByRole("button", { name: "‹ Anterior" })).toBeEnabled();
   await page.screenshot({
     path: testInfo.outputPath("preview-folhas.png"),
     animations: "disabled",
   });
-  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
-  await page.locator(".notebook-page-card").click();
+  await page.getByRole("button", { name: "Abrir preview de Uma ideia sem matéria." }).click();
   await expect(page.getByLabel("Título da folha")).toHaveValue("Uma ideia sem matéria.");
   await page.getByRole("button", { name: "Folhas do caderno", exact: true }).click();
   await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
@@ -87,6 +97,7 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
     0,
   );
   await page.getByRole("button", { name: "Abrir Meu universo", exact: true }).click();
+  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
   await page.getByRole("tab", { name: /Anotações/ }).click();
   await page.getByRole("button", { name: /Ideias soltas/ }).click();
   await page.getByRole("button", { name: /Meu primeiro rascunho/ }).click();

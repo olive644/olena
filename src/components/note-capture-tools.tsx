@@ -1,4 +1,5 @@
-import { Camera, RotateCw, X } from "lucide-react";
+import { Camera, RotateCw } from "lucide-react";
+import { PaperEditorIcon } from "./paper-editor-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
@@ -188,6 +189,26 @@ export function NoteCaptureTools({
   onCloseEditing,
 }: NoteCaptureToolsProps) {
   const [mode, setMode] = useState<"scan" | "drawing" | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const dialogRef = useRef<HTMLElement>(null);
+  async function toggleFullscreen() {
+    if (expanded) {
+      if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
+      setExpanded(false);
+    } else {
+      setExpanded(true);
+      await dialogRef.current?.requestFullscreen?.().catch(() => {
+        // Browsers without native fullscreen keep the viewport-sized editor.
+      });
+    }
+  }
+  useEffect(() => {
+    function syncFullscreen() {
+      setExpanded(document.fullscreenElement === dialogRef.current);
+    }
+    document.addEventListener("fullscreenchange", syncFullscreen);
+    return () => document.removeEventListener("fullscreenchange", syncFullscreen);
+  }, []);
   const [handwritingDirty, setHandwritingDirty] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
   const [draftWriteFailed, setDraftWriteFailed] = useState(false);
@@ -212,6 +233,10 @@ export function NoteCaptureTools({
         return;
       }
       setConfirmClose(false);
+      setExpanded(false);
+      if (document.fullscreenElement === dialogRef.current && document.fullscreenElement) {
+        void document.exitFullscreen().catch(() => {});
+      }
       setHandwritingDirty(false);
       if (editingAsset) onCloseEditing?.();
       else setMode(null);
@@ -225,6 +250,10 @@ export function NoteCaptureTools({
     document.body.style.overflow = "hidden";
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        if (expanded) {
+          setExpanded(false);
+          return;
+        }
         if (confirmClose) setConfirmClose(false);
         else close();
       }
@@ -234,7 +263,7 @@ export function NoteCaptureTools({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
     };
-  }, [currentMode, confirmClose, close]);
+  }, [currentMode, confirmClose, close, expanded]);
 
   return (
     <>
@@ -257,9 +286,10 @@ export function NoteCaptureTools({
               onClick={() => close()}
             />
             <section
+              ref={dialogRef}
               className={
                 currentMode === "drawing"
-                  ? "capture-dialog capture-dialog--handwriting"
+                  ? `capture-dialog capture-dialog--handwriting${expanded ? " capture-dialog--expanded" : ""}`
                   : "capture-dialog"
               }
               role="dialog"
@@ -277,14 +307,27 @@ export function NoteCaptureTools({
                         : "Escrever à mão"}
                   </h2>
                 </div>
-                <button
-                  className="sheet-close"
-                  type="button"
-                  aria-label="Fechar"
-                  onClick={() => close()}
-                >
-                  <X size={20} />
-                </button>
+                <div className="capture-header-actions">
+                  {currentMode === "drawing" && (
+                    <button
+                      type="button"
+                      className="sheet-close"
+                      aria-label={expanded ? "Sair da tela cheia" : "Tela cheia"}
+                      aria-pressed={expanded}
+                      onClick={() => void toggleFullscreen()}
+                    >
+                      <PaperEditorIcon name={expanded ? "collapse" : "expand"} />
+                    </button>
+                  )}
+                  <button
+                    className="sheet-close"
+                    type="button"
+                    aria-label="Fechar"
+                    onClick={() => close()}
+                  >
+                    <PaperEditorIcon name="close" />
+                  </button>
+                </div>
               </header>
               {currentMode === "scan" ? (
                 <Scanner onSave={onSave} onClose={() => close(true)} />
