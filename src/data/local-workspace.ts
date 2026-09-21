@@ -83,6 +83,11 @@ function isLegacyNote(value: unknown): boolean {
 
 export function isHandwritingDocument(value: unknown): boolean {
   if (!isRecord(value) || value["version"] !== 1) return false;
+  if (
+    value["pageText"] !== undefined &&
+    (typeof value["pageText"] !== "string" || value["pageText"].length > 5000)
+  )
+    return false;
   if (!["ruled", "grid", "dots", "blank", "night", "aged"].includes(String(value["paper"])))
     return false;
   if (

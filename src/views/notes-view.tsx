@@ -69,6 +69,12 @@ function NotebookArtwork({
 export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  useEffect(() => {
+    if (!previewOpen) return;
+    const timer = window.setTimeout(() => setPreviewOpen(false), 2400);
+    return () => window.clearTimeout(timer);
+  }, [previewOpen]);
   const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
   const [moveMessage, setMoveMessage] = useState("");
@@ -157,6 +163,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     setActiveNotebookId(notebook.id);
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
+    setPreviewOpen(notebook.kind !== "folder");
   }
 
   function removeSelectedNotebooks() {
@@ -522,6 +529,51 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
             )}
           </section>
         </>
+      ) : previewOpen && activeNotebook.kind !== "folder" ? (
+        <section className="notebook-entry-preview" aria-label="Preview do caderno">
+          <h1>{activeNotebook.title}</h1>
+          <p>
+            {notebookPages.length}{" "}
+            {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}
+          </p>
+          <div className="notebook-preview-book">
+            <div className="notebook-preview-cover" aria-hidden="true">
+              <NotebookArtwork subjectColor="#7c3aed" title={activeNotebook.title} />
+            </div>
+            <div className="notebook-preview-leaves">
+              {notebookPages.length === 0 ? (
+                <div className="notebook-preview-leaf">
+                  <strong>Seu próximo começo</strong>
+                  <p>Uma folha em branco esperando suas ideias.</p>
+                </div>
+              ) : (
+                notebookPages.slice(0, 3).map((page, index) => (
+                  <button
+                    className="notebook-preview-leaf"
+                    type="button"
+                    key={page.id}
+                    style={{ "--leaf-index": index } as CSSProperties}
+                    onClick={() => {
+                      setActivePageId(page.id);
+                      setPreviewOpen(false);
+                    }}
+                    aria-label={`Abrir preview de ${page.title}`}
+                  >
+                    {page.assets[0] ? (
+                      <img src={page.assets[0].dataUrl} alt="" />
+                    ) : (
+                      <p>{page.content || "Folha em branco"}</p>
+                    )}
+                    <strong>{page.title}</strong>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+          <button className="primary-button" type="button" onClick={() => setPreviewOpen(false)}>
+            Ver todas as folhas
+          </button>
+        </section>
       ) : activePage ? (
         <>
           <header className="notebook-inner-heading">
@@ -703,9 +755,6 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               className="notebook-pages notebook-pages--opening"
               aria-label={`Folhas de ${activeNotebook.title}`}
             >
-              <div className="notebook-opening-art" aria-hidden="true">
-                <NotebookArtwork subjectColor="#7c3aed" title={activeNotebook.title} />
-              </div>
               {notebookPages.length === 0 ? (
                 <div className="notebook-pages__empty">
                   <span className="paper-stack" aria-hidden="true">

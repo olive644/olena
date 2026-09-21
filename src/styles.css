@@ -6322,6 +6322,90 @@ body.local-room-active {
   margin: 0 auto 28px;
   pointer-events: none;
 }
+.handwriting-full-page-text {
+  position: absolute;
+  z-index: 2;
+  resize: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  font-family: monospace;
+  font-weight: 400;
+  overflow: auto;
+  outline: 2px dashed #a779ef;
+  outline-offset: 8px;
+}
+.notebook-entry-preview {
+  text-align: center;
+  padding: 32px 12px;
+}
+.notebook-preview-book {
+  position: relative;
+  width: min(420px, 85%);
+  height: 340px;
+  margin: 40px auto;
+  perspective: 900px;
+}
+.notebook-preview-cover {
+  position: absolute;
+  inset: 0 auto 0 4%;
+  width: 180px;
+  z-index: 4;
+  pointer-events: none;
+  transform-origin: left;
+  animation: preview-cover-open 900ms ease forwards;
+}
+.notebook-preview-leaves {
+  position: absolute;
+  inset: 5% 10%;
+}
+.notebook-preview-leaf {
+  position: absolute;
+  inset: 0 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  border: 2px solid #d6cbb8;
+  border-radius: 4px 12px 8px 4px;
+  background: #fff9ef;
+  color: #292432;
+  box-shadow: 5px 6px 0 #51465d33;
+  animation: preview-leaf-open 900ms ease both;
+  animation-delay: calc(var(--leaf-index, 0) * 100ms);
+}
+.notebook-preview-leaf img {
+  width: 100%;
+  height: 80%;
+  object-fit: contain;
+}
+.notebook-preview-leaf p {
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+@keyframes preview-cover-open {
+  to {
+    transform: rotateY(-78deg);
+    opacity: 1;
+  }
+}
+@keyframes preview-leaf-open {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateX(calc((var(--leaf-index, 0) - 1) * 45px))
+      rotate(calc((var(--leaf-index, 0) - 1) * 8deg));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-preview-cover,
+  .notebook-preview-leaf {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+}
 .notebook-opening-art .book-cover__face {
   animation: notebook-open 800ms ease both;
 }

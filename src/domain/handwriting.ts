@@ -20,9 +20,14 @@ export type HandwritingSticky = {
 };
 
 export type HandwritingDocument = {
+  pageText?: string;
   version: 1;
   paper: HandwritingPaper;
   paperColor?: HandwritingPaperColor;
   strokes: HandwritingStroke[];
   stickies?: HandwritingSticky[];
 };
+
+export function pageTextLines(text: string): string[] {
+  return text.split("\n").flatMap((line) => line.match(/.{1,58}/gu) ?? [""]);
+}
