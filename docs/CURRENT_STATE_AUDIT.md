@@ -10,9 +10,11 @@ PDF.js 6.3.289 é a única dependência nova, necessária para rasterização de
 
 ## Borracha de texto e controles compactos
 
+Barras de ferramentas usam grafite facetado e base deslocada como a navegação. Rótulos são brancos; ícones de ação usam preto com facetas, preservando as cores dos instrumentos. O roxo da seleção permanece também durante hover nos dois temas, com teste de regressão desktop/mobile.
+
 Trocar de ferramenta anima a elevação e o encaixe do ícone por 420 ms; o nome se expande por 320 ms. prefers-reduced-motion desliga essas transições.
 
-A borracha substitui por espaços os caracteres tocados do texto integral, preservando a posição dos demais e o histórico de desfazer/refazer. Caixas de texto legadas são apagadas como objetos inteiros. Selecionar Borracha encerra a edição de texto e deixa o canvas receber o gesto. Salvar usa disquete redesenhado; Exportar e espessuras usam papel roxo facetado. Ferramentas e ações revelam os nomes ao passar o mouse, focar pelo teclado ou selecionar, em todas as larguras. Ícones usam creme sobre as barras grafite, sem fundos adicionais.
+A borracha substitui por espaços os caracteres tocados do texto integral, preservando a posição dos demais e o histórico de desfazer/refazer. Caixas de texto legadas são apagadas como objetos inteiros. Selecionar Borracha encerra a edição de texto e deixa o canvas receber o gesto. Salvar usa disquete redesenhado; Exportar e espessuras usam papel roxo facetado. Ferramentas e ações revelam os nomes ao passar o mouse, focar pelo teclado ou selecionar, em todas as larguras. Ícones ficam diretamente sobre as barras, sem fundos adicionais.
 
 ## Compatibilidade de pincéis
 

@@ -3897,7 +3897,10 @@ body.local-room-active {
   padding: 0.28rem;
   border: 1px solid var(--line);
   border-radius: 8px 12px 8px 10px;
-  background: var(--soft);
+  background:
+    linear-gradient(135deg, #51465d 0 18px, transparent 18px),
+    linear-gradient(315deg, #17151c 0 20px, transparent 20px), #292432;
+  box-shadow: 0 4px 0 #17151c;
 }
 
 .handwriting-tool-group button,
@@ -3924,9 +3927,8 @@ body.local-room-active {
   background: var(--surface);
 }
 
-.handwriting-tool-group button.is-active,
-.handwriting-tool-group button[aria-pressed="true"],
-.handwriting-history button.is-active,
+.handwriting-commandbar .handwriting-tool-group button:is(.is-active, [aria-pressed="true"]),
+.handwriting-commandbar .handwriting-history button.is-active,
 .handwriting-paper-picker button.is-active {
   border-color: #7433e0;
   color: #fff9ef;
@@ -4054,9 +4056,19 @@ body.local-room-active {
 }
 .handwriting-commandbar .paper-editor-icon,
 .handwriting-footer .paper-editor-icon {
-  color: #fff9ef;
-  --editor-icon-cutout: #292432;
-  --editor-icon-facet: #c5c1c9;
+  color: #17151c;
+  --editor-icon-cutout: #fff9ef;
+  --editor-icon-facet: #66616b;
+  filter: drop-shadow(0 1px 0 #a79eaf);
+}
+.handwriting-commandbar .handwriting-tool-group button span,
+.handwriting-commandbar .handwriting-history button span {
+  color: #fff;
+}
+.handwriting-commandbar :is(.handwriting-tool-group, .handwriting-history) button {
+  border-radius: 5px 13px 6px 11px;
+  min-height: 44px;
+  min-width: 44px;
 }
 .handwriting-commandbar .handwriting-assist,
 .handwriting-commandbar .handwriting-pen-only {
@@ -4142,7 +4154,7 @@ body.local-room-active {
 
 .handwriting-history .handwriting-zoom-value {
   min-width: 52px;
-  color: var(--violet-dark);
+  color: #fff;
   font-variant-numeric: tabular-nums;
 }
 

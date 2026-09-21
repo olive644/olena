@@ -61,6 +61,17 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await eraser.click();
     await expect(eraser.locator("span")).toHaveCSS("max-width", "150px");
     await expect(eraser.locator("svg")).toHaveCSS("animation-name", "editor-tool-pick");
+    await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
+    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(dialog.locator('[data-paper-editor-icon="hand"]')).toHaveCSS(
+      "color",
+      "rgb(23, 21, 28)",
+    );
+    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
+    await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 255, 255)");
+    await page.screenshot({ path: testInfo.outputPath("ferramentas-contraste-escuro.png") });
+    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   }
   await expect(dialog.getByRole("button", { name: "Caneta", exact: true })).toHaveAttribute(
