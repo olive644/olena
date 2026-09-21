@@ -53,7 +53,9 @@ const MAX_INITIAL_JS_BYTES = 264 * 1024;
 // Unified creation and movable annotation folders bring the measured total
 // to 661 KiB. Notes UI stays lazy-loaded; no dependency was added and the
 // initial entry remains below its existing 264 KiB budget.
-const MAX_TOTAL_JS_BYTES = 664 * 1024;
+// Pointer-based folder placement and editable text objects bring the total
+// to 664.3 KiB. Both interfaces remain lazy and reuse existing state/history.
+const MAX_TOTAL_JS_BYTES = 667 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));

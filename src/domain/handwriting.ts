@@ -10,6 +10,8 @@ export type HandwritingStroke = {
 };
 
 export type HandwritingSticky = {
+  kind?: "text";
+  ink?: string;
   id: string;
   x: number;
   y: number;

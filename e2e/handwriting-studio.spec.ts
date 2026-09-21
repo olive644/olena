@@ -104,6 +104,9 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "true",
   );
   await expect(reopened.getByRole("button", { name: "Limpar folha" })).toBeEnabled();
+  await reopened.getByRole("button", { name: "Escura", exact: true }).click();
+  await reopened.getByRole("button", { name: "Adicionar texto" }).click();
+  await reopened.getByLabel("Texto na folha").fill("Minha anotação pelo teclado");
   await reopened.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await page.reload();
   const saved = await page.evaluate(() => {
@@ -134,6 +137,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.locator(".notebook-page-card").first().click();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
+  await expect(page.getByLabel("Texto na folha")).toHaveValue("Minha anotação pelo teclado");
+  await expect(page.getByRole("button", { name: "Escura", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
 });
 
 test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, testInfo) => {

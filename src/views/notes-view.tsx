@@ -69,6 +69,20 @@ function NotebookArtwork({
 export function NotesView({ workspace, dispatch }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
+  const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
+  const [dropTarget, setDropTarget] = useState<string | null>(null);
+  const [moveMessage, setMoveMessage] = useState("");
+  const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
+  const drag = useRef<{ id: string; x: number; y: number; moved: boolean } | null>(null);
+  const skipClick = useRef<string | null>(null);
+  function moveFolder(id: string, target: string) {
+    dispatch({ type: "notebook/folder-moved", id, parentId: target });
+    setMoveMessage(
+      `Pasta guardada em ${workspace.notebooks.find((item) => item.id === target)?.title ?? "caderno"}.`,
+    );
+    setDraggedFolder(null);
+    setDropTarget(null);
+  }
   const [newNotebookName, setNewNotebookName] = useState("");
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
@@ -126,6 +140,14 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   }
 
   function openNotebook(notebook: StudyNotebook) {
+    if (skipClick.current === notebook.id) {
+      skipClick.current = null;
+      return;
+    }
+    if (draggedFolder && notebook.kind !== "folder") {
+      moveFolder(draggedFolder, notebook.id);
+      return;
+    }
     if (selectionMode) {
       setSelectedNotebookIds((ids) =>
         ids.includes(notebook.id) ? ids.filter((id) => id !== notebook.id) : [...ids, notebook.id],
@@ -216,6 +238,20 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
   return (
     <main className="main-content" id="main-content">
       <PageHeader />
+      {draggedFolder && dragPosition && (
+        <div
+          className="folder-drag-preview"
+          aria-hidden="true"
+          style={{ left: dragPosition.x + 12, top: dragPosition.y + 12 }}
+        >
+          {workspace.notebooks.find((item) => item.id === draggedFolder)?.title}
+        </div>
+      )}
+      <p className="shelf-move-status" role="status">
+        {draggedFolder
+          ? "Solte a pasta sobre um caderno. Pelo teclado, escolha o caderno e pressione Enter. Escape cancela."
+          : moveMessage}
+      </p>
       <dialog ref={createDialog} className="notebook-create-dialog" aria-label="Crie">
         <form
           method="dialog"
@@ -324,6 +360,10 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
           </header>
 
           <section className="notebooks-showcase" aria-label="Meus cadernos">
+            <p id="folder-drag-hint" className="shelf-drag-hint">
+              Arraste uma pasta para um caderno. Pelo teclado, pressione espaço na pasta e Enter no
+              caderno.
+            </p>
             {workspace.notebooks.length === 0 ? (
               <div className="notebooks-empty">
                 <NotebookArtwork subjectColor="#7C3AED" />
@@ -347,7 +387,83 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                           [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4;
                         return (
                           <button
-                            className="notebook-card"
+                            className={`notebook-card ${dropTarget === notebook.id ? "is-drop-target" : ""} ${draggedFolder === notebook.id ? "is-dragging-folder" : ""}`}
+                            data-notebook-drop={
+                              notebook.kind !== "folder" ? notebook.id : undefined
+                            }
+                            style={notebook.kind === "folder" ? { touchAction: "none" } : undefined}
+                            onKeyDown={(event) => {
+                              if (event.key === "Escape") {
+                                setDraggedFolder(null);
+                                setDropTarget(null);
+                              }
+                              if (
+                                event.key === " " &&
+                                notebook.kind === "folder" &&
+                                !selectionMode
+                              ) {
+                                event.preventDefault();
+                                setDraggedFolder(notebook.id);
+                              }
+                            }}
+                            onPointerDown={(event) => {
+                              if (notebook.kind !== "folder" || selectionMode || event.button !== 0)
+                                return;
+                              drag.current = {
+                                id: notebook.id,
+                                x: event.clientX,
+                                y: event.clientY,
+                                moved: false,
+                              };
+                              event.currentTarget.setPointerCapture(event.pointerId);
+                            }}
+                            onPointerMove={(event) => {
+                              const current = drag.current;
+                              if (!current) return;
+                              if (
+                                Math.hypot(event.clientX - current.x, event.clientY - current.y) <
+                                  8 &&
+                                !current.moved
+                              )
+                                return;
+                              current.moved = true;
+                              setDragPosition({ x: event.clientX, y: event.clientY });
+                              setDraggedFolder(current.id);
+                              const target = document
+                                .elementFromPoint(event.clientX, event.clientY)
+                                ?.closest<HTMLElement>("[data-notebook-drop]");
+                              setDropTarget(target?.dataset["notebookDrop"] ?? null);
+                              const shelf = document
+                                .elementFromPoint(event.clientX, event.clientY)
+                                ?.closest(".notebook-shelf");
+                              if (shelf) {
+                                const bounds = shelf.getBoundingClientRect();
+                                if (event.clientX > bounds.right - 45) shelf.scrollLeft += 24;
+                                if (event.clientX < bounds.left + 45) shelf.scrollLeft -= 24;
+                              }
+                            }}
+                            onPointerUp={(event) => {
+                              const current = drag.current;
+                              drag.current = null;
+                              setDragPosition(null);
+                              if (!current?.moved) return;
+                              skipClick.current = current.id;
+                              const target = document
+                                .elementFromPoint(event.clientX, event.clientY)
+                                ?.closest<HTMLElement>("[data-notebook-drop]")?.dataset[
+                                "notebookDrop"
+                              ];
+                              if (target) moveFolder(current.id, target);
+                              else {
+                                setDraggedFolder(null);
+                                setDropTarget(null);
+                              }
+                            }}
+                            onPointerCancel={() => {
+                              drag.current = null;
+                              setDraggedFolder(null);
+                              setDropTarget(null);
+                            }}
                             type="button"
                             onClick={() => openNotebook(notebook)}
                             aria-label={`Abrir ${notebook.title}`}
@@ -366,7 +482,13 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                             )}
                             {notebook.kind === "folder" ? (
                               <span className="annotation-folder" aria-hidden="true">
-                                <span className="annotation-folder__paper" />
+                                <span className="annotation-folder__back" />
+                                {[0, 1, 2].map((index) => (
+                                  <span
+                                    key={index}
+                                    className={`annotation-folder__paper annotation-folder__paper--${index}`}
+                                  />
+                                ))}
                                 <span className="annotation-folder__front">
                                   <strong>{notebook.title}</strong>
                                   <small>ANOTAÇÕES</small>
@@ -525,34 +647,15 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                 <span aria-hidden="true">‹</span> Meus Cadernos
               </button>
               <h1>{activeNotebook.title}</h1>
-              <p>Suas ideias, folha por folha.</p>
+              <p>
+                {activeNotebook.kind === "folder"
+                  ? "Suas ideias reunidas."
+                  : "Abra uma folha ou comece uma nova."}
+              </p>
             </div>
             <div className="notebook-detail-actions">
               {activeNotebook.kind === "folder" ? (
                 <>
-                  <label className="folder-destination">
-                    Guardar em
-                    <select
-                      aria-label="Guardar pasta em"
-                      value={activeNotebook.parentId ?? ""}
-                      onChange={(event) =>
-                        dispatch({
-                          type: "notebook/folder-moved",
-                          id: activeNotebook.id,
-                          parentId: event.target.value || null,
-                        })
-                      }
-                    >
-                      <option value="">Vitrine</option>
-                      {workspace.notebooks
-                        .filter((item) => item.kind !== "folder")
-                        .map((item) => (
-                          <option key={item.id} value={item.id}>
-                            {item.title}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
                   {activeNotebook.parentId && (
                     <button
                       type="button"
@@ -596,7 +699,13 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
             </div>
           )}
           {notebookSection === "pages" ? (
-            <section className="notebook-pages" aria-label={`Folhas de ${activeNotebook.title}`}>
+            <section
+              className="notebook-pages notebook-pages--opening"
+              aria-label={`Folhas de ${activeNotebook.title}`}
+            >
+              <div className="notebook-opening-art" aria-hidden="true">
+                <NotebookArtwork subjectColor="#7c3aed" title={activeNotebook.title} />
+              </div>
               {notebookPages.length === 0 ? (
                 <div className="notebook-pages__empty">
                   <span className="paper-stack" aria-hidden="true">
@@ -612,8 +721,17 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                 </div>
               ) : (
                 <div className="notebook-page-grid">
+                  <button className="notebook-page-create" type="button" onClick={createPage}>
+                    <PaperActionIcon name="plus" />
+                    <strong>Criar folha</strong>
+                    <span>Escrita à mão, texto ou digitalização</span>
+                  </button>
                   {notebookPages.map((page, index) => (
-                    <div className="notebook-page-tile" key={page.id}>
+                    <div
+                      className="notebook-page-tile"
+                      key={page.id}
+                      style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
+                    >
                       <button
                         className="notebook-page-card"
                         type="button"
@@ -622,6 +740,13 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                         <span className="notebook-page-card__number">
                           {String(index + 1).padStart(2, "0")}
                         </span>
+                        {page.assets[0] && (
+                          <img
+                            className="notebook-page-preview"
+                            src={page.assets[0].dataUrl}
+                            alt=""
+                          />
+                        )}
                         <strong>{page.title || "Folha sem título"}</strong>
                         <span>
                           {page.content ||
@@ -674,15 +799,25 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
               aria-label={`Notas de ${activeNotebook.title}`}
             >
               {folders.map((folder) => (
-                <button
-                  className="text-note-card folder-link"
-                  type="button"
-                  key={folder.id}
-                  onClick={() => openNotebook(folder)}
-                >
-                  <strong>{folder.title}</strong>
-                  <span>Pasta · {folder.pageIds.length} notas</span>
-                </button>
+                <div key={folder.id}>
+                  <button
+                    className="text-note-card folder-link"
+                    type="button"
+                    key={folder.id}
+                    onClick={() => openNotebook(folder)}
+                  >
+                    <strong>{folder.title}</strong>
+                    <span>Pasta · {folder.pageIds.length} notas</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      dispatch({ type: "notebook/folder-moved", id: folder.id, parentId: null })
+                    }
+                  >
+                    Devolver à vitrine
+                  </button>
+                </div>
               ))}
               {notebookNotes.length === 0 && folders.length === 0 ? (
                 <div className="notebook-pages__empty">
@@ -690,7 +825,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                   <p>
                     {activeNotebook.kind === "folder"
                       ? "Crie uma nota para guardar ideias rápidas em texto."
-                      : "Abra uma pasta na vitrine e escolha este caderno em Guardar em."}
+                      : "Arraste uma pasta da vitrine para a capa deste caderno."}
                   </p>
                   {activeNotebook.kind === "folder" && (
                     <button className="primary-button" type="button" onClick={createTextNote}>
