@@ -3846,12 +3846,12 @@ body.local-room-active {
 }
 
 .handwriting-commandbar {
-  --surface: #292432;
-  --soft: #292432;
-  --text: #fff9ef;
-  --muted: #c5c1c9;
-  --line: #51465d;
-  --line-strong: #66616b;
+  --surface: #ffffff;
+  --soft: #fff9ef;
+  --text: #17151c;
+  --muted: #51465d;
+  --line: #eadfc8;
+  --line-strong: #cfc3ae;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -3859,6 +3859,14 @@ body.local-room-active {
   border-bottom: 1px solid var(--line);
   gap: 0.75rem;
   background: var(--surface);
+}
+:root[data-theme="dark"] .handwriting-commandbar {
+  --surface: #292432;
+  --soft: #292432;
+  --text: #fff9ef;
+  --muted: #c5c1c9;
+  --line: #51465d;
+  --line-strong: #66616b;
 }
 
 .handwriting-tool-group,
@@ -3897,6 +3905,14 @@ body.local-room-active {
   padding: 0.28rem;
   border: 1px solid var(--line);
   border-radius: 8px 12px 8px 10px;
+  background:
+    linear-gradient(135deg, #fff0c7 0 18px, transparent 18px),
+    linear-gradient(315deg, #eadfc8 0 20px, transparent 20px), #ffffff;
+  box-shadow: 0 4px 0 #d8cdb7;
+}
+:root[data-theme="dark"]
+  .handwriting-commandbar
+  :is(.handwriting-tool-group, .handwriting-history) {
   background:
     linear-gradient(135deg, #51465d 0 18px, transparent 18px),
     linear-gradient(315deg, #17151c 0 20px, transparent 20px), #292432;
@@ -4063,7 +4079,13 @@ body.local-room-active {
 }
 .handwriting-commandbar .handwriting-tool-group button span,
 .handwriting-commandbar .handwriting-history button span {
-  color: #fff;
+  color: var(--text);
+}
+.handwriting-commandbar
+  :is(.handwriting-tool-group, .handwriting-history)
+  button:is(.is-active, [aria-pressed="true"])
+  span {
+  color: #fff9ef;
 }
 .handwriting-commandbar :is(.handwriting-tool-group, .handwriting-history) button {
   border-radius: 5px 13px 6px 11px;
@@ -4135,6 +4157,22 @@ body.local-room-active {
   display: block;
   margin: 16px 0;
 }
+.editor-file-panel .editor-import-size {
+  display: grid;
+  grid-template-columns: auto minmax(140px, 1fr) 52px;
+  align-items: center;
+  gap: 12px;
+}
+.editor-import-size input[type="range"] {
+  width: 100%;
+  accent-color: #7c3aed;
+}
+.editor-import-size output {
+  color: #fff9ef;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  text-align: right;
+}
 .editor-file-panel input[type="number"] {
   width: 80px;
   padding: 8px;
@@ -4154,7 +4192,7 @@ body.local-room-active {
 
 .handwriting-history .handwriting-zoom-value {
   min-width: 52px;
-  color: #fff;
+  color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 

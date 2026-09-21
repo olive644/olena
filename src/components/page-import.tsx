@@ -1,6 +1,34 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import { HelenaLoading } from "./helena-loading";
+
+function prepareImportedPage(
+  source: CanvasImageSource,
+  width: number,
+  height: number,
+  sizePercent: number,
+) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 1600;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Não foi possível abrir a página.");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, 1200, 1600);
+  const scale = Math.min(1200 / width, 1600 / height) * (sizePercent / 100);
+  context.drawImage(
+    source,
+    (1200 - width * scale) / 2,
+    (1600 - height * scale) / 2,
+    width * scale,
+    height * scale,
+  );
+  for (const quality of [0.85, 0.65, 0.45]) {
+    const result = canvas.toDataURL("image/jpeg", quality);
+    if (result.length <= 500_000) return result;
+  }
+  throw new Error("Esta imagem é muito detalhada. Importe uma versão menor.");
+}
 
 export function PageImport({
   onImport,
@@ -11,7 +39,8 @@ export function PageImport({
 }) {
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [page, setPage] = useState(1);
-  const [preview, setPreview] = useState("");
+  const [source, setSource] = useState<HTMLCanvasElement | null>(null);
+  const [size, setSize] = useState(100);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const generation = useRef(0);
@@ -28,28 +57,31 @@ export function PageImport({
     [],
   );
 
-  function prepare(source: CanvasImageSource, width: number, height: number) {
+  function keepSource(image: CanvasImageSource, width: number, height: number) {
+    const scale = Math.min(1, 1200 / width, 1600 / height);
     const canvas = document.createElement("canvas");
-    canvas.width = 1200;
-    canvas.height = 1600;
-    const context = canvas.getContext("2d");
-    if (!context) throw new Error("Não foi possível abrir a página.");
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, 1200, 1600);
-    const scale = Math.min(1200 / width, 1600 / height);
-    context.drawImage(
-      source,
-      (1200 - width * scale) / 2,
-      (1600 - height * scale) / 2,
-      width * scale,
-      height * scale,
-    );
-    for (const quality of [0.85, 0.65, 0.45]) {
-      const result = canvas.toDataURL("image/jpeg", quality);
-      if (result.length <= 500_000) return result;
-    }
-    throw new Error("Esta imagem é muito detalhada. Importe uma versão menor.");
+    canvas.width = Math.max(1, Math.round(width * scale));
+    canvas.height = Math.max(1, Math.round(height * scale));
+    canvas.getContext("2d")?.drawImage(image, 0, 0, canvas.width, canvas.height);
+    setSource(canvas);
   }
+
+  const prepared = useMemo(() => {
+    if (!source) return { preview: "", error: "" };
+    try {
+      return {
+        preview: prepareImportedPage(source, source.width, source.height, size),
+        error: "",
+      };
+    } catch (caught) {
+      return {
+        preview: "",
+        error:
+          caught instanceof Error ? caught.message : "Não foi possível redimensionar a imagem.",
+      };
+    }
+  }, [source, size]);
+  const preview = prepared.preview;
 
   useEffect(() => {
     if (!pdf) return;
@@ -69,7 +101,7 @@ export function PageImport({
         const job = source.render({ canvas, viewport });
         render = job;
         await job.promise;
-        if (!cancelled) setPreview(prepare(canvas, canvas.width, canvas.height));
+        if (!cancelled) keepSource(canvas, canvas.width, canvas.height);
       } catch {
         if (!cancelled) setError("Não foi possível ler esta página do PDF.");
       } finally {
@@ -85,7 +117,8 @@ export function PageImport({
   async function open(file: File) {
     const id = ++generation.current;
     setPdf(null);
-    setPreview("");
+    setSource(null);
+    setSize(100);
     setError("");
     setBusy(true);
     try {
@@ -121,7 +154,7 @@ export function PageImport({
           throw new Error("Escolha PDF, PNG, JPEG ou WebP.");
         const bitmap = await createImageBitmap(file);
         try {
-          if (id === generation.current) setPreview(prepare(bitmap, bitmap.width, bitmap.height));
+          if (id === generation.current) keepSource(bitmap, bitmap.width, bitmap.height);
         } finally {
           bitmap.close();
         }
@@ -175,7 +208,7 @@ export function PageImport({
               const next = Math.max(1, Math.min(pdf.numPages, Number(event.target.value) || 1));
               if (next === page) return;
               setBusy(true);
-              setPreview("");
+              setSource(null);
               setError("");
               setPage(next);
             }}
@@ -184,7 +217,22 @@ export function PageImport({
         </label>
       )}
       {busy && <HelenaLoading label="Preparando página" compact />}
-      {error && <p role="alert">{error}</p>}
+      {(error || prepared.error) && <p role="alert">{error || prepared.error}</p>}
+      {source && (
+        <label className="editor-import-size">
+          <span>Tamanho da imagem</span>
+          <input
+            type="range"
+            min={25}
+            max={150}
+            step={5}
+            value={size}
+            aria-label="Tamanho da imagem"
+            onChange={(event) => setSize(Number(event.target.value))}
+          />
+          <output>{size}%</output>
+        </label>
+      )}
       {preview && <img src={preview} alt="Prévia da página importada" />}
       <div>
         <button type="button" disabled={!preview || busy} onClick={() => onImport(preview)}>

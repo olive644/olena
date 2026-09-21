@@ -1,5 +1,7 @@
 # HelenaStudy: Second Brain
 
+PageImport mantém uma cópia reduzida da fonte em canvas e deriva o JPEG final conforme o controle de tamanho de 25% a 150%. O resultado continua centralizado, limitado a 500 mil caracteres e salvo no mesmo campo background. A commandbar usa tokens claros por padrão e redefine seus tokens para grafite em data-theme dark; o papel roxo fica restrito aos controles ativos.
+
 No editor, seletores de estado ativo incluem handwriting-commandbar para superar a especificidade do hover. Rótulos de ferramentas têm cor branca explícita para evitar herança de figcaption. Ícones de ação usam preto em ambos os temas; instrumentos mantêm cores próprias.
 
 PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho. renderPage usa a mesma imagem base em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. O painel lateral mostra o estojo ilustrado na caneta e as unidades na régua. Importação nunca altera o arquivo original.
