@@ -321,10 +321,11 @@ export function HandwritingStudio({
   const [writingWindowY, setWritingWindowY] = useState(110);
   const [draftStatus, setDraftStatus] = useState(recovered.current ? "Rascunho recuperado" : "");
 
-  useEffect(() => {
-    if (paper === "night" && color === "#17151c") setColor("#fff9ef");
-    if (paper !== "night" && color === "#fff9ef") setColor("#17151c");
-  }, [paper, color]);
+  function selectPaper(nextPaper: PaperStyle) {
+    setPaper(nextPaper);
+    if (nextPaper === "night" && color === "#17151c") setColor("#fff9ef");
+    if (nextPaper !== "night" && color === "#fff9ef") setColor("#17151c");
+  }
 
   const currentDocument: HandwritingDocument = useMemo(
     () => ({ version: 1, paper, strokes, stickies }),
@@ -1200,7 +1201,7 @@ export function HandwritingStudio({
               type="button"
               className={paper === value ? "is-active" : ""}
               aria-pressed={paper === value}
-              onClick={() => setPaper(value)}
+              onClick={() => selectPaper(value)}
               key={value}
             >
               <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
