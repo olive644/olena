@@ -33,7 +33,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await page
       .getByRole("dialog", { name: "Mais ferramentas" })
       .getByRole("button", { name: "Cadernos", exact: true })
-      .click({ force: true });
+      .evaluate((element) => (element as HTMLButtonElement).click());
   } else {
     await page
       .getByRole("navigation", { name: "Navegação principal" })
