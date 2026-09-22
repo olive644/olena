@@ -20,6 +20,11 @@ A ordem dos post-its é a ordem de composição do canvas. Os controles Trazer p
 para trás reordenam o array, registram no histórico existente e mantêm a mesma camada em rascunho,
 PNG, PDF e impressão.
 
+O estojo de coordenadas calcula localmente `deltaX`, `deltaY`, distância euclidiana, inclinação e
+ângulo a partir da origem, fim e valor de divisão. A prévia usa o gesto ainda não confirmado; após
+salvar, Selecionar escolhe o eixo e reabre a leitura. Um eixo vertical informa inclinação vertical
+em vez de dividir por zero.
+
 PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil caracteres. backgroundFrame opcional persiste posição e dimensões na folha de 1200 por 1600, incluindo histórico e exportação. Documentos antigos sem frame continuam preenchendo a folha. Selecionar expõe movimento, redimensionamento proporcional e remoção independente da imagem; cancelar fecha a importação sem alterar a folha. A commandbar usa tokens claros por padrão e grafite em data-theme dark.
 
 No editor, seletores de estado ativo incluem handwriting-commandbar para superar a especificidade do hover. Ícones de ação usam preto no claro e branco no escuro; instrumentos mantêm cores próprias. Paper picker, brush panel e footer compartilham tokens e facetas claras por padrão, com uma única substituição grafite em data-theme dark. Post-its usam ajuste de fonte na renderização compartilhada para não truncar a exportação.

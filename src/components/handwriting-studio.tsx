@@ -24,6 +24,7 @@ import type {
 import { DEFAULT_HANDWRITING_LAYER_VISIBILITY } from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
+import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-math";
 import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
 const PageImport = lazy(() =>
@@ -2172,6 +2173,18 @@ export function HandwritingStudio({
   }
 
   const displayWidth = Math.max(260, Math.round(fitWidth * zoom));
+  const selectedCoordinateSystem =
+    coordinateSystems.find((system) => selectedIds.includes(system.id)) ?? coordinateSystems.at(-1);
+  const liveCoordinateStats = coordinateMeasure
+    ? coordinateStats({
+        origin: coordinateMeasure.start,
+        end: coordinateMeasure.end,
+        step: coordinateStep,
+      })
+    : null;
+  const inspectedCoordinateStats =
+    liveCoordinateStats ??
+    (selectedCoordinateSystem ? coordinateStats(selectedCoordinateSystem) : null);
 
   return (
     <div className="handwriting-studio">
@@ -3205,6 +3218,38 @@ export function HandwritingStudio({
               />
               <span>Eixos com o mesmo tamanho</span>
             </label>
+            {inspectedCoordinateStats && (
+              <section className="handwriting-coordinate-inspector" aria-live="polite">
+                <small>{liveCoordinateStats ? "PRÉVIA DO GESTO" : "LEITURA DO EIXO"}</small>
+                <strong>
+                  Δx {formatCoordinateNumber(inspectedCoordinateStats.deltaX)} · Δy{" "}
+                  {formatCoordinateNumber(inspectedCoordinateStats.deltaY)}
+                </strong>
+                <dl>
+                  <div>
+                    <dt>Distância</dt>
+                    <dd>{formatCoordinateNumber(inspectedCoordinateStats.distance)}</dd>
+                  </div>
+                  <div>
+                    <dt>Inclinação</dt>
+                    <dd>
+                      {inspectedCoordinateStats.slope === null
+                        ? "vertical"
+                        : formatCoordinateNumber(inspectedCoordinateStats.slope)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Ângulo</dt>
+                    <dd>{formatCoordinateNumber(inspectedCoordinateStats.angle)}°</dd>
+                  </div>
+                </dl>
+                {liveCoordinateStats ? (
+                  <p>Solte para salvar este sistema. A prévia acompanha o arraste.</p>
+                ) : (
+                  <p>Use Selecionar para inspecionar outro sistema desenhado.</p>
+                )}
+              </section>
+            )}
           </aside>
         )}
         {layersOpen && !textMode && (

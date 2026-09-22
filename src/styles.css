@@ -4253,6 +4253,73 @@ body.local-room-active {
   line-height: 1.5;
   color: var(--muted);
 }
+
+.handwriting-coordinate-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.handwriting-coordinate-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #7433e0;
+}
+
+.handwriting-coordinate-inspector {
+  margin-top: 16px;
+  padding: 12px;
+  border: 2px solid #7433e0;
+  border-radius: 6px 14px 7px 11px;
+  background: var(--soft);
+  box-shadow: 0 4px 0 #51259b;
+}
+
+.handwriting-coordinate-inspector > small {
+  color: var(--violet);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.handwriting-coordinate-inspector > strong {
+  display: block;
+  margin: 6px 0 10px;
+  font-size: 14px;
+}
+
+.handwriting-coordinate-inspector dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+
+.handwriting-coordinate-inspector dl div {
+  padding: 7px 5px;
+  border-radius: 4px 8px 4px 7px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.handwriting-coordinate-inspector dt {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.handwriting-coordinate-inspector dd {
+  margin: 3px 0 0;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.handwriting-coordinate-inspector p {
+  margin: 10px 0 0;
+  font-size: 10px;
+}
 .handwriting-brush-panel > button {
   display: grid;
   gap: 8px;

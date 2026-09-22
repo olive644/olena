@@ -36,6 +36,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   antigas compatíveis e renderização completa na exportação.
 - Post-its com ordenação de camada individual, trazendo para frente ou enviando para trás com estado
   persistido no histórico e nas exportações.
+- Leitura matemática local para sistemas de coordenadas, exibindo Δx, Δy, distância, inclinação e
+  ângulo durante o gesto e ao selecionar um eixo existente.
 
 ## Próximos incrementos recomendados
 
