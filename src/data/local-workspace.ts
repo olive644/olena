@@ -112,6 +112,44 @@ export function isHandwritingDocument(value: unknown): boolean {
     (typeof value["pageText"] !== "string" || value["pageText"].length > 5000)
   )
     return false;
+  if (
+    value["pageTextSize"] !== undefined &&
+    (typeof value["pageTextSize"] !== "number" ||
+      !Number.isFinite(value["pageTextSize"]) ||
+      value["pageTextSize"] < 16 ||
+      value["pageTextSize"] > 72)
+  )
+    return false;
+  if (
+    value["coordinateSystems"] !== undefined &&
+    (!Array.isArray(value["coordinateSystems"]) ||
+      value["coordinateSystems"].length > 20 ||
+      !value["coordinateSystems"].every(
+        (system: unknown) =>
+          isRecord(system) &&
+          isString(system["id"]) &&
+          [1, 2, 5, 10].includes(Number(system["step"])) &&
+          isString(system["color"]) &&
+          /^#[0-9a-f]{6}$/i.test(system["color"]) &&
+          [system["origin"], system["end"]].every(
+            (point) =>
+              isRecord(point) &&
+              typeof point["x"] === "number" &&
+              Number.isFinite(point["x"]) &&
+              point["x"] >= 0 &&
+              point["x"] <= 1200 &&
+              typeof point["y"] === "number" &&
+              Number.isFinite(point["y"]) &&
+              point["y"] >= 0 &&
+              point["y"] <= 1600 &&
+              typeof point["pressure"] === "number" &&
+              Number.isFinite(point["pressure"]) &&
+              point["pressure"] >= 0 &&
+              point["pressure"] <= 1,
+          ),
+      ))
+  )
+    return false;
   if (!["ruled", "grid", "dots", "blank", "night", "aged"].includes(String(value["paper"])))
     return false;
   if (

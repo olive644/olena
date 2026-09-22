@@ -13,6 +13,7 @@ import {
 import { isHandwritingDocument, MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
 import type {
   HandwritingDocument,
+  HandwritingCoordinateSystem,
   HandwritingPaper,
   HandwritingPaperColor,
   HandwritingPoint,
@@ -35,7 +36,15 @@ const WRITING_WINDOW_HEIGHT = 185;
 import { erasePageText, pageTextLines, rulerLength } from "../domain/handwriting";
 
 type HandwritingTool =
-  "pen" | "highlighter" | "eraser" | "hand" | "select" | "zoom-in" | "zoom-out" | "ruler";
+  | "pen"
+  | "highlighter"
+  | "eraser"
+  | "hand"
+  | "select"
+  | "zoom-in"
+  | "zoom-out"
+  | "ruler"
+  | "coordinates";
 type PaperStyle = HandwritingPaper;
 type Stroke = HandwritingStroke;
 type Snapshot = {
@@ -43,6 +52,8 @@ type Snapshot = {
   strokes: Stroke[];
   stickies: HandwritingSticky[];
   pageText: string;
+  pageTextSize: number;
+  coordinateSystems: HandwritingCoordinateSystem[];
   background?: string | undefined;
 };
 type SelectionBox = { x: number; y: number; width: number; height: number };
@@ -166,11 +177,17 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   context.globalAlpha = stroke.tool === "highlighter" ? 0.3 : stroke.brush === "soft" ? 0.16 : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
-  if (stroke.tool === "highlighter") {
-    context.lineWidth = stroke.width;
+  if (stroke.tool === "highlighter" || stroke.brush === "fine") {
+    context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
     context.beginPath();
     context.moveTo(first.x, first.y);
-    for (const point of stroke.points) context.lineTo(point.x, point.y);
+    for (let index = 1; index < stroke.points.length - 1; index += 1) {
+      const point = stroke.points[index]!;
+      const next = stroke.points[index + 1]!;
+      context.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
+    }
+    const last = stroke.points.at(-1)!;
+    context.lineTo(last.x, last.y);
     if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
     context.stroke();
     context.restore();
@@ -200,15 +217,13 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
       : Math.PI / 4;
     context.lineWidth =
       stroke.width *
-      (stroke.brush === "fine"
-        ? 0.65
-        : stroke.brush === "ink"
-          ? (0.5 + pressure * 3) *
-            (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4))) *
-            tiltShading(current)
-          : stroke.brush === "soft"
-            ? 2 + pressure * 4
-            : 0.72 + pressure * 0.55);
+      (stroke.brush === "ink"
+        ? (0.5 + pressure * 3) *
+          (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4))) *
+          tiltShading(current)
+        : stroke.brush === "soft"
+          ? 2 + pressure * 4
+          : 0.72 + pressure * 0.55);
     context.beginPath();
     context.moveTo(
       previous ? (previous.x + current.x) / 2 : current.x,
@@ -247,6 +262,8 @@ function renderPage(
   stickies: readonly HandwritingSticky[],
   editing = false,
   pageText = "",
+  pageTextSize = 28,
+  coordinateSystems: readonly HandwritingCoordinateSystem[] = [],
   background?: HTMLImageElement,
   backgroundFrame = { x: 0, y: 0, width: PAGE_WIDTH, height: PAGE_HEIGHT },
 ) {
@@ -265,12 +282,15 @@ function renderPage(
   context.globalCompositeOperation = paperColor === "night" && !background ? "screen" : "multiply";
   for (const stroke of strokes) if (stroke.tool === "highlighter") drawStroke(context, stroke);
   context.restore();
+  for (const system of coordinateSystems) drawCoordinateSystem(context, system);
   if (pageText) {
     context.save();
     context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
-    context.font = "28px monospace";
+    context.font = `${pageTextSize}px monospace`;
     context.textBaseline = "top";
-    pageTextLines(pageText).forEach((line, index) => context.fillText(line, 112, 80 + index * 40));
+    pageTextLines(pageText, pageTextSize).forEach((line, index) =>
+      context.fillText(line, 112, 80 + index * pageTextSize * (40 / 28)),
+    );
     context.restore();
   }
   for (const stroke of strokes) if (stroke.tool !== "highlighter") drawStroke(context, stroke);
@@ -295,6 +315,76 @@ function renderPage(
     );
     context.restore();
   }
+}
+
+function drawCoordinateSystem(
+  context: CanvasRenderingContext2D,
+  system: HandwritingCoordinateSystem,
+) {
+  const { origin, end, step } = system;
+  const xEnd = end.x;
+  const yEnd = end.y;
+  const tickGap = 48;
+  const xDirection = Math.sign(xEnd - origin.x) || 1;
+  const yDirection = Math.sign(yEnd - origin.y) || -1;
+  context.save();
+  context.strokeStyle = system.color;
+  context.fillStyle = system.color;
+  context.lineWidth = 3;
+  context.lineCap = "round";
+  context.font = "18px monospace";
+  context.textAlign = "center";
+  context.textBaseline = "top";
+  context.beginPath();
+  context.moveTo(origin.x, origin.y);
+  context.lineTo(xEnd, origin.y);
+  context.moveTo(origin.x, origin.y);
+  context.lineTo(origin.x, yEnd);
+  context.stroke();
+  const arrow = (x: number, y: number, horizontal: boolean, direction: number) => {
+    context.beginPath();
+    if (horizontal) {
+      context.moveTo(x, y);
+      context.lineTo(x - direction * 16, y - 8);
+      context.lineTo(x - direction * 16, y + 8);
+    } else {
+      context.moveTo(x, y);
+      context.lineTo(x - 8, y - direction * 16);
+      context.lineTo(x + 8, y - direction * 16);
+    }
+    context.closePath();
+    context.fill();
+  };
+  arrow(xEnd, origin.y, true, xDirection);
+  arrow(origin.x, yEnd, false, yDirection);
+  context.fillText("0", origin.x - 14, origin.y + 9);
+  for (
+    let distance = tickGap, value = step;
+    distance < Math.abs(xEnd - origin.x) - 12;
+    distance += tickGap, value += step
+  ) {
+    const x = origin.x + distance * xDirection;
+    context.beginPath();
+    context.moveTo(x, origin.y - 7);
+    context.lineTo(x, origin.y + 7);
+    context.stroke();
+    context.fillText(String(value), x, origin.y + 10);
+  }
+  context.textAlign = yDirection < 0 ? "right" : "left";
+  context.textBaseline = "middle";
+  for (
+    let distance = tickGap, value = step;
+    distance < Math.abs(yEnd - origin.y) - 12;
+    distance += tickGap, value += step
+  ) {
+    const y = origin.y + distance * yDirection;
+    context.beginPath();
+    context.moveTo(origin.x - 7, y);
+    context.lineTo(origin.x + 7, y);
+    context.stroke();
+    context.fillText(String(value), origin.x + (yDirection < 0 ? -12 : 12), y);
+  }
+  context.restore();
 }
 
 function strokeBounds(stroke: Stroke): SelectionBox {
@@ -380,6 +470,8 @@ export function HandwritingStudio({
   const drawingRef = useRef(false);
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
   const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
+  const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
+  const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
   function closeImport() {
@@ -409,6 +501,10 @@ export function HandwritingStudio({
     start: HandwritingPoint;
     end: HandwritingPoint;
   } | null>(null);
+  const [coordinateMeasure, setCoordinateMeasure] = useState<{
+    start: HandwritingPoint;
+    end: HandwritingPoint;
+  } | null>(null);
   const activePointerRef = useRef<number | null>(null);
   const panRef = useRef<{
     pointerId: number;
@@ -431,6 +527,10 @@ export function HandwritingStudio({
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const [strokes, setStrokes] = useState<Stroke[]>(() => startingDocument?.strokes ?? []);
   const [pageText, setPageText] = useState(startingDocument?.pageText ?? "");
+  const [pageTextSize, setPageTextSize] = useState(startingDocument?.pageTextSize ?? 28);
+  const [coordinateSystems, setCoordinateSystems] = useState<HandwritingCoordinateSystem[]>(
+    () => startingDocument?.coordinateSystems ?? [],
+  );
   const [textMode, setTextMode] = useState(false);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
     () => startingDocument?.stickies ?? [],
@@ -482,10 +582,22 @@ export function HandwritingStudio({
       strokes,
       stickies,
       pageText,
+      pageTextSize,
+      coordinateSystems,
       background,
       backgroundFrame,
     }),
-    [paper, paperColor, strokes, stickies, pageText, background, backgroundFrame],
+    [
+      paper,
+      paperColor,
+      strokes,
+      stickies,
+      pageText,
+      pageTextSize,
+      coordinateSystems,
+      background,
+      backgroundFrame,
+    ],
   );
   const baseline = JSON.stringify({
     version: 1,
@@ -503,6 +615,8 @@ export function HandwritingStudio({
     strokes: initialDocument?.strokes ?? [],
     stickies: initialDocument?.stickies ?? [],
     pageText: initialDocument?.pageText ?? "",
+    pageTextSize: initialDocument?.pageTextSize ?? 28,
+    coordinateSystems: initialDocument?.coordinateSystems ?? [],
     background: initialDocument?.background,
     backgroundFrame: initialDocument?.backgroundFrame,
   });
@@ -559,6 +673,8 @@ export function HandwritingStudio({
       stickies,
       true,
       textMode ? "" : pageText,
+      pageTextSize,
+      coordinateSystems,
       backgroundImage,
       backgroundFrame,
     );
@@ -587,6 +703,8 @@ export function HandwritingStudio({
     stickies,
     strokes,
     pageText,
+    pageTextSize,
+    coordinateSystems,
     textMode,
     backgroundImage,
     backgroundFrame,
@@ -772,7 +890,15 @@ export function HandwritingStudio({
   ) {
     setUndoStack((history) => [
       ...history.slice(-39),
-      { strokes: currentStrokes, stickies: currentStickies, pageText, background, backgroundFrame },
+      {
+        strokes: currentStrokes,
+        stickies: currentStickies,
+        pageText,
+        pageTextSize,
+        coordinateSystems,
+        background,
+        backgroundFrame,
+      },
     ]);
     setRedoStack([]);
   }
@@ -805,11 +931,11 @@ export function HandwritingStudio({
     const context = canvasRef.current?.getContext("2d");
     if (context) {
       context.save();
-      context.font = "28px monospace";
+      context.font = `${pageTextSize}px monospace`;
       const glyphWidth = context.measureText("M").width;
       context.restore();
       setPageText((current) => {
-        const next = erasePageText(current, points, glyphWidth);
+        const next = erasePageText(current, points, glyphWidth, pageTextSize);
         if (next !== current) eraserChangedRef.current = true;
         return next;
       });
@@ -879,6 +1005,11 @@ export function HandwritingStudio({
     setError("");
     const point = canvasPoint(canvas, event);
     if (effectiveTool === "ruler") setRulerMeasure({ start: point, end: point });
+    if (effectiveTool === "coordinates") {
+      remember();
+      setCoordinateMeasure({ start: point, end: point });
+      return;
+    }
     if (effectiveTool === "select") {
       const hitSelected = strokes.some(
         (stroke) => selectedIds.includes(stroke.id) && strokeTouches(stroke, point, 24),
@@ -969,6 +1100,27 @@ export function HandwritingStudio({
       const end = points.at(-1);
       if (end) setRulerMeasure((measurement) => (measurement ? { ...measurement, end } : null));
     }
+    if (activeToolRef.current === "coordinates") {
+      const end = points.at(-1);
+      if (end)
+        setCoordinateMeasure((measurement) => {
+          if (!measurement) return null;
+          if (!equalCoordinateAxes) return { ...measurement, end };
+          const size = Math.max(
+            Math.abs(end.x - measurement.start.x),
+            Math.abs(end.y - measurement.start.y),
+          );
+          return {
+            ...measurement,
+            end: {
+              ...end,
+              x: measurement.start.x + (end.x >= measurement.start.x ? size : -size),
+              y: measurement.start.y + (end.y >= measurement.start.y ? size : -size),
+            },
+          };
+        });
+      return;
+    }
     if (activeToolRef.current === "eraser") {
       eraseAt(points);
       return;
@@ -1004,6 +1156,26 @@ export function HandwritingStudio({
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (event.pointerId !== activePointerRef.current) return;
     setRulerMeasure(null);
+    if (activeToolRef.current === "coordinates" && coordinateMeasure) {
+      const width = Math.abs(coordinateMeasure.end.x - coordinateMeasure.start.x);
+      const height = Math.abs(coordinateMeasure.end.y - coordinateMeasure.start.y);
+      if (width > 48 && height > 48)
+        setCoordinateSystems((current) => [
+          ...current,
+          {
+            id: strokeId(),
+            origin: coordinateMeasure.start,
+            end: coordinateMeasure.end,
+            step: coordinateStep,
+            color,
+          },
+        ]);
+      else setUndoStack((history) => history.slice(0, -1));
+      setCoordinateMeasure(null);
+      activePointerRef.current = null;
+      drawingRef.current = false;
+      return;
+    }
     activePointerRef.current = null;
     if (selectionRef.current) {
       const selection = selectionRef.current;
@@ -1057,11 +1229,13 @@ export function HandwritingStudio({
     if (!previous) return;
     setRedoStack((history) => [
       ...history,
-      { strokes, stickies, pageText, background, backgroundFrame },
+      { strokes, stickies, pageText, pageTextSize, coordinateSystems, background, backgroundFrame },
     ]);
     setStrokes(previous.strokes);
     setStickies(previous.stickies);
     setPageText(previous.pageText);
+    setPageTextSize(previous.pageTextSize);
+    setCoordinateSystems(previous.coordinateSystems);
     setBackground(previous.background);
     setBackgroundFrame(previous.backgroundFrame);
     setSelectedIds([]);
@@ -1073,11 +1247,13 @@ export function HandwritingStudio({
     if (!next) return;
     setUndoStack((history) => [
       ...history,
-      { strokes, stickies, pageText, background, backgroundFrame },
+      { strokes, stickies, pageText, pageTextSize, coordinateSystems, background, backgroundFrame },
     ]);
     setStrokes(next.strokes);
     setStickies(next.stickies);
     setPageText(next.pageText);
+    setPageTextSize(next.pageTextSize);
+    setCoordinateSystems(next.coordinateSystems);
     setBackground(next.background);
     setBackgroundFrame(next.backgroundFrame);
     setSelectedIds([]);
@@ -1085,11 +1261,18 @@ export function HandwritingStudio({
   }
 
   function clearPage() {
-    if (strokes.length === 0 && stickies.length === 0 && !pageText) return;
+    if (
+      strokes.length === 0 &&
+      stickies.length === 0 &&
+      coordinateSystems.length === 0 &&
+      !pageText
+    )
+      return;
     remember();
     setStrokes([]);
     setStickies([]);
     setPageText("");
+    setCoordinateSystems([]);
     setSelectedIds([]);
   }
 
@@ -1282,6 +1465,8 @@ export function HandwritingStudio({
     const document: HandwritingDocument = {
       version: 1,
       pageText,
+      pageTextSize,
+      coordinateSystems,
       background,
       backgroundFrame,
       paper,
@@ -1314,6 +1499,8 @@ export function HandwritingStudio({
       stickies,
       false,
       pageText,
+      pageTextSize,
+      coordinateSystems,
       backgroundImage,
       backgroundFrame,
     );
@@ -1333,6 +1520,8 @@ export function HandwritingStudio({
         stickies,
         false,
         pageText,
+        pageTextSize,
+        coordinateSystems,
         backgroundImage,
         backgroundFrame,
       );
@@ -1399,7 +1588,11 @@ export function HandwritingStudio({
     const canvas = canvasRef.current;
     if (
       !canvas ||
-      (strokes.length === 0 && stickies.length === 0 && !pageText.trim() && !background)
+      (strokes.length === 0 &&
+        stickies.length === 0 &&
+        coordinateSystems.length === 0 &&
+        !pageText.trim() &&
+        !background)
     ) {
       setError("Escreva ou adicione um post-it antes de salvar.");
       return;
@@ -1487,6 +1680,26 @@ export function HandwritingStudio({
           </button>
           <button
             type="button"
+            className={!textMode && tool === "coordinates" ? "is-active" : ""}
+            aria-label="Sistema de coordenadas"
+            title="Sistema de coordenadas: arraste da origem até o fim dos eixos"
+            aria-pressed={!textMode && tool === "coordinates"}
+            onClick={() => setTool("coordinates")}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>Coordenadas</span>
+          </button>
+          <button
+            type="button"
             aria-label="Texto na página inteira"
             aria-pressed={textMode}
             onClick={() => setTextMode((active) => !active)}
@@ -1507,7 +1720,7 @@ export function HandwritingStudio({
           </button>
         </div>
 
-        {(selectedIds.length > 0 || (tool === "select" && background)) && (
+        {(selectedIds.length > 0 || (tool === "select" && (background || pageText))) && (
           <div className="handwriting-selection-actions" aria-label="Itens selecionados">
             {selectedIds.length > 0 && (
               <>
@@ -1528,6 +1741,31 @@ export function HandwritingStudio({
                 <span>Imagem importada selecionada</span>
                 <button type="button" onClick={removeBackground}>
                   Remover imagem
+                </button>
+              </>
+            )}
+            {tool === "select" && pageText && (
+              <>
+                <span>Texto: {pageTextSize}px</span>
+                <button
+                  type="button"
+                  disabled={pageTextSize <= 16}
+                  onClick={() => {
+                    remember();
+                    setPageTextSize((size) => Math.max(16, size - 2));
+                  }}
+                >
+                  Diminuir texto
+                </button>
+                <button
+                  type="button"
+                  disabled={pageTextSize >= 72}
+                  onClick={() => {
+                    remember();
+                    setPageTextSize((size) => Math.min(72, size + 2));
+                  }}
+                >
+                  Aumentar texto
                 </button>
               </>
             )}
@@ -1671,7 +1909,7 @@ export function HandwritingStudio({
           <button
             type="button"
             aria-label="Limpar folha"
-            disabled={!strokes.length && !stickies.length && !pageText}
+            disabled={!strokes.length && !stickies.length && !coordinateSystems.length && !pageText}
             onClick={clearPage}
           >
             <PaperEditorIcon name="trash" />
@@ -1944,6 +2182,29 @@ export function HandwritingStudio({
                   </svg>
                 );
               })()}
+            {coordinateMeasure && (
+              <svg
+                className="handwriting-ruler-overlay"
+                viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
+                aria-label="Prévia do sistema de coordenadas"
+              >
+                <g opacity="0.9">
+                  <path
+                    d={`M${coordinateMeasure.start.x} ${coordinateMeasure.end.y}V${coordinateMeasure.start.y}H${coordinateMeasure.end.x}`}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                  />
+                  <circle
+                    cx={coordinateMeasure.start.x}
+                    cy={coordinateMeasure.start.y}
+                    r="8"
+                    fill="#7433e0"
+                  />
+                </g>
+              </svg>
+            )}
             <canvas
               ref={canvasRef}
               className={`handwriting-canvas handwriting-canvas--${tool}`}
@@ -1985,14 +2246,17 @@ export function HandwritingStudio({
                   top: `${(80 / PAGE_HEIGHT) * 100}%`,
                   width: `${(980 / PAGE_WIDTH) * 100}%`,
                   height: `${(1440 / PAGE_HEIGHT) * 100}%`,
-                  fontSize: `${(28 * displayWidth) / PAGE_WIDTH}px`,
-                  lineHeight: `${(40 * displayWidth) / PAGE_WIDTH}px`,
+                  fontSize: `${(pageTextSize * displayWidth) / PAGE_WIDTH}px`,
+                  lineHeight: `${(pageTextSize * (40 / 28) * displayWidth) / PAGE_WIDTH}px`,
                   color: paperColor === "night" ? "#fff9ef" : "#17151c",
                 }}
                 onFocus={() => remember()}
                 onChange={(event) => {
-                  const lines = pageTextLines(event.target.value.replace(/\t/g, "    "));
-                  if (lines.length > 36) {
+                  const lines = pageTextLines(
+                    event.target.value.replace(/\t/g, "    "),
+                    pageTextSize,
+                  );
+                  if (lines.length > Math.floor(1440 / (pageTextSize * (40 / 28)))) {
                     setError("Esta folha está completa. Crie outra folha para continuar.");
                     return;
                   }
@@ -2163,6 +2427,48 @@ export function HandwritingStudio({
               A folha digital mede 21 cm de largura. A medida acompanha o documento, não o tamanho
               físico da tela.
             </p>
+          </aside>
+        )}
+        {tool === "coordinates" && !textMode && (
+          <aside className="handwriting-brush-panel" aria-label="Opções do sistema de coordenadas">
+            <header>
+              <div>
+                <small>MATEMÁTICA</small>
+                <h3>Sistema de coordenadas</h3>
+              </div>
+            </header>
+            <p>
+              Arraste a partir da origem para criar os eixos. Cada divisão ocupa um quadrado da
+              folha.
+            </p>
+            {([1, 2, 5, 10] as const).map((step) => (
+              <button
+                type="button"
+                key={step}
+                aria-pressed={coordinateStep === step}
+                onClick={() => setCoordinateStep(step)}
+              >
+                <span className="brush-card-title">Cada divisão vale {step}</span>
+                <svg viewBox="0 0 180 44" aria-hidden="true">
+                  <path
+                    d="M18 36V8M18 36H166M18 12l-5 8m5-8 5 8m139 16-8-5m8 5-8 5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                  <path d="M66 31v10M114 31v10M13 24h10" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </button>
+            ))}
+            <label className="handwriting-coordinate-toggle">
+              <input
+                type="checkbox"
+                checked={equalCoordinateAxes}
+                onChange={(event) => setEqualCoordinateAxes(event.target.checked)}
+              />
+              <span>Eixos com o mesmo tamanho</span>
+            </label>
           </aside>
         )}
       </div>
