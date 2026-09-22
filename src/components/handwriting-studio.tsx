@@ -61,6 +61,7 @@ type Snapshot = {
 };
 type SelectionBox = { x: number; y: number; width: number; height: number };
 type SelectionMode = "rectangle" | "lasso";
+const PAGE_TEXT_SELECTION_ID = "__handwriting-page-text__";
 
 type HandwritingStudioProps = {
   onClose: () => void;
@@ -414,6 +415,14 @@ function coordinateBounds(system: HandwritingCoordinateSystem): SelectionBox {
   };
 }
 
+function stickyBounds(sticky: HandwritingSticky): SelectionBox {
+  return { x: sticky.x, y: sticky.y, width: 260, height: 220 };
+}
+
+function pageTextBounds(): SelectionBox {
+  return { x: 112, y: 80, width: 980, height: 1440 };
+}
+
 function overlaps(first: SelectionBox, second: SelectionBox): boolean {
   return (
     first.x <= second.x + second.width &&
@@ -756,6 +765,17 @@ export function HandwritingStudio({
         const box = coordinateBounds(system);
         context.strokeRect(box.x - 12, box.y - 12, box.width + 24, box.height + 24);
       }
+    }
+    if (layerVisibility.stickies) {
+      for (const sticky of stickies) {
+        if (!selectedIds.includes(sticky.id)) continue;
+        const box = stickyBounds(sticky);
+        context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
+      }
+    }
+    if (layerVisibility.text && pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID)) {
+      const box = pageTextBounds();
+      context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
     }
     if (selectionBox) {
       context.fillStyle = "#7433e026";
@@ -1120,7 +1140,27 @@ export function HandwritingStudio({
                 width: 48,
                 height: 48,
               }),
-          ));
+          )) ||
+        (layerVisibility.stickies &&
+          stickies.some(
+            (sticky) =>
+              selectedIds.includes(sticky.id) &&
+              overlaps(stickyBounds(sticky), {
+                x: point.x - 24,
+                y: point.y - 24,
+                width: 48,
+                height: 48,
+              }),
+          )) ||
+        (layerVisibility.text &&
+          Boolean(pageText) &&
+          selectedIds.includes(PAGE_TEXT_SELECTION_ID) &&
+          overlaps(pageTextBounds(), {
+            x: point.x - 24,
+            y: point.y - 24,
+            width: 48,
+            height: 48,
+          }));
       selectionRef.current = {
         pointerId: event.pointerId,
         start: point,
@@ -1211,6 +1251,17 @@ export function HandwritingStudio({
                 },
               };
             }),
+          );
+          setStickies((current) =>
+            current.map((sticky) =>
+              selection.ids.includes(sticky.id)
+                ? {
+                    ...sticky,
+                    x: Math.max(0, Math.min(940, sticky.x + dx)),
+                    y: Math.max(0, Math.min(1380, sticky.y + dy)),
+                  }
+                : sticky,
+            ),
           );
           selection.origin = point;
         }
@@ -1337,6 +1388,29 @@ export function HandwritingStudio({
                 })
                 .map((system) => system.id)
             : []),
+          ...(layerVisibility.stickies
+            ? stickies
+                .filter((sticky) => {
+                  const box = stickyBounds(sticky);
+                  return pointInPolygon(
+                    { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                    polygon,
+                  );
+                })
+                .map((sticky) => sticky.id)
+            : []),
+          ...(layerVisibility.text && pageText
+            ? pointInPolygon(
+                {
+                  x: pageTextBounds().x + pageTextBounds().width / 2,
+                  y: pageTextBounds().y + pageTextBounds().height / 2,
+                  pressure: 0.5,
+                },
+                polygon,
+              )
+              ? [PAGE_TEXT_SELECTION_ID]
+              : []
+            : []),
         ]);
         setSelectionPath(null);
         return;
@@ -1357,6 +1431,14 @@ export function HandwritingStudio({
             ? coordinateSystems
                 .filter((system) => overlaps(coordinateBounds(system), box))
                 .map((system) => system.id)
+            : []),
+          ...(layerVisibility.stickies
+            ? stickies
+                .filter((sticky) => overlaps(stickyBounds(sticky), box))
+                .map((sticky) => sticky.id)
+            : []),
+          ...(layerVisibility.text && pageText && overlaps(pageTextBounds(), box)
+            ? [PAGE_TEXT_SELECTION_ID]
             : []),
         ]);
         setSelectionBox(null);
@@ -1467,6 +1549,8 @@ export function HandwritingStudio({
     remember();
     setStrokes((current) => current.filter((stroke) => !selectedIds.includes(stroke.id)));
     setCoordinateSystems((current) => current.filter((system) => !selectedIds.includes(system.id)));
+    setStickies((current) => current.filter((sticky) => !selectedIds.includes(sticky.id)));
+    if (selectedIds.includes(PAGE_TEXT_SELECTION_ID)) setPageText("");
     setSelectedIds([]);
   }
 
@@ -1476,6 +1560,8 @@ export function HandwritingStudio({
       ...coordinateSystems
         .filter((system) => selectedIds.includes(system.id))
         .map(coordinateBounds),
+      ...stickies.filter((sticky) => selectedIds.includes(sticky.id)).map(stickyBounds),
+      ...(pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID) ? [pageTextBounds()] : []),
     ]);
   }
 
@@ -1569,6 +1655,10 @@ export function HandwritingStudio({
 
   function startStickyDrag(event: ReactPointerEvent<HTMLButtonElement>, sticky: HandwritingSticky) {
     if (event.button !== 0) return;
+    if (tool === "select") {
+      setSelectedIds([sticky.id]);
+      setSelectionBox(stickyBounds(sticky));
+    }
     event.currentTarget.setPointerCapture(event.pointerId);
     stickyDragRef.current = { id: sticky.id, x: event.clientX, y: event.clientY };
     remember();
@@ -1581,10 +1671,10 @@ export function HandwritingStudio({
     const bounds = canvas.getBoundingClientRect();
     const dx = ((event.clientX - drag.x) * PAGE_WIDTH) / bounds.width;
     const dy = ((event.clientY - drag.y) * PAGE_HEIGHT) / bounds.height;
-    updateSticky(sticky.id, {
-      x: Math.round(Math.max(0, Math.min(940, sticky.x + dx))),
-      y: Math.round(Math.max(0, Math.min(1380, sticky.y + dy))),
-    });
+    const nextX = Math.round(Math.max(0, Math.min(940, sticky.x + dx)));
+    const nextY = Math.round(Math.max(0, Math.min(1380, sticky.y + dy)));
+    updateSticky(sticky.id, { x: nextX, y: nextY });
+    if (tool === "select") setSelectionBox({ x: nextX, y: nextY, width: 260, height: 220 });
     drag.x = event.clientX;
     drag.y = event.clientY;
   }
