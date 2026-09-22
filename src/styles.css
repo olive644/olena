@@ -7216,6 +7216,64 @@ body.local-room-active {
 .handwriting-sticky--text .handwriting-sticky__bar {
   background: #fff9ef;
 }
+
+.handwriting-sticky--formula {
+  min-width: 210px;
+  border-color: #7433e0;
+  border-radius: 5px 14px 6px 10px;
+  background: color-mix(in srgb, var(--surface) 88%, #a779ef 12%);
+  box-shadow: 4px 5px 0 rgb(81 37 155 / 28%);
+}
+.handwriting-sticky--formula textarea {
+  font-family: "Cambria Math", "STIX Two Math", monospace;
+  font-size: clamp(13px, 1.35vw, 21px);
+  line-height: 1.35;
+}
+.handwriting-formula-assist {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px 10px 6px 8px;
+  background: var(--soft);
+}
+.handwriting-formula-assist span {
+  color: var(--violet);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.handwriting-formula-assist input {
+  min-width: 150px;
+  flex: 1;
+  padding: 5px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: "Cambria Math", "STIX Two Math", monospace;
+}
+.handwriting-formula-assist button {
+  padding: 5px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 8px 4px 6px;
+  color: var(--text);
+  background: var(--surface);
+  font-size: 10px;
+  font-weight: 800;
+}
+.handwriting-formula-assist button:last-child {
+  border-color: #7433e0;
+  color: #fff9ef;
+  background: #7433e0;
+}
+.handwriting-formula-assist button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
 @keyframes notebook-open {
   from {
     transform: perspective(600px) rotateY(0);

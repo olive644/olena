@@ -38,6 +38,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   persistido no histórico e nas exportações.
 - Leitura matemática local para sistemas de coordenadas, exibindo Δx, Δy, distância, inclinação e
   ângulo durante o gesto e ao selecionar um eixo existente.
+- Assistente local de fórmula para um eixo selecionado, com leitura sugerida ou edição manual,
+  confirmação explícita e anotação preservando os traços originais.
 
 ## Próximos incrementos recomendados
 
@@ -47,8 +49,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    modelo de privacidade antes de oferecer o recurso.
 3. **Ordenação de camadas:** reordenar traços, texto e documentos importados sem perder a
    legibilidade em telas pequenas.
-4. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
-   confirmação, preservando o traço original e sem enviar conteúdo a serviço externo por padrão.
+4. **OCR matemático opcional:** avaliar um motor local ou integração consentida para reconhecer
+   símbolos manuscritos além do assistente de fórmula atual, preservando o traço original.
 
 O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. Não devem ser
 apresentados como parte do ajuste local de traço nem enviar conteúdo para serviços externos sem

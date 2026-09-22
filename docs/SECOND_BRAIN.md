@@ -25,6 +25,11 @@ O estojo de coordenadas calcula localmente `deltaX`, `deltaY`, distância euclid
 salvar, Selecionar escolhe o eixo e reabre a leitura. Um eixo vertical informa inclinação vertical
 em vez de dividir por zero.
 
+O Assistente local aparece ao selecionar um eixo. Ele sugere `Δy = m · Δx` ou uma forma vertical,
+permite revisão manual e cria um sticky de texto marcado como fórmula somente após o clique de
+confirmação. Isso é anotação assistida, não OCR: nenhum reconhecimento de caligrafia é alegado sem
+um motor local ou consentimento explícito para um serviço externo.
+
 PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil caracteres. backgroundFrame opcional persiste posição e dimensões na folha de 1200 por 1600, incluindo histórico e exportação. Documentos antigos sem frame continuam preenchendo a folha. Selecionar expõe movimento, redimensionamento proporcional e remoção independente da imagem; cancelar fecha a importação sem alterar a folha. A commandbar usa tokens claros por padrão e grafite em data-theme dark.
 
 No editor, seletores de estado ativo incluem handwriting-commandbar para superar a especificidade do hover. Ícones de ação usam preto no claro e branco no escuro; instrumentos mantêm cores próprias. Paper picker, brush panel e footer compartilham tokens e facetas claras por padrão, com uma única substituição grafite em data-theme dark. Post-its usam ajuste de fonte na renderização compartilhada para não truncar a exportação.

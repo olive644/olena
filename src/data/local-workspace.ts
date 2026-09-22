@@ -191,6 +191,7 @@ export function isHandwritingDocument(value: unknown): boolean {
           ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
           isString(sticky["text"]) &&
           sticky["text"].length <= 240 &&
+          (sticky["formula"] === undefined || typeof sticky["formula"] === "boolean") &&
           (sticky["checklist"] === undefined ||
             (Array.isArray(sticky["checklist"]) &&
               sticky["checklist"].length <= 12 &&

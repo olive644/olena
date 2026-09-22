@@ -27,6 +27,7 @@ export type HandwritingSticky = {
   color: "yellow" | "blue" | "lilac";
   text: string;
   checklist?: HandwritingChecklistItem[] | undefined;
+  formula?: boolean;
 };
 
 export type HandwritingChecklistItem = {

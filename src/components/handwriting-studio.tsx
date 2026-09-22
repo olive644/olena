@@ -325,7 +325,7 @@ function renderPage(
     context.save();
     const width = stickyWidth(sticky);
     const height = stickyHeight(sticky);
-    if (sticky.kind !== "text") {
+    if (sticky.kind !== "text" || sticky.formula) {
       context.fillStyle = "#bfb7a7";
       context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
       context.fillStyle = stickyColor(sticky.color);
@@ -361,13 +361,13 @@ function renderPage(
     const { fontSize, lines } = stickyTextLayout(
       sticky.text,
       (text, size) => {
-        context.font = `bold ${size}px sans-serif`;
+        context.font = `${sticky.formula ? "600" : "bold"} ${size}px ${sticky.formula ? "monospace" : "sans-serif"}`;
         return context.measureText(text).width;
       },
       width - 36,
       height - 46,
     );
-    context.font = `bold ${fontSize}px sans-serif`;
+    context.font = `${sticky.formula ? "600" : "bold"} ${fontSize}px ${sticky.formula ? "monospace" : "sans-serif"}`;
     context.textBaseline = "top";
     lines.forEach((line, index) =>
       context.fillText(line, sticky.x + 18, sticky.y + 28 + index * fontSize * 1.3),
@@ -712,6 +712,7 @@ export function HandwritingStudio({
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [selectionPath, setSelectionPath] = useState<HandwritingPoint[] | null>(null);
   const [selectionMode, setSelectionMode] = useState<SelectionMode>("rectangle");
+  const [formulaDraft, setFormulaDraft] = useState("");
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
@@ -1685,6 +1686,43 @@ export function HandwritingStudio({
     ]);
   }
 
+  function useCoordinateFormula() {
+    const coordinateSystem = coordinateSystems.find((system) => selectedIds.includes(system.id));
+    if (!coordinateSystem) return;
+    const stats = coordinateStats(coordinateSystem);
+    setFormulaDraft(
+      stats.slope === null
+        ? `x = ${formatCoordinateNumber(coordinateSystem.origin.x)}`
+        : `Δy = ${formatCoordinateNumber(stats.slope)} · Δx`,
+    );
+  }
+
+  function insertFormulaAnnotation() {
+    const formula = formulaDraft.trim();
+    if (!formula) return;
+    const coordinateSystem = coordinateSystems.find((system) => selectedIds.includes(system.id));
+    const bounds = selectionBounds() ?? (coordinateSystem && coordinateBounds(coordinateSystem));
+    if (!bounds) return;
+    remember();
+    setStickies((current) => [
+      ...current,
+      {
+        id: strokeId(),
+        kind: "text",
+        formula: true,
+        x: Math.max(24, Math.min(PAGE_WIDTH - 460, bounds.x)),
+        y: Math.max(24, Math.min(PAGE_HEIGHT - 140, bounds.y + bounds.height + 18)),
+        width: 460,
+        height: 140,
+        color: "yellow",
+        ink: color,
+        text: formula.slice(0, 240),
+      },
+    ]);
+    setFormulaDraft("");
+    setSelectedIds([]);
+  }
+
   function scaleSelection(factor: number) {
     const bounds = selectionBounds();
     if (!bounds || (bounds.width < 1 && bounds.height < 1)) return;
@@ -2173,8 +2211,11 @@ export function HandwritingStudio({
   }
 
   const displayWidth = Math.max(260, Math.round(fitWidth * zoom));
-  const selectedCoordinateSystem =
-    coordinateSystems.find((system) => selectedIds.includes(system.id)) ?? coordinateSystems.at(-1);
+  const selectedCoordinateSystem = coordinateSystems.find((system) =>
+    selectedIds.includes(system.id),
+  );
+  const inspectedCoordinateSystem =
+    selectedCoordinateSystem ?? (tool === "coordinates" ? coordinateSystems.at(-1) : undefined);
   const liveCoordinateStats = coordinateMeasure
     ? coordinateStats({
         origin: coordinateMeasure.start,
@@ -2184,7 +2225,7 @@ export function HandwritingStudio({
     : null;
   const inspectedCoordinateStats =
     liveCoordinateStats ??
-    (selectedCoordinateSystem ? coordinateStats(selectedCoordinateSystem) : null);
+    (inspectedCoordinateSystem ? coordinateStats(inspectedCoordinateSystem) : null);
 
   return (
     <div className="handwriting-studio">
@@ -2383,6 +2424,28 @@ export function HandwritingStudio({
                   Aumentar texto
                 </button>
               </>
+            )}
+            {tool === "select" && selectedCoordinateSystem && (
+              <div className="handwriting-formula-assist">
+                <span>Assistente local</span>
+                <input
+                  aria-label="Fórmula matemática"
+                  value={formulaDraft}
+                  maxLength={240}
+                  onChange={(event) => setFormulaDraft(event.target.value)}
+                  placeholder="Ex.: y = 2x + 1"
+                />
+                <button type="button" onClick={useCoordinateFormula}>
+                  Usar leitura
+                </button>
+                <button
+                  type="button"
+                  disabled={!formulaDraft.trim()}
+                  onClick={insertFormulaAnnotation}
+                >
+                  Inserir fórmula
+                </button>
+              </div>
             )}
           </div>
         )}
@@ -2900,7 +2963,7 @@ export function HandwritingStudio({
             )}
             {stickies.map((sticky) => (
               <div
-                className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.color}`}
+                className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.color}${sticky.formula ? " handwriting-sticky--formula" : ""}`}
                 style={{
                   pointerEvents: tool === "eraser" && sticky.kind === "text" ? "none" : undefined,
                   left: `${(sticky.x / PAGE_WIDTH) * 100}%`,
