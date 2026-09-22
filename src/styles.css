@@ -4406,7 +4406,7 @@ body.local-room-active {
   margin-top: 2px;
   accent-color: #7433e0;
 }
-.handwriting-layer-row span {
+.handwriting-layer-row > span {
   display: grid;
   gap: 3px;
 }
@@ -4417,6 +4417,26 @@ body.local-room-active {
   color: var(--muted);
   font-size: 10px;
   line-height: 1.35;
+}
+.handwriting-layer-reorder {
+  display: flex;
+  gap: 4px;
+  margin-top: 3px;
+}
+.handwriting-layer-reorder button {
+  min-width: 28px;
+  min-height: 24px;
+  padding: 2px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 8px 4px 6px;
+  color: var(--text);
+  background: var(--surface);
+  font-weight: 900;
+  line-height: 1;
+}
+.handwriting-layer-reorder button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
 }
 .handwriting-layer-reset {
   width: 100%;

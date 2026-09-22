@@ -52,6 +52,15 @@ export type HandwritingLayerVisibility = {
   stickies: boolean;
 };
 
+export type HandwritingLayerKey = "coordinates" | "text" | "strokes" | "stickies";
+
+export const DEFAULT_HANDWRITING_LAYER_ORDER: HandwritingLayerKey[] = [
+  "coordinates",
+  "text",
+  "strokes",
+  "stickies",
+];
+
 export const DEFAULT_HANDWRITING_LAYER_VISIBILITY: HandwritingLayerVisibility = {
   background: true,
   coordinates: true,
@@ -66,7 +75,10 @@ export type HandwritingDocument = {
   pageText?: string;
   pageTextSize?: number;
   coordinateSystems?: HandwritingCoordinateSystem[];
-  layers?: { visibility: HandwritingLayerVisibility };
+  layers?: {
+    visibility: HandwritingLayerVisibility;
+    order?: HandwritingLayerKey[];
+  };
   version: 1;
   paper: HandwritingPaper;
   paperColor?: HandwritingPaperColor;

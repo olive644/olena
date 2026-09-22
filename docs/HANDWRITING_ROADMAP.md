@@ -42,6 +42,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   confirmação explícita e anotação preservando os traços originais.
 - OCR local opcional para uma seleção de traços, com Tesseract.js carregado sob demanda, revisão
   da sugestão no campo de fórmula e confirmação explícita antes de inserir a anotação.
+- Ordenação persistente de camadas de coordenadas, texto, escrita e post-its, com controles para
+  subir ou descer a composição e suporte a desfazer, rascunho e exportação.
 
 ## Próximos incrementos recomendados
 
@@ -49,8 +51,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    caligrafia, com anúncio acessível da posição atual.
 2. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
    modelo de privacidade antes de oferecer o recurso.
-3. **Ordenação de camadas:** reordenar traços, texto e documentos importados sem perder a
-   legibilidade em telas pequenas.
+3. **Objetos importados independentes:** permitir várias imagens ou páginas na mesma folha, com
+   rotação e seleção individual sem substituir o documento de fundo legado.
 4. **OCR matemático especializado:** avaliar um provedor com reconhecimento de símbolos manuscritos
    e LaTeX, como integração opcional e consentida, sem colocar credenciais no bundle do navegador.
 

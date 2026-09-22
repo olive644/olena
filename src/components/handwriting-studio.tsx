@@ -20,8 +20,12 @@ import type {
   HandwritingStroke,
   HandwritingSticky,
   HandwritingLayerVisibility,
+  HandwritingLayerKey,
 } from "../domain/handwriting";
-import { DEFAULT_HANDWRITING_LAYER_VISIBILITY } from "../domain/handwriting";
+import {
+  DEFAULT_HANDWRITING_LAYER_ORDER,
+  DEFAULT_HANDWRITING_LAYER_VISIBILITY,
+} from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
 import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-math";
@@ -65,6 +69,7 @@ type Snapshot = {
   coordinateSystems: HandwritingCoordinateSystem[];
   background?: string | undefined;
   layerVisibility: HandwritingLayerVisibility;
+  layerOrder: HandwritingLayerKey[];
 };
 type SelectionBox = { x: number; y: number; width: number; height: number };
 type SelectionMode = "rectangle" | "lasso";
@@ -288,6 +293,7 @@ function renderPage(
   background?: HTMLImageElement,
   backgroundFrame = { x: 0, y: 0, width: PAGE_WIDTH, height: PAGE_HEIGHT },
   layerVisibility = DEFAULT_HANDWRITING_LAYER_VISIBILITY,
+  layerOrder = DEFAULT_HANDWRITING_LAYER_ORDER,
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
@@ -300,15 +306,23 @@ function renderPage(
       backgroundFrame.width,
       backgroundFrame.height,
     );
-  context.save();
-  context.globalCompositeOperation =
-    paperColor === "night" && (!background || !layerVisibility.background) ? "screen" : "multiply";
-  if (layerVisibility.strokes)
+  const drawStrokesLayer = () => {
+    if (!layerVisibility.strokes) return;
+    context.save();
+    context.globalCompositeOperation =
+      paperColor === "night" && (!background || !layerVisibility.background)
+        ? "screen"
+        : "multiply";
     for (const stroke of strokes) if (stroke.tool === "highlighter") drawStroke(context, stroke);
-  context.restore();
-  if (layerVisibility.coordinates)
+    context.restore();
+    for (const stroke of strokes) if (stroke.tool !== "highlighter") drawStroke(context, stroke);
+  };
+  const drawCoordinatesLayer = () => {
+    if (!layerVisibility.coordinates) return;
     for (const system of coordinateSystems) drawCoordinateSystem(context, system);
-  if (layerVisibility.text && pageText) {
+  };
+  const drawTextLayer = () => {
+    if (!layerVisibility.text || !pageText) return;
     context.save();
     context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
     context.font = `${pageTextSize}px monospace`;
@@ -317,63 +331,76 @@ function renderPage(
       context.fillText(line, 112, 80 + index * pageTextSize * (40 / 28)),
     );
     context.restore();
-  }
-  if (layerVisibility.strokes)
-    for (const stroke of strokes) if (stroke.tool !== "highlighter") drawStroke(context, stroke);
-  if (!layerVisibility.stickies) return;
-  for (const sticky of stickies) {
-    if (editing && sticky.kind === "text") continue;
-    context.save();
-    const width = stickyWidth(sticky);
-    const height = stickyHeight(sticky);
-    if (sticky.kind !== "text" || sticky.formula) {
-      context.fillStyle = "#bfb7a7";
-      context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
-      context.fillStyle = stickyColor(sticky.color);
-      context.fillRect(sticky.x, sticky.y, width, height);
-    }
-    context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
-    if (sticky.checklist?.length) {
-      context.font = "bold 22px sans-serif";
+  };
+  const drawStickiesLayer = () => {
+    if (!layerVisibility.stickies) return;
+    for (const sticky of stickies) {
+      if (editing && sticky.kind === "text") continue;
+      context.save();
+      const width = stickyWidth(sticky);
+      const height = stickyHeight(sticky);
+      if (sticky.kind !== "text" || sticky.formula) {
+        context.fillStyle = "#bfb7a7";
+        context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
+        context.fillStyle = stickyColor(sticky.color);
+        context.fillRect(sticky.x, sticky.y, width, height);
+      }
+      context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
+      if (sticky.checklist?.length) {
+        context.font = "bold 22px sans-serif";
+        context.textBaseline = "top";
+        const title = sticky.text.trim();
+        if (title) context.fillText(title.slice(0, 36), sticky.x + 18, sticky.y + 26);
+        const startY = sticky.y + (title ? 64 : 30);
+        const rowHeight = Math.min(
+          30,
+          (height - (startY - sticky.y) - 18) / sticky.checklist.length,
+        );
+        context.font = "bold 16px sans-serif";
+        sticky.checklist.forEach((item, index) => {
+          const rowY = startY + index * rowHeight;
+          context.strokeStyle = "#17151c";
+          context.lineWidth = 2;
+          context.strokeRect(sticky.x + 18, rowY + 3, 14, 14);
+          if (item.done) {
+            context.beginPath();
+            context.moveTo(sticky.x + 20, rowY + 10);
+            context.lineTo(sticky.x + 24, rowY + 14);
+            context.lineTo(sticky.x + 31, rowY + 6);
+            context.stroke();
+          }
+          context.fillStyle = item.done ? "#6b6570" : "#17151c";
+          context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
+        });
+        context.restore();
+        continue;
+      }
+      const { fontSize, lines } = stickyTextLayout(
+        sticky.text,
+        (text, size) => {
+          context.font = `${sticky.formula ? "600" : "bold"} ${size}px ${sticky.formula ? "monospace" : "sans-serif"}`;
+          return context.measureText(text).width;
+        },
+        width - 36,
+        height - 46,
+      );
+      context.font = `${sticky.formula ? "600" : "bold"} ${fontSize}px ${sticky.formula ? "monospace" : "sans-serif"}`;
       context.textBaseline = "top";
-      const title = sticky.text.trim();
-      if (title) context.fillText(title.slice(0, 36), sticky.x + 18, sticky.y + 26);
-      const startY = sticky.y + (title ? 64 : 30);
-      const rowHeight = Math.min(30, (height - (startY - sticky.y) - 18) / sticky.checklist.length);
-      context.font = "bold 16px sans-serif";
-      sticky.checklist.forEach((item, index) => {
-        const rowY = startY + index * rowHeight;
-        context.strokeStyle = "#17151c";
-        context.lineWidth = 2;
-        context.strokeRect(sticky.x + 18, rowY + 3, 14, 14);
-        if (item.done) {
-          context.beginPath();
-          context.moveTo(sticky.x + 20, rowY + 10);
-          context.lineTo(sticky.x + 24, rowY + 14);
-          context.lineTo(sticky.x + 31, rowY + 6);
-          context.stroke();
-        }
-        context.fillStyle = item.done ? "#6b6570" : "#17151c";
-        context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
-      });
+      lines.forEach((line, index) =>
+        context.fillText(line, sticky.x + 18, sticky.y + 28 + index * fontSize * 1.3),
+      );
       context.restore();
-      continue;
     }
-    const { fontSize, lines } = stickyTextLayout(
-      sticky.text,
-      (text, size) => {
-        context.font = `${sticky.formula ? "600" : "bold"} ${size}px ${sticky.formula ? "monospace" : "sans-serif"}`;
-        return context.measureText(text).width;
-      },
-      width - 36,
-      height - 46,
-    );
-    context.font = `${sticky.formula ? "600" : "bold"} ${fontSize}px ${sticky.formula ? "monospace" : "sans-serif"}`;
-    context.textBaseline = "top";
-    lines.forEach((line, index) =>
-      context.fillText(line, sticky.x + 18, sticky.y + 28 + index * fontSize * 1.3),
-    );
-    context.restore();
+  };
+  const completeLayerOrder = [
+    ...layerOrder,
+    ...DEFAULT_HANDWRITING_LAYER_ORDER.filter((key) => !layerOrder.includes(key)),
+  ];
+  for (const layer of completeLayerOrder) {
+    if (layer === "coordinates") drawCoordinatesLayer();
+    if (layer === "text") drawTextLayer();
+    if (layer === "strokes") drawStrokesLayer();
+    if (layer === "stickies") drawStickiesLayer();
   }
 }
 
@@ -701,6 +728,9 @@ export function HandwritingStudio({
     ...DEFAULT_HANDWRITING_LAYER_VISIBILITY,
     ...(startingDocument?.layers?.visibility ?? {}),
   }));
+  const [layerOrder, setLayerOrder] = useState<HandwritingLayerKey[]>(
+    () => startingDocument?.layers?.order ?? [...DEFAULT_HANDWRITING_LAYER_ORDER],
+  );
   const [layersOpen, setLayersOpen] = useState(false);
   const [textMode, setTextMode] = useState(false);
   const [textAutoCorrect, setTextAutoCorrect] = useState(true);
@@ -751,6 +781,20 @@ export function HandwritingStudio({
     if (nextColor !== "night" && color === "#fff9ef") setColor("#17151c");
   }
 
+  function moveLayer(layer: HandwritingLayerKey, direction: -1 | 1) {
+    const index = layerOrder.indexOf(layer);
+    const nextIndex = index + direction;
+    if (index < 0 || nextIndex < 0 || nextIndex >= layerOrder.length) return;
+    remember();
+    setLayerOrder((current) => {
+      const next = [...current];
+      const [moved] = next.splice(index, 1);
+      if (!moved) return current;
+      next.splice(nextIndex, 0, moved);
+      return next;
+    });
+  }
+
   const currentDocument: HandwritingDocument = useMemo(
     () => ({
       version: 1,
@@ -761,7 +805,7 @@ export function HandwritingStudio({
       pageText,
       pageTextSize,
       coordinateSystems,
-      layers: { visibility: layerVisibility },
+      layers: { visibility: layerVisibility, order: layerOrder },
       background,
       backgroundFrame,
     }),
@@ -774,6 +818,7 @@ export function HandwritingStudio({
       pageTextSize,
       coordinateSystems,
       layerVisibility,
+      layerOrder,
       background,
       backgroundFrame,
     ],
@@ -801,6 +846,7 @@ export function HandwritingStudio({
         ...DEFAULT_HANDWRITING_LAYER_VISIBILITY,
         ...(initialDocument?.layers?.visibility ?? {}),
       },
+      order: initialDocument?.layers?.order ?? DEFAULT_HANDWRITING_LAYER_ORDER,
     },
     background: initialDocument?.background,
     backgroundFrame: initialDocument?.backgroundFrame,
@@ -863,6 +909,7 @@ export function HandwritingStudio({
       backgroundImage,
       backgroundFrame,
       layerVisibility,
+      layerOrder,
     );
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -920,6 +967,7 @@ export function HandwritingStudio({
     pageTextSize,
     coordinateSystems,
     layerVisibility,
+    layerOrder,
     textMode,
     backgroundImage,
     backgroundFrame,
@@ -966,27 +1014,25 @@ export function HandwritingStudio({
     return () => observer.disconnect();
   }, []);
 
-  const shortcutStateRef = useRef({
+  type ShortcutState = {
+    tool: HandwritingTool;
+    fileAction: "import" | "export" | null;
+    writingWindowOpen: boolean;
+    undo: () => void;
+    redo: () => void;
+    zoomAt: (clientX: number, clientY: number, direction: 1 | -1) => void;
+    resetView: () => void;
+    setTool: (next: HandwritingTool) => void;
+  };
+  const shortcutStateRef = useRef<ShortcutState>({
     tool,
     fileAction,
     writingWindowOpen,
-    undo,
-    redo,
-    zoomAt,
-    resetView,
+    undo: () => undefined,
+    redo: () => undefined,
+    zoomAt: () => undefined,
+    resetView: () => undefined,
     setTool,
-  });
-  useEffect(() => {
-    shortcutStateRef.current = {
-      tool,
-      fileAction,
-      writingWindowOpen,
-      undo,
-      redo,
-      zoomAt,
-      resetView,
-      setTool,
-    };
   });
 
   // Atalhos de teclado no estilo Xournal++/apps de mesa digitalizadora:
@@ -1112,6 +1158,7 @@ export function HandwritingStudio({
         pageTextSize,
         coordinateSystems,
         layerVisibility,
+        layerOrder,
         background,
         backgroundFrame,
       },
@@ -1606,6 +1653,7 @@ export function HandwritingStudio({
         pageTextSize,
         coordinateSystems,
         layerVisibility,
+        layerOrder,
         background,
         backgroundFrame,
       },
@@ -1616,6 +1664,7 @@ export function HandwritingStudio({
     setPageTextSize(previous.pageTextSize);
     setCoordinateSystems(previous.coordinateSystems);
     setLayerVisibility(previous.layerVisibility);
+    setLayerOrder(previous.layerOrder);
     setBackground(previous.background);
     setBackgroundFrame(previous.backgroundFrame);
     setSelectedIds([]);
@@ -1634,6 +1683,7 @@ export function HandwritingStudio({
         pageTextSize,
         coordinateSystems,
         layerVisibility,
+        layerOrder,
         background,
         backgroundFrame,
       },
@@ -1644,6 +1694,7 @@ export function HandwritingStudio({
     setPageTextSize(next.pageTextSize);
     setCoordinateSystems(next.coordinateSystems);
     setLayerVisibility(next.layerVisibility);
+    setLayerOrder(next.layerOrder);
     setBackground(next.background);
     setBackgroundFrame(next.backgroundFrame);
     setSelectedIds([]);
@@ -2096,7 +2147,7 @@ export function HandwritingStudio({
       pageText,
       pageTextSize,
       coordinateSystems,
-      layers: { visibility: layerVisibility },
+      layers: { visibility: layerVisibility, order: layerOrder },
       background,
       backgroundFrame,
       paper,
@@ -2134,6 +2185,7 @@ export function HandwritingStudio({
       backgroundImage,
       backgroundFrame,
       layerVisibility,
+      layerOrder,
     );
     return exportPage(canvas);
   }
@@ -2156,6 +2208,7 @@ export function HandwritingStudio({
         backgroundImage,
         backgroundFrame,
         layerVisibility,
+        layerOrder,
       );
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
@@ -2201,6 +2254,7 @@ export function HandwritingStudio({
         backgroundImage,
         backgroundFrame,
         layerVisibility,
+        layerOrder,
       );
       downloadCanvasAsPdf(canvas, "folha-do-caderno.pdf");
     } catch (caught) {
@@ -2212,6 +2266,19 @@ export function HandwritingStudio({
     setZoom(1);
     viewportRef.current?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
+
+  useEffect(() => {
+    shortcutStateRef.current = {
+      tool,
+      fileAction,
+      writingWindowOpen,
+      undo,
+      redo,
+      zoomAt,
+      resetView,
+      setTool,
+    };
+  });
 
   function handleCanvasKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
     const viewport = viewportRef.current;
@@ -3403,28 +3470,60 @@ export function HandwritingStudio({
                 ["text", "Texto da página", "Texto digitado em tela cheia"],
                 ["stickies", "Post-its", "Anotações móveis e lembretes"],
               ] as const
-            ).map(([key, title, description]) => (
-              <label className="handwriting-layer-row" key={key}>
-                <input
-                  type="checkbox"
-                  checked={layerVisibility[key]}
-                  onChange={(event) => {
-                    remember();
-                    setLayerVisibility((current) => ({ ...current, [key]: event.target.checked }));
-                  }}
-                />
-                <span>
-                  <strong>{title}</strong>
-                  <small>{description}</small>
-                </span>
-              </label>
-            ))}
+            ).map(([key, title, description]) => {
+              const reorderable = key !== "background";
+              const layerIndex = reorderable ? layerOrder.indexOf(key as HandwritingLayerKey) : -1;
+              return (
+                <label className="handwriting-layer-row" key={key}>
+                  <input
+                    type="checkbox"
+                    checked={layerVisibility[key]}
+                    onChange={(event) => {
+                      remember();
+                      setLayerVisibility((current) => ({
+                        ...current,
+                        [key]: event.target.checked,
+                      }));
+                    }}
+                  />
+                  <span>
+                    <strong>{title}</strong>
+                    <small>{description}</small>
+                    <span className="handwriting-layer-reorder">
+                      <button
+                        type="button"
+                        aria-label={`Subir camada ${title}`}
+                        disabled={layerIndex <= 0}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          if (reorderable) moveLayer(key as HandwritingLayerKey, -1);
+                        }}
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Descer camada ${title}`}
+                        disabled={!reorderable || layerIndex >= layerOrder.length - 1}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          if (reorderable) moveLayer(key as HandwritingLayerKey, 1);
+                        }}
+                      >
+                        ↓
+                      </button>
+                    </span>
+                  </span>
+                </label>
+              );
+            })}
             <button
               type="button"
               className="handwriting-layer-reset"
               onClick={() => {
                 remember();
                 setLayerVisibility({ ...DEFAULT_HANDWRITING_LAYER_VISIBILITY });
+                setLayerOrder([...DEFAULT_HANDWRITING_LAYER_ORDER]);
               }}
             >
               Mostrar todas

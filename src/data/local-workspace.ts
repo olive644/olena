@@ -210,12 +210,20 @@ export function isHandwritingDocument(value: unknown): boolean {
     const layerRecord = isRecord(value["layers"]) ? value["layers"] : undefined;
     const visibility =
       layerRecord && isRecord(layerRecord["visibility"]) ? layerRecord["visibility"] : undefined;
+    const order = layerRecord?.["order"];
     if (
       !layerRecord ||
       !visibility ||
       !["background", "coordinates", "strokes", "text", "stickies"].every(
         (key) => typeof visibility[key] === "boolean",
-      )
+      ) ||
+      (order !== undefined &&
+        (!Array.isArray(order) ||
+          order.length !== 4 ||
+          new Set(order).size !== 4 ||
+          !order.every((key) =>
+            ["coordinates", "text", "strokes", "stickies"].includes(String(key)),
+          )))
     )
       return false;
   }

@@ -145,6 +145,25 @@ describe("local workspace", () => {
     ).toBe(false);
   });
 
+  it("aceita ordem de camadas completa e rejeita duplicatas", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    const visibility = {
+      background: true,
+      coordinates: true,
+      strokes: true,
+      text: true,
+      stickies: true,
+    };
+    const order = ["stickies", "strokes", "text", "coordinates"];
+    expect(isHandwritingDocument({ ...document, layers: { visibility, order } })).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        layers: { visibility, order: ["stickies", "strokes", "text", "text"] },
+      }),
+    ).toBe(false);
+  });
+
   it("ignora conteúdo inválido sem quebrar o aplicativo", () => {
     window.localStorage.setItem(WORKSPACE_STORAGE_KEY, "{conteudo-invalido");
     expect(loadWorkspace(window.localStorage)).toEqual(createInitialWorkspace());
