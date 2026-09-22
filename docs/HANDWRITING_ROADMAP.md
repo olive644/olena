@@ -22,6 +22,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   no mesmo fluxo.
 - Correção automática local no Texto, com acentos frequentes, capitalização após pontuação e opção
   para desligar o comportamento.
+- Importação de todas as páginas de um PDF como folhas separadas, mantendo cada página ajustável e
+  anotável individualmente.
 
 ## Próximos incrementos recomendados
 
@@ -29,8 +31,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    caligrafia, com anúncio acessível da posição atual.
 2. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
    modelo de privacidade antes de oferecer o recurso.
-3. **PDF direto e várias folhas:** gerar um arquivo único do caderno, com escolha de resolução e
-   margens. Hoje a opção Imprimir/PDF depende do navegador e exporta uma folha por vez.
+3. **PDF direto:** gerar um arquivo único do caderno, com escolha de resolução e margens. Hoje a
+   opção Imprimir/PDF depende do navegador e exporta uma folha por vez.
 4. **Post-its avançados:** redimensionar, ordenar camadas e criar modelos de checklist sem perder
    a legibilidade em telas pequenas.
 5. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após

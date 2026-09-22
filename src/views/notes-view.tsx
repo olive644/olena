@@ -10,6 +10,7 @@ import {
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
+import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import {
   createWorkspaceId,
@@ -244,6 +245,50 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       createdAt: new Date().toISOString(),
       ...(handwriting ? { handwriting } : {}),
     });
+  }
+
+  function importPages(pages: ImportedPage[]) {
+    if (!activeNotebook || pages.length === 0) return;
+    let lastPageId: string | null = null;
+    const createdAt = new Date().toISOString();
+    pages.forEach((page, index) => {
+      const id = createWorkspaceId("note");
+      const handwriting: HandwritingDocument = {
+        version: 1,
+        paper: "blank",
+        paperColor: "light",
+        background: page.image,
+        backgroundFrame: page.frame,
+        strokes: [],
+        stickies: [],
+      };
+      dispatch({
+        type: "note/added",
+        id,
+        notebookId: activeNotebook.id,
+        subjectId: activeNotebook.subjectId,
+        updatedAt: createdAt,
+      });
+      dispatch({
+        type: "note/updated",
+        id,
+        title: `Página importada ${index + 1}`,
+        content: "",
+        updatedAt: createdAt,
+      });
+      dispatch({
+        type: "note/asset-added",
+        noteId: id,
+        kind: "drawing",
+        name: `Página importada ${index + 1}`,
+        dataUrl: page.image,
+        createdAt,
+        handwriting,
+      });
+      lastPageId = id;
+    });
+    setNotebookSection("pages");
+    setActivePageId(lastPageId);
   }
 
   function updateAsset(assetId: string, dataUrl: string, handwriting: HandwritingDocument) {
@@ -684,6 +729,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                   draftPageKey={activePage.id}
                   onSave={saveAsset}
                   onUpdate={updateAsset}
+                  onImportPages={importPages}
                   editingAsset={editingAsset}
                   onCloseEditing={() => setEditingAssetId(null)}
                 />

@@ -7,6 +7,7 @@ import type { HandwritingDocument } from "../domain/handwriting";
 import type { NoteAsset } from "../domain/workspace";
 import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
+import type { ImportedPage } from "./page-import";
 
 type NoteCaptureToolsProps = {
   draftPageKey: string;
@@ -17,6 +18,7 @@ type NoteCaptureToolsProps = {
     handwriting?: HandwritingDocument,
   ) => void;
   onUpdate?: (assetId: string, dataUrl: string, handwriting: HandwritingDocument) => void;
+  onImportPages?: (pages: ImportedPage[]) => void;
   editingAsset?: NoteAsset | null;
   onCloseEditing?: () => void;
 };
@@ -185,6 +187,7 @@ export function NoteCaptureTools({
   draftPageKey,
   onSave,
   onUpdate,
+  onImportPages,
   editingAsset = null,
   onCloseEditing,
 }: NoteCaptureToolsProps) {
@@ -353,6 +356,10 @@ export function NoteCaptureTools({
                   onDirtyChange={setHandwritingDirty}
                   onDraftChange={(document) => {
                     latestDraftRef.current = document;
+                  }}
+                  onImportPages={(pages) => {
+                    onImportPages?.(pages);
+                    close(true);
                   }}
                   draftKey={editingAsset?.id ?? `new-${draftPageKey}`}
                 />

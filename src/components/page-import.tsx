@@ -3,6 +3,11 @@ import type { PDFDocumentProxy } from "pdfjs-dist";
 import { HelenaLoading } from "./helena-loading";
 import type { HandwritingDocument } from "../domain/handwriting";
 
+export type ImportedPage = {
+  image: string;
+  frame: NonNullable<HandwritingDocument["backgroundFrame"]>;
+};
+
 function prepareImportedPage(
   source: CanvasImageSource,
   width: number,
@@ -34,9 +39,11 @@ function prepareImportedPage(
 
 export function PageImport({
   onImport,
+  onImportMany,
   onClose,
 }: {
   onImport: (image: string, frame: HandwritingDocument["backgroundFrame"]) => void;
+  onImportMany?: (pages: ImportedPage[]) => void;
   onClose: () => void;
 }) {
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
@@ -44,6 +51,7 @@ export function PageImport({
   const [source, setSource] = useState<HTMLCanvasElement | null>(null);
   const [size, setSize] = useState(100);
   const [busy, setBusy] = useState(false);
+  const [importingAll, setImportingAll] = useState(false);
   const [error, setError] = useState("");
   const generation = useRef(0);
   const taskRef = useRef<{ destroy: () => Promise<void> } | null>(null);
@@ -169,6 +177,43 @@ export function PageImport({
     }
   }
 
+  async function importAllPages() {
+    if (!pdf || !onImportMany || pdf.numPages < 2) return;
+    setBusy(true);
+    setImportingAll(true);
+    setError("");
+    try {
+      const pages: ImportedPage[] = [];
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        const pdfPage = await pdf.getPage(pageNumber);
+        const size = pdfPage.getViewport({ scale: 1 });
+        const viewport = pdfPage.getViewport({
+          scale: Math.min(1200 / size.width, 1600 / size.height),
+        });
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        await pdfPage.render({ canvas, viewport }).promise;
+        const image = prepareImportedPage(canvas, canvas.width, canvas.height, 100, true);
+        pages.push({
+          image,
+          frame: {
+            x: (1200 - canvas.width) / 2,
+            y: (1600 - canvas.height) / 2,
+            width: canvas.width,
+            height: canvas.height,
+          },
+        });
+      }
+      onImportMany(pages);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível importar o PDF.");
+    } finally {
+      setBusy(false);
+      setImportingAll(false);
+    }
+  }
+
   return (
     <section
       className="editor-file-panel"
@@ -183,7 +228,7 @@ export function PageImport({
       <h3>Importar página</h3>
       <p>
         Escolha uma imagem ou uma página de PDF para anotar por cima. Suas anotações atuais serão
-        mantidas.
+        mantidas. PDFs com várias páginas podem virar folhas separadas.
       </p>
       <input
         ref={fileRef}
@@ -218,7 +263,9 @@ export function PageImport({
           de {pdf.numPages}
         </label>
       )}
-      {busy && <HelenaLoading label="Preparando página" compact />}
+      {busy && (
+        <HelenaLoading label={importingAll ? "Importando páginas" : "Preparando página"} compact />
+      )}
       {(error || prepared.error) && <p role="alert">{error || prepared.error}</p>}
       {source && (
         <label className="editor-import-size">
@@ -260,6 +307,11 @@ export function PageImport({
         >
           Usar esta página
         </button>
+        {pdf && pdf.numPages > 1 && onImportMany && (
+          <button type="button" disabled={busy} onClick={() => void importAllPages()}>
+            Importar todas ({pdf.numPages})
+          </button>
+        )}
         <button type="button" className="editor-import-cancel" onClick={onClose}>
           Cancelar
         </button>

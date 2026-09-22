@@ -25,6 +25,7 @@ import { DEFAULT_HANDWRITING_LAYER_VISIBILITY } from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
 import { HelenaLoading } from "./helena-loading";
+import type { ImportedPage } from "./page-import";
 const PageImport = lazy(() =>
   import("./page-import").then((module) => ({ default: module.PageImport })),
 );
@@ -70,6 +71,7 @@ type HandwritingStudioProps = {
   draftKey: string;
   onDirtyChange?: (dirty: boolean) => void;
   onDraftChange?: (document: HandwritingDocument) => void;
+  onImportPages?: (pages: ImportedPage[]) => void;
 };
 
 function readDraft(key: string): HandwritingDocument | null {
@@ -508,6 +510,7 @@ export function HandwritingStudio({
   draftKey,
   onDirtyChange,
   onDraftChange,
+  onImportPages,
 }: HandwritingStudioProps) {
   const [recovered] = useState(() => readDraft(draftKey));
   const startingDocument = recovered ?? initialDocument;
@@ -2973,6 +2976,10 @@ export function HandwritingStudio({
         <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
           <PageImport
             onClose={closeImport}
+            onImportMany={(pages) => {
+              onImportPages?.(pages);
+              closeImport();
+            }}
             onImport={(image, frame) => {
               remember();
               setBackground(image);
