@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Novos avatares oficiais
+
+O seletor compartilhado inclui Alice (ratinha), Soso Estrelinha (borboleta), Nicolas (raposa), Guilherme (gato branco), Erick (cervo), Miau (coruja) e Luizão (corvo), preservando os cinco avatares anteriores. As artes fornecidas usam imagem proporcional em um SVG com recorte individual da moldura, tornando transparente apenas o exterior sem remover detalhes claros dos personagens. O menu permite rolagem em telas baixas. A seleção utiliza a persistência e sincronização do perfil existentes.
+
 ## Conta e sincronização
 
 O login Google usa Firebase Authentication com persistência local explícita. Workspace, tema, perfil, onboarding, progresso Solo e cache de dificuldade são replicados no Realtime Database sob `users/<uid>/state`; as regras limitam leitura e escrita ao próprio UID. O Perfil mostra conta, estado, última confirmação, sincronização manual e logout. Alterações que falham por falta de rede permanecem pendentes e são tentadas novamente, sem serem marcadas como enviadas. O logout explícito remove do dispositivo as chaves sincronizadas da conta anterior.

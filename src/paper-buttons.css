@@ -654,6 +654,9 @@
   right: 0;
   width: min(360px, calc(100vw - 28px));
   padding: 16px;
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid #d7cbb7;
   border-radius: 9px 22px 12px 18px;
   color: #292432;
@@ -669,6 +672,12 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
+}
+
+@media (max-width: 760px) {
+  .profile-picker {
+    max-height: calc(100dvh - 210px);
+  }
 }
 
 .profile-picker__options {
@@ -695,7 +704,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* Botão único de aparência da barra móvel: mesma peça de papel do avatar de
