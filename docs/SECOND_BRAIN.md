@@ -27,8 +27,11 @@ em vez de dividir por zero.
 
 O Assistente local aparece ao selecionar um eixo. Ele sugere `Δy = m · Δx` ou uma forma vertical,
 permite revisão manual e cria um sticky de texto marcado como fórmula somente após o clique de
-confirmação. Isso é anotação assistida, não OCR: nenhum reconhecimento de caligrafia é alegado sem
-um motor local ou consentimento explícito para um serviço externo.
+confirmação. Ao selecionar traços, o botão OCR local carrega Tesseract.js sob demanda, rasteriza
+somente aquela seleção e preenche o mesmo campo de fórmula com uma sugestão editável. O motor é
+adequado para texto simples, números e operadores latinos, não promete interpretar toda matemática
+manuscrita e nunca substitui os traços originais. Reconhecimento avançado de símbolos e LaTeX exige
+um provedor especializado, autenticação segura e consentimento explícito.
 
 PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil caracteres. backgroundFrame opcional persiste posição e dimensões na folha de 1200 por 1600, incluindo histórico e exportação. Documentos antigos sem frame continuam preenchendo a folha. Selecionar expõe movimento, redimensionamento proporcional e remoção independente da imagem; cancelar fecha a importação sem alterar a folha. A commandbar usa tokens claros por padrão e grafite em data-theme dark.
 
@@ -221,7 +224,8 @@ expõe ações de revelar, avançar ou encerrar. O QR code continua usando a com
 
 1. **Núcleo local concluído:** Espaço do aluno, Agenda, Foco, Hábitos, Cadernos e planos de aula.
 2. **Sistema de estudos em evolução:** biblioteca, flashcards, revisão programada, quizzes, bingo,
-   metas, digitalização local e escrita à mão estão funcionais. OCR e banco de questões ainda não.
+   metas, digitalização local, escrita à mão e OCR local opcional estão funcionais; OCR matemático
+   especializado e banco de questões ainda não.
 3. **Helena inteligente com fundação definida:** contrato, consentimento e fronteira segura do
    backend estão prontos; provedor e interface ainda não estão ativados. Depois entram tutor,
    explicações, resumos e planos personalizados.

@@ -40,6 +40,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   ângulo durante o gesto e ao selecionar um eixo existente.
 - Assistente local de fórmula para um eixo selecionado, com leitura sugerida ou edição manual,
   confirmação explícita e anotação preservando os traços originais.
+- OCR local opcional para uma seleção de traços, com Tesseract.js carregado sob demanda, revisão
+  da sugestão no campo de fórmula e confirmação explícita antes de inserir a anotação.
 
 ## Próximos incrementos recomendados
 
@@ -49,12 +51,13 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    modelo de privacidade antes de oferecer o recurso.
 3. **Ordenação de camadas:** reordenar traços, texto e documentos importados sem perder a
    legibilidade em telas pequenas.
-4. **OCR matemático opcional:** avaliar um motor local ou integração consentida para reconhecer
-   símbolos manuscritos além do assistente de fórmula atual, preservando o traço original.
+4. **OCR matemático especializado:** avaliar um provedor com reconhecimento de símbolos manuscritos
+   e LaTeX, como integração opcional e consentida, sem colocar credenciais no bundle do navegador.
 
-O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. Não devem ser
-apresentados como parte do ajuste local de traço nem enviar conteúdo para serviços externos sem
-consentimento e modelo de ameaça.
+O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. O OCR local atual
+é adequado para texto simples, números e operadores latinos; a saída sempre exige revisão e não
+substitui um interpretador matemático. Não devem ser enviados traços para serviços externos sem
+consentimento, autenticação segura e modelo de ameaça.
 
 ## Referências de produto e plataforma
 

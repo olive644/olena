@@ -25,6 +25,7 @@ import { DEFAULT_HANDWRITING_LAYER_VISIBILITY } from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
 import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-math";
+import { normalizeMathOcrText } from "../domain/ocr";
 import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
 const PageImport = lazy(() =>
@@ -713,6 +714,8 @@ export function HandwritingStudio({
   const [selectionPath, setSelectionPath] = useState<HandwritingPoint[] | null>(null);
   const [selectionMode, setSelectionMode] = useState<SelectionMode>("rectangle");
   const [formulaDraft, setFormulaDraft] = useState("");
+  const [ocrBusy, setOcrBusy] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
@@ -1723,6 +1726,57 @@ export function HandwritingStudio({
     setSelectedIds([]);
   }
 
+  async function recognizeSelectedFormula() {
+    const selectedStrokes = strokes.filter(
+      (stroke) => selectedIds.includes(stroke.id) && stroke.tool !== "highlighter",
+    );
+    const bounds = unionBounds(selectedStrokes.map(strokeBounds));
+    if (!bounds) {
+      setError("Selecione traços de uma expressão antes de reconhecer a fórmula.");
+      return;
+    }
+    setError("");
+    setOcrBusy(true);
+    setOcrProgress(0);
+    type OcrWorker = Awaited<ReturnType<typeof import("tesseract.js").createWorker>>;
+    let worker: OcrWorker | null = null;
+    try {
+      const temporaryCanvas = document.createElement("canvas");
+      const padding = 32;
+      const scale = 2;
+      temporaryCanvas.width = Math.ceil((bounds.width + padding * 2) * scale);
+      temporaryCanvas.height = Math.ceil((bounds.height + padding * 2) * scale);
+      const context = temporaryCanvas.getContext("2d");
+      if (!context) throw new Error("Não foi possível preparar a seleção para OCR.");
+      context.scale(scale, scale);
+      context.fillStyle = "#fff9ef";
+      context.fillRect(0, 0, bounds.width + padding * 2, bounds.height + padding * 2);
+      context.translate(padding - bounds.x, padding - bounds.y);
+      for (const stroke of selectedStrokes) drawStroke(context, stroke);
+
+      const { createWorker, PSM } = await import("tesseract.js");
+      worker = await createWorker("eng", 1, {
+        logger: (message) => setOcrProgress(Math.round(message.progress * 100)),
+      });
+      await worker.setParameters({
+        tessedit_pageseg_mode: PSM.SINGLE_LINE,
+        tessedit_char_whitelist:
+          "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-=()[]{}.,/:^*xXyY",
+      });
+      const result = await worker.recognize(temporaryCanvas.toDataURL("image/png"));
+      const recognized = normalizeMathOcrText(result.data.text ?? "");
+      if (!recognized)
+        throw new Error("O OCR não encontrou uma expressão legível. Revise ou digite a fórmula.");
+      setFormulaDraft(recognized);
+      setOcrProgress(100);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Não foi possível reconhecer a fórmula.");
+    } finally {
+      if (worker) await worker.terminate();
+      setOcrBusy(false);
+    }
+  }
+
   function scaleSelection(factor: number) {
     const bounds = selectionBounds();
     if (!bounds || (bounds.width < 1 && bounds.height < 1)) return;
@@ -2214,6 +2268,7 @@ export function HandwritingStudio({
   const selectedCoordinateSystem = coordinateSystems.find((system) =>
     selectedIds.includes(system.id),
   );
+  const selectedStrokeCount = strokes.filter((stroke) => selectedIds.includes(stroke.id)).length;
   const inspectedCoordinateSystem =
     selectedCoordinateSystem ?? (tool === "coordinates" ? coordinateSystems.at(-1) : undefined);
   const liveCoordinateStats = coordinateMeasure
@@ -2425,7 +2480,7 @@ export function HandwritingStudio({
                 </button>
               </>
             )}
-            {tool === "select" && selectedCoordinateSystem && (
+            {tool === "select" && (selectedCoordinateSystem || selectedStrokeCount > 0) && (
               <div className="handwriting-formula-assist">
                 <span>Assistente local</span>
                 <input
@@ -2435,9 +2490,20 @@ export function HandwritingStudio({
                   onChange={(event) => setFormulaDraft(event.target.value)}
                   placeholder="Ex.: y = 2x + 1"
                 />
-                <button type="button" onClick={useCoordinateFormula}>
-                  Usar leitura
-                </button>
+                {selectedCoordinateSystem && (
+                  <button type="button" onClick={useCoordinateFormula}>
+                    Usar leitura
+                  </button>
+                )}
+                {selectedStrokeCount > 0 && (
+                  <button
+                    type="button"
+                    disabled={ocrBusy}
+                    onClick={() => void recognizeSelectedFormula()}
+                  >
+                    {ocrBusy ? `OCR ${ocrProgress}%` : "Reconhecer OCR local"}
+                  </button>
+                )}
                 <button
                   type="button"
                   disabled={!formulaDraft.trim()}

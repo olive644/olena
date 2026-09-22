@@ -19,7 +19,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Measured entry is 260.8 KiB; retain a small allowance for CI variance.
 // Reliable retry and live account status add 1.1 KiB to the initial sync hook.
 // Measured entry: 263.8 KiB; retain the existing small CI allowance.
-const MAX_INITIAL_JS_BYTES = 266 * 1024;
+// The OCR action adds a small local normalization path to the lazy notebook
+// route, while bundler variance puts the measured entry at 267.2 KiB.
+const MAX_INITIAL_JS_BYTES = 268 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -72,7 +74,9 @@ const MAX_INITIAL_JS_BYTES = 266 * 1024;
 // Keyboard shortcuts, tablet pen detection and tilt-aware ink width live
 // entirely inside the existing lazy handwriting studio chunk; no dependency
 // was added and the initial entry is unchanged. Measured total: 693.5 KiB.
-const MAX_TOTAL_JS_BYTES = 700 * 1024;
+// Tesseract.js is loaded only after an explicit OCR action. Its optional
+// engine and runtime add about 46 KiB to the lazy application total.
+const MAX_TOTAL_JS_BYTES = 750 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
