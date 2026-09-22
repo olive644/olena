@@ -6,7 +6,7 @@ O seletor compartilhado inclui Alice (ratinha), Soso Estrelinha (borboleta), Nic
 
 ## Conta e sincronização
 
-O login Google usa Firebase Authentication com persistência local explícita. Workspace, tema, perfil, onboarding, progresso Solo e cache de dificuldade são replicados no Realtime Database sob `users/<uid>/state`; as regras limitam leitura e escrita ao próprio UID. O Perfil mostra conta, estado, última confirmação, sincronização manual e logout. Alterações que falham por falta de rede permanecem pendentes e são tentadas novamente, sem serem marcadas como enviadas. O logout explícito remove do dispositivo as chaves sincronizadas da conta anterior.
+O login Google usa Firebase Authentication com persistência local explícita. Workspace, tema, perfil, onboarding, progresso Solo e cache de dificuldade são replicados no Realtime Database sob `users/<uid>/state`; as regras limitam leitura e escrita ao próprio UID. O Perfil mostra conta, estado, última confirmação, sincronização manual e logout. Alterações que falham por falta de rede permanecem pendentes e são tentadas novamente, sem serem marcadas como enviadas. O logout explícito remove do dispositivo as chaves sincronizadas da conta anterior. A seção Recuperação local mantém até seis snapshots recentes do workspace neste dispositivo, ignora duplicatas consecutivas e permite restaurar uma versão anterior pelo Perfil; esse mecanismo é local e não substitui a resolução de conflitos da nuvem.
 
 ## Régua, marca-texto e documentos importados
 

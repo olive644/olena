@@ -28,6 +28,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   folha por página e margens A4 limpas.
 - Post-its com redimensionamento por alça, preservando proporção do texto e compatibilidade com
   folhas antigas.
+- Histórico local do workspace no Perfil, com até seis snapshots recentes, deduplicação consecutiva
+  e restauração de uma versão anterior sem alterar o protocolo de sincronização na nuvem.
 
 ## Próximos incrementos recomendados
 

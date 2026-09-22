@@ -360,6 +360,74 @@
   opacity: 0.5;
 }
 
+.workspace-history-settings {
+  display: grid;
+  width: min(100%, 760px);
+  margin: 0 auto 1rem;
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 8px 18px 8px 14px;
+  color: var(--text);
+  background:
+    linear-gradient(135deg, #fff0c7 0 24px, transparent 24px),
+    linear-gradient(315deg, #eadfc8 0 28px, transparent 28px), var(--surface);
+  box-shadow: 0 5px 0 var(--line);
+  gap: 1rem;
+}
+
+:root[data-theme="dark"] .workspace-history-settings {
+  background:
+    linear-gradient(135deg, #51465d 0 24px, transparent 24px),
+    linear-gradient(315deg, #17151c 0 28px, transparent 28px), #292432;
+}
+
+.workspace-history-settings h2,
+.workspace-history-settings p {
+  margin: 0.25rem 0 0;
+}
+
+.workspace-history-empty {
+  color: var(--muted);
+}
+
+.workspace-history-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.workspace-history-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 6px 12px 6px 10px;
+  background: var(--soft);
+}
+
+.workspace-history-list li > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.workspace-history-list small {
+  color: var(--muted);
+}
+
+.workspace-history-list button {
+  min-height: 36px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #a779ef;
+  border-radius: 6px 10px 6px 8px;
+  color: #fff9ef;
+  background: #7433e0;
+  font-weight: 800;
+}
+
 .study-method-settings__header {
   display: grid;
   gap: 0.2rem;

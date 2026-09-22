@@ -39,7 +39,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
   );
   const [view, setView] = useState<AppView>(joinCode ? "learn" : "today");
-  const { workspace, dispatch } = useWorkspace();
+  const { workspace, dispatch, history, restoreSnapshot } = useWorkspace();
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
     if (signedOut) return true;
@@ -99,7 +99,13 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           {view === "library" && <LibraryView workspace={workspace} dispatch={dispatch} />}
           {view === "activity-bank" && <ActivityBankView onBack={() => setView("today")} />}
           {view === "profile" && (
-            <ProfileView workspace={workspace} dispatch={dispatch} cloud={cloud} />
+            <ProfileView
+              workspace={workspace}
+              dispatch={dispatch}
+              cloud={cloud}
+              history={history}
+              onRestoreSnapshot={restoreSnapshot}
+            />
           )}
         </Suspense>
         <MobileNavigation view={view} onNavigate={setView} />
