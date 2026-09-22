@@ -34,6 +34,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   diálogo de impressão; a impressão tradicional continua disponível como alternativa.
 - Post-its com modo checklist, itens concluídos, título, inclusão e remoção de itens, mantendo notas
   antigas compatíveis e renderização completa na exportação.
+- Post-its com ordenação de camada individual, trazendo para frente ou enviando para trás com estado
+  persistido no histórico e nas exportações.
 
 ## Próximos incrementos recomendados
 
@@ -41,8 +43,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    caligrafia, com anúncio acessível da posição atual.
 2. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
    modelo de privacidade antes de oferecer o recurso.
-3. **Ordenação de camadas:** reordenar post-its e outros elementos sem perder a legibilidade em telas
-   pequenas.
+3. **Ordenação de camadas:** reordenar traços, texto e documentos importados sem perder a
+   legibilidade em telas pequenas.
 4. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
    confirmação, preservando o traço original e sem enviar conteúdo a serviço externo por padrão.
 

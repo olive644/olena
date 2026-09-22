@@ -16,6 +16,10 @@ Post-its preservam `text` para notas antigas e aceitam `checklist` opcional com 
 item guarda `id`, `text` e `done`; o editor alterna entre nota e checklist, e o renderizador do
 canvas repete título, caixas marcadas e texto no PNG/PDF/impressão.
 
+A ordem dos post-its é a ordem de composição do canvas. Os controles Trazer para frente e Enviar
+para trás reordenam o array, registram no histórico existente e mantêm a mesma camada em rascunho,
+PNG, PDF e impressão.
+
 PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil caracteres. backgroundFrame opcional persiste posição e dimensões na folha de 1200 por 1600, incluindo histórico e exportação. Documentos antigos sem frame continuam preenchendo a folha. Selecionar expõe movimento, redimensionamento proporcional e remoção independente da imagem; cancelar fecha a importação sem alterar a folha. A commandbar usa tokens claros por padrão e grafite em data-theme dark.
 
 No editor, seletores de estado ativo incluem handwriting-commandbar para superar a especificidade do hover. Ícones de ação usam preto no claro e branco no escuro; instrumentos mantêm cores próprias. Paper picker, brush panel e footer compartilham tokens e facetas claras por padrão, com uma única substituição grafite em data-theme dark. Post-its usam ajuste de fonte na renderização compartilhada para não truncar a exportação.

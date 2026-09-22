@@ -1814,6 +1814,21 @@ export function HandwritingStudio({
     });
   }
 
+  function moveStickyLayer(stickyId: string, direction: "front" | "back") {
+    const currentIndex = stickies.findIndex((sticky) => sticky.id === stickyId);
+    if (currentIndex < 0) return;
+    const targetIndex = direction === "front" ? stickies.length - 1 : 0;
+    if (currentIndex === targetIndex) return;
+    remember();
+    setStickies((current) => {
+      const next = [...current];
+      const [moved] = next.splice(currentIndex, 1);
+      if (!moved) return current;
+      next.splice(targetIndex, 0, moved);
+      return next;
+    });
+  }
+
   function removeSticky(id: string) {
     remember();
     setStickies((current) => current.filter((sticky) => sticky.id !== id));
@@ -2933,6 +2948,28 @@ export function HandwritingStudio({
                     >
                       <PaperEditorIcon name="review" />
                     </button>
+                  )}
+                  {sticky.kind !== "text" && (
+                    <>
+                      <button
+                        type="button"
+                        aria-label="Trazer post-it para frente"
+                        title="Trazer para frente"
+                        onPointerDown={(event) => event.stopPropagation()}
+                        onClick={() => moveStickyLayer(sticky.id, "front")}
+                      >
+                        <PaperEditorIcon name="bringFront" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Enviar post-it para trás"
+                        title="Enviar para trás"
+                        onPointerDown={(event) => event.stopPropagation()}
+                        onClick={() => moveStickyLayer(sticky.id, "back")}
+                      >
+                        <PaperEditorIcon name="sendBack" />
+                      </button>
+                    </>
                   )}
                   <button
                     type="button"
