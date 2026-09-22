@@ -47,7 +47,7 @@ export function reviewPortugueseText(text: string): string {
             : corrected;
         })
         .replace(
-          /(^\s*|[!?]\s+|(?<!\d)\.\s+|\n\s*)([a-zá-úç])/gu,
+          /(^\s*|[!?]\s+|(?<!\d)\.\s+|\n\s*|:\s+)([a-zá-úç])/gu,
           (_, prefix: string, letter: string) => prefix + letter.toLocaleUpperCase("pt-BR"),
         );
     })
