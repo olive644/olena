@@ -296,7 +296,10 @@ estabilização mantém curvas e diagonais intencionais.
 `HandwritingDocument.stickies` é opcional para continuar lendo documentos anteriores. Cada
 post-it tem posição fixa no papel, cor e texto limitado; sua camada HTML permite editar e mover,
 enquanto a rasterização em canvas o inclui na miniatura, no PNG e na impressão. A seleção
-retangular trabalha apenas com traços, não com post-its. A janela ampliada usa um segundo canvas
-que mapeia toques para as mesmas coordenadas da folha. `notebook/page-moved` altera somente
-`pageIds`, preservando o conteúdo de cada folha. A impressão abre uma janela local e depende do
-diálogo de impressão do navegador para gerar PDF.
+retangular trabalha com traços e sistemas de coordenadas, permitindo mover ou apagar os eixos junto
+com a escrita. Post-its e texto continuam com controles próprios para não conflitar com a edição
+direta. O painel Camadas controla visibilidade de documento importado, coordenadas, escrita, texto e
+post-its; essa preferência fica dentro de `HandwritingDocument.layers.visibility` e participa do
+histórico. A janela ampliada usa um segundo canvas que mapeia toques para as mesmas coordenadas da
+folha. `notebook/page-moved` altera somente `pageIds`, preservando o conteúdo de cada folha. A
+impressão abre uma janela local e depende do diálogo de impressão do navegador para gerar PDF.

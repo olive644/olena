@@ -105,6 +105,24 @@ describe("local workspace", () => {
     ).toBe(false);
   });
 
+  it("aceita visibilidade de camadas válida e rejeita camada incompleta", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    const visibility = {
+      background: true,
+      coordinates: true,
+      strokes: true,
+      text: true,
+      stickies: true,
+    };
+    expect(isHandwritingDocument({ ...document, layers: { visibility } })).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        layers: { visibility: { ...visibility, text: "yes" } },
+      }),
+    ).toBe(false);
+  });
+
   it("ignora conteúdo inválido sem quebrar o aplicativo", () => {
     window.localStorage.setItem(WORKSPACE_STORAGE_KEY, "{conteudo-invalido");
     expect(loadWorkspace(window.localStorage)).toEqual(createInitialWorkspace());

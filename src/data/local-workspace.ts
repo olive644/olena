@@ -184,6 +184,19 @@ export function isHandwritingDocument(value: unknown): boolean {
       ))
   )
     return false;
+  if (value["layers"] !== undefined) {
+    const layerRecord = isRecord(value["layers"]) ? value["layers"] : undefined;
+    const visibility =
+      layerRecord && isRecord(layerRecord["visibility"]) ? layerRecord["visibility"] : undefined;
+    if (
+      !layerRecord ||
+      !visibility ||
+      !["background", "coordinates", "strokes", "text", "stickies"].every(
+        (key) => typeof visibility[key] === "boolean",
+      )
+    )
+      return false;
+  }
   return value["strokes"].every(
     (stroke: unknown) =>
       isRecord(stroke) &&

@@ -4314,6 +4314,56 @@ body.local-room-active {
   font-size: 10px;
   line-height: 1.5;
 }
+.handwriting-layer-panel {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.handwriting-layer-panel > p {
+  margin: 0 0 4px;
+}
+.handwriting-layer-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px 12px 7px 10px;
+  background: var(--soft);
+  cursor: pointer;
+}
+.handwriting-layer-row input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #7433e0;
+}
+.handwriting-layer-row span {
+  display: grid;
+  gap: 3px;
+}
+.handwriting-layer-row strong {
+  font-size: 11px;
+}
+.handwriting-layer-row small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+.handwriting-layer-reset {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #7433e0;
+  border-radius: 6px 12px 7px 10px;
+  color: #fff9ef;
+  background: #7433e0;
+  box-shadow: 0 3px #51259b;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
 @media (max-width: 680px) {
   .handwriting-brush-panel {
     display: flex;

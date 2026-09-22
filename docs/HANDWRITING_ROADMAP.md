@@ -13,6 +13,10 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
 - Navegação e reordenação de folhas do caderno.
 - Exportação PNG e impressão com opção de salvar em PDF pelo navegador.
 - Post-its editáveis, com três cores e posição livre sobre o papel.
+- Painel de camadas com visibilidade persistente para documento importado, coordenadas, escrita,
+  texto e post-its.
+- Seleção retangular também reconhece sistemas de coordenadas, permitindo mover e apagar os eixos
+  junto com outros traços.
 
 ## Próximos incrementos recomendados
 
@@ -26,6 +30,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    margens. Hoje a opção Imprimir/PDF depende do navegador e exporta uma folha por vez.
 5. **Post-its avançados:** redimensionar, ordenar camadas e criar modelos de checklist sem perder
    a legibilidade em telas pequenas.
+6. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
+   confirmação, preservando o traço original e sem enviar conteúdo a serviço externo por padrão.
 
 O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. Não devem ser
 apresentados como parte do ajuste local de traço nem enviar conteúdo para serviços externos sem

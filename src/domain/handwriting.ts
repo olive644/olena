@@ -34,12 +34,29 @@ export type HandwritingCoordinateSystem = {
   color: string;
 };
 
+export type HandwritingLayerVisibility = {
+  background: boolean;
+  coordinates: boolean;
+  strokes: boolean;
+  text: boolean;
+  stickies: boolean;
+};
+
+export const DEFAULT_HANDWRITING_LAYER_VISIBILITY: HandwritingLayerVisibility = {
+  background: true,
+  coordinates: true,
+  strokes: true,
+  text: true,
+  stickies: true,
+};
+
 export type HandwritingDocument = {
   backgroundFrame?: { x: number; y: number; width: number; height: number } | undefined;
   background?: string | undefined;
   pageText?: string;
   pageTextSize?: number;
   coordinateSystems?: HandwritingCoordinateSystem[];
+  layers?: { visibility: HandwritingLayerVisibility };
   version: 1;
   paper: HandwritingPaper;
   paperColor?: HandwritingPaperColor;
