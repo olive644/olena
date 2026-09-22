@@ -26,10 +26,20 @@ export type HandwritingSticky = {
   text: string;
 };
 
+export type HandwritingCoordinateSystem = {
+  id: string;
+  origin: HandwritingPoint;
+  end: HandwritingPoint;
+  step: 1 | 2 | 5 | 10;
+  color: string;
+};
+
 export type HandwritingDocument = {
   backgroundFrame?: { x: number; y: number; width: number; height: number } | undefined;
   background?: string | undefined;
   pageText?: string;
+  pageTextSize?: number;
+  coordinateSystems?: HandwritingCoordinateSystem[];
   version: 1;
   paper: HandwritingPaper;
   paperColor?: HandwritingPaperColor;
@@ -43,16 +53,21 @@ export function rulerLength(pixels: number, unit: "px" | "cm" | "in") {
     : `${((pixels * 21) / 1200 / (unit === "in" ? 2.54 : 1)).toFixed(2)} ${unit}`;
 }
 
-export function pageTextLines(text: string): string[] {
-  return text.split("\n").flatMap((line) => line.match(/.{1,58}/gu) ?? [""]);
+export function pageTextLines(text: string, fontSize = 28): string[] {
+  const columns = Math.max(18, Math.floor(976 / (fontSize * 0.6)));
+  return text
+    .split("\n")
+    .flatMap((line) => line.match(new RegExp(`.{1,${columns}}`, "gu")) ?? [""]);
 }
 
 export function erasePageText(
   text: string,
   points: readonly HandwritingPoint[],
   glyphWidth: number,
+  fontSize = 28,
 ) {
-  return pageTextLines(text)
+  const lineHeight = fontSize * (40 / 28);
+  return pageTextLines(text, fontSize)
     .map((line, row) =>
       Array.from(line)
         .map((character, column) =>
@@ -60,8 +75,8 @@ export function erasePageText(
             ({ x, y }) =>
               x + 30 >= 112 + column * glyphWidth &&
               x - 30 <= 112 + (column + 1) * glyphWidth &&
-              y + 30 >= 80 + row * 40 &&
-              y - 30 <= 108 + row * 40,
+              y + 30 >= 80 + row * lineHeight &&
+              y - 30 <= 80 + fontSize + row * lineHeight,
           )
             ? " "
             : character,

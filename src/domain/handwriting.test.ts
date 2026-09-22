@@ -9,6 +9,12 @@ it("preserva parágrafos e divide linhas longas sem perder caracteres", () => {
   expect(lines.join("")).toBe(text);
 });
 
+it("recalcula a largura das linhas quando o texto aumenta", () => {
+  const text = "a".repeat(60);
+  expect(pageTextLines(text, 28)).toHaveLength(2);
+  expect(pageTextLines(text, 56)).toHaveLength(3);
+});
+
 it("apaga letras tocadas sem deslocar as demais linhas ou perder acentos", () => {
   const text = "Minha anotação\nSegunda linha";
   expect(erasePageText(text, [{ x: 128, y: 85, pressure: 0.5 }], 17)).toBe(
