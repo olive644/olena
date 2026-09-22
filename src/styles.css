@@ -4651,6 +4651,12 @@ body.local-room-active {
   touch-action: none;
 }
 
+.handwriting-sticky__bar button.is-active {
+  border-radius: 4px;
+  color: #fff9ef;
+  background: #7433e0;
+}
+
 .handwriting-sticky textarea {
   min-height: 0;
   flex: 1;
@@ -4663,6 +4669,87 @@ body.local-room-active {
   font-size: clamp(10px, 1.1vw, 16px);
   font-weight: 700;
   line-height: 1.2;
+}
+
+.handwriting-sticky__checklist {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  padding: 3px 4px 18px;
+}
+
+.handwriting-sticky__checklist > input,
+.handwriting-sticky__checklist-item input {
+  min-width: 0;
+  border: 0;
+  outline-offset: -2px;
+  color: #17151c;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.handwriting-sticky__checklist > input {
+  margin-bottom: 3px;
+  font-size: clamp(11px, 1.1vw, 15px);
+}
+
+.handwriting-sticky__checklist-item {
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 4px;
+}
+
+.handwriting-sticky__checklist-item button {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  place-items: center;
+  border: 1.5px solid #17151c;
+  border-radius: 3px;
+  color: #fff9ef;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.handwriting-sticky__checklist-item button.is-done {
+  border-color: #7433e0;
+  background: #7433e0;
+}
+
+.handwriting-sticky__checklist-item button:last-child {
+  border: 0;
+  color: #17151c;
+  background: transparent;
+  font-size: 17px;
+}
+
+.handwriting-sticky__checklist-item input {
+  width: 100%;
+  font-size: clamp(9px, 0.95vw, 13px);
+}
+
+.handwriting-sticky__checklist-item input:focus-visible,
+.handwriting-sticky__checklist > input:focus-visible {
+  outline: 2px solid #7433e0;
+  outline-offset: 1px;
+}
+
+.handwriting-sticky__add-item {
+  align-self: flex-start;
+  padding: 2px 4px;
+  border: 0;
+  color: #51259b;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .handwriting-sticky__colors button {

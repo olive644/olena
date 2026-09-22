@@ -95,6 +95,28 @@ describe("local workspace", () => {
     };
     expect(isHandwritingDocument(document)).toBe(true);
     expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [
+          {
+            ...document.stickies[0],
+            checklist: [{ id: "item-1", text: "Revisar", done: false }],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [
+          {
+            ...document.stickies[0],
+            checklist: [{ id: "item-1", text: "ok", done: "não" }],
+          },
+        ],
+      }),
+    ).toBe(false);
+    expect(
       isHandwritingDocument({ ...document, stickies: [{ ...document.stickies[0], x: 1200 }] }),
     ).toBe(false);
     expect(

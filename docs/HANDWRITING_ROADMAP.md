@@ -30,8 +30,10 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   folhas antigas.
 - Histórico local do workspace no Perfil, com até seis snapshots recentes, deduplicação consecutiva
   e restauração de uma versão anterior sem alterar o protocolo de sincronização na nuvem.
-- PDF direto da folha atual, baixado localmente como imagem vetorializada em uma página sem abrir o
+- PDF direto da folha atual, baixado localmente como imagem rasterizada em uma página sem abrir o
   diálogo de impressão; a impressão tradicional continua disponível como alternativa.
+- Post-its com modo checklist, itens concluídos, título, inclusão e remoção de itens, mantendo notas
+  antigas compatíveis e renderização completa na exportação.
 
 ## Próximos incrementos recomendados
 
@@ -39,8 +41,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    caligrafia, com anúncio acessível da posição atual.
 2. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
    modelo de privacidade antes de oferecer o recurso.
-3. **Post-its avançados:** ordenar camadas e criar modelos de checklist sem perder a legibilidade em
-   telas pequenas.
+3. **Ordenação de camadas:** reordenar post-its e outros elementos sem perder a legibilidade em telas
+   pequenas.
 4. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
    confirmação, preservando o traço original e sem enviar conteúdo a serviço externo por padrão.
 

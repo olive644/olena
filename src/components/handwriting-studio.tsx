@@ -331,6 +331,32 @@ function renderPage(
       context.fillRect(sticky.x, sticky.y, width, height);
     }
     context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
+    if (sticky.checklist?.length) {
+      context.font = "bold 22px sans-serif";
+      context.textBaseline = "top";
+      const title = sticky.text.trim();
+      if (title) context.fillText(title.slice(0, 36), sticky.x + 18, sticky.y + 26);
+      const startY = sticky.y + (title ? 64 : 30);
+      const rowHeight = Math.min(30, (height - (startY - sticky.y) - 18) / sticky.checklist.length);
+      context.font = "bold 16px sans-serif";
+      sticky.checklist.forEach((item, index) => {
+        const rowY = startY + index * rowHeight;
+        context.strokeStyle = "#17151c";
+        context.lineWidth = 2;
+        context.strokeRect(sticky.x + 18, rowY + 3, 14, 14);
+        if (item.done) {
+          context.beginPath();
+          context.moveTo(sticky.x + 20, rowY + 10);
+          context.lineTo(sticky.x + 24, rowY + 14);
+          context.lineTo(sticky.x + 31, rowY + 6);
+          context.stroke();
+        }
+        context.fillStyle = item.done ? "#6b6570" : "#17151c";
+        context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
+      });
+      context.restore();
+      continue;
+    }
     const { fontSize, lines } = stickyTextLayout(
       sticky.text,
       (text, size) => {
@@ -1741,6 +1767,53 @@ export function HandwritingStudio({
     );
   }
 
+  function toggleStickyChecklist(sticky: HandwritingSticky) {
+    remember();
+    if (sticky.checklist?.length) {
+      const itemText = sticky.checklist
+        .map((item) => item.text.trim())
+        .filter(Boolean)
+        .join("\n");
+      updateSticky(sticky.id, {
+        checklist: undefined,
+        text: [sticky.text.trim(), itemText].filter(Boolean).join("\n").slice(0, 240),
+      });
+      return;
+    }
+    updateSticky(sticky.id, {
+      checklist: [{ id: strokeId(), text: "", done: false }],
+    });
+  }
+
+  function updateChecklistItem(
+    sticky: HandwritingSticky,
+    itemId: string,
+    change: { text?: string; done?: boolean },
+  ) {
+    if (!sticky.checklist) return;
+    updateSticky(sticky.id, {
+      checklist: sticky.checklist.map((item) =>
+        item.id === itemId ? { ...item, ...change } : item,
+      ),
+    });
+  }
+
+  function addChecklistItem(sticky: HandwritingSticky) {
+    if (!sticky.checklist || sticky.checklist.length >= 12) return;
+    remember();
+    updateSticky(sticky.id, {
+      checklist: [...sticky.checklist, { id: strokeId(), text: "", done: false }],
+    });
+  }
+
+  function removeChecklistItem(sticky: HandwritingSticky, itemId: string) {
+    if (!sticky.checklist || sticky.checklist.length <= 1) return;
+    remember();
+    updateSticky(sticky.id, {
+      checklist: sticky.checklist.filter((item) => item.id !== itemId),
+    });
+  }
+
   function removeSticky(id: string) {
     remember();
     setStickies((current) => current.filter((sticky) => sticky.id !== id));
@@ -2847,6 +2920,20 @@ export function HandwritingStudio({
                   >
                     <PaperEditorIcon name="hand" />
                   </button>
+                  {sticky.kind !== "text" && (
+                    <button
+                      type="button"
+                      className={sticky.checklist?.length ? "is-active" : undefined}
+                      aria-label={
+                        sticky.checklist?.length ? "Voltar para nota" : "Transformar em checklist"
+                      }
+                      aria-pressed={Boolean(sticky.checklist?.length)}
+                      onPointerDown={(event) => event.stopPropagation()}
+                      onClick={() => toggleStickyChecklist(sticky)}
+                    >
+                      <PaperEditorIcon name="review" />
+                    </button>
+                  )}
                   <button
                     type="button"
                     aria-label={sticky.kind === "text" ? "Remover texto" : "Remover post-it"}
@@ -2855,19 +2942,74 @@ export function HandwritingStudio({
                     <PaperEditorIcon name="close" />
                   </button>
                 </div>
-                <textarea
-                  aria-label={sticky.kind === "text" ? "Texto na folha" : "Texto do post-it"}
-                  value={sticky.text}
-                  maxLength={240}
-                  onFocus={() => remember()}
-                  onBlur={() => {
-                    if (!textAutoCorrect) return;
-                    const corrected = reviewPortugueseText(sticky.text);
-                    if (corrected !== sticky.text) updateSticky(sticky.id, { text: corrected });
-                  }}
-                  onChange={(event) => updateSticky(sticky.id, { text: event.target.value })}
-                  placeholder="Sua ideia aqui"
-                />
+                {sticky.checklist?.length ? (
+                  <div className="handwriting-sticky__checklist">
+                    <input
+                      aria-label="Título do checklist"
+                      value={sticky.text}
+                      maxLength={80}
+                      onFocus={() => remember()}
+                      onChange={(event) => updateSticky(sticky.id, { text: event.target.value })}
+                      placeholder="Título"
+                    />
+                    {sticky.checklist.map((item) => (
+                      <div className="handwriting-sticky__checklist-item" key={item.id}>
+                        <button
+                          type="button"
+                          className={item.done ? "is-done" : undefined}
+                          aria-label={item.done ? "Marcar como pendente" : "Marcar como concluído"}
+                          aria-pressed={item.done}
+                          onPointerDown={(event) => event.stopPropagation()}
+                          onClick={() => {
+                            remember();
+                            updateChecklistItem(sticky, item.id, { done: !item.done });
+                          }}
+                        >
+                          {item.done ? "✓" : ""}
+                        </button>
+                        <input
+                          aria-label="Item do checklist"
+                          value={item.text}
+                          maxLength={120}
+                          onChange={(event) =>
+                            updateChecklistItem(sticky, item.id, { text: event.target.value })
+                          }
+                          placeholder="Próximo passo"
+                        />
+                        <button
+                          type="button"
+                          aria-label="Remover item"
+                          onPointerDown={(event) => event.stopPropagation()}
+                          onClick={() => removeChecklistItem(sticky, item.id)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="handwriting-sticky__add-item"
+                      onPointerDown={(event) => event.stopPropagation()}
+                      onClick={() => addChecklistItem(sticky)}
+                    >
+                      + Item
+                    </button>
+                  </div>
+                ) : (
+                  <textarea
+                    aria-label={sticky.kind === "text" ? "Texto na folha" : "Texto do post-it"}
+                    value={sticky.text}
+                    maxLength={240}
+                    onFocus={() => remember()}
+                    onBlur={() => {
+                      if (!textAutoCorrect) return;
+                      const corrected = reviewPortugueseText(sticky.text);
+                      if (corrected !== sticky.text) updateSticky(sticky.id, { text: corrected });
+                    }}
+                    onChange={(event) => updateSticky(sticky.id, { text: event.target.value })}
+                    placeholder="Sua ideia aqui"
+                  />
+                )}
                 {sticky.kind !== "text" && (
                   <div className="handwriting-sticky__colors" aria-label="Cor do post-it">
                     {(["yellow", "blue", "lilac"] as const).map((color) => (

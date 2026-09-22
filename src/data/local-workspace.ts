@@ -190,7 +190,18 @@ export function isHandwritingDocument(value: unknown): boolean {
               sticky["height"] <= 420)) &&
           ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
           isString(sticky["text"]) &&
-          sticky["text"].length <= 240,
+          sticky["text"].length <= 240 &&
+          (sticky["checklist"] === undefined ||
+            (Array.isArray(sticky["checklist"]) &&
+              sticky["checklist"].length <= 12 &&
+              sticky["checklist"].every(
+                (item: unknown) =>
+                  isRecord(item) &&
+                  isString(item["id"]) &&
+                  isString(item["text"]) &&
+                  item["text"].length <= 120 &&
+                  typeof item["done"] === "boolean",
+              ))),
       ))
   )
     return false;

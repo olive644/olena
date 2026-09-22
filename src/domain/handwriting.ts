@@ -26,6 +26,13 @@ export type HandwritingSticky = {
   height?: number;
   color: "yellow" | "blue" | "lilac";
   text: string;
+  checklist?: HandwritingChecklistItem[] | undefined;
+};
+
+export type HandwritingChecklistItem = {
+  id: string;
+  text: string;
+  done: boolean;
 };
 
 export type HandwritingCoordinateSystem = {
