@@ -303,6 +303,54 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     });
   }
 
+  function exportNotebookPdf() {
+    const pages = notebookPages
+      .map((page) => ({ title: page.title || "Folha sem título", image: page.assets[0]?.dataUrl }))
+      .filter((page): page is { title: string; image: string } => Boolean(page.image));
+    if (pages.length === 0) {
+      setMoveMessage("Adicione pelo menos uma folha com conteúdo antes de exportar.");
+      return;
+    }
+    const printWindow = window.open("", "_blank", "noopener,noreferrer");
+    if (!printWindow) {
+      setMoveMessage("Permita pop-ups para exportar o caderno em PDF.");
+      return;
+    }
+    printWindow.document.write(`<!doctype html><html><head><title></title><style>
+      @page { size: A4; margin: 0; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: #fff; }
+      .notebook-export-page { width: 210mm; min-height: 297mm; padding: 10mm; display: grid; place-items: center; break-after: page; }
+      .notebook-export-page:last-child { break-after: auto; }
+      .notebook-export-page img { display: block; max-width: 190mm; max-height: 277mm; object-fit: contain; }
+    </style></head><body></body></html>`);
+    printWindow.document.title = activeNotebook?.title ?? "Caderno";
+    for (const page of pages) {
+      const wrapper = printWindow.document.createElement("section");
+      wrapper.className = "notebook-export-page";
+      const image = printWindow.document.createElement("img");
+      image.alt = page.title;
+      image.src = page.image;
+      wrapper.append(image);
+      printWindow.document.body.append(wrapper);
+    }
+    printWindow.document.close();
+    const images = Array.from(printWindow.document.images);
+    void Promise.all(
+      images.map((image) =>
+        image.complete
+          ? Promise.resolve()
+          : new Promise<void>((resolve) => {
+              image.addEventListener("load", () => resolve(), { once: true });
+              image.addEventListener("error", () => resolve(), { once: true });
+            }),
+      ),
+    ).then(() => {
+      printWindow.focus();
+      printWindow.print();
+    });
+  }
+
   return (
     <main className="main-content" id="main-content">
       <PageHeader />
@@ -833,9 +881,19 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                   </button>
                 </>
               ) : (
-                <button className="primary-button" type="button" onClick={createPage}>
-                  <PaperActionIcon name="plus" /> <span>Nova folha</span>
-                </button>
+                <>
+                  <button
+                    className="secondary-button"
+                    type="button"
+                    disabled={!notebookPages.some((page) => page.assets[0])}
+                    onClick={exportNotebookPdf}
+                  >
+                    <PaperActionIcon name="book" /> <span>Exportar PDF</span>
+                  </button>
+                  <button className="primary-button" type="button" onClick={createPage}>
+                    <PaperActionIcon name="plus" /> <span>Nova folha</span>
+                  </button>
+                </>
               )}
             </div>
           </header>
