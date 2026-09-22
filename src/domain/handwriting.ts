@@ -22,6 +22,8 @@ export type HandwritingSticky = {
   id: string;
   x: number;
   y: number;
+  width?: number;
+  height?: number;
   color: "yellow" | "blue" | "lilac";
   text: string;
 };

@@ -32,6 +32,10 @@ const PageImport = lazy(() =>
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 1600;
+const STICKY_MIN_WIDTH = 160;
+const STICKY_MAX_WIDTH = 520;
+const STICKY_MIN_HEIGHT = 120;
+const STICKY_MAX_HEIGHT = 420;
 const BASE_DISPLAY_WIDTH = 760;
 const WRITING_WINDOW_WIDTH = 500;
 const WRITING_WINDOW_HEIGHT = 185;
@@ -87,6 +91,14 @@ function readDraft(key: string): HandwritingDocument | null {
 
 function stickyColor(color: HandwritingSticky["color"]): string {
   return color === "blue" ? "#d9ecf4" : color === "lilac" ? "#e9ddfb" : "#fff0b5";
+}
+
+function stickyWidth(sticky: HandwritingSticky): number {
+  return Math.max(STICKY_MIN_WIDTH, Math.min(STICKY_MAX_WIDTH, sticky.width ?? 260));
+}
+
+function stickyHeight(sticky: HandwritingSticky): number {
+  return Math.max(STICKY_MIN_HEIGHT, Math.min(STICKY_MAX_HEIGHT, sticky.height ?? 220));
 }
 
 function pointDistance(first: HandwritingPoint, second: HandwritingPoint): number {
@@ -310,17 +322,24 @@ function renderPage(
   for (const sticky of stickies) {
     if (editing && sticky.kind === "text") continue;
     context.save();
+    const width = stickyWidth(sticky);
+    const height = stickyHeight(sticky);
     if (sticky.kind !== "text") {
       context.fillStyle = "#bfb7a7";
-      context.fillRect(sticky.x + 8, sticky.y + 9, 260, 220);
+      context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
       context.fillStyle = stickyColor(sticky.color);
-      context.fillRect(sticky.x, sticky.y, 260, 220);
+      context.fillRect(sticky.x, sticky.y, width, height);
     }
     context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
-    const { fontSize, lines } = stickyTextLayout(sticky.text, (text, size) => {
-      context.font = `bold ${size}px sans-serif`;
-      return context.measureText(text).width;
-    });
+    const { fontSize, lines } = stickyTextLayout(
+      sticky.text,
+      (text, size) => {
+        context.font = `bold ${size}px sans-serif`;
+        return context.measureText(text).width;
+      },
+      width - 36,
+      height - 46,
+    );
     context.font = `bold ${fontSize}px sans-serif`;
     context.textBaseline = "top";
     lines.forEach((line, index) =>
@@ -418,7 +437,7 @@ function coordinateBounds(system: HandwritingCoordinateSystem): SelectionBox {
 }
 
 function stickyBounds(sticky: HandwritingSticky): SelectionBox {
-  return { x: sticky.x, y: sticky.y, width: 260, height: 220 };
+  return { x: sticky.x, y: sticky.y, width: stickyWidth(sticky), height: stickyHeight(sticky) };
 }
 
 function pageTextBounds(text: string, size: number): SelectionBox {
@@ -586,6 +605,13 @@ export function HandwritingStudio({
     path: HandwritingPoint[];
   } | null>(null);
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
+  const stickyResizeRef = useRef<{
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const [strokes, setStrokes] = useState<Stroke[]>(() => startingDocument?.strokes ?? []);
   const [pageText, setPageText] = useState(startingDocument?.pageText ?? "");
   const [pageTextSize, setPageTextSize] = useState(startingDocument?.pageTextSize ?? 28);
@@ -1055,9 +1081,9 @@ export function HandwritingStudio({
           !points.some(
             ({ x, y }) =>
               x >= sticky.x - 30 &&
-              x <= sticky.x + 290 &&
+              x <= sticky.x + stickyWidth(sticky) + 30 &&
               y >= sticky.y - 30 &&
-              y <= sticky.y + 250,
+              y <= sticky.y + stickyHeight(sticky) + 30,
           ),
       );
       if (next.length !== current.length) eraserChangedRef.current = true;
@@ -1265,8 +1291,8 @@ export function HandwritingStudio({
               selection.ids.includes(sticky.id)
                 ? {
                     ...sticky,
-                    x: Math.max(0, Math.min(940, sticky.x + dx)),
-                    y: Math.max(0, Math.min(1380, sticky.y + dy)),
+                    x: Math.max(0, Math.min(PAGE_WIDTH - stickyWidth(sticky), sticky.x + dx)),
+                    y: Math.max(0, Math.min(PAGE_HEIGHT - stickyHeight(sticky), sticky.y + dy)),
                   }
                 : sticky,
             ),
@@ -1680,6 +1706,45 @@ export function HandwritingStudio({
     remember();
   }
 
+  function startStickyResize(
+    event: ReactPointerEvent<HTMLButtonElement>,
+    sticky: HandwritingSticky,
+  ) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    stickyResizeRef.current = {
+      id: sticky.id,
+      x: event.clientX,
+      y: event.clientY,
+      width: stickyWidth(sticky),
+      height: stickyHeight(sticky),
+    };
+    remember();
+  }
+
+  function resizeSticky(event: ReactPointerEvent<HTMLButtonElement>, sticky: HandwritingSticky) {
+    const resize = stickyResizeRef.current;
+    const canvas = canvasRef.current;
+    if (!resize || resize.id !== sticky.id || !canvas) return;
+    const bounds = canvas.getBoundingClientRect();
+    const scale = PAGE_WIDTH / bounds.width;
+    const width = Math.max(
+      STICKY_MIN_WIDTH,
+      Math.min(STICKY_MAX_WIDTH, resize.width + (event.clientX - resize.x) * scale),
+    );
+    const height = Math.max(
+      STICKY_MIN_HEIGHT,
+      Math.min(STICKY_MAX_HEIGHT, resize.height + (event.clientY - resize.y) * scale),
+    );
+    const nextWidth = Math.min(width, PAGE_WIDTH - sticky.x);
+    const nextHeight = Math.min(height, PAGE_HEIGHT - sticky.y);
+    updateSticky(sticky.id, { width: nextWidth, height: nextHeight });
+    if (selectedIds.includes(sticky.id))
+      setSelectionBox({ x: sticky.x, y: sticky.y, width: nextWidth, height: nextHeight });
+  }
+
   function moveSticky(event: ReactPointerEvent<HTMLButtonElement>, sticky: HandwritingSticky) {
     const drag = stickyDragRef.current;
     const canvas = canvasRef.current;
@@ -1687,8 +1752,12 @@ export function HandwritingStudio({
     const bounds = canvas.getBoundingClientRect();
     const dx = ((event.clientX - drag.x) * PAGE_WIDTH) / bounds.width;
     const dy = ((event.clientY - drag.y) * PAGE_HEIGHT) / bounds.height;
-    const nextX = Math.round(Math.max(0, Math.min(940, sticky.x + dx)));
-    const nextY = Math.round(Math.max(0, Math.min(1380, sticky.y + dy)));
+    const nextX = Math.round(
+      Math.max(0, Math.min(PAGE_WIDTH - stickyWidth(sticky), sticky.x + dx)),
+    );
+    const nextY = Math.round(
+      Math.max(0, Math.min(PAGE_HEIGHT - stickyHeight(sticky), sticky.y + dy)),
+    );
     updateSticky(sticky.id, { x: nextX, y: nextY });
     if (tool === "select") setSelectionBox({ x: nextX, y: nextY, width: 260, height: 220 });
     drag.x = event.clientX;
@@ -2659,8 +2728,8 @@ export function HandwritingStudio({
                   pointerEvents: tool === "eraser" && sticky.kind === "text" ? "none" : undefined,
                   left: `${(sticky.x / PAGE_WIDTH) * 100}%`,
                   top: `${(sticky.y / PAGE_HEIGHT) * 100}%`,
-                  width: `${(260 / PAGE_WIDTH) * 100}%`,
-                  height: `${(220 / PAGE_HEIGHT) * 100}%`,
+                  width: `${(stickyWidth(sticky) / PAGE_WIDTH) * 100}%`,
+                  height: `${(stickyHeight(sticky) / PAGE_HEIGHT) * 100}%`,
                   ...(sticky.kind === "text" ? { color: sticky.ink ?? "#17151c" } : {}),
                 }}
                 key={sticky.id}
@@ -2681,8 +2750,14 @@ export function HandwritingStudio({
                       event.preventDefault();
                       remember();
                       updateSticky(sticky.id, {
-                        x: Math.max(0, Math.min(940, sticky.x + delta[0])),
-                        y: Math.max(0, Math.min(1380, sticky.y + delta[1])),
+                        x: Math.max(
+                          0,
+                          Math.min(PAGE_WIDTH - stickyWidth(sticky), sticky.x + delta[0]),
+                        ),
+                        y: Math.max(
+                          0,
+                          Math.min(PAGE_HEIGHT - stickyHeight(sticky), sticky.y + delta[1]),
+                        ),
                       });
                     }}
                     onPointerDown={(event) => startStickyDrag(event, sticky)}
@@ -2734,6 +2809,21 @@ export function HandwritingStudio({
                     ))}
                   </div>
                 )}
+                <button
+                  type="button"
+                  className="handwriting-sticky__resize"
+                  aria-label="Redimensionar post-it"
+                  onPointerDown={(event) => startStickyResize(event, sticky)}
+                  onPointerMove={(event) => resizeSticky(event, sticky)}
+                  onPointerUp={() => {
+                    stickyResizeRef.current = null;
+                  }}
+                  onPointerCancel={() => {
+                    stickyResizeRef.current = null;
+                  }}
+                >
+                  <PaperEditorIcon name="expand" />
+                </button>
               </div>
             ))}
           </div>

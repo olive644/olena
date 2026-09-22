@@ -173,11 +173,21 @@ export function isHandwritingDocument(value: unknown): boolean {
           typeof sticky["x"] === "number" &&
           Number.isFinite(sticky["x"]) &&
           sticky["x"] >= 0 &&
-          sticky["x"] <= 940 &&
+          sticky["x"] <= 1040 &&
           typeof sticky["y"] === "number" &&
           Number.isFinite(sticky["y"]) &&
           sticky["y"] >= 0 &&
-          sticky["y"] <= 1380 &&
+          sticky["y"] <= 1480 &&
+          (sticky["width"] === undefined ||
+            (typeof sticky["width"] === "number" &&
+              Number.isFinite(sticky["width"]) &&
+              sticky["width"] >= 160 &&
+              sticky["width"] <= 520)) &&
+          (sticky["height"] === undefined ||
+            (typeof sticky["height"] === "number" &&
+              Number.isFinite(sticky["height"]) &&
+              sticky["height"] >= 120 &&
+              sticky["height"] <= 420)) &&
           ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
           isString(sticky["text"]) &&
           sticky["text"].length <= 240,

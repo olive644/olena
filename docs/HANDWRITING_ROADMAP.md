@@ -26,6 +26,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   anotável individualmente.
 - Exportação do caderno inteiro para uma sequência de impressão pronta para salvar como PDF, com uma
   folha por página e margens A4 limpas.
+- Post-its com redimensionamento por alça, preservando proporção do texto e compatibilidade com
+  folhas antigas.
 
 ## Próximos incrementos recomendados
 
@@ -35,8 +37,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
    modelo de privacidade antes de oferecer o recurso.
 3. **PDF direto:** gerar um arquivo baixável sem depender do diálogo de impressão, com escolha de
    resolução e margens.
-4. **Post-its avançados:** redimensionar, ordenar camadas e criar modelos de checklist sem perder
-   a legibilidade em telas pequenas.
+4. **Post-its avançados:** ordenar camadas e criar modelos de checklist sem perder a legibilidade em
+   telas pequenas.
 5. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
    confirmação, preservando o traço original e sem enviar conteúdo a serviço externo por padrão.
 

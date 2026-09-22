@@ -4599,6 +4599,27 @@ body.local-room-active {
   transform: rotate(-1deg);
 }
 
+.handwriting-sticky__resize {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  place-items: center;
+  border: 0;
+  color: #17151c;
+  background: transparent;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.handwriting-sticky__resize .paper-editor-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .handwriting-sticky--yellow {
   background: #fff0b5;
 }
