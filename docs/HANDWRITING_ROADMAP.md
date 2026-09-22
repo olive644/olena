@@ -18,6 +18,8 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
 - Seleção retangular também reconhece sistemas de coordenadas, permitindo mover e apagar os eixos
   junto com outros traços.
 - Seleção por laço livre e ações de escala proporcional para traços e sistemas de coordenadas.
+- Correção automática local no Texto, com acentos frequentes, capitalização após pontuação e opção
+  para desligar o comportamento.
 
 ## Próximos incrementos recomendados
 

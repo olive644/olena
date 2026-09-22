@@ -304,3 +304,6 @@ post-its; essa preferência fica dentro de `HandwritingDocument.layers.visibilit
 histórico. A janela ampliada usa um segundo canvas que mapeia toques para as mesmas coordenadas da
 folha. `notebook/page-moved` altera somente `pageIds`, preservando o conteúdo de cada folha. A
 impressão abre uma janela local e depende do diálogo de impressão do navegador para gerar PDF.
+O Texto tem correção automática local opcional ao perder foco, com acentos frequentes e
+capitalização após pontuação. Links, emails e blocos de código ficam preservados, e o botão Revisar
+texto continua disponível para aplicação manual.

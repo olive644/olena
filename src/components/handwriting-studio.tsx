@@ -581,6 +581,7 @@ export function HandwritingStudio({
   }));
   const [layersOpen, setLayersOpen] = useState(false);
   const [textMode, setTextMode] = useState(false);
+  const [textAutoCorrect, setTextAutoCorrect] = useState(true);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
     () => startingDocument?.stickies ?? [],
   );
@@ -2132,6 +2133,18 @@ export function HandwritingStudio({
               <PaperEditorIcon name="review" /> <span>Revisar texto</span>
             </button>
           )}
+          {textMode && (
+            <button
+              type="button"
+              className={textAutoCorrect ? "is-active" : ""}
+              aria-label="Correção automática de texto"
+              aria-pressed={textAutoCorrect}
+              title="Corrige acentos comuns e início de frases ao sair da área de texto"
+              onClick={() => setTextAutoCorrect((enabled) => !enabled)}
+            >
+              <PaperEditorIcon name="review" /> <span>Correção automática</span>
+            </button>
+          )}
           <button
             type="button"
             className={!textMode && tool === "zoom-out" ? "is-active" : ""}
@@ -2513,6 +2526,11 @@ export function HandwritingStudio({
                   color: paperColor === "night" ? "#fff9ef" : "#17151c",
                 }}
                 onFocus={() => remember()}
+                onBlur={() => {
+                  if (!textAutoCorrect) return;
+                  const corrected = reviewPortugueseText(pageText);
+                  if (corrected !== pageText) setPageText(corrected);
+                }}
                 onChange={(event) => {
                   const lines = pageTextLines(
                     event.target.value.replace(/\t/g, "    "),
@@ -2585,6 +2603,11 @@ export function HandwritingStudio({
                   value={sticky.text}
                   maxLength={240}
                   onFocus={() => remember()}
+                  onBlur={() => {
+                    if (!textAutoCorrect) return;
+                    const corrected = reviewPortugueseText(sticky.text);
+                    if (corrected !== sticky.text) updateSticky(sticky.id, { text: corrected });
+                  }}
                   onChange={(event) => updateSticky(sticky.id, { text: event.target.value })}
                   placeholder="Sua ideia aqui"
                 />
