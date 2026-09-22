@@ -357,6 +357,10 @@ function drawCoordinateSystem(
   };
   arrow(xEnd, origin.y, true, xDirection);
   arrow(origin.x, yEnd, false, yDirection);
+  if (system.measurements === false) {
+    context.restore();
+    return;
+  }
   context.fillText("0", origin.x - 14, origin.y + 9);
   for (
     let distance = tickGap, value = step;
@@ -393,6 +397,15 @@ function strokeBounds(stroke: Stroke): SelectionBox {
   const x = Math.min(...xs);
   const y = Math.min(...ys);
   return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y };
+}
+
+function coordinateBounds(system: HandwritingCoordinateSystem): SelectionBox {
+  return {
+    x: Math.min(system.origin.x, system.end.x),
+    y: Math.min(system.origin.y, system.end.y),
+    width: Math.abs(system.end.x - system.origin.x),
+    height: Math.abs(system.end.y - system.origin.y),
+  };
 }
 
 function overlaps(first: SelectionBox, second: SelectionBox): boolean {
@@ -472,6 +485,7 @@ export function HandwritingStudio({
   const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
   const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
+  const [coordinateMeasurements, setCoordinateMeasurements] = useState(true);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
   function closeImport() {
@@ -522,6 +536,7 @@ export function HandwritingStudio({
     start: HandwritingPoint;
     origin: HandwritingPoint;
     ids: string[];
+    coordinateIds: string[];
     moving: boolean;
   } | null>(null);
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
@@ -538,6 +553,7 @@ export function HandwritingStudio({
   const [undoStack, setUndoStack] = useState<Snapshot[]>([]);
   const [redoStack, setRedoStack] = useState<Snapshot[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedCoordinateIds, setSelectedCoordinateIds] = useState<string[]>([]);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
@@ -689,6 +705,11 @@ export function HandwritingStudio({
       const box = strokeBounds(stroke);
       context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
     }
+    for (const system of coordinateSystems) {
+      if (!selectedCoordinateIds.includes(system.id)) continue;
+      const box = coordinateBounds(system);
+      context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
+    }
     if (selectionBox) {
       context.fillStyle = "#7433e026";
       context.fillRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
@@ -699,6 +720,7 @@ export function HandwritingStudio({
     paper,
     paperColor,
     selectedIds,
+    selectedCoordinateIds,
     selectionBox,
     stickies,
     strokes,
@@ -1011,19 +1033,27 @@ export function HandwritingStudio({
       return;
     }
     if (effectiveTool === "select") {
-      const hitSelected = strokes.some(
+      const hitSelectedStroke = strokes.some(
         (stroke) => selectedIds.includes(stroke.id) && strokeTouches(stroke, point, 24),
       );
+      const hitSelectedCoordinate = coordinateSystems.some((system) => {
+        if (!selectedCoordinateIds.includes(system.id)) return false;
+        const box = coordinateBounds(system);
+        return overlaps(box, { x: point.x - 24, y: point.y - 24, width: 48, height: 48 });
+      });
+      const hitSelected = hitSelectedStroke || hitSelectedCoordinate;
       selectionRef.current = {
         pointerId: event.pointerId,
         start: point,
         origin: point,
         ids: hitSelected ? selectedIds : [],
+        coordinateIds: hitSelected ? selectedCoordinateIds : [],
         moving: hitSelected,
       };
       if (hitSelected) remember();
       else {
         setSelectedIds([]);
+        setSelectedCoordinateIds([]);
         setSelectionBox({ x: point.x, y: point.y, width: 0, height: 0 });
       }
       return;
@@ -1078,6 +1108,25 @@ export function HandwritingStudio({
                     })),
                   }
                 : stroke,
+            ),
+          );
+          setCoordinateSystems((current) =>
+            current.map((system) =>
+              selection.coordinateIds.includes(system.id)
+                ? {
+                    ...system,
+                    origin: {
+                      ...system.origin,
+                      x: Math.max(0, Math.min(PAGE_WIDTH, system.origin.x + dx)),
+                      y: Math.max(0, Math.min(PAGE_HEIGHT, system.origin.y + dy)),
+                    },
+                    end: {
+                      ...system.end,
+                      x: Math.max(0, Math.min(PAGE_WIDTH, system.end.x + dx)),
+                      y: Math.max(0, Math.min(PAGE_HEIGHT, system.end.y + dy)),
+                    },
+                  }
+                : system,
             ),
           );
           selection.origin = point;
@@ -1167,6 +1216,7 @@ export function HandwritingStudio({
             origin: coordinateMeasure.start,
             end: coordinateMeasure.end,
             step: coordinateStep,
+            measurements: coordinateMeasurements,
             color,
           },
         ]);
@@ -1193,6 +1243,11 @@ export function HandwritingStudio({
           strokes
             .filter((stroke) => overlaps(strokeBounds(stroke), box))
             .map((stroke) => stroke.id),
+        );
+        setSelectedCoordinateIds(
+          coordinateSystems
+            .filter((system) => overlaps(coordinateBounds(system), box))
+            .map((system) => system.id),
         );
         setSelectionBox(null);
       }
@@ -1239,6 +1294,7 @@ export function HandwritingStudio({
     setBackground(previous.background);
     setBackgroundFrame(previous.backgroundFrame);
     setSelectedIds([]);
+    setSelectedCoordinateIds([]);
     setUndoStack((history) => history.slice(0, -1));
   }
 
@@ -1257,6 +1313,7 @@ export function HandwritingStudio({
     setBackground(next.background);
     setBackgroundFrame(next.backgroundFrame);
     setSelectedIds([]);
+    setSelectedCoordinateIds([]);
     setRedoStack((history) => history.slice(0, -1));
   }
 
@@ -1274,13 +1331,18 @@ export function HandwritingStudio({
     setPageText("");
     setCoordinateSystems([]);
     setSelectedIds([]);
+    setSelectedCoordinateIds([]);
   }
 
   function deleteSelection() {
-    if (!selectedIds.length) return;
+    if (!selectedIds.length && !selectedCoordinateIds.length) return;
     remember();
     setStrokes((current) => current.filter((stroke) => !selectedIds.includes(stroke.id)));
+    setCoordinateSystems((current) =>
+      current.filter((system) => !selectedCoordinateIds.includes(system.id)),
+    );
     setSelectedIds([]);
+    setSelectedCoordinateIds([]);
   }
 
   function removeBackground() {
@@ -1635,6 +1697,26 @@ export function HandwritingStudio({
           </button>
           <button
             type="button"
+            className={!textMode && tool === "coordinates" ? "is-active" : ""}
+            aria-label="Sistema de coordenadas"
+            title="Sistema de coordenadas: arraste da origem até o fim dos eixos"
+            aria-pressed={!textMode && tool === "coordinates"}
+            onClick={() => setTool("coordinates")}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>Coordenadas</span>
+          </button>
+          <button
+            type="button"
             className={!textMode && tool === "pen" ? "is-active" : ""}
             aria-label="Caneta"
             aria-pressed={!textMode && tool === "pen"}
@@ -1680,26 +1762,6 @@ export function HandwritingStudio({
           </button>
           <button
             type="button"
-            className={!textMode && tool === "coordinates" ? "is-active" : ""}
-            aria-label="Sistema de coordenadas"
-            title="Sistema de coordenadas: arraste da origem até o fim dos eixos"
-            aria-pressed={!textMode && tool === "coordinates"}
-            onClick={() => setTool("coordinates")}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>Coordenadas</span>
-          </button>
-          <button
-            type="button"
             aria-label="Texto na página inteira"
             aria-pressed={textMode}
             onClick={() => setTextMode((active) => !active)}
@@ -1720,7 +1782,9 @@ export function HandwritingStudio({
           </button>
         </div>
 
-        {(selectedIds.length > 0 || (tool === "select" && (background || pageText))) && (
+        {(selectedIds.length > 0 ||
+          selectedCoordinateIds.length > 0 ||
+          (tool === "select" && (background || pageText))) && (
           <div className="handwriting-selection-actions" aria-label="Itens selecionados">
             {selectedIds.length > 0 && (
               <>
@@ -1733,6 +1797,18 @@ export function HandwritingStudio({
                 </button>
                 <button type="button" onClick={deleteSelection}>
                   Apagar traços
+                </button>
+              </>
+            )}
+            {selectedCoordinateIds.length > 0 && (
+              <>
+                <span>
+                  {selectedCoordinateIds.length} sistema
+                  {selectedCoordinateIds.length === 1 ? "" : "s"} de coordenadas selecionado
+                  {selectedCoordinateIds.length === 1 ? "" : "s"}
+                </span>
+                <button type="button" onClick={deleteSelection}>
+                  Apagar coordenadas
                 </button>
               </>
             )}
@@ -2003,6 +2079,48 @@ export function HandwritingStudio({
               <span>{label}</span>
             </button>
           ))}
+          {tool === "coordinates" && !textMode && (
+            <div className="handwriting-coordinate-picker" aria-label="Variações das coordenadas">
+              <strong>Coordenadas</strong>
+              {([1, 2, 5, 10] as const).map((step) => (
+                <button
+                  type="button"
+                  key={step}
+                  className={coordinateStep === step ? "is-active" : ""}
+                  aria-pressed={coordinateStep === step}
+                  onClick={() => setCoordinateStep(step)}
+                >
+                  <svg viewBox="0 0 64 52" aria-hidden="true">
+                    <path
+                      d="M10 43V8M10 43H57M10 10l-4 7m4-7 4 7m41 26-7-4m7 4-7 4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    />
+                    <path d="M26 38v10M42 38v10M5 27h10" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                  <span>Escala {step}</span>
+                </button>
+              ))}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={coordinateMeasurements}
+                  onChange={(event) => setCoordinateMeasurements(event.target.checked)}
+                />
+                <span>Medições</span>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={equalCoordinateAxes}
+                  onChange={(event) => setEqualCoordinateAxes(event.target.checked)}
+                />
+                <span>Eixos iguais</span>
+              </label>
+            </div>
+          )}
         </aside>
 
         <div className="handwriting-viewport" ref={viewportRef}>
@@ -2182,29 +2300,79 @@ export function HandwritingStudio({
                   </svg>
                 );
               })()}
-            {coordinateMeasure && (
-              <svg
-                className="handwriting-ruler-overlay"
-                viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
-                aria-label="Prévia do sistema de coordenadas"
-              >
-                <g opacity="0.9">
-                  <path
-                    d={`M${coordinateMeasure.start.x} ${coordinateMeasure.end.y}V${coordinateMeasure.start.y}H${coordinateMeasure.end.x}`}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                  />
-                  <circle
-                    cx={coordinateMeasure.start.x}
-                    cy={coordinateMeasure.start.y}
-                    r="8"
-                    fill="#7433e0"
-                  />
-                </g>
-              </svg>
-            )}
+            {coordinateMeasure &&
+              (() => {
+                const { start, end } = coordinateMeasure;
+                const xDirection = Math.sign(end.x - start.x) || 1;
+                const yDirection = Math.sign(end.y - start.y) || -1;
+                const xTicks = Math.max(0, Math.floor((Math.abs(end.x - start.x) - 12) / 48));
+                const yTicks = Math.max(0, Math.floor((Math.abs(end.y - start.y) - 12) / 48));
+                return (
+                  <svg
+                    className="handwriting-ruler-overlay"
+                    viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
+                    aria-label="Prévia numerada do sistema de coordenadas"
+                  >
+                    <g stroke={color} fill={color} strokeWidth="3" strokeLinecap="round">
+                      <path d={`M${start.x} ${end.y}V${start.y}H${end.x}`} fill="none" />
+                      <path d={`M${end.x} ${start.y}l${-xDirection * 16} -8v16Z`} stroke="none" />
+                      <path d={`M${start.x} ${end.y}l-8 ${-yDirection * 16}h16Z`} stroke="none" />
+                      {coordinateMeasurements && (
+                        <>
+                          <text
+                            x={start.x - 14}
+                            y={start.y + 26}
+                            textAnchor="middle"
+                            stroke="none"
+                            fontSize="18"
+                            fontFamily="monospace"
+                          >
+                            0
+                          </text>
+                          {Array.from({ length: xTicks }, (_, index) => {
+                            const distance = (index + 1) * 48;
+                            const x = start.x + distance * xDirection;
+                            return (
+                              <g key={`x-${index}`}>
+                                <path d={`M${x} ${start.y - 7}v14`} />
+                                <text
+                                  x={x}
+                                  y={start.y + 28}
+                                  textAnchor="middle"
+                                  stroke="none"
+                                  fontSize="18"
+                                  fontFamily="monospace"
+                                >
+                                  {(index + 1) * coordinateStep}
+                                </text>
+                              </g>
+                            );
+                          })}
+                          {Array.from({ length: yTicks }, (_, index) => {
+                            const distance = (index + 1) * 48;
+                            const y = start.y + distance * yDirection;
+                            return (
+                              <g key={`y-${index}`}>
+                                <path d={`M${start.x - 7} ${y}h14`} />
+                                <text
+                                  x={start.x - 13}
+                                  y={y + 6}
+                                  textAnchor="end"
+                                  stroke="none"
+                                  fontSize="18"
+                                  fontFamily="monospace"
+                                >
+                                  {(index + 1) * coordinateStep}
+                                </text>
+                              </g>
+                            );
+                          })}
+                        </>
+                      )}
+                    </g>
+                  </svg>
+                );
+              })()}
             <canvas
               ref={canvasRef}
               className={`handwriting-canvas handwriting-canvas--${tool}`}
@@ -2427,48 +2595,6 @@ export function HandwritingStudio({
               A folha digital mede 21 cm de largura. A medida acompanha o documento, não o tamanho
               físico da tela.
             </p>
-          </aside>
-        )}
-        {tool === "coordinates" && !textMode && (
-          <aside className="handwriting-brush-panel" aria-label="Opções do sistema de coordenadas">
-            <header>
-              <div>
-                <small>MATEMÁTICA</small>
-                <h3>Sistema de coordenadas</h3>
-              </div>
-            </header>
-            <p>
-              Arraste a partir da origem para criar os eixos. Cada divisão ocupa um quadrado da
-              folha.
-            </p>
-            {([1, 2, 5, 10] as const).map((step) => (
-              <button
-                type="button"
-                key={step}
-                aria-pressed={coordinateStep === step}
-                onClick={() => setCoordinateStep(step)}
-              >
-                <span className="brush-card-title">Cada divisão vale {step}</span>
-                <svg viewBox="0 0 180 44" aria-hidden="true">
-                  <path
-                    d="M18 36V8M18 36H166M18 12l-5 8m5-8 5 8m139 16-8-5m8 5-8 5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                  <path d="M66 31v10M114 31v10M13 24h10" stroke="currentColor" strokeWidth="2" />
-                </svg>
-              </button>
-            ))}
-            <label className="handwriting-coordinate-toggle">
-              <input
-                type="checkbox"
-                checked={equalCoordinateAxes}
-                onChange={(event) => setEqualCoordinateAxes(event.target.checked)}
-              />
-              <span>Eixos com o mesmo tamanho</span>
-            </label>
           </aside>
         )}
       </div>
