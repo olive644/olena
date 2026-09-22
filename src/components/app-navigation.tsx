@@ -47,6 +47,13 @@ const PROFILE_AVATARS = [
   { name: "Andreyna", photoUrl: "/profile-avatars/andreyna.webp" },
   { name: "Jairo", photoUrl: "/profile-avatars/jairo.webp" },
   { name: "Helena", photoUrl: "/profile-avatars/helena.webp" },
+  { name: "Alice", photoUrl: "/profile-avatars/alice.svg" },
+  { name: "Soso Estrelinha", photoUrl: "/profile-avatars/soso-estrelinha.svg" },
+  { name: "Nicolas", photoUrl: "/profile-avatars/nicolas.svg" },
+  { name: "Guilherme", photoUrl: "/profile-avatars/guilherme.svg" },
+  { name: "Erick", photoUrl: "/profile-avatars/erick.svg" },
+  { name: "Miau", photoUrl: "/profile-avatars/miau.svg" },
+  { name: "Luizão", photoUrl: "/profile-avatars/luizao.svg" },
 ] as const;
 
 function readStoredProfile(): StoredProfile {
