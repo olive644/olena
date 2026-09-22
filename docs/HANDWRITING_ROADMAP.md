@@ -17,20 +17,19 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   texto e post-its.
 - Seleção retangular também reconhece sistemas de coordenadas, permitindo mover e apagar os eixos
   junto com outros traços.
+- Seleção por laço livre e ações de escala proporcional para traços e sistemas de coordenadas.
 
 ## Próximos incrementos recomendados
 
-1. **Laço livre e redimensionamento:** a seleção atual usa um retângulo. Laço desenhado e escala
-   proporcional de traços ficam para uma etapa própria.
-2. **Janela ampliada mais automática:** acompanhar a pauta e deslocar a área de escrita conforme a
+1. **Janela ampliada mais automática:** acompanhar a pauta e deslocar a área de escrita conforme a
    caligrafia, com anúncio acessível da posição atual.
-3. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
+2. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
    modelo de privacidade antes de oferecer o recurso.
-4. **PDF direto e várias folhas:** gerar um arquivo único do caderno, com escolha de resolução e
+3. **PDF direto e várias folhas:** gerar um arquivo único do caderno, com escolha de resolução e
    margens. Hoje a opção Imprimir/PDF depende do navegador e exporta uma folha por vez.
-5. **Post-its avançados:** redimensionar, ordenar camadas e criar modelos de checklist sem perder
+4. **Post-its avançados:** redimensionar, ordenar camadas e criar modelos de checklist sem perder
    a legibilidade em telas pequenas.
-6. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
+5. **Reconhecimento matemático opcional:** converter seleção manuscrita em fórmula somente após
    confirmação, preservando o traço original e sem enviar conteúdo a serviço externo por padrão.
 
 O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. Não devem ser

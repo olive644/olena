@@ -60,6 +60,7 @@ type Snapshot = {
   layerVisibility: HandwritingLayerVisibility;
 };
 type SelectionBox = { x: number; y: number; width: number; height: number };
+type SelectionMode = "rectangle" | "lasso";
 
 type HandwritingStudioProps = {
   onClose: () => void;
@@ -422,6 +423,29 @@ function overlaps(first: SelectionBox, second: SelectionBox): boolean {
   );
 }
 
+function pointInPolygon(point: HandwritingPoint, polygon: readonly HandwritingPoint[]): boolean {
+  let inside = false;
+  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
+    const current = polygon[index];
+    const prior = polygon[previous];
+    if (!current || !prior) continue;
+    const intersects =
+      current.y > point.y !== prior.y > point.y &&
+      point.x < ((prior.x - current.x) * (point.y - current.y)) / (prior.y - current.y) + current.x;
+    if (intersects) inside = !inside;
+  }
+  return inside;
+}
+
+function unionBounds(boxes: readonly SelectionBox[]): SelectionBox | null {
+  if (!boxes.length) return null;
+  const x = Math.min(...boxes.map((box) => box.x));
+  const y = Math.min(...boxes.map((box) => box.y));
+  const right = Math.max(...boxes.map((box) => box.x + box.width));
+  const bottom = Math.max(...boxes.map((box) => box.y + box.height));
+  return { x, y, width: right - x, height: bottom - y };
+}
+
 function distanceToSegment(
   point: HandwritingPoint,
   start: HandwritingPoint,
@@ -541,6 +565,8 @@ export function HandwritingStudio({
     origin: HandwritingPoint;
     ids: string[];
     moving: boolean;
+    lasso: boolean;
+    path: HandwritingPoint[];
   } | null>(null);
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const [strokes, setStrokes] = useState<Stroke[]>(() => startingDocument?.strokes ?? []);
@@ -562,6 +588,8 @@ export function HandwritingStudio({
   const [redoStack, setRedoStack] = useState<Snapshot[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
+  const [selectionPath, setSelectionPath] = useState<HandwritingPoint[] | null>(null);
+  const [selectionMode, setSelectionMode] = useState<SelectionMode>("rectangle");
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
@@ -733,12 +761,22 @@ export function HandwritingStudio({
       context.fillRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
       context.strokeRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
     }
+    if (selectionPath && selectionPath.length > 1) {
+      context.beginPath();
+      context.moveTo(selectionPath[0]!.x, selectionPath[0]!.y);
+      for (const point of selectionPath.slice(1)) context.lineTo(point.x, point.y);
+      context.closePath();
+      context.fillStyle = "#7433e026";
+      context.fill();
+      context.stroke();
+    }
     context.restore();
   }, [
     paper,
     paperColor,
     selectedIds,
     selectionBox,
+    selectionPath,
     stickies,
     strokes,
     pageText,
@@ -1052,6 +1090,21 @@ export function HandwritingStudio({
       return;
     }
     if (effectiveTool === "select") {
+      if (selectionMode === "lasso") {
+        selectionRef.current = {
+          pointerId: event.pointerId,
+          start: point,
+          origin: point,
+          ids: [],
+          moving: false,
+          lasso: true,
+          path: [point],
+        };
+        setSelectedIds([]);
+        setSelectionBox(null);
+        setSelectionPath([point]);
+        return;
+      }
       const hitSelected =
         strokes.some(
           (stroke) => selectedIds.includes(stroke.id) && strokeTouches(stroke, point, 24),
@@ -1073,6 +1126,8 @@ export function HandwritingStudio({
         origin: point,
         ids: hitSelected ? selectedIds : [],
         moving: hitSelected,
+        lasso: false,
+        path: [],
       };
       if (hitSelected) remember();
       else {
@@ -1115,6 +1170,11 @@ export function HandwritingStudio({
     const selection = selectionRef.current;
     if (selection && selection.pointerId === event.pointerId) {
       const point = canvasPoint(canvas, event);
+      if (selection.lasso) {
+        selection.path.push(point);
+        setSelectionPath([...selection.path]);
+        return;
+      }
       if (selection.moving) {
         const dx = point.x - selection.origin.x;
         const dy = point.y - selection.origin.y;
@@ -1252,6 +1312,34 @@ export function HandwritingStudio({
       const selection = selectionRef.current;
       selectionRef.current = null;
       drawingRef.current = false;
+      if (selection.lasso) {
+        const point = canvasRef.current ? canvasPoint(canvasRef.current, event) : selection.start;
+        const polygon = [...selection.path, point];
+        setSelectedIds([
+          ...strokes
+            .filter((stroke) => {
+              const box = strokeBounds(stroke);
+              return pointInPolygon(
+                { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                polygon,
+              );
+            })
+            .map((stroke) => stroke.id),
+          ...(layerVisibility.coordinates
+            ? coordinateSystems
+                .filter((system) => {
+                  const box = coordinateBounds(system);
+                  return pointInPolygon(
+                    { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                    polygon,
+                  );
+                })
+                .map((system) => system.id)
+            : []),
+        ]);
+        setSelectionPath(null);
+        return;
+      }
       if (!selection.moving) {
         const point = canvasRef.current ? canvasPoint(canvasRef.current, event) : selection.start;
         const box = {
@@ -1271,6 +1359,7 @@ export function HandwritingStudio({
             : []),
         ]);
         setSelectionBox(null);
+        setSelectionPath(null);
       }
       return;
     }
@@ -1378,6 +1467,41 @@ export function HandwritingStudio({
     setStrokes((current) => current.filter((stroke) => !selectedIds.includes(stroke.id)));
     setCoordinateSystems((current) => current.filter((system) => !selectedIds.includes(system.id)));
     setSelectedIds([]);
+  }
+
+  function selectionBounds(): SelectionBox | null {
+    return unionBounds([
+      ...strokes.filter((stroke) => selectedIds.includes(stroke.id)).map(strokeBounds),
+      ...coordinateSystems
+        .filter((system) => selectedIds.includes(system.id))
+        .map(coordinateBounds),
+    ]);
+  }
+
+  function scaleSelection(factor: number) {
+    const bounds = selectionBounds();
+    if (!bounds || (bounds.width < 1 && bounds.height < 1)) return;
+    remember();
+    const center = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
+    const scalePoint = (point: HandwritingPoint): HandwritingPoint => ({
+      ...point,
+      x: Math.max(0, Math.min(PAGE_WIDTH, center.x + (point.x - center.x) * factor)),
+      y: Math.max(0, Math.min(PAGE_HEIGHT, center.y + (point.y - center.y) * factor)),
+    });
+    setStrokes((current) =>
+      current.map((stroke) =>
+        selectedIds.includes(stroke.id)
+          ? { ...stroke, points: stroke.points.map(scalePoint), width: stroke.width * factor }
+          : stroke,
+      ),
+    );
+    setCoordinateSystems((current) =>
+      current.map((system) =>
+        selectedIds.includes(system.id)
+          ? { ...system, origin: scalePoint(system.origin), end: scalePoint(system.end) }
+          : system,
+      ),
+    );
   }
 
   function removeBackground() {
@@ -1829,19 +1953,48 @@ export function HandwritingStudio({
           </button>
         </div>
 
-        {(selectedIds.length > 0 || (tool === "select" && (background || pageText))) && (
+        {(selectedIds.length > 0 || tool === "select") && (
           <div className="handwriting-selection-actions" aria-label="Itens selecionados">
+            {tool === "select" && (
+              <>
+                <span>Modo</span>
+                <button
+                  type="button"
+                  aria-pressed={selectionMode === "rectangle"}
+                  onClick={() => setSelectionMode("rectangle")}
+                >
+                  Retângulo
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={selectionMode === "lasso"}
+                  onClick={() => setSelectionMode("lasso")}
+                >
+                  Laço livre
+                </button>
+              </>
+            )}
             {selectedIds.length > 0 && (
               <>
                 <span>
-                  {selectedIds.length} traço{selectedIds.length === 1 ? "" : "s"} selecionado
+                  {selectedIds.length} item{selectedIds.length === 1 ? "" : "s"} selecionado
                   {selectedIds.length === 1 ? "" : "s"}
                 </span>
-                <button type="button" onClick={alignSelection}>
+                <button
+                  type="button"
+                  disabled={!strokes.some((stroke) => selectedIds.includes(stroke.id))}
+                  onClick={alignSelection}
+                >
                   Alinhar
                 </button>
+                <button type="button" onClick={() => scaleSelection(1.12)}>
+                  Aumentar
+                </button>
+                <button type="button" onClick={() => scaleSelection(0.88)}>
+                  Diminuir
+                </button>
                 <button type="button" onClick={deleteSelection}>
-                  Apagar traços
+                  Apagar seleção
                 </button>
               </>
             )}

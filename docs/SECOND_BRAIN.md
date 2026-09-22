@@ -297,8 +297,9 @@ estabilização mantém curvas e diagonais intencionais.
 post-it tem posição fixa no papel, cor e texto limitado; sua camada HTML permite editar e mover,
 enquanto a rasterização em canvas o inclui na miniatura, no PNG e na impressão. A seleção
 retangular trabalha com traços e sistemas de coordenadas, permitindo mover ou apagar os eixos junto
-com a escrita. Post-its e texto continuam com controles próprios para não conflitar com a edição
-direta. O painel Camadas controla visibilidade de documento importado, coordenadas, escrita, texto e
+com a escrita. O modo Laço livre seleciona os mesmos objetos por contorno, enquanto as ações de
+escala proporcional ajustam traços e eixos ao redor do centro da seleção. Post-its e texto continuam
+com controles próprios para não conflitar com a edição direta. O painel Camadas controla visibilidade de documento importado, coordenadas, escrita, texto e
 post-its; essa preferência fica dentro de `HandwritingDocument.layers.visibility` e participa do
 histórico. A janela ampliada usa um segundo canvas que mapeia toques para as mesmas coordenadas da
 folha. `notebook/page-moved` altera somente `pageIds`, preservando o conteúdo de cada folha. A
