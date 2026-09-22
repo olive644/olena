@@ -3828,10 +3828,28 @@ body.local-room-active {
   touch-action: none;
 }
 
+.handwriting-writing-window__status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .handwriting-writing-window__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
+}
+
+.handwriting-writing-window__actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--text);
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .handwriting-writing-window__actions button {

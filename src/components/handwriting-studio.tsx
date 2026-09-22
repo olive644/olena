@@ -773,6 +773,8 @@ export function HandwritingStudio({
   const [writingWindowOpen, setWritingWindowOpen] = useState(false);
   const [writingWindowX, setWritingWindowX] = useState(100);
   const [writingWindowY, setWritingWindowY] = useState(110);
+  const [writingWindowAutoFollow, setWritingWindowAutoFollow] = useState(true);
+  const [writingWindowStatus, setWritingWindowStatus] = useState("Coluna 1, linha 1");
   const [draftStatus, setDraftStatus] = useState(recovered ? "Rascunho recuperado" : "");
 
   function selectPaperColor(nextColor: HandwritingPaperColor) {
@@ -2129,15 +2131,27 @@ export function HandwritingStudio({
       );
     }
     const bounds = event.currentTarget.getBoundingClientRect();
-    if ((event.clientX - bounds.left) / bounds.width > 0.88) advanceWritingWindow();
+    const relativeX = (event.clientX - bounds.left) / bounds.width;
+    const relativeY = (event.clientY - bounds.top) / bounds.height;
+    if (writingWindowAutoFollow && (relativeX > 0.82 || relativeY > 0.84)) advanceWritingWindow();
   }
 
   function advanceWritingWindow() {
     if (writingWindowX + WRITING_WINDOW_WIDTH + 300 < PAGE_WIDTH) {
-      setWritingWindowX((current) => current + 300);
+      setWritingWindowX((current) => {
+        const next = current + 300;
+        setWritingWindowStatus(
+          `Coluna ${Math.floor((next - 100) / 300) + 1}, linha ${Math.floor((writingWindowY - 110) / 48) + 1}`,
+        );
+        return next;
+      });
     } else {
       setWritingWindowX(100);
-      setWritingWindowY((current) => Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48));
+      setWritingWindowY((current) => {
+        const next = Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48);
+        setWritingWindowStatus(`Coluna 1, linha ${Math.floor((next - 110) / 48) + 1}`);
+        return next;
+      });
     }
   }
 
@@ -2757,10 +2771,29 @@ export function HandwritingStudio({
             onPointerUp={finishWritingWindow}
             onPointerCancel={finishWritingWindow}
           />
+          <p className="handwriting-writing-window__status" aria-live="polite">
+            {writingWindowStatus}
+          </p>
           <div className="handwriting-writing-window__actions">
+            <label>
+              <input
+                type="checkbox"
+                checked={writingWindowAutoFollow}
+                onChange={(event) => setWritingWindowAutoFollow(event.target.checked)}
+              />
+              Acompanhar escrita
+            </label>
             <button
               type="button"
-              onClick={() => setWritingWindowX((current) => Math.max(0, current - 300))}
+              onClick={() =>
+                setWritingWindowX((current) => {
+                  const next = Math.max(0, current - 300);
+                  setWritingWindowStatus(
+                    `Coluna ${Math.floor((next - 100) / 300) + 1}, linha ${Math.floor((writingWindowY - 110) / 48) + 1}`,
+                  );
+                  return next;
+                })
+              }
             >
               Voltar
             </button>
@@ -2773,6 +2806,9 @@ export function HandwritingStudio({
                 setWritingWindowX(100);
                 setWritingWindowY((current) =>
                   Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48),
+                );
+                setWritingWindowStatus(
+                  `Coluna 1, linha ${Math.floor((Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, writingWindowY + 48) - 110) / 48) + 1}`,
                 );
               }}
             >
