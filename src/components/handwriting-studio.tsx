@@ -419,8 +419,13 @@ function stickyBounds(sticky: HandwritingSticky): SelectionBox {
   return { x: sticky.x, y: sticky.y, width: 260, height: 220 };
 }
 
-function pageTextBounds(): SelectionBox {
-  return { x: 112, y: 80, width: 980, height: 1440 };
+function pageTextBounds(text: string, size: number): SelectionBox {
+  const lineHeight = size * (40 / 28);
+  const height = Math.min(
+    1440,
+    Math.max(lineHeight, pageTextLines(text, size).length * lineHeight),
+  );
+  return { x: 112, y: 80, width: 980, height };
 }
 
 function overlaps(first: SelectionBox, second: SelectionBox): boolean {
@@ -774,7 +779,7 @@ export function HandwritingStudio({
       }
     }
     if (layerVisibility.text && pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID)) {
-      const box = pageTextBounds();
+      const box = pageTextBounds(pageText, pageTextSize);
       context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
     }
     if (selectionBox) {
@@ -1155,7 +1160,7 @@ export function HandwritingStudio({
         (layerVisibility.text &&
           Boolean(pageText) &&
           selectedIds.includes(PAGE_TEXT_SELECTION_ID) &&
-          overlaps(pageTextBounds(), {
+          overlaps(pageTextBounds(pageText, pageTextSize), {
             x: point.x - 24,
             y: point.y - 24,
             width: 48,
@@ -1402,8 +1407,12 @@ export function HandwritingStudio({
           ...(layerVisibility.text && pageText
             ? pointInPolygon(
                 {
-                  x: pageTextBounds().x + pageTextBounds().width / 2,
-                  y: pageTextBounds().y + pageTextBounds().height / 2,
+                  x:
+                    pageTextBounds(pageText, pageTextSize).x +
+                    pageTextBounds(pageText, pageTextSize).width / 2,
+                  y:
+                    pageTextBounds(pageText, pageTextSize).y +
+                    pageTextBounds(pageText, pageTextSize).height / 2,
                   pressure: 0.5,
                 },
                 polygon,
@@ -1437,7 +1446,9 @@ export function HandwritingStudio({
                 .filter((sticky) => overlaps(stickyBounds(sticky), box))
                 .map((sticky) => sticky.id)
             : []),
-          ...(layerVisibility.text && pageText && overlaps(pageTextBounds(), box)
+          ...(layerVisibility.text &&
+          pageText &&
+          overlaps(pageTextBounds(pageText, pageTextSize), box)
             ? [PAGE_TEXT_SELECTION_ID]
             : []),
         ]);
@@ -1561,7 +1572,9 @@ export function HandwritingStudio({
         .filter((system) => selectedIds.includes(system.id))
         .map(coordinateBounds),
       ...stickies.filter((sticky) => selectedIds.includes(sticky.id)).map(stickyBounds),
-      ...(pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID) ? [pageTextBounds()] : []),
+      ...(pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID)
+        ? [pageTextBounds(pageText, pageTextSize)]
+        : []),
     ]);
   }
 
