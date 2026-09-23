@@ -46,14 +46,15 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
   subir ou descer a composição e suporte a desfazer, rascunho e exportação.
 - Janela ampliada com acompanhamento automático opcional: avança por coluna e linha ao alcançar a
   borda, oferece controle manual e anuncia a posição atual para tecnologias assistivas.
+- Objetos importados independentes: novas imagens entram na mesma folha sem substituir o fundo
+  legado, com seleção, movimento, redimensionamento, rotação em passos de 15°, histórico e
+  exportação local.
 
 ## Próximos incrementos recomendados
 
 1. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
    modelo de privacidade antes de oferecer o recurso.
-2. **Objetos importados independentes:** permitir várias imagens ou páginas na mesma folha, com
-   rotação e seleção individual sem substituir o documento de fundo legado.
-3. **OCR matemático especializado:** avaliar um provedor com reconhecimento de símbolos manuscritos
+2. **OCR matemático especializado:** avaliar um provedor com reconhecimento de símbolos manuscritos
    e LaTeX, como integração opcional e consentida, sem colocar credenciais no bundle do navegador.
 
 O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. O OCR local atual

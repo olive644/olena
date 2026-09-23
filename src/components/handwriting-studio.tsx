@@ -13,6 +13,7 @@ import {
 import { isHandwritingDocument, MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
 import type {
   HandwritingDocument,
+  HandwritingImage,
   HandwritingCoordinateSystem,
   HandwritingPaper,
   HandwritingPaperColor,
@@ -70,6 +71,7 @@ type Snapshot = {
   background?: string | undefined;
   layerVisibility: HandwritingLayerVisibility;
   layerOrder: HandwritingLayerKey[];
+  images: HandwritingImage[];
 };
 type SelectionBox = { x: number; y: number; width: number; height: number };
 type SelectionMode = "rectangle" | "lasso";
@@ -294,6 +296,11 @@ function renderPage(
   backgroundFrame = { x: 0, y: 0, width: PAGE_WIDTH, height: PAGE_HEIGHT },
   layerVisibility = DEFAULT_HANDWRITING_LAYER_VISIBILITY,
   layerOrder = DEFAULT_HANDWRITING_LAYER_ORDER,
+  importedImages: readonly {
+    image: HTMLImageElement;
+    frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
+    rotation?: number;
+  }[] = [],
 ) {
   const context = canvas.getContext("2d");
   if (!context) return;
@@ -306,6 +313,23 @@ function renderPage(
       backgroundFrame.width,
       backgroundFrame.height,
     );
+  if (layerVisibility.background) {
+    for (const imported of importedImages) {
+      context.save();
+      const centerX = imported.frame.x + imported.frame.width / 2;
+      const centerY = imported.frame.y + imported.frame.height / 2;
+      context.translate(centerX, centerY);
+      context.rotate(((imported.rotation ?? 0) * Math.PI) / 180);
+      context.drawImage(
+        imported.image,
+        -imported.frame.width / 2,
+        -imported.frame.height / 2,
+        imported.frame.width,
+        imported.frame.height,
+      );
+      context.restore();
+    }
+  }
   const drawStrokesLayer = () => {
     if (!layerVisibility.strokes) return;
     context.save();
@@ -495,6 +519,10 @@ function stickyBounds(sticky: HandwritingSticky): SelectionBox {
   return { x: sticky.x, y: sticky.y, width: stickyWidth(sticky), height: stickyHeight(sticky) };
 }
 
+function importedImageBounds(image: HandwritingImage): SelectionBox {
+  return { x: image.x, y: image.y, width: image.width, height: image.height };
+}
+
 function pageTextBounds(text: string, size: number): SelectionBox {
   const lineHeight = size * (40 / 28);
   const height = Math.min(
@@ -664,10 +692,20 @@ export function HandwritingStudio({
   }
   const [background, setBackground] = useState(startingDocument?.background);
   const [backgroundFrame, setBackgroundFrame] = useState(startingDocument?.backgroundFrame);
+  const [importedImages, setImportedImages] = useState<HandwritingImage[]>(
+    () => startingDocument?.images ?? [],
+  );
   const imageDrag = useRef<{
     x: number;
     y: number;
     frame: NonNullable<HandwritingDocument["backgroundFrame"]>;
+    resize: boolean;
+  } | null>(null);
+  const importedImageDrag = useRef<{
+    id: string;
+    x: number;
+    y: number;
+    frame: HandwritingImage;
     resize: boolean;
   } | null>(null);
   const [loadedImage, setBackgroundImage] = useState<HTMLImageElement>();
@@ -681,6 +719,55 @@ export function HandwritingStudio({
       image.onload = null;
     };
   }, [background]);
+  const [loadedImportedImages, setLoadedImportedImages] = useState<
+    {
+      id: string;
+      image: HTMLImageElement;
+      frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
+      rotation?: number;
+    }[]
+  >([]);
+  useEffect(() => {
+    let cancelled = false;
+    if (importedImages.length === 0) return;
+    const loaded = importedImages.map(
+      (entry) =>
+        new Promise<{
+          id: string;
+          image: HTMLImageElement;
+          frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
+          rotation?: number;
+        } | null>((resolve) => {
+          const image = new Image();
+          image.onload = () =>
+            resolve({
+              id: entry.id,
+              image,
+              frame: entry,
+              ...(entry.rotation === undefined ? {} : { rotation: entry.rotation }),
+            });
+          image.onerror = () => resolve(null);
+          image.src = entry.dataUrl;
+        }),
+    );
+    void Promise.all(loaded).then((entries) => {
+      if (!cancelled)
+        setLoadedImportedImages(
+          entries.filter((entry): entry is NonNullable<typeof entry> => entry !== null),
+        );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [importedImages]);
+  const renderableImportedImages = useMemo(
+    () =>
+      loadedImportedImages.filter((entry) => importedImages.some((image) => image.id === entry.id)),
+    [importedImages, loadedImportedImages],
+  );
+  const importedImagesReady = importedImages.every((image) =>
+    loadedImportedImages.some((entry) => entry.id === image.id),
+  );
   const [rulerMeasure, setRulerMeasure] = useState<{
     start: HandwritingPoint;
     end: HandwritingPoint;
@@ -807,6 +894,7 @@ export function HandwritingStudio({
       pageText,
       pageTextSize,
       coordinateSystems,
+      images: importedImages,
       layers: { visibility: layerVisibility, order: layerOrder },
       background,
       backgroundFrame,
@@ -819,6 +907,7 @@ export function HandwritingStudio({
       pageText,
       pageTextSize,
       coordinateSystems,
+      importedImages,
       layerVisibility,
       layerOrder,
       background,
@@ -843,6 +932,7 @@ export function HandwritingStudio({
     pageText: initialDocument?.pageText ?? "",
     pageTextSize: initialDocument?.pageTextSize ?? 28,
     coordinateSystems: initialDocument?.coordinateSystems ?? [],
+    images: initialDocument?.images ?? [],
     layers: {
       visibility: {
         ...DEFAULT_HANDWRITING_LAYER_VISIBILITY,
@@ -912,6 +1002,7 @@ export function HandwritingStudio({
       backgroundFrame,
       layerVisibility,
       layerOrder,
+      renderableImportedImages,
     );
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -942,6 +1033,13 @@ export function HandwritingStudio({
       const box = pageTextBounds(pageText, pageTextSize);
       context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
     }
+    if (layerVisibility.background) {
+      for (const image of importedImages) {
+        if (!selectedIds.includes(image.id)) continue;
+        const box = importedImageBounds(image);
+        context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
+      }
+    }
     if (selectionBox) {
       context.fillStyle = "#7433e026";
       context.fillRect(selectionBox.x, selectionBox.y, selectionBox.width, selectionBox.height);
@@ -968,11 +1066,13 @@ export function HandwritingStudio({
     pageText,
     pageTextSize,
     coordinateSystems,
+    importedImages,
     layerVisibility,
     layerOrder,
     textMode,
     backgroundImage,
     backgroundFrame,
+    renderableImportedImages,
   ]);
 
   useEffect(() => {
@@ -1150,6 +1250,7 @@ export function HandwritingStudio({
   function remember(
     currentStrokes: Stroke[] = strokes,
     currentStickies: HandwritingSticky[] = stickies,
+    currentImages: HandwritingImage[] = importedImages,
   ) {
     setUndoStack((history) => [
       ...history.slice(-39),
@@ -1161,6 +1262,7 @@ export function HandwritingStudio({
         coordinateSystems,
         layerVisibility,
         layerOrder,
+        images: currentImages,
         background,
         backgroundFrame,
       },
@@ -1325,7 +1427,18 @@ export function HandwritingStudio({
             y: point.y - 24,
             width: 48,
             height: 48,
-          }));
+          })) ||
+        (layerVisibility.background &&
+          importedImages.some(
+            (image) =>
+              selectedIds.includes(image.id) &&
+              overlaps(importedImageBounds(image), {
+                x: point.x - 24,
+                y: point.y - 24,
+                width: 48,
+                height: 48,
+              }),
+          ));
       selectionRef.current = {
         pointerId: event.pointerId,
         start: point,
@@ -1426,6 +1539,17 @@ export function HandwritingStudio({
                     y: Math.max(0, Math.min(PAGE_HEIGHT - stickyHeight(sticky), sticky.y + dy)),
                   }
                 : sticky,
+            ),
+          );
+          setImportedImages((current) =>
+            current.map((image) =>
+              selection.ids.includes(image.id)
+                ? {
+                    ...image,
+                    x: Math.max(0, Math.min(PAGE_WIDTH - image.width, image.x + dx)),
+                    y: Math.max(0, Math.min(PAGE_HEIGHT - image.height, image.y + dy)),
+                  }
+                : image,
             ),
           );
           selection.origin = point;
@@ -1580,6 +1704,17 @@ export function HandwritingStudio({
               ? [PAGE_TEXT_SELECTION_ID]
               : []
             : []),
+          ...(layerVisibility.background
+            ? importedImages
+                .filter((image) => {
+                  const box = importedImageBounds(image);
+                  return pointInPolygon(
+                    { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                    polygon,
+                  );
+                })
+                .map((image) => image.id)
+            : []),
         ]);
         setSelectionPath(null);
         return;
@@ -1610,6 +1745,11 @@ export function HandwritingStudio({
           pageText &&
           overlaps(pageTextBounds(pageText, pageTextSize), box)
             ? [PAGE_TEXT_SELECTION_ID]
+            : []),
+          ...(layerVisibility.background
+            ? importedImages
+                .filter((image) => overlaps(importedImageBounds(image), box))
+                .map((image) => image.id)
             : []),
         ]);
         setSelectionBox(null);
@@ -1656,6 +1796,7 @@ export function HandwritingStudio({
         coordinateSystems,
         layerVisibility,
         layerOrder,
+        images: importedImages,
         background,
         backgroundFrame,
       },
@@ -1665,6 +1806,7 @@ export function HandwritingStudio({
     setPageText(previous.pageText);
     setPageTextSize(previous.pageTextSize);
     setCoordinateSystems(previous.coordinateSystems);
+    setImportedImages(previous.images);
     setLayerVisibility(previous.layerVisibility);
     setLayerOrder(previous.layerOrder);
     setBackground(previous.background);
@@ -1686,6 +1828,7 @@ export function HandwritingStudio({
         coordinateSystems,
         layerVisibility,
         layerOrder,
+        images: importedImages,
         background,
         backgroundFrame,
       },
@@ -1695,6 +1838,7 @@ export function HandwritingStudio({
     setPageText(next.pageText);
     setPageTextSize(next.pageTextSize);
     setCoordinateSystems(next.coordinateSystems);
+    setImportedImages(next.images);
     setLayerVisibility(next.layerVisibility);
     setLayerOrder(next.layerOrder);
     setBackground(next.background);
@@ -1708,7 +1852,8 @@ export function HandwritingStudio({
       strokes.length === 0 &&
       stickies.length === 0 &&
       coordinateSystems.length === 0 &&
-      !pageText
+      !pageText &&
+      importedImages.length === 0
     )
       return;
     remember();
@@ -1716,6 +1861,7 @@ export function HandwritingStudio({
     setStickies([]);
     setPageText("");
     setCoordinateSystems([]);
+    setImportedImages([]);
     setSelectedIds([]);
   }
 
@@ -1725,6 +1871,7 @@ export function HandwritingStudio({
     setStrokes((current) => current.filter((stroke) => !selectedIds.includes(stroke.id)));
     setCoordinateSystems((current) => current.filter((system) => !selectedIds.includes(system.id)));
     setStickies((current) => current.filter((sticky) => !selectedIds.includes(sticky.id)));
+    setImportedImages((current) => current.filter((image) => !selectedIds.includes(image.id)));
     if (selectedIds.includes(PAGE_TEXT_SELECTION_ID)) setPageText("");
     setSelectedIds([]);
   }
@@ -1736,6 +1883,7 @@ export function HandwritingStudio({
         .filter((system) => selectedIds.includes(system.id))
         .map(coordinateBounds),
       ...stickies.filter((sticky) => selectedIds.includes(sticky.id)).map(stickyBounds),
+      ...importedImages.filter((image) => selectedIds.includes(image.id)).map(importedImageBounds),
       ...(pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID)
         ? [pageTextBounds(pageText, pageTextSize)]
         : []),
@@ -1854,6 +2002,20 @@ export function HandwritingStudio({
           : system,
       ),
     );
+    setImportedImages((current) =>
+      current.map((image) => {
+        if (!selectedIds.includes(image.id)) return image;
+        const width = Math.max(40, Math.min(PAGE_WIDTH, image.width * factor));
+        const height = Math.max(40, Math.min(PAGE_HEIGHT, image.height * factor));
+        return {
+          ...image,
+          x: Math.max(0, Math.min(PAGE_WIDTH - width, center.x - width / 2)),
+          y: Math.max(0, Math.min(PAGE_HEIGHT - height, center.y - height / 2)),
+          width,
+          height,
+        };
+      }),
+    );
   }
 
   function removeBackground() {
@@ -1861,6 +2023,28 @@ export function HandwritingStudio({
     remember();
     setBackground(undefined);
     setBackgroundFrame(undefined);
+  }
+
+  function removeSelectedImages() {
+    const selectedImages = importedImages.filter((image) => selectedIds.includes(image.id));
+    if (!selectedImages.length) return;
+    remember();
+    setImportedImages((current) => current.filter((image) => !selectedIds.includes(image.id)));
+    setSelectedIds((current) =>
+      current.filter((id) => !selectedImages.some((image) => image.id === id)),
+    );
+  }
+
+  function rotateSelectedImages(direction: -1 | 1) {
+    if (!importedImages.some((image) => selectedIds.includes(image.id))) return;
+    remember();
+    setImportedImages((current) =>
+      current.map((image) => {
+        if (!selectedIds.includes(image.id)) return image;
+        const rotation = ((image.rotation ?? 0) + direction * 15 + 360) % 360;
+        return { ...image, rotation };
+      }),
+    );
   }
 
   function alignSelection() {
@@ -2161,6 +2345,7 @@ export function HandwritingStudio({
       pageText,
       pageTextSize,
       coordinateSystems,
+      images: importedImages,
       layers: { visibility: layerVisibility, order: layerOrder },
       background,
       backgroundFrame,
@@ -2184,6 +2369,7 @@ export function HandwritingStudio({
 
   function pageImage(): string {
     if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
+    if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Não foi possível preparar a folha.");
     renderPage(
@@ -2200,6 +2386,7 @@ export function HandwritingStudio({
       backgroundFrame,
       layerVisibility,
       layerOrder,
+      renderableImportedImages,
     );
     return exportPage(canvas);
   }
@@ -2207,6 +2394,7 @@ export function HandwritingStudio({
   function exportPng() {
     try {
       if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
+      if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
       renderPage(
@@ -2223,6 +2411,7 @@ export function HandwritingStudio({
         backgroundFrame,
         layerVisibility,
         layerOrder,
+        renderableImportedImages,
       );
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
@@ -2253,6 +2442,7 @@ export function HandwritingStudio({
   function exportPdf() {
     try {
       if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
+      if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
       renderPage(
@@ -2269,6 +2459,7 @@ export function HandwritingStudio({
         backgroundFrame,
         layerVisibility,
         layerOrder,
+        renderableImportedImages,
       );
       downloadCanvasAsPdf(canvas, "folha-do-caderno.pdf");
     } catch (caught) {
@@ -2536,6 +2727,21 @@ export function HandwritingStudio({
                 </button>
               </>
             )}
+            {tool === "select" &&
+              importedImages.some((image) => selectedIds.includes(image.id)) && (
+                <>
+                  <span>Imagem(ns) importada(s) selecionada(s)</span>
+                  <button type="button" onClick={removeSelectedImages}>
+                    Remover imagem(ns)
+                  </button>
+                  <button type="button" onClick={() => rotateSelectedImages(-1)}>
+                    Girar −15°
+                  </button>
+                  <button type="button" onClick={() => rotateSelectedImages(1)}>
+                    Girar +15°
+                  </button>
+                </>
+              )}
             {tool === "select" && pageText && (
               <>
                 <span>Texto: {pageTextSize}px</span>
@@ -2999,6 +3205,144 @@ export function HandwritingStudio({
                   </div>
                 );
               })()}
+            {layerVisibility.background &&
+              tool === "select" &&
+              !textMode &&
+              importedImages.map((image) => (
+                <div
+                  key={image.id}
+                  className={`handwriting-import-selection handwriting-import-selection--object${selectedIds.includes(image.id) ? " is-selected" : ""}`}
+                  style={{
+                    left: `${image.x / 12}%`,
+                    top: `${image.y / 16}%`,
+                    width: `${image.width / 12}%`,
+                    height: `${image.height / 16}%`,
+                    transform: `rotate(${image.rotation ?? 0}deg)`,
+                  }}
+                  onPointerDown={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setSelectedIds([image.id]);
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                    remember();
+                    importedImageDrag.current = {
+                      id: image.id,
+                      x: event.clientX,
+                      y: event.clientY,
+                      frame: image,
+                      resize: (event.target as HTMLElement).closest("[data-resize]") !== null,
+                    };
+                  }}
+                  onPointerMove={(event) => {
+                    const drag = importedImageDrag.current;
+                    if (!drag || drag.id !== image.id) return;
+                    const scale =
+                      PAGE_WIDTH /
+                      (canvasRef.current?.getBoundingClientRect().width || displayWidth);
+                    const dx = (event.clientX - drag.x) * scale;
+                    const dy = (event.clientY - drag.y) * scale;
+                    setImportedImages((current) =>
+                      current.map((entry) => {
+                        if (entry.id !== drag.id) return entry;
+                        if (drag.resize) {
+                          const ratio = drag.frame.height / drag.frame.width;
+                          const width = Math.max(
+                            40,
+                            Math.min(
+                              PAGE_WIDTH - drag.frame.x,
+                              (PAGE_HEIGHT - drag.frame.y) / ratio,
+                              drag.frame.width + dx,
+                            ),
+                          );
+                          return { ...entry, width, height: width * ratio };
+                        }
+                        return {
+                          ...entry,
+                          x: Math.max(
+                            0,
+                            Math.min(PAGE_WIDTH - drag.frame.width, drag.frame.x + dx),
+                          ),
+                          y: Math.max(
+                            0,
+                            Math.min(PAGE_HEIGHT - drag.frame.height, drag.frame.y + dy),
+                          ),
+                        };
+                      }),
+                    );
+                  }}
+                  onPointerUp={() => {
+                    importedImageDrag.current = null;
+                  }}
+                  onPointerCancel={() => {
+                    importedImageDrag.current = null;
+                  }}
+                >
+                  <button
+                    type="button"
+                    aria-label="Mover imagem importada"
+                    onKeyDown={(event) => {
+                      const delta = {
+                        ArrowLeft: [-10, 0],
+                        ArrowRight: [10, 0],
+                        ArrowUp: [0, -10],
+                        ArrowDown: [0, 10],
+                      }[event.key];
+                      if (!delta) return;
+                      event.preventDefault();
+                      remember();
+                      setImportedImages((current) =>
+                        current.map((entry) =>
+                          entry.id === image.id
+                            ? {
+                                ...entry,
+                                x: Math.max(
+                                  0,
+                                  Math.min(PAGE_WIDTH - entry.width, entry.x + delta[0]!),
+                                ),
+                                y: Math.max(
+                                  0,
+                                  Math.min(PAGE_HEIGHT - entry.height, entry.y + delta[1]!),
+                                ),
+                              }
+                            : entry,
+                        ),
+                      );
+                    }}
+                  >
+                    Arraste para mover
+                  </button>
+                  <button
+                    type="button"
+                    data-resize
+                    className="handwriting-import-resize"
+                    aria-label="Redimensionar imagem importada"
+                    onKeyDown={(event) => {
+                      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key))
+                        return;
+                      event.preventDefault();
+                      remember();
+                      const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+                      setImportedImages((current) =>
+                        current.map((entry) => {
+                          if (entry.id !== image.id) return entry;
+                          const ratio = entry.height / entry.width;
+                          const width = Math.max(
+                            40,
+                            Math.min(PAGE_WIDTH - entry.x, entry.width + direction * 10),
+                          );
+                          return {
+                            ...entry,
+                            width,
+                            height: Math.min(PAGE_HEIGHT - entry.y, width * ratio),
+                          };
+                        }),
+                      );
+                    }}
+                  >
+                    ↘
+                  </button>
+                </div>
+              ))}
             {rulerMeasure &&
               (() => {
                 const { start, end } = rulerMeasure;
@@ -3644,9 +3988,17 @@ export function HandwritingStudio({
               closeImport();
             }}
             onImport={(image, frame) => {
+              if (!frame) return;
+              if (importedImages.length >= 20) {
+                setError("Esta folha chegou ao limite de 20 imagens importadas.");
+                closeImport();
+                return;
+              }
               remember();
-              setBackground(image);
-              setBackgroundFrame(frame);
+              setImportedImages((current) => [
+                ...current,
+                { id: strokeId(), dataUrl: image, ...frame },
+              ]);
               setTool("select");
               closeImport();
               setError("");

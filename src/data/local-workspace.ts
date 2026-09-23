@@ -108,6 +108,33 @@ export function isHandwritingDocument(value: unknown): boolean {
   )
     return false;
   if (
+    value["images"] !== undefined &&
+    (!Array.isArray(value["images"]) ||
+      value["images"].length > 20 ||
+      !value["images"].every(
+        (image: unknown) =>
+          isRecord(image) &&
+          isString(image["id"]) &&
+          isString(image["dataUrl"]) &&
+          /^data:image\/(?:jpeg|png|webp);base64,/.test(image["dataUrl"]) &&
+          image["dataUrl"].length <= 500_000 &&
+          ["x", "y", "width", "height"].every(
+            (key) =>
+              typeof image[key] === "number" && Number.isFinite(image[key]) && image[key] >= 0,
+          ) &&
+          Number(image["x"]) + Number(image["width"]) <= 1200.01 &&
+          Number(image["y"]) + Number(image["height"]) <= 1600.01 &&
+          Number(image["width"]) >= 40 &&
+          Number(image["height"]) >= 40 &&
+          (image["rotation"] === undefined ||
+            (typeof image["rotation"] === "number" &&
+              Number.isFinite(image["rotation"]) &&
+              image["rotation"] >= -180 &&
+              image["rotation"] <= 180)),
+      ))
+  )
+    return false;
+  if (
     value["pageText"] !== undefined &&
     (typeof value["pageText"] !== "string" || value["pageText"].length > 5000)
   )

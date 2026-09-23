@@ -30,6 +30,16 @@ export type HandwritingSticky = {
   formula?: boolean;
 };
 
+export type HandwritingImage = {
+  id: string;
+  dataUrl: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation?: number;
+};
+
 export type HandwritingChecklistItem = {
   id: string;
   text: string;
@@ -74,6 +84,7 @@ export type HandwritingDocument = {
   background?: string | undefined;
   pageText?: string;
   pageTextSize?: number;
+  images?: HandwritingImage[];
   coordinateSystems?: HandwritingCoordinateSystem[];
   layers?: {
     visibility: HandwritingLayerVisibility;

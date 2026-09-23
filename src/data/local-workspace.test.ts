@@ -43,6 +43,33 @@ describe("local workspace", () => {
       }),
     ).toBe(false);
   });
+  it("valida vários objetos de imagem independentes", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    const image = {
+      id: "image-1",
+      dataUrl: "data:image/jpeg;base64,/9j/",
+      x: 100,
+      y: 120,
+      width: 420,
+      height: 300,
+      rotation: -12,
+    };
+    expect(
+      isHandwritingDocument({ ...document, images: [image, { ...image, id: "image-2" }] }),
+    ).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        images: [{ ...image, x: 900, width: 400 }],
+      }),
+    ).toBe(false);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        images: [{ ...image, dataUrl: "https://example.com/image.jpg" }],
+      }),
+    ).toBe(false);
+  });
   it("salva e recupera o estado versionado", () => {
     const workspace = createInitialWorkspace();
     saveWorkspace(window.localStorage, workspace);
