@@ -1,4 +1,5 @@
 const shapes = {
+  share: "m12 22 23-13 3 5-23 13Z M12 25l25 12-3 5-24-12Z",
   cloudUpload: "M14 37h20a9 9 0 0 0 1-18 12 12 0 0 0-23 3 8 8 0 0 0 2 15Zm10-5V15m0 0-7 7m7-7 7 7",
   page: "M9 4h22l8 8v32H9Z",
   pen: "M6 29 25 5l9 8-20 23-10 3Z M24 7l8 7",
@@ -29,6 +30,7 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
+  share: "m12 22 23-13 1 3-23 13Z",
   cloudUpload: "M14 37h20a9 9 0 0 0 1-18 12 12 0 0 0-23 3 8 8 0 0 0 2 15Zm10-5V15m0 0-7 7m7-7 7 7",
   page: "M31 4v9h8Z",
   pen: "m6 29 5 4L30 9l-5-4Z",
@@ -74,7 +76,30 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
       aria-hidden="true"
       data-paper-editor-icon={name}
     >
-      {name === "eraser" ? (
+      {name === "cloudUpload" ? (
+        <>
+          <path d="M11 35h27l7-8-5-10-8-1-8-10-12 5-3 9-6 4 1 7Z" fill="currentColor" />
+          <path d="m12 11 12-5-7 14-8 0Z" fill={light} />
+          <path d="M21 36V25h-6l9-10 9 10h-6v11Z" fill={detail} />
+        </>
+      ) : name === "layers" ? (
+        <>
+          <path d="m4 31 20 10 20-10v6L24 47 4 37Z" fill="currentColor" />
+          <path d="m4 20 20 10 20-10v6L24 36 4 26Z" fill={light} />
+          <path d="M4 13 24 3l20 10-20 10Z" fill="currentColor" />
+          <path d="M4 13 24 3v20Z" fill={light} />
+        </>
+      ) : name === "download" ? (
+        <>
+          <path d="M7 30h7v9h20v-9h7v15H7Z M20 3h8v19h9L24 35 11 22h9Z" fill="currentColor" />
+          <path d="M20 3h4v32L11 22h9Z M7 30h4v15H7Z" fill={light} />
+        </>
+      ) : name === "save" ? (
+        <>
+          <path d="M6 4h30l7 8v31H6Z" fill="currentColor" />
+          <path d="M6 4h6v39H6Z M36 4v8h7Z" fill={light} />
+        </>
+      ) : name === "eraser" ? (
         <>
           <g transform="translate(2 2) rotate(-35 24 24)">
             <path d="M6 17h35l1 13-36 1Z" fill="#17151C" />
@@ -116,6 +141,15 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
           <path d="m6 29 8 7-10 3Z" fill="#FFE88D" />
           <path d="m5 35 4 3-5 1Z" fill="#292432" />
           <path d="m25 5 5-3 8 7-4 4Z" fill="#EF6C87" />
+        </>
+      )}
+      {name === "share" && (
+        <>
+          <path
+            d="m5 19 7-3 7 5v9l-8 4-7-5Z M29 3l9-2 7 7-3 9-10 1-5-7Z M29 33l9-2 7 7-3 9-10 1-5-7Z"
+            fill="currentColor"
+          />
+          <path d="m29 3 9-2-6 17-5-7Z M5 19l7-3-1 18-7-5Z M29 33l9-2-6 17-5-7Z" fill={light} />
         </>
       )}
       {name === "highlighter" && (

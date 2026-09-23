@@ -16,6 +16,7 @@ import {
   type PublicNotebookCollabState,
 } from "../domain/notebook-collab.js";
 import type { HandwritingDocument } from "../domain/handwriting.js";
+import { mergeHandwriting } from "../domain/merge-handwriting.js";
 import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 
@@ -103,6 +104,47 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
 
   return async function handle(request: Request): Promise<Response> {
     const action = new URL(request.url).searchParams.get("action");
+
+    if (action === "view-create") {
+      const body = await readJsonBody(request);
+      const pages = body["pages"];
+      if (
+        !Array.isArray(pages) ||
+        !pages.length ||
+        pages.length > 40 ||
+        !pages.every((page: unknown) => {
+          if (!page || typeof page !== "object") return false;
+          const item = page as Record<string, unknown>;
+          return (
+            typeof item["title"] === "string" &&
+            item["title"].length <= 200 &&
+            typeof item["image"] === "string" &&
+            /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(item["image"])
+          );
+        })
+      )
+        return jsonResponse(400, { error: "Escolha de 1 a 40 folhas com imagens válidas." });
+      // A separate, unguessable read capability never exposes room credentials.
+      const token = crypto.randomUUID();
+      const expiresAt = now() + 7 * 24 * 60 * 60 * 1000;
+      await dependencies.store.set(
+        `notebook-views/${token}`,
+        JSON.stringify({ pages, expiresAt }),
+        7 * 24 * 60 * 60,
+      );
+      return jsonResponse(201, { token, expiresAt });
+    }
+    if (action === "view-read") {
+      const body = await readJsonBody(request);
+      const token = body["token"];
+      if (typeof token !== "string" || !/^[a-f0-9-]{36}$/.test(token))
+        return jsonResponse(404, { error: "Link de visualização inválido ou expirado." });
+      const raw = await dependencies.store.get(`notebook-views/${token}`);
+      if (!raw) return jsonResponse(404, { error: "Link de visualização inválido ou expirado." });
+      const snapshot = JSON.parse(raw) as { expiresAt: number };
+      if (snapshot.expiresAt <= now()) return jsonResponse(404, { error: "Este link expirou." });
+      return jsonResponse(200, snapshot);
+    }
 
     if (action === "create" && request.method === "POST") {
       const body = await readJsonBody(request);
@@ -244,7 +286,14 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         return jsonResponse(400, { error: "A folha compartilhada ficou inválida." });
       const updated = applyNotebookCollabDocument(authorized.state, {
         participantId: authorized.participantId,
-        document: candidate as HandwritingDocument,
+        document:
+          isHandwritingDocument(body["baseDocument"]) && authorized.state.document
+            ? mergeHandwriting(
+                body["baseDocument"] as HandwritingDocument,
+                candidate as HandwritingDocument,
+                authorized.state.document,
+              )
+            : (candidate as HandwritingDocument),
         ...(typeof body["label"] === "string" ? { label: body["label"] } : {}),
         now: now(),
       });
@@ -268,7 +317,7 @@ export function createNotebookCollabHandler(dependencies: NotebookCollabHandlerD
       )
         return jsonResponse(403, { error: "Origem não permitida." });
       const text = await request.text();
-      if (text.length > MAX_REQUEST_BYTES)
+      if (text.length > (action === "view-create" ? 4_000_000 : MAX_REQUEST_BYTES * 2))
         return jsonResponse(413, { error: "Pedido muito grande." });
       const parsed = JSON.parse(text) as unknown;
       if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))

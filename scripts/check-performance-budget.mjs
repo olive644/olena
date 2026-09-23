@@ -23,7 +23,8 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // route, while bundler variance puts the measured entry at 267.2 KiB.
 // Conflict-safe cloud sync adds a small guard in the initial hook; the merge
 // algorithm itself stays lazy, keeping the measured entry below 269 KiB.
-const MAX_INITIAL_JS_BYTES = 269 * 1024;
+// Read-only notebook routing adds less than 1 KiB to the entry.
+const MAX_INITIAL_JS_BYTES = 270 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -80,7 +81,9 @@ const MAX_INITIAL_JS_BYTES = 269 * 1024;
 // engine and runtime add about 46 KiB to the lazy application total. The
 // notebook collaboration client adds a small realtime transport and presence
 // UI; keep its new ceiling explicit rather than silently dropping the guard.
-const MAX_TOTAL_JS_BYTES = 760 * 1024;
+// Optional notebook file menus, multi-page PDF and collaboration reconciliation.
+// Measured application total: 774 KiB. No new runtime dependency.
+const MAX_TOTAL_JS_BYTES = 780 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

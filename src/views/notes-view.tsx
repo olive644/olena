@@ -12,6 +12,7 @@ import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
+import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   createWorkspaceId,
   type StudyNotebook,
@@ -36,6 +37,7 @@ function PreviewContent({ page }: { page: StudyNote }) {
 }
 
 type NotesViewProps = {
+  cloud?: CloudSyncState;
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
 };
@@ -81,7 +83,7 @@ function NotebookArtwork({
   );
 }
 
-export function NotesView({ workspace, dispatch }: NotesViewProps) {
+export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -236,8 +238,10 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     handwriting?: HandwritingDocument,
   ) {
     if (!activePage) return;
+    const assetId = createWorkspaceId("asset");
     dispatch({
       type: "note/asset-added",
+      assetId,
       noteId: activePage.id,
       kind,
       name,
@@ -245,6 +249,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       createdAt: new Date().toISOString(),
       ...(handwriting ? { handwriting } : {}),
     });
+    return assetId;
   }
 
   function importPages(pages: ImportedPage[]) {
@@ -774,6 +779,9 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
             {activePage.kind !== "note" && (
               <Suspense fallback={<HelenaLoading label="Abrindo ferramentas…" compact />}>
                 <NoteCaptureTools
+                  key={activePage.id}
+                  {...(cloud ? { cloud } : {})}
+                  notebookPages={notebookPages}
                   draftPageKey={activePage.id}
                   onSave={saveAsset}
                   onUpdate={updateAsset}
