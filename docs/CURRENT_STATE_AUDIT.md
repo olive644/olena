@@ -598,3 +598,9 @@ campo opcional `stickies`, preservando a leitura de folhas anteriores. A navega�
 permite criar, percorrer e reordenar folhas. PNG é baixado localmente; Imprimir/PDF usa o diálogo
 do navegador, que oferece salvar como PDF quando disponível. Nenhum desses fluxos sincroniza
 rascunhos entre dispositivos.
+
+# Divisão do editor do Caderno, setembro de 2026
+
+O arquivo `handwriting-studio.tsx` passou de 4342 para cerca de 3700 linhas: as funções auxiliares que viviam soltas no topo foram movidas, sem mudança de comportamento, para módulos próprios em `src/components`. `handwriting-types.ts` guarda tipos e constantes do editor, `handwriting-geometry.ts` guarda as caixas delimitadoras, a seleção e a detecção de toque da borracha, `handwriting-canvas.ts` guarda o desenho de papel, traços, post-its e eixos, `handwriting-export.ts` guarda a exportação para PNG, JPEG e PDF, e `handwriting-draft.ts` guarda a leitura do rascunho local. A chave de rascunho `helenastudy.handwriting.draft.*` continua a mesma para não perder rascunhos salvos. As funções de geometria agora têm testes próprios em `handwriting-geometry.test.ts`.
+
+O componente `HandwritingStudio` continua com cerca de 3600 linhas em uma única função e deve ser dividido em hooks e subcomponentes em etapas seguintes, começando pelos painéis de ferramentas e pelo tratamento de ponteiro.
