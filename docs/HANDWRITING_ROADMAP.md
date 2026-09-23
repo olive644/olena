@@ -7,6 +7,11 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
 
 ## Entregue nesta etapa
 
+- Cadernos compartilhados (primeira etapa): o editor cria ou entra em uma sala por código, com até
+  quatro participantes ativos, presença por nome, atividade recente e propagação da folha entre
+  abas/dispositivos pelo transporte realtime. A sala é temporária e o servidor valida o documento;
+  CRDT por traço fica como evolução futura.
+
 - Rascunho local recuperável e confirmação ao fechar uma folha com alterações.
 - Seleção retangular de traços para mover, alinhar horizontalmente e apagar.
 - Janela de escrita ampliada com avanço manual e avanço ao atingir a borda direita.

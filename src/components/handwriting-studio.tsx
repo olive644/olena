@@ -85,6 +85,9 @@ type HandwritingStudioProps = {
   onDirtyChange?: (dirty: boolean) => void;
   onDraftChange?: (document: HandwritingDocument) => void;
   onImportPages?: (pages: ImportedPage[]) => void;
+  remoteDocument?: HandwritingDocument;
+  remoteAuthor?: string;
+  collaborationActivity?: string;
 };
 
 function readDraft(key: string): HandwritingDocument | null {
@@ -664,6 +667,9 @@ export function HandwritingStudio({
   onDirtyChange,
   onDraftChange,
   onImportPages,
+  remoteDocument,
+  remoteAuthor,
+  collaborationActivity,
 }: HandwritingStudioProps) {
   const [recovered] = useState(() => readDraft(draftKey));
   const startingDocument = recovered ?? initialDocument;
@@ -944,6 +950,33 @@ export function HandwritingStudio({
     backgroundFrame: initialDocument?.backgroundFrame,
   });
   const dirty = JSON.stringify(currentDocument) !== baseline;
+
+  useEffect(() => {
+    if (!remoteDocument || JSON.stringify(remoteDocument) === JSON.stringify(currentDocument))
+      return;
+    // A collaborator's document is an external subscription update.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPaper(remoteDocument.paper);
+    setPaperColor(remoteDocument.paperColor ?? "light");
+    setColor(remoteDocument.paperColor === "night" ? "#fff9ef" : "#17151c");
+    setStrokes(remoteDocument.strokes);
+    setStickies(remoteDocument.stickies ?? []);
+    setPageText(remoteDocument.pageText ?? "");
+    setPageTextSize(remoteDocument.pageTextSize ?? 28);
+    setCoordinateSystems(remoteDocument.coordinateSystems ?? []);
+    setImportedImages(remoteDocument.images ?? []);
+    setLayerVisibility({
+      ...DEFAULT_HANDWRITING_LAYER_VISIBILITY,
+      ...(remoteDocument.layers?.visibility ?? {}),
+    });
+    setLayerOrder(remoteDocument.layers?.order ?? DEFAULT_HANDWRITING_LAYER_ORDER);
+    setBackground(remoteDocument.background);
+    setBackgroundFrame(remoteDocument.backgroundFrame);
+    setDraftStatus(
+      remoteAuthor ? `Atualizado por ${remoteAuthor}` : "Atualizado por um colaborador",
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [remoteAuthor, remoteDocument]);
 
   useEffect(() => {
     onDirtyChange?.(dirty);
@@ -2556,6 +2589,11 @@ export function HandwritingStudio({
 
   return (
     <div className="handwriting-studio">
+      {collaborationActivity && (
+        <div className="handwriting-collaboration-toast" role="status">
+          <span aria-hidden="true">•</span> {collaborationActivity}
+        </div>
+      )}
       <div
         className="handwriting-commandbar"
         aria-label="Ferramentas de escrita"

@@ -12,6 +12,10 @@ O exportador da folha também monta um PDF local de uma página a partir do canv
 e download direto. A impressão permanece como caminho alternativo para o diálogo do sistema e para
 o caderno inteiro.
 
+A colaboração do caderno usa uma sala temporária em `/api/notebook-collab`, com até quatro pessoas,
+presença por nome, histórico curto de ações e documento validado no servidor. A primeira etapa envia
+atualizações do documento inteiro; CRDT por traço e comentários ficam para uma evolução posterior.
+
 Post-its preservam `text` para notas antigas e aceitam `checklist` opcional com até 12 itens. Cada
 item guarda `id`, `text` e `done`; o editor alterna entre nota e checklist, e o renderizador do
 canvas repete título, caixas marcadas e texto no PNG/PDF/impressão.

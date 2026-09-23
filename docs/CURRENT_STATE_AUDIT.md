@@ -20,6 +20,11 @@ PDF.js 6.3.289 é a única dependência nova, necessária para rasterização de
 
 ## Borracha de texto e controles compactos
 
+O editor de cadernos também oferece uma primeira sala colaborativa em `/api/notebook-collab`: código
+de convite, presença nominal, limite rígido de quatro pessoas e atualização do documento com uma
+atividade curta mostrando quem agiu. A sala expira e valida a folha no servidor; a etapa atual usa
+última atualização do documento inteiro, não um CRDT por ponto.
+
 Barras de ferramentas usam grafite facetado e base deslocada como a navegação. Rótulos são brancos; ícones de ação usam preto com facetas, preservando as cores dos instrumentos. O roxo da seleção permanece também durante hover nos dois temas, com teste de regressão desktop/mobile.
 
 Trocar de ferramenta anima a elevação e o encaixe do ícone por 420 ms; o nome se expande por 320 ms. prefers-reduced-motion desliga essas transições.

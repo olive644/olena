@@ -1,4 +1,4 @@
-import { Camera, RotateCw } from "lucide-react";
+import { Camera, Copy, RotateCw, Share2, Users } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -8,6 +8,7 @@ import type { NoteAsset } from "../domain/workspace";
 import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
 import type { ImportedPage } from "./page-import";
+import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 
 type NoteCaptureToolsProps = {
   draftPageKey: string;
@@ -216,7 +217,44 @@ export function NoteCaptureTools({
   const [confirmClose, setConfirmClose] = useState(false);
   const [draftWriteFailed, setDraftWriteFailed] = useState(false);
   const latestDraftRef = useRef<HandwritingDocument | null>(null);
+  const [collaborationPanelOpen, setCollaborationPanelOpen] = useState(false);
+  const [collaborationName, setCollaborationName] = useState(() => {
+    try {
+      const profile = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as {
+        name?: string;
+      };
+      return profile.name ?? "";
+    } catch {
+      return "";
+    }
+  });
+  const [collaborationCodeInput, setCollaborationCodeInput] = useState("");
+  const [remoteDocument, setRemoteDocument] = useState<HandwritingDocument>();
+  const [remoteAuthor, setRemoteAuthor] = useState("");
+  const notebookId = editingAsset?.id ?? `draft-${draftPageKey}`;
+  const collaboration = useNotebookCollaboration({
+    notebookId,
+    onRemoteDocument: (document, author) => {
+      setRemoteDocument(document);
+      setRemoteAuthor(author ?? "");
+    },
+  });
   const currentMode = editingAsset ? "drawing" : mode;
+
+  useEffect(() => {
+    if (!currentMode) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCollaborationPanelOpen(false);
+      setRemoteDocument(undefined);
+      setRemoteAuthor("");
+    }
+  }, [currentMode]);
+
+  async function copyCollaborationCode() {
+    if (!collaboration.state.code) return;
+    if (navigator.clipboard)
+      await navigator.clipboard.writeText(collaboration.state.code).catch(() => {});
+  }
 
   const close = useCallback(
     (force = false) => {
@@ -315,6 +353,17 @@ export function NoteCaptureTools({
                     <button
                       type="button"
                       className="sheet-close"
+                      aria-label="Compartilhar caderno"
+                      aria-expanded={collaborationPanelOpen}
+                      onClick={() => setCollaborationPanelOpen((open) => !open)}
+                    >
+                      <Share2 size={18} />
+                    </button>
+                  )}
+                  {currentMode === "drawing" && (
+                    <button
+                      type="button"
+                      className="sheet-close"
                       aria-label={expanded ? "Sair da tela cheia" : "Tela cheia"}
                       aria-pressed={expanded}
                       onClick={() => void toggleFullscreen()}
@@ -332,6 +381,105 @@ export function NoteCaptureTools({
                   </button>
                 </div>
               </header>
+              {currentMode === "drawing" && collaborationPanelOpen && (
+                <section className="notebook-collaboration-panel" aria-label="Compartilhar caderno">
+                  <div className="notebook-collaboration-panel__heading">
+                    <div>
+                      <span>COLABORAÇÃO</span>
+                      <h3>Compartilhar caderno para escrever junto</h3>
+                    </div>
+                    <Users size={20} aria-hidden="true" />
+                  </div>
+                  {collaboration.state.status === "idle" ||
+                  collaboration.state.status === "error" ? (
+                    <>
+                      <label>
+                        Seu nome
+                        <input
+                          value={collaborationName}
+                          onChange={(event) => setCollaborationName(event.target.value)}
+                          placeholder="Como você quer aparecer?"
+                          maxLength={24}
+                        />
+                      </label>
+                      <div className="notebook-collaboration-panel__actions">
+                        <button
+                          className="primary-button"
+                          type="button"
+                          onClick={() =>
+                            void collaboration.create(
+                              collaborationName,
+                              latestDraftRef.current ?? remoteDocument,
+                            )
+                          }
+                        >
+                          Criar sala
+                        </button>
+                        <label>
+                          Código da sala
+                          <input
+                            value={collaborationCodeInput}
+                            onChange={(event) =>
+                              setCollaborationCodeInput(event.target.value.toUpperCase())
+                            }
+                            placeholder="ABCDE"
+                            maxLength={5}
+                          />
+                        </label>
+                        <button
+                          className="secondary-button"
+                          type="button"
+                          onClick={() =>
+                            void collaboration.join(collaborationCodeInput, collaborationName)
+                          }
+                        >
+                          Entrar na sala
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="notebook-collaboration-code">
+                        <strong>{collaboration.state.code}</strong>
+                        <button
+                          type="button"
+                          className="icon-button"
+                          onClick={() => void copyCollaborationCode()}
+                        >
+                          <Copy size={15} /> Copiar código
+                        </button>
+                      </div>
+                      <div className="notebook-collaboration-people">
+                        {(collaboration.state.room?.participants ?? []).map((participant) => (
+                          <span
+                            key={participant.id}
+                            className={participant.online ? "is-online" : ""}
+                          >
+                            {participant.displayName}
+                          </span>
+                        ))}
+                      </div>
+                      {collaboration.state.room?.actions.at(-1) && (
+                        <p className="notebook-collaboration-activity">
+                          {collaboration.state.room.actions.at(-1)?.displayName}{" "}
+                          {collaboration.state.room.actions.at(-1)?.label}
+                        </p>
+                      )}
+                      <button
+                        className="secondary-button"
+                        type="button"
+                        onClick={() => void collaboration.leave()}
+                      >
+                        Sair da colaboração
+                      </button>
+                    </>
+                  )}
+                  {collaboration.state.error && (
+                    <p className="capture-error">{collaboration.state.error}</p>
+                  )}
+                  {collaboration.state.status === "connecting" && <p>Conectando ao caderno…</p>}
+                </section>
+              )}
               {currentMode === "scan" ? (
                 <Scanner onSave={onSave} onClose={() => close(true)} />
               ) : editingAsset && !editingAsset.handwriting ? (
@@ -356,7 +504,15 @@ export function NoteCaptureTools({
                   onDirtyChange={setHandwritingDirty}
                   onDraftChange={(document) => {
                     latestDraftRef.current = document;
+                    collaboration.publish(document, "editou o caderno");
                   }}
+                  {...(remoteDocument ? { remoteDocument } : {})}
+                  {...(remoteAuthor ? { remoteAuthor } : {})}
+                  {...(collaboration.state.room?.actions.at(-1)
+                    ? {
+                        collaborationActivity: `${collaboration.state.room.actions.at(-1)?.displayName} ${collaboration.state.room.actions.at(-1)?.label}`,
+                      }
+                    : {})}
                   onImportPages={(pages) => {
                     onImportPages?.(pages);
                     close(true);

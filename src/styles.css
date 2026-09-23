@@ -3769,6 +3769,98 @@ body.local-room-active {
   display: flex;
   gap: 8px;
 }
+
+.notebook-collaboration-panel {
+  margin: 0 1rem 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--violet) 42%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--violet) 14%);
+  box-shadow: 0 8px 20px rgb(23 21 28 / 10%);
+}
+
+.notebook-collaboration-panel__heading,
+.notebook-collaboration-panel__actions,
+.notebook-collaboration-code,
+.notebook-collaboration-people {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.notebook-collaboration-panel__heading {
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+}
+
+.notebook-collaboration-panel__heading span {
+  color: var(--violet-dark);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.notebook-collaboration-panel__heading h3 {
+  margin: 0.1rem 0 0;
+  font-size: 0.95rem;
+}
+
+.notebook-collaboration-panel label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.notebook-collaboration-panel input {
+  min-height: 34px;
+  padding: 0 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.notebook-collaboration-panel__actions {
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.notebook-collaboration-code {
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+
+.notebook-collaboration-code strong {
+  color: var(--violet-dark);
+  font-size: 1.25rem;
+  letter-spacing: 0.16em;
+}
+
+.notebook-collaboration-people {
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+
+.notebook-collaboration-people span {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.notebook-collaboration-people span.is-online {
+  border-color: color-mix(in srgb, #2d9b69 45%, var(--line));
+  color: var(--text);
+}
+
+.notebook-collaboration-activity {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
 .capture-dialog.capture-dialog--expanded,
 .capture-dialog:fullscreen {
   position: fixed;
@@ -3788,6 +3880,29 @@ body.local-room-active {
   min-height: 0;
   grid-template-rows: auto minmax(0, 1fr) auto;
   background: color-mix(in srgb, var(--page) 84%, var(--violet) 16%);
+}
+
+.handwriting-collaboration-toast {
+  position: absolute;
+  z-index: 4;
+  top: 0.55rem;
+  left: 50%;
+  max-width: min(80%, 420px);
+  padding: 0.3rem 0.65rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--violet) 36%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--violet) 8%);
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.handwriting-collaboration-toast span {
+  color: var(--violet);
 }
 
 .handwriting-studio:has(.handwriting-writing-window) {

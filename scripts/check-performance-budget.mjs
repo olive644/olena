@@ -77,8 +77,10 @@ const MAX_INITIAL_JS_BYTES = 269 * 1024;
 // entirely inside the existing lazy handwriting studio chunk; no dependency
 // was added and the initial entry is unchanged. Measured total: 693.5 KiB.
 // Tesseract.js is loaded only after an explicit OCR action. Its optional
-// engine and runtime add about 46 KiB to the lazy application total.
-const MAX_TOTAL_JS_BYTES = 750 * 1024;
+// engine and runtime add about 46 KiB to the lazy application total. The
+// notebook collaboration client adds a small realtime transport and presence
+// UI; keep its new ceiling explicit rather than silently dropping the guard.
+const MAX_TOTAL_JS_BYTES = 760 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
