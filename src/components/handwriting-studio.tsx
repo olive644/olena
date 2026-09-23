@@ -689,6 +689,7 @@ export function HandwritingStudio({
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
   const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
+  const [coordinateMeasurements, setCoordinateMeasurements] = useState(true);
   const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
@@ -1420,6 +1421,7 @@ export function HandwritingStudio({
           start: point,
           origin: point,
           ids: [],
+          coordinateIds: [],
           moving: false,
           lasso: true,
           path: [point],

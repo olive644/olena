@@ -51,6 +51,7 @@ export type HandwritingCoordinateSystem = {
   origin: HandwritingPoint;
   end: HandwritingPoint;
   step: 1 | 2 | 5 | 10;
+  measurements?: boolean;
   color: string;
 };
 
@@ -77,15 +78,6 @@ export const DEFAULT_HANDWRITING_LAYER_VISIBILITY: HandwritingLayerVisibility = 
   strokes: true,
   text: true,
   stickies: true,
-};
-
-export type HandwritingCoordinateSystem = {
-  id: string;
-  origin: HandwritingPoint;
-  end: HandwritingPoint;
-  step: 1 | 2 | 5 | 10;
-  measurements?: boolean;
-  color: string;
 };
 
 export type HandwritingDocument = {
