@@ -1,10 +1,15 @@
-export function stickyTextLayout(text: string, measure: (text: string, size: number) => number) {
+export function stickyTextLayout(
+  text: string,
+  measure: (text: string, size: number) => number,
+  maxWidth = 224,
+  maxHeight = 174,
+) {
   for (let fontSize = 25; fontSize >= 0.25; fontSize -= 0.25) {
     const lines = text.split("\n").flatMap((paragraph) => {
       const result: string[] = [];
       let line = "";
       for (const character of paragraph) {
-        if (line && measure(line + character, fontSize) > 224) {
+        if (line && measure(line + character, fontSize) > maxWidth) {
           result.push(line);
           line = "";
         }
@@ -12,7 +17,7 @@ export function stickyTextLayout(text: string, measure: (text: string, size: num
       }
       return [...result, line];
     });
-    if (lines.length * fontSize * 1.3 <= 174) return { fontSize, lines };
+    if (lines.length * fontSize * 1.3 <= maxHeight) return { fontSize, lines };
   }
   return { fontSize: 0.25, lines: [text] };
 }

@@ -8,14 +8,23 @@ import {
   type StudyPreferences,
 } from "../domain/study-preferences";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
+import type { WorkspaceHistoryEntry } from "../data/workspace-history";
 
 type ProfileViewProps = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
   cloud: CloudSyncState;
+  history: WorkspaceHistoryEntry[];
+  onRestoreSnapshot: (entry: WorkspaceHistoryEntry) => void;
 };
 
-export function ProfileView({ workspace, dispatch, cloud }: ProfileViewProps) {
+export function ProfileView({
+  workspace,
+  dispatch,
+  cloud,
+  history,
+  onRestoreSnapshot,
+}: ProfileViewProps) {
   function updatePomodoroMinutes(pomodoroMinutes: 25 | 50) {
     dispatch({
       type: "focus/preferences-updated",
@@ -71,9 +80,11 @@ export function ProfileView({ workspace, dispatch, cloud }: ProfileViewProps) {
               ? "A nuvem ainda não está configurada. Seus estudos continuam salvos somente neste dispositivo."
               : cloud.status === "offline"
                 ? "Sem conexão. Suas alterações ficam neste dispositivo e serão enviadas quando a internet voltar."
-                : cloud.status === "syncing" || cloud.status === "loading"
-                  ? "Sincronizando suas alterações com segurança…"
-                  : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
+                : cloud.status === "conflict"
+                  ? "Conflito conciliado: suas alterações locais foram preservadas e a versão remota foi guardada neste dispositivo."
+                  : cloud.status === "syncing" || cloud.status === "loading"
+                    ? "Sincronizando suas alterações com segurança…"
+                    : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
           </p>
         </div>
         <dl>
@@ -92,9 +103,11 @@ export function ProfileView({ workspace, dispatch, cloud }: ProfileViewProps) {
                 ? "Nuvem indisponível"
                 : cloud.status === "offline"
                   ? "Aguardando conexão"
-                  : cloud.status === "syncing" || cloud.status === "loading"
-                    ? "Sincronizando"
-                    : "Sincronizado"}
+                  : cloud.status === "conflict"
+                    ? "Conflito preservado"
+                    : cloud.status === "syncing" || cloud.status === "loading"
+                      ? "Sincronizando"
+                      : "Sincronizado"}
             </dd>
           </div>
           <div>
@@ -126,6 +139,43 @@ export function ProfileView({ workspace, dispatch, cloud }: ProfileViewProps) {
             Sair desta conta
           </button>
         </div>
+      </section>
+
+      <section className="workspace-history-settings" aria-labelledby="workspace-history-title">
+        <div>
+          <span className="section-label">Recuperação local</span>
+          <h2 id="workspace-history-title">Histórico dos estudos</h2>
+          <p>
+            Guardamos até seis versões recentes neste dispositivo para recuperar uma versão
+            anterior.
+          </p>
+        </div>
+        {history.length === 0 ? (
+          <p className="workspace-history-empty">
+            O histórico será criado após a próxima alteração.
+          </p>
+        ) : (
+          <ol className="workspace-history-list">
+            {history.map((entry, index) => (
+              <li key={entry.id}>
+                <div>
+                  <strong>{index === 0 ? "Versão atual" : `Versão anterior ${index}`}</strong>
+                  <small>
+                    {new Date(entry.savedAt).toLocaleString("pt-BR", {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    })}
+                  </small>
+                </div>
+                {index > 0 && (
+                  <button type="button" onClick={() => onRestoreSnapshot(entry)}>
+                    Restaurar
+                  </button>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
 
       <section className="study-method-settings" aria-labelledby="study-method-title">

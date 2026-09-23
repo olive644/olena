@@ -13,3 +13,8 @@ test("preserva links, código, emails e caixa alta", () => {
     "VOCÊS https://site.test/voce `nao` nome@voce.com",
   );
 });
+test("corrige acentos frequentes e capitaliza linhas novas", () => {
+  expect(reviewPortugueseText("ja terminei a pagina\nproxima etapa: matematica")).toBe(
+    "Já terminei a página\nPróxima etapa: Matemática",
+  );
+});

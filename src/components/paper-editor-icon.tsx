@@ -20,6 +20,9 @@ const shapes = {
   collapse: "M11 3h6v14H3v-6h8Z M25 3h6v8h8v6H25Z M3 25h14v14h-6v-8H3Z M25 25h14v6h-8v8h-6Z",
   review: "M5 4h25l7 7v27H5Z",
   save: "M6 4h29l7 7v31H6Z",
+  layers: "M4 14 24 4l20 10-20 10Z M4 24l20 10 20-10 M4 34l20 10 20-10",
+  bringFront: "M24 4 36 16h-8v13h-8V16h-8Z M6 34h36v7H6Z",
+  sendBack: "M12 6h8v10h8L16 28 4 16h8Z M6 34h36v7H6Z",
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
@@ -44,6 +47,9 @@ const facets: Record<keyof typeof shapes, string> = {
   collapse: "M11 3h3v11H3v-3h8Z M25 3h3v11h11v3H25Z",
   review: "M5 4h25l-9 7H11v27H5Z",
   save: "M6 4h6v38H6Z M35 4l7 7h-7Z",
+  layers: "M4 14 24 24 44 14 24 4Z M4 24l20 10 20-10 M4 34l20 10 20-10",
+  bringFront: "M24 4v22l-4-7h-8Z M6 34h36v3H6Z",
+  sendBack: "M12 6h8v16l-4-6-4 6Z M6 34h36v3H6Z",
 };
 
 export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {

@@ -2,6 +2,11 @@ import { useEffect, useReducer, useRef } from "react";
 import { loadWorkspace, saveWorkspace } from "../data/local-workspace";
 import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 import { workspaceReducer } from "../domain/workspace";
+import {
+  loadWorkspaceHistory,
+  recordWorkspaceSnapshot,
+  type WorkspaceHistoryEntry,
+} from "../data/workspace-history";
 
 export function useWorkspace() {
   const remoteUpdate = useRef(false);
@@ -15,6 +20,7 @@ export function useWorkspace() {
       return;
     }
     saveWorkspace(window.localStorage, workspace);
+    recordWorkspaceSnapshot(window.localStorage, workspace);
     window.dispatchEvent(new Event(SYNCED_STORAGE_EVENT));
   }, [workspace]);
 
@@ -27,5 +33,15 @@ export function useWorkspace() {
     return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
   }, []);
 
-  return { workspace, dispatch };
+  function restoreSnapshot(entry: WorkspaceHistoryEntry) {
+    remoteUpdate.current = false;
+    dispatch({ type: "workspace/replaced", workspace: entry.workspace });
+  }
+
+  return {
+    workspace,
+    dispatch,
+    history: loadWorkspaceHistory(window.localStorage),
+    restoreSnapshot,
+  };
 }

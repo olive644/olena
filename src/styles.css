@@ -3743,6 +3743,98 @@ body.local-room-active {
   display: flex;
   gap: 8px;
 }
+
+.notebook-collaboration-panel {
+  margin: 0 1rem 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--violet) 42%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--violet) 14%);
+  box-shadow: 0 8px 20px rgb(23 21 28 / 10%);
+}
+
+.notebook-collaboration-panel__heading,
+.notebook-collaboration-panel__actions,
+.notebook-collaboration-code,
+.notebook-collaboration-people {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.notebook-collaboration-panel__heading {
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+}
+
+.notebook-collaboration-panel__heading span {
+  color: var(--violet-dark);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.notebook-collaboration-panel__heading h3 {
+  margin: 0.1rem 0 0;
+  font-size: 0.95rem;
+}
+
+.notebook-collaboration-panel label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.notebook-collaboration-panel input {
+  min-height: 34px;
+  padding: 0 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.notebook-collaboration-panel__actions {
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.notebook-collaboration-code {
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+
+.notebook-collaboration-code strong {
+  color: var(--violet-dark);
+  font-size: 1.25rem;
+  letter-spacing: 0.16em;
+}
+
+.notebook-collaboration-people {
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+
+.notebook-collaboration-people span {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.notebook-collaboration-people span.is-online {
+  border-color: color-mix(in srgb, #2d9b69 45%, var(--line));
+  color: var(--text);
+}
+
+.notebook-collaboration-activity {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
 .capture-dialog.capture-dialog--expanded,
 .capture-dialog:fullscreen {
   position: fixed;
@@ -3762,6 +3854,29 @@ body.local-room-active {
   min-height: 0;
   grid-template-rows: auto minmax(0, 1fr) auto;
   background: color-mix(in srgb, var(--page) 84%, var(--violet) 16%);
+}
+
+.handwriting-collaboration-toast {
+  position: absolute;
+  z-index: 4;
+  top: 0.55rem;
+  left: 50%;
+  max-width: min(80%, 420px);
+  padding: 0.3rem 0.65rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--violet) 36%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--violet) 8%);
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.handwriting-collaboration-toast span {
+  color: var(--violet);
 }
 
 .handwriting-studio:has(.handwriting-writing-window) {
@@ -3802,10 +3917,28 @@ body.local-room-active {
   touch-action: none;
 }
 
+.handwriting-writing-window__status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .handwriting-writing-window__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
+}
+
+.handwriting-writing-window__actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--text);
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .handwriting-writing-window__actions button {
@@ -4227,6 +4360,73 @@ body.local-room-active {
   line-height: 1.5;
   color: var(--muted);
 }
+
+.handwriting-coordinate-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.handwriting-coordinate-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #7433e0;
+}
+
+.handwriting-coordinate-inspector {
+  margin-top: 16px;
+  padding: 12px;
+  border: 2px solid #7433e0;
+  border-radius: 6px 14px 7px 11px;
+  background: var(--soft);
+  box-shadow: 0 4px 0 #51259b;
+}
+
+.handwriting-coordinate-inspector > small {
+  color: var(--violet);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.handwriting-coordinate-inspector > strong {
+  display: block;
+  margin: 6px 0 10px;
+  font-size: 14px;
+}
+
+.handwriting-coordinate-inspector dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+
+.handwriting-coordinate-inspector dl div {
+  padding: 7px 5px;
+  border-radius: 4px 8px 4px 7px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.handwriting-coordinate-inspector dt {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.handwriting-coordinate-inspector dd {
+  margin: 3px 0 0;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.handwriting-coordinate-inspector p {
+  margin: 10px 0 0;
+  font-size: 10px;
+}
 .handwriting-brush-panel > button {
   display: grid;
   gap: 8px;
@@ -4287,6 +4487,76 @@ body.local-room-active {
 .handwriting-brush-panel button small {
   font-size: 10px;
   line-height: 1.5;
+}
+.handwriting-layer-panel {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.handwriting-layer-panel > p {
+  margin: 0 0 4px;
+}
+.handwriting-layer-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px 12px 7px 10px;
+  background: var(--soft);
+  cursor: pointer;
+}
+.handwriting-layer-row input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #7433e0;
+}
+.handwriting-layer-row > span {
+  display: grid;
+  gap: 3px;
+}
+.handwriting-layer-row strong {
+  font-size: 11px;
+}
+.handwriting-layer-row small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+.handwriting-layer-reorder {
+  display: flex;
+  gap: 4px;
+  margin-top: 3px;
+}
+.handwriting-layer-reorder button {
+  min-width: 28px;
+  min-height: 24px;
+  padding: 2px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 8px 4px 6px;
+  color: var(--text);
+  background: var(--surface);
+  font-weight: 900;
+  line-height: 1;
+}
+.handwriting-layer-reorder button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+.handwriting-layer-reset {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #7433e0;
+  border-radius: 6px 12px 7px 10px;
+  color: #fff9ef;
+  background: #7433e0;
+  box-shadow: 0 3px #51259b;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
 }
 @media (max-width: 680px) {
   .handwriting-brush-panel {
@@ -4555,6 +4825,27 @@ body.local-room-active {
   transform: rotate(-1deg);
 }
 
+.handwriting-sticky__resize {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  place-items: center;
+  border: 0;
+  color: #17151c;
+  background: transparent;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.handwriting-sticky__resize .paper-editor-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .handwriting-sticky--yellow {
   background: #fff0b5;
 }
@@ -4586,6 +4877,12 @@ body.local-room-active {
   touch-action: none;
 }
 
+.handwriting-sticky__bar button.is-active {
+  border-radius: 4px;
+  color: #fff9ef;
+  background: #7433e0;
+}
+
 .handwriting-sticky textarea {
   min-height: 0;
   flex: 1;
@@ -4598,6 +4895,87 @@ body.local-room-active {
   font-size: clamp(10px, 1.1vw, 16px);
   font-weight: 700;
   line-height: 1.2;
+}
+
+.handwriting-sticky__checklist {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  padding: 3px 4px 18px;
+}
+
+.handwriting-sticky__checklist > input,
+.handwriting-sticky__checklist-item input {
+  min-width: 0;
+  border: 0;
+  outline-offset: -2px;
+  color: #17151c;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.handwriting-sticky__checklist > input {
+  margin-bottom: 3px;
+  font-size: clamp(11px, 1.1vw, 15px);
+}
+
+.handwriting-sticky__checklist-item {
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 4px;
+}
+
+.handwriting-sticky__checklist-item button {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  place-items: center;
+  border: 1.5px solid #17151c;
+  border-radius: 3px;
+  color: #fff9ef;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.handwriting-sticky__checklist-item button.is-done {
+  border-color: #7433e0;
+  background: #7433e0;
+}
+
+.handwriting-sticky__checklist-item button:last-child {
+  border: 0;
+  color: #17151c;
+  background: transparent;
+  font-size: 17px;
+}
+
+.handwriting-sticky__checklist-item input {
+  width: 100%;
+  font-size: clamp(9px, 0.95vw, 13px);
+}
+
+.handwriting-sticky__checklist-item input:focus-visible,
+.handwriting-sticky__checklist > input:focus-visible {
+  outline: 2px solid #7433e0;
+  outline-offset: 1px;
+}
+
+.handwriting-sticky__add-item {
+  align-self: flex-start;
+  padding: 2px 4px;
+  border: 0;
+  color: #51259b;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .handwriting-sticky__colors button {
@@ -6996,6 +7374,64 @@ body.local-room-active {
 }
 .handwriting-sticky--text .handwriting-sticky__bar {
   background: #fff9ef;
+}
+
+.handwriting-sticky--formula {
+  min-width: 210px;
+  border-color: #7433e0;
+  border-radius: 5px 14px 6px 10px;
+  background: color-mix(in srgb, var(--surface) 88%, #a779ef 12%);
+  box-shadow: 4px 5px 0 rgb(81 37 155 / 28%);
+}
+.handwriting-sticky--formula textarea {
+  font-family: "Cambria Math", "STIX Two Math", monospace;
+  font-size: clamp(13px, 1.35vw, 21px);
+  line-height: 1.35;
+}
+.handwriting-formula-assist {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px 10px 6px 8px;
+  background: var(--soft);
+}
+.handwriting-formula-assist span {
+  color: var(--violet);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.handwriting-formula-assist input {
+  min-width: 150px;
+  flex: 1;
+  padding: 5px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  color: var(--text);
+  background: var(--surface);
+  font-family: "Cambria Math", "STIX Two Math", monospace;
+}
+.handwriting-formula-assist button {
+  padding: 5px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 8px 4px 6px;
+  color: var(--text);
+  background: var(--surface);
+  font-size: 10px;
+  font-weight: 800;
+}
+.handwriting-formula-assist button:last-child {
+  border-color: #7433e0;
+  color: #fff9ef;
+  background: #7433e0;
+}
+.handwriting-formula-assist button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 @keyframes notebook-open {
   from {

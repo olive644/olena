@@ -10,6 +10,7 @@ import {
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
+import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import {
   createWorkspaceId,
@@ -246,6 +247,50 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
     });
   }
 
+  function importPages(pages: ImportedPage[]) {
+    if (!activeNotebook || pages.length === 0) return;
+    let lastPageId: string | null = null;
+    const createdAt = new Date().toISOString();
+    pages.forEach((page, index) => {
+      const id = createWorkspaceId("note");
+      const handwriting: HandwritingDocument = {
+        version: 1,
+        paper: "blank",
+        paperColor: "light",
+        background: page.image,
+        backgroundFrame: page.frame,
+        strokes: [],
+        stickies: [],
+      };
+      dispatch({
+        type: "note/added",
+        id,
+        notebookId: activeNotebook.id,
+        subjectId: activeNotebook.subjectId,
+        updatedAt: createdAt,
+      });
+      dispatch({
+        type: "note/updated",
+        id,
+        title: `Página importada ${index + 1}`,
+        content: "",
+        updatedAt: createdAt,
+      });
+      dispatch({
+        type: "note/asset-added",
+        noteId: id,
+        kind: "drawing",
+        name: `Página importada ${index + 1}`,
+        dataUrl: page.image,
+        createdAt,
+        handwriting,
+      });
+      lastPageId = id;
+    });
+    setNotebookSection("pages");
+    setActivePageId(lastPageId);
+  }
+
   function updateAsset(assetId: string, dataUrl: string, handwriting: HandwritingDocument) {
     if (!activePage) return;
     dispatch({
@@ -255,6 +300,54 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
       dataUrl,
       handwriting,
       updatedAt: new Date().toISOString(),
+    });
+  }
+
+  function exportNotebookPdf() {
+    const pages = notebookPages
+      .map((page) => ({ title: page.title || "Folha sem título", image: page.assets[0]?.dataUrl }))
+      .filter((page): page is { title: string; image: string } => Boolean(page.image));
+    if (pages.length === 0) {
+      setMoveMessage("Adicione pelo menos uma folha com conteúdo antes de exportar.");
+      return;
+    }
+    const printWindow = window.open("", "_blank", "noopener,noreferrer");
+    if (!printWindow) {
+      setMoveMessage("Permita pop-ups para exportar o caderno em PDF.");
+      return;
+    }
+    printWindow.document.write(`<!doctype html><html><head><title></title><style>
+      @page { size: A4; margin: 0; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: #fff; }
+      .notebook-export-page { width: 210mm; min-height: 297mm; padding: 10mm; display: grid; place-items: center; break-after: page; }
+      .notebook-export-page:last-child { break-after: auto; }
+      .notebook-export-page img { display: block; max-width: 190mm; max-height: 277mm; object-fit: contain; }
+    </style></head><body></body></html>`);
+    printWindow.document.title = activeNotebook?.title ?? "Caderno";
+    for (const page of pages) {
+      const wrapper = printWindow.document.createElement("section");
+      wrapper.className = "notebook-export-page";
+      const image = printWindow.document.createElement("img");
+      image.alt = page.title;
+      image.src = page.image;
+      wrapper.append(image);
+      printWindow.document.body.append(wrapper);
+    }
+    printWindow.document.close();
+    const images = Array.from(printWindow.document.images);
+    void Promise.all(
+      images.map((image) =>
+        image.complete
+          ? Promise.resolve()
+          : new Promise<void>((resolve) => {
+              image.addEventListener("load", () => resolve(), { once: true });
+              image.addEventListener("error", () => resolve(), { once: true });
+            }),
+      ),
+    ).then(() => {
+      printWindow.focus();
+      printWindow.print();
     });
   }
 
@@ -684,6 +777,7 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                   draftPageKey={activePage.id}
                   onSave={saveAsset}
                   onUpdate={updateAsset}
+                  onImportPages={importPages}
                   editingAsset={editingAsset}
                   onCloseEditing={() => setEditingAssetId(null)}
                 />
@@ -787,9 +881,19 @@ export function NotesView({ workspace, dispatch }: NotesViewProps) {
                   </button>
                 </>
               ) : (
-                <button className="primary-button" type="button" onClick={createPage}>
-                  <PaperActionIcon name="plus" /> <span>Nova folha</span>
-                </button>
+                <>
+                  <button
+                    className="secondary-button"
+                    type="button"
+                    disabled={!notebookPages.some((page) => page.assets[0])}
+                    onClick={exportNotebookPdf}
+                  >
+                    <PaperActionIcon name="book" /> <span>Exportar PDF</span>
+                  </button>
+                  <button className="primary-button" type="button" onClick={createPage}>
+                    <PaperActionIcon name="plus" /> <span>Nova folha</span>
+                  </button>
+                </>
               )}
             </div>
           </header>
