@@ -788,6 +788,13 @@ export function HandwritingStudio({
     end: HandwritingPoint;
   } | null>(null);
   const activePointerRef = useRef<number | null>(null);
+  const touchPointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchRef = useRef<{
+    distance: number;
+    zoom: number;
+    centerX: number;
+    centerY: number;
+  } | null>(null);
   const panRef = useRef<{
     pointerId: number;
     x: number;
@@ -846,6 +853,8 @@ export function HandwritingStudio({
   const [ocrBusy, setOcrBusy] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
+  const [fileMenuOpen, setFileMenuOpen] = useState(false);
+  const [paperSectionsOpen, setPaperSectionsOpen] = useState({ paper: false, color: false });
   const [stickyMenuId, setStickyMenuId] = useState<string | null>(null);
   const [stickyColorMenuId, setStickyColorMenuId] = useState<string | null>(null);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
@@ -1266,15 +1275,14 @@ export function HandwritingStudio({
     };
   }, []);
 
-  // Ctrl/Cmd+scroll para zoom centralizado no cursor, como em apps de desenho
-  // profissionais. Precisa de um listener nativo (nao onWheel do React): o
-  // React trata wheel como passivo por padrao, entao preventDefault() dentro
-  // de onWheel falha silenciosamente e a pagina ainda rolaria junto do zoom.
+  // Scroll vertical faz zoom centralizado no cursor, como em apps de desenho
+  // profissionais. Ctrl/Cmd continua funcionando como atalho explícito; o
+  // listener nativo permite preventDefault sem eventos passivos.
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
     function onWheel(event: WheelEvent) {
-      if (!event.ctrlKey && !event.metaKey) return;
+      if (event.shiftKey && !event.ctrlKey && !event.metaKey) return;
       event.preventDefault();
       shortcutStateRef.current.zoomAt(event.clientX, event.clientY, event.deltaY < 0 ? 1 : -1);
     }
@@ -1305,21 +1313,25 @@ export function HandwritingStudio({
     setRedoStack([]);
   }
 
-  function zoomAt(clientX: number, clientY: number, direction: 1 | -1) {
+  function zoomTo(clientX: number, clientY: number, nextZoom: number) {
     const canvas = canvasRef.current;
     const viewport = viewportRef.current;
     if (!canvas || !viewport) return;
     const bounds = canvas.getBoundingClientRect();
     const relativeX = (clientX - bounds.left) / bounds.width;
     const relativeY = (clientY - bounds.top) / bounds.height;
-    const nextZoom = Math.max(0.7, Math.min(2, Math.round((zoom + direction * 0.15) * 100) / 100));
-    if (nextZoom === zoom) return;
-    setZoom(nextZoom);
+    const clampedZoom = Math.max(0.7, Math.min(2, Math.round(nextZoom * 100) / 100));
+    if (clampedZoom === zoom) return;
+    setZoom(clampedZoom);
     requestAnimationFrame(() => {
       const nextBounds = canvas.getBoundingClientRect();
       viewport.scrollLeft += nextBounds.left + relativeX * nextBounds.width - clientX;
       viewport.scrollTop += nextBounds.top + relativeY * nextBounds.height - clientY;
     });
+  }
+
+  function zoomAt(clientX: number, clientY: number, direction: 1 | -1) {
+    zoomTo(clientX, clientY, zoom + direction * 0.15);
   }
 
   function eraseAt(points: HandwritingPoint[]) {
@@ -1360,6 +1372,32 @@ export function HandwritingStudio({
   }
 
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "touch") {
+      touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      if (touchPointersRef.current.size >= 2) {
+        const points = [...touchPointersRef.current.values()].slice(0, 2);
+        const first = points[0];
+        const second = points[1];
+        if (first && second) {
+          pinchRef.current = {
+            distance: Math.hypot(second.x - first.x, second.y - first.y),
+            zoom,
+            centerX: (first.x + second.x) / 2,
+            centerY: (first.y + second.y) / 2,
+          };
+          const unfinishedStroke = liveStrokeRef.current;
+          if (unfinishedStroke)
+            setStrokes((current) => current.filter((stroke) => stroke.id !== unfinishedStroke.id));
+          drawingRef.current = false;
+          liveStrokeRef.current = null;
+          selectionRef.current = null;
+          panRef.current = null;
+          activePointerRef.current = null;
+          event.preventDefault();
+          return;
+        }
+      }
+    }
     // Ponta de borracha invertida e botao de barril sao comuns em mesas
     // digitalizadoras (Wacom, Huion, Surface Pen). O navegador reporta a
     // ponta de borracha como button 5 e o botao de barril como button 2 em
@@ -1513,6 +1551,24 @@ export function HandwritingStudio({
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "touch") {
+      touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      const pinch = pinchRef.current;
+      if (pinch && touchPointersRef.current.size >= 2) {
+        const points = [...touchPointersRef.current.values()].slice(0, 2);
+        const first = points[0];
+        const second = points[1];
+        if (first && second && pinch.distance > 0) {
+          const distance = Math.hypot(second.x - first.x, second.y - first.y);
+          zoomTo(
+            (first.x + second.x) / 2,
+            (first.y + second.y) / 2,
+            pinch.zoom * (distance / pinch.distance),
+          );
+          return;
+        }
+      }
+    }
     const viewport = viewportRef.current;
     const pan = panRef.current;
     if (pan && viewport && pan.pointerId === event.pointerId) {
@@ -1664,6 +1720,10 @@ export function HandwritingStudio({
   }
 
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "touch") {
+      touchPointersRef.current.delete(event.pointerId);
+      if (pinchRef.current && touchPointersRef.current.size < 2) pinchRef.current = null;
+    }
     if (event.pointerId !== activePointerRef.current) return;
     setRulerMeasure(null);
     if (activeToolRef.current === "coordinates" && coordinateMeasure) {
@@ -2198,15 +2258,16 @@ export function HandwritingStudio({
   }
 
   function moveLayer(layer: HandwritingLayerKey, direction: -1 | 1) {
+    const available = layerOrder.filter((key) => layerAvailability[key]);
+    const visibleIndex = available.indexOf(layer);
+    const swapWith = available[visibleIndex + direction];
     const index = layerOrder.indexOf(layer);
-    const nextIndex = index + direction;
-    if (index < 0 || nextIndex < 0 || nextIndex >= layerOrder.length) return;
+    const swapIndex = swapWith ? layerOrder.indexOf(swapWith) : -1;
+    if (index < 0 || swapIndex < 0) return;
     remember();
     setLayerOrder((current) => {
       const next = [...current];
-      const [moved] = next.splice(index, 1);
-      if (!moved) return current;
-      next.splice(nextIndex, 0, moved);
+      [next[index], next[swapIndex]] = [next[swapIndex]!, next[index]!];
       return next;
     });
   }
@@ -2673,6 +2734,14 @@ export function HandwritingStudio({
   const inspectedCoordinateStats =
     liveCoordinateStats ??
     (inspectedCoordinateSystem ? coordinateStats(inspectedCoordinateSystem) : null);
+  const layerAvailability: Record<HandwritingLayerKey, boolean> = {
+    coordinates: coordinateSystems.length > 0,
+    text: Boolean(pageText.trim()),
+    strokes: strokes.length > 0,
+    stickies: stickies.length > 0,
+  };
+  const hasBackgroundLayer = Boolean(background || importedImages.length > 0);
+  const visibleLayerOrder = layerOrder.filter((layer) => layerAvailability[layer]);
   const showBrushPanel = tool === "pen" && !textMode && !writingWindowOpen;
   const showRulerPanel = tool === "ruler" && !textMode;
   const showCoordinatePanel = tool === "coordinates" && !textMode;
@@ -3098,6 +3167,93 @@ export function HandwritingStudio({
             <span className="editor-action-label">Limpar</span>
           </button>
         </div>
+
+        <div className="handwriting-file-menu" aria-label="Arquivo">
+          <button
+            type="button"
+            className={fileMenuOpen ? "is-active" : ""}
+            aria-label="Arquivo"
+            aria-expanded={fileMenuOpen}
+            title="Arquivo: upload, exportar e salvar"
+            onClick={() => setFileMenuOpen((open) => !open)}
+          >
+            <PaperEditorIcon name="page" /> <span>Arquivo</span>
+          </button>
+          {fileMenuOpen && (
+            <div className="handwriting-file-actions" aria-label="Ações de arquivo">
+              <button
+                type="button"
+                aria-expanded={fileAction === "import"}
+                ref={importButtonRef}
+                onClick={() => {
+                  setFileMenuOpen(false);
+                  setFileAction(fileAction === "import" ? null : "import");
+                }}
+              >
+                <PaperEditorIcon name="cloudUpload" /> <span>Upload</span>
+              </button>
+              <div className="editor-export-menu">
+                <button
+                  type="button"
+                  aria-expanded={fileAction === "export"}
+                  onClick={() => {
+                    setFileAction(fileAction === "export" ? null : "export");
+                  }}
+                >
+                  <PaperEditorIcon name="download" /> <span>Exportar</span>
+                </button>
+                {fileAction === "export" && (
+                  <div
+                    className="editor-export-options"
+                    aria-label="Formatos de exportação"
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") setFileAction(null);
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => {
+                        exportPng();
+                        setFileAction(null);
+                      }}
+                    >
+                      PNG
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        exportPdf();
+                        setFileAction(null);
+                      }}
+                    >
+                      Baixar PDF
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        printPage();
+                        setFileAction(null);
+                      }}
+                    >
+                      Imprimir
+                    </button>
+                  </div>
+                )}
+              </div>
+              <button
+                className="primary-button"
+                type="button"
+                aria-label="Salvar folha no caderno"
+                onClick={() => {
+                  setFileMenuOpen(false);
+                  save();
+                }}
+              >
+                <PaperEditorIcon name="save" /> <span>Salvar</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {writingWindowOpen && (
@@ -3168,45 +3324,98 @@ export function HandwritingStudio({
         inert={fileAction === "import"}
       >
         <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
-          <strong>Tipo de papel</strong>
-          {(
-            [
-              ["ruled", "Pautado"],
-              ["grid", "Quadriculado"],
-              ["dots", "Pontilhado"],
-              ["blank", "Em branco"],
-            ] as const
-          ).map(([value, label]) => (
+          <section className="handwriting-paper-section">
             <button
               type="button"
-              className={paper === value ? "is-active" : ""}
-              aria-pressed={paper === value}
-              onClick={() => setPaper(value)}
-              key={value}
+              className="handwriting-paper-section__toggle"
+              aria-expanded={paperSectionsOpen.paper}
+              aria-label="Tipo de papel"
+              onClick={() =>
+                setPaperSectionsOpen((current) => ({ ...current, paper: !current.paper }))
+              }
             >
-              <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
-              <span>{label}</span>
+              <PaperEditorIcon name="page" />
+              <span>Tipo de papel</span>
+              <strong>
+                {paper === "ruled"
+                  ? "Pautado"
+                  : paper === "grid"
+                    ? "Quadriculado"
+                    : paper === "dots"
+                      ? "Pontilhado"
+                      : "Em branco"}
+              </strong>
             </button>
-          ))}
-          <strong>Cor da folha</strong>
-          {(
-            [
-              ["light", "Clara"],
-              ["aged", "Papel de livro"],
-              ["night", "Escura"],
-            ] as const
-          ).map(([value, label]) => (
+            {paperSectionsOpen.paper && (
+              <div className="handwriting-paper-options">
+                {(
+                  [
+                    ["ruled", "Pautado"],
+                    ["grid", "Quadriculado"],
+                    ["dots", "Pontilhado"],
+                    ["blank", "Em branco"],
+                  ] as const
+                ).map(([value, label]) => (
+                  <button
+                    type="button"
+                    className={paper === value ? "is-active" : ""}
+                    aria-pressed={paper === value}
+                    onClick={() => setPaper(value)}
+                    key={value}
+                  >
+                    <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+          <section className="handwriting-paper-section">
             <button
               type="button"
-              className={paperColor === value ? "is-active" : ""}
-              aria-pressed={paperColor === value}
-              onClick={() => selectPaperColor(value)}
-              key={value}
+              className="handwriting-paper-section__toggle"
+              aria-expanded={paperSectionsOpen.color}
+              aria-label="Cor da folha"
+              onClick={() =>
+                setPaperSectionsOpen((current) => ({ ...current, color: !current.color }))
+              }
             >
-              <span className={`paper-preview paper-preview--tone-${value}`} aria-hidden="true" />
-              <span>{label}</span>
+              <PaperEditorIcon name="page" />
+              <span>Cor da folha</span>
+              <strong>
+                {paperColor === "light"
+                  ? "Clara"
+                  : paperColor === "aged"
+                    ? "Papel de livro"
+                    : "Escura"}
+              </strong>
             </button>
-          ))}
+            {paperSectionsOpen.color && (
+              <div className="handwriting-paper-options">
+                {(
+                  [
+                    ["light", "Clara"],
+                    ["aged", "Papel de livro"],
+                    ["night", "Escura"],
+                  ] as const
+                ).map(([value, label]) => (
+                  <button
+                    type="button"
+                    className={paperColor === value ? "is-active" : ""}
+                    aria-pressed={paperColor === value}
+                    onClick={() => selectPaperColor(value)}
+                    key={value}
+                  >
+                    <span
+                      className={`paper-preview paper-preview--tone-${value}`}
+                      aria-hidden="true"
+                    />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
         </aside>
 
         <div className="handwriting-viewport" ref={viewportRef}>
@@ -4033,19 +4242,20 @@ export function HandwritingStudio({
                 <h3>Camadas da folha</h3>
               </div>
             </header>
-            <p>Mostre, oculte e ajuste a ordem sem sair da folha.</p>
-            <label className="handwriting-layer-row">
-              <input
-                type="checkbox"
-                checked={layerVisibility.background}
-                onChange={() => toggleLayerVisibility("background")}
-              />
-              <span>
-                <strong>Imagens</strong>
-                <small>Documentos e fotos importados</small>
-              </span>
-            </label>
-            {layerOrder.map((layer, index) => {
+            {hasBackgroundLayer && (
+              <label className="handwriting-layer-row">
+                <input
+                  type="checkbox"
+                  checked={layerVisibility.background}
+                  onChange={() => toggleLayerVisibility("background")}
+                />
+                <span>
+                  <strong>Imagens</strong>
+                  <small>Documentos e fotos importados</small>
+                </span>
+              </label>
+            )}
+            {visibleLayerOrder.map((layer, index) => {
               const labels: Record<HandwritingLayerKey, [string, string]> = {
                 coordinates: ["Coordenadas", "Eixos e medições"],
                 text: ["Texto", "Texto digitado na folha"],
@@ -4076,7 +4286,7 @@ export function HandwritingStudio({
                       <button
                         type="button"
                         aria-label={`Mover ${title} para baixo`}
-                        disabled={index === layerOrder.length - 1}
+                        disabled={index === visibleLayerOrder.length - 1}
                         onClick={() => moveLayer(layer, 1)}
                       >
                         ↓
@@ -4086,6 +4296,9 @@ export function HandwritingStudio({
                 </div>
               );
             })}
+            {!hasBackgroundLayer && visibleLayerOrder.length === 0 && (
+              <p className="handwriting-layer-empty">Nenhuma camada adicionada ainda.</p>
+            )}
           </aside>
         )}
       </div>
@@ -4096,66 +4309,6 @@ export function HandwritingStudio({
           <strong>{draftStatus || "Escrita local e privada."}</strong>
           <span>Compatível com toque, mouse e pressão de canetas suportadas pelo navegador.</span>
         </p>
-        <div className="handwriting-export-actions">
-          <button
-            type="button"
-            aria-expanded={fileAction === "import"}
-            ref={importButtonRef}
-            onClick={() => setFileAction(fileAction === "import" ? null : "import")}
-          >
-            <PaperEditorIcon name="import" /> <span>Importar</span>
-          </button>
-          <div className="editor-export-menu">
-            <button
-              type="button"
-              aria-expanded={fileAction === "export"}
-              onClick={() => setFileAction(fileAction === "export" ? null : "export")}
-            >
-              <PaperEditorIcon name="download" /> <span>Exportar</span>
-            </button>
-            {fileAction === "export" && (
-              <div
-                className="editor-export-options"
-                aria-label="Formatos de exportação"
-                onKeyDown={(event) => {
-                  if (event.key === "Escape") setFileAction(null);
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => {
-                    exportPng();
-                    setFileAction(null);
-                  }}
-                >
-                  PNG
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    exportPdf();
-                    setFileAction(null);
-                  }}
-                >
-                  Baixar PDF
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    printPage();
-                    setFileAction(null);
-                  }}
-                >
-                  Imprimir
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-        <button className="primary-button handwriting-save" type="button" onClick={save}>
-          <PaperEditorIcon name="save" />
-          Salvar folha no caderno
-        </button>
       </footer>
       {fileAction === "import" && (
         <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
