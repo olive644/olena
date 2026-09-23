@@ -9803,12 +9803,6 @@ select {
   height: 16px;
 }
 
-@media (max-width: 899px) {
-  .page-header__theme {
-    display: none;
-  }
-}
-
 /* Sistema oficial de ícones HelenaStudy: grafite, roxo e creme com acento amarelo. */
 .navigation-icon {
   --navigation-icon-detail: var(--surface);

@@ -109,12 +109,8 @@ describe("App", () => {
   it("organiza as ferramentas secundárias no menu móvel", async () => {
     render(<App />);
     const mobileNavigation = screen.getByRole("navigation", { name: "Navegação móvel" });
-    expect(
-      mobileNavigation.querySelectorAll(
-        ":scope > .mobile-nav__item, :scope > .appearance-picker > .mobile-nav__item",
-      ),
-    ).toHaveLength(5);
-    fireEvent.click(screen.getByRole("button", { name: "Mais ferramentas" }));
+    expect(mobileNavigation.querySelectorAll(":scope > .mobile-nav__item")).toHaveLength(5);
+    fireEvent.click(screen.getByRole("button", { name: "Mais" }));
 
     const moreMenu = screen.getByRole("dialog", { name: "Mais ferramentas" });
     expect(within(moreMenu).queryByLabelText("Trocar foto de perfil")).toBeNull();
@@ -160,7 +156,7 @@ describe("App", () => {
     const appearanceTrigger = header.querySelector(".appearance-picker__trigger") as HTMLElement;
     const lightArtwork = appearanceTrigger.querySelector('[data-icon="theme-dark"]');
     expect(lightArtwork?.classList.contains("navigation-icon--brand")).toBe(true);
-    expect(lightArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
+    expect(lightArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(1);
     expect(
       lightArtwork?.querySelector('img[src="/navigation-icons/paper/claro/theme-dark.svg"]'),
     ).toBeTruthy();
@@ -172,9 +168,9 @@ describe("App", () => {
       header.querySelector(".appearance-picker__trigger") as HTMLElement
     ).querySelector('[data-icon="theme-light"]');
     expect(darkArtwork?.classList.contains("navigation-icon--brand")).toBe(true);
-    expect(darkArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
+    expect(darkArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(1);
     expect(
-      darkArtwork?.querySelector('img[src="/navigation-icons/paper/escuro/theme-light.svg"]'),
+      darkArtwork?.querySelector('img[src="/navigation-icons/paper/claro/theme-light.svg"]'),
     ).toBeTruthy();
   });
 
@@ -250,7 +246,7 @@ describe("App", () => {
     expect(
       profile.querySelector('img[src="/navigation-icons/paper/profile-active.svg"]'),
     ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Mais ferramentas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Mais" }));
     expect(
       within(screen.getByRole("dialog", { name: "Mais ferramentas" })).queryByRole("button", {
         name: "Perfil",
