@@ -36,6 +36,17 @@ describe("notebook collaboration handler", () => {
     };
     expect(createdBody.state.participants).toHaveLength(1);
 
+    const resumed = await handler(
+      request("resume", {
+        code: createdBody.code,
+        credential: createdBody.hostToken,
+      }),
+    );
+    expect(resumed.status).toBe(200);
+    expect((await resumed.json()) as { participantId: string }).toMatchObject({
+      participantId: createdBody.participantId,
+    });
+
     const joined = await handler(
       request("join", { code: createdBody.code, displayName: "Bob", requestId: "join-1" }),
     );

@@ -305,7 +305,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
   const fullText = reopened.getByLabel("Texto da página inteira");
   await fullText.fill("voce nao sabe. tambem estudo portugues");
-  await reopened.getByRole("button", { name: "Revisar texto" }).click();
+  await fullText.evaluate((node) => node.blur());
   await expect(fullText).toHaveValue("Você não sabe. Também estudo português");
   await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
   await expect(fullText).toHaveValue("voce nao sabe. tambem estudo portugues");
