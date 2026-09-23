@@ -5651,7 +5651,7 @@ body.local-room-active {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   width: min(100%, 390px);
-  gap: clamp(0.2rem, 1vw, 0.55rem);
+  gap: clamp(0.15rem, 1vw, 0.55rem);
 }
 
 .pomodoro-week__day {
