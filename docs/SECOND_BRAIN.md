@@ -1,6 +1,6 @@
 # HelenaStudy: Second Brain
 
-useCloudSync mantém dirty e changeRevision separados de lastItems. O snapshot só se torna confirmado depois de PUT bem-sucedido; falhas exibem offline e são repetidas no polling ou por Sincronizar agora. Firebase Auth usa browserLocalPersistence. O estado público do hook abastece a seção Conta e sincronização do Perfil. O logout explícito interrompe uploads antes de limpar as chaves sincronizadas locais.
+useCloudSync mantém dirty e changeRevision separados de lastItems. O snapshot só se torna confirmado depois de PUT bem-sucedido; falhas exibem offline e são repetidas no polling ou por Sincronizar agora. Antes de um PUT, o hook concilia chaves alteradas nos dois dispositivos: mudanças independentes são combinadas e conflitos preservam o local, guardando `helenastudy.sync-conflict.v1` para recuperação. O algoritmo é carregado sob demanda para não aumentar a entrada principal. Firebase Auth usa browserLocalPersistence. O estado público do hook abastece a seção Conta e sincronização do Perfil. O logout explícito interrompe uploads e remove a cópia de conflito antes de limpar as chaves sincronizadas locais.
 
 O hook useWorkspace grava até seis snapshots locais do workspace após alterações persistidas. A
 chave `helenastudy.workspace.history.v1` usa entradas completas, deduplica estados consecutivos e

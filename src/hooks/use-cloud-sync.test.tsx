@@ -134,3 +134,56 @@ it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busc
     JSON.stringify({ completed: true }),
   );
 });
+
+it("concilia alterações simultâneas por chave e preserva o conflito local", async () => {
+  const user = {
+    uid: "user-1",
+    displayName: "Helena",
+    email: "helena@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+
+  let getCount = 0;
+  const puts: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET") {
+        getCount += 1;
+        return new Response(
+          JSON.stringify(
+            getCount === 1
+              ? { items: { "helena.profile.v1": "base", "helenastudy.theme": "light" } }
+              : { items: { "helena.profile.v1": "remote", "helenastudy.theme": "dark" } },
+          ),
+          { status: 200 },
+        );
+      }
+      puts.push(init?.body as string);
+      return new Response("null", { status: 200 });
+    }),
+  );
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  act(() => writeSyncedStorage("helena.profile.v1", "local"));
+  await waitFor(() => expect(result.current.status).toBe("conflict"));
+
+  expect(JSON.parse(puts.at(-1)!).items).toEqual({
+    "helena.profile.v1": "local",
+    "helenastudy.theme": "dark",
+  });
+  expect(localStorage.getItem("helenastudy.sync-conflict.v1")).toContain("helena.profile.v1");
+});

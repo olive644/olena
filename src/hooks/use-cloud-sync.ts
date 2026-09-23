@@ -5,15 +5,26 @@ import {
   readSyncedStorage,
   SYNCED_STORAGE_EVENT,
 } from "../data/synced-storage";
+import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
+const SYNC_CONFLICT_STORAGE_KEY = "helenastudy.sync-conflict.v1";
+
+async function mergeItems(
+  base: SyncedItems,
+  local: SyncedItems,
+  remote: SyncedItems,
+): Promise<SyncedMergeResult> {
+  const { mergeSyncedItems } = await import("../data/sync-conflict");
+  return mergeSyncedItems(base, local, remote);
+}
 
 export type CloudSyncState = {
   ready: boolean;
   revision: number;
   authenticated?: boolean;
   enabled: boolean;
-  status: "disabled" | "signed-out" | "loading" | "syncing" | "synced" | "offline";
+  status: "disabled" | "signed-out" | "loading" | "syncing" | "synced" | "offline" | "conflict";
   displayName?: string | undefined;
   email?: string | undefined;
   lastSyncedAt?: number | undefined;
@@ -45,6 +56,38 @@ export function useCloudSync() {
     let saveCloud: (() => Promise<void>) | undefined;
     let dirty = false;
     let changeRevision = 0;
+    let conflictPending = false;
+
+    function parseItems(serialized: string): SyncedItems {
+      try {
+        const parsed: unknown = JSON.parse(serialized);
+        if (!parsed || typeof parsed !== "object") return {};
+        return Object.fromEntries(
+          Object.entries(parsed).filter(
+            (entry): entry is [string, string] => typeof entry[1] === "string",
+          ),
+        );
+      } catch {
+        return {};
+      }
+    }
+
+    function rememberConflict(
+      base: SyncedItems,
+      local: SyncedItems,
+      remote: SyncedItems,
+      keys: string[],
+    ) {
+      conflictPending = true;
+      try {
+        localStorage.setItem(
+          SYNC_CONFLICT_STORAGE_KEY,
+          JSON.stringify({ createdAt: Date.now(), base, local, remote, keys }),
+        );
+      } catch {
+        // A full localStorage must not interrupt the sync path.
+      }
+    }
 
     function scheduleUpload() {
       if (!saveCloud) return;
@@ -64,6 +107,8 @@ export function useCloudSync() {
           pollTimer = undefined;
           saveCloud = undefined;
           if (!user) {
+            conflictPending = false;
+            localStorage.removeItem(SYNC_CONFLICT_STORAGE_KEY);
             setState((current) => ({
               enabled: current.enabled,
               ready: true,
@@ -80,6 +125,7 @@ export function useCloudSync() {
             saveCloud = undefined;
             await authApi.signOut(auth);
             applySyncedStorage({});
+            localStorage.removeItem(SYNC_CONFLICT_STORAGE_KEY);
           };
 
           setState((current) => ({
@@ -126,16 +172,32 @@ export function useCloudSync() {
           }
 
           saveCloud = async () => {
-            const items = readSyncedStorage();
-            const serialized = JSON.stringify(items);
+            let items = readSyncedStorage();
+            let serialized = JSON.stringify(items);
             if (serialized === lastItems) {
               dirty = false;
-              setState((current) => ({ ...current, status: "synced" }));
+              setState((current) => ({
+                ...current,
+                status: conflictPending ? "conflict" : "synced",
+              }));
               return;
             }
             const savingRevision = changeRevision;
             setState((current) => ({ ...current, status: "syncing" }));
             try {
+              if (lastItems) {
+                const latest = await request("GET");
+                const latestItems = latest?.items;
+                const latestSerialized = latestItems ? JSON.stringify(latestItems) : "";
+                if (latestItems && latestSerialized && latestSerialized !== lastItems) {
+                  const merged = await mergeItems(parseItems(lastItems), items, latestItems);
+                  if (merged.conflicts.length)
+                    rememberConflict(parseItems(lastItems), items, latestItems, merged.conflicts);
+                  items = merged.items;
+                  serialized = JSON.stringify(items);
+                  applySyncedStorage(items);
+                }
+              }
               await request("PUT", { version: 1, updatedAt: Date.now(), items });
               if (!active) return;
               lastItems = serialized;
@@ -143,7 +205,7 @@ export function useCloudSync() {
               const savedAt = Date.now();
               setState((current) => ({
                 ...current,
-                status: dirty ? "syncing" : "synced",
+                status: dirty ? "syncing" : conflictPending ? "conflict" : "synced",
                 lastSyncedAt: savedAt,
               }));
               if (dirty) {
@@ -155,18 +217,31 @@ export function useCloudSync() {
             }
           };
 
-          const receiveCloud = (next: CloudState | null) => {
+          const receiveCloud = async (next: CloudState | null) => {
             const serialized = next?.items ? JSON.stringify(next.items) : undefined;
             const changed = Boolean(serialized && serialized !== lastItems);
             if (changed && next?.items && serialized) {
-              lastItems = serialized;
-              applySyncedStorage(next.items);
+              const localItems = readSyncedStorage();
+              const localSerialized = JSON.stringify(localItems);
+              if (localSerialized !== lastItems) {
+                const merged = await mergeItems(parseItems(lastItems), localItems, next.items);
+                if (merged.conflicts.length)
+                  rememberConflict(parseItems(lastItems), localItems, next.items, merged.conflicts);
+                applySyncedStorage(merged.items);
+                dirty = true;
+                changeRevision += 1;
+                setState((current) => ({ ...current, status: "syncing" }));
+                void saveCloud?.();
+              } else {
+                lastItems = serialized;
+                applySyncedStorage(next.items);
+              }
             }
             setState((current) => ({
               ...current,
               ready: true,
               authenticated: true,
-              status: "synced",
+              status: conflictPending ? "conflict" : dirty ? "syncing" : "synced",
               lastSyncedAt: Date.now(),
               revision: current.revision,
             }));

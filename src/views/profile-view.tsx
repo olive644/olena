@@ -80,9 +80,11 @@ export function ProfileView({
               ? "A nuvem ainda não está configurada. Seus estudos continuam salvos somente neste dispositivo."
               : cloud.status === "offline"
                 ? "Sem conexão. Suas alterações ficam neste dispositivo e serão enviadas quando a internet voltar."
-                : cloud.status === "syncing" || cloud.status === "loading"
-                  ? "Sincronizando suas alterações com segurança…"
-                  : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
+                : cloud.status === "conflict"
+                  ? "Conflito conciliado: suas alterações locais foram preservadas e a versão remota foi guardada neste dispositivo."
+                  : cloud.status === "syncing" || cloud.status === "loading"
+                    ? "Sincronizando suas alterações com segurança…"
+                    : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
           </p>
         </div>
         <dl>
@@ -101,9 +103,11 @@ export function ProfileView({
                 ? "Nuvem indisponível"
                 : cloud.status === "offline"
                   ? "Aguardando conexão"
-                  : cloud.status === "syncing" || cloud.status === "loading"
-                    ? "Sincronizando"
-                    : "Sincronizado"}
+                  : cloud.status === "conflict"
+                    ? "Conflito preservado"
+                    : cloud.status === "syncing" || cloud.status === "loading"
+                      ? "Sincronizando"
+                      : "Sincronizado"}
             </dd>
           </div>
           <div>

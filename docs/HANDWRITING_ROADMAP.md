@@ -49,12 +49,12 @@ quando o navegador oferece a API. O fallback continua sendo o evento de ponteiro
 - Objetos importados independentes: novas imagens entram na mesma folha sem substituir o fundo
   legado, com seleção, movimento, redimensionamento, rotação em passos de 15°, histórico e
   exportação local.
+- Sincronização com conciliação local por chave: alterações independentes são combinadas, conflitos
+  preservam a versão local e guardam uma cópia remota para recuperação no dispositivo.
 
 ## Próximos incrementos recomendados
 
-1. **Rascunhos entre dispositivos:** exigir sincronização própria, resolução de conflitos e um
-   modelo de privacidade antes de oferecer o recurso.
-2. **OCR matemático especializado:** avaliar um provedor com reconhecimento de símbolos manuscritos
+1. **OCR matemático especializado:** avaliar um provedor com reconhecimento de símbolos manuscritos
    e LaTeX, como integração opcional e consentida, sem colocar credenciais no bundle do navegador.
 
 O reconhecimento de caligrafia e a conversão para texto são trabalhos separados. O OCR local atual

@@ -21,7 +21,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Measured entry: 263.8 KiB; retain the existing small CI allowance.
 // The OCR action adds a small local normalization path to the lazy notebook
 // route, while bundler variance puts the measured entry at 267.2 KiB.
-const MAX_INITIAL_JS_BYTES = 268 * 1024;
+// Conflict-safe cloud sync adds a small guard in the initial hook; the merge
+// algorithm itself stays lazy, keeping the measured entry below 269 KiB.
+const MAX_INITIAL_JS_BYTES = 269 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
