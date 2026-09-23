@@ -416,7 +416,12 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   let dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Adicionar post-it" }).click();
   await dialog.getByRole("textbox", { name: "Texto do post-it" }).fill("Revisar gramática");
-  await dialog.getByRole("button", { name: "Post-it azul" }).click();
+  await dialog.getByRole("button", { name: "Opções do post-it" }).click();
+  await dialog.getByRole("button", { name: "Cores" }).click();
+  await dialog.getByRole("button", { name: "Usar cor azul" }).click();
+  await expect(dialog.getByRole("complementary", { name: "Pincéis da caneta" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Camadas da folha" }).click();
+  await expect(dialog.getByRole("complementary", { name: "Camadas da folha" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("postit-no-caderno.png") });
   await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
   await expect(
