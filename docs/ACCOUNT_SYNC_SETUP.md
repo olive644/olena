@@ -1,6 +1,6 @@
 # Login e sincronização entre dispositivos
 
-O Olena usa Firebase Authentication com Google e Firebase Realtime Database. O navegador mantém uma cópia local para funcionar sem internet; depois do login, a mesma conta replica o workspace, tema, perfil, onboarding e progresso entre computador e celular.
+O OlenaStudy usa Firebase Authentication com Google e Firebase Realtime Database. O navegador mantém uma cópia local para funcionar sem internet; depois do login, a mesma conta replica o workspace, tema, perfil, onboarding e progresso entre computador e celular.
 
 ## Configuração
 

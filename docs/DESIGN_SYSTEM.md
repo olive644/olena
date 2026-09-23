@@ -1,4 +1,4 @@
-# Identidade visual oficial HelenaStudy
+# Identidade visual oficial OlenaStudy
 
 O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elementos visuais é **papel recortado**. Preservar silhuetas reconhecíveis, facetas geométricas, camadas de cores sólidas e pequenas sombras de sobreposição. Não substituir por ícones de contorno genéricos, plástico 3D, glassmorphism ou gradientes.
 
@@ -10,7 +10,7 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 - Botões: camadas e facetas discretas, foco visível, área de toque mínima de 44px. Não depender só de sombra para comunicar o material.
 - Navegação desktop: rail creme, texto grafite e ícones grafite no tema claro; rail grafite, texto e ícones creme no escuro. O item ativo e o menu aberto usam papel roxo facetado com ícone creme em ambos os temas. O cartão inicial do Espaço do aluno não apresenta mascote; as poses aprovadas seguem no onboarding e login.
 - Cabeçalho móvel: Mais à esquerda, seletor de aparência e foto circular à direita. O seletor de aparência também é usado no desktop. A barra inferior mantém Praticar elevado em papel roxo facetado, com ícone creme. Perfil usa silhueta autoral inteiramente em papel grafite, sem elementos decorativos e sem foto do usuário, reservada para configurações futuras de perfil, conta e aplicativo.
-- O acabamento compartilhado está em src/paper-buttons.css: cantos assimétricos, facetas sólidas e base deslocada. Botões primários usam roxo e secundários usam creme. Setas de ação usam exclusivamente o SVG de papel da HelenaStudy. As transições do menu lateral e Mais usam três tiras de papel que formam um X, com movimento reduzido e estado acessível. No celular, Mais abre uma gaveta pela esquerda. O topo reserva o canto direito para o perfil do usuário, usando a foto Google quando disponível ou os avatares oficiais Poliana, Oliver, Andreyna, Jairo e Helena. A animação foi adaptada do exemplo de Ali-Tahmazi99 no Uiverse.io.
+- O acabamento compartilhado está em src/paper-buttons.css: cantos assimétricos, facetas sólidas e base deslocada. Botões primários usam roxo e secundários usam creme. Setas de ação usam exclusivamente o SVG de papel da OlenaStudy. As transições do menu lateral e Mais usam três tiras de papel que formam um X, com movimento reduzido e estado acessível. No celular, Mais abre uma gaveta pela esquerda. O topo reserva o canto direito para o perfil do usuário, usando a foto Google quando disponível ou os avatares oficiais Poliana, Oliver, Andreyna, Jairo e Helena. A animação foi adaptada do exemplo de Ali-Tahmazi99 no Uiverse.io.
 - Espaço do aluno: cabeçalho neutro, sem bloco roxo. Começar prática e Ver meu dia usam papel branco com texto e ícones grafite. Em tema escuro, campos de texto usam grafite elevado e contraste creme em vez de branco saturado.
 
 ## Tela de login

@@ -1,4 +1,4 @@
-# HelenaStudy: Second Brain
+# OlenaStudy: Second Brain
 
 useCloudSync mantém dirty e changeRevision separados de lastItems. O snapshot só se torna confirmado depois de PUT bem-sucedido; falhas exibem offline e são repetidas no polling ou por Sincronizar agora. Antes de um PUT, o hook concilia chaves alteradas nos dois dispositivos: mudanças independentes são combinadas e conflitos preservam o local, guardando `helenastudy.sync-conflict.v1` para recuperação. O algoritmo é carregado sob demanda para não aumentar a entrada principal. Firebase Auth usa browserLocalPersistence. O estado público do hook abastece a seção Conta e sincronização do Perfil. O logout explícito interrompe uploads e remove a cópia de conflito antes de limpar as chaves sincronizadas locais.
 
@@ -103,7 +103,7 @@ isso não substitui a validação física nem ativa App Check/cron em produção
 
 ## Proposta
 
-O HelenaStudy é o segundo aplicativo da marca Oli. Ele reúne organização, foco, rotina e
+O OlenaStudy é o segundo aplicativo da marca Oli. Ele reúne organização, foco, rotina e
 aprendizado em um único espaço, preservando o planejador de aulas de inglês como uma ferramenta do
 produto.
 
@@ -155,12 +155,12 @@ individual quanto no Modo Sala.
 
 ## Mapa mental vivo
 
-Este diagrama funciona como a rede de navegação do repositório: parte da experiência HelenaStudy e
+Este diagrama funciona como a rede de navegação do repositório: parte da experiência OlenaStudy e
 liga cada área do produto à sua base técnica e às garantias de qualidade.
 
 ```mermaid
 flowchart LR
-  HS[HelenaStudy] --> UX[Experiência]
+  HS[OlenaStudy] --> UX[Experiência]
   HS --> DATA[Workspace local]
   HS --> STUDY[Estudo]
   HS --> ORG[Organização]
@@ -253,7 +253,7 @@ no bundle do navegador.
 
 Helena é a gata preta de olhos amarelos que orienta o fluxo. O aplicativo usa a silhueta
 assimétrica original em `public/helena.svg`, sem redesenhar a personagem como um gato genérico. O
-nome exibido na interface é somente HelenaStudy. A navegação usa uma família própria de ícones SVG
+nome exibido na interface é somente OlenaStudy. A navegação usa uma família própria de ícones SVG
 lineares, com selos amarelos e traços pretos para manter contraste e consistência sem carregar um
 pacote de ícones adicional.
 

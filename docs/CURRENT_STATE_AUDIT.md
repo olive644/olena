@@ -121,7 +121,7 @@ O Pomodoro executa automaticamente 25 minutos de foco e 5 minutos de pausa. A ca
 
 ## Mostrador Pomodoro em maçã, 16/09/2026
 
-O contador fica no centro da silhueta vazada de uma maçã em papel recortado. O contorno roxo acompanha o tempo restante e muda para verde durante a pausa. Facetas, folha dobrada e base deslocada seguem a identidade HelenaStudy. A lógica de ciclos permanece igual.
+O contador fica no centro da silhueta vazada de uma maçã em papel recortado. O contorno roxo acompanha o tempo restante e muda para verde durante a pausa. Facetas, folha dobrada e base deslocada seguem a identidade OlenaStudy. A lógica de ciclos permanece igual.
 
 ## Barra desktop e Espaço do aluno, 15/09/2026
 
@@ -191,11 +191,11 @@ pendente a ativação externa e a validação em aparelhos físicos/Firebase rea
 
 Ativação e limites operacionais: ver `ROOM_SETUP.md`.
 
-## Sistema oficial de ícones HelenaStudy
+## Sistema oficial de ícones OlenaStudy
 
 - A navegação usa glifos preenchidos e arredondados próprios para Espaço, Agenda, Foco, Praticar, Mais, Biblioteca, Hábitos, Notas, Planos e Banco.
 - A mesma geometria assume grafite sobre superfícies claras, roxo no estado ativo e creme sobre a navegação escura.
-- O amarelo permanece reservado aos pequenos acentos de cada símbolo, de acordo com a identidade da HelenaStudy.
+- O amarelo permanece reservado aos pequenos acentos de cada símbolo, de acordo com a identidade da OlenaStudy.
 - Os mesmos componentes são reutilizados na barra lateral, na navegação móvel, no menu Mais, nos atalhos e no botão Começar prática.
 - No celular, a barra é preta no tema claro e roxa no tema escuro; em ambos os casos ela reutiliza a variante branca dos ícones oficiais.
 - A aba ativa recebe um pulso curto e o novo módulo entra suavemente, com as animações removidas quando `prefers-reduced-motion` está ativo.
@@ -235,7 +235,7 @@ O repositório nasceu contendo apenas um README. A primeira base estabelece:
 
 - produto focado em planejamento de aulas para professores de inglês;
 - React, TypeScript estrito e Vite;
-- identidade HelenaStudy com assinatura Oli;
+- identidade OlenaStudy com assinatura Oli;
 - criação determinística de um rascunho de aula no navegador;
 - interface responsiva sem autenticação;
 - lint, formatação, testes, build, orçamento de bundle e E2E;
@@ -264,7 +264,7 @@ do desenho original fornecido para a marca. A navegação desktop agora usa um r
 clara, roxa e escura, nomes revelados no hover/foco e alternância de tema no canto superior direito.
 O retrato de Helena usa o PNG transparente `public/helena-mark.png`, sem moldura de aplicativo. A
 navegação desktop pode ser expandida pelo botão de três linhas para revelar categorias e nomes,
-enquanto o cabeçalho mantém a assinatura HelenaStudy com o sufixo roxo. Os arquivos
+enquanto o cabeçalho mantém a assinatura OlenaStudy com o sufixo roxo. Os arquivos
 individuais em `public/navigation-icons/` mantêm os desenhos aprovados sem reinterpretá-los e evitam
 dependência de posicionamento por sprite no navegador.
 
@@ -333,7 +333,7 @@ acesso direto. A interface não usa gradientes, vidro, neon ou elementos decorat
 demonstração de IA.
 
 A assinatura visível da marca secundária foi removida a pedido do proprietário. O nome exibido é
-somente HelenaStudy, sem alterar a origem ou as regras de engenharia do repositório.
+somente OlenaStudy, sem alterar a origem ou as regras de engenharia do repositório.
 
 ## 8. Fundação do Espaço do aluno
 
@@ -376,7 +376,7 @@ colunas e diagonais.
 O workspace evolui para a versão 3 e migra automaticamente as versões 1 e 2. Nenhuma dependência
 foi adicionada; Canvas, Pointer Events e captura de arquivo do navegador atendem à primeira versão.
 
-## 10. Iconografia própria da HelenaStudy
+## 10. Iconografia própria da OlenaStudy
 
 A navegação desktop, a barra inferior mobile e o painel Mais passam a compartilhar uma família de
 ícones SVG criada para o produto. Cada módulo mantém um símbolo reconhecível, mas usa a assimetria,
@@ -474,7 +474,7 @@ O painel e a navegação adotam uma hierarquia inspirada em aplicativos de revis
 próxima ação evidente, atalhos de prática, progresso diário visível e cartões fáceis de reconhecer.
 A referência é apenas de experiência; cores, componentes, textos e iconografia continuam próprios.
 
-A identidade HelenaStudy permanece baseada em preto, amarelo, violeta e na mascote original. A nova
+A identidade OlenaStudy permanece baseada em preto, amarelo, violeta e na mascote original. A nova
 família de ícones usa traço consistente e pequenos acentos da marca, sem substituir a Helena por uma
 identidade genérica. As animações são curtas, comunicam mudança de estado e são removidas quando o
 sistema solicita redução de movimento.
@@ -518,9 +518,17 @@ Primeira visita abre onboarding e termina no login Google aprovado. A conclusão
 
 Temporizador e Pomodoro ocupam uma área aberta, sem cartão de fundo, e são escolhidos por setas laterais de papel recortado. A troca usa o mesmo deslocamento direcional de 550 ms dos mundos de Praticar, respeita redução de movimento e fica bloqueada durante uma sessão em andamento ou pausada. O temporizador permite escolher horas, minutos e segundos em três seletores, enquanto a rosa permanece ligada aos minutos registrados e protegida pela redoma facetada. No Pomodoro, mordidas animadas consomem a maçã conforme a sessão avança e sete maçãs cheias registram os dias da semana em que pelo menos um ciclo foi concluído. O botão de início também usa um ícone próprio de papel recortado.
 
-# Marca Pepopsia, setembro de 2026
+# Marca OlenaStudy, setembro de 2026
 
-A marca exibida na interface, nos metadados e nos materiais públicos passou a ser Pepopsia. Helena continua sendo o nome da gatinha e da assistente; identificadores internos antigos foram preservados para não quebrar dados locais, links e integrações existentes.
+A marca exibida na interface, nos metadados e nos materiais públicos passou a ser OlenaStudy. Helena continua sendo o nome da gatinha e da assistente; identificadores internos antigos foram preservados para não quebrar dados locais, links e integrações existentes.
+
+A troca de nome substituiu os nomes anteriores (OliStudy, HelenaStudy e Pepopsia) em textos da interface, metadados, documentação, licença, comentários e no nome do pacote. Ficaram propositalmente inalterados, porque renomeá-los sem migração apagaria dados salvos ou quebraria integrações ativas:
+
+- chaves de localStorage e de sincronização (`helenastudy.workspace.v1`, `helenastudy.theme`, `helenastudy.workspace.history.v1`, `helenastudy.sync-conflict.v1`, `helenastudy.handwriting.draft.*` e `helena-study:word-frequency:v1`);
+- o domínio de produção `helenastudy.vercel.app` e as URLs que dependem dele (canonical, sitemap, robots, Open Graph e redirecionamento do Google Agenda);
+- nomes de infraestrutura nos comandos do serviço de voz (imagem Docker, serviço Cloud Run e URL do Railway) e valores fictícios de teste do Firebase.
+
+Trocar esses itens exige uma migração própria das chaves, no aparelho e na nuvem, e a renomeação real do projeto na Vercel.
 
 # Cadernos e folhas, setembro de 2026
 

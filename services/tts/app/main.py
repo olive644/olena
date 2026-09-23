@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="HelenaStudy TTS Service", lifespan=lifespan)
+app = FastAPI(title="OlenaStudy TTS Service", lifespan=lifespan)
 
 
 class SynthesizeRequest(BaseModel):

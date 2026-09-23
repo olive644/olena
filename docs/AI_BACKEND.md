@@ -94,7 +94,7 @@ silenciosamente aceita pelo backend.
 
 - O consentimento é por solicitação, depois da prévia das fontes selecionadas.
 - Desmarcar uma fonte remove seu conteúdo do corpo enviado.
-- A política inicial é sem histórico no backend e sem uso para treinamento pelo HelenaStudy.
+- A política inicial é sem histórico no backend e sem uso para treinamento pelo OlenaStudy.
 - Prompt, fontes e resposta não devem ser gravados em logs, analytics ou rastreamento de erros.
 - Logs operacionais podem conter apenas ID da requisição, capacidade, horário, duração, resultado e
   contagens agregadas de tamanho/tokens.

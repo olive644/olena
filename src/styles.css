@@ -7,7 +7,7 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   color-scheme: light;
-  /* Tokens de cor base: mantidos alinhados à paleta oficial HelenaStudy
+  /* Tokens de cor base: mantidos alinhados à paleta oficial OlenaStudy
      (Creme/Roxo/Amarelo/Grafite). O bloco :root em "Paleta oficial da marca"
      mais abaixo neste arquivo redeclara os mesmos valores e é a referência
      final. Mantenha os dois sincronizados ao alterar qualquer tom de marca. */
@@ -1201,7 +1201,7 @@ p {
   }
 }
 
-/* SimpleStudy-inspired learning experience, with HelenaStudy identity. */
+/* SimpleStudy-inspired learning experience, with OlenaStudy identity. */
 :root {
   --page: #f7f5fc;
   --surface: #ffffff;
@@ -9220,7 +9220,7 @@ body.local-room-active {
   --line-strong: #cec5ba;
 }
 
-/* Paleta oficial da marca (guia HelenaStudy): Creme, Roxo, Amarelo, Grafite.
+/* Paleta oficial da marca (guia OlenaStudy): Creme, Roxo, Amarelo, Grafite.
    Sobrescreve as variáveis herdadas acima, seguindo o padrão de camadas já usado
    neste arquivo, e acrescenta um tema escuro opcional, alternável em tempo
    real (ver .theme-toggle em app-navigation) e persistido no dispositivo. */
@@ -10573,7 +10573,7 @@ select {
   }
 }
 
-/* Sistema oficial de ícones HelenaStudy: grafite, roxo e creme com acento amarelo. */
+/* Sistema oficial de ícones OlenaStudy: grafite, roxo e creme com acento amarelo. */
 .navigation-icon {
   --navigation-icon-detail: var(--surface);
   --navigation-icon-accent: var(--yellow);
@@ -10699,7 +10699,7 @@ select {
   }
 }
 
-/* Navegação final HelenaStudy: arte aprovada, sem reconstrução dos glifos. */
+/* Navegação final OlenaStudy: arte aprovada, sem reconstrução dos glifos. */
 .navigation-icon--brand {
   position: relative;
   background: none;
@@ -11077,7 +11077,7 @@ select {
   }
 }
 
-/* Seletor de tema animado com a paleta oficial HelenaStudy. */
+/* Seletor de tema animado com a paleta oficial OlenaStudy. */
 .page-header__theme .theme-toggle {
   position: relative;
   display: inline-flex;

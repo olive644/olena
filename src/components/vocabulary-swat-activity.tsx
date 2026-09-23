@@ -76,7 +76,7 @@ export function VocabularySwatActivity() {
           <div className="swat-print-sheet" aria-label="Folha com moldes de mãos para imprimir">
             <header>
               <div>
-                <span>OliStudy · material de aula</span>
+                <span>OlenaStudy · material de aula</span>
                 <h3>Mãos-mata-mosca</h3>
               </div>
               <p>Recorte e cole cada mão em um palito de madeira.</p>

@@ -1,13 +1,13 @@
-# OliStudy
+# OlenaStudy
 
-> OliStudy é uma central de estudos, foco e rotina para estudantes: agenda, tarefas, hábitos, temporizador e Pomodoro, cadernos com digitalização e escrita à mão, flashcards, quizzes, bingo de vocabulário e planejamento de aulas, reunidos em um único espaço guiado pela gatinha e assistente Helena.
+> OlenaStudy é uma central de estudos, foco e rotina para estudantes: agenda, tarefas, hábitos, temporizador e Pomodoro, cadernos com digitalização e escrita à mão, flashcards, quizzes, bingo de vocabulário e planejamento de aulas, reunidos em um único espaço guiado pela gatinha e assistente Helena.
 
 O produto roda como aplicativo web (SPA em React/TypeScript), funciona primariamente com dados locais no navegador (sem conta obrigatória) e é voltado a estudantes do ensino médio, vestibular, ENEM, concursos e professores de inglês que montam planos de aula. A única integração de IA ativa hoje é a síntese de voz opcional do quiz de escuta.
 
 ## Produto
 
-- [OliStudy](https://helenastudy.vercel.app/): aplicativo web de estudos com agenda, hábitos, foco, cadernos, flashcards, quizzes, bingo e planejador de aulas de inglês.
+- [OlenaStudy](https://helenastudy.vercel.app/): aplicativo web de estudos com agenda, hábitos, foco, cadernos, flashcards, quizzes, bingo e planejador de aulas de inglês.
 
 ## Optional
 
-- [Repositório no GitHub](https://github.com/olive644/olena): código-fonte aberto do OliStudy.
+- [Repositório no GitHub](https://github.com/olive644/olena): código-fonte aberto do OlenaStudy.

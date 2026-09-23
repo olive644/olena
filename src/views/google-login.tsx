@@ -136,9 +136,9 @@ export function GoogleLogin({
   }
 
   return (
-    <main className="onboarding login-page" id="main-content" aria-label="Entrar na OliStudy">
+    <main className="onboarding login-page" id="main-content" aria-label="Entrar na OlenaStudy">
       <h1 className="sr-only">
-        OliStudy: agenda de estudos, pomodoro, flashcards e quizzes para ENEM, vestibular e
+        OlenaStudy: agenda de estudos, pomodoro, flashcards e quizzes para ENEM, vestibular e
         concursos
       </h1>
       <header className="onboarding__header">
