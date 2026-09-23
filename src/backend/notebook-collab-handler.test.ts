@@ -11,6 +11,39 @@ function request(action: string, body: Record<string, unknown>) {
 }
 
 describe("notebook collaboration handler", () => {
+  it("cria leitura isolada, recusa conteúdo ativo e não concede edição pelo token", async () => {
+    const handler = createNotebookCollabHandler({
+      store: createMemoryRoomStore(),
+      publish: async () => {},
+      streamUrl: () => "",
+    });
+    const invalid = await handler(
+      request("view-create", { pages: [{ title: "X", image: "data:image/svg+xml,<svg/>" }] }),
+    );
+    expect(invalid.status).toBe(400);
+    const created = await handler(
+      request("view-create", {
+        pages: [{ title: "Questão", image: "data:image/png;base64,aGVsbG8=" }],
+      }),
+    );
+    expect(created.status).toBe(201);
+    const { token } = (await created.json()) as { token: string };
+    const read = await handler(request("view-read", { token }));
+    expect(read.status).toBe(200);
+    expect(await read.json()).toMatchObject({ pages: [{ title: "Questão" }] });
+    expect(
+      (
+        await handler(
+          request("update", {
+            code: token,
+            credential: token,
+            document: { version: 1, paper: "ruled", strokes: [] },
+          }),
+        )
+      ).status,
+    ).toBe(400);
+    expect((await handler(request("view-read", { token: "missing" }))).status).toBe(404);
+  });
   it("creates, joins and broadcasts a document", async () => {
     const store = createMemoryRoomStore();
     const published: unknown[] = [];

@@ -1,4 +1,7 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { NotebookFileActions } from "./notebook-file-actions";
+import type { StudyNote } from "../domain/workspace";
+import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   lazy,
   Suspense,
@@ -10,6 +13,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
+import { encodeHandwritingDraft } from "../data/handwriting-draft";
 import type {
   HandwritingDocument,
   HandwritingImage,
@@ -76,6 +80,10 @@ const PageImport = lazy(() =>
 );
 
 type HandwritingStudioProps = {
+  cloud?: CloudSyncState;
+  notebookPages?: StudyNote[];
+  currentPageId?: string;
+  onAutosave?: (dataUrl: string, document: HandwritingDocument) => void;
   onClose: () => void;
   onSave: (dataUrl: string, document: HandwritingDocument) => void;
   initialDocument?: HandwritingDocument;
@@ -89,6 +97,10 @@ type HandwritingStudioProps = {
 };
 
 export function HandwritingStudio({
+  cloud,
+  notebookPages = [],
+  currentPageId,
+  onAutosave,
   onClose,
   onSave,
   initialDocument,
@@ -100,7 +112,7 @@ export function HandwritingStudio({
   remoteAuthor,
   collaborationActivity,
 }: HandwritingStudioProps) {
-  const [recovered] = useState(() => readDraft(draftKey));
+  const [recovered] = useState(() => readDraft(draftKey, initialDocument));
   const startingDocument = recovered ?? initialDocument;
   const storedPaper = startingDocument?.paper as string | undefined;
   const legacyPaperColor: HandwritingPaperColor =
@@ -121,10 +133,13 @@ export function HandwritingStudio({
   const [coordinateMeasurements, setCoordinateMeasurements] = useState(true);
   const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
-  const importButtonRef = useRef<HTMLButtonElement>(null);
   function closeImport() {
     setFileAction(null);
-    requestAnimationFrame(() => importButtonRef.current?.focus());
+    requestAnimationFrame(() =>
+      document
+        .querySelector<HTMLButtonElement>('.notebook-file-tools button[aria-label="Upload"]')
+        ?.focus(),
+    );
   }
   const [background, setBackground] = useState(startingDocument?.background);
   const [backgroundFrame, setBackgroundFrame] = useState(startingDocument?.backgroundFrame);
@@ -278,7 +293,6 @@ export function HandwritingStudio({
   const [ocrBusy, setOcrBusy] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
-  const [fileMenuOpen, setFileMenuOpen] = useState(false);
   const [paperSectionsOpen, setPaperSectionsOpen] = useState({ paper: false, color: false });
   const [stickyMenuId, setStickyMenuId] = useState<string | null>(null);
   const [stickyColorMenuId, setStickyColorMenuId] = useState<string | null>(null);
@@ -421,13 +435,47 @@ export function HandwritingStudio({
     onDraftChange?.(currentDocument);
   }, [currentDocument, onDraftChange]);
 
+  const autosaveRef = useRef<() => void>(() => {});
+  const autosavedRef = useRef("");
+  useEffect(() => {
+    autosaveRef.current = () => {
+      const serialized = JSON.stringify(currentDocument);
+      if (!dirty || !onAutosave || drawingRef.current || serialized === autosavedRef.current)
+        return;
+      try {
+        onAutosave(pageImage(), buildDocument());
+        autosavedRef.current = serialized;
+        setDraftStatus("Folha salva automaticamente");
+      } catch {
+        setDraftStatus("Falha ao salvar a folha. O rascunho será preservado.");
+      }
+    };
+  });
+  useEffect(() => {
+    const timer = window.setTimeout(() => autosaveRef.current(), 900);
+    return () => window.clearTimeout(timer);
+  }, [currentDocument]);
+  useEffect(() => {
+    const flush = () => autosaveRef.current();
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      flush();
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
   useEffect(() => {
     if (!dirty) return;
     const timeout = window.setTimeout(() => {
       try {
         localStorage.setItem(
           `helenastudy.handwriting.draft.${draftKey}`,
-          JSON.stringify(currentDocument),
+          encodeHandwritingDraft(currentDocument, initialDocument),
         );
         setDraftStatus("Rascunho salvo neste dispositivo");
       } catch {
@@ -435,7 +483,7 @@ export function HandwritingStudio({
       }
     }, 450);
     return () => window.clearTimeout(timeout);
-  }, [currentDocument, dirty, draftKey]);
+  }, [currentDocument, dirty, draftKey, initialDocument]);
 
   useEffect(() => {
     if (!dirty) return;
@@ -443,7 +491,7 @@ export function HandwritingStudio({
       try {
         localStorage.setItem(
           `helenastudy.handwriting.draft.${draftKey}`,
-          JSON.stringify(currentDocument),
+          encodeHandwritingDraft(currentDocument, initialDocument),
         );
       } catch {
         // The visible quota warning remains handled by the regular draft save.
@@ -451,7 +499,7 @@ export function HandwritingStudio({
     };
     window.addEventListener("pagehide", persistBeforeLeaving);
     return () => window.removeEventListener("pagehide", persistBeforeLeaving);
-  }, [currentDocument, dirty, draftKey]);
+  }, [currentDocument, dirty, draftKey, initialDocument]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1970,8 +2018,9 @@ export function HandwritingStudio({
   function pageImage(): string {
     if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
     if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
-    const canvas = canvasRef.current;
-    if (!canvas) throw new Error("Não foi possível preparar a folha.");
+    const canvas = document.createElement("canvas");
+    canvas.width = PAGE_WIDTH;
+    canvas.height = PAGE_HEIGHT;
     renderPage(
       canvas,
       strokes,
@@ -2119,7 +2168,7 @@ export function HandwritingStudio({
     }
   }
 
-  function save() {
+  function save(closeAfter = true) {
     const canvas = canvasRef.current;
     if (
       !canvas ||
@@ -2127,6 +2176,7 @@ export function HandwritingStudio({
         stickies.length === 0 &&
         coordinateSystems.length === 0 &&
         !pageText.trim() &&
+        importedImages.length === 0 &&
         !background)
     ) {
       setError("Escreva ou adicione um post-it antes de salvar.");
@@ -2136,7 +2186,8 @@ export function HandwritingStudio({
       const document = buildDocument();
       onSave(pageImage(), document);
       localStorage.removeItem(`helenastudy.handwriting.draft.${draftKey}`);
-      onClose();
+      setDraftStatus("Folha salva no caderno");
+      if (closeAfter) onClose();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível salvar a folha.");
     }
@@ -2593,92 +2644,16 @@ export function HandwritingStudio({
           </button>
         </div>
 
-        <div className="handwriting-file-menu" aria-label="Arquivo">
-          <button
-            type="button"
-            className={fileMenuOpen ? "is-active" : ""}
-            aria-label="Arquivo"
-            aria-expanded={fileMenuOpen}
-            title="Arquivo: upload, exportar e salvar"
-            onClick={() => setFileMenuOpen((open) => !open)}
-          >
-            <PaperEditorIcon name="page" /> <span>Arquivo</span>
-          </button>
-          {fileMenuOpen && (
-            <div className="handwriting-file-actions" aria-label="Ações de arquivo">
-              <button
-                type="button"
-                aria-expanded={fileAction === "import"}
-                ref={importButtonRef}
-                onClick={() => {
-                  setFileMenuOpen(false);
-                  setFileAction(fileAction === "import" ? null : "import");
-                }}
-              >
-                <PaperEditorIcon name="cloudUpload" /> <span>Upload</span>
-              </button>
-              <div className="editor-export-menu">
-                <button
-                  type="button"
-                  aria-expanded={fileAction === "export"}
-                  onClick={() => {
-                    setFileAction(fileAction === "export" ? null : "export");
-                  }}
-                >
-                  <PaperEditorIcon name="download" /> <span>Exportar</span>
-                </button>
-                {fileAction === "export" && (
-                  <div
-                    className="editor-export-options"
-                    aria-label="Formatos de exportação"
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape") setFileAction(null);
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        exportPng();
-                        setFileAction(null);
-                      }}
-                    >
-                      PNG
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        exportPdf();
-                        setFileAction(null);
-                      }}
-                    >
-                      Baixar PDF
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        printPage();
-                        setFileAction(null);
-                      }}
-                    >
-                      Imprimir
-                    </button>
-                  </div>
-                )}
-              </div>
-              <button
-                className="primary-button"
-                type="button"
-                aria-label="Salvar folha no caderno"
-                onClick={() => {
-                  setFileMenuOpen(false);
-                  save();
-                }}
-              >
-                <PaperEditorIcon name="save" /> <span>Salvar</span>
-              </button>
-            </div>
-          )}
-        </div>
+        <NotebookFileActions
+          pages={notebookPages}
+          currentPageId={currentPageId ?? draftKey}
+          currentImage={pageImage}
+          onUpload={() => setFileAction("import")}
+          onSave={() => save(false)}
+          onPng={exportPng}
+          onPdf={exportPdf}
+          onPrint={printPage}
+        />
       </div>
 
       {writingWindowOpen && (
@@ -2759,17 +2734,11 @@ export function HandwritingStudio({
                 setPaperSectionsOpen((current) => ({ ...current, paper: !current.paper }))
               }
             >
-              <PaperEditorIcon name="page" />
-              <span>Tipo de papel</span>
-              <strong>
-                {paper === "ruled"
-                  ? "Pautado"
-                  : paper === "grid"
-                    ? "Quadriculado"
-                    : paper === "dots"
-                      ? "Pontilhado"
-                      : "Em branco"}
-              </strong>
+              <span className="paper-preview paper-preview--blank" aria-hidden="true" />
+              <span className="paper-picker-label">Tipo de papel</span>
+              <span className="paper-picker-chevron" aria-hidden="true">
+                ⌄
+              </span>
             </button>
             {paperSectionsOpen.paper && (
               <div className="handwriting-paper-options">
@@ -2789,7 +2758,7 @@ export function HandwritingStudio({
                     key={value}
                   >
                     <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
-                    <span>{label}</span>
+                    <span className="paper-picker-label">{label}</span>
                   </button>
                 ))}
               </div>
@@ -2805,15 +2774,11 @@ export function HandwritingStudio({
                 setPaperSectionsOpen((current) => ({ ...current, color: !current.color }))
               }
             >
-              <PaperEditorIcon name="page" />
-              <span>Cor da folha</span>
-              <strong>
-                {paperColor === "light"
-                  ? "Clara"
-                  : paperColor === "aged"
-                    ? "Papel de livro"
-                    : "Escura"}
-              </strong>
+              <span className="paper-preview paper-preview--tone-aged" aria-hidden="true" />
+              <span className="paper-picker-label">Cor da folha</span>
+              <span className="paper-picker-chevron" aria-hidden="true">
+                ⌄
+              </span>
             </button>
             {paperSectionsOpen.color && (
               <div className="handwriting-paper-options">
@@ -2835,7 +2800,7 @@ export function HandwritingStudio({
                       className={`paper-preview paper-preview--tone-${value}`}
                       aria-hidden="true"
                     />
-                    <span>{label}</span>
+                    <span className="paper-picker-label">{label}</span>
                   </button>
                 ))}
               </div>
@@ -3231,7 +3196,10 @@ export function HandwritingStudio({
                 onBlur={() => {
                   if (!textAutoCorrect) return;
                   const corrected = reviewPortugueseText(pageText);
-                  if (corrected !== pageText) setPageText(corrected);
+                  if (corrected !== pageText) {
+                    remember();
+                    setPageText(corrected);
+                  }
                 }}
                 onChange={(event) => {
                   const lines = pageTextLines(
@@ -3497,16 +3465,15 @@ export function HandwritingStudio({
             <header>
               <div>
                 <small>SEU ESTOJO</small>
-                <h3>Canetas e pincéis</h3>
               </div>
             </header>
             {(
               [
-                ["fine", "Fineliner", "Ponta técnica · tinta uniforme", 2],
-                ["ink", "Caneta-tinteiro", "Tinta expressiva · responde à pressão", 7],
-                ["soft", "Pincel macio", "Cerdas suaves · camadas translúcidas", 14],
+                ["fine", "Fineliner", 2],
+                ["ink", "Caneta-tinteiro", 7],
+                ["soft", "Pincel macio", 14],
               ] as const
-            ).map(([value, title, description, size]) => (
+            ).map(([value, title, size]) => (
               <button
                 type="button"
                 key={value}
@@ -3525,7 +3492,6 @@ export function HandwritingStudio({
                     opacity={value === "soft" ? 0.3 : 1}
                   />
                 </svg>
-                <small>{description}</small>
               </button>
             ))}
           </aside>
@@ -3731,8 +3697,22 @@ export function HandwritingStudio({
       {error && <p className="capture-error">{error}</p>}
       <footer className="handwriting-footer" inert={fileAction === "import"}>
         <p>
-          <strong>{draftStatus || "Escrita local e privada."}</strong>
-          <span>Compatível com toque, mouse e pressão de canetas suportadas pelo navegador.</span>
+          <strong>
+            {cloud?.authenticated
+              ? cloud.status === "synced"
+                ? "Sincronizado na sua conta"
+                : cloud.status === "offline"
+                  ? "Sem conexão. Alterações aguardando sincronização"
+                  : cloud.status === "conflict"
+                    ? "Há alterações simultâneas para revisar na conta"
+                    : "Sincronizando com sua conta…"
+              : draftStatus || "Salvamento automático ativo"}
+          </strong>
+          <span>
+            {cloud?.authenticated
+              ? "Computador e celular usam a mesma conta."
+              : "Entre na sua conta para sincronizar entre dispositivos."}
+          </span>
         </p>
       </footer>
       {fileAction === "import" && (

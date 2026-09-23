@@ -193,6 +193,7 @@ export type WorkspaceAction =
   | { type: "note/updated"; id: string; title: string; content: string; updatedAt: string }
   | {
       type: "note/asset-added";
+      assetId?: string;
       noteId: string;
       kind: NoteAsset["kind"];
       name: string;
@@ -465,7 +466,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 assets: [
                   ...note.assets,
                   {
-                    id: createId("asset"),
+                    id: action.assetId ?? createId("asset"),
                     kind: action.kind,
                     name: action.name,
                     dataUrl: action.dataUrl,

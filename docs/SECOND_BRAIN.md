@@ -1,5 +1,23 @@
 # OlenaStudy: Second Brain
 
+O editor usa `NotebookFileActions` para salvar, exportar seleção e criar links de leitura.
+`?notebook-view=<token>` abre `NotebookReader`, sem ferramentas de edição. A API
+`notebook-collab` aceita `view-create` e `view-read`, guarda cópias por sete dias e limita
+criação a seis pedidos por minuto por endereço. O cron existente também limpa
+`notebook-collab` e `notebook-views`; publicar seus índices nas regras Firebase.
+
+`HandwritingStudio` salva uma imagem fora do canvas visível e o documento editável no
+workspace, usando um identificador estável durante a sessão. O workspace segue a
+sincronização de conta já existente. `handwriting-draft` compara a versão-base antes de
+recuperar rascunhos. `mergeHandwriting` concilia objetos distintos de participantes; não
+é um editor colaborativo de texto por caractere. Os testes do editor podem executar no
+Edge instalado com `$env:PLAYWRIGHT_SYSTEM_EDGE='1'` e
+`npx playwright test e2e/handwriting-studio.spec.ts --workers=2`.
+
+Os novos fluxos não adicionam dependências. O orçamento medido foi atualizado para
+270 KiB de entrada e 780 KiB de JavaScript total, incluindo menus, PDF múltiplo,
+reconciliação e leitor opcional. A leitura de documentos e o editor continuam sob demanda.
+
 useCloudSync mantém dirty e changeRevision separados de lastItems. O snapshot só se torna confirmado depois de PUT bem-sucedido; falhas exibem offline e são repetidas no polling ou por Sincronizar agora. Antes de um PUT, o hook concilia chaves alteradas nos dois dispositivos: mudanças independentes são combinadas e conflitos preservam o local, guardando `helenastudy.sync-conflict.v1` para recuperação. O algoritmo é carregado sob demanda para não aumentar a entrada principal. Firebase Auth usa browserLocalPersistence. O estado público do hook abastece a seção Conta e sincronização do Perfil. O logout explícito interrompe uploads e remove a cópia de conflito antes de limpar as chaves sincronizadas locais.
 
 O hook useWorkspace grava até seis snapshots locais do workspace após alterações persistidas. A

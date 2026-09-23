@@ -28,6 +28,9 @@ export function createRoomGuard(
       "answer",
       "next",
       "end",
+      "update",
+      "view-create",
+      "view-read",
     ].includes(requestedAction ?? "")
       ? requestedAction!
       : "unknown";
@@ -72,7 +75,12 @@ export function createRoomGuard(
     // Vercel supplies this header. Never use a caller-controlled id as the only abuse boundary.
     const address =
       request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-    const limit = action === "create" ? 6 : action === "join" ? 90 : 600;
+    const limit =
+      action === "create" || action === "view-create"
+        ? 6
+        : action === "join" || action === "view-read"
+          ? 90
+          : 600;
     const bucket = Math.floor(Date.now() / 60000);
     const key = `room-limits/${createHash("sha256").update(`${address}:${action}`).digest("hex")}`;
     for (let attempt = 0; attempt < 40; attempt++) {

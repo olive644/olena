@@ -1,23 +1,27 @@
-import { Camera, Copy, RotateCw, Share2, Users } from "lucide-react";
+import { Camera, Copy, RotateCw, Users } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
+import { encodeHandwritingDraft } from "../data/handwriting-draft";
 import type { HandwritingDocument } from "../domain/handwriting";
-import type { NoteAsset } from "../domain/workspace";
+import type { NoteAsset, StudyNote } from "../domain/workspace";
+import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
 import type { ImportedPage } from "./page-import";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 
 type NoteCaptureToolsProps = {
+  cloud?: CloudSyncState;
+  notebookPages?: StudyNote[];
   draftPageKey: string;
   onSave: (
     kind: NoteAsset["kind"],
     name: string,
     dataUrl: string,
     handwriting?: HandwritingDocument,
-  ) => void;
+  ) => string | void;
   onUpdate?: (assetId: string, dataUrl: string, handwriting: HandwritingDocument) => void;
   onImportPages?: (pages: ImportedPage[]) => void;
   editingAsset?: NoteAsset | null;
@@ -185,6 +189,8 @@ function Scanner({
 }
 
 export function NoteCaptureTools({
+  cloud,
+  notebookPages = [],
   draftPageKey,
   onSave,
   onUpdate,
@@ -216,7 +222,50 @@ export function NoteCaptureTools({
   const [handwritingDirty, setHandwritingDirty] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
   const [draftWriteFailed, setDraftWriteFailed] = useState(false);
+  const [closingSavedDraft, setClosingSavedDraft] = useState(false);
   const latestDraftRef = useRef<HandwritingDocument | null>(null);
+  const [restoredAssetId] = useState(() => {
+    try {
+      const id = localStorage.getItem(`helenastudy.handwriting.saved.${draftPageKey}`);
+      return notebookPages
+        .find((page) => page.id === draftPageKey)
+        ?.assets.some((asset) => asset.id === id)
+        ? id
+        : null;
+    } catch {
+      return null;
+    }
+  });
+  const savedAssetIdRef = useRef<string | null>(editingAsset?.id ?? restoredAssetId);
+  const initialHandwriting =
+    editingAsset?.handwriting ??
+    notebookPages
+      .find((page) => page.id === draftPageKey)
+      ?.assets.find((asset) => asset.id === restoredAssetId)?.handwriting;
+  const savedDocumentRef = useRef("");
+  const saveDocument = (dataUrl: string, handwriting: HandwritingDocument) => {
+    const candidateId = editingAsset?.id ?? savedAssetIdRef.current;
+    const id =
+      editingAsset?.id ??
+      (notebookPages
+        .find((page) => page.id === draftPageKey)
+        ?.assets.some((asset) => asset.id === candidateId)
+        ? candidateId
+        : null);
+    if (id) onUpdate?.(id, dataUrl, handwriting);
+    else {
+      const created = onSave("drawing", "Folha manuscrita", dataUrl, handwriting);
+      if (created) {
+        savedAssetIdRef.current = created;
+        try {
+          localStorage.setItem(`helenastudy.handwriting.saved.${draftPageKey}`, created);
+        } catch {
+          // Reopening within this session still keeps the saved identifier.
+        }
+      }
+    }
+    savedDocumentRef.current = JSON.stringify(handwriting);
+  };
   const [collaborationPanelOpen, setCollaborationPanelOpen] = useState(false);
   const [collaborationName, setCollaborationName] = useState(() => {
     try {
@@ -259,11 +308,12 @@ export function NoteCaptureTools({
   const close = useCallback(
     (force = false) => {
       if (!force && currentMode === "drawing" && handwritingDirty) {
+        setClosingSavedDraft(savedDocumentRef.current === JSON.stringify(latestDraftRef.current));
         try {
           if (latestDraftRef.current) {
             localStorage.setItem(
               `helenastudy.handwriting.draft.${editingAsset?.id ?? `new-${draftPageKey}`}`,
-              JSON.stringify(latestDraftRef.current),
+              encodeHandwritingDraft(latestDraftRef.current, initialHandwriting),
             );
           }
           setDraftWriteFailed(false);
@@ -282,7 +332,7 @@ export function NoteCaptureTools({
       if (editingAsset) onCloseEditing?.();
       else setMode(null);
     },
-    [currentMode, handwritingDirty, editingAsset, draftPageKey, onCloseEditing],
+    [currentMode, handwritingDirty, editingAsset, draftPageKey, onCloseEditing, initialHandwriting],
   );
 
   useEffect(() => {
@@ -312,7 +362,14 @@ export function NoteCaptureTools({
         <button className="secondary-button" type="button" onClick={() => setMode("scan")}>
           <PaperActionIcon name="scan" /> <span>Digitalizar</span>
         </button>
-        <button className="secondary-button" type="button" onClick={() => setMode("drawing")}>
+        <button
+          className="secondary-button"
+          type="button"
+          onClick={() => {
+            savedDocumentRef.current = "";
+            setMode("drawing");
+          }}
+        >
           <PaperActionIcon name="handwriting" /> <span>Escrever à mão</span>
         </button>
       </div>
@@ -357,7 +414,7 @@ export function NoteCaptureTools({
                       aria-expanded={collaborationPanelOpen}
                       onClick={() => setCollaborationPanelOpen((open) => !open)}
                     >
-                      <Share2 size={18} />
+                      <PaperEditorIcon name="share" />
                     </button>
                   )}
                   {currentMode === "drawing" && (
@@ -492,14 +549,13 @@ export function NoteCaptureTools({
                 </div>
               ) : (
                 <HandwritingStudio
+                  {...(cloud ? { cloud } : {})}
+                  notebookPages={notebookPages}
+                  currentPageId={draftPageKey}
                   key={editingAsset?.id ?? "new"}
-                  {...(editingAsset?.handwriting
-                    ? { initialDocument: editingAsset.handwriting }
-                    : {})}
-                  onSave={(dataUrl, handwriting) => {
-                    if (editingAsset) onUpdate?.(editingAsset.id, dataUrl, handwriting);
-                    else onSave("drawing", "Folha manuscrita", dataUrl, handwriting);
-                  }}
+                  {...(initialHandwriting ? { initialDocument: initialHandwriting } : {})}
+                  onSave={saveDocument}
+                  onAutosave={saveDocument}
                   onClose={() => close(true)}
                   onDirtyChange={setHandwritingDirty}
                   onDraftChange={(document) => {
@@ -529,7 +585,11 @@ export function NoteCaptureTools({
                   <p>
                     {draftWriteFailed
                       ? "Não foi possível guardar o rascunho. Salve a folha antes de sair ou feche sem salvar."
-                      : "Suas alterações estão no rascunho deste dispositivo. Deseja fechar a folha?"}
+                      : cloud?.status === "synced" && closingSavedDraft
+                        ? "Sua folha foi salva e sincronizada na sua conta."
+                        : cloud?.authenticated
+                          ? "Sua folha está protegida neste dispositivo. A sincronização continua enquanto o aplicativo estiver aberto."
+                          : "Sua folha está salva neste dispositivo. Entre na sua conta para sincronizar com o computador e o celular."}
                   </p>
                   <div>
                     <button type="button" onClick={() => setConfirmClose(false)}>

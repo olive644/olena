@@ -1,4 +1,80 @@
 import { expect, test } from "@playwright/test";
+import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
+import { createMemoryRoomStore } from "../src/backend/room-transaction";
+
+test("salva automaticamente e compartilha uma cópia somente para leitura", async ({
+  page,
+}, testInfo) => {
+  const handler = createNotebookCollabHandler({
+    store: createMemoryRoomStore(),
+    publish: async () => {},
+    streamUrl: () => "",
+  });
+  await page.route("**/api/notebook-collab?*", async (route) => {
+    const request = route.request();
+    const response = await handler(
+      new Request(request.url(), { method: "POST", body: request.postData() }),
+    );
+    await route.fulfill({
+      status: response.status,
+      contentType: "application/json",
+      body: await response.text(),
+    });
+  });
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/");
+  if (testInfo.project.name === "mobile") {
+    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
+    await page
+      .getByRole("dialog", { name: "Mais ferramentas" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  } else {
+    await page
+      .getByRole("navigation", { name: "Navegação principal" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  }
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  const editor = page.getByRole("dialog", { name: "Escrever à mão" });
+  await editor.getByRole("button", { name: "Adicionar post-it" }).click();
+  await editor
+    .getByRole("textbox", { name: "Texto do post-it" })
+    .fill("Questão protegida pelo salvamento automático");
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const state = JSON.parse(localStorage.getItem("helenastudy.workspace.v1") ?? "{}");
+        return state.notes?.[0]?.assets?.[0]?.handwriting?.stickies?.[0]?.text;
+      }),
+    )
+    .toBe("Questão protegida pelo salvamento automático");
+  await editor.getByRole("button", { name: "Salvar", exact: true }).click();
+  await editor.getByRole("button", { name: "Link de visualização" }).click();
+  const share = page.getByRole("dialog", { name: "Link de visualização" });
+  await expect(share).toBeVisible();
+  await share.getByRole("button", { name: "Criar link" }).click();
+  const link = share.getByRole("textbox", { name: "Link somente para leitura" });
+  await expect(link).toHaveValue(/notebook-view=/);
+  await page.screenshot({ path: testInfo.outputPath("link-de-leitura.png") });
+  const url = await link.inputValue();
+  await page.goto(url);
+  await expect(page.getByRole("heading", { name: "Folhas compartilhadas" })).toBeVisible();
+  await expect(page.locator(".notebook-reader img")).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Salvar", exact: true })).toHaveCount(0);
+  await expect
+    .poll(() =>
+      page
+        .locator(".notebook-reader img")
+        .evaluate((element) => (element as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+});
 
 function twoPagePdf() {
   const streams = ["1 0 0 rg 0 0 300 400 re f", "0 0 1 rg 0 0 300 400 re f"];
@@ -30,7 +106,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   });
   await page.goto("/");
   if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais", exact: true }).click();
+    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     await page
       .getByRole("dialog", { name: "Mais ferramentas" })
       .getByRole("button", { name: "Cadernos", exact: true })
@@ -206,20 +282,21 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.mouse.down();
   await page.mouse.move(selectionX + 30, selectionY + 10, { steps: 8 });
   await page.mouse.up();
-  await expect(dialog.getByRole("button", { name: "Apagar traços" })).toBeVisible();
-  await dialog.getByRole("button", { name: "Apagar traços" }).click();
+  await expect(dialog.getByRole("button", { name: "Apagar seleção" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Apagar seleção" }).click();
   await dialog.getByRole("button", { name: "Desfazer" }).click();
-  await dialog.getByRole("button", { name: "Arquivo", exact: true }).click();
+  await dialog.getByRole("button", { name: "Salvar", exact: true }).click();
   await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
+  await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
+  if (await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
+    await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole("img", { name: /folha manuscrita/i })).toBeVisible();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
-  await reopened.getByRole("button", { name: "Arquivo", exact: true }).click();
   await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   await reopened.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(reopened.getByLabel("Arquivo para importar")).toHaveCount(0);
-  await reopened.getByRole("button", { name: "Arquivo", exact: true }).click();
   await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   const fileInput = reopened.getByLabel("Arquivo para importar");
   const png = await page.evaluate(() => {
@@ -296,7 +373,8 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect
     .poll(async () => Math.round((await imported.boundingBox())!.width))
     .toBe(Math.round(oldWidth));
-  await reopened.getByRole("button", { name: "Remover imagem" }).click();
+  await reopened.getByRole("button", { name: "Mover imagem importada" }).click();
+  await reopened.getByRole("button", { name: "Remover imagem(ns)" }).click();
   await expect(imported).toHaveCount(0);
   await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
   await expect(imported).toBeVisible();
@@ -343,6 +421,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     document.documentElement.dataset.theme = "dark";
   });
   await page.screenshot({ path: testInfo.outputPath("editor-escuro.png"), animations: "disabled" });
+  await reopened.getByRole("button", { name: "Salvar", exact: true }).click();
   await reopened.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await page.reload();
   const saved = await page.evaluate(() => {
@@ -351,18 +430,22 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     const workspace = JSON.parse(raw) as {
       notes: {
         assets: {
-          handwriting?: { paper: string; background?: string; strokes: { points: unknown[] }[] };
+          handwriting?: {
+            paper: string;
+            images?: { dataUrl: string }[];
+            strokes: { points: unknown[] }[];
+          };
         }[];
       }[];
     };
     return workspace.notes[0]?.assets[0]?.handwriting ?? null;
   });
   expect(saved?.paper).toBe("grid");
-  expect(saved?.background).toMatch(/^data:image\/jpeg;base64,/);
+  expect(saved?.images?.[0]?.dataUrl).toMatch(/^data:image\/jpeg;base64,/);
   expect(saved?.strokes).toHaveLength(1);
   expect(saved?.strokes[0]?.points).toHaveLength(2);
   if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais", exact: true }).click();
+    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     await page
       .getByRole("dialog", { name: "Mais ferramentas" })
       .getByRole("button", { name: "Cadernos", exact: true })
@@ -405,7 +488,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   });
   await page.goto("/");
   if (testInfo.project.name === "mobile") {
-    await page.getByRole("button", { name: "Mais", exact: true }).click();
+    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     await page
       .getByRole("dialog", { name: "Mais ferramentas" })
       .getByRole("button", { name: "Cadernos", exact: true })
@@ -473,7 +556,11 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await page.mouse.down();
   await page.mouse.move(bounds.x + 100, bounds.y + bounds.height / 2, { steps: 6 });
   await page.mouse.up();
+  await dialog.getByRole("button", { name: "Salvar", exact: true }).click();
   await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
+  await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
+  if (await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
+    await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(dialog).not.toBeVisible();
   const saved = await page.evaluate(() => {
     const raw = localStorage.getItem("helenastudy.workspace.v1");

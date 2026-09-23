@@ -8,6 +8,7 @@ import {
   type PublicNotebookCollabState,
 } from "../domain/notebook-collab";
 import type { HandwritingDocument } from "../domain/handwriting";
+import { mergeHandwriting } from "../domain/merge-handwriting";
 
 export type NotebookCollaborationStatus =
   "idle" | "connecting" | "online" | "reconnecting" | "offline" | "error";
@@ -120,6 +121,12 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   const streamRef = useRef<EventSource | undefined>(undefined);
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const lastPublishedRef = useRef("");
+  const revisionRef = useRef(-1);
+  const baseDocumentRef = useRef<HandwritingDocument | undefined>(undefined);
+  const pendingRef = useRef<{ document: HandwritingDocument; label?: string } | undefined>(
+    undefined,
+  );
+  const publishingRef = useRef(false);
   const updateTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mountedRef = useRef(true);
   const onRemoteDocumentRef = useRef(onRemoteDocument);
@@ -134,17 +141,28 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   }, []);
 
   const applyRoom = useCallback((room: PublicNotebookCollabState) => {
+    if (room.revision < revisionRef.current) return;
+    revisionRef.current = room.revision;
     setState((current) => {
       if (current.room && current.room.code === room.code && current.room.revision > room.revision)
         return current;
       return { ...current, code: room.code, room, status: "online", error: "" };
     });
     if (room.document) {
-      const serialized = JSON.stringify(room.document);
+      if (JSON.stringify(pendingRef.current?.document) === JSON.stringify(room.document))
+        pendingRef.current = undefined;
+      const pending = pendingRef.current;
+      const next =
+        pending && baseDocumentRef.current
+          ? mergeHandwriting(baseDocumentRef.current, pending.document, room.document)
+          : room.document;
+      baseDocumentRef.current = room.document;
+      if (pending) pendingRef.current = { ...pending, document: next };
+      const serialized = JSON.stringify(next);
       if (serialized !== lastPublishedRef.current) {
         lastPublishedRef.current = serialized;
         const author = room.actions.at(-1)?.displayName;
-        onRemoteDocumentRef.current?.(room.document, author);
+        onRemoteDocumentRef.current?.(next, author);
       }
     }
   }, []);
@@ -195,7 +213,9 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         }>(action, body);
         const credential = payload.participantToken ?? payload.hostToken ?? session.credential;
         const participantId = payload.participantId ?? session.participantId;
-        const nextSession = { ...session, credential, participantId };
+        const nextSession = { ...session, code: payload.state.code, credential, participantId };
+        revisionRef.current = payload.state.revision;
+        baseDocumentRef.current = payload.state.document;
         sessionRef.current = nextSession;
         writeStoredSession(notebookId, nextSession);
         setState({
@@ -276,32 +296,56 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     [connect],
   );
 
-  const publish = useCallback(async (document: HandwritingDocument, label?: string) => {
-    const session = sessionRef.current;
-    if (!session || JSON.stringify(document) === lastPublishedRef.current) return;
-    lastPublishedRef.current = JSON.stringify(document);
-    try {
-      await request("update", {
-        code: session.code,
-        credential: session.credential,
-        document,
-        ...(label ? { label } : {}),
-      });
-    } catch (caught) {
-      if (mountedRef.current)
-        setState((current) => ({
-          ...current,
-          status: "error",
-          error:
-            caught instanceof Error ? caught.message : "Não foi possível compartilhar a alteração.",
-        }));
-    }
-  }, []);
+  const publish = useCallback(
+    async (document: HandwritingDocument, label?: string) => {
+      const session = sessionRef.current;
+      if (!session || JSON.stringify(document) === lastPublishedRef.current) return;
+      pendingRef.current = { document, ...(label ? { label } : {}) };
+      if (publishingRef.current) return;
+      publishingRef.current = true;
+      try {
+        while (pendingRef.current && sessionRef.current === session) {
+          const pending: { document: HandwritingDocument; label?: string } = pendingRef.current;
+          const payload = await request<{ state: PublicNotebookCollabState }>("update", {
+            code: session.code,
+            credential: session.credential,
+            document: pending.document,
+            ...(baseDocumentRef.current ? { baseDocument: baseDocumentRef.current } : {}),
+            ...(pending.label ? { label: pending.label } : {}),
+          });
+          if (sessionRef.current !== session) break;
+          if (pendingRef.current === pending) pendingRef.current = undefined;
+          applyRoom(payload.state);
+        }
+      } catch (caught) {
+        if (mountedRef.current)
+          setState((current) => ({
+            ...current,
+            status: "error",
+            error:
+              caught instanceof Error
+                ? caught.message
+                : "Não foi possível compartilhar a alteração.",
+          }));
+      } finally {
+        publishingRef.current = false;
+      }
+    },
+    [applyRoom],
+  );
 
   const publishDebounced = useCallback(
     (document: HandwritingDocument, label?: string) => {
+      if (!sessionRef.current || JSON.stringify(document) === lastPublishedRef.current) return;
       if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
-      updateTimerRef.current = setTimeout(() => void publish(document, label), 350);
+      pendingRef.current = { document, ...(label ? { label } : {}) };
+      updateTimerRef.current = setTimeout(() => {
+        const pending = pendingRef.current;
+        if (pending) {
+          lastPublishedRef.current = "";
+          void publish(pending.document, pending.label);
+        }
+      }, 350);
     },
     [publish],
   );
@@ -314,6 +358,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       );
     }
     sessionRef.current = undefined;
+    pendingRef.current = undefined;
+    if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
     stop(true);
     setState({ code: "", participantId: "", displayName: "", status: "idle", error: "" });
   }, [stop]);
@@ -327,6 +373,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     }
     return () => {
       mountedRef.current = false;
+      sessionRef.current = undefined;
+      pendingRef.current = undefined;
       if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
       stop();
     };
@@ -336,15 +384,27 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     const session = sessionRef.current;
     if (!session || state.status === "idle") return;
     const beat = () =>
-      void request("heartbeat", { code: session.code, credential: session.credential }).catch(
-        () => {},
-      );
+      void request<{ state: PublicNotebookCollabState }>("heartbeat", {
+        code: session.code,
+        credential: session.credential,
+      })
+        .then((payload) => {
+          const pending = pendingRef.current;
+          applyRoom(payload.state);
+          if (pending) {
+            lastPublishedRef.current = "";
+            void publish(pendingRef.current?.document ?? pending.document, pending.label);
+          }
+        })
+        .catch(() => {
+          setState((current) => ({ ...current, status: "offline" }));
+        });
     heartbeatRef.current = setInterval(beat, 15_000);
     return () => {
       if (heartbeatRef.current) clearInterval(heartbeatRef.current);
       heartbeatRef.current = undefined;
     };
-  }, [state.status, state.code]);
+  }, [state.status, state.code, applyRoom, publish]);
 
   return { state, create, join, publish: publishDebounced, leave };
 }

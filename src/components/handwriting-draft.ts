@@ -1,12 +1,11 @@
-import { isHandwritingDocument } from "../data/local-workspace";
+import { decodeHandwritingDraft } from "../data/handwriting-draft";
 import type { HandwritingDocument } from "../domain/handwriting";
 
-export function readDraft(key: string): HandwritingDocument | null {
+export function readDraft(key: string, base?: HandwritingDocument): HandwritingDocument | null {
   try {
     const raw = localStorage.getItem(`helenastudy.handwriting.draft.${key}`);
     if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    return isHandwritingDocument(parsed) ? (parsed as HandwritingDocument) : null;
+    return decodeHandwritingDraft(raw, base);
   } catch {
     return null;
   }
