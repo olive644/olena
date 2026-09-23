@@ -1,5 +1,4 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
-import { stickyTextLayout } from "./sticky-text-layout";
 import {
   lazy,
   Suspense,
@@ -10,15 +9,13 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { isHandwritingDocument, MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
+import { isHandwritingDocument } from "../data/local-workspace";
 import type {
   HandwritingDocument,
   HandwritingImage,
   HandwritingCoordinateSystem,
-  HandwritingPaper,
   HandwritingPaperColor,
   HandwritingPoint,
-  HandwritingStroke,
   HandwritingSticky,
   HandwritingLayerVisibility,
   HandwritingLayerKey,
@@ -26,6 +23,9 @@ import type {
 import {
   DEFAULT_HANDWRITING_LAYER_ORDER,
   DEFAULT_HANDWRITING_LAYER_VISIBILITY,
+  erasePageText,
+  pageTextLines,
+  rulerLength,
 } from "../domain/handwriting";
 import { stabilizeHandwriting } from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
@@ -33,49 +33,47 @@ import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-ma
 import { normalizeMathOcrText } from "../domain/ocr";
 import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
+import {
+  PAGE_WIDTH,
+  PAGE_HEIGHT,
+  STICKY_MIN_WIDTH,
+  STICKY_MAX_WIDTH,
+  STICKY_MIN_HEIGHT,
+  STICKY_MAX_HEIGHT,
+  BASE_DISPLAY_WIDTH,
+  WRITING_WINDOW_WIDTH,
+  WRITING_WINDOW_HEIGHT,
+  PAGE_TEXT_SELECTION_ID,
+} from "./handwriting-types";
+import type {
+  HandwritingTool,
+  PaperStyle,
+  Stroke,
+  Snapshot,
+  SelectionBox,
+  SelectionMode,
+} from "./handwriting-types";
+import {
+  stickyWidth,
+  stickyHeight,
+  pointDistance,
+  strokeBounds,
+  coordinateBounds,
+  stickyBounds,
+  importedImageBounds,
+  pageTextBounds,
+  overlaps,
+  pointInPolygon,
+  unionBounds,
+  strokeTouches,
+} from "./handwriting-geometry";
+import { canvasPoint, drawStroke, renderPage } from "./handwriting-canvas";
+import { exportPage, downloadCanvasAsPdf } from "./handwriting-export";
+import { readDraft, strokeId } from "./handwriting-draft";
+
 const PageImport = lazy(() =>
   import("./page-import").then((module) => ({ default: module.PageImport })),
 );
-
-const PAGE_WIDTH = 1200;
-const PAGE_HEIGHT = 1600;
-const STICKY_MIN_WIDTH = 160;
-const STICKY_MAX_WIDTH = 520;
-const STICKY_MIN_HEIGHT = 120;
-const STICKY_MAX_HEIGHT = 420;
-const BASE_DISPLAY_WIDTH = 760;
-const WRITING_WINDOW_WIDTH = 500;
-const WRITING_WINDOW_HEIGHT = 185;
-
-import { erasePageText, pageTextLines, rulerLength } from "../domain/handwriting";
-
-type HandwritingTool =
-  | "pen"
-  | "highlighter"
-  | "eraser"
-  | "hand"
-  | "select"
-  | "zoom-in"
-  | "zoom-out"
-  | "ruler"
-  | "coordinates";
-type PaperStyle = HandwritingPaper;
-type Stroke = HandwritingStroke;
-type Snapshot = {
-  backgroundFrame?: HandwritingDocument["backgroundFrame"];
-  strokes: Stroke[];
-  stickies: HandwritingSticky[];
-  pageText: string;
-  pageTextSize: number;
-  coordinateSystems: HandwritingCoordinateSystem[];
-  background?: string | undefined;
-  layerVisibility: HandwritingLayerVisibility;
-  layerOrder: HandwritingLayerKey[];
-  images: HandwritingImage[];
-};
-type SelectionBox = { x: number; y: number; width: number; height: number };
-type SelectionMode = "rectangle" | "lasso";
-const PAGE_TEXT_SELECTION_ID = "__handwriting-page-text__";
 
 type HandwritingStudioProps = {
   onClose: () => void;
@@ -89,579 +87,6 @@ type HandwritingStudioProps = {
   remoteAuthor?: string;
   collaborationActivity?: string;
 };
-
-function readDraft(key: string): HandwritingDocument | null {
-  try {
-    const raw = localStorage.getItem(`helenastudy.handwriting.draft.${key}`);
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    return isHandwritingDocument(parsed) ? (parsed as HandwritingDocument) : null;
-  } catch {
-    return null;
-  }
-}
-
-function stickyColor(color: HandwritingSticky["color"]): string {
-  return color === "blue" ? "#d9ecf4" : color === "lilac" ? "#e9ddfb" : "#fff0b5";
-}
-
-function stickyWidth(sticky: HandwritingSticky): number {
-  return Math.max(STICKY_MIN_WIDTH, Math.min(STICKY_MAX_WIDTH, sticky.width ?? 260));
-}
-
-function stickyHeight(sticky: HandwritingSticky): number {
-  return Math.max(STICKY_MIN_HEIGHT, Math.min(STICKY_MAX_HEIGHT, sticky.height ?? 220));
-}
-
-function pointDistance(first: HandwritingPoint, second: HandwritingPoint): number {
-  return Math.hypot(second.x - first.x, second.y - first.y);
-}
-
-function canvasPoint(
-  canvas: HTMLCanvasElement,
-  event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
-    Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
-): HandwritingPoint {
-  const bounds = canvas.getBoundingClientRect();
-  return {
-    x: Math.max(
-      0,
-      Math.min(canvas.width, ((event.clientX - bounds.left) / bounds.width) * canvas.width),
-    ),
-    y: Math.max(
-      0,
-      Math.min(canvas.height, ((event.clientY - bounds.top) / bounds.height) * canvas.height),
-    ),
-    pressure: event.pressure > 0 ? event.pressure : 0.5,
-    ...(event.tiltX ? { tiltX: event.tiltX } : {}),
-    ...(event.tiltY ? { tiltY: event.tiltY } : {}),
-  };
-}
-
-function tiltShading(point: HandwritingPoint): number {
-  // Inclinacao da caneta (graus, -90 a 90) simula uma ponta caligrafica: mais
-  // deitada = traco mais largo, em pe = mais fino. Mouse/toque nao reportam
-  // tilt, entao o efeito fica neutro (1) para esses dispositivos.
-  const tiltX = point.tiltX ?? 0;
-  const tiltY = point.tiltY ?? 0;
-  const magnitude = Math.min(1, Math.hypot(tiltX, tiltY) / 90);
-  return 1 + magnitude * 0.6;
-}
-
-function drawPaper(
-  context: CanvasRenderingContext2D,
-  paper: PaperStyle,
-  paperColor: HandwritingPaperColor,
-) {
-  context.fillStyle =
-    paperColor === "night" ? "#292432" : paperColor === "aged" ? "#f3e6c8" : "#fffdf7";
-  context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
-  context.save();
-  context.strokeStyle =
-    paperColor === "night" ? "#51465d" : paperColor === "aged" ? "#d4bd91" : "#dcd8ee";
-  context.fillStyle =
-    paperColor === "night" ? "#6d5f78" : paperColor === "aged" ? "#d4bd91" : "#d5d0e8";
-  context.lineWidth = 1.4;
-  const gap = 48;
-  if (paper === "ruled" || paper === "grid") {
-    for (let y = 112; y < PAGE_HEIGHT; y += gap) {
-      context.beginPath();
-      context.moveTo(0, y);
-      context.lineTo(PAGE_WIDTH, y);
-      context.stroke();
-    }
-  }
-  if (paper === "grid") {
-    for (let x = 72; x < PAGE_WIDTH; x += gap) {
-      context.beginPath();
-      context.moveTo(x, 0);
-      context.lineTo(x, PAGE_HEIGHT);
-      context.stroke();
-    }
-  }
-  if (paper === "dots") {
-    for (let y = 72; y < PAGE_HEIGHT; y += gap) {
-      for (let x = 72; x < PAGE_WIDTH; x += gap) {
-        context.beginPath();
-        context.arc(x, y, 2.1, 0, Math.PI * 2);
-        context.fill();
-      }
-    }
-  }
-  if (paper !== "blank" && paperColor !== "night") {
-    context.strokeStyle = paperColor === "aged" ? "#c78f78" : "#e9b9b1";
-    context.lineWidth = 2;
-    context.beginPath();
-    context.moveTo(104, 0);
-    context.lineTo(104, PAGE_HEIGHT);
-    context.stroke();
-  }
-  context.restore();
-}
-
-function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
-  const first = stroke.points[0];
-  if (!first) return;
-  context.save();
-  context.strokeStyle = stroke.color;
-  context.fillStyle = stroke.color;
-  context.globalAlpha = stroke.tool === "highlighter" ? 0.3 : stroke.brush === "soft" ? 0.16 : 1;
-  context.lineCap = "round";
-  context.lineJoin = "round";
-  if (stroke.tool === "highlighter" || stroke.brush === "fine") {
-    context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
-    context.beginPath();
-    context.moveTo(first.x, first.y);
-    for (let index = 1; index < stroke.points.length - 1; index += 1) {
-      const point = stroke.points[index]!;
-      const next = stroke.points[index + 1]!;
-      context.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
-    }
-    const last = stroke.points.at(-1)!;
-    context.lineTo(last.x, last.y);
-    if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
-    context.stroke();
-    context.restore();
-    return;
-  }
-  if (stroke.points.length === 1) {
-    context.beginPath();
-    context.arc(
-      first.x,
-      first.y,
-      stroke.width * (stroke.brush === "soft" ? 2 : stroke.brush === "ink" ? 1 : 0.5),
-      0,
-      Math.PI * 2,
-    );
-    context.fill();
-    context.restore();
-    return;
-  }
-  for (let index = 0; index < stroke.points.length; index += 1) {
-    const previous = stroke.points[index - 1];
-    const current = stroke.points[index];
-    const next = stroke.points[index + 1];
-    if (!current) continue;
-    const pressure = stroke.tool === "pen" ? current.pressure : 0.7;
-    const direction = previous
-      ? Math.atan2(current.y - previous.y, current.x - previous.x)
-      : Math.PI / 4;
-    context.lineWidth =
-      stroke.width *
-      (stroke.brush === "ink"
-        ? (0.5 + pressure * 3) *
-          (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4))) *
-          tiltShading(current)
-        : stroke.brush === "soft"
-          ? 2 + pressure * 4
-          : 0.72 + pressure * 0.55);
-    context.beginPath();
-    context.moveTo(
-      previous ? (previous.x + current.x) / 2 : current.x,
-      previous ? (previous.y + current.y) / 2 : current.y,
-    );
-    context.quadraticCurveTo(
-      current.x,
-      current.y,
-      next ? (current.x + next.x) / 2 : current.x,
-      next ? (current.y + next.y) / 2 : current.y,
-    );
-    context.stroke();
-    if (stroke.brush === "soft" && previous) {
-      const spread = stroke.width * (1 + pressure);
-      context.save();
-      context.globalAlpha = 0.1;
-      context.lineWidth = Math.max(0.5, stroke.width * 0.18);
-      for (let bristle = -2; bristle <= 2; bristle += 1) {
-        const offset = bristle * spread * 0.55;
-        context.beginPath();
-        context.moveTo(previous.x + offset, previous.y + offset * 0.4);
-        context.lineTo(current.x + offset, current.y + offset * 0.4);
-        context.stroke();
-      }
-      context.restore();
-    }
-  }
-  context.restore();
-}
-
-function renderPage(
-  canvas: HTMLCanvasElement,
-  strokes: readonly Stroke[],
-  paper: PaperStyle,
-  paperColor: HandwritingPaperColor,
-  stickies: readonly HandwritingSticky[],
-  editing = false,
-  pageText = "",
-  pageTextSize = 28,
-  coordinateSystems: readonly HandwritingCoordinateSystem[] = [],
-  background?: HTMLImageElement,
-  backgroundFrame = { x: 0, y: 0, width: PAGE_WIDTH, height: PAGE_HEIGHT },
-  layerVisibility = DEFAULT_HANDWRITING_LAYER_VISIBILITY,
-  layerOrder = DEFAULT_HANDWRITING_LAYER_ORDER,
-  importedImages: readonly {
-    image: HTMLImageElement;
-    frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
-    rotation?: number;
-  }[] = [],
-) {
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  drawPaper(context, paper, paperColor);
-  if (layerVisibility.background && background)
-    context.drawImage(
-      background,
-      backgroundFrame.x,
-      backgroundFrame.y,
-      backgroundFrame.width,
-      backgroundFrame.height,
-    );
-  if (layerVisibility.background) {
-    for (const imported of importedImages) {
-      context.save();
-      const centerX = imported.frame.x + imported.frame.width / 2;
-      const centerY = imported.frame.y + imported.frame.height / 2;
-      context.translate(centerX, centerY);
-      context.rotate(((imported.rotation ?? 0) * Math.PI) / 180);
-      context.drawImage(
-        imported.image,
-        -imported.frame.width / 2,
-        -imported.frame.height / 2,
-        imported.frame.width,
-        imported.frame.height,
-      );
-      context.restore();
-    }
-  }
-  const drawStrokesLayer = () => {
-    if (!layerVisibility.strokes) return;
-    context.save();
-    context.globalCompositeOperation =
-      paperColor === "night" && (!background || !layerVisibility.background)
-        ? "screen"
-        : "multiply";
-    for (const stroke of strokes) if (stroke.tool === "highlighter") drawStroke(context, stroke);
-    context.restore();
-    for (const stroke of strokes) if (stroke.tool !== "highlighter") drawStroke(context, stroke);
-  };
-  const drawCoordinatesLayer = () => {
-    if (!layerVisibility.coordinates) return;
-    for (const system of coordinateSystems) drawCoordinateSystem(context, system);
-  };
-  const drawTextLayer = () => {
-    if (!layerVisibility.text || !pageText) return;
-    context.save();
-    context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
-    context.font = `${pageTextSize}px monospace`;
-    context.textBaseline = "top";
-    pageTextLines(pageText, pageTextSize).forEach((line, index) =>
-      context.fillText(line, 112, 80 + index * pageTextSize * (40 / 28)),
-    );
-    context.restore();
-  };
-  const drawStickiesLayer = () => {
-    if (!layerVisibility.stickies) return;
-    for (const sticky of stickies) {
-      if (editing && sticky.kind === "text") continue;
-      context.save();
-      const width = stickyWidth(sticky);
-      const height = stickyHeight(sticky);
-      if (sticky.kind !== "text" || sticky.formula) {
-        context.fillStyle = "#bfb7a7";
-        context.fillRect(sticky.x + 8, sticky.y + 9, width, height);
-        context.fillStyle = stickyColor(sticky.color);
-        context.fillRect(sticky.x, sticky.y, width, height);
-      }
-      context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
-      if (sticky.checklist?.length) {
-        context.font = "bold 22px sans-serif";
-        context.textBaseline = "top";
-        const title = sticky.text.trim();
-        if (title) context.fillText(title.slice(0, 36), sticky.x + 18, sticky.y + 26);
-        const startY = sticky.y + (title ? 64 : 30);
-        const rowHeight = Math.min(
-          30,
-          (height - (startY - sticky.y) - 18) / sticky.checklist.length,
-        );
-        context.font = "bold 16px sans-serif";
-        sticky.checklist.forEach((item, index) => {
-          const rowY = startY + index * rowHeight;
-          context.strokeStyle = "#17151c";
-          context.lineWidth = 2;
-          context.strokeRect(sticky.x + 18, rowY + 3, 14, 14);
-          if (item.done) {
-            context.beginPath();
-            context.moveTo(sticky.x + 20, rowY + 10);
-            context.lineTo(sticky.x + 24, rowY + 14);
-            context.lineTo(sticky.x + 31, rowY + 6);
-            context.stroke();
-          }
-          context.fillStyle = item.done ? "#6b6570" : "#17151c";
-          context.fillText(item.text.trim().slice(0, 32) || "Item", sticky.x + 42, rowY + 1);
-        });
-        context.restore();
-        continue;
-      }
-      const { fontSize, lines } = stickyTextLayout(
-        sticky.text,
-        (text, size) => {
-          context.font = `${sticky.formula ? "600" : "bold"} ${size}px ${sticky.formula ? "monospace" : "sans-serif"}`;
-          return context.measureText(text).width;
-        },
-        width - 36,
-        height - 46,
-      );
-      context.font = `${sticky.formula ? "600" : "bold"} ${fontSize}px ${sticky.formula ? "monospace" : "sans-serif"}`;
-      context.textBaseline = "top";
-      lines.forEach((line, index) =>
-        context.fillText(line, sticky.x + 18, sticky.y + 28 + index * fontSize * 1.3),
-      );
-      context.restore();
-    }
-  };
-  const completeLayerOrder = [
-    ...layerOrder,
-    ...DEFAULT_HANDWRITING_LAYER_ORDER.filter((key) => !layerOrder.includes(key)),
-  ];
-  for (const layer of completeLayerOrder) {
-    if (layer === "coordinates") drawCoordinatesLayer();
-    if (layer === "text") drawTextLayer();
-    if (layer === "strokes") drawStrokesLayer();
-    if (layer === "stickies") drawStickiesLayer();
-  }
-}
-
-function drawCoordinateSystem(
-  context: CanvasRenderingContext2D,
-  system: HandwritingCoordinateSystem,
-) {
-  const { origin, end, step } = system;
-  const xEnd = end.x;
-  const yEnd = end.y;
-  const tickGap = 48;
-  const xDirection = Math.sign(xEnd - origin.x) || 1;
-  const yDirection = Math.sign(yEnd - origin.y) || -1;
-  context.save();
-  context.strokeStyle = system.color;
-  context.fillStyle = system.color;
-  context.lineWidth = 3;
-  context.lineCap = "round";
-  context.font = "18px monospace";
-  context.textAlign = "center";
-  context.textBaseline = "top";
-  context.beginPath();
-  context.moveTo(origin.x, origin.y);
-  context.lineTo(xEnd, origin.y);
-  context.moveTo(origin.x, origin.y);
-  context.lineTo(origin.x, yEnd);
-  context.stroke();
-  const arrow = (x: number, y: number, horizontal: boolean, direction: number) => {
-    context.beginPath();
-    if (horizontal) {
-      context.moveTo(x, y);
-      context.lineTo(x - direction * 16, y - 8);
-      context.lineTo(x - direction * 16, y + 8);
-    } else {
-      context.moveTo(x, y);
-      context.lineTo(x - 8, y - direction * 16);
-      context.lineTo(x + 8, y - direction * 16);
-    }
-    context.closePath();
-    context.fill();
-  };
-  arrow(xEnd, origin.y, true, xDirection);
-  arrow(origin.x, yEnd, false, yDirection);
-  if (system.measurements === false) {
-    context.restore();
-    return;
-  }
-  context.fillText("0", origin.x - 14, origin.y + 9);
-  for (
-    let distance = tickGap, value = step;
-    distance < Math.abs(xEnd - origin.x) - 12;
-    distance += tickGap, value += step
-  ) {
-    const x = origin.x + distance * xDirection;
-    context.beginPath();
-    context.moveTo(x, origin.y - 7);
-    context.lineTo(x, origin.y + 7);
-    context.stroke();
-    context.fillText(String(value), x, origin.y + 10);
-  }
-  context.textAlign = yDirection < 0 ? "right" : "left";
-  context.textBaseline = "middle";
-  for (
-    let distance = tickGap, value = step;
-    distance < Math.abs(yEnd - origin.y) - 12;
-    distance += tickGap, value += step
-  ) {
-    const y = origin.y + distance * yDirection;
-    context.beginPath();
-    context.moveTo(origin.x - 7, y);
-    context.lineTo(origin.x + 7, y);
-    context.stroke();
-    context.fillText(String(value), origin.x + (yDirection < 0 ? -12 : 12), y);
-  }
-  context.restore();
-}
-
-function strokeBounds(stroke: Stroke): SelectionBox {
-  const xs = stroke.points.map((point) => point.x);
-  const ys = stroke.points.map((point) => point.y);
-  const x = Math.min(...xs);
-  const y = Math.min(...ys);
-  return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y };
-}
-
-function coordinateBounds(system: HandwritingCoordinateSystem): SelectionBox {
-  return {
-    x: Math.min(system.origin.x, system.end.x),
-    y: Math.min(system.origin.y, system.end.y),
-    width: Math.abs(system.end.x - system.origin.x),
-    height: Math.abs(system.end.y - system.origin.y),
-  };
-}
-
-function stickyBounds(sticky: HandwritingSticky): SelectionBox {
-  return { x: sticky.x, y: sticky.y, width: stickyWidth(sticky), height: stickyHeight(sticky) };
-}
-
-function importedImageBounds(image: HandwritingImage): SelectionBox {
-  return { x: image.x, y: image.y, width: image.width, height: image.height };
-}
-
-function pageTextBounds(text: string, size: number): SelectionBox {
-  const lineHeight = size * (40 / 28);
-  const height = Math.min(
-    1440,
-    Math.max(lineHeight, pageTextLines(text, size).length * lineHeight),
-  );
-  return { x: 112, y: 80, width: 980, height };
-}
-
-function overlaps(first: SelectionBox, second: SelectionBox): boolean {
-  return (
-    first.x <= second.x + second.width &&
-    first.x + first.width >= second.x &&
-    first.y <= second.y + second.height &&
-    first.y + first.height >= second.y
-  );
-}
-
-function pointInPolygon(point: HandwritingPoint, polygon: readonly HandwritingPoint[]): boolean {
-  let inside = false;
-  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
-    const current = polygon[index];
-    const prior = polygon[previous];
-    if (!current || !prior) continue;
-    const intersects =
-      current.y > point.y !== prior.y > point.y &&
-      point.x < ((prior.x - current.x) * (point.y - current.y)) / (prior.y - current.y) + current.x;
-    if (intersects) inside = !inside;
-  }
-  return inside;
-}
-
-function unionBounds(boxes: readonly SelectionBox[]): SelectionBox | null {
-  if (!boxes.length) return null;
-  const x = Math.min(...boxes.map((box) => box.x));
-  const y = Math.min(...boxes.map((box) => box.y));
-  const right = Math.max(...boxes.map((box) => box.x + box.width));
-  const bottom = Math.max(...boxes.map((box) => box.y + box.height));
-  return { x, y, width: right - x, height: bottom - y };
-}
-
-function distanceToSegment(
-  point: HandwritingPoint,
-  start: HandwritingPoint,
-  end: HandwritingPoint,
-): number {
-  const segmentX = end.x - start.x;
-  const segmentY = end.y - start.y;
-  const lengthSquared = segmentX * segmentX + segmentY * segmentY;
-  if (lengthSquared === 0) return pointDistance(point, start);
-  const ratio = Math.max(
-    0,
-    Math.min(1, ((point.x - start.x) * segmentX + (point.y - start.y) * segmentY) / lengthSquared),
-  );
-  return Math.hypot(point.x - (start.x + ratio * segmentX), point.y - (start.y + ratio * segmentY));
-}
-
-function strokeTouches(stroke: Stroke, point: HandwritingPoint, radius: number): boolean {
-  if (stroke.points.length === 1) {
-    const first = stroke.points[0];
-    return first ? pointDistance(first, point) <= radius : false;
-  }
-  return stroke.points.some((current, index) => {
-    const next = stroke.points[index + 1];
-    return next ? distanceToSegment(point, current, next) <= radius : false;
-  });
-}
-
-function exportPage(canvas: HTMLCanvasElement): string {
-  const png = canvas.toDataURL("image/png");
-  if (png.length <= MAX_NOTE_ASSET_DATA_URL_LENGTH) return png;
-  for (const quality of [0.92, 0.82, 0.7, 0.58]) {
-    const jpeg = canvas.toDataURL("image/jpeg", quality);
-    if (jpeg.length <= MAX_NOTE_ASSET_DATA_URL_LENGTH) return jpeg;
-  }
-  throw new Error("A folha ficou grande demais. Remova alguns traços e tente novamente.");
-}
-
-function downloadCanvasAsPdf(canvas: HTMLCanvasElement, filename: string) {
-  const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
-  const separator = dataUrl.indexOf(",");
-  if (separator < 0) throw new Error("Não foi possível preparar o PDF.");
-  const binary = atob(dataUrl.slice(separator + 1));
-  const imageBytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-  const encoder = new TextEncoder();
-  const chunks: Uint8Array[] = [];
-  const offsets = [0, 0, 0, 0, 0, 0];
-  let byteLength = 0;
-
-  function append(chunk: string | Uint8Array) {
-    const bytes = typeof chunk === "string" ? encoder.encode(chunk) : chunk;
-    chunks.push(bytes);
-    byteLength += bytes.byteLength;
-  }
-
-  function object(number: number, body: string) {
-    offsets[number] = byteLength;
-    append(`${number} 0 obj\n${body}\nendobj\n`);
-  }
-
-  append("%PDF-1.4\n");
-  object(1, "<< /Type /Catalog /Pages 2 0 R >>");
-  object(2, "<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
-  object(
-    3,
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${canvas.width} ${canvas.height}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`,
-  );
-  offsets[4] = byteLength;
-  append(
-    `4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBytes.byteLength} >>\nstream\n`,
-  );
-  append(imageBytes);
-  append("\nendstream\nendobj\n");
-  const content = `q\n${canvas.width} 0 0 ${canvas.height} 0 0 cm\n/Im0 Do\nQ\n`;
-  object(5, `<< /Length ${encoder.encode(content).byteLength} >>\nstream\n${content}endstream`);
-  const xrefOffset = byteLength;
-  append("xref\n0 6\n0000000000 65535 f \n");
-  for (const offset of offsets.slice(1)) append(`${String(offset).padStart(10, "0")} 00000 n \n`);
-  append(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
-
-  const blob = new Blob(chunks as unknown as BlobPart[], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function strokeId(): string {
-  return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
-}
 
 export function HandwritingStudio({
   onClose,
@@ -1401,7 +826,7 @@ export function HandwritingStudio({
     // Ponta de borracha invertida e botao de barril sao comuns em mesas
     // digitalizadoras (Wacom, Huion, Surface Pen). O navegador reporta a
     // ponta de borracha como button 5 e o botao de barril como button 2 em
-    // pointerType "pen" — tratamos os dois sem exigir que a pessoa troque de
+    // pointerType "pen". Tratamos os dois sem exigir que a pessoa troque de
     // ferramenta manualmente.
     const isPenEraserTip = event.pointerType === "pen" && event.button === 5;
     const isPenBarrelButton = event.pointerType === "pen" && event.button === 2;
