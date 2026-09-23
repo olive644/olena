@@ -1691,37 +1691,38 @@ export function HandwritingStudio({
         const point = canvasRef.current ? canvasPoint(canvasRef.current, event) : selection.start;
         const polygon = [...selection.path, point];
         const selectedStrokeIds = strokes
-            .filter((stroke) => {
-              const box = strokeBounds(stroke);
-              return pointInPolygon(
-                { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
-                polygon,
-              );
-            })
-            .map((stroke) => stroke.id);
+          .filter((stroke) => {
+            const box = strokeBounds(stroke);
+            return pointInPolygon(
+              { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+              polygon,
+            );
+          })
+          .map((stroke) => stroke.id);
         const selectedCoordinateIds = layerVisibility.coordinates
-            ? coordinateSystems
-                .filter((system) => {
-                  const box = coordinateBounds(system);
-                  return pointInPolygon(
-                    { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
-                    polygon,
-                  );
-                })
-                .map((system) => system.id)
-            : [];
+          ? coordinateSystems
+              .filter((system) => {
+                const box = coordinateBounds(system);
+                return pointInPolygon(
+                  { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                  polygon,
+                );
+              })
+              .map((system) => system.id)
+          : [];
         const selectedStickyIds = layerVisibility.stickies
-            ? stickies
-                .filter((sticky) => {
-                  const box = stickyBounds(sticky);
-                  return pointInPolygon(
-                    { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
-                    polygon,
-                  );
-                })
-                .map((sticky) => sticky.id)
-            : [];
-        const selectedTextIds = layerVisibility.text && pageText
+          ? stickies
+              .filter((sticky) => {
+                const box = stickyBounds(sticky);
+                return pointInPolygon(
+                  { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                  polygon,
+                );
+              })
+              .map((sticky) => sticky.id)
+          : [];
+        const selectedTextIds =
+          layerVisibility.text && pageText
             ? pointInPolygon(
                 {
                   x:
@@ -1738,16 +1739,16 @@ export function HandwritingStudio({
               : []
             : [];
         const selectedImageIds = layerVisibility.background
-            ? importedImages
-                .filter((image) => {
-                  const box = importedImageBounds(image);
-                  return pointInPolygon(
-                    { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
-                    polygon,
-                  );
-                })
-                .map((image) => image.id)
-            : [];
+          ? importedImages
+              .filter((image) => {
+                const box = importedImageBounds(image);
+                return pointInPolygon(
+                  { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
+                  polygon,
+                );
+              })
+              .map((image) => image.id)
+          : [];
         setSelectedIds([
           ...selectedStrokeIds,
           ...selectedCoordinateIds,
@@ -1768,28 +1769,27 @@ export function HandwritingStudio({
           height: Math.abs(point.y - selection.start.y),
         };
         const selectedStrokeIds = strokes
-            .filter((stroke) => overlaps(strokeBounds(stroke), box))
-            .map((stroke) => stroke.id);
+          .filter((stroke) => overlaps(strokeBounds(stroke), box))
+          .map((stroke) => stroke.id);
         const selectedCoordinateIds = layerVisibility.coordinates
-            ? coordinateSystems
-                .filter((system) => overlaps(coordinateBounds(system), box))
-                .map((system) => system.id)
-            : [];
+          ? coordinateSystems
+              .filter((system) => overlaps(coordinateBounds(system), box))
+              .map((system) => system.id)
+          : [];
         const selectedStickyIds = layerVisibility.stickies
-            ? stickies
-                .filter((sticky) => overlaps(stickyBounds(sticky), box))
-                .map((sticky) => sticky.id)
-            : [];
-        const selectedTextIds = layerVisibility.text &&
-          pageText &&
-          overlaps(pageTextBounds(pageText, pageTextSize), box)
+          ? stickies
+              .filter((sticky) => overlaps(stickyBounds(sticky), box))
+              .map((sticky) => sticky.id)
+          : [];
+        const selectedTextIds =
+          layerVisibility.text && pageText && overlaps(pageTextBounds(pageText, pageTextSize), box)
             ? [PAGE_TEXT_SELECTION_ID]
             : [];
         const selectedImageIds = layerVisibility.background
-            ? importedImages
-                .filter((image) => overlaps(importedImageBounds(image), box))
-                .map((image) => image.id)
-            : [];
+          ? importedImages
+              .filter((image) => overlaps(importedImageBounds(image), box))
+              .map((image) => image.id)
+          : [];
         setSelectedIds([
           ...selectedStrokeIds,
           ...selectedCoordinateIds,
