@@ -31,6 +31,7 @@ export type HandwritingCoordinateSystem = {
   origin: HandwritingPoint;
   end: HandwritingPoint;
   step: 1 | 2 | 5 | 10;
+  measurements?: boolean;
   color: string;
 };
 

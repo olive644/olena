@@ -105,6 +105,25 @@ describe("local workspace", () => {
     ).toBe(false);
   });
 
+  it("valida coordenadas com medições opcionais", () => {
+    const system = {
+      id: "axes-1",
+      origin: { x: 100, y: 500, pressure: 0.5 },
+      end: { x: 500, y: 100, pressure: 0.5 },
+      step: 2,
+      measurements: false,
+      color: "#17151c",
+    };
+    const document = { version: 1, paper: "grid", strokes: [], coordinateSystems: [system] };
+    expect(isHandwritingDocument(document)).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        coordinateSystems: [{ ...system, measurements: "não" }],
+      }),
+    ).toBe(false);
+  });
+
   it("ignora conteúdo inválido sem quebrar o aplicativo", () => {
     window.localStorage.setItem(WORKSPACE_STORAGE_KEY, "{conteudo-invalido");
     expect(loadWorkspace(window.localStorage)).toEqual(createInitialWorkspace());

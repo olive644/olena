@@ -4421,6 +4421,38 @@ body.local-room-active {
   border-color: #fff9ef;
 }
 
+.handwriting-coordinate-picker {
+  display: grid;
+  gap: 0.45rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
+}
+.handwriting-coordinate-picker > strong {
+  color: var(--muted);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.handwriting-coordinate-picker > button {
+  min-height: 68px;
+  grid-template-columns: 42px minmax(0, 1fr);
+}
+.handwriting-coordinate-picker > button svg {
+  width: 42px;
+  height: 52px;
+}
+.handwriting-coordinate-picker > label {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 6px 10px 6px 8px;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
 .handwriting-viewport {
   position: relative;
   min-width: 0;

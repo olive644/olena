@@ -129,6 +129,7 @@ export function isHandwritingDocument(value: unknown): boolean {
           isRecord(system) &&
           isString(system["id"]) &&
           [1, 2, 5, 10].includes(Number(system["step"])) &&
+          (system["measurements"] === undefined || typeof system["measurements"] === "boolean") &&
           isString(system["color"]) &&
           /^#[0-9a-f]{6}$/i.test(system["color"]) &&
           [system["origin"], system["end"]].every(
