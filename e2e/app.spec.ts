@@ -324,7 +324,9 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   const navigation = page.getByRole("navigation", { name: "Navegação móvel" });
   await expect(navigation).toBeVisible();
   await expect(
-    navigation.locator(":scope > .mobile-nav__item, :scope > .appearance-picker > .mobile-nav__item"),
+    navigation.locator(
+      ":scope > .mobile-nav__item, :scope > .appearance-picker > .mobile-nav__item",
+    ),
   ).toHaveCount(5);
 
   for (const label of ["Agenda", "Foco", "Praticar", "Espaço"]) {
