@@ -2,7 +2,7 @@
 
 ## Direção
 
-O HelenaStudy evolui como um workspace de estudos conectado. O início é o **Espaço do aluno**. Cada
+O OlenaStudy evolui como um workspace de estudos conectado. O início é o **Espaço do aluno**. Cada
 entrega deve preservar os dados existentes, funcionar no celular e entrar por uma pull request
 pequena o bastante para revisão.
 

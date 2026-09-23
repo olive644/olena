@@ -1,7 +1,7 @@
 # Configurar a integração com o Google Agenda
 
 A integração usa OAuth 2.0 para ler os próximos eventos do Google Agenda do
-usuário (somente leitura). Como o HelenaStudy é uma SPA estática hospedada na
+usuário (somente leitura). Como o OlenaStudy é uma SPA estática hospedada na
 Vercel, o "backend" é só a função serverless `api/google-calendar.ts`; não
 existe banco de dados; a sessão do Google fica num cookie `HttpOnly` cifrado
 no próprio navegador do usuário.
@@ -58,7 +58,7 @@ Depois de configurar, faça um novo deploy para as variáveis entrarem em vigor.
 
 - **Conectar Google Agenda** leva o usuário para `/api/google-calendar?action=connect`, que redireciona para a tela de consentimento do Google.
 - O Google chama de volta `?action=callback`, a função troca o código por tokens e grava a sessão cifrada num cookie.
-- A Agenda do HelenaStudy chama `?action=events` para listar os próximos 14 dias; o access token é renovado automaticamente quando expira.
+- A Agenda do OlenaStudy chama `?action=events` para listar os próximos 14 dias; o access token é renovado automaticamente quando expira.
 - **Desconectar** apaga o cookie de sessão. Nada fica salvo em nenhum servidor.
 
-Esta primeira versão é só leitura. Criar eventos do HelenaStudy diretamente no Google Agenda (escrita) é um passo futuro separado.
+Esta primeira versão é só leitura. Criar eventos do OlenaStudy diretamente no Google Agenda (escrita) é um passo futuro separado.

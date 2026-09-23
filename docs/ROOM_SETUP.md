@@ -4,7 +4,7 @@ O Modo Sala permite que o professor crie uma sala com um código de cinco
 letras e cada aluno entre pelo próprio celular, de qualquer lugar, para
 jogar o quiz de escuta em tempo real com placar ao vivo.
 
-Como o HelenaStudy é uma SPA estática na Vercel (sem servidor tradicional
+Como o OlenaStudy é uma SPA estática na Vercel (sem servidor tradicional
 nem banco de dados), o estado de cada sala precisa ficar em algum lugar
 acessível pelos dispositivos de todos os participantes. Usamos o
 **Firebase Realtime Database**: o servidor (função na Vercel) é o único que

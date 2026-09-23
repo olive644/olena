@@ -1,4 +1,4 @@
-# Regras de trabalho do HelenaStudy
+# Regras de trabalho do OlenaStudy
 
 Estas regras herdam o padrão de engenharia do OliQualidade e valem para todo o repositório.
 

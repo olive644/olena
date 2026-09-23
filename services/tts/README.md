@@ -1,5 +1,5 @@
 ---
-title: HelenaStudy TTS
+title: OlenaStudy TTS
 emoji: 🗣️
 colorFrom: purple
 colorTo: yellow
@@ -233,12 +233,12 @@ e-mail; orcamentos so avisam, nao bloqueiam gasto automaticamente.
 - **Piper**: o pacote `piper-tts` (mantido atualmente, fork "Piper 1") usa
   licenca GPL-3.0. Ele fica isolado neste servico Python, executado como
   processo proprio; nenhum codigo GPL entra no frontend (JavaScript/TypeScript
-  do HelenaStudy).
+  do OlenaStudy).
 - **Voz do Piper** (`en_US-hfc_female-medium`): distribuida no repositorio
   `rhasspy/piper-voices` no Hugging Face. O `MODEL_CARD` oficial dessa voz
   informa que o dataset de treinamento (Hi-Fi CAPTAIN, NICT) usa licenca
   **CC BY-NC-SA 4.0 (nao comercial)**: https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en.
-  Isso pode ser incompativel com uso comercial do HelenaStudy dependendo de
+  Isso pode ser incompativel com uso comercial do OlenaStudy dependendo de
   como o produto for monetizado; nao troquei a voz por conta propria porque
   foi pedida nominalmente, mas isso precisa ser decidido antes do deploy em
   producao. Este projeto nao redistribui o arquivo do modelo, apenas o baixa

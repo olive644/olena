@@ -1,4 +1,4 @@
-# Servico de TTS do HelenaStudy: Kokoro como provedor principal, Piper como
+# Servico de TTS do OlenaStudy: Kokoro como provedor principal, Piper como
 # reserva. Roda em container proprio, nunca exposto direto ao navegador; a
 # funcao /api/speech da Vercel fala com ele por HTTP interno autenticado.
 #

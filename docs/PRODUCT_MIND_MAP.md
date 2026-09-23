@@ -1,11 +1,11 @@
-# Mapa mental do HelenaStudy
+# Mapa mental do OlenaStudy
 
 Este mapa registra a visão do produto sem afirmar que recursos planejados já estão disponíveis. O
 estado executável de cada módulo fica tipado em `src/product/module-catalog.ts`.
 
 ```mermaid
 mindmap
-  root((HelenaStudy))
+  root((OlenaStudy))
     Espaço do aluno
       Prioridades do dia
       Progresso

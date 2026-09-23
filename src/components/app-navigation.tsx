@@ -188,7 +188,7 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
           <span aria-hidden="true" />
         </button>
         {expanded && (
-          <div className="sidebar__brand" aria-label="OliStudy">
+          <div className="sidebar__brand" aria-label="OlenaStudy">
             <strong>
               Oli<span>Study</span>
             </strong>

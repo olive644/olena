@@ -1,4 +1,4 @@
-# Contrato de Parceria e Divisão de Receitas: HelenaStudy
+# Contrato de Parceria e Divisão de Receitas: OlenaStudy
 
 **Aviso importante:** este documento é um modelo redigido para formalizar o
 entendimento entre as partes abaixo. Ele não substitui a orientação de um
@@ -20,7 +20,7 @@ CPF: **************\_\_\_\_**************
 Endereço: **************\_\_\_\_**************
 
 As partes acima, em comum acordo, celebram o presente Contrato de Parceria e
-Divisão de Receitas ("Contrato"), referente ao aplicativo **HelenaStudy**
+Divisão de Receitas ("Contrato"), referente ao aplicativo **OlenaStudy**
 ("Aplicativo"), mediante as cláusulas a seguir.
 
 ## 1. Objeto
@@ -78,7 +78,7 @@ acordarem por escrito.
 
 ## 4. Propriedade intelectual
 
-4.1. O código-fonte, design, marca "HelenaStudy" e demais ativos do
+4.1. O código-fonte, design, marca "OlenaStudy" e demais ativos do
 Aplicativo são de titularidade conjunta das duas partes, na mesma proporção
 de 50%/50%, independentemente de qual parte tenha efetuado o registro
 técnico (ex.: repositório de código, domínio, contas de distribuição).
@@ -153,7 +153,7 @@ Parte 2: Helena
 
 ---
 
-_Este arquivo é mantido no repositório do HelenaStudy como registro do
+_Este arquivo é mantido no repositório do OlenaStudy como registro do
 acordo entre as partes. Alterações neste documento devem ser feitas apenas
 com o consentimento de ambas as partes, preferencialmente em uma nova
 versão assinada, mantendo o histórico das versões anteriores no controle de

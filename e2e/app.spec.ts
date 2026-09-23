@@ -200,7 +200,7 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   await page.getByRole("button", { name: "Expandir menu lateral" }).click();
   await expect(sidebar).toHaveClass(/sidebar--expanded/);
   await expect(sidebar).toHaveCSS("width", "260px");
-  await expect(sidebar.getByLabel("OliStudy")).toBeVisible();
+  await expect(sidebar.getByLabel("OlenaStudy")).toBeVisible();
   await expect(sidebar.getByText("Área do aluno", { exact: true })).toBeVisible();
   await expect(sidebar.getByText("Espaço do aluno", { exact: true })).toBeVisible();
 
@@ -256,7 +256,7 @@ test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, t
   await expect(page.getByRole("heading", { name: "Espaço do aluno" })).toBeVisible();
   await expect(page.getByText("Dados salvos neste dispositivo")).toHaveCount(0);
   await expect(page.getByAltText(/rosto da helena/i)).toHaveCount(0);
-  await expect(page.getByAltText("Helena, a mascote do OliStudy")).toHaveCount(0);
+  await expect(page.getByAltText("Helena, a mascote do OlenaStudy")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Agenda", exact: true }).click();
   await page.getByLabel(/o que precisa ser feito/i).fill("Revisar Simple Past");
