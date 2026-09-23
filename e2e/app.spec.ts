@@ -87,7 +87,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("usa o ícone grafite original em Começar prática", async ({ page }) => {
+test("usa o ícone grafite original em Começar prática", async ({ page }, testInfo) => {
   for (const theme of ["light", "dark"]) {
     const action = page.getByRole("button", { name: "Começar prática", exact: true });
     await expect(
@@ -98,7 +98,13 @@ test("usa o ícone grafite original em Começar prática", async ({ page }) => {
     ).toBeHidden();
 
     if (theme === "light") {
-      await page.locator(".appearance-picker__trigger").click();
+      await page
+        .locator(
+          testInfo.project.name === "mobile"
+            ? ".mobile-nav .appearance-picker summary"
+            : ".page-header__theme .appearance-picker__trigger",
+        )
+        .click();
       await page.getByRole("button", { name: "Escuro", exact: true }).click();
     }
   }
@@ -356,7 +362,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
   await expect(toolsDialog).toBeHidden();
 
-  for (const label of ["Hábitos", "Notas", "Biblioteca", "Planos de aula"]) {
+  for (const label of ["Hábitos", "Cadernos", "Biblioteca", "Planos de aula"]) {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     const more = page.getByRole("dialog", { name: "Mais ferramentas" });
     await expect(more).toBeVisible();

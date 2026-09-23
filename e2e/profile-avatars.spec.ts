@@ -7,13 +7,24 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/");
+  const profileMenu = page.locator(
+    testInfo.project.name === "mobile" ? ".mobile-profile-menu" : ".page-header .profile-menu",
+  );
   const avatars = ["Alice", "Soso Estrelinha", "Nicolas", "Guilherme", "Erick", "Miau", "Luizão"];
   for (const theme of ["Claro", "Escuro"]) {
-    await page.getByLabel(/Aparência: tema/).click();
+    await page
+      .locator(
+        testInfo.project.name === "mobile"
+          ? ".mobile-nav .appearance-picker summary"
+          : ".page-header__theme .appearance-picker__trigger",
+      )
+      .click();
     await page.getByRole("button", { name: theme, exact: true }).click();
-    await page.locator(".profile-menu summary").click();
+    await profileMenu.locator("summary").click();
     for (const name of avatars) {
-      const option = page.locator(".profile-picker").getByRole("button", { name, exact: true });
+      const option = profileMenu
+        .locator(".profile-picker")
+        .getByRole("button", { name, exact: true });
       await option.scrollIntoViewIfNeeded();
       await expect(option).toBeVisible();
       const pixels = await option.locator("img").evaluate(async (image: HTMLImageElement) => {
@@ -36,21 +47,21 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
       });
       expect(pixels).toEqual({ width: 512, height: 512, corners: [0, 0, 0, 0], center: 255 });
     }
-    await page.locator(".profile-picker").evaluate((element) => {
+    await profileMenu.locator(".profile-picker").evaluate((element) => {
       element.scrollTop = 0;
     });
     await page.screenshot({ path: testInfo.outputPath(`avatares-${theme}.png`) });
-    await page.getByRole("button", { name: "Soso Estrelinha", exact: true }).click();
-    await expect(page.locator(".profile-menu summary")).toHaveAttribute(
+    await profileMenu.getByRole("button", { name: "Soso Estrelinha", exact: true }).click();
+    await expect(profileMenu.locator("summary")).toHaveAttribute(
       "aria-label",
       "Perfil de Soso Estrelinha",
     );
-    await expect(page.locator(".user-profile img")).toHaveAttribute(
+    await expect(profileMenu.locator("summary img")).toHaveAttribute(
       "src",
       "/profile-avatars/soso-estrelinha.svg",
     );
     await page.reload();
-    await expect(page.locator(".profile-menu summary")).toHaveAttribute(
+    await expect(profileMenu.locator("summary")).toHaveAttribute(
       "aria-label",
       "Perfil de Soso Estrelinha",
     );

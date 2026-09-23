@@ -74,8 +74,11 @@ describe("App", () => {
 
   it("permite escolher um avatar oficial para o perfil", () => {
     render(<App />);
-    fireEvent.click(screen.getAllByLabelText("Escolher perfil")[0]!);
-    fireEvent.click(screen.getByRole("button", { name: "Helena" }));
+    const profileTrigger = screen.getAllByLabelText("Escolher perfil")[0]!;
+    fireEvent.click(profileTrigger);
+    fireEvent.click(
+      within(profileTrigger.closest("details")!).getByRole("button", { name: "Helena" }),
+    );
 
     expect(screen.getAllByLabelText("Perfil de Helena").length).toBeGreaterThan(0);
     expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toEqual({

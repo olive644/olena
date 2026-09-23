@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Navegação móvel e smoke tests
+
+O seletor de aparência da barra móvel abre acima da navegação, dentro da área visível e clicável. O avatar do topo móvel abre o mesmo seletor de perfis do desktop, com persistência e sincronização existentes. Os testes E2E agora usam os controles e rótulos atuais de cada largura, sem selecionar elementos ocultos da outra interface. A suíte local cobre desktop e mobile; testes específicos de uma plataforma são pulados na outra.
+
 ## Revisão do editor, salvamento e compartilhamento
 
 Os seletores de tipo e cor do papel usam miniaturas branca e papel de livro, lado a lado,

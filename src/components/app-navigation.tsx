@@ -78,6 +78,31 @@ function useStoredProfile() {
   return [profile, setProfile] as const;
 }
 
+function ProfileChoices({ onChoose }: { onChoose: (profile: StoredProfile) => void }) {
+  return (
+    <section className="profile-picker">
+      <div className="profile-picker__heading">
+        <strong>Quem está estudando?</strong>
+      </div>
+      <div className="profile-picker__options">
+        {PROFILE_AVATARS.map((avatar) => (
+          <button
+            type="button"
+            onClick={(event) => {
+              onChoose(avatar);
+              event.currentTarget.closest("details")?.removeAttribute("open");
+            }}
+            key={avatar.name}
+          >
+            <img src={avatar.photoUrl} alt="" width="72" height="72" />
+            <span>{avatar.name}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationItem[] }[] = [
   {
     label: "Área do aluno",
@@ -216,7 +241,7 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
 
 export function MobileNavigation({ view, onNavigate }: NavigationProps) {
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
-  const [profile] = useStoredProfile();
+  const [profile, setProfile] = useStoredProfile();
   const moreActive = MORE_ITEMS.some((item) => item.view === view);
   const [dragX, setDragX] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -363,19 +388,29 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
         >
           <NavigationIcon name="more" />
         </button>
-        <button
-          className="mobile-top-bar__profile"
-          type="button"
-          aria-label={profile.name ? `Perfil de ${profile.name}` : "Escolher perfil"}
-          onClick={() => setMoreOpen((open) => !open)}
-        >
-          <img
-            src={profile.photoUrl ?? "/profile-avatars/helena.webp"}
-            alt=""
-            width="34"
-            height="34"
+        <details className="profile-menu mobile-profile-menu">
+          <summary
+            className="mobile-top-bar__profile"
+            aria-label={profile.name ? `Perfil de ${profile.name}` : "Escolher perfil"}
+          >
+            <img
+              src={profile.photoUrl ?? "/profile-avatars/helena.webp"}
+              alt=""
+              width="34"
+              height="34"
+            />
+          </summary>
+          <ProfileChoices
+            onChoose={(nextProfile) => {
+              setProfile(nextProfile);
+              try {
+                writeSyncedStorage("helena.profile.v1", JSON.stringify(nextProfile));
+              } catch {
+                /* A escolha continua visível quando o armazenamento não está disponível. */
+              }
+            }}
           />
-        </button>
+        </details>
       </div>
     </>
   );
@@ -411,26 +446,7 @@ export function PageHeader() {
               height="44"
             />
           </summary>
-          <section className="profile-picker">
-            <div className="profile-picker__heading">
-              <strong>Quem está estudando?</strong>
-            </div>
-            <div className="profile-picker__options">
-              {PROFILE_AVATARS.map((avatar) => (
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    chooseProfile(avatar);
-                    event.currentTarget.closest("details")?.removeAttribute("open");
-                  }}
-                  key={avatar.name}
-                >
-                  <img src={avatar.photoUrl} alt="" width="72" height="72" />
-                  <span>{avatar.name}</span>
-                </button>
-              ))}
-            </div>
-          </section>
+          <ProfileChoices onChoose={chooseProfile} />
         </details>
       </div>
     </header>
