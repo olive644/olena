@@ -1,0 +1,424 @@
+/* Compact notebook controls, sharing the application's cut-paper facets. */
+.handwriting-studio {
+  --notebook-purple:
+    linear-gradient(135deg, #a779ef 0 10px, transparent 10px),
+    linear-gradient(315deg, #51259b 0 13px, transparent 13px), #7433e0;
+}
+.handwriting-commandbar {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 14px;
+}
+.handwriting-ink-options {
+  grid-column: 1 / span 10;
+  grid-row: 2;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.handwriting-tool-group {
+  grid-column: 1 / span 8;
+}
+.handwriting-history {
+  grid-column: 9 / -1;
+  justify-content: space-between;
+  min-width: 0;
+  overflow-x: auto;
+}
+.notebook-file-tools__label {
+  display: none;
+}
+.notebook-file-tools {
+  position: relative;
+  grid-column: 11 / -1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 6px;
+  border-left: 1px solid var(--line);
+}
+.notebook-file-tools__label {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-right: 4px;
+  color: var(--muted);
+}
+.notebook-file-tools > button,
+.handwriting-selection-actions button,
+.notebook-file-popover button,
+.notebook-pages-dialog button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid #7433e0;
+  border-radius: 5px 13px 6px 11px;
+  background: var(--notebook-purple);
+  color: #fff9ef;
+  box-shadow: 0 3px 0 #4b209b;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    translate 180ms ease,
+    box-shadow 180ms ease;
+}
+.notebook-file-tools > button > span,
+.handwriting-paper-picker .paper-picker-label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 240ms ease,
+    opacity 200ms ease,
+    margin 240ms ease;
+}
+.notebook-file-tools > button:is(:hover, :focus-visible, [aria-expanded="true"]) > span,
+.handwriting-paper-picker button:is(:hover, :focus-visible) .paper-picker-label {
+  max-width: 130px;
+  margin-left: 6px;
+  opacity: 1;
+}
+.notebook-file-tools > button .paper-editor-icon {
+  color: #fff9ef;
+  --editor-icon-cutout: #51259b;
+  --editor-icon-facet: #cbb1f4;
+}
+.notebook-file-tools button:hover:not(:disabled),
+.handwriting-selection-actions button:hover:not(:disabled) {
+  translate: 0 -2px;
+  box-shadow: 0 5px 0 #4b209b;
+}
+.handwriting-selection-actions button[aria-pressed="true"],
+.notebook-file-tools > button[aria-expanded="true"] {
+  outline: 2px solid #facc15;
+  outline-offset: 2px;
+}
+.handwriting-studio button:focus-visible {
+  outline: 3px solid #a779ef;
+  outline-offset: 3px;
+}
+.handwriting-selection-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.handwriting-selection-actions {
+  flex-wrap: wrap;
+  color: #fff9ef;
+  background:
+    linear-gradient(135deg, #51465d 0 20px, transparent 20px),
+    linear-gradient(315deg, #17151c 0 20px, transparent 20px), #292432;
+}
+.handwriting-formula-assist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+}
+.handwriting-formula-assist input {
+  min-width: 100px;
+  flex: 1;
+}
+.notebook-file-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  min-width: 220px;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 7px 16px 8px 12px;
+  background:
+    linear-gradient(135deg, #51465d 0 20px, transparent 20px),
+    linear-gradient(315deg, #17151c 0 20px, transparent 20px), #292432;
+  box-shadow: 0 5px 0 #17151c;
+}
+.notebook-pages-dialog {
+  position: fixed;
+  inset: 16% max(16px, calc((100vw - 520px) / 2));
+  z-index: 100;
+  overflow-y: auto;
+  padding: 24px;
+  color: #fff9ef;
+  background:
+    linear-gradient(135deg, #51465d 0 25px, transparent 25px),
+    linear-gradient(315deg, #17151c 0 25px, transparent 25px), #292432;
+  border: 2px solid #a779ef;
+  border-radius: 8px 20px 10px 14px;
+  box-shadow: 0 0 0 100vmax #17151c99;
+  width: min(520px, calc(100vw - 32px));
+  max-height: 80vh;
+  margin: auto;
+}
+.notebook-pages-dialog::backdrop {
+  background: #17151c99;
+}
+.notebook-pages-dialog h3 {
+  margin-top: 0;
+}
+.notebook-pages-dialog p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.notebook-pages-dialog > button {
+  margin: 10px 8px 0 0;
+}
+.notebook-pages-dialog__list {
+  display: grid;
+  gap: 8px;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+.notebook-pages-dialog label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.notebook-pages-dialog input[type="checkbox"] {
+  accent-color: #a779ef;
+  width: 20px;
+  height: 20px;
+}
+.notebook-pages-dialog input[readonly] {
+  width: 100%;
+  color: #fff9ef;
+  background: #17151c;
+  padding: 12px;
+}
+.handwriting-paper-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  padding: 10px 8px;
+  overflow-x: hidden;
+}
+.handwriting-paper-section {
+  display: contents;
+}
+.handwriting-paper-picker button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  min-width: 44px;
+  width: auto;
+  max-width: 100%;
+  min-height: 64px;
+  padding: 8px;
+  gap: 0;
+  border-radius: 5px 13px 6px 11px;
+}
+.handwriting-paper-picker .paper-preview {
+  width: 28px;
+  height: 38px;
+  flex-shrink: 0;
+}
+.handwriting-paper-picker .paper-preview--blank {
+  background: linear-gradient(135deg, #e9ddfb 0 8px, transparent 8px), #fffdf7;
+}
+.handwriting-paper-picker .paper-preview--tone-aged {
+  background: linear-gradient(135deg, #dfc78e 0 8px, transparent 8px), #f3e6c8;
+}
+.handwriting-paper-picker .paper-picker-chevron {
+  color: var(--text);
+  margin-left: 5px;
+  font-size: 17px;
+  transition: rotate 200ms ease;
+}
+.handwriting-paper-picker button[aria-expanded="true"] .paper-picker-chevron {
+  rotate: 180deg;
+}
+.handwriting-paper-picker .handwriting-paper-section__toggle {
+  order: 0;
+  background: transparent;
+  border: 1px solid var(--line);
+}
+.handwriting-paper-picker .handwriting-paper-section__toggle[aria-expanded="true"] {
+  background: var(--notebook-purple);
+}
+.handwriting-paper-picker
+  .handwriting-paper-section__toggle[aria-expanded="true"]
+  .paper-picker-chevron {
+  color: #fff9ef;
+}
+.handwriting-paper-options {
+  order: 1;
+  flex: 0 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+  animation: notebook-reveal 200ms ease;
+}
+.handwriting-paper-picker button:is(:hover, :focus-visible) {
+  background: var(--notebook-purple);
+  color: #fff9ef;
+}
+.handwriting-paper-picker .paper-picker-label {
+  font-size: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: inherit;
+  flex-shrink: 1;
+  white-space: normal;
+}
+.handwriting-brush-panel .brush-instrument {
+  margin: 4px 0;
+}
+.handwriting-brush-panel .brush-sample {
+  height: 30px;
+}
+.handwriting-footer {
+  min-height: 38px;
+  padding: 6px 14px;
+}
+.notebook-reader {
+  max-width: 960px;
+  margin: auto;
+  padding: 24px;
+  color: var(--text);
+}
+.notebook-reader img {
+  width: 100%;
+  height: auto;
+}
+.notebook-reader figure {
+  margin: 24px 0;
+}
+.notebook-reader figcaption {
+  padding: 12px 0;
+  font-weight: 800;
+}
+@keyframes notebook-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1050px) {
+  .handwriting-commandbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .handwriting-tool-group {
+    grid-column: 1;
+  }
+  .handwriting-history {
+    grid-column: 2;
+  }
+  .handwriting-ink-options {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .notebook-file-tools {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-content: flex-start;
+    border-left: 0;
+    padding: 2px;
+  }
+  .handwriting-selection-actions {
+    grid-row: 4;
+  }
+  .notebook-file-popover {
+    left: 0;
+    right: auto;
+  }
+}
+@media (max-width: 680px) {
+  .handwriting-studio:has(.handwriting-writing-window) {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .handwriting-studio:has(.handwriting-writing-window) > * {
+    flex-shrink: 0;
+  }
+  .handwriting-studio:has(.handwriting-writing-window) .handwriting-workspace {
+    min-height: 260px;
+    flex: 1 0 260px;
+  }
+  .handwriting-writing-window {
+    position: relative;
+    z-index: 2;
+  }
+  .handwriting-commandbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+    padding: 6px;
+    gap: 6px;
+  }
+  .handwriting-tool-group {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .handwriting-history {
+    grid-row: 2;
+    grid-column: 1;
+    overflow-x: auto;
+  }
+  .handwriting-ink-options {
+    grid-row: 3;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .notebook-file-tools {
+    grid-row: 4;
+  }
+  .handwriting-selection-actions {
+    grid-row: 5;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .handwriting-paper-picker {
+    min-height: 0;
+    padding: 5px 8px;
+    max-height: 155px;
+    flex-wrap: wrap;
+  }
+  .handwriting-paper-options {
+    flex-basis: auto;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .handwriting-paper-picker button {
+    min-width: 44px;
+    min-height: 54px;
+  }
+  .handwriting-paper-picker .paper-preview {
+    width: 25px;
+    height: 32px;
+  }
+  .handwriting-workspace {
+    flex: 1;
+  }
+  .notebook-file-popover {
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-file-tools *,
+  .handwriting-paper-picker *,
+  .handwriting-selection-actions * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

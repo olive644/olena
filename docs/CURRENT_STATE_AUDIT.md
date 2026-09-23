@@ -1,5 +1,33 @@
 # Auditoria do estado atual
 
+## Revisão do editor, salvamento e compartilhamento
+
+Os seletores de tipo e cor do papel usam miniaturas branca e papel de livro, lado a lado,
+com opções compactas e nomes revelados no foco ou hover. Upload, Exportar e Salvar ficam
+na segunda linha de ferramentas. O estojo mantém instrumentos e amostras, sem título ou
+descrições repetidas. A seleção usa ações roxas facetadas sobre grafite. A janela ampliada
+no celular tem rolagem própria do editor para impedir sobreposição com a folha.
+
+O editor salva automaticamente no workspace após uma pausa de 900 ms e tenta finalizar
+o salvamento ao sair. A sincronização usa a conta Firebase existente e informa o estado
+real de envio. Sem login, a cópia permanece neste dispositivo. Rascunhos de recuperação
+registram sua versão-base para não substituir uma folha atualizada pela nuvem. Reabrir
+uma folha nova na mesma sessão reutiliza o identificador do arquivo já salvo.
+
+Salvar oferece arquivo no caderno, PDF da folha atual, seleção de folhas e link somente
+para leitura. O link publica uma cópia das imagens escolhidas, expira em sete dias e não
+contém credenciais de edição. Atualmente a seleção exige folhas com imagem salva; folhas
+sem imagem precisam ser abertas e salvas antes. A colaboração continua sendo da folha
+aberta, com até quatro participantes, e não sincroniza a criação de outras folhas da sala.
+O código retornado pelo servidor agora é utilizado nos envios; alterações em objetos
+distintos são conciliadas por identificador e versões antigas recebidas são ignoradas.
+Edições simultâneas do mesmo objeto podem prevalecer pela última alteração recebida.
+
+Os testes usam navegador real com servidor de colaboração em memória. Eles não comprovam
+a configuração da conta Firebase, App Check ou variáveis do ambiente de produção. Publicar
+os índices de `firebase-room.rules.json` habilita a limpeza programada das novas cópias.
+Modelo de ameaça e limites: `docs/NOTEBOOK_SHARING_SECURITY.md`.
+
 ## Novos avatares oficiais
 
 O seletor compartilhado inclui Alice (ratinha), Soso Estrelinha (borboleta), Nicolas (raposa), Guilherme (gato branco), Erick (cervo), Miau (coruja) e Luizão (corvo), preservando os cinco avatares anteriores. As artes fornecidas usam imagem proporcional em um SVG com recorte individual da moldura, tornando transparente apenas o exterior sem remover detalhes claros dos personagens. O menu permite rolagem em telas baixas. A seleção utiliza a persistência e sincronização do perfil existentes.

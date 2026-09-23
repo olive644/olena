@@ -13,7 +13,13 @@ export async function cleanExpiredRooms(
       ...init,
       signal: AbortSignal.timeout(Math.max(1, Math.min(10000, deadline - Date.now()))),
     });
-  for (const path of ["rooms", "private-rooms", "room-limits"]) {
+  for (const path of [
+    "rooms",
+    "private-rooms",
+    "room-limits",
+    "notebook-collab",
+    "notebook-views",
+  ]) {
     let complete = false;
     for (let batch = 0; batch < Math.min(10, maxBatches) && Date.now() < deadline; batch++) {
       const url = `${root}/${path}.json?orderBy=${encodeURIComponent('"expiresAt"')}&startAt=0&endAt=${now}&limitToFirst=100`;
