@@ -1583,6 +1583,13 @@
     border-radius: 12px 22px 14px 18px;
   }
 
+  .appearance-picker--nav .appearance-picker__sheet {
+    top: auto;
+    right: 12px;
+    bottom: calc(104px + env(safe-area-inset-bottom));
+    left: 12px;
+  }
+
   .appearance-picker__option,
   .appearance-picker__option.is-active {
     min-height: 88px;

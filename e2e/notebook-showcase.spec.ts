@@ -7,7 +7,7 @@ test("cria cadernos gerais e mantém folhas após recarregar", async ({ page }, 
   await page.goto("/");
   async function openShelf() {
     if (testInfo.project.name === "mobile") {
-      await page.getByRole("button", { name: "Mais", exact: true }).click();
+      await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       await page
         .getByRole("dialog", { name: "Mais ferramentas" })
         .getByRole("button", { name: "Cadernos", exact: true })
