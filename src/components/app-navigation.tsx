@@ -216,6 +216,8 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
 
 export function MobileNavigation({ view, onNavigate }: NavigationProps) {
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
+  const [profile] = useStoredProfile();
+  const moreActive = MORE_ITEMS.some((item) => item.view === view);
   const [dragX, setDragX] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dragStartX = useRef<number | null>(null);
@@ -345,30 +347,42 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
             </button>
           );
         })}
+        <AppearanceToggle variant="nav" />
+      </nav>
+
+      <div className="mobile-top-bar">
         <button
           className={
-            view === "profile"
-              ? "mobile-nav__item mobile-nav__profile mobile-nav__item--active"
-              : "mobile-nav__item mobile-nav__profile"
+            moreOpen || moreActive ? "mobile-more-trigger is-active" : "mobile-more-trigger"
           }
           type="button"
-          aria-label="Perfil"
-          aria-current={view === "profile" ? "page" : undefined}
-          onClick={() => navigate("profile")}
+          aria-label="Mais ferramentas"
+          aria-expanded={moreOpen}
+          aria-controls="mobile-more-panel"
+          onClick={() => setMoreOpen((open) => !open)}
         >
-          <span className="mobile-nav__icon">
-            <NavigationIcon name="profile" profileActive={view === "profile"} />
-          </span>
-          <span>Perfil</span>
+          <NavigationIcon name="more" />
         </button>
-      </nav>
+        <button
+          className="mobile-top-bar__profile"
+          type="button"
+          aria-label={profile.name ? `Perfil de ${profile.name}` : "Escolher perfil"}
+          onClick={() => setMoreOpen((open) => !open)}
+        >
+          <img
+            src={profile.photoUrl ?? "/profile-avatars/helena.webp"}
+            alt=""
+            width="34"
+            height="34"
+          />
+        </button>
+      </div>
     </>
   );
 }
 
 export function PageHeader() {
   const [profile, setProfile] = useStoredProfile();
-  const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
 
   function chooseProfile(nextProfile: StoredProfile) {
     setProfile(nextProfile);
@@ -381,21 +395,10 @@ export function PageHeader() {
 
   return (
     <header className="page-header">
-      <button
-        className="mobile-more-trigger paper-menu"
-        type="button"
-        aria-label="Mais"
-        aria-expanded={moreOpen}
-        aria-controls="mobile-more-panel"
-        data-open={moreOpen}
-        onClick={() => setMoreOpen((open) => !open)}
-      >
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-      </button>
       <div className="page-header__actions">
-        <AppearanceToggle />
+        <div className="page-header__theme">
+          <AppearanceToggle />
+        </div>
         <details className="profile-menu">
           <summary
             className="user-profile"
