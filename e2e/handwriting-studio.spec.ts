@@ -107,6 +107,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "aria-pressed",
     "true",
   );
+  await dialog.getByRole("button", { name: "Tipo de papel", exact: true }).click();
   await expect(dialog.getByRole("button", { name: "Pautado" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -208,15 +209,18 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect(dialog.getByRole("button", { name: "Apagar traços" })).toBeVisible();
   await dialog.getByRole("button", { name: "Apagar traços" }).click();
   await dialog.getByRole("button", { name: "Desfazer" }).click();
+  await dialog.getByRole("button", { name: "Arquivo", exact: true }).click();
   await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole("img", { name: /folha manuscrita/i })).toBeVisible();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
-  await reopened.getByRole("button", { name: "Importar", exact: true }).click();
+  await reopened.getByRole("button", { name: "Arquivo", exact: true }).click();
+  await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   await reopened.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(reopened.getByLabel("Arquivo para importar")).toHaveCount(0);
-  await reopened.getByRole("button", { name: "Importar", exact: true }).click();
+  await reopened.getByRole("button", { name: "Arquivo", exact: true }).click();
+  await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   const fileInput = reopened.getByLabel("Arquivo para importar");
   const png = await page.evaluate(() => {
     const canvas = document.createElement("canvas");
@@ -296,11 +300,13 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect(imported).toHaveCount(0);
   await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
   await expect(imported).toBeVisible();
+  await reopened.getByRole("button", { name: "Tipo de papel", exact: true }).click();
   await expect(reopened.getByRole("button", { name: "Quadriculado" })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
   await expect(reopened.getByRole("button", { name: "Limpar folha" })).toBeEnabled();
+  await reopened.getByRole("button", { name: "Cor da folha", exact: true }).click();
   await reopened.getByRole("button", { name: "Escura", exact: true }).click();
   await reopened.getByRole("button", { name: "Texto na página inteira" }).click();
   const fullText = reopened.getByLabel("Texto da página inteira");
@@ -386,6 +392,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     .toBeLessThan(50);
   await page.getByRole("button", { name: "Texto na página inteira" }).click();
   await expect(page.getByLabel("Texto da página inteira")).toHaveValue(erasedText);
+  await page.getByRole("button", { name: "Cor da folha", exact: true }).click();
   await expect(page.getByRole("button", { name: "Escura", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",

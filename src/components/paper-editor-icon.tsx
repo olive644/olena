@@ -1,5 +1,6 @@
 const shapes = {
-  import: "M17 34h7V15h8L20 3 8 15h9Z M4 32h6v5h21v-5h6v11H4Z",
+  cloudUpload: "M14 37h20a9 9 0 0 0 1-18 12 12 0 0 0-23 3 8 8 0 0 0 2 15Zm10-5V15m0 0-7 7m7-7 7 7",
+  page: "M9 4h22l8 8v32H9Z",
   pen: "M6 29 25 5l9 8-20 23-10 3Z M24 7l8 7",
   highlighter: "M6 28 22 8l12 10-16 20H5Z",
   eraser: "M4 26 22 7l14 13-17 18H15Z",
@@ -28,7 +29,8 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
-  import: "M20 3v31h-3V15H8Z",
+  cloudUpload: "M14 37h20a9 9 0 0 0 1-18 12 12 0 0 0-23 3 8 8 0 0 0 2 15Zm10-5V15m0 0-7 7m7-7 7 7",
+  page: "M31 4v9h8Z",
   pen: "m6 29 5 4L30 9l-5-4Z",
   highlighter: "m6 28 6 5 16-20-6-5Z",
   eraser: "",
