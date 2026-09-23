@@ -66,8 +66,10 @@ describe("App", () => {
     );
     render(<App />);
 
-    const profile = screen.getByLabelText("Perfil de Ana");
-    expect(profile.querySelector("img")?.getAttribute("src")).toBe("https://example.com/ana.png");
+    const profiles = screen.getAllByLabelText("Perfil de Ana");
+    for (const profile of profiles) {
+      expect(profile.querySelector("img")?.getAttribute("src")).toBe("https://example.com/ana.png");
+    }
   });
 
   it("permite escolher um avatar oficial para o perfil", () => {
@@ -75,7 +77,7 @@ describe("App", () => {
     fireEvent.click(screen.getAllByLabelText("Escolher perfil")[0]!);
     fireEvent.click(screen.getByRole("button", { name: "Helena" }));
 
-    expect(screen.getByLabelText("Perfil de Helena")).toBeTruthy();
+    expect(screen.getAllByLabelText("Perfil de Helena").length).toBeGreaterThan(0);
     expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toEqual({
       name: "Helena",
       photoUrl: "/profile-avatars/helena.webp",
@@ -107,16 +109,12 @@ describe("App", () => {
   it("organiza as ferramentas secundárias no menu móvel", async () => {
     render(<App />);
     const mobileNavigation = screen.getByRole("navigation", { name: "Navegação móvel" });
-    expect(within(mobileNavigation).getAllByRole("button")).toHaveLength(5);
-    fireEvent.click(within(mobileNavigation).getByRole("button", { name: "Perfil" }));
-    expect(await screen.findByRole("heading", { name: "Em produção" })).toBeTruthy();
-    expect(screen.getByText("Mais informações em breve.")).toBeTruthy();
     expect(
-      within(mobileNavigation)
-        .getByRole("button", { name: "Perfil" })
-        .querySelector('img[src="/navigation-icons/paper/profile-active.svg"]'),
-    ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Mais" }));
+      mobileNavigation.querySelectorAll(
+        ":scope > .mobile-nav__item, :scope > .appearance-picker > .mobile-nav__item",
+      ),
+    ).toHaveLength(5);
+    fireEvent.click(screen.getByRole("button", { name: "Mais ferramentas" }));
 
     const moreMenu = screen.getByRole("dialog", { name: "Mais ferramentas" });
     expect(within(moreMenu).queryByLabelText("Trocar foto de perfil")).toBeNull();
@@ -156,28 +154,27 @@ describe("App", () => {
     });
   });
 
-  it("usa a iconografia própria da Helena no seletor de tema", () => {
+  it("usa a iconografia própria da Helena no seletor de aparência", () => {
     render(<App />);
-    const lightThemeButton = screen.getByLabelText(/Aparência: tema claro/i);
-    const lightArtwork = lightThemeButton.querySelector('[data-icon="theme-dark"]');
+    const header = document.querySelector(".page-header__theme") as HTMLElement;
+    const appearanceTrigger = header.querySelector(".appearance-picker__trigger") as HTMLElement;
+    const lightArtwork = appearanceTrigger.querySelector('[data-icon="theme-dark"]');
     expect(lightArtwork?.classList.contains("navigation-icon--brand")).toBe(true);
-    expect(lightArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(1);
+    expect(lightArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
     expect(
       lightArtwork?.querySelector('img[src="/navigation-icons/paper/claro/theme-dark.svg"]'),
     ).toBeTruthy();
-    expect(
-      lightThemeButton.querySelector('img[src="/navigation-icons/paper/claro/theme-light.svg"]'),
-    ).toBeTruthy();
 
-    fireEvent.click(lightThemeButton);
-    fireEvent.click(screen.getByRole("button", { name: "Escuro" }));
-    const darkThemeButton = screen.getByLabelText(/Aparência: tema escuro/i);
-    expect(document.documentElement.dataset["theme"]).toBe("dark");
-    const darkArtwork = darkThemeButton.querySelector('[data-icon="theme-light"]');
+    fireEvent.click(appearanceTrigger);
+    fireEvent.click(within(header).getByRole("button", { name: "Escuro" }));
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    const darkArtwork = (
+      header.querySelector(".appearance-picker__trigger") as HTMLElement
+    ).querySelector('[data-icon="theme-light"]');
     expect(darkArtwork?.classList.contains("navigation-icon--brand")).toBe(true);
-    expect(darkArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(1);
+    expect(darkArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
     expect(
-      darkArtwork?.querySelector('img[src="/navigation-icons/paper/claro/theme-light.svg"]'),
+      darkArtwork?.querySelector('img[src="/navigation-icons/paper/escuro/theme-light.svg"]'),
     ).toBeTruthy();
   });
 
@@ -253,7 +250,7 @@ describe("App", () => {
     expect(
       profile.querySelector('img[src="/navigation-icons/paper/profile-active.svg"]'),
     ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Mais" }));
+    fireEvent.click(screen.getByRole("button", { name: "Mais ferramentas" }));
     expect(
       within(screen.getByRole("dialog", { name: "Mais ferramentas" })).queryByRole("button", {
         name: "Perfil",
@@ -264,11 +261,7 @@ describe("App", () => {
   it("mostra a rosa que cresce com o temporizador de foco", async () => {
     render(<App />);
 
-    fireEvent.click(
-      within(screen.getByRole("navigation", { name: "Navegação móvel" })).getByRole("button", {
-        name: "Perfil",
-      }),
-    );
+    navigate("Perfil");
     expect(
       await screen.findByRole("heading", { name: /personalizar métodos de estudos/i }),
     ).toBeTruthy();

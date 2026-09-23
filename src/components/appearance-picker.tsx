@@ -8,9 +8,11 @@ const OPTIONS: readonly { value: ThemePreference; label: string }[] = [
   { value: "system", label: "Sistema" },
 ];
 
-/* Botão único da barra móvel: mostra o ícone do tema oposto ao ativo (convite
-   para trocar) e abre a folha de papel com as três opções de aparência. */
-export function AppearanceToggle() {
+/* Botão único de aparência: mostra o ícone do tema oposto ao ativo (convite
+   para trocar) e abre a folha de papel com as três opções de aparência.
+   "header" é o botão quadrado isolado do cabeçalho (desktop); "nav" imita um
+   item comum da barra inferior móvel, com rótulo abaixo do ícone. */
+export function AppearanceToggle({ variant = "header" }: { variant?: "header" | "nav" }) {
   const { theme, preference, setThemePreference } = useTheme();
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -22,17 +24,26 @@ export function AppearanceToggle() {
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, []);
 
+  const icon = <NavigationIcon name={theme === "dark" ? "theme-light" : "theme-dark"} />;
+  const label = `Aparência: tema ${theme === "dark" ? "escuro" : "claro"}. Toque para escolher.`;
+
   return (
-    <details className="appearance-picker" ref={detailsRef}>
-      <summary
-        className="appearance-picker__trigger"
-        aria-label={`Aparência: tema ${theme === "dark" ? "escuro" : "claro"}. Toque para escolher.`}
-      >
-        <span className="appearance-picker__trigger-icons" aria-hidden="true">
-          <NavigationIcon name="theme-light" paperVariant="claro" />
-          <NavigationIcon name="theme-dark" paperVariant="claro" />
-        </span>
-      </summary>
+    <details
+      className={
+        variant === "nav" ? "appearance-picker appearance-picker--nav" : "appearance-picker"
+      }
+      ref={detailsRef}
+    >
+      {variant === "nav" ? (
+        <summary className="mobile-nav__item" aria-label={label}>
+          <span className="mobile-nav__icon">{icon}</span>
+          <span>Aparência</span>
+        </summary>
+      ) : (
+        <summary className="appearance-picker__trigger" aria-label={label}>
+          {icon}
+        </summary>
+      )}
       <section className="appearance-picker__sheet" aria-label="Escolher aparência">
         <strong>Aparência</strong>
         <div className="appearance-picker__options">
@@ -52,12 +63,8 @@ export function AppearanceToggle() {
               key={option.value}
             >
               <span className="appearance-picker__option-icons">
-                {option.value !== "dark" && (
-                  <NavigationIcon name="theme-light" paperVariant="claro" />
-                )}
-                {option.value !== "light" && (
-                  <NavigationIcon name="theme-dark" paperVariant="claro" />
-                )}
+                {option.value !== "dark" && <NavigationIcon name="theme-light" />}
+                {option.value !== "light" && <NavigationIcon name="theme-dark" />}
               </span>
               <span>{option.label}</span>
             </button>

@@ -1820,17 +1820,17 @@ select {
     width: 46px;
     height: 46px;
     padding: 0;
-    border: 1px solid rgb(255 255 255 / 9%);
+    border: 1px solid transparent;
     border-radius: 14px;
     gap: 5px;
-    color: #fff9ef;
-    background: rgb(255 255 255 / 5%);
+    color: var(--text);
+    background: transparent;
   }
 
   .sidebar__toggle:hover,
   .sidebar__toggle:focus-visible {
-    border-color: rgb(255 255 255 / 16%);
-    background: rgb(255 255 255 / 10%);
+    border-color: var(--line);
+    background: var(--soft);
   }
 
   .sidebar__toggle > span {
@@ -1866,7 +1866,7 @@ select {
   .sidebar--expanded .nav-section__label {
     display: block;
     padding: 0 12px 5px;
-    color: rgb(255 255 255 / 48%);
+    color: var(--muted);
     font-size: 0.64rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -1895,7 +1895,7 @@ select {
     max-width: none;
     padding: 0;
     border: 0;
-    color: rgb(255 255 255 / 86%);
+    color: var(--text);
     background: transparent;
     box-shadow: none;
     font-size: 0.8rem;
@@ -1917,32 +1917,6 @@ select {
 
   .page-header {
     justify-content: space-between;
-  }
-
-  .page-header__brand {
-    display: block;
-  }
-
-  .page-header .brand {
-    gap: 10px;
-  }
-
-  .page-header .brand__mark {
-    width: 42px;
-    height: 46px;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgb(15 15 20 / 14%));
-  }
-
-  .page-header .brand__copy strong {
-    color: var(--text);
-    font-size: 1.1rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-  }
-
-  .page-header .brand__copy strong span {
-    color: var(--violet);
   }
 }
 
@@ -4691,6 +4665,38 @@ body.local-room-active {
   border-color: #fff9ef;
 }
 
+.handwriting-coordinate-picker {
+  display: grid;
+  gap: 0.45rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
+}
+.handwriting-coordinate-picker > strong {
+  color: var(--muted);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.handwriting-coordinate-picker > button {
+  min-height: 68px;
+  grid-template-columns: 42px minmax(0, 1fr);
+}
+.handwriting-coordinate-picker > button svg {
+  width: 42px;
+  height: 52px;
+}
+.handwriting-coordinate-picker > label {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 6px 10px 6px 8px;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
 .handwriting-viewport {
   position: relative;
   min-width: 0;
@@ -6023,7 +6029,7 @@ body.local-room-active {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   width: min(100%, 390px);
-  gap: clamp(0.2rem, 1vw, 0.55rem);
+  gap: clamp(0.15rem, 1vw, 0.55rem);
 }
 
 .pomodoro-week__day {
@@ -10204,11 +10210,11 @@ select {
 
 .sidebar .theme-toggle {
   margin-top: 0.4rem;
-  color: rgb(255 255 255 / 80%);
+  color: var(--text);
 }
 
 .sidebar .theme-toggle:hover {
-  background: rgb(255 255 255 / 8%);
+  background: var(--soft);
 }
 
 .page-header__actions {
@@ -10325,10 +10331,14 @@ select {
     min-width: 28px;
     border: 0;
     border-radius: 0;
-    color: #fff9ef;
+    color: var(--text);
     background: transparent;
     box-shadow: none;
     place-items: center;
+  }
+
+  .sidebar .nav-item--active .navigation-icon {
+    color: #fff9ef;
   }
 
   .sidebar .navigation-icon > .navigation-icon__glyph,
@@ -10717,7 +10727,7 @@ select {
     max-width: none;
     padding: 0;
     border: 0;
-    color: inherit;
+    color: var(--text);
     background: transparent;
     box-shadow: none;
     opacity: 1;
@@ -10917,7 +10927,7 @@ select {
     min-width: 0;
     align-items: center;
     gap: 7px;
-    color: #fff9ef;
+    color: var(--text);
   }
 
   .sidebar__brand img {

@@ -79,6 +79,15 @@ export const DEFAULT_HANDWRITING_LAYER_VISIBILITY: HandwritingLayerVisibility = 
   stickies: true,
 };
 
+export type HandwritingCoordinateSystem = {
+  id: string;
+  origin: HandwritingPoint;
+  end: HandwritingPoint;
+  step: 1 | 2 | 5 | 10;
+  measurements?: boolean;
+  color: string;
+};
+
 export type HandwritingDocument = {
   backgroundFrame?: { x: number; y: number; width: number; height: number } | undefined;
   background?: string | undefined;
