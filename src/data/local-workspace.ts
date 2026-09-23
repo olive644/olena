@@ -108,6 +108,33 @@ export function isHandwritingDocument(value: unknown): boolean {
   )
     return false;
   if (
+    value["images"] !== undefined &&
+    (!Array.isArray(value["images"]) ||
+      value["images"].length > 20 ||
+      !value["images"].every(
+        (image: unknown) =>
+          isRecord(image) &&
+          isString(image["id"]) &&
+          isString(image["dataUrl"]) &&
+          /^data:image\/(?:jpeg|png|webp);base64,/.test(image["dataUrl"]) &&
+          image["dataUrl"].length <= 500_000 &&
+          ["x", "y", "width", "height"].every(
+            (key) =>
+              typeof image[key] === "number" && Number.isFinite(image[key]) && image[key] >= 0,
+          ) &&
+          Number(image["x"]) + Number(image["width"]) <= 1200.01 &&
+          Number(image["y"]) + Number(image["height"]) <= 1600.01 &&
+          Number(image["width"]) >= 40 &&
+          Number(image["height"]) >= 40 &&
+          (image["rotation"] === undefined ||
+            (typeof image["rotation"] === "number" &&
+              Number.isFinite(image["rotation"]) &&
+              image["rotation"] >= -180 &&
+              image["rotation"] <= 180)),
+      ))
+  )
+    return false;
+  if (
     value["pageText"] !== undefined &&
     (typeof value["pageText"] !== "string" || value["pageText"].length > 5000)
   )
@@ -129,7 +156,6 @@ export function isHandwritingDocument(value: unknown): boolean {
           isRecord(system) &&
           isString(system["id"]) &&
           [1, 2, 5, 10].includes(Number(system["step"])) &&
-          (system["measurements"] === undefined || typeof system["measurements"] === "boolean") &&
           isString(system["color"]) &&
           /^#[0-9a-f]{6}$/i.test(system["color"]) &&
           [system["origin"], system["end"]].every(
@@ -174,17 +200,60 @@ export function isHandwritingDocument(value: unknown): boolean {
           typeof sticky["x"] === "number" &&
           Number.isFinite(sticky["x"]) &&
           sticky["x"] >= 0 &&
-          sticky["x"] <= 940 &&
+          sticky["x"] <= 1040 &&
           typeof sticky["y"] === "number" &&
           Number.isFinite(sticky["y"]) &&
           sticky["y"] >= 0 &&
-          sticky["y"] <= 1380 &&
+          sticky["y"] <= 1480 &&
+          (sticky["width"] === undefined ||
+            (typeof sticky["width"] === "number" &&
+              Number.isFinite(sticky["width"]) &&
+              sticky["width"] >= 160 &&
+              sticky["width"] <= 520)) &&
+          (sticky["height"] === undefined ||
+            (typeof sticky["height"] === "number" &&
+              Number.isFinite(sticky["height"]) &&
+              sticky["height"] >= 120 &&
+              sticky["height"] <= 420)) &&
           ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
           isString(sticky["text"]) &&
-          sticky["text"].length <= 240,
+          sticky["text"].length <= 240 &&
+          (sticky["formula"] === undefined || typeof sticky["formula"] === "boolean") &&
+          (sticky["checklist"] === undefined ||
+            (Array.isArray(sticky["checklist"]) &&
+              sticky["checklist"].length <= 12 &&
+              sticky["checklist"].every(
+                (item: unknown) =>
+                  isRecord(item) &&
+                  isString(item["id"]) &&
+                  isString(item["text"]) &&
+                  item["text"].length <= 120 &&
+                  typeof item["done"] === "boolean",
+              ))),
       ))
   )
     return false;
+  if (value["layers"] !== undefined) {
+    const layerRecord = isRecord(value["layers"]) ? value["layers"] : undefined;
+    const visibility =
+      layerRecord && isRecord(layerRecord["visibility"]) ? layerRecord["visibility"] : undefined;
+    const order = layerRecord?.["order"];
+    if (
+      !layerRecord ||
+      !visibility ||
+      !["background", "coordinates", "strokes", "text", "stickies"].every(
+        (key) => typeof visibility[key] === "boolean",
+      ) ||
+      (order !== undefined &&
+        (!Array.isArray(order) ||
+          order.length !== 4 ||
+          new Set(order).size !== 4 ||
+          !order.every((key) =>
+            ["coordinates", "text", "strokes", "stickies"].includes(String(key)),
+          )))
+    )
+      return false;
+  }
   return value["strokes"].every(
     (stroke: unknown) =>
       isRecord(stroke) &&

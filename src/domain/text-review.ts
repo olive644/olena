@@ -4,6 +4,23 @@ const accents: Record<string, string> = {
   voces: "vocês",
   nao: "não",
   tambem: "também",
+  ate: "até",
+  ja: "já",
+  so: "só",
+  eh: "é",
+  estao: "estão",
+  pagina: "página",
+  paginas: "páginas",
+  informacao: "informação",
+  informacoes: "informações",
+  organizacao: "organização",
+  organizacoes: "organizações",
+  possivel: "possível",
+  possiveis: "possíveis",
+  dificil: "difícil",
+  dificeis: "difíceis",
+  proxima: "próxima",
+  proximo: "próximo",
   anotacao: "anotação",
   anotacoes: "anotações",
   revisao: "revisão",
@@ -30,7 +47,7 @@ export function reviewPortugueseText(text: string): string {
             : corrected;
         })
         .replace(
-          /(^\s*|[!?]\s+|(?<!\d)\.\s+)([a-zá-úç])/gu,
+          /(^\s*|[!?]\s+|(?<!\d)\.\s+|\n\s*|:\s+)([a-zá-úç])/gu,
           (_, prefix: string, letter: string) => prefix + letter.toLocaleUpperCase("pt-BR"),
         );
     })

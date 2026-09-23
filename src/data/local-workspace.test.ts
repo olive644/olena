@@ -43,6 +43,33 @@ describe("local workspace", () => {
       }),
     ).toBe(false);
   });
+  it("valida vários objetos de imagem independentes", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    const image = {
+      id: "image-1",
+      dataUrl: "data:image/jpeg;base64,/9j/",
+      x: 100,
+      y: 120,
+      width: 420,
+      height: 300,
+      rotation: -12,
+    };
+    expect(
+      isHandwritingDocument({ ...document, images: [image, { ...image, id: "image-2" }] }),
+    ).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        images: [{ ...image, x: 900, width: 400 }],
+      }),
+    ).toBe(false);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        images: [{ ...image, dataUrl: "https://example.com/image.jpg" }],
+      }),
+    ).toBe(false);
+  });
   it("salva e recupera o estado versionado", () => {
     const workspace = createInitialWorkspace();
     saveWorkspace(window.localStorage, workspace);
@@ -95,6 +122,28 @@ describe("local workspace", () => {
     };
     expect(isHandwritingDocument(document)).toBe(true);
     expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [
+          {
+            ...document.stickies[0],
+            checklist: [{ id: "item-1", text: "Revisar", done: false }],
+          },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [
+          {
+            ...document.stickies[0],
+            checklist: [{ id: "item-1", text: "ok", done: "não" }],
+          },
+        ],
+      }),
+    ).toBe(false);
+    expect(
       isHandwritingDocument({ ...document, stickies: [{ ...document.stickies[0], x: 1200 }] }),
     ).toBe(false);
     expect(
@@ -105,21 +154,39 @@ describe("local workspace", () => {
     ).toBe(false);
   });
 
-  it("valida coordenadas com medições opcionais", () => {
-    const system = {
-      id: "axes-1",
-      origin: { x: 100, y: 500, pressure: 0.5 },
-      end: { x: 500, y: 100, pressure: 0.5 },
-      step: 2,
-      measurements: false,
-      color: "#17151c",
+  it("aceita visibilidade de camadas válida e rejeita camada incompleta", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    const visibility = {
+      background: true,
+      coordinates: true,
+      strokes: true,
+      text: true,
+      stickies: true,
     };
-    const document = { version: 1, paper: "grid", strokes: [], coordinateSystems: [system] };
-    expect(isHandwritingDocument(document)).toBe(true);
+    expect(isHandwritingDocument({ ...document, layers: { visibility } })).toBe(true);
     expect(
       isHandwritingDocument({
         ...document,
-        coordinateSystems: [{ ...system, measurements: "não" }],
+        layers: { visibility: { ...visibility, text: "yes" } },
+      }),
+    ).toBe(false);
+  });
+
+  it("aceita ordem de camadas completa e rejeita duplicatas", () => {
+    const document = { version: 1, paper: "blank", strokes: [] };
+    const visibility = {
+      background: true,
+      coordinates: true,
+      strokes: true,
+      text: true,
+      stickies: true,
+    };
+    const order = ["stickies", "strokes", "text", "coordinates"];
+    expect(isHandwritingDocument({ ...document, layers: { visibility, order } })).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        layers: { visibility, order: ["stickies", "strokes", "text", "text"] },
       }),
     ).toBe(false);
   });

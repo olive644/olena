@@ -1,12 +1,47 @@
 # HelenaStudy: Second Brain
 
-useCloudSync mantém dirty e changeRevision separados de lastItems. O snapshot só se torna confirmado depois de PUT bem-sucedido; falhas exibem offline e são repetidas no polling ou por Sincronizar agora. Firebase Auth usa browserLocalPersistence. O estado público do hook abastece a seção Conta e sincronização do Perfil. O logout explícito interrompe uploads antes de limpar as chaves sincronizadas locais.
+useCloudSync mantém dirty e changeRevision separados de lastItems. O snapshot só se torna confirmado depois de PUT bem-sucedido; falhas exibem offline e são repetidas no polling ou por Sincronizar agora. Antes de um PUT, o hook concilia chaves alteradas nos dois dispositivos: mudanças independentes são combinadas e conflitos preservam o local, guardando `helenastudy.sync-conflict.v1` para recuperação. O algoritmo é carregado sob demanda para não aumentar a entrada principal. Firebase Auth usa browserLocalPersistence. O estado público do hook abastece a seção Conta e sincronização do Perfil. O logout explícito interrompe uploads e remove a cópia de conflito antes de limpar as chaves sincronizadas locais.
 
-PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil caracteres. backgroundFrame opcional persiste posição e dimensões na folha de 1200 por 1600, incluindo histórico e exportação. Documentos antigos sem frame continuam preenchendo a folha. Selecionar expõe movimento, redimensionamento proporcional e remoção independente da imagem; cancelar fecha a importação sem alterar a folha. A commandbar usa tokens claros por padrão e grafite em data-theme dark.
+O hook useWorkspace grava até seis snapshots locais do workspace após alterações persistidas. A
+chave `helenastudy.workspace.history.v1` usa entradas completas, deduplica estados consecutivos e
+ignora snapshots acima de 1,5 milhão de caracteres para proteger o localStorage. O Perfil lista as
+versões e restaura uma anterior pelo reducer existente; a restauração segue o fluxo normal de
+persistência e sincronização, sem mudar o contrato do Firebase.
+
+O exportador da folha também monta um PDF local de uma página a partir do canvas, com JPEG embutido
+e download direto. A impressão permanece como caminho alternativo para o diálogo do sistema e para
+o caderno inteiro.
+
+A colaboração do caderno usa uma sala temporária em `/api/notebook-collab`, com até quatro pessoas,
+presença por nome, histórico curto de ações e documento validado no servidor. A primeira etapa envia
+atualizações do documento inteiro; CRDT por traço e comentários ficam para uma evolução posterior.
+
+Post-its preservam `text` para notas antigas e aceitam `checklist` opcional com até 12 itens. Cada
+item guarda `id`, `text` e `done`; o editor alterna entre nota e checklist, e o renderizador do
+canvas repete título, caixas marcadas e texto no PNG/PDF/impressão.
+
+A ordem dos post-its é a ordem de composição do canvas. Os controles Trazer para frente e Enviar
+para trás reordenam o array, registram no histórico existente e mantêm a mesma camada em rascunho,
+PNG, PDF e impressão.
+
+O estojo de coordenadas calcula localmente `deltaX`, `deltaY`, distância euclidiana, inclinação e
+ângulo a partir da origem, fim e valor de divisão. A prévia usa o gesto ainda não confirmado; após
+salvar, Selecionar escolhe o eixo e reabre a leitura. Um eixo vertical informa inclinação vertical
+em vez de dividir por zero.
+
+O Assistente local aparece ao selecionar um eixo. Ele sugere `Δy = m · Δx` ou uma forma vertical,
+permite revisão manual e cria um sticky de texto marcado como fórmula somente após o clique de
+confirmação. Ao selecionar traços, o botão OCR local carrega Tesseract.js sob demanda, rasteriza
+somente aquela seleção e preenche o mesmo campo de fórmula com uma sugestão editável. O motor é
+adequado para texto simples, números e operadores latinos, não promete interpretar toda matemática
+manuscrita e nunca substitui os traços originais. Reconhecimento avançado de símbolos e LaTeX exige
+um provedor especializado, autenticação segura e consentimento explícito.
+
+PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil caracteres. backgroundFrame opcional persiste posição e dimensões na folha de 1200 por 1600, incluindo histórico e exportação. Documentos antigos sem frame continuam preenchendo a folha. Novas imagens usam `HandwritingDocument.images`, uma coleção local de objetos com movimento, redimensionamento proporcional, rotação de 15° e remoção individual; cancelar fecha a importação sem alterar a folha. O painel Camadas permite subir ou descer coordenadas, texto, escrita e post-its; a ordem é normalizada para documentos antigos e entra no histórico, rascunho e exportação. A commandbar usa tokens claros por padrão e grafite em data-theme dark.
 
 No editor, seletores de estado ativo incluem handwriting-commandbar para superar a especificidade do hover. Ícones de ação usam preto no claro e branco no escuro; instrumentos mantêm cores próprias. Paper picker, brush panel e footer compartilham tokens e facetas claras por padrão, com uma única substituição grafite em data-theme dark. Post-its usam ajuste de fonte na renderização compartilhada para não truncar a exportação.
 
-PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho. renderPage usa a mesma imagem base em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. O painel lateral mostra o estojo ilustrado na caneta e as unidades na régua. Importação nunca altera o arquivo original.
+PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho; objetos em `images` seguem a mesma validação e limite total do documento. renderPage usa a imagem base e as imagens independentes em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. O painel lateral mostra o estojo ilustrado na caneta e as unidades na régua. Importação nunca altera o arquivo original.
 
 eraseAt centraliza a borracha para traços, pageText e caixas kind text. erasePageText usa a largura real de glifo monospace do canvas, margem 112/80, entrelinha 40 e raio 30 nas coordenadas do documento. Letras viram espaços para manter a posição; o snapshot existente inclui todo o texto. Caixas legadas recebem pointer-events none durante a borracha. Rótulos expansíveis do editor usam a mesma regra CSS em desktop e mobile.
 
@@ -193,7 +228,8 @@ expõe ações de revelar, avançar ou encerrar. O QR code continua usando a com
 
 1. **Núcleo local concluído:** Espaço do aluno, Agenda, Foco, Hábitos, Cadernos e planos de aula.
 2. **Sistema de estudos em evolução:** biblioteca, flashcards, revisão programada, quizzes, bingo,
-   metas, digitalização local e escrita à mão estão funcionais. OCR e banco de questões ainda não.
+   metas, digitalização local, escrita à mão e OCR local opcional estão funcionais; OCR matemático
+   especializado e banco de questões ainda não.
 3. **Helena inteligente com fundação definida:** contrato, consentimento e fronteira segura do
    backend estão prontos; provedor e interface ainda não estão ativados. Depois entram tutor,
    explicações, resumos e planos personalizados.
@@ -296,7 +332,15 @@ estabilização mantém curvas e diagonais intencionais.
 `HandwritingDocument.stickies` é opcional para continuar lendo documentos anteriores. Cada
 post-it tem posição fixa no papel, cor e texto limitado; sua camada HTML permite editar e mover,
 enquanto a rasterização em canvas o inclui na miniatura, no PNG e na impressão. A seleção
-retangular trabalha apenas com traços, não com post-its. A janela ampliada usa um segundo canvas
-que mapeia toques para as mesmas coordenadas da folha. `notebook/page-moved` altera somente
-`pageIds`, preservando o conteúdo de cada folha. A impressão abre uma janela local e depende do
-diálogo de impressão do navegador para gerar PDF.
+retangular trabalha com traços, sistemas de coordenadas, post-its e texto, permitindo mover ou apagar
+o conteúdo selecionado. O modo Laço livre seleciona os mesmos objetos por contorno, enquanto as ações
+de escala proporcional ajustam traços e eixos ao redor do centro da seleção. Post-its mantêm o controle
+de arraste próprio e entram na seleção pelo botão Mover; texto selecionado pode ser removido ou ter seu
+tamanho ajustado sem sair do fluxo de edição. O painel Camadas controla visibilidade de documento importado, coordenadas, escrita, texto e
+post-its; essa preferência fica dentro de `HandwritingDocument.layers.visibility` e participa do
+histórico. A janela ampliada usa um segundo canvas que mapeia toques para as mesmas coordenadas da
+folha. `notebook/page-moved` altera somente `pageIds`, preservando o conteúdo de cada folha. A
+impressão abre uma janela local e depende do diálogo de impressão do navegador para gerar PDF.
+O Texto tem correção automática local opcional ao perder foco, com acentos frequentes e
+capitalização após pontuação. Links, emails e blocos de código ficam preservados, e o botão Revisar
+texto continua disponível para aplicação manual.

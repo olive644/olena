@@ -22,8 +22,28 @@ export type HandwritingSticky = {
   id: string;
   x: number;
   y: number;
+  width?: number;
+  height?: number;
   color: "yellow" | "blue" | "lilac";
   text: string;
+  checklist?: HandwritingChecklistItem[] | undefined;
+  formula?: boolean;
+};
+
+export type HandwritingImage = {
+  id: string;
+  dataUrl: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation?: number;
+};
+
+export type HandwritingChecklistItem = {
+  id: string;
+  text: string;
+  done: boolean;
 };
 
 export type HandwritingCoordinateSystem = {
@@ -35,12 +55,42 @@ export type HandwritingCoordinateSystem = {
   color: string;
 };
 
+export type HandwritingLayerVisibility = {
+  background: boolean;
+  coordinates: boolean;
+  strokes: boolean;
+  text: boolean;
+  stickies: boolean;
+};
+
+export type HandwritingLayerKey = "coordinates" | "text" | "strokes" | "stickies";
+
+export const DEFAULT_HANDWRITING_LAYER_ORDER: HandwritingLayerKey[] = [
+  "coordinates",
+  "text",
+  "strokes",
+  "stickies",
+];
+
+export const DEFAULT_HANDWRITING_LAYER_VISIBILITY: HandwritingLayerVisibility = {
+  background: true,
+  coordinates: true,
+  strokes: true,
+  text: true,
+  stickies: true,
+};
+
 export type HandwritingDocument = {
   backgroundFrame?: { x: number; y: number; width: number; height: number } | undefined;
   background?: string | undefined;
   pageText?: string;
   pageTextSize?: number;
+  images?: HandwritingImage[];
   coordinateSystems?: HandwritingCoordinateSystem[];
+  layers?: {
+    visibility: HandwritingLayerVisibility;
+    order?: HandwritingLayerKey[];
+  };
   version: 1;
   paper: HandwritingPaper;
   paperColor?: HandwritingPaperColor;
