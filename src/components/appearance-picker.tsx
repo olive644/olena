@@ -10,9 +10,9 @@ const OPTIONS: readonly { value: ThemePreference; label: string }[] = [
 
 /* Botão único de aparência: mostra o ícone do tema oposto ao ativo (convite
    para trocar) e abre a folha de papel com as três opções de aparência.
-   "header" é o botão quadrado isolado do cabeçalho (desktop); "nav" imita um
-   item comum da barra inferior móvel, com rótulo abaixo do ícone. */
-export function AppearanceToggle({ variant = "header" }: { variant?: "header" | "nav" }) {
+   Existe uma única instância global no cabeçalho, visível tanto no desktop
+   quanto no celular. */
+export function AppearanceToggle() {
   const { theme, preference, setThemePreference } = useTheme();
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -24,26 +24,16 @@ export function AppearanceToggle({ variant = "header" }: { variant?: "header" | 
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, []);
 
-  const icon = <NavigationIcon name={theme === "dark" ? "theme-light" : "theme-dark"} />;
+  const icon = (
+    <NavigationIcon name={theme === "dark" ? "theme-light" : "theme-dark"} paperVariant="claro" />
+  );
   const label = `Aparência: tema ${theme === "dark" ? "escuro" : "claro"}. Toque para escolher.`;
 
   return (
-    <details
-      className={
-        variant === "nav" ? "appearance-picker appearance-picker--nav" : "appearance-picker"
-      }
-      ref={detailsRef}
-    >
-      {variant === "nav" ? (
-        <summary className="mobile-nav__item" aria-label={label}>
-          <span className="mobile-nav__icon">{icon}</span>
-          <span>Aparência</span>
-        </summary>
-      ) : (
-        <summary className="appearance-picker__trigger" aria-label={label}>
-          {icon}
-        </summary>
-      )}
+    <details className="appearance-picker" ref={detailsRef}>
+      <summary className="appearance-picker__trigger" aria-label={label}>
+        {icon}
+      </summary>
       <section className="appearance-picker__sheet" aria-label="Escolher aparência">
         <strong>Aparência</strong>
         <div className="appearance-picker__options">
