@@ -1999,28 +1999,58 @@ export function HandwritingStudio({
     try {
       const temporaryCanvas = document.createElement("canvas");
       const padding = 32;
-      const scale = 2;
+      const scale = 3;
       temporaryCanvas.width = Math.ceil((bounds.width + padding * 2) * scale);
       temporaryCanvas.height = Math.ceil((bounds.height + padding * 2) * scale);
       const context = temporaryCanvas.getContext("2d");
       if (!context) throw new Error("Não foi possível preparar a seleção para OCR.");
       context.scale(scale, scale);
-      context.fillStyle = "#fff9ef";
+      context.fillStyle = "#ffffff";
       context.fillRect(0, 0, bounds.width + padding * 2, bounds.height + padding * 2);
       context.translate(padding - bounds.x, padding - bounds.y);
       for (const stroke of selectedStrokes) drawStroke(context, stroke);
+
+      // O Tesseract reconhece melhor tinta preta em fundo branco puro do que
+      // os tons de papel da folha. Binarizamos a prévia sem alterar o desenho.
+      const pixels = context.getImageData(0, 0, temporaryCanvas.width, temporaryCanvas.height);
+      for (let index = 0; index < pixels.data.length; index += 4) {
+        const red = pixels.data[index] ?? 255;
+        const green = pixels.data[index + 1] ?? 255;
+        const blue = pixels.data[index + 2] ?? 255;
+        const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
+        const value = luminance < 220 ? 0 : 255;
+        pixels.data[index] = value;
+        pixels.data[index + 1] = value;
+        pixels.data[index + 2] = value;
+        pixels.data[index + 3] = 255;
+      }
+      context.putImageData(pixels, 0, 0);
+      const ocrImage = temporaryCanvas.toDataURL("image/png");
 
       const { createWorker, PSM } = await import("tesseract.js");
       worker = await createWorker("eng", 1, {
         logger: (message) => setOcrProgress(Math.round(message.progress * 100)),
       });
-      await worker.setParameters({
-        tessedit_pageseg_mode: PSM.SINGLE_LINE,
+      const parameters = {
         tessedit_char_whitelist:
           "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-=()[]{}.,/:^*xXyY",
-      });
-      const result = await worker.recognize(temporaryCanvas.toDataURL("image/png"));
-      const recognized = normalizeMathOcrText(result.data.text ?? "");
+        preserve_interword_spaces: "1",
+      } as const;
+      await worker.setParameters({ ...parameters, tessedit_pageseg_mode: PSM.SINGLE_BLOCK });
+      const blockResult = await worker.recognize(ocrImage);
+      let recognized = normalizeMathOcrText(blockResult.data.text ?? "");
+      const blockConfidence = Number(blockResult.data.confidence ?? 0);
+      if (!recognized || blockConfidence < 35) {
+        await worker.setParameters({ ...parameters, tessedit_pageseg_mode: PSM.SINGLE_LINE });
+        const lineResult = await worker.recognize(ocrImage);
+        const lineText = normalizeMathOcrText(lineResult.data.text ?? "");
+        if (
+          lineText &&
+          (!recognized || Number(lineResult.data.confidence ?? 0) > blockConfidence)
+        ) {
+          recognized = lineText;
+        }
+      }
       if (!recognized)
         throw new Error("O OCR não encontrou uma expressão legível. Revise ou digite a fórmula.");
       setFormulaDraft(recognized);

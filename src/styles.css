@@ -4925,6 +4925,13 @@ body.local-room-active {
   cursor: pointer;
 }
 
+.handwriting-sticky__menu-trigger .paper-editor-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  transform: rotate(1deg);
+}
+
 .handwriting-sticky__menu-trigger:hover,
 .handwriting-sticky__menu-trigger:focus-visible {
   border-radius: 5px;
@@ -5033,7 +5040,9 @@ body.local-room-active {
   flex: 1;
   flex-direction: column;
   gap: 4px;
+  overflow-y: auto;
   padding: 3px 4px 18px;
+  scrollbar-width: thin;
 }
 
 .handwriting-sticky__checklist > input,

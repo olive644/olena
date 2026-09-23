@@ -95,6 +95,12 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
           <path d="M32 33h8l-8 8Z" fill="#292432" />
           <path d="M13 17h20v3H13Zm0 7h17v3H13Zm0 7h9v3h-9Z" fill="#292432" />
         </>
+      ) : name === "more" ? (
+        <>
+          <circle cx="12" cy="24" r="3.4" fill="currentColor" />
+          <circle cx="24" cy="24" r="3.4" fill="currentColor" />
+          <circle cx="36" cy="24" r="3.4" fill="currentColor" />
+        </>
       ) : (
         <>
           <path d={shapes[name]} fill="#17151C" transform="translate(2 3)" />
