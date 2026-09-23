@@ -202,6 +202,23 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       });
     }
 
+    if (action === "resume" && request.method === "POST") {
+      const authorized = await authorizedParticipant(await readJsonBody(request));
+      if (authorized instanceof Response) return authorized;
+      const updated = touchNotebookCollabParticipant(
+        authorized.state,
+        authorized.participantId,
+        now(),
+        true,
+      );
+      const publicState = await save(updated);
+      return jsonResponse(200, {
+        participantId: authorized.participantId,
+        state: publicState,
+        streamUrl: dependencies.streamUrl(updated.code),
+      });
+    }
+
     if (["heartbeat", "leave"].includes(action ?? "") && request.method === "POST") {
       const authorized = await authorizedParticipant(await readJsonBody(request));
       if (authorized instanceof Response) return authorized;

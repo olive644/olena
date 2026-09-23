@@ -471,6 +471,10 @@ function drawCoordinateSystem(
   };
   arrow(xEnd, origin.y, true, xDirection);
   arrow(origin.x, yEnd, false, yDirection);
+  if (system.measurements === false) {
+    context.restore();
+    return;
+  }
   context.fillText("0", origin.x - 14, origin.y + 9);
   for (
     let distance = tickGap, value = step;
@@ -826,7 +830,6 @@ export function HandwritingStudio({
   const [layerOrder, setLayerOrder] = useState<HandwritingLayerKey[]>(
     () => startingDocument?.layers?.order ?? [...DEFAULT_HANDWRITING_LAYER_ORDER],
   );
-  const [layersOpen, setLayersOpen] = useState(false);
   const [textMode, setTextMode] = useState(false);
   const [textAutoCorrect, setTextAutoCorrect] = useState(true);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
@@ -845,6 +848,10 @@ export function HandwritingStudio({
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
+    // A janela de escrita fica sobre a folha e captura os ponteiros. Fechá-la
+    // ao trocar de ferramenta garante que régua, borracha e seleção recebam
+    // os próximos gestos imediatamente.
+    setWritingWindowOpen(false);
     if (next === "highlighter" && tool !== "highlighter") {
       penInk.current = color;
       setColor("#facc15");
@@ -877,20 +884,6 @@ export function HandwritingStudio({
     setPaperColor(nextColor);
     if (nextColor === "night" && color === "#17151c") setColor("#fff9ef");
     if (nextColor !== "night" && color === "#fff9ef") setColor("#17151c");
-  }
-
-  function moveLayer(layer: HandwritingLayerKey, direction: -1 | 1) {
-    const index = layerOrder.indexOf(layer);
-    const nextIndex = index + direction;
-    if (index < 0 || nextIndex < 0 || nextIndex >= layerOrder.length) return;
-    remember();
-    setLayerOrder((current) => {
-      const next = [...current];
-      const [moved] = next.splice(index, 1);
-      if (!moved) return current;
-      next.splice(nextIndex, 0, moved);
-      return next;
-    });
   }
 
   const currentDocument: HandwritingDocument = useMemo(
@@ -1679,6 +1672,7 @@ export function HandwritingStudio({
             origin: coordinateMeasure.start,
             end: coordinateMeasure.end,
             step: coordinateStep,
+            measurements: coordinateMeasurements,
             color,
           },
         ]);
@@ -1696,8 +1690,7 @@ export function HandwritingStudio({
       if (selection.lasso) {
         const point = canvasRef.current ? canvasPoint(canvasRef.current, event) : selection.start;
         const polygon = [...selection.path, point];
-        setSelectedIds([
-          ...strokes
+        const selectedStrokeIds = strokes
             .filter((stroke) => {
               const box = strokeBounds(stroke);
               return pointInPolygon(
@@ -1705,8 +1698,8 @@ export function HandwritingStudio({
                 polygon,
               );
             })
-            .map((stroke) => stroke.id),
-          ...(layerVisibility.coordinates
+            .map((stroke) => stroke.id);
+        const selectedCoordinateIds = layerVisibility.coordinates
             ? coordinateSystems
                 .filter((system) => {
                   const box = coordinateBounds(system);
@@ -1716,8 +1709,8 @@ export function HandwritingStudio({
                   );
                 })
                 .map((system) => system.id)
-            : []),
-          ...(layerVisibility.stickies
+            : [];
+        const selectedStickyIds = layerVisibility.stickies
             ? stickies
                 .filter((sticky) => {
                   const box = stickyBounds(sticky);
@@ -1727,8 +1720,8 @@ export function HandwritingStudio({
                   );
                 })
                 .map((sticky) => sticky.id)
-            : []),
-          ...(layerVisibility.text && pageText
+            : [];
+        const selectedTextIds = layerVisibility.text && pageText
             ? pointInPolygon(
                 {
                   x:
@@ -1743,8 +1736,8 @@ export function HandwritingStudio({
               )
               ? [PAGE_TEXT_SELECTION_ID]
               : []
-            : []),
-          ...(layerVisibility.background
+            : [];
+        const selectedImageIds = layerVisibility.background
             ? importedImages
                 .filter((image) => {
                   const box = importedImageBounds(image);
@@ -1754,8 +1747,15 @@ export function HandwritingStudio({
                   );
                 })
                 .map((image) => image.id)
-            : []),
+            : [];
+        setSelectedIds([
+          ...selectedStrokeIds,
+          ...selectedCoordinateIds,
+          ...selectedStickyIds,
+          ...selectedTextIds,
+          ...selectedImageIds,
         ]);
+        setSelectedCoordinateIds(selectedCoordinateIds);
         setSelectionPath(null);
         return;
       }
@@ -1767,31 +1767,37 @@ export function HandwritingStudio({
           width: Math.abs(point.x - selection.start.x),
           height: Math.abs(point.y - selection.start.y),
         };
-        setSelectedIds([
-          ...strokes
+        const selectedStrokeIds = strokes
             .filter((stroke) => overlaps(strokeBounds(stroke), box))
-            .map((stroke) => stroke.id),
-          ...(layerVisibility.coordinates
+            .map((stroke) => stroke.id);
+        const selectedCoordinateIds = layerVisibility.coordinates
             ? coordinateSystems
                 .filter((system) => overlaps(coordinateBounds(system), box))
                 .map((system) => system.id)
-            : []),
-          ...(layerVisibility.stickies
+            : [];
+        const selectedStickyIds = layerVisibility.stickies
             ? stickies
                 .filter((sticky) => overlaps(stickyBounds(sticky), box))
                 .map((sticky) => sticky.id)
-            : []),
-          ...(layerVisibility.text &&
+            : [];
+        const selectedTextIds = layerVisibility.text &&
           pageText &&
           overlaps(pageTextBounds(pageText, pageTextSize), box)
             ? [PAGE_TEXT_SELECTION_ID]
-            : []),
-          ...(layerVisibility.background
+            : [];
+        const selectedImageIds = layerVisibility.background
             ? importedImages
                 .filter((image) => overlaps(importedImageBounds(image), box))
                 .map((image) => image.id)
-            : []),
+            : [];
+        setSelectedIds([
+          ...selectedStrokeIds,
+          ...selectedCoordinateIds,
+          ...selectedStickyIds,
+          ...selectedTextIds,
+          ...selectedImageIds,
         ]);
+        setSelectedCoordinateIds(selectedCoordinateIds);
         setSelectionBox(null);
         setSelectionPath(null);
       }
@@ -2513,7 +2519,13 @@ export function HandwritingStudio({
 
   function resetView() {
     setZoom(1);
-    viewportRef.current?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    // Use an immediate reset: smooth scrolling can leave the editor in an
+    // intermediate position when the user starts drawing right away.
+    viewport.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    viewport.scrollTop = 0;
+    viewport.scrollLeft = 0;
   }
 
   useEffect(() => {
@@ -2694,38 +2706,12 @@ export function HandwritingStudio({
           </button>
           <button
             type="button"
-            className={!textMode && tool === "coordinates" ? "is-active" : ""}
-            aria-label="Sistema de coordenadas"
-            title="Sistema de coordenadas: arraste da origem até o fim dos eixos"
-            aria-pressed={!textMode && tool === "coordinates"}
-            onClick={() => setTool("coordinates")}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>Coordenadas</span>
-          </button>
-          <button
-            type="button"
-            className={layersOpen ? "is-active" : ""}
-            aria-label="Camadas da folha"
-            aria-pressed={layersOpen}
-            onClick={() => setLayersOpen((open) => !open)}
-          >
-            <PaperEditorIcon name="layers" /> <span>Camadas</span>
-          </button>
-          <button
-            type="button"
             aria-label="Texto na página inteira"
             aria-pressed={textMode}
-            onClick={() => setTextMode((active) => !active)}
+            onClick={() => {
+              setWritingWindowOpen(false);
+              setTextMode((active) => !active);
+            }}
           >
             <PaperEditorIcon name="text" /> <span>Texto</span>
           </button>
@@ -2737,7 +2723,10 @@ export function HandwritingStudio({
             className={writingWindowOpen ? "is-active" : ""}
             aria-label="Janela de escrita ampliada"
             aria-pressed={writingWindowOpen}
-            onClick={() => setWritingWindowOpen((open) => !open)}
+            onClick={() => {
+              setTextMode(false);
+              setWritingWindowOpen((open) => !open);
+            }}
           >
             <PaperEditorIcon name="zoomIn" /> <span>Janela de escrita</span>
           </button>
@@ -2972,19 +2961,6 @@ export function HandwritingStudio({
           {textMode && (
             <button
               type="button"
-              title="Ajusta acentos comuns e início de frases. Use Desfazer para reverter."
-              onClick={() => {
-                remember();
-                setPageText(reviewPortugueseText(pageText));
-                setRedoStack([]);
-              }}
-            >
-              <PaperEditorIcon name="review" /> <span>Revisar texto</span>
-            </button>
-          )}
-          {textMode && (
-            <button
-              type="button"
               className={textAutoCorrect ? "is-active" : ""}
               aria-label="Correção automática de texto"
               aria-pressed={textAutoCorrect}
@@ -3106,7 +3082,7 @@ export function HandwritingStudio({
       )}
 
       <div
-        className={`handwriting-workspace${!textMode && (layersOpen || tool === "ruler" || (tool === "pen" && !writingWindowOpen)) ? " handwriting-workspace--brushes" : ""}`}
+        className={`handwriting-workspace${!textMode && (tool === "ruler" || tool === "coordinates" || (tool === "pen" && !writingWindowOpen)) ? " handwriting-workspace--brushes" : ""}`}
         inert={fileAction === "import"}
       >
         <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
@@ -3149,48 +3125,6 @@ export function HandwritingStudio({
               <span>{label}</span>
             </button>
           ))}
-          {tool === "coordinates" && !textMode && (
-            <div className="handwriting-coordinate-picker" aria-label="Variações das coordenadas">
-              <strong>Coordenadas</strong>
-              {([1, 2, 5, 10] as const).map((step) => (
-                <button
-                  type="button"
-                  key={step}
-                  className={coordinateStep === step ? "is-active" : ""}
-                  aria-pressed={coordinateStep === step}
-                  onClick={() => setCoordinateStep(step)}
-                >
-                  <svg viewBox="0 0 64 52" aria-hidden="true">
-                    <path
-                      d="M10 43V8M10 43H57M10 10l-4 7m4-7 4 7m41 26-7-4m7 4-7 4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                    <path d="M26 38v10M42 38v10M5 27h10" stroke="currentColor" strokeWidth="2" />
-                  </svg>
-                  <span>Escala {step}</span>
-                </button>
-              ))}
-              <label>
-                <input
-                  type="checkbox"
-                  checked={coordinateMeasurements}
-                  onChange={(event) => setCoordinateMeasurements(event.target.checked)}
-                />
-                <span>Medições</span>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={equalCoordinateAxes}
-                  onChange={(event) => setEqualCoordinateAxes(event.target.checked)}
-                />
-                <span>Eixos iguais</span>
-              </label>
-            </div>
-          )}
         </aside>
 
         <div className="handwriting-viewport" ref={viewportRef}>
@@ -3780,6 +3714,7 @@ export function HandwritingStudio({
                   type="button"
                   className="handwriting-sticky__resize"
                   aria-label="Redimensionar post-it"
+                  title="Arraste o canto para redimensionar"
                   onPointerDown={(event) => startStickyResize(event, sticky)}
                   onPointerMove={(event) => resizeSticky(event, sticky)}
                   onPointerUp={() => {
@@ -3789,7 +3724,7 @@ export function HandwritingStudio({
                     stickyResizeRef.current = null;
                   }}
                 >
-                  <PaperEditorIcon name="expand" />
+                  <PaperEditorIcon name="resize" />
                 </button>
               </div>
             ))}
@@ -3912,6 +3847,14 @@ export function HandwritingStudio({
             <label className="handwriting-coordinate-toggle">
               <input
                 type="checkbox"
+                checked={coordinateMeasurements}
+                onChange={(event) => setCoordinateMeasurements(event.target.checked)}
+              />
+              <span>Medições nos eixos</span>
+            </label>
+            <label className="handwriting-coordinate-toggle">
+              <input
+                type="checkbox"
                 checked={equalCoordinateAxes}
                 onChange={(event) => setEqualCoordinateAxes(event.target.checked)}
               />
@@ -3949,88 +3892,6 @@ export function HandwritingStudio({
                 )}
               </section>
             )}
-          </aside>
-        )}
-        {layersOpen && !textMode && (
-          <aside
-            className="handwriting-brush-panel handwriting-layer-panel"
-            aria-label="Camadas da folha"
-          >
-            <header>
-              <div>
-                <small>ORGANIZAR FOLHA</small>
-                <h3>Camadas</h3>
-              </div>
-            </header>
-            <p>
-              Oculte partes da página sem apagar conteúdo. A configuração fica salva no caderno.
-            </p>
-            {(
-              [
-                ["background", "Documento importado", "Imagem ou PDF de fundo"],
-                ["coordinates", "Coordenadas", "Eixos e marcações matemáticas"],
-                ["strokes", "Escrita e marca-texto", "Traços feitos com caneta"],
-                ["text", "Texto da página", "Texto digitado em tela cheia"],
-                ["stickies", "Post-its", "Anotações móveis e lembretes"],
-              ] as const
-            ).map(([key, title, description]) => {
-              const reorderable = key !== "background";
-              const layerIndex = reorderable ? layerOrder.indexOf(key as HandwritingLayerKey) : -1;
-              return (
-                <label className="handwriting-layer-row" key={key}>
-                  <input
-                    type="checkbox"
-                    checked={layerVisibility[key]}
-                    onChange={(event) => {
-                      remember();
-                      setLayerVisibility((current) => ({
-                        ...current,
-                        [key]: event.target.checked,
-                      }));
-                    }}
-                  />
-                  <span>
-                    <strong>{title}</strong>
-                    <small>{description}</small>
-                    <span className="handwriting-layer-reorder">
-                      <button
-                        type="button"
-                        aria-label={`Subir camada ${title}`}
-                        disabled={layerIndex <= 0}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          if (reorderable) moveLayer(key as HandwritingLayerKey, -1);
-                        }}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Descer camada ${title}`}
-                        disabled={!reorderable || layerIndex >= layerOrder.length - 1}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          if (reorderable) moveLayer(key as HandwritingLayerKey, 1);
-                        }}
-                      >
-                        ↓
-                      </button>
-                    </span>
-                  </span>
-                </label>
-              );
-            })}
-            <button
-              type="button"
-              className="handwriting-layer-reset"
-              onClick={() => {
-                remember();
-                setLayerVisibility({ ...DEFAULT_HANDWRITING_LAYER_VISIBILITY });
-                setLayerOrder([...DEFAULT_HANDWRITING_LAYER_ORDER]);
-              }}
-            >
-              Mostrar todas
-            </button>
           </aside>
         )}
       </div>
