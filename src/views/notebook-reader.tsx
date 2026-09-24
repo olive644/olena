@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { HelenaLoading } from "../components/helena-loading";
+import { roomAppCheckToken } from "../data/room-app-check";
 
 export default function NotebookReader({ token }: { token: string }) {
   const [pages, setPages] = useState<{ title: string; image: string }[]>([]);
@@ -8,11 +9,13 @@ export default function NotebookReader({ token }: { token: string }) {
     const controller = new AbortController();
     void (async () => {
       try {
+        const appCheck = await roomAppCheckToken();
         const response = await fetch("/api/notebook-collab?action=view-read", {
           method: "POST",
           signal: controller.signal,
           headers: {
             "Content-Type": "application/json",
+            ...(appCheck ? { "X-Firebase-AppCheck": appCheck } : {}),
           },
           body: JSON.stringify({ token }),
         });

@@ -9,8 +9,8 @@ Node reais para detectar falhas que o resolvedor do Vite não reproduz.
 A criação da sala grava a folha inicial na mesma operação que gera o convite.
 O token de leitura continua isolado das credenciais de edição; a proteção App Check,
 os limites de requisições e o limite de quatro participantes continuam aplicados.
-A leitura pública por token não depende de reCAPTCHA, pois o token é aleatório,
-somente leitura e protegido por limite de requisições.
+A leitura pública por token também exige App Check. A chave reCAPTCHA Enterprise
+precisa autorizar `olenastudy.vercel.app` para o Modo Sala e os links de visitante.
 
 ## Navegação móvel e smoke tests
 

@@ -47,7 +47,6 @@ export function createRoomGuard(
       });
     let verification = "valid";
     const token = request.headers.get("X-Firebase-AppCheck");
-    const publicRead = requestedAction === "view-read";
     if (!projectNumber || !appId) verification = "misconfigured";
     else if (!token) verification = "missing";
     else {
@@ -65,7 +64,7 @@ export function createRoomGuard(
     }
     const blockedStatus = verification === "misconfigured" ? 503 : 403;
     log(verification, enforce && verification !== "valid" ? blockedStatus : 200);
-    if (enforce && verification !== "valid" && !publicRead) {
+    if (enforce && verification !== "valid") {
       return reject(
         blockedStatus,
         verification === "misconfigured"
