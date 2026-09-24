@@ -45,6 +45,9 @@ import { HandwritingFooter } from "./handwriting-footer";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
+import { HandwritingInkOptions } from "./handwriting-ink-options";
+import { HandwritingSelectionActions } from "./handwriting-selection-actions";
+import { HandwritingToolGroup } from "./handwriting-tool-group";
 import {
   PAGE_WIDTH,
   PAGE_HEIGHT,
@@ -2287,350 +2290,71 @@ export function HandwritingStudio({
         aria-label="Ferramentas de escrita"
         inert={fileAction === "import"}
       >
-        <div className="handwriting-tool-group" aria-label="Instrumentos">
-          <button
-            type="button"
-            className={!textMode && tool === "ruler" ? "is-active" : ""}
-            aria-label="Régua"
-            title="Régua: arraste para traçar uma linha reta"
-            aria-pressed={!textMode && tool === "ruler"}
-            onClick={() => setTool("ruler")}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#B88C13" d="m2 15 14-13 7 7-14 14Z" />
-              <path fill="#FACC15" d="m2 13 14-12 6 6L8 20Z" />
-              <path fill="#FFE88D" d="m2 13 14-12 2 2L4 15Z" />
-              <path stroke="#51465D" strokeWidth="1.5" d="m6 10 2 2m1-5 3 3m0-6 2 2m1-5 3 3" />
-            </svg>
-            <span>Régua</span>
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "coordinates" ? "is-active" : ""}
-            aria-label="Sistema de coordenadas"
-            title="Sistema de coordenadas: arraste da origem até o fim dos eixos"
-            aria-pressed={!textMode && tool === "coordinates"}
-            onClick={() => setTool("coordinates")}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>Coordenadas</span>
-          </button>
-          <button
-            type="button"
-            className={layersOpen ? "is-active" : ""}
-            aria-label="Camadas da folha"
-            aria-pressed={layersOpen}
-            title="Camadas da folha: mostrar, ocultar e ordenar elementos"
-            onClick={() => setLayersOpen((open) => !open)}
-          >
-            <PaperEditorIcon name="layers" /> <span>Camadas</span>
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "pen" ? "is-active" : ""}
-            aria-label="Caneta"
-            aria-pressed={!textMode && tool === "pen"}
-            onClick={() => setTool("pen")}
-          >
-            <PaperEditorIcon name="pen" /> <span>Caneta</span>
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "highlighter" ? "is-active" : ""}
-            aria-label="Marca-texto"
-            aria-pressed={!textMode && tool === "highlighter"}
-            onClick={() => setTool("highlighter")}
-          >
-            <PaperEditorIcon name="highlighter" /> <span>Marca-texto</span>
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "eraser" ? "is-active" : ""}
-            aria-label="Borracha"
-            aria-pressed={!textMode && tool === "eraser"}
-            onClick={() => setTool("eraser")}
-          >
-            <PaperEditorIcon name="eraser" /> <span>Borracha</span>
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "hand" ? "is-active" : ""}
-            aria-label="Mover folha"
-            aria-pressed={!textMode && tool === "hand"}
-            onClick={() => setTool("hand")}
-          >
-            <PaperEditorIcon name="hand" /> <span>Mover</span>
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "select" ? "is-active" : ""}
-            aria-label="Selecionar traços"
-            aria-pressed={!textMode && tool === "select"}
-            onClick={() => setTool("select")}
-          >
-            <PaperEditorIcon name="select" /> <span>Selecionar</span>
-          </button>
-          <button
-            type="button"
-            aria-label="Texto na página inteira"
-            aria-pressed={textMode}
-            onClick={() => {
-              setWritingWindowOpen(false);
-              setTextMode((active) => !active);
-            }}
-          >
-            <PaperEditorIcon name="text" /> <span>Texto</span>
-          </button>
-          <button type="button" aria-label="Adicionar post-it" onClick={() => addSticky()}>
-            <PaperEditorIcon name="sticky" /> <span>Post-it</span>
-          </button>
-          <button
-            type="button"
-            className={writingWindowOpen ? "is-active" : ""}
-            aria-label="Janela de escrita ampliada"
-            aria-pressed={writingWindowOpen}
-            onClick={() => {
-              setTextMode(false);
-              setWritingWindowOpen((open) => !open);
-            }}
-          >
-            <PaperEditorIcon name="zoomIn" /> <span>Janela de escrita</span>
-          </button>
-        </div>
+        <HandwritingToolGroup
+          textMode={textMode}
+          tool={tool}
+          layersOpen={layersOpen}
+          writingWindowOpen={writingWindowOpen}
+          onSelectTool={setTool}
+          onToggleLayers={() => setLayersOpen((open) => !open)}
+          onToggleText={() => {
+            setWritingWindowOpen(false);
+            setTextMode((active) => !active);
+          }}
+          onAddSticky={() => addSticky()}
+          onToggleWritingWindow={() => {
+            setTextMode(false);
+            setWritingWindowOpen((open) => !open);
+          }}
+        />
 
         {(selectedIds.length > 0 || tool === "select") && (
-          <div className="handwriting-selection-actions" aria-label="Itens selecionados">
-            {tool === "select" && (
-              <>
-                <span>Modo</span>
-                <button
-                  type="button"
-                  aria-pressed={selectionMode === "rectangle"}
-                  onClick={() => setSelectionMode("rectangle")}
-                >
-                  Retângulo
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={selectionMode === "lasso"}
-                  onClick={() => setSelectionMode("lasso")}
-                >
-                  Laço livre
-                </button>
-              </>
-            )}
-            {selectedIds.length > 0 && (
-              <>
-                <span>
-                  {selectedIds.length} item{selectedIds.length === 1 ? "" : "s"} selecionado
-                  {selectedIds.length === 1 ? "" : "s"}
-                </span>
-                <button
-                  type="button"
-                  disabled={!strokes.some((stroke) => selectedIds.includes(stroke.id))}
-                  onClick={alignSelection}
-                >
-                  Alinhar
-                </button>
-                <button type="button" onClick={() => scaleSelection(1.12)}>
-                  Aumentar
-                </button>
-                <button type="button" onClick={() => scaleSelection(0.88)}>
-                  Diminuir
-                </button>
-                <button type="button" onClick={deleteSelection}>
-                  Apagar seleção
-                </button>
-              </>
-            )}
-            {selectedCoordinateIds.length > 0 && (
-              <>
-                <span>
-                  {selectedCoordinateIds.length} sistema
-                  {selectedCoordinateIds.length === 1 ? "" : "s"} de coordenadas selecionado
-                  {selectedCoordinateIds.length === 1 ? "" : "s"}
-                </span>
-                <button type="button" onClick={deleteSelection}>
-                  Apagar coordenadas
-                </button>
-              </>
-            )}
-            {tool === "select" && background && (
-              <>
-                <span>Imagem importada selecionada</span>
-                <button type="button" onClick={removeBackground}>
-                  Remover imagem
-                </button>
-              </>
-            )}
-            {tool === "select" &&
-              importedImages.some((image) => selectedIds.includes(image.id)) && (
-                <>
-                  <span>Imagem(ns) importada(s) selecionada(s)</span>
-                  <button type="button" onClick={removeSelectedImages}>
-                    Remover imagem(ns)
-                  </button>
-                  <button type="button" onClick={() => rotateSelectedImages(-1)}>
-                    Girar −15°
-                  </button>
-                  <button type="button" onClick={() => rotateSelectedImages(1)}>
-                    Girar +15°
-                  </button>
-                </>
-              )}
-            {tool === "select" && pageText && (
-              <>
-                <span>Texto: {pageTextSize}px</span>
-                <button
-                  type="button"
-                  disabled={pageTextSize <= 16}
-                  onClick={() => {
-                    remember();
-                    setPageTextSize((size) => Math.max(16, size - 2));
-                  }}
-                >
-                  Diminuir texto
-                </button>
-                <button
-                  type="button"
-                  disabled={pageTextSize >= 72}
-                  onClick={() => {
-                    remember();
-                    setPageTextSize((size) => Math.min(72, size + 2));
-                  }}
-                >
-                  Aumentar texto
-                </button>
-              </>
-            )}
-            {tool === "select" && (selectedCoordinateSystem || selectedStrokeCount > 0) && (
-              <div className="handwriting-formula-assist">
-                <span>Assistente local</span>
-                <input
-                  aria-label="Fórmula matemática"
-                  value={formulaDraft}
-                  maxLength={240}
-                  onChange={(event) => setFormulaDraft(event.target.value)}
-                  placeholder="Ex.: y = 2x + 1"
-                />
-                {selectedCoordinateSystem && (
-                  <button type="button" onClick={useCoordinateFormula}>
-                    Usar leitura
-                  </button>
-                )}
-                {selectedStrokeCount > 0 && (
-                  <button
-                    type="button"
-                    disabled={ocrBusy}
-                    onClick={() => void recognizeSelectedFormula()}
-                  >
-                    {ocrBusy ? `OCR ${ocrProgress}%` : "Reconhecer OCR local"}
-                  </button>
-                )}
-                <button
-                  type="button"
-                  disabled={!formulaDraft.trim()}
-                  onClick={insertFormulaAnnotation}
-                >
-                  Inserir fórmula
-                </button>
-              </div>
-            )}
-          </div>
+          <HandwritingSelectionActions
+            tool={tool}
+            selectionMode={selectionMode}
+            onSelectionModeChange={setSelectionMode}
+            selectedIds={selectedIds}
+            selectedCoordinateIds={selectedCoordinateIds}
+            canAlign={strokes.some((stroke) => selectedIds.includes(stroke.id))}
+            onAlign={alignSelection}
+            onScale={scaleSelection}
+            onDelete={deleteSelection}
+            hasBackground={Boolean(background)}
+            onRemoveBackground={removeBackground}
+            hasSelectedImages={importedImages.some((image) => selectedIds.includes(image.id))}
+            onRemoveSelectedImages={removeSelectedImages}
+            onRotateImages={rotateSelectedImages}
+            hasPageText={Boolean(pageText)}
+            pageTextSize={pageTextSize}
+            onChangeTextSize={(delta) => {
+              remember();
+              setPageTextSize((size) =>
+                delta < 0 ? Math.max(16, size + delta) : Math.min(72, size + delta),
+              );
+            }}
+            hasSelectedCoordinateSystem={Boolean(selectedCoordinateSystem)}
+            selectedStrokeCount={selectedStrokeCount}
+            formulaDraft={formulaDraft}
+            onFormulaDraftChange={setFormulaDraft}
+            ocrBusy={ocrBusy}
+            ocrProgress={ocrProgress}
+            onUseCoordinateFormula={useCoordinateFormula}
+            onRecognizeFormula={recognizeSelectedFormula}
+            onInsertFormula={insertFormulaAnnotation}
+          />
         )}
 
-        <div className="handwriting-ink-options">
-          <fieldset className="ink-palette" disabled={tool === "eraser"}>
-            <legend>Cor da tinta</legend>
-            {[
-              ["#17151c", "Grafite"],
-              ["#7c3aed", "Roxo"],
-              ["#ef476f", "Rosa"],
-              ["#2d8a67", "Verde"],
-              ["#facc15", "Amarelo"],
-              ["#fff9ef", "Creme"],
-            ].map(([ink, label]) => (
-              <button
-                key={ink}
-                type="button"
-                className="ink-swatch"
-                aria-label={`Tinta ${label}`}
-                aria-pressed={color.toLowerCase() === ink}
-                style={{ backgroundColor: ink }}
-                onClick={() => ink && setColor(ink)}
-              >
-                <span aria-hidden="true">{color.toLowerCase() === ink ? "✓" : ""}</span>
-              </button>
-            ))}
-            <label className="ink-custom" title="Escolher outra cor">
-              <span>Outra</span>
-              <input
-                type="color"
-                aria-label="Cor da tinta"
-                value={color}
-                disabled={tool === "eraser"}
-                onChange={(event) => setColor(event.target.value)}
-              />
-            </label>
-          </fieldset>
-          <fieldset className="stroke-palette" disabled={tool === "eraser"}>
-            <legend>Espessura do traço</legend>
-            {(
-              [
-                [3, "Fino"],
-                [5, "Regular"],
-                [8, "Forte"],
-              ] as const
-            ).map(([size, label]) => (
-              <button
-                type="button"
-                key={size}
-                aria-label={`Traço ${label}`}
-                aria-pressed={width === size}
-                onClick={() => setWidth(size)}
-              >
-                <svg viewBox="0 0 64 24" aria-hidden="true">
-                  <path
-                    d="M5 17C16 2 19 23 31 10S43 23 59 7"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={size}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span>{label}</span>
-              </button>
-            ))}
-          </fieldset>
-          <label className="handwriting-assist">
-            <input
-              type="checkbox"
-              checked={stabilization}
-              onChange={(event) => setStabilization(event.target.checked)}
-            />
-            <span>
-              <strong>Ajuste inteligente</strong>
-              <small>Suaviza e endireita traços leves</small>
-            </span>
-          </label>
-          <label className="handwriting-pen-only">
-            <input
-              type="checkbox"
-              checked={penOnly}
-              onChange={(event) => setPenOnly(event.target.checked)}
-            />
-            <span>Só caneta, dedo move</span>
-          </label>
-        </div>
+        <HandwritingInkOptions
+          tool={tool}
+          color={color}
+          onColorChange={setColor}
+          width={width}
+          onWidthChange={setWidth}
+          stabilization={stabilization}
+          onStabilizationChange={setStabilization}
+          penOnly={penOnly}
+          onPenOnlyChange={setPenOnly}
+        />
 
         <HandwritingHistoryBar
           textMode={textMode}
