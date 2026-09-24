@@ -35,13 +35,8 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await menu.getByRole("button", { name: "Fechar menu" }).click();
     }
     if (theme === "light") {
-      if (mobile) {
-        await navigation.getByLabel(/Aparência/).click();
-        await page.getByRole("button", { name: "Escuro", exact: true }).click();
-      } else {
-        await page.locator(".page-header__theme .appearance-picker__trigger").click();
-        await page.getByRole("button", { name: "Escuro", exact: true }).click();
-      }
+      await page.locator(".page-header__theme .appearance-picker__trigger").click();
+      await page.getByRole("button", { name: "Escuro", exact: true }).click();
     }
   }
   await page.screenshot({ path: testInfo.outputPath("paper-icons.png"), fullPage: true });
@@ -87,7 +82,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("usa o ícone grafite original em Começar prática", async ({ page }, testInfo) => {
+test("usa o ícone grafite original em Começar prática", async ({ page }) => {
   for (const theme of ["light", "dark"]) {
     const action = page.getByRole("button", { name: "Começar prática", exact: true });
     await expect(
@@ -98,13 +93,7 @@ test("usa o ícone grafite original em Começar prática", async ({ page }, test
     ).toBeHidden();
 
     if (theme === "light") {
-      await page
-        .locator(
-          testInfo.project.name === "mobile"
-            ? ".mobile-nav .appearance-picker summary"
-            : ".page-header__theme .appearance-picker__trigger",
-        )
-        .click();
+      await page.locator(".page-header__theme .appearance-picker__trigger").click();
       await page.getByRole("button", { name: "Escuro", exact: true }).click();
     }
   }
@@ -414,7 +403,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   );
   await expect(page.locator("main")).toHaveCSS("animation-name", "mobile-view-arrive");
 
-  await navigation.getByLabel(/Aparência/).click();
+  await page.locator(".page-header__theme .appearance-picker__trigger").click();
   await page.getByRole("button", { name: "Escuro", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(navigation).toHaveCSS("background-color", "rgb(255, 255, 255)");

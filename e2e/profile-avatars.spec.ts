@@ -7,18 +7,10 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/");
-  const profileMenu = page.locator(
-    testInfo.project.name === "mobile" ? ".mobile-profile-menu" : ".page-header .profile-menu",
-  );
+  const profileMenu = page.locator(".page-header .profile-menu");
   const avatars = ["Alice", "Soso Estrelinha", "Nicolas", "Guilherme", "Erick", "Miau", "Luizão"];
   for (const theme of ["Claro", "Escuro"]) {
-    await page
-      .locator(
-        testInfo.project.name === "mobile"
-          ? ".mobile-nav .appearance-picker summary"
-          : ".page-header__theme .appearance-picker__trigger",
-      )
-      .click();
+    await page.locator(".page-header__theme .appearance-picker__trigger").click();
     await page.getByRole("button", { name: theme, exact: true }).click();
     await profileMenu.locator("summary").click();
     for (const name of avatars) {
