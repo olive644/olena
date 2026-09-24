@@ -114,6 +114,10 @@ async function request<T>(action: string, body: Record<string, unknown>): Promis
   return payload;
 }
 
+// Espera curta para juntar traços seguidos em um só envio: o colega vê o traço
+// quase assim que a caneta é solta, sem uma escrita por ponto.
+const PUBLISH_DEBOUNCE_MS = 140;
+
 export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Options) {
   const [state, setState] = useState<NotebookCollaborationState>({
     code: "",
@@ -366,7 +370,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
           lastPublishedRef.current = "";
           void publish(pending.document, pending.label);
         }
-      }, 350);
+      }, PUBLISH_DEBOUNCE_MS);
     },
     [publish],
   );

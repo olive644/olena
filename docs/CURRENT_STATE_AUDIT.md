@@ -746,3 +746,17 @@ A folha tinha um bitmap fixo de 1200 por 1600 pixels, qualquer que fosse a tela 
 Medido em tela 2x com a folha exibida a 1518 px CSS: o bitmap passou de 1200 para 2598 px de largura. Testes: `handwriting-canvas-scale.test.ts` (13) e `e2e/ink-sharpness.spec.ts`, que roda com `deviceScaleFactor: 2`, exige bitmap acima de 1200, crescimento com o zoom, respeito ao teto e a tinta exatamente sob a caneta.
 
 Orçamento: 781,9 KiB de 790, entrada inicial em 269,8 KiB (sem mudança).
+
+# Motor de traço profissional, etapa 3: colaboração suave, setembro de 2026
+
+Duas falhas reais no caderno colaborativo, e o que faltava para o traço do colega parecer escrita:
+
+- **Traço local perdido no meio do gesto.** Ao receber uma atualização de um colega, o editor trocava `strokes` pela lista remota. O traço que a pessoa estava fazendo, que ainda não estava na lista remota, sumia da folha e, ao soltar a caneta, a atualização do estado não o encontrava mais. `applyRemoteStrokes` mantém o traço em andamento na lista (sem duplicá-lo e sem tratá-lo como traço de colega). O teste do gesto (`handwriting-studio-remote.test.tsx`) falha sem a correção e passa com ela.
+- **Traços do colega apareciam de uma vez.** Agora os traços novos de uma atualização ao vivo são "escritos" na camada de tinta ao longo do próprio caminho (`handwriting-reveal.ts`): duração proporcional ao comprimento (140 a 650 ms), em sequência e na ordem, com leve sobreposição e suavização no início e no fim. Um lote tem duração total limitada (1,4 s), e mais de 16 traços de uma vez, a primeira carga do documento (que chega sem autor) e a preferência de reduzir movimento não animam. Ao terminar, cada traço é desenhado na folha no mesmo quadro em que sai da camada, sem quadro em branco, e a folha não desenha um traço em revelação.
+- **Latência de envio.** A espera antes de publicar a folha caiu de 350 para 140 ms, então o colega vê o traço quase assim que a caneta é solta, ainda juntando traços seguidos em um só envio.
+
+Verificação: um e2e com dois usuários reais não é viável porque a colaboração exige conta Google. A lógica é coberta por testes puros (`handwriting-reveal.test.ts`, 19) e pelo componente com atualizações remotas simuladas (5). A animação foi conferida em quadros fixos (60 a 1200 ms) com as mesmas funções de desenho, mostrando o traço crescendo ao longo do caminho e o resultado final idêntico ao traço salvo.
+
+Não está incluído: tinta ao vivo enquanto o colega ainda escreve, e cursor de presença. Isso exige um canal em tempo real novo no servidor (o modelo atual envia o documento ao soltar a caneta) e mudança nas regras do banco.
+
+Orçamento: 783,6 KiB de 790, entrada inicial em 269,8 KiB (sem mudança).
