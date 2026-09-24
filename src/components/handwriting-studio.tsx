@@ -31,7 +31,11 @@ import {
   pageTextLines,
   rulerLength,
 } from "../domain/handwriting";
-import { stabilizeHandwriting } from "./handwriting-stabilization";
+import {
+  createLiveStabilizer,
+  straightenStroke,
+  type LiveStabilizer,
+} from "./handwriting-stabilization";
 import { reviewPortugueseText } from "../domain/text-review";
 import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-math";
 import { normalizeMathOcrText } from "../domain/ocr";
@@ -123,6 +127,7 @@ export function HandwritingStudio({
         : (startingDocument?.paperColor ?? "light");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const liveStrokeRef = useRef<Stroke | null>(null);
+  const liveStabilizerRef = useRef<LiveStabilizer | null>(null);
   const writingCanvasRef = useRef<HTMLCanvasElement>(null);
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -863,6 +868,7 @@ export function HandwritingStudio({
             setStrokes((current) => current.filter((stroke) => stroke.id !== unfinishedStroke.id));
           drawingRef.current = false;
           liveStrokeRef.current = null;
+          liveStabilizerRef.current = null;
           selectionRef.current = null;
           panRef.current = null;
           activePointerRef.current = null;
@@ -915,6 +921,7 @@ export function HandwritingStudio({
     }
     drawingRef.current = true;
     liveStrokeRef.current = null;
+    liveStabilizerRef.current = null;
     setError("");
     const point = canvasPoint(canvas, event);
     if (effectiveTool === "ruler") setRulerMeasure({ start: point, end: point });
@@ -1020,6 +1027,8 @@ export function HandwritingStudio({
       points: [point],
     };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
+    liveStabilizerRef.current =
+      stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
     setStrokes((current) => [...current, nextStroke]);
   }
 
@@ -1181,11 +1190,14 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
     const previous = liveStroke.points.at(-1);
-    const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
-      const lastPoint = accepted.at(-1) ?? previous;
-      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
-      return accepted;
-    }, []);
+    const added = (liveStabilizerRef.current?.push(points) ?? points).reduce<HandwritingPoint[]>(
+      (accepted, point) => {
+        const lastPoint = accepted.at(-1) ?? previous;
+        if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+        return accepted;
+      },
+      [],
+    );
     if (added.length === 0) return;
     liveStroke.points.push(...added);
     const context = canvas.getContext("2d");
@@ -1355,16 +1367,23 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (!liveStroke) return;
-    const points = (
-      stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points
-    ).map((point) => ({
-      ...point,
-      x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
-      y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
-    }));
+    const settledPoints = settleLiveStroke(liveStroke.points);
+    const points = (stabilization ? straightenStroke(settledPoints) : settledPoints).map(
+      (point) => ({
+        ...point,
+        x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
+        y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
+      }),
+    );
     setStrokes((current) =>
       current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
     );
+  }
+
+  function settleLiveStroke(points: HandwritingPoint[]): HandwritingPoint[] {
+    const stabilizer = liveStabilizerRef.current;
+    liveStabilizerRef.current = null;
+    return stabilizer ? [...points, ...stabilizer.finish()] : points;
   }
 
   function undo() {
@@ -1924,6 +1943,9 @@ export function HandwritingStudio({
       points: [writingPoint(event.nativeEvent)],
     };
     liveStrokeRef.current = nextStroke;
+    const writingStart = nextStroke.points[0];
+    liveStabilizerRef.current =
+      stabilization && writingStart ? createLiveStabilizer(writingStart) : null;
     setStrokes((current) => [...current, nextStroke]);
   }
 
@@ -1934,11 +1956,14 @@ export function HandwritingStudio({
     const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
     const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map(writingPoint);
     const previous = liveStroke.points.at(-1);
-    const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
-      const lastPoint = accepted.at(-1) ?? previous;
-      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
-      return accepted;
-    }, []);
+    const added = (liveStabilizerRef.current?.push(points) ?? points).reduce<HandwritingPoint[]>(
+      (accepted, point) => {
+        const lastPoint = accepted.at(-1) ?? previous;
+        if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+        return accepted;
+      },
+      [],
+    );
     if (added.length === 0) return;
     liveStroke.points.push(...added);
     const canvas = writingCanvasRef.current;
@@ -1957,7 +1982,8 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (liveStroke) {
-      const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
+      const settledPoints = settleLiveStroke(liveStroke.points);
+      const points = stabilization ? straightenStroke(settledPoints) : settledPoints;
       setStrokes((current) =>
         current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
       );

@@ -325,10 +325,13 @@ fallback JPEG progressivo quando necessário, e entrega o resultado ao fluxo exi
 rascunho usa a chave da folha ou do anexo e é removido após salvar. Se o dispositivo não tiver
 espaço, o fechamento avisa que o rascunho não pôde ser guardado.
 
-A estabilização fica em `stabilizeHandwriting`: uma média móvel reduz oscilações entre pontos e uma
-correção parcial atua apenas em traços longos com inclinação de até sete graus. Essa regra preserva
-diagonais intencionais e pode evoluir de forma isolada, com testes puros, sem enviar escrita a um
-serviço externo.
+A estabilização tem duas etapas em `handwriting-stabilization.ts`. Durante o traço, `createLiveStabilizer`
+filtra cada amostra da caneta, inspirado nas opções Inertia e Deadzone do Xournal++: a zona morta ignora
+tremores menores que 2,5 pixels da folha e a inércia faz uma caneta virtual seguir a mão como uma mola
+amortecida, sem ultrapassá-la. Pressão e inclinação vêm da amostra real. Ao levantar a caneta, `finish`
+completa o traço até o ponto exato em que a mão parou. Depois, `straightenStroke` aplica uma correção
+parcial apenas em traços longos com inclinação de até doze graus, preservando diagonais e curvas
+intencionais. Tudo roda no navegador, com testes puros, sem enviar escrita a um serviço externo.
 
 O modal de captura usa um portal em `document.body`, garantindo que o estúdio em tela cheia fique
 acima da barra móvel mesmo durante as animações do conteúdo. Os testes E2E incluem escrita e
