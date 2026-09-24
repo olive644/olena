@@ -20,12 +20,12 @@ for (const width of [320, 360, 390, 768, 1280]) {
     const navigation = page.getByRole("navigation", {
       name: mobile ? "Navegação móvel" : "Navegação principal",
     });
-    const profile = page.locator(
-      mobile ? ".mobile-top-bar__profile" : ".page-header .user-profile",
-    );
+    const profile = mobile
+      ? navigation.getByRole("button", { name: "Perfil", exact: true })
+      : page.locator(".page-header .user-profile");
     if (mobile) {
       await expect(profile).toBeVisible();
-      await expect(profile.locator("img")).toBeVisible();
+      await expect(profile.locator("img").first()).toBeVisible();
       const more = page.getByRole("button", { name: "Mais ferramentas", exact: true });
       await expect(more).toBeVisible();
       await more.click();
@@ -97,36 +97,24 @@ for (const width of [320, 360, 390, 768, 1280]) {
       });
       if (mode === "Cronômetro") await page.getByRole("button", { name: "Próximo modo" }).click();
     }
-    await page
-      .locator(
-        mobile
-          ? ".mobile-nav .appearance-picker summary"
-          : ".page-header__theme .appearance-picker__trigger",
-      )
-      .click();
+    await page.locator(".page-header__theme .appearance-picker__trigger").click();
     if (mobile) {
       const appearanceBox = await page
-        .locator(".mobile-nav .appearance-picker__sheet")
+        .locator(".page-header__theme .appearance-picker__sheet")
         .boundingBox();
       expect(appearanceBox!.x).toBeGreaterThanOrEqual(0);
       expect(appearanceBox!.x + appearanceBox!.width).toBeLessThanOrEqual(width);
     }
     await expect(
       page
-        .locator(
-          mobile
-            ? '.mobile-nav .appearance-picker__sheet [data-icon="theme-light"] img'
-            : '.page-header__theme .appearance-picker__sheet [data-icon="theme-light"] img',
-        )
+        .locator('.page-header__theme .appearance-picker__sheet [data-icon="theme-light"] img')
         .first(),
     ).toBeVisible();
     await page.getByRole("button", { name: "Escuro", exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await expect(
       page.locator(
-        mobile
-          ? '.mobile-nav .appearance-picker summary [data-icon="theme-light"] img:visible'
-          : '.page-header__theme .appearance-picker__trigger [data-icon="theme-light"] img:visible',
+        '.page-header__theme .appearance-picker__trigger [data-icon="theme-light"] img:visible',
       ),
     ).toBeVisible();
     await page.screenshot({
