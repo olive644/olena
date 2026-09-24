@@ -1,6 +1,7 @@
 import { isHandwritingDocument } from "../data/local-workspace.js";
 import {
   MAX_NOTEBOOK_COLLAB_PARTICIPANTS,
+  NOTEBOOK_COLLAB_PRESENCE_GRACE_MS,
   NOTEBOOK_COLLAB_TTL_SECONDS,
   addNotebookCollabParticipant,
   applyNotebookCollabDocument,
@@ -78,6 +79,10 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
   async function save(state: NotebookCollabState): Promise<PublicNotebookCollabState> {
     const next = {
       ...state,
+      participants: state.participants.map((item) => ({
+        ...item,
+        online: item.online && now() - item.lastSeenAt < NOTEBOOK_COLLAB_PRESENCE_GRACE_MS,
+      })),
       revision: state.revision + 1,
       updatedAt: now(),
       expiresAt: now() + NOTEBOOK_COLLAB_TTL_SECONDS * 1000,
@@ -218,7 +223,22 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       if (!state) return jsonResponse(404, { error: "Caderno compartilhado não encontrado." });
       const requestId = typeof body["requestId"] === "string" ? body["requestId"] : "";
       const receipt = requestId ? state.receipts?.[`join:${requestId}`] : undefined;
-      if (receipt) {
+      const existing = dependencies.identity
+        ? state.participants.find((item) => item.accountId === dependencies.identity?.uid)
+        : undefined;
+      if (existing) {
+        state.participants = state.participants.filter(
+          (item) => item.accountId !== existing.accountId || item.id === existing.id,
+        );
+        const updated = touchNotebookCollabParticipant(state, existing.id, now(), true);
+        return jsonResponse(200, {
+          participantId: existing.id,
+          participantToken: existing.token,
+          state: await save(updated),
+          streamUrl: dependencies.streamUrl(code),
+        });
+      }
+      if (receipt && state.participants.some((item) => item.id === receipt.participantId)) {
         const participant = state.participants.find((item) => item.id === receipt.participantId);
         return jsonResponse(200, {
           participantId: receipt.participantId,
@@ -228,10 +248,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
           ...(participant ? { displayName: participant.displayName } : {}),
         });
       }
-      if (
-        state.participants.filter((item) => item.online !== false).length >=
-        MAX_NOTEBOOK_COLLAB_PARTICIPANTS
-      )
+      if (state.participants.length >= MAX_NOTEBOOK_COLLAB_PARTICIPANTS)
         return jsonResponse(409, { error: "Este caderno já tem quatro participantes." });
       if (
         !dependencies.identity &&
@@ -292,6 +309,20 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       const body = await readJsonBody(request);
       const authorized = await authorizedParticipant(body);
       if (authorized instanceof Response) return authorized;
+      if (action === "leave") {
+        const state = authorized.state;
+        state.participants = state.participants.filter(
+          (item) =>
+            item.id !== authorized.participantId &&
+            (!dependencies.identity || item.accountId !== dependencies.identity.uid),
+        );
+        state.receipts = Object.fromEntries(
+          Object.entries(state.receipts ?? {}).filter(([, receipt]) =>
+            state.participants.some((item) => item.id === receipt.participantId),
+          ),
+        );
+        return jsonResponse(200, { state: await save(state) });
+      }
       const updated = touchNotebookCollabParticipant(
         authorized.state,
         authorized.participantId,

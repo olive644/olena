@@ -151,6 +151,29 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
 
   const applyRoom = useCallback((room: PublicNotebookCollabState) => {
     if (room.revision < revisionRef.current) return;
+    const session = sessionRef.current;
+    if (!session || session.code !== room.code) return;
+    if (
+      session &&
+      !room.participants.some((participant) => participant.id === session.participantId)
+    ) {
+      sessionRef.current = undefined;
+      pendingRef.current = undefined;
+      clearTimeout(updateTimerRef.current);
+      clearTimeout(activityTimerRef.current);
+      streamRef.current?.close();
+      clearInterval(heartbeatRef.current);
+      clearStoredSession();
+      setActivity("");
+      setState({
+        code: "",
+        participantId: "",
+        displayName: "",
+        status: "idle",
+        error: "Você saiu desta colaboração.",
+      });
+      return;
+    }
     const action = room.actions.at(-1);
     if (action && action.id !== lastActionIdRef.current) {
       lastActionIdRef.current = action.id;
@@ -374,9 +397,16 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   const leave = useCallback(async () => {
     const session = sessionRef.current;
     if (session) {
-      await request("leave", { code: session.code, credential: session.credential }).catch(
-        () => {},
-      );
+      try {
+        await request("leave", { code: session.code, credential: session.credential });
+      } catch {
+        if (sessionRef.current !== session) return;
+        setState((current) => ({
+          ...current,
+          error: "Não foi possível sair. Confira a conexão e tente novamente.",
+        }));
+        return;
+      }
     }
     sessionRef.current = undefined;
     pendingRef.current = undefined;
@@ -420,6 +450,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         })(),
       })
         .then((payload) => {
+          if (sessionRef.current !== session) return;
           const pending = pendingRef.current;
           applyRoom(payload.state);
           if (pending) {
@@ -428,6 +459,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
           }
         })
         .catch(() => {
+          if (sessionRef.current !== session) return;
           setState((current) => ({ ...current, status: "offline" }));
         });
     heartbeatRef.current = setInterval(beat, 15_000);

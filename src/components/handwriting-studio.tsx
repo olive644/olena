@@ -31,7 +31,6 @@ import {
   rulerLength,
 } from "../domain/handwriting";
 import {
-  createLiveStabilizer,
   stabilizeHandwriting,
   straightenStroke,
   type LiveStabilizer,
@@ -544,6 +543,7 @@ export function HandwritingStudio({
     );
     const context = canvas.getContext("2d");
     if (!context) return;
+    if (liveStrokeRef.current) drawStroke(context, liveStrokeRef.current);
     context.save();
     context.setLineDash([14, 9]);
     context.strokeStyle = "#7433e0";
@@ -1044,9 +1044,12 @@ export function HandwritingStudio({
       points: [point],
     };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
-    liveStabilizerRef.current =
-      stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
-    setStrokes((current) => [...current, nextStroke]);
+    liveStabilizerRef.current = null;
+    if (effectiveTool === "ruler") setStrokes((current) => [...current, nextStroke]);
+    else {
+      const context = canvas.getContext("2d");
+      if (context) drawStroke(context, nextStroke);
+    }
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -1392,9 +1395,7 @@ export function HandwritingStudio({
         y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
       }),
     );
-    setStrokes((current) =>
-      current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
-    );
+    setStrokes((current) => [...current, { ...liveStroke, points }]);
   }
 
   function settleLiveStroke(points: HandwritingPoint[]): HandwritingPoint[] {
@@ -1966,7 +1967,8 @@ export function HandwritingStudio({
     // ampliada aqui e faz a tinta ficar atrás da ponta, então só se suaviza ao
     // terminar o traço.
     liveStabilizerRef.current = null;
-    setStrokes((current) => [...current, nextStroke]);
+    const context = canvasRef.current?.getContext("2d");
+    if (context) drawStroke(context, nextStroke);
   }
 
   function moveWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -2006,9 +2008,7 @@ export function HandwritingStudio({
     liveStrokeRef.current = null;
     if (liveStroke) {
       const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
-      setStrokes((current) =>
-        current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
-      );
+      setStrokes((current) => [...current, { ...liveStroke, points }]);
     }
     const bounds = event.currentTarget.getBoundingClientRect();
     const relativeX = (event.clientX - bounds.left) / bounds.width;
