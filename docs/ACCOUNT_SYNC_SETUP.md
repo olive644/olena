@@ -20,3 +20,7 @@ As variáveis `VITE_` identificam o projeto Firebase e são públicas por defini
 - Mudanças locais são enviadas após uma pausa curta e os outros dispositivos consultam atualizações periodicamente.
 - Se a rede falhar, a cópia local continua funcionando e o envio permanece pendente para nova tentativa automática ou manual.
 - O Perfil mostra o estado da sincronização, permite sincronizar agora e sair da conta.
+
+O convite para edição exige login Google. A função `/api/notebook-collab` valida o ID token com as chaves públicas do Firebase; `VITE_FIREBASE_PROJECT_ID` também precisa estar disponível no ambiente da função na Vercel. O nome da equipe vem da conta autenticada e o avatar escolhido é sincronizado em `helena.profile.v1`. O link de visualização continua acessível sem login e não permite editar.
+
+O estado principal da conta prevalece sobre um backup local antigo no login. Só alterações feitas durante a busca inicial são preservadas por cima da nuvem. A sequência de Pomodoro também sincroniza; dados antigos do dispositivo são migrados quando essa chave ainda não existe na conta. Rascunhos manuscritos locais, histórico e cópias de conflito continuam como recuperação local. A edição colaborativa é uma sala temporária de uma folha, não um arquivo permanente salvo automaticamente na biblioteca de todos os convidados.

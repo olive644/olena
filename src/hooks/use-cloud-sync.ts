@@ -175,15 +175,35 @@ export function useCloudSync() {
           // nuvem antigo (de uma sessao anterior) sobrescreveria a marca de
           // onboarding concluido que acabou de ser salva, jogando a pessoa
           // de volta pro onboarding mesmo apos o login funcionar.
-          const localBeforeGet = JSON.stringify(readSyncedStorage());
+          const localBeforeGet = readSyncedStorage();
           const cloud = await request("GET");
           if (!active) return;
-          const localAfterGet = JSON.stringify(readSyncedStorage());
+          const localAfterGet = readSyncedStorage();
 
           let lastItems = "";
-          if (cloud?.items && localAfterGet === localBeforeGet) {
-            applySyncedStorage(cloud.items);
-            lastItems = JSON.stringify(cloud.items);
+          if (cloud?.items) {
+            const merged = { ...cloud.items };
+            // Chave introduzida depois da primeira versão da nuvem: não apague
+            // a sequência local antiga antes de enviá-la à conta.
+            const localPomodoro = localAfterGet["noteoli.pomodoro-streak.v1"];
+            if (cloud.items["noteoli.pomodoro-streak.v1"] === undefined && localPomodoro)
+              merged["noteoli.pomodoro-streak.v1"] = localPomodoro;
+            for (const key of new Set([
+              ...Object.keys(localBeforeGet),
+              ...Object.keys(localAfterGet),
+            ])) {
+              if (localBeforeGet[key] !== localAfterGet[key]) {
+                if (localAfterGet[key] === undefined) delete merged[key];
+                else merged[key] = localAfterGet[key];
+              }
+            }
+            applySyncedStorage(merged);
+            const remoteSerialized = JSON.stringify(cloud.items);
+            lastItems = JSON.stringify(merged) === remoteSerialized ? remoteSerialized : "";
+            if (!lastItems) {
+              dirty = true;
+              changeRevision += 1;
+            }
           } else {
             dirty = true;
             changeRevision += 1;

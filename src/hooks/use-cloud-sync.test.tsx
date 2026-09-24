@@ -136,6 +136,60 @@ it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busc
   );
 });
 
+it("prioriza o estado da conta sobre um backup local antigo e preserva só a mudança nova", async () => {
+  const user = {
+    uid: "user-2",
+    displayName: "Conta Real",
+    email: "conta@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  localStorage.setItem("helena.profile.v1", "avatar-antigo");
+  let resolveGet: (value: Response) => void = () => undefined;
+  const puts: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET")
+        return new Promise<Response>((resolve) => {
+          resolveGet = resolve;
+        });
+      puts.push(init?.body as string);
+      return new Response("null", { status: 200 });
+    }),
+  );
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("loading"));
+  act(() => writeSyncedStorage("helena.onboarding.v1", "nova sessão"));
+  act(() =>
+    resolveGet(
+      new Response(
+        JSON.stringify({
+          items: {
+            "helena.profile.v1": "avatar-da-nuvem",
+            "helena.onboarding.v1": "sessão-antiga",
+          },
+        }),
+        { status: 200 },
+      ),
+    ),
+  );
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(localStorage.getItem("helena.profile.v1")).toBe("avatar-da-nuvem");
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe("nova sessão");
+  expect(JSON.parse(puts[0]!).items["helena.profile.v1"]).toBe("avatar-da-nuvem");
+});
+
 it("concilia alterações simultâneas por chave e preserva o conflito local", async () => {
   const user = {
     uid: "user-1",

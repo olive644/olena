@@ -5,6 +5,7 @@ export const SYNCED_STORAGE_KEYS = [
   "helena.profile.v1",
   "helena.soloProgress",
   "helena-study:word-frequency:v1",
+  "noteoli.pomodoro-streak.v1",
 ] as const;
 
 export const SYNCED_STORAGE_EVENT = "helena:synced-storage-change";

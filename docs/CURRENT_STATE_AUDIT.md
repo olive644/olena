@@ -173,7 +173,7 @@ O rail desktop usa fundo grafite e ícones claros no tema claro. No tema escuro,
 
 ## Onboarding e loading em papel, 14/09/2026
 
-Preview disponível em /?onboarding=1, sem bloquear visitantes existentes ou convites de sala. Cinco perguntas e cinco poses WebP, com pré-carregamento da próxima imagem. Preferências são locais, salvas somente após login concluído. Login Google requer VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN e VITE_FIREBASE_PROJECT_ID, provedor Google habilitado e domínio autorizado. Não há sincronização de estudos nem autorização de backend baseada nesse login.
+Preview disponível em /?onboarding=1, sem bloquear visitantes existentes ou convites de sala. Cinco perguntas e cinco poses WebP, com pré-carregamento da próxima imagem. Login Google requer VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN e VITE_FIREBASE_PROJECT_ID, provedor Google habilitado e domínio autorizado. A sincronização de estudos e a autorização da colaboração foram implementadas posteriormente, como descrito nas seções mais recentes.
 
 Autenticação usa SDK Firebase existente, preparado ao abrir a etapa de login, antes do clique. Popup cancelado ou configuração ausente mostram erro, nunca simulam sucesso; nenhum token é salvo manualmente. Google confirmado ativo no Firebase. Configuração local adicionada em arquivo ignorado pelo Git. Publicação das variáveis na Vercel e validação real com uma conta continuam pendentes. Consultar GOOGLE_LOGIN.md. Habilitação geral e persistência de rascunho continuam pendentes.
 
@@ -677,11 +677,21 @@ Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçal
 
 # Convite de edição do caderno, setembro de 2026
 
-O cabeçalho da folha mostra os participantes da sala como avatares e um botão de adicionar pessoa. Ao criar a sala, o editor oferece tanto o código quanto um link de convite. O link abre diretamente a folha compartilhada, sem exigir que o convidado tenha um caderno local ou passe pelo onboarding. O convidado informa seu nome e entra na sala; o limite segue em quatro participantes. A sessão da sala passa a usar o identificador da página, estável antes e depois do salvamento do anexo.
+O cabeçalho da folha mostra os participantes da sala como avatares e um botão de adicionar pessoa. Ao criar a sala, o editor oferece um link de convite. O link abre diretamente a folha compartilhada, sem exigir que o convidado tenha um caderno local ou passe pelo onboarding, mas exige login Google. O nome vem da conta; o limite segue em quatro participantes. A sessão da sala usa o identificador da página, estável antes e depois do salvamento do anexo.
 
 O editor só notifica mudanças reais do documento ao hook de colaboração. Uma renderização causada pela chegada de uma atualização remota não reenvia a versão local antiga. O seletor de tipo e cor do papel mantém seus dois botões na primeira linha, com rótulos acessíveis e títulos de inspeção sem expansão nem deslocamento. Os três botões de arquivo usam fundo claro e cores distintas nos ícones.
 
 Limite atual: cada sala sincroniza uma folha manuscrita, não todas as folhas do caderno. A sala expira após oito horas; para continuar depois disso, o anfitrião cria outro convite.
+
+# Identidade, convite e sincronização da conta, setembro de 2026
+
+O convite de edição mostra só um link. Quem o abre precisa entrar com Google; a entrada na sala ocorre automaticamente depois que a conta fica pronta. O backend verifica a assinatura, emissor, público, validade e `auth_time` do Firebase ID token e liga a credencial da sala ao UID. O nome vem do token validado, não de um campo digitável. O avatar escolhido vem de `helena.profile.v1`, chave sincronizada entre dispositivos, e o servidor só aceita caminhos de avatar do aplicativo. Um token de outra conta não pode retomar a credencial. Links de visualização continuam públicos e sem edição.
+
+O aviso de atividade mostra apenas uma ação nova de documento feita por outra pessoa, por quatro segundos. Entradas, batimentos de presença, carregamento inicial e ações antigas não exibem "editou o caderno". O desenho ao vivo usa resposta espacial mais rápida e zona morta menor, sem a inércia que deixava a tinta atrás da ponta.
+
+Inventário de persistência: `helenastudy.workspace.v1` guarda cadernos, páginas, anexos e preferências da área de estudo; `helena.profile.v1` guarda o avatar escolhido; tema, onboarding, progresso solo, frequência de palavras e a sequência do Pomodoro também são chaves sincronizadas. O Firebase RTDB em `/users/<uid>/state` é a fonte principal após o login. Um backup local anterior não substitui o estado existente da conta; somente alterações feitas durante a busca inicial são mescladas sobre ele. A chave recém-incluída do Pomodoro é migrada do dispositivo quando ainda não existe na nuvem. `helenastudy.handwriting.draft.*`, identificadores de anexo salvo, histórico local e registro de conflitos são backups locais; credenciais da sala e retorno do login usam `sessionStorage` por sessão.
+
+Limites que continuam: a sala é temporária (oito horas) e transmite uma folha, não o caderno inteiro nem uma cópia permanente para cada convidado. O convidado vê e edita a folha compartilhada, mas ela não vira automaticamente uma página da biblioteca da própria conta. A sincronização da área de estudo ocorre por chave inteira; edições simultâneas do mesmo workspace em dois aparelhos produzem um conflito com cópia local recuperável, não uma fusão perfeita de campos. A tela deve comunicar estado `offline` ou `conflict` antes de prometer disponibilidade em outro dispositivo. Há testes de identidade, conflito de login, convite e atividade; o fluxo real entre duas contas requer teste no domínio implantado com App Check e Firebase Auth configurados.
 
 # Limpeza dos dados pessoais ao sair da conta, setembro de 2026
 
