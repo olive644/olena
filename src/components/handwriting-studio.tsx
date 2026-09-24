@@ -33,6 +33,7 @@ import {
 } from "../domain/handwriting";
 import {
   createLiveStabilizer,
+  stabilizeHandwriting,
   straightenStroke,
   type LiveStabilizer,
 } from "./handwriting-stabilization";
@@ -1950,9 +1951,11 @@ export function HandwritingStudio({
       points: [writingPoint(event.nativeEvent)],
     };
     liveStrokeRef.current = nextStroke;
-    const writingStart = nextStroke.points[0];
-    liveStabilizerRef.current =
-      stabilization && writingStart ? createLiveStabilizer(writingStart) : null;
+    // Na janela ampliada a tinta tem que ficar sob a caneta enquanto se escreve.
+    // A inércia do estabilizador ao vivo, calibrada para a folha inteira, aparece
+    // ampliada aqui e faz a tinta ficar atrás da ponta, então só se suaviza ao
+    // terminar o traço.
+    liveStabilizerRef.current = null;
     setStrokes((current) => [...current, nextStroke]);
   }
 
@@ -1963,14 +1966,11 @@ export function HandwritingStudio({
     const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
     const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map(writingPoint);
     const previous = liveStroke.points.at(-1);
-    const added = (liveStabilizerRef.current?.push(points) ?? points).reduce<HandwritingPoint[]>(
-      (accepted, point) => {
-        const lastPoint = accepted.at(-1) ?? previous;
-        if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
-        return accepted;
-      },
-      [],
-    );
+    const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
+      const lastPoint = accepted.at(-1) ?? previous;
+      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+      return accepted;
+    }, []);
     if (added.length === 0) return;
     liveStroke.points.push(...added);
     const canvas = writingCanvasRef.current;
@@ -1989,8 +1989,7 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (liveStroke) {
-      const settledPoints = settleLiveStroke(liveStroke.points);
-      const points = stabilization ? straightenStroke(settledPoints) : settledPoints;
+      const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
       setStrokes((current) =>
         current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
       );

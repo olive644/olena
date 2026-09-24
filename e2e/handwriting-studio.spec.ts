@@ -590,3 +590,79 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await page.getByRole("button", { name: "Mover Nova folha para depois" }).first().click();
   await expect(page.locator(".notebook-page-card__number").first()).toHaveText("01");
 });
+
+test("a tinta da janela de escrita acompanha a ponta da caneta durante o traço", async ({
+  page,
+}, testInfo) => {
+  test.slow();
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+  });
+  await page.goto("/");
+  if (testInfo.project.name === "mobile") {
+    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
+    await page
+      .getByRole("dialog", { name: "Mais ferramentas" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  } else {
+    await page
+      .getByRole("navigation", { name: "Navegação principal" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  }
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByLabel("Nome", { exact: true }).fill("Janela de escrita");
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("checkbox", { name: /Ajuste inteligente/ })).toBeChecked();
+  await dialog.getByRole("button", { name: "Janela de escrita ampliada" }).click();
+
+  const canvas = dialog.getByLabel("Área ampliada para escrever com dedo ou caneta");
+  await canvas.scrollIntoViewIfNeeded();
+  const box = (await canvas.boundingBox())!;
+  const at = (fx: number, fy: number) => ({
+    x: box.x + box.width * fx,
+    y: box.y + box.height * fy,
+  });
+  const steps = 60;
+  const path = Array.from({ length: steps + 1 }, (_, index) => {
+    const progress = index / steps;
+    return at(0.1 + progress * 0.7, 0.5 + Math.sin(progress * Math.PI * 3) * 0.28);
+  });
+  await page.mouse.move(path[0]!.x, path[0]!.y);
+  await page.mouse.down();
+  for (const point of path.slice(1, 41)) await page.mouse.move(point.x, point.y, { steps: 2 });
+  await page.waitForTimeout(150);
+
+  // Mede se há tinta escura logo abaixo da ponta da caneta. Com a inércia do
+  // estabilizador ao vivo a tinta ficava muitos pixels atrás da ponta.
+  const tip = path[40]!;
+  const inkAtTip = await canvas.evaluate(
+    (element, position) => {
+      const target = element as HTMLCanvasElement;
+      const context = target.getContext("2d");
+      if (!context) return false;
+      const bounds = target.getBoundingClientRect();
+      const centerX = Math.round(((position.x - bounds.left) / bounds.width) * target.width);
+      const centerY = Math.round(((position.y - bounds.top) / bounds.height) * target.height);
+      const radius = 4;
+      const { data } = context.getImageData(
+        Math.max(0, centerX - radius),
+        Math.max(0, centerY - radius),
+        radius * 2,
+        radius * 2,
+      );
+      for (let index = 0; index < data.length; index += 4) {
+        if (data[index]! < 90 && data[index + 1]! < 90 && data[index + 2]! < 100) return true;
+      }
+      return false;
+    },
+    { x: tip.x, y: tip.y },
+  );
+  await page.mouse.up();
+  expect(inkAtTip).toBe(true);
+});
