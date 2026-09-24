@@ -8,7 +8,10 @@ import "./paper-buttons.css";
 import "./notebook-editor.css";
 
 const NotebookReader = lazy(() => import("./views/notebook-reader"));
-const viewToken = new URLSearchParams(location.search).get("notebook-view");
+const NotebookCollaborationInvite = lazy(() => import("./views/notebook-collaboration-invite"));
+const params = new URLSearchParams(location.search);
+const viewToken = params.get("notebook-view");
+const collaborationCode = params.get("notebook-collab");
 
 const root = document.getElementById("root");
 
@@ -18,9 +21,13 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    {viewToken ? (
-      <Suspense fallback={<HelenaLoading label="Abrindo folhas" />}>
-        <NotebookReader token={viewToken} />
+    {viewToken || collaborationCode ? (
+      <Suspense fallback={<HelenaLoading label="Abrindo caderno" />}>
+        {viewToken ? (
+          <NotebookReader token={viewToken} />
+        ) : (
+          <NotebookCollaborationInvite code={collaborationCode!} />
+        )}
       </Suspense>
     ) : (
       <App />

@@ -674,3 +674,11 @@ Três ajustes vindos da auditoria de segurança, sem mudança de fluxo para o us
 - `vercel.json` ganhou `Strict-Transport-Security` e `Cross-Origin-Opener-Policy: same-origin-allow-popups`. O valor `same-origin` foi descartado de propósito, porque quebraria o `signInWithPopup` do login Google. `src/security-headers.test.ts` trava esses cabeçalhos e a ausência de `unsafe-inline` e `unsafe-eval` no `script-src`.
 
 Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. Pendência fora do repositório: confirmar na Vercel se `FIREBASE_APPCHECK_ENFORCE` está `true`, porque sem ele o App Check só registra e não bloqueia.
+
+# Convite de edição do caderno, setembro de 2026
+
+O cabeçalho da folha mostra os participantes da sala como avatares e um botão de adicionar pessoa. Ao criar a sala, o editor oferece tanto o código quanto um link de convite. O link abre diretamente a folha compartilhada, sem exigir que o convidado tenha um caderno local ou passe pelo onboarding. O convidado informa seu nome e entra na sala; o limite segue em quatro participantes. A sessão da sala passa a usar o identificador da página, estável antes e depois do salvamento do anexo.
+
+O editor só notifica mudanças reais do documento ao hook de colaboração. Uma renderização causada pela chegada de uma atualização remota não reenvia a versão local antiga. O seletor de tipo e cor do papel mantém seus dois botões na primeira linha, com rótulos acessíveis e títulos de inspeção sem expansão nem deslocamento. Os três botões de arquivo usam fundo claro e cores distintas nos ícones.
+
+Limite atual: cada sala sincroniza uma folha manuscrita, não todas as folhas do caderno. A sala expira após oito horas; para continuar depois disso, o anfitrião cria outro convite.

@@ -2,6 +2,75 @@ import { expect, test } from "@playwright/test";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
 
+test("convite permite a outra pessoa entrar na folha sem caderno local", async ({
+  page,
+  browser,
+}, testInfo) => {
+  const handler = createNotebookCollabHandler({
+    store: createMemoryRoomStore(),
+    publish: async () => {},
+    streamUrl: () => "",
+  });
+  const routeApi = async (route: import("@playwright/test").Route) => {
+    const request = route.request();
+    const response = await handler(
+      new Request(request.url(), { method: "POST", body: request.postData() }),
+    );
+    await route.fulfill({
+      status: response.status,
+      contentType: "application/json",
+      body: await response.text(),
+    });
+  };
+  await page.route("**/api/notebook-collab?*", routeApi);
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/");
+  if (testInfo.project.name === "mobile") {
+    await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
+    await page
+      .getByRole("dialog", { name: "Mais ferramentas" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  } else {
+    await page
+      .getByRole("navigation", { name: "Navegação principal" })
+      .getByRole("button", { name: "Cadernos", exact: true })
+      .click();
+  }
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  const host = page.getByRole("dialog", { name: "Escrever à mão" });
+  if (testInfo.project.name === "desktop") {
+    const paperType = host.getByRole("button", { name: "Tipo de papel" });
+    const paperColor = host.getByRole("button", { name: "Cor da folha" });
+    const before = await paperColor.boundingBox();
+    await paperType.hover();
+    const after = await paperColor.boundingBox();
+    expect(after?.x).toBe(before?.x);
+    expect(after?.y).toBe(before?.y);
+  }
+  await host.getByRole("button", { name: "Compartilhar caderno" }).click();
+  await host.getByRole("textbox", { name: "Seu nome" }).fill("Ana");
+  await host.getByRole("button", { name: "Criar sala" }).click();
+  await expect(host.getByRole("button", { name: "Copiar convite" })).toBeVisible();
+  const code = await host.locator(".notebook-collaboration-code strong").textContent();
+  const guestContext = await browser.newContext();
+  await guestContext.route("**/api/notebook-collab?*", routeApi);
+  const guestPage = await guestContext.newPage();
+  await guestPage.goto(`/?notebook-collab=${code}`);
+  const guest = guestPage.getByRole("dialog", { name: "Escrever à mão" });
+  await expect(guest.getByRole("textbox", { name: "Código da sala" })).toHaveValue(code ?? "");
+  await guest.getByRole("textbox", { name: "Seu nome" }).fill("Bia");
+  await guest.getByRole("button", { name: "Entrar na sala" }).click();
+  await expect(guest.locator(".notebook-collaboration-people").getByText("Bia")).toBeVisible();
+  await expect(guest.locator(".notebook-collaboration-people").getByText("Ana")).toBeVisible();
+  await guestContext.close();
+});
+
 test("salva automaticamente e compartilha uma cópia somente para leitura", async ({
   page,
 }, testInfo) => {
@@ -206,14 +275,17 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "true",
   );
   const panStart = await canvas.boundingBox();
+  const visibleViewport = await dialog.locator(".handwriting-viewport").boundingBox();
   const initialScroll = await dialog
     .locator(".handwriting-viewport")
     .evaluate((node) => node.scrollTop);
   expect(panStart).not.toBeNull();
-  if (!panStart) return;
-  await page.mouse.move(panStart.x + 60, panStart.y + 150);
+  expect(visibleViewport).not.toBeNull();
+  if (!panStart || !visibleViewport) return;
+  const panY = Math.min(panStart.y + 150, visibleViewport.y + visibleViewport.height - 24);
+  await page.mouse.move(panStart.x + 60, panY);
   await page.mouse.down();
-  await page.mouse.move(panStart.x + 60, panStart.y + 50, { steps: 8 });
+  await page.mouse.move(panStart.x + 60, panY - 100, { steps: 8 });
   await page.mouse.up();
   await expect
     .poll(() => dialog.locator(".handwriting-viewport").evaluate((node) => node.scrollTop))

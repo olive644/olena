@@ -26,6 +26,7 @@ type NoteCaptureToolsProps = {
   onImportPages?: (pages: ImportedPage[]) => void;
   editingAsset?: NoteAsset | null;
   onCloseEditing?: () => void;
+  initialJoinCode?: string;
 };
 
 async function loadImage(url: string): Promise<HTMLImageElement> {
@@ -196,9 +197,10 @@ export function NoteCaptureTools({
   onUpdate,
   onImportPages,
   editingAsset = null,
+  initialJoinCode,
   onCloseEditing,
 }: NoteCaptureToolsProps) {
-  const [mode, setMode] = useState<"scan" | "drawing" | null>(null);
+  const [mode, setMode] = useState<"scan" | "drawing" | null>(initialJoinCode ? "drawing" : null);
   const [expanded, setExpanded] = useState(false);
   const dialogRef = useRef<HTMLElement>(null);
   async function toggleFullscreen() {
@@ -266,7 +268,7 @@ export function NoteCaptureTools({
     }
     savedDocumentRef.current = JSON.stringify(handwriting);
   };
-  const [collaborationPanelOpen, setCollaborationPanelOpen] = useState(false);
+  const [collaborationPanelOpen, setCollaborationPanelOpen] = useState(Boolean(initialJoinCode));
   const [collaborationName, setCollaborationName] = useState(() => {
     try {
       const profile = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as {
@@ -277,10 +279,10 @@ export function NoteCaptureTools({
       return "";
     }
   });
-  const [collaborationCodeInput, setCollaborationCodeInput] = useState("");
+  const [collaborationCodeInput, setCollaborationCodeInput] = useState(initialJoinCode ?? "");
   const [remoteDocument, setRemoteDocument] = useState<HandwritingDocument>();
   const [remoteAuthor, setRemoteAuthor] = useState("");
-  const notebookId = editingAsset?.id ?? `draft-${draftPageKey}`;
+  const notebookId = `page-${draftPageKey}`;
   const collaboration = useNotebookCollaboration({
     notebookId,
     onRemoteDocument: (document, author) => {
@@ -303,6 +305,13 @@ export function NoteCaptureTools({
     if (!collaboration.state.code) return;
     if (navigator.clipboard)
       await navigator.clipboard.writeText(collaboration.state.code).catch(() => {});
+  }
+
+  async function copyCollaborationInvite() {
+    if (!collaboration.state.code) return;
+    const url = new URL(window.location.origin);
+    url.searchParams.set("notebook-collab", collaboration.state.code);
+    await navigator.clipboard?.writeText(url.href).catch(() => {});
   }
 
   const close = useCallback(
@@ -407,15 +416,39 @@ export function NoteCaptureTools({
                 </div>
                 <div className="capture-header-actions">
                   {currentMode === "drawing" && (
-                    <button
-                      type="button"
-                      className="sheet-close"
-                      aria-label="Compartilhar caderno"
-                      aria-expanded={collaborationPanelOpen}
-                      onClick={() => setCollaborationPanelOpen((open) => !open)}
-                    >
-                      <PaperEditorIcon name="share" />
-                    </button>
+                    <div className="notebook-team" role="group" aria-label="Equipe de edição">
+                      {(collaboration.state.room?.participants ?? [])
+                        .slice(0, 4)
+                        .map((participant, index) => (
+                          <span
+                            key={participant.id}
+                            className={`notebook-team__avatar notebook-team__avatar--${index % 3}${participant.online ? " is-online" : ""}`}
+                            title={`${participant.displayName}${participant.online ? " · online" : " · ausente"}`}
+                            aria-label={participant.displayName}
+                          >
+                            {participant.displayName
+                              .trim()
+                              .split(/\s+/)
+                              .map((part) => part[0])
+                              .slice(0, 2)
+                              .join("")
+                              .toUpperCase()}
+                          </span>
+                        ))}
+                      <button
+                        type="button"
+                        className="notebook-team__add"
+                        aria-label={
+                          collaboration.state.code
+                            ? "Adicionar pessoa ao caderno"
+                            : "Compartilhar caderno"
+                        }
+                        aria-expanded={collaborationPanelOpen}
+                        onClick={() => setCollaborationPanelOpen((open) => !open)}
+                      >
+                        <span aria-hidden="true">+</span>
+                      </button>
+                    </div>
                   )}
                   {currentMode === "drawing" && (
                     <button
@@ -504,6 +537,13 @@ export function NoteCaptureTools({
                           onClick={() => void copyCollaborationCode()}
                         >
                           <Copy size={15} /> Copiar código
+                        </button>
+                        <button
+                          type="button"
+                          className="icon-button"
+                          onClick={() => void copyCollaborationInvite()}
+                        >
+                          <Copy size={15} /> Copiar convite
                         </button>
                       </div>
                       <div className="notebook-collaboration-people">

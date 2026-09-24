@@ -68,8 +68,7 @@
     translate 180ms ease,
     box-shadow 180ms ease;
 }
-.notebook-file-tools > button > span,
-.handwriting-paper-picker .paper-picker-label {
+.notebook-file-tools > button > span {
   display: inline-block;
   max-width: 0;
   opacity: 0;
@@ -80,8 +79,7 @@
     opacity 200ms ease,
     margin 240ms ease;
 }
-.notebook-file-tools > button:is(:hover, :focus-visible, [aria-expanded="true"]) > span,
-.handwriting-paper-picker button:is(:hover, :focus-visible) .paper-picker-label {
+.notebook-file-tools > button:is(:hover, :focus-visible, [aria-expanded="true"]) > span {
   max-width: 130px;
   margin-left: 6px;
   opacity: 1;
@@ -206,6 +204,20 @@
 .handwriting-paper-section {
   display: contents;
 }
+.handwriting-paper-section:first-child > .handwriting-paper-section__toggle {
+  grid-column: 1;
+  grid-row: 1;
+}
+.handwriting-paper-section:last-child > .handwriting-paper-section__toggle {
+  grid-column: 2;
+  grid-row: 1;
+}
+.handwriting-paper-section:first-child > .handwriting-paper-options {
+  grid-row: 2;
+}
+.handwriting-paper-section:last-child > .handwriting-paper-options {
+  grid-row: 3;
+}
 .handwriting-paper-picker button {
   display: inline-flex;
   align-items: center;
@@ -266,12 +278,57 @@
   color: #fff9ef;
 }
 .handwriting-paper-picker .paper-picker-label {
-  font-size: 10px;
-  text-transform: none;
-  letter-spacing: 0;
-  color: inherit;
-  flex-shrink: 1;
-  white-space: normal;
+  display: none;
+}
+.handwriting-paper-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+}
+.handwriting-paper-section {
+  display: contents;
+}
+.handwriting-paper-picker button {
+  width: 100%;
+  justify-content: center;
+}
+.handwriting-paper-options {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+}
+.handwriting-paper-options button {
+  width: 48px;
+  min-width: 48px;
+}
+.handwriting-paper-picker button:is(:hover, :focus-visible) {
+  transform: none;
+}
+.notebook-file-tools > button {
+  border-color: #d9c9ab;
+  background: #fffaf0;
+  color: #292432;
+  box-shadow: 0 3px 0 #d9c9ab;
+}
+.notebook-file-tools > button .paper-editor-icon {
+  color: #292432;
+  --editor-icon-cutout: #fffaf0;
+  --editor-icon-facet: #facc15;
+}
+.notebook-file-tools > button:first-of-type .paper-editor-icon {
+  color: #236a99;
+  --editor-icon-facet: #8bd1f0;
+}
+.notebook-file-tools > button:nth-of-type(2) .paper-editor-icon {
+  color: #237a5c;
+  --editor-icon-facet: #89dab4;
+}
+.notebook-file-tools > button:nth-of-type(3) .paper-editor-icon {
+  color: #6330ad;
+  --editor-icon-facet: #cbb1f4;
+}
+.notebook-file-tools > button:hover:not(:disabled) {
+  box-shadow: 0 5px 0 #d9c9ab;
 }
 .handwriting-brush-panel .brush-instrument {
   margin: 4px 0;
@@ -389,7 +446,7 @@
   .handwriting-paper-picker {
     min-height: 0;
     padding: 5px 8px;
-    max-height: 155px;
+    max-height: 116px;
     flex-wrap: wrap;
   }
   .handwriting-paper-options {
@@ -420,5 +477,21 @@
   .handwriting-selection-actions * {
     animation: none !important;
     transition: none !important;
+  }
+}
+@media (max-width: 680px) {
+  .handwriting-paper-picker {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 116px;
+    overflow-y: auto;
+  }
+  .handwriting-paper-options {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+  .handwriting-paper-options button {
+    min-width: 48px;
+    width: 48px;
   }
 }

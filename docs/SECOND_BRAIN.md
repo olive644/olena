@@ -371,3 +371,4 @@ impressão abre uma janela local e depende do diálogo de impressão do navegado
 O Texto tem correção automática local opcional ao perder foco, com acentos frequentes e
 capitalização após pontuação. Links, emails e blocos de código ficam preservados, e o botão Revisar
 texto continua disponível para aplicação manual.
+O convite para editar uma folha usa `?notebook-collab=CODE`, tratado em `main.tsx` antes do app autenticado. `NotebookCollaborationInvite` monta `NoteCaptureTools` diretamente em modo desenho, com código pré-preenchido. O convidado não precisa possuir a página no próprio workspace; as alterações são transmitidas pela sala e o rascunho local continua disponível. O cabeçalho exibe até quatro avatares e o botão de convite. A sessão é indexada pelo ID estável da página, não pelo anexo manuscrito que só existe após salvar.

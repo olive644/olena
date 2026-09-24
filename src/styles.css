@@ -3741,16 +3741,100 @@ body.local-room-active {
 }
 .capture-header-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+.notebook-team {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+.notebook-team__avatar,
+.notebook-team__add {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 1px 3px rgb(23 21 28 / 18%);
+}
+.notebook-team__avatar + .notebook-team__avatar,
+.notebook-team__add {
+  margin-left: -7px;
+}
+.notebook-team__avatar {
+  background: #d9e9ff;
+  color: #124b93;
+}
+.notebook-team__avatar--1 {
+  background: #d9f4e6;
+  color: #1c684a;
+}
+.notebook-team__avatar--2 {
+  background: #fff0c2;
+  color: #775107;
+}
+.notebook-team__avatar:not(.is-online) {
+  opacity: 0.55;
+}
+.notebook-team__add {
+  cursor: pointer;
+  background: #fffaf0;
+  color: #292432;
+  border-color: #d9c9ab;
+}
+.notebook-team__add span {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+.notebook-team__add:hover {
+  background: #eee2ff;
+  color: #51259b;
+}
+.notebook-team__add:focus-visible {
+  outline: 3px solid #7433e0;
+  outline-offset: 2px;
+}
+.notebook-invite-entry {
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--soft);
+  color: var(--text);
+}
+.notebook-invite-entry h1 {
+  margin: 0 0 4px;
+}
+.notebook-invite-entry p {
+  margin: 0;
 }
 
 .notebook-collaboration-panel {
-  margin: 0 1rem 0.75rem;
+  position: absolute;
+  z-index: 25;
+  top: 82px;
+  right: 1rem;
+  width: min(540px, calc(100% - 2rem));
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+  margin: 0;
   padding: 0.85rem 1rem;
   border: 1px solid color-mix(in srgb, var(--violet) 42%, var(--line));
   border-radius: 12px;
   background: color-mix(in srgb, var(--surface) 86%, var(--violet) 14%);
   box-shadow: 0 8px 20px rgb(23 21 28 / 10%);
+}
+@media (max-width: 680px) {
+  .notebook-collaboration-panel {
+    top: 72px;
+    right: 0.5rem;
+    width: calc(100% - 1rem);
+    max-height: calc(100% - 84px);
+  }
 }
 
 .notebook-collaboration-panel__heading,
