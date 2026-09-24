@@ -20,7 +20,7 @@ Vercel (nunca cole o Client Secret em uma conversa ou committe em um arquivo).
 
 1. Em **APIs e serviços → Tela de consentimento OAuth**, escolha **Externo**.
 2. Preencha nome do app, e-mail de suporte e domínio autorizado
-   (`helenastudy.vercel.app`, ou o seu domínio de produção).
+   (`olenastudy.vercel.app`, ou o seu domínio de produção).
 3. Escopo necessário: `https://www.googleapis.com/auth/calendar.events.readonly`.
 4. Enquanto o app estiver em modo de teste, adicione as contas Google que vão
    usar o recurso em **Usuários de teste**.
@@ -30,7 +30,7 @@ Vercel (nunca cole o Client Secret em uma conversa ou committe em um arquivo).
 1. Em **APIs e serviços → Credenciais → Criar credenciais → ID do cliente OAuth**.
 2. Tipo de aplicativo: **Aplicativo da Web**.
 3. Em **URIs de redirecionamento autorizados**, adicione exatamente:
-   - `https://helenastudy.vercel.app/api/google-calendar?action=callback`
+   - `https://olenastudy.vercel.app/api/google-calendar?action=callback`
      (troque pelo domínio real de produção, se for diferente)
 4. Salve e copie o **Client ID** e o **Client Secret**.
 

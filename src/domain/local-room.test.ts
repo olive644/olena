@@ -278,15 +278,15 @@ describe("sala local", () => {
   });
 
   it("monta o link de convite com o código em maiúsculas", () => {
-    expect(buildLocalRoomJoinUrl("https://helenastudy.vercel.app/", "abcde")).toBe(
-      "https://helenastudy.vercel.app/?sala=ABCDE",
+    expect(buildLocalRoomJoinUrl("https://olenastudy.vercel.app/", "abcde")).toBe(
+      "https://olenastudy.vercel.app/?sala=ABCDE",
     );
   });
 
   it("lê o código de convite da URL só quando é válido", () => {
-    expect(readLocalRoomCodeFromUrl("https://helenastudy.vercel.app/?sala=abcde")).toBe("ABCDE");
-    expect(readLocalRoomCodeFromUrl("https://helenastudy.vercel.app/")).toBeUndefined();
-    expect(readLocalRoomCodeFromUrl("https://helenastudy.vercel.app/?sala=xx")).toBeUndefined();
+    expect(readLocalRoomCodeFromUrl("https://olenastudy.vercel.app/?sala=abcde")).toBe("ABCDE");
+    expect(readLocalRoomCodeFromUrl("https://olenastudy.vercel.app/")).toBeUndefined();
+    expect(readLocalRoomCodeFromUrl("https://olenastudy.vercel.app/?sala=xx")).toBeUndefined();
   });
 
   it("classifica os participantes do maior pro menor placar", () => {

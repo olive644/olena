@@ -5,7 +5,7 @@ import { RoomQrCode } from "./room-qr-code";
 describe("RoomQrCode", () => {
   it("renderiza um SVG acessível com módulos escuros para a URL", () => {
     const { container } = render(
-      <RoomQrCode value="https://helenastudy.vercel.app/?sala=ABCDE" size={120} />,
+      <RoomQrCode value="https://olenastudy.vercel.app/?sala=ABCDE" size={120} />,
     );
     const svg = container.querySelector("svg");
     expect(svg).not.toBeNull();
