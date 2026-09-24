@@ -624,3 +624,7 @@ Mais três blocos de interface saíram do `HandwritingStudio`: `handwriting-tool
 # Bundle enxuto, setembro de 2026
 
 O `tesseract.js` carrega o `regenerator-runtime` apenas para navegadores sem async e await nativos. Como o build é ES2022, o polyfill de 6,6 KB nunca era usado, mas entrava no total de JavaScript. Ele agora é redirecionado para um módulo vazio (`src/build-empty-module.ts`) em `vite.config.ts`. O total da aplicação caiu de 777,3 para 770,8 KiB, sem mudar o limite de 780 KiB, o que reabre margem para as próximas divisões do editor. O OCR local foi conferido de ponta a ponta em navegador real, com o mesmo desenho, antes e depois: mesma leitura, mesmo tempo e nenhum erro de console. Fica registrado, como próximos candidatos, mover a arte vetorial embutida em `paper-editor-icon.tsx`, `onboarding-paper-icon.tsx` e `paper-action-icon.tsx` (cerca de 14 KiB) para um sprite servido como arquivo, no modelo já usado por `navigation-icons.svg`.
+
+# Folha ao vivo na janela de escrita, setembro de 2026
+
+Ao escrever na janela de escrita ampliada, a folha voltou a mostrar o traço enquanto ele acontece. Desde a otimização de latência da caneta, a janela desenhava só no próprio canvas e a folha só recebia o traço ao levantar a caneta. Agora cada segmento é desenhado também direto no canvas da folha, do mesmo modo que na escrita normal, sem atualizar o estado a cada ponto e portanto sem perder o ganho de latência. O e2e da janela de escrita cobre a tinta sob a caneta e a tinta na folha durante o traço.
