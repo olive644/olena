@@ -394,26 +394,18 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     [publish],
   );
 
-  const leave = useCallback(async () => {
+  const leave = useCallback(() => {
     const session = sessionRef.current;
-    if (session) {
-      try {
-        await request("leave", { code: session.code, credential: session.credential });
-      } catch {
-        if (sessionRef.current !== session) return;
-        setState((current) => ({
-          ...current,
-          error: "Não foi possível sair. Confira a conexão e tente novamente.",
-        }));
-        return;
-      }
-    }
     sessionRef.current = undefined;
     pendingRef.current = undefined;
     if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
     stop(true);
     setState({ code: "", participantId: "", displayName: "", status: "idle", error: "" });
     setActivity("");
+    if (session)
+      void request("leave", { code: session.code, credential: session.credential }).catch(() => {
+        // A presença expira no servidor mesmo se a confirmação de saída falhar.
+      });
   }, [stop]);
 
   useEffect(() => {

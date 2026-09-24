@@ -36,10 +36,16 @@ it("publica com o código criado pelo servidor e permite ao segundo participante
     },
   );
   const requests: { action: string; code?: string }[] = [];
+  let delayLeave = false;
+  let finishLeave: (() => void) | undefined;
   vi.stubGlobal("fetch", async (url: string, init: RequestInit) => {
     const action = new URL(url, "https://test.example").searchParams.get("action")!;
     const body = JSON.parse(init.body as string) as { code?: string };
     requests.push({ action, ...body });
+    if (action === "leave" && delayLeave)
+      await new Promise<void>((resolve) => {
+        finishLeave = resolve;
+      });
     return handler(new Request(new URL(url, "https://test.example"), init));
   });
   const host = renderHook(() => useNotebookCollaboration({ notebookId: "page-a" }));
@@ -90,6 +96,11 @@ it("publica com o código criado pelo servidor e permite ao segundo participante
     );
   });
   expect(requests.filter((item) => item.action === "update").length).toBeLessThanOrEqual(5);
+  delayLeave = true;
+  act(() => guest.result.current.leave());
+  expect(guest.result.current.state.status).toBe("idle");
+  await waitFor(() => expect(finishLeave).toBeTypeOf("function"));
+  finishLeave?.();
   host.unmount();
   guest.unmount();
 });
