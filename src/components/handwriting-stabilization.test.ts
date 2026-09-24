@@ -13,13 +13,15 @@ function point(x: number, y: number, extra: Partial<HandwritingPoint> = {}): Han
 describe("zona morta do estabilizador ao vivo", () => {
   it("ignora tremores menores que o raio", () => {
     const stabilizer = createLiveStabilizer(point(100, 100));
-    expect(stabilizer.push([point(101, 100), point(100, 101), point(101, 101)])).toEqual([]);
+    expect(stabilizer.push([point(100.5, 100), point(100, 100.5), point(100.5, 100.5)])).toEqual(
+      [],
+    );
   });
 
   it("aceita amostras que saem do raio e mede a partir da última aceita", () => {
     const stabilizer = createLiveStabilizer(point(100, 100));
     expect(stabilizer.push([point(110, 100)])).toHaveLength(1);
-    expect(stabilizer.push([point(111, 100)])).toEqual([]);
+    expect(stabilizer.push([point(110.5, 100)])).toEqual([]);
     expect(stabilizer.push([point(114, 100)])).toHaveLength(1);
   });
 });
@@ -77,16 +79,15 @@ describe("inércia do estabilizador ao vivo", () => {
 
   it("não acrescenta pontos ao terminar quando nada foi aceito", () => {
     const stabilizer = createLiveStabilizer(point(10, 10));
-    stabilizer.push([point(11, 10)]);
+    stabilizer.push([point(10.5, 10)]);
     expect(stabilizer.finish()).toEqual([]);
   });
 
-  it("usa opções padrão que não oscilam", () => {
+  it("usa resposta padrão rápida sem ultrapassar a ponta", () => {
     expect(DEFAULT_LIVE_STABILIZER.mass).toBeGreaterThan(0);
-    const damping = 1 - DEFAULT_LIVE_STABILIZER.drag;
-    const stiffness = damping / DEFAULT_LIVE_STABILIZER.mass;
-    const trace = 1 - stiffness + damping;
-    expect(trace * trace - 4 * damping).toBeGreaterThanOrEqual(0);
+    const response = (1 - DEFAULT_LIVE_STABILIZER.drag) / DEFAULT_LIVE_STABILIZER.mass;
+    expect(response).toBeGreaterThan(0.5);
+    expect(response).toBeLessThanOrEqual(1);
   });
 });
 

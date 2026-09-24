@@ -5,6 +5,7 @@ import {
   addNotebookCollabParticipant,
   applyNotebookCollabDocument,
   createNotebookCollabCode,
+  sanitizeNotebookCollabAvatar,
   createNotebookCollabState,
   isValidNotebookCollabCode,
   notebookCollabStorageKey,
@@ -31,6 +32,8 @@ export type NotebookCollabHandlerDependencies = {
   randomCode?(): string;
   randomId?(): string;
   guard?(request: Request): Promise<Response | undefined>;
+  authenticate?(request: Request): Promise<{ uid: string; name: string } | undefined>;
+  identity?: { uid: string; name: string };
   observe?(event: { action: string; status: number; durationMs: number }): void;
 };
 
@@ -100,6 +103,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
     if (!state) return jsonResponse(404, { error: "Caderno compartilhado não encontrado." });
     const participant = state.participants.find((item) => safeEqual(item.token, credential));
     if (!participant) return jsonResponse(403, { error: "Você não está neste caderno." });
+    if (dependencies.identity && participant.accountId !== dependencies.identity.uid)
+      return jsonResponse(403, { error: "Entre na conta usada neste convite." });
     return { state, participantId: participant.id };
   }
 
@@ -150,7 +155,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
     if (action === "create" && request.method === "POST") {
       const body = await readJsonBody(request);
       const displayName = sanitizeNotebookCollabName(
-        typeof body["displayName"] === "string" ? body["displayName"] : "",
+        dependencies.identity?.name ??
+          (typeof body["displayName"] === "string" ? body["displayName"] : ""),
       );
       const notebookId = typeof body["notebookId"] === "string" ? body["notebookId"].trim() : "";
       if (!displayName || !notebookId || notebookId.length > 120)
@@ -171,7 +177,17 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       let state = createNotebookCollabState({ code, hostToken, notebookId, now: now() });
       state = addNotebookCollabParticipant(
         state,
-        { id: randomId(), displayName, token: hostToken, online: true, lastSeenAt: now() },
+        {
+          id: randomId(),
+          displayName,
+          ...(dependencies.identity ? { accountId: dependencies.identity.uid } : {}),
+          ...(sanitizeNotebookCollabAvatar(body["avatarUrl"])
+            ? { avatarUrl: sanitizeNotebookCollabAvatar(body["avatarUrl"]) }
+            : {}),
+          token: hostToken,
+          online: true,
+          lastSeenAt: now(),
+        },
         now(),
       );
       if (requestId) state.createRequestId = requestId;
@@ -193,7 +209,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       const code =
         typeof body["code"] === "string" ? normalizeNotebookCollabCode(body["code"]) : "";
       const displayName = sanitizeNotebookCollabName(
-        typeof body["displayName"] === "string" ? body["displayName"] : "",
+        dependencies.identity?.name ??
+          (typeof body["displayName"] === "string" ? body["displayName"] : ""),
       );
       if (!isValidNotebookCollabCode(code) || !displayName)
         return jsonResponse(400, { error: "Código ou nome inválidos." });
@@ -217,6 +234,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       )
         return jsonResponse(409, { error: "Este caderno já tem quatro participantes." });
       if (
+        !dependencies.identity &&
         state.participants.some(
           (item) => item.displayName.toLowerCase() === displayName.toLowerCase(),
         )
@@ -229,6 +247,10 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         {
           id: participantId,
           displayName,
+          ...(dependencies.identity ? { accountId: dependencies.identity.uid } : {}),
+          ...(sanitizeNotebookCollabAvatar(body["avatarUrl"])
+            ? { avatarUrl: sanitizeNotebookCollabAvatar(body["avatarUrl"]) }
+            : {}),
           token: participantToken,
           online: true,
           lastSeenAt: now(),
@@ -267,13 +289,20 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
     }
 
     if (["heartbeat", "leave"].includes(action ?? "") && request.method === "POST") {
-      const authorized = await authorizedParticipant(await readJsonBody(request));
+      const body = await readJsonBody(request);
+      const authorized = await authorizedParticipant(body);
       if (authorized instanceof Response) return authorized;
       const updated = touchNotebookCollabParticipant(
         authorized.state,
         authorized.participantId,
         now(),
         action !== "leave",
+        action === "heartbeat" && dependencies.identity
+          ? {
+              displayName: sanitizeNotebookCollabName(dependencies.identity.name),
+              avatarUrl: sanitizeNotebookCollabAvatar(body["avatarUrl"]),
+            }
+          : undefined,
       );
       const publicState = await save(updated);
       return jsonResponse(200, {
@@ -329,10 +358,22 @@ export function createNotebookCollabHandler(dependencies: NotebookCollabHandlerD
         return jsonResponse(400, { error: "Pedido inválido." });
       const blocked = await dependencies.guard?.(request);
       if (blocked) return blocked;
+      const identity =
+        action !== "view-read" && action !== "view-create"
+          ? await dependencies.authenticate?.(request)
+          : undefined;
+      if (
+        dependencies.authenticate &&
+        action !== "view-read" &&
+        action !== "view-create" &&
+        !identity
+      )
+        return jsonResponse(401, { error: "Entre na sua conta para editar este caderno." });
       for (let attempt = 0; attempt < 40; attempt += 1) {
         try {
           const result = await createAttempt({
             ...dependencies,
+            ...(identity ? { identity } : {}),
             store: versionedStore(dependencies.store),
           })(new Request(request.url, { method: "POST", headers: request.headers, body: text }));
           dependencies.observe?.({

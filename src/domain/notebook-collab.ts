@@ -15,10 +15,17 @@ export const NOTEBOOK_COLLAB_ACTION_LIMIT = 12;
 export type NotebookCollabParticipant = {
   id: string;
   displayName: string;
+  accountId?: string;
+  avatarUrl?: string | undefined;
   online: boolean;
   lastSeenAt: number;
   token?: string;
 };
+
+export function sanitizeNotebookCollabAvatar(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  return /^\/profile-avatars\/[a-z0-9-]+\.(?:svg|webp)$/.test(value) ? value : undefined;
+}
 
 export type NotebookCollabAction = {
   id: string;
@@ -45,7 +52,7 @@ export type NotebookCollabState = {
 };
 
 export type PublicNotebookCollabState = Omit<NotebookCollabState, "hostToken" | "receipts"> & {
-  participants: Omit<NotebookCollabParticipant, "token">[];
+  participants: Omit<NotebookCollabParticipant, "token" | "accountId">[];
 };
 
 export function createNotebookCollabCode(random?: () => number): string {
@@ -114,11 +121,19 @@ export function touchNotebookCollabParticipant(
   participantId: string,
   now: number,
   online = true,
+  profile?: { displayName: string; avatarUrl?: string | undefined },
 ): NotebookCollabState {
   return {
     ...state,
     participants: state.participants.map((item) =>
-      item.id === participantId ? { ...item, lastSeenAt: now, online } : item,
+      item.id === participantId
+        ? {
+            ...item,
+            lastSeenAt: now,
+            online,
+            ...(profile ? { displayName: profile.displayName, avatarUrl: profile.avatarUrl } : {}),
+          }
+        : item,
     ),
     updatedAt: now,
   };
@@ -156,6 +171,7 @@ export function toPublicNotebookCollabState(state: NotebookCollabState): PublicN
   const participants = state.participants.map((participant) => {
     const copy = { ...participant };
     delete copy.token;
+    delete copy.accountId;
     return copy;
   });
   return {
