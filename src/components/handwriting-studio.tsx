@@ -41,6 +41,10 @@ import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-ma
 import { normalizeMathOcrText } from "../domain/ocr";
 import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
+import { HandwritingFooter } from "./handwriting-footer";
+import { HandwritingHistoryBar } from "./handwriting-history-bar";
+import { HandwritingPaperPicker } from "./handwriting-paper-picker";
+import { HandwritingWritingWindow } from "./handwriting-writing-window";
 import {
   PAGE_WIDTH,
   PAGE_HEIGHT,
@@ -1994,6 +1998,24 @@ export function HandwritingStudio({
     if (writingWindowAutoFollow && (relativeX > 0.82 || relativeY > 0.84)) advanceWritingWindow();
   }
 
+  function goBackWritingWindow() {
+    setWritingWindowX((current) => {
+      const next = Math.max(0, current - 300);
+      setWritingWindowStatus(
+        `Coluna ${Math.floor((next - 100) / 300) + 1}, linha ${Math.floor((writingWindowY - 110) / 48) + 1}`,
+      );
+      return next;
+    });
+  }
+
+  function nextWritingLine() {
+    setWritingWindowX(100);
+    setWritingWindowY((current) => Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48));
+    setWritingWindowStatus(
+      `Coluna 1, linha ${Math.floor((Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, writingWindowY + 48) - 110) / 48) + 1}`,
+    );
+  }
+
   function advanceWritingWindow() {
     if (writingWindowX + WRITING_WINDOW_WIDTH + 300 < PAGE_WIDTH) {
       setWritingWindowX((current) => {
@@ -2610,65 +2632,26 @@ export function HandwritingStudio({
           </label>
         </div>
 
-        <div className="handwriting-history" aria-label="Histórico e zoom">
-          {textMode && (
-            <button
-              type="button"
-              className={textAutoCorrect ? "is-active" : ""}
-              aria-label="Correção automática de texto"
-              aria-pressed={textAutoCorrect}
-              title="Corrige acentos comuns e início de frases ao sair da área de texto"
-              onClick={() => setTextAutoCorrect((enabled) => !enabled)}
-            >
-              <PaperEditorIcon name="review" /> <span>Correção automática</span>
-            </button>
-          )}
-          <button
-            type="button"
-            className={!textMode && tool === "zoom-out" ? "is-active" : ""}
-            aria-label="Lupa para reduzir"
-            aria-pressed={!textMode && tool === "zoom-out"}
-            onClick={() => setTool("zoom-out")}
-          >
-            <PaperEditorIcon name="zoomOut" />
-            <span className="editor-action-label">Reduzir</span>
-          </button>
-          <button className="handwriting-zoom-value" type="button" onClick={resetView}>
-            {Math.round(zoom * 100)}%
-          </button>
-          <button
-            type="button"
-            className={!textMode && tool === "zoom-in" ? "is-active" : ""}
-            aria-label="Lupa para ampliar"
-            aria-pressed={!textMode && tool === "zoom-in"}
-            onClick={() => setTool("zoom-in")}
-          >
-            <PaperEditorIcon name="zoomIn" />
-            <span className="editor-action-label">Ampliar</span>
-          </button>
-          <button type="button" aria-label="Redefinir visualização" onClick={resetView}>
-            <PaperEditorIcon name="reset" />
-            <span className="editor-action-label">Redefinir</span>
-          </button>
-          <span className="handwriting-commandbar__divider" />
-          <button type="button" aria-label="Desfazer" disabled={!undoStack.length} onClick={undo}>
-            <PaperEditorIcon name="undo" />
-            <span className="editor-action-label">Desfazer</span>
-          </button>
-          <button type="button" aria-label="Refazer" disabled={!redoStack.length} onClick={redo}>
-            <PaperEditorIcon name="redo" />
-            <span className="editor-action-label">Refazer</span>
-          </button>
-          <button
-            type="button"
-            aria-label="Limpar folha"
-            disabled={!strokes.length && !stickies.length && !coordinateSystems.length && !pageText}
-            onClick={clearPage}
-          >
-            <PaperEditorIcon name="trash" />
-            <span className="editor-action-label">Limpar</span>
-          </button>
-        </div>
+        <HandwritingHistoryBar
+          textMode={textMode}
+          textAutoCorrect={textAutoCorrect}
+          onToggleAutoCorrect={() => setTextAutoCorrect((enabled) => !enabled)}
+          tool={tool}
+          onSelectTool={setTool}
+          zoom={zoom}
+          onResetView={resetView}
+          canUndo={undoStack.length > 0}
+          canRedo={redoStack.length > 0}
+          onUndo={undo}
+          onRedo={redo}
+          canClear={
+            strokes.length > 0 ||
+            stickies.length > 0 ||
+            coordinateSystems.length > 0 ||
+            pageText.length > 0
+          }
+          onClear={clearPage}
+        />
 
         <NotebookFileActions
           pages={notebookPages}
@@ -2683,156 +2666,34 @@ export function HandwritingStudio({
       </div>
 
       {writingWindowOpen && (
-        <section className="handwriting-writing-window" aria-label="Janela de escrita ampliada">
-          <div>
-            <strong>Escrita ampliada</strong>
-            <span>Escreva aqui. Ao chegar à borda, a janela avança pela folha.</span>
-          </div>
-          <canvas
-            ref={writingCanvasRef}
-            width={600}
-            height={220}
-            aria-label="Área ampliada para escrever com dedo ou caneta"
-            onPointerDown={startWritingWindow}
-            onPointerMove={moveWritingWindow}
-            onPointerUp={finishWritingWindow}
-            onPointerCancel={finishWritingWindow}
-          />
-          <p className="handwriting-writing-window__status" aria-live="polite">
-            {writingWindowStatus}
-          </p>
-          <div className="handwriting-writing-window__actions">
-            <label>
-              <input
-                type="checkbox"
-                checked={writingWindowAutoFollow}
-                onChange={(event) => setWritingWindowAutoFollow(event.target.checked)}
-              />
-              Acompanhar escrita
-            </label>
-            <button
-              type="button"
-              onClick={() =>
-                setWritingWindowX((current) => {
-                  const next = Math.max(0, current - 300);
-                  setWritingWindowStatus(
-                    `Coluna ${Math.floor((next - 100) / 300) + 1}, linha ${Math.floor((writingWindowY - 110) / 48) + 1}`,
-                  );
-                  return next;
-                })
-              }
-            >
-              Voltar
-            </button>
-            <button type="button" onClick={advanceWritingWindow}>
-              Avançar
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setWritingWindowX(100);
-                setWritingWindowY((current) =>
-                  Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48),
-                );
-                setWritingWindowStatus(
-                  `Coluna 1, linha ${Math.floor((Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, writingWindowY + 48) - 110) / 48) + 1}`,
-                );
-              }}
-            >
-              Próxima linha
-            </button>
-          </div>
-        </section>
+        <HandwritingWritingWindow
+          canvasRef={writingCanvasRef}
+          status={writingWindowStatus}
+          autoFollow={writingWindowAutoFollow}
+          onAutoFollowChange={setWritingWindowAutoFollow}
+          onStart={startWritingWindow}
+          onMove={moveWritingWindow}
+          onFinish={finishWritingWindow}
+          onBack={goBackWritingWindow}
+          onAdvance={advanceWritingWindow}
+          onNextLine={nextWritingLine}
+        />
       )}
 
       <div
         className={`handwriting-workspace${rightPanelCount ? " handwriting-workspace--brushes" : ""}${rightPanelCount > 1 ? " handwriting-workspace--panels-two" : ""}`}
         inert={fileAction === "import"}
       >
-        <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
-          <section className="handwriting-paper-section">
-            <button
-              type="button"
-              className="handwriting-paper-section__toggle"
-              aria-expanded={paperSectionsOpen.paper}
-              aria-label="Tipo de papel"
-              onClick={() =>
-                setPaperSectionsOpen((current) => ({ ...current, paper: !current.paper }))
-              }
-            >
-              <span className="paper-preview paper-preview--blank" aria-hidden="true" />
-              <span className="paper-picker-label">Tipo de papel</span>
-              <span className="paper-picker-chevron" aria-hidden="true">
-                ⌄
-              </span>
-            </button>
-            {paperSectionsOpen.paper && (
-              <div className="handwriting-paper-options">
-                {(
-                  [
-                    ["ruled", "Pautado"],
-                    ["grid", "Quadriculado"],
-                    ["dots", "Pontilhado"],
-                    ["blank", "Em branco"],
-                  ] as const
-                ).map(([value, label]) => (
-                  <button
-                    type="button"
-                    className={paper === value ? "is-active" : ""}
-                    aria-pressed={paper === value}
-                    onClick={() => setPaper(value)}
-                    key={value}
-                  >
-                    <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
-                    <span className="paper-picker-label">{label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-          <section className="handwriting-paper-section">
-            <button
-              type="button"
-              className="handwriting-paper-section__toggle"
-              aria-expanded={paperSectionsOpen.color}
-              aria-label="Cor da folha"
-              onClick={() =>
-                setPaperSectionsOpen((current) => ({ ...current, color: !current.color }))
-              }
-            >
-              <span className="paper-preview paper-preview--tone-aged" aria-hidden="true" />
-              <span className="paper-picker-label">Cor da folha</span>
-              <span className="paper-picker-chevron" aria-hidden="true">
-                ⌄
-              </span>
-            </button>
-            {paperSectionsOpen.color && (
-              <div className="handwriting-paper-options">
-                {(
-                  [
-                    ["light", "Clara"],
-                    ["aged", "Papel de livro"],
-                    ["night", "Escura"],
-                  ] as const
-                ).map(([value, label]) => (
-                  <button
-                    type="button"
-                    className={paperColor === value ? "is-active" : ""}
-                    aria-pressed={paperColor === value}
-                    onClick={() => selectPaperColor(value)}
-                    key={value}
-                  >
-                    <span
-                      className={`paper-preview paper-preview--tone-${value}`}
-                      aria-hidden="true"
-                    />
-                    <span className="paper-picker-label">{label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-        </aside>
+        <HandwritingPaperPicker
+          paper={paper}
+          paperColor={paperColor}
+          sectionsOpen={paperSectionsOpen}
+          onToggleSection={(section) =>
+            setPaperSectionsOpen((current) => ({ ...current, [section]: !current[section] }))
+          }
+          onSelectPaper={setPaper}
+          onSelectPaperColor={selectPaperColor}
+        />
 
         <div className="handwriting-viewport" ref={viewportRef}>
           {(tool === "hand" || tool === "zoom-in" || tool === "zoom-out") && (
@@ -3721,26 +3582,7 @@ export function HandwritingStudio({
       </div>
 
       {error && <p className="capture-error">{error}</p>}
-      <footer className="handwriting-footer" inert={fileAction === "import"}>
-        <p>
-          <strong>
-            {cloud?.authenticated
-              ? cloud.status === "synced"
-                ? "Sincronizado na sua conta"
-                : cloud.status === "offline"
-                  ? "Sem conexão. Alterações aguardando sincronização"
-                  : cloud.status === "conflict"
-                    ? "Há alterações simultâneas para revisar na conta"
-                    : "Sincronizando com sua conta…"
-              : draftStatus || "Salvamento automático ativo"}
-          </strong>
-          <span>
-            {cloud?.authenticated
-              ? "Computador e celular usam a mesma conta."
-              : "Entre na sua conta para sincronizar entre dispositivos."}
-          </span>
-        </p>
-      </footer>
+      <HandwritingFooter cloud={cloud} draftStatus={draftStatus} inert={fileAction === "import"} />
       {fileAction === "import" && (
         <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
           <PageImport
