@@ -1611,12 +1611,6 @@
     box-shadow: 0 4px 0 #4b209b;
   }
 
-  /* A barra superior completa some no celular: o botão de "mais" e a
-     bolinha de perfil ficam em .mobile-top-bar, fora do cabeçalho. */
-  .app-shell .page-header {
-    display: none;
-  }
-
   .app-shell .mobile-nav__item--featured .navigation-icon__variant--claro,
   :root[data-theme="dark"]
     .app-shell
