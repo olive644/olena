@@ -70,13 +70,12 @@ export type LiveStabilizerOptions = {
   drag: number;
 };
 
-// Com massa 2 e amortecimento 0,7 a caneta virtual alcança a mão sem passar do
-// ponto (as duas raízes da resposta são reais e positivas), então o traço não
-// balança no fim de um movimento.
+// Resposta mais próxima da ponta: a configuração anterior atrasava o traço
+// visivelmente, sobretudo com amostras esparsas de mouse e toque.
 export const DEFAULT_LIVE_STABILIZER: LiveStabilizerOptions = {
-  deadzone: 2.5,
-  mass: 2,
-  drag: 0.7,
+  deadzone: 1,
+  mass: 1,
+  drag: 0.25,
 };
 
 const SETTLE_DISTANCE = 0.75;
@@ -87,9 +86,9 @@ export type LiveStabilizer = {
   finish: () => HandwritingPoint[];
 };
 
-// Estabilização em tempo real, inspirada nas opções Inertia e Deadzone do Xournal++.
-// A zona morta ignora tremores menores que o raio. A inércia faz uma caneta
-// virtual seguir a mão como uma mola amortecida, suavizando sacudidas rápidas.
+// Estabilização em tempo real, inspirada nas opções de suavização do Xournal++.
+// A zona morta ignora tremores menores que o raio. A resposta exponencial
+// acompanha a mão sem oscilar nem acumular atraso a cada amostra.
 // Pressão e inclinação vêm da amostra real; só a posição é filtrada.
 export function createLiveStabilizer(
   start: HandwritingPoint,
@@ -98,15 +97,10 @@ export function createLiveStabilizer(
   let anchor = start;
   let x = start.x;
   let y = start.y;
-  let velocityX = 0;
-  let velocityY = 0;
-
   function step(target: HandwritingPoint) {
-    const damping = 1 - options.drag;
-    velocityX = (velocityX + (target.x - x) / options.mass) * damping;
-    velocityY = (velocityY + (target.y - y) / options.mass) * damping;
-    x += velocityX;
-    y += velocityY;
+    const response = Math.min(1, Math.max(0.05, (1 - options.drag) / options.mass));
+    x += (target.x - x) * response;
+    y += (target.y - y) * response;
   }
 
   return {

@@ -62,10 +62,15 @@ it("publica com o código criado pelo servidor e permite ao segundo participante
     expect(await guest.result.current.join("ABCDE", "Bob")).toBe(true);
   });
   await waitFor(() => expect(remote).toHaveBeenCalledWith(document));
+  expect(guest.result.current.activity).toBe("");
   act(() => {
-    host.result.current.publish({ ...document, pageText: "Questão revisada" });
+    host.result.current.publish({ ...document, pageText: "Questão revisada" }, "editou o caderno");
+  });
+  await waitFor(() => expect(guest.result.current.activity).toBe("Alice editou o caderno"));
+  act(() => {
     guest.result.current.publish({
       ...document,
+      pageText: "Questão revisada",
       strokes: [
         {
           id: "bob-stroke",
