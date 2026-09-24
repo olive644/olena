@@ -11,6 +11,36 @@ function request(action: string, body: Record<string, unknown>) {
 }
 
 describe("notebook collaboration handler", () => {
+  it("saves the initial sheet before making the invitation available", async () => {
+    const published: unknown[] = [];
+    const handler = createNotebookCollabHandler({
+      store: createMemoryRoomStore(),
+      publish: async (_code, state) => void published.push(state),
+      streamUrl: () => "https://stream.example/room",
+    });
+    const document = { version: 1, paper: "ruled", strokes: [], pageText: "Folha do dono" };
+    const invalid = await handler(
+      request("create", {
+        notebookId: "sheet",
+        displayName: "Alice",
+        document: { invalid: true },
+      }),
+    );
+    expect(invalid.status).toBe(400);
+    const response = await handler(
+      request("create", {
+        notebookId: "sheet",
+        displayName: "Alice",
+        document,
+      }),
+    );
+    expect(response.status).toBe(201);
+    const { code } = (await response.json()) as { code: string };
+    expect(published[0]).toMatchObject({ document });
+    const joined = await handler(request("join", { code, displayName: "Bob" }));
+    expect(joined.status).toBe(200);
+    expect(await joined.json()).toMatchObject({ state: { document } });
+  });
   it("cria leitura isolada, recusa conteúdo ativo e não concede edição pelo token", async () => {
     const handler = createNotebookCollabHandler({
       store: createMemoryRoomStore(),

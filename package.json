@@ -20,7 +20,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "performance:check": "node scripts/check-performance-budget.mjs",
-    "verify": "npm run lint && npm run format:check && npm test && npm run build && npm run performance:check"
+    "api:check": "node scripts/check-api-runtime.mjs",
+    "verify": "npm run lint && npm run format:check && npm run api:check && npm test && npm run build && npm run performance:check"
   },
   "dependencies": {
     "firebase": "^12.19.0",

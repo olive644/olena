@@ -1,4 +1,4 @@
-import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences";
+import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
 import type { HandwritingDocument } from "./handwriting";
 
 export const WORKSPACE_VERSION = 7 as const;

@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+As APIs usam Node ESM em produção. Imports de valores, inclusive em módulos compartilhados
+com o frontend, precisam da extensão `.js`. `npm run api:check` verifica o carregamento
+do JavaScript emitido sem o resolvedor do Vite e faz parte de `npm run verify`.
+`notebook-collab?action=create` aceita `document` opcional validado e salva a folha inicial
+antes de devolver o código da sala, evitando convites para uma folha ainda não publicada.
+
 O editor usa `NotebookFileActions` para salvar, exportar seleção e criar links de leitura.
 `?notebook-view=<token>` abre `NotebookReader`, sem ferramentas de edição. A API
 `notebook-collab` aceita `view-create` e `view-read`, guarda cópias por sete dias e limita

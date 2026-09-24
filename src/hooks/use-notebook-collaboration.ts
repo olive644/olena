@@ -262,16 +262,13 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         participantId: "",
         displayName: name,
       };
-      const ok = await connect(session, "create", {
+      return connect(session, "create", {
         notebookId,
         displayName: name,
         requestId: crypto.randomUUID(),
+        ...(initialDocument ? { document: initialDocument } : {}),
       });
-      if (ok && initialDocument) await publish(initialDocument, "abriu o caderno");
-      return ok;
     },
-    // publish is a stable callback below; this dependency is intentionally declared later.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [connect, notebookId],
   );
 

@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Correção do compartilhamento de cadernos
+
+O endpoint de cadernos falhava na inicialização em produção com `ERR_MODULE_NOT_FOUND`.
+Os imports transitivos do validador agora incluem `.js`, como exige o Node ESM.
+`npm run api:check`, integrado ao `verify`, transpila e carrega todas as APIs em processos
+Node reais para detectar falhas que o resolvedor do Vite não reproduz.
+A criação da sala grava a folha inicial na mesma operação que gera o convite.
+O token de leitura continua isolado das credenciais de edição; a proteção App Check,
+os limites de requisições e o limite de quatro participantes continuam aplicados.
+A leitura pública por token não depende de reCAPTCHA, pois o token é aleatório,
+somente leitura e protegido por limite de requisições.
+
 ## Navegação móvel e smoke tests
 
 O seletor de aparência da barra móvel abre acima da navegação, dentro da área visível e clicável. O avatar do topo móvel abre o mesmo seletor de perfis do desktop, com persistência e sincronização existentes. Os testes E2E agora usam os controles e rótulos atuais de cada largura, sem selecionar elementos ocultos da outra interface. A suíte local cobre desktop e mobile; testes específicos de uma plataforma são pulados na outra.

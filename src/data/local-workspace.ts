@@ -14,12 +14,12 @@ import {
   type StudyTask,
   type Subject,
   type WorkspaceState,
-} from "../domain/workspace";
+} from "../domain/workspace.js";
 import {
   defaultStudyPreferences,
   studyModalities,
   type StudyPreferences,
-} from "../domain/study-preferences";
+} from "../domain/study-preferences.js";
 
 export const WORKSPACE_STORAGE_KEY = "helenastudy.workspace.v1";
 export const MAX_NOTE_ASSET_DATA_URL_LENGTH = 1_000_000;

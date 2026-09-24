@@ -56,7 +56,8 @@ it("publica com o código criado pelo servidor e permite ao segundo participante
   await act(async () => {
     expect(await host.result.current.create("Alice", document)).toBe(true);
   });
-  expect(requests.find((request) => request.action === "update")?.code).toBe("ABCDE");
+  expect(host.result.current.state.room?.document).toEqual(document);
+  expect(requests.filter((request) => request.action === "update")).toHaveLength(0);
   await act(async () => {
     expect(await guest.result.current.join("ABCDE", "Bob")).toBe(true);
   });

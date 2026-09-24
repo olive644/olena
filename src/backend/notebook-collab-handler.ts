@@ -154,6 +154,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       const notebookId = typeof body["notebookId"] === "string" ? body["notebookId"].trim() : "";
       if (!displayName || !notebookId || notebookId.length > 120)
         return jsonResponse(400, { error: "Nome ou caderno inválido." });
+      if (body["document"] !== undefined && !isHandwritingDocument(body["document"]))
+        return jsonResponse(400, { error: "A folha compartilhada ficou inválida." });
       const requestId = typeof body["requestId"] === "string" ? body["requestId"] : "";
       let code = randomCode();
       for (
@@ -172,6 +174,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         now(),
       );
       if (requestId) state.createRequestId = requestId;
+      if (isHandwritingDocument(body["document"]))
+        state.document = body["document"] as HandwritingDocument;
       const publicState = await save(state);
       const host = state.participants[0];
       return jsonResponse(201, {
