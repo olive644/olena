@@ -33,7 +33,14 @@ function smoothPass(points: readonly HandwritingPoint[]): HandwritingPoint[] {
 
 export function stabilizeHandwriting(points: readonly HandwritingPoint[]): HandwritingPoint[] {
   if (points.length < 3) return [...points];
-  const smoothed = smoothPass(smoothPass(points));
+  return straightenStroke(smoothPass(smoothPass(points)));
+}
+
+// Endireita traços quase retos (uma linha feita à mão livre, quase horizontal),
+// sem suavizar o desenho. Curvas e traços curtos passam intactos.
+export function straightenStroke(points: readonly HandwritingPoint[]): HandwritingPoint[] {
+  if (points.length < 3) return [...points];
+  const smoothed = [...points];
   const first = smoothed[0];
   const last = smoothed.at(-1);
   if (!first || !last) return smoothed;
@@ -52,4 +59,80 @@ export function stabilizeHandwriting(points: readonly HandwritingPoint[]): Handw
   if (maxDeviation > 10) return smoothed;
   const center = smoothed[Math.floor(smoothed.length / 2)] ?? first;
   return smoothed.map((point) => rotatePoint(point, center, -angle * 0.88));
+}
+
+export type LiveStabilizerOptions = {
+  /** Distância mínima, em pixels da folha, para aceitar uma nova amostra da caneta. */
+  deadzone: number;
+  /** Massa da caneta virtual: quanto maior, mais ela demora para acompanhar a mão. */
+  mass: number;
+  /** Amortecimento de 0 a 1: quanto maior, menos a caneta virtual balança. */
+  drag: number;
+};
+
+// Com massa 2 e amortecimento 0,7 a caneta virtual alcança a mão sem passar do
+// ponto (as duas raízes da resposta são reais e positivas), então o traço não
+// balança no fim de um movimento.
+export const DEFAULT_LIVE_STABILIZER: LiveStabilizerOptions = {
+  deadzone: 2.5,
+  mass: 2,
+  drag: 0.7,
+};
+
+const SETTLE_DISTANCE = 0.75;
+const MAX_SETTLE_STEPS = 40;
+
+export type LiveStabilizer = {
+  push: (samples: readonly HandwritingPoint[]) => HandwritingPoint[];
+  finish: () => HandwritingPoint[];
+};
+
+// Estabilização em tempo real, inspirada nas opções Inertia e Deadzone do Xournal++.
+// A zona morta ignora tremores menores que o raio. A inércia faz uma caneta
+// virtual seguir a mão como uma mola amortecida, suavizando sacudidas rápidas.
+// Pressão e inclinação vêm da amostra real; só a posição é filtrada.
+export function createLiveStabilizer(
+  start: HandwritingPoint,
+  options: LiveStabilizerOptions = DEFAULT_LIVE_STABILIZER,
+): LiveStabilizer {
+  let anchor = start;
+  let x = start.x;
+  let y = start.y;
+  let velocityX = 0;
+  let velocityY = 0;
+
+  function step(target: HandwritingPoint) {
+    const damping = 1 - options.drag;
+    velocityX = (velocityX + (target.x - x) / options.mass) * damping;
+    velocityY = (velocityY + (target.y - y) / options.mass) * damping;
+    x += velocityX;
+    y += velocityY;
+  }
+
+  return {
+    push(samples) {
+      const filtered: HandwritingPoint[] = [];
+      for (const sample of samples) {
+        if (Math.hypot(sample.x - anchor.x, sample.y - anchor.y) < options.deadzone) continue;
+        anchor = sample;
+        step(sample);
+        filtered.push({ ...sample, x, y });
+      }
+      return filtered;
+    },
+    finish() {
+      const tail: HandwritingPoint[] = [];
+      for (let index = 0; index < MAX_SETTLE_STEPS; index += 1) {
+        if (Math.hypot(anchor.x - x, anchor.y - y) <= SETTLE_DISTANCE) break;
+        step(anchor);
+        tail.push({ ...anchor, x, y });
+      }
+      if (x !== anchor.x || y !== anchor.y) {
+        x = anchor.x;
+        y = anchor.y;
+        tail.push({ ...anchor });
+      }
+      return tail;
+    },
+  };
 }
