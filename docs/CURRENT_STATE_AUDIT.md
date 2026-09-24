@@ -628,3 +628,7 @@ O `tesseract.js` carrega o `regenerator-runtime` apenas para navegadores sem asy
 # Folha ao vivo na janela de escrita, setembro de 2026
 
 Ao escrever na janela de escrita ampliada, a folha voltou a mostrar o traço enquanto ele acontece. Desde a otimização de latência da caneta, a janela desenhava só no próprio canvas e a folha só recebia o traço ao levantar a caneta. Agora cada segmento é desenhado também direto no canvas da folha, do mesmo modo que na escrita normal, sem atualizar o estado a cada ponto e portanto sem perder o ganho de latência. O e2e da janela de escrita cobre a tinta sob a caneta e a tinta na folha durante o traço.
+
+# Divisão do componente do editor, etapa 2c, setembro de 2026
+
+Os quatro painéis laterais do editor (pincéis, régua, coordenadas e camadas) saíram do `HandwritingStudio` para `handwriting-side-panels.tsx`, sem mudança de comportamento. Cada painel recebe apenas as props de que precisa. O componente principal caiu de 3338 para cerca de 3140 linhas, e os painéis têm testes próprios em `handwriting-side-panels.test.tsx`. Ficam para as próximas etapas a camada de post-its dentro da folha, as sobreposições de imagem, régua e coordenadas, e a lógica de ponteiro em um hook.
