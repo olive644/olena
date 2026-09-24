@@ -693,6 +693,20 @@ Inventário de persistência: `helenastudy.workspace.v1` guarda cadernos, págin
 
 Limites que continuam: a sala é temporária (oito horas) e transmite uma folha, não o caderno inteiro nem uma cópia permanente para cada convidado. O convidado vê e edita a folha compartilhada, mas ela não vira automaticamente uma página da biblioteca da própria conta. A sincronização da área de estudo ocorre por chave inteira; edições simultâneas do mesmo workspace em dois aparelhos produzem um conflito com cópia local recuperável, não uma fusão perfeita de campos. A tela deve comunicar estado `offline` ou `conflict` antes de prometer disponibilidade em outro dispositivo. Há testes de identidade, conflito de login, convite e atividade; o fluxo real entre duas contas requer teste no domínio implantado com App Check e Firebase Auth configurados.
 
+# OCR local sob o CSP de produção, setembro de 2026
+
+O OCR do caderno estava quebrado em produção. O CSP só libera `'self'` e o `tesseract.js` cria o worker a partir de um blob e busca worker, núcleo WebAssembly e idioma no `cdn.jsdelivr.net`. O erro aparecia como "Não foi possível reconhecer a fórmula". O problema passou despercebido porque o servidor de desenvolvimento e o e2e não aplicavam o CSP.
+
+Agora o OCR roda todo no mesmo domínio, sem enviar o IP do aluno a terceiros:
+
+- `scripts/copy-ocr-assets.mjs` copia para `public/ocr/` (não versionado) o worker, os dois núcleos LSTM e o idioma `eng` (`4.0.0_best_int`, 2,9 MB) dos pacotes instalados. Roda em `predev` e `prebuild`. Esses arquivos ficam fora do orçamento de JS, que só conta `dist/assets`.
+- `@tesseract.js-data/eng` entrou como devDependency (MIT, sem dependências, `npm audit` limpo). Não vai para o bundle: só fornece o arquivo de idioma na hora do build.
+- `handwriting-ocr.ts` define `workerPath`, `corePath`, `langPath` e `workerBlobURL: false`.
+- O CSP ganhou `worker-src 'self'` e `'wasm-unsafe-eval'` no `script-src`. Esse valor libera WebAssembly, não `eval` de JavaScript. Os arquivos de `/ocr/` têm cache de 7 dias, porque os nomes não levam hash.
+- `vite preview` passou a servir os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP real. `e2e/ocr-csp.spec.ts` desenha uma fórmula, roda o OCR e exige resposta preenchida, nenhuma violação de CSP e nenhuma requisição externa durante o reconhecimento. Sem a correção, o teste falha.
+
+As fontes do Google continuam sendo carregadas de fora com a página e serão tratadas em outra mudança de privacidade.
+
 # Limpeza dos dados pessoais ao sair da conta, setembro de 2026
 
 Ao sair da conta, o app apagava só as seis chaves sincronizadas do `localStorage`. O histórico de versões (`helenastudy.workspace.history.v1`, listado e restaurável na página de perfil), os rascunhos e folhas salvas do caderno, o progresso, o perfil, a sequência do pomodoro (`noteoli.pomodoro-streak.v1`), as sessões de sala e o cookie de sessão do Google Agenda continuavam no aparelho. Em um computador compartilhado, a próxima pessoa via e podia restaurar o que a anterior estudou.
