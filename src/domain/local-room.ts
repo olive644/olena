@@ -128,9 +128,22 @@ export function formatRoomEstimatedDuration(
 export const CORRECT_ANSWER_XP = 10;
 export const LEADER_WRONG_ANSWER_PENALTY_XP = 5;
 
-export function createLocalRoomCode(random: () => number = Math.random): string {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  return Array.from({ length: 5 }, () => alphabet[Math.floor(random() * alphabet.length)]).join("");
+const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const ROOM_CODE_LENGTH = 5;
+
+// O código da sala é a única barreira para entrar nela, então vem de uma fonte
+// criptográfica e não de Math.random, que é previsível. O alfabeto tem 32
+// símbolos (potência de dois), então mascarar cada byte com 31 escolhe um
+// símbolo sem viés, sem divisão nem descarte de valores.
+export function createLocalRoomCode(random?: () => number): string {
+  if (random) {
+    return Array.from(
+      { length: ROOM_CODE_LENGTH },
+      () => ROOM_CODE_ALPHABET[Math.floor(random() * ROOM_CODE_ALPHABET.length)],
+    ).join("");
+  }
+  const bytes = globalThis.crypto.getRandomValues(new Uint8Array(ROOM_CODE_LENGTH));
+  return Array.from(bytes, (byte) => ROOM_CODE_ALPHABET[byte & 31]).join("");
 }
 
 export function sanitizeDisplayName(value: string): string {
