@@ -1973,9 +1973,15 @@ export function HandwritingStudio({
     }, []);
     if (added.length === 0) return;
     liveStroke.points.push(...added);
+    if (!previous) return;
+    // A folha também mostra a escrita enquanto ela acontece na janela. O
+    // segmento é desenhado direto no canvas da folha, como na escrita normal,
+    // sem atualizar o estado a cada ponto.
+    const sheetContext = canvasRef.current?.getContext("2d");
+    if (sheetContext) drawStroke(sheetContext, { ...liveStroke, points: [previous, ...added] });
     const canvas = writingCanvasRef.current;
     const context = canvas?.getContext("2d");
-    if (!canvas || !context || !previous) return;
+    if (!canvas || !context) return;
     context.save();
     context.scale(canvas.width / WRITING_WINDOW_WIDTH, canvas.height / WRITING_WINDOW_HEIGHT);
     context.translate(-writingWindowX, -writingWindowY);

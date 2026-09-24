@@ -591,7 +591,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await expect(page.locator(".notebook-page-card__number").first()).toHaveText("01");
 });
 
-test("a tinta da janela de escrita acompanha a ponta da caneta durante o traço", async ({
+test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async ({
   page,
 }, testInfo) => {
   test.slow();
@@ -663,6 +663,31 @@ test("a tinta da janela de escrita acompanha a ponta da caneta durante o traço"
     },
     { x: tip.x, y: tip.y },
   );
+  // A folha também precisa mostrar o traço enquanto ele acontece na janela:
+  // a janela cobre 500 por 185 unidades da folha a partir da origem dela.
+  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  const inkOnSheet = await sheet.evaluate(
+    (element, position) => {
+      const target = element as HTMLCanvasElement;
+      const context = target.getContext("2d");
+      if (!context) return false;
+      const centerX = Math.round(100 + position.fx * 500);
+      const centerY = Math.round(110 + position.fy * 185);
+      const radius = 6;
+      const { data } = context.getImageData(
+        Math.max(0, centerX - radius),
+        Math.max(0, centerY - radius),
+        radius * 2,
+        radius * 2,
+      );
+      for (let index = 0; index < data.length; index += 4) {
+        if (data[index]! < 90 && data[index + 1]! < 90 && data[index + 2]! < 100) return true;
+      }
+      return false;
+    },
+    { fx: (tip.x - box.x) / box.width, fy: (tip.y - box.y) / box.height },
+  );
   await page.mouse.up();
   expect(inkAtTip).toBe(true);
+  expect(inkOnSheet).toBe(true);
 });
