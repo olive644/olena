@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Na colaboração, o UID autenticado identifica a pessoa, não o aparelho. Entrar pelo
+mesmo UID reutiliza a participação; sair remove a conta da equipe em todos os aparelhos.
+Sem heartbeat por 45 segundos, a pessoa fica offline, mas mantém sua vaga.
+O login Google não recria o perfil/avatar: o perfil da nuvem prevalece sobre o backup
+local na hidratação. Traços livres são desenhados diretamente no canvas durante o gesto
+e entram no documento compartilhado somente ao levantar a caneta.
+
 As APIs usam Node ESM em produção. Imports de valores, inclusive em módulos compartilhados
 com o frontend, precisam da extensão `.js`. `npm run api:check` verifica o carregamento
 do JavaScript emitido sem o resolvedor do Vite e faz parte de `npm run verify`.

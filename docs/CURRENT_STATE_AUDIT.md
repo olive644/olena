@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Identidade e presença no caderno
+
+Corrigida a criação de uma participação por aparelho para o mesmo UID. A entrada
+reutiliza a participação da conta e elimina duplicatas antigas dessa conta ao reentrar.
+Saída explícita remove a conta; desconexão mantém avatar e vaga com presença offline.
+O login Google deixou de sobrescrever o avatar escolhido com o avatar padrão.
+Testes cobrem reentrada autenticada, credenciais após saída e expiração da presença.
+Painel de convite e seleção acompanham o tema; ações usam ícones facetados do app.
+O traço livre não é serializado nem sincronizado enquanto o gesto estiver em andamento.
+Isso reduz trabalho durante a escrita, mas não equivale a uma medição em todos os celulares.
+
 ## Correção do compartilhamento de cadernos
 
 O endpoint de cadernos falhava na inicialização em produção com `ERR_MODULE_NOT_FOUND`.

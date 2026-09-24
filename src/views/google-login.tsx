@@ -30,12 +30,8 @@ function googleLoginError(cause: unknown): string {
   return "Não foi possível entrar agora. Tente novamente em instantes.";
 }
 
-function applyGoogleLogin(displayName: string | null, answers: readonly (string | string[])[]) {
+function applyGoogleLogin(answers: readonly (string | string[])[]) {
   writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ answers, completed: true }));
-  writeSyncedStorage(
-    "helena.profile.v1",
-    JSON.stringify({ name: displayName ?? undefined, photoUrl: "/profile-avatars/helena.webp" }),
-  );
 }
 
 export function readPendingGoogleAnswers(): readonly (string | string[])[] {
@@ -81,7 +77,7 @@ export function GoogleLogin({
         // persistência) porque o Firebase só entrega esse resultado uma vez.
         if (hasPendingGoogleRedirect()) {
           if (loaded.redirectResult) {
-            applyGoogleLogin(loaded.redirectResult.user.displayName, readPendingGoogleAnswers());
+            applyGoogleLogin(readPendingGoogleAnswers());
             clearPendingAnswers();
             if (active) onFinish();
             return;
@@ -113,8 +109,8 @@ export function GoogleLogin({
     const provider = new services.authApi.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
     try {
-      const credential = await services.authApi.signInWithPopup(services.auth, provider);
-      applyGoogleLogin(credential.user.displayName, answers);
+      await services.authApi.signInWithPopup(services.auth, provider);
+      applyGoogleLogin(answers);
       onFinish();
     } catch (cause) {
       if (isPopupBlockedError(cause)) {
