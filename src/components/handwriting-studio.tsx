@@ -47,6 +47,7 @@ import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
+import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { HandwritingStickyNote } from "./handwriting-sticky-note";
 import {
   HandwritingBrushPanel,
@@ -1597,6 +1598,7 @@ export function HandwritingStudio({
 
       const { createWorker, PSM } = await import("tesseract.js");
       worker = await createWorker("eng", 1, {
+        ...OCR_WORKER_OPTIONS,
         logger: (message) => setOcrProgress(Math.round(message.progress * 100)),
       });
       const parameters = {
