@@ -637,6 +637,14 @@ Os quatro painéis laterais do editor (pincéis, régua, coordenadas e camadas) 
 
 Cada post-it e cada texto solto da folha agora é renderizado por `HandwritingStickyNote` (`handwriting-sticky-note.tsx`), sem mudança de comportamento. O componente cuida do rótulo, do menu de opções, das cores, do checklist, do campo de texto com correção automática, do arraste por teclado e dos puxadores de mover e redimensionar. O estado e a lógica de arrastar e redimensionar continuam no `HandwritingStudio`, que os entrega por props. O componente principal caiu de 3145 para cerca de 2950 linhas, e o novo componente tem 17 testes próprios em `handwriting-sticky-note.test.tsx`. Ficam para a próxima etapa as sobreposições de imagem, régua e coordenadas dentro da folha e a lógica de ponteiro em um hook.
 
+# Seletor de tema no celular, setembro de 2026
+
+Ao restaurar o layout móvel original, o commit `662f6c9` tirou o seletor de aparência da barra inferior e o do cabeçalho continuava escondido abaixo de 900px por uma regra antiga em `styles.css`. Com isso, telas menores ficaram sem forma de trocar o tema. A regra que escondia `.page-header__theme` foi removida, e o seletor aparece no cabeçalho móvel ao lado do menu e do perfil, verificado em 320px.
+
+O teste `responsive-navigation.spec.ts` foi ajustado ao layout atual: o perfil móvel é o botão "Perfil" da barra inferior, e o seletor de tema é o do cabeçalho em todas as larguras.
+
+Os testes do projeto móvel que dependiam do layout antigo (`app.spec.ts` e `profile-avatars.spec.ts`) também foram ajustados: o seletor de tema e o menu de perfil são os do cabeçalho em todas as larguras. O projeto móvel foi rodado localmente com `PLAYWRIGHT_SYSTEM_EDGE=1` (Edge com o perfil do iPhone 13), já que o WebKit não está instalado nesta máquina.
+
 # Domínio olenastudy.vercel.app, setembro de 2026
 
 O projeto da Vercel passou a se chamar `olenastudy` e o domínio `olenastudy.vercel.app` foi anexado como produção, com `helenastudy.vercel.app` redirecionando (307) para ele. As URLs do repositório (canonical, Open Graph, sitemap, robots, `llms.txt`, guia do Google Agenda e testes de URL de sala) passaram a usar o domínio novo.
