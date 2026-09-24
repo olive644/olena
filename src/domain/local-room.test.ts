@@ -58,11 +58,24 @@ describe("sala local", () => {
     const getRandomValues = vi.spyOn(globalThis.crypto, "getRandomValues");
     const codes = Array.from({ length: 200 }, () => createLocalRoomCode());
     expect(mathRandom).not.toHaveBeenCalled();
-    expect(getRandomValues).toHaveBeenCalledTimes(200 * 5);
+    expect(getRandomValues).toHaveBeenCalledTimes(200);
     expect(codes.every((code) => isValidLocalRoomCode(code))).toBe(true);
     // 1000 sorteios em 32 símbolos: um gerador quebrado ficaria bem abaixo disso.
     expect(new Set(codes.join("")).size).toBeGreaterThan(24);
     mathRandom.mockRestore();
+    getRandomValues.mockRestore();
+  });
+
+  it("mapeia cada byte sorteado para um símbolo do alfabeto de 32 letras", () => {
+    const bytes = [0, 1, 31, 32, 255];
+    const getRandomValues = vi.spyOn(globalThis.crypto, "getRandomValues").mockImplementation(((
+      array: Uint8Array,
+    ) => {
+      array.set(bytes);
+      return array;
+    }) as typeof globalThis.crypto.getRandomValues);
+    // 0 -> A, 1 -> B, 31 -> 9, 32 -> A (volta ao início), 255 -> 9
+    expect(createLocalRoomCode()).toBe("AB9A9");
     getRandomValues.mockRestore();
   });
 

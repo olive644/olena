@@ -657,7 +657,7 @@ O nome escrito como `Oli<span>Study</span>` na marca do onboarding, do login e d
 
 Três ajustes vindos da auditoria de segurança, sem mudança de fluxo para o usuário:
 
-- O código da sala (5 caracteres, alfabeto de 32 símbolos) passou a ser sorteado com `crypto.getRandomValues` em vez de `Math.random`. Como o código é a barreira para entrar numa sala, ele não pode ser previsível. O sorteio não tem viés, porque 2^32 é múltiplo de 32.
+- O código da sala (5 caracteres, alfabeto de 32 símbolos) passou a ser sorteado com `crypto.getRandomValues` em vez de `Math.random`. Como o código é a barreira para entrar numa sala, ele não pode ser previsível. Cada byte sorteado é mascarado com 31 para escolher o símbolo (o alfabeto tem 32, uma potência de dois), sem divisão nem viés. A primeira versão dividia um inteiro de 32 bits e o CodeQL a apontou como `js/biased-cryptographic-random`, então o mascaramento foi adotado.
 - Os tokens de anfitrião e de participante passaram a ser comparados em tempo constante por `safeEqual` (`src/backend/secure-compare.ts`), em vez de `===`. Um token ausente nunca autoriza.
 - `vercel.json` ganhou `Strict-Transport-Security` e `Cross-Origin-Opener-Policy: same-origin-allow-popups`. O valor `same-origin` foi descartado de propósito, porque quebraria o `signInWithPopup` do login Google. `src/security-headers.test.ts` trava esses cabeçalhos e a ausência de `unsafe-inline` e `unsafe-eval` no `script-src`.
 
