@@ -706,3 +706,13 @@ Agora o OCR roda todo no mesmo domínio, sem enviar o IP do aluno a terceiros:
 - `vite preview` passou a servir os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP real. `e2e/ocr-csp.spec.ts` desenha uma fórmula, roda o OCR e exige resposta preenchida, nenhuma violação de CSP e nenhuma requisição externa durante o reconhecimento. Sem a correção, o teste falha.
 
 As fontes do Google continuam sendo carregadas de fora com a página e serão tratadas em outra mudança de privacidade.
+
+# Limpeza dos dados pessoais ao sair da conta, setembro de 2026
+
+Ao sair da conta, o app apagava só as seis chaves sincronizadas do `localStorage`. O histórico de versões (`helenastudy.workspace.history.v1`, listado e restaurável na página de perfil), os rascunhos e folhas salvas do caderno, o progresso, o perfil, a sequência do pomodoro (`noteoli.pomodoro-streak.v1`), as sessões de sala e o cookie de sessão do Google Agenda continuavam no aparelho. Em um computador compartilhado, a próxima pessoa via e podia restaurar o que a anterior estudou.
+
+- `src/data/personal-data.ts` apaga do `localStorage` e do `sessionStorage` toda chave com prefixo `helena` ou `noteoli.`. Chaves de outros aplicativos da mesma origem não são tocadas.
+- `signOut` em `use-cloud-sync.ts` chama essa limpeza e pede ao servidor para apagar o cookie do Google Agenda (`POST /api/google-calendar?action=disconnect`), já que o cookie é HttpOnly e o navegador não consegue removê-lo.
+- Troca de conta sem sair: `helena.account.v1` guarda a conta dona dos dados do aparelho. Se entra uma conta diferente, os dados da anterior são apagados antes da sincronização, senão o espaço dela seria enviado para a conta nova. A marca de onboarding é preservada, porque o login a grava no mesmo instante e apagá-la devolveria a pessoa ao onboarding. A primeira conta a entrar num aparelho com uso local anterior mantém esse uso, que continua sendo sincronizado para ela como antes.
+
+Limites conhecidos: quem usa o app sem entrar em conta e sem sair não tem o que limpar, porque o modo local guarda tudo no navegador de propósito. Um botão manual de "apagar dados deste aparelho" fica como melhoria futura. O histórico de versões continua pertencendo à conta enquanto ela estiver ativa.
