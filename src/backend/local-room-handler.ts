@@ -25,6 +25,7 @@ import {
 } from "../domain/local-room.js";
 import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
+import { safeEqual } from "./secure-compare.js";
 import { createHash } from "node:crypto";
 
 export type LocalRoomHandlerDependencies = {
@@ -298,8 +299,8 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       if (!state) return jsonResponse(404, { error: "Esta sala não está mais disponível." });
       const isAuthorized =
         role === "host"
-          ? state.hostToken === credential
-          : state.participants.some((participant) => participant.token === credential);
+          ? safeEqual(state.hostToken, credential)
+          : state.participants.some((participant) => safeEqual(participant.token, credential));
       if (!isAuthorized) {
         return jsonResponse(403, {
           error: "Não foi possível confirmar sua participação nesta sala.",
@@ -310,7 +311,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       let updated: LocalRoomState = {
         ...state,
         participants: state.participants.map((p) =>
-          p.token === credential
+          safeEqual(p.token, credential)
             ? { ...p, lastSeenAt: time, online: action !== "leave" }
             : { ...p, online: time - (p.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS },
         ),
@@ -335,7 +336,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       const publicState = await saveRoom(updated);
       return jsonResponse(200, {
         state: publicState,
-        participantId: state.participants.find((p) => p.token === credential)?.id,
+        participantId: state.participants.find((p) => safeEqual(p.token, credential))?.id,
         streamUrl: dependencies.streamUrl(code),
       });
     }
@@ -424,7 +425,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       const state = await loadRoom(dependencies.store, code);
       if (!state) return jsonResponse(404, { error: "Sala não encontrada." });
       const participant = state.participants.find(
-        (p) => p.id === participantId && p.token === participantToken,
+        (p) => p.id === participantId && safeEqual(p.token, participantToken),
       );
       if (!participant) return jsonResponse(403, { error: "Não autorizado." });
       const key = `answer:${participantId}:${questionIndex}`;
@@ -516,7 +517,8 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
     }
     const state = await loadRoom(store, code);
     if (!state) return jsonResponse(404, { error: "Sala não encontrada." });
-    if (state.hostToken !== hostToken) return jsonResponse(403, { error: "Não autorizado." });
+    if (!safeEqual(state.hostToken, hostToken))
+      return jsonResponse(403, { error: "Não autorizado." });
     return state;
   }
 }

@@ -19,6 +19,7 @@ import type { HandwritingDocument } from "../domain/handwriting.js";
 import { mergeHandwriting } from "../domain/merge-handwriting.js";
 import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
+import { safeEqual } from "./secure-compare.js";
 
 const MAX_REQUEST_BYTES = 900_000;
 
@@ -97,7 +98,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       return jsonResponse(400, { error: "Código ou credencial inválidos." });
     const state = await loadState(dependencies.store, code);
     if (!state) return jsonResponse(404, { error: "Caderno compartilhado não encontrado." });
-    const participant = state.participants.find((item) => item.token === credential);
+    const participant = state.participants.find((item) => safeEqual(item.token, credential));
     if (!participant) return jsonResponse(403, { error: "Você não está neste caderno." });
     return { state, participantId: participant.id };
   }

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   addLocalParticipant,
   advanceRoomQuestion,
@@ -51,6 +51,19 @@ describe("sala local", () => {
     expect(isValidLocalRoomCode("O0I1")).toBe(false);
     expect(normalizeLocalRoomCode(" ab-c d ")).toBe("ABCD");
     expect(isValidLocalRoomCode(" ab-c de ")).toBe(true);
+  });
+
+  it("sorteia o código com fonte criptográfica, sem Math.random", () => {
+    const mathRandom = vi.spyOn(Math, "random");
+    const getRandomValues = vi.spyOn(globalThis.crypto, "getRandomValues");
+    const codes = Array.from({ length: 200 }, () => createLocalRoomCode());
+    expect(mathRandom).not.toHaveBeenCalled();
+    expect(getRandomValues).toHaveBeenCalledTimes(200 * 5);
+    expect(codes.every((code) => isValidLocalRoomCode(code))).toBe(true);
+    // 1000 sorteios em 32 símbolos: um gerador quebrado ficaria bem abaixo disso.
+    expect(new Set(codes.join("")).size).toBeGreaterThan(24);
+    mathRandom.mockRestore();
+    getRandomValues.mockRestore();
   });
 
   it("filtra e limita o nome temporário", () => {

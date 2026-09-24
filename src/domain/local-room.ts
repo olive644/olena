@@ -128,7 +128,14 @@ export function formatRoomEstimatedDuration(
 export const CORRECT_ANSWER_XP = 10;
 export const LEADER_WRONG_ANSWER_PENALTY_XP = 5;
 
-export function createLocalRoomCode(random: () => number = Math.random): string {
+// O código da sala é a única barreira para entrar nela, então vem de uma fonte
+// criptográfica e não de Math.random, que é previsível. O alfabeto tem 32
+// símbolos e 2^32 é múltiplo de 32, então o sorteio não tem viés.
+function secureRandom(): number {
+  return globalThis.crypto.getRandomValues(new Uint32Array(1))[0]! / 2 ** 32;
+}
+
+export function createLocalRoomCode(random: () => number = secureRandom): string {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   return Array.from({ length: 5 }, () => alphabet[Math.floor(random() * alphabet.length)]).join("");
 }

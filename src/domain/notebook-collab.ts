@@ -48,7 +48,7 @@ export type PublicNotebookCollabState = Omit<NotebookCollabState, "hostToken" | 
   participants: Omit<NotebookCollabParticipant, "token">[];
 };
 
-export function createNotebookCollabCode(random: () => number = Math.random): string {
+export function createNotebookCollabCode(random?: () => number): string {
   return createLocalRoomCode(random);
 }
 
