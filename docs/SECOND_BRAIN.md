@@ -122,7 +122,7 @@ isso não substitui a validação física nem ativa App Check/cron em produção
 - O Modelo pronto contém somente cinco palavras. A base local de 10 mil frequências e seu gerador Python foram removidos; classificação fora da sala usa cache, Datamuse e estimativa offline.
 - SDK Firebase App Check é importado dinamicamente apenas se configurado. JWT é verificado com jose no servidor; configuração externa ainda pendente, sem enforcement ativo declarado.
 - Limpeza autenticada diária em `api/room-cleanup.ts` depende de CRON_SECRET e regras/índices em `firebase-room.rules.json`. Não publicar as regras sem considerar salas legadas sem expiresAt.
-- `npm run verify` reúne lint, formatação, testes, build e orçamento. `PLAYWRIGHT_SYSTEM_EDGE=1` permite validar com Edge local quando os browsers Playwright não estão disponíveis; CI mantém Chromium/WebKit. E2E multiplayer usa transportes de teste, não produção.
+- `npm run verify` reúne lint, formatação, testes, build e orçamento. `PLAYWRIGHT_SYSTEM_EDGE=1` permite validar com Edge local quando os browsers Playwright não estão disponíveis; CI mantém Chromium/WebKit. E2E multiplayer usa transportes de teste, não produção. `npm run dev` e `npm run build` copiam antes o worker, o núcleo WebAssembly e o idioma do OCR para `public/ocr/` (`scripts/copy-ocr-assets.mjs`); o OCR não usa CDN. `vite preview` serve os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP de produção.
 - Estado e pendências detalhados em `CURRENT_STATE_AUDIT.md` e procedimento em `ROOM_SETUP.md`.
 
 ## Proposta

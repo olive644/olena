@@ -29,6 +29,11 @@ describe("cabeçalhos de segurança da Vercel", () => {
     expect(scriptSrc).not.toContain("'unsafe-inline'");
     expect(scriptSrc).not.toContain("'unsafe-eval'");
     expect(csp).toContain("object-src 'none'");
+    // O OCR local precisa de WebAssembly (wasm-unsafe-eval, que não libera eval de JS)
+    // e de um worker do mesmo domínio (sem blob:).
+    expect(scriptSrc).toContain("'wasm-unsafe-eval'");
+    expect(csp).toContain("worker-src 'self'");
+    expect(csp).not.toMatch(/(?:script|worker|child)-src[^;]*blob:/);
     expect(csp).toContain("frame-ancestors 'self'");
     expect(csp).toContain("base-uri 'self'");
   });
