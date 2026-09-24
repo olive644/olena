@@ -10,84 +10,160 @@ function point(x: number, y: number, extra: Partial<HandwritingPoint> = {}): Han
   return { x, y, pressure: 0.5, ...extra };
 }
 
+// Gerador determinístico: o mesmo tremor em toda execução.
+function noise(seed: number) {
+  let state = seed >>> 0;
+  return (amount: number) => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return (state / 4294967296 - 0.5) * 2 * amount;
+  };
+}
+
+// Caneta andando em linha reta a `speed` unidades/s, amostrada a 125 Hz.
+function straightRun(speed: number, samples: number, jitter = 0, seed = 3) {
+  const random = noise(seed);
+  const step = (speed * 8) / 1000;
+  const raw: HandwritingPoint[] = [];
+  const times: number[] = [];
+  for (let index = 1; index <= samples; index += 1) {
+    raw.push(point(100 + index * step, 200 + random(jitter)));
+    times.push(index * 8);
+  }
+  return { raw, times };
+}
+
 describe("zona morta do estabilizador ao vivo", () => {
   it("ignora tremores menores que o raio", () => {
     const stabilizer = createLiveStabilizer(point(100, 100));
-    expect(stabilizer.push([point(100.5, 100), point(100, 100.5), point(100.5, 100.5)])).toEqual(
+    expect(stabilizer.push([point(100.3, 100), point(100, 100.3), point(100.3, 100.3)])).toEqual(
       [],
     );
   });
 
   it("aceita amostras que saem do raio e mede a partir da última aceita", () => {
     const stabilizer = createLiveStabilizer(point(100, 100));
-    expect(stabilizer.push([point(110, 100)])).toHaveLength(1);
-    expect(stabilizer.push([point(110.5, 100)])).toEqual([]);
-    expect(stabilizer.push([point(114, 100)])).toHaveLength(1);
+    expect(stabilizer.push([point(101, 100)])).toHaveLength(1);
+    expect(stabilizer.push([point(101.3, 100)])).toEqual([]);
+    expect(stabilizer.push([point(102, 100)])).toHaveLength(1);
   });
 });
 
-describe("inércia do estabilizador ao vivo", () => {
-  it("segue a mão com atraso e nunca passa do maior ponto alcançado pela mão", () => {
-    const stabilizer = createLiveStabilizer(point(0, 0));
-    const positions: number[] = [];
-    for (let step = 0; step < 60; step += 1) {
-      for (const filtered of stabilizer.push([point(100 + (step % 2) * 3, 0)]))
-        positions.push(filtered.x);
-    }
-    expect(positions.length).toBeGreaterThan(10);
-    expect(positions[0]!).toBeLessThan(100);
-    expect(Math.max(...positions)).toBeLessThanOrEqual(103);
-    expect(positions.at(-1)!).toBeGreaterThan(98);
+describe("filtro 1€ ao vivo", () => {
+  it("reduz o tremor de uma mão lenta", () => {
+    const { raw, times } = straightRun(40, 200, 1.5);
+    const stabilizer = createLiveStabilizer(point(100, 200));
+    const filtered = stabilizer.push(raw, times);
+    const rms = (values: number[]) =>
+      Math.sqrt(values.reduce((sum, v) => sum + v * v, 0) / values.length);
+    const rawError = rms(raw.slice(40).map((p) => p.y - 200));
+    const filteredError = rms(filtered.slice(40).map((p) => p.y - 200));
+    expect(filteredError).toBeLessThan(rawError * 0.5);
   });
 
-  it("sobe sem recuar enquanto a mão avança para um alvo mais distante", () => {
-    const stabilizer = createLiveStabilizer(point(0, 0));
-    const positions: number[] = [];
-    for (let step = 1; step <= 20; step += 1) {
-      for (const filtered of stabilizer.push([point(200 + step * 3, 0)]))
-        positions.push(filtered.x);
+  it.each([150, 500, 1500])(
+    "mantém a tinta sob a caneta a %i unidades por segundo, sem atraso",
+    (speed) => {
+      const { raw, times } = straightRun(speed, 60);
+      const stabilizer = createLiveStabilizer(point(100, 200));
+      const filtered = stabilizer.push(raw, times);
+      // O preditor de velocidade zera o atraso em movimento uniforme.
+      expect(Math.abs(raw.at(-1)!.x - filtered.at(-1)!.x)).toBeLessThan(1);
+    },
+  );
+
+  it("quase não passa da ponta da caneta nem no arranque", () => {
+    const { raw, times } = straightRun(600, 40);
+    const filtered = createLiveStabilizer(point(100, 200)).push(raw, times);
+    filtered.forEach((sample, index) => expect(sample.x).toBeLessThanOrEqual(raw[index]!.x + 3));
+  });
+
+  it("preserva o canto fechado em vez de arredondá-lo", () => {
+    // Caneta descendo a 900 unidades/s e virando 90° para a direita.
+    const step = (900 * 8) / 1000;
+    const raw: HandwritingPoint[] = [];
+    const times: number[] = [];
+    for (let index = 1; index <= 20; index += 1) {
+      raw.push(point(100, 100 + index * step));
+      times.push(index * 8);
     }
-    for (let index = 1; index < positions.length; index += 1) {
-      expect(positions[index]!).toBeGreaterThan(positions[index - 1]!);
+    const cornerY = 100 + 20 * step;
+    for (let index = 1; index <= 10; index += 1) {
+      raw.push(point(100 + index * step, cornerY));
+      times.push((20 + index) * 8);
+    }
+    const filtered = createLiveStabilizer(point(100, 100)).push(raw, times);
+    const afterCorner = filtered[20]!;
+    expect(Math.hypot(afterCorner.x - raw[20]!.x, afterCorner.y - raw[20]!.y)).toBeLessThan(0.01);
+    // Sem ultrapassar o canto para o lado errado.
+    for (const sample of filtered.slice(20)) expect(sample.y).toBeLessThanOrEqual(cornerY + 1);
+  });
+
+  it("não trata o ruído de uma mão lenta como canto", () => {
+    const { raw, times } = straightRun(60, 250, 2.5, 21);
+    const filtered = createLiveStabilizer(point(100, 200)).push(raw, times);
+    const worst = Math.max(...filtered.slice(30).map((sample) => Math.abs(sample.y - 200)));
+    expect(worst).toBeLessThan(1.2);
+  });
+
+  it("segue a mesma trilha com e sem timestamps a 125 Hz", () => {
+    const { raw, times } = straightRun(500, 30);
+    const withTimes = createLiveStabilizer(point(100, 200)).push(raw, times);
+    const without = createLiveStabilizer(point(100, 200)).push(raw);
+    expect(without.at(-1)!.x).toBeCloseTo(withTimes.at(-1)!.x, 3);
+  });
+
+  it("aguenta timestamps repetidos ou fora de ordem sem gerar NaN", () => {
+    const stabilizer = createLiveStabilizer(point(100, 100));
+    const filtered = stabilizer.push(
+      [point(110, 100), point(120, 100), point(130, 100)],
+      [50, 50, 20],
+    );
+    for (const sample of filtered) {
+      expect(Number.isFinite(sample.x)).toBe(true);
+      expect(Number.isFinite(sample.y)).toBe(true);
     }
   });
 
-  it("acompanha um movimento contínuo sempre atrás da mão", () => {
-    const stabilizer = createLiveStabilizer(point(0, 0));
-    for (let step = 1; step <= 30; step += 1) {
-      const [filtered] = stabilizer.push([point(step * 6, 0)]);
-      expect(filtered).toBeDefined();
-      expect(filtered!.x).toBeLessThan(step * 6);
-      expect(filtered!.x).toBeGreaterThan(0);
+  it("suaviza a pressão sem inventar valores fora da faixa da caneta", () => {
+    const stabilizer = createLiveStabilizer(point(100, 100, { pressure: 0.2 }));
+    const samples = Array.from({ length: 12 }, (_, index) =>
+      point(105 + index * 5, 100, { pressure: 0.8 }),
+    );
+    const filtered = stabilizer.push(samples);
+    const pressures = filtered.map((sample) => sample.pressure);
+    expect(pressures[0]!).toBeGreaterThan(0.2);
+    expect(pressures[0]!).toBeLessThan(0.8);
+    expect(pressures.at(-1)!).toBeGreaterThan(0.75);
+    expect(Math.max(...pressures)).toBeLessThanOrEqual(0.8);
+    for (let index = 1; index < pressures.length; index += 1) {
+      expect(pressures[index]!).toBeGreaterThanOrEqual(pressures[index - 1]!);
     }
   });
 
-  it("mantém pressão e inclinação da amostra real", () => {
-    const stabilizer = createLiveStabilizer(point(0, 0));
-    const [filtered] = stabilizer.push([point(50, 0, { pressure: 0.9, tiltX: 20, tiltY: -10 })]);
-    expect(filtered).toMatchObject({ pressure: 0.9, tiltX: 20, tiltY: -10 });
+  it("mantém a inclinação da amostra real", () => {
+    const stabilizer = createLiveStabilizer(point(100, 100));
+    const [filtered] = stabilizer.push([point(140, 100, { tiltX: 30, tiltY: -10 })]);
+    expect(filtered).toMatchObject({ tiltX: 30, tiltY: -10 });
   });
 
   it("termina exatamente onde a caneta foi levantada", () => {
-    const stabilizer = createLiveStabilizer(point(0, 0));
-    stabilizer.push([point(40, 10), point(80, 30), point(120, 60)]);
+    const { raw, times } = straightRun(900, 25);
+    const stabilizer = createLiveStabilizer(point(100, 200));
+    stabilizer.push(raw, times);
     const tail = stabilizer.finish();
-    expect(tail.length).toBeGreaterThan(0);
-    expect(tail.at(-1)).toMatchObject({ x: 120, y: 60 });
+    expect(tail.at(-1)).toMatchObject({ x: raw.at(-1)!.x, y: raw.at(-1)!.y });
     expect(stabilizer.finish()).toEqual([]);
   });
 
   it("não acrescenta pontos ao terminar quando nada foi aceito", () => {
-    const stabilizer = createLiveStabilizer(point(10, 10));
-    stabilizer.push([point(10.5, 10)]);
-    expect(stabilizer.finish()).toEqual([]);
+    expect(createLiveStabilizer(point(100, 100)).finish()).toEqual([]);
   });
 
-  it("usa resposta padrão rápida sem ultrapassar a ponta", () => {
-    expect(DEFAULT_LIVE_STABILIZER.mass).toBeGreaterThan(0);
-    const response = (1 - DEFAULT_LIVE_STABILIZER.drag) / DEFAULT_LIVE_STABILIZER.mass;
-    expect(response).toBeGreaterThan(0.5);
-    expect(response).toBeLessThanOrEqual(1);
+  it("usa uma configuração padrão coerente", () => {
+    expect(DEFAULT_LIVE_STABILIZER.minCutoff).toBeGreaterThan(0);
+    expect(DEFAULT_LIVE_STABILIZER.beta).toBeGreaterThan(0);
+    expect(DEFAULT_LIVE_STABILIZER.pressureResponse).toBeGreaterThan(0);
+    expect(DEFAULT_LIVE_STABILIZER.pressureResponse).toBeLessThanOrEqual(1);
   });
 });
 

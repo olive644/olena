@@ -83,7 +83,11 @@ const MAX_INITIAL_JS_BYTES = 270 * 1024;
 // UI; keep its new ceiling explicit rather than silently dropping the guard.
 // Optional notebook file menus, multi-page PDF and collaboration reconciliation.
 // Measured application total: 774 KiB. No new runtime dependency.
-const MAX_TOTAL_JS_BYTES = 780 * 1024;
+// The professional stroke engine (single-fill variable-width outline, 1 Euro
+// filter over a velocity predictor, live ink layer and stroke tip prediction)
+// lives in the lazy handwriting studio chunk and adds about 7 KiB: 781.2 KiB
+// measured, initial entry unchanged at 269.8 KiB. No new runtime dependency.
+const MAX_TOTAL_JS_BYTES = 790 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

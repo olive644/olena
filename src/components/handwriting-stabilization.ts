@@ -62,34 +62,54 @@ export function straightenStroke(points: readonly HandwritingPoint[]): Handwriti
 }
 
 export type LiveStabilizerOptions = {
-  /** Distância mínima, em pixels da folha, para aceitar uma nova amostra da caneta. */
+  /** Frequência de corte mínima, em Hz: quanto menor, mais o tremor lento é suavizado. */
+  minCutoff: number;
+  /** Quanto o corte sobe com a velocidade: quanto maior, menos suavização em traços rápidos. */
+  beta: number;
+  /** Distância mínima, em unidades da folha, para aceitar uma nova amostra. */
   deadzone: number;
-  /** Massa da caneta virtual: quanto maior, mais ela demora para acompanhar a mão. */
-  mass: number;
-  /** Amortecimento de 0 a 1: quanto maior, menos a caneta virtual balança. */
-  drag: number;
+  /** Suavização da pressão de 0 a 1: quanto maior, mais rápido ela acompanha a caneta. */
+  pressureResponse: number;
 };
 
-// Resposta mais próxima da ponta: a configuração anterior atrasava o traço
-// visivelmente, sobretudo com amostras esparsas de mouse e toque.
+// Filtro 1€ (Casiez, Roussel e Vogel, 2012) sobre um preditor de velocidade
+// (filtro alfa-beta). O 1€ escolhe a força da suavização pela velocidade: devagar,
+// o corte baixo remove o tremor; rápido, o corte alto deixa a tinta acompanhar. O
+// preditor tira o atraso de um passa-baixa simples: em movimento uniforme a tinta
+// fica exatamente sob a caneta, então dá para suavizar bem mais sem ela ficar para
+// trás. Velocidades em unidades da folha por segundo (a folha tem 1200 de largura).
 export const DEFAULT_LIVE_STABILIZER: LiveStabilizerOptions = {
-  deadzone: 1,
-  mass: 1,
-  drag: 0.25,
+  minCutoff: 0.9,
+  beta: 0.02,
+  deadzone: 0.5,
+  pressureResponse: 0.45,
 };
 
-const SETTLE_DISTANCE = 0.75;
-const MAX_SETTLE_STEPS = 40;
+const DEFAULT_SAMPLE_INTERVAL_MS = 8;
+const MIN_INTERVAL_S = 0.001;
+const MAX_INTERVAL_S = 0.1;
+// Canto: a direção vira mais de ~78° num passo maior que o ruído e com a mão em
+// movimento. Ali a tinta não pode arredondar: trava no ponto real da caneta.
+const CORNER_MIN_STEP = 4;
+const CORNER_MIN_SPEED = 150;
+const CORNER_COSINE = 0.2;
+const SETTLE_DISTANCE = 0.5;
+const MAX_SETTLE_STEPS = 12;
+const SETTLE_RESPONSE = 0.55;
 
 export type LiveStabilizer = {
-  push: (samples: readonly HandwritingPoint[]) => HandwritingPoint[];
+  /** Filtra amostras novas. `times` são os timestamps (ms) de cada uma; sem eles, assume 125 Hz. */
+  push: (samples: readonly HandwritingPoint[], times?: readonly number[]) => HandwritingPoint[];
+  /** Pontos finais que levam a tinta até onde a caneta realmente parou. */
   finish: () => HandwritingPoint[];
 };
 
-// Estabilização em tempo real, inspirada nas opções de suavização do Xournal++.
-// A zona morta ignora tremores menores que o raio. A resposta exponencial
-// acompanha a mão sem oscilar nem acumular atraso a cada amostra.
-// Pressão e inclinação vêm da amostra real; só a posição é filtrada.
+function lowPassAlpha(cutoff: number, interval: number): number {
+  const tau = 1 / (2 * Math.PI * cutoff);
+  return 1 / (1 + tau / interval);
+}
+
+// Só posição e pressão são filtradas; inclinação e o resto vêm da amostra real.
 export function createLiveStabilizer(
   start: HandwritingPoint,
   options: LiveStabilizerOptions = DEFAULT_LIVE_STABILIZER,
@@ -97,28 +117,67 @@ export function createLiveStabilizer(
   let anchor = start;
   let x = start.x;
   let y = start.y;
-  function step(target: HandwritingPoint) {
-    const response = Math.min(1, Math.max(0.05, (1 - options.drag) / options.mass));
-    x += (target.x - x) * response;
-    y += (target.y - y) * response;
-  }
+  let pressure = start.pressure;
+  let velocityX = 0;
+  let velocityY = 0;
+  let lastRaw = start;
+  let lastTime: number | undefined;
 
   return {
-    push(samples) {
+    push(samples, times) {
       const filtered: HandwritingPoint[] = [];
-      for (const sample of samples) {
-        if (Math.hypot(sample.x - anchor.x, sample.y - anchor.y) < options.deadzone) continue;
+      samples.forEach((sample, index) => {
+        if (Math.hypot(sample.x - anchor.x, sample.y - anchor.y) < options.deadzone) return;
+        const time = times?.[index] ?? (lastTime ?? 0) + DEFAULT_SAMPLE_INTERVAL_MS;
+        const interval = Math.min(
+          MAX_INTERVAL_S,
+          Math.max(MIN_INTERVAL_S, (time - (lastTime ?? time - DEFAULT_SAMPLE_INTERVAL_MS)) / 1000),
+        );
+        lastTime = time;
+        const stepX = sample.x - lastRaw.x;
+        const stepY = sample.y - lastRaw.y;
+        const step = Math.hypot(stepX, stepY);
+        const speed = Math.hypot(velocityX, velocityY);
+        if (
+          step >= CORNER_MIN_STEP &&
+          speed >= CORNER_MIN_SPEED &&
+          (stepX * velocityX + stepY * velocityY) / (step * speed) < CORNER_COSINE
+        ) {
+          x = sample.x;
+          y = sample.y;
+          velocityX = 0;
+          velocityY = 0;
+          pressure += options.pressureResponse * (sample.pressure - pressure);
+          lastRaw = sample;
+          anchor = sample;
+          filtered.push({ ...sample, x, y, pressure });
+          return;
+        }
+        const predictedX = x + velocityX * interval;
+        const predictedY = y + velocityY * interval;
+        const errorX = sample.x - predictedX;
+        const errorY = sample.y - predictedY;
+        const cutoff = options.minCutoff + options.beta * Math.hypot(velocityX, velocityY);
+        const alpha = lowPassAlpha(cutoff, interval);
+        // Ganho de velocidade com amortecimento crítico para esse alfa.
+        const velocityGain = (alpha * alpha) / (2 - alpha) / interval;
+        x = predictedX + alpha * errorX;
+        y = predictedY + alpha * errorY;
+        velocityX += velocityGain * errorX;
+        velocityY += velocityGain * errorY;
+        pressure += options.pressureResponse * (sample.pressure - pressure);
+        lastRaw = sample;
         anchor = sample;
-        step(sample);
-        filtered.push({ ...sample, x, y });
-      }
+        filtered.push({ ...sample, x, y, pressure });
+      });
       return filtered;
     },
     finish() {
       const tail: HandwritingPoint[] = [];
       for (let index = 0; index < MAX_SETTLE_STEPS; index += 1) {
         if (Math.hypot(anchor.x - x, anchor.y - y) <= SETTLE_DISTANCE) break;
-        step(anchor);
+        x += (anchor.x - x) * SETTLE_RESPONSE;
+        y += (anchor.y - y) * SETTLE_RESPONSE;
         tail.push({ ...anchor, x, y });
       }
       if (x !== anchor.x || y !== anchor.y) {
