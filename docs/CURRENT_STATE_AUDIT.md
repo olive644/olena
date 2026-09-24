@@ -624,3 +624,7 @@ Mais três blocos de interface saíram do `HandwritingStudio`: `handwriting-tool
 # Bundle enxuto, setembro de 2026
 
 O `tesseract.js` carrega o `regenerator-runtime` apenas para navegadores sem async e await nativos. Como o build é ES2022, o polyfill de 6,6 KB nunca era usado, mas entrava no total de JavaScript. Ele agora é redirecionado para um módulo vazio (`src/build-empty-module.ts`) em `vite.config.ts`. O total da aplicação caiu de 777,3 para 770,8 KiB, sem mudar o limite de 780 KiB, o que reabre margem para as próximas divisões do editor. O OCR local foi conferido de ponta a ponta em navegador real, com o mesmo desenho, antes e depois: mesma leitura, mesmo tempo e nenhum erro de console. Fica registrado, como próximos candidatos, mover a arte vetorial embutida em `paper-editor-icon.tsx`, `onboarding-paper-icon.tsx` e `paper-action-icon.tsx` (cerca de 14 KiB) para um sprite servido como arquivo, no modelo já usado por `navigation-icons.svg`.
+
+# Divisão do componente do editor, etapa 2c, setembro de 2026
+
+Os quatro painéis laterais do editor (pincéis, régua, coordenadas e camadas) saíram do `HandwritingStudio` para `handwriting-side-panels.tsx`, sem mudança de comportamento. Cada painel recebe apenas as props de que precisa. O componente principal caiu de 3338 para cerca de 3140 linhas, e os painéis têm testes próprios em `handwriting-side-panels.test.tsx`. Ficam para as próximas etapas a camada de post-its dentro da folha, as sobreposições de imagem, régua e coordenadas, e a lógica de ponteiro em um hook.
