@@ -2,27 +2,10 @@ import { expect, test } from "@playwright/test";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
 
-test("convite permite a outra pessoa entrar na folha sem caderno local", async ({
+test("colaboração exige conta e mostra apenas convite por link", async ({
   page,
   browser,
 }, testInfo) => {
-  const handler = createNotebookCollabHandler({
-    store: createMemoryRoomStore(),
-    publish: async () => {},
-    streamUrl: () => "",
-  });
-  const routeApi = async (route: import("@playwright/test").Route) => {
-    const request = route.request();
-    const response = await handler(
-      new Request(request.url(), { method: "POST", body: request.postData() }),
-    );
-    await route.fulfill({
-      status: response.status,
-      contentType: "application/json",
-      body: await response.text(),
-    });
-  };
-  await page.route("**/api/notebook-collab?*", routeApi);
   await page.addInitScript(() =>
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
@@ -54,20 +37,16 @@ test("convite permite a outra pessoa entrar na folha sem caderno local", async (
     expect(after?.y).toBe(before?.y);
   }
   await host.getByRole("button", { name: "Compartilhar caderno" }).click();
-  await host.getByRole("textbox", { name: "Seu nome" }).fill("Ana");
-  await host.getByRole("button", { name: "Criar sala" }).click();
-  await expect(host.getByRole("button", { name: "Copiar convite" })).toBeVisible();
-  const code = await host.locator(".notebook-collaboration-code strong").textContent();
+  await expect(
+    host.getByText("Entre na sua conta para escrever com outras pessoas.", { exact: false }),
+  ).toBeVisible();
+  await expect(host.getByRole("textbox", { name: "Seu nome" })).toHaveCount(0);
+  await expect(host.getByRole("button", { name: "Copiar código" })).toHaveCount(0);
   const guestContext = await browser.newContext();
-  await guestContext.route("**/api/notebook-collab?*", routeApi);
   const guestPage = await guestContext.newPage();
-  await guestPage.goto(`/?notebook-collab=${code}`);
-  const guest = guestPage.getByRole("dialog", { name: "Escrever à mão" });
-  await expect(guest.getByRole("textbox", { name: "Código da sala" })).toHaveValue(code ?? "");
-  await guest.getByRole("textbox", { name: "Seu nome" }).fill("Bia");
-  await guest.getByRole("button", { name: "Entrar na sala" }).click();
-  await expect(guest.locator(".notebook-collaboration-people").getByText("Bia")).toBeVisible();
-  await expect(guest.locator(".notebook-collaboration-people").getByText("Ana")).toBeVisible();
+  await guestPage.goto("/?notebook-collab=ABCDE");
+  await expect(guestPage.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
+  await expect(guestPage.getByRole("textbox", { name: "Código da sala" })).toHaveCount(0);
   await guestContext.close();
 });
 

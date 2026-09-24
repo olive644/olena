@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
 import { roomAppCheckToken } from "../data/room-app-check";
+import { getFirebaseAccountServices } from "../data/firebase-account";
 import {
   isValidNotebookCollabCode,
   normalizeNotebookCollabCode,
@@ -96,11 +97,15 @@ function normalizeState(value: unknown): PublicNotebookCollabState | undefined {
 
 async function request<T>(action: string, body: Record<string, unknown>): Promise<T> {
   const appCheckToken = await roomAppCheckToken();
+  const accountToken = await getFirebaseAccountServices()
+    .then(({ auth }) => auth.currentUser?.getIdToken())
+    .catch(() => undefined);
   const response = await fetch(`/api/notebook-collab?action=${action}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...(appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
+      ...(accountToken ? { Authorization: `Bearer ${accountToken}` } : {}),
     },
     body: JSON.stringify(body),
   });
@@ -117,6 +122,9 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     status: "idle",
     error: "",
   });
+  const [activity, setActivity] = useState("");
+  const lastActionIdRef = useRef("");
+  const activityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const sessionRef = useRef<StoredSession | undefined>(undefined);
   const streamRef = useRef<EventSource | undefined>(undefined);
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
@@ -137,11 +145,24 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     streamRef.current = undefined;
     if (heartbeatRef.current) clearInterval(heartbeatRef.current);
     heartbeatRef.current = undefined;
+    clearTimeout(activityTimerRef.current);
     if (clear) clearStoredSession();
   }, []);
 
   const applyRoom = useCallback((room: PublicNotebookCollabState) => {
     if (room.revision < revisionRef.current) return;
+    const action = room.actions.at(-1);
+    if (action && action.id !== lastActionIdRef.current) {
+      lastActionIdRef.current = action.id;
+      if (
+        action.kind === "document" &&
+        action.participantId !== sessionRef.current?.participantId
+      ) {
+        setActivity(`${action.displayName} ${action.label}`);
+        clearTimeout(activityTimerRef.current);
+        activityTimerRef.current = setTimeout(() => setActivity(""), 4000);
+      }
+    }
     revisionRef.current = room.revision;
     setState((current) => {
       if (current.room && current.room.code === room.code && current.room.revision > room.revision)
@@ -161,7 +182,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       const serialized = JSON.stringify(next);
       if (serialized !== lastPublishedRef.current) {
         lastPublishedRef.current = serialized;
-        const author = room.actions.at(-1)?.displayName;
+        const author =
+          room.actions.at(-1)?.kind === "document" ? room.actions.at(-1)?.displayName : undefined;
         onRemoteDocumentRef.current?.(next, author);
       }
     }
@@ -215,6 +237,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         const participantId = payload.participantId ?? session.participantId;
         const nextSession = { ...session, code: payload.state.code, credential, participantId };
         revisionRef.current = payload.state.revision;
+        lastActionIdRef.current = payload.state.actions.at(-1)?.id ?? "";
         baseDocumentRef.current = payload.state.document;
         sessionRef.current = nextSession;
         writeStoredSession(notebookId, nextSession);
@@ -246,7 +269,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   );
 
   const create = useCallback(
-    async (displayName: string, initialDocument?: HandwritingDocument) => {
+    async (displayName: string, initialDocument?: HandwritingDocument, avatarUrl?: string) => {
       const name = sanitizeNotebookCollabName(displayName);
       if (!name) {
         setState((current) => ({
@@ -265,6 +288,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       return connect(session, "create", {
         notebookId,
         displayName: name,
+        avatarUrl,
         requestId: crypto.randomUUID(),
         ...(initialDocument ? { document: initialDocument } : {}),
       });
@@ -273,7 +297,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   );
 
   const join = useCallback(
-    async (code: string, displayName: string) => {
+    async (code: string, displayName: string, avatarUrl?: string) => {
       const normalized = normalizeNotebookCollabCode(code);
       const name = sanitizeNotebookCollabName(displayName);
       if (!isValidNotebookCollabCode(normalized) || !name) {
@@ -287,7 +311,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       return connect(
         { code: normalized, credential: "", participantId: "", displayName: name },
         "join",
-        { code: normalized, displayName: name, requestId: crypto.randomUUID() },
+        { code: normalized, displayName: name, avatarUrl, requestId: crypto.randomUUID() },
       );
     },
     [connect],
@@ -359,6 +383,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
     stop(true);
     setState({ code: "", participantId: "", displayName: "", status: "idle", error: "" });
+    setActivity("");
   }, [stop]);
 
   useEffect(() => {
@@ -384,6 +409,15 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       void request<{ state: PublicNotebookCollabState }>("heartbeat", {
         code: session.code,
         credential: session.credential,
+        avatarUrl: (() => {
+          try {
+            return (
+              JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as { photoUrl?: string }
+            ).photoUrl;
+          } catch {
+            return undefined;
+          }
+        })(),
       })
         .then((payload) => {
           const pending = pendingRef.current;
@@ -403,5 +437,5 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     };
   }, [state.status, state.code, applyRoom, publish]);
 
-  return { state, create, join, publish: publishDebounced, leave };
+  return { state, activity, create, join, publish: publishDebounced, leave };
 }

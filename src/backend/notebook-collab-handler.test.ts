@@ -11,6 +11,68 @@ function request(action: string, body: Record<string, unknown>) {
 }
 
 describe("notebook collaboration handler", () => {
+  it("usa a identidade autenticada e vincula cada credencial à conta", async () => {
+    const handler = createNotebookCollabHandler({
+      store: createMemoryRoomStore(),
+      publish: async () => {},
+      streamUrl: () => "https://stream.example/room",
+      authenticate: async (input) => {
+        const uid = input.headers.get("authorization")?.replace("Bearer ", "");
+        return uid
+          ? { uid, name: uid === "owner" ? "Conta da dona" : "Conta convidada" }
+          : undefined;
+      },
+    });
+    const asUser = (action: string, body: Record<string, unknown>, uid: string) =>
+      new Request(`https://helena.example/api/notebook-collab?action=${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${uid}` },
+        body: JSON.stringify(body),
+      });
+    expect((await handler(request("create", { notebookId: "sheet" }))).status).toBe(401);
+    const created = await handler(
+      asUser(
+        "create",
+        {
+          notebookId: "sheet",
+          displayName: "Nome inventado",
+          avatarUrl: "/profile-avatars/moguel-porquinho.svg",
+        },
+        "owner",
+      ),
+    );
+    expect(created.status).toBe(201);
+    const room = (await created.json()) as {
+      code: string;
+      hostToken: string;
+      state: { participants: { displayName: string; avatarUrl?: string }[] };
+    };
+    expect(room.state.participants[0]).toMatchObject({
+      displayName: "Conta da dona",
+      avatarUrl: "/profile-avatars/moguel-porquinho.svg",
+    });
+    const heartbeat = await handler(
+      asUser(
+        "heartbeat",
+        {
+          code: room.code,
+          credential: room.hostToken,
+          avatarUrl: "/profile-avatars/anonha-panda.svg",
+        },
+        "owner",
+      ),
+    );
+    expect(heartbeat.status).toBe(200);
+    expect(
+      (await heartbeat.json()) as { state: { participants: { avatarUrl?: string }[] } },
+    ).toMatchObject({
+      state: { participants: [{ avatarUrl: "/profile-avatars/anonha-panda.svg" }] },
+    });
+    expect(
+      (await handler(asUser("resume", { code: room.code, credential: room.hostToken }, "visitor")))
+        .status,
+    ).toBe(403);
+  });
   it("saves the initial sheet before making the invitation available", async () => {
     const published: unknown[] = [];
     const handler = createNotebookCollabHandler({

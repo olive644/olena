@@ -1,4 +1,4 @@
-import { Camera, Copy, RotateCw, Users } from "lucide-react";
+import { Camera, Copy, Link2, RotateCw, Users } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -11,6 +11,7 @@ import { HandwritingStudio } from "./handwriting-studio";
 import { PaperActionIcon } from "./paper-action-icon";
 import type { ImportedPage } from "./page-import";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
+import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 
 type NoteCaptureToolsProps = {
   cloud?: CloudSyncState;
@@ -269,17 +270,34 @@ export function NoteCaptureTools({
     savedDocumentRef.current = JSON.stringify(handwriting);
   };
   const [collaborationPanelOpen, setCollaborationPanelOpen] = useState(Boolean(initialJoinCode));
-  const [collaborationName, setCollaborationName] = useState(() => {
+  const [collaborationAvatar, setCollaborationAvatar] = useState(() => {
     try {
       const profile = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as {
-        name?: string;
+        photoUrl?: string;
       };
-      return profile.name ?? "";
+      return profile.photoUrl ?? "";
     } catch {
       return "";
     }
   });
-  const [collaborationCodeInput, setCollaborationCodeInput] = useState(initialJoinCode ?? "");
+  useEffect(() => {
+    const refreshAvatar = () => {
+      try {
+        const profile = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as {
+          photoUrl?: string;
+        };
+        setCollaborationAvatar(profile.photoUrl ?? "");
+      } catch {
+        setCollaborationAvatar("");
+      }
+    };
+    window.addEventListener(SYNCED_STORAGE_EVENT, refreshAvatar);
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refreshAvatar);
+    return () => {
+      window.removeEventListener(SYNCED_STORAGE_EVENT, refreshAvatar);
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refreshAvatar);
+    };
+  }, []);
   const [remoteDocument, setRemoteDocument] = useState<HandwritingDocument>();
   const [remoteAuthor, setRemoteAuthor] = useState("");
   const notebookId = `page-${draftPageKey}`;
@@ -290,6 +308,26 @@ export function NoteCaptureTools({
       setRemoteAuthor(author ?? "");
     },
   });
+  const joinCollaboration = collaboration.join;
+  const initialJoinAttemptRef = useRef(false);
+  useEffect(() => {
+    if (!initialJoinCode || !cloud?.authenticated || !cloud.ready || initialJoinAttemptRef.current)
+      return;
+    initialJoinAttemptRef.current = true;
+    void joinCollaboration(
+      initialJoinCode,
+      cloud.displayName || cloud.email || "",
+      collaborationAvatar,
+    );
+  }, [
+    initialJoinCode,
+    cloud?.authenticated,
+    cloud?.ready,
+    cloud?.displayName,
+    cloud?.email,
+    collaborationAvatar,
+    joinCollaboration,
+  ]);
   const currentMode = editingAsset ? "drawing" : mode;
 
   useEffect(() => {
@@ -301,17 +339,15 @@ export function NoteCaptureTools({
     }
   }, [currentMode]);
 
-  async function copyCollaborationCode() {
-    if (!collaboration.state.code) return;
-    if (navigator.clipboard)
-      await navigator.clipboard.writeText(collaboration.state.code).catch(() => {});
+  function collaborationInviteUrl() {
+    const url = new URL(window.location.origin);
+    url.searchParams.set("notebook-collab", collaboration.state.code);
+    return url.href;
   }
 
   async function copyCollaborationInvite() {
     if (!collaboration.state.code) return;
-    const url = new URL(window.location.origin);
-    url.searchParams.set("notebook-collab", collaboration.state.code);
-    await navigator.clipboard?.writeText(url.href).catch(() => {});
+    await navigator.clipboard?.writeText(collaborationInviteUrl()).catch(() => {});
   }
 
   const close = useCallback(
@@ -426,13 +462,17 @@ export function NoteCaptureTools({
                             title={`${participant.displayName}${participant.online ? " · online" : " · ausente"}`}
                             aria-label={participant.displayName}
                           >
-                            {participant.displayName
-                              .trim()
-                              .split(/\s+/)
-                              .map((part) => part[0])
-                              .slice(0, 2)
-                              .join("")
-                              .toUpperCase()}
+                            {participant.avatarUrl ? (
+                              <img src={participant.avatarUrl} alt="" />
+                            ) : (
+                              participant.displayName
+                                .trim()
+                                .split(/\s+/)
+                                .map((part) => part[0])
+                                .slice(0, 2)
+                                .join("")
+                                .toUpperCase()
+                            )}
                           </span>
                         ))}
                       <button
@@ -480,70 +520,50 @@ export function NoteCaptureTools({
                     </div>
                     <Users size={20} aria-hidden="true" />
                   </div>
-                  {collaboration.state.status === "idle" ||
-                  collaboration.state.status === "error" ? (
+                  {!cloud?.authenticated ? (
+                    <p>
+                      Entre na sua conta para escrever com outras pessoas. O nome e o avatar vêm do
+                      seu perfil sincronizado.
+                    </p>
+                  ) : collaboration.state.status === "idle" ||
+                    collaboration.state.status === "error" ? (
                     <>
-                      <label>
-                        Seu nome
-                        <input
-                          value={collaborationName}
-                          onChange={(event) => setCollaborationName(event.target.value)}
-                          placeholder="Como você quer aparecer?"
-                          maxLength={24}
-                        />
-                      </label>
+                      <p className="notebook-collaboration-identity">
+                        Você aparece como <strong>{cloud.displayName || cloud.email}</strong>.
+                      </p>
                       <div className="notebook-collaboration-panel__actions">
                         <button
                           className="primary-button"
                           type="button"
                           onClick={() =>
                             void collaboration.create(
-                              collaborationName,
+                              cloud.displayName || cloud.email || "",
                               latestDraftRef.current ?? remoteDocument,
+                              collaborationAvatar,
                             )
                           }
                         >
-                          Criar sala
-                        </button>
-                        <label>
-                          Código da sala
-                          <input
-                            value={collaborationCodeInput}
-                            onChange={(event) =>
-                              setCollaborationCodeInput(event.target.value.toUpperCase())
-                            }
-                            placeholder="ABCDE"
-                            maxLength={5}
-                          />
-                        </label>
-                        <button
-                          className="secondary-button"
-                          type="button"
-                          onClick={() =>
-                            void collaboration.join(collaborationCodeInput, collaborationName)
-                          }
-                        >
-                          Entrar na sala
+                          Criar link de edição
                         </button>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="notebook-collaboration-code">
-                        <strong>{collaboration.state.code}</strong>
-                        <button
-                          type="button"
-                          className="icon-button"
-                          onClick={() => void copyCollaborationCode()}
-                        >
-                          <Copy size={15} /> Copiar código
-                        </button>
+                        <label>
+                          Link para editar juntos
+                          <input
+                            readOnly
+                            value={collaborationInviteUrl()}
+                            onFocus={(event) => event.currentTarget.select()}
+                          />
+                        </label>
                         <button
                           type="button"
                           className="icon-button"
                           onClick={() => void copyCollaborationInvite()}
                         >
-                          <Copy size={15} /> Copiar convite
+                          <Link2 size={15} /> <Copy size={15} /> Copiar link
                         </button>
                       </div>
                       <div className="notebook-collaboration-people">
@@ -552,15 +572,13 @@ export function NoteCaptureTools({
                             key={participant.id}
                             className={participant.online ? "is-online" : ""}
                           >
+                            {participant.avatarUrl && <img src={participant.avatarUrl} alt="" />}
                             {participant.displayName}
                           </span>
                         ))}
                       </div>
-                      {collaboration.state.room?.actions.at(-1) && (
-                        <p className="notebook-collaboration-activity">
-                          {collaboration.state.room.actions.at(-1)?.displayName}{" "}
-                          {collaboration.state.room.actions.at(-1)?.label}
-                        </p>
+                      {collaboration.activity && (
+                        <p className="notebook-collaboration-activity">{collaboration.activity}</p>
                       )}
                       <button
                         className="secondary-button"
@@ -604,10 +622,8 @@ export function NoteCaptureTools({
                   }}
                   {...(remoteDocument ? { remoteDocument } : {})}
                   {...(remoteAuthor ? { remoteAuthor } : {})}
-                  {...(collaboration.state.room?.actions.at(-1)
-                    ? {
-                        collaborationActivity: `${collaboration.state.room.actions.at(-1)?.displayName} ${collaboration.state.room.actions.at(-1)?.label}`,
-                      }
+                  {...(collaboration.activity
+                    ? { collaborationActivity: collaboration.activity }
                     : {})}
                   onImportPages={(pages) => {
                     onImportPages?.(pages);

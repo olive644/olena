@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from "react";
 import { PageHeader } from "../components/app-navigation";
+import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
 import {
   minutesFocusedOn,
   minutesFocusedForSubject,
@@ -263,6 +264,17 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       return [];
     }
   });
+  useEffect(() => {
+    const refresh = () => {
+      try {
+        setPomodoroDays(JSON.parse(localStorage.getItem(POMODORO_STREAK_KEY) ?? "[]") as string[]);
+      } catch {
+        setPomodoroDays([]);
+      }
+    };
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+  }, []);
 
   useEffect(() => {
     document.body.classList.add("focus-page-active");
@@ -303,7 +315,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
         const today = toDateKey(new Date());
         setPomodoroDays((current) => {
           const nextDays = current.includes(today) ? current : [...current, today];
-          localStorage.setItem(POMODORO_STREAK_KEY, JSON.stringify(nextDays));
+          writeSyncedStorage(POMODORO_STREAK_KEY, JSON.stringify(nextDays));
           return nextDays;
         });
       }
