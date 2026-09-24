@@ -218,7 +218,7 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
         {expanded && (
           <div className="sidebar__brand" aria-label="OlenaStudy">
             <strong>
-              Oli<span>Study</span>
+              Olena<span>Study</span>
             </strong>
           </div>
         )}
@@ -312,7 +312,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
             <header>
               <div>
                 <span>
-                  Oli<span>Study</span>
+                  Olena<span>Study</span>
                 </span>
                 <h2 id="mobile-more-title">Mais ferramentas</h2>
               </div>

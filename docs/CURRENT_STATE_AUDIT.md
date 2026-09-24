@@ -648,3 +648,29 @@ Os quatro painéis laterais do editor (pincéis, régua, coordenadas e camadas) 
 # Divisão do componente do editor, etapa 2d, setembro de 2026
 
 Cada post-it e cada texto solto da folha agora é renderizado por `HandwritingStickyNote` (`handwriting-sticky-note.tsx`), sem mudança de comportamento. O componente cuida do rótulo, do menu de opções, das cores, do checklist, do campo de texto com correção automática, do arraste por teclado e dos puxadores de mover e redimensionar. O estado e a lógica de arrastar e redimensionar continuam no `HandwritingStudio`, que os entrega por props. O componente principal caiu de 3145 para cerca de 2950 linhas, e o novo componente tem 17 testes próprios em `handwriting-sticky-note.test.tsx`. Ficam para a próxima etapa as sobreposições de imagem, régua e coordenadas dentro da folha e a lógica de ponteiro em um hook.
+
+# Seletor de tema no celular, setembro de 2026
+
+Ao restaurar o layout móvel original, o commit `662f6c9` tirou o seletor de aparência da barra inferior e o do cabeçalho continuava escondido abaixo de 900px por uma regra antiga em `styles.css`. Com isso, telas menores ficaram sem forma de trocar o tema. A regra que escondia `.page-header__theme` foi removida, e o seletor aparece no cabeçalho móvel ao lado do menu e do perfil, verificado em 320px.
+
+O teste `responsive-navigation.spec.ts` foi ajustado ao layout atual: o perfil móvel é o botão "Perfil" da barra inferior, e o seletor de tema é o do cabeçalho em todas as larguras.
+
+Os testes do projeto móvel que dependiam do layout antigo (`app.spec.ts` e `profile-avatars.spec.ts`) também foram ajustados: o seletor de tema e o menu de perfil são os do cabeçalho em todas as larguras. O projeto móvel foi rodado localmente com `PLAYWRIGHT_SYSTEM_EDGE=1` (Edge com o perfil do iPhone 13), já que o WebKit não está instalado nesta máquina.
+
+# Domínio olenastudy.vercel.app, setembro de 2026
+
+O projeto da Vercel passou a se chamar `olenastudy` e o domínio `olenastudy.vercel.app` foi anexado como produção, com `helenastudy.vercel.app` redirecionando (307) para ele. As URLs do repositório (canonical, Open Graph, sitemap, robots, `llms.txt`, guia do Google Agenda e testes de URL de sala) passaram a usar o domínio novo.
+
+As chaves do `localStorage` continuam com o prefixo antigo de propósito. Três delas (`helenastudy.workspace.v1`, `helenastudy.theme` e `helena-study:word-frequency:v1`) são sincronizadas com a nuvem pelo nome, e `applySyncedStorage` apaga a chave local que não vier do servidor. Renomear sem migrar o dado na nuvem apagaria o caderno de quem está logado. As demais são locais e invisíveis ao usuário, então renomear não traz ganho. Pendências fora do repositório: domínio autorizado no Firebase Auth, URI de redirecionamento do OAuth do Google e `GOOGLE_REDIRECT_URI` na Vercel.
+
+O nome escrito como `Oli<span>Study</span>` na marca do onboarding, do login e da barra lateral não foi pego pela busca por texto corrido e ainda mostrava "OliStudy". Agora é `Olena<span>Study</span>`, com teste em `onboarding-view.test.tsx`.
+
+# Endurecimento da sala e dos cabeçalhos, setembro de 2026
+
+Três ajustes vindos da auditoria de segurança, sem mudança de fluxo para o usuário:
+
+- O código da sala (5 caracteres, alfabeto de 32 símbolos) passou a ser sorteado com `crypto.getRandomValues` em vez de `Math.random`. Como o código é a barreira para entrar numa sala, ele não pode ser previsível. Cada byte sorteado é mascarado com 31 para escolher o símbolo (o alfabeto tem 32, uma potência de dois), sem divisão nem viés. A primeira versão dividia um inteiro de 32 bits e o CodeQL a apontou como `js/biased-cryptographic-random`, então o mascaramento foi adotado.
+- Os tokens de anfitrião e de participante passaram a ser comparados em tempo constante por `safeEqual` (`src/backend/secure-compare.ts`), em vez de `===`. Um token ausente nunca autoriza.
+- `vercel.json` ganhou `Strict-Transport-Security` e `Cross-Origin-Opener-Policy: same-origin-allow-popups`. O valor `same-origin` foi descartado de propósito, porque quebraria o `signInWithPopup` do login Google. `src/security-headers.test.ts` trava esses cabeçalhos e a ausência de `unsafe-inline` e `unsafe-eval` no `script-src`.
+
+Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. Pendência fora do repositório: confirmar na Vercel se `FIREBASE_APPCHECK_ENFORCE` está `true`, porque sem ele o App Check só registra e não bloqueia.

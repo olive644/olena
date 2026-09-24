@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   addLocalParticipant,
   advanceRoomQuestion,
@@ -51,6 +51,32 @@ describe("sala local", () => {
     expect(isValidLocalRoomCode("O0I1")).toBe(false);
     expect(normalizeLocalRoomCode(" ab-c d ")).toBe("ABCD");
     expect(isValidLocalRoomCode(" ab-c de ")).toBe(true);
+  });
+
+  it("sorteia o código com fonte criptográfica, sem Math.random", () => {
+    const mathRandom = vi.spyOn(Math, "random");
+    const getRandomValues = vi.spyOn(globalThis.crypto, "getRandomValues");
+    const codes = Array.from({ length: 200 }, () => createLocalRoomCode());
+    expect(mathRandom).not.toHaveBeenCalled();
+    expect(getRandomValues).toHaveBeenCalledTimes(200);
+    expect(codes.every((code) => isValidLocalRoomCode(code))).toBe(true);
+    // 1000 sorteios em 32 símbolos: um gerador quebrado ficaria bem abaixo disso.
+    expect(new Set(codes.join("")).size).toBeGreaterThan(24);
+    mathRandom.mockRestore();
+    getRandomValues.mockRestore();
+  });
+
+  it("mapeia cada byte sorteado para um símbolo do alfabeto de 32 letras", () => {
+    const bytes = [0, 1, 31, 32, 255];
+    const getRandomValues = vi.spyOn(globalThis.crypto, "getRandomValues").mockImplementation(((
+      array: Uint8Array,
+    ) => {
+      array.set(bytes);
+      return array;
+    }) as typeof globalThis.crypto.getRandomValues);
+    // 0 -> A, 1 -> B, 31 -> 9, 32 -> A (volta ao início), 255 -> 9
+    expect(createLocalRoomCode()).toBe("AB9A9");
+    getRandomValues.mockRestore();
   });
 
   it("filtra e limita o nome temporário", () => {
@@ -278,15 +304,15 @@ describe("sala local", () => {
   });
 
   it("monta o link de convite com o código em maiúsculas", () => {
-    expect(buildLocalRoomJoinUrl("https://helenastudy.vercel.app/", "abcde")).toBe(
-      "https://helenastudy.vercel.app/?sala=ABCDE",
+    expect(buildLocalRoomJoinUrl("https://olenastudy.vercel.app/", "abcde")).toBe(
+      "https://olenastudy.vercel.app/?sala=ABCDE",
     );
   });
 
   it("lê o código de convite da URL só quando é válido", () => {
-    expect(readLocalRoomCodeFromUrl("https://helenastudy.vercel.app/?sala=abcde")).toBe("ABCDE");
-    expect(readLocalRoomCodeFromUrl("https://helenastudy.vercel.app/")).toBeUndefined();
-    expect(readLocalRoomCodeFromUrl("https://helenastudy.vercel.app/?sala=xx")).toBeUndefined();
+    expect(readLocalRoomCodeFromUrl("https://olenastudy.vercel.app/?sala=abcde")).toBe("ABCDE");
+    expect(readLocalRoomCodeFromUrl("https://olenastudy.vercel.app/")).toBeUndefined();
+    expect(readLocalRoomCodeFromUrl("https://olenastudy.vercel.app/?sala=xx")).toBeUndefined();
   });
 
   it("classifica os participantes do maior pro menor placar", () => {
