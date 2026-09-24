@@ -26,6 +26,7 @@ export function HandwritingPaperPicker({
           className="handwriting-paper-section__toggle"
           aria-expanded={sectionsOpen.paper}
           aria-label="Tipo de papel"
+          title="Tipo de papel"
           onClick={() => onToggleSection("paper")}
         >
           <span className="paper-preview paper-preview--blank" aria-hidden="true" />
@@ -48,6 +49,8 @@ export function HandwritingPaperPicker({
                 type="button"
                 className={paper === value ? "is-active" : ""}
                 aria-pressed={paper === value}
+                aria-label={label}
+                title={label}
                 onClick={() => onSelectPaper(value)}
                 key={value}
               >
@@ -64,6 +67,7 @@ export function HandwritingPaperPicker({
           className="handwriting-paper-section__toggle"
           aria-expanded={sectionsOpen.color}
           aria-label="Cor da folha"
+          title="Cor da folha"
           onClick={() => onToggleSection("color")}
         >
           <span className="paper-preview paper-preview--tone-aged" aria-hidden="true" />
@@ -85,6 +89,8 @@ export function HandwritingPaperPicker({
                 type="button"
                 className={paperColor === value ? "is-active" : ""}
                 aria-pressed={paperColor === value}
+                aria-label={label}
+                title={label}
                 onClick={() => onSelectPaperColor(value)}
                 key={value}
               >

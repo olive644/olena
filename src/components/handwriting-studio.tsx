@@ -450,9 +450,11 @@ export function HandwritingStudio({
     onDirtyChange?.(dirty);
   }, [dirty, onDirtyChange]);
 
+  const onDraftChangeRef = useRef(onDraftChange);
+  onDraftChangeRef.current = onDraftChange;
   useEffect(() => {
-    onDraftChange?.(currentDocument);
-  }, [currentDocument, onDraftChange]);
+    onDraftChangeRef.current?.(currentDocument);
+  }, [currentDocument]);
 
   const autosaveRef = useRef<() => void>(() => {});
   const autosavedRef = useRef("");

@@ -36,6 +36,16 @@ it("troca de ferramenta com os atalhos P, E, H e V", () => {
   expect(pen.getAttribute("aria-pressed")).toBe("true");
 });
 
+it("não republica o rascunho quando apenas a identidade do callback muda", () => {
+  const first = vi.fn();
+  const second = vi.fn();
+  const props = { onClose: vi.fn(), onSave: vi.fn(), draftKey: "stable-callback" };
+  const view = render(<HandwritingStudio {...props} onDraftChange={first} />);
+  expect(first).toHaveBeenCalledTimes(1);
+  view.rerender(<HandwritingStudio {...props} onDraftChange={second} />);
+  expect(second).not.toHaveBeenCalled();
+});
+
 it("Espaço segurado troca temporariamente para mover e volta ao soltar", () => {
   renderStudio();
   const pen = screen.getByRole("button", { name: "Caneta" });
