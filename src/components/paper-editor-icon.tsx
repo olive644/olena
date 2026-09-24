@@ -1,4 +1,5 @@
 const shapes = {
+  add: "M20 4h8v16h16v8H28v16h-8V28H4v-8h16Z",
   copyLink: "M5 14h24v29H5Z M15 4h24v29h-7V11H15Z",
   team: "M8 5h10l4 5-4 10H8L4 10Z M28 5h10l4 5-4 10H28l-4-10Z M5 24h16l4 17H1Z M27 24h16l4 17H25Z",
   exit: "M6 3h23v40H6Z M29 18h7v-6l11 12-11 12v-6h-7Z",
@@ -33,6 +34,7 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
+  add: "M20 4h4v20H4v-4h16Z",
   copyLink: "M5 14h5v29H5Z M15 4h24l-6 6H15Z",
   team: "M8 5h10l-4 7H4Z M28 5h10l-4 7H24Z M5 24h8L6 41H1Z M27 24h8l-5 17h-5Z",
   exit: "M6 3h23L12 9v30l17 4H6Z M29 18h7l11 6H29Z",

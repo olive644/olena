@@ -453,7 +453,19 @@ export function NoteCaptureTools({
                 <div className="capture-header-actions">
                   {currentMode === "drawing" && (
                     <div className="notebook-team" role="group" aria-label="Equipe de edição">
-                      {(collaboration.state.room?.participants ?? [])
+                      {(collaboration.state.room?.participants.length
+                        ? collaboration.state.room.participants
+                        : cloud?.authenticated
+                          ? [
+                              {
+                                id: "current-account",
+                                displayName: cloud.displayName || cloud.email || "Sua conta",
+                                avatarUrl: collaborationAvatar,
+                                online: true,
+                              },
+                            ]
+                          : []
+                      )
                         .slice(0, 4)
                         .map((participant, index) => (
                           <span
@@ -486,7 +498,7 @@ export function NoteCaptureTools({
                         aria-expanded={collaborationPanelOpen}
                         onClick={() => setCollaborationPanelOpen((open) => !open)}
                       >
-                        <span aria-hidden="true">+</span>
+                        <PaperEditorIcon name="add" />
                       </button>
                     </div>
                   )}

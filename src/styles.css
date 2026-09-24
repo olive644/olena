@@ -3790,17 +3790,21 @@ body.local-room-active {
 .notebook-team__add {
   cursor: pointer;
   background: #fffaf0;
-  color: #292432;
+  color: #7433e0;
   border-color: #d9c9ab;
+  box-shadow: 0 3px 0 #d9c9ab;
 }
-.notebook-team__add span {
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1;
+.notebook-team__add .paper-editor-icon {
+  width: 18px;
+  height: 18px;
+  --editor-icon-facet: #cbb1f4;
+  --editor-icon-cutout: #fffaf0;
 }
 .notebook-team__add:hover {
   background: #eee2ff;
   color: #51259b;
+  translate: 0 -2px;
+  box-shadow: 0 5px 0 #d9c9ab;
 }
 .notebook-team__add:focus-visible {
   outline: 3px solid #7433e0;
