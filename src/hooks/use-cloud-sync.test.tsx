@@ -8,6 +8,7 @@ vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn()
 
 beforeEach(() => {
   localStorage.clear();
+  sessionStorage.clear();
   vi.stubEnv("VITEST", "");
   vi.stubEnv("VITE_FIREBASE_API_KEY", "key");
   vi.stubEnv("VITE_FIREBASE_AUTH_DOMAIN", "auth.example");
@@ -186,4 +187,91 @@ it("concilia alterações simultâneas por chave e preserva o conflito local", a
     "helenastudy.theme": "dark",
   });
   expect(localStorage.getItem("helenastudy.sync-conflict.v1")).toContain("helena.profile.v1");
+});
+
+function signedInServices(user: { uid: string; displayName: string; email: string }) {
+  const account = { ...user, getIdToken: vi.fn(async () => "token") };
+  const signOut = vi.fn(async () => undefined);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: account },
+    authApi: {
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof account) => void) => {
+        listener(account);
+        return () => undefined;
+      },
+      signOut,
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  return signOut;
+}
+
+it("ao sair, apaga histórico, rascunhos e sessões deste aparelho e desconecta o Google Agenda", async () => {
+  signedInServices({ uid: "ana", displayName: "Ana", email: "ana@example.com" });
+  const fetchMock = vi.fn(async () => new Response("null", { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const personal = [
+    "helenastudy.workspace.history.v1",
+    "helenastudy.handwriting.draft.abc",
+    "helenastudy.handwriting.saved.page-1",
+    "helena.profile.v1",
+    "noteoli.pomodoro-streak.v1",
+  ];
+  for (const key of personal) localStorage.setItem(key, "dado da Ana");
+  localStorage.setItem("outro-app.token", "x");
+  sessionStorage.setItem("helena:local-room-session:v1", "{}");
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await act(async () => {
+    await result.current.signOut?.();
+  });
+
+  for (const key of personal) expect(localStorage.getItem(key)).toBeNull();
+  expect(localStorage.getItem("helena.account.v1")).toBeNull();
+  expect(sessionStorage.getItem("helena:local-room-session:v1")).toBeNull();
+  expect(localStorage.getItem("outro-app.token")).toBe("x");
+  expect(fetchMock).toHaveBeenCalledWith("/api/google-calendar?action=disconnect", {
+    method: "POST",
+  });
+});
+
+it("outra conta no mesmo aparelho não recebe os dados da anterior", async () => {
+  signedInServices({ uid: "beto", displayName: "Beto", email: "beto@example.com" });
+  const uploads: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "PUT") uploads.push(String(init.body));
+      return new Response("null", { status: 200 });
+    }),
+  );
+  localStorage.setItem("helena.account.v1", "ana");
+  localStorage.setItem("helenastudy.workspace.v1", "espaco da Ana");
+  localStorage.setItem("helenastudy.workspace.history.v1", "historico da Ana");
+  localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  expect(localStorage.getItem("helenastudy.workspace.v1")).toBeNull();
+  expect(localStorage.getItem("helenastudy.workspace.history.v1")).toBeNull();
+  expect(localStorage.getItem("helena.account.v1")).toBe("beto");
+  expect(uploads.join("")).not.toContain("Ana");
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe('{"completed":true}');
+});
+
+it("a mesma conta voltando ao aparelho mantém o que já estava nele", async () => {
+  signedInServices({ uid: "ana", displayName: "Ana", email: "ana@example.com" });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("null", { status: 200 })),
+  );
+  localStorage.setItem("helena.account.v1", "ana");
+  localStorage.setItem("helenastudy.workspace.history.v1", "historico da Ana");
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  expect(localStorage.getItem("helenastudy.workspace.history.v1")).toBe("historico da Ana");
 });

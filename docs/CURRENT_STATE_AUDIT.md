@@ -682,3 +682,13 @@ O cabeçalho da folha mostra os participantes da sala como avatares e um botão 
 O editor só notifica mudanças reais do documento ao hook de colaboração. Uma renderização causada pela chegada de uma atualização remota não reenvia a versão local antiga. O seletor de tipo e cor do papel mantém seus dois botões na primeira linha, com rótulos acessíveis e títulos de inspeção sem expansão nem deslocamento. Os três botões de arquivo usam fundo claro e cores distintas nos ícones.
 
 Limite atual: cada sala sincroniza uma folha manuscrita, não todas as folhas do caderno. A sala expira após oito horas; para continuar depois disso, o anfitrião cria outro convite.
+
+# Limpeza dos dados pessoais ao sair da conta, setembro de 2026
+
+Ao sair da conta, o app apagava só as seis chaves sincronizadas do `localStorage`. O histórico de versões (`helenastudy.workspace.history.v1`, listado e restaurável na página de perfil), os rascunhos e folhas salvas do caderno, o progresso, o perfil, a sequência do pomodoro (`noteoli.pomodoro-streak.v1`), as sessões de sala e o cookie de sessão do Google Agenda continuavam no aparelho. Em um computador compartilhado, a próxima pessoa via e podia restaurar o que a anterior estudou.
+
+- `src/data/personal-data.ts` apaga do `localStorage` e do `sessionStorage` toda chave com prefixo `helena` ou `noteoli.`. Chaves de outros aplicativos da mesma origem não são tocadas.
+- `signOut` em `use-cloud-sync.ts` chama essa limpeza e pede ao servidor para apagar o cookie do Google Agenda (`POST /api/google-calendar?action=disconnect`), já que o cookie é HttpOnly e o navegador não consegue removê-lo.
+- Troca de conta sem sair: `helena.account.v1` guarda a conta dona dos dados do aparelho. Se entra uma conta diferente, os dados da anterior são apagados antes da sincronização, senão o espaço dela seria enviado para a conta nova. A marca de onboarding é preservada, porque o login a grava no mesmo instante e apagá-la devolveria a pessoa ao onboarding. A primeira conta a entrar num aparelho com uso local anterior mantém esse uso, que continua sendo sincronizado para ela como antes.
+
+Limites conhecidos: quem usa o app sem entrar em conta e sem sair não tem o que limpar, porque o modo local guarda tudo no navegador de propósito. Um botão manual de "apagar dados deste aparelho" fica como melhoria futura. O histórico de versões continua pertencendo à conta enquanto ela estiver ativa.
