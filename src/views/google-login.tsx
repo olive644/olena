@@ -143,7 +143,7 @@ export function GoogleLogin({
       </h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          Oli<span>Study</span>
+          Olena<span>Study</span>
         </span>
         <span className="onboarding__eyebrow">SEU PRÓXIMO PASSO COMEÇA AQUI</span>
       </header>

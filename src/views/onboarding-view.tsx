@@ -195,7 +195,7 @@ export default function OnboardingView({
       </h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          Oli<span>Study</span>
+          Olena<span>Study</span>
         </span>
         <span className="onboarding__eyebrow">UM COMEÇO DO SEU JEITO</span>
       </header>
