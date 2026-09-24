@@ -6,7 +6,7 @@ O produto roda como aplicativo web (SPA em React/TypeScript), funciona primariam
 
 ## Produto
 
-- [OlenaStudy](https://helenastudy.vercel.app/): aplicativo web de estudos com agenda, hábitos, foco, cadernos, flashcards, quizzes, bingo e planejador de aulas de inglês.
+- [OlenaStudy](https://olenastudy.vercel.app/): aplicativo web de estudos com agenda, hábitos, foco, cadernos, flashcards, quizzes, bingo e planejador de aulas de inglês.
 
 ## Optional
 

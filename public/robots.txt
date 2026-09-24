@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://helenastudy.vercel.app/sitemap.xml
+Sitemap: https://olenastudy.vercel.app/sitemap.xml

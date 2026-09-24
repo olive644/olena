@@ -644,3 +644,11 @@ Ao restaurar o layout móvel original, o commit `662f6c9` tirou o seletor de apa
 O teste `responsive-navigation.spec.ts` foi ajustado ao layout atual: o perfil móvel é o botão "Perfil" da barra inferior, e o seletor de tema é o do cabeçalho em todas as larguras.
 
 Os testes do projeto móvel que dependiam do layout antigo (`app.spec.ts` e `profile-avatars.spec.ts`) também foram ajustados: o seletor de tema e o menu de perfil são os do cabeçalho em todas as larguras. O projeto móvel foi rodado localmente com `PLAYWRIGHT_SYSTEM_EDGE=1` (Edge com o perfil do iPhone 13), já que o WebKit não está instalado nesta máquina.
+
+# Domínio olenastudy.vercel.app, setembro de 2026
+
+O projeto da Vercel passou a se chamar `olenastudy` e o domínio `olenastudy.vercel.app` foi anexado como produção, com `helenastudy.vercel.app` redirecionando (307) para ele. As URLs do repositório (canonical, Open Graph, sitemap, robots, `llms.txt`, guia do Google Agenda e testes de URL de sala) passaram a usar o domínio novo.
+
+As chaves do `localStorage` continuam com o prefixo antigo de propósito. Três delas (`helenastudy.workspace.v1`, `helenastudy.theme` e `helena-study:word-frequency:v1`) são sincronizadas com a nuvem pelo nome, e `applySyncedStorage` apaga a chave local que não vier do servidor. Renomear sem migrar o dado na nuvem apagaria o caderno de quem está logado. As demais são locais e invisíveis ao usuário, então renomear não traz ganho. Pendências fora do repositório: domínio autorizado no Firebase Auth, URI de redirecionamento do OAuth do Google e `GOOGLE_REDIRECT_URI` na Vercel.
+
+O nome escrito como `Oli<span>Study</span>` na marca do onboarding, do login e da barra lateral não foi pego pela busca por texto corrido e ainda mostrava "OliStudy". Agora é `Olena<span>Study</span>`, com teste em `onboarding-view.test.tsx`.
