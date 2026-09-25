@@ -30,7 +30,7 @@ test("o traço em andamento fica na camada ao vivo e vai para a folha ao soltar"
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
@@ -80,7 +80,7 @@ test("a camada ao vivo mostra o traço inteiro de novo a cada quadro, sem falhas
     .click();
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Caneta", exact: true }).click();

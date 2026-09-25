@@ -419,7 +419,7 @@ test("abre digitalização, escrita à mão e completa um bingo", async ({ page 
   await navigateToTool(page, testInfo.project.name, "Cadernos", "Cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
 
   await page
     .getByRole("dialog", { name: "Escrever à mão" })
