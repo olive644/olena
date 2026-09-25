@@ -25,7 +25,7 @@ test("colaboração exige conta e mostra apenas convite por link", async ({
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const host = page.getByRole("dialog", { name: "Escrever à mão" });
   if (testInfo.project.name === "desktop") {
@@ -121,7 +121,7 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
   await editor.getByRole("button", { name: "Adicionar post-it" }).click();
@@ -182,6 +182,10 @@ function twoPagePdf() {
 }
 
 test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile",
+    "A barra de zoom e a ferramenta de mover são controles exclusivos do desktop; o fluxo móvel é coberto pelos testes de gestos e gavetas.",
+  );
   test.slow();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
@@ -204,7 +208,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.getByLabel("Nome", { exact: true }).fill("Meu universo");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Meu universo" })).toBeVisible();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
 
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -384,9 +388,9 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   if (await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
     await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(dialog).not.toBeVisible();
-  await expect(page.getByRole("img", { name: /folha manuscrita/i })).toBeVisible();
-  await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
-  const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
+  await expect(page.getByRole("button", { name: /^Abrir preview de / })).toBeVisible();
+  await page.getByRole("button", { name: /^Abrir preview de / }).click();
+  const reopened = page.getByRole("dialog", { name: "Escrever à mão" });
   await reopened.getByRole("button", { name: "Upload", exact: true }).click();
   await reopened.getByRole("button", { name: "Cancelar", exact: true }).click();
   await expect(reopened.getByLabel("Arquivo para importar")).toHaveCount(0);
@@ -551,7 +555,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   }
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
-  await page.getByRole("button", { name: /Abrir preview de Folha manuscrita/ }).click();
+  await page.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible();
   await expect
     .poll(() =>
@@ -592,7 +596,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   let dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Adicionar post-it" }).click();
@@ -600,6 +604,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await dialog.getByRole("button", { name: "Opções do post-it" }).click();
   await dialog.getByRole("button", { name: "Cores" }).click();
   await dialog.getByRole("button", { name: "Usar cor azul" }).click();
+  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   await expect(dialog.getByRole("complementary", { name: "Pincéis da caneta" })).toBeVisible();
   await dialog.getByRole("button", { name: "Camadas da folha" }).click();
   await expect(dialog.getByRole("complementary", { name: "Camadas da folha" })).toBeVisible();
@@ -628,6 +633,9 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
         ),
     )
     .toBe(true);
+  if (testInfo.project.name === "mobile") {
+    await dialog.getByRole("button", { name: "Opções", exact: true }).click();
+  }
   await dialog.getByRole("button", { name: /Caneta-tinteiro/ }).click();
   await dialog.getByRole("button", { name: "Régua", exact: true }).click();
   await expect(dialog.getByLabel("Unidades da régua")).toBeVisible();
@@ -670,22 +678,22 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   expect(saved?.stickies?.[0]).toMatchObject({ text: "Revisar gramática", color: "blue" });
   expect(saved?.strokes).toHaveLength(1);
   expect(saved?.strokes[0]).toMatchObject({ brush: "ink" });
-  await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
-  const reopened = page.getByRole("dialog", { name: "Folha manuscrita" });
+  await page.getByRole("button", { name: /^Abrir preview de / }).click();
+  const reopened = page.getByRole("dialog", { name: "Escrever à mão" });
   const download = page.waitForEvent("download");
   await reopened.getByRole("button", { name: "Exportar", exact: true }).click();
   await reopened.getByRole("button", { name: "PNG", exact: true }).click();
   expect((await download).suggestedFilename()).toBe("folha-do-caderno.png");
   await reopened.getByRole("button", { name: "Fechar", exact: true }).click();
-  await page.getByRole("button", { name: "Folhas do caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  if (await reopened.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
+    await reopened.getByRole("button", { name: "Fechar e manter rascunho" }).click();
+  await page.getByRole("button", { name: "Criar nova folha", exact: true }).click();
   await page
     .getByRole("dialog", { name: "Escrever à mão" })
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
-  await page.getByRole("button", { name: "Folhas do caderno" }).click();
   await expect(page.locator(".notebook-page-card")).toHaveCount(0);
-  await page.getByRole("button", { name: "Próxima folha", exact: true }).click();
+  await page.getByRole("button", { name: "Próxima ›", exact: true }).click();
   await expect(page.getByText("Folha 2 de 2", { exact: true })).toBeVisible();
 });
 
@@ -712,7 +720,7 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByLabel("Nome", { exact: true }).fill("Janela de escrita");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-  await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog).toBeVisible();

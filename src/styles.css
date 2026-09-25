@@ -7924,9 +7924,18 @@ body.local-room-active {
   margin: 0 auto 28px;
   pointer-events: none;
 }
-.handwriting-full-page-text {
+.handwriting-text-frame {
   position: absolute;
   z-index: 2;
+  outline: 2px dashed #a779ef;
+  outline-offset: 4px;
+}
+.handwriting-full-page-text {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   resize: none;
   border: none;
   padding: 0;
@@ -7935,8 +7944,66 @@ body.local-room-active {
   font-family: monospace;
   font-weight: 400;
   overflow: auto;
-  outline: 2px dashed #a779ef;
-  outline-offset: 8px;
+  outline: none;
+}
+.handwriting-text-frame-handle {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 5px;
+  color: #292432;
+  background: #fff9ef;
+  border: 2px solid #7433e0;
+  border-radius: 9px;
+  box-shadow: 0 3px 0 #d8c7ed;
+  touch-action: none;
+}
+.handwriting-text-frame-handle svg {
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+.handwriting-text-frame-handle--move {
+  top: -42px;
+  left: -4px;
+  cursor: grab;
+}
+.handwriting-text-frame-size {
+  position: absolute;
+  z-index: 3;
+  top: -42px;
+  left: 42px;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  gap: 4px;
+  padding: 3px;
+  color: #292432;
+  background: #fff9ef;
+  border: 2px solid #7433e0;
+  border-radius: 9px;
+  font:
+    700 12px/1 system-ui,
+    sans-serif;
+}
+.handwriting-text-frame-size button {
+  min-width: 30px;
+  height: 28px;
+  border: 0;
+  border-radius: 5px;
+  color: #292432;
+  background: #f3eaff;
+}
+.handwriting-text-frame-size button:disabled {
+  opacity: 0.45;
+}
+.handwriting-text-frame-handle--resize {
+  right: -18px;
+  top: -18px;
+  cursor: nwse-resize;
 }
 .notebook-entry-preview {
   text-align: center;

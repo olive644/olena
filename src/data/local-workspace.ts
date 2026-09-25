@@ -169,6 +169,23 @@ export function isHandwritingDocument(value: unknown): boolean {
   )
     return false;
   if (
+    value["pageTextFrame"] !== undefined &&
+    (!isRecord(value["pageTextFrame"]) ||
+      !isFiniteNumber(value["pageTextFrame"]["x"]) ||
+      !isFiniteNumber(value["pageTextFrame"]["y"]) ||
+      !isFiniteNumber(value["pageTextFrame"]["width"]) ||
+      !isFiniteNumber(value["pageTextFrame"]["height"]) ||
+      Number(value["pageTextFrame"]["x"]) < 0 ||
+      Number(value["pageTextFrame"]["y"]) < 0 ||
+      Number(value["pageTextFrame"]["width"]) < 120 ||
+      Number(value["pageTextFrame"]["height"]) < 60 ||
+      Number(value["pageTextFrame"]["x"]) + Number(value["pageTextFrame"]["width"]) >
+        pageWidth + 0.01 ||
+      Number(value["pageTextFrame"]["y"]) + Number(value["pageTextFrame"]["height"]) >
+        pageHeight + 0.01)
+  )
+    return false;
+  if (
     value["coordinateSystems"] !== undefined &&
     (!Array.isArray(value["coordinateSystems"]) ||
       value["coordinateSystems"].length > 20 ||
