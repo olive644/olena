@@ -182,6 +182,7 @@ function twoPagePdf() {
 }
 
 test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === "mobile", "A barra de zoom e a ferramenta de mover são controles exclusivos do desktop; o fluxo móvel é coberto pelos testes de gestos e gavetas.");
   test.slow();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
@@ -600,6 +601,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await dialog.getByRole("button", { name: "Opções do post-it" }).click();
   await dialog.getByRole("button", { name: "Cores" }).click();
   await dialog.getByRole("button", { name: "Usar cor azul" }).click();
+  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   await expect(dialog.getByRole("complementary", { name: "Pincéis da caneta" })).toBeVisible();
   await dialog.getByRole("button", { name: "Camadas da folha" }).click();
   await expect(dialog.getByRole("complementary", { name: "Camadas da folha" })).toBeVisible();
@@ -628,6 +630,9 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
         ),
     )
     .toBe(true);
+  if (testInfo.project.name === "mobile") {
+    await dialog.getByRole("button", { name: "Opções", exact: true }).click();
+  }
   await dialog.getByRole("button", { name: /Caneta-tinteiro/ }).click();
   await dialog.getByRole("button", { name: "Régua", exact: true }).click();
   await expect(dialog.getByLabel("Unidades da régua")).toBeVisible();
