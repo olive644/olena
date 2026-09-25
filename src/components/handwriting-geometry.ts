@@ -55,13 +55,17 @@ export function importedImageBounds(image: HandwritingImage): SelectionBox {
   return { x: image.x, y: image.y, width: image.width, height: image.height };
 }
 
-export function pageTextBounds(text: string, size: number): SelectionBox {
+export function pageTextBounds(
+  text: string,
+  size: number,
+  frame: SelectionBox = { x: 112, y: 80, width: 980, height: 1440 },
+): SelectionBox {
   const lineHeight = size * (40 / 28);
   const height = Math.min(
-    1440,
-    Math.max(lineHeight, pageTextLines(text, size).length * lineHeight),
+    frame.height,
+    Math.max(lineHeight, pageTextLines(text, size, frame.width).length * lineHeight),
   );
-  return { x: 112, y: 80, width: 980, height };
+  return { ...frame, height };
 }
 
 export function overlaps(first: SelectionBox, second: SelectionBox): boolean {

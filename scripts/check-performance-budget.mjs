@@ -94,8 +94,10 @@ const MAX_INITIAL_JS_BYTES = 272 * 1024;
 // measured, initial entry unchanged at 269.8 KiB. No new runtime dependency.
 // Notebook board settings and page formats measure 789.3 KiB on main; the privacy
 // consent block and the brand footer add 1.2 KiB (790.5 KiB). The ceiling moves
-// to 795 KiB for CI variance. No new runtime dependency.
-const MAX_TOTAL_JS_BYTES = 795 * 1024;
+// to 795 KiB for CI variance. The resizable notebook text frame adds 1.9 KiB
+// to the lazy editor chunk (796.9 KiB measured); keep a 800 KiB ceiling.
+// No new runtime dependency.
+const MAX_TOTAL_JS_BYTES = 800 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

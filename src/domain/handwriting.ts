@@ -86,6 +86,7 @@ export type HandwritingDocument = {
   background?: string | undefined;
   pageText?: string;
   pageTextSize?: number;
+  pageTextFrame?: { x: number; y: number; width: number; height: number };
   images?: HandwritingImage[];
   coordinateSystems?: HandwritingCoordinateSystem[];
   layers?: {
@@ -105,8 +106,8 @@ export function rulerLength(pixels: number, unit: "px" | "cm" | "in") {
     : `${((pixels * 21) / 1200 / (unit === "in" ? 2.54 : 1)).toFixed(2)} ${unit}`;
 }
 
-export function pageTextLines(text: string, fontSize = 28): string[] {
-  const columns = Math.max(18, Math.floor(976 / (fontSize * 0.6)));
+export function pageTextLines(text: string, fontSize = 28, width = 980): string[] {
+  const columns = Math.max(1, Math.floor((width - 4) / (fontSize * 0.6)));
   return text
     .split("\n")
     .flatMap((line) => line.match(new RegExp(`.{1,${columns}}`, "gu")) ?? [""]);
@@ -117,18 +118,19 @@ export function erasePageText(
   points: readonly HandwritingPoint[],
   glyphWidth: number,
   fontSize = 28,
+  frame = { x: 112, y: 80, width: 980, height: 1440 },
 ) {
   const lineHeight = fontSize * (40 / 28);
-  return pageTextLines(text, fontSize)
+  return pageTextLines(text, fontSize, frame.width)
     .map((line, row) =>
       Array.from(line)
         .map((character, column) =>
           points.some(
             ({ x, y }) =>
-              x + 30 >= 112 + column * glyphWidth &&
-              x - 30 <= 112 + (column + 1) * glyphWidth &&
-              y + 30 >= 80 + row * lineHeight &&
-              y - 30 <= 80 + fontSize + row * lineHeight,
+              x + 30 >= frame.x + column * glyphWidth &&
+              x - 30 <= frame.x + (column + 1) * glyphWidth &&
+              y + 30 >= frame.y + row * lineHeight &&
+              y - 30 <= frame.y + fontSize + row * lineHeight,
           )
             ? " "
             : character,

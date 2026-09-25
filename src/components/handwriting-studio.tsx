@@ -338,6 +338,16 @@ export function HandwritingStudio({
   const [strokes, setStrokes] = useState<Stroke[]>(() => startingDocument?.strokes ?? []);
   const [pageText, setPageText] = useState(startingDocument?.pageText ?? "");
   const [pageTextSize, setPageTextSize] = useState(startingDocument?.pageTextSize ?? 28);
+  const [pageTextFrame, setPageTextFrame] = useState(
+    startingDocument?.pageTextFrame ?? { x: 112, y: 80, width: 980, height: 1440 },
+  );
+  const textFrameDrag = useRef<{
+    pointerId: number;
+    x: number;
+    y: number;
+    frame: { x: number; y: number; width: number; height: number };
+    mode: "move" | "resize";
+  } | null>(null);
   const [coordinateSystems, setCoordinateSystems] = useState<HandwritingCoordinateSystem[]>(
     () => startingDocument?.coordinateSystems ?? [],
   );
@@ -411,7 +421,15 @@ export function HandwritingStudio({
   const PAGE_HEIGHT = canvasSize.height;
   function selectPaper(next: PaperStyle) {
     if (next === "board") setCanvasSize({ width: 3200, height: 2400 });
-    else setCanvasSize({ width: 1200, height: 1600 });
+    else {
+      setCanvasSize({ width: 1200, height: 1600 });
+      setPageTextFrame((frame) => ({
+        x: Math.min(frame.x, 1080),
+        y: Math.min(frame.y, 1540),
+        width: Math.max(120, Math.min(frame.width, 1200 - Math.min(frame.x, 1080))),
+        height: Math.max(60, Math.min(frame.height, 1600 - Math.min(frame.y, 1540))),
+      }));
+    }
     setPaper(next);
   }
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
@@ -455,6 +473,7 @@ export function HandwritingStudio({
       stickies,
       pageText,
       pageTextSize,
+      pageTextFrame,
       coordinateSystems,
       images: importedImages,
       layers: { visibility: layerVisibility, order: layerOrder },
@@ -469,6 +488,7 @@ export function HandwritingStudio({
       stickies,
       pageText,
       pageTextSize,
+      pageTextFrame,
       coordinateSystems,
       importedImages,
       layerVisibility,
@@ -499,6 +519,7 @@ export function HandwritingStudio({
     stickies: initialDocument?.stickies ?? [],
     pageText: initialDocument?.pageText ?? "",
     pageTextSize: initialDocument?.pageTextSize ?? 28,
+    pageTextFrame: initialDocument?.pageTextFrame ?? { x: 112, y: 80, width: 980, height: 1440 },
     coordinateSystems: initialDocument?.coordinateSystems ?? [],
     images: initialDocument?.images ?? [],
     layers: {
@@ -545,6 +566,7 @@ export function HandwritingStudio({
     setStickies(remoteDocument.stickies ?? []);
     setPageText(remoteDocument.pageText ?? "");
     setPageTextSize(remoteDocument.pageTextSize ?? 28);
+    setPageTextFrame(remoteDocument.pageTextFrame ?? { x: 112, y: 80, width: 980, height: 1440 });
     setCoordinateSystems(remoteDocument.coordinateSystems ?? []);
     setImportedImages(remoteDocument.images ?? []);
     setLayerVisibility({
@@ -661,6 +683,7 @@ export function HandwritingStudio({
       layerVisibility,
       layerOrder,
       renderableImportedImages,
+      pageTextFrame,
     );
     // O traço em andamento fica na camada ao vivo, não na folha.
     const context = canvas.getContext("2d");
@@ -689,7 +712,7 @@ export function HandwritingStudio({
       }
     }
     if (layerVisibility.text && pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID)) {
-      const box = pageTextBounds(pageText, pageTextSize);
+      const box = pageTextBounds(pageText, pageTextSize, pageTextFrame);
       context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
     }
     if (layerVisibility.background) {
@@ -725,6 +748,7 @@ export function HandwritingStudio({
     strokes,
     pageText,
     pageTextSize,
+    pageTextFrame,
     coordinateSystems,
     importedImages,
     layerVisibility,
@@ -924,6 +948,7 @@ export function HandwritingStudio({
         stickies: currentStickies,
         pageText,
         pageTextSize,
+        pageTextFrame,
         coordinateSystems,
         layerVisibility,
         layerOrder,
@@ -933,6 +958,94 @@ export function HandwritingStudio({
       },
     ]);
     setRedoStack([]);
+  }
+
+  function startTextFrameDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    const handle = (event.target as HTMLElement).closest<HTMLButtonElement>(
+      "[data-text-frame-handle]",
+    );
+    if (!handle) return;
+    event.preventDefault();
+    event.stopPropagation();
+    remember();
+    textFrameDrag.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      frame: pageTextFrame,
+      mode: handle.dataset["textFrameHandle"] === "resize" ? "resize" : "move",
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveTextFrame(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = textFrameDrag.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    event.stopPropagation();
+    const scale = PAGE_WIDTH / displayWidth;
+    const dx = (event.clientX - drag.x) * scale;
+    const dy = (event.clientY - drag.y) * scale;
+    const nextWidth = Math.max(120, Math.min(PAGE_WIDTH - drag.frame.x, drag.frame.width + dx));
+    const contentHeight =
+      pageTextLines(pageText, pageTextSize, nextWidth).length * pageTextSize * (40 / 28);
+    if (drag.mode === "resize" && contentHeight > PAGE_HEIGHT - drag.frame.y) {
+      setError("O texto não cabe nesta largura. Aumente a caixa.");
+      return;
+    }
+    setError("");
+    setPageTextFrame(
+      drag.mode === "move"
+        ? {
+            ...drag.frame,
+            x: Math.max(0, Math.min(PAGE_WIDTH - drag.frame.width, drag.frame.x + dx)),
+            y: Math.max(0, Math.min(PAGE_HEIGHT - drag.frame.height, drag.frame.y + dy)),
+          }
+        : {
+            ...drag.frame,
+            width: nextWidth,
+            height: Math.max(
+              60,
+              Math.min(PAGE_HEIGHT - drag.frame.y, Math.max(contentHeight, drag.frame.height + dy)),
+            ),
+          },
+    );
+  }
+
+  function adjustTextFrameWithKeyboard(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    const delta = {
+      ArrowLeft: [-10, 0],
+      ArrowRight: [10, 0],
+      ArrowUp: [0, -10],
+      ArrowDown: [0, 10],
+    }[event.key];
+    if (!delta) return;
+    event.preventDefault();
+    remember();
+    const resize = event.currentTarget.dataset["textFrameHandle"] === "resize";
+    const [dx, dy] = delta;
+    if (dx === undefined || dy === undefined) return;
+    setPageTextFrame((frame) =>
+      resize
+        ? (() => {
+            const nextWidth = Math.max(120, Math.min(PAGE_WIDTH - frame.x, frame.width + dx));
+            const contentHeight =
+              pageTextLines(pageText, pageTextSize, nextWidth).length * pageTextSize * (40 / 28);
+            if (contentHeight > PAGE_HEIGHT - frame.y) return frame;
+            return {
+              ...frame,
+              width: nextWidth,
+              height: Math.max(
+                60,
+                Math.min(PAGE_HEIGHT - frame.y, Math.max(contentHeight, frame.height + dy)),
+              ),
+            };
+          })()
+        : {
+            ...frame,
+            x: Math.max(0, Math.min(PAGE_WIDTH - frame.width, frame.x + dx)),
+            y: Math.max(0, Math.min(PAGE_HEIGHT - frame.height, frame.y + dy)),
+          },
+    );
   }
 
   function zoomTo(clientX: number, clientY: number, nextZoom: number) {
@@ -971,7 +1084,7 @@ export function HandwritingStudio({
       const glyphWidth = context.measureText("M").width;
       context.restore();
       setPageText((current) => {
-        const next = erasePageText(current, points, glyphWidth, pageTextSize);
+        const next = erasePageText(current, points, glyphWidth, pageTextSize, pageTextFrame);
         if (next !== current) eraserChangedRef.current = true;
         return next;
       });
@@ -1231,7 +1344,7 @@ export function HandwritingStudio({
         (layerVisibility.text &&
           Boolean(pageText) &&
           selectedIds.includes(PAGE_TEXT_SELECTION_ID) &&
-          overlaps(pageTextBounds(pageText, pageTextSize), {
+          overlaps(pageTextBounds(pageText, pageTextSize, pageTextFrame), {
             x: point.x - 24,
             y: point.y - 24,
             width: 48,
@@ -1568,11 +1681,11 @@ export function HandwritingStudio({
             ? pointInPolygon(
                 {
                   x:
-                    pageTextBounds(pageText, pageTextSize).x +
-                    pageTextBounds(pageText, pageTextSize).width / 2,
+                    pageTextBounds(pageText, pageTextSize, pageTextFrame).x +
+                    pageTextBounds(pageText, pageTextSize, pageTextFrame).width / 2,
                   y:
-                    pageTextBounds(pageText, pageTextSize).y +
-                    pageTextBounds(pageText, pageTextSize).height / 2,
+                    pageTextBounds(pageText, pageTextSize, pageTextFrame).y +
+                    pageTextBounds(pageText, pageTextSize, pageTextFrame).height / 2,
                   pressure: 0.5,
                 },
                 polygon,
@@ -1624,7 +1737,9 @@ export function HandwritingStudio({
               .map((sticky) => sticky.id)
           : [];
         const selectedTextIds =
-          layerVisibility.text && pageText && overlaps(pageTextBounds(pageText, pageTextSize), box)
+          layerVisibility.text &&
+          pageText &&
+          overlaps(pageTextBounds(pageText, pageTextSize, pageTextFrame), box)
             ? [PAGE_TEXT_SELECTION_ID]
             : [];
         const selectedImageIds = layerVisibility.background
@@ -1686,6 +1801,7 @@ export function HandwritingStudio({
         stickies,
         pageText,
         pageTextSize,
+        pageTextFrame,
         coordinateSystems,
         layerVisibility,
         layerOrder,
@@ -1698,6 +1814,7 @@ export function HandwritingStudio({
     setStickies(previous.stickies);
     setPageText(previous.pageText);
     setPageTextSize(previous.pageTextSize);
+    setPageTextFrame(previous.pageTextFrame);
     setCoordinateSystems(previous.coordinateSystems);
     setImportedImages(previous.images);
     setLayerVisibility(previous.layerVisibility);
@@ -1719,6 +1836,7 @@ export function HandwritingStudio({
         stickies,
         pageText,
         pageTextSize,
+        pageTextFrame,
         coordinateSystems,
         layerVisibility,
         layerOrder,
@@ -1731,6 +1849,7 @@ export function HandwritingStudio({
     setStickies(next.stickies);
     setPageText(next.pageText);
     setPageTextSize(next.pageTextSize);
+    setPageTextFrame(next.pageTextFrame);
     setCoordinateSystems(next.coordinateSystems);
     setImportedImages(next.images);
     setLayerVisibility(next.layerVisibility);
@@ -1782,7 +1901,7 @@ export function HandwritingStudio({
       ...stickies.filter((sticky) => selectedIds.includes(sticky.id)).map(stickyBounds),
       ...importedImages.filter((image) => selectedIds.includes(image.id)).map(importedImageBounds),
       ...(pageText && selectedIds.includes(PAGE_TEXT_SELECTION_ID)
-        ? [pageTextBounds(pageText, pageTextSize)]
+        ? [pageTextBounds(pageText, pageTextSize, pageTextFrame)]
         : []),
     ]);
   }
@@ -2334,6 +2453,7 @@ export function HandwritingStudio({
       canvasSize,
       pageText,
       pageTextSize,
+      pageTextFrame,
       coordinateSystems,
       images: importedImages,
       layers: { visibility: layerVisibility, order: layerOrder },
@@ -2378,6 +2498,7 @@ export function HandwritingStudio({
       layerVisibility,
       layerOrder,
       renderableImportedImages,
+      pageTextFrame,
     );
     return exportPage(canvas);
   }
@@ -2403,6 +2524,7 @@ export function HandwritingStudio({
         layerVisibility,
         layerOrder,
         renderableImportedImages,
+        pageTextFrame,
       );
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
@@ -2451,6 +2573,7 @@ export function HandwritingStudio({
         layerVisibility,
         layerOrder,
         renderableImportedImages,
+        pageTextFrame,
       );
       downloadCanvasAsPdf(canvas, "folha-do-caderno.pdf");
     } catch (caught) {
@@ -3182,48 +3305,104 @@ export function HandwritingStudio({
               aria-hidden="true"
             />
             {textMode && layerVisibility.text && (
-              <textarea
-                className="handwriting-full-page-text"
-                aria-label="Texto da página inteira"
-                placeholder="Escreva aqui. Esta área ocupa a folha inteira."
-                value={pageText}
-                spellCheck
-                lang="pt-BR"
-                autoCorrect="on"
-                autoCapitalize="sentences"
-                wrap="off"
+              <div
+                className="handwriting-text-frame"
                 style={{
-                  left: `${(112 / PAGE_WIDTH) * 100}%`,
-                  top: `${(80 / PAGE_HEIGHT) * 100}%`,
-                  width: `${(980 / PAGE_WIDTH) * 100}%`,
-                  height: `${(1440 / PAGE_HEIGHT) * 100}%`,
-                  fontSize: `${(pageTextSize * displayWidth) / PAGE_WIDTH}px`,
-                  lineHeight: `${(pageTextSize * (40 / 28) * displayWidth) / PAGE_WIDTH}px`,
-                  color: paperColor === "night" ? "#fff9ef" : "#17151c",
+                  left: `${(pageTextFrame.x / PAGE_WIDTH) * 100}%`,
+                  top: `${(pageTextFrame.y / PAGE_HEIGHT) * 100}%`,
+                  width: `${(pageTextFrame.width / PAGE_WIDTH) * 100}%`,
+                  height: `${(pageTextFrame.height / PAGE_HEIGHT) * 100}%`,
                 }}
-                onFocus={() => remember()}
-                onBlur={() => {
-                  if (!textAutoCorrect) return;
-                  const corrected = reviewPortugueseText(pageText);
-                  if (corrected !== pageText) {
-                    remember();
-                    setPageText(corrected);
-                  }
-                }}
-                onChange={(event) => {
-                  const lines = pageTextLines(
-                    event.target.value.replace(/\t/g, "    "),
-                    pageTextSize,
-                  );
-                  if (lines.length > Math.floor(1440 / (pageTextSize * (40 / 28)))) {
-                    setError("Esta folha está completa. Crie outra folha para continuar.");
-                    return;
-                  }
-                  setError("");
-                  setPageText(lines.join("\n"));
-                  setRedoStack([]);
-                }}
-              />
+                onPointerDown={startTextFrameDrag}
+                onPointerMove={moveTextFrame}
+                onPointerUp={() => (textFrameDrag.current = null)}
+                onPointerCancel={() => (textFrameDrag.current = null)}
+              >
+                <button
+                  type="button"
+                  className="handwriting-text-frame-handle handwriting-text-frame-handle--move"
+                  data-text-frame-handle="move"
+                  aria-label="Mover caixa de texto"
+                  onKeyDown={adjustTextFrameWithKeyboard}
+                >
+                  <PaperEditorIcon name="hand" />
+                </button>
+                <div className="handwriting-text-frame-size" aria-label="Tamanho do texto">
+                  <button
+                    type="button"
+                    aria-label="Diminuir tamanho do texto"
+                    disabled={pageTextSize <= 16}
+                    onClick={() => {
+                      remember();
+                      setPageTextSize((size) => Math.max(16, size - 2));
+                    }}
+                  >
+                    A−
+                  </button>
+                  <span>{pageTextSize}px</span>
+                  <button
+                    type="button"
+                    aria-label="Aumentar tamanho do texto"
+                    disabled={pageTextSize >= 72}
+                    onClick={() => {
+                      remember();
+                      setPageTextSize((size) => Math.min(72, size + 2));
+                    }}
+                  >
+                    A+
+                  </button>
+                </div>
+                <textarea
+                  className="handwriting-full-page-text"
+                  aria-label="Texto da página inteira"
+                  placeholder="Escreva aqui. Arraste as alças para mover e ajustar a caixa."
+                  value={pageText}
+                  spellCheck
+                  lang="pt-BR"
+                  autoCorrect="on"
+                  autoCapitalize="sentences"
+                  wrap="soft"
+                  style={{
+                    fontSize: `${(pageTextSize * displayWidth) / PAGE_WIDTH}px`,
+                    lineHeight: `${(pageTextSize * (40 / 28) * displayWidth) / PAGE_WIDTH}px`,
+                    color: paperColor === "night" ? "#fff9ef" : "#17151c",
+                  }}
+                  onFocus={() => remember()}
+                  onBlur={() => {
+                    if (!textAutoCorrect) return;
+                    const corrected = reviewPortugueseText(pageText);
+                    if (corrected !== pageText) {
+                      remember();
+                      setPageText(corrected);
+                    }
+                  }}
+                  onChange={(event) => {
+                    const lines = pageTextLines(
+                      event.target.value.replace(/\t/g, "    "),
+                      pageTextSize,
+                      pageTextFrame.width,
+                    );
+                    if (
+                      lines.length > Math.floor(pageTextFrame.height / (pageTextSize * (40 / 28)))
+                    ) {
+                      setError("Esta caixa está completa. Aumente-a ou crie outra folha.");
+                      return;
+                    }
+                    setError("");
+                    setPageText(event.target.value.replace(/\t/g, "    "));
+                    setRedoStack([]);
+                  }}
+                />
+                <button
+                  type="button"
+                  className="handwriting-text-frame-handle handwriting-text-frame-handle--resize"
+                  data-text-frame-handle="resize"
+                  aria-label="Redimensionar caixa de texto"
+                  onKeyDown={adjustTextFrameWithKeyboard}
+                >
+                  <PaperEditorIcon name="resize" />
+                </button>
+              </div>
             )}
             {layerVisibility.stickies &&
               stickies.map((sticky) => (

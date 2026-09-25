@@ -206,6 +206,7 @@ export function renderPage(
     frame: Pick<HandwritingImage, "x" | "y" | "width" | "height">;
     rotation?: number;
   }[] = [],
+  pageTextFrame = { x: 112, y: 80, width: 980, height: 1440 },
 ) {
   const context = pageContext(canvas);
   if (!context) return;
@@ -256,9 +257,11 @@ export function renderPage(
     context.fillStyle = paperColor === "night" ? "#fff9ef" : "#17151c";
     context.font = `${pageTextSize}px monospace`;
     context.textBaseline = "top";
-    pageTextLines(pageText, pageTextSize).forEach((line, index) =>
-      context.fillText(line, 112, 80 + index * pageTextSize * (40 / 28)),
-    );
+    pageTextLines(pageText, pageTextSize, pageTextFrame.width)
+      .slice(0, Math.floor(pageTextFrame.height / (pageTextSize * (40 / 28))))
+      .forEach((line, index) =>
+        context.fillText(line, pageTextFrame.x, pageTextFrame.y + index * pageTextSize * (40 / 28)),
+      );
     context.restore();
   };
   const drawStickiesLayer = () => {

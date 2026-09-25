@@ -37,6 +37,7 @@ export type Snapshot = {
   stickies: HandwritingSticky[];
   pageText: string;
   pageTextSize: number;
+  pageTextFrame: NonNullable<HandwritingDocument["pageTextFrame"]>;
   coordinateSystems: HandwritingCoordinateSystem[];
   background?: string | undefined;
   layerVisibility: HandwritingLayerVisibility;
