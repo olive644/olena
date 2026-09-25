@@ -1,4 +1,4 @@
-import { Camera, Copy, Link2, RotateCw, Users } from "lucide-react";
+import { Camera, RotateCw } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -453,7 +453,19 @@ export function NoteCaptureTools({
                 <div className="capture-header-actions">
                   {currentMode === "drawing" && (
                     <div className="notebook-team" role="group" aria-label="Equipe de edição">
-                      {(collaboration.state.room?.participants ?? [])
+                      {(collaboration.state.room?.participants.length
+                        ? collaboration.state.room.participants
+                        : cloud?.authenticated
+                          ? [
+                              {
+                                id: "current-account",
+                                displayName: cloud.displayName || cloud.email || "Sua conta",
+                                avatarUrl: collaborationAvatar,
+                                online: true,
+                              },
+                            ]
+                          : []
+                      )
                         .slice(0, 4)
                         .map((participant, index) => (
                           <span
@@ -486,7 +498,7 @@ export function NoteCaptureTools({
                         aria-expanded={collaborationPanelOpen}
                         onClick={() => setCollaborationPanelOpen((open) => !open)}
                       >
-                        <span aria-hidden="true">+</span>
+                        <PaperEditorIcon name="add" />
                       </button>
                     </div>
                   )}
@@ -516,9 +528,8 @@ export function NoteCaptureTools({
                   <div className="notebook-collaboration-panel__heading">
                     <div>
                       <span>COLABORAÇÃO</span>
-                      <h3>Compartilhar caderno para escrever junto</h3>
                     </div>
-                    <Users size={20} aria-hidden="true" />
+                    <PaperEditorIcon name="team" />
                   </div>
                   {!cloud?.authenticated ? (
                     <p>
@@ -563,7 +574,7 @@ export function NoteCaptureTools({
                           className="icon-button"
                           onClick={() => void copyCollaborationInvite()}
                         >
-                          <Link2 size={15} /> <Copy size={15} /> Copiar link
+                          <PaperEditorIcon name="copyLink" /> <span>Copiar link</span>
                         </button>
                       </div>
                       <div className="notebook-collaboration-people">
@@ -581,11 +592,13 @@ export function NoteCaptureTools({
                         <p className="notebook-collaboration-activity">{collaboration.activity}</p>
                       )}
                       <button
-                        className="secondary-button"
+                        className="notebook-collaboration-leave"
                         type="button"
+                        aria-label="Sair da colaboração"
+                        title="Sair da colaboração"
                         onClick={() => void collaboration.leave()}
                       >
-                        Sair da colaboração
+                        <PaperEditorIcon name="exit" />
                       </button>
                     </>
                   )}
