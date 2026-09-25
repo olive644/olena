@@ -94,7 +94,15 @@ import {
   unionBounds,
   strokeTouches,
 } from "./handwriting-geometry";
-import { canvasPoint, drawStroke, renderPage } from "./handwriting-canvas";
+import {
+  canvasPoint,
+  clearPageCanvas,
+  drawStroke,
+  pageContext,
+  pageRenderScale,
+  renderPage,
+  sizePageCanvas,
+} from "./handwriting-canvas";
 import { exportPage, downloadCanvasAsPdf } from "./handwriting-export";
 import { readDraft, strokeId } from "./handwriting-draft";
 
@@ -358,6 +366,15 @@ export function HandwritingStudio({
   const [penOnly, setPenOnly] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [fitWidth, setFitWidth] = useState(BASE_DISPLAY_WIDTH);
+  // Resolução do bitmap da folha: acompanha a densidade da tela e o zoom para a
+  // tinta ficar nítida. Muda com um pequeno atraso para o zoom não redesenhar a
+  // folha a cada passo.
+  const [renderScale, setRenderScale] = useState(() =>
+    pageRenderScale(
+      typeof window === "undefined" ? 1 : window.devicePixelRatio || 1,
+      BASE_DISPLAY_WIDTH,
+    ),
+  );
   const [error, setError] = useState("");
   const [writingWindowOpen, setWritingWindowOpen] = useState(false);
   const [writingWindowX, setWritingWindowX] = useState(100);
@@ -539,6 +556,8 @@ export function HandwritingStudio({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    sizePageCanvas(canvas, renderScale);
+    if (liveCanvasRef.current) sizePageCanvas(liveCanvasRef.current, renderScale);
     // O traço em andamento fica só na camada ao vivo até a caneta ser solta.
     const liveId = liveStrokeRef.current?.id;
     renderPage(
@@ -628,6 +647,7 @@ export function HandwritingStudio({
     backgroundImage,
     backgroundFrame,
     renderableImportedImages,
+    renderScale,
   ]);
 
   useEffect(() => {
@@ -637,12 +657,13 @@ export function HandwritingStudio({
     const context = target?.getContext("2d");
     if (!source || !target || !context) return;
     context.clearRect(0, 0, target.width, target.height);
+    const mirrorScale = source.width / PAGE_WIDTH;
     context.drawImage(
       source,
-      writingWindowX,
-      writingWindowY,
-      WRITING_WINDOW_WIDTH,
-      WRITING_WINDOW_HEIGHT,
+      writingWindowX * mirrorScale,
+      writingWindowY * mirrorScale,
+      WRITING_WINDOW_WIDTH * mirrorScale,
+      WRITING_WINDOW_HEIGHT * mirrorScale,
       0,
       0,
       target.width,
@@ -658,6 +679,7 @@ export function HandwritingStudio({
     writingWindowX,
     writingWindowY,
     backgroundImage,
+    renderScale,
   ]);
 
   useEffect(() => {
@@ -885,9 +907,10 @@ export function HandwritingStudio({
   function paintLive() {
     liveFrameRef.current = null;
     const overlay = liveCanvasRef.current;
-    const context = overlay?.getContext("2d");
-    if (!overlay || !context) return;
-    context.clearRect(0, 0, overlay.width, overlay.height);
+    if (!overlay) return;
+    clearPageCanvas(overlay);
+    const context = pageContext(overlay);
+    if (!context) return;
     const stroke = liveStrokeRef.current;
     if (!stroke) return;
     // A ponta prevista cobre o atraso do filtro e do quadro, mas só enquanto a mão
@@ -911,14 +934,14 @@ export function HandwritingStudio({
     if (liveFrameRef.current !== null) cancelAnimationFrame(liveFrameRef.current);
     liveFrameRef.current = null;
     clearTimeout(liveSettleRef.current);
-    const overlay = liveCanvasRef.current;
-    overlay?.getContext("2d")?.clearRect(0, 0, overlay.width, overlay.height);
+    if (liveCanvasRef.current) clearPageCanvas(liveCanvasRef.current);
   }
 
   // Ao soltar a caneta o traço final é desenhado na folha no mesmo instante em que
   // a camada ao vivo é limpa, para não haver um quadro sem tinta entre os dois.
   function commitLiveStroke(stroke: Stroke) {
-    const context = canvasRef.current?.getContext("2d");
+    const main = canvasRef.current;
+    const context = main ? pageContext(main) : null;
     if (context) drawStroke(context, stroke);
     clearLive();
   }
@@ -931,12 +954,13 @@ export function HandwritingStudio({
     const context = target?.getContext("2d");
     if (!source || !target || !context) return;
     context.clearRect(0, 0, target.width, target.height);
+    const mirrorScale = source.width / PAGE_WIDTH;
     context.drawImage(
       source,
-      writingWindowX,
-      writingWindowY,
-      WRITING_WINDOW_WIDTH,
-      WRITING_WINDOW_HEIGHT,
+      writingWindowX * mirrorScale,
+      writingWindowY * mirrorScale,
+      WRITING_WINDOW_WIDTH * mirrorScale,
+      WRITING_WINDOW_HEIGHT * mirrorScale,
       0,
       0,
       target.width,
@@ -2349,6 +2373,15 @@ export function HandwritingStudio({
   }
 
   const displayWidth = Math.max(260, Math.round(fitWidth * zoom));
+  const wantedScale = pageRenderScale(
+    typeof window === "undefined" ? 1 : window.devicePixelRatio || 1,
+    displayWidth,
+  );
+  useEffect(() => {
+    if (wantedScale === renderScale) return;
+    const timer = setTimeout(() => setRenderScale(wantedScale), 150);
+    return () => clearTimeout(timer);
+  }, [wantedScale, renderScale]);
   const selectedCoordinateSystem = coordinateSystems.find((system) =>
     selectedIds.includes(system.id),
   );

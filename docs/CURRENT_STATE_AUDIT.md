@@ -743,3 +743,17 @@ Medido com o mesmo gesto de teste (mão lenta com ruído de 125 Hz), pela segund
 Orçamento: o total passou de 778,1 para 781,2 KiB e o teto foi para 790 KiB, com a justificativa no script. A entrada inicial não mudou (269,8 KiB), porque o editor é carregado sob demanda. Testes novos: `handwriting-ink.test.ts` e `handwriting-stabilization.test.ts` (37) e `e2e/ink-live-layer.spec.ts`.
 
 Limites conhecidos: a folha ainda tem 1200 por 1600 pixels de resolução fixa e borra em telas de densidade alta e ao ampliar (próxima etapa). A colaboração ainda substitui `strokes` por inteiro ao receber uma atualização (etapa seguinte).
+
+# Motor de traço profissional, etapa 2: nitidez, setembro de 2026
+
+A folha tinha um bitmap fixo de 1200 por 1600 pixels, qualquer que fosse a tela ou o zoom. Em tela de densidade 2x ou ampliada, cada pixel da tinta era esticado, e a tinta e as pautas saíam borradas.
+
+- O bitmap agora acompanha `devicePixelRatio` vezes o tamanho exibido (`pageRenderScale`), arredondado para cima em passos de 0,25 e com atraso de 150 ms para o zoom não redesenhar a cada passo. A folha e a camada de tinta ao vivo usam a mesma escala.
+- Teto de 9 milhões de pixels por camada: o iOS Safari recusa canvas acima de 16,7 milhões de pixels e limita a memória total, e a folha tem duas camadas. Na prática a escala máxima é cerca de 2,16.
+- Todo desenho passa por `pageContext`, que aplica a escala e mantém as coordenadas em unidades da folha (1200 por 1600). O mapeamento do ponteiro (`canvasPoint`) mede em unidades da folha, não do bitmap, então o traço cai onde a caneta está em qualquer resolução.
+- O espelho da janela de escrita lê o bitmap em pixels, então a região de origem é multiplicada pela escala.
+- A exportação em PNG e em PDF do editor passa a sair na resolução da tela. As folhas gravadas nas anotações continuam em 1200 por 1600, para não aumentar os dados salvos.
+
+Medido em tela 2x com a folha exibida a 1518 px CSS: o bitmap passou de 1200 para 2598 px de largura. Testes: `handwriting-canvas-scale.test.ts` (13) e `e2e/ink-sharpness.spec.ts`, que roda com `deviceScaleFactor: 2`, exige bitmap acima de 1200, crescimento com o zoom, respeito ao teto e a tinta exatamente sob a caneta.
+
+Orçamento: 781,9 KiB de 790, entrada inicial em 269,8 KiB (sem mudança).

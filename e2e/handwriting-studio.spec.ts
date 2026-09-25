@@ -762,9 +762,11 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
       const target = element as HTMLCanvasElement;
       const context = target.getContext("2d");
       if (!context) return false;
-      const centerX = Math.round(100 + position.fx * 500);
-      const centerY = Math.round(110 + position.fy * 185);
-      const radius = 6;
+      // A folha tem 1200 por 1600 unidades; o bitmap pode ter mais pixels por unidade.
+      const scale = target.width / 1200;
+      const centerX = Math.round((100 + position.fx * 500) * scale);
+      const centerY = Math.round((110 + position.fy * 185) * scale);
+      const radius = Math.round(6 * scale);
       const { data } = context.getImageData(
         Math.max(0, centerX - radius),
         Math.max(0, centerY - radius),

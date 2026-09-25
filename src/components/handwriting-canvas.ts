@@ -24,20 +24,58 @@ import { stickyTextLayout } from "./sticky-text-layout";
 // Posição dos fios do pincel macio ao longo da largura do traço (-1 a 1).
 const SOFT_BRISTLE_OFFSETS = [-0.9, -0.45, 0, 0.45, 0.9] as const;
 
+// Tamanho máximo do bitmap da folha, em pixels. O iOS Safari recusa canvas acima
+// de 16,7 milhões de pixels e limita a memória total; a folha tem duas camadas.
+const MAX_CANVAS_PIXELS = 9_000_000;
+
+// Quantos pixels do bitmap por unidade da folha (1200 por 1600) dão uma tinta
+// nítida na tela: densidade de pixels vezes o tamanho exibido. Arredonda para cima
+// em passos de 0,25, para o zoom não redesenhar a folha a cada fração.
+export function pageRenderScale(devicePixelRatio: number, displayWidth: number): number {
+  const wanted = Math.max(1, (devicePixelRatio * displayWidth) / PAGE_WIDTH);
+  const limit = Math.sqrt(MAX_CANVAS_PIXELS / (PAGE_WIDTH * PAGE_HEIGHT));
+  return Math.min(limit, Math.ceil(wanted * 4) / 4);
+}
+
+// Ajusta o bitmap à escala. Mudar o tamanho do canvas o apaga, então só mexe se mudou.
+export function sizePageCanvas(canvas: HTMLCanvasElement, scale: number) {
+  const width = Math.round(PAGE_WIDTH * scale);
+  const height = Math.round(PAGE_HEIGHT * scale);
+  if (canvas.width !== width) canvas.width = width;
+  if (canvas.height !== height) canvas.height = height;
+}
+
+// Contexto que desenha em unidades da folha, qualquer que seja a escala do bitmap.
+export function pageContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D | null {
+  const context = canvas.getContext("2d");
+  if (!context) return null;
+  const scale = canvas.width / PAGE_WIDTH;
+  context.setTransform(scale, 0, 0, scale, 0, 0);
+  return context;
+}
+
+export function clearPageCanvas(canvas: HTMLCanvasElement) {
+  const context = canvas.getContext("2d");
+  if (!context) return;
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 export function canvasPoint(
   canvas: HTMLCanvasElement,
   event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
     Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
 ): HandwritingPoint {
   const bounds = canvas.getBoundingClientRect();
+  // Em unidades da folha, não do bitmap: o bitmap muda de resolução com o zoom.
   return {
     x: Math.max(
       0,
-      Math.min(canvas.width, ((event.clientX - bounds.left) / bounds.width) * canvas.width),
+      Math.min(PAGE_WIDTH, ((event.clientX - bounds.left) / bounds.width) * PAGE_WIDTH),
     ),
     y: Math.max(
       0,
-      Math.min(canvas.height, ((event.clientY - bounds.top) / bounds.height) * canvas.height),
+      Math.min(PAGE_HEIGHT, ((event.clientY - bounds.top) / bounds.height) * PAGE_HEIGHT),
     ),
     pressure: event.pressure > 0 ? event.pressure : 0.5,
     ...(event.tiltX ? { tiltX: event.tiltX } : {}),
@@ -162,7 +200,7 @@ export function renderPage(
     rotation?: number;
   }[] = [],
 ) {
-  const context = canvas.getContext("2d");
+  const context = pageContext(canvas);
   if (!context) return;
   drawPaper(context, paper, paperColor);
   if (layerVisibility.background && background)
