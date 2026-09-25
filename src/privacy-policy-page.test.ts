@@ -155,8 +155,8 @@ describe("página da Política de Privacidade", () => {
 
   it("tem o rodapé de direitos com o ícone da Galeria.Oli", () => {
     expect(text).toContain("Todos os direitos Galeria.Oli - OlenaStudy");
-    expect(html).toContain('src="/galeria-oli-icon.png"');
-    expect(html).toMatch(/<footer[^>]*brand-footer[\s\S]*<img[^>]+galeria-oli-icon\.png/);
+    expect(html).toContain('src="/galeria-oli-icon.svg"');
+    expect(html).toMatch(/<footer[^>]*brand-footer[\s\S]*<img[^>]+galeria-oli-icon.svg/);
   });
 
   it("usa o visual de papel recortado do aplicativo em cada bloco", () => {
@@ -167,24 +167,41 @@ describe("página da Política de Privacidade", () => {
 });
 
 describe("ícone da Galeria.Oli", () => {
-  const icon = readFileSync("public/galeria-oli-icon.png");
+  const icon = readFileSync("public/galeria-oli-icon.svg", "utf8");
 
-  it("existe e é um PNG", () => {
-    expect(existsSync("public/galeria-oli-icon.png")).toBe(true);
-    expect(icon.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
+  it("é um SVG de verdade, com caixa de visualização quadrada", () => {
+    expect(icon.trimStart().startsWith("<svg")).toBe(true);
+    expect(icon).toContain('xmlns="http://www.w3.org/2000/svg"');
+    const box = icon.match(/viewBox="0 0 (\d+) (\d+)"/);
+    expect(box).not.toBeNull();
+    expect(box![1]).toBe(box![2]);
   });
 
-  it("é quadrado e tem canal de transparência (sem fundo)", () => {
-    const width = icon.readUInt32BE(16);
-    const height = icon.readUInt32BE(20);
-    const colorType = icon[25];
-    expect(width).toBe(height);
-    expect(width).toBeGreaterThanOrEqual(128);
-    // 6 = cores com transparência (RGBA)
-    expect(colorType).toBe(6);
+  it("é vetor puro: nada de imagem embutida, fundo, script ou referência externa", () => {
+    expect(icon).not.toMatch(/<image/i);
+    expect(icon).not.toMatch(/<rect/i);
+    expect(icon).not.toMatch(/<script/i);
+    expect(icon).not.toMatch(/href=|xlink|url\(|data:/i);
+    expect(icon).not.toMatch(/style=|<style/i);
   });
 
-  it("é leve, para não pesar em cada abertura do aplicativo", () => {
-    expect(icon.length).toBeLessThan(80 * 1024);
+  it("não tem fundo: só o rosto (contorno, miolo e traços), nenhum preenchimento branco", () => {
+    const fills = [...icon.matchAll(/fill="(#[0-9a-f]{6})"/gi)].map((match) =>
+      match[1]!.toLowerCase(),
+    );
+    expect(fills.length).toBeGreaterThanOrEqual(4);
+    expect(fills).not.toContain("#ffffff");
+    expect(fills).not.toContain("#fff");
+    // contorno, miolo claro e tinta escura
+    expect(new Set(fills).size).toBe(3);
+  });
+
+  it("é acessível e leve, para não pesar em cada abertura do aplicativo", () => {
+    expect(icon).toContain('aria-label="Galeria.Oli"');
+    expect(icon.length).toBeLessThan(20 * 1024);
+  });
+
+  it("existe só em SVG: o PNG antigo foi removido", () => {
+    expect(existsSync("public/galeria-oli-icon.png")).toBe(false);
   });
 });
