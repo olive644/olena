@@ -60,7 +60,8 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await page.locator(".page-header__theme .appearance-picker__trigger").click();
+  await page.getByRole("button", { name: "Escuro", exact: true }).click();
   const nav = page.getByRole("navigation", { name: "Navegação móvel" });
   const header = page.locator(".page-header");
   await expect(nav).toHaveCSS("background-color", "rgb(41, 36, 50)");
