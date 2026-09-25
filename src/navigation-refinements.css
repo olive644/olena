@@ -1,0 +1,94 @@
+@media (min-width: 900px) {
+  .app-shell > .sidebar > .sidebar__nav {
+    grid-template-rows: auto auto 1fr;
+    align-content: stretch;
+  }
+  .app-shell > .sidebar .sidebar__profile {
+    align-self: end;
+    margin-top: auto;
+    padding-top: 10px;
+  }
+  .app-shell > .sidebar:not(.sidebar--expanded) .sidebar__profile .nav-item {
+    width: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    margin: 0 auto;
+    padding: 0;
+    justify-content: center;
+  }
+  .app-shell > .sidebar:not(.sidebar--expanded) .sidebar__profile .nav-item > span:last-child {
+    display: none;
+  }
+  .app-shell > .sidebar.sidebar--expanded .sidebar__profile {
+    width: 100%;
+  }
+  .app-shell > .sidebar.sidebar--expanded .sidebar__profile .nav-item {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 899px) {
+  .app-shell .main-content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  .app-shell .mobile-nav {
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    min-height: 62px;
+    padding: 4px 6px 6px;
+    border-radius: 14px 22px 16px 19px;
+  }
+  .app-shell .mobile-nav__item {
+    min-height: 48px;
+    gap: 1px;
+    font-size: 0.58rem;
+  }
+  .app-shell .mobile-nav__item--featured .mobile-nav__icon,
+  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured .mobile-nav__icon {
+    width: 42px;
+    height: 42px;
+    margin-top: -14px;
+    border-radius: 7px 12px 8px 10px;
+    box-shadow: 0 3px 0 #4b209b;
+  }
+  :root[data-theme="dark"] .app-shell .page-header,
+  :root[data-theme="dark"] .app-shell .mobile-nav {
+    border-color: #51465d;
+    color: #fff9ef;
+    background-color: #292432;
+    background-image:
+      linear-gradient(135deg, #393244 0 7%, transparent 7%),
+      linear-gradient(315deg, #17151c 0 8%, transparent 8%);
+    box-shadow: 0 4px 0 #17151c;
+  }
+  :root[data-theme="dark"] .app-shell .mobile-nav__item {
+    color: #fff9ef;
+  }
+  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured {
+    color: #d7b6ff;
+  }
+  :root[data-theme="dark"] .app-shell .mobile-nav .navigation-icon__variant--claro,
+  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured .navigation-icon__variant--claro {
+    display: none;
+  }
+  :root[data-theme="dark"] .app-shell .mobile-nav .navigation-icon__variant--escuro {
+    display: block;
+  }
+  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured .mobile-nav__icon {
+    border-color: #292432;
+  }
+  :root[data-theme="dark"] .app-shell .mobile-nav__profile .navigation-icon--profile img {
+    filter: brightness(0) invert(1);
+  }
+  :root[data-theme="dark"] .page-header > .mobile-more-trigger,
+  :root[data-theme="dark"] .app-shell .page-header > .mobile-more-trigger[aria-expanded="true"] {
+    border: 0;
+    color: #fff9ef;
+    background: transparent;
+    box-shadow: none;
+  }
+  :root[data-theme="dark"] .page-header .paper-menu > span {
+    background: #fff9ef;
+  }
+}

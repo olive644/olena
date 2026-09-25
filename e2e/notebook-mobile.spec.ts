@@ -51,3 +51,47 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await expect(editor.getByRole("button", { name: "Mover folha", exact: true })).toBeVisible();
   await expect(editor.locator(".notebook-mobile-dock")).toHaveCount(0);
 });
+
+test("navegação escura e gavetas do caderno mantêm contraste e ações separadas", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "mobile");
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/");
+  await page.locator(".page-header__theme .appearance-picker__trigger").click();
+  await page.getByRole("button", { name: "Escuro", exact: true }).click();
+  const nav = page.getByRole("navigation", { name: "Navegação móvel" });
+  const header = page.locator(".page-header");
+  await expect(nav).toHaveCSS("background-color", "rgb(41, 36, 50)");
+  await expect(header).toHaveCSS("background-color", "rgb(41, 36, 50)");
+  await expect(page.getByRole("button", { name: "Mais ferramentas", exact: true })).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+  await page.screenshot({ path: info.outputPath("navegacao-escura.png") });
+  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
+  const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
+  await expect(menu.getByRole("button", { name: "Planos de aula" })).toHaveCount(0);
+  await menu.getByRole("button", { name: "Cadernos", exact: true }).click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha" }).click();
+  const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+  await editor.getByRole("button", { name: "Tipo de papel" }).click();
+  const typeBox = await editor.locator(".handwriting-paper-options").boundingBox();
+  await editor.getByRole("button", { name: "Cor da folha" }).click();
+  const colorBox = await editor.locator(".handwriting-paper-options").boundingBox();
+  expect(Math.abs(colorBox!.y - typeBox!.y)).toBeLessThan(5);
+  await expect(editor.locator(".handwriting-paper-options")).toHaveCount(1);
+  await editor.getByRole("button", { name: "Compartilhar", exact: true }).click();
+  await expect(editor.locator(".handwriting-paper-options")).toHaveCount(0);
+  await expect(editor.getByRole("button", { name: "PNG", exact: true })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Baixar PDF" })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Link de visualização" })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Download da folha atual" })).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath("compartilhar-mobile.png") });
+  await editor.getByRole("button", { name: "Salvar caderno" }).click();
+  await expect(editor.getByRole("button", { name: "PNG", exact: true })).toBeHidden();
+});

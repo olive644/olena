@@ -56,7 +56,8 @@ describe("App", () => {
     expect(within(sidebar).getByLabelText("OlenaStudy")).toBeTruthy();
     expect(within(sidebar).getByText("Área do aluno")).toBeTruthy();
     expect(within(sidebar).getByText("Meus materiais")).toBeTruthy();
-    expect(within(sidebar).getByText("Área do professor")).toBeTruthy();
+    expect(within(sidebar).queryByText("Área do professor")).toBeNull();
+    expect(within(sidebar).getByRole("button", { name: "Perfil" })).toBeTruthy();
   });
 
   it("mostra o perfil Google no canto superior quando estiver disponível", () => {
@@ -139,8 +140,6 @@ describe("App", () => {
       ["Biblioteca", "library"],
       ["Hábitos", "habits"],
       ["Cadernos", "notes"],
-      ["Planos de aula", "lesson"],
-      ["Banco de atividades", "activity-bank"],
     ] as const;
 
     icons.forEach(([label, icon]) => {
@@ -378,15 +377,10 @@ describe("App", () => {
     expect(screen.getByText("Preparar apresentação")).toBeTruthy();
   });
 
-  it("preserva o criador de planos de aula", async () => {
+  it("oculta as ferramentas do professor da navegação por enquanto", () => {
     render(<App />);
-    navigate("Planos de aula");
-    fireEvent.change(await screen.findByLabelText(/tema da aula/i), {
-      target: { value: "Simple Past" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /criar rascunho/i }));
-    expect(screen.getByRole("heading", { name: "Simple Past" })).toBeTruthy();
-    expect(screen.getByText("Warm-up")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Planos de aula" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Banco de atividades" })).toBeNull();
   });
 
   it("cria e revisa um flashcard local", async () => {

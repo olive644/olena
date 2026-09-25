@@ -31,7 +31,7 @@ test("exportar PDF permanece disponível dentro da folha", async ({ page }, test
     await page.waitForTimeout(8);
   }
   await page.mouse.up();
-  await dialog.getByRole("button", { name: "Exportar", exact: true }).click();
+  await dialog.getByRole("button", { name: "Compartilhar", exact: true }).click();
   const download = page.waitForEvent("download");
   await dialog.getByRole("button", { name: "Baixar PDF", exact: true }).click();
   expect((await download).suggestedFilename()).toBe("folha-do-caderno.pdf");

@@ -114,7 +114,6 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
       { view: "planner", label: "Agenda", icon: "planner" },
       { view: "focus", label: "Foco", icon: "focus" },
       { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "learn" },
-      { view: "profile", label: "Perfil", icon: "profile" },
     ],
   },
   {
@@ -123,13 +122,6 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
       { view: "library", label: "Biblioteca", icon: "library" },
       { view: "notes", label: "Cadernos", mobileLabel: "Cadernos", icon: "notes" },
       { view: "habits", label: "Hábitos", icon: "habits" },
-    ],
-  },
-  {
-    label: "Área do professor",
-    items: [
-      { view: "lesson-builder", label: "Planos de aula", icon: "lesson" },
-      { view: "activity-bank", label: "Banco de atividades", icon: "activity-bank" },
     ],
   },
 ];
@@ -237,6 +229,13 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
             ))}
           </section>
         ))}
+        <section className="nav-section sidebar__profile" aria-label="Perfil">
+          <NavigationButton
+            item={{ view: "profile", label: "Perfil", icon: "profile" }}
+            active={view === "profile"}
+            onSelect={() => onNavigate("profile")}
+          />
+        </section>
       </nav>
     </aside>
   );

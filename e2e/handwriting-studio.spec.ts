@@ -36,7 +36,7 @@ test("colaboração exige conta e mostra apenas convite por link", async ({
     const after = await paperColor.boundingBox();
     expect(after?.x).toBe(before?.x);
     expect(after?.y).toBe(before?.y);
-    for (const name of ["Upload", "Exportar", "Salvar"]) {
+    for (const name of ["Upload", "Compartilhar", "Salvar caderno"]) {
       const button = host.getByRole("button", { name, exact: true });
       await button.hover();
       await expect
@@ -136,7 +136,7 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
       }),
     )
     .toBe("Questão protegida pelo salvamento automático");
-  await editor.getByRole("button", { name: "Salvar", exact: true }).click();
+  await editor.getByRole("button", { name: "Compartilhar", exact: true }).click();
   await editor.getByRole("button", { name: "Link de visualização" }).click();
   const share = page.getByRole("dialog", { name: "Link de visualização" });
   await expect(share).toBeVisible();
@@ -270,12 +270,14 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "aria-pressed",
     "true",
   );
-  await dialog.getByRole("button", { name: "Tipo de papel", exact: true }).click();
+  const paperType = dialog.getByRole("button", { name: "Tipo de papel", exact: true });
+  if ((await paperType.getAttribute("aria-expanded")) !== "true") await paperType.click();
   await expect(dialog.getByRole("button", { name: "Pautado" })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
   await dialog.getByRole("button", { name: "Quadriculado" }).click();
+  if ((await paperType.getAttribute("aria-expanded")) !== "true") await paperType.click();
   await expect(dialog.getByRole("button", { name: "Quadriculado" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -382,8 +384,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect(dialog.getByRole("button", { name: "Apagar seleção" })).toBeVisible();
   await dialog.getByRole("button", { name: "Apagar seleção" }).click();
   await dialog.getByRole("button", { name: "Desfazer" }).click();
-  await dialog.getByRole("button", { name: "Salvar", exact: true }).click();
-  await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
+  await dialog.getByRole("button", { name: "Salvar caderno" }).click();
   await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
   if (await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
     await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
@@ -475,7 +476,9 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect(imported).toHaveCount(0);
   await reopened.getByRole("button", { name: "Desfazer", exact: true }).click();
   await expect(imported).toBeVisible();
-  await reopened.getByRole("button", { name: "Tipo de papel", exact: true }).click();
+  const reopenedPaperType = reopened.getByRole("button", { name: "Tipo de papel", exact: true });
+  if ((await reopenedPaperType.getAttribute("aria-expanded")) !== "true")
+    await reopenedPaperType.click();
   await expect(reopened.getByRole("button", { name: "Quadriculado" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -518,8 +521,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     document.documentElement.dataset.theme = "dark";
   });
   await page.screenshot({ path: testInfo.outputPath("editor-escuro.png"), animations: "disabled" });
-  await reopened.getByRole("button", { name: "Salvar", exact: true }).click();
-  await reopened.getByRole("button", { name: "Salvar folha no caderno" }).click();
+  await reopened.getByRole("button", { name: "Salvar caderno" }).click();
   await page.reload();
   const saved = await page.evaluate(() => {
     const raw = localStorage.getItem("helenastudy.workspace.v1");
@@ -578,6 +580,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
 });
 
 test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile",
+    "O traço deste cenário é produzido com mouse; a escrita por toque tem cobertura própria no mobile.",
+  );
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
@@ -657,8 +663,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await page.mouse.down();
   await page.mouse.move(bounds.x + 100, bounds.y + bounds.height / 2, { steps: 6 });
   await page.mouse.up();
-  await dialog.getByRole("button", { name: "Salvar", exact: true }).click();
-  await dialog.getByRole("button", { name: "Salvar folha no caderno" }).click();
+  await dialog.getByRole("button", { name: "Salvar caderno" }).click();
   await dialog.getByRole("button", { name: "Fechar", exact: true }).click();
   if (await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
     await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
@@ -681,7 +686,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await page.getByRole("button", { name: /^Abrir preview de / }).click();
   const reopened = page.getByRole("dialog", { name: "Escrever à mão" });
   const download = page.waitForEvent("download");
-  await reopened.getByRole("button", { name: "Exportar", exact: true }).click();
+  await reopened.getByRole("button", { name: "Compartilhar", exact: true }).click();
   await reopened.getByRole("button", { name: "PNG", exact: true }).click();
   expect((await download).suggestedFilename()).toBe("folha-do-caderno.png");
   await reopened.getByRole("button", { name: "Fechar", exact: true }).click();
@@ -700,6 +705,10 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
 test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async ({
   page,
 }, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile",
+    "A amostragem de tinta na ponta usa movimentos de mouse, não gestos de toque.",
+  );
   test.slow();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));

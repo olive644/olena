@@ -16,6 +16,8 @@ type Props = {
   onPng: () => void;
   onPdf: () => void;
   onPrint: () => void;
+  menuOpen?: boolean;
+  onMenuChange?: (open: boolean) => void;
 };
 
 export function NotebookFileActions({
@@ -28,8 +30,12 @@ export function NotebookFileActions({
   onPng,
   onPdf,
   onPrint,
+  menuOpen,
+  onMenuChange,
 }: Props) {
-  const [menu, setMenu] = useState<"save" | "export" | null>(null);
+  const [localMenu, setLocalMenu] = useState(false);
+  const menu = menuOpen ?? localMenu;
+  const setMenu = onMenuChange ?? setLocalMenu;
   const [selection, setSelection] = useState<"download" | "link" | null>(null);
   const [selected, setSelected] = useState<string[]>([currentPageId]);
   const [busy, setBusy] = useState(false);
@@ -84,7 +90,7 @@ export function NotebookFileActions({
   }
 
   function openSelection(kind: "download" | "link") {
-    setMenu(null);
+    setMenu(false);
     setSelection(kind);
     setSelected([currentPageId]);
     setError("");
@@ -101,23 +107,25 @@ export function NotebookFileActions({
       </button>
       <button
         type="button"
-        aria-label="Exportar"
-        title="Exportar"
-        aria-expanded={menu === "export"}
-        onClick={() => setMenu(menu === "export" ? null : "export")}
+        aria-label="Compartilhar"
+        title="Compartilhar"
+        aria-expanded={menu}
+        onClick={() => setMenu(!menu)}
       >
-        <PaperEditorIcon name="download" />
-        <span>Exportar</span>
+        <PaperEditorIcon name="share" />
+        <span>Compartilhar</span>
       </button>
       <button
         type="button"
-        aria-label="Salvar"
-        title="Salvar"
-        aria-expanded={menu === "save"}
-        onClick={() => setMenu(menu === "save" ? null : "save")}
+        aria-label="Salvar caderno"
+        title="Salvar caderno"
+        onClick={() => {
+          onSave();
+          setMenu(false);
+        }}
       >
         <PaperEditorIcon name="save" />
-        <span>Salvar</span>
+        <span>Salvar caderno</span>
       </button>
       {menu && (
         <div
@@ -125,72 +133,48 @@ export function NotebookFileActions({
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               event.stopPropagation();
-              setMenu(null);
+              setMenu(false);
             }
           }}
         >
-          {menu === "export" ? (
-            <>
-              <button
-                type="button"
-                onClick={() => {
-                  onPng();
-                  setMenu(null);
-                }}
-              >
-                PNG
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                onPng();
+                setMenu(false);
+              }}
+            >
+              PNG
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onPdf();
+                setMenu(false);
+              }}
+            >
+              Baixar PDF
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onPrint();
+                setMenu(false);
+              }}
+            >
+              Imprimir
+            </button>
+            {options.length > 1 && (
+              <button type="button" onClick={() => openSelection("download")}>
+                Selecionar folhas para download
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  onPdf();
-                  setMenu(null);
-                }}
-              >
-                Baixar PDF
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  onPrint();
-                  setMenu(null);
-                }}
-              >
-                Imprimir
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                aria-label="Salvar folha no caderno"
-                onClick={() => {
-                  onSave();
-                  setMenu(null);
-                }}
-              >
-                Salvar arquivo
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  onPdf();
-                  setMenu(null);
-                }}
-              >
-                Download da folha atual
-              </button>
-              {options.length > 1 && (
-                <button type="button" onClick={() => openSelection("download")}>
-                  Selecionar folhas para download
-                </button>
-              )}
-              <button type="button" onClick={() => openSelection("link")}>
-                Link de visualização
-              </button>
-            </>
-          )}
-          <button type="button" onClick={() => setMenu(null)}>
+            )}
+            <button type="button" onClick={() => openSelection("link")}>
+              Link de visualização
+            </button>
+          </>
+          <button type="button" onClick={() => setMenu(false)}>
             Fechar menu
           </button>
         </div>

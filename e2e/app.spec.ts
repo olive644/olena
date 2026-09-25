@@ -23,7 +23,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(5);
+      await expect(secondary).toHaveCount(3);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
         await expect
@@ -165,7 +165,7 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(10);
+  await expect(navigation.getByRole("button")).toHaveCount(8);
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
     "aria-current",
     "page",
@@ -263,17 +263,9 @@ test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, t
   await expect(page.getByText("Revisar Simple Past")).toBeVisible();
 });
 
-test("preserva o criador de planos de aula", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "O atalho mobile fica no Espaço do aluno.");
-  await page.getByRole("button", { name: /planos de aula/i }).click();
-  await expect(page.getByRole("heading", { name: "Mão no vocabulário" })).toBeVisible();
-  await expect(page.getByLabel("Folha com moldes de mãos para imprimir")).toBeVisible();
-  await expect(page.getByRole("img", { name: /molde de mão/i })).toHaveCount(8);
-  await page.getByLabel(/tema da aula/i).fill("Simple Past");
-  await page.getByLabel(/perfil da turma/i).fill("Adultos iniciantes");
-  await page.getByRole("button", { name: /criar rascunho/i }).click();
-  await expect(page.getByRole("heading", { name: "Simple Past" })).toBeVisible();
-  await expect(page.getByText("Warm-up")).toBeVisible();
+test("oculta por enquanto as ferramentas do professor", async ({ page }) => {
+  await expect(page.getByRole("button", { name: "Planos de aula" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Banco de atividades" })).toHaveCount(0);
 });
 
 test("cria um flashcard e conclui a revisão", async ({ page }, testInfo) => {
@@ -335,7 +327,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await expect(toolsDialog).toBeVisible();
   await page.waitForTimeout(350);
   const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(5);
+  await expect(toolItems).toHaveCount(3);
 
   for (const item of await toolItems.all()) {
     const iconBox = await item.locator(".navigation-icon").boundingBox();
@@ -351,7 +343,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
   await expect(toolsDialog).toBeHidden();
 
-  for (const label of ["Hábitos", "Cadernos", "Biblioteca", "Planos de aula"]) {
+  for (const label of ["Hábitos", "Cadernos", "Biblioteca"]) {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     const more = page.getByRole("dialog", { name: "Mais ferramentas" });
     await expect(more).toBeVisible();
@@ -406,12 +398,12 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   await page.locator(".page-header__theme .appearance-picker__trigger").click();
   await page.getByRole("button", { name: "Escuro", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(navigation).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(navigation).toHaveCSS("background-color", "rgb(41, 36, 50)");
   const focusIcon = navigation
     .getByRole("button", { name: "Foco", exact: true })
-    .locator(".navigation-icon__variant--claro");
+    .locator(".navigation-icon__variant--escuro");
   await expect(focusIcon).toBeVisible();
-  await expect(navigation).toHaveCSS("color", "rgb(41, 36, 50)");
+  await expect(navigation).toHaveCSS("color", "rgb(255, 249, 239)");
 });
 
 test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }, testInfo) => {

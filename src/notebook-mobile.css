@@ -36,6 +36,9 @@
     background: var(--surface);
     z-index: 9;
   }
+  :root .handwriting-studio .handwriting-paper-section {
+    position: static;
+  }
   :root .handwriting-studio .handwriting-paper-options {
     position: absolute;
     top: 58px;
@@ -300,8 +303,15 @@
     font-size: 12px;
   }
   :root .handwriting-studio .notebook-file-popover {
-    bottom: auto;
+    position: absolute;
     top: 62px;
-    max-height: 65dvh;
+    right: 8px;
+    bottom: auto;
+    left: auto;
+    width: min(360px, calc(100vw - 24px));
+    min-width: 0;
+    max-height: min(56dvh, 410px);
+    overflow: auto;
+    z-index: 20;
   }
 }

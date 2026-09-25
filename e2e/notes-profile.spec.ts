@@ -26,7 +26,7 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
       await page.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
     }
     const editor = page.getByRole("dialog", { name: "Escrever à mão" });
-    for (const name of ["Configurações do editor", "Upload", "Exportar", "Salvar"]) {
+    for (const name of ["Configurações do editor", "Upload", "Compartilhar", "Salvar caderno"]) {
       const button = editor.getByRole("button", { name, exact: true });
       await expect(button).toBeVisible();
     }
