@@ -1,6 +1,7 @@
 import { useNotebookPreferences } from "../data/notebook-preferences";
 import { NotebookSettings } from "./notebook-settings";
 import { NotebookFileActions } from "./notebook-file-actions";
+import { PaperEditorIcon } from "./paper-editor-icon";
 import type { StudyNote } from "../domain/workspace";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
@@ -367,8 +368,20 @@ export function HandwritingStudio({
   const [stickyMenuId, setStickyMenuId] = useState<string | null>(null);
   const [stickyColorMenuId, setStickyColorMenuId] = useState<string | null>(null);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
+  const [phoneLayout, setPhoneLayout] = useState(
+    () => window.matchMedia?.("(max-width: 680px)").matches ?? false,
+  );
+  const [mobileDrawer, setMobileDrawer] = useState<"tool" | "history" | null>(null);
+  useEffect(() => {
+    const query = window.matchMedia?.("(max-width: 680px)");
+    if (!query) return;
+    const update = () => setPhoneLayout(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
+    setMobileDrawer(["pen", "ruler", "coordinates", "select"].includes(next) ? "tool" : null);
     // A janela de escrita fica sobre a folha e captura os ponteiros. Fechá-la
     // ao trocar de ferramenta garante que régua, borracha e seleção recebam
     // os próximos gestos imediatamente.
@@ -2582,7 +2595,40 @@ export function HandwritingStudio({
     Number(layersOpen);
 
   return (
-    <div className="handwriting-studio">
+    <div
+      className="handwriting-studio"
+      data-mobile-drawer={mobileDrawer ?? "closed"}
+      data-tool={textMode ? "text" : tool}
+    >
+      {phoneLayout && (
+        <div className="notebook-mobile-dock" aria-label="Opções do editor">
+          <button
+            type="button"
+            aria-expanded={mobileDrawer === "tool"}
+            onClick={() => setMobileDrawer(mobileDrawer === "tool" ? null : "tool")}
+          >
+            <PaperEditorIcon name="pen" />
+            <span>Opções</span>
+          </button>
+          <button
+            type="button"
+            aria-expanded={mobileDrawer === "history"}
+            onClick={() => setMobileDrawer(mobileDrawer === "history" ? null : "history")}
+          >
+            <PaperEditorIcon name="undo" />
+            <span>Histórico e zoom</span>
+          </button>
+          {mobileDrawer && (
+            <button
+              type="button"
+              aria-label="Recolher opções"
+              onClick={() => setMobileDrawer(null)}
+            >
+              <PaperEditorIcon name="close" />
+            </button>
+          )}
+        </div>
+      )}
       {collaborationActivity && (
         <div className="handwriting-collaboration-toast" role="status">
           <span aria-hidden="true">•</span> {collaborationActivity}
@@ -2600,8 +2646,12 @@ export function HandwritingStudio({
           layersOpen={layersOpen}
           writingWindowOpen={writingWindowOpen}
           onSelectTool={setTool}
-          onToggleLayers={() => setLayersOpen((open) => !open)}
+          onToggleLayers={() => {
+            setLayersOpen((open) => !open);
+            setMobileDrawer("tool");
+          }}
           onToggleText={() => {
+            setMobileDrawer(null);
             setWritingWindowOpen(false);
             setTextMode((active) => !active);
           }}

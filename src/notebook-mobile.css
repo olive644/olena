@@ -1,0 +1,307 @@
+/* Phone editor: top paper/file actions, canvas, contextual drawer, bottom tools. */
+@media (max-width: 680px) {
+  :root .handwriting-studio {
+    --mobile-bottom: calc(160px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-rows: 58px minmax(0, 1fr) 54px 44px auto;
+    isolation: isolate;
+  }
+  :root .handwriting-studio > .handwriting-commandbar,
+  :root .handwriting-studio > .handwriting-workspace {
+    display: contents;
+  }
+  :root .handwriting-studio .notebook-file-tools,
+  :root .handwriting-studio .handwriting-history,
+  :root .handwriting-studio .handwriting-ink-options,
+  :root .handwriting-studio .handwriting-selection-actions {
+    grid-area: auto;
+  }
+  :root .handwriting-studio .handwriting-viewport {
+    grid-row: 2;
+    grid-column: 1;
+    min-width: 0;
+    min-height: 0;
+    padding: 16px;
+  }
+  :root .handwriting-studio .handwriting-paper-picker {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 116px;
+    height: 58px;
+    min-height: 0;
+    max-height: none;
+    padding: 6px;
+    overflow: visible;
+    border: 0;
+    background: var(--surface);
+    z-index: 9;
+  }
+  :root .handwriting-studio .handwriting-paper-options {
+    position: absolute;
+    top: 58px;
+    left: 6px;
+    width: 284px;
+    max-width: calc(100vw - 24px);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px 16px 10px 12px;
+    background: var(--surface);
+    box-shadow: 0 5px 0 var(--line);
+  }
+  :root .handwriting-paper-section--color > .handwriting-paper-options {
+    top: 58px;
+  }
+  :root .handwriting-studio .notebook-file-tools {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 116px;
+    height: 58px;
+    min-width: 0;
+    max-width: none;
+    justify-content: flex-end;
+    gap: 3px;
+    padding: 6px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--surface);
+    box-shadow: none;
+    z-index: 8;
+  }
+  :root .handwriting-studio .notebook-file-tools > button {
+    min-width: 40px;
+    width: 40px;
+    padding: 5px;
+  }
+  :root .handwriting-studio .handwriting-tool-group {
+    grid-row: 3;
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 54px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 4px;
+    padding: 5px 8px;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 18px 18px 0 0;
+    background: var(--surface);
+    box-shadow: 0 -3px 12px #17151c0d;
+    scrollbar-width: none;
+  }
+  :root .handwriting-tool-group button {
+    flex: 0 0 44px;
+  }
+  :root .handwriting-tool-group button[aria-label="Mover folha"] {
+    display: none;
+  }
+  :root .handwriting-tool-group button[aria-label="Selecionar traços"] {
+    order: -3;
+  }
+  :root .handwriting-tool-group button[aria-label="Caneta"] {
+    order: -2;
+  }
+  :root .handwriting-tool-group button[aria-label="Borracha"] {
+    order: -1;
+  }
+  :root .notebook-mobile-dock {
+    display: flex;
+    grid-row: 4;
+    grid-column: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    z-index: 6;
+  }
+  :root .notebook-mobile-dock button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 11px;
+  }
+  :root .notebook-mobile-dock .paper-editor-icon {
+    width: 22px;
+    height: 22px;
+    flex-basis: 22px;
+  }
+  :root .notebook-mobile-dock button[aria-expanded="true"] {
+    color: var(--violet);
+  }
+  :root .handwriting-studio .notebook-page-book {
+    grid-row: 5;
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    min-height: 62px;
+    gap: 5px;
+    padding: 5px 6px calc(6px + env(safe-area-inset-bottom));
+  }
+  :root .notebook-page-book .page-book {
+    flex: 1 1 120px;
+    max-width: 190px;
+    min-width: 0;
+    width: auto;
+  }
+  :root .notebook-page-book > button {
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
+    padding: 5px;
+  }
+  :root .notebook-page-book .page-book__right {
+    min-width: 0;
+    padding: 5px;
+    gap: 3px;
+  }
+  :root .notebook-page-book .page-book__right strong,
+  :root .notebook-page-book .page-book__right small {
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  :root .handwriting-studio .handwriting-ink-options,
+  :root .handwriting-studio .handwriting-history,
+  :root .handwriting-studio .handwriting-selection-actions,
+  :root .handwriting-workspace > .handwriting-brush-panel {
+    display: none;
+  }
+  :root .handwriting-studio[data-mobile-drawer="history"] .handwriting-history {
+    position: absolute;
+    display: flex;
+    inset: auto 8px var(--mobile-bottom);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 12px 6px;
+    justify-content: space-between;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 18px 18px 4px 4px;
+    box-shadow: 0 -4px 24px #17151c22;
+    z-index: 7;
+  }
+  :root .handwriting-studio[data-mobile-drawer="tool"][data-tool="pen"] .handwriting-ink-options {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    inset: auto 8px calc(var(--mobile-bottom) + 78px);
+    width: auto;
+    max-width: none;
+    gap: 8px;
+    padding: 14px 10px 8px;
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    border-radius: 18px 18px 0 0;
+    background: var(--surface);
+    box-shadow: 0 -4px 24px #17151c22;
+    z-index: 7;
+  }
+  :root .handwriting-studio .handwriting-ink-options fieldset {
+    justify-content: center;
+    min-width: 0;
+    gap: 4px;
+  }
+  :root .handwriting-studio .ink-palette .ink-swatch {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 36px;
+  }
+  :root .handwriting-studio .ink-custom input {
+    width: 32px;
+  }
+  :root .handwriting-studio .stroke-palette button {
+    min-width: 65px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-brush-panel {
+    position: absolute;
+    display: flex;
+    inset: auto 8px var(--mobile-bottom);
+    width: auto;
+    min-height: 78px;
+    max-height: 28dvh;
+    padding: 8px;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 14px 14px 4px 4px;
+    background: var(--surface);
+    overflow: auto;
+    z-index: 7;
+  }
+  :root .handwriting-studio[data-tool="pen"] .handwriting-workspace > .handwriting-brush-panel {
+    border-radius: 0 0 4px 4px;
+    border-top: 0;
+  }
+  :root .handwriting-studio .handwriting-brush-panel > button {
+    flex: 1 0 80px;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]
+    .handwriting-workspace
+    > .handwriting-layer-panel {
+    display: block;
+    z-index: 8;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"][data-tool="select"]
+    .handwriting-selection-actions {
+    position: absolute;
+    display: flex;
+    inset: auto 8px var(--mobile-bottom);
+    max-height: 32dvh;
+    padding: 12px;
+    overflow: auto;
+    background: var(--surface);
+    z-index: 7;
+  }
+  :root .notebook-entry-preview {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 0 28px;
+  }
+  :root .notebook-entry-preview .notebook-preview-book {
+    box-sizing: border-box;
+    width: calc(100% - 12px);
+    max-width: 520px;
+    margin: 24px auto;
+  }
+  :root .notebook-entry-preview > h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  :root .notebook-preview-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  :root .notebook-preview-actions button {
+    font-size: 12px;
+  }
+  :root .notebook-entry-preview .notebook-preview-controls {
+    flex-wrap: nowrap;
+    font-size: 12px;
+  }
+  :root .handwriting-studio .notebook-file-popover {
+    bottom: auto;
+    top: 62px;
+    max-height: 65dvh;
+  }
+}

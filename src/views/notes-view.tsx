@@ -700,7 +700,16 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                 y: event.clientY,
                 pointerId: event.pointerId,
               };
-              event.currentTarget.setPointerCapture(event.pointerId);
+              previewSwipeConsumed.current = false;
+            }}
+            onPointerMove={(event) => {
+              const start = previewDrag.current;
+              if (!start || start.pointerId !== event.pointerId) return;
+              const dx = event.clientX - start.x;
+              const dy = event.clientY - start.y;
+              if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }
             }}
             onPointerUp={(event) => {
               const start = previewDrag.current;
