@@ -37,6 +37,7 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
     await editor.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(preview).toBeVisible();
   await expect(preview.getByText("2 folhas guardadas")).toBeVisible();
+  await expect(preview.getByRole("button", { name: "Criar nova folha" })).toBeVisible();
 
   const book = preview.getByLabel("Prévia folheável do caderno");
   const bounds = await book.boundingBox();

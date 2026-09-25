@@ -686,7 +686,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
           <div
             className="notebook-preview-book"
             onPointerDown={(event) => {
-              if (event.button !== 0) return;
+              if (event.button !== 0 || (event.target as HTMLElement).closest("button")) return;
               previewDrag.current = {
                 x: event.clientX,
                 y: event.clientY,
@@ -794,6 +794,17 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               Próxima ›
             </button>
           </nav>
+          {notebookPages.length > 0 && (
+            <button
+              className="notebook-preview-create"
+              type="button"
+              onClick={createPageAtEnd}
+              aria-label="Criar nova folha"
+            >
+              <PaperActionIcon name="plus" />
+              <span>Nova folha</span>
+            </button>
+          )}
           {notebookPages[previewPageIndex] && (
             <button
               className="notebook-preview-remove"
