@@ -13,6 +13,7 @@ import {
 } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
 import { encodeHandwritingDraft } from "../data/handwriting-draft";
+import { openPrintWindow } from "../data/print-window";
 import type {
   HandwritingDocument,
   HandwritingImage,
@@ -2311,7 +2312,7 @@ export function HandwritingStudio({
   function printPage() {
     try {
       const imageUrl = pageImage();
-      const printWindow = window.open("", "_blank");
+      const printWindow = openPrintWindow();
       if (!printWindow) throw new Error("Permita a janela de impressão para salvar em PDF.");
       const image = printWindow.document.createElement("img");
       image.alt = "Folha do caderno";

@@ -770,3 +770,11 @@ Sobre o traço em andamento: o modelo em que ele só entra na lista ao soltar a 
 Verificação: um e2e com dois usuários reais não é viável porque a colaboração exige conta Google. A lógica é coberta por testes puros (`handwriting-reveal.test.ts`) e pelo componente com atualizações remotas simuladas, inclusive uma atualização que chega no meio do gesto (`handwriting-studio-remote.test.tsx`). A animação foi conferida em quadros fixos (60 a 1200 ms) com as mesmas funções de desenho, mostrando o traço crescendo ao longo do caminho e o resultado final idêntico ao traço salvo.
 
 Não está incluído: tinta ao vivo enquanto o colega ainda escreve, e cursor de presença. Isso exige um canal em tempo real novo no servidor (o modelo atual envia o documento ao soltar a caneta) e mudança nas regras do banco.
+
+# Exportar o caderno em PDF, setembro de 2026
+
+O botão "Exportar PDF" do caderno nunca funcionou. Ele abria a janela de impressão com `window.open("", "_blank", "noopener,noreferrer")`, e com `noopener` o navegador devolve `null`: a janela abre em branco, o app não consegue escrever nela e ainda mostra "Permita pop-ups para exportar o caderno em PDF". Confirmado em Chromium real: 0 folhas na janela aberta.
+
+`openPrintWindow` (`src/data/print-window.ts`) abre a janela normalmente e corta o vínculo depois, com `opener = null`, que mantém a proteção que o `noopener` queria dar (a janela não controla a página de origem). Passou a ser usado na exportação do caderno e na impressão da folha do editor. `e2e/notebook-pdf.spec.ts` cobre o fluxo real (desenhar, salvar a folha, exportar): a janela abre com o título do caderno e uma imagem por folha com conteúdo, sem aviso na página de origem e com `window.opener` nulo. O teste falhava antes da correção.
+
+O teste `recupera rascunho, adiciona post-it e organiza folhas` falhava de forma intermitente por uma corrida do próprio teste: ao reabrir, o rascunho recuperado é regravado pelo autosave 450 ms depois, e o aviso passa de "Rascunho recuperado" para "Rascunho salvo neste dispositivo". Com a máquina carregada o teste chegava tarde ao primeiro aviso. Agora aceita as duas fases, e a recuperação continua provada pelo texto do post-it.
