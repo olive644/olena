@@ -147,6 +147,12 @@ describe("página da Política de Privacidade", () => {
     expect(text).toContain("A lista completa e atualizada dessas empresas está disponível");
   });
 
+  it("deixa claro que voz natural e consulta de vocabulário dependem da permissão da pessoa", () => {
+    expect(text).toContain("Só acontece se você permitir na tela dos exercícios");
+    expect(text).toContain("somente com a sua permissão");
+    expect(text).toContain("usa a voz do seu aparelho");
+  });
+
   it("descreve o que fica só no aparelho e o que não é feito", () => {
     expect(text).toContain("reconhecimento de fórmulas escritas à mão");
     expect(text).toContain("Não vendemos");

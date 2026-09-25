@@ -173,14 +173,15 @@ produto.
 
 Os dados pessoais compartilham um workspace local versionado e não exigem conta. O Modo Sala usa
 Firebase Realtime Database para estado temporário compartilhado; o texto da pergunta de escuta é
-enviado ao Cloudflare Workers AI apenas quando a voz neural é usada, tanto no Quiz de Escuta
-individual quanto no Modo Sala.
+enviado ao Cloudflare Workers AI apenas quando a voz neural é usada e a pessoa aceitou no aviso
+de escuta (`helena.listening.online.v1`), tanto no Quiz de Escuta individual quanto no Modo Sala.
+Sem aceite, a voz do aparelho e a estimativa local de dificuldade são usadas.
 
 ## Arquitetura atual
 
 - React 19 e TypeScript estrito;
 - Vite para desenvolvimento e build;
-- CSS próprio, mobile-first e Manrope carregada pelo Google Fonts;
+- CSS próprio, mobile-first e Manrope e Nunito servidas pelo próprio domínio (`public/fonts`, licença OFL), sem chamadas ao Google Fonts;
 - interface com hierarquia de próxima ação, cartões de progresso, ícones ilustrados preenchidos e
   movimentos curtos compatíveis com `prefers-reduced-motion`;
 - Vitest e Testing Library para unidade/componente;

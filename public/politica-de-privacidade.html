@@ -67,6 +67,27 @@
           scroll-behavior: auto;
         }
       }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-600-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-700-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 800;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-800-normal.woff2") format("woff2");
+      }
       body {
         margin: 0;
         background: var(--page);
@@ -310,8 +331,8 @@
             </li>
             <li>
               Algumas funções usam <strong>empresas parceiras</strong> para enviar pequenos trechos:
-              a voz das frases, a consulta de vocabulário, a agenda do Google (se você conectar) e a
-              verificação de segurança do Google.
+              a voz das frases e a consulta de vocabulário (só se você permitir nos exercícios de
+              escuta), a agenda do Google (se você conectar) e a verificação de segurança do Google.
             </li>
             <li>
               <strong>Não vendemos seus dados</strong>, não fazemos publicidade e não acompanhamos o
@@ -429,16 +450,25 @@
                     O texto da frase que será lida (até 160 caracteres), sem ligá-lo à sua conta.
                   </td>
                   <td>
-                    Gerar o áudio dos exercícios de escuta. Se a voz não estiver disponível, o
-                    aplicativo usa a voz do seu aparelho.
+                    Gerar o áudio dos exercícios de escuta com uma voz mais natural. Só acontece se
+                    você permitir na tela dos exercícios; sem a permissão, ou se a voz não estiver
+                    disponível, o aplicativo usa a voz do seu aparelho.
                   </td>
-                  <td>Para prestar o serviço (art. 7º, V).</td>
+                  <td>
+                    Com o seu consentimento, que você pode retirar quando quiser (art. 7º, I).
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Dificuldade das palavras</th>
                   <td>A palavra em inglês do cartão, enviada sozinha.</td>
-                  <td>Estimar se a palavra é fácil, média ou difícil.</td>
-                  <td>Para prestar o serviço (art. 7º, V).</td>
+                  <td>
+                    Estimar se a palavra é fácil, média ou difícil. Só acontece se você permitir na
+                    tela dos exercícios; sem a permissão, o aplicativo estima a dificuldade no seu
+                    próprio aparelho.
+                  </td>
+                  <td>
+                    Com o seu consentimento, que você pode retirar quando quiser (art. 7º, I).
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Segurança contra abusos</th>
@@ -448,15 +478,6 @@
                   </td>
                   <td>Impedir robôs e uso abusivo nas salas e nos cadernos compartilhados.</td>
                   <td>Para proteger o serviço e as pessoas que o usam (art. 7º, IX e art. 46).</td>
-                </tr>
-                <tr>
-                  <th scope="row">Letras do aplicativo</th>
-                  <td>
-                    Seu endereço de rede e dados do seu navegador, que o Google vê ao entregar as
-                    fontes de letra.
-                  </td>
-                  <td>Mostrar os textos com o visual do OlenaStudy.</td>
-                  <td>Para prestar o serviço (art. 7º, V).</td>
                 </tr>
                 <tr>
                   <th scope="row">Funcionamento na internet</th>
@@ -517,8 +538,7 @@
           <ul>
             <li>
               <strong>Google:</strong> para entrar na conta, guardar seus estudos na nuvem, fazer a
-              verificação de segurança, mostrar a sua agenda (se você conectar) e entregar as fontes
-              de letra.
+              verificação de segurança e mostrar a sua agenda (se você conectar).
             </li>
             <li>
               <strong>A empresa que hospeda o aplicativo na internet:</strong> para que ele funcione
@@ -526,11 +546,11 @@
             </li>
             <li>
               <strong>Uma empresa parceira de voz por inteligência artificial:</strong> para gerar o
-              áudio das frases dos exercícios de escuta.
+              áudio das frases dos exercícios de escuta, somente com a sua permissão.
             </li>
             <li>
               <strong>Um serviço de consulta de vocabulário:</strong> para estimar a dificuldade das
-              palavras em inglês.
+              palavras em inglês, somente com a sua permissão.
             </li>
           </ul>
           <p>

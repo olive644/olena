@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ListeningQuiz } from "./listening-quiz";
 
@@ -54,5 +54,37 @@ describe("feedback do quiz de escuta", () => {
     expect(screen.queryByLabelText(/o que você ouviu/i)).toBeNull();
     act(() => vi.advanceTimersByTime(1_000));
     expect(screen.getByLabelText(/o que você ouviu/i)).toBeTruthy();
+  });
+});
+
+describe("aceite da voz natural no quiz de escuta", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    vi.spyOn(Math, "random").mockReturnValue(0.999);
+  });
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("não faz nenhuma requisição antes do aceite e pede a permissão na tela", async () => {
+    const fetchMock = vi.fn(() => Promise.reject(new Error("rede não deveria ser usada")));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<ListeningQuiz flashcards={[]} />);
+    expect(screen.getByRole("heading", { name: /Voz natural e vocabulário online/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /iniciar escuta/i }));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("guarda a escolha neste aparelho e para de perguntar", () => {
+    render(<ListeningQuiz flashcards={[]} />);
+    fireEvent.click(screen.getByRole("button", { name: "Permitir" }));
+    expect(screen.queryByRole("heading", { name: /Voz natural e vocabulário online/ })).toBeNull();
+    const stored = JSON.parse(window.localStorage.getItem("helena.listening.online.v1") ?? "{}");
+    expect(stored.choice).toBe("accepted");
   });
 });
