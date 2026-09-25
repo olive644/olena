@@ -748,8 +748,9 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
     { x: tip.x, y: tip.y },
   );
   // A folha também precisa mostrar o traço enquanto ele acontece na janela:
-  // a janela cobre 500 por 185 unidades da folha a partir da origem dela.
-  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  // a janela cobre 500 por 185 unidades da folha a partir da origem dela. O traço
+  // em andamento fica na camada de tinta ao vivo, por cima da folha.
+  const sheet = dialog.locator(".handwriting-live-layer");
   const inkOnSheet = await sheet.evaluate(
     (element, position) => {
       const target = element as HTMLCanvasElement;
@@ -774,4 +775,15 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
   await page.mouse.up();
   expect(inkAtTip).toBe(true);
   expect(inkOnSheet).toBe(true);
+  // Ao soltar, o traço passa para a folha e a camada ao vivo esvazia.
+  await expect
+    .poll(() =>
+      sheet.evaluate((element) => {
+        const target = element as HTMLCanvasElement;
+        const { data } = target.getContext("2d")!.getImageData(0, 0, target.width, target.height);
+        for (let index = 3; index < data.length; index += 4) if (data[index]! > 0) return false;
+        return true;
+      }),
+    )
+    .toBe(true);
 });

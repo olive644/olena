@@ -12,7 +12,17 @@ import type {
 } from "../domain/handwriting";
 import { stickyColor, stickyHeight, stickyWidth } from "./handwriting-geometry";
 import { PAGE_HEIGHT, PAGE_WIDTH, type PaperStyle, type Stroke } from "./handwriting-types";
+import {
+  bristleLines,
+  strokeOutline,
+  strokeRadii,
+  strokeSmoothPath,
+  traceOutline,
+} from "./handwriting-ink";
 import { stickyTextLayout } from "./sticky-text-layout";
+
+// Posição dos fios do pincel macio ao longo da largura do traço (-1 a 1).
+const SOFT_BRISTLE_OFFSETS = [-0.9, -0.45, 0, 0.45, 0.9] as const;
 
 export function canvasPoint(
   canvas: HTMLCanvasElement,
@@ -33,16 +43,6 @@ export function canvasPoint(
     ...(event.tiltX ? { tiltX: event.tiltX } : {}),
     ...(event.tiltY ? { tiltY: event.tiltY } : {}),
   };
-}
-
-export function tiltShading(point: HandwritingPoint): number {
-  // Inclinacao da caneta (graus, -90 a 90) simula uma ponta caligrafica: mais
-  // deitada = traco mais largo, em pe = mais fino. Mouse/toque nao reportam
-  // tilt, entao o efeito fica neutro (1) para esses dispositivos.
-  const tiltX = point.tiltX ?? 0;
-  const tiltY = point.tiltY ?? 0;
-  const magnitude = Math.min(1, Math.hypot(tiltX, tiltY) / 90);
-  return 1 + magnitude * 0.6;
 }
 
 export function drawPaper(
@@ -102,20 +102,13 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   context.save();
   context.strokeStyle = stroke.color;
   context.fillStyle = stroke.color;
-  context.globalAlpha = stroke.tool === "highlighter" ? 0.3 : stroke.brush === "soft" ? 0.16 : 1;
+  context.globalAlpha = stroke.tool === "highlighter" ? 0.3 : stroke.brush === "soft" ? 0.3 : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
   if (stroke.tool === "highlighter" || stroke.brush === "fine") {
     context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
     context.beginPath();
-    context.moveTo(first.x, first.y);
-    for (let index = 1; index < stroke.points.length - 1; index += 1) {
-      const point = stroke.points[index]!;
-      const next = stroke.points[index + 1]!;
-      context.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
-    }
-    const last = stroke.points.at(-1)!;
-    context.lineTo(last.x, last.y);
+    strokeSmoothPath(context, stroke.points);
     if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
     context.stroke();
     context.restore();
@@ -134,49 +127,16 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
     context.restore();
     return;
   }
-  for (let index = 0; index < stroke.points.length; index += 1) {
-    const previous = stroke.points[index - 1];
-    const current = stroke.points[index];
-    const next = stroke.points[index + 1];
-    if (!current) continue;
-    const pressure = stroke.tool === "pen" ? current.pressure : 0.7;
-    const direction = previous
-      ? Math.atan2(current.y - previous.y, current.x - previous.x)
-      : Math.PI / 4;
-    context.lineWidth =
-      stroke.width *
-      (stroke.brush === "ink"
-        ? (0.5 + pressure * 3) *
-          (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4))) *
-          tiltShading(current)
-        : stroke.brush === "soft"
-          ? 2 + pressure * 4
-          : 0.72 + pressure * 0.55);
-    context.beginPath();
-    context.moveTo(
-      previous ? (previous.x + current.x) / 2 : current.x,
-      previous ? (previous.y + current.y) / 2 : current.y,
-    );
-    context.quadraticCurveTo(
-      current.x,
-      current.y,
-      next ? (current.x + next.x) / 2 : current.x,
-      next ? (current.y + next.y) / 2 : current.y,
-    );
-    context.stroke();
-    if (stroke.brush === "soft" && previous) {
-      const spread = stroke.width * (1 + pressure);
-      context.save();
-      context.globalAlpha = 0.1;
-      context.lineWidth = Math.max(0.5, stroke.width * 0.18);
-      for (let bristle = -2; bristle <= 2; bristle += 1) {
-        const offset = bristle * spread * 0.55;
-        context.beginPath();
-        context.moveTo(previous.x + offset, previous.y + offset * 0.4);
-        context.lineTo(current.x + offset, current.y + offset * 0.4);
-        context.stroke();
-      }
-      context.restore();
+  const outline = strokeOutline(stroke.points, strokeRadii(stroke, stroke.points));
+  traceOutline(context, outline);
+  context.fill("nonzero");
+  if (stroke.brush === "soft") {
+    context.globalAlpha = 0.12;
+    context.lineWidth = Math.max(0.5, stroke.width * 0.18);
+    for (const line of bristleLines(stroke.points, outline, SOFT_BRISTLE_OFFSETS)) {
+      context.beginPath();
+      strokeSmoothPath(context, line);
+      context.stroke();
     }
   }
   context.restore();

@@ -11796,3 +11796,14 @@ select {
     transition: none;
   }
 }
+
+/* Camada de tinta ao vivo: fica por cima da folha e nunca recebe o ponteiro. */
+.handwriting-live-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+}

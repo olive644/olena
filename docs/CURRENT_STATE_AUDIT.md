@@ -727,3 +727,19 @@ Ao sair da conta, o app apagava só as seis chaves sincronizadas do `localStorag
 - Troca de conta sem sair: `helena.account.v1` guarda a conta dona dos dados do aparelho. Se entra uma conta diferente, os dados da anterior são apagados antes da sincronização, senão o espaço dela seria enviado para a conta nova. A marca de onboarding é preservada, porque o login a grava no mesmo instante e apagá-la devolveria a pessoa ao onboarding. A primeira conta a entrar num aparelho com uso local anterior mantém esse uso, que continua sendo sincronizado para ela como antes.
 
 Limites conhecidos: quem usa o app sem entrar em conta e sem sair não tem o que limpar, porque o modo local guarda tudo no navegador de propósito. Um botão manual de "apagar dados deste aparelho" fica como melhoria futura. O histórico de versões continua pertencendo à conta enquanto ela estiver ativa.
+
+# Motor de traço profissional, etapa 1, setembro de 2026
+
+A escrita à mão passou a usar um motor de traço próprio, na linha do perfect-freehand e do filtro 1€, sem nova dependência. As queixas eram tinta com degraus, tremor, "salto" ao soltar a caneta e traço sem nitidez. Esta etapa cobre suavidade, precisão e o fim do salto; a nitidez em telas de alta densidade e a colaboração ficam nas etapas seguintes.
+
+O que mudou:
+
+- **Contorno único (`handwriting-ink.ts`).** Caneta-tinteiro e pincel macio deixaram de ser um `stroke()` por segmento e passaram a ser um contorno de largura variável preenchido de uma vez. Isso elimina os degraus de espessura, as "contas" nas juntas e o escurecimento onde segmentos translúcidos se sobrepunham. O raio é suavizado ao longo do traço e só depende dos pontos até o vizinho seguinte, então a ponta ao vivo e o traço pronto usam a mesma conta. Cantos fechados ganham um disco limitado ao menor raio vizinho. Os fios do pincel macio seguem o traço em caminhos únicos.
+- **Filtro na entrada (`handwriting-stabilization.ts`).** A zona morta com inércia foi trocada por um filtro 1€ (a suavização cresce quando a mão é lenta e some quando é rápida) sobre um preditor de velocidade (alfa-beta). O preditor zera o atraso em movimento uniforme, então dá para suavizar bem mais sem a tinta ficar atrás da ponta. Cantos fechados (virada acima de ~78° com passo real) travam no ponto da caneta em vez de serem arredondados. A pressão também é suavizada. O filtro usa os timestamps dos eventos coalescidos.
+- **Camada de tinta ao vivo.** O traço em andamento é redesenhado por inteiro uma vez por quadro em um canvas sobreposto (`.handwriting-live-layer`), com uma ponta prevista de até 18 unidades enquanto a mão se move. Ao soltar, o traço final é desenhado na folha no mesmo instante em que a camada é limpa, sem quadro em branco. A folha não desenha o traço em andamento, então nada é desenhado duas vezes. A janela de escrita ampliada usa o mesmo caminho, com a tinta vetorial na resolução da janela.
+
+Medido com o mesmo gesto de teste (mão lenta com ruído de 125 Hz), pela segunda diferença da posição: rugosidade 0,858 para 0,296 na mão lenta (-66%) e 0,857 para 0,637 na mão rápida (-26%), com atraso praticamente zero de 150 a 1500 unidades por segundo (testes unitários). O comparativo de capturas em 2x mostrou o fim das contas nos cantos e dos degraus de largura.
+
+Orçamento: o total passou de 778,1 para 781,2 KiB e o teto foi para 790 KiB, com a justificativa no script. A entrada inicial não mudou (269,8 KiB), porque o editor é carregado sob demanda. Testes novos: `handwriting-ink.test.ts` e `handwriting-stabilization.test.ts` (37) e `e2e/ink-live-layer.spec.ts`.
+
+Limites conhecidos: a folha ainda tem 1200 por 1600 pixels de resolução fixa e borra em telas de densidade alta e ao ampliar (próxima etapa). A colaboração ainda substitui `strokes` por inteiro ao receber uma atualização (etapa seguinte).
