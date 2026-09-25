@@ -8,6 +8,33 @@ import {
 } from "./local-workspace";
 
 describe("local workspace", () => {
+  it("mescla cadernos padrão repetidos sem perder folhas", () => {
+    const workspace = createInitialWorkspace();
+    const stored = {
+      ...workspace,
+      notebooks: [
+        {
+          id: "notebook-2",
+          title: "Meu caderno 2",
+          subjectId: "",
+          createdAt: "2026-01-02",
+          pageIds: ["page-2"],
+        },
+        {
+          id: "notebook-1",
+          title: "Meu caderno",
+          subjectId: "",
+          createdAt: "2026-01-01",
+          pageIds: ["page-1"],
+        },
+      ],
+    };
+    const loaded = loadWorkspace({ getItem: () => JSON.stringify(stored) });
+    expect(loaded.notebooks).toHaveLength(1);
+    expect(loaded.notebooks[0]).toMatchObject({ id: "notebook-1", title: "Meu caderno" });
+    expect(loaded.notebooks[0]?.pageIds).toEqual(["page-1", "page-2"]);
+  });
+
   it("valida quadro amplo sem limitar conteúdo à área A4 e rejeita dimensões inválidas", () => {
     const board = {
       version: 1,
