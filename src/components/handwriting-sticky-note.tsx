@@ -2,13 +2,15 @@ import { reviewPortugueseText } from "../domain/text-review";
 import type { HandwritingSticky } from "../domain/handwriting";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { stickyHeight, stickyWidth } from "./handwriting-geometry";
-import { PAGE_HEIGHT, PAGE_WIDTH } from "./handwriting-types";
+import { PAGE_HEIGHT as DEFAULT_HEIGHT, PAGE_WIDTH as DEFAULT_WIDTH } from "./handwriting-types";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
 type StickyColor = HandwritingSticky["color"];
 
 type HandwritingStickyNoteProps = {
   sticky: HandwritingSticky;
+  pageWidth?: number;
+  pageHeight?: number;
   isSelected: boolean;
   ignorePointer: boolean;
   menuOpen: boolean;
@@ -36,6 +38,8 @@ type HandwritingStickyNoteProps = {
 
 export function HandwritingStickyNote({
   sticky,
+  pageWidth: PAGE_WIDTH = DEFAULT_WIDTH,
+  pageHeight: PAGE_HEIGHT = DEFAULT_HEIGHT,
   isSelected,
   ignorePointer,
   menuOpen,

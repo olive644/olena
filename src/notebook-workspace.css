@@ -1,0 +1,304 @@
+/* Caderno de papel. Movimento inspirado no exemplo de anand_4957, Uiverse.io,
+   fornecido pelo proprietário. A folha vira uma vez a cada navegação. */
+.notebook-page-book {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  flex: 0 0 auto;
+}
+.notebook-page-book > button {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px 14px 7px 11px;
+  background: var(--soft);
+  box-shadow: 0 3px var(--line);
+}
+.notebook-page-book > button:disabled {
+  opacity: 0.35;
+}
+.notebook-page-book > button:is(:hover, :focus-visible):not(:disabled) {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+.page-book {
+  display: flex;
+  position: relative;
+  width: 230px;
+  height: 64px;
+  padding: 4px;
+  perspective: 600px;
+  border-radius: 4px 10px 5px 8px;
+  background: #7c3aed;
+  box-shadow: 0 4px #51259b;
+}
+.page-book__left,
+.page-book__right {
+  display: flex;
+  width: 50%;
+  padding: 8px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: #fff9ef;
+  color: #292432;
+}
+.page-book__left {
+  border-right: 3px solid #dfd1b6;
+}
+.page-book__left i {
+  height: 2px;
+  background: #dfd1b6;
+}
+.page-book__left i:last-child {
+  width: 65%;
+}
+.page-book__right strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+.page-book__right small {
+  font-size: 9px;
+}
+.page-book__turn {
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: calc(50% - 4px);
+  transform-origin: right center;
+  background: #fff9ef;
+  animation: notebook-page-turn 420ms ease-out both;
+  pointer-events: none;
+}
+@keyframes notebook-page-turn {
+  from {
+    transform: rotateY(0);
+  }
+  to {
+    transform: rotateY(180deg);
+    opacity: 0;
+  }
+}
+.notebook-settings {
+  width: min(520px, calc(100vw - 28px));
+  max-height: calc(100dvh - 32px);
+  padding: 22px;
+  overflow: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px 24px 9px 18px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 7px 8px #51259b;
+}
+.notebook-settings::backdrop {
+  background: rgb(23 21 28 / 45%);
+}
+.notebook-settings header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.notebook-settings header small {
+  color: var(--violet);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+.notebook-settings h2 {
+  margin: 5px 0 15px;
+}
+.notebook-settings fieldset {
+  margin: 16px 0 0;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 5px 15px 6px 12px;
+}
+.notebook-settings legend {
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 900;
+}
+.notebook-settings label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 62px;
+}
+.notebook-settings label + label {
+  border-top: 1px solid var(--line);
+}
+.notebook-settings label span {
+  display: grid;
+  gap: 4px;
+}
+.notebook-settings label strong {
+  font-size: 12px;
+}
+.notebook-settings label small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.notebook-settings input {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  accent-color: #7c3aed;
+}
+.notebook-settings .sheet-close {
+  width: 44px;
+  height: 44px;
+}
+:root .capture-dialog--handwriting .notebook-file-tools [data-paper-editor-icon="settings"] {
+  color: #7c3aed;
+  --editor-icon-facet: #a779ef;
+}
+.handwriting-layer-panel {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(135deg, var(--soft) 0 20px, transparent 20px),
+    linear-gradient(315deg, var(--soft) 0 20px, transparent 20px);
+}
+.handwriting-close-confirm {
+  border-radius: 8px 22px 9px 17px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  box-shadow: 6px 7px #51259b;
+}
+.handwriting-close-confirm button,
+.notebook-collaboration-panel__actions > button {
+  position: relative;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 1px solid #51259b;
+  border-radius: 5px 14px 6px 11px;
+  background: #7433e0;
+  background-image:
+    linear-gradient(135deg, #a779ef 0 14px, transparent 14px),
+    linear-gradient(315deg, #51259b 0 16px, transparent 16px);
+  color: #fff9ef;
+  box-shadow: 0 4px #51259b;
+  transition: transform 160ms ease;
+}
+.handwriting-close-confirm button:hover,
+.notebook-collaboration-panel__actions > button:hover {
+  transform: translateY(-2px);
+}
+.handwriting-sticky__menu .paper-editor-icon {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  color: #7c3aed;
+  --editor-icon-facet: #a779ef;
+}
+.handwriting-sticky__menu [data-paper-editor-icon="review"] {
+  color: #2d8a67;
+  --editor-icon-facet: #6bbf59;
+}
+.handwriting-sticky__menu [data-paper-editor-icon="bringFront"] {
+  color: #2679a5;
+  --editor-icon-facet: #71b5db;
+}
+.handwriting-sticky__menu [data-paper-editor-icon="sendBack"] {
+  color: #b98717;
+  --editor-icon-facet: #facc15;
+}
+.handwriting-sticky__menu [data-paper-editor-icon="close"] {
+  color: #c63854;
+  --editor-icon-facet: #ef6c87;
+}
+:root .capture-dialog--handwriting .handwriting-sticky .handwriting-sticky__resize {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+  bottom: 0;
+  right: 0;
+  padding: 6px;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+.handwriting-sticky__resize .paper-editor-icon {
+  width: 20px;
+  height: 20px;
+  color: #7c3aed;
+  --editor-icon-facet: #a779ef;
+}
+.paper-preview--board {
+  width: 42px;
+  height: 32px;
+  background:
+    radial-gradient(#b9accf 1px, transparent 1px) 0 0 / 6px 6px,
+    #fffdf7;
+}
+.handwriting-viewport--board {
+  padding: 0;
+}
+.handwriting-viewport--board .handwriting-page-shell {
+  box-shadow: none;
+  border: 0;
+}
+.notebook-bound-preview {
+  width: min(900px, 100%);
+  margin: auto;
+}
+@media (max-width: 680px) {
+  .handwriting-commandbar {
+    max-height: min(220px, 30dvh);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .handwriting-paper-picker {
+    max-height: 68px;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .handwriting-workspace > .handwriting-brush-panel {
+    max-height: 96px;
+    flex-shrink: 0;
+  }
+  .handwriting-viewport {
+    min-height: 120px;
+  }
+  .notebook-file-popover {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 82px;
+    width: auto;
+    z-index: 20;
+  }
+  .notebook-page-book {
+    gap: 10px;
+    padding: 6px 10px;
+  }
+  .page-book {
+    width: 190px;
+    height: 54px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-book__turn {
+    animation: none;
+    display: none;
+  }
+  .handwriting-close-confirm button,
+  .notebook-collaboration-panel__actions > button {
+    transition: none;
+  }
+}

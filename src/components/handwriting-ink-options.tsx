@@ -6,10 +6,6 @@ type HandwritingInkOptionsProps = {
   onColorChange: (color: string) => void;
   width: number;
   onWidthChange: (width: number) => void;
-  stabilization: boolean;
-  onStabilizationChange: (enabled: boolean) => void;
-  penOnly: boolean;
-  onPenOnlyChange: (enabled: boolean) => void;
 };
 
 export function HandwritingInkOptions({
@@ -18,10 +14,6 @@ export function HandwritingInkOptions({
   onColorChange,
   width,
   onWidthChange,
-  stabilization,
-  onStabilizationChange,
-  penOnly,
-  onPenOnlyChange,
 }: HandwritingInkOptionsProps) {
   return (
     <div className="handwriting-ink-options">
@@ -87,25 +79,6 @@ export function HandwritingInkOptions({
           </button>
         ))}
       </fieldset>
-      <label className="handwriting-assist">
-        <input
-          type="checkbox"
-          checked={stabilization}
-          onChange={(event) => onStabilizationChange(event.target.checked)}
-        />
-        <span>
-          <strong>Ajuste inteligente</strong>
-          <small>Suaviza e endireita traços leves</small>
-        </span>
-      </label>
-      <label className="handwriting-pen-only">
-        <input
-          type="checkbox"
-          checked={penOnly}
-          onChange={(event) => onPenOnlyChange(event.target.checked)}
-        />
-        <span>Só caneta, dedo move</span>
-      </label>
     </div>
   );
 }

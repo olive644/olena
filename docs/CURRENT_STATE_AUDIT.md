@@ -1,5 +1,30 @@
 # Auditoria do estado atual
 
+## Editor de cadernos: quadro, livro e preferências
+
+Folhas novas abrem no editor expandido e começam em um quadro de 3200 por 2400
+unidades. Documentos antigos continuam em 1200 por 1600. O tipo de papel pode ser
+alterado sem cortar conteúdo; somente páginas vazias voltam ao formato menor.
+Dimensões são validadas, salvas e compartilhadas no documento. Imagens, post-its,
+ponteiros e exportação usam as dimensões da página.
+
+O rodapé agora permite folhear o caderno e criar a próxima folha no final. A troca
+salva o documento atual e interrompe a navegação se falhar. A reabertura recupera
+o documento salvo também sem o identificador local, necessário entre dispositivos.
+Erros de salvamento continuam visíveis, sem o antigo rodapé de conectividade.
+
+Configurações à esquerda do upload agrupam escrita, texto e coordenadas.
+A chave versionada helena.notebookPreferences.v1 participa do snapshot da conta
+e recebe os dados aplicados pela sincronização existente. Não há novo backend.
+Estojo de camadas, confirmação de saída e convite usam o papel facetado da marca.
+
+O pincel mantém pressão suavizada por tempo, inclusive com posição parada;
+preserva inclinação ao salvar e evita alargar a ponta ao finalizar. Eventos agrupados
+compartilham uma medição de layout, e a janela ampliada não muda para outra curva
+ao levantar a caneta. Referências técnicas: [filtro 1€](https://gery.casiez.net/1euro/)
+e [Pointer Events, W3C](https://www.w3.org/TR/pointerevents/).
+Testes automatizados não substituem avaliação com caneta física em Android/iOS.
+
 ## Identidade e presença no caderno
 
 Corrigida a criação de uma participação por aparelho para o mesmo UID. A entrada

@@ -1,3 +1,5 @@
+import { useNotebookPreferences } from "../data/notebook-preferences";
+import { NotebookSettings } from "./notebook-settings";
 import { NotebookFileActions } from "./notebook-file-actions";
 import type { StudyNote } from "../domain/workspace";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
@@ -33,7 +35,6 @@ import {
 import { rulerMeasurement, rulerPoints, type RulerKind, type RulerUnit } from "../domain/ruler";
 import {
   createLiveStabilizer,
-  stabilizeHandwriting,
   straightenStroke,
   type LiveStabilizer,
 } from "./handwriting-stabilization";
@@ -42,7 +43,7 @@ import { coordinateStats, formatCoordinateNumber } from "../domain/coordinate-ma
 import { normalizeMathOcrText } from "../domain/ocr";
 import { HelenaLoading } from "./helena-loading";
 import type { ImportedPage } from "./page-import";
-import { HandwritingFooter } from "./handwriting-footer";
+import { NotebookPageBook } from "./notebook-page-book";
 import { HandwritingHistoryBar } from "./handwriting-history-bar";
 import { HandwritingPaperPicker } from "./handwriting-paper-picker";
 import { HandwritingWritingWindow } from "./handwriting-writing-window";
@@ -70,8 +71,6 @@ import {
 } from "./handwriting-side-panels";
 import { HandwritingToolGroup } from "./handwriting-tool-group";
 import {
-  PAGE_WIDTH,
-  PAGE_HEIGHT,
   STICKY_MIN_WIDTH,
   STICKY_MAX_WIDTH,
   STICKY_MIN_HEIGHT,
@@ -123,6 +122,8 @@ type HandwritingStudioProps = {
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
   currentPageId?: string;
+  onSelectPage?: (id: string) => void;
+  onCreatePage?: () => void;
   onAutosave?: (dataUrl: string, document: HandwritingDocument) => void;
   onClose: () => void;
   onSave: (dataUrl: string, document: HandwritingDocument) => void;
@@ -137,9 +138,10 @@ type HandwritingStudioProps = {
 };
 
 export function HandwritingStudio({
-  cloud,
   notebookPages = [],
   currentPageId,
+  onSelectPage,
+  onCreatePage,
   onAutosave,
   onClose,
   onSave,
@@ -183,8 +185,18 @@ export function HandwritingStudio({
   const [rulerUnit, setRulerUnit] = useState<RulerUnit>("cm");
   const [rulerKind, setRulerKind] = useState<RulerKind>("straight");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
-  const [coordinateMeasurements, setCoordinateMeasurements] = useState(true);
-  const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
+  const { preferences, changePreference, preferenceError } = useNotebookPreferences();
+  const {
+    stabilization,
+    penOnly,
+    textAutoCorrect,
+    coordinateMeasurements,
+    equalCoordinateAxes,
+    writingWindowAutoFollow,
+  } = preferences;
+  const setCoordinateMeasurements = (value: boolean) =>
+    changePreference("coordinateMeasurements", value);
+  const setEqualCoordinateAxes = (value: boolean) => changePreference("equalCoordinateAxes", value);
   const [fileAction, setFileAction] = useState<"import" | "export" | null>(null);
   function closeImport() {
     setFileAction(null);
@@ -331,7 +343,7 @@ export function HandwritingStudio({
     () => startingDocument?.layers?.order ?? [...DEFAULT_HANDWRITING_LAYER_ORDER],
   );
   const [textMode, setTextMode] = useState(false);
-  const [textAutoCorrect, setTextAutoCorrect] = useState(true);
+  const setTextAutoCorrect = (value: boolean) => changePreference("textAutoCorrect", value);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
     () => startingDocument?.stickies ?? [],
   );
@@ -369,13 +381,33 @@ export function HandwritingStudio({
   const [paper, setPaper] = useState<PaperStyle>(
     storedPaper === "night" || storedPaper === "aged"
       ? "blank"
-      : (startingDocument?.paper ?? "ruled"),
+      : (startingDocument?.paper ?? "board"),
   );
+  const [canvasSize, setCanvasSize] = useState(
+    startingDocument?.canvasSize ??
+      (startingDocument?.paper && startingDocument.paper !== "board"
+        ? { width: 1200, height: 1600 }
+        : { width: 3200, height: 2400 }),
+  );
+  const PAGE_WIDTH = canvasSize.width;
+  const PAGE_HEIGHT = canvasSize.height;
+  function selectPaper(next: PaperStyle) {
+    if (next === "board") setCanvasSize({ width: 3200, height: 2400 });
+    else if (
+      !strokes.length &&
+      !stickies.length &&
+      !coordinateSystems.length &&
+      !importedImages.length &&
+      !background &&
+      !pageText.trim()
+    ) {
+      setCanvasSize({ width: 1200, height: 1600 });
+    }
+    setPaper(next);
+  }
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
   const [color, setColor] = useState(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   const [width, setWidth] = useState(5);
-  const [stabilization, setStabilization] = useState(true);
-  const [penOnly, setPenOnly] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [fitWidth, setFitWidth] = useState(BASE_DISPLAY_WIDTH);
   // Resolução do bitmap da folha: acompanha a densidade da tela e o zoom para a
@@ -384,14 +416,17 @@ export function HandwritingStudio({
   const [renderScale, setRenderScale] = useState(() =>
     pageRenderScale(
       typeof window === "undefined" ? 1 : window.devicePixelRatio || 1,
-      BASE_DISPLAY_WIDTH,
+      BASE_DISPLAY_WIDTH * (PAGE_WIDTH / 1200),
+      PAGE_WIDTH,
+      PAGE_HEIGHT,
     ),
   );
   const [error, setError] = useState("");
   const [writingWindowOpen, setWritingWindowOpen] = useState(false);
   const [writingWindowX, setWritingWindowX] = useState(100);
   const [writingWindowY, setWritingWindowY] = useState(110);
-  const [writingWindowAutoFollow, setWritingWindowAutoFollow] = useState(true);
+  const setWritingWindowAutoFollow = (value: boolean) =>
+    changePreference("writingWindowAutoFollow", value);
   const [writingWindowStatus, setWritingWindowStatus] = useState("Coluna 1, linha 1");
   const [draftStatus, setDraftStatus] = useState(recovered ? "Rascunho recuperado" : "");
 
@@ -404,6 +439,7 @@ export function HandwritingStudio({
   const currentDocument: HandwritingDocument = useMemo(
     () => ({
       version: 1,
+      canvasSize,
       paper,
       paperColor,
       strokes,
@@ -417,6 +453,7 @@ export function HandwritingStudio({
       backgroundFrame,
     }),
     [
+      canvasSize,
       paper,
       paperColor,
       strokes,
@@ -433,11 +470,16 @@ export function HandwritingStudio({
   );
   const baseline = JSON.stringify({
     version: 1,
+    canvasSize:
+      initialDocument?.canvasSize ??
+      (initialDocument?.paper && initialDocument.paper !== "board"
+        ? { width: 1200, height: 1600 }
+        : { width: 3200, height: 2400 }),
     paper:
       (initialDocument?.paper as string | undefined) === "night" ||
       (initialDocument?.paper as string | undefined) === "aged"
         ? "blank"
-        : (initialDocument?.paper ?? "ruled"),
+        : (initialDocument?.paper ?? "board"),
     paperColor:
       (initialDocument?.paper as string | undefined) === "night"
         ? "night"
@@ -468,6 +510,12 @@ export function HandwritingStudio({
     // A collaborator's document is an external subscription update.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPaper(remoteDocument.paper);
+    setCanvasSize(
+      remoteDocument.canvasSize ??
+        (remoteDocument.paper === "board"
+          ? { width: 3200, height: 2400 }
+          : { width: 1200, height: 1600 }),
+    );
     setPaperColor(remoteDocument.paperColor ?? "light");
     setColor(remoteDocument.paperColor === "night" ? "#fff9ef" : "#17151c");
     const incoming = newRemoteStrokes(
@@ -582,8 +630,9 @@ export function HandwritingStudio({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    sizePageCanvas(canvas, renderScale);
-    if (liveCanvasRef.current) sizePageCanvas(liveCanvasRef.current, renderScale);
+    sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
+    if (liveCanvasRef.current)
+      sizePageCanvas(liveCanvasRef.current, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     // O traço em andamento fica só na camada ao vivo até a caneta ser solta.
     const hidden = new Set(revealsRef.current.map((reveal) => reveal.stroke.id));
     const liveId = liveStrokeRef.current?.id;
@@ -676,6 +725,8 @@ export function HandwritingStudio({
     backgroundFrame,
     renderableImportedImages,
     renderScale,
+    PAGE_WIDTH,
+    PAGE_HEIGHT,
   ]);
 
   useEffect(() => {
@@ -700,6 +751,7 @@ export function HandwritingStudio({
     context.fillStyle = "#7433e055";
     context.fillRect(target.width - 14, 0, 2, target.height);
   }, [
+    PAGE_WIDTH,
     paper,
     stickies,
     strokes,
@@ -1073,7 +1125,7 @@ export function HandwritingStudio({
     if (event.button !== 0 && !isPenEraserTip && !isPenBarrelButton) return;
     if (event.pointerType === "pen" && !penDetectedRef.current) {
       penDetectedRef.current = true;
-      setPenOnly(true);
+      changePreference("penOnly", true);
     }
     const effectiveTool: HandwritingTool = isPenEraserTip
       ? "eraser"
@@ -1334,7 +1386,8 @@ export function HandwritingStudio({
     }
     const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
     const sampleEvents = coalesced.length > 0 ? coalesced : [event.nativeEvent];
-    const points = sampleEvents.map((point) => canvasPoint(canvas, point));
+    const bounds = canvas.getBoundingClientRect();
+    const points = sampleEvents.map((point) => canvasPoint(canvas, point, bounds));
     const sampleTimes = sampleEvents.map((sample) => sample.timeStamp);
     if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
@@ -1395,7 +1448,12 @@ export function HandwritingStudio({
       HandwritingPoint[]
     >((accepted, point) => {
       const lastPoint = accepted.at(-1) ?? previous;
-      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+      if (
+        !lastPoint ||
+        pointDistance(lastPoint, point) >= 0.65 ||
+        Math.abs(lastPoint.pressure - point.pressure) >= 0.015
+      )
+        accepted.push(point);
       return accepted;
     }, []);
     if (added.length === 0) return;
@@ -2101,12 +2159,16 @@ export function HandwritingStudio({
   }
 
   function writingPoint(
-    event: Pick<PointerEvent, "clientX" | "clientY" | "pressure">,
+    event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
+      Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
+    measuredBounds?: DOMRect,
   ): HandwritingPoint {
     const canvas = writingCanvasRef.current;
     if (!canvas) return { x: writingWindowX, y: writingWindowY, pressure: 0.5 };
-    const bounds = canvas.getBoundingClientRect();
+    const bounds = measuredBounds ?? canvas.getBoundingClientRect();
     return {
+      tiltX: event.tiltX ?? 0,
+      tiltY: event.tiltY ?? 0,
       x:
         writingWindowX +
         Math.max(
@@ -2157,11 +2219,19 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
     const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
-    const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map(writingPoint);
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map((sample) =>
+      writingPoint(sample, bounds),
+    );
     const previous = liveStroke.points.at(-1);
     const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
       const lastPoint = accepted.at(-1) ?? previous;
-      if (!lastPoint || pointDistance(lastPoint, point) >= 1.4) accepted.push(point);
+      if (
+        !lastPoint ||
+        pointDistance(lastPoint, point) >= 0.65 ||
+        Math.abs(lastPoint.pressure - point.pressure) >= 0.015
+      )
+        accepted.push(point);
       return accepted;
     }, []);
     if (added.length === 0) return;
@@ -2178,7 +2248,7 @@ export function HandwritingStudio({
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (liveStroke) {
-      const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
+      const points = stabilization ? straightenStroke(liveStroke.points) : liveStroke.points;
       commitLiveStroke({ ...liveStroke, points });
       setStrokes((current) => [...current, { ...liveStroke, points }]);
     }
@@ -2228,6 +2298,7 @@ export function HandwritingStudio({
   function buildDocument(): HandwritingDocument {
     const document: HandwritingDocument = {
       version: 1,
+      canvasSize,
       pageText,
       pageTextSize,
       coordinateSystems,
@@ -2240,6 +2311,7 @@ export function HandwritingStudio({
       strokes: strokes.map((stroke) => ({
         ...stroke,
         points: stroke.points.map((point) => ({
+          ...point,
           x: Math.round(point.x * 100) / 100,
           y: Math.round(point.y * 100) / 100,
           pressure: Math.round(point.pressure * 1000) / 1000,
@@ -2257,8 +2329,7 @@ export function HandwritingStudio({
     if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
     if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
     const canvas = document.createElement("canvas");
-    canvas.width = PAGE_WIDTH;
-    canvas.height = PAGE_HEIGHT;
+    sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
     renderPage(
       canvas,
       strokes,
@@ -2354,6 +2425,19 @@ export function HandwritingStudio({
     }
   }
 
+  function switchPage(navigate: () => void) {
+    try {
+      if (dirty) onSave(pageImage(), buildDocument());
+      navigate();
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Não foi possível salvar antes de trocar de folha.",
+      );
+    }
+  }
+
   function resetView() {
     setZoom(1);
     const viewport = viewportRef.current;
@@ -2431,10 +2515,12 @@ export function HandwritingStudio({
     }
   }
 
-  const displayWidth = Math.max(260, Math.round(fitWidth * zoom));
+  const displayWidth = Math.max(260, Math.round(fitWidth * zoom * (PAGE_WIDTH / 1200)));
   const wantedScale = pageRenderScale(
     typeof window === "undefined" ? 1 : window.devicePixelRatio || 1,
     displayWidth,
+    PAGE_WIDTH,
+    PAGE_HEIGHT,
   );
   useEffect(() => {
     if (wantedScale === renderScale) return;
@@ -2547,16 +2633,12 @@ export function HandwritingStudio({
           onColorChange={setColor}
           width={width}
           onWidthChange={setWidth}
-          stabilization={stabilization}
-          onStabilizationChange={setStabilization}
-          penOnly={penOnly}
-          onPenOnlyChange={setPenOnly}
         />
 
         <HandwritingHistoryBar
           textMode={textMode}
           textAutoCorrect={textAutoCorrect}
-          onToggleAutoCorrect={() => setTextAutoCorrect((enabled) => !enabled)}
+          onToggleAutoCorrect={() => setTextAutoCorrect(!textAutoCorrect)}
           tool={tool}
           onSelectTool={setTool}
           zoom={zoom}
@@ -2575,6 +2657,7 @@ export function HandwritingStudio({
         />
 
         <NotebookFileActions
+          settings={<NotebookSettings preferences={preferences} onChange={changePreference} />}
           pages={notebookPages}
           currentPageId={currentPageId ?? draftKey}
           currentImage={pageImage}
@@ -2612,11 +2695,14 @@ export function HandwritingStudio({
           onToggleSection={(section) =>
             setPaperSectionsOpen((current) => ({ ...current, [section]: !current[section] }))
           }
-          onSelectPaper={setPaper}
+          onSelectPaper={selectPaper}
           onSelectPaperColor={selectPaperColor}
         />
 
-        <div className="handwriting-viewport" ref={viewportRef}>
+        <div
+          className={`handwriting-viewport${paper === "board" ? " handwriting-viewport--board" : ""}`}
+          ref={viewportRef}
+        >
           {(tool === "hand" || tool === "zoom-in" || tool === "zoom-out") && (
             <span className="handwriting-viewport-hint" aria-hidden="true">
               {tool === "hand"
@@ -2645,10 +2731,10 @@ export function HandwritingStudio({
                   <div
                     className="handwriting-import-selection"
                     style={{
-                      left: `${frame.x / 12}%`,
-                      top: `${frame.y / 16}%`,
-                      width: `${frame.width / 12}%`,
-                      height: `${frame.height / 16}%`,
+                      left: `${(frame.x / PAGE_WIDTH) * 100}%`,
+                      top: `${(frame.y / PAGE_HEIGHT) * 100}%`,
+                      width: `${(frame.width / PAGE_WIDTH) * 100}%`,
+                      height: `${(frame.height / PAGE_HEIGHT) * 100}%`,
                     }}
                     onPointerDown={(event) => {
                       event.preventDefault();
@@ -2760,10 +2846,10 @@ export function HandwritingStudio({
                   key={image.id}
                   className={`handwriting-import-selection handwriting-import-selection--object${selectedIds.includes(image.id) ? " is-selected" : ""}`}
                   style={{
-                    left: `${image.x / 12}%`,
-                    top: `${image.y / 16}%`,
-                    width: `${image.width / 12}%`,
-                    height: `${image.height / 16}%`,
+                    left: `${(image.x / PAGE_WIDTH) * 100}%`,
+                    top: `${(image.y / PAGE_HEIGHT) * 100}%`,
+                    width: `${(image.width / PAGE_WIDTH) * 100}%`,
+                    height: `${(image.height / PAGE_HEIGHT) * 100}%`,
                     transform: `rotate(${image.rotation ?? 0}deg)`,
                   }}
                   onPointerDown={(event) => {
@@ -3036,6 +3122,8 @@ export function HandwritingStudio({
                 <HandwritingStickyNote
                   key={sticky.id}
                   sticky={sticky}
+                  pageWidth={PAGE_WIDTH}
+                  pageHeight={PAGE_HEIGHT}
                   isSelected={selectedIds.includes(sticky.id)}
                   ignorePointer={tool === "eraser" && sticky.kind === "text"}
                   menuOpen={stickyMenuId === sticky.id}
@@ -3119,8 +3207,18 @@ export function HandwritingStudio({
         )}
       </div>
 
+      {/Falha|Sem espaço/.test(draftStatus) && <p role="alert">{draftStatus}</p>}
+      {preferenceError && <p role="status">{preferenceError}</p>}
       {error && <p className="capture-error">{error}</p>}
-      <HandwritingFooter cloud={cloud} draftStatus={draftStatus} inert={fileAction === "import"} />
+      {onSelectPage && onCreatePage && (
+        <NotebookPageBook
+          pages={notebookPages}
+          currentPageId={currentPageId ?? draftKey}
+          inert={fileAction === "import"}
+          onSelect={(id) => switchPage(() => onSelectPage?.(id))}
+          onCreate={() => switchPage(() => onCreatePage())}
+        />
+      )}
       {fileAction === "import" && (
         <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
           <PageImport

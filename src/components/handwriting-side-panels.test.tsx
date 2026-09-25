@@ -104,17 +104,11 @@ describe("painel de coordenadas", () => {
     expect(props.onStepChange).toHaveBeenCalledWith(10);
   });
 
-  it("liga e desliga as medições e os eixos iguais", () => {
+  it("deixa preferências e instrução longa fora do estojo", () => {
     const props = coordinateProps();
     render(<HandwritingCoordinatePanel {...props} />);
-    const measurements = screen.getByRole("checkbox", { name: "Medições nos eixos" });
-    const equal = screen.getByRole("checkbox", { name: "Eixos com o mesmo tamanho" });
-    expect((measurements as HTMLInputElement).checked).toBe(true);
-    expect((equal as HTMLInputElement).checked).toBe(false);
-    fireEvent.click(measurements);
-    fireEvent.click(equal);
-    expect(props.onMeasurementsChange).toHaveBeenCalledWith(false);
-    expect(props.onEqualAxesChange).toHaveBeenCalledWith(true);
+    expect(screen.queryByRole("checkbox")).toBeNull();
+    expect(screen.queryByText(/Arraste a partir da origem/)).toBeNull();
   });
 
   it("não mostra a leitura quando não há eixo para inspecionar", () => {

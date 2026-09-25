@@ -1,4 +1,5 @@
 const shapes = {
+  settings: "M18 3h12l2 7 7 2 6 10-5 6 1 8-11 7-6-4-7 3L6 35l1-8-5-6 6-10 7-1Z",
   add: "M20 4h8v16h16v8H28v16h-8V28H4v-8h16Z",
   copyLink: "M5 14h24v29H5Z M15 4h24v29h-7V11H15Z",
   team: "M8 5h10l4 5-4 10H8L4 10Z M28 5h10l4 5-4 10H28l-4-10Z M5 24h16l4 17H1Z M27 24h16l4 17H25Z",
@@ -24,7 +25,8 @@ const shapes = {
   close: "M7 4 20 16 32 4l5 5-12 12 12 12-5 5-12-12L7 38l-5-5 13-12L2 9Z",
   more: "M8 24a4 4 0 1 0 8 0 4 4 0 1 0-8 0Zm12 0a4 4 0 1 0 8 0 4 4 0 1 0-8 0Zm12 0a4 4 0 1 0 8 0 4 4 0 1 0-8 0Z",
   expand: "M3 3h14v6H9v8H3Z M25 3h14v14h-6V9h-8Z M3 25h6v8h8v6H3Z M33 25h6v14H25v-6h8Z",
-  resize: "M8 8h12v4h-8v8H8ZM28 28h-8v-4h12v12h-4Z",
+  resize:
+    "M5 5h17v6h-7l9 9 9-9h-7V5h17v17h-6v-7l-9 9 9 9v-7h6v17H26v-6h7l-9-9-9 9h7v6H5V26h6v7l9-9-9-9v7H5Z",
   collapse: "M11 3h6v14H3v-6h8Z M25 3h6v8h8v6H25Z M3 25h14v14h-6v-8H3Z M25 25h14v6h-8v8h-6Z",
   review: "M5 4h25l7 7v27H5Z",
   save: "M6 4h29l7 7v31H6Z",
@@ -34,6 +36,7 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
+  settings: "M18 3h12l-6 8-9 7-9 17 1-8-5-6 6-10 7-1Z",
   add: "M20 4h4v20H4v-4h16Z",
   copyLink: "M5 14h5v29H5Z M15 4h24l-6 6H15Z",
   team: "M8 5h10l-4 7H4Z M28 5h10l-4 7H24Z M5 24h8L6 41H1Z M27 24h8l-5 17h-5Z",
@@ -59,7 +62,7 @@ const facets: Record<keyof typeof shapes, string> = {
   close: "M7 4 20 16l-4 3L2 9Z M25 21l12 12-5 1-10-10Z",
   more: "M8 24a4 4 0 0 0 8 0 4 4 0 0 0-8 0Zm12 0a4 4 0 0 0 8 0 4 4 0 0 0-8 0Zm12 0a4 4 0 0 0 8 0 4 4 0 0 0-8 0Z",
   expand: "M3 3h14v3H6v11H3Z M25 3h14l-6 6V6h-8Z",
-  resize: "M8 8h8v3H11v5H8ZM32 32h-8v-3h5v-5h3Z",
+  resize: "M5 5h17v3H8v14H5Z M26 40h14V26h3v17H26Z",
   collapse: "M11 3h3v11H3v-3h8Z M25 3h3v11h11v3H25Z",
   review: "M5 4h25l-9 7H11v27H5Z",
   save: "M6 4h6v38H6Z M35 4l7 7h-7Z",
@@ -180,6 +183,7 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
         />
       )}
       {name === "review" && <path d="m11 22 6 6 13-15 4 4-17 19-10-10Z" fill={detail} />}
+      {name === "settings" && <path d="m24 15 8 4v10l-8 4-8-4V19Z" fill={detail} />}
       {name === "print" && <path d="M14 27h14v9H14Z" fill={detail} />}
     </svg>
   );
