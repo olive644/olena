@@ -22,7 +22,7 @@ const shapes = {
   trash: "M9 12h22l-3 26H12Z M5 6h30v5H5Z M15 2h10v5H15Z",
   download: "M17 3h7v19h8L20 34 8 22h9Z M4 32h6v5h21v-5h6v11H4Z",
   print: "M10 3h22v10H10Z M4 14h34v17h-6v9H10v-9H4Z",
-  close: "M7 4 20 16 32 4l5 5-12 12 12 12-5 5-12-12L7 38l-5-5 13-12L2 9Z",
+  close: "M10 6 24 20 38 6l4 4-14 14 14 14-4 4-14-14-14 14-4-4 14-14L6 10Z",
   more: "M8 24a4 4 0 1 0 8 0 4 4 0 1 0-8 0Zm12 0a4 4 0 1 0 8 0 4 4 0 1 0-8 0Zm12 0a4 4 0 1 0 8 0 4 4 0 1 0-8 0Z",
   expand: "M3 3h14v6H9v8H3Z M25 3h14v14h-6V9h-8Z M3 25h6v8h8v6H3Z M33 25h6v14H25v-6h8Z",
   resize:
@@ -59,7 +59,7 @@ const facets: Record<keyof typeof shapes, string> = {
   trash: "M9 12h6v26h-3Z M5 6h30v3H5Z",
   download: "M17 3h3v24l-7-5H8l12 12-3-10Z",
   print: "M4 14h34v5H9v12H4Z",
-  close: "M7 4 20 16l-4 3L2 9Z M25 21l12 12-5 1-10-10Z",
+  close: "M10 6 24 20 10 10 6 10Z M38 6l4 4-14 14-4-4Z",
   more: "M8 24a4 4 0 0 0 8 0 4 4 0 0 0-8 0Zm12 0a4 4 0 0 0 8 0 4 4 0 0 0-8 0Zm12 0a4 4 0 0 0 8 0 4 4 0 0 0-8 0Z",
   expand: "M3 3h14v3H6v11H3Z M25 3h14l-6 6V6h-8Z",
   resize: "M5 5h17v3H8v14H5Z M26 40h14V26h3v17H26Z",
@@ -92,7 +92,12 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
           <path d={shapes.settings} fill="currentColor" />
           <path d={facets.settings} fill={light} />
           <path d="m24 15 8 4v10l-8 4-8-4V19Z" fill={detail} />
-          <path d="m24 20 4 2v5l-4 2-4-2v-5Z" fill="currentColor" />
+          <path d="m24 20 4 2v5l-4 2-4-2v-5Z" fill={light} />
+        </>
+      ) : name === "close" ? (
+        <>
+          <path d={shapes.close} fill="#EF6C87" stroke="#292432" strokeWidth="2" />
+          <path d={facets.close} fill="#FFADBC" />
         </>
       ) : name === "cloudUpload" ? (
         <>
