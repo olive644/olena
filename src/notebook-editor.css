@@ -381,14 +381,6 @@
   gap: 6px;
   padding-bottom: 2px;
 }
-.handwriting-paper-format > .paper-picker-label {
-  display: block;
-  flex: 0 0 auto;
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
 .handwriting-paper-options--format {
   flex: 1 1 auto;
   display: flex;
@@ -401,10 +393,7 @@
   padding: 4px 7px;
 }
 .handwriting-paper-options--format .paper-picker-label {
-  display: inline;
-  margin-left: 4px;
-  font-size: 11px;
-  font-weight: 800;
+  display: none;
 }
 .handwriting-paper-picker button:is(:hover, :focus-visible) {
   transform: none;
