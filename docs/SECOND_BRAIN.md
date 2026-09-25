@@ -180,7 +180,7 @@ individual quanto no Modo Sala.
 
 - React 19 e TypeScript estrito;
 - Vite para desenvolvimento e build;
-- CSS próprio, mobile-first e Manrope carregada pelo Google Fonts;
+- CSS próprio, mobile-first e Manrope e Nunito servidas pelo próprio domínio (`public/fonts`, licença OFL), sem chamadas ao Google Fonts;
 - interface com hierarquia de próxima ação, cartões de progresso, ícones ilustrados preenchidos e
   movimentos curtos compatíveis com `prefers-reduced-motion`;
 - Vitest e Testing Library para unidade/componente;

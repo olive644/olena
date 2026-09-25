@@ -829,3 +829,10 @@ Ajustes desta PR depois de a `main` avançar:
 - O ícone da Galeria.Oli passou de PNG para SVG (`public/galeria-oli-icon.svg`, 8 KB, cinco caminhos: contorno, miolo e três traços de tinta), traçado a partir da arte original com contornos de precisão de subpixel e curvas suaves. Não embute imagem, não tem fundo e não referencia nada externo.
 - Dois testes de e2e que estavam vermelhos na `main` depois do #231 foram atualizados: o do PDF (a nova folha já abre o editor, então usa `openHandwritingA4`) e o do rascunho (o editor já não mostra o aviso de rascunho recuperado; a recuperação continua provada pelo texto do post-it).
 - O detector de segredos acusou como falso positivo o nome de uma constante que terminava em `KEY`; ela foi renomeada e a impressão digital do commit antigo foi registrada em `.gitleaksignore`, porque o histórico da branch não é reescrito.
+
+## Fontes no próprio domínio (2026-09-25)
+
+- Manrope (600, 700, 800) e Nunito (400 a 800) passaram a ser servidas de `public/fonts` (subconjunto latino em woff2, 160 KB, licença SIL OFL 1.1 junto dos arquivos), com `@font-face` em `public/fonts/fonts.css` e preload das duas mais usadas em `index.html`. Nenhuma dependência nova: os arquivos foram copiados dos pacotes Fontsource, que não ficaram no `package.json`.
+- Isso elimina o envio do endereço de rede e dos dados do navegador ao Google ao carregar as letras. O CSP perdeu `fonts.googleapis.com` (style-src) e `fonts.gstatic.com` (font-src): agora `font-src 'self'`.
+- A Política de Privacidade (versão 2026-09-25) perdeu a linha "Letras do aplicativo" e a menção ao Google entregando fontes, e a própria página usa a Manrope do aplicativo.
+- Testes: `src/self-hosted-fonts.test.ts` (sem Google no HTML, CSP, arquivos e licenças presentes, política) e `e2e/self-hosted-fonts.spec.ts` (nenhuma requisição a domínios de fontes de terceiros, letras carregadas de `/fonts/`).
