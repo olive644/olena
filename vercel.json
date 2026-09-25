@@ -1,6 +1,12 @@
 {
   "crons": [{ "path": "/api/room-cleanup", "schedule": "0 4 * * *" }],
-  "rewrites": [{ "source": "/sala/:code/projetor", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/sala/:code/projetor", "destination": "/index.html" },
+    {
+      "source": "/:view(planejador|foco|habitos|cadernos|aulas|aprender|biblioteca|atividades|perfil)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

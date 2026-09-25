@@ -179,6 +179,8 @@ Sem aceite, a voz do aparelho e a estimativa local de dificuldade são usadas.
 
 ## Arquitetura atual
 
+Cada aba tem seu caminho (`src/domain/app-routes.ts`, hook `useAppView` com History API), então recarregar ou compartilhar `/cadernos` mantém a tela. Novas abas precisam entrar em `VIEW_PATHS` e no rewrite do `vercel.json`.
+
 - React 19 e TypeScript estrito;
 - Vite para desenvolvimento e build;
 - CSS próprio, mobile-first e Manrope e Nunito servidas pelo próprio domínio (`public/fonts`, licença OFL), sem chamadas ao Google Fonts;

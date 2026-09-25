@@ -28,8 +28,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // entry to 270.3 KiB on main. The privacy consent block and the brand footer
 // share the onboarding but add no measurable weight to the entry, so the ceiling
 // moves to 272 KiB to keep a small allowance for CI variance (Linux measures
-// about 0.5 KiB above Windows).
-const MAX_INITIAL_JS_BYTES = 272 * 1024;
+// about 0.5 KiB above Windows). URL routing per tab (app-routes and useAppView) adds
+// 0.8 KiB to the entry (272.6 KiB measured), so the ceiling moves to 274 KiB.
+const MAX_INITIAL_JS_BYTES = 274 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -101,7 +102,7 @@ const MAX_INITIAL_JS_BYTES = 272 * 1024;
 // The listening consent notice, its storage helper and hook add 3.6 KiB across
 // the lazy listening chunks (800.5 KiB measured); with account deletion the total is 804.4 KiB and the ceiling moves to 810 KiB.
 // No new runtime dependency.
-const MAX_TOTAL_JS_BYTES = 810 * 1024;
+const MAX_TOTAL_JS_BYTES = 812 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

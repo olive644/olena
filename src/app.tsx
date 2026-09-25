@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react";
-import { MobileNavigation, Sidebar, type AppView } from "./components/app-navigation";
+import { useAppView } from "./hooks/use-app-view";
+import { MobileNavigation, Sidebar } from "./components/app-navigation";
 import { HelenaLoading } from "./components/helena-loading";
 import { MobileMenuContext } from "./components/mobile-menu-context";
 import { readLocalRoomCodeFromUrl, readLocalRoomProjectorCodeFromUrl } from "./domain/room-code";
@@ -38,7 +39,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const [joinCode] = useState(
     () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
   );
-  const [view, setView] = useState<AppView>(joinCode ? "learn" : "today");
+  const [view, setView] = useAppView(joinCode ? "learn" : "today");
   const { workspace, dispatch, history, restoreSnapshot } = useWorkspace();
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
