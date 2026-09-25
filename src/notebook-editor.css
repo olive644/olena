@@ -277,18 +277,18 @@
 .handwriting-paper-section {
   display: contents;
 }
-.handwriting-paper-section:first-child > .handwriting-paper-section__toggle {
+.handwriting-paper-section--type > .handwriting-paper-section__toggle {
   grid-column: 1;
   grid-row: 1;
 }
-.handwriting-paper-section:last-child > .handwriting-paper-section__toggle {
+.handwriting-paper-section--color > .handwriting-paper-section__toggle {
   grid-column: 2;
   grid-row: 1;
 }
-.handwriting-paper-section:first-child > .handwriting-paper-options {
+.handwriting-paper-section--type > .handwriting-paper-options {
   grid-row: 2;
 }
-.handwriting-paper-section:last-child > .handwriting-paper-options {
+.handwriting-paper-section--color > .handwriting-paper-options {
   grid-row: 3;
 }
 .handwriting-paper-picker button {
@@ -373,6 +373,27 @@
 .handwriting-paper-options button {
   width: 48px;
   min-width: 48px;
+}
+.handwriting-paper-format {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 2px;
+}
+.handwriting-paper-options--format {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 5px;
+}
+.handwriting-paper-options--format button {
+  width: auto;
+  min-width: 48px;
+  min-height: 42px;
+  padding: 4px 7px;
+}
+.handwriting-paper-options--format .paper-picker-label {
+  display: none;
 }
 .handwriting-paper-picker button:is(:hover, :focus-visible) {
   transform: none;

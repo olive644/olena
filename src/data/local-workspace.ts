@@ -660,6 +660,40 @@ function notebooksFromNotes(notes: StudyNote[]): StudyNotebook[] {
   }));
 }
 
+function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceState {
+  const candidates = workspace.notebooks.filter(
+    (notebook) => /^Meu caderno(?: \d+)?$/i.test(notebook.title) && notebook.kind !== "folder",
+  );
+  if (candidates.length < 2) return workspace;
+  const primary =
+    candidates.find((notebook) => notebook.title.toLowerCase() === "meu caderno") ?? candidates[0]!;
+  const duplicateIds = new Set(
+    candidates.filter((notebook) => notebook.id !== primary.id).map((notebook) => notebook.id),
+  );
+  const pageIds = Array.from(
+    new Set(
+      [
+        primary.pageIds,
+        ...candidates
+          .filter((notebook) => notebook.id !== primary.id)
+          .map((notebook) => notebook.pageIds),
+      ].flat(),
+    ),
+  );
+  return {
+    ...workspace,
+    notebooks: workspace.notebooks
+      .filter((notebook) => !duplicateIds.has(notebook.id))
+      .map((notebook) => {
+        if (notebook.id === primary.id) return { ...notebook, title: "Meu caderno", pageIds };
+        if (notebook.parentId && duplicateIds.has(notebook.parentId)) {
+          return { ...notebook, parentId: primary.id };
+        }
+        return notebook;
+      }),
+  };
+}
+
 function migrateLegacyWorkspace(legacy: LegacyWorkspace): WorkspaceState {
   const notes = migrateNotes(legacy.notes);
   return {
@@ -736,7 +770,7 @@ export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState
 
   try {
     const parsed: unknown = JSON.parse(serialized);
-    if (isWorkspaceState(parsed)) return parsed;
+    if (isWorkspaceState(parsed)) return mergeRepeatedDefaultNotebooks(parsed);
     if (isWorkspaceV6(parsed)) return migrateWorkspaceV6(parsed);
     if (isWorkspaceV5(parsed)) return migrateWorkspaceV5(parsed);
     if (isWorkspaceV4(parsed)) return migrateWorkspaceV4(parsed);

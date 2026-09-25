@@ -393,16 +393,7 @@ export function HandwritingStudio({
   const PAGE_HEIGHT = canvasSize.height;
   function selectPaper(next: PaperStyle) {
     if (next === "board") setCanvasSize({ width: 3200, height: 2400 });
-    else if (
-      !strokes.length &&
-      !stickies.length &&
-      !coordinateSystems.length &&
-      !importedImages.length &&
-      !background &&
-      !pageText.trim()
-    ) {
-      setCanvasSize({ width: 1200, height: 1600 });
-    }
+    else setCanvasSize({ width: 1200, height: 1600 });
     setPaper(next);
   }
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
@@ -2429,6 +2420,7 @@ export function HandwritingStudio({
     try {
       if (dirty) onSave(pageImage(), buildDocument());
       navigate();
+      requestAnimationFrame(resetView);
     } catch (caught) {
       setError(
         caught instanceof Error
@@ -2989,18 +2981,51 @@ export function HandwritingStudio({
                     viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
                     aria-label="Medição da régua"
                   >
-                    <g transform={`translate(${start.x} ${start.y}) rotate(${angle})`}>
-                      <path d={`M0 -8V-38H${length}V-8Z`} fill="#FACC15" fillOpacity="0.88" />
-                      <path d={`M0 -38H${length}V-32H0Z`} fill="#FFE88D" />
-                      {Array.from({ length: Math.floor(length / step) + 1 }, (_, index) => (
-                        <path
-                          key={index}
-                          d={`M${index * step} -8v${index % 4 === 0 ? -22 : -12}`}
+                    {rulerKind === "circle" ? (
+                      <g>
+                        <circle
+                          cx={start.x}
+                          cy={start.y}
+                          r={Math.max(1, length)}
+                          fill="#FACC15"
+                          fillOpacity="0.2"
+                          stroke="#DFA900"
+                          strokeWidth="10"
+                        />
+                        <circle
+                          cx={start.x}
+                          cy={start.y}
+                          r={Math.max(1, length)}
+                          fill="none"
                           stroke="#292432"
                           strokeWidth="2"
+                          strokeDasharray="2 12"
                         />
-                      ))}
-                    </g>
+                        <line
+                          x1={start.x - length}
+                          y1={start.y}
+                          x2={start.x + length}
+                          y2={start.y}
+                          stroke="#292432"
+                          strokeWidth="2"
+                          strokeDasharray="8 8"
+                          opacity="0.7"
+                        />
+                      </g>
+                    ) : (
+                      <g transform={`translate(${start.x} ${start.y}) rotate(${angle})`}>
+                        <path d={`M0 -8V-38H${length}V-8Z`} fill="#FACC15" fillOpacity="0.88" />
+                        <path d={`M0 -38H${length}V-32H0Z`} fill="#FFE88D" />
+                        {Array.from({ length: Math.floor(length / step) + 1 }, (_, index) => (
+                          <path
+                            key={index}
+                            d={`M${index * step} -8v${index % 4 === 0 ? -22 : -12}`}
+                            stroke="#292432"
+                            strokeWidth="2"
+                          />
+                        ))}
+                      </g>
+                    )}
                     <g
                       transform={`translate(${Math.max(66, Math.min(PAGE_WIDTH - 66, (start.x + end.x) / 2))} ${Math.max(28, (start.y + end.y) / 2 - 56)})`}
                     >
