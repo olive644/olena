@@ -79,6 +79,8 @@ describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
   });
 
   it("completa o login ao voltar do redirecionamento com o resultado pendente", async () => {
+    const profile = JSON.stringify({ name: "Ana", photoUrl: "/profile-avatars/anonha.webp" });
+    localStorage.setItem("helena.profile.v1", profile);
     sessionStorage.setItem("helena.pending-google-answers", JSON.stringify(["Matemática"]));
     vi.mocked(getFirebaseAccountServices).mockResolvedValue({
       auth: {},
@@ -96,6 +98,7 @@ describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
 
     await waitFor(() => expect(finish).toHaveBeenCalledOnce());
     expect(sessionStorage.getItem("helena.pending-google-answers")).toBeNull();
+    expect(localStorage.getItem("helena.profile.v1")).toBe(profile);
     expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}")).toEqual({
       answers: ["Matemática"],
       completed: true,

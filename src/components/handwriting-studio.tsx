@@ -556,6 +556,7 @@ export function HandwritingStudio({
       layerOrder,
       renderableImportedImages,
     );
+    // O traço em andamento fica na camada ao vivo, não na folha.
     const context = canvas.getContext("2d");
     if (!context) return;
     context.save();
@@ -1131,9 +1132,12 @@ export function HandwritingStudio({
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
-    setStrokes((current) => [...current, nextStroke]);
-    lastSampleAtRef.current = performance.now();
-    scheduleLivePaint();
+    // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
+    if (effectiveTool === "ruler") setStrokes((current) => [...current, nextStroke]);
+    else {
+      lastSampleAtRef.current = performance.now();
+      scheduleLivePaint();
+    }
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -1479,9 +1483,7 @@ export function HandwritingStudio({
       }),
     );
     commitLiveStroke({ ...liveStroke, points });
-    setStrokes((current) =>
-      current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
-    );
+    setStrokes((current) => [...current, { ...liveStroke, points }]);
   }
 
   function settleLiveStroke(points: HandwritingPoint[]): HandwritingPoint[] {
@@ -2053,7 +2055,6 @@ export function HandwritingStudio({
     // ampliada aqui e faz a tinta ficar atrás da ponta, então só se suaviza ao
     // terminar o traço.
     liveStabilizerRef.current = null;
-    setStrokes((current) => [...current, nextStroke]);
     lastSampleAtRef.current = performance.now();
     scheduleLivePaint();
   }
@@ -2086,9 +2087,7 @@ export function HandwritingStudio({
     if (liveStroke) {
       const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
       commitLiveStroke({ ...liveStroke, points });
-      setStrokes((current) =>
-        current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
-      );
+      setStrokes((current) => [...current, { ...liveStroke, points }]);
     }
     const bounds = event.currentTarget.getBoundingClientRect();
     const relativeX = (event.clientX - bounds.left) / bounds.width;

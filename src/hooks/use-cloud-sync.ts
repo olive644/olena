@@ -192,6 +192,7 @@ export function useCloudSync() {
               ...Object.keys(localBeforeGet),
               ...Object.keys(localAfterGet),
             ])) {
+              if (key === "helena.profile.v1" && cloud.items[key] !== undefined) continue;
               if (localBeforeGet[key] !== localAfterGet[key]) {
                 if (localAfterGet[key] === undefined) delete merged[key];
                 else merged[key] = localAfterGet[key];
