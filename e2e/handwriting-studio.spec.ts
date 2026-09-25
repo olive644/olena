@@ -182,7 +182,10 @@ function twoPagePdf() {
 }
 
 test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === "mobile", "A barra de zoom e a ferramenta de mover são controles exclusivos do desktop; o fluxo móvel é coberto pelos testes de gestos e gavetas.");
+  test.skip(
+    testInfo.project.name === "mobile",
+    "A barra de zoom e a ferramenta de mover são controles exclusivos do desktop; o fluxo móvel é coberto pelos testes de gestos e gavetas.",
+  );
   test.slow();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));

@@ -427,7 +427,10 @@ test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }
     .click();
   await page.getByRole("button", { name: /^Abrir preview de / }).click();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible();
-  await page.getByRole("dialog", { name: "Escrever à mão" }).getByRole("button", { name: "Fechar", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Escrever à mão" })
+    .getByRole("button", { name: "Fechar", exact: true })
+    .click();
 
   await studentSpaceButton(page, testInfo.project.name).click();
   await page
