@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { HandwritingPoint } from "../domain/handwriting";
 import type { Stroke } from "./handwriting-types";
 import {
-  applyRemoteStrokes,
+  newRemoteStrokes,
   partialStroke,
   planReveal,
   revealDuration,
@@ -134,46 +134,20 @@ describe("atualização remota", () => {
   const remote = [stroke("a", 100), stroke("b", 100)];
 
   it("marca como novos só os traços que a folha ainda não conhecia", () => {
-    const { incoming, strokes } = applyRemoteStrokes({
-      remote,
-      known: new Set(["a"]),
-      drawing: null,
-    });
-    expect(incoming.map((item) => item.id)).toEqual(["b"]);
-    expect(strokes.map((item) => item.id)).toEqual(["a", "b"]);
+    expect(newRemoteStrokes(remote, new Set(["a"])).map((item) => item.id)).toEqual(["b"]);
   });
 
-  it("mantém o traço que esta pessoa está fazendo quando a atualização não o traz", () => {
-    const drawing = stroke("meu", 60);
-    const { strokes, incoming } = applyRemoteStrokes({
-      remote,
-      known: new Set(["a", "b", "meu"]),
-      drawing,
-    });
-    expect(strokes.map((item) => item.id)).toEqual(["a", "b", "meu"]);
-    expect(strokes.at(-1)).toBe(drawing);
-    expect(incoming).toEqual([]);
+  it("não marca nada quando a folha já conhece todos", () => {
+    expect(newRemoteStrokes(remote, new Set(["a", "b"]))).toEqual([]);
   });
 
-  it("não duplica o traço em andamento quando a atualização já o traz", () => {
-    const drawing = stroke("a", 100);
-    const { strokes } = applyRemoteStrokes({ remote, known: new Set(["a"]), drawing });
-    expect(strokes.filter((item) => item.id === "a")).toHaveLength(1);
-  });
-
-  it("não anima o traço em andamento como se fosse de um colega", () => {
-    const drawing = stroke("meu", 60);
-    const { incoming } = applyRemoteStrokes({
-      remote: [...remote, drawing],
-      known: new Set(["a", "b", "meu"]),
-      drawing,
-    });
-    expect(incoming).toEqual([]);
+  it("marca todos quando a folha está vazia e mantém a ordem", () => {
+    expect(newRemoteStrokes(remote, new Set()).map((item) => item.id)).toEqual(["a", "b"]);
   });
 
   it("não altera a lista recebida", () => {
     const copy = [...remote];
-    applyRemoteStrokes({ remote, known: new Set(), drawing: stroke("x", 10) });
+    newRemoteStrokes(remote, new Set(["a"]));
     expect(remote).toEqual(copy);
   });
 });

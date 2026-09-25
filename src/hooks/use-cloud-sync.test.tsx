@@ -171,6 +171,7 @@ it("prioriza o estado da conta sobre um backup local antigo e preserva só a mud
   const { result } = renderHook(() => useCloudSync());
   await waitFor(() => expect(result.current.status).toBe("loading"));
   act(() => writeSyncedStorage("helena.onboarding.v1", "nova sessão"));
+  act(() => writeSyncedStorage("helena.profile.v1", "avatar-padrão-gravado-pelo-login"));
   act(() =>
     resolveGet(
       new Response(

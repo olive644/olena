@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Na colaboração, o UID autenticado identifica a pessoa, não o aparelho. Entrar pelo
+mesmo UID reutiliza a participação; sair remove a conta da equipe em todos os aparelhos.
+Sem heartbeat por 45 segundos, a pessoa fica offline, mas mantém sua vaga.
+O login Google não recria o perfil/avatar: o perfil da nuvem prevalece sobre o backup
+local na hidratação. Traços livres são desenhados diretamente no canvas durante o gesto
+e entram no documento compartilhado somente ao levantar a caneta.
+
 As APIs usam Node ESM em produção. Imports de valores, inclusive em módulos compartilhados
 com o frontend, precisam da extensão `.js`. `npm run api:check` verifica o carregamento
 do JavaScript emitido sem o resolvedor do Vite e faz parte de `npm run verify`.
@@ -65,7 +72,7 @@ PageImport mantém a proporção da fonte no JPEG local, limitado a 500 mil cara
 
 No editor, seletores de estado ativo incluem handwriting-commandbar para superar a especificidade do hover. Ícones de ação usam preto no claro e branco no escuro; instrumentos mantêm cores próprias. Paper picker, brush panel e footer compartilham tokens e facetas claras por padrão, com uma única substituição grafite em data-theme dark. Post-its usam ajuste de fonte na renderização compartilhada para não truncar a exportação.
 
-PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho; objetos em `images` seguem a mesma validação e limite total do documento. renderPage usa a imagem base e as imagens independentes em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. O painel lateral mostra o estojo ilustrado na caneta e as unidades na régua. Importação nunca altera o arquivo original.
+PageImport carrega PDF.js e worker por import dinâmico somente ao escolher PDF; seleções de páginas cancelam render anterior. background opcional validado como JPEG base64 de até 500 mil caracteres faz parte de snapshot/document/rascunho; objetos em `images` seguem a mesma validação e limite total do documento. renderPage usa a imagem base e as imagens independentes em edição e exportação, com marca-texto composto antes da tinta/texto. rulerLength usa 21/1200 cm por pixel lógico. `domain/ruler.ts` concentra conversão de unidade e geometria dos seis instrumentos; esquadros encaixam a 45°/30°, transferidor a 15°, círculo fecha com 48 segmentos e curva francesa usa 32 segmentos suaves. O painel lateral mostra os estojos ilustrados da caneta e da régua. Importação nunca altera o arquivo original.
 
 eraseAt centraliza a borracha para traços, pageText e caixas kind text. erasePageText usa a largura real de glifo monospace do canvas, margem 112/80, entrelinha 40 e raio 30 nas coordenadas do documento. Letras viram espaços para manter a posição; o snapshot existente inclui todo o texto. Caixas legadas recebem pointer-events none durante a borracha. Rótulos expansíveis do editor usam a mesma regra CSS em desktop e mobile.
 

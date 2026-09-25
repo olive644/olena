@@ -135,9 +135,9 @@ it("um traço em andamento sobrevive a uma atualização de colega no meio do ge
       })}
     />,
   );
+  // Durante o gesto o traço ainda não está na lista: a atualização traz só os do colega.
   const during = onDraftChange.mock.calls.at(-1)?.[0] as HandwritingDocument;
-  expect(during.strokes).toHaveLength(3);
-  expect(during.strokes.slice(0, 2).map((stroke) => stroke.id)).toEqual(["a", "b"]);
+  expect(during.strokes.map((stroke) => stroke.id)).toEqual(["a", "b"]);
 
   fireEvent.pointerMove(canvas, { ...pointer, clientX: 180, clientY: 130, buttons: 1 });
   fireEvent.pointerUp(canvas, { ...pointer, clientX: 180, clientY: 130 });

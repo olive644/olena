@@ -11,6 +11,32 @@ function request(action: string, body: Record<string, unknown>) {
 }
 
 describe("notebook collaboration handler", () => {
+  it("mantém desconectados na equipe e remove somente quem sai explicitamente", async () => {
+    let clock = 1000;
+    const handler = createNotebookCollabHandler({
+      store: createMemoryRoomStore(),
+      now: () => clock,
+      publish: async () => {},
+      streamUrl: () => "",
+    });
+    const created = await handler(request("create", { notebookId: "sheet", displayName: "Alice" }));
+    const { code, hostToken } = (await created.json()) as { code: string; hostToken: string };
+    const joined = await handler(request("join", { code, displayName: "Bob" }));
+    const { participantToken } = (await joined.json()) as { participantToken: string };
+    clock += 46_000;
+    const beat = await handler(request("heartbeat", { code, credential: hostToken }));
+    expect(await beat.json()).toMatchObject({
+      state: {
+        participants: [
+          { displayName: "Alice", online: true },
+          { displayName: "Bob", online: false },
+        ],
+      },
+    });
+    const left = await handler(request("leave", { code, credential: participantToken }));
+    const body = (await left.json()) as { state: { participants: unknown[] } };
+    expect(body.state.participants).toHaveLength(1);
+  });
   it("usa a identidade autenticada e vincula cada credencial à conta", async () => {
     const handler = createNotebookCollabHandler({
       store: createMemoryRoomStore(),
@@ -70,6 +96,24 @@ describe("notebook collaboration handler", () => {
     });
     expect(
       (await handler(asUser("resume", { code: room.code, credential: room.hostToken }, "visitor")))
+        .status,
+    ).toBe(403);
+    const secondDevice = await handler(
+      asUser("join", { code: room.code, avatarUrl: "/profile-avatars/helena.webp" }, "owner"),
+    );
+    const joined = (await secondDevice.json()) as {
+      participantToken: string;
+      state: { participants: { avatarUrl: string }[] };
+    };
+    expect(joined.state.participants).toHaveLength(1);
+    expect(joined.participantToken).toBe(room.hostToken);
+    expect(joined.state.participants[0]?.avatarUrl).toBe("/profile-avatars/anonha-panda.svg");
+    const left = await handler(
+      asUser("leave", { code: room.code, credential: room.hostToken }, "owner"),
+    );
+    expect(await left.json()).toMatchObject({ state: { participants: [] } });
+    expect(
+      (await handler(asUser("heartbeat", { code: room.code, credential: room.hostToken }, "owner")))
         .status,
     ).toBe(403);
   });

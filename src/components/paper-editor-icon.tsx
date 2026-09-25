@@ -1,4 +1,8 @@
 const shapes = {
+  add: "M20 4h8v16h16v8H28v16h-8V28H4v-8h16Z",
+  copyLink: "M5 14h24v29H5Z M15 4h24v29h-7V11H15Z",
+  team: "M8 5h10l4 5-4 10H8L4 10Z M28 5h10l4 5-4 10H28l-4-10Z M5 24h16l4 17H1Z M27 24h16l4 17H25Z",
+  exit: "M6 3h23v40H6Z M29 18h7v-6l11 12-11 12v-6h-7Z",
   share: "m12 22 23-13 3 5-23 13Z M12 25l25 12-3 5-24-12Z",
   cloudUpload: "M14 37h20a9 9 0 0 0 1-18 12 12 0 0 0-23 3 8 8 0 0 0 2 15Zm10-5V15m0 0-7 7m7-7 7 7",
   page: "M9 4h22l8 8v32H9Z",
@@ -30,6 +34,10 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
+  add: "M20 4h4v20H4v-4h16Z",
+  copyLink: "M5 14h5v29H5Z M15 4h24l-6 6H15Z",
+  team: "M8 5h10l-4 7H4Z M28 5h10l-4 7H24Z M5 24h8L6 41H1Z M27 24h8l-5 17h-5Z",
+  exit: "M6 3h23L12 9v30l17 4H6Z M29 18h7l11 6H29Z",
   share: "m12 22 23-13 1 3-23 13Z",
   cloudUpload: "M14 37h20a9 9 0 0 0 1-18 12 12 0 0 0-23 3 8 8 0 0 0 2 15Zm10-5V15m0 0-7 7m7-7 7 7",
   page: "M31 4v9h8Z",

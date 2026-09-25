@@ -96,19 +96,9 @@ export function partialStroke(stroke: Stroke, progress: number): Stroke {
   return { ...stroke, points: kept };
 }
 
-// Decide o que fazer com os traços de uma atualização remota.
-// - O traço que esta pessoa está fazendo agora não pode sumir: sem ele na lista, a
-//   folha o apagaria no meio do gesto. Se a atualização não o traz, ele é mantido.
-// - Traços que a folha ainda não conhecia são os "novos": só eles são animados.
-export function applyRemoteStrokes(input: {
-  remote: readonly Stroke[];
-  known: ReadonlySet<string>;
-  drawing: Stroke | null;
-}): { strokes: Stroke[]; incoming: Stroke[] } {
-  const { remote, known, drawing } = input;
-  const keepDrawing = drawing !== null && !remote.some((stroke) => stroke.id === drawing.id);
-  return {
-    strokes: keepDrawing ? [...remote, drawing] : [...remote],
-    incoming: remote.filter((stroke) => !known.has(stroke.id)),
-  };
+// Traços de uma atualização remota que a folha ainda não conhecia: só eles são
+// animados. O traço que esta pessoa está fazendo não entra na lista até a caneta ser
+// solta, então nunca é confundido com um traço de colega.
+export function newRemoteStrokes(remote: readonly Stroke[], known: ReadonlySet<string>): Stroke[] {
+  return remote.filter((stroke) => !known.has(stroke.id));
 }

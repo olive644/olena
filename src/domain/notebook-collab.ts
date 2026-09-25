@@ -150,6 +150,7 @@ export function applyNotebookCollabDocument(
 ): NotebookCollabState {
   const participant = state.participants.find((item) => item.id === dependencies.participantId);
   if (!participant || !isHandwritingDocument(dependencies.document)) return state;
+  if (JSON.stringify(state.document) === JSON.stringify(dependencies.document)) return state;
   const action: NotebookCollabAction = {
     id: `document-${dependencies.participantId}-${dependencies.now}-${state.revision + 1}`,
     participantId: participant.id,

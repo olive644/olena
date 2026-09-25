@@ -28,8 +28,8 @@ import {
   DEFAULT_HANDWRITING_LAYER_VISIBILITY,
   erasePageText,
   pageTextLines,
-  rulerLength,
 } from "../domain/handwriting";
+import { rulerMeasurement, rulerPoints, type RulerKind, type RulerUnit } from "../domain/ruler";
 import {
   createLiveStabilizer,
   stabilizeHandwriting,
@@ -50,7 +50,7 @@ import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { predictedTip } from "./handwriting-ink";
 import {
-  applyRemoteStrokes,
+  newRemoteStrokes,
   partialStroke,
   planReveal,
   revealProgress,
@@ -179,7 +179,8 @@ export function HandwritingStudio({
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
-  const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
+  const [rulerUnit, setRulerUnit] = useState<RulerUnit>("cm");
+  const [rulerKind, setRulerKind] = useState<RulerKind>("straight");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
   const [coordinateMeasurements, setCoordinateMeasurements] = useState(true);
   const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
@@ -468,11 +469,10 @@ export function HandwritingStudio({
     setPaper(remoteDocument.paper);
     setPaperColor(remoteDocument.paperColor ?? "light");
     setColor(remoteDocument.paperColor === "night" ? "#fff9ef" : "#17151c");
-    const { strokes: remoteStrokes, incoming } = applyRemoteStrokes({
-      remote: remoteDocument.strokes,
-      known: new Set(strokes.map((stroke) => stroke.id)),
-      drawing: liveStrokeRef.current,
-    });
+    const incoming = newRemoteStrokes(
+      remoteDocument.strokes,
+      new Set(strokes.map((stroke) => stroke.id)),
+    );
     // Traços novos de um colega são escritos na folha em vez de aparecerem de uma vez.
     const stillHere = revealsRef.current.filter((reveal) =>
       remoteDocument.strokes.some((stroke) => stroke.id === reveal.stroke.id),
@@ -483,7 +483,7 @@ export function HandwritingStudio({
       revealsRef.current = [...stillHere, ...planReveal(incoming, performance.now())];
       scheduleLivePaint();
     }
-    setStrokes(remoteStrokes);
+    setStrokes(remoteDocument.strokes);
     setStickies(remoteDocument.stickies ?? []);
     setPageText(remoteDocument.pageText ?? "");
     setPageTextSize(remoteDocument.pageTextSize ?? 28);
@@ -603,6 +603,7 @@ export function HandwritingStudio({
       layerOrder,
       renderableImportedImages,
     );
+    // O traço em andamento fica na camada ao vivo, não na folha.
     const context = canvas.getContext("2d");
     if (!context) return;
     context.save();
@@ -1214,9 +1215,12 @@ export function HandwritingStudio({
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
-    setStrokes((current) => [...current, nextStroke]);
-    lastSampleAtRef.current = performance.now();
-    scheduleLivePaint();
+    // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
+    if (effectiveTool === "ruler") setStrokes((current) => [...current, nextStroke]);
+    else {
+      lastSampleAtRef.current = performance.now();
+      scheduleLivePaint();
+    }
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -1333,7 +1337,16 @@ export function HandwritingStudio({
     const sampleTimes = sampleEvents.map((sample) => sample.timeStamp);
     if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
-      if (end) setRulerMeasure((measurement) => (measurement ? { ...measurement, end } : null));
+      if (end)
+        setRulerMeasure((measurement) => {
+          if (!measurement) return null;
+          const guide = rulerPoints(measurement.start, end, rulerKind);
+          const snappedEnd = guide[1];
+          return {
+            ...measurement,
+            end: rulerKind === "circle" || rulerKind === "curve" || !snappedEnd ? end : snappedEnd,
+          };
+        });
     }
     if (activeToolRef.current === "coordinates") {
       const end = points.at(-1);
@@ -1369,7 +1382,7 @@ export function HandwritingStudio({
         if (!start || !end) return current;
         return [
           ...current.slice(0, -1),
-          { ...last, points: [start, { ...end, pressure: start.pressure }] },
+          { ...last, points: rulerPoints(start, { ...end, pressure: start.pressure }, rulerKind) },
         ];
       });
       return;
@@ -1562,9 +1575,7 @@ export function HandwritingStudio({
       }),
     );
     commitLiveStroke({ ...liveStroke, points });
-    setStrokes((current) =>
-      current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
-    );
+    setStrokes((current) => [...current, { ...liveStroke, points }]);
   }
 
   function settleLiveStroke(points: HandwritingPoint[]): HandwritingPoint[] {
@@ -2136,7 +2147,6 @@ export function HandwritingStudio({
     // ampliada aqui e faz a tinta ficar atrás da ponta, então só se suaviza ao
     // terminar o traço.
     liveStabilizerRef.current = null;
-    setStrokes((current) => [...current, nextStroke]);
     lastSampleAtRef.current = performance.now();
     scheduleLivePaint();
   }
@@ -2169,9 +2179,7 @@ export function HandwritingStudio({
     if (liveStroke) {
       const points = stabilization ? stabilizeHandwriting(liveStroke.points) : liveStroke.points;
       commitLiveStroke({ ...liveStroke, points });
-      setStrokes((current) =>
-        current.map((stroke) => (stroke.id === liveStroke.id ? { ...liveStroke, points } : stroke)),
-      );
+      setStrokes((current) => [...current, { ...liveStroke, points }]);
     }
     const bounds = event.currentTarget.getBoundingClientRect();
     const relativeX = (event.clientX - bounds.left) / bounds.width;
@@ -2480,6 +2488,7 @@ export function HandwritingStudio({
         <HandwritingToolGroup
           textMode={textMode}
           tool={tool}
+          rulerUnit={rulerUnit}
           layersOpen={layersOpen}
           writingWindowOpen={writingWindowOpen}
           onSelectTool={setTool}
@@ -2916,7 +2925,7 @@ export function HandwritingStudio({
                         fontWeight="800"
                         dominantBaseline="middle"
                       >
-                        {rulerLength(length, rulerUnit)}
+                        {rulerMeasurement(length, rulerUnit, rulerKind)}
                       </text>
                     </g>
                   </svg>
@@ -3079,7 +3088,12 @@ export function HandwritingStudio({
           <HandwritingBrushPanel brush={brush} color={color} onBrushChange={setBrush} />
         )}
         {showRulerPanel && (
-          <HandwritingRulerPanel rulerUnit={rulerUnit} onRulerUnitChange={setRulerUnit} />
+          <HandwritingRulerPanel
+            rulerUnit={rulerUnit}
+            rulerKind={rulerKind}
+            onRulerUnitChange={setRulerUnit}
+            onRulerKindChange={setRulerKind}
+          />
         )}
         {showCoordinatePanel && (
           <HandwritingCoordinatePanel

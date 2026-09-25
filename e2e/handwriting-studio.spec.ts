@@ -35,13 +35,46 @@ test("colaboração exige conta e mostra apenas convite por link", async ({
     const after = await paperColor.boundingBox();
     expect(after?.x).toBe(before?.x);
     expect(after?.y).toBe(before?.y);
+    for (const name of ["Upload", "Exportar", "Salvar"]) {
+      const button = host.getByRole("button", { name, exact: true });
+      await button.hover();
+      await expect
+        .poll(() =>
+          button.evaluate((element) => {
+            const label = element.querySelector("span")!;
+            return label.clientWidth >= label.scrollWidth;
+          }),
+        )
+        .toBe(true);
+      const buttonBounds = (await button.boundingBox())!;
+      const dialogBounds = (await host.boundingBox())!;
+      expect(buttonBounds.x + buttonBounds.width).toBeLessThanOrEqual(
+        dialogBounds.x + dialogBounds.width,
+      );
+    }
   }
+  await host.getByRole("button", { name: "Selecionar traços", exact: true }).click();
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+  await expect(host.locator(".handwriting-selection-actions")).toHaveCSS(
+    "background-color",
+    "rgb(255, 255, 255)",
+  );
   await host.getByRole("button", { name: "Compartilhar caderno" }).click();
   await expect(
     host.getByText("Entre na sua conta para escrever com outras pessoas.", { exact: false }),
   ).toBeVisible();
   await expect(host.getByRole("textbox", { name: "Seu nome" })).toHaveCount(0);
   await expect(host.getByRole("button", { name: "Copiar código" })).toHaveCount(0);
+  await expect(
+    host.getByText("Compartilhar caderno para escrever junto", { exact: true }),
+  ).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath("notebook-light.png") });
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await expect(host.locator(".notebook-collaboration-panel")).toHaveCSS(
+    "background-color",
+    "rgb(23, 21, 28)",
+  );
+  await page.screenshot({ path: testInfo.outputPath("notebook-dark.png") });
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
   await guestPage.goto("/?notebook-collab=ABCDE");
@@ -278,6 +311,12 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "true",
   );
   await dialog.getByRole("button", { name: "Pixels", exact: true }).click();
+  await expect(dialog.getByRole("button", { name: /Régua reta/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Esquadro 45°/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Esquadro 30°\/60°/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Transferidor/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Gabarito circular/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Curva francesa/ })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("estudio-manuscrito.png") });
 
   const bounds = await canvas.boundingBox();

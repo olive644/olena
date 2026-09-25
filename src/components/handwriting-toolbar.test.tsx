@@ -8,6 +8,7 @@ function toolGroupProps(overrides: Partial<Parameters<typeof HandwritingToolGrou
   return {
     textMode: false,
     tool: "pen" as const,
+    rulerUnit: "cm" as const,
     layersOpen: false,
     writingWindowOpen: false,
     onSelectTool: vi.fn(),
@@ -20,6 +21,11 @@ function toolGroupProps(overrides: Partial<Parameters<typeof HandwritingToolGrou
 }
 
 describe("grupo de instrumentos", () => {
+  it("mostra a unidade ativa no ícone da régua", () => {
+    const { container } = render(<HandwritingToolGroup {...toolGroupProps({ rulerUnit: "in" })} />);
+    expect(container.querySelector(".ruler-tool-unit")?.textContent).toBe("in");
+  });
+
   it.each([
     ["Régua", "ruler"],
     ["Sistema de coordenadas", "coordinates"],
