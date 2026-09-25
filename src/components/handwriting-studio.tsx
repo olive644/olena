@@ -375,6 +375,7 @@ export function HandwritingStudio({
   const [ocrProgress, setOcrProgress] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
   const [paperSectionsOpen, setPaperSectionsOpen] = useState({ paper: false, color: false });
+  const [fileMenuOpen, setFileMenuOpen] = useState(false);
   const [stickyMenuId, setStickyMenuId] = useState<string | null>(null);
   const [stickyColorMenuId, setStickyColorMenuId] = useState<string | null>(null);
   const [tool, setActiveTool] = useState<HandwritingTool>("pen");
@@ -2860,6 +2861,11 @@ export function HandwritingStudio({
           onPng={exportPng}
           onPdf={exportPdf}
           onPrint={printPage}
+          menuOpen={fileMenuOpen}
+          onMenuChange={(open) => {
+            setFileMenuOpen(open);
+            if (open) setPaperSectionsOpen({ paper: false, color: false });
+          }}
         />
       </div>
 
@@ -2886,11 +2892,21 @@ export function HandwritingStudio({
           paper={paper}
           paperColor={paperColor}
           sectionsOpen={paperSectionsOpen}
-          onToggleSection={(section) =>
-            setPaperSectionsOpen((current) => ({ ...current, [section]: !current[section] }))
-          }
-          onSelectPaper={selectPaper}
-          onSelectPaperColor={selectPaperColor}
+          onToggleSection={(section) => {
+            setFileMenuOpen(false);
+            setPaperSectionsOpen((current) => ({
+              paper: section === "paper" ? !current.paper : false,
+              color: section === "color" ? !current.color : false,
+            }));
+          }}
+          onSelectPaper={(next) => {
+            selectPaper(next);
+            setPaperSectionsOpen({ paper: false, color: false });
+          }}
+          onSelectPaperColor={(next) => {
+            selectPaperColor(next);
+            setPaperSectionsOpen({ paper: false, color: false });
+          }}
         />
 
         <div

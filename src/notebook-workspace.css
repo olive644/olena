@@ -150,10 +150,42 @@
   line-height: 1.4;
 }
 .notebook-settings input {
+  appearance: none;
+  display: grid;
+  place-items: center;
   width: 22px;
   height: 22px;
   flex-shrink: 0;
-  accent-color: #7c3aed;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px 7px 5px 6px;
+  background: var(--surface);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+.notebook-settings input::after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  background: #292432;
+  clip-path: polygon(9% 49%, 27% 31%, 43% 47%, 76% 11%, 94% 27%, 44% 86%);
+  transform: scale(0);
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1.2);
+}
+.notebook-settings input:checked {
+  border-color: #d4a900;
+  background: #facc15;
+  box-shadow: 0 2px 0 #a98200;
+}
+.notebook-settings input:checked::after {
+  transform: scale(1);
+}
+.notebook-settings input:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
 }
 .notebook-settings .sheet-close {
   width: 44px;
@@ -162,6 +194,12 @@
 :root .capture-dialog--handwriting .notebook-file-tools [data-paper-editor-icon="settings"] {
   color: #7c3aed;
   --editor-icon-facet: #a779ef;
+}
+@media (prefers-reduced-motion: reduce) {
+  .notebook-settings input,
+  .notebook-settings input::after {
+    transition: none;
+  }
 }
 .handwriting-layer-panel {
   background-color: var(--surface);

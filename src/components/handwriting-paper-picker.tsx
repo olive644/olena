@@ -35,32 +35,6 @@ export function HandwritingPaperPicker({
             ⌄
           </span>
         </button>
-        {sectionsOpen.paper && (
-          <div className="handwriting-paper-options">
-            {(
-              [
-                ["board", "Quadro amplo"],
-                ["ruled", "Pautado"],
-                ["grid", "Quadriculado"],
-                ["dots", "Pontilhado"],
-                ["blank", "Em branco"],
-              ] as const
-            ).map(([value, label]) => (
-              <button
-                type="button"
-                className={paper === value ? "is-active" : ""}
-                aria-pressed={paper === value}
-                aria-label={label}
-                title={label}
-                onClick={() => onSelectPaper(value)}
-                key={value}
-              >
-                <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
-                <span className="paper-picker-label">{label}</span>
-              </button>
-            ))}
-          </div>
-        )}
       </section>
       <section className="handwriting-paper-section handwriting-paper-section--color">
         <button
@@ -77,31 +51,57 @@ export function HandwritingPaperPicker({
             ⌄
           </span>
         </button>
-        {sectionsOpen.color && (
-          <div className="handwriting-paper-options">
-            {(
-              [
-                ["light", "Clara"],
-                ["aged", "Papel de livro"],
-                ["night", "Escura"],
-              ] as const
-            ).map(([value, label]) => (
-              <button
-                type="button"
-                className={paperColor === value ? "is-active" : ""}
-                aria-pressed={paperColor === value}
-                aria-label={label}
-                title={label}
-                onClick={() => onSelectPaperColor(value)}
-                key={value}
-              >
-                <span className={`paper-preview paper-preview--tone-${value}`} aria-hidden="true" />
-                <span className="paper-picker-label">{label}</span>
-              </button>
-            ))}
-          </div>
-        )}
       </section>
+      {(sectionsOpen.paper || sectionsOpen.color) && (
+        <div className="handwriting-paper-options">
+          {sectionsOpen.paper
+            ? (
+                [
+                  ["board", "Quadro amplo"],
+                  ["ruled", "Pautado"],
+                  ["grid", "Quadriculado"],
+                  ["dots", "Pontilhado"],
+                  ["blank", "Em branco"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  type="button"
+                  className={paper === value ? "is-active" : ""}
+                  aria-pressed={paper === value}
+                  aria-label={label}
+                  title={label}
+                  onClick={() => onSelectPaper(value)}
+                  key={value}
+                >
+                  <span className={`paper-preview paper-preview--${value}`} aria-hidden="true" />
+                  <span className="paper-picker-label">{label}</span>
+                </button>
+              ))
+            : (
+                [
+                  ["light", "Clara"],
+                  ["aged", "Papel de livro"],
+                  ["night", "Escura"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  type="button"
+                  className={paperColor === value ? "is-active" : ""}
+                  aria-pressed={paperColor === value}
+                  aria-label={label}
+                  title={label}
+                  onClick={() => onSelectPaperColor(value)}
+                  key={value}
+                >
+                  <span
+                    className={`paper-preview paper-preview--tone-${value}`}
+                    aria-hidden="true"
+                  />
+                  <span className="paper-picker-label">{label}</span>
+                </button>
+              ))}
+        </div>
+      )}
     </aside>
   );
 }

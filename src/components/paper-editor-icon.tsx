@@ -87,7 +87,14 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
       aria-hidden="true"
       data-paper-editor-icon={name}
     >
-      {name === "cloudUpload" ? (
+      {name === "settings" ? (
+        <>
+          <path d={shapes.settings} fill="currentColor" />
+          <path d={facets.settings} fill={light} />
+          <path d="m24 15 8 4v10l-8 4-8-4V19Z" fill={detail} />
+          <path d="m24 20 4 2v5l-4 2-4-2v-5Z" fill="currentColor" />
+        </>
+      ) : name === "cloudUpload" ? (
         <>
           <path d="M11 35h27l7-8-5-10-8-1-8-10-12 5-3 9-6 4 1 7Z" fill="currentColor" />
           <path d="m12 11 12-5-7 14-8 0Z" fill={light} />
@@ -183,7 +190,6 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
         />
       )}
       {name === "review" && <path d="m11 22 6 6 13-15 4 4-17 19-10-10Z" fill={detail} />}
-      {name === "settings" && <path d="m24 15 8 4v10l-8 4-8-4V19Z" fill={detail} />}
       {name === "print" && <path d="M14 27h14v9H14Z" fill={detail} />}
     </svg>
   );
