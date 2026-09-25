@@ -256,6 +256,72 @@
   width: min(900px, 100%);
   margin: auto;
 }
+.notebook-entry-preview .notebook-preview-book {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.notebook-entry-preview .notebook-preview-book:active {
+  cursor: grabbing;
+}
+.notebook-entry-preview .notebook-preview-book:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 6px;
+}
+.notebook-preview-leaf--empty {
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #51259b;
+}
+.notebook-preview-leaf--empty .paper-action-icon {
+  width: 58px;
+  height: 58px;
+  filter: drop-shadow(0 4px 0 #d9c9ab);
+}
+.notebook-preview-remove {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #a44050;
+  border-radius: 6px 12px 7px 10px;
+  gap: 7px;
+  color: #fff9ef;
+  background: #a44050;
+  box-shadow: 0 4px 0 #6e2634;
+  font: inherit;
+  font-weight: 800;
+}
+.notebook-preview-remove__icon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  border: 2px solid currentColor;
+  border-radius: 5px 9px 6px 8px;
+  font-size: 20px;
+  line-height: 1;
+  place-items: center;
+}
+.notebook-page-book .book-remove {
+  color: #a44050;
+  border-color: #d9c9ab;
+  background: #fffaf0;
+}
+.notebook-page-book .book-remove .paper-editor-icon {
+  width: 24px;
+  height: 24px;
+  --editor-icon-facet: #f3a6b3;
+  --editor-icon-cutout: #fffaf0;
+}
+.notebook-page-book .page-book {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.notebook-page-book .page-book:active {
+  cursor: grabbing;
+}
 @media (max-width: 680px) {
   .handwriting-commandbar {
     max-height: min(220px, 30dvh);

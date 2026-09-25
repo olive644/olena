@@ -88,7 +88,6 @@ function NotebookArtwork({
 export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
-  const [previewOpen, setPreviewOpen] = useState(false);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [turningPage, setTurningPage] = useState<{ page: StudyNote; direction: number } | null>(
     null,
@@ -99,6 +98,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const drag = useRef<{ id: string; x: number; y: number; moved: boolean } | null>(null);
   const skipClick = useRef<string | null>(null);
+  const previewDrag = useRef<{ x: number; y: number; pointerId: number } | null>(null);
+  const previewSwipeConsumed = useRef(false);
   function moveFolder(id: string, target: string) {
     dispatch({ type: "notebook/folder-moved", id, parentId: target });
     setMoveMessage(
@@ -155,7 +156,6 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
       createdAt: new Date().toISOString(),
     });
     setActiveNotebookId(id);
-    setPreviewOpen(false);
     setNotebookSection(createKind === "folder" ? "notes" : "pages");
     createDialog.current?.close();
     setNewNotebookName("");
@@ -180,7 +180,6 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setActiveNotebookId(notebook.id);
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
-    setPreviewOpen(notebook.kind !== "folder");
     setPreviewPageIndex(0);
     setTurningPage(null);
   }
@@ -198,6 +197,24 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
 
   function createPage() {
     addPage(false);
+  }
+
+  function removePage(id: string) {
+    if (!activeNotebook) return;
+    const index = notebookPages.findIndex((page) => page.id === id);
+    dispatch({ type: "note/removed", notebookId: activeNotebook.id, noteId: id });
+    setEditingAssetId(null);
+    setActivePageId(null);
+    setPreviewPageIndex(Math.max(0, Math.min(index, notebookPages.length - 2)));
+  }
+
+  function turnPreview(direction: -1 | 1) {
+    const nextIndex = previewPageIndex + direction;
+    if (turningPage || nextIndex < 0 || nextIndex >= notebookPages.length) return;
+    const page = notebookPages[nextIndex];
+    if (!page) return;
+    setTurningPage({ page, direction });
+    setPreviewPageIndex(nextIndex);
   }
 
   function addPage(append: boolean) {
@@ -652,7 +669,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             )}
           </section>
         </>
-      ) : previewOpen && activeNotebook.kind !== "folder" ? (
+      ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label="Preview do caderno">
           <button
             className="secondary-button"
@@ -666,7 +683,38 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             {notebookPages.length}{" "}
             {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}
           </p>
-          <div className="notebook-preview-book">
+          <div
+            className="notebook-preview-book"
+            onPointerDown={(event) => {
+              if (event.button !== 0) return;
+              previewDrag.current = {
+                x: event.clientX,
+                y: event.clientY,
+                pointerId: event.pointerId,
+              };
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerUp={(event) => {
+              const start = previewDrag.current;
+              previewDrag.current = null;
+              if (!start || start.pointerId !== event.pointerId) return;
+              const dx = event.clientX - start.x;
+              const dy = event.clientY - start.y;
+              if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+                previewSwipeConsumed.current = true;
+                turnPreview(dx < 0 ? 1 : -1);
+              }
+            }}
+            onPointerCancel={() => {
+              previewDrag.current = null;
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft") turnPreview(-1);
+              if (event.key === "ArrowRight") turnPreview(1);
+            }}
+            tabIndex={0}
+            aria-label="Prévia folheável do caderno"
+          >
             <div className="notebook-preview-inside" aria-hidden="true">
               <span>MEU UNIVERSO PARTICULAR</span>
               <strong>{activeNotebook.title}</strong>
@@ -674,10 +722,17 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             </div>
             <div className="notebook-preview-leaves">
               {notebookPages.length === 0 ? (
-                <div className="notebook-preview-leaf">
-                  <strong>Seu próximo começo</strong>
-                  <p>Uma folha em branco esperando suas ideias.</p>
-                </div>
+                <button
+                  className="notebook-preview-leaf notebook-preview-leaf--empty"
+                  type="button"
+                  onClick={() => {
+                    createPageAtEnd();
+                  }}
+                  aria-label="Criar primeira folha"
+                >
+                  <PaperActionIcon name="plus" />
+                  <strong>Criar primeira folha</strong>
+                </button>
               ) : (
                 notebookPages.slice(previewPageIndex, previewPageIndex + 1).map((page) => (
                   <button
@@ -686,8 +741,11 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                     disabled={!!turningPage}
                     key={page.id}
                     onClick={() => {
+                      if (previewSwipeConsumed.current) {
+                        previewSwipeConsumed.current = false;
+                        return;
+                      }
                       setActivePageId(page.id);
-                      setPreviewOpen(false);
                     }}
                     aria-label={`Abrir preview de ${page.title}`}
                   >
@@ -715,9 +773,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               type="button"
               disabled={previewPageIndex === 0 || !!turningPage}
               onClick={() => {
-                const page = notebookPages[previewPageIndex - 1];
-                if (page) setTurningPage({ page, direction: -1 });
-                setPreviewPageIndex((index) => index - 1);
+                turnPreview(-1);
               }}
             >
               ‹ Anterior
@@ -732,17 +788,24 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               type="button"
               disabled={previewPageIndex >= notebookPages.length - 1 || !!turningPage}
               onClick={() => {
-                const page = notebookPages[previewPageIndex];
-                if (page) setTurningPage({ page, direction: 1 });
-                setPreviewPageIndex((index) => index + 1);
+                turnPreview(1);
               }}
             >
               Próxima ›
             </button>
           </nav>
-          <button className="primary-button" type="button" onClick={() => setPreviewOpen(false)}>
-            Ver todas as folhas
-          </button>
+          {notebookPages[previewPageIndex] && (
+            <button
+              className="notebook-preview-remove"
+              type="button"
+              onClick={() => removePage(notebookPages[previewPageIndex]!.id)}
+            >
+              <span className="notebook-preview-remove__icon" aria-hidden="true">
+                ×
+              </span>
+              Remover folha
+            </button>
+          )}
         </section>
       ) : activePage ? (
         <>
@@ -775,12 +838,17 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                     setEditingAssetId(null);
                     createPageAtEnd();
                   }}
+                  onRemovePage={removePage}
                   draftPageKey={activePage.id}
                   onSave={saveAsset}
                   onUpdate={updateAsset}
                   onImportPages={importPages}
                   editingAsset={editingAsset}
                   onCloseEditing={() => setEditingAssetId(null)}
+                  onClosePage={() => {
+                    setEditingAssetId(null);
+                    setActivePageId(null);
+                  }}
                 />
               </Suspense>
             )}

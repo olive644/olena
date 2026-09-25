@@ -20,24 +20,17 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
     if (theme === "Claro") {
       await page.getByRole("button", { name: "Crie", exact: true }).click();
       await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
-      await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+      await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
     } else {
       await page.getByRole("button", { name: /Abrir Meu caderno/i }).click();
-      await page.getByRole("button", { name: "Ver todas as folhas" }).click();
-      await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+      await page.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
     }
-    await page
-      .getByRole("dialog", { name: "Escrever à mão" })
-      .getByRole("button", { name: "Fechar", exact: true })
-      .click();
-    for (const name of ["Digitalizar", "Escrever à mão"]) {
-      const button = page.getByRole("button", { name, exact: true });
+    const editor = page.getByRole("dialog", { name: "Escrever à mão" });
+    for (const name of ["Configurações do editor", "Upload", "Exportar", "Salvar"]) {
+      const button = editor.getByRole("button", { name, exact: true });
       await expect(button).toBeVisible();
-      await expect(button.locator("svg")).toHaveCSS("width", "32px");
-      await button.click();
-      await expect(page.getByRole("dialog")).toBeVisible();
-      await page.getByRole("button", { name: "Fechar", exact: true }).click();
     }
     await page.screenshot({ path: testInfo.outputPath(`cadernos-${theme}.png`) });
+    await editor.getByRole("button", { name: "Fechar", exact: true }).click();
   }
 });

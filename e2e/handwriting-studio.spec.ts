@@ -551,18 +551,12 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   }
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
-  await page.getByRole("button", { name: "Ver todas as folhas" }).click();
-  await page.getByRole("button", { name: "Abrir caderno", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "Escrever à mão" })
-    .getByRole("button", { name: "Fechar", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
-  await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
+  await page.getByRole("button", { name: /Abrir preview de Folha manuscrita/ }).click();
+  await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible();
   await expect
     .poll(() =>
       page
-        .getByRole("dialog", { name: "Folha manuscrita" })
+        .getByRole("dialog", { name: "Escrever à mão" })
         .locator("canvas.handwriting-canvas")
         .evaluate(
           (canvas: HTMLCanvasElement) =>

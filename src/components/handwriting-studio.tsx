@@ -124,6 +124,7 @@ type HandwritingStudioProps = {
   currentPageId?: string;
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
+  onRemovePage?: (id: string) => void;
   onAutosave?: (dataUrl: string, document: HandwritingDocument) => void;
   onClose: () => void;
   onSave: (dataUrl: string, document: HandwritingDocument) => void;
@@ -142,6 +143,7 @@ export function HandwritingStudio({
   currentPageId,
   onSelectPage,
   onCreatePage,
+  onRemovePage,
   onAutosave,
   onClose,
   onSave,
@@ -288,6 +290,7 @@ export function HandwritingStudio({
     start: HandwritingPoint;
     end: HandwritingPoint;
   } | null>(null);
+  const rulerMeasureRef = useRef<{ start: HandwritingPoint; end: HandwritingPoint } | null>(null);
   const [coordinateMeasure, setCoordinateMeasure] = useState<{
     start: HandwritingPoint;
     end: HandwritingPoint;
@@ -1154,7 +1157,11 @@ export function HandwritingStudio({
     clearLive();
     setError("");
     const point = canvasPoint(canvas, event);
-    if (effectiveTool === "ruler") setRulerMeasure({ start: point, end: point });
+    if (effectiveTool === "ruler") {
+      const measurement = { start: point, end: point };
+      rulerMeasureRef.current = measurement;
+      setRulerMeasure(measurement);
+    }
     if (effectiveTool === "coordinates") {
       remember();
       setCoordinateMeasure({ start: point, end: point });
@@ -1260,8 +1267,7 @@ export function HandwritingStudio({
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
-    if (effectiveTool === "ruler") setStrokes((current) => [...current, nextStroke]);
-    else {
+    if (effectiveTool !== "ruler") {
       lastSampleAtRef.current = performance.now();
       scheduleLivePaint();
     }
@@ -1387,10 +1393,12 @@ export function HandwritingStudio({
           if (!measurement) return null;
           const guide = rulerPoints(measurement.start, end, rulerKind);
           const snappedEnd = guide[1];
-          return {
+          const nextMeasurement = {
             ...measurement,
             end: rulerKind === "circle" || rulerKind === "curve" || !snappedEnd ? end : snappedEnd,
           };
+          rulerMeasureRef.current = nextMeasurement;
+          return nextMeasurement;
         });
     }
     if (activeToolRef.current === "coordinates") {
@@ -1416,20 +1424,6 @@ export function HandwritingStudio({
     }
     if (activeToolRef.current === "eraser") {
       eraseAt(points);
-      return;
-    }
-    if (activeToolRef.current === "ruler") {
-      setStrokes((current) => {
-        const last = current.at(-1);
-        if (!last) return current;
-        const start = last.points[0];
-        const end = points.at(-1);
-        if (!start || !end) return current;
-        return [
-          ...current.slice(0, -1),
-          { ...last, points: rulerPoints(start, { ...end, pressure: start.pressure }, rulerKind) },
-        ];
-      });
       return;
     }
     const liveStroke = liveStrokeRef.current;
@@ -1459,6 +1453,34 @@ export function HandwritingStudio({
       if (pinchRef.current && touchPointersRef.current.size < 2) pinchRef.current = null;
     }
     if (event.pointerId !== activePointerRef.current) return;
+    if (activeToolRef.current === "ruler") {
+      const measurement = rulerMeasureRef.current;
+      const canvas = canvasRef.current;
+      const end = canvas && measurement ? canvasPoint(canvas, event) : measurement?.end;
+      if (measurement && end && pointDistance(measurement.start, end) >= 4) {
+        setStrokes((current) => [
+          ...current,
+          {
+            id: strokeId(),
+            tool: "pen",
+            color,
+            width,
+            points: rulerPoints(
+              measurement.start,
+              { ...end, pressure: measurement.start.pressure },
+              rulerKind,
+            ),
+          },
+        ]);
+      } else {
+        setUndoStack((history) => history.slice(0, -1));
+      }
+      rulerMeasureRef.current = null;
+      setRulerMeasure(null);
+      activePointerRef.current = null;
+      drawingRef.current = false;
+      return;
+    }
     setRulerMeasure(null);
     if (activeToolRef.current === "coordinates" && coordinateMeasure) {
       const width = Math.abs(coordinateMeasure.end.x - coordinateMeasure.start.x);
@@ -1612,7 +1634,6 @@ export function HandwritingStudio({
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
-    if (activeToolRef.current === "ruler") return;
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;
     if (!liveStroke) return;
@@ -3037,7 +3058,11 @@ export function HandwritingStudio({
                         fontWeight="800"
                         dominantBaseline="middle"
                       >
-                        {rulerMeasurement(length, rulerUnit, rulerKind)}
+                        {rulerMeasurement(
+                          rulerKind === "circle" ? length * 2 : length,
+                          rulerUnit,
+                          rulerKind,
+                        )}
                       </text>
                     </g>
                   </svg>
@@ -3242,6 +3267,7 @@ export function HandwritingStudio({
           inert={fileAction === "import"}
           onSelect={(id) => switchPage(() => onSelectPage?.(id))}
           onCreate={() => switchPage(() => onCreatePage())}
+          {...(onRemovePage ? { onRemove: onRemovePage } : {})}
         />
       )}
       {fileAction === "import" && (

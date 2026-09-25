@@ -19,6 +19,7 @@ type NoteCaptureToolsProps = {
   autoOpen?: boolean;
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
+  onRemovePage?: (id: string) => void;
   draftPageKey: string;
   onSave: (
     kind: NoteAsset["kind"],
@@ -30,6 +31,7 @@ type NoteCaptureToolsProps = {
   onImportPages?: (pages: ImportedPage[]) => void;
   editingAsset?: NoteAsset | null;
   onCloseEditing?: () => void;
+  onClosePage?: () => void;
   initialJoinCode?: string;
 };
 
@@ -199,6 +201,7 @@ export function NoteCaptureTools({
   autoOpen = false,
   onSelectPage,
   onCreatePage,
+  onRemovePage,
   draftPageKey,
   onSave,
   onUpdate,
@@ -206,6 +209,7 @@ export function NoteCaptureTools({
   editingAsset = null,
   initialJoinCode,
   onCloseEditing,
+  onClosePage,
 }: NoteCaptureToolsProps) {
   const [mode, setMode] = useState<"scan" | "drawing" | null>(
     initialJoinCode || autoOpen ? "drawing" : null,
@@ -365,9 +369,18 @@ export function NoteCaptureTools({
       }
       setHandwritingDirty(false);
       if (editingAsset) onCloseEditing?.();
-      else setMode(null);
+      setMode(null);
+      onClosePage?.();
     },
-    [currentMode, handwritingDirty, editingAsset, draftPageKey, onCloseEditing, initialHandwriting],
+    [
+      currentMode,
+      handwritingDirty,
+      editingAsset,
+      draftPageKey,
+      onCloseEditing,
+      onClosePage,
+      initialHandwriting,
+    ],
   );
 
   useEffect(() => {
@@ -600,6 +613,7 @@ export function NoteCaptureTools({
                   currentPageId={draftPageKey}
                   {...(onSelectPage ? { onSelectPage } : {})}
                   {...(onCreatePage ? { onCreatePage } : {})}
+                  {...(onRemovePage ? { onRemovePage } : {})}
                   key={editingAsset?.id ?? "new"}
                   {...(initialHandwriting ? { initialDocument: initialHandwriting } : {})}
                   onSave={saveDocument}
