@@ -614,7 +614,9 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await expect(dialog.getByRole("textbox", { name: "Texto do post-it" })).toHaveValue(
     "Revisar gramática",
   );
-  await expect(dialog.getByText("Rascunho recuperado")).toBeVisible();
+  // O aviso passa de "recuperado" para "salvo" quando o autosave (450 ms) regrava o
+  // rascunho recuperado; as duas fases valem, e o texto do post-it acima prova a recuperação.
+  await expect(dialog.getByText(/Rascunho (recuperado|salvo neste dispositivo)/)).toBeVisible();
   await expect(dialog.locator(".brush-instrument")).toHaveCount(3);
   await expect
     .poll(() =>
