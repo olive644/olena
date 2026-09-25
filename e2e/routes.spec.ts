@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-test("recarregar uma aba mantém a aba, e voltar retorna à anterior", async ({ page }) => {
+test("recarregar uma aba mantém a aba, e voltar retorna à anterior", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "A navegação lateral só existe no desktop.");
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
