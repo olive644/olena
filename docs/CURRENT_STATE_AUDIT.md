@@ -822,3 +822,10 @@ Pendências que dependem do proprietário, registradas na própria política e a
 - **Não existe exclusão de conta no app.** A política diz que o pedido é atendido manualmente. Um botão de exclusão de conta e de dados é a melhoria natural.
 - **Voz natural e vocabulário.** Os exercícios de escuta enviam o texto da frase ao serviço de voz com `consent: true` fixo no código, e cada palavra vai ao serviço de vocabulário, sem aceite próprio. A política informa isso, mas o `AGENTS.md` pede consentimento claro: vale um aceite específico dentro dos exercícios.
 - **Fontes.** As letras do aplicativo ainda vêm dos servidores do Google e a política menciona isso. Hospedá-las no próprio domínio elimina esse envio, e faria a página da política usar a fonte Manrope do aplicativo (hoje ela usa a fonte padrão do aparelho, para não fazer requisição externa).
+
+Ajustes desta PR depois de a `main` avançar:
+
+- O orçamento de JS foi ajustado: entrada de 270 para 272 KiB e total de 790 para 795 KiB. A `main` limpa já media 270,3 KiB de entrada e 789,3 KiB no total (preferências do quadro e formatos de página); o bloco de concordância e o rodapé não mudam a entrada e somam 1,2 KiB ao total. A CI mede cerca de 0,5 KiB acima de uma máquina Windows.
+- O ícone da Galeria.Oli passou de PNG para SVG (`public/galeria-oli-icon.svg`, 8 KB, cinco caminhos: contorno, miolo e três traços de tinta), traçado a partir da arte original com contornos de precisão de subpixel e curvas suaves. Não embute imagem, não tem fundo e não referencia nada externo.
+- Dois testes de e2e que estavam vermelhos na `main` depois do #231 foram atualizados: o do PDF (a nova folha já abre o editor, então usa `openHandwritingA4`) e o do rascunho (o editor já não mostra o aviso de rascunho recuperado; a recuperação continua provada pelo texto do post-it).
+- O detector de segredos acusou como falso positivo o nome de uma constante que terminava em `KEY`; ela foi renomeada e a impressão digital do commit antigo foi registrada em `.gitleaksignore`, porque o histórico da branch não é reescrito.

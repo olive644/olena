@@ -24,7 +24,12 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Conflict-safe cloud sync adds a small guard in the initial hook; the merge
 // algorithm itself stays lazy, keeping the measured entry below 269 KiB.
 // Read-only notebook routing adds less than 1 KiB to the entry.
-const MAX_INITIAL_JS_BYTES = 270 * 1024;
+// Board preferences, page formats and notebook layout fixes bring the measured
+// entry to 270.3 KiB on main. The privacy consent block and the brand footer
+// share the onboarding but add no measurable weight to the entry, so the ceiling
+// moves to 272 KiB to keep a small allowance for CI variance (Linux measures
+// about 0.5 KiB above Windows).
+const MAX_INITIAL_JS_BYTES = 272 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -87,7 +92,10 @@ const MAX_INITIAL_JS_BYTES = 270 * 1024;
 // filter over a velocity predictor, live ink layer and stroke tip prediction)
 // lives in the lazy handwriting studio chunk and adds about 7 KiB: 781.2 KiB
 // measured, initial entry unchanged at 269.8 KiB. No new runtime dependency.
-const MAX_TOTAL_JS_BYTES = 790 * 1024;
+// Notebook board settings and page formats measure 789.3 KiB on main; the privacy
+// consent block and the brand footer add 1.2 KiB (790.5 KiB). The ceiling moves
+// to 795 KiB for CI variance. No new runtime dependency.
+const MAX_TOTAL_JS_BYTES = 795 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
