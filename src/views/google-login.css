@@ -200,3 +200,44 @@
     font-size: 15px;
   }
 }
+
+.login-page__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 12px 14px;
+  border: 2px solid #dccfee;
+  border-radius: 10px 16px 10px 16px;
+  background: #faf6ff;
+  color: #4a4056;
+  font-size: 13px;
+  line-height: 1.55;
+  cursor: pointer;
+}
+.login-page__consent input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  accent-color: #7c3aed;
+  cursor: pointer;
+}
+.login-page__consent input:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: 2px;
+}
+.login-page__consent a {
+  color: #51259b;
+  font-weight: 700;
+}
+.login-page__consent-help {
+  min-height: 18px;
+  margin: 8px 0 0;
+  color: #726579;
+  font-size: 12px;
+  text-align: center;
+}
+.login-page__consent-help + .login-page__actions {
+  margin-top: 8px;
+}

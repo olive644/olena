@@ -1,0 +1,4 @@
+# Falso positivo conhecido do gitleaks: o nome de um item guardado no navegador, não um segredo.
+# A constante foi renomeada (PRIVACY_CONSENT_ITEM); a impressão digital abaixo é do commit antigo,
+# que continua no histórico da branch e não pode ser reescrito.
+ca4ff273971c9b31c11a830b4e7a162239778f4f:src/domain/privacy-policy.ts:generic-api-key:5

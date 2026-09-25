@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openHandwritingA4 } from "./notebook-helpers";
 
 test("exportar o caderno em PDF abre a janela de impressão com as folhas", async ({
   page,
@@ -18,7 +19,8 @@ test("exportar o caderno em PDF abre a janela de impressão com as folhas", asyn
   await page.getByLabel("Nome", { exact: true }).fill("Caderno de teste");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  // "Nova folha" já abre o editor; o auxiliar confirma e usa a geometria A4.
+  await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   const canvas = dialog.locator(".handwriting-viewport canvas").first();
