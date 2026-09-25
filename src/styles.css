@@ -8016,7 +8016,7 @@ body.local-room-active {
   transform-origin: left center;
   transform-style: preserve-3d;
   pointer-events: none;
-  animation: preview-leaf-open 650ms ease-in-out both;
+  animation: preview-leaf-open 480ms cubic-bezier(0.22, 0.75, 0.25, 1) both;
 }
 .notebook-turning-leaf--back {
   animation-direction: reverse;

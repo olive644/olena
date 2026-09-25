@@ -11,6 +11,7 @@ import {
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
+import { PaperEditorIcon } from "../components/paper-editor-icon";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
@@ -686,7 +687,14 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
           <div
             className="notebook-preview-book"
             onPointerDown={(event) => {
-              if (event.button !== 0 || (event.target as HTMLElement).closest("button")) return;
+              const button = (event.target as HTMLElement).closest("button");
+              if (
+                event.button !== 0 ||
+                (button &&
+                  (!button.classList.contains("notebook-preview-leaf") ||
+                    button.classList.contains("notebook-preview-leaf--empty")))
+              )
+                return;
               previewDrag.current = {
                 x: event.clientX,
                 y: event.clientY,
@@ -795,27 +803,27 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             </button>
           </nav>
           {notebookPages.length > 0 && (
-            <button
-              className="notebook-preview-create"
-              type="button"
-              onClick={createPageAtEnd}
-              aria-label="Criar nova folha"
-            >
-              <PaperActionIcon name="plus" />
-              <span>Nova folha</span>
-            </button>
-          )}
-          {notebookPages[previewPageIndex] && (
-            <button
-              className="notebook-preview-remove"
-              type="button"
-              onClick={() => removePage(notebookPages[previewPageIndex]!.id)}
-            >
-              <span className="notebook-preview-remove__icon" aria-hidden="true">
-                ×
-              </span>
-              Remover folha
-            </button>
+            <div className="notebook-preview-actions">
+              <button
+                className="notebook-preview-create"
+                type="button"
+                onClick={createPageAtEnd}
+                aria-label="Criar nova folha"
+              >
+                <PaperActionIcon name="plus" />
+                <span>Nova folha</span>
+              </button>
+              {notebookPages[previewPageIndex] && (
+                <button
+                  className="notebook-preview-remove"
+                  type="button"
+                  onClick={() => removePage(notebookPages[previewPageIndex]!.id)}
+                >
+                  <PaperEditorIcon name="close" />
+                  <span>Remover folha</span>
+                </button>
+              )}
+            </div>
           )}
         </section>
       ) : activePage ? (

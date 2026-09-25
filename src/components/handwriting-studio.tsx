@@ -302,6 +302,8 @@ export function HandwritingStudio({
     zoom: number;
     centerX: number;
     centerY: number;
+    scrollLeft: number;
+    scrollTop: number;
   } | null>(null);
   const panRef = useRef<{
     pointerId: number;
@@ -1088,11 +1090,14 @@ export function HandwritingStudio({
         const first = points[0];
         const second = points[1];
         if (first && second) {
+          const viewport = viewportRef.current;
           pinchRef.current = {
             distance: Math.hypot(second.x - first.x, second.y - first.y),
             zoom,
             centerX: (first.x + second.x) / 2,
             centerY: (first.y + second.y) / 2,
+            scrollLeft: viewport?.scrollLeft ?? 0,
+            scrollTop: viewport?.scrollTop ?? 0,
           };
           const unfinishedStroke = liveStrokeRef.current;
           if (unfinishedStroke)
@@ -1282,12 +1287,15 @@ export function HandwritingStudio({
         const first = points[0];
         const second = points[1];
         if (first && second && pinch.distance > 0) {
+          const centerX = (first.x + second.x) / 2;
+          const centerY = (first.y + second.y) / 2;
+          const viewport = viewportRef.current;
+          if (viewport) {
+            viewport.scrollLeft = pinch.scrollLeft + pinch.centerX - centerX;
+            viewport.scrollTop = pinch.scrollTop + pinch.centerY - centerY;
+          }
           const distance = Math.hypot(second.x - first.x, second.y - first.y);
-          zoomTo(
-            (first.x + second.x) / 2,
-            (first.y + second.y) / 2,
-            pinch.zoom * (distance / pinch.distance),
-          );
+          zoomTo(centerX, centerY, pinch.zoom * (distance / pinch.distance));
           return;
         }
       }

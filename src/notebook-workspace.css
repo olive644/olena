@@ -297,6 +297,13 @@
   width: 32px;
   height: 32px;
 }
+.notebook-preview-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 .notebook-preview-remove {
   display: inline-flex;
   align-items: center;
@@ -311,15 +318,12 @@
   font: inherit;
   font-weight: 800;
 }
-.notebook-preview-remove__icon {
-  display: grid;
-  width: 22px;
-  height: 22px;
-  border: 2px solid currentColor;
-  border-radius: 5px 9px 6px 8px;
-  font-size: 20px;
-  line-height: 1;
-  place-items: center;
+.notebook-preview-remove .paper-editor-icon {
+  width: 25px;
+  height: 25px;
+  color: #fff;
+  --editor-icon-cutout: #a44050;
+  --editor-icon-facet: #fff;
 }
 .notebook-page-book .book-remove {
   color: #a44050;
@@ -341,22 +345,157 @@
   cursor: grabbing;
 }
 @media (max-width: 680px) {
+  .capture-dialog.capture-dialog--handwriting {
+    grid-template-rows: 54px minmax(0, 1fr);
+  }
+  .capture-dialog--handwriting > header {
+    min-height: 54px;
+    padding: 6px 9px;
+  }
+  .capture-dialog--handwriting > header h2 {
+    font-size: 1.05rem;
+  }
+  .capture-dialog--handwriting > header .sheet-close button {
+    width: 40px;
+    height: 40px;
+  }
+  .handwriting-studio {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
   .handwriting-commandbar {
-    max-height: min(220px, 30dvh);
-    overflow-y: auto;
-    overflow-x: hidden;
+    display: flex;
+    min-height: 62px;
+    max-height: 72px;
+    align-items: center;
+    padding: 7px 8px 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 8px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .handwriting-commandbar::-webkit-scrollbar {
+    display: none;
+  }
+  .handwriting-commandbar
+    > :is(
+      .handwriting-tool-group,
+      .handwriting-history,
+      .handwriting-ink-options,
+      .notebook-file-tools,
+      .handwriting-selection-actions
+    ) {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+    min-height: 48px;
+    padding: 3px;
+    overflow: visible;
+    border: 1px solid var(--line);
+    border-radius: 12px 7px 11px 8px;
+    scroll-snap-align: start;
+    box-shadow: 0 3px 0 var(--line);
+  }
+  .handwriting-commandbar :is(.handwriting-tool-group, .handwriting-history) button,
+  .notebook-file-tools > button {
+    min-width: 42px;
+    min-height: 42px;
+    padding: 5px;
+  }
+  .handwriting-commandbar .paper-editor-icon {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+  }
+  .handwriting-commandbar .handwriting-tool-group button span,
+  .handwriting-commandbar .handwriting-history button span,
+  .notebook-file-tools > button > span,
+  .handwriting-ink-options legend,
+  .handwriting-ink-options .handwriting-assist,
+  .handwriting-ink-options .handwriting-pen-only {
+    display: none;
+  }
+  .handwriting-ink-options {
+    flex-wrap: nowrap;
+  }
+  .handwriting-ink-options fieldset {
+    min-height: 42px;
+    padding: 3px 5px;
+    box-shadow: none;
+  }
+  .ink-palette .ink-swatch {
+    width: 34px;
+    height: 34px;
+  }
+  .stroke-palette button {
+    min-width: 42px;
+    min-height: 38px;
+    padding: 2px;
+  }
+  .stroke-palette svg {
+    width: 34px;
+    height: 18px;
   }
   .handwriting-paper-picker {
-    max-height: 68px;
+    min-height: 56px;
+    max-height: 64px;
     flex-shrink: 0;
-    overflow-y: auto;
+    padding: 5px 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-top: 1px solid var(--line);
+    scrollbar-width: none;
+  }
+  .handwriting-paper-picker::-webkit-scrollbar {
+    display: none;
+  }
+  .handwriting-paper-picker .handwriting-paper-section__toggle,
+  .handwriting-paper-options button {
+    width: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 4px;
+  }
+  .handwriting-paper-picker .paper-preview {
+    width: 22px;
+    height: 30px;
   }
   .handwriting-workspace > .handwriting-brush-panel {
-    max-height: 96px;
+    min-height: 64px;
+    max-height: 72px;
     flex-shrink: 0;
+    padding: 6px 8px;
+    gap: 7px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .handwriting-workspace > .handwriting-brush-panel::-webkit-scrollbar {
+    display: none;
+  }
+  .handwriting-brush-panel > button {
+    min-width: 76px;
+    width: 76px;
+    min-height: 54px;
+    padding: 4px;
+  }
+  .handwriting-brush-panel button .brush-card-title {
+    max-width: 68px;
+    overflow: hidden;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .handwriting-brush-panel button .brush-instrument {
+    width: 66px;
+    height: 30px;
+    margin: 0;
   }
   .handwriting-viewport {
-    min-height: 120px;
+    min-height: 0;
+    padding: 8px;
+    overscroll-behavior: none;
   }
   .notebook-file-popover {
     position: fixed;
@@ -368,12 +507,59 @@
     z-index: 20;
   }
   .notebook-page-book {
-    gap: 10px;
-    padding: 6px 10px;
+    min-height: 62px;
+    gap: 6px;
+    padding: 5px 7px calc(7px + env(safe-area-inset-bottom));
   }
   .page-book {
-    width: 190px;
-    height: 54px;
+    width: min(168px, 46vw);
+    height: 50px;
+  }
+  .notebook-page-book > button {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+  .notebook-entry-preview {
+    padding: 18px 10px calc(24px + env(safe-area-inset-bottom));
+  }
+  .notebook-entry-preview .notebook-preview-book {
+    width: min(94vw, 520px);
+    height: clamp(220px, 64vw, 330px);
+    margin: 24px auto 18px;
+    border-width: 5px;
+  }
+  .notebook-preview-inside {
+    gap: 12px;
+    padding: 12px 8px;
+  }
+  .notebook-preview-leaf {
+    padding: 10px;
+  }
+  .notebook-preview-controls {
+    gap: 8px;
+    margin: 16px 0 12px;
+  }
+  .notebook-preview-controls .secondary-button {
+    min-height: 42px;
+    padding: 7px 10px;
+  }
+  .notebook-preview-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 150px));
+    gap: 8px;
+  }
+  .notebook-preview-create,
+  .notebook-preview-remove {
+    min-width: 0;
+    min-height: 46px;
+    justify-content: center;
+    padding: 6px 9px;
+    white-space: nowrap;
+  }
+  .notebook-preview-create .paper-action-icon {
+    width: 28px;
+    height: 28px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
