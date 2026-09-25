@@ -5039,8 +5039,8 @@ body.local-room-active {
   }
   .handwriting-ruler-panel {
     display: grid;
-    grid-template-columns: 176px max-content;
-    max-height: 136px;
+    grid-template-columns: 166px max-content;
+    max-height: 100px;
     overflow-x: auto;
     overflow-y: hidden;
   }
@@ -5052,8 +5052,16 @@ body.local-room-active {
     width: max-content;
   }
   .handwriting-ruler-panel .ruler-case > button {
-    width: 104px;
-    min-height: 112px;
+    width: 96px;
+    min-height: 84px;
+    padding: 4px 6px;
+  }
+  .handwriting-ruler-panel .ruler-card-art {
+    width: 62px;
+    height: 38px;
+  }
+  .handwriting-ruler-panel .ruler-case small {
+    display: none;
   }
 }
 
