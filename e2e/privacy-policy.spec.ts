@@ -75,35 +75,108 @@ test("a tabela de dados rola dentro do próprio quadro no celular", async ({ pag
 });
 
 for (const scheme of ["light", "dark"] as const) {
-  test(`o texto da política tem contraste suficiente no tema ${scheme}`, async ({
+  test(`cada bloco da política tem contraste suficiente no tema ${scheme}`, async ({
     page,
   }, testInfo) => {
     test.skip(testInfo.project.name !== "desktop", "Tema verificado com Chromium.");
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto(POLICY);
-    const colors = await page.evaluate(() => {
-      const pick = (selector: string) => {
+    const pairs = await page.evaluate(() => {
+      // O fundo de verdade de um texto é o do primeiro ancestral que não é transparente.
+      const background = (node: Element): string => {
+        let current: Element | null = node;
+        while (current) {
+          const value = getComputedStyle(current).backgroundColor;
+          if (value !== "rgba(0, 0, 0, 0)" && value !== "transparent") return value;
+          current = current.parentElement;
+        }
+        return "rgb(255, 255, 255)";
+      };
+      const selectors: Record<string, string> = {
+        "texto do título": ".hero p",
+        "resumo em papel roxo": ".summary li",
+        "título do resumo": ".summary h2",
+        "destaque do resumo": ".summary strong",
+        "título de seção": "h2#quem",
+        "aviso amarelo": ".pending",
+        "célula da tabela": "tbody td",
+        "cabeçalho da tabela": "thead th",
+        "link do índice": ".toc a",
+        "texto do rodapé": ".brand-footer span",
+      };
+      return Object.entries(selectors).map(([name, selector]) => {
         const node = document.querySelector(selector)!;
-        return {
-          color: getComputedStyle(node).color,
-          background: getComputedStyle(node).backgroundColor,
-        };
-      };
-      return {
-        body: pick("main p"),
-        heading: pick("main h2"),
-        page: getComputedStyle(document.body).backgroundColor,
-        card: getComputedStyle(document.querySelector("main")!).backgroundColor,
-        link: getComputedStyle(document.querySelector("main a")!).color,
-      };
+        return { name, color: getComputedStyle(node).color, background: background(node) };
+      });
     });
-    expect(contrast(colors.body.color, colors.card)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(colors.heading.color, colors.card)).toBeGreaterThanOrEqual(4.5);
-    expect(contrast(colors.link, colors.card)).toBeGreaterThanOrEqual(4.5);
-    // Cada tema tem o seu fundo: o escuro não é o claro com o texto trocado.
-    if (scheme === "dark") expect(colors.page).not.toBe("rgb(255, 249, 239)");
+    for (const pair of pairs) {
+      expect(
+        contrast(pair.color, pair.background),
+        `${pair.name} (${pair.color} sobre ${pair.background})`,
+      ).toBeGreaterThanOrEqual(4.5);
+    }
   });
 }
+
+test("os blocos usam o papel recortado do aplicativo, com base deslocada", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Visual verificado com Chromium.");
+  await page.goto(POLICY);
+  const cards = await page.locator("main .paper:not(.toc)").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const style = getComputedStyle(node);
+      return {
+        radius: style.borderTopLeftRadius + "/" + style.borderBottomRightRadius,
+        shadow: style.boxShadow,
+      };
+    }),
+  );
+  // O índice é de propósito um bloco tracejado e plano; todos os outros têm base.
+  expect(cards.length).toBeGreaterThanOrEqual(12);
+  for (const card of cards) {
+    // Sombra em camadas com base deslocada, nunca uma sombra difusa única.
+    expect(card.shadow).toMatch(/\d+px \d+px 0px/);
+    // Cantos assimétricos: não é um retângulo arredondado uniforme.
+    const [topLeft, bottomRight] = card.radius.split("/");
+    expect(topLeft).not.toBe(bottomRight);
+  }
+});
+
+test("o rodapé da Galeria.Oli aparece com o ícone carregado na política", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Visual verificado com Chromium.");
+  await page.goto(POLICY);
+  const footer = page.locator("footer.brand-footer");
+  await footer.scrollIntoViewIfNeeded();
+  await expect(footer).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");
+  const icon = footer.locator("img");
+  await expect(icon).toBeVisible();
+  expect(await icon.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  // O ícone fica à esquerda do texto.
+  const [iconBox, textBox] = await Promise.all([
+    icon.boundingBox(),
+    footer.locator("span").boundingBox(),
+  ]);
+  expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(textBox!.x + 1);
+});
+
+test("o rodapé da Galeria.Oli aparece no onboarding e no login", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Fluxo verificado no desktop.");
+  await page.goto("/?onboarding=1");
+  const onboarding = page.locator("footer.brand-footer");
+  await expect(onboarding).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");
+  expect(
+    await onboarding.locator("img").evaluate((image: HTMLImageElement) => image.naturalWidth),
+  ).toBeGreaterThan(0);
+  await page.goto("/?onboarding=1&login=1");
+  const login = page.locator("footer.brand-footer");
+  await expect(login).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");
+  expect(
+    await login.locator("img").evaluate((image: HTMLImageElement) => image.naturalWidth),
+  ).toBeGreaterThan(0);
+});
 
 test("o login pede a concordância e abre a política em outra aba sem perder o lugar", async ({
   page,

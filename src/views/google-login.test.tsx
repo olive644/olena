@@ -226,3 +226,14 @@ describe("concordância com a Política de Privacidade", () => {
     expect(localStorage.getItem(PRIVACY_CONSENT_KEY)).toBeNull();
   });
 });
+
+describe("rodapé da Galeria.Oli no login", () => {
+  it("aparece na tela de login, com o ícone à esquerda", async () => {
+    vi.mocked(getFirebaseAccountServices).mockRejectedValue(new Error("setup"));
+    const { container } = render(<GoogleLogin answers={[]} onFinish={vi.fn()} />);
+    const footer = container.querySelector("footer.brand-footer");
+    expect(footer?.textContent).toBe("Todos os direitos Galeria.Oli - OlenaStudy");
+    expect(footer?.firstElementChild?.tagName).toBe("IMG");
+    await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
+  });
+});

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { BrandFooter } from "../components/brand-footer";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
@@ -227,6 +228,7 @@ export function GoogleLogin({
         </section>
       </div>
       <footer className="login-page__footer">No seu tempo. Do seu jeito. Com a Helena.</footer>
+      <BrandFooter />
     </main>
   );
 }

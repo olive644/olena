@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import "./onboarding.css";
+import { BrandFooter } from "../components/brand-footer";
 import { GoogleLogin, hasPendingGoogleRedirect, readPendingGoogleAnswers } from "./google-login";
 import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
 
@@ -311,6 +312,7 @@ export default function OnboardingView({
           <p className="onboarding__privacy">Só o necessário para conhecer seu jeito de estudar.</p>
         </div>
       </section>
+      <BrandFooter />
     </main>
   );
 }
