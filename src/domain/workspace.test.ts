@@ -282,6 +282,30 @@ describe("workspaceReducer", () => {
     expect(removed.notes[0]?.assets).toEqual([]);
   });
 
+  it("remove uma folha do caderno e do espaço de trabalho", () => {
+    const withNotebook = workspaceReducer(createInitialWorkspace(), {
+      type: "notebook/added",
+      id: "notebook-1",
+      title: "Meu caderno",
+      subjectId: "subject-english",
+      createdAt: "2026-09-25T00:00:00.000Z",
+    });
+    const withPage = workspaceReducer(withNotebook, {
+      type: "note/added",
+      id: "page-1",
+      notebookId: "notebook-1",
+      subjectId: "subject-english",
+      updatedAt: "2026-09-25T00:01:00.000Z",
+    });
+    const removed = workspaceReducer(withPage, {
+      type: "note/removed",
+      notebookId: "notebook-1",
+      noteId: "page-1",
+    });
+    expect(removed.notebooks[0]?.pageIds).toEqual([]);
+    expect(removed.notes).toEqual([]);
+  });
+
   it("cria uma cartela e reconhece uma sequência de bingo", () => {
     const labels = buildBingoLabels(["Present Perfect", "Phrasal verbs"]);
     expect(labels).toHaveLength(9);

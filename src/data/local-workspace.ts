@@ -667,30 +667,20 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
   if (candidates.length < 2) return workspace;
   const primary =
     candidates.find((notebook) => notebook.title.toLowerCase() === "meu caderno") ?? candidates[0]!;
-  const duplicateIds = new Set(
-    candidates.filter((notebook) => notebook.id !== primary.id).map((notebook) => notebook.id),
-  );
-  const pageIds = Array.from(
-    new Set(
-      [
-        primary.pageIds,
-        ...candidates
-          .filter((notebook) => notebook.id !== primary.id)
-          .map((notebook) => notebook.pageIds),
-      ].flat(),
-    ),
-  );
+  const duplicateIds = new Set(candidates.map(({ id }) => id));
+  duplicateIds.delete(primary.id);
+  const pageIds = [...new Set([primary, ...candidates].flatMap(({ pageIds }) => pageIds))];
   return {
     ...workspace,
     notebooks: workspace.notebooks
       .filter((notebook) => !duplicateIds.has(notebook.id))
-      .map((notebook) => {
-        if (notebook.id === primary.id) return { ...notebook, title: "Meu caderno", pageIds };
-        if (notebook.parentId && duplicateIds.has(notebook.parentId)) {
-          return { ...notebook, parentId: primary.id };
-        }
-        return notebook;
-      }),
+      .map((notebook) =>
+        notebook.id === primary.id
+          ? { ...notebook, title: "Meu caderno", pageIds }
+          : notebook.parentId && duplicateIds.has(notebook.parentId)
+            ? { ...notebook, parentId: primary.id }
+            : notebook,
+      ),
   };
 }
 

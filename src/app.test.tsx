@@ -227,15 +227,15 @@ describe("App", () => {
     expect(screen.getByDisplayValue("Improve: melhorar")).toBeTruthy();
   });
 
-  it("oferece digitalização e escrita à mão dentro de uma anotação", async () => {
+  it("cria a primeira folha diretamente na prévia do caderno", async () => {
     render(<App />);
     navigate("Cadernos");
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }));
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
-    fireEvent.click(screen.getByRole("button", { name: "Nova folha" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar primeira folha" }));
 
-    expect(await screen.findByRole("button", { name: "Digitalizar" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Escrever à mão" })).toBeTruthy();
+    expect(await screen.findByRole("dialog", { name: "Escrever à mão" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Upload" })).toBeTruthy();
   });
 
   it("abre as configurações pelo Perfil da navegação desktop", async () => {

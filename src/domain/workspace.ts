@@ -192,6 +192,7 @@ export type WorkspaceAction =
       append?: boolean;
     }
   | { type: "note/updated"; id: string; title: string; content: string; updatedAt: string }
+  | { type: "note/removed"; notebookId: string; noteId: string }
   | {
       type: "note/asset-added";
       assetId?: string;
@@ -460,6 +461,16 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           },
           ...state.notes,
         ],
+      };
+    case "note/removed":
+      return {
+        ...state,
+        notebooks: state.notebooks.map((notebook) =>
+          notebook.id === action.notebookId
+            ? { ...notebook, pageIds: notebook.pageIds.filter((id) => id !== action.noteId) }
+            : notebook,
+        ),
+        notes: state.notes.filter((note) => note.id !== action.noteId),
       };
     case "note/asset-added":
       return {

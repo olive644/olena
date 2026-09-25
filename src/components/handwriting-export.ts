@@ -1,10 +1,22 @@
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
 
 export function exportPage(canvas: HTMLCanvasElement): string {
-  const png = canvas.toDataURL("image/png");
+  let source = canvas;
+  const maxPreviewEdge = 1600;
+  if (Math.max(canvas.width, canvas.height) > maxPreviewEdge) {
+    const scale = maxPreviewEdge / Math.max(canvas.width, canvas.height);
+    const preview = document.createElement("canvas");
+    preview.width = Math.max(1, Math.round(canvas.width * scale));
+    preview.height = Math.max(1, Math.round(canvas.height * scale));
+    const context = preview.getContext("2d");
+    if (!context) throw new Error("Não foi possível preparar a miniatura da folha.");
+    context.drawImage(canvas, 0, 0, preview.width, preview.height);
+    source = preview;
+  }
+  const png = source.toDataURL("image/png");
   if (png.length <= MAX_NOTE_ASSET_DATA_URL_LENGTH) return png;
   for (const quality of [0.92, 0.82, 0.7, 0.58]) {
-    const jpeg = canvas.toDataURL("image/jpeg", quality);
+    const jpeg = source.toDataURL("image/jpeg", quality);
     if (jpeg.length <= MAX_NOTE_ASSET_DATA_URL_LENGTH) return jpeg;
   }
   throw new Error("A folha ficou grande demais. Remova alguns traços e tente novamente.");
