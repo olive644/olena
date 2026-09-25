@@ -851,3 +851,10 @@ Ajustes desta PR depois de a `main` avançar:
 - A escolha fica em `helena.listening.online.v1` como `{choice, version, at}`, é apagada junto com os demais dados pessoais ao sair da conta e pede de novo se `LISTENING_CONSENT_VERSION` subir. Pode ser trocada a qualquer momento nas configurações de áudio.
 - Sem aceite (ou com recusa): `NaturalVoicePlayer` não faz requisição e usa a voz do aparelho; `classifyWordDifficulty` usa o cache ou a estimativa local. Com aceite, o comportamento anterior continua, e `consent: true` só é enviado nesse caso.
 - A Política de Privacidade passou para a versão 2026-09-25: voz e vocabulário agora têm o consentimento como base legal (art. 7º, I) e o texto diz que só acontece com a permissão da pessoa.
+
+## Endereço próprio para cada aba (2026-09-26)
+
+- Recarregar a página voltava ao início porque a aba ativa só existia em estado do React (e o app remonta a cada sincronização da nuvem). Agora cada aba tem um caminho (`src/domain/app-routes.ts`): `/`, `/planejador`, `/foco`, `/habitos`, `/cadernos`, `/aulas`, `/aprender`, `/biblioteca`, `/atividades`, `/perfil`. O hook `useAppView` lê o caminho ao abrir, usa `history.pushState` ao trocar de aba e ouve `popstate` para o botão voltar. Sem biblioteca de rotas.
+- A raiz `/` continua sendo a aba inicial ou a que um convite de sala pede (`?sala=`); `/sala/CODIGO/projetor` e os links de caderno (`?notebook-view`, `?notebook-collab`) não mudaram.
+- `vercel.json` ganhou um rewrite desses caminhos para `index.html`; arquivos estáticos e `/api` seguem servidos normalmente.
+- Testes: `app-routes.test.ts`, `use-app-view.test.tsx` e `e2e/routes.spec.ts` (recarregar, voltar e link direto).
