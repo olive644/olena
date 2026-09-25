@@ -2,7 +2,7 @@
 // atributo data-policy-version em public/politica-de-privacidade.html (um teste confere).
 export const PRIVACY_POLICY_VERSION = "2026-09-24";
 export const PRIVACY_POLICY_PATH = "/politica-de-privacidade.html";
-export const PRIVACY_CONSENT_KEY = "helena.privacy.v1";
+export const PRIVACY_CONSENT_ITEM = "helena.privacy.v1";
 
 export type PrivacyConsent = { version: string; acceptedAt: string };
 
@@ -17,7 +17,7 @@ export function recordPrivacyConsent(
     acceptedAt: now.toISOString(),
   };
   try {
-    storage.setItem(PRIVACY_CONSENT_KEY, JSON.stringify(consent));
+    storage.setItem(PRIVACY_CONSENT_ITEM, JSON.stringify(consent));
   } catch {
     /* Sem armazenamento, o login continua; o aceite vale para esta sessão. */
   }
@@ -25,7 +25,7 @@ export function recordPrivacyConsent(
 
 export function readPrivacyConsent(storage: Pick<Storage, "getItem">): PrivacyConsent | null {
   try {
-    const parsed: unknown = JSON.parse(storage.getItem(PRIVACY_CONSENT_KEY) ?? "null");
+    const parsed: unknown = JSON.parse(storage.getItem(PRIVACY_CONSENT_ITEM) ?? "null");
     if (
       parsed &&
       typeof parsed === "object" &&

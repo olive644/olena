@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import {
-  PRIVACY_CONSENT_KEY,
+  PRIVACY_CONSENT_ITEM,
   PRIVACY_POLICY_PATH,
   PRIVACY_POLICY_VERSION,
 } from "../domain/privacy-policy";
@@ -208,7 +208,7 @@ describe("concordância com a Política de Privacidade", () => {
     fireEvent.click(button);
     await waitFor(() => expect(finish).toHaveBeenCalledOnce());
     expect(popup).toHaveBeenCalledOnce();
-    const stored = JSON.parse(localStorage.getItem(PRIVACY_CONSENT_KEY) ?? "null") as {
+    const stored = JSON.parse(localStorage.getItem(PRIVACY_CONSENT_ITEM) ?? "null") as {
       version: string;
       acceptedAt: string;
     };
@@ -223,7 +223,7 @@ describe("concordância com a Política de Privacidade", () => {
     await waitFor(() => expect(getFirebaseAccountServices).toHaveBeenCalled());
     fireEvent.click(screen.getByRole("button", { name: "Entrar com Google" }));
     expect(popup).not.toHaveBeenCalled();
-    expect(localStorage.getItem(PRIVACY_CONSENT_KEY)).toBeNull();
+    expect(localStorage.getItem(PRIVACY_CONSENT_ITEM)).toBeNull();
   });
 });
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  PRIVACY_CONSENT_KEY,
+  PRIVACY_CONSENT_ITEM,
   PRIVACY_POLICY_VERSION,
   readPrivacyConsent,
   recordPrivacyConsent,
@@ -18,7 +18,7 @@ describe("registro do aceite da política", () => {
   it("guarda a versão e o momento do aceite", () => {
     const storage = memoryStorage();
     recordPrivacyConsent(storage, new Date("2026-09-24T15:30:00.000Z"));
-    expect(JSON.parse(storage.getItem(PRIVACY_CONSENT_KEY)!)).toEqual({
+    expect(JSON.parse(storage.getItem(PRIVACY_CONSENT_ITEM)!)).toEqual({
       version: PRIVACY_POLICY_VERSION,
       acceptedAt: "2026-09-24T15:30:00.000Z",
     });
@@ -35,10 +35,10 @@ describe("registro do aceite da política", () => {
 
   it("trata ausência, lixo e formato errado como sem aceite", () => {
     expect(readPrivacyConsent(memoryStorage())).toBeNull();
-    expect(readPrivacyConsent(memoryStorage({ [PRIVACY_CONSENT_KEY]: "não é json" }))).toBeNull();
-    expect(readPrivacyConsent(memoryStorage({ [PRIVACY_CONSENT_KEY]: "{}" }))).toBeNull();
+    expect(readPrivacyConsent(memoryStorage({ [PRIVACY_CONSENT_ITEM]: "não é json" }))).toBeNull();
+    expect(readPrivacyConsent(memoryStorage({ [PRIVACY_CONSENT_ITEM]: "{}" }))).toBeNull();
     expect(
-      readPrivacyConsent(memoryStorage({ [PRIVACY_CONSENT_KEY]: '{"version":1,"acceptedAt":2}' })),
+      readPrivacyConsent(memoryStorage({ [PRIVACY_CONSENT_ITEM]: '{"version":1,"acceptedAt":2}' })),
     ).toBeNull();
   });
 
@@ -52,6 +52,6 @@ describe("registro do aceite da política", () => {
   });
 
   it("usa uma chave que é apagada junto com os dados pessoais ao sair da conta", () => {
-    expect(PRIVACY_CONSENT_KEY.startsWith("helena")).toBe(true);
+    expect(PRIVACY_CONSENT_ITEM.startsWith("helena")).toBe(true);
   });
 });
