@@ -49,6 +49,31 @@ describe("zona morta do estabilizador ao vivo", () => {
 });
 
 describe("filtro 1€ ao vivo", () => {
+  it("mantém pressão equivalente com frequências diferentes", () => {
+    function pressureAt(hz: number) {
+      const filter = createLiveStabilizer(point(0, 0, { pressure: 0.2 }));
+      filter.push([point(1, 0, { pressure: 0.2 })], [0]);
+      let pressure = 0.2;
+      for (let index = 1; index <= hz / 20; index++) {
+        pressure = filter.push([point(index * 10, 0, { pressure: 0.9 })], [(index * 1000) / hz])[0]!
+          .pressure;
+      }
+      return pressure;
+    }
+    expect(pressureAt(60)).toBeCloseTo(pressureAt(240), 6);
+  });
+  it("não descarta mudança de pressão com a caneta parada", () => {
+    const filter = createLiveStabilizer(point(100, 100, { pressure: 0.2 }));
+    const [sample] = filter.push([point(100, 100, { pressure: 0.9 })]);
+    expect(sample!.pressure).toBeGreaterThan(0.2);
+    expect(sample!.pressure).toBeLessThan(0.9);
+    expect(sample!.x).toBe(100);
+  });
+  it("não cria uma ponta mais grossa ao concluir o traço", () => {
+    const filter = createLiveStabilizer(point(0, 0, { pressure: 0.1 }));
+    const [sample] = filter.push([point(30, 0, { pressure: 0.9 })]);
+    expect(filter.finish().every((tail) => tail.pressure === sample!.pressure)).toBe(true);
+  });
   it("reduz o tremor de uma mão lenta", () => {
     const { raw, times } = straightRun(40, 200, 1.5);
     const stabilizer = createLiveStabilizer(point(100, 200));

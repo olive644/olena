@@ -388,17 +388,17 @@
   --editor-icon-cutout: #fffaf0;
   --editor-icon-facet: #facc15;
 }
-:root .capture-dialog--handwriting .notebook-file-tools > button:first-of-type .paper-editor-icon {
+:root .capture-dialog--handwriting .notebook-file-tools [data-paper-editor-icon="cloudUpload"] {
   color: #236a99;
   --editor-icon-cutout: #fffaf0;
   --editor-icon-facet: #8bd1f0;
 }
-:root .capture-dialog--handwriting .notebook-file-tools > button:nth-of-type(2) .paper-editor-icon {
+:root .capture-dialog--handwriting .notebook-file-tools [data-paper-editor-icon="download"] {
   color: #237a5c;
   --editor-icon-cutout: #fffaf0;
   --editor-icon-facet: #89dab4;
 }
-:root .capture-dialog--handwriting .notebook-file-tools > button:nth-of-type(3) .paper-editor-icon {
+:root .capture-dialog--handwriting .notebook-file-tools [data-paper-editor-icon="save"] {
   color: #6330ad;
   --editor-icon-cutout: #fffaf0;
   --editor-icon-facet: #cbb1f4;

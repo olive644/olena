@@ -5,7 +5,7 @@ export type HandwritingPoint = {
   tiltX?: number;
   tiltY?: number;
 };
-export type HandwritingPaper = "ruled" | "grid" | "dots" | "blank";
+export type HandwritingPaper = "ruled" | "grid" | "dots" | "blank" | "board";
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
   brush?: "fine" | "ink" | "soft";
@@ -81,6 +81,7 @@ export const DEFAULT_HANDWRITING_LAYER_VISIBILITY: HandwritingLayerVisibility = 
 };
 
 export type HandwritingDocument = {
+  canvasSize?: { width: number; height: number };
   backgroundFrame?: { x: number; y: number; width: number; height: number } | undefined;
   background?: string | undefined;
   pageText?: string;

@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+O editor usa canvasSize opcional no HandwritingDocument. Ausência em documentos
+antigos mantém 1200x1600; quadro novo usa 3200x2400. Não reduzir dimensões de uma
+página preenchida ao trocar papel. O limite do bitmap continua em 9 milhões de
+pixels por camada. Sobreposições e ponteiros usam dimensões lógicas, não pixels CSS.
+
+NotebookPageBook substitui cartões de folhas na área do caderno e o antigo footer
+do editor. A criação pelo + usa note/added com append para não inverter a leitura.
+NotebookSettings controla preferências versionadas em notebook-preferences.ts,
+incluídas no snapshot sincronizado. Teste de fluxo: e2e/notebook-workspace.spec.ts.
+O livro adapta o exemplo CSS de anand_4957 (Uiverse.io) fornecido pelo proprietário,
+com animação única na troca de página e respeito a prefers-reduced-motion.
+
 Na colaboração, o UID autenticado identifica a pessoa, não o aparelho. Entrar pelo
 mesmo UID reutiliza a participação; sair remove a conta da equipe em todos os aparelhos.
 Sem heartbeat por 45 segundos, a pessoa fica offline, mas mantém sua vaga.

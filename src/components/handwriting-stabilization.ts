@@ -24,6 +24,7 @@ function smoothPass(points: readonly HandwritingPoint[]): HandwritingPoint[] {
     const previous = points[index - 1] ?? point;
     const next = points[index + 1] ?? point;
     return {
+      ...point,
       x: previous.x * 0.25 + point.x * 0.5 + next.x * 0.25,
       y: previous.y * 0.25 + point.y * 0.5 + next.y * 0.25,
       pressure: previous.pressure * 0.2 + point.pressure * 0.6 + next.pressure * 0.2,
@@ -127,13 +128,19 @@ export function createLiveStabilizer(
     push(samples, times) {
       const filtered: HandwritingPoint[] = [];
       samples.forEach((sample, index) => {
-        if (Math.hypot(sample.x - anchor.x, sample.y - anchor.y) < options.deadzone) return;
+        if (
+          Math.hypot(sample.x - anchor.x, sample.y - anchor.y) < options.deadzone &&
+          Math.abs(sample.pressure - pressure) < 0.015
+        )
+          return;
         const time = times?.[index] ?? (lastTime ?? 0) + DEFAULT_SAMPLE_INTERVAL_MS;
         const interval = Math.min(
           MAX_INTERVAL_S,
           Math.max(MIN_INTERVAL_S, (time - (lastTime ?? time - DEFAULT_SAMPLE_INTERVAL_MS)) / 1000),
         );
         lastTime = time;
+        // A mesma resposta por segundo em canetas de 60, 125 ou 240 Hz.
+        const pressureAlpha = 1 - Math.pow(1 - options.pressureResponse, interval / 0.008);
         const stepX = sample.x - lastRaw.x;
         const stepY = sample.y - lastRaw.y;
         const step = Math.hypot(stepX, stepY);
@@ -147,7 +154,7 @@ export function createLiveStabilizer(
           y = sample.y;
           velocityX = 0;
           velocityY = 0;
-          pressure += options.pressureResponse * (sample.pressure - pressure);
+          pressure += pressureAlpha * (sample.pressure - pressure);
           lastRaw = sample;
           anchor = sample;
           filtered.push({ ...sample, x, y, pressure });
@@ -165,7 +172,7 @@ export function createLiveStabilizer(
         y = predictedY + alpha * errorY;
         velocityX += velocityGain * errorX;
         velocityY += velocityGain * errorY;
-        pressure += options.pressureResponse * (sample.pressure - pressure);
+        pressure += pressureAlpha * (sample.pressure - pressure);
         lastRaw = sample;
         anchor = sample;
         filtered.push({ ...sample, x, y, pressure });
@@ -178,12 +185,12 @@ export function createLiveStabilizer(
         if (Math.hypot(anchor.x - x, anchor.y - y) <= SETTLE_DISTANCE) break;
         x += (anchor.x - x) * SETTLE_RESPONSE;
         y += (anchor.y - y) * SETTLE_RESPONSE;
-        tail.push({ ...anchor, x, y });
+        tail.push({ ...anchor, x, y, pressure });
       }
       if (x !== anchor.x || y !== anchor.y) {
         x = anchor.x;
         y = anchor.y;
-        tail.push({ ...anchor });
+        tail.push({ ...anchor, pressure });
       }
       return tail;
     },

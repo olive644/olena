@@ -421,6 +421,10 @@ test("abre digitalização, escrita à mão e completa um bingo", async ({ page 
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
 
+  await page
+    .getByRole("dialog", { name: "Escrever à mão" })
+    .getByRole("button", { name: "Fechar", exact: true })
+    .click();
   await page.getByRole("button", { name: "Digitalizar" }).click();
   await expect(page.getByRole("dialog", { name: "Digitalizar documento" })).toBeVisible();
   await page.getByRole("button", { name: "Fechar", exact: true }).click();

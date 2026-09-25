@@ -189,6 +189,7 @@ export type WorkspaceAction =
       subjectId: string;
       updatedAt: string;
       kind?: "note";
+      append?: boolean;
     }
   | { type: "note/updated"; id: string; title: string; content: string; updatedAt: string }
   | {
@@ -439,7 +440,12 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         notebooks: state.notebooks.map((notebook) =>
           notebook.id === action.notebookId
-            ? { ...notebook, pageIds: [action.id, ...notebook.pageIds] }
+            ? {
+                ...notebook,
+                pageIds: action.append
+                  ? [...notebook.pageIds, action.id]
+                  : [action.id, ...notebook.pageIds],
+              }
             : notebook,
         ),
         notes: [

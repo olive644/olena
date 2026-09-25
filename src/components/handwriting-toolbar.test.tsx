@@ -288,14 +288,9 @@ describe("opções de tinta", () => {
     ).toBe(true);
   });
 
-  it("liga e desliga o ajuste inteligente e o modo só caneta", () => {
+  it("deixa as preferências de escrita nas configurações", () => {
     const props = inkProps();
     render(<HandwritingInkOptions {...props} />);
-    const assist = screen.getByRole("checkbox", { name: /Ajuste inteligente/ }) as HTMLInputElement;
-    expect(assist.checked).toBe(true);
-    fireEvent.click(assist);
-    expect(props.onStabilizationChange).toHaveBeenCalledWith(false);
-    fireEvent.click(screen.getByRole("checkbox", { name: "Só caneta, dedo move" }));
-    expect(props.onPenOnlyChange).toHaveBeenCalledWith(true);
+    expect(screen.queryByRole("checkbox")).toBeNull();
   });
 });

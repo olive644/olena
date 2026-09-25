@@ -135,10 +135,6 @@ type HandwritingCoordinatePanelProps = {
 export function HandwritingCoordinatePanel({
   coordinateStep,
   onStepChange,
-  coordinateMeasurements,
-  onMeasurementsChange,
-  equalCoordinateAxes,
-  onEqualAxesChange,
   inspectedCoordinateStats,
   isLivePreview,
 }: HandwritingCoordinatePanelProps) {
@@ -150,9 +146,6 @@ export function HandwritingCoordinatePanel({
           <h3>Sistema de coordenadas</h3>
         </div>
       </header>
-      <p>
-        Arraste a partir da origem para criar os eixos. Cada divisão ocupa um quadrado da folha.
-      </p>
       {([1, 2, 5, 10] as const).map((step) => (
         <button
           type="button"
@@ -173,22 +166,6 @@ export function HandwritingCoordinatePanel({
           </svg>
         </button>
       ))}
-      <label className="handwriting-coordinate-toggle">
-        <input
-          type="checkbox"
-          checked={coordinateMeasurements}
-          onChange={(event) => onMeasurementsChange(event.target.checked)}
-        />
-        <span>Medições nos eixos</span>
-      </label>
-      <label className="handwriting-coordinate-toggle">
-        <input
-          type="checkbox"
-          checked={equalCoordinateAxes}
-          onChange={(event) => onEqualAxesChange(event.target.checked)}
-        />
-        <span>Eixos com o mesmo tamanho</span>
-      </label>
       {inspectedCoordinateStats && (
         <section className="handwriting-coordinate-inspector" aria-live="polite">
           <small>{isLivePreview ? "PRÉVIA DO GESTO" : "LEITURA DO EIXO"}</small>

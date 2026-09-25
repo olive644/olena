@@ -4,8 +4,10 @@ import { HelenaLoading } from "./helena-loading";
 import type { StudyNote } from "../domain/workspace";
 import { downloadNotebookPdf } from "../data/notebook-export";
 import { roomAppCheckToken } from "../data/room-app-check";
+import type { ReactNode } from "react";
 
 type Props = {
+  settings?: ReactNode;
   pages: StudyNote[];
   currentPageId: string;
   currentImage: () => string;
@@ -17,6 +19,7 @@ type Props = {
 };
 
 export function NotebookFileActions({
+  settings,
   pages,
   currentPageId,
   currentImage,
@@ -91,6 +94,7 @@ export function NotebookFileActions({
   return (
     <div className="notebook-file-tools" role="group" aria-label="Arquivo">
       <span className="notebook-file-tools__label">Arquivo</span>
+      {settings}
       <button type="button" aria-label="Upload" title="Upload" onClick={onUpload}>
         <PaperEditorIcon name="cloudUpload" />
         <span>Upload</span>

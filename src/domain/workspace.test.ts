@@ -11,6 +11,30 @@ import type { StudyPreferences } from "./study-preferences";
 import type { HandwritingDocument } from "./handwriting";
 
 describe("workspaceReducer", () => {
+  it("adiciona a próxima folha no fim sem reordenar folhas existentes", () => {
+    let state = workspaceReducer(createInitialWorkspace(), {
+      type: "notebook/added",
+      id: "book",
+      title: "Caderno",
+      subjectId: "",
+      createdAt: "2026-09-24",
+    });
+    for (const id of ["first", "second", "third"]) {
+      state = workspaceReducer(state, {
+        type: "note/added",
+        id,
+        notebookId: "book",
+        subjectId: "",
+        updatedAt: "2026-09-24",
+        append: true,
+      });
+    }
+    expect(state.notebooks.find((book) => book.id === "book")?.pageIds).toEqual([
+      "first",
+      "second",
+      "third",
+    ]);
+  });
   it("guarda pastas em cadernos e preserva notas ao retirar ou excluir o caderno", () => {
     let state = createInitialWorkspace();
     state = workspaceReducer(state, {

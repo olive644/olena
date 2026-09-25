@@ -1,3 +1,4 @@
+import { openHandwritingA4 } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
@@ -25,7 +26,7 @@ test("colaboração exige conta e mostra apenas convite por link", async ({
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page);
   const host = page.getByRole("dialog", { name: "Escrever à mão" });
   if (testInfo.project.name === "desktop") {
     const paperType = host.getByRole("button", { name: "Tipo de papel" });
@@ -121,7 +122,7 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page);
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
   await editor.getByRole("button", { name: "Adicionar post-it" }).click();
   await editor
@@ -204,7 +205,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Meu universo" })).toBeVisible();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page);
 
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog).toBeVisible();
@@ -215,14 +216,12 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   for (const selector of [
     ".handwriting-paper-picker",
     ".handwriting-brush-panel",
-    ".handwriting-footer",
+    ".notebook-page-book",
   ]) {
     await expect(dialog.locator(selector)).toHaveCSS("background-color", "rgb(255, 255, 255)");
   }
-  await dialog.getByRole("button", { name: "Tela cheia", exact: true }).click();
   await expect(dialog).toHaveClass(/capture-dialog--expanded/);
-  await dialog.getByRole("button", { name: "Sair da tela cheia" }).click();
-  await expect(dialog).not.toHaveClass(/capture-dialog--expanded/);
+  await expect(dialog.getByRole("button", { name: /tela cheia/i })).toHaveCount(0);
   await expect(dialog.locator("svg.lucide")).toHaveCount(0);
   {
     const eraser = dialog.getByRole("button", { name: "Borracha", exact: true });
@@ -245,8 +244,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
       "background-color",
       "rgb(41, 36, 50)",
     );
-    for (const selector of [".handwriting-paper-picker", ".handwriting-footer"]) {
-      await expect(dialog.locator(selector)).toHaveCSS("background-color", "rgb(41, 36, 50)");
+    for (const selector of [".handwriting-paper-picker", ".notebook-page-book"]) {
+      await expect(dialog.locator(selector)).toHaveCSS(
+        "background-color",
+        selector === ".notebook-page-book" ? "rgb(32, 29, 38)" : "rgb(41, 36, 50)",
+      );
     }
     await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
     await expect(dialog.locator(".handwriting-brush-panel")).toHaveCSS(
@@ -324,6 +326,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   expect(bounds).not.toBeNull();
   expect(viewport).not.toBeNull();
   if (!bounds || !viewport) return;
+  expect(viewport.height).toBeGreaterThanOrEqual(120);
   expect(viewport.x).toBeGreaterThanOrEqual(0);
   expect(viewport.x + viewport.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   const startX = Math.max(bounds.x, viewport.x) + 40;
@@ -549,7 +552,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
   await page.getByRole("button", { name: "Ver todas as folhas" }).click();
-  await page.locator(".notebook-page-card").first().click();
+  await page.getByRole("button", { name: "Abrir caderno", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Escrever à mão" })
+    .getByRole("button", { name: "Fechar", exact: true })
+    .click();
   await page.getByRole("button", { name: "Abrir Folha manuscrita" }).click();
   await expect(page.getByRole("dialog", { name: "Folha manuscrita" })).toBeVisible();
   await expect
@@ -592,7 +599,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page);
   let dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Adicionar post-it" }).click();
   await dialog.getByRole("textbox", { name: "Texto do post-it" }).fill("Revisar gramática");
@@ -609,12 +616,12 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   ).toBeVisible();
   await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(dialog).not.toBeVisible();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page, true);
   dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog.getByRole("textbox", { name: "Texto do post-it" })).toHaveValue(
     "Revisar gramática",
   );
-  await expect(dialog.getByText("Rascunho recuperado")).toBeVisible();
+  await expect(dialog.getByRole("navigation", { name: "Folhear caderno" })).toBeVisible();
   await expect(dialog.locator(".brush-instrument")).toHaveCount(3);
   await expect
     .poll(() =>
@@ -674,11 +681,16 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await reopened.getByRole("button", { name: "PNG", exact: true }).click();
   expect((await download).suggestedFilename()).toBe("folha-do-caderno.png");
   await reopened.getByRole("button", { name: "Fechar", exact: true }).click();
+  await page.getByRole("button", { name: "Folhas do caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Escrever à mão" })
+    .getByRole("button", { name: "Fechar", exact: true })
+    .click();
   await page.getByRole("button", { name: "Folhas do caderno" }).click();
-  await expect(page.locator(".notebook-page-card")).toHaveCount(2);
-  await page.getByRole("button", { name: "Mover Nova folha para depois" }).first().click();
-  await expect(page.locator(".notebook-page-card__number").first()).toHaveText("01");
+  await expect(page.locator(".notebook-page-card")).toHaveCount(0);
+  await page.getByRole("button", { name: "Próxima folha", exact: true }).click();
+  await expect(page.getByText("Folha 2 de 2", { exact: true })).toBeVisible();
 });
 
 test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async ({
@@ -705,10 +717,12 @@ test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async 
   await page.getByLabel("Nome", { exact: true }).fill("Janela de escrita");
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole("checkbox", { name: /Ajuste inteligente/ })).toBeChecked();
+  await dialog.getByRole("button", { name: "Configurações do editor" }).click();
+  await expect(page.getByRole("checkbox", { name: /Ajuste inteligente/ })).toBeChecked();
+  await page.getByRole("button", { name: "Fechar configurações" }).click();
   await dialog.getByRole("button", { name: "Janela de escrita ampliada" }).click();
 
   const canvas = dialog.getByLabel("Área ampliada para escrever com dedo ou caneta");
