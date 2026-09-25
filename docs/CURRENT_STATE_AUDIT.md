@@ -778,3 +778,20 @@ O botão "Exportar PDF" do caderno nunca funcionou. Ele abria a janela de impres
 `openPrintWindow` (`src/data/print-window.ts`) abre a janela normalmente e corta o vínculo depois, com `opener = null`, que mantém a proteção que o `noopener` queria dar (a janela não controla a página de origem). Passou a ser usado na exportação do caderno e na impressão da folha do editor. `e2e/notebook-pdf.spec.ts` cobre o fluxo real (desenhar, salvar a folha, exportar): a janela abre com o título do caderno e uma imagem por folha com conteúdo, sem aviso na página de origem e com `window.opener` nulo. O teste falhava antes da correção.
 
 O teste `recupera rascunho, adiciona post-it e organiza folhas` falhava de forma intermitente por uma corrida do próprio teste: ao reabrir, o rascunho recuperado é regravado pelo autosave 450 ms depois, e o aviso passa de "Rascunho recuperado" para "Rascunho salvo neste dispositivo". Com a máquina carregada o teste chegava tarde ao primeiro aviso. Agora aceita as duas fases, e a recuperação continua provada pelo texto do post-it.
+
+# Política de Privacidade, setembro de 2026
+
+O app não tinha política de privacidade nem forma de a pessoa concordar com ela, e é usado por estudantes, muitos deles menores de 18 anos. Agora há:
+
+- **Página pública** `public/politica-de-privacidade.html` (versão 2026-09-24), estática e sem script, imagem ou recurso externo, para não rastrear quem a lê e para ficar fora do orçamento de JS. Serve também como o link de política que o Google pede na tela de consentimento OAuth do Google Agenda. Descreve, com base no código, o que fica só no aparelho, o que vai para a nuvem (Firebase), o que vai a terceiros (Google, Vercel, Cloudflare, Datamuse), cookies, prazos de guarda, segurança, crianças e adolescentes (LGPD, art. 14), direitos (art. 18) e como pedir exclusão. Tem tema claro e escuro, índice e tabela que rola dentro do próprio quadro no celular.
+- **Concordância no login**, no fim do onboarding (`GoogleLogin`): uma caixa que nunca vem marcada, com o link da política em outra aba (para não perder as respostas do onboarding) e a declaração de ter 18 anos ou a autorização de quem é responsável. O botão "Entrar com Google" só habilita depois de marcar, com o motivo dito na tela. A versão aceita e o momento ficam em `helena.privacy.v1` (`src/domain/privacy-policy.ts`), gravados antes de sair para o Google, porque o login pode virar um redirecionamento de página inteira. A chave começa com `helena`, então é apagada ao sair da conta.
+- **Trava contra política desatualizada** (`src/privacy-policy-page.test.ts`): o teste lê o `connect-src` do CSP e exige que cada serviço externo liberado ali seja citado na política. Se um serviço novo entrar no CSP, o teste falha até a política ser atualizada. Também confere a versão, a ausência de travessões, de script e de recursos externos, o índice e os direitos da LGPD.
+
+Pendências que dependem do proprietário, registradas na própria política e aqui:
+
+- **Canal de contato.** O e-mail para pedidos de privacidade ainda não foi definido; a política mostra um aviso de "canal em definição". Não deve ser divulgada como definitiva antes de haver um e-mail.
+- **Revisão jurídica.** O texto foi redigido a partir do código, não por advogado. Vale uma revisão antes de divulgar, sobretudo as bases legais, o prazo de 15 dias e o tratamento de menores.
+- **Google Cloud.** Adicionar o endereço da política na tela de consentimento OAuth do projeto.
+- **Não existe exclusão de conta no app.** A política diz que o pedido é atendido manualmente. Um botão de exclusão de conta e de dados é a melhoria natural.
+- **Voz natural e vocabulário.** Os exercícios de escuta enviam o texto da frase à Cloudflare com `consent: true` fixo no código, e cada palavra vai ao Datamuse, sem aceite próprio. A política informa isso, mas o `AGENTS.md` pede consentimento claro: vale um aceite específico dentro dos exercícios.
+- **Google Fonts.** As fontes ainda vêm dos servidores do Google e a política menciona isso. Hospedá-las no próprio domínio elimina esse envio de IP e a linha da tabela.

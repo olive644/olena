@@ -3,6 +3,7 @@ import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
+import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
@@ -64,6 +65,8 @@ export function GoogleLogin({
     useState<Awaited<ReturnType<typeof getFirebaseAccountServices>>>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
+  // Nunca vem marcada: o aceite da política precisa ser um ato da pessoa.
+  const [accepted, setAccepted] = useState(false);
   const pending = useRef(false);
 
   useEffect(() => {
@@ -102,8 +105,11 @@ export function GoogleLogin({
   }, []);
 
   async function login() {
-    if (!services || pending.current) return;
+    if (!services || pending.current || !accepted) return;
     pending.current = true;
+    // O aceite é registrado antes de sair para o Google: o login pode virar um
+    // redirecionamento de página inteira e a pessoa voltaria sem o registro.
+    recordPrivacyConsent(window.localStorage);
     setBusy(true);
     setError("");
     const provider = new services.authApi.GoogleAuthProvider();
@@ -181,8 +187,31 @@ export function GoogleLogin({
             />
           )}
           {error && <p role="alert">{error}</p>}
+          <label className="login-page__consent">
+            <input
+              type="checkbox"
+              checked={accepted}
+              aria-describedby="login-consent-help"
+              onChange={(event) => setAccepted(event.target.checked)}
+            />
+            <span>
+              Li e concordo com a{" "}
+              <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
+                Política de Privacidade<span className="sr-only"> (abre em uma nova aba)</span>
+              </a>
+              . Tenho 18 anos ou mais, ou a autorização de quem é responsável por mim.
+            </span>
+          </label>
+          <p id="login-consent-help" className="login-page__consent-help">
+            {accepted ? "" : "Marque a concordância para poder entrar."}
+          </p>
           <div className="onboarding__actions login-page__actions">
-            <button type="button" disabled={!services || busy} onClick={() => void login()}>
+            <button
+              type="button"
+              disabled={!services || busy || !accepted}
+              aria-describedby="login-consent-help"
+              onClick={() => void login()}
+            >
               Entrar com Google
               <PaperArrow />
             </button>

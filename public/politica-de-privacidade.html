@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Política de Privacidade do OlenaStudy</title>
+    <meta
+      name="description"
+      content="Como o OlenaStudy trata os seus dados: o que fica no seu aparelho, o que vai para a nuvem, com quem é compartilhado e como exercer seus direitos."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://olenastudy.vercel.app/politica-de-privacidade.html" />
+    <meta name="color-scheme" content="light dark" />
+    <style>
+      :root {
+        --page: #fff9ef;
+        --card: #ffffff;
+        --ink: #292432;
+        --muted: #5a5266;
+        --line: #e6dccb;
+        --violet: #7c3aed;
+        --violet-deep: #51259b;
+        --note: #f3ecff;
+        --warn-bg: #fff3c4;
+        --warn-line: #d9b420;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #211c29;
+          --card: #292432;
+          --ink: #fff9ef;
+          --muted: #cfc6dc;
+          --line: #443b52;
+          --violet: #a779ef;
+          --violet-deep: #c9b0f7;
+          --note: #352c45;
+          --warn-bg: #3d3416;
+          --warn-line: #b99a1c;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family:
+          "Manrope",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        line-height: 1.65;
+      }
+      .wrap {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 4rem;
+      }
+      header.brand {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.5rem 0 1.25rem;
+      }
+      .logo {
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .logo span {
+        color: var(--violet);
+      }
+      .back {
+        color: var(--violet-deep);
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .back:hover,
+      .back:focus-visible {
+        text-decoration: underline;
+      }
+      main {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px 26px 18px 26px;
+        box-shadow: 0 5px 0 var(--line);
+        padding: 1.5rem 1.25rem 2rem;
+      }
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.9rem;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+      }
+      h2 {
+        margin: 2.2rem 0 0.6rem;
+        font-size: 1.25rem;
+        letter-spacing: -0.02em;
+        color: var(--violet-deep);
+      }
+      h3 {
+        margin: 1.4rem 0 0.4rem;
+        font-size: 1.02rem;
+      }
+      p,
+      li {
+        max-width: 68ch;
+      }
+      .meta {
+        margin: 0 0 1.25rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .summary {
+        margin: 1rem 0 1.5rem;
+        padding: 1rem 1.1rem;
+        background: var(--note);
+        border: 1px solid var(--line);
+        border-radius: 12px 18px 12px 18px;
+      }
+      .summary h2 {
+        margin-top: 0;
+      }
+      .summary ul {
+        margin: 0.4rem 0 0;
+        padding-left: 1.2rem;
+      }
+      .pending {
+        margin: 1rem 0;
+        padding: 0.9rem 1rem;
+        background: var(--warn-bg);
+        border: 2px solid var(--warn-line);
+        border-radius: 10px;
+        font-weight: 600;
+      }
+      nav.toc {
+        margin: 0 0 1rem;
+        padding: 0.9rem 1.1rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      nav.toc strong {
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+      nav.toc ol {
+        margin: 0;
+        padding-left: 1.3rem;
+        columns: 2 240px;
+      }
+      nav.toc a {
+        color: var(--violet-deep);
+      }
+      .table-scroll {
+        overflow-x: auto;
+        margin: 0.6rem 0 1rem;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+      table {
+        width: 100%;
+        min-width: 620px;
+        border-collapse: collapse;
+        font-size: 0.93rem;
+      }
+      th,
+      td {
+        padding: 0.6rem 0.7rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        background: var(--note);
+        font-size: 0.85rem;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      a {
+        color: var(--violet-deep);
+      }
+      a:focus-visible {
+        outline: 3px solid var(--violet);
+        outline-offset: 2px;
+      }
+      footer {
+        margin-top: 1.5rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        text-align: center;
+      }
+      @media (max-width: 520px) {
+        h1 {
+          font-size: 1.55rem;
+        }
+        main {
+          padding: 1.1rem 0.9rem 1.5rem;
+        }
+      }
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+        main {
+          border: 0;
+          box-shadow: none;
+        }
+        .back,
+        nav.toc {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="brand">
+        <a class="logo" href="/">Olena<span>Study</span></a>
+        <a class="back" href="/">Voltar ao aplicativo</a>
+      </header>
+
+      <main data-policy-version="2026-09-24">
+        <h1>Política de Privacidade</h1>
+        <p class="meta">
+          Versão de 24 de setembro de 2026. Vale para o aplicativo OlenaStudy em
+          olenastudy.vercel.app.
+        </p>
+
+        <section class="summary" aria-labelledby="resumo">
+          <h2 id="resumo">Resumo em poucas palavras</h2>
+          <ul>
+            <li>
+              Sem conta, tudo o que você faz fica <strong>só no seu aparelho</strong>, no
+              armazenamento do navegador.
+            </li>
+            <li>
+              Ao entrar com o Google, seu espaço de estudos é
+              <strong>copiado para a nuvem</strong> (Firebase, do Google) para aparecer em outros
+              aparelhos. Só a sua conta lê essa cópia.
+            </li>
+            <li>
+              Algumas funções mandam <strong>pequenos trechos</strong> a serviços de terceiros: voz
+              natural (Cloudflare), classificação de vocabulário (Datamuse), Google Agenda (se você
+              conectar) e verificação de dispositivo (Google reCAPTCHA).
+            </li>
+            <li>
+              <strong>Não vendemos dados</strong>, não fazemos publicidade e não usamos ferramentas
+              de análise de comportamento.
+            </li>
+            <li>
+              Se você tem menos de 18 anos, use com a ciência e a autorização de quem é responsável
+              por você.
+            </li>
+          </ul>
+        </section>
+
+        <nav class="toc" aria-label="Índice">
+          <strong>Nesta página</strong>
+          <ol>
+            <li><a href="#quem">Quem é responsável</a></li>
+            <li><a href="#dados">Quais dados usamos e para quê</a></li>
+            <li><a href="#armazenamento">Cookies e armazenamento no navegador</a></li>
+            <li><a href="#compartilhamento">Com quem compartilhamos</a></li>
+            <li><a href="#prazos">Por quanto tempo guardamos</a></li>
+            <li><a href="#seguranca">Como protegemos</a></li>
+            <li><a href="#menores">Crianças e adolescentes</a></li>
+            <li><a href="#direitos">Seus direitos e como exercê-los</a></li>
+            <li><a href="#mudancas">Mudanças nesta política</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="quem">1. Quem é responsável</h2>
+        <p>
+          O responsável pelo tratamento dos dados (o "controlador", na Lei Geral de Proteção de
+          Dados, a LGPD, Lei nº 13.709/2018) é <strong>Oliver</strong>, pessoa física, que mantém o
+          OlenaStudy. O código do aplicativo é público em
+          <a href="https://github.com/olive644/olena" rel="noopener noreferrer"
+            >github.com/olive644/olena</a
+          >, o que permite conferir o que está descrito aqui.
+        </p>
+        <p class="pending" role="note">
+          Canal de contato em definição: o e-mail para pedidos de privacidade ainda será divulgado
+          nesta seção. Até lá, não envie dados pessoais em canais públicos. Você pode abrir uma
+          conversa pelo repositório acima pedindo contato, sem informar dados pessoais, e a resposta
+          seguirá por um canal privado.
+        </p>
+
+        <h2 id="dados">2. Quais dados usamos e para quê</h2>
+        <p>
+          Usamos só o que cada função precisa. A tabela mostra cada situação, o que é tratado, a
+          finalidade e a base legal da LGPD.
+        </p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Situação</th>
+                <th scope="col">O que é tratado</th>
+                <th scope="col">Para quê</th>
+                <th scope="col">Base legal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Uso no aparelho, sem conta</th>
+                <td>
+                  Agenda, hábitos, foco, cadernos e folhas manuscritas, flashcards, anotações,
+                  progresso, perfil escolhido (avatar e nome), tema, rascunhos e histórico de
+                  versões do seu espaço.
+                </td>
+                <td>Fazer o aplicativo funcionar para você.</td>
+                <td>Execução do serviço que você pediu (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Entrar com o Google</th>
+                <td>
+                  Nome, e-mail, foto e identificador da conta Google, fornecidos pelo Google via
+                  Firebase Authentication.
+                </td>
+                <td>Identificar você e mostrar seu nome e sua foto no aplicativo.</td>
+                <td>
+                  Execução do serviço (art. 7º, V) e seu consentimento ao entrar (art. 7º, I).
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Sincronização entre aparelhos</th>
+                <td>
+                  Uma cópia do seu espaço de estudos, guardada no Firebase Realtime Database
+                  (Google) sob o identificador da sua conta.
+                </td>
+                <td>Mostrar os mesmos dados em outros aparelhos e evitar perdê-los.</td>
+                <td>Execução do serviço (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Google Agenda (opcional)</th>
+                <td>
+                  Seus eventos dos próximos dias, em modo somente leitura. O acesso fica em um
+                  cookie cifrado no seu navegador.
+                </td>
+                <td>Mostrar seus compromissos junto com seus estudos.</td>
+                <td>Seu consentimento, que você pode retirar a qualquer momento (art. 7º, I).</td>
+              </tr>
+              <tr>
+                <th scope="row">Modo Sala</th>
+                <td>
+                  O nome de exibição que você digita, pontuação, respostas e presença na sala.
+                </td>
+                <td>Jogar e estudar com outras pessoas em tempo real.</td>
+                <td>Execução do serviço (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Caderno compartilhado</th>
+                <td>
+                  O conteúdo da folha, o nome de exibição e a presença de quem está editando, ou uma
+                  cópia somente leitura acessível por um link.
+                </td>
+                <td>Escrever junto com outras pessoas ou compartilhar uma folha.</td>
+                <td>Execução do serviço (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Exercícios de escuta com voz natural</th>
+                <td>
+                  O texto da frase a ser lida (até 160 caracteres), sem associá-lo à sua conta.
+                </td>
+                <td>Gerar o áudio da frase. Sem o serviço, o app usa a voz do seu navegador.</td>
+                <td>Execução do serviço (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Classificação de vocabulário</th>
+                <td>A palavra em inglês do cartão, enviada sozinha.</td>
+                <td>Estimar se a palavra é fácil, média ou difícil.</td>
+                <td>Execução do serviço (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Verificação de dispositivo e limite de uso</th>
+                <td>
+                  Um token de verificação do Google reCAPTCHA Enterprise e do Firebase App Check e o
+                  endereço IP, guardado apenas como código embaralhado (hash SHA-256) por cerca de
+                  um a dois minutos.
+                </td>
+                <td>Impedir abusos e robôs nas funções de sala e de caderno compartilhado.</td>
+                <td>Segurança e prevenção a fraudes (art. 7º, IX e art. 46).</td>
+              </tr>
+              <tr>
+                <th scope="row">Fontes de letra</th>
+                <td>
+                  Seu endereço IP e dados do navegador, vistos pelo Google ao carregar as fontes.
+                </td>
+                <td>Exibir o texto com a tipografia do aplicativo.</td>
+                <td>Execução do serviço (art. 7º, V).</td>
+              </tr>
+              <tr>
+                <th scope="row">Hospedagem</th>
+                <td>
+                  Registros técnicos de acesso (endereço IP, data, página e navegador) mantidos pela
+                  Vercel, que hospeda o aplicativo.
+                </td>
+                <td>Entregar o aplicativo e proteger a infraestrutura.</td>
+                <td>Segurança e execução do serviço (art. 7º, V e IX).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>O que acontece só no seu aparelho</h3>
+        <p>
+          O reconhecimento de texto (OCR) de fórmulas e a leitura de PDFs e imagens que você importa
+          são feitos <strong>no seu aparelho</strong>. Esses arquivos não são enviados a nenhum
+          servidor por essas funções.
+        </p>
+
+        <h3>O que não fazemos</h3>
+        <ul>
+          <li>Não vendemos nem alugamos dados pessoais.</li>
+          <li>Não fazemos publicidade nem perfis para anúncios.</li>
+          <li>Não usamos ferramentas de análise de comportamento (analytics).</li>
+          <li>Não pedimos localização, câmera contínua ou microfone.</li>
+        </ul>
+
+        <h2 id="armazenamento">3. Cookies e armazenamento no navegador</h2>
+        <ul>
+          <li>
+            <strong>Armazenamento do navegador (localStorage, sessionStorage, IndexedDB):</strong>
+            guarda o seu espaço de estudos, o tema, rascunhos, o histórico de versões, o progresso e
+            a sessão de login do Firebase. É o que faz o aplicativo funcionar sem conta.
+          </li>
+          <li>
+            <strong>Cookies do Google Agenda:</strong> só existem se você conectar a agenda. São
+            protegidos (HttpOnly, Secure, SameSite), com o acesso cifrado, e duram até 90 dias ou
+            até você desconectar ou sair da conta.
+          </li>
+          <li>
+            <strong>Cookies de terceiros:</strong> o Google reCAPTCHA pode definir cookies próprios
+            para verificar o dispositivo, conforme a política do Google.
+          </li>
+          <li>Não usamos cookies de publicidade nem de rastreamento entre sites.</li>
+        </ul>
+
+        <h2 id="compartilhamento">4. Com quem compartilhamos</h2>
+        <p>
+          Compartilhamos dados apenas com empresas que prestam o serviço técnico de que o aplicativo
+          depende (operadores), para as finalidades da tabela acima:
+        </p>
+        <ul>
+          <li>
+            <strong>Google</strong> (Firebase Authentication, Firebase Realtime Database, Firebase
+            App Check, reCAPTCHA Enterprise, Google Agenda e Google Fonts).
+          </li>
+          <li><strong>Vercel</strong> (hospedagem e execução das funções do servidor).</li>
+          <li>
+            <strong>Cloudflare</strong> (Workers AI, para gerar a voz natural dos exercícios de
+            escuta).
+          </li>
+          <li><strong>Datamuse</strong> (consulta de frequência de palavras em inglês).</li>
+        </ul>
+        <p>
+          Também podemos compartilhar dados se uma lei ou uma ordem de autoridade competente exigir.
+          Esses serviços podem processar dados em servidores fora do Brasil. Nesses casos, o
+          compartilhamento se limita ao necessário para a função e segue as regras de transferência
+          internacional da LGPD (art. 33).
+        </p>
+
+        <h2 id="prazos">5. Por quanto tempo guardamos</h2>
+        <ul>
+          <li>
+            <strong>No seu aparelho:</strong> até você apagar os dados do navegador. Ao sair da
+            conta, os dados pessoais deste aparelho (espaço, histórico, rascunhos, progresso, perfil
+            e sessões de sala) são apagados.
+          </li>
+          <li>
+            <strong>Na nuvem, sua cópia sincronizada:</strong> enquanto sua conta existir, ou até
+            você pedir a exclusão.
+          </li>
+          <li>
+            <strong>Salas:</strong> até 4 horas depois da criação, com limpeza automática diária das
+            salas vencidas.
+          </li>
+          <li><strong>Link somente leitura de um caderno:</strong> até 7 dias.</li>
+          <li>
+            <strong>Acesso ao Google Agenda:</strong> até 90 dias no cookie, ou até você desconectar
+            ou sair da conta.
+          </li>
+          <li>
+            <strong>Limite de uso por endereço IP:</strong> cerca de um a dois minutos, apenas como
+            hash.
+          </li>
+        </ul>
+        <p>
+          Os registros técnicos mantidos pela Vercel e pelo Google seguem os prazos das políticas
+          deles.
+        </p>
+
+        <h2 id="seguranca">6. Como protegemos</h2>
+        <ul>
+          <li>Conexão criptografada (HTTPS) obrigatória e cabeçalhos de segurança no navegador.</li>
+          <li>
+            Regras do banco de dados que só deixam a sua conta ler e gravar a sua cópia
+            sincronizada.
+          </li>
+          <li>
+            Códigos de sala e de convite gerados de forma aleatória, e chaves de acesso de
+            organizador e de participante conferidas no servidor.
+          </li>
+          <li>
+            Verificação de dispositivo (App Check) e limite de tentativas nas funções de sala.
+          </li>
+          <li>Acesso à agenda guardado em cookie cifrado (AES-256-GCM).</li>
+          <li>Limpeza dos dados pessoais deste aparelho quando você sai da conta.</li>
+        </ul>
+        <p>
+          Nenhum sistema é totalmente imune a falhas. Se houver um incidente que possa causar risco
+          relevante a você, comunicaremos você e a Autoridade Nacional de Proteção de Dados (ANPD),
+          como a LGPD exige.
+        </p>
+
+        <h2 id="menores">7. Crianças e adolescentes</h2>
+        <p>
+          O OlenaStudy é feito para quem estuda, e muitas pessoas usuárias são menores de 18 anos.
+          Para menores, o uso deve ser feito com a ciência e a autorização de quem é responsável, e
+          o tratamento de dados considera sempre o melhor interesse da criança e do adolescente
+          (LGPD, art. 14). Por isso coletamos apenas o que a função precisa, sem publicidade e sem
+          perfis comerciais. A conta Google segue as regras de idade do próprio Google.
+        </p>
+
+        <h2 id="direitos">8. Seus direitos e como exercê-los</h2>
+        <p>Pela LGPD (art. 18) você pode, a qualquer momento:</p>
+        <ul>
+          <li>confirmar se tratamos seus dados e ter acesso a eles;</li>
+          <li>corrigir dados incompletos, inexatos ou desatualizados;</li>
+          <li>pedir a anonimização, o bloqueio ou a eliminação de dados desnecessários;</li>
+          <li>pedir a portabilidade dos seus dados;</li>
+          <li>saber com quem compartilhamos os seus dados;</li>
+          <li>retirar o consentimento, o que não afeta o que foi feito antes;</li>
+          <li>reclamar à ANPD (gov.br/anpd).</li>
+        </ul>
+        <p>
+          <strong>Como pedir:</strong> use o canal de contato da seção 1. Para excluir a sua conta e
+          os dados sincronizados, faça o pedido por esse canal, informando o e-mail da conta Google.
+          O aplicativo ainda não tem um botão de exclusão de conta, então o pedido é atendido
+          manualmente, com resposta em até 15 dias.
+        </p>
+        <p>
+          <strong>O que você mesmo controla no aplicativo:</strong> sair da conta apaga os dados
+          pessoais deste aparelho, desconectar o Google Agenda encerra o acesso à agenda, e você
+          pode apagar folhas, cadernos e anotações quando quiser.
+        </p>
+
+        <h2 id="mudancas">9. Mudanças nesta política</h2>
+        <p>
+          Quando o aplicativo passar a tratar dados de outra forma, atualizaremos esta página, com
+          uma nova data de versão. Em mudanças relevantes, pediremos novamente a sua concordância na
+          tela de entrada.
+        </p>
+      </main>
+
+      <footer>OlenaStudy. Política de Privacidade, versão de 24 de setembro de 2026.</footer>
+    </div>
+  </body>
+</html>
