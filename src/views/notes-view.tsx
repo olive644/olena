@@ -726,17 +726,14 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               previewDrag.current = null;
             }}
             onKeyDown={(event) => {
+              if (event.target !== event.currentTarget) return;
               if (event.key === "ArrowLeft") turnPreview(-1);
               if (event.key === "ArrowRight") turnPreview(1);
             }}
             tabIndex={0}
             aria-label="Prévia folheável do caderno"
           >
-            <div className="notebook-preview-inside" aria-hidden="true">
-              <span>MEU UNIVERSO PARTICULAR</span>
-              <strong>{activeNotebook.title}</strong>
-              <span>Escolha uma folha para continuar suas ideias.</span>
-            </div>
+            <div className="notebook-preview-inside" aria-hidden="true" />
             <div className="notebook-preview-leaves">
               {notebookPages.length === 0 ? (
                 <button
@@ -783,6 +780,24 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                 </div>
               )}
             </div>
+            {notebookPages.length > 1 && (
+              <nav className="notebook-preview-tabs" aria-label="Abas das folhas">
+                {notebookPages.map((page, index) => (
+                  <button
+                    key={page.id}
+                    type="button"
+                    className={index === previewPageIndex ? "is-active" : ""}
+                    aria-label={`Ir para folha ${index + 1}: ${page.title}`}
+                    aria-current={index === previewPageIndex ? "page" : undefined}
+                    title={page.title}
+                    disabled={!!turningPage}
+                    onClick={() => setPreviewPageIndex(index)}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </nav>
+            )}
           </div>
           <nav className="notebook-preview-controls" aria-label="Folhear caderno">
             <button
