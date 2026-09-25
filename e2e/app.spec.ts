@@ -414,7 +414,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   await expect(navigation).toHaveCSS("color", "rgb(41, 36, 50)");
 });
 
-test("abre digitalização, escrita à mão e completa um bingo", async ({ page }, testInfo) => {
+test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }, testInfo) => {
   await page.evaluate(() => localStorage.setItem("helena.soloProgress", "4"));
   await navigateToTool(page, testInfo.project.name, "Cadernos", "Cadernos");
   await page.getByRole("button", { name: "Crie", exact: true }).click();
@@ -425,13 +425,9 @@ test("abre digitalização, escrita à mão e completa um bingo", async ({ page 
     .getByRole("dialog", { name: "Escrever à mão" })
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
-  await page.getByRole("button", { name: "Digitalizar" }).click();
-  await expect(page.getByRole("dialog", { name: "Digitalizar documento" })).toBeVisible();
-  await page.getByRole("button", { name: "Fechar", exact: true }).click();
-
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await page.getByRole("button", { name: /^Abrir preview de / }).click();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible();
-  await page.getByRole("button", { name: "Fechar", exact: true }).click();
+  await page.getByRole("dialog", { name: "Escrever à mão" }).getByRole("button", { name: "Fechar", exact: true }).click();
 
   await studentSpaceButton(page, testInfo.project.name).click();
   await page

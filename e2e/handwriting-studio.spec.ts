@@ -384,7 +384,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   if (await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).isVisible())
     await dialog.getByRole("button", { name: "Fechar e manter rascunho" }).click();
   await expect(dialog).not.toBeVisible();
-  await expect(page.getByRole("img", { name: /folha manuscrita/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Abrir preview de / })).toBeVisible();
   await page.getByRole("button", { name: /^Abrir preview de / }).click();
   const reopened = page.getByRole("dialog", { name: "Escrever à mão" });
   await reopened.getByRole("button", { name: "Upload", exact: true }).click();
@@ -551,7 +551,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   }
   await page.screenshot({ path: testInfo.outputPath("vitrine-cadernos.png"), fullPage: true });
   await page.locator(".notebook-card").first().click();
-  await page.getByRole("button", { name: /Abrir preview de Folha manuscrita/ }).click();
+  await page.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible();
   await expect
     .poll(() =>

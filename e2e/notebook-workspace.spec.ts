@@ -76,6 +76,7 @@ test("quadro amplo, preferências e livro preservam páginas ao navegar e reabri
       if (key.startsWith("helenastudy.handwriting.")) localStorage.removeItem(key);
     }
   });
+  await editor.getByRole("button", { name: "Folha anterior" }).click();
   await editor.getByRole("button", { name: "Próxima folha", exact: true }).click();
   await editor.getByRole("button", { name: "Folha anterior" }).click();
   await expect(editor.getByRole("textbox", { name: "Texto do post-it" })).toHaveValue(
