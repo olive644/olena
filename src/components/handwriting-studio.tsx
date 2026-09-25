@@ -393,16 +393,7 @@ export function HandwritingStudio({
   const PAGE_HEIGHT = canvasSize.height;
   function selectPaper(next: PaperStyle) {
     if (next === "board") setCanvasSize({ width: 3200, height: 2400 });
-    else if (
-      !strokes.length &&
-      !stickies.length &&
-      !coordinateSystems.length &&
-      !importedImages.length &&
-      !background &&
-      !pageText.trim()
-    ) {
-      setCanvasSize({ width: 1200, height: 1600 });
-    }
+    else setCanvasSize({ width: 1200, height: 1600 });
     setPaper(next);
   }
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
@@ -2429,6 +2420,7 @@ export function HandwritingStudio({
     try {
       if (dirty) onSave(pageImage(), buildDocument());
       navigate();
+      requestAnimationFrame(resetView);
     } catch (caught) {
       setError(
         caught instanceof Error

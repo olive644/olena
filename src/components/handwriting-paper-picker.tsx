@@ -24,7 +24,6 @@ export function HandwritingPaperPicker({
         className="handwriting-paper-section handwriting-paper-format"
         aria-label="Formato da folha"
       >
-        <span className="paper-picker-label">Formato</span>
         <div className="handwriting-paper-options handwriting-paper-options--format">
           <button
             type="button"
