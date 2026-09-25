@@ -28,8 +28,8 @@ import {
   DEFAULT_HANDWRITING_LAYER_VISIBILITY,
   erasePageText,
   pageTextLines,
-  rulerLength,
 } from "../domain/handwriting";
+import { rulerMeasurement, rulerPoints, type RulerKind, type RulerUnit } from "../domain/ruler";
 import {
   createLiveStabilizer,
   stabilizeHandwriting,
@@ -160,7 +160,8 @@ export function HandwritingStudio({
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
-  const [rulerUnit, setRulerUnit] = useState<"px" | "cm" | "in">("px");
+  const [rulerUnit, setRulerUnit] = useState<RulerUnit>("cm");
+  const [rulerKind, setRulerKind] = useState<RulerKind>("straight");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
   const [coordinateMeasurements, setCoordinateMeasurements] = useState(true);
   const [equalCoordinateAxes, setEqualCoordinateAxes] = useState(true);
@@ -1254,7 +1255,16 @@ export function HandwritingStudio({
     const sampleTimes = sampleEvents.map((sample) => sample.timeStamp);
     if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
-      if (end) setRulerMeasure((measurement) => (measurement ? { ...measurement, end } : null));
+      if (end)
+        setRulerMeasure((measurement) => {
+          if (!measurement) return null;
+          const guide = rulerPoints(measurement.start, end, rulerKind);
+          const snappedEnd = guide[1];
+          return {
+            ...measurement,
+            end: rulerKind === "circle" || rulerKind === "curve" || !snappedEnd ? end : snappedEnd,
+          };
+        });
     }
     if (activeToolRef.current === "coordinates") {
       const end = points.at(-1);
@@ -1290,7 +1300,7 @@ export function HandwritingStudio({
         if (!start || !end) return current;
         return [
           ...current.slice(0, -1),
-          { ...last, points: [start, { ...end, pressure: start.pressure }] },
+          { ...last, points: rulerPoints(start, { ...end, pressure: start.pressure }, rulerKind) },
         ];
       });
       return;
@@ -2387,6 +2397,7 @@ export function HandwritingStudio({
         <HandwritingToolGroup
           textMode={textMode}
           tool={tool}
+          rulerUnit={rulerUnit}
           layersOpen={layersOpen}
           writingWindowOpen={writingWindowOpen}
           onSelectTool={setTool}
@@ -2823,7 +2834,7 @@ export function HandwritingStudio({
                         fontWeight="800"
                         dominantBaseline="middle"
                       >
-                        {rulerLength(length, rulerUnit)}
+                        {rulerMeasurement(length, rulerUnit, rulerKind)}
                       </text>
                     </g>
                   </svg>
@@ -2986,7 +2997,12 @@ export function HandwritingStudio({
           <HandwritingBrushPanel brush={brush} color={color} onBrushChange={setBrush} />
         )}
         {showRulerPanel && (
-          <HandwritingRulerPanel rulerUnit={rulerUnit} onRulerUnitChange={setRulerUnit} />
+          <HandwritingRulerPanel
+            rulerUnit={rulerUnit}
+            rulerKind={rulerKind}
+            onRulerUnitChange={setRulerUnit}
+            onRulerKindChange={setRulerKind}
+          />
         )}
         {showCoordinatePanel && (
           <HandwritingCoordinatePanel

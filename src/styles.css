@@ -4712,6 +4712,227 @@ body.local-room-active {
   font-size: 10px;
   line-height: 1.5;
 }
+.handwriting-ruler-panel {
+  --ruler-yellow: #facc15;
+  --ruler-gold: #dfa900;
+  --ruler-ink: #292432;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+.handwriting-tool-group button:has(.ruler-tool-unit) {
+  position: relative;
+}
+.ruler-tool-unit {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  min-width: 17px;
+  padding: 1px 3px;
+  border-radius: 3px 6px 3px 5px;
+  color: #fff9ef;
+  background: #292432;
+  font-size: 7px;
+  font-style: normal;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 1px 0 #facc15;
+}
+.ruler-unit-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px 14px 7px 11px;
+  background: var(--surface);
+  box-shadow: 0 3px 0 var(--line);
+}
+.ruler-unit-picker legend {
+  padding: 0 5px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ruler-unit-picker button {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 44px;
+  padding: 5px 3px 7px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px 10px 5px 8px;
+  color: var(--ruler-ink);
+  background: #fff9ef;
+  place-items: center;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.ruler-unit-picker button::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 13px;
+  height: 13px;
+  background: #a779ef;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.ruler-unit-picker button i {
+  width: 80%;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, var(--ruler-ink) 0 1px, transparent 1px 6px);
+}
+.ruler-unit-picker button[aria-pressed="true"] {
+  border-color: #7c3aed;
+  color: #fff9ef;
+  background: #7433e0;
+  box-shadow: 0 3px 0 #51259b;
+}
+.ruler-unit-picker button[aria-pressed="true"] i {
+  background: repeating-linear-gradient(90deg, #fff9ef 0 1px, transparent 1px 6px);
+}
+.ruler-case {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.ruler-case > button {
+  display: grid;
+  min-width: 0;
+  min-height: 118px;
+  padding: 9px 7px 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px 14px 6px 11px;
+  color: var(--text);
+  background: var(--soft);
+  box-shadow: 0 3px 0 var(--line);
+  place-items: center;
+  text-align: center;
+  font: inherit;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+.ruler-case > button:is(:hover, :focus-visible) {
+  transform: translateY(-2px) rotate(-0.5deg);
+  border-color: #a779ef;
+}
+.ruler-case > button[aria-pressed="true"] {
+  border: 2px solid #7c3aed;
+  box-shadow: 0 4px 0 #51259b;
+}
+.ruler-case strong {
+  font-size: 10px;
+  line-height: 1.15;
+}
+.ruler-case small {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.2;
+}
+.ruler-card-art {
+  position: relative;
+  display: block;
+  width: 76px;
+  height: 52px;
+  color: var(--ruler-ink);
+  filter: drop-shadow(0 3px 0 rgb(41 36 50 / 18%));
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ruler-case > button[aria-pressed="true"] .ruler-card-art {
+  transform: rotate(-4deg) scale(1.04);
+}
+.ruler-card-art::before,
+.ruler-card-art::after,
+.ruler-card-art i::before,
+.ruler-card-art i::after {
+  content: "";
+  position: absolute;
+}
+.ruler-card-art[data-ruler="straight"]::before {
+  inset: 15px 1px 9px;
+  background: linear-gradient(160deg, #ffe88d 0 20%, var(--ruler-yellow) 21% 80%, #e0ae00 81%);
+  clip-path: polygon(0 5%, 100% 0, 97% 100%, 2% 94%);
+}
+.ruler-card-art[data-ruler="straight"]::after {
+  inset: 16px 7px 23px;
+  background: repeating-linear-gradient(90deg, var(--ruler-ink) 0 1px, transparent 1px 7px);
+}
+.ruler-card-art[data-ruler^="triangle"]::before {
+  inset: 2px 5px 3px;
+  background: linear-gradient(135deg, #ffe88d, var(--ruler-yellow) 52%, #dba700);
+  clip-path: polygon(4% 94%, 96% 94%, 96% 7%);
+}
+.ruler-card-art[data-ruler="triangle-30"]::before {
+  clip-path: polygon(4% 94%, 96% 94%, 70% 7%);
+}
+.ruler-card-art[data-ruler^="triangle"]::after {
+  inset: 17px 22px 12px 25px;
+  background: var(--soft);
+  clip-path: polygon(4% 94%, 96% 94%, 96% 7%);
+}
+.ruler-card-art[data-ruler="triangle-30"]::after {
+  inset: 20px 25px 12px;
+  clip-path: polygon(4% 94%, 96% 94%, 66% 7%);
+}
+.ruler-card-art[data-ruler="protractor"]::before {
+  inset: 5px 3px 4px;
+  border-radius: 74px 74px 6px 6px;
+  background: conic-gradient(from 270deg at 50% 100%, #ffe88d, var(--ruler-yellow), #dba700);
+  clip-path: polygon(0 100%, 0 50%, 7% 25%, 22% 8%, 50% 0, 78% 8%, 93% 25%, 100% 50%, 100% 100%);
+}
+.ruler-card-art[data-ruler="protractor"]::after {
+  inset: 23px 19px 4px;
+  border-radius: 42px 42px 3px 3px;
+  background: var(--soft);
+}
+.ruler-card-art[data-ruler="circle"]::before {
+  inset: 1px 13px;
+  border: 10px solid var(--ruler-yellow);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px #e0ae00;
+}
+.ruler-card-art[data-ruler="circle"]::after {
+  width: 9px;
+  height: 9px;
+  top: 8px;
+  left: 21px;
+  border-radius: 50%;
+  background: var(--soft);
+  box-shadow:
+    25px 5px 0 var(--soft),
+    -1px 22px 0 var(--soft),
+    28px 25px 0 var(--soft);
+}
+.ruler-card-art[data-ruler="curve"]::before {
+  inset: 5px 1px;
+  border: 11px solid var(--ruler-yellow);
+  border-left-color: transparent;
+  border-radius: 62% 20% 67% 24%;
+  transform: rotate(-12deg);
+}
+.ruler-card-art[data-ruler="curve"]::after {
+  width: 17px;
+  height: 17px;
+  right: 15px;
+  bottom: 6px;
+  border-radius: 50%;
+  background: var(--soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ruler-case > button,
+  .ruler-card-art {
+    transition: none;
+  }
+}
 .handwriting-layer-panel {
   display: grid;
   align-content: start;
@@ -4814,6 +5035,32 @@ body.local-room-active {
   .handwriting-brush-panel button small,
   .handwriting-brush-panel button .brush-sample,
   .brush-panel-tip {
+    display: none;
+  }
+  .handwriting-ruler-panel {
+    display: grid;
+    grid-template-columns: 166px max-content;
+    max-height: 100px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .handwriting-ruler-panel .ruler-unit-picker {
+    align-self: center;
+  }
+  .handwriting-ruler-panel .ruler-case {
+    display: flex;
+    width: max-content;
+  }
+  .handwriting-ruler-panel .ruler-case > button {
+    width: 96px;
+    min-height: 84px;
+    padding: 4px 6px;
+  }
+  .handwriting-ruler-panel .ruler-card-art {
+    width: 62px;
+    height: 38px;
+  }
+  .handwriting-ruler-panel .ruler-case small {
     display: none;
   }
 }
