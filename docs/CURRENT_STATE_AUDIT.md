@@ -836,3 +836,10 @@ Ajustes desta PR depois de a `main` avançar:
 - Isso elimina o envio do endereço de rede e dos dados do navegador ao Google ao carregar as letras. O CSP perdeu `fonts.googleapis.com` (style-src) e `fonts.gstatic.com` (font-src): agora `font-src 'self'`.
 - A Política de Privacidade (versão 2026-09-25) perdeu a linha "Letras do aplicativo" e a menção ao Google entregando fontes, e a própria página usa a Manrope do aplicativo.
 - Testes: `src/self-hosted-fonts.test.ts` (sem Google no HTML, CSP, arquivos e licenças presentes, política) e `e2e/self-hosted-fonts.spec.ts` (nenhuma requisição a domínios de fontes de terceiros, letras carregadas de `/fonts/`).
+
+## Aceite para voz natural e vocabulário online (2026-09-25)
+
+- Os exercícios de escuta enviavam `consent: true` fixo e consultavam o serviço de vocabulário sem nenhum aceite na tela. Agora nada sai do aparelho até a pessoa escolher "Permitir" no aviso `ListeningOnlineNotice`, mostrado no Quiz de Escuta e no Modo Sala.
+- A escolha fica em `helena.listening.online.v1` como `{choice, version, at}`, é apagada junto com os demais dados pessoais ao sair da conta e pede de novo se `LISTENING_CONSENT_VERSION` subir. Pode ser trocada a qualquer momento nas configurações de áudio.
+- Sem aceite (ou com recusa): `NaturalVoicePlayer` não faz requisição e usa a voz do aparelho; `classifyWordDifficulty` usa o cache ou a estimativa local. Com aceite, o comportamento anterior continua, e `consent: true` só é enviado nesse caso.
+- A Política de Privacidade passou para a versão 2026-09-25: voz e vocabulário agora têm o consentimento como base legal (art. 7º, I) e o texto diz que só acontece com a permissão da pessoa.

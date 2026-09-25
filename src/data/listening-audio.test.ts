@@ -22,7 +22,11 @@ afterEach(() => {
 
 function collectStates(): { states: NaturalVoiceState[]; player: NaturalVoicePlayer } {
   const states: NaturalVoiceState[] = [];
-  const player = new NaturalVoicePlayer((state) => states.push(state));
+  // Com aceite: é o caso em que o áudio realmente é pedido ao serviço de voz.
+  const player = new NaturalVoicePlayer(
+    (state) => states.push(state),
+    () => true,
+  );
   return { states, player };
 }
 
@@ -81,5 +85,49 @@ describe("NaturalVoicePlayer", () => {
 
     const playingCount = states.filter((s) => s.status === "playing").length;
     expect(playingCount).toBe(1);
+  });
+});
+
+describe("NaturalVoicePlayer sem aceite", () => {
+  it("nunca chama a rede e usa a voz do aparelho", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const states: NaturalVoiceState[] = [];
+    const player = new NaturalVoicePlayer((state) => states.push(state));
+    const fallback = vi.fn();
+
+    await player.generate("hello", 1, fallback);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(fallback).toHaveBeenCalledOnce();
+    expect(states).toEqual([{ status: "idle" }]);
+  });
+
+  it("não pré-carrega o áudio da próxima frase", () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    new NaturalVoicePlayer(() => undefined).preload("hello", 1);
+    new NaturalVoicePlayer(
+      () => undefined,
+      () => false,
+    ).preload("hello", 1);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("passa a usar a rede no mesmo jogador assim que o aceite é dado", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(200, { "X-TTS-Provider": "kokoro" }));
+    vi.stubGlobal("fetch", fetchMock);
+    let allowed = false;
+    const player = new NaturalVoicePlayer(
+      () => undefined,
+      () => allowed,
+    );
+    await player.generate("hello", 1, vi.fn());
+    expect(fetchMock).not.toHaveBeenCalled();
+    allowed = true;
+    await player.generate("hello", 1, vi.fn());
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const body = JSON.parse((fetchMock.mock.calls[0]![1] as RequestInit).body as string);
+    expect(body).toEqual({ text: "hello", rate: 1, consent: true });
   });
 });

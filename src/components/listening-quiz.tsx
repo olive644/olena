@@ -14,6 +14,8 @@ import {
   speakEnglish,
 } from "../data/speech-voice";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
+import { useListeningOnline } from "../hooks/use-listening-online";
+import { ListeningOnlineNotice } from "./listening-online-notice";
 
 type RoundState = "ready" | "countdown" | "answering" | "feedback" | "finished";
 type DifficultyFilter = "mixed" | WordDifficulty;
@@ -72,17 +74,28 @@ export function ListeningQuiz({
     if (state === "answering") answerRef.current?.focus();
   }, [state]);
 
+  const online = useListeningOnline();
+  const onlineAllowed = online.allowed;
+  const isAllowed = online.isAllowed;
+
   useEffect(() => {
-    const player = new NaturalVoicePlayer(setNaturalState);
+    // O texto das frases só vai à empresa de voz se a pessoa tiver aceitado.
+    const player = new NaturalVoicePlayer(setNaturalState, isAllowed);
     naturalPlayerRef.current = player;
     return () => player.dispose();
-  }, []);
+  }, [isAllowed]);
 
   useEffect(() => {
     let active = true;
     Promise.all(
       initialDeck.map(
-        async (item) => [item.id, (await classifyWordDifficulty(item.front)).difficulty] as const,
+        async (item) =>
+          [
+            item.id,
+            // Cada palavra só é consultada online com o aceite; sem ele, a dificuldade é estimada aqui.
+            (await classifyWordDifficulty(item.front, window.localStorage, onlineAllowed))
+              .difficulty,
+          ] as const,
       ),
     ).then((entries) => {
       if (!active) return;
@@ -92,7 +105,7 @@ export function ListeningQuiz({
     return () => {
       active = false;
     };
-  }, [initialDeck]);
+  }, [initialDeck, onlineAllowed]);
 
   const playAudio = useCallback(() => {
     if (!card) return;
@@ -283,10 +296,21 @@ export function ListeningQuiz({
             </div>
           </section>
 
+          {online.choice === null && (
+            <ListeningOnlineNotice choice={online.choice} onChoose={online.choose} />
+          )}
+
           <details className="listening-audio-settings">
             <summary>
               <Headphones size={18} /> Configurações de áudio
             </summary>
+            {online.choice !== null && (
+              <ListeningOnlineNotice
+                choice={online.choice}
+                onChoose={online.choose}
+                variant="compact"
+              />
+            )}
             <p className="listening-model-state" role="status">
               {naturalState.status === "idle"
                 ? "Voz feminina. O áudio é gerado quando você pede para ouvir."
