@@ -279,6 +279,24 @@
   height: 58px;
   filter: drop-shadow(0 4px 0 #d9c9ab);
 }
+.notebook-preview-create {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 7px 14px 7px 9px;
+  border: 1px solid #d9c9ab;
+  border-radius: 16px 8px 14px 9px;
+  gap: 8px;
+  color: #51259b;
+  background: #fffaf0;
+  box-shadow: 0 4px 0 #d9c9ab;
+  font: inherit;
+  font-weight: 800;
+}
+.notebook-preview-create .paper-action-icon {
+  width: 32px;
+  height: 32px;
+}
 .notebook-preview-remove {
   display: inline-flex;
   align-items: center;
