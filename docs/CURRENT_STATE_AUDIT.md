@@ -830,6 +830,14 @@ Ajustes desta PR depois de a `main` avançar:
 - Dois testes de e2e que estavam vermelhos na `main` depois do #231 foram atualizados: o do PDF (a nova folha já abre o editor, então usa `openHandwritingA4`) e o do rascunho (o editor já não mostra o aviso de rascunho recuperado; a recuperação continua provada pelo texto do post-it).
 - O detector de segredos acusou como falso positivo o nome de uma constante que terminava em `KEY`; ela foi renomeada e a impressão digital do commit antigo foi registrada em `.gitleaksignore`, porque o histórico da branch não é reescrito.
 
+## Exclusão de conta no Perfil (2026-09-25)
+
+- O pedido de exclusão deixou de ser manual. No Perfil há uma "Zona de perigo" com o botão "Excluir minha conta" (`DeleteAccountPanel`), no estilo do GitHub: a janela lista o que será apagado e o botão final só é liberado quando a pessoa digita o nome da conta exatamente como aparece (nome do Google ou, sem nome, o e-mail; diferencia maiúsculas e minúsculas).
+- Ordem em `deleteAccountEverywhere` (`src/data/account-deletion.ts`): novo login do Google (`reauthenticateWithPopup`, também evita o erro de login antigo do Firebase), apagar `users/{uid}` no banco em tempo real, apagar o usuário do Firebase Auth e só então limpar o aparelho (dados pessoais, sessão e cookie do Google Agenda). Se um passo falhar, os seguintes não acontecem; se a pessoa fechar o login, nada é apagado e a sincronização volta a funcionar.
+- Salas e cadernos compartilhados são temporários (`expiresAt`) e já não ficam ligados à conta, então não há outro dado por conta para apagar. Regras do banco não mudaram (`users/$uid` já permite escrita ao dono).
+- A Política de Privacidade (2026-09-25) passou a apontar para o botão em vez de "pedido atendido manualmente".
+- Testes: `account-deletion.test.ts` (ordem e falhas), `delete-account-panel.test.tsx` (nome exato, Enter, Escape, foco, erros), `use-cloud-sync.test.tsx` (fluxo completo e cancelamento) e a política.
+
 ## Fontes no próprio domínio (2026-09-25)
 
 - Manrope (600, 700, 800) e Nunito (400 a 800) passaram a ser servidas de `public/fonts` (subconjunto latino em woff2, 160 KB, licença SIL OFL 1.1 junto dos arquivos), com `@font-face` em `public/fonts/fonts.css` e preload das duas mais usadas em `index.html`. Nenhuma dependência nova: os arquivos foram copiados dos pacotes Fontsource, que não ficaram no `package.json`.

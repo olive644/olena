@@ -330,3 +330,74 @@ it("a mesma conta voltando ao aparelho mantém o que já estava nele", async () 
 
   expect(localStorage.getItem("helenastudy.workspace.history.v1")).toBe("historico da Ana");
 });
+
+function deletionSetup(overrides: { reauthenticateWithPopup?: () => Promise<unknown> } = {}) {
+  const user = {
+    uid: "user-1",
+    displayName: "Helena",
+    email: "helena@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  const calls: string[] = [];
+  const authApi = {
+    onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+      listener(user);
+      return () => undefined;
+    },
+    signOut: vi.fn(async () => undefined),
+    GoogleAuthProvider: class {},
+    reauthenticateWithPopup: vi.fn(
+      overrides.reauthenticateWithPopup ?? (async () => void calls.push("reauth")),
+    ),
+    deleteUser: vi.fn(async () => void calls.push("user")),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi,
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+    if (init?.method === "DELETE") calls.push(`delete ${String(input).split("?")[0]}`);
+    return new Response("null", { status: 200 });
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return { calls, authApi };
+}
+
+it("exclui a conta: confirma o login, apaga a nuvem e a conta e limpa o aparelho", async () => {
+  const { calls, authApi } = deletionSetup();
+  localStorage.setItem("helena.soloProgress", "9");
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.deleteAccount).toBeTypeOf("function"));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  await act(async () => {
+    await result.current.deleteAccount?.();
+  });
+
+  expect(calls).toEqual([
+    "reauth",
+    "delete https://project.firebaseio.com/users/user-1.json",
+    "user",
+  ]);
+  expect(authApi.reauthenticateWithPopup).toHaveBeenCalledTimes(1);
+  expect(localStorage.getItem("helena.soloProgress")).toBeNull();
+});
+
+it("se o login for fechado, nada é apagado e os dados continuam no aparelho", async () => {
+  const { calls } = deletionSetup({
+    reauthenticateWithPopup: async () => {
+      throw Object.assign(new Error("fechou"), { code: "auth/popup-closed-by-user" });
+    },
+  });
+  localStorage.setItem("helena.soloProgress", "9");
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  await act(async () => {
+    await expect(result.current.deleteAccount?.()).rejects.toMatchObject({ reason: "cancelled" });
+  });
+
+  expect(calls).toEqual([]);
+  expect(localStorage.getItem("helena.soloProgress")).toBe("9");
+});

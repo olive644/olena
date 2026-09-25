@@ -1,5 +1,7 @@
 import type { Dispatch } from "react";
 import { PageHeader } from "../components/app-navigation";
+import { DeleteAccountPanel } from "../components/delete-account-panel";
+import { accountConfirmationName } from "../data/account-deletion";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import {
   hasStudyModality,
@@ -318,6 +320,13 @@ export function ProfileView({
           </div>
         </fieldset>
       </section>
+
+      {cloud.enabled && cloud.deleteAccount && accountConfirmationName(cloud) && (
+        <DeleteAccountPanel
+          accountName={accountConfirmationName(cloud)}
+          onDelete={cloud.deleteAccount}
+        />
+      )}
 
       <section
         className="profile-coming-soon profile-coming-soon--compact"

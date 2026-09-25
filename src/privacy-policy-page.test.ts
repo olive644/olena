@@ -211,3 +211,12 @@ describe("ícone da Galeria.Oli", () => {
     expect(existsSync("public/galeria-oli-icon.png")).toBe(false);
   });
 });
+
+describe("exclusão de conta na política", () => {
+  it("aponta para o botão do Perfil e não fala mais em pedido manual", () => {
+    expect(text).toContain('use o botão "Excluir minha conta"');
+    expect(text).toContain("digite o nome da conta para confirmar");
+    expect(text).not.toContain("ainda não tem um botão de exclusão");
+    expect(text).not.toContain("atendido manualmente");
+  });
+});
