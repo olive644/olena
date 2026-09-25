@@ -311,6 +311,12 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "true",
   );
   await dialog.getByRole("button", { name: "Pixels", exact: true }).click();
+  await expect(dialog.getByRole("button", { name: /Régua reta/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Esquadro 45°/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Esquadro 30°\/60°/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Transferidor/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Gabarito circular/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Curva francesa/ })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("estudio-manuscrito.png") });
 
   const bounds = await canvas.boundingBox();

@@ -4,9 +4,9 @@ import type {
   HandwritingLayerVisibility,
   HandwritingStroke,
 } from "../domain/handwriting";
+import type { RulerKind, RulerUnit } from "../domain/ruler";
 
 type Brush = NonNullable<HandwritingStroke["brush"]>;
-type RulerUnit = "px" | "cm" | "in";
 type CoordinateStep = 1 | 2 | 5 | 10;
 
 type HandwritingBrushPanelProps = {
@@ -56,55 +56,67 @@ export function HandwritingBrushPanel({ brush, color, onBrushChange }: Handwriti
 
 type HandwritingRulerPanelProps = {
   rulerUnit: RulerUnit;
+  rulerKind: RulerKind;
   onRulerUnitChange: (unit: RulerUnit) => void;
+  onRulerKindChange: (kind: RulerKind) => void;
 };
 
 export function HandwritingRulerPanel({
   rulerUnit,
+  rulerKind,
   onRulerUnitChange,
+  onRulerKindChange,
 }: HandwritingRulerPanelProps) {
+  const rulers = [
+    ["straight", "Régua reta", "Linhas livres", "straight"],
+    ["triangle-45", "Esquadro 45°", "Ângulos de 45°", "triangle-45"],
+    ["triangle-30", "Esquadro 30°/60°", "Ângulos de 30°", "triangle-30"],
+    ["protractor", "Transferidor", "Ângulos de 15°", "protractor"],
+    ["circle", "Gabarito circular", "Círculos precisos", "circle"],
+    ["curve", "Curva francesa", "Curvas contínuas", "curve"],
+  ] as const;
   return (
-    <aside className="handwriting-brush-panel" aria-label="Unidades da régua">
+    <aside
+      className="handwriting-brush-panel handwriting-ruler-panel"
+      aria-label="Estojo de réguas"
+    >
       <header>
         <div>
-          <small>MEDIR NA FOLHA</small>
-          <h3>Réguas</h3>
+          <small>ESTOJO TÉCNICO</small>
         </div>
       </header>
-      {(
-        [
-          ["px", "Pixels"],
-          ["cm", "Centímetros"],
-          ["in", "Polegadas"],
-        ] as const
-      ).map(([unit, title]) => (
-        <button
-          type="button"
-          key={unit}
-          aria-pressed={rulerUnit === unit}
-          onClick={() => onRulerUnitChange(unit)}
-        >
-          <span className="brush-card-title">{title}</span>
-          <svg viewBox="0 0 180 44" aria-hidden="true">
-            <path
-              d="M4 4H176V40H4Z"
-              fill={unit === "px" ? "#FACC15" : unit === "cm" ? "#A779EF" : "#6BBF59"}
-            />
-            {Array.from({ length: 17 }, (_, index) => (
-              <path
-                key={index}
-                d={`M${10 + index * 10} 5v${index % 5 === 0 ? 20 : 10}`}
-                stroke="#292432"
-                strokeWidth="2"
-              />
-            ))}
-          </svg>
-        </button>
-      ))}
-      <p>
-        A folha digital mede 21 cm de largura. A medida acompanha o documento, não o tamanho físico
-        da tela.
-      </p>
+      <fieldset className="ruler-unit-picker" aria-label="Unidades da régua">
+        <legend>Unidade</legend>
+        {(["cm", "in", "px"] as const).map((unit) => (
+          <button
+            type="button"
+            key={unit}
+            aria-label={unit === "cm" ? "Centímetros" : unit === "in" ? "Polegadas" : "Pixels"}
+            aria-pressed={rulerUnit === unit}
+            onClick={() => onRulerUnitChange(unit)}
+          >
+            <span>{unit}</span>
+            <i aria-hidden="true" />
+          </button>
+        ))}
+      </fieldset>
+      <div className="ruler-case" role="group" aria-label="Tipos de régua">
+        {rulers.map(([kind, title, description, drawing]) => (
+          <button
+            type="button"
+            key={kind}
+            aria-pressed={rulerKind === kind}
+            onClick={() => onRulerKindChange(kind)}
+          >
+            <span className="ruler-card-art" data-ruler={drawing} aria-hidden="true">
+              <i />
+            </span>
+            <strong>{title}</strong>
+            <small>{description}</small>
+          </button>
+        ))}
+      </div>
+      <p>96 px equivalem a 1 polegada. A escala acompanha a folha, mesmo com zoom.</p>
     </aside>
   );
 }

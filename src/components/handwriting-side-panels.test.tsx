@@ -36,7 +36,14 @@ describe("painel de pincéis", () => {
 describe("painel da régua", () => {
   it("marca a unidade atual e escolhe outra", () => {
     const onRulerUnitChange = vi.fn();
-    render(<HandwritingRulerPanel rulerUnit="cm" onRulerUnitChange={onRulerUnitChange} />);
+    render(
+      <HandwritingRulerPanel
+        rulerUnit="cm"
+        rulerKind="straight"
+        onRulerUnitChange={onRulerUnitChange}
+        onRulerKindChange={vi.fn()}
+      />,
+    );
     expect(screen.getByRole("button", { name: /Centímetros/ }).getAttribute("aria-pressed")).toBe(
       "true",
     );
@@ -47,9 +54,24 @@ describe("painel da régua", () => {
     expect(onRulerUnitChange).toHaveBeenCalledWith("in");
   });
 
-  it("explica que a medida acompanha o documento", () => {
-    render(<HandwritingRulerPanel rulerUnit="px" onRulerUnitChange={vi.fn()} />);
-    expect(screen.getByText(/A folha digital mede 21 cm de largura/)).toBeTruthy();
+  it("oferece instrumentos funcionais e escolhe o gabarito circular", () => {
+    const onRulerKindChange = vi.fn();
+    render(
+      <HandwritingRulerPanel
+        rulerUnit="px"
+        rulerKind="straight"
+        onRulerUnitChange={vi.fn()}
+        onRulerKindChange={onRulerKindChange}
+      />,
+    );
+    expect(screen.getByRole("button", { name: /Régua reta/ }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("button", { name: /Esquadro 45°/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Transferidor/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Gabarito circular/ }));
+    expect(onRulerKindChange).toHaveBeenCalledWith("circle");
+    expect(screen.getByText(/96 px equivalem a 1 polegada/)).toBeTruthy();
   });
 });
 

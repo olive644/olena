@@ -1,9 +1,11 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { HandwritingTool } from "./handwriting-types";
+import type { RulerUnit } from "../domain/ruler";
 
 type HandwritingToolGroupProps = {
   textMode: boolean;
   tool: HandwritingTool;
+  rulerUnit: RulerUnit;
   layersOpen: boolean;
   writingWindowOpen: boolean;
   onSelectTool: (tool: HandwritingTool) => void;
@@ -16,6 +18,7 @@ type HandwritingToolGroupProps = {
 export function HandwritingToolGroup({
   textMode,
   tool,
+  rulerUnit,
   layersOpen,
   writingWindowOpen,
   onSelectTool,
@@ -40,6 +43,9 @@ export function HandwritingToolGroup({
           <path fill="#FFE88D" d="m2 13 14-12 2 2L4 15Z" />
           <path stroke="#51465D" strokeWidth="1.5" d="m6 10 2 2m1-5 3 3m0-6 2 2m1-5 3 3" />
         </svg>
+        <b className="ruler-tool-unit" aria-hidden="true">
+          {rulerUnit}
+        </b>
         <span>Régua</span>
       </button>
       <button
