@@ -16,7 +16,7 @@ for (const activity of ["listening", "bingo"] as const) {
       publish: async (code, state) => {
         if ((state.revision ?? 0) >= (states.get(code)?.revision ?? 0)) states.set(code, state);
       },
-      streamUrl: (code) => `http://127.0.0.1:4173/test-room/${code}`,
+      streamUrl: (code) => `${testInfo.project.use.baseURL}/test-room/${code}`,
     });
     const hostViewport =
       testInfo.project.name === "mobile"

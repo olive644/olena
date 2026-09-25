@@ -81,23 +81,46 @@ function isLegacyNote(value: unknown): boolean {
   );
 }
 
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
 export function isHandwritingDocument(value: unknown): boolean {
   if (!isRecord(value) || value["version"] !== 1) return false;
+  const size = value["canvasSize"];
+  if (
+    size !== undefined &&
+    (!isRecord(size) ||
+      typeof size["width"] !== "number" ||
+      typeof size["height"] !== "number" ||
+      ![1200, 3200].includes(size["width"]) ||
+      ![1600, 2400].includes(size["height"]))
+  )
+    return false;
+  const pageWidth = isRecord(size)
+    ? Number(size["width"])
+    : value["paper"] === "board"
+      ? 3200
+      : 1200;
+  const pageHeight = isRecord(size)
+    ? Number(size["height"])
+    : value["paper"] === "board"
+      ? 2400
+      : 1600;
   const frame = value["backgroundFrame"];
   if (
     frame !== undefined &&
     (!isRecord(frame) ||
       !["x", "y", "width", "height"].every(
         (key) =>
-          typeof frame[key] === "number" &&
-          Number.isFinite(frame[key]) &&
+          isFiniteNumber(frame[key]) &&
           frame[key] >= 0 &&
-          frame[key] <= 1600,
+          frame[key] <= Math.max(pageWidth, pageHeight),
       ) ||
       Number(frame["width"]) <= 0 ||
       Number(frame["height"]) <= 0 ||
-      Number(frame["x"]) + Number(frame["width"]) > 1200.01 ||
-      Number(frame["y"]) + Number(frame["height"]) > 1600.01)
+      Number(frame["x"]) + Number(frame["width"]) > pageWidth + 0.01 ||
+      Number(frame["y"]) + Number(frame["height"]) > pageHeight + 0.01)
   )
     return false;
   if (
@@ -119,16 +142,14 @@ export function isHandwritingDocument(value: unknown): boolean {
           /^data:image\/(?:jpeg|png|webp);base64,/.test(image["dataUrl"]) &&
           image["dataUrl"].length <= 500_000 &&
           ["x", "y", "width", "height"].every(
-            (key) =>
-              typeof image[key] === "number" && Number.isFinite(image[key]) && image[key] >= 0,
+            (key) => isFiniteNumber(image[key]) && image[key] >= 0,
           ) &&
-          Number(image["x"]) + Number(image["width"]) <= 1200.01 &&
-          Number(image["y"]) + Number(image["height"]) <= 1600.01 &&
+          Number(image["x"]) + Number(image["width"]) <= pageWidth + 0.01 &&
+          Number(image["y"]) + Number(image["height"]) <= pageHeight + 0.01 &&
           Number(image["width"]) >= 40 &&
           Number(image["height"]) >= 40 &&
           (image["rotation"] === undefined ||
-            (typeof image["rotation"] === "number" &&
-              Number.isFinite(image["rotation"]) &&
+            (isFiniteNumber(image["rotation"]) &&
               image["rotation"] >= -180 &&
               image["rotation"] <= 180)),
       ))
@@ -161,23 +182,22 @@ export function isHandwritingDocument(value: unknown): boolean {
           [system["origin"], system["end"]].every(
             (point) =>
               isRecord(point) &&
-              typeof point["x"] === "number" &&
-              Number.isFinite(point["x"]) &&
+              isFiniteNumber(point["x"]) &&
               point["x"] >= 0 &&
-              point["x"] <= 1200 &&
-              typeof point["y"] === "number" &&
-              Number.isFinite(point["y"]) &&
+              point["x"] <= pageWidth &&
+              isFiniteNumber(point["y"]) &&
               point["y"] >= 0 &&
-              point["y"] <= 1600 &&
-              typeof point["pressure"] === "number" &&
-              Number.isFinite(point["pressure"]) &&
+              point["y"] <= pageHeight &&
+              isFiniteNumber(point["pressure"]) &&
               point["pressure"] >= 0 &&
               point["pressure"] <= 1,
           ),
       ))
   )
     return false;
-  if (!["ruled", "grid", "dots", "blank", "night", "aged"].includes(String(value["paper"])))
+  if (
+    !["ruled", "grid", "dots", "blank", "board", "night", "aged"].includes(String(value["paper"]))
+  )
     return false;
   if (
     value["paperColor"] !== undefined &&
@@ -197,22 +217,18 @@ export function isHandwritingDocument(value: unknown): boolean {
           (sticky["ink"] === undefined ||
             (typeof sticky["ink"] === "string" && /^#[0-9a-f]{6}$/i.test(sticky["ink"]))) &&
           isString(sticky["id"]) &&
-          typeof sticky["x"] === "number" &&
-          Number.isFinite(sticky["x"]) &&
+          isFiniteNumber(sticky["x"]) &&
           sticky["x"] >= 0 &&
-          sticky["x"] <= 1040 &&
-          typeof sticky["y"] === "number" &&
-          Number.isFinite(sticky["y"]) &&
+          sticky["x"] <= pageWidth - 160 &&
+          isFiniteNumber(sticky["y"]) &&
           sticky["y"] >= 0 &&
-          sticky["y"] <= 1480 &&
+          sticky["y"] <= pageHeight - 120 &&
           (sticky["width"] === undefined ||
-            (typeof sticky["width"] === "number" &&
-              Number.isFinite(sticky["width"]) &&
+            (isFiniteNumber(sticky["width"]) &&
               sticky["width"] >= 160 &&
               sticky["width"] <= 520)) &&
           (sticky["height"] === undefined ||
-            (typeof sticky["height"] === "number" &&
-              Number.isFinite(sticky["height"]) &&
+            (isFiniteNumber(sticky["height"]) &&
               sticky["height"] >= 120 &&
               sticky["height"] <= 420)) &&
           ["yellow", "blue", "lilac"].includes(String(sticky["color"])) &&
@@ -272,16 +288,13 @@ export function isHandwritingDocument(value: unknown): boolean {
       stroke["points"].every(
         (point: unknown) =>
           isRecord(point) &&
-          typeof point["x"] === "number" &&
-          Number.isFinite(point["x"]) &&
+          isFiniteNumber(point["x"]) &&
           point["x"] >= 0 &&
-          point["x"] <= 1200 &&
-          typeof point["y"] === "number" &&
-          Number.isFinite(point["y"]) &&
+          point["x"] <= pageWidth &&
+          isFiniteNumber(point["y"]) &&
           point["y"] >= 0 &&
-          point["y"] <= 1600 &&
-          typeof point["pressure"] === "number" &&
-          Number.isFinite(point["pressure"]) &&
+          point["y"] <= pageHeight &&
+          isFiniteNumber(point["pressure"]) &&
           point["pressure"] >= 0 &&
           point["pressure"] <= 1,
       ),

@@ -1,3 +1,4 @@
+import { NotebookPageBook } from "../components/notebook-page-book";
 import {
   lazy,
   Suspense,
@@ -137,10 +138,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
         return note?.kind === "note" ? [note] : [];
       })
     : [];
-  const visiblePages = notebookSection === "notes" ? notebookNotes : notebookPages;
   const activePage =
     [...notebookPages, ...notebookNotes].find((page) => page.id === activePageId) ?? null;
-  const activePageIndex = visiblePages.findIndex((page) => page.id === activePageId);
   const editingAsset = activePage?.assets.find((asset) => asset.id === editingAssetId) ?? null;
 
   function createNotebook() {
@@ -193,11 +192,20 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setSelectionMode(false);
   }
 
+  function createPageAtEnd() {
+    addPage(true);
+  }
+
   function createPage() {
+    addPage(false);
+  }
+
+  function addPage(append: boolean) {
     if (!activeNotebook) return;
     const id = createWorkspaceId("note");
     dispatch({
       type: "note/added",
+      append,
       id,
       notebookId: activeNotebook.id,
       subjectId: activeNotebook.subjectId,
@@ -746,31 +754,6 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             <div>
               <span>{activeNotebook.title}</span>
             </div>
-            <nav className="notebook-page-navigation" aria-label="Navegação das folhas">
-              <button
-                type="button"
-                disabled={activePageIndex <= 0}
-                onClick={() => setActivePageId(visiblePages[activePageIndex - 1]?.id ?? null)}
-              >
-                ‹ Anterior
-              </button>
-              <span>
-                {activePageIndex + 1} de {visiblePages.length}
-              </span>
-              <button
-                type="button"
-                disabled={activePageIndex >= visiblePages.length - 1}
-                onClick={() => setActivePageId(visiblePages[activePageIndex + 1]?.id ?? null)}
-              >
-                Próxima ›
-              </button>
-              <button
-                type="button"
-                onClick={activePage.kind === "note" ? createTextNote : createPage}
-              >
-                {activePage.kind === "note" ? "Nova nota" : "Nova folha"}
-              </button>
-            </nav>
           </header>
           <section className="note-editor note-editor--page" aria-label="Editor de folha">
             <div className="note-editor__meta">
@@ -783,6 +766,15 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                   key={activePage.id}
                   {...(cloud ? { cloud } : {})}
                   notebookPages={notebookPages}
+                  autoOpen
+                  onSelectPage={(id) => {
+                    setEditingAssetId(null);
+                    setActivePageId(id);
+                  }}
+                  onCreatePage={() => {
+                    setEditingAssetId(null);
+                    createPageAtEnd();
+                  }}
                   draftPageKey={activePage.id}
                   onSave={saveAsset}
                   onUpdate={updateAsset}
@@ -945,76 +937,34 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                   </button>
                 </div>
               ) : (
-                <div className="notebook-page-grid">
-                  <button className="notebook-page-create" type="button" onClick={createPage}>
-                    <PaperActionIcon name="plus" />
-                    <strong>Criar folha</strong>
-                    <span>Escrita à mão, texto ou digitalização</span>
+                <div className="notebook-bound-preview">
+                  <button
+                    type="button"
+                    className="notebook-preview-book"
+                    aria-label="Abrir caderno"
+                    onClick={() => {
+                      setActivePageId(notebookPages[previewPageIndex]?.id ?? notebookPages[0]!.id);
+                    }}
+                  >
+                    <span className="notebook-preview-inside">
+                      <strong>{activeNotebook.title}</strong>
+                    </span>
+                    <span className="notebook-preview-leaves">
+                      <span className="notebook-preview-leaf">
+                        <PreviewContent
+                          page={notebookPages[previewPageIndex] ?? notebookPages[0]!}
+                        />
+                      </span>
+                    </span>
                   </button>
-                  {notebookPages.map((page, index) => (
-                    <div
-                      className="notebook-page-tile"
-                      key={page.id}
-                      style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
-                    >
-                      <button
-                        className="notebook-page-card"
-                        type="button"
-                        onClick={() => setActivePageId(page.id)}
-                      >
-                        <span className="notebook-page-card__number">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        {page.assets[0] && (
-                          <img
-                            className="notebook-page-preview"
-                            src={page.assets[0].dataUrl}
-                            alt=""
-                          />
-                        )}
-                        <strong>{page.title || "Folha sem título"}</strong>
-                        <span>
-                          {page.content ||
-                            (page.assets.length > 0
-                              ? `${page.assets.length} imagem${page.assets.length === 1 ? "" : "s"}`
-                              : "Folha vazia")}
-                        </span>
-                        <small>Abrir folha</small>
-                      </button>
-                      <div className="notebook-page-order" aria-label={`Ordem de ${page.title}`}>
-                        <button
-                          type="button"
-                          disabled={index === 0}
-                          aria-label={`Mover ${page.title} para antes`}
-                          onClick={() =>
-                            dispatch({
-                              type: "notebook/page-moved",
-                              notebookId: activeNotebook.id,
-                              pageId: page.id,
-                              direction: -1,
-                            })
-                          }
-                        >
-                          ↑ Antes
-                        </button>
-                        <button
-                          type="button"
-                          disabled={index === notebookPages.length - 1}
-                          aria-label={`Mover ${page.title} para depois`}
-                          onClick={() =>
-                            dispatch({
-                              type: "notebook/page-moved",
-                              notebookId: activeNotebook.id,
-                              pageId: page.id,
-                              direction: 1,
-                            })
-                          }
-                        >
-                          ↓ Depois
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                  <NotebookPageBook
+                    pages={notebookPages}
+                    currentPageId={notebookPages[previewPageIndex]?.id ?? notebookPages[0]!.id}
+                    onSelect={(id) =>
+                      setPreviewPageIndex(notebookPages.findIndex((page) => page.id === id))
+                    }
+                    onCreate={createPageAtEnd}
+                  />
                 </div>
               )}
             </section>

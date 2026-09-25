@@ -16,6 +16,9 @@ import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/sync
 type NoteCaptureToolsProps = {
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
+  autoOpen?: boolean;
+  onSelectPage?: (id: string) => void;
+  onCreatePage?: () => void;
   draftPageKey: string;
   onSave: (
     kind: NoteAsset["kind"],
@@ -193,6 +196,9 @@ function Scanner({
 export function NoteCaptureTools({
   cloud,
   notebookPages = [],
+  autoOpen = false,
+  onSelectPage,
+  onCreatePage,
   draftPageKey,
   onSave,
   onUpdate,
@@ -201,42 +207,27 @@ export function NoteCaptureTools({
   initialJoinCode,
   onCloseEditing,
 }: NoteCaptureToolsProps) {
-  const [mode, setMode] = useState<"scan" | "drawing" | null>(initialJoinCode ? "drawing" : null);
-  const [expanded, setExpanded] = useState(false);
+  const [mode, setMode] = useState<"scan" | "drawing" | null>(
+    initialJoinCode || autoOpen ? "drawing" : null,
+  );
   const dialogRef = useRef<HTMLElement>(null);
-  async function toggleFullscreen() {
-    if (expanded) {
-      if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
-      setExpanded(false);
-    } else {
-      setExpanded(true);
-      await dialogRef.current?.requestFullscreen?.().catch(() => {
-        // Browsers without native fullscreen keep the viewport-sized editor.
-      });
-    }
-  }
-  useEffect(() => {
-    function syncFullscreen() {
-      setExpanded(document.fullscreenElement === dialogRef.current);
-    }
-    document.addEventListener("fullscreenchange", syncFullscreen);
-    return () => document.removeEventListener("fullscreenchange", syncFullscreen);
-  }, []);
   const [handwritingDirty, setHandwritingDirty] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
   const [draftWriteFailed, setDraftWriteFailed] = useState(false);
   const [closingSavedDraft, setClosingSavedDraft] = useState(false);
   const latestDraftRef = useRef<HandwritingDocument | null>(null);
   const [restoredAssetId] = useState(() => {
+    const assets = notebookPages.find((page) => page.id === draftPageKey)?.assets ?? [];
+    const fallback = assets.find((asset) => asset.handwriting)?.id ?? null;
     try {
       const id = localStorage.getItem(`helenastudy.handwriting.saved.${draftPageKey}`);
       return notebookPages
         .find((page) => page.id === draftPageKey)
         ?.assets.some((asset) => asset.id === id)
         ? id
-        : null;
+        : fallback;
     } catch {
-      return null;
+      return fallback;
     }
   });
   const savedAssetIdRef = useRef<string | null>(editingAsset?.id ?? restoredAssetId);
@@ -369,7 +360,6 @@ export function NoteCaptureTools({
         return;
       }
       setConfirmClose(false);
-      setExpanded(false);
       if (document.fullscreenElement === dialogRef.current && document.fullscreenElement) {
         void document.exitFullscreen().catch(() => {});
       }
@@ -386,10 +376,6 @@ export function NoteCaptureTools({
     document.body.style.overflow = "hidden";
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        if (expanded) {
-          setExpanded(false);
-          return;
-        }
         if (confirmClose) setConfirmClose(false);
         else close();
       }
@@ -399,7 +385,7 @@ export function NoteCaptureTools({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
     };
-  }, [currentMode, confirmClose, close, expanded]);
+  }, [currentMode, confirmClose, close]);
 
   return (
     <>
@@ -432,7 +418,7 @@ export function NoteCaptureTools({
               ref={dialogRef}
               className={
                 currentMode === "drawing"
-                  ? `capture-dialog capture-dialog--handwriting${expanded ? " capture-dialog--expanded" : ""}`
+                  ? "capture-dialog capture-dialog--handwriting capture-dialog--expanded"
                   : "capture-dialog"
               }
               role="dialog"
@@ -501,17 +487,6 @@ export function NoteCaptureTools({
                         <PaperEditorIcon name="add" />
                       </button>
                     </div>
-                  )}
-                  {currentMode === "drawing" && (
-                    <button
-                      type="button"
-                      className="sheet-close"
-                      aria-label={expanded ? "Sair da tela cheia" : "Tela cheia"}
-                      aria-pressed={expanded}
-                      onClick={() => void toggleFullscreen()}
-                    >
-                      <PaperEditorIcon name={expanded ? "collapse" : "expand"} />
-                    </button>
                   )}
                   <button
                     className="sheet-close"
@@ -623,6 +598,8 @@ export function NoteCaptureTools({
                   {...(cloud ? { cloud } : {})}
                   notebookPages={notebookPages}
                   currentPageId={draftPageKey}
+                  {...(onSelectPage ? { onSelectPage } : {})}
+                  {...(onCreatePage ? { onCreatePage } : {})}
                   key={editingAsset?.id ?? "new"}
                   {...(initialHandwriting ? { initialDocument: initialHandwriting } : {})}
                   onSave={saveDocument}

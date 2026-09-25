@@ -1,3 +1,4 @@
+import { openHandwritingA4 } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
 // O preview do e2e serve os cabeçalhos do vercel.json, inclusive o CSP. Este teste
@@ -33,7 +34,7 @@ test("o OCR local reconhece a fórmula sob o CSP de produção, sem chamar terce
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Nova folha", exact: true }).click();
-  await page.getByRole("button", { name: "Escrever à mão" }).click();
+  await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
   const canvas = dialog.locator(".handwriting-viewport canvas").first();

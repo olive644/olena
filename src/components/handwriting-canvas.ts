@@ -31,16 +31,28 @@ const MAX_CANVAS_PIXELS = 9_000_000;
 // Quantos pixels do bitmap por unidade da folha (1200 por 1600) dão uma tinta
 // nítida na tela: densidade de pixels vezes o tamanho exibido. Arredonda para cima
 // em passos de 0,25, para o zoom não redesenhar a folha a cada fração.
-export function pageRenderScale(devicePixelRatio: number, displayWidth: number): number {
-  const wanted = Math.max(1, (devicePixelRatio * displayWidth) / PAGE_WIDTH);
-  const limit = Math.sqrt(MAX_CANVAS_PIXELS / (PAGE_WIDTH * PAGE_HEIGHT));
+export function pageRenderScale(
+  devicePixelRatio: number,
+  displayWidth: number,
+  pageWidth = PAGE_WIDTH,
+  pageHeight = PAGE_HEIGHT,
+): number {
+  const wanted = Math.max(1, (devicePixelRatio * displayWidth) / pageWidth);
+  const limit = Math.sqrt(MAX_CANVAS_PIXELS / (pageWidth * pageHeight));
   return Math.min(limit, Math.ceil(wanted * 4) / 4);
 }
 
 // Ajusta o bitmap à escala. Mudar o tamanho do canvas o apaga, então só mexe se mudou.
-export function sizePageCanvas(canvas: HTMLCanvasElement, scale: number) {
-  const width = Math.round(PAGE_WIDTH * scale);
-  const height = Math.round(PAGE_HEIGHT * scale);
+export function sizePageCanvas(
+  canvas: HTMLCanvasElement,
+  scale: number,
+  pageWidth = PAGE_WIDTH,
+  pageHeight = PAGE_HEIGHT,
+) {
+  canvas.dataset["pageWidth"] = String(pageWidth);
+  canvas.dataset["pageHeight"] = String(pageHeight);
+  const width = Math.round(pageWidth * scale);
+  const height = Math.round(pageHeight * scale);
   if (canvas.width !== width) canvas.width = width;
   if (canvas.height !== height) canvas.height = height;
 }
@@ -49,7 +61,7 @@ export function sizePageCanvas(canvas: HTMLCanvasElement, scale: number) {
 export function pageContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D | null {
   const context = canvas.getContext("2d");
   if (!context) return null;
-  const scale = canvas.width / PAGE_WIDTH;
+  const scale = canvas.width / Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
   context.setTransform(scale, 0, 0, scale, 0, 0);
   return context;
 }
@@ -65,17 +77,16 @@ export function canvasPoint(
   canvas: HTMLCanvasElement,
   event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
     Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
+  bounds = canvas.getBoundingClientRect(),
 ): HandwritingPoint {
-  const bounds = canvas.getBoundingClientRect();
+  const pageWidth = Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
+  const pageHeight = Number(canvas.dataset["pageHeight"] || PAGE_HEIGHT);
   // Em unidades da folha, não do bitmap: o bitmap muda de resolução com o zoom.
   return {
-    x: Math.max(
-      0,
-      Math.min(PAGE_WIDTH, ((event.clientX - bounds.left) / bounds.width) * PAGE_WIDTH),
-    ),
+    x: Math.max(0, Math.min(pageWidth, ((event.clientX - bounds.left) / bounds.width) * pageWidth)),
     y: Math.max(
       0,
-      Math.min(PAGE_HEIGHT, ((event.clientY - bounds.top) / bounds.height) * PAGE_HEIGHT),
+      Math.min(pageHeight, ((event.clientY - bounds.top) / bounds.height) * pageHeight),
     ),
     pressure: event.pressure > 0 ? event.pressure : 0.5,
     ...(event.tiltX ? { tiltX: event.tiltX } : {}),
@@ -88,9 +99,11 @@ export function drawPaper(
   paper: PaperStyle,
   paperColor: HandwritingPaperColor,
 ) {
+  const pageWidth = Number(context.canvas?.dataset?.["pageWidth"] || PAGE_WIDTH);
+  const pageHeight = Number(context.canvas?.dataset?.["pageHeight"] || PAGE_HEIGHT);
   context.fillStyle =
     paperColor === "night" ? "#292432" : paperColor === "aged" ? "#f3e6c8" : "#fffdf7";
-  context.fillRect(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
+  context.fillRect(0, 0, pageWidth, pageHeight);
   context.save();
   context.strokeStyle =
     paperColor === "night" ? "#51465d" : paperColor === "aged" ? "#d4bd91" : "#dcd8ee";
@@ -99,31 +112,31 @@ export function drawPaper(
   context.lineWidth = 1.4;
   const gap = 48;
   if (paper === "ruled" || paper === "grid") {
-    for (let y = 112; y < PAGE_HEIGHT; y += gap) {
+    for (let y = 112; y < pageHeight; y += gap) {
       context.beginPath();
       context.moveTo(0, y);
-      context.lineTo(PAGE_WIDTH, y);
+      context.lineTo(pageWidth, y);
       context.stroke();
     }
   }
   if (paper === "grid") {
-    for (let x = 72; x < PAGE_WIDTH; x += gap) {
+    for (let x = 72; x < pageWidth; x += gap) {
       context.beginPath();
       context.moveTo(x, 0);
-      context.lineTo(x, PAGE_HEIGHT);
+      context.lineTo(x, pageHeight);
       context.stroke();
     }
   }
-  if (paper === "dots") {
-    for (let y = 72; y < PAGE_HEIGHT; y += gap) {
-      for (let x = 72; x < PAGE_WIDTH; x += gap) {
+  if (paper === "dots" || paper === "board") {
+    for (let y = 72; y < pageHeight; y += gap) {
+      for (let x = 72; x < pageWidth; x += gap) {
         context.beginPath();
         context.arc(x, y, 2.1, 0, Math.PI * 2);
         context.fill();
       }
     }
   }
-  if (paper !== "blank" && paperColor !== "night") {
+  if (paper !== "blank" && paper !== "board" && paperColor !== "night") {
     context.strokeStyle = paperColor === "aged" ? "#c78f78" : "#e9b9b1";
     context.lineWidth = 2;
     context.beginPath();
@@ -154,13 +167,7 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   }
   if (stroke.points.length === 1) {
     context.beginPath();
-    context.arc(
-      first.x,
-      first.y,
-      stroke.width * (stroke.brush === "soft" ? 2 : stroke.brush === "ink" ? 1 : 0.5),
-      0,
-      Math.PI * 2,
-    );
+    context.arc(first.x, first.y, strokeRadii(stroke, stroke.points)[0]!, 0, Math.PI * 2);
     context.fill();
     context.restore();
     return;

@@ -59,7 +59,8 @@ export function strokeRadii(stroke: InkStroke, points: readonly HandwritingPoint
     let radius = target;
     if (index > 0) {
       const gap = Math.hypot(point.x - before.x, point.y - before.y);
-      radius = previous + (target - previous) * (1 - Math.exp(-gap / WIDTH_SMOOTHING));
+      radius =
+        previous + (target - previous) * (1 - Math.exp(-Math.max(gap, 0.65) / WIDTH_SMOOTHING));
     }
     radii.push(radius);
     previous = radius;

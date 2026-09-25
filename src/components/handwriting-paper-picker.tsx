@@ -39,6 +39,7 @@ export function HandwritingPaperPicker({
           <div className="handwriting-paper-options">
             {(
               [
+                ["board", "Quadro amplo"],
                 ["ruled", "Pautado"],
                 ["grid", "Quadriculado"],
                 ["dots", "Pontilhado"],

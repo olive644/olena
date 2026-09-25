@@ -41,6 +41,17 @@ describe("escala de renderização da folha", () => {
 });
 
 describe("tamanho do canvas da folha", () => {
+  it("mantém o quadro amplo dentro do orçamento e converte posições fora da área A4", () => {
+    const canvas = document.createElement("canvas");
+    sizePageCanvas(canvas, pageRenderScale(3, 6400, 3200, 2400), 3200, 2400);
+    expect(canvas.width * canvas.height).toBeLessThan(9_010_000);
+    const bounds = { left: 0, top: 0, width: 1600, height: 1200 } as DOMRect;
+    const measure = vi.spyOn(canvas, "getBoundingClientRect");
+    expect(
+      canvasPoint(canvas, { clientX: 1400, clientY: 1000, pressure: 0.7 }, bounds),
+    ).toMatchObject({ x: 2800, y: 2000, pressure: 0.7 });
+    expect(measure).not.toHaveBeenCalled();
+  });
   it("dimensiona o bitmap pela escala", () => {
     const canvas = document.createElement("canvas");
     sizePageCanvas(canvas, 1.5);

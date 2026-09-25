@@ -8,6 +8,31 @@ import {
 } from "./local-workspace";
 
 describe("local workspace", () => {
+  it("valida quadro amplo sem limitar conteúdo à área A4 e rejeita dimensões inválidas", () => {
+    const board = {
+      version: 1,
+      paper: "board",
+      canvasSize: { width: 3200, height: 2400 },
+      strokes: [],
+      backgroundFrame: { x: 2000, y: 1800, width: 400, height: 400 },
+    };
+    expect(isHandwritingDocument(board)).toBe(true);
+    expect(isHandwritingDocument({ ...board, paper: "ruled" })).toBe(true);
+    for (const canvasSize of [
+      { width: "3200", height: 2400 },
+      { width: 999999, height: 2400 },
+      { width: 3200, height: null },
+    ]) {
+      expect(isHandwritingDocument({ ...board, canvasSize })).toBe(false);
+    }
+    expect(
+      isHandwritingDocument({
+        ...board,
+        backgroundFrame: { x: 3000, y: 2000, width: 400, height: 400 },
+      }),
+    ).toBe(false);
+    expect(isHandwritingDocument({ version: 1, paper: "ruled", strokes: [] })).toBe(true);
+  });
   it("valida posição e tamanho de imagens importadas", () => {
     const document = { version: 1, paper: "blank", strokes: [] };
     expect(
