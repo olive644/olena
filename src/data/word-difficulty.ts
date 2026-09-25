@@ -59,9 +59,12 @@ async function queryDatamuse(word: string): Promise<number | undefined> {
   return Number.isFinite(frequency) ? frequencyPerMillionToZipf(frequency) : undefined;
 }
 
+// `allowOnline` só é verdadeiro depois do aceite da pessoa: sem ele a palavra nunca sai do
+// aparelho, e a dificuldade vem do que já está em cache ou de uma estimativa própria.
 export async function classifyWordDifficulty(
   value: string,
   storage: Storage = window.localStorage,
+  allowOnline = false,
 ): Promise<DifficultyResult> {
   const word = normalize(value);
   const cache = loadCache(storage);
@@ -74,6 +77,7 @@ export async function classifyWordDifficulty(
     };
 
   try {
+    if (!allowOnline) throw new Error("sem aceite para consultar online");
     const remoteValue = await queryDatamuse(word);
     if (typeof remoteValue === "number") {
       cache[word] = remoteValue;

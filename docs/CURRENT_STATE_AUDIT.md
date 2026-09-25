@@ -829,3 +829,10 @@ Ajustes desta PR depois de a `main` avançar:
 - O ícone da Galeria.Oli passou de PNG para SVG (`public/galeria-oli-icon.svg`, 8 KB, cinco caminhos: contorno, miolo e três traços de tinta), traçado a partir da arte original com contornos de precisão de subpixel e curvas suaves. Não embute imagem, não tem fundo e não referencia nada externo.
 - Dois testes de e2e que estavam vermelhos na `main` depois do #231 foram atualizados: o do PDF (a nova folha já abre o editor, então usa `openHandwritingA4`) e o do rascunho (o editor já não mostra o aviso de rascunho recuperado; a recuperação continua provada pelo texto do post-it).
 - O detector de segredos acusou como falso positivo o nome de uma constante que terminava em `KEY`; ela foi renomeada e a impressão digital do commit antigo foi registrada em `.gitleaksignore`, porque o histórico da branch não é reescrito.
+
+## Aceite para voz natural e vocabulário online (2026-09-25)
+
+- Os exercícios de escuta enviavam `consent: true` fixo e consultavam o serviço de vocabulário sem nenhum aceite na tela. Agora nada sai do aparelho até a pessoa escolher "Permitir" no aviso `ListeningOnlineNotice`, mostrado no Quiz de Escuta e no Modo Sala.
+- A escolha fica em `helena.listening.online.v1` como `{choice, version, at}`, é apagada junto com os demais dados pessoais ao sair da conta e pede de novo se `LISTENING_CONSENT_VERSION` subir. Pode ser trocada a qualquer momento nas configurações de áudio.
+- Sem aceite (ou com recusa): `NaturalVoicePlayer` não faz requisição e usa a voz do aparelho; `classifyWordDifficulty` usa o cache ou a estimativa local. Com aceite, o comportamento anterior continua, e `consent: true` só é enviado nesse caso.
+- A Política de Privacidade passou para a versão 2026-09-25: voz e vocabulário agora têm o consentimento como base legal (art. 7º, I) e o texto diz que só acontece com a permissão da pessoa.

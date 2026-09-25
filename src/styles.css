@@ -12121,3 +12121,52 @@ select {
   border-radius: inherit;
   pointer-events: none;
 }
+
+/* Aceite dos recursos online dos exercícios de escuta: papel lilás do app. */
+.listening-online-notice {
+  margin: 0.9rem 0;
+  padding: 0.9rem 1rem 1rem;
+  border: 2px solid #dccfee;
+  border-radius: 18px 18px 22px 8px;
+  background: #f3ecff;
+  color: #292432;
+}
+.listening-online-notice h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+.listening-online-notice p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.listening-online-notice a {
+  color: #51259b;
+  font-weight: 700;
+}
+.listening-online-notice__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.listening-online-notice__actions button,
+.listening-online-notice--compact button {
+  min-height: 44px;
+}
+.listening-online-notice--compact:not(section) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.55rem 0.8rem;
+}
+:root[data-theme="dark"] .listening-online-notice {
+  border-color: #52476a;
+  background: #382f49;
+  color: #fff9ef;
+}
+:root[data-theme="dark"] .listening-online-notice a {
+  color: #cdb6f8;
+}

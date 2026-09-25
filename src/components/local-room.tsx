@@ -19,6 +19,8 @@ import {
 import { parseManualListeningInput } from "../domain/listening-quiz";
 import { selectFallbackEnglishVoice, speakEnglish } from "../data/speech-voice";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
+import { useListeningOnline } from "../hooks/use-listening-online";
+import { ListeningOnlineNotice } from "./listening-online-notice";
 import {
   LOCAL_ROOM_SESSION_KEY,
   useLocalRoom,
@@ -395,11 +397,15 @@ export function LocalRoom({
   const [replayCooldownUntil, setReplayCooldownUntil] = useState(0);
   const [replayCooldownSeconds, setReplayCooldownSeconds] = useState(0);
 
+  const online = useListeningOnline();
+  const isAllowed = online.isAllowed;
+
   useEffect(() => {
-    const player = new NaturalVoicePlayer(setNaturalState);
+    // O texto das frases só vai à empresa de voz se a pessoa tiver aceitado neste aparelho.
+    const player = new NaturalVoicePlayer(setNaturalState, isAllowed);
     naturalPlayerRef.current = player;
     return () => player.dispose();
-  }, []);
+  }, [isAllowed]);
 
   function playQuestionAudio(text: string) {
     const limit = state?.settings.audioRepetitions ?? "unlimited";
@@ -1175,6 +1181,11 @@ export function LocalRoom({
                   {state.settings.activity !== "bingo" && (
                     <details className="listening-audio-settings">
                       <summary>Configurações de áudio</summary>
+                      <ListeningOnlineNotice
+                        choice={online.choice}
+                        onChoose={online.choose}
+                        variant="compact"
+                      />
                       <div className="local-room-audio-settings-grid">
                         <label>
                           <span>Repetições permitidas</span>
@@ -1287,6 +1298,13 @@ export function LocalRoom({
               <Radio size={28} />
               <h3>Aguardando o início</h3>
               <p>O organizador controla esta sala. Código: {state.code}</p>
+              {state.settings.activity !== "bingo" && (
+                <ListeningOnlineNotice
+                  choice={online.choice}
+                  onChoose={online.choose}
+                  variant="compact"
+                />
+              )}
             </div>
           )
         ) : state.phase === "playing" && state.currentQuestion ? (

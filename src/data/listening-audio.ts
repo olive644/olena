@@ -14,14 +14,25 @@ export class NaturalVoicePlayer {
   private requestId = 0;
   private readonly cache = new Map<string, Promise<CachedAudio>>();
 
-  constructor(private readonly onState: (state: NaturalVoiceState) => void) {}
+  // `isAllowed` diz se a pessoa aceitou enviar o texto das frases a uma empresa parceira
+  // de voz. Sem aceite (o padrão) nada sai do aparelho: usa-se só a voz do dispositivo.
+  constructor(
+    private readonly onState: (state: NaturalVoiceState) => void,
+    private readonly isAllowed: () => boolean = () => false,
+  ) {}
 
   preload(text: string, rate: number): void {
+    if (!this.isAllowed()) return;
     void this.load(text, rate).catch(() => undefined);
   }
 
   async generate(text: string, rate: number, fallback?: () => void): Promise<void> {
     this.stopPlayback();
+    if (!this.isAllowed()) {
+      this.onState({ status: "idle" });
+      fallback?.();
+      return;
+    }
     const requestId = this.requestId;
     this.onState({ status: "generating", message: "Preparando a pronúncia." });
 
