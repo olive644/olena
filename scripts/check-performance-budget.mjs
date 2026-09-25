@@ -96,8 +96,10 @@ const MAX_INITIAL_JS_BYTES = 272 * 1024;
 // consent block and the brand footer add 1.2 KiB (790.5 KiB). The ceiling moves
 // to 795 KiB for CI variance. The resizable notebook text frame adds 1.9 KiB
 // to the lazy editor chunk (796.9 KiB measured); keep a 800 KiB ceiling.
+// The account deletion panel and flow add 4 KiB across the lazy profile and cloud chunks
+// (801.1 KiB measured); the ceiling moves to 805 KiB.
 // No new runtime dependency.
-const MAX_TOTAL_JS_BYTES = 800 * 1024;
+const MAX_TOTAL_JS_BYTES = 805 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getFirebaseAccountServices } from "../data/firebase-account";
+import { deleteAccountEverywhere } from "../data/account-deletion";
 import { claimDeviceForAccount, clearPersonalData } from "../data/personal-data";
 import {
   applySyncedStorage,
@@ -41,6 +42,8 @@ export type CloudSyncState = {
   lastSyncedAt?: number | undefined;
   syncNow?: (() => void) | undefined;
   signOut?: (() => Promise<void>) | undefined;
+  // Apaga a conta e os estudos da nuvem. Rejeita com AccountDeletionError.
+  deleteAccount?: (() => Promise<void>) | undefined;
 };
 
 export function useCloudSync() {
@@ -130,18 +133,49 @@ export function useCloudSync() {
             return;
           }
 
-          const signOut = async () => {
-            clearTimeout(uploadTimer);
-            dirty = false;
-            saveCloud = undefined;
-            await authApi.signOut(auth);
-            // Em computador compartilhado, nada da pessoa que saiu pode ficar visível
-            // para a próxima: histórico de versões, rascunhos do caderno, progresso,
-            // perfil e sessões de sala, não só as chaves sincronizadas.
+          // Em computador compartilhado, nada da pessoa que saiu pode ficar visível
+          // para a próxima: histórico de versões, rascunhos do caderno, progresso,
+          // perfil e sessões de sala, não só as chaves sincronizadas.
+          const wipeDevice = () => {
             clearPersonalData(localStorage);
             clearPersonalData(sessionStorage);
             disconnectGoogleCalendar();
             applySyncedStorage({});
+          };
+          const stopSyncing = () => {
+            clearTimeout(uploadTimer);
+            dirty = false;
+            saveCloud = undefined;
+          };
+          const signOut = async () => {
+            stopSyncing();
+            await authApi.signOut(auth);
+            wipeDevice();
+          };
+          const deleteAccount = async () => {
+            // Durante a exclusão nada novo pode ser enviado; se ela falhar, a sincronização volta.
+            const resume = saveCloud;
+            stopSyncing();
+            try {
+              await deleteAccountEverywhere({
+                reauthenticate: async () => {
+                  await authApi.reauthenticateWithPopup(user, new authApi.GoogleAuthProvider());
+                },
+                deleteCloudData: async () => {
+                  const token = await user.getIdToken(true);
+                  const response = await fetch(
+                    `${databaseURL}/users/${user.uid}.json?auth=${encodeURIComponent(token)}`,
+                    { method: "DELETE" },
+                  );
+                  if (!response.ok) throw new Error("delete");
+                },
+                deleteAuthUser: () => authApi.deleteUser(user),
+                wipeLocal: wipeDevice,
+              });
+            } catch (cause) {
+              saveCloud = resume;
+              throw cause;
+            }
           };
 
           setState((current) => ({
@@ -152,6 +186,7 @@ export function useCloudSync() {
             displayName: user.displayName ?? undefined,
             email: user.email ?? undefined,
             signOut,
+            deleteAccount,
           }));
           // Outra conta já usou este aparelho: os dados dela não podem ir para a conta nova.
           claimDeviceForAccount(localStorage, user.uid);
@@ -311,6 +346,7 @@ export function useCloudSync() {
             lastSyncedAt: Date.now(),
             syncNow,
             signOut,
+            deleteAccount,
             revision: current.revision + 1,
           }));
           if (dirty) void saveCloud();
