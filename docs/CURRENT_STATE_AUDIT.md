@@ -757,3 +757,16 @@ A folha tinha um bitmap fixo de 1200 por 1600 pixels, qualquer que fosse a tela 
 Medido em tela 2x com a folha exibida a 1518 px CSS: o bitmap passou de 1200 para 2598 px de largura. Testes: `handwriting-canvas-scale.test.ts` (13) e `e2e/ink-sharpness.spec.ts`, que roda com `deviceScaleFactor: 2`, exige bitmap acima de 1200, crescimento com o zoom, respeito ao teto e a tinta exatamente sob a caneta.
 
 Orçamento: 781,9 KiB de 790, entrada inicial em 269,8 KiB (sem mudança).
+
+# Motor de traço profissional, etapa 3: colaboração suave, setembro de 2026
+
+Duas melhorias no caderno colaborativo:
+
+- **Traços do colega apareciam de uma vez.** Agora os traços novos de uma atualização ao vivo são "escritos" na camada de tinta ao longo do próprio caminho (`handwriting-reveal.ts`): duração proporcional ao comprimento (140 a 650 ms), em sequência e na ordem, com leve sobreposição e suavização no início e no fim. Um lote tem duração total limitada (1,4 s), e mais de 16 traços de uma vez, a primeira carga do documento (que chega sem autor) e a preferência de reduzir movimento não animam. Ao terminar, cada traço é desenhado na folha no mesmo quadro em que sai da camada, sem quadro em branco, e a folha não desenha um traço em revelação. `newRemoteStrokes` separa os traços que a folha ainda não conhecia; o traço que a própria pessoa está fazendo não entra na lista até a caneta ser solta, então nunca é confundido com um de colega.
+- **Latência de envio.** A espera antes de publicar a folha caiu de 350 para 140 ms, então o colega vê o traço quase assim que a caneta é solta, ainda juntando traços seguidos em um só envio.
+
+Sobre o traço em andamento: o modelo em que ele só entra na lista ao soltar a caneta (que já estava na `main`) impede que uma atualização remota o remova do estado, e a camada de tinta ao vivo impede que a folha, ao ser redesenhada por essa atualização, o apague da tela.
+
+Verificação: um e2e com dois usuários reais não é viável porque a colaboração exige conta Google. A lógica é coberta por testes puros (`handwriting-reveal.test.ts`) e pelo componente com atualizações remotas simuladas, inclusive uma atualização que chega no meio do gesto (`handwriting-studio-remote.test.tsx`). A animação foi conferida em quadros fixos (60 a 1200 ms) com as mesmas funções de desenho, mostrando o traço crescendo ao longo do caminho e o resultado final idêntico ao traço salvo.
+
+Não está incluído: tinta ao vivo enquanto o colega ainda escreve, e cursor de presença. Isso exige um canal em tempo real novo no servidor (o modelo atual envia o documento ao soltar a caneta) e mudança nas regras do banco.
