@@ -15,6 +15,7 @@ import {
 } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
 import { encodeHandwritingDraft } from "../data/handwriting-draft";
+import { openPrintWindow } from "../data/print-window";
 import type {
   HandwritingDocument,
   HandwritingImage,
@@ -50,6 +51,14 @@ import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { predictedTip } from "./handwriting-ink";
+import {
+  newRemoteStrokes,
+  partialStroke,
+  planReveal,
+  revealProgress,
+  shouldReveal,
+  type RevealingStroke,
+} from "./handwriting-reveal";
 
 // Quanto tempo depois da última amostra a ponta prevista ainda vale (ms).
 const LIVE_PREDICTION_WINDOW_MS = 24;
@@ -166,6 +175,9 @@ export function HandwritingStudio({
   const liveSettleRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const lastSampleAtRef = useRef(0);
   const paintLiveRef = useRef<() => void>(() => undefined);
+  // Traços de colegas em revelação: são escritos na camada ao vivo, ao longo do
+  // próprio caminho, e só entram na folha quando terminam.
+  const revealsRef = useRef<RevealingStroke[]>([]);
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
@@ -506,6 +518,20 @@ export function HandwritingStudio({
     );
     setPaperColor(remoteDocument.paperColor ?? "light");
     setColor(remoteDocument.paperColor === "night" ? "#fff9ef" : "#17151c");
+    const incoming = newRemoteStrokes(
+      remoteDocument.strokes,
+      new Set(strokes.map((stroke) => stroke.id)),
+    );
+    // Traços novos de um colega são escritos na folha em vez de aparecerem de uma vez.
+    const stillHere = revealsRef.current.filter((reveal) =>
+      remoteDocument.strokes.some((stroke) => stroke.id === reveal.stroke.id),
+    );
+    revealsRef.current = stillHere;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    if (remoteAuthor && !reducedMotion && shouldReveal(incoming)) {
+      revealsRef.current = [...stillHere, ...planReveal(incoming, performance.now())];
+      scheduleLivePaint();
+    }
     setStrokes(remoteDocument.strokes);
     setStickies(remoteDocument.stickies ?? []);
     setPageText(remoteDocument.pageText ?? "");
@@ -608,10 +634,12 @@ export function HandwritingStudio({
     if (liveCanvasRef.current)
       sizePageCanvas(liveCanvasRef.current, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     // O traço em andamento fica só na camada ao vivo até a caneta ser solta.
+    const hidden = new Set(revealsRef.current.map((reveal) => reveal.stroke.id));
     const liveId = liveStrokeRef.current?.id;
+    if (liveId) hidden.add(liveId);
     renderPage(
       canvas,
-      liveId ? strokes.filter((stroke) => stroke.id !== liveId) : strokes,
+      hidden.size > 0 ? strokes.filter((stroke) => !hidden.has(stroke.id)) : strokes,
       paper,
       paperColor,
       stickies,
@@ -964,16 +992,42 @@ export function HandwritingStudio({
     const context = pageContext(overlay);
     if (!context) return;
     const stroke = liveStrokeRef.current;
-    if (!stroke) return;
-    // A ponta prevista cobre o atraso do filtro e do quadro, mas só enquanto a mão
-    // se move: parada, a ponta prevista ficaria à frente da caneta.
-    const fresh = performance.now() - lastSampleAtRef.current < LIVE_PREDICTION_WINDOW_MS;
-    const tip = fresh ? predictedTip(stroke.points) : undefined;
-    const drawn = tip ? { ...stroke, points: [...stroke.points, tip] } : stroke;
-    drawStroke(context, drawn);
-    if (writingWindowOpen) paintWritingWindowLive(drawn);
+    let tip: HandwritingPoint | undefined;
+    if (stroke) {
+      // A ponta prevista cobre o atraso do filtro e do quadro, mas só enquanto a mão
+      // se move: parada, a ponta prevista ficaria à frente da caneta.
+      const fresh = performance.now() - lastSampleAtRef.current < LIVE_PREDICTION_WINDOW_MS;
+      tip = fresh ? predictedTip(stroke.points) : undefined;
+      const drawn = tip ? { ...stroke, points: [...stroke.points, tip] } : stroke;
+      drawStroke(context, drawn);
+      if (writingWindowOpen) paintWritingWindowLive(drawn);
+    }
+    paintReveals(context);
     clearTimeout(liveSettleRef.current);
     if (tip) liveSettleRef.current = setTimeout(scheduleLivePaint, LIVE_PREDICTION_WINDOW_MS + 8);
+  }
+
+  // Escreve, quadro a quadro, os traços novos de colegas. Ao terminar, cada um é
+  // desenhado na folha no mesmo quadro em que sai da camada ao vivo.
+  function paintReveals(context: CanvasRenderingContext2D) {
+    const reveals = revealsRef.current;
+    if (reveals.length === 0) return;
+    const now = performance.now();
+    const active: RevealingStroke[] = [];
+    const finished: Stroke[] = [];
+    for (const reveal of reveals) {
+      const progress = revealProgress(reveal, now);
+      if (progress >= 1) finished.push(reveal.stroke);
+      else {
+        active.push(reveal);
+        if (progress > 0) drawStroke(context, partialStroke(reveal.stroke, progress));
+      }
+    }
+    revealsRef.current = active;
+    const main = canvasRef.current;
+    const mainContext = finished.length > 0 && main ? pageContext(main) : null;
+    if (mainContext) for (const stroke of finished) drawStroke(mainContext, stroke);
+    if (active.length > 0) scheduleLivePaint();
   }
   paintLiveRef.current = paintLive;
 
@@ -986,6 +1040,11 @@ export function HandwritingStudio({
     if (liveFrameRef.current !== null) cancelAnimationFrame(liveFrameRef.current);
     liveFrameRef.current = null;
     clearTimeout(liveSettleRef.current);
+    // Revelações de colegas continuam: repinta a camada só com elas, no mesmo quadro.
+    if (revealsRef.current.length > 0) {
+      paintLive();
+      return;
+    }
     if (liveCanvasRef.current) clearPageCanvas(liveCanvasRef.current);
   }
 
@@ -2324,7 +2383,7 @@ export function HandwritingStudio({
   function printPage() {
     try {
       const imageUrl = pageImage();
-      const printWindow = window.open("", "_blank");
+      const printWindow = openPrintWindow();
       if (!printWindow) throw new Error("Permita a janela de impressão para salvar em PDF.");
       const image = printWindow.document.createElement("img");
       image.alt = "Folha do caderno";

@@ -13,6 +13,7 @@ import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
+import { openPrintWindow } from "../data/print-window";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   createWorkspaceId,
@@ -324,7 +325,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
       setMoveMessage("Adicione pelo menos uma folha com conteúdo antes de exportar.");
       return;
     }
-    const printWindow = window.open("", "_blank", "noopener,noreferrer");
+    const printWindow = openPrintWindow();
     if (!printWindow) {
       setMoveMessage("Permita pop-ups para exportar o caderno em PDF.");
       return;
