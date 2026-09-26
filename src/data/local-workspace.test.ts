@@ -4,6 +4,7 @@ import {
   isHandwritingDocument,
   loadWorkspace,
   saveWorkspace,
+  WORKSPACE_RECOVERY_KEY,
   WORKSPACE_STORAGE_KEY,
 } from "./local-workspace";
 
@@ -371,5 +372,81 @@ describe("local workspace", () => {
       title: "Revisão de verbos",
       pageIds: ["note-v6"],
     });
+  });
+});
+
+describe("espaço ilegível", () => {
+  function memoryStorage(initial: Record<string, string> = {}) {
+    const values = new Map(Object.entries(initial));
+    return {
+      values,
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => void values.set(key, value),
+    };
+  }
+
+  it("guarda uma cópia do conteúdo inválido antes de abrir o espaço inicial", () => {
+    // Uma folha com mais de 500 traços não passa na validação e invalidava o espaço inteiro.
+    const workspace = createInitialWorkspace();
+    workspace.notes.push({
+      id: "cheia",
+      title: "Cheia",
+      content: "",
+      subjectId: "",
+      updatedAt: "2026",
+      assets: [
+        {
+          id: "a",
+          kind: "drawing",
+          name: "Folha cheia",
+          dataUrl: "data:image/png;base64,AA",
+          createdAt: "2026",
+          handwriting: {
+            version: 1,
+            paper: "ruled",
+            strokes: Array.from({ length: 501 }, (_, index) => ({
+              id: `s${index}`,
+              tool: "pen" as const,
+              brush: "fine" as const,
+              color: "#000",
+              width: 4,
+              points: [{ x: 1, y: 1, pressure: 0.5 }],
+            })),
+          },
+        },
+      ],
+    });
+    const raw = JSON.stringify(workspace);
+    const storage = memoryStorage({ [WORKSPACE_STORAGE_KEY]: raw });
+    const loaded = loadWorkspace(storage);
+    expect(loaded.notes.some((note) => note.id === "cheia")).toBe(false);
+    expect(storage.values.get(WORKSPACE_RECOVERY_KEY)).toBe(raw);
+  });
+
+  it("guarda também um conteúdo que nem é JSON", () => {
+    const storage = memoryStorage({ [WORKSPACE_STORAGE_KEY]: "{quebrado" });
+    loadWorkspace(storage);
+    expect(storage.values.get(WORKSPACE_RECOVERY_KEY)).toBe("{quebrado");
+  });
+
+  it("não cria cópia quando o espaço é válido nem quando ainda não existe", () => {
+    const valid = memoryStorage({
+      [WORKSPACE_STORAGE_KEY]: JSON.stringify(createInitialWorkspace()),
+    });
+    loadWorkspace(valid);
+    expect(valid.values.has(WORKSPACE_RECOVERY_KEY)).toBe(false);
+    const empty = memoryStorage();
+    loadWorkspace(empty);
+    expect(empty.values.has(WORKSPACE_RECOVERY_KEY)).toBe(false);
+  });
+
+  it("segue abrindo o espaço inicial se não houver lugar para a cópia", () => {
+    const storage = {
+      getItem: () => "{quebrado",
+      setItem: () => {
+        throw new Error("QuotaExceededError");
+      },
+    };
+    expect(() => loadWorkspace(storage)).not.toThrow();
   });
 });
