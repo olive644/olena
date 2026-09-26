@@ -6,6 +6,7 @@ import {
   NotebookJourney,
   canAnimateNotebook,
   notebookShelfCover,
+  notebookPageSnapshot,
   type NotebookJourneyState,
 } from "../components/notebook-journey";
 import { PageHeader } from "../components/app-navigation";
@@ -173,6 +174,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
       setJourney({
         notebook: activeNotebook,
         returning: true,
+        closed: !spread,
+        pages: notebookPageSnapshot(),
         tabs: notebookPaperTabs(activeNotebook, notebookPages, workspace.subjects),
         from: spread
           ? { x: rect.x + rect.width / 2, y: rect.y, width: rect.width / 2, height: rect.height }

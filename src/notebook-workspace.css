@@ -795,6 +795,39 @@
   gap: 1rem;
   margin-bottom: 0.9rem;
 }
+.notebook-page-index header > div {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  column-gap: 10px;
+}
+.notebook-page-index header .paper-tab-icon {
+  grid-row: span 2;
+  width: 40px;
+  height: 40px;
+}
+.notebook-page-index .notebook-index-close,
+.notebook-page-index__move button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid #d5ccba;
+  background: #fff9ef;
+  box-shadow: 0 3px #d5ccba;
+  border-radius: 4px 12px 4px 8px;
+  padding: 5px;
+}
+.notebook-index-close .paper-editor-icon {
+  width: 28px;
+  height: 28px;
+}
+.notebook-page-index__move img,
+.book-index .paper-tab-icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+.notebook-page-index__move .is-previous {
+  transform: rotate(180deg);
+}
 
 .notebook-page-index h2,
 .notebook-page-index p {
@@ -882,11 +915,11 @@
 
 .notebook-page-index__move button {
   min-width: 44px;
-  min-height: 36px;
+  min-height: 44px;
   border: 1px solid var(--line);
   border-radius: 6px 10px 6px 8px;
   color: var(--text);
-  background: var(--surface);
+  background: #fffaf0;
   font-size: 1.1rem;
   cursor: pointer;
 }

@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
+import {
+  NotebookJourney,
+  canAnimateNotebook,
+  notebookPageSnapshot,
+  type NotebookJourneyState,
+} from "./notebook-journey";
 import type {
   StudyNote,
   StudyNotebook,
@@ -67,6 +73,27 @@ export function NotebookSpread({
 }: Props) {
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [showCover, setShowCover] = useState(false);
+  const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
+  const finishCoverJourney = useCallback(() => setCoverJourney(null), []);
+  function changeCover(next: boolean) {
+    if (coverJourney) return;
+    const source = document.querySelector<HTMLElement>(
+      next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
+    );
+    const rect = source?.getBoundingClientRect();
+    if (rect && canAnimateNotebook())
+      setCoverJourney({
+        notebook,
+        tabs: notebookPaperTabs(notebook, pages, subjects),
+        returning: next,
+        destination: next ? "cover" : "spread",
+        pages: next ? notebookPageSnapshot() : undefined,
+        from: next
+          ? { x: rect.x + rect.width / 2, y: rect.y, width: rect.width / 2, height: rect.height }
+          : rect,
+      });
+    setShowCover(next);
+  }
   const [turning, setTurning] = useState<Turn | null>(null);
   const [removing, setRemoving] = useState<{ page: StudyNote; side: number } | null>(null);
   const drag = useRef<{ x: number; y: number; id: number; width: number; moved: boolean } | null>(
@@ -76,7 +103,7 @@ export function NotebookSpread({
   const lastSpread = Math.max(0, Math.ceil(pages.length / 2) - 1);
   const current = Math.min(spreadIndex, lastSpread);
   const visible = pages.slice(current * 2, current * 2 + 2);
-  const busy = Boolean(turning || removing);
+  const busy = Boolean(turning || removing || coverJourney);
   const backControl = onBack && (
     <button
       type="button"
@@ -132,6 +159,7 @@ export function NotebookSpread({
   const back = turning ? pages[turning.to * 2 + (turning.direction > 0 ? 0 : 1)] : undefined;
   return (
     <div className="notebook-spread-workspace">
+      {coverJourney && <NotebookJourney journey={coverJourney} onDone={finishCoverJourney} />}
       {showCover && (
         <div className="notebook-spread-options">
           {backControl}
@@ -140,9 +168,9 @@ export function NotebookSpread({
             className="secondary-button"
             aria-pressed={showCover}
             disabled={busy}
-            onClick={() => setShowCover(!showCover)}
+            onClick={() => changeCover(false)}
           >
-            {showCover ? "Ver folhas" : "Ver capa"}
+            Ver folhas
           </button>
         </div>
       )}
@@ -151,6 +179,26 @@ export function NotebookSpread({
           className="notebook-concept-cover"
           role="img"
           aria-label={`Capa do caderno ${notebook.title}, Helena e estrelas de papel`}
+          onPointerDown={(event) => {
+            if (busy || event.button !== 0) return;
+            event.currentTarget.setPointerCapture(event.pointerId);
+            drag.current = {
+              x: event.clientX,
+              y: event.clientY,
+              id: event.pointerId,
+              width: event.currentTarget.clientWidth,
+              moved: false,
+            };
+          }}
+          onPointerUp={(event) => {
+            const start = drag.current;
+            drag.current = null;
+            if (start && event.clientX - start.x < -40 && Math.abs(event.clientY - start.y) < 60)
+              changeCover(false);
+          }}
+          onPointerCancel={() => {
+            drag.current = null;
+          }}
         >
           <NotebookCover
             subjectColor="#7C3AED"
@@ -181,12 +229,12 @@ export function NotebookSpread({
                 type="button"
                 className="notebook-paper-tool"
                 disabled={busy}
-                onClick={() => setShowCover(true)}
-                aria-label="Ver capa"
-                title="Ver capa"
+                onClick={() => changeCover(true)}
+                aria-label="Personalizar"
+                title="Personalizar"
               >
                 <NotebookToolIcon name="cover" />
-                <span className="notebook-cover-label">Ver capa</span>
+                <span className="notebook-cover-label">Personalizar</span>
               </button>
             }
             onJump={(id) => turnTo(Math.floor(pages.findIndex((page) => page.id === id) / 2))}
@@ -268,6 +316,12 @@ export function NotebookSpread({
               }}
             >
               <div className="notebook-cover-corners" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <i />
+              </div>
+              <div className="notebook-page-stack" aria-hidden="true">
                 <i />
                 <i />
                 <i />

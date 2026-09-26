@@ -215,7 +215,8 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   );
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
   await expect(editor).toHaveCount(0);
-  await preview.getByRole("button", { name: "Ver capa", exact: true }).click();
+  await preview.getByRole("button", { name: "Personalizar", exact: true }).click();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath("capa-helena.png") });
   if (testInfo.project.name === "mobile") {
     for (const size of [
@@ -237,7 +238,8 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       expect(spread!.width).toBeLessThan(size.width);
       const create = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
       expect(create!.y + create!.height).toBeLessThan(nav!.y);
-      await preview.getByRole("button", { name: "Ver capa" }).click();
+      await preview.getByRole("button", { name: "Personalizar" }).click();
+      await expect(page.locator(".notebook-journey")).toHaveCount(0);
     }
   }
   await preview.getByRole("button", { name: "Ver folhas" }).click();
