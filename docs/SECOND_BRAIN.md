@@ -1,8 +1,17 @@
 # OlenaStudy: Second Brain
 
+O preview principal usa `NotebookSpread`: folhas em pares, divisórias por matéria
+e capa `public/notebook-covers/helena-estrelas.webp`. O editor mantém
+`NotebookPageBook`. As divisórias reutilizam `subjects` e `note.subjectId`;
+`notebook.subjectIds` opcional preserva divisórias ainda vazias. Não há cópia de
+folhas ao trocar matéria. Modelos sem data `weekly` e `calendar` são renderizados
+por `handwriting-planner-paper.ts` através de `drawPaper`, inclusive nas exportações.
+Testes: `notebook-spread.test.tsx` e `e2e/notebook-tabs.spec.ts`.
+
 O editor usa canvasSize opcional no HandwritingDocument. Ausência em documentos
-antigos mantém 1200x1600; quadro novo usa 3200x2400. Não reduzir dimensões de uma
-página preenchida ao trocar papel. O limite do bitmap continua em 9 milhões de
+antigos mantém 1200x1600; quadro novo usa 3200x2400. Ao trocar para A4,
+`fitHandwriting` reduz conteúdo proporcionalmente, preservando dados e limites
+mínimos dos objetos. Não cortar pontos fora da página. O limite do bitmap continua em 9 milhões de
 pixels por camada. Sobreposições e ponteiros usam dimensões lógicas, não pixels CSS.
 
 NotebookPageBook substitui cartões de folhas na área do caderno e o antigo footer

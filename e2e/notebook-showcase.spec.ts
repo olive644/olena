@@ -48,9 +48,9 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
     steps: 8,
   });
   await page.mouse.up();
-  await expect(preview.getByText("Folha 2 de 2")).toBeVisible();
+  await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();
 
-  await preview.getByRole("button", { name: "Remover folha" }).click();
+  await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
   await expect(preview.getByText("1 folha guardada")).toBeVisible();
   await preview.getByRole("button", { name: /Abrir preview de Nova folha/ }).click();
   editor = page.getByRole("dialog", { name: "Escrever à mão" });

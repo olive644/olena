@@ -14,7 +14,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   const preview = page.getByRole("region", { name: "Preview do caderno" });
-  const book = await preview.locator(".notebook-preview-book").boundingBox();
+  const book = await preview.locator(".notebook-paper-spread").boundingBox();
   expect(book!.x).toBeGreaterThanOrEqual(0);
   expect(book!.x + book!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   await page.screenshot({ path: info.outputPath("preview-mobile.png") });

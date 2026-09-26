@@ -1,4 +1,6 @@
 dist
+public/ocr
+.vercel
 node_modules
 coverage
 playwright-report

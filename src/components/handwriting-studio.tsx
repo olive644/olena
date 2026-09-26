@@ -15,6 +15,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
+import { fitHandwriting } from "../domain/resize-handwriting";
 import { encodeHandwritingDraft } from "../data/handwriting-draft";
 import { openPrintWindow } from "../data/print-window";
 import type {
@@ -421,6 +422,15 @@ export function HandwritingStudio({
   const PAGE_WIDTH = canvasSize.width;
   const PAGE_HEIGHT = canvasSize.height;
   function selectPaper(next: PaperStyle) {
+    if (next !== "board" && PAGE_WIDTH > 1200) {
+      const fitted = fitHandwriting(currentDocument, 1200, 1600);
+      setStrokes(fitted.strokes);
+      setStickies(fitted.stickies ?? []);
+      setImportedImages(fitted.images ?? []);
+      setCoordinateSystems(fitted.coordinateSystems ?? []);
+      setBackgroundFrame(fitted.backgroundFrame);
+      if (pageText.trim() && fitted.pageTextFrame) setPageTextFrame(fitted.pageTextFrame);
+    }
     if (next === "board") setCanvasSize({ width: 3200, height: 2400 });
     else {
       setCanvasSize({ width: 1200, height: 1600 });
@@ -600,19 +610,24 @@ export function HandwritingStudio({
       const serialized = JSON.stringify(currentDocument);
       if (!dirty || !onAutosave || drawingRef.current || serialized === autosavedRef.current)
         return;
+      if ((background && !backgroundImage) || !importedImagesReady) return;
       try {
         onAutosave(pageImage(), buildDocument());
         autosavedRef.current = serialized;
         setDraftStatus("Folha salva automaticamente");
-      } catch {
-        setDraftStatus("Falha ao salvar a folha. O rascunho será preservado.");
+      } catch (caught) {
+        setDraftStatus(
+          caught instanceof Error
+            ? `Não foi possível salvar: ${caught.message}`
+            : "Não foi possível salvar a folha. Tente salvar novamente.",
+        );
       }
     };
   });
   useEffect(() => {
     const timer = window.setTimeout(() => autosaveRef.current(), 900);
     return () => window.clearTimeout(timer);
-  }, [currentDocument]);
+  }, [currentDocument, backgroundImage, importedImagesReady]);
   useEffect(() => {
     const flush = () => autosaveRef.current();
     const onVisibility = () => {
@@ -2650,16 +2665,8 @@ export function HandwritingStudio({
 
   function save(closeAfter = true) {
     const canvas = canvasRef.current;
-    if (
-      !canvas ||
-      (strokes.length === 0 &&
-        stickies.length === 0 &&
-        coordinateSystems.length === 0 &&
-        !pageText.trim() &&
-        importedImages.length === 0 &&
-        !background)
-    ) {
-      setError("Escreva ou adicione um post-it antes de salvar.");
+    if (!canvas) {
+      setError("Aguarde a folha carregar antes de salvar.");
       return;
     }
     try {
@@ -2667,6 +2674,7 @@ export function HandwritingStudio({
       onSave(pageImage(), document);
       localStorage.removeItem(`helenastudy.handwriting.draft.${draftKey}`);
       setDraftStatus("Folha salva no caderno");
+      setError("");
       if (closeAfter) onClose();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível salvar a folha.");

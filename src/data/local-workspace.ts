@@ -213,7 +213,9 @@ export function isHandwritingDocument(value: unknown): boolean {
   )
     return false;
   if (
-    !["ruled", "grid", "dots", "blank", "board", "night", "aged"].includes(String(value["paper"]))
+    !["ruled", "grid", "dots", "blank", "board", "weekly", "calendar", "night", "aged"].includes(
+      String(value["paper"]),
+    )
   )
     return false;
   if (
@@ -347,6 +349,8 @@ function isNotebook(value: unknown): boolean {
     isRecord(value) &&
     (value["kind"] === undefined || value["kind"] === "folder") &&
     (value["parentId"] === undefined || isString(value["parentId"])) &&
+    (value["subjectIds"] === undefined ||
+      (Array.isArray(value["subjectIds"]) && value["subjectIds"].every(isString))) &&
     isString(value["id"]) &&
     isString(value["title"]) &&
     isString(value["subjectId"]) &&
@@ -687,13 +691,19 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
   const duplicateIds = new Set(candidates.map(({ id }) => id));
   duplicateIds.delete(primary.id);
   const pageIds = [...new Set([primary, ...candidates].flatMap(({ pageIds }) => pageIds))];
+  const subjectIds = [...new Set(candidates.flatMap((notebook) => notebook.subjectIds ?? []))];
   return {
     ...workspace,
     notebooks: workspace.notebooks
       .filter((notebook) => !duplicateIds.has(notebook.id))
       .map((notebook) =>
         notebook.id === primary.id
-          ? { ...notebook, title: "Meu caderno", pageIds }
+          ? {
+              ...notebook,
+              title: "Meu caderno",
+              pageIds,
+              ...(subjectIds.length ? { subjectIds } : {}),
+            }
           : notebook.parentId && duplicateIds.has(notebook.parentId)
             ? { ...notebook, parentId: primary.id }
             : notebook,

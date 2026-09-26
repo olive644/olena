@@ -62,6 +62,8 @@ export function HandwritingPaperPicker({
                   ["grid", "Quadriculado"],
                   ["dots", "Pontilhado"],
                   ["blank", "Em branco"],
+                  ["weekly", "Plano semanal"],
+                  ["calendar", "Calendário"],
                 ] as const
               ).map(([value, label]) => (
                 <button
