@@ -54,6 +54,7 @@ import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
+import { recognizeShape } from "./handwriting-shapes";
 import {
   PASTE_OFFSET,
   copyItems,
@@ -163,6 +164,9 @@ type HandwritingStudioProps = {
 // Área de transferência da seleção. Fica fora do componente para valer entre folhas.
 let selectionClipboard: SelectionClipboard | null = null;
 
+// Pausa, em milissegundos, para a forma desenhada ser acertada.
+const SHAPE_HOLD_MS = 600;
+
 export function HandwritingStudio({
   notebookPages = [],
   currentPageId,
@@ -215,6 +219,7 @@ export function HandwritingStudio({
   const { preferences, changePreference, preferenceError } = useNotebookPreferences();
   const {
     stabilization,
+    shapeSnap,
     penOnly,
     textAutoCorrect,
     coordinateMeasurements,
@@ -343,6 +348,10 @@ export function HandwritingStudio({
   const penDetectedRef = useRef(false);
   // Ids dos traços que chegaram de colegas: desfazer e refazer não podem apagá-los.
   const remoteStrokeIdsRef = useRef(new Set<string>());
+  // "Segurar para acertar": depois de uma pausa no fim do traço, a forma reconhecida substitui o
+  // rabisco e o resto do gesto é ignorado até a caneta ser solta.
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const shapeSnappedRef = useRef(false);
   const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const selectionRef = useRef<{
     pointerId: number;
@@ -1576,6 +1585,8 @@ export function HandwritingStudio({
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
+    clearTimeout(holdTimerRef.current);
+    shapeSnappedRef.current = false;
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
     if (effectiveTool !== "ruler") {
       lastSampleAtRef.current = performance.now();
@@ -1772,6 +1783,7 @@ export function HandwritingStudio({
     }
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
+    if (shapeSnappedRef.current) return;
     const previous = liveStroke.points.at(-1);
     const added = (liveStabilizerRef.current?.push(points, sampleTimes) ?? points).reduce<
       HandwritingPoint[]
@@ -1789,9 +1801,25 @@ export function HandwritingStudio({
     liveStroke.points.push(...added);
     lastSampleAtRef.current = performance.now();
     scheduleLivePaint();
+    clearTimeout(holdTimerRef.current);
+    if (shapeSnap && (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")) {
+      holdTimerRef.current = setTimeout(snapHeldStroke, SHAPE_HOLD_MS);
+    }
+  }
+
+  function snapHeldStroke() {
+    const live = liveStrokeRef.current;
+    if (!live || !drawingRef.current || shapeSnappedRef.current) return;
+    const shape = recognizeShape(live.points);
+    if (!shape) return;
+    live.points = shape.points;
+    liveStabilizerRef.current = null;
+    shapeSnappedRef.current = true;
+    scheduleLivePaint();
   }
 
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
+    clearTimeout(holdTimerRef.current);
     if (event.pointerType === "pen") {
       palmRef.current = { penDown: false, lastPenAt: performance.now() };
     }
@@ -1987,13 +2015,13 @@ export function HandwritingStudio({
     liveStrokeRef.current = null;
     if (!liveStroke) return;
     const settledPoints = settleLiveStroke(liveStroke.points);
-    const points = (stabilization ? straightenStroke(settledPoints) : settledPoints).map(
-      (point) => ({
-        ...point,
-        x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
-        y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
-      }),
-    );
+    const points = (
+      stabilization && !shapeSnappedRef.current ? straightenStroke(settledPoints) : settledPoints
+    ).map((point) => ({
+      ...point,
+      x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
+      y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
+    }));
     commitLiveStroke({ ...liveStroke, points });
     setStrokes((current) => [...current, { ...liveStroke, points }]);
   }

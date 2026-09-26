@@ -108,7 +108,9 @@ const MAX_INITIAL_JS_BYTES = 276 * 1024;
 // Direct-manipulation notebook tools remain lazy: measured ~818 KiB, no new dependency.
 // Selection tools (copy, paste, duplicate, rotate, lasso rule) live in the lazy handwriting
 // studio chunk and add about 4 KiB (822.5 KiB measured); the ceiling moves to 830 KiB.
-const MAX_TOTAL_JS_BYTES = 830 * 1024;
+// Shape recognition (hold to snap) is lazy in the handwriting studio chunk: 828.6 KiB measured,
+// ceiling 836 KiB for CI variance.
+const MAX_TOTAL_JS_BYTES = 836 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

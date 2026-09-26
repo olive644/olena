@@ -166,3 +166,57 @@ test("alças da caixa: arrastar o canto redimensiona e a alça de cima gira", as
   const turned = await extent();
   expect(turned.height).toBeGreaterThan(grown.height * 2);
 });
+
+test("segurar a caneta parada no fim de um traço acerta a reta e o círculo", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Fluxo de desenho verificado no desktop.");
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("button", { name: "Cadernos", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
+  await openHandwritingA4(page);
+  const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
+  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  await sheet.scrollIntoViewIfNeeded();
+  const box = (await sheet.boundingBox())!;
+
+  const inkRows = () =>
+    sheet.evaluate((element) => {
+      const canvas = element as HTMLCanvasElement;
+      const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
+      let minY = canvas.height;
+      let maxY = 0;
+      for (let index = 0; index < data.length; index += 4) {
+        if (data[index + 3]! > 200 && data[index]! < 90 && data[index + 1]! < 90) {
+          const y = Math.floor(index / 4 / canvas.width);
+          minY = Math.min(minY, y);
+          maxY = Math.max(maxY, y);
+        }
+      }
+      return maxY - minY;
+    });
+
+  // Uma linha com ondinhas e uma pausa no fim: a caneta parada acerta a reta.
+  const x0 = box.x + box.width * 0.2;
+  const y0 = box.y + 200;
+  await page.mouse.move(x0, y0);
+  await page.mouse.down();
+  for (let step = 1; step <= 25; step += 1) {
+    await page.mouse.move(x0 + step * 8, y0 + Math.sin(step) * 6);
+    await page.waitForTimeout(6);
+  }
+  await page.waitForTimeout(900);
+  await page.mouse.up();
+  await expect(dialog.getByRole("button", { name: "Desfazer", exact: true })).toBeEnabled();
+  // A tinta de uma reta perfeita é fina; o rabisco com a onda de 6 px ocuparia bem mais linhas.
+  expect(await inkRows()).toBeLessThan(14);
+});
