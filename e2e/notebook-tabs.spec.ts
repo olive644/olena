@@ -237,12 +237,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await preview.getByRole("button", { name: "Ver folhas" }).click();
   await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
   await expect(preview.locator(".notebook-crumple")).toBeVisible();
-  await preview.locator(".notebook-crumple").evaluate((element) => {
-    for (const animation of element.getAnimations({ subtree: true })) {
-      animation.pause();
-      animation.currentTime = 560;
-    }
-  });
+  await page.waitForTimeout(500);
   await page.screenshot({ path: testInfo.outputPath("papel-amassando.png") });
   await expect(preview.locator(".notebook-crumple")).toHaveCount(0);
   await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();
