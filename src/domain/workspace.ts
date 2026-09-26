@@ -47,6 +47,7 @@ export type StudyNote = {
 };
 
 export type NotebookTab = {
+  motif?: "moon" | "sun";
   id: string;
   kind: "divider" | "bookmark";
   pageId: string;

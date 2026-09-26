@@ -5,6 +5,79 @@ import { createInitialWorkspace, workspaceReducer } from "../domain/workspace";
 import { isHandwritingDocument, loadWorkspace } from "../data/local-workspace";
 import { notebookPaperTabs } from "./notebook-paper-tools";
 
+it("edita o título no preview sem abrir editor e permite cancelar", () => {
+  const state = fixture();
+  const notebook = state.notebooks[0]!;
+  const pages = notebook.pageIds.map((id) => state.notes.find((page) => page.id === id)!);
+  const dispatch = vi.fn();
+  const onOpen = vi.fn();
+  render(
+    <NotebookSpread
+      notebook={notebook}
+      pages={pages}
+      subjects={state.subjects}
+      dispatch={dispatch}
+      onOpen={onOpen}
+      onCreate={vi.fn()}
+      onRemove={vi.fn()}
+    />,
+  );
+  const title = screen.getByRole("textbox", { name: "Título da folha 1" });
+  fireEvent.change(title, { target: { value: "  Constelações  " } });
+  fireEvent.blur(title);
+  expect(dispatch).toHaveBeenCalledWith(
+    expect.objectContaining({
+      type: "note/updated",
+      id: "one",
+      title: "Constelações",
+      content: pages[0]!.content,
+    }),
+  );
+  expect(onOpen).not.toHaveBeenCalled();
+  dispatch.mockClear();
+  fireEvent.change(title, { target: { value: "Descartar" } });
+  fireEvent.keyDown(title, { key: "Escape" });
+  fireEvent.blur(title);
+  expect(dispatch).not.toHaveBeenCalled();
+});
+
+it("oferece Sol e preserva o modelo do marcador ao recarregar", () => {
+  const state = fixture();
+  const notebook = state.notebooks[0]!;
+  const pages = notebook.pageIds.map((id) => state.notes.find((page) => page.id === id)!);
+  const paperTabs = [
+    {
+      id: "marker",
+      kind: "bookmark" as const,
+      pageId: "one",
+      label: "Ideias",
+      color: "#FACC15",
+      position: 0.4,
+    },
+  ];
+  const dispatch = vi.fn();
+  render(
+    <NotebookSpread
+      notebook={{ ...notebook, paperTabs }}
+      pages={pages}
+      subjects={state.subjects}
+      dispatch={dispatch}
+      onOpen={vi.fn()}
+      onCreate={vi.fn()}
+      onRemove={vi.fn()}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Editar marcas" }));
+  fireEvent.click(screen.getByRole("button", { name: "Marcador Ideias, folha 1" }));
+  fireEvent.click(screen.getByRole("button", { name: "Sol" }));
+  const action = dispatch.mock.calls[0]![0];
+  expect(action.changes.paperTabs[0].motif).toBe("sun");
+  const updated = workspaceReducer(state, action);
+  expect(
+    loadWorkspace({ getItem: () => JSON.stringify(updated) }).notebooks[0]?.paperTabs?.[0]?.motif,
+  ).toBe("sun");
+});
+
 function fixture() {
   let state = workspaceReducer(createInitialWorkspace(), {
     type: "notebook/added",

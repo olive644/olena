@@ -12,6 +12,7 @@ test("buscar nos cadernos acha pelo título sem acento e abre o caderno", async 
 
   const search = page.getByRole("searchbox", { name: "Buscar nos cadernos" });
   await search.fill("fisica");
+  await expect(search).toHaveValue("fisica");
   await expect(page.getByText("1 resultado")).toBeVisible();
   await page
     .locator(".notebook-search")

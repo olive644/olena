@@ -45,7 +45,7 @@ export function NotebookCover({
           className={`book-cover__mark is-${tab.kind}`}
           style={{ "--tab-color": tab.color, "--tab-position": tab.position } as CSSProperties}
         >
-          {tab.kind === "bookmark" && <PaperMoonMark />}
+          {tab.kind === "bookmark" && <PaperMoonMark motif={tab.motif} />}
         </span>
       ))}
     </span>

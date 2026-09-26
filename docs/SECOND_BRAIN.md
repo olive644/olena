@@ -1,5 +1,15 @@
 # OlenaStudy: Second Brain
 
+`NotebookJourney` é uma camada visual temporária via portal. A navegação monta o
+destino e a medição acontece no próximo frame, após o ajuste de scroll. Animações
+nativas são canceladas no unmount. Busca e demais campos continuam utilizáveis
+durante a viagem; o foco só retorna ao destino se o usuário não o moveu para outro campo.
+Movimento reduzido e ausência da API de animação mantêm a navegação imediata.
+Referência técnica: https://developer.mozilla.org/en-US/docs/Web/API/Element/animate
+Títulos no preview usam `note/updated` somente no blur/Enter, sem alterar conteúdo.
+`NotebookTab.motif` é opcional (moon/sun), validado no armazenamento local. Marcas
+anteriores usam Lua sem migração destrutiva. Os dois ornamentos ficam na ponta inferior.
+
 `NotebookPaperTools` posiciona cada marcação individualmente: sobre a folha quando
 ela está aberta, sob o papel nas outras aberturas e durante viradas. Não criar um
 contexto de empilhamento no nav de marcações, pois impediria camadas individuais.
