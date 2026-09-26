@@ -20,7 +20,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await page.screenshot({ path: info.outputPath("preview-mobile.png") });
   await preview.getByRole("button", { name: "Criar primeira folha" }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
-  await expect(editor.getByRole("button", { name: "Mover folha", exact: true })).toBeHidden();
+  await expect(editor.getByRole("button", { name: "Mover folha", exact: true })).toHaveCount(0);
   await expect(editor.getByRole("button", { name: "Tinta Roxo" })).toBeHidden();
   const paper = await editor
     .getByRole("button", { name: "Tipo de papel", exact: true })
@@ -48,7 +48,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await expect(editor.getByRole("button", { name: "Tinta Roxo" })).toBeVisible();
   await page.screenshot({ path: info.outputPath("caneta-360-dark.png") });
   await page.setViewportSize({ width: 820, height: 1180 });
-  await expect(editor.getByRole("button", { name: "Mover folha", exact: true })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Mover folha", exact: true })).toHaveCount(0);
   await expect(editor.locator(".notebook-mobile-dock")).toHaveCount(0);
 });
 

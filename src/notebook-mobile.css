@@ -100,9 +100,6 @@
   :root .handwriting-tool-group button {
     flex: 0 0 44px;
   }
-  :root .handwriting-tool-group button[aria-label="Mover folha"] {
-    display: none;
-  }
   :root .handwriting-tool-group button[aria-label="Selecionar traços"] {
     order: -3;
   }

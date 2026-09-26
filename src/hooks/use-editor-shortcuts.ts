@@ -15,6 +15,9 @@ export type EditorShortcutState = {
   paste: () => void;
   duplicate: () => void;
   selectAll: () => void;
+  // Com algo selecionado, as setas empurram a seleção (Shift: dez vezes mais).
+  hasSelection: boolean;
+  nudge: (dx: number, dy: number) => void;
 };
 
 function isEditableTarget(target: EventTarget | null): boolean {
@@ -97,6 +100,19 @@ export function useEditorShortcuts(
       if (ctrlOrCmd && event.key === "0") {
         event.preventDefault();
         current.resetView();
+        return;
+      }
+      const arrow: Record<string, [number, number]> = {
+        ArrowLeft: [-1, 0],
+        ArrowRight: [1, 0],
+        ArrowUp: [0, -1],
+        ArrowDown: [0, 1],
+      };
+      const step = arrow[event.key];
+      if (step && current.hasSelection && !ctrlOrCmd && !event.altKey) {
+        event.preventDefault();
+        const size = event.shiftKey ? 10 : 1;
+        current.nudge(step[0] * size, step[1] * size);
         return;
       }
       if (ctrlOrCmd || event.altKey) return;

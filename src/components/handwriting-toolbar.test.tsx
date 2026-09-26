@@ -32,7 +32,6 @@ describe("grupo de instrumentos", () => {
     ["Caneta", "pen"],
     ["Marca-texto", "highlighter"],
     ["Borracha", "eraser"],
-    ["Mover folha", "hand"],
     ["Selecionar traços", "select"],
   ])("o botão %s escolhe a ferramenta %s", (name, tool) => {
     const props = toolGroupProps();
