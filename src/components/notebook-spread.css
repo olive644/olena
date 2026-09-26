@@ -111,12 +111,41 @@
   transform-origin: top left;
   perspective: 1600px;
 }
+.notebook-page-entering .capture-layer,
+.notebook-page-entering .note-editor,
+.notebook-page-entering .notebook-inner-heading {
+  visibility: hidden;
+}
+.notebook-page-journey-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1099;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--page, #fff9ef);
+}
+.notebook-page-journey {
+  position: fixed;
+  z-index: 1100;
+  transform-origin: top left;
+  pointer-events: none;
+  background: #fff9ef;
+  border-radius: 3px 8px 8px 3px;
+  overflow: hidden;
+}
+.notebook-page-journey > .notebook-sheet-open {
+  height: 100%;
+  padding: 0;
+}
+.notebook-page-journey .notebook-empty-paper {
+  height: 100%;
+}
 .notebook-journey-leaf {
   position: absolute;
   inset: 0;
   transform-origin: left center;
   transform-style: preserve-3d;
-  z-index: 5;
+  z-index: 2;
 }
 .notebook-journey-leaf > .book-cover {
   position: absolute;
@@ -147,7 +176,8 @@
   top: 0;
   width: 200%;
   height: 100%;
-  clip-path: inset(-80px -100px -80px 50%);
+  z-index: 4;
+  clip-path: inset(-80px -100px -80px 100%);
 }
 .notebook-journey[data-returning="true"] .notebook-journey-pages {
   clip-path: inset(-80px -100px -80px -30px);
@@ -155,6 +185,13 @@
 .notebook-journey[data-returning="true"] .notebook-journey-leaf,
 .notebook-journey[data-returning="true"] .notebook-journey-clasp {
   transform: rotateY(-180deg);
+}
+.notebook-journey[data-closed="true"] .notebook-journey-pages {
+  display: none;
+}
+.notebook-journey[data-closed="true"] .notebook-journey-leaf,
+.notebook-journey[data-closed="true"] .notebook-journey-clasp {
+  transform: none;
 }
 .notebook-journey-pages .notebook-spread-shell,
 .notebook-journey-pages .notebook-paper-spread,
@@ -164,9 +201,6 @@
 }
 .notebook-journey-pages .notebook-open-clasp {
   visibility: hidden;
-}
-.notebook-journey-pages .notebook-sheet-open {
-  font: inherit;
 }
 .notebook-marker-motifs {
   display: flex;
@@ -1086,6 +1120,20 @@
   width: min(290px, 75%);
   aspect-ratio: 3 / 4;
   margin: 22px auto 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+.notebook-concept-cover:active {
+  cursor: grabbing;
+}
+.notebook-concept-cover:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 7px;
 }
 .notebook-concept-cover .book-cover {
   width: 100%;

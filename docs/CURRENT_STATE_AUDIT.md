@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Capa navegável e entrada na folha
+
+A criação oferece somente cadernos e a vitrine não mostra a instrução de arrastar
+pastas. Pastas existentes continuam acessíveis, preservando seu conteúdo.
+A primeira folha volta à capa por arrasto para a direita, seta esquerda ou Capa.
+A capa abre por toque, teclado ou arrasto para a esquerda, inclusive em Personalizar.
+A transição mantém as medidas das folhas e coloca a capa sob a pilha antes de
+entregar o preview. O arrasto nativo da imagem foi desativado para não cancelar o gesto.
+Ao abrir uma folha pelo preview, ela se destaca e amplia até o canvas do editor.
+O fundo do caderno se dissolve durante esse percurso. Movimento reduzido abre direto.
+
 ## Camadas e transições do caderno
 
 Marcas ficam entre a capa e as folhas, com pontas acessíveis fora do papel.
