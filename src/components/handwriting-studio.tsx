@@ -53,6 +53,7 @@ import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
+import { restoreStrokes } from "./handwriting-undo";
 import { predictedTip } from "./handwriting-ink";
 import {
   newRemoteStrokes,
@@ -319,6 +320,8 @@ export function HandwritingStudio({
   const activeToolRef = useRef<HandwritingTool>("pen");
   const spaceToolRef = useRef<HandwritingTool | null>(null);
   const penDetectedRef = useRef(false);
+  // Ids dos traços que chegaram de colegas: desfazer e refazer não podem apagá-los.
+  const remoteStrokeIdsRef = useRef(new Set<string>());
   const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const selectionRef = useRef<{
     pointerId: number;
@@ -565,6 +568,7 @@ export function HandwritingStudio({
       remoteDocument.strokes,
       new Set(strokes.map((stroke) => stroke.id)),
     );
+    for (const stroke of incoming) remoteStrokeIdsRef.current.add(stroke.id);
     // Traços novos de um colega são escritos na folha em vez de aparecerem de uma vez.
     const stillHere = revealsRef.current.filter((reveal) =>
       remoteDocument.strokes.some((stroke) => stroke.id === reveal.stroke.id),
@@ -1849,7 +1853,7 @@ export function HandwritingStudio({
         backgroundFrame,
       },
     ]);
-    setStrokes(previous.strokes);
+    setStrokes(restoreStrokes(previous.strokes, strokes, remoteStrokeIdsRef.current));
     setStickies(previous.stickies);
     setPageText(previous.pageText);
     setPageTextSize(previous.pageTextSize);
@@ -1884,7 +1888,7 @@ export function HandwritingStudio({
         backgroundFrame,
       },
     ]);
-    setStrokes(next.strokes);
+    setStrokes(restoreStrokes(next.strokes, strokes, remoteStrokeIdsRef.current));
     setStickies(next.stickies);
     setPageText(next.pageText);
     setPageTextSize(next.pageTextSize);

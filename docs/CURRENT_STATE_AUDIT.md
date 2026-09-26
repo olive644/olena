@@ -909,3 +909,9 @@ Ajustes desta PR depois de a `main` avançar:
 - `handwriting-palm.ts` decide se um toque deve ser ignorado: enquanto há caneta na folha e por 500 ms depois que ela sai. Nesse período o toque não entra na pinça, na rolagem nem no rastreio de ponteiros. Sem caneta, dedo e pinça funcionam como antes.
 - Teste que falha sem a correção: `e2e/palm-rejection.spec.ts` usa o CDP do Chromium para escrever com uma caneta simulada e tocar em dois pontos no meio do traço; sem a correção o traço some. Regras em `handwriting-palm.test.ts`.
 - Correção de leitura anterior: o documento do editor já guarda os traços em vetor (`HandwritingDocument.strokes`) junto do PNG, então "persistir em vetor" não é um item pendente; o que falta é usar o vetor para reabrir e sincronizar sem depender do PNG.
+
+## Desfazer e refazer em caderno compartilhado (2026-09-26)
+
+- Desfazer restaurava um retrato inteiro da folha. Se um colega escrevesse depois do retrato, desfazer o próprio traço apagava o traço do colega e, na sincronização, também na tela dele.
+- O editor passa a guardar os ids dos traços recebidos de colegas (`remoteStrokeIdsRef`) e `restoreStrokes` (`handwriting-undo.ts`) devolve os traços do retrato mais os de colegas que ainda estão na folha. Desfazer e refazer só mexem no que a própria pessoa fez. Sem colega, o comportamento é idêntico ao anterior.
+- Limite conhecido: post-its, texto e imagens seguem restaurando o retrato inteiro; o ajuste cobre os traços, que são o que os colegas mais acrescentam. Testes em `handwriting-undo.test.ts`.
