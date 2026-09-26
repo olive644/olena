@@ -923,3 +923,9 @@ Ajustes desta PR depois de a `main` avançar:
 - Laço: um traço entra quando pelo menos metade dos pontos está dentro do laço (antes só o centro da caixa contava, então traços compridos ou curvos eram escolhidos ou perdidos por acaso). Com Shift o laço soma à seleção existente.
 - Botões: Copiar, Recortar, Duplicar, Girar ±15° (todos os itens; antes só imagens), Selecionar tudo e Colar. Atalhos com a ferramenta Selecionar ativa: Ctrl+C, Ctrl+X, Ctrl+V, Ctrl+D e Ctrl+A. Cada ação entra no histórico, então Desfazer volta.
 - Não incluído: alças de arrastar para redimensionar e girar direto na caixa da seleção (o tamanho continua por Aumentar e Diminuir). Testes: `handwriting-selection-ops.test.ts` e `e2e/selection-tools.spec.ts`.
+
+## Alças na caixa da seleção (2026-09-26)
+
+- A seleção agora mostra uma caixa tracejada com quatro alças de canto e uma alça de girar acima dela. Arrastar um canto redimensiona de forma proporcional a partir do canto oposto (que fica parado); arrastar a alça de cima gira em torno do centro, com Shift encaixando de 15 em 15 graus. Traços engrossam junto, imagens e post-its mudam de tamanho e posição, e nada sai da folha.
+- Cada quadro do arrasto é calculado a partir da folha original guardada no começo do gesto (`handle.original`), sem acumular erro, e o gesto inteiro é um único passo do Desfazer. A área de toque das alças é maior com o dedo (34 unidades contra 22).
+- A regra está em `handwriting-selection-ops.ts` (`scaleItems`, `hitSelectionHandle`, `dragScaleFactor`, `dragRotation`) com testes; `e2e/selection-tools.spec.ts` arrasta o canto e a alça de girar e confere o tamanho do traço na folha. Isso fecha o item "não incluído" da entrada anterior.
