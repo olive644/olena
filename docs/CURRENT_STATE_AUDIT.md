@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Correções do preview móvel e fechamento do editor
+
+Salvar manualmente atualiza a referência limpa do documento e fecha sem oferecer
+um rascunho redundante. A confirmação de saída permanece para alterações não salvas,
+mas não afirma mais que a cópia local está sincronizada. Marcações só aparecem no
+par aberto que contém a folha à qual estão presas. No celular, o spread usa a altura
+disponível sem limite artificial; a vitrine reserva espaço para capa, título e trilho,
+sem sobreposição nem rolagem horizontal causada pela largura da prateleira.
+
 Marcações: o toque navega à folha; Editar marcas permite ajustar nome e cor.
 O contraste dos controles acompanha o tema. Divisórias sobrepõem a borda como
 abas coladas; marcadores têm corpo comprido, estrela recortada e ponta inferior.

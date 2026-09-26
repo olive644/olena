@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+Salvar manualmente no editor de escrita atualiza a linha de base de alterações.
+Assim, fechar uma folha salva não abre o aviso de rascunho local; alterações ainda
+pendentes continuam protegidas pela confirmação. A mensagem de saída não promete
+sincronização sem confirmação. No preview aberto, cada fita aparece apenas no par
+de páginas que contém sua folha, usando o lado relativo ao par. Em celulares, o spread
+expande pela área vertical disponível, e os cartões da vitrine mantêm capa, título e
+trilho separados, sem sobreposição nem rolagem lateral involuntária.
+
 O preview principal usa `NotebookSpread`: folhas em pares, virada pela lombada
 acompanhando o ponteiro e papel amassado ao remover uma folha da prévia.
 `NotebookPaperTools` permite arrastar divisórias à borda direita e fitas à folha

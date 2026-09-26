@@ -344,55 +344,57 @@ export function NotebookPaperTools({
           <div className={`notebook-drop-guide is-${tool ?? ghost?.kind}`} aria-hidden="true" />
         )}
         <nav className="notebook-attached-tabs" aria-label="Divisórias e marcadores">
-          {tabs.map((tab) => {
-            const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
-            const isVisible = visible.some((page) => page.id === tab.pageId);
-            return (
-              <button
-                type="button"
-                key={tab.id}
-                className={`notebook-attached-tab is-${tab.kind} ${isVisible ? "is-current" : ""}`}
-                disabled={disabled}
-                style={
-                  {
-                    "--tab-color": tab.color,
-                    "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase())
-                      ? "#17151C"
-                      : "#FFF9EF",
-                    "--tab-position": tab.position,
-                    "--tab-side": pageIndex % 2,
-                  } as CSSProperties
-                }
-                title={`${tab.label || "Marcador"}, folha ${pageIndex + 1}. Arraste para reposicionar.`}
-                aria-label={`${tab.kind === "divider" ? "Divisória" : "Marcador"} ${tab.label}, folha ${pageIndex + 1}`}
-                aria-current={isVisible ? "page" : undefined}
-                onPointerDown={(event) => start(event, tab.kind, tab.id)}
-                {...pointerHandlers}
-                onClick={() =>
-                  click(() => {
-                    setTool(null);
-                    if (editing) setSelectedId(tab.id);
-                    else {
-                      setSelectedId(null);
-                      onJump(tab.pageId);
-                    }
-                  })
-                }
-                onKeyDown={(event) => {
-                  const backwards = tab.kind === "divider" ? "ArrowUp" : "ArrowLeft";
-                  const forwards = tab.kind === "divider" ? "ArrowDown" : "ArrowRight";
-                  if (event.key === backwards || event.key === forwards) {
-                    event.preventDefault();
-                    update(tab, {
-                      position: clamp(tab.position + (event.key === backwards ? -0.08 : 0.08)),
-                    });
+          {tabs
+            .filter((tab) => visible.some((page) => page.id === tab.pageId))
+            .map((tab) => {
+              const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
+              const tabSide = visible.findIndex((page) => page.id === tab.pageId);
+              return (
+                <button
+                  type="button"
+                  key={tab.id}
+                  className={`notebook-attached-tab is-${tab.kind} is-current`}
+                  disabled={disabled}
+                  style={
+                    {
+                      "--tab-color": tab.color,
+                      "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase())
+                        ? "#17151C"
+                        : "#FFF9EF",
+                      "--tab-position": tab.position,
+                      "--tab-side": tabSide,
+                    } as CSSProperties
                   }
-                }}
-              >
-                <span>{tab.kind === "divider" ? tab.label || "Divisória" : pageIndex + 1}</span>
-              </button>
-            );
-          })}
+                  title={`${tab.label || "Marcador"}, folha ${pageIndex + 1}. Arraste para reposicionar.`}
+                  aria-label={`${tab.kind === "divider" ? "Divisória" : "Marcador"} ${tab.label}, folha ${pageIndex + 1}`}
+                  aria-current="page"
+                  onPointerDown={(event) => start(event, tab.kind, tab.id)}
+                  {...pointerHandlers}
+                  onClick={() =>
+                    click(() => {
+                      setTool(null);
+                      if (editing) setSelectedId(tab.id);
+                      else {
+                        setSelectedId(null);
+                        onJump(tab.pageId);
+                      }
+                    })
+                  }
+                  onKeyDown={(event) => {
+                    const backwards = tab.kind === "divider" ? "ArrowUp" : "ArrowLeft";
+                    const forwards = tab.kind === "divider" ? "ArrowDown" : "ArrowRight";
+                    if (event.key === backwards || event.key === forwards) {
+                      event.preventDefault();
+                      update(tab, {
+                        position: clamp(tab.position + (event.key === backwards ? -0.08 : 0.08)),
+                      });
+                    }
+                  }}
+                >
+                  <span>{tab.kind === "divider" ? tab.label || "Divisória" : pageIndex + 1}</span>
+                </button>
+              );
+            })}
         </nav>
       </div>
       {ghost && (
