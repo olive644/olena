@@ -57,10 +57,18 @@ import { restoreStrokes } from "./handwriting-undo";
 import {
   PASTE_OFFSET,
   copyItems,
+  dragRotation,
+  dragScaleFactor,
+  hitSelectionHandle,
   lassoContainsStroke,
   mergeSelection,
+  oppositeCorner,
   pasteItems,
   rotateItems,
+  scaleItems,
+  selectionHandles,
+  SELECTION_PAD,
+  type HandleKind,
   selectionSize,
   type SelectionClipboard,
 } from "./handwriting-selection-ops";
@@ -347,6 +355,20 @@ export function HandwritingStudio({
     path: HandwritingPoint[];
     // Com Shift, o laço soma à seleção que já existia.
     previousIds?: string[];
+    // Arrasto de uma alça da caixa da seleção: a folha de origem é guardada para cada quadro
+    // ser calculado a partir dela, sem acumular erro.
+    handle?: {
+      kind: HandleKind;
+      anchor: { x: number; y: number };
+      center: { x: number; y: number };
+      grab: { x: number; y: number };
+      original: {
+        strokes: Stroke[];
+        stickies: HandwritingSticky[];
+        coordinateSystems: HandwritingCoordinateSystem[];
+        images: HandwritingImage[];
+      };
+    };
   } | null>(null);
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const stickyResizeRef = useRef<{
@@ -760,6 +782,46 @@ export function HandwritingStudio({
         const box = importedImageBounds(image);
         context.strokeRect(box.x - 8, box.y - 8, box.width + 16, box.height + 16);
       }
+    }
+    const boxes = [
+      ...strokes.filter((stroke) => selectedIds.includes(stroke.id)).map(strokeBounds),
+      ...(layerVisibility.coordinates
+        ? coordinateSystems
+            .filter((system) => selectedIds.includes(system.id))
+            .map(coordinateBounds)
+        : []),
+      ...(layerVisibility.stickies
+        ? stickies.filter((sticky) => selectedIds.includes(sticky.id)).map(stickyBounds)
+        : []),
+      ...(layerVisibility.background
+        ? importedImages.filter((image) => selectedIds.includes(image.id)).map(importedImageBounds)
+        : []),
+    ];
+    const selectionFrame = unionBounds(boxes);
+    if (selectionFrame && !selectionBox && !selectionPath) {
+      const handles = selectionHandles(selectionFrame);
+      context.save();
+      context.setLineDash([10, 8]);
+      context.strokeRect(
+        selectionFrame.x - SELECTION_PAD,
+        selectionFrame.y - SELECTION_PAD,
+        selectionFrame.width + SELECTION_PAD * 2,
+        selectionFrame.height + SELECTION_PAD * 2,
+      );
+      context.setLineDash([]);
+      context.beginPath();
+      context.moveTo(handles.rotate.x, handles.rotate.y);
+      context.lineTo(handles.rotate.x, selectionFrame.y - SELECTION_PAD);
+      context.stroke();
+      context.fillStyle = "#ffffff";
+      for (const kind of ["nw", "ne", "se", "sw", "rotate"] as const) {
+        const handle = handles[kind];
+        context.beginPath();
+        context.arc(handle.x, handle.y, kind === "rotate" ? 13 : 11, 0, Math.PI * 2);
+        context.fill();
+        context.stroke();
+      }
+      context.restore();
     }
     if (selectionBox) {
       context.fillStyle = "#7433e026";
@@ -1374,6 +1436,47 @@ export function HandwritingStudio({
       return;
     }
     if (effectiveTool === "select") {
+      const frame = unionBounds([
+        ...strokes.filter((stroke) => selectedIds.includes(stroke.id)).map(strokeBounds),
+        ...(layerVisibility.coordinates
+          ? coordinateSystems
+              .filter((system) => selectedIds.includes(system.id))
+              .map(coordinateBounds)
+          : []),
+        ...(layerVisibility.stickies
+          ? stickies.filter((sticky) => selectedIds.includes(sticky.id)).map(stickyBounds)
+          : []),
+        ...(layerVisibility.background
+          ? importedImages
+              .filter((image) => selectedIds.includes(image.id))
+              .map(importedImageBounds)
+          : []),
+      ]);
+      // Alça maior no toque, para o dedo acertar.
+      const grabRadius = event.pointerType === "touch" ? 34 : 22;
+      const grabbed = frame ? hitSelectionHandle(point, frame, grabRadius) : null;
+      if (frame && grabbed) {
+        remember();
+        drawingRef.current = true;
+        selectionRef.current = {
+          pointerId: event.pointerId,
+          start: point,
+          origin: point,
+          ids: selectedIds,
+          coordinateIds: selectedCoordinateIds,
+          moving: true,
+          lasso: false,
+          path: [],
+          handle: {
+            kind: grabbed,
+            anchor: grabbed === "rotate" ? point : oppositeCorner(frame, grabbed),
+            center: { x: frame.x + frame.width / 2, y: frame.y + frame.height / 2 },
+            grab: point,
+            original: { strokes, stickies, coordinateSystems, images: importedImages },
+          },
+        };
+        return;
+      }
       if (selectionMode === "lasso") {
         selectionRef.current = {
           pointerId: event.pointerId,
@@ -1524,6 +1627,29 @@ export function HandwritingStudio({
     const selection = selectionRef.current;
     if (selection && selection.pointerId === event.pointerId) {
       const point = canvasPoint(canvas, event);
+      const handle = selection.handle;
+      if (handle) {
+        const chosen = new Set(selection.ids);
+        const next =
+          handle.kind === "rotate"
+            ? rotateItems(
+                handle.original,
+                chosen,
+                dragRotation(handle.center, handle.grab, point, event.shiftKey),
+                handle.center,
+              )
+            : scaleItems(
+                handle.original,
+                chosen,
+                dragScaleFactor(handle.anchor, handle.grab, point),
+                handle.anchor,
+              );
+        setStrokes([...next.strokes]);
+        setStickies([...next.stickies]);
+        setCoordinateSystems([...next.coordinateSystems]);
+        setImportedImages([...next.images]);
+        return;
+      }
       if (selection.lasso) {
         selection.path.push(point);
         setSelectionPath([...selection.path]);

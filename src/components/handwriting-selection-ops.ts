@@ -171,3 +171,125 @@ export function mergeSelection(
 ): string[] {
   return additive ? [...new Set([...previous, ...picked])] : [...picked];
 }
+
+// Escala os itens a partir de um ponto fixo (a âncora), como ao arrastar o canto oposto da caixa.
+// Traços engrossam junto; imagens e post-its mudam de tamanho e de posição.
+export function scaleItems(
+  items: SelectionItems,
+  ids: ReadonlySet<string>,
+  factor: number,
+  anchor: { x: number; y: number },
+): SelectionItems {
+  const scale = (value: number, origin: number) => origin + (value - origin) * factor;
+  const scalePoint = (point: HandwritingPoint): HandwritingPoint => ({
+    ...point,
+    x: clamp(scale(point.x, anchor.x), PAGE_WIDTH),
+    y: clamp(scale(point.y, anchor.y), PAGE_HEIGHT),
+  });
+  return {
+    strokes: items.strokes.map((stroke) =>
+      ids.has(stroke.id)
+        ? { ...stroke, points: stroke.points.map(scalePoint), width: stroke.width * factor }
+        : stroke,
+    ),
+    coordinateSystems: items.coordinateSystems.map((system) =>
+      ids.has(system.id)
+        ? { ...system, origin: scalePoint(system.origin), end: scalePoint(system.end) }
+        : system,
+    ),
+    stickies: items.stickies.map((sticky) => {
+      if (!ids.has(sticky.id)) return sticky;
+      const width = Math.max(40, (sticky.width ?? 0) * factor);
+      const height = Math.max(40, (sticky.height ?? 0) * factor);
+      return {
+        ...sticky,
+        ...(sticky.width !== undefined ? { width } : {}),
+        ...(sticky.height !== undefined ? { height } : {}),
+        x: clamp(scale(sticky.x, anchor.x), PAGE_WIDTH - width),
+        y: clamp(scale(sticky.y, anchor.y), PAGE_HEIGHT - height),
+      };
+    }),
+    images: items.images.map((image) => {
+      if (!ids.has(image.id)) return image;
+      const width = Math.max(40, Math.min(PAGE_WIDTH, image.width * factor));
+      const height = Math.max(40, Math.min(PAGE_HEIGHT, image.height * factor));
+      return {
+        ...image,
+        width,
+        height,
+        x: clamp(scale(image.x, anchor.x), PAGE_WIDTH - width),
+        y: clamp(scale(image.y, anchor.y), PAGE_HEIGHT - height),
+      };
+    }),
+  };
+}
+
+export type HandleKind = "nw" | "ne" | "se" | "sw" | "rotate";
+export type Box = { x: number; y: number; width: number; height: number };
+
+// Distância da alça de girar acima da caixa.
+export const ROTATE_HANDLE_GAP = 46;
+// Folga entre a caixa dos itens e a caixa da seleção desenhada.
+export const SELECTION_PAD = 12;
+
+export function selectionHandles(bounds: Box): Record<HandleKind, { x: number; y: number }> {
+  const left = bounds.x - SELECTION_PAD;
+  const top = bounds.y - SELECTION_PAD;
+  const right = bounds.x + bounds.width + SELECTION_PAD;
+  const bottom = bounds.y + bounds.height + SELECTION_PAD;
+  return {
+    nw: { x: left, y: top },
+    ne: { x: right, y: top },
+    se: { x: right, y: bottom },
+    sw: { x: left, y: bottom },
+    rotate: { x: (left + right) / 2, y: top - ROTATE_HANDLE_GAP },
+  };
+}
+
+// A alça de girar tem prioridade: fica fora da caixa, então nunca disputa com um canto.
+export function hitSelectionHandle(
+  point: { x: number; y: number },
+  bounds: Box,
+  radius: number,
+): HandleKind | null {
+  const handles = selectionHandles(bounds);
+  const order: HandleKind[] = ["rotate", "nw", "ne", "se", "sw"];
+  for (const kind of order) {
+    const handle = handles[kind];
+    if (Math.hypot(point.x - handle.x, point.y - handle.y) <= radius) return kind;
+  }
+  return null;
+}
+
+// O canto oposto ao arrastado fica parado.
+export function oppositeCorner(bounds: Box, kind: Exclude<HandleKind, "rotate">) {
+  const handles = selectionHandles(bounds);
+  const opposite = { nw: "se", ne: "sw", se: "nw", sw: "ne" } as const;
+  return handles[opposite[kind]];
+}
+
+// Fator de escala de um arrasto proporcional: distância atual à âncora sobre a inicial, com piso
+// para o conteúdo nunca sumir nem inverter.
+export function dragScaleFactor(
+  anchor: { x: number; y: number },
+  start: { x: number; y: number },
+  current: { x: number; y: number },
+): number {
+  const initial = Math.hypot(start.x - anchor.x, start.y - anchor.y);
+  if (initial < 1) return 1;
+  const factor = Math.hypot(current.x - anchor.x, current.y - anchor.y) / initial;
+  return Math.max(0.1, Math.min(8, factor));
+}
+
+// Ângulo do arrasto de girar, em graus. Com `snap`, encaixa de 15 em 15.
+export function dragRotation(
+  center: { x: number; y: number },
+  start: { x: number; y: number },
+  current: { x: number; y: number },
+  snap: boolean,
+): number {
+  const from = Math.atan2(start.y - center.y, start.x - center.x);
+  const to = Math.atan2(current.y - center.y, current.x - center.x);
+  const degrees = ((to - from) * 180) / Math.PI;
+  return snap ? Math.round(degrees / 15) * 15 : degrees;
+}

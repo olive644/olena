@@ -73,3 +73,96 @@ test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async
   await actions.getByRole("button", { name: "Selecionar tudo" }).click();
   await expect(actions.getByText("4 itens selecionados")).toBeVisible();
 });
+
+test("alças da caixa: arrastar o canto redimensiona e a alça de cima gira", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Fluxo de desenho verificado no desktop.");
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("button", { name: "Cadernos", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
+  await openHandwritingA4(page);
+  const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
+  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  await sheet.scrollIntoViewIfNeeded();
+  const box = (await sheet.boundingBox())!;
+
+  // Traço horizontal: da esquerda para a direita em uma altura fixa.
+  const y0 = box.y + 160;
+  const x0 = box.x + box.width * 0.2;
+  await page.mouse.move(x0, y0);
+  await page.mouse.down();
+  for (let step = 1; step <= 20; step += 1) {
+    await page.mouse.move(x0 + step * 8, y0 + Math.sin(step / 3) * 10);
+    await page.waitForTimeout(6);
+  }
+  await page.mouse.up();
+
+  const extent = () =>
+    sheet.evaluate((element) => {
+      const canvas = element as HTMLCanvasElement;
+      const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
+      let minX = canvas.width;
+      let maxX = 0;
+      let minY = canvas.height;
+      let maxY = 0;
+      for (let index = 0; index < data.length; index += 4) {
+        if (data[index + 3]! > 200 && data[index]! < 90 && data[index + 1]! < 90) {
+          const pixel = index / 4;
+          const x = pixel % canvas.width;
+          const y = Math.floor(pixel / canvas.width);
+          minX = Math.min(minX, x);
+          maxX = Math.max(maxX, x);
+          minY = Math.min(minY, y);
+          maxY = Math.max(maxY, y);
+        }
+      }
+      return { width: maxX - minX, height: maxY - minY };
+    });
+  const before = await extent();
+  // Posição do traço em unidades da folha, para reencontrá-lo se o layout se mexer.
+  const startUnits = {
+    x: ((x0 - box.x) / box.width) * 1200,
+    y: ((y0 - box.y) / box.width) * 1200,
+  };
+
+  await dialog.getByRole("button", { name: "Selecionar traços" }).click();
+  await dialog.getByRole("button", { name: "Selecionar tudo" }).click();
+  // A barra da seleção empurra a folha: os pontos do traço acompanham o deslocamento.
+  const moved = (await sheet.boundingBox())!;
+  const unit = moved.width / 1200;
+  const left = moved.x + startUnits.x * unit;
+  const baseline = moved.y + startUnits.y * unit;
+  const right = left + 160 * (moved.width / box.width);
+  const strokeTop = baseline - 10;
+  const strokeBottom = baseline + 10;
+  const frame = { left: left - 12 * unit, right: right + 12 * unit, top: strokeTop - 12 * unit };
+  const corner = { x: frame.right, y: strokeBottom + 12 * unit };
+  await page.mouse.move(corner.x, corner.y);
+  await page.mouse.down();
+  await page.mouse.move(corner.x + 80, corner.y + 20, { steps: 8 });
+  await page.mouse.up();
+  const grown = await extent();
+  expect(grown.width).toBeGreaterThan(before.width * 1.3);
+
+  // A alça de girar fica acima do meio da caixa; levá-la para o lado vira o traço.
+  const rotateHandle = {
+    x: (frame.left + frame.right + 80) / 2,
+    y: frame.top - 46 * unit,
+  };
+  await page.mouse.move(rotateHandle.x, rotateHandle.y);
+  await page.mouse.down();
+  await page.mouse.move(rotateHandle.x + 260, rotateHandle.y + 260, { steps: 10 });
+  await page.mouse.up();
+  const turned = await extent();
+  expect(turned.height).toBeGreaterThan(grown.height * 2);
+});

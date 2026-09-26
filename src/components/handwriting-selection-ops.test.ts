@@ -2,6 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   PASTE_OFFSET,
   copyItems,
+  dragRotation,
+  dragScaleFactor,
+  hitSelectionHandle,
+  oppositeCorner,
+  scaleItems,
+  selectionHandles,
   lassoContainsStroke,
   mergeSelection,
   pasteItems,
@@ -148,5 +154,50 @@ describe("laço", () => {
   it("com Shift soma à seleção sem duplicar; sem Shift troca", () => {
     expect(mergeSelection(["a", "b"], ["b", "c"], true)).toEqual(["a", "b", "c"]);
     expect(mergeSelection(["a", "b"], ["c"], false)).toEqual(["c"]);
+  });
+});
+
+describe("alças da caixa de seleção", () => {
+  const bounds = { x: 100, y: 200, width: 200, height: 100 };
+
+  it("acha o canto tocado, a alça de girar e ignora o resto", () => {
+    const handles = selectionHandles(bounds);
+    expect(hitSelectionHandle(handles.se, bounds, 20)).toBe("se");
+    expect(hitSelectionHandle(handles.nw, bounds, 20)).toBe("nw");
+    expect(hitSelectionHandle(handles.rotate, bounds, 20)).toBe("rotate");
+    expect(hitSelectionHandle({ x: 200, y: 250 }, bounds, 20)).toBeNull();
+  });
+
+  it("o canto oposto é a âncora", () => {
+    const handles = selectionHandles(bounds);
+    expect(oppositeCorner(bounds, "se")).toEqual(handles.nw);
+    expect(oppositeCorner(bounds, "nw")).toEqual(handles.se);
+  });
+
+  it("fator de escala: proporcional à distância da âncora, com limites", () => {
+    const anchor = { x: 0, y: 0 };
+    expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 200, y: 0 })).toBe(2);
+    expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 0, y: 0 })).toBe(0.1);
+    expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 5000, y: 0 })).toBe(8);
+    expect(dragScaleFactor(anchor, { x: 0.2, y: 0 }, { x: 50, y: 0 })).toBe(1);
+  });
+
+  it("escala a partir da âncora e engrossa o traço", () => {
+    const scaled = scaleItems(items(), new Set(["s1"]), 2, { x: 100, y: 100 });
+    expect(scaled.strokes[0]!.points[1]).toMatchObject({ x: 300, y: 100 });
+    expect(scaled.strokes[0]!.width).toBe(8);
+    const image = scaleItems(items(), new Set(["i1"]), 0.5, { x: 50, y: 60 }).images[0]!;
+    expect(image).toMatchObject({ x: 50, y: 60, width: 100, height: 50 });
+  });
+
+  it("nunca leva itens para fora da folha", () => {
+    const big = scaleItems(items(), new Set(["s2"]), 8, { x: 0, y: 0 });
+    expect(big.strokes[1]!.points[0]).toMatchObject({ x: 1200, y: 1600 });
+  });
+
+  it("gira pelo arrasto: um quarto de volta e encaixe de 15 graus", () => {
+    const center = { x: 0, y: 0 };
+    expect(dragRotation(center, { x: 100, y: 0 }, { x: 0, y: 100 }, false)).toBeCloseTo(90, 5);
+    expect(dragRotation(center, { x: 100, y: 0 }, { x: 100, y: 20 }, true)).toBe(15);
   });
 });
