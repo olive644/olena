@@ -1,7 +1,8 @@
 import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { StudyNote } from "../domain/workspace";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { NotebookPageIndex } from "./notebook-page-index";
 
 export function NotebookPageBook({
   pages,
@@ -9,6 +10,7 @@ export function NotebookPageBook({
   onSelect,
   onCreate,
   onRemove,
+  onMove,
   inert = false,
 }: {
   pages: StudyNote[];
@@ -16,9 +18,11 @@ export function NotebookPageBook({
   onSelect: (id: string) => void;
   onCreate: () => void;
   onRemove?: (id: string) => void;
+  onMove?: (id: string, direction: -1 | 1) => void;
   inert?: boolean;
 }) {
   const drag = useRef<{ x: number; y: number; pointerId: number } | null>(null);
+  const [indexOpen, setIndexOpen] = useState(false);
   const index = Math.max(
     0,
     pages.findIndex((page) => page.id === currentPageId),
@@ -57,6 +61,16 @@ export function NotebookPageBook({
       >
         <PaperEditorIcon name="undo" />
       </button>
+      {pages.length > 1 && (
+        <button
+          type="button"
+          className="book-index"
+          aria-label="Abrir índice de folhas"
+          onClick={() => setIndexOpen(true)}
+        >
+          Índice
+        </button>
+      )}
       <div className="page-book" key={currentPageId}>
         <span className="page-book__left" aria-hidden="true">
           <i />
@@ -93,6 +107,15 @@ export function NotebookPageBook({
         <button type="button" aria-label="Criar próxima folha" onClick={onCreate}>
           <PaperActionIcon name="plus" />
         </button>
+      )}
+      {indexOpen && (
+        <NotebookPageIndex
+          pages={pages}
+          currentPageId={currentPageId}
+          onSelect={onSelect}
+          {...(onMove ? { onMove } : {})}
+          onClose={() => setIndexOpen(false)}
+        />
       )}
     </nav>
   );

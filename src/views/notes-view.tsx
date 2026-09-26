@@ -1,5 +1,6 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { NotebookSearch } from "../components/notebook-search";
+import { NotebookPageIndex } from "../components/notebook-page-index";
 import {
   lazy,
   Suspense,
@@ -117,6 +118,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [activePageId, setActivePageId] = useState<string | null>(null);
+  const [indexOpen, setIndexOpen] = useState(false);
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
   const [notebookSection, setNotebookSection] = useState<"pages" | "notes">("pages");
 
@@ -185,6 +187,11 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
     setPreviewPageIndex(0);
+  }
+
+  function movePage(pageId: string, direction: -1 | 1) {
+    if (!activeNotebook) return;
+    dispatch({ type: "notebook/page-moved", notebookId: activeNotebook.id, pageId, direction });
   }
 
   function openSearchHit(hit: SearchHit) {
@@ -697,6 +704,20 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             {notebookPages.length}{" "}
             {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}
           </p>
+          {notebookPages.length > 1 && (
+            <button className="secondary-button" type="button" onClick={() => setIndexOpen(true)}>
+              Índice de folhas
+            </button>
+          )}
+          {indexOpen && (
+            <NotebookPageIndex
+              pages={notebookPages}
+              currentPageId=""
+              onSelect={setActivePageId}
+              onMove={movePage}
+              onClose={() => setIndexOpen(false)}
+            />
+          )}
           <NotebookSpread
             key={activeNotebook.id}
             notebook={activeNotebook}
@@ -740,6 +761,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                     createPageAtEnd();
                   }}
                   onRemovePage={removePage}
+                  onMovePage={movePage}
                   draftPageKey={activePage.id}
                   onSave={saveAsset}
                   onUpdate={updateAsset}
