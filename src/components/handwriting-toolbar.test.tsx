@@ -100,7 +100,13 @@ function selectionProps(
     onRemoveBackground: vi.fn(),
     hasSelectedImages: false,
     onRemoveSelectedImages: vi.fn(),
-    onRotateImages: vi.fn(),
+    onRotate: vi.fn(),
+    onCopy: vi.fn(),
+    onCut: vi.fn(),
+    onPaste: vi.fn(),
+    onDuplicate: vi.fn(),
+    onSelectAll: vi.fn(),
+    canPaste: false,
     hasPageText: false,
     pageTextSize: 28,
     onChangeTextSize: vi.fn(),
@@ -178,8 +184,8 @@ describe("ações da seleção", () => {
     fireEvent.click(screen.getByRole("button", { name: "Girar +15°" }));
     expect(props.onRemoveBackground).toHaveBeenCalledTimes(1);
     expect(props.onRemoveSelectedImages).toHaveBeenCalledTimes(1);
-    expect(props.onRotateImages).toHaveBeenNthCalledWith(1, -1);
-    expect(props.onRotateImages).toHaveBeenNthCalledWith(2, 1);
+    expect(props.onRotate).toHaveBeenNthCalledWith(1, -1);
+    expect(props.onRotate).toHaveBeenNthCalledWith(2, 1);
   });
 
   it("muda o tamanho do texto da folha e bloqueia nos limites", () => {

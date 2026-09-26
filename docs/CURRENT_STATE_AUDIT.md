@@ -915,3 +915,11 @@ Ajustes desta PR depois de a `main` avançar:
 - Desfazer restaurava um retrato inteiro da folha. Se um colega escrevesse depois do retrato, desfazer o próprio traço apagava o traço do colega e, na sincronização, também na tela dele.
 - O editor passa a guardar os ids dos traços recebidos de colegas (`remoteStrokeIdsRef`) e `restoreStrokes` (`handwriting-undo.ts`) devolve os traços do retrato mais os de colegas que ainda estão na folha. Desfazer e refazer só mexem no que a própria pessoa fez. Sem colega, o comportamento é idêntico ao anterior.
 - Limite conhecido: post-its, texto e imagens seguem restaurando o retrato inteiro; o ajuste cobre os traços, que são o que os colegas mais acrescentam. Testes em `handwriting-undo.test.ts`.
+
+## Seleção por laço completa no editor de escrita (2026-09-26)
+
+- O editor já tinha seleção por retângulo e por laço, mover e alinhar, aumentar e diminuir e apagar. Faltava o resto do fluxo de quem edita um caderno: copiar, recortar, colar, duplicar, selecionar tudo, girar qualquer item e somar ao laço.
+- `handwriting-selection-ops.ts` reúne a regra em funções puras (copiar com clone profundo, colar com ids novos e deslocamento de 36 px por colagem seguida, sempre dentro da folha; girar traços, sistemas de coordenadas e imagens em torno do centro da seleção, post-its só orbitam; laço; soma à seleção). A área de transferência é uma variável do módulo do editor, então vale entre folhas na mesma sessão e nunca sai do aparelho.
+- Laço: um traço entra quando pelo menos metade dos pontos está dentro do laço (antes só o centro da caixa contava, então traços compridos ou curvos eram escolhidos ou perdidos por acaso). Com Shift o laço soma à seleção existente.
+- Botões: Copiar, Recortar, Duplicar, Girar ±15° (todos os itens; antes só imagens), Selecionar tudo e Colar. Atalhos com a ferramenta Selecionar ativa: Ctrl+C, Ctrl+X, Ctrl+V, Ctrl+D e Ctrl+A. Cada ação entra no histórico, então Desfazer volta.
+- Não incluído: alças de arrastar para redimensionar e girar direto na caixa da seleção (o tamanho continua por Aumentar e Diminuir). Testes: `handwriting-selection-ops.test.ts` e `e2e/selection-tools.spec.ts`.
