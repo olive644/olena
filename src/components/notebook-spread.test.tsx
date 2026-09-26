@@ -40,10 +40,21 @@ it("mostra duas folhas reais e navega até a última sem perder a criação", as
   const state = fixture();
   const onOpen = vi.fn();
   const onCreate = vi.fn();
+  const notebook = state.notebooks[0]!;
+  const pages = notebook.pageIds.map((id) => state.notes.find((note) => note.id === id)!);
+  const paperTabs = notebookPaperTabs(notebook, pages, state.subjects);
+  paperTabs.push({
+    id: "moon-bookmark",
+    kind: "bookmark",
+    pageId: "one",
+    label: "Lua",
+    color: "#FACC15",
+    position: 0.35,
+  });
   render(
     <NotebookSpread
-      notebook={state.notebooks[0]!}
-      pages={state.notebooks[0]!.pageIds.map((id) => state.notes.find((note) => note.id === id)!)}
+      notebook={{ ...notebook, paperTabs }}
+      pages={pages}
       subjects={state.subjects}
       dispatch={vi.fn()}
       onOpen={onOpen}
@@ -56,10 +67,12 @@ it("mostra duas folhas reais e navega até a última sem perder a criação", as
   expect(onOpen).toHaveBeenCalledWith("two");
   fireEvent.click(screen.getByRole("button", { name: "Próxima ›" }));
   await waitFor(() => expect(screen.getByText("Folhas 3 de 3")).toBeTruthy());
-  expect(screen.queryByRole("button", { name: "Divisória Matemática, folha 1" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Divisória Matemática, folha 1" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Marcador Lua, folha 1" })).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Criar próxima folha" }));
   expect(onCreate).toHaveBeenCalledWith("");
-  expect(screen.queryByRole("button", { name: "Divisória Matemática, folha 1" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Divisória Matemática, folha 1" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Marcador Lua, folha 1" })).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "‹ Anterior" }));
   await waitFor(() => expect(screen.getByText("Folhas 1 e 2 de 3")).toBeTruthy());
   fireEvent.click(screen.getByRole("button", { name: "Divisória Matemática, folha 1" }));

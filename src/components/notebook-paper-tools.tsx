@@ -59,6 +59,27 @@ export function notebookPaperTabs(
   ];
 }
 
+export function PaperMoonMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 40 40"
+      aria-hidden="true"
+      className={className ?? "paper-tab-moon"}
+      focusable="false"
+    >
+      <path
+        fill="#292432"
+        opacity=".24"
+        d="M26 6a13 13 0 1 0 8 23A11 11 0 0 1 26 6Z"
+        transform="translate(0 1)"
+      />
+      <path fill="#FFF9EF" d="M26 5a13 13 0 1 0 8 23A11 11 0 0 1 26 5Z" />
+      <path fill="#7C3AED" d="m13 8 1.5 3.5L18 13l-3.5 1.5L13 18l-1.5-3.5L8 13l3.5-1.5Z" />
+      <path fill="#7C3AED" d="m30 29 1 2.3 2.3 1-2.3 1L30 36l-1-2.7-2.5-1 2.5-1Z" />
+    </svg>
+  );
+}
+
 export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className="paper-tab-icon">
@@ -77,6 +98,8 @@ export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
           <path fill="currentColor" d="M9 2h18v33l-9-7-9 7z" />
           <path fill="#FFFFFF" opacity=".35" d="M9 2h18L9 19z" />
           <path fill="#292432" opacity=".25" d="M23 6h4v29l-4-3z" />
+          <path fill="#FFF9EF" d="M19 8a8 8 0 1 0 5 14A7 7 0 0 1 19 8Z" />
+          <path fill="#7C3AED" d="m11 7 1 2.3 2.3 1-2.3 1L11 14l-1-2.7-2.5-1 2.5-1Z" />
         </>
       )}
     </svg>
@@ -344,57 +367,60 @@ export function NotebookPaperTools({
           <div className={`notebook-drop-guide is-${tool ?? ghost?.kind}`} aria-hidden="true" />
         )}
         <nav className="notebook-attached-tabs" aria-label="Divisórias e marcadores">
-          {tabs
-            .filter((tab) => visible.some((page) => page.id === tab.pageId))
-            .map((tab) => {
-              const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
-              const tabSide = visible.findIndex((page) => page.id === tab.pageId);
-              return (
-                <button
-                  type="button"
-                  key={tab.id}
-                  className={`notebook-attached-tab is-${tab.kind} is-current`}
-                  disabled={disabled}
-                  style={
-                    {
-                      "--tab-color": tab.color,
-                      "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase())
-                        ? "#17151C"
-                        : "#FFF9EF",
-                      "--tab-position": tab.position,
-                      "--tab-side": tabSide,
-                    } as CSSProperties
-                  }
-                  title={`${tab.label || "Marcador"}, folha ${pageIndex + 1}. Arraste para reposicionar.`}
-                  aria-label={`${tab.kind === "divider" ? "Divisória" : "Marcador"} ${tab.label}, folha ${pageIndex + 1}`}
-                  aria-current="page"
-                  onPointerDown={(event) => start(event, tab.kind, tab.id)}
-                  {...pointerHandlers}
-                  onClick={() =>
-                    click(() => {
-                      setTool(null);
-                      if (editing) setSelectedId(tab.id);
-                      else {
-                        setSelectedId(null);
-                        onJump(tab.pageId);
-                      }
-                    })
-                  }
-                  onKeyDown={(event) => {
-                    const backwards = tab.kind === "divider" ? "ArrowUp" : "ArrowLeft";
-                    const forwards = tab.kind === "divider" ? "ArrowDown" : "ArrowRight";
-                    if (event.key === backwards || event.key === forwards) {
-                      event.preventDefault();
-                      update(tab, {
-                        position: clamp(tab.position + (event.key === backwards ? -0.08 : 0.08)),
-                      });
+          {tabs.map((tab) => {
+            const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
+            return (
+              <button
+                type="button"
+                key={tab.id}
+                className={`notebook-attached-tab is-${tab.kind}`}
+                disabled={disabled}
+                style={
+                  {
+                    "--tab-color": tab.color,
+                    "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase())
+                      ? "#17151C"
+                      : "#FFF9EF",
+                    "--tab-position": tab.position,
+                    "--tab-side": pageIndex % 2,
+                  } as CSSProperties
+                }
+                title={`${tab.label || "Marcador"}, folha ${pageIndex + 1}. Arraste para reposicionar.`}
+                aria-label={`${tab.kind === "divider" ? "Divisória" : "Marcador"} ${tab.label}, folha ${pageIndex + 1}`}
+                onPointerDown={(event) => start(event, tab.kind, tab.id)}
+                {...pointerHandlers}
+                onClick={() =>
+                  click(() => {
+                    setTool(null);
+                    if (editing) setSelectedId(tab.id);
+                    else {
+                      setSelectedId(null);
+                      onJump(tab.pageId);
                     }
-                  }}
-                >
-                  <span>{tab.kind === "divider" ? tab.label || "Divisória" : pageIndex + 1}</span>
-                </button>
-              );
-            })}
+                  })
+                }
+                onKeyDown={(event) => {
+                  const backwards = tab.kind === "divider" ? "ArrowUp" : "ArrowLeft";
+                  const forwards = tab.kind === "divider" ? "ArrowDown" : "ArrowRight";
+                  if (event.key === backwards || event.key === forwards) {
+                    event.preventDefault();
+                    update(tab, {
+                      position: clamp(tab.position + (event.key === backwards ? -0.08 : 0.08)),
+                    });
+                  }
+                }}
+              >
+                {tab.kind === "divider" ? (
+                  <span>{tab.label || "Divisória"}</span>
+                ) : (
+                  <>
+                    <span className="visually-hidden">{pageIndex + 1}</span>
+                    <PaperMoonMark className="notebook-attached-tab__moon" />
+                  </>
+                )}
+              </button>
+            );
+          })}
         </nav>
       </div>
       {ghost && (

@@ -4,15 +4,16 @@
 
 Salvar manualmente atualiza a referência limpa do documento e fecha sem oferecer
 um rascunho redundante. A confirmação de saída permanece para alterações não salvas,
-mas não afirma mais que a cópia local está sincronizada. Marcações só aparecem no
-par aberto que contém a folha à qual estão presas. No celular, o spread usa a altura
+mas não afirma mais que a cópia local está sincronizada. Marcações permanecem
+presas às folhas durante a folheada e ficam atrás do papel que passa à frente. No celular, o spread usa a altura
 disponível sem limite artificial; a vitrine reserva espaço para capa, título e trilho,
 sem sobreposição nem rolagem horizontal causada pela largura da prateleira.
 
 Marcações: o toque navega à folha; Editar marcas permite ajustar nome e cor.
 O contraste dos controles acompanha o tema. Divisórias sobrepõem a borda como
-abas coladas; marcadores têm corpo comprido, estrela recortada e ponta inferior.
-As peças persistidas também aparecem entre as páginas do caderno fechado na vitrine.
+abas coladas; o marcador amarelo traz uma meia-lua papercraft e fica para fora da
+borda inferior. As pontas continuam visíveis e acionáveis, e a mesma Lua aparece na
+capa fechada da vitrine.
 
 ## Atualização: marcações diretamente no papel
 

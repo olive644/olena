@@ -12,7 +12,7 @@ import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { NotebookSpread } from "../components/notebook-spread";
-import { notebookPaperTabs } from "../components/notebook-paper-tools";
+import { notebookPaperTabs, PaperMoonMark } from "../components/notebook-paper-tools";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
@@ -85,7 +85,9 @@ function NotebookArtwork({
           key={tab.id}
           className={`book-cover__mark is-${tab.kind}`}
           style={{ "--tab-color": tab.color, "--tab-position": tab.position } as CSSProperties}
-        />
+        >
+          {tab.kind === "bookmark" && <PaperMoonMark />}
+        </span>
       ))}
     </span>
   );
