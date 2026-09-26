@@ -40,7 +40,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
   );
   const [view, setView] = useAppView(joinCode ? "learn" : "today");
-  const { workspace, dispatch, history, restoreSnapshot } = useWorkspace();
+  const { workspace, storageFull, dispatch, history, restoreSnapshot } = useWorkspace();
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
     if (signedOut) return true;
@@ -73,6 +73,12 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         <a className="skip-link" href="#main-content">
           Ir para o conteúdo
         </a>
+        {storageFull && (
+          <p className="storage-full-banner" role="alert">
+            Este dispositivo está sem espaço para guardar seus estudos. As últimas alterações não
+            foram salvas aqui. Apague folhas ou cadernos que não usa mais para liberar espaço.
+          </p>
+        )}
         <Sidebar view={view} onNavigate={setView} />
         <Suspense
           fallback={
