@@ -20,6 +20,27 @@
 .book-cover__face .book-cover__edition {
   display: none;
 }
+.book-cover__mark {
+  position: absolute;
+  z-index: 1;
+  background: var(--tab-color);
+  box-shadow: inset -3px -2px #29243235;
+  pointer-events: none;
+}
+.book-cover__mark.is-divider {
+  right: -16px;
+  top: calc(8% + var(--tab-position) * 72%);
+  width: 30px;
+  height: 20px;
+  clip-path: polygon(0 6%, 88% 0, 100% 20%, 100% 95%, 0 100%);
+}
+.book-cover__mark.is-bookmark {
+  left: calc(14% + var(--tab-position) * 66%);
+  bottom: -24px;
+  width: 19px;
+  height: 48px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 87%, 0 100%);
+}
 .notebook-spread-workspace {
   width: 100%;
   min-width: 0;
@@ -428,6 +449,7 @@
 }
 .notebook-paper-toolbox {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin: 0 0 12px;
@@ -441,7 +463,7 @@
   border: 1px solid var(--line);
   border-radius: 4px 12px 4px 8px;
   background: var(--surface);
-  color: var(--ink);
+  color: var(--text);
   box-shadow: 0 3px #d5ccba;
   font-size: 12px;
   touch-action: none;
@@ -456,7 +478,7 @@
   height: 32px;
   color: #7c3aed;
 }
-.notebook-paper-tool:last-of-type .paper-tab-icon {
+.notebook-paper-tool[aria-label="Colocar marcador"] .paper-tab-icon {
   color: #facc15;
 }
 .notebook-tool-hint {
@@ -502,18 +524,18 @@
   pointer-events: none;
 }
 :root .notebook-attached-tab.is-divider {
-  right: -53px;
+  right: -49px;
   top: calc(22px + (100% - 66px) * var(--tab-position));
   width: 76px;
   height: 44px;
-  padding: 4px 7px 4px 20px;
+  padding: 4px 6px 4px 15px;
   border-radius: 0;
   text-align: center;
   filter: drop-shadow(1px 3px 0 #29243238);
 }
 .notebook-attached-tab.is-divider::before {
-  clip-path: polygon(0 0, 88% 0, 100% 17%, 100% 100%, 0 100%);
-  border-left: 9px solid #ffffff45;
+  clip-path: polygon(0 7%, 90% 0, 100% 12%, 100% 90%, 0 100%);
+  border-left: 12px solid #ffffff65;
 }
 .notebook-attached-tab.is-divider::after {
   top: 2px;
@@ -525,7 +547,8 @@
 }
 .notebook-attached-tab.is-divider span {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 800;
   line-height: 1.2;
   overflow-wrap: anywhere;
   max-height: 34px;
@@ -539,24 +562,37 @@
   outline-offset: 3px;
 }
 :root .notebook-attached-tab.is-bookmark {
-  width: 30px;
-  height: 65px;
+  width: 44px;
+  height: 128px;
   bottom: -36px;
-  left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 15px);
-  padding: 22px 0 10px;
-  font-size: 10px;
+  left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 22px);
+  padding: 82px 0 12px;
+  font-size: 12px;
+  font-weight: 800;
   filter: drop-shadow(2px 3px 0 #29243230);
 }
 .notebook-attached-tab.is-bookmark::before {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  clip-path: polygon(0 5%, 16% 0, 84% 0, 100% 5%, 100% 100%, 50% 93%, 0 100%);
   box-shadow: inset -5px 0 #29243230;
 }
 .notebook-attached-tab.is-bookmark::after {
-  left: 4px;
-  top: 0;
-  bottom: 11px;
-  width: 2px;
-  background: #ffffff40;
+  left: 10px;
+  top: 15px;
+  width: 24px;
+  height: 28px;
+  background: #fff9ef;
+  clip-path: polygon(
+    50% 0,
+    64% 33%,
+    100% 38%,
+    74% 63%,
+    80% 100%,
+    50% 81%,
+    20% 100%,
+    26% 63%,
+    0 38%,
+    36% 33%
+  );
 }
 .notebook-tab-inspector {
   position: absolute;
@@ -566,6 +602,7 @@
   width: min(280px, calc(100% - 18px));
   padding: 14px;
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--line);
   border-radius: 4px 16px 5px 12px;
   box-shadow:
@@ -580,6 +617,9 @@
   font-weight: 700;
 }
 .notebook-tab-inspector input {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--muted);
   width: 100%;
   min-width: 0;
   min-height: 40px;
@@ -781,9 +821,7 @@
     height: 28px;
   }
   .notebook-tool-hint {
-    font-size: 9px;
-    max-width: 62px;
-    text-align: right;
+    display: none;
   }
   .notebook-spread-shell {
     flex: 1;
@@ -835,19 +873,19 @@
     height: 34px;
   }
   :root .notebook-attached-tab.is-divider {
-    width: 64px;
-    right: -42px;
-    padding-left: 18px;
+    width: 72px;
+    right: -40px;
+    padding-left: 16px;
   }
   .notebook-attached-tab.is-divider span {
-    font-size: 9px;
+    font-size: 10px;
   }
   :root .notebook-attached-tab.is-bookmark {
-    width: 26px;
-    left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 13px);
+    width: 44px;
+    left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 22px);
     bottom: -31px;
-    height: 56px;
-    padding-top: 18px;
+    height: 102px;
+    padding-top: 62px;
   }
   :root .notebook-spread-workspace .notebook-preview-controls,
   :root .notebook-spread-workspace .notebook-preview-actions {

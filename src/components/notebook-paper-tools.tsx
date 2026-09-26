@@ -117,6 +117,7 @@ export function NotebookPaperTools({
   const suppressClick = useRef(false);
   const [tool, setTool] = useState<NotebookTab["kind"] | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
   const [ghost, setGhost] = useState<{ kind: NotebookTab["kind"]; x: number; y: number } | null>(
     null,
   );
@@ -250,12 +251,27 @@ export function NotebookPaperTools({
             <span>{kind === "divider" ? "Divisória" : "Marcador"}</span>
           </button>
         ))}
+        <button
+          type="button"
+          className="notebook-paper-tool"
+          aria-pressed={editing}
+          disabled={!tabs.length || disabled}
+          onClick={() => {
+            setEditing(!editing);
+            setSelectedId(null);
+            setTool(null);
+          }}
+        >
+          {editing ? "Concluir edição" : "Editar marcas"}
+        </button>
         <span className="notebook-tool-hint">
           {tool === "divider"
             ? "Toque na borda direita"
             : tool === "bookmark"
               ? "Toque na folha"
-              : "Pegue e arraste"}
+              : editing
+                ? "Toque na marca para editar"
+                : "Toque para ir à folha"}
         </span>
       </div>
       {selected && (
@@ -340,7 +356,9 @@ export function NotebookPaperTools({
                 style={
                   {
                     "--tab-color": tab.color,
-                    "--tab-text": tab.color === "#FACC15" ? "#292432" : "#FFF9EF",
+                    "--tab-text": ["#FACC15", "#5887C9"].includes(tab.color.toUpperCase())
+                      ? "#17151C"
+                      : "#FFF9EF",
                     "--tab-position": tab.position,
                     "--tab-side": pageIndex % 2,
                   } as CSSProperties
@@ -353,8 +371,11 @@ export function NotebookPaperTools({
                 onClick={() =>
                   click(() => {
                     setTool(null);
-                    onJump(tab.pageId);
-                    setSelectedId(tab.id);
+                    if (editing) setSelectedId(tab.id);
+                    else {
+                      setSelectedId(null);
+                      onJump(tab.pageId);
+                    }
                   })
                 }
                 onKeyDown={(event) => {
