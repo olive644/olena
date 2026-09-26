@@ -1097,3 +1097,9 @@ Limites que se cruzam:
 - Tudo o que se seleciona agora se move: além de traços, post-its, imagens e eixos, o texto da folha (a moldura de texto) acompanha o arrasto, sem sair da folha (`moveTextFrame`). Antes ele podia ser escolhido, mas não arrastado.
 - Com qualquer coisa selecionada, as setas empurram a seleção (1 unidade da folha, ou 10 com Shift), em qualquer ferramenta, e vários toques seguidos entram como um só passo do Desfazer (`nudgeSelection`). Sem seleção as setas continuam rolando a folha como antes.
 - Testes: gesto da seleção com o texto (`use-selection-gesture.test.tsx`), empurrar (`use-selection-actions.test.tsx`, `use-editor-shortcuts.test.tsx`) e um e2e novo (`selection-tools.spec.ts`) que confere as setas e o Desfazer e que o botão não existe. O e2e de arrastar a folha agora usa a tecla H, e o teste de atalhos reconhece a mão pela folha ("Arraste a folha para mover").
+
+## Formato compacto dos traços, etapa 2 de 2: gravação ligada (2026-09-26)
+
+- `PACKED_STORAGE_WRITES` passou a `true`: o espaço de estudos, o histórico de versões e os rascunhos agora são gravados no formato compacto (`pts`), e o que sincroniza com a conta encolhe junto. A leitura dos dois formatos segue valendo, então espaços já gravados no formato antigo abrem normalmente e são regravados no compacto na próxima alteração.
+- Reverter é seguro a qualquer momento (a constante volta a `false`, e nada que já foi gravado deixa de abrir). O risco que motivou as duas etapas continua o mesmo: uma aba ou um aparelho ainda na versão anterior à etapa 1 não entende o formato compacto; por isso a etapa 2 só foi ligada depois de a etapa 1 ter sido publicada e de os aparelhos terem aberto a versão nova.
+- O teste que travava a constante agora confere o contrário: a gravação padrão é compacta, e um espaço no formato antigo continua abrindo. Os e2e do editor já aceitavam `points` e `pts`.

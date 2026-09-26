@@ -10,9 +10,10 @@ import type { HandwritingPoint } from "../domain/handwriting";
 //
 // Implantação em duas etapas, para uma aba ou um aparelho com a versão anterior aberta não ler um
 // espaço que não entende (e abrir um espaço vazio por cima do da nuvem): primeiro esta versão
-// passa a LER o formato compacto e continua GRAVANDO o antigo; depois de os clientes terem
-// atualizado, a etapa seguinte liga a gravação compacta em `PACKED_STORAGE_WRITES`.
-export const PACKED_STORAGE_WRITES = false;
+// passou a LER o formato compacto e continuou GRAVANDO o antigo; depois de os clientes terem
+// atualizado, a etapa 2 ligou a gravação compacta em `PACKED_STORAGE_WRITES` (esta constante).
+// Voltar a `false` é seguro a qualquer momento: a leitura dos dois formatos permanece.
+export const PACKED_STORAGE_WRITES = true;
 
 const PRESSURE_DECIMALS = 3;
 const POSITION_DECIMALS = 2;

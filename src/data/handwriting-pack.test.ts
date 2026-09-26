@@ -108,13 +108,19 @@ describe("formato compacto dos traços", () => {
   });
 });
 
-describe("implantação em duas etapas", () => {
-  it("por enquanto continua gravando o formato antigo, para versões anteriores abertas ainda lerem", () => {
-    expect(PACKED_STORAGE_WRITES).toBe(false);
+describe("implantação em duas etapas (etapa 2 ligada)", () => {
+  it("na etapa 2 a gravação padrão já é a compacta, e o formato antigo continua abrindo", () => {
+    expect(PACKED_STORAGE_WRITES).toBe(true);
     const workspace = workspaceWith(documentWith(3, 10));
     const storage = memoryStorage();
     saveWorkspace(storage, workspace);
-    expect(storage.values.get(WORKSPACE_STORAGE_KEY)).toBe(JSON.stringify(workspace));
+    const raw = storage.values.get(WORKSPACE_STORAGE_KEY)!;
+    expect(raw).toContain('"pts"');
+    expect(raw).not.toContain('"points"');
+    expect(loadWorkspace(storage)).toEqual(workspace);
+    // Um espaço gravado antes, no formato antigo, abre igual.
+    storage.values.set(WORKSPACE_STORAGE_KEY, JSON.stringify(workspace));
+    expect(loadWorkspace(storage)).toEqual(workspace);
   });
 
   it("já lê um espaço gravado no formato compacto", () => {
