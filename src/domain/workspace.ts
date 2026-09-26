@@ -48,6 +48,8 @@ export type StudyNote = {
 
 export type StudyNotebook = {
   subjectIds?: string[];
+  dividerPosition?: "side" | "bottom";
+  bookmarkedPageIds?: string[];
   kind?: "folder";
   parentId?: string;
   id: string;
@@ -160,6 +162,11 @@ export type WorkspaceAction =
   | { type: "workspace/replaced"; workspace: WorkspaceState }
   | { type: "subject/added"; id?: string; name: string; color: string }
   | { type: "notebook/subject-linked"; id: string; subjectId: string }
+  | {
+      type: "notebook/organized";
+      id: string;
+      changes: Partial<Pick<StudyNotebook, "subjectIds" | "dividerPosition" | "bookmarkedPageIds">>;
+    }
   | { type: "note/subject-changed"; id: string; subjectId: string; updatedAt: string }
   | { type: "task/added"; title: string; subjectId: string; dueDate: string }
   | { type: "task/toggled"; id: string }
@@ -325,6 +332,13 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 subjectIds: [...new Set([...(notebook.subjectIds ?? []), action.subjectId])],
               }
             : notebook,
+        ),
+      };
+    case "notebook/organized":
+      return {
+        ...state,
+        notebooks: state.notebooks.map((notebook) =>
+          notebook.id === action.id ? { ...notebook, ...action.changes } : notebook,
         ),
       };
     case "note/subject-changed":

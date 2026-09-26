@@ -2842,10 +2842,7 @@ export function HandwritingStudio({
           textMode={textMode}
           textAutoCorrect={textAutoCorrect}
           onToggleAutoCorrect={() => setTextAutoCorrect(!textAutoCorrect)}
-          tool={tool}
-          onSelectTool={setTool}
           zoom={zoom}
-          onResetView={resetView}
           canUndo={undoStack.length > 0}
           canRedo={redoStack.length > 0}
           onUndo={undo}

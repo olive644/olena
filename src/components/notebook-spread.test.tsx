@@ -84,3 +84,37 @@ it("preserva divisórias, conteúdo e atribuições ao recarregar", () => {
   for (const paper of ["weekly", "calendar"])
     expect(isHandwritingDocument({ version: 1, paper, strokes: [], stickies: [] })).toBe(true);
 });
+
+it("ordena divisórias, muda a posição e conserva folhas marcadas", () => {
+  let state = fixture();
+  state = workspaceReducer(state, {
+    type: "subject/added",
+    id: "history",
+    name: "História",
+    color: "#ac365e",
+  });
+  state = workspaceReducer(state, {
+    type: "notebook/subject-linked",
+    id: "book",
+    subjectId: "history",
+  });
+  state = workspaceReducer(state, {
+    type: "notebook/organized",
+    id: "book",
+    changes: { subjectIds: ["history", "math"] },
+  });
+  state = workspaceReducer(state, {
+    type: "notebook/organized",
+    id: "book",
+    changes: { dividerPosition: "bottom" },
+  });
+  state = workspaceReducer(state, {
+    type: "notebook/organized",
+    id: "book",
+    changes: { bookmarkedPageIds: ["two"] },
+  });
+  const loaded = loadWorkspace({ getItem: () => JSON.stringify(state) });
+  expect(loaded.notebooks[0]?.subjectIds).toEqual(["history", "math"]);
+  expect(loaded.notebooks[0]?.dividerPosition).toBe("bottom");
+  expect(loaded.notebooks[0]?.bookmarkedPageIds).toEqual(["two"]);
+});

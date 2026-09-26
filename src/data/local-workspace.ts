@@ -351,6 +351,10 @@ function isNotebook(value: unknown): boolean {
     (value["parentId"] === undefined || isString(value["parentId"])) &&
     (value["subjectIds"] === undefined ||
       (Array.isArray(value["subjectIds"]) && value["subjectIds"].every(isString))) &&
+    (value["dividerPosition"] === undefined ||
+      ["side", "bottom"].includes(String(value["dividerPosition"]))) &&
+    (value["bookmarkedPageIds"] === undefined ||
+      (Array.isArray(value["bookmarkedPageIds"]) && value["bookmarkedPageIds"].every(isString))) &&
     isString(value["id"]) &&
     isString(value["title"]) &&
     isString(value["subjectId"]) &&
@@ -692,6 +696,9 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
   duplicateIds.delete(primary.id);
   const pageIds = [...new Set([primary, ...candidates].flatMap(({ pageIds }) => pageIds))];
   const subjectIds = [...new Set(candidates.flatMap((notebook) => notebook.subjectIds ?? []))];
+  const bookmarkedPageIds = [
+    ...new Set(candidates.flatMap((notebook) => notebook.bookmarkedPageIds ?? [])),
+  ];
   return {
     ...workspace,
     notebooks: workspace.notebooks
@@ -703,6 +710,11 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
               title: "Meu caderno",
               pageIds,
               ...(subjectIds.length ? { subjectIds } : {}),
+              ...(bookmarkedPageIds.length ? { bookmarkedPageIds } : {}),
+              ...(primary.dividerPosition ||
+              candidates.some((item) => item.dividerPosition === "bottom")
+                ? { dividerPosition: primary.dividerPosition ?? "bottom" }
+                : {}),
             }
           : notebook.parentId && duplicateIds.has(notebook.parentId)
             ? { ...notebook, parentId: primary.id }

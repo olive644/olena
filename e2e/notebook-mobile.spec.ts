@@ -39,9 +39,9 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await editor.getByRole("button", { name: "Borracha", exact: true }).click();
   await expect(editor.getByRole("button", { name: "Tinta Roxo" })).toBeHidden();
   await editor.getByRole("button", { name: "Histórico e zoom", exact: true }).click();
-  await expect(editor.getByRole("button", { name: "Lupa para ampliar" })).toBeVisible();
+  await expect(editor.getByLabel("Zoom atual")).toBeVisible();
   await editor.getByRole("button", { name: "Recolher opções" }).click();
-  await expect(editor.getByRole("button", { name: "Lupa para ampliar" })).toBeHidden();
+  await expect(editor.getByLabel("Zoom atual")).toBeHidden();
   await page.setViewportSize({ width: 360, height: 740 });
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
   await editor.getByRole("button", { name: "Caneta", exact: true }).click();

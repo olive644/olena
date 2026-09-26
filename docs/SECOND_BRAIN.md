@@ -1,9 +1,12 @@
 # OlenaStudy: Second Brain
 
-O preview principal usa `NotebookSpread`: folhas em pares, divisórias por matéria
+O preview principal usa `NotebookSpread`: folhas em pares, divisórias reordenáveis
 e capa `public/notebook-covers/helena-estrelas.webp`. O editor mantém
 `NotebookPageBook`. As divisórias reutilizam `subjects` e `note.subjectId`;
-`notebook.subjectIds` opcional preserva divisórias ainda vazias. Não há cópia de
+`notebook.subjectIds` opcional preserva a ordem e divisórias ainda vazias.
+`dividerPosition` permite fitas laterais ou inferiores e `bookmarkedPageIds`
+marca folhas importantes na prévia. A capa não integra as aberturas de folhas.
+Não há cópia de
 folhas ao trocar matéria. Modelos sem data `weekly` e `calendar` são renderizados
 por `handwriting-planner-paper.ts` através de `drawPaper`, inclusive nas exportações.
 Testes: `notebook-spread.test.tsx` e `e2e/notebook-tabs.spec.ts`.

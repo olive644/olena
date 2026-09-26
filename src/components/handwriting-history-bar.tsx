@@ -1,14 +1,10 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
-import type { HandwritingTool } from "./handwriting-types";
 
 type HandwritingHistoryBarProps = {
   textMode: boolean;
   textAutoCorrect: boolean;
   onToggleAutoCorrect: () => void;
-  tool: HandwritingTool;
-  onSelectTool: (tool: HandwritingTool) => void;
   zoom: number;
-  onResetView: () => void;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -21,10 +17,7 @@ export function HandwritingHistoryBar({
   textMode,
   textAutoCorrect,
   onToggleAutoCorrect,
-  tool,
-  onSelectTool,
   zoom,
-  onResetView,
   canUndo,
   canRedo,
   onUndo,
@@ -33,7 +26,7 @@ export function HandwritingHistoryBar({
   onClear,
 }: HandwritingHistoryBarProps) {
   return (
-    <div className="handwriting-history" aria-label="Histórico e zoom">
+    <div className="handwriting-history" aria-label="Histórico">
       {textMode && (
         <button
           type="button"
@@ -46,33 +39,9 @@ export function HandwritingHistoryBar({
           <PaperEditorIcon name="review" /> <span>Correção automática</span>
         </button>
       )}
-      <button
-        type="button"
-        className={!textMode && tool === "zoom-out" ? "is-active" : ""}
-        aria-label="Lupa para reduzir"
-        aria-pressed={!textMode && tool === "zoom-out"}
-        onClick={() => onSelectTool("zoom-out")}
-      >
-        <PaperEditorIcon name="zoomOut" />
-        <span className="editor-action-label">Reduzir</span>
-      </button>
-      <button className="handwriting-zoom-value" type="button" onClick={onResetView}>
+      <output className="handwriting-zoom-value" aria-label="Zoom atual">
         {Math.round(zoom * 100)}%
-      </button>
-      <button
-        type="button"
-        className={!textMode && tool === "zoom-in" ? "is-active" : ""}
-        aria-label="Lupa para ampliar"
-        aria-pressed={!textMode && tool === "zoom-in"}
-        onClick={() => onSelectTool("zoom-in")}
-      >
-        <PaperEditorIcon name="zoomIn" />
-        <span className="editor-action-label">Ampliar</span>
-      </button>
-      <button type="button" aria-label="Redefinir visualização" onClick={onResetView}>
-        <PaperEditorIcon name="reset" />
-        <span className="editor-action-label">Redefinir</span>
-      </button>
+      </output>
       <span className="handwriting-commandbar__divider" />
       <button type="button" aria-label="Desfazer" disabled={!canUndo} onClick={onUndo}>
         <PaperEditorIcon name="undo" />
