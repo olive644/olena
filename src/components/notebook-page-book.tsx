@@ -3,6 +3,7 @@ import { PaperEditorIcon } from "./paper-editor-icon";
 import type { StudyNote } from "../domain/workspace";
 import { useRef, useState } from "react";
 import { NotebookPageIndex } from "./notebook-page-index";
+import { NotebookToolIcon } from "./notebook-tool-icon";
 
 export function NotebookPageBook({
   pages,
@@ -68,7 +69,7 @@ export function NotebookPageBook({
           aria-label="Abrir índice de folhas"
           onClick={() => setIndexOpen(true)}
         >
-          Índice
+          <NotebookToolIcon name="index" />
         </button>
       )}
       <div className="page-book" key={currentPageId}>

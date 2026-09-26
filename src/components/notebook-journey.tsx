@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { NotebookTab, StudyNotebook } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
@@ -8,6 +8,9 @@ export type NotebookJourneyState = {
   tabs: NotebookTab[];
   from: { x: number; y: number; width: number; height: number };
   returning: boolean;
+  closed?: boolean;
+  destination?: "shelf" | "cover" | "spread";
+  pages?: HTMLElement | undefined;
 };
 
 export function notebookShelfCover(id: string) {
@@ -23,6 +26,11 @@ export function canAnimateNotebook() {
   );
 }
 
+export function notebookPageSnapshot() {
+  return document.querySelector<HTMLElement>(".notebook-spread-shell")?.cloneNode(true) as
+    HTMLElement | undefined;
+}
+
 export function NotebookJourney({
   journey,
   onDone,
@@ -31,19 +39,32 @@ export function NotebookJourney({
   onDone: () => void;
 }) {
   const carrier = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  const paper = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const element = carrier.current;
+    const target = journey.returning
+      ? journey.destination === "cover"
+        ? document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover")
+        : notebookShelfCover(journey.notebook.id)
+      : document.querySelector<HTMLElement>(".notebook-spread-shell");
+    if (!element || !target || !canAnimateNotebook()) {
+      onDone();
+      return;
+    }
+    const snapshot = journey.pages ?? notebookPageSnapshot();
+    if (snapshot && paper.current) {
+      snapshot.setAttribute("inert", "");
+      snapshot.setAttribute("aria-hidden", "true");
+      snapshot.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+      paper.current.replaceChildren(snapshot);
+    }
     const animations: Animation[] = [];
     let cancelled = false;
+    const previousVisibility = target.style.visibility;
+    target.style.visibility = "hidden";
     const frame = requestAnimationFrame(() => {
-      const element = carrier.current;
-      const target = journey.returning
-        ? notebookShelfCover(journey.notebook.id)
-        : document.querySelector<HTMLElement>(".notebook-paper-spread");
-      if (!element || !target || !canAnimateNotebook()) {
-        onDone();
-        return;
-      }
-      if (journey.returning) target.scrollIntoView({ block: "nearest", behavior: "instant" });
+      if (journey.returning && journey.destination !== "cover")
+        target.scrollIntoView({ block: "nearest", behavior: "instant" });
       const rect = target.getBoundingClientRect();
       const destination = journey.returning
         ? rect
@@ -54,114 +75,94 @@ export function NotebookJourney({
             height: rect.height,
           };
       const { from } = journey;
-      const transform = `translate(${destination.x - from.x}px, ${destination.y - from.y}px) scale(${destination.width / from.width}, ${destination.height / from.height})`;
-      const timing: KeyframeAnimationOptions = {
-        duration: 940,
-        easing: "linear",
-        fill: "both",
+      const transport = `translate(${destination.x - from.x}px, ${destination.y - from.y}px) scale(${destination.width / from.width}, ${destination.height / from.height})`;
+      const timing: KeyframeAnimationOptions = { duration: 1100, fill: "both" };
+      const animate = (node: Element | null, frames: Keyframe[]) => {
+        if (node) {
+          if (journey.closed && node !== element) {
+            if (node === paper.current) (node as HTMLElement).style.display = "none";
+            else (node as HTMLElement).style.transform = "none";
+            return;
+          }
+          animations.push(node.animate(frames, timing));
+        }
       };
-      animations.push(
-        element.animate(
-          journey.returning
-            ? [
-                { transform: "none", offset: 0 },
-                { transform: "none", offset: 0.28, easing: "cubic-bezier(.22,.7,.18,1)" },
-                { transform, offset: 1 },
-              ]
-            : [
-                { transform: "none", offset: 0, easing: "cubic-bezier(.22,.7,.18,1)" },
-                { transform, offset: 0.65 },
-                { transform, offset: 1 },
-              ],
-          timing,
-        ),
+      animate(
+        element,
+        journey.returning
+          ? [
+              { transform: "none" },
+              { transform: "none", offset: 0.53, easing: "cubic-bezier(.45,0,.2,1)" },
+              { transform: transport },
+            ]
+          : [
+              { transform: "none", easing: "cubic-bezier(.2,.7,.2,1)" },
+              { transform: transport, offset: 0.48 },
+              { transform: transport },
+            ],
       );
-      const cover = element.querySelector<HTMLElement>(".book-cover__face");
-      if (cover)
-        animations.push(
-          cover.animate(
-            journey.returning
-              ? [
-                  { transform: "rotateY(-165deg)" },
-                  { transform: "rotateY(0deg)", offset: 0.4 },
-                  { transform: "rotateY(0deg)" },
-                ]
-              : [
-                  { transform: "rotateY(0deg)" },
-                  { transform: "rotateY(-12deg)", offset: 0.4 },
-                  { transform: "rotateY(-165deg)" },
-                ],
-            timing,
-          ),
-        );
-      const lining = element.querySelector<HTMLElement>(".notebook-journey-lining");
-      if (lining)
-        animations.push(
-          lining.animate(
-            journey.returning
-              ? [
-                  { transform: "rotateY(-165deg)" },
-                  { transform: "rotateY(0deg)", offset: 0.4 },
-                  { transform: "rotateY(0deg)" },
-                ]
-              : [
-                  { transform: "rotateY(0deg)" },
-                  { transform: "rotateY(-12deg)", offset: 0.4 },
-                  { transform: "rotateY(-165deg)" },
-                ],
-            timing,
-          ),
-        );
-      if (lining)
-        animations.push(
-          lining.animate(
-            journey.returning
-              ? [
-                  { opacity: 1 },
-                  { opacity: 1, offset: 0.18 },
-                  { opacity: 0, offset: 0.19 },
-                  { opacity: 0 },
-                ]
-              : [
-                  { opacity: 0 },
-                  { opacity: 0, offset: 0.7 },
-                  { opacity: 1, offset: 0.71 },
-                  { opacity: 1 },
-                ],
-            timing,
-          ),
-        );
-      const clasp = element.querySelector<HTMLElement>(".book-cover__clasp");
-      if (clasp)
-        animations.push(
-          clasp.animate(
-            {
-              transform: journey.returning
-                ? ["rotateY(170deg)", "rotateY(0deg)"]
-                : ["rotateY(0deg)", "rotateY(170deg)"],
-            },
-            { ...timing, duration: 300 },
-          ),
-        );
-      animations.push(
-        target.animate(
-          journey.returning
-            ? [{ opacity: 0 }, { opacity: 0, offset: 0.85 }, { opacity: 1 }]
-            : [
-                { opacity: 0, transform: "scaleX(.5)", transformOrigin: "75% center" },
-                { opacity: 0, transform: "scaleX(.5)", offset: 0.35 },
-                { opacity: 1, transform: "scaleX(1)" },
-              ],
-          timing,
-        ),
+      animate(
+        element.querySelector(".notebook-journey-leaf"),
+        journey.returning
+          ? [
+              { transform: "rotateY(-180deg)" },
+              { transform: "rotateY(0deg)", offset: 0.46 },
+              { transform: "rotateY(0deg)" },
+            ]
+          : [
+              { transform: "rotateY(0deg)" },
+              { transform: "rotateY(0deg)", offset: 0.38, easing: "cubic-bezier(.4,0,.2,1)" },
+              { transform: "rotateY(-180deg)", offset: 0.93 },
+              { transform: "rotateY(-180deg)" },
+            ],
+      );
+      animate(
+        element.querySelector(".notebook-journey-clasp"),
+        journey.returning
+          ? [
+              { transform: "rotateY(-180deg)" },
+              { transform: "rotateY(-180deg)", offset: 0.42 },
+              { transform: "rotateY(0deg)", offset: 0.58 },
+              { transform: "rotateY(0deg)" },
+            ]
+          : [
+              { transform: "rotateY(0deg)" },
+              { transform: "rotateY(0deg)", offset: 0.18 },
+              { transform: "rotateY(-180deg)", offset: 0.37 },
+              { transform: "rotateY(-180deg)" },
+            ],
+      );
+      animate(
+        paper.current,
+        journey.returning
+          ? [
+              { clipPath: "inset(-80px -100px -80px -30px)" },
+              { clipPath: "inset(-80px -100px -80px 50%)", offset: 0.45 },
+              { clipPath: "inset(-80px -100px -80px 50%)" },
+            ]
+          : [
+              { clipPath: "inset(-80px -100px -80px 50%)" },
+              { clipPath: "inset(-80px -100px -80px 50%)", offset: 0.4 },
+              { clipPath: "inset(-80px -100px -80px -30px)", offset: 0.94 },
+              { clipPath: "inset(-80px -100px -80px -30px)" },
+            ],
       );
       if (!journey.returning)
-        animations.push(
-          element.animate([{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], timing),
-        );
+        animate(element.querySelector(".notebook-journey-leaf"), [
+          { opacity: 1 },
+          { opacity: 1, offset: 0.9 },
+          { opacity: 0 },
+        ]);
+      else if (!journey.closed)
+        animate(element.querySelector(".notebook-journey-leaf"), [
+          { opacity: 0 },
+          { opacity: 1, offset: 0.12 },
+          { opacity: 1 },
+        ]);
       void animations[0]!.finished
         .then(() => {
           if (cancelled) return;
+          target.style.visibility = previousVisibility;
           const focusTarget = journey.returning
             ? target.closest<HTMLElement>("button")
             : document.querySelector<HTMLElement>(".notebook-back-tool");
@@ -175,12 +176,14 @@ export function NotebookJourney({
       cancelled = true;
       cancelAnimationFrame(frame);
       animations.forEach((animation) => animation.cancel());
+      target.style.visibility = previousVisibility;
     };
   }, [journey, onDone]);
 
   return createPortal(
     <div
       className="notebook-journey"
+      data-returning={journey.returning}
       ref={carrier}
       aria-hidden="true"
       style={{
@@ -190,8 +193,19 @@ export function NotebookJourney({
         height: journey.from.height,
       }}
     >
-      <NotebookCover subjectColor="#7C3AED" title={journey.notebook.title} tabs={journey.tabs} />
-      <span className="notebook-journey-lining" />
+      <div className="notebook-journey-pages" ref={paper} />
+      <div className="notebook-journey-leaf">
+        <NotebookCover
+          subjectColor="#7C3AED"
+          title={journey.notebook.title}
+          tabs={journey.tabs}
+          clasp={false}
+        />
+        <span className="notebook-journey-lining" />
+      </div>
+      <span className="book-cover__clasp notebook-journey-clasp">
+        <i />
+      </span>
     </div>,
     document.body,
   );

@@ -58,7 +58,7 @@
 .book-cover__clasp {
   position: absolute;
   z-index: 2;
-  top: 42%;
+  top: 56%;
   right: -1px;
   width: 29%;
   height: 17%;
@@ -95,13 +95,13 @@
   clip-path: polygon(0 0, 100% 0, 50% 55%, 0 100%);
 }
 .notebook-open-clasp {
-  width: 56px;
-  height: 58px;
-  right: -49px;
-  top: 68%;
-  z-index: -1;
-  transform: rotate(7deg) scaleX(-1);
-  transform-origin: center;
+  width: 14.5%;
+  height: 17%;
+  right: -10px;
+  top: 56%;
+  z-index: 0;
+  transform: rotateY(-180deg);
+  transform-origin: right center;
   pointer-events: none;
 }
 .notebook-journey {
@@ -111,22 +111,62 @@
   transform-origin: top left;
   perspective: 1600px;
 }
-.notebook-journey > .book-cover {
+.notebook-journey-leaf {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  z-index: 5;
+}
+.notebook-journey-leaf > .book-cover {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   aspect-ratio: auto;
-  perspective: 1600px;
+  backface-visibility: hidden;
+  transform: translateZ(1px);
+  filter: none;
 }
 .notebook-journey .book-cover__face {
-  transform-origin: left center;
-  backface-visibility: hidden;
-  overflow: visible;
+  overflow: hidden;
 }
 .notebook-journey .book-cover__concept {
   border-radius: inherit;
 }
 .notebook-journey .book-cover__spine {
   z-index: 0;
+}
+.notebook-journey-clasp {
+  z-index: 6;
+  backface-visibility: visible;
+}
+.notebook-journey-pages {
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 200%;
+  height: 100%;
+  clip-path: inset(-80px -100px -80px 50%);
+}
+.notebook-journey[data-returning="true"] .notebook-journey-pages {
+  clip-path: inset(-80px -100px -80px -30px);
+}
+.notebook-journey[data-returning="true"] .notebook-journey-leaf,
+.notebook-journey[data-returning="true"] .notebook-journey-clasp {
+  transform: rotateY(-180deg);
+}
+.notebook-journey-pages .notebook-spread-shell,
+.notebook-journey-pages .notebook-paper-spread,
+.notebook-journey-pages .notebook-spread-pair {
+  height: 100%;
+  box-sizing: border-box;
+}
+.notebook-journey-pages .notebook-open-clasp {
+  visibility: hidden;
+}
+.notebook-journey-pages .notebook-sheet-open {
+  font: inherit;
 }
 .notebook-marker-motifs {
   display: flex;
@@ -189,9 +229,9 @@
   background: #fff9ef;
   border: 8px solid #51465d;
   border-radius: 8px 16px 16px 8px;
-  backface-visibility: visible;
-  opacity: 0;
-  transform-origin: left center;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  transform-origin: center;
   box-shadow: inset 0 0 0 2px #d5ccba;
 }
 @media (max-width: 480px) {
@@ -208,11 +248,6 @@
   }
   :root .notebook-sheet-title:focus {
     font-size: 16px;
-  }
-  .notebook-open-clasp {
-    width: 42px;
-    height: 46px;
-    right: -36px;
   }
 }
 .book-cover .book-cover__spine {
@@ -288,12 +323,12 @@
   position: relative;
   width: 100%;
   isolation: isolate;
+  perspective: 1800px;
 }
 .notebook-paper-spread {
   position: relative;
-  z-index: 2;
-  background: #51465d;
-  border: 10px solid #51465d;
+  background: transparent;
+  border: 10px solid transparent;
   border-radius: 12px 22px 22px 12px;
   box-shadow:
     0 5px #51259b,
@@ -303,7 +338,70 @@
     4px 15px #51465d;
   touch-action: pan-y;
   user-select: none;
-  perspective: 1800px;
+}
+.notebook-paper-spread::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  background: #51465d;
+  border-radius: inherit;
+  z-index: -1;
+  pointer-events: none;
+}
+.notebook-spread-pair {
+  position: relative;
+  z-index: 2;
+}
+.notebook-page-stack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.notebook-page-stack i {
+  position: absolute;
+  width: 49%;
+  height: 100%;
+  left: 0;
+  top: 3px;
+  background: #f4ecdd;
+  border-bottom: 1px solid #c7b99f;
+  border-radius: 3px 1px 12px 8px;
+  transform: rotate(-0.6deg);
+  box-shadow:
+    0 2px #fff9ef,
+    0 3px #d5ccba;
+}
+.notebook-page-stack i:nth-child(2) {
+  top: 5px;
+  transform: rotate(0.25deg);
+}
+.notebook-page-stack i:nth-child(n + 3) {
+  left: auto;
+  right: 0;
+  border-radius: 1px 5px 8px 12px;
+  transform: rotate(0.6deg);
+}
+.notebook-page-stack i:nth-child(4) {
+  top: 5px;
+  transform: rotate(-0.25deg);
+}
+.book-cover__face::after {
+  content: "";
+  position: absolute;
+  inset: 6px 6px 6px 13px;
+  border: 1px dashed #a779ef;
+  border-radius: 2px 10px 8px 2px;
+  pointer-events: none;
+}
+.book-cover__pages {
+  box-shadow:
+    2px 3px #c7b99f,
+    3px 5px #fff9ef,
+    4px 7px #d5ccba;
+}
+.notebook-sheet {
+  border-bottom: 1px solid #d5ccba;
 }
 .notebook-paper-spread::before {
   content: "";
@@ -800,7 +898,7 @@
   z-index: 1;
 }
 :root .notebook-attached-tab.is-exposed {
-  z-index: 3;
+  z-index: 4;
 }
 .notebook-attached-tab:active {
   cursor: grabbing;
@@ -1013,6 +1111,9 @@
   border-top: 7px solid #7c3aed;
 }
 @media (max-width: 600px) {
+  .notebook-paper-spread::after {
+    inset: -7px;
+  }
   html:has(.notebooks-main),
   body:has(.notebooks-main) {
     overflow: hidden;
@@ -1110,6 +1211,8 @@
     box-sizing: border-box;
     height: 100%;
     border-width: 7px;
+  }
+  .notebook-spread-shell {
     perspective: 1000px;
   }
   .notebook-cover-corners {

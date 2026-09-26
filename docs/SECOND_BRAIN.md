@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+A capa de fundo não cria mais o contexto que escondia marcas enterradas.
+A ordem é capa, pilha de papel, marcas enterradas, folhas, marcas expostas.
+O fecho é irmão da face giratória. `NotebookJourney` recebe snapshot inerte das
+folhas e distingue retorno já fechado de fechamento antes de voltar à vitrine.
+Personalizar mostra a capa; opções futuras de decoração não são simuladas.
+
 `NotebookJourney` é uma camada visual temporária via portal. A navegação monta o
 destino e a medição acontece no próximo frame, após o ajuste de scroll. Animações
 nativas são canceladas no unmount. Busca e demais campos continuam utilizáveis
