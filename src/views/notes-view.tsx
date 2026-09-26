@@ -11,7 +11,7 @@ import {
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
-import { PaperEditorIcon } from "../components/paper-editor-icon";
+import { NotebookSpread } from "../components/notebook-spread";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
@@ -66,19 +66,14 @@ function NotebookArtwork({
     >
       <span className="book-cover__pages" />
       <span className="book-cover__face">
-        <span className="book-cover__edition">MEU UNIVERSO PARTICULAR</span>
+        <span className="book-cover__edition">HELENA · ESTRELAS DE PAPEL</span>
         <span className="book-cover__title">{title}</span>
-        <svg className="book-cover__art" viewBox="0 0 180 150">
-          <path fill="#51465D" d="M8 137 44 51 94 137Z" />
-          <path fill="#A779EF" d="m44 51 9 86h41Z" />
-          <path fill="#FFF9EF" d="m39 63 5-12 20 34-17-7Z" />
-          <path fill="#292432" d="m66 137 60-103 46 103Z" />
-          <path fill="#FFE88D" d="m126 34 46 103-59-28Z" />
-          <path fill="#FACC15" d="m124 10 6 13 15 2-11 10 2 15-12-7-13 7 3-15-11-10 15-2Z" />
-          <path fill="#FFF9EF" d="M30 8 18 12 10 24 12 38 24 47 38 45 47 34 34 36 24 29 23 18Z" />
-          <path fill="#A779EF" d="m12 38 12 9 14-2 9-11-13 7Z" />
-        </svg>
-        <span className="book-cover__footer">ESCREVA • DESCUBRA • GUARDE</span>
+        <img
+          className="book-cover__concept"
+          src="/notebook-covers/helena-estrelas.webp"
+          alt=""
+          loading="lazy"
+        />
       </span>
       <span className="book-cover__spine" />
       <span className="book-cover__ribbon" />
@@ -90,17 +85,13 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
-  const [turningPage, setTurningPage] = useState<{ page: StudyNote; direction: number } | null>(
-    null,
-  );
+
   const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
   const [moveMessage, setMoveMessage] = useState("");
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const drag = useRef<{ id: string; x: number; y: number; moved: boolean } | null>(null);
   const skipClick = useRef<string | null>(null);
-  const previewDrag = useRef<{ x: number; y: number; pointerId: number } | null>(null);
-  const previewSwipeConsumed = useRef(false);
   function moveFolder(id: string, target: string) {
     dispatch({ type: "notebook/folder-moved", id, parentId: target });
     setMoveMessage(
@@ -182,7 +173,6 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
     setPreviewPageIndex(0);
-    setTurningPage(null);
   }
 
   function removeSelectedNotebooks() {
@@ -209,16 +199,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setPreviewPageIndex(Math.max(0, Math.min(index, notebookPages.length - 2)));
   }
 
-  function turnPreview(direction: -1 | 1) {
-    const nextIndex = previewPageIndex + direction;
-    if (turningPage || nextIndex < 0 || nextIndex >= notebookPages.length) return;
-    const page = notebookPages[nextIndex];
-    if (!page) return;
-    setTurningPage({ page, direction });
-    setPreviewPageIndex(nextIndex);
-  }
-
-  function addPage(append: boolean) {
+  function addPage(append: boolean, subjectId?: string) {
     if (!activeNotebook) return;
     const id = createWorkspaceId("note");
     dispatch({
@@ -226,7 +207,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
       append,
       id,
       notebookId: activeNotebook.id,
-      subjectId: activeNotebook.subjectId,
+      subjectId: subjectId ?? activePage?.subjectId ?? activeNotebook.subjectId,
       updatedAt: new Date().toISOString(),
     });
     setActivePageId(id);
@@ -684,171 +665,16 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             {notebookPages.length}{" "}
             {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}
           </p>
-          <div
-            className="notebook-preview-book"
-            onPointerDown={(event) => {
-              const button = (event.target as HTMLElement).closest("button");
-              if (
-                event.button !== 0 ||
-                (button &&
-                  (!button.classList.contains("notebook-preview-leaf") ||
-                    button.classList.contains("notebook-preview-leaf--empty")))
-              )
-                return;
-              previewDrag.current = {
-                x: event.clientX,
-                y: event.clientY,
-                pointerId: event.pointerId,
-              };
-              previewSwipeConsumed.current = false;
-            }}
-            onPointerMove={(event) => {
-              const start = previewDrag.current;
-              if (!start || start.pointerId !== event.pointerId) return;
-              const dx = event.clientX - start.x;
-              const dy = event.clientY - start.y;
-              if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-                event.currentTarget.setPointerCapture(event.pointerId);
-              }
-            }}
-            onPointerUp={(event) => {
-              const start = previewDrag.current;
-              previewDrag.current = null;
-              if (!start || start.pointerId !== event.pointerId) return;
-              const dx = event.clientX - start.x;
-              const dy = event.clientY - start.y;
-              if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-                previewSwipeConsumed.current = true;
-                turnPreview(dx < 0 ? 1 : -1);
-              }
-            }}
-            onPointerCancel={() => {
-              previewDrag.current = null;
-            }}
-            onKeyDown={(event) => {
-              if (event.target !== event.currentTarget) return;
-              if (event.key === "ArrowLeft") turnPreview(-1);
-              if (event.key === "ArrowRight") turnPreview(1);
-            }}
-            tabIndex={0}
-            aria-label="Prévia folheável do caderno"
-          >
-            <div className="notebook-preview-inside" aria-hidden="true" />
-            <div className="notebook-preview-leaves">
-              {notebookPages.length === 0 ? (
-                <button
-                  className="notebook-preview-leaf notebook-preview-leaf--empty"
-                  type="button"
-                  onClick={() => {
-                    createPageAtEnd();
-                  }}
-                  aria-label="Criar primeira folha"
-                >
-                  <PaperActionIcon name="plus" />
-                  <strong>Criar primeira folha</strong>
-                </button>
-              ) : (
-                notebookPages.slice(previewPageIndex, previewPageIndex + 1).map((page) => (
-                  <button
-                    className="notebook-preview-leaf"
-                    type="button"
-                    disabled={!!turningPage}
-                    key={page.id}
-                    onClick={() => {
-                      if (previewSwipeConsumed.current) {
-                        previewSwipeConsumed.current = false;
-                        return;
-                      }
-                      setActivePageId(page.id);
-                    }}
-                    aria-label={`Abrir preview de ${page.title}`}
-                  >
-                    <PreviewContent page={page} />
-                  </button>
-                ))
-              )}
-              {turningPage && (
-                <div
-                  className={`notebook-turning-leaf ${turningPage.direction < 0 ? "notebook-turning-leaf--back" : ""}`}
-                  aria-hidden="true"
-                  onAnimationEnd={() => setTurningPage(null)}
-                >
-                  <div className="notebook-preview-leaf notebook-turning-front">
-                    <PreviewContent page={turningPage.page} />
-                  </div>
-                  <div className="notebook-preview-leaf notebook-turning-back" />
-                </div>
-              )}
-            </div>
-            {notebookPages.length > 1 && (
-              <nav className="notebook-preview-tabs" aria-label="Abas das folhas">
-                {notebookPages.map((page, index) => (
-                  <button
-                    key={page.id}
-                    type="button"
-                    className={index === previewPageIndex ? "is-active" : ""}
-                    aria-label={`Ir para folha ${index + 1}: ${page.title}`}
-                    aria-current={index === previewPageIndex ? "page" : undefined}
-                    title={page.title}
-                    disabled={!!turningPage}
-                    onClick={() => setPreviewPageIndex(index)}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </nav>
-            )}
-          </div>
-          <nav className="notebook-preview-controls" aria-label="Folhear caderno">
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={previewPageIndex === 0 || !!turningPage}
-              onClick={() => {
-                turnPreview(-1);
-              }}
-            >
-              ‹ Anterior
-            </button>
-            <span aria-live="polite">
-              {notebookPages.length
-                ? `Folha ${previewPageIndex + 1} de ${notebookPages.length}`
-                : "Nenhuma folha ainda"}
-            </span>
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={previewPageIndex >= notebookPages.length - 1 || !!turningPage}
-              onClick={() => {
-                turnPreview(1);
-              }}
-            >
-              Próxima ›
-            </button>
-          </nav>
-          {notebookPages.length > 0 && (
-            <div className="notebook-preview-actions">
-              <button
-                className="notebook-preview-create"
-                type="button"
-                onClick={createPageAtEnd}
-                aria-label="Criar nova folha"
-              >
-                <PaperActionIcon name="plus" />
-                <span>Nova folha</span>
-              </button>
-              {notebookPages[previewPageIndex] && (
-                <button
-                  className="notebook-preview-remove"
-                  type="button"
-                  onClick={() => removePage(notebookPages[previewPageIndex]!.id)}
-                >
-                  <PaperEditorIcon name="close" />
-                  <span>Remover folha</span>
-                </button>
-              )}
-            </div>
-          )}
+          <NotebookSpread
+            key={activeNotebook.id}
+            notebook={activeNotebook}
+            pages={notebookPages}
+            subjects={workspace.subjects}
+            dispatch={dispatch}
+            onOpen={setActivePageId}
+            onCreate={(subjectId) => addPage(true, subjectId)}
+            onRemove={removePage}
+          />
         </section>
       ) : activePage ? (
         <>

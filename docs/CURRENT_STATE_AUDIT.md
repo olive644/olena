@@ -1,5 +1,21 @@
 # Auditoria do estado atual
 
+## Caderno papercraft: folhas duplas e matérias
+
+O preview usa `NotebookSpread` com duas folhas reais por abertura. Mouse, toque,
+setas do teclado e botões navegam em pares; a última posição livre permite criar
+outra folha. Cada folha tem abertura e remoção próprias. A capa aprovada Helena,
+estrelas de papel usa a arte atual em uma pose inédita, otimizada em WebP (40 KB).
+
+As fitas representam matérias do workspace. `StudyNotebook.subjectIds`, opcional,
+mantém divisórias vazias; `StudyNote.subjectId` associa folhas sem duplicar conteúdo.
+A seleção filtra a leitura e novas folhas herdam a matéria selecionada. Cadernos
+antigos continuam válidos e a migração dos cadernos padrão preserva divisórias.
+
+Os papéis `weekly` e `calendar` são modelos sem data fixa, preenchidos pelo usuário.
+São desenhados no mesmo canvas das folhas e participam de salvamento, reabertura
+e exportação. A validação de documentos aceita os dois novos tipos.
+
 ## Editor de cadernos: quadro, livro e preferências
 
 Folhas novas abrem no editor expandido e começam em um quadro de 3200 por 2400

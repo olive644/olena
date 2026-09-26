@@ -2650,16 +2650,8 @@ export function HandwritingStudio({
 
   function save(closeAfter = true) {
     const canvas = canvasRef.current;
-    if (
-      !canvas ||
-      (strokes.length === 0 &&
-        stickies.length === 0 &&
-        coordinateSystems.length === 0 &&
-        !pageText.trim() &&
-        importedImages.length === 0 &&
-        !background)
-    ) {
-      setError("Escreva ou adicione um post-it antes de salvar.");
+    if (!canvas) {
+      setError("Aguarde a folha carregar antes de salvar.");
       return;
     }
     try {
@@ -2667,6 +2659,7 @@ export function HandwritingStudio({
       onSave(pageImage(), document);
       localStorage.removeItem(`helenastudy.handwriting.draft.${draftKey}`);
       setDraftStatus("Folha salva no caderno");
+      setError("");
       if (closeAfter) onClose();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível salvar a folha.");

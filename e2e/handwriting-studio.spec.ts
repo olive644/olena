@@ -698,8 +698,9 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
   await expect(page.locator(".notebook-page-card")).toHaveCount(0);
-  await page.getByRole("button", { name: "Próxima ›", exact: true }).click();
-  await expect(page.getByText("Folha 2 de 2", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Próxima ›", exact: true })).toBeDisabled();
+  await expect(page.getByText("Folhas 1 e 2 de 2", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Abrir preview de / })).toHaveCount(2);
 });
 
 test("a escrita na janela acompanha a caneta e aparece ao vivo na folha", async ({

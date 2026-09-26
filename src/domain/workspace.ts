@@ -47,6 +47,7 @@ export type StudyNote = {
 };
 
 export type StudyNotebook = {
+  subjectIds?: string[];
   kind?: "folder";
   parentId?: string;
   id: string;
@@ -157,7 +158,9 @@ export type WorkspaceState = {
 
 export type WorkspaceAction =
   | { type: "workspace/replaced"; workspace: WorkspaceState }
-  | { type: "subject/added"; name: string; color: string }
+  | { type: "subject/added"; id?: string; name: string; color: string }
+  | { type: "notebook/subject-linked"; id: string; subjectId: string }
+  | { type: "note/subject-changed"; id: string; subjectId: string; updatedAt: string }
   | { type: "task/added"; title: string; subjectId: string; dueDate: string }
   | { type: "task/toggled"; id: string }
   | { type: "event/added"; title: string; subjectId: string; date: string; time: string }
@@ -308,8 +311,32 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         subjects: [
           ...state.subjects,
-          { id: createId("subject"), name: action.name, color: action.color },
+          { id: action.id ?? createId("subject"), name: action.name, color: action.color },
         ],
+      };
+    case "notebook/subject-linked":
+      if (!state.subjects.some((subject) => subject.id === action.subjectId)) return state;
+      return {
+        ...state,
+        notebooks: state.notebooks.map((notebook) =>
+          notebook.id === action.id
+            ? {
+                ...notebook,
+                subjectIds: [...new Set([...(notebook.subjectIds ?? []), action.subjectId])],
+              }
+            : notebook,
+        ),
+      };
+    case "note/subject-changed":
+      if (action.subjectId && !state.subjects.some((subject) => subject.id === action.subjectId))
+        return state;
+      return {
+        ...state,
+        notes: state.notes.map((note) =>
+          note.id === action.id
+            ? { ...note, subjectId: action.subjectId, updatedAt: action.updatedAt }
+            : note,
+        ),
       };
     case "task/added":
       return {

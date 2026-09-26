@@ -5,7 +5,8 @@ export type HandwritingPoint = {
   tiltX?: number;
   tiltY?: number;
 };
-export type HandwritingPaper = "ruled" | "grid" | "dots" | "blank" | "board";
+export type HandwritingPaper =
+  "ruled" | "grid" | "dots" | "blank" | "board" | "weekly" | "calendar";
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
   brush?: "fine" | "ink" | "soft";

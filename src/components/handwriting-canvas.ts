@@ -20,6 +20,7 @@ import {
   traceOutline,
 } from "./handwriting-ink";
 import { stickyTextLayout } from "./sticky-text-layout";
+import { drawPlannerPaper } from "./handwriting-planner-paper";
 
 // Posição dos fios do pincel macio ao longo da largura do traço (-1 a 1).
 const SOFT_BRISTLE_OFFSETS = [-0.9, -0.45, 0, 0.45, 0.9] as const;
@@ -104,6 +105,10 @@ export function drawPaper(
   context.fillStyle =
     paperColor === "night" ? "#292432" : paperColor === "aged" ? "#f3e6c8" : "#fffdf7";
   context.fillRect(0, 0, pageWidth, pageHeight);
+  if (paper === "weekly" || paper === "calendar") {
+    drawPlannerPaper(context, paper, paperColor, pageWidth, pageHeight);
+    return;
+  }
   context.save();
   context.strokeStyle =
     paperColor === "night" ? "#51465d" : paperColor === "aged" ? "#d4bd91" : "#dcd8ee";
