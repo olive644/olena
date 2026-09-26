@@ -633,8 +633,8 @@ export function NoteCaptureTools({
                     ? { remoteCursors: collaboration.cursors }
                     : {})}
                   onCursorMove={collaboration.sendCursor}
-                  {...(collaboration.activity
-                    ? { collaborationActivity: collaboration.activity }
+                  {...(collaboration.activity || collaboration.notice
+                    ? { collaborationActivity: collaboration.activity || collaboration.notice }
                     : {})}
                   onImportPages={(pages) => {
                     onImportPages?.(pages);
