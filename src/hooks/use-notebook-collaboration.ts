@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
 import { roomAppCheckToken } from "../data/room-app-check";
 import { getFirebaseAccountServices } from "../data/firebase-account";
@@ -114,6 +114,27 @@ async function request<T>(action: string, body: Record<string, unknown>): Promis
   return payload;
 }
 
+// Cursor dos colegas. Quem lê usa a hora em que a posição chegou, não a do servidor, para relógios
+// desencontrados não esconderem nem eternizarem um cursor.
+export type RemoteCursor = {
+  participantId: string;
+  displayName: string;
+  avatarUrl?: string | undefined;
+  x: number;
+  y: number;
+};
+
+const CURSOR_SEND_INTERVAL_MS = 250;
+const CURSOR_STALE_MS = 5_000;
+
+function readCursorPoint(value: unknown): { x: number; y: number } | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const { x, y } = value as { x?: unknown; y?: unknown };
+  return typeof x === "number" && typeof y === "number" && Number.isFinite(x) && Number.isFinite(y)
+    ? { x, y }
+    : undefined;
+}
+
 // Espera curta para juntar traços seguidos em um só envio: o colega vê o traço
 // quase assim que a caneta é solta, sem uma escrita por ponto.
 const PUBLISH_DEBOUNCE_MS = 140;
@@ -141,6 +162,12 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   const publishingRef = useRef(false);
   const updateTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mountedRef = useRef(true);
+  const cursorSeenRef = useRef(new Map<string, { x: number; y: number; seenAt: number }>());
+  const [cursorTick, setCursorTick] = useState(0);
+  const cursorSentAtRef = useRef(0);
+  const cursorTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const cursorBusyRef = useRef(false);
+  const cursorPendingRef = useRef<{ x: number; y: number } | undefined>(undefined);
   const onRemoteDocumentRef = useRef(onRemoteDocument);
   onRemoteDocumentRef.current = onRemoteDocument;
 
@@ -150,6 +177,10 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     if (heartbeatRef.current) clearInterval(heartbeatRef.current);
     heartbeatRef.current = undefined;
     clearTimeout(activityTimerRef.current);
+    clearTimeout(cursorTimerRef.current);
+    cursorTimerRef.current = undefined;
+    cursorPendingRef.current = undefined;
+    cursorSeenRef.current.clear();
     if (clear) clearStoredSession();
   }, []);
 
@@ -216,6 +247,29 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     }
   }, []);
 
+  const receiveCursor = useCallback((id: string, value: unknown) => {
+    const point = readCursorPoint(value);
+    if (point) cursorSeenRef.current.set(id, { ...point, seenAt: performance.now() });
+    else cursorSeenRef.current.delete(id);
+  }, []);
+
+  // O Firebase manda mudanças de filhos como "put" ou "patch" com o caminho relativo à sala.
+  const receiveCursorEvent = useCallback(
+    (path: string, data: unknown, kind: "put" | "patch") => {
+      const rest = path.replace(/^\/cursors\/?/, "");
+      if (rest) {
+        receiveCursor(rest.split("/")[0]!, rest.includes("/") ? undefined : data);
+      } else {
+        if (kind === "put") cursorSeenRef.current.clear();
+        if (data && typeof data === "object") {
+          for (const [id, value] of Object.entries(data)) receiveCursor(id, value);
+        }
+      }
+      setCursorTick((tick) => tick + 1);
+    },
+    [receiveCursor],
+  );
+
   const startStream = useCallback(
     (streamUrl: string) => {
       streamRef.current?.close();
@@ -235,14 +289,34 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
           if (payload.path === "/" && payload.data) {
             const room = normalizeState(payload.data);
             if (room) applyRoom(room);
+            const all = (payload.data as { cursors?: unknown }).cursors;
+            cursorSeenRef.current.clear();
+            if (all && typeof all === "object") {
+              for (const [id, value] of Object.entries(all)) receiveCursor(id, value);
+            }
+            setCursorTick((tick) => tick + 1);
+          } else if (payload.path.startsWith("/cursors")) {
+            receiveCursorEvent(payload.path, payload.data, "put");
           }
+        } catch {
+          // Aguarda o próximo evento.
+        }
+      });
+      source.addEventListener("patch", (event) => {
+        try {
+          const payload = JSON.parse((event as MessageEvent<string>).data) as {
+            path: string;
+            data: unknown;
+          };
+          if (payload.path.startsWith("/cursors"))
+            receiveCursorEvent(payload.path, payload.data, "patch");
         } catch {
           // Aguarda o próximo evento.
         }
       });
       streamRef.current = source;
     },
-    [applyRoom],
+    [applyRoom, receiveCursor, receiveCursorEvent],
   );
 
   const connect = useCallback(
@@ -398,6 +472,48 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     [publish],
   );
 
+  const flushCursor = useCallback(() => {
+    const session = sessionRef.current;
+    const point = cursorPendingRef.current;
+    if (!session || !point || cursorBusyRef.current) return;
+    cursorPendingRef.current = undefined;
+    cursorBusyRef.current = true;
+    cursorSentAtRef.current = performance.now();
+    void request("cursor", {
+      code: session.code,
+      credential: session.credential,
+      x: point.x,
+      y: point.y,
+    })
+      .catch(() => undefined)
+      .finally(() => {
+        cursorBusyRef.current = false;
+      });
+  }, []);
+
+  // Posição do cursor em unidades da folha. Só é enviada com alguém mais na folha, no máximo
+  // quatro vezes por segundo e sem empilhar pedidos: a última posição vence.
+  const sendCursor = useCallback(
+    (x: number, y: number) => {
+      const session = sessionRef.current;
+      if (!session || state.status !== "online") return;
+      const others = (state.room?.participants ?? []).filter(
+        (item) => item.online !== false && item.id !== session.participantId,
+      );
+      if (others.length === 0) return;
+      cursorPendingRef.current = { x, y };
+      const wait = CURSOR_SEND_INTERVAL_MS - (performance.now() - cursorSentAtRef.current);
+      if (wait <= 0) flushCursor();
+      else if (!cursorTimerRef.current) {
+        cursorTimerRef.current = setTimeout(() => {
+          cursorTimerRef.current = undefined;
+          flushCursor();
+        }, wait);
+      }
+    },
+    [flushCursor, state.room, state.status],
+  );
+
   const leave = useCallback(() => {
     const session = sessionRef.current;
     sessionRef.current = undefined;
@@ -411,6 +527,21 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         // A presença expira no servidor mesmo se a confirmação de saída falhar.
       });
   }, [stop]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = performance.now();
+      let changed = false;
+      for (const [id, seen] of cursorSeenRef.current) {
+        if (now - seen.seenAt > CURSOR_STALE_MS) {
+          cursorSeenRef.current.delete(id);
+          changed = true;
+        }
+      }
+      if (changed) setCursorTick((tick) => tick + 1);
+    }, 1_000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -465,5 +596,27 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     };
   }, [state.status, state.code, applyRoom, publish]);
 
-  return { state, activity, create, join, publish: publishDebounced, leave };
+  const selfId = state.participantId;
+  const cursors: RemoteCursor[] = useMemo(() => {
+    void cursorTick;
+    const people = new Map((state.room?.participants ?? []).map((item) => [item.id, item]));
+    return [...cursorSeenRef.current.entries()]
+      .filter(([id]) => id !== selfId && people.get(id)?.online !== false)
+      .flatMap(([id, seen]) => {
+        const person = people.get(id);
+        return person
+          ? [
+              {
+                participantId: id,
+                displayName: person.displayName,
+                avatarUrl: person.avatarUrl,
+                x: seen.x,
+                y: seen.y,
+              },
+            ]
+          : [];
+      });
+  }, [cursorTick, selfId, state.room?.participants]);
+
+  return { state, activity, cursors, sendCursor, create, join, publish: publishDebounced, leave };
 }

@@ -147,3 +147,39 @@ it("um traço em andamento sobrevive a uma atualização de colega no meio do ge
   expect(["a", "b"]).not.toContain(mine.id);
   expect(mine.points.length).toBeGreaterThan(1);
 });
+
+it("mostra o cursor e o nome do colega sobre a folha, na posição em porcentagem", () => {
+  const view = render(
+    <HandwritingStudio
+      {...props({
+        remoteCursors: [{ participantId: "p1", displayName: "Bia", x: 600, y: 800 }],
+      })}
+    />,
+  );
+  const cursor = view.container.querySelector<HTMLElement>(".handwriting-remote-cursor");
+  expect(cursor?.textContent).toBe("Bia");
+  const sheet = view.container.querySelector<HTMLCanvasElement>("canvas.handwriting-canvas")!;
+  // A largura da folha depende do papel; a posição é sempre proporcional a ela.
+  expect(cursor?.style.left).toBe(`${(600 / sheet.width) * 100}%`);
+  expect(cursor?.style.top).toBe(`${(800 / sheet.height) * 100}%`);
+  expect(cursor?.getAttribute("aria-hidden")).toBe("true");
+});
+
+it("avisa a posição do próprio cursor em unidades da folha ao mover o ponteiro", () => {
+  const onCursorMove = vi.fn();
+  const view = render(<HandwritingStudio {...props({ onCursorMove })} />);
+  const canvas = view.container.querySelector<HTMLCanvasElement>("canvas.handwriting-canvas")!;
+  vi.spyOn(canvas, "getBoundingClientRect").mockReturnValue({
+    left: 0,
+    top: 0,
+    width: 600,
+    height: 800,
+    right: 600,
+    bottom: 800,
+    x: 0,
+    y: 0,
+    toJSON: () => ({}),
+  });
+  fireEvent.pointerMove(canvas, { clientX: 300, clientY: 400, pointerType: "mouse" });
+  expect(onCursorMove).toHaveBeenCalledWith(canvas.width / 2, canvas.height / 2);
+});

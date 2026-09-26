@@ -571,3 +571,45 @@
     width: 48px;
   }
 }
+
+.handwriting-remote-cursor {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  transform: translate(-6px, -6px);
+  pointer-events: none;
+  transition:
+    left 200ms linear,
+    top 200ms linear;
+}
+
+.handwriting-remote-cursor__dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--cursor-color, #7433e0);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 25%);
+}
+
+.handwriting-remote-cursor__name {
+  max-width: 9rem;
+  padding: 0.05rem 0.45rem;
+  overflow: hidden;
+  border-radius: 6px 10px 6px 8px;
+  margin-top: 8px;
+  color: #fff;
+  background: var(--cursor-color, #7433e0);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .handwriting-remote-cursor {
+    transition: none;
+  }
+}

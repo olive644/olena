@@ -95,7 +95,11 @@ export function createFirebasePublicRoomPublisher(
         headers: { Authorization: `Bearer ${token}`, "X-Firebase-ETag": "true" },
       });
       if (!snapshot.ok) throw new Error(`Firebase respondeu HTTP ${snapshot.status}`);
-      const current = (await snapshot.json()) as { revision?: number; generation?: string } | null;
+      const current = (await snapshot.json()) as {
+        revision?: number;
+        generation?: string;
+        cursors?: unknown;
+      } | null;
       const next = publicState as { revision?: number; generation?: string };
       if (Number(current?.generation ?? 0) > Number(next.generation ?? 0)) return;
       if (
@@ -112,13 +116,42 @@ export function createFirebasePublicRoomPublisher(
           Authorization: `Bearer ${token}`,
           "if-match": version,
         },
-        body: JSON.stringify(publicState),
+        // Regravar a folha não pode apagar os cursores, que são escritos por outro canal.
+        body: JSON.stringify(
+          current?.cursors ? { ...(publicState as object), cursors: current.cursors } : publicState,
+        ),
       });
       if (response.status === 412) continue;
       if (!response.ok) throw new Error(`Firebase respondeu HTTP ${response.status}`);
       return;
     }
     throw new Error("A sala mudou durante a publicação. Reconecte para sincronizar.");
+  };
+}
+
+// Escreve (ou apaga) só o cursor de um participante em rooms/{codigo}/cursors/{id}. É uma
+// gravação pequena e sem condição de versão: a última posição vence, e uma posição perdida
+// é substituída pela próxima em fração de segundo.
+export function createFirebaseCursorPublisher(
+  config: FirebaseRealtimeConfig,
+  fetchImpl: typeof fetch = fetch,
+  now: () => number = () => Date.now(),
+) {
+  return async function publishCursor(
+    code: string,
+    participantId: string,
+    cursor: { x: number; y: number; at: number } | null,
+  ): Promise<void> {
+    const token = await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
+    const response = await fetchImpl(
+      `${config.databaseUrl}/rooms/${code}/cursors/${participantId}.json`,
+      {
+        method: cursor ? "PUT" : "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        ...(cursor ? { body: JSON.stringify(cursor) } : {}),
+      },
+    );
+    if (!response.ok) throw new Error(`Firebase respondeu HTTP ${response.status}`);
   };
 }
 
