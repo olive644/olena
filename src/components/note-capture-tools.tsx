@@ -20,6 +20,7 @@ type NoteCaptureToolsProps = {
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
   onRemovePage?: (id: string) => void;
+  onMovePage?: (id: string, direction: -1 | 1) => void;
   draftPageKey: string;
   onSave: (
     kind: NoteAsset["kind"],
@@ -202,6 +203,7 @@ export function NoteCaptureTools({
   onSelectPage,
   onCreatePage,
   onRemovePage,
+  onMovePage,
   draftPageKey,
   onSave,
   onUpdate,
@@ -614,6 +616,7 @@ export function NoteCaptureTools({
                   {...(onSelectPage ? { onSelectPage } : {})}
                   {...(onCreatePage ? { onCreatePage } : {})}
                   {...(onRemovePage ? { onRemovePage } : {})}
+                  {...(onMovePage ? { onMovePage } : {})}
                   key={editingAsset?.id ?? "new"}
                   {...(initialHandwriting ? { initialDocument: initialHandwriting } : {})}
                   onSave={saveDocument}
