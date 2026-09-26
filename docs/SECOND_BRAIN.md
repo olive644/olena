@@ -7,6 +7,7 @@ O E2E verifica a oclusão real com elementFromPoint. `NotebookCover` compartilha
 arte, etiqueta, costura, fecho e marcas entre vitrine e preview de capa.
 `PaperMoonMark` desenha o marcador recortado completo; a ferramenta usa a versão
 compacta de sua Lua. Ferramentas permanecem claras com texto grafite no tema escuro.
+A fita móvel mantém o botão fora do centro da folha, deixando o preview abrir por toque.
 
 Salvar manualmente no editor de escrita atualiza a linha de base de alterações.
 Assim, fechar uma folha salva não abre o aviso de rascunho local; alterações ainda

@@ -1037,8 +1037,8 @@
   :root .notebook-attached-tab.is-bookmark {
     width: 48px;
     left: calc((var(--tab-side) * 50%) + 7% + (var(--tab-position) * 36%) - 24px);
-    bottom: -38px;
-    height: 135px;
+    bottom: -34px;
+    height: 92px;
   }
   :root .notebook-spread-workspace .notebook-preview-controls,
   :root .notebook-spread-workspace .notebook-preview-actions {

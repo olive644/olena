@@ -11,6 +11,7 @@ roxo com constelação. Cantoneiras e costura dão acabamento ao caderno aberto.
 `NotebookCover` unifica capa de preview e vitrine, com etiqueta presa por fita,
 fecho de estrela e lombada em camadas. Ferramentas usam papel branco e texto grafite
 nos dois temas. Os títulos das folhas ficam acima do conteúdo, fora dos marcadores.
+No celular, a fita é mais curta para não capturar o toque no centro da folha.
 
 ## Correções do preview móvel e fechamento do editor
 
