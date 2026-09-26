@@ -27,6 +27,19 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
   await expect(preview).toBeVisible();
   await expect(page.getByRole("button", { name: "Exportar PDF" })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: /Anotações/ })).toHaveCount(0);
+  if (testInfo.project.name === "mobile") {
+    await preview.getByRole("button", { name: "Meus Cadernos" }).click();
+    const card = page.locator(".notebook-card").filter({ hasText: "Meu universo" });
+    const copy = await card.locator(".notebook-card__copy").boundingBox();
+    const rail = await page.locator(".notebook-shelf__rail").boundingBox();
+    expect(copy).not.toBeNull();
+    expect(rail).not.toBeNull();
+    expect(copy!.y + copy!.height).toBeLessThanOrEqual(rail!.y);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      await page.evaluate(() => window.innerWidth),
+    );
+    await card.click();
+  }
   await preview.getByRole("button", { name: "Criar primeira folha" }).click();
 
   let editor = page.getByRole("dialog", { name: "Escrever à mão" });

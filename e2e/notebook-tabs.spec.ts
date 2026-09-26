@@ -136,14 +136,15 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
   await preview.getByRole("button", { name: "Próxima ›" }).click();
   await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
+  await expect(divider).toHaveCount(0);
+  await expect(marker).toHaveCount(0);
+  await preview.getByRole("button", { name: "‹ Anterior" }).click();
+  await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
   await divider.click();
   await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
   await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
-  await preview.getByRole("button", { name: "Próxima ›" }).click();
-  await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
   await preview.getByRole("button", { name: "Marcador Marcador, folha 2", exact: true }).click();
   await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
-  await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
   await preview.getByRole("button", { name: "Editar marcas", exact: true }).click();
   await divider.click();
   await expect(preview.getByLabel("Nome da marcação")).toBeVisible();
@@ -187,8 +188,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     await page.screenshot({ path: testInfo.outputPath(`${paper}.png`) });
   }
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
-  const keepDraft = editor.getByRole("button", { name: "Fechar e manter rascunho" });
-  if (await keepDraft.isVisible()) await keepDraft.click();
+  await expect(editor).toHaveCount(0);
   await preview.getByRole("button", { name: /Abrir preview de .*folha 2/ }).click();
   await editor.getByRole("button", { name: "Tipo de papel", exact: true }).click();
   await expect(editor.getByRole("button", { name: "Calendário", exact: true })).toHaveAttribute(
@@ -196,7 +196,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     "true",
   );
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
-  if (await keepDraft.isVisible()) await keepDraft.click();
+  await expect(editor).toHaveCount(0);
   await preview.getByRole("button", { name: "Ver capa", exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath("capa-helena.png") });
   if (testInfo.project.name === "mobile") {

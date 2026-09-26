@@ -800,11 +800,11 @@
   .notebook-workbench {
     flex: 1;
     min-height: 0;
-    max-height: 365px;
+    max-height: none;
     display: flex;
     flex-direction: column;
     padding: 0 48px 38px 0;
-    width: min(100%, 410px);
+    width: min(100%, 560px);
   }
   .notebook-paper-toolbox {
     flex-shrink: 0;
@@ -964,14 +964,46 @@
     padding: 8px 6px 0;
   }
   .notebooks-main .notebooks-showcase .notebook-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
     min-height: 0;
+    padding: 8px 6px 30px;
+    overflow: visible;
   }
-  .notebooks-main .notebook-shelf {
-    padding-bottom: 4px;
+  .notebooks-main .notebook-shelf .notebook-card__copy {
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    min-height: 48px;
+    max-width: none;
+    padding: 4px 0 0;
+    text-align: center;
   }
   .notebooks-main .notebook-shelf__rail {
-    bottom: 38px;
-    height: 13px;
+    bottom: 8px;
+    width: 100%;
+  }
+  .notebooks-main .notebook-shelf {
+    overflow: visible;
+  }
+  .notebooks-main .notebook-shelf {
+    padding-bottom: 16px;
+  }
+  .notebooks-main .notebook-shelf .book-cover {
+    flex: 0 0 auto;
+    width: min(125px, 40vw);
+    transform: none;
+  }
+  .notebooks-main .notebook-shelf .notebook-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .notebooks-main .notebook-shelf__label {
+    margin-bottom: 4px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

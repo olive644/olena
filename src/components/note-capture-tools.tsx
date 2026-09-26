@@ -645,10 +645,10 @@ export function NoteCaptureTools({
                   <p>
                     {draftWriteFailed
                       ? "Não foi possível guardar o rascunho. Salve a folha antes de sair ou feche sem salvar."
-                      : cloud?.status === "synced" && closingSavedDraft
-                        ? "Sua folha foi salva e sincronizada na sua conta."
+                      : closingSavedDraft
+                        ? "Sua folha foi salva no caderno."
                         : cloud?.authenticated
-                          ? "Sua folha está protegida neste dispositivo. A sincronização continua enquanto o aplicativo estiver aberto."
+                          ? "Há alterações guardadas como rascunho neste dispositivo."
                           : "Sua folha está salva neste dispositivo. Entre na sua conta para sincronizar com o computador e o celular."}
                   </p>
                   <div>

@@ -565,7 +565,8 @@ export function HandwritingStudio({
     background: initialDocument?.background,
     backgroundFrame: initialDocument?.backgroundFrame,
   });
-  const dirty = JSON.stringify(currentDocument) !== baseline;
+  const [savedBaseline, setSavedBaseline] = useState(baseline);
+  const dirty = JSON.stringify(currentDocument) !== savedBaseline;
 
   useEffect(() => {
     if (!remoteDocument || JSON.stringify(remoteDocument) === JSON.stringify(currentDocument))
@@ -2817,6 +2818,8 @@ export function HandwritingStudio({
       const document = buildDocument();
       onSave(pageImage(), document);
       localStorage.removeItem(`helenastudy.handwriting.draft.${draftKey}`);
+      setSavedBaseline(JSON.stringify(document));
+      onDirtyChange?.(false);
       setDraftStatus("Folha salva no caderno");
       setError("");
       if (closeAfter) onClose();
