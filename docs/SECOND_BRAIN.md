@@ -9,8 +9,9 @@ por `handwriting-planner-paper.ts` através de `drawPaper`, inclusive nas export
 Testes: `notebook-spread.test.tsx` e `e2e/notebook-tabs.spec.ts`.
 
 O editor usa canvasSize opcional no HandwritingDocument. Ausência em documentos
-antigos mantém 1200x1600; quadro novo usa 3200x2400. Não reduzir dimensões de uma
-página preenchida ao trocar papel. O limite do bitmap continua em 9 milhões de
+antigos mantém 1200x1600; quadro novo usa 3200x2400. Ao trocar para A4,
+`fitHandwriting` reduz conteúdo proporcionalmente, preservando dados e limites
+mínimos dos objetos. Não cortar pontos fora da página. O limite do bitmap continua em 9 milhões de
 pixels por camada. Sobreposições e ponteiros usam dimensões lógicas, não pixels CSS.
 
 NotebookPageBook substitui cartões de folhas na área do caderno e o antigo footer

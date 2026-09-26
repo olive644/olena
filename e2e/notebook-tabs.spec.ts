@@ -75,10 +75,10 @@ test("folhas duplas e divisórias de matérias persistem no caderno", async ({
     .getByLabel("Matéria da folha 2", { exact: true })
     .selectOption({ label: "Matemática" });
   const tabs = preview.getByRole("navigation", { name: "Divisórias de matérias" });
+  await preview.getByRole("button", { name: "Fechar matérias", exact: true }).click();
   await tabs.getByRole("button", { name: "Matemática", exact: true }).click();
   await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(1);
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
-  await preview.getByRole("button", { name: "Matérias", exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
   await preview.getByRole("button", { name: /Abrir preview de / }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
@@ -117,4 +117,25 @@ test("folhas duplas e divisórias de matérias persistem no caderno", async ({
   if (await keepDraft.isVisible()) await keepDraft.click();
   await preview.getByRole("button", { name: "Ver capa", exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath("capa-helena.png") });
+  if (testInfo.project.name === "mobile") {
+    for (const size of [
+      { width: 390, height: 720 },
+      { width: 320, height: 640 },
+    ]) {
+      await page.setViewportSize(size);
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight))
+        .toBeLessThanOrEqual(1);
+      const cover = await preview.locator(".notebook-concept-cover").boundingBox();
+      const nav = await page.locator(".mobile-nav").boundingBox();
+      expect(cover).not.toBeNull();
+      expect(cover!.y + cover!.height).toBeLessThan(nav!.y);
+      await preview.getByRole("button", { name: "Ver folhas" }).click();
+      const spread = await book.boundingBox();
+      expect(spread!.width).toBeLessThan(size.width);
+      const create = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
+      expect(create!.y + create!.height).toBeLessThan(nav!.y);
+      await preview.getByRole("button", { name: "Ver capa" }).click();
+    }
+  }
 });

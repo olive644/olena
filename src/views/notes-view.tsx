@@ -365,7 +365,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   }
 
   return (
-    <main className="main-content" id="main-content">
+    <main className="main-content notebooks-main" id="main-content">
       <PageHeader />
       {draggedFolder && dragPosition && (
         <div

@@ -77,11 +77,25 @@ export function NotebookSpread({
           aria-expanded={organizing}
           onClick={() => setOrganizing(!organizing)}
         >
+          <span className="notebook-divider-icon" aria-hidden="true" />
           Matérias
         </button>
       </div>
       {organizing && (
-        <section className="notebook-subject-manager" aria-label="Organizar matérias">
+        <section
+          className="notebook-subject-manager"
+          aria-label="Organizar matérias"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setOrganizing(false);
+          }}
+        >
+          <button
+            type="button"
+            className="secondary-button notebook-subject-close"
+            onClick={() => setOrganizing(false)}
+          >
+            Fechar matérias
+          </button>
           <h2>Divisórias do caderno</h2>
           <p>Escolha uma matéria nas fitas. Novas folhas entram nela automaticamente.</p>
           <form

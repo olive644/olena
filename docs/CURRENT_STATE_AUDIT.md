@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+Em celulares até 600px, cadernos ocupam uma janela fixa entre cabeçalho e navegação.
+Prévia e capa se adaptam à altura; apenas a estante e a gaveta de matérias rolam.
+As fitas usam recortes, dobras e um marcador amarelo de papel.
+Trocar Quadro por A4 agora ajusta proporcionalmente traços e objetos aos limites,
+evitando rejeição no salvamento. Autosave aguarda imagens carregarem e agenda nova
+tentativa quando ficam prontas; erros reais mantêm sua causa no aviso.
+
 ## Caderno papercraft: folhas duplas e matérias
 
 O preview usa `NotebookSpread` com duas folhas reais por abertura. Mouse, toque,
