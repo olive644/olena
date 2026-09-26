@@ -20,6 +20,7 @@ import {
   studyModalities,
   type StudyPreferences,
 } from "../domain/study-preferences.js";
+import { PACKED_STORAGE_WRITES, packWorkspace, unpackWorkspace } from "./handwriting-pack.js";
 
 export const WORKSPACE_STORAGE_KEY = "helenastudy.workspace.v1";
 export const MAX_NOTE_ASSET_DATA_URL_LENGTH = 1_000_000;
@@ -838,7 +839,8 @@ export function loadWorkspace(
   if (!serialized) return createInitialWorkspace();
 
   try {
-    const parsed: unknown = JSON.parse(serialized);
+    // Aceita traços no formato compacto e no antigo.
+    const parsed: unknown = unpackWorkspace(JSON.parse(serialized));
     if (isWorkspaceState(parsed)) return mergeRepeatedDefaultNotebooks(parsed);
     if (isWorkspaceV6(parsed)) return migrateWorkspaceV6(parsed);
     if (isWorkspaceV5(parsed)) return migrateWorkspaceV5(parsed);
@@ -854,6 +856,13 @@ export function loadWorkspace(
   }
 }
 
-export function saveWorkspace(storage: Pick<Storage, "setItem">, workspace: WorkspaceState): void {
-  storage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(workspace));
+export function saveWorkspace(
+  storage: Pick<Storage, "setItem">,
+  workspace: WorkspaceState,
+  packed = PACKED_STORAGE_WRITES,
+): void {
+  storage.setItem(
+    WORKSPACE_STORAGE_KEY,
+    JSON.stringify(packed ? packWorkspace(workspace) : workspace),
+  );
 }
