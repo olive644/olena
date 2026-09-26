@@ -1012,3 +1012,18 @@ Medido em Node (Vitest) e em Chromium real, com folhas sintéticas e o editor ab
 - **Publicação:** cada envio do caderno compartilhado faz de dois a três `JSON.stringify` da folha inteira, o que custa 55 ms por vez em 4 MB e trava a escrita de quem tem uma folha enorme. Não foi alterado; a solução seria comparar por revisão em vez de por texto.
 
 **Decisão pendente do dono:** subir o teto de 500 traços e 800 000 caracteres exige olhar a cota de 5 MB do armazenamento do navegador, o corpo máximo de 900 000 caracteres da colaboração e o tamanho por nó do Firebase, então não foi feito aqui.
+
+## Avaliação do teto por folha e cota do armazenamento (2026-09-26)
+
+**Conclusão: o valor seguro é o atual (500 traços e 800 000 caracteres por folha). Subir o teto não é seguro hoje; o que dá folga é gastar menos bytes por traço e mover a folha para um armazenamento maior.**
+
+Limites que se cruzam:
+
+- **Cota do navegador:** medida em Chromium, 5 242 880 caracteres por site, somando todas as chaves. Uma folha no teto (800 000) já ocupa 15% disso; o espaço de estudos inteiro (todas as folhas, imagens e preferências) e o histórico de versões (até 6 cópias de até 1,5 milhão de caracteres cada, mais que a própria cota) disputam o resto. Portanto o limite que importa é o total, não o por folha: cinco folhas no teto já enchem a cota, e subir o teto por folha só encurta isso.
+- **Colaboração:** o corpo de uma atualização leva a folha nova e a folha-base, e o servidor recusa mais de 1,8 milhão de caracteres (`MAX_REQUEST_BYTES * 2`). Com o teto em 800 000, duas cópias (1,6 milhão) já estão a 11% do limite; acima de cerca de 900 000 por folha a colaboração passaria a falhar. Além disso o estado publicado inteiro (a folha incluída) vai a todos os participantes a cada alteração, então subir o teto multiplica o tráfego por pessoa.
+- **Cada traço custa:** com posição e pressão arredondadas, um ponto ocupa 40 caracteres em JSON. Um traço de 40 pontos (uma palavra curta) custa 1,56 KB, então 800 000 caracteres comportam 500 traços; com 60 pontos por traço são 333; com 100, 200. O teto de 500 traços e o de bytes estão equilibrados de propósito: o segundo é o que morde quando os traços são longos.
+- **Formato:** guardar cada ponto como `[x, y, pressão]` em vez de objeto ocupa 21 caracteres em vez de 40, quase o dobro de capacidade (900 traços de 40 pontos no mesmo teto) sem tocar em nenhum limite acima. É a alavanca segura, mas exige migrar o formato salvo, o validador e a colaboração, então fica como próxima etapa própria. A solução de fundo para caderno grande é guardar as folhas em IndexedDB (dezenas de vezes a cota do `localStorage`), o que também é uma mudança de arquitetura.
+
+**Correção de leitura anterior:** o texto da varredura dizia que compactar os pontos ao gravar reduz o JSON dos traços salvos em mais de 30%. A folha já era arredondada ao salvar (posição a duas casas e pressão a três, em `document()` do editor), então o ganho real da compactação está no rascunho automático e no que a colaboração envia, que antes ia com todas as casas decimais, e não na folha salva.
+
+**Falha grave encontrada e corrigida:** com o armazenamento cheio, `saveWorkspace` lançava um erro dentro de um efeito do React e o app inteiro ficava em branco (reproduzido em Chromium: `setItem` estoura a cota, corpo da página vazio). Agora `useWorkspace` captura o erro, remove o histórico de versões (que é conveniência e costuma ser o que enche o espaço) e tenta de novo; só se ainda assim não couber, mostra o aviso fixo "Este dispositivo está sem espaço para guardar seus estudos…" e mantém a alteração em memória para a pessoa continuar. Testes: `use-workspace.test.tsx` (cede o histórico, não derruba, volta ao normal) e `e2e/storage-full.spec.ts`.

@@ -12170,3 +12170,23 @@ select {
 :root[data-theme="dark"] .listening-online-notice a {
   color: #cdb6f8;
 }
+
+.storage-full-banner {
+  position: fixed;
+  z-index: 80;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 0.7rem 1rem;
+  margin: 0;
+  border-bottom: 3px solid #b3261e;
+  color: #3b0d0a;
+  background: #ffe1dd;
+  font-weight: 700;
+  text-align: center;
+}
+
+:root[data-theme="dark"] .storage-full-banner {
+  color: #ffdad6;
+  background: #5c1f1a;
+}
