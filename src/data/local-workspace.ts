@@ -20,6 +20,7 @@ import {
   studyModalities,
   type StudyPreferences,
 } from "../domain/study-preferences.js";
+import { PACKED_STORAGE_WRITES, packWorkspace, unpackWorkspace } from "./handwriting-pack.js";
 
 export const WORKSPACE_STORAGE_KEY = "helenastudy.workspace.v1";
 export const MAX_NOTE_ASSET_DATA_URL_LENGTH = 1_000_000;
@@ -817,8 +818,6 @@ function migrateWorkspaceV6(workspace: WorkspaceV6): WorkspaceState {
 // Cópia do que não foi possível ler. Sem ela, o espaço inicial que substitui um espaço inválido seria
 // gravado por cima na próxima alteração e o conteúdo antigo se perderia de vez. Fica em um só
 // lugar, sempre com o mais recente, e o nome começa com "helena" para ser apagado ao sair da conta.
-import { PACKED_STORAGE_WRITES, packWorkspace, unpackWorkspace } from "./handwriting-pack";
-
 export const WORKSPACE_RECOVERY_KEY = "helenastudy.workspace.recovery.v1";
 
 function keepUnreadableWorkspace(
