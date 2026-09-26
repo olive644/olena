@@ -3,8 +3,10 @@
 Salvar manualmente no editor de escrita atualiza a linha de base de alterações.
 Assim, fechar uma folha salva não abre o aviso de rascunho local; alterações ainda
 pendentes continuam protegidas pela confirmação. A mensagem de saída não promete
-sincronização sem confirmação. No preview aberto, cada fita aparece apenas no par
-de páginas que contém sua folha, usando o lado relativo ao par. Em celulares, o spread
+sincronização sem confirmação. No preview aberto, fitas permanecem ancoradas no livro
+entre as folheadas e atrás das páginas que passam à frente; suas pontas continuam
+visíveis e acionáveis. Marcador tem motivo exclusivo de Lua papercraft, também usado
+na capa fechada. Em celulares, o spread
 expande pela área vertical disponível, e os cartões da vitrine mantêm capa, título e
 trilho separados, sem sobreposição nem rolagem lateral involuntária.
 

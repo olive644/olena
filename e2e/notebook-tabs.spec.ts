@@ -43,6 +43,15 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
   const book = preview.getByLabel("Prévia folheável do caderno");
+  const layers = await preview.evaluate((element) => {
+    const paper = element.querySelector<HTMLElement>(".notebook-paper-spread");
+    const tabs = element.querySelector<HTMLElement>(".notebook-attached-tabs");
+    return {
+      paper: paper ? getComputedStyle(paper).zIndex : "",
+      tabs: tabs ? getComputedStyle(tabs).zIndex : "",
+    };
+  });
+  expect(layers).toEqual({ paper: "2", tabs: "1" });
   await book.scrollIntoViewIfNeeded();
   const bounds = await book.boundingBox();
   if (!bounds) throw new Error("Prévia não renderizada");
@@ -123,27 +132,32 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
   const marker = preview.getByRole("button", { name: "Marcador Marcador, folha 1", exact: true });
   await expect(marker).toBeVisible();
+  await expect(marker.locator(".notebook-attached-tab__moon")).toHaveCount(1);
   const markerBox = (await marker.boundingBox())!;
   const currentBox = (await book.boundingBox())!;
   expect(markerBox.y + markerBox.height).toBeGreaterThan(currentBox.y + currentBox.height);
-  await dragPiece(marker, 0.73, 0.7);
+  await dragPiece(preview.getByRole("button", { name: "Colocar marcador" }), 0.73, 0.7);
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
-  await expect(
-    preview.getByRole("button", { name: "Marcador Marcador, folha 2", exact: true }),
-  ).toBeVisible();
+  const markerOnSecondPage = preview.getByRole("button", {
+    name: "Marcador Marcador, folha 2",
+    exact: true,
+  });
+  await expect(markerOnSecondPage).toBeVisible();
   await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(2);
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
   await preview.getByRole("button", { name: "Próxima ›" }).click();
   await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
-  await expect(divider).toHaveCount(0);
-  await expect(marker).toHaveCount(0);
-  await preview.getByRole("button", { name: "‹ Anterior" }).click();
-  await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
+  await expect(divider).toBeVisible();
+  await expect(marker).toBeVisible();
+  await expect(markerOnSecondPage).toBeVisible();
   await divider.click();
   await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
   await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
-  await preview.getByRole("button", { name: "Marcador Marcador, folha 2", exact: true }).click();
+  const secondMarkerBox = (await markerOnSecondPage.boundingBox())!;
+  await markerOnSecondPage.click({
+    position: { x: secondMarkerBox.width / 2, y: secondMarkerBox.height - 8 },
+  });
   await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
   await preview.getByRole("button", { name: "Editar marcas", exact: true }).click();
   await divider.click();
@@ -223,12 +237,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await preview.getByRole("button", { name: "Ver folhas" }).click();
   await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
   await expect(preview.locator(".notebook-crumple")).toBeVisible();
-  await preview.locator(".notebook-crumple").evaluate((element) => {
-    for (const animation of element.getAnimations({ subtree: true })) {
-      animation.pause();
-      animation.currentTime = 560;
-    }
-  });
+  await page.waitForTimeout(500);
   await page.screenshot({ path: testInfo.outputPath("papel-amassando.png") });
   await expect(preview.locator(".notebook-crumple")).toHaveCount(0);
   await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();

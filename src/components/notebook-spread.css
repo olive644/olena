@@ -41,6 +41,13 @@
   height: 48px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 87%, 0 100%);
 }
+.book-cover__mark.is-bookmark > .paper-tab-moon {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  width: 19px;
+  height: 19px;
+}
 .notebook-spread-workspace {
   width: 100%;
   min-width: 0;
@@ -64,6 +71,7 @@
 }
 .notebook-paper-spread {
   position: relative;
+  z-index: 2;
   background: #7c3aed;
   border: 8px solid #7c3aed;
   border-radius: 7px 16px 16px 7px;
@@ -489,8 +497,11 @@
 .notebook-attached-tabs {
   position: absolute;
   inset: 0;
-  z-index: 7;
+  z-index: 1;
   pointer-events: none;
+}
+.notebook-attached-tabs:focus-within {
+  z-index: 6;
 }
 :root .notebook-attached-tab {
   position: absolute;
@@ -554,9 +565,6 @@
   max-height: 34px;
   overflow: hidden;
 }
-.notebook-attached-tab.is-current {
-  filter: drop-shadow(1px 3px 0 #29243238) brightness(1.05);
-}
 .notebook-attached-tab:focus-visible {
   outline: 3px solid #facc15;
   outline-offset: 3px;
@@ -571,28 +579,22 @@
   font-weight: 800;
   filter: drop-shadow(2px 3px 0 #29243230);
 }
+.notebook-attached-tab__moon {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 4px;
+  width: 25px;
+  height: 25px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
 .notebook-attached-tab.is-bookmark::before {
   clip-path: polygon(0 5%, 16% 0, 84% 0, 100% 5%, 100% 100%, 50% 93%, 0 100%);
   box-shadow: inset -5px 0 #29243230;
 }
 .notebook-attached-tab.is-bookmark::after {
-  left: 10px;
-  top: 15px;
-  width: 24px;
-  height: 28px;
-  background: #fff9ef;
-  clip-path: polygon(
-    50% 0,
-    64% 33%,
-    100% 38%,
-    74% 63%,
-    80% 100%,
-    50% 81%,
-    20% 100%,
-    26% 63%,
-    0 38%,
-    36% 33%
-  );
+  display: none;
 }
 .notebook-tab-inspector {
   position: absolute;
