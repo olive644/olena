@@ -119,10 +119,10 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // O caderno celeste adiciona ícones SVG e a viagem animada à rota lazy de cadernos.
 // Linux CI mede 848.0 KiB; 851 KiB preserva margem estreita para variação do build.
 // O snapshot de folhas e as transições nos dois sentidos elevam a medição Linux
-// para 852.1 KiB; 854 KiB mantém margem curta sem afetar a entrada inicial.
-// A entrada animada na folha e a navegação da capa acrescentam cerca de 3 KiB
-// à rota lazy de cadernos (855.2 KiB medidos), sem nova dependência.
-const MAX_TOTAL_JS_BYTES = 858 * 1024;
+// para 852.1 KiB. A extração dos gestos de seleção e pinça adiciona cerca de
+// 1 KiB; a entrada animada na folha e a navegação da capa acrescentam cerca de
+// 3 KiB à rota lazy de cadernos, sem nova dependência.
+const MAX_TOTAL_JS_BYTES = 860 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
