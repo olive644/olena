@@ -887,3 +887,10 @@ Ajustes desta PR depois de a `main` avançar:
 - A raiz `/` continua sendo a aba inicial ou a que um convite de sala pede (`?sala=`); `/sala/CODIGO/projetor` e os links de caderno (`?notebook-view`, `?notebook-collab`) não mudaram.
 - `vercel.json` ganhou um rewrite desses caminhos para `index.html`; arquivos estáticos e `/api` seguem servidos normalmente.
 - Testes: `app-routes.test.ts`, `use-app-view.test.tsx` e `e2e/routes.spec.ts` (recarregar, voltar e link direto).
+
+## Rejeição de palma no editor de escrita (2026-09-26)
+
+- O editor já entrava sozinho no modo "só caneta" ao detectar uma caneta (toque passa a rolar a folha), mas dois pontos de contato da palma enquanto a caneta escrevia disparavam o zoom por pinça e apagavam o traço em andamento.
+- `handwriting-palm.ts` decide se um toque deve ser ignorado: enquanto há caneta na folha e por 500 ms depois que ela sai. Nesse período o toque não entra na pinça, na rolagem nem no rastreio de ponteiros. Sem caneta, dedo e pinça funcionam como antes.
+- Teste que falha sem a correção: `e2e/palm-rejection.spec.ts` usa o CDP do Chromium para escrever com uma caneta simulada e tocar em dois pontos no meio do traço; sem a correção o traço some. Regras em `handwriting-palm.test.ts`.
+- Correção de leitura anterior: o documento do editor já guarda os traços em vetor (`HandwritingDocument.strokes`) junto do PNG, então "persistir em vetor" não é um item pendente; o que falta é usar o vetor para reabrir e sincronizar sem depender do PNG.
