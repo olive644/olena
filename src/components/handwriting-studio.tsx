@@ -54,6 +54,16 @@ import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
+import {
+  PASTE_OFFSET,
+  copyItems,
+  lassoContainsStroke,
+  mergeSelection,
+  pasteItems,
+  rotateItems,
+  selectionSize,
+  type SelectionClipboard,
+} from "./handwriting-selection-ops";
 import { predictedTip } from "./handwriting-ink";
 import {
   newRemoteStrokes,
@@ -141,6 +151,9 @@ type HandwritingStudioProps = {
   remoteAuthor?: string;
   collaborationActivity?: string;
 };
+
+// Área de transferência da seleção. Fica fora do componente para valer entre folhas.
+let selectionClipboard: SelectionClipboard | null = null;
 
 export function HandwritingStudio({
   notebookPages = [],
@@ -332,6 +345,8 @@ export function HandwritingStudio({
     moving: boolean;
     lasso: boolean;
     path: HandwritingPoint[];
+    // Com Shift, o laço soma à seleção que já existia.
+    previousIds?: string[];
   } | null>(null);
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const stickyResizeRef = useRef<{
@@ -372,6 +387,8 @@ export function HandwritingStudio({
   const [undoStack, setUndoStack] = useState<Snapshot[]>([]);
   const [redoStack, setRedoStack] = useState<Snapshot[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [canPaste, setCanPaste] = useState(() => selectionClipboard !== null);
+  const pasteCountRef = useRef(0);
   const [selectedCoordinateIds, setSelectedCoordinateIds] = useState<string[]>([]);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [selectionPath, setSelectionPath] = useState<HandwritingPoint[] | null>(null);
@@ -837,6 +854,11 @@ export function HandwritingStudio({
     zoomAt: (clientX: number, clientY: number, direction: 1 | -1) => void;
     resetView: () => void;
     setTool: (next: HandwritingTool) => void;
+    copy: () => void;
+    cut: () => void;
+    paste: () => void;
+    duplicate: () => void;
+    selectAll: () => void;
   };
   const shortcutStateRef = useRef<ShortcutState>({
     tool,
@@ -847,6 +869,11 @@ export function HandwritingStudio({
     zoomAt: () => undefined,
     resetView: () => undefined,
     setTool,
+    copy: () => undefined,
+    cut: () => undefined,
+    paste: () => undefined,
+    duplicate: () => undefined,
+    selectAll: () => undefined,
   });
 
   // Atalhos de teclado no estilo Xournal++/apps de mesa digitalizadora:
@@ -883,6 +910,22 @@ export function HandwritingStudio({
         if (event.shiftKey) current.redo();
         else current.undo();
         return;
+      }
+      if (ctrlOrCmd && current.tool === "select") {
+        const shortcut = event.key.toLowerCase();
+        const actions: Record<string, () => void> = {
+          c: current.copy,
+          x: current.cut,
+          v: current.paste,
+          d: current.duplicate,
+          a: current.selectAll,
+        };
+        const action = actions[shortcut];
+        if (action) {
+          event.preventDefault();
+          action();
+          return;
+        }
       }
       if (ctrlOrCmd && event.key.toLowerCase() === "y") {
         event.preventDefault();
@@ -1341,8 +1384,9 @@ export function HandwritingStudio({
           moving: false,
           lasso: true,
           path: [point],
+          previousIds: event.shiftKey ? selectedIds : [],
         };
-        setSelectedIds([]);
+        if (!event.shiftKey) setSelectedIds([]);
         setSelectionBox(null);
         setSelectionPath([point]);
         return;
@@ -1689,13 +1733,7 @@ export function HandwritingStudio({
         const point = canvasRef.current ? canvasPoint(canvasRef.current, event) : selection.start;
         const polygon = [...selection.path, point];
         const selectedStrokeIds = strokes
-          .filter((stroke) => {
-            const box = strokeBounds(stroke);
-            return pointInPolygon(
-              { x: box.x + box.width / 2, y: box.y + box.height / 2, pressure: 0.5 },
-              polygon,
-            );
-          })
+          .filter((stroke) => lassoContainsStroke(polygon, stroke))
           .map((stroke) => stroke.id);
         const selectedCoordinateIds = layerVisibility.coordinates
           ? coordinateSystems
@@ -1747,13 +1785,19 @@ export function HandwritingStudio({
               })
               .map((image) => image.id)
           : [];
-        setSelectedIds([
-          ...selectedStrokeIds,
-          ...selectedCoordinateIds,
-          ...selectedStickyIds,
-          ...selectedTextIds,
-          ...selectedImageIds,
-        ]);
+        setSelectedIds(
+          mergeSelection(
+            selection.previousIds ?? [],
+            [
+              ...selectedStrokeIds,
+              ...selectedCoordinateIds,
+              ...selectedStickyIds,
+              ...selectedTextIds,
+              ...selectedImageIds,
+            ],
+            (selection.previousIds?.length ?? 0) > 0,
+          ),
+        );
         setSelectedCoordinateIds(selectedCoordinateIds);
         setSelectionPath(null);
         return;
@@ -2125,16 +2169,84 @@ export function HandwritingStudio({
     );
   }
 
-  function rotateSelectedImages(direction: -1 | 1) {
-    if (!importedImages.some((image) => selectedIds.includes(image.id))) return;
+  function selectedItems() {
+    const ids = new Set(selectedIds);
+    return {
+      ids,
+      copy: copyItems({ strokes, stickies, coordinateSystems, images: importedImages }, ids),
+    };
+  }
+
+  function copySelection(): boolean {
+    const { copy } = selectedItems();
+    if (selectionSize(copy) === 0) return false;
+    selectionClipboard = copy;
+    pasteCountRef.current = 0;
+    setCanPaste(true);
+    return true;
+  }
+
+  function cutSelection() {
+    if (!copySelection()) return;
+    deleteSelection();
+  }
+
+  function pasteSelection() {
+    if (!selectionClipboard) return;
     remember();
-    setImportedImages((current) =>
-      current.map((image) => {
-        if (!selectedIds.includes(image.id)) return image;
-        const rotation = ((image.rotation ?? 0) + direction * 15 + 360) % 360;
-        return { ...image, rotation };
-      }),
+    pasteCountRef.current += 1;
+    const { items, ids } = pasteItems(
+      selectionClipboard,
+      PASTE_OFFSET * pasteCountRef.current,
+      strokeId,
     );
+    setStrokes((current) => [...current, ...items.strokes]);
+    setStickies((current) => [...current, ...items.stickies]);
+    setCoordinateSystems((current) => [...current, ...items.coordinateSystems]);
+    setImportedImages((current) => [...current, ...items.images]);
+    setSelectedIds(ids);
+    setSelectedCoordinateIds(items.coordinateSystems.map((system) => system.id));
+  }
+
+  function duplicateSelection() {
+    const { copy } = selectedItems();
+    if (selectionSize(copy) === 0) return;
+    remember();
+    const { items, ids } = pasteItems(copy, PASTE_OFFSET, strokeId);
+    setStrokes((current) => [...current, ...items.strokes]);
+    setStickies((current) => [...current, ...items.stickies]);
+    setCoordinateSystems((current) => [...current, ...items.coordinateSystems]);
+    setImportedImages((current) => [...current, ...items.images]);
+    setSelectedIds(ids);
+    setSelectedCoordinateIds(items.coordinateSystems.map((system) => system.id));
+  }
+
+  function selectAll() {
+    setTool("select");
+    setSelectedIds([
+      ...strokes.map((stroke) => stroke.id),
+      ...(layerVisibility.coordinates ? coordinateSystems.map((system) => system.id) : []),
+      ...(layerVisibility.stickies ? stickies.map((sticky) => sticky.id) : []),
+      ...(layerVisibility.text && pageText ? [PAGE_TEXT_SELECTION_ID] : []),
+      ...(layerVisibility.background ? importedImages.map((image) => image.id) : []),
+    ]);
+    setSelectedCoordinateIds(coordinateSystems.map((system) => system.id));
+  }
+
+  function rotateSelection(direction: -1 | 1) {
+    const bounds = selectionBounds();
+    if (!bounds) return;
+    remember();
+    const rotated = rotateItems(
+      { strokes, stickies, coordinateSystems, images: importedImages },
+      new Set(selectedIds),
+      direction * 15,
+      { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 },
+    );
+    setStrokes([...rotated.strokes]);
+    setStickies([...rotated.stickies]);
+    setCoordinateSystems([...rotated.coordinateSystems]);
+    setImportedImages([...rotated.images]);
   }
 
   function alignSelection() {
@@ -2659,6 +2771,11 @@ export function HandwritingStudio({
       zoomAt,
       resetView,
       setTool,
+      copy: () => void copySelection(),
+      cut: cutSelection,
+      paste: pasteSelection,
+      duplicate: duplicateSelection,
+      selectAll,
     };
   });
 
@@ -2836,7 +2953,13 @@ export function HandwritingStudio({
             onRemoveBackground={removeBackground}
             hasSelectedImages={importedImages.some((image) => selectedIds.includes(image.id))}
             onRemoveSelectedImages={removeSelectedImages}
-            onRotateImages={rotateSelectedImages}
+            onRotate={rotateSelection}
+            onCopy={copySelection}
+            onCut={cutSelection}
+            onPaste={pasteSelection}
+            onDuplicate={duplicateSelection}
+            onSelectAll={selectAll}
+            canPaste={canPaste}
             hasPageText={Boolean(pageText)}
             pageTextSize={pageTextSize}
             onChangeTextSize={(delta) => {

@@ -14,7 +14,13 @@ type HandwritingSelectionActionsProps = {
   onRemoveBackground: () => void;
   hasSelectedImages: boolean;
   onRemoveSelectedImages: () => void;
-  onRotateImages: (direction: -1 | 1) => void;
+  onRotate: (direction: -1 | 1) => void;
+  onCopy: () => void;
+  onCut: () => void;
+  onPaste: () => void;
+  onDuplicate: () => void;
+  onSelectAll: () => void;
+  canPaste: boolean;
   hasPageText: boolean;
   pageTextSize: number;
   onChangeTextSize: (delta: -2 | 2) => void;
@@ -43,7 +49,13 @@ export function HandwritingSelectionActions({
   onRemoveBackground,
   hasSelectedImages,
   onRemoveSelectedImages,
-  onRotateImages,
+  onRotate,
+  onCopy,
+  onCut,
+  onPaste,
+  onDuplicate,
+  onSelectAll,
+  canPaste,
   hasPageText,
   pageTextSize,
   onChangeTextSize,
@@ -76,6 +88,12 @@ export function HandwritingSelectionActions({
           >
             Laço livre
           </button>
+          <button type="button" onClick={onSelectAll}>
+            Selecionar tudo
+          </button>
+          <button type="button" disabled={!canPaste} onClick={onPaste}>
+            Colar
+          </button>
         </>
       )}
       {selectedIds.length > 0 && (
@@ -84,9 +102,28 @@ export function HandwritingSelectionActions({
             {selectedIds.length}{" "}
             {selectedIds.length === 1 ? "item selecionado" : "itens selecionados"}
           </span>
+          <button type="button" onClick={onCopy}>
+            Copiar
+          </button>
+          <button type="button" onClick={onCut}>
+            Recortar
+          </button>
+          <button type="button" onClick={onDuplicate}>
+            Duplicar
+          </button>
           <button type="button" disabled={!canAlign} onClick={onAlign}>
             Alinhar
           </button>
+          {!hasSelectedImages && (
+            <>
+              <button type="button" onClick={() => onRotate(-1)}>
+                Girar −15°
+              </button>
+              <button type="button" onClick={() => onRotate(1)}>
+                Girar +15°
+              </button>
+            </>
+          )}
           <button type="button" onClick={() => onScale(1.12)}>
             Aumentar
           </button>
@@ -124,10 +161,10 @@ export function HandwritingSelectionActions({
           <button type="button" onClick={onRemoveSelectedImages}>
             Remover imagem(ns)
           </button>
-          <button type="button" onClick={() => onRotateImages(-1)}>
+          <button type="button" onClick={() => onRotate(-1)}>
             Girar −15°
           </button>
-          <button type="button" onClick={() => onRotateImages(1)}>
+          <button type="button" onClick={() => onRotate(1)}>
             Girar +15°
           </button>
         </>
