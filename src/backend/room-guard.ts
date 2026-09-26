@@ -29,6 +29,7 @@ export function createRoomGuard(
       "next",
       "end",
       "update",
+      "cursor",
       "view-create",
       "view-read",
     ].includes(requestedAction ?? "")

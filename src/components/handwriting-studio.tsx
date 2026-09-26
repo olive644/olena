@@ -54,6 +54,8 @@ import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
 import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
+import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
+import { cursorColor } from "./handwriting-cursor";
 import { recognizeShape } from "./handwriting-shapes";
 import {
   PASTE_OFFSET,
@@ -158,6 +160,9 @@ type HandwritingStudioProps = {
   onImportPages?: (pages: ImportedPage[]) => void;
   remoteDocument?: HandwritingDocument;
   remoteAuthor?: string;
+  // Cursores dos colegas e envio do meu, em unidades da folha (só em cadernos compartilhados).
+  remoteCursors?: readonly RemoteCursor[];
+  onCursorMove?: (x: number, y: number) => void;
   collaborationActivity?: string;
 };
 
@@ -183,6 +188,8 @@ export function HandwritingStudio({
   onImportPages,
   remoteDocument,
   remoteAuthor,
+  remoteCursors,
+  onCursorMove,
   collaborationActivity,
 }: HandwritingStudioProps) {
   const [recovered] = useState(() => readDraft(draftKey, initialDocument));
@@ -1596,6 +1603,10 @@ export function HandwritingStudio({
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (onCursorMove && canvasRef.current) {
+      const at = canvasPoint(canvasRef.current, event);
+      onCursorMove(at.x, at.y);
+    }
     if (event.pointerType === "pen") {
       palmRef.current = { ...palmRef.current, lastPenAt: performance.now() };
     } else if (
@@ -3632,6 +3643,21 @@ export function HandwritingStudio({
               height={PAGE_HEIGHT}
               aria-hidden="true"
             />
+            {remoteCursors?.map((cursor) => (
+              <div
+                key={cursor.participantId}
+                className="handwriting-remote-cursor"
+                aria-hidden="true"
+                style={{
+                  left: `${(cursor.x / PAGE_WIDTH) * 100}%`,
+                  top: `${(cursor.y / PAGE_HEIGHT) * 100}%`,
+                  ["--cursor-color" as string]: cursorColor(cursor.participantId),
+                }}
+              >
+                <span className="handwriting-remote-cursor__dot" />
+                <span className="handwriting-remote-cursor__name">{cursor.displayName}</span>
+              </div>
+            ))}
             {textMode && layerVisibility.text && (
               <div
                 className="handwriting-text-frame"

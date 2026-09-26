@@ -1,6 +1,7 @@
 import { generateKeyPairSync } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import {
+  createFirebaseCursorPublisher,
   createFirebasePublicRoomPublisher,
   createFirebaseRealtimeStore,
   firebasePublicStreamUrl,
@@ -131,5 +132,48 @@ describe("armazenamento no Firebase Realtime Database", () => {
 
   it("monta a URL de streaming público sem autenticação embutida", () => {
     expect(firebasePublicStreamUrl(config, "ABCDE")).toBe(`${config.databaseUrl}/rooms/ABCDE.json`);
+  });
+});
+
+describe("cursor no Firebase", () => {
+  it("escreve só o cursor do participante e apaga com null", async () => {
+    const fetchImpl = vi.fn<typeof fetch>(async (input) =>
+      String(input).includes("oauth2") || String(input).includes("token")
+        ? tokenResponse()
+        : new Response(null, { status: 200 }),
+    );
+    const publishCursor = createFirebaseCursorPublisher(config, fetchImpl, () => 1_000);
+    await publishCursor("ABCDE", "p1", { x: 10, y: 20, at: 1000 });
+    await publishCursor("ABCDE", "p1", null);
+    const writes = fetchImpl.mock.calls.filter(([input]) => String(input).includes("/rooms/"));
+    expect(String(writes[0]![0])).toBe(`${config.databaseUrl}/rooms/ABCDE/cursors/p1.json`);
+    expect(writes[0]![1]?.method).toBe("PUT");
+    expect(JSON.parse(writes[0]![1]?.body as string)).toEqual({ x: 10, y: 20, at: 1000 });
+    expect(writes[1]![1]?.method).toBe("DELETE");
+  });
+
+  it("regravar a folha preserva os cursores que já estavam publicados", async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(tokenResponse())
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ revision: 1, cursors: { p1: { x: 1, y: 2, at: 3 } } }), {
+          status: 200,
+          headers: { etag: '"v1"' },
+        }),
+      )
+      .mockResolvedValueOnce(new Response(null, { status: 200 }));
+    await createFirebasePublicRoomPublisher(
+      config,
+      fetchImpl,
+      () => 1000,
+    )("ABCDE", {
+      revision: 2,
+    });
+    const [, init] = fetchImpl.mock.calls[2] as [string, RequestInit];
+    expect(JSON.parse(init.body as string)).toEqual({
+      revision: 2,
+      cursors: { p1: { x: 1, y: 2, at: 3 } },
+    });
   });
 });

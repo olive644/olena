@@ -51,8 +51,27 @@ export type NotebookCollabState = {
   receipts?: Record<string, { participantId: string; participantToken: string }>;
 };
 
+// Posição do cursor de quem está escrevendo, em unidades da folha. Vale por poucos segundos: quem
+// lê ignora entradas antigas, então nada precisa ser apagado.
+export type NotebookCollabCursor = { x: number; y: number; at: number };
+export const NOTEBOOK_COLLAB_CURSOR_MAX = 4000;
+export const NOTEBOOK_COLLAB_CURSOR_TTL_MS = 5_000;
+
+export function sanitizeNotebookCollabCursor(
+  body: Record<string, unknown>,
+  now: number,
+): NotebookCollabCursor | null {
+  const { x, y } = body;
+  if (typeof x !== "number" || typeof y !== "number" || !Number.isFinite(x) || !Number.isFinite(y))
+    return null;
+  const clamp = (value: number) => Math.max(0, Math.min(NOTEBOOK_COLLAB_CURSOR_MAX, value));
+  return { x: Math.round(clamp(x)), y: Math.round(clamp(y)), at: now };
+}
+
 export type PublicNotebookCollabState = Omit<NotebookCollabState, "hostToken" | "receipts"> & {
   participants: Omit<NotebookCollabParticipant, "token" | "accountId">[];
+  // Escrito à parte, por um canal leve, sem passar pela folha: ver publishCursor.
+  cursors?: Record<string, NotebookCollabCursor>;
 };
 
 export function createNotebookCollabCode(random?: () => number): string {

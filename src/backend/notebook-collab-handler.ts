@@ -7,6 +7,7 @@ import {
   applyNotebookCollabDocument,
   createNotebookCollabCode,
   sanitizeNotebookCollabAvatar,
+  sanitizeNotebookCollabCursor,
   createNotebookCollabState,
   isValidNotebookCollabCode,
   notebookCollabStorageKey,
@@ -28,6 +29,13 @@ const MAX_REQUEST_BYTES = 900_000;
 export type NotebookCollabHandlerDependencies = {
   store: KvStore;
   publish(code: string, state: PublicNotebookCollabState): Promise<void>;
+  // Canal leve do cursor: escreve só a posição de um participante (ou apaga com null), sem regravar
+  // a folha. Opcional: sem ele o pedido de cursor é aceito e ignorado.
+  publishCursor?(
+    code: string,
+    participantId: string,
+    cursor: { x: number; y: number; at: number } | null,
+  ): Promise<void>;
   streamUrl(code: string): string;
   now?(): number;
   randomCode?(): string;
@@ -305,6 +313,18 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       });
     }
 
+    if (action === "cursor" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const authorized = await authorizedParticipant(body);
+      if (authorized instanceof Response) return authorized;
+      const cursor = sanitizeNotebookCollabCursor(body, now());
+      if (!cursor) return jsonResponse(400, { error: "Posição inválida." });
+      await dependencies
+        .publishCursor?.(authorized.state.code, authorized.participantId, cursor)
+        .catch(() => undefined);
+      return jsonResponse(200, { ok: true });
+    }
+
     if (["heartbeat", "leave"].includes(action ?? "") && request.method === "POST") {
       const body = await readJsonBody(request);
       const authorized = await authorizedParticipant(body);
@@ -321,6 +341,9 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
             state.participants.some((item) => item.id === receipt.participantId),
           ),
         );
+        await dependencies
+          .publishCursor?.(state.code, authorized.participantId, null)
+          .catch(() => undefined);
         return jsonResponse(200, { state: await save(state) });
       }
       const updated = touchNotebookCollabParticipant(

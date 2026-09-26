@@ -258,3 +258,73 @@ describe("notebook collaboration handler", () => {
     expect((await handler(request("join", { code, displayName: "P4" }))).status).toBe(409);
   });
 });
+
+describe("cursor ao vivo", () => {
+  async function room() {
+    const published: { code: string; participantId: string; cursor: unknown }[] = [];
+    const handler = createNotebookCollabHandler({
+      store: createMemoryRoomStore(),
+      now: () => 5000,
+      publish: async () => {},
+      publishCursor: async (code, participantId, cursor) => {
+        published.push({ code, participantId, cursor });
+      },
+      streamUrl: () => "",
+    });
+    const created = await handler(request("create", { notebookId: "sheet", displayName: "Alice" }));
+    const { code, hostToken, participantId } = (await created.json()) as {
+      code: string;
+      hostToken: string;
+      participantId: string;
+    };
+    return { handler, published, code, hostToken, participantId };
+  }
+
+  it("publica só a posição do participante autenticado, com a hora do servidor", async () => {
+    const { handler, published, code, hostToken, participantId } = await room();
+    const answer = await handler(
+      request("cursor", { code, credential: hostToken, x: 120.6, y: 300 }),
+    );
+    expect(answer.status).toBe(200);
+    expect(published).toEqual([{ code, participantId, cursor: { x: 121, y: 300, at: 5000 } }]);
+  });
+
+  it("limita a posição à folha e recusa valores que não são números", async () => {
+    const { handler, published, code, hostToken } = await room();
+    await handler(request("cursor", { code, credential: hostToken, x: -50, y: 99999 }));
+    expect(published[0]!.cursor).toMatchObject({ x: 0, y: 4000 });
+    for (const body of [{ x: "1", y: 2 }, { x: 1 }, { x: Infinity, y: 1 }]) {
+      const answer = await handler(request("cursor", { code, credential: hostToken, ...body }));
+      expect(answer.status).toBe(400);
+    }
+    expect(published).toHaveLength(1);
+  });
+
+  it("recusa credencial inválida e não escreve nada", async () => {
+    const { handler, published, code } = await room();
+    const answer = await handler(request("cursor", { code, credential: "errada", x: 1, y: 1 }));
+    expect(answer.status).toBe(403);
+    expect(published).toHaveLength(0);
+  });
+
+  it("uma falha do canal de cursor não derruba o pedido", async () => {
+    const handler = createNotebookCollabHandler({
+      store: createMemoryRoomStore(),
+      publish: async () => {},
+      publishCursor: async () => {
+        throw new Error("rede");
+      },
+      streamUrl: () => "",
+    });
+    const created = await handler(request("create", { notebookId: "sheet", displayName: "Alice" }));
+    const { code, hostToken } = (await created.json()) as { code: string; hostToken: string };
+    const answer = await handler(request("cursor", { code, credential: hostToken, x: 1, y: 1 }));
+    expect(answer.status).toBe(200);
+  });
+
+  it("sair da sala apaga o cursor", async () => {
+    const { handler, published, code, hostToken, participantId } = await room();
+    await handler(request("leave", { code, credential: hostToken }));
+    expect(published.at(-1)).toEqual({ code, participantId, cursor: null });
+  });
+});

@@ -28,6 +28,7 @@ nesta versão. A API recusa tokens vencidos mesmo antes da limpeza programada.
 - Somente data URLs de PNG, JPEG ou WebP; SVG e conteúdo ativo são recusados.
 - Títulos são renderizados como texto React e respostas têm Cache-Control no-store.
 - `notebook-views` e `notebook-collab` não permitem leitura/escrita direta pelo cliente.
+- O cursor ao vivo usa a ação `cursor`, que exige a credencial do participante e grava só `rooms/{codigo}/cursors/{id}` com x e y limitados a 0 a 4000; não guarda nada além da posição e da hora.
 - Publicar índices `expiresAt` em `firebase-room.rules.json` para limpeza programada.
 
 ## Verificação

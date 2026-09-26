@@ -110,7 +110,9 @@ const MAX_INITIAL_JS_BYTES = 276 * 1024;
 // studio chunk and add about 4 KiB (822.5 KiB measured); the ceiling moves to 830 KiB.
 // Shape recognition (hold to snap) is lazy in the handwriting studio chunk: 828.6 KiB measured,
 // ceiling 836 KiB for CI variance.
-const MAX_TOTAL_JS_BYTES = 836 * 1024;
+// Live cursor (hook channel, overlay) adds about 3 KiB to the lazy collaboration chunks:
+// 834.4 KiB measured, ceiling 842 KiB for CI variance.
+const MAX_TOTAL_JS_BYTES = 842 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

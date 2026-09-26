@@ -104,3 +104,71 @@ it("publica com o código criado pelo servidor e permite ao segundo participante
   host.unmount();
   guest.unmount();
 });
+
+it("mostra o cursor do colega vindo do canal leve e o esconde quando fica parado", async () => {
+  const sources = new Set<Map<string, (event: MessageEvent<string>) => void>>();
+  const emit = (type: string, path: string, data: unknown) => {
+    for (const source of sources) {
+      source.get(type)?.(new MessageEvent(type, { data: JSON.stringify({ path, data }) }));
+    }
+  };
+  const cursorWrites: { participantId: string; cursor: unknown }[] = [];
+  const handler = createNotebookCollabHandler({
+    store: createMemoryRoomStore(),
+    randomCode: () => "ABCDE",
+    publish: async (_code, state) => emit("put", "/", state),
+    publishCursor: async (_code, participantId, cursor) => {
+      cursorWrites.push({ participantId, cursor });
+      emit("put", `/cursors/${participantId}`, cursor);
+    },
+    streamUrl: () => "https://stream.example/ABCDE",
+  });
+  vi.stubGlobal(
+    "EventSource",
+    class {
+      handlers = new Map<string, (event: MessageEvent<string>) => void>();
+      constructor() {
+        sources.add(this.handlers);
+      }
+      close() {
+        sources.delete(this.handlers);
+      }
+      addEventListener(type: string, listener: (event: MessageEvent<string>) => void) {
+        this.handlers.set(type, listener);
+      }
+    },
+  );
+  vi.stubGlobal("fetch", async (url: string, init: RequestInit) =>
+    handler(new Request(new URL(url, "https://test.example"), init)),
+  );
+
+  const host = renderHook(() => useNotebookCollaboration({ notebookId: "page-a" }));
+  const guest = renderHook(() => useNotebookCollaboration({ notebookId: "page-b" }));
+  await act(async () => {
+    await host.result.current.create("Alice");
+  });
+  await act(async () => {
+    await guest.result.current.join("ABCDE", "Bob");
+  });
+  await waitFor(() => expect(host.result.current.state.room?.participants).toHaveLength(2));
+
+  // Sozinho na folha ninguém recebe cursor: com colega, a posição sai.
+  act(() => host.result.current.sendCursor(100, 200));
+  await waitFor(() => expect(cursorWrites.length).toBeGreaterThan(0));
+  const written = cursorWrites.at(-1)!;
+  expect(written.cursor).toMatchObject({ x: 100, y: 200 });
+
+  // O colega vê o cursor com o nome de quem escreve, e não vê o próprio.
+  await waitFor(() =>
+    expect(guest.result.current.cursors).toEqual([
+      expect.objectContaining({ displayName: "Alice", x: 100, y: 200 }),
+    ]),
+  );
+  expect(host.result.current.cursors.every((item) => item.displayName !== "Alice")).toBe(true);
+
+  // Sem novas posições por mais de cinco segundos, o cursor some.
+  const realNow = performance.now.bind(performance);
+  vi.spyOn(performance, "now").mockImplementation(() => realNow() + 6_000);
+  await waitFor(() => expect(guest.result.current.cursors).toEqual([]), { timeout: 3_000 });
+  vi.restoreAllMocks();
+});

@@ -626,6 +626,10 @@ export function NoteCaptureTools({
                   }}
                   {...(remoteDocument ? { remoteDocument } : {})}
                   {...(remoteAuthor ? { remoteAuthor } : {})}
+                  {...(collaboration.cursors.length > 0
+                    ? { remoteCursors: collaboration.cursors }
+                    : {})}
+                  onCursorMove={collaboration.sendCursor}
                   {...(collaboration.activity
                     ? { collaborationActivity: collaboration.activity }
                     : {})}

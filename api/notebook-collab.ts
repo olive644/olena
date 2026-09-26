@@ -1,4 +1,5 @@
 import {
+  createFirebaseCursorPublisher,
   createFirebasePublicRoomPublisher,
   createFirebaseRealtimeStore,
   firebasePublicStreamUrl,
@@ -27,6 +28,7 @@ const handler = createNotebookCollabHandler({
     process.env["FIREBASE_APPCHECK_ENFORCE"] === "true",
   ),
   publish: createFirebasePublicRoomPublisher(config),
+  publishCursor: createFirebaseCursorPublisher(config),
   streamUrl: (code) => firebasePublicStreamUrl(config, code),
 });
 
