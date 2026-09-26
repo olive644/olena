@@ -52,6 +52,7 @@ import { HandwritingWritingWindow } from "./handwriting-writing-window";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 import { HandwritingSelectionActions } from "./handwriting-selection-actions";
 import { OCR_WORKER_OPTIONS } from "./handwriting-ocr";
+import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { predictedTip } from "./handwriting-ink";
 import {
   newRemoteStrokes,
@@ -318,6 +319,7 @@ export function HandwritingStudio({
   const activeToolRef = useRef<HandwritingTool>("pen");
   const spaceToolRef = useRef<HandwritingTool | null>(null);
   const penDetectedRef = useRef(false);
+  const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const selectionRef = useRef<{
     pointerId: number;
     start: HandwritingPoint;
@@ -1225,6 +1227,16 @@ export function HandwritingStudio({
   }
 
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "pen") {
+      palmRef.current = { penDown: true, lastPenAt: performance.now() };
+    } else if (
+      event.pointerType === "touch" &&
+      shouldIgnoreTouch(palmRef.current, performance.now())
+    ) {
+      // Palma apoiada enquanto a caneta escreve: não é gesto e não pode cancelar o traço.
+      event.preventDefault();
+      return;
+    }
     if (event.pointerType === "touch") {
       touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (touchPointersRef.current.size >= 2) {
@@ -1421,6 +1433,14 @@ export function HandwritingStudio({
   }
 
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "pen") {
+      palmRef.current = { ...palmRef.current, lastPenAt: performance.now() };
+    } else if (
+      event.pointerType === "touch" &&
+      shouldIgnoreTouch(palmRef.current, performance.now())
+    ) {
+      return;
+    }
     if (event.pointerType === "touch") {
       touchPointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
       const pinch = pinchRef.current;
@@ -1598,6 +1618,9 @@ export function HandwritingStudio({
   }
 
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
+    if (event.pointerType === "pen") {
+      palmRef.current = { penDown: false, lastPenAt: performance.now() };
+    }
     if (event.pointerType === "touch") {
       touchPointersRef.current.delete(event.pointerId);
       if (pinchRef.current && touchPointersRef.current.size < 2) pinchRef.current = null;
