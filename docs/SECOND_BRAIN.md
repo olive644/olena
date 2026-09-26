@@ -6,6 +6,10 @@ acompanhando o ponteiro e papel amassado ao remover uma folha da prévia.
 escolhida, saindo por baixo. Clique/toque também permite posicionar sem arrastar;
 setas reposicionam uma marcação focada. Nome e cor usam um pequeno painel contextual.
 `notebook.paperTabs` armazena tipo, folha, posição normalizada, nome e cor.
+Tocar uma marca navega sem abrir o painel. O botão Editar marcas ativa a edição
+por toque; criação e reposicionamento continuam abrindo os ajustes da peça.
+A vitrine representa as mesmas marcações atrás da capa, com cor e posição salvas.
+Botões e inspector usam a cor de texto do tema, inclusive no modo escuro.
 Na ausência desse campo, as marcações legadas são adaptadas sem apagar assuntos;
 a primeira edição grava o formato novo. Divisórias navegam até a folha, sem filtrar.
 Remover uma folha limpa apenas suas marcações. Animações respeitam movimento reduzido.

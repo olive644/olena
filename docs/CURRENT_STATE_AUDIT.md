@@ -1,5 +1,10 @@
 # Auditoria do estado atual
 
+Marcações: o toque navega à folha; Editar marcas permite ajustar nome e cor.
+O contraste dos controles acompanha o tema. Divisórias sobrepõem a borda como
+abas coladas; marcadores têm corpo comprido, estrela recortada e ponta inferior.
+As peças persistidas também aparecem entre as páginas do caderno fechado na vitrine.
+
 ## Atualização: marcações diretamente no papel
 
 O preview agora usa ferramentas arrastáveis, sem formulário de atribuição por folha.

@@ -12,6 +12,7 @@ import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { NotebookSpread } from "../components/notebook-spread";
+import { notebookPaperTabs } from "../components/notebook-paper-tools";
 import type { ImportedPage } from "../components/page-import";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
@@ -19,6 +20,7 @@ import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   createWorkspaceId,
   type StudyNotebook,
+  type NotebookTab,
   type StudyNote,
   type WorkspaceAction,
   type WorkspaceState,
@@ -54,9 +56,11 @@ function notebookTitle(workspace: WorkspaceState): string {
 function NotebookArtwork({
   subjectColor,
   title = "Ideias em papel",
+  tabs = [],
 }: {
   subjectColor: string;
   title?: string;
+  tabs?: NotebookTab[];
 }) {
   return (
     <span
@@ -76,7 +80,13 @@ function NotebookArtwork({
         />
       </span>
       <span className="book-cover__spine" />
-      <span className="book-cover__ribbon" />
+      {tabs.map((tab) => (
+        <span
+          key={tab.id}
+          className={`book-cover__mark is-${tab.kind}`}
+          style={{ "--tab-color": tab.color, "--tab-position": tab.position } as CSSProperties}
+        />
+      ))}
     </span>
   );
 }
@@ -630,6 +640,13 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                                   "#7C3AED"
                                 }
                                 title={notebook.title}
+                                tabs={notebookPaperTabs(
+                                  notebook,
+                                  notebook.pageIds.flatMap(
+                                    (id) => workspace.notes.find((note) => note.id === id) ?? [],
+                                  ),
+                                  workspace.subjects,
+                                )}
                               />
                             )}
                             <span className="notebook-card__copy">

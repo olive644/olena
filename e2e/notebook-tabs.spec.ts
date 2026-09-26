@@ -134,6 +134,34 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(2);
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
+  await preview.getByRole("button", { name: "Próxima ›" }).click();
+  await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
+  await divider.click();
+  await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
+  await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
+  await preview.getByRole("button", { name: "Próxima ›" }).click();
+  await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
+  await preview.getByRole("button", { name: "Marcador Marcador, folha 2", exact: true }).click();
+  await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
+  await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
+  await preview.getByRole("button", { name: "Editar marcas", exact: true }).click();
+  await divider.click();
+  await expect(preview.getByLabel("Nome da marcação")).toBeVisible();
+  await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  await preview.getByRole("button", { name: "Concluir edição", exact: true }).click();
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  const toolColor = await preview
+    .getByRole("button", { name: "Colocar divisória" })
+    .evaluate((element) => getComputedStyle(element).color);
+  expect(toolColor).not.toBe("rgb(15, 15, 20)");
+  await expect
+    .poll(() =>
+      preview
+        .getByRole("button", { name: "Colocar divisória" })
+        .evaluate((element) => getComputedStyle(element).backgroundColor),
+    )
+    .toBe("rgb(32, 29, 38)");
+  await page.screenshot({ path: testInfo.outputPath("marcacoes-modo-escuro.png") });
   await preview.getByRole("button", { name: /Abrir preview de .*folha 2/ }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
   const gear = editor.locator('[data-paper-editor-icon="settings"]');
@@ -234,4 +262,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       ),
     )
     .toBeLessThan(Number(originalPosition));
+  await preview.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  await expect(page.locator(".book-cover__mark.is-divider")).toHaveCount(1);
+  await page.screenshot({ path: testInfo.outputPath("vitrine-com-divisoria.png") });
 });
