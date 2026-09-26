@@ -65,16 +65,25 @@ it("mostra duas folhas reais e navega até a última sem perder a criação", as
   expect(screen.getAllByRole("button", { name: /Abrir preview/ })).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: /Abrir preview.*folha 2$/ }));
   expect(onOpen).toHaveBeenCalledWith("two");
+  expect(
+    screen.getByRole("button", { name: "Marcador Lua, folha 1" }).getAttribute("aria-current"),
+  ).toBe("page");
   fireEvent.click(screen.getByRole("button", { name: "Próxima ›" }));
   await waitFor(() => expect(screen.getByText("Folhas 3 de 3")).toBeTruthy());
   expect(screen.getByRole("button", { name: "Divisória Matemática, folha 1" })).toBeTruthy();
   expect(screen.getByRole("button", { name: "Marcador Lua, folha 1" })).toBeTruthy();
+  expect(
+    screen.getByRole("button", { name: "Marcador Lua, folha 1" }).hasAttribute("aria-current"),
+  ).toBe(false);
   fireEvent.click(screen.getByRole("button", { name: "Criar próxima folha" }));
   expect(onCreate).toHaveBeenCalledWith("");
   expect(screen.getByRole("button", { name: "Divisória Matemática, folha 1" })).toBeTruthy();
   expect(screen.getByRole("button", { name: "Marcador Lua, folha 1" })).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "‹ Anterior" }));
   await waitFor(() => expect(screen.getByText("Folhas 1 e 2 de 3")).toBeTruthy());
+  expect(
+    screen.getByRole("button", { name: "Marcador Lua, folha 1" }).getAttribute("aria-current"),
+  ).toBe("page");
   fireEvent.click(screen.getByRole("button", { name: "Divisória Matemática, folha 1" }));
   await waitFor(() => expect(screen.getByText("Folhas 1 e 2 de 3")).toBeTruthy());
   expect(screen.getAllByRole("button", { name: /Abrir preview/ })).toHaveLength(2);

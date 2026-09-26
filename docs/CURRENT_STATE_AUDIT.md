@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Camadas físicas e acabamento do caderno
+
+Marcações na abertura atual ficam sobre o papel; as demais permanecem atrás dele,
+com pontas expostas para navegação. O foco não eleva todas as marcações juntas.
+O teste de navegador verifica a área clicável do corpo do marcador antes e depois
+de folhear, além da permanência das pontas. Durante a virada, o papel cobre as peças.
+O marcador Lua usa recorte com margem creme, crescente dourado facetado e corpo
+roxo com constelação. Cantoneiras e costura dão acabamento ao caderno aberto.
+`NotebookCover` unifica capa de preview e vitrine, com etiqueta presa por fita,
+fecho de estrela e lombada em camadas. Ferramentas usam papel branco e texto grafite
+nos dois temas. Os títulos das folhas ficam acima do conteúdo, fora dos marcadores.
+
 ## Correções do preview móvel e fechamento do editor
 
 Salvar manualmente atualiza a referência limpa do documento e fecha sem oferecer
@@ -11,7 +23,7 @@ sem sobreposição nem rolagem horizontal causada pela largura da prateleira.
 
 Marcações: o toque navega à folha; Editar marcas permite ajustar nome e cor.
 O contraste dos controles acompanha o tema. Divisórias sobrepõem a borda como
-abas coladas; o marcador amarelo traz uma meia-lua papercraft e fica para fora da
+abas coladas; o marcador traz uma meia-lua papercraft e fica para fora da
 borda inferior. As pontas continuam visíveis e acionáveis, e a mesma Lua aparece na
 capa fechada da vitrine.
 

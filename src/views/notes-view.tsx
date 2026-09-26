@@ -1,19 +1,12 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { NotebookSearch } from "../components/notebook-search";
-import {
-  lazy,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type Dispatch,
-} from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { NotebookSpread } from "../components/notebook-spread";
-import { notebookPaperTabs, PaperMoonMark } from "../components/notebook-paper-tools";
+import { notebookPaperTabs } from "../components/notebook-paper-tools";
+import { NotebookCover as NotebookArtwork } from "../components/notebook-cover";
 import type { ImportedPage } from "../components/page-import";
 import type { SearchHit } from "../domain/notebook-search";
 import type { HandwritingDocument } from "../domain/handwriting";
@@ -22,7 +15,6 @@ import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   createWorkspaceId,
   type StudyNotebook,
-  type NotebookTab,
   type StudyNote,
   type WorkspaceAction,
   type WorkspaceState,
@@ -53,46 +45,6 @@ function notebookTitle(workspace: WorkspaceState): string {
   const base = "Meu caderno";
   const matches = workspace.notebooks.filter((notebook) => notebook.title.startsWith(base)).length;
   return matches === 0 ? base : `${base} ${matches + 1}`;
-}
-
-function NotebookArtwork({
-  subjectColor,
-  title = "Ideias em papel",
-  tabs = [],
-}: {
-  subjectColor: string;
-  title?: string;
-  tabs?: NotebookTab[];
-}) {
-  return (
-    <span
-      className="book-cover"
-      style={{ "--notebook-accent": subjectColor } as CSSProperties}
-      aria-hidden="true"
-    >
-      <span className="book-cover__pages" />
-      <span className="book-cover__face">
-        <span className="book-cover__edition">HELENA · ESTRELAS DE PAPEL</span>
-        <span className="book-cover__title">{title}</span>
-        <img
-          className="book-cover__concept"
-          src="/notebook-covers/helena-estrelas.webp"
-          alt=""
-          loading="lazy"
-        />
-      </span>
-      <span className="book-cover__spine" />
-      {tabs.map((tab) => (
-        <span
-          key={tab.id}
-          className={`book-cover__mark is-${tab.kind}`}
-          style={{ "--tab-color": tab.color, "--tab-position": tab.position } as CSSProperties}
-        >
-          {tab.kind === "bookmark" && <PaperMoonMark />}
-        </span>
-      ))}
-    </span>
-  );
 }
 
 export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {

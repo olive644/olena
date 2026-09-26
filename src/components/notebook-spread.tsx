@@ -7,7 +7,8 @@ import type {
 } from "../domain/workspace";
 import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
-import { NotebookPaperTools } from "./notebook-paper-tools";
+import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
+import { NotebookCover } from "./notebook-cover";
 import "./notebook-spread.css";
 
 type Props = {
@@ -123,12 +124,16 @@ export function NotebookSpread({
         </div>
       )}
       {showCover ? (
-        <div className="notebook-concept-cover">
-          <img
-            src="/notebook-covers/helena-estrelas.webp"
-            alt="Helena alcançando uma estrela em uma capa de papel recortado"
+        <div
+          className="notebook-concept-cover"
+          role="img"
+          aria-label={`Capa do caderno ${notebook.title}, Helena e estrelas de papel`}
+        >
+          <NotebookCover
+            subjectColor="#7C3AED"
+            title={notebook.title}
+            tabs={notebookPaperTabs(notebook, pages, subjects)}
           />
-          <h2>{notebook.title}</h2>
         </div>
       ) : (
         <>
@@ -227,6 +232,12 @@ export function NotebookSpread({
                 }
               }}
             >
+              <div className="notebook-cover-corners" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <i />
+              </div>
               <div className="notebook-spread-pair">
                 {basePages.map((page, side) => (
                   <article

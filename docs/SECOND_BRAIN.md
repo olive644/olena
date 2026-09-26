@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+`NotebookPaperTools` posiciona cada marcação individualmente: sobre a folha quando
+ela está aberta, sob o papel nas outras aberturas e durante viradas. Não criar um
+contexto de empilhamento no nav de marcações, pois impediria camadas individuais.
+O E2E verifica a oclusão real com elementFromPoint. `NotebookCover` compartilha
+arte, etiqueta, costura, fecho e marcas entre vitrine e preview de capa.
+`PaperMoonMark` desenha o marcador recortado completo; a ferramenta usa a versão
+compacta de sua Lua. Ferramentas permanecem claras com texto grafite no tema escuro.
+
 Salvar manualmente no editor de escrita atualiza a linha de base de alterações.
 Assim, fechar uma folha salva não abre o aviso de rascunho local; alterações ainda
 pendentes continuam protegidas pela confirmação. A mensagem de saída não promete
@@ -19,7 +27,7 @@ setas reposicionam uma marcação focada. Nome e cor usam um pequeno painel cont
 Tocar uma marca navega sem abrir o painel. O botão Editar marcas ativa a edição
 por toque; criação e reposicionamento continuam abrindo os ajustes da peça.
 A vitrine representa as mesmas marcações atrás da capa, com cor e posição salvas.
-Botões e inspector usam a cor de texto do tema, inclusive no modo escuro.
+O inspector usa a cor de texto do tema, inclusive no modo escuro.
 Na ausência desse campo, as marcações legadas são adaptadas sem apagar assuntos;
 a primeira edição grava o formato novo. Divisórias navegam até a folha, sem filtrar.
 Remover uma folha limpa apenas suas marcações. Animações respeitam movimento reduzido.
