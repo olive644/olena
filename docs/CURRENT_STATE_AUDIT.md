@@ -1063,3 +1063,11 @@ Limites que se cruzam:
   - `use-selection-actions.ts`: o gancho com apagar, copiar, recortar, colar, duplicar, selecionar tudo, girar, mudar de tamanho e alinhar, junto com a área de transferência.
 - Testes novos: `handwriting-selection-scene.test.ts` (11) e `use-selection-actions.test.tsx` (6); os e2e de seleção, alças, palma e do editor passam sem alteração.
 - O que ainda pesa no arquivo: `start`, `move` e `finish` do ponteiro (cerca de 600 linhas juntas, misturando caneta, borracha, régua, coordenadas, seleção e janela de escrita), o painel de papel, a importação e a janela de escrita. São os próximos candidatos, em pedaços pequenos.
+
+## Editor de escrita menor: gestos fora do arquivo principal (2026-09-26)
+
+- Continuação da entrada anterior: `handwriting-studio.tsx` foi de 3497 para cerca de 3280 linhas (o arquivo já tinha saído de 3900), sem mudar comportamento.
+  - `use-selection-gesture.ts`: o gesto inteiro da ferramenta Selecionar (tocar em uma alça, laço com Shift, retângulo, arrastar itens e alças, escolher ao soltar), que estava espalhado pelo início, pelo movimento e pelo fim do toque, mais o estado da caixa e do laço. O editor só repassa os eventos (`begin`, `move`, `end`, `cancel`).
+  - `use-pinch-zoom.ts`: a pinça de dois dedos (zoom e rolagem), com o aviso para quem desenha largar o traço quando o segundo dedo toca.
+- Testes novos: `use-selection-gesture.test.tsx` (5) e `use-pinch-zoom.test.tsx` (5); os e2e de seleção, alças, formas, palma e do editor passam sem alteração.
+- Restam em `start`, `move` e `finish` a caneta e o traço ao vivo, a borracha, a régua e os eixos, o pan e a janela de escrita. São ramos menores e entrelaçados com muitos refs; o próximo passo natural é um gancho para o traço ao vivo (caneta, forma ao segurar e palma), depois régua e eixos.
