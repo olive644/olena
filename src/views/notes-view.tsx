@@ -1,4 +1,5 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
+import { NotebookSearch } from "../components/notebook-search";
 import {
   lazy,
   Suspense,
@@ -14,6 +15,7 @@ import { PaperActionIcon } from "../components/paper-action-icon";
 import { NotebookSpread } from "../components/notebook-spread";
 import { notebookPaperTabs } from "../components/notebook-paper-tools";
 import type { ImportedPage } from "../components/page-import";
+import type { SearchHit } from "../domain/notebook-search";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
@@ -182,6 +184,15 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setActiveNotebookId(notebook.id);
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
+    setPreviewPageIndex(0);
+  }
+
+  function openSearchHit(hit: SearchHit) {
+    const target = workspace.notebooks.find((notebook) => notebook.id === hit.notebookId);
+    if (!target) return;
+    setActiveNotebookId(target.id);
+    setActivePageId(hit.pageId);
+    setNotebookSection(target.kind === "folder" ? "notes" : "pages");
     setPreviewPageIndex(0);
   }
 
@@ -497,6 +508,10 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               )}
             </div>
           </header>
+
+          {workspace.notebooks.length > 0 && (
+            <NotebookSearch workspace={workspace} onOpen={openSearchHit} />
+          )}
 
           <section className="notebooks-showcase" aria-label="Meus cadernos">
             <p id="folder-drag-hint" className="shelf-drag-hint">
