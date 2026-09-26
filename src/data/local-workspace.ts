@@ -814,7 +814,25 @@ function migrateWorkspaceV6(workspace: WorkspaceV6): WorkspaceState {
   };
 }
 
-export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState {
+// Cópia do que não foi possível ler. Sem ela, o espaço inicial que substitui um espaço inválido seria
+// gravado por cima na próxima alteração e o conteúdo antigo se perderia de vez. Fica em um só
+// lugar, sempre com o mais recente, e o nome começa com "helena" para ser apagado ao sair da conta.
+export const WORKSPACE_RECOVERY_KEY = "helenastudy.workspace.recovery.v1";
+
+function keepUnreadableWorkspace(
+  storage: Partial<Pick<Storage, "setItem">>,
+  serialized: string,
+): void {
+  try {
+    storage.setItem?.(WORKSPACE_RECOVERY_KEY, serialized);
+  } catch {
+    // Sem espaço para a cópia: o espaço inicial ainda abre, como antes.
+  }
+}
+
+export function loadWorkspace(
+  storage: Pick<Storage, "getItem"> & Partial<Pick<Storage, "setItem">>,
+): WorkspaceState {
   const serialized = storage.getItem(WORKSPACE_STORAGE_KEY);
   if (!serialized) return createInitialWorkspace();
 
@@ -827,8 +845,10 @@ export function loadWorkspace(storage: Pick<Storage, "getItem">): WorkspaceState
     if (isWorkspaceV3(parsed)) return migrateWorkspaceV3(parsed);
     if (isWorkspaceV2(parsed)) return migrateWorkspaceV2(parsed);
     if (isLegacyWorkspace(parsed)) return migrateLegacyWorkspace(parsed);
+    keepUnreadableWorkspace(storage, serialized);
     return createInitialWorkspace();
   } catch {
+    keepUnreadableWorkspace(storage, serialized);
     return createInitialWorkspace();
   }
 }

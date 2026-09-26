@@ -25,6 +25,10 @@ const CONTEXT = 32;
 
 // Sem acento e sem diferença de maiúsculas, mantendo o tamanho: cada letra vira uma letra.
 export function fold(value: string): string {
+  // Caminho rápido: quase todo texto normaliza sem mudar de tamanho, e assim a busca em milhares de
+  // folhas não faz uma normalização por letra.
+  const quick = value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  if (quick.length === value.length) return quick;
   return Array.from(value)
     .map((char) => {
       const base = char.normalize("NFD").replace(/[̀-ͯ]/g, "");

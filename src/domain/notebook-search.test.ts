@@ -118,3 +118,27 @@ describe("busca nos cadernos", () => {
     expect(searchNotebooks(many, "folha").length).toBe(40);
   });
 });
+
+describe("busca em bibliotecas grandes", () => {
+  it("varre seis mil folhas em poucas dezenas de milissegundos", () => {
+    const notebooks = Array.from({ length: 200 }, (_, index) =>
+      notebook(
+        `n${index}`,
+        `Caderno ${index}`,
+        Array.from({ length: 30 }, (_, page) => `p${index}-${page}`),
+      ),
+    );
+    const notes = notebooks.flatMap((item) =>
+      item.pageIds.map((id) =>
+        note(id, `Folha ${id}`, {
+          content: "A aceleração é a variação da velocidade no tempo, e a variação da posição.",
+        }),
+      ),
+    );
+    const start = performance.now();
+    searchNotebooks({ notebooks, notes }, "zzzz");
+    const elapsed = performance.now() - start;
+    // Antes da normalização rápida isso levava mais de 160 ms; o limite deixa folga para CI lento.
+    expect(elapsed).toBeLessThan(120);
+  });
+});

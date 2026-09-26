@@ -57,6 +57,7 @@ import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
 import { recognizeShape } from "./handwriting-shapes";
+import { compactPoints } from "./handwriting-precision";
 import {
   PASTE_OFFSET,
   copyItems,
@@ -2029,13 +2030,16 @@ export function HandwritingStudio({
     liveStrokeRef.current = null;
     if (!liveStroke) return;
     const settledPoints = settleLiveStroke(liveStroke.points);
-    const points = (
-      stabilization && !shapeSnappedRef.current ? straightenStroke(settledPoints) : settledPoints
-    ).map((point) => ({
-      ...point,
-      x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
-      y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
-    }));
+    const points = compactPoints(
+      (stabilization && !shapeSnappedRef.current
+        ? straightenStroke(settledPoints)
+        : settledPoints
+      ).map((point) => ({
+        ...point,
+        x: Math.max(0, Math.min(PAGE_WIDTH, point.x)),
+        y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
+      })),
+    );
     commitLiveStroke({ ...liveStroke, points });
     setStrokes((current) => [...current, { ...liveStroke, points }]);
   }
