@@ -18,7 +18,9 @@ it("troca de ferramenta com os atalhos P, E, H e V", () => {
   renderStudio();
   const pen = screen.getByRole("button", { name: "Caneta" });
   const eraser = screen.getByRole("button", { name: "Borracha" });
-  const hand = screen.getByRole("button", { name: "Mover folha" });
+  // Não há botão de mover a folha: a mão vem pela tecla H e se reconhece pela folha.
+  expect(screen.queryByRole("button", { name: "Mover folha" })).toBeNull();
+  const handActive = () => screen.queryByLabelText("Arraste a folha para mover") !== null;
   const select = screen.getByRole("button", { name: "Selecionar traços" });
 
   expect(pen.getAttribute("aria-pressed")).toBe("true");
@@ -27,7 +29,8 @@ it("troca de ferramenta com os atalhos P, E, H e V", () => {
   expect(eraser.getAttribute("aria-pressed")).toBe("true");
 
   fireEvent.keyDown(window, { key: "h", code: "KeyH" });
-  expect(hand.getAttribute("aria-pressed")).toBe("true");
+  expect(handActive()).toBe(true);
+  expect(eraser.getAttribute("aria-pressed")).toBe("false");
 
   fireEvent.keyDown(window, { key: "v", code: "KeyV" });
   expect(select.getAttribute("aria-pressed")).toBe("true");
@@ -49,16 +52,16 @@ it("não republica o rascunho quando apenas a identidade do callback muda", () =
 it("Espaço segurado troca temporariamente para mover e volta ao soltar", () => {
   renderStudio();
   const pen = screen.getByRole("button", { name: "Caneta" });
-  const hand = screen.getByRole("button", { name: "Mover folha" });
 
   fireEvent.keyDown(window, { key: "e", code: "KeyE" });
   const eraser = screen.getByRole("button", { name: "Borracha" });
   expect(eraser.getAttribute("aria-pressed")).toBe("true");
 
   fireEvent.keyDown(window, { key: " ", code: "Space" });
-  expect(hand.getAttribute("aria-pressed")).toBe("true");
+  expect(screen.queryByLabelText("Arraste a folha para mover")).not.toBeNull();
 
   fireEvent.keyUp(window, { key: " ", code: "Space" });
+  expect(screen.queryByLabelText("Arraste a folha para mover")).toBeNull();
   expect(eraser.getAttribute("aria-pressed")).toBe("true");
   expect(pen.getAttribute("aria-pressed")).toBe("false");
 });

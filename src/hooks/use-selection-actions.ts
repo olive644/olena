@@ -22,7 +22,14 @@ import {
   selectionSize,
   type SelectionClipboard,
 } from "../components/handwriting-selection-ops";
-import type { SelectionScene } from "../components/handwriting-selection-scene";
+import {
+  moveCoordinateSystems,
+  moveImages,
+  moveStickies,
+  moveStrokes,
+  moveTextFrame,
+  type SelectionScene,
+} from "../components/handwriting-selection-scene";
 import {
   PAGE_TEXT_SELECTION_ID,
   type HandwritingTool,
@@ -47,6 +54,7 @@ type SelectionActionsInput = {
   setCoordinateSystems: Setter<HandwritingCoordinateSystem[]>;
   setImportedImages: Setter<HandwritingImage[]>;
   setPageText: Setter<string>;
+  setPageTextFrame: Setter<{ x: number; y: number; width: number; height: number }>;
   setSelectedIds: Setter<string[]>;
   setSelectedCoordinateIds: Setter<string[]>;
 };
@@ -66,6 +74,7 @@ export function useSelectionActions(input: SelectionActionsInput) {
     setCoordinateSystems,
     setImportedImages,
     setPageText,
+    setPageTextFrame,
     setSelectedIds,
     setSelectedCoordinateIds,
   } = input;
@@ -74,6 +83,7 @@ export function useSelectionActions(input: SelectionActionsInput) {
   const layerVisibility = scene.layers;
   const [canPaste, setCanPaste] = useState(() => selectionClipboard !== null);
   const pasteCount = useRef(0);
+  const lastNudgeAt = useRef(0);
 
   function deleteSelection() {
     if (!selectedIds.length && !selectedCoordinateIds.length) return;
@@ -215,6 +225,21 @@ export function useSelectionActions(input: SelectionActionsInput) {
     setImportedImages([...rotated.images]);
   }
 
+  // Empurra tudo o que está selecionado (traços, post-its, imagens, eixos e o texto da folha).
+  // Vários toques seguidos entram como um só passo do Desfazer.
+  function nudgeSelection(dx: number, dy: number) {
+    if (!selectedIds.length) return;
+    const now = Date.now();
+    if (now - lastNudgeAt.current > 800) remember();
+    lastNudgeAt.current = now;
+    setStrokes((current) => moveStrokes(current, selectedIds, dx, dy, page));
+    setCoordinateSystems((current) => moveCoordinateSystems(current, selectedIds, dx, dy, page));
+    setStickies((current) => moveStickies(current, selectedIds, dx, dy, page));
+    setImportedImages((current) => moveImages(current, selectedIds, dx, dy, page));
+    if (selectedIds.includes(PAGE_TEXT_SELECTION_ID))
+      setPageTextFrame((frame) => moveTextFrame(frame, dx, dy, page));
+  }
+
   function alignSelection() {
     if (!selectedIds.length) return;
     remember();
@@ -252,5 +277,7 @@ export function useSelectionActions(input: SelectionActionsInput) {
     selectAll,
     rotateSelection,
     alignSelection,
+    nudgeSelection,
+    hasSelection: selectedIds.length > 0,
   };
 }

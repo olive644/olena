@@ -10,7 +10,11 @@ import {
 } from "../domain/handwriting";
 import type { SelectionScene } from "../components/handwriting-selection-scene";
 import { selectionHandles } from "../components/handwriting-selection-ops";
-import type { SelectionMode, Stroke } from "../components/handwriting-types";
+import {
+  PAGE_TEXT_SELECTION_ID,
+  type SelectionMode,
+  type Stroke,
+} from "../components/handwriting-types";
 
 const stroke = (id: string, x: number, y: number): Stroke =>
   ({
@@ -27,11 +31,12 @@ const stroke = (id: string, x: number, y: number): Stroke =>
 
 const at = (x: number, y: number) => ({ x, y, pressure: 0.5 });
 
-function useHarness(mode: SelectionMode = "rectangle") {
+function useHarness(mode: SelectionMode = "rectangle", withText = false) {
   const [strokes, setStrokes] = useState<Stroke[]>([stroke("a", 100, 100), stroke("b", 600, 600)]);
   const [stickies, setStickies] = useState<HandwritingSticky[]>([]);
   const [coordinateSystems, setCoordinateSystems] = useState<HandwritingCoordinateSystem[]>([]);
   const [images, setImportedImages] = useState<HandwritingImage[]>([]);
+  const [pageTextFrame, setPageTextFrame] = useState({ x: 700, y: 900, width: 300, height: 200 });
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedCoordinateIds, setSelectedCoordinateIds] = useState<string[]>([]);
   const remember = useMemo(() => vi.fn(), []);
@@ -40,9 +45,9 @@ function useHarness(mode: SelectionMode = "rectangle") {
     stickies,
     coordinateSystems,
     images,
-    pageText: "",
+    pageText: withText ? "Anotação" : "",
     pageTextSize: 28,
-    pageTextFrame: { x: 0, y: 0, width: 100, height: 100 },
+    pageTextFrame,
     layers: DEFAULT_HANDWRITING_LAYER_VISIBILITY,
   };
   const gesture = useSelectionGesture({
@@ -58,8 +63,9 @@ function useHarness(mode: SelectionMode = "rectangle") {
     setStickies,
     setCoordinateSystems,
     setImportedImages,
+    setPageTextFrame,
   });
-  return { gesture, strokes, selectedIds, remember };
+  return { gesture, strokes, selectedIds, remember, pageTextFrame };
 }
 
 const pointer = { pointerId: 1, pointerType: "mouse" };
@@ -116,6 +122,20 @@ describe("gesto da ferramenta Selecionar", () => {
     expect(widthAfter).toBeGreaterThan(100);
     act(() => void result.current.gesture.end(at(corner.x + 100, corner.y + 40)));
     expect(result.current.selectedIds).toEqual(["a"]);
+  });
+
+  it("o texto da folha selecionado também se move, sem sair da folha", () => {
+    const { result } = renderHook(() => useHarness("rectangle", true));
+    act(() => result.current.gesture.begin(pointer, at(690, 890)));
+    act(() => void result.current.gesture.end(at(1010, 1110)));
+    expect(result.current.selectedIds).toContain(PAGE_TEXT_SELECTION_ID);
+    act(() => result.current.gesture.begin(pointer, at(725, 915)));
+    act(() => void result.current.gesture.move(pointer, at(775, 945)));
+    act(() => void result.current.gesture.end(at(775, 945)));
+    expect(result.current.pageTextFrame).toMatchObject({ x: 750, y: 930 });
+    act(() => result.current.gesture.begin(pointer, at(765, 945)));
+    act(() => void result.current.gesture.move(pointer, at(9000, 9000)));
+    expect(result.current.pageTextFrame).toMatchObject({ x: 900, y: 1400 });
   });
 
   it("o movimento de outro ponteiro e o de quando não há gesto não são do gesto", () => {

@@ -17,6 +17,8 @@ function setup(overrides: Partial<EditorShortcutState> = {}) {
     paste: vi.fn(),
     duplicate: vi.fn(),
     selectAll: vi.fn(),
+    hasSelection: false,
+    nudge: vi.fn(),
     ...overrides,
   };
   const canvas = document.createElement("canvas");
@@ -88,6 +90,20 @@ describe("atalhos do editor", () => {
     expect(select.state.paste).toHaveBeenCalledTimes(1);
     expect(select.state.duplicate).toHaveBeenCalledTimes(1);
     expect(select.state.selectAll).toHaveBeenCalledTimes(1);
+  });
+
+  it("com algo selecionado as setas empurram a seleção, e Shift empurra dez vezes mais", () => {
+    const { state } = setup({ hasSelection: true });
+    press("ArrowRight");
+    press("ArrowUp", { shiftKey: true });
+    expect(state.nudge).toHaveBeenNthCalledWith(1, 1, 0);
+    expect(state.nudge).toHaveBeenNthCalledWith(2, 0, -10);
+  });
+
+  it("sem seleção as setas não são interceptadas", () => {
+    const { state } = setup({ hasSelection: false });
+    expect(press("ArrowLeft").defaultPrevented).toBe(false);
+    expect(state.nudge).not.toHaveBeenCalled();
   });
 
   it("Espaço vira a mão enquanto está pressionado e devolve a ferramenta ao soltar", () => {

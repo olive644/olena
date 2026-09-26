@@ -151,6 +151,17 @@ function clamp(value: number, max: number): number {
 
 export type PageSize = { width: number; height: number };
 
+export type TextFrame = { x: number; y: number; width: number; height: number };
+
+// A moldura do texto da folha acompanha o arrasto e não sai da folha.
+export function moveTextFrame(frame: TextFrame, dx: number, dy: number, page: PageSize): TextFrame {
+  return {
+    ...frame,
+    x: clamp(frame.x + dx, Math.max(0, page.width - frame.width)),
+    y: clamp(frame.y + dy, Math.max(0, page.height - frame.height)),
+  };
+}
+
 export function moveStrokes(
   strokes: readonly Stroke[],
   ids: readonly string[],

@@ -235,12 +235,12 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await expect(eraser.locator("svg")).toHaveCSS("animation-name", "editor-tool-pick");
     await expect(eraser).toHaveCSS("background-color", "rgb(116, 51, 224)");
     await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
-    await expect(dialog.locator('[data-paper-editor-icon="hand"]')).toHaveCSS(
+    await expect(dialog.locator('[data-paper-editor-icon="select"]')).toHaveCSS(
       "color",
       "rgb(23, 21, 28)",
     );
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-    await expect(dialog.locator('[data-paper-editor-icon="hand"]')).toHaveCSS(
+    await expect(dialog.locator('[data-paper-editor-icon="select"]')).toHaveCSS(
       "color",
       "rgb(255, 249, 239)",
     );
@@ -288,11 +288,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   await expect(dialog.getByLabel("Zoom atual")).toHaveText("115%");
   await page.mouse.wheel(0, 100);
   await expect(dialog.getByLabel("Zoom atual")).toHaveText("100%");
-  await dialog.getByRole("button", { name: "Mover folha" }).click();
-  await expect(dialog.getByRole("button", { name: "Mover folha" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  // Não há mais botão de mover a folha: a tecla H (ou Espaço, ou o botão da caneta) troca para a
+  // mão, e mover o que está selecionado não precisa de ferramenta.
+  await expect(dialog.getByRole("button", { name: "Mover folha" })).toHaveCount(0);
+  await page.keyboard.press("h");
+  await expect(canvas).toHaveAttribute("aria-label", "Arraste a folha para mover");
   const panStart = await canvas.boundingBox();
   const visibleViewport = await dialog.locator(".handwriting-viewport").boundingBox();
   const initialScroll = await dialog

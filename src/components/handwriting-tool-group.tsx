@@ -107,15 +107,6 @@ export function HandwritingToolGroup({
       </button>
       <button
         type="button"
-        className={!textMode && tool === "hand" ? "is-active" : ""}
-        aria-label="Mover folha"
-        aria-pressed={!textMode && tool === "hand"}
-        onClick={() => onSelectTool("hand")}
-      >
-        <PaperEditorIcon name="hand" /> <span>Mover</span>
-      </button>
-      <button
-        type="button"
         className={!textMode && tool === "select" ? "is-active" : ""}
         aria-label="Selecionar traços"
         aria-pressed={!textMode && tool === "select"}

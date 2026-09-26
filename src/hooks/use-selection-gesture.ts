@@ -21,12 +21,18 @@ import {
   moveImages,
   moveStickies,
   moveStrokes,
+  moveTextFrame,
   pickInBox,
   pickInPolygon,
   selectionFrame,
   type SelectionScene,
 } from "../components/handwriting-selection-scene";
-import type { SelectionBox, SelectionMode, Stroke } from "../components/handwriting-types";
+import {
+  PAGE_TEXT_SELECTION_ID,
+  type SelectionBox,
+  type SelectionMode,
+  type Stroke,
+} from "../components/handwriting-types";
 
 type Setter<T> = Dispatch<SetStateAction<T>>;
 
@@ -73,6 +79,7 @@ type SelectionGestureInput = {
   setStickies: Setter<HandwritingSticky[]>;
   setCoordinateSystems: Setter<HandwritingCoordinateSystem[]>;
   setImportedImages: Setter<HandwritingImage[]>;
+  setPageTextFrame: Setter<{ x: number; y: number; width: number; height: number }>;
 };
 
 function boxBetween(a: HandwritingPoint, b: HandwritingPoint): SelectionBox {
@@ -100,6 +107,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
     setStickies,
     setCoordinateSystems,
     setImportedImages,
+    setPageTextFrame,
   } = input;
   const gesture = useRef<Gesture | null>(null);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
@@ -212,6 +220,8 @@ export function useSelectionGesture(input: SelectionGestureInput) {
         setCoordinateSystems((items) => moveCoordinateSystems(items, current.ids, dx, dy, page));
         setStickies((items) => moveStickies(items, current.ids, dx, dy, page));
         setImportedImages((items) => moveImages(items, current.ids, dx, dy, page));
+        if (current.ids.includes(PAGE_TEXT_SELECTION_ID))
+          setPageTextFrame((frame) => moveTextFrame(frame, dx, dy, page));
         current.origin = point;
       }
     } else {

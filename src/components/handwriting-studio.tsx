@@ -749,6 +749,8 @@ export function HandwritingStudio({
     selectAll,
     rotateSelection,
     alignSelection,
+    nudgeSelection,
+    hasSelection,
   } = useSelectionActions({
     scene: selectionScene,
     selectedIds,
@@ -761,6 +763,7 @@ export function HandwritingStudio({
     setCoordinateSystems,
     setImportedImages,
     setPageText,
+    setPageTextFrame,
     setSelectedIds,
     setSelectedCoordinateIds,
   });
@@ -777,6 +780,7 @@ export function HandwritingStudio({
     setStickies,
     setCoordinateSystems,
     setImportedImages,
+    setPageTextFrame,
   });
   const { selectionBox, setSelectionBox, selectionPath, setSelectionPath } = selectionGesture;
   const pinch = usePinchZoom({
@@ -2136,6 +2140,8 @@ export function HandwritingStudio({
       paste: pasteSelection,
       duplicate: duplicateSelection,
       selectAll,
+      hasSelection,
+      nudge: nudgeSelection,
     },
     canvasRef,
     viewportRef,
