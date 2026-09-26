@@ -46,7 +46,17 @@ export type StudyNote = {
   kind?: "note";
 };
 
+export type NotebookTab = {
+  id: string;
+  kind: "divider" | "bookmark";
+  pageId: string;
+  label: string;
+  color: string;
+  position: number;
+};
+
 export type StudyNotebook = {
+  paperTabs?: NotebookTab[];
   subjectIds?: string[];
   dividerPosition?: "side" | "bottom";
   bookmarkedPageIds?: string[];
@@ -165,7 +175,9 @@ export type WorkspaceAction =
   | {
       type: "notebook/organized";
       id: string;
-      changes: Partial<Pick<StudyNotebook, "subjectIds" | "dividerPosition" | "bookmarkedPageIds">>;
+      changes: Partial<
+        Pick<StudyNotebook, "subjectIds" | "dividerPosition" | "bookmarkedPageIds" | "paperTabs">
+      >;
     }
   | { type: "note/subject-changed"; id: string; subjectId: string; updatedAt: string }
   | { type: "task/added"; title: string; subjectId: string; dueDate: string }
@@ -508,7 +520,20 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         notebooks: state.notebooks.map((notebook) =>
           notebook.id === action.notebookId
-            ? { ...notebook, pageIds: notebook.pageIds.filter((id) => id !== action.noteId) }
+            ? {
+                ...notebook,
+                pageIds: notebook.pageIds.filter((id) => id !== action.noteId),
+                ...(notebook.paperTabs
+                  ? { paperTabs: notebook.paperTabs.filter((tab) => tab.pageId !== action.noteId) }
+                  : {}),
+                ...(notebook.bookmarkedPageIds
+                  ? {
+                      bookmarkedPageIds: notebook.bookmarkedPageIds.filter(
+                        (id) => id !== action.noteId,
+                      ),
+                    }
+                  : {}),
+              }
             : notebook,
         ),
         notes: state.notes.filter((note) => note.id !== action.noteId),

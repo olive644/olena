@@ -347,6 +347,22 @@ function isNote(value: unknown): boolean {
 function isNotebook(value: unknown): boolean {
   return (
     isRecord(value) &&
+    (value["paperTabs"] === undefined ||
+      (Array.isArray(value["paperTabs"]) &&
+        value["paperTabs"].every(
+          (tab: unknown) =>
+            isRecord(tab) &&
+            isString(tab["id"]) &&
+            isString(tab["pageId"]) &&
+            isString(tab["label"]) &&
+            isString(tab["color"]) &&
+            /^#[\da-f]{6}$/i.test(tab["color"]) &&
+            (tab["kind"] === "divider" || tab["kind"] === "bookmark") &&
+            typeof tab["position"] === "number" &&
+            Number.isFinite(tab["position"]) &&
+            tab["position"] >= 0 &&
+            tab["position"] <= 1,
+        ))) &&
     (value["kind"] === undefined || value["kind"] === "folder") &&
     (value["parentId"] === undefined || isString(value["parentId"])) &&
     (value["subjectIds"] === undefined ||
@@ -711,6 +727,11 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
               pageIds,
               ...(subjectIds.length ? { subjectIds } : {}),
               ...(bookmarkedPageIds.length ? { bookmarkedPageIds } : {}),
+              ...(candidates.some((item) => item.paperTabs)
+                ? {
+                    paperTabs: candidates.flatMap((item) => item.paperTabs ?? []),
+                  }
+                : {}),
               ...(primary.dividerPosition ||
               candidates.some((item) => item.dividerPosition === "bottom")
                 ? { dividerPosition: primary.dividerPosition ?? "bottom" }

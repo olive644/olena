@@ -1,5 +1,20 @@
 # Auditoria do estado atual
 
+## Atualização: marcações diretamente no papel
+
+O preview agora usa ferramentas arrastáveis, sem formulário de atribuição por folha.
+Divisórias ficam presas à borda direita; fitas saem por baixo da folha escolhida.
+`StudyNotebook.paperTabs` persiste a âncora, posição, nome e cor. Dados legados
+continuam válidos e são convertidos ao editar as marcações, sem apagar assuntos.
+Clicar numa divisória navega à folha em vez de filtrar o caderno. A virada acompanha
+o arrasto pela lombada com frente e verso; remover na prévia anima o papel amassado.
+Teclado, posicionamento por clique e movimento reduzido possuem caminhos equivalentes.
+A implementação não adiciona dependências. O JS medido fica em aproximadamente
+274.2 KiB inicial e 818 KiB total; limites ajustados para 276 e 822 KiB, com margem
+restrita para diferenças do build Linux.
+
+Os registros abaixo descrevem também os comportamentos anteriores à atualização.
+
 Em celulares até 600px, cadernos ocupam uma janela fixa entre cabeçalho e navegação.
 Prévia e capa se adaptam à altura; apenas a estante e a gaveta de divisórias rolam.
 As fitas usam recortes, dobras e um marcador amarelo de papel.

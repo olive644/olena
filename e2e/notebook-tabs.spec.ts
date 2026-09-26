@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
 test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   page,
@@ -55,6 +55,8 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       type: "touchMove",
       touchPoints: [{ x: x - 90, y }],
     });
+    await expect(preview.locator(".notebook-turn-leaf")).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath("folha-em-movimento.png") });
     await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
     await session.detach();
   } else {
@@ -63,33 +65,76 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     await page.mouse.move(bounds.x + bounds.width * 0.2, bounds.y + bounds.height * 0.45, {
       steps: 8,
     });
+    await expect(preview.locator(".notebook-turn-leaf")).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath("folha-em-movimento.png") });
     await page.mouse.up();
   }
   await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toHaveCount(0);
   await preview.getByRole("button", { name: "‹ Anterior" }).click();
-  await preview.getByRole("button", { name: "Divisórias", exact: true }).click();
-  await preview.getByLabel("Nova divisória", { exact: true }).fill("Matemática");
-  await preview.getByRole("button", { name: "Adicionar divisória" }).click();
-  await preview.getByRole("radio", { name: "Embaixo" }).check();
-  await preview.getByText("Associar folhas às divisórias").click();
-  await preview
-    .getByLabel("Divisória da folha 2", { exact: true })
-    .selectOption({ label: "Matemática" });
-  const tabs = preview.getByRole("navigation", { name: "Divisórias do caderno" });
-  await expect(tabs).toHaveClass(/is-bottom/);
-  await preview.getByRole("button", { name: "Fechar divisórias", exact: true }).click();
-  await tabs.getByRole("button", { name: "Matemática", exact: true }).click();
-  await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(1);
+  await expect(book).toHaveAttribute("aria-busy", "false");
+  async function dragPiece(source: Locator, relativeX: number, relativeY: number) {
+    await source.evaluate((element) =>
+      element.scrollIntoView({ block: "center", behavior: "instant" }),
+    );
+    const target = (await book.boundingBox())!;
+    const x = target.x + target.width * relativeX;
+    const y = target.y + target.height * relativeY;
+    const box = await source.boundingBox();
+    if (!box) throw new Error("Ferramenta não renderizada");
+    const startX = box.x + box.width / 2;
+    const startY = box.y + box.height / 2;
+    if (testInfo.project.name === "mobile" && browserName === "chromium") {
+      const session = await page.context().newCDPSession(page);
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: startX, y: startY }],
+      });
+      for (let step = 1; step <= 8; step++)
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [
+            { x: startX + ((x - startX) * step) / 8, y: startY + ((y - startY) * step) / 8 },
+          ],
+        });
+      await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+      await session.detach();
+    } else {
+      await page.mouse.move(startX, startY);
+      await page.mouse.down();
+      await page.mouse.move(x, y, { steps: 8 });
+      await page.mouse.up();
+    }
+  }
+  await dragPiece(preview.getByRole("button", { name: "Colocar divisória" }), 0.99, 0.35);
+  await preview.getByLabel("Nome da marcação").fill("Matemática");
+  await preview.getByRole("button", { name: "Verde", exact: true }).click();
+  await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  const divider = preview.getByRole("button", {
+    name: "Divisória Matemática, folha 2",
+    exact: true,
+  });
+  await expect(divider).toBeVisible();
+  const beforeY = (await divider.boundingBox())!.y - (await book.boundingBox())!.y;
+  await dragPiece(divider, 0.99, 0.7);
+  await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  expect((await divider.boundingBox())!.y - (await book.boundingBox())!.y).toBeGreaterThan(beforeY);
+  await dragPiece(preview.getByRole("button", { name: "Colocar marcador" }), 0.28, 0.6);
+  await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  const marker = preview.getByRole("button", { name: "Marcador Marcador, folha 1", exact: true });
+  await expect(marker).toBeVisible();
+  const markerBox = (await marker.boundingBox())!;
+  const currentBox = (await book.boundingBox())!;
+  expect(markerBox.y + markerBox.height).toBeGreaterThan(currentBox.y + currentBox.height);
+  await dragPiece(marker, 0.73, 0.7);
+  await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  await expect(
+    preview.getByRole("button", { name: "Marcador Marcador, folha 2", exact: true }),
+  ).toBeVisible();
+  await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(2);
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
-  await preview.getByRole("button", { name: "Marcar folha 2 como importante" }).click();
-  const important = preview.getByRole("navigation", { name: "Folhas importantes" });
-  await expect(important).toContainText("★ 2");
-  const tabBox = await tabs.boundingBox();
-  const importantBox = await important.boundingBox();
-  expect(importantBox!.x).toBeGreaterThanOrEqual(tabBox!.x + tabBox!.width - 1);
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
-  await preview.getByRole("button", { name: /Abrir preview de / }).click();
+  await preview.getByRole("button", { name: /Abrir preview de .*folha 2/ }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
   const gear = editor.locator('[data-paper-editor-icon="settings"]');
   await expect(gear.locator('path[fill="#17151C"]')).toHaveCount(0);
@@ -147,4 +192,46 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       await preview.getByRole("button", { name: "Ver capa" }).click();
     }
   }
+  await preview.getByRole("button", { name: "Ver folhas" }).click();
+  await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
+  await expect(preview.locator(".notebook-crumple")).toBeVisible();
+  await preview.locator(".notebook-crumple").evaluate((element) => {
+    for (const animation of element.getAnimations({ subtree: true })) {
+      animation.pause();
+      animation.currentTime = 560;
+    }
+  });
+  await page.screenshot({ path: testInfo.outputPath("papel-amassando.png") });
+  await expect(preview.locator(".notebook-crumple")).toHaveCount(0);
+  await expect(preview.getByText("Folhas 1 e 2 de 2")).toBeVisible();
+  await expect(preview.getByRole("button", { name: "Divisória Matemática, folha 2" })).toHaveCount(
+    0,
+  );
+  await expect(preview.getByRole("button", { name: "Marcador Marcador, folha 2" })).toHaveCount(0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await preview.getByRole("button", { name: "Remover folha 2", exact: true }).click();
+  await expect(preview.locator(".notebook-crumple")).toHaveCount(0);
+  await expect(preview.getByText("Folhas 1 de 1")).toBeVisible();
+  await preview.getByRole("button", { name: "Colocar divisória" }).focus();
+  await page.keyboard.press("Enter");
+  await preview.getByRole("button", { name: /Abrir preview de .*folha 1/ }).focus();
+  await page.keyboard.press("Enter");
+  await expect(preview.getByLabel("Nome da marcação")).toBeVisible();
+  await preview.getByRole("button", { name: "Pronto", exact: true }).click();
+  const keyboardDivider = preview.getByRole("button", {
+    name: "Divisória Divisória, folha 1",
+    exact: true,
+  });
+  await keyboardDivider.focus();
+  const originalPosition = await keyboardDivider.evaluate((element) =>
+    element.style.getPropertyValue("--tab-position"),
+  );
+  await page.keyboard.press("ArrowUp");
+  await expect
+    .poll(() =>
+      keyboardDivider.evaluate((element) =>
+        Number(element.style.getPropertyValue("--tab-position")),
+      ),
+    )
+    .toBeLessThan(Number(originalPosition));
 });
