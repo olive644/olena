@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { StudyNote } from "../domain/workspace";
+import { NotebookToolIcon } from "./notebook-tool-icon";
+import { PaperEditorIcon } from "./paper-editor-icon";
 
 type NotebookPageIndexProps = {
   pages: readonly StudyNote[];
@@ -39,14 +41,19 @@ export function NotebookPageIndex({
     >
       <header>
         <div>
-          <small>CADERNO</small>
+          <NotebookToolIcon name="index" />
           <h2>Índice de folhas</h2>
           <p>
             {pages.length} {pages.length === 1 ? "folha" : "folhas"}
           </p>
         </div>
-        <button type="button" className="secondary-button" onClick={onClose}>
-          Fechar
+        <button
+          type="button"
+          className="notebook-index-close"
+          onClick={onClose}
+          aria-label="Fechar"
+        >
+          <PaperEditorIcon name="close" />
         </button>
       </header>
       <ol>
@@ -85,7 +92,7 @@ export function NotebookPageIndex({
                     disabled={index === 0}
                     onClick={() => onMove(page.id, -1)}
                   >
-                    ‹
+                    <img src="/paper-arrow.svg" alt="" className="is-previous" />
                   </button>
                   <button
                     type="button"
@@ -93,7 +100,7 @@ export function NotebookPageIndex({
                     disabled={index === pages.length - 1}
                     onClick={() => onMove(page.id, 1)}
                   >
-                    ›
+                    <img src="/paper-arrow.svg" alt="" />
                   </button>
                 </span>
               )}

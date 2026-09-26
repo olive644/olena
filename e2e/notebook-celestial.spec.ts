@@ -37,12 +37,16 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
     }),
   );
   await page.screenshot({ path: testInfo.outputPath("abertura.png") });
+  const clasp = await page.locator(".notebook-journey-clasp").boundingBox();
+  const carrier = await page.locator(".notebook-journey").boundingBox();
+  expect(clasp!.x).toBeGreaterThan(carrier!.x + carrier!.width * 0.9);
+  await expect(page.locator(".notebook-journey-pages .notebook-sheet")).toHaveCount(2);
   await page.evaluate(() => document.getAnimations().forEach((animation) => animation.play()));
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   const toolbar = page.getByRole("toolbar", { name: "Ferramentas do caderno" });
   await expect(toolbar.getByRole("button")).toHaveText([
     "",
-    "Ver capa",
+    "Personalizar",
     "Divisória",
     "Marcador",
     "Editar marcas",
@@ -71,7 +75,25 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await page.getByRole("button", { name: "Próxima ›" }).click();
   await expect(book).toHaveAttribute("aria-busy", "false");
   await expect(page.locator(".notebook-attached-tab.is-buried")).toHaveCount(3);
+  for (const mark of await page.locator(".notebook-attached-tab.is-buried").all()) {
+    expect(
+      await mark.evaluate((node) => {
+        const bounds = node.getBoundingClientRect();
+        const divider = node.classList.contains("is-divider");
+        const x = divider ? bounds.right - 12 : bounds.x + bounds.width / 2;
+        const y = divider ? bounds.y + bounds.height / 2 : bounds.bottom - 16;
+        return node.contains(document.elementFromPoint(x, y));
+      }),
+    ).toBe(true);
+  }
   await page.screenshot({ path: testInfo.outputPath("marcas-sob-folhas.png") });
+  await page.getByRole("button", { name: "Personalizar", exact: true }).click();
+  await expect(page.locator(".notebook-journey")).toBeVisible();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  await expect(page.locator(".notebook-concept-cover .book-cover")).toBeVisible();
+  await page.getByRole("button", { name: "Ver folhas", exact: true }).click();
+  await expect(page.locator(".notebook-journey")).toBeVisible();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
   await expect(page.locator(".notebook-journey")).toBeVisible();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);

@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Camadas e transições do caderno
+
+Marcas ficam entre a capa e as folhas, com pontas acessíveis fora do papel.
+O fecho é independente da capa e abre para a direita. A viagem usa uma cópia
+visual das folhas reais; Personalizar e Ver folhas também animam o fechamento
+e a abertura. A capa aceita gesto para a esquerda. Controles aguardam a transição.
+O índice usa o mesmo ícone no editor e preview, com setas de papel e botão claro.
+
 ## Caderno celeste e navegação física
 
 A barra reúne a seta amarela original, capa, divisórias, marcador, edição e índice.

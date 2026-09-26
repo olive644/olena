@@ -6,10 +6,12 @@ export function NotebookCover({
   subjectColor,
   title = "Ideias em papel",
   tabs = [],
+  clasp = true,
 }: {
   subjectColor: string;
   title?: string;
   tabs?: NotebookTab[];
+  clasp?: boolean;
 }) {
   return (
     <span
@@ -30,10 +32,12 @@ export function NotebookCover({
         <span className="book-cover__label">
           <span className="book-cover__title">{title}</span>
         </span>
+      </span>
+      {clasp && (
         <span className="book-cover__clasp">
           <i />
         </span>
-      </span>
+      )}
       <span className="book-cover__spine">
         <i />
         <i />
