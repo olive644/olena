@@ -25,6 +25,65 @@ export type NotebookCollaborationState = {
 
 export const NOTEBOOK_COLLAB_SESSION_KEY = "helena:notebook-collab-session:v1";
 
+// Alterações ainda não enviadas ficam guardadas neste aparelho, para sobreviver a uma recarga ou
+// ao fechamento da aba sem conexão. `base` é a última folha do servidor a partir da qual elas
+// foram feitas: é o que permite juntar com o que os colegas escreveram nesse meio tempo.
+export const NOTEBOOK_COLLAB_PENDING_KEY = "helena.notebook-collab.pending.v1";
+
+type StoredPending = {
+  code: string;
+  document: HandwritingDocument;
+  base?: HandwritingDocument;
+  label?: string;
+};
+
+function readStoredPending(code: string): StoredPending | undefined {
+  try {
+    const value = JSON.parse(localStorage.getItem(NOTEBOOK_COLLAB_PENDING_KEY) ?? "null") as {
+      code?: unknown;
+      document?: unknown;
+      base?: unknown;
+      label?: unknown;
+    } | null;
+    if (!value || value.code !== code || !isHandwritingDocument(value.document)) return undefined;
+    return {
+      code,
+      document: value.document as HandwritingDocument,
+      ...(isHandwritingDocument(value.base) ? { base: value.base as HandwritingDocument } : {}),
+      ...(typeof value.label === "string" ? { label: value.label } : {}),
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+function writeStoredPending(pending: StoredPending | undefined) {
+  try {
+    if (pending) localStorage.setItem(NOTEBOOK_COLLAB_PENDING_KEY, JSON.stringify(pending));
+    else localStorage.removeItem(NOTEBOOK_COLLAB_PENDING_KEY);
+  } catch {
+    // Sem espaço, as alterações continuam só na memória, como antes.
+  }
+}
+
+// Falha de rede ou do servidor: vale tentar de novo. Recusas (403, 404...) não.
+class CollabRequestError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+function isTransient(caught: unknown): boolean {
+  return (
+    caught instanceof TypeError ||
+    (caught instanceof CollabRequestError && caught.status >= 500) ||
+    (typeof navigator !== "undefined" && navigator.onLine === false)
+  );
+}
+
 type StoredSession = {
   code: string;
   credential: string;
@@ -110,7 +169,11 @@ async function request<T>(action: string, body: Record<string, unknown>): Promis
     body: JSON.stringify(body),
   });
   const payload = (await response.json().catch(() => ({}))) as T & { error?: string };
-  if (!response.ok) throw new Error(payload.error ?? "Não foi possível conectar o caderno.");
+  if (!response.ok)
+    throw new CollabRequestError(
+      payload.error ?? "Não foi possível conectar o caderno.",
+      response.status,
+    );
   return payload;
 }
 
@@ -160,6 +223,11 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     undefined,
   );
   const publishingRef = useRef(false);
+  const [hasPending, setHasPending] = useState(false);
+  const publishRef = useRef<
+    ((document: HandwritingDocument, label?: string) => Promise<void>) | undefined
+  >(undefined);
+  const codeRef = useRef("");
   const updateTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mountedRef = useRef(true);
   const cursorSeenRef = useRef(new Map<string, { x: number; y: number; seenAt: number }>());
@@ -170,6 +238,27 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   const cursorPendingRef = useRef<{ x: number; y: number } | undefined>(undefined);
   const onRemoteDocumentRef = useRef(onRemoteDocument);
   onRemoteDocumentRef.current = onRemoteDocument;
+
+  // Toda mudança da fila passa por aqui: memória, aparelho e o aviso da tela ficam juntos.
+  const setPending = useCallback(
+    (next: { document: HandwritingDocument; label?: string } | undefined) => {
+      pendingRef.current = next;
+      setHasPending(next !== undefined);
+      const code = codeRef.current;
+      if (!code) return;
+      writeStoredPending(
+        next
+          ? {
+              code,
+              document: next.document,
+              ...(baseDocumentRef.current ? { base: baseDocumentRef.current } : {}),
+              ...(next.label ? { label: next.label } : {}),
+            }
+          : undefined,
+      );
+    },
+    [],
+  );
 
   const stop = useCallback((clear = false) => {
     streamRef.current?.close();
@@ -184,68 +273,75 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     if (clear) clearStoredSession();
   }, []);
 
-  const applyRoom = useCallback((room: PublicNotebookCollabState) => {
-    if (room.revision < revisionRef.current) return;
-    const session = sessionRef.current;
-    if (!session || session.code !== room.code) return;
-    if (
-      session &&
-      !room.participants.some((participant) => participant.id === session.participantId)
-    ) {
-      sessionRef.current = undefined;
-      pendingRef.current = undefined;
-      clearTimeout(updateTimerRef.current);
-      clearTimeout(activityTimerRef.current);
-      streamRef.current?.close();
-      clearInterval(heartbeatRef.current);
-      clearStoredSession();
-      setActivity("");
-      setState({
-        code: "",
-        participantId: "",
-        displayName: "",
-        status: "idle",
-        error: "Você saiu desta colaboração.",
-      });
-      return;
-    }
-    const action = room.actions.at(-1);
-    if (action && action.id !== lastActionIdRef.current) {
-      lastActionIdRef.current = action.id;
+  const applyRoom = useCallback(
+    (room: PublicNotebookCollabState) => {
+      if (room.revision < revisionRef.current) return;
+      const session = sessionRef.current;
+      if (!session || session.code !== room.code) return;
       if (
-        action.kind === "document" &&
-        action.participantId !== sessionRef.current?.participantId
+        session &&
+        !room.participants.some((participant) => participant.id === session.participantId)
       ) {
-        setActivity(`${action.displayName} ${action.label}`);
+        sessionRef.current = undefined;
+        setPending(undefined);
+        clearTimeout(updateTimerRef.current);
         clearTimeout(activityTimerRef.current);
-        activityTimerRef.current = setTimeout(() => setActivity(""), 4000);
+        streamRef.current?.close();
+        clearInterval(heartbeatRef.current);
+        clearStoredSession();
+        setActivity("");
+        setState({
+          code: "",
+          participantId: "",
+          displayName: "",
+          status: "idle",
+          error: "Você saiu desta colaboração.",
+        });
+        return;
       }
-    }
-    revisionRef.current = room.revision;
-    setState((current) => {
-      if (current.room && current.room.code === room.code && current.room.revision > room.revision)
-        return current;
-      return { ...current, code: room.code, room, status: "online", error: "" };
-    });
-    if (room.document) {
-      if (JSON.stringify(pendingRef.current?.document) === JSON.stringify(room.document))
-        pendingRef.current = undefined;
-      const pending = pendingRef.current;
-      const next =
-        pending && baseDocumentRef.current
-          ? mergeHandwriting(baseDocumentRef.current, pending.document, room.document)
-          : room.document;
-      baseDocumentRef.current = room.document;
-      if (pending) pendingRef.current = { ...pending, document: next };
-      const serialized = JSON.stringify(next);
-      if (serialized !== lastPublishedRef.current) {
-        lastPublishedRef.current = serialized;
-        const author =
-          room.actions.at(-1)?.kind === "document" ? room.actions.at(-1)?.displayName : undefined;
-        onRemoteDocumentRef.current?.(next, author);
+      const action = room.actions.at(-1);
+      if (action && action.id !== lastActionIdRef.current) {
+        lastActionIdRef.current = action.id;
+        if (
+          action.kind === "document" &&
+          action.participantId !== sessionRef.current?.participantId
+        ) {
+          setActivity(`${action.displayName} ${action.label}`);
+          clearTimeout(activityTimerRef.current);
+          activityTimerRef.current = setTimeout(() => setActivity(""), 4000);
+        }
       }
-    }
-  }, []);
+      revisionRef.current = room.revision;
+      setState((current) => {
+        if (
+          current.room &&
+          current.room.code === room.code &&
+          current.room.revision > room.revision
+        )
+          return current;
+        return { ...current, code: room.code, room, status: "online", error: "" };
+      });
+      if (room.document) {
+        if (JSON.stringify(pendingRef.current?.document) === JSON.stringify(room.document))
+          setPending(undefined);
+        const pending = pendingRef.current;
+        const next =
+          pending && baseDocumentRef.current
+            ? mergeHandwriting(baseDocumentRef.current, pending.document, room.document)
+            : room.document;
+        baseDocumentRef.current = room.document;
+        if (pending) setPending({ ...pending, document: next });
+        const serialized = JSON.stringify(next);
+        if (serialized !== lastPublishedRef.current) {
+          lastPublishedRef.current = serialized;
+          const author =
+            room.actions.at(-1)?.kind === "document" ? room.actions.at(-1)?.displayName : undefined;
+          onRemoteDocumentRef.current?.(next, author);
+        }
+      }
+    },
+    [setPending],
+  );
 
   const receiveCursor = useCallback((id: string, value: unknown) => {
     const point = readCursorPoint(value);
@@ -340,6 +436,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         revisionRef.current = payload.state.revision;
         lastActionIdRef.current = payload.state.actions.at(-1)?.id ?? "";
         baseDocumentRef.current = payload.state.document;
+        codeRef.current = payload.state.code;
         sessionRef.current = nextSession;
         writeStoredSession(notebookId, nextSession);
         setState({
@@ -353,6 +450,20 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         lastPublishedRef.current = payload.state.document
           ? JSON.stringify(payload.state.document)
           : "";
+        const saved = readStoredPending(payload.state.code);
+        if (saved) {
+          // Alterações feitas sem conexão: juntam com o que os colegas escreveram desde então.
+          const restored =
+            saved.base && payload.state.document
+              ? mergeHandwriting(saved.base, saved.document, payload.state.document)
+              : saved.document;
+          setPending({ document: restored, ...(saved.label ? { label: saved.label } : {}) });
+          lastPublishedRef.current = "";
+          onRemoteDocumentRef.current?.(restored);
+          startStream(payload.streamUrl);
+          void publishRef.current?.(restored, saved.label);
+          return true;
+        }
         if (payload.state.document) onRemoteDocumentRef.current?.(payload.state.document);
         startStream(payload.streamUrl);
         return true;
@@ -366,7 +477,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         return false;
       }
     },
-    [notebookId, startStream],
+    [notebookId, setPending, startStream],
   );
 
   const create = useCallback(
@@ -422,7 +533,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     async (document: HandwritingDocument, label?: string) => {
       const session = sessionRef.current;
       if (!session || JSON.stringify(document) === lastPublishedRef.current) return;
-      pendingRef.current = { document, ...(label ? { label } : {}) };
+      setPending({ document, ...(label ? { label } : {}) });
       if (publishingRef.current) return;
       publishingRef.current = true;
       try {
@@ -436,31 +547,36 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
             ...(pending.label ? { label: pending.label } : {}),
           });
           if (sessionRef.current !== session) break;
-          if (pendingRef.current === pending) pendingRef.current = undefined;
+          if (pendingRef.current === pending) setPending(undefined);
           applyRoom(payload.state);
         }
       } catch (caught) {
-        if (mountedRef.current)
-          setState((current) => ({
-            ...current,
-            status: "error",
-            error:
-              caught instanceof Error
-                ? caught.message
-                : "Não foi possível compartilhar a alteração.",
-          }));
+        if (mountedRef.current) {
+          // Sem conexão a alteração não se perde: fica na fila (e no aparelho) e sai quando voltar.
+          if (isTransient(caught)) setState((current) => ({ ...current, status: "offline" }));
+          else
+            setState((current) => ({
+              ...current,
+              status: "error",
+              error:
+                caught instanceof Error
+                  ? caught.message
+                  : "Não foi possível compartilhar a alteração.",
+            }));
+        }
       } finally {
         publishingRef.current = false;
       }
     },
-    [applyRoom],
+    [applyRoom, setPending],
   );
+  publishRef.current = publish;
 
   const publishDebounced = useCallback(
     (document: HandwritingDocument, label?: string) => {
       if (!sessionRef.current || JSON.stringify(document) === lastPublishedRef.current) return;
       if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
-      pendingRef.current = { document, ...(label ? { label } : {}) };
+      setPending({ document, ...(label ? { label } : {}) });
       updateTimerRef.current = setTimeout(() => {
         const pending = pendingRef.current;
         if (pending) {
@@ -469,7 +585,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         }
       }, PUBLISH_DEBOUNCE_MS);
     },
-    [publish],
+    [publish, setPending],
   );
 
   const flushCursor = useCallback(() => {
@@ -517,7 +633,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   const leave = useCallback(() => {
     const session = sessionRef.current;
     sessionRef.current = undefined;
-    pendingRef.current = undefined;
+    setPending(undefined);
+    codeRef.current = "";
     if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
     stop(true);
     setState({ code: "", participantId: "", displayName: "", status: "idle", error: "" });
@@ -526,7 +643,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       void request("leave", { code: session.code, credential: session.credential }).catch(() => {
         // A presença expira no servidor mesmo se a confirmação de saída falhar.
       });
-  }, [stop]);
+  }, [setPending, stop]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -553,6 +670,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     return () => {
       mountedRef.current = false;
       sessionRef.current = undefined;
+      // A fila guardada no aparelho continua; só a cópia em memória some.
       pendingRef.current = undefined;
       if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
       stop();
@@ -590,7 +708,17 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
           setState((current) => ({ ...current, status: "offline" }));
         });
     heartbeatRef.current = setInterval(beat, 15_000);
+    // Quando a internet volta, envia a fila na hora em vez de esperar o próximo batimento.
+    const goOnline = () => beat();
+    const goOffline = () => {
+      if (sessionRef.current === session)
+        setState((current) => ({ ...current, status: "offline" }));
+    };
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
     return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
       if (heartbeatRef.current) clearInterval(heartbeatRef.current);
       heartbeatRef.current = undefined;
     };
@@ -618,5 +746,25 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       });
   }, [cursorTick, selfId, state.room?.participants]);
 
-  return { state, activity, cursors, sendCursor, create, join, publish: publishDebounced, leave };
+  const notice =
+    state.status === "offline"
+      ? "Sem conexão. Suas alterações ficam neste aparelho e serão enviadas quando a internet voltar."
+      : state.status === "reconnecting"
+        ? "Reconectando ao caderno…"
+        : hasPending && state.status === "online"
+          ? "Enviando alterações…"
+          : "";
+
+  return {
+    state,
+    activity,
+    notice,
+    hasPending,
+    cursors,
+    sendCursor,
+    create,
+    join,
+    publish: publishDebounced,
+    leave,
+  };
 }
