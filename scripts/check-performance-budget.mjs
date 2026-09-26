@@ -116,7 +116,9 @@ const MAX_INITIAL_JS_BYTES = 276 * 1024;
 // (839.2 KiB measured); the ceiling moves to 848 KiB.
 // O caderno celeste adiciona ícones SVG e a viagem animada à rota lazy de cadernos.
 // Linux CI mede 848.0 KiB; 851 KiB preserva margem estreita para variação do build.
-const MAX_TOTAL_JS_BYTES = 851 * 1024;
+// O snapshot de folhas e as transições nos dois sentidos elevam a medição Linux
+// para 852.1 KiB; 854 KiB mantém margem curta sem afetar a entrada inicial.
+const MAX_TOTAL_JS_BYTES = 854 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
