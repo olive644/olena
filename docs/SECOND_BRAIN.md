@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+O snapshot de `NotebookJourney` congela largura, altura e tipografia na origem,
+depois compensa a escala do transportador. As folhas ficam acima da capa giratória.
+Não apagar a capa por opacity no último frame: isso causava o salto visual.
+`NotebookPageJourney` preserva a folha escolhida, aguarda o canvas do editor e usa
+o retângulo real dele como destino. Observador, frames e animações são limpos ao sair;
+o limite de espera devolve o controle mesmo se o editor não montar.
+
 A capa de fundo não cria mais o contexto que escondia marcas enterradas.
 A ordem é capa, pilha de papel, marcas enterradas, folhas, marcas expostas.
 O fecho é irmão da face giratória. `NotebookJourney` recebe snapshot inerte das

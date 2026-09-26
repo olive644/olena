@@ -41,6 +41,12 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   const carrier = await page.locator(".notebook-journey").boundingBox();
   expect(clasp!.x).toBeGreaterThan(carrier!.x + carrier!.width * 0.9);
   await expect(page.locator(".notebook-journey-pages .notebook-sheet")).toHaveCount(2);
+  await page
+    .locator(".notebook-journey")
+    .evaluate(() =>
+      document.getAnimations().forEach((animation) => (animation.currentTime = 1050)),
+    );
+  await page.screenshot({ path: testInfo.outputPath("abertura-sem-salto.png") });
   await page.evaluate(() => document.getAnimations().forEach((animation) => animation.play()));
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   const toolbar = page.getByRole("toolbar", { name: "Ferramentas do caderno" });
@@ -52,11 +58,52 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
     "Editar marcas",
     "Índice de folhas",
   ]);
+  await page.getByRole("button", { name: "‹ Capa" }).click();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  const cover = page.getByRole("button", { name: /Abrir caderno .* folheando a capa/ });
+  await expect(cover).toBeVisible();
+  await cover.click();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  const leftSheet = (await page.locator(".notebook-sheet").first().boundingBox())!;
+  await page.mouse.move(leftSheet.x + 36, leftSheet.y + leftSheet.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(leftSheet.x + 118, leftSheet.y + leftSheet.height / 2, { steps: 5 });
+  await page.mouse.up();
+  await expect(cover).toBeVisible();
+  await expect(cover).toBeEnabled();
+  const closed = (await cover.boundingBox())!;
+  await page.mouse.move(closed.x + closed.width * 0.8, closed.y + closed.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(closed.x + closed.width * 0.25, closed.y + closed.height / 2, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
+  await expect(toolbar).toBeVisible();
   const title = page.getByRole("textbox", { name: "Título da folha 1", exact: true });
   await title.fill("Mapa das estrelas");
   await title.press("Enter");
   await expect(title).toHaveValue("Mapa das estrelas");
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Abrir preview de Mapa das estrelas, folha 1" }).click();
+  await expect(page.locator(".notebook-page-journey")).toBeVisible();
+  await expect
+    .poll(() =>
+      page.locator(".notebook-page-journey").evaluate((node) => node.getAnimations().length),
+    )
+    .toBeGreaterThan(0);
+  await page.locator(".notebook-page-journey").evaluate(() =>
+    document.getAnimations().forEach((animation) => {
+      animation.pause();
+      animation.currentTime = 320;
+    }),
+  );
+  await page.screenshot({ path: testInfo.outputPath("entrada-na-folha.png") });
+  await page.evaluate(() => document.getAnimations().forEach((animation) => animation.play()));
+  await expect(page.locator(".notebook-page-journey")).toHaveCount(0);
+  const editor = page.getByRole("dialog", { name: "Escrever à mão" });
+  await expect(editor).toBeVisible();
+  await expect(editor.locator(".handwriting-canvas")).toBeVisible();
+  await editor.getByRole("button", { name: "Fechar", exact: true }).click();
+  await expect(title).toBeVisible();
   await page.getByRole("button", { name: "Colocar marcador" }).click();
   await page.locator('.notebook-sheet[data-page-id="one"]').click();
   await page.getByRole("button", { name: "Sol", exact: true }).click();

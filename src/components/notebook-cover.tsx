@@ -25,6 +25,7 @@ export function NotebookCover({
           className="book-cover__concept"
           src="/notebook-covers/helena-estrelas.webp"
           alt=""
+          draggable={false}
           loading="lazy"
         />
         <span className="book-cover__corner is-top" />

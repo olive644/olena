@@ -201,7 +201,7 @@ describe("App", () => {
     expect(screen.queryByText("Revisar phrasal verbs")).toBeNull();
   });
 
-  it("cria hábito e anotação usando o mesmo espaço local", async () => {
+  it("cria hábito e caderno usando o mesmo espaço local", async () => {
     render(<App />);
     navigate("Hábitos");
     fireEvent.change(screen.getByLabelText(/nome do hábito/i), {
@@ -214,16 +214,9 @@ describe("App", () => {
 
     navigate("Cadernos");
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }));
-    fireEvent.click(screen.getByRole("button", { name: /Anotações/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Criar pasta" }));
-    fireEvent.click(screen.getByRole("button", { name: "Nova nota" }));
-    fireEvent.change(screen.getByLabelText(/título da folha/i), {
-      target: { value: "Vocabulário" },
-    });
-    fireEvent.change(screen.getByLabelText(/conteúdo da folha/i), {
-      target: { value: "Improve: melhorar" },
-    });
-    expect(screen.getByDisplayValue("Improve: melhorar")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Anotações/ })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
+    expect(screen.getByRole("button", { name: "Criar primeira folha" })).toBeTruthy();
   });
 
   it("cria a primeira folha diretamente na prévia do caderno", async () => {

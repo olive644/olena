@@ -28,6 +28,7 @@ type Props = {
   onRemove: (id: string) => void;
   onBack?: () => void;
   onIndex?: () => void;
+  transitioning?: boolean;
 };
 type Turn = {
   from: number;
@@ -70,13 +71,15 @@ export function NotebookSpread({
   onRemove,
   onBack,
   onIndex,
+  transitioning = false,
 }: Props) {
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [showCover, setShowCover] = useState(false);
   const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
   const finishCoverJourney = useCallback(() => setCoverJourney(null), []);
   function changeCover(next: boolean) {
-    if (coverJourney) return;
+    if (busy || next === showCover) return;
+    suppressClick.current = false;
     const source = document.querySelector<HTMLElement>(
       next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
     );
@@ -103,13 +106,14 @@ export function NotebookSpread({
   const lastSpread = Math.max(0, Math.ceil(pages.length / 2) - 1);
   const current = Math.min(spreadIndex, lastSpread);
   const visible = pages.slice(current * 2, current * 2 + 2);
-  const busy = Boolean(turning || removing || coverJourney);
+  const busy = Boolean(turning || removing || coverJourney || transitioning);
   const backControl = onBack && (
     <button
       type="button"
       className="notebook-paper-tool notebook-back-tool"
       aria-label="Meus Cadernos"
       title="Voltar aos meus cadernos"
+      disabled={busy}
       onClick={onBack}
     >
       <img src="/paper-arrow.svg" alt="" />
@@ -175,13 +179,13 @@ export function NotebookSpread({
         </div>
       )}
       {showCover ? (
-        <div
+        <button
+          type="button"
           className="notebook-concept-cover"
-          role="img"
-          aria-label={`Capa do caderno ${notebook.title}, Helena e estrelas de papel`}
+          disabled={busy}
+          aria-label={`Abrir caderno ${notebook.title} folheando a capa`}
           onPointerDown={(event) => {
             if (busy || event.button !== 0) return;
-            event.currentTarget.setPointerCapture(event.pointerId);
             drag.current = {
               x: event.clientX,
               y: event.clientY,
@@ -190,14 +194,31 @@ export function NotebookSpread({
               moved: false,
             };
           }}
+          onPointerMove={(event) => {
+            const start = drag.current;
+            if (!start || start.id !== event.pointerId) return;
+            const dx = event.clientX - start.x;
+            if (dx < -8 && Math.abs(dx) > Math.abs(event.clientY - start.y) * 1.15) {
+              start.moved = true;
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }
+          }}
           onPointerUp={(event) => {
             const start = drag.current;
             drag.current = null;
-            if (start && event.clientX - start.x < -40 && Math.abs(event.clientY - start.y) < 60)
+            if (start?.moved && event.clientX - start.x < -40) {
               changeCover(false);
+            }
           }}
           onPointerCancel={() => {
             drag.current = null;
+          }}
+          onClick={() => {
+            if (suppressClick.current) {
+              suppressClick.current = false;
+              return;
+            }
+            changeCover(false);
           }}
         >
           <NotebookCover
@@ -205,7 +226,7 @@ export function NotebookSpread({
             title={notebook.title}
             tabs={notebookPaperTabs(notebook, pages, subjects)}
           />
-        </div>
+        </button>
       ) : (
         <>
           <NotebookPaperTools
@@ -218,7 +239,12 @@ export function NotebookSpread({
             backControl={backControl}
             indexControl={
               onIndex && (
-                <button type="button" className="notebook-paper-tool" onClick={onIndex}>
+                <button
+                  type="button"
+                  className="notebook-paper-tool"
+                  disabled={busy}
+                  onClick={onIndex}
+                >
                   <NotebookToolIcon name="index" />
                   Índice de folhas
                 </button>
@@ -250,7 +276,8 @@ export function NotebookSpread({
                   (event.key === "ArrowLeft" || event.key === "ArrowRight")
                 ) {
                   event.preventDefault();
-                  turnTo(current + (event.key === "ArrowLeft" ? -1 : 1));
+                  if (event.key === "ArrowLeft" && current === 0) changeCover(true);
+                  else turnTo(current + (event.key === "ArrowLeft" ? -1 : 1));
                 }
               }}
               onPointerDown={(event) => {
@@ -280,6 +307,14 @@ export function NotebookSpread({
                 event.currentTarget.setPointerCapture(event.pointerId);
                 const direction = dx < 0 ? 1 : -1;
                 const target = Math.max(0, Math.min(lastSpread, current + direction));
+                if (
+                  current === 0 &&
+                  direction === -1 &&
+                  start.x < event.currentTarget.getBoundingClientRect().x + start.width / 2
+                ) {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  return;
+                }
                 if (target !== current)
                   setTurning({
                     from: current,
@@ -289,10 +324,20 @@ export function NotebookSpread({
                     settling: false,
                   });
               }}
-              onPointerUp={() => {
+              onPointerUp={(event) => {
                 const start = drag.current;
                 drag.current = null;
-                if (!start?.moved || !turning) return;
+                if (!start?.moved) return;
+                if (
+                  !turning &&
+                  current === 0 &&
+                  event.clientX - start.x > 40 &&
+                  start.x < event.currentTarget.getBoundingClientRect().x + start.width / 2
+                ) {
+                  changeCover(true);
+                  return;
+                }
+                if (!turning) return;
                 if (reducedMotion()) {
                   setSpreadIndex(turning.progress > 0.18 ? turning.to : turning.from);
                   setTurning(null);
@@ -447,10 +492,10 @@ export function NotebookSpread({
             <button
               className="secondary-button"
               type="button"
-              disabled={current === 0 || busy}
-              onClick={() => turnTo(current - 1)}
+              disabled={busy}
+              onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
             >
-              ‹ Anterior
+              {current === 0 ? "‹ Capa" : "‹ Anterior"}
             </button>
             <span aria-live="polite">
               {pages.length

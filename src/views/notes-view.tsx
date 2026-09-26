@@ -13,6 +13,10 @@ import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { NotebookSpread } from "../components/notebook-spread";
+import {
+  NotebookPageJourney,
+  type NotebookPageJourneyState,
+} from "../components/notebook-page-journey";
 import { notebookPaperTabs } from "../components/notebook-paper-tools";
 import { NotebookCover as NotebookArtwork } from "../components/notebook-cover";
 import type { ImportedPage } from "../components/page-import";
@@ -57,7 +61,6 @@ function notebookTitle(workspace: WorkspaceState): string {
 
 export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
-  const [createKind, setCreateKind] = useState<"notebook" | "folder">("notebook");
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
 
   const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
@@ -82,6 +85,24 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const [indexOpen, setIndexOpen] = useState(false);
   const [journey, setJourney] = useState<NotebookJourneyState | null>(null);
   const finishJourney = useCallback(() => setJourney(null), []);
+  const [pageJourney, setPageJourney] = useState<NotebookPageJourneyState | null>(null);
+  const finishPageJourney = useCallback(() => setPageJourney(null), []);
+  function openPreviewPage(id: string) {
+    if (journey || pageJourney) return;
+    const source = Array.from(document.querySelectorAll<HTMLElement>(".notebook-sheet"))
+      .find((sheet) => sheet.dataset["pageId"] === id)
+      ?.querySelector<HTMLElement>(".notebook-sheet-open");
+    const preview = document.querySelector<HTMLElement>(".notebook-entry-preview");
+    if (source && preview && canAnimateNotebook()) {
+      const { x, y, width, height } = preview.getBoundingClientRect();
+      setPageJourney({
+        from: source.getBoundingClientRect(),
+        paper: source.cloneNode(true) as HTMLElement,
+        background: { element: preview.cloneNode(true) as HTMLElement, x, y, width, height },
+      });
+    }
+    setActivePageId(id);
+  }
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
   const [notebookSection, setNotebookSection] = useState<"pages" | "notes">("pages");
 
@@ -117,15 +138,12 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     dispatch({
       type: "notebook/added",
       id,
-      title:
-        newNotebookName.trim() ||
-        (createKind === "folder" ? "Minhas anotações" : notebookTitle(workspace)),
-      ...(createKind === "folder" ? { kind: "folder" as const } : {}),
+      title: newNotebookName.trim() || notebookTitle(workspace),
       subjectId: "",
       createdAt: new Date().toISOString(),
     });
     setActiveNotebookId(id);
-    setNotebookSection(createKind === "folder" ? "notes" : "pages");
+    setNotebookSection("pages");
     createDialog.current?.close();
     setNewNotebookName("");
     setActivePageId(null);
@@ -387,6 +405,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   return (
     <main className="main-content notebooks-main" id="main-content" aria-busy={Boolean(journey)}>
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
+      {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
       <PageHeader />
       {draggedFolder && dragPosition && (
         <div
@@ -410,32 +429,14 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             createNotebook();
           }}
         >
-          <h2>O que vamos criar?</h2>
-          <div className="notebook-create-choices">
-            <button
-              type="button"
-              aria-pressed={createKind === "notebook"}
-              onClick={() => setCreateKind("notebook")}
-            >
-              <strong>Cadernos</strong>
-              <span>Folhas para digitalizar e escrever à mão</span>
-            </button>
-            <button
-              type="button"
-              aria-pressed={createKind === "folder"}
-              onClick={() => setCreateKind("folder")}
-            >
-              <strong>Anotações</strong>
-              <span>Uma pasta para guardar suas notas</span>
-            </button>
-          </div>
+          <h2>Novo caderno</h2>
           <label>
             Nome
             <input
               aria-label="Nome"
               value={newNotebookName}
               maxLength={80}
-              placeholder={createKind === "folder" ? "Minhas anotações" : "Meu caderno"}
+              placeholder="Meu caderno"
               onChange={(event) => setNewNotebookName(event.target.value)}
             />
           </label>
@@ -444,7 +445,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               Cancelar
             </button>
             <button className="primary-button" type="submit">
-              {createKind === "folder" ? "Criar pasta" : "Criar caderno"}
+              Criar caderno
             </button>
           </div>
         </form>
@@ -514,10 +515,6 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
           )}
 
           <section className="notebooks-showcase" aria-label="Meus cadernos">
-            <p id="folder-drag-hint" className="shelf-drag-hint">
-              Arraste uma pasta para um caderno. Pelo teclado, pressione espaço na pasta e Enter no
-              caderno.
-            </p>
             {workspace.notebooks.length === 0 ? (
               <div className="notebooks-empty">
                 <NotebookArtwork subjectColor="#7C3AED" />
@@ -705,7 +702,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             pages={notebookPages}
             subjects={workspace.subjects}
             dispatch={dispatch}
-            onOpen={setActivePageId}
+            onOpen={openPreviewPage}
+            transitioning={Boolean(journey)}
             onCreate={(subjectId) => addPage(true, subjectId)}
             onRemove={removePage}
             onBack={returnToShelf}
@@ -872,7 +870,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               )}
             </div>
           </header>
-          {activeNotebook.kind !== "folder" && (
+          {activeNotebook.kind !== "folder" && (notebookNotes.length > 0 || folders.length > 0) && (
             <div className="notebook-section-tabs" role="tablist" aria-label="Conteúdo do caderno">
               <button
                 type="button"
