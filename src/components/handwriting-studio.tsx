@@ -150,6 +150,7 @@ type HandwritingStudioProps = {
   onSelectPage?: (id: string) => void;
   onCreatePage?: () => void;
   onRemovePage?: (id: string) => void;
+  onMovePage?: (id: string, direction: -1 | 1) => void;
   onAutosave?: (dataUrl: string, document: HandwritingDocument) => void;
   onClose: () => void;
   onSave: (dataUrl: string, document: HandwritingDocument) => void;
@@ -178,6 +179,7 @@ export function HandwritingStudio({
   onSelectPage,
   onCreatePage,
   onRemovePage,
+  onMovePage,
   onAutosave,
   onClose,
   onSave,
@@ -3859,6 +3861,7 @@ export function HandwritingStudio({
           onSelect={(id) => switchPage(() => onSelectPage?.(id))}
           onCreate={() => switchPage(() => onCreatePage())}
           {...(onRemovePage ? { onRemove: onRemovePage } : {})}
+          {...(onMovePage ? { onMove: onMovePage } : {})}
         />
       )}
       {fileAction === "import" && (

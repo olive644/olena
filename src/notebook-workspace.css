@@ -772,3 +772,126 @@
   font-size: 0.9rem;
   opacity: 0.85;
 }
+
+.notebook-page-index {
+  width: min(94vw, 880px);
+  max-height: 88vh;
+  padding: 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px 22px 8px 18px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 6px 0 var(--line);
+}
+
+.notebook-page-index::backdrop {
+  background: rgb(20 16 28 / 55%);
+}
+
+.notebook-page-index header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.notebook-page-index h2,
+.notebook-page-index p {
+  margin: 0;
+}
+
+.notebook-page-index ol {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  list-style: none;
+}
+
+.notebook-page-index li {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.notebook-page-index__open {
+  display: grid;
+  padding: 0.45rem;
+  border: 2px solid var(--line);
+  border-radius: 6px 14px 6px 12px;
+  color: inherit;
+  background: var(--soft);
+  box-shadow: 0 3px 0 var(--line);
+  font: inherit;
+  gap: 0.4rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.notebook-page-index li.is-current .notebook-page-index__open {
+  border-color: #7433e0;
+  box-shadow: 0 3px 0 #7433e0;
+}
+
+.notebook-page-index__open:focus-visible {
+  outline: 3px solid #7433e0;
+  outline-offset: 2px;
+}
+
+.notebook-page-index__thumb {
+  display: grid;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 4px 10px 4px 8px;
+  background: #fffdf7;
+  place-items: center;
+}
+
+.notebook-page-index__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.notebook-page-index__thumb > span {
+  padding: 0.6rem;
+  color: #6b6478;
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.notebook-page-index__label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.notebook-page-index__label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notebook-page-index__move {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.notebook-page-index__move button {
+  min-width: 44px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px 10px 6px 8px;
+  color: var(--text);
+  background: var(--surface);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.notebook-page-index__move button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
