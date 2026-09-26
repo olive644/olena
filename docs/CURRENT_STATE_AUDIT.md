@@ -1071,3 +1071,11 @@ Limites que se cruzam:
   - `use-pinch-zoom.ts`: a pinça de dois dedos (zoom e rolagem), com o aviso para quem desenha largar o traço quando o segundo dedo toca.
 - Testes novos: `use-selection-gesture.test.tsx` (5) e `use-pinch-zoom.test.tsx` (5); os e2e de seleção, alças, formas, palma e do editor passam sem alteração.
 - Restam em `start`, `move` e `finish` a caneta e o traço ao vivo, a borracha, a régua e os eixos, o pan e a janela de escrita. São ramos menores e entrelaçados com muitos refs; o próximo passo natural é um gancho para o traço ao vivo (caneta, forma ao segurar e palma), depois régua e eixos.
+
+## Editor de escrita menor: atalhos e cena da folha (2026-09-26)
+
+- Terceira etapa da redução de `handwriting-studio.tsx`: de 3283 para cerca de 3090 linhas (do pico de 3900), sem mudar comportamento.
+  - `use-editor-shortcuts.ts`: os atalhos de teclado (desfazer e refazer, trocar de ferramenta, zoom, Espaço para rolar, copiar e colar da seleção) e o zoom pela roda do mouse. Os ouvintes são criados uma vez e leem o estado mais recente por uma ref.
+  - `handwriting-page-scene.ts`: `PageScene` reúne tudo o que desenha a folha, e `renderPageScene` a desenha. `renderPage` recebe quinze argumentos posicionais e era chamado em quatro lugares (tela, PNG, PDF e impressão); agora são chamadas de uma linha.
+- Correção incidental: a redução anterior deixou um `context.restore()` sobrando depois de `drawSelectionOverlay`, que já faz o próprio `save` e `restore`. Foi removido.
+- Testes novos: `use-editor-shortcuts.test.tsx` (8) e `handwriting-page-scene.test.ts` (2); os e2e do editor, seleção, palma, nitidez e PDF passam sem alteração.

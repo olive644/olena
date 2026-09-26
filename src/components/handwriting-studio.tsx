@@ -61,6 +61,8 @@ import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
 import { useSelectionGesture } from "../hooks/use-selection-gesture";
 import { usePinchZoom } from "../hooks/use-pinch-zoom";
+import { useEditorShortcuts } from "../hooks/use-editor-shortcuts";
+import { renderPageScene, type PageScene } from "./handwriting-page-scene";
 import { drawSelectionOverlay, type SelectionScene } from "./handwriting-selection-scene";
 import {} from "./handwriting-selection-ops";
 import { predictedTip } from "./handwriting-ink";
@@ -115,7 +117,6 @@ import {
   drawStroke,
   pageContext,
   pageRenderScale,
-  renderPage,
   sizePageCanvas,
 } from "./handwriting-canvas";
 import { exportPage, downloadCanvasAsPdf } from "./handwriting-export";
@@ -323,7 +324,6 @@ export function HandwritingStudio({
   } | null>(null);
   const eraserChangedRef = useRef(false);
   const activeToolRef = useRef<HandwritingTool>("pen");
-  const spaceToolRef = useRef<HandwritingTool | null>(null);
   const penDetectedRef = useRef(false);
   // Ids dos traços que chegaram de colegas: desfazer e refazer não podem apagá-los.
   const remoteStrokeIdsRef = useRef(new Set<string>());
@@ -678,6 +678,40 @@ export function HandwritingStudio({
     return () => window.removeEventListener("pagehide", persistBeforeLeaving);
   }, [currentDocument, dirty, draftKey, initialDocument]);
 
+  // A folha como se desenha: tela, PNG, PDF e impressão usam a mesma cena.
+  const pageScene = useMemo<PageScene>(
+    () => ({
+      strokes,
+      paper,
+      paperColor,
+      stickies,
+      pageText,
+      pageTextSize,
+      pageTextFrame,
+      coordinateSystems,
+      backgroundImage,
+      backgroundFrame,
+      layers: layerVisibility,
+      layerOrder,
+      images: renderableImportedImages,
+    }),
+    [
+      strokes,
+      paper,
+      paperColor,
+      stickies,
+      pageText,
+      pageTextSize,
+      pageTextFrame,
+      coordinateSystems,
+      backgroundImage,
+      backgroundFrame,
+      layerVisibility,
+      layerOrder,
+      renderableImportedImages,
+    ],
+  );
+
   // A folha vista pela seleção: as regras de escolher, acertar e mover itens ficam em
   // handwriting-selection-scene.ts, e as ações (copiar, colar, girar...) em use-selection-actions.ts.
   const selectionScene = useMemo<SelectionScene>(
@@ -774,49 +808,24 @@ export function HandwritingStudio({
     const hidden = new Set(revealsRef.current.map((reveal) => reveal.stroke.id));
     const liveId = liveStrokeRef.current?.id;
     if (liveId) hidden.add(liveId);
-    renderPage(
-      canvas,
-      hidden.size > 0 ? strokes.filter((stroke) => !hidden.has(stroke.id)) : strokes,
-      paper,
-      paperColor,
-      stickies,
-      true,
-      textMode ? "" : pageText,
-      pageTextSize,
-      coordinateSystems,
-      backgroundImage,
-      backgroundFrame,
-      layerVisibility,
-      layerOrder,
-      renderableImportedImages,
-      pageTextFrame,
-    );
+    renderPageScene(canvas, pageScene, {
+      editing: true,
+      strokes: hidden.size > 0 ? strokes.filter((stroke) => !hidden.has(stroke.id)) : strokes,
+      pageText: textMode ? "" : pageText,
+    });
     // O traço em andamento fica na camada ao vivo, não na folha.
     const context = canvas.getContext("2d");
     if (!context) return;
     drawSelectionOverlay(context, selectionScene, selectedIds, selectionBox, selectionPath);
-    context.restore();
   }, [
-    paper,
-    paperColor,
+    pageScene,
     selectionScene,
     selectedIds,
-    selectedCoordinateIds,
     selectionBox,
     selectionPath,
-    stickies,
     strokes,
     pageText,
-    pageTextSize,
-    pageTextFrame,
-    coordinateSystems,
-    importedImages,
-    layerVisibility,
-    layerOrder,
     textMode,
-    backgroundImage,
-    backgroundFrame,
-    renderableImportedImages,
     renderScale,
     PAGE_WIDTH,
     PAGE_HEIGHT,
@@ -864,162 +873,6 @@ export function HandwritingStudio({
     const observer = new ResizeObserver(update);
     observer.observe(viewport);
     return () => observer.disconnect();
-  }, []);
-
-  type ShortcutState = {
-    tool: HandwritingTool;
-    fileAction: "import" | "export" | null;
-    writingWindowOpen: boolean;
-    undo: () => void;
-    redo: () => void;
-    zoomAt: (clientX: number, clientY: number, direction: 1 | -1) => void;
-    resetView: () => void;
-    setTool: (next: HandwritingTool) => void;
-    copy: () => void;
-    cut: () => void;
-    paste: () => void;
-    duplicate: () => void;
-    selectAll: () => void;
-  };
-  const shortcutStateRef = useRef<ShortcutState>({
-    tool,
-    fileAction,
-    writingWindowOpen,
-    undo: () => undefined,
-    redo: () => undefined,
-    zoomAt: () => undefined,
-    resetView: () => undefined,
-    setTool,
-    copy: () => undefined,
-    cut: () => undefined,
-    paste: () => undefined,
-    duplicate: () => undefined,
-    selectAll: () => undefined,
-  });
-
-  // Atalhos de teclado no estilo Xournal++/apps de mesa digitalizadora:
-  // Ctrl+Z / Ctrl+Shift+Z (desfazer/refazer), P/E/H (trocar ferramenta),
-  // Ctrl +/-/0 (zoom) e Espaco segurado para pan temporario. Usamos uma ref
-  // para o handler ler sempre o estado mais recente sem precisar recriar o
-  // listener a cada render.
-  useEffect(() => {
-    function isEditableTarget(target: EventTarget | null): boolean {
-      if (!(target instanceof HTMLElement)) return false;
-      return (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.tagName === "SELECT" ||
-        target.isContentEditable
-      );
-    }
-    function centerZoom(direction: 1 | -1) {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const bounds = canvas.getBoundingClientRect();
-      shortcutStateRef.current.zoomAt(
-        bounds.left + bounds.width / 2,
-        bounds.top + bounds.height / 2,
-        direction,
-      );
-    }
-    function onKeyDown(event: KeyboardEvent) {
-      const current = shortcutStateRef.current;
-      if (current.fileAction || current.writingWindowOpen || isEditableTarget(event.target)) return;
-      const ctrlOrCmd = event.ctrlKey || event.metaKey;
-      if (ctrlOrCmd && event.key.toLowerCase() === "z") {
-        event.preventDefault();
-        if (event.shiftKey) current.redo();
-        else current.undo();
-        return;
-      }
-      if (ctrlOrCmd && current.tool === "select") {
-        const shortcut = event.key.toLowerCase();
-        const actions: Record<string, () => void> = {
-          c: current.copy,
-          x: current.cut,
-          v: current.paste,
-          d: current.duplicate,
-          a: current.selectAll,
-        };
-        const action = actions[shortcut];
-        if (action) {
-          event.preventDefault();
-          action();
-          return;
-        }
-      }
-      if (ctrlOrCmd && event.key.toLowerCase() === "y") {
-        event.preventDefault();
-        current.redo();
-        return;
-      }
-      if (ctrlOrCmd && (event.key === "+" || event.key === "=")) {
-        event.preventDefault();
-        centerZoom(1);
-        return;
-      }
-      if (ctrlOrCmd && event.key === "-") {
-        event.preventDefault();
-        centerZoom(-1);
-        return;
-      }
-      if (ctrlOrCmd && event.key === "0") {
-        event.preventDefault();
-        current.resetView();
-        return;
-      }
-      if (ctrlOrCmd || event.altKey) return;
-      if (event.code === "Space") {
-        if (!event.repeat && spaceToolRef.current === null && current.tool !== "hand") {
-          spaceToolRef.current = current.tool;
-          current.setTool("hand");
-        }
-        event.preventDefault();
-        return;
-      }
-      const key = event.key.toLowerCase();
-      if (key === "p") {
-        event.preventDefault();
-        current.setTool("pen");
-      } else if (key === "e") {
-        event.preventDefault();
-        current.setTool("eraser");
-      } else if (key === "h") {
-        event.preventDefault();
-        current.setTool("hand");
-      } else if (key === "v") {
-        event.preventDefault();
-        current.setTool("select");
-      }
-    }
-    function onKeyUp(event: KeyboardEvent) {
-      if (event.code !== "Space") return;
-      const previous = spaceToolRef.current;
-      if (previous === null) return;
-      spaceToolRef.current = null;
-      shortcutStateRef.current.setTool(previous);
-    }
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("keyup", onKeyUp);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("keyup", onKeyUp);
-    };
-  }, []);
-
-  // Scroll vertical faz zoom centralizado no cursor, como em apps de desenho
-  // profissionais. Ctrl/Cmd continua funcionando como atalho explícito; o
-  // listener nativo permite preventDefault sem eventos passivos.
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport) return;
-    function onWheel(event: WheelEvent) {
-      if (event.shiftKey && !event.ctrlKey && !event.metaKey) return;
-      event.preventDefault();
-      shortcutStateRef.current.zoomAt(event.clientX, event.clientY, event.deltaY < 0 ? 1 : -1);
-    }
-    viewport.addEventListener("wheel", onWheel, { passive: false });
-    return () => viewport.removeEventListener("wheel", onWheel);
   }, []);
 
   function remember(
@@ -2193,23 +2046,7 @@ export function HandwritingStudio({
     if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
     const canvas = document.createElement("canvas");
     sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
-    renderPage(
-      canvas,
-      strokes,
-      paper,
-      paperColor,
-      stickies,
-      false,
-      pageText,
-      pageTextSize,
-      coordinateSystems,
-      backgroundImage,
-      backgroundFrame,
-      layerVisibility,
-      layerOrder,
-      renderableImportedImages,
-      pageTextFrame,
-    );
+    renderPageScene(canvas, pageScene);
     return exportPage(canvas);
   }
 
@@ -2219,23 +2056,7 @@ export function HandwritingStudio({
       if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
-      renderPage(
-        canvas,
-        strokes,
-        paper,
-        paperColor,
-        stickies,
-        false,
-        pageText,
-        pageTextSize,
-        coordinateSystems,
-        backgroundImage,
-        backgroundFrame,
-        layerVisibility,
-        layerOrder,
-        renderableImportedImages,
-        pageTextFrame,
-      );
+      renderPageScene(canvas, pageScene);
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "folha-do-caderno.png";
@@ -2268,23 +2089,7 @@ export function HandwritingStudio({
       if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
-      renderPage(
-        canvas,
-        strokes,
-        paper,
-        paperColor,
-        stickies,
-        false,
-        pageText,
-        pageTextSize,
-        coordinateSystems,
-        backgroundImage,
-        backgroundFrame,
-        layerVisibility,
-        layerOrder,
-        renderableImportedImages,
-        pageTextFrame,
-      );
+      renderPageScene(canvas, pageScene);
       downloadCanvasAsPdf(canvas, "folha-do-caderno.pdf");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível exportar o PDF.");
@@ -2316,8 +2121,8 @@ export function HandwritingStudio({
     viewport.scrollLeft = 0;
   }
 
-  useEffect(() => {
-    shortcutStateRef.current = {
+  useEditorShortcuts(
+    {
       tool,
       fileAction,
       writingWindowOpen,
@@ -2331,8 +2136,10 @@ export function HandwritingStudio({
       paste: pasteSelection,
       duplicate: duplicateSelection,
       selectAll,
-    };
-  });
+    },
+    canvasRef,
+    viewportRef,
+  );
 
   function handleCanvasKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
     const viewport = viewportRef.current;
