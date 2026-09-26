@@ -1,4 +1,5 @@
 import { WORKSPACE_VERSION, type WorkspaceState } from "../domain/workspace";
+import { PACKED_STORAGE_WRITES, packWorkspace, unpackWorkspace } from "./handwriting-pack";
 
 export const WORKSPACE_HISTORY_KEY = "helenastudy.workspace.history.v1";
 export const MAX_WORKSPACE_HISTORY = 6;
@@ -53,7 +54,12 @@ export function loadWorkspaceHistory(storage: Pick<Storage, "getItem">): Workspa
     if (!isRecord(parsed) || parsed["version"] !== 1 || !Array.isArray(parsed["entries"])) {
       return [];
     }
-    return parsed["entries"].filter(isEntry).slice(0, MAX_WORKSPACE_HISTORY);
+    return parsed["entries"]
+      .map((entry) =>
+        isRecord(entry) ? { ...entry, workspace: unpackWorkspace(entry["workspace"]) } : entry,
+      )
+      .filter(isEntry)
+      .slice(0, MAX_WORKSPACE_HISTORY);
   } catch {
     return [];
   }
@@ -76,7 +82,14 @@ export function recordWorkspaceSnapshot(
   try {
     storage.setItem(
       WORKSPACE_HISTORY_KEY,
-      JSON.stringify({ version: 1, entries: [entry, ...current].slice(0, MAX_WORKSPACE_HISTORY) }),
+      JSON.stringify({
+        version: 1,
+        entries: [entry, ...current]
+          .slice(0, MAX_WORKSPACE_HISTORY)
+          .map((item) =>
+            PACKED_STORAGE_WRITES ? { ...item, workspace: packWorkspace(item.workspace) } : item,
+          ),
+      }),
     );
     return true;
   } catch {

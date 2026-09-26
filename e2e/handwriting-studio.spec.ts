@@ -531,7 +531,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
           handwriting?: {
             paper: string;
             images?: { dataUrl: string }[];
-            strokes: { points: unknown[] }[];
+            strokes: { points?: unknown[]; pts?: number[] }[];
           };
         }[];
       }[];
@@ -541,7 +541,9 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   expect(saved?.paper).toBe("grid");
   expect(saved?.images?.[0]?.dataUrl).toMatch(/^data:image\/jpeg;base64,/);
   expect(saved?.strokes).toHaveLength(1);
-  expect(saved?.strokes[0]?.points).toHaveLength(2);
+  // Aceita o formato antigo (points) e o compacto (pts, três números por ponto).
+  const savedStroke = saved?.strokes[0];
+  expect(savedStroke?.points?.length ?? (savedStroke?.pts?.length ?? 0) / 3).toBe(2);
   if (testInfo.project.name === "mobile") {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     await page

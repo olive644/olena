@@ -817,6 +817,8 @@ function migrateWorkspaceV6(workspace: WorkspaceV6): WorkspaceState {
 // Cópia do que não foi possível ler. Sem ela, o espaço inicial que substitui um espaço inválido seria
 // gravado por cima na próxima alteração e o conteúdo antigo se perderia de vez. Fica em um só
 // lugar, sempre com o mais recente, e o nome começa com "helena" para ser apagado ao sair da conta.
+import { PACKED_STORAGE_WRITES, packWorkspace, unpackWorkspace } from "./handwriting-pack";
+
 export const WORKSPACE_RECOVERY_KEY = "helenastudy.workspace.recovery.v1";
 
 function keepUnreadableWorkspace(
@@ -837,7 +839,8 @@ export function loadWorkspace(
   if (!serialized) return createInitialWorkspace();
 
   try {
-    const parsed: unknown = JSON.parse(serialized);
+    // Aceita traços no formato compacto e no antigo.
+    const parsed: unknown = unpackWorkspace(JSON.parse(serialized));
     if (isWorkspaceState(parsed)) return mergeRepeatedDefaultNotebooks(parsed);
     if (isWorkspaceV6(parsed)) return migrateWorkspaceV6(parsed);
     if (isWorkspaceV5(parsed)) return migrateWorkspaceV5(parsed);
@@ -853,6 +856,13 @@ export function loadWorkspace(
   }
 }
 
-export function saveWorkspace(storage: Pick<Storage, "setItem">, workspace: WorkspaceState): void {
-  storage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(workspace));
+export function saveWorkspace(
+  storage: Pick<Storage, "setItem">,
+  workspace: WorkspaceState,
+  packed = PACKED_STORAGE_WRITES,
+): void {
+  storage.setItem(
+    WORKSPACE_STORAGE_KEY,
+    JSON.stringify(packed ? packWorkspace(workspace) : workspace),
+  );
 }

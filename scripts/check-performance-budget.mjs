@@ -31,7 +31,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // about 0.5 KiB above Windows). URL routing per tab (app-routes and useAppView) adds
 // 0.8 KiB to the entry (272.6 KiB measured), so the ceiling moves to 274 KiB.
 // Validated paper-tab persistence: measured 274.2 KiB, with a narrow CI allowance.
-const MAX_INITIAL_JS_BYTES = 276 * 1024;
+// The compact stroke storage format (read path in the initial workspace loader) adds 1.6 KiB
+// (276.3 KiB measured); the ceiling moves to 278 KiB.
+const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
