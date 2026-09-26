@@ -30,7 +30,8 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // moves to 272 KiB to keep a small allowance for CI variance (Linux measures
 // about 0.5 KiB above Windows). URL routing per tab (app-routes and useAppView) adds
 // 0.8 KiB to the entry (272.6 KiB measured), so the ceiling moves to 274 KiB.
-const MAX_INITIAL_JS_BYTES = 274 * 1024;
+// Validated paper-tab persistence: measured 274.2 KiB, with a narrow CI allowance.
+const MAX_INITIAL_JS_BYTES = 276 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -104,7 +105,8 @@ const MAX_INITIAL_JS_BYTES = 274 * 1024;
 // No new runtime dependency.
 // Divisórias móveis, marcadores de folhas e controles de prévia acrescentam
 // 1.9 KiB ao total medido (813.9 KiB), sem nova dependência ou rota inicial.
-const MAX_TOTAL_JS_BYTES = 816 * 1024;
+// Direct-manipulation notebook tools remain lazy: measured ~818 KiB, no new dependency.
+const MAX_TOTAL_JS_BYTES = 822 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

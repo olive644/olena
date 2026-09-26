@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { NotebookSpread } from "./notebook-spread";
 import { createInitialWorkspace, workspaceReducer } from "../domain/workspace";
 import { isHandwritingDocument, loadWorkspace } from "../data/local-workspace";
+import { notebookPaperTabs } from "./notebook-paper-tools";
 
 function fixture() {
   let state = workspaceReducer(createInitialWorkspace(), {
@@ -35,7 +36,7 @@ function fixture() {
   return state;
 }
 
-it("mostra duas folhas reais e navega até a última sem perder a criação", () => {
+it("mostra duas folhas reais e navega até a última sem perder a criação", async () => {
   const state = fixture();
   const onOpen = vi.fn();
   const onCreate = vi.fn();
@@ -54,12 +55,39 @@ it("mostra duas folhas reais e navega até a última sem perder a criação", ()
   fireEvent.click(screen.getByRole("button", { name: /Abrir preview.*folha 2$/ }));
   expect(onOpen).toHaveBeenCalledWith("two");
   fireEvent.click(screen.getByRole("button", { name: "Próxima ›" }));
-  expect(screen.getByText("Folhas 3 de 3")).toBeTruthy();
+  await waitFor(() => expect(screen.getByText("Folhas 3 de 3")).toBeTruthy());
   fireEvent.click(screen.getByRole("button", { name: "Criar próxima folha" }));
   expect(onCreate).toHaveBeenCalledWith("");
-  fireEvent.click(screen.getByRole("button", { name: "Matemática" }));
-  fireEvent.click(screen.getByRole("button", { name: "Criar próxima folha" }));
-  expect(onCreate).toHaveBeenLastCalledWith("math");
+  fireEvent.click(screen.getByRole("button", { name: "Divisória Matemática, folha 1" }));
+  await waitFor(() => expect(screen.getByText("Folhas 1 e 2 de 3")).toBeTruthy());
+  expect(screen.getAllByRole("button", { name: /Abrir preview/ })).toHaveLength(2);
+});
+
+it("converte marcações antigas em peças e preserva posição, cor e folha", () => {
+  let state = fixture();
+  const notebook = state.notebooks[0]!;
+  const pages = notebook.pageIds.map((id) => state.notes.find((page) => page.id === id)!);
+  const tabs = notebookPaperTabs(
+    { ...notebook, bookmarkedPageIds: ["two"] },
+    pages,
+    state.subjects,
+  );
+  expect(tabs.map((tab) => [tab.kind, tab.pageId])).toEqual([
+    ["divider", "one"],
+    ["bookmark", "two"],
+  ]);
+  tabs[0] = { ...tabs[0]!, position: 0.8, color: "#FACC15", label: "Ideias", pageId: "three" };
+  state = workspaceReducer(state, {
+    type: "notebook/organized",
+    id: "book",
+    changes: { paperTabs: tabs },
+  });
+  expect(loadWorkspace({ getItem: () => JSON.stringify(state) }).notebooks[0]?.paperTabs).toEqual(
+    tabs,
+  );
+  state = workspaceReducer(state, { type: "note/removed", notebookId: "book", noteId: "three" });
+  expect(state.notebooks[0]?.paperTabs?.map((tab) => tab.pageId)).toEqual(["two"]);
+  expect(state.notes.find((page) => page.id === "two")).toBeTruthy();
 });
 
 it("preserva divisórias, conteúdo e atribuições ao recarregar", () => {
