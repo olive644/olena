@@ -59,49 +59,56 @@ export function notebookPaperTabs(
   ];
 }
 
-export function PaperMoonMark({ className }: { className?: string }) {
+export function PaperMoonMark({
+  className,
+  compact = false,
+}: {
+  className?: string;
+  compact?: boolean;
+}) {
   return (
     <svg
-      viewBox="0 0 40 40"
+      viewBox={compact ? "0 0 64 64" : "0 0 64 180"}
       aria-hidden="true"
       className={className ?? "paper-tab-moon"}
       focusable="false"
     >
       <path
         fill="#292432"
-        opacity=".24"
-        d="M26 6a13 13 0 1 0 8 23A11 11 0 0 1 26 6Z"
-        transform="translate(0 1)"
+        opacity=".22"
+        d="m37 4-21 7L4 27l2 20 9 14v116l18-7 18 7V62l11-17-17 4-13-9-6-14 3-12Z"
+        transform="translate(1 3)"
       />
-      <path fill="#FFF9EF" d="M26 5a13 13 0 1 0 8 23A11 11 0 0 1 26 5Z" />
-      <path fill="#7C3AED" d="m13 8 1.5 3.5L18 13l-3.5 1.5L13 18l-1.5-3.5L8 13l3.5-1.5Z" />
-      <path fill="#7C3AED" d="m30 29 1 2.3 2.3 1-2.3 1L30 36l-1-2.7-2.5-1 2.5-1Z" />
+      <path
+        fill="#FFF9EF"
+        d="m37 4-21 7L4 27l2 20 9 14v116l18-7 18 7V62l11-17-17 4-13-9-6-14 3-12Z"
+      />
+      <path fill="#51259B" d="M19 48h28v123l-14-5-14 5Z" />
+      <path fill="#7C3AED" d="m19 48 28 14v74l-28 25Z" />
+      <path fill="var(--tab-color, #FACC15)" d="m19 116 9 8-9 15Zm28 19-11 10 11 10Z" />
+      <path fill="#A779EF" d="m19 48 8 5v48l-8 8Z" />
+      <path fill="#FACC15" d="m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z" />
+      <path fill="#FFE88D" d="m29 9-13 7-8 13 9 8 4-10 1-11Z" />
+      <path fill="#D7A80A" d="m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z" />
+      <path fill="#FFF9EF" d="m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z" />
+      <path fill="#FFE88D" d="m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z" />
+      <path fill="none" stroke="#D8BEFA" strokeWidth="1.4" d="m33 96 5 12-10 12 7 20" />
+      <path fill="#FFF9EF" d="m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z" />
+      <path fill="#FFE88D" d="m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z" />
     </svg>
   );
 }
 
 export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
+  if (kind === "bookmark") return <PaperMoonMark className="paper-tab-icon" compact />;
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className="paper-tab-icon">
-      {kind === "divider" ? (
-        <>
-          <path fill="#D5CCBA" d="M3 6h23v30H3z" />
-          <path fill="#FFF9EF" d="M3 3h23v30H3z" />
-          <path fill="currentColor" d="M19 10h15l4 5v15H19z" />
-          <path fill="#FFFFFF" opacity=".3" d="m19 10 15 0-8 8h-7z" />
-          <path fill="#292432" opacity=".3" d="m31 23 7-8v15H19l5-7z" />
-          <path fill="#292432" opacity=".18" d="M19 10h4v20h-4z" />
-        </>
-      ) : (
-        <>
-          <path fill="#292432" opacity=".25" d="M12 5h19v33l-9-7-10 7z" />
-          <path fill="currentColor" d="M9 2h18v33l-9-7-9 7z" />
-          <path fill="#FFFFFF" opacity=".35" d="M9 2h18L9 19z" />
-          <path fill="#292432" opacity=".25" d="M23 6h4v29l-4-3z" />
-          <path fill="#FFF9EF" d="M19 8a8 8 0 1 0 5 14A7 7 0 0 1 19 8Z" />
-          <path fill="#7C3AED" d="m11 7 1 2.3 2.3 1-2.3 1L11 14l-1-2.7-2.5-1 2.5-1Z" />
-        </>
-      )}
+      <path fill="#D5CCBA" d="M3 6h23v30H3z" />
+      <path fill="#FFF9EF" d="M3 3h23v30H3z" />
+      <path fill="currentColor" d="M19 10h15l4 5v15H19z" />
+      <path fill="#FFFFFF" opacity=".3" d="m19 10 15 0-8 8h-7z" />
+      <path fill="#292432" opacity=".3" d="m31 23 7-8v15H19l5-7z" />
+      <path fill="#292432" opacity=".18" d="M19 10h4v20h-4z" />
     </svg>
   );
 }
@@ -369,11 +376,13 @@ export function NotebookPaperTools({
         <nav className="notebook-attached-tabs" aria-label="Divisórias e marcadores">
           {tabs.map((tab) => {
             const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
+            const exposed = !disabled && visible.some((page) => page.id === tab.pageId);
             return (
               <button
                 type="button"
                 key={tab.id}
-                className={`notebook-attached-tab is-${tab.kind}`}
+                className={`notebook-attached-tab is-${tab.kind} ${exposed ? "is-exposed" : "is-buried"}`}
+                aria-current={exposed ? "page" : undefined}
                 disabled={disabled}
                 style={
                   {

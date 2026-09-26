@@ -4,6 +4,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   page,
   browserName,
 }, testInfo) => {
+  test.slow();
   await page.addInitScript(() =>
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
@@ -43,15 +44,11 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
   const book = preview.getByLabel("Prévia folheável do caderno");
-  const layers = await preview.evaluate((element) => {
-    const paper = element.querySelector<HTMLElement>(".notebook-paper-spread");
-    const tabs = element.querySelector<HTMLElement>(".notebook-attached-tabs");
-    return {
-      paper: paper ? getComputedStyle(paper).zIndex : "",
-      tabs: tabs ? getComputedStyle(tabs).zIndex : "",
-    };
-  });
-  expect(layers).toEqual({ paper: "2", tabs: "1" });
+  const isTabExposed = (tab: Locator) =>
+    tab.evaluate((element) => {
+      const box = element.getBoundingClientRect();
+      return element.contains(document.elementFromPoint(box.x + box.width / 2, box.y + 22));
+    });
   await book.scrollIntoViewIfNeeded();
   const bounds = await book.boundingBox();
   if (!bounds) throw new Error("Prévia não renderizada");
@@ -133,6 +130,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   const marker = preview.getByRole("button", { name: "Marcador Marcador, folha 1", exact: true });
   await expect(marker).toBeVisible();
   await expect(marker.locator(".notebook-attached-tab__moon")).toHaveCount(1);
+  await expect.poll(() => isTabExposed(marker)).toBe(true);
   const markerBox = (await marker.boundingBox())!;
   const currentBox = (await book.boundingBox())!;
   expect(markerBox.y + markerBox.height).toBeGreaterThan(currentBox.y + currentBox.height);
@@ -143,6 +141,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     exact: true,
   });
   await expect(markerOnSecondPage).toBeVisible();
+  await expect.poll(() => isTabExposed(markerOnSecondPage)).toBe(true);
   await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(2);
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
@@ -151,6 +150,8 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   await expect(divider).toBeVisible();
   await expect(marker).toBeVisible();
   await expect(markerOnSecondPage).toBeVisible();
+  await expect.poll(() => isTabExposed(marker)).toBe(false);
+  await page.screenshot({ path: testInfo.outputPath("marcadores-sob-as-folhas.png") });
   await divider.click();
   await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
   await expect(preview.getByLabel("Nome da marcação")).toHaveCount(0);
@@ -168,15 +169,18 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   const toolColor = await preview
     .getByRole("button", { name: "Colocar divisória" })
     .evaluate((element) => getComputedStyle(element).color);
-  expect(toolColor).not.toBe("rgb(15, 15, 20)");
+  expect(toolColor).toBe("rgb(41, 36, 50)");
   await expect
     .poll(() =>
       preview
         .getByRole("button", { name: "Colocar divisória" })
         .evaluate((element) => getComputedStyle(element).backgroundColor),
     )
-    .toBe("rgb(32, 29, 38)");
+    .toBe("rgb(255, 253, 247)");
   await page.screenshot({ path: testInfo.outputPath("marcacoes-modo-escuro.png") });
+  await preview
+    .locator(".notebook-workbench")
+    .screenshot({ path: testInfo.outputPath("caderno-papercraft.png") });
   await preview.getByRole("button", { name: /Abrir preview de .*folha 2/ }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
   const gear = editor.locator('[data-paper-editor-icon="settings"]');
@@ -222,10 +226,12 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight))
         .toBeLessThanOrEqual(1);
-      const cover = await preview.locator(".notebook-concept-cover").boundingBox();
+      const cover = await preview.locator(".notebook-concept-cover .book-cover").boundingBox();
       const nav = await page.locator(".mobile-nav").boundingBox();
+      const newPage = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
       expect(cover).not.toBeNull();
       expect(cover!.y + cover!.height).toBeLessThan(nav!.y);
+      expect(cover!.y + cover!.height + 27).toBeLessThan(newPage!.y);
       await preview.getByRole("button", { name: "Ver folhas" }).click();
       const spread = await book.boundingBox();
       expect(spread!.width).toBeLessThan(size.width);
