@@ -102,7 +102,9 @@ const MAX_INITIAL_JS_BYTES = 274 * 1024;
 // The listening consent notice, its storage helper and hook add 3.6 KiB across
 // the lazy listening chunks (800.5 KiB measured); with account deletion the total is 804.4 KiB and the ceiling moves to 810 KiB.
 // No new runtime dependency.
-const MAX_TOTAL_JS_BYTES = 812 * 1024;
+// Divisórias móveis, marcadores de folhas e controles de prévia acrescentam
+// 1.9 KiB ao total medido (813.9 KiB), sem nova dependência ou rota inicial.
+const MAX_TOTAL_JS_BYTES = 816 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

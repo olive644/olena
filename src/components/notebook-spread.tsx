@@ -35,6 +35,8 @@ export function NotebookSpread({
   const [name, setName] = useState("");
   const [showCover, setShowCover] = useState(false);
   const [direction, setDirection] = useState(1);
+  const draggedDivider = useRef<string | null>(null);
+  const touchedDivider = useRef<{ id: string; y: number } | null>(null);
   const drag = useRef<{ x: number; y: number; id: number } | null>(null);
   const suppressClick = useRef(false);
   const filtered =
@@ -43,7 +45,21 @@ export function NotebookSpread({
   const current = Math.min(spreadIndex, lastSpread);
   const visible = filtered.slice(current * 2, current * 2 + 2);
   const linked = new Set([...(notebook.subjectIds ?? []), ...pages.map((page) => page.subjectId)]);
-  const divisions = subjects.filter((subject) => linked.has(subject.id));
+  const divisions = [...(notebook.subjectIds ?? []), ...pages.map((page) => page.subjectId)]
+    .filter((id, index, ids) => id && ids.indexOf(id) === index)
+    .map((id) => subjects.find((subject) => subject.id === id))
+    .filter((subject): subject is WorkspaceState["subjects"][number] => Boolean(subject));
+  const bookmarks = pages.filter((page) => notebook.bookmarkedPageIds?.includes(page.id));
+  function reorder(id: string, targetId: string) {
+    if (id === targetId) return;
+    const ids = divisions.map((division) => division.id);
+    const source = ids.indexOf(id);
+    const target = ids.indexOf(targetId);
+    if (source < 0 || target < 0) return;
+    ids.splice(source, 1);
+    ids.splice(target, 0, id);
+    dispatch({ type: "notebook/organized", id: notebook.id, changes: { subjectIds: ids } });
+  }
   function chooseSubject(id: string) {
     setSubjectId(id);
     setSpreadIndex(0);
@@ -78,13 +94,13 @@ export function NotebookSpread({
           onClick={() => setOrganizing(!organizing)}
         >
           <span className="notebook-divider-icon" aria-hidden="true" />
-          Matérias
+          Divisórias
         </button>
       </div>
       {organizing && (
         <section
           className="notebook-subject-manager"
-          aria-label="Organizar matérias"
+          aria-label="Organizar divisórias"
           onKeyDown={(event) => {
             if (event.key === "Escape") setOrganizing(false);
           }}
@@ -94,10 +110,10 @@ export function NotebookSpread({
             className="secondary-button notebook-subject-close"
             onClick={() => setOrganizing(false)}
           >
-            Fechar matérias
+            Fechar divisórias
           </button>
           <h2>Divisórias do caderno</h2>
-          <p>Escolha uma matéria nas fitas. Novas folhas entram nela automaticamente.</p>
+          <p>Crie divisórias, arraste para ordenar e marque folhas importantes no livro.</p>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -114,7 +130,7 @@ export function NotebookSpread({
             }}
           >
             <label>
-              Nova matéria
+              Nova divisória
               <input
                 value={name}
                 maxLength={50}
@@ -127,14 +143,14 @@ export function NotebookSpread({
             </button>
           </form>
           <label>
-            Usar matéria existente
+            Usar divisória existente
             <select
               value=""
               onChange={(event) => {
                 if (event.target.value) link(event.target.value);
               }}
             >
-              <option value="">Escolher matéria</option>
+              <option value="">Escolher divisória</option>
               {subjects
                 .filter((subject) => !linked.has(subject.id))
                 .map((subject) => (
@@ -144,12 +160,108 @@ export function NotebookSpread({
                 ))}
             </select>
           </label>
-          <div className="notebook-subject-pages">
+          <fieldset className="notebook-divider-position">
+            <legend>Onde ficam as fitas?</legend>
+            <label>
+              <input
+                type="radio"
+                name="divider-position"
+                checked={notebook.dividerPosition !== "bottom"}
+                onChange={() =>
+                  dispatch({
+                    type: "notebook/organized",
+                    id: notebook.id,
+                    changes: { dividerPosition: "side" },
+                  })
+                }
+              />{" "}
+              Na lateral
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="divider-position"
+                checked={notebook.dividerPosition === "bottom"}
+                onChange={() =>
+                  dispatch({
+                    type: "notebook/organized",
+                    id: notebook.id,
+                    changes: { dividerPosition: "bottom" },
+                  })
+                }
+              />{" "}
+              Embaixo
+            </label>
+          </fieldset>
+          <div className="notebook-divider-order" aria-label="Ordenar divisórias">
+            {divisions.map((division, index) => (
+              <div
+                key={division.id}
+                className="notebook-divider-row"
+                data-divider-id={division.id}
+                draggable
+                onPointerDown={(event) => {
+                  if (
+                    event.pointerType === "touch" &&
+                    !(event.target as HTMLElement).closest("button")
+                  )
+                    touchedDivider.current = { id: division.id, y: event.clientY };
+                }}
+                onPointerUp={(event) => {
+                  const start = touchedDivider.current;
+                  touchedDivider.current = null;
+                  if (!start || Math.abs(event.clientY - start.y) < 20) return;
+                  const target = document
+                    .elementFromPoint(event.clientX, event.clientY)
+                    ?.closest<HTMLElement>("[data-divider-id]");
+                  if (target?.dataset["dividerId"]) reorder(start.id, target.dataset["dividerId"]);
+                }}
+                onPointerCancel={() => {
+                  touchedDivider.current = null;
+                }}
+                onDragStart={(event) => {
+                  draggedDivider.current = division.id;
+                  event.dataTransfer.effectAllowed = "move";
+                }}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  if (draggedDivider.current) reorder(draggedDivider.current, division.id);
+                  draggedDivider.current = null;
+                }}
+                onDragEnd={() => {
+                  draggedDivider.current = null;
+                }}
+              >
+                <span className="notebook-divider-swatch" style={{ background: division.color }} />
+                <strong>{division.name}</strong>
+                <span aria-hidden="true">⋮⋮</span>
+                <button
+                  type="button"
+                  disabled={index === 0}
+                  aria-label={`Mover ${division.name} para cima`}
+                  onClick={() => reorder(division.id, divisions[index - 1]!.id)}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  disabled={index === divisions.length - 1}
+                  aria-label={`Mover ${division.name} para baixo`}
+                  onClick={() => reorder(division.id, divisions[index + 1]!.id)}
+                >
+                  ↓
+                </button>
+              </div>
+            ))}
+          </div>
+          <details className="notebook-subject-pages">
+            <summary>Associar folhas às divisórias</summary>
             {pages.map((page, index) => (
               <label key={page.id}>
                 Folha {index + 1}: {page.title}
                 <select
-                  aria-label={`Matéria da folha ${index + 1}`}
+                  aria-label={`Divisória da folha ${index + 1}`}
                   value={page.subjectId}
                   onChange={(event) => {
                     dispatch({
@@ -161,7 +273,7 @@ export function NotebookSpread({
                     setSpreadIndex(0);
                   }}
                 >
-                  <option value="">Sem matéria</option>
+                  <option value="">Sem divisória</option>
                   {subjects.map((subject) => (
                     <option key={subject.id} value={subject.id}>
                       {subject.name}
@@ -170,7 +282,7 @@ export function NotebookSpread({
                 </select>
               </label>
             ))}
-          </div>
+          </details>
         </section>
       )}
       {showCover ? (
@@ -263,6 +375,25 @@ export function NotebookSpread({
                         <footer>
                           <span>{pages.indexOf(page) + 1}</span>
                           <button
+                            type="button"
+                            className="notebook-sheet-bookmark"
+                            aria-label={`${notebook.bookmarkedPageIds?.includes(page.id) ? "Desmarcar" : "Marcar"} folha ${pages.indexOf(page) + 1} como importante`}
+                            aria-pressed={Boolean(notebook.bookmarkedPageIds?.includes(page.id))}
+                            onClick={() =>
+                              dispatch({
+                                type: "notebook/organized",
+                                id: notebook.id,
+                                changes: {
+                                  bookmarkedPageIds: notebook.bookmarkedPageIds?.includes(page.id)
+                                    ? notebook.bookmarkedPageIds.filter((id) => id !== page.id)
+                                    : [...(notebook.bookmarkedPageIds ?? []), page.id],
+                                },
+                              })
+                            }
+                          >
+                            <span aria-hidden="true">★</span>
+                          </button>
+                          <button
                             className="notebook-sheet-remove"
                             type="button"
                             aria-label={`Remover folha ${pages.indexOf(page) + 1}`}
@@ -273,12 +404,7 @@ export function NotebookSpread({
                         </footer>
                       </>
                     ) : side === 0 && filtered.length === 0 ? (
-                      <img
-                        className="notebook-inside-cover"
-                        draggable={false}
-                        src="/notebook-covers/helena-estrelas.webp"
-                        alt="Capa Helena, estrelas de papel"
-                      />
+                      <div className="notebook-empty-paper" aria-label="Folha em branco" />
                     ) : (
                       <button
                         type="button"
@@ -295,10 +421,13 @@ export function NotebookSpread({
               })}
             </div>
           </div>
-          <nav className="notebook-subject-ribbons" aria-label="Divisórias de matérias">
+          <nav
+            className={`notebook-subject-ribbons ${notebook.dividerPosition === "bottom" ? "is-bottom" : ""}`}
+            aria-label="Divisórias do caderno"
+          >
             {[
               { id: "all", name: "Todas", color: "#51259B" },
-              { id: "", name: "Sem matéria", color: "#51465D" },
+              { id: "", name: "Sem divisória", color: "#51465D" },
               ...divisions,
             ].map((subject) => (
               <button
@@ -313,6 +442,24 @@ export function NotebookSpread({
               </button>
             ))}
           </nav>
+          {bookmarks.length > 0 && (
+            <nav className="notebook-page-bookmarks" aria-label="Folhas importantes">
+              {bookmarks.map((page) => (
+                <button
+                  key={page.id}
+                  type="button"
+                  title={page.title}
+                  onClick={() => {
+                    setSubjectId("all");
+                    setSpreadIndex(Math.floor(pages.indexOf(page) / 2));
+                    setShowCover(false);
+                  }}
+                >
+                  ★ {pages.indexOf(page) + 1}
+                </button>
+              ))}
+            </nav>
+          )}
         </div>
       )}
       {!showCover && (

@@ -61,10 +61,9 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
   expect(inkAtPointer).toBe(true);
 
   // Ampliar a folha aumenta a resolução do bitmap, e o traço continua no lugar.
-  await dialog.getByRole("button", { name: "Lupa para ampliar" }).click();
+  await sheet.hover();
   for (let click = 0; click < 6; click += 1) {
-    const current = (await sheet.boundingBox())!;
-    await page.mouse.click(current.x + current.width * 0.5, current.y + 120);
+    await page.mouse.wheel(0, -100);
     await page.waitForTimeout(60);
   }
   await expect.poll(bitmapWidth, { timeout: 5000 }).toBeGreaterThan(initial);

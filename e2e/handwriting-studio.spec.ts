@@ -283,12 +283,11 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     "true",
   );
   const canvas = dialog.locator("canvas.handwriting-canvas");
-  await dialog.getByRole("button", { name: "Lupa para ampliar" }).click();
-  await canvas.click({ position: { x: 60, y: 60 } });
-  await expect(dialog.getByRole("button", { name: "115%" })).toBeVisible();
-  await dialog.getByRole("button", { name: "Lupa para reduzir" }).click();
-  await canvas.click({ position: { x: 60, y: 60 } });
-  await expect(dialog.getByRole("button", { name: "100%" })).toBeVisible();
+  await canvas.hover({ position: { x: 60, y: 60 } });
+  await page.mouse.wheel(0, -100);
+  await expect(dialog.getByLabel("Zoom atual")).toHaveText("115%");
+  await page.mouse.wheel(0, 100);
+  await expect(dialog.getByLabel("Zoom atual")).toHaveText("100%");
   await dialog.getByRole("button", { name: "Mover folha" }).click();
   await expect(dialog.getByRole("button", { name: "Mover folha" })).toHaveAttribute(
     "aria-pressed",

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("folhas duplas e divisórias de matérias persistem no caderno", async ({
+test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   page,
   browserName,
 }, testInfo) => {
@@ -68,17 +68,26 @@ test("folhas duplas e divisórias de matérias persistem no caderno", async ({
   await expect(preview.getByText("Folhas 3 de 3")).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toHaveCount(0);
   await preview.getByRole("button", { name: "‹ Anterior" }).click();
-  await preview.getByRole("button", { name: "Matérias", exact: true }).click();
-  await preview.getByLabel("Nova matéria", { exact: true }).fill("Matemática");
+  await preview.getByRole("button", { name: "Divisórias", exact: true }).click();
+  await preview.getByLabel("Nova divisória", { exact: true }).fill("Matemática");
   await preview.getByRole("button", { name: "Adicionar divisória" }).click();
+  await preview.getByRole("radio", { name: "Embaixo" }).check();
+  await preview.getByText("Associar folhas às divisórias").click();
   await preview
-    .getByLabel("Matéria da folha 2", { exact: true })
+    .getByLabel("Divisória da folha 2", { exact: true })
     .selectOption({ label: "Matemática" });
-  const tabs = preview.getByRole("navigation", { name: "Divisórias de matérias" });
-  await preview.getByRole("button", { name: "Fechar matérias", exact: true }).click();
+  const tabs = preview.getByRole("navigation", { name: "Divisórias do caderno" });
+  await expect(tabs).toHaveClass(/is-bottom/);
+  await preview.getByRole("button", { name: "Fechar divisórias", exact: true }).click();
   await tabs.getByRole("button", { name: "Matemática", exact: true }).click();
   await expect(preview.getByRole("button", { name: /Abrir preview de / })).toHaveCount(1);
   await expect(preview.getByRole("button", { name: /Abrir preview de .*folha 2/ })).toBeVisible();
+  await preview.getByRole("button", { name: "Marcar folha 2 como importante" }).click();
+  const important = preview.getByRole("navigation", { name: "Folhas importantes" });
+  await expect(important).toContainText("★ 2");
+  const tabBox = await tabs.boundingBox();
+  const importantBox = await important.boundingBox();
+  expect(importantBox!.x).toBeGreaterThanOrEqual(tabBox!.x + tabBox!.width - 1);
   await page.screenshot({ path: testInfo.outputPath("abas-do-caderno.png") });
   await preview.getByRole("button", { name: /Abrir preview de / }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });

@@ -1,23 +1,29 @@
 # Auditoria do estado atual
 
 Em celulares até 600px, cadernos ocupam uma janela fixa entre cabeçalho e navegação.
-Prévia e capa se adaptam à altura; apenas a estante e a gaveta de matérias rolam.
+Prévia e capa se adaptam à altura; apenas a estante e a gaveta de divisórias rolam.
 As fitas usam recortes, dobras e um marcador amarelo de papel.
 Trocar Quadro por A4 agora ajusta proporcionalmente traços e objetos aos limites,
 evitando rejeição no salvamento. Autosave aguarda imagens carregarem e agenda nova
 tentativa quando ficam prontas; erros reais mantêm sua causa no aviso.
 
-## Caderno papercraft: folhas duplas e matérias
+## Caderno papercraft: folhas duplas e divisórias
 
 O preview usa `NotebookSpread` com duas folhas reais por abertura. Mouse, toque,
 setas do teclado e botões navegam em pares; a última posição livre permite criar
 outra folha. Cada folha tem abertura e remoção próprias. A capa aprovada Helena,
 estrelas de papel usa a arte atual em uma pose inédita, otimizada em WebP (40 KB).
 
-As fitas representam matérias do workspace. `StudyNotebook.subjectIds`, opcional,
-mantém divisórias vazias; `StudyNote.subjectId` associa folhas sem duplicar conteúdo.
+As fitas representam divisórias do caderno e podem ser reordenadas ou posicionadas
+na lateral ou embaixo. `StudyNotebook.subjectIds`, opcional, preserva sua ordem e
+divisórias vazias; `StudyNote.subjectId` associa folhas sem duplicar conteúdo.
 A seleção filtra a leitura e novas folhas herdam a matéria selecionada. Cadernos
 antigos continuam válidos e a migração dos cadernos padrão preserva divisórias.
+`bookmarkedPageIds` guarda estrelas de folhas importantes, exibidas na prévia e
+acessíveis por atalhos. O interior aberto mostra somente folhas, nunca a capa.
+Os controles novos ficam no módulo de cadernos carregado sob demanda. O orçamento
+do JavaScript total foi ajustado de 812 para 816 KiB (medição: 813,9 KiB),
+enquanto a entrada inicial continua abaixo do limite de 274 KiB.
 
 Os papéis `weekly` e `calendar` são modelos sem data fixa, preenchidos pelo usuário.
 São desenhados no mesmo canvas das folhas e participam de salvamento, reabertura

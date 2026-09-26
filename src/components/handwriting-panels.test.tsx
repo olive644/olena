@@ -12,10 +12,7 @@ function historyProps(overrides: Partial<Parameters<typeof HandwritingHistoryBar
     textMode: false,
     textAutoCorrect: true,
     onToggleAutoCorrect: vi.fn(),
-    tool: "pen" as const,
-    onSelectTool: vi.fn(),
     zoom: 1.5,
-    onResetView: vi.fn(),
     canUndo: true,
     canRedo: true,
     onUndo: vi.fn(),
@@ -34,15 +31,11 @@ describe("barra de histórico e zoom", () => {
     fireEvent.click(screen.getByRole("button", { name: "Desfazer" }));
     fireEvent.click(screen.getByRole("button", { name: "Refazer" }));
     fireEvent.click(screen.getByRole("button", { name: "Limpar folha" }));
-    fireEvent.click(screen.getByRole("button", { name: "Redefinir visualização" }));
-    fireEvent.click(screen.getByRole("button", { name: "Lupa para ampliar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Lupa para reduzir" }));
     expect(props.onUndo).toHaveBeenCalledTimes(1);
     expect(props.onRedo).toHaveBeenCalledTimes(1);
     expect(props.onClear).toHaveBeenCalledTimes(1);
-    expect(props.onResetView).toHaveBeenCalledTimes(1);
-    expect(props.onSelectTool).toHaveBeenNthCalledWith(1, "zoom-in");
-    expect(props.onSelectTool).toHaveBeenNthCalledWith(2, "zoom-out");
+    expect(screen.queryByRole("button", { name: "Redefinir visualização" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Lupa para ampliar" })).toBeNull();
   });
 
   it("desativa desfazer, refazer e limpar quando não há o que fazer", () => {
@@ -56,11 +49,8 @@ describe("barra de histórico e zoom", () => {
     }
   });
 
-  it("marca a lupa ativa e esconde a correção automática fora do modo texto", () => {
-    render(<HandwritingHistoryBar {...historyProps({ tool: "zoom-in" })} />);
-    expect(
-      screen.getByRole("button", { name: "Lupa para ampliar" }).getAttribute("aria-pressed"),
-    ).toBe("true");
+  it("esconde a correção automática fora do modo texto", () => {
+    render(<HandwritingHistoryBar {...historyProps()} />);
     expect(screen.queryByRole("button", { name: "Correção automática de texto" })).toBeNull();
   });
 
