@@ -17,7 +17,7 @@ describe("configurações do editor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Configurações do editor" }));
     expect(screen.getAllByRole("group")).toHaveLength(3);
     const switches = screen.getAllByRole("checkbox");
-    expect(switches).toHaveLength(6);
+    expect(switches).toHaveLength(7);
     switches.forEach((input) => fireEvent.click(input));
     for (const [key, value] of Object.entries(DEFAULT_NOTEBOOK_PREFERENCES)) {
       expect(onChange).toHaveBeenCalledWith(key, !value);

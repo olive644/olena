@@ -4,6 +4,7 @@ import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "./synced-stora
 export const NOTEBOOK_PREFERENCES_KEY = "helena.notebookPreferences.v1";
 export const DEFAULT_NOTEBOOK_PREFERENCES = {
   stabilization: true,
+  shapeSnap: true,
   penOnly: false,
   textAutoCorrect: true,
   coordinateMeasurements: true,
