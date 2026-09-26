@@ -220,3 +220,54 @@ test("segurar a caneta parada no fim de um traço acerta a reta e o círculo", a
   // A tinta de uma reta perfeita é fina; o rabisco com a onda de 6 px ocuparia bem mais linhas.
   expect(await inkRows()).toBeLessThan(14);
 });
+
+test("com algo selecionado as setas empurram, e não existe botão de mover a folha", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Fluxo de desenho verificado no desktop.");
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("button", { name: "Cadernos", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
+  await openHandwritingA4(page);
+  const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
+  await expect(dialog.getByRole("button", { name: "Mover folha" })).toHaveCount(0);
+  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  const sheet = dialog.locator(".handwriting-viewport canvas").first();
+  await sheet.scrollIntoViewIfNeeded();
+  const box = (await sheet.boundingBox())!;
+  await page.mouse.move(box.x + 150, box.y + 160);
+  await page.mouse.down();
+  for (let step = 1; step <= 15; step += 1) {
+    await page.mouse.move(box.x + 150 + step * 8, box.y + 160 + Math.sin(step / 3) * 10);
+    await page.waitForTimeout(6);
+  }
+  await page.mouse.up();
+
+  const leftEdge = () =>
+    sheet.evaluate((element) => {
+      const canvas = element as HTMLCanvasElement;
+      const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
+      let minX = canvas.width;
+      for (let index = 0; index < data.length; index += 4) {
+        if (data[index + 3]! > 200 && data[index]! < 90 && data[index + 1]! < 90)
+          minX = Math.min(minX, (index / 4) % canvas.width);
+      }
+      return minX;
+    });
+  const before = await leftEdge();
+  await dialog.getByRole("button", { name: "Selecionar traços" }).click();
+  await dialog.getByRole("button", { name: "Selecionar tudo" }).click();
+  for (let press = 0; press < 3; press += 1) await page.keyboard.press("Shift+ArrowRight");
+  await expect.poll(leftEdge).toBeGreaterThan(before + 20);
+  // Tudo isso vira um passo só: um Desfazer devolve a posição.
+  await dialog.getByRole("button", { name: "Desfazer", exact: true }).click();
+  await expect.poll(leftEdge).toBeLessThan(before + 3);
+});

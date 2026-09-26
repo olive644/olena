@@ -30,6 +30,7 @@ function useHarness() {
   const [coordinateSystems, setCoordinateSystems] = useState<HandwritingCoordinateSystem[]>([]);
   const [images, setImportedImages] = useState<HandwritingImage[]>([]);
   const [pageText, setPageText] = useState("");
+  const [pageTextFrame, setPageTextFrame] = useState({ x: 0, y: 0, width: 100, height: 100 });
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedCoordinateIds, setSelectedCoordinateIds] = useState<string[]>([]);
   const [tool, setTool] = useState<HandwritingTool>("pen");
@@ -41,7 +42,7 @@ function useHarness() {
     images,
     pageText,
     pageTextSize: 28,
-    pageTextFrame: { x: 0, y: 0, width: 100, height: 100 },
+    pageTextFrame,
     layers: DEFAULT_HANDWRITING_LAYER_VISIBILITY,
   };
   const actions = useSelectionActions({
@@ -56,10 +57,20 @@ function useHarness() {
     setCoordinateSystems,
     setImportedImages,
     setPageText,
+    setPageTextFrame,
     setSelectedIds,
     setSelectedCoordinateIds,
   });
-  return { actions, strokes, selectedIds, setSelectedIds, tool, remember };
+  return {
+    actions,
+    strokes,
+    selectedIds,
+    setSelectedIds,
+    tool,
+    remember,
+    pageTextFrame,
+    setPageText,
+  };
 }
 
 describe("ações da seleção", () => {
@@ -111,6 +122,19 @@ describe("ações da seleção", () => {
     act(() => result.current.setSelectedIds(["a"]));
     act(() => result.current.actions.scaleSelection(2));
     expect(result.current.strokes[0]!.width).toBe(8);
+    expect(result.current.remember).toHaveBeenCalledTimes(1);
+  });
+
+  it("as setas empurram tudo o que está selecionado, como um passo só do Desfazer", () => {
+    const { result } = renderHook(useHarness);
+    act(() => result.current.actions.nudgeSelection(5, 5));
+    expect(result.current.remember).not.toHaveBeenCalled();
+    act(() => result.current.setSelectedIds(["a"]));
+    expect(result.current.actions.hasSelection).toBe(true);
+    act(() => result.current.actions.nudgeSelection(1, 0));
+    act(() => result.current.actions.nudgeSelection(10, 0));
+    expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 111, y: 100 });
+    expect(result.current.strokes[1]!.points[0]).toMatchObject({ x: 400 });
     expect(result.current.remember).toHaveBeenCalledTimes(1);
   });
 

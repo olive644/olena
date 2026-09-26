@@ -1079,3 +1079,10 @@ Limites que se cruzam:
   - `handwriting-page-scene.ts`: `PageScene` reúne tudo o que desenha a folha, e `renderPageScene` a desenha. `renderPage` recebe quinze argumentos posicionais e era chamado em quatro lugares (tela, PNG, PDF e impressão); agora são chamadas de uma linha.
 - Correção incidental: a redução anterior deixou um `context.restore()` sobrando depois de `drawSelectionOverlay`, que já faz o próprio `save` e `restore`. Foi removido.
 - Testes novos: `use-editor-shortcuts.test.tsx` (8) e `handwriting-page-scene.test.ts` (2); os e2e do editor, seleção, palma, nitidez e PDF passam sem alteração.
+
+## Seleção universal e sem botão de mover folha (2026-09-26)
+
+- O botão "Mover folha" (a mão) saiu da barra de ferramentas no computador e no celular. A mão continua existindo como modo interno, pela tecla H, pelo Espaço segurado e pelo botão do lado da caneta, e no toque a folha rola com o dedo (modo só caneta) e com a pinça de dois dedos. Mover o que está selecionado não depende mais de nenhuma ferramenta especial.
+- Tudo o que se seleciona agora se move: além de traços, post-its, imagens e eixos, o texto da folha (a moldura de texto) acompanha o arrasto, sem sair da folha (`moveTextFrame`). Antes ele podia ser escolhido, mas não arrastado.
+- Com qualquer coisa selecionada, as setas empurram a seleção (1 unidade da folha, ou 10 com Shift), em qualquer ferramenta, e vários toques seguidos entram como um só passo do Desfazer (`nudgeSelection`). Sem seleção as setas continuam rolando a folha como antes.
+- Testes: gesto da seleção com o texto (`use-selection-gesture.test.tsx`), empurrar (`use-selection-actions.test.tsx`, `use-editor-shortcuts.test.tsx`) e um e2e novo (`selection-tools.spec.ts`) que confere as setas e o Desfazer e que o botão não existe. O e2e de arrastar a folha agora usa a tecla H, e o teste de atalhos reconhece a mão pela folha ("Arraste a folha para mover").
