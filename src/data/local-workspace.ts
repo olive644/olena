@@ -358,6 +358,7 @@ function isNotebook(value: unknown): boolean {
             isString(tab["color"]) &&
             /^#[\da-f]{6}$/i.test(tab["color"]) &&
             (tab["kind"] === "divider" || tab["kind"] === "bookmark") &&
+            (tab["motif"] === undefined || tab["motif"] === "moon" || tab["motif"] === "sun") &&
             typeof tab["position"] === "number" &&
             Number.isFinite(tab["position"]) &&
             tab["position"] >= 0 &&

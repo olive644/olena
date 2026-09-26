@@ -62,9 +62,11 @@ export function notebookPaperTabs(
 export function PaperMoonMark({
   className,
   compact = false,
+  motif = "moon",
 }: {
   className?: string;
   compact?: boolean;
+  motif?: "moon" | "sun" | undefined;
 }) {
   return (
     <svg
@@ -72,29 +74,53 @@ export function PaperMoonMark({
       aria-hidden="true"
       className={className ?? "paper-tab-moon"}
       focusable="false"
+      data-motif={motif}
     >
-      <path
-        fill="#292432"
-        opacity=".22"
-        d="m37 4-21 7L4 27l2 20 9 14v116l18-7 18 7V62l11-17-17 4-13-9-6-14 3-12Z"
-        transform="translate(1 3)"
-      />
-      <path
-        fill="#FFF9EF"
-        d="m37 4-21 7L4 27l2 20 9 14v116l18-7 18 7V62l11-17-17 4-13-9-6-14 3-12Z"
-      />
-      <path fill="#51259B" d="M19 48h28v123l-14-5-14 5Z" />
-      <path fill="#7C3AED" d="m19 48 28 14v74l-28 25Z" />
-      <path fill="var(--tab-color, #FACC15)" d="m19 116 9 8-9 15Zm28 19-11 10 11 10Z" />
-      <path fill="#A779EF" d="m19 48 8 5v48l-8 8Z" />
-      <path fill="#FACC15" d="m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z" />
-      <path fill="#FFE88D" d="m29 9-13 7-8 13 9 8 4-10 1-11Z" />
-      <path fill="#D7A80A" d="m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z" />
-      <path fill="#FFF9EF" d="m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z" />
-      <path fill="#FFE88D" d="m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z" />
-      <path fill="none" stroke="#D8BEFA" strokeWidth="1.4" d="m33 96 5 12-10 12 7 20" />
-      <path fill="#FFF9EF" d="m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z" />
-      <path fill="#FFE88D" d="m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z" />
+      {!compact && (
+        <g transform="translate(0 -44)">
+          <path fill="#FFF9EF" d="M15 46h36v130l-18-6-18 6Z" />
+          <path fill="#51259B" d="M19 48h28v123l-14-5-14 5Z" />
+          <path fill="#7C3AED" d="m19 48 28 14v74l-28 25Z" />
+          <path fill="var(--tab-color, #FACC15)" d="m19 116 9 8-9 15Zm28 19-11 10 11 10Z" />
+          <path fill="#A779EF" d="m19 48 8 5v48l-8 8Z" />
+          <path fill="#FFE88D" d="m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z" />
+          <path fill="none" stroke="#D8BEFA" strokeWidth="1.4" d="m33 96 5 12-10 12 7 20" />
+          <path fill="#FFF9EF" d="m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z" />
+          <path fill="#FFE88D" d="m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z" />
+        </g>
+      )}
+      <g transform={compact ? undefined : "translate(0 116)"}>
+        {motif === "sun" ? (
+          <>
+            <path
+              fill="#FFF9EF"
+              d="m32 0 9 10 14-1 1 14 8 9-9 10 1 14-15-1-9 9-9-9-14 1 1-14L0 32l10-9L9 9l14 1Z"
+            />
+            <path
+              fill="#FACC15"
+              d="m32 5 8 10 11-2-1 12 9 7-9 8 1 11-12-1-7 9-8-9-11 1 1-12-9-7 10-8-2-11 12 1Z"
+            />
+            <path fill="#D7A80A" d="m32 32 27 0-9 8 1 11-12-1-7 9-8-9-11 1Z" />
+            <path fill="#FFE88D" d="m32 16 12 5 5 11-5 12-12 5-12-5-5-12 5-11Z" />
+            <path fill="#FACC15" d="m32 20 12 12-12 13-12-13Z" />
+            <path fill="#FFF9EF" d="m32 20 0 12-12 0Z" />
+          </>
+        ) : (
+          <>
+            <path
+              fill="#FFF9EF"
+              d="m37 4-21 7L4 27l2 20 15 15 17 2 15-6 9-13-17 4-13-9-6-14 3-12Z"
+            />
+            <path
+              fill="#FACC15"
+              d="m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z"
+            />
+            <path fill="#FFE88D" d="m29 9-13 7-8 13 9 8 4-10 1-11Z" />
+            <path fill="#D7A80A" d="m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z" />
+            <path fill="#FFF9EF" d="m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z" />
+          </>
+        )}
+      </g>
     </svg>
   );
 }
@@ -103,8 +129,10 @@ export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
   if (kind === "bookmark") return <PaperMoonMark className="paper-tab-icon" compact />;
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className="paper-tab-icon">
-      <path fill="#D5CCBA" d="M3 6h23v30H3z" />
-      <path fill="#FFF9EF" d="M3 3h23v30H3z" />
+      <path fill="#51465D" d="M3 5h25v32H3z" />
+      <path fill="#D5CCBA" d="M6 7h20v27H6z" />
+      <path fill="#FFF9EF" d="M8 3h18v28H8z" />
+      <path fill="#D5CCBA" d="M11 8h12v2H11Zm0 5h12v2H11Zm0 10h12v2H11Z" />
       <path fill="currentColor" d="M19 10h15l4 5v15H19z" />
       <path fill="#FFFFFF" opacity=".3" d="m19 10 15 0-8 8h-7z" />
       <path fill="#292432" opacity=".3" d="m31 23 7-8v15H19l5-7z" />
@@ -122,6 +150,8 @@ type Props = {
   onJump: (pageId: string) => void;
   disabled: boolean;
   coverControl: ReactNode;
+  backControl?: ReactNode;
+  indexControl?: ReactNode;
   children: ReactNode;
 };
 
@@ -134,6 +164,8 @@ export function NotebookPaperTools({
   onJump,
   disabled,
   coverControl,
+  backControl,
+  indexControl,
   children,
 }: Props) {
   const mount = useRef<HTMLDivElement>(null);
@@ -258,6 +290,7 @@ export function NotebookPaperTools({
       }}
     >
       <div className="notebook-paper-toolbox" role="toolbar" aria-label="Ferramentas do caderno">
+        {backControl}
         {coverControl}
         {(["divider", "bookmark"] as const).map((kind) => (
           <button
@@ -281,19 +314,22 @@ export function NotebookPaperTools({
             <span>{kind === "divider" ? "Divisória" : "Marcador"}</span>
           </button>
         ))}
-        <button
-          type="button"
-          className="notebook-paper-tool"
-          aria-pressed={editing}
-          disabled={!tabs.length || disabled}
-          onClick={() => {
-            setEditing(!editing);
-            setSelectedId(null);
-            setTool(null);
-          }}
-        >
-          {editing ? "Concluir edição" : "Editar marcas"}
-        </button>
+        <div className="notebook-toolbar-secondary">
+          <button
+            type="button"
+            className="notebook-paper-tool"
+            aria-pressed={editing}
+            disabled={!tabs.length || disabled}
+            onClick={() => {
+              setEditing(!editing);
+              setSelectedId(null);
+              setTool(null);
+            }}
+          >
+            {editing ? "Concluir edição" : "Editar marcas"}
+          </button>
+          {indexControl}
+        </div>
         <span className="notebook-tool-hint">
           {tool === "divider"
             ? "Toque na borda direita"
@@ -329,6 +365,22 @@ export function NotebookPaperTools({
               </button>
             ))}
           </div>
+          {selected.kind === "bookmark" && (
+            <div className="notebook-marker-motifs" role="group" aria-label="Modelo do marcador">
+              {(["moon", "sun"] as const).map((motif) => (
+                <button
+                  type="button"
+                  key={motif}
+                  className="notebook-paper-tool"
+                  aria-pressed={(selected.motif ?? "moon") === motif}
+                  onClick={() => update(selected, { motif })}
+                >
+                  <PaperMoonMark compact motif={motif} className="paper-tab-icon" />
+                  {motif === "moon" ? "Lua" : "Sol"}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="notebook-tab-edit-actions">
             <button
               type="button"
@@ -424,7 +476,7 @@ export function NotebookPaperTools({
                 ) : (
                   <>
                     <span className="visually-hidden">{pageIndex + 1}</span>
-                    <PaperMoonMark className="notebook-attached-tab__moon" />
+                    <PaperMoonMark className="notebook-attached-tab__moon" motif={tab.motif} />
                   </>
                 )}
               </button>

@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Caderno celeste e navegação física
+
+A barra reúne a seta amarela original, capa, divisórias, marcador, edição e índice.
+Títulos são editáveis sobre as folhas: Enter ou sair do campo salva; Escape cancela.
+Lua e Sol ficam na ponta inferior do marcador, também na vitrine. O campo opcional
+`NotebookTab.motif` conserva marcas antigas como Lua e persiste a escolha de Sol.
+O fecho de estrela ganhou facetas maiores e aparece aberto junto à borda do livro.
+`NotebookJourney` mede origem e destino após a navegação e anima transporte, capa,
+forro e fecho, devolvendo o foco ao destino. Movimento reduzido não cria a viagem.
+O teste `notebook-celestial` cobre os dois percursos, edição, persistência, modelos,
+oclusão ao folhear e largura móvel de 320px.
+
 ## Camadas físicas e acabamento do caderno
 
 Marcações na abertura atual ficam sobre o papel; as demais permanecem atrás dele,

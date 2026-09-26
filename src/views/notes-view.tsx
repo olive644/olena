@@ -1,7 +1,13 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { NotebookSearch } from "../components/notebook-search";
 import { NotebookPageIndex } from "../components/notebook-page-index";
-import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type Dispatch } from "react";
+import {
+  NotebookJourney,
+  canAnimateNotebook,
+  notebookShelfCover,
+  type NotebookJourneyState,
+} from "../components/notebook-journey";
 import { PageHeader } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
@@ -73,6 +79,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
   const [activePageId, setActivePageId] = useState<string | null>(null);
   const [indexOpen, setIndexOpen] = useState(false);
+  const [journey, setJourney] = useState<NotebookJourneyState | null>(null);
+  const finishJourney = useCallback(() => setJourney(null), []);
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
   const [notebookSection, setNotebookSection] = useState<"pages" | "notes">("pages");
 
@@ -137,6 +145,14 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
       );
       return;
     }
+    const cover = notebookShelfCover(notebook.id);
+    if (cover && canAnimateNotebook())
+      setJourney({
+        notebook,
+        returning: false,
+        from: cover.getBoundingClientRect(),
+        tabs: notebookPaperTabs(notebook, workspace.notes, workspace.subjects),
+      });
     setActiveNotebookId(notebook.id);
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
@@ -148,9 +164,28 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     dispatch({ type: "notebook/page-moved", notebookId: activeNotebook.id, pageId, direction });
   }
 
+  function returnToShelf() {
+    if (journey) return;
+    const spread = document.querySelector<HTMLElement>(".notebook-paper-spread");
+    const cover = document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover");
+    const rect = (spread ?? cover)?.getBoundingClientRect();
+    if (activeNotebook && rect && canAnimateNotebook())
+      setJourney({
+        notebook: activeNotebook,
+        returning: true,
+        tabs: notebookPaperTabs(activeNotebook, notebookPages, workspace.subjects),
+        from: spread
+          ? { x: rect.x + rect.width / 2, y: rect.y, width: rect.width / 2, height: rect.height }
+          : rect,
+      });
+    setActiveNotebookId(null);
+    setIndexOpen(false);
+  }
+
   function openSearchHit(hit: SearchHit) {
     const target = workspace.notebooks.find((notebook) => notebook.id === hit.notebookId);
     if (!target) return;
+    setJourney(null);
     setActiveNotebookId(target.id);
     setActivePageId(hit.pageId);
     setNotebookSection(target.kind === "folder" ? "notes" : "pages");
@@ -347,7 +382,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   }
 
   return (
-    <main className="main-content notebooks-main" id="main-content">
+    <main className="main-content notebooks-main" id="main-content" aria-busy={Boolean(journey)}>
+      {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       <PageHeader />
       {draggedFolder && dragPosition && (
         <div
@@ -646,23 +682,11 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
         </>
       ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label="Preview do caderno">
-          <button
-            className="secondary-button"
-            type="button"
-            onClick={() => setActiveNotebookId(null)}
-          >
-            Meus Cadernos
-          </button>
           <h1>{activeNotebook.title}</h1>
           <p>
             {notebookPages.length}{" "}
             {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}
           </p>
-          {notebookPages.length > 1 && (
-            <button className="secondary-button" type="button" onClick={() => setIndexOpen(true)}>
-              Índice de folhas
-            </button>
-          )}
           {indexOpen && (
             <NotebookPageIndex
               pages={notebookPages}
@@ -681,6 +705,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             onOpen={setActivePageId}
             onCreate={(subjectId) => addPage(true, subjectId)}
             onRemove={removePage}
+            onBack={returnToShelf}
+            onIndex={() => setIndexOpen(true)}
           />
         </section>
       ) : activePage ? (

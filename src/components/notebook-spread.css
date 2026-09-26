@@ -58,17 +58,21 @@
 .book-cover__clasp {
   position: absolute;
   z-index: 2;
-  top: 43%;
+  top: 42%;
   right: -1px;
-  width: 22%;
-  height: 12%;
+  width: 29%;
+  height: 17%;
   background: #51259b;
   border-block: 3px solid #a779ef;
   clip-path: polygon(20% 0, 100% 0, 100% 100%, 20% 100%, 0 50%);
+  transform-origin: right center;
+  box-shadow:
+    inset 0 -6px #292432,
+    inset 0 5px #7c3aed;
 }
 .book-cover__clasp i {
   position: absolute;
-  inset: 20% 27%;
+  inset: 13% 20%;
   background: #facc15;
   clip-path: polygon(
     50% 0,
@@ -82,6 +86,134 @@
     0 38%,
     35% 32%
   );
+}
+.book-cover__clasp i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ffe88d;
+  clip-path: polygon(0 0, 100% 0, 50% 55%, 0 100%);
+}
+.notebook-open-clasp {
+  width: 56px;
+  height: 58px;
+  right: -49px;
+  top: 68%;
+  z-index: -1;
+  transform: rotate(7deg) scaleX(-1);
+  transform-origin: center;
+  pointer-events: none;
+}
+.notebook-journey {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  transform-origin: top left;
+  perspective: 1600px;
+}
+.notebook-journey > .book-cover {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  perspective: 1600px;
+}
+.notebook-journey .book-cover__face {
+  transform-origin: left center;
+  backface-visibility: hidden;
+  overflow: visible;
+}
+.notebook-journey .book-cover__concept {
+  border-radius: inherit;
+}
+.notebook-journey .book-cover__spine {
+  z-index: 0;
+}
+.notebook-marker-motifs {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+}
+:root .notebook-paper-tool.notebook-back-tool {
+  padding: 0;
+  width: 44px;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+.notebook-back-tool::before {
+  display: none;
+}
+.notebook-back-tool img {
+  width: 36px;
+  height: 36px;
+  transform: rotate(180deg);
+}
+:root .notebook-sheet-title {
+  box-sizing: border-box;
+  flex: 0 0 44px;
+  height: 44px;
+  width: calc(100% - 30px);
+  min-width: 0;
+  margin: 8px 15px 0;
+  padding: 6px;
+  background: transparent;
+  color: #51465d;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font:
+    700 13px Manrope,
+    sans-serif;
+  text-align: center;
+  text-overflow: ellipsis;
+  user-select: text;
+}
+:root .notebook-sheet-title:hover {
+  border-bottom-color: #d5ccba;
+}
+:root .notebook-sheet-title:focus-visible {
+  outline: 2px solid #7c3aed;
+  background: #fffdf7;
+}
+.notebook-sheet-title + .notebook-sheet-open {
+  padding-top: 0;
+}
+.notebook-toolbar-secondary {
+  display: flex;
+  gap: 8px;
+}
+.notebook-journey-lining {
+  position: absolute;
+  inset: 0;
+  background: #fff9ef;
+  border: 8px solid #51465d;
+  border-radius: 8px 16px 16px 8px;
+  backface-visibility: visible;
+  opacity: 0;
+  transform-origin: left center;
+  box-shadow: inset 0 0 0 2px #d5ccba;
+}
+@media (max-width: 480px) {
+  .notebook-cover-label {
+    display: none;
+  }
+  .notebook-toolbar-secondary {
+    gap: 5px;
+  }
+  :root .notebook-sheet-title {
+    font-size: 12px;
+    margin-inline: 10px;
+    width: calc(100% - 20px);
+  }
+  :root .notebook-sheet-title:focus {
+    font-size: 16px;
+  }
+  .notebook-open-clasp {
+    width: 42px;
+    height: 46px;
+    right: -36px;
+  }
 }
 .book-cover .book-cover__spine {
   width: 8%;

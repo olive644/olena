@@ -9,6 +9,7 @@ import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
+import { NotebookToolIcon } from "./notebook-tool-icon";
 import "./notebook-spread.css";
 
 type Props = {
@@ -19,6 +20,8 @@ type Props = {
   onOpen: (id: string) => void;
   onCreate: (subjectId: string) => void;
   onRemove: (id: string) => void;
+  onBack?: () => void;
+  onIndex?: () => void;
 };
 type Turn = {
   from: number;
@@ -32,7 +35,13 @@ const reducedMotion = () =>
   typeof window.matchMedia === "function" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function PageImage({ page }: { page?: StudyNote | undefined }) {
+function PageImage({
+  page,
+  hideTitle = false,
+}: {
+  page?: StudyNote | undefined;
+  hideTitle?: boolean;
+}) {
   return (
     <>
       {page?.assets[0] ? (
@@ -40,7 +49,7 @@ function PageImage({ page }: { page?: StudyNote | undefined }) {
       ) : (
         <div className="notebook-empty-paper">{page?.content && <p>{page.content}</p>}</div>
       )}
-      <strong>{page?.title ?? ""}</strong>
+      {!hideTitle && <strong>{page?.title ?? ""}</strong>}
     </>
   );
 }
@@ -53,6 +62,8 @@ export function NotebookSpread({
   onOpen,
   onCreate,
   onRemove,
+  onBack,
+  onIndex,
 }: Props) {
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [showCover, setShowCover] = useState(false);
@@ -66,6 +77,17 @@ export function NotebookSpread({
   const current = Math.min(spreadIndex, lastSpread);
   const visible = pages.slice(current * 2, current * 2 + 2);
   const busy = Boolean(turning || removing);
+  const backControl = onBack && (
+    <button
+      type="button"
+      className="notebook-paper-tool notebook-back-tool"
+      aria-label="Meus Cadernos"
+      title="Voltar aos meus cadernos"
+      onClick={onBack}
+    >
+      <img src="/paper-arrow.svg" alt="" />
+    </button>
+  );
   useEffect(() => {
     if (!turning?.settling) return;
     const timer = window.setTimeout(() => {
@@ -112,6 +134,7 @@ export function NotebookSpread({
     <div className="notebook-spread-workspace">
       {showCover && (
         <div className="notebook-spread-options">
+          {backControl}
           <button
             type="button"
             className="secondary-button"
@@ -144,14 +167,26 @@ export function NotebookSpread({
             visible={visible}
             dispatch={dispatch}
             disabled={busy}
+            backControl={backControl}
+            indexControl={
+              onIndex && (
+                <button type="button" className="notebook-paper-tool" onClick={onIndex}>
+                  <NotebookToolIcon name="index" />
+                  Índice de folhas
+                </button>
+              )
+            }
             coverControl={
               <button
                 type="button"
                 className="notebook-paper-tool"
                 disabled={busy}
                 onClick={() => setShowCover(true)}
+                aria-label="Ver capa"
+                title="Ver capa"
               >
-                Ver capa
+                <NotebookToolIcon name="cover" />
+                <span className="notebook-cover-label">Ver capa</span>
               </button>
             }
             onJump={(id) => turnTo(Math.floor(pages.findIndex((page) => page.id === id) / 2))}
@@ -174,7 +209,7 @@ export function NotebookSpread({
                 if (
                   event.button !== 0 ||
                   busy ||
-                  (event.target as HTMLElement).closest("footer, .notebook-sheet-create")
+                  (event.target as HTMLElement).closest("footer, input, .notebook-sheet-create")
                 )
                   return;
                 suppressClick.current = false;
@@ -238,6 +273,9 @@ export function NotebookSpread({
                 <i />
                 <i />
               </div>
+              <span className="book-cover__clasp notebook-open-clasp" aria-hidden="true">
+                <i />
+              </span>
               <div className="notebook-spread-pair">
                 {basePages.map((page, side) => (
                   <article
@@ -247,6 +285,31 @@ export function NotebookSpread({
                   >
                     {page ? (
                       <>
+                        <input
+                          key={page.id + page.title}
+                          className="notebook-sheet-title"
+                          aria-label={`Título da folha ${pages.indexOf(page) + 1}`}
+                          defaultValue={page.title}
+                          maxLength={120}
+                          disabled={busy}
+                          onBlur={(event) => {
+                            const title = event.currentTarget.value.trim() || page.title;
+                            event.currentTarget.value = title;
+                            if (title !== page.title)
+                              dispatch({
+                                type: "note/updated",
+                                id: page.id,
+                                title,
+                                content: page.content,
+                                updatedAt: new Date().toISOString(),
+                              });
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Escape") event.currentTarget.value = page.title;
+                            if (event.key === "Enter" || event.key === "Escape")
+                              event.currentTarget.blur();
+                          }}
+                        />
                         <button
                           className="notebook-sheet-open"
                           type="button"
@@ -254,7 +317,7 @@ export function NotebookSpread({
                           onClick={() => onOpen(page.id)}
                           aria-label={`Abrir preview de ${page.title}, folha ${pages.indexOf(page) + 1}`}
                         >
-                          <PageImage page={page} />
+                          <PageImage page={page} hideTitle />
                         </button>
                         <footer>
                           <span>{pages.indexOf(page) + 1}</span>
