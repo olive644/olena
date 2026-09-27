@@ -30,6 +30,11 @@ export function NotebookSettings({
           "Formas ao segurar",
           "Segure a caneta parada no fim do traço para acertar retas, elipses, retângulos e triângulos.",
         ],
+        [
+          "inkPrediction",
+          "Prever a ponta da caneta",
+          "Desenha um pedacinho à frente da caneta para a tinta parecer sair com menos atraso.",
+        ],
         ["penOnly", "Só caneta, dedo move", "Use os dedos para navegar e a caneta para escrever."],
         [
           "writingWindowAutoFollow",
