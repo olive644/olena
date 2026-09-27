@@ -145,7 +145,7 @@
   inset: 0;
   transform-origin: left center;
   transform-style: preserve-3d;
-  z-index: 2;
+  z-index: 5;
 }
 .notebook-journey-leaf > .book-cover {
   position: absolute;
@@ -177,10 +177,10 @@
   width: 200%;
   height: 100%;
   z-index: 4;
-  clip-path: inset(-80px -100px -80px 100%);
+  clip-path: inset(-80px -100px -80px 50%);
 }
 .notebook-journey[data-returning="true"] .notebook-journey-pages {
-  clip-path: inset(-80px -100px -80px -30px);
+  clip-path: inset(-80px -100px -80px 50%);
 }
 .notebook-journey[data-returning="true"] .notebook-journey-leaf,
 .notebook-journey[data-returning="true"] .notebook-journey-clasp {
@@ -261,12 +261,13 @@
   position: absolute;
   inset: 0;
   background: #fff9ef;
-  border: 8px solid #51465d;
+  border: 0;
   border-radius: 8px 16px 16px 8px;
   backface-visibility: hidden;
   transform: rotateY(180deg);
   transform-origin: center;
   box-shadow: inset 0 0 0 2px #d5ccba;
+  overflow: hidden;
 }
 @media (max-width: 480px) {
   .notebook-cover-label {
@@ -679,10 +680,10 @@
   transform-origin: right center;
 }
 .notebook-turn-leaf.is-settling {
-  transition: transform 520ms cubic-bezier(0.22, 0.6, 0.28, 1);
+  transition: transform var(--turn-duration) var(--turn-easing);
 }
 .notebook-turn-leaf.is-automatic {
-  animation: notebook-leaf-turn 520ms cubic-bezier(0.22, 0.6, 0.28, 1) both;
+  animation: notebook-leaf-turn var(--turn-duration) var(--turn-easing) both;
 }
 .notebook-turn-face {
   position: absolute;

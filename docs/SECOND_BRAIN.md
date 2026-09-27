@@ -1,11 +1,23 @@
 # OlenaStudy: Second Brain
 
 O snapshot de `NotebookJourney` congela largura, altura e tipografia na origem,
-depois compensa a escala do transportador. As folhas ficam acima da capa giratória.
+depois compensa a escala do transportador. A capa gira acima do miolo, com a folha
+esquerda no verso e a direita fixa sob ela. Ao fim, a folha fixa coincide com o verso.
 Não apagar a capa por opacity no último frame: isso causava o salto visual.
 `NotebookPageJourney` preserva a folha escolhida, aguarda o canvas do editor e usa
 o retângulo real dele como destino. Observador, frames e animações são limpos ao sair;
 o limite de espera devolve o controle mesmo se o editor não montar.
+
+`notebook-motion.ts` define tempo e curva compartilhados pelo giro de folhas e capa.
+`animatePageEntry` em NotesView atende abertura e criação no preview; a criação usa
+uma folha vazia e a mesma transição já existente.
+`handwriting-eraser.ts` recorta a linha central da tinta contra a cápsula varrida
+pela borracha, considerando a espessura e interpolando pressão e inclinação nos cortes.
+Não altera o formato persistido: cada trecho restante é um traço com novo ID.
+O último ponto da borracha conecta eventos separados dentro do mesmo gesto.
+`pointerSamples` acrescenta a amostra principal quando o lote agrupado está atrasado.
+O limite espacial do estabilizador atua na saída, preservando o estimador de velocidade.
+Previsão especulativa da ponta foi retirada da renderização para evitar avançar e recuar.
 
 A capa de fundo não cria mais o contexto que escondia marcas enterradas.
 A ordem é capa, pilha de papel, marcas enterradas, folhas, marcas expostas.

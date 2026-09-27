@@ -43,9 +43,7 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await expect(page.locator(".notebook-journey-pages .notebook-sheet")).toHaveCount(2);
   await page
     .locator(".notebook-journey")
-    .evaluate(() =>
-      document.getAnimations().forEach((animation) => (animation.currentTime = 1050)),
-    );
+    .evaluate(() => document.getAnimations().forEach((animation) => (animation.currentTime = 980)));
   await page.screenshot({ path: testInfo.outputPath("abertura-sem-salto.png") });
   await page.evaluate(() => document.getAnimations().forEach((animation) => animation.play()));
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
@@ -102,6 +100,12 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   const editor = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(editor).toBeVisible();
   await expect(editor.locator(".handwriting-canvas")).toBeVisible();
+  await editor.getByRole("button", { name: "Fechar", exact: true }).click();
+  await expect(title).toBeVisible();
+  await page.getByRole("button", { name: "Criar nova folha", exact: true }).click();
+  await expect(page.locator(".notebook-page-journey")).toBeVisible();
+  await expect(page.locator(".notebook-page-journey")).toHaveCount(0);
+  await expect(editor).toBeVisible();
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
   await expect(title).toBeVisible();
   await page.getByRole("button", { name: "Colocar marcador" }).click();

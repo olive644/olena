@@ -49,6 +49,14 @@ describe("zona morta do estabilizador ao vivo", () => {
 });
 
 describe("filtro 1€ ao vivo", () => {
+  it.each([60, 125, 240])("limita o atraso desde o primeiro movimento a %i Hz", (hz) => {
+    const filter = createLiveStabilizer(point(0, 0), { ...DEFAULT_LIVE_STABILIZER, maxLag: 1.5 });
+    for (let index = 1; index <= 12; index++) {
+      const raw = point(index * 12, Math.sin(index * 0.4) * 20);
+      const [filtered] = filter.push([raw], [(index * 1000) / hz]);
+      expect(Math.hypot(filtered!.x - raw.x, filtered!.y - raw.y)).toBeLessThanOrEqual(1.501);
+    }
+  });
   it("mantém pressão equivalente com frequências diferentes", () => {
     function pressureAt(hz: number) {
       const filter = createLiveStabilizer(point(0, 0, { pressure: 0.2 }));

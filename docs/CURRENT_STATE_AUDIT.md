@@ -1,5 +1,19 @@
 # Auditoria do estado atual
 
+## Folheamento da capa, criação e tinta por área
+
+Capa e folhas compartilham a curva de movimento e o giro de 520 ms. O verso
+da capa leva uma cópia da folha na mesma escala, sem revelar o miolo por varredura
+horizontal. A nova folha do preview também se destaca e amplia até o editor.
+O estabilizador limita a distância visual até a ponta a 1,5 pixel de tela e mantém
+a suavização de pressão. O primeiro ponto é pintado imediatamente; a amostra mais
+recente do navegador e a posição de soltura entram no traço, inclusive na janela de escrita.
+A borracha recorta segmentos dentro do caminho percorrido, incluindo os espaços
+entre eventos. Os fragmentos conservam cor, pressão e inclinação; desfazer recupera
+o traço original em uma única ação. Não há mudança de formato no documento salvo.
+Testes de navegador verificam tinta e borracha com eventos de mouse, pen e touch;
+isso não substitui medição física da latência de uma mesa digitalizadora.
+
 ## Capa navegável e entrada na folha
 
 A criação oferece somente cadernos e a vitrine não mostra a instrução de arrastar

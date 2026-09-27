@@ -87,20 +87,29 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const finishJourney = useCallback(() => setJourney(null), []);
   const [pageJourney, setPageJourney] = useState<NotebookPageJourneyState | null>(null);
   const finishPageJourney = useCallback(() => setPageJourney(null), []);
+  function animatePageEntry(source: HTMLElement | null | undefined, blank = false) {
+    const preview = document.querySelector<HTMLElement>(".notebook-entry-preview");
+    if (!source || !preview || !canAnimateNotebook()) return;
+    const { x, y, width, height } = preview.getBoundingClientRect();
+    const paper = blank ? document.createElement("div") : (source.cloneNode(true) as HTMLElement);
+    if (blank) {
+      paper.className = "notebook-sheet-open";
+      const sheet = document.createElement("div");
+      sheet.className = "notebook-empty-paper";
+      paper.append(sheet);
+    }
+    setPageJourney({
+      from: source.getBoundingClientRect(),
+      paper,
+      background: { element: preview.cloneNode(true) as HTMLElement, x, y, width, height },
+    });
+  }
   function openPreviewPage(id: string) {
     if (journey || pageJourney) return;
     const source = Array.from(document.querySelectorAll<HTMLElement>(".notebook-sheet"))
       .find((sheet) => sheet.dataset["pageId"] === id)
       ?.querySelector<HTMLElement>(".notebook-sheet-open");
-    const preview = document.querySelector<HTMLElement>(".notebook-entry-preview");
-    if (source && preview && canAnimateNotebook()) {
-      const { x, y, width, height } = preview.getBoundingClientRect();
-      setPageJourney({
-        from: source.getBoundingClientRect(),
-        paper: source.cloneNode(true) as HTMLElement,
-        background: { element: preview.cloneNode(true) as HTMLElement, x, y, width, height },
-      });
-    }
+    animatePageEntry(source);
     setActivePageId(id);
   }
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
@@ -238,7 +247,13 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   }
 
   function addPage(append: boolean, subjectId?: string) {
-    if (!activeNotebook) return;
+    if (!activeNotebook || journey || pageJourney) return;
+    animatePageEntry(
+      document.querySelector<HTMLElement>(".notebook-sheet-create") ??
+        document.querySelector<HTMLElement>(".notebook-sheet:last-child .notebook-sheet-open") ??
+        document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover"),
+      true,
+    );
     const id = createWorkspaceId("note");
     dispatch({
       type: "note/added",

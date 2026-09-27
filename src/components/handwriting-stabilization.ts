@@ -71,6 +71,8 @@ export type LiveStabilizerOptions = {
   deadzone: number;
   /** Suavização da pressão de 0 a 1: quanto maior, mais rápido ela acompanha a caneta. */
   pressureResponse: number;
+  /** Distância máxima entre a tinta filtrada e a amostra real, em unidades da folha. */
+  maxLag: number;
 };
 
 // Filtro 1€ (Casiez, Roussel e Vogel, 2012) sobre um preditor de velocidade
@@ -84,6 +86,7 @@ export const DEFAULT_LIVE_STABILIZER: LiveStabilizerOptions = {
   beta: 0.02,
   deadzone: 0.5,
   pressureResponse: 0.45,
+  maxLag: 4,
 };
 
 const DEFAULT_SAMPLE_INTERVAL_MS = 8;
@@ -118,6 +121,8 @@ export function createLiveStabilizer(
   let anchor = start;
   let x = start.x;
   let y = start.y;
+  let renderedX = start.x;
+  let renderedY = start.y;
   let pressure = start.pressure;
   let velocityX = 0;
   let velocityY = 0;
@@ -157,6 +162,8 @@ export function createLiveStabilizer(
           pressure += pressureAlpha * (sample.pressure - pressure);
           lastRaw = sample;
           anchor = sample;
+          renderedX = x;
+          renderedY = y;
           filtered.push({ ...sample, x, y, pressure });
           return;
         }
@@ -172,14 +179,26 @@ export function createLiveStabilizer(
         y = predictedY + alpha * errorY;
         velocityX += velocityGain * errorX;
         velocityY += velocityGain * errorY;
+        // O filtro começa sem velocidade. Limitar a distância evita a cauda lenta
+        // no arranque, nas curvas e depois de uma pausa, inclusive sob zoom.
+        const lag = Math.hypot(sample.x - x, sample.y - y);
+        renderedX = x;
+        renderedY = y;
+        if (lag > options.maxLag) {
+          const fraction = options.maxLag / lag;
+          renderedX = sample.x + (x - sample.x) * fraction;
+          renderedY = sample.y + (y - sample.y) * fraction;
+        }
         pressure += pressureAlpha * (sample.pressure - pressure);
         lastRaw = sample;
         anchor = sample;
-        filtered.push({ ...sample, x, y, pressure });
+        filtered.push({ ...sample, x: renderedX, y: renderedY, pressure });
       });
       return filtered;
     },
     finish() {
+      x = renderedX;
+      y = renderedY;
       const tail: HandwritingPoint[] = [];
       for (let index = 0; index < MAX_SETTLE_STEPS; index += 1) {
         if (Math.hypot(anchor.x - x, anchor.y - y) <= SETTLE_DISTANCE) break;
@@ -192,6 +211,8 @@ export function createLiveStabilizer(
         y = anchor.y;
         tail.push({ ...anchor, pressure });
       }
+      renderedX = x;
+      renderedY = y;
       return tail;
     },
   };
