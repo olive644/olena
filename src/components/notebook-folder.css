@@ -68,8 +68,7 @@
 }
 .paper-folder {
   position: relative;
-  grid-column: span 2;
-  width: calc(2 * var(--shelf-item-width) + 28px);
+  width: var(--shelf-item-width);
   isolation: isolate;
 }
 .paper-folder-stage {
@@ -116,7 +115,7 @@
   display: block;
   position: absolute;
   inset: 0;
-  background: rgb(255 255 255 / 72%);
+  background: rgb(255 255 255 / 56%);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 2px solid #fff9ef;
@@ -186,10 +185,10 @@
 .paper-folder .paper-folder-book {
   position: absolute;
   left: 50%;
-  top: -10px;
-  width: 38%;
+  bottom: 34px;
+  width: 70%;
   z-index: 1;
-  transform: translate(-50%, 26px) rotate(-5deg) scale(0.62);
+  transform: translateX(-50%) rotate(-9deg);
   transform-origin: 50% 100%;
   height: auto;
   aspect-ratio: 3 / 4;
@@ -222,38 +221,37 @@
   padding: 5px;
 }
 .paper-folder .book-1 {
-  transform: translate(-50%, 22px) rotate(0) scale(0.62);
+  transform: translate(-42%, -10px) rotate(3deg);
   transition-delay: 45ms;
 }
 .paper-folder .book-2 {
-  transform: translate(-50%, 18px) rotate(5deg) scale(0.62);
+  transform: translate(-35%, 2px) rotate(12deg);
   transition-delay: 90ms;
 }
 .paper-folder.is-open .paper-folder-front {
-  transform: rotateX(-48deg);
+  transform: rotateX(-20deg);
   transition-delay: 0ms;
 }
 .paper-folder.is-open .paper-folder-book {
-  z-index: 3;
-  transform: translate(calc(-50% - 120px), -57px) rotate(-3deg);
+  transform: translate(calc(-50% - 22px), -38px) rotate(-12deg);
   transition-delay: 100ms;
 }
 .paper-folder.is-open .book-1 {
-  transform: translate(-50%, -72px) rotate(0);
+  transform: translate(-50%, -57px) rotate(0);
   transition-delay: 155ms;
 }
 .paper-folder.is-open .book-2 {
-  transform: translate(calc(-50% + 120px), -57px) rotate(3deg);
+  transform: translate(calc(-50% + 22px), -34px) rotate(12deg);
   transition-delay: 210ms;
 }
 .paper-folder.is-open[data-book-count="1"] .book-0 {
-  transform: translate(-50%, -72px) rotate(0);
+  transform: translate(-50%, -48px) rotate(0);
 }
 .paper-folder.is-open[data-book-count="2"] .book-0 {
-  transform: translate(calc(-50% - 72px), -65px) rotate(-3deg);
+  transform: translate(calc(-50% - 18px), -40px) rotate(-9deg);
 }
 .paper-folder.is-open[data-book-count="2"] .book-1 {
-  transform: translate(calc(-50% + 72px), -65px) rotate(3deg);
+  transform: translate(calc(-50% + 18px), -48px) rotate(9deg);
 }
 .paper-folder.is-drop-target .paper-folder-front {
   outline: 3px solid #7c3aed;
@@ -288,29 +286,23 @@
   .paper-folder-art {
     height: 158px;
   }
-  .paper-folder {
-    width: calc(2 * var(--shelf-item-width) + 22px);
-  }
-  .paper-folder .paper-folder-book {
-    width: 40%;
-  }
   .paper-folder.is-open .paper-folder-book {
-    transform: translate(calc(-50% - 88px), -43px) rotate(-3deg);
+    transform: translate(calc(-50% - 15px), -25px) rotate(-12deg);
   }
   .paper-folder.is-open .book-1 {
-    transform: translate(-50%, -57px) rotate(0);
+    transform: translate(-50%, -39px) rotate(0);
   }
   .paper-folder.is-open .book-2 {
-    transform: translate(calc(-50% + 88px), -43px) rotate(3deg);
+    transform: translate(calc(-50% + 15px), -23px) rotate(12deg);
   }
   .paper-folder.is-open[data-book-count="1"] .book-0 {
-    transform: translate(-50%, -57px) rotate(0);
+    transform: translate(-50%, -32px) rotate(0);
   }
   .paper-folder.is-open[data-book-count="2"] .book-0 {
-    transform: translate(calc(-50% - 50px), -50px) rotate(-3deg);
+    transform: translate(calc(-50% - 12px), -27px) rotate(-9deg);
   }
   .paper-folder.is-open[data-book-count="2"] .book-1 {
-    transform: translate(calc(-50% + 50px), -50px) rotate(3deg);
+    transform: translate(calc(-50% + 12px), -34px) rotate(9deg);
   }
   .paper-folder-toggle {
     top: 47px;
