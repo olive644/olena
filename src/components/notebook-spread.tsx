@@ -18,6 +18,7 @@ import { NotebookCover } from "./notebook-cover";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
 import "./notebook-spread.css";
+import "./notebook-binding-finish.css";
 
 type Props = {
   notebook: StudyNotebook;
@@ -387,10 +388,16 @@ export function NotebookSpread({
               <div className="notebook-spread-pair">
                 {basePages.map((page, side) => (
                   <article
-                    className={`notebook-sheet ${removing?.side === side ? "is-revealing" : ""}`}
+                    className={`notebook-sheet ${!page && side === 1 ? "is-endpaper" : ""} ${removing?.side === side ? "is-revealing" : ""}`}
                     key={side}
                     data-page-id={page?.id}
                   >
+                    {!page && side === 1 && (
+                      <div className="notebook-endpaper" aria-hidden="true">
+                        <span className="notebook-endpaper-card" />
+                        <span className="notebook-endpaper-pocket" />
+                      </div>
+                    )}
                     {page ? (
                       <>
                         <input

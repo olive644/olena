@@ -19,6 +19,7 @@ export function NotebookCover({
       style={{ "--notebook-accent": subjectColor } as CSSProperties}
       aria-hidden="true"
     >
+      <span className="book-cover__backboard" />
       <span className="book-cover__pages" />
       <span className="book-cover__face">
         <img

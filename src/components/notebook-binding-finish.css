@@ -1,0 +1,201 @@
+/* Encadernação em camadas sólidas, compartilhada pela vitrine e pela virada. */
+.book-cover__backboard {
+  position: absolute;
+  inset: 9px -8px -12px 6px;
+  border-radius: 4px 17px 16px 4px;
+  background: #51259b;
+  border: 2px solid #a779ef;
+  box-shadow: 2px 3px #292432;
+}
+.book-cover__pages {
+  box-shadow:
+    1px 2px #fffdf7,
+    2px 4px #d5ccba,
+    3px 6px #fff9ef;
+  border-right: 3px double #c7b99f;
+}
+.book-cover__face {
+  box-shadow:
+    inset -3px 0 #51259b,
+    inset 0 -4px #51259b;
+}
+.book-cover__face::after {
+  inset: 8px 8px 8px 20px;
+  border-style: solid;
+  border-color: #a779ef;
+  border-width: 1px;
+  opacity: 0.65;
+}
+.book-cover__corner {
+  width: 17%;
+  height: 13%;
+  background: #51259b;
+  box-shadow: inset -4px 4px #a779ef;
+}
+.book-cover__label {
+  bottom: 8%;
+  border: 3px solid #fffdf7;
+  outline: 1px solid #d5ccba;
+  box-shadow: 2px 4px #51259b;
+  transform: rotate(-1deg);
+}
+.book-cover__label::before {
+  height: 10px;
+  background: #ffe88d;
+}
+.book-cover .book-cover__spine {
+  border-right: 3px solid #51465d;
+  box-shadow: 3px 0 #29243226;
+}
+.book-cover__spine::after {
+  content: "";
+  position: absolute;
+  inset: 9px 4px;
+  border-left: 1px dashed #a779ef;
+  opacity: 0.7;
+}
+.book-cover__clasp {
+  border-block: 2px solid #a779ef;
+  box-shadow:
+    inset 0 -4px #292432,
+    inset 0 4px #7c3aed;
+}
+.book-cover__clasp::before {
+  content: "";
+  position: absolute;
+  inset: 6px 5px 7px 22%;
+  border-block: 1px dashed #a779ef;
+}
+.notebook-paper-spread::after {
+  background: #51465d;
+  box-shadow:
+    inset 0 3px #a779ef,
+    inset 0 -3px #292432;
+}
+.notebook-paper-spread::before {
+  border-color: #d5ccba;
+  opacity: 0.65;
+}
+.notebook-cover-corners i {
+  background: #51259b;
+  box-shadow: inset 4px 4px #a779ef;
+}
+.notebook-page-stack i {
+  box-shadow:
+    0 2px #fffdf7,
+    0 3px #c7b99f,
+    0 5px #fff9ef;
+}
+.notebook-sheet {
+  border-radius: 6px 1px 12px 8px;
+  box-shadow:
+    inset -6px 0 #e2d7c3,
+    inset -10px 0 #f4ecdd,
+    inset 0 -3px #f4ecdd;
+}
+.notebook-sheet + .notebook-sheet {
+  border-radius: 1px 6px 8px 12px;
+  box-shadow:
+    inset 6px 0 #e2d7c3,
+    inset 10px 0 #f4ecdd,
+    inset 0 -3px #f4ecdd;
+}
+.notebook-sheet::before {
+  border-color: #ded3bf;
+  border-radius: 2px 2px 8px 8px;
+}
+.notebook-sheet::after {
+  width: 18px;
+  height: 18px;
+  background: #e2d7c3;
+  box-shadow: inset -3px -3px #fffdf7;
+}
+.notebook-sheet footer > span {
+  min-width: 22px;
+  text-align: center;
+  border-top: 1px solid #d5ccba;
+  padding-top: 3px;
+}
+.notebook-binding i {
+  height: 8px;
+  border-radius: 3px;
+  background: #c7b99f;
+  border-top: 2px solid #fff9ef;
+  border-bottom: 2px solid #8c765a;
+  box-shadow: 1px 2px #29243226;
+}
+.notebook-binding i::before,
+.notebook-binding i::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  top: 0;
+  background: #51465d;
+  border-radius: 50%;
+  z-index: -1;
+}
+.notebook-binding i::before {
+  left: -2px;
+}
+.notebook-binding i::after {
+  right: -2px;
+}
+.notebook-sheet.is-endpaper {
+  background: #f4ecdd;
+}
+.notebook-endpaper {
+  position: absolute;
+  inset: 22px 18px 18px 22px;
+  pointer-events: none;
+  border: 1px solid #ded3bf;
+  border-radius: 2px 3px 8px 3px;
+}
+.notebook-endpaper-card {
+  position: absolute;
+  bottom: 10%;
+  left: 16%;
+  width: 66%;
+  height: 24%;
+  background: #fff9ef;
+  border: 1px solid #d5ccba;
+  transform: rotate(-5deg);
+  box-shadow: 2px 2px #d5ccba;
+}
+.notebook-endpaper-card::before {
+  content: "";
+  position: absolute;
+  top: 12%;
+  left: 10%;
+  width: 22%;
+  height: 5px;
+  background: #a779ef;
+}
+.notebook-endpaper-pocket {
+  position: absolute;
+  inset: 76% 8% 4%;
+  background: #e2d7c3;
+  clip-path: polygon(0 0, 42% 0, 48% 12%, 58% 12%, 64% 0, 100% 0, 100% 100%, 0 100%);
+  box-shadow:
+    inset 3px 0 #fff9ef,
+    inset -3px -3px #c7b99f;
+}
+.notebook-endpaper-pocket::after {
+  content: "";
+  position: absolute;
+  inset: 12px 7px 7px;
+  border: 1px dashed #b5a185;
+  border-top: 0;
+}
+.is-endpaper .notebook-sheet-create {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 27%;
+}
+.is-endpaper .notebook-sheet-create:hover {
+  background: transparent;
+}
+.is-endpaper .notebook-sheet-create::before,
+.is-endpaper .notebook-sheet-create::after {
+  display: none;
+}
