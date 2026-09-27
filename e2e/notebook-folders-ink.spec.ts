@@ -45,88 +45,114 @@ test("pastas papercraft guardam três cadernos e limitam três pastas por vitrin
   await expect(page.locator(".notebook-card")).toHaveCount(4);
 });
 
-test("caderno aberto na pasta mantém capa grande, divisória e marcador na viagem", async ({
-  page,
-}, info) => {
-  let workspace = createInitialWorkspace();
-  workspace = workspaceReducer(workspace, {
-    type: "notebook/added",
-    id: "folder-preview",
-    kind: "collection",
-    shelf: 0,
-    title: "Constelação",
-    subjectId: "",
-    createdAt: "2026-09-26",
+for (const count of [1, 3]) {
+  test(`pasta compacta com ${count} cadernos mantém capas e marcadores dentro da vitrine`, async ({
+    page,
+  }, info) => {
+    let workspace = createInitialWorkspace();
+    workspace = workspaceReducer(workspace, {
+      type: "notebook/added",
+      id: "folder-preview",
+      kind: "collection",
+      shelf: 0,
+      title: "Constelação",
+      subjectId: "",
+      createdAt: "2026-09-26",
+    });
+    workspace = workspaceReducer(workspace, {
+      type: "notebook/added",
+      id: "book-preview",
+      title: "Meu universo",
+      subjectId: "",
+      createdAt: "2026-09-26",
+    });
+    workspace = workspaceReducer(workspace, {
+      type: "note/added",
+      id: "page-preview",
+      notebookId: "book-preview",
+      subjectId: "",
+      updatedAt: "2026-09-26",
+    });
+    workspace = workspaceReducer(workspace, {
+      type: "notebook/organized",
+      id: "book-preview",
+      changes: {
+        paperTabs: [
+          {
+            id: "divider-preview",
+            kind: "divider",
+            pageId: "page-preview",
+            label: "Divisória",
+            color: "#7c3aed",
+            position: 0.25,
+          },
+          {
+            id: "bookmark-preview",
+            kind: "bookmark",
+            pageId: "page-preview",
+            label: "Lua",
+            color: "#facc15",
+            position: 0.55,
+            motif: "moon",
+          },
+        ],
+      },
+    });
+    workspace = workspaceReducer(workspace, {
+      type: "notebook/stored",
+      id: "book-preview",
+      folderId: "folder-preview",
+    });
+    for (let index = 1; index < count; index++) {
+      workspace = workspaceReducer(workspace, {
+        type: "notebook/added",
+        id: `extra-${index}`,
+        title: `Ideias ${index}`,
+        subjectId: "",
+        createdAt: "2026-09-27",
+      });
+      workspace = workspaceReducer(workspace, {
+        type: "notebook/stored",
+        id: `extra-${index}`,
+        folderId: "folder-preview",
+      });
+    }
+    await page.addInitScript(
+      (state) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state)),
+      workspace,
+    );
+    if (count === 3)
+      await page.addInitScript(() => localStorage.setItem("helenastudy.theme", "dark"));
+    await page.reload();
+    const folder = page.locator('[data-folder-drop="folder-preview"]');
+    const folderRect = (await folder.boundingBox())!;
+    expect(folderRect.width).toBe(info.project.name === "mobile" ? 164 : 220);
+    const rail = (await page.locator(".notebook-shelf__rail").first().boundingBox())!;
+    for (const book of await folder.locator(".paper-folder-book").all()) {
+      const rect = (await book.boundingBox())!;
+      expect(rect.y + rect.height).toBeLessThan(rail.y);
+    }
+    await page.screenshot({ path: info.outputPath("pasta-compacta-fechada.png"), fullPage: true });
+    await folder.getByRole("button", { name: "Abrir pasta Constelação" }).click();
+    const cover = folder.locator('[data-notebook-drop="book-preview"] .book-cover');
+    await expect(cover).toBeVisible();
+    await expect(cover.locator(".book-cover__mark.is-divider")).toHaveCount(1);
+    await expect(cover.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
+    const rect = (await cover.boundingBox())!;
+    expect(rect.width).toBeGreaterThan(info.project.name === "mobile" ? 100 : 140);
+    await page.screenshot({
+      path: info.outputPath("pasta-capa-grande-marcadores.png"),
+      fullPage: true,
+    });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await folder.getByRole("button", { name: "Abrir Meu universo" }).click();
+    const journey = page.locator(".notebook-journey");
+    await expect(journey).toBeVisible();
+    await expect(journey.locator(".book-cover__mark.is-divider")).toHaveCount(1);
+    await expect(journey.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
+    await expect(journey).toHaveCount(0);
   });
-  workspace = workspaceReducer(workspace, {
-    type: "notebook/added",
-    id: "book-preview",
-    title: "Meu universo",
-    subjectId: "",
-    createdAt: "2026-09-26",
-  });
-  workspace = workspaceReducer(workspace, {
-    type: "note/added",
-    id: "page-preview",
-    notebookId: "book-preview",
-    subjectId: "",
-    updatedAt: "2026-09-26",
-  });
-  workspace = workspaceReducer(workspace, {
-    type: "notebook/organized",
-    id: "book-preview",
-    changes: {
-      paperTabs: [
-        {
-          id: "divider-preview",
-          kind: "divider",
-          pageId: "page-preview",
-          label: "Divisória",
-          color: "#7c3aed",
-          position: 0.25,
-        },
-        {
-          id: "bookmark-preview",
-          kind: "bookmark",
-          pageId: "page-preview",
-          label: "Lua",
-          color: "#facc15",
-          position: 0.55,
-          motif: "moon",
-        },
-      ],
-    },
-  });
-  workspace = workspaceReducer(workspace, {
-    type: "notebook/stored",
-    id: "book-preview",
-    folderId: "folder-preview",
-  });
-  await page.addInitScript(
-    (state) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state)),
-    workspace,
-  );
-  await page.reload();
-  const folder = page.locator('[data-folder-drop="folder-preview"]');
-  await folder.getByRole("button", { name: "Abrir pasta Constelação" }).click();
-  const cover = folder.locator('[data-notebook-drop="book-preview"] .book-cover');
-  await expect(cover).toBeVisible();
-  await expect(cover.locator(".book-cover__mark.is-divider")).toHaveCount(1);
-  await expect(cover.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
-  const rect = (await cover.boundingBox())!;
-  expect(rect.width).toBeGreaterThan(info.project.name === "mobile" ? 100 : 140);
-  await page.screenshot({
-    path: info.outputPath("pasta-capa-grande-marcadores.png"),
-    fullPage: true,
-  });
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await folder.getByRole("button", { name: "Abrir Meu universo" }).click();
-  const journey = page.locator(".notebook-journey");
-  await expect(journey).toBeVisible();
-  await expect(journey.locator(".book-cover__mark.is-divider")).toHaveCount(1);
-  await expect(journey.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
-  await expect(journey).toHaveCount(0);
-});
+}
 
 test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, info) => {
   await page.evaluate(() => localStorage.setItem("helenastudy.theme", "dark"));
