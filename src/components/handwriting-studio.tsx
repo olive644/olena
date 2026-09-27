@@ -115,6 +115,7 @@ import {
 import {
   canvasPoint,
   clearPageCanvas,
+  drawHoverPreview,
   drawStroke,
   pageContext,
   pageRenderScale,
@@ -209,6 +210,7 @@ export function HandwritingStudio({
     stabilization,
     shapeSnap,
     inkPrediction,
+    penHoverPreview,
     penOnly,
     textAutoCorrect,
     coordinateMeasurements,
@@ -343,6 +345,9 @@ export function HandwritingStudio({
   const shapeSnappedRef = useRef(false);
   // Ponta prevista pelo navegador: só é desenhada na tela, nunca entra no traço.
   const predictedRef = useRef<HandwritingPoint[]>([]);
+  // Ponto onde a caneta paira sem tocar a folha (prévia da ponta); nulo quando não paira,
+  // quando solta a folha ou assim que começa a escrever de verdade.
+  const hoverPointRef = useRef<HandwritingPoint | null>(null);
   const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const stickyResizeRef = useRef<{
@@ -1110,6 +1115,9 @@ export function HandwritingStudio({
     if (stroke) {
       drawStroke(context, withPredictedTail(stroke, predictedRef.current));
       if (writingWindowOpen) paintWritingWindowLive(stroke);
+    } else if (hoverPointRef.current && (tool === "pen" || tool === "highlighter")) {
+      const previewWidth = tool === "highlighter" ? Math.min(100, width * 2.5) : width;
+      drawHoverPreview(context, hoverPointRef.current, previewWidth / 2, color);
     }
     paintReveals(context);
   }
@@ -1194,6 +1202,7 @@ export function HandwritingStudio({
   }
 
   function start(event: ReactPointerEvent<HTMLCanvasElement>) {
+    hoverPointRef.current = null;
     if (event.pointerType === "pen") {
       palmRef.current = { penDown: true, lastPenAt: performance.now() };
     } else if (
@@ -1311,7 +1320,25 @@ export function HandwritingStudio({
     }
   }
 
+  function updateHoverPreview(event: ReactPointerEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current;
+    const shouldShow =
+      penHoverPreview &&
+      event.pointerType === "pen" &&
+      event.buttons === 0 &&
+      !drawingRef.current &&
+      canvas;
+    if (shouldShow) {
+      hoverPointRef.current = canvasPoint(canvas, event);
+      paintLive();
+    } else if (hoverPointRef.current) {
+      hoverPointRef.current = null;
+      paintLive();
+    }
+  }
+
   function move(event: ReactPointerEvent<HTMLCanvasElement>) {
+    updateHoverPreview(event);
     if (onCursorMove && canvasRef.current) {
       const at = canvasPoint(canvasRef.current, event);
       onCursorMove(at.x, at.y);
@@ -1960,7 +1987,7 @@ export function HandwritingStudio({
 
   function writingPoint(
     event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
-      Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
+      Partial<Pick<PointerEvent, "tiltX" | "tiltY" | "twist">>,
     measuredBounds?: DOMRect,
   ): HandwritingPoint {
     const canvas = writingCanvasRef.current;
@@ -1969,6 +1996,7 @@ export function HandwritingStudio({
     return {
       tiltX: event.tiltX ?? 0,
       tiltY: event.tiltY ?? 0,
+      ...(event.twist !== undefined ? { twist: event.twist } : {}),
       x:
         writingWindowX +
         Math.max(
@@ -2924,6 +2952,12 @@ export function HandwritingStudio({
               onPointerUp={finish}
               onPointerCancel={finish}
               onLostPointerCapture={finish}
+              onPointerLeave={() => {
+                if (hoverPointRef.current) {
+                  hoverPointRef.current = null;
+                  paintLive();
+                }
+              }}
               onKeyDown={handleCanvasKeyDown}
             />
             <canvas

@@ -35,6 +35,11 @@ export function NotebookSettings({
           "Prever a ponta da caneta",
           "Desenha um pedacinho à frente da caneta para a tinta parecer sair com menos atraso.",
         ],
+        [
+          "penHoverPreview",
+          "Prévia ao pairar a caneta",
+          "Mostra onde a ponta vai pousar antes de tocar a folha, em canetas que avisam isso.",
+        ],
         ["penOnly", "Só caneta, dedo move", "Use os dedos para navegar e a caneta para escrever."],
         [
           "writingWindowAutoFollow",

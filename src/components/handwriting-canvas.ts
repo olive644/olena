@@ -78,7 +78,7 @@ export function clearPageCanvas(canvas: HTMLCanvasElement) {
 export function canvasPoint(
   canvas: HTMLCanvasElement,
   event: Pick<PointerEvent, "clientX" | "clientY" | "pressure"> &
-    Partial<Pick<PointerEvent, "tiltX" | "tiltY">>,
+    Partial<Pick<PointerEvent, "tiltX" | "tiltY" | "twist">>,
   bounds = canvas.getBoundingClientRect(),
 ): HandwritingPoint {
   const pageWidth = Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
@@ -93,6 +93,7 @@ export function canvasPoint(
     pressure: event.pressure > 0 ? event.pressure : 0.5,
     ...(event.tiltX ? { tiltX: event.tiltX } : {}),
     ...(event.tiltY ? { tiltY: event.tiltY } : {}),
+    ...(event.twist ? { twist: event.twist } : {}),
   };
 }
 
@@ -158,6 +159,28 @@ export function drawPaper(
     context.lineTo(104, PAGE_HEIGHT);
     context.stroke();
   }
+  context.restore();
+}
+
+// Prévia de onde a ponta vai pousar, mostrada enquanto a caneta paira sobre a folha sem
+// tocar (canetas que avisam isso, como a Apple Pencil). Não é tinta: só some ao afastar
+// a caneta ou ao começar a escrever de verdade.
+export function drawHoverPreview(
+  context: CanvasRenderingContext2D,
+  point: HandwritingPoint,
+  radius: number,
+  color: string,
+) {
+  context.save();
+  context.fillStyle = color;
+  context.globalAlpha = 0.3;
+  context.beginPath();
+  context.arc(point.x, point.y, Math.max(2, radius), 0, Math.PI * 2);
+  context.fill();
+  context.strokeStyle = color;
+  context.globalAlpha = 0.55;
+  context.lineWidth = 1.2;
+  context.stroke();
   context.restore();
 }
 

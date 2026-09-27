@@ -70,6 +70,25 @@ describe("raio do traço", () => {
     expect(marker[0]).toBeCloseTo((4 * (0.5 + 0.7 * 3) * angleFactor) / 2, 6);
   });
 
+  it("o giro da caneta muda o ângulo da ponta chata do tinteiro", () => {
+    // Linha horizontal (direção 0), pressão 0,5: sem giro informado, o ângulo padrão é 45°.
+    const noTwist = strokeRadii(ink, line(4, 3, 0.5));
+    const defaultFactor = 0.35 + 0.65 * Math.SQRT1_2;
+    expect(noTwist[0]).toBeCloseTo((4 * (0.5 + 0.5 * 3) * defaultFactor) / 2, 6);
+    // Girada a 90°, a ponta fica perpendicular ao traço: fator máximo (1).
+    const perpendicular = strokeRadii(
+      ink,
+      line(4, 3, 0.5).map((p) => ({ ...p, twist: 90 })),
+    );
+    expect(perpendicular[0]).toBeCloseTo((4 * (0.5 + 0.5 * 3) * 1) / 2, 6);
+    // Girada a 0°, a ponta fica alinhada ao traço: fator mínimo (0,35).
+    const aligned = strokeRadii(
+      ink,
+      line(4, 3, 0.5).map((p) => ({ ...p, twist: 0 })),
+    );
+    expect(aligned[0]).toBeCloseTo((4 * (0.5 + 0.5 * 3) * 0.35) / 2, 6);
+  });
+
   it("nunca produz valor inválido, nem com pontos repetidos", () => {
     const radii = strokeRadii(ink, [point(10, 10), point(10, 10), point(10, 10), point(20, 10)]);
     for (const radius of radii) {

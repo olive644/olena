@@ -4,6 +4,9 @@ export type HandwritingPoint = {
   pressure: number;
   tiltX?: number;
   tiltY?: number;
+  // Giro da caneta em torno do próprio eixo (graus, 0 a 359). Só a Apple Pencil Pro e
+  // algumas mesas digitalizadoras informam; sem isso o campo nem existe no ponto.
+  twist?: number;
 };
 
 // PNG transparente válido mantém compatibilidade com leitores anteriores até renderizar a prévia.
