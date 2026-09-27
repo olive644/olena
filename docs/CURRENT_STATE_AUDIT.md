@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Vitrine e pastas brancas
+
+A prateleira agora acompanha uma altura comum para os objetos. Nomes, contagens
+e controles ficam abaixo da barra, sem deslocá-la ao abrir pastas. Pastas usam
+branco translúcido com facetas e adesivos celestes, conforme o pedido específico
+do proprietário. O acabamento de vidro fica restrito às pastas.
+
+Cadernos podem ser arrastados para pastas e retirados para a vitrine usando
+pointer events de mouse, caneta e toque. Soltar fora da vitrine cancela o gesto;
+pastas cheias conservam o caderno na origem. Seletores e botões preservam o acesso
+por teclado. Miniaturas abertas são clicáveis e fornecem a origem e o destino
+da animação existente do caderno. A pasta permanece aberta ao voltar do preview.
+
 ## Pastas, colaboração do caderno e escala de tinta
 
 Crie oferece caderno ou pasta. Cada vitrine admite três pastas, cada pasta admite

@@ -1,78 +1,152 @@
-/* Abertura pela base inspirada na pasta de byllzz, Uiverse.io, adaptada ao papel OlenaStudy. */
-.notebooks-main .notebooks-showcase .notebook-shelf:has(.paper-folder) {
+/* Abertura pela base inspirada em byllzz, Uiverse.io. Vidro branco com facetas de papel. */
+.notebooks-main .notebooks-showcase .notebook-shelf--objects {
+  --shelf-object-height: 300px;
+  --shelf-item-width: 220px;
   overflow-x: auto;
+  padding-bottom: 18px;
 }
-.notebooks-main .notebooks-showcase .notebook-shelf:has(.paper-folder) .notebook-grid {
+.notebooks-main .notebooks-showcase .notebook-shelf--objects .notebook-grid {
+  position: relative;
   grid-template-columns: none;
   grid-auto-flow: column;
-  grid-auto-columns: 220px;
+  grid-auto-columns: var(--shelf-item-width);
   gap: 28px;
   width: max-content;
-  padding: 24px 16px 20px;
+  min-width: 100%;
+  box-sizing: border-box;
+  padding: 24px 16px 0;
   align-items: start;
 }
-.notebooks-main .notebook-shelf .paper-folder-book .book-cover {
+.notebooks-main .notebooks-showcase .notebook-shelf--objects .notebook-card {
+  display: grid;
+  grid-template-rows: var(--shelf-object-height) 90px;
+  align-items: end;
+  justify-items: center;
+  gap: 0;
+  padding: 0;
+  min-height: 0;
+  border-radius: 0;
+  touch-action: none;
+  user-select: none;
+  transform: none;
+}
+.notebooks-main .notebook-shelf--objects .notebook-card > .book-cover {
+  width: calc(var(--shelf-item-width) - 10px);
+  height: auto;
+  transform: none;
+}
+.notebooks-main .notebooks-showcase .notebook-shelf--objects .notebook-card__copy,
+.paper-folder-copy {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-self: start;
   width: 100%;
-  height: 100%;
+  max-width: none;
+  height: 90px;
+  padding: 40px 4px 8px;
+  gap: 5px;
+  text-align: center;
+  color: var(--text);
+}
+.paper-folder-copy > span {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.paper-folder-copy small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.notebooks-main .notebook-shelf--objects .notebook-shelf__rail {
+  top: calc(24px + var(--shelf-object-height) + 10px);
+  bottom: auto;
+  width: 100%;
+  z-index: 2;
 }
 .paper-folder {
   position: relative;
-  width: 220px;
-  flex: 0 0 220px;
+  width: var(--shelf-item-width);
   isolation: isolate;
 }
-.paper-folder-toggle {
+.paper-folder-stage {
+  height: var(--shelf-object-height);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: var(--text);
-  gap: 5px;
-}
-.paper-folder-toggle::before,
-.paper-folder-toggle::after {
-  display: none;
+  align-items: end;
+  justify-content: center;
 }
 .paper-folder-art {
-  display: block;
   position: relative;
-  width: 190px;
-  height: 185px;
+  width: calc(var(--shelf-item-width) - 16px);
+  height: 190px;
   perspective: 900px;
-  margin-top: 20px;
+  margin-bottom: -5px;
 }
 .paper-folder-back {
   position: absolute;
-  inset: 30px 0 0;
-  background: #51259b;
+  inset: 26px 0 0;
+  background: #e7e2ef;
   clip-path: polygon(0 0, 40% 0, 48% 13%, 100% 13%, 100% 100%, 0 100%);
-  border-radius: 7px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #fff9ef;
+}
+.paper-folder-toggle {
+  position: absolute;
+  inset: 64px 0 0;
+  z-index: 2;
+  display: block;
+  padding: 0;
+  width: 100%;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.paper-folder-toggle::before,
+.paper-folder-toggle::after,
+.paper-folder-book::before,
+.paper-folder-book::after {
+  display: none !important;
 }
 .paper-folder-front {
+  display: block;
   position: absolute;
-  inset: 66px -3px 0;
-  background: #7c3aed;
-  border: 3px solid #a779ef;
-  border-radius: 5px 10px 7px 8px;
-  box-shadow: 2px 5px #51259b;
+  inset: 0;
+  background: rgb(255 255 255 / 72%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid #fff9ef;
+  border-radius: 5px 13px 7px 8px;
+  box-shadow:
+    2px 5px 0 #b5aac8,
+    inset 0 0 0 3px rgb(255 255 255 / 45%);
   transform-origin: bottom;
-  transition: transform 420ms ease;
+  transition:
+    transform 420ms ease,
+    background 180ms ease;
+}
+.paper-folder-front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 48%);
+  clip-path: polygon(0 0, 40% 0, 0 55%, 0 0, 100% 75%, 100% 100%, 75% 100%);
+  pointer-events: none;
 }
 .paper-folder-front::after {
   content: "";
   position: absolute;
-  inset: 6px;
-  border: 1px dashed #d8befa;
+  inset: 7px;
+  border: 1px dashed #aaa0bb;
   pointer-events: none;
 }
 .paper-folder-label {
   position: absolute;
-  bottom: 12px;
-  left: 15px;
-  right: 15px;
+  bottom: 13px;
+  left: 13px;
+  right: 13px;
   background: #fff9ef;
   color: #292432;
   padding: 7px;
@@ -80,7 +154,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  box-shadow: 2px 3px #51259b;
+  box-shadow: 2px 3px #c9bfd9;
 }
 .paper-folder-moon,
 .paper-folder-sun {
@@ -91,57 +165,88 @@
   transform: rotate(-12deg);
 }
 .paper-folder-moon {
-  left: 16px;
+  left: 14px;
 }
 .paper-folder-sun {
-  right: 18px;
+  right: 14px;
   transform: rotate(12deg);
 }
 .paper-folder-star {
   position: absolute;
   top: 11px;
-  left: 77px;
+  left: calc(50% - 19px);
   width: 38px;
   height: 38px;
 }
-.paper-folder-book {
+.paper-folder .paper-folder-book {
   position: absolute;
-  left: 18px;
-  top: 40px;
-  width: 100px;
-  height: 126px;
-  transition: transform 420ms ease;
+  left: 12%;
+  top: 36px;
+  width: 44%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 1;
+  touch-action: none;
+  user-select: none;
+  transition:
+    top 420ms ease,
+    left 420ms ease,
+    width 420ms ease;
 }
-.paper-folder-book .book-cover {
+.notebooks-main .notebook-shelf .paper-folder-book .book-cover {
   width: 100%;
   height: 100%;
   transform: none;
 }
-.paper-folder-book.book-1 {
-  left: 49px;
-  top: 35px;
+.paper-folder .paper-folder-book .book-cover__face .book-cover__title {
+  font-size: 9px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
 }
-.paper-folder-book.book-2 {
-  left: 80px;
+.paper-folder .paper-folder-book .book-cover__label {
+  padding: 3px;
+}
+.paper-folder .book-1 {
+  left: 29%;
   top: 30px;
 }
-.is-open .paper-folder-front {
-  transform: rotateX(-32deg);
+.paper-folder .book-2 {
+  left: 44%;
+  top: 24px;
 }
-.is-open .paper-folder-book.book-0 {
-  transform: translateY(-22px) rotate(-12deg);
+.paper-folder.is-open .paper-folder-front {
+  transform: rotateX(-30deg);
 }
-.is-open .paper-folder-book.book-1 {
-  transform: translateY(-34px);
+.paper-folder.is-open .paper-folder-book {
+  top: -18px;
+  left: 1%;
+  width: 29%;
+  z-index: 3;
 }
-.is-open .paper-folder-book.book-2 {
-  transform: translateY(-22px) rotate(12deg);
+.paper-folder.is-open .book-1 {
+  left: 35%;
+}
+.paper-folder.is-open .book-2 {
+  left: 69%;
+}
+.paper-folder.is-drop-target .paper-folder-front {
+  outline: 3px solid #7c3aed;
+  outline-offset: 4px;
+  background: rgb(255 255 255 / 90%);
 }
 .paper-folder-content {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   padding: 12px;
-  margin-top: 12px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -156,7 +261,7 @@
 }
 .paper-folder-row {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 .paper-folder-row button {
   min-width: 0;
@@ -166,6 +271,58 @@
   min-height: 44px;
   font: inherit;
   font-size: 12px;
+}
+.paper-folder-row button:first-child {
+  flex: 1;
+}
+.paper-folder button:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: 5px;
+}
+.notebook-shelf-drag-ghost {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  width: 90px;
+  transform: rotate(5deg);
+}
+.notebook-shelf-drag-ghost .book-cover {
+  width: 100%;
+}
+.notebook-shelf-drag-ghost .book-cover__title {
+  font-size: 10px;
+}
+@media (max-width: 640px) {
+  .notebooks-main .notebooks-showcase .notebook-shelf--objects {
+    --shelf-object-height: 220px;
+    --shelf-item-width: 164px;
+  }
+  .notebooks-main .notebooks-showcase .notebook-shelf--objects .notebook-grid {
+    gap: 22px;
+  }
+  .paper-folder-art {
+    height: 158px;
+  }
+  .paper-folder-toggle {
+    top: 47px;
+  }
+  .paper-folder-moon,
+  .paper-folder-sun,
+  .paper-folder-star {
+    width: 30px;
+    height: 30px;
+  }
+  .paper-folder-star {
+    left: calc(50% - 15px);
+  }
+  .paper-folder-label {
+    font-size: 12px;
+    left: 8px;
+    right: 8px;
+  }
+  .paper-folder-content {
+    padding: 8px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .paper-folder-front,

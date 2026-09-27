@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+`useNotebookShelfDrag` controla o movimento de cadernos. `data-folder-drop` resolve
+o destino, `notebook/stored` preserva os limites e a persistência. O gesto suprime
+somente o clique que nasce ao soltar. `NotesView` conserva as pastas abertas entre
+preview e vitrine; suas miniaturas usam `data-notebook-drop` para a mesma viagem
+animada dos livros soltos. A barra pertence ao grid, posicionada pela altura dos
+objetos, não pela altura variável do painel de uma pasta.
+
 `NotesView` mantém a colaboração no caderno, acima do editor de cada folha.
 `useNotebookCollaboration` seleciona documentos por `pageId`, filtra cursores e
 isola filas offline. O endpoint `pages` mescla somente o índice, preservando tinta

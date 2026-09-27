@@ -30,11 +30,11 @@ test("caderno usa uma única prévia para criar, abrir, folhear e remover", asyn
   if (testInfo.project.name === "mobile") {
     await preview.getByRole("button", { name: "Meus Cadernos" }).click();
     const card = page.locator(".notebook-card").filter({ hasText: "Meu universo" });
-    const copy = await card.locator(".notebook-card__copy").boundingBox();
+    const copy = await card.locator(".notebook-card__copy strong").boundingBox();
     const rail = await page.locator(".notebook-shelf__rail").boundingBox();
     expect(copy).not.toBeNull();
     expect(rail).not.toBeNull();
-    expect(copy!.y + copy!.height).toBeLessThanOrEqual(rail!.y);
+    expect(copy!.y).toBeGreaterThanOrEqual(rail!.y + rail!.height);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
       await page.evaluate(() => window.innerWidth),
     );
