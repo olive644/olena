@@ -5183,6 +5183,27 @@ body.local-room-active {
   background-image: linear-gradient(135deg, #facc15 0 10px, transparent 11px);
 }
 
+.paper-preview--cornell {
+  background-image:
+    linear-gradient(to right, transparent 0 11px, #b9b1cf 11px 12px, transparent 12px),
+    repeating-linear-gradient(to bottom, transparent 0 9px, #dcd8ee 9px 10px);
+}
+
+.paper-preview--staff {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    #b9b1cf 3px 4px,
+    transparent 4px 7px,
+    #b9b1cf 7px 8px,
+    transparent 8px 11px,
+    #b9b1cf 11px 12px,
+    transparent 12px 15px,
+    #b9b1cf 15px 16px,
+    transparent 16px 22px
+  );
+}
+
 .paper-preview--tone-light {
   background-color: #fffdf7;
 }

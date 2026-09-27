@@ -46,6 +46,9 @@ describe("local workspace", () => {
     };
     expect(isHandwritingDocument(board)).toBe(true);
     expect(isHandwritingDocument({ ...board, paper: "ruled" })).toBe(true);
+    expect(isHandwritingDocument({ ...board, paper: "cornell" })).toBe(true);
+    expect(isHandwritingDocument({ ...board, paper: "staff" })).toBe(true);
+    expect(isHandwritingDocument({ ...board, paper: "pergaminho" })).toBe(false);
     for (const canvasSize of [
       { width: "3200", height: 2400 },
       { width: 999999, height: 2400 },

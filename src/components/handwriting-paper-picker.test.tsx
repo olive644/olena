@@ -16,6 +16,8 @@ it("mantém os nomes acessíveis sem rótulos que expandem os botões", () => {
   expect(screen.getByRole("button", { name: "Tipo de papel" }).title).toBe("Tipo de papel");
   expect(screen.getByRole("button", { name: "Cor da folha" }).title).toBe("Cor da folha");
   expect(screen.getByRole("button", { name: "Pautado" }).title).toBe("Pautado");
+  expect(screen.getByRole("button", { name: "Cornell" }).title).toBe("Cornell");
+  expect(screen.getByRole("button", { name: "Pauta musical" }).title).toBe("Pauta musical");
   rerender(<HandwritingPaperPicker {...props} sectionsOpen={{ paper: false, color: true }} />);
   expect(screen.getByRole("button", { name: "Papel de livro" }).title).toBe("Papel de livro");
 });

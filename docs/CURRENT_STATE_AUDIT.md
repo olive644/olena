@@ -1224,3 +1224,12 @@ Limites que se cruzam:
 - O arrastar para reordenar fica desligado enquanto o filtro de favoritas está ativo (a lista mostra só um recorte, e a posição de soltar ficaria ambígua); os botões de mover e a estrela continuam funcionando normalmente.
 - O filtro fica desativado quando o caderno não tem nenhuma folha favoritada ainda, para não abrir uma lista vazia sem explicação.
 - Testes: `notebook-page-index.test.tsx` (favoritar e desfavoritar pela estrela, o filtro mostrando só as favoritas com a numeração certa, e o filtro desativado sem favoritas).
+
+## Papéis Cornell e pauta musical (2026-09-27)
+
+- Dois papéis novos no seletor de papel do editor, ao lado de pautado/quadriculado/pontilhado/em branco/quadro amplo/plano semanal/calendário:
+  - **Cornell**: cabeçalho com tópico e data, coluna estreita de "Pistas" à esquerda, coluna larga de "Anotações" à direita e uma faixa de "Resumo" embaixo, cada área com suas próprias pautas finas. É só o desenho de fundo (como os outros papéis); o método de estudo em si (preencher pistas durante a aula e resumir depois) fica por conta de quem usa.
+  - **Pauta musical**: pautas de 5 linhas repetidas pela folha, no espaçamento de um caderno de música de papel, sem clave nem números (só as linhas guia).
+  - Novo arquivo `handwriting-template-paper.ts`, no mesmo padrão do `handwriting-planner-paper.ts` (plano semanal e calendário) já existente: recebe o contexto 2D, a cor da folha e o tamanho do bitmap, desenha em coordenadas fixas de 1200×1600.
+  - A validação local de documentos (`isHandwritingDocument`) precisou incluir os dois nomes novos na lista de papéis aceitos; sem isso um documento salvo com Cornell ou pauta musical seria rejeitado como inválido ao recarregar.
+- Testes: `handwriting-template-paper.test.ts` (as duas funções de desenho não travam em qualquer cor e tamanho de folha, e `drawPaper` encaminha para elas), `handwriting-paper-picker.test.tsx` (os dois botões aparecem com o nome certo) e `local-workspace.test.ts` (os dois nomes são aceitos pela validação, e um nome desconhecido continua rejeitado).
