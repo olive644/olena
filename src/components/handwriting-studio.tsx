@@ -59,7 +59,7 @@ import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
 import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
-import { HandwritingShapeInsert } from "./handwriting-shape-insert";
+import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
@@ -1804,17 +1804,50 @@ export function HandwritingStudio({
     );
   }
 
-  // Alternativa por teclado a desenhar a forma à mão: insere pronta, do tamanho padrão, no
-  // meio da folha, e já a seleciona (setas, Girar e Aumentar/Diminuir já funcionam nela).
-  function insertShape(kind: ShapeKind) {
+  // Alternativa por teclado a desenhar a mão livre: nem a forma (segurar a caneta parada no
+  // fim do traço) nem a régua e os eixos (arrastar para medir) têm como funcionar sem
+  // ponteiro, então tudo aqui entra pronto, do tamanho padrão, no meio da folha, já
+  // selecionado (setas, Girar e Aumentar/Diminuir já funcionam nele).
+  function insertWithoutDrawing(kind: InsertKind) {
     remember();
-    const width = 320;
-    const height = kind === "line" || kind === "arrow" ? 40 : 220;
+    if (kind === "ruler") {
+      const start: HandwritingPoint = {
+        x: PAGE_WIDTH / 2 - 160,
+        y: PAGE_HEIGHT / 2,
+        pressure: 0.5,
+      };
+      const end: HandwritingPoint = { x: PAGE_WIDTH / 2 + 160, y: PAGE_HEIGHT / 2, pressure: 0.5 };
+      const id = strokeId();
+      setStrokes((current) => [
+        ...current,
+        { id, tool: "pen", color, width, points: rulerPoints(start, end, rulerKind) },
+      ]);
+      setSelectedIds([id]);
+      return;
+    }
+    if (kind === "coordinate-system") {
+      const id = strokeId();
+      setCoordinateSystems((current) => [
+        ...current,
+        {
+          id,
+          origin: { x: PAGE_WIDTH / 2 - 160, y: PAGE_HEIGHT / 2 + 160, pressure: 0.5 },
+          end: { x: PAGE_WIDTH / 2 + 160, y: PAGE_HEIGHT / 2 - 160, pressure: 0.5 },
+          step: coordinateStep,
+          measurements: coordinateMeasurements,
+          color,
+        },
+      ]);
+      setSelectedCoordinateIds([id]);
+      return;
+    }
+    const boxWidth = 320;
+    const boxHeight = kind === "line" || kind === "arrow" ? 40 : 220;
     const box = {
-      x: (PAGE_WIDTH - width) / 2,
-      y: (PAGE_HEIGHT - height) / 2,
-      width,
-      height,
+      x: (PAGE_WIDTH - boxWidth) / 2,
+      y: (PAGE_HEIGHT - boxHeight) / 2,
+      width: boxWidth,
+      height: boxHeight,
     };
     const id = strokeId();
     setStrokes((current) => [
@@ -2458,7 +2491,7 @@ export function HandwritingStudio({
 
         {shapeInsertOpen && (
           <HandwritingShapeInsert
-            onInsert={insertShape}
+            onInsert={insertWithoutDrawing}
             onClose={() => setShapeInsertOpen(false)}
           />
         )}

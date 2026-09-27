@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import type { ShapeKind } from "./handwriting-shapes";
 
+export type InsertKind = ShapeKind | "ruler" | "coordinate-system";
+
 type HandwritingShapeInsertProps = {
-  onInsert: (kind: ShapeKind) => void;
+  onInsert: (kind: InsertKind) => void;
   onClose: () => void;
 };
 
@@ -15,9 +17,16 @@ const SHAPES: { kind: ShapeKind; label: string }[] = [
   { kind: "polygon", label: "Polígono" },
 ];
 
-// Alternativa por teclado a "segurar a caneta parada no fim do traço": insere a forma
-// pronta, do tamanho padrão, no meio da folha. Depois dá para mover, girar e redimensionar
-// com o que já é acessível por teclado na seleção (setas, Girar, Aumentar/Diminuir).
+const MEASURING: { kind: "ruler" | "coordinate-system"; label: string }[] = [
+  { kind: "ruler", label: "Régua" },
+  { kind: "coordinate-system", label: "Eixos de coordenadas" },
+];
+
+// Alternativa por teclado a desenhar a mão livre (segurar a caneta parada no fim do traço
+// para uma forma, ou arrastar para medir com a régua e os eixos): nenhum dos dois tem
+// como funcionar sem ponteiro, então aqui tudo entra pronto, do tamanho padrão, no meio da
+// folha. Depois dá para mover, girar e redimensionar com o que já é acessível por teclado
+// na seleção (setas, Girar, Aumentar/Diminuir).
 export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeInsertProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -30,7 +39,7 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
     <dialog
       ref={dialog}
       className="handwriting-shape-insert"
-      aria-label="Inserir forma"
+      aria-label="Inserir sem desenhar"
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -38,14 +47,28 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
       onKeyDown={(event) => event.stopPropagation()}
     >
       <header>
-        <h2>Inserir forma</h2>
+        <h2>Inserir sem desenhar</h2>
         <button type="button" aria-label="Fechar" onClick={onClose}>
           ×
         </button>
       </header>
-      <p>A forma entra pronta no meio da folha. Mova, gire e redimensione com a seleção.</p>
+      <p>Entra pronto no meio da folha. Mova, gire e redimensione com a seleção.</p>
       <div className="handwriting-shape-insert__grid" role="group" aria-label="Formas">
         {SHAPES.map(({ kind, label }) => (
+          <button
+            key={kind}
+            type="button"
+            onClick={() => {
+              onInsert(kind);
+              onClose();
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className="handwriting-shape-insert__grid" role="group" aria-label="Régua e eixos">
+        {MEASURING.map(({ kind, label }) => (
           <button
             key={kind}
             type="button"
