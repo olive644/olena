@@ -283,14 +283,12 @@ describe("opções de tinta", () => {
     expect(props.onWidthChange).toHaveBeenCalledWith(8);
   });
 
-  it("desativa cor e espessura com a borracha", () => {
+  it("esconde a cor e permite ajustar a área da borracha", () => {
     render(<HandwritingInkOptions {...inkProps({ tool: "eraser" })} />);
+    expect(screen.queryByRole("group", { name: "Cor da tinta" })).toBeNull();
     expect(
-      (screen.getByRole("group", { name: "Cor da tinta" }) as HTMLFieldSetElement).disabled,
-    ).toBe(true);
-    expect(
-      (screen.getByRole("group", { name: "Espessura do traço" }) as HTMLFieldSetElement).disabled,
-    ).toBe(true);
+      (screen.getByRole("group", { name: "Área da borracha" }) as HTMLFieldSetElement).disabled,
+    ).toBe(false);
   });
 
   it("deixa as preferências de escrita nas configurações", () => {

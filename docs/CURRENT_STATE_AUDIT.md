@@ -1,5 +1,36 @@
 # Auditoria do estado atual
 
+## Pastas, colaboração do caderno e escala de tinta
+
+Crie oferece caderno ou pasta. Cada vitrine admite três pastas, cada pasta admite
+três cadernos. Os limites vivem no reducer, não somente na interface. Retirar ou
+desfazer uma pasta conserva os cadernos e folhas. Pastas de anotações antigas
+continuam distintas (`folder`); as novas coleções usam `collection` e `shelf`.
+A arte de papel recortado usa Lua, Sol e Estrela, com abertura acessível por toque
+e teclado, inspirada no movimento de pasta enviado pelo usuário (byllzz/Uiverse).
+
+Pincéis e borracha oferecem escala de 0 a 100%, em passos de 1%. Zero corresponde
+ao menor tamanho utilizável, não a uma ferramenta invisível. A borracha agrupa
+amostras por quadro e rejeita traços distantes antes do cálculo geométrico.
+Atualizações remotas aguardam o fim do gesto; confirmações atrasadas são conciliadas
+contra o documento efetivamente enviado, sem ressuscitar fragmentos apagados.
+
+A sala pertence ao caderno: índice, títulos e tinta por folha compartilham a
+mesma equipe. Cursores têm pageId. A fila offline é separada por sala/folha e
+retomada ao navegar. Novas folhas são registradas antes de publicar sua tinta.
+Avatares aparecem na capa quando mais de uma pessoa está online. O painel de
+colaboração tem fechamento próprio. Título da folha mantém papel claro; gavetas
+do editor seguem o tema escuro. Miniaturas recebidas são renderizadas pelo mesmo
+motor do editor, sem imagens externas ou nova dependência.
+
+Compatibilidade: salas antigas sem `pages` mantêm o protocolo de folha única.
+O formato de tinta não mudou. O índice usa merge de três versões para conservar
+criações, remoções e renomes simultâneos. Prévia pendente usa PNG válido, mantendo
+a validação e leitura anterior dos assets. Nenhum dado antigo é apagado na transição.
+O rollback precisa manter leitura de `collection` para não rejeitar pastas novas.
+Peso medido: entrada 269,8 KiB; aplicação 873,6 KiB. O limite lazy sobe para 878 KiB
+para comportar as funcionalidades solicitadas, sem alterar o orçamento inicial.
+
 ## Encadernação papercraft
 
 A capa mantém a ilustração aprovada da Helena e ganha contracapa rígida em camadas,

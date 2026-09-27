@@ -37,19 +37,36 @@ function strokeIds(document: HandwritingDocument | undefined): string[] {
 
 let network = true;
 
-function setup() {
+function setup(streamRooms = false) {
+  const streams: { active: boolean; listener?: (event: MessageEvent<string>) => void }[] = [];
   const store = createMemoryRoomStore();
   const handler = createNotebookCollabHandler({
     store,
     randomCode: () => "ABCDE",
-    publish: async () => {},
+    publish: async (_code, state) => {
+      if (streamRooms)
+        for (const source of streams)
+          if (source.active)
+            source.listener?.(
+              new MessageEvent("put", { data: JSON.stringify({ path: "/", data: state }) }),
+            );
+    },
     streamUrl: () => "https://stream.example/ABCDE",
   });
   vi.stubGlobal(
     "EventSource",
     class {
-      close() {}
-      addEventListener() {}
+      active = true;
+      listener?: (event: MessageEvent<string>) => void;
+      constructor() {
+        streams.push(this);
+      }
+      close() {
+        this.active = false;
+      }
+      addEventListener(type: string, listener: (event: MessageEvent<string>) => void) {
+        if (type === "put") this.listener = listener;
+      }
     },
   );
   vi.stubGlobal("fetch", async (url: string, init: RequestInit) => {
@@ -169,4 +186,66 @@ it("sair do caderno descarta a fila guardada", async () => {
   act(() => host.result.current.leave());
   expect(localStorage.getItem(NOTEBOOK_COLLAB_PENDING_KEY)).toBeNull();
   expect(host.result.current.hasPending).toBe(false);
+});
+
+it("eco de um envio em andamento não restaura fragmentos já apagados pelo gesto seguinte", async () => {
+  const { handler } = setup(true);
+  const host = await startRoom(documentWith("original"));
+  let release: (() => void) | undefined;
+  let first = true;
+  vi.stubGlobal("fetch", async (url: string, init: RequestInit) => {
+    if (url.includes("action=update") && first) {
+      first = false;
+      await new Promise<void>((resolve) => {
+        release = resolve;
+      });
+    }
+    return handler(new Request(new URL(url, "https://test.example"), init));
+  });
+  act(() => host.result.current.publish(documentWith("left", "right")));
+  await waitFor(() => expect(release).toBeDefined());
+  act(() => host.result.current.publish(documentWith("left")));
+  await act(async () => {
+    release?.();
+  });
+  await waitFor(() => expect(host.result.current.hasPending).toBe(false));
+  expect(strokeIds(host.result.current.state.room?.document)).toEqual(["left"]);
+  act(() => window.dispatchEvent(new Event("online")));
+  await waitFor(() =>
+    expect(strokeIds(host.result.current.state.room?.document)).toEqual(["left"]),
+  );
+});
+
+it("trocar de folha escoa a fila anterior sem misturar os documentos", async () => {
+  setup();
+  const pages = [
+    { id: "one", title: "Um", document: documentWith("a") },
+    { id: "two", title: "Dois", document: documentWith("b") },
+  ];
+  const host = renderHook(
+    ({ pageId }) => useNotebookCollaboration({ notebookId: "whole-book", pageId, pages }),
+    { initialProps: { pageId: "one" } },
+  );
+  await act(async () => {
+    await host.result.current.create("Alice", pages[0]!.document);
+  });
+  network = false;
+  act(() => host.result.current.publish(documentWith("fragment")));
+  await waitFor(() => expect(host.result.current.state.status).toBe("offline"));
+  expect(localStorage.getItem(`${NOTEBOOK_COLLAB_PENDING_KEY}:ABCDE/one`)).not.toBeNull();
+  network = true;
+  host.rerender({ pageId: "two" });
+  await waitFor(() => expect(strokeIds(host.result.current.state.room?.document)).toEqual(["b"]));
+  expect(strokeIds(host.result.current.state.room?.pages?.[0]?.document)).toEqual(["fragment"]);
+  expect(localStorage.getItem(`${NOTEBOOK_COLLAB_PENDING_KEY}:ABCDE/one`)).toBeNull();
+  act(() => host.result.current.publish(documentWith("b", "second-page")));
+  await waitFor(() => expect(host.result.current.hasPending).toBe(false));
+  host.rerender({ pageId: "one" });
+  await waitFor(() =>
+    expect(strokeIds(host.result.current.state.room?.document)).toEqual(["fragment"]),
+  );
+  expect(strokeIds(host.result.current.state.room?.pages?.[1]?.document)).toEqual([
+    "b",
+    "second-page",
+  ]);
 });

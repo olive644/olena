@@ -1,5 +1,25 @@
 # OlenaStudy: Second Brain
 
+`NotesView` mantém a colaboração no caderno, acima do editor de cada folha.
+`useNotebookCollaboration` seleciona documentos por `pageId`, filtra cursores e
+isola filas offline. O endpoint `pages` mescla somente o índice, preservando tinta
+atual no servidor. `update` exige uma folha existente nas salas com `pages`.
+Não reconciliar eco SSE próprio contra uma edição mais recente enquanto o envio
+está em andamento: a resposta HTTP informa a base exata que foi confirmada.
+`mergeNotebookPages` também protege alterações locais de índice contra heartbeats.
+`NotebookPageThumbnail` renderiza assets com `SHARED_PAGE_PLACEHOLDER` sob demanda.
+
+`NotebookFolder` usa `collection` (não confundir com `folder`, legado de notas).
+`notebook/stored` limita três livros por pasta; `notebook/added` limita três pastas
+por shelf. Não apagar conteúdo ao desfazer pasta. O teste de persistência cobre
+coleções e folhas recebidas sem miniatura local.
+
+`HandwritingInkOptions` mapeia 0..100% para largura 0,5..40. A borracha guarda
+tamanho independente e usa raio três vezes essa largura. `flushErase` processa
+a fila uma vez por frame e a escoa em pointerup. Testar mouse, pen e touch em
+`handwriting-area-ink.spec.ts`; percentuais, pastas e tema em
+`notebook-folders-ink.spec.ts`. Nenhuma medição sintética promete latência física.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita
