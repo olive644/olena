@@ -111,7 +111,7 @@ function segmentsCross(a: Vec, b: Vec, c: Vec, d: Vec): boolean {
   const d2 = cross(c, d, b);
   const d3 = cross(a, b, c);
   const d4 = cross(a, b, d);
-  return (d1 > 0 !== d2 > 0) && (d3 > 0 !== d4 > 0);
+  return d1 > 0 !== d2 > 0 && d3 > 0 !== d4 > 0;
 }
 
 // Descarta vértices quase colados um no outro (inclui o ponto de fechamento, que raramente
@@ -251,10 +251,7 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
   // uma tolerância bem mais apertada: uma curva de verdade (elipse) só cabe em poucos
   // segmentos retos se a tolerância for larga, então aqui ela precisa ser estreita o
   // bastante para que só cantos retos de verdade sobrevivam à simplificação.
-  const polygonVertices = dedupeVertices(
-    simplify(closedPath, diagonal * 0.022),
-    diagonal * 0.06,
-  );
+  const polygonVertices = dedupeVertices(simplify(closedPath, diagonal * 0.022), diagonal * 0.06);
   const sides = polygonVertices.length;
   if (sides >= 5 && sides <= 8) {
     const fit = polylineResidual(points, [...polygonVertices, polygonVertices[0]!]);
