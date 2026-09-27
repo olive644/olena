@@ -101,7 +101,7 @@ export function HandwritingSelectionActions({
       )}
       {selectedIds.length > 0 && (
         <>
-          <span>
+          <span role="status" aria-live="polite">
             {selectedIds.length}{" "}
             {selectedIds.length === 1 ? "item selecionado" : "itens selecionados"}
           </span>
@@ -143,7 +143,7 @@ export function HandwritingSelectionActions({
       )}
       {selectedCoordinateIds.length > 0 && (
         <>
-          <span>
+          <span role="status" aria-live="polite">
             {selectedCoordinateIds.length} sistema
             {selectedCoordinateIds.length === 1 ? "" : "s"} de coordenadas selecionado
             {selectedCoordinateIds.length === 1 ? "" : "s"}

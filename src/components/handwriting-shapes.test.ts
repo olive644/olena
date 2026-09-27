@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { recognizeShape } from "./handwriting-shapes";
+import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import type { HandwritingPoint } from "../domain/handwriting";
 
 // Gera pontos ao longo de uma linha poligonal, com um tremor determinístico.
@@ -199,5 +199,50 @@ describe("reconhecer formas", () => {
     );
     expect(shape!.points.length).toBeGreaterThan(30);
     expect(shape!.points.every((point) => point.pressure === 0.5)).toBe(true);
+  });
+});
+
+describe("forma pronta, sem desenhar (alternativa por teclado)", () => {
+  const box = { x: 100, y: 200, width: 300, height: 150 };
+
+  it("cada forma cabe dentro da caixa pedida e tem mais de um ponto", () => {
+    const kinds: ShapeKind[] = ["line", "ellipse", "rectangle", "triangle", "polygon", "arrow"];
+    for (const kind of kinds) {
+      const points = canonicalShape(kind, box);
+      expect(points.length).toBeGreaterThan(1);
+      for (const point of points) {
+        expect(point.x).toBeGreaterThanOrEqual(box.x - 1);
+        expect(point.x).toBeLessThanOrEqual(box.x + box.width + 1);
+        expect(point.y).toBeGreaterThanOrEqual(box.y - 1);
+        expect(point.y).toBeLessThanOrEqual(box.y + box.height + 1);
+      }
+    }
+  });
+
+  it("a reta vai de um lado ao outro da caixa, na metade da altura", () => {
+    const points = canonicalShape("line", box);
+    expect(points[0]).toMatchObject({ x: box.x, y: box.y + box.height / 2 });
+    expect(points.at(-1)).toMatchObject({ x: box.x + box.width, y: box.y + box.height / 2 });
+  });
+
+  it("o retângulo tem os quatro cantos da caixa", () => {
+    const points = canonicalShape("rectangle", box);
+    const xs = points.map((p) => p.x);
+    const ys = points.map((p) => p.y);
+    expect(Math.min(...xs)).toBeCloseTo(box.x, 6);
+    expect(Math.max(...xs)).toBeCloseTo(box.x + box.width, 6);
+    expect(Math.min(...ys)).toBeCloseTo(box.y, 6);
+    expect(Math.max(...ys)).toBeCloseTo(box.y + box.height, 6);
+  });
+
+  it("a seta tem cabo e ponta em V, reconhecidos de volta como seta", () => {
+    const points = canonicalShape("arrow", box);
+    const recognized = recognizeShape(points);
+    expect(recognized?.kind).toBe("arrow");
+  });
+
+  it("usa a pressão pedida em todos os pontos", () => {
+    const points = canonicalShape("ellipse", box, 0.8);
+    expect(points.every((point) => point.pressure === 0.8)).toBe(true);
   });
 });

@@ -5075,6 +5075,56 @@ body.local-room-active {
   border-right: 1px solid var(--line);
   gap: 0.45rem;
 }
+
+.handwriting-shape-insert {
+  width: min(92vw, 420px);
+  padding: 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px 22px 8px 18px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 6px 0 var(--line);
+}
+.handwriting-shape-insert::backdrop {
+  background: rgb(20 16 28 / 55%);
+}
+.handwriting-shape-insert header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.handwriting-shape-insert header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.handwriting-shape-insert header button {
+  min-width: 36px;
+  min-height: 36px;
+  font-size: 1.2rem;
+  line-height: 1;
+  border: 1px solid var(--line);
+  border-radius: 4px 10px 4px 8px;
+  background: var(--soft);
+}
+.handwriting-shape-insert p {
+  margin: 0.6rem 0 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.handwriting-shape-insert__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.handwriting-shape-insert__grid button {
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 6px 14px 6px 12px;
+  background: var(--soft);
+  color: var(--text);
+  font-weight: 600;
+}
 .handwriting-file-actions .editor-export-options {
   top: calc(100% + 0.5rem);
   bottom: auto;

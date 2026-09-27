@@ -285,3 +285,82 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
   if (!best) return null;
   return { kind: best.kind, points: densify(best.vertices, pressure, true) };
 }
+
+// Alternativa por teclado ao "segurar para acertar": desenhar a mão livre é, por natureza,
+// um gesto de ponteiro. Quem não usa ponteiro insere a forma pronta direto, do tamanho e na
+// posição pedidos, e ajusta depois com o que já é acessível por teclado (mover a seleção,
+// girar, redimensionar). Só o polígono usa um número fixo de lados (hexágono), por não ter
+// um "padrão" natural como as outras formas.
+export function canonicalShape(
+  kind: ShapeKind,
+  box: { x: number; y: number; width: number; height: number },
+  pressure = 0.5,
+): HandwritingPoint[] {
+  const { x, y, width, height } = box;
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+  if (kind === "line")
+    return densify(
+      [
+        { x, y: cy },
+        { x: x + width, y: cy },
+      ],
+      pressure,
+      false,
+    );
+  if (kind === "ellipse") {
+    const rx = width / 2;
+    const ry = height / 2;
+    const ring = Array.from({ length: 72 }, (_, index) => {
+      const angle = (index / 72) * Math.PI * 2;
+      return { x: cx + Math.cos(angle) * rx, y: cy + Math.sin(angle) * ry };
+    });
+    return densify(ring, pressure, true);
+  }
+  if (kind === "rectangle") {
+    return densify(
+      [
+        { x, y },
+        { x: x + width, y },
+        { x: x + width, y: y + height },
+        { x, y: y + height },
+      ],
+      pressure,
+      true,
+    );
+  }
+  if (kind === "triangle") {
+    return densify(
+      [
+        { x: cx, y },
+        { x: x + width, y: y + height },
+        { x, y: y + height },
+      ],
+      pressure,
+      true,
+    );
+  }
+  if (kind === "polygon") {
+    const sides = 6;
+    const radius = Math.min(width, height) / 2;
+    const vertices = Array.from({ length: sides }, (_, index) => {
+      const angle = -Math.PI / 2 + (index / sides) * Math.PI * 2;
+      return { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius };
+    });
+    return densify(vertices, pressure, true);
+  }
+  // arrow
+  const tail = { x, y: cy };
+  const head = { x: x + width, y: cy };
+  const barbLength = Math.min(width * 0.24, Math.max(20, width * 0.18));
+  const barbAngle = (28 * Math.PI) / 180;
+  const tip1 = {
+    x: head.x + Math.cos(Math.PI - barbAngle) * barbLength,
+    y: head.y + Math.sin(Math.PI - barbAngle) * barbLength,
+  };
+  const tip2 = {
+    x: head.x + Math.cos(Math.PI + barbAngle) * barbLength,
+    y: head.y + Math.sin(Math.PI + barbAngle) * barbLength,
+  };
+  return densify([tail, head, tip1, head, tip2], pressure, false);
+}
