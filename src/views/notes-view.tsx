@@ -1,6 +1,7 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { NotebookSearch } from "../components/notebook-search";
 import { NotebookFolder } from "../components/notebook-folder";
+import { TextNoteEditor, TextNotePreview } from "../components/text-note";
 import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
@@ -96,6 +97,7 @@ export function NotesView({
   }
   const [newNotebookName, setNewNotebookName] = useState("");
   const [createFolder, setCreateFolder] = useState(false);
+  const [createNote, setCreateNote] = useState(false);
   const [folderShelf, setFolderShelf] = useState(0);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
@@ -272,11 +274,24 @@ export function NotesView({
     dispatch({
       type: "notebook/added",
       id,
-      title: newNotebookName.trim() || (createFolder ? "Minha pasta" : notebookTitle(workspace)),
+      title:
+        newNotebookName.trim() ||
+        (createFolder ? "Minha pasta" : createNote ? "Minha Note" : notebookTitle(workspace)),
       ...(createFolder ? { kind: "collection" as const, shelf: folderShelf } : {}),
+      ...(createNote ? { kind: "note" as const } : {}),
       subjectId: "",
       createdAt: new Date().toISOString(),
     });
+    if (createNote) {
+      dispatch({
+        type: "note/added",
+        id: createWorkspaceId("note"),
+        notebookId: id,
+        subjectId: "",
+        kind: "note",
+        updatedAt: new Date().toISOString(),
+      });
+    }
     setActiveNotebookId(createFolder ? null : id);
     if (!createFolder) setSharedNotebookId(id);
     setNotebookSection("pages");
@@ -302,7 +317,7 @@ export function NotesView({
       return;
     }
     const cover = notebookShelfCover(notebook.id);
-    if (cover && canAnimateNotebook())
+    if (notebook.kind !== "note" && cover && canAnimateNotebook())
       setJourney({
         notebook,
         returning: false,
@@ -611,19 +626,42 @@ export function NotesView({
             createNotebook();
           }}
         >
-          <h2>{createFolder ? "Nova pasta" : "Novo caderno"}</h2>
+          <h2>{createFolder ? "Nova pasta" : createNote ? "Nova Note" : "Novo caderno"}</h2>
           <div className="notebook-detail-actions">
             <button
               type="button"
-              aria-pressed={!createFolder}
-              onClick={() => setCreateFolder(false)}
+              aria-pressed={!createFolder && !createNote}
+              onClick={() => {
+                setCreateFolder(false);
+                setCreateNote(false);
+              }}
             >
               Caderno
             </button>
-            <button type="button" aria-pressed={createFolder} onClick={() => setCreateFolder(true)}>
+            <button
+              type="button"
+              aria-pressed={createNote}
+              onClick={() => {
+                setCreateFolder(false);
+                setCreateNote(true);
+              }}
+            >
+              Note
+            </button>
+            <button
+              type="button"
+              aria-pressed={createFolder}
+              onClick={() => {
+                setCreateFolder(true);
+                setCreateNote(false);
+              }}
+            >
               Pasta
             </button>
           </div>
+          {createNote && (
+            <p>Uma folha para escrever suas ideias. Até 3 Notes ou cadernos por pasta.</p>
+          )}
           {createFolder && (
             <label>
               Vitrine
@@ -641,7 +679,7 @@ export function NotesView({
               <small>
                 {folderLimit
                   ? "Esta vitrine já tem 3 pastas."
-                  : "Até 3 pastas por vitrine e 3 cadernos por pasta."}
+                  : "Até 3 pastas por vitrine e 3 itens por pasta, entre Notes e cadernos."}
               </small>
             </label>
           )}
@@ -651,7 +689,7 @@ export function NotesView({
               aria-label="Nome"
               value={newNotebookName}
               maxLength={80}
-              placeholder={createFolder ? "Minha pasta" : "Meu caderno"}
+              placeholder={createFolder ? "Minha pasta" : createNote ? "Minha Note" : "Meu caderno"}
               onChange={(event) => setNewNotebookName(event.target.value)}
             />
           </label>
@@ -660,7 +698,7 @@ export function NotesView({
               Cancelar
             </button>
             <button className="primary-button" type="submit" disabled={createFolder && folderLimit}>
-              {createFolder ? "Criar pasta" : "Criar caderno"}
+              {createFolder ? "Criar pasta" : createNote ? "Criar Note" : "Criar caderno"}
             </button>
           </div>
         </form>
@@ -739,16 +777,27 @@ export function NotesView({
                 aria-hidden="true"
                 style={{ left: bookDrag.moving.x + 16, top: bookDrag.moving.y - 45 }}
               >
-                <NotebookArtwork
-                  subjectColor="#7c3aed"
-                  coverStyle={
-                    workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.coverStyle
-                  }
-                  title={
-                    workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
-                    "Caderno"
-                  }
-                />
+                {workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.kind ===
+                "note" ? (
+                  <TextNotePreview
+                    title={
+                      workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
+                      "Note"
+                    }
+                  />
+                ) : (
+                  <NotebookArtwork
+                    subjectColor="#7c3aed"
+                    coverStyle={
+                      workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)
+                        ?.coverStyle
+                    }
+                    title={
+                      workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
+                      "Caderno"
+                    }
+                  />
+                )}
               </div>
             )}
             {workspace.notebooks.length === 0 ? (
@@ -876,7 +925,7 @@ export function NotesView({
                               setDraggedFolder(null);
                               setDropTarget(null);
                             }}
-                            {...(!notebook.kind && !selectionMode
+                            {...((!notebook.kind || notebook.kind === "note") && !selectionMode
                               ? bookDrag.handlers(notebook.id)
                               : {})}
                             type="button"
@@ -895,7 +944,15 @@ export function NotesView({
                                 {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
                               </span>
                             )}
-                            {notebook.kind === "folder" ? (
+                            {notebook.kind === "note" ? (
+                              <TextNotePreview
+                                title={notebook.title}
+                                content={
+                                  workspace.notes.find((note) => note.id === notebook.pageIds[0])
+                                    ?.content ?? ""
+                                }
+                              />
+                            ) : notebook.kind === "folder" ? (
                               <span className="annotation-folder" aria-hidden="true">
                                 <span className="annotation-folder__back" />
                                 {[0, 1, 2].map((index) => (
@@ -934,6 +991,7 @@ export function NotesView({
                             <span className="notebook-card__copy">
                               <strong>{notebook.title}</strong>
                               <small>
+                                {notebook.kind === "note" ? "Note · " : ""}
                                 {notebook.pageIds.length}{" "}
                                 {notebook.kind === "folder" ? "nota" : "folha"}
                                 {notebook.pageIds.length === 1 ? "" : "s"}
@@ -950,6 +1008,26 @@ export function NotesView({
             )}
           </section>
         </>
+      ) : activeNotebook.kind === "note" ? (
+        <TextNoteEditor
+          notebook={activeNotebook}
+          note={workspace.notes.find((note) => note.id === activeNotebook.pageIds[0])}
+          onBack={returnToShelf}
+          onTitle={(title) =>
+            dispatch({ type: "notebook/organized", id: activeNotebook.id, changes: { title } })
+          }
+          onContent={(content) => {
+            const note = workspace.notes.find((item) => item.id === activeNotebook.pageIds[0]);
+            if (!note) return;
+            dispatch({
+              type: "note/updated",
+              id: note.id,
+              title: activeNotebook.title,
+              content,
+              updatedAt: new Date().toISOString(),
+            });
+          }}
+        />
       ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label="Preview do caderno">
           <h1>{activeNotebook.title}</h1>
