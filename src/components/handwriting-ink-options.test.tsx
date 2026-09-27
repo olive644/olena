@@ -22,3 +22,37 @@ for (const tool of ["pen", "highlighter", "eraser"] as const) {
     if (tool === "eraser") expect(screen.queryByRole("button", { name: "Tinta Roxo" })).toBeNull();
   });
 }
+
+it("borracha: alterna entre apagar por trecho e por traço inteiro", () => {
+  const onEraserWholeStrokeChange = vi.fn();
+  render(
+    <HandwritingInkOptions
+      tool="eraser"
+      width={10}
+      color="#17151c"
+      onColorChange={vi.fn()}
+      onWidthChange={vi.fn()}
+      eraserWholeStroke={false}
+      onEraserWholeStrokeChange={onEraserWholeStrokeChange}
+    />,
+  );
+  const wholeStroke = screen.getByRole("button", { name: "Apagar o traço inteiro" });
+  const partial = screen.getByRole("button", { name: "Apagar só o trecho tocado" });
+  expect(partial.getAttribute("aria-pressed")).toBe("true");
+  expect(wholeStroke.getAttribute("aria-pressed")).toBe("false");
+  fireEvent.click(wholeStroke);
+  expect(onEraserWholeStrokeChange).toHaveBeenCalledWith(true);
+});
+
+it("não mostra o modo da borracha para outras ferramentas nem sem o callback", () => {
+  render(
+    <HandwritingInkOptions
+      tool="pen"
+      width={10}
+      color="#17151c"
+      onColorChange={vi.fn()}
+      onWidthChange={vi.fn()}
+    />,
+  );
+  expect(screen.queryByText("Modo da borracha")).toBeNull();
+});
