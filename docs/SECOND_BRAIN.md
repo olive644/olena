@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+Pastas não exibem mais o painel inferior de guardar, retirar e desfazer. Abertura
+pelas miniaturas e arrastar continuam; a seleção da vitrine inclui pastas, também
+em Selecionar tudo. Excluir a pasta conserva os cadernos conforme o reducer.
+
 `useNotebookShelfDrag` controla o movimento de cadernos. `data-folder-drop` resolve
 o destino, `notebook/stored` preserva os limites e a persistência. O gesto suprime
 somente o clique que nasce ao soltar. `NotesView` conserva as pastas abertas entre
