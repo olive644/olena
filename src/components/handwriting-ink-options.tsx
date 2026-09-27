@@ -6,6 +6,8 @@ type HandwritingInkOptionsProps = {
   onColorChange: (color: string) => void;
   width: number;
   onWidthChange: (width: number) => void;
+  eraserWholeStroke?: boolean;
+  onEraserWholeStrokeChange?: (wholeStroke: boolean) => void;
 };
 
 export function HandwritingInkOptions({
@@ -14,10 +16,33 @@ export function HandwritingInkOptions({
   onColorChange,
   width,
   onWidthChange,
+  eraserWholeStroke = false,
+  onEraserWholeStrokeChange,
 }: HandwritingInkOptionsProps) {
   const percentage = Math.max(0, Math.min(100, Math.round(((width - 0.5) / 39.5) * 100)));
   return (
     <div className="handwriting-ink-options">
+      {tool === "eraser" && onEraserWholeStrokeChange && (
+        <fieldset className="eraser-mode">
+          <legend>Modo da borracha</legend>
+          <button
+            type="button"
+            aria-label="Apagar só o trecho tocado"
+            aria-pressed={!eraserWholeStroke}
+            onClick={() => onEraserWholeStrokeChange(false)}
+          >
+            Trecho
+          </button>
+          <button
+            type="button"
+            aria-label="Apagar o traço inteiro"
+            aria-pressed={eraserWholeStroke}
+            onClick={() => onEraserWholeStrokeChange(true)}
+          >
+            Traço inteiro
+          </button>
+        </fieldset>
+      )}
       {tool !== "eraser" && (
         <fieldset className="ink-palette">
           <legend>Cor da tinta</legend>

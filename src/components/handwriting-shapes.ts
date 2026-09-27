@@ -4,7 +4,7 @@ import type { HandwritingPoint } from "../domain/handwriting";
 // traço, uma reta, uma elipse, um retângulo ou um triângulo feitos à mão livre viram a forma
 // perfeita. Só a regra fica aqui; o editor decide quando chamar.
 
-export type ShapeKind = "line" | "ellipse" | "rectangle" | "triangle";
+export type ShapeKind = "line" | "ellipse" | "rectangle" | "triangle" | "polygon" | "arrow";
 export type RecognizedShape = { kind: ShapeKind; points: HandwritingPoint[] };
 
 // Comprimento mínimo do traço (unidades da folha) para valer como forma. Abaixo disso é letra.
@@ -102,6 +102,96 @@ function averagePressure(points: readonly HandwritingPoint[]): number {
   return points.reduce((sum, point) => sum + point.pressure, 0) / points.length || 0.5;
 }
 
+function cross(origin: Vec, a: Vec, b: Vec): number {
+  return (a.x - origin.x) * (b.y - origin.y) - (a.y - origin.y) * (b.x - origin.x);
+}
+
+function segmentsCross(a: Vec, b: Vec, c: Vec, d: Vec): boolean {
+  const d1 = cross(c, d, a);
+  const d2 = cross(c, d, b);
+  const d3 = cross(a, b, c);
+  const d4 = cross(a, b, d);
+  return (d1 > 0 !== d2 > 0) && (d3 > 0 !== d4 > 0);
+}
+
+// Descarta vértices quase colados um no outro (inclui o ponto de fechamento, que raramente
+// cai bem em cima do início): sem isso um cantinho de nada vira lado, e um lado curtíssimo
+// perto do fechamento pode até parecer, por erro numérico, um cruzamento com outro lado.
+function dedupeVertices(vertices: readonly Vec[], tolerance: number): Vec[] {
+  const out: Vec[] = [];
+  for (const vertex of vertices) {
+    const last = out.at(-1);
+    if (!last || dist(last, vertex) > tolerance) out.push(vertex);
+  }
+  if (out.length > 1 && dist(out[0]!, out.at(-1)!) <= tolerance) out.pop();
+  return out;
+}
+
+// Um polígono de verdade não cruza os próprios lados; um rabisco em zigue-zague, sim.
+function isSimplePolygon(vertices: readonly Vec[]): boolean {
+  const count = vertices.length;
+  for (let i = 0; i < count; i += 1) {
+    const a = vertices[i]!;
+    const b = vertices[(i + 1) % count]!;
+    for (let j = i + 1; j < count; j += 1) {
+      if (j === i || j === i + 1 || (j + 1) % count === i) continue;
+      if (segmentsCross(a, b, vertices[j]!, vertices[(j + 1) % count]!)) return false;
+    }
+  }
+  return true;
+}
+
+// Menor diferença angular entre dois ângulos (em radianos, sempre entre 0 e π).
+function angleDelta(a: number, b: number): number {
+  const delta = Math.abs(a - b) % (Math.PI * 2);
+  return delta > Math.PI ? Math.PI * 2 - delta : delta;
+}
+
+// Seta: cabo reto até a ponta e, sem levantar a caneta, duas farpas em V voltando da
+// ponta. É o jeito natural de desenhar uma seta à mão: ida, farpa de um lado, volta à
+// ponta, farpa do outro lado.
+function recognizeArrow(
+  points: readonly HandwritingPoint[],
+  length: number,
+): RecognizedShape | null {
+  const epsilon = Math.max(8, length * 0.035);
+  const simplified = simplify(points, epsilon);
+  if (simplified.length !== 5) return null;
+  const [tail, headA, barbA, headB, barbB] = simplified as [Vec, Vec, Vec, Vec, Vec];
+  const shaftLength = dist(tail, headA);
+  if (shaftLength < MIN_PATH * 0.6 || dist(headA, headB) > shaftLength * 0.2) return null;
+  const barbALength = dist(headA, barbA);
+  const barbBLength = dist(headB, barbB);
+  const shortestBarb = Math.min(barbALength, barbBLength);
+  const longestBarb = Math.max(barbALength, barbBLength);
+  if (shortestBarb < shaftLength * 0.1 || longestBarb > shaftLength * 0.8) return null;
+  if (longestBarb / shortestBarb > 2.6) return null;
+  const shaftAngle = Math.atan2(headA.y - tail.y, headA.x - tail.x);
+  const back = shaftAngle + Math.PI;
+  const angleA = Math.atan2(barbA.y - headA.y, barbA.x - headA.x);
+  const angleB = Math.atan2(barbB.y - headB.y, barbB.x - headB.x);
+  const diffA = angleDelta(angleA, back);
+  const diffB = angleDelta(angleB, back);
+  if (diffA < 0.2 || diffA > 1.4 || diffB < 0.2 || diffB > 1.4) return null;
+  const side = (angle: number) => Math.sign(Math.sin(angle - shaftAngle));
+  if (side(angleA) === side(angleB)) return null;
+  const fit = polylineResidual(points, [tail, headA, barbA, headA, barbB]);
+  if (fit.mean > length * 0.055) return null;
+  const pressure = averagePressure(points);
+  const head = { x: (headA.x + headB.x) / 2, y: (headA.y + headB.y) / 2 };
+  const barbLength = Math.min(shaftLength * 0.24, Math.max(20, (barbALength + barbBLength) / 2));
+  const barbAngle = (Math.PI * 28) / 180;
+  const tip1 = {
+    x: head.x + Math.cos(shaftAngle + Math.PI - barbAngle) * barbLength,
+    y: head.y + Math.sin(shaftAngle + Math.PI - barbAngle) * barbLength,
+  };
+  const tip2 = {
+    x: head.x + Math.cos(shaftAngle + Math.PI + barbAngle) * barbLength,
+    y: head.y + Math.sin(shaftAngle + Math.PI + barbAngle) * barbLength,
+  };
+  return { kind: "arrow", points: densify([tail, head, tip1, head, tip2], pressure, false) };
+}
+
 export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedShape | null {
   if (points.length < 8) return null;
   const length = pathLength(points);
@@ -120,6 +210,10 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
       return { kind: "line", points: densify([first, last], pressure, false) };
     }
   }
+
+  // Seta: cabo reto com uma ponta em V, sem voltar perto do início.
+  const arrow = recognizeArrow(points, length);
+  if (arrow) return arrow;
 
   // Formas fechadas: o fim volta perto do começo.
   if (chord > diagonal * 0.3) return null;
@@ -150,6 +244,22 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
     const fit = polylineResidual(points, [...vertices, vertices[0]!]);
     if (fit.mean <= diagonal * 0.035) {
       candidates.push({ kind: "triangle", vertices, score: fit.mean / diagonal });
+    }
+  }
+
+  // Polígono (pentágono, hexágono...): mesma ideia do triângulo, com mais lados, mas com
+  // uma tolerância bem mais apertada: uma curva de verdade (elipse) só cabe em poucos
+  // segmentos retos se a tolerância for larga, então aqui ela precisa ser estreita o
+  // bastante para que só cantos retos de verdade sobrevivam à simplificação.
+  const polygonVertices = dedupeVertices(
+    simplify(closedPath, diagonal * 0.022),
+    diagonal * 0.06,
+  );
+  const sides = polygonVertices.length;
+  if (sides >= 5 && sides <= 8) {
+    const fit = polylineResidual(points, [...polygonVertices, polygonVertices[0]!]);
+    if (fit.mean <= diagonal * 0.016 && isSimplePolygon(polygonVertices)) {
+      candidates.push({ kind: "polygon", vertices: polygonVertices, score: fit.mean / diagonal });
     }
   }
 

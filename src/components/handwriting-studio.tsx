@@ -68,7 +68,7 @@ import { useEditorShortcuts } from "../hooks/use-editor-shortcuts";
 import { renderPageScene, type PageScene } from "./handwriting-page-scene";
 import { drawSelectionOverlay, type SelectionScene } from "./handwriting-selection-scene";
 import {} from "./handwriting-selection-ops";
-import { eraseInkArea } from "./handwriting-eraser";
+import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
 import { pointerSamples } from "./handwriting-pointer";
 import {
   newRemoteStrokes,
@@ -465,6 +465,7 @@ export function HandwritingStudio({
   const [color, setColor] = useState(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   const [width, setWidth] = useState(5);
   const [eraserWidth, setEraserWidth] = useState(10);
+  const [eraserWholeStroke, setEraserWholeStroke] = useState(false);
   const [gestureRevision, setGestureRevision] = useState(0);
   const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
   const [zoom, setZoom] = useState(1);
@@ -1055,7 +1056,9 @@ export function HandwritingStudio({
     const path = eraserPointRef.current ? [eraserPointRef.current, ...points] : points;
     eraserPointRef.current = points.at(-1) ?? eraserPointRef.current;
     const current = eraseSnapshotRef.current;
-    const nextStrokes = eraseInkArea(current.strokes, path, eraserWidth * 3, strokeId);
+    const nextStrokes = eraserWholeStroke
+      ? eraseWholeStrokes(current.strokes, path, eraserWidth * 3)
+      : eraseInkArea(current.strokes, path, eraserWidth * 3, strokeId);
     if (nextStrokes !== current.strokes) eraserChangedRef.current = true;
     setStrokes(nextStrokes);
     let nextText = current.pageText;
@@ -2424,6 +2427,8 @@ export function HandwritingStudio({
           onColorChange={setColor}
           width={tool === "eraser" ? eraserWidth : width}
           onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
+          eraserWholeStroke={eraserWholeStroke}
+          onEraserWholeStrokeChange={setEraserWholeStroke}
         />
 
         <HandwritingHistoryBar
