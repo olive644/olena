@@ -6,7 +6,9 @@ import {
   isValidNotebookCollabCode,
   normalizeNotebookCollabCode,
   sanitizeNotebookCollabName,
+  isNotebookCollabPages,
   type PublicNotebookCollabState,
+  type NotebookCollabPage,
 } from "../domain/notebook-collab";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { mergeHandwriting } from "../domain/merge-handwriting";
@@ -39,7 +41,7 @@ type StoredPending = {
 
 function readStoredPending(code: string): StoredPending | undefined {
   try {
-    const value = JSON.parse(localStorage.getItem(NOTEBOOK_COLLAB_PENDING_KEY) ?? "null") as {
+    const value = JSON.parse(localStorage.getItem(pendingStorageKey(code)) ?? "null") as {
       code?: unknown;
       document?: unknown;
       base?: unknown;
@@ -57,10 +59,16 @@ function readStoredPending(code: string): StoredPending | undefined {
   }
 }
 
-function writeStoredPending(pending: StoredPending | undefined) {
+function pendingStorageKey(code: string) {
+  return code.includes("/")
+    ? `${NOTEBOOK_COLLAB_PENDING_KEY}:${code}`
+    : NOTEBOOK_COLLAB_PENDING_KEY;
+}
+
+function writeStoredPending(code: string, pending: StoredPending | undefined) {
   try {
-    if (pending) localStorage.setItem(NOTEBOOK_COLLAB_PENDING_KEY, JSON.stringify(pending));
-    else localStorage.removeItem(NOTEBOOK_COLLAB_PENDING_KEY);
+    if (pending) localStorage.setItem(pendingStorageKey(code), JSON.stringify(pending));
+    else localStorage.removeItem(pendingStorageKey(code));
   } catch {
     // Sem espaço, as alterações continuam só na memória, como antes.
   }
@@ -93,6 +101,10 @@ type StoredSession = {
 
 type Options = {
   notebookId: string;
+  pageId?: string;
+  pages?: NotebookCollabPage[];
+  title?: string;
+  onRoom?: (room: PublicNotebookCollabState) => void;
   onRemoteDocument?: (document: HandwritingDocument, author?: string) => void;
 };
 
@@ -151,6 +163,7 @@ function normalizeState(value: unknown): PublicNotebookCollabState | undefined {
     return undefined;
   if (candidate.document !== undefined && !isHandwritingDocument(candidate.document))
     return undefined;
+  if (candidate.pages !== undefined && !isNotebookCollabPages(candidate.pages)) return undefined;
   return candidate as PublicNotebookCollabState;
 }
 
@@ -202,7 +215,36 @@ function readCursorPoint(value: unknown): { x: number; y: number } | undefined {
 // quase assim que a caneta é solta, sem uma escrita por ponto.
 const PUBLISH_DEBOUNCE_MS = 140;
 
-export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Options) {
+function pageIndexPayload(next: NotebookCollabPage[], base: NotebookCollabPage[]) {
+  return {
+    pages: next.map((page) =>
+      base.some((before) => before.id === page.id) ? { id: page.id, title: page.title } : page,
+    ),
+    basePages: base.map(({ id, title }) => ({ id, title })),
+  };
+}
+
+export function useNotebookCollaboration({
+  notebookId,
+  pageId,
+  pages,
+  title,
+  onRoom,
+  onRemoteDocument,
+}: Options) {
+  const optionsRef = useRef({ pages, title, onRoom });
+  optionsRef.current = { pages, title, onRoom };
+  const selectDocument = useCallback(
+    (room: PublicNotebookCollabState) => {
+      const selected = room.pages
+        ? room.pages.find((page) => page.id === pageId)?.document
+        : room.document;
+      const { document: ignored, ...rest } = room;
+      void ignored;
+      return { ...rest, ...(selected ? { document: selected } : {}) };
+    },
+    [pageId],
+  );
   const [state, setState] = useState<NotebookCollaborationState>({
     code: "",
     participantId: "",
@@ -230,6 +272,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   const codeRef = useRef("");
   const updateTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mountedRef = useRef(true);
+  const generationRef = useRef(0);
+  const knownPagesRef = useRef<NotebookCollabPage[] | undefined>(undefined);
   const cursorSeenRef = useRef(new Map<string, { x: number; y: number; seenAt: number }>());
   const [cursorTick, setCursorTick] = useState(0);
   const cursorSentAtRef = useRef(0);
@@ -246,10 +290,12 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       setHasPending(next !== undefined);
       const code = codeRef.current;
       if (!code) return;
+      const pendingCode = pageId ? `${code}/${pageId}` : code;
       writeStoredPending(
+        pendingCode,
         next
           ? {
-              code,
+              code: pendingCode,
               document: next.document,
               ...(baseDocumentRef.current ? { base: baseDocumentRef.current } : {}),
               ...(next.label ? { label: next.label } : {}),
@@ -257,7 +303,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
           : undefined,
       );
     },
-    [],
+    [pageId],
   );
 
   const stop = useCallback((clear = false) => {
@@ -274,7 +320,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
   }, []);
 
   const applyRoom = useCallback(
-    (room: PublicNotebookCollabState) => {
+    (received: PublicNotebookCollabState, acknowledged?: HandwritingDocument) => {
+      const room = selectDocument(received);
       if (room.revision < revisionRef.current) return;
       const session = sessionRef.current;
       if (!session || session.code !== room.code) return;
@@ -312,6 +359,8 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         }
       }
       revisionRef.current = room.revision;
+      knownPagesRef.current = room.pages;
+      optionsRef.current.onRoom?.(room);
       setState((current) => {
         if (
           current.room &&
@@ -322,12 +371,25 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         return { ...current, code: room.code, room, status: "online", error: "" };
       });
       if (room.document) {
+        // O eco SSE de um envio anterior não confirma o gesto seguinte da borracha.
+        // Só a resposta HTTP identifica exatamente qual documento foi aceito.
+        if (
+          publishingRef.current &&
+          !acknowledged &&
+          action?.kind === "document" &&
+          action.participantId === session.participantId
+        )
+          return;
         if (JSON.stringify(pendingRef.current?.document) === JSON.stringify(room.document))
           setPending(undefined);
         const pending = pendingRef.current;
         const next =
           pending && baseDocumentRef.current
-            ? mergeHandwriting(baseDocumentRef.current, pending.document, room.document)
+            ? mergeHandwriting(
+                acknowledged ?? baseDocumentRef.current,
+                pending.document,
+                room.document,
+              )
             : room.document;
         baseDocumentRef.current = room.document;
         if (pending) setPending({ ...pending, document: next });
@@ -340,14 +402,24 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         }
       }
     },
-    [setPending],
+    [setPending, selectDocument],
   );
 
-  const receiveCursor = useCallback((id: string, value: unknown) => {
-    const point = readCursorPoint(value);
-    if (point) cursorSeenRef.current.set(id, { ...point, seenAt: performance.now() });
-    else cursorSeenRef.current.delete(id);
-  }, []);
+  const receiveCursor = useCallback(
+    (id: string, value: unknown) => {
+      if (
+        pageId &&
+        (!value || typeof value !== "object" || (value as { pageId?: string }).pageId !== pageId)
+      ) {
+        cursorSeenRef.current.delete(id);
+        return;
+      }
+      const point = readCursorPoint(value);
+      if (point) cursorSeenRef.current.set(id, { ...point, seenAt: performance.now() });
+      else cursorSeenRef.current.delete(id);
+    },
+    [pageId],
+  );
 
   // O Firebase manda mudanças de filhos como "put" ou "patch" com o caminho relativo à sala.
   const receiveCursorEvent = useCallback(
@@ -421,6 +493,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       action: "resume" | "join" | "create",
       body: Record<string, unknown>,
     ) => {
+      const generation = generationRef.current;
       setState((current) => ({ ...current, status: "connecting", error: "" }));
       try {
         const payload = await request<{
@@ -430,7 +503,29 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
           participantToken?: string;
           hostToken?: string;
         }>(action, body);
+        if (!mountedRef.current || generation !== generationRef.current) return false;
+        // Cada folha guarda sua própria fila. Ao voltar, escoa também as folhas não abertas.
         const credential = payload.participantToken ?? payload.hostToken ?? session.credential;
+        for (const page of payload.state.pages ?? []) {
+          if (page.id === pageId) continue;
+          const key = `${payload.state.code}/${page.id}`;
+          const queued = readStoredPending(key);
+          if (!queued) continue;
+          const updated = await request<{ state: PublicNotebookCollabState }>("update", {
+            code: payload.state.code,
+            credential,
+            pageId: page.id,
+            document: queued.document,
+            ...(queued.base ? { baseDocument: queued.base } : {}),
+          });
+          if (!mountedRef.current || generation !== generationRef.current) return false;
+          if (JSON.stringify(readStoredPending(key)) === JSON.stringify(queued))
+            writeStoredPending(key, undefined);
+          payload.state = updated.state;
+        }
+        payload.state = selectDocument(payload.state);
+        knownPagesRef.current = payload.state.pages;
+        optionsRef.current.onRoom?.(payload.state);
         const participantId = payload.participantId ?? session.participantId;
         const nextSession = { ...session, code: payload.state.code, credential, participantId };
         revisionRef.current = payload.state.revision;
@@ -450,7 +545,9 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         lastPublishedRef.current = payload.state.document
           ? JSON.stringify(payload.state.document)
           : "";
-        const saved = readStoredPending(payload.state.code);
+        const saved = readStoredPending(
+          pageId ? `${payload.state.code}/${pageId}` : payload.state.code,
+        );
         if (saved) {
           // Alterações feitas sem conexão: juntam com o que os colegas escreveram desde então.
           const restored =
@@ -468,7 +565,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         startStream(payload.streamUrl);
         return true;
       } catch (caught) {
-        if (mountedRef.current)
+        if (mountedRef.current && generation === generationRef.current)
           setState((current) => ({
             ...current,
             status: "error",
@@ -477,7 +574,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         return false;
       }
     },
-    [notebookId, setPending, startStream],
+    [notebookId, pageId, selectDocument, setPending, startStream],
   );
 
   const create = useCallback(
@@ -502,10 +599,20 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
         displayName: name,
         avatarUrl,
         requestId: crypto.randomUUID(),
+        ...(optionsRef.current.pages
+          ? {
+              pages: optionsRef.current.pages.map((page) =>
+                page.id === pageId && initialDocument
+                  ? { ...page, document: initialDocument }
+                  : page,
+              ),
+              title: optionsRef.current.title,
+            }
+          : {}),
         ...(initialDocument ? { document: initialDocument } : {}),
       });
     },
-    [connect, notebookId],
+    [connect, notebookId, pageId],
   );
 
   const join = useCallback(
@@ -536,22 +643,47 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       setPending({ document, ...(label ? { label } : {}) });
       if (publishingRef.current) return;
       publishingRef.current = true;
+      const generation = generationRef.current;
       try {
+        if (
+          pageId &&
+          knownPagesRef.current &&
+          !knownPagesRef.current.some((page) => page.id === pageId)
+        ) {
+          const indexed = await request<{ state: PublicNotebookCollabState }>("pages", {
+            code: session.code,
+            credential: session.credential,
+            ...pageIndexPayload(optionsRef.current.pages ?? [], knownPagesRef.current),
+          });
+          if (sessionRef.current !== session) return;
+          applyRoom(indexed.state);
+        }
         while (pendingRef.current && sessionRef.current === session) {
           const pending: { document: HandwritingDocument; label?: string } = pendingRef.current;
           const payload = await request<{ state: PublicNotebookCollabState }>("update", {
             code: session.code,
             credential: session.credential,
             document: pending.document,
+            ...(pageId ? { pageId } : {}),
             ...(baseDocumentRef.current ? { baseDocument: baseDocumentRef.current } : {}),
             ...(pending.label ? { label: pending.label } : {}),
           });
+          payload.state = selectDocument(payload.state);
           if (sessionRef.current !== session) break;
           if (pendingRef.current === pending) setPending(undefined);
-          applyRoom(payload.state);
+          else if (pendingRef.current && payload.state.document) {
+            // Rebase newer local edits on the acknowledged send, not on the older server base.
+            const newer = pendingRef.current;
+            setPending({
+              ...newer,
+              document: mergeHandwriting(pending.document, newer.document, payload.state.document),
+            });
+            baseDocumentRef.current = payload.state.document;
+          }
+          applyRoom(payload.state, pending.document);
         }
       } catch (caught) {
-        if (mountedRef.current) {
+        if (mountedRef.current && generation === generationRef.current) {
           // Sem conexão a alteração não se perde: fica na fila (e no aparelho) e sai quando voltar.
           if (isTransient(caught)) setState((current) => ({ ...current, status: "offline" }));
           else
@@ -565,12 +697,36 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
             }));
         }
       } finally {
-        publishingRef.current = false;
+        if (generation === generationRef.current) {
+          publishingRef.current = false;
+        }
       }
     },
-    [applyRoom, setPending],
+    [applyRoom, setPending, pageId, selectDocument],
   );
   publishRef.current = publish;
+  const syncPages = useCallback(
+    async (next: NotebookCollabPage[], basePages: NotebookCollabPage[]) => {
+      const session = sessionRef.current;
+      if (!session) return;
+      try {
+        const payload = await request<{ state: PublicNotebookCollabState }>("pages", {
+          code: session.code,
+          credential: session.credential,
+          ...pageIndexPayload(next, basePages),
+        });
+        if (sessionRef.current === session) applyRoom(payload.state);
+      } catch (cause) {
+        if (sessionRef.current !== session) return;
+        setState((current) => ({
+          ...current,
+          status: isTransient(cause) ? "offline" : current.status,
+          error: cause instanceof Error ? cause.message : "Não foi possível atualizar o índice.",
+        }));
+      }
+    },
+    [applyRoom],
+  );
 
   const publishDebounced = useCallback(
     (document: HandwritingDocument, label?: string) => {
@@ -600,12 +756,13 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
       credential: session.credential,
       x: point.x,
       y: point.y,
+      ...(pageId ? { pageId } : {}),
     })
       .catch(() => undefined)
       .finally(() => {
         cursorBusyRef.current = false;
       });
-  }, []);
+  }, [pageId]);
 
   // Posição do cursor em unidades da folha. Só é enviada com alguém mais na folha, no máximo
   // quatro vezes por segundo e sem empilhar pedidos: a última posição vence.
@@ -662,14 +819,24 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
 
   useEffect(() => {
     mountedRef.current = true;
+    publishingRef.current = false;
+    lastPublishedRef.current = "";
+    revisionRef.current = -1;
+    baseDocumentRef.current = undefined;
+    knownPagesRef.current = undefined;
     const stored = readStoredSession(notebookId);
     if (stored) {
       sessionRef.current = stored;
       void connect(stored, "resume", { code: stored.code, credential: stored.credential });
+    } else {
+      // A sessão pertence a um caderno, nunca herda a equipe do caderno anterior.
+      setState({ code: "", participantId: "", displayName: "", status: "idle", error: "" });
     }
     return () => {
       mountedRef.current = false;
+      generationRef.current += 1;
       sessionRef.current = undefined;
+      codeRef.current = "";
       // A fila guardada no aparelho continua; só a cópia em memória some.
       pendingRef.current = undefined;
       if (updateTimerRef.current) clearTimeout(updateTimerRef.current);
@@ -765,6 +932,7 @@ export function useNotebookCollaboration({ notebookId, onRemoteDocument }: Optio
     create,
     join,
     publish: publishDebounced,
+    syncPages,
     leave,
   };
 }

@@ -1,6 +1,10 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { NotebookSearch } from "../components/notebook-search";
+import { NotebookFolder } from "../components/notebook-folder";
+import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
+import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
 import { NotebookPageIndex } from "../components/notebook-page-index";
+import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type Dispatch } from "react";
 import {
   NotebookJourney,
@@ -38,7 +42,7 @@ function PreviewContent({ page }: { page: StudyNote }) {
   return (
     <>
       {page.assets[0] ? (
-        <img src={page.assets[0].dataUrl} alt="" />
+        <NotebookPageThumbnail asset={page.assets[0]} />
       ) : (
         <p>{page.content || "Folha em branco"}</p>
       )}
@@ -48,6 +52,8 @@ function PreviewContent({ page }: { page: StudyNote }) {
 }
 
 type NotesViewProps = {
+  initialJoinCode?: string;
+  initialNotebookId?: string;
   cloud?: CloudSyncState;
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
@@ -59,7 +65,13 @@ function notebookTitle(workspace: WorkspaceState): string {
   return matches === 0 ? base : `${base} ${matches + 1}`;
 }
 
-export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
+export function NotesView({
+  workspace,
+  dispatch,
+  cloud,
+  initialJoinCode,
+  initialNotebookId,
+}: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
 
@@ -78,9 +90,19 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
     setDropTarget(null);
   }
   const [newNotebookName, setNewNotebookName] = useState("");
+  const [createFolder, setCreateFolder] = useState(false);
+  const [folderShelf, setFolderShelf] = useState(0);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
-  const [activeNotebookId, setActiveNotebookId] = useState<string | null>(null);
+  const [activeNotebookId, setActiveNotebookId] = useState<string | null>(
+    initialNotebookId ?? null,
+  );
+  const [sharedNotebookId, setSharedNotebookId] = useState(initialNotebookId ?? "");
+  const [sharedDocument, setSharedDocument] = useState<{
+    pageId: string;
+    document: HandwritingDocument;
+    author?: string;
+  }>();
   const [activePageId, setActivePageId] = useState<string | null>(null);
   const [indexOpen, setIndexOpen] = useState(false);
   const [journey, setJourney] = useState<NotebookJourneyState | null>(null);
@@ -122,7 +144,16 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
 
   const activeNotebook =
     workspace.notebooks.find((notebook) => notebook.id === activeNotebookId) ?? null;
-  const shelfItems = workspace.notebooks.filter((item) => !item.parentId);
+  const shelfItems = workspace.notebooks.filter(
+    (item) => !item.parentId && item.kind !== "collection",
+  );
+  const collections = workspace.notebooks.filter((item) => item.kind === "collection");
+  const shelfCount = Math.max(
+    1,
+    Math.ceil(shelfItems.length / 4),
+    ...collections.map((item) => (item.shelf ?? 0) + 1),
+  );
+  const folderLimit = collections.filter((item) => (item.shelf ?? 0) === folderShelf).length >= 3;
   const folders = workspace.notebooks.filter(
     (item) => item.kind === "folder" && item.parentId === activeNotebookId,
   );
@@ -141,17 +172,108 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
   const activePage =
     [...notebookPages, ...notebookNotes].find((page) => page.id === activePageId) ?? null;
   const editingAsset = activePage?.assets.find((asset) => asset.id === editingAssetId) ?? null;
+  const collaborationNotebookId = activeNotebookId ?? sharedNotebookId;
+  const collaborationBook = workspace.notebooks.find((book) => book.id === collaborationNotebookId);
+  // Cópias recebidas por convite não reutilizam IDs de folhas de outro caderno local.
+  const sharedPrefix = collaborationNotebookId.startsWith("shared-")
+    ? `${collaborationNotebookId}:`
+    : "";
+  const remotePageId = (id: string) =>
+    sharedPrefix && id.startsWith(sharedPrefix) ? id.slice(sharedPrefix.length) : id;
+  const localPageId = (id: string) =>
+    sharedPrefix && !collaborationBook?.pageIds.includes(id) ? `${sharedPrefix}${id}` : id;
+  const sharedPages = (collaborationBook?.pageIds ?? []).flatMap((id) => {
+    const page = workspace.notes.find((note) => note.id === id);
+    const asset = page?.assets[0];
+    const document: HandwritingDocument | undefined =
+      page?.assets.find((item) => item.handwriting)?.handwriting ??
+      (asset?.kind === "scan"
+        ? {
+            version: 1,
+            paper: "blank",
+            strokes: [],
+            background: asset.dataUrl,
+          }
+        : undefined);
+    return page
+      ? [{ id: remotePageId(id), title: page.title, ...(document ? { document } : {}) }]
+      : [];
+  });
+  const remoteIndexes = useRef(new Map<string, NotebookCollabPage[]>());
+  const collaboration = useNotebookCollaboration({
+    notebookId: collaborationNotebookId,
+    ...(activePageId ? { pageId: remotePageId(activePageId) } : {}),
+    pages: sharedPages,
+    title: collaborationBook?.title ?? "Caderno compartilhado",
+    onRemoteDocument: (document, author) => {
+      if (activePageId)
+        setSharedDocument({ pageId: activePageId, document, ...(author ? { author } : {}) });
+    },
+    onRoom: (room) => {
+      const received =
+        room.pages ??
+        (room.document
+          ? [{ id: `shared-${room.code}`, title: "Folha compartilhada", document: room.document }]
+          : undefined);
+      if (received) {
+        const before = remoteIndexes.current.get(room.code);
+        const next = before ? mergeNotebookPages(before, sharedPages, received) : received;
+        remoteIndexes.current.set(room.code, received);
+        dispatch({
+          type: "notebook/shared-received",
+          notebookId: collaborationNotebookId,
+          pages: next.map((page) => ({ ...page, id: localPageId(page.id) })),
+          ...(room.title ? { title: room.title } : {}),
+          ...(activePageId ? { editingPageId: activePageId } : {}),
+        });
+      }
+    },
+  });
+  const joinedRef = useRef(false);
+  const joinNotebook = collaboration.join;
+  useEffect(() => {
+    if (!initialJoinCode || !cloud?.authenticated || joinedRef.current) return;
+    joinedRef.current = true;
+    void joinNotebook(initialJoinCode, cloud.displayName || cloud.email || "Participante");
+  }, [initialJoinCode, cloud?.authenticated, cloud?.displayName, cloud?.email, joinNotebook]);
+  const pageIndexSignature = JSON.stringify(sharedPages.map(({ id, title }) => ({ id, title })));
+  const roomIndexSignature = JSON.stringify(
+    collaboration.state.room?.pages?.map(({ id, title }) => ({ id, title })),
+  );
+  useEffect(() => {
+    const base = collaboration.state.room?.pages;
+    if (
+      !base ||
+      collaboration.state.status !== "online" ||
+      !collaboration.state.code ||
+      pageIndexSignature === roomIndexSignature
+    )
+      return;
+    const timer = setTimeout(() => void collaboration.syncPages(sharedPages, base), 350);
+    return () => clearTimeout(timer);
+    // Documents have their own edit channel; only the index triggers this update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    pageIndexSignature,
+    roomIndexSignature,
+    collaboration.state.code,
+    collaboration.state.status,
+    collaboration.syncPages,
+  ]);
 
   function createNotebook() {
+    if (createFolder && folderLimit) return;
     const id = createWorkspaceId("notebook");
     dispatch({
       type: "notebook/added",
       id,
-      title: newNotebookName.trim() || notebookTitle(workspace),
+      title: newNotebookName.trim() || (createFolder ? "Minha pasta" : notebookTitle(workspace)),
+      ...(createFolder ? { kind: "collection" as const, shelf: folderShelf } : {}),
       subjectId: "",
       createdAt: new Date().toISOString(),
     });
-    setActiveNotebookId(id);
+    setActiveNotebookId(createFolder ? null : id);
+    if (!createFolder) setSharedNotebookId(id);
     setNotebookSection("pages");
     createDialog.current?.close();
     setNewNotebookName("");
@@ -182,6 +304,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
         tabs: notebookPaperTabs(notebook, workspace.notes, workspace.subjects),
       });
     setActiveNotebookId(notebook.id);
+    setSharedNotebookId(notebook.id);
     setActivePageId(null);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
     setPreviewPageIndex(0);
@@ -422,6 +545,24 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
       <PageHeader />
+      {initialJoinCode && collaboration.state.error && (
+        <div role="alert">
+          <p>{collaboration.state.error}</p>
+          {!collaboration.state.code && (
+            <button
+              type="button"
+              onClick={() =>
+                void joinNotebook(
+                  initialJoinCode,
+                  cloud?.displayName || cloud?.email || "Participante",
+                )
+              }
+            >
+              Tentar entrar novamente
+            </button>
+          )}
+        </div>
+      )}
       {draggedFolder && dragPosition && (
         <div
           className="folder-drag-preview"
@@ -444,14 +585,47 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             createNotebook();
           }}
         >
-          <h2>Novo caderno</h2>
+          <h2>{createFolder ? "Nova pasta" : "Novo caderno"}</h2>
+          <div className="notebook-detail-actions">
+            <button
+              type="button"
+              aria-pressed={!createFolder}
+              onClick={() => setCreateFolder(false)}
+            >
+              Caderno
+            </button>
+            <button type="button" aria-pressed={createFolder} onClick={() => setCreateFolder(true)}>
+              Pasta
+            </button>
+          </div>
+          {createFolder && (
+            <label>
+              Vitrine
+              <select
+                aria-label="Vitrine da pasta"
+                value={folderShelf}
+                onChange={(event) => setFolderShelf(Number(event.target.value))}
+              >
+                {Array.from({ length: shelfCount }, (_, index) => (
+                  <option key={index} value={index}>
+                    Coleção {index + 1}
+                  </option>
+                ))}
+              </select>
+              <small>
+                {folderLimit
+                  ? "Esta vitrine já tem 3 pastas."
+                  : "Até 3 pastas por vitrine e 3 cadernos por pasta."}
+              </small>
+            </label>
+          )}
           <label>
             Nome
             <input
               aria-label="Nome"
               value={newNotebookName}
               maxLength={80}
-              placeholder="Meu caderno"
+              placeholder={createFolder ? "Minha pasta" : "Meu caderno"}
               onChange={(event) => setNewNotebookName(event.target.value)}
             />
           </label>
@@ -459,8 +633,8 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             <button type="button" onClick={() => createDialog.current?.close()}>
               Cancelar
             </button>
-            <button className="primary-button" type="submit">
-              Criar caderno
+            <button className="primary-button" type="submit" disabled={createFolder && folderLimit}>
+              {createFolder ? "Criar pasta" : "Criar caderno"}
             </button>
           </div>
         </form>
@@ -538,7 +712,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
               </div>
             ) : (
               <div className="notebook-shelves">
-                {Array.from({ length: Math.ceil(shelfItems.length / 4) }, (_, shelfIndex) => (
+                {Array.from({ length: shelfCount }, (_, shelfIndex) => (
                   <section
                     className="notebook-shelf"
                     key={shelfIndex}
@@ -548,6 +722,17 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                       Coleção {String(shelfIndex + 1).padStart(2, "0")}
                     </span>
                     <div className="notebook-grid">
+                      {collections
+                        .filter((folder) => (folder.shelf ?? 0) === shelfIndex)
+                        .map((folder) => (
+                          <NotebookFolder
+                            key={folder.id}
+                            folder={folder}
+                            notebooks={workspace.notebooks}
+                            dispatch={dispatch}
+                            onOpen={openNotebook}
+                          />
+                        ))}
                       {shelfItems.slice(shelfIndex * 4, shelfIndex * 4 + 4).map((notebook) => {
                         const coverIndex =
                           [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4;
@@ -662,6 +847,11 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                               </span>
                             ) : (
                               <NotebookArtwork
+                                participants={
+                                  notebook.id === collaborationNotebookId
+                                    ? (collaboration.state.room?.participants ?? [])
+                                    : []
+                                }
                                 subjectColor={
                                   ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ??
                                   "#7C3AED"
@@ -712,6 +902,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
             />
           )}
           <NotebookSpread
+            participants={collaboration.state.room?.participants ?? []}
             key={activeNotebook.id}
             notebook={activeNotebook}
             pages={notebookPages}
@@ -747,6 +938,13 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                   key={activePage.id}
                   {...(cloud ? { cloud } : {})}
                   notebookPages={notebookPages}
+                  sharedCollaboration={collaboration}
+                  {...(sharedDocument?.pageId === activePage.id
+                    ? {
+                        sharedDocument: sharedDocument.document,
+                        sharedAuthor: sharedDocument.author ?? "",
+                      }
+                    : {})}
                   autoOpen
                   onSelectPage={(id) => {
                     setEditingAssetId(null);
@@ -765,6 +963,7 @@ export function NotesView({ workspace, dispatch, cloud }: NotesViewProps) {
                   editingAsset={editingAsset}
                   onCloseEditing={() => setEditingAssetId(null)}
                   onClosePage={() => {
+                    finishPageJourney();
                     setEditingAssetId(null);
                     setActivePageId(null);
                   }}

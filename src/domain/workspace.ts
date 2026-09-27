@@ -1,5 +1,6 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
 import type { HandwritingDocument } from "./handwriting";
+import { SHARED_PAGE_PLACEHOLDER } from "./handwriting.js";
 
 export const WORKSPACE_VERSION = 7 as const;
 
@@ -61,7 +62,8 @@ export type StudyNotebook = {
   subjectIds?: string[];
   dividerPosition?: "side" | "bottom";
   bookmarkedPageIds?: string[];
-  kind?: "folder";
+  kind?: "folder" | "collection";
+  shelf?: number;
   parentId?: string;
   id: string;
   title: string;
@@ -188,7 +190,8 @@ export type WorkspaceAction =
   | { type: "habit/toggled"; id: string; date: string }
   | {
       type: "notebook/added";
-      kind?: "folder";
+      kind?: "folder" | "collection";
+      shelf?: number;
       id: string;
       title: string;
       subjectId: string;
@@ -196,6 +199,14 @@ export type WorkspaceAction =
     }
   | { type: "notebook/removed"; ids: string[] }
   | { type: "notebook/folder-moved"; id: string; parentId: string | null }
+  | { type: "notebook/stored"; id: string; folderId: string | null }
+  | {
+      type: "notebook/shared-received";
+      notebookId: string;
+      title?: string;
+      pages: { id: string; title: string; document?: HandwritingDocument }[];
+      editingPageId?: string;
+    }
   | { type: "notebook/page-moved"; notebookId: string; pageId: string; direction: -1 | 1 }
   | {
       type: "note/asset-updated";
@@ -423,6 +434,13 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         }),
       };
     case "notebook/added":
+      if (
+        action.kind === "collection" &&
+        state.notebooks.filter(
+          (item) => item.kind === "collection" && (item.shelf ?? 0) === (action.shelf ?? 0),
+        ).length >= 3
+      )
+        return state;
       return {
         ...state,
         notebooks: [
@@ -433,10 +451,91 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             createdAt: action.createdAt,
             pageIds: [],
             ...(action.kind ? { kind: action.kind } : {}),
+            ...(action.kind === "collection"
+              ? { shelf: Math.max(0, Math.floor(action.shelf ?? 0)) }
+              : {}),
           },
           ...state.notebooks,
         ],
       };
+    case "notebook/shared-received": {
+      const notebook = state.notebooks.find((item) => item.id === action.notebookId);
+      if (!notebook) return state;
+      const ids = new Set(action.pages.map((page) => page.id));
+      const notes = state.notes.filter(
+        (note) => !notebook.pageIds.includes(note.id) || ids.has(note.id),
+      );
+      for (const page of action.pages) {
+        const index = notes.findIndex((note) => note.id === page.id);
+        const old = notes[index];
+        const note: StudyNote = old ?? {
+          id: page.id,
+          subjectId: notebook.subjectId,
+          title: page.title,
+          content: "",
+          updatedAt: new Date().toISOString(),
+          assets: [],
+        };
+        const next = {
+          ...note,
+          title: page.title,
+          assets:
+            page.document && page.id !== action.editingPageId
+              ? [
+                  {
+                    id: note.assets.find((asset) => asset.handwriting)?.id ?? `shared-${page.id}`,
+                    kind: "drawing" as const,
+                    name: "Folha manuscrita",
+                    dataUrl:
+                      JSON.stringify(note.assets[0]?.handwriting) === JSON.stringify(page.document)
+                        ? note.assets[0]?.dataUrl || SHARED_PAGE_PLACEHOLDER
+                        : SHARED_PAGE_PLACEHOLDER,
+                    createdAt: note.updatedAt,
+                    handwriting: page.document,
+                  },
+                ]
+              : note.assets,
+        };
+        if (index >= 0) notes[index] = next;
+        else notes.push(next);
+      }
+      return {
+        ...state,
+        notes,
+        notebooks: state.notebooks.map((item) =>
+          item.id === notebook.id
+            ? {
+                ...item,
+                title: action.title ?? item.title,
+                pageIds: action.pages.map((page) => page.id),
+              }
+            : item,
+        ),
+      };
+    }
+    case "notebook/stored": {
+      const book = state.notebooks.find((item) => item.id === action.id && !item.kind);
+      const folder = state.notebooks.find(
+        (item) => item.id === action.folderId && item.kind === "collection",
+      );
+      if (
+        !book ||
+        (action.folderId &&
+          (!folder ||
+            state.notebooks.filter((item) => item.parentId === folder.id && item.id !== book.id)
+              .length >= 3))
+      )
+        return state;
+      return {
+        ...state,
+        notebooks: state.notebooks.map((item) => {
+          if (item.id !== book.id) return item;
+          const { parentId, ...rest } = item;
+          void parentId;
+          return action.folderId ? { ...rest, parentId: action.folderId } : rest;
+        }),
+      };
+    }
     case "notebook/folder-moved": {
       const folder = state.notebooks.find(
         (item) => item.id === action.id && item.kind === "folder",

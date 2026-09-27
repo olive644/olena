@@ -15,12 +15,19 @@ import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
+import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
 import "./notebook-spread.css";
 import "./notebook-binding-finish.css";
 
 type Props = {
+  participants?: {
+    id: string;
+    displayName: string;
+    avatarUrl?: string | undefined;
+    online: boolean;
+  }[];
   notebook: StudyNotebook;
   pages: StudyNote[];
   subjects: WorkspaceState["subjects"];
@@ -54,7 +61,7 @@ function PageImage({
   return (
     <>
       {page?.assets[0] ? (
-        <img draggable={false} src={page.assets[0].dataUrl} alt="" />
+        <NotebookPageThumbnail asset={page.assets[0]} />
       ) : (
         <div className="notebook-empty-paper">{page?.content && <p>{page.content}</p>}</div>
       )}
@@ -64,6 +71,7 @@ function PageImage({
 }
 
 export function NotebookSpread({
+  participants,
   notebook,
   pages,
   subjects,
@@ -232,6 +240,7 @@ export function NotebookSpread({
           }}
         >
           <NotebookCover
+            {...(participants ? { participants } : {})}
             subjectColor="#7C3AED"
             title={notebook.title}
             tabs={notebookPaperTabs(notebook, pages, subjects)}

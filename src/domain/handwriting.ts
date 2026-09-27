@@ -5,6 +5,10 @@ export type HandwritingPoint = {
   tiltX?: number;
   tiltY?: number;
 };
+
+// PNG transparente válido mantém compatibilidade com leitores anteriores até renderizar a prévia.
+export const SHARED_PAGE_PLACEHOLDER =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jF9sAAAAASUVORK5CYII=";
 export type HandwritingPaper =
   "ruled" | "grid" | "dots" | "blank" | "board" | "weekly" | "calendar";
 export type HandwritingPaperColor = "light" | "aged" | "night";
@@ -120,6 +124,7 @@ export function erasePageText(
   glyphWidth: number,
   fontSize = 28,
   frame = { x: 112, y: 80, width: 980, height: 1440 },
+  radius = 30,
 ) {
   const lineHeight = fontSize * (40 / 28);
   return pageTextLines(text, fontSize, frame.width)
@@ -128,10 +133,10 @@ export function erasePageText(
         .map((character, column) =>
           points.some(
             ({ x, y }) =>
-              x + 30 >= frame.x + column * glyphWidth &&
-              x - 30 <= frame.x + (column + 1) * glyphWidth &&
-              y + 30 >= frame.y + row * lineHeight &&
-              y - 30 <= frame.y + fontSize + row * lineHeight,
+              x + radius >= frame.x + column * glyphWidth &&
+              x - radius <= frame.x + (column + 1) * glyphWidth &&
+              y + radius >= frame.y + row * lineHeight &&
+              y - radius <= frame.y + fontSize + row * lineHeight,
           )
             ? " "
             : character,

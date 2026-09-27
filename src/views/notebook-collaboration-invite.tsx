@@ -1,10 +1,24 @@
-import { useState } from "react";
-import { NoteCaptureTools } from "../components/note-capture-tools";
+import { useEffect, useState } from "react";
+import { NotesView } from "./notes-view";
+import { useWorkspace } from "../hooks/use-workspace";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { useCloudSync } from "../hooks/use-cloud-sync";
 
 export default function NotebookCollaborationInvite({ code }: { code: string }) {
   const cloud = useCloudSync();
+  const { workspace, dispatch } = useWorkspace();
+  const notebookId = `shared-${code}`;
+  const exists = workspace.notebooks.some((book) => book.id === notebookId);
+  useEffect(() => {
+    if (cloud.authenticated && !exists)
+      dispatch({
+        type: "notebook/added",
+        id: notebookId,
+        title: "Caderno compartilhado",
+        subjectId: "",
+        createdAt: new Date().toISOString(),
+      });
+  }, [cloud.authenticated, exists, notebookId, dispatch]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -34,7 +48,7 @@ export default function NotebookCollaborationInvite({ code }: { code: string }) 
   }
 
   return (
-    <main className="notebook-invite-entry">
+    <div className="notebook-invite-entry">
       <h1>Caderno compartilhado</h1>
       {!cloud.ready ? (
         <p>Preparando sua conta e o caderno…</p>
@@ -51,14 +65,17 @@ export default function NotebookCollaborationInvite({ code }: { code: string }) 
           </button>
           {error && <p role="alert">{error}</p>}
         </section>
-      ) : (
-        <NoteCaptureTools
+      ) : exists ? (
+        <NotesView
           cloud={cloud}
-          draftPageKey={`shared-${code}`}
+          workspace={workspace}
+          dispatch={dispatch}
+          initialNotebookId={notebookId}
           initialJoinCode={code}
-          onSave={() => undefined}
         />
+      ) : (
+        <p>Abrindo caderno…</p>
       )}
-    </main>
+    </div>
   );
 }

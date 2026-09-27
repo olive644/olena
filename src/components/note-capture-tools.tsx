@@ -14,6 +14,9 @@ import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 
 type NoteCaptureToolsProps = {
+  sharedCollaboration?: ReturnType<typeof useNotebookCollaboration>;
+  sharedDocument?: HandwritingDocument;
+  sharedAuthor?: string;
   cloud?: CloudSyncState;
   notebookPages?: StudyNote[];
   autoOpen?: boolean;
@@ -197,6 +200,9 @@ function Scanner({
 }
 
 export function NoteCaptureTools({
+  sharedCollaboration,
+  sharedDocument,
+  sharedAuthor,
   cloud,
   notebookPages = [],
   autoOpen = false,
@@ -295,16 +301,19 @@ export function NoteCaptureTools({
       window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refreshAvatar);
     };
   }, []);
-  const [remoteDocument, setRemoteDocument] = useState<HandwritingDocument>();
-  const [remoteAuthor, setRemoteAuthor] = useState("");
+  const [localRemoteDocument, setRemoteDocument] = useState<HandwritingDocument>();
+  const [localRemoteAuthor, setRemoteAuthor] = useState("");
+  const remoteDocument = sharedCollaboration ? sharedDocument : localRemoteDocument;
+  const remoteAuthor = sharedCollaboration ? sharedAuthor : localRemoteAuthor;
   const notebookId = `page-${draftPageKey}`;
-  const collaboration = useNotebookCollaboration({
-    notebookId,
+  const localCollaboration = useNotebookCollaboration({
+    notebookId: sharedCollaboration ? "" : notebookId,
     onRemoteDocument: (document, author) => {
       setRemoteDocument(document);
       setRemoteAuthor(author ?? "");
     },
   });
+  const collaboration = sharedCollaboration ?? localCollaboration;
   const joinCollaboration = collaboration.join;
   const initialJoinAttemptRef = useRef(false);
   useEffect(() => {
@@ -519,7 +528,14 @@ export function NoteCaptureTools({
                     <div>
                       <span>COLABORAÇÃO</span>
                     </div>
-                    <PaperEditorIcon name="team" />
+                    <button
+                      type="button"
+                      className="sheet-close"
+                      aria-label="Fechar painel de colaboração"
+                      onClick={() => setCollaborationPanelOpen(false)}
+                    >
+                      <PaperEditorIcon name="close" />
+                    </button>
                   </div>
                   {!cloud?.authenticated ? (
                     <p>

@@ -7,11 +7,18 @@ export function NotebookCover({
   title = "Ideias em papel",
   tabs = [],
   clasp = true,
+  participants = [],
 }: {
   subjectColor: string;
   title?: string;
   tabs?: NotebookTab[];
   clasp?: boolean;
+  participants?: {
+    id: string;
+    displayName: string;
+    avatarUrl?: string | undefined;
+    online: boolean;
+  }[];
 }) {
   return (
     <span
@@ -45,6 +52,22 @@ export function NotebookCover({
         <i />
         <i />
       </span>
+      {participants.filter((person) => person.online).length > 1 && (
+        <span className="book-cover__team">
+          {participants
+            .filter((person) => person.online)
+            .slice(0, 4)
+            .map((person) => (
+              <span key={person.id} title={person.displayName}>
+                {person.avatarUrl ? (
+                  <img src={person.avatarUrl} alt="" />
+                ) : (
+                  person.displayName.slice(0, 1).toUpperCase()
+                )}
+              </span>
+            ))}
+        </span>
+      )}
       {tabs.map((tab) => (
         <span
           key={tab.id}
