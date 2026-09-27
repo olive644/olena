@@ -13,6 +13,9 @@ type NotebookPageIndexProps = {
   // Arrasta a miniatura direto para a posição solta. Funciona junto com onMove: o
   // arrastar é um atalho a mais, o teclado e o toque seguem com os botões.
   onReorder?: (id: string, toIndex: number) => void;
+  // Folhas favoritas do caderno e o alternador de favorito por miniatura.
+  favoritePageIds?: readonly string[];
+  onToggleFavorite?: (id: string) => void;
   onClose: () => void;
 };
 
@@ -20,14 +23,16 @@ type NotebookPageIndexProps = {
 const DRAG_THRESHOLD = 8;
 
 // Índice do caderno: miniaturas de todas as folhas, para ir a qualquer uma de uma vez, reordenar
-// pelos botões (teclado e toque, sem depender de arrastar) e, a mais, arrastar a miniatura direto
-// para o lugar desejado.
+// pelos botões (teclado e toque, sem depender de arrastar), arrastar a miniatura direto para o
+// lugar desejado e favoritar folhas para achá-las rápido depois.
 export function NotebookPageIndex({
   pages,
   currentPageId,
   onSelect,
   onMove,
   onReorder,
+  favoritePageIds,
+  onToggleFavorite,
   onClose,
 }: NotebookPageIndexProps) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -48,6 +53,15 @@ export function NotebookPageIndex({
   const suppressClickRef = useRef(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+
+  const favorites = favoritePageIds ?? [];
+  // Arrastar reordena pela posição entre todas as folhas; com o filtro de favoritas a lista
+  // mostra só um recorte, então o arrastar fica desligado enquanto o filtro está ativo.
+  const dragEnabled = Boolean(onReorder) && !favoritesOnly;
+  const entries = pages
+    .map((page, index) => ({ page, index }))
+    .filter(({ page }) => !favoritesOnly || favorites.includes(page.id));
 
   function nearestIndex(x: number, y: number): number {
     let best = 0;
@@ -75,7 +89,7 @@ export function NotebookPageIndex({
   }
 
   function pointerDown(event: ReactPointerEvent<HTMLButtonElement>, pageId: string, index: number) {
-    if (!onReorder || event.button !== 0) return;
+    if (!dragEnabled || event.button !== 0) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     dragRef.current = {
       pageId,
@@ -126,7 +140,8 @@ export function NotebookPageIndex({
           <NotebookToolIcon name="index" />
           <h2>Índice de folhas</h2>
           <p>
-            {pages.length} {pages.length === 1 ? "folha" : "folhas"}
+            {entries.length} {entries.length === 1 ? "folha" : "folhas"}
+            {favoritesOnly ? (entries.length === 1 ? " favorita" : " favoritas") : ""}
           </p>
         </div>
         <button
@@ -138,14 +153,26 @@ export function NotebookPageIndex({
           <PaperEditorIcon name="close" />
         </button>
       </header>
+      {onToggleFavorite && (
+        <button
+          type="button"
+          className="notebook-page-index__favorites-filter"
+          aria-pressed={favoritesOnly}
+          disabled={!favorites.length && !favoritesOnly}
+          onClick={() => setFavoritesOnly((value) => !value)}
+        >
+          {favoritesOnly ? "Ver todas as folhas" : "Só favoritas"}
+        </button>
+      )}
       <ol>
-        {pages.map((page, index) => {
+        {entries.map(({ page, index }) => {
           const current = page.id === currentPageId;
           const thumbnail = page.assets[0];
+          const favorited = favorites.includes(page.id);
           const classes = [
             current ? "is-current" : null,
             draggingId === page.id ? "is-dragging" : null,
-            onReorder && dropIndex === index && draggingId && draggingId !== page.id
+            dragEnabled && dropIndex === index && draggingId && draggingId !== page.id
               ? "is-drop-target"
               : null,
           ]
@@ -160,6 +187,21 @@ export function NotebookPageIndex({
                 else itemsRef.current.delete(page.id);
               }}
             >
+              {onToggleFavorite && (
+                <button
+                  type="button"
+                  className="notebook-page-index__favorite"
+                  aria-pressed={favorited}
+                  aria-label={
+                    favorited
+                      ? `Tirar a folha ${index + 1} dos favoritos`
+                      : `Favoritar a folha ${index + 1}`
+                  }
+                  onClick={() => onToggleFavorite(page.id)}
+                >
+                  {favorited ? "★" : "☆"}
+                </button>
+              )}
               <button
                 type="button"
                 className="notebook-page-index__open"

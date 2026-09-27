@@ -1218,6 +1218,13 @@ Limites que se cruzam:
 - O arrastar usa eventos de ponteiro (funciona com o dedo, a caneta ou o mouse): ao soltar mais longe da posição inicial que uma folga pequena, a miniatura mais próxima do ponto de soltar vira o alvo; abaixo disso continua sendo um toque normal, que abre a folha.
 - Testes: `workspace.test.ts` (mover para o fim, para o começo, fora dos limites e com caderno inexistente) e `notebook-page-index.test.tsx` (arrastar reordena sem abrir a folha; um toque curto sem arrastar continua abrindo).
 
+## Favoritar folhas no índice (2026-09-27)
+
+- O índice de folhas ganha uma estrela por miniatura (favoritar/desfavoritar) e um filtro "Só favoritas" no topo, que esconde as demais mantendo a numeração original de cada folha (a folha 5 continua "5" mesmo filtrada). O campo já existia no domínio (`StudyNotebook.bookmarkedPageIds`), só não tinha nenhuma ação de interface que o alterasse; agora usa a ação genérica `notebook/organized` já existente.
+- O arrastar para reordenar fica desligado enquanto o filtro de favoritas está ativo (a lista mostra só um recorte, e a posição de soltar ficaria ambígua); os botões de mover e a estrela continuam funcionando normalmente.
+- O filtro fica desativado quando o caderno não tem nenhuma folha favoritada ainda, para não abrir uma lista vazia sem explicação.
+- Testes: `notebook-page-index.test.tsx` (favoritar e desfavoritar pela estrela, o filtro mostrando só as favoritas com a numeração certa, e o filtro desativado sem favoritas).
+
 ## Papéis Cornell e pauta musical (2026-09-27)
 
 - Dois papéis novos no seletor de papel do editor, ao lado de pautado/quadriculado/pontilhado/em branco/quadro amplo/plano semanal/calendário:

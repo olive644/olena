@@ -13,6 +13,8 @@ export function NotebookPageBook({
   onRemove,
   onMove,
   onReorder,
+  favoritePageIds,
+  onToggleFavorite,
   inert = false,
 }: {
   pages: StudyNote[];
@@ -22,6 +24,8 @@ export function NotebookPageBook({
   onRemove?: (id: string) => void;
   onMove?: (id: string, direction: -1 | 1) => void;
   onReorder?: (id: string, toIndex: number) => void;
+  favoritePageIds?: readonly string[];
+  onToggleFavorite?: (id: string) => void;
   inert?: boolean;
 }) {
   const drag = useRef<{ x: number; y: number; pointerId: number } | null>(null);
@@ -118,6 +122,8 @@ export function NotebookPageBook({
           onSelect={onSelect}
           {...(onMove ? { onMove } : {})}
           {...(onReorder ? { onReorder } : {})}
+          {...(favoritePageIds ? { favoritePageIds } : {})}
+          {...(onToggleFavorite ? { onToggleFavorite } : {})}
           onClose={() => setIndexOpen(false)}
         />
       )}
