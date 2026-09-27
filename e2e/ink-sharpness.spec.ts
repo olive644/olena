@@ -1,4 +1,4 @@
-import { openHandwritingA4 } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 
 // Tela de alta densidade (como um celular ou notebook 2x): o bitmap da folha precisa
@@ -22,7 +22,7 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   const live = dialog.locator(".handwriting-live-layer");
   await sheet.scrollIntoViewIfNeeded();

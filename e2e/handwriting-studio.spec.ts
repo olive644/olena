@@ -1,4 +1,4 @@
-import { openHandwritingA4 } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
 import { expect, test } from "@playwright/test";
 import { createNotebookCollabHandler } from "../src/backend/notebook-collab-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
@@ -254,7 +254,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
         selector === ".notebook-page-book" ? "rgb(32, 29, 38)" : "rgb(41, 36, 50)",
       );
     }
-    await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+    await activateHandwritingPen(page);
     await expect(dialog.locator(".handwriting-brush-panel")).toHaveCSS(
       "background-color",
       "rgb(41, 36, 50)",
@@ -264,7 +264,7 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
     await expect(eraser.locator("span")).toHaveCSS("color", "rgb(255, 249, 239)");
     await page.screenshot({ path: testInfo.outputPath("ferramentas-contraste-escuro.png") });
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
-    await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+    await activateHandwritingPen(page);
   }
   await expect(dialog.getByRole("button", { name: "Caneta", exact: true })).toHaveAttribute(
     "aria-pressed",
@@ -611,7 +611,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await dialog.getByRole("button", { name: "Opções do post-it" }).click();
   await dialog.getByRole("button", { name: "Cores" }).click();
   await dialog.getByRole("button", { name: "Usar cor azul" }).click();
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   await expect(dialog.getByRole("complementary", { name: "Pincéis da caneta" })).toBeVisible();
   await dialog.getByRole("button", { name: "Camadas da folha" }).click();
   await expect(dialog.getByRole("complementary", { name: "Camadas da folha" })).toBeVisible();
@@ -647,7 +647,7 @@ test("recupera rascunho, adiciona post-it e organiza folhas", async ({ page }, t
   await dialog.getByRole("button", { name: "Régua", exact: true }).click();
   await expect(dialog.getByLabel("Unidades da régua")).toBeVisible();
   await expect(dialog.getByLabel("Pincéis da caneta")).toHaveCount(0);
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   await expect(dialog.getByRole("button", { name: /Caneta-tinteiro/ })).toHaveAttribute(
     "aria-pressed",
     "true",

@@ -1,4 +1,4 @@
-/* Abertura pela base inspirada em byllzz, Uiverse.io. Vidro branco com facetas de papel. */
+/* Abertura pela base e leque inspirados no exemplo Uiverse fornecido pelo proprietário. */
 .notebooks-main .notebooks-showcase .notebook-shelf--objects {
   --shelf-object-height: 300px;
   --shelf-item-width: 220px;
@@ -68,7 +68,8 @@
 }
 .paper-folder {
   position: relative;
-  width: var(--shelf-item-width);
+  grid-column: span 2;
+  width: calc(2 * var(--shelf-item-width) + 28px);
   isolation: isolate;
 }
 .paper-folder-stage {
@@ -79,7 +80,7 @@
 }
 .paper-folder-art {
   position: relative;
-  width: calc(var(--shelf-item-width) - 16px);
+  width: calc(100% - 16px);
   height: 190px;
   perspective: 900px;
   margin-bottom: -5px;
@@ -93,6 +94,7 @@
   box-shadow: inset 0 0 0 2px #fff9ef;
 }
 .paper-folder-toggle {
+  perspective: 900px;
   position: absolute;
   inset: 64px 0 0;
   z-index: 2;
@@ -124,8 +126,9 @@
     inset 0 0 0 3px rgb(255 255 255 / 45%);
   transform-origin: bottom;
   transition:
-    transform 420ms ease,
+    transform 560ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
     background 180ms ease;
+  transition-delay: 100ms, 0ms;
 }
 .paper-folder-front::before {
   content: "";
@@ -158,6 +161,7 @@
 }
 .paper-folder-moon,
 .paper-folder-sun {
+  filter: drop-shadow(1px 2px 0 #b5aac8);
   position: absolute;
   top: 8px;
   width: 38px;
@@ -172,6 +176,7 @@
   transform: rotate(12deg);
 }
 .paper-folder-star {
+  filter: drop-shadow(1px 2px 0 #b5aac8);
   position: absolute;
   top: 11px;
   left: calc(50% - 19px);
@@ -180,9 +185,12 @@
 }
 .paper-folder .paper-folder-book {
   position: absolute;
-  left: 12%;
-  top: 36px;
-  width: 44%;
+  left: 50%;
+  top: -10px;
+  width: 38%;
+  z-index: 1;
+  transform: translate(-50%, 26px) rotate(-5deg) scale(0.62);
+  transform-origin: 50% 100%;
   height: auto;
   aspect-ratio: 3 / 4;
   padding: 0;
@@ -194,10 +202,8 @@
   opacity: 1;
   touch-action: none;
   user-select: none;
-  transition:
-    top 420ms ease,
-    left 420ms ease,
-    width 420ms ease;
+  transition: transform 620ms cubic-bezier(0.22, 1.18, 0.36, 1);
+  transition-delay: 0ms;
 }
 .notebooks-main .notebook-shelf .paper-folder-book .book-cover {
   width: 100%;
@@ -205,7 +211,7 @@
   transform: none;
 }
 .paper-folder .paper-folder-book .book-cover__face .book-cover__title {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.2;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -213,67 +219,46 @@
   display: block;
 }
 .paper-folder .paper-folder-book .book-cover__label {
-  padding: 3px;
+  padding: 5px;
 }
 .paper-folder .book-1 {
-  left: 29%;
-  top: 30px;
+  transform: translate(-50%, 22px) rotate(0) scale(0.62);
+  transition-delay: 45ms;
 }
 .paper-folder .book-2 {
-  left: 44%;
-  top: 24px;
+  transform: translate(-50%, 18px) rotate(5deg) scale(0.62);
+  transition-delay: 90ms;
 }
 .paper-folder.is-open .paper-folder-front {
-  transform: rotateX(-30deg);
+  transform: rotateX(-48deg);
+  transition-delay: 0ms;
 }
 .paper-folder.is-open .paper-folder-book {
-  top: -18px;
-  left: 1%;
-  width: 29%;
   z-index: 3;
+  transform: translate(calc(-50% - 120px), -57px) rotate(-3deg);
+  transition-delay: 100ms;
 }
 .paper-folder.is-open .book-1 {
-  left: 35%;
+  transform: translate(-50%, -72px) rotate(0);
+  transition-delay: 155ms;
 }
 .paper-folder.is-open .book-2 {
-  left: 69%;
+  transform: translate(calc(-50% + 120px), -57px) rotate(3deg);
+  transition-delay: 210ms;
+}
+.paper-folder.is-open[data-book-count="1"] .book-0 {
+  transform: translate(-50%, -72px) rotate(0);
+}
+.paper-folder.is-open[data-book-count="2"] .book-0 {
+  transform: translate(calc(-50% - 72px), -65px) rotate(-3deg);
+}
+.paper-folder.is-open[data-book-count="2"] .book-1 {
+  transform: translate(calc(-50% + 72px), -65px) rotate(3deg);
 }
 .paper-folder.is-drop-target .paper-folder-front {
   outline: 3px solid #7c3aed;
   outline-offset: 4px;
   background: rgb(255 255 255 / 90%);
-}
-.paper-folder-content {
-  display: grid;
-  gap: 12px;
-  padding: 12px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.paper-folder-content label {
-  display: grid;
-  gap: 6px;
-}
-.paper-folder-content select {
-  width: 100%;
-  min-height: 44px;
-}
-.paper-folder-row {
-  display: flex;
-  gap: 8px;
-}
-.paper-folder-row button {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.paper-folder-content button {
-  min-height: 44px;
-  font: inherit;
-  font-size: 12px;
-}
-.paper-folder-row button:first-child {
-  flex: 1;
 }
 .paper-folder button:focus-visible {
   outline: 3px solid #7c3aed;
@@ -303,6 +288,30 @@
   .paper-folder-art {
     height: 158px;
   }
+  .paper-folder {
+    width: calc(2 * var(--shelf-item-width) + 22px);
+  }
+  .paper-folder .paper-folder-book {
+    width: 40%;
+  }
+  .paper-folder.is-open .paper-folder-book {
+    transform: translate(calc(-50% - 88px), -43px) rotate(-3deg);
+  }
+  .paper-folder.is-open .book-1 {
+    transform: translate(-50%, -57px) rotate(0);
+  }
+  .paper-folder.is-open .book-2 {
+    transform: translate(calc(-50% + 88px), -43px) rotate(3deg);
+  }
+  .paper-folder.is-open[data-book-count="1"] .book-0 {
+    transform: translate(-50%, -57px) rotate(0);
+  }
+  .paper-folder.is-open[data-book-count="2"] .book-0 {
+    transform: translate(calc(-50% - 50px), -50px) rotate(-3deg);
+  }
+  .paper-folder.is-open[data-book-count="2"] .book-1 {
+    transform: translate(calc(-50% + 50px), -50px) rotate(3deg);
+  }
   .paper-folder-toggle {
     top: 47px;
   }
@@ -319,9 +328,6 @@
     font-size: 12px;
     left: 8px;
     right: 8px;
-  }
-  .paper-folder-content {
-    padding: 8px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

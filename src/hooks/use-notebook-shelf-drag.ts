@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { StudyNotebook } from "../domain/workspace";
 
 export function useNotebookShelfDrag(
@@ -7,6 +7,9 @@ export function useNotebookShelfDrag(
 ) {
   const gesture = useRef<{ id: string; x: number; y: number; moved: boolean } | null>(null);
   const suppressedClick = useRef<string | null>(null);
+  const scrollFrame = useRef<number | null>(null);
+  const scrollDirection = useRef(0);
+  const pointerPosition = useRef({ x: 0, y: 0 });
   const [moving, setMoving] = useState<{ id: string; x: number; y: number } | null>(null);
   const [targetId, setTargetId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -18,6 +21,9 @@ export function useNotebookShelfDrag(
     }, 0);
   }
   function clear() {
+    scrollDirection.current = 0;
+    if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
+    scrollFrame.current = null;
     gesture.current = null;
     setMoving(null);
     setTargetId(null);
@@ -26,6 +32,24 @@ export function useNotebookShelfDrag(
     return document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-folder-drop]")?.dataset[
       "folderDrop"
     ];
+  }
+  useEffect(
+    () => () => {
+      if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
+    },
+    [],
+  );
+  function autoScroll(shelf: HTMLElement) {
+    if (scrollFrame.current !== null) return;
+    const tick = () => {
+      scrollFrame.current = null;
+      if (!gesture.current?.moved || !scrollDirection.current) return;
+      const before = shelf.scrollLeft;
+      shelf.scrollLeft += scrollDirection.current * 18;
+      setTargetId(destination(pointerPosition.current.x, pointerPosition.current.y) ?? null);
+      if (shelf.scrollLeft !== before) scrollFrame.current = requestAnimationFrame(tick);
+    };
+    scrollFrame.current = requestAnimationFrame(tick);
   }
   return {
     moving,
@@ -54,15 +78,15 @@ export function useNotebookShelfDrag(
           )
             return;
           current.moved = true;
+          pointerPosition.current = { x: event.clientX, y: event.clientY };
           setMoving({ id, x: event.clientX, y: event.clientY });
           setTargetId(destination(event.clientX, event.clientY) ?? null);
-          const shelf = document
-            .elementFromPoint(event.clientX, event.clientY)
-            ?.closest(".notebook-shelf");
+          const shelf = event.currentTarget.closest<HTMLElement>(".notebook-shelf--objects");
           if (shelf) {
             const rect = shelf.getBoundingClientRect();
-            if (event.clientX > rect.right - 36) shelf.scrollLeft += 18;
-            if (event.clientX < rect.left + 36) shelf.scrollLeft -= 18;
+            scrollDirection.current =
+              event.clientX > rect.right - 36 ? 1 : event.clientX < rect.left + 36 ? -1 : 0;
+            if (scrollDirection.current) autoScroll(shelf);
           }
         },
         onPointerUp(event: PointerEvent<HTMLButtonElement>) {

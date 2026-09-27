@@ -105,6 +105,7 @@ function selectionProps(
     onPaste: vi.fn(),
     onDuplicate: vi.fn(),
     onSelectAll: vi.fn(),
+    onMove: vi.fn(),
     canPaste: false,
     hasPageText: false,
     pageTextSize: 28,

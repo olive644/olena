@@ -18,13 +18,15 @@ const book = (id: string, parentId?: string): StudyNotebook => ({
   ...(parentId ? { parentId } : {}),
 });
 function pointer(x: number, pointerType: string) {
+  const target = document.createElement("button");
+  target.setPointerCapture = vi.fn();
   return {
     button: 0,
     pointerId: 3,
     clientX: x,
     clientY: 100,
     pointerType,
-    currentTarget: { setPointerCapture: vi.fn() },
+    currentTarget: target,
   } as unknown as PointerEvent<HTMLButtonElement>;
 }
 function hit(element: Element | null) {

@@ -1,5 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test";
-import { openHandwritingA4 } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
 
 async function inkPixels(canvas: Locator): Promise<number> {
   return canvas.evaluate((element) => {
@@ -32,7 +32,7 @@ test("a palma apoiada com a caneta escrevendo não cancela o traço", async ({
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;

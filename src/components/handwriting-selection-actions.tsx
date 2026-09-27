@@ -1,4 +1,5 @@
 import type { HandwritingTool, SelectionMode } from "./handwriting-types";
+import { PaperEditorIcon } from "./paper-editor-icon";
 
 type HandwritingSelectionActionsProps = {
   tool: HandwritingTool;
@@ -20,6 +21,7 @@ type HandwritingSelectionActionsProps = {
   onPaste: () => void;
   onDuplicate: () => void;
   onSelectAll: () => void;
+  onMove: () => void;
   canPaste: boolean;
   hasPageText: boolean;
   pageTextSize: number;
@@ -55,6 +57,7 @@ export function HandwritingSelectionActions({
   onPaste,
   onDuplicate,
   onSelectAll,
+  onMove,
   canPaste,
   hasPageText,
   pageTextSize,
@@ -104,6 +107,9 @@ export function HandwritingSelectionActions({
           </span>
           <button type="button" onClick={onCopy}>
             Copiar
+          </button>
+          <button type="button" aria-pressed={tool === "hand"} onClick={onMove}>
+            <PaperEditorIcon name="hand" /> Mover
           </button>
           <button type="button" onClick={onCut}>
             Recortar

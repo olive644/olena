@@ -113,11 +113,11 @@ export function useSelectionGesture(input: SelectionGestureInput) {
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [selectionPath, setSelectionPath] = useState<HandwritingPoint[] | null>(null);
 
-  function begin(event: PointerLike, point: HandwritingPoint): void {
+  function begin(event: PointerLike, point: HandwritingPoint, moveOnly = false): void {
     const frame = selectionFrame(scene, selectedIds);
     // Alça maior no toque, para o dedo acertar.
     const grabRadius = event.pointerType === "touch" ? 34 : 22;
-    const grabbed = frame ? hitSelectionHandle(point, frame, grabRadius) : null;
+    const grabbed = frame && !moveOnly ? hitSelectionHandle(point, frame, grabRadius) : null;
     if (frame && grabbed) {
       remember();
       gesture.current = {
@@ -144,7 +144,8 @@ export function useSelectionGesture(input: SelectionGestureInput) {
       };
       return;
     }
-    if (selectionMode === "lasso") {
+    const hit = moveOnly ? selectedIds.length > 0 : hitsSelected(scene, selectedIds, point);
+    if (selectionMode === "lasso" && !hit) {
       gesture.current = {
         pointerId: event.pointerId,
         start: point,
@@ -161,7 +162,6 @@ export function useSelectionGesture(input: SelectionGestureInput) {
       setSelectionPath([point]);
       return;
     }
-    const hit = hitsSelected(scene, selectedIds, point);
     gesture.current = {
       pointerId: event.pointerId,
       start: point,

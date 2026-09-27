@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { activateHandwritingPen } from "./notebook-helpers";
 
 test("exportar PDF permanece disponível dentro da folha", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Fluxo de desenho verificado no desktop.");
@@ -17,7 +18,7 @@ test("exportar PDF permanece disponível dentro da folha", async ({ page }, test
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const canvas = dialog.locator(".handwriting-viewport canvas").first();
   await canvas.scrollIntoViewIfNeeded();
   const box = (await canvas.boundingBox())!;

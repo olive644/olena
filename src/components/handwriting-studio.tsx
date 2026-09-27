@@ -1231,7 +1231,15 @@ export function HandwritingStudio({
     if (activePointerRef.current !== null) return;
     canvas.setPointerCapture(event.pointerId);
     activePointerRef.current = event.pointerId;
-    if (effectiveTool === "hand" || (penOnly && event.pointerType === "touch")) {
+    if (effectiveTool === "hand" && selectedIds.length > 0) {
+      drawingRef.current = true;
+      selectionGesture.begin(event, canvasPoint(canvas, event), true);
+      return;
+    }
+    if (
+      effectiveTool === "hand" ||
+      (penOnly && event.pointerType === "touch" && effectiveTool !== "select")
+    ) {
       const viewport = viewportRef.current;
       if (!viewport) {
         activePointerRef.current = null;
@@ -1646,12 +1654,13 @@ export function HandwritingStudio({
         width: 460,
         height: 140,
         color: "yellow",
-        ink: color,
+        ink: "#292432",
         text: formula.slice(0, 240),
       },
     ]);
     setFormulaDraft("");
     setSelectedIds([]);
+    setTool("pen");
   }
 
   async function recognizeSelectedFormula() {
@@ -1779,7 +1788,7 @@ export function HandwritingStudio({
   }
 
   function setStickyMoving(sticky: HandwritingSticky) {
-    setTool("select");
+    setTool("hand");
     setSelectedIds([sticky.id]);
     setSelectedCoordinateIds([]);
     setSelectionBox(stickyBounds(sticky));
@@ -2233,6 +2242,7 @@ export function HandwritingStudio({
     }
     if (
       tool === "hand" &&
+      selectedIds.length === 0 &&
       ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
     ) {
       event.preventDefault();
@@ -2359,7 +2369,7 @@ export function HandwritingStudio({
           rulerUnit={rulerUnit}
           layersOpen={layersOpen}
           writingWindowOpen={writingWindowOpen}
-          onSelectTool={setTool}
+          onSelectTool={(next) => setTool(!textMode && next === tool ? "hand" : next)}
           onToggleLayers={() => {
             setLayersOpen((open) => !open);
             setMobileDrawer("tool");
@@ -2378,6 +2388,7 @@ export function HandwritingStudio({
 
         {(selectedIds.length > 0 || tool === "select") && (
           <HandwritingSelectionActions
+            onMove={() => setTool("hand")}
             tool={tool}
             selectionMode={selectionMode}
             onSelectionModeChange={setSelectionMode}
@@ -3036,7 +3047,11 @@ export function HandwritingStudio({
                   pageWidth={PAGE_WIDTH}
                   pageHeight={PAGE_HEIGHT}
                   isSelected={selectedIds.includes(sticky.id)}
-                  ignorePointer={tool === "eraser" && sticky.kind === "text"}
+                  ignorePointer={
+                    tool === "hand" ||
+                    tool === "select" ||
+                    (tool === "eraser" && sticky.kind === "text")
+                  }
                   menuOpen={stickyMenuId === sticky.id}
                   colorMenuOpen={stickyColorMenuId === sticky.id}
                   textAutoCorrect={textAutoCorrect}

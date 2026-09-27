@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { activateHandwritingPen } from "./notebook-helpers";
 import { createInitialWorkspace, workspaceReducer } from "../src/domain/workspace";
 
 test.beforeEach(async ({ page }) => {
@@ -44,6 +45,89 @@ test("pastas papercraft guardam três cadernos e limitam três pastas por vitrin
   await expect(page.locator(".notebook-card")).toHaveCount(4);
 });
 
+test("caderno aberto na pasta mantém capa grande, divisória e marcador na viagem", async ({
+  page,
+}, info) => {
+  let workspace = createInitialWorkspace();
+  workspace = workspaceReducer(workspace, {
+    type: "notebook/added",
+    id: "folder-preview",
+    kind: "collection",
+    shelf: 0,
+    title: "Constelação",
+    subjectId: "",
+    createdAt: "2026-09-26",
+  });
+  workspace = workspaceReducer(workspace, {
+    type: "notebook/added",
+    id: "book-preview",
+    title: "Meu universo",
+    subjectId: "",
+    createdAt: "2026-09-26",
+  });
+  workspace = workspaceReducer(workspace, {
+    type: "note/added",
+    id: "page-preview",
+    notebookId: "book-preview",
+    subjectId: "",
+    updatedAt: "2026-09-26",
+  });
+  workspace = workspaceReducer(workspace, {
+    type: "notebook/organized",
+    id: "book-preview",
+    changes: {
+      paperTabs: [
+        {
+          id: "divider-preview",
+          kind: "divider",
+          pageId: "page-preview",
+          label: "Divisória",
+          color: "#7c3aed",
+          position: 0.25,
+        },
+        {
+          id: "bookmark-preview",
+          kind: "bookmark",
+          pageId: "page-preview",
+          label: "Lua",
+          color: "#facc15",
+          position: 0.55,
+          motif: "moon",
+        },
+      ],
+    },
+  });
+  workspace = workspaceReducer(workspace, {
+    type: "notebook/stored",
+    id: "book-preview",
+    folderId: "folder-preview",
+  });
+  await page.addInitScript(
+    (state) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state)),
+    workspace,
+  );
+  await page.reload();
+  const folder = page.locator('[data-folder-drop="folder-preview"]');
+  await folder.getByRole("button", { name: "Abrir pasta Constelação" }).click();
+  const cover = folder.locator('[data-notebook-drop="book-preview"] .book-cover');
+  await expect(cover).toBeVisible();
+  await expect(cover.locator(".book-cover__mark.is-divider")).toHaveCount(1);
+  await expect(cover.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
+  const rect = (await cover.boundingBox())!;
+  expect(rect.width).toBeGreaterThan(info.project.name === "mobile" ? 100 : 140);
+  await page.screenshot({
+    path: info.outputPath("pasta-capa-grande-marcadores.png"),
+    fullPage: true,
+  });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await folder.getByRole("button", { name: "Abrir Meu universo" }).click();
+  const journey = page.locator(".notebook-journey");
+  await expect(journey).toBeVisible();
+  await expect(journey.locator(".book-cover__mark.is-divider")).toHaveCount(1);
+  await expect(journey.locator(".book-cover__mark.is-bookmark")).toHaveCount(1);
+  await expect(journey).toHaveCount(0);
+});
+
 test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, info) => {
   await page.evaluate(() => localStorage.setItem("helenastudy.theme", "dark"));
   await page.reload();
@@ -52,7 +136,7 @@ test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, inf
   await page.getByRole("button", { name: "Criar primeira folha" }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
   await expect(editor).toBeVisible();
-  await editor.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const pen = editor.getByRole("slider", { name: "Espessura do pincel" });
   await expect(pen).toBeVisible();
   await pen.fill("0");
@@ -99,11 +183,23 @@ test("arrastar caderno para pasta e retirar, com viagem e nomes fora da pratelei
   const card = page.locator('.notebook-card[data-notebook-drop="book-4"]');
   await card.scrollIntoViewIfNeeded();
   const source = (await card.locator(".book-cover").boundingBox())!;
-  const target = (await folder.locator(".paper-folder-front").boundingBox())!;
   const x = source.x + source.width / 2;
   const y = source.y + source.height / 2;
   await page.mouse.move(x, y);
   await page.mouse.down();
+  if (info.project.name === "mobile") {
+    const shelf = (await page.locator(".notebook-shelf--objects").first().boundingBox())!;
+    await page.mouse.move(shelf.x + 14, y, { steps: 8 });
+    await expect
+      .poll(() =>
+        folder.locator(".paper-folder-front").evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.left >= 0 && rect.right <= window.innerWidth;
+        }),
+      )
+      .toBe(true);
+  }
+  const target = (await folder.locator(".paper-folder-front").boundingBox())!;
   await page.mouse.move(target.x + target.width / 2, target.y + 30, { steps: 8 });
   await page.mouse.up();
   await expect(folder.locator(".paper-folder-copy")).toContainText("1 de 3 cadernos");

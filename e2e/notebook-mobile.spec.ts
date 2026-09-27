@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { activateHandwritingPen } from "./notebook-helpers";
 
 test("celular distribui ações e recolhe as opções para liberar a folha", async ({ page }, info) => {
   test.skip(info.project.name !== "mobile");
@@ -31,7 +32,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   expect(tools!.y).toBeGreaterThanOrEqual(canvas!.y + canvas!.height - 1);
   expect(canvas!.height).toBeGreaterThan(page.viewportSize()!.height * 0.5);
   await page.screenshot({ path: info.outputPath("editor-mobile.png") });
-  await editor.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   await expect(editor.getByRole("button", { name: "Tinta Roxo" })).toBeVisible();
   await editor.getByRole("button", { name: "Tinta Roxo" }).click();
   expect(await editor.evaluate((node) => node.scrollTop)).toBe(0);
@@ -44,7 +45,7 @@ test("celular distribui ações e recolhe as opções para liberar a folha", asy
   await expect(editor.getByLabel("Zoom atual")).toBeHidden();
   await page.setViewportSize({ width: 360, height: 740 });
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-  await editor.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   await expect(editor.getByRole("button", { name: "Tinta Roxo" })).toBeVisible();
   await page.screenshot({ path: info.outputPath("caneta-360-dark.png") });
   await page.setViewportSize({ width: 820, height: 1180 });

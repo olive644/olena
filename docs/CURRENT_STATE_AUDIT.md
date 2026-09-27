@@ -1185,3 +1185,11 @@ Limites que se cruzam:
 - Regras para não desenhar lixo: no máximo 3 pontos e 36 unidades da folha; a previsão inteira é descartada se o primeiro ponto previsto está a mais de 40 unidades do fim do traço (o filtro de suavização ainda está atrás do ponteiro e a ponta ficaria desconectada da tinta); um ponto que volta contra a direção do traço interrompe a ponta; a pressão da ponta é a do último ponto real.
 - Só vale para caneta e marca-texto, e some ao fixar uma forma. Preferência nova "Prever a ponta da caneta" (`inkPrediction`, ligada por padrão) em Configurações, Escrita e toque.
 - Testes: `handwriting-prediction.test.ts` (7, as regras) e `handwriting-studio-prediction.test.tsx` (o editor pede a previsão ao navegador e respeita a preferência). **Não medido:** o ganho real depende de caneta e tela de verdade (Chromium só entrega previsão para toque e caneta, não para mouse); precisa de teste em iPad ou tablet. O canvas dessincronizado (`desynchronized`) não foi feito de propósito: o ganho depende do hardware e ele dificulta secar a tinta sem artefatos, então só vale com medição.
+
+## Pasta ampliada e movimento universal (2026-09-27)
+
+- A pasta ocupa duas posições na prateleira para que as capas abertas tenham área legível. Cada miniatura usa `notebookPaperTabs` com as páginas do próprio caderno, preservando divisórias e marcadores na vitrine e na animação de entrada.
+- A abertura da pasta mantém a aba frontal articulada e as capas saem em sequência. A estrela costurada da pasta também é o favicon. Não há painel de ações sob a pasta; guardar e retirar continuam pelo arrasto.
+- No celular, manter um caderno arrastado junto à borda da prateleira agora rola a própria prateleira continuamente. Isso permite alcançar uma pasta que saiu da área visível depois da ampliação.
+- Tocar de novo na ferramenta ativa volta para a mão. Uma seleção existente pode ser arrastada no modo mão por mouse, caneta ou toque; o botão Mover da seleção também entra nesse modo. A barra de fórmula permanece clara inclusive no tema escuro e os controles de histórico ficam agrupados.
+- E2E cobre capa ampliada com abas no desktop e mobile, viagem ao preview, ferramenta mão, objetos selecionados, fórmula e layout.

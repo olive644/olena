@@ -63,10 +63,12 @@ export function PaperMoonMark({
   className,
   compact = false,
   motif = "moon",
+  stitched = false,
 }: {
   className?: string;
   compact?: boolean;
   motif?: "moon" | "sun" | undefined;
+  stitched?: boolean;
 }) {
   return (
     <svg
@@ -119,6 +121,20 @@ export function PaperMoonMark({
             <path fill="#D7A80A" d="m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z" />
             <path fill="#FFF9EF" d="m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z" />
           </>
+        )}
+        {stitched && (
+          <path
+            fill="none"
+            stroke="#fff9ef"
+            strokeWidth="1.6"
+            strokeDasharray="2.4 2.4"
+            strokeLinecap="round"
+            d={
+              motif === "sun"
+                ? "m32 9 7 9 9-2-1 10 8 6-8 7 1 9-10-1-6 8-7-8-9 1 1-10-8-6 9-7-2-9 10 1Z"
+                : "m22 15-9 14 1 14 10 11 13 4 11-5-7 1-15-9-9-17 1-10Z"
+            }
+          />
         )}
       </g>
     </svg>

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { openHandwritingA4 } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
 
 test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async ({
   page,
@@ -18,7 +18,7 @@ test("seleção: laço, copiar, colar, duplicar, girar e selecionar tudo", async
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   await sheet.scrollIntoViewIfNeeded();
   let box = (await sheet.boundingBox())!;
@@ -91,7 +91,7 @@ test("alças da caixa: arrastar o canto redimensiona e a alça de cima gira", as
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;
@@ -184,7 +184,7 @@ test("segurar a caneta parada no fim de um traço acerta a reta e o círculo", a
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;
@@ -239,7 +239,7 @@ test("com algo selecionado as setas empurram, e não existe botão de mover a fo
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
   await expect(dialog.getByRole("button", { name: "Mover folha" })).toHaveCount(0);
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   await sheet.scrollIntoViewIfNeeded();
   const box = (await sheet.boundingBox())!;
