@@ -1103,3 +1103,8 @@ Limites que se cruzam:
 - `PACKED_STORAGE_WRITES` passou a `true`: o espaço de estudos, o histórico de versões e os rascunhos agora são gravados no formato compacto (`pts`), e o que sincroniza com a conta encolhe junto. A leitura dos dois formatos segue valendo, então espaços já gravados no formato antigo abrem normalmente e são regravados no compacto na próxima alteração.
 - Reverter é seguro a qualquer momento (a constante volta a `false`, e nada que já foi gravado deixa de abrir). O risco que motivou as duas etapas continua o mesmo: uma aba ou um aparelho ainda na versão anterior à etapa 1 não entende o formato compacto; por isso a etapa 2 só foi ligada depois de a etapa 1 ter sido publicada e de os aparelhos terem aberto a versão nova.
 - O teste que travava a constante agora confere o contrário: a gravação padrão é compacta, e um espaço no formato antigo continua abrindo. Os e2e do editor já aceitavam `points` e `pts`.
+
+## Política de segurança (2026-09-26)
+
+- Novo `SECURITY.md` na raiz, com o README apontando para ele: como relatar em privado (relato privado do GitHub; o canal de contato da Galeria.Oli ainda está em definição e deve ser adicionado quando existir), o que esperar (confirmar em até 7 dias, avaliar em até 15, sem garantia contratual), versões cobertas (só a produção), escopo dentro e fora, como testar com segurança, o resumo das proteções que já existem e o tratamento de dados pessoais achados por engano (LGPD).
+- Pendência do dono: ativar "Private vulnerability reporting" nas configurações de segurança do repositório, senão a via preferida do documento não funciona, e trocar a menção ao canal em definição pelo e-mail assim que ele existir.
