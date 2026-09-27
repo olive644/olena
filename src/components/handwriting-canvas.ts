@@ -158,7 +158,8 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   context.save();
   context.strokeStyle = stroke.color;
   context.fillStyle = stroke.color;
-  context.globalAlpha = stroke.tool === "highlighter" ? 0.3 : stroke.brush === "soft" ? 0.3 : 1;
+  context.globalAlpha =
+    stroke.tool === "highlighter" ? (stroke.opacity ?? 0.3) : stroke.brush === "soft" ? 0.3 : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
   if (stroke.tool === "highlighter" || stroke.brush === "fine") {
