@@ -195,81 +195,102 @@ export function NotebookSpread({
           >
             Ver folhas
           </button>
-          <label className="notebook-cover-choice">
-            Capa do caderno
-            <select
-              value={notebook.coverStyle ?? "helena-estrelas"}
-              disabled={busy}
-              onChange={(event) =>
-                dispatch({
-                  type: "notebook/organized",
-                  id: notebook.id,
-                  changes: {
-                    coverStyle:
-                      event.target.value === "oliver-estrelas"
-                        ? "oliver-estrelas"
-                        : "helena-estrelas",
-                  },
-                })
-              }
-            >
-              <option value="helena-estrelas">Helena e as estrelas</option>
-              <option value="oliver-estrelas">Oliver e as estrelas</option>
-            </select>
-          </label>
         </div>
       )}
       {showCover ? (
-        <button
-          type="button"
-          className="notebook-concept-cover"
-          disabled={busy}
-          aria-label={`Abrir caderno ${notebook.title} folheando a capa`}
-          onPointerDown={(event) => {
-            if (busy || event.button !== 0) return;
-            drag.current = {
-              x: event.clientX,
-              y: event.clientY,
-              id: event.pointerId,
-              width: event.currentTarget.clientWidth,
-              moved: false,
-            };
-          }}
-          onPointerMove={(event) => {
-            const start = drag.current;
-            if (!start || start.id !== event.pointerId) return;
-            const dx = event.clientX - start.x;
-            if (dx < -8 && Math.abs(dx) > Math.abs(event.clientY - start.y) * 1.15) {
-              start.moved = true;
-              event.currentTarget.setPointerCapture(event.pointerId);
-            }
-          }}
-          onPointerUp={(event) => {
-            const start = drag.current;
-            drag.current = null;
-            if (start?.moved && event.clientX - start.x < -40) {
+        <div className="notebook-cover-customizer">
+          <section className="notebook-cover-inventory" aria-label="Inventário de capas">
+            <div className="notebook-cover-inventory__heading">
+              <span>SUAS CAPAS</span>
+              <small>2 disponíveis</small>
+            </div>
+            <div className="notebook-cover-inventory__items">
+              {(
+                [
+                  ["helena-estrelas", "Helena e as estrelas"],
+                  ["oliver-estrelas", "Oliver e as estrelas"],
+                ] as const
+              ).map(([style, label]) => {
+                const selected = (notebook.coverStyle ?? "helena-estrelas") === style;
+                return (
+                  <button
+                    key={style}
+                    type="button"
+                    className="notebook-cover-inventory__item"
+                    aria-label={`Usar capa ${label}`}
+                    aria-pressed={selected}
+                    disabled={busy}
+                    onClick={() =>
+                      dispatch({
+                        type: "notebook/organized",
+                        id: notebook.id,
+                        changes: { coverStyle: style },
+                      })
+                    }
+                  >
+                    <span className="notebook-cover-inventory__art">
+                      <img src={`/notebook-covers/${style}.webp`} alt="" loading="lazy" />
+                    </span>
+                    <span className="notebook-cover-inventory__name">{label}</span>
+                    <span className="notebook-cover-inventory__state">
+                      {selected ? "Em uso" : "Escolher"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+          <button
+            type="button"
+            className="notebook-concept-cover"
+            disabled={busy}
+            aria-label={`Abrir caderno ${notebook.title} folheando a capa`}
+            onPointerDown={(event) => {
+              if (busy || event.button !== 0) return;
+              drag.current = {
+                x: event.clientX,
+                y: event.clientY,
+                id: event.pointerId,
+                width: event.currentTarget.clientWidth,
+                moved: false,
+              };
+            }}
+            onPointerMove={(event) => {
+              const start = drag.current;
+              if (!start || start.id !== event.pointerId) return;
+              const dx = event.clientX - start.x;
+              if (dx < -8 && Math.abs(dx) > Math.abs(event.clientY - start.y) * 1.15) {
+                start.moved = true;
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }
+            }}
+            onPointerUp={(event) => {
+              const start = drag.current;
+              drag.current = null;
+              if (start?.moved && event.clientX - start.x < -40) {
+                changeCover(false);
+              }
+            }}
+            onPointerCancel={() => {
+              drag.current = null;
+            }}
+            onClick={() => {
+              if (suppressClick.current) {
+                suppressClick.current = false;
+                return;
+              }
               changeCover(false);
-            }
-          }}
-          onPointerCancel={() => {
-            drag.current = null;
-          }}
-          onClick={() => {
-            if (suppressClick.current) {
-              suppressClick.current = false;
-              return;
-            }
-            changeCover(false);
-          }}
-        >
-          <NotebookCover
-            {...(participants ? { participants } : {})}
-            subjectColor="#7C3AED"
-            title={notebook.title}
-            coverStyle={notebook.coverStyle}
-            tabs={notebookPaperTabs(notebook, pages, subjects)}
-          />
-        </button>
+            }}
+          >
+            <NotebookCover
+              {...(participants ? { participants } : {})}
+              subjectColor="#7C3AED"
+              title={notebook.title}
+              coverStyle={notebook.coverStyle}
+              tabs={notebookPaperTabs(notebook, pages, subjects)}
+            />
+          </button>
+        </div>
       ) : (
         <>
           <NotebookPaperTools

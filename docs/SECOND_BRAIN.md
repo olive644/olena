@@ -5,6 +5,8 @@ o evento de gravação ou a verificação inicial. O editor só confirma salvame
 manual após esse reconhecimento, sem prometer sincronização em nuvem.
 `StudyNotebook.coverStyle` é opcional, mantendo a capa Helena como padrão para
 dados antigos. A ação notebook/organized também altera a capa em Personalizar.
+O inventário de capas fica à esquerda do preview fechado e usa dois botões com aria-pressed,
+miniaturas dos assets existentes e a ação notebook/organized para selecionar.
 A regra específica de transição de paper-folder-book protege a animação contra
 o shorthand global de botões; não alterar o tamanho aprovado das pastas.
 

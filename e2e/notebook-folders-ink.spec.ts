@@ -189,13 +189,25 @@ test("salvamento confirmado, índice legível e capa personalizável", async ({ 
   await page.screenshot({ path: info.outputPath("indice-legivel.png") });
   await index.getByRole("button", { name: "Fechar", exact: true }).click();
   await page.getByRole("button", { name: "Personalizar", exact: true }).click();
-  await page
-    .getByRole("combobox", { name: "Capa do caderno", exact: true })
-    .selectOption("oliver-estrelas");
+  const inventory = page.getByRole("region", { name: "Inventário de capas" });
+  await expect(inventory.locator(".notebook-cover-inventory__item")).toHaveCount(2);
+  const inventoryBounds = await inventory.boundingBox();
+  const coverBounds = await page.locator(".notebook-concept-cover").boundingBox();
+  expect(inventoryBounds).not.toBeNull();
+  expect(coverBounds).not.toBeNull();
+  expect(inventoryBounds!.x + inventoryBounds!.width).toBeLessThanOrEqual(coverBounds!.x + 2);
+  await expect(
+    inventory.getByRole("button", { name: "Usar capa Helena e as estrelas" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await inventory.getByRole("button", { name: "Usar capa Oliver e as estrelas" }).click();
+  await expect(
+    inventory.getByRole("button", { name: "Usar capa Oliver e as estrelas" }),
+  ).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".notebook-concept-cover .book-cover__concept")).toHaveAttribute(
     "src",
     "/notebook-covers/oliver-estrelas.webp",
   );
+  await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("capa-oliver.png") });
   await page.reload();
   await expect(page.locator('[data-notebook-drop="book-1"] .book-cover__concept')).toHaveAttribute(
