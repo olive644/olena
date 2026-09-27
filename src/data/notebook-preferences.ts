@@ -6,6 +6,7 @@ export const DEFAULT_NOTEBOOK_PREFERENCES = {
   stabilization: true,
   shapeSnap: true,
   inkPrediction: true,
+  penHoverPreview: true,
   penOnly: false,
   textAutoCorrect: true,
   coordinateMeasurements: true,

@@ -18,7 +18,11 @@ export const PACKED_STORAGE_WRITES = true;
 const PRESSURE_DECIMALS = 3;
 const POSITION_DECIMALS = 2;
 
-type PackedStroke = Record<string, unknown> & { pts: number[]; tilt?: number[] };
+type PackedStroke = Record<string, unknown> & {
+  pts: number[];
+  tilt?: number[];
+  twist?: number[];
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -32,10 +36,15 @@ function round(value: number, decimals: number): number {
 export function packPoints(points: readonly HandwritingPoint[]): {
   pts: number[];
   tilt?: number[];
+  twist?: number[];
 } {
   const pts: number[] = [];
   const hasTilt = points.some((point) => point.tiltX !== undefined || point.tiltY !== undefined);
+  // Ao contrário da inclinação, giro 0 é uma leitura de verdade (caneta sem girar), não o
+  // mesmo que "sem informação": por isso guarda por ponto ter ou não a chave, não o valor.
+  const hasTwist = points.some((point) => point.twist !== undefined);
   const tilt: number[] = [];
+  const twist: number[] = [];
   for (const point of points) {
     pts.push(
       round(point.x, POSITION_DECIMALS),
@@ -43,15 +52,21 @@ export function packPoints(points: readonly HandwritingPoint[]): {
       round(point.pressure, PRESSURE_DECIMALS),
     );
     if (hasTilt) tilt.push(Math.round(point.tiltX ?? 0), Math.round(point.tiltY ?? 0));
+    if (hasTwist) twist.push(Math.round(point.twist ?? 0));
   }
-  return hasTilt ? { pts, tilt } : { pts };
+  return { pts, ...(hasTilt ? { tilt } : {}), ...(hasTwist ? { twist } : {}) };
 }
 
-export function unpackPoints(pts: readonly number[], tilt?: readonly number[]): HandwritingPoint[] {
+export function unpackPoints(
+  pts: readonly number[],
+  tilt?: readonly number[],
+  twist?: readonly number[],
+): HandwritingPoint[] {
   const points: HandwritingPoint[] = [];
   for (let index = 0; index + 2 < pts.length; index += 3) {
     const tiltX = tilt?.[(index / 3) * 2];
     const tiltY = tilt?.[(index / 3) * 2 + 1];
+    const twistValue = twist?.[index / 3];
     points.push({
       x: pts[index]!,
       y: pts[index + 1]!,
@@ -59,6 +74,8 @@ export function unpackPoints(pts: readonly number[], tilt?: readonly number[]): 
       // Sem inclinação no original, o campo nem existia: 0 e ausente são o mesmo para o desenho.
       ...(tiltX ? { tiltX } : {}),
       ...(tiltY ? { tiltY } : {}),
+      // Giro 0 é significativo (ver acima), então preservado mesmo sendo falso em JS.
+      ...(twistValue !== undefined ? { twist: twistValue } : {}),
     });
   }
   return points;
@@ -76,8 +93,15 @@ function packStroke(stroke: unknown): unknown {
 
 function unpackStroke(stroke: unknown): unknown {
   if (!isRecord(stroke) || !isNumberList(stroke["pts"])) return stroke;
-  const { pts, tilt, ...rest } = stroke;
-  return { ...rest, points: unpackPoints(pts, isNumberList(tilt) ? tilt : undefined) };
+  const { pts, tilt, twist, ...rest } = stroke;
+  return {
+    ...rest,
+    points: unpackPoints(
+      pts,
+      isNumberList(tilt) ? tilt : undefined,
+      isNumberList(twist) ? twist : undefined,
+    ),
+  };
 }
 
 function mapDocument(document: unknown, mapStroke: (stroke: unknown) => unknown): unknown {

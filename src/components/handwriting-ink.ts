@@ -28,6 +28,13 @@ export function tiltShading(point: HandwritingPoint): number {
   return 1 + magnitude * 0.6;
 }
 
+// Ângulo da ponta chata do tinteiro: 45° por padrão, mas gira com o giro da caneta
+// (barrel roll) em quem informa isso, como a Apple Pencil Pro. Girar a caneta na mão
+// muda a direção do traço fino/grosso, do jeito que giraria uma pena de calígrafo.
+function nibAngle(point: HandwritingPoint): number {
+  return point.twist !== undefined ? (point.twist * Math.PI) / 180 : Math.PI / 4;
+}
+
 // Diâmetro que o pincel pede para um ponto, antes da suavização ao longo do traço.
 function targetDiameter(stroke: InkStroke, point: HandwritingPoint, direction: number): number {
   const pressure = stroke.tool === "pen" ? point.pressure : 0.7;
@@ -35,7 +42,7 @@ function targetDiameter(stroke: InkStroke, point: HandwritingPoint, direction: n
     return (
       stroke.width *
       (0.5 + pressure * 3) *
-      (0.35 + 0.65 * Math.abs(Math.sin(direction - Math.PI / 4))) *
+      (0.35 + 0.65 * Math.abs(Math.sin(direction - nibAngle(point)))) *
       tiltShading(point)
     );
   }
