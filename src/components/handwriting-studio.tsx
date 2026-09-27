@@ -16,6 +16,7 @@ import {
 } from "react";
 import { isHandwritingDocument } from "../data/local-workspace";
 import { fitHandwriting } from "../domain/resize-handwriting";
+import { mergeHandwriting } from "../domain/merge-handwriting";
 import { encodeHandwritingDraft } from "../data/handwriting-draft";
 import { openPrintWindow } from "../data/print-window";
 import type {
@@ -323,6 +324,15 @@ export function HandwritingStudio({
   } | null>(null);
   const eraserChangedRef = useRef(false);
   const eraserPointRef = useRef<HandwritingPoint | null>(null);
+  const eraseQueueRef = useRef<HandwritingPoint[]>([]);
+  const eraseFrameRef = useRef<number | null>(null);
+  const flushEraseRef = useRef<() => void>(() => {});
+  useEffect(
+    () => () => {
+      if (eraseFrameRef.current !== null) cancelAnimationFrame(eraseFrameRef.current);
+    },
+    [],
+  );
   const activeToolRef = useRef<HandwritingTool>("pen");
   const penDetectedRef = useRef(false);
   // Ids dos traços que chegaram de colegas: desfazer e refazer não podem apagá-los.
@@ -397,7 +407,11 @@ export function HandwritingStudio({
   }, []);
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
-    setMobileDrawer(["pen", "ruler", "coordinates", "select"].includes(next) ? "tool" : null);
+    setMobileDrawer(
+      ["pen", "eraser", "highlighter", "ruler", "coordinates", "select"].includes(next)
+        ? "tool"
+        : null,
+    );
     // A janela de escrita fica sobre a folha e captura os ponteiros. Fechá-la
     // ao trocar de ferramenta garante que régua, borracha e seleção recebam
     // os próximos gestos imediatamente.
@@ -450,6 +464,9 @@ export function HandwritingStudio({
   const [paperColor, setPaperColor] = useState<HandwritingPaperColor>(legacyPaperColor);
   const [color, setColor] = useState(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   const [width, setWidth] = useState(5);
+  const [eraserWidth, setEraserWidth] = useState(10);
+  const [gestureRevision, setGestureRevision] = useState(0);
+  const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
   const [zoom, setZoom] = useState(1);
   const [fitWidth, setFitWidth] = useState(BASE_DISPLAY_WIDTH);
   // Resolução do bitmap da folha: acompanha a densidade da tela e o zoom para a
@@ -548,22 +565,32 @@ export function HandwritingStudio({
     backgroundFrame: initialDocument?.backgroundFrame,
   });
   const [savedBaseline, setSavedBaseline] = useState(baseline);
+  const eraseSnapshotRef = useRef({ strokes, pageText, stickies });
+  eraseSnapshotRef.current = { strokes, pageText, stickies };
   const dirty = JSON.stringify(currentDocument) !== savedBaseline;
 
   useEffect(() => {
-    if (!remoteDocument || JSON.stringify(remoteDocument) === JSON.stringify(currentDocument))
+    if (drawingRef.current) return;
+    if (!remoteDocument) return;
+    if (remoteBaseRef.current === remoteDocument) return;
+    if (JSON.stringify(remoteDocument) === JSON.stringify(currentDocument)) {
+      remoteBaseRef.current = remoteDocument;
       return;
+    }
+    const reconciled = remoteBaseRef.current
+      ? mergeHandwriting(remoteBaseRef.current, currentDocument, remoteDocument)
+      : remoteDocument;
+    remoteBaseRef.current = remoteDocument;
     // A collaborator's document is an external subscription update.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPaper(remoteDocument.paper);
+    setPaper(reconciled.paper);
     setCanvasSize(
-      remoteDocument.canvasSize ??
-        (remoteDocument.paper === "board"
+      reconciled.canvasSize ??
+        (reconciled.paper === "board"
           ? { width: 3200, height: 2400 }
           : { width: 1200, height: 1600 }),
     );
-    setPaperColor(remoteDocument.paperColor ?? "light");
-    setColor(remoteDocument.paperColor === "night" ? "#fff9ef" : "#17151c");
+    setPaperColor(reconciled.paperColor ?? "light");
     const incoming = newRemoteStrokes(
       remoteDocument.strokes,
       new Set(strokes.map((stroke) => stroke.id)),
@@ -579,25 +606,25 @@ export function HandwritingStudio({
       revealsRef.current = [...stillHere, ...planReveal(incoming, performance.now())];
       scheduleLivePaint();
     }
-    setStrokes(remoteDocument.strokes);
-    setStickies(remoteDocument.stickies ?? []);
-    setPageText(remoteDocument.pageText ?? "");
-    setPageTextSize(remoteDocument.pageTextSize ?? 28);
-    setPageTextFrame(remoteDocument.pageTextFrame ?? { x: 112, y: 80, width: 980, height: 1440 });
-    setCoordinateSystems(remoteDocument.coordinateSystems ?? []);
-    setImportedImages(remoteDocument.images ?? []);
+    setStrokes(reconciled.strokes);
+    setStickies(reconciled.stickies ?? []);
+    setPageText(reconciled.pageText ?? "");
+    setPageTextSize(reconciled.pageTextSize ?? 28);
+    setPageTextFrame(reconciled.pageTextFrame ?? { x: 112, y: 80, width: 980, height: 1440 });
+    setCoordinateSystems(reconciled.coordinateSystems ?? []);
+    setImportedImages(reconciled.images ?? []);
     setLayerVisibility({
       ...DEFAULT_HANDWRITING_LAYER_VISIBILITY,
-      ...(remoteDocument.layers?.visibility ?? {}),
+      ...(reconciled.layers?.visibility ?? {}),
     });
-    setLayerOrder(remoteDocument.layers?.order ?? DEFAULT_HANDWRITING_LAYER_ORDER);
-    setBackground(remoteDocument.background);
-    setBackgroundFrame(remoteDocument.backgroundFrame);
+    setLayerOrder(reconciled.layers?.order ?? DEFAULT_HANDWRITING_LAYER_ORDER);
+    setBackground(reconciled.background);
+    setBackgroundFrame(reconciled.backgroundFrame);
     setDraftStatus(
       remoteAuthor ? `Atualizado por ${remoteAuthor}` : "Atualizado por um colaborador",
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [remoteAuthor, remoteDocument]);
+  }, [remoteAuthor, remoteDocument, gestureRevision]);
 
   useEffect(() => {
     onDirtyChange?.(dirty);
@@ -606,8 +633,8 @@ export function HandwritingStudio({
   const onDraftChangeRef = useRef(onDraftChange);
   onDraftChangeRef.current = onDraftChange;
   useEffect(() => {
-    onDraftChangeRef.current?.(currentDocument);
-  }, [currentDocument]);
+    if (!drawingRef.current) onDraftChangeRef.current?.(currentDocument);
+  }, [currentDocument, gestureRevision]);
 
   const autosaveRef = useRef<() => void>(() => {});
   const autosavedRef = useRef("");
@@ -1015,41 +1042,58 @@ export function HandwritingStudio({
   }
 
   function eraseAt(points: HandwritingPoint[]) {
+    eraseQueueRef.current.push(...points);
+    if (eraseFrameRef.current === null)
+      eraseFrameRef.current = requestAnimationFrame(() => flushEraseRef.current());
+  }
+  function flushErase() {
+    if (eraseFrameRef.current !== null) cancelAnimationFrame(eraseFrameRef.current);
+    eraseFrameRef.current = null;
+    const points = eraseQueueRef.current;
+    eraseQueueRef.current = [];
+    if (!points.length) return;
     const path = eraserPointRef.current ? [eraserPointRef.current, ...points] : points;
     eraserPointRef.current = points.at(-1) ?? eraserPointRef.current;
-    setStrokes((current) => {
-      const next = eraseInkArea(current, path, 30, strokeId);
-      if (next !== current) eraserChangedRef.current = true;
-      return next;
-    });
+    const current = eraseSnapshotRef.current;
+    const nextStrokes = eraseInkArea(current.strokes, path, eraserWidth * 3, strokeId);
+    if (nextStrokes !== current.strokes) eraserChangedRef.current = true;
+    setStrokes(nextStrokes);
+    let nextText = current.pageText;
     const context = canvasRef.current?.getContext("2d");
     if (context) {
       context.save();
       context.font = `${pageTextSize}px monospace`;
       const glyphWidth = context.measureText("M").width;
       context.restore();
-      setPageText((current) => {
-        const next = erasePageText(current, points, glyphWidth, pageTextSize, pageTextFrame);
-        if (next !== current) eraserChangedRef.current = true;
-        return next;
-      });
-    }
-    setStickies((current) => {
-      const next = current.filter(
-        (sticky) =>
-          sticky.kind !== "text" ||
-          !points.some(
-            ({ x, y }) =>
-              x >= sticky.x - 30 &&
-              x <= sticky.x + stickyWidth(sticky) + 30 &&
-              y >= sticky.y - 30 &&
-              y <= sticky.y + stickyHeight(sticky) + 30,
-          ),
+      nextText = erasePageText(
+        current.pageText,
+        points,
+        glyphWidth,
+        pageTextSize,
+        pageTextFrame,
+        eraserWidth * 3,
       );
-      if (next.length !== current.length) eraserChangedRef.current = true;
-      return next;
-    });
+      if (nextText !== current.pageText) eraserChangedRef.current = true;
+      setPageText(nextText);
+    }
+    const nextStickies = current.stickies.filter(
+      (sticky) =>
+        sticky.kind !== "text" ||
+        !points.some(
+          ({ x, y }) =>
+            x >= sticky.x - eraserWidth * 3 &&
+            x <= sticky.x + stickyWidth(sticky) + eraserWidth * 3 &&
+            y >= sticky.y - eraserWidth * 3 &&
+            y <= sticky.y + stickyHeight(sticky) + eraserWidth * 3,
+        ),
+    );
+    if (nextStickies.length !== current.stickies.length) {
+      eraserChangedRef.current = true;
+      setStickies(nextStickies);
+    }
+    eraseSnapshotRef.current = { strokes: nextStrokes, pageText: nextText, stickies: nextStickies };
   }
+  flushEraseRef.current = flushErase;
 
   function paintLive() {
     liveFrameRef.current = null;
@@ -1229,7 +1273,7 @@ export function HandwritingStudio({
       eraseAt([point]);
       return;
     }
-    const activeWidth = effectiveTool === "highlighter" ? Math.max(22, width * 4) : width;
+    const activeWidth = effectiveTool === "highlighter" ? Math.min(100, width * 2.5) : width;
     const nextStroke: Stroke = {
       id: strokeId(),
       tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
@@ -1453,7 +1497,9 @@ export function HandwritingStudio({
     }
     if (!drawingRef.current) return;
     drawingRef.current = false;
+    setGestureRevision((value) => value + 1);
     if (activeToolRef.current === "eraser") {
+      flushErase();
       eraserPointRef.current = null;
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
@@ -2376,8 +2422,8 @@ export function HandwritingStudio({
           tool={tool}
           color={color}
           onColorChange={setColor}
-          width={width}
-          onWidthChange={setWidth}
+          width={tool === "eraser" ? eraserWidth : width}
+          onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
         />
 
         <HandwritingHistoryBar

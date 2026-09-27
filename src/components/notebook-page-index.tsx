@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { StudyNote } from "../domain/workspace";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 
 type NotebookPageIndexProps = {
   pages: readonly StudyNote[];
@@ -59,7 +60,7 @@ export function NotebookPageIndex({
       <ol>
         {pages.map((page, index) => {
           const current = page.id === currentPageId;
-          const thumbnail = page.assets[0]?.dataUrl;
+          const thumbnail = page.assets[0];
           return (
             <li key={page.id} className={current ? "is-current" : undefined}>
               <button
@@ -74,7 +75,7 @@ export function NotebookPageIndex({
               >
                 <span className="notebook-page-index__thumb">
                   {thumbnail ? (
-                    <img src={thumbnail} alt="" loading="lazy" draggable={false} />
+                    <NotebookPageThumbnail asset={thumbnail} />
                   ) : (
                     <span aria-hidden="true">{page.content.slice(0, 80) || "Folha em branco"}</span>
                   )}

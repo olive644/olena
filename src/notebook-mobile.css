@@ -1,4 +1,22 @@
 /* Phone editor: top paper/file actions, canvas, contextual drawer, bottom tools. */
+:root[data-theme="dark"] .handwriting-studio .handwriting-commandbar,
+:root[data-theme="dark"] .handwriting-studio .handwriting-workspace {
+  --surface: #292432;
+  --text: #fff9ef;
+  --line: #51465d;
+}
+.handwriting-ink-options .ink-size-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  color: inherit;
+}
+.ink-size-control input[type="range"] {
+  width: 100%;
+  min-height: 32px;
+  accent-color: #7c3aed;
+}
 @media (max-width: 680px) {
   :root .handwriting-studio {
     --mobile-bottom: calc(160px + env(safe-area-inset-bottom));
@@ -194,7 +212,13 @@
     box-shadow: 0 -4px 24px #17151c22;
     z-index: 7;
   }
-  :root .handwriting-studio[data-mobile-drawer="tool"][data-tool="pen"] .handwriting-ink-options {
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]:is(
+      [data-tool="pen"],
+      [data-tool="eraser"],
+      [data-tool="highlighter"]
+    )
+    .handwriting-ink-options {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -215,6 +239,20 @@
     justify-content: center;
     min-width: 0;
     gap: 4px;
+    flex-wrap: wrap;
+  }
+  :root .handwriting-studio .ink-size-control {
+    flex-basis: 100%;
+  }
+  :root
+    .handwriting-studio[data-mobile-drawer="tool"]:is(
+      [data-tool="eraser"],
+      [data-tool="highlighter"]
+    )
+    .handwriting-ink-options {
+    bottom: var(--mobile-bottom);
+    border-bottom: 1px solid var(--line);
+    border-radius: 18px 18px 4px 4px;
   }
   :root .handwriting-studio .ink-palette .ink-swatch {
     flex: 0 0 32px;

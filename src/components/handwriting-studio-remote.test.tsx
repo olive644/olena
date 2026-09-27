@@ -135,9 +135,9 @@ it("um traço em andamento sobrevive a uma atualização de colega no meio do ge
       })}
     />,
   );
-  // Durante o gesto o traço ainda não está na lista: a atualização traz só os do colega.
+  // A atualização aguarda o fim do gesto, sem publicar documentos intermediários.
   const during = onDraftChange.mock.calls.at(-1)?.[0] as HandwritingDocument;
-  expect(during.strokes.map((stroke) => stroke.id)).toEqual(["a", "b"]);
+  expect(during.strokes.map((stroke) => stroke.id)).toEqual(["a"]);
 
   fireEvent.pointerMove(canvas, { ...pointer, clientX: 180, clientY: 130, buttons: 1 });
   fireEvent.pointerUp(canvas, { ...pointer, clientX: 180, clientY: 130 });
@@ -182,4 +182,47 @@ it("avisa a posição do próprio cursor em unidades da folha ao mover o ponteir
   });
   fireEvent.pointerMove(canvas, { clientX: 300, clientY: 400, pointerType: "mouse" });
   expect(onCursorMove).toHaveBeenCalledWith(canvas.width / 2, canvas.height / 2);
+});
+
+it("um clique de borracha sem frame intermediário conserva desfazer e não recupera tinta remota antiga", () => {
+  const onDraftChange = vi.fn();
+  const initialDocument = documentWith("original");
+  const view = render(
+    <HandwritingStudio
+      {...props({ initialDocument, remoteDocument: initialDocument, onDraftChange })}
+    />,
+  );
+  const canvas = view.container.querySelector<HTMLCanvasElement>(".handwriting-canvas")!;
+  vi.spyOn(canvas, "getBoundingClientRect").mockReturnValue({
+    left: 0,
+    top: 0,
+    width: 600,
+    height: 800,
+    right: 600,
+    bottom: 800,
+    x: 0,
+    y: 0,
+    toJSON: () => ({}),
+  });
+  canvas.setPointerCapture = vi.fn();
+  canvas.hasPointerCapture = vi.fn(() => true);
+  canvas.releasePointerCapture = vi.fn();
+  fireEvent.click(view.getByRole("button", { name: /^Borracha$/ }));
+  const pointer = {
+    pointerId: 1,
+    pointerType: "mouse",
+    button: 0,
+    pressure: 0.5,
+    clientX: 125,
+    clientY: 100,
+  };
+  fireEvent.pointerDown(canvas, { ...pointer, buttons: 1 });
+  fireEvent.pointerUp(canvas, { ...pointer, buttons: 0 });
+  const erased = onDraftChange.mock.calls.at(-1)?.[0] as HandwritingDocument;
+  expect(erased.strokes).toHaveLength(2);
+  expect(erased.strokes.some((stroke) => stroke.id === "original")).toBe(false);
+  fireEvent.click(view.getByRole("button", { name: /^Desfazer$/ }));
+  expect((onDraftChange.mock.calls.at(-1)?.[0] as HandwritingDocument).strokes).toEqual(
+    initialDocument.strokes,
+  );
 });

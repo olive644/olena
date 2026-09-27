@@ -4,6 +4,27 @@ import { strokeRadii } from "./handwriting-ink";
 
 type Interval = [number, number];
 const EPSILON = 1e-7;
+const boundsCache = new WeakMap<
+  Stroke,
+  { left: number; right: number; top: number; bottom: number }
+>();
+function bounds(stroke: Stroke) {
+  const cached = boundsCache.get(stroke);
+  if (cached) return cached;
+  let left = Infinity,
+    right = -Infinity,
+    top = Infinity,
+    bottom = -Infinity;
+  for (const point of stroke.points) {
+    left = Math.min(left, point.x);
+    right = Math.max(right, point.x);
+    top = Math.min(top, point.y);
+    bottom = Math.max(bottom, point.y);
+  }
+  const box = { left, right, top, bottom };
+  boundsCache.set(stroke, box);
+  return box;
+}
 
 function interpolate(a: HandwritingPoint, b: HandwritingPoint, t: number): HandwritingPoint {
   return {
@@ -80,6 +101,23 @@ export function eraseStrokeArea(
   nextId: () => string,
 ): Stroke[] {
   if (path.length === 0 || stroke.points.length === 0) return [stroke];
+  const box = bounds(stroke);
+  const padding = radius + stroke.width * 2;
+  let touches = false;
+  for (let i = 0; i < path.length; i++) {
+    const a = path[i]!;
+    const b = path[i + 1] ?? a;
+    if (
+      Math.max(a.x, b.x) + padding >= box.left &&
+      Math.min(a.x, b.x) - padding <= box.right &&
+      Math.max(a.y, b.y) + padding >= box.top &&
+      Math.min(a.y, b.y) - padding <= box.bottom
+    ) {
+      touches = true;
+      break;
+    }
+  }
+  if (!touches) return [stroke];
   const radii =
     stroke.tool === "highlighter"
       ? stroke.points.map(() => stroke.width / 2)
@@ -99,8 +137,18 @@ export function eraseStrokeArea(
     const b = stroke.points[index + 1] ?? a;
     const cuts: Interval[] = [];
     const reach = radius + Math.max(radii[index]!, radii[index + 1] ?? radii[index]!);
-    for (let step = 0; step < Math.max(1, path.length - 1); step++)
-      cuts.push(...capsule(a, b, path[step]!, path[step + 1] ?? path[step]!, reach));
+    for (let step = 0; step < Math.max(1, path.length - 1); step++) {
+      const c = path[step]!;
+      const d = path[step + 1] ?? c;
+      if (
+        Math.max(a.x, b.x) < Math.min(c.x, d.x) - reach ||
+        Math.min(a.x, b.x) > Math.max(c.x, d.x) + reach ||
+        Math.max(a.y, b.y) < Math.min(c.y, d.y) - reach ||
+        Math.min(a.y, b.y) > Math.max(c.y, d.y) + reach
+      )
+        continue;
+      cuts.push(...capsule(a, b, c, d, reach));
+    }
     cuts.sort((left, right) => left[0] - right[0]);
     let cursor = 0;
     const keep = (from: number, to: number) => {

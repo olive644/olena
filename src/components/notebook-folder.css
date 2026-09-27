@@ -1,0 +1,175 @@
+/* Abertura pela base inspirada na pasta de byllzz, Uiverse.io, adaptada ao papel OlenaStudy. */
+.notebooks-main .notebooks-showcase .notebook-shelf:has(.paper-folder) {
+  overflow-x: auto;
+}
+.notebooks-main .notebooks-showcase .notebook-shelf:has(.paper-folder) .notebook-grid {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: 220px;
+  gap: 28px;
+  width: max-content;
+  padding: 24px 16px 20px;
+  align-items: start;
+}
+.notebooks-main .notebook-shelf .paper-folder-book .book-cover {
+  width: 100%;
+  height: 100%;
+}
+.paper-folder {
+  position: relative;
+  width: 220px;
+  flex: 0 0 220px;
+  isolation: isolate;
+}
+.paper-folder-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: var(--text);
+  gap: 5px;
+}
+.paper-folder-toggle::before,
+.paper-folder-toggle::after {
+  display: none;
+}
+.paper-folder-art {
+  display: block;
+  position: relative;
+  width: 190px;
+  height: 185px;
+  perspective: 900px;
+  margin-top: 20px;
+}
+.paper-folder-back {
+  position: absolute;
+  inset: 30px 0 0;
+  background: #51259b;
+  clip-path: polygon(0 0, 40% 0, 48% 13%, 100% 13%, 100% 100%, 0 100%);
+  border-radius: 7px;
+}
+.paper-folder-front {
+  position: absolute;
+  inset: 66px -3px 0;
+  background: #7c3aed;
+  border: 3px solid #a779ef;
+  border-radius: 5px 10px 7px 8px;
+  box-shadow: 2px 5px #51259b;
+  transform-origin: bottom;
+  transition: transform 420ms ease;
+}
+.paper-folder-front::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed #d8befa;
+  pointer-events: none;
+}
+.paper-folder-label {
+  position: absolute;
+  bottom: 12px;
+  left: 15px;
+  right: 15px;
+  background: #fff9ef;
+  color: #292432;
+  padding: 7px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 2px 3px #51259b;
+}
+.paper-folder-moon,
+.paper-folder-sun {
+  position: absolute;
+  top: 8px;
+  width: 38px;
+  height: 38px;
+  transform: rotate(-12deg);
+}
+.paper-folder-moon {
+  left: 16px;
+}
+.paper-folder-sun {
+  right: 18px;
+  transform: rotate(12deg);
+}
+.paper-folder-star {
+  position: absolute;
+  top: 11px;
+  left: 77px;
+  width: 38px;
+  height: 38px;
+}
+.paper-folder-book {
+  position: absolute;
+  left: 18px;
+  top: 40px;
+  width: 100px;
+  height: 126px;
+  transition: transform 420ms ease;
+}
+.paper-folder-book .book-cover {
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+.paper-folder-book.book-1 {
+  left: 49px;
+  top: 35px;
+}
+.paper-folder-book.book-2 {
+  left: 80px;
+  top: 30px;
+}
+.is-open .paper-folder-front {
+  transform: rotateX(-32deg);
+}
+.is-open .paper-folder-book.book-0 {
+  transform: translateY(-22px) rotate(-12deg);
+}
+.is-open .paper-folder-book.book-1 {
+  transform: translateY(-34px);
+}
+.is-open .paper-folder-book.book-2 {
+  transform: translateY(-22px) rotate(12deg);
+}
+.paper-folder-content {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  margin-top: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.paper-folder-content label {
+  display: grid;
+  gap: 6px;
+}
+.paper-folder-content select {
+  width: 100%;
+  min-height: 44px;
+}
+.paper-folder-row {
+  display: flex;
+  gap: 6px;
+}
+.paper-folder-row button {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.paper-folder-content button {
+  min-height: 44px;
+  font: inherit;
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .paper-folder-front,
+  .paper-folder-book {
+    transition: none;
+  }
+}

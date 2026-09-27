@@ -1,4 +1,38 @@
 /* Encadernação em camadas sólidas, compartilhada pela vitrine e pela virada. */
+.book-cover__team {
+  position: absolute;
+  z-index: 4;
+  top: 7%;
+  left: 16%;
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  background: #fff9ef;
+  box-shadow: 2px 3px #51259b;
+  border-radius: 5px;
+}
+.book-cover__team > span {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #51259b;
+  color: #fff9ef;
+  overflow: hidden;
+  font-size: 12px;
+}
+.book-cover__team img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+:root[data-theme] .notebook-sheet input.notebook-sheet-title {
+  /* O papel não herda o preenchimento global de campos escuros. */
+  background: #fff9ef !important;
+  color: #51465d !important;
+  color-scheme: light;
+}
 .book-cover__backboard {
   position: absolute;
   inset: 9px -8px -12px 6px;

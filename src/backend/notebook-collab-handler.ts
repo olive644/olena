@@ -5,6 +5,7 @@ import {
   NOTEBOOK_COLLAB_TTL_SECONDS,
   addNotebookCollabParticipant,
   applyNotebookCollabDocument,
+  mergeNotebookPages,
   createNotebookCollabCode,
   sanitizeNotebookCollabAvatar,
   sanitizeNotebookCollabCursor,
@@ -19,6 +20,7 @@ import {
   type PublicNotebookCollabState,
 } from "../domain/notebook-collab.js";
 import type { HandwritingDocument } from "../domain/handwriting.js";
+import { isNotebookCollabPages } from "../domain/notebook-collab.js";
 import { mergeHandwriting } from "../domain/merge-handwriting.js";
 import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
@@ -176,6 +178,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         return jsonResponse(400, { error: "Nome ou caderno inválido." });
       if (body["document"] !== undefined && !isHandwritingDocument(body["document"]))
         return jsonResponse(400, { error: "A folha compartilhada ficou inválida." });
+      if (body["pages"] !== undefined && !isNotebookCollabPages(body["pages"]))
+        return jsonResponse(400, { error: "As folhas do caderno ficaram inválidas." });
       const requestId = typeof body["requestId"] === "string" ? body["requestId"] : "";
       let code = randomCode();
       for (
@@ -204,6 +208,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         now(),
       );
       if (requestId) state.createRequestId = requestId;
+      if (isNotebookCollabPages(body["pages"])) state.pages = body["pages"];
+      if (typeof body["title"] === "string") state.title = body["title"].slice(0, 120);
       if (isHandwritingDocument(body["document"]))
         state.document = body["document"] as HandwritingDocument;
       const publicState = await save(state);
@@ -365,21 +371,48 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       });
     }
 
+    if (action === "pages" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const authorized = await authorizedParticipant(body);
+      if (authorized instanceof Response) return authorized;
+      if (!isNotebookCollabPages(body["pages"]) || !isNotebookCollabPages(body["basePages"]))
+        return jsonResponse(400, { error: "Índice do caderno inválido." });
+      const next = mergeNotebookPages(
+        body["basePages"],
+        body["pages"],
+        authorized.state.pages ?? [],
+      );
+      if (next.length > 200)
+        return jsonResponse(400, { error: "Este caderno chegou ao limite de folhas." });
+      return jsonResponse(200, {
+        state: await save({
+          ...authorized.state,
+          pages: next,
+        }),
+      });
+    }
     if (action === "update" && request.method === "POST") {
       const body = await readJsonBody(request);
       const authorized = await authorizedParticipant(body);
       if (authorized instanceof Response) return authorized;
       const candidate = body["document"];
+      const pageId = typeof body["pageId"] === "string" ? body["pageId"] : undefined;
+      const remoteDocument = authorized.state.pages
+        ? authorized.state.pages.find((page) => page.id === pageId)?.document
+        : authorized.state.document;
+      if (authorized.state.pages && !authorized.state.pages.some((page) => page.id === pageId))
+        return jsonResponse(409, { error: "Esta folha foi removida do caderno." });
       if (!isHandwritingDocument(candidate))
         return jsonResponse(400, { error: "A folha compartilhada ficou inválida." });
       const updated = applyNotebookCollabDocument(authorized.state, {
         participantId: authorized.participantId,
+        ...(pageId ? { pageId } : {}),
         document:
-          isHandwritingDocument(body["baseDocument"]) && authorized.state.document
+          isHandwritingDocument(body["baseDocument"]) && remoteDocument
             ? mergeHandwriting(
                 body["baseDocument"] as HandwritingDocument,
                 candidate as HandwritingDocument,
-                authorized.state.document,
+                remoteDocument,
               )
             : (candidate as HandwritingDocument),
         ...(typeof body["label"] === "string" ? { label: body["label"] } : {}),

@@ -122,9 +122,11 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // para 852.1 KiB. A extração dos gestos de seleção e pinça adiciona cerca de
 // 1 KiB; a entrada animada na folha e a navegação da capa acrescentam cerca de
 // 3 KiB à rota lazy de cadernos, sem nova dependência.
-// Ink prediction (rules, preference and wiring) is lazy in the handwriting studio chunk: 860.2 KiB
-// measured; the ceiling moves to 866 KiB.
-const MAX_TOTAL_JS_BYTES = 866 * 1024;
+// Whole-notebook collaboration, per-page offline queues, shared thumbnails and
+// papercraft folders add 14.2 KiB to lazy routes (873.6 KiB measured on Windows).
+// No new dependency. Initial JavaScript stays 269.8 KiB; retain its existing limit.
+// Ink prediction adds about 1 KiB to the lazy studio chunk; the ceiling is 880 KiB.
+const MAX_TOTAL_JS_BYTES = 880 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
