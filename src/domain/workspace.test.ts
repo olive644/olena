@@ -116,6 +116,43 @@ describe("workspaceReducer", () => {
     });
     expect(reordered.notebooks[0]?.pageIds).toEqual(["first", "second"]);
     expect(reordered.notes).toEqual(second.notes);
+    const third = workspaceReducer(second, {
+      type: "note/added",
+      id: "third",
+      notebookId: "book",
+      subjectId: initial.subjects[0]!.id,
+      updatedAt: "2026-09-20",
+    });
+    expect(third.notebooks[0]?.pageIds).toEqual(["third", "second", "first"]);
+    const draggedToEnd = workspaceReducer(third, {
+      type: "notebook/page-reordered",
+      notebookId: "book",
+      pageId: "third",
+      toIndex: 2,
+    });
+    expect(draggedToEnd.notebooks[0]?.pageIds).toEqual(["second", "first", "third"]);
+    expect(draggedToEnd.notes).toEqual(third.notes);
+    const draggedBack = workspaceReducer(draggedToEnd, {
+      type: "notebook/page-reordered",
+      notebookId: "book",
+      pageId: "third",
+      toIndex: 0,
+    });
+    expect(draggedBack.notebooks[0]?.pageIds).toEqual(["third", "second", "first"]);
+    const outOfBounds = workspaceReducer(draggedToEnd, {
+      type: "notebook/page-reordered",
+      notebookId: "book",
+      pageId: "third",
+      toIndex: 99,
+    });
+    expect(outOfBounds.notebooks[0]?.pageIds).toEqual(draggedToEnd.notebooks[0]?.pageIds);
+    const unknownNotebook = workspaceReducer(third, {
+      type: "notebook/page-reordered",
+      notebookId: "não existe",
+      pageId: "third",
+      toIndex: 0,
+    });
+    expect(unknownNotebook).toEqual(third);
   });
   it("salva preferências de estudo e cria Programação uma única vez", () => {
     const preferences: StudyPreferences = {

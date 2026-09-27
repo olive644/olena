@@ -872,6 +872,16 @@
   outline-offset: 2px;
 }
 
+.notebook-page-index li.is-dragging .notebook-page-index__open {
+  opacity: 0.45;
+  cursor: grabbing;
+}
+
+.notebook-page-index li.is-drop-target .notebook-page-index__open {
+  border-color: #f5b700;
+  box-shadow: 0 3px 0 #f5b700;
+}
+
 .notebook-page-index__thumb {
   display: grid;
   aspect-ratio: 3 / 4;

@@ -1196,3 +1196,10 @@ Limites que se cruzam:
 
 - O marca-texto já aceitava qualquer cor (a paleta de tinta não tem restrição por ferramenta); o que faltava era a opacidade, fixa em 30%. Agora um controle deslizante (10% a 70%) aparece na barra de opções só com o marca-texto ativo, e o valor escolhido é gravado no próprio traço (`HandwritingStroke.opacity`, opcional). Traços antigos sem o campo continuam em 30%, o mesmo valor de sempre.
 - Testes: `handwriting-canvas-highlighter.test.ts` (a opacidade do traço manda no desenho, com e sem o campo, e não afeta a caneta) e `handwriting-ink-options.test.tsx` (o controle aparece só para o marca-texto e manda o valor certo).
+
+## Arrastar folhas entre miniaturas do índice (2026-09-27)
+
+- O índice de folhas (`NotebookPageIndex`) já reordenava pelos botões "para trás"/"para frente" (um vizinho por vez, funciona por teclado e toque). Agora também dá para arrastar a miniatura direto para o lugar desejado: um gesto a mais, não uma troca. Os botões continuam do mesmo jeito, incluindo para quem usa teclado ou leitor de tela.
+- Nova ação do domínio `notebook/page-reordered` (`notebookId`, `pageId`, `toIndex`): tira a folha do lugar e a insere na posição alvo, preservando o conteúdo de todas (só mexe em `pageIds`, igual a `notebook/page-moved`). Fora dos limites, é ajustada para o começo ou o fim; caderno ou folha desconhecidos não mudam nada.
+- O arrastar usa eventos de ponteiro (funciona com o dedo, a caneta ou o mouse): ao soltar mais longe da posição inicial que uma folga pequena, a miniatura mais próxima do ponto de soltar vira o alvo; abaixo disso continua sendo um toque normal, que abre a folha.
+- Testes: `workspace.test.ts` (mover para o fim, para o começo, fora dos limites e com caderno inexistente) e `notebook-page-index.test.tsx` (arrastar reordena sem abrir a folha; um toque curto sem arrastar continua abrindo).

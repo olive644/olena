@@ -208,6 +208,9 @@ export type WorkspaceAction =
       editingPageId?: string;
     }
   | { type: "notebook/page-moved"; notebookId: string; pageId: string; direction: -1 | 1 }
+  // Arrastar a miniatura no índice: leva a folha direto para a posição solta,
+  // em vez de andar vizinho a vizinho como o botão de mover.
+  | { type: "notebook/page-reordered"; notebookId: string; pageId: string; toIndex: number }
   | {
       type: "note/asset-updated";
       noteId: string;
@@ -586,6 +589,20 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           if (index < 0 || nextIndex < 0 || nextIndex >= notebook.pageIds.length) return notebook;
           const pageIds = [...notebook.pageIds];
           [pageIds[index], pageIds[nextIndex]] = [pageIds[nextIndex]!, pageIds[index]!];
+          return { ...notebook, pageIds };
+        }),
+      };
+    case "notebook/page-reordered":
+      return {
+        ...state,
+        notebooks: state.notebooks.map((notebook) => {
+          if (notebook.id !== action.notebookId) return notebook;
+          const index = notebook.pageIds.indexOf(action.pageId);
+          const toIndex = Math.max(0, Math.min(notebook.pageIds.length - 1, action.toIndex));
+          if (index < 0 || index === toIndex) return notebook;
+          const pageIds = [...notebook.pageIds];
+          pageIds.splice(index, 1);
+          pageIds.splice(toIndex, 0, action.pageId);
           return { ...notebook, pageIds };
         }),
       };
