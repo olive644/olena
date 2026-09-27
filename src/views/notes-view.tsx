@@ -1,6 +1,7 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { NotebookSearch } from "../components/notebook-search";
 import { NotebookFolder } from "../components/notebook-folder";
+import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
 import { NotebookPageIndex } from "../components/notebook-page-index";
@@ -74,6 +75,10 @@ export function NotesView({
 }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
+  const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
+  const bookDrag = useNotebookShelfDrag(workspace.notebooks, (id, folderId) =>
+    dispatch({ type: "notebook/stored", id, folderId }),
+  );
 
   const [draggedFolder, setDraggedFolder] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
@@ -281,6 +286,7 @@ export function NotesView({
   }
 
   function openNotebook(notebook: StudyNotebook) {
+    if (bookDrag.consumeClick(notebook.id)) return;
     if (skipClick.current === notebook.id) {
       skipClick.current = null;
       return;
@@ -704,6 +710,24 @@ export function NotesView({
           )}
 
           <section className="notebooks-showcase" aria-label="Meus cadernos">
+            <span className="sr-only" role="status">
+              {bookDrag.message}
+            </span>
+            {bookDrag.moving && (
+              <div
+                className="notebook-shelf-drag-ghost"
+                aria-hidden="true"
+                style={{ left: bookDrag.moving.x + 16, top: bookDrag.moving.y - 45 }}
+              >
+                <NotebookArtwork
+                  subjectColor="#7c3aed"
+                  title={
+                    workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
+                    "Caderno"
+                  }
+                />
+              </div>
+            )}
             {workspace.notebooks.length === 0 ? (
               <div className="notebooks-empty">
                 <NotebookArtwork subjectColor="#7C3AED" />
@@ -714,7 +738,7 @@ export function NotesView({
               <div className="notebook-shelves">
                 {Array.from({ length: shelfCount }, (_, shelfIndex) => (
                   <section
-                    className="notebook-shelf"
+                    className="notebook-shelf notebook-shelf--objects"
                     key={shelfIndex}
                     aria-label={`Prateleira ${shelfIndex + 1}`}
                   >
@@ -731,6 +755,15 @@ export function NotesView({
                             notebooks={workspace.notebooks}
                             dispatch={dispatch}
                             onOpen={openNotebook}
+                            open={openFolderIds.includes(folder.id)}
+                            onToggle={() =>
+                              setOpenFolderIds((ids) =>
+                                ids.includes(folder.id)
+                                  ? ids.filter((id) => id !== folder.id)
+                                  : [...ids, folder.id],
+                              )
+                            }
+                            drag={bookDrag}
                           />
                         ))}
                       {shelfItems.slice(shelfIndex * 4, shelfIndex * 4 + 4).map((notebook) => {
@@ -815,6 +848,9 @@ export function NotesView({
                               setDraggedFolder(null);
                               setDropTarget(null);
                             }}
+                            {...(!notebook.kind && !selectionMode
+                              ? bookDrag.handlers(notebook.id)
+                              : {})}
                             type="button"
                             onClick={() => openNotebook(notebook)}
                             aria-label={`Abrir ${notebook.title}`}
@@ -877,8 +913,8 @@ export function NotesView({
                           </button>
                         );
                       })}
+                      <div className="notebook-shelf__rail" aria-hidden="true" />
                     </div>
-                    <div className="notebook-shelf__rail" aria-hidden="true" />
                   </section>
                 ))}
               </div>
