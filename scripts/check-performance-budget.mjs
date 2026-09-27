@@ -130,8 +130,11 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // the ceiling moves to 882 KiB. Highlighter opacity and drag-to-reorder in the page
 // index add about 1 KiB more; the ceiling moves to 884 KiB. Favoriting pages in the
 // index (star toggle and filter) and the Cornell/sheet-music paper templates each add
-// under 1 KiB more; the ceiling moves to 888 KiB.
-const MAX_TOTAL_JS_BYTES = 888 * 1024;
+// under 1 KiB more; the ceiling moves to 888 KiB. The pen hover preview and the
+// twist-driven nib angle fit under that same ceiling with no bump needed. The IndexedDB
+// mirror (stage 1 of the storage migration) adds about 1.6 KiB more (887.6 KiB measured);
+// the ceiling moves to 891 KiB, leaving margin for build variance.
+const MAX_TOTAL_JS_BYTES = 891 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
