@@ -37,6 +37,7 @@ import {
 import { rulerMeasurement, rulerPoints, type RulerKind, type RulerUnit } from "../domain/ruler";
 import {
   createLiveStabilizer,
+  DEFAULT_LIVE_STABILIZER,
   straightenStroke,
   type LiveStabilizer,
 } from "./handwriting-stabilization";
@@ -65,7 +66,8 @@ import { useEditorShortcuts } from "../hooks/use-editor-shortcuts";
 import { renderPageScene, type PageScene } from "./handwriting-page-scene";
 import { drawSelectionOverlay, type SelectionScene } from "./handwriting-selection-scene";
 import {} from "./handwriting-selection-ops";
-import { predictedTip } from "./handwriting-ink";
+import { eraseInkArea } from "./handwriting-eraser";
+import { pointerSamples } from "./handwriting-pointer";
 import {
   newRemoteStrokes,
   partialStroke,
@@ -75,8 +77,6 @@ import {
   type RevealingStroke,
 } from "./handwriting-reveal";
 
-// Quanto tempo depois da última amostra a ponta prevista ainda vale (ms).
-const LIVE_PREDICTION_WINDOW_MS = 24;
 import { HandwritingStickyNote } from "./handwriting-sticky-note";
 import {
   HandwritingBrushPanel,
@@ -109,7 +109,6 @@ import {
   coordinateBounds,
   stickyBounds,
   unionBounds,
-  strokeTouches,
 } from "./handwriting-geometry";
 import {
   canvasPoint,
@@ -192,8 +191,6 @@ export function HandwritingStudio({
   // enquanto se escreve é exatamente o traço final, sem o salto ao terminar.
   const liveCanvasRef = useRef<HTMLCanvasElement>(null);
   const liveFrameRef = useRef<number | null>(null);
-  const liveSettleRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const lastSampleAtRef = useRef(0);
   const paintLiveRef = useRef<() => void>(() => undefined);
   // Traços de colegas em revelação: são escritos na camada ao vivo, ao longo do
   // próprio caminho, e só entram na folha quando terminam.
@@ -323,6 +320,7 @@ export function HandwritingStudio({
     scrollTop: number;
   } | null>(null);
   const eraserChangedRef = useRef(false);
+  const eraserPointRef = useRef<HandwritingPoint | null>(null);
   const activeToolRef = useRef<HandwritingTool>("pen");
   const penDetectedRef = useRef(false);
   // Ids dos traços que chegaram de colegas: desfazer e refazer não podem apagá-los.
@@ -1009,11 +1007,11 @@ export function HandwritingStudio({
   }
 
   function eraseAt(points: HandwritingPoint[]) {
+    const path = eraserPointRef.current ? [eraserPointRef.current, ...points] : points;
+    eraserPointRef.current = points.at(-1) ?? eraserPointRef.current;
     setStrokes((current) => {
-      const next = current.filter(
-        (stroke) => !points.some((point) => strokeTouches(stroke, point, 30)),
-      );
-      if (next.length !== current.length) eraserChangedRef.current = true;
+      const next = eraseInkArea(current, path, 30, strokeId);
+      if (next !== current) eraserChangedRef.current = true;
       return next;
     });
     const context = canvasRef.current?.getContext("2d");
@@ -1053,19 +1051,11 @@ export function HandwritingStudio({
     const context = pageContext(overlay);
     if (!context) return;
     const stroke = liveStrokeRef.current;
-    let tip: HandwritingPoint | undefined;
     if (stroke) {
-      // A ponta prevista cobre o atraso do filtro e do quadro, mas só enquanto a mão
-      // se move: parada, a ponta prevista ficaria à frente da caneta.
-      const fresh = performance.now() - lastSampleAtRef.current < LIVE_PREDICTION_WINDOW_MS;
-      tip = fresh ? predictedTip(stroke.points) : undefined;
-      const drawn = tip ? { ...stroke, points: [...stroke.points, tip] } : stroke;
-      drawStroke(context, drawn);
-      if (writingWindowOpen) paintWritingWindowLive(drawn);
+      drawStroke(context, stroke);
+      if (writingWindowOpen) paintWritingWindowLive(stroke);
     }
     paintReveals(context);
-    clearTimeout(liveSettleRef.current);
-    if (tip) liveSettleRef.current = setTimeout(scheduleLivePaint, LIVE_PREDICTION_WINDOW_MS + 8);
   }
 
   // Escreve, quadro a quadro, os traços novos de colegas. Ao terminar, cada um é
@@ -1100,7 +1090,6 @@ export function HandwritingStudio({
   function clearLive() {
     if (liveFrameRef.current !== null) cancelAnimationFrame(liveFrameRef.current);
     liveFrameRef.current = null;
-    clearTimeout(liveSettleRef.current);
     // Revelações de colegas continuam: repinta a camada só com elas, no mesmo quadro.
     if (revealsRef.current.length > 0) {
       paintLive();
@@ -1227,6 +1216,7 @@ export function HandwritingStudio({
     remember();
     if (effectiveTool === "eraser") {
       eraserChangedRef.current = false;
+      eraserPointRef.current = null;
       eraseAt([point]);
       return;
     }
@@ -1241,13 +1231,17 @@ export function HandwritingStudio({
     };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     liveStabilizerRef.current =
-      stabilization && effectiveTool !== "ruler" ? createLiveStabilizer(point) : null;
+      stabilization && effectiveTool !== "ruler"
+        ? createLiveStabilizer(point, {
+            ...DEFAULT_LIVE_STABILIZER,
+            maxLag: Math.min(4, (PAGE_WIDTH / canvas.getBoundingClientRect().width) * 1.5),
+          })
+        : null;
     clearTimeout(holdTimerRef.current);
     shapeSnappedRef.current = false;
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
     if (effectiveTool !== "ruler") {
-      lastSampleAtRef.current = performance.now();
-      scheduleLivePaint();
+      paintLive();
     }
   }
 
@@ -1277,10 +1271,14 @@ export function HandwritingStudio({
     const canvas = canvasRef.current;
     if (!canvas) return;
     if (selectionGesture.move(event, canvasPoint(canvas, event))) return;
-    const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
-    const sampleEvents = coalesced.length > 0 ? coalesced : [event.nativeEvent];
+    const sampleEvents = pointerSamples(event.nativeEvent);
     const bounds = canvas.getBoundingClientRect();
-    const points = sampleEvents.map((point) => canvasPoint(canvas, point, bounds));
+    const points = sampleEvents.map((sample) => {
+      const point = canvasPoint(canvas, sample, bounds);
+      if (event.type === "pointerup" && sample.pressure === 0)
+        point.pressure = liveStrokeRef.current?.points.at(-1)?.pressure ?? point.pressure;
+      return point;
+    });
     const sampleTimes = sampleEvents.map((sample) => sample.timeStamp);
     if (activeToolRef.current === "ruler") {
       const end = points.at(-1);
@@ -1340,7 +1338,6 @@ export function HandwritingStudio({
     }, []);
     if (added.length === 0) return;
     liveStroke.points.push(...added);
-    lastSampleAtRef.current = performance.now();
     scheduleLivePaint();
     clearTimeout(holdTimerRef.current);
     if (shapeSnap && (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")) {
@@ -1360,6 +1357,14 @@ export function HandwritingStudio({
   }
 
   function finish(event: ReactPointerEvent<HTMLCanvasElement>) {
+    // Alguns dispositivos entregam a última posição somente no pointerup.
+    // Consumir esse ponto evita encurtar traços rápidos ou deixar falhas na borracha.
+    if (
+      event.type === "pointerup" &&
+      event.pointerId === activePointerRef.current &&
+      (liveStrokeRef.current || activeToolRef.current === "eraser")
+    )
+      move(event);
     clearTimeout(holdTimerRef.current);
     if (event.pointerType === "pen") {
       palmRef.current = { penDown: false, lastPenAt: performance.now() };
@@ -1430,6 +1435,7 @@ export function HandwritingStudio({
     if (!drawingRef.current) return;
     drawingRef.current = false;
     if (activeToolRef.current === "eraser") {
+      eraserPointRef.current = null;
       if (!eraserChangedRef.current) setUndoStack((history) => history.slice(0, -1));
       return;
     }
@@ -1925,19 +1931,20 @@ export function HandwritingStudio({
     // ampliada aqui e faz a tinta ficar atrás da ponta, então só se suaviza ao
     // terminar o traço.
     liveStabilizerRef.current = null;
-    lastSampleAtRef.current = performance.now();
-    scheduleLivePaint();
+    paintLive();
   }
 
   function moveWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (writingPointerRef.current !== event.pointerId) return;
     const liveStroke = liveStrokeRef.current;
     if (!liveStroke) return;
-    const coalesced = event.nativeEvent.getCoalescedEvents?.() ?? [];
     const bounds = event.currentTarget.getBoundingClientRect();
-    const points = (coalesced.length > 0 ? coalesced : [event.nativeEvent]).map((sample) =>
-      writingPoint(sample, bounds),
-    );
+    const points = pointerSamples(event.nativeEvent).map((sample) => {
+      const point = writingPoint(sample, bounds);
+      if (event.type === "pointerup" && sample.pressure === 0)
+        point.pressure = liveStroke.points.at(-1)?.pressure ?? point.pressure;
+      return point;
+    });
     const previous = liveStroke.points.at(-1);
     const added = points.reduce<HandwritingPoint[]>((accepted, point) => {
       const lastPoint = accepted.at(-1) ?? previous;
@@ -1953,12 +1960,12 @@ export function HandwritingStudio({
     liveStroke.points.push(...added);
     // A folha e a janela mostram a escrita enquanto ela acontece, desenhada por
     // inteiro a cada quadro, sem atualizar o estado a cada ponto.
-    lastSampleAtRef.current = performance.now();
     scheduleLivePaint();
   }
 
   function finishWritingWindow(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (writingPointerRef.current !== event.pointerId) return;
+    if (event.type === "pointerup") moveWritingWindow(event);
     writingPointerRef.current = null;
     const liveStroke = liveStrokeRef.current;
     liveStrokeRef.current = null;

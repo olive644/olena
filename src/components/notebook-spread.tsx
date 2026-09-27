@@ -16,6 +16,7 @@ import { PaperEditorIcon } from "./paper-editor-icon";
 import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
 import { NotebookToolIcon } from "./notebook-tool-icon";
+import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
 import "./notebook-spread.css";
 
 type Props = {
@@ -124,7 +125,7 @@ export function NotebookSpread({
     const timer = window.setTimeout(() => {
       setSpreadIndex(turning.progress === 1 ? turning.to : turning.from);
       setTurning(null);
-    }, 560);
+    }, NOTEBOOK_TURN_MS + 40);
     return () => window.clearTimeout(timer);
   }, [turning]);
   useEffect(() => {
@@ -162,7 +163,15 @@ export function NotebookSpread({
   const front = turning ? pages[turning.from * 2 + (turning.direction > 0 ? 1 : 0)] : undefined;
   const back = turning ? pages[turning.to * 2 + (turning.direction > 0 ? 0 : 1)] : undefined;
   return (
-    <div className="notebook-spread-workspace">
+    <div
+      className="notebook-spread-workspace"
+      style={
+        {
+          "--turn-duration": `${NOTEBOOK_TURN_MS}ms`,
+          "--turn-easing": NOTEBOOK_TURN_EASING,
+        } as CSSProperties
+      }
+    >
       {coverJourney && <NotebookJourney journey={coverJourney} onDone={finishCoverJourney} />}
       {showCover && (
         <div className="notebook-spread-options">
