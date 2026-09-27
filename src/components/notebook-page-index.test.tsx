@@ -141,6 +141,60 @@ describe("índice de folhas", () => {
     expect(onSelect).toHaveBeenCalledWith("a");
   });
 
+  it("favorita e desfavorita uma folha pela estrela", () => {
+    const onToggleFavorite = vi.fn();
+    render(
+      <NotebookPageIndex
+        pages={pages}
+        currentPageId="a"
+        onSelect={vi.fn()}
+        onClose={vi.fn()}
+        favoritePageIds={["b"]}
+        onToggleFavorite={onToggleFavorite}
+      />,
+    );
+    const starB = screen.getByRole("button", { name: "Tirar a folha 2 dos favoritos" });
+    expect(starB.getAttribute("aria-pressed")).toBe("true");
+    const starA = screen.getByRole("button", { name: "Favoritar a folha 1" });
+    expect(starA.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(starA);
+    expect(onToggleFavorite).toHaveBeenCalledWith("a");
+  });
+
+  it("o filtro Só favoritas mostra apenas as folhas favoritas, mantendo a numeração original", () => {
+    render(
+      <NotebookPageIndex
+        pages={pages}
+        currentPageId="a"
+        onSelect={vi.fn()}
+        onClose={vi.fn()}
+        favoritePageIds={["c"]}
+        onToggleFavorite={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("3 folhas")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Só favoritas" }));
+    expect(screen.getByText("1 folha favorita")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Folha 1: Cinemática" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Folha 3: Sem título" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Ver todas as folhas" }));
+    expect(screen.getByText("3 folhas")).toBeTruthy();
+  });
+
+  it("sem favoritas, o filtro fica desativado", () => {
+    render(
+      <NotebookPageIndex
+        pages={pages}
+        currentPageId="a"
+        onSelect={vi.fn()}
+        onClose={vi.fn()}
+        favoritePageIds={[]}
+        onToggleFavorite={vi.fn()}
+      />,
+    );
+    expect(isDisabled("Só favoritas")).toBe(true);
+  });
+
   it("sem onMove não mostra botões de mover, e Fechar chama onClose", () => {
     const onClose = vi.fn();
     render(

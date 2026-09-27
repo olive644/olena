@@ -327,6 +327,20 @@ export function NotesView({
     dispatch({ type: "notebook/page-reordered", notebookId: activeNotebook.id, pageId, toIndex });
   }
 
+  // Favoritar no índice: junta ou tira da lista de folhas favoritas do caderno.
+  function toggleFavoritePage(pageId: string) {
+    if (!activeNotebook) return;
+    const current = activeNotebook.bookmarkedPageIds ?? [];
+    const bookmarkedPageIds = current.includes(pageId)
+      ? current.filter((id) => id !== pageId)
+      : [...current, pageId];
+    dispatch({
+      type: "notebook/organized",
+      id: activeNotebook.id,
+      changes: { bookmarkedPageIds },
+    });
+  }
+
   function returnToShelf() {
     if (journey) return;
     const spread = document.querySelector<HTMLElement>(".notebook-paper-spread");
@@ -946,6 +960,8 @@ export function NotesView({
               onSelect={setActivePageId}
               onMove={movePage}
               onReorder={reorderPage}
+              favoritePageIds={activeNotebook.bookmarkedPageIds ?? []}
+              onToggleFavorite={toggleFavoritePage}
               onClose={() => setIndexOpen(false)}
             />
           )}
@@ -1200,6 +1216,8 @@ export function NotesView({
                     onCreate={createPageAtEnd}
                     onMove={movePage}
                     onReorder={reorderPage}
+                    favoritePageIds={activeNotebook.bookmarkedPageIds ?? []}
+                    onToggleFavorite={toggleFavoritePage}
                   />
                 </div>
               )}
