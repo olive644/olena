@@ -11,6 +11,9 @@ Pastas mantêm as dimensões aprovadas e nome apenas abaixo. A transição dos l
 tem prioridade sobre o estilo global dos botões, com retorno animado e suporte a
 movimento reduzido. Personalizar oferece a capa original e Oliver e as estrelas;
 a escolha persiste em coverStyle e acompanha vitrine, pasta, arraste e viagem.
+JavaScript total medido: 888,2 KiB na CI Linux, 887,2 KiB local Windows.
+O teto passa de 888 para 890 KiB para a confirmação e seleção de capa, sem
+novas dependências e sem mudar o limite da entrada inicial.
 
 GeoGebra foi examinado no commit e7fb8b166e9c1489e31a5705134271a39c69b830,
 em checkout separado, sem incorporar código ou carregar serviços externos.
