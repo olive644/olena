@@ -18,6 +18,8 @@ export type HandwritingStroke = {
   tool: "pen" | "highlighter";
   color: string;
   width: number;
+  // Só vale para o marca-texto; sem ela, o traço usa a opacidade padrão (30%).
+  opacity?: number;
   points: HandwritingPoint[];
 };
 

@@ -8,6 +8,8 @@ type HandwritingInkOptionsProps = {
   onWidthChange: (width: number) => void;
   eraserWholeStroke?: boolean;
   onEraserWholeStrokeChange?: (wholeStroke: boolean) => void;
+  highlighterOpacity?: number;
+  onHighlighterOpacityChange?: (opacity: number) => void;
 };
 
 export function HandwritingInkOptions({
@@ -18,6 +20,8 @@ export function HandwritingInkOptions({
   onWidthChange,
   eraserWholeStroke = false,
   onEraserWholeStrokeChange,
+  highlighterOpacity = 0.3,
+  onHighlighterOpacityChange,
 }: HandwritingInkOptionsProps) {
   const percentage = Math.max(0, Math.min(100, Math.round(((width - 0.5) / 39.5) * 100)));
   return (
@@ -73,6 +77,24 @@ export function HandwritingInkOptions({
               aria-label="Cor da tinta"
               value={color}
               onChange={(event) => onColorChange(event.target.value)}
+            />
+          </label>
+        </fieldset>
+      )}
+      {tool === "highlighter" && onHighlighterOpacityChange && (
+        <fieldset className="highlighter-opacity">
+          <legend>Opacidade do marca-texto</legend>
+          <label className="ink-size-control">
+            <span>Opacidade: {Math.round(highlighterOpacity * 100)}%</span>
+            <input
+              type="range"
+              min="10"
+              max="70"
+              step="1"
+              aria-label="Opacidade do marca-texto"
+              aria-valuetext={`${Math.round(highlighterOpacity * 100)}%`}
+              value={Math.round(highlighterOpacity * 100)}
+              onChange={(event) => onHighlighterOpacityChange(Number(event.target.value) / 100)}
             />
           </label>
         </fieldset>

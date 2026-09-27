@@ -466,6 +466,7 @@ export function HandwritingStudio({
   const [width, setWidth] = useState(5);
   const [eraserWidth, setEraserWidth] = useState(10);
   const [eraserWholeStroke, setEraserWholeStroke] = useState(false);
+  const [highlighterOpacity, setHighlighterOpacity] = useState(0.3);
   const [gestureRevision, setGestureRevision] = useState(0);
   const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
   const [zoom, setZoom] = useState(1);
@@ -1281,6 +1282,7 @@ export function HandwritingStudio({
       id: strokeId(),
       tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
       ...(effectiveTool === "pen" ? { brush } : {}),
+      ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
       color,
       width: activeWidth,
       points: [point],
@@ -2429,6 +2431,8 @@ export function HandwritingStudio({
           onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
           eraserWholeStroke={eraserWholeStroke}
           onEraserWholeStrokeChange={setEraserWholeStroke}
+          highlighterOpacity={highlighterOpacity}
+          onHighlighterOpacityChange={setHighlighterOpacity}
         />
 
         <HandwritingHistoryBar
