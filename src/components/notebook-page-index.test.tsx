@@ -10,6 +10,7 @@ beforeEach(() => {
   HTMLDialogElement.prototype.close = function () {
     this.removeAttribute("open");
   };
+  HTMLElement.prototype.setPointerCapture = vi.fn();
 });
 afterEach(cleanup);
 
@@ -80,6 +81,64 @@ describe("índice de folhas", () => {
     expect(onMove).toHaveBeenCalledWith("b", 1);
     fireEvent.click(screen.getByRole("button", { name: "Mover a folha 2 para trás" }));
     expect(onMove).toHaveBeenCalledWith("b", -1);
+  });
+
+  it("arrastar a miniatura para a posição de outra reordena, sem abrir a folha", () => {
+    const onReorder = vi.fn();
+    const onSelect = vi.fn();
+    render(
+      <NotebookPageIndex
+        pages={pages}
+        currentPageId="a"
+        onSelect={onSelect}
+        onReorder={onReorder}
+        onClose={vi.fn()}
+      />,
+    );
+    const items = document.querySelectorAll("li");
+    const rects = [
+      { left: 0, top: 0, width: 100, height: 100 },
+      { left: 120, top: 0, width: 100, height: 100 },
+      { left: 240, top: 0, width: 100, height: 100 },
+    ];
+    items.forEach((item, index) => {
+      vi.spyOn(item, "getBoundingClientRect").mockReturnValue({
+        ...rects[index]!,
+        right: rects[index]!.left + rects[index]!.width,
+        bottom: rects[index]!.height,
+        x: rects[index]!.left,
+        y: 0,
+        toJSON: () => ({}),
+      });
+    });
+    const first = screen.getByRole("button", { name: "Folha 1: Cinemática" });
+    fireEvent.pointerDown(first, { clientX: 50, clientY: 50, button: 0 });
+    fireEvent.pointerMove(first, { clientX: 290, clientY: 50 });
+    fireEvent.pointerUp(first);
+    expect(onReorder).toHaveBeenCalledWith("a", 2);
+    fireEvent.click(first);
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
+  it("um toque curto na miniatura, sem arrastar, continua abrindo a folha normalmente", () => {
+    const onReorder = vi.fn();
+    const onSelect = vi.fn();
+    render(
+      <NotebookPageIndex
+        pages={pages}
+        currentPageId="a"
+        onSelect={onSelect}
+        onReorder={onReorder}
+        onClose={vi.fn()}
+      />,
+    );
+    const first = screen.getByRole("button", { name: "Folha 1: Cinemática" });
+    fireEvent.pointerDown(first, { clientX: 50, clientY: 50, button: 0 });
+    fireEvent.pointerMove(first, { clientX: 51, clientY: 50 });
+    fireEvent.pointerUp(first);
+    fireEvent.click(first);
+    expect(onReorder).not.toHaveBeenCalled();
+    expect(onSelect).toHaveBeenCalledWith("a");
   });
 
   it("sem onMove não mostra botões de mover, e Fechar chama onClose", () => {

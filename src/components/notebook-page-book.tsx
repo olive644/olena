@@ -12,6 +12,7 @@ export function NotebookPageBook({
   onCreate,
   onRemove,
   onMove,
+  onReorder,
   inert = false,
 }: {
   pages: StudyNote[];
@@ -20,6 +21,7 @@ export function NotebookPageBook({
   onCreate: () => void;
   onRemove?: (id: string) => void;
   onMove?: (id: string, direction: -1 | 1) => void;
+  onReorder?: (id: string, toIndex: number) => void;
   inert?: boolean;
 }) {
   const drag = useRef<{ x: number; y: number; pointerId: number } | null>(null);
@@ -115,6 +117,7 @@ export function NotebookPageBook({
           currentPageId={currentPageId}
           onSelect={onSelect}
           {...(onMove ? { onMove } : {})}
+          {...(onReorder ? { onReorder } : {})}
           onClose={() => setIndexOpen(false)}
         />
       )}

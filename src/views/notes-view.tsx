@@ -321,6 +321,12 @@ export function NotesView({
     dispatch({ type: "notebook/page-moved", notebookId: activeNotebook.id, pageId, direction });
   }
 
+  // Arrastar a miniatura no índice: mesma troca de lugar, mas indo direto para o alvo.
+  function reorderPage(pageId: string, toIndex: number) {
+    if (!activeNotebook) return;
+    dispatch({ type: "notebook/page-reordered", notebookId: activeNotebook.id, pageId, toIndex });
+  }
+
   function returnToShelf() {
     if (journey) return;
     const spread = document.querySelector<HTMLElement>(".notebook-paper-spread");
@@ -939,6 +945,7 @@ export function NotesView({
               currentPageId=""
               onSelect={setActivePageId}
               onMove={movePage}
+              onReorder={reorderPage}
               onClose={() => setIndexOpen(false)}
             />
           )}
@@ -1191,6 +1198,8 @@ export function NotesView({
                       setPreviewPageIndex(notebookPages.findIndex((page) => page.id === id))
                     }
                     onCreate={createPageAtEnd}
+                    onMove={movePage}
+                    onReorder={reorderPage}
                   />
                 </div>
               )}
