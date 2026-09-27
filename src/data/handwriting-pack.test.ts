@@ -85,6 +85,18 @@ describe("formato compacto dos traços", () => {
     expect(packPoints(points(5)).tilt).toBeUndefined();
   });
 
+  it("preserva o giro, inclusive quando é exatamente 0 (diferente de sem informação)", () => {
+    const original: HandwritingPoint[] = [
+      { x: 1, y: 2, pressure: 0.5, twist: 0 },
+      { x: 3, y: 4, pressure: 0.6, twist: 90 },
+      { x: 5, y: 6, pressure: 0.4, twist: 0 },
+    ];
+    const packed = packPoints(original);
+    expect(packed.twist).toEqual([0, 90, 0]);
+    expect(unpackPoints(packed.pts, packed.tilt, packed.twist)).toEqual(original);
+    expect(packPoints(points(5)).twist).toBeUndefined();
+  });
+
   it("um documento vai e volta idêntico", () => {
     const document = documentWith(20, 30, true);
     const packed = packDocument(document) as { strokes: { pts?: number[]; points?: unknown }[] };
