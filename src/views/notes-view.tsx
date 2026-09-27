@@ -682,13 +682,13 @@ export function NotesView({
                     type="button"
                     onClick={() =>
                       setSelectedNotebookIds(
-                        selectedNotebookIds.length === shelfItems.length
+                        selectedNotebookIds.length === shelfItems.length + collections.length
                           ? []
-                          : shelfItems.map((notebook) => notebook.id),
+                          : [...shelfItems, ...collections].map((notebook) => notebook.id),
                       )
                     }
                   >
-                    {selectedNotebookIds.length === shelfItems.length
+                    {selectedNotebookIds.length === shelfItems.length + collections.length
                       ? "Limpar tudo"
                       : "Selecionar tudo"}
                   </button>
@@ -753,15 +753,18 @@ export function NotesView({
                             key={folder.id}
                             folder={folder}
                             notebooks={workspace.notebooks}
-                            dispatch={dispatch}
                             onOpen={openNotebook}
                             open={openFolderIds.includes(folder.id)}
+                            selectionMode={selectionMode}
+                            selected={selectedNotebookIds.includes(folder.id)}
                             onToggle={() =>
-                              setOpenFolderIds((ids) =>
-                                ids.includes(folder.id)
-                                  ? ids.filter((id) => id !== folder.id)
-                                  : [...ids, folder.id],
-                              )
+                              selectionMode
+                                ? openNotebook(folder)
+                                : setOpenFolderIds((ids) =>
+                                    ids.includes(folder.id)
+                                      ? ids.filter((id) => id !== folder.id)
+                                      : [...ids, folder.id],
+                                  )
                             }
                             drag={bookDrag}
                           />

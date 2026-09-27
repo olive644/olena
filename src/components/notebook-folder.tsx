@@ -1,6 +1,5 @@
-import type { Dispatch } from "react";
 import type { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
-import type { StudyNotebook, WorkspaceAction } from "../domain/workspace";
+import type { StudyNotebook } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
 import { PaperMoonMark } from "./notebook-paper-tools";
 import "./notebook-folder.css";
@@ -8,19 +7,21 @@ import "./notebook-folder.css";
 export function NotebookFolder({
   folder,
   notebooks,
-  dispatch,
   onOpen,
   open,
   onToggle,
   drag,
+  selectionMode = false,
+  selected = false,
 }: {
   folder: StudyNotebook;
   notebooks: StudyNotebook[];
-  dispatch: Dispatch<WorkspaceAction>;
   onOpen: (book: StudyNotebook) => void;
   open: boolean;
   onToggle: () => void;
   drag: ReturnType<typeof useNotebookShelfDrag>;
+  selectionMode?: boolean;
+  selected?: boolean;
 }) {
   const books = notebooks.filter((book) => book.parentId === folder.id && !book.kind);
   return (
@@ -39,7 +40,7 @@ export function NotebookFolder({
               data-notebook-drop={book.id}
               aria-label={`Abrir ${book.title}`}
               tabIndex={open ? 0 : -1}
-              disabled={!open}
+              disabled={!open || selectionMode}
               {...drag.handlers(book.id)}
               onClick={() => onOpen(book)}
             >
@@ -50,7 +51,8 @@ export function NotebookFolder({
             type="button"
             className="paper-folder-toggle"
             aria-expanded={open}
-            aria-label={`${open ? "Fechar" : "Abrir"} pasta ${folder.title}`}
+            aria-label={`${selectionMode ? "Selecionar" : open ? "Fechar" : "Abrir"} pasta ${folder.title}`}
+            aria-pressed={selectionMode ? selected : undefined}
             onClick={onToggle}
           >
             <span className="paper-folder-front" aria-hidden="true">
@@ -67,6 +69,11 @@ export function NotebookFolder({
                 <path d="m22 22 10 15-2-11 8-8Z" fill="#d4a817" />
               </svg>
               <span className="paper-folder-label">{folder.title}</span>
+              {selectionMode && (
+                <span className={`notebook-card__check ${selected ? "is-selected" : ""}`}>
+                  {selected ? "✓" : ""}
+                </span>
+              )}
             </span>
           </button>
         </div>
@@ -75,56 +82,6 @@ export function NotebookFolder({
         <span>{folder.title}</span>
         <small>{books.length} de 3 cadernos</small>
       </div>
-      {open && (
-        <div className="paper-folder-content">
-          {books.map((book) => (
-            <div key={book.id} className="paper-folder-row">
-              <button type="button" className="secondary-button" onClick={() => onOpen(book)}>
-                {book.title}
-              </button>
-              <button
-                type="button"
-                className="secondary-button"
-                aria-label={`Retirar ${book.title} da pasta`}
-                onClick={() => dispatch({ type: "notebook/stored", id: book.id, folderId: null })}
-              >
-                Retirar
-              </button>
-            </div>
-          ))}
-          <label>
-            Guardar caderno
-            <select
-              value=""
-              disabled={books.length >= 3}
-              onChange={(event) => {
-                if (event.target.value)
-                  dispatch({
-                    type: "notebook/stored",
-                    id: event.target.value,
-                    folderId: folder.id,
-                  });
-              }}
-            >
-              <option value="">{books.length >= 3 ? "Pasta completa" : "Escolher caderno"}</option>
-              {notebooks
-                .filter((book) => !book.kind && !book.parentId)
-                .map((book) => (
-                  <option key={book.id} value={book.id}>
-                    {book.title}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => dispatch({ type: "notebook/removed", ids: [folder.id] })}
-          >
-            Desfazer pasta e manter cadernos
-          </button>
-        </div>
-      )}
     </div>
   );
 }

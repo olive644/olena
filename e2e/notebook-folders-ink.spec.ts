@@ -35,13 +35,12 @@ test("pastas papercraft guardam três cadernos e limitam três pastas por vitrin
   const folder = page
     .locator(".paper-folder")
     .filter({ has: page.getByRole("button", { name: "Fechar pasta Pasta 1", exact: true }) });
-  for (let i = 1; i <= 3; i++) await folder.getByLabel("Guardar caderno").selectOption(`book-${i}`);
-  await expect(folder.getByLabel("Guardar caderno")).toBeDisabled();
+  await expect(folder.locator(".paper-folder-content")).toHaveCount(0);
+  await expect(folder.locator(".paper-folder-copy")).toContainText("0 de 3 cadernos");
   await page.screenshot({ path: info.outputPath("pastas-papercraft.png") });
-  await folder.getByRole("button", { name: "Retirar Caderno 2 da pasta" }).click();
-  await expect(folder.getByLabel("Guardar caderno")).toBeEnabled();
-  await folder.getByLabel("Guardar caderno").selectOption("book-4");
-  await folder.getByRole("button", { name: "Desfazer pasta e manter cadernos" }).click();
+  await page.getByRole("button", { name: "Selecionar", exact: true }).click();
+  await page.getByRole("button", { name: "Selecionar pasta Pasta 1", exact: true }).click();
+  await page.getByRole("button", { name: "Excluir (1)", exact: true }).click();
   await expect(page.locator(".notebook-card")).toHaveCount(4);
 });
 
@@ -111,11 +110,10 @@ test("arrastar caderno para pasta e retirar, com viagem e nomes fora da pratelei
   await folder.getByRole("button", { name: "Abrir pasta Meu arquivo lunar" }).click();
   const rail = (await page.locator(".notebook-shelf__rail").first().boundingBox())!;
   const title = (await folder.locator(".paper-folder-copy > span").boundingBox())!;
-  const panel = (await folder.locator(".paper-folder-content").boundingBox())!;
+  await expect(folder.locator(".paper-folder-content")).toHaveCount(0);
   const bookTitle = (await page.locator(".notebook-card__copy strong").first().boundingBox())!;
   expect(title.y).toBeGreaterThanOrEqual(rail.y + rail.height);
   expect(bookTitle.y).toBeGreaterThanOrEqual(rail.y + rail.height);
-  expect(panel.y).toBeGreaterThan(rail.y + rail.height);
   await page.screenshot({ path: info.outputPath("pasta-branca-aberta.png"), fullPage: true });
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await folder.getByRole("button", { name: "Abrir Caderno 4", exact: true }).click();

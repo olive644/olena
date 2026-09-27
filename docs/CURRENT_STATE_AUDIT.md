@@ -9,8 +9,10 @@ do proprietário. O acabamento de vidro fica restrito às pastas.
 
 Cadernos podem ser arrastados para pastas e retirados para a vitrine usando
 pointer events de mouse, caneta e toque. Soltar fora da vitrine cancela o gesto;
-pastas cheias conservam o caderno na origem. Seletores e botões preservam o acesso
-por teclado. Miniaturas abertas são clicáveis e fornecem a origem e o destino
+pastas cheias conservam o caderno na origem. O painel de ações abaixo das pastas
+foi removido: miniaturas abertas permitem abrir e arrastar os cadernos, e o modo
+Selecionar inclui pastas na exclusão e em Selecionar tudo. Excluir uma pasta
+preserva seus cadernos. Miniaturas abertas são clicáveis e fornecem a origem e o destino
 da animação existente do caderno. A pasta permanece aberta ao voltar do preview.
 
 ## Pastas, colaboração do caderno e escala de tinta
