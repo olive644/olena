@@ -31,11 +31,34 @@ const stroke = (id: string, x: number, y: number): Stroke =>
 
 const at = (x: number, y: number) => ({ x, y, pressure: 0.5 });
 
-function useHarness(mode: SelectionMode = "rectangle", withText = false) {
+function useHarness(mode: SelectionMode = "rectangle", withText = false, withObjects = false) {
   const [strokes, setStrokes] = useState<Stroke[]>([stroke("a", 100, 100), stroke("b", 600, 600)]);
-  const [stickies, setStickies] = useState<HandwritingSticky[]>([]);
-  const [coordinateSystems, setCoordinateSystems] = useState<HandwritingCoordinateSystem[]>([]);
-  const [images, setImportedImages] = useState<HandwritingImage[]>([]);
+  const [stickies, setStickies] = useState<HandwritingSticky[]>(
+    withObjects
+      ? [
+          { id: "sticky", x: 300, y: 300, color: "yellow", text: "Nota" },
+          {
+            id: "formula",
+            x: 300,
+            y: 600,
+            color: "yellow",
+            kind: "text",
+            formula: true,
+            text: "y = x",
+          },
+        ]
+      : [],
+  );
+  const [coordinateSystems, setCoordinateSystems] = useState<HandwritingCoordinateSystem[]>(
+    withObjects
+      ? [{ id: "axes", origin: at(600, 400), end: at(800, 200), step: 1, color: "#000" }]
+      : [],
+  );
+  const [images, setImportedImages] = useState<HandwritingImage[]>(
+    withObjects
+      ? [{ id: "image", dataUrl: "data:,", x: 400, y: 700, width: 100, height: 100 }]
+      : [],
+  );
   const [pageTextFrame, setPageTextFrame] = useState({ x: 700, y: 900, width: 300, height: 200 });
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedCoordinateIds, setSelectedCoordinateIds] = useState<string[]>([]);
@@ -65,12 +88,54 @@ function useHarness(mode: SelectionMode = "rectangle", withText = false) {
     setImportedImages,
     setPageTextFrame,
   });
-  return { gesture, strokes, selectedIds, remember, pageTextFrame };
+  return {
+    gesture,
+    strokes,
+    selectedIds,
+    remember,
+    pageTextFrame,
+    stickies,
+    images,
+    coordinateSystems,
+  };
 }
 
 const pointer = { pointerId: 1, pointerType: "mouse" };
 
 describe("gesto da ferramenta Selecionar", () => {
+  it.each(["mouse", "pen", "touch"])(
+    "Mover transporta todos os tipos juntos com %s",
+    (pointerType) => {
+      const { result } = renderHook(() => useHarness("rectangle", true, true));
+      const event = { pointerId: 7, pointerType };
+      act(() => result.current.gesture.begin(event, at(0, 0)));
+      act(() => void result.current.gesture.end(at(1190, 1500)));
+      expect(result.current.selectedIds).toHaveLength(7);
+      act(() => result.current.gesture.begin(event, at(1100, 1300), true));
+      act(() => void result.current.gesture.move(event, at(1140, 1320)));
+      act(() => void result.current.gesture.end(at(1140, 1320)));
+      expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 140, y: 120 });
+      expect(result.current.stickies[0]).toMatchObject({ x: 340, y: 320 });
+      expect(result.current.stickies[1]).toMatchObject({ x: 340, y: 620 });
+      expect(result.current.coordinateSystems[0]!.origin).toMatchObject({ x: 640, y: 420 });
+      expect(result.current.images[0]).toMatchObject({ x: 440, y: 720 });
+      expect(result.current.pageTextFrame).toMatchObject({ x: 740, y: 920 });
+      expect(result.current.remember).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("arrasta a seleção feita com laço sem apagá-la", () => {
+    const { result } = renderHook(() => useHarness("lasso"));
+    act(() => result.current.gesture.begin(pointer, at(0, 0)));
+    for (const point of [at(300, 0), at(300, 300), at(0, 300)])
+      act(() => void result.current.gesture.move(pointer, point));
+    act(() => void result.current.gesture.end(at(0, 0)));
+    act(() => result.current.gesture.begin(pointer, at(150, 120)));
+    act(() => void result.current.gesture.move(pointer, at(190, 140)));
+    act(() => void result.current.gesture.end(at(190, 140)));
+    expect(result.current.selectedIds).toEqual(["a"]);
+    expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 140, y: 120 });
+  });
   it("retângulo: mostra a área ao arrastar e escolhe o que toca ao soltar", () => {
     const { result } = renderHook(() => useHarness("rectangle"));
     act(() => result.current.gesture.begin(pointer, at(80, 80)));

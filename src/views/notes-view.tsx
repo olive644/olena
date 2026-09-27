@@ -753,6 +753,8 @@ export function NotesView({
                             key={folder.id}
                             folder={folder}
                             notebooks={workspace.notebooks}
+                            pages={workspace.notes}
+                            subjects={workspace.subjects}
                             onOpen={openNotebook}
                             open={openFolderIds.includes(folder.id)}
                             selectionMode={selectionMode}

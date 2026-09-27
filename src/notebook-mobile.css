@@ -204,7 +204,7 @@
     min-width: 0;
     max-width: none;
     padding: 12px 6px;
-    justify-content: space-between;
+    justify-content: center;
     overflow-x: auto;
     border: 1px solid var(--line);
     background: var(--surface);

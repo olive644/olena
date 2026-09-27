@@ -1,4 +1,4 @@
-import { openHandwritingA4 } from "./notebook-helpers";
+import { openHandwritingA4, activateHandwritingPen } from "./notebook-helpers";
 import { expect, test, type Locator } from "@playwright/test";
 
 // Conta pixels com tinta (alfa alto) em uma faixa do canvas.
@@ -33,7 +33,7 @@ test("o traço em andamento fica na camada ao vivo e vai para a folha ao soltar"
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   const live = dialog.locator(".handwriting-live-layer");
   await sheet.scrollIntoViewIfNeeded();
@@ -83,7 +83,7 @@ test("a camada ao vivo mostra o traço inteiro de novo a cada quadro, sem falhas
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   await openHandwritingA4(page);
   const dialog = page.getByRole("dialog", { name: "Escrever à mão" });
-  await dialog.getByRole("button", { name: "Caneta", exact: true }).click();
+  await activateHandwritingPen(page);
   await dialog.getByRole("button", { name: /Pincel macio/ }).click();
   const sheet = dialog.locator(".handwriting-viewport canvas").first();
   const live = dialog.locator(".handwriting-live-layer");

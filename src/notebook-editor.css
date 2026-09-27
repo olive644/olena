@@ -20,9 +20,69 @@
 }
 .handwriting-history {
   grid-column: 9 / -1;
-  justify-content: space-between;
+  justify-content: flex-start;
+  justify-self: end;
+  width: max-content;
+  max-width: 100%;
+  gap: 6px;
   min-width: 0;
   overflow-x: auto;
+}
+.handwriting-history > button,
+.handwriting-history > output,
+.handwriting-history > .handwriting-commandbar__divider {
+  flex: 0 0 auto;
+}
+
+/* Fórmulas são cartões de papel branco, inclusive no tema escuro. */
+:root .handwriting-studio .handwriting-formula-assist,
+:root .handwriting-studio .handwriting-sticky--formula {
+  --text: #292432;
+  --surface: #fff;
+  --soft: #fff9ef;
+  --line: #e7dcc7;
+  --line-strong: #cfc2ab;
+  --violet: #7c3aed;
+  color: #292432;
+  background: #fff;
+  border: 1px solid #e7dcc7;
+  border-radius: 5px 14px 6px 10px;
+  box-shadow: 3px 4px 0 #d8cdb7;
+}
+:root .handwriting-studio .handwriting-formula-assist {
+  padding: 10px;
+}
+:root .handwriting-studio .handwriting-formula-assist input,
+:root .handwriting-studio .handwriting-sticky--formula textarea {
+  background: #fff;
+  color: #292432;
+  caret-color: #7c3aed;
+  color-scheme: light;
+}
+:root .handwriting-studio .handwriting-sticky--formula .handwriting-sticky__bar {
+  background: #fff9ef;
+  color: #51465d;
+  border-bottom: 1px solid #e7dcc7;
+}
+:root .handwriting-studio .handwriting-sticky--formula .handwriting-sticky__bar::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: #7c3aed;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+:root .handwriting-studio .handwriting-formula-assist button {
+  min-height: 36px;
+  color: #292432;
+  background: #fff9ef;
+  box-shadow: 0 3px 0 #d8cdb7;
+  border-color: #e7dcc7;
+}
+:root .handwriting-studio .handwriting-formula-assist button:last-child {
+  color: #fff9ef;
+  background: var(--notebook-purple);
+  border-color: #7c3aed;
+  box-shadow: 0 3px 0 #51259b;
 }
 .notebook-file-tools__label {
   display: none;

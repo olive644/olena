@@ -108,7 +108,13 @@ export function HandwritingStickyNote({
             onDragEnd();
           }}
         >
-          {sticky.kind === "text" ? "Texto" : sticky.checklist?.length ? "Checklist" : "Nota"}
+          {sticky.formula
+            ? "Fórmula"
+            : sticky.kind === "text"
+              ? "Texto"
+              : sticky.checklist?.length
+                ? "Checklist"
+                : "Nota"}
         </span>
         <button
           type="button"

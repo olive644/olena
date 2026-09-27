@@ -1,12 +1,14 @@
 import type { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
-import type { StudyNotebook } from "../domain/workspace";
+import type { StudyNotebook, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
-import { PaperMoonMark } from "./notebook-paper-tools";
+import { notebookPaperTabs, PaperMoonMark } from "./notebook-paper-tools";
 import "./notebook-folder.css";
 
 export function NotebookFolder({
   folder,
   notebooks,
+  pages,
+  subjects,
   onOpen,
   open,
   onToggle,
@@ -16,6 +18,8 @@ export function NotebookFolder({
 }: {
   folder: StudyNotebook;
   notebooks: StudyNotebook[];
+  pages: WorkspaceState["notes"];
+  subjects: WorkspaceState["subjects"];
   onOpen: (book: StudyNotebook) => void;
   open: boolean;
   onToggle: () => void;
@@ -27,6 +31,7 @@ export function NotebookFolder({
   return (
     <div
       data-folder-drop={folder.id}
+      data-book-count={books.length}
       className={`paper-folder ${open ? "is-open" : ""} ${drag.targetId === folder.id ? "is-drop-target" : ""}`}
     >
       <div className="paper-folder-stage">
@@ -44,7 +49,15 @@ export function NotebookFolder({
               {...drag.handlers(book.id)}
               onClick={() => onOpen(book)}
             >
-              <NotebookCover subjectColor="#7c3aed" title={book.title} />
+              <NotebookCover
+                subjectColor="#7c3aed"
+                title={book.title}
+                tabs={notebookPaperTabs(
+                  book,
+                  book.pageIds.flatMap((id) => pages.find((page) => page.id === id) ?? []),
+                  subjects,
+                )}
+              />
             </button>
           ))}
           <button
@@ -57,17 +70,12 @@ export function NotebookFolder({
           >
             <span className="paper-folder-front" aria-hidden="true">
               <span className="paper-folder-moon">
-                <PaperMoonMark compact motif="moon" />
+                <PaperMoonMark compact motif="moon" stitched />
               </span>
               <span className="paper-folder-sun">
-                <PaperMoonMark compact motif="sun" />
+                <PaperMoonMark compact motif="sun" stitched />
               </span>
-              <svg className="paper-folder-star" viewBox="0 0 44 44">
-                <path d="m22 2 6 12 14 2-10 10 2 15-12-7-12 7 2-15L2 16l14-2Z" fill="#fff9ef" />
-                <path d="m22 7 5 10 11 1-8 8 2 11-10-6-10 6 2-11-8-8 11-1Z" fill="#facc15" />
-                <path d="m22 7 0 15-16-4 11-1Z" fill="#ffe88d" />
-                <path d="m22 22 10 15-2-11 8-8Z" fill="#d4a817" />
-              </svg>
+              <img className="paper-folder-star" src="/favicon-star.svg" alt="" draggable={false} />
               <span className="paper-folder-label">{folder.title}</span>
               {selectionMode && (
                 <span className={`notebook-card__check ${selected ? "is-selected" : ""}`}>
