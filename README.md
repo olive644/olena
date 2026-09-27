@@ -14,6 +14,10 @@ A fronteira segura da futura Helena inteligente já possui contrato e testes, ma
 provedor conectado. Consulte [`docs/AI_BACKEND.md`](docs/AI_BACKEND.md) para o fluxo de dados, o
 modelo de ameaça e as decisões necessárias antes da ativação.
 
+## Segurança
+
+Encontrou uma vulnerabilidade? Não abra uma issue pública: veja [`SECURITY.md`](SECURITY.md) para relatar em privado.
+
 ## Licença
 
 Software proprietário. Todos os direitos reservados — veja [`LICENSE`](LICENSE). O código está
