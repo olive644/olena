@@ -58,6 +58,7 @@ import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
 import { recognizeShape } from "./handwriting-shapes";
+import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
 import { useSelectionGesture } from "../hooks/use-selection-gesture";
@@ -206,6 +207,7 @@ export function HandwritingStudio({
   const {
     stabilization,
     shapeSnap,
+    inkPrediction,
     penOnly,
     textAutoCorrect,
     coordinateMeasurements,
@@ -329,6 +331,8 @@ export function HandwritingStudio({
   // rabisco e o resto do gesto é ignorado até a caneta ser solta.
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const shapeSnappedRef = useRef(false);
+  // Ponta prevista pelo navegador: só é desenhada na tela, nunca entra no traço.
+  const predictedRef = useRef<HandwritingPoint[]>([]);
   const palmRef = useRef<PalmState>({ penDown: false, lastPenAt: null });
   const stickyDragRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const stickyResizeRef = useRef<{
@@ -1056,7 +1060,7 @@ export function HandwritingStudio({
     if (!context) return;
     const stroke = liveStrokeRef.current;
     if (stroke) {
-      drawStroke(context, stroke);
+      drawStroke(context, withPredictedTail(stroke, predictedRef.current));
       if (writingWindowOpen) paintWritingWindowLive(stroke);
     }
     paintReveals(context);
@@ -1092,6 +1096,7 @@ export function HandwritingStudio({
   }
 
   function clearLive() {
+    predictedRef.current = [];
     if (liveFrameRef.current !== null) cancelAnimationFrame(liveFrameRef.current);
     liveFrameRef.current = null;
     // Revelações de colegas continuam: repinta a camada só com elas, no mesmo quadro.
@@ -1342,6 +1347,15 @@ export function HandwritingStudio({
     }, []);
     if (added.length === 0) return;
     liveStroke.points.push(...added);
+    predictedRef.current =
+      inkPrediction && (liveStroke.tool === "pen" || liveStroke.tool === "highlighter")
+        ? predictedTail(
+            liveStroke.points,
+            (event.nativeEvent.getPredictedEvents?.() ?? []).map((sample) =>
+              canvasPoint(canvas, sample, bounds),
+            ),
+          )
+        : [];
     scheduleLivePaint();
     clearTimeout(holdTimerRef.current);
     if (shapeSnap && (activeToolRef.current === "pen" || activeToolRef.current === "highlighter")) {
@@ -1356,6 +1370,7 @@ export function HandwritingStudio({
     if (!shape) return;
     live.points = shape.points;
     liveStabilizerRef.current = null;
+    predictedRef.current = [];
     shapeSnappedRef.current = true;
     scheduleLivePaint();
   }
