@@ -64,6 +64,8 @@ export function HandwritingPaperPicker({
                   ["blank", "Em branco"],
                   ["weekly", "Plano semanal"],
                   ["calendar", "Calendário"],
+                  ["cornell", "Cornell"],
+                  ["staff", "Pauta musical"],
                 ] as const
               ).map(([value, label]) => (
                 <button

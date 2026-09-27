@@ -1217,3 +1217,12 @@ Limites que se cruzam:
 - Nova ação do domínio `notebook/page-reordered` (`notebookId`, `pageId`, `toIndex`): tira a folha do lugar e a insere na posição alvo, preservando o conteúdo de todas (só mexe em `pageIds`, igual a `notebook/page-moved`). Fora dos limites, é ajustada para o começo ou o fim; caderno ou folha desconhecidos não mudam nada.
 - O arrastar usa eventos de ponteiro (funciona com o dedo, a caneta ou o mouse): ao soltar mais longe da posição inicial que uma folga pequena, a miniatura mais próxima do ponto de soltar vira o alvo; abaixo disso continua sendo um toque normal, que abre a folha.
 - Testes: `workspace.test.ts` (mover para o fim, para o começo, fora dos limites e com caderno inexistente) e `notebook-page-index.test.tsx` (arrastar reordena sem abrir a folha; um toque curto sem arrastar continua abrindo).
+
+## Papéis Cornell e pauta musical (2026-09-27)
+
+- Dois papéis novos no seletor de papel do editor, ao lado de pautado/quadriculado/pontilhado/em branco/quadro amplo/plano semanal/calendário:
+  - **Cornell**: cabeçalho com tópico e data, coluna estreita de "Pistas" à esquerda, coluna larga de "Anotações" à direita e uma faixa de "Resumo" embaixo, cada área com suas próprias pautas finas. É só o desenho de fundo (como os outros papéis); o método de estudo em si (preencher pistas durante a aula e resumir depois) fica por conta de quem usa.
+  - **Pauta musical**: pautas de 5 linhas repetidas pela folha, no espaçamento de um caderno de música de papel, sem clave nem números (só as linhas guia).
+  - Novo arquivo `handwriting-template-paper.ts`, no mesmo padrão do `handwriting-planner-paper.ts` (plano semanal e calendário) já existente: recebe o contexto 2D, a cor da folha e o tamanho do bitmap, desenha em coordenadas fixas de 1200×1600.
+  - A validação local de documentos (`isHandwritingDocument`) precisou incluir os dois nomes novos na lista de papéis aceitos; sem isso um documento salvo com Cornell ou pauta musical seria rejeitado como inválido ao recarregar.
+- Testes: `handwriting-template-paper.test.ts` (as duas funções de desenho não travam em qualquer cor e tamanho de folha, e `drawPaper` encaminha para elas), `handwriting-paper-picker.test.tsx` (os dois botões aparecem com o nome certo) e `local-workspace.test.ts` (os dois nomes são aceitos pela validação, e um nome desconhecido continua rejeitado).

@@ -10,7 +10,7 @@ export type HandwritingPoint = {
 export const SHARED_PAGE_PLACEHOLDER =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jF9sAAAAASUVORK5CYII=";
 export type HandwritingPaper =
-  "ruled" | "grid" | "dots" | "blank" | "board" | "weekly" | "calendar";
+  "ruled" | "grid" | "dots" | "blank" | "board" | "weekly" | "calendar" | "cornell" | "staff";
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
   brush?: "fine" | "ink" | "soft";

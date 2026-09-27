@@ -214,9 +214,19 @@ export function isHandwritingDocument(value: unknown): boolean {
   )
     return false;
   if (
-    !["ruled", "grid", "dots", "blank", "board", "weekly", "calendar", "night", "aged"].includes(
-      String(value["paper"]),
-    )
+    ![
+      "ruled",
+      "grid",
+      "dots",
+      "blank",
+      "board",
+      "weekly",
+      "calendar",
+      "cornell",
+      "staff",
+      "night",
+      "aged",
+    ].includes(String(value["paper"]))
   )
     return false;
   if (
