@@ -16,6 +16,7 @@ function toolGroupProps(overrides: Partial<Parameters<typeof HandwritingToolGrou
     onToggleText: vi.fn(),
     onAddSticky: vi.fn(),
     onToggleWritingWindow: vi.fn(),
+    onOpenShapeInsert: vi.fn(),
     ...overrides,
   };
 }
@@ -79,6 +80,13 @@ describe("grupo de instrumentos", () => {
     expect(props.onToggleText).toHaveBeenCalledTimes(1);
     expect(props.onAddSticky).toHaveBeenCalledTimes(1);
     expect(props.onToggleWritingWindow).toHaveBeenCalledTimes(1);
+  });
+
+  it("abre o menu de inserir forma", () => {
+    const props = toolGroupProps();
+    render(<HandwritingToolGroup {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Inserir forma" }));
+    expect(props.onOpenShapeInsert).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -146,6 +154,7 @@ describe("ações da seleção", () => {
       <HandwritingSelectionActions {...selectionProps({ selectedIds: ["a"] })} />,
     );
     expect(screen.getByText("1 item selecionado")).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toBe("1 item selecionado");
     rerender(<HandwritingSelectionActions {...selectionProps({ selectedIds: ["a", "b"] })} />);
     expect(screen.getByText("2 itens selecionados")).toBeTruthy();
   });

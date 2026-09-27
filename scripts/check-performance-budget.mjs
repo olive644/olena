@@ -133,9 +133,11 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // under 1 KiB more; the ceiling moves to 888 KiB. The pen hover preview and the
 // twist-driven nib angle fit under that same ceiling with no bump needed. The IndexedDB
 // mirror (stage 1 of the storage migration) adds about 1.6 KiB more (887.6 KiB measured);
-// persisted-save confirmation and cover selection add about 1.5 KiB without dependencies.
-// The combined ceiling is 893 KiB, leaving margin for build variance.
-const MAX_TOTAL_JS_BYTES = 893 * 1024;
+// the ceiling moves to 891 KiB. Persisted-save confirmation and cover selection add about
+// 1.5 KiB more; the ceiling moves to 893 KiB. Keyboard shape insertion and the
+// accessibility live regions (selection count, page index announcements) add about 3 KiB
+// more; the ceiling moves to 897 KiB, leaving margin for build variance.
+const MAX_TOTAL_JS_BYTES = 897 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

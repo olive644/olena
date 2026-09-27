@@ -54,6 +54,10 @@ export function NotebookPageIndex({
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  // Aviso só para leitor de tela: mover, arrastar e favoritar já têm retorno visual (a
+  // posição muda na tela), mas quem usa leitor de tela precisa ouvir o resultado sem ter
+  // que navegar de volta até a miniatura para conferir.
+  const [announcement, setAnnouncement] = useState("");
 
   const favorites = favoritePageIds ?? [];
   // Arrastar reordena pela posição entre todas as folhas; com o filtro de favoritas a lista
@@ -119,7 +123,10 @@ export function NotebookPageIndex({
     if (active.moved) {
       suppressClickRef.current = true;
       const target = dropIndex ?? active.fromIndex;
-      if (target !== active.fromIndex) onReorder?.(active.pageId, target);
+      if (target !== active.fromIndex) {
+        onReorder?.(active.pageId, target);
+        setAnnouncement(`Folha movida para a posição ${target + 1}.`);
+      }
     }
     endDrag();
   }
@@ -135,6 +142,9 @@ export function NotebookPageIndex({
       }}
       onKeyDown={(event) => event.stopPropagation()}
     >
+      <p className="visually-hidden" role="status" aria-live="polite">
+        {announcement}
+      </p>
       <header>
         <div>
           <NotebookToolIcon name="index" />
@@ -197,7 +207,14 @@ export function NotebookPageIndex({
                       ? `Tirar a folha ${index + 1} dos favoritos`
                       : `Favoritar a folha ${index + 1}`
                   }
-                  onClick={() => onToggleFavorite(page.id)}
+                  onClick={() => {
+                    onToggleFavorite(page.id);
+                    setAnnouncement(
+                      favorited
+                        ? `Folha ${index + 1} não é mais favorita.`
+                        : `Folha ${index + 1} favoritada.`,
+                    );
+                  }}
                 >
                   {favorited ? "★" : "☆"}
                 </button>
@@ -238,7 +255,10 @@ export function NotebookPageIndex({
                     type="button"
                     aria-label={`Mover a folha ${index + 1} para trás`}
                     disabled={index === 0}
-                    onClick={() => onMove(page.id, -1)}
+                    onClick={() => {
+                      onMove(page.id, -1);
+                      setAnnouncement(`Folha movida para a posição ${index}.`);
+                    }}
                   >
                     <img src="/paper-arrow.svg" alt="" className="is-previous" />
                   </button>
@@ -246,7 +266,10 @@ export function NotebookPageIndex({
                     type="button"
                     aria-label={`Mover a folha ${index + 1} para frente`}
                     disabled={index === pages.length - 1}
-                    onClick={() => onMove(page.id, 1)}
+                    onClick={() => {
+                      onMove(page.id, 1);
+                      setAnnouncement(`Folha movida para a posição ${index + 2}.`);
+                    }}
                   >
                     <img src="/paper-arrow.svg" alt="" />
                   </button>
