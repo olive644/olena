@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { eraseInkArea, eraseStrokeArea } from "./handwriting-eraser";
+import { eraseInkArea, eraseStrokeArea, eraseWholeStrokes } from "./handwriting-eraser";
 import type { Stroke } from "./handwriting-types";
 
 const point = (x: number, y: number, pressure = 0.5) => ({ x, y, pressure });
@@ -57,4 +57,20 @@ it("remove um ponto isolado e um traço coberto por inteiro", () => {
     eraseStrokeArea({ ...line, points: [point(150, 100)] }, [point(150, 100)], 20, nextId),
   ).toEqual([]);
   expect(eraseStrokeArea(line, [point(0, 100), point(300, 100)], 20, nextId)).toEqual([]);
+});
+
+it("no modo traço inteiro, tocar em qualquer ponto remove o traço todo", () => {
+  const other: Stroke = { ...line, id: "other", points: [point(0, 300), point(300, 300)] };
+  const result = eraseWholeStrokes([line, other], [point(150, 100)], 20);
+  expect(result).toEqual([other]);
+});
+
+it("no modo traço inteiro, mantém a referência quando nada é tocado", () => {
+  const strokes = [line];
+  expect(eraseWholeStrokes(strokes, [point(500, 500)], 20)).toBe(strokes);
+});
+
+it("no modo traço inteiro, remove todos os traços que a borracha passou por cima", () => {
+  const second: Stroke = { ...line, id: "second", points: [point(0, 100), point(300, 100)] };
+  expect(eraseWholeStrokes([line, second], [point(0, 100), point(300, 100)], 5)).toEqual([]);
 });

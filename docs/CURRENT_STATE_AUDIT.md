@@ -1193,3 +1193,14 @@ Limites que se cruzam:
 - No celular, manter um caderno arrastado junto à borda da prateleira agora rola a própria prateleira continuamente. Isso permite alcançar uma pasta que saiu da área visível depois da ampliação.
 - Tocar de novo na ferramenta ativa volta para a mão. Uma seleção existente pode ser arrastada no modo mão por mouse, caneta ou toque; o botão Mover da seleção também entra nesse modo. A barra de fórmula permanece clara inclusive no tema escuro e os controles de histórico ficam agrupados.
 - E2E cobre capa ampliada com abas no desktop e mobile, viagem ao preview, ferramenta mão, objetos selecionados, fórmula e layout.
+
+## Borracha por traço inteiro, setas e polígonos (2026-09-27)
+
+- Novo modo de borracha: além do corte por área existente, um botão "Traço inteiro" na barra de opções (só aparece com a borracha ativa) faz qualquer toque remover o traço de tinta inteiro em vez de recortar só o trecho tocado (`eraseWholeStrokes` em `handwriting-eraser.ts`). O corte por área continua sendo o padrão; a escolha não é uma preferência salva, só o estado da sessão.
+- O "segurar para acertar" agora também reconhece seta (cabo reto com uma ponta em V, desenhada sem levantar a caneta: ida até a ponta, farpa de um lado, volta à ponta, farpa do outro) e polígono de 5 a 8 lados (pentágono, hexágono etc., mesma ideia do triângulo já existente, com tolerância mais apertada e uma checagem de que os lados não se cruzam, para não confundir com um rabisco ou com uma elipse) em `handwriting-shapes.ts`.
+- Testes novos: `handwriting-eraser.test.ts` (traço inteiro remove tudo que toca e preserva referência quando não toca nada), `handwriting-shapes.test.ts` (seta na horizontal e na vertical, pentágono), `handwriting-ink-options.test.tsx` (alternância do modo da borracha).
+
+## Opacidade do marca-texto (2026-09-27)
+
+- O marca-texto já aceitava qualquer cor (a paleta de tinta não tem restrição por ferramenta); o que faltava era a opacidade, fixa em 30%. Agora um controle deslizante (10% a 70%) aparece na barra de opções só com o marca-texto ativo, e o valor escolhido é gravado no próprio traço (`HandwritingStroke.opacity`, opcional). Traços antigos sem o campo continuam em 30%, o mesmo valor de sempre.
+- Testes: `handwriting-canvas-highlighter.test.ts` (a opacidade do traço manda no desenho, com e sem o campo, e não afeta a caneta) e `handwriting-ink-options.test.tsx` (o controle aparece só para o marca-texto e manda o valor certo).

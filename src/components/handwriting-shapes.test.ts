@@ -102,6 +102,59 @@ describe("reconhecer formas", () => {
     expect(shape?.kind).toBe("triangle");
   });
 
+  it("um pentágono vira polígono", () => {
+    const shape = recognizeShape(
+      trace(
+        [
+          [120, 120],
+          [320, 100],
+          [380, 260],
+          [220, 380],
+          [80, 260],
+          [120, 125],
+        ],
+        2,
+      ),
+    );
+    expect(shape?.kind).toBe("polygon");
+    expect(shape!.points.length).toBeGreaterThan(20);
+  });
+
+  it("uma seta com cabo e farpas vira seta", () => {
+    const shape = recognizeShape(
+      trace(
+        [
+          [100, 300],
+          [400, 300],
+          [340, 260],
+          [400, 300],
+          [340, 340],
+        ],
+        1,
+      ),
+    );
+    expect(shape?.kind).toBe("arrow");
+    const xs = shape!.points.map((point) => point.x);
+    expect(Math.min(...xs)).toBeLessThan(110);
+    expect(Math.max(...xs)).toBeGreaterThan(390);
+  });
+
+  it("uma seta na vertical, de baixo para cima, também é reconhecida", () => {
+    const shape = recognizeShape(
+      trace(
+        [
+          [300, 500],
+          [300, 150],
+          [340, 210],
+          [300, 150],
+          [260, 210],
+        ],
+        1,
+      ),
+    );
+    expect(shape?.kind).toBe("arrow");
+  });
+
   it("um rabisco, uma letra curta e uma curva aberta não viram forma", () => {
     expect(
       recognizeShape(

@@ -169,6 +169,74 @@ export function eraseStrokeArea(
   return fragments.map((points) => ({ ...stroke, id: nextId(), points }));
 }
 
+// Só diz se a borracha encostou no traço, sem cortar nada: usado no modo "traço inteiro".
+function strokeIntersectsErase(
+  stroke: Stroke,
+  path: readonly HandwritingPoint[],
+  radius: number,
+): boolean {
+  if (path.length === 0 || stroke.points.length === 0) return false;
+  const box = bounds(stroke);
+  const padding = radius + stroke.width * 2;
+  let touches = false;
+  for (let i = 0; i < path.length; i++) {
+    const a = path[i]!;
+    const b = path[i + 1] ?? a;
+    if (
+      Math.max(a.x, b.x) + padding >= box.left &&
+      Math.min(a.x, b.x) - padding <= box.right &&
+      Math.max(a.y, b.y) + padding >= box.top &&
+      Math.min(a.y, b.y) - padding <= box.bottom
+    ) {
+      touches = true;
+      break;
+    }
+  }
+  if (!touches) return false;
+  const radii =
+    stroke.tool === "highlighter"
+      ? stroke.points.map(() => stroke.width / 2)
+      : stroke.brush === "fine"
+        ? stroke.points.map(() => (stroke.width * 0.65) / 2)
+        : strokeRadii(stroke, stroke.points);
+  const count = Math.max(1, stroke.points.length - 1);
+  for (let index = 0; index < count; index++) {
+    const a = stroke.points[index]!;
+    const b = stroke.points[index + 1] ?? a;
+    const reach = radius + Math.max(radii[index]!, radii[index + 1] ?? radii[index]!);
+    for (let step = 0; step < Math.max(1, path.length - 1); step++) {
+      const c = path[step]!;
+      const d = path[step + 1] ?? c;
+      if (
+        Math.max(a.x, b.x) < Math.min(c.x, d.x) - reach ||
+        Math.min(a.x, b.x) > Math.max(c.x, d.x) + reach ||
+        Math.max(a.y, b.y) < Math.min(c.y, d.y) - reach ||
+        Math.min(a.y, b.y) > Math.max(c.y, d.y) + reach
+      )
+        continue;
+      if (capsule(a, b, c, d, reach).length > 0) return true;
+    }
+  }
+  return false;
+}
+
+// Modo "traço inteiro": em vez de recortar só o pedaço tocado, remove o traço todo que a
+// borracha encostou, como apagar uma linha inteira de um quadro branco.
+export function eraseWholeStrokes(
+  strokes: Stroke[],
+  path: readonly HandwritingPoint[],
+  radius: number,
+): Stroke[] {
+  if (path.length === 0) return strokes;
+  let changed = false;
+  const kept = strokes.filter((stroke) => {
+    const hit = strokeIntersectsErase(stroke, path, radius);
+    if (hit) changed = true;
+    return !hit;
+  });
+  return changed ? kept : strokes;
+}
+
 export function eraseInkArea(
   strokes: Stroke[],
   path: readonly HandwritingPoint[],

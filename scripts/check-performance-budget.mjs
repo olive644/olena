@@ -126,7 +126,9 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // papercraft folders add 14.2 KiB to lazy routes (873.6 KiB measured on Windows).
 // No new dependency. Initial JavaScript stays 269.8 KiB; retain its existing limit.
 // Ink prediction adds about 1 KiB to the lazy studio chunk; the ceiling is 880 KiB.
-const MAX_TOTAL_JS_BYTES = 880 * 1024;
+// Whole-stroke eraser mode and arrow/polygon shape recognition add under 1 KiB more;
+// the ceiling moves to 882 KiB.
+const MAX_TOTAL_JS_BYTES = 882 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
