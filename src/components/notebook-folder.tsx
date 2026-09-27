@@ -52,6 +52,7 @@ export function NotebookFolder({
               <NotebookCover
                 subjectColor="#7c3aed"
                 title={book.title}
+                coverStyle={book.coverStyle}
                 tabs={notebookPaperTabs(
                   book,
                   book.pageIds.flatMap((id) => pages.find((page) => page.id === id) ?? []),
@@ -76,7 +77,6 @@ export function NotebookFolder({
                 <PaperMoonMark compact motif="sun" stitched />
               </span>
               <img className="paper-folder-star" src="/favicon-star.svg" alt="" draggable={false} />
-              <span className="paper-folder-label">{folder.title}</span>
               {selectionMode && (
                 <span className={`notebook-card__check ${selected ? "is-selected" : ""}`}>
                   {selected ? "✓" : ""}

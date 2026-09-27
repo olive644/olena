@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MAX_NOTE_ASSET_DATA_URL_LENGTH } from "../data/local-workspace";
 import { encodeHandwritingDraft } from "../data/handwriting-draft";
+import { confirmNotebookSave } from "../data/notebook-save-confirmation";
 import type { HandwritingDocument } from "../domain/handwriting";
 import type { NoteAsset, StudyNote } from "../domain/workspace";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
@@ -636,6 +637,7 @@ export function NoteCaptureTools({
                   key={editingAsset?.id ?? "new"}
                   {...(initialHandwriting ? { initialDocument: initialHandwriting } : {})}
                   onSave={saveDocument}
+                  onConfirmSave={(document) => confirmNotebookSave(draftPageKey, document)}
                   onAutosave={saveDocument}
                   onClose={() => close(true)}
                   onDirtyChange={setHandwritingDirty}

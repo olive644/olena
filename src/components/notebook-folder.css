@@ -201,8 +201,14 @@
   opacity: 1;
   touch-action: none;
   user-select: none;
-  transition: transform 620ms cubic-bezier(0.22, 1.18, 0.36, 1);
-  transition-delay: 0ms;
+  --folder-book-delay: 0ms;
+}
+/* Preserve object motion against the shared paper-button transition rule. */
+.app-shell .paper-folder .paper-folder-art button.paper-folder-book {
+  transition-property: transform;
+  transition-duration: 620ms;
+  transition-timing-function: cubic-bezier(0.22, 1.18, 0.36, 1);
+  transition-delay: var(--folder-book-delay);
 }
 .notebooks-main .notebook-shelf .paper-folder-book .book-cover {
   width: 100%;
@@ -222,11 +228,11 @@
 }
 .paper-folder .book-1 {
   transform: translate(-42%, -10px) rotate(3deg);
-  transition-delay: 45ms;
+  --folder-book-delay: 45ms;
 }
 .paper-folder .book-2 {
   transform: translate(-35%, 2px) rotate(12deg);
-  transition-delay: 90ms;
+  --folder-book-delay: 90ms;
 }
 .paper-folder.is-open .paper-folder-front {
   transform: rotateX(-20deg);
@@ -234,15 +240,15 @@
 }
 .paper-folder.is-open .paper-folder-book {
   transform: translate(calc(-50% - 22px), -38px) rotate(-12deg);
-  transition-delay: 100ms;
+  --folder-book-delay: 100ms;
 }
 .paper-folder.is-open .book-1 {
   transform: translate(-50%, -57px) rotate(0);
-  transition-delay: 155ms;
+  --folder-book-delay: 155ms;
 }
 .paper-folder.is-open .book-2 {
   transform: translate(calc(-50% + 22px), -34px) rotate(12deg);
-  transition-delay: 210ms;
+  --folder-book-delay: 210ms;
 }
 .paper-folder.is-open[data-book-count="1"] .book-0 {
   transform: translate(-50%, -48px) rotate(0);
@@ -324,7 +330,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .paper-folder-front,
-  .paper-folder-book {
+  .app-shell .paper-folder .paper-folder-art button.paper-folder-book {
     transition: none;
   }
 }

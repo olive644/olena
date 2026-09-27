@@ -376,6 +376,9 @@ function isNotebook(value: unknown): boolean {
             tab["position"] <= 1,
         ))) &&
     (value["kind"] === undefined || value["kind"] === "folder" || value["kind"] === "collection") &&
+    (value["coverStyle"] === undefined ||
+      value["coverStyle"] === "helena-estrelas" ||
+      value["coverStyle"] === "oliver-estrelas") &&
     (value["shelf"] === undefined ||
       (Number.isInteger(value["shelf"]) && Number(value["shelf"]) >= 0)) &&
     (value["parentId"] === undefined || isString(value["parentId"])) &&

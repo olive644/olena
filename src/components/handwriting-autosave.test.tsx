@@ -1,13 +1,42 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { HandwritingStudio } from "./handwriting-studio";
 import { isHandwritingDocument } from "../data/local-workspace";
+import * as exportTools from "./handwriting-export";
 
 afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   localStorage.clear();
+});
+
+it("confirma o salvamento manual e não confirma quando salvar falha", async () => {
+  vi.spyOn(exportTools, "exportPage").mockReturnValue("data:image/png;base64,YQ==");
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
+  vi.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue("data:image/png;base64,YQ==");
+  const onSave = vi.fn();
+  const onDirtyChange = vi.fn();
+  render(
+    <HandwritingStudio
+      draftKey="manual-confirmation"
+      onClose={vi.fn()}
+      onSave={onSave}
+      onDirtyChange={onDirtyChange}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Salvar caderno" }));
+  expect(onSave).toHaveBeenCalledTimes(1);
+  await waitFor(() =>
+    expect(screen.getByText("Folha salva no caderno").getAttribute("role")).toBe("status"),
+  );
+  expect(onDirtyChange).toHaveBeenLastCalledWith(false);
+  onSave.mockImplementation(() => {
+    throw new Error("Sem espaço para salvar");
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar caderno" }));
+  expect(screen.queryByText("Folha salva no caderno")).toBeNull();
+  expect(screen.getByText("Sem espaço para salvar")).toBeTruthy();
 });
 
 it("waits for imported images and retries autosave when they finish loading", async () => {
