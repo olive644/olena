@@ -1,5 +1,23 @@
 # Auditoria do estado atual
 
+## Confirmação de salvamento, capas e movimento das pastas
+
+O salvamento manual confirma a versão persistida no armazenamento local antes de
+mostrar sucesso por quatro segundos; falhas preservam o rascunho. Não representa
+confirmação de sincronização em nuvem. A comparação normaliza a compactação dos traços.
+O filtro Só favoritas mantém texto escuro sobre papel claro em ambos os temas.
+
+Pastas mantêm as dimensões aprovadas e nome apenas abaixo. A transição dos livros
+tem prioridade sobre o estilo global dos botões, com retorno animado e suporte a
+movimento reduzido. Personalizar oferece a capa original e Oliver e as estrelas;
+a escolha persiste em coverStyle e acompanha vitrine, pasta, arraste e viagem.
+
+GeoGebra foi examinado no commit e7fb8b166e9c1489e31a5705134271a39c69b830,
+em checkout separado, sem incorporar código ou carregar serviços externos.
+A incorporação aguarda definição de uso comercial/licença pelo proprietário.
+Referências: https://www.geogebra.org/license e
+https://geogebra.github.io/docs/reference/en/GeoGebra_Apps_Embedding/.
+
 ## Vitrine e pastas brancas
 
 A prateleira agora acompanha uma altura comum para os objetos. Nomes, contagens

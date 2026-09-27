@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+`confirmNotebookSave` compara o documento normalizado com o armazenamento após
+o evento de gravação ou a verificação inicial. O editor só confirma salvamento
+manual após esse reconhecimento, sem prometer sincronização em nuvem.
+`StudyNotebook.coverStyle` é opcional, mantendo a capa Helena como padrão para
+dados antigos. A ação notebook/organized também altera a capa em Personalizar.
+A regra específica de transição de paper-folder-book protege a animação contra
+o shorthand global de botões; não alterar o tamanho aprovado das pastas.
+
 Pastas não exibem mais o painel inferior de guardar, retirar e desfazer. Abertura
 pelas miniaturas e arrastar continuam; a seleção da vitrine inclui pastas, também
 em Selecionar tudo. Excluir a pasta conserva os cadernos conforme o reducer.

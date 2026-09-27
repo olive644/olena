@@ -741,6 +741,9 @@ export function NotesView({
               >
                 <NotebookArtwork
                   subjectColor="#7c3aed"
+                  coverStyle={
+                    workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.coverStyle
+                  }
                   title={
                     workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
                     "Caderno"
@@ -918,6 +921,7 @@ export function NotesView({
                                   "#7C3AED"
                                 }
                                 title={notebook.title}
+                                coverStyle={notebook.coverStyle}
                                 tabs={notebookPaperTabs(
                                   notebook,
                                   notebook.pageIds.flatMap(

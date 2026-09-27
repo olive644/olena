@@ -174,6 +174,7 @@ export function NotebookSpread({
   return (
     <div
       className="notebook-spread-workspace"
+      data-cover-style={notebook.coverStyle}
       style={
         {
           "--turn-duration": `${NOTEBOOK_TURN_MS}ms`,
@@ -194,6 +195,28 @@ export function NotebookSpread({
           >
             Ver folhas
           </button>
+          <label className="notebook-cover-choice">
+            Capa do caderno
+            <select
+              value={notebook.coverStyle ?? "helena-estrelas"}
+              disabled={busy}
+              onChange={(event) =>
+                dispatch({
+                  type: "notebook/organized",
+                  id: notebook.id,
+                  changes: {
+                    coverStyle:
+                      event.target.value === "oliver-estrelas"
+                        ? "oliver-estrelas"
+                        : "helena-estrelas",
+                  },
+                })
+              }
+            >
+              <option value="helena-estrelas">Helena e as estrelas</option>
+              <option value="oliver-estrelas">Oliver e as estrelas</option>
+            </select>
+          </label>
         </div>
       )}
       {showCover ? (
@@ -243,6 +266,7 @@ export function NotebookSpread({
             {...(participants ? { participants } : {})}
             subjectColor="#7C3AED"
             title={notebook.title}
+            coverStyle={notebook.coverStyle}
             tabs={notebookPaperTabs(notebook, pages, subjects)}
           />
         </button>

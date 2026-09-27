@@ -877,6 +877,7 @@
   border: 1px solid #d5ccba;
   border-radius: 4px 12px 4px 8px;
   background: #fff9ef;
+  color: #292432;
   box-shadow: 0 3px #d5ccba;
   font-weight: 600;
 }
@@ -884,7 +885,7 @@
 .notebook-page-index__favorites-filter[aria-pressed="true"] {
   border-color: #f5b700;
   box-shadow: 0 3px #f5b700;
-  color: #b98900;
+  color: #705100;
 }
 
 .notebook-page-index__open {

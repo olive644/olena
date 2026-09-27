@@ -5,6 +5,21 @@ import { createInitialWorkspace, workspaceReducer } from "../domain/workspace";
 import { isHandwritingDocument, loadWorkspace } from "../data/local-workspace";
 import { notebookPaperTabs } from "./notebook-paper-tools";
 
+it("conserva a capa Oliver ao salvar e recarregar o caderno", () => {
+  const original = fixture();
+  const state = workspaceReducer(original, {
+    type: "notebook/organized",
+    id: "book",
+    changes: { coverStyle: "oliver-estrelas" },
+  });
+  const loaded = loadWorkspace({ getItem: () => JSON.stringify(state) });
+  expect(loaded.notebooks[0]?.coverStyle).toBe("oliver-estrelas");
+  expect(loaded.notebooks[0]?.pageIds).toEqual(original.notebooks[0]?.pageIds);
+  expect(
+    loadWorkspace({ getItem: () => JSON.stringify(original) }).notebooks[0]?.coverStyle,
+  ).toBeUndefined();
+});
+
 it("edita o título no preview sem abrir editor e permite cancelar", () => {
   const state = fixture();
   const notebook = state.notebooks[0]!;

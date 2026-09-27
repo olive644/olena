@@ -1,0 +1,11 @@
+# Capa Oliver e as estrelas
+
+Arquivo: `public/notebook-covers/oliver-estrelas.webp`, 900 x 1350 pixels.
+Criada com imagegen integrado usando a capa Helena como referência de estilo
+e o avatar oficial Oliver como referência do personagem, sem sua moldura.
+Conversão WebP com Sharp, qualidade 85. A capa original Helena foi preservada.
+A proposta anterior com dois mascotes foi descartada a pedido do proprietário.
+
+## Prompt final
+
+Create a NEW portrait 2:3 notebook cover illustration for OlenaStudy. Reference image 1 is the existing Helena notebook cover: copy its premium crisp low-poly folded-paper visual language and flat front-facing print composition, NOT its character or purple palette. Reference image 2 shows Oliver: the OUTER blue circular ring is only an AVATAR FRAME and MUST BE COMPLETELY REMOVED, never draw a circle, ring, medallion or round border around Oliver. Oliver himself is a friendly cyan ice-blue faceted little creature with pale aqua face, black heart-shaped happy eyes, large black smiling mouth, small cyan hands. Reimagine Oliver as a complete freestanding cute papercraft creature with soft rounded but polygonal silhouette, short little body and feet, without ANY ring enclosing his face. Oliver is the ONLY character, no cat, no Helena. Design an entirely Oliver-themed cover: warm ivory upper field, tiny pale blue paper dots, folded-paper ocean-blue and turquoise asymmetric panels along the bottom and edges, a few angular icy-blue sparkles and small golden folded stars. Oliver centrally located in middle/lower cover, waving joyfully and holding one little folded golden star. Place face close to horizontal center and around 52 percent down, to remain fully visible above the app's existing bottom title label and away from its right-side clasp. Upper quarter calm ivory negative space. Bottom 18 percent only geometric blue facets, no body/face/text there. Crisp solid-color polygon planes and clean cut-paper edges matching the Helena cover, restrained dimensional paper shadows, no airbrushed gradients, no fuzzy textures. This is flat print artwork only, no notebook mockup, no spine, no clasp, no lettering, no label, no watermark. Absolutely no circular blue halo or avatar frame. Distinctively Oliver blue/cyan theme, playful professional finished composition.

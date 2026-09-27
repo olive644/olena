@@ -58,6 +58,7 @@ export type NotebookTab = {
 };
 
 export type StudyNotebook = {
+  coverStyle?: "helena-estrelas" | "oliver-estrelas";
   paperTabs?: NotebookTab[];
   subjectIds?: string[];
   dividerPosition?: "side" | "bottom";
@@ -179,7 +180,10 @@ export type WorkspaceAction =
       type: "notebook/organized";
       id: string;
       changes: Partial<
-        Pick<StudyNotebook, "subjectIds" | "dividerPosition" | "bookmarkedPageIds" | "paperTabs">
+        Pick<
+          StudyNotebook,
+          "subjectIds" | "dividerPosition" | "bookmarkedPageIds" | "paperTabs" | "coverStyle"
+        >
       >;
     }
   | { type: "note/subject-changed"; id: string; subjectId: string; updatedAt: string }

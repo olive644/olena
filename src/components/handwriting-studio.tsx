@@ -138,6 +138,7 @@ type HandwritingStudioProps = {
   onAutosave?: (dataUrl: string, document: HandwritingDocument) => void;
   onClose: () => void;
   onSave: (dataUrl: string, document: HandwritingDocument) => void;
+  onConfirmSave?: (document: HandwritingDocument) => Promise<void>;
   initialDocument?: HandwritingDocument;
   draftKey: string;
   onDirtyChange?: (dirty: boolean) => void;
@@ -164,6 +165,7 @@ export function HandwritingStudio({
   onAutosave,
   onClose,
   onSave,
+  onConfirmSave,
   initialDocument,
   draftKey,
   onDirtyChange,
@@ -490,6 +492,12 @@ export function HandwritingStudio({
     changePreference("writingWindowAutoFollow", value);
   const [writingWindowStatus, setWritingWindowStatus] = useState("Coluna 1, linha 1");
   const [draftStatus, setDraftStatus] = useState(recovered ? "Rascunho recuperado" : "");
+  const [saveConfirmation, setSaveConfirmation] = useState(0);
+  useEffect(() => {
+    if (!saveConfirmation) return;
+    const timer = window.setTimeout(() => setSaveConfirmation(0), 4000);
+    return () => window.clearTimeout(timer);
+  }, [saveConfirmation]);
 
   function selectPaperColor(nextColor: HandwritingPaperColor) {
     setPaperColor(nextColor);
@@ -2258,19 +2266,25 @@ export function HandwritingStudio({
     }
   }
 
-  function save(closeAfter = true) {
+  async function save(closeAfter = true) {
+    setSaveConfirmation(0);
     const canvas = canvasRef.current;
     if (!canvas) {
       setError("Aguarde a folha carregar antes de salvar.");
       return;
     }
     try {
+      const savedSnapshot = JSON.stringify(currentDocument);
+      const draftStorageKey = `helenastudy.handwriting.draft.${draftKey}`;
+      const draftBeforeSave = localStorage.getItem(draftStorageKey);
       const document = buildDocument();
       onSave(pageImage(), document);
-      localStorage.removeItem(`helenastudy.handwriting.draft.${draftKey}`);
-      setSavedBaseline(JSON.stringify(document));
-      onDirtyChange?.(false);
+      await onConfirmSave?.(document);
+      if (localStorage.getItem(draftStorageKey) === draftBeforeSave)
+        localStorage.removeItem(draftStorageKey);
+      setSavedBaseline(savedSnapshot);
       setDraftStatus("Folha salva no caderno");
+      setSaveConfirmation(Date.now());
       setError("");
       if (closeAfter) onClose();
     } catch (caught) {
@@ -3143,6 +3157,11 @@ export function HandwritingStudio({
       </div>
 
       {/Falha|Sem espaço/.test(draftStatus) && <p role="alert">{draftStatus}</p>}
+      {saveConfirmation > 0 && (
+        <p className="handwriting-save-status" role="status" aria-live="polite">
+          Folha salva no caderno
+        </p>
+      )}
       {preferenceError && <p role="status">{preferenceError}</p>}
       {error && <p className="capture-error">{error}</p>}
       {onSelectPage && onCreatePage && (

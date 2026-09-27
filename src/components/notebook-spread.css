@@ -340,6 +340,9 @@
 }
 .notebook-spread-options {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   justify-content: center;
   margin: 12px 0;
 }
@@ -1450,4 +1453,18 @@
     animation: none;
     transition: none;
   }
+}
+.notebook-cover-choice {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+  text-align: left;
+}
+.notebook-cover-choice select {
+  padding: 10px 12px;
+  border: 1px solid #d5ccba;
+  border-radius: 5px 13px 6px 11px;
+  background: #fff9ef;
+  color: #292432;
+  box-shadow: 0 3px #d5ccba;
 }

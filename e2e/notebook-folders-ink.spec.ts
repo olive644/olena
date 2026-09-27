@@ -14,7 +14,8 @@ test.beforeEach(async ({ page }) => {
     });
   await page.addInitScript((state) => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
-    localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
+    if (!localStorage.getItem("helenastudy.workspace.v1"))
+      localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
   }, workspace);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/cadernos");
@@ -145,6 +146,22 @@ for (const count of [1, 3]) {
       fullPage: true,
     });
     await page.emulateMedia({ reducedMotion: "no-preference" });
+    const animatedBook = folder.locator(".paper-folder-book").first();
+    await expect(animatedBook).toHaveCSS("transition-property", "transform");
+    await expect(animatedBook).toHaveCSS("transition-duration", "0.62s");
+    await expect(folder.locator(".paper-folder-label")).toHaveCount(0);
+    const openedTransform = await animatedBook.evaluate((node) => getComputedStyle(node).transform);
+    await folder.getByRole("button", { name: "Fechar pasta Constelação" }).click();
+    await expect
+      .poll(() => animatedBook.evaluate((node) => node.getAnimations().length))
+      .toBeGreaterThan(0);
+    await expect.poll(() => animatedBook.evaluate((node) => node.getAnimations().length)).toBe(0);
+    await expect(animatedBook).not.toHaveCSS("transform", openedTransform);
+    await folder.getByRole("button", { name: "Abrir pasta Constelação" }).click();
+    await expect
+      .poll(() => animatedBook.evaluate((node) => node.getAnimations().length))
+      .toBeGreaterThan(0);
+    await expect(animatedBook).toHaveCSS("transform", openedTransform);
     await folder.getByRole("button", { name: "Abrir Meu universo" }).click();
     const journey = page.locator(".notebook-journey");
     await expect(journey).toBeVisible();
@@ -153,6 +170,39 @@ for (const count of [1, 3]) {
     await expect(journey).toHaveCount(0);
   });
 }
+
+test("salvamento confirmado, índice legível e capa personalizável", async ({ page }, info) => {
+  await page.evaluate(() => localStorage.setItem("helenastudy.theme", "dark"));
+  await page.reload();
+  await page.getByRole("button", { name: "Abrir Caderno 1", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha" }).click();
+  const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+  await editor.getByRole("button", { name: "Salvar caderno", exact: true }).click();
+  await expect(editor.getByText("Folha salva no caderno", { exact: true })).toBeVisible();
+  await editor.getByRole("button", { name: "Fechar", exact: true }).click();
+  await page.getByRole("button", { name: "Índice de folhas", exact: true }).click();
+  const index = page.getByRole("dialog", { name: "Índice de folhas" });
+  await expect(index.getByRole("button", { name: "Só favoritas" })).toHaveCSS(
+    "color",
+    "rgb(41, 36, 50)",
+  );
+  await page.screenshot({ path: info.outputPath("indice-legivel.png") });
+  await index.getByRole("button", { name: "Fechar", exact: true }).click();
+  await page.getByRole("button", { name: "Personalizar", exact: true }).click();
+  await page
+    .getByRole("combobox", { name: "Capa do caderno", exact: true })
+    .selectOption("oliver-estrelas");
+  await expect(page.locator(".notebook-concept-cover .book-cover__concept")).toHaveAttribute(
+    "src",
+    "/notebook-covers/oliver-estrelas.webp",
+  );
+  await page.screenshot({ path: info.outputPath("capa-oliver.png") });
+  await page.reload();
+  await expect(page.locator('[data-notebook-drop="book-1"] .book-cover__concept')).toHaveAttribute(
+    "src",
+    "/notebook-covers/oliver-estrelas.webp",
+  );
+});
 
 test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, info) => {
   await page.evaluate(() => localStorage.setItem("helenastudy.theme", "dark"));

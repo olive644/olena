@@ -211,6 +211,7 @@ export function NotebookJourney({
   return createPortal(
     <div
       className="notebook-journey"
+      data-cover-style={journey.notebook.coverStyle}
       data-returning={journey.returning}
       data-closed={journey.closed ?? false}
       ref={carrier}
@@ -227,6 +228,7 @@ export function NotebookJourney({
         <NotebookCover
           subjectColor="#7C3AED"
           title={journey.notebook.title}
+          coverStyle={journey.notebook.coverStyle}
           tabs={journey.tabs}
           clasp={false}
         />

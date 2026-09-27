@@ -673,3 +673,18 @@
     transition: none;
   }
 }
+.handwriting-save-status {
+  position: fixed;
+  bottom: max(110px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  border: 1px solid #d5ccba;
+  border-radius: 5px 13px 6px 11px;
+  background: #fff9ef;
+  color: #292432;
+  box-shadow: 0 4px #d5ccba;
+  pointer-events: none;
+}
