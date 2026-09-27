@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Encadernação papercraft
+
+A capa mantém a ilustração aprovada da Helena e ganha contracapa rígida em camadas,
+lombada costurada, etiqueta de papel e cantoneiras menores. O fecho usa um botão
+dourado octogonal em vez da estrela, inclusive durante a abertura e no caderno aberto.
+O miolo tem bordas de folhas escalonadas, dobras discretas e pontos de encadernação.
+O espaço de criação à direita recebe o acabamento de guarda com bolso e cartão
+decorativos, sem alterar as áreas de escrita ou adicionar controles sem função.
+Os acabamentos usam cores sólidas da identidade original e não mudam os dados salvos.
+
 ## Folheamento da capa, criação e tinta por área
 
 Capa e folhas compartilham a curva de movimento e o giro de 520 ms. O verso

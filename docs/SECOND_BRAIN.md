@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+`notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
+regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
+compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita
+sem conteúdo; o bolso não é um controle. Não aplicar esse acabamento ao canvas do editor.
+
 O snapshot de `NotebookJourney` congela largura, altura e tipografia na origem,
 depois compensa a escala do transportador. A capa gira acima do miolo, com a folha
 esquerda no verso e a direita fixa sob ela. Ao fim, a folha fixa coincide com o verso.
