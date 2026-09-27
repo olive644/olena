@@ -844,8 +844,47 @@
 }
 
 .notebook-page-index li {
+  position: relative;
   display: grid;
   gap: 0.35rem;
+}
+
+.notebook-page-index__favorite {
+  position: absolute;
+  z-index: 1;
+  top: 0.55rem;
+  left: 0.55rem;
+  min-width: 32px;
+  min-height: 32px;
+  border: 1px solid #d5ccba;
+  border-radius: 4px 12px 4px 8px;
+  background: #fff9efcc;
+  color: #b98900;
+  font-size: 1.1rem;
+  line-height: 1;
+  box-shadow: 0 2px #d5ccba;
+}
+
+.notebook-page-index__favorite[aria-pressed="true"] {
+  color: #f5b700;
+  border-color: #f5b700;
+  box-shadow: 0 2px #f5b700;
+}
+
+.notebook-page-index__favorites-filter {
+  margin: 0 0 0.9rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #d5ccba;
+  border-radius: 4px 12px 4px 8px;
+  background: #fff9ef;
+  box-shadow: 0 3px #d5ccba;
+  font-weight: 600;
+}
+
+.notebook-page-index__favorites-filter[aria-pressed="true"] {
+  border-color: #f5b700;
+  box-shadow: 0 3px #f5b700;
+  color: #b98900;
 }
 
 .notebook-page-index__open {

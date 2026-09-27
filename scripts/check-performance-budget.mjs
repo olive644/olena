@@ -128,8 +128,9 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // Ink prediction adds about 1 KiB to the lazy studio chunk; the ceiling is 880 KiB.
 // Whole-stroke eraser mode and arrow/polygon shape recognition add under 1 KiB more;
 // the ceiling moves to 882 KiB. Highlighter opacity and drag-to-reorder in the page
-// index add about 1 KiB more; the ceiling moves to 884 KiB.
-const MAX_TOTAL_JS_BYTES = 884 * 1024;
+// index add about 1 KiB more; the ceiling moves to 884 KiB. Favoriting pages in the
+// index (star toggle and filter) adds under 1 KiB; the ceiling moves to 886 KiB.
+const MAX_TOTAL_JS_BYTES = 886 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
