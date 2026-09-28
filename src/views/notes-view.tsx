@@ -664,6 +664,8 @@ export function NotesView({
         <form
           method="dialog"
           onSubmit={(event) => {
+            if ((event.nativeEvent as SubmitEvent).submitter?.getAttribute("value") === "cancel")
+              return;
             event.preventDefault();
             createNotebook();
           }}
@@ -745,7 +747,7 @@ export function NotesView({
             />
           </label>
           <div className="notebook-detail-actions">
-            <button type="button" onClick={() => createDialog.current?.close()}>
+            <button type="submit" value="cancel">
               Cancelar
             </button>
             <button className="primary-button" type="submit" disabled={createFolder && folderLimit}>

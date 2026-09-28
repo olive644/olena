@@ -119,6 +119,8 @@ for (const count of [1, 3]) {
         folderId: "folder-preview",
       });
     }
+    // Sai do app antes de trocar os dois armazenamentos: evita uma escrita antiga do mount.
+    await page.goto("/robots.txt");
     await page.evaluate(
       async ({ state, dark }) => {
         const serialized = JSON.stringify(state);
@@ -143,7 +145,7 @@ for (const count of [1, 3]) {
       },
       { state: workspace, dark: count === 3 },
     );
-    await page.reload();
+    await page.goto("/cadernos");
     const folder = page.locator('[data-folder-drop="folder-preview"]');
     const folderRect = (await folder.boundingBox())!;
     expect(folderRect.width).toBe(info.project.name === "mobile" ? 164 : 220);
