@@ -12,7 +12,7 @@ describe("RoomQrCode", () => {
     expect(svg?.getAttribute("aria-label")).toMatch(/qr code/i);
     expect(svg?.getAttribute("width")).toBe("120");
     expect(container.querySelector(".helena-room-qr")).not.toBeNull();
-    expect(container.querySelector("img")?.getAttribute("src")).toBe("/room-crew-header.png");
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/helena-room-invite.png");
     const path = container.querySelector("path");
     expect(path?.getAttribute("d")?.length).toBeGreaterThan(0);
   });

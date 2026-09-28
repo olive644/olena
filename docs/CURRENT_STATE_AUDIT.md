@@ -1359,6 +1359,14 @@ Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note 
 
 # Convite da turma, 2026-09-28
 
+Decisão final: usar apenas Helena erguendo a placa, em
+`public/helena-room-invite.png`. Fundo externo transparente, QR SVG grafite
+com quatro módulos de margem branca dentro da placa, sem estilizar ou ocultar
+os módulos. Composição quadrada para celular e desktop. A turma permanece como
+estudo anterior, não como arte ativa. Prompt de extração pela ferramenta integrada:
+remover somente o fundo creme externo, preservar gata, placa branca opaca e pose;
+limpar resíduos e franjas externas sem alterar a geometria.
+
 Header do Modo Sala com cinco personagens sem molduras, QR vetorial separado e
 layout adaptável. Contraste branco sobre roxo preservado no hover selecionado.
 Arte criada pela ferramenta integrada de geração de imagens usando as cinco

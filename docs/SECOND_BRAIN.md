@@ -1,9 +1,10 @@
 # OlenaStudy: Second Brain
 
-O convite do lobby é um header responsivo com a turma principal em papel, sem
-molduras de avatar. `RoomQrCode` sobrepõe um SVG funcional à arte, nunca um QR
-gerado por imagem. Em contêineres estreitos o código mantém 144px e ganha espaço
-abaixo da arte para preservar a leitura. O card selecionado mantém roxo no hover.
+O convite do lobby usa a Helena sozinha erguendo uma placa, com fundo externo
+transparente. `RoomQrCode` sobrepõe um SVG grafite funcional dentro da placa,
+com margem branca de quatro módulos, nunca um QR gerado por imagem. O encaixe
+percentual mantém a proporção no mobile; no convite compacto do projetor a arte
+é ocultada para priorizar a leitura do código. O card selecionado mantém roxo no hover.
 
 `local-room-fullscreen` é um portal fora de `.app-shell`. As regras compartilhadas
 de `paper-buttons.css` incluem esse contêiner para manter acabamento, foco e toque.

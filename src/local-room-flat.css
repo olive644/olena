@@ -108,7 +108,7 @@
 }
 
 .local-room-share .helena-room-qr--holding {
-  width: 100%;
+  width: min(100%, 420px);
   margin-inline: auto;
 }
 
@@ -134,34 +134,28 @@
 }
 
 .helena-room-qr--holding {
-  container-type: inline-size;
-  aspect-ratio: auto;
+  aspect-ratio: 1;
   padding-bottom: 0;
-  background: #fff9ef;
+  background: transparent;
 }
 
 .helena-room-qr--holding svg {
-  top: 48%;
-  left: 41.5%;
-  width: 16%;
+  top: 14%;
+  left: 16%;
+  width: 40%;
   height: auto;
   aspect-ratio: 1;
 }
 
-@container (max-width: 750px) {
-  .helena-room-qr--holding img {
-    margin-bottom: 148px;
-  }
+.local-room-projector__late-join .helena-room-qr--holding img {
+  display: none;
+}
 
-  .helena-room-qr--holding svg {
-    top: auto;
-    bottom: 12px;
-    left: 50%;
-    width: 144px;
-    height: 144px;
-    transform: translateX(-50%);
-    box-shadow: 0 3px 0 #ded4c0;
-  }
+.local-room-projector__late-join .helena-room-qr--holding svg {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
 }
 
 @media (max-width: 760px) {

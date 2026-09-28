@@ -19,10 +19,10 @@ export function RoomQrCode({ value, size = 152 }: { value: string; size?: number
   return (
     <div className="helena-room-qr helena-room-qr--holding">
       <img
-        src="/room-crew-header.png"
-        alt="Helena, Oliver, a estrela, a raposa e o urso reunidos no convite da sala"
-        width="2172"
-        height="724"
+        src="/helena-room-invite.png"
+        alt="Helena erguendo a placa de convite da sala"
+        width="1254"
+        height="1254"
       />
       <svg
         viewBox={`0 0 ${size} ${size}`}
@@ -31,8 +31,8 @@ export function RoomQrCode({ value, size = 152 }: { value: string; size?: number
         role="img"
         aria-label="QR code para entrar na sala"
       >
-        <rect width={size} height={size} rx="10" fill="#fff" />
-        <path d={path} fill="#0f0f14" />
+        <rect width={size} height={size} fill="#fff" />
+        <path d={path} fill="#292432" />
       </svg>
     </div>
   );
