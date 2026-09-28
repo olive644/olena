@@ -1291,3 +1291,10 @@ Limites que se cruzam:
 ## Notes de texto na vitrine
 
 Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note e uma página de texto, preservada pelo armazenamento existente. A prévia mostra papel creme com canto dobrado, título e trecho real do texto. O editor contém somente título e escrita, com salvamento automático. Pastas aceitam até três itens mistos entre Notes e cadernos; a vitrine continua distribuindo quatro itens soltos por coleção. Notes podem ser arrastadas para dentro e para fora, abertas, buscadas e excluídas com a seleção existente.
+
+## Mover para pasta pelo teclado, sem arrastar (2026-09-28)
+
+- Continuação da acessibilidade do editor pro resto do app: hoje só dá para colocar um caderno ou uma note dentro de uma pasta arrastando na vitrine, um gesto de ponteiro sem alternativa por teclado. Agora, no modo "Selecionar" já existente, uma nova ação "Mover para pasta" abre um menu (as pastas existentes + "Vitrine", para tirar de uma pasta) e move toda a seleção de uma vez.
+- Respeita o mesmo limite de três itens por pasta que o arrastar já respeita: se a seleção não couber inteira, avisa quantos entraram e quantos não, ou que a pasta já está cheia. A folder que virou notebook não entra na seleção (não faz sentido colocar uma pasta dentro de outra), só cadernos e notes.
+- Novo `NotebookFolderMovePicker`, no mesmo padrão de diálogo já usado em outros lugares do app.
+- Testes: `notes-view-folder-move.test.tsx` (move pra pasta, move de volta pra vitrine, avisa quando a pasta já está cheia, Fechar não move nada).

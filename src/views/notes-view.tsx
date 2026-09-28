@@ -6,6 +6,7 @@ import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
 import { NotebookPageIndex } from "../components/notebook-page-index";
+import { NotebookFolderMovePicker } from "../components/notebook-folder-move-picker";
 import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type Dispatch } from "react";
 import {
@@ -101,6 +102,7 @@ export function NotesView({
   const [folderShelf, setFolderShelf] = useState(0);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
+  const [folderPickerOpen, setFolderPickerOpen] = useState(false);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(
     initialNotebookId ?? null,
   );
@@ -391,6 +393,47 @@ export function NotesView({
     dispatch({ type: "notebook/removed", ids: selectedNotebookIds });
     setSelectedNotebookIds([]);
     setSelectionMode(false);
+  }
+
+  // Alternativa por teclado a arrastar um caderno para dentro de uma pasta: move a seleção
+  // inteira de uma vez, respeitando o limite de três itens por pasta que o arrastar já respeita.
+  function moveSelectedNotebooksToFolder(folderId: string | null) {
+    const eligible = selectedNotebookIds.filter((id) => {
+      const item = workspace.notebooks.find((notebook) => notebook.id === id);
+      return item && (!item.kind || item.kind === "note");
+    });
+    if (eligible.length === 0) return;
+    setSelectedNotebookIds([]);
+    setSelectionMode(false);
+    if (!folderId) {
+      eligible.forEach((id) => dispatch({ type: "notebook/stored", id, folderId: null }));
+      setMoveMessage(
+        eligible.length === 1
+          ? "1 item movido para a vitrine."
+          : `${eligible.length} itens movidos para a vitrine.`,
+      );
+      return;
+    }
+    const folder = workspace.notebooks.find((notebook) => notebook.id === folderId);
+    const already = workspace.notebooks.filter(
+      (item) => item.parentId === folderId && !eligible.includes(item.id),
+    ).length;
+    const capacity = Math.max(0, 3 - already);
+    const toMove = eligible.slice(0, capacity);
+    toMove.forEach((id) => dispatch({ type: "notebook/stored", id, folderId }));
+    if (toMove.length === 0) {
+      setMoveMessage(`A pasta ${folder?.title ?? ""} já tem três itens. Escolha outra pasta.`);
+    } else if (toMove.length < eligible.length) {
+      setMoveMessage(
+        `${toMove.length} de ${eligible.length} movidos para ${folder?.title ?? "a pasta"}; ela já estava com pouco espaço.`,
+      );
+    } else {
+      setMoveMessage(
+        toMove.length === 1
+          ? `1 item movido para ${folder?.title ?? "a pasta"}.`
+          : `${toMove.length} itens movidos para ${folder?.title ?? "a pasta"}.`,
+      );
+    }
   }
 
   function createPageAtEnd() {
@@ -753,12 +796,28 @@ export function NotesView({
                   <button
                     type="button"
                     disabled={selectedNotebookIds.length === 0}
+                    onClick={() => setFolderPickerOpen(true)}
+                  >
+                    Mover para pasta{" "}
+                    {selectedNotebookIds.length > 0 ? `(${selectedNotebookIds.length})` : ""}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={selectedNotebookIds.length === 0}
                     onClick={removeSelectedNotebooks}
                   >
                     Excluir{" "}
                     {selectedNotebookIds.length > 0 ? `(${selectedNotebookIds.length})` : ""}
                   </button>
                 </div>
+              )}
+              {folderPickerOpen && (
+                <NotebookFolderMovePicker
+                  count={selectedNotebookIds.length}
+                  folders={collections}
+                  onMove={moveSelectedNotebooksToFolder}
+                  onClose={() => setFolderPickerOpen(false)}
+                />
               )}
             </div>
           </header>
