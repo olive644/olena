@@ -611,13 +611,6 @@ export function LearnView({
                   initialJoinCode={joinCode}
                   projectorMode={projectorMode}
                   onExit={leaveRoom}
-                  materials={workspace.subjects.map((subject) => ({
-                    id: subject.id,
-                    name: subject.name,
-                    cards: workspace.flashcards
-                      .filter((card) => card.subjectId === subject.id)
-                      .map(({ id, front, back }) => ({ id, front, back })),
-                  }))}
                 />
               </RoomErrorBoundary>
             </Suspense>

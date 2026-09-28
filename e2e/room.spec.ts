@@ -93,6 +93,22 @@ for (const activity of ["listening", "bingo"] as const) {
       await host.getByRole("button", { name: "Abrir Modo Sala", exact: true }).click();
       await host.getByRole("button", { name: "Criar sala", exact: true }).click();
       await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+      await expect(host.getByRole("combobox", { name: "Material da sala" })).toHaveCount(0);
+      await expect(
+        host.getByRole("checkbox", { name: "Aceitar um pequeno erro de digitação" }),
+      ).toHaveCount(0);
+      const shuffleQuestions = host.getByRole("checkbox", { name: "Embaralhar questões" });
+      await expect(shuffleQuestions).toHaveCSS("appearance", "none");
+      await expect(shuffleQuestions).toHaveCSS("background-color", "rgb(250, 204, 21)");
+      if (testInfo.project.name === "mobile") {
+        const settingsColumns = await host
+          .locator(".local-room-settings__panel")
+          .evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
+        expect(settingsColumns).toBe(1);
+        await host.locator(".local-room-settings").screenshot({
+          path: testInfo.outputPath("room-mobile-settings.png"),
+        });
+      }
       const selectedActivity = host.locator('.local-room-activity[aria-checked="true"]');
       await selectedActivity.hover();
       await expect(selectedActivity).toHaveCSS("background-color", "rgb(116, 51, 224)");
@@ -116,6 +132,7 @@ for (const activity of ["listening", "bingo"] as const) {
       await host.locator(".local-room-share__code").scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("room-paper.png") });
       await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+      await expect(shuffleQuestions).toHaveCSS("background-color", "rgb(250, 204, 21)");
       await host.screenshot({
         path: testInfo.outputPath("room-paper-dark.png"),
         animations: "disabled",
@@ -129,9 +146,6 @@ for (const activity of ["listening", "bingo"] as const) {
         await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
       }
       if (activity === "listening") {
-        await host
-          .getByRole("combobox", { name: "Material da sala", exact: true })
-          .selectOption("Lista personalizada");
         await host
           .getByLabel(/Digite ou cole palavras e traduções/)
           .fill(

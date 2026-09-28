@@ -540,7 +540,7 @@ pendente a ativação externa e a validação em aparelhos físicos/Firebase rea
 - Abuso: limites distribuídos por origem de rede e ação; App Check com verificação de assinatura/claims implementado, mas **não ativado**. O projeto appstudyoli não tinha aplicativo Web registrado na consulta desta execução. Falta chave pública reCAPTCHA Enterprise/domínio e configuração do app.
 - Expiração: prazo absoluto de 4 horas, regras de leitura por expiresAt e limpeza autenticada agendada de projeção pública/privada/contadores. **Regras e cron ainda não publicados**. O lote atual remove até 100 itens por caminho/execução; monitorar acúmulo e ampliar frequência/capacidade antes de maior escala. Projeções legadas sem expiresAt exigem migração/remoção separada.
 - Rodada: categoria, contagem por dificuldade, prévia, até 30 flashcards de matéria própria, equipes alternadas, embaralhamento e entrada tardia configuráveis. Compartilhar matéria envia frente/verso temporariamente ao servidor; aviso explícito no seletor. Material próprio usa dificuldade média.
-- Escuta em sala: a lista personalizada aceita pares colados com `=`, ponto e vírgula, vírgula, tabulação ou hífen, informa erros por linha e substitui o antigo catálogo extenso por cinco exemplos básicos. A tela do anfitrião oculta a palavra por padrão; cada participante recebe feedback privado com resposta, tradução e XP antes do avanço. Repetições, velocidade e reprodução automática são sincronizadas na sala.
+- Escuta em sala: a lista personalizada aceita pares colados com `=`, ponto e vírgula, vírgula, tabulação ou hífen e informa erros por linha. A interface da sala usa somente a lista manual, sem modelo pronto, materiais salvos ou controle de tolerância a erros. A tela do anfitrião oculta a palavra por padrão; cada participante recebe feedback privado com resposta, tradução e XP antes do avanço. Repetições, velocidade e reprodução automática são sincronizadas na sala.
 - Bingo: cartelas e marcas validadas no servidor; primeira cartela completa encerra a partida. Entrada tardia recebe até 9 itens restantes e pode ter cartela menor; desabilitar entrada tardia quando a igualdade competitiva for importante.
 - Resiliência: Error Boundary da sala, cancelamento de requisições, timeout, retomada com retry sem apagar credencial em falha transitória, validação de payloads, logs de ação/status/duração, foco de teclado contido no diálogo.
 - Evidência local: concorrência de 30 entradas/respostas em armazenamento atômico de teste; ETags/412 com HTTP simulado; partidas completas de quiz e bingo com anfitrião e dois jogadores em contextos separados, incluindo reload. Transporte E2E usa handler real + adaptador em memória, **não Firebase real**. Edge instalado substituiu browsers cujo download falhou; Safari/WebKit, bloqueio físico de celular, carga real de 30 dispositivos e auditoria assistiva completa continuam pendentes.
@@ -789,17 +789,19 @@ limiting continuam pendentes.
 O lobby mostra conexão, participantes, convite, resumo e duração estimada. A entrada normaliza o
 código e informa separadamente sala inexistente, iniciada, cheia ou nome duplicado. No celular, o
 cabeçalho da sala permanece visível e oferece uma ação textual para sair.
-O lobby do anfitrião usa layout flat responsivo. O convite e a lista de participantes ficam ao lado
-da escolha da atividade no desktop e passam para uma coluna no celular. Escuta coletiva e Bingo
-estão disponíveis; Flashcards em grupo e Quiz competitivo aparecem desabilitados como “Em breve”.
+O lobby do anfitrião usa layout responsivo em papel recortado. No desktop, convite e participantes
+ficam na coluna esquerda, atividades e configurações na direita. No celular, convite/QR aparece
+primeiro, participantes logo abaixo e os controles seguem em uma coluna sem rolagem horizontal.
+Escuta coletiva e Bingo estão disponíveis; Flashcards em grupo e Quiz competitivo aparecem
+desabilitados como “Em breve”.
 A barra inferior resume a rodada e mantém a ação de início visível. Os ícones aprovados do projeto,
 a arte da Helena segurando a placa e o QR SVG dinâmico foram preservados.
-No quiz de escuta, a Lista personalizada é o fluxo principal. Ela aceita até 30 pares separados por
+Na Escuta coletiva, a Lista personalizada é a única fonte de perguntas e aceita até 30 pares separados por
 igual, ponto e vírgula, vírgula, tabulação ou hífen. Respostas equivalentes podem ser cadastradas com
 barra vertical, por exemplo `bus = ônibus | autocarro | o ônibus`. O formulário aponta erros e
 duplicatas por linha, mostra uma prévia e confirma quando as palavras são aplicadas. Controles
-incompatíveis ficam ocultos. O professor também pode habilitar a aceitação de um único erro de
-digitação em respostas com quatro ou mais caracteres. Essa tolerância permanece desligada por padrão.
+incompatíveis ficam ocultos. Os checks de configuração usam o mesmo papel amarelo das opções de
+Handwriting. A opção para aceitar erros de digitação não aparece mais na sala.
 Durante a rodada, o painel do professor esconde a palavra por padrão e exige confirmação antes de
 revelá-la. Cada aluno recebe a resposta esperada e o XP após responder; quando todos terminam, há três
 segundos de feedback com uma barra regressiva antes da próxima pergunta. A estimativa da rodada inclui
