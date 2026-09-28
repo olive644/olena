@@ -58,9 +58,9 @@ describe("contagem regressiva do início da rodada", () => {
     return container.querySelector(".local-room-countdown__value")?.textContent ?? null;
   }
 
-  it("mostra conexão, resumo e saída textual no lobby", () => {
+  it("mostra resumo e saída textual sem o indicador redundante no lobby", () => {
     render(<LocalRoom />);
-    expect(screen.getByText(/participante conectado.*Online/)).toBeTruthy();
+    expect(screen.queryByText(/participante conectado.*Online/)).toBeNull();
     expect(screen.getByLabelText("Resumo da rodada").textContent).toContain("0 perguntas");
     expect(screen.getByRole("button", { name: /sair da sala/i })).toBeTruthy();
   });

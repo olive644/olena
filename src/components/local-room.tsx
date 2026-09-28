@@ -801,14 +801,6 @@ export function LocalRoom({
             </button>
           </div>
         </header>
-        <p className="local-note" role="status" aria-live="polite">
-          {countLabel(
-            state.participants.filter((p) => p.online !== false).length,
-            "participante conectado",
-            "participantes conectados",
-          )}{" "}
-          · {connectionLabel}
-        </p>
         {room.error && <p role="alert">{room.error}</p>}
         {state.settings.teams && (
           <p aria-label="Placar por equipe">
