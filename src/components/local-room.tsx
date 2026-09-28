@@ -148,7 +148,6 @@ type LocalRoomProps = {
   initialJoinCode?: string | undefined;
   projectorMode?: boolean;
   onExit?: () => void;
-  materials?: { id: string; name: string; cards: { id: string; front: string; back: string }[] }[];
 };
 
 function ShareRoom({ code }: { code: string }) {
@@ -373,12 +372,7 @@ function ProjectorRoom({
   );
 }
 
-export function LocalRoom({
-  initialJoinCode,
-  projectorMode = false,
-  onExit,
-  materials = [],
-}: LocalRoomProps) {
+export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: LocalRoomProps) {
   const room = useLocalRoom(initialJoinCode);
   const [profile] = useState(() => {
     try {
@@ -399,7 +393,6 @@ export function LocalRoom({
   const [pendingActivity, setPendingActivity] = useState<"listening" | "bingo" | null>(null);
   const activityRequestRef = useRef(false);
   const [manualWords, setManualWords] = useState("");
-  const [manualMode, setManualMode] = useState(true);
   const [appliedManualWords, setAppliedManualWords] = useState("");
   const [manualApplyStatus, setManualApplyStatus] = useState("");
   const [revealHostWord, setRevealHostWord] = useState(false);
@@ -646,12 +639,11 @@ export function LocalRoom({
     activityRequestRef.current = true;
     setPendingActivity(activity);
     try {
-      const saved = await room.updateSettings(
+      await room.updateSettings(
         activity === "bingo"
           ? { activity, subjectName: "", category: "", difficulty: "mixed" }
           : { activity },
       );
-      if (saved && activity === "bingo") setManualMode(false);
     } finally {
       activityRequestRef.current = false;
       setPendingActivity(null);
@@ -792,7 +784,7 @@ export function LocalRoom({
   const manualDeck = manualInput.cards;
   const manualErrors = manualInput.lines.filter((line) => line.error);
   const manualDeckIsValid = manualDeck.length > 0 && manualErrors.length === 0;
-  const usesManualList = state.settings.activity !== "bingo" && manualMode;
+  const usesManualList = state.settings.activity !== "bingo";
   const manualSelectionPending =
     usesManualList &&
     (!manualWords.trim() ||
@@ -912,123 +904,92 @@ export function LocalRoom({
                   <h3>
                     {state.settings.activity === "bingo" ? "Prepare o bingo" : "Prepare a escuta"}
                   </h3>
-                  <label>
-                    <span>Material da sala</span>
-                    <select
-                      value={
-                        manualMode ? MANUAL_LISTENING_SOURCE : (state.settings.subjectName ?? "")
-                      }
-                      onChange={(event) => {
-                        if (event.target.value === MANUAL_LISTENING_SOURCE) {
-                          setManualMode(true);
-                          return;
-                        }
-                        setManualMode(false);
-                        const material = materials.find((item) => item.name === event.target.value);
-                        void room.updateSettings(
-                          { subjectName: material?.name ?? "", difficulty: "mixed", category: "" },
-                          material?.cards.slice(0, 30) ?? [],
-                        );
-                      }}
-                    >
-                      <option value="">Modelo básico</option>
-                      <option value={MANUAL_LISTENING_SOURCE}>Lista personalizada</option>
-                      {materials
-                        .filter((item) => item.cards.length)
-                        .map((item) => (
-                          <option key={item.id} value={item.name}>
-                            {item.name} · meus cartões
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                  {(manualMode || state.settings.subjectName === MANUAL_LISTENING_SOURCE) &&
-                    state.settings.activity !== "bingo" && (
-                      <div className="local-room-manual">
-                        <div>
-                          <strong>Lista personalizada</strong>
-                          <span>
-                            {manualDeck.length} válidas
-                            {manualErrors.length > 0
-                              ? ` · ${manualErrors.length} precisam de correção`
-                              : ""}
-                          </span>
-                        </div>
-                        <label htmlFor="local-room-manual-words">
-                          Digite ou cole palavras e traduções. Use =, ;, vírgula, tabulação ou
-                          hífen. Separe respostas equivalentes com |.
-                        </label>
-                        <textarea
-                          id="local-room-manual-words"
-                          value={manualWords}
-                          onChange={(event) => {
-                            setManualWords(event.target.value);
-                            setManualApplyStatus("");
-                          }}
-                          placeholder={"bus = ônibus | autocarro\nschool = escola\nbook = livro"}
-                          rows={6}
-                          spellCheck={false}
-                        />
-                        {manualErrors.length > 0 && (
-                          <ul className="local-room-manual__errors" aria-live="polite">
-                            {manualErrors.map((line) => (
-                              <li key={line.lineNumber}>
-                                Linha {line.lineNumber}: {line.error}.
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        {manualDeck.length > 0 && (
-                          <div
-                            className="local-room-manual__preview"
-                            aria-label="Prévia das palavras"
-                          >
-                            {manualDeck.slice(0, 6).map((card) => (
-                              <span key={card.id}>
-                                {card.front} →{" "}
-                                {[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        <div className="local-room-manual__action">
-                          <p aria-live="polite">
-                            {manualApplyStatus ||
-                              (manualSelectionPending && manualWords.trim()
-                                ? "● Alterações ainda não aplicadas"
-                                : manualDeckIsValid
-                                  ? `${countLabel(manualDeck.length, "palavra pronta", "palavras prontas")} para aplicar.`
-                                  : "Adicione pelo menos uma palavra e sua tradução.")}
-                          </p>
-                          <button
-                            className="secondary-button"
-                            type="button"
-                            disabled={!manualDeckIsValid || !manualSelectionPending}
-                            onClick={() => {
-                              void room
-                                .updateSettings(
-                                  {
-                                    subjectName: MANUAL_LISTENING_SOURCE,
-                                    difficulty: "mixed",
-                                    category: "",
-                                    questionCount: "all",
-                                  },
-                                  manualDeck,
-                                )
-                                .then((saved) => {
-                                  if (!saved) return;
-                                  setAppliedManualWords(manualWords);
-                                  setManualApplyStatus(
-                                    `${countLabel(manualDeck.length, "palavra adicionada", "palavras adicionadas")} à rodada ✓`,
-                                  );
-                                });
-                            }}
-                          >
-                            {manualApplyStatus ? "Palavras aplicadas ✓" : "Aplicar palavras"}
-                          </button>
-                        </div>
+                  {state.settings.activity !== "bingo" && (
+                    <div className="local-room-manual">
+                      <div>
+                        <strong>Lista personalizada</strong>
+                        <span>
+                          {manualDeck.length} válidas
+                          {manualErrors.length > 0
+                            ? ` · ${manualErrors.length} precisam de correção`
+                            : ""}
+                        </span>
                       </div>
-                    )}
+                      <label htmlFor="local-room-manual-words">
+                        Digite ou cole palavras e traduções. Use =, ;, vírgula, tabulação ou hífen.
+                        Separe respostas equivalentes com |.
+                      </label>
+                      <textarea
+                        id="local-room-manual-words"
+                        value={manualWords}
+                        onChange={(event) => {
+                          setManualWords(event.target.value);
+                          setManualApplyStatus("");
+                        }}
+                        placeholder={"bus = ônibus | autocarro\nschool = escola\nbook = livro"}
+                        rows={6}
+                        spellCheck={false}
+                      />
+                      {manualErrors.length > 0 && (
+                        <ul className="local-room-manual__errors" aria-live="polite">
+                          {manualErrors.map((line) => (
+                            <li key={line.lineNumber}>
+                              Linha {line.lineNumber}: {line.error}.
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {manualDeck.length > 0 && (
+                        <div
+                          className="local-room-manual__preview"
+                          aria-label="Prévia das palavras"
+                        >
+                          {manualDeck.slice(0, 6).map((card) => (
+                            <span key={card.id}>
+                              {card.front} →{" "}
+                              {[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div className="local-room-manual__action">
+                        <p aria-live="polite">
+                          {manualApplyStatus ||
+                            (manualSelectionPending && manualWords.trim()
+                              ? "● Alterações ainda não aplicadas"
+                              : manualDeckIsValid
+                                ? `${countLabel(manualDeck.length, "palavra pronta", "palavras prontas")} para aplicar.`
+                                : "Adicione pelo menos uma palavra e sua tradução.")}
+                        </p>
+                        <button
+                          className="secondary-button"
+                          type="button"
+                          disabled={!manualDeckIsValid || !manualSelectionPending}
+                          onClick={() => {
+                            void room
+                              .updateSettings(
+                                {
+                                  subjectName: MANUAL_LISTENING_SOURCE,
+                                  difficulty: "mixed",
+                                  category: "",
+                                  questionCount: "all",
+                                },
+                                manualDeck,
+                              )
+                              .then((saved) => {
+                                if (!saved) return;
+                                setAppliedManualWords(manualWords);
+                                setManualApplyStatus(
+                                  `${countLabel(manualDeck.length, "palavra adicionada", "palavras adicionadas")} à rodada ✓`,
+                                );
+                              });
+                          }}
+                        >
+                          {manualApplyStatus ? "Palavras aplicadas ✓" : "Aplicar palavras"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   <label className="local-room-activity-native">
                     <span>Atividade</span>
                     <select
@@ -1101,18 +1062,6 @@ export function LocalRoom({
                     />{" "}
                     Permitir entrada após iniciar
                   </label>
-                  {state.settings.activity !== "bingo" && (
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={state.settings.acceptMinorTypos ?? false}
-                        onChange={(event) =>
-                          void room.updateSettings({ acceptMinorTypos: event.target.checked })
-                        }
-                      />{" "}
-                      Aceitar um pequeno erro de digitação
-                    </label>
-                  )}
                   {!usesManualList && (
                     <label>
                       <span>Dificuldade</span>
@@ -1149,7 +1098,7 @@ export function LocalRoom({
                   )}
                   {usesManualList ? (
                     <p className="local-room-manual__quantity">
-                      Quantidade: {manualDeck.length || availableCount} · todas as palavras
+                      Quantidade: {manualDeck.length} · todas as palavras
                     </p>
                   ) : (
                     <label>
