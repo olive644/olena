@@ -1256,7 +1256,12 @@ export function HandwritingStudio({
     activePointerRef.current = event.pointerId;
     if (effectiveTool === "hand" && selectedIds.length > 0) {
       drawingRef.current = true;
-      selectionGesture.begin(event, canvasPoint(canvas, event), true);
+      selectionGesture.begin(
+        event,
+        canvasPoint(canvas, event),
+        true,
+        PAGE_WIDTH / canvas.getBoundingClientRect().width,
+      );
       return;
     }
     if (
@@ -1294,7 +1299,12 @@ export function HandwritingStudio({
       return;
     }
     if (effectiveTool === "select") {
-      selectionGesture.begin(event, point);
+      selectionGesture.begin(
+        event,
+        point,
+        false,
+        PAGE_WIDTH / canvas.getBoundingClientRect().width,
+      );
       return;
     }
     remember();
@@ -1536,7 +1546,11 @@ export function HandwritingStudio({
     }
     activePointerRef.current = null;
     if (
-      selectionGesture.end(canvasRef.current ? canvasPoint(canvasRef.current, event) : undefined)
+      selectionGesture.end(
+        event.type === "pointerup" && canvasRef.current
+          ? canvasPoint(canvasRef.current, event)
+          : undefined,
+      )
     ) {
       drawingRef.current = false;
       return;

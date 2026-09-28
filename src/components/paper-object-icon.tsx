@@ -63,15 +63,11 @@ export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
         </>
       ) : name === "shapes" ? (
         <>
-          <path d="M6 5h21l7 7v32H6Z" fill="#51465D" />
-          <path d="M9 3h19l6 6v32H9Z" fill="#FFF9EF" />
-          <path d="M28 3v7h7Z" fill="#E4DAC6" />
-          <path d="m16 16 8 14H8Z" fill="#FACC15" />
-          <path d="m16 16-3 14H8Z" fill="#FFE88D" />
-          <circle cx="30" cy="29" r="7" fill="#7C3AED" />
-          <path d="M30 22a7 7 0 0 1 0 14Z" fill="#A779EF" />
-          <path d="M13 33h9v7h-9Z" fill="#5924B4" />
-          <path d="M13 33h9v3h-9Z" fill="#A779EF" />
+          <path d="M4 24h23v21H4Z" fill="#51259B" />
+          <path d="M4 21h23v21H4Z" fill="#A779EF" />
+          <path d="m4 21 6 5v16H4Z" fill="#E9DAFB" />
+          <path d="m32 3 14 24H18Z" fill="#FACC15" />
+          <path d="m32 3-6 18-8 6Z" fill="#FFE88D" />
         </>
       ) : name === "ruler" ? (
         <>

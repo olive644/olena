@@ -424,6 +424,8 @@ test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
 
+  if (testInfo.project.name === "mobile")
+    await page.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
   await studentSpaceButton(page, testInfo.project.name).click();
   await page
     .getByRole("navigation", {

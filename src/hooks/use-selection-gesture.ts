@@ -8,12 +8,15 @@ import type {
 import {
   dragRotation,
   dragScaleFactor,
+  constrainSelectionScale,
   hitSelectionHandle,
   mergeSelection,
   oppositeCorner,
   rotateItems,
   scaleItems,
   type HandleKind,
+  type Box,
+  type SelectionItems,
 } from "../components/handwriting-selection-ops";
 import {
   hitsSelected,
@@ -33,6 +36,7 @@ import {
   type SelectionMode,
   type Stroke,
 } from "../components/handwriting-types";
+import { unionBounds } from "../components/handwriting-geometry";
 
 type Setter<T> = Dispatch<SetStateAction<T>>;
 
@@ -40,12 +44,13 @@ type Setter<T> = Dispatch<SetStateAction<T>>;
 type Gesture = {
   pointerId: number;
   start: HandwritingPoint;
-  origin: HandwritingPoint;
   ids: string[];
-  coordinateIds: string[];
   moving: boolean;
   lasso: boolean;
   path: HandwritingPoint[];
+  originalScene?: SelectionScene;
+  frame?: Box | null;
+  shiftKey?: boolean;
   // Com Shift, o laço soma à seleção que já existia.
   previousIds?: string[];
   // Arrasto de uma alça da caixa da seleção: a folha de origem é guardada para cada quadro ser
@@ -55,12 +60,7 @@ type Gesture = {
     anchor: { x: number; y: number };
     center: { x: number; y: number };
     grab: { x: number; y: number };
-    original: {
-      strokes: Stroke[];
-      stickies: HandwritingSticky[];
-      coordinateSystems: HandwritingCoordinateSystem[];
-      images: HandwritingImage[];
-    };
+    original: SelectionItems;
   };
 };
 
@@ -91,6 +91,17 @@ function boxBetween(a: HandwritingPoint, b: HandwritingPoint): SelectionBox {
   };
 }
 
+function mergeTransformed<T extends { id: string }>(
+  current: T[],
+  transformed: readonly T[],
+  ids: ReadonlySet<string>,
+): T[] {
+  const updated = new Map(
+    transformed.filter((item) => ids.has(item.id)).map((item) => [item.id, item]),
+  );
+  return current.map((item) => updated.get(item.id) ?? item);
+}
+
 // O gesto da ferramenta Selecionar: começar (tocar em uma alça, no laço ou em um item), acompanhar
 // o ponteiro e terminar escolhendo os itens. O editor só repassa os eventos de ponteiro.
 export function useSelectionGesture(input: SelectionGestureInput) {
@@ -98,7 +109,6 @@ export function useSelectionGesture(input: SelectionGestureInput) {
     scene,
     selectionMode,
     selectedIds,
-    selectedCoordinateIds,
     page,
     remember,
     setSelectedIds,
@@ -113,33 +123,32 @@ export function useSelectionGesture(input: SelectionGestureInput) {
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
   const [selectionPath, setSelectionPath] = useState<HandwritingPoint[] | null>(null);
 
-  function begin(event: PointerLike, point: HandwritingPoint, moveOnly = false): void {
+  function begin(
+    event: PointerLike,
+    point: HandwritingPoint,
+    moveOnly = false,
+    unitsPerPixel = 1,
+  ): void {
     const frame = selectionFrame(scene, selectedIds);
     // Alça maior no toque, para o dedo acertar.
-    const grabRadius = event.pointerType === "touch" ? 34 : 22;
-    const grabbed = frame && !moveOnly ? hitSelectionHandle(point, frame, grabRadius) : null;
+    const grabRadius = (event.pointerType === "touch" ? 20 : 12) * unitsPerPixel;
+    const grabbed = frame ? hitSelectionHandle(point, frame, grabRadius) : null;
     if (frame && grabbed) {
       remember();
       gesture.current = {
         pointerId: event.pointerId,
         start: point,
-        origin: point,
         ids: [...selectedIds],
-        coordinateIds: [...selectedCoordinateIds],
         moving: true,
         lasso: false,
         path: [],
+        frame,
         handle: {
           kind: grabbed,
           anchor: grabbed === "rotate" ? point : oppositeCorner(frame, grabbed),
           center: { x: frame.x + frame.width / 2, y: frame.y + frame.height / 2 },
           grab: point,
-          original: {
-            strokes: [...scene.strokes],
-            stickies: [...scene.stickies],
-            coordinateSystems: [...scene.coordinateSystems],
-            images: [...scene.images],
-          },
+          original: scene,
         },
       };
       return;
@@ -157,9 +166,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
       gesture.current = {
         pointerId: event.pointerId,
         start: point,
-        origin: point,
         ids: [],
-        coordinateIds: [],
         moving: false,
         lasso: true,
         path: [point],
@@ -173,15 +180,21 @@ export function useSelectionGesture(input: SelectionGestureInput) {
     gesture.current = {
       pointerId: event.pointerId,
       start: point,
-      origin: point,
       ids: hit ? [...selectedIds] : [],
-      coordinateIds: hit ? [...selectedCoordinateIds] : [],
       moving: hit,
       lasso: false,
       path: [],
+      frame: unionBounds([
+        ...(frame ? [frame] : []),
+        ...(selectedIds.includes(PAGE_TEXT_SELECTION_ID) ? [scene.pageTextFrame] : []),
+      ]),
+      originalScene: scene,
     };
-    if (hit) remember();
-    else {
+    if (hit) {
+      remember();
+      setSelectionBox(null);
+      setSelectionPath(null);
+    } else {
       setSelectedIds([]);
       setSelectedCoordinateIds([]);
       setSelectionBox({ x: point.x, y: point.y, width: 0, height: 0 });
@@ -192,9 +205,16 @@ export function useSelectionGesture(input: SelectionGestureInput) {
   function move(event: PointerLike, point: HandwritingPoint): boolean {
     const current = gesture.current;
     if (!current || current.pointerId !== event.pointerId) return false;
+    current.shiftKey = Boolean(event.shiftKey);
+    const chosen = new Set(current.ids);
+    const apply = (next: SelectionItems) => {
+      setStrokes((items) => mergeTransformed(items, next.strokes, chosen));
+      setStickies((items) => mergeTransformed(items, next.stickies, chosen));
+      setCoordinateSystems((items) => mergeTransformed(items, next.coordinateSystems, chosen));
+      setImportedImages((items) => mergeTransformed(items, next.images, chosen));
+    };
     const handle = current.handle;
     if (handle) {
-      const chosen = new Set(current.ids);
       const next =
         handle.kind === "rotate"
           ? rotateItems(
@@ -206,13 +226,15 @@ export function useSelectionGesture(input: SelectionGestureInput) {
           : scaleItems(
               handle.original,
               chosen,
-              dragScaleFactor(handle.anchor, handle.grab, point),
+              constrainSelectionScale(
+                current.frame!,
+                handle.anchor,
+                dragScaleFactor(handle.anchor, handle.grab, point),
+                page,
+              ),
               handle.anchor,
             );
-      setStrokes([...next.strokes]);
-      setStickies([...next.stickies]);
-      setCoordinateSystems([...next.coordinateSystems]);
-      setImportedImages([...next.images]);
+      apply(next);
       return true;
     }
     if (current.lasso) {
@@ -221,16 +243,31 @@ export function useSelectionGesture(input: SelectionGestureInput) {
       return true;
     }
     if (current.moving) {
-      const dx = point.x - current.origin.x;
-      const dy = point.y - current.origin.y;
-      if (dx !== 0 || dy !== 0) {
-        setStrokes((items) => moveStrokes(items, current.ids, dx, dy, page));
-        setCoordinateSystems((items) => moveCoordinateSystems(items, current.ids, dx, dy, page));
-        setStickies((items) => moveStickies(items, current.ids, dx, dy, page));
-        setImportedImages((items) => moveImages(items, current.ids, dx, dy, page));
+      const original = current.originalScene;
+      const frame = current.frame;
+      if (original && frame) {
+        const dx = Math.max(
+          -frame.x,
+          Math.min(page.width - frame.x - frame.width, point.x - current.start.x),
+        );
+        const dy = Math.max(
+          -frame.y,
+          Math.min(page.height - frame.y - frame.height, point.y - current.start.y),
+        );
+        apply({
+          strokes: moveStrokes(original.strokes, current.ids, dx, dy, page),
+          coordinateSystems: moveCoordinateSystems(
+            original.coordinateSystems,
+            current.ids,
+            dx,
+            dy,
+            page,
+          ),
+          stickies: moveStickies(original.stickies, current.ids, dx, dy, page),
+          images: moveImages(original.images, current.ids, dx, dy, page),
+        });
         if (current.ids.includes(PAGE_TEXT_SELECTION_ID))
-          setPageTextFrame((frame) => moveTextFrame(frame, dx, dy, page));
-        current.origin = point;
+          setPageTextFrame(moveTextFrame(original.pageTextFrame, dx, dy, page));
       }
     } else {
       setSelectionBox(boxBetween(current.start, point));
@@ -243,6 +280,14 @@ export function useSelectionGesture(input: SelectionGestureInput) {
   function end(point?: HandwritingPoint): boolean {
     const current = gesture.current;
     if (!current) return false;
+    if (point && current.moving)
+      move(
+        {
+          pointerId: current.pointerId,
+          ...(current.shiftKey === undefined ? {} : { shiftKey: current.shiftKey }),
+        },
+        point,
+      );
     gesture.current = null;
     const at = point ?? current.start;
     if (current.lasso) {
