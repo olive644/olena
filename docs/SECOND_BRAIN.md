@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+O convite do lobby é um header responsivo com a turma principal em papel, sem
+molduras de avatar. `RoomQrCode` sobrepõe um SVG funcional à arte, nunca um QR
+gerado por imagem. Em contêineres estreitos o código mantém 144px e ganha espaço
+abaixo da arte para preservar a leitura. O card selecionado mantém roxo no hover.
+
 `local-room-fullscreen` é um portal fora de `.app-shell`. As regras compartilhadas
 de `paper-buttons.css` incluem esse contêiner para manter acabamento, foco e toque.
 `public/room-icons/` contém as artes vetoriais de Escuta, Flashcards, Quiz, Bingo,

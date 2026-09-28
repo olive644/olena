@@ -19,10 +19,10 @@ export function RoomQrCode({ value, size = 152 }: { value: string; size?: number
   return (
     <div className="helena-room-qr helena-room-qr--holding">
       <img
-        src="/helena-holding-qr.png"
-        alt="Helena segurando a placa de convite da sala"
-        width="1254"
-        height="1254"
+        src="/room-crew-header.png"
+        alt="Helena, Oliver, a estrela, a raposa e o urso reunidos no convite da sala"
+        width="2172"
+        height="724"
       />
       <svg
         viewBox={`0 0 ${size} ${size}`}

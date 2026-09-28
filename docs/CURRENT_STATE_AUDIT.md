@@ -1356,3 +1356,11 @@ Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note 
 - Respeita o mesmo limite de três itens por pasta que o arrastar já respeita: se a seleção não couber inteira, avisa quantos entraram e quantos não, ou que a pasta já está cheia. A folder que virou notebook não entra na seleção (não faz sentido colocar uma pasta dentro de outra), só cadernos e notes.
 - Novo `NotebookFolderMovePicker`, no mesmo padrão de diálogo já usado em outros lugares do app.
 - Testes: `notes-view-folder-move.test.tsx` (move pra pasta, move de volta pra vitrine, avisa quando a pasta já está cheia, Fechar não move nada).
+
+# Convite da turma, 2026-09-28
+
+Header do Modo Sala com cinco personagens sem molduras, QR vetorial separado e
+layout adaptável. Contraste branco sobre roxo preservado no hover selecionado.
+Arte criada pela ferramenta integrada de geração de imagens usando as cinco
+referências do usuário: papel facetado, fundo creme, placa central vazia, sem
+texto ou QR desenhado. Asset: `public/room-crew-header.png`.

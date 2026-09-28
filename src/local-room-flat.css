@@ -108,8 +108,74 @@
 }
 
 .local-room-share .helena-room-qr--holding {
-  width: min(100%, 340px);
+  width: 100%;
   margin-inline: auto;
+}
+
+/* The real QR stays separate from the decorative paper illustration. */
+.local-room-lobby > .local-room-share {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.local-room-lobby > .local-room-share .local-room-share__qr {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+
+.local-room-lobby > .local-room-share .local-room-share__code,
+.local-room-lobby > .local-room-share .local-room-share__link {
+  grid-column: 2;
+}
+
+.helena-room-qr--holding {
+  container-type: inline-size;
+  aspect-ratio: auto;
+  padding-bottom: 0;
+  background: #fff9ef;
+}
+
+.helena-room-qr--holding svg {
+  top: 48%;
+  left: 41.5%;
+  width: 16%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+@container (max-width: 750px) {
+  .helena-room-qr--holding img {
+    margin-bottom: 148px;
+  }
+
+  .helena-room-qr--holding svg {
+    top: auto;
+    bottom: 12px;
+    left: 50%;
+    width: 144px;
+    height: 144px;
+    transform: translateX(-50%);
+    box-shadow: 0 3px 0 #ded4c0;
+  }
+}
+
+@media (max-width: 760px) {
+  .local-room-lobby > .local-room-share {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.75rem;
+  }
+
+  .local-room-lobby > .local-room-share .local-room-share__qr,
+  .local-room-lobby > .local-room-share .local-room-share__code,
+  .local-room-lobby > .local-room-share .local-room-share__link {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }
 
 .local-room-share__link {
@@ -250,7 +316,7 @@
   text-align: left;
 }
 
-.local-room-activity:not(:disabled):hover,
+.local-room-activity:not(:disabled):not([aria-checked="true"]):hover,
 .local-room-activity[aria-checked="true"] {
   border-color: var(--violet-dark);
   background-color: var(--lavender);
