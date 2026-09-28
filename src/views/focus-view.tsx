@@ -1,4 +1,6 @@
 import { Check, Plus } from "lucide-react";
+import { PaperEditorIcon } from "../components/paper-editor-icon";
+import "../components/paper-object-controls.css";
 import {
   useEffect,
   useRef,
@@ -540,7 +542,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     onClick={reset}
                     aria-label="Reiniciar contador"
                   >
-                    ↺
+                    <PaperEditorIcon name="reset" />
                   </button>
                   <button
                     className="secondary-button"

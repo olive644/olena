@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ShapeKind } from "./handwriting-shapes";
+import { PaperObjectIcon } from "./paper-object-icon";
+import { PaperEditorIcon } from "./paper-editor-icon";
 
 type HandwritingShapeInsertProps = {
   onInsert: (kind: ShapeKind) => void;
@@ -15,9 +17,7 @@ const SHAPES: { kind: ShapeKind; label: string }[] = [
   { kind: "polygon", label: "Polígono" },
 ];
 
-// Alternativa por teclado a "segurar a caneta parada no fim do traço": insere a forma
-// pronta, do tamanho padrão, no meio da folha. Depois dá para mover, girar e redimensionar
-// com o que já é acessível por teclado na seleção (setas, Girar, Aumentar/Diminuir).
+// A escolha por teclado insere uma forma pronta para mover, girar e redimensionar.
 export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeInsertProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -40,10 +40,10 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
       <header>
         <h2>Inserir forma</h2>
         <button type="button" aria-label="Fechar" onClick={onClose}>
-          ×
+          <PaperEditorIcon name="close" />
         </button>
       </header>
-      <p>A forma entra pronta no meio da folha. Mova, gire e redimensione com a seleção.</p>
+      <p>Escolha uma forma. Ela aparece na área visível, pronta para mover e ajustar.</p>
       <div className="handwriting-shape-insert__grid" role="group" aria-label="Formas">
         {SHAPES.map(({ kind, label }) => (
           <button
@@ -54,7 +54,8 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
               onClose();
             }}
           >
-            {label}
+            <PaperObjectIcon name={kind} />
+            <span>{label}</span>
           </button>
         ))}
       </div>

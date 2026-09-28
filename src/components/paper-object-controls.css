@@ -1,0 +1,143 @@
+.paper-object-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.paper-choice-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+:root .paper-choice-row > button,
+:root .handwriting-shape-insert button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 8px 12px;
+  border: 1px solid #e4dac6;
+  border-radius: 5px 14px 5px 8px;
+  background: #fffdf8;
+  color: #292432;
+  box-shadow: 0 3px #d5ccba;
+  font: inherit;
+  cursor: pointer;
+}
+:root .paper-choice-row > button[aria-pressed="true"] {
+  background: #7c3aed;
+  color: #fff9ef;
+  border-color: #a779ef;
+  box-shadow: 0 3px #51259b;
+}
+.paper-choice-row > button > span {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 220ms ease,
+    opacity 160ms ease;
+}
+.paper-choice-row > button:is(:focus-visible, [aria-pressed="true"]) > span {
+  max-width: 160px;
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .paper-choice-row > button:hover > span {
+    max-width: 160px;
+    opacity: 1;
+  }
+}
+.paper-choice-row > button:focus-visible,
+.handwriting-shape-insert button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 4px;
+}
+.eraser-mode.paper-choice-row {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.eraser-mode legend {
+  margin-bottom: 7px;
+}
+:root .notebook-create-dialog {
+  background: #fffdf8;
+  color: #292432;
+  border: 1px solid #e4dac6;
+  border-radius: 8px 24px 8px 16px;
+  box-shadow: 0 7px #51465d;
+}
+.notebook-create-dialog .paper-choice-row {
+  margin: 18px 0 24px;
+}
+:root .notebook-create-dialog :is(input, select) {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #d5ccba;
+  border-radius: 5px 12px 5px 8px;
+  background: #fff9ef;
+  color: #292432;
+  box-sizing: border-box;
+  font: inherit;
+}
+:root .notebook-create-dialog label {
+  color: #292432;
+}
+:root .notebook-create-dialog small {
+  color: #51465d;
+}
+:root .notebook-create-dialog .notebook-detail-actions > button {
+  min-height: 46px;
+  padding: 10px 16px;
+  border: 1px solid #e4dac6;
+  border-radius: 5px 14px 5px 8px;
+  color: #292432;
+  background: #fff9ef;
+  box-shadow: 0 3px #d5ccba;
+}
+:root .notebook-create-dialog .notebook-detail-actions > .primary-button {
+  background: #7c3aed;
+  color: #fff9ef;
+  box-shadow: 0 3px #51259b;
+  border-color: #a779ef;
+}
+:root .handwriting-shape-insert {
+  background: #fffdf8;
+  color: #292432;
+  border-color: #e4dac6;
+  box-shadow: 0 7px #51465d;
+  width: min(92vw, 460px);
+}
+:root .handwriting-shape-insert p {
+  color: #51465d;
+}
+:root .handwriting-shape-insert__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+:root .handwriting-shape-insert__grid button {
+  flex-direction: column;
+  min-height: 92px;
+  font-size: 13px;
+}
+:root .handwriting-shape-insert__grid button:hover {
+  border-color: #7c3aed;
+  background: #f1e9fb;
+}
+.timer-controls .icon-button .paper-editor-icon {
+  width: 28px;
+  height: 28px;
+  color: #fff9ef;
+  --editor-icon-facet: #c7a7ff;
+}
+@media (prefers-reduced-motion: reduce) {
+  .paper-choice-row > button > span {
+    transition: none;
+  }
+}

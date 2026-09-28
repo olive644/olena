@@ -137,7 +137,9 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // 1.5 KiB more; the ceiling moves to 893 KiB. Keyboard shape insertion and the
 // accessibility live regions (selection count, page index announcements) add about 3 KiB
 // more; the ceiling moves to 897 KiB, leaving margin for build variance.
-const MAX_TOTAL_JS_BYTES = 897 * 1024;
+// Shared paper object icons, visible shape placement and bounded shelves add
+// about 4.2 KiB without a dependency. Measured total: 900.1 KiB on Windows.
+const MAX_TOTAL_JS_BYTES = 902 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

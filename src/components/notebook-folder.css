@@ -2,8 +2,34 @@
 .notebooks-main .notebooks-showcase .notebook-shelf--objects {
   --shelf-object-height: 300px;
   --shelf-item-width: 220px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
   padding-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 6px 20px 8px 8px;
+  background: var(--surface);
+  scrollbar-width: thin;
+  scrollbar-color: #a779ef transparent;
+}
+.notebooks-main .notebook-shelves,
+.notebooks-main .notebooks-showcase {
+  min-width: 0;
+}
+.notebooks-main .notebook-shelf__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px 4px;
+}
+.notebooks-main .notebook-shelf__label small {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--muted);
 }
 .notebooks-main .notebooks-showcase .notebook-shelf--objects .notebook-grid {
   position: relative;
@@ -34,6 +60,8 @@
   width: calc(var(--shelf-item-width) - 10px);
   height: auto;
   transform: none;
+  z-index: 3;
+  overflow: visible;
 }
 .notebooks-main .notebooks-showcase .notebook-shelf--objects .notebook-card__copy,
 .paper-folder-copy {

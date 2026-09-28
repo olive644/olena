@@ -1804,15 +1804,36 @@ export function HandwritingStudio({
     );
   }
 
-  // Alternativa por teclado a desenhar a forma à mão: insere pronta, do tamanho padrão, no
-  // meio da folha, e já a seleciona (setas, Girar e Aumentar/Diminuir já funcionam nela).
+  // A forma entra na área visível, em coordenadas da folha, pronta para mover e ajustar.
   function insertShape(kind: ShapeKind) {
     remember();
-    const width = 320;
-    const height = kind === "line" || kind === "arrow" ? 40 : 220;
+    const canvas = canvasRef.current?.getBoundingClientRect();
+    const viewport = viewportRef.current?.getBoundingClientRect();
+    const visible =
+      canvas && viewport
+        ? {
+            left: Math.max(canvas.left, viewport.left),
+            right: Math.min(canvas.right, viewport.right),
+            top: Math.max(canvas.top, viewport.top),
+            bottom: Math.min(canvas.bottom, viewport.bottom),
+          }
+        : null;
+    const scale = canvas?.width ? PAGE_WIDTH / canvas.width : 1;
+    const width = visible
+      ? Math.min(320, Math.max(80, (visible.right - visible.left) * scale * 0.55))
+      : 320;
+    const height = kind === "line" || kind === "arrow" ? 40 : Math.min(220, width * 0.7);
+    const centerX =
+      visible && canvas
+        ? ((visible.left + visible.right) / 2 - canvas.left) * scale
+        : PAGE_WIDTH / 2;
+    const centerY =
+      visible && canvas
+        ? ((visible.top + visible.bottom) / 2 - canvas.top) * scale
+        : PAGE_HEIGHT / 2;
     const box = {
-      x: (PAGE_WIDTH - width) / 2,
-      y: (PAGE_HEIGHT - height) / 2,
+      x: Math.max(0, Math.min(PAGE_WIDTH - width, centerX - width / 2)),
+      y: Math.max(0, Math.min(PAGE_HEIGHT - height, centerY - height / 2)),
       width,
       height,
     };
@@ -1822,6 +1843,8 @@ export function HandwritingStudio({
       { id, tool: "pen", brush: "fine", color, width: 4, points: canonicalShape(kind, box) },
     ]);
     setSelectedIds([id]);
+    setTool("select");
+    setLayerVisibility((current) => ({ ...current, strokes: true }));
   }
 
   function addSticky(kind?: "text") {

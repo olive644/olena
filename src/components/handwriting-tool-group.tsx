@@ -1,4 +1,5 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperObjectIcon } from "./paper-object-icon";
 import type { HandwritingTool } from "./handwriting-types";
 import type { RulerUnit } from "../domain/ruler";
 
@@ -133,10 +134,7 @@ export function HandwritingToolGroup({
         title="Inserir forma pronta: alternativa a segurar a caneta parada no fim do traço"
         onClick={() => onOpenShapeInsert()}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="2" y="10" width="9" height="9" rx="1.5" fill="#B48CF5" stroke="#51465D" />
-          <circle cx="17" cy="7" r="5" fill="#FACC15" stroke="#51465D" />
-        </svg>
+        <PaperObjectIcon name="shapes" />
         <span>Inserir forma</span>
       </button>
       <button

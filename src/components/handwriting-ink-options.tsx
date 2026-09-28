@@ -1,4 +1,5 @@
 import type { HandwritingTool } from "./handwriting-types";
+import { PaperObjectIcon } from "./paper-object-icon";
 
 type HandwritingInkOptionsProps = {
   tool: HandwritingTool;
@@ -27,23 +28,27 @@ export function HandwritingInkOptions({
   return (
     <div className="handwriting-ink-options">
       {tool === "eraser" && onEraserWholeStrokeChange && (
-        <fieldset className="eraser-mode">
+        <fieldset className="eraser-mode paper-choice-row">
           <legend>Modo da borracha</legend>
           <button
             type="button"
             aria-label="Apagar só o trecho tocado"
+            title="Apagar só o trecho tocado"
             aria-pressed={!eraserWholeStroke}
             onClick={() => onEraserWholeStrokeChange(false)}
           >
-            Trecho
+            <PaperObjectIcon name="eraseArea" />
+            <span>Trecho</span>
           </button>
           <button
             type="button"
             aria-label="Apagar o traço inteiro"
+            title="Apagar o traço inteiro"
             aria-pressed={eraserWholeStroke}
             onClick={() => onEraserWholeStrokeChange(true)}
           >
-            Traço inteiro
+            <PaperObjectIcon name="eraseStroke" />
+            <span>Traço inteiro</span>
           </button>
         </fieldset>
       )}
