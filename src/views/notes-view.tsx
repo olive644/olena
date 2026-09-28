@@ -78,6 +78,7 @@ export function NotesView({
   initialNotebookId,
 }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
+  const [createDialogVersion, setCreateDialogVersion] = useState(0);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
   const bookDrag = useNotebookShelfDrag(workspace.notebooks, (id, folderId) =>
@@ -660,12 +661,15 @@ export function NotesView({
           ? "Solte a pasta sobre um caderno. Pelo teclado, escolha o caderno e pressione Enter. Escape cancela."
           : moveMessage}
       </p>
-      <dialog ref={createDialog} className="notebook-create-dialog" aria-label="Crie">
+      <dialog
+        key={createDialogVersion}
+        ref={createDialog}
+        className="notebook-create-dialog"
+        aria-label="Crie"
+      >
         <form
           method="dialog"
           onSubmit={(event) => {
-            if ((event.nativeEvent as SubmitEvent).submitter?.getAttribute("value") === "cancel")
-              return;
             event.preventDefault();
             createNotebook();
           }}
@@ -747,7 +751,13 @@ export function NotesView({
             />
           </label>
           <div className="notebook-detail-actions">
-            <button type="submit" value="cancel">
+            <button
+              type="button"
+              onClick={() => {
+                createDialog.current?.close();
+                setCreateDialogVersion((version) => version + 1);
+              }}
+            >
               Cancelar
             </button>
             <button className="primary-button" type="submit" disabled={createFolder && folderLimit}>
