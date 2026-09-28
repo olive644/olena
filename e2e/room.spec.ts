@@ -103,6 +103,16 @@ for (const activity of ["listening", "bingo"] as const) {
       const qrBounds = await host.locator(".local-room-share svg[aria-label]").boundingBox();
       expect(qrBounds?.width).toBeGreaterThanOrEqual(120);
       expect(Math.abs((qrBounds?.width ?? 0) - (qrBounds?.height ?? 0))).toBeLessThan(1);
+      await expect(host.locator(".local-room-share [data-qr-finder]")).toHaveCount(3);
+      await expect(host.locator(".local-room-share [data-qr-logo]")).toHaveAttribute(
+        "href",
+        "/olena-favicon-180.png",
+      );
+      await expect(host.locator(".helena-room-qr--holding svg")).toHaveAttribute(
+        "data-qr-error-correction",
+        "H",
+      );
+      await expect(host.locator(".helena-room-qr--holding svg rect")).toHaveCount(9);
       await host.locator(".local-room-share__code").scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("room-paper.png") });
       await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
