@@ -178,7 +178,12 @@ function ShareRoom({ code }: { code: string }) {
           onClick={() => void copy(code, "Código copiado ✓")}
           aria-label="Copiar código da sala"
         >
-          <Copy size={17} />
+          <span className="local-room-copy-icon local-room-copy-icon--generic" aria-hidden="true">
+            <Copy size={17} />
+          </span>
+          <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
+            <PaperEditorIcon name="copyLink" />
+          </span>
         </button>
       </div>
       <details className="local-room-share__qr" open>
@@ -194,7 +199,18 @@ function ShareRoom({ code }: { code: string }) {
             type="button"
             onClick={() => void copy(joinUrl, "Link copiado ✓")}
           >
-            <Copy size={16} /> Copiar link
+            <span className="local-room-copy-label">
+              <span
+                className="local-room-copy-icon local-room-copy-icon--generic"
+                aria-hidden="true"
+              >
+                <Copy size={16} />
+              </span>
+              <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
+                <PaperEditorIcon name="copyLink" />
+              </span>
+              Copiar link
+            </span>
           </button>
         </div>
         <p className="local-room-copy-status" role="status" aria-live="polite">

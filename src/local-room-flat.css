@@ -201,10 +201,102 @@
   justify-content: center;
 }
 
+.local-room-copy-icon--paper {
+  display: none;
+}
+
 .local-room-participants {
   border: 0;
   border-top: 1px solid var(--line);
   border-radius: 0;
+}
+
+/* No desktop, convite e participantes compartilham a coluna de papel à esquerda,
+   enquanto atividades e configuração ficam na coluna direita. */
+@media (min-width: 761px) {
+  .local-room-lobby {
+    grid-template-columns: minmax(19rem, 0.88fr) minmax(0, 1.12fr);
+    align-items: start;
+    gap: 1rem;
+  }
+
+  .local-room-lobby > .local-room-share {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 1rem 1.25rem 1.2rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 7px 20px 7px 20px;
+    background-color: var(--soft);
+    background-image:
+      linear-gradient(135deg, var(--surface) 0 17px, transparent 17px),
+      linear-gradient(315deg, var(--page) 0 17px, transparent 17px);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--line-strong) 78%, transparent);
+    gap: 0.15rem;
+  }
+
+  .local-room-lobby > .local-room-share .local-room-share__code strong {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+  }
+
+  .local-room-lobby > .local-room-share .helena-room-qr--holding {
+    width: min(100%, 350px);
+  }
+
+  .local-room-lobby__invite {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .local-room-lobby__invite .local-room-participants {
+    min-height: 100%;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 7px 18px 7px 18px;
+    background-color: var(--soft);
+    background-image:
+      linear-gradient(135deg, var(--surface) 0 15px, transparent 15px),
+      linear-gradient(315deg, var(--page) 0 15px, transparent 15px);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--line-strong) 78%, transparent);
+  }
+
+  .local-room-lobby__invite .local-room-participant-list {
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .local-room-lobby > .local-room-settings {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-width: 0;
+    align-self: stretch;
+  }
+
+  .local-room-copy-icon--generic {
+    display: none;
+  }
+
+  .local-room-copy-icon--paper {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .local-room-copy-icon--paper .paper-editor-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  .local-room-copy-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
 }
 
 .local-room-participant-list {
