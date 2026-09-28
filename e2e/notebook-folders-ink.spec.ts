@@ -33,6 +33,7 @@ test("pastas papercraft guardam três cadernos e limitam três pastas por vitrin
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await expect(page.getByRole("button", { name: "Criar pasta", exact: true })).toBeDisabled();
   await page.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Crie" })).toBeHidden();
   await page.getByRole("button", { name: "Abrir pasta Pasta 1", exact: true }).click();
   const folder = page
     .locator(".paper-folder")
@@ -125,6 +126,10 @@ for (const count of [1, 3]) {
         if (dark) localStorage.setItem("helenastudy.theme", "dark");
         const database = await new Promise<IDBDatabase>((resolve, reject) => {
           const request = indexedDB.open("helenastudy", 1);
+          request.onupgradeneeded = () => {
+            if (!request.result.objectStoreNames.contains("workspace"))
+              request.result.createObjectStore("workspace");
+          };
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
