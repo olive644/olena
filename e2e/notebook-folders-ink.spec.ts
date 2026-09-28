@@ -32,7 +32,8 @@ test("pastas papercraft guardam três cadernos e limitam três pastas por vitrin
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await expect(page.getByRole("button", { name: "Criar pasta", exact: true })).toBeDisabled();
-  await page.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Crie" })).toBeHidden();
   await page.getByRole("button", { name: "Abrir pasta Pasta 1", exact: true }).click();
   const folder = page
     .locator(".paper-folder")
@@ -118,13 +119,33 @@ for (const count of [1, 3]) {
         folderId: "folder-preview",
       });
     }
-    await page.addInitScript(
-      (state) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state)),
-      workspace,
+    // Sai do app antes de trocar os dois armazenamentos: evita uma escrita antiga do mount.
+    await page.goto("/robots.txt");
+    await page.evaluate(
+      async ({ state, dark }) => {
+        const serialized = JSON.stringify(state);
+        localStorage.setItem("helenastudy.workspace.v1", serialized);
+        if (dark) localStorage.setItem("helenastudy.theme", "dark");
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
+          const request = indexedDB.open("helenastudy", 1);
+          request.onupgradeneeded = () => {
+            if (!request.result.objectStoreNames.contains("workspace"))
+              request.result.createObjectStore("workspace");
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        await new Promise<void>((resolve, reject) => {
+          const transaction = database.transaction("workspace", "readwrite");
+          transaction.objectStore("workspace").put(serialized, "current");
+          transaction.oncomplete = () => resolve();
+          transaction.onerror = () => reject(transaction.error);
+        });
+        database.close();
+      },
+      { state: workspace, dark: count === 3 },
     );
-    if (count === 3)
-      await page.addInitScript(() => localStorage.setItem("helenastudy.theme", "dark"));
-    await page.reload();
+    await page.goto("/cadernos");
     const folder = page.locator('[data-folder-drop="folder-preview"]');
     const folderRect = (await folder.boundingBox())!;
     expect(folderRect.width).toBe(info.project.name === "mobile" ? 164 : 220);

@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
   <path fill="#CABDA5" d="m17 6 11-1 7 7-1 11-7 5-11-4-4-10Z"/>
   <path fill="#FFF9EF" d="m17 3 11-1 7 7-1 11-7 5-11-4-4-10Z"/>
-  <path fill="#FFFFFF" d="m17 3 11-1-5 12-7 7-4-10Z"/>
+  <path fill="#E4DAC6" d="m17 3 11-1-5 12-7 7-4-10Z"/>
   <path fill="#CABDA5" d="m14 29 12-3 11 6 6 12-15 3L5 44l2-10Z"/>
   <path fill="#FFF9EF" d="m14 26 12-3 11 6 6 12-15 3L5 41l2-10Z"/>
-  <path fill="#FFFFFF" d="m14 26 12-3-5 12-16 6 2-10Z"/>
+  <path fill="#E4DAC6" d="m14 26 12-3-5 12-16 6 2-10Z"/>
 </svg>

@@ -138,8 +138,10 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // accessibility live regions (selection count, page index announcements) add about 3 KiB
 // more; the ceiling moves to 897 KiB. Text notes (notebook-folder and text-note
 // components) and inserting a ruler/coordinate system without drawing add about 3 KiB
-// more together (896.5 KiB measured); the ceiling moves to 902 KiB for build variance.
-const MAX_TOTAL_JS_BYTES = 902 * 1024;
+// more together (896.5 KiB measured). Shared paper object icons, visible shape placement
+// and bounded shelves are also included. Combined build: 902.8 KiB on Windows;
+// allow 2.2 KiB of build variance without adding a dependency.
+const MAX_TOTAL_JS_BYTES = 905 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

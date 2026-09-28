@@ -1290,6 +1290,8 @@ Limites que se cruzam:
 
 ## Notes de texto na vitrine
 
+Atualização das vitrines e ferramentas: o limite é de quatro objetos visíveis por vitrine, incluindo pastas, Notes e cadernos. O excedente ocupa outra vitrine; cada vitrine aceita até três pastas e cada pasta continua com três itens. Marcadores ficam acima da prateleira no preview. Criação, modos de borracha, formas, reinício de Foco e navegação usam ícones de papel. Formas entram na área visível da folha com seleção ativa e camada de tinta visível.
+
 Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note e uma página de texto, preservada pelo armazenamento existente. A prévia mostra papel creme com canto dobrado, título e trecho real do texto. O editor contém somente título e escrita, com salvamento automático. Pastas aceitam até três itens mistos entre Notes e cadernos; a vitrine continua distribuindo quatro itens soltos por coleção. Notes podem ser arrastadas para dentro e para fora, abertas, buscadas e excluídas com a seleção existente.
 
 ## Mover para pasta pelo teclado, sem arrastar (2026-09-28)

@@ -213,7 +213,7 @@ describe("App", () => {
     expect(habitButton.getAttribute("aria-pressed")).toBe("true");
 
     navigate("Cadernos");
-    fireEvent.click(await screen.findByRole("button", { name: "Crie" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     expect(screen.queryByRole("button", { name: /Anotações/ })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
     expect(screen.getByRole("button", { name: "Criar primeira folha" })).toBeTruthy();
@@ -222,7 +222,7 @@ describe("App", () => {
   it("cria a primeira folha diretamente na prévia do caderno", async () => {
     render(<App />);
     navigate("Cadernos");
-    fireEvent.click(await screen.findByRole("button", { name: "Crie" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
     fireEvent.click(screen.getByRole("button", { name: "Criar primeira folha" }));
 

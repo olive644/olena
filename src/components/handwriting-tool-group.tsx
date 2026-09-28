@@ -1,4 +1,5 @@
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperObjectIcon } from "./paper-object-icon";
 import type { HandwritingTool } from "./handwriting-types";
 import type { RulerUnit } from "../domain/ruler";
 
@@ -133,10 +134,7 @@ export function HandwritingToolGroup({
         title="Forma, régua ou eixos prontos: alternativa a desenhar ou medir com o ponteiro"
         onClick={() => onOpenShapeInsert()}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="2" y="10" width="9" height="9" rx="1.5" fill="#B48CF5" stroke="#51465D" />
-          <circle cx="17" cy="7" r="5" fill="#FACC15" stroke="#51465D" />
-        </svg>
+        <PaperObjectIcon name="shapes" />
         <span>Inserir sem desenhar</span>
       </button>
       <button

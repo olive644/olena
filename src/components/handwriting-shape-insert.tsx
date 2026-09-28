@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ShapeKind } from "./handwriting-shapes";
+import { PaperObjectIcon } from "./paper-object-icon";
+import { PaperEditorIcon } from "./paper-editor-icon";
 
 export type InsertKind = ShapeKind | "ruler" | "coordinate-system";
 
@@ -22,11 +24,7 @@ const MEASURING: { kind: "ruler" | "coordinate-system"; label: string }[] = [
   { kind: "coordinate-system", label: "Eixos de coordenadas" },
 ];
 
-// Alternativa por teclado a desenhar a mão livre (segurar a caneta parada no fim do traço
-// para uma forma, ou arrastar para medir com a régua e os eixos): nenhum dos dois tem
-// como funcionar sem ponteiro, então aqui tudo entra pronto, do tamanho padrão, no meio da
-// folha. Depois dá para mover, girar e redimensionar com o que já é acessível por teclado
-// na seleção (setas, Girar, Aumentar/Diminuir).
+// Alternativa por teclado ao desenho e à medição com ponteiro.
 export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeInsertProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -49,10 +47,10 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
       <header>
         <h2>Inserir sem desenhar</h2>
         <button type="button" aria-label="Fechar" onClick={onClose}>
-          ×
+          <PaperEditorIcon name="close" />
         </button>
       </header>
-      <p>Entra pronto no meio da folha. Mova, gire e redimensione com a seleção.</p>
+      <p>Escolha uma forma, régua ou eixos. O objeto aparece pronto para mover e ajustar.</p>
       <div className="handwriting-shape-insert__grid" role="group" aria-label="Formas">
         {SHAPES.map(({ kind, label }) => (
           <button
@@ -63,7 +61,8 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
               onClose();
             }}
           >
-            {label}
+            <PaperObjectIcon name={kind} />
+            <span>{label}</span>
           </button>
         ))}
       </div>

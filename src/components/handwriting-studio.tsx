@@ -1804,10 +1804,7 @@ export function HandwritingStudio({
     );
   }
 
-  // Alternativa por teclado a desenhar a mão livre: nem a forma (segurar a caneta parada no
-  // fim do traço) nem a régua e os eixos (arrastar para medir) têm como funcionar sem
-  // ponteiro, então tudo aqui entra pronto, do tamanho padrão, no meio da folha, já
-  // selecionado (setas, Girar e Aumentar/Diminuir já funcionam nele).
+  // Objetos entram prontos e selecionados; formas ficam no centro da área visível.
   function insertWithoutDrawing(kind: InsertKind) {
     remember();
     if (kind === "ruler") {
@@ -1841,13 +1838,35 @@ export function HandwritingStudio({
       setSelectedCoordinateIds([id]);
       return;
     }
-    const boxWidth = 320;
-    const boxHeight = kind === "line" || kind === "arrow" ? 40 : 220;
+    const canvas = canvasRef.current?.getBoundingClientRect();
+    const viewport = viewportRef.current?.getBoundingClientRect();
+    const visible =
+      canvas && viewport
+        ? {
+            left: Math.max(canvas.left, viewport.left),
+            right: Math.min(canvas.right, viewport.right),
+            top: Math.max(canvas.top, viewport.top),
+            bottom: Math.min(canvas.bottom, viewport.bottom),
+          }
+        : null;
+    const scale = canvas?.width ? PAGE_WIDTH / canvas.width : 1;
+    const shapeWidth = visible
+      ? Math.min(320, Math.max(80, (visible.right - visible.left) * scale * 0.55))
+      : 320;
+    const shapeHeight = kind === "line" || kind === "arrow" ? 40 : Math.min(220, shapeWidth * 0.7);
+    const centerX =
+      visible && canvas
+        ? ((visible.left + visible.right) / 2 - canvas.left) * scale
+        : PAGE_WIDTH / 2;
+    const centerY =
+      visible && canvas
+        ? ((visible.top + visible.bottom) / 2 - canvas.top) * scale
+        : PAGE_HEIGHT / 2;
     const box = {
-      x: (PAGE_WIDTH - boxWidth) / 2,
-      y: (PAGE_HEIGHT - boxHeight) / 2,
-      width: boxWidth,
-      height: boxHeight,
+      x: Math.max(0, Math.min(PAGE_WIDTH - shapeWidth, centerX - shapeWidth / 2)),
+      y: Math.max(0, Math.min(PAGE_HEIGHT - shapeHeight, centerY - shapeHeight / 2)),
+      width: shapeWidth,
+      height: shapeHeight,
     };
     const id = strokeId();
     setStrokes((current) => [
@@ -1855,6 +1874,8 @@ export function HandwritingStudio({
       { id, tool: "pen", brush: "fine", color, width: 4, points: canonicalShape(kind, box) },
     ]);
     setSelectedIds([id]);
+    setTool("select");
+    setLayerVisibility((current) => ({ ...current, strokes: true }));
   }
 
   function addSticky(kind?: "text") {

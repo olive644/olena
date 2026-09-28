@@ -1,4 +1,6 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
+import { notebookShelves, SHELF_CAPACITY } from "../domain/notebook-shelves";
+import { PaperObjectIcon } from "../components/paper-object-icon";
 import { NotebookSearch } from "../components/notebook-search";
 import { NotebookFolder } from "../components/notebook-folder";
 import { TextNoteEditor, TextNotePreview } from "../components/text-note";
@@ -76,6 +78,7 @@ export function NotesView({
   initialNotebookId,
 }: NotesViewProps) {
   const createDialog = useRef<HTMLDialogElement>(null);
+  const [createDialogVersion, setCreateDialogVersion] = useState(0);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
   const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
   const bookDrag = useNotebookShelfDrag(workspace.notebooks, (id, folderId) =>
@@ -157,11 +160,8 @@ export function NotesView({
     (item) => !item.parentId && item.kind !== "collection",
   );
   const collections = workspace.notebooks.filter((item) => item.kind === "collection");
-  const shelfCount = Math.max(
-    1,
-    Math.ceil(shelfItems.length / 4),
-    ...collections.map((item) => (item.shelf ?? 0) + 1),
-  );
+  const shelves = notebookShelves(workspace.notebooks);
+  const shelfCount = shelves.length;
   const folderLimit = collections.filter((item) => (item.shelf ?? 0) === folderShelf).length >= 3;
   const folders = workspace.notebooks.filter(
     (item) => item.kind === "folder" && item.parentId === activeNotebookId,
@@ -661,7 +661,12 @@ export function NotesView({
           ? "Solte a pasta sobre um caderno. Pelo teclado, escolha o caderno e pressione Enter. Escape cancela."
           : moveMessage}
       </p>
-      <dialog ref={createDialog} className="notebook-create-dialog" aria-label="Crie">
+      <dialog
+        key={createDialogVersion}
+        ref={createDialog}
+        className="notebook-create-dialog"
+        aria-label="Crie"
+      >
         <form
           method="dialog"
           onSubmit={(event) => {
@@ -670,36 +675,45 @@ export function NotesView({
           }}
         >
           <h2>{createFolder ? "Nova pasta" : createNote ? "Nova Note" : "Novo caderno"}</h2>
-          <div className="notebook-detail-actions">
+          <div className="paper-choice-row" role="group" aria-label="Tipo de criação">
             <button
               type="button"
+              aria-label="Caderno"
+              title="Criar caderno"
               aria-pressed={!createFolder && !createNote}
               onClick={() => {
                 setCreateFolder(false);
                 setCreateNote(false);
               }}
             >
-              Caderno
+              <PaperObjectIcon name="notebook" />
+              <span>Caderno</span>
             </button>
             <button
               type="button"
+              aria-label="Note"
+              title="Criar Note"
               aria-pressed={createNote}
               onClick={() => {
                 setCreateFolder(false);
                 setCreateNote(true);
               }}
             >
-              Note
+              <PaperObjectIcon name="note" />
+              <span>Note</span>
             </button>
             <button
               type="button"
+              aria-label="Pasta"
+              title="Criar pasta"
               aria-pressed={createFolder}
               onClick={() => {
                 setCreateFolder(true);
                 setCreateNote(false);
               }}
             >
-              Pasta
+              <PaperObjectIcon name="folder" />
+              <span>Pasta</span>
             </button>
           </div>
           {createNote && (
@@ -713,16 +727,16 @@ export function NotesView({
                 value={folderShelf}
                 onChange={(event) => setFolderShelf(Number(event.target.value))}
               >
-                {Array.from({ length: shelfCount }, (_, index) => (
+                {Array.from({ length: shelfCount + 1 }, (_, index) => (
                   <option key={index} value={index}>
-                    Coleção {index + 1}
+                    {index === shelfCount ? "Nova vitrine" : `Coleção ${index + 1}`}
                   </option>
                 ))}
               </select>
               <small>
                 {folderLimit
                   ? "Esta vitrine já tem 3 pastas."
-                  : "Até 3 pastas por vitrine e 3 itens por pasta, entre Notes e cadernos."}
+                  : "Até 4 objetos por vitrine, até 3 pastas. Cada pasta guarda 3 itens."}
               </small>
             </label>
           )}
@@ -737,7 +751,13 @@ export function NotesView({
             />
           </label>
           <div className="notebook-detail-actions">
-            <button type="button" onClick={() => createDialog.current?.close()}>
+            <button
+              type="button"
+              onClick={() => {
+                createDialog.current?.close();
+                setCreateDialogVersion((version) => version + 1);
+              }}
+            >
               Cancelar
             </button>
             <button className="primary-button" type="submit" disabled={createFolder && folderLimit}>
@@ -875,11 +895,13 @@ export function NotesView({
                   >
                     <span className="notebook-shelf__label">
                       Coleção {String(shelfIndex + 1).padStart(2, "0")}
+                      <small>
+                        {shelves[shelfIndex]!.length}/{SHELF_CAPACITY} objetos
+                      </small>
                     </span>
                     <div className="notebook-grid">
-                      {collections
-                        .filter((folder) => (folder.shelf ?? 0) === shelfIndex)
-                        .map((folder) => (
+                      {shelves[shelfIndex]!.filter((folder) => folder.kind === "collection").map(
+                        (folder) => (
                           <NotebookFolder
                             key={folder.id}
                             folder={folder}
@@ -901,164 +923,175 @@ export function NotesView({
                             }
                             drag={bookDrag}
                           />
-                        ))}
-                      {shelfItems.slice(shelfIndex * 4, shelfIndex * 4 + 4).map((notebook) => {
-                        const coverIndex =
-                          [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4;
-                        return (
-                          <button
-                            className={`notebook-card ${dropTarget === notebook.id ? "is-drop-target" : ""} ${draggedFolder === notebook.id ? "is-dragging-folder" : ""}`}
-                            data-notebook-drop={
-                              notebook.kind !== "folder" ? notebook.id : undefined
-                            }
-                            style={notebook.kind === "folder" ? { touchAction: "none" } : undefined}
-                            onKeyDown={(event) => {
-                              if (event.key === "Escape") {
-                                setDraggedFolder(null);
-                                setDropTarget(null);
+                        ),
+                      )}
+                      {shelves[shelfIndex]!.filter((item) => item.kind !== "collection").map(
+                        (notebook) => {
+                          const coverIndex =
+                            [...notebook.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4;
+                          return (
+                            <button
+                              className={`notebook-card ${dropTarget === notebook.id ? "is-drop-target" : ""} ${draggedFolder === notebook.id ? "is-dragging-folder" : ""}`}
+                              data-notebook-drop={
+                                notebook.kind !== "folder" ? notebook.id : undefined
                               }
-                              if (
-                                event.key === " " &&
-                                notebook.kind === "folder" &&
-                                !selectionMode
-                              ) {
-                                event.preventDefault();
-                                setDraggedFolder(notebook.id);
+                              style={
+                                notebook.kind === "folder" ? { touchAction: "none" } : undefined
                               }
-                            }}
-                            onPointerDown={(event) => {
-                              if (notebook.kind !== "folder" || selectionMode || event.button !== 0)
-                                return;
-                              drag.current = {
-                                id: notebook.id,
-                                x: event.clientX,
-                                y: event.clientY,
-                                moved: false,
-                              };
-                              event.currentTarget.setPointerCapture(event.pointerId);
-                            }}
-                            onPointerMove={(event) => {
-                              const current = drag.current;
-                              if (!current) return;
-                              if (
-                                Math.hypot(event.clientX - current.x, event.clientY - current.y) <
-                                  8 &&
-                                !current.moved
-                              )
-                                return;
-                              current.moved = true;
-                              setDragPosition({ x: event.clientX, y: event.clientY });
-                              setDraggedFolder(current.id);
-                              const target = document
-                                .elementFromPoint(event.clientX, event.clientY)
-                                ?.closest<HTMLElement>("[data-notebook-drop]");
-                              setDropTarget(target?.dataset["notebookDrop"] ?? null);
-                              const shelf = document
-                                .elementFromPoint(event.clientX, event.clientY)
-                                ?.closest(".notebook-shelf");
-                              if (shelf) {
-                                const bounds = shelf.getBoundingClientRect();
-                                if (event.clientX > bounds.right - 45) shelf.scrollLeft += 24;
-                                if (event.clientX < bounds.left + 45) shelf.scrollLeft -= 24;
-                              }
-                            }}
-                            onPointerUp={(event) => {
-                              const current = drag.current;
-                              drag.current = null;
-                              setDragPosition(null);
-                              if (!current?.moved) return;
-                              skipClick.current = current.id;
-                              const target = document
-                                .elementFromPoint(event.clientX, event.clientY)
-                                ?.closest<HTMLElement>("[data-notebook-drop]")?.dataset[
-                                "notebookDrop"
-                              ];
-                              if (target) moveFolder(current.id, target);
-                              else {
-                                setDraggedFolder(null);
-                                setDropTarget(null);
-                              }
-                            }}
-                            onPointerCancel={() => {
-                              drag.current = null;
-                              setDraggedFolder(null);
-                              setDropTarget(null);
-                            }}
-                            {...((!notebook.kind || notebook.kind === "note") && !selectionMode
-                              ? bookDrag.handlers(notebook.id)
-                              : {})}
-                            type="button"
-                            onClick={() => openNotebook(notebook)}
-                            aria-label={`Abrir ${notebook.title}`}
-                            aria-pressed={
-                              selectionMode ? selectedNotebookIds.includes(notebook.id) : undefined
-                            }
-                            key={notebook.id}
-                          >
-                            {selectionMode && (
-                              <span
-                                className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
-                                aria-hidden="true"
-                              >
-                                {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
-                              </span>
-                            )}
-                            {notebook.kind === "note" ? (
-                              <TextNotePreview
-                                title={notebook.title}
-                                content={
-                                  workspace.notes.find((note) => note.id === notebook.pageIds[0])
-                                    ?.content ?? ""
+                              onKeyDown={(event) => {
+                                if (event.key === "Escape") {
+                                  setDraggedFolder(null);
+                                  setDropTarget(null);
                                 }
-                              />
-                            ) : notebook.kind === "folder" ? (
-                              <span className="annotation-folder" aria-hidden="true">
-                                <span className="annotation-folder__back" />
-                                {[0, 1, 2].map((index) => (
-                                  <span
-                                    key={index}
-                                    className={`annotation-folder__paper annotation-folder__paper--${index}`}
-                                  />
-                                ))}
-                                <span className="annotation-folder__front">
-                                  <strong>{notebook.title}</strong>
-                                  <small>ANOTAÇÕES</small>
+                                if (
+                                  event.key === " " &&
+                                  notebook.kind === "folder" &&
+                                  !selectionMode
+                                ) {
+                                  event.preventDefault();
+                                  setDraggedFolder(notebook.id);
+                                }
+                              }}
+                              onPointerDown={(event) => {
+                                if (
+                                  notebook.kind !== "folder" ||
+                                  selectionMode ||
+                                  event.button !== 0
+                                )
+                                  return;
+                                drag.current = {
+                                  id: notebook.id,
+                                  x: event.clientX,
+                                  y: event.clientY,
+                                  moved: false,
+                                };
+                                event.currentTarget.setPointerCapture(event.pointerId);
+                              }}
+                              onPointerMove={(event) => {
+                                const current = drag.current;
+                                if (!current) return;
+                                if (
+                                  Math.hypot(event.clientX - current.x, event.clientY - current.y) <
+                                    8 &&
+                                  !current.moved
+                                )
+                                  return;
+                                current.moved = true;
+                                setDragPosition({ x: event.clientX, y: event.clientY });
+                                setDraggedFolder(current.id);
+                                const target = document
+                                  .elementFromPoint(event.clientX, event.clientY)
+                                  ?.closest<HTMLElement>("[data-notebook-drop]");
+                                setDropTarget(target?.dataset["notebookDrop"] ?? null);
+                                const shelf = document
+                                  .elementFromPoint(event.clientX, event.clientY)
+                                  ?.closest(".notebook-shelf");
+                                if (shelf) {
+                                  const bounds = shelf.getBoundingClientRect();
+                                  if (event.clientX > bounds.right - 45) shelf.scrollLeft += 24;
+                                  if (event.clientX < bounds.left + 45) shelf.scrollLeft -= 24;
+                                }
+                              }}
+                              onPointerUp={(event) => {
+                                const current = drag.current;
+                                drag.current = null;
+                                setDragPosition(null);
+                                if (!current?.moved) return;
+                                skipClick.current = current.id;
+                                const target = document
+                                  .elementFromPoint(event.clientX, event.clientY)
+                                  ?.closest<HTMLElement>("[data-notebook-drop]")?.dataset[
+                                  "notebookDrop"
+                                ];
+                                if (target) moveFolder(current.id, target);
+                                else {
+                                  setDraggedFolder(null);
+                                  setDropTarget(null);
+                                }
+                              }}
+                              onPointerCancel={() => {
+                                drag.current = null;
+                                setDraggedFolder(null);
+                                setDropTarget(null);
+                              }}
+                              {...((!notebook.kind || notebook.kind === "note") && !selectionMode
+                                ? bookDrag.handlers(notebook.id)
+                                : {})}
+                              type="button"
+                              onClick={() => openNotebook(notebook)}
+                              aria-label={`Abrir ${notebook.title}`}
+                              aria-pressed={
+                                selectionMode
+                                  ? selectedNotebookIds.includes(notebook.id)
+                                  : undefined
+                              }
+                              key={notebook.id}
+                            >
+                              {selectionMode && (
+                                <span
+                                  className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
+                                  aria-hidden="true"
+                                >
+                                  {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
                                 </span>
+                              )}
+                              {notebook.kind === "note" ? (
+                                <TextNotePreview
+                                  title={notebook.title}
+                                  content={
+                                    workspace.notes.find((note) => note.id === notebook.pageIds[0])
+                                      ?.content ?? ""
+                                  }
+                                />
+                              ) : notebook.kind === "folder" ? (
+                                <span className="annotation-folder" aria-hidden="true">
+                                  <span className="annotation-folder__back" />
+                                  {[0, 1, 2].map((index) => (
+                                    <span
+                                      key={index}
+                                      className={`annotation-folder__paper annotation-folder__paper--${index}`}
+                                    />
+                                  ))}
+                                  <span className="annotation-folder__front">
+                                    <strong>{notebook.title}</strong>
+                                    <small>ANOTAÇÕES</small>
+                                  </span>
+                                </span>
+                              ) : (
+                                <NotebookArtwork
+                                  participants={
+                                    notebook.id === collaborationNotebookId
+                                      ? (collaboration.state.room?.participants ?? [])
+                                      : []
+                                  }
+                                  subjectColor={
+                                    ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ??
+                                    "#7C3AED"
+                                  }
+                                  title={notebook.title}
+                                  coverStyle={notebook.coverStyle}
+                                  tabs={notebookPaperTabs(
+                                    notebook,
+                                    notebook.pageIds.flatMap(
+                                      (id) => workspace.notes.find((note) => note.id === id) ?? [],
+                                    ),
+                                    workspace.subjects,
+                                  )}
+                                />
+                              )}
+                              <span className="notebook-card__copy">
+                                <strong>{notebook.title}</strong>
+                                <small>
+                                  {notebook.kind === "note" ? "Note · " : ""}
+                                  {notebook.pageIds.length}{" "}
+                                  {notebook.kind === "folder" ? "nota" : "folha"}
+                                  {notebook.pageIds.length === 1 ? "" : "s"}
+                                </small>
                               </span>
-                            ) : (
-                              <NotebookArtwork
-                                participants={
-                                  notebook.id === collaborationNotebookId
-                                    ? (collaboration.state.room?.participants ?? [])
-                                    : []
-                                }
-                                subjectColor={
-                                  ["#7C3AED", "#22665F", "#A44050", "#315A83"][coverIndex] ??
-                                  "#7C3AED"
-                                }
-                                title={notebook.title}
-                                coverStyle={notebook.coverStyle}
-                                tabs={notebookPaperTabs(
-                                  notebook,
-                                  notebook.pageIds.flatMap(
-                                    (id) => workspace.notes.find((note) => note.id === id) ?? [],
-                                  ),
-                                  workspace.subjects,
-                                )}
-                              />
-                            )}
-                            <span className="notebook-card__copy">
-                              <strong>{notebook.title}</strong>
-                              <small>
-                                {notebook.kind === "note" ? "Note · " : ""}
-                                {notebook.pageIds.length}{" "}
-                                {notebook.kind === "folder" ? "nota" : "folha"}
-                                {notebook.pageIds.length === 1 ? "" : "s"}
-                              </small>
-                            </span>
-                          </button>
-                        );
-                      })}
+                            </button>
+                          );
+                        },
+                      )}
                       <div className="notebook-shelf__rail" aria-hidden="true" />
                     </div>
                   </section>
