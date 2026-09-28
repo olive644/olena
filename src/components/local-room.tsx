@@ -1,4 +1,4 @@
-import { Check, Copy, DoorOpen, Maximize2, MonitorUp, Radio, Users, Volume2 } from "lucide-react";
+import { Check, Copy, MonitorUp, Radio, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -19,14 +19,11 @@ import {
 } from "../domain/local-room";
 import { parseManualListeningInput } from "../domain/listening-quiz";
 import { selectFallbackEnglishVoice, speakEnglish } from "../data/speech-voice";
+import { roomAppCheckToken } from "../data/room-app-check";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
 import { useListeningOnline } from "../hooks/use-listening-online";
 import { ListeningOnlineNotice } from "./listening-online-notice";
-import {
-  LOCAL_ROOM_SESSION_KEY,
-  useLocalRoom,
-  type RoomConnectionStatus,
-} from "../hooks/use-local-room";
+import { LOCAL_ROOM_SESSION_KEY, useLocalRoom } from "../hooks/use-local-room";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
@@ -300,13 +297,9 @@ function Podium({ participants }: { participants: readonly LocalRoomParticipant[
 
 function ProjectorRoom({
   state,
-  connectionLabel,
-  connectionStatus,
   secondsLeft,
 }: {
   state: PublicLocalRoomState;
-  connectionLabel: string;
-  connectionStatus: RoomConnectionStatus;
   secondsLeft: number;
 }) {
   const connected = state.participants.filter((participant) => participant.online !== false);
@@ -315,22 +308,16 @@ function ProjectorRoom({
   return (
     <div className="local-room-projector">
       <header className="local-room-projector__header">
-        <div>
-          <span>Sala</span>
-          <strong>{state.code}</strong>
-        </div>
-        <p className={`local-room-connection local-room-connection--${connectionStatus}`}>
-          <span aria-hidden="true" /> {connectionLabel}
-        </p>
-        <p>
-          <Users size={22} /> {countLabel(connected.length, "participante", "participantes")}
+        <p className="local-room-projector__participants">
+          <PaperEditorIcon name="team" />
+          {countLabel(connected.length, "participante", "participantes")}
         </p>
         <button
           className="secondary-button"
           type="button"
           onClick={() => void document.documentElement.requestFullscreen?.()}
         >
-          <Maximize2 size={20} /> Tela cheia
+          <PaperEditorIcon name="expand" /> Tela cheia
         </button>
       </header>
 
@@ -649,6 +636,10 @@ export function LocalRoom({
     onExit?.();
   }
 
+  function prepareRoomProtection() {
+    void roomAppCheckToken().catch(() => undefined);
+  }
+
   async function selectActivity(activity: "listening" | "bingo") {
     if (activityRequestRef.current || (room.state?.settings.activity ?? "listening") === activity)
       return;
@@ -703,7 +694,7 @@ export function LocalRoom({
           </button>
         )}
         <div className="local-room-intro">
-          <Radio size={34} />
+          <PaperEditorIcon name="team" />
           <div>
             <h3>Modo Sala</h3>
             <p>Cada aluno entra pelo próprio celular com um código de cinco letras.</p>
@@ -713,18 +704,32 @@ export function LocalRoom({
               className="primary-button"
               type="button"
               onClick={() => void room.createRoom(DEFAULT_SETTINGS)}
+              onPointerEnter={prepareRoomProtection}
+              onFocus={prepareRoomProtection}
               disabled={room.busy}
             >
-              <Users size={17} /> Criar sala
+              <span className="local-room-entry-icon local-room-entry-icon--team">
+                <PaperEditorIcon name="team" />
+              </span>
+              {room.busy ? "Criando sala…" : "Criar sala"}
             </button>
             <button
               className="secondary-button"
               type="button"
               onClick={() => room.setRole("participant")}
+              disabled={room.busy}
             >
-              <DoorOpen size={17} /> Entrar com código
+              <span className="local-room-entry-icon local-room-entry-icon--page">
+                <PaperEditorIcon name="page" />
+              </span>
+              Entrar com código
             </button>
           </div>
+          {room.busy && (
+            <div className="local-room-intro__loading">
+              <HelenaLoading compact label="Criando sala…" />
+            </div>
+          )}
           {room.error && <p role="alert">{room.error}</p>}
         </div>
       </LocalRoomFullscreen>
@@ -804,24 +809,10 @@ export function LocalRoom({
     team,
     score: state.participants.filter((p) => p.team === team).reduce((sum, p) => sum + p.score, 0),
   }));
-  const connectionLabel =
-    room.connectionStatus === "online"
-      ? "Online"
-      : room.connectionStatus === "offline"
-        ? "Sem conexão"
-        : room.connectionStatus === "reconnecting"
-          ? "Reconectando…"
-          : "Conectando…";
-
   if (projectorMode)
     return (
       <LocalRoomFullscreen>
-        <ProjectorRoom
-          state={state}
-          connectionLabel={connectionLabel}
-          connectionStatus={room.connectionStatus}
-          secondsLeft={secondsLeft}
-        />
+        <ProjectorRoom state={state} secondsLeft={secondsLeft} />
       </LocalRoomFullscreen>
     );
 
@@ -856,24 +847,26 @@ export function LocalRoom({
         {state.phase === "lobby" ? (
           isHost ? (
             <div className="local-room-lobby">
-              <ShareRoom code={state.code} />
-              <div className="local-room-lobby__invite">
-                <section className="local-room-participants" aria-labelledby="participants-title">
-                  <div className="local-room-section-heading">
-                    <h3 id="participants-title">Participantes</h3>
-                    <span>
-                      {participantCount}/{MAX_ROOM_PARTICIPANTS}
-                    </span>
-                  </div>
-                  {participantCount === 0 ? (
-                    <div className="local-room-participants__empty">
-                      <strong>Aguardando participantes…</strong>
-                      <p>Compartilhe o código {state.code}. A rodada começa com uma pessoa.</p>
+              <div className="local-room-lobby__main">
+                <ShareRoom code={state.code} />
+                <div className="local-room-lobby__invite">
+                  <section className="local-room-participants" aria-labelledby="participants-title">
+                    <div className="local-room-section-heading">
+                      <h3 id="participants-title">Participantes</h3>
+                      <span>
+                        {participantCount}/{MAX_ROOM_PARTICIPANTS}
+                      </span>
                     </div>
-                  ) : (
-                    <LobbyParticipants participants={state.participants} />
-                  )}
-                </section>
+                    {participantCount === 0 ? (
+                      <div className="local-room-participants__empty">
+                        <strong>Aguardando participantes…</strong>
+                        <p>Compartilhe o código {state.code}. A rodada começa com uma pessoa.</p>
+                      </div>
+                    ) : (
+                      <LobbyParticipants participants={state.participants} />
+                    )}
+                  </section>
+                </div>
               </div>
 
               <div className="local-room-settings">

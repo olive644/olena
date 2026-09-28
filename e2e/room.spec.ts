@@ -174,7 +174,8 @@ for (const activity of ["listening", "bingo"] as const) {
           : undefined;
       if (projector) {
         await expect(projector).toHaveURL(new RegExp(`/sala/${code}/projetor$`));
-        await expect(projector.getByRole("banner").getByText(code, { exact: true })).toBeVisible();
+        await expect(projector.getByRole("main").getByText(code, { exact: true })).toBeVisible();
+        await expect(projector.getByText(code, { exact: true })).toHaveCount(1);
         await expect(projector.locator(".helena-room-qr--holding")).toBeVisible();
         await expect(projector.getByRole("button", { name: "Sair da sala" })).toHaveCount(0);
         await projector.screenshot({ path: testInfo.outputPath("projector-lobby.png") });
