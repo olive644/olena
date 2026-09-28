@@ -2,7 +2,6 @@ import { useState, useRef, type Dispatch, type SetStateAction } from "react";
 import type {
   HandwritingCoordinateSystem,
   HandwritingImage,
-  HandwritingPoint,
   HandwritingSticky,
 } from "../domain/handwriting";
 import { strokeId } from "../components/handwriting-draft";
@@ -12,6 +11,7 @@ import {
   pageTextBounds,
   stickyBounds,
   strokeBounds,
+  strokeInkBounds,
   unionBounds,
 } from "../components/handwriting-geometry";
 import {
@@ -19,6 +19,8 @@ import {
   copyItems,
   pasteItems,
   rotateItems,
+  scaleItems,
+  constrainSelectionScale,
   selectionSize,
   type SelectionClipboard,
 } from "../components/handwriting-selection-ops";
@@ -100,7 +102,7 @@ export function useSelectionActions(input: SelectionActionsInput) {
   // Caixa dos itens selecionados, com o texto da folha (usada para escalar, girar e alinhar).
   function selectionBounds(): SelectionBox | null {
     return unionBounds([
-      ...strokes.filter((stroke) => selectedIds.includes(stroke.id)).map(strokeBounds),
+      ...strokes.filter((stroke) => selectedIds.includes(stroke.id)).map(strokeInkBounds),
       ...coordinateSystems
         .filter((system) => selectedIds.includes(system.id))
         .map(coordinateBounds),
@@ -117,39 +119,17 @@ export function useSelectionActions(input: SelectionActionsInput) {
     if (!bounds || (bounds.width < 1 && bounds.height < 1)) return;
     remember();
     const center = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
-    const scalePoint = (point: HandwritingPoint): HandwritingPoint => ({
-      ...point,
-      x: Math.max(0, Math.min(page.width, center.x + (point.x - center.x) * factor)),
-      y: Math.max(0, Math.min(page.height, center.y + (point.y - center.y) * factor)),
-    });
-    setStrokes((current) =>
-      current.map((stroke) =>
-        selectedIds.includes(stroke.id)
-          ? { ...stroke, points: stroke.points.map(scalePoint), width: stroke.width * factor }
-          : stroke,
-      ),
+    const scaled = scaleItems(
+      scene,
+      new Set(selectedIds),
+      constrainSelectionScale(bounds, center, factor, page),
+      center,
+      page,
     );
-    setCoordinateSystems((current) =>
-      current.map((system) =>
-        selectedIds.includes(system.id)
-          ? { ...system, origin: scalePoint(system.origin), end: scalePoint(system.end) }
-          : system,
-      ),
-    );
-    setImportedImages((current) =>
-      current.map((image) => {
-        if (!selectedIds.includes(image.id)) return image;
-        const width = Math.max(40, Math.min(page.width, image.width * factor));
-        const height = Math.max(40, Math.min(page.height, image.height * factor));
-        return {
-          ...image,
-          x: Math.max(0, Math.min(page.width - width, center.x - width / 2)),
-          y: Math.max(0, Math.min(page.height - height, center.y - height / 2)),
-          width,
-          height,
-        };
-      }),
-    );
+    setStrokes([...scaled.strokes]);
+    setCoordinateSystems([...scaled.coordinateSystems]);
+    setStickies([...scaled.stickies]);
+    setImportedImages([...scaled.images]);
   }
 
   function selectedItems() {
@@ -218,6 +198,7 @@ export function useSelectionActions(input: SelectionActionsInput) {
       new Set(selectedIds),
       direction * 15,
       { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 },
+      page,
     );
     setStrokes([...rotated.strokes]);
     setStickies([...rotated.stickies]);
@@ -229,6 +210,10 @@ export function useSelectionActions(input: SelectionActionsInput) {
   // Vários toques seguidos entram como um só passo do Desfazer.
   function nudgeSelection(dx: number, dy: number) {
     if (!selectedIds.length) return;
+    const bounds = selectionBounds();
+    if (!bounds) return;
+    dx = Math.max(-bounds.x, Math.min(page.width - bounds.x - bounds.width, dx));
+    dy = Math.max(-bounds.y, Math.min(page.height - bounds.y - bounds.height, dy));
     const now = Date.now();
     if (now - lastNudgeAt.current > 800) remember();
     lastNudgeAt.current = now;

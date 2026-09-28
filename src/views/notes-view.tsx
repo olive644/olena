@@ -1127,7 +1127,19 @@ export function NotesView({
         />
       ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label="Preview do caderno">
-          <h1>{activeNotebook.title}</h1>
+          <div className="notebook-preview-heading">
+            <button
+              type="button"
+              className="notebook-paper-tool notebook-back-tool"
+              aria-label="Meus Cadernos"
+              title="Voltar aos meus cadernos"
+              disabled={Boolean(journey)}
+              onClick={returnToShelf}
+            >
+              <img src="/paper-arrow.svg" alt="" />
+            </button>
+            <h1>{activeNotebook.title}</h1>
+          </div>
           <p>
             {notebookPages.length}{" "}
             {notebookPages.length === 1 ? "folha guardada" : "folhas guardadas"}

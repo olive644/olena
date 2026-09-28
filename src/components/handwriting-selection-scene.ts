@@ -15,6 +15,7 @@ import {
   stickyHeight,
   stickyWidth,
   strokeBounds,
+  strokeInkBounds,
   strokeTouches,
   unionBounds,
 } from "./handwriting-geometry";
@@ -129,10 +130,13 @@ export function hitsSelected(
 export function selectionFrame(
   scene: SelectionScene,
   selectedIds: readonly string[],
+  includeInk = false,
 ): SelectionBox | null {
   const selected = new Set(selectedIds);
   return unionBounds([
-    ...scene.strokes.filter((stroke) => selected.has(stroke.id)).map(strokeBounds),
+    ...scene.strokes
+      .filter((stroke) => selected.has(stroke.id))
+      .map(includeInk ? strokeInkBounds : strokeBounds),
     ...(scene.layers.coordinates
       ? scene.coordinateSystems.filter((system) => selected.has(system.id)).map(coordinateBounds)
       : []),

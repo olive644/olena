@@ -1,0 +1,37 @@
+.paper-digits {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+  --digit-fold: #51465d;
+  --digit-edge: #211b29;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  vertical-align: middle;
+  gap: 0.025em;
+}
+.paper-digits svg {
+  display: block;
+  width: 0.66em;
+  height: 0.98em;
+  min-width: 0;
+}
+.paper-digits__colon {
+  display: grid;
+  gap: 0.15em;
+  margin-inline: 0.04em;
+}
+.paper-digits__colon::before,
+.paper-digits__colon::after {
+  content: "";
+  width: 0.085em;
+  height: 0.085em;
+  background: var(--digit-face);
+  clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+}
+:root[data-theme="dark"] .paper-digits {
+  --digit-face: #fff9ef;
+  --digit-depth: #847291;
+  --digit-fold: #fff;
+  --digit-edge: #d8ccb8;
+}

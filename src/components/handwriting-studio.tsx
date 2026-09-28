@@ -1836,10 +1836,8 @@ export function HandwritingStudio({
     const visibleWidth = visible ? (visible.right - visible.left) * scale : PAGE_WIDTH;
     const visibleHeight = visible ? (visible.bottom - visible.top) * scale : PAGE_HEIGHT;
     const shapeWidth = visible ? Math.min(320, Math.max(24, visibleWidth * 0.55)) : 320;
-    const curveSpan = Math.min(shapeWidth, visibleHeight * 0.75);
-    const circleRadius = Math.min(shapeWidth / 2, visibleWidth * 0.42, visibleHeight * 0.42);
     const shapeHeight =
-      kind === "line" || kind === "arrow" || kind === "ruler"
+      kind === "arrow"
         ? Math.min(40, Math.max(16, visibleHeight * 0.5))
         : Math.max(16, Math.min(220, shapeWidth * 0.7, visibleHeight * 0.55));
     const centerX =
@@ -1858,53 +1856,13 @@ export function HandwritingStudio({
     };
     const id = strokeId();
     const ink = tool === "highlighter" ? penInk.current : color;
-    if (kind === "coordinate-system") {
-      setCoordinateSystems((current) => [
-        ...current,
-        {
-          id,
-          origin: { x: box.x, y: box.y + box.height, pressure: 0.5 },
-          end: { x: box.x + box.width, y: box.y, pressure: 0.5 },
-          step: coordinateStep,
-          measurements: coordinateMeasurements,
-          color: ink,
-        },
-      ]);
-    } else {
-      let rulerStart: HandwritingPoint = {
-        x: box.x,
-        y: box.y + box.height / 2,
-        pressure: 0.5,
-      };
-      let rulerEnd: HandwritingPoint = {
-        x: box.x + box.width,
-        y: box.y + box.height / 2,
-        pressure: 0.5,
-      };
-      if (rulerKind === "circle") {
-        rulerStart = { x: centerX, y: centerY, pressure: 0.5 };
-        rulerEnd = { x: centerX + circleRadius, y: centerY, pressure: 0.5 };
-      } else if (rulerKind === "curve") {
-        rulerStart = {
-          x: centerX - curveSpan / 2,
-          y: centerY - curveSpan * 0.12,
-          pressure: 0.5,
-        };
-        rulerEnd = {
-          x: centerX + curveSpan / 2,
-          y: centerY - curveSpan * 0.12,
-          pressure: 0.5,
-        };
-      }
-      const points =
-        kind === "ruler" ? rulerPoints(rulerStart, rulerEnd, rulerKind) : canonicalShape(kind, box);
-      setStrokes((current) => [
-        ...current,
-        { id, tool: "pen", brush: "fine", color: ink, width: 4, points },
-      ]);
-    }
+    const points = canonicalShape(kind, box);
+    setStrokes((current) => [
+      ...current,
+      { id, tool: "pen", brush: "fine", color: ink, width: 4, points },
+    ]);
     setSelectedIds([id]);
-    setSelectedCoordinateIds(kind === "coordinate-system" ? [id] : []);
+    setSelectedCoordinateIds([]);
     setTool("select");
     setMobileDrawer(null);
     setLayerVisibility((current) => ({ ...current, strokes: true, coordinates: true }));

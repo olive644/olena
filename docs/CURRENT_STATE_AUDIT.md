@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Controles legíveis, formas completas e numerais de papel
+
+A seta de retorno fica junto ao título do caderno. Os botões ativos usam roxo com
+texto creme; no celular, os rótulos podem ocupar outra linha da barra sem serem cortados.
+A capa oferece Ver folhas por ícone expansível e não mostra criação de folha.
+O menu Inserir sem desenhar contém apenas elipse, retângulo, triângulo, seta e polígono.
+Régua e coordenadas continuam nos instrumentos existentes do editor.
+
+Arrastar, aumentar e mover pelas setas respeitam os limites do grupo com a espessura
+da tinta. A escala usa o tamanho real da folha, inclusive quadros maiores que 1200 por 1600.
+Cronômetro e Pomodoro usam os numerais aprovados de papel, grafite no tema claro e
+creme no escuro, com texto acessível e arte SVG compartilhada carregada pelo próprio site.
+
 ## Gestos de formas e expansão do preview
 
 A barra do caderno expande o próprio botão e acomoda seu rótulo, como os instrumentos
@@ -14,7 +27,7 @@ limites da folha proporcionalmente. O último ponto ao soltar é aplicado, as al
 também funcionam no modo Mover e sua área de toque acompanha o zoom.
 O caderno móvel aberto mantém proporção 1,4:1, sem ocupar a altura inteira disponível.
 `design-previews/numeros-papel.html` contém os numerais vetoriais de 0 a 10 em
-grafite e creme, conforme aprovação visual, sem alterar os algarismos dos temporizadores.
+grafite e creme, conforme aprovação visual, agora também usados pelos temporizadores.
 
 ## Inserção de formas e ações do caderno
 

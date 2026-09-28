@@ -130,6 +130,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
     unitsPerPixel = 1,
   ): void {
     const frame = selectionFrame(scene, selectedIds);
+    const inkFrame = selectionFrame(scene, selectedIds, true);
     // Alça maior no toque, para o dedo acertar.
     const grabRadius = (event.pointerType === "touch" ? 20 : 12) * unitsPerPixel;
     const grabbed = frame ? hitSelectionHandle(point, frame, grabRadius) : null;
@@ -142,7 +143,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
         moving: true,
         lasso: false,
         path: [],
-        frame,
+        frame: inkFrame,
         handle: {
           kind: grabbed,
           anchor: grabbed === "rotate" ? point : oppositeCorner(frame, grabbed),
@@ -185,7 +186,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
       lasso: false,
       path: [],
       frame: unionBounds([
-        ...(frame ? [frame] : []),
+        ...(inkFrame ? [inkFrame] : []),
         ...(selectedIds.includes(PAGE_TEXT_SELECTION_ID) ? [scene.pageTextFrame] : []),
       ]),
       originalScene: scene,
@@ -222,6 +223,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
               chosen,
               dragRotation(handle.center, handle.grab, point, Boolean(event.shiftKey)),
               handle.center,
+              page,
             )
           : scaleItems(
               handle.original,
@@ -233,6 +235,7 @@ export function useSelectionGesture(input: SelectionGestureInput) {
                 page,
               ),
               handle.anchor,
+              page,
             );
       apply(next);
       return true;
