@@ -32,7 +32,7 @@ test("pastas papercraft guardam três cadernos e limitam três pastas por vitrin
   }
   await page.getByRole("button", { name: "Crie", exact: true }).click();
   await expect(page.getByRole("button", { name: "Criar pasta", exact: true })).toBeDisabled();
-  await page.getByRole("button", { name: "Cancelar", exact: true }).click();
+  await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Crie" })).toBeHidden();
   await page.getByRole("button", { name: "Abrir pasta Pasta 1", exact: true }).click();
   const folder = page
