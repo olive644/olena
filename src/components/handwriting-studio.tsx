@@ -58,7 +58,7 @@ import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
-import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
+import { canonicalShape, recognizeShape } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
