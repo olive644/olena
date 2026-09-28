@@ -1364,3 +1364,15 @@ layout adaptável. Contraste branco sobre roxo preservado no hover selecionado.
 Arte criada pela ferramenta integrada de geração de imagens usando as cinco
 referências do usuário: papel facetado, fundo creme, placa central vazia, sem
 texto ou QR desenhado. Asset: `public/room-crew-header.png`.
+
+Revisão aprovada para integração: estilo aproximado às poses do onboarding,
+cabeça da Helena em nova pose, anatomia do urso simplificada, pata da raposa com
+dobras legíveis e ponta superior da estrela inteira. A placa e o QR continuam
+separados. Edição pela ferramenta integrada, sem alterações no fluxo da sala.
+
+Prompt da revisão: usar as poses 1 e 3 do onboarding como referências de papel
+recortado, facetas maiores e sombras discretas; preservar os cinco personagens,
+paleta, proporção 3:1 e placa branca central; corrigir anatomia do urso, mostrar
+a estrela inteira e mudar a cabeça da Helena. Refinamento final: alterar apenas
+a pata levantada da raposa para um antebraço curto conectado e pata de papel com
+duas pequenas divisões, mantendo todo o restante da composição.
