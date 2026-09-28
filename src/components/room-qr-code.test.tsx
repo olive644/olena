@@ -20,7 +20,7 @@ describe("RoomQrCode", () => {
     expect(container.querySelectorAll("[data-qr-finder]")).toHaveLength(3);
     expect(container.querySelector("[data-qr-finder] rect")?.getAttribute("fill")).toBe("#0B5C66");
     expect(container.querySelector("[data-qr-logo]")?.getAttribute("href")).toBe(
-      "/olena-favicon-180.png",
+      "/favicon-star.svg",
     );
     expect(svg?.querySelectorAll("rect")).toHaveLength(9);
   });

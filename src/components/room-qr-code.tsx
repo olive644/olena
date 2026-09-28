@@ -90,7 +90,7 @@ export function RoomQrCode({ value, size = 152 }: { value: string; size?: number
           />
         ))}
         <image
-          href="/olena-favicon-180.png"
+          href="/favicon-star.svg"
           x={(size - logoSize) / 2}
           y={(size - logoSize) / 2}
           width={logoSize}

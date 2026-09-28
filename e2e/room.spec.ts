@@ -106,7 +106,7 @@ for (const activity of ["listening", "bingo"] as const) {
       await expect(host.locator(".local-room-share [data-qr-finder]")).toHaveCount(3);
       await expect(host.locator(".local-room-share [data-qr-logo]")).toHaveAttribute(
         "href",
-        "/olena-favicon-180.png",
+        "/favicon-star.svg",
       );
       await expect(host.locator(".helena-room-qr--holding svg")).toHaveAttribute(
         "data-qr-error-correction",
