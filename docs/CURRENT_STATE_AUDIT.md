@@ -1287,3 +1287,7 @@ Limites que se cruzam:
 - O menu "Inserir sem desenhar" (antes só formas) ganha mais duas opções: **Régua** e **Eixos de coordenadas**. Igual às formas, medir com a régua ou os eixos hoje só funciona arrastando (um gesto de ponteiro sem alternativa possível); agora entram prontos, do tamanho padrão, no meio da folha, já selecionados. A régua usa o tipo escolhido no momento (reta, esquadro, transferidor etc.) e os eixos usam o passo e a opção de mostrar medições já configurados.
 - O botão da barra de ferramentas e o diálogo mudaram de nome, de "Inserir forma" para "Inserir sem desenhar", já que cobrem mais do que formas.
 - Testes: `handwriting-studio-shape-insert.test.tsx` (a régua e os eixos entram selecionados, cada um com a contagem certa).
+
+## Notes de texto na vitrine
+
+Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note e uma página de texto, preservada pelo armazenamento existente. A prévia mostra papel creme com canto dobrado, título e trecho real do texto. O editor contém somente título e escrita, com salvamento automático. Pastas aceitam até três itens mistos entre Notes e cadernos; a vitrine continua distribuindo quatro itens soltos por coleção. Notes podem ser arrastadas para dentro e para fora, abertas, buscadas e excluídas com a seleção existente.

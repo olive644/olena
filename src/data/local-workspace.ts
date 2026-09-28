@@ -375,7 +375,10 @@ function isNotebook(value: unknown): boolean {
             tab["position"] >= 0 &&
             tab["position"] <= 1,
         ))) &&
-    (value["kind"] === undefined || value["kind"] === "folder" || value["kind"] === "collection") &&
+    (value["kind"] === undefined ||
+      value["kind"] === "folder" ||
+      value["kind"] === "collection" ||
+      value["kind"] === "note") &&
     (value["coverStyle"] === undefined ||
       value["coverStyle"] === "helena-estrelas" ||
       value["coverStyle"] === "oliver-estrelas") &&
@@ -720,7 +723,7 @@ function notebooksFromNotes(notes: StudyNote[]): StudyNotebook[] {
 
 function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceState {
   const candidates = workspace.notebooks.filter(
-    (notebook) => /^Meu caderno(?: \d+)?$/i.test(notebook.title) && notebook.kind !== "folder",
+    (notebook) => /^Meu caderno(?: \d+)?$/i.test(notebook.title) && !notebook.kind,
   );
   if (candidates.length < 2) return workspace;
   const primary =

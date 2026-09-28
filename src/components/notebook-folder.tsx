@@ -1,6 +1,7 @@
 import type { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import type { StudyNotebook, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
+import { TextNotePreview } from "./text-note";
 import { notebookPaperTabs, PaperMoonMark } from "./notebook-paper-tools";
 import "./notebook-folder.css";
 
@@ -27,7 +28,9 @@ export function NotebookFolder({
   selectionMode?: boolean;
   selected?: boolean;
 }) {
-  const books = notebooks.filter((book) => book.parentId === folder.id && !book.kind);
+  const books = notebooks.filter(
+    (book) => book.parentId === folder.id && (!book.kind || book.kind === "note"),
+  );
   return (
     <div
       data-folder-drop={folder.id}
@@ -49,16 +52,23 @@ export function NotebookFolder({
               {...drag.handlers(book.id)}
               onClick={() => onOpen(book)}
             >
-              <NotebookCover
-                subjectColor="#7c3aed"
-                title={book.title}
-                coverStyle={book.coverStyle}
-                tabs={notebookPaperTabs(
-                  book,
-                  book.pageIds.flatMap((id) => pages.find((page) => page.id === id) ?? []),
-                  subjects,
-                )}
-              />
+              {book.kind === "note" ? (
+                <TextNotePreview
+                  title={book.title}
+                  content={pages.find((page) => page.id === book.pageIds[0])?.content ?? ""}
+                />
+              ) : (
+                <NotebookCover
+                  subjectColor="#7c3aed"
+                  title={book.title}
+                  coverStyle={book.coverStyle}
+                  tabs={notebookPaperTabs(
+                    book,
+                    book.pageIds.flatMap((id) => pages.find((page) => page.id === id) ?? []),
+                    subjects,
+                  )}
+                />
+              )}
             </button>
           ))}
           <button
@@ -88,7 +98,9 @@ export function NotebookFolder({
       </div>
       <div className="paper-folder-copy">
         <span>{folder.title}</span>
-        <small>{books.length} de 3 cadernos</small>
+        <small>
+          {books.length} de 3 {books.some((book) => book.kind === "note") ? "itens" : "cadernos"}
+        </small>
       </div>
     </div>
   );
