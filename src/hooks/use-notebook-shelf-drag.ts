@@ -97,12 +97,12 @@ export function useNotebookShelfDrag(
             const folderId = destination(event.clientX, event.clientY);
             const book = notebooks.find((item) => item.id === id);
             if (folderId && folderId !== book?.parentId) {
-              if (notebooks.filter((item) => item.parentId === folderId && !item.kind).length < 3) {
+              if (notebooks.filter((item) => item.parentId === folderId).length < 3) {
                 store(id, folderId);
                 setMessage(
-                  `Caderno guardado em ${notebooks.find((item) => item.id === folderId)?.title}.`,
+                  `${book?.kind === "note" ? "Note guardada" : "Caderno guardado"} em ${notebooks.find((item) => item.id === folderId)?.title}.`,
                 );
-              } else setMessage("Esta pasta já tem três cadernos. Escolha outra pasta.");
+              } else setMessage("Esta pasta já tem três itens. Escolha outra pasta.");
             } else if (
               !folderId &&
               book?.parentId &&
@@ -111,7 +111,11 @@ export function useNotebookShelfDrag(
                 ?.closest(".notebooks-showcase")
             ) {
               store(id, null);
-              setMessage("Caderno retirado da pasta e colocado na vitrine.");
+              setMessage(
+                book.kind === "note"
+                  ? "Note retirada da pasta e colocada na vitrine."
+                  : "Caderno retirado da pasta e colocado na vitrine.",
+              );
             }
           }
           clear();

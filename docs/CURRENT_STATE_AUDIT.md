@@ -1281,3 +1281,7 @@ Limites que se cruzam:
   - A contagem de itens selecionados no editor (que já existia como texto visível) e a contagem de sistemas de coordenadas selecionados agora são regiões `aria-live="polite"`: quem usa leitor de tela ouve a mudança sem precisar navegar até lá para conferir.
   - O índice de folhas ganha um aviso (`aria-live`, só para leitor de tela) ao mover, favoritar ou arrastar uma miniatura, contando a nova posição ou o novo estado de favorito.
 - Testes: `handwriting-shapes.test.ts` (cada forma cabe na caixa pedida, a seta gerada é reconhecida de volta como seta), `handwriting-toolbar.test.tsx` (o botão abre o menu; a contagem de selecionados é uma região de status), `handwriting-studio-shape-insert.test.tsx` (o fluxo completo: abrir, escolher, a forma entra selecionada; fechar sem escolher não insere nada), `notebook-page-index.test.tsx` (os avisos de mover e favoritar).
+
+## Notes de texto na vitrine
+
+Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note e uma página de texto, preservada pelo armazenamento existente. A prévia mostra papel creme com canto dobrado, título e trecho real do texto. O editor contém somente título e escrita, com salvamento automático. Pastas aceitam até três itens mistos entre Notes e cadernos; a vitrine continua distribuindo quatro itens soltos por coleção. Notes podem ser arrastadas para dentro e para fora, abertas, buscadas e excluídas com a seleção existente.

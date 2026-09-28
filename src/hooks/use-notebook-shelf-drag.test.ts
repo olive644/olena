@@ -66,7 +66,7 @@ it("retira na vitrine, cancela fora dela e recusa pasta cheia", () => {
   full.dataset["folderDrop"] = "full";
   dragTo(full);
   expect(store).not.toHaveBeenCalled();
-  expect(result.current.message).toContain("três cadernos");
+  expect(result.current.message).toContain("três itens");
   const shelf = document.createElement("section");
   shelf.className = "notebooks-showcase";
   dragTo(shelf);

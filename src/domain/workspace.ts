@@ -63,7 +63,7 @@ export type StudyNotebook = {
   subjectIds?: string[];
   dividerPosition?: "side" | "bottom";
   bookmarkedPageIds?: string[];
-  kind?: "folder" | "collection";
+  kind?: "folder" | "collection" | "note";
   shelf?: number;
   parentId?: string;
   id: string;
@@ -182,7 +182,12 @@ export type WorkspaceAction =
       changes: Partial<
         Pick<
           StudyNotebook,
-          "subjectIds" | "dividerPosition" | "bookmarkedPageIds" | "paperTabs" | "coverStyle"
+          | "subjectIds"
+          | "dividerPosition"
+          | "bookmarkedPageIds"
+          | "paperTabs"
+          | "coverStyle"
+          | "title"
         >
       >;
     }
@@ -194,7 +199,7 @@ export type WorkspaceAction =
   | { type: "habit/toggled"; id: string; date: string }
   | {
       type: "notebook/added";
-      kind?: "folder" | "collection";
+      kind?: "folder" | "collection" | "note";
       shelf?: number;
       id: string;
       title: string;
@@ -521,7 +526,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
       };
     }
     case "notebook/stored": {
-      const book = state.notebooks.find((item) => item.id === action.id && !item.kind);
+      const book = state.notebooks.find(
+        (item) => item.id === action.id && (!item.kind || item.kind === "note"),
+      );
       const folder = state.notebooks.find(
         (item) => item.id === action.folderId && item.kind === "collection",
       );
