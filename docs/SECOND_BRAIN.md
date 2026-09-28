@@ -1,7 +1,10 @@
 # OlenaStudy: Second Brain
 
-O lobby centraliza o convite e usa `helena-room-invite.webp` (840 px, 41 KB,
-transparente). O PNG original permanece como fonte. O SVG do QR não muda.
+No lobby desktop, `local-room-lobby__main` agrupa convite/QR e participantes
+na coluna esquerda; a configuração dos minijogos fica na direita sem expandir
+o espaço entre esses cartões. No celular, os blocos continuam empilhados.
+O convite usa `helena-room-invite.webp` (840 px, 41 KB, transparente). O PNG
+original permanece como fonte. O SVG do QR não muda.
 `pendingActivity` dá seleção otimista e loading até `updateSettings` concluir,
 com bloqueio de cliques concorrentes e retorno ao estado confirmado em falha.
 O join envia `avatarUrl` opcional do perfil local, validado por `sanitizeRoomAvatar`
@@ -14,6 +17,14 @@ com margem branca de quatro módulos, nunca um QR gerado por imagem. O encaixe
 percentual mantém a proporção no mobile; no convite compacto do projetor a arte
 é ocultada para priorizar a leitura do código. O card selecionado mantém roxo no hover.
 
+`createFirebaseAccessTokenProvider` compartilha o token OAuth em memória entre
+o guard, o armazenamento e o publicador Firebase durante a vida da instância
+serverless, reduzindo trocas sequenciais com o endpoint OAuth na criação. O
+token renova antes de expirar; App Check do cliente e a proteção do servidor
+permanecem ativos. O foco ou ponteiro no botão de criar antecipa a preparação
+do App Check, e o loading da Helena permanece visível durante a criação.
+No projetor, o cabeçalho não repete o código exibido abaixo nem o status Online;
+participantes e tela cheia usam `PaperEditorIcon` com cores da paleta do editor.
 `local-room-fullscreen` é um portal fora de `.app-shell`. As regras compartilhadas
 de `paper-buttons.css` incluem esse contêiner para manter acabamento, foco e toque.
 `public/room-icons/` contém as artes vetoriais de Escuta, Flashcards, Quiz, Bingo,

@@ -1,5 +1,6 @@
 import {
   createFirebasePublicRoomPublisher,
+  createFirebaseAccessTokenProvider,
   createFirebaseRealtimeStore,
   firebasePublicStreamUrl,
 } from "../src/backend/firebase-realtime-store.js";
@@ -17,7 +18,8 @@ const config = {
   },
 };
 
-const store = createFirebaseRealtimeStore(config);
+const accessToken = createFirebaseAccessTokenProvider(config);
+const store = createFirebaseRealtimeStore(config, fetch, () => Date.now(), accessToken);
 const handler = createLocalRoomHandler({
   store,
   guard: createRoomGuard(
@@ -28,7 +30,7 @@ const handler = createLocalRoomHandler({
     (event) => console.info(JSON.stringify({ event: "room_protection", ...event })),
   ),
   observe: (event) => console.info(JSON.stringify({ event: "room_request", ...event })),
-  publish: createFirebasePublicRoomPublisher(config),
+  publish: createFirebasePublicRoomPublisher(config, fetch, () => Date.now(), accessToken),
   streamUrl: (code) => firebasePublicStreamUrl(config, code),
 });
 

@@ -1,4 +1,8 @@
-import { getGoogleAccessToken, type GoogleServiceAccount } from "./google-service-account.js";
+import {
+  createGoogleAccessTokenProvider,
+  getGoogleAccessToken,
+  type GoogleServiceAccount,
+} from "./google-service-account.js";
 import type { KvStore } from "./kv-store.js";
 
 const SCOPES = [
@@ -11,6 +15,14 @@ export type FirebaseRealtimeConfig = {
   serviceAccount: GoogleServiceAccount;
 };
 
+export function createFirebaseAccessTokenProvider(
+  config: FirebaseRealtimeConfig,
+  fetchImpl: typeof fetch = fetch,
+  now: () => number = () => Date.now(),
+): () => Promise<string> {
+  return createGoogleAccessTokenProvider(config.serviceAccount, SCOPES, fetchImpl, now);
+}
+
 type StoredEnvelope = { value: string; expiresAt: number };
 
 // Guarda um envelope { value, expiresAt } porque o Realtime Database não tem
@@ -20,9 +32,12 @@ export function createFirebaseRealtimeStore(
   config: FirebaseRealtimeConfig,
   fetchImpl: typeof fetch = fetch,
   now: () => number = () => Date.now(),
+  accessToken?: () => Promise<string>,
 ): KvStore {
   async function authorizedFetch(path: string, init: RequestInit): Promise<Response> {
-    const token = await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
+    const token = accessToken
+      ? await accessToken()
+      : await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
     return fetchImpl(`${config.databaseUrl}/${path}.json`, {
       ...init,
       headers: { ...(init.headers ?? {}), Authorization: `Bearer ${token}` },
@@ -86,9 +101,12 @@ export function createFirebasePublicRoomPublisher(
   config: FirebaseRealtimeConfig,
   fetchImpl: typeof fetch = fetch,
   now: () => number = () => Date.now(),
+  accessToken?: () => Promise<string>,
 ) {
   return async function publish(code: string, publicState: unknown): Promise<void> {
-    const token = await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
+    const token = accessToken
+      ? await accessToken()
+      : await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
     const url = `${config.databaseUrl}/rooms/${code}.json`;
     for (let attempt = 0; attempt < 40; attempt++) {
       const snapshot = await fetchImpl(url, {

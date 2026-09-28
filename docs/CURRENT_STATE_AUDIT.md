@@ -2,10 +2,18 @@
 
 ## Convite e participantes da Sala
 
-O convite fica centralizado no desktop e no celular, com código e cópia do link
-próximos da Helena. A ilustração usa WebP transparente de 41 KB em vez do PNG de
-699 KB, preservando o QR vetorial separado. Não há código repetido no topo nem
-resumo fixo no rodapé; Iniciar atividade continua no fluxo da página.
+O convite e os participantes ficam agrupados na coluna esquerda no desktop, com
+o QR em cima e a lista logo abaixo. A configuração alta dos minijogos ocupa a
+coluna direita sem esticar a distância entre esses cartões. No celular, o fluxo
+continua empilhado. A ilustração usa WebP transparente de 41 KB em vez do PNG de
+699 KB, preservando o QR vetorial separado. Não há resumo fixo no rodapé;
+Iniciar atividade continua no fluxo da página.
+
+A criação reaproveita o token OAuth da conta de serviço entre as chamadas ao
+Firebase enquanto a instância da API estiver ativa, em vez de pedir um token em
+cada operação. App Check continua habilitado, e sua preparação começa quando
+o botão recebe foco ou ponteiro. O botão informa "Criando sala…" com o loading
+da Helena até a resposta chegar.
 
 A troca entre Escuta e Bingo seleciona o cartão imediatamente, mostra HelenaLoading
 e bloqueia novas alterações até confirmar a resposta. Falhas restauram a seleção
@@ -20,10 +28,13 @@ Praticar retira o texto auxiliar do cabeçalho, a instrução de escolha de mund
 estrelas dos indicadores de progresso. A navegação usa um controle de videogame
 recortado, com variantes grafite e creme para os estados existentes.
 
+A entrada do Modo Sala usa ícones facetados do `PaperEditorIcon`, com turquesa
+e amarelo para criar e ocre e amarelo para entrar com código.
 A Sala compartilha o acabamento de botões do aplicativo mesmo sendo renderizada
 em um portal. O cabeçalho oferece Modo Projetor com ícone próprio e Sair da sala
-com a porta vermelha do editor. O seletor de tema e o resumo duplicado do cabeçalho
-saem, assim como o aviso redundante de participantes conectados e Online.
+com a porta vermelha do editor. No projetor, o cabeçalho não repete o código
+mostrado em destaque no conteúdo, nem mostra Online; contagem de participantes
+e tela cheia usam ícones de papel do editor.
 Os participantes continuam na lista. Os ícones usam turquesa para Escuta, laranja
 para Flashcards, coral com base caramelo para Quiz e verde para Bingo,
 preservando os desenhos e as facetas aprovados com contraste sobre o cartão roxo.
