@@ -228,16 +228,16 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
         .poll(() => page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight))
         .toBeLessThanOrEqual(1);
       const cover = await preview.locator(".notebook-concept-cover .book-cover").boundingBox();
-      const nav = await page.locator(".mobile-nav").boundingBox();
+      await expect(page.locator(".mobile-nav")).toBeHidden();
       const newPage = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
       expect(cover).not.toBeNull();
-      expect(cover!.y + cover!.height).toBeLessThan(nav!.y);
+      expect(cover!.y + cover!.height).toBeLessThan(size.height);
       expect(cover!.y + cover!.height + 27).toBeLessThan(newPage!.y);
       await preview.getByRole("button", { name: "Ver folhas" }).click();
       const spread = await book.boundingBox();
       expect(spread!.width).toBeLessThan(size.width);
       const create = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
-      expect(create!.y + create!.height).toBeLessThan(nav!.y);
+      expect(create!.y + create!.height).toBeLessThan(size.height);
       await preview.getByRole("button", { name: "Personalizar" }).click();
       await expect(page.locator(".notebook-journey")).toHaveCount(0);
     }
@@ -280,6 +280,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     )
     .toBeLessThan(Number(originalPosition));
   await preview.getByRole("button", { name: "Meus Cadernos", exact: true }).click();
+  if (testInfo.project.name === "mobile") await expect(page.locator(".mobile-nav")).toBeVisible();
   await expect(page.locator(".book-cover__mark.is-divider")).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath("vitrine-com-divisoria.png") });
 });

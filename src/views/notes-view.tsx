@@ -625,7 +625,12 @@ export function NotesView({
   }
 
   return (
-    <main className="main-content notebooks-main" id="main-content" aria-busy={Boolean(journey)}>
+    <main
+      className="main-content notebooks-main"
+      id="main-content"
+      aria-busy={Boolean(journey)}
+      data-notebook-open={Boolean(activeNotebookId)}
+    >
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
       <PageHeader />

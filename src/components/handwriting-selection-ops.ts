@@ -246,7 +246,7 @@ export function selectionHandles(bounds: Box): Record<HandleKind, { x: number; y
   };
 }
 
-// A alça de girar tem prioridade: fica fora da caixa, então nunca disputa com um canto.
+// A alça mais próxima vence quando as áreas de toque se sobrepõem em formas pequenas.
 export function hitSelectionHandle(
   point: { x: number; y: number },
   bounds: Box,
@@ -254,31 +254,56 @@ export function hitSelectionHandle(
 ): HandleKind | null {
   const handles = selectionHandles(bounds);
   const order: HandleKind[] = ["rotate", "nw", "ne", "se", "sw"];
+  let closest: HandleKind | null = null;
+  let distance = radius;
   for (const kind of order) {
     const handle = handles[kind];
-    if (Math.hypot(point.x - handle.x, point.y - handle.y) <= radius) return kind;
+    const next = Math.hypot(point.x - handle.x, point.y - handle.y);
+    if (next <= distance) {
+      closest = kind;
+      distance = next;
+    }
   }
-  return null;
+  return closest;
 }
 
 // O canto oposto ao arrastado fica parado.
 export function oppositeCorner(bounds: Box, kind: Exclude<HandleKind, "rotate">) {
-  const handles = selectionHandles(bounds);
-  const opposite = { nw: "se", ne: "sw", se: "nw", sw: "ne" } as const;
-  return handles[opposite[kind]];
+  return {
+    x: kind === "nw" || kind === "sw" ? bounds.x + bounds.width : bounds.x,
+    y: kind === "nw" || kind === "ne" ? bounds.y + bounds.height : bounds.y,
+  };
 }
 
-// Fator de escala de um arrasto proporcional: distância atual à âncora sobre a inicial, com piso
-// para o conteúdo nunca sumir nem inverter.
+// Projeção na diagonal inicial, com piso para não inverter nem crescer ao cruzar a âncora.
 export function dragScaleFactor(
   anchor: { x: number; y: number },
   start: { x: number; y: number },
   current: { x: number; y: number },
 ): number {
-  const initial = Math.hypot(start.x - anchor.x, start.y - anchor.y);
-  if (initial < 1) return 1;
-  const factor = Math.hypot(current.x - anchor.x, current.y - anchor.y) / initial;
+  const dx = start.x - anchor.x;
+  const dy = start.y - anchor.y;
+  const squared = dx * dx + dy * dy;
+  if (squared < 1) return 1;
+  const factor = ((current.x - anchor.x) * dx + (current.y - anchor.y) * dy) / squared;
   return Math.max(0.1, Math.min(8, factor));
+}
+
+export function constrainSelectionScale(
+  bounds: Box,
+  anchor: { x: number; y: number },
+  factor: number,
+  page: { width: number; height: number },
+): number {
+  let limit = factor;
+  for (const [near, far, origin, edge] of [
+    [bounds.x, bounds.x + bounds.width, anchor.x, page.width],
+    [bounds.y, bounds.y + bounds.height, anchor.y, page.height],
+  ] as const) {
+    if (near < origin) limit = Math.min(limit, origin / (origin - near));
+    if (far > origin) limit = Math.min(limit, (edge - origin) / (far - origin));
+  }
+  return Math.max(0.1, limit);
 }
 
 // Ângulo do arrasto de girar, em graus. Com `snap`, encaixa de 15 em 15.

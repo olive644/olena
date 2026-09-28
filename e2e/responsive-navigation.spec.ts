@@ -63,7 +63,7 @@ for (const width of [320, 360, 390, 768, 1280]) {
       await expect(startButton.locator(".focus-paper-control-icon.is-play")).toBeVisible();
       await expect(startButton.locator(".focus-paper-control-icon__face")).toHaveCSS(
         "fill",
-        "rgb(41, 36, 50)",
+        "rgb(255, 249, 239)",
       );
       if (mode === "Pomodoro") {
         const tomatoes = page.locator(".streak-tomato");

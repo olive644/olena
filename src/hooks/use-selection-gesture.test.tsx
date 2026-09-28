@@ -121,6 +121,43 @@ const pointer = { pointerId: 1, pointerType: "mouse" };
 
 describe("gesto da ferramenta Selecionar", () => {
   it.each(["mouse", "pen", "touch"])(
+    "preserva a forma nas bordas e aplica a posição final com %s",
+    (pointerType) => {
+      const { result } = renderHook(() =>
+        useHarness("rectangle", false, false, [closedRectangleStroke("box")]),
+      );
+      act(() => result.current.setSelectedIds(["box"]));
+      const event = { pointerId: 4, pointerType };
+      act(() => result.current.gesture.begin(event, at(200, 200)));
+      act(() => void result.current.gesture.move(event, at(9000, 9000)));
+      let points = result.current.strokes[0]!.points;
+      expect(points[1]!.x - points[0]!.x).toBe(200);
+      expect(points[2]!.y - points[1]!.y).toBe(200);
+      act(() => void result.current.gesture.move(event, at(200, 200)));
+      expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 100, y: 100 });
+      act(() => void result.current.gesture.end(at(240, 220)));
+      points = result.current.strokes[0]!.points;
+      expect(points[0]).toMatchObject({ x: 140, y: 120 });
+      expect(result.current.remember).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("redimensiona no modo Mover mantendo o canto oposto e a proporção na borda", () => {
+    const { result } = renderHook(() =>
+      useHarness("rectangle", false, false, [closedRectangleStroke("box")]),
+    );
+    act(() => result.current.setSelectedIds(["box"]));
+    const corner = selectionHandles({ x: 100, y: 100, width: 200, height: 200 }).se;
+    act(() => result.current.gesture.begin(pointer, at(corner.x, corner.y), true));
+    act(() => void result.current.gesture.end(at(5000, 5000)));
+    const points = result.current.strokes[0]!.points;
+    expect(points[0]).toMatchObject({ x: 100, y: 100 });
+    expect(points[1]!.x).toBeLessThanOrEqual(1200);
+    expect(points[1]!.x - points[0]!.x).toBeCloseTo(points[2]!.y - points[1]!.y);
+    expect(points[1]!.x - points[0]!.x).toBeGreaterThan(200);
+  });
+
+  it.each(["mouse", "pen", "touch"])(
     "Move uma forma arrastando o interior da caixa com %s, sem exigir tocar no traço",
     (pointerType) => {
       const { result } = renderHook(() =>

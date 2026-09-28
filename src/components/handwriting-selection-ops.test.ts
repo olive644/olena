@@ -169,9 +169,8 @@ describe("alças da caixa de seleção", () => {
   });
 
   it("o canto oposto é a âncora", () => {
-    const handles = selectionHandles(bounds);
-    expect(oppositeCorner(bounds, "se")).toEqual(handles.nw);
-    expect(oppositeCorner(bounds, "nw")).toEqual(handles.se);
+    expect(oppositeCorner(bounds, "se")).toEqual({ x: 100, y: 200 });
+    expect(oppositeCorner(bounds, "nw")).toEqual({ x: 300, y: 300 });
   });
 
   it("fator de escala: proporcional à distância da âncora, com limites", () => {
@@ -179,6 +178,8 @@ describe("alças da caixa de seleção", () => {
     expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 200, y: 0 })).toBe(2);
     expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 0, y: 0 })).toBe(0.1);
     expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 5000, y: 0 })).toBe(8);
+    expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: -200, y: 0 })).toBe(0.1);
+    expect(dragScaleFactor(anchor, { x: 100, y: 0 }, { x: 100, y: 200 })).toBe(1);
     expect(dragScaleFactor(anchor, { x: 0.2, y: 0 }, { x: 50, y: 0 })).toBe(1);
   });
 

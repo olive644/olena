@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Números de papel · OlenaStudy</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #fff9ef;
+        color: #292432;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+      }
+      main {
+        max-width: 1200px;
+        margin: auto;
+        padding: 48px 52px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 36px;
+      }
+      .brand {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+      }
+      .brand span {
+        color: #7c3aed;
+      }
+      h1 {
+        font-size: 34px;
+        letter-spacing: -0.04em;
+        margin: 12px 0 6px;
+      }
+      p {
+        margin: 0;
+        color: #51465d;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .badge {
+        border: 1px solid #d8ccb8;
+        padding: 8px 14px;
+        border-radius: 3px 12px 3px 9px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .alphabet {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 16px;
+      }
+      .tile {
+        min-height: 165px;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        background: #fffdf8;
+        border: 1px solid #e4dac6;
+        border-radius: 5px 22px 5px 13px;
+        box-shadow: 0 4px #e4dac6;
+        position: relative;
+      }
+      .tile::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        border-bottom: 15px solid #e4dac6;
+        border-left: 15px solid transparent;
+      }
+      .number {
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+        --face: #292432;
+        --depth: #17131d;
+        --fold: #51465d;
+        --edge: #211b29;
+      }
+      .number svg {
+        width: 62px;
+        height: 92px;
+        overflow: visible;
+      }
+      .caption {
+        color: #766a7c;
+        font-size: 11px;
+        margin-top: 18px;
+      }
+      .note {
+        padding: 24px;
+        background: #eee4fb;
+        box-shadow: 0 4px #dac7f5;
+        border-color: #dac7f5;
+      }
+      .note strong {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+      .note p {
+        font-size: 12px;
+      }
+      .samples {
+        margin-top: 34px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .sample {
+        border-radius: 6px 26px 6px 18px;
+        padding: 28px;
+        background: #eee4fb;
+      }
+      .sample.dark {
+        background: #292432;
+        color: #fff9ef;
+      }
+      .sample .number {
+        margin: 20px 0 8px;
+      }
+      .sample .number svg {
+        width: 55px;
+        height: 78px;
+      }
+      .sample.dark .number {
+        --face: #fff9ef;
+        --depth: #847291;
+        --fold: #fff;
+        --edge: #d8ccb8;
+      }
+      .label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .colon {
+        width: 12px;
+        display: grid;
+        align-content: center;
+        gap: 14px;
+        margin: 0 6px;
+      }
+      .colon::before,
+      .colon::after {
+        content: "";
+        width: 9px;
+        height: 9px;
+        background: var(--face);
+        clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+      }
+      .sample p {
+        color: inherit;
+        opacity: 0.72;
+        text-align: center;
+        font-size: 12px;
+      }
+      footer {
+        margin-top: 24px;
+        font-size: 12px;
+        color: #766a7c;
+      }
+      @media (max-width: 700px) {
+        main {
+          padding: 24px;
+        }
+        header {
+          display: block;
+        }
+        .badge {
+          display: inline-block;
+          margin-top: 14px;
+        }
+        .alphabet {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .samples {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <div class="brand">Helena<span>Study</span></div>
+          <h1>Números de papel</h1>
+          <p>Recortes precisos. Dobras suaves. Uma identidade para contar o seu tempo.</p>
+        </div>
+        <span class="badge">Proposta visual · 0 a 10</span>
+      </header>
+      <section class="alphabet" aria-label="Números de zero a dez"></section>
+      <section class="samples" aria-label="Exemplos de aplicação">
+        <article class="sample">
+          <span class="label">Pomodoro · papel grafite</span>
+          <div class="number" data-number="25:00"></div>
+          <p>Mesma largura por dígito, sem saltos ao contar.</p>
+        </article>
+        <article class="sample dark">
+          <span class="label">Cronômetro · papel creme</span>
+          <div class="number" data-number="00:10"></div>
+          <p>Facetas claras com profundidade discreta.</p>
+        </article>
+      </section>
+      <footer>
+        Preview para aprovação. Os numerais ainda não foram aplicados aos temporizadores.
+      </footer>
+    </main>
+    <script>
+      // Silhuetas vetoriais próprias, com largura fixa e contraformas recortadas.
+      const glyphs = [
+        "M18 5H46L58 18V76L45 89H17L5 77V19ZM23 22L20 26V68L24 73H39L43 69V26L39 22Z",
+        "M15 21L32 5H44V73H56V89H9V73H27V26L15 36L5 25Z",
+        "M17 5H46L58 18V39L47 50L23 66L20 73H58V89H5V65L15 53L40 36L43 32V25L39 21H23L19 25V31H5V18Z",
+        "M7 5H46L58 17V35L48 46L58 56V77L45 89H17L5 77V67H20V71L24 74H39L43 70V59L38 54H23V39H38L43 34V24L39 20H7Z",
+        "M32 5H48V54H59V70H48V89H32V70H4V54ZM32 30L18 54H32Z",
+        "M8 5H57V21H23V38H44L58 52V76L45 89H17L5 77V67H20V71L24 74H39L43 70V58L38 53H8Z",
+        "M22 5H54V21H27L21 28V39H45L58 52V76L45 89H18L5 76V24ZM21 55V69L26 74H38L43 69V59L39 55Z",
+        "M5 5H58V23L29 89H11L40 22H5Z",
+        "M18 5H45L57 17V35L48 45L58 56V77L45 89H18L5 77V56L15 45L6 35V17ZM24 20L21 24V34L25 38H38L42 34V24L38 20ZM24 54L20 59V70L24 74H39L43 70V59L39 54Z",
+        "M18 5H45L58 18V70L41 89H10V73H35L42 65V55H18L5 42V18ZM24 21L20 25V35L24 40H42V26L37 21Z",
+      ];
+      function digit(value) {
+        const path = glyphs[Number(value)];
+        const id = "cut-" + Math.random().toString(36).slice(2);
+        return `<svg viewBox="0 0 66 98" aria-hidden="true"><defs><clipPath id="${id}"><path fill-rule="evenodd" clip-rule="evenodd" d="${path}"/></clipPath></defs><path fill="var(--depth)" fill-rule="evenodd" d="${path}" transform="translate(3 5)"/><path fill="var(--face)" fill-rule="evenodd" d="${path}"/><g clip-path="url(#${id})"><path d="M0 0H66L0 38Z" fill="var(--fold)"/><path d="M66 56V96H0Z" fill="var(--edge)"/></g></svg>`;
+      }
+      function number(value) {
+        return [...value]
+          .map((char) => (char === ":" ? '<span class="colon"></span>' : digit(char)))
+          .join("");
+      }
+      const grid = document.querySelector(".alphabet");
+      for (let value = 0; value <= 10; value++) {
+        const tile = document.createElement("article");
+        tile.className = "tile";
+        tile.innerHTML = `<div class="number" aria-label="${value}">${number(String(value))}</div><span class="caption">${String(value).padStart(2, "0")}</span>`;
+        grid.append(tile);
+      }
+      const note = document.createElement("article");
+      note.className = "tile note";
+      note.innerHTML =
+        "<strong>Feitos de recortes</strong><p>Silhuetas desenhadas uma a uma. Dobras em duas faces e base de papel deslocada.</p>";
+      grid.append(note);
+      document.querySelectorAll("[data-number]").forEach((element) => {
+        element.innerHTML = number(element.dataset.number);
+        element.setAttribute("aria-label", element.dataset.number);
+      });
+    </script>
+  </body>
+</html>

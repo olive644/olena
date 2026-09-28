@@ -11990,15 +11990,24 @@ select {
 }
 
 .focus-paper-control-icon.is-play .focus-paper-control-icon__depth {
-  fill: #17131d;
+  fill: #cbbfa9;
 }
 
 .focus-paper-control-icon.is-play .focus-paper-control-icon__face {
-  fill: #292432;
+  fill: #fff9ef;
 }
 
 .focus-paper-control-icon.is-play .focus-paper-control-icon__fold {
-  fill: #51465d;
+  fill: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .app-shell:has(.notebooks-main[data-notebook-open="true"]) > .mobile-nav {
+    display: none;
+  }
+  :root .app-shell .notebooks-main[data-notebook-open="true"] {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
 }
 
 @keyframes focus-mode-arrive {

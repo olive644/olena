@@ -1,5 +1,21 @@
 # Auditoria do estado atual
 
+## Gestos de formas e expansão do preview
+
+A barra do caderno expande o próprio botão e acomoda seu rótulo, como os instrumentos
+da folha. A navegação inferior móvel fica oculta durante a leitura, personalização
+e edição, retornando à vitrine. O play dos dois modos de foco usa papel creme.
+O símbolo de inserir formas volta à composição anterior de quadrado e triângulo.
+
+Mover usa a geometria inicial do gesto e limita o grupo inteiro à folha, sem
+achatar seus pontos. Redimensionar mantém o canto oposto do conteúdo fixo, usa
+projeção na diagonal para evitar crescimento ao cruzar a âncora e respeita os
+limites da folha proporcionalmente. O último ponto ao soltar é aplicado, as alças
+também funcionam no modo Mover e sua área de toque acompanha o zoom.
+O caderno móvel aberto mantém proporção 1,4:1, sem ocupar a altura inteira disponível.
+`design-previews/numeros-papel.html` contém os numerais vetoriais de 0 a 10 em
+grafite e creme, conforme aprovação visual, sem alterar os algarismos dos temporizadores.
+
 ## Inserção de formas e ações do caderno
 
 Os botões de criação usam as facetas creme e roxas do design system. A barra de

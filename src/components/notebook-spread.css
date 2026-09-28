@@ -860,11 +860,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  width: 48px;
+  gap: 5px;
+  width: auto;
   min-width: 48px;
   min-height: 48px;
-  padding: 4px;
+  padding: 4px 7px;
   border: 1px solid #e4dac6;
   border-radius: 5px 14px 5px 8px;
   background-color: #fffdf7;
@@ -907,22 +907,7 @@
   z-index: 3;
 }
 .notebook-paper-toolbox .notebook-paper-tool > span:not(.paper-tab-icon) {
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: calc(100% - 8px);
-  transform: translateY(-50%);
-  box-sizing: border-box;
   max-width: 0;
-  padding: 0;
-  border: 1px solid transparent;
-  border-left: 0;
-  border-radius: 0 11px 5px 0;
-  background-color: #fffdf7;
-  background-image:
-    linear-gradient(135deg, #fffdf8 0 10%, transparent 10%),
-    linear-gradient(315deg, #e9dfcc 0 12%, transparent 12%);
-  box-shadow: 0 3px #d5ccba;
   color: inherit;
   display: inline-block;
   opacity: 0;
@@ -930,24 +915,16 @@
   pointer-events: none;
   white-space: nowrap;
   transition:
-    max-width 220ms ease,
-    opacity 160ms ease;
+    max-width 320ms ease,
+    opacity 240ms ease;
 }
 .notebook-paper-toolbox
   .notebook-paper-tool:is([aria-pressed="true"], :hover, :focus-visible)
   > span:not(.paper-tab-icon) {
   max-width: 150px;
-  padding-inline: 12px 10px;
-  border-color: #e4dac6;
   opacity: 1;
 }
 .notebook-paper-toolbox .notebook-paper-tool[aria-pressed="true"] > span:not(.paper-tab-icon) {
-  background-color: #7433e0;
-  background-image:
-    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
-    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
-  border-color: #7433e0;
-  box-shadow: 0 4px #4b209b;
   color: #fff9ef;
 }
 .notebook-paper-toolbox .notebook-paper-tool .paper-tab-icon,
@@ -1275,6 +1252,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 8px;
   }
   :root .notebook-spread-workspace .notebook-spread-options {
@@ -1287,7 +1265,8 @@
     font-size: 11px;
   }
   .notebook-workbench {
-    flex: 1;
+    flex: 0 0 auto;
+    margin-block: 0;
     min-height: 0;
     max-height: none;
     display: flex;
@@ -1297,15 +1276,24 @@
   }
   .notebook-paper-toolbox {
     flex-shrink: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 4px 3px 7px;
+    scrollbar-width: none;
     gap: 5px;
     margin-bottom: 10px;
     margin-right: -60px;
   }
   :root .notebook-paper-toolbox .notebook-paper-tool:not(.notebook-back-tool) {
+    flex: 0 0 auto;
+    touch-action: none;
     font-size: 10px;
-    width: 44px;
+    width: auto;
     min-width: 44px;
     min-height: 44px;
+  }
+  .notebook-paper-toolbox .notebook-toolbar-secondary {
+    flex-shrink: 0;
   }
   .notebook-paper-toolbox .notebook-paper-tool .paper-tab-icon,
   .notebook-paper-toolbox .notebook-paper-tool > .paper-editor-icon {
@@ -1317,7 +1305,8 @@
     display: none;
   }
   .notebook-spread-shell {
-    flex: 1;
+    flex: 0 0 auto;
+    aspect-ratio: 1.4;
     min-height: 0;
   }
   .notebook-paper-spread {
