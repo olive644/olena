@@ -58,8 +58,8 @@ import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
-import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
-import { HandwritingShapeInsert } from "./handwriting-shape-insert";
+import { canonicalShape, recognizeShape } from "./handwriting-shapes";
+import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
@@ -1804,9 +1804,40 @@ export function HandwritingStudio({
     );
   }
 
-  // A forma entra na área visível, em coordenadas da folha, pronta para mover e ajustar.
-  function insertShape(kind: ShapeKind) {
+  // Objetos entram prontos e selecionados; formas ficam no centro da área visível.
+  function insertWithoutDrawing(kind: InsertKind) {
     remember();
+    if (kind === "ruler") {
+      const start: HandwritingPoint = {
+        x: PAGE_WIDTH / 2 - 160,
+        y: PAGE_HEIGHT / 2,
+        pressure: 0.5,
+      };
+      const end: HandwritingPoint = { x: PAGE_WIDTH / 2 + 160, y: PAGE_HEIGHT / 2, pressure: 0.5 };
+      const id = strokeId();
+      setStrokes((current) => [
+        ...current,
+        { id, tool: "pen", color, width, points: rulerPoints(start, end, rulerKind) },
+      ]);
+      setSelectedIds([id]);
+      return;
+    }
+    if (kind === "coordinate-system") {
+      const id = strokeId();
+      setCoordinateSystems((current) => [
+        ...current,
+        {
+          id,
+          origin: { x: PAGE_WIDTH / 2 - 160, y: PAGE_HEIGHT / 2 + 160, pressure: 0.5 },
+          end: { x: PAGE_WIDTH / 2 + 160, y: PAGE_HEIGHT / 2 - 160, pressure: 0.5 },
+          step: coordinateStep,
+          measurements: coordinateMeasurements,
+          color,
+        },
+      ]);
+      setSelectedCoordinateIds([id]);
+      return;
+    }
     const canvas = canvasRef.current?.getBoundingClientRect();
     const viewport = viewportRef.current?.getBoundingClientRect();
     const visible =
@@ -1819,10 +1850,10 @@ export function HandwritingStudio({
           }
         : null;
     const scale = canvas?.width ? PAGE_WIDTH / canvas.width : 1;
-    const width = visible
+    const shapeWidth = visible
       ? Math.min(320, Math.max(80, (visible.right - visible.left) * scale * 0.55))
       : 320;
-    const height = kind === "line" || kind === "arrow" ? 40 : Math.min(220, width * 0.7);
+    const shapeHeight = kind === "line" || kind === "arrow" ? 40 : Math.min(220, shapeWidth * 0.7);
     const centerX =
       visible && canvas
         ? ((visible.left + visible.right) / 2 - canvas.left) * scale
@@ -1832,10 +1863,10 @@ export function HandwritingStudio({
         ? ((visible.top + visible.bottom) / 2 - canvas.top) * scale
         : PAGE_HEIGHT / 2;
     const box = {
-      x: Math.max(0, Math.min(PAGE_WIDTH - width, centerX - width / 2)),
-      y: Math.max(0, Math.min(PAGE_HEIGHT - height, centerY - height / 2)),
-      width,
-      height,
+      x: Math.max(0, Math.min(PAGE_WIDTH - shapeWidth, centerX - shapeWidth / 2)),
+      y: Math.max(0, Math.min(PAGE_HEIGHT - shapeHeight, centerY - shapeHeight / 2)),
+      width: shapeWidth,
+      height: shapeHeight,
     };
     const id = strokeId();
     setStrokes((current) => [
@@ -2481,7 +2512,7 @@ export function HandwritingStudio({
 
         {shapeInsertOpen && (
           <HandwritingShapeInsert
-            onInsert={insertShape}
+            onInsert={insertWithoutDrawing}
             onClose={() => setShapeInsertOpen(false)}
           />
         )}

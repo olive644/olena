@@ -130,12 +130,12 @@ export function HandwritingToolGroup({
       </button>
       <button
         type="button"
-        aria-label="Inserir forma"
-        title="Inserir forma pronta: alternativa a segurar a caneta parada no fim do traço"
+        aria-label="Inserir sem desenhar"
+        title="Forma, régua ou eixos prontos: alternativa a desenhar ou medir com o ponteiro"
         onClick={() => onOpenShapeInsert()}
       >
         <PaperObjectIcon name="shapes" />
-        <span>Inserir forma</span>
+        <span>Inserir sem desenhar</span>
       </button>
       <button
         type="button"

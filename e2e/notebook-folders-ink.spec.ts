@@ -118,12 +118,26 @@ for (const count of [1, 3]) {
         folderId: "folder-preview",
       });
     }
-    await page.addInitScript(
-      (state) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state)),
-      workspace,
+    await page.evaluate(
+      async ({ state, dark }) => {
+        const serialized = JSON.stringify(state);
+        localStorage.setItem("helenastudy.workspace.v1", serialized);
+        if (dark) localStorage.setItem("helenastudy.theme", "dark");
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
+          const request = indexedDB.open("helenastudy", 1);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        await new Promise<void>((resolve, reject) => {
+          const transaction = database.transaction("workspace", "readwrite");
+          transaction.objectStore("workspace").put(serialized, "current");
+          transaction.oncomplete = () => resolve();
+          transaction.onerror = () => reject(transaction.error);
+        });
+        database.close();
+      },
+      { state: workspace, dark: count === 3 },
     );
-    if (count === 3)
-      await page.addInitScript(() => localStorage.setItem("helenastudy.theme", "dark"));
     await page.reload();
     const folder = page.locator('[data-folder-drop="folder-preview"]');
     const folderRect = (await folder.boundingBox())!;

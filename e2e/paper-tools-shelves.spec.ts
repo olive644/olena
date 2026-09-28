@@ -13,8 +13,8 @@ test("formas aparecem na área visível e borracha alterna pelos ícones", async
   await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
   await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
-  await editor.getByRole("button", { name: "Inserir forma", exact: true }).click();
-  const shapes = page.getByRole("dialog", { name: "Inserir forma", exact: true });
+  await editor.getByRole("button", { name: "Inserir sem desenhar", exact: true }).click();
+  const shapes = page.getByRole("dialog", { name: "Inserir sem desenhar", exact: true });
   await expect(shapes).toBeVisible();
   await expect(shapes).toHaveCSS("color", "rgb(41, 36, 50)");
   await page.screenshot({ path: info.outputPath("formas.png") });

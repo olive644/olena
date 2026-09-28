@@ -3,8 +3,10 @@ import type { ShapeKind } from "./handwriting-shapes";
 import { PaperObjectIcon } from "./paper-object-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
+export type InsertKind = ShapeKind | "ruler" | "coordinate-system";
+
 type HandwritingShapeInsertProps = {
-  onInsert: (kind: ShapeKind) => void;
+  onInsert: (kind: InsertKind) => void;
   onClose: () => void;
 };
 
@@ -17,7 +19,12 @@ const SHAPES: { kind: ShapeKind; label: string }[] = [
   { kind: "polygon", label: "Polígono" },
 ];
 
-// A escolha por teclado insere uma forma pronta para mover, girar e redimensionar.
+const MEASURING: { kind: "ruler" | "coordinate-system"; label: string }[] = [
+  { kind: "ruler", label: "Régua" },
+  { kind: "coordinate-system", label: "Eixos de coordenadas" },
+];
+
+// Alternativa por teclado ao desenho e à medição com ponteiro.
 export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeInsertProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -30,7 +37,7 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
     <dialog
       ref={dialog}
       className="handwriting-shape-insert"
-      aria-label="Inserir forma"
+      aria-label="Inserir sem desenhar"
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -38,12 +45,12 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
       onKeyDown={(event) => event.stopPropagation()}
     >
       <header>
-        <h2>Inserir forma</h2>
+        <h2>Inserir sem desenhar</h2>
         <button type="button" aria-label="Fechar" onClick={onClose}>
           <PaperEditorIcon name="close" />
         </button>
       </header>
-      <p>Escolha uma forma. Ela aparece na área visível, pronta para mover e ajustar.</p>
+      <p>Escolha uma forma, régua ou eixos. O objeto aparece pronto para mover e ajustar.</p>
       <div className="handwriting-shape-insert__grid" role="group" aria-label="Formas">
         {SHAPES.map(({ kind, label }) => (
           <button
@@ -56,6 +63,20 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
           >
             <PaperObjectIcon name={kind} />
             <span>{label}</span>
+          </button>
+        ))}
+      </div>
+      <div className="handwriting-shape-insert__grid" role="group" aria-label="Régua e eixos">
+        {MEASURING.map(({ kind, label }) => (
+          <button
+            key={kind}
+            type="button"
+            onClick={() => {
+              onInsert(kind);
+              onClose();
+            }}
+          >
+            {label}
           </button>
         ))}
       </div>

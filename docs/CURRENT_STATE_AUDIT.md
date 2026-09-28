@@ -1282,8 +1282,21 @@ Limites que se cruzam:
   - O índice de folhas ganha um aviso (`aria-live`, só para leitor de tela) ao mover, favoritar ou arrastar uma miniatura, contando a nova posição ou o novo estado de favorito.
 - Testes: `handwriting-shapes.test.ts` (cada forma cabe na caixa pedida, a seta gerada é reconhecida de volta como seta), `handwriting-toolbar.test.tsx` (o botão abre o menu; a contagem de selecionados é uma região de status), `handwriting-studio-shape-insert.test.tsx` (o fluxo completo: abrir, escolher, a forma entra selecionada; fechar sem escolher não insere nada), `notebook-page-index.test.tsx` (os avisos de mover e favoritar).
 
+## Régua e eixos de coordenadas também entram sem desenhar (2026-09-27)
+
+- O menu "Inserir sem desenhar" (antes só formas) ganha mais duas opções: **Régua** e **Eixos de coordenadas**. Igual às formas, medir com a régua ou os eixos hoje só funciona arrastando (um gesto de ponteiro sem alternativa possível); agora entram prontos, do tamanho padrão, no meio da folha, já selecionados. A régua usa o tipo escolhido no momento (reta, esquadro, transferidor etc.) e os eixos usam o passo e a opção de mostrar medições já configurados.
+- O botão da barra de ferramentas e o diálogo mudaram de nome, de "Inserir forma" para "Inserir sem desenhar", já que cobrem mais do que formas.
+- Testes: `handwriting-studio-shape-insert.test.tsx` (a régua e os eixos entram selecionados, cada um com a contagem certa).
+
 ## Notes de texto na vitrine
 
 Atualização das vitrines e ferramentas: o limite é de quatro objetos visíveis por vitrine, incluindo pastas, Notes e cadernos. O excedente ocupa outra vitrine; cada vitrine aceita até três pastas e cada pasta continua com três itens. Marcadores ficam acima da prateleira no preview. Criação, modos de borracha, formas, reinício de Foco e navegação usam ícones de papel. Formas entram na área visível da folha com seleção ativa e camada de tinta visível.
 
 Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note e uma página de texto, preservada pelo armazenamento existente. A prévia mostra papel creme com canto dobrado, título e trecho real do texto. O editor contém somente título e escrita, com salvamento automático. Pastas aceitam até três itens mistos entre Notes e cadernos; a vitrine continua distribuindo quatro itens soltos por coleção. Notes podem ser arrastadas para dentro e para fora, abertas, buscadas e excluídas com a seleção existente.
+
+## Mover para pasta pelo teclado, sem arrastar (2026-09-28)
+
+- Continuação da acessibilidade do editor pro resto do app: hoje só dá para colocar um caderno ou uma note dentro de uma pasta arrastando na vitrine, um gesto de ponteiro sem alternativa por teclado. Agora, no modo "Selecionar" já existente, uma nova ação "Mover para pasta" abre um menu (as pastas existentes + "Vitrine", para tirar de uma pasta) e move toda a seleção de uma vez.
+- Respeita o mesmo limite de três itens por pasta que o arrastar já respeita: se a seleção não couber inteira, avisa quantos entraram e quantos não, ou que a pasta já está cheia. A folder que virou notebook não entra na seleção (não faz sentido colocar uma pasta dentro de outra), só cadernos e notes.
+- Novo `NotebookFolderMovePicker`, no mesmo padrão de diálogo já usado em outros lugares do app.
+- Testes: `notes-view-folder-move.test.tsx` (move pra pasta, move de volta pra vitrine, avisa quando a pasta já está cheia, Fechar não move nada).
