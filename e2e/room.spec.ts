@@ -89,6 +89,17 @@ for (const activity of ["listening", "bingo"] as const) {
       await host.getByRole("button", { name: "Abrir Modo Sala", exact: true }).click();
       await host.getByRole("button", { name: "Criar sala", exact: true }).click();
       await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+      const selectedActivity = host.locator('.local-room-activity[aria-checked="true"]');
+      await selectedActivity.hover();
+      await expect(selectedActivity).toHaveCSS("background-color", "rgb(116, 51, 224)");
+      await expect(selectedActivity).toHaveCSS("color", "rgb(255, 249, 239)");
+      await host.locator(".local-room-share img").evaluate(async (image) => {
+        await (image as HTMLImageElement).decode();
+      });
+      const qrBounds = await host.locator(".local-room-share svg[aria-label]").boundingBox();
+      expect(qrBounds?.width).toBeGreaterThanOrEqual(120);
+      expect(Math.abs((qrBounds?.width ?? 0) - (qrBounds?.height ?? 0))).toBeLessThan(1);
+      await host.locator(".local-room-share__code").scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("room-paper.png") });
       await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
       await host.screenshot({

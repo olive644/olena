@@ -811,8 +811,8 @@ export function LocalRoom({
         {state.phase === "lobby" ? (
           isHost ? (
             <div className="local-room-lobby">
+              <ShareRoom code={state.code} />
               <div className="local-room-lobby__invite">
-                <ShareRoom code={state.code} />
                 <section className="local-room-participants" aria-labelledby="participants-title">
                   <div className="local-room-section-heading">
                     <h3 id="participants-title">Participantes</h3>

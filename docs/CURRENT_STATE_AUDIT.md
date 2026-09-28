@@ -1356,3 +1356,31 @@ Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note 
 - Respeita o mesmo limite de três itens por pasta que o arrastar já respeita: se a seleção não couber inteira, avisa quantos entraram e quantos não, ou que a pasta já está cheia. A folder que virou notebook não entra na seleção (não faz sentido colocar uma pasta dentro de outra), só cadernos e notes.
 - Novo `NotebookFolderMovePicker`, no mesmo padrão de diálogo já usado em outros lugares do app.
 - Testes: `notes-view-folder-move.test.tsx` (move pra pasta, move de volta pra vitrine, avisa quando a pasta já está cheia, Fechar não move nada).
+
+# Convite da turma, 2026-09-28
+
+Decisão final: usar apenas Helena erguendo a placa, em
+`public/helena-room-invite.png`. Fundo externo transparente, QR SVG grafite
+com quatro módulos de margem branca dentro da placa, sem estilizar ou ocultar
+os módulos. Composição quadrada para celular e desktop. A turma permanece como
+estudo anterior, não como arte ativa. Prompt de extração pela ferramenta integrada:
+remover somente o fundo creme externo, preservar gata, placa branca opaca e pose;
+limpar resíduos e franjas externas sem alterar a geometria.
+
+Header do Modo Sala com cinco personagens sem molduras, QR vetorial separado e
+layout adaptável. Contraste branco sobre roxo preservado no hover selecionado.
+Arte criada pela ferramenta integrada de geração de imagens usando as cinco
+referências do usuário: papel facetado, fundo creme, placa central vazia, sem
+texto ou QR desenhado. Asset: `public/room-crew-header.png`.
+
+Revisão aprovada para integração: estilo aproximado às poses do onboarding,
+cabeça da Helena em nova pose, anatomia do urso simplificada, pata da raposa com
+dobras legíveis e ponta superior da estrela inteira. A placa e o QR continuam
+separados. Edição pela ferramenta integrada, sem alterações no fluxo da sala.
+
+Prompt da revisão: usar as poses 1 e 3 do onboarding como referências de papel
+recortado, facetas maiores e sombras discretas; preservar os cinco personagens,
+paleta, proporção 3:1 e placa branca central; corrigir anatomia do urso, mostrar
+a estrela inteira e mudar a cabeça da Helena. Refinamento final: alterar apenas
+a pata levantada da raposa para um antebraço curto conectado e pata de papel com
+duas pequenas divisões, mantendo todo o restante da composição.
