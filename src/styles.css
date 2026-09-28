@@ -5117,6 +5117,9 @@ body.local-room-active {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem;
 }
+.handwriting-shape-insert__grid + .handwriting-shape-insert__grid {
+  margin-top: 0.5rem;
+}
 .handwriting-shape-insert__grid button {
   padding: 0.7rem;
   border: 1px solid var(--line);

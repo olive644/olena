@@ -85,7 +85,7 @@ describe("grupo de instrumentos", () => {
   it("abre o menu de inserir forma", () => {
     const props = toolGroupProps();
     render(<HandwritingToolGroup {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: "Inserir forma" }));
+    fireEvent.click(screen.getByRole("button", { name: "Inserir sem desenhar" }));
     expect(props.onOpenShapeInsert).toHaveBeenCalledTimes(1);
   });
 });

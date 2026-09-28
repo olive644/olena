@@ -136,8 +136,10 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // the ceiling moves to 891 KiB. Persisted-save confirmation and cover selection add about
 // 1.5 KiB more; the ceiling moves to 893 KiB. Keyboard shape insertion and the
 // accessibility live regions (selection count, page index announcements) add about 3 KiB
-// more; the ceiling moves to 897 KiB, leaving margin for build variance.
-const MAX_TOTAL_JS_BYTES = 897 * 1024;
+// more; the ceiling moves to 897 KiB. Text notes (notebook-folder and text-note
+// components) and inserting a ruler/coordinate system without drawing add about 3 KiB
+// more together (896.5 KiB measured); the ceiling moves to 902 KiB for build variance.
+const MAX_TOTAL_JS_BYTES = 902 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
