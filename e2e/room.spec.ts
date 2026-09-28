@@ -84,8 +84,18 @@ for (const activity of ["listening", "bingo"] as const) {
           exact: true,
         })
         .click();
+      await expect(host.getByRole("heading", { name: "Pratique para lembrar." })).toBeVisible();
+      await host.screenshot({ path: testInfo.outputPath("practice.png") });
       await host.getByRole("button", { name: "Abrir Modo Sala", exact: true }).click();
       await host.getByRole("button", { name: "Criar sala", exact: true }).click();
+      await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+      await host.screenshot({ path: testInfo.outputPath("room-paper.png") });
+      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+      await host.screenshot({
+        path: testInfo.outputPath("room-paper-dark.png"),
+        animations: "disabled",
+      });
+      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
       await host.getByRole("combobox", { name: "Atividade", exact: true }).selectOption(activity);
       if (activity === "listening") {
         await host
@@ -111,14 +121,21 @@ for (const activity of ["listening", "bingo"] as const) {
           await expect(page.getByText("Aguardando o início")).toBeVisible();
         }),
       );
-      await expect(
-        host.locator(".local-room-session__actions p:not(.local-room-connection)"),
-      ).toContainText("2 participantes");
+      await expect(host.locator(".local-room-participant-list li")).toHaveCount(2);
+      const startButton = host.getByRole("button", { name: "Iniciar atividade" });
+      await expect(startButton).toHaveCSS("background-color", "rgb(116, 51, 224)");
+      await expect(startButton).toHaveCSS("background-image", /linear-gradient/);
+      await expect(host.locator(".local-room-session__header .theme-toggle")).toHaveCount(0);
+      expect(
+        await host
+          .locator(".local-room-fullscreen")
+          .evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
+      ).toBe(true);
       const projector =
         activity === "listening"
           ? await Promise.all([
               contexts[0]!.waitForEvent("page"),
-              host.getByRole("button", { name: "Abrir modo projetor" }).click(),
+              host.getByRole("button", { name: "Modo Projetor" }).click(),
             ]).then(([page]) => page)
           : undefined;
       if (projector) {
@@ -129,6 +146,12 @@ for (const activity of ["listening", "bingo"] as const) {
         await projector.screenshot({ path: testInfo.outputPath("projector-lobby.png") });
       }
       await host.screenshot({ path: testInfo.outputPath("lobby-desktop.png") });
+      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+      await host.screenshot({
+        path: testInfo.outputPath("lobby-dark.png"),
+        animations: "disabled",
+      });
+      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
       await expect(host.locator("#root")).toHaveAttribute("inert", "");
       await host.getByRole("button", { name: "Iniciar atividade" }).click();
       if (projector)

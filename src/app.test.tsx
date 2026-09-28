@@ -136,7 +136,7 @@ describe("App", () => {
       ["Espaço do aluno", "today"],
       ["Agenda", "planner"],
       ["Foco", "focus"],
-      ["Praticar", "learn"],
+      ["Praticar", "gamepad"],
       ["Biblioteca", "library"],
       ["Hábitos", "habits"],
       ["Cadernos", "notes"],

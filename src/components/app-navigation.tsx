@@ -113,7 +113,7 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
       { view: "today", label: "Espaço do aluno", mobileLabel: "Espaço", icon: "today" },
       { view: "planner", label: "Agenda", icon: "planner" },
       { view: "focus", label: "Foco", icon: "focus" },
-      { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "learn" },
+      { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "gamepad" },
     ],
   },
   {
@@ -129,7 +129,7 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
 const MOBILE_ITEMS: readonly NavigationItem[] = [
   { view: "today", label: "Espaço do aluno", mobileLabel: "Espaço", icon: "today" },
   { view: "planner", label: "Agenda", icon: "planner" },
-  { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "learn" },
+  { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "gamepad" },
   { view: "focus", label: "Foco", icon: "focus" },
 ];
 

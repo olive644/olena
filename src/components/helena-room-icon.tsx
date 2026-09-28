@@ -42,21 +42,13 @@ export function HelenaRoomIcon({ name, size = 20 }: HelenaRoomIconProps) {
   }
 
   return (
-    <svg
-      className="helena-room-icon"
-      viewBox="0 0 24 24"
+    <img
+      className="room-paper-icon"
+      src="/room-icons/play.svg"
+      alt=""
       width={size}
       height={size}
       aria-hidden="true"
-    >
-      <path
-        className="helena-room-icon__play"
-        d="M8.2 5.7c0-1.1 1.2-1.7 2.1-1.1l8.1 5.3c.8.5.8 1.7 0 2.2l-8.1 5.3c-.9.6-2.1 0-2.1-1.1Z"
-      />
-      <path
-        className="helena-room-icon__spark"
-        d="m18.5 2.5.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6Z"
-      />
-    </svg>
+    />
   );
 }

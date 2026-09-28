@@ -26,7 +26,7 @@ import {
   useLocalRoom,
   type RoomConnectionStatus,
 } from "../hooks/use-local-room";
-import { ThemeToggle } from "./app-navigation";
+import { PaperEditorIcon } from "./paper-editor-icon";
 import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
@@ -45,28 +45,24 @@ const DEFAULT_SETTINGS: LocalRoomSettings = {
 const ROOM_ACTIVITY_OPTIONS = [
   {
     key: "listening",
-    icon: "focus",
     title: "Escuta coletiva",
     badge: "Recomendado",
     enabled: true,
   },
   {
     key: "flashcards",
-    icon: "learn",
     title: "Flashcards em grupo",
     badge: "Em breve",
     enabled: false,
   },
   {
     key: "quiz",
-    icon: "medal-first",
     title: "Quiz competitivo",
     badge: "Em breve",
     enabled: false,
   },
   {
     key: "bingo",
-    icon: "activity-bank",
     title: "Bingo",
     enabled: true,
   },
@@ -173,10 +169,6 @@ function ShareRoom({ code }: { code: string }) {
 
   return (
     <div className="local-room-share">
-      <div className="local-room-share__heading">
-        <h3>Convide seus alunos</h3>
-        <p>Todo mundo começa por aqui.</p>
-      </div>
       <div className="local-room-share__code">
         <strong aria-label="Código da sala">{code}</strong>
         <button
@@ -794,40 +786,21 @@ export function LocalRoom({
             <strong>{state.code}</strong>
           </div>
           <div className="local-room-session__actions">
-            <p className={`local-room-connection local-room-connection--${room.connectionStatus}`}>
-              <span aria-hidden="true" /> {connectionLabel}
-            </p>
-            <p>
-              <Users size={16} /> <strong>{state.participants.length}</strong>{" "}
-              <span className="local-room-participant-noun">
-                {state.participants.length === 1 ? "participante" : "participantes"}
-              </span>
-            </p>
-            <span className="local-room-theme-toggle">
-              <ThemeToggle />
-            </span>
             {isHost && (
               <button
                 className="secondary-button local-room-open-projector"
                 type="button"
                 onClick={openProjector}
               >
-                <MonitorUp size={18} /> Abrir modo projetor
+                <img className="room-paper-icon" src="/room-icons/projector.svg" alt="" /> Modo
+                Projetor
               </button>
             )}
-            <button className="secondary-button" type="button" onClick={exitRoom}>
-              <HelenaRoomIcon name="close" size={18} /> Sair da sala
+            <button className="secondary-button local-room-exit" type="button" onClick={exitRoom}>
+              <PaperEditorIcon name="exit" /> Sair da sala
             </button>
           </div>
         </header>
-        <p className="local-note" role="status" aria-live="polite">
-          {countLabel(
-            state.participants.filter((p) => p.online !== false).length,
-            "participante conectado",
-            "participantes conectados",
-          )}{" "}
-          · {connectionLabel}
-        </p>
         {room.error && <p role="alert">{room.error}</p>}
         {state.settings.teams && (
           <p aria-label="Placar por equipe">
@@ -864,10 +837,6 @@ export function LocalRoom({
               </div>
 
               <div className="local-room-settings">
-                <div className="local-room-settings__heading">
-                  <h2>Escolha uma atividade</h2>
-                  <p>Uma nova experiência, sem trocar de sala.</p>
-                </div>
                 <div
                   className="local-room-activities"
                   role="radiogroup"
@@ -887,7 +856,12 @@ export function LocalRoom({
                       key={activity.key}
                     >
                       <span className="local-room-activity__icon">
-                        <NavigationIcon name={activity.icon} />
+                        <img
+                          src={`/room-icons/${activity.key}.svg`}
+                          alt=""
+                          width="48"
+                          height="48"
+                        />
                       </span>
                       {"badge" in activity && (
                         <span className="local-room-activity__badge">{activity.badge}</span>
