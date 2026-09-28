@@ -11,6 +11,7 @@
 }
 
 .local-room-session__header {
+  justify-content: flex-end;
   position: sticky;
   z-index: 10;
   top: 0;
@@ -52,6 +53,7 @@
 }
 
 .local-room-lobby__invite {
+  grid-column: 1 / -1;
   overflow: hidden;
   border: 1px solid var(--line-strong);
   border-radius: 16px;
@@ -115,8 +117,8 @@
 /* The real QR stays separate from the decorative paper illustration. */
 .local-room-lobby > .local-room-share {
   grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  grid-template-rows: auto auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
   align-items: center;
   border: 1px solid var(--line-strong);
   border-radius: 16px;
@@ -125,12 +127,20 @@
 
 .local-room-lobby > .local-room-share .local-room-share__qr {
   grid-column: 1;
-  grid-row: 1 / 3;
+  grid-row: 2;
 }
 
 .local-room-lobby > .local-room-share .local-room-share__code,
 .local-room-lobby > .local-room-share .local-room-share__link {
-  grid-column: 2;
+  grid-column: 1;
+}
+
+.local-room-share__link p {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.local-room-share .local-room-copy-status:empty {
+  display: none;
 }
 
 .helena-room-qr--holding {
@@ -199,6 +209,10 @@
 
 .local-room-participant-list {
   display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(6, auto);
+  grid-auto-columns: minmax(220px, 1fr);
+  overflow-x: auto;
   margin: 0;
   padding: 0;
   gap: 0.55rem;
@@ -208,15 +222,24 @@
 .local-room-participant-list li {
   display: grid;
   min-height: 44px;
-  grid-template-columns: 36px minmax(0, 1fr) auto;
+  grid-template-columns: 40px minmax(0, 1fr);
   align-items: center;
   gap: 0.65rem;
 }
 
+.local-room-participant-list__identity {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  min-width: 0;
+}
+
 .local-room-avatar {
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
   border-radius: 50%;
   color: #4d2b91;
   background: #eee5ff;
@@ -268,6 +291,7 @@
 }
 
 .local-room-settings {
+  grid-column: 1 / -1;
   padding: 0;
   border: 0;
   background: transparent;
@@ -521,19 +545,18 @@
 }
 
 .local-room-action-bar {
-  position: sticky;
-  z-index: 9;
-  bottom: 0;
+  position: static;
   display: grid;
-  min-height: 76px;
-  margin: 1rem -1.5rem -8rem;
-  padding: 0.85rem 1.5rem max(0.85rem, env(safe-area-inset-bottom));
-  border-top: 1px solid var(--line-strong);
+  margin: 0;
+  padding: 0.85rem 0;
+  border: 0;
   grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
   align-items: center;
   color: var(--text);
-  background: var(--surface);
+  background: transparent;
   gap: 1rem;
 }
 
@@ -850,19 +873,11 @@
   }
 
   .local-room-participant-list {
-    display: flex;
     padding-bottom: 0.35rem;
-    overflow-x: auto;
-    gap: 1.1rem;
     scroll-snap-type: x proximity;
   }
 
   .local-room-participant-list li {
-    display: flex;
-    min-width: 70px;
-    flex-direction: column;
-    gap: 0.2rem;
-    text-align: center;
     scroll-snap-align: start;
   }
 
@@ -875,12 +890,8 @@
   }
 
   .local-room-action-bar {
-    position: fixed;
-    right: 0;
-    left: 0;
     margin: 0;
     padding-inline: 1rem;
-    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .local-room-action-bar > span {
@@ -888,8 +899,7 @@
   }
 
   .local-room-action-bar > div:last-child {
-    grid-column: 2;
-    grid-row: 1 / 3;
+    grid-column: 1;
   }
 
   .local-room-action-bar .primary-button {
@@ -927,7 +937,7 @@
   }
 
   .local-room-action-bar {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: 1fr;
   }
 }
 

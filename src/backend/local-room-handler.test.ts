@@ -42,6 +42,19 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it.each([
+    ["/profile-avatars/oliver.webp", "/profile-avatars/oliver.webp"],
+    ["https://lh3.googleusercontent.com/avatar", "https://lh3.googleusercontent.com/avatar"],
+    ["https://example.com/tracker.png", undefined],
+    ["javascript:alert(1)", undefined],
+  ])("valida o avatar do participante: %s", async (avatarUrl, expected) => {
+    const { code } = await createRoomViaApi();
+    const response = await handler(post("join", { code, displayName: "Ana", avatarUrl }));
+    expect(response.status).toBe(200);
+    const payload = (await response.json()) as { state: PublicLocalRoomState };
+    expect(payload.state.participants[0]?.avatarUrl).toBe(expected);
+  });
+
   it("cria uma sala, devolve o token do host e a URL de streaming público", async () => {
     const response = await handler(
       post("create", { settings: { difficulty: "easy", questionCount: 10, roundSeconds: 30 } }),

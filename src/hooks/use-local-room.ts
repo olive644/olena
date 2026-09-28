@@ -414,7 +414,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
-  async function joinRoom(code: string, name: string) {
+  async function joinRoom(code: string, name: string, avatarUrl?: string) {
     setError("");
     const roomCode = normalizeLocalRoomCode(code);
     const displayName = sanitizeDisplayName(name);
@@ -438,7 +438,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         participantToken: string;
         state: PublicLocalRoomState;
         streamUrl: string;
-      }>("join", { code: roomCode, displayName, requestId: joinRequestRef.current.id });
+      }>("join", { code: roomCode, displayName, avatarUrl, requestId: joinRequestRef.current.id });
       setParticipantId(payload.participantId);
       participantTokenRef.current = payload.participantToken;
       codeRef.current = roomCode;

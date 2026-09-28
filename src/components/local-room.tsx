@@ -7,6 +7,7 @@ import {
   isValidLocalRoomCode,
   MAX_ROOM_PARTICIPANTS,
   normalizeLocalRoomCode,
+  sanitizeRoomAvatar,
   rankLocalRoomParticipants,
   localRoomPool,
   roomSecondsLeft,
@@ -207,19 +208,28 @@ function ShareRoom({ code }: { code: string }) {
 function LobbyParticipants({ participants }: { participants: readonly LocalRoomParticipant[] }) {
   return (
     <ul className="local-room-participant-list">
-      {participants.map((participant, index) => (
+      {participants.map((participant) => (
         <li key={participant.id}>
-          <span
-            className={`local-room-avatar local-room-avatar--${(index % 4) + 1}`}
-            aria-hidden="true"
-          >
-            {participant.displayName.slice(0, 2).toUpperCase()}
-          </span>
-          <span className="local-room-participant-list__name">{participant.displayName}</span>
-          <small className={participant.online === false ? "is-offline" : ""}>
-            <span aria-hidden="true" />
-            {participant.online === false ? "Ausente" : "Conectado"}
-          </small>
+          <img
+            className="local-room-avatar"
+            src={sanitizeRoomAvatar(participant.avatarUrl) ?? "/profile-avatars/helena.webp"}
+            alt=""
+            width="40"
+            height="40"
+            referrerPolicy="no-referrer"
+            onError={(event) => {
+              if (event.currentTarget.getAttribute("src") !== "/profile-avatars/helena.webp") {
+                event.currentTarget.src = "/profile-avatars/helena.webp";
+              }
+            }}
+          />
+          <div className="local-room-participant-list__identity">
+            <span className="local-room-participant-list__name">{participant.displayName}</span>
+            <small className={participant.online === false ? "is-offline" : ""}>
+              <span aria-hidden="true" />
+              {participant.online === false ? "Ausente" : "Pronto"}
+            </small>
+          </div>
         </li>
       ))}
     </ul>
@@ -367,8 +377,24 @@ export function LocalRoom({
   materials = [],
 }: LocalRoomProps) {
   const room = useLocalRoom(initialJoinCode);
+  const [profile] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as {
+        name?: unknown;
+        photoUrl?: unknown;
+      };
+      return {
+        name: typeof stored.name === "string" ? stored.name : "",
+        avatarUrl: sanitizeRoomAvatar(stored.photoUrl),
+      };
+    } catch {
+      return { name: "", avatarUrl: undefined };
+    }
+  });
   const [code, setCode] = useState(initialJoinCode ?? "");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(profile.name);
+  const [pendingActivity, setPendingActivity] = useState<"listening" | "bingo" | null>(null);
+  const activityRequestRef = useRef(false);
   const [manualWords, setManualWords] = useState("");
   const [manualMode, setManualMode] = useState(true);
   const [appliedManualWords, setAppliedManualWords] = useState("");
@@ -380,7 +406,10 @@ export function LocalRoom({
   const [lastResult, setLastResult] = useState<
     (LocalRoomAnswerFeedback & { submittedAnswer: string }) | undefined
   >(undefined);
-  const state = room.state;
+  const state =
+    room.state && pendingActivity
+      ? { ...room.state, settings: { ...room.state.settings, activity: pendingActivity } }
+      : room.state;
   const [naturalState, setNaturalState] = useState<NaturalVoiceState>({ status: "idle" });
   const naturalPlayerRef = useRef<NaturalVoicePlayer | undefined>(undefined);
   const audioPlayCountRef = useRef(0);
@@ -570,7 +599,7 @@ export function LocalRoom({
 
   function joinRoom(event: FormEvent) {
     event.preventDefault();
-    void room.joinRoom(code, name);
+    void room.joinRoom(code, name, profile.avatarUrl);
   }
 
   async function submitAnswer(event: FormEvent) {
@@ -604,18 +633,22 @@ export function LocalRoom({
     onExit?.();
   }
 
-  function selectActivity(activity: "listening" | "bingo") {
-    if (activity === "bingo") {
-      setManualMode(false);
-      void room.updateSettings({
-        activity,
-        subjectName: "",
-        category: "",
-        difficulty: "mixed",
-      });
+  async function selectActivity(activity: "listening" | "bingo") {
+    if (activityRequestRef.current || (room.state?.settings.activity ?? "listening") === activity)
       return;
+    activityRequestRef.current = true;
+    setPendingActivity(activity);
+    try {
+      const saved = await room.updateSettings(
+        activity === "bingo"
+          ? { activity, subjectName: "", category: "", difficulty: "mixed" }
+          : { activity },
+      );
+      if (saved && activity === "bingo") setManualMode(false);
+    } finally {
+      activityRequestRef.current = false;
+      setPendingActivity(null);
     }
-    void room.updateSettings({ activity });
   }
 
   if (room.isRestoring)
@@ -781,10 +814,6 @@ export function LocalRoom({
       {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
       <div className={`local-room-session local-room-session--${state.phase}`}>
         <header className="local-room-session__header">
-          <div className="local-room-session__code">
-            <span>Sala</span>
-            <strong>{state.code}</strong>
-          </div>
           <div className="local-room-session__actions">
             {isHost && (
               <button
@@ -822,11 +851,6 @@ export function LocalRoom({
                   </div>
                   {participantCount === 0 ? (
                     <div className="local-room-participants__empty">
-                      <div aria-hidden="true">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
                       <strong>Aguardando participantes…</strong>
                       <p>Compartilhe o código {state.code}. A rodada começa com uma pessoa.</p>
                     </div>
@@ -846,13 +870,13 @@ export function LocalRoom({
                     <button
                       className="local-room-activity"
                       type="button"
-                      disabled={!activity.enabled}
+                      disabled={!activity.enabled || pendingActivity !== null}
                       role="radio"
                       aria-checked={
                         activity.enabled &&
                         (state.settings.activity ?? "listening") === activity.key
                       }
-                      onClick={() => activity.enabled && selectActivity(activity.key)}
+                      onClick={() => activity.enabled && void selectActivity(activity.key)}
                       key={activity.key}
                     >
                       <span className="local-room-activity__icon">
@@ -870,7 +894,12 @@ export function LocalRoom({
                     </button>
                   ))}
                 </div>
-                <div className="local-room-settings__panel">
+                {pendingActivity && <HelenaLoading compact label="Preparando atividade…" />}
+                <div
+                  className="local-room-settings__panel"
+                  inert={pendingActivity !== null}
+                  aria-busy={pendingActivity !== null}
+                >
                   <h3>
                     {state.settings.activity === "bingo" ? "Prepare o bingo" : "Prepare a escuta"}
                   </h3>
@@ -1230,23 +1259,14 @@ export function LocalRoom({
               </div>
               <div className="local-room-action-bar">
                 <div>
-                  <strong>
-                    {state.settings.activity === "bingo" ? "Bingo" : "Escuta coletiva"}
-                  </strong>
-                  <p>
-                    {countLabel(actualCount, "pergunta", "perguntas")},{" "}
-                    {state.settings.roundSeconds}s cada, cerca de {estimatedDuration}
-                  </p>
-                </div>
-                <span>
-                  {countLabel(participantCount, "participante pronto", "participantes prontos")}
-                </span>
-                <div>
                   <button
                     className="primary-button"
                     type="button"
                     disabled={
-                      participantCount === 0 || availableCount === 0 || manualSelectionPending
+                      participantCount === 0 ||
+                      availableCount === 0 ||
+                      manualSelectionPending ||
+                      pendingActivity !== null
                     }
                     onClick={() => void room.startRound()}
                     aria-describedby={
