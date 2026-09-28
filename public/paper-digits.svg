@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="digit-0" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-0"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 5H46L58 18V76L45 89H17L5 77V19ZM23 22L20 26V68L24 73H39L43 69V26L39 22Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M18 5H46L58 18V76L45 89H17L5 77V19ZM23 22L20 26V68L24 73H39L43 69V26L39 22Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M18 5H46L58 18V76L45 89H17L5 77V19ZM23 22L20 26V68L24 73H39L43 69V26L39 22Z"/>
+    <g clip-path="url(#cut-0)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-1" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-1"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 21L32 5H44V73H56V89H9V73H27V26L15 36L5 25Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M15 21L32 5H44V73H56V89H9V73H27V26L15 36L5 25Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M15 21L32 5H44V73H56V89H9V73H27V26L15 36L5 25Z"/>
+    <g clip-path="url(#cut-1)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-2" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-2"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 5H46L58 18V39L47 50L23 66L20 73H58V89H5V65L15 53L40 36L43 32V25L39 21H23L19 25V31H5V18Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M17 5H46L58 18V39L47 50L23 66L20 73H58V89H5V65L15 53L40 36L43 32V25L39 21H23L19 25V31H5V18Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M17 5H46L58 18V39L47 50L23 66L20 73H58V89H5V65L15 53L40 36L43 32V25L39 21H23L19 25V31H5V18Z"/>
+    <g clip-path="url(#cut-2)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-3" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-3"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5H46L58 17V35L48 46L58 56V77L45 89H17L5 77V67H20V71L24 74H39L43 70V59L38 54H23V39H38L43 34V24L39 20H7Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M7 5H46L58 17V35L48 46L58 56V77L45 89H17L5 77V67H20V71L24 74H39L43 70V59L38 54H23V39H38L43 34V24L39 20H7Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M7 5H46L58 17V35L48 46L58 56V77L45 89H17L5 77V67H20V71L24 74H39L43 70V59L38 54H23V39H38L43 34V24L39 20H7Z"/>
+    <g clip-path="url(#cut-3)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-4" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-4"><path fill-rule="evenodd" clip-rule="evenodd" d="M32 5H48V54H59V70H48V89H32V70H4V54ZM32 30L18 54H32Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M32 5H48V54H59V70H48V89H32V70H4V54ZM32 30L18 54H32Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M32 5H48V54H59V70H48V89H32V70H4V54ZM32 30L18 54H32Z"/>
+    <g clip-path="url(#cut-4)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-5" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-5"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 5H57V21H23V38H44L58 52V76L45 89H17L5 77V67H20V71L24 74H39L43 70V58L38 53H8Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M8 5H57V21H23V38H44L58 52V76L45 89H17L5 77V67H20V71L24 74H39L43 70V58L38 53H8Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M8 5H57V21H23V38H44L58 52V76L45 89H17L5 77V67H20V71L24 74H39L43 70V58L38 53H8Z"/>
+    <g clip-path="url(#cut-5)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-6" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-6"><path fill-rule="evenodd" clip-rule="evenodd" d="M22 5H54V21H27L21 28V39H45L58 52V76L45 89H18L5 76V24ZM21 55V69L26 74H38L43 69V59L39 55Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M22 5H54V21H27L21 28V39H45L58 52V76L45 89H18L5 76V24ZM21 55V69L26 74H38L43 69V59L39 55Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M22 5H54V21H27L21 28V39H45L58 52V76L45 89H18L5 76V24ZM21 55V69L26 74H38L43 69V59L39 55Z"/>
+    <g clip-path="url(#cut-6)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-7" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-7"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 5H58V23L29 89H11L40 22H5Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M5 5H58V23L29 89H11L40 22H5Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M5 5H58V23L29 89H11L40 22H5Z"/>
+    <g clip-path="url(#cut-7)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-8" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-8"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 5H45L57 17V35L48 45L58 56V77L45 89H18L5 77V56L15 45L6 35V17ZM24 20L21 24V34L25 38H38L42 34V24L38 20ZM24 54L20 59V70L24 74H39L43 70V59L39 54Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M18 5H45L57 17V35L48 45L58 56V77L45 89H18L5 77V56L15 45L6 35V17ZM24 20L21 24V34L25 38H38L42 34V24L38 20ZM24 54L20 59V70L24 74H39L43 70V59L39 54Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M18 5H45L57 17V35L48 45L58 56V77L45 89H18L5 77V56L15 45L6 35V17ZM24 20L21 24V34L25 38H38L42 34V24L38 20ZM24 54L20 59V70L24 74H39L43 70V59L39 54Z"/>
+    <g clip-path="url(#cut-8)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+  <symbol id="digit-9" viewBox="0 0 66 98">
+    <defs><clipPath id="cut-9"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 5H45L58 18V70L41 89H10V73H35L42 65V55H18L5 42V18ZM24 21L20 25V35L24 40H42V26L37 21Z"/></clipPath></defs>
+    <path fill="var(--digit-depth)" fill-rule="evenodd" d="M18 5H45L58 18V70L41 89H10V73H35L42 65V55H18L5 42V18ZM24 21L20 25V35L24 40H42V26L37 21Z" transform="translate(3 5)"/>
+    <path fill="var(--digit-face)" fill-rule="evenodd" d="M18 5H45L58 18V70L41 89H10V73H35L42 65V55H18L5 42V18ZM24 21L20 25V35L24 40H42V26L37 21Z"/>
+    <g clip-path="url(#cut-9)"><path d="M0 0H66L0 38Z" fill="var(--digit-fold)"/><path d="M66 56V96H0Z" fill="var(--digit-edge)"/></g>
+  </symbol>
+</svg>

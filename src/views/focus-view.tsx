@@ -1,4 +1,5 @@
 import { Check, Plus } from "lucide-react";
+import { PaperDigits } from "../components/paper-digits";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import "../components/paper-object-controls.css";
 import {
@@ -462,7 +463,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                       <PomodoroTomato progress={secondsRemaining / (duration * 60)} />
                       <div className="pomodoro-dial__time">
                         <h2 id="focus-timer-title" className="timer">
-                          {formatTimer(secondsRemaining)}
+                          <PaperDigits value={formatTimer(secondsRemaining)} />
                         </h2>
                         {pomodoroPhase !== "focus" && <p>Respire um pouco</p>}
                       </div>
@@ -524,7 +525,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                 </div>
                 {mode === "timer" && (
                   <h2 id="focus-timer-title" className="timer timer--stopwatch" aria-live="off">
-                    {formatStopwatch(timerElapsedMilliseconds)}
+                    <PaperDigits value={formatStopwatch(timerElapsedMilliseconds)} />
                   </h2>
                 )}
                 <div className="timer-controls">

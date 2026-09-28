@@ -107,6 +107,7 @@ export function rotateItems(
   ids: ReadonlySet<string>,
   degrees: number,
   center: { x: number; y: number },
+  page = { width: PAGE_WIDTH, height: PAGE_HEIGHT },
 ): SelectionItems {
   const radians = (degrees * Math.PI) / 180;
   const cos = Math.cos(radians);
@@ -117,7 +118,7 @@ export function rotateItems(
   });
   const rotatePoint = (point: HandwritingPoint): HandwritingPoint => {
     const next = spin(point.x, point.y);
-    return { ...point, x: clamp(next.x, PAGE_WIDTH), y: clamp(next.y, PAGE_HEIGHT) };
+    return { ...point, x: clamp(next.x, page.width), y: clamp(next.y, page.height) };
   };
   return {
     strokes: items.strokes.map((stroke) =>
@@ -135,8 +136,8 @@ export function rotateItems(
       const next = spin(sticky.x + width / 2, sticky.y + height / 2);
       return {
         ...sticky,
-        x: clamp(next.x - width / 2, PAGE_WIDTH - width),
-        y: clamp(next.y - height / 2, PAGE_HEIGHT - height),
+        x: clamp(next.x - width / 2, page.width - width),
+        y: clamp(next.y - height / 2, page.height - height),
       };
     }),
     images: items.images.map((image) => {
@@ -144,8 +145,8 @@ export function rotateItems(
       const next = spin(image.x + image.width / 2, image.y + image.height / 2);
       return {
         ...image,
-        x: clamp(next.x - image.width / 2, PAGE_WIDTH - image.width),
-        y: clamp(next.y - image.height / 2, PAGE_HEIGHT - image.height),
+        x: clamp(next.x - image.width / 2, page.width - image.width),
+        y: clamp(next.y - image.height / 2, page.height - image.height),
         rotation: ((((image.rotation ?? 0) + degrees) % 360) + 360) % 360,
       };
     }),
@@ -179,12 +180,13 @@ export function scaleItems(
   ids: ReadonlySet<string>,
   factor: number,
   anchor: { x: number; y: number },
+  page = { width: PAGE_WIDTH, height: PAGE_HEIGHT },
 ): SelectionItems {
   const scale = (value: number, origin: number) => origin + (value - origin) * factor;
   const scalePoint = (point: HandwritingPoint): HandwritingPoint => ({
     ...point,
-    x: clamp(scale(point.x, anchor.x), PAGE_WIDTH),
-    y: clamp(scale(point.y, anchor.y), PAGE_HEIGHT),
+    x: clamp(scale(point.x, anchor.x), page.width),
+    y: clamp(scale(point.y, anchor.y), page.height),
   });
   return {
     strokes: items.strokes.map((stroke) =>
@@ -205,20 +207,20 @@ export function scaleItems(
         ...sticky,
         ...(sticky.width !== undefined ? { width } : {}),
         ...(sticky.height !== undefined ? { height } : {}),
-        x: clamp(scale(sticky.x, anchor.x), PAGE_WIDTH - width),
-        y: clamp(scale(sticky.y, anchor.y), PAGE_HEIGHT - height),
+        x: clamp(scale(sticky.x, anchor.x), page.width - width),
+        y: clamp(scale(sticky.y, anchor.y), page.height - height),
       };
     }),
     images: items.images.map((image) => {
       if (!ids.has(image.id)) return image;
-      const width = Math.max(40, Math.min(PAGE_WIDTH, image.width * factor));
-      const height = Math.max(40, Math.min(PAGE_HEIGHT, image.height * factor));
+      const width = Math.max(40, Math.min(page.width, image.width * factor));
+      const height = Math.max(40, Math.min(page.height, image.height * factor));
       return {
         ...image,
         width,
         height,
-        x: clamp(scale(image.x, anchor.x), PAGE_WIDTH - width),
-        y: clamp(scale(image.y, anchor.y), PAGE_HEIGHT - height),
+        x: clamp(scale(image.x, anchor.x), page.width - width),
+        y: clamp(scale(image.y, anchor.y), page.height - height),
       };
     }),
   };

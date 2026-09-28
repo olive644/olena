@@ -15,8 +15,8 @@ afterEach(() => {
   localStorage.clear();
 });
 
-describe("inserir forma, régua ou eixos pelo teclado, sem desenhar", () => {
-  it.each(["Reta", "Elipse", "Retângulo", "Triângulo", "Seta", "Polígono"])(
+describe("inserir formas pelo teclado, sem desenhar", () => {
+  it.each(["Elipse", "Retângulo", "Triângulo", "Seta", "Polígono"])(
     "insere %s e deixa o objeto pronto para mover",
     (shape) => {
       render(<HandwritingStudio onClose={vi.fn()} onSave={vi.fn()} draftKey="shape-insert" />);
@@ -30,22 +30,12 @@ describe("inserir forma, régua ou eixos pelo teclado, sem desenhar", () => {
     },
   );
 
-  it("insere a régua pronta e selecionada", () => {
+  it("não duplica os instrumentos de reta, régua e coordenadas no menu de formas", () => {
     render(<HandwritingStudio onClose={vi.fn()} onSave={vi.fn()} draftKey="shape-insert-ruler" />);
     fireEvent.click(screen.getByRole("button", { name: "Inserir sem desenhar" }));
-    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Régua" }));
-    expect(screen.getByText("1 item selecionado")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Mover$/ })).toBeTruthy();
-  });
-
-  it("insere os eixos de coordenadas prontos e selecionados para mover", () => {
-    render(<HandwritingStudio onClose={vi.fn()} onSave={vi.fn()} draftKey="shape-insert-axes" />);
-    fireEvent.click(screen.getByRole("button", { name: "Inserir sem desenhar" }));
-    fireEvent.click(
-      within(screen.getByRole("dialog")).getByRole("button", { name: "Eixos de coordenadas" }),
-    );
-    expect(screen.getByText("1 sistema de coordenadas selecionado")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Mover$/ })).toBeTruthy();
+    const menu = within(screen.getByRole("dialog"));
+    for (const name of ["Reta", "Régua", "Eixos de coordenadas"])
+      expect(menu.queryByRole("button", { name })).toBeNull();
   });
 
   it("Fechar ou cancelar não insere nada", () => {

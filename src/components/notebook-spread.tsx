@@ -79,7 +79,6 @@ export function NotebookSpread({
   onOpen,
   onCreate,
   onRemove,
-  onBack,
   onIndex,
   transitioning = false,
 }: Props) {
@@ -117,18 +116,6 @@ export function NotebookSpread({
   const current = Math.min(spreadIndex, lastSpread);
   const visible = pages.slice(current * 2, current * 2 + 2);
   const busy = Boolean(turning || removing || coverJourney || transitioning);
-  const backControl = onBack && (
-    <button
-      type="button"
-      className="notebook-paper-tool notebook-back-tool"
-      aria-label="Meus Cadernos"
-      title="Voltar aos meus cadernos"
-      disabled={busy}
-      onClick={onBack}
-    >
-      <img src="/paper-arrow.svg" alt="" />
-    </button>
-  );
   useEffect(() => {
     if (!turning?.settling) return;
     const timer = window.setTimeout(() => {
@@ -184,16 +171,16 @@ export function NotebookSpread({
     >
       {coverJourney && <NotebookJourney journey={coverJourney} onDone={finishCoverJourney} />}
       {showCover && (
-        <div className="notebook-spread-options">
-          {backControl}
+        <div className="notebook-spread-options notebook-paper-toolbox">
           <button
             type="button"
-            className="secondary-button"
-            aria-pressed={showCover}
+            className="notebook-paper-tool"
+            aria-label="Ver folhas"
             disabled={busy}
             onClick={() => changeCover(false)}
           >
-            Ver folhas
+            <NotebookToolIcon name="index" />
+            <span>Ver folhas</span>
           </button>
         </div>
       )}
@@ -300,7 +287,6 @@ export function NotebookSpread({
             visible={visible}
             dispatch={dispatch}
             disabled={busy}
-            backControl={backControl}
             indexControl={
               onIndex && (
                 <button
@@ -585,7 +571,7 @@ export function NotebookSpread({
           </nav>
         </>
       )}
-      {pages.length > 0 && (
+      {!showCover && pages.length > 0 && (
         <div className="notebook-preview-actions">
           <button
             className="notebook-preview-create"

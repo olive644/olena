@@ -44,6 +44,29 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
   const book = preview.getByLabel("Prévia folheável do caderno");
+  if (testInfo.project.name === "mobile") {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.keyboard.press("Tab");
+    for (const name of [
+      "Personalizar",
+      "Colocar divisória",
+      "Colocar marcador",
+      "Índice de folhas",
+    ]) {
+      const control = preview.getByRole("button", { name, exact: true });
+      await control.focus();
+      await expect
+        .poll(() =>
+          control.evaluate((element) => {
+            const label = element.querySelector("span")!.getBoundingClientRect();
+            return label.width > 30 && label.left >= 0 && label.right <= innerWidth;
+          }),
+        )
+        .toBe(true);
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await book.focus();
+  }
   const isTabExposed = (tab: Locator) =>
     tab.evaluate((element) => {
       const box = element.getBoundingClientRect();
@@ -161,6 +184,9 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   });
   await expect(preview.getByText("Folhas 1 e 2 de 3")).toBeVisible();
   await preview.getByRole("button", { name: "Editar marcas", exact: true }).click();
+  const activeTool = preview.getByRole("button", { name: "Concluir edição", exact: true });
+  await expect(activeTool).toHaveCSS("background-color", "rgb(116, 51, 224)");
+  await expect(activeTool).toHaveCSS("color", "rgb(255, 249, 239)");
   await divider.click();
   await expect(preview.getByLabel("Nome da marcação")).toBeVisible();
   await preview.getByRole("button", { name: "Pronto", exact: true }).click();
@@ -229,10 +255,9 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
         .toBeLessThanOrEqual(1);
       const cover = await preview.locator(".notebook-concept-cover .book-cover").boundingBox();
       await expect(page.locator(".mobile-nav")).toBeHidden();
-      const newPage = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
+      await expect(preview.getByRole("button", { name: "Criar nova folha" })).toHaveCount(0);
       expect(cover).not.toBeNull();
       expect(cover!.y + cover!.height).toBeLessThan(size.height);
-      expect(cover!.y + cover!.height + 27).toBeLessThan(newPage!.y);
       await preview.getByRole("button", { name: "Ver folhas" }).click();
       const spread = await book.boundingBox();
       expect(spread!.width).toBeLessThan(size.width);

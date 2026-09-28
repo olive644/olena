@@ -49,7 +49,6 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   const toolbar = page.getByRole("toolbar", { name: "Ferramentas do caderno" });
   await expect(toolbar.getByRole("button")).toHaveText([
-    "",
     "Personalizar",
     "Divisória",
     "Marcador",

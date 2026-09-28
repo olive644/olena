@@ -74,6 +74,21 @@ function useHarness() {
 }
 
 describe("ações da seleção", () => {
+  it("limita aumentar e mover pelas setas sem deformar os pontos nas bordas", () => {
+    const { result } = renderHook(useHarness);
+    act(() => result.current.setSelectedIds(["a"]));
+    act(() => result.current.actions.scaleSelection(100));
+    let item = result.current.strokes[0]!;
+    expect(
+      (item.points[1]!.x - item.points[0]!.x) / (item.points[1]!.y - item.points[0]!.y),
+    ).toBeCloseTo(1.5);
+    const width = item.points[1]!.x - item.points[0]!.x;
+    act(() => result.current.actions.nudgeSelection(5000, 5000));
+    item = result.current.strokes[0]!;
+    expect(item.points[1]!.x - item.points[0]!.x).toBeCloseTo(width);
+    expect(item.points[1]!.x + item.width * 0.325).toBeLessThanOrEqual(1200.000001);
+    expect(item.points[1]!.y + item.width * 0.325).toBeLessThanOrEqual(1600.000001);
+  });
   it("duplicar acrescenta uma cópia deslocada, seleciona a cópia e entra no histórico", () => {
     const { result } = renderHook(useHarness);
     act(() => result.current.setSelectedIds(["a"]));

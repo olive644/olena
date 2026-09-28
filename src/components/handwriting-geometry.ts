@@ -1,4 +1,5 @@
 import { pageTextLines } from "../domain/handwriting";
+import { strokeRadii } from "./handwriting-ink";
 import type {
   HandwritingCoordinateSystem,
   HandwritingImage,
@@ -36,6 +37,23 @@ export function strokeBounds(stroke: Stroke): SelectionBox {
   const x = Math.min(...xs);
   const y = Math.min(...ys);
   return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y };
+}
+
+export function strokeInkBounds(stroke: Stroke): SelectionBox {
+  const box = strokeBounds(stroke);
+  const radii =
+    stroke.tool === "highlighter"
+      ? [stroke.width / 2]
+      : stroke.brush === "fine"
+        ? [stroke.width * 0.325]
+        : strokeRadii(stroke, stroke.points);
+  const padding = radii.reduce((largest, next) => Math.max(largest, next), 0);
+  return {
+    x: box.x - padding,
+    y: box.y - padding,
+    width: box.width + padding * 2,
+    height: box.height + padding * 2,
+  };
 }
 
 export function coordinateBounds(system: HandwritingCoordinateSystem): SelectionBox {

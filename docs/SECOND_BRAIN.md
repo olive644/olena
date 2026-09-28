@@ -526,8 +526,11 @@ Gestos de seleção usam a geometria inicial e limites de grupo. A escala é pro
 na diagonal do arrasto, com âncora no canto oposto do conteúdo. A barra de preview
 expande o botão no fluxo; `data-notebook-open` oculta a navegação inferior móvel
 enquanto há caderno ativo. A proposta de numerais está separada em
-`design-previews/numeros-papel.html`: versão branca aprovada e variante grafite no lugar da roxa,
-ainda sem aplicação nos temporizadores. No mobile, o livro mantém proporção 1,4 para não esticar.
+`design-previews/numeros-papel.html` documenta a arte aprovada. `PaperDigits` e
+`public/paper-digits.svg` aplicam os numerais grafite e creme aos temporizadores.
+No mobile, o livro mantém proporção 1,4 para não esticar. A barra permite quebra de linha
+para exibir nomes inteiros, e a seta de retorno fica ao lado do título. Na capa,
+Ver folhas usa ícone expansível e a criação de página só aparece no livro aberto.
 
 `notebookShelves` centraliza a distribuição visual: quatro objetos no total, até três pastas por vitrine, com transbordamento para novas vitrines. `PaperObjectIcon` e `paper-object-controls.css` compartilham ícones e seletores de criação, formas e modos de borracha. Inserir forma, régua ou eixos converte o centro visível do viewport em coordenadas da folha e ativa seleção, inclusive com zoom e rolagem. Círculos e curvas da régua limitam sua extensão à área visível. A seleção pode ser movida pelo interior do quadro, sem depender do contorno do traço; o modo mão aplica o mesmo gesto a mouse, caneta e toque. A barra do preview usa ícones compactos e revela o rótulo no hover, foco ou ativação, conforme o padrão das ferramentas do editor.
 

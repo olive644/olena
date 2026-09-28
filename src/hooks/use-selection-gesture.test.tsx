@@ -46,6 +46,7 @@ function useHarness(
   withText = false,
   withObjects = false,
   initialStrokes: Stroke[] = [stroke("a", 100, 100), stroke("b", 600, 600)],
+  page = { width: 1200, height: 1600 },
 ) {
   const [strokes, setStrokes] = useState<Stroke[]>(initialStrokes);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
@@ -93,7 +94,7 @@ function useHarness(
     selectionMode: mode,
     selectedIds,
     selectedCoordinateIds,
-    page: { width: 1200, height: 1600 },
+    page,
     remember,
     setSelectedIds,
     setSelectedCoordinateIds,
@@ -120,6 +121,26 @@ function useHarness(
 const pointer = { pointerId: 1, pointerType: "mouse" };
 
 describe("gesto da ferramenta Selecionar", () => {
+  it("redimensiona no quadro amplo sem cortar nos limites antigos da folha", () => {
+    const shape = closedRectangleStroke("box");
+    shape.points = shape.points.map((point) => ({
+      ...point,
+      x: point.x + 1400,
+      y: point.y + 1600,
+    }));
+    const { result } = renderHook(() =>
+      useHarness("rectangle", false, false, [shape], { width: 3200, height: 2400 }),
+    );
+    act(() => result.current.setSelectedIds(["box"]));
+    const corner = selectionHandles({ x: 1500, y: 1700, width: 200, height: 200 }).se;
+    act(() => result.current.gesture.begin(pointer, at(corner.x, corner.y)));
+    act(() => void result.current.gesture.end(at(corner.x + 100, corner.y + 100)));
+    const points = result.current.strokes[0]!.points;
+    expect(points[0]).toMatchObject({ x: 1500, y: 1700 });
+    expect(points[1]!.x).toBeGreaterThan(1700);
+    expect(points[2]!.y).toBeGreaterThan(1900);
+    expect(points[1]!.x - points[0]!.x).toBeCloseTo(points[2]!.y - points[1]!.y);
+  });
   it.each(["mouse", "pen", "touch"])(
     "preserva a forma nas bordas e aplica a posição final com %s",
     (pointerType) => {
@@ -131,8 +152,10 @@ describe("gesto da ferramenta Selecionar", () => {
       act(() => result.current.gesture.begin(event, at(200, 200)));
       act(() => void result.current.gesture.move(event, at(9000, 9000)));
       let points = result.current.strokes[0]!.points;
-      expect(points[1]!.x - points[0]!.x).toBe(200);
-      expect(points[2]!.y - points[1]!.y).toBe(200);
+      expect(points[1]!.x - points[0]!.x).toBeCloseTo(200);
+      expect(points[2]!.y - points[1]!.y).toBeCloseTo(200);
+      expect(Math.max(...points.map((point) => point.x)) + 1.3).toBeLessThanOrEqual(1200);
+      expect(Math.max(...points.map((point) => point.y)) + 1.3).toBeLessThanOrEqual(1600);
       act(() => void result.current.gesture.move(event, at(200, 200)));
       expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 100, y: 100 });
       act(() => void result.current.gesture.end(at(240, 220)));
