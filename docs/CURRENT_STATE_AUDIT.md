@@ -1,5 +1,19 @@
 # Auditoria do estado atual
 
+## Praticar e Sala com controles de papel
+
+Praticar retira o texto auxiliar do cabeçalho, a instrução de escolha de mundo e as
+estrelas dos indicadores de progresso. A navegação usa um controle de videogame
+recortado, com variantes grafite e creme para os estados existentes.
+
+A Sala compartilha o acabamento de botões do aplicativo mesmo sendo renderizada
+em um portal. O cabeçalho oferece Modo Projetor com ícone próprio e Sair da sala
+com a porta vermelha do editor. O seletor de tema e o resumo duplicado do cabeçalho
+saem; o estado de conexão continua no aviso da sala e os participantes na lista.
+Os títulos auxiliares de convite e escolha de atividade foram removidos.
+Escuta, Flashcards, Quiz e Bingo recebem SVGs exclusivos de papel; os jogos ainda
+indisponíveis continuam desativados. O play usa a arte creme facetada aprovada.
+
 ## Controles legíveis, formas completas e numerais de papel
 
 A seta de retorno fica junto ao título do caderno. Os botões ativos usam roxo com

@@ -143,7 +143,6 @@ function PracticeHub({
               className="solo-journey__progress"
               aria-label={`Progresso no Mundo ${world.number}`}
             >
-              <NavigationIcon name="xp" />
               <span>Seu progresso</span>
               <strong>{Math.min(unlockedLevel, SOLO_LEVELS.length)}/4 níveis</strong>
             </div>
@@ -219,12 +218,11 @@ function PracticeHub({
       <section className="solo-journey" aria-labelledby="solo-journey-title">
         <div className="solo-journey__heading">
           <div>
-            <span className="section-label">Minigames Solo</span>
-            <h2 id="solo-journey-title">Escolha um mundo</h2>
-            <p>Use as setas para explorar sua próxima aventura.</p>
+            <h2 id="solo-journey-title" className="section-label">
+              Minigames Solo
+            </h2>
           </div>
           <div className="solo-journey__progress" aria-label="Progresso no mundo atual">
-            <NavigationIcon name="xp" />
             <span>Mundo {world.number}</span>
             <strong>
               {world.number === 1 ? `${Math.min(unlockedLevel, 4)}/4 níveis` : "Bloqueado"}
@@ -589,7 +587,6 @@ export function LearnView({
         <div>
           <span className="section-label">Praticar</span>
           <h1>Pratique para lembrar.</h1>
-          <p>Use flashcards, quizzes e bingo com conteúdo salvo no seu próprio espaço.</p>
         </div>
         <label className="view-select">
           <span>Matéria</span>

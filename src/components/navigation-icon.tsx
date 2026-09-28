@@ -3,6 +3,7 @@ export type NavigationIconName =
   | "planner"
   | "focus"
   | "learn"
+  | "gamepad"
   | "habits"
   | "notes"
   | "library"
@@ -31,6 +32,7 @@ const BRAND_ICON_NAMES = new Set<NavigationIconName>([
   "planner",
   "focus",
   "learn",
+  "gamepad",
   "more",
   "library",
   "habits",

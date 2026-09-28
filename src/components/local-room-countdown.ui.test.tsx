@@ -60,7 +60,7 @@ describe("contagem regressiva do início da rodada", () => {
 
   it("mostra conexão, resumo e saída textual no lobby", () => {
     render(<LocalRoom />);
-    expect(screen.getByText("Online")).toBeTruthy();
+    expect(screen.getByText(/participante conectado.*Online/)).toBeTruthy();
     expect(screen.getByLabelText("Resumo da rodada").textContent).toContain("0 perguntas");
     expect(screen.getByRole("button", { name: /sair da sala/i })).toBeTruthy();
   });

@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+`local-room-fullscreen` é um portal fora de `.app-shell`. As regras compartilhadas
+de `paper-buttons.css` incluem esse contêiner para manter acabamento, foco e toque.
+`public/room-icons/` contém as artes vetoriais de Escuta, Flashcards, Quiz, Bingo,
+Projetor e Play. A saída reutiliza `PaperEditorIcon` com `exit` e as cores do editor.
+A navegação Praticar usa `gamepad`, sem alterar o ícone `learn` de outros contextos.
+
 `confirmNotebookSave` compara o documento normalizado com o armazenamento após
 o evento de gravação ou a verificação inicial. O editor só confirma salvamento
 manual após esse reconhecimento, sem prometer sincronização em nuvem.

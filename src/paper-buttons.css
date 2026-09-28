@@ -1,5 +1,6 @@
 /* Papel recortado, derivado dos botões aprovados do onboarding. */
-.app-shell button:not(.mobile-more-backdrop):not(.theme-toggle):not(.solo-helena) {
+:is(.app-shell, .local-room-fullscreen)
+  button:not(.mobile-more-backdrop):not(.theme-toggle):not(.solo-helena) {
   border-radius: 5px 13px 6px 11px;
   transition:
     box-shadow 160ms ease,
@@ -7,7 +8,7 @@
     background-color 160ms ease;
 }
 
-.app-shell
+:is(.app-shell, .local-room-fullscreen)
   :is(
     .primary-button,
     .secondary-button,
@@ -38,7 +39,7 @@
   font-weight: 800;
 }
 
-.app-shell
+:is(.app-shell, .local-room-fullscreen)
   :is(
     .primary-button,
     .preset-switch button.is-active,
@@ -57,16 +58,16 @@
   box-shadow: 0 4px 0 #4b209b;
 }
 
-.app-shell button:focus-visible {
+:is(.app-shell, .local-room-fullscreen) button:focus-visible {
   outline: 3px solid #a779ef;
   outline-offset: 4px;
 }
 
-.app-shell button:disabled {
+:is(.app-shell, .local-room-fullscreen) button:disabled {
   cursor: not-allowed;
 }
 
-.app-shell
+:is(.app-shell, .local-room-fullscreen)
   :is(
     .primary-button,
     .secondary-button,
