@@ -14,6 +14,7 @@ import {
   type WorkspaceAction,
   type WorkspaceState,
 } from "../domain/workspace";
+import { PaperEditorIcon } from "./paper-editor-icon";
 
 const colors = ["#7C3AED", "#287D69", "#AC365E", "#FACC15", "#5887C9"];
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
@@ -335,6 +336,8 @@ export function NotebookPaperTools({
             type="button"
             className="notebook-paper-tool"
             aria-pressed={editing}
+            aria-label={editing ? "Concluir edição" : "Editar marcas"}
+            title={editing ? "Concluir edição" : "Editar marcas"}
             disabled={!tabs.length || disabled}
             onClick={() => {
               setEditing(!editing);
@@ -342,7 +345,8 @@ export function NotebookPaperTools({
               setTool(null);
             }}
           >
-            {editing ? "Concluir edição" : "Editar marcas"}
+            <PaperEditorIcon name={editing ? "save" : "pen"} />
+            <span>{editing ? "Concluir edição" : "Editar marcas"}</span>
           </button>
           {indexControl}
         </div>

@@ -1,7 +1,15 @@
 import type { ShapeKind } from "./handwriting-shapes";
 import "./paper-object-controls.css";
 
-type ObjectIcon = "notebook" | "note" | "folder" | "shapes" | "eraseArea" | "eraseStroke";
+type ObjectIcon =
+  | "notebook"
+  | "note"
+  | "folder"
+  | "shapes"
+  | "ruler"
+  | "coordinate-system"
+  | "eraseArea"
+  | "eraseStroke";
 const outlines: Record<ShapeKind, string> = {
   line: "M8 35 39 12",
   ellipse: "M40 24C40 13 32 8 24 8S8 13 8 24s8 16 16 16 16-5 16-16Z",
@@ -55,11 +63,41 @@ export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
         </>
       ) : name === "shapes" ? (
         <>
-          <path d="M4 24h23v21H4Z" fill="#51259B" />
-          <path d="M4 21h23v21H4Z" fill="#A779EF" />
-          <path d="m4 21 6 5v16H4Z" fill="#E9DAFB" />
-          <path d="m32 3 14 24H18Z" fill="#FACC15" />
-          <path d="m32 3-6 18-8 6Z" fill="#FFE88D" />
+          <path d="M6 5h21l7 7v32H6Z" fill="#51465D" />
+          <path d="M9 3h19l6 6v32H9Z" fill="#FFF9EF" />
+          <path d="M28 3v7h7Z" fill="#E4DAC6" />
+          <path d="m16 16 8 14H8Z" fill="#FACC15" />
+          <path d="m16 16-3 14H8Z" fill="#FFE88D" />
+          <circle cx="30" cy="29" r="7" fill="#7C3AED" />
+          <path d="M30 22a7 7 0 0 1 0 14Z" fill="#A779EF" />
+          <path d="M13 33h9v7h-9Z" fill="#5924B4" />
+          <path d="M13 33h9v3h-9Z" fill="#A779EF" />
+        </>
+      ) : name === "ruler" ? (
+        <>
+          <path d="m5 35 29-29 9 9-29 29Z" fill="#51259B" />
+          <path d="m5 32 27-27 9 9-27 27Z" fill="#FACC15" />
+          <path d="m10 27 4 4m2-10 5 5m2-11 5 5m2-11 4 4" stroke="#51465D" strokeWidth="2" />
+          <path d="m8 30 3 3 24-24-3-3Z" fill="#FFE88D" />
+        </>
+      ) : name === "coordinate-system" ? (
+        <>
+          <path
+            d="M9 5v34h34"
+            fill="none"
+            stroke="#51259B"
+            strokeWidth="6"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 5v34h34"
+            fill="none"
+            stroke="#A779EF"
+            strokeWidth="4"
+            strokeLinejoin="round"
+          />
+          <path d="M9 15h5M19 34v5M9 25h5M29 34v5" stroke="#FACC15" strokeWidth="3" />
+          <path d="m6 9 3-5 3 5m27 27 5 3-5 3" fill="#FACC15" />
         </>
       ) : (
         <>
