@@ -1273,6 +1273,15 @@ Limites que se cruzam:
 - Cuidado de ordem dos efeitos: a leitura do espelho ao abrir precisa rodar antes do efeito que grava nele, senão a gravação do primeiro carregamento sobrescreveria o que já estava lá antes de dar tempo de ler.
 - Testes: `indexed-workspace-store.test.ts` (abre, cria a tabela na primeira vez, grava e lê de volta, reaproveita a mesma conexão, devolve nulo sem IndexedDB), `use-workspace-indexed-mirror.test.tsx` (espelha o que foi salvo, troca pelo conteúdo do espelho ao abrir quando ele já tem algo, funciona sem IndexedDB disponível, uma falha do espelho não afeta o salvamento de verdade).
 
-# Notes de texto na vitrine
+## Acessibilidade: inserir forma pelo teclado e anúncios de leitor de tela (2026-09-27)
+
+- **Inserir forma sem desenhar**: novo botão "Inserir forma" na barra de ferramentas abre um menu (Reta, Elipse, Retângulo, Triângulo, Seta, Polígono); escolher uma insere a forma pronta, do tamanho padrão, no meio da folha, já selecionada. Desenhar à mão livre é, por natureza, um gesto de ponteiro sem alternativa possível por teclado; a forma pronta é a alternativa: depois de inserida, mover, girar e redimensionar já são acessíveis por teclado (setas empurram a seleção, Girar, Aumentar/Diminuir), então o pedido de "alternativa por teclado para desenhar formas" fica coberto pela composição das duas coisas.
+  - `canonicalShape` em `handwriting-shapes.ts`: gera os pontos da forma direto (sem desenho e sem reconhecimento), reaproveitando a mesma função de gerar traço liso (`densify`) que o reconhecimento já usa. Só o polígono usa um número fixo de lados (hexágono), por não ter um "padrão" natural como as outras formas.
+- **Leitor de tela**:
+  - A contagem de itens selecionados no editor (que já existia como texto visível) e a contagem de sistemas de coordenadas selecionados agora são regiões `aria-live="polite"`: quem usa leitor de tela ouve a mudança sem precisar navegar até lá para conferir.
+  - O índice de folhas ganha um aviso (`aria-live`, só para leitor de tela) ao mover, favoritar ou arrastar uma miniatura, contando a nova posição ou o novo estado de favorito.
+- Testes: `handwriting-shapes.test.ts` (cada forma cabe na caixa pedida, a seta gerada é reconhecida de volta como seta), `handwriting-toolbar.test.tsx` (o botão abre o menu; a contagem de selecionados é uma região de status), `handwriting-studio-shape-insert.test.tsx` (o fluxo completo: abrir, escolher, a forma entra selecionada; fechar sem escolher não insere nada), `notebook-page-index.test.tsx` (os avisos de mover e favoritar).
+
+## Notes de texto na vitrine
 
 Criar oferece Caderno, Note e Pasta. Note usa um item de notebook com kind note e uma página de texto, preservada pelo armazenamento existente. A prévia mostra papel creme com canto dobrado, título e trecho real do texto. O editor contém somente título e escrita, com salvamento automático. Pastas aceitam até três itens mistos entre Notes e cadernos; a vitrine continua distribuindo quatro itens soltos por coleção. Notes podem ser arrastadas para dentro e para fora, abertas, buscadas e excluídas com a seleção existente.

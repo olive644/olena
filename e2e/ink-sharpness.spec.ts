@@ -29,9 +29,14 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
 
   // Tela 2x: o bitmap tem mais pixels que os 1200 da folha, nas duas camadas.
   const bitmapWidth = () => sheet.evaluate((element) => (element as HTMLCanvasElement).width);
-  await expect.poll(bitmapWidth).toBeGreaterThan(1200);
+  await expect
+    .poll(async () => {
+      const width = await bitmapWidth();
+      const liveWidth = await live.evaluate((element) => (element as HTMLCanvasElement).width);
+      return width > 1200 && width === liveWidth;
+    })
+    .toBe(true);
   const initial = await bitmapWidth();
-  expect(await live.evaluate((element) => (element as HTMLCanvasElement).width)).toBe(initial);
   expect(await sheet.evaluate((element) => (element as HTMLCanvasElement).height)).toBe(
     Math.round((initial / 1200) * 1600),
   );

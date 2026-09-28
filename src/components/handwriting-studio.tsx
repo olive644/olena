@@ -58,7 +58,8 @@ import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
-import { recognizeShape } from "./handwriting-shapes";
+import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
+import { HandwritingShapeInsert } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
 import { useSelectionActions } from "../hooks/use-selection-actions";
@@ -396,6 +397,7 @@ export function HandwritingStudio({
   const [ocrBusy, setOcrBusy] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
+  const [shapeInsertOpen, setShapeInsertOpen] = useState(false);
   const [paperSectionsOpen, setPaperSectionsOpen] = useState({ paper: false, color: false });
   const [fileMenuOpen, setFileMenuOpen] = useState(false);
   const [stickyMenuId, setStickyMenuId] = useState<string | null>(null);
@@ -1802,6 +1804,26 @@ export function HandwritingStudio({
     );
   }
 
+  // Alternativa por teclado a desenhar a forma à mão: insere pronta, do tamanho padrão, no
+  // meio da folha, e já a seleciona (setas, Girar e Aumentar/Diminuir já funcionam nela).
+  function insertShape(kind: ShapeKind) {
+    remember();
+    const width = 320;
+    const height = kind === "line" || kind === "arrow" ? 40 : 220;
+    const box = {
+      x: (PAGE_WIDTH - width) / 2,
+      y: (PAGE_HEIGHT - height) / 2,
+      width,
+      height,
+    };
+    const id = strokeId();
+    setStrokes((current) => [
+      ...current,
+      { id, tool: "pen", brush: "fine", color, width: 4, points: canonicalShape(kind, box) },
+    ]);
+    setSelectedIds([id]);
+  }
+
   function addSticky(kind?: "text") {
     if (stickies.length >= 40) {
       setError("Esta folha chegou ao limite de 40 post-its.");
@@ -2431,7 +2453,15 @@ export function HandwritingStudio({
             setTextMode(false);
             setWritingWindowOpen((open) => !open);
           }}
+          onOpenShapeInsert={() => setShapeInsertOpen(true)}
         />
+
+        {shapeInsertOpen && (
+          <HandwritingShapeInsert
+            onInsert={insertShape}
+            onClose={() => setShapeInsertOpen(false)}
+          />
+        )}
 
         {(selectedIds.length > 0 || tool === "select") && (
           <HandwritingSelectionActions

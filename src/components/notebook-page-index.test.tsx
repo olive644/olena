@@ -195,6 +195,27 @@ describe("índice de folhas", () => {
     expect(isDisabled("Só favoritas")).toBe(true);
   });
 
+  it("avisa por leitor de tela ao mover, favoritar e arrastar", () => {
+    render(
+      <NotebookPageIndex
+        pages={pages}
+        currentPageId="a"
+        onSelect={vi.fn()}
+        onMove={vi.fn()}
+        onReorder={vi.fn()}
+        favoritePageIds={[]}
+        onToggleFavorite={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    const status = screen.getByRole("status");
+    expect(status.textContent).toBe("");
+    fireEvent.click(screen.getByRole("button", { name: "Mover a folha 2 para frente" }));
+    expect(status.textContent).toBe("Folha movida para a posição 3.");
+    fireEvent.click(screen.getByRole("button", { name: "Favoritar a folha 1" }));
+    expect(status.textContent).toBe("Folha 1 favoritada.");
+  });
+
   it("sem onMove não mostra botões de mover, e Fechar chama onClose", () => {
     const onClose = vi.fn();
     render(
