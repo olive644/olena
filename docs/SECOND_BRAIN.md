@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+O lobby centraliza o convite e usa `helena-room-invite.webp` (840 px, 41 KB,
+transparente). O PNG original permanece como fonte. O SVG do QR não muda.
+`pendingActivity` dá seleção otimista e loading até `updateSettings` concluir,
+com bloqueio de cliques concorrentes e retorno ao estado confirmado em falha.
+O join envia `avatarUrl` opcional do perfil local, validado por `sanitizeRoomAvatar`
+no cliente e backend. A lista usa seis linhas por coluna e mantém nome de exibição,
+avatar e prontidão juntos. Não introduz autenticação nem verificação de identidade.
+
 O convite do lobby usa a Helena sozinha erguendo uma placa, com fundo externo
 transparente. `RoomQrCode` sobrepõe um SVG grafite funcional dentro da placa,
 com margem branca de quatro módulos, nunca um QR gerado por imagem. O encaixe

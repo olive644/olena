@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PublicLocalRoomState } from "../domain/local-room";
@@ -18,6 +18,7 @@ const LOBBY_STATE: PublicLocalRoomState = {
 let setRoomState:
   ((updater: (state: PublicLocalRoomState) => PublicLocalRoomState) => void) | null = null;
 let restoring = false;
+const updateSettings = vi.fn();
 
 vi.mock("../hooks/use-local-room", () => ({
   useLocalRoom: () => {
@@ -34,7 +35,7 @@ vi.mock("../hooks/use-local-room", () => ({
       setRole: vi.fn(),
       createRoom: vi.fn(),
       joinRoom: vi.fn(),
-      updateSettings: vi.fn(),
+      updateSettings,
       startRound: vi.fn(),
       nextQuestion: vi.fn().mockResolvedValue(undefined),
       endRoom: vi.fn(),
@@ -52,11 +53,45 @@ describe("contagem regressiva do início da rodada", () => {
     vi.useRealTimers();
     setRoomState = null;
     restoring = false;
+    updateSettings.mockReset();
   });
 
   function countdownText(container: HTMLElement) {
     return container.querySelector(".local-room-countdown__value")?.textContent ?? null;
   }
+
+  it("seleciona imediatamente, bloqueia cliques repetidos e reverte em falha", async () => {
+    let resolveSettings: (saved: boolean) => void = () => {};
+    updateSettings.mockImplementation(
+      () =>
+        new Promise<boolean>((resolve) => {
+          resolveSettings = resolve;
+        }),
+    );
+    render(<LocalRoom />);
+    const bingo = screen.getByRole("radio", { name: /^Bingo/ });
+    fireEvent.click(bingo);
+    expect(bingo.getAttribute("aria-checked")).toBe("true");
+    expect(screen.getByText("Preparando atividade…")).toBeTruthy();
+    fireEvent.click(bingo);
+    expect(updateSettings).toHaveBeenCalledTimes(1);
+    await act(async () => resolveSettings(false));
+    expect(bingo.getAttribute("aria-checked")).toBe("false");
+    expect(screen.queryByText("Preparando atividade…")).toBeNull();
+  });
+
+  it("mostra avatar, nome e prontidão sem o resumo fixo e sem repetir o código no topo", () => {
+    render(<LocalRoom />);
+    const container = document.body;
+    expect(container.querySelector(".local-room-session__code")).toBeNull();
+    expect(container.querySelector(".local-room-action-bar strong")).toBeNull();
+    const participant = container.querySelector(".local-room-participant-list li");
+    expect(participant?.textContent).toContain("Ana");
+    expect(participant?.textContent).toContain("Pronto");
+    expect(participant?.querySelector("img")?.getAttribute("src")).toBe(
+      "/profile-avatars/helena.webp",
+    );
+  });
 
   it("mostra resumo e saída textual sem o indicador redundante no lobby", () => {
     render(<LocalRoom />);

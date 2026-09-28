@@ -31,6 +31,10 @@ for (const activity of ["listening", "bingo"] as const) {
       for (const context of contexts) {
         await context.route("**/api/local-room?*", async (route) => {
           const request = route.request();
+          const body = request.postDataJSON() as { settings?: { activity?: string } };
+          if (request.url().includes("action=settings") && body.settings?.activity) {
+            await new Promise((resolve) => setTimeout(resolve, 700));
+          }
           const response = await handler(
             new Request(request.url(), {
               method: request.method(),
@@ -107,7 +111,13 @@ for (const activity of ["listening", "bingo"] as const) {
         animations: "disabled",
       });
       await host.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
-      await host.getByRole("combobox", { name: "Atividade", exact: true }).selectOption(activity);
+      if (activity === "bingo") {
+        const bingo = host.getByRole("radio", { name: /^Bingo/ });
+        await bingo.click();
+        await expect(bingo).toHaveAttribute("aria-checked", "true");
+        await expect(host.getByText("Preparando atividade…")).toBeVisible();
+        await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
+      }
       if (activity === "listening") {
         await host
           .getByRole("combobox", { name: "Material da sala", exact: true })
@@ -122,10 +132,16 @@ for (const activity of ["listening", "bingo"] as const) {
       } else {
         await host.getByRole("combobox", { name: "Perguntas", exact: true }).selectOption("5");
       }
-      const code = await host.locator(".local-room-session__code strong").innerText();
+      const code = await host.getByLabel("Código da sala", { exact: true }).innerText();
       const players = await Promise.all(contexts.slice(1).map((c) => c.newPage()));
       await Promise.all(
         players.map(async (page, index) => {
+          await page.addInitScript((i) => {
+            localStorage.setItem(
+              "helena.profile.v1",
+              JSON.stringify({ name: `Aluno ${i}`, photoUrl: "/profile-avatars/oliver.webp" }),
+            );
+          }, index);
           await page.goto(`/?sala=${code}`);
           await page.getByLabel("Nome de exibição").fill(`Aluno ${index}`);
           await page.getByRole("button", { name: "Entrar", exact: true }).click();
@@ -133,6 +149,13 @@ for (const activity of ["listening", "bingo"] as const) {
         }),
       );
       await expect(host.locator(".local-room-participant-list li")).toHaveCount(2);
+      await expect(host.locator(".local-room-participant-list img").first()).toHaveAttribute(
+        "src",
+        "/profile-avatars/oliver.webp",
+      );
+      await expect(
+        host.locator(".local-room-participant-list").getByText("Pronto", { exact: true }),
+      ).toHaveCount(2);
       const startButton = host.getByRole("button", { name: "Iniciar atividade" });
       await expect(startButton).toHaveCSS("background-color", "rgb(116, 51, 224)");
       await expect(startButton).toHaveCSS("background-image", /linear-gradient/);
@@ -220,6 +243,34 @@ for (const activity of ["listening", "bingo"] as const) {
       if (activity === "listening")
         expect(states.get(code)!.participants.map((p) => p.score)).toEqual([50, 50]);
       else expect(Math.max(...states.get(code)!.participants.map((p) => p.score))).toBe(50);
+      await host.getByRole("button", { name: "Trocar atividade", exact: true }).click();
+      for (let index = 2; index < 7; index++) {
+        await handler(
+          new Request(`${testInfo.project.use.baseURL}/api/local-room?action=join`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              code,
+              displayName: `Aluno ${index}`,
+              avatarUrl: "/profile-avatars/helena.webp",
+            }),
+          }),
+        );
+      }
+      const participants = host.locator(".local-room-participant-list li");
+      await expect(participants).toHaveCount(7);
+      const positions = await participants.evaluateAll((items) =>
+        items.map((item) => {
+          const bounds = item.getBoundingClientRect();
+          return { x: bounds.x, y: bounds.y };
+        }),
+      );
+      expect(positions[5]!.x).toBeCloseTo(positions[0]!.x);
+      expect(positions[5]!.y).toBeGreaterThan(positions[0]!.y);
+      expect(positions[6]!.x).toBeGreaterThan(positions[0]!.x);
+      expect(positions[6]!.y).toBeCloseTo(positions[0]!.y);
+      await participants.first().scrollIntoViewIfNeeded();
+      await host.screenshot({ path: testInfo.outputPath("participants.png") });
     } finally {
       await Promise.all(contexts.map((context) => context.close()));
     }

@@ -15,6 +15,7 @@ import {
   ROOM_PRESENCE_GRACE_MS,
   ROOM_CATEGORIES,
   sanitizeDisplayName,
+  sanitizeRoomAvatar,
   startRoom,
   submitRoomAnswer,
   toPublicRoomState,
@@ -215,6 +216,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       const displayName = sanitizeDisplayName(
         typeof body["displayName"] === "string" ? body["displayName"] : "",
       );
+      const avatarUrl = sanitizeRoomAvatar(body["avatarUrl"]);
       if (!isValidLocalRoomCode(code) || !displayName) {
         return jsonResponse(400, { error: "Código ou nome de exibição inválidos." });
       }
@@ -251,6 +253,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           id: participantId,
           token: participantToken,
           displayName,
+          ...(avatarUrl ? { avatarUrl } : {}),
           score: 0,
           lastSeenAt: now(),
           online: true,

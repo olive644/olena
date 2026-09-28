@@ -30,6 +30,7 @@ export type LocalRoomSettings = {
 export type LocalRoomParticipant = {
   id: string;
   displayName: string;
+  avatarUrl?: string;
   score: number;
   token?: string;
   lastSeenAt?: number;
@@ -38,6 +39,20 @@ export type LocalRoomParticipant = {
   bingoMarks?: string[];
   bingoCard?: string[];
 };
+
+export function sanitizeRoomAvatar(value: unknown): string | undefined {
+  if (typeof value !== "string" || value.length > 2048) return undefined;
+  if (/^\/profile-avatars\/[a-z0-9-]+\.(?:svg|webp)$/.test(value)) return value;
+  try {
+    const url = new URL(value);
+    if (url.protocol === "https:" && /(^|\.)googleusercontent\.com$/.test(url.hostname)) {
+      return url.href;
+    }
+  } catch {
+    // Invalid profile image: use the local default avatar.
+  }
+  return undefined;
+}
 
 export type LocalRoomQuestion = { id: string; front: string };
 

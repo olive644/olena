@@ -1,5 +1,19 @@
 # Auditoria do estado atual
 
+## Convite e participantes da Sala
+
+O convite fica centralizado no desktop e no celular, com código e cópia do link
+próximos da Helena. A ilustração usa WebP transparente de 41 KB em vez do PNG de
+699 KB, preservando o QR vetorial separado. Não há código repetido no topo nem
+resumo fixo no rodapé; Iniciar atividade continua no fluxo da página.
+
+A troca entre Escuta e Bingo seleciona o cartão imediatamente, mostra HelenaLoading
+e bloqueia novas alterações até confirmar a resposta. Falhas restauram a seleção
+confirmada. Participantes usam foto do perfil ou avatar padrão, nome e status Pronto
+(Ausente quando desconectados). A lista forma colunas de até seis linhas, com
+rolagem horizontal quando necessário. O nome ainda é de exibição, não identidade
+autenticada. Avatares aceitos são arquivos locais do perfil ou imagens HTTPS Google.
+
 ## Praticar e Sala com controles de papel
 
 Praticar retira o texto auxiliar do cabeçalho, a instrução de escolha de mundo e as
