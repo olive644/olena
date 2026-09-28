@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Inserção de formas e ações do caderno
+
+Os botões de criação usam as facetas creme e roxas do design system. A barra de
+ações do preview do caderno mantém só os ícones no estado compacto e expande os
+rótulos ao passar o mouse, focar pelo teclado ou ativar uma ferramenta. O menu
+Inserir sem desenhar usa ícones próprios para formas, régua e eixos. Todos os
+objetos entram na área visível da folha e já ficam selecionados; círculos e curvas
+da régua respeitam essa área. Mover pelo quadro selecionado funciona ao arrastar
+por dentro da seleção com mouse, caneta ou toque, inclusive para eixos.
+
 ## Confirmação de salvamento, capas e movimento das pastas
 
 O salvamento manual confirma a versão persistida no armazenamento local antes de

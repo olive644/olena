@@ -522,6 +522,6 @@ Pastas da vitrine: `NotebookFolder` recebe cadernos, páginas e matérias de `No
 
 # Notes de texto
 
-`notebookShelves` centraliza a distribuição visual: quatro objetos no total, até três pastas por vitrine, com transbordamento para novas vitrines. `PaperObjectIcon` e `paper-object-controls.css` compartilham ícones e seletores de criação, formas e modos de borracha. Inserir forma converte o centro visível do viewport em coordenadas da folha e ativa seleção, inclusive com zoom e rolagem.
+`notebookShelves` centraliza a distribuição visual: quatro objetos no total, até três pastas por vitrine, com transbordamento para novas vitrines. `PaperObjectIcon` e `paper-object-controls.css` compartilham ícones e seletores de criação, formas e modos de borracha. Inserir forma, régua ou eixos converte o centro visível do viewport em coordenadas da folha e ativa seleção, inclusive com zoom e rolagem. Círculos e curvas da régua limitam sua extensão à área visível. A seleção pode ser movida pelo interior do quadro, sem depender do contorno do traço; o modo mão aplica o mesmo gesto a mouse, caneta e toque. A barra do preview usa ícones compactos e revela o rótulo no hover, foco ou ativação, conforme o padrão das ferramentas do editor.
 
 StudyNotebook.kind admite note. Uma Note possui uma StudyNote de texto em pageIds; TextNoteEditor e TextNotePreview compartilham esse conteúdo. O limite de três em notebook/stored e no gesto de arraste conta todos os itens da pasta. A validação local aceita o novo tipo sem alterar o formato dos cadernos existentes.

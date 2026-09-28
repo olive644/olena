@@ -76,7 +76,8 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
               onClose();
             }}
           >
-            {label}
+            <PaperObjectIcon name={kind} />
+            <span>{label}</span>
           </button>
         ))}
       </div>

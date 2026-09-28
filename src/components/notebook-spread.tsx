@@ -308,9 +308,11 @@ export function NotebookSpread({
                   className="notebook-paper-tool"
                   disabled={busy}
                   onClick={onIndex}
+                  aria-label="Índice de folhas"
+                  title="Índice de folhas"
                 >
                   <NotebookToolIcon name="index" />
-                  Índice de folhas
+                  <span>Índice de folhas</span>
                 </button>
               )
             }

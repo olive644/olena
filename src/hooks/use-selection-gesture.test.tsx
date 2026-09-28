@@ -29,10 +29,25 @@ const stroke = (id: string, x: number, y: number): Stroke =>
     ],
   }) as unknown as Stroke;
 
+const closedRectangleStroke = (id: string): Stroke =>
+  ({
+    id,
+    tool: "pen",
+    brush: "fine",
+    color: "#000",
+    width: 4,
+    points: [at(100, 100), at(300, 100), at(300, 300), at(100, 300), at(100, 100)],
+  }) as unknown as Stroke;
+
 const at = (x: number, y: number) => ({ x, y, pressure: 0.5 });
 
-function useHarness(mode: SelectionMode = "rectangle", withText = false, withObjects = false) {
-  const [strokes, setStrokes] = useState<Stroke[]>([stroke("a", 100, 100), stroke("b", 600, 600)]);
+function useHarness(
+  mode: SelectionMode = "rectangle",
+  withText = false,
+  withObjects = false,
+  initialStrokes: Stroke[] = [stroke("a", 100, 100), stroke("b", 600, 600)],
+) {
+  const [strokes, setStrokes] = useState<Stroke[]>(initialStrokes);
   const [stickies, setStickies] = useState<HandwritingSticky[]>(
     withObjects
       ? [
@@ -97,12 +112,30 @@ function useHarness(mode: SelectionMode = "rectangle", withText = false, withObj
     stickies,
     images,
     coordinateSystems,
+    setStrokes,
+    setSelectedIds,
   };
 }
 
 const pointer = { pointerId: 1, pointerType: "mouse" };
 
 describe("gesto da ferramenta Selecionar", () => {
+  it.each(["mouse", "pen", "touch"])(
+    "Move uma forma arrastando o interior da caixa com %s, sem exigir tocar no traço",
+    (pointerType) => {
+      const { result } = renderHook(() =>
+        useHarness("rectangle", false, false, [closedRectangleStroke("box")]),
+      );
+      act(() => result.current.setSelectedIds(["box"]));
+      const event = { pointerId: 9, pointerType };
+      act(() => result.current.gesture.begin(event, at(200, 200)));
+      act(() => void result.current.gesture.move(event, at(240, 220)));
+      act(() => void result.current.gesture.end(at(240, 220)));
+      expect(result.current.strokes[0]!.points[0]).toMatchObject({ x: 140, y: 120 });
+      expect(result.current.selectedIds).toEqual(["box"]);
+    },
+  );
+
   it.each(["mouse", "pen", "touch"])(
     "Mover transporta todos os tipos juntos com %s",
     (pointerType) => {

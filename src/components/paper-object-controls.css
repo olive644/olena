@@ -20,17 +20,23 @@
   padding: 8px 12px;
   border: 1px solid #e4dac6;
   border-radius: 5px 14px 5px 8px;
-  background: #fffdf8;
+  background-color: #fff9ef;
+  background-image:
+    linear-gradient(135deg, #fffdf8 0 10%, transparent 10%),
+    linear-gradient(315deg, #e9dfcc 0 12%, transparent 12%);
   color: #292432;
   box-shadow: 0 3px #d5ccba;
   font: inherit;
   cursor: pointer;
 }
 :root .paper-choice-row > button[aria-pressed="true"] {
-  background: #7c3aed;
+  background-color: #7433e0;
+  background-image:
+    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
   color: #fff9ef;
-  border-color: #a779ef;
-  box-shadow: 0 3px #51259b;
+  border-color: #7433e0;
+  box-shadow: 0 4px #4b209b;
 }
 .paper-choice-row > button > span {
   display: inline-block;
@@ -98,14 +104,20 @@
   border: 1px solid #e4dac6;
   border-radius: 5px 14px 5px 8px;
   color: #292432;
-  background: #fff9ef;
+  background-color: #fff9ef;
+  background-image:
+    linear-gradient(135deg, #fffdf8 0 10%, transparent 10%),
+    linear-gradient(315deg, #e9dfcc 0 12%, transparent 12%);
   box-shadow: 0 3px #d5ccba;
 }
 :root .notebook-create-dialog .notebook-detail-actions > .primary-button {
-  background: #7c3aed;
+  background-color: #7433e0;
+  background-image:
+    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
   color: #fff9ef;
-  box-shadow: 0 3px #51259b;
-  border-color: #a779ef;
+  box-shadow: 0 4px #4b209b;
+  border-color: #7433e0;
 }
 :root .handwriting-shape-insert {
   background: #fffdf8;
@@ -121,6 +133,9 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
+:root .handwriting-shape-insert__grid:last-child {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 :root .handwriting-shape-insert__grid button {
   flex-direction: column;
   min-height: 92px;
@@ -128,7 +143,10 @@
 }
 :root .handwriting-shape-insert__grid button:hover {
   border-color: #7c3aed;
-  background: #f1e9fb;
+  background-color: #fff9ef;
+  background-image:
+    linear-gradient(135deg, #f1e9fb 0 10%, transparent 10%),
+    linear-gradient(315deg, #e9dfcc 0 12%, transparent 12%);
 }
 .timer-controls .icon-button .paper-editor-icon {
   width: 28px;
