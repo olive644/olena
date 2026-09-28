@@ -3,6 +3,10 @@ import { expect, test, type Page } from "@playwright/test";
 test("carrega os ícones de papel no desktop e mobile em ambos os temas", async ({
   page,
 }, testInfo) => {
+  await expect(page.locator('link[rel="icon"][sizes="32x32"]')).toHaveAttribute(
+    "href",
+    "/olena-favicon-32.png",
+  );
   const mobile = testInfo.project.name === "mobile";
   const navigation = page.getByRole("navigation", {
     name: mobile ? "Navegação móvel" : "Navegação principal",
