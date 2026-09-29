@@ -66,6 +66,52 @@ describe("NaturalVoicePlayer", () => {
     expect(states.at(-1)).toEqual({ status: "error", message: "Usando a voz do dispositivo." });
   });
 
+  it("na sala, não usa a voz do aparelho e permite tentar novamente após falha", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse(503))
+      .mockResolvedValueOnce(jsonResponse(200, { "X-TTS-Provider": "kokoro" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const { states, player } = collectStates();
+
+    await player.generate("hello", 1);
+    expect(states.at(-1)).toEqual({
+      status: "error",
+      message: "Áudio indisponível. Toque para tentar novamente.",
+    });
+    await player.generate("hello", 1);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(states.at(-1)?.status).toBe("playing");
+  });
+
+  it("quando o celular bloqueia autoplay, pede um toque e aproveita o áudio já baixado", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(200));
+    vi.stubGlobal("fetch", fetchMock);
+    HTMLMediaElement.prototype.play = vi
+      .fn()
+      .mockRejectedValueOnce(new DOMException("blocked", "NotAllowedError"))
+      .mockResolvedValueOnce(undefined);
+    const { states, player } = collectStates();
+
+    expect(await player.generate("hello", 1)).toBe(false);
+    expect(states.at(-1)?.message).toContain("Toque para ouvir");
+    expect(await player.generate("hello", 1)).toBe(true);
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it("inclui o código da sala somente no pedido de áudio compartilhado", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(200));
+    vi.stubGlobal("fetch", fetchMock);
+    const player = new NaturalVoicePlayer(
+      () => undefined,
+      () => true,
+      () => "ABCDE",
+    );
+    await player.generate("hello", 1);
+    const body = JSON.parse((fetchMock.mock.calls[0]![1] as RequestInit).body as string);
+    expect(body).toEqual({ text: "hello", rate: 1, consent: true, roomCode: "ABCDE" });
+  });
+
   it("cancela a reproducao anterior quando generate e chamado de novo antes de terminar", async () => {
     let resolveFirst: (() => void) | undefined;
     const firstFetch = new Promise<Response>((resolve) => {

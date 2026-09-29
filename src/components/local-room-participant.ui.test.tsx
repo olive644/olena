@@ -5,6 +5,7 @@ import { LocalRoom } from "./local-room";
 
 const mocks = vi.hoisted(() => ({
   submitAnswer: vi.fn<() => Promise<undefined>>(),
+  generateAudio: vi.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(true),
 }));
 
 vi.mock("../data/listening-audio", () => ({
@@ -12,8 +13,8 @@ vi.mock("../data/listening-audio", () => ({
     dispose() {}
     stop() {}
     preload() {}
-    generate() {
-      return Promise.resolve();
+    generate(...args: unknown[]) {
+      return mocks.generateAudio(...args);
     }
   },
 }));
@@ -84,5 +85,11 @@ describe("resposta do participante", () => {
     expect(screen.getByRole("button", { name: "Ouvir novamente em 5s" })).toBeTruthy();
     act(() => vi.advanceTimersByTime(5_000));
     expect(screen.getByRole("button", { name: "Ouvir novamente" })).toBeTruthy();
+  });
+
+  it("pede áudio da sala sem passar a voz do navegador como alternativa", () => {
+    render(<LocalRoom />);
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    expect(mocks.generateAudio).toHaveBeenLastCalledWith("book", 1);
   });
 });

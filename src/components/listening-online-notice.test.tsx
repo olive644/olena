@@ -29,4 +29,17 @@ describe("aviso da voz natural e do vocabulário online", () => {
     fireEvent.click(screen.getByRole("button", { name: "Ativar" }));
     expect(onChoose).toHaveBeenCalledWith("accepted");
   });
+
+  it("na sala, explica a gravação compartilhada e não promete voz do aparelho", () => {
+    const onChoose = vi.fn();
+    const { rerender } = render(
+      <ListeningOnlineNotice choice={null} onChoose={onChoose} roomAudio variant="compact" />,
+    );
+    expect(screen.getByText(/a gravação fica disponível em armazenamento privado/)).toBeTruthy();
+    rerender(
+      <ListeningOnlineNotice choice="declined" onChoose={onChoose} roomAudio variant="compact" />,
+    );
+    expect(screen.getByRole("status").textContent).toContain("Ative para ouvir");
+    expect(screen.getByRole("status").textContent).not.toContain("voz do seu aparelho");
+  });
 });

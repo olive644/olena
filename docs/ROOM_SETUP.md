@@ -55,6 +55,8 @@ Na aba **Regras** do Realtime Database, substitua pelo seguinte e publique:
 - `/private-rooms/<código>` guarda o estado completo (com o token do
   organizador e as respostas certas): ninguém lê nem escreve direto por
   aqui, nem autenticado.
+- `/speech-audio/<hash>` guarda por pouco tempo as gravações da sala para todos
+  receberem os mesmos bytes. A leitura e a escrita diretas também são negadas.
 
 O servidor (a função da Vercel) escreve nos dois caminhos usando uma conta
 de serviço com privilégio de administrador, que **ignora** essas regras;

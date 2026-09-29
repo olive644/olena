@@ -14,13 +14,32 @@ antes de repassar o pedido para o **Cloudflare Workers AI**, chamando o modelo `
 (MeloTTS, voz natural em inglês) autenticado por token, nunca exposto direto ao navegador.
 
 Se a chamada ao Cloudflare falhar, exceder o tempo limite configurado ou não estiver configurada,
-`/api/speech` responde com erro e o cliente (`NaturalVoicePlayer`, em `src/data/listening-audio.ts`)
-usa a voz em inglês disponível no navegador como último recurso, tanto no Quiz de Escuta quanto no
-Modo Sala. O áudio retorna em MP3 e nenhum texto, resposta ou token é registrado em log.
+`/api/speech` responde com erro. O Quiz individual ainda pode usar a voz em inglês do navegador.
+O Modo Sala não faz essa troca: mostra um aviso e permite tentar novamente. Se o celular bloquear a
+reprodução automática, a pessoa toca em Ouvir para iniciar a mesma gravação. O áudio retorna em MP3
+e nenhum texto, resposta ou token é registrado em log.
 
 Configure `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_TOKEN` apenas como variáveis protegidas da Vercel
-(nunca com prefixo `VITE_`, que exporia o token no navegador). O cache de áudio do cliente vive somente
-na memória da sessão.
+(nunca com prefixo `VITE_`, que exporia o token no navegador). O cache do Quiz individual vive somente
+na memória da sessão. No Modo Sala, o pedido inclui o código da sala e o backend guarda a gravação em
+`speech-audio/<hash>` no Firebase Realtime Database. A chave é o hash da sala, do texto, da velocidade
+e da versão da voz, sem texto legível. Uma escrita transacional reserva a geração para um aparelho;
+os outros aguardam e recebem os mesmos bytes. A gravação fica disponível por uma hora e a limpeza
+diária apaga cópias vencidas. As regras negam leitura e escrita diretas de `speech-audio`; somente a
+função com conta de serviço acessa esse caminho. O limite de 240 pedidos por minuto permite uma turma
+na mesma rede, enquanto apenas 30 gerações novas por minuto podem chegar ao provedor. O consentimento
+continua individual e foi versionado novamente por causa da retenção temporária. Publicar as regras
+atualizadas de `firebase-room.rules.json` é necessário para o índice da limpeza.
+
+### Riscos do áudio compartilhado
+
+| Risco                                                | Controle                                                                                   |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Descobrir frases pelo nome da chave                  | A chave usa SHA-256 da sala, frase, velocidade e versão; o texto não aparece no caminho.   |
+| Ler gravações de outras salas diretamente            | As regras do Firebase negam acesso do navegador; só a função da Vercel lê o cache privado. |
+| Gerar muitas falas pagas com uma mesma rede          | Pedidos e novas gerações têm limites separados, compartilhados entre instâncias.           |
+| Guardar áudio além do necessário                     | Leitura expira em uma hora; a rotina diária apaga cópias vencidas.                         |
+| Duas instâncias gerarem a mesma frase ao mesmo tempo | Reserva e publicação usam comparação de versão do Firebase.                                |
 
 Existe também um serviço próprio Kokoro+Piper (`services/tts`, veja seu `README.md`) que fica **fora
 de uso em produção no momento**: nenhuma hospedagem grátis viável foi encontrada pra rodar os dois

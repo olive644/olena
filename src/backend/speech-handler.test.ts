@@ -31,7 +31,7 @@ describe("handler de voz", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("audio/wav");
-    expect(deps.provider.synthesize).toHaveBeenCalledWith(validRequest);
+    expect(deps.provider.synthesize).toHaveBeenCalledWith(validRequest, "test-client");
   });
 
   it("bloqueia outra origem e exige consentimento", async () => {
@@ -44,6 +44,9 @@ describe("handler de voz", () => {
     ).toBe(400);
     expect(
       (await createSpeechHandler(deps)(post({ ...validRequest, voice: "Charon" }))).status,
+    ).toBe(400);
+    expect(
+      (await createSpeechHandler(deps)(post({ ...validRequest, roomCode: "not a room" }))).status,
     ).toBe(400);
     expect(deps.provider.synthesize).not.toHaveBeenCalled();
   });

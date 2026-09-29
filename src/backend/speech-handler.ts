@@ -1,3 +1,6 @@
+import { SpeechGenerationRateLimitError } from "./shared-speech-provider.js";
+import { isValidLocalRoomCode, normalizeLocalRoomCode } from "../domain/local-room.js";
+
 const MAX_BODY_BYTES = 1_000;
 const MAX_TEXT_LENGTH = 160;
 
@@ -5,6 +8,7 @@ export type SpeechRequest = {
   text: string;
   rate: number;
   consent: true;
+  roomCode?: string;
 };
 
 export type SpeechAudio = {
@@ -13,7 +17,7 @@ export type SpeechAudio = {
 };
 
 export type SpeechProvider = {
-  synthesize(request: SpeechRequest): Promise<SpeechAudio>;
+  synthesize(request: SpeechRequest, clientId?: string): Promise<SpeechAudio>;
 };
 
 export type SpeechRateLimiter = {
@@ -42,7 +46,7 @@ function isSpeechRequest(value: unknown): value is SpeechRequest {
   if (!value || typeof value !== "object") return false;
   const candidate = value as Record<string, unknown>;
   return (
-    Object.keys(candidate).every((key) => ["text", "rate", "consent"].includes(key)) &&
+    Object.keys(candidate).every((key) => ["text", "rate", "consent", "roomCode"].includes(key)) &&
     typeof candidate["text"] === "string" &&
     candidate["text"].trim().length > 0 &&
     candidate["text"].length <= MAX_TEXT_LENGTH &&
@@ -50,7 +54,9 @@ function isSpeechRequest(value: unknown): value is SpeechRequest {
     Number.isFinite(candidate["rate"]) &&
     candidate["rate"] >= 0.7 &&
     candidate["rate"] <= 1.05 &&
-    candidate["consent"] === true
+    candidate["consent"] === true &&
+    (candidate["roomCode"] === undefined ||
+      (typeof candidate["roomCode"] === "string" && isValidLocalRoomCode(candidate["roomCode"])))
   );
 }
 
@@ -89,10 +95,14 @@ export function createSpeechHandler(dependencies: SpeechHandlerDependencies) {
     }
 
     try {
-      const result = await dependencies.provider.synthesize({
-        ...payload,
-        text: payload.text.trim(),
-      });
+      const result = await dependencies.provider.synthesize(
+        {
+          ...payload,
+          text: payload.text.trim(),
+          ...(payload.roomCode ? { roomCode: normalizeLocalRoomCode(payload.roomCode) } : {}),
+        },
+        clientId,
+      );
       return new Response(result.audio.buffer as ArrayBuffer, {
         headers: {
           "Cache-Control": "private, max-age=3600",
@@ -102,10 +112,10 @@ export function createSpeechHandler(dependencies: SpeechHandlerDependencies) {
         },
       });
     } catch (error) {
-      const response = jsonError(
-        503,
-        "A voz natural está indisponível. Usando a voz do dispositivo.",
-      );
+      if (error instanceof SpeechGenerationRateLimitError) {
+        return jsonError(429, "Limite de voz atingido. Tente novamente em instantes.");
+      }
+      const response = jsonError(503, "O áudio está indisponível. Tente novamente em instantes.");
       if (
         error instanceof Error &&
         "providerStatus" in error &&

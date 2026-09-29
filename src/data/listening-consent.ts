@@ -1,11 +1,11 @@
 // Escolha da pessoa sobre os recursos online dos exercícios de escuta: a voz natural
 // (o texto da frase vai a uma empresa parceira de voz) e a consulta de vocabulário
-// (cada palavra em inglês vai a um serviço de consulta). Sem aceite, o aplicativo usa
-// a voz do aparelho e uma estimativa própria de dificuldade, sem enviar nada.
+// (cada palavra em inglês vai a um serviço de consulta). Na sala, a gravação fica
+// temporariamente no armazenamento privado. Sem aceite, nada é enviado pelo aparelho.
 export const LISTENING_ONLINE_ITEM = "helena.listening.online.v1";
 
-// Sobe só quando muda o que é enviado, para pedir a escolha de novo.
-export const LISTENING_CONSENT_VERSION = 1;
+// Sobe quando muda o envio ou a retenção, para pedir a escolha de novo.
+export const LISTENING_CONSENT_VERSION = 2;
 
 export type ListeningOnlineChoice = "accepted" | "declined";
 

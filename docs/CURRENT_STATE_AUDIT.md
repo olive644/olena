@@ -766,7 +766,9 @@ porque o download e a inicialização locais prejudicavam o tempo até a primeir
 nenhuma das abordagens server-side repete. O áudio é reutilizado por texto normalizado e velocidade no
 cache do navegador (durante a sessão). Requisições antigas são canceladas quando a seleção muda. Se o
 Cloudflare Workers AI falhar ou não estiver configurado, a melhor voz em inglês instalada no
-dispositivo é acionada automaticamente, tanto no Quiz de Escuta quanto no Modo Sala.
+dispositivo é acionada automaticamente somente no Quiz de Escuta individual. No Modo Sala, falhas
+mostram uma tentativa manual, sem voz do aparelho. A sala usa uma gravação privada compartilhada por
+frase e velocidade, com expiração lógica de uma hora e limpeza diária, conforme `docs/AI_BACKEND.md`.
 
 As rodadas são embaralhadas sem repetição e aceitam 5, 10, 15 ou todas as palavras disponíveis. O
 modelo embutido foi reduzido a cinco exemplos; listas personalizadas e cartões do aluno são o fluxo
@@ -821,7 +823,8 @@ mensagem clara, sem criar um participante duplicado.
 A pronúncia das palavras (Escuta coletiva e Bingo) usa o mesmo cliente e o mesmo caminho de geração
 de áudio do Quiz de Escuta individual (`NaturalVoicePlayer`, `POST /api/speech`), em vez de chamar a
 Web Speech API direto. Professor e participantes ouvem a mesma pronúncia gerada pelo Cloudflare
-Workers AI, com a voz do navegador entrando só se o serviço inteiro falhar. Trocar de pergunta cancela
+Workers AI, usando os mesmos bytes guardados temporariamente no backend. A voz do navegador não entra
+na sala quando o serviço falha; é possível tentar de novo. Trocar de pergunta cancela
 qualquer reprodução ou pedido de áudio pendente da pergunta anterior.
 
 ## 13. Experiência de estudo renovada
