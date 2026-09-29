@@ -94,6 +94,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     [
       data.questionIndex,
       data.questionStartedAt,
+      data.feedbackUntil,
       data.totalQuestions,
       data.revision,
       data.expiresAt,
@@ -137,6 +138,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     participants: data.participants ?? [],
     questionIndex: data.questionIndex ?? 0,
     questionStartedAt: data.questionStartedAt ?? 0,
+    ...(data.feedbackUntil === undefined ? {} : { feedbackUntil: data.feedbackUntil }),
     totalQuestions: data.totalQuestions ?? 0,
     answeredParticipantIds: data.answeredParticipantIds ?? [],
     ...(data.currentQuestion ? { currentQuestion: data.currentQuestion } : {}),

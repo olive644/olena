@@ -837,7 +837,13 @@
   border-radius: inherit;
   background: var(--violet);
   transform-origin: left;
-  animation: local-room-feedback-progress 3s linear forwards;
+  transition: transform 100ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .local-room-feedback-countdown i {
+    transition: none;
+  }
 }
 
 .local-room-results-actions {
@@ -850,12 +856,6 @@
 .local-room-answer .helena-loading--compact {
   margin: 0;
   justify-content: center;
-}
-
-@keyframes local-room-feedback-progress {
-  to {
-    transform: scaleX(0);
-  }
 }
 
 .local-room-projector {
@@ -1059,12 +1059,6 @@
 
 .local-room-projector__results {
   justify-items: center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .local-room-feedback-countdown i {
-    animation: none;
-  }
 }
 
 @media (max-width: 900px) {

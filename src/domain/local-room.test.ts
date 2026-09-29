@@ -213,6 +213,12 @@ describe("sala local", () => {
     });
     expect(second.state.questionIndex).toBe(0);
     expect(second.state.answeredParticipantIds).toEqual(["p1", "p2"]);
+    expect(second.state.feedbackUntil).toBe(3_005);
+    expect(canAdvanceRoomQuestion(second.state, 3_004)).toBe(false);
+    expect(canAdvanceRoomQuestion(second.state, 3_005)).toBe(true);
+    const next = advanceRoomQuestion(second.state, 3_005);
+    expect(next.feedbackUntil).toBeUndefined();
+    expect(toPublicRoomState(second.state).feedbackUntil).toBe(3_005);
     expect(second.question).toEqual({ front: card.front, back: card.back });
   });
 
@@ -276,7 +282,7 @@ describe("sala local", () => {
         },
         5,
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("avança perguntas e mostra o resultado no fim do baralho", () => {

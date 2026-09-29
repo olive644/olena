@@ -11,6 +11,7 @@ import {
   rankLocalRoomParticipants,
   localRoomPool,
   roomSecondsLeft,
+  ROOM_FEEDBACK_MS,
   type LocalRoomAnswerFeedback,
   ROOM_CATEGORIES,
   type LocalRoomParticipant,
@@ -67,7 +68,6 @@ const ROOM_ACTIVITY_OPTIONS = [
 
 const MEDAL_ICON_BY_RANK = ["medal-first", "medal-second", "medal-third"] as const;
 const MANUAL_LISTENING_SOURCE = "Lista personalizada";
-const ANSWER_FEEDBACK_MS = 3_000;
 const AUDIO_REPLAY_COOLDOWN_MS = 5_000;
 
 // Passos da contagem regressiva antes de liberar a primeira pergunta:
@@ -486,6 +486,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const [secondsLeft, setSecondsLeft] = useState(() =>
     state ? roomSecondsLeft(state, Date.now()) : roundSeconds,
   );
+  const [feedbackMsLeft, setFeedbackMsLeft] = useState(() =>
+    Math.max(0, (state?.feedbackUntil ?? 0) - Date.now()),
+  );
 
   // Modo Sala toma a tela toda enquanto estiver aberto, pra ficar bem
   // visível projetado ou compartilhado. Some de novo assim que a pessoa
@@ -550,6 +553,15 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     return () => window.clearInterval(timer);
   }, [replayCooldownUntil]);
 
+  useEffect(() => {
+    const deadline = state?.feedbackUntil;
+    if (deadline === undefined) return;
+    const update = () => setFeedbackMsLeft(Math.max(0, deadline - Date.now()));
+    update();
+    const timer = window.setInterval(update, 100);
+    return () => window.clearInterval(timer);
+  }, [state?.feedbackUntil]);
+
   // Só o navegador do organizador tenta avançar quando o tempo acaba.
   // O intervalo curto também corrige pequenas diferenças entre relógios.
   useEffect(() => {
@@ -558,13 +570,13 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     const tick = () => {
       const remaining = state ? roomSecondsLeft(state, Date.now()) : 0;
       setSecondsLeft(remaining);
-      const activeIds =
-        state?.participants
-          .filter((participant) => participant.online !== false)
-          .map((participant) => participant.id) ?? [];
-      const allAnswered =
-        activeIds.length > 0 && activeIds.every((id) => state?.answeredParticipantIds.includes(id));
-      if (remaining === 0 && room.isHost && !projectorMode && !allAnswered && !advancing) {
+      if (
+        remaining === 0 &&
+        room.isHost &&
+        !projectorMode &&
+        state?.feedbackUntil === undefined &&
+        !advancing
+      ) {
         advancing = true;
         void room.nextQuestion().finally(() => {
           advancing = false;
@@ -577,18 +589,15 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, projectorMode, questionStartedAt, roundSeconds, room.isHost, state]);
 
-  const activeParticipantIds = state?.participants
-    .filter((participant) => participant.online !== false)
-    .map((participant) => participant.id);
-  const everyoneAnswered =
-    Boolean(activeParticipantIds?.length) &&
-    activeParticipantIds!.every((id) => state?.answeredParticipantIds.includes(id));
   useEffect(() => {
-    if (!isPlaying || !room.isHost || projectorMode || !everyoneAnswered) return;
-    const timer = window.setTimeout(() => void room.nextQuestion(), ANSWER_FEEDBACK_MS);
+    if (!isPlaying || !room.isHost || projectorMode || !state?.feedbackUntil) return;
+    const timer = window.setTimeout(
+      () => void room.nextQuestion(),
+      Math.max(0, state.feedbackUntil - Date.now()),
+    );
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [everyoneAnswered, isPlaying, projectorMode, questionStartedAt, room.isHost]);
+  }, [isPlaying, projectorMode, questionStartedAt, room.isHost, state?.feedbackUntil]);
 
   function joinRoom(event: FormEvent) {
     event.preventDefault();
@@ -1424,11 +1433,11 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       : "Ouvir novamente"}
                   </button>
                 )}
-                {everyoneAnswered ? (
+                {state.feedbackUntil !== undefined ? (
                   <div className="local-room-feedback-countdown">
-                    <p>Próxima pergunta em 3 segundos.</p>
+                    <p>Próxima pergunta em {Math.ceil(feedbackMsLeft / 1_000)} segundos.</p>
                     <span aria-hidden="true">
-                      <i />
+                      <i style={{ transform: `scaleX(${feedbackMsLeft / ROOM_FEEDBACK_MS})` }} />
                     </span>
                   </div>
                 ) : (

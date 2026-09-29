@@ -72,6 +72,7 @@ export type LocalRoomState = {
   questionIndex: number;
   questionStartedAt: number;
   answeredParticipantIds: string[];
+  feedbackUntil?: number | undefined;
   createdAt: number;
   updatedAt: number;
   revision?: number;
@@ -102,6 +103,7 @@ export type PublicLocalRoomState = {
   totalQuestions: number;
   currentQuestion?: LocalRoomQuestion;
   answeredParticipantIds: string[];
+  feedbackUntil?: number;
   revision?: number;
   expiresAt?: number;
   bingoWords?: { id: string; text: string }[];
@@ -124,6 +126,7 @@ export {
 export const MAX_ROOM_PARTICIPANTS = 30;
 export const ROOM_TTL_SECONDS = 60 * 60 * 4;
 export const ROOM_PRESENCE_GRACE_MS = 120_000;
+export const ROOM_FEEDBACK_MS = 3_000;
 
 export function formatRoomEstimatedDuration(
   questionCount: number,
@@ -189,6 +192,7 @@ export function createRoom(
     questionIndex: 0,
     questionStartedAt: dependencies.now,
     answeredParticipantIds: [],
+    feedbackUntil: undefined,
     createdAt: dependencies.now,
     updatedAt: dependencies.now,
     hostLastSeenAt: dependencies.now,
@@ -258,6 +262,7 @@ export function startRoom(
     questionIndex: 0,
     questionStartedAt: dependencies.now,
     answeredParticipantIds: [],
+    feedbackUntil: undefined,
     receipts: Object.fromEntries(
       Object.entries(state.receipts ?? {}).filter(([key]) => !key.startsWith("answer:")),
     ),
@@ -341,25 +346,20 @@ export function submitRoomAnswer(
       ? { ...answered, phase: "results" }
       : state.settings.activity === "bingo" && allAnswered
         ? advanceRoomQuestion(answered, dependencies.now)
-        : answered,
+        : allAnswered
+          ? { ...answered, feedbackUntil: dependencies.now + ROOM_FEEDBACK_MS }
+          : answered,
     correct,
     xpChange,
     question: { front: card.front, back: card.back },
   };
 }
 
-// A pergunta permanece visível por alguns instantes após a última resposta.
-// O organizador pode avançar quando todos responderem ou quando o tempo acabar.
+// O feedback da escuta permanece visível por três segundos após a última resposta.
+// Se ninguém concluiu a rodada, vale o limite de tempo da pergunta.
 export function canAdvanceRoomQuestion(state: LocalRoomState, now: number): boolean {
   if (state.phase !== "playing") return false;
-  const activeParticipants = state.participants.filter(
-    (participant) => participant.online !== false,
-  );
-  if (
-    activeParticipants.length > 0 &&
-    activeParticipants.every((participant) => state.answeredParticipantIds.includes(participant.id))
-  )
-    return true;
+  if (state.feedbackUntil !== undefined) return now >= state.feedbackUntil;
   return now >= state.questionStartedAt + state.settings.roundSeconds * 1000;
 }
 
@@ -385,6 +385,7 @@ export function advanceRoomQuestion(state: LocalRoomState, now: number): LocalRo
     questionIndex: nextIndex,
     questionStartedAt: now,
     answeredParticipantIds: [],
+    feedbackUntil: undefined,
     updatedAt: now,
   };
 }
@@ -398,6 +399,7 @@ export function returnRoomToLobby(state: LocalRoomState, now: number): LocalRoom
     questionIndex: 0,
     questionStartedAt: now,
     answeredParticipantIds: [],
+    feedbackUntil: undefined,
     updatedAt: now,
   };
 }
@@ -435,6 +437,7 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
     questionStartedAt: state.questionStartedAt,
     totalQuestions: state.deck.length,
     answeredParticipantIds: state.answeredParticipantIds,
+    ...(state.feedbackUntil === undefined ? {} : { feedbackUntil: state.feedbackUntil }),
     ...(state.revision === undefined ? {} : { revision: state.revision }),
     ...(state.expiresAt === undefined ? {} : { expiresAt: state.expiresAt }),
     ...(state.generation === undefined ? {} : { generation: state.generation }),
