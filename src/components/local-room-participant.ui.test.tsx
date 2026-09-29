@@ -6,6 +6,7 @@ import { LocalRoom } from "./local-room";
 const mocks = vi.hoisted(() => ({
   submitAnswer: vi.fn<() => Promise<undefined>>(),
   generateAudio: vi.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(true),
+  roomState: undefined as PublicLocalRoomState | undefined,
 }));
 
 vi.mock("../data/listening-audio", () => ({
@@ -40,7 +41,7 @@ vi.mock("../hooks/use-local-room", () => ({
   LOCAL_ROOM_SESSION_KEY: "helena:local-room-session:v1",
   useLocalRoom: () => ({
     role: "participant" as const,
-    state: PLAYING_STATE,
+    state: mocks.roomState ?? PLAYING_STATE,
     error: "",
     isHost: false,
     participantId: "p1",
@@ -63,6 +64,7 @@ vi.mock("../hooks/use-local-room", () => ({
 describe("resposta do participante", () => {
   afterEach(() => {
     vi.clearAllMocks();
+    mocks.roomState = undefined;
     vi.useRealTimers();
   });
 
@@ -85,6 +87,23 @@ describe("resposta do participante", () => {
     expect(screen.getByRole("button", { name: "Ouvir novamente em 5s" })).toBeTruthy();
     act(() => vi.advanceTimersByTime(5_000));
     expect(screen.getByRole("button", { name: "Ouvir novamente" })).toBeTruthy();
+  });
+
+  it("mostra o tempo restante do feedback compartilhado, sem reiniciar a contagem", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    mocks.roomState = {
+      ...PLAYING_STATE,
+      questionStartedAt: 1_000,
+      answeredParticipantIds: ["p1"],
+      feedbackUntil: 4_000,
+    };
+    render(<LocalRoom />);
+    expect(screen.getByText("Próxima pergunta em 3 segundos.")).toBeTruthy();
+    act(() => vi.advanceTimersByTime(1_100));
+    expect(screen.getByText("Próxima pergunta em 2 segundos.")).toBeTruthy();
+    act(() => vi.advanceTimersByTime(1_900));
+    expect(screen.getByText("Próxima pergunta em 0 segundos.")).toBeTruthy();
   });
 
   it("pede áudio da sala sem passar a voz do navegador como alternativa", () => {

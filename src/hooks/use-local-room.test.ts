@@ -65,6 +65,7 @@ describe("normalizeRoomState", () => {
       participants: [{ id: "p1", displayName: "Ana", score: 2 }],
       questionIndex: 1,
       questionStartedAt: 2000,
+      feedbackUntil: 5000,
       totalQuestions: 5,
       answeredParticipantIds: ["p1"],
       currentQuestion: { id: "c1", front: "hello" },

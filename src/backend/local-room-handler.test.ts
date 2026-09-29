@@ -312,6 +312,9 @@ describe("handler da sala local", () => {
     await handler(
       post("answer", { code, participantId, participantToken, questionIndex: 0, answer: "livro" }),
     );
+    const tooSoon = await handler(post("next", { code, hostToken, questionIndex: 0 }));
+    expect(tooSoon.status).toBe(409);
+    currentTime += 3_000;
     const resultResponse = await handler(post("next", { code, hostToken, questionIndex: 0 }));
     expect((await resultResponse.json()).state.phase).toBe("results");
 
@@ -335,6 +338,32 @@ describe("handler da sala local", () => {
     expect(onTime.status).toBe(200);
     const payload = (await onTime.json()) as { state: { questionIndex: number } };
     expect(payload.state.questionIndex).toBe(1);
+  });
+
+  it("não pula o feedback ao reconectar após o fim do tempo da pergunta", async () => {
+    const { code, hostToken } = await createRoomViaApi(15);
+    const joined = await handler(post("join", { code, displayName: "Ana" }));
+    const { participantId, participantToken } = (await joined.json()) as {
+      participantId: string;
+      participantToken: string;
+    };
+    await handler(post("start", { code, hostToken }));
+    currentTime += 14_500;
+    await handler(
+      post("answer", { code, participantId, participantToken, questionIndex: 0, answer: "livro" }),
+    );
+
+    currentTime += 500;
+    const duringFeedback = await handler(
+      post("resume", { code, role: "host", credential: hostToken }),
+    );
+    expect((await duringFeedback.json()).state.questionIndex).toBe(0);
+
+    currentTime += 2_500;
+    const afterFeedback = await handler(
+      post("resume", { code, role: "host", credential: hostToken }),
+    );
+    expect((await afterFeedback.json()).state.questionIndex).toBe(1);
   });
 
   it("encerra a sala a pedido do host", async () => {

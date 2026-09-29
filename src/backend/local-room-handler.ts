@@ -331,10 +331,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           ...updated,
           participants: updated.participants.filter((p) => p.online !== false),
         };
-      if (
-        updated.phase === "playing" &&
-        time >= updated.questionStartedAt + updated.settings.roundSeconds * 1000
-      )
+      if (updated.phase === "playing" && canAdvanceRoomQuestion(updated, time))
         updated = advanceRoomQuestion(updated, time);
       const publicState = await saveRoom(updated);
       return jsonResponse(200, {

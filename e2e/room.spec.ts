@@ -257,8 +257,6 @@ for (const activity of ["listening", "bingo"] as const) {
             },
           ),
         );
-        if (activity === "listening")
-          await expect(players[0]!.getByText("Próxima pergunta em 3 segundos.")).toBeVisible();
       }
       await expect(host.getByRole("heading", { name: "Atividade concluída" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Repetir" })).toBeVisible();

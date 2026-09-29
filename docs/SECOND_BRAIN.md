@@ -410,6 +410,11 @@ avanço. Respostas enviadas ficam bloqueadas até a confirmação do servidor e 
 da Helena. A reprodução automática aguarda o fim de “3, 2, 1, Vai!”. A repetição manual do áudio tem
 cooldown de cinco segundos, comunicado no próprio botão.
 
+O prazo do feedback da escuta é registrado pelo servidor quando chega a última resposta. O endpoint
+de avanço e a retomada da sala respeitam esse prazo, inclusive se o tempo normal da pergunta acabar
+durante o feedback. A contagem e a barra usam o mesmo prazo, em vez de reiniciar a animação quando
+o evento chega ao participante. Se a turma não concluir, o limite normal da pergunta continua valendo.
+
 O professor pode cadastrar equivalências com `|`. A normalização ignora caixa, acentos, pontuação e
 espaços excedentes. Uma opção desligada por padrão permite aceitar uma inserção, remoção ou troca de
 caractere em respostas com pelo menos quatro caracteres. Assim, a aproximação só entra por decisão
