@@ -325,7 +325,9 @@ Os dados pessoais compartilham um workspace local versionado e não exigem conta
 Firebase Realtime Database para estado temporário compartilhado; o texto da pergunta de escuta é
 enviado ao Cloudflare Workers AI apenas quando a voz neural é usada e a pessoa aceitou no aviso
 de escuta (`helena.listening.online.v1`), tanto no Quiz de Escuta individual quanto no Modo Sala.
-Sem aceite, a voz do aparelho e a estimativa local de dificuldade são usadas.
+Sem aceite, o Quiz individual usa a voz do aparelho e a estimativa local de dificuldade. No Modo Sala
+não há voz do aparelho: o áudio gerado com aceite é compartilhado temporariamente por `speech-audio`
+no Firebase, com acesso privado, expiração de uma hora e limpeza diária. Consulte `docs/AI_BACKEND.md`.
 
 ## Arquitetura atual
 

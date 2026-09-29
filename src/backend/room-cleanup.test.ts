@@ -13,6 +13,9 @@ it("remove projeções vencidas sem apagar uma sala renovada", async () => {
     .mockResolvedValueOnce(new Response(null, { status: 412 }))
     .mockResolvedValueOnce(Response.json(null))
     .mockResolvedValueOnce(Response.json(null))
+    .mockResolvedValueOnce(Response.json(null))
+    .mockResolvedValueOnce(Response.json(null))
+    .mockResolvedValueOnce(Response.json(null))
     .mockResolvedValueOnce(Response.json(null));
   expect(await cleanExpiredRooms("https://db.example", "token", fetchImpl, 100)).toEqual({
     removed: 1,

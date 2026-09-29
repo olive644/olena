@@ -1,6 +1,7 @@
 import { createCloudflareTtsProvider } from "../src/backend/cloudflare-tts-provider.js";
 import { createFirebaseRealtimeStore } from "../src/backend/firebase-realtime-store.js";
 import { checkRateLimit } from "../src/backend/rate-limit.js";
+import { createSharedSpeechProvider } from "../src/backend/shared-speech-provider.js";
 import { createSpeechHandler } from "../src/backend/speech-handler.js";
 import { createVercelHandler } from "../src/backend/vercel-adapter.js";
 
@@ -20,13 +21,21 @@ const handler = createSpeechHandler({
     // Store compartilhado (Firebase) em vez de Map em memória: o limite vale
     // pra todas as instâncias serverless, não só pra que atendeu a requisição.
     consume(clientId) {
-      return checkRateLimit(rateLimitStore, "speech-rate-limit", clientId, 30, 60);
+      return checkRateLimit(rateLimitStore, "speech-rate-limit", clientId, 240, 60);
     },
   },
-  provider: createCloudflareTtsProvider(
-    process.env["CLOUDFLARE_ACCOUNT_ID"] ?? "",
-    process.env["CLOUDFLARE_API_TOKEN"] ?? "",
-    Number(process.env["TTS_TIMEOUT_MS"] ?? "8000"),
+  provider: createSharedSpeechProvider(
+    createCloudflareTtsProvider(
+      process.env["CLOUDFLARE_ACCOUNT_ID"] ?? "",
+      process.env["CLOUDFLARE_API_TOKEN"] ?? "",
+      Number(process.env["TTS_TIMEOUT_MS"] ?? "8000"),
+    ),
+    rateLimitStore,
+    {
+      consume(clientId) {
+        return checkRateLimit(rateLimitStore, "speech-generation-rate-limit", clientId, 30, 60);
+      },
+    },
   ),
 });
 

@@ -18,7 +18,6 @@ import {
   type PublicLocalRoomState,
 } from "../domain/local-room";
 import { parseManualListeningInput } from "../domain/listening-quiz";
-import { selectFallbackEnglishVoice, speakEnglish } from "../data/speech-voice";
 import { roomAppCheckToken } from "../data/room-app-check";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
 import { useListeningOnline } from "../hooks/use-listening-online";
@@ -416,10 +415,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
 
   const online = useListeningOnline();
   const isAllowed = online.isAllowed;
+  const roomCodeRef = useRef(state?.code);
+  useEffect(() => {
+    roomCodeRef.current = state?.code;
+  }, [state?.code]);
 
   useEffect(() => {
     // O texto das frases só vai à empresa de voz se a pessoa tiver aceitado neste aparelho.
-    const player = new NaturalVoicePlayer(setNaturalState, isAllowed);
+    const player = new NaturalVoicePlayer(setNaturalState, isAllowed, () => roomCodeRef.current);
     naturalPlayerRef.current = player;
     return () => player.dispose();
   }, [isAllowed]);
@@ -430,15 +433,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
       setNaturalState({ status: "error", message: `Limite de ${limit} reproduções atingido.` });
       return;
     }
-    audioPlayCountRef.current += 1;
     const rate = state?.settings.audioRate ?? 1;
-    void naturalPlayerRef.current?.generate(text, rate, () => {
-      const voices = window.speechSynthesis?.getVoices() ?? [];
-      speakEnglish(text, {
-        voice: selectFallbackEnglishVoice(voices),
-        rate,
-        onUnavailable: () => {},
-      });
+    void naturalPlayerRef.current?.generate(text, rate).then((played) => {
+      if (played) audioPlayCountRef.current += 1;
     });
   }
 
@@ -1146,6 +1143,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                         choice={online.choice}
                         onChoose={online.choose}
                         variant="compact"
+                        roomAudio
                       />
                       <div className="local-room-audio-settings-grid">
                         <label>
@@ -1255,6 +1253,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   choice={online.choice}
                   onChoose={online.choose}
                   variant="compact"
+                  roomAudio
                 />
               )}
             </div>
@@ -1278,6 +1277,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                 <button
                   className="secondary-button local-room-host-audio"
                   type="button"
+                  disabled={naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
                   <Volume2 size={18} /> Reproduzir áudio
@@ -1315,6 +1315,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     {naturalState.message}
                   </p>
                 )}
+                {!online.allowed && (
+                  <ListeningOnlineNotice
+                    choice={online.choice}
+                    onChoose={online.choose}
+                    variant="compact"
+                    roomAudio
+                  />
+                )}
                 <p>
                   {state.answeredParticipantIds.length} de {state.participants.length} já
                   responderam. Quando todos responderem, o resultado permanece por três segundos.
@@ -1336,6 +1344,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                 </p>
                 <button
                   className="secondary-button"
+                  disabled={naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
                   <Volume2 size={18} /> Ouvir palavra
@@ -1344,6 +1353,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   <p className="local-room-audio-status" role="status">
                     {naturalState.message}
                   </p>
+                )}
+                {!online.allowed && (
+                  <ListeningOnlineNotice
+                    choice={online.choice}
+                    onChoose={online.choose}
+                    variant="compact"
+                    roomAudio
+                  />
                 )}
                 <div className="local-room-bingo-grid">
                   {(ownParticipant?.bingoCard ?? []).map((id) => (
@@ -1438,6 +1455,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   <p className="local-room-audio-status" role="status">
                     {naturalState.message}
                   </p>
+                )}
+                {!online.allowed && (
+                  <ListeningOnlineNotice
+                    choice={online.choice}
+                    onChoose={online.choose}
+                    variant="compact"
+                    roomAudio
+                  />
                 )}
                 <label>
                   <span>Digite a tradução</span>

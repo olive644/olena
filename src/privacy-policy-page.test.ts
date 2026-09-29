@@ -150,7 +150,8 @@ describe("página da Política de Privacidade", () => {
   it("deixa claro que voz natural e consulta de vocabulário dependem da permissão da pessoa", () => {
     expect(text).toContain("Só acontece se você permitir na tela dos exercícios");
     expect(text).toContain("somente com a sua permissão");
-    expect(text).toContain("usa a voz do seu aparelho");
+    expect(text).toContain("pode usar a voz do aparelho");
+    expect(text).toContain("Na sala, não há troca para a voz do aparelho");
   });
 
   it("descreve o que fica só no aparelho e o que não é feito", () => {
