@@ -1,12 +1,16 @@
-// Espelho assíncrono do espaço de estudos em IndexedDB, ao lado do localStorage síncrono de
-// sempre. Etapa 1 da migração (ver docs/CURRENT_STATE_AUDIT.md): o app continua lendo e
-// gravando no localStorage exatamente como antes (nada muda se o IndexedDB falhar ou não
-// existir, como em alguns modos de navegação privada); a cada gravação, o mesmo conteúdo é
-// espelhado aqui também, em segundo plano, sem nunca poder atrapalhar o salvamento de verdade.
-// Guarda um único registro (o espaço de estudos inteiro, como um texto serializado), do mesmo
-// jeito que uma única chave do localStorage guarda hoje. Quando o espelho tiver um histórico
-// confiável de uso real, a etapa 2 troca a leitura inicial para preferir o IndexedDB e sobe o
-// teto de traços por folha, que hoje existe por causa do limite pequeno do localStorage.
+// Armazenamento do espaço de estudos em IndexedDB. Guarda um único registro (o espaço de
+// estudos inteiro, como um texto serializado), do mesmo jeito que uma única chave do
+// localStorage guarda hoje.
+//
+// Etapa 1 da migração (ver docs/CURRENT_STATE_AUDIT.md): só um espelho best-effort ao lado do
+// localStorage, que seguia sendo a gravação de verdade; uma falha aqui nunca aparecia para
+// quem usa o app.
+//
+// Etapa 2: o IndexedDB passa a ser quem garante o salvamento de verdade (tem bem mais espaço
+// que os cerca de 5 MB por site do localStorage). Por isso `set()` agora propaga o erro em vez
+// de engolir: quem chama precisa saber se a gravação de verdade falhou, para avisar a pessoa
+// que o armazenamento está cheio. `get()` continua best-effort: uma falha de leitura só faz o
+// app seguir com o que já tinha carregado do localStorage.
 
 const DATABASE_NAME = "helenastudy";
 const DATABASE_VERSION = 1;
@@ -61,18 +65,13 @@ export function openIndexedWorkspaceStore(factory?: IDBFactory): WorkspaceKeyVal
       }
     },
     async set(value: string) {
-      try {
-        const db = await connect();
-        await new Promise<void>((resolve, reject) => {
-          const tx = db.transaction(STORE_NAME, "readwrite");
-          tx.objectStore(STORE_NAME).put(value, RECORD_KEY);
-          tx.oncomplete = () => resolve();
-          tx.onerror = () => reject(tx.error);
-        });
-      } catch {
-        // Espelho best-effort: uma falha de gravação aqui nunca deve impedir o salvamento
-        // de verdade, que continua indo para o localStorage.
-      }
+      const db = await connect();
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).put(value, RECORD_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
     },
   };
 }
