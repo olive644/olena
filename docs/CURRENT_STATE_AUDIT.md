@@ -2,6 +2,12 @@
 
 ## Correção transitiva de gRPC no Firebase (2026-09-30)
 
+O job de testes de navegador tem limite de 25 minutos: a instalação dos navegadores
+no runner pode consumir cerca de dez minutos e a suíte completa mais seis a sete.
+O limite anterior de quinze interrompia a validação sem concluir os testes.
+Todos os testes, projetos e verificações permanecem obrigatórios; apenas o tempo
+máximo do job foi ajustado.
+
 O Firebase permanece na versão 12.19.0. Um override limitado a
 `@firebase/firestore` fixa `@grpc/grpc-js` em 1.13.6, corrigindo os avisos
 GHSA-m9gg-hp2v-232j e GHSA-f596-whhp-79r4. A versão antiga 1.9.16 fazia a
