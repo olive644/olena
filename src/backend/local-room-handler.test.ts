@@ -78,13 +78,46 @@ describe("handler da sala local", () => {
       state: PublicLocalRoomState;
     };
     expect(changedPayload.sourceDeck).toEqual([]);
-    expect(changedPayload.state.content?.count).toBe(50);
+    expect(changedPayload.state.content?.count).toBe(100);
     const started = await handler(post("start", { code, hostToken }));
     expect(started.status).toBe(200);
     const startedPayload = (await started.json()) as { state: PublicLocalRoomState };
     expect(startedPayload.state.totalQuestions).toBe(10);
     expect(startedPayload.state.currentQuestion?.id).toMatch(/^ready-/);
     expect(startedPayload.state.currentQuestion?.front).not.toBe("wrong");
+  });
+
+  it("aplica apenas palavras escolhidas e exige quantidade suficiente", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    await handler(post("join", { code, displayName: "Ana" }));
+    const selected = ["ready-bus", "ready-book", "ready-cat", "ready-dog", "ready-hello"];
+    const response = await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: { subjectName: READY_LISTENING_SOURCE, readyWordIds: selected },
+      }),
+    );
+    expect(response.status).toBe(200);
+    expect(((await response.json()) as { state: PublicLocalRoomState }).state.content?.count).toBe(
+      5,
+    );
+    const start = await handler(post("start", { code, hostToken }));
+    expect(start.status).toBe(200);
+    expect(selected).toContain(
+      ((await start.json()) as { state: PublicLocalRoomState }).state.currentQuestion?.id,
+    );
+  });
+
+  it("recusa IDs do catálogo inválidos e bloqueia novas entradas após iniciar", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    const invalid = await handler(
+      post("settings", { code, hostToken, settings: { readyWordIds: ["ready-internal"] } }),
+    );
+    expect(invalid.status).toBe(400);
+    await handler(post("join", { code, displayName: "Ana" }));
+    await handler(post("start", { code, hostToken }));
+    expect((await handler(post("join", { code, displayName: "Bia" }))).status).toBe(409);
   });
 
   it("exige gravação do professor antes de iniciar a escuta e não publica o áudio", async () => {
@@ -181,7 +214,7 @@ describe("handler da sala local", () => {
     );
     expect(invalidDifficulty.status).toBe(400);
     const invalidRound = await handler(
-      post("create", { settings: { difficulty: "easy", questionCount: 10, roundSeconds: 5 } }),
+      post("create", { settings: { difficulty: "easy", questionCount: 10, roundSeconds: 7 } }),
     );
     expect(invalidRound.status).toBe(400);
     const invalidAudio = await handler(
@@ -206,6 +239,16 @@ describe("handler da sala local", () => {
     const response = await handler(post("create", { settings: { difficulty: "mixed" } }));
     const payload = (await response.json()) as { state: { settings: { roundSeconds: number } } };
     expect(payload.state.settings.roundSeconds).toBe(30);
+  });
+
+  it("aceita os novos passos de perguntas e tempo", async () => {
+    const response = await handler(
+      post("create", { settings: { questionCount: 20, roundSeconds: 5 } }),
+    );
+    expect(response.status).toBe(201);
+    const payload = (await response.json()) as { state: PublicLocalRoomState };
+    expect(payload.state.settings.questionCount).toBe(20);
+    expect(payload.state.settings.roundSeconds).toBe(5);
   });
 
   it("permite participante entrar e recebe a URL de streaming", async () => {

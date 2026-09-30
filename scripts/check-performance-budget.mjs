@@ -143,9 +143,11 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // notebooks to a folder without dragging and the table sticky (rows/columns of editable
 // text, an alternative to Samsung Notes-style tables) add more on top of that. Teacher
 // recordings and the static Kokoro word catalog add the room playback client without a
-// runtime dependency. The combined build measures 918.0 KiB on Windows; allow 3 KiB
-// for build variance without changing the initial-route ceiling.
-const MAX_TOTAL_JS_BYTES = 921 * 1024;
+// runtime dependency. The combined build measures 918.0 KiB on Windows. The 100-word
+// picker, sliders and recorder recovery add about 4 KiB to the lazy room route:
+// 922.1 KiB measured on Windows. Keep a narrow allowance for CI variance without
+// changing the initial-route ceiling or adding a runtime dependency.
+const MAX_TOTAL_JS_BYTES = 926 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

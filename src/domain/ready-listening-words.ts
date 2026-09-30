@@ -53,7 +53,57 @@ window=janela
 chair=cadeira
 table=mesa
 phone=telefone|celular
-computer=computador`;
+computer=computador
+hello=olá
+goodbye=tchau|adeus
+please=por favor
+thanks=obrigado|obrigada
+yes=sim
+no=não
+morning=manhã
+night=noite
+today=hoje
+tomorrow=amanhã
+cat=gato|gata
+dog=cachorro|cachorra|cão
+bird=pássaro|ave
+fish=peixe
+horse=cavalo
+cow=vaca
+lion=leão
+bear=urso
+fox=raposa
+butterfly=borboleta
+red=vermelho|vermelha
+blue=azul
+green=verde
+yellow=amarelo|amarela
+black=preto|preta
+white=branco|branca
+pink=rosa
+purple=roxo|roxa
+brown=marrom
+gray=cinza
+one=um|uma
+two=dois|duas
+three=três
+four=quatro
+five=cinco
+six=seis
+seven=sete
+eight=oito
+nine=nove
+ten=dez
+happy=feliz
+sad=triste
+big=grande
+small=pequeno|pequena
+fast=rápido|rápida
+slow=lento|lenta
+hot=quente
+cold=frio|fria
+new=novo|nova
+old=velho|velha|antigo|antiga`;
 
 export const READY_LISTENING_DECK: readonly ListeningCard[] = READY_WORD_ROWS.split("\n").map(
   (row) => {
@@ -69,6 +119,33 @@ export const READY_LISTENING_DECK: readonly ListeningCard[] = READY_WORD_ROWS.sp
 );
 
 const READY_WORD_IDS = new Set(READY_LISTENING_DECK.map((card) => card.id));
+
+export function searchReadyListeningWords(query: string): readonly ListeningCard[] {
+  const normalized = query
+    .trim()
+    .toLocaleLowerCase("pt-BR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  if (!normalized) return READY_LISTENING_DECK;
+  return READY_LISTENING_DECK.filter((card) =>
+    [card.front, card.back, ...(card.acceptedAnswers ?? [])].some((value) =>
+      value
+        .toLocaleLowerCase("pt-BR")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .includes(normalized),
+    ),
+  );
+}
+
+export function validReadyListeningWordIds(ids: unknown): ids is string[] {
+  return (
+    Array.isArray(ids) &&
+    ids.length <= READY_LISTENING_DECK.length &&
+    ids.every((id) => typeof id === "string" && READY_WORD_IDS.has(id)) &&
+    new Set(ids).size === ids.length
+  );
+}
 
 export function readyListeningAudioUrl(id: string): string | undefined {
   return READY_WORD_IDS.has(id) ? `/audio/kokoro/${id}.mp3` : undefined;

@@ -116,15 +116,6 @@ export function ProjectorRoom({
               {state.answeredParticipantIds.length} de {connected.length} respostas recebidas
             </p>
           </div>
-          {state.settings.allowLateJoin && (
-            <aside className="local-room-projector__late-join" aria-label="Entrada na sala">
-              <RoomQrCode value={joinUrl} />
-              <div>
-                <span>Entrada aberta</span>
-                <strong>{state.code}</strong>
-              </div>
-            </aside>
-          )}
           <Scoreboard participants={state.participants} />
         </main>
       ) : (

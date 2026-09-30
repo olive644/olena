@@ -203,7 +203,7 @@ for (const activity of ["listening", "bingo"] as const) {
         await host.getByRole("button", { name: "Aplicar palavras", exact: true }).click();
         await expect(host.getByText("5 falas adicionadas à rodada ✓")).toBeVisible();
       } else {
-        await host.getByRole("combobox", { name: "Perguntas", exact: true }).selectOption("5");
+        await expect.poll(() => states.values().next().value?.settings.questionCount).toBe(5);
       }
       const code = await host.getByLabel("Código da sala", { exact: true }).innerText();
       const players = await Promise.all(contexts.slice(1).map((c) => c.newPage()));
@@ -345,11 +345,32 @@ for (const activity of ["listening", "bingo"] as const) {
       await participants.first().scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("participants.png") });
       if (activity === "listening") {
-        await host.getByRole("combobox", { name: "Áudio da rodada" }).selectOption("ready");
-        await expect(host.getByText("50 palavras em inglês com áudio já incluído")).toBeVisible();
-        await host.getByRole("combobox", { name: "Perguntas", exact: true }).selectOption("5");
+        await host.getByRole("button", { name: "Banco de palavras" }).click();
+        await expect(host.getByText("100 palavras com áudio")).toBeVisible();
+        const search = host.getByRole("searchbox", {
+          name: "Buscar palavras em inglês ou português",
+        });
+        await search.fill("onibus");
+        await expect(
+          host.locator(".local-room-ready-words__results").getByText("bus", { exact: true }),
+        ).toBeVisible();
+        await search.fill("");
+        const words = host.locator(".local-room-ready-words__results button");
+        for (let index = 0; index < 5; index++) await words.nth(index).click();
+        await host.getByRole("button", { name: "Aplicar seleção" }).click();
+        await expect(host.locator(".local-room-settings__panel")).toHaveAttribute(
+          "aria-busy",
+          "false",
+        );
+        await expect.poll(() => states.get(code)?.settings.readyWordIds?.length).toBe(5);
+        const slider = host.getByRole("slider", { name: "Perguntas" });
+        await slider.focus();
+        await slider.press("Home");
         await expect.poll(() => states.get(code)?.settings.questionCount).toBe(5);
-        expect(states.get(code)?.content?.count).toBe(50);
+        await expect.poll(() => states.get(code)?.content?.count).toBe(5);
+        await host.locator(".local-room-ready-words").screenshot({
+          path: testInfo.outputPath("ready-word-picker.png"),
+        });
         const audioResponse = host.waitForResponse((response) =>
           /\/audio\/kokoro\/ready-[a-z]+\.mp3$/.test(response.url()),
         );

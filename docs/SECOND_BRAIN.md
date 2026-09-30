@@ -285,10 +285,10 @@ isso não substitui a validação física nem ativa App Check/cron em produção
 
 - Firebase REST usa ETags/CAS, revisões públicas monotônicas e recibos para operações repetidas; não há bloqueio apenas em memória no servidor de produção.
 - Sessão temporária possui credencial privada distinta do ID exibido. Presença usa heartbeat e encerra após 2 minutos sem anfitrião; sala tem prazo absoluto de 4 horas.
-- Quiz de escuta e bingo compartilham opções de rodada e equipes. A Escuta coletiva oferece lista digitada com áudio do professor ou 50 palavras prontas com MP3 Kokoro incluído no aplicativo; materiais pessoais salvos não entram automaticamente na sala.
+- Quiz de escuta e bingo compartilham opções de rodada e equipes. A Escuta coletiva oferece lista digitada com áudio do professor ou 100 palavras prontas com MP3 Kokoro incluído no aplicativo; materiais pessoais salvos não entram automaticamente na sala. O banco permite busca em inglês e português, com seleção confirmada no servidor.
 - O lobby flat mantém a arte aprovada da Helena no convite, usa os ícones existentes e apresenta atividades futuras desabilitadas. Somente Escuta coletiva e Bingo iniciam rodadas.
 - O Quiz de Escuta prioriza uma lista personalizada de até 30 pares, aceita separadores comuns, explica erros por linha e não expõe a palavra na tela projetada. A resposta privada inclui correção, par esperado e XP por três segundos. A sala sincroniza limite de repetições e reprodução automática; a velocidade é fixa em 1×. O primeiro tempo de resposta começa após três segundos de contagem agendada no servidor.
-- O modelo básico de cinco palavras continua disponível no quiz individual e não é usado na Escuta coletiva do Modo Sala. O catálogo próprio de 50 palavras da sala tem arquivos MP3 estáticos. A base local de 10 mil frequências e seu gerador Python foram removidos; classificação fora da sala usa cache, Datamuse e estimativa offline.
+- O modelo básico de cinco palavras continua disponível no quiz individual e não é usado na Escuta coletiva do Modo Sala. O catálogo próprio de 100 palavras da sala tem arquivos MP3 estáticos. A base local de 10 mil frequências e seu gerador Python foram removidos; classificação fora da sala usa cache, Datamuse e estimativa offline.
 - SDK Firebase App Check é importado dinamicamente apenas se configurado. JWT é verificado com jose no servidor; configuração externa ainda pendente, sem enforcement ativo declarado.
 - Limpeza autenticada diária em `api/room-cleanup.ts` depende de CRON_SECRET e regras/índices em `firebase-room.rules.json`. Não publicar as regras sem considerar salas legadas sem expiresAt.
 - `npm run verify` reúne lint, formatação, testes, build e orçamento. `PLAYWRIGHT_SYSTEM_EDGE=1` permite validar com Edge local quando os browsers Playwright não estão disponíveis; CI mantém Chromium/WebKit. E2E multiplayer usa transportes de teste, não produção. `npm run dev` e `npm run build` copiam antes o worker, o núcleo WebAssembly e o idioma do OCR para `public/ocr/` (`scripts/copy-ocr-assets.mjs`); o OCR não usa CDN. `vite preview` serve os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP de produção.
@@ -331,7 +331,7 @@ produto.
 
 Os dados pessoais compartilham um workspace local versionado e não exigem conta. O Modo Sala usa
 Firebase Realtime Database para estado temporário compartilhado. Na Escuta Coletiva, o professor
-envia uma gravação por fala ou usa o catálogo de 50 palavras com áudio Kokoro estático; os participantes recebem o mesmo áudio. As gravações
+envia uma gravação por fala ou usa o catálogo de 100 palavras com áudio Kokoro estático; os participantes recebem o mesmo áudio. As gravações
 expiram com a sala em até quatro horas e não treinam a Olena. Quiz individual e Bingo ainda podem
 usar Cloudflare Workers AI com consentimento (`helena.listening.online.v1`). Sem aceite, o Quiz
 individual usa a voz do aparelho. No Modo Sala não há voz do aparelho. Consulte `docs/AI_BACKEND.md`.
