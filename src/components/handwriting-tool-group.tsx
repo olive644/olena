@@ -13,6 +13,7 @@ type HandwritingToolGroupProps = {
   onToggleLayers: () => void;
   onToggleText: () => void;
   onAddSticky: () => void;
+  onAddTable: () => void;
   onToggleWritingWindow: () => void;
   onOpenShapeInsert: () => void;
 };
@@ -27,6 +28,7 @@ export function HandwritingToolGroup({
   onToggleLayers,
   onToggleText,
   onAddSticky,
+  onAddTable,
   onToggleWritingWindow,
   onOpenShapeInsert,
 }: HandwritingToolGroupProps) {
@@ -127,6 +129,32 @@ export function HandwritingToolGroup({
       </button>
       <button type="button" aria-label="Adicionar post-it" onClick={() => onAddSticky()}>
         <PaperEditorIcon name="sticky" /> <span>Post-it</span>
+      </button>
+      <button
+        type="button"
+        aria-label="Adicionar tabela"
+        title="Tabela com células de texto, redimensionável em linhas e colunas"
+        onClick={() => onAddTable()}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <rect
+            x="3"
+            y="4"
+            width="18"
+            height="16"
+            rx="1.5"
+            fill="#FFF9EF"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          />
+          <path
+            d="M3 10h18M3 16h18M9 4v16M15 4v16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+        </svg>
+        <span>Tabela</span>
       </button>
       <button
         type="button"

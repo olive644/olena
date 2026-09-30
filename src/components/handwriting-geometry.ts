@@ -27,6 +27,43 @@ export function stickyHeight(sticky: HandwritingSticky): number {
   return Math.max(STICKY_MIN_HEIGHT, Math.min(STICKY_MAX_HEIGHT, sticky.height ?? 220));
 }
 
+// Tabela dentro de um post-it (kind "table"): linhas e colunas por vez, sempre com pelo
+// menos uma de cada, e um teto (8 linhas, 6 colunas) para a folha não crescer sem limite.
+export const TABLE_MAX_ROWS = 8;
+export const TABLE_MAX_COLUMNS = 6;
+
+export function tableAddRow(cells: readonly (readonly string[])[]): string[][] {
+  if (cells.length >= TABLE_MAX_ROWS) return cells.map((row) => [...row]);
+  const columns = cells[0]?.length ?? 1;
+  return [...cells.map((row) => [...row]), Array.from({ length: columns }, () => "")];
+}
+
+export function tableRemoveRow(cells: readonly (readonly string[])[]): string[][] {
+  if (cells.length <= 1) return cells.map((row) => [...row]);
+  return cells.slice(0, -1).map((row) => [...row]);
+}
+
+export function tableAddColumn(cells: readonly (readonly string[])[]): string[][] {
+  if ((cells[0]?.length ?? 0) >= TABLE_MAX_COLUMNS) return cells.map((row) => [...row]);
+  return cells.map((row) => [...row, ""]);
+}
+
+export function tableRemoveColumn(cells: readonly (readonly string[])[]): string[][] {
+  if ((cells[0]?.length ?? 0) <= 1) return cells.map((row) => [...row]);
+  return cells.map((row) => row.slice(0, -1));
+}
+
+export function tableSetCell(
+  cells: readonly (readonly string[])[],
+  rowIndex: number,
+  columnIndex: number,
+  value: string,
+): string[][] {
+  return cells.map((row, r) =>
+    r === rowIndex ? row.map((cell, c) => (c === columnIndex ? value : cell)) : [...row],
+  );
+}
+
 export function pointDistance(first: HandwritingPoint, second: HandwritingPoint): number {
   return Math.hypot(second.x - first.x, second.y - first.y);
 }

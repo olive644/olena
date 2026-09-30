@@ -1442,3 +1442,11 @@ paleta, proporção 3:1 e placa branca central; corrigir anatomia do urso, mostr
 a estrela inteira e mudar a cabeça da Helena. Refinamento final: alterar apenas
 a pata levantada da raposa para um antebraço curto conectado e pata de papel com
 duas pequenas divisões, mantendo todo o restante da composição.
+
+## Tabela dentro do post-it (2026-09-29)
+
+- Recurso inspirado no Samsung Notes (que tem tabelas prontas para preencher): novo botão "Tabela" na barra de ferramentas insere um post-it especial com uma grade de células de texto (3×3 por padrão), em vez de um post-it comum.
+- Cada célula é editável, e a tabela tem botões para adicionar/remover linha e coluna (até 8 linhas e 6 colunas; nunca fica com zero linhas ou colunas). Fora isso, uma tabela é um post-it como outro qualquer: usa o mesmo mover, redimensionar, selecionar, trazer para frente/enviar para trás, cor de fundo e apagar que os post-its já têm, sem código novo para isso.
+- As funções puras de mexer na grade (`tableAddRow`, `tableRemoveRow`, `tableAddColumn`, `tableRemoveColumn`, `tableSetCell`) ficam em `handwriting-geometry.ts`, ao lado das outras contas de post-it.
+- A tabela entra na exportação em PNG/PDF e na impressão do mesmo jeito que os outros post-its (uma grade desenhada com o texto de cada célula), e participa da mesma camada "Post-its" do painel de camadas.
+- Testes: `handwriting-geometry.test.ts` (as funções da grade, incluindo os limites de linhas/colunas), `handwriting-sticky-note.test.tsx` (editar célula, adicionar/remover linha e coluna, botões desativados no mínimo), `handwriting-canvas-table.test.ts` (a tabela não trava o desenho da folha, com célula vazia ou texto longo), `local-workspace.test.ts` (a validação aceita tabela válida e rejeita linha vazia ou célula gigante).

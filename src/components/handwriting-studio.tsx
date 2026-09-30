@@ -1868,7 +1868,7 @@ export function HandwritingStudio({
     setLayerVisibility((current) => ({ ...current, strokes: true, coordinates: true }));
   }
 
-  function addSticky(kind?: "text") {
+  function addSticky(kind?: "text" | "table") {
     if (stickies.length >= 40) {
       setError("Esta folha chegou ao limite de 40 post-its.");
       return;
@@ -1882,7 +1882,19 @@ export function HandwritingStudio({
         y: 160 + (current.length % 4) * 55,
         color: "yellow",
         text: "",
-        ...(kind ? { kind, ink: color } : {}),
+        ...(kind === "text" ? { kind, ink: color } : {}),
+        ...(kind === "table"
+          ? {
+              kind,
+              width: 360,
+              height: 220,
+              cells: [
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""],
+              ],
+            }
+          : {}),
       },
     ]);
   }
@@ -2493,6 +2505,7 @@ export function HandwritingStudio({
             setTextMode((active) => !active);
           }}
           onAddSticky={() => addSticky()}
+          onAddTable={() => addSticky("table")}
           onToggleWritingWindow={() => {
             setTextMode(false);
             setWritingWindowOpen((open) => !open);

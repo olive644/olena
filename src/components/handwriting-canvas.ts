@@ -316,6 +316,27 @@ export function renderPage(
         context.fillRect(sticky.x, sticky.y, width, height);
       }
       context.fillStyle = sticky.kind === "text" ? (sticky.ink ?? "#17151c") : "#17151c";
+      if (sticky.kind === "table") {
+        const rows = sticky.cells ?? [[""]];
+        const columns = rows[0]?.length ?? 1;
+        const cellWidth = (width - 16) / columns;
+        const cellHeight = (height - 16) / rows.length;
+        context.strokeStyle = "#17151c";
+        context.lineWidth = 1.4;
+        context.font = `${Math.min(15, cellHeight * 0.4)}px sans-serif`;
+        context.textBaseline = "top";
+        rows.forEach((row, rowIndex) => {
+          row.forEach((cell, columnIndex) => {
+            const cellX = sticky.x + 8 + columnIndex * cellWidth;
+            const cellY = sticky.y + 8 + rowIndex * cellHeight;
+            context.strokeRect(cellX, cellY, cellWidth, cellHeight);
+            const text = cell.trim();
+            if (text) context.fillText(text.slice(0, 24), cellX + 6, cellY + 6, cellWidth - 10);
+          });
+        });
+        context.restore();
+        continue;
+      }
       if (sticky.checklist?.length) {
         context.font = "bold 22px sans-serif";
         context.textBaseline = "top";
