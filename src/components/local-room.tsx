@@ -32,6 +32,7 @@ import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
 import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
 import { RoomRecordingInput } from "./room-recording-input";
+import { PaperEnglishWord } from "./paper-english-word";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
 const DEFAULT_SETTINGS: LocalRoomSettings = {
@@ -248,9 +249,22 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const [name, setName] = useState(profile.name);
   const [pendingActivity, setPendingActivity] = useState<"listening" | "bingo" | null>(null);
   const activityRequestRef = useRef(false);
-  const [manualWords, setManualWords] = useState("");
+  const [manualRows, setManualRows] = useState<
+    { id: string; word: string; translation: string; audioId?: string; pendingAudio?: boolean }[]
+  >([{ id: "first", word: "", translation: "" }]);
+  const manualWords = manualRows
+    .map((row) =>
+      row.word.trim() || row.translation.trim() || row.audioId || row.pendingAudio
+        ? `${row.word}\t${row.translation}`
+        : "",
+    )
+    .join("\n");
+  const recordingIds = Object.fromEntries(
+    manualRows.flatMap((row) =>
+      row.audioId ? [[normalizeListeningAnswer(row.word), row.audioId]] : [],
+    ),
+  );
   const [appliedManualWords, setAppliedManualWords] = useState("");
-  const [recordingIds, setRecordingIds] = useState<Record<string, string>>({});
   const [appliedRecordingSignature, setAppliedRecordingSignature] = useState("");
   const restoredRoomCodeRef = useRef("");
   const authoringRoomCodeRef = useRef<string | undefined>(undefined);
@@ -538,9 +552,8 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     authoringRoomCodeRef.current = state?.code;
     restoredRoomCodeRef.current = "";
     const timer = window.setTimeout(() => {
-      setManualWords("");
+      setManualRows([{ id: "first", word: "", translation: "" }]);
       setAppliedManualWords("");
-      setRecordingIds({});
       setAppliedRecordingSignature("");
       setManualApplyStatus("");
       setReadySearch("");
@@ -570,7 +583,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     if (manualWords.trim()) return;
     const roomCode = state.code;
     const restoredWords = room.hostDeck
-      .map((card) => `${card.front} = ${[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}`)
+      .map((card) => `${card.front}\t${[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}`)
       .join("\n");
     const ids = Object.fromEntries(
       room.hostDeck.flatMap((card) =>
@@ -579,9 +592,15 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     );
     const timer = window.setTimeout(() => {
       restoredRoomCodeRef.current = roomCode;
-      setManualWords(restoredWords);
+      setManualRows(
+        room.hostDeck.map((card) => ({
+          id: card.id,
+          word: card.front,
+          translation: [card.back, ...(card.acceptedAnswers ?? [])].join(" | "),
+          ...(card.audioId ? { audioId: card.audioId } : {}),
+        })),
+      );
       setAppliedManualWords(restoredWords);
-      setRecordingIds(ids);
       setAppliedRecordingSignature(
         room.hostDeck.map((card) => ids[normalizeListeningAnswer(card.front)] ?? "").join("|"),
       );
@@ -719,7 +738,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const questionCount = state.settings.questionCount;
   const pool = localRoomPool(state.settings);
   const availableCount = state.content?.count ?? pool.length;
-  const manualInput = parseManualListeningInput(manualWords);
+  const manualInput = parseManualListeningInput(manualWords, /\t/);
   const manualDeck = manualInput.cards;
   const manualErrors = manualInput.lines.filter((line) => line.error);
   const recordingSignature = manualDeck
@@ -863,7 +882,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                           void room.updateSettings({ subjectName: MANUAL_LISTENING_SOURCE })
                         }
                       >
-                        <img src="/room-icons/manual-words.svg" alt="" width="40" height="40" />
+                        <img src="/room-icons/microphone.svg" alt="" width="40" height="40" />
                         <span>Manualmente</span>
                       </button>
                       <button
@@ -927,7 +946,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                                 }
                                 aria-label={`Remover ${card.front}`}
                               >
-                                <span>{card.front}</span>
+                                <PaperEnglishWord value={card.front} />
                                 <span aria-hidden="true">×</span>
                               </button>
                             ),
@@ -980,7 +999,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                               {readySelected.has(card.id) ? "✓" : "+"}
                             </span>
                             <span>
-                              <strong>{card.front}</strong>
+                              <strong>
+                                <PaperEnglishWord value={card.front} />
+                              </strong>
                               <small>{card.back}</small>
                             </span>
                           </button>
@@ -1014,7 +1035,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   {state.settings.activity !== "bingo" && usesManualList && (
                     <div className="local-room-manual">
                       <div>
-                        <strong>Lista personalizada</strong>
+                        <strong>Suas gravações</strong>
                         <span>
                           {manualDeck.length} válidas
                           {manualErrors.length > 0
@@ -1022,57 +1043,130 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                             : ""}
                         </span>
                       </div>
-                      <label htmlFor="local-room-manual-words">
-                        Digite ou cole palavras e traduções. Use =, ;, vírgula, tabulação ou hífen.
-                        Separe respostas equivalentes com |. Depois grave ou envie o áudio de cada
-                        fala.
-                      </label>
+                      <p>Grave sua voz e informe a palavra e a tradução de cada fala.</p>
                       <p className="local-room-manual__privacy">
                         As gravações ficam nesta sala por até 4 horas. Elas não treinam a Olena.
                       </p>
-                      <textarea
-                        id="local-room-manual-words"
-                        value={manualWords}
-                        onChange={(event) => {
-                          setManualWords(event.target.value);
-                          setManualApplyStatus("");
-                        }}
-                        placeholder={"bus = ônibus | autocarro\nschool = escola\nbook = livro"}
-                        rows={6}
-                        spellCheck={false}
-                      />
+                      <div className="local-room-manual__rows">
+                        {manualRows.map((row, index) => (
+                          <div className="local-room-manual__row" key={row.id}>
+                            <div className="local-room-manual__row-heading">
+                              <strong>Fala {index + 1}</strong>
+                              <button
+                                type="button"
+                                className="local-room-manual__remove"
+                                aria-label={`Remover fala ${index + 1}`}
+                                onClick={() => {
+                                  setManualRows((rows) =>
+                                    rows.length === 1
+                                      ? [{ id: crypto.randomUUID(), word: "", translation: "" }]
+                                      : rows.filter((item) => item.id !== row.id),
+                                  );
+                                  setManualApplyStatus("");
+                                }}
+                              >
+                                Remover
+                              </button>
+                            </div>
+                            <RoomRecordingInput
+                              key={`${state.code}:${row.id}`}
+                              word={row.word || `Fala ${index + 1}`}
+                              translation=""
+                              audioId={row.audioId}
+                              code={state.code}
+                              credential={speechCredential() ?? ""}
+                              showHeading={false}
+                              onPending={() => {
+                                setManualRows((rows) =>
+                                  rows.map((item) =>
+                                    item.id === row.id
+                                      ? {
+                                          id: item.id,
+                                          word: item.word,
+                                          translation: item.translation,
+                                          pendingAudio: true,
+                                        }
+                                      : item,
+                                  ),
+                                );
+                                setManualApplyStatus("");
+                              }}
+                              onSaved={(audioId) => {
+                                setManualRows((rows) =>
+                                  rows.map((item) =>
+                                    item.id === row.id
+                                      ? { ...item, audioId, pendingAudio: false }
+                                      : item,
+                                  ),
+                                );
+                                setManualApplyStatus("");
+                              }}
+                            />
+                            <div className="local-room-manual__fields">
+                              <label>
+                                <span>Palavra em inglês</span>
+                                <input
+                                  aria-label={`Palavra em inglês da fala ${index + 1}`}
+                                  value={row.word}
+                                  maxLength={200}
+                                  placeholder="Ex.: school"
+                                  onChange={(event) => {
+                                    setManualRows((rows) =>
+                                      rows.map((item) =>
+                                        item.id === row.id
+                                          ? { ...item, word: event.target.value }
+                                          : item,
+                                      ),
+                                    );
+                                    setManualApplyStatus("");
+                                  }}
+                                />
+                              </label>
+                              <label>
+                                <span>Tradução</span>
+                                <input
+                                  aria-label={`Tradução da fala ${index + 1}`}
+                                  value={row.translation}
+                                  maxLength={600}
+                                  placeholder="Ex.: escola"
+                                  onChange={(event) => {
+                                    setManualRows((rows) =>
+                                      rows.map((item) =>
+                                        item.id === row.id
+                                          ? { ...item, translation: event.target.value }
+                                          : item,
+                                      ),
+                                    );
+                                    setManualApplyStatus("");
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          className="secondary-button"
+                          disabled={manualRows.length >= 30}
+                          onClick={() =>
+                            setManualRows((rows) => [
+                              ...rows,
+                              { id: crypto.randomUUID(), word: "", translation: "" },
+                            ])
+                          }
+                        >
+                          <img src="/room-icons/microphone.svg" alt="" width="22" height="22" />
+                          Adicionar fala
+                        </button>
+                      </div>
                       {manualErrors.length > 0 && (
                         <ul className="local-room-manual__errors" aria-live="polite">
                           {manualErrors.map((line) => (
                             <li key={line.lineNumber}>
-                              Linha {line.lineNumber}: {line.error}.
+                              Fala {line.lineNumber}: {line.error}.
                             </li>
                           ))}
                         </ul>
-                      )}
-                      {manualDeck.length > 0 && (
-                        <div
-                          className="local-room-manual__preview"
-                          aria-label="Gravações das palavras"
-                        >
-                          {manualDeck.map((card) => (
-                            <RoomRecordingInput
-                              key={normalizeListeningAnswer(card.front)}
-                              word={card.front}
-                              translation={[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}
-                              audioId={recordingIds[normalizeListeningAnswer(card.front)]}
-                              code={state.code}
-                              credential={speechCredential() ?? ""}
-                              onSaved={(id) => {
-                                setRecordingIds((current) => ({
-                                  ...current,
-                                  [normalizeListeningAnswer(card.front)]: id,
-                                }));
-                                setManualApplyStatus("");
-                              }}
-                            />
-                          ))}
-                        </div>
                       )}
                       <div className="local-room-manual__action">
                         <p aria-live="polite">

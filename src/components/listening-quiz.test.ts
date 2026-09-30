@@ -114,4 +114,16 @@ describe("quiz de escuta", () => {
       "“school” já foi usada na linha 1",
     ]);
   });
+  it("preserva a pontuação dos campos separados da gravação manual", () => {
+    const parsed = parseManualListeningInput(
+      "hello, teacher\tolá, professor | oi, professor",
+      /\t/,
+    );
+    expect(parsed.lines.some((line) => line.error)).toBe(false);
+    expect(parsed.cards[0]).toMatchObject({
+      front: "hello, teacher",
+      back: "olá, professor",
+      acceptedAnswers: ["oi, professor"],
+    });
+  });
 });

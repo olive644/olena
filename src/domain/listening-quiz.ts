@@ -31,12 +31,15 @@ export type ManualListeningParseResult = {
 
 const MANUAL_SEPARATOR = /\t|=|;|,|\s+-\s+/;
 
-export function parseManualListeningInput(value: string): ManualListeningParseResult {
+export function parseManualListeningInput(
+  value: string,
+  separatorPattern = MANUAL_SEPARATOR,
+): ManualListeningParseResult {
   const seen = new Map<string, number>();
   const lines = value.split(/\r?\n/).flatMap((raw, index): ManualListeningLine[] => {
     if (!raw.trim()) return [];
     const lineNumber = index + 1;
-    const separator = raw.match(MANUAL_SEPARATOR);
+    const separator = raw.match(separatorPattern);
     if (!separator || separator.index === undefined) {
       return [{ lineNumber, raw, error: "falta a tradução" }];
     }

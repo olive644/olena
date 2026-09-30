@@ -9,6 +9,8 @@ type Props = {
   code: string;
   credential: string;
   onSaved(id: string): void;
+  showHeading?: boolean;
+  onPending?(): void;
 };
 
 const MAX_DURATION_MS = 20_000;
@@ -45,8 +47,11 @@ export function RoomRecordingInput({
   code,
   credential,
   onSaved,
+  showHeading = true,
+  onPending,
 }: Props) {
   const [recording, setRecording] = useState(false);
+  const [requesting, setRequesting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [blob, setBlob] = useState<Blob | undefined>(undefined);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
@@ -56,8 +61,10 @@ export function RoomRecordingInput({
   const timerRef = useRef<number | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | undefined>(undefined);
+  const mountedRef = useRef(true);
 
   function selectAudio(next: Blob | undefined) {
+    if (next) onPending?.();
     if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
     const url = next ? URL.createObjectURL(next) : undefined;
     previewUrlRef.current = url;
@@ -65,15 +72,16 @@ export function RoomRecordingInput({
     setPreviewUrl(url);
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
       if (timerRef.current) window.clearTimeout(timerRef.current);
       if (recorderRef.current?.state === "recording") recorderRef.current.stop();
       streamRef.current?.getTracks().forEach((track) => track.stop());
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
-    },
-    [],
-  );
+    };
+  }, []);
 
   async function startRecording() {
     setError("");
@@ -82,8 +90,13 @@ export function RoomRecordingInput({
       return;
     }
     let stream: MediaStream | undefined;
+    setRequesting(true);
     try {
       const activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!mountedRef.current) {
+        activeStream.getTracks().forEach((track) => track.stop());
+        return;
+      }
       stream = activeStream;
       const type = supportedRecorderType();
       let recorder: MediaRecorder;
@@ -105,6 +118,7 @@ export function RoomRecordingInput({
       recorder.onstop = () => {
         if (timerRef.current) window.clearTimeout(timerRef.current);
         activeStream.getTracks().forEach((track) => track.stop());
+        if (!mountedRef.current) return;
         setRecording(false);
         if (recordingFailed) return;
         try {
@@ -130,17 +144,21 @@ export function RoomRecordingInput({
         );
       };
       recorder.start();
+      onPending?.();
       setRecording(true);
       timerRef.current = window.setTimeout(() => {
         if (recorder.state === "recording") recorder.stop();
       }, MAX_DURATION_MS);
     } catch (caught) {
       stream?.getTracks().forEach((track) => track.stop());
+      if (!mountedRef.current) return;
       setError(
         caught instanceof DOMException && caught.name === "NotAllowedError"
           ? "Permita o microfone nas configurações do navegador e tente novamente."
           : "Não foi possível iniciar o microfone. Verifique a permissão ou envie um arquivo.",
       );
+    } finally {
+      if (mountedRef.current) setRequesting(false);
     }
   }
 
@@ -161,8 +179,12 @@ export function RoomRecordingInput({
   return (
     <div className="local-room-recording" aria-label={`Áudio de ${word}`}>
       <div className="local-room-recording__heading">
-        <strong>{word}</strong>
-        <span>{translation}</span>
+        {showHeading && (
+          <>
+            <strong>{word}</strong>
+            <span>{translation}</span>
+          </>
+        )}
         <small>
           {blob ? "Nova gravação não guardada" : audioId ? "Áudio guardado ✓" : "Áudio pendente"}
         </small>
@@ -171,19 +193,19 @@ export function RoomRecordingInput({
         <button
           className="secondary-button"
           type="button"
-          disabled={saving}
+          disabled={saving || requesting}
           onClick={() => {
             if (recording && recorderRef.current?.state === "recording") recorderRef.current.stop();
             else void startRecording();
           }}
         >
           <img src="/room-icons/microphone.svg" alt="" width="22" height="22" />
-          {recording ? "Parar gravação" : "Gravar"}
+          {requesting ? "Abrindo microfone…" : recording ? "Parar gravação" : "Gravar"}
         </button>
         <button
           className="secondary-button"
           type="button"
-          disabled={recording || saving}
+          disabled={recording || saving || requesting}
           onClick={() => inputRef.current?.click()}
         >
           Enviar arquivo
