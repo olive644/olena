@@ -187,32 +187,47 @@ for (const activity of ["listening", "bingo"] as const) {
       }
       if (activity === "listening") {
         await expect(host.getByRole("button", { name: "Gravar", exact: true })).toBeVisible();
-        await host.evaluate(() => {
-          const context = new AudioContext();
-          const destination = context.createMediaStreamDestination();
-          const source = context.createOscillator();
-          source.connect(destination);
-          source.start();
-          Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
-            configurable: true,
-            value: async () => {
-              // O stream já existe; ativar a fonte não pode bloquear a permissão de captura.
-              // WebKit headless pode deixar resume pendente sem um dispositivo de som.
-              void context.resume();
-              return destination.stream;
-            },
+        const hasRecorder = await host.evaluate(() => typeof MediaRecorder !== "undefined");
+        if (hasRecorder) {
+          await host.evaluate(() => {
+            const context = new AudioContext();
+            const destination = context.createMediaStreamDestination();
+            const source = context.createOscillator();
+            source.connect(destination);
+            source.start();
+            Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
+              configurable: true,
+              value: async () => {
+                // A ativação da fonte sintética não bloqueia a entrega do stream.
+                void context.resume();
+                return destination.stream;
+              },
+            });
           });
-        });
-        await host.getByRole("button", { name: "Gravar", exact: true }).click();
-        try {
-          await expect(host.getByRole("button", { name: "Parar gravação" })).toBeVisible();
-        } catch (error) {
-          const status = await host.locator(".local-room-recording").innerText();
-          throw new Error(`Estado do gravador: ${status}`, { cause: error });
+          await host.getByRole("button", { name: "Gravar", exact: true }).click();
+          try {
+            await expect(host.getByRole("button", { name: "Parar gravação" })).toBeVisible();
+          } catch (error) {
+            const status = await host.locator(".local-room-recording").innerText();
+            throw new Error(`Estado do gravador: ${status}`, { cause: error });
+          }
+          // Dá ao MediaRecorder real tempo para capturar uma pequena fala de teste.
+          await host.waitForTimeout(350);
+          await host.getByRole("button", { name: "Parar gravação" }).click();
+        } else {
+          // A distribuição WebKit headless do CI não fornece MediaRecorder.
+          // Não pular a rodada: verificar o aviso e guardar áudio pelo caminho de arquivo.
+          expect(browser.browserType().name()).toBe("webkit");
+          await host.getByRole("button", { name: "Gravar", exact: true }).click();
+          await expect(
+            host.getByText("Este navegador não permite gravar aqui. Use Enviar arquivo."),
+          ).toBeVisible();
+          await host.locator('.local-room-recording input[type="file"]').setInputFiles({
+            name: "fala.wav",
+            mimeType: "audio/wav",
+            buffer: silentWav(),
+          });
         }
-        // Dá ao MediaRecorder real tempo para capturar uma pequena fala de teste.
-        await host.waitForTimeout(350);
-        await host.getByRole("button", { name: "Parar gravação" }).click();
         await host.getByRole("button", { name: "Guardar áudio" }).click();
         await expect(host.getByText("Áudio guardado ✓")).toBeVisible();
         await host

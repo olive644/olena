@@ -8,6 +8,12 @@ O limite anterior de quinze interrompia a validação sem concluir os testes.
 Todos os testes, projetos e verificações permanecem obrigatórios; apenas o tempo
 máximo do job foi ajustado.
 
+O teste da sala verifica captura nativa com uma fonte sintética quando MediaRecorder
+existe. O WebKit headless do CI não fornece essa API: nesse caso, o teste exige o
+aviso de indisponibilidade e guarda o primeiro áudio por arquivo antes de preencher
+a palavra. A rodada completa, reprodução, respostas e retomada continuam testadas
+nos dois motores. Isso não comprova permissões de microfone em aparelhos físicos.
+
 O Firebase permanece na versão 12.19.0. Um override limitado a
 `@firebase/firestore` fixa `@grpc/grpc-js` em 1.13.6, corrigindo os avisos
 GHSA-m9gg-hp2v-232j e GHSA-f596-whhp-79r4. A versão antiga 1.9.16 fazia a
