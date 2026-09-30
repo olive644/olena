@@ -29,6 +29,8 @@ function normalizedAudio(blob: Blob): Blob {
     !["audio/webm", "audio/ogg", "audio/mp4", "audio/mpeg", "audio/wav"].includes(mapped)
   )
     throw new Error("Use áudio WebM, OGG, M4A, MP3 ou WAV.");
+  if (!blob.size)
+    throw new Error("O microfone não captou áudio. Tente novamente ou envie um arquivo.");
   if (blob.size > MAX_ROOM_RECORDING_BYTES)
     throw new Error(
       "A gravação passou de 256 KB. Grave uma fala mais curta ou envie um arquivo menor.",
@@ -79,11 +81,22 @@ export function RoomRecordingInput({
       setError("Este navegador não permite gravar aqui. Use Enviar arquivo.");
       return;
     }
+    let stream: MediaStream | undefined;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream = activeStream;
       const type = supportedRecorderType();
-      const recorder = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+      let recorder: MediaRecorder;
+      try {
+        recorder = new MediaRecorder(activeStream, {
+          ...(type ? { mimeType: type } : {}),
+          audioBitsPerSecond: 64_000,
+        });
+      } catch {
+        recorder = new MediaRecorder(activeStream);
+      }
       const chunks: Blob[] = [];
+      let recordingFailed = false;
       streamRef.current = stream;
       recorderRef.current = recorder;
       recorder.ondataavailable = (event) => {
@@ -91,10 +104,15 @@ export function RoomRecordingInput({
       };
       recorder.onstop = () => {
         if (timerRef.current) window.clearTimeout(timerRef.current);
-        stream.getTracks().forEach((track) => track.stop());
+        activeStream.getTracks().forEach((track) => track.stop());
         setRecording(false);
+        if (recordingFailed) return;
         try {
-          const audio = normalizedAudio(new Blob(chunks, { type: recorder.mimeType }));
+          if (!chunks.length)
+            throw new Error("O microfone não captou áudio. Tente novamente ou envie um arquivo.");
+          const audio = normalizedAudio(
+            new Blob(chunks, { type: recorder.mimeType || chunks[0]?.type || type || "" }),
+          );
           selectAudio(audio);
         } catch (caught) {
           setError(
@@ -102,11 +120,27 @@ export function RoomRecordingInput({
           );
         }
       };
+      recorder.onerror = () => {
+        recordingFailed = true;
+        if (timerRef.current) window.clearTimeout(timerRef.current);
+        stream?.getTracks().forEach((track) => track.stop());
+        setRecording(false);
+        setError(
+          "A gravação foi interrompida pelo navegador. Tente novamente ou envie um arquivo.",
+        );
+      };
       recorder.start();
       setRecording(true);
-      timerRef.current = window.setTimeout(() => recorder.stop(), MAX_DURATION_MS);
-    } catch {
-      setError("Não foi possível acessar o microfone. Verifique a permissão ou envie um arquivo.");
+      timerRef.current = window.setTimeout(() => {
+        if (recorder.state === "recording") recorder.stop();
+      }, MAX_DURATION_MS);
+    } catch (caught) {
+      stream?.getTracks().forEach((track) => track.stop());
+      setError(
+        caught instanceof DOMException && caught.name === "NotAllowedError"
+          ? "Permita o microfone nas configurações do navegador e tente novamente."
+          : "Não foi possível iniciar o microfone. Verifique a permissão ou envie um arquivo.",
+      );
     }
   }
 
@@ -139,7 +173,7 @@ export function RoomRecordingInput({
           type="button"
           disabled={saving}
           onClick={() => {
-            if (recording) recorderRef.current?.stop();
+            if (recording && recorderRef.current?.state === "recording") recorderRef.current.stop();
             else void startRecording();
           }}
         >

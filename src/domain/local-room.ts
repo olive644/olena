@@ -10,11 +10,11 @@ export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
 
 export type LocalRoomDifficulty = "mixed" | "easy" | "medium" | "hard";
 
-export type LocalRoomRoundSeconds = 15 | 30 | 45 | 60;
+export type LocalRoomRoundSeconds = 5 | 10 | 15 | 30 | 45 | 60;
 
 export type LocalRoomSettings = {
   difficulty: LocalRoomDifficulty;
-  questionCount: 5 | 10 | 15 | "all";
+  questionCount: 5 | 10 | 15 | 20 | "all";
   roundSeconds: LocalRoomRoundSeconds;
   activity?: "listening" | "bingo";
   category?: string;
@@ -22,6 +22,7 @@ export type LocalRoomSettings = {
   teams?: boolean;
   allowLateJoin?: boolean;
   subjectName?: string;
+  readyWordIds?: string[];
   audioRate?: 0.75 | 1;
   audioRepetitions?: 1 | 2 | 3 | "unlimited";
   autoPlayAudio?: boolean;
@@ -214,7 +215,7 @@ export function addLocalParticipant(
   now: number,
 ): LocalRoomState {
   if (
-    (state.phase !== "lobby" && !(state.phase === "playing" && state.settings.allowLateJoin)) ||
+    state.phase !== "lobby" ||
     state.participants.filter((p) => p.online !== false).length >= MAX_ROOM_PARTICIPANTS
   )
     return state;
@@ -238,7 +239,9 @@ export function localRoomPool(
   const cards =
     source ??
     (settings.activity !== "bingo" && settings.subjectName === READY_LISTENING_SOURCE
-      ? READY_LISTENING_DECK
+      ? settings.readyWordIds === undefined
+        ? READY_LISTENING_DECK
+        : READY_LISTENING_DECK.filter((card) => settings.readyWordIds?.includes(card.id))
       : STARTER_DECK);
   return cards.filter(
     (card) =>
@@ -259,6 +262,12 @@ export function startRoom(
   if (state.phase !== "lobby" || state.participants.length === 0) return state;
   const pool = localRoomPool(state.settings, state.sourceDeck);
   if (!pool.length) return state;
+  if (
+    state.settings.subjectName === READY_LISTENING_SOURCE &&
+    typeof state.settings.questionCount === "number" &&
+    pool.length < state.settings.questionCount
+  )
+    return state;
   const deck =
     state.settings.shuffle === false
       ? pool.slice(

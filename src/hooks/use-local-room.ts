@@ -82,9 +82,10 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     !isValidLocalRoomCode(data.code) ||
     !["lobby", "playing", "results", "finished"].includes(data.phase ?? "") ||
     !data.settings ||
-    ![15, 30, 45, 60].includes(data.settings.roundSeconds) ||
+    ![5, 10, 15, 30, 45, 60].includes(data.settings.roundSeconds) ||
     !["mixed", "easy", "medium", "hard"].includes(data.settings.difficulty) ||
-    ![5, 10, 15, "all"].includes(data.settings.questionCount) ||
+    ![5, 10, 15, 20, "all"].includes(data.settings.questionCount) ||
+    (data.settings.readyWordIds !== undefined && !strings(data.settings.readyWordIds)) ||
     // Salas antigas podem conter a velocidade anterior, mas não a expomos mais.
     (data.settings.audioRate !== undefined && ![0.75, 1].includes(data.settings.audioRate)) ||
     (data.settings.audioRepetitions !== undefined &&

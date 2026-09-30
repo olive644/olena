@@ -92,6 +92,10 @@ describe("sala local", () => {
     expect(addLocalParticipant(joined, participant(), 3).participants).toHaveLength(1);
     const started = startRoom(joined, { now: 4, random: () => 0 });
     expect(addLocalParticipant(started, participant("p2", "Bia"), 5).participants).toHaveLength(1);
+    const legacyOpen = { ...started, settings: { ...started.settings, allowLateJoin: true } };
+    expect(addLocalParticipant(legacyOpen, participant("p3", "Caio"), 6).participants).toHaveLength(
+      1,
+    );
   });
 
   it("só deixa alterar configurações no lobby", () => {

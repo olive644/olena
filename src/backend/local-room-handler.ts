@@ -11,6 +11,7 @@ import {
   MAX_ROOM_PARTICIPANTS,
   normalizeLocalRoomCode,
   localRoomStorageKey,
+  localRoomPool,
   ROOM_TTL_SECONDS,
   ROOM_PRESENCE_GRACE_MS,
   ROOM_CATEGORIES,
@@ -28,7 +29,10 @@ import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 import { safeEqual } from "./secure-compare.js";
 import { createHash } from "node:crypto";
-import { READY_LISTENING_SOURCE } from "../domain/ready-listening-words.js";
+import {
+  READY_LISTENING_SOURCE,
+  validReadyListeningWordIds,
+} from "../domain/ready-listening-words.js";
 
 export type LocalRoomHandlerDependencies = {
   store: KvStore;
@@ -69,7 +73,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "category",
           "shuffle",
           "teams",
-          "allowLateJoin",
+          "readyWordIds",
           "subjectName",
           "audioRepetitions",
           "autoPlayAudio",
@@ -93,15 +97,12 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   )
     return false;
   if (
-    [
-      "shuffle",
-      "teams",
-      "allowLateJoin",
-      "autoPlayAudio",
-      "recordedAudioRequired",
-      "acceptMinorTypos",
-    ].some((key) => key in candidate && typeof candidate[key] !== "boolean")
+    ["shuffle", "teams", "autoPlayAudio", "recordedAudioRequired", "acceptMinorTypos"].some(
+      (key) => key in candidate && typeof candidate[key] !== "boolean",
+    )
   )
+    return false;
+  if ("readyWordIds" in candidate && !validReadyListeningWordIds(candidate["readyWordIds"]))
     return false;
   if (
     "difficulty" in candidate &&
@@ -111,13 +112,13 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   }
   if (
     "questionCount" in candidate &&
-    ![5, 10, 15, "all"].includes(candidate["questionCount"] as number | string)
+    ![5, 10, 15, 20, "all"].includes(candidate["questionCount"] as number | string)
   ) {
     return false;
   }
   if (
     "roundSeconds" in candidate &&
-    ![15, 30, 45, 60].includes(candidate["roundSeconds"] as number)
+    ![5, 10, 15, 30, 45, 60].includes(candidate["roundSeconds"] as number)
   ) {
     return false;
   }
@@ -236,7 +237,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           streamUrl: dependencies.streamUrl(code),
         });
       }
-      if (state.phase !== "lobby" && !(state.phase === "playing" && state.settings.allowLateJoin)) {
+      if (state.phase !== "lobby") {
         return jsonResponse(409, { error: "Esta sala já começou a atividade." });
       }
       if (state.participants.filter((p) => p.online !== false).length >= MAX_ROOM_PARTICIPANTS) {
@@ -263,15 +264,6 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           online: true,
           ...(state.settings.teams
             ? { team: state.participants.length % 2 === 0 ? "Roxo" : "Amarelo" }
-            : {}),
-          ...(state.settings.activity === "bingo" && state.phase === "playing"
-            ? {
-                bingoCard: state.deck
-                  .slice(state.questionIndex)
-                  .slice(0, 9)
-                  .map((card) => card.id),
-                bingoMarks: [],
-              }
             : {}),
         },
         now(),
@@ -433,6 +425,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           error: "Grave ou envie o áudio de cada palavra antes de iniciar.",
         });
       }
+      if (
+        state.settings.subjectName === READY_LISTENING_SOURCE &&
+        typeof state.settings.questionCount === "number" &&
+        localRoomPool(state.settings).length < state.settings.questionCount
+      )
+        return jsonResponse(409, { error: "Selecione palavras suficientes para a rodada." });
       const started = startRoom(state, { now: now() });
       if (started.phase !== "playing") {
         return jsonResponse(409, { error: "É preciso ao menos um participante para iniciar." });

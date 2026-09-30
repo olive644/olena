@@ -80,15 +80,13 @@ describe("sala concorrente", () => {
     expect(h.state().totalQuestions).toBe(1);
   });
 
-  it("permite entrada tardia configurada e rejeita sala expirada", async () => {
+  it("bloqueia entrada tardia e rejeita sala expirada", async () => {
     const h = harness();
-    const room = await (
-      await h.post("create", { settings: { allowLateJoin: true, teams: true } })
-    ).json();
+    const room = await (await h.post("create", { settings: { teams: true } })).json();
     await h.post("join", { code: room.code, displayName: "Ana" });
     await h.post("start", room);
-    expect((await h.post("join", { code: room.code, displayName: "Bia" })).status).toBe(200);
-    expect(h.state().participants.map((p) => p.team)).toEqual(["Roxo", "Amarelo"]);
+    expect((await h.post("join", { code: room.code, displayName: "Bia" })).status).toBe(409);
+    expect(h.state().participants.map((p) => p.team)).toEqual(["Roxo"]);
     h.time(4 * 60 * 60 * 1000 + 2000);
     expect((await h.post("join", { code: room.code, displayName: "Cris" })).status).toBe(404);
   });

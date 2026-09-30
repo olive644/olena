@@ -95,10 +95,10 @@ describe("contagem regressiva do início da rodada", () => {
     );
   });
 
-  it("mostra resumo e saída textual sem o indicador redundante no lobby", () => {
+  it("mostra saída textual sem resumo e indicador redundantes no lobby", () => {
     render(<LocalRoom />);
     expect(screen.queryByText(/participante conectado.*Online/)).toBeNull();
-    expect(screen.getByLabelText("Resumo da rodada").textContent).toContain("0 perguntas");
+    expect(screen.queryByLabelText("Resumo da rodada")).toBeNull();
     expect(screen.getByRole("button", { name: /sair da sala/i })).toBeTruthy();
   });
 

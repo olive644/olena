@@ -814,7 +814,7 @@ placar. Salas expiram após quatro horas e aceitam até 30 participantes. Não h
 global. Reconexão com identidade preservada, presença após fechamento abrupto, App Check e rate
 limiting continuam pendentes.
 
-O lobby mostra conexão, participantes, convite, resumo e duração estimada. A entrada normaliza o
+O lobby mostra conexão, participantes e convite. A entrada normaliza o
 código e informa separadamente sala inexistente, iniciada, cheia ou nome duplicado. No celular, o
 cabeçalho da sala permanece visível e oferece uma ação textual para sair.
 O lobby do anfitrião usa layout responsivo em papel recortado. No desktop, convite e participantes
@@ -822,15 +822,18 @@ ficam na coluna esquerda, atividades e configurações na direita. No celular, c
 primeiro, participantes logo abaixo e os controles seguem em uma coluna sem rolagem horizontal.
 Escuta coletiva e Bingo estão disponíveis; Flashcards em grupo e Quiz competitivo aparecem
 desabilitados como “Em breve”.
-A barra inferior resume a rodada e mantém a ação de início visível. Os ícones aprovados do projeto,
+A ação de início continua visível. Os ícones aprovados do projeto,
 a arte da Helena segurando a placa e o QR SVG dinâmico foram preservados.
-Na Escuta coletiva, o anfitrião escolhe entre 50 palavras prontas com áudio Kokoro incluído no
-aplicativo ou uma Lista personalizada com gravações próprias. A lista aceita até 30 pares separados por
+Na Escuta coletiva, o anfitrião escolhe entre gravações manuais ou um banco de 100 palavras em inglês
+com áudio Kokoro incluído no aplicativo. O banco permite busca pela palavra em inglês ou pela tradução
+em português sem exigir acentos, seleção em chips e confirmação antes de começar. A lista manual aceita até 30 pares separados por
 igual, ponto e vírgula, vírgula, tabulação ou hífen. Respostas equivalentes podem ser cadastradas com
 barra vertical, por exemplo `bus = ônibus | autocarro | o ônibus`. O formulário aponta erros e
 duplicatas por linha, mostra uma prévia e confirma quando as palavras são aplicadas. Controles
 incompatíveis ficam ocultos. Os checks de configuração usam o mesmo papel amarelo das opções de
-Handwriting. A opção para aceitar erros de digitação não aparece mais na sala.
+Handwriting. Perguntas (5, 10, 15 ou 20) e tempo (5, 10, 15 ou 30 segundos) são selecionados em
+controles de arrastar. A opção para aceitar erros de digitação não aparece mais na sala; a entrada
+de participantes fecha ao iniciar a rodada, inclusive para configurações antigas.
 Durante a rodada, o painel do professor esconde a palavra por padrão e exige confirmação antes de
 revelá-la. Cada aluno recebe a resposta esperada e o XP após responder; quando todos terminam, há três
 segundos de feedback com uma barra regressiva antes da próxima pergunta. A estimativa da rodada inclui
@@ -849,7 +852,10 @@ mensagem clara, sem criar um participante duplicado.
 
 Na Escuta Coletiva manual, cada fala precisa de uma gravação enviada pelo professor antes de iniciar.
 As palavras prontas já trazem MP3 locais e não precisam de envio ou serviço de voz ativo.
-O microfone e o envio de arquivo aceitam até 256 KB por fala. Os áudios ficam privados na sala
+O microfone e o envio de arquivo aceitam até 256 KB por fala. A gravação limita a taxa de áudio
+solicitada e libera a captura quando o navegador interrompe ou recusa o gravador. A versão
+2026-09-30 da Política de Privacidade informa que o microfone só é solicitado ao professor que
+escolhe gravar e que as gravações duram até quatro horas após a criação da sala. Os áudios ficam privados na sala
 por até quatro horas e não são usados para treinar modelos. O Bingo mantém o caminho de voz
 gerada do Quiz individual. Trocar de pergunta cancela a reprodução anterior.
 

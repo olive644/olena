@@ -77,6 +77,12 @@ describe("página da Política de Privacidade", () => {
     }
   });
 
+  it("explica quando o microfone é usado e o prazo do áudio da sala", () => {
+    expect(text).toContain("microfone só é solicitado quando o professor escolhe gravar");
+    expect(text).toContain("por até 4 horas após a criação da sala");
+    expect(text).not.toContain("Não pedimos localização nem acesso ao microfone");
+  });
+
   it("fala em linguagem simples: sem nomes de fornecedores nem termos técnicos", () => {
     const proibidos = [
       "Firebase",
