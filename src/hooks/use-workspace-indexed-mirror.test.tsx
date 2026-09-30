@@ -10,8 +10,9 @@ vi.mock("../data/indexed-workspace-store", () => ({
 
 import { useWorkspace } from "./use-workspace";
 
-// Espelho falso em memória: o mesmo formato do de verdade (get/set assíncronos), sem IndexedDB.
-function fakeMirror(initial?: string) {
+// Armazenamento falso em memória: o mesmo formato do IndexedDB de verdade (get/set
+// assíncronos).
+function fakeStore(initial?: string) {
   let value = initial;
   return {
     store: {
@@ -30,10 +31,10 @@ beforeEach(() => {
 });
 afterEach(() => vi.restoreAllMocks());
 
-describe("espelho em IndexedDB (etapa 1)", () => {
-  it("sem nada no espelho ainda, grava nele o mesmo texto salvo no localStorage", async () => {
-    const mirror = fakeMirror();
-    spies.openIndexedWorkspaceStore.mockReturnValue(mirror.store);
+describe("IndexedDB como gravação de verdade (etapa 2)", () => {
+  it("grava no IndexedDB o mesmo texto salvo no localStorage", async () => {
+    const indexed = fakeStore();
+    spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);
     const { result } = renderHook(() => useWorkspace());
     act(() =>
       result.current.dispatch({
@@ -44,32 +45,33 @@ describe("espelho em IndexedDB (etapa 1)", () => {
         createdAt: "2026-09-27",
       }),
     );
-    await waitFor(() => expect(mirror.store.set).toHaveBeenCalled());
+    await waitFor(() => expect(indexed.store.set).toHaveBeenCalled());
     const localValue = localStorage.getItem(WORKSPACE_STORAGE_KEY);
-    expect(mirror.read()).toBe(localValue);
+    expect(indexed.read()).toBe(localValue);
+    expect(result.current.storageFull).toBe(false);
   });
 
-  it("com um espaço válido já no espelho, ele substitui o carregado do localStorage ao abrir", async () => {
+  it("com um espaço válido já no IndexedDB, ele substitui o carregado do localStorage ao abrir", async () => {
     const base = createInitialWorkspace();
     localStorage.setItem(WORKSPACE_STORAGE_KEY, JSON.stringify(base));
-    const fromMirror = JSON.stringify({
+    const fromIndexed = JSON.stringify({
       ...base,
       notebooks: [
         {
-          id: "do-espelho",
-          title: "Do espelho",
+          id: "do-indexeddb",
+          title: "Do IndexedDB",
           subjectId: base.subjects[0]!.id,
           createdAt: "2026-09-27",
           pageIds: [],
         },
       ],
     });
-    const mirror = fakeMirror(fromMirror);
-    spies.openIndexedWorkspaceStore.mockReturnValue(mirror.store);
+    const indexed = fakeStore(fromIndexed);
+    spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);
     const { result } = renderHook(() => useWorkspace());
     expect(result.current.workspace.notebooks).toHaveLength(0);
     await waitFor(() =>
-      expect(result.current.workspace.notebooks.some((n) => n.id === "do-espelho")).toBe(true),
+      expect(result.current.workspace.notebooks.some((n) => n.id === "do-indexeddb")).toBe(true),
     );
   });
 
@@ -81,18 +83,18 @@ describe("espelho em IndexedDB (etapa 1)", () => {
         result.current.dispatch({
           type: "notebook/added",
           id: "n2",
-          title: "Sem espelho",
+          title: "Sem IndexedDB",
           subjectId: "",
           createdAt: "2026-09-27",
         }),
       ),
     ).not.toThrow();
     expect(
-      result.current.workspace.notebooks.some((notebook) => notebook.title === "Sem espelho"),
+      result.current.workspace.notebooks.some((notebook) => notebook.title === "Sem IndexedDB"),
     ).toBe(true);
   });
 
-  it("uma falha no espelho não impede o salvamento de verdade no localStorage", async () => {
+  it("uma falha na leitura do IndexedDB não impede o app de abrir com o que já tinha no localStorage", async () => {
     spies.openIndexedWorkspaceStore.mockReturnValue({
       get: vi.fn(async () => {
         throw new Error("indisponível");
@@ -114,5 +116,48 @@ describe("espelho em IndexedDB (etapa 1)", () => {
     await waitFor(() =>
       expect(localStorage.getItem(WORKSPACE_STORAGE_KEY)).toContain("Resiliente"),
     );
+  });
+
+  it("quando o localStorage falha mas o IndexedDB grava, não avisa armazenamento cheio", async () => {
+    const indexed = fakeStore();
+    spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("The quota has been exceeded.", "QuotaExceededError");
+    });
+    const { result } = renderHook(() => useWorkspace());
+    act(() =>
+      result.current.dispatch({
+        type: "notebook/added",
+        id: "n4",
+        title: "Salvo só no IndexedDB",
+        subjectId: "",
+        createdAt: "2026-09-27",
+      }),
+    );
+    await waitFor(() => expect(indexed.store.set).toHaveBeenCalled());
+    expect(result.current.storageFull).toBe(false);
+  });
+
+  it("quando o localStorage e o IndexedDB falham juntos, avisa armazenamento cheio", async () => {
+    spies.openIndexedWorkspaceStore.mockReturnValue({
+      get: vi.fn(async () => undefined),
+      set: vi.fn(async () => {
+        throw new Error("indisponível");
+      }),
+    });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("The quota has been exceeded.", "QuotaExceededError");
+    });
+    const { result } = renderHook(() => useWorkspace());
+    act(() =>
+      result.current.dispatch({
+        type: "notebook/added",
+        id: "n5",
+        title: "Sem onde salvar",
+        subjectId: "",
+        createdAt: "2026-09-27",
+      }),
+    );
+    await waitFor(() => expect(result.current.storageFull).toBe(true));
   });
 });

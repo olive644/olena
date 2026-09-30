@@ -92,4 +92,19 @@ describe("espelho do espaço de estudos em IndexedDB", () => {
   it("sem IndexedDB disponível (como no jsdom deste teste), devolve nulo em vez de travar", () => {
     expect(openIndexedWorkspaceStore(undefined)).toBeNull();
   });
+
+  it("propaga o erro quando a gravação falha, para quem chama saber que não salvou de verdade", async () => {
+    const failingFactory = {
+      open() {
+        const request = {} as IDBOpenDBRequest;
+        queueMicrotask(() => {
+          (request as { error: unknown }).error = new Error("indisponível");
+          request.onerror?.(new Event("error"));
+        });
+        return request;
+      },
+    } as unknown as IDBFactory;
+    const store = openIndexedWorkspaceStore(failingFactory)!;
+    await expect(store.set("x")).rejects.toThrow("indisponível");
+  });
 });

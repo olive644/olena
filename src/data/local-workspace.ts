@@ -234,8 +234,12 @@ export function isHandwritingDocument(value: unknown): boolean {
     !["light", "aged", "night"].includes(String(value["paperColor"]))
   )
     return false;
-  if (!Array.isArray(value["strokes"]) || value["strokes"].length > 500) return false;
-  if (JSON.stringify(value).length > 800_000) return false;
+  // Etapa 2 da migração para IndexedDB (docs/CURRENT_STATE_AUDIT.md): o teto de traços por
+  // folha e o teto de tamanho do documento existiam por causa do limite pequeno do
+  // localStorage (cerca de 5 MB por site). Agora que o IndexedDB é quem grava de verdade
+  // (bem mais espaço disponível), os dois sobem para caber folhas bem mais densas.
+  if (!Array.isArray(value["strokes"]) || value["strokes"].length > 4000) return false;
+  if (JSON.stringify(value).length > 6_000_000) return false;
   if (
     value["stickies"] !== undefined &&
     (!Array.isArray(value["stickies"]) ||
@@ -887,13 +891,17 @@ export function loadWorkspace(
   }
 }
 
+export function serializeWorkspace(
+  workspace: WorkspaceState,
+  packed = PACKED_STORAGE_WRITES,
+): string {
+  return JSON.stringify(packed ? packWorkspace(workspace) : workspace);
+}
+
 export function saveWorkspace(
   storage: Pick<Storage, "setItem">,
   workspace: WorkspaceState,
   packed = PACKED_STORAGE_WRITES,
 ): void {
-  storage.setItem(
-    WORKSPACE_STORAGE_KEY,
-    JSON.stringify(packed ? packWorkspace(workspace) : workspace),
-  );
+  storage.setItem(WORKSPACE_STORAGE_KEY, serializeWorkspace(workspace, packed));
 }

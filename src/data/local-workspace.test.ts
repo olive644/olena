@@ -430,7 +430,7 @@ describe("espaço ilegível", () => {
   }
 
   it("guarda uma cópia do conteúdo inválido antes de abrir o espaço inicial", () => {
-    // Uma folha com mais de 500 traços não passa na validação e invalidava o espaço inteiro.
+    // Uma folha com mais de 4000 traços não passa na validação e invalidava o espaço inteiro.
     const workspace = createInitialWorkspace();
     workspace.notes.push({
       id: "cheia",
@@ -448,7 +448,7 @@ describe("espaço ilegível", () => {
           handwriting: {
             version: 1,
             paper: "ruled",
-            strokes: Array.from({ length: 501 }, (_, index) => ({
+            strokes: Array.from({ length: 4001 }, (_, index) => ({
               id: `s${index}`,
               tool: "pen" as const,
               brush: "fine" as const,
