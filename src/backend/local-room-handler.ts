@@ -28,6 +28,7 @@ import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 import { safeEqual } from "./secure-compare.js";
 import { createHash } from "node:crypto";
+import { READY_LISTENING_SOURCE } from "../domain/ready-listening-words.js";
 
 export type LocalRoomHandlerDependencies = {
   store: KvStore;
@@ -405,6 +406,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           }));
         }
       }
+      if (
+        updated.settings.activity !== "bingo" &&
+        updated.settings.subjectName === READY_LISTENING_SOURCE
+      ) {
+        delete updated.sourceDeck;
+      }
       const publicState = await saveRoom(updated);
       return jsonResponse(200, { state: publicState, sourceDeck: updated.sourceDeck ?? [] });
     }
@@ -416,6 +423,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       if (
         (state.settings.activity ?? "listening") === "listening" &&
         state.settings.recordedAudioRequired &&
+        state.settings.subjectName !== READY_LISTENING_SOURCE &&
         (!state.sourceDeck?.length ||
           state.sourceDeck.some(
             (card) => !card.audioId || !state.recordingIds?.includes(card.audioId),

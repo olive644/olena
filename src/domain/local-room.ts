@@ -4,6 +4,7 @@ import {
   STARTER_DECK,
   type ListeningCard,
 } from "./listening-quiz.js";
+import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "./ready-listening-words.js";
 
 export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
 
@@ -232,9 +233,14 @@ export function updateRoomSettings(
 
 export function localRoomPool(
   settings: LocalRoomSettings,
-  source: readonly ListeningCard[] = STARTER_DECK,
+  source?: readonly ListeningCard[],
 ): readonly ListeningCard[] {
-  return source.filter(
+  const cards =
+    source ??
+    (settings.activity !== "bingo" && settings.subjectName === READY_LISTENING_SOURCE
+      ? READY_LISTENING_DECK
+      : STARTER_DECK);
+  return cards.filter(
     (card) =>
       (settings.difficulty === "mixed" || card.difficulty === settings.difficulty) &&
       (!settings.category || card.category === settings.category),

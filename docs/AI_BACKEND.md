@@ -4,7 +4,8 @@
 
 A fronteira da futura tutora Helena está definida como contrato independente de provedor e permanece
 desativada. Separadamente, o Quiz individual e o Bingo usam o serviço de voz natural
-descrito abaixo. A Escuta Coletiva usa gravações enviadas pelo professor.
+descrito abaixo. A Escuta Coletiva oferece gravações enviadas pelo professor ou 50 palavras
+prontas com áudio Kokoro incluído no aplicativo.
 
 ## Voz do Quiz individual e do Bingo
 
@@ -31,16 +32,24 @@ na mesma rede, enquanto apenas 30 gerações novas por minuto podem chegar ao pr
 continua individual e foi versionado novamente por causa da retenção temporária. Publicar as regras
 atualizadas de `firebase-room.rules.json` é necessário para o índice da limpeza.
 
-### Gravações da Escuta Coletiva
+### Áudio da Escuta Coletiva
 
-Antes de iniciar, o professor informa cada fala e tradução, grava com o microfone ou envia um
-arquivo e escuta a prévia. A sala aceita áudio WebM, OGG, MP4/M4A, MP3 ou WAV de até 256 KB por
-fala. `POST /api/room-recording?action=upload` exige a credencial do anfitrião no lobby e guarda
-os bytes em `room-recordings`. O início da rodada exige uma gravação para cada fala. Durante a
-rodada, `?action=play` entrega apenas o áudio da pergunta atual, e somente a integrantes da sala.
-Não há síntese MeloTTS, voz do dispositivo nem envio do texto a um provedor nessa atividade.
-As gravações expiram com a sala em até quatro horas e a limpeza diária remove as cópias vencidas.
-Não há biblioteca permanente na conta nem treinamento de modelo com essas gravações.
+Na opção **Palavras prontas**, a sala seleciona 5, 10, 15 ou todas as 50 palavras do catálogo
+`src/domain/ready-listening-words.ts`. Cada palavra tem um MP3 em `public/audio/kokoro/`,
+gerado uma vez com Kokoro v1.0, voz `af_heart`, inglês americano e velocidade 1×. O navegador
+baixa apenas os áudios usados na rodada e pode reutilizá-los pelo cache HTTP. Nenhum modelo é
+baixado pelo aluno, nenhum serviço de voz precisa ficar ligado e não há troca pela voz do aparelho.
+O script `services/tts/scripts/generate-ready-listening-audio.py` reproduz os arquivos a partir
+do modelo Kokoro e da lista, sem armazenar o modelo no repositório. Modelo: [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), licença Apache-2.0.
+
+Na opção **Gravações do professor**, antes de iniciar, o professor informa cada fala e tradução,
+grava com o microfone ou envia um arquivo e escuta a prévia. A sala aceita áudio WebM, OGG,
+MP4/M4A, MP3 ou WAV de até 256 KB por fala. `POST /api/room-recording?action=upload` exige a
+credencial do anfitrião no lobby e guarda os bytes em `room-recordings`. O início da rodada exige
+uma gravação para cada fala. Durante a rodada, `?action=play` entrega apenas o áudio da pergunta
+atual, e somente a integrantes da sala. As gravações expiram com a sala em até quatro horas e a
+limpeza diária remove as cópias vencidas. Não há biblioteca permanente na conta nem treinamento
+de modelo com essas gravações.
 
 ### Riscos do áudio compartilhado
 

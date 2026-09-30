@@ -7,6 +7,7 @@ import {
   ROOM_START_COUNTDOWN_MS,
   type PublicLocalRoomState,
 } from "../domain/local-room";
+import { READY_LISTENING_SOURCE } from "../domain/ready-listening-words";
 
 const origin = "https://helena.example";
 
@@ -49,6 +50,43 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it("inicia uma rodada de palavras prontas sem gravação e ignora material antigo", async () => {
+    const response = await handler(
+      post("create", {
+        settings: {
+          difficulty: "mixed",
+          questionCount: 10,
+          roundSeconds: 30,
+          activity: "listening",
+          recordedAudioRequired: true,
+        },
+      }),
+    );
+    const { code, hostToken } = (await response.json()) as { code: string; hostToken: string };
+    await handler(post("join", { code, displayName: "Ana" }));
+    const changed = await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: { subjectName: READY_LISTENING_SOURCE },
+        sourceDeck: [{ id: "manual-1", front: "wrong", back: "errado" }],
+      }),
+    );
+    expect(changed.status).toBe(200);
+    const changedPayload = (await changed.json()) as {
+      sourceDeck: unknown[];
+      state: PublicLocalRoomState;
+    };
+    expect(changedPayload.sourceDeck).toEqual([]);
+    expect(changedPayload.state.content?.count).toBe(50);
+    const started = await handler(post("start", { code, hostToken }));
+    expect(started.status).toBe(200);
+    const startedPayload = (await started.json()) as { state: PublicLocalRoomState };
+    expect(startedPayload.state.totalQuestions).toBe(10);
+    expect(startedPayload.state.currentQuestion?.id).toMatch(/^ready-/);
+    expect(startedPayload.state.currentQuestion?.front).not.toBe("wrong");
+  });
+
   it("exige gravação do professor antes de iniciar a escuta e não publica o áudio", async () => {
     const response = await handler(
       post("create", {

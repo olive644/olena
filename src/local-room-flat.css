@@ -670,6 +670,40 @@
   gap: 0.55rem;
 }
 
+.local-room-ready-words {
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 6px 15px 7px 12px;
+  background-color: var(--surface);
+  background-image: linear-gradient(135deg, var(--soft) 0 13px, transparent 13px);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--line-strong) 58%, transparent);
+  grid-column: 1 / -1;
+}
+
+.local-room-ready-words p {
+  margin: 0.35rem 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.local-room-ready-words summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.local-room-ready-words ul {
+  display: grid;
+  max-height: 180px;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.3rem 0.7rem;
+  list-style: none;
+  font-size: 0.75rem;
+}
+
 .local-room-manual > div:first-child,
 .local-room-manual__action {
   display: flex;

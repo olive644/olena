@@ -16,6 +16,7 @@ import {
   type LocalRoomSettings,
 } from "../domain/local-room";
 import { normalizeListeningAnswer, parseManualListeningInput } from "../domain/listening-quiz";
+import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "../domain/ready-listening-words";
 import { roomAppCheckToken } from "../data/room-app-check";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
 import { RecordedRoomPlayer } from "../data/recorded-room-player";
@@ -229,7 +230,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     }
     const playback =
       (state?.settings.activity ?? "listening") === "listening"
-        ? recordedPlayerRef.current?.generate(state?.questionIndex ?? 0)
+        ? state?.settings.subjectName === READY_LISTENING_SOURCE && state.currentQuestion
+          ? recordedPlayerRef.current?.generate(state.questionIndex, state.currentQuestion.id)
+          : recordedPlayerRef.current?.generate(state?.questionIndex ?? 0)
         : naturalPlayerRef.current?.generate(text, 1);
     void playback?.then((played) => {
       if (played) audioPlayCountRef.current += 1;
@@ -264,6 +267,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   }
 
   const currentQuestionFront = state?.currentQuestion?.front;
+  const currentQuestionId = state?.currentQuestion?.id;
   useEffect(() => {
     // Uma pergunta nova nao deve tocar a reproducao (ou pedido de audio) da
     // pergunta anterior por cima; ja aproveita pra pedir o audio dela com
@@ -272,11 +276,20 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     naturalPlayerRef.current?.stop();
     recordedPlayerRef.current?.stop();
     if (currentQuestionFront) {
-      if ((state?.settings.activity ?? "listening") === "listening")
-        recordedPlayerRef.current?.preload(state?.questionIndex ?? 0);
-      else naturalPlayerRef.current?.preload(currentQuestionFront, 1);
+      if ((state?.settings.activity ?? "listening") === "listening") {
+        if (state?.settings.subjectName === READY_LISTENING_SOURCE && currentQuestionId)
+          recordedPlayerRef.current?.preload(state.questionIndex, currentQuestionId);
+        else recordedPlayerRef.current?.preload(state?.questionIndex ?? 0);
+      } else naturalPlayerRef.current?.preload(currentQuestionFront, 1);
     }
-  }, [questionKey, currentQuestionFront, state?.settings.activity, state?.questionIndex]);
+  }, [
+    questionKey,
+    currentQuestionFront,
+    state?.settings.activity,
+    state?.questionIndex,
+    state?.settings.subjectName,
+    currentQuestionId,
+  ]);
 
   const participantCount = state?.participants.length ?? 0;
   const canJoin = !room.busy && isValidLocalRoomCode(code) && name.trim().length > 0;
@@ -619,11 +632,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     Boolean(recordingIds[normalizeListeningAnswer(card.front)]),
   );
   const manualDeckIsValid = manualDeck.length > 0 && manualErrors.length === 0 && recordingsReady;
-  const usesManualList = state.settings.activity !== "bingo";
+  const usesReadyWords =
+    state.settings.activity !== "bingo" && state.settings.subjectName === READY_LISTENING_SOURCE;
+  const usesManualList = state.settings.activity !== "bingo" && !usesReadyWords;
   const manualSelectionPending =
     usesManualList &&
     (!manualWords.trim() ||
       state.settings.subjectName !== MANUAL_LISTENING_SOURCE ||
+      !room.hostDeck?.length ||
       appliedManualWords !== manualWords ||
       appliedRecordingSignature !== recordingSignature);
   const actualCount = usesManualList
@@ -741,6 +757,52 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     {state.settings.activity === "bingo" ? "Prepare o bingo" : "Prepare a escuta"}
                   </h3>
                   {state.settings.activity !== "bingo" && (
+                    <label>
+                      <span>Áudio da rodada</span>
+                      <select
+                        value={usesReadyWords ? "ready" : "teacher"}
+                        onChange={(event) => {
+                          if (event.target.value === "ready") {
+                            void room.updateSettings(
+                              {
+                                subjectName: READY_LISTENING_SOURCE,
+                                difficulty: "mixed",
+                                category: "",
+                                questionCount: 10,
+                              },
+                              [],
+                            );
+                            setAppliedManualWords("");
+                          } else {
+                            void room.updateSettings({ subjectName: MANUAL_LISTENING_SOURCE });
+                          }
+                        }}
+                      >
+                        <option value="teacher">Gravações do professor</option>
+                        <option value="ready">50 palavras prontas com voz Kokoro</option>
+                      </select>
+                    </label>
+                  )}
+                  {usesReadyWords && (
+                    <div className="local-room-ready-words">
+                      <strong>Palavras prontas</strong>
+                      <p>
+                        50 palavras em inglês com áudio já incluído no aplicativo. Nenhuma gravação
+                        é necessária.
+                      </p>
+                      <details>
+                        <summary>Ver palavras e traduções</summary>
+                        <ul>
+                          {READY_LISTENING_DECK.map((card) => (
+                            <li key={card.id}>
+                              {card.front} = {card.back}
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    </div>
+                  )}
+                  {state.settings.activity !== "bingo" && usesManualList && (
                     <div className="local-room-manual">
                       <div>
                         <strong>Lista personalizada</strong>
@@ -859,7 +921,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       <option value="bingo">Bingo de vocabulário</option>
                     </select>
                   </label>
-                  {!usesManualList && (
+                  {!usesManualList && !usesReadyWords && (
                     <>
                       <label>
                         <span>Matéria / tema</span>
@@ -919,7 +981,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     />{" "}
                     Permitir entrada após iniciar
                   </label>
-                  {!usesManualList && (
+                  {!usesManualList && !usesReadyWords && (
                     <label>
                       <span>Dificuldade</span>
                       <select

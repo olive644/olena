@@ -1,5 +1,6 @@
 import { loadRoomRecording } from "./room-recording";
 import type { NaturalVoiceState } from "./listening-audio";
+import { readyListeningAudioUrl } from "../domain/ready-listening-words";
 
 export class RecordedRoomPlayer {
   private cache = new Map<string, Promise<Blob>>();
@@ -12,16 +13,19 @@ export class RecordedRoomPlayer {
     private readonly room: () => { code: string; credential: string } | undefined,
   ) {}
 
-  preload(questionIndex: number): void {
-    void this.load(questionIndex).catch(() => undefined);
+  preload(questionIndex: number, readyAudioId?: string): void {
+    void this.load(questionIndex, readyAudioId).catch(() => undefined);
   }
 
-  async generate(questionIndex: number): Promise<boolean> {
+  async generate(questionIndex: number, readyAudioId?: string): Promise<boolean> {
     this.stopPlayback();
     const requestId = this.requestId;
-    this.onState({ status: "generating", message: "Carregando a voz do professor." });
+    this.onState({
+      status: "generating",
+      message: readyAudioId ? "Carregando a palavra." : "Carregando a voz do professor.",
+    });
     try {
-      const blob = await this.load(questionIndex);
+      const blob = await this.load(questionIndex, readyAudioId);
       if (requestId !== this.requestId) return false;
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
@@ -74,7 +78,22 @@ export class RecordedRoomPlayer {
     this.url = undefined;
   }
 
-  private load(questionIndex: number): Promise<Blob> {
+  private load(questionIndex: number, readyAudioId?: string): Promise<Blob> {
+    if (readyAudioId) {
+      const url = readyListeningAudioUrl(readyAudioId);
+      if (!url) return Promise.reject(new Error("Esta palavra pronta não está disponível."));
+      const cached = this.cache.get(url);
+      if (cached) return cached;
+      const request = fetch(url).then((response) => {
+        if (!response.ok) throw new Error("Não foi possível carregar o áudio da palavra.");
+        return response.blob();
+      });
+      this.cache.set(url, request);
+      void request.catch(() => {
+        if (this.cache.get(url) === request) this.cache.delete(url);
+      });
+      return request;
+    }
     const room = this.room();
     if (!room) return Promise.reject(new Error("A sala não está disponível."));
     const key = `${room.code}:${questionIndex}`;

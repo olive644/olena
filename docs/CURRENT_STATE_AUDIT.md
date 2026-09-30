@@ -824,7 +824,8 @@ Escuta coletiva e Bingo estão disponíveis; Flashcards em grupo e Quiz competit
 desabilitados como “Em breve”.
 A barra inferior resume a rodada e mantém a ação de início visível. Os ícones aprovados do projeto,
 a arte da Helena segurando a placa e o QR SVG dinâmico foram preservados.
-Na Escuta coletiva, a Lista personalizada é a única fonte de perguntas e aceita até 30 pares separados por
+Na Escuta coletiva, o anfitrião escolhe entre 50 palavras prontas com áudio Kokoro incluído no
+aplicativo ou uma Lista personalizada com gravações próprias. A lista aceita até 30 pares separados por
 igual, ponto e vírgula, vírgula, tabulação ou hífen. Respostas equivalentes podem ser cadastradas com
 barra vertical, por exemplo `bus = ônibus | autocarro | o ônibus`. O formulário aponta erros e
 duplicatas por linha, mostra uma prévia e confirma quando as palavras são aplicadas. Controles
@@ -846,7 +847,8 @@ Anfitrião e participante guardam a credencial somente na aba atual e retomam a 
 atualização da página, inclusive durante a rodada. Uma sessão expirada ou inválida é descartada com
 mensagem clara, sem criar um participante duplicado.
 
-Na Escuta Coletiva, cada fala precisa de uma gravação enviada pelo professor antes de iniciar.
+Na Escuta Coletiva manual, cada fala precisa de uma gravação enviada pelo professor antes de iniciar.
+As palavras prontas já trazem MP3 locais e não precisam de envio ou serviço de voz ativo.
 O microfone e o envio de arquivo aceitam até 256 KB por fala. Os áudios ficam privados na sala
 por até quatro horas e não são usados para treinar modelos. O Bingo mantém o caminho de voz
 gerada do Quiz individual. Trocar de pergunta cancela a reprodução anterior.

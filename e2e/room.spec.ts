@@ -344,6 +344,19 @@ for (const activity of ["listening", "bingo"] as const) {
       expect(positions[6]!.y).toBeCloseTo(positions[0]!.y);
       await participants.first().scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("participants.png") });
+      if (activity === "listening") {
+        await host.getByRole("combobox", { name: "Áudio da rodada" }).selectOption("ready");
+        await expect(host.getByText("50 palavras em inglês com áudio já incluído")).toBeVisible();
+        await host.getByRole("combobox", { name: "Perguntas", exact: true }).selectOption("5");
+        await expect.poll(() => states.get(code)?.settings.questionCount).toBe(5);
+        expect(states.get(code)?.content?.count).toBe(50);
+        const audioResponse = host.waitForResponse((response) =>
+          /\/audio\/kokoro\/ready-[a-z]+\.mp3$/.test(response.url()),
+        );
+        await host.getByRole("button", { name: "Iniciar atividade" }).click();
+        expect((await audioResponse).status()).toBe(200);
+        expect(states.get(code)?.currentQuestion?.id).toMatch(/^ready-/);
+      }
     } finally {
       await Promise.all(contexts.map((context) => context.close()));
     }
