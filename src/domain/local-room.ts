@@ -71,6 +71,7 @@ export type LocalRoomState = {
   deck: ListeningCard[];
   questionIndex: number;
   questionStartedAt: number;
+  countdownStartedAt?: number | undefined;
   answeredParticipantIds: string[];
   feedbackUntil?: number | undefined;
   createdAt: number;
@@ -100,6 +101,7 @@ export type PublicLocalRoomState = {
   participants: LocalRoomParticipant[];
   questionIndex: number;
   questionStartedAt: number;
+  countdownStartedAt?: number | undefined;
   totalQuestions: number;
   currentQuestion?: LocalRoomQuestion;
   answeredParticipantIds: string[];
@@ -127,6 +129,7 @@ export const MAX_ROOM_PARTICIPANTS = 30;
 export const ROOM_TTL_SECONDS = 60 * 60 * 4;
 export const ROOM_PRESENCE_GRACE_MS = 120_000;
 export const ROOM_FEEDBACK_MS = 3_000;
+export const ROOM_START_COUNTDOWN_MS = 3_000;
 
 export function formatRoomEstimatedDuration(
   questionCount: number,
@@ -260,7 +263,9 @@ export function startRoom(
     phase: "playing",
     deck,
     questionIndex: 0,
-    questionStartedAt: dependencies.now,
+    questionStartedAt:
+      dependencies.now + (state.settings.activity === "bingo" ? 0 : ROOM_START_COUNTDOWN_MS),
+    countdownStartedAt: state.settings.activity === "bingo" ? undefined : dependencies.now,
     answeredParticipantIds: [],
     feedbackUntil: undefined,
     receipts: Object.fromEntries(
@@ -295,6 +300,7 @@ export function submitRoomAnswer(
     state.phase !== "playing" ||
     dependencies.questionIndex !== state.questionIndex ||
     !card ||
+    dependencies.now < state.questionStartedAt ||
     dependencies.now >= state.questionStartedAt + state.settings.roundSeconds * 1000 ||
     state.answeredParticipantIds.includes(dependencies.participantId) ||
     !state.participants.some((item) => item.id === dependencies.participantId)
@@ -374,6 +380,18 @@ export function roomSecondsLeft(state: PublicLocalRoomState, now: number): numbe
   );
 }
 
+export function roomCountdownValue(state: PublicLocalRoomState, now: number): number | null {
+  if (
+    state.phase !== "playing" ||
+    state.questionIndex !== 0 ||
+    state.countdownStartedAt === undefined
+  )
+    return null;
+  const remaining = state.questionStartedAt - now;
+  if (remaining > 0) return Math.min(3, Math.ceil(remaining / 1000));
+  return remaining > -400 ? 0 : null;
+}
+
 export function advanceRoomQuestion(state: LocalRoomState, now: number): LocalRoomState {
   if (state.phase !== "playing") return state;
   const nextIndex = state.questionIndex + 1;
@@ -384,6 +402,7 @@ export function advanceRoomQuestion(state: LocalRoomState, now: number): LocalRo
     ...state,
     questionIndex: nextIndex,
     questionStartedAt: now,
+    countdownStartedAt: undefined,
     answeredParticipantIds: [],
     feedbackUntil: undefined,
     updatedAt: now,
@@ -398,6 +417,7 @@ export function returnRoomToLobby(state: LocalRoomState, now: number): LocalRoom
     deck: [],
     questionIndex: 0,
     questionStartedAt: now,
+    countdownStartedAt: undefined,
     answeredParticipantIds: [],
     feedbackUntil: undefined,
     updatedAt: now,
@@ -435,6 +455,9 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
     }),
     questionIndex: state.questionIndex,
     questionStartedAt: state.questionStartedAt,
+    ...(state.countdownStartedAt === undefined
+      ? {}
+      : { countdownStartedAt: state.countdownStartedAt }),
     totalQuestions: state.deck.length,
     answeredParticipantIds: state.answeredParticipantIds,
     ...(state.feedbackUntil === undefined ? {} : { feedbackUntil: state.feedbackUntil }),

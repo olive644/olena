@@ -2739,6 +2739,7 @@ body.local-room-active {
   display: grid;
   place-items: center;
   background: color-mix(in srgb, var(--ink) 55%, transparent);
+  pointer-events: none;
 }
 
 .local-room-countdown__value {

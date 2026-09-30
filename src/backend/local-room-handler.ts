@@ -48,6 +48,7 @@ function jsonResponse(status: number, body: unknown): Response {
       "Content-Type": "application/json; charset=utf-8",
       "Referrer-Policy": "no-referrer",
       "X-Content-Type-Options": "nosniff",
+      "X-Room-Server-Time": String(Date.now()),
     },
   });
 }
@@ -69,7 +70,6 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "teams",
           "allowLateJoin",
           "subjectName",
-          "audioRate",
           "audioRepetitions",
           "autoPlayAudio",
           "acceptMinorTypos",
@@ -112,9 +112,6 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
     "roundSeconds" in candidate &&
     ![15, 30, 45, 60].includes(candidate["roundSeconds"] as number)
   ) {
-    return false;
-  }
-  if ("audioRate" in candidate && ![0.75, 1].includes(candidate["audioRate"] as number)) {
     return false;
   }
   if (
@@ -434,6 +431,8 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
         await dependencies.publish(code, toPublicRoomState(state));
         return jsonResponse(200, { ...receipt, state: toPublicRoomState(state) });
       }
+      if (now() < state.questionStartedAt)
+        return jsonResponse(409, { error: "Aguarde a contagem para responder." });
       if (now() >= state.questionStartedAt + state.settings.roundSeconds * 1000)
         return jsonResponse(409, { error: "O tempo desta pergunta acabou." });
       if (questionIndex !== state.questionIndex)

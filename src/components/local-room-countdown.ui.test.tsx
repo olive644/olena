@@ -43,6 +43,8 @@ vi.mock("../hooks/use-local-room", () => ({
       returnToLobby: vi.fn(),
       submitAnswer: vi.fn(),
       reset: vi.fn(),
+      serverNow: () => Date.now(),
+      speechCredential: () => "host-token",
     };
   },
 }));
@@ -106,7 +108,7 @@ describe("contagem regressiva do início da rodada", () => {
     expect(screen.getByRole("status").textContent).toContain("Retomando sala");
   });
 
-  it("mostra 3, 2, 1 e Vai! só na transição do lobby pra a primeira pergunta", () => {
+  it("sincroniza 3, 2, 1 e Vai! com o começo real da primeira pergunta", () => {
     vi.useFakeTimers();
     render(<LocalRoom />);
 
@@ -115,29 +117,30 @@ describe("contagem regressiva do início da rodada", () => {
         ...state,
         phase: "playing",
         questionIndex: 0,
-        questionStartedAt: Date.now(),
+        countdownStartedAt: Date.now(),
+        questionStartedAt: Date.now() + 3_000,
         currentQuestion: { id: "c1", front: "hello" },
       }));
     });
     expect(countdownText(document.body)).toBe("3");
 
     act(() => {
-      vi.advanceTimersByTime(700);
+      vi.advanceTimersByTime(1_000);
     });
     expect(countdownText(document.body)).toBe("2");
 
     act(() => {
-      vi.advanceTimersByTime(700);
+      vi.advanceTimersByTime(1_000);
     });
     expect(countdownText(document.body)).toBe("1");
 
     act(() => {
-      vi.advanceTimersByTime(700);
+      vi.advanceTimersByTime(1_000);
     });
     expect(countdownText(document.body)).toBe("Vai!");
 
     act(() => {
-      vi.advanceTimersByTime(700);
+      vi.advanceTimersByTime(500);
     });
     expect(countdownText(document.body)).toBeNull();
 
@@ -148,6 +151,7 @@ describe("contagem regressiva do início da rodada", () => {
         ...state,
         questionIndex: 1,
         questionStartedAt: Date.now(),
+        countdownStartedAt: undefined,
       }));
     });
     expect(countdownText(document.body)).toBeNull();

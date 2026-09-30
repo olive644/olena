@@ -106,10 +106,17 @@ describe("NaturalVoicePlayer", () => {
       () => undefined,
       () => true,
       () => "ABCDE",
+      () => "participant-token",
     );
     await player.generate("hello", 1);
     const body = JSON.parse((fetchMock.mock.calls[0]![1] as RequestInit).body as string);
-    expect(body).toEqual({ text: "hello", rate: 1, consent: true, roomCode: "ABCDE" });
+    expect(body).toEqual({
+      text: "hello",
+      rate: 1,
+      consent: true,
+      roomCode: "ABCDE",
+      roomCredential: "participant-token",
+    });
   });
 
   it("cancela a reproducao anterior quando generate e chamado de novo antes de terminar", async () => {

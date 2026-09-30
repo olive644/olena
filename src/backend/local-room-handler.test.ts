@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createLocalRoomHandler } from "./local-room-handler";
 import { createMemoryRoomStore } from "./room-transaction";
-import { MAX_ROOM_PARTICIPANTS, type PublicLocalRoomState } from "../domain/local-room";
+import {
+  MAX_ROOM_PARTICIPANTS,
+  ROOM_START_COUNTDOWN_MS,
+  type PublicLocalRoomState,
+} from "../domain/local-room";
 
 const origin = "https://helena.example";
 
@@ -60,6 +64,7 @@ describe("handler da sala local", () => {
       post("create", { settings: { difficulty: "easy", questionCount: 10, roundSeconds: 30 } }),
     );
     expect(response.status).toBe(201);
+    expect(Number(response.headers.get("X-Room-Server-Time"))).toBeGreaterThan(0);
     const payload = (await response.json()) as {
       code: string;
       hostToken: string;
@@ -88,6 +93,10 @@ describe("handler da sala local", () => {
       }),
     );
     expect(invalidAudio.status).toBe(400);
+    const oldSpeedControl = await handler(
+      post("create", { settings: { difficulty: "easy", questionCount: 5, audioRate: 0.75 } }),
+    );
+    expect(oldSpeedControl.status).toBe(400);
     const invalidTypoTolerance = await handler(
       post("create", {
         settings: { difficulty: "easy", questionCount: 5, acceptMinorTypos: "sim" },
@@ -233,6 +242,12 @@ describe("handler da sala local", () => {
     };
     await handler(post("start", { code, hostToken }));
 
+    const tooEarly = await handler(
+      post("answer", { code, participantId, participantToken, questionIndex: 0, answer: "cedo" }),
+    );
+    expect(tooEarly.status).toBe(409);
+    currentTime += ROOM_START_COUNTDOWN_MS;
+
     const answerResponse = await handler(
       post("answer", {
         code,
@@ -279,6 +294,7 @@ describe("handler da sala local", () => {
     );
     expect(settingsResponse.status).toBe(200);
     await handler(post("start", { code, hostToken }));
+    currentTime += ROOM_START_COUNTDOWN_MS;
 
     const answerResponse = await handler(
       post("answer", {
@@ -309,6 +325,7 @@ describe("handler da sala local", () => {
       }),
     );
     await handler(post("start", { code, hostToken }));
+    currentTime += ROOM_START_COUNTDOWN_MS;
     await handler(
       post("answer", { code, participantId, participantToken, questionIndex: 0, answer: "livro" }),
     );
@@ -333,7 +350,7 @@ describe("handler da sala local", () => {
     const tooEarly = await handler(post("next", { code, hostToken }));
     expect(tooEarly.status).toBe(409);
 
-    currentTime += 15_000;
+    currentTime += ROOM_START_COUNTDOWN_MS + 15_000;
     const onTime = await handler(post("next", { code, hostToken }));
     expect(onTime.status).toBe(200);
     const payload = (await onTime.json()) as { state: { questionIndex: number } };
@@ -348,6 +365,7 @@ describe("handler da sala local", () => {
       participantToken: string;
     };
     await handler(post("start", { code, hostToken }));
+    currentTime += ROOM_START_COUNTDOWN_MS;
     currentTime += 14_500;
     await handler(
       post("answer", { code, participantId, participantToken, questionIndex: 0, answer: "livro" }),

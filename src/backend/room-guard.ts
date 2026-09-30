@@ -16,7 +16,9 @@ export function createRoomGuard(
   }) => void = () => {},
 ) {
   return async (request: Request): Promise<Response | undefined> => {
-    const requestedAction = new URL(request.url).searchParams.get("action");
+    const url = new URL(request.url);
+    const requestedAction =
+      url.pathname === "/api/speech" ? "speech" : url.searchParams.get("action");
     const action = [
       "create",
       "join",
@@ -32,6 +34,7 @@ export function createRoomGuard(
       "cursor",
       "view-create",
       "view-read",
+      "speech",
     ].includes(requestedAction ?? "")
       ? requestedAction!
       : "unknown";

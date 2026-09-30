@@ -62,4 +62,39 @@ describe("handler de voz", () => {
     expect(response.status).toBe(503);
     expect(await response.text()).not.toContain("segredo");
   });
+
+  it("exige credencial e proteção para áudio da sala sem repassar segredo ao provedor", async () => {
+    const deps = dependencies();
+    deps.authorizeRoom = vi.fn().mockResolvedValue(true);
+    deps.guardRoomRequest = vi.fn().mockResolvedValue(undefined);
+    const handler = createSpeechHandler(deps);
+    const roomRequest = {
+      ...validRequest,
+      rate: 1,
+      roomCode: "ABCDE",
+      roomCredential: "room-secret",
+    };
+
+    expect((await handler(post({ ...validRequest, roomCode: "ABCDE" }))).status).toBe(400);
+    expect((await handler(post({ ...roomRequest, rate: 0.75 }))).status).toBe(400);
+    expect((await handler(post(roomRequest))).status).toBe(200);
+    expect(deps.authorizeRoom).toHaveBeenCalledWith("ABCDE", "room-secret", "Hello");
+    expect(deps.provider.synthesize).toHaveBeenCalledWith(
+      { ...validRequest, rate: 1, roomCode: "ABCDE" },
+      "test-client",
+    );
+    expect(JSON.stringify(vi.mocked(deps.provider.synthesize).mock.calls)).not.toContain(
+      "room-secret",
+    );
+
+    deps.authorizeRoom = vi.fn().mockResolvedValue(false);
+    expect((await createSpeechHandler(deps)(post(roomRequest))).status).toBe(403);
+    deps.guardRoomRequest = vi.fn().mockResolvedValue(new Response(null, { status: 403 }));
+    expect((await createSpeechHandler(deps)(post(roomRequest))).status).toBe(403);
+    deps.guardRoomRequest = vi.fn().mockRejectedValue(new Error("private failure"));
+    const guardFailure = await createSpeechHandler(deps)(post(roomRequest));
+    expect(guardFailure.status).toBe(503);
+    expect(await guardFailure.text()).not.toContain("private failure");
+    expect(deps.provider.synthesize).toHaveBeenCalledTimes(1);
+  });
 });

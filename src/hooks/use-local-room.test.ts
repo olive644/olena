@@ -34,6 +34,15 @@ describe("normalizeRoomState", () => {
       }),
     ).toThrow("dados inválidos");
   });
+  it("continua lendo a velocidade salva por uma versão antiga", () => {
+    const state = normalizeRoomState({
+      code: "ABCDE",
+      phase: "lobby",
+      settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 30, audioRate: 0.75 },
+      participants: [],
+    });
+    expect(state.settings.audioRate).toBe(0.75);
+  });
   it("preenche arrays que o Firebase omite quando estão vazios", () => {
     const raw = {
       code: "ABCDE",
@@ -120,6 +129,7 @@ describe("sessão temporária da sala", () => {
   });
 
   it("retoma automaticamente a sala salva e reconecta ao Firebase", async () => {
+    const serverTime = Date.now() + 10_000;
     window.sessionStorage.setItem(
       LOCAL_ROOM_SESSION_KEY,
       JSON.stringify({ role: "participant", code: "ABCDE", credential: "p1" }),
@@ -140,7 +150,13 @@ describe("sessão temporária da sala", () => {
           },
           streamUrl: "https://firebase.example/rooms/ABCDE.json",
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "X-Room-Server-Time": String(serverTime),
+          },
+        },
       ),
     );
     const eventSourceConstructor = vi.fn();
@@ -165,6 +181,7 @@ describe("sessão temporária da sala", () => {
 
     expect(result.current.role).toBe("participant");
     expect(result.current.state?.phase).toBe("playing");
+    expect(Math.abs(result.current.serverNow() - Date.now() - 10_000)).toBeLessThan(1_000);
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/local-room?action=resume",
       expect.objectContaining({ method: "POST" }),

@@ -1,5 +1,29 @@
 # Auditoria do estado atual
 
+## Tempo, áudio e componentes da Escuta Coletiva
+
+Ao iniciar a Escuta, o servidor agenda a primeira pergunta para três segundos
+depois. A contagem 3, 2, 1 é calculada a partir desse horário, não de um timer
+isolado no navegador. As respostas anteriores ao início recebem 409; o relógio
+da sala usa o horário informado nas respostas da API para reduzir divergências
+entre dispositivos. O Bingo continua sem essa contagem. O aviso "Vai!" não
+bloqueia cliques quando o tempo válido começa.
+
+A sala usa voz na velocidade fixa 1×. A interface não oferece mais esse controle,
+e a API recusa alterações de velocidade na sala. Um valor salvo por uma versão
+antiga ainda é lido sem impedir a retomada, mas não altera a reprodução.
+Pedidos de voz da sala exigem a credencial temporária de host ou participante,
+passam pela mesma proteção App Check configurável da sala e só sintetizam o
+texto da pergunta atual. O segredo não chega ao provedor de voz nem aos logs.
+Os registros `speech_request` contêm somente escopo, status e duração. A
+ativação externa de App Check continua dependente da configuração de produção.
+
+`LocalRoom` segue como coordenador da rodada e dos estados de interação. O
+convite e os avatares do lobby foram extraídos para
+`local-room-lobby-presentation.tsx`; placar, pódio e projetor estão em
+`local-room-projector.tsx`. São componentes de apresentação, sem nova
+abstração de dados ou mudança de regras da sala.
+
 ## Convite e participantes da Sala
 
 O convite e os participantes ficam agrupados na coluna esquerda no desktop, com
@@ -540,7 +564,7 @@ pendente a ativação externa e a validação em aparelhos físicos/Firebase rea
 - Abuso: limites distribuídos por origem de rede e ação; App Check com verificação de assinatura/claims implementado, mas **não ativado**. O projeto appstudyoli não tinha aplicativo Web registrado na consulta desta execução. Falta chave pública reCAPTCHA Enterprise/domínio e configuração do app.
 - Expiração: prazo absoluto de 4 horas, regras de leitura por expiresAt e limpeza autenticada agendada de projeção pública/privada/contadores. **Regras e cron ainda não publicados**. O lote atual remove até 100 itens por caminho/execução; monitorar acúmulo e ampliar frequência/capacidade antes de maior escala. Projeções legadas sem expiresAt exigem migração/remoção separada.
 - Rodada: categoria, contagem por dificuldade, prévia, até 30 flashcards de matéria própria, equipes alternadas, embaralhamento e entrada tardia configuráveis. Compartilhar matéria envia frente/verso temporariamente ao servidor; aviso explícito no seletor. Material próprio usa dificuldade média.
-- Escuta em sala: a lista personalizada aceita pares colados com `=`, ponto e vírgula, vírgula, tabulação ou hífen e informa erros por linha. A interface da sala usa somente a lista manual, sem modelo pronto, materiais salvos ou controle de tolerância a erros. A tela do anfitrião oculta a palavra por padrão; cada participante recebe feedback privado com resposta, tradução e XP antes do avanço. Repetições, velocidade e reprodução automática são sincronizadas na sala.
+- Escuta em sala: a lista personalizada aceita pares colados com `=`, ponto e vírgula, vírgula, tabulação ou hífen e informa erros por linha. A interface da sala usa somente a lista manual, sem modelo pronto, materiais salvos ou controle de tolerância a erros. A tela do anfitrião oculta a palavra por padrão; cada participante recebe feedback privado com resposta, tradução e XP antes do avanço. Repetições e reprodução automática são sincronizadas na sala; a velocidade da voz é fixa.
 - Feedback da escuta: quando todas as pessoas ativas respondem, o servidor grava o prazo de três segundos no estado privado e público. Nem o avanço pedido pelo anfitrião nem a retomada da sala pulam esse prazo, mesmo se o tempo da pergunta terminar antes. A contagem e a barra dos participantes usam o prazo compartilhado. Sem conclusão de todos, a rodada ainda termina pelo tempo configurado.
 - Bingo: cartelas e marcas validadas no servidor; primeira cartela completa encerra a partida. Entrada tardia recebe até 9 itens restantes e pode ter cartela menor; desabilitar entrada tardia quando a igualdade competitiva for importante.
 - Resiliência: Error Boundary da sala, cancelamento de requisições, timeout, retomada com retry sem apagar credencial em falha transitória, validação de payloads, logs de ação/status/duração, foco de teclado contido no diálogo.
@@ -753,8 +777,10 @@ pela base local de frequência, com os mesmos fallbacks já documentados.
 
 A pronúncia neural usa o **Cloudflare Workers AI** (modelo `@cf/myshell-ai/melotts`, voz natural em
 inglês), chamado direto pela função `/api/speech` da Vercel com o token em variável de ambiente
-protegida, nunca exposto ao navegador. O navegador envia somente o texto da pergunta e a velocidade;
-a resposta chega em MP3.
+protegida, nunca exposto ao navegador. No Quiz individual, o navegador envia o
+texto da pergunta e a velocidade. Na sala, acrescenta a credencial temporária,
+fixa a velocidade em 1× e exige autorização da pergunta atual. A resposta
+chega em MP3.
 
 Existe um serviço próprio Kokoro+Piper (`services/tts`, container separado, Kokoro como voz principal
 e Piper como reserva automática) totalmente implementado e testado, mas **fora de uso em produção no
@@ -769,7 +795,8 @@ cache do navegador (durante a sessão). Requisições antigas são canceladas qu
 Cloudflare Workers AI falhar ou não estiver configurado, a melhor voz em inglês instalada no
 dispositivo é acionada automaticamente somente no Quiz de Escuta individual. No Modo Sala, falhas
 mostram uma tentativa manual, sem voz do aparelho. A sala usa uma gravação privada compartilhada por
-frase e velocidade, com expiração lógica de uma hora e limpeza diária, conforme `docs/AI_BACKEND.md`.
+frase, com velocidade fixa, expiração lógica de uma hora e limpeza diária,
+conforme `docs/AI_BACKEND.md`.
 
 As rodadas são embaralhadas sem repetição e aceitam 5, 10, 15 ou todas as palavras disponíveis. O
 modelo embutido foi reduzido a cinco exemplos; listas personalizadas e cartões do aluno são o fluxo

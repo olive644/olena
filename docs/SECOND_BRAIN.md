@@ -287,12 +287,20 @@ isso não substitui a validação física nem ativa App Check/cron em produção
 - Sessão temporária possui credencial privada distinta do ID exibido. Presença usa heartbeat e encerra após 2 minutos sem anfitrião; sala tem prazo absoluto de 4 horas.
 - Quiz de escuta e bingo compartilham opções de rodada e equipes. A Escuta coletiva usa somente lista digitada pelo professor, sem modelos prontos ou materiais salvos.
 - O lobby flat mantém a arte aprovada da Helena no convite, usa os ícones existentes e apresenta atividades futuras desabilitadas. Somente Escuta coletiva e Bingo iniciam rodadas.
-- O Quiz de Escuta prioriza uma lista personalizada de até 30 pares, aceita separadores comuns, explica erros por linha e não expõe a palavra na tela projetada. A resposta privada inclui correção, par esperado e XP por três segundos. A sala sincroniza limite de repetições, velocidade e reprodução automática.
+- O Quiz de Escuta prioriza uma lista personalizada de até 30 pares, aceita separadores comuns, explica erros por linha e não expõe a palavra na tela projetada. A resposta privada inclui correção, par esperado e XP por três segundos. A sala sincroniza limite de repetições e reprodução automática; a velocidade é fixa em 1×. O primeiro tempo de resposta começa após três segundos de contagem agendada no servidor.
 - O modelo básico de cinco palavras continua disponível no quiz individual, mas não na Escuta coletiva do Modo Sala. A base local de 10 mil frequências e seu gerador Python foram removidos; classificação fora da sala usa cache, Datamuse e estimativa offline.
 - SDK Firebase App Check é importado dinamicamente apenas se configurado. JWT é verificado com jose no servidor; configuração externa ainda pendente, sem enforcement ativo declarado.
 - Limpeza autenticada diária em `api/room-cleanup.ts` depende de CRON_SECRET e regras/índices em `firebase-room.rules.json`. Não publicar as regras sem considerar salas legadas sem expiresAt.
 - `npm run verify` reúne lint, formatação, testes, build e orçamento. `PLAYWRIGHT_SYSTEM_EDGE=1` permite validar com Edge local quando os browsers Playwright não estão disponíveis; CI mantém Chromium/WebKit. E2E multiplayer usa transportes de teste, não produção. `npm run dev` e `npm run build` copiam antes o worker, o núcleo WebAssembly e o idioma do OCR para `public/ocr/` (`scripts/copy-ocr-assets.mjs`); o OCR não usa CDN. `vite preview` serve os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP de produção.
 - Estado e pendências detalhados em `CURRENT_STATE_AUDIT.md` e procedimento em `ROOM_SETUP.md`.
+
+Na Escuta Coletiva, a chamada de áudio compartilhado agora envia a credencial
+temporária da sala e o App Check quando disponível. O servidor verifica que a
+pessoa pertence à sala ativa e que o texto é a pergunta atual, sem repassar o
+segredo ao motor de voz. O componente principal da sala coordena a rodada;
+convite e participantes, além de placar e projetor, têm arquivos de
+apresentação próprios. Configuração externa de App Check deve ser verificada
+antes de afirmar que há enforcement em produção.
 
 ## Proposta
 

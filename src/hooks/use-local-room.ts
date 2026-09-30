@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { roomAppCheckToken } from "../data/room-app-check";
 import {
   isValidLocalRoomCode,
@@ -84,6 +84,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ![15, 30, 45, 60].includes(data.settings.roundSeconds) ||
     !["mixed", "easy", "medium", "hard"].includes(data.settings.difficulty) ||
     ![5, 10, 15, "all"].includes(data.settings.questionCount) ||
+    // Salas antigas podem conter a velocidade anterior, mas não a expomos mais.
     (data.settings.audioRate !== undefined && ![0.75, 1].includes(data.settings.audioRate)) ||
     (data.settings.audioRepetitions !== undefined &&
       ![1, 2, 3, "unlimited"].includes(data.settings.audioRepetitions)) ||
@@ -94,6 +95,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     [
       data.questionIndex,
       data.questionStartedAt,
+      data.countdownStartedAt,
       data.feedbackUntil,
       data.totalQuestions,
       data.revision,
@@ -138,6 +140,9 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     participants: data.participants ?? [],
     questionIndex: data.questionIndex ?? 0,
     questionStartedAt: data.questionStartedAt ?? 0,
+    ...(data.countdownStartedAt === undefined
+      ? {}
+      : { countdownStartedAt: data.countdownStartedAt }),
     ...(data.feedbackUntil === undefined ? {} : { feedbackUntil: data.feedbackUntil }),
     totalQuestions: data.totalQuestions ?? 0,
     answeredParticipantIds: data.answeredParticipantIds ?? [],
@@ -159,11 +164,13 @@ async function sendRoom<T>(
   action: string,
   body: Record<string, unknown>,
   signal: AbortSignal,
+  onServerTime: (offsetMs: number) => void,
 ): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
     const appCheckToken = await roomAppCheckToken();
+    const sentAt = Date.now();
     const response = await fetch(`/api/local-room?action=${action}`, {
       method: "POST",
       headers: {
@@ -173,6 +180,11 @@ async function sendRoom<T>(
       body: JSON.stringify(body),
       signal: AbortSignal.any([controller.signal, signal]),
     });
+    const receivedAt = Date.now();
+    const serverTime = Number(response.headers.get("X-Room-Server-Time"));
+    if (response.headers.has("X-Room-Server-Time") && Number.isFinite(serverTime)) {
+      onServerTime(serverTime - (sentAt + receivedAt) / 2);
+    }
     const payload = (await response.json().catch(() => ({}))) as T & {
       error?: string;
       code?: string;
@@ -193,11 +205,14 @@ async function sendRoom<T>(
 
 export function useLocalRoom(initialJoinCode?: string) {
   const requestsRef = useRef(new Set<AbortController>());
+  const clockOffsetRef = useRef(0);
   async function requestRoom<T>(action: string, body: Record<string, unknown>): Promise<T> {
     const controller = new AbortController();
     requestsRef.current.add(controller);
     try {
-      return await sendRoom<T>(action, body, controller.signal);
+      return await sendRoom<T>(action, body, controller.signal, (offset) => {
+        clockOffsetRef.current = offset;
+      });
     } finally {
       requestsRef.current.delete(controller);
     }
@@ -231,6 +246,16 @@ export function useLocalRoom(initialJoinCode?: string) {
   const hostTokenRef = useRef(storedSession?.role === "host" ? storedSession.credential : "");
   const participantTokenRef = useRef(
     storedSession?.role === "participant" ? storedSession.credential : "",
+  );
+  const serverNow = useCallback(() => Date.now() + clockOffsetRef.current, []);
+  const speechCredential = useCallback(
+    () =>
+      role === "host"
+        ? hostTokenRef.current
+        : role === "participant"
+          ? participantTokenRef.current
+          : undefined,
+    [role],
   );
   const pendingRef = useRef(false);
   const createRequestRef = useRef(crypto.randomUUID());
@@ -614,5 +639,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     returnToLobby,
     submitAnswer,
     reset,
+    serverNow,
+    speechCredential,
   };
 }
