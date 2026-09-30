@@ -36,6 +36,9 @@
     "tesseract.js": "^6.0.1"
   },
   "overrides": {
+    "@firebase/firestore": {
+      "@grpc/grpc-js": "1.13.6"
+    },
     "sharp": "^0.35.4"
   },
   "devDependencies": {

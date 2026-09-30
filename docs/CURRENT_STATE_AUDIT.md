@@ -1,5 +1,22 @@
 # Auditoria do estado atual
 
+## Correção transitiva de gRPC no Firebase (2026-09-30)
+
+O Firebase permanece na versão 12.19.0. Um override limitado a
+`@firebase/firestore` fixa `@grpc/grpc-js` em 1.13.6, corrigindo os avisos
+GHSA-m9gg-hp2v-232j e GHSA-f596-whhp-79r4. A versão antiga 1.9.16 fazia a
+auditoria reprovar; a instalação com o novo lockfile não apresenta vulnerabilidades.
+O proto-loader continua na série 0.7. Não foram alteradas regras, dados, credenciais
+ou APIs da aplicação. A alteração afeta a árvore Node do SDK; o aplicativo web
+continua usando os mesmos módulos de Firebase. As APIs da aplicação usam REST
+para Realtime Database, não um servidor gRPC próprio.
+
+Validação: instalação limpa com `npm ci`, `npm audit --audit-level=high`,
+verificação geral e inicialização/encerramento local de Firestore pelo SDK Node,
+sem conexão remota. Reverter o commit restaura o manifesto e o lockfile anteriores,
+mas reintroduz a vulnerabilidade. Remover o override só quando a dependência
+oficial de Firestore usar uma versão corrigida e a auditoria continuar verde.
+
 ## Tempo, áudio e componentes da Escuta Coletiva
 
 Ao iniciar a Escuta, o servidor agenda a primeira pergunta para três segundos
