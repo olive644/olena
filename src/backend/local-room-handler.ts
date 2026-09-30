@@ -28,6 +28,7 @@ import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 import { safeEqual } from "./secure-compare.js";
 import { createHash } from "node:crypto";
+import { READY_LISTENING_SOURCE } from "../domain/ready-listening-words.js";
 
 export type LocalRoomHandlerDependencies = {
   store: KvStore;
@@ -72,6 +73,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "subjectName",
           "audioRepetitions",
           "autoPlayAudio",
+          "recordedAudioRequired",
           "acceptMinorTypos",
         ].includes(key),
     )
@@ -91,9 +93,14 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   )
     return false;
   if (
-    ["shuffle", "teams", "allowLateJoin", "autoPlayAudio", "acceptMinorTypos"].some(
-      (key) => key in candidate && typeof candidate[key] !== "boolean",
-    )
+    [
+      "shuffle",
+      "teams",
+      "allowLateJoin",
+      "autoPlayAudio",
+      "recordedAudioRequired",
+      "acceptMinorTypos",
+    ].some((key) => key in candidate && typeof candidate[key] !== "boolean")
   )
     return false;
   if (
@@ -335,6 +342,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
         state: publicState,
         participantId: state.participants.find((p) => safeEqual(p.token, credential))?.id,
         streamUrl: dependencies.streamUrl(code),
+        ...(role === "host" ? { sourceDeck: updated.sourceDeck ?? [] } : {}),
       });
     }
 
@@ -374,14 +382,18 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
                   ))) ||
               card.id.length > 80 ||
               card.front.length > 200 ||
-              card.back.length > 200,
+              card.back.length > 200 ||
+              (card.audioId !== undefined &&
+                (typeof card.audioId !== "string" || !/^[a-zA-Z0-9-]{8,80}$/.test(card.audioId))),
           )
         )
           return jsonResponse(400, {
             error: "O material deve ter até 30 cartões com frente e verso de até 200 caracteres.",
           });
         if (cards.length === 0) delete updated.sourceDeck;
-        else
+        else {
+          if (cards.some((card) => card.audioId && !state.recordingIds?.includes(card.audioId)))
+            return jsonResponse(400, { error: "Uma gravação não pertence a esta sala." });
           updated.sourceDeck = cards.map((card, index) => ({
             id: `material-${index}`,
             front: card.front.trim(),
@@ -389,17 +401,38 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
             ...(card.acceptedAnswers?.length
               ? { acceptedAnswers: card.acceptedAnswers.map((answer: string) => answer.trim()) }
               : {}),
+            ...(card.audioId ? { audioId: card.audioId } : {}),
             difficulty: "medium",
           }));
+        }
+      }
+      if (
+        updated.settings.activity !== "bingo" &&
+        updated.settings.subjectName === READY_LISTENING_SOURCE
+      ) {
+        delete updated.sourceDeck;
       }
       const publicState = await saveRoom(updated);
-      return jsonResponse(200, { state: publicState });
+      return jsonResponse(200, { state: publicState, sourceDeck: updated.sourceDeck ?? [] });
     }
 
     if (action === "start" && request.method === "POST") {
       const body = await readJsonBody(request);
       const state = await requireHost(dependencies.store, body);
       if (state instanceof Response) return state;
+      if (
+        (state.settings.activity ?? "listening") === "listening" &&
+        state.settings.recordedAudioRequired &&
+        state.settings.subjectName !== READY_LISTENING_SOURCE &&
+        (!state.sourceDeck?.length ||
+          state.sourceDeck.some(
+            (card) => !card.audioId || !state.recordingIds?.includes(card.audioId),
+          ))
+      ) {
+        return jsonResponse(409, {
+          error: "Grave ou envie o áudio de cada palavra antes de iniciar.",
+        });
+      }
       const started = startRoom(state, { now: now() });
       if (started.phase !== "playing") {
         return jsonResponse(409, { error: "É preciso ao menos um participante para iniciar." });

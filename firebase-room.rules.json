@@ -10,6 +10,7 @@
     "private-rooms": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },
     "room-limits": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },
     "speech-audio": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },
+    "room-recordings": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },
     "speech-rate-limit": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },
     "speech-generation-rate-limit": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },
     "notebook-collab": { ".indexOn": ["expiresAt"], ".read": false, ".write": false },

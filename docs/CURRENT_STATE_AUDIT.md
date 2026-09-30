@@ -775,12 +775,10 @@ em inglês, sem duplicar termos. As respostas aceitam a palavra ou expressão ou
 principal e equivalentes cadastrados. Os filtros Fácil, Médio e Difícil continuam sendo calculados
 pela base local de frequência, com os mesmos fallbacks já documentados.
 
-A pronúncia neural usa o **Cloudflare Workers AI** (modelo `@cf/myshell-ai/melotts`, voz natural em
-inglês), chamado direto pela função `/api/speech` da Vercel com o token em variável de ambiente
-protegida, nunca exposto ao navegador. No Quiz individual, o navegador envia o
-texto da pergunta e a velocidade. Na sala, acrescenta a credencial temporária,
-fixa a velocidade em 1× e exige autorização da pergunta atual. A resposta
-chega em MP3.
+A pronúncia neural do Quiz individual e do Bingo usa o **Cloudflare Workers AI**
+(modelo `@cf/myshell-ai/melotts`), chamado por `/api/speech` com token protegido.
+Na Escuta Coletiva, o professor grava ou envia uma fala por palavra com sua tradução.
+Cada participante recebe a mesma gravação, sem MeloTTS nem voz do navegador.
 
 Existe um serviço próprio Kokoro+Piper (`services/tts`, container separado, Kokoro como voz principal
 e Piper como reserva automática) totalmente implementado e testado, mas **fora de uso em produção no
@@ -794,8 +792,8 @@ nenhuma das abordagens server-side repete. O áudio é reutilizado por texto nor
 cache do navegador (durante a sessão). Requisições antigas são canceladas quando a seleção muda. Se o
 Cloudflare Workers AI falhar ou não estiver configurado, a melhor voz em inglês instalada no
 dispositivo é acionada automaticamente somente no Quiz de Escuta individual. No Modo Sala, falhas
-mostram uma tentativa manual, sem voz do aparelho. A sala usa uma gravação privada compartilhada por
-frase, com velocidade fixa, expiração lógica de uma hora e limpeza diária,
+mostram uma tentativa manual, sem voz do aparelho. O Bingo compartilha a voz gerada por
+frase por uma hora; a Escuta Coletiva usa as gravações do professor até a sala expirar,
 conforme `docs/AI_BACKEND.md`.
 
 As rodadas são embaralhadas sem repetição e aceitam 5, 10, 15 ou todas as palavras disponíveis. O
@@ -826,7 +824,8 @@ Escuta coletiva e Bingo estão disponíveis; Flashcards em grupo e Quiz competit
 desabilitados como “Em breve”.
 A barra inferior resume a rodada e mantém a ação de início visível. Os ícones aprovados do projeto,
 a arte da Helena segurando a placa e o QR SVG dinâmico foram preservados.
-Na Escuta coletiva, a Lista personalizada é a única fonte de perguntas e aceita até 30 pares separados por
+Na Escuta coletiva, o anfitrião escolhe entre 50 palavras prontas com áudio Kokoro incluído no
+aplicativo ou uma Lista personalizada com gravações próprias. A lista aceita até 30 pares separados por
 igual, ponto e vírgula, vírgula, tabulação ou hífen. Respostas equivalentes podem ser cadastradas com
 barra vertical, por exemplo `bus = ônibus | autocarro | o ônibus`. O formulário aponta erros e
 duplicatas por linha, mostra uma prévia e confirma quando as palavras são aplicadas. Controles
@@ -848,12 +847,11 @@ Anfitrião e participante guardam a credencial somente na aba atual e retomam a 
 atualização da página, inclusive durante a rodada. Uma sessão expirada ou inválida é descartada com
 mensagem clara, sem criar um participante duplicado.
 
-A pronúncia das palavras (Escuta coletiva e Bingo) usa o mesmo cliente e o mesmo caminho de geração
-de áudio do Quiz de Escuta individual (`NaturalVoicePlayer`, `POST /api/speech`), em vez de chamar a
-Web Speech API direto. Professor e participantes ouvem a mesma pronúncia gerada pelo Cloudflare
-Workers AI, usando os mesmos bytes guardados temporariamente no backend. A voz do navegador não entra
-na sala quando o serviço falha; é possível tentar de novo. Trocar de pergunta cancela
-qualquer reprodução ou pedido de áudio pendente da pergunta anterior.
+Na Escuta Coletiva manual, cada fala precisa de uma gravação enviada pelo professor antes de iniciar.
+As palavras prontas já trazem MP3 locais e não precisam de envio ou serviço de voz ativo.
+O microfone e o envio de arquivo aceitam até 256 KB por fala. Os áudios ficam privados na sala
+por até quatro horas e não são usados para treinar modelos. O Bingo mantém o caminho de voz
+gerada do Quiz individual. Trocar de pergunta cancela a reprodução anterior.
 
 ## 13. Experiência de estudo renovada
 

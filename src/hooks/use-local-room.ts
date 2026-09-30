@@ -10,6 +10,7 @@ import type {
   LocalRoomSettings,
   PublicLocalRoomState,
 } from "../domain/local-room";
+import type { ListeningCard } from "../domain/listening-quiz";
 
 type Role = "choose" | "host" | "participant";
 export type StoredLocalRoomSession = {
@@ -90,6 +91,8 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
       ![1, 2, 3, "unlimited"].includes(data.settings.audioRepetitions)) ||
     (data.settings.autoPlayAudio !== undefined &&
       typeof data.settings.autoPlayAudio !== "boolean") ||
+    (data.settings.recordedAudioRequired !== undefined &&
+      typeof data.settings.recordedAudioRequired !== "boolean") ||
     (data.settings.acceptMinorTypos !== undefined &&
       typeof data.settings.acceptMinorTypos !== "boolean") ||
     [
@@ -227,6 +230,7 @@ export function useLocalRoom(initialJoinCode?: string) {
   });
   const [role, setRole] = useState<Role>(storedSession?.role ?? "choose");
   const [state, updateState] = useState<PublicLocalRoomState>();
+  const [hostDeck, setHostDeck] = useState<ListeningCard[]>([]);
   function setState(next: PublicLocalRoomState | undefined) {
     updateState((current) =>
       !next
@@ -307,17 +311,20 @@ export function useLocalRoom(initialJoinCode?: string) {
     let active = true;
     setIsRestoring(true);
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
-    void requestRoom<{ state: PublicLocalRoomState; streamUrl: string; participantId?: string }>(
-      "resume",
-      {
-        code: storedSession.code,
-        role: storedSession.role,
-        credential: storedSession.credential,
-      },
-    )
+    void requestRoom<{
+      state: PublicLocalRoomState;
+      streamUrl: string;
+      participantId?: string;
+      sourceDeck?: ListeningCard[];
+    }>("resume", {
+      code: storedSession.code,
+      role: storedSession.role,
+      credential: storedSession.credential,
+    })
       .then((payload) => {
         if (!active) return;
         setState(payload.state);
+        if (storedSession.role === "host") setHostDeck(payload.sourceDeck ?? []);
         if (payload.participantId) setParticipantId(payload.participantId);
         startStreaming(payload.streamUrl);
       })
@@ -429,6 +436,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         credential: payload.hostToken,
       });
       setState(payload.state);
+      setHostDeck([]);
       setRole("host");
       startStreaming(payload.streamUrl);
     } catch (caught) {
@@ -495,13 +503,17 @@ export function useLocalRoom(initialJoinCode?: string) {
     }[],
   ) {
     try {
-      const payload = await requestRoom<{ state: PublicLocalRoomState }>("settings", {
+      const payload = await requestRoom<{
+        state: PublicLocalRoomState;
+        sourceDeck: ListeningCard[];
+      }>("settings", {
         code: codeRef.current,
         hostToken: hostTokenRef.current,
         settings,
         ...(sourceDeck ? { sourceDeck } : {}),
       });
       setState(payload.state);
+      setHostDeck(payload.sourceDeck);
       return true;
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível salvar.");
@@ -612,6 +624,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     stopStreaming();
     clearStoredLocalRoomSession();
     setState(undefined);
+    setHostDeck([]);
     setError("");
     setRole("choose");
     hostTokenRef.current = "";
@@ -622,6 +635,7 @@ export function useLocalRoom(initialJoinCode?: string) {
   return {
     role,
     state,
+    hostDeck,
     error,
     isHost: role === "host",
     participantId,

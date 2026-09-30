@@ -57,6 +57,8 @@ Na aba **Regras** do Realtime Database, substitua pelo seguinte e publique:
   aqui, nem autenticado.
 - `/speech-audio/<hash>` guarda por pouco tempo as gravações da sala para todos
   receberem os mesmos bytes. A leitura e a escrita diretas também são negadas.
+- `/room-recordings/<código>-<id>` guarda as falas enviadas pelo professor para
+  Escuta Coletiva. O navegador não lê nem escreve diretamente nesse caminho.
 
 O servidor (a função da Vercel) escreve nos dois caminhos usando uma conta
 de serviço com privilégio de administrador, que **ignora** essas regras;
@@ -108,12 +110,15 @@ vigor.
 - Na Escuta Coletiva, `start` agenda a primeira pergunta para três segundos
   depois. O cabeçalho `X-Room-Server-Time` ajuda o navegador a acompanhar esse
   horário; respostas antes dele são recusadas. A velocidade da voz é fixa em 1×.
-- `POST /api/speech` com `roomCode` exige `roomCredential` temporária e, quando
-  o enforcement estiver ativado, um token App Check. Só a pergunta atual da
-  sala ativa pode ser sintetizada. Pedidos individuais continuam separados.
-  Recarregue abas abertas antes da mudança, pois clientes antigos não enviam
-  a credencial no pedido de áudio. Monitore `speech_request` por status e
-  duração, sem registrar texto ou credenciais.
+- Antes da Escuta Coletiva, o professor grava no microfone ou envia um arquivo
+  de até 256 KB por fala e informa a tradução. `POST /api/room-recording?action=upload`
+  aceita somente o anfitrião no lobby. `?action=play` entrega a gravação da
+  pergunta atual somente ao anfitrião ou participante da sala. Iniciar exige
+  áudio em todas as falas. As gravações expiram com a sala em até quatro horas;
+  não treinam modelos e não ficam salvas na conta para reutilização futura.
+- `POST /api/speech` permanece para Quiz individual e Bingo. A Escuta Coletiva
+  usa somente a gravação enviada pelo professor, sem MeloTTS ou voz do aparelho.
+  Recarregue abas antigas antes de iniciar uma sala com gravações.
 
 ### Riscos considerados no áudio da sala
 

@@ -20,6 +20,17 @@ vi.mock("../data/listening-audio", () => ({
   },
 }));
 
+vi.mock("../data/recorded-room-player", () => ({
+  RecordedRoomPlayer: class {
+    dispose() {}
+    stop() {}
+    preload() {}
+    generate(...args: unknown[]) {
+      return mocks.generateAudio(...args);
+    }
+  },
+}));
+
 const PLAYING_STATE: PublicLocalRoomState = {
   code: "ABCDE",
   phase: "playing",
@@ -111,6 +122,6 @@ describe("resposta do participante", () => {
   it("pede áudio da sala sem passar a voz do navegador como alternativa", () => {
     render(<LocalRoom />);
     fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
-    expect(mocks.generateAudio).toHaveBeenLastCalledWith("book", 1);
+    expect(mocks.generateAudio).toHaveBeenLastCalledWith(0);
   });
 });
