@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Segurança de dependências: o override de `@firebase/firestore` fixa somente seu
+`@grpc/grpc-js` em 1.13.6. Firebase 12.19.0 e os módulos web permanecem iguais.
+Não usar `npm audit fix --force`, que sugeria downgrade incompatível para Firebase 9.
+Conferir `npm ci` e `npm audit --audit-level=high` ao atualizar esse override;
+removê-lo somente quando o Firestore oficial não depender de uma versão vulnerável.
+
 No lobby desktop, `local-room-lobby__main` agrupa convite/QR e participantes
 na coluna esquerda; a configuração dos minijogos fica na direita sem expandir
 o espaço entre esses cartões. No celular, os blocos continuam empilhados.
