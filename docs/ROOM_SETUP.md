@@ -105,6 +105,30 @@ vigor.
 - `POST ?action=answer`: cada aluno envia sua resposta; a correção é
   conferida no servidor (o baralho completo com as respostas certas fica só
   em `/private-rooms`, nunca é enviado para o navegador de ninguém).
+- Na Escuta Coletiva, `start` agenda a primeira pergunta para três segundos
+  depois. O cabeçalho `X-Room-Server-Time` ajuda o navegador a acompanhar esse
+  horário; respostas antes dele são recusadas. A velocidade da voz é fixa em 1×.
+- `POST /api/speech` com `roomCode` exige `roomCredential` temporária e, quando
+  o enforcement estiver ativado, um token App Check. Só a pergunta atual da
+  sala ativa pode ser sintetizada. Pedidos individuais continuam separados.
+  Recarregue abas abertas antes da mudança, pois clientes antigos não enviam
+  a credencial no pedido de áudio. Monitore `speech_request` por status e
+  duração, sem registrar texto ou credenciais.
+
+### Riscos considerados no áudio da sala
+
+- Conhecer apenas o código público ou inventar um código não autoriza geração.
+  O servidor lê a sala privada e compara a credencial temporária com as de
+  anfitrião e participantes.
+- Mesmo com uma credencial válida, não é permitido sintetizar texto arbitrário:
+  só a pergunta atual de uma sala em andamento passa. Salas expiradas ou
+  encerradas são recusadas.
+- App Check e limites distribuídos reduzem abuso automatizado, mas a proteção
+  forte depende da variável `FIREBASE_APPCHECK_ENFORCE=true` e da configuração
+  correta no Firebase e na Vercel. Verifique essa ativação no ambiente real.
+- A credencial transita apenas na requisição HTTPS e não é enviada ao provedor
+  de voz, ao estado público ou aos registros operacionais. A voz individual
+  continua exigindo consentimento próprio.
 
 ## Ativação da versão com concorrência, presença e bingo
 

@@ -58,6 +58,8 @@ vi.mock("../hooks/use-local-room", () => ({
     returnToLobby: vi.fn(),
     submitAnswer: mocks.submitAnswer,
     reset: vi.fn(),
+    serverNow: () => Date.now(),
+    speechCredential: () => "participant-token",
   }),
 }));
 

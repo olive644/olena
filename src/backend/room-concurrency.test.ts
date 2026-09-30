@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { createLocalRoomHandler } from "./local-room-handler";
 import { createMemoryRoomStore } from "./room-transaction";
-import { ROOM_PRESENCE_GRACE_MS, type PublicLocalRoomState } from "../domain/local-room";
+import {
+  ROOM_PRESENCE_GRACE_MS,
+  ROOM_START_COUNTDOWN_MS,
+  type PublicLocalRoomState,
+} from "../domain/local-room";
 
 function harness() {
   let now = 1000;
@@ -105,6 +109,7 @@ describe("sala concorrente", () => {
     expect(JSON.stringify(h.state())).not.toContain(users[0]!.participantToken);
     const starts = await Promise.all([h.post("start", room), h.post("start", room)]);
     expect(starts.map((r) => r.status)).toEqual([200, 200]);
+    h.time(1000 + ROOM_START_COUNTDOWN_MS);
     const answers = await Promise.all(
       users.map((user) =>
         h.post("answer", {
@@ -137,7 +142,7 @@ describe("sala concorrente", () => {
         })
       ).status,
     ).toBe(403);
-    h.time(32000);
+    h.time(1000 + ROOM_START_COUNTDOWN_MS + 30_000);
     expect(
       (
         await h.post("answer", {
@@ -185,6 +190,7 @@ describe("sala concorrente", () => {
     expect((await one.json()).participantToken).toBe((await two.json()).participantToken);
     expect(h.state().participants).toHaveLength(1);
     await h.post("start", first);
+    h.time(1000 + ROOM_START_COUNTDOWN_MS);
     const retriedJoin = await h.post("join", join);
     expect(retriedJoin.status).toBe(200);
     const user = await retriedJoin.json();

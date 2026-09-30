@@ -1,22 +1,19 @@
-import { Check, Copy, MonitorUp, Radio, Volume2 } from "lucide-react";
+import { Check, MonitorUp, Radio, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
-  buildLocalRoomJoinUrl,
   formatRoomEstimatedDuration,
   isValidLocalRoomCode,
   MAX_ROOM_PARTICIPANTS,
   normalizeLocalRoomCode,
   sanitizeRoomAvatar,
-  rankLocalRoomParticipants,
   localRoomPool,
   roomSecondsLeft,
+  roomCountdownValue,
   ROOM_FEEDBACK_MS,
   type LocalRoomAnswerFeedback,
   ROOM_CATEGORIES,
-  type LocalRoomParticipant,
   type LocalRoomSettings,
-  type PublicLocalRoomState,
 } from "../domain/local-room";
 import { parseManualListeningInput } from "../domain/listening-quiz";
 import { roomAppCheckToken } from "../data/room-app-check";
@@ -28,14 +25,14 @@ import { PaperEditorIcon } from "./paper-editor-icon";
 import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
-import { RoomQrCode } from "./room-qr-code";
+import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
+import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
 const DEFAULT_SETTINGS: LocalRoomSettings = {
   difficulty: "mixed",
   questionCount: "all",
   roundSeconds: 30,
   subjectName: "Lista personalizada",
-  audioRate: 1,
   audioRepetitions: "unlimited",
   autoPlayAudio: true,
 };
@@ -66,13 +63,8 @@ const ROOM_ACTIVITY_OPTIONS = [
   },
 ] as const;
 
-const MEDAL_ICON_BY_RANK = ["medal-first", "medal-second", "medal-third"] as const;
 const MANUAL_LISTENING_SOURCE = "Lista personalizada";
 const AUDIO_REPLAY_COOLDOWN_MS = 5_000;
-
-// Passos da contagem regressiva antes de liberar a primeira pergunta:
-// 3, 2, 1 e "Vai!" (representado por 0), cada um por COUNTDOWN_STEP_MS.
-const COUNTDOWN_STEP_MS = 700;
 
 function countLabel(count: number, singular: string, plural: string) {
   return `${count} ${count === 1 ? singular : plural}`;
@@ -149,230 +141,10 @@ type LocalRoomProps = {
   onExit?: () => void;
 };
 
-function ShareRoom({ code }: { code: string }) {
-  const [copyStatus, setCopyStatus] = useState("");
-  const joinUrl = buildLocalRoomJoinUrl(window.location.href, code);
-
-  async function copy(value: string, success: string) {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopyStatus(success);
-    } catch {
-      setCopyStatus("Não foi possível copiar.");
-    }
-    window.setTimeout(() => setCopyStatus(""), 2500);
-  }
-
-  return (
-    <div className="local-room-share">
-      <div className="local-room-share__code">
-        <strong aria-label="Código da sala">{code}</strong>
-        <button
-          className="icon-button"
-          type="button"
-          onClick={() => void copy(code, "Código copiado ✓")}
-          aria-label="Copiar código da sala"
-        >
-          <span className="local-room-copy-icon local-room-copy-icon--generic" aria-hidden="true">
-            <Copy size={17} />
-          </span>
-          <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
-            <PaperEditorIcon name="copyLink" />
-          </span>
-        </button>
-      </div>
-      <details className="local-room-share__qr" open>
-        <summary>Mostrar ou recolher QR code</summary>
-        <RoomQrCode value={joinUrl} />
-      </details>
-      <div className="local-room-share__link">
-        <p>Escaneie o QR code ou compartilhe o convite.</p>
-        <input aria-label="Link da sala" value={joinUrl} readOnly />
-        <div className="local-room-share__actions">
-          <button
-            className="secondary-button"
-            type="button"
-            onClick={() => void copy(joinUrl, "Link copiado ✓")}
-          >
-            <span className="local-room-copy-label">
-              <span
-                className="local-room-copy-icon local-room-copy-icon--generic"
-                aria-hidden="true"
-              >
-                <Copy size={16} />
-              </span>
-              <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
-                <PaperEditorIcon name="copyLink" />
-              </span>
-              Copiar link
-            </span>
-          </button>
-        </div>
-        <p className="local-room-copy-status" role="status" aria-live="polite">
-          {copyStatus}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function LobbyParticipants({ participants }: { participants: readonly LocalRoomParticipant[] }) {
-  return (
-    <ul className="local-room-participant-list">
-      {participants.map((participant) => (
-        <li key={participant.id}>
-          <img
-            className="local-room-avatar"
-            src={sanitizeRoomAvatar(participant.avatarUrl) ?? "/profile-avatars/helena.webp"}
-            alt=""
-            width="40"
-            height="40"
-            referrerPolicy="no-referrer"
-            onError={(event) => {
-              if (event.currentTarget.getAttribute("src") !== "/profile-avatars/helena.webp") {
-                event.currentTarget.src = "/profile-avatars/helena.webp";
-              }
-            }}
-          />
-          <div className="local-room-participant-list__identity">
-            <span className="local-room-participant-list__name">{participant.displayName}</span>
-            <small className={participant.online === false ? "is-offline" : ""}>
-              <span aria-hidden="true" />
-              {participant.online === false ? "Ausente" : "Pronto"}
-            </small>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Scoreboard({ participants }: { participants: readonly LocalRoomParticipant[] }) {
-  const ranked = rankLocalRoomParticipants(participants);
-  return (
-    <ol className="local-room-scoreboard">
-      {ranked.map((participant, index) => (
-        <li key={participant.id}>
-          <span className="local-room-scoreboard__rank">{index + 1}</span>
-          <span>
-            {participant.displayName}
-            {participant.team ? ` · ${participant.team}` : ""}
-            {participant.online === false ? " · ausente" : ""}
-          </span>
-          <strong>
-            {participant.score} <NavigationIcon name="xp" />
-          </strong>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function Podium({ participants }: { participants: readonly LocalRoomParticipant[] }) {
-  const ranked = rankLocalRoomParticipants(participants);
-  const top3 = ranked.slice(0, 3);
-  const rest = ranked.slice(3);
-  return (
-    <>
-      <ol className="local-room-podium">
-        {top3.map((participant, index) => (
-          <li
-            className={`local-room-podium__place local-room-podium__place--${index + 1}`}
-            key={participant.id}
-          >
-            <NavigationIcon name={MEDAL_ICON_BY_RANK[index]!} />
-            <span>{participant.displayName}</span>
-            <strong>
-              {participant.score} <NavigationIcon name="xp" />
-            </strong>
-          </li>
-        ))}
-      </ol>
-      {rest.length > 0 && <Scoreboard participants={rest} />}
-    </>
-  );
-}
-
-function ProjectorRoom({
-  state,
-  secondsLeft,
-}: {
-  state: PublicLocalRoomState;
-  secondsLeft: number;
-}) {
-  const connected = state.participants.filter((participant) => participant.online !== false);
-  const joinUrl = buildLocalRoomJoinUrl(window.location.origin, state.code);
-
-  return (
-    <div className="local-room-projector">
-      <header className="local-room-projector__header">
-        <p className="local-room-projector__participants">
-          <PaperEditorIcon name="team" />
-          {countLabel(connected.length, "participante", "participantes")}
-        </p>
-        <button
-          className="secondary-button"
-          type="button"
-          onClick={() => void document.documentElement.requestFullscreen?.()}
-        >
-          <PaperEditorIcon name="expand" /> Tela cheia
-        </button>
-      </header>
-
-      {state.phase === "lobby" ? (
-        <main className="local-room-projector__lobby">
-          <div>
-            <span>Entre na sala</span>
-            <strong>{state.code}</strong>
-            <p>Aponte a câmera para o QR code.</p>
-          </div>
-          <RoomQrCode value={joinUrl} />
-        </main>
-      ) : state.phase === "playing" ? (
-        <main className="local-room-projector__round">
-          <div className="local-room-round__progress">
-            <span>
-              Pergunta {state.questionIndex + 1} de {state.totalQuestions}
-            </span>
-            <span className="local-room-round__timer">
-              <NavigationIcon name="timer" /> {secondsLeft}s
-            </span>
-          </div>
-          <div className="local-room-projector__prompt">
-            <NavigationIcon
-              name={state.settings.activity === "bingo" ? "activity-bank" : "focus"}
-            />
-            <h1>
-              {state.settings.activity === "bingo" ? "Marque sua cartela" : "Ouça com atenção"}
-            </h1>
-            <p>
-              {state.answeredParticipantIds.length} de {connected.length} respostas recebidas
-            </p>
-          </div>
-          {state.settings.allowLateJoin && (
-            <aside className="local-room-projector__late-join" aria-label="Entrada na sala">
-              <RoomQrCode value={joinUrl} />
-              <div>
-                <span>Entrada aberta</span>
-                <strong>{state.code}</strong>
-              </div>
-            </aside>
-          )}
-          <Scoreboard participants={state.participants} />
-        </main>
-      ) : (
-        <main className="local-room-projector__results">
-          <NavigationIcon name="medal-first" />
-          <h1>{state.phase === "finished" ? "Sala encerrada" : "Resultado da turma"}</h1>
-          <Podium participants={state.participants} />
-        </main>
-      )}
-    </div>
-  );
-}
-
 export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: LocalRoomProps) {
   const room = useLocalRoom(initialJoinCode);
+  const serverNow = room.serverNow;
+  const speechCredential = room.speechCredential;
   const [profile] = useState(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as {
@@ -408,8 +180,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const [naturalState, setNaturalState] = useState<NaturalVoiceState>({ status: "idle" });
   const naturalPlayerRef = useRef<NaturalVoicePlayer | undefined>(undefined);
   const audioPlayCountRef = useRef(0);
-  const countdownAudioQuestionRef = useRef<string | undefined>(undefined);
-  const countdownHasRenderedRef = useRef(false);
+  const autoPlayedQuestionRef = useRef<string | undefined>(undefined);
   const [replayCooldownUntil, setReplayCooldownUntil] = useState(0);
   const [replayCooldownSeconds, setReplayCooldownSeconds] = useState(0);
 
@@ -422,10 +193,15 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
 
   useEffect(() => {
     // O texto das frases só vai à empresa de voz se a pessoa tiver aceitado neste aparelho.
-    const player = new NaturalVoicePlayer(setNaturalState, isAllowed, () => roomCodeRef.current);
+    const player = new NaturalVoicePlayer(
+      setNaturalState,
+      isAllowed,
+      () => roomCodeRef.current,
+      speechCredential,
+    );
     naturalPlayerRef.current = player;
     return () => player.dispose();
-  }, [isAllowed]);
+  }, [isAllowed, speechCredential]);
 
   function playQuestionAudio(text: string) {
     const limit = state?.settings.audioRepetitions ?? "unlimited";
@@ -433,8 +209,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
       setNaturalState({ status: "error", message: `Limite de ${limit} reproduções atingido.` });
       return;
     }
-    const rate = state?.settings.audioRate ?? 1;
-    void naturalPlayerRef.current?.generate(text, rate).then((played) => {
+    void naturalPlayerRef.current?.generate(text, 1).then((played) => {
       if (played) audioPlayCountRef.current += 1;
     });
   }
@@ -473,9 +248,8 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     // antecedencia, antes de alguem clicar em "Ouvir".
     audioPlayCountRef.current = 0;
     naturalPlayerRef.current?.stop();
-    if (currentQuestionFront)
-      naturalPlayerRef.current?.preload(currentQuestionFront, state?.settings.audioRate ?? 1);
-  }, [questionKey, currentQuestionFront, state?.settings.audioRate]);
+    if (currentQuestionFront) naturalPlayerRef.current?.preload(currentQuestionFront, 1);
+  }, [questionKey, currentQuestionFront]);
 
   const participantCount = state?.participants.length ?? 0;
   const canJoin = !room.busy && isValidLocalRoomCode(code) && name.trim().length > 0;
@@ -483,11 +257,13 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const isPlaying = state?.phase === "playing";
   const questionStartedAt = state?.questionStartedAt ?? 0;
   const roundSeconds = state?.settings.roundSeconds ?? 30;
+  const [clockNow, setClockNow] = useState(() => serverNow());
+  const countdownValue = state ? roomCountdownValue(state, clockNow) : null;
   const [secondsLeft, setSecondsLeft] = useState(() =>
-    state ? roomSecondsLeft(state, Date.now()) : roundSeconds,
+    state ? roomSecondsLeft(state, serverNow()) : roundSeconds,
   );
   const [feedbackMsLeft, setFeedbackMsLeft] = useState(() =>
-    Math.max(0, (state?.feedbackUntil ?? 0) - Date.now()),
+    Math.max(0, (state?.feedbackUntil ?? 0) - serverNow()),
   );
 
   // Modo Sala toma a tela toda enquanto estiver aberto, pra ficar bem
@@ -500,46 +276,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     };
   }, []);
 
-  // Contagem regressiva (3, 2, 1, Vai!) antes da primeira pergunta de cada
-  // sala. Dispara só na transição do lobby pra a rodada, nunca de novo
-  // entre perguntas nem se a pessoa entrar com a sala já em andamento.
-  const previousPhaseRef = useRef(state?.phase);
-  const [countdownValue, setCountdownValue] = useState<number | null>(null);
-  useEffect(() => {
-    const previousPhase = previousPhaseRef.current;
-    previousPhaseRef.current = state?.phase;
-    if (
-      (previousPhase === "lobby" || previousPhase === "results") &&
-      state?.phase === "playing" &&
-      state.questionIndex === 0
-    ) {
-      countdownAudioQuestionRef.current = questionKey;
-      countdownHasRenderedRef.current = false;
-      setCountdownValue(3);
-    }
-  }, [questionKey, state?.phase, state?.questionIndex]);
-  useEffect(() => {
-    if (countdownValue === null) return;
-    const timer = window.setTimeout(() => {
-      setCountdownValue((current) => (current === null || current <= 0 ? null : current - 1));
-    }, COUNTDOWN_STEP_MS);
-    return () => window.clearTimeout(timer);
-  }, [countdownValue]);
-
   useEffect(() => {
     if (!currentQuestionFront || state?.phase !== "playing" || projectorMode) return;
-    if (countdownAudioQuestionRef.current === questionKey) {
-      if (countdownValue !== null) {
-        countdownHasRenderedRef.current = true;
-        return;
-      }
-      if (!countdownHasRenderedRef.current) return;
-      countdownAudioQuestionRef.current = undefined;
-    }
+    if (clockNow < state.questionStartedAt || autoPlayedQuestionRef.current === questionKey) return;
+    autoPlayedQuestionRef.current = questionKey;
     if (state.settings.autoPlayAudio) playQuestionAudio(currentQuestionFront);
-    // Uma pergunta nova ou o fim da contagem são os únicos gatilhos automáticos.
+    // O horário do servidor, não a animação local, libera o áudio da rodada.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countdownValue, currentQuestionFront, projectorMode, questionKey, state?.phase]);
+  }, [clockNow, currentQuestionFront, projectorMode, questionKey, state?.phase]);
 
   useEffect(() => {
     if (!replayCooldownUntil) return;
@@ -556,11 +300,11 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   useEffect(() => {
     const deadline = state?.feedbackUntil;
     if (deadline === undefined) return;
-    const update = () => setFeedbackMsLeft(Math.max(0, deadline - Date.now()));
+    const update = () => setFeedbackMsLeft(Math.max(0, deadline - serverNow()));
     update();
     const timer = window.setInterval(update, 100);
     return () => window.clearInterval(timer);
-  }, [state?.feedbackUntil]);
+  }, [state?.feedbackUntil, serverNow]);
 
   // Só o navegador do organizador tenta avançar quando o tempo acaba.
   // O intervalo curto também corrige pequenas diferenças entre relógios.
@@ -568,7 +312,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     if (!isPlaying) return;
     let advancing = false;
     const tick = () => {
-      const remaining = state ? roomSecondsLeft(state, Date.now()) : 0;
+      const now = room.serverNow();
+      setClockNow(now);
+      const remaining = state ? roomSecondsLeft(state, now) : 0;
       setSecondsLeft(remaining);
       if (
         remaining === 0 &&
@@ -584,7 +330,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
       }
     };
     tick();
-    const timer = window.setInterval(tick, 500);
+    const timer = window.setInterval(tick, 250);
     return () => window.clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, projectorMode, questionStartedAt, roundSeconds, room.isHost, state]);
@@ -593,7 +339,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     if (!isPlaying || !room.isHost || projectorMode || !state?.feedbackUntil) return;
     const timer = window.setTimeout(
       () => void room.nextQuestion(),
-      Math.max(0, state.feedbackUntil - Date.now()),
+      Math.max(0, state.feedbackUntil - room.serverNow()),
     );
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -606,7 +352,13 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
 
   async function submitAnswer(event: FormEvent) {
     event.preventDefault();
-    if (!state?.currentQuestion || !answer.trim() || isSubmittingAnswer) return;
+    if (
+      !state?.currentQuestion ||
+      !answer.trim() ||
+      isSubmittingAnswer ||
+      room.serverNow() < state.questionStartedAt
+    )
+      return;
     setIsSubmittingAnswer(true);
     const submittedAnswer = answer.trim();
     try {
@@ -1175,20 +927,6 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                           </select>
                         </label>
                         <label>
-                          <span>Velocidade</span>
-                          <select
-                            value={state.settings.audioRate ?? 1}
-                            onChange={(event) =>
-                              void room.updateSettings({
-                                audioRate: Number(event.target.value) as 0.75 | 1,
-                              })
-                            }
-                          >
-                            <option value="0.75">0,75×</option>
-                            <option value="1">1×</option>
-                          </select>
-                        </label>
-                        <label>
                           <input
                             type="checkbox"
                             checked={state.settings.autoPlayAudio ?? false}
@@ -1478,14 +1216,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   <input
                     value={answer}
                     onChange={(event) => setAnswer(event.target.value)}
-                    disabled={isSubmittingAnswer}
+                    disabled={isSubmittingAnswer || room.serverNow() < state.questionStartedAt}
                     autoFocus
                   />
                 </label>
                 <button
                   className="primary-button local-room-answer__submit"
                   type="submit"
-                  disabled={isSubmittingAnswer}
+                  disabled={isSubmittingAnswer || room.serverNow() < state.questionStartedAt}
                 >
                   {isSubmittingAnswer ? "Enviando…" : "Responder"}
                 </button>

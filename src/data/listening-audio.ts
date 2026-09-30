@@ -1,3 +1,5 @@
+import { roomAppCheckToken } from "./room-app-check";
+
 export type NaturalVoiceStatus = "idle" | "generating" | "playing" | "ready" | "error";
 
 export type NaturalVoiceState = {
@@ -23,6 +25,7 @@ export class NaturalVoicePlayer {
     private readonly onState: (state: NaturalVoiceState) => void,
     private readonly isAllowed: () => boolean = () => false,
     private readonly roomCode: () => string | undefined = () => undefined,
+    private readonly roomCredential: () => string | undefined = () => undefined,
   ) {}
 
   preload(text: string, rate: number): void {
@@ -88,6 +91,7 @@ export class NaturalVoicePlayer {
 
   private load(text: string, rate: number): Promise<CachedAudio> {
     const roomCode = this.roomCode();
+    const roomCredential = roomCode ? this.roomCredential() : undefined;
     const cacheKey = `${roomCode ?? "individual"}:${rate}:${text}`;
     const cached = this.cache.get(cacheKey);
     if (cached) return cached;
@@ -97,10 +101,20 @@ export class NaturalVoicePlayer {
       this.controllers.add(controller);
       const timeout = window.setTimeout(() => controller.abort(), 20_000);
       try {
+        if (roomCode && !roomCredential) throw new Error("Room credential unavailable");
+        const appCheckToken = roomCode ? await roomAppCheckToken() : undefined;
         const response = await fetch("/api/speech", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, rate, consent: true, ...(roomCode ? { roomCode } : {}) }),
+          headers: {
+            "Content-Type": "application/json",
+            ...(roomCode && appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
+          },
+          body: JSON.stringify({
+            text,
+            rate,
+            consent: true,
+            ...(roomCode ? { roomCode, roomCredential } : {}),
+          }),
           signal: controller.signal,
         });
         if (!response.ok) throw new Error("Natural speech unavailable");

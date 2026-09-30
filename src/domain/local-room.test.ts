@@ -16,6 +16,8 @@ import {
   readLocalRoomCodeFromUrl,
   returnRoomToLobby,
   roomSecondsLeft,
+  roomCountdownValue,
+  ROOM_START_COUNTDOWN_MS,
   sanitizeDisplayName,
   startRoom,
   submitRoomAnswer,
@@ -109,17 +111,50 @@ describe("sala local", () => {
     expect(started.phase).toBe("playing");
     expect(started.deck).toHaveLength(5);
     expect(started.participants[0]?.score).toBe(0);
-    expect(started.questionStartedAt).toBe(3);
+    expect(started.questionStartedAt).toBe(3 + ROOM_START_COUNTDOWN_MS);
+    expect(started.countdownStartedAt).toBe(3);
+    expect(roomCountdownValue(toPublicRoomState(started), 3)).toBe(3);
+    expect(roomCountdownValue(toPublicRoomState(started), 3 + ROOM_START_COUNTDOWN_MS)).toBe(0);
+    expect(
+      roomCountdownValue(toPublicRoomState(started), 3 + ROOM_START_COUNTDOWN_MS + 400),
+    ).toBeNull();
+  });
+
+  it("não pontua antes do começo e mantém o Bingo sem contagem inicial", () => {
+    const listening = startedWithTwo();
+    const early = submitRoomAnswer(listening, {
+      participantId: "p1",
+      questionIndex: 0,
+      answer: listening.deck[0]!.back,
+      now: listening.questionStartedAt - 1,
+    });
+    expect(early.state).toBe(listening);
+    expect(early.xpChange).toBe(0);
+
+    const bingo = startRoom(
+      addLocalParticipant(
+        createRoom(
+          { ...settings, activity: "bingo" },
+          { code: "ABCDE", hostToken: "secret", now: 1 },
+        ),
+        participant(),
+        2,
+      ),
+      { now: 3, random: () => 0 },
+    );
+    expect(bingo.questionStartedAt).toBe(3);
+    expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBeNull();
   });
 
   it("dá XP ao acertar e nada ao errar sem estar liderando", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
+    const firstAt = started.questionStartedAt + 1;
     const first = submitRoomAnswer(started, {
       participantId: "p1",
       questionIndex: 0,
       answer: card.back,
-      now: 4,
+      now: firstAt,
     });
     expect(first.correct).toBe(true);
     expect(first.xpChange).toBe(CORRECT_ANSWER_XP);
@@ -132,7 +167,7 @@ describe("sala local", () => {
       participantId: "p2",
       questionIndex: 0,
       answer: "resposta errada",
-      now: 5,
+      now: firstAt + 1,
     });
     expect(second.correct).toBe(false);
     expect(second.xpChange).toBe(0);
@@ -142,17 +177,18 @@ describe("sala local", () => {
   it("recusa uma segunda resposta do mesmo participante", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
+    const firstAt = started.questionStartedAt + 1;
     const first = submitRoomAnswer(started, {
       participantId: "p1",
       questionIndex: 0,
       answer: card.back,
-      now: 4,
+      now: firstAt,
     });
     const again = submitRoomAnswer(first.state, {
       participantId: "p1",
       questionIndex: 0,
       answer: card.back,
-      now: 5,
+      now: firstAt + 1,
     });
     expect(again.correct).toBe(false);
     expect(again.state).toBe(first.state);
@@ -161,11 +197,12 @@ describe("sala local", () => {
   it("tira XP de quem está liderando se errar, e trava em zero", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
+    const firstAt = started.questionStartedAt + 1;
     const leading = submitRoomAnswer(started, {
       participantId: "p1",
       questionIndex: 0,
       answer: card.back,
-      now: 4,
+      now: firstAt,
     });
     expect(leading.state.participants.find((item) => item.id === "p1")?.score).toBe(
       CORRECT_ANSWER_XP,
@@ -175,18 +212,18 @@ describe("sala local", () => {
       participantId: "p2",
       questionIndex: leading.state.questionIndex,
       answer: "errada",
-      now: 5,
+      now: firstAt + 1,
     });
     // p2 não lidera (0 contra CORRECT_ANSWER_XP de p1), então não perde nada.
     expect(stillTwoAnswered.xpChange).toBe(0);
 
-    const nextState = advanceRoomQuestion(stillTwoAnswered.state, 6);
+    const nextState = advanceRoomQuestion(stillTwoAnswered.state, firstAt + 2);
     const nextCard = nextState.deck[nextState.questionIndex]!;
     const p1Wrong = submitRoomAnswer(nextState, {
       participantId: "p1",
       questionIndex: nextState.questionIndex,
       answer: "errada",
-      now: 7,
+      now: firstAt + 3,
     });
     expect(p1Wrong.xpChange).toBe(-LEADER_WRONG_ANSWER_PENALTY_XP);
     expect(p1Wrong.state.participants.find((item) => item.id === "p1")?.score).toBe(
@@ -198,44 +235,47 @@ describe("sala local", () => {
   it("mantém a pergunta para mostrar feedback quando todo mundo responde", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
+    const firstAt = started.questionStartedAt + 1;
     const first = submitRoomAnswer(started, {
       participantId: "p1",
       questionIndex: 0,
       answer: card.back,
-      now: 4,
+      now: firstAt,
     });
     expect(first.state.questionIndex).toBe(0);
     const second = submitRoomAnswer(first.state, {
       participantId: "p2",
       questionIndex: 0,
       answer: card.back,
-      now: 5,
+      now: firstAt + 1,
     });
     expect(second.state.questionIndex).toBe(0);
     expect(second.state.answeredParticipantIds).toEqual(["p1", "p2"]);
-    expect(second.state.feedbackUntil).toBe(3_005);
-    expect(canAdvanceRoomQuestion(second.state, 3_004)).toBe(false);
-    expect(canAdvanceRoomQuestion(second.state, 3_005)).toBe(true);
-    const next = advanceRoomQuestion(second.state, 3_005);
+    const feedbackEndsAt = firstAt + 1 + 3_000;
+    expect(second.state.feedbackUntil).toBe(feedbackEndsAt);
+    expect(canAdvanceRoomQuestion(second.state, feedbackEndsAt - 1)).toBe(false);
+    expect(canAdvanceRoomQuestion(second.state, feedbackEndsAt)).toBe(true);
+    const next = advanceRoomQuestion(second.state, feedbackEndsAt);
     expect(next.feedbackUntil).toBeUndefined();
-    expect(toPublicRoomState(second.state).feedbackUntil).toBe(3_005);
+    expect(toPublicRoomState(second.state).feedbackUntil).toBe(feedbackEndsAt);
     expect(second.question).toEqual({ front: card.front, back: card.back });
   });
 
   it("aplica a tolerância de digitação escolhida pelo professor", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
+    const firstAt = started.questionStartedAt + 1;
     const typo = card.back.slice(0, -1);
     const strict = submitRoomAnswer(started, {
       participantId: "p1",
       questionIndex: 0,
       answer: typo,
-      now: 4,
+      now: firstAt,
     });
     expect(strict.correct).toBe(false);
     const tolerant = submitRoomAnswer(
       { ...started, settings: { ...started.settings, acceptMinorTypos: true } },
-      { participantId: "p1", questionIndex: 0, answer: typo, now: 4 },
+      { participantId: "p1", questionIndex: 0, answer: typo, now: firstAt },
     );
     expect(tolerant.correct).toBe(true);
   });
