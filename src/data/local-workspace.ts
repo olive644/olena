@@ -243,7 +243,20 @@ export function isHandwritingDocument(value: unknown): boolean {
       !value["stickies"].every(
         (sticky: unknown) =>
           isRecord(sticky) &&
-          (sticky["kind"] === undefined || sticky["kind"] === "text") &&
+          (sticky["kind"] === undefined ||
+            sticky["kind"] === "text" ||
+            sticky["kind"] === "table") &&
+          (sticky["cells"] === undefined ||
+            (Array.isArray(sticky["cells"]) &&
+              sticky["cells"].length >= 1 &&
+              sticky["cells"].length <= 8 &&
+              sticky["cells"].every(
+                (row: unknown) =>
+                  Array.isArray(row) &&
+                  row.length >= 1 &&
+                  row.length <= 6 &&
+                  row.every((cell: unknown) => isString(cell) && cell.length <= 200),
+              ))) &&
           (sticky["ink"] === undefined ||
             (typeof sticky["ink"] === "string" && /^#[0-9a-f]{6}$/i.test(sticky["ink"]))) &&
           isString(sticky["id"]) &&

@@ -27,7 +27,7 @@ export type HandwritingStroke = {
 };
 
 export type HandwritingSticky = {
-  kind?: "text";
+  kind?: "text" | "table";
   ink?: string;
   id: string;
   x: number;
@@ -38,6 +38,9 @@ export type HandwritingSticky = {
   text: string;
   checklist?: HandwritingChecklistItem[] | undefined;
   formula?: boolean;
+  // Só para kind "table": o conteúdo, linha por linha. Redimensionar a tabela (mudar o
+  // número de linhas ou colunas) mexe aqui; mover e apagar reaproveitam tudo do post-it.
+  cells?: string[][];
 };
 
 export type HandwritingImage = {

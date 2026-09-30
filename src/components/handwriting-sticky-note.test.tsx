@@ -256,3 +256,87 @@ describe("post-it: texto e checklist", () => {
     expect(props.onAddChecklistItem).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("tabela dentro do post-it", () => {
+  function tableSticky(overrides: Partial<HandwritingSticky> = {}): HandwritingSticky {
+    return sticky({
+      kind: "table",
+      width: 360,
+      height: 220,
+      cells: [
+        ["a", "b"],
+        ["c", "d"],
+      ],
+      ...overrides,
+    });
+  }
+
+  it("nomeia como Tabela e mostra uma célula por linha e coluna", () => {
+    render(<HandwritingStickyNote {...noteProps({ sticky: tableSticky() })} />);
+    expect(screen.getByText("Tabela")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Mover tabela" })).toBeTruthy();
+    expect((screen.getByLabelText("Célula linha 1, coluna 1") as HTMLTextAreaElement).value).toBe(
+      "a",
+    );
+    expect((screen.getByLabelText("Célula linha 2, coluna 2") as HTMLTextAreaElement).value).toBe(
+      "d",
+    );
+  });
+
+  it("não mostra o alternador de checklist para tabela", () => {
+    render(<HandwritingStickyNote {...noteProps({ sticky: tableSticky(), menuOpen: true })} />);
+    expect(screen.queryByText("Checklist")).toBeNull();
+  });
+
+  it("edita uma célula sem afetar as outras", () => {
+    const props = noteProps({ sticky: tableSticky() });
+    render(<HandwritingStickyNote {...props} />);
+    fireEvent.change(screen.getByLabelText("Célula linha 1, coluna 2"), {
+      target: { value: "novo" },
+    });
+    expect(props.onUpdate).toHaveBeenCalledWith({
+      cells: [
+        ["a", "novo"],
+        ["c", "d"],
+      ],
+    });
+  });
+
+  it("adiciona e remove linha e coluna", () => {
+    const props = noteProps({ sticky: tableSticky() });
+    render(<HandwritingStickyNote {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar linha" }));
+    expect(props.onUpdate).toHaveBeenCalledWith({
+      cells: [
+        ["a", "b"],
+        ["c", "d"],
+        ["", ""],
+      ],
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Remover linha" }));
+    expect(props.onUpdate).toHaveBeenCalledWith({ cells: [["a", "b"]] });
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar coluna" }));
+    expect(props.onUpdate).toHaveBeenCalledWith({
+      cells: [
+        ["a", "b", ""],
+        ["c", "d", ""],
+      ],
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Remover coluna" }));
+    expect(props.onUpdate).toHaveBeenCalledWith({
+      cells: [["a"], ["c"]],
+    });
+  });
+
+  it("desativa remover linha ou coluna quando só sobra uma", () => {
+    render(
+      <HandwritingStickyNote {...noteProps({ sticky: tableSticky({ cells: [["único"]] }) })} />,
+    );
+    expect(
+      (screen.getByRole("button", { name: "Remover linha" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
+    expect(
+      (screen.getByRole("button", { name: "Remover coluna" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
+  });
+});
