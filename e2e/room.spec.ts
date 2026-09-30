@@ -186,12 +186,66 @@ for (const activity of ["listening", "bingo"] as const) {
         await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
       }
       if (activity === "listening") {
+        await expect(host.getByRole("button", { name: "Gravar", exact: true })).toBeVisible();
+        const hasRecorder = await host.evaluate(() => typeof MediaRecorder !== "undefined");
+        if (hasRecorder) {
+          await host.evaluate(() => {
+            const context = new AudioContext();
+            const destination = context.createMediaStreamDestination();
+            const source = context.createOscillator();
+            source.connect(destination);
+            source.start();
+            Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
+              configurable: true,
+              value: async () => {
+                // A ativação da fonte sintética não bloqueia a entrega do stream.
+                void context.resume();
+                return destination.stream;
+              },
+            });
+          });
+          await host.getByRole("button", { name: "Gravar", exact: true }).click();
+          try {
+            await expect(host.getByRole("button", { name: "Parar gravação" })).toBeVisible();
+          } catch (error) {
+            const status = await host.locator(".local-room-recording").innerText();
+            throw new Error(`Estado do gravador: ${status}`, { cause: error });
+          }
+          // Dá ao MediaRecorder real tempo para capturar uma pequena fala de teste.
+          await host.waitForTimeout(350);
+          await host.getByRole("button", { name: "Parar gravação" }).click();
+        } else {
+          // A distribuição WebKit headless do CI não fornece MediaRecorder.
+          // Não pular a rodada: verificar o aviso e guardar áudio pelo caminho de arquivo.
+          expect(browser.browserType().name()).toBe("webkit");
+          await host.getByRole("button", { name: "Gravar", exact: true }).click();
+          await expect(
+            host.getByText("Este navegador não permite gravar aqui. Use Enviar arquivo."),
+          ).toBeVisible();
+          await host.locator('.local-room-recording input[type="file"]').setInputFiles({
+            name: "fala.wav",
+            mimeType: "audio/wav",
+            buffer: silentWav(),
+          });
+        }
+        await host.getByRole("button", { name: "Guardar áudio" }).click();
+        await expect(host.getByText("Áudio guardado ✓")).toBeVisible();
         await host
-          .getByLabel(/Digite ou cole palavras e traduções/)
-          .fill(
-            "school = escola\nfriend = amigo\nbook = livro\nwindow = janela\nteacher = professor",
-          );
-        for (const card of await host.locator(".local-room-recording").all()) {
+          .locator(".local-room-manual")
+          .screenshot({ path: testInfo.outputPath("manual-recording.png") });
+        const pairs = [
+          ["school", "escola"],
+          ["friend", "amigo"],
+          ["book", "livro"],
+          ["window", "janela"],
+          ["teacher", "professor"],
+        ];
+        for (const [index, pair] of pairs.entries()) {
+          if (index > 0) await host.getByRole("button", { name: "Adicionar fala" }).click();
+          await host.getByLabel(`Palavra em inglês da fala ${index + 1}`).fill(pair[0]!);
+          await host.getByLabel(`Tradução da fala ${index + 1}`, { exact: true }).fill(pair[1]!);
+        }
+        for (const card of (await host.locator(".local-room-recording").all()).slice(1)) {
           await card.locator('input[type="file"]').setInputFiles({
             name: "fala.wav",
             mimeType: "audio/wav",
@@ -347,12 +401,15 @@ for (const activity of ["listening", "bingo"] as const) {
       if (activity === "listening") {
         await host.getByRole("button", { name: "Banco de palavras" }).click();
         await expect(host.getByText("100 palavras com áudio")).toBeVisible();
+        await expect(
+          host.locator('.local-room-ready-words__subject img[src="/room-icons/english.svg"]'),
+        ).toBeVisible();
         const search = host.getByRole("searchbox", {
           name: "Buscar palavras em inglês ou português",
         });
         await search.fill("onibus");
         await expect(
-          host.locator(".local-room-ready-words__results").getByText("bus", { exact: true }),
+          host.locator(".local-room-ready-words__results").getByRole("checkbox", { name: /bus/ }),
         ).toBeVisible();
         await search.fill("");
         const words = host.locator(".local-room-ready-words__results button");

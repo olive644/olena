@@ -2,6 +2,18 @@
 
 ## Correção transitiva de gRPC no Firebase (2026-09-30)
 
+O job de testes de navegador tem limite de 25 minutos: a instalação dos navegadores
+no runner pode consumir cerca de dez minutos e a suíte completa mais seis a sete.
+O limite anterior de quinze interrompia a validação sem concluir os testes.
+Todos os testes, projetos e verificações permanecem obrigatórios; apenas o tempo
+máximo do job foi ajustado.
+
+O teste da sala verifica captura nativa com uma fonte sintética quando MediaRecorder
+existe. O WebKit headless do CI não fornece essa API: nesse caso, o teste exige o
+aviso de indisponibilidade e guarda o primeiro áudio por arquivo antes de preencher
+a palavra. A rodada completa, reprodução, respostas e retomada continuam testadas
+nos dois motores. Isso não comprova permissões de microfone em aparelhos físicos.
+
 O Firebase permanece na versão 12.19.0. Um override limitado a
 `@firebase/firestore` fixa `@grpc/grpc-js` em 1.13.6, corrigindo os avisos
 GHSA-m9gg-hp2v-232j e GHSA-f596-whhp-79r4. A versão antiga 1.9.16 fazia a
@@ -843,10 +855,14 @@ A ação de início continua visível. Os ícones aprovados do projeto,
 a arte da Helena segurando a placa e o QR SVG dinâmico foram preservados.
 Na Escuta coletiva, o anfitrião escolhe entre gravações manuais ou um banco de 100 palavras em inglês
 com áudio Kokoro incluído no aplicativo. O banco permite busca pela palavra em inglês ou pela tradução
-em português sem exigir acentos, seleção em chips e confirmação antes de começar. A lista manual aceita até 30 pares separados por
-igual, ponto e vírgula, vírgula, tabulação ou hífen. Respostas equivalentes podem ser cadastradas com
-barra vertical, por exemplo `bus = ônibus | autocarro | o ônibus`. O formulário aponta erros e
-duplicatas por linha, mostra uma prévia e confirma quando as palavras são aplicadas. Controles
+em português sem exigir acentos, seleção em chips e confirmação antes de começar. A matéria usa a
+bandeira dos EUA do onboarding. As palavras do banco usam um alfabeto A a Z em papel com a temática
+dos EUA, guardado em um único sprite SVG leve e com texto acessível para leitores de tela.
+O modo manual abre com um microfone em cada fala, permite gravar antes de informar a palavra e
+oferece campos separados para inglês e tradução, até 30 falas. Respostas equivalentes podem ser
+cadastradas com barra vertical. O formulário aponta erros e duplicatas por fala, mostra uma prévia
+e confirma quando as gravações são aplicadas. O áudio fica ligado à fala ao editar seus campos;
+selecionar uma nova gravação exige guardá-la novamente antes de iniciar. Controles
 incompatíveis ficam ocultos. Os checks de configuração usam o mesmo papel amarelo das opções de
 Handwriting. Perguntas (5, 10, 15 ou 20) e tempo (5, 10, 15 ou 30 segundos) são selecionados em
 controles de arrastar. A opção para aceitar erros de digitação não aparece mais na sala; a entrada

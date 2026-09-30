@@ -5,7 +5,61 @@ import { RoomRecordingInput } from "./room-recording-input";
 afterEach(() => vi.unstubAllGlobals());
 
 describe("microfone da Escuta Coletiva", () => {
+  it("explica a alternativa de arquivo quando o navegador não fornece MediaRecorder", () => {
+    const getUserMedia = vi.fn();
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: { getUserMedia },
+    });
+    vi.stubGlobal("MediaRecorder", undefined);
+    render(
+      <RoomRecordingInput
+        word="Fala 1"
+        translation=""
+        code="ABCDE"
+        credential="secret"
+        onSaved={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
+    expect(
+      screen.getByText("Este navegador não permite gravar aqui. Use Enviar arquivo."),
+    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Enviar arquivo" })).toBeTruthy();
+    expect(getUserMedia).not.toHaveBeenCalled();
+  });
+  it("libera a captura se a fala for removida enquanto a permissão está pendente", async () => {
+    const stop = vi.fn();
+    let resolveCapture: (value: { getTracks(): { stop: typeof stop }[] }) => void = () => {};
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        getUserMedia: vi.fn(
+          () =>
+            new Promise((resolve) => {
+              resolveCapture = resolve;
+            }),
+        ),
+      },
+    });
+    vi.stubGlobal("MediaRecorder", class {});
+    const { unmount } = render(
+      <RoomRecordingInput
+        word="Fala 1"
+        translation=""
+        code="ABCDE"
+        credential="secret"
+        onSaved={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
+    expect(screen.getByRole("button", { name: "Abrindo microfone…" })).toBeTruthy();
+    unmount();
+    resolveCapture({ getTracks: () => [{ stop }] });
+    await waitFor(() => expect(stop).toHaveBeenCalledOnce());
+  });
   it("captura uma fala e mostra a prévia pronta para guardar", async () => {
+    const onPending = vi.fn();
     const stop = vi.fn();
     Object.defineProperty(navigator, "mediaDevices", {
       configurable: true,
@@ -46,6 +100,7 @@ describe("microfone da Escuta Coletiva", () => {
         code="ABCDE"
         credential="secret"
         onSaved={vi.fn()}
+        onPending={onPending}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
@@ -55,6 +110,7 @@ describe("microfone da Escuta Coletiva", () => {
     fireEvent.click(screen.getByRole("button", { name: "Parar gravação" }));
     await waitFor(() => expect(screen.getByRole("button", { name: "Guardar áudio" })).toBeTruthy());
     expect(stop).toHaveBeenCalled();
+    expect(onPending).toHaveBeenCalled();
   });
 
   it("libera o microfone e avisa quando o gravador falha ao iniciar", async () => {
