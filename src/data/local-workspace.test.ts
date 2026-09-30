@@ -210,6 +210,47 @@ describe("local workspace", () => {
     ).toBe(false);
   });
 
+  it("aceita tabela válida e rejeita tabela com linha vazia ou célula gigante", () => {
+    const document = {
+      version: 1,
+      paper: "ruled",
+      strokes: [],
+      stickies: [
+        {
+          id: "table-1",
+          kind: "table",
+          x: 120,
+          y: 150,
+          color: "yellow",
+          text: "",
+          cells: [
+            ["Data", "Tarefa"],
+            ["27/09", "Revisar"],
+          ],
+        },
+      ],
+    };
+    expect(isHandwritingDocument(document)).toBe(true);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [{ ...document.stickies[0], cells: [] }],
+      }),
+    ).toBe(false);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [{ ...document.stickies[0], cells: [["x".repeat(201)]] }],
+      }),
+    ).toBe(false);
+    expect(
+      isHandwritingDocument({
+        ...document,
+        stickies: [{ ...document.stickies[0], cells: Array.from({ length: 9 }, () => ["a"]) }],
+      }),
+    ).toBe(false);
+  });
+
   it("aceita visibilidade de camadas válida e rejeita camada incompleta", () => {
     const document = { version: 1, paper: "blank", strokes: [] };
     const visibility = {

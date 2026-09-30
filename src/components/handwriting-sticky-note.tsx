@@ -1,7 +1,15 @@
 import { reviewPortugueseText } from "../domain/text-review";
 import type { HandwritingSticky } from "../domain/handwriting";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { stickyHeight, stickyWidth } from "./handwriting-geometry";
+import {
+  stickyHeight,
+  stickyWidth,
+  tableAddColumn,
+  tableAddRow,
+  tableRemoveColumn,
+  tableRemoveRow,
+  tableSetCell,
+} from "./handwriting-geometry";
 import { PAGE_HEIGHT as DEFAULT_HEIGHT, PAGE_WIDTH as DEFAULT_WIDTH } from "./handwriting-types";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
@@ -66,7 +74,7 @@ export function HandwritingStickyNote({
 }: HandwritingStickyNoteProps) {
   return (
     <div
-      className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.color}${sticky.formula ? " handwriting-sticky--formula" : ""}${isSelected ? " is-selected" : ""}`}
+      className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.kind === "table" ? "table" : sticky.color}${sticky.formula ? " handwriting-sticky--formula" : ""}${isSelected ? " is-selected" : ""}`}
       style={{
         pointerEvents: ignorePointer ? "none" : undefined,
         left: `${(sticky.x / PAGE_WIDTH) * 100}%`,
@@ -82,7 +90,13 @@ export function HandwritingStickyNote({
           className="handwriting-sticky__drag-hint"
           role="button"
           tabIndex={0}
-          aria-label={sticky.kind === "text" ? "Mover texto" : "Mover post-it"}
+          aria-label={
+            sticky.kind === "text"
+              ? "Mover texto"
+              : sticky.kind === "table"
+                ? "Mover tabela"
+                : "Mover post-it"
+          }
           onKeyDown={(event) => {
             const movement: Record<string, [number, number]> = {
               ArrowLeft: [-10, 0],
@@ -112,9 +126,11 @@ export function HandwritingStickyNote({
             ? "Fórmula"
             : sticky.kind === "text"
               ? "Texto"
-              : sticky.checklist?.length
-                ? "Checklist"
-                : "Nota"}
+              : sticky.kind === "table"
+                ? "Tabela"
+                : sticky.checklist?.length
+                  ? "Checklist"
+                  : "Nota"}
         </span>
         <button
           type="button"
@@ -138,7 +154,7 @@ export function HandwritingStickyNote({
           <button type="button" onClick={() => onMoveMode()}>
             <PaperEditorIcon name="hand" /> Mover
           </button>
-          {sticky.kind !== "text" && (
+          {sticky.kind === undefined && (
             <button
               type="button"
               className={sticky.checklist?.length ? "is-active" : undefined}
@@ -184,7 +200,90 @@ export function HandwritingStickyNote({
           </button>
         </div>
       )}
-      {sticky.checklist?.length ? (
+      {sticky.kind === "table" ? (
+        <div className="handwriting-sticky__table">
+          <table>
+            <tbody>
+              {(sticky.cells ?? [[""]]).map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, columnIndex) => (
+                    <td key={columnIndex}>
+                      <textarea
+                        aria-label={`Célula linha ${rowIndex + 1}, coluna ${columnIndex + 1}`}
+                        value={cell}
+                        maxLength={200}
+                        onFocus={() => onRemember()}
+                        onChange={(event) =>
+                          onUpdate({
+                            cells: tableSetCell(
+                              sticky.cells ?? [[""]],
+                              rowIndex,
+                              columnIndex,
+                              event.target.value,
+                            ),
+                          })
+                        }
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div
+            className="handwriting-sticky__table-controls"
+            role="group"
+            aria-label="Linhas e colunas"
+          >
+            <button
+              type="button"
+              aria-label="Adicionar linha"
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => {
+                onRemember();
+                onUpdate({ cells: tableAddRow(sticky.cells ?? [[""]]) });
+              }}
+            >
+              + Linha
+            </button>
+            <button
+              type="button"
+              aria-label="Remover linha"
+              disabled={(sticky.cells ?? [[""]]).length <= 1}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => {
+                onRemember();
+                onUpdate({ cells: tableRemoveRow(sticky.cells ?? [[""]]) });
+              }}
+            >
+              − Linha
+            </button>
+            <button
+              type="button"
+              aria-label="Adicionar coluna"
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => {
+                onRemember();
+                onUpdate({ cells: tableAddColumn(sticky.cells ?? [[""]]) });
+              }}
+            >
+              + Coluna
+            </button>
+            <button
+              type="button"
+              aria-label="Remover coluna"
+              disabled={(sticky.cells?.[0]?.length ?? 1) <= 1}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => {
+                onRemember();
+                onUpdate({ cells: tableRemoveColumn(sticky.cells ?? [[""]]) });
+              }}
+            >
+              − Coluna
+            </button>
+          </div>
+        </div>
+      ) : sticky.checklist?.length ? (
         <div className="handwriting-sticky__checklist">
           <input
             aria-label="Título do checklist"

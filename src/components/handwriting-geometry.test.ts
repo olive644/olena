@@ -17,6 +17,11 @@ import {
   stickyWidth,
   strokeBounds,
   strokeTouches,
+  tableAddColumn,
+  tableAddRow,
+  tableRemoveColumn,
+  tableRemoveRow,
+  tableSetCell,
   unionBounds,
 } from "./handwriting-geometry";
 
@@ -139,5 +144,56 @@ describe("distâncias e borracha", () => {
     const line = stroke([point(0, 0), point(100, 0)]);
     expect(strokeTouches(line, point(50, 6), 6)).toBe(true);
     expect(strokeTouches(line, point(50, 7), 6)).toBe(false);
+  });
+});
+
+describe("tabela dentro do post-it", () => {
+  const grid = [
+    ["a", "b"],
+    ["c", "d"],
+  ];
+
+  it("adiciona uma linha do tamanho das colunas existentes, sem passar do teto", () => {
+    const withRow = tableAddRow(grid);
+    expect(withRow).toEqual([
+      ["a", "b"],
+      ["c", "d"],
+      ["", ""],
+    ]);
+    expect(grid).toEqual([
+      ["a", "b"],
+      ["c", "d"],
+    ]);
+    let big = [["x"]];
+    for (let i = 0; i < 10; i += 1) big = tableAddRow(big);
+    expect(big.length).toBe(8);
+  });
+
+  it("remove a última linha, nunca ficando sem nenhuma", () => {
+    expect(tableRemoveRow(grid)).toEqual([["a", "b"]]);
+    expect(tableRemoveRow([["a"]])).toEqual([["a"]]);
+  });
+
+  it("adiciona e remove coluna em todas as linhas de uma vez, sem passar do teto", () => {
+    expect(tableAddColumn(grid)).toEqual([
+      ["a", "b", ""],
+      ["c", "d", ""],
+    ]);
+    expect(tableRemoveColumn(grid)).toEqual([["a"], ["c"]]);
+    expect(tableRemoveColumn([["a"], ["c"]])).toEqual([["a"], ["c"]]);
+    let wide = [["x"]];
+    for (let i = 0; i < 10; i += 1) wide = tableAddColumn(wide);
+    expect(wide[0]?.length).toBe(6);
+  });
+
+  it("muda só a célula pedida, sem afetar as outras", () => {
+    expect(tableSetCell(grid, 1, 0, "novo")).toEqual([
+      ["a", "b"],
+      ["novo", "d"],
+    ]);
+    expect(grid).toEqual([
+      ["a", "b"],
+      ["c", "d"],
+    ]);
   });
 });

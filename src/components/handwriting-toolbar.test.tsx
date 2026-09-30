@@ -15,6 +15,7 @@ function toolGroupProps(overrides: Partial<Parameters<typeof HandwritingToolGrou
     onToggleLayers: vi.fn(),
     onToggleText: vi.fn(),
     onAddSticky: vi.fn(),
+    onAddTable: vi.fn(),
     onToggleWritingWindow: vi.fn(),
     onOpenShapeInsert: vi.fn(),
     ...overrides,
@@ -87,6 +88,13 @@ describe("grupo de instrumentos", () => {
     render(<HandwritingToolGroup {...props} />);
     fireEvent.click(screen.getByRole("button", { name: "Inserir sem desenhar" }));
     expect(props.onOpenShapeInsert).toHaveBeenCalledTimes(1);
+  });
+
+  it("adiciona uma tabela", () => {
+    const props = toolGroupProps();
+    render(<HandwritingToolGroup {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar tabela" }));
+    expect(props.onAddTable).toHaveBeenCalledTimes(1);
   });
 });
 

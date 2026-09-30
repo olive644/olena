@@ -5650,6 +5650,66 @@ body.local-room-active {
   scrollbar-width: thin;
 }
 
+.handwriting-sticky__table {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  padding: 3px 4px 6px;
+}
+.handwriting-sticky__table table {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  overflow: auto;
+  display: block;
+}
+.handwriting-sticky__table tbody,
+.handwriting-sticky__table tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+.handwriting-sticky__table td {
+  border: 1px solid #17151c55;
+  padding: 0;
+}
+.handwriting-sticky__table td textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 28px;
+  padding: 3px 5px;
+  resize: none;
+  border: 0;
+  outline-offset: -2px;
+  color: #17151c;
+  background: transparent;
+  font-family: inherit;
+  font-size: clamp(9px, 1vw, 13px);
+  line-height: 1.2;
+}
+.handwriting-sticky__table-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.handwriting-sticky__table-controls button {
+  min-height: 26px;
+  padding: 2px 8px;
+  border: 1px solid #17151c55;
+  border-radius: 4px 10px 4px 8px;
+  background: #fffdf7cc;
+  color: #17151c;
+  font-size: 11px;
+  font-weight: 700;
+}
+.handwriting-sticky__table-controls button:disabled {
+  opacity: 0.4;
+}
+
 .handwriting-sticky__checklist > input,
 .handwriting-sticky__checklist-item input {
   min-width: 0;
