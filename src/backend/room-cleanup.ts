@@ -18,6 +18,7 @@ export async function cleanExpiredRooms(
     "private-rooms",
     "room-limits",
     "speech-audio",
+    "room-recordings",
     "speech-rate-limit",
     "speech-generation-rate-limit",
     "notebook-collab",

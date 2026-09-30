@@ -686,6 +686,12 @@
   font-size: 0.72rem;
 }
 
+.local-room-manual__privacy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .local-room-manual textarea {
   width: 100%;
   min-height: 132px;
@@ -716,18 +722,81 @@
 }
 
 .local-room-manual__preview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  max-height: 420px;
+  overflow-y: auto;
+  gap: 0.6rem;
 }
 
-.local-room-manual__preview span {
-  padding: 0.35rem 0.55rem;
+.local-room-recording {
+  display: grid;
+  min-width: 0;
+  padding: 0.7rem;
   border: 1px solid var(--line-strong);
   border-radius: 5px 10px 6px 9px;
   color: var(--text);
   background: var(--soft);
-  font-size: 0.72rem;
+  gap: 0.55rem;
+}
+
+.local-room-recording__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+}
+
+.local-room-recording__heading strong {
+  font-size: 0.85rem;
+}
+.local-room-recording__heading span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.local-room-recording__heading small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.local-room-recording__controls,
+.local-room-recording__preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.local-room-recording__controls .secondary-button,
+.local-room-recording__preview .secondary-button {
+  min-height: 44px;
+}
+
+.local-room-recording__controls img {
+  width: 22px;
+  height: 22px;
+}
+.local-room-recording__file {
+  display: none;
+}
+.local-room-recording__preview audio {
+  width: min(100%, 260px);
+  height: 44px;
+}
+.local-room-recording__error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  .local-room-recording__controls .secondary-button,
+  .local-room-recording__preview .secondary-button {
+    flex: 1 1 135px;
+  }
+  .local-room-recording__preview audio {
+    width: 100%;
+  }
 }
 
 .local-room-manual__quantity {

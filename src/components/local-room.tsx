@@ -15,9 +15,10 @@ import {
   ROOM_CATEGORIES,
   type LocalRoomSettings,
 } from "../domain/local-room";
-import { parseManualListeningInput } from "../domain/listening-quiz";
+import { normalizeListeningAnswer, parseManualListeningInput } from "../domain/listening-quiz";
 import { roomAppCheckToken } from "../data/room-app-check";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
+import { RecordedRoomPlayer } from "../data/recorded-room-player";
 import { useListeningOnline } from "../hooks/use-listening-online";
 import { ListeningOnlineNotice } from "./listening-online-notice";
 import { LOCAL_ROOM_SESSION_KEY, useLocalRoom } from "../hooks/use-local-room";
@@ -26,6 +27,7 @@ import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
 import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
+import { RoomRecordingInput } from "./room-recording-input";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
 const DEFAULT_SETTINGS: LocalRoomSettings = {
@@ -35,6 +37,7 @@ const DEFAULT_SETTINGS: LocalRoomSettings = {
   subjectName: "Lista personalizada",
   audioRepetitions: "unlimited",
   autoPlayAudio: true,
+  recordedAudioRequired: true,
 };
 
 const ROOM_ACTIVITY_OPTIONS = [
@@ -165,6 +168,10 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const activityRequestRef = useRef(false);
   const [manualWords, setManualWords] = useState("");
   const [appliedManualWords, setAppliedManualWords] = useState("");
+  const [recordingIds, setRecordingIds] = useState<Record<string, string>>({});
+  const [appliedRecordingSignature, setAppliedRecordingSignature] = useState("");
+  const restoredRoomCodeRef = useRef("");
+  const authoringRoomCodeRef = useRef<string | undefined>(undefined);
   const [manualApplyStatus, setManualApplyStatus] = useState("");
   const [revealHostWord, setRevealHostWord] = useState(false);
   const [confirmRevealHostWord, setConfirmRevealHostWord] = useState(false);
@@ -179,6 +186,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
       : room.state;
   const [naturalState, setNaturalState] = useState<NaturalVoiceState>({ status: "idle" });
   const naturalPlayerRef = useRef<NaturalVoicePlayer | undefined>(undefined);
+  const recordedPlayerRef = useRef<RecordedRoomPlayer | undefined>(undefined);
   const audioPlayCountRef = useRef(0);
   const autoPlayedQuestionRef = useRef<string | undefined>(undefined);
   const [replayCooldownUntil, setReplayCooldownUntil] = useState(0);
@@ -203,13 +211,27 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     return () => player.dispose();
   }, [isAllowed, speechCredential]);
 
+  useEffect(() => {
+    const player = new RecordedRoomPlayer(setNaturalState, () => {
+      const code = roomCodeRef.current;
+      const credential = speechCredential();
+      return code && credential ? { code, credential } : undefined;
+    });
+    recordedPlayerRef.current = player;
+    return () => player.dispose();
+  }, [speechCredential]);
+
   function playQuestionAudio(text: string) {
     const limit = state?.settings.audioRepetitions ?? "unlimited";
     if (limit !== "unlimited" && audioPlayCountRef.current >= limit) {
       setNaturalState({ status: "error", message: `Limite de ${limit} reproduções atingido.` });
       return;
     }
-    void naturalPlayerRef.current?.generate(text, 1).then((played) => {
+    const playback =
+      (state?.settings.activity ?? "listening") === "listening"
+        ? recordedPlayerRef.current?.generate(state?.questionIndex ?? 0)
+        : naturalPlayerRef.current?.generate(text, 1);
+    void playback?.then((played) => {
       if (played) audioPlayCountRef.current += 1;
     });
   }
@@ -248,8 +270,13 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     // antecedencia, antes de alguem clicar em "Ouvir".
     audioPlayCountRef.current = 0;
     naturalPlayerRef.current?.stop();
-    if (currentQuestionFront) naturalPlayerRef.current?.preload(currentQuestionFront, 1);
-  }, [questionKey, currentQuestionFront]);
+    recordedPlayerRef.current?.stop();
+    if (currentQuestionFront) {
+      if ((state?.settings.activity ?? "listening") === "listening")
+        recordedPlayerRef.current?.preload(state?.questionIndex ?? 0);
+      else naturalPlayerRef.current?.preload(currentQuestionFront, 1);
+    }
+  }, [questionKey, currentQuestionFront, state?.settings.activity, state?.questionIndex]);
 
   const participantCount = state?.participants.length ?? 0;
   const canJoin = !room.busy && isValidLocalRoomCode(code) && name.trim().length > 0;
@@ -408,6 +435,50 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     }
   }
 
+  useEffect(() => {
+    if (authoringRoomCodeRef.current === state?.code) return;
+    authoringRoomCodeRef.current = state?.code;
+    restoredRoomCodeRef.current = "";
+    const timer = window.setTimeout(() => {
+      setManualWords("");
+      setAppliedManualWords("");
+      setRecordingIds({});
+      setAppliedRecordingSignature("");
+      setManualApplyStatus("");
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [state?.code]);
+
+  useEffect(() => {
+    if (
+      !state?.code ||
+      !room.isHost ||
+      !room.hostDeck?.length ||
+      restoredRoomCodeRef.current === state.code
+    )
+      return;
+    if (manualWords.trim()) return;
+    const roomCode = state.code;
+    const restoredWords = room.hostDeck
+      .map((card) => `${card.front} = ${[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}`)
+      .join("\n");
+    const ids = Object.fromEntries(
+      room.hostDeck.flatMap((card) =>
+        card.audioId ? [[normalizeListeningAnswer(card.front), card.audioId]] : [],
+      ),
+    );
+    const timer = window.setTimeout(() => {
+      restoredRoomCodeRef.current = roomCode;
+      setManualWords(restoredWords);
+      setAppliedManualWords(restoredWords);
+      setRecordingIds(ids);
+      setAppliedRecordingSignature(
+        room.hostDeck.map((card) => ids[normalizeListeningAnswer(card.front)] ?? "").join("|"),
+      );
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [room.hostDeck, room.isHost, state?.code, manualWords]);
+
   if (room.isRestoring)
     return (
       <LocalRoomFullscreen>
@@ -541,13 +612,20 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   const manualInput = parseManualListeningInput(manualWords);
   const manualDeck = manualInput.cards;
   const manualErrors = manualInput.lines.filter((line) => line.error);
-  const manualDeckIsValid = manualDeck.length > 0 && manualErrors.length === 0;
+  const recordingSignature = manualDeck
+    .map((card) => recordingIds[normalizeListeningAnswer(card.front)] ?? "")
+    .join("|");
+  const recordingsReady = manualDeck.every((card) =>
+    Boolean(recordingIds[normalizeListeningAnswer(card.front)]),
+  );
+  const manualDeckIsValid = manualDeck.length > 0 && manualErrors.length === 0 && recordingsReady;
   const usesManualList = state.settings.activity !== "bingo";
   const manualSelectionPending =
     usesManualList &&
     (!manualWords.trim() ||
       state.settings.subjectName !== MANUAL_LISTENING_SOURCE ||
-      appliedManualWords !== manualWords);
+      appliedManualWords !== manualWords ||
+      appliedRecordingSignature !== recordingSignature);
   const actualCount = usesManualList
     ? manualDeck.length
     : questionCount === "all"
@@ -675,8 +753,12 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       </div>
                       <label htmlFor="local-room-manual-words">
                         Digite ou cole palavras e traduções. Use =, ;, vírgula, tabulação ou hífen.
-                        Separe respostas equivalentes com |.
+                        Separe respostas equivalentes com |. Depois grave ou envie o áudio de cada
+                        fala.
                       </label>
+                      <p className="local-room-manual__privacy">
+                        As gravações ficam nesta sala por até 4 horas. Elas não treinam a Olena.
+                      </p>
                       <textarea
                         id="local-room-manual-words"
                         value={manualWords}
@@ -700,13 +782,24 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       {manualDeck.length > 0 && (
                         <div
                           className="local-room-manual__preview"
-                          aria-label="Prévia das palavras"
+                          aria-label="Gravações das palavras"
                         >
-                          {manualDeck.slice(0, 6).map((card) => (
-                            <span key={card.id}>
-                              {card.front} →{" "}
-                              {[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}
-                            </span>
+                          {manualDeck.map((card) => (
+                            <RoomRecordingInput
+                              key={normalizeListeningAnswer(card.front)}
+                              word={card.front}
+                              translation={[card.back, ...(card.acceptedAnswers ?? [])].join(" | ")}
+                              audioId={recordingIds[normalizeListeningAnswer(card.front)]}
+                              code={state.code}
+                              credential={speechCredential() ?? ""}
+                              onSaved={(id) => {
+                                setRecordingIds((current) => ({
+                                  ...current,
+                                  [normalizeListeningAnswer(card.front)]: id,
+                                }));
+                                setManualApplyStatus("");
+                              }}
+                            />
                           ))}
                         </div>
                       )}
@@ -716,8 +809,10 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                             (manualSelectionPending && manualWords.trim()
                               ? "● Alterações ainda não aplicadas"
                               : manualDeckIsValid
-                                ? `${countLabel(manualDeck.length, "palavra pronta", "palavras prontas")} para aplicar.`
-                                : "Adicione pelo menos uma palavra e sua tradução.")}
+                                ? `${countLabel(manualDeck.length, "fala pronta", "falas prontas")} para aplicar.`
+                                : manualDeck.length && !recordingsReady
+                                  ? "Guarde o áudio de cada fala para continuar."
+                                  : "Adicione pelo menos uma palavra e sua tradução.")}
                         </p>
                         <button
                           className="secondary-button"
@@ -732,13 +827,17 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                                   category: "",
                                   questionCount: "all",
                                 },
-                                manualDeck,
+                                manualDeck.map((card) => ({
+                                  ...card,
+                                  audioId: recordingIds[normalizeListeningAnswer(card.front)]!,
+                                })),
                               )
                               .then((saved) => {
                                 if (!saved) return;
                                 setAppliedManualWords(manualWords);
+                                setAppliedRecordingSignature(recordingSignature);
                                 setManualApplyStatus(
-                                  `${countLabel(manualDeck.length, "palavra adicionada", "palavras adicionadas")} à rodada ✓`,
+                                  `${countLabel(manualDeck.length, "fala adicionada", "falas adicionadas")} à rodada ✓`,
                                 );
                               });
                           }}
@@ -900,12 +999,6 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   {state.settings.activity !== "bingo" && (
                     <details className="listening-audio-settings">
                       <summary>Configurações de áudio</summary>
-                      <ListeningOnlineNotice
-                        choice={online.choice}
-                        onChoose={online.choose}
-                        variant="compact"
-                        roomAudio
-                      />
                       <div className="local-room-audio-settings-grid">
                         <label>
                           <span>Repetições permitidas</span>
@@ -936,7 +1029,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                           />{" "}
                           Reproduzir automaticamente
                         </label>
-                        <p>Voz em inglês americano, com alternativa do dispositivo.</p>
+                        <p>Todos ouvirão as gravações guardadas pelo professor.</p>
                       </div>
                     </details>
                   )}
@@ -984,7 +1077,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     <small id="local-room-start-help">
                       {participantCount === 0
                         ? "Aguarde pelo menos um aluno entrar"
-                        : "Aplique as palavras antes de iniciar"}
+                        : "Guarde os áudios e aplique as palavras antes de iniciar"}
                     </small>
                   )}
                 </div>
@@ -995,7 +1088,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
               <Radio size={28} />
               <h3>Aguardando o início</h3>
               <p>O organizador controla esta sala. Código: {state.code}</p>
-              {state.settings.activity !== "bingo" && (
+              {state.settings.activity === "bingo" && (
                 <ListeningOnlineNotice
                   choice={online.choice}
                   onChoose={online.choose}
@@ -1062,7 +1155,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     {naturalState.message}
                   </p>
                 )}
-                {!online.allowed && (
+                {state.settings.activity === "bingo" && !online.allowed && (
                   <ListeningOnlineNotice
                     choice={online.choice}
                     onChoose={online.choose}
@@ -1101,7 +1194,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     {naturalState.message}
                   </p>
                 )}
-                {!online.allowed && (
+                {state.settings.activity === "bingo" && !online.allowed && (
                   <ListeningOnlineNotice
                     choice={online.choice}
                     onChoose={online.choose}
@@ -1202,14 +1295,6 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   <p className="local-room-audio-status" role="status">
                     {naturalState.message}
                   </p>
-                )}
-                {!online.allowed && (
-                  <ListeningOnlineNotice
-                    choice={online.choice}
-                    onChoose={online.choose}
-                    variant="compact"
-                    roomAudio
-                  />
                 )}
                 <label>
                   <span>Digite a tradução</span>

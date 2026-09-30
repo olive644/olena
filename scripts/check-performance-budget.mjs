@@ -141,7 +141,10 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // more together (896.5 KiB measured). Shared paper object icons, visible shape placement
 // and bounded shelves are also included. Combined build: 902.8 KiB on Windows;
 // allow 2.2 KiB of build variance without adding a dependency.
-const MAX_TOTAL_JS_BYTES = 905 * 1024;
+// Teacher-recorded listening adds a lazy room recorder, upload and playback client.
+// The measured application total is 912.2 KiB on Windows; allow 3.8 KiB for CI variance.
+// The initial route remains below its existing ceiling and no runtime dependency was added.
+const MAX_TOTAL_JS_BYTES = 916 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

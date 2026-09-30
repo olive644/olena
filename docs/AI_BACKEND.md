@@ -3,10 +3,10 @@
 ## Estado da decisão
 
 A fronteira da futura tutora Helena está definida como contrato independente de provedor e permanece
-desativada. Separadamente, o Quiz de Escuta e o Modo Sala usam o mesmo serviço de voz natural,
-descrito abaixo, que recebe somente o texto curto a ser pronunciado.
+desativada. Separadamente, o Quiz individual e o Bingo usam o serviço de voz natural
+descrito abaixo. A Escuta Coletiva usa gravações enviadas pelo professor.
 
-## Voz do Quiz de Escuta e do Modo Sala
+## Voz do Quiz individual e do Bingo
 
 `POST /api/speech` é uma função Vercel same-origin. Ela aceita texto de até 160 caracteres, velocidade
 entre 0,7 e 1,05 e consentimento explícito no corpo. Origem, tamanho e limite de uso são validados
@@ -15,13 +15,13 @@ antes de repassar o pedido para o **Cloudflare Workers AI**, chamando o modelo `
 
 Se a chamada ao Cloudflare falhar, exceder o tempo limite configurado ou não estiver configurada,
 `/api/speech` responde com erro. O Quiz individual ainda pode usar a voz em inglês do navegador.
-O Modo Sala não faz essa troca: mostra um aviso e permite tentar novamente. Se o celular bloquear a
-reprodução automática, a pessoa toca em Ouvir para iniciar a mesma gravação. O áudio retorna em MP3
+O Bingo não faz essa troca: mostra um aviso e permite tentar novamente. Se o celular bloquear a
+reprodução automática, a pessoa toca em Ouvir para iniciar o mesmo áudio. O áudio retorna em MP3
 e nenhum texto, resposta ou token é registrado em log.
 
 Configure `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_TOKEN` apenas como variáveis protegidas da Vercel
 (nunca com prefixo `VITE_`, que exporia o token no navegador). O cache do Quiz individual vive somente
-na memória da sessão. No Modo Sala, o pedido inclui o código da sala e o backend guarda a gravação em
+na memória da sessão. No Bingo da Sala, o pedido inclui o código e o backend guarda o áudio gerado em
 `speech-audio/<hash>` no Firebase Realtime Database. A chave é o hash da sala, do texto, da velocidade
 e da versão da voz, sem texto legível. Uma escrita transacional reserva a geração para um aparelho;
 os outros aguardam e recebem os mesmos bytes. A gravação fica disponível por uma hora e a limpeza
@@ -30,6 +30,17 @@ função com conta de serviço acessa esse caminho. O limite de 240 pedidos por 
 na mesma rede, enquanto apenas 30 gerações novas por minuto podem chegar ao provedor. O consentimento
 continua individual e foi versionado novamente por causa da retenção temporária. Publicar as regras
 atualizadas de `firebase-room.rules.json` é necessário para o índice da limpeza.
+
+### Gravações da Escuta Coletiva
+
+Antes de iniciar, o professor informa cada fala e tradução, grava com o microfone ou envia um
+arquivo e escuta a prévia. A sala aceita áudio WebM, OGG, MP4/M4A, MP3 ou WAV de até 256 KB por
+fala. `POST /api/room-recording?action=upload` exige a credencial do anfitrião no lobby e guarda
+os bytes em `room-recordings`. O início da rodada exige uma gravação para cada fala. Durante a
+rodada, `?action=play` entrega apenas o áudio da pergunta atual, e somente a integrantes da sala.
+Não há síntese MeloTTS, voz do dispositivo nem envio do texto a um provedor nessa atividade.
+As gravações expiram com a sala em até quatro horas e a limpeza diária remove as cópias vencidas.
+Não há biblioteca permanente na conta nem treinamento de modelo com essas gravações.
 
 ### Riscos do áudio compartilhado
 

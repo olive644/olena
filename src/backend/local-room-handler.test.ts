@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createLocalRoomHandler } from "./local-room-handler";
 import { createMemoryRoomStore } from "./room-transaction";
+import { createRoomRecordingHandler } from "./room-recording-handler";
 import {
   MAX_ROOM_PARTICIPANTS,
   ROOM_START_COUNTDOWN_MS,
@@ -22,14 +23,16 @@ let publish: ReturnType<typeof vi.fn>;
 let codeCounter = 0;
 let idCounter = 0;
 let currentTime = 1_000;
+let store = createMemoryRoomStore(() => currentTime);
 
 beforeEach(() => {
   codeCounter = 0;
   idCounter = 0;
   currentTime = 1_000;
+  store = createMemoryRoomStore(() => currentTime);
   publish = vi.fn().mockResolvedValue(undefined);
   handler = createLocalRoomHandler({
-    store: createMemoryRoomStore(() => currentTime),
+    store,
     publish: publish as (code: string, publicState: PublicLocalRoomState) => Promise<void>,
     streamUrl: (code) => `https://helenastudy-rtdb.firebaseio.com/rooms/${code}.json`,
     now: () => currentTime,
@@ -46,6 +49,62 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it("exige gravação do professor antes de iniciar a escuta e não publica o áudio", async () => {
+    const response = await handler(
+      post("create", {
+        settings: {
+          difficulty: "mixed",
+          questionCount: "all",
+          roundSeconds: 30,
+          recordedAudioRequired: true,
+        },
+      }),
+    );
+    const { code, hostToken } = (await response.json()) as { code: string; hostToken: string };
+    await handler(post("join", { code, displayName: "Ana" }));
+    const missing = await handler(post("start", { code, hostToken }));
+    expect(missing.status).toBe(409);
+    const recordings = createRoomRecordingHandler({
+      store,
+      now: () => currentTime,
+      randomId: () => "audio-123456",
+    });
+    const upload = await recordings(
+      post("upload", {
+        code,
+        credential: hostToken,
+        contentType: "audio/webm",
+        audio: Buffer.from([0x1a, 0x45, 0xdf, 0xa3, 0x42]).toString("base64"),
+      }),
+    );
+    expect(upload.status).toBe(201);
+    const { audioId } = (await upload.json()) as { audioId: string };
+    const foreign = await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: {},
+        sourceDeck: [{ id: "a", front: "school", back: "escola", audioId: "foreign-123" }],
+      }),
+    );
+    expect(foreign.status).toBe(400);
+    const saved = await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: {},
+        sourceDeck: [{ id: "a", front: "school", back: "escola", audioId }],
+      }),
+    );
+    expect(saved.status).toBe(200);
+    const savedPayload = (await saved.json()) as {
+      state: PublicLocalRoomState;
+      sourceDeck: { audioId: string }[];
+    };
+    expect(savedPayload.sourceDeck[0]?.audioId).toBe(audioId);
+    expect(JSON.stringify(savedPayload.state)).not.toContain(audioId);
+    expect((await handler(post("start", { code, hostToken }))).status).toBe(200);
+  });
   it.each([
     ["/profile-avatars/oliver.webp", "/profile-avatars/oliver.webp"],
     ["https://lh3.googleusercontent.com/avatar", "https://lh3.googleusercontent.com/avatar"],

@@ -1,7 +1,26 @@
 import { test, expect } from "@playwright/test";
 import { createLocalRoomHandler } from "../src/backend/local-room-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
+import { createRoomRecordingHandler } from "../src/backend/room-recording-handler";
 import type { PublicLocalRoomState } from "../src/domain/local-room";
+
+function silentWav(): Buffer {
+  const samples = 2000;
+  const audio = Buffer.alloc(44 + samples * 2);
+  audio.write("RIFF", 0);
+  audio.writeUInt32LE(audio.length - 8, 4);
+  audio.write("WAVEfmt ", 8);
+  audio.writeUInt32LE(16, 16);
+  audio.writeUInt16LE(1, 20);
+  audio.writeUInt16LE(1, 22);
+  audio.writeUInt32LE(8000, 24);
+  audio.writeUInt32LE(16000, 28);
+  audio.writeUInt16LE(2, 32);
+  audio.writeUInt16LE(16, 34);
+  audio.write("data", 36);
+  audio.writeUInt32LE(samples * 2, 40);
+  return audio;
+}
 
 // Real room handler and optimistic transactions, with a deterministic transport
 // adapter instead of production Firebase. Each participant has isolated storage.
@@ -11,13 +30,16 @@ for (const activity of ["listening", "bingo"] as const) {
   }, testInfo) => {
     test.setTimeout(120_000);
     const states = new Map<string, PublicLocalRoomState>();
+    const store = createMemoryRoomStore();
     const handler = createLocalRoomHandler({
-      store: createMemoryRoomStore(),
+      store,
       publish: async (code, state) => {
         if ((state.revision ?? 0) >= (states.get(code)?.revision ?? 0)) states.set(code, state);
       },
       streamUrl: (code) => `${testInfo.project.use.baseURL}/test-room/${code}`,
     });
+    const recordingHandler = createRoomRecordingHandler({ store });
+    let playbackRequests = 0;
     const hostViewport =
       testInfo.project.name === "mobile"
         ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }
@@ -46,6 +68,22 @@ for (const activity of ["listening", "bingo"] as const) {
             status: response.status,
             contentType: "application/json",
             body: await response.text(),
+          });
+        });
+        await context.route("**/api/room-recording?*", async (route) => {
+          const request = route.request();
+          if (request.url().includes("action=play")) playbackRequests += 1;
+          const response = await recordingHandler(
+            new Request(request.url(), {
+              method: request.method(),
+              headers: request.headers(),
+              body: request.postData() ?? "{}",
+            }),
+          );
+          await route.fulfill({
+            status: response.status,
+            headers: Object.fromEntries(response.headers.entries()),
+            body: Buffer.from(await response.arrayBuffer()),
           });
         });
         await context.route("**/test-room/*", (route) =>
@@ -92,7 +130,9 @@ for (const activity of ["listening", "bingo"] as const) {
       await host.screenshot({ path: testInfo.outputPath("practice.png") });
       await host.getByRole("button", { name: "Abrir Modo Sala", exact: true }).click();
       await host.getByRole("button", { name: "Criar sala", exact: true }).click();
-      await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+      await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible({
+        timeout: 15_000,
+      });
       await expect(host.getByRole("combobox", { name: "Material da sala" })).toHaveCount(0);
       await expect(
         host.getByRole("checkbox", { name: "Aceitar um pequeno erro de digitação" }),
@@ -151,8 +191,17 @@ for (const activity of ["listening", "bingo"] as const) {
           .fill(
             "school = escola\nfriend = amigo\nbook = livro\nwindow = janela\nteacher = professor",
           );
+        for (const card of await host.locator(".local-room-recording").all()) {
+          await card.locator('input[type="file"]').setInputFiles({
+            name: "fala.wav",
+            mimeType: "audio/wav",
+            buffer: silentWav(),
+          });
+          await card.getByRole("button", { name: "Guardar áudio" }).click();
+          await expect(card.getByText("Áudio guardado ✓")).toBeVisible();
+        }
         await host.getByRole("button", { name: "Aplicar palavras", exact: true }).click();
-        await expect(host.getByText("5 palavras adicionadas à rodada ✓")).toBeVisible();
+        await expect(host.getByText("5 falas adicionadas à rodada ✓")).toBeVisible();
       } else {
         await host.getByRole("combobox", { name: "Perguntas", exact: true }).selectOption("5");
       }
@@ -266,6 +315,7 @@ for (const activity of ["listening", "bingo"] as const) {
       if (activity === "listening")
         expect(states.get(code)!.participants.map((p) => p.score)).toEqual([50, 50]);
       else expect(Math.max(...states.get(code)!.participants.map((p) => p.score))).toBe(50);
+      if (activity === "listening") expect(playbackRequests).toBeGreaterThan(0);
       await host.getByRole("button", { name: "Trocar atividade", exact: true }).click();
       for (let index = 2; index < 7; index++) {
         await handler(

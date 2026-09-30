@@ -330,12 +330,11 @@ produto.
 10. Montar planos de aula pelo fluxo determinístico existente.
 
 Os dados pessoais compartilham um workspace local versionado e não exigem conta. O Modo Sala usa
-Firebase Realtime Database para estado temporário compartilhado; o texto da pergunta de escuta é
-enviado ao Cloudflare Workers AI apenas quando a voz neural é usada e a pessoa aceitou no aviso
-de escuta (`helena.listening.online.v1`), tanto no Quiz de Escuta individual quanto no Modo Sala.
-Sem aceite, o Quiz individual usa a voz do aparelho e a estimativa local de dificuldade. No Modo Sala
-não há voz do aparelho: o áudio gerado com aceite é compartilhado temporariamente por `speech-audio`
-no Firebase, com acesso privado, expiração de uma hora e limpeza diária. Consulte `docs/AI_BACKEND.md`.
+Firebase Realtime Database para estado temporário compartilhado. Na Escuta Coletiva, o professor
+envia uma gravação por fala; os participantes autorizados recebem o mesmo áudio. As gravações
+expiram com a sala em até quatro horas e não treinam a Olena. Quiz individual e Bingo ainda podem
+usar Cloudflare Workers AI com consentimento (`helena.listening.online.v1`). Sem aceite, o Quiz
+individual usa a voz do aparelho. No Modo Sala não há voz do aparelho. Consulte `docs/AI_BACKEND.md`.
 
 ## Arquitetura atual
 
@@ -349,9 +348,9 @@ Cada aba tem seu caminho (`src/domain/app-routes.ts`, hook `useAppView` com Hist
 - Vitest e Testing Library para unidade/componente;
 - Playwright para fluxos desktop e mobile;
 - GitHub Actions para qualidade, auditoria, segredos, análise estática e CodeQL.
-- Cloudflare Workers AI (modelo MeloTTS) chamado por função same-origin, sem expor o token no
-  navegador; serviço próprio Kokoro+Piper (`services/tts`) implementado e testado, mas fora de uso
-  em produção por falta de hospedagem grátis viável;
+- Cloudflare Workers AI (modelo MeloTTS) continua no Quiz individual e Bingo, sem expor o token no
+  navegador; Escuta Coletiva usa áudio gravado pelo professor. Kokoro+Piper (`services/tts`)
+  permanece fora de uso em produção por falta de hospedagem grátis viável;
 - cache de áudio por texto e velocidade durante a sessão, com fallback imediato para a voz do
   dispositivo se o Cloudflare Workers AI falhar;
 - Firebase Realtime Database como armazenamento temporário da Sala e Server-Sent Events para o

@@ -6,6 +6,7 @@ export type ListeningCard = Pick<Flashcard, "id" | "front" | "back"> & {
   acceptedAnswers?: readonly string[];
   difficulty?: PedagogicalDifficulty;
   category?: string;
+  audioId?: string;
 };
 
 export const STARTER_DECK: readonly ListeningCard[] = [

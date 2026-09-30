@@ -35,6 +35,8 @@ export function createRoomGuard(
       "view-create",
       "view-read",
       "speech",
+      "upload",
+      "play",
     ].includes(requestedAction ?? "")
       ? requestedAction!
       : "unknown";
@@ -82,9 +84,11 @@ export function createRoomGuard(
     const limit =
       action === "create" || action === "view-create"
         ? 6
-        : action === "join" || action === "view-read"
-          ? 90
-          : 600;
+        : action === "upload"
+          ? 30
+          : action === "join" || action === "view-read"
+            ? 90
+            : 600;
     const bucket = Math.floor(Date.now() / 60000);
     const key = `room-limits/${createHash("sha256").update(`${address}:${action}`).digest("hex")}`;
     for (let attempt = 0; attempt < 40; attempt++) {
