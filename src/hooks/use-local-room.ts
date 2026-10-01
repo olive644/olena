@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getFirebaseAccountServices } from "../data/firebase-account";
 import { roomAppCheckToken } from "../data/room-app-check";
 import {
   isValidLocalRoomCode,
@@ -182,12 +183,19 @@ async function sendRoom<T>(
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
     const appCheckToken = await roomAppCheckToken();
+    // Quando a pessoa está logada, o token vai junto para o servidor poder impedir que a
+    // mesma conta entre na mesma sala por outro dispositivo. A sala continua funcionando
+    // sem login (sem este token) como sempre funcionou.
+    const accountToken = await getFirebaseAccountServices()
+      .then(({ auth }) => auth.currentUser?.getIdToken())
+      .catch(() => undefined);
     const sentAt = Date.now();
     const response = await fetch(`/api/local-room?action=${action}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         ...(appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
+        ...(accountToken ? { Authorization: `Bearer ${accountToken}` } : {}),
       },
       body: JSON.stringify(body),
       signal: AbortSignal.any([controller.signal, signal]),

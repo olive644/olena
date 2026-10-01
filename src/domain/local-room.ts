@@ -36,6 +36,9 @@ export type LocalRoomParticipant = {
   avatarUrl?: string;
   score: number;
   token?: string;
+  // UID da conta Google, quando a pessoa está logada (nunca exposto no estado público da
+  // sala): usado só para impedir que a mesma conta entre duas vezes por dispositivos diferentes.
+  accountId?: string;
   lastSeenAt?: number;
   online?: boolean;
   team?: string;
@@ -68,6 +71,9 @@ export type LocalRoomAnswerFeedback = {
 export type LocalRoomState = {
   code: string;
   hostToken: string;
+  // UID da conta de quem criou a sala, quando estava logada ao criar (mesma observação de
+  // privacidade do accountId do participante acima).
+  hostAccountId?: string;
   phase: LocalRoomPhase;
   settings: LocalRoomSettings;
   participants: LocalRoomParticipant[];
@@ -187,11 +193,12 @@ export function buildLocalRoomJoinUrl(origin: string, code: string): string {
 
 export function createRoom(
   settings: LocalRoomSettings,
-  dependencies: { code: string; hostToken: string; now: number },
+  dependencies: { code: string; hostToken: string; hostAccountId?: string; now: number },
 ): LocalRoomState {
   return {
     code: dependencies.code,
     hostToken: dependencies.hostToken,
+    ...(dependencies.hostAccountId ? { hostAccountId: dependencies.hostAccountId } : {}),
     phase: "lobby",
     settings,
     participants: [],
@@ -468,6 +475,7 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
     participants: state.participants.map((participant) => {
       const publicParticipant = { ...participant };
       delete publicParticipant.token;
+      delete publicParticipant.accountId;
       return publicParticipant;
     }),
     questionIndex: state.questionIndex,

@@ -2,7 +2,12 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
+import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { useCloudSync } from "./use-cloud-sync";
+
+function notebook(id: string, title: string): WorkspaceState["notebooks"][number] {
+  return { id, title, subjectId: "subject-english", createdAt: "2026", pageIds: [] };
+}
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
 
@@ -277,6 +282,66 @@ it("concilia alterações simultâneas por chave e preserva o conflito local", a
     "helenastudy.theme": "dark",
   });
   expect(localStorage.getItem("helenastudy.sync-conflict.v1")).toContain("helena.profile.v1");
+});
+
+it("mescla cadernos adicionados em cada dispositivo, em vez de descartar um dos dois", async () => {
+  // Reproduz o relato de conteúdo diferente entre PC e celular: cada dispositivo cria um
+  // caderno diferente desde a última sincronização. Antes desta mudança, o merge tratava o
+  // espaço de estudos inteiro como um bloco só e um dos dois cadernos desaparecia.
+  const user = {
+    uid: "user-1",
+    displayName: "Helena",
+    email: "helena@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+
+  const base = createInitialWorkspace();
+  const fromPhone = { ...base, notebooks: [notebook("do-celular", "Caderno do celular")] };
+
+  let getCount = 0;
+  const puts: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET") {
+        getCount += 1;
+        return new Response(
+          JSON.stringify({
+            items: {
+              "helenastudy.workspace.v1": JSON.stringify(getCount === 1 ? base : fromPhone),
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      puts.push(init?.body as string);
+      return new Response("null", { status: 200 });
+    }),
+  );
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  const fromPc = { ...base, notebooks: [notebook("do-pc", "Caderno do PC")] };
+  act(() => writeSyncedStorage("helenastudy.workspace.v1", JSON.stringify(fromPc)));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  const uploaded = JSON.parse(puts.at(-1)!).items["helenastudy.workspace.v1"] as string;
+  const mergedNotebooks = (JSON.parse(uploaded) as WorkspaceState).notebooks.map((n) => n.id);
+  expect(mergedNotebooks.sort()).toEqual(["do-celular", "do-pc"]);
+  expect(localStorage.getItem("helenastudy.sync-conflict.v1")).toBeNull();
 });
 
 it("recebe uma mudança de outro dispositivo pelo stream do Firebase, sem esperar nenhum polling", async () => {

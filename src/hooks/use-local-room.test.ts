@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   LOCAL_ROOM_SESSION_KEY,
   normalizeRoomState,
@@ -7,6 +7,17 @@ import {
   useLocalRoom,
 } from "./use-local-room";
 import type { PublicLocalRoomState } from "../domain/local-room";
+import { getFirebaseAccountServices } from "../data/firebase-account";
+
+vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
+
+beforeEach(() => {
+  // Sem conta logada por padrão: o comportamento de convidado (sem Authorization) continua
+  // sendo o caminho exercitado pelos testes que não mexem nisso.
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: null },
+  } as never);
+});
 
 describe("normalizeRoomState", () => {
   it("rejeita dados de participantes inválidos", () => {
@@ -203,5 +214,94 @@ describe("sessão temporária da sala", () => {
     );
 
     expect(result.current.error).toBe("Não foi possível criar a sala.");
+  });
+
+  it("envia o token da conta logada junto do pedido, para o servidor poder impedir entrar duas vezes na sala", async () => {
+    vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+      auth: { currentUser: { getIdToken: vi.fn().mockResolvedValue("id-token-da-ana") } },
+    } as never);
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          code: "ABCDE",
+          hostToken: "host-1",
+          state: {
+            code: "ABCDE",
+            phase: "lobby",
+            settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 30 },
+            participants: [],
+          },
+          streamUrl: "https://firebase.example/rooms/ABCDE.json",
+        }),
+        { status: 201, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    vi.stubGlobal(
+      "EventSource",
+      class {
+        onopen = null;
+        onerror = null;
+        close = vi.fn();
+        addEventListener = vi.fn();
+        constructor() {
+          /* não importa para este teste */
+        }
+      },
+    );
+
+    const { result } = renderHook(() => useLocalRoom());
+    await waitFor(() => expect(result.current.isRestoring).toBe(false));
+    await act(async () =>
+      result.current.createRoom({ difficulty: "mixed", questionCount: 5, roundSeconds: 30 }),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/local-room?action=create",
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer id-token-da-ana" }),
+      }),
+    );
+  });
+
+  it("não manda Authorization quando ninguém está logado (convidado continua funcionando)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          code: "ABCDE",
+          hostToken: "host-1",
+          state: {
+            code: "ABCDE",
+            phase: "lobby",
+            settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 30 },
+            participants: [],
+          },
+          streamUrl: "https://firebase.example/rooms/ABCDE.json",
+        }),
+        { status: 201, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    vi.stubGlobal(
+      "EventSource",
+      class {
+        onopen = null;
+        onerror = null;
+        close = vi.fn();
+        addEventListener = vi.fn();
+        constructor() {
+          /* não importa para este teste */
+        }
+      },
+    );
+
+    const { result } = renderHook(() => useLocalRoom());
+    await waitFor(() => expect(result.current.isRestoring).toBe(false));
+    await act(async () =>
+      result.current.createRoom({ difficulty: "mixed", questionCount: 5, roundSeconds: 30 }),
+    );
+
+    const headers = fetchMock.mock.calls[0]?.[1]?.headers as Record<string, string>;
+    expect(headers).not.toHaveProperty("Authorization");
   });
 });
