@@ -27,7 +27,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(3);
+      await expect(secondary).toHaveCount(4);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
         await expect
@@ -361,9 +361,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
 
 test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Contrato visual do Modo Sala móvel.");
-  const navigation = page.getByRole("navigation", { name: "Navegação móvel" });
-
-  await navigation.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
+  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
   await page
     .getByRole("dialog", { name: "Mais ferramentas" })
     .getByRole("button", { name: "Modo Sala", exact: true })
