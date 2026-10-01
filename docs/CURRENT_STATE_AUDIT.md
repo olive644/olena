@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Modo Sala independente (2026-10-01)
+
+- Rota `/sala` e navegação própria com ícone de sala em papel recortado nos temas claro e escuro. Praticar permanece dedicado à prática individual.
+- Minigame, palavras e configurações são preparados localmente antes de criar a sala. O convite, QR e participantes aparecem somente depois da criação.
+- Arquivos de áudio preparados antes da criação são enviados usando a credencial da sala criada. Nenhum arquivo é enviado durante a preparação local.
+- Entrada usa o nome da conta, sem campo de nome de exibição. Loading acompanha entrada, criação e reconexão; a espera do App Check respeita o prazo da requisição.
+
 ## Liberação segura da transição para a folha (2026-10-01)
 
 - A viagem da folha deixava de ter prazo ao encontrar o canvas; falhas de criação ou cancelamento das animações não liberavam a classe que oculta o editor. Agora há conclusão única, prazo total de quatro segundos e limpeza em falha ou desmontagem.

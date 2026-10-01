@@ -181,14 +181,25 @@ async function sendRoom<T>(
 ): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
+  const combinedSignal = AbortSignal.any([controller.signal, signal]);
+  let cancelTokenWait: (() => void) | undefined;
   try {
-    const appCheckToken = await roomAppCheckToken();
-    // Quando a pessoa está logada, o token vai junto para o servidor poder impedir que a
-    // mesma conta entre na mesma sala por outro dispositivo. A sala continua funcionando
-    // sem login (sem este token) como sempre funcionou.
-    const accountToken = await getFirebaseAccountServices()
-      .then(({ auth }) => auth.currentUser?.getIdToken())
-      .catch(() => undefined);
+    combinedSignal.throwIfAborted();
+    // As proteções são preparadas juntas, dentro do prazo da conexão.
+    // O token da conta preserva a exclusividade por dispositivo no servidor.
+    const [appCheckToken, accountToken] = await Promise.race([
+      Promise.all([
+        roomAppCheckToken(),
+        getFirebaseAccountServices()
+          .then(({ auth }) => auth.currentUser?.getIdToken())
+          .catch(() => undefined),
+      ]),
+      new Promise<never>((_, reject) => {
+        cancelTokenWait = () =>
+          reject(new DOMException("A conexão demorou demais. Tente novamente.", "AbortError"));
+        combinedSignal.addEventListener("abort", cancelTokenWait, { once: true });
+      }),
+    ]);
     const sentAt = Date.now();
     const response = await fetch(`/api/local-room?action=${action}`, {
       method: "POST",
@@ -198,7 +209,7 @@ async function sendRoom<T>(
         ...(accountToken ? { Authorization: `Bearer ${accountToken}` } : {}),
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.any([controller.signal, signal]),
+      signal: combinedSignal,
     });
     const receivedAt = Date.now();
     const serverTime = Number(response.headers.get("X-Room-Server-Time"));
@@ -219,6 +230,7 @@ async function sendRoom<T>(
       normalizeRoomState(payload.state as Partial<PublicLocalRoomState>);
     return payload;
   } finally {
+    if (cancelTokenWait) combinedSignal.removeEventListener("abort", cancelTokenWait);
     clearTimeout(timeout);
   }
 }
@@ -246,6 +258,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     return session;
   });
   const [role, setRole] = useState<Role>(storedSession?.role ?? "choose");
+  const [hasSavedSession, setHasSavedSession] = useState(Boolean(storedSession));
   const [state, updateState] = useState<PublicLocalRoomState>();
   const [hostDeck, setHostDeck] = useState<ListeningCard[]>([]);
   function setState(next: PublicLocalRoomState | undefined) {
@@ -324,7 +337,8 @@ export function useLocalRoom(initialJoinCode?: string) {
   }
 
   useEffect(() => {
-    if (!storedSession || codeRef.current !== storedSession.code) return;
+    const session = readStoredLocalRoomSession();
+    if (!session || codeRef.current !== session.code) return;
     let active = true;
     setIsRestoring(true);
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -334,14 +348,15 @@ export function useLocalRoom(initialJoinCode?: string) {
       participantId?: string;
       sourceDeck?: ListeningCard[];
     }>("resume", {
-      code: storedSession.code,
-      role: storedSession.role,
-      credential: storedSession.credential,
+      code: session.code,
+      role: session.role,
+      credential: session.credential,
     })
       .then((payload) => {
         if (!active) return;
         setState(payload.state);
-        if (storedSession.role === "host") setHostDeck(payload.sourceDeck ?? []);
+        setError("");
+        if (session.role === "host") setHostDeck(payload.sourceDeck ?? []);
         if (payload.participantId) setParticipantId(payload.participantId);
         startStreaming(payload.streamUrl);
       })
@@ -352,6 +367,7 @@ export function useLocalRoom(initialJoinCode?: string) {
           (caught.status === 404 || caught.invalidSession)
         ) {
           clearStoredLocalRoomSession();
+          setHasSavedSession(false);
           hostTokenRef.current = "";
           codeRef.current = "";
           setParticipantId("");
@@ -434,7 +450,7 @@ export function useLocalRoom(initialJoinCode?: string) {
   }, []);
 
   async function createRoom(settings: LocalRoomSettings) {
-    if (pendingRef.current) return;
+    if (pendingRef.current) return undefined;
     pendingRef.current = true;
     setBusy(true);
     setError("");
@@ -455,11 +471,14 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       setHostDeck([]);
       setRole("host");
+      setHasSavedSession(true);
       startStreaming(payload.streamUrl);
+      return { code: payload.code, hostToken: payload.hostToken };
     } catch (caught) {
       if (caught instanceof RoomRequestError && caught.status === 409)
         createRequestRef.current = crypto.randomUUID();
       setError(roomErrorMessage(caught, "Não foi possível criar a sala."));
+      return undefined;
     } finally {
       pendingRef.current = false;
       setBusy(false);
@@ -475,7 +494,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       return;
     }
     if (!displayName) {
-      setError("Escolha um nome de exibição.");
+      setError("Entre na sua conta para participar da sala.");
       return;
     }
     if (pendingRef.current) return;
@@ -501,6 +520,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
       setRole("participant");
+      setHasSavedSession(true);
       startStreaming(payload.streamUrl);
     } catch (caught) {
       setError(roomErrorMessage(caught, "Não foi possível entrar na sala."));
@@ -640,6 +660,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       }).catch(() => {});
     stopStreaming();
     clearStoredLocalRoomSession();
+    setHasSavedSession(false);
     setState(undefined);
     setHostDeck([]);
     setError("");
@@ -657,9 +678,11 @@ export function useLocalRoom(initialJoinCode?: string) {
     isHost: role === "host",
     participantId,
     isRestoring,
+    hasSavedSession,
     connectionStatus,
     busy,
     setRole,
+    reconnect: () => setRestoreAttempt((attempt) => attempt + 1),
     createRoom,
     joinRoom,
     updateSettings,

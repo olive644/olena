@@ -10,6 +10,7 @@ import { HabitsView } from "./views/habits-view";
 import { TodayView } from "./views/today-view";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const RoomView = lazy(() => import("./views/room-view"));
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
 const LibraryView = lazy(() => import("./views/library-view"));
 const LessonBuilderView = lazy(() => import("./views/lesson-builder-view"));
@@ -39,7 +40,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const [joinCode] = useState(
     () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
   );
-  const [view, setView] = useAppView(joinCode ? "learn" : "today");
+  const [view, setView] = useAppView(joinCode ? "room" : "today");
   const { workspace, storageFull, dispatch, history, restoreSnapshot } = useWorkspace();
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
@@ -97,12 +98,16 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             <NotesView workspace={workspace} dispatch={dispatch} cloud={cloud} />
           )}
           {view === "lesson-builder" && <LessonBuilderView onBack={() => setView("today")} />}
-          {view === "learn" && (
-            <LearnView
-              workspace={workspace}
-              dispatch={dispatch}
+          {view === "learn" && <LearnView workspace={workspace} dispatch={dispatch} />}
+          {view === "room" && (
+            <RoomView
               joinCode={joinCode}
               projectorMode={Boolean(projectorCode)}
+              accountName={cloud.displayName}
+              accountLoading={cloud.enabled && cloud.authenticated === undefined && !cloud.ready}
+              requireAccount={cloud.enabled}
+              onExit={() => setView("today")}
+              onSignIn={() => setOnboarding(true)}
             />
           )}
           {view === "library" && <LibraryView workspace={workspace} dispatch={dispatch} />}

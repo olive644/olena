@@ -23,6 +23,7 @@ export type AppView =
   | "notes"
   | "lesson-builder"
   | "learn"
+  | "room"
   | "library"
   | "activity-bank"
   | "profile";
@@ -114,6 +115,7 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
       { view: "planner", label: "Agenda", icon: "planner" },
       { view: "focus", label: "Foco", icon: "focus" },
       { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "gamepad" },
+      { view: "room", label: "Modo Sala", icon: "room" },
     ],
   },
   {

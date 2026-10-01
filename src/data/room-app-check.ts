@@ -1,4 +1,5 @@
 let tokenProvider: Promise<() => Promise<string>> | undefined;
+let pendingToken: Promise<string> | undefined;
 export async function roomAppCheckToken(): Promise<string | undefined> {
   const siteKey = import.meta.env["VITE_FIREBASE_APPCHECK_SITE_KEY"] as string | undefined;
   if (!siteKey) return undefined;
@@ -22,5 +23,10 @@ export async function roomAppCheckToken(): Promise<string | undefined> {
       tokenProvider = undefined;
       throw error;
     });
-  return (await tokenProvider)();
+  pendingToken ??= tokenProvider
+    .then((provider) => provider())
+    .finally(() => {
+      pendingToken = undefined;
+    });
+  return pendingToken;
 }
