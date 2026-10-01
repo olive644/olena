@@ -42,85 +42,106 @@ export function NotebookPageJourney({
     }
     document.documentElement.classList.add("notebook-page-entering");
     let cancelled = false;
+    let completed = false;
     let started = false;
     let frame = 0;
     const animations: Animation[] = [];
     const reveal = () => document.documentElement.classList.remove("notebook-page-entering");
     const observer = new MutationObserver(start);
-    const timeout = window.setTimeout(() => {
-      if (!started) {
-        reveal();
-        onDone();
-      }
-    }, 4000);
-    function start() {
-      const target = document.querySelector<HTMLElement>(".handwriting-canvas");
-      if (!target || started) return;
-      started = true;
+    const timeout = window.setTimeout(finish, 4000);
+    function finish() {
+      if (cancelled || completed) return;
+      completed = true;
       observer.disconnect();
       window.clearTimeout(timeout);
+      cancelAnimationFrame(frame);
+      animations.forEach((animation) => animation.cancel());
+      reveal();
+      onDone();
+    }
+    function start() {
+      const target = document.querySelector<HTMLElement>(".handwriting-canvas");
+      if (!target || started || completed) return;
+      started = true;
+      observer.disconnect();
+      if (
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        typeof element.animate !== "function"
+      ) {
+        finish();
+        return;
+      }
       frame = requestAnimationFrame(() => {
-        const bounds = target.getBoundingClientRect();
-        const viewport = target.closest(".handwriting-viewport")!.getBoundingClientRect();
-        const x = Math.max(0, viewport.x, bounds.x);
-        const y = Math.max(0, viewport.y, bounds.y);
-        const rect = {
-          x,
-          y,
-          width: Math.min(window.innerWidth, viewport.right, bounds.right) - x,
-          height: Math.min(window.innerHeight, viewport.bottom, bounds.bottom) - y,
-        };
-        const { from } = journey;
-        const destination = `translate(${rect.x - from.x}px, ${rect.y - from.y}px)`;
-        animations.push(
-          element.animate(
-            [
-              {
-                transform: "none",
-                width: `${from.width}px`,
-                height: `${from.height}px`,
-                boxShadow: "0 3px 0 #d5ccba",
-                easing: "cubic-bezier(.2,.7,.2,1)",
-              },
-              {
-                transform: "translateY(-16px) rotate(-2deg)",
-                width: `${from.width}px`,
-                height: `${from.height}px`,
-                boxShadow: "0 20px 45px #29243230",
-                offset: 0.18,
-              },
-              {
-                transform: destination,
-                width: `${rect.width}px`,
-                height: `${rect.height}px`,
-                boxShadow: "0 3px 0 #d5ccba",
-                offset: 1,
-              },
-            ],
-            { duration: 650, fill: "both", easing: "cubic-bezier(.22,.65,.25,1)" },
-          ),
-        );
-        if (scene)
+        try {
+          const bounds = target.getBoundingClientRect();
+          const viewportElement = target.closest(".handwriting-viewport");
+          if (!viewportElement) {
+            finish();
+            return;
+          }
+          const viewport = viewportElement.getBoundingClientRect();
+          const x = Math.max(0, viewport.x, bounds.x);
+          const y = Math.max(0, viewport.y, bounds.y);
+          const rect = {
+            x,
+            y,
+            width: Math.min(window.innerWidth, viewport.right, bounds.right) - x,
+            height: Math.min(window.innerHeight, viewport.bottom, bounds.bottom) - y,
+          };
+          const { from } = journey;
+          const destination = `translate(${rect.x - from.x}px, ${rect.y - from.y}px)`;
           animations.push(
-            scene.animate([{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], {
-              duration: 650,
-              fill: "both",
-              easing: "ease-in",
-            }),
+            element.animate(
+              [
+                {
+                  transform: "none",
+                  width: `${from.width}px`,
+                  height: `${from.height}px`,
+                  boxShadow: "0 3px 0 #d5ccba",
+                  easing: "cubic-bezier(.2,.7,.2,1)",
+                },
+                {
+                  transform: "translateY(-16px) rotate(-2deg)",
+                  width: `${from.width}px`,
+                  height: `${from.height}px`,
+                  boxShadow: "0 20px 45px #29243230",
+                  offset: 0.18,
+                },
+                {
+                  transform: destination,
+                  width: `${rect.width}px`,
+                  height: `${rect.height}px`,
+                  boxShadow: "0 3px 0 #d5ccba",
+                  offset: 1,
+                },
+              ],
+              { duration: 650, fill: "both", easing: "cubic-bezier(.22,.65,.25,1)" },
+            ),
           );
-        void animations[0]!.finished
-          .then(async () => {
-            if (cancelled) return;
-            reveal();
-            const fade = element.animate([{ opacity: 1 }, { opacity: 0 }], {
-              duration: 150,
-              fill: "both",
-            });
-            animations.push(fade);
-            await fade.finished;
-            if (!cancelled) onDone();
-          })
-          .catch(() => {});
+          if (scene)
+            animations.push(
+              scene.animate([{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], {
+                duration: 650,
+                fill: "both",
+                easing: "ease-in",
+              }),
+            );
+          void animations[0]!.finished
+            .then(async () => {
+              if (cancelled || completed) return;
+              reveal();
+              const fade = element.animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 150,
+                fill: "both",
+              });
+              animations.push(fade);
+              await fade.finished;
+              finish();
+            })
+            .catch(finish);
+        } catch {
+          finish();
+        }
       });
     }
     observer.observe(document.body, { childList: true, subtree: true });

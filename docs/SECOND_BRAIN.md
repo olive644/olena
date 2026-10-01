@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Transição da folha: `NotebookPageJourney` sempre libera o editor, inclusive quando
+a animação falha ou não termina. O prazo de quatro segundos cobre espera pelo canvas
+e movimento; movimento reduzido pula a animação. Ao desmontar, cancela observador,
+frame, animações e prazo sem executar a conclusão da tela antiga.
+
 Segurança de dependências: o override de `@firebase/firestore` fixa somente seu
 `@grpc/grpc-js` em 1.13.6. Firebase 12.19.0 e os módulos web permanecem iguais.
 Não usar `npm audit fix --force`, que sugeria downgrade incompatível para Firebase 9.
