@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   LOCAL_ROOM_SESSION_KEY,
@@ -189,5 +189,19 @@ describe("sessão temporária da sala", () => {
     expect(eventSourceConstructor).toHaveBeenCalledWith(
       "https://firebase.example/rooms/ABCDE.json",
     );
+  });
+
+  it("mostra uma mensagem em português quando o próprio fetch falha, em vez do texto nativo em inglês", async () => {
+    // Erro nativo do navegador (timeout do AbortController, "Failed to fetch" sem rede): não
+    // vem traduzido, então não pode ser mostrado direto na tela.
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new DOMException("aborted", "AbortError")));
+
+    const { result } = renderHook(() => useLocalRoom());
+    await waitFor(() => expect(result.current.isRestoring).toBe(false));
+    await act(async () =>
+      result.current.createRoom({ difficulty: "mixed", questionCount: 5, roundSeconds: 30 }),
+    );
+
+    expect(result.current.error).toBe("Não foi possível criar a sala.");
   });
 });

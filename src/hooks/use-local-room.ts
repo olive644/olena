@@ -164,6 +164,14 @@ class RoomRequestError extends Error {
   }
 }
 
+// Só a mensagem de um RoomRequestError é confiável em português (vem do servidor ou do
+// texto padrão abaixo, em sendRoom). Qualquer outro erro (timeout do AbortController, "Failed
+// to fetch" por falta de rede, etc.) vem em inglês, direto do navegador: mostrar
+// `caught.message` nesses casos exibia esse texto sem tradução.
+function roomErrorMessage(caught: unknown, fallback: string): string {
+  return caught instanceof RoomRequestError ? caught.message : fallback;
+}
+
 async function sendRoom<T>(
   action: string,
   body: Record<string, unknown>,
@@ -344,7 +352,7 @@ export function useLocalRoom(initialJoinCode?: string) {
           setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
           retryTimer = setTimeout(() => setRestoreAttempt((attempt) => attempt + 1), 5000);
         }
-        setError(caught instanceof Error ? caught.message : "Não foi possível retomar a sala.");
+        setError(roomErrorMessage(caught, "Não foi possível retomar a sala."));
       })
       .finally(() => {
         if (active) setIsRestoring(false);
@@ -443,7 +451,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     } catch (caught) {
       if (caught instanceof RoomRequestError && caught.status === 409)
         createRequestRef.current = crypto.randomUUID();
-      setError(caught instanceof Error ? caught.message : "Não foi possível criar a sala.");
+      setError(roomErrorMessage(caught, "Não foi possível criar a sala."));
     } finally {
       pendingRef.current = false;
       setBusy(false);
@@ -487,7 +495,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setRole("participant");
       startStreaming(payload.streamUrl);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível entrar na sala.");
+      setError(roomErrorMessage(caught, "Não foi possível entrar na sala."));
     } finally {
       pendingRef.current = false;
       setBusy(false);
@@ -517,7 +525,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setHostDeck(payload.sourceDeck);
       return true;
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível salvar.");
+      setError(roomErrorMessage(caught, "Não foi possível salvar."));
       return false;
     }
   }
@@ -530,7 +538,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível iniciar a rodada.");
+      setError(roomErrorMessage(caught, "Não foi possível iniciar a rodada."));
     }
   }
 
@@ -543,7 +551,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível avançar.");
+      setError(roomErrorMessage(caught, "Não foi possível avançar."));
     }
   }
 
@@ -556,7 +564,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       stopStreaming();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível encerrar a sala.");
+      setError(roomErrorMessage(caught, "Não foi possível encerrar a sala."));
     }
   }
 
@@ -568,7 +576,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível repetir a atividade.");
+      setError(roomErrorMessage(caught, "Não foi possível repetir a atividade."));
     }
   }
 
@@ -580,7 +588,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível trocar a atividade.");
+      setError(roomErrorMessage(caught, "Não foi possível trocar a atividade."));
     }
   }
 
@@ -608,7 +616,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         ...(payload.question ? { question: payload.question } : {}),
       };
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível enviar a resposta.");
+      setError(roomErrorMessage(caught, "Não foi possível enviar a resposta."));
       return undefined;
     }
   }

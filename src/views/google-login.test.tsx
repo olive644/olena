@@ -85,6 +85,51 @@ describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
     );
   });
 
+  it("avisa e libera o botão quando o próprio redirecionamento falha, em vez de travar em silêncio", async () => {
+    const signInWithPopup = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error("blocked"), { code: "auth/popup-blocked" }));
+    const signInWithRedirect = vi
+      .fn()
+      .mockRejectedValue(
+        Object.assign(new Error("unauthorized"), { code: "auth/unauthorized-domain" }),
+      );
+    vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+      auth: {},
+      authApi: {
+        GoogleAuthProvider: FakeGoogleAuthProvider,
+        signInWithPopup,
+        signInWithRedirect,
+      },
+      databaseURL: "https://project.firebaseio.com",
+      redirectResult: null,
+    } as never);
+
+    const finish = vi.fn();
+    render(<GoogleLogin answers={["Inglês"]} onFinish={finish} />);
+    await waitFor(() => expect(getFirebaseAccountServices).toHaveBeenCalled());
+    fireEvent.click(await screen.findByRole("checkbox", { name: /Li e concordo/ }));
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Entrar com Google" }).hasAttribute("disabled"),
+      ).toBe(false),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Entrar com Google" }));
+
+    await waitFor(() => expect(signInWithRedirect).toHaveBeenCalledOnce());
+    expect(await screen.findByRole("alert")).toHaveProperty(
+      "textContent",
+      "Este endereço ainda não está liberado para login. Acesse pelo endereço oficial da OlenaStudy.",
+    );
+    expect(sessionStorage.getItem("helena.pending-google-answers")).toBeNull();
+    expect(finish).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Entrar com Google" }).hasAttribute("disabled"),
+      ).toBe(false),
+    );
+  });
+
   it("completa o login ao voltar do redirecionamento com o resultado pendente", async () => {
     const profile = JSON.stringify({ name: "Ana", photoUrl: "/profile-avatars/anonha.webp" });
     localStorage.setItem("helena.profile.v1", profile);
