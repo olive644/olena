@@ -1,4 +1,4 @@
-import { Check, MonitorUp, Radio, Search, Volume2 } from "lucide-react";
+import { Check, MonitorUp, Radio, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -33,6 +33,7 @@ import { HelenaRoomIcon } from "./helena-room-icon";
 import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
 import { RoomRecordingInput } from "./room-recording-input";
 import { PaperEnglishWord } from "./paper-english-word";
+import { ListeningBankFile } from "./listening-bank-file";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
 const DEFAULT_SETTINGS: LocalRoomSettings = {
@@ -73,7 +74,6 @@ const ROOM_ACTIVITY_OPTIONS = [
 
 const MANUAL_LISTENING_SOURCE = "Lista personalizada";
 const AUDIO_REPLAY_COOLDOWN_MS = 5_000;
-const QUESTION_STEPS = [5, 10, 15, 20] as const;
 const TIME_STEPS = [5, 10, 15, 30] as const;
 
 function RoomStepSlider({
@@ -611,9 +611,8 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   if (room.isRestoring)
     return (
       <LocalRoomFullscreen>
-        <div className="local-room-restoring" role="status" aria-live="polite">
-          <Radio size={34} aria-hidden="true" />
-          <h3>Retomando sala…</h3>
+        <div className="local-room-restoring">
+          <HelenaLoading compact label="Retomando sala…" />
           <p>Reconectando você à atividade em andamento.</p>
         </div>
       </LocalRoomFullscreen>
@@ -735,7 +734,6 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   if (!state) return null;
   const isHost = room.isHost;
   const answered = state.answeredParticipantIds.includes(room.participantId);
-  const questionCount = state.settings.questionCount;
   const pool = localRoomPool(state.settings);
   const availableCount = state.content?.count ?? pool.length;
   const manualInput = parseManualListeningInput(manualWords, /\t/);
@@ -871,8 +869,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   <h3>
                     {state.settings.activity === "bingo" ? "Prepare o bingo" : "Prepare a escuta"}
                   </h3>
+                  {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
                   {state.settings.activity !== "bingo" && (
-                    <div className="local-room-source" role="group" aria-label="Áudio da rodada">
+                    <div className="local-room-source" role="group" aria-label="Banco de palavras">
                       <button
                         type="button"
                         className="local-room-source__option"
@@ -882,8 +881,8 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                           void room.updateSettings({ subjectName: MANUAL_LISTENING_SOURCE })
                         }
                       >
-                        <img src="/room-icons/microphone.svg" alt="" width="40" height="40" />
-                        <span>Manualmente</span>
+                        <img src="/room-icons/upload.svg" alt="" width="40" height="40" />
+                        <span>Enviar arquivos</span>
                       </button>
                       <button
                         type="button"
@@ -897,7 +896,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                               subjectName: READY_LISTENING_SOURCE,
                               difficulty: "mixed",
                               category: "",
-                              questionCount: 10,
+                              questionCount: "all",
                               readyWordIds: state.settings.readyWordIds ?? [],
                             },
                             [],
@@ -906,7 +905,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                         }}
                       >
                         <img src="/room-icons/word-bank.svg" alt="" width="40" height="40" />
-                        <span>Banco de palavras</span>
+                        <span>Palavras prontas</span>
                       </button>
                     </div>
                   )}
@@ -920,8 +919,13 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                         </div>
                         <span>{READY_LISTENING_DECK.length} palavras com áudio</span>
                       </div>
+                      <ListeningBankFile
+                        onImport={(ids) =>
+                          setReadyDraftIds((current) => [...new Set([...current, ...ids])])
+                        }
+                      />
                       <label className="local-room-ready-words__search">
-                        <Search size={18} aria-hidden="true" />
+                        <img src="/room-icons/search.svg" alt="" width="22" height="22" />
                         <input
                           type="search"
                           value={readySearch}
@@ -1009,13 +1013,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                         {readyMatches.length === 0 && <p>Nenhuma palavra encontrada.</p>}
                       </div>
                       <div className="local-room-ready-words__apply">
-                        <span>
-                          Escolha ao menos{" "}
-                          {state.settings.questionCount === "all"
-                            ? 5
-                            : state.settings.questionCount}{" "}
-                          palavras para começar.
-                        </span>
+                        <span>Todas as palavras selecionadas entram na rodada.</span>
                         <button
                           className="secondary-button"
                           type="button"
@@ -1023,7 +1021,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                           onClick={() => {
                             setReadyApplying(true);
                             void room
-                              .updateSettings({ readyWordIds: readyDraftIds })
+                              .updateSettings({ readyWordIds: readyDraftIds, questionCount: "all" })
                               .finally(() => setReadyApplying(false));
                           }}
                         >
@@ -1035,7 +1033,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                   {state.settings.activity !== "bingo" && usesManualList && (
                     <div className="local-room-manual">
                       <div>
-                        <strong>Suas gravações</strong>
+                        <strong>Seus arquivos de áudio</strong>
                         <span>
                           {manualDeck.length} válidas
                           {manualErrors.length > 0
@@ -1043,9 +1041,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                             : ""}
                         </span>
                       </div>
-                      <p>Grave sua voz e informe a palavra e a tradução de cada fala.</p>
+                      <p>Envie o áudio e informe a palavra e a tradução de cada fala.</p>
                       <p className="local-room-manual__privacy">
-                        As gravações ficam nesta sala por até 4 horas. Elas não treinam a Olena.
+                        Os arquivos ficam nesta sala por até 4 horas. Eles não treinam a Olena.
                       </p>
                       <div className="local-room-manual__rows">
                         {manualRows.map((row, index) => (
@@ -1155,7 +1153,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                             ])
                           }
                         >
-                          <img src="/room-icons/microphone.svg" alt="" width="22" height="22" />
+                          <img src="/room-icons/upload.svg" alt="" width="22" height="22" />
                           Adicionar fala
                         </button>
                       </div>
@@ -1308,19 +1306,10 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       </select>
                     </label>
                   )}
-                  {usesManualList ? (
+                  {state.settings.activity !== "bingo" && (
                     <p className="local-room-manual__quantity">
-                      Quantidade: {manualDeck.length} · todas as palavras
+                      {usesManualList ? manualDeck.length : readyDraftIds.length} palavras na rodada
                     </p>
-                  ) : (
-                    <RoomStepSlider
-                      label="Perguntas"
-                      value={state.settings.questionCount}
-                      steps={QUESTION_STEPS}
-                      onCommit={(value) =>
-                        void room.updateSettings({ questionCount: value as 5 | 10 | 15 | 20 })
-                      }
-                    />
                   )}
                   <RoomStepSlider
                     label="Tempo por pergunta"
@@ -1379,13 +1368,21 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       participantCount === 0 ||
                       availableCount === 0 ||
                       readyApplying ||
-                      (usesReadyWords &&
-                        (readySelectionPending ||
-                          availableCount < (questionCount === "all" ? 5 : questionCount))) ||
+                      (usesReadyWords && readySelectionPending) ||
                       manualSelectionPending ||
                       pendingActivity !== null
                     }
-                    onClick={() => void room.startRound()}
+                    onClick={() => {
+                      void (async () => {
+                        if (
+                          state.settings.activity !== "bingo" &&
+                          state.settings.questionCount !== "all"
+                        ) {
+                          if (!(await room.updateSettings({ questionCount: "all" }))) return;
+                        }
+                        await room.startRound();
+                      })();
+                    }}
                     aria-describedby={
                       participantCount === 0 || manualSelectionPending || usesReadyWords
                         ? "local-room-start-help"
@@ -1402,9 +1399,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                           ? "Guarde os áudios e aplique as palavras antes de iniciar"
                           : readySelectionPending
                             ? "Aplique a seleção antes de iniciar"
-                            : availableCount < (questionCount === "all" ? 5 : questionCount)
-                              ? "Selecione mais palavras para esta rodada"
-                              : ""}
+                            : ""}
                     </small>
                   )}
                 </div>

@@ -77,10 +77,10 @@ describe("página da Política de Privacidade", () => {
     }
   });
 
-  it("explica quando o microfone é usado e o prazo do áudio da sala", () => {
-    expect(text).toContain("microfone só é solicitado quando o professor escolhe gravar");
+  it("explica o envio de arquivos sem microfone e o prazo do áudio da sala", () => {
+    expect(text).toContain("Não pedimos localização nem acesso ao microfone");
     expect(text).toContain("por até 4 horas após a criação da sala");
-    expect(text).not.toContain("Não pedimos localização nem acesso ao microfone");
+    expect(text).not.toContain("microfone só é solicitado");
   });
 
   it("fala em linguagem simples: sem nomes de fornecedores nem termos técnicos", () => {

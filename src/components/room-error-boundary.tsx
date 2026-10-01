@@ -7,7 +7,7 @@ export class RoomErrorBoundary extends Component<{ children: ReactNode }, { fail
   }
   override render() {
     return this.state.failed ? (
-      <section role="alert">
+      <section className="room-reconnect-error" role="alert">
         <h3>Não foi possível exibir a sala</h3>
         <p>Sua participação está salva nesta aba. Recarregue para tentar reconectar.</p>
         <button className="primary-button" onClick={() => window.location.reload()}>

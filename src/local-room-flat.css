@@ -754,6 +754,61 @@
   background: var(--soft);
 }
 
+.local-room-settings label.local-room-ready-words__search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  grid-column: 1 / -1;
+}
+.local-room-ready-words__search > img {
+  flex: 0 0 22px;
+}
+.local-room-settings .local-room-ready-words__search input {
+  min-height: 44px;
+  padding: 0;
+  box-shadow: none;
+}
+.learn-grid.learn-grid--room {
+  grid-template-columns: minmax(0, 1fr);
+}
+.learn-grid--room .study-panel:has(.room-reconnect-error) {
+  min-height: calc(100dvh - 230px);
+  display: grid;
+  place-items: center;
+}
+.room-reconnect-error {
+  width: min(100%, 520px);
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.local-room-bank-import {
+  display: grid;
+  gap: 0.5rem;
+}
+.local-room-bank-import > label {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.local-room-bank-import input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.local-room-bank-import > label:focus-within {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+.local-room-bank-import small,
+.local-room-bank-import p {
+  color: var(--muted);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
 .local-room-ready-words__search input {
   width: 100%;
   min-width: 0;

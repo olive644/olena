@@ -1,194 +1,57 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor, cleanup } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
 import { RoomRecordingInput } from "./room-recording-input";
-
-afterEach(() => vi.unstubAllGlobals());
-
-describe("microfone da Escuta Coletiva", () => {
-  it("explica a alternativa de arquivo quando o navegador não fornece MediaRecorder", () => {
-    const getUserMedia = vi.fn();
-    Object.defineProperty(navigator, "mediaDevices", {
-      configurable: true,
-      value: { getUserMedia },
-    });
-    vi.stubGlobal("MediaRecorder", undefined);
-    render(
-      <RoomRecordingInput
-        word="Fala 1"
-        translation=""
-        code="ABCDE"
-        credential="secret"
-        onSaved={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
-    expect(
-      screen.getByText("Este navegador não permite gravar aqui. Use Enviar arquivo."),
-    ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Enviar arquivo" })).toBeTruthy();
-    expect(getUserMedia).not.toHaveBeenCalled();
+import { uploadRoomRecording } from "../data/room-recording";
+vi.mock("../data/room-recording", () => ({
+  MAX_ROOM_RECORDING_BYTES: 256_000,
+  uploadRoomRecording: vi.fn().mockResolvedValue("audio-id"),
+}));
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+  vi.clearAllMocks();
+});
+function setup() {
+  vi.stubGlobal("URL", {
+    createObjectURL: vi.fn().mockReturnValue("blob:preview"),
+    revokeObjectURL: vi.fn(),
   });
-  it("libera a captura se a fala for removida enquanto a permissão está pendente", async () => {
-    const stop = vi.fn();
-    let resolveCapture: (value: { getTracks(): { stop: typeof stop }[] }) => void = () => {};
-    Object.defineProperty(navigator, "mediaDevices", {
-      configurable: true,
-      value: {
-        getUserMedia: vi.fn(
-          () =>
-            new Promise((resolve) => {
-              resolveCapture = resolve;
-            }),
-        ),
-      },
-    });
-    vi.stubGlobal("MediaRecorder", class {});
-    const { unmount } = render(
-      <RoomRecordingInput
-        word="Fala 1"
-        translation=""
-        code="ABCDE"
-        credential="secret"
-        onSaved={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
-    expect(screen.getByRole("button", { name: "Abrindo microfone…" })).toBeTruthy();
-    unmount();
-    resolveCapture({ getTracks: () => [{ stop }] });
-    await waitFor(() => expect(stop).toHaveBeenCalledOnce());
+  const saved = vi.fn();
+  render(
+    <RoomRecordingInput
+      word="school"
+      translation="escola"
+      code="ABCDE"
+      credential="host"
+      onSaved={saved}
+    />,
+  );
+  return saved;
+}
+it("oferece arquivos sem solicitar acesso ao microfone", () => {
+  setup();
+  expect(screen.queryByRole("button", { name: "Gravar" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Enviar arquivo" })).toBeTruthy();
+});
+it("normaliza o formato e guarda o áudio enviado", async () => {
+  const saved = setup();
+  fireEvent.change(screen.getByLabelText("Enviar áudio de school"), {
+    target: { files: [new File(["audio"], "school.mp3", { type: "audio/mp3" })] },
   });
-  it("captura uma fala e mostra a prévia pronta para guardar", async () => {
-    const onPending = vi.fn();
-    const stop = vi.fn();
-    Object.defineProperty(navigator, "mediaDevices", {
-      configurable: true,
-      value: { getUserMedia: vi.fn().mockResolvedValue({ getTracks: () => [{ stop }] }) },
-    });
-    vi.stubGlobal("URL", {
-      ...URL,
-      createObjectURL: vi.fn().mockReturnValue("blob:preview"),
-      revokeObjectURL: vi.fn(),
-    });
-    class WorkingRecorder {
-      static isTypeSupported() {
-        return true;
-      }
-      constructor(...args: unknown[]) {
-        if (args[1]) throw new Error("Formato preferido indisponível");
-      }
-      state = "inactive";
-      mimeType = "audio/webm;codecs=opus";
-      ondataavailable?: (event: { data: Blob }) => void;
-      onstop?: () => void;
-      start() {
-        this.state = "recording";
-      }
-      stop() {
-        this.state = "inactive";
-        this.ondataavailable?.({
-          data: new Blob([new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, 0x42])], { type: "audio/webm" }),
-        });
-        this.onstop?.();
-      }
-    }
-    vi.stubGlobal("MediaRecorder", WorkingRecorder);
-    render(
-      <RoomRecordingInput
-        word="cat"
-        translation="gato"
-        code="ABCDE"
-        credential="secret"
-        onSaved={vi.fn()}
-        onPending={onPending}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Parar gravação" })).toBeTruthy(),
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Parar gravação" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "Guardar áudio" })).toBeTruthy());
-    expect(stop).toHaveBeenCalled();
-    expect(onPending).toHaveBeenCalled();
+  fireEvent.click(await screen.findByRole("button", { name: "Guardar áudio" }));
+  await waitFor(() => expect(saved).toHaveBeenCalledWith("audio-id"));
+  expect(vi.mocked(uploadRoomRecording).mock.calls[0]?.[2].type).toBe("audio/mpeg");
+});
+it("recusa arquivos excessivos e formatos não suportados", () => {
+  setup();
+  const input = screen.getByLabelText("Enviar áudio de school");
+  fireEvent.change(input, {
+    target: { files: [new File(["x"], "bad.pdf", { type: "application/pdf" })] },
   });
-
-  it("libera o microfone e avisa quando o gravador falha ao iniciar", async () => {
-    const stop = vi.fn();
-    const getUserMedia = vi.fn().mockResolvedValue({ getTracks: () => [{ stop }] });
-    Object.defineProperty(navigator, "mediaDevices", {
-      configurable: true,
-      value: { getUserMedia },
-    });
-    class BrokenRecorder {
-      static isTypeSupported() {
-        return true;
-      }
-      start() {
-        throw new Error("Codec indisponível");
-      }
-    }
-    vi.stubGlobal("MediaRecorder", BrokenRecorder);
-    render(
-      <RoomRecordingInput
-        word="bus"
-        translation="ônibus"
-        code="ABCDE"
-        credential="secret"
-        onSaved={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
-    await waitFor(() =>
-      expect(screen.getByRole("alert").textContent).toContain(
-        "Não foi possível iniciar o microfone",
-      ),
-    );
-    expect(stop).toHaveBeenCalledOnce();
-    expect(screen.getByRole("button", { name: "Gravar" })).toBeTruthy();
+  expect(screen.getByRole("alert").textContent).toContain("Use áudio");
+  fireEvent.change(input, {
+    target: { files: [new File([new Uint8Array(256_001)], "big.wav", { type: "audio/wav" })] },
   });
-
-  it("encerra a captura e permite tentar de novo após erro durante a gravação", async () => {
-    const stop = vi.fn();
-    Object.defineProperty(navigator, "mediaDevices", {
-      configurable: true,
-      value: { getUserMedia: vi.fn().mockResolvedValue({ getTracks: () => [{ stop }] }) },
-    });
-    class FailingRecorder {
-      static latest: FailingRecorder;
-      static isTypeSupported() {
-        return true;
-      }
-      state = "inactive";
-      onerror?: () => void;
-      start() {
-        this.state = "recording";
-      }
-      stop() {
-        this.state = "inactive";
-      }
-      constructor() {
-        FailingRecorder.latest = this;
-      }
-    }
-    vi.stubGlobal("MediaRecorder", FailingRecorder);
-    render(
-      <RoomRecordingInput
-        word="book"
-        translation="livro"
-        code="ABCDE"
-        credential="secret"
-        onSaved={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Gravar" }));
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Parar gravação" })).toBeTruthy(),
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Parar gravação" }));
-    FailingRecorder.latest.onerror?.();
-    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("interrompida"));
-    expect(stop).toHaveBeenCalled();
-    expect(screen.getByRole("button", { name: "Gravar" })).toBeTruthy();
-  });
+  expect(screen.getByRole("alert").textContent).toContain("256 KB");
+  expect(uploadRoomRecording).not.toHaveBeenCalled();
 });

@@ -13,7 +13,9 @@ it("keeps paper fills isolated from navigation line-icon styles", () => {
 it.each(["flag-us", "flag-br", "flag-es"])("renders a separate country design for %s", (name) => {
   const { container } = render(<OnboardingPaperIcon name={name} />);
   expect(container.querySelector("svg")?.getAttribute("data-paper-icon")).toBe(name);
-  expect(container.querySelectorAll("path").length).toBeGreaterThan(3);
+  if (name === "flag-us")
+    expect(container.querySelector("image")?.getAttribute("href")).toBe("/room-icons/english.svg");
+  else expect(container.querySelectorAll("path").length).toBeGreaterThan(3);
 });
 it("uses the same folded arrow reversed for back", () => {
   const { container } = render(<PaperArrow back />);

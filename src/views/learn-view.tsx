@@ -588,19 +588,26 @@ export function LearnView({
           <span className="section-label">Praticar</span>
           <h1>Pratique para lembrar.</h1>
         </div>
-        <label className="view-select">
-          <span>Matéria</span>
-          <select value={selectedSubject.id} onChange={(event) => setSubjectId(event.target.value)}>
-            {workspace.subjects.map((subject) => (
-              <option value={subject.id} key={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        {mode !== "room" && (
+          <label className="view-select">
+            <span>Matéria</span>
+            <select
+              value={selectedSubject.id}
+              onChange={(event) => setSubjectId(event.target.value)}
+            >
+              {workspace.subjects.map((subject) => (
+                <option value={subject.id} key={subject.id}>
+                  {subject.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </header>
 
-      <div className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : ""}`}>
+      <div
+        className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : mode === "room" ? " learn-grid--room" : ""}`}
+      >
         <section className="module-panel study-panel" aria-label="Praticar">
           {mode === "hub" ? (
             <PracticeHub onSelect={setMode} onEnterRoom={enterRoom} unlockedLevel={unlockedLevel} />
