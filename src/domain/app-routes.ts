@@ -10,6 +10,7 @@ export const VIEW_PATHS: Record<AppView, string> = {
   notes: "/cadernos",
   "lesson-builder": "/aulas",
   learn: "/aprender",
+  room: "/sala",
   library: "/biblioteca",
   "activity-bank": "/atividades",
   profile: "/perfil",

@@ -27,7 +27,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(3);
+      await expect(secondary).toHaveCount(4);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
         await expect
@@ -169,7 +169,8 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(8);
+  await expect(navigation.getByRole("button")).toHaveCount(9);
+  await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toBeVisible();
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
     "aria-current",
     "page",
@@ -331,7 +332,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await expect(toolsDialog).toBeVisible();
   await page.waitForTimeout(350);
   const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(3);
+  await expect(toolItems).toHaveCount(4);
 
   for (const item of await toolItems.all()) {
     const iconBox = await item.locator(".navigation-icon").boundingBox();
@@ -360,21 +361,24 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
 
 test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Contrato visual do Modo Sala móvel.");
-  const navigation = page.getByRole("navigation", { name: "Navegação móvel" });
-
-  await navigation.getByRole("button", { name: "Praticar", exact: true }).click();
-  await page.getByRole("button", { name: "Abrir Modo Sala", exact: true }).click();
+  await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Mais ferramentas" })
+    .getByRole("button", { name: "Modo Sala", exact: true })
+    .click();
 
   const dialog = page.getByRole("dialog", { name: "Modo Sala" });
-  const backButton = dialog.getByRole("button", { name: "Voltar", exact: true });
+  const backButton = dialog.getByRole("button", { name: "Sair da sala", exact: true });
   const heading = dialog.getByRole("heading", { name: "Modo Sala", exact: true });
-  await expect(backButton.locator(".helena-room-icon")).toBeVisible();
+  await expect(backButton.locator(".paper-editor-icon")).toBeVisible();
 
   const backBox = await backButton.boundingBox();
   const headingBox = await heading.boundingBox();
   expect(backBox).not.toBeNull();
   expect(headingBox).not.toBeNull();
-  expect(backBox!.y + backBox!.height).toBeLessThanOrEqual(headingBox!.y);
+  expect(backBox!.height).toBeGreaterThanOrEqual(44);
+  await backButton.click();
+  await expect(dialog).toHaveCount(0);
 });
 
 test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, testInfo) => {

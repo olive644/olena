@@ -1,17 +1,7 @@
 import { Check, Lock } from "lucide-react";
-import {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useState,
-  type Dispatch,
-  type FormEvent,
-} from "react";
-import { HelenaLoading } from "../components/helena-loading";
+import { useCallback, useEffect, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
 import { NavigationIcon } from "../components/navigation-icon";
-import { RoomErrorBoundary } from "../components/room-error-boundary";
 import { PageHeader } from "../components/app-navigation";
 import { ListeningQuiz } from "../components/listening-quiz";
 import { writeSyncedStorage } from "../data/synced-storage";
@@ -26,15 +16,9 @@ import {
   type WorkspaceState,
 } from "../domain/workspace";
 
-const LocalRoom = lazy(() =>
-  import("../components/local-room").then((module) => ({ default: module.LocalRoom })),
-);
-
 type LearnViewProps = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
-  joinCode?: string | undefined;
-  projectorMode?: boolean;
 };
 
 type SoloMode = "review" | "quiz" | "listening" | "bingo";
@@ -87,11 +71,9 @@ const SOLO_ROUTE = "M135 620 C135 550 225 540 225 450 S135 370 135 280 S180 190 
 
 function PracticeHub({
   onSelect,
-  onEnterRoom,
   unlockedLevel,
 }: {
   onSelect: (mode: SoloMode) => void;
-  onEnterRoom: () => void;
   unlockedLevel: number;
 }) {
   const [worldIndex, setWorldIndex] = useState(0);
@@ -285,18 +267,6 @@ function PracticeHub({
             )}
           </div>
         </div>
-      </section>
-
-      <section className="room-entry-card" aria-labelledby="room-entry-title">
-        <img src="/helena-holding-qr.png" alt="Helena segurando o convite do Modo Sala" />
-        <div>
-          <span className="section-label">Jogar com a turma</span>
-          <h2 id="room-entry-title">Modo Sala</h2>
-          <p>Crie uma sala, convide seus alunos e conduza atividades ao vivo.</p>
-        </div>
-        <button className="primary-button" type="button" onClick={onEnterRoom}>
-          <HelenaRoomIcon name="play" /> Abrir Modo Sala
-        </button>
       </section>
     </div>
   );
@@ -537,26 +507,14 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
   );
 }
 
-export function LearnView({
-  workspace,
-  dispatch,
-  joinCode,
-  projectorMode = false,
-}: LearnViewProps) {
+export function LearnView({ workspace, dispatch }: LearnViewProps) {
   const defaultSubject = workspace.subjects[0];
   const [subjectId, setSubjectId] = useState(defaultSubject?.id ?? "");
-  const [mode, setMode] = useState<"hub" | SoloMode | "room">(joinCode ? "room" : "hub");
+  const [mode, setMode] = useState<"hub" | SoloMode>("hub");
   const [unlockedLevel, setUnlockedLevel] = useState(() => {
     const saved = Number(window.localStorage.getItem(SOLO_PROGRESS_KEY));
     return Number.isInteger(saved) && saved >= 1 ? Math.min(saved, SOLO_LEVELS.length) : 1;
   });
-
-  useEffect(() => {
-    if (mode !== "room") return;
-    const leaveRoom = () => setMode("hub");
-    window.addEventListener("popstate", leaveRoom);
-    return () => window.removeEventListener("popstate", leaveRoom);
-  }, [mode]);
 
   const completeLevel = useCallback((level: number) => {
     setUnlockedLevel((current) => {
@@ -570,16 +528,6 @@ export function LearnView({
   const selectedSubject =
     workspace.subjects.find((subject) => subject.id === subjectId) ?? defaultSubject;
 
-  function enterRoom() {
-    window.history.pushState({ ...window.history.state, helenaRoom: true }, "");
-    setMode("room");
-  }
-
-  function leaveRoom() {
-    if (window.history.state?.helenaRoom) window.history.back();
-    else setMode("hub");
-  }
-
   return (
     <main className="main-content" id="main-content">
       <PageHeader />
@@ -588,39 +536,22 @@ export function LearnView({
           <span className="section-label">Praticar</span>
           <h1>Pratique para lembrar.</h1>
         </div>
-        {mode !== "room" && (
-          <label className="view-select">
-            <span>Matéria</span>
-            <select
-              value={selectedSubject.id}
-              onChange={(event) => setSubjectId(event.target.value)}
-            >
-              {workspace.subjects.map((subject) => (
-                <option value={subject.id} key={subject.id}>
-                  {subject.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+        <label className="view-select">
+          <span>Matéria</span>
+          <select value={selectedSubject.id} onChange={(event) => setSubjectId(event.target.value)}>
+            {workspace.subjects.map((subject) => (
+              <option value={subject.id} key={subject.id}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
+        </label>
       </header>
 
-      <div
-        className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : mode === "room" ? " learn-grid--room" : ""}`}
-      >
+      <div className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : ""}`}>
         <section className="module-panel study-panel" aria-label="Praticar">
           {mode === "hub" ? (
-            <PracticeHub onSelect={setMode} onEnterRoom={enterRoom} unlockedLevel={unlockedLevel} />
-          ) : mode === "room" ? (
-            <Suspense fallback={<HelenaLoading label="Preparando o Modo Sala…" />}>
-              <RoomErrorBoundary>
-                <LocalRoom
-                  initialJoinCode={joinCode}
-                  projectorMode={projectorMode}
-                  onExit={leaveRoom}
-                />
-              </RoomErrorBoundary>
-            </Suspense>
+            <PracticeHub onSelect={setMode} unlockedLevel={unlockedLevel} />
           ) : (
             <>
               <div className="module-heading solo-session-heading">

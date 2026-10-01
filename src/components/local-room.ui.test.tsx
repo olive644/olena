@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { formatRoomEstimatedDuration } from "../domain/local-room";
 import { LocalRoom } from "./local-room";
@@ -21,13 +21,28 @@ describe("chegada por link de convite", () => {
   });
 
   it("sem código de convite, mostra a tela inicial normal", () => {
-    render(<LocalRoom />);
+    render(<LocalRoom accountName="Ana" />);
     expect(screen.getByText(/^modo sala$/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /criar sala/i })).toBeTruthy();
+    expect(screen.getByRole("radiogroup", { name: "Atividades da sala" })).toBeTruthy();
+    expect(screen.queryByLabelText("Código da sala")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Participantes" })).toBeNull();
+  });
+
+  it("prepara o minigame e as palavras sem criar nem alterar uma sala remota", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    render(<LocalRoom accountName="Ana" />);
+    const create = screen.getByRole("button", { name: /^Criar sala$/ });
+    expect(create.hasAttribute("disabled")).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Selecionar exibidas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Aplicar seleção" }));
+    await waitFor(() => expect(create.hasAttribute("disabled")).toBe(false));
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(create.hasAttribute("disabled")).toBe(false);
   });
 
   it("normaliza o código colado e só libera a entrada com os dois campos válidos", () => {
-    render(<LocalRoom />);
+    render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("button", { name: /entrar com código/i }));
 
     const submit = screen.getByRole("button", { name: /^entrar$/i });
@@ -35,9 +50,21 @@ describe("chegada por link de convite", () => {
     fireEvent.paste(screen.getByLabelText(/código/i), {
       clipboardData: { getData: () => "ab-c de" },
     });
-    fireEvent.change(screen.getByLabelText(/nome de exibição/i), { target: { value: "Ana" } });
+    expect(screen.queryByLabelText(/nome de exibição/i)).toBeNull();
+    expect(screen.getByText("Ana")).toBeTruthy();
 
     expect((screen.getByLabelText(/código/i) as HTMLInputElement).value).toBe("ABCDE");
     expect(submit.hasAttribute("disabled")).toBe(false);
+  });
+
+  it("não usa apelido local quando a conta é obrigatória", () => {
+    localStorage.setItem("helena.profile.v1", JSON.stringify({ name: "Apelido local" }));
+    const { rerender } = render(<LocalRoom initialJoinCode="ABCDE" requireAccount />);
+    expect(screen.getByRole("button", { name: /^Entrar$/ }).hasAttribute("disabled")).toBe(true);
+    expect(screen.queryByText("Apelido local")).toBeNull();
+    rerender(<LocalRoom initialJoinCode="ABCDE" requireAccount accountName="Nome da conta" />);
+    expect(screen.getByText("Nome da conta")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^Entrar$/ }).hasAttribute("disabled")).toBe(false);
+    localStorage.removeItem("helena.profile.v1");
   });
 });

@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Modo Sala tem rota `/sala`, independente de Praticar. A configuração inicial é um
+rascunho local reutilizando os controles existentes; criar a sala persiste esse
+rascunho antes de exibir o convite. Arquivos preparados permanecem em memória até
+a criação, quando recebem IDs da API privada. Participantes entram com o nome da
+conta e não escolhem outro nome no formulário. A espera do App Check participa do
+timeout da conexão para não deixar a tela de entrada presa indefinidamente.
+
 Transição da folha: `NotebookPageJourney` sempre libera o editor, inclusive quando
 a animação falha ou não termina. O prazo de quatro segundos cobre espera pelo canvas
 e movimento; movimento reduzido pula a animação. Ao desmontar, cancela observador,

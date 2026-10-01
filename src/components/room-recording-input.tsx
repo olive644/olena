@@ -11,6 +11,9 @@ type Props = {
   onSaved(id: string): void;
   showHeading?: boolean;
   onPending?(): void;
+  onStaged?(blob: Blob): void;
+  staged?: boolean;
+  stagedBlob?: Blob | undefined;
 };
 
 export function RoomRecordingInput({
@@ -22,12 +25,20 @@ export function RoomRecordingInput({
   onSaved,
   showHeading = true,
   onPending,
+  onStaged,
+  staged = false,
+  stagedBlob,
 }: Props) {
-  const [blob, setBlob] = useState<Blob>();
+  const [blob, setBlob] = useState<Blob | undefined>(code ? stagedBlob : undefined);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  useEffect(() => {
+    if (!audioId) return;
+    const timer = window.setTimeout(() => setBlob(undefined), 0);
+    return () => window.clearTimeout(timer);
+  }, [audioId]);
   useEffect(() => {
     const url = blob ? URL.createObjectURL(blob) : "";
     const timer = window.setTimeout(() => setPreviewUrl(url), 0);
@@ -41,7 +52,8 @@ export function RoomRecordingInput({
     setSaving(true);
     setError("");
     try {
-      onSaved(await uploadRoomRecording(code, credential, blob));
+      if (!code && onStaged) onStaged(blob);
+      else onSaved(await uploadRoomRecording(code, credential, blob));
       setBlob(undefined);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível guardar o áudio.");
@@ -59,7 +71,13 @@ export function RoomRecordingInput({
           </>
         )}
         <small>
-          {blob ? "Arquivo ainda não guardado" : audioId ? "Áudio guardado ✓" : "Áudio pendente"}
+          {blob
+            ? "Arquivo ainda não guardado"
+            : audioId
+              ? "Áudio guardado ✓"
+              : staged
+                ? "Áudio preparado ✓"
+                : "Áudio pendente"}
         </small>
       </div>
       <button

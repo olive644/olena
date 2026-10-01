@@ -1793,3 +1793,48 @@
   font-size: 0.7rem;
   margin: 0;
 }
+.local-room-lobby--preparing {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.local-room-lobby--preparing > .local-room-settings {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.local-room-lobby--preparing > .local-room-action-bar {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.local-room-session__header h2,
+.local-room-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.local-room-session__header h2 {
+  margin-right: auto;
+  font-size: clamp(1rem, 3vw, 1.4rem);
+}
+
+.local-room-restoring {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+  padding: 24px;
+}
+
+.room-view {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+}
+
+.room-reconnect-error button {
+  margin: 0.4rem;
+}

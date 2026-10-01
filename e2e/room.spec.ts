@@ -22,6 +22,92 @@ function silentWav(): Buffer {
   return audio;
 }
 
+for (const source of ["bank", "files"] as const) {
+  test(`prepara ${source} antes de criar a sala`, async ({ page }, testInfo) => {
+    const store = createMemoryRoomStore();
+    const handler = createLocalRoomHandler({
+      store,
+      publish: async () => {},
+      streamUrl: () => "/test-stream",
+    });
+    const recordings = createRoomRecordingHandler({ store });
+    const actions: string[] = [];
+    await page.route("**/api/local-room?*", async (route) => {
+      actions.push(new URL(route.request().url()).searchParams.get("action") ?? "");
+      const response = await handler(
+        new Request(route.request().url(), {
+          method: "POST",
+          body: route.request().postData() ?? "{}",
+        }),
+      );
+      await route.fulfill({
+        status: response.status,
+        body: await response.text(),
+        contentType: "application/json",
+      });
+    });
+    await page.route("**/api/room-recording?*", async (route) => {
+      const response = await recordings(
+        new Request(route.request().url(), {
+          method: "POST",
+          body: route.request().postData() ?? "{}",
+        }),
+      );
+      await route.fulfill({
+        status: response.status,
+        body: await response.text(),
+        contentType: "application/json",
+      });
+    });
+    await page.addInitScript(() => {
+      localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+      Object.defineProperty(window, "EventSource", {
+        value: class extends EventTarget {
+          onopen = null;
+          onerror = null;
+          close() {}
+        },
+      });
+    });
+    await page.goto("/sala");
+    await expect(page.getByRole("heading", { name: "Modo Sala", exact: true })).toBeVisible();
+    if (source === "bank") {
+      await page.getByRole("button", { name: "Selecionar exibidas" }).click();
+      await page.getByRole("button", { name: "Aplicar seleção" }).click();
+    } else {
+      await page.getByRole("button", { name: "Enviar arquivos", exact: true }).click();
+      await page.getByLabel("Palavra em inglês da fala 1").fill("hello");
+      await page.getByLabel("Tradução da fala 1", { exact: true }).fill("olá");
+      await page
+        .getByLabel("Enviar áudio de hello")
+        .setInputFiles({ name: "hello.wav", mimeType: "audio/wav", buffer: silentWav() });
+      await page.getByRole("button", { name: "Guardar áudio" }).click();
+      await expect(page.getByText("Áudio preparado ✓")).toBeVisible();
+      await page.getByRole("button", { name: "Aplicar palavras", exact: true }).click();
+    }
+    expect(actions).toEqual([]);
+    await expect(page.getByLabel("Código da sala", { exact: true })).toHaveCount(0);
+    await page.locator(".local-room-fullscreen").evaluate((element) => {
+      element.scrollTop = 0;
+    });
+    await page.screenshot({ path: testInfo.outputPath(`preparing-${source}.png`) });
+    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+    await page.screenshot({ path: testInfo.outputPath(`preparing-${source}-dark.png`) });
+    await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+    await page.getByRole("button", { name: "Criar sala", exact: true }).click();
+    await expect(page.getByLabel("Código da sala", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Iniciar atividade" })).toBeDisabled();
+    await expect(page.getByText("Criando sala…")).toHaveCount(0);
+    if (source === "files") await expect(page.getByText("Áudio guardado ✓")).toBeVisible();
+    expect(actions[0]).toBe("create");
+    expect(
+      await page
+        .locator(".local-room-fullscreen")
+        .evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
+    ).toBe(true);
+  });
+}
+
 // Real room handler and optimistic transactions, with a deterministic transport
 // adapter instead of production Firebase. Each participant has isolated storage.
 for (const activity of ["listening", "bingo"] as const) {
@@ -128,8 +214,16 @@ for (const activity of ["listening", "bingo"] as const) {
         .click();
       await expect(host.getByRole("heading", { name: "Pratique para lembrar." })).toBeVisible();
       await host.screenshot({ path: testInfo.outputPath("practice.png") });
-      await host.getByRole("button", { name: "Abrir Modo Sala", exact: true }).click();
+      await host.goto("/sala");
+      await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+      await expect(host.locator(".local-room-share")).toHaveCount(0);
+      await host
+        .getByRole("searchbox", { name: "Buscar palavras em inglês ou português" })
+        .fill("bus");
+      await host.getByRole("button", { name: "Selecionar exibidas" }).click();
+      await host.getByRole("button", { name: "Aplicar seleção" }).click();
       await host.getByRole("button", { name: "Criar sala", exact: true }).click();
+      await expect(host.locator(".local-room-share")).toBeVisible();
       await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible({
         timeout: 15_000,
       });
@@ -186,6 +280,7 @@ for (const activity of ["listening", "bingo"] as const) {
         await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
       }
       if (activity === "listening") {
+        await host.getByRole("button", { name: "Enviar arquivos", exact: true }).click();
         await expect(host.getByRole("button", { name: "Gravar", exact: true })).toHaveCount(0);
         await host.locator('.local-room-recording input[type="file"]').setInputFiles({
           name: "fala.wav",
@@ -234,7 +329,8 @@ for (const activity of ["listening", "bingo"] as const) {
             );
           }, index);
           await page.goto(`/?sala=${code}`);
-          await page.getByLabel("Nome de exibição").fill(`Aluno ${index}`);
+          await expect(page.getByText(`Aluno ${index}`, { exact: true })).toBeVisible();
+          await expect(page.getByLabel("Nome de exibição")).toHaveCount(0);
           await page.getByRole("button", { name: "Entrar", exact: true }).click();
           await expect(page.getByText("Aguardando o início")).toBeVisible();
         }),

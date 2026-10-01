@@ -1,4 +1,4 @@
-import { Check, MonitorUp, Radio, Volume2 } from "lucide-react";
+import { Check, Volume2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -13,6 +13,7 @@ import {
   type LocalRoomAnswerFeedback,
   ROOM_CATEGORIES,
   type LocalRoomSettings,
+  type PublicLocalRoomState,
 } from "../domain/local-room";
 import { normalizeListeningAnswer, parseManualListeningInput } from "../domain/listening-quiz";
 import {
@@ -21,6 +22,8 @@ import {
   searchReadyListeningWords,
 } from "../domain/ready-listening-words";
 import { roomAppCheckToken } from "../data/room-app-check";
+import { uploadRoomRecording } from "../data/room-recording";
+import type { ListeningCard } from "../domain/listening-quiz";
 import { NaturalVoicePlayer, type NaturalVoiceState } from "../data/listening-audio";
 import { RecordedRoomPlayer } from "../data/recorded-room-player";
 import { useListeningOnline } from "../hooks/use-listening-online";
@@ -40,7 +43,8 @@ const DEFAULT_SETTINGS: LocalRoomSettings = {
   difficulty: "mixed",
   questionCount: "all",
   roundSeconds: 30,
-  subjectName: "Lista personalizada",
+  subjectName: READY_LISTENING_SOURCE,
+  readyWordIds: [],
   audioRepetitions: "unlimited",
   autoPlayAudio: true,
   recordedAudioRequired: true,
@@ -225,10 +229,49 @@ type LocalRoomProps = {
   initialJoinCode?: string | undefined;
   projectorMode?: boolean;
   onExit?: () => void;
+  onSignIn?: () => void;
+  accountName?: string | undefined;
+  accountLoading?: boolean;
+  requireAccount?: boolean;
 };
 
-export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: LocalRoomProps) {
-  const room = useLocalRoom(initialJoinCode);
+export function LocalRoom({
+  initialJoinCode,
+  projectorMode = false,
+  onExit,
+  onSignIn,
+  accountName,
+  accountLoading = false,
+  requireAccount = false,
+}: LocalRoomProps) {
+  const connection = useLocalRoom(initialJoinCode);
+  const preparing = connection.role === "choose" && !connection.isRestoring;
+  const [draftSettings, setDraftSettings] = useState(DEFAULT_SETTINGS);
+  const [draftDeck, setDraftDeck] = useState<ListeningCard[]>([]);
+  const [creating, setCreating] = useState(false);
+  const [creationError, setCreationError] = useState("");
+  const draftState: PublicLocalRoomState = {
+    code: "",
+    phase: "lobby",
+    settings: draftSettings,
+    participants: [],
+    questionIndex: 0,
+    questionStartedAt: 0,
+    totalQuestions: 0,
+    answeredParticipantIds: [],
+  };
+  const room = {
+    ...connection,
+    state: preparing ? draftState : connection.state,
+    isHost: preparing || connection.isHost,
+    hostDeck: preparing ? draftDeck : connection.hostDeck,
+    updateSettings: async (settings: Partial<LocalRoomSettings>, sourceDeck?: ListeningCard[]) => {
+      if (!preparing) return connection.updateSettings(settings, sourceDeck);
+      setDraftSettings((current) => ({ ...current, ...settings }));
+      if (sourceDeck) setDraftDeck(sourceDeck);
+      return true;
+    },
+  };
   const serverNow = room.serverNow;
   const speechCredential = room.speechCredential;
   const [profile] = useState(() => {
@@ -246,11 +289,18 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     }
   });
   const [code, setCode] = useState(initialJoinCode ?? "");
-  const [name, setName] = useState(profile.name);
+  const name = accountName?.trim() || (!requireAccount ? profile.name : "");
   const [pendingActivity, setPendingActivity] = useState<"listening" | "bingo" | null>(null);
   const activityRequestRef = useRef(false);
   const [manualRows, setManualRows] = useState<
-    { id: string; word: string; translation: string; audioId?: string; pendingAudio?: boolean }[]
+    {
+      id: string;
+      word: string;
+      translation: string;
+      audioId?: string;
+      audioFile?: Blob;
+      pendingAudio?: boolean;
+    }[]
   >([{ id: "first", word: "", translation: "" }]);
   const manualWords = manualRows
     .map((row) =>
@@ -261,7 +311,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     .join("\n");
   const recordingIds = Object.fromEntries(
     manualRows.flatMap((row) =>
-      row.audioId ? [[normalizeListeningAnswer(row.word), row.audioId]] : [],
+      row.audioId || (preparing && row.audioFile)
+        ? [[normalizeListeningAnswer(row.word), row.audioId ?? row.id]]
+        : [],
     ),
   );
   const [appliedManualWords, setAppliedManualWords] = useState("");
@@ -391,7 +443,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
   ]);
 
   const participantCount = state?.participants.length ?? 0;
-  const canJoin = !room.busy && isValidLocalRoomCode(code) && name.trim().length > 0;
+  const canJoin = !room.busy && !accountLoading && isValidLocalRoomCode(code) && name.length > 0;
 
   const isPlaying = state?.phase === "playing";
   const questionStartedAt = state?.questionStartedAt ?? 0;
@@ -530,6 +582,11 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     void roomAppCheckToken().catch(() => undefined);
   }
 
+  useEffect(() => {
+    // Verifica o dispositivo enquanto o usuário escolhe a atividade ou digita o código.
+    prepareRoomProtection();
+  }, []);
+
   async function selectActivity(activity: "listening" | "bingo") {
     if (activityRequestRef.current || (room.state?.settings.activity ?? "listening") === activity)
       return;
@@ -549,7 +606,10 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
 
   useEffect(() => {
     if (authoringRoomCodeRef.current === state?.code) return;
+    const previousCode = authoringRoomCodeRef.current;
     authoringRoomCodeRef.current = state?.code;
+    // A criação não descarta os arquivos e a seleção preparados localmente.
+    if (previousCode === "" && state?.code) return;
     restoredRoomCodeRef.current = "";
     const timer = window.setTimeout(() => {
       setManualRows([{ id: "first", word: "", translation: "" }]);
@@ -614,6 +674,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
         <div className="local-room-restoring">
           <HelenaLoading compact label="Retomando sala…" />
           <p>Reconectando você à atividade em andamento.</p>
+          <button className="secondary-button" type="button" onClick={exitRoom}>
+            <PaperEditorIcon name="exit" /> Voltar ao aplicativo
+          </button>
         </div>
       </LocalRoomFullscreen>
     );
@@ -622,69 +685,14 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
     return (
       <LocalRoomFullscreen>
         <div className="local-room-restoring" role="alert">
-          <MonitorUp size={34} aria-hidden="true" />
+          <img src="/room-icons/projector.svg" alt="" width="48" height="48" />
           <h3>Modo projetor protegido</h3>
           <p>Abra esta tela pelo painel do professor que criou a sala.</p>
         </div>
       </LocalRoomFullscreen>
     );
 
-  if (room.role === "choose")
-    return (
-      <LocalRoomFullscreen>
-        {onExit && (
-          <button
-            className="icon-button local-room-back"
-            type="button"
-            onClick={onExit}
-            aria-label="Voltar"
-          >
-            <HelenaRoomIcon name="back" />
-          </button>
-        )}
-        <div className="local-room-intro">
-          <PaperEditorIcon name="team" />
-          <div>
-            <h3>Modo Sala</h3>
-            <p>Cada aluno entra pelo próprio celular com um código de cinco letras.</p>
-          </div>
-          <div className="local-room-intro__actions">
-            <button
-              className="primary-button"
-              type="button"
-              onClick={() => void room.createRoom(DEFAULT_SETTINGS)}
-              onPointerEnter={prepareRoomProtection}
-              onFocus={prepareRoomProtection}
-              disabled={room.busy}
-            >
-              <span className="local-room-entry-icon local-room-entry-icon--team">
-                <PaperEditorIcon name="team" />
-              </span>
-              {room.busy ? "Criando sala…" : "Criar sala"}
-            </button>
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={() => room.setRole("participant")}
-              disabled={room.busy}
-            >
-              <span className="local-room-entry-icon local-room-entry-icon--page">
-                <PaperEditorIcon name="page" />
-              </span>
-              Entrar com código
-            </button>
-          </div>
-          {room.busy && (
-            <div className="local-room-intro__loading">
-              <HelenaLoading compact label="Criando sala…" />
-            </div>
-          )}
-          {room.error && <p role="alert">{room.error}</p>}
-        </div>
-      </LocalRoomFullscreen>
-    );
-
-  if (room.role === "participant" && !state)
+  if (room.role === "participant" && !state && !room.hasSavedSession)
     return (
       <LocalRoomFullscreen>
         <form className="local-room-join" onSubmit={joinRoom}>
@@ -696,7 +704,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
             <HelenaRoomIcon name="back" /> Voltar
           </button>
           <h3>Entrar em uma sala</h3>
-          <p>Peça o código de cinco letras para o professor e digite seu nome.</p>
+          <p>Use o código do professor. Você participa com o nome da sua conta.</p>
           <label>
             <span>Código</span>
             <input
@@ -714,28 +722,58 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
               required
             />
           </label>
-          <label>
-            <span>Nome de exibição</span>
-            <input
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              maxLength={24}
-              required
-            />
-          </label>
+          <div className="local-room-account">
+            <PaperEditorIcon name="team" />
+            <span>
+              {name ||
+                (accountLoading ? "Carregando sua conta…" : "Entre na sua conta para participar.")}
+            </span>
+          </div>
+          {requireAccount && !accountLoading && !name && onSignIn && (
+            <button className="secondary-button" type="button" onClick={onSignIn}>
+              <PaperEditorIcon name="team" /> Entrar na conta
+            </button>
+          )}
           {room.error && <p role="alert">{room.error}</p>}
           <button className="primary-button" type="submit" disabled={!canJoin}>
-            Entrar
+            <img src="/room-icons/join.svg" alt="" width="24" height="24" />
+            {room.busy ? "Entrando…" : "Entrar"}
           </button>
+          {(room.busy || accountLoading) && (
+            <HelenaLoading
+              compact
+              label={room.busy ? "Entrando na sala…" : "Carregando sua conta…"}
+            />
+          )}
         </form>
       </LocalRoomFullscreen>
     );
 
-  if (!state) return null;
+  if (!state)
+    return (
+      <LocalRoomFullscreen>
+        <div className="local-room-restoring">
+          <NavigationIcon name="room" />
+          <h3>Vamos retomar sua sala</h3>
+          <p role="alert">
+            {room.error || "A conexão foi interrompida. Sua participação está salva nesta aba."}
+          </p>
+          <button className="primary-button" type="button" onClick={room.reconnect}>
+            <img src="/room-icons/reconnect.svg" alt="" width="24" height="24" /> Tentar novamente
+          </button>
+          <button className="secondary-button" type="button" onClick={exitRoom}>
+            <PaperEditorIcon name="exit" /> Sair da sala
+          </button>
+        </div>
+      </LocalRoomFullscreen>
+    );
   const isHost = room.isHost;
   const answered = state.answeredParticipantIds.includes(room.participantId);
   const pool = localRoomPool(state.settings);
-  const availableCount = state.content?.count ?? pool.length;
+  const availableCount =
+    preparing && state.settings.subjectName === MANUAL_LISTENING_SOURCE
+      ? draftDeck.length
+      : (state.content?.count ?? pool.length);
   const manualInput = parseManualListeningInput(manualWords, /\t/);
   const manualDeck = manualInput.cards;
   const manualErrors = manualInput.lines.filter((line) => line.error);
@@ -778,8 +816,22 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
       {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
       <div className={`local-room-session local-room-session--${state.phase}`}>
         <header className="local-room-session__header">
+          {preparing && (
+            <h2>
+              <NavigationIcon name="room" /> Modo Sala
+            </h2>
+          )}
           <div className="local-room-session__actions">
-            {isHost && (
+            {preparing && (
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => room.setRole("participant")}
+              >
+                <img src="/room-icons/join.svg" alt="" width="24" height="24" /> Entrar com código
+              </button>
+            )}
+            {isHost && !preparing && (
               <button
                 className="secondary-button local-room-open-projector"
                 type="button"
@@ -795,6 +847,10 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
           </div>
         </header>
         {room.error && <p role="alert">{room.error}</p>}
+        {!room.isRestoring &&
+          (room.connectionStatus === "reconnecting" || room.connectionStatus === "offline") && (
+            <HelenaLoading compact label="Reconectando sala…" />
+          )}
         {state.settings.teams && (
           <p aria-label="Placar por equipe">
             {teamScores.map((t) => `${t.team}: ${t.score} XP`).join(" · ")}
@@ -803,30 +859,35 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
 
         {state.phase === "lobby" ? (
           isHost ? (
-            <div className="local-room-lobby">
-              <div className="local-room-lobby__main">
-                <ShareRoom code={state.code} />
-                <div className="local-room-lobby__invite">
-                  <section className="local-room-participants" aria-labelledby="participants-title">
-                    <div className="local-room-section-heading">
-                      <h3 id="participants-title">Participantes</h3>
-                      <span>
-                        {participantCount}/{MAX_ROOM_PARTICIPANTS}
-                      </span>
-                    </div>
-                    {participantCount === 0 ? (
-                      <div className="local-room-participants__empty">
-                        <strong>Aguardando participantes…</strong>
-                        <p>Compartilhe o código {state.code}. A rodada começa com uma pessoa.</p>
+            <div className={`local-room-lobby${preparing ? " local-room-lobby--preparing" : ""}`}>
+              {!preparing && (
+                <div className="local-room-lobby__main">
+                  <ShareRoom code={state.code} />
+                  <div className="local-room-lobby__invite">
+                    <section
+                      className="local-room-participants"
+                      aria-labelledby="participants-title"
+                    >
+                      <div className="local-room-section-heading">
+                        <h3 id="participants-title">Participantes</h3>
+                        <span>
+                          {participantCount}/{MAX_ROOM_PARTICIPANTS}
+                        </span>
                       </div>
-                    ) : (
-                      <LobbyParticipants participants={state.participants} />
-                    )}
-                  </section>
+                      {participantCount === 0 ? (
+                        <div className="local-room-participants__empty">
+                          <strong>Aguardando participantes…</strong>
+                          <p>Compartilhe o código {state.code}. A rodada começa com uma pessoa.</p>
+                        </div>
+                      ) : (
+                        <LobbyParticipants participants={state.participants} />
+                      )}
+                    </section>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="local-room-settings">
+              <div className="local-room-settings" inert={creating}>
                 <div
                   className="local-room-activities"
                   role="radiogroup"
@@ -1043,7 +1104,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                       </div>
                       <p>Envie o áudio e informe a palavra e a tradução de cada fala.</p>
                       <p className="local-room-manual__privacy">
-                        Os arquivos ficam nesta sala por até 4 horas. Eles não treinam a Olena.
+                        {preparing
+                          ? "Os arquivos ficam neste dispositivo até criar a sala."
+                          : "Os arquivos ficam nesta sala por até 4 horas. Eles não treinam a Olena."}
                       </p>
                       <div className="local-room-manual__rows">
                         {manualRows.map((row, index) => (
@@ -1071,9 +1134,20 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                               word={row.word || `Fala ${index + 1}`}
                               translation=""
                               audioId={row.audioId}
+                              staged={Boolean(row.audioFile)}
+                              stagedBlob={row.audioFile}
                               code={state.code}
                               credential={speechCredential() ?? ""}
                               showHeading={false}
+                              onStaged={(audioFile) =>
+                                setManualRows((rows) =>
+                                  rows.map((item) =>
+                                    item.id === row.id
+                                      ? { ...item, audioFile, pendingAudio: false }
+                                      : item,
+                                  ),
+                                )
+                              }
                               onPending={() => {
                                 setManualRows((rows) =>
                                   rows.map((item) =>
@@ -1365,7 +1439,9 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     className="primary-button"
                     type="button"
                     disabled={
-                      participantCount === 0 ||
+                      (!preparing && participantCount === 0) ||
+                      creating ||
+                      room.busy ||
                       availableCount === 0 ||
                       readyApplying ||
                       (usesReadyWords && readySelectionPending) ||
@@ -1374,6 +1450,63 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                     }
                     onClick={() => {
                       void (async () => {
+                        if (preparing) {
+                          setCreating(true);
+                          setCreationError("");
+                          try {
+                            const created = await connection.createRoom(draftSettings);
+                            if (!created) return;
+                            if (usesManualList) {
+                              const audioIds = new Map<string, string>();
+                              for (const row of manualRows) {
+                                if (row.audioFile)
+                                  audioIds.set(
+                                    normalizeListeningAnswer(row.word),
+                                    await uploadRoomRecording(
+                                      created.code,
+                                      created.hostToken,
+                                      row.audioFile,
+                                    ),
+                                  );
+                              }
+                              const uploadedDeck = draftDeck.map((card) => ({
+                                ...card,
+                                audioId:
+                                  audioIds.get(normalizeListeningAnswer(card.front)) ??
+                                  card.audioId,
+                              }));
+                              if (await connection.updateSettings(draftSettings, uploadedDeck)) {
+                                setManualRows((rows) =>
+                                  rows.map((row) => {
+                                    const audioId = audioIds.get(
+                                      normalizeListeningAnswer(row.word),
+                                    );
+                                    return audioId ? { ...row, audioId } : row;
+                                  }),
+                                );
+                                setAppliedRecordingSignature(
+                                  manualDeck
+                                    .map(
+                                      (card) =>
+                                        audioIds.get(normalizeListeningAnswer(card.front)) ??
+                                        recordingIds[normalizeListeningAnswer(card.front)] ??
+                                        "",
+                                    )
+                                    .join("|"),
+                                );
+                              }
+                            }
+                          } catch (caught) {
+                            setCreationError(
+                              caught instanceof Error
+                                ? caught.message
+                                : "Não foi possível preparar os áudios da sala.",
+                            );
+                          } finally {
+                            setCreating(false);
+                          }
+                          return;
+                        }
                         if (
                           state.settings.activity !== "bingo" &&
                           state.settings.questionCount !== "all"
@@ -1389,25 +1522,34 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                         : undefined
                     }
                   >
-                    <HelenaRoomIcon name="play" size={18} /> Iniciar atividade
+                    <HelenaRoomIcon name="play" size={18} />{" "}
+                    {preparing ? "Criar sala" : "Iniciar atividade"}
                   </button>
-                  {(participantCount === 0 || manualSelectionPending || usesReadyWords) && (
-                    <small id="local-room-start-help">
-                      {participantCount === 0
-                        ? "Aguarde pelo menos um aluno entrar"
-                        : manualSelectionPending
-                          ? "Guarde os áudios e aplique as palavras antes de iniciar"
-                          : readySelectionPending
-                            ? "Aplique a seleção antes de iniciar"
-                            : ""}
-                    </small>
-                  )}
+                  {!preparing &&
+                    (participantCount === 0 || manualSelectionPending || usesReadyWords) && (
+                      <small id="local-room-start-help">
+                        {participantCount === 0
+                          ? "Aguarde pelo menos um aluno entrar"
+                          : manualSelectionPending
+                            ? "Guarde os áudios e aplique as palavras antes de iniciar"
+                            : readySelectionPending
+                              ? "Aplique a seleção antes de iniciar"
+                              : ""}
+                      </small>
+                    )}
                 </div>
+                {(creating || room.busy) && (
+                  <HelenaLoading
+                    compact
+                    label={preparing ? "Criando sala…" : "Preparando atividade…"}
+                  />
+                )}
+                {creationError && <p role="alert">{creationError}</p>}
               </div>
             </div>
           ) : (
             <div className="local-room-waiting" role="status">
-              <Radio size={28} />
+              <PaperEditorIcon name="team" />
               <h3>Aguardando o início</h3>
               <p>O organizador controla esta sala. Código: {state.code}</p>
               {state.settings.activity === "bingo" && (
@@ -1554,7 +1696,7 @@ export function LocalRoom({ initialJoinCode, projectorMode = false, onExit }: Lo
                 role="status"
                 aria-live="polite"
               >
-                {lastResult?.correct ? <Check size={28} /> : <Radio size={28} />}
+                {lastResult?.correct ? <Check size={28} /> : <PaperEditorIcon name="team" />}
                 <h3>{lastResult?.correct ? "Correto!" : "Ainda não foi dessa vez"}</h3>
                 {!lastResult?.correct && lastResult?.submittedAnswer && (
                   <p>
