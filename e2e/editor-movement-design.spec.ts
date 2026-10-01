@@ -67,6 +67,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/cadernos");
   await page.getByRole("button", { name: "Abrir Meu caderno", exact: true }).click();
   await page.getByRole("button", { name: /^Abrir preview/ }).click();
+  // O editor é carregado sob demanda. Testar a ferramenta só depois que ele estiver pronto.
+  await expect(page.getByRole("dialog", { name: "Escrever à mão" })).toBeVisible({
+    timeout: 15_000,
+  });
 });
 
 for (const pointerType of ["mouse", "pen", "touch"]) {

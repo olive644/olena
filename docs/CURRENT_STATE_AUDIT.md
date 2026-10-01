@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Liberação segura da transição para a folha (2026-10-01)
+
+- A viagem da folha deixava de ter prazo ao encontrar o canvas; falhas de criação ou cancelamento das animações não liberavam a classe que oculta o editor. Agora há conclusão única, prazo total de quatro segundos e limpeza em falha ou desmontagem.
+- Movimento reduzido e ausência da API de animação pulam a viagem sem esconder o editor. O movimento normal mantém duração e desenho existentes.
+- O teste de ferramentas aguardava a Caneta antes de confirmar o carregamento sob demanda do editor. A preparação agora aguarda o diálogo pronto; as verificações da ferramenta permanecem iguais.
+
 ## Banco de palavras e arquivos na sala (2026-09-30)
 
 - Removida a captura por microfone da Escuta coletiva. O Banco de palavras agrupa palavras prontas e arquivos de áudio com palavra/tradução. A API privada e a expiração de quatro horas permanecem iguais.
