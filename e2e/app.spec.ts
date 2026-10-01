@@ -373,6 +373,9 @@ test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInf
   const backButton = preparation.getByRole("button", { name: "Voltar", exact: true });
   const heading = preparation.getByRole("heading", { name: "Modo Sala", exact: true });
   await expect(backButton.locator(".paper-editor-icon")).toBeVisible();
+  await expect
+    .poll(async () => (await backButton.boundingBox())?.height ?? 0)
+    .toBeGreaterThanOrEqual(44);
 
   const backBox = await backButton.boundingBox();
   const headingBox = await heading.boundingBox();
