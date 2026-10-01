@@ -387,6 +387,25 @@ describe("sala local", () => {
     expect(publicState.questionStartedAt).toBe(started.questionStartedAt);
   });
 
+  it("nunca expõe o UID da conta de participantes nem do host no estado público", () => {
+    const withAccount = createRoom(settings, {
+      code: "ABCDE",
+      hostToken: "secret",
+      hostAccountId: "conta-host",
+      now: 1,
+    });
+    const withParticipant = addLocalParticipant(
+      withAccount,
+      { ...participant("p1", "Ana"), accountId: "conta-ana" },
+      2,
+    );
+    const publicState = toPublicRoomState(withParticipant);
+    expect(publicState).not.toHaveProperty("hostAccountId");
+    expect(publicState.participants[0]).not.toHaveProperty("accountId");
+    expect(JSON.stringify(publicState)).not.toContain("conta-ana");
+    expect(JSON.stringify(publicState)).not.toContain("conta-host");
+  });
+
   it("limita o cronômetro ao tempo configurado mesmo com relógio adiantado", () => {
     const state = toPublicRoomState(startedWithTwo());
     expect(roomSecondsLeft(state, state.questionStartedAt - 500)).toBe(30);

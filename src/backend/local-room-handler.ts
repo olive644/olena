@@ -43,7 +43,13 @@ export type LocalRoomHandlerDependencies = {
   randomId?(): string;
   guard?(request: Request): Promise<Response | undefined>;
   observe?(event: { action: string; status: number; durationMs: number }): void;
+  // Identidade opcional da conta Google por trás do pedido (ver firebase-account-identity.ts).
+  // A sala continua funcionando sem login; quando presente, serve só para impedir que a mesma
+  // conta entre duas vezes na mesma sala por dispositivos diferentes.
+  authenticate?(request: Request): Promise<{ uid: string; name: string } | undefined>;
 };
+
+type RoomIdentity = { uid: string; name: string } | undefined;
 
 function jsonResponse(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), {
@@ -150,7 +156,7 @@ async function loadRoom(store: KvStore, code: string): Promise<LocalRoomState | 
   }
 }
 
-function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
+function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity: RoomIdentity) {
   const now = () => dependencies.now?.() ?? Date.now();
   const randomCode = () => dependencies.randomCode?.() ?? createLocalRoomCode();
   const randomId = () => dependencies.randomId?.() ?? crypto.randomUUID();
@@ -204,7 +210,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
         return jsonResponse(409, { error: "Este código está ocupado. Tente criar uma nova sala." });
       }
       const hostToken = randomId();
-      const state = createRoom(settings, { code, hostToken, now: now() });
+      const state = createRoom(settings, {
+        code,
+        hostToken,
+        ...(identity?.uid ? { hostAccountId: identity.uid } : {}),
+        now: now(),
+      });
       if (requestId) state.createRequestId = requestId;
       const publicState = await saveRoom(state);
       return jsonResponse(201, {
@@ -250,6 +261,18 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
       ) {
         return jsonResponse(409, { error: "Esse nome já está em uso nesta sala." });
       }
+      if (
+        identity?.uid &&
+        (state.hostAccountId === identity.uid ||
+          state.participants.some(
+            (participant) => participant.accountId === identity.uid && participant.online !== false,
+          ))
+      ) {
+        return jsonResponse(409, {
+          error: "Esta conta já está nesta sala em outro dispositivo.",
+          code: "already_in_room",
+        });
+      }
       const participantId = randomId();
       const participantToken = randomId();
       const updated = addLocalParticipant(
@@ -259,6 +282,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies) {
           token: participantToken,
           displayName,
           ...(avatarUrl ? { avatarUrl } : {}),
+          ...(identity?.uid ? { accountId: identity.uid } : {}),
           score: 0,
           lastSeenAt: now(),
           online: true,
@@ -577,12 +601,13 @@ export function createLocalRoomHandler(dependencies: LocalRoomHandlerDependencie
         return jsonResponse(400, { error: "Identificador de pedido inválido." });
       const blocked = await dependencies.guard?.(request);
       if (blocked) return blocked;
+      const identity = await dependencies.authenticate?.(request);
       for (let attempt = 0; attempt < 40; attempt++) {
         try {
-          const result = await createRoomAttempt({
-            ...dependencies,
-            store: versionedStore(dependencies.store),
-          })(new Request(request.url, { method: "POST", headers: request.headers, body: text }));
+          const result = await createRoomAttempt(
+            { ...dependencies, store: versionedStore(dependencies.store) },
+            identity,
+          )(new Request(request.url, { method: "POST", headers: request.headers, body: text }));
           dependencies.observe?.({
             action,
             status: result.status,

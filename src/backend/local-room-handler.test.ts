@@ -532,3 +532,127 @@ describe("handler da sala local", () => {
     expect(payload.state.phase).toBe("finished");
   });
 });
+
+describe("exclusividade de sala por conta logada", () => {
+  let authenticatedHandler: (request: Request) => Promise<Response>;
+
+  function postAs(action: string, body: Record<string, unknown>, uid?: string): Request {
+    return new Request(`${origin}/api/local-room?action=${action}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(uid ? { Authorization: `Bearer ${uid}` } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  beforeEach(() => {
+    codeCounter = 0;
+    idCounter = 0;
+    currentTime = 1_000;
+    store = createMemoryRoomStore(() => currentTime);
+    publish = vi.fn().mockResolvedValue(undefined);
+    authenticatedHandler = createLocalRoomHandler({
+      store,
+      publish: publish as (code: string, publicState: PublicLocalRoomState) => Promise<void>,
+      streamUrl: (code) => `https://helenastudy-rtdb.firebaseio.com/rooms/${code}.json`,
+      now: () => currentTime,
+      randomCode: () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[codeCounter++]!.repeat(5),
+      randomId: () => `id-${idCounter++}`,
+      // Fake de teste: o "token" é o próprio UID, sem assinatura de verdade (a verificação
+      // real do ID token do Firebase mora em firebase-account-identity.ts).
+      authenticate: async (request) => {
+        const uid = request.headers.get("authorization")?.replace("Bearer ", "");
+        return uid ? { uid, name: uid } : undefined;
+      },
+    });
+  });
+
+  it("recusa a mesma conta entrar de novo enquanto já está na sala por outro dispositivo", async () => {
+    const created = await authenticatedHandler(
+      postAs("create", { settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 15 } }),
+    );
+    const { code } = (await created.json()) as { code: string };
+    await authenticatedHandler(postAs("join", { code, displayName: "Ana" }, "conta-ana"));
+
+    const secondDevice = await authenticatedHandler(
+      postAs("join", { code, displayName: "Ana do celular" }, "conta-ana"),
+    );
+    expect(secondDevice.status).toBe(409);
+    expect((await secondDevice.json()) as { code: string }).toMatchObject({
+      code: "already_in_room",
+    });
+  });
+
+  it("recusa a conta do anfitrião entrar como participante por outro dispositivo", async () => {
+    const created = await authenticatedHandler(
+      postAs(
+        "create",
+        { settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 15 } },
+        "conta-host",
+      ),
+    );
+    const { code } = (await created.json()) as { code: string };
+
+    const secondDevice = await authenticatedHandler(
+      postAs("join", { code, displayName: "Também eu" }, "conta-host"),
+    );
+    expect(secondDevice.status).toBe(409);
+  });
+
+  it("permite contas diferentes entrarem normalmente na mesma sala", async () => {
+    const created = await authenticatedHandler(
+      postAs("create", { settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 15 } }),
+    );
+    const { code } = (await created.json()) as { code: string };
+    await authenticatedHandler(postAs("join", { code, displayName: "Ana" }, "conta-ana"));
+
+    const other = await authenticatedHandler(
+      postAs("join", { code, displayName: "Bia" }, "conta-bia"),
+    );
+    expect(other.status).toBe(200);
+  });
+
+  it("depois que a conta sai da sala, ela pode entrar de novo por outro dispositivo", async () => {
+    const created = await authenticatedHandler(
+      postAs("create", { settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 15 } }),
+    );
+    const { code } = (await created.json()) as { code: string };
+    const joined = await authenticatedHandler(
+      postAs("join", { code, displayName: "Ana" }, "conta-ana"),
+    );
+    const { participantToken } = (await joined.json()) as { participantToken: string };
+
+    await authenticatedHandler(
+      postAs("leave", { code, role: "participant", credential: participantToken }, "conta-ana"),
+    );
+
+    const secondDevice = await authenticatedHandler(
+      postAs("join", { code, displayName: "Ana do celular" }, "conta-ana"),
+    );
+    expect(secondDevice.status).toBe(200);
+  });
+
+  it("não restringe quem entra sem estar logado (convidado)", async () => {
+    const created = await authenticatedHandler(
+      postAs("create", { settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 15 } }),
+    );
+    const { code } = (await created.json()) as { code: string };
+    await authenticatedHandler(postAs("join", { code, displayName: "Visitante 1" }));
+    const second = await authenticatedHandler(postAs("join", { code, displayName: "Visitante 2" }));
+    expect(second.status).toBe(200);
+  });
+
+  it("a sala pública nunca expõe o UID da conta", async () => {
+    const created = await authenticatedHandler(
+      postAs("create", { settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 15 } }),
+    );
+    const { code } = (await created.json()) as { code: string };
+    const joined = await authenticatedHandler(
+      postAs("join", { code, displayName: "Ana" }, "conta-ana"),
+    );
+    const payload = (await joined.json()) as { state: PublicLocalRoomState };
+    expect(JSON.stringify(payload.state)).not.toContain("conta-ana");
+  });
+});
