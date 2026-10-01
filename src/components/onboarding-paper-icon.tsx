@@ -123,6 +123,18 @@ const art: Record<string, ReactNode> = {
 };
 
 export function OnboardingPaperIcon({ name }: { name: string }) {
+  if (name === "flag-us")
+    return (
+      <svg
+        className="onboarding-paper-icon"
+        viewBox="0 0 48 48"
+        aria-hidden="true"
+        focusable="false"
+        data-paper-icon={name}
+      >
+        <image href="/room-icons/english.svg" width="48" height="48" />
+      </svg>
+    );
   let drawing = art[name];
   if (name.startsWith("flag-")) {
     drawing = (

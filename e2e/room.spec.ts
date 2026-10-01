@@ -186,48 +186,12 @@ for (const activity of ["listening", "bingo"] as const) {
         await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
       }
       if (activity === "listening") {
-        await expect(host.getByRole("button", { name: "Gravar", exact: true })).toBeVisible();
-        const hasRecorder = await host.evaluate(() => typeof MediaRecorder !== "undefined");
-        if (hasRecorder) {
-          await host.evaluate(() => {
-            const context = new AudioContext();
-            const destination = context.createMediaStreamDestination();
-            const source = context.createOscillator();
-            source.connect(destination);
-            source.start();
-            Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
-              configurable: true,
-              value: async () => {
-                // A ativação da fonte sintética não bloqueia a entrega do stream.
-                void context.resume();
-                return destination.stream;
-              },
-            });
-          });
-          await host.getByRole("button", { name: "Gravar", exact: true }).click();
-          try {
-            await expect(host.getByRole("button", { name: "Parar gravação" })).toBeVisible();
-          } catch (error) {
-            const status = await host.locator(".local-room-recording").innerText();
-            throw new Error(`Estado do gravador: ${status}`, { cause: error });
-          }
-          // Dá ao MediaRecorder real tempo para capturar uma pequena fala de teste.
-          await host.waitForTimeout(350);
-          await host.getByRole("button", { name: "Parar gravação" }).click();
-        } else {
-          // A distribuição WebKit headless do CI não fornece MediaRecorder.
-          // Não pular a rodada: verificar o aviso e guardar áudio pelo caminho de arquivo.
-          expect(browser.browserType().name()).toBe("webkit");
-          await host.getByRole("button", { name: "Gravar", exact: true }).click();
-          await expect(
-            host.getByText("Este navegador não permite gravar aqui. Use Enviar arquivo."),
-          ).toBeVisible();
-          await host.locator('.local-room-recording input[type="file"]').setInputFiles({
-            name: "fala.wav",
-            mimeType: "audio/wav",
-            buffer: silentWav(),
-          });
-        }
+        await expect(host.getByRole("button", { name: "Gravar", exact: true })).toHaveCount(0);
+        await host.locator('.local-room-recording input[type="file"]').setInputFiles({
+          name: "fala.wav",
+          mimeType: "audio/wav",
+          buffer: silentWav(),
+        });
         await host.getByRole("button", { name: "Guardar áudio" }).click();
         await expect(host.getByText("Áudio guardado ✓")).toBeVisible();
         await host
@@ -399,7 +363,7 @@ for (const activity of ["listening", "bingo"] as const) {
       await participants.first().scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("participants.png") });
       if (activity === "listening") {
-        await host.getByRole("button", { name: "Banco de palavras" }).click();
+        await host.getByRole("button", { name: "Palavras prontas" }).click();
         await expect(host.getByText("100 palavras com áudio")).toBeVisible();
         await expect(
           host.locator('.local-room-ready-words__subject img[src="/room-icons/english.svg"]'),
@@ -412,6 +376,14 @@ for (const activity of ["listening", "bingo"] as const) {
           host.locator(".local-room-ready-words__results").getByRole("checkbox", { name: /bus/ }),
         ).toBeVisible();
         await search.fill("");
+        await host.getByLabel("Importar lista de palavras").setInputFiles({
+          name: "palavras.csv",
+          mimeType: "text/csv",
+          buffer: Buffer.from("word,translation\nschool,escola\nonibus,bus\nunknown,desconhecido"),
+        });
+        await expect(host.getByText(/2 palavras selecionadas/)).toBeVisible();
+        await expect(host.getByText(/Sem áudio no banco: unknown/)).toBeVisible();
+        await host.getByRole("button", { name: "Limpar", exact: true }).click();
         const words = host.locator(".local-room-ready-words__results button");
         for (let index = 0; index < 5; index++) await words.nth(index).click();
         await host.getByRole("button", { name: "Aplicar seleção" }).click();
@@ -420,10 +392,8 @@ for (const activity of ["listening", "bingo"] as const) {
           "false",
         );
         await expect.poll(() => states.get(code)?.settings.readyWordIds?.length).toBe(5);
-        const slider = host.getByRole("slider", { name: "Perguntas" });
-        await slider.focus();
-        await slider.press("Home");
-        await expect.poll(() => states.get(code)?.settings.questionCount).toBe(5);
+        await expect(host.getByRole("slider", { name: "Perguntas" })).toHaveCount(0);
+        await expect.poll(() => states.get(code)?.settings.questionCount).toBe("all");
         await expect.poll(() => states.get(code)?.content?.count).toBe(5);
         await host.locator(".local-room-ready-words").screenshot({
           path: testInfo.outputPath("ready-word-picker.png"),

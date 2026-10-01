@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Banco de palavras e arquivos na sala (2026-09-30)
+
+- Removida a captura por microfone da Escuta coletiva. O Banco de palavras agrupa palavras prontas e arquivos de áudio com palavra/tradução. A API privada e a expiração de quatro horas permanecem iguais.
+- Listas CSV, TXT e TSV são lidas no dispositivo, com limite de 64 KB e 500 linhas. A primeira coluna escolhe palavras em inglês ou português que já possuem áudio. Termos desconhecidos são informados, sem voz sintética de fallback nem promessa de extração de PDF/slides.
+- Referências: Kahoot aceita áudio WAV, MP3, OGG e MPEG; Blooket importa CSV. O Olena também preserva os formatos existentes M4A e WebM, com limite de 256 KB por áudio e validação no servidor. Não foram adicionadas dependências.
+- A seleção aplicada define a rodada inteira. Removido o controle de quantidade de perguntas da preparação; tempo e embaralhamento permanecem.
+- Busca com lupa alinhada na horizontal; bandeira compartilhada entre onboarding e sala tem 50 estrelas e 13 listras. Recuperação centralizada, sem seletor de matéria na sala, e retomada com HelenaLoading.
+
 ## Correção transitiva de gRPC no Firebase (2026-09-30)
 
 O job de testes de navegador tem limite de 25 minutos: a instalação dos navegadores
