@@ -29,6 +29,8 @@ function googleLoginError(cause: unknown): string {
   if (code === "auth/popup-blocked")
     return "Permita a janela de login no navegador e tente novamente.";
   if (code === "auth/network-request-failed") return "Confira sua conexão e tente novamente.";
+  if (code === "auth/unauthorized-domain")
+    return "Este endereço ainda não está liberado para login. Acesse pelo endereço oficial da OlenaStudy.";
   return "Não foi possível entrar agora. Tente novamente em instantes.";
 }
 
@@ -129,8 +131,18 @@ export function GoogleLogin({
         } catch {
           /* Sem sessionStorage, o redirecionamento ainda funciona, só perde as respostas do onboarding. */
         }
-        await services.authApi.signInWithRedirect(services.auth, provider);
-        return;
+        try {
+          await services.authApi.signInWithRedirect(services.auth, provider);
+          return;
+        } catch (redirectCause) {
+          // Sem isto, uma falha aqui (domínio não autorizado, rede) ficava sem tratamento: a
+          // pessoa via o botão parado em "Aguardando o Google…" para sempre, sem nenhum aviso.
+          clearPendingAnswers();
+          setError(googleLoginError(redirectCause));
+          pending.current = false;
+          setBusy(false);
+          return;
+        }
       }
       setError(googleLoginError(cause));
       pending.current = false;
