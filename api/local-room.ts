@@ -7,6 +7,7 @@ import {
 import { createLocalRoomHandler } from "../src/backend/local-room-handler.js";
 import { createVercelHandler } from "../src/backend/vercel-adapter.js";
 import { createRoomGuard } from "../src/backend/room-guard.js";
+import { createFirebaseAccountIdentity } from "../src/backend/firebase-account-identity.js";
 
 const config = {
   databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
@@ -22,6 +23,7 @@ const accessToken = createFirebaseAccessTokenProvider(config);
 const store = createFirebaseRealtimeStore(config, fetch, () => Date.now(), accessToken);
 const handler = createLocalRoomHandler({
   store,
+  authenticate: createFirebaseAccountIdentity(process.env["VITE_FIREBASE_PROJECT_ID"] ?? ""),
   guard: createRoomGuard(
     store,
     "776947909599",
