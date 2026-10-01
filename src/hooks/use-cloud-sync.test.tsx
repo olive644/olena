@@ -6,6 +6,35 @@ import { useCloudSync } from "./use-cloud-sync";
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
 
+// jsdom não implementa EventSource. Este fake guarda os listeners registrados para os testes
+// poderem simular um evento "put" chegando do Firebase, como o navegador de verdade entregaria.
+class FakeEventSource {
+  static instances: FakeEventSource[] = [];
+  closed = false;
+  private listeners = new Map<string, Set<(event: MessageEvent<string>) => void>>();
+
+  constructor(readonly url: string) {
+    FakeEventSource.instances.push(this);
+  }
+
+  addEventListener(type: string, listener: (event: MessageEvent<string>) => void) {
+    (this.listeners.get(type) ?? this.listeners.set(type, new Set()).get(type)!).add(listener);
+  }
+
+  removeEventListener(type: string, listener: (event: MessageEvent<string>) => void) {
+    this.listeners.get(type)?.delete(listener);
+  }
+
+  close() {
+    this.closed = true;
+  }
+
+  emit(type: string, data: unknown) {
+    for (const listener of this.listeners.get(type) ?? [])
+      listener({ data: JSON.stringify(data) } as MessageEvent<string>);
+  }
+}
+
 beforeEach(() => {
   localStorage.clear();
   sessionStorage.clear();
@@ -13,6 +42,8 @@ beforeEach(() => {
   vi.stubEnv("VITE_FIREBASE_API_KEY", "key");
   vi.stubEnv("VITE_FIREBASE_AUTH_DOMAIN", "auth.example");
   vi.stubEnv("VITE_FIREBASE_PROJECT_ID", "project");
+  FakeEventSource.instances = [];
+  vi.stubGlobal("EventSource", FakeEventSource);
 });
 
 afterEach(() => {
@@ -32,6 +63,7 @@ it("mantém alteração pendente após falha e permite tentar a sincronização 
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: { currentUser: user },
     authApi: {
+      onIdTokenChanged: () => () => undefined,
       onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
         listener(user);
         return () => undefined;
@@ -84,6 +116,7 @@ it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busc
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: { currentUser: user },
     authApi: {
+      onIdTokenChanged: () => () => undefined,
       onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
         listener(user);
         return () => undefined;
@@ -146,6 +179,7 @@ it("prioriza o estado da conta sobre um backup local antigo e preserva só a mud
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: { currentUser: user },
     authApi: {
+      onIdTokenChanged: () => () => undefined,
       onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
         listener(user);
         return () => undefined;
@@ -201,6 +235,7 @@ it("concilia alterações simultâneas por chave e preserva o conflito local", a
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: { currentUser: user },
     authApi: {
+      onIdTokenChanged: () => () => undefined,
       onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
         listener(user);
         return () => undefined;
@@ -244,12 +279,146 @@ it("concilia alterações simultâneas por chave e preserva o conflito local", a
   expect(localStorage.getItem("helenastudy.sync-conflict.v1")).toContain("helena.profile.v1");
 });
 
+it("recebe uma mudança de outro dispositivo pelo stream do Firebase, sem esperar nenhum polling", async () => {
+  const user = {
+    uid: "user-1",
+    displayName: "Helena",
+    email: "helena@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET")
+        return new Response(JSON.stringify({ items: { "helenastudy.theme": "light" } }), {
+          status: 200,
+        });
+      return new Response("null", { status: 200 });
+    }),
+  );
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await waitFor(() => expect(FakeEventSource.instances).toHaveLength(1));
+
+  const stream = FakeEventSource.instances[0]!;
+  expect(stream.url).toContain("/users/user-1/state.json");
+  act(() =>
+    stream.emit("put", {
+      path: "/",
+      data: { items: { "helenastudy.theme": "dark" } },
+    }),
+  );
+
+  await waitFor(() => expect(localStorage.getItem("helenastudy.theme")).toBe("dark"));
+  expect(result.current.status).toBe("synced");
+});
+
+it("reabre o stream com um token novo quando o login renova (onIdTokenChanged)", async () => {
+  const user = {
+    uid: "user-1",
+    displayName: "Helena",
+    email: "helena@example.com",
+    getIdToken: vi.fn(async () => "token-1"),
+  };
+  let refreshToken: (() => void) | undefined;
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        refreshToken = () => listener({ ...user, getIdToken: vi.fn(async () => "token-2") });
+        return () => undefined;
+      },
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET")
+        return new Response(JSON.stringify({ items: {} }), { status: 200 });
+      return new Response("null", { status: 200 });
+    }),
+  );
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await waitFor(() => expect(FakeEventSource.instances).toHaveLength(1));
+  expect(FakeEventSource.instances[0]!.url).toContain("auth=token-1");
+
+  await act(async () => refreshToken?.());
+
+  await waitFor(() => expect(FakeEventSource.instances).toHaveLength(2));
+  expect(FakeEventSource.instances[0]!.closed).toBe(true);
+  expect(FakeEventSource.instances[1]!.url).toContain("auth=token-2");
+});
+
+it("tenta subir de novo uma mudança que falhou por falta de rede quando a conexão volta", async () => {
+  const user = {
+    uid: "user-1",
+    displayName: "Helena",
+    email: "helena@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  let online = true;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET")
+        return new Response(JSON.stringify({ items: {} }), { status: 200 });
+      if (!online) throw new Error("offline");
+      return new Response("null", { status: 200 });
+    }),
+  );
+
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+
+  online = false;
+  act(() => writeSyncedStorage("helena.soloProgress", "4"));
+  await waitFor(() => expect(result.current.status).toBe("offline"));
+
+  online = true;
+  act(() => window.dispatchEvent(new Event("online")));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+});
+
 function signedInServices(user: { uid: string; displayName: string; email: string }) {
   const account = { ...user, getIdToken: vi.fn(async () => "token") };
   const signOut = vi.fn(async () => undefined);
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: { currentUser: account },
     authApi: {
+      onIdTokenChanged: () => () => undefined,
       onAuthStateChanged: (_auth: unknown, listener: (current: typeof account) => void) => {
         listener(account);
         return () => undefined;
@@ -344,6 +513,7 @@ function deletionSetup(overrides: { reauthenticateWithPopup?: () => Promise<unkn
       listener(user);
       return () => undefined;
     },
+    onIdTokenChanged: () => () => undefined,
     signOut: vi.fn(async () => undefined),
     GoogleAuthProvider: class {},
     reauthenticateWithPopup: vi.fn(
