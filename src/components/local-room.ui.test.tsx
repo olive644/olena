@@ -27,6 +27,8 @@ describe("chegada por link de convite", () => {
     expect(screen.getByRole("radiogroup", { name: "Atividades da sala" })).toBeTruthy();
     expect(screen.queryByLabelText("Código da sala")).toBeNull();
     expect(screen.queryByRole("heading", { name: "Participantes" })).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.queryByRole("button", { name: /entrar com código/i })).toBeNull();
   });
 
   it("prepara o minigame e as palavras sem criar nem alterar uma sala remota", async () => {
@@ -35,18 +37,16 @@ describe("chegada por link de convite", () => {
     const create = screen.getByRole("button", { name: /^Criar sala$/ });
     expect(create.hasAttribute("disabled")).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Selecionar exibidas" }));
-    fireEvent.click(screen.getByRole("button", { name: "Aplicar seleção" }));
+    expect(screen.queryByRole("button", { name: "Aplicar seleção" })).toBeNull();
     await waitFor(() => expect(create.hasAttribute("disabled")).toBe(false));
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(create.hasAttribute("disabled")).toBe(false);
   });
 
   it("normaliza o código colado e só libera a entrada com os dois campos válidos", () => {
-    render(<LocalRoom accountName="Ana" />);
-    fireEvent.click(screen.getByRole("button", { name: /entrar com código/i }));
+    render(<LocalRoom accountName="Ana" initialJoinCode="ABCDE" />);
 
     const submit = screen.getByRole("button", { name: /^entrar$/i });
-    expect(submit.hasAttribute("disabled")).toBe(true);
     fireEvent.paste(screen.getByLabelText(/código/i), {
       clipboardData: { getData: () => "ab-c de" },
     });

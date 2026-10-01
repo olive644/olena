@@ -22,7 +22,7 @@ function silentWav(): Buffer {
   return audio;
 }
 
-for (const source of ["bank", "files"] as const) {
+for (const source of ["bank", "files", "files-retry"] as const) {
   test(`prepara ${source} antes de criar a sala`, async ({ page }, testInfo) => {
     const store = createMemoryRoomStore();
     const handler = createLocalRoomHandler({
@@ -31,6 +31,7 @@ for (const source of ["bank", "files"] as const) {
       streamUrl: () => "/test-stream",
     });
     const recordings = createRoomRecordingHandler({ store });
+    let failUpload = source === "files-retry";
     const actions: string[] = [];
     await page.route("**/api/local-room?*", async (route) => {
       actions.push(new URL(route.request().url()).searchParams.get("action") ?? "");
@@ -47,6 +48,11 @@ for (const source of ["bank", "files"] as const) {
       });
     });
     await page.route("**/api/room-recording?*", async (route) => {
+      if (failUpload) {
+        failUpload = false;
+        await route.fulfill({ status: 503, json: { error: "Falha temporária no envio" } });
+        return;
+      }
       const response = await recordings(
         new Request(route.request().url(), {
           method: "POST",
@@ -72,8 +78,20 @@ for (const source of ["bank", "files"] as const) {
     await page.goto("/sala");
     await expect(page.getByRole("heading", { name: "Modo Sala", exact: true })).toBeVisible();
     if (source === "bank") {
+      const search = page.getByRole("searchbox", {
+        name: "Buscar palavras em inglês ou português",
+      });
+      await search.fill("onibus");
+      await page
+        .locator(".local-room-ready-words__results")
+        .getByRole("checkbox", { name: /bus/ })
+        .click();
+      await expect(page.getByRole("button", { name: "Criar sala", exact: true })).toBeEnabled();
+      await expect(page.getByRole("button", { name: "Aplicar seleção" })).toHaveCount(0);
+      await page.getByRole("button", { name: "Limpar", exact: true }).click();
+      await expect(page.getByRole("button", { name: "Criar sala", exact: true })).toBeDisabled();
+      await search.fill("");
       await page.getByRole("button", { name: "Selecionar exibidas" }).click();
-      await page.getByRole("button", { name: "Aplicar seleção" }).click();
     } else {
       await page.getByRole("button", { name: "Enviar arquivos", exact: true }).click();
       await page.getByLabel("Palavra em inglês da fala 1").fill("hello");
@@ -87,7 +105,7 @@ for (const source of ["bank", "files"] as const) {
     }
     expect(actions).toEqual([]);
     await expect(page.getByLabel("Código da sala", { exact: true })).toHaveCount(0);
-    await page.locator(".local-room-fullscreen").evaluate((element) => {
+    await page.locator(".local-room-preparation").evaluate((element) => {
       element.scrollTop = 0;
     });
     await page.screenshot({ path: testInfo.outputPath(`preparing-${source}.png`) });
@@ -98,13 +116,43 @@ for (const source of ["bank", "files"] as const) {
     await expect(page.getByLabel("Código da sala", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Iniciar atividade" })).toBeDisabled();
     await expect(page.getByText("Criando sala…")).toHaveCount(0);
-    if (source === "files") await expect(page.getByText("Áudio guardado ✓")).toBeVisible();
+    await expect(page.getByText("Preparando atividade…")).toHaveCount(0);
+    if (source === "files-retry") {
+      await expect(page.getByText("Falha temporária no envio")).toBeVisible();
+      await page.getByRole("button", { name: "Tentar enviar áudios novamente" }).click();
+      await expect(
+        page.getByRole("button", { name: "Tentar enviar áudios novamente" }),
+      ).toHaveCount(0);
+      await expect(page.getByText("Preparando atividade…")).toHaveCount(0);
+      await expect.poll(() => actions.filter((action) => action === "create").length).toBe(1);
+    }
+    await expect(page.locator(".local-room-settings")).toHaveCount(0);
+    if (source !== "bank") expect(actions).toContain("settings");
     expect(actions[0]).toBe("create");
     expect(
       await page
         .locator(".local-room-fullscreen")
         .evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
     ).toBe(true);
+    if (source === "bank") {
+      const code = await page.getByLabel("Código da sala", { exact: true }).innerText();
+      const joined = await page.evaluate(async (roomCode) => {
+        const response = await fetch("/api/local-room?action=join", {
+          method: "POST",
+          body: JSON.stringify({ code: roomCode, displayName: "Ana" }),
+        });
+        return response.ok;
+      }, code);
+      expect(joined).toBe(true);
+      await page.reload();
+      await expect(page.locator(".local-room-participant-list li")).toHaveCount(1);
+      const audioResponse = page.waitForResponse((response) =>
+        /\/audio\/kokoro\/ready-[a-z]+\.mp3$/.test(response.url()),
+      );
+      await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
+      expect((await audioResponse).status()).toBe(200);
+      await expect(page.getByText("Pergunta 1 de 100", { exact: true })).toBeVisible();
+    }
   });
 }
 
@@ -221,12 +269,6 @@ for (const activity of ["listening", "bingo"] as const) {
         .getByRole("searchbox", { name: "Buscar palavras em inglês ou português" })
         .fill("bus");
       await host.getByRole("button", { name: "Selecionar exibidas" }).click();
-      await host.getByRole("button", { name: "Aplicar seleção" }).click();
-      await host.getByRole("button", { name: "Criar sala", exact: true }).click();
-      await expect(host.locator(".local-room-share")).toBeVisible();
-      await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible({
-        timeout: 15_000,
-      });
       await expect(host.getByRole("combobox", { name: "Material da sala" })).toHaveCount(0);
       await expect(
         host.getByRole("checkbox", { name: "Aceitar um pequeno erro de digitação" }),
@@ -247,36 +289,10 @@ for (const activity of ["listening", "bingo"] as const) {
       await selectedActivity.hover();
       await expect(selectedActivity).toHaveCSS("background-color", "rgb(116, 51, 224)");
       await expect(selectedActivity).toHaveCSS("color", "rgb(255, 249, 239)");
-      await host.locator(".local-room-share img").evaluate(async (image) => {
-        await (image as HTMLImageElement).decode();
-      });
-      const qrBounds = await host.locator(".local-room-share svg[aria-label]").boundingBox();
-      expect(qrBounds?.width).toBeGreaterThanOrEqual(120);
-      expect(Math.abs((qrBounds?.width ?? 0) - (qrBounds?.height ?? 0))).toBeLessThan(1);
-      await expect(host.locator(".local-room-share [data-qr-finder]")).toHaveCount(3);
-      await expect(host.locator(".local-room-share [data-qr-logo]")).toHaveAttribute(
-        "href",
-        "/favicon-star.svg",
-      );
-      await expect(host.locator(".helena-room-qr--holding svg")).toHaveAttribute(
-        "data-qr-error-correction",
-        "H",
-      );
-      await expect(host.locator(".helena-room-qr--holding svg rect")).toHaveCount(9);
-      await host.locator(".local-room-share__code").scrollIntoViewIfNeeded();
-      await host.screenshot({ path: testInfo.outputPath("room-paper.png") });
-      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-      await expect(shuffleQuestions).toHaveCSS("background-color", "rgb(250, 204, 21)");
-      await host.screenshot({
-        path: testInfo.outputPath("room-paper-dark.png"),
-        animations: "disabled",
-      });
-      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
       if (activity === "bingo") {
         const bingo = host.getByRole("radio", { name: /^Bingo/ });
         await bingo.click();
         await expect(bingo).toHaveAttribute("aria-checked", "true");
-        await expect(host.getByText("Preparando atividade…")).toBeVisible();
         await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
       }
       if (activity === "listening") {
@@ -288,7 +304,7 @@ for (const activity of ["listening", "bingo"] as const) {
           buffer: silentWav(),
         });
         await host.getByRole("button", { name: "Guardar áudio" }).click();
-        await expect(host.getByText("Áudio guardado ✓")).toBeVisible();
+        await expect(host.getByText("Áudio preparado ✓")).toBeVisible();
         await host
           .locator(".local-room-manual")
           .screenshot({ path: testInfo.outputPath("manual-recording.png") });
@@ -311,13 +327,40 @@ for (const activity of ["listening", "bingo"] as const) {
             buffer: silentWav(),
           });
           await card.getByRole("button", { name: "Guardar áudio" }).click();
-          await expect(card.getByText("Áudio guardado ✓")).toBeVisible();
+          await expect(card.getByText("Áudio preparado ✓")).toBeVisible();
         }
         await host.getByRole("button", { name: "Aplicar palavras", exact: true }).click();
         await expect(host.getByText("5 falas adicionadas à rodada ✓")).toBeVisible();
-      } else {
-        await expect.poll(() => states.values().next().value?.settings.questionCount).toBe(5);
       }
+      await host.getByRole("button", { name: "Criar sala", exact: true }).click();
+      await expect(host.locator(".local-room-share")).toBeVisible();
+      await expect(host.locator(".local-room-settings")).toHaveCount(0);
+      await expect(host.getByText("Criando sala…")).toHaveCount(0);
+      await expect(host.getByText("Preparando atividade…")).toHaveCount(0);
+      await host.locator(".local-room-share img").evaluate(async (image) => {
+        await (image as HTMLImageElement).decode();
+      });
+      const qrBounds = await host.locator(".local-room-share svg[aria-label]").boundingBox();
+      expect(qrBounds?.width).toBeGreaterThanOrEqual(120);
+      expect(Math.abs((qrBounds?.width ?? 0) - (qrBounds?.height ?? 0))).toBeLessThan(1);
+      await expect(host.locator(".local-room-share [data-qr-finder]")).toHaveCount(3);
+      await expect(host.locator(".local-room-share [data-qr-logo]")).toHaveAttribute(
+        "href",
+        "/favicon-star.svg",
+      );
+      await expect(host.locator(".helena-room-qr--holding svg")).toHaveAttribute(
+        "data-qr-error-correction",
+        "H",
+      );
+      await expect(host.locator(".helena-room-qr--holding svg rect")).toHaveCount(9);
+      await host.locator(".local-room-share__code").scrollIntoViewIfNeeded();
+      await host.screenshot({ path: testInfo.outputPath("room-paper.png") });
+      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+      await host.screenshot({
+        path: testInfo.outputPath("room-paper-dark.png"),
+        animations: "disabled",
+      });
+      await host.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
       const code = await host.getByLabel("Código da sala", { exact: true }).innerText();
       const players = await Promise.all(contexts.slice(1).map((c) => c.newPage()));
       await Promise.all(
@@ -458,49 +501,7 @@ for (const activity of ["listening", "bingo"] as const) {
       expect(positions[6]!.y).toBeCloseTo(positions[0]!.y);
       await participants.first().scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("participants.png") });
-      if (activity === "listening") {
-        await host.getByRole("button", { name: "Palavras prontas" }).click();
-        await expect(host.getByText("100 palavras com áudio")).toBeVisible();
-        await expect(
-          host.locator('.local-room-ready-words__subject img[src="/room-icons/english.svg"]'),
-        ).toBeVisible();
-        const search = host.getByRole("searchbox", {
-          name: "Buscar palavras em inglês ou português",
-        });
-        await search.fill("onibus");
-        await expect(
-          host.locator(".local-room-ready-words__results").getByRole("checkbox", { name: /bus/ }),
-        ).toBeVisible();
-        await search.fill("");
-        await host.getByLabel("Importar lista de palavras").setInputFiles({
-          name: "palavras.csv",
-          mimeType: "text/csv",
-          buffer: Buffer.from("word,translation\nschool,escola\nonibus,bus\nunknown,desconhecido"),
-        });
-        await expect(host.getByText(/2 palavras selecionadas/)).toBeVisible();
-        await expect(host.getByText(/Sem áudio no banco: unknown/)).toBeVisible();
-        await host.getByRole("button", { name: "Limpar", exact: true }).click();
-        const words = host.locator(".local-room-ready-words__results button");
-        for (let index = 0; index < 5; index++) await words.nth(index).click();
-        await host.getByRole("button", { name: "Aplicar seleção" }).click();
-        await expect(host.locator(".local-room-settings__panel")).toHaveAttribute(
-          "aria-busy",
-          "false",
-        );
-        await expect.poll(() => states.get(code)?.settings.readyWordIds?.length).toBe(5);
-        await expect(host.getByRole("slider", { name: "Perguntas" })).toHaveCount(0);
-        await expect.poll(() => states.get(code)?.settings.questionCount).toBe("all");
-        await expect.poll(() => states.get(code)?.content?.count).toBe(5);
-        await host.locator(".local-room-ready-words").screenshot({
-          path: testInfo.outputPath("ready-word-picker.png"),
-        });
-        const audioResponse = host.waitForResponse((response) =>
-          /\/audio\/kokoro\/ready-[a-z]+\.mp3$/.test(response.url()),
-        );
-        await host.getByRole("button", { name: "Iniciar atividade" }).click();
-        expect((await audioResponse).status()).toBe(200);
-        expect(states.get(code)?.currentQuestion?.id).toMatch(/^ready-/);
-      }
+      await expect(host.locator(".local-room-settings")).toHaveCount(0);
     } finally {
       await Promise.all(contexts.map((context) => context.close()));
     }

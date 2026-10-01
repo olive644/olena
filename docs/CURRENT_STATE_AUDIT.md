@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Preparação e convite separados (2026-10-01)
+
+- Preparação permanece dentro da navegação do app no desktop e celular.
+- Palavras selecionadas são aplicadas imediatamente ao rascunho local.
+- Após criar, configurações ficam ocultas e convite e participantes ficam próximos.
+- Envio de áudio com falha pode ser repetido sem reabrir a configuração.
+- Ícone Modo Sala representa três pessoas em camadas de papel, com variantes dos temas.
+
 ## Modo Sala independente (2026-10-01)
 
 - Rota `/sala` e navegação própria com ícone de sala em papel recortado nos temas claro e escuro. Praticar permanece dedicado à prática individual.

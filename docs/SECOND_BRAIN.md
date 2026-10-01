@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Preparação do Modo Sala mantém a navegação desktop e móvel. A seleção no banco
+de palavras já integra o rascunho, sem confirmação adicional. Depois de criar,
+somente convite, participantes e início ficam visíveis; minigames e controles
+não se repetem. Falhas no envio dos áudios oferecem nova tentativa na sala.
+O ícone usa três pessoas em papel recortado, com figura central maior.
+
 Modo Sala tem rota `/sala`, independente de Praticar. A configuração inicial é um
 rascunho local reutilizando os controles existentes; criar a sala persiste esse
 rascunho antes de exibir o convite. Arquivos preparados permanecem em memória até
