@@ -84,7 +84,9 @@ export function useCloudSync() {
     if (!enabled) return;
     let active = true;
     let stopAuth: (() => void) | undefined;
-    let pollTimer: ReturnType<typeof setInterval> | undefined;
+    let eventSource: EventSource | undefined;
+    let stopIdToken: (() => void) | undefined;
+    let onlineListener: (() => void) | undefined;
     let uploadTimer: ReturnType<typeof setTimeout> | undefined;
     let saveCloud: (() => Promise<void>) | undefined;
     let dirty = false;
@@ -136,8 +138,12 @@ export function useCloudSync() {
       .then(({ auth, authApi, databaseURL }) => {
         if (!active) return;
         async function syncUser(user: (typeof auth)["currentUser"]) {
-          clearInterval(pollTimer);
-          pollTimer = undefined;
+          eventSource?.close();
+          eventSource = undefined;
+          stopIdToken?.();
+          stopIdToken = undefined;
+          if (onlineListener) window.removeEventListener("online", onlineListener);
+          onlineListener = undefined;
           saveCloud = undefined;
           if (!user) {
             conflictPending = false;
@@ -369,15 +375,48 @@ export function useCloudSync() {
             revision: current.revision + 1,
           }));
           if (dirty) void saveCloud();
-          pollTimer = setInterval(() => {
-            if (dirty) {
-              void saveCloud?.();
-              return;
-            }
-            void request("GET")
-              .then(receiveCloud)
-              .catch(() => setState((current) => ({ ...current, status: "offline" })));
-          }, 5000);
+
+          // Conecta direto no Realtime Database do Firebase por Server-Sent Events nativos
+          // do navegador, do mesmo jeito que a sala local já fazia (ver startStreaming em
+          // use-local-room.ts): mudanças feitas em outro dispositivo chegam aqui na hora,
+          // em vez de esperar o próximo ciclo de um polling. A diferença em relação à sala é
+          // que este stream exige um token de login na própria URL (a sala lê um caminho
+          // público); como o token expira, a conexão precisa ser reaberta com um token novo
+          // sempre que ele for renovado (onIdTokenChanged), e também se o próprio Firebase
+          // avisar que o token usado na conexão não vale mais (auth_revoked).
+          function openStream(streamUser: NonNullable<(typeof auth)["currentUser"]>) {
+            eventSource?.close();
+            eventSource = undefined;
+            void streamUser.getIdToken().then((token) => {
+              if (!active) return;
+              const source = new EventSource(`${url}?auth=${encodeURIComponent(token)}`);
+              source.addEventListener("put", (event) => {
+                try {
+                  const payload = JSON.parse((event as MessageEvent<string>).data) as {
+                    path: string;
+                    data: CloudState | null;
+                  };
+                  if (payload.path === "/") void receiveCloud(payload.data);
+                } catch {
+                  // Evento malformado: ignora e espera o próximo.
+                }
+              });
+              source.addEventListener("auth_revoked", () => openStream(streamUser));
+              source.addEventListener("cancel", () => source.close());
+              eventSource = source;
+            });
+          }
+          openStream(user);
+          stopIdToken = authApi.onIdTokenChanged(auth, (freshUser) => {
+            if (freshUser) openStream(freshUser);
+          });
+          // O stream só avisa quando algo muda DE VERDADE no lado de fora: uma mudança local
+          // que falhou em subir por falta de rede (dirty) não gera nenhum evento novo até a
+          // rede voltar, então precisa de um empurrão explícito nesse momento.
+          onlineListener = () => {
+            if (dirty) void saveCloud?.();
+          };
+          window.addEventListener("online", onlineListener);
         }
         stopAuth = authApi.onAuthStateChanged(auth, (user) => {
           void syncUser(user).catch(() =>
@@ -395,7 +434,9 @@ export function useCloudSync() {
     return () => {
       active = false;
       clearTimeout(uploadTimer);
-      clearInterval(pollTimer);
+      eventSource?.close();
+      stopIdToken?.();
+      if (onlineListener) window.removeEventListener("online", onlineListener);
       stopAuth?.();
       window.removeEventListener(SYNCED_STORAGE_EVENT, scheduleUpload);
     };
