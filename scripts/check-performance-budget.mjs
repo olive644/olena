@@ -146,8 +146,11 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // runtime dependency. The combined build measures 918.0 KiB on Windows. The 100-word
 // picker, sliders and recorder recovery add about 4 KiB to the lazy room route:
 // 922.1 KiB measured on Windows. Keep a narrow allowance for CI variance without
-// changing the initial-route ceiling or adding a runtime dependency.
-const MAX_TOTAL_JS_BYTES = 926 * 1024;
+// changing the initial-route ceiling or adding a runtime dependency. The item-level
+// workspace sync merge (fixes whole-blob conflicts discarding one device's changes
+// on cross-device sync) adds about 4 KiB more: 926.3 KiB measured on Windows. No new
+// dependency.
+const MAX_TOTAL_JS_BYTES = 930 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;

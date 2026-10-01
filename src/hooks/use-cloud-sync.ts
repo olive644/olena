@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { deleteAccountEverywhere } from "../data/account-deletion";
 import { claimDeviceForAccount, clearPersonalData } from "../data/personal-data";
+import { loadWorkspace, serializeWorkspace, WORKSPACE_STORAGE_KEY } from "../data/local-workspace";
 import {
   applySyncedStorage,
   readSyncedStorage,
   SYNCED_STORAGE_EVENT,
 } from "../data/synced-storage";
+import { mergeWorkspaceStates } from "../domain/workspace-sync-merge";
 import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
@@ -28,7 +30,24 @@ async function mergeItems(
   remote: SyncedItems,
 ): Promise<SyncedMergeResult> {
   const { mergeSyncedItems } = await import("../data/sync-conflict");
-  return mergeSyncedItems(base, local, remote);
+  const result = mergeSyncedItems(base, local, remote);
+  // O espaço de estudos inteiro é só mais uma chave para o merge acima: se os dois lados
+  // mudaram, ele descarta um bloco inteiro, mesmo quando as mudanças foram em cadernos ou
+  // folhas diferentes (o caso comum de usar o mesmo app em dois aparelhos). Quando é
+  // exatamente esse o conflito, mescla por item em vez de aceitar essa perda.
+  if (result.conflicts.includes(WORKSPACE_STORAGE_KEY)) {
+    const asWorkspace = (raw: string | undefined) => loadWorkspace({ getItem: () => raw ?? null });
+    const { workspace, conflicts } = mergeWorkspaceStates(
+      asWorkspace(base[WORKSPACE_STORAGE_KEY]),
+      asWorkspace(local[WORKSPACE_STORAGE_KEY]),
+      asWorkspace(remote[WORKSPACE_STORAGE_KEY]),
+    );
+    result.items[WORKSPACE_STORAGE_KEY] = serializeWorkspace(workspace);
+    if (conflicts === 0) {
+      result.conflicts = result.conflicts.filter((key) => key !== WORKSPACE_STORAGE_KEY);
+    }
+  }
+  return result;
 }
 
 export type CloudSyncState = {
