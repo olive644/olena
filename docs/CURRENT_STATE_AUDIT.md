@@ -1548,3 +1548,9 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - O stream só avisa quando algo muda de fato no lado de fora: uma mudança local que falhou em subir por falta de rede não gera nenhum evento novo até a rede voltar. Por isso, um listener do evento `online` do navegador tenta de novo nesse momento, no lugar do que antes era coberto pelo próprio ciclo do polling.
 - O envio de mudanças locais (debounce de 350 ms após qualquer edição, e o `PUT` em si) não mudou; só a forma de **receber** mudanças de outros dispositivos deixou de ser polling.
 - Testes: `use-cloud-sync.test.tsx` (uma mudança publicada no stream chega sem esperar nenhum polling, o stream é refeito com o token novo quando o login renova, e uma mudança que falhou por falta de rede sobe de novo quando o navegador avisa que a conexão voltou).
+
+## Teto absoluto no orçamento de performance (2026-10-01)
+
+- `scripts/check-performance-budget.mjs`: o orçamento normal (`MAX_INITIAL_JS_BYTES`, `MAX_TOTAL_JS_BYTES`) sempre subiu aos poucos, com uma frase de justificativa a cada funcionalidade nova, o que é esperado. O que faltava era algo avisando se a soma dessas subidas pequenas virasse um problema grande sem ninguém perceber.
+- Dois novos tetos absolutos (`HARD_CEILING_INITIAL_JS_BYTES` em 400 KiB, `HARD_CEILING_TOTAL_JS_BYTES` em 1500 KiB) não medem o build: checam a própria configuração do script. Se o orçamento normal precisar passar de qualquer um dos dois, o script falha com uma mensagem própria, diferente da falha de build normal, pedindo uma revisão consciente (code-splitting, lazy-loading) em vez de só mais um bump de rotina.
+- Os tetos absolutos em si não deveriam precisar subir no dia a dia; se algum dia precisarem, é uma decisão própria, não uma consequência automática de uma funcionalidade nova.
