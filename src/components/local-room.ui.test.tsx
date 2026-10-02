@@ -43,11 +43,32 @@ describe("chegada por link de convite", () => {
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
     const create = screen.getByRole("button", { name: /^Criar sala$/ });
     expect(create.hasAttribute("disabled")).toBe(true);
+    const english = screen.getByRole("button", { name: "Inglês" });
+    expect(english.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("searchbox")).toBeNull();
+    fireEvent.click(english);
+    expect(english.getAttribute("aria-expanded")).toBe("true");
+    expect(document.querySelectorAll(".local-room-ready-words__results button")).toHaveLength(100);
     fireEvent.click(screen.getByRole("button", { name: "Selecionar exibidas" }));
     expect(screen.queryByRole("button", { name: "Aplicar seleção" })).toBeNull();
     await waitFor(() => expect(create.hasAttribute("disabled")).toBe(false));
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(create.hasAttribute("disabled")).toBe(false);
+    fireEvent.click(english);
+    expect(screen.queryByRole("searchbox")).toBeNull();
+    expect(english.textContent).toContain("100 selecionadas");
+  });
+
+  it("preenche a barra somente até o passo do tempo selecionado", () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    const slider = screen.getByRole("slider", { name: "Tempo por pergunta" });
+    fireEvent.change(slider, { target: { value: "1" } });
+    expect(slider.getAttribute("aria-valuetext")).toBe("10s");
+    expect((slider as HTMLElement).style.getPropertyValue("--room-slider-progress")).toBe(
+      "33.33333333333333%",
+    );
+    fireEvent.pointerUp(slider);
   });
 
   it("não adiciona falas vazias e remove configurações redundantes de áudio", async () => {

@@ -1,4 +1,3 @@
-import { Copy } from "lucide-react";
 import { useState } from "react";
 import {
   buildLocalRoomJoinUrl,
@@ -33,9 +32,6 @@ export function ShareRoom({ code }: { code: string }) {
           onClick={() => void copy(code, "Código copiado")}
           aria-label="Copiar código da sala"
         >
-          <span className="local-room-copy-icon local-room-copy-icon--generic" aria-hidden="true">
-            <Copy size={17} />
-          </span>
           <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
             <PaperEditorIcon name="copyLink" />
           </span>
@@ -55,12 +51,6 @@ export function ShareRoom({ code }: { code: string }) {
             onClick={() => void copy(joinUrl, "Link copiado")}
           >
             <span className="local-room-copy-label">
-              <span
-                className="local-room-copy-icon local-room-copy-icon--generic"
-                aria-hidden="true"
-              >
-                <Copy size={16} />
-              </span>
               <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
                 <PaperEditorIcon name="copyLink" />
               </span>

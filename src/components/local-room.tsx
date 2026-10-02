@@ -1,5 +1,12 @@
 import { Volume2 } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { createPortal } from "react-dom";
 import {
   isValidLocalRoomCode,
@@ -136,6 +143,9 @@ function RoomStepSlider({
         max={steps.length - 1}
         step="1"
         value={index}
+        style={
+          { "--room-slider-progress": `${(index / (steps.length - 1)) * 100}%` } as CSSProperties
+        }
         aria-valuetext={shown === "all" ? "Todas" : `${shown}${suffix}`}
         onChange={(event) => {
           const next = Number(event.target.value);
@@ -339,6 +349,7 @@ export function LocalRoom({
   const authoringRoomCodeRef = useRef<string | undefined>(undefined);
   const [manualApplyStatus, setManualApplyStatus] = useState("");
   const [readySearch, setReadySearch] = useState("");
+  const [readyWordsOpen, setReadyWordsOpen] = useState(false);
   const [readyApplying, setReadyApplying] = useState(false);
   const readyAppliedRef = useRef("");
   const [revealHostWord, setRevealHostWord] = useState(false);
@@ -858,17 +869,6 @@ export function LocalRoom({
         {!preparing && (
           <header className="local-room-session__header">
             <div className="local-room-session__actions">
-              {isHost && !preparing && state.phase === "lobby" && (
-                <button
-                  className="secondary-button"
-                  type="button"
-                  onClick={() =>
-                    window.open(`/?sala=${state.code}`, "_blank", "noopener,noreferrer")
-                  }
-                >
-                  <img src="/room-icons/join.svg" alt="" width="24" height="24" /> Entrar com código
-                </button>
-              )}
               {isHost && !preparing && (
                 <button
                   className="secondary-button local-room-open-projector"
@@ -1022,109 +1022,132 @@ export function LocalRoom({
                       )}
                       {usesReadyWords && (
                         <div className="local-room-ready-words" aria-busy={readyApplying}>
-                          <div className="local-room-ready-words__subject">
+                          <button
+                            type="button"
+                            className="local-room-ready-words__subject"
+                            aria-expanded={readyWordsOpen}
+                            aria-controls="room-english-words"
+                            aria-label="Inglês"
+                            onClick={() => setReadyWordsOpen((open) => !open)}
+                          >
                             <img src="/room-icons/english.svg" alt="" width="35" height="35" />
-                            <div>
+                            <span className="local-room-ready-words__subject-label">
                               <small>MATÉRIA</small>
                               <strong>Inglês</strong>
-                            </div>
-                            <span>{READY_LISTENING_DECK.length} palavras com áudio</span>
-                          </div>
-                          <label className="local-room-ready-words__search">
-                            <img src="/room-icons/search.svg" alt="" width="22" height="22" />
-                            <input
-                              type="search"
-                              value={readySearch}
-                              onChange={(event) => setReadySearch(event.target.value)}
-                              placeholder="Buscar em inglês ou português"
-                              aria-label="Buscar palavras em inglês ou português"
-                            />
-                          </label>
-                          {readyDraftIds.length > 0 && (
-                            <div
-                              className="local-room-ready-words__selected"
-                              aria-label="Palavras selecionadas"
-                            >
-                              {READY_LISTENING_DECK.filter((card) =>
-                                readySelected.has(card.id),
-                              ).map((card) => (
+                            </span>
+                            <span>
+                              {readyDraftIds.length > 0
+                                ? `${readyDraftIds.length} selecionadas`
+                                : `${READY_LISTENING_DECK.length} palavras com áudio`}
+                            </span>
+                            <span className="local-room-ready-words__disclosure" aria-hidden="true">
+                              <PaperEditorIcon name="add" />
+                            </span>
+                          </button>
+                          {readyWordsOpen && (
+                            <div id="room-english-words" className="local-room-ready-words__body">
+                              <label className="local-room-ready-words__search">
+                                <img src="/room-icons/search.svg" alt="" width="22" height="22" />
+                                <input
+                                  type="search"
+                                  value={readySearch}
+                                  onChange={(event) => setReadySearch(event.target.value)}
+                                  placeholder="Buscar em inglês ou português"
+                                  aria-label="Buscar palavras em inglês ou português"
+                                />
+                              </label>
+                              {readyDraftIds.length > 0 && (
+                                <div
+                                  className="local-room-ready-words__selected"
+                                  aria-label="Palavras selecionadas"
+                                >
+                                  {READY_LISTENING_DECK.filter((card) =>
+                                    readySelected.has(card.id),
+                                  ).map((card) => (
+                                    <button
+                                      type="button"
+                                      key={card.id}
+                                      disabled={readyApplying}
+                                      onClick={() =>
+                                        setReadyDraftIds((ids) =>
+                                          ids.filter((id) => id !== card.id),
+                                        )
+                                      }
+                                      aria-label={`Remover ${card.front}`}
+                                    >
+                                      <PaperEnglishWord value={card.front} />
+                                      <span aria-hidden="true">×</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                              <div className="local-room-ready-words__tools">
+                                <strong>{readyDraftIds.length} selecionadas</strong>
                                 <button
                                   type="button"
-                                  key={card.id}
                                   disabled={readyApplying}
                                   onClick={() =>
-                                    setReadyDraftIds((ids) => ids.filter((id) => id !== card.id))
+                                    setReadyDraftIds((ids) => [
+                                      ...new Set([...ids, ...readyMatches.map((card) => card.id)]),
+                                    ])
                                   }
-                                  aria-label={`Remover ${card.front}`}
                                 >
-                                  <PaperEnglishWord value={card.front} />
-                                  <span aria-hidden="true">×</span>
+                                  Selecionar exibidas
                                 </button>
-                              ))}
+                                {readyDraftIds.length > 0 && (
+                                  <button
+                                    type="button"
+                                    disabled={readyApplying}
+                                    onClick={() => setReadyDraftIds([])}
+                                  >
+                                    Limpar
+                                  </button>
+                                )}
+                              </div>
+                              <div
+                                className="local-room-ready-words__results"
+                                aria-label="Resultados da busca"
+                              >
+                                {readyMatches.map((card) => (
+                                  <button
+                                    type="button"
+                                    role="checkbox"
+                                    aria-checked={readySelected.has(card.id)}
+                                    key={card.id}
+                                    disabled={readyApplying}
+                                    onClick={() =>
+                                      setReadyDraftIds((ids) =>
+                                        ids.includes(card.id)
+                                          ? ids.filter((id) => id !== card.id)
+                                          : [...ids, card.id],
+                                      )
+                                    }
+                                  >
+                                    <span
+                                      className="local-room-ready-words__check"
+                                      aria-hidden="true"
+                                    >
+                                      {readySelected.has(card.id) ? (
+                                        <PaperCheckIcon />
+                                      ) : (
+                                        <PaperEditorIcon name="add" />
+                                      )}
+                                    </span>
+                                    <span>
+                                      <strong>
+                                        <PaperEnglishWord value={card.front} />
+                                      </strong>
+                                      <small>{card.back}</small>
+                                    </span>
+                                  </button>
+                                ))}
+                                {readyMatches.length === 0 && <p>Nenhuma palavra encontrada.</p>}
+                              </div>
+                              <div className="local-room-ready-words__apply">
+                                <span>Todas as palavras selecionadas entram na rodada.</span>
+                              </div>
                             </div>
                           )}
-                          <div className="local-room-ready-words__tools">
-                            <strong>{readyDraftIds.length} selecionadas</strong>
-                            <button
-                              type="button"
-                              disabled={readyApplying}
-                              onClick={() =>
-                                setReadyDraftIds((ids) => [
-                                  ...new Set([...ids, ...readyMatches.map((card) => card.id)]),
-                                ])
-                              }
-                            >
-                              Selecionar exibidas
-                            </button>
-                            {readyDraftIds.length > 0 && (
-                              <button
-                                type="button"
-                                disabled={readyApplying}
-                                onClick={() => setReadyDraftIds([])}
-                              >
-                                Limpar
-                              </button>
-                            )}
-                          </div>
-                          <div
-                            className="local-room-ready-words__results"
-                            aria-label="Resultados da busca"
-                          >
-                            {readyMatches.map((card) => (
-                              <button
-                                type="button"
-                                role="checkbox"
-                                aria-checked={readySelected.has(card.id)}
-                                key={card.id}
-                                disabled={readyApplying}
-                                onClick={() =>
-                                  setReadyDraftIds((ids) =>
-                                    ids.includes(card.id)
-                                      ? ids.filter((id) => id !== card.id)
-                                      : [...ids, card.id],
-                                  )
-                                }
-                              >
-                                <span className="local-room-ready-words__check" aria-hidden="true">
-                                  {readySelected.has(card.id) ? (
-                                    <PaperCheckIcon />
-                                  ) : (
-                                    <img src="/room-icons/add.svg" alt="" width="22" height="22" />
-                                  )}
-                                </span>
-                                <span>
-                                  <strong>
-                                    <PaperEnglishWord value={card.front} />
-                                  </strong>
-                                  <small>{card.back}</small>
-                                </span>
-                              </button>
-                            ))}
-                            {readyMatches.length === 0 && <p>Nenhuma palavra encontrada.</p>}
-                          </div>
-                          <div className="local-room-ready-words__apply">
-                            <span>Todas as palavras selecionadas entram na rodada.</span>
-                          </div>
                         </div>
                       )}
                       {state.settings.activity !== "bingo" && usesManualList && (

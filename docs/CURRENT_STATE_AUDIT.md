@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Controles e convite da sala (2026-10-01)
+
+- Preparação mantém perfil e tema do cabeçalho. Inglês é uma opção expansível, inicialmente fechada, com busca e 100 palavras ao abrir. Seleções continuam aplicadas imediatamente e são preservadas ao recolher.
+- Expansão, marcação e chegada dos chips usam movimentos discretos, desativados com movimento reduzido. O mais reutiliza PaperEditorIcon em grafite e creme.
+- Trilho do tempo representa a posição escolhida, em vez de ficar sempre cheio. Os passos, teclado e persistência são preservados.
+- Foco compartilhado é discreto e interno, sem moldura roxa exagerada; navegação por teclado não foi removida. Alto contraste mantém um indicador explícito.
+- Convite e ações do criador ficam centralizados, sem Entrar com código para o anfitrião. Helena e QR permanecem, sem o cartão de fundo. Copiar usa papel turquesa no desktop e celular.
+
 ## Artes alinhadas ao onboarding (2026-10-01)
 
 - As quatro cenas foram reconstruídas usando diretamente as artes do onboarding, com corpo compacto, facetas limpas e cenários simplificados.
