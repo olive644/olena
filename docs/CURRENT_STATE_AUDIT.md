@@ -1086,7 +1086,7 @@ Três ajustes vindos da auditoria de segurança, sem mudança de fluxo para o us
 - Os tokens de anfitrião e de participante passaram a ser comparados em tempo constante por `safeEqual` (`src/backend/secure-compare.ts`), em vez de `===`. Um token ausente nunca autoriza.
 - `vercel.json` ganhou `Strict-Transport-Security` e `Cross-Origin-Opener-Policy: same-origin-allow-popups`. O valor `same-origin` foi descartado de propósito, porque quebraria o `signInWithPopup` do login Google. `src/security-headers.test.ts` trava esses cabeçalhos e a ausência de `unsafe-inline` e `unsafe-eval` no `script-src`.
 
-Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. Pendência fora do repositório: confirmar na Vercel se `FIREBASE_APPCHECK_ENFORCE` está `true`, porque sem ele o App Check só registra e não bloqueia.
+Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. O dono confirmou em 2026-10-02 que `FIREBASE_APPCHECK_ENFORCE` está `true` na Vercel: o App Check bloqueia de verdade, não só registra.
 
 # Convite de edição do caderno, setembro de 2026
 
