@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+Rotas SPA precisam de rewrite na Vercel além do History API. /sala tem regra exata
+para index.html, coberta por room-hosting-route.test.ts. Validar HTTP em produção
+após deploy; sucesso no servidor local não prova o roteamento da hospedagem.
+
 Banco da sala abre pela opção Inglês; seleção imediata permanece ao recolher.
 Slider usa --room-slider-progress para comunicar o passo atual. Foco de teclado
 é interno e discreto, não desativado. Convite do anfitrião não tem Entrar com código,

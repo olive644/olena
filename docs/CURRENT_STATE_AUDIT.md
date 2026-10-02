@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Rota da sala na hospedagem (2026-10-02)
+
+- /sala retornava 404 ao abrir diretamente na Vercel: a navegação interna usava History API, mas faltava rewrite para index.html na hospedagem.
+- Rewrite exato de /sala corrige acesso direto e recarregamento sem capturar APIs, áudios ou alterar a rota do projetor.
+- Teste lê vercel.json e reproduz a ausência da rota antes da correção. O servidor local sozinho não reproduz essa configuração de produção.
+
 ## Controles e convite da sala (2026-10-01)
 
 - Preparação mantém perfil e tema do cabeçalho. Inglês é uma opção expansível, inicialmente fechada, com busca e 100 palavras ao abrir. Seleções continuam aplicadas imediatamente e são preservadas ao recolher.
