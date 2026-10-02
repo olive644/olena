@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Preparação e convite separados (2026-10-01)
+
+- Preparação permanece dentro da navegação do app no desktop e celular.
+- Palavras selecionadas são aplicadas imediatamente ao rascunho local.
+- Após criar, configurações ficam ocultas e convite e participantes ficam próximos.
+- Envio de áudio com falha pode ser repetido sem reabrir a configuração.
+- Ícone Modo Sala representa três pessoas em camadas de papel, com variantes dos temas.
+
 ## Modo Sala independente (2026-10-01)
 
 - Rota `/sala` e navegação própria com ícone de sala em papel recortado nos temas claro e escuro. Praticar permanece dedicado à prática individual.
@@ -1530,7 +1538,7 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `api/local-room.ts` passou a verificar esse token com `createFirebaseAccountIdentity` (já existia, usado só em `notebook-collab`). `src/backend/local-room-handler.ts` guarda o UID de quem criou a sala (`hostAccountId`) e de cada participante (`accountId`, em `LocalRoomParticipant`), e recusa (`409`, `code: "already_in_room"`) uma nova entrada na mesma sala pela mesma conta enquanto a entrada anterior (como anfitrião ou participante) ainda está online. Depois que a pessoa sai (`leave`) ou fica off-line além da margem de presença, a mesma conta pode entrar de novo normalmente.
 - Nem `hostAccountId` nem `accountId` aparecem no estado público da sala (`toPublicRoomState` os remove, do mesmo jeito que já removia o `token`): os outros participantes nunca veem o UID de ninguém.
 - Testes: `local-room-handler.test.ts` (recusa a mesma conta entrar de novo enquanto online, recusa o anfitrião entrar como participante por outro dispositivo, contas diferentes entram normalmente, depois de saír a mesma conta pode voltar, convidados sem login não são afetados, o UID nunca aparece no estado público), `local-room.test.ts` (o estado público nunca inclui `accountId`/`hostAccountId`), `use-local-room.test.ts` (o token da conta logada vai no `Authorization`; sem conta logada, o cabeçalho não é enviado).
-- Ainda pendente da mesma investigação (fora do escopo desta mudança): a sincronização do workspace inteiro entre dispositivos (hoje faz merge por chave de armazenamento inteira, não por caderno/nota, então um conflito real descarta um lado inteiro).
+- Ficou pendente da mesma investigação (fora do escopo desta mudança, resolvido na seção "Sincronização entre dispositivos por item, não por bloco inteiro" abaixo): a sincronização do workspace inteiro entre dispositivos (hoje faz merge por chave de armazenamento inteira, não por caderno/nota, então um conflito real descarta um lado inteiro).
 
 ## Sincronização entre dispositivos por item, não por bloco inteiro (2026-10-01)
 
@@ -1538,7 +1546,7 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `src/domain/workspace-sync-merge.ts` (novo): mescla o espaço de estudos item por item (por `id`) em cada uma das listas do workspace (cadernos, folhas, tarefas, hábitos, materiais, flashcards, metas, etc.), em vez de tratar o JSON inteiro como um bloco. Um item que só mudou, só foi criado ou só foi removido de um dos lados entra no resultado normalmente; só quando o MESMO item foi alterado de formas diferentes nos dois dispositivos é que um precisa ceder lugar ao outro (o lado local prevalece nesse caso, como já acontecia antes, só que agora restrito a esse item específico, não ao espaço inteiro). A comparação ignora ordem de chaves dentro de cada item.
 - `src/hooks/use-cloud-sync.ts`: quando o merge genérico por chave detecta conflito especificamente na chave do espaço de estudos, troca para esse merge por item antes de decidir o que sobe para a nuvem. As outras chaves sincronizadas (tema, perfil, onboarding, etc., todas valores pequenos e escalares) continuam no merge simples por chave, que já era correto para elas.
 - Testes: `workspace-sync-merge.test.ts` (adições em dispositivos diferentes convivem, remoção só de um lado é respeitada, edição só remota é trazida, o mesmo item editado diferente nos dois lados conta como conflito e mantém o local, duas edições iguais não contam conflito, preferências mesclam como valor único, ordem de chaves não importa), `use-cloud-sync.test.tsx` (cadernos criados em cada dispositivo desde a última sincronização aparecem os dois depois do merge, sem ficar presa em "conflict").
-- Ainda pendente da mesma investigação (fora do escopo desta mudança): a sincronização continua sendo por polling a cada 5 segundos, não em tempo real; um dispositivo que fica fechado por muito tempo só sincroniza de verdade quando reabre.
+- Ficou pendente da mesma investigação (fora do escopo desta mudança, resolvido na seção "Sincronização entre dispositivos em tempo real, via stream do Firebase" abaixo): a sincronização continua sendo por polling a cada 5 segundos, não em tempo real; um dispositivo que fica fechado por muito tempo só sincroniza de verdade quando reabre.
 
 ## Sincronização entre dispositivos em tempo real, via stream do Firebase (2026-10-01)
 
@@ -1549,9 +1557,15 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - O envio de mudanças locais (debounce de 350 ms após qualquer edição, e o `PUT` em si) não mudou; só a forma de **receber** mudanças de outros dispositivos deixou de ser polling.
 - Testes: `use-cloud-sync.test.tsx` (uma mudança publicada no stream chega sem esperar nenhum polling, o stream é refeito com o token novo quando o login renova, e uma mudança que falhou por falta de rede sobe de novo quando o navegador avisa que a conexão voltou).
 
+## Teto absoluto no orçamento de performance (2026-10-01)
+
+- `scripts/check-performance-budget.mjs`: o orçamento normal (`MAX_INITIAL_JS_BYTES`, `MAX_TOTAL_JS_BYTES`) sempre subiu aos poucos, com uma frase de justificativa a cada funcionalidade nova, o que é esperado. O que faltava era algo avisando se a soma dessas subidas pequenas virasse um problema grande sem ninguém perceber.
+- Dois novos tetos absolutos (`HARD_CEILING_INITIAL_JS_BYTES` em 400 KiB, `HARD_CEILING_TOTAL_JS_BYTES` em 1500 KiB) não medem o build: checam a própria configuração do script. Se o orçamento normal precisar passar de qualquer um dos dois, o script falha com uma mensagem própria, diferente da falha de build normal, pedindo uma revisão consciente (code-splitting, lazy-loading) em vez de só mais um bump de rotina.
+- Os tetos absolutos em si não deveriam precisar subir no dia a dia; se algum dia precisarem, é uma decisão própria, não uma consequência automática de uma funcionalidade nova.
+
 ## Unificação dos dois sistemas de rate limit (2026-10-01)
 
 - `src/backend/room-guard.ts` tinha sua própria repetição da mesma lógica de limite por janela fixa (bucket por minuto, `compareAndSet` com até 40 tentativas) que já existia em `src/backend/rate-limit.ts` (`checkRateLimit`, usada por `speech.ts` e `google-calendar.ts`). Dois sistemas paralelos fazendo a mesma conta é dívida técnica: um endpoint novo podia esquecer de aplicar um dos dois sem ninguém notar.
-- `room-guard.ts` agora chama `checkRateLimit(store, "room-limits", `${endereço}:${ação}`, limite, 60)` em vez de repetir o laço de `compareAndSet`. A chave gerada (`room-limits/sha256(endereço:ação)`), a janela de 60s e o TTL de 120s continuam exatamente os mesmos de antes.
+- `room-guard.ts` agora chama `checkRateLimit` (namespace `"room-limits"`, identidade `endereço:ação`, limite por ação, janela de 60s) em vez de repetir o laço de `compareAndSet`. A chave gerada (`room-limits/sha256(endereço:ação)`), a janela e o TTL de 120s continuam exatamente os mesmos de antes.
 - Única diferença observável: o evento de observabilidade que distinguia "limite atingido" (`rate_limited`) de "contenção depois de 40 tentativas" (`rate_limit_contention`) passou a registrar os dois casos como `rate_limited`, já que o resultado para quem usa a sala é o mesmo (`429`) nos dois casos, e nenhum teste dependia dessa distinção.
 - Testes: `room-guard.test.ts` continua cobrindo o limite atômico e independente por endereço, agora através do caminho compartilhado.
