@@ -1838,3 +1838,19 @@
 .room-reconnect-error button {
   margin: 0.4rem;
 }
+
+.local-room-preparation {
+  width: 100%;
+  padding-block: 24px;
+}
+
+.local-room-lobby--created {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 680px;
+  margin-inline: auto;
+}
+
+.local-room-lobby--created > .local-room-lobby__main {
+  grid-column: 1;
+  grid-row: 1;
+}

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PublicLocalRoomState } from "../domain/local-room";
@@ -62,24 +62,13 @@ describe("contagem regressiva do início da rodada", () => {
     return container.querySelector(".local-room-countdown__value")?.textContent ?? null;
   }
 
-  it("seleciona imediatamente, bloqueia cliques repetidos e reverte em falha", async () => {
-    let resolveSettings: (saved: boolean) => void = () => {};
-    updateSettings.mockImplementation(
-      () =>
-        new Promise<boolean>((resolve) => {
-          resolveSettings = resolve;
-        }),
-    );
+  it("oculta minigames e configurações depois de criar a sala", () => {
     render(<LocalRoom />);
-    const bingo = screen.getByRole("radio", { name: /^Bingo/ });
-    fireEvent.click(bingo);
-    expect(bingo.getAttribute("aria-checked")).toBe("true");
-    expect(screen.getByText("Preparando atividade…")).toBeTruthy();
-    fireEvent.click(bingo);
-    expect(updateSettings).toHaveBeenCalledTimes(1);
-    await act(async () => resolveSettings(false));
-    expect(bingo.getAttribute("aria-checked")).toBe("false");
-    expect(screen.queryByText("Preparando atividade…")).toBeNull();
+    expect(screen.queryByRole("radiogroup", { name: "Atividades da sala" })).toBeNull();
+    expect(screen.queryByText("Prepare a escuta")).toBeNull();
+    expect(screen.getByLabelText("Código da sala").textContent).toBe("ABCDE");
+    expect(screen.getByRole("button", { name: "Iniciar atividade" })).toBeTruthy();
+    expect(updateSettings).not.toHaveBeenCalled();
   });
 
   it("mostra avatar, nome e prontidão sem o resumo fixo e sem repetir o código no topo", () => {

@@ -367,10 +367,15 @@ test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInf
     .getByRole("button", { name: "Modo Sala", exact: true })
     .click();
 
-  const dialog = page.getByRole("dialog", { name: "Modo Sala" });
-  const backButton = dialog.getByRole("button", { name: "Sair da sala", exact: true });
-  const heading = dialog.getByRole("heading", { name: "Modo Sala", exact: true });
+  const preparation = page.locator(".local-room-preparation");
+  await expect(page.getByRole("dialog", { name: "Modo Sala" })).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "Navegação móvel" })).toBeVisible();
+  const backButton = preparation.getByRole("button", { name: "Voltar", exact: true });
+  const heading = preparation.getByRole("heading", { name: "Modo Sala", exact: true });
   await expect(backButton.locator(".paper-editor-icon")).toBeVisible();
+  await expect
+    .poll(async () => (await backButton.boundingBox())?.height ?? 0)
+    .toBeGreaterThanOrEqual(44);
 
   const backBox = await backButton.boundingBox();
   const headingBox = await heading.boundingBox();
@@ -378,7 +383,7 @@ test("mantém o retorno do Modo Sala livre no celular", async ({ page }, testInf
   expect(headingBox).not.toBeNull();
   expect(backBox!.height).toBeGreaterThanOrEqual(44);
   await backButton.click();
-  await expect(dialog).toHaveCount(0);
+  await expect(preparation).toHaveCount(0);
 });
 
 test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, testInfo) => {

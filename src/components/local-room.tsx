@@ -173,9 +173,16 @@ function CountdownOverlay({ value }: { value: number }) {
 // Um portal direto pro <body>, não pro elemento pai mais próximo, porque
 // qualquer ancestral com transform (como o hover de .module-panel) vira um
 // "containing block" e faz position:fixed grudar nele em vez da tela toda.
-function LocalRoomFullscreen({ children }: { children: ReactNode }) {
+function LocalRoomFullscreen({
+  children,
+  embedded = false,
+}: {
+  children: ReactNode;
+  embedded?: boolean;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (embedded) return;
     const previous = document.activeElement;
     const root = document.getElementById("root");
     const wasInert = root?.inert ?? false;
@@ -185,7 +192,8 @@ function LocalRoomFullscreen({ children }: { children: ReactNode }) {
       if (root) root.inert = wasInert;
       if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
     };
-  }, []);
+  }, [embedded]);
+  if (embedded) return <div className="local-room-preparation">{children}</div>;
   return createPortal(
     <div
       ref={ref}
@@ -247,13 +255,14 @@ export function LocalRoom({
   const connection = useLocalRoom(initialJoinCode);
   const preparing = connection.role === "choose" && !connection.isRestoring;
   const [draftSettings, setDraftSettings] = useState(DEFAULT_SETTINGS);
+  const [readyDraftIds, setReadyDraftIds] = useState<string[]>([]);
   const [draftDeck, setDraftDeck] = useState<ListeningCard[]>([]);
   const [creating, setCreating] = useState(false);
   const [creationError, setCreationError] = useState("");
   const draftState: PublicLocalRoomState = {
     code: "",
     phase: "lobby",
-    settings: draftSettings,
+    settings: { ...draftSettings, readyWordIds: readyDraftIds },
     participants: [],
     questionIndex: 0,
     questionStartedAt: 0,
@@ -322,7 +331,6 @@ export function LocalRoom({
   const authoringRoomCodeRef = useRef<string | undefined>(undefined);
   const [manualApplyStatus, setManualApplyStatus] = useState("");
   const [readySearch, setReadySearch] = useState("");
-  const [readyDraftIds, setReadyDraftIds] = useState<string[]>([]);
   const [readyApplying, setReadyApplying] = useState(false);
   const readyAppliedRef = useRef("");
   const [revealHostWord, setRevealHostWord] = useState(false);
@@ -626,11 +634,12 @@ export function LocalRoom({
 
   const appliedReadyKey = JSON.stringify(state?.settings.readyWordIds ?? []);
   useEffect(() => {
+    if (preparing) return;
     if (readyAppliedRef.current === appliedReadyKey) return;
     readyAppliedRef.current = appliedReadyKey;
     const timer = window.setTimeout(() => setReadyDraftIds(state?.settings.readyWordIds ?? []), 0);
     return () => window.clearTimeout(timer);
-  }, [appliedReadyKey, state?.settings.readyWordIds]);
+  }, [appliedReadyKey, state?.settings.readyWordIds, preparing]);
 
   useEffect(() => {
     if (
@@ -804,6 +813,41 @@ export function LocalRoom({
     team,
     score: state.participants.filter((p) => p.team === team).reduce((sum, p) => sum + p.score, 0),
   }));
+  async function savePreparedRecordings(code: string, credential: string) {
+    const audioIds = new Map<string, string>();
+    for (const row of manualRows) {
+      if (row.audioFile)
+        audioIds.set(
+          normalizeListeningAnswer(row.word),
+          await uploadRoomRecording(code, credential, row.audioFile),
+        );
+    }
+    const uploadedDeck = draftDeck.map((card) => ({
+      ...card,
+      audioId: audioIds.get(normalizeListeningAnswer(card.front)) ?? card.audioId,
+    }));
+    if (await connection.updateSettings(draftSettings, uploadedDeck)) {
+      setManualRows((rows) =>
+        rows.map((row) => {
+          const audioId = audioIds.get(normalizeListeningAnswer(row.word));
+          return audioId ? { ...row, audioId } : row;
+        }),
+      );
+      setAppliedRecordingSignature(
+        manualDeck
+          .map(
+            (card) =>
+              audioIds.get(normalizeListeningAnswer(card.front)) ??
+              recordingIds[normalizeListeningAnswer(card.front)] ??
+              "",
+          )
+          .join("|"),
+      );
+    } else {
+      throw new Error("Não foi possível preparar os áudios. Tente enviar novamente.");
+    }
+  }
+
   if (projectorMode)
     return (
       <LocalRoomFullscreen>
@@ -812,7 +856,7 @@ export function LocalRoom({
     );
 
   return (
-    <LocalRoomFullscreen>
+    <LocalRoomFullscreen embedded={preparing}>
       {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
       <div className={`local-room-session local-room-session--${state.phase}`}>
         <header className="local-room-session__header">
@@ -822,11 +866,11 @@ export function LocalRoom({
             </h2>
           )}
           <div className="local-room-session__actions">
-            {preparing && (
+            {isHost && !preparing && state.phase === "lobby" && (
               <button
                 className="secondary-button"
                 type="button"
-                onClick={() => room.setRole("participant")}
+                onClick={() => window.open(`/?sala=${state.code}`, "_blank", "noopener,noreferrer")}
               >
                 <img src="/room-icons/join.svg" alt="" width="24" height="24" /> Entrar com código
               </button>
@@ -842,7 +886,7 @@ export function LocalRoom({
               </button>
             )}
             <button className="secondary-button local-room-exit" type="button" onClick={exitRoom}>
-              <PaperEditorIcon name="exit" /> Sair da sala
+              <PaperEditorIcon name="exit" /> {preparing ? "Voltar" : "Sair da sala"}
             </button>
           </div>
         </header>
@@ -859,7 +903,9 @@ export function LocalRoom({
 
         {state.phase === "lobby" ? (
           isHost ? (
-            <div className={`local-room-lobby${preparing ? " local-room-lobby--preparing" : ""}`}>
+            <div
+              className={`local-room-lobby${preparing ? " local-room-lobby--preparing" : " local-room-lobby--created"}`}
+            >
               {!preparing && (
                 <div className="local-room-lobby__main">
                   <ShareRoom code={state.code} />
@@ -887,552 +933,546 @@ export function LocalRoom({
                 </div>
               )}
 
-              <div className="local-room-settings" inert={creating}>
-                <div
-                  className="local-room-activities"
-                  role="radiogroup"
-                  aria-label="Atividades da sala"
-                >
-                  {ROOM_ACTIVITY_OPTIONS.map((activity) => (
-                    <button
-                      className="local-room-activity"
-                      type="button"
-                      disabled={!activity.enabled || pendingActivity !== null}
-                      role="radio"
-                      aria-checked={
-                        activity.enabled &&
-                        (state.settings.activity ?? "listening") === activity.key
-                      }
-                      onClick={() => activity.enabled && void selectActivity(activity.key)}
-                      key={activity.key}
-                    >
-                      <span className="local-room-activity__icon">
-                        <img
-                          src={`/room-icons/${activity.key}.svg`}
-                          alt=""
-                          width="48"
-                          height="48"
-                        />
-                      </span>
-                      {"badge" in activity && (
-                        <span className="local-room-activity__badge">{activity.badge}</span>
-                      )}
-                      <strong>{activity.title}</strong>
-                    </button>
-                  ))}
-                </div>
-                {pendingActivity && <HelenaLoading compact label="Preparando atividade…" />}
-                <div
-                  className="local-room-settings__panel"
-                  inert={pendingActivity !== null || readyApplying}
-                  aria-busy={pendingActivity !== null || readyApplying}
-                >
-                  <h3>
-                    {state.settings.activity === "bingo" ? "Prepare o bingo" : "Prepare a escuta"}
-                  </h3>
-                  {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
-                  {state.settings.activity !== "bingo" && (
-                    <div className="local-room-source" role="group" aria-label="Banco de palavras">
+              {preparing && (
+                <div className="local-room-settings" inert={creating}>
+                  <div
+                    className="local-room-activities"
+                    role="radiogroup"
+                    aria-label="Atividades da sala"
+                  >
+                    {ROOM_ACTIVITY_OPTIONS.map((activity) => (
                       <button
+                        className="local-room-activity"
                         type="button"
-                        className="local-room-source__option"
-                        aria-pressed={usesManualList}
-                        disabled={readyApplying}
-                        onClick={() =>
-                          void room.updateSettings({ subjectName: MANUAL_LISTENING_SOURCE })
+                        disabled={!activity.enabled || pendingActivity !== null}
+                        role="radio"
+                        aria-checked={
+                          activity.enabled &&
+                          (state.settings.activity ?? "listening") === activity.key
                         }
+                        onClick={() => activity.enabled && void selectActivity(activity.key)}
+                        key={activity.key}
                       >
-                        <img src="/room-icons/upload.svg" alt="" width="40" height="40" />
-                        <span>Enviar arquivos</span>
+                        <span className="local-room-activity__icon">
+                          <img
+                            src={`/room-icons/${activity.key}.svg`}
+                            alt=""
+                            width="48"
+                            height="48"
+                          />
+                        </span>
+                        {"badge" in activity && (
+                          <span className="local-room-activity__badge">{activity.badge}</span>
+                        )}
+                        <strong>{activity.title}</strong>
                       </button>
-                      <button
-                        type="button"
-                        className="local-room-source__option"
-                        aria-pressed={usesReadyWords}
-                        disabled={readyApplying}
-                        onClick={() => {
-                          setReadyDraftIds(state.settings.readyWordIds ?? []);
-                          void room.updateSettings(
-                            {
-                              subjectName: READY_LISTENING_SOURCE,
-                              difficulty: "mixed",
-                              category: "",
-                              questionCount: "all",
-                              readyWordIds: state.settings.readyWordIds ?? [],
-                            },
-                            [],
-                          );
-                          setAppliedManualWords("");
-                        }}
+                    ))}
+                  </div>
+                  {pendingActivity && <HelenaLoading compact label="Preparando atividade…" />}
+                  <div
+                    className="local-room-settings__panel"
+                    inert={pendingActivity !== null || readyApplying}
+                    aria-busy={pendingActivity !== null || readyApplying}
+                  >
+                    <h3>
+                      {state.settings.activity === "bingo" ? "Prepare o bingo" : "Prepare a escuta"}
+                    </h3>
+                    {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
+                    {state.settings.activity !== "bingo" && (
+                      <div
+                        className="local-room-source"
+                        role="group"
+                        aria-label="Banco de palavras"
                       >
-                        <img src="/room-icons/word-bank.svg" alt="" width="40" height="40" />
-                        <span>Palavras prontas</span>
-                      </button>
-                    </div>
-                  )}
-                  {usesReadyWords && (
-                    <div className="local-room-ready-words" aria-busy={readyApplying}>
-                      <div className="local-room-ready-words__subject">
-                        <img src="/room-icons/english.svg" alt="" width="35" height="35" />
-                        <div>
-                          <small>MATÉRIA</small>
-                          <strong>Inglês</strong>
-                        </div>
-                        <span>{READY_LISTENING_DECK.length} palavras com áudio</span>
-                      </div>
-                      <ListeningBankFile
-                        onImport={(ids) =>
-                          setReadyDraftIds((current) => [...new Set([...current, ...ids])])
-                        }
-                      />
-                      <label className="local-room-ready-words__search">
-                        <img src="/room-icons/search.svg" alt="" width="22" height="22" />
-                        <input
-                          type="search"
-                          value={readySearch}
-                          onChange={(event) => setReadySearch(event.target.value)}
-                          placeholder="Buscar em inglês ou português"
-                          aria-label="Buscar palavras em inglês ou português"
-                        />
-                      </label>
-                      {readyDraftIds.length > 0 && (
-                        <div
-                          className="local-room-ready-words__selected"
-                          aria-label="Palavras selecionadas"
-                        >
-                          {READY_LISTENING_DECK.filter((card) => readySelected.has(card.id)).map(
-                            (card) => (
-                              <button
-                                type="button"
-                                key={card.id}
-                                disabled={readyApplying}
-                                onClick={() =>
-                                  setReadyDraftIds((ids) => ids.filter((id) => id !== card.id))
-                                }
-                                aria-label={`Remover ${card.front}`}
-                              >
-                                <PaperEnglishWord value={card.front} />
-                                <span aria-hidden="true">×</span>
-                              </button>
-                            ),
-                          )}
-                        </div>
-                      )}
-                      <div className="local-room-ready-words__tools">
-                        <strong>{readyDraftIds.length} selecionadas</strong>
                         <button
                           type="button"
+                          className="local-room-source__option"
+                          aria-pressed={usesManualList}
                           disabled={readyApplying}
                           onClick={() =>
-                            setReadyDraftIds((ids) => [
-                              ...new Set([...ids, ...readyMatches.map((card) => card.id)]),
-                            ])
+                            void room.updateSettings({ subjectName: MANUAL_LISTENING_SOURCE })
                           }
                         >
-                          Selecionar exibidas
+                          <img src="/room-icons/upload.svg" alt="" width="40" height="40" />
+                          <span>Enviar arquivos</span>
                         </button>
-                        {readyDraftIds.length > 0 && (
-                          <button
-                            type="button"
-                            disabled={readyApplying}
-                            onClick={() => setReadyDraftIds([])}
-                          >
-                            Limpar
-                          </button>
-                        )}
-                      </div>
-                      <div
-                        className="local-room-ready-words__results"
-                        aria-label="Resultados da busca"
-                      >
-                        {readyMatches.map((card) => (
-                          <button
-                            type="button"
-                            role="checkbox"
-                            aria-checked={readySelected.has(card.id)}
-                            key={card.id}
-                            disabled={readyApplying}
-                            onClick={() =>
-                              setReadyDraftIds((ids) =>
-                                ids.includes(card.id)
-                                  ? ids.filter((id) => id !== card.id)
-                                  : [...ids, card.id],
-                              )
-                            }
-                          >
-                            <span className="local-room-ready-words__check" aria-hidden="true">
-                              {readySelected.has(card.id) ? "✓" : "+"}
-                            </span>
-                            <span>
-                              <strong>
-                                <PaperEnglishWord value={card.front} />
-                              </strong>
-                              <small>{card.back}</small>
-                            </span>
-                          </button>
-                        ))}
-                        {readyMatches.length === 0 && <p>Nenhuma palavra encontrada.</p>}
-                      </div>
-                      <div className="local-room-ready-words__apply">
-                        <span>Todas as palavras selecionadas entram na rodada.</span>
                         <button
-                          className="secondary-button"
                           type="button"
-                          disabled={!readySelectionPending || readyApplying}
+                          className="local-room-source__option"
+                          aria-pressed={usesReadyWords}
+                          disabled={readyApplying}
                           onClick={() => {
-                            setReadyApplying(true);
-                            void room
-                              .updateSettings({ readyWordIds: readyDraftIds, questionCount: "all" })
-                              .finally(() => setReadyApplying(false));
+                            setReadyDraftIds(state.settings.readyWordIds ?? []);
+                            void room.updateSettings(
+                              {
+                                subjectName: READY_LISTENING_SOURCE,
+                                difficulty: "mixed",
+                                category: "",
+                                questionCount: "all",
+                                readyWordIds: state.settings.readyWordIds ?? [],
+                              },
+                              [],
+                            );
+                            setAppliedManualWords("");
                           }}
                         >
-                          {readyApplying ? "Aplicando…" : "Aplicar seleção"}
+                          <img src="/room-icons/word-bank.svg" alt="" width="40" height="40" />
+                          <span>Palavras prontas</span>
                         </button>
                       </div>
-                    </div>
-                  )}
-                  {state.settings.activity !== "bingo" && usesManualList && (
-                    <div className="local-room-manual">
-                      <div>
-                        <strong>Seus arquivos de áudio</strong>
-                        <span>
-                          {manualDeck.length} válidas
-                          {manualErrors.length > 0
-                            ? ` · ${manualErrors.length} precisam de correção`
-                            : ""}
-                        </span>
+                    )}
+                    {usesReadyWords && (
+                      <div className="local-room-ready-words" aria-busy={readyApplying}>
+                        <div className="local-room-ready-words__subject">
+                          <img src="/room-icons/english.svg" alt="" width="35" height="35" />
+                          <div>
+                            <small>MATÉRIA</small>
+                            <strong>Inglês</strong>
+                          </div>
+                          <span>{READY_LISTENING_DECK.length} palavras com áudio</span>
+                        </div>
+                        <ListeningBankFile
+                          onImport={(ids) =>
+                            setReadyDraftIds((current) => [...new Set([...current, ...ids])])
+                          }
+                        />
+                        <label className="local-room-ready-words__search">
+                          <img src="/room-icons/search.svg" alt="" width="22" height="22" />
+                          <input
+                            type="search"
+                            value={readySearch}
+                            onChange={(event) => setReadySearch(event.target.value)}
+                            placeholder="Buscar em inglês ou português"
+                            aria-label="Buscar palavras em inglês ou português"
+                          />
+                        </label>
+                        {readyDraftIds.length > 0 && (
+                          <div
+                            className="local-room-ready-words__selected"
+                            aria-label="Palavras selecionadas"
+                          >
+                            {READY_LISTENING_DECK.filter((card) => readySelected.has(card.id)).map(
+                              (card) => (
+                                <button
+                                  type="button"
+                                  key={card.id}
+                                  disabled={readyApplying}
+                                  onClick={() =>
+                                    setReadyDraftIds((ids) => ids.filter((id) => id !== card.id))
+                                  }
+                                  aria-label={`Remover ${card.front}`}
+                                >
+                                  <PaperEnglishWord value={card.front} />
+                                  <span aria-hidden="true">×</span>
+                                </button>
+                              ),
+                            )}
+                          </div>
+                        )}
+                        <div className="local-room-ready-words__tools">
+                          <strong>{readyDraftIds.length} selecionadas</strong>
+                          <button
+                            type="button"
+                            disabled={readyApplying}
+                            onClick={() =>
+                              setReadyDraftIds((ids) => [
+                                ...new Set([...ids, ...readyMatches.map((card) => card.id)]),
+                              ])
+                            }
+                          >
+                            Selecionar exibidas
+                          </button>
+                          {readyDraftIds.length > 0 && (
+                            <button
+                              type="button"
+                              disabled={readyApplying}
+                              onClick={() => setReadyDraftIds([])}
+                            >
+                              Limpar
+                            </button>
+                          )}
+                        </div>
+                        <div
+                          className="local-room-ready-words__results"
+                          aria-label="Resultados da busca"
+                        >
+                          {readyMatches.map((card) => (
+                            <button
+                              type="button"
+                              role="checkbox"
+                              aria-checked={readySelected.has(card.id)}
+                              key={card.id}
+                              disabled={readyApplying}
+                              onClick={() =>
+                                setReadyDraftIds((ids) =>
+                                  ids.includes(card.id)
+                                    ? ids.filter((id) => id !== card.id)
+                                    : [...ids, card.id],
+                                )
+                              }
+                            >
+                              <span className="local-room-ready-words__check" aria-hidden="true">
+                                {readySelected.has(card.id) ? "✓" : "+"}
+                              </span>
+                              <span>
+                                <strong>
+                                  <PaperEnglishWord value={card.front} />
+                                </strong>
+                                <small>{card.back}</small>
+                              </span>
+                            </button>
+                          ))}
+                          {readyMatches.length === 0 && <p>Nenhuma palavra encontrada.</p>}
+                        </div>
+                        <div className="local-room-ready-words__apply">
+                          <span>Todas as palavras selecionadas entram na rodada.</span>
+                        </div>
                       </div>
-                      <p>Envie o áudio e informe a palavra e a tradução de cada fala.</p>
-                      <p className="local-room-manual__privacy">
-                        {preparing
-                          ? "Os arquivos ficam neste dispositivo até criar a sala."
-                          : "Os arquivos ficam nesta sala por até 4 horas. Eles não treinam a Olena."}
-                      </p>
-                      <div className="local-room-manual__rows">
-                        {manualRows.map((row, index) => (
-                          <div className="local-room-manual__row" key={row.id}>
-                            <div className="local-room-manual__row-heading">
-                              <strong>Fala {index + 1}</strong>
-                              <button
-                                type="button"
-                                className="local-room-manual__remove"
-                                aria-label={`Remover fala ${index + 1}`}
-                                onClick={() => {
+                    )}
+                    {state.settings.activity !== "bingo" && usesManualList && (
+                      <div className="local-room-manual">
+                        <div>
+                          <strong>Seus arquivos de áudio</strong>
+                          <span>
+                            {manualDeck.length} válidas
+                            {manualErrors.length > 0
+                              ? ` · ${manualErrors.length} precisam de correção`
+                              : ""}
+                          </span>
+                        </div>
+                        <p>Envie o áudio e informe a palavra e a tradução de cada fala.</p>
+                        <p className="local-room-manual__privacy">
+                          {preparing
+                            ? "Os arquivos ficam neste dispositivo até criar a sala."
+                            : "Os arquivos ficam nesta sala por até 4 horas. Eles não treinam a Olena."}
+                        </p>
+                        <div className="local-room-manual__rows">
+                          {manualRows.map((row, index) => (
+                            <div className="local-room-manual__row" key={row.id}>
+                              <div className="local-room-manual__row-heading">
+                                <strong>Fala {index + 1}</strong>
+                                <button
+                                  type="button"
+                                  className="local-room-manual__remove"
+                                  aria-label={`Remover fala ${index + 1}`}
+                                  onClick={() => {
+                                    setManualRows((rows) =>
+                                      rows.length === 1
+                                        ? [{ id: crypto.randomUUID(), word: "", translation: "" }]
+                                        : rows.filter((item) => item.id !== row.id),
+                                    );
+                                    setManualApplyStatus("");
+                                  }}
+                                >
+                                  Remover
+                                </button>
+                              </div>
+                              <RoomRecordingInput
+                                key={`${state.code}:${row.id}`}
+                                word={row.word || `Fala ${index + 1}`}
+                                translation=""
+                                audioId={row.audioId}
+                                staged={Boolean(row.audioFile)}
+                                stagedBlob={row.audioFile}
+                                code={state.code}
+                                credential={speechCredential() ?? ""}
+                                showHeading={false}
+                                onStaged={(audioFile) =>
                                   setManualRows((rows) =>
-                                    rows.length === 1
-                                      ? [{ id: crypto.randomUUID(), word: "", translation: "" }]
-                                      : rows.filter((item) => item.id !== row.id),
+                                    rows.map((item) =>
+                                      item.id === row.id
+                                        ? { ...item, audioFile, pendingAudio: false }
+                                        : item,
+                                    ),
+                                  )
+                                }
+                                onPending={() => {
+                                  setManualRows((rows) =>
+                                    rows.map((item) =>
+                                      item.id === row.id
+                                        ? {
+                                            id: item.id,
+                                            word: item.word,
+                                            translation: item.translation,
+                                            pendingAudio: true,
+                                          }
+                                        : item,
+                                    ),
                                   );
                                   setManualApplyStatus("");
                                 }}
-                              >
-                                Remover
-                              </button>
+                                onSaved={(audioId) => {
+                                  setManualRows((rows) =>
+                                    rows.map((item) =>
+                                      item.id === row.id
+                                        ? { ...item, audioId, pendingAudio: false }
+                                        : item,
+                                    ),
+                                  );
+                                  setManualApplyStatus("");
+                                }}
+                              />
+                              <div className="local-room-manual__fields">
+                                <label>
+                                  <span>Palavra em inglês</span>
+                                  <input
+                                    aria-label={`Palavra em inglês da fala ${index + 1}`}
+                                    value={row.word}
+                                    maxLength={200}
+                                    placeholder="Ex.: school"
+                                    onChange={(event) => {
+                                      setManualRows((rows) =>
+                                        rows.map((item) =>
+                                          item.id === row.id
+                                            ? { ...item, word: event.target.value }
+                                            : item,
+                                        ),
+                                      );
+                                      setManualApplyStatus("");
+                                    }}
+                                  />
+                                </label>
+                                <label>
+                                  <span>Tradução</span>
+                                  <input
+                                    aria-label={`Tradução da fala ${index + 1}`}
+                                    value={row.translation}
+                                    maxLength={600}
+                                    placeholder="Ex.: escola"
+                                    onChange={(event) => {
+                                      setManualRows((rows) =>
+                                        rows.map((item) =>
+                                          item.id === row.id
+                                            ? { ...item, translation: event.target.value }
+                                            : item,
+                                        ),
+                                      );
+                                      setManualApplyStatus("");
+                                    }}
+                                  />
+                                </label>
+                              </div>
                             </div>
-                            <RoomRecordingInput
-                              key={`${state.code}:${row.id}`}
-                              word={row.word || `Fala ${index + 1}`}
-                              translation=""
-                              audioId={row.audioId}
-                              staged={Boolean(row.audioFile)}
-                              stagedBlob={row.audioFile}
-                              code={state.code}
-                              credential={speechCredential() ?? ""}
-                              showHeading={false}
-                              onStaged={(audioFile) =>
-                                setManualRows((rows) =>
-                                  rows.map((item) =>
-                                    item.id === row.id
-                                      ? { ...item, audioFile, pendingAudio: false }
-                                      : item,
-                                  ),
-                                )
-                              }
-                              onPending={() => {
-                                setManualRows((rows) =>
-                                  rows.map((item) =>
-                                    item.id === row.id
-                                      ? {
-                                          id: item.id,
-                                          word: item.word,
-                                          translation: item.translation,
-                                          pendingAudio: true,
-                                        }
-                                      : item,
-                                  ),
-                                );
-                                setManualApplyStatus("");
-                              }}
-                              onSaved={(audioId) => {
-                                setManualRows((rows) =>
-                                  rows.map((item) =>
-                                    item.id === row.id
-                                      ? { ...item, audioId, pendingAudio: false }
-                                      : item,
-                                  ),
-                                );
-                                setManualApplyStatus("");
-                              }}
-                            />
-                            <div className="local-room-manual__fields">
-                              <label>
-                                <span>Palavra em inglês</span>
-                                <input
-                                  aria-label={`Palavra em inglês da fala ${index + 1}`}
-                                  value={row.word}
-                                  maxLength={200}
-                                  placeholder="Ex.: school"
-                                  onChange={(event) => {
-                                    setManualRows((rows) =>
-                                      rows.map((item) =>
-                                        item.id === row.id
-                                          ? { ...item, word: event.target.value }
-                                          : item,
-                                      ),
-                                    );
-                                    setManualApplyStatus("");
-                                  }}
-                                />
-                              </label>
-                              <label>
-                                <span>Tradução</span>
-                                <input
-                                  aria-label={`Tradução da fala ${index + 1}`}
-                                  value={row.translation}
-                                  maxLength={600}
-                                  placeholder="Ex.: escola"
-                                  onChange={(event) => {
-                                    setManualRows((rows) =>
-                                      rows.map((item) =>
-                                        item.id === row.id
-                                          ? { ...item, translation: event.target.value }
-                                          : item,
-                                      ),
-                                    );
-                                    setManualApplyStatus("");
-                                  }}
-                                />
-                              </label>
-                            </div>
-                          </div>
-                        ))}
-                        <button
-                          type="button"
-                          className="secondary-button"
-                          disabled={manualRows.length >= 30}
-                          onClick={() =>
-                            setManualRows((rows) => [
-                              ...rows,
-                              { id: crypto.randomUUID(), word: "", translation: "" },
-                            ])
-                          }
-                        >
-                          <img src="/room-icons/upload.svg" alt="" width="22" height="22" />
-                          Adicionar fala
-                        </button>
-                      </div>
-                      {manualErrors.length > 0 && (
-                        <ul className="local-room-manual__errors" aria-live="polite">
-                          {manualErrors.map((line) => (
-                            <li key={line.lineNumber}>
-                              Fala {line.lineNumber}: {line.error}.
-                            </li>
                           ))}
-                        </ul>
-                      )}
-                      <div className="local-room-manual__action">
-                        <p aria-live="polite">
-                          {manualApplyStatus ||
-                            (manualSelectionPending && manualWords.trim()
-                              ? "● Alterações ainda não aplicadas"
-                              : manualDeckIsValid
-                                ? `${countLabel(manualDeck.length, "fala pronta", "falas prontas")} para aplicar.`
-                                : manualDeck.length && !recordingsReady
-                                  ? "Guarde o áudio de cada fala para continuar."
-                                  : "Adicione pelo menos uma palavra e sua tradução.")}
-                        </p>
-                        <button
-                          className="secondary-button"
-                          type="button"
-                          disabled={!manualDeckIsValid || !manualSelectionPending}
-                          onClick={() => {
-                            void room
-                              .updateSettings(
-                                {
-                                  subjectName: MANUAL_LISTENING_SOURCE,
-                                  difficulty: "mixed",
-                                  category: "",
-                                  questionCount: "all",
-                                },
-                                manualDeck.map((card) => ({
-                                  ...card,
-                                  audioId: recordingIds[normalizeListeningAnswer(card.front)]!,
-                                })),
-                              )
-                              .then((saved) => {
-                                if (!saved) return;
-                                setAppliedManualWords(manualWords);
-                                setAppliedRecordingSignature(recordingSignature);
-                                setManualApplyStatus(
-                                  `${countLabel(manualDeck.length, "fala adicionada", "falas adicionadas")} à rodada ✓`,
-                                );
-                              });
-                          }}
-                        >
-                          {manualApplyStatus ? "Palavras aplicadas ✓" : "Aplicar palavras"}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  <label className="local-room-activity-native">
-                    <span>Atividade</span>
-                    <select
-                      value={state.settings.activity ?? "listening"}
-                      onChange={(event) =>
-                        selectActivity(event.target.value as "listening" | "bingo")
-                      }
-                    >
-                      <option value="listening">Quiz de escuta</option>
-                      <option value="bingo">Bingo de vocabulário</option>
-                    </select>
-                  </label>
-                  {!usesManualList && !usesReadyWords && (
-                    <>
-                      <label>
-                        <span>Matéria / tema</span>
-                        <select
-                          value={state.settings.category ?? ""}
-                          disabled={Boolean(state.settings.subjectName)}
-                          onChange={(event) =>
-                            void room.updateSettings({ category: event.target.value })
-                          }
-                        >
-                          <option value="">Inglês · todos os temas</option>
-                          {ROOM_CATEGORIES.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <p>
-                        {availableCount} questões disponíveis neste filtro. Prévia:{" "}
-                        {(
-                          state.content?.preview ?? pool.slice(0, 3).map((card) => card.front)
-                        ).join(", ") || "Nenhuma questão"}
-                        .
-                      </p>
-                    </>
-                  )}
-                  <label>
-                    <span>Respostas</span>
-                    <select
-                      value={state.settings.teams ? "teams" : "individual"}
-                      onChange={(event) =>
-                        void room.updateSettings({ teams: event.target.value === "teams" })
-                      }
-                    >
-                      <option value="individual">Individuais</option>
-                      <option value="teams">Equipes Roxo e Amarelo · soma dos pontos</option>
-                    </select>
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={state.settings.shuffle !== false}
-                      onChange={(event) =>
-                        void room.updateSettings({ shuffle: event.target.checked })
-                      }
-                    />{" "}
-                    Embaralhar questões
-                  </label>
-                  {!usesManualList && !usesReadyWords && (
-                    <label>
-                      <span>Dificuldade</span>
-                      <select
-                        value={state.settings.difficulty}
-                        onChange={(event) =>
-                          void room.updateSettings({
-                            difficulty: event.target.value as LocalRoomSettings["difficulty"],
-                          })
-                        }
-                      >
-                        <option value="mixed">
-                          Misto ·{" "}
-                          {state.content?.difficultyCounts?.mixed ??
-                            localRoomPool({ ...state.settings, difficulty: "mixed" }).length}
-                        </option>
-                        <option value="easy">
-                          Fácil ·{" "}
-                          {state.content?.difficultyCounts?.easy ??
-                            localRoomPool({ ...state.settings, difficulty: "easy" }).length}
-                        </option>
-                        <option value="medium">
-                          Médio ·{" "}
-                          {state.content?.difficultyCounts?.medium ??
-                            localRoomPool({ ...state.settings, difficulty: "medium" }).length}
-                        </option>
-                        <option value="hard">
-                          Difícil ·{" "}
-                          {state.content?.difficultyCounts?.hard ??
-                            localRoomPool({ ...state.settings, difficulty: "hard" }).length}
-                        </option>
-                      </select>
-                    </label>
-                  )}
-                  {state.settings.activity !== "bingo" && (
-                    <p className="local-room-manual__quantity">
-                      {usesManualList ? manualDeck.length : readyDraftIds.length} palavras na rodada
-                    </p>
-                  )}
-                  <RoomStepSlider
-                    label="Tempo por pergunta"
-                    value={state.settings.roundSeconds}
-                    steps={TIME_STEPS}
-                    suffix="s"
-                    onCommit={(value) =>
-                      void room.updateSettings({ roundSeconds: value as 5 | 10 | 15 | 30 })
-                    }
-                  />
-                  {state.settings.activity !== "bingo" && (
-                    <details className="listening-audio-settings">
-                      <summary>Configurações de áudio</summary>
-                      <div className="local-room-audio-settings-grid">
-                        <label>
-                          <span>Repetições permitidas</span>
-                          <select
-                            value={state.settings.audioRepetitions ?? "unlimited"}
-                            onChange={(event) =>
-                              void room.updateSettings({
-                                audioRepetitions:
-                                  event.target.value === "unlimited"
-                                    ? "unlimited"
-                                    : (Number(event.target.value) as 1 | 2 | 3),
-                              })
+                          <button
+                            type="button"
+                            className="secondary-button"
+                            disabled={manualRows.length >= 30}
+                            onClick={() =>
+                              setManualRows((rows) => [
+                                ...rows,
+                                { id: crypto.randomUUID(), word: "", translation: "" },
+                              ])
                             }
                           >
-                            <option value="unlimited">Ilimitadas</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            <img src="/room-icons/upload.svg" alt="" width="22" height="22" />
+                            Adicionar fala
+                          </button>
+                        </div>
+                        {manualErrors.length > 0 && (
+                          <ul className="local-room-manual__errors" aria-live="polite">
+                            {manualErrors.map((line) => (
+                              <li key={line.lineNumber}>
+                                Fala {line.lineNumber}: {line.error}.
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        <div className="local-room-manual__action">
+                          <p aria-live="polite">
+                            {manualApplyStatus ||
+                              (manualSelectionPending && manualWords.trim()
+                                ? "● Alterações ainda não aplicadas"
+                                : manualDeckIsValid
+                                  ? `${countLabel(manualDeck.length, "fala pronta", "falas prontas")} para aplicar.`
+                                  : manualDeck.length && !recordingsReady
+                                    ? "Guarde o áudio de cada fala para continuar."
+                                    : "Adicione pelo menos uma palavra e sua tradução.")}
+                          </p>
+                          <button
+                            className="secondary-button"
+                            type="button"
+                            disabled={!manualDeckIsValid || !manualSelectionPending}
+                            onClick={() => {
+                              void room
+                                .updateSettings(
+                                  {
+                                    subjectName: MANUAL_LISTENING_SOURCE,
+                                    difficulty: "mixed",
+                                    category: "",
+                                    questionCount: "all",
+                                  },
+                                  manualDeck.map((card) => ({
+                                    ...card,
+                                    audioId: recordingIds[normalizeListeningAnswer(card.front)]!,
+                                  })),
+                                )
+                                .then((saved) => {
+                                  if (!saved) return;
+                                  setAppliedManualWords(manualWords);
+                                  setAppliedRecordingSignature(recordingSignature);
+                                  setManualApplyStatus(
+                                    `${countLabel(manualDeck.length, "fala adicionada", "falas adicionadas")} à rodada ✓`,
+                                  );
+                                });
+                            }}
+                          >
+                            {manualApplyStatus ? "Palavras aplicadas ✓" : "Aplicar palavras"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    <label className="local-room-activity-native">
+                      <span>Atividade</span>
+                      <select
+                        value={state.settings.activity ?? "listening"}
+                        onChange={(event) =>
+                          selectActivity(event.target.value as "listening" | "bingo")
+                        }
+                      >
+                        <option value="listening">Quiz de escuta</option>
+                        <option value="bingo">Bingo de vocabulário</option>
+                      </select>
+                    </label>
+                    {!usesManualList && !usesReadyWords && (
+                      <>
+                        <label>
+                          <span>Matéria / tema</span>
+                          <select
+                            value={state.settings.category ?? ""}
+                            disabled={Boolean(state.settings.subjectName)}
+                            onChange={(event) =>
+                              void room.updateSettings({ category: event.target.value })
+                            }
+                          >
+                            <option value="">Inglês · todos os temas</option>
+                            {ROOM_CATEGORIES.map((category) => (
+                              <option key={category} value={category}>
+                                {category}
+                              </option>
+                            ))}
                           </select>
                         </label>
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={state.settings.autoPlayAudio ?? false}
-                            onChange={(event) =>
-                              void room.updateSettings({ autoPlayAudio: event.target.checked })
-                            }
-                          />{" "}
-                          Reproduzir automaticamente
-                        </label>
-                      </div>
-                    </details>
-                  )}
-                  {room.error && <p role="alert">{room.error}</p>}
+                        <p>
+                          {availableCount} questões disponíveis neste filtro. Prévia:{" "}
+                          {(
+                            state.content?.preview ?? pool.slice(0, 3).map((card) => card.front)
+                          ).join(", ") || "Nenhuma questão"}
+                          .
+                        </p>
+                      </>
+                    )}
+                    <label>
+                      <span>Respostas</span>
+                      <select
+                        value={state.settings.teams ? "teams" : "individual"}
+                        onChange={(event) =>
+                          void room.updateSettings({ teams: event.target.value === "teams" })
+                        }
+                      >
+                        <option value="individual">Individuais</option>
+                        <option value="teams">Equipes Roxo e Amarelo · soma dos pontos</option>
+                      </select>
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.settings.shuffle !== false}
+                        onChange={(event) =>
+                          void room.updateSettings({ shuffle: event.target.checked })
+                        }
+                      />{" "}
+                      Embaralhar questões
+                    </label>
+                    {!usesManualList && !usesReadyWords && (
+                      <label>
+                        <span>Dificuldade</span>
+                        <select
+                          value={state.settings.difficulty}
+                          onChange={(event) =>
+                            void room.updateSettings({
+                              difficulty: event.target.value as LocalRoomSettings["difficulty"],
+                            })
+                          }
+                        >
+                          <option value="mixed">
+                            Misto ·{" "}
+                            {state.content?.difficultyCounts?.mixed ??
+                              localRoomPool({ ...state.settings, difficulty: "mixed" }).length}
+                          </option>
+                          <option value="easy">
+                            Fácil ·{" "}
+                            {state.content?.difficultyCounts?.easy ??
+                              localRoomPool({ ...state.settings, difficulty: "easy" }).length}
+                          </option>
+                          <option value="medium">
+                            Médio ·{" "}
+                            {state.content?.difficultyCounts?.medium ??
+                              localRoomPool({ ...state.settings, difficulty: "medium" }).length}
+                          </option>
+                          <option value="hard">
+                            Difícil ·{" "}
+                            {state.content?.difficultyCounts?.hard ??
+                              localRoomPool({ ...state.settings, difficulty: "hard" }).length}
+                          </option>
+                        </select>
+                      </label>
+                    )}
+                    {state.settings.activity !== "bingo" && (
+                      <p className="local-room-manual__quantity">
+                        {usesManualList ? manualDeck.length : readyDraftIds.length} palavras na
+                        rodada
+                      </p>
+                    )}
+                    <RoomStepSlider
+                      label="Tempo por pergunta"
+                      value={state.settings.roundSeconds}
+                      steps={TIME_STEPS}
+                      suffix="s"
+                      onCommit={(value) =>
+                        void room.updateSettings({ roundSeconds: value as 5 | 10 | 15 | 30 })
+                      }
+                    />
+                    {state.settings.activity !== "bingo" && (
+                      <details className="listening-audio-settings">
+                        <summary>Configurações de áudio</summary>
+                        <div className="local-room-audio-settings-grid">
+                          <label>
+                            <span>Repetições permitidas</span>
+                            <select
+                              value={state.settings.audioRepetitions ?? "unlimited"}
+                              onChange={(event) =>
+                                void room.updateSettings({
+                                  audioRepetitions:
+                                    event.target.value === "unlimited"
+                                      ? "unlimited"
+                                      : (Number(event.target.value) as 1 | 2 | 3),
+                                })
+                              }
+                            >
+                              <option value="unlimited">Ilimitadas</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                            </select>
+                          </label>
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={state.settings.autoPlayAudio ?? false}
+                              onChange={(event) =>
+                                void room.updateSettings({ autoPlayAudio: event.target.checked })
+                              }
+                            />{" "}
+                            Reproduzir automaticamente
+                          </label>
+                        </div>
+                      </details>
+                    )}
+                    {room.error && <p role="alert">{room.error}</p>}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="local-room-action-bar">
                 <div>
                   <button
@@ -1454,48 +1494,13 @@ export function LocalRoom({
                           setCreating(true);
                           setCreationError("");
                           try {
-                            const created = await connection.createRoom(draftSettings);
+                            const created = await connection.createRoom({
+                              ...draftSettings,
+                              readyWordIds: readyDraftIds,
+                            });
                             if (!created) return;
-                            if (usesManualList) {
-                              const audioIds = new Map<string, string>();
-                              for (const row of manualRows) {
-                                if (row.audioFile)
-                                  audioIds.set(
-                                    normalizeListeningAnswer(row.word),
-                                    await uploadRoomRecording(
-                                      created.code,
-                                      created.hostToken,
-                                      row.audioFile,
-                                    ),
-                                  );
-                              }
-                              const uploadedDeck = draftDeck.map((card) => ({
-                                ...card,
-                                audioId:
-                                  audioIds.get(normalizeListeningAnswer(card.front)) ??
-                                  card.audioId,
-                              }));
-                              if (await connection.updateSettings(draftSettings, uploadedDeck)) {
-                                setManualRows((rows) =>
-                                  rows.map((row) => {
-                                    const audioId = audioIds.get(
-                                      normalizeListeningAnswer(row.word),
-                                    );
-                                    return audioId ? { ...row, audioId } : row;
-                                  }),
-                                );
-                                setAppliedRecordingSignature(
-                                  manualDeck
-                                    .map(
-                                      (card) =>
-                                        audioIds.get(normalizeListeningAnswer(card.front)) ??
-                                        recordingIds[normalizeListeningAnswer(card.front)] ??
-                                        "",
-                                    )
-                                    .join("|"),
-                                );
-                              }
-                            }
+                            if (usesManualList)
+                              await savePreparedRecordings(created.code, created.hostToken);
                           } catch (caught) {
                             setCreationError(
                               caught instanceof Error
@@ -1538,6 +1543,30 @@ export function LocalRoom({
                       </small>
                     )}
                 </div>
+                {!preparing && creationError && (
+                  <button
+                    className="secondary-button"
+                    type="button"
+                    disabled={creating}
+                    onClick={() => {
+                      const credential = connection.speechCredential();
+                      if (!credential) return;
+                      setCreating(true);
+                      setCreationError("");
+                      void savePreparedRecordings(state.code, credential)
+                        .catch((caught: unknown) => {
+                          setCreationError(
+                            caught instanceof Error
+                              ? caught.message
+                              : "Não foi possível enviar os áudios.",
+                          );
+                        })
+                        .finally(() => setCreating(false));
+                    }}
+                  >
+                    Tentar enviar áudios novamente
+                  </button>
+                )}
                 {(creating || room.busy) && (
                   <HelenaLoading
                     compact
