@@ -25,7 +25,18 @@ function silentWav(): Buffer {
 for (const activity of ["listening", "bingo"] as const) {
   test(`preparação de ${activity} permite rolar até palavras e criar sem cortes`, async ({
     page,
+    browserName,
   }, testInfo) => {
+    const scrollPage = async (distance: number) => {
+      // Mobile WebKit does not expose wheel input. Keep document-height and
+      // viewport assertions there, and real wheel coverage in Chromium.
+      if (browserName === "webkit" && testInfo.project.name === "mobile") {
+        await page.evaluate((delta) => window.scrollBy(0, delta), distance);
+      } else {
+        await page.mouse.move(page.viewportSize()!.width - 4, 150);
+        await page.mouse.wheel(0, distance);
+      }
+    };
     await page.addInitScript(() => {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     });
@@ -43,8 +54,7 @@ for (const activity of ["listening", "bingo"] as const) {
       const bounds = await first.boundingBox();
       expect(bounds).not.toBeNull();
       const viewport = page.viewportSize()!;
-      await page.mouse.move(viewport.width - 4, 150);
-      await page.mouse.wheel(0, bounds!.y - 150);
+      await scrollPage(bounds!.y - 150);
       await expect
         .poll(async () => (await first.boundingBox())?.y ?? -1)
         .toBeLessThan(viewport.height - 150);
@@ -55,8 +65,7 @@ for (const activity of ["listening", "bingo"] as const) {
       await page.screenshot({ path: testInfo.outputPath("words-selectable.png") });
     }
     const viewport = page.viewportSize()!;
-    await page.mouse.move(viewport.width - 4, 150);
-    await page.mouse.wheel(0, 8000);
+    await scrollPage(8000);
     const create = preparation.getByRole("button", { name: "Criar sala", exact: true });
     await expect
       .poll(async () => {
