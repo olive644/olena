@@ -107,14 +107,22 @@
 .local-room-step-slider input::-webkit-slider-runnable-track {
   height: 8px;
   border-radius: 2px;
-  background: #7c3aed;
+  background: linear-gradient(
+    to right,
+    #7c3aed 0 var(--room-slider-progress),
+    var(--line-strong) var(--room-slider-progress) 100%
+  );
   box-shadow: 0 3px 0 #51259b;
 }
 .local-room-step-slider input::-moz-range-track {
   height: 8px;
   border-radius: 2px;
-  background: #7c3aed;
+  background: var(--line-strong);
   box-shadow: 0 3px 0 #51259b;
+}
+.local-room-step-slider input::-moz-range-progress {
+  height: 8px;
+  background: #7c3aed;
 }
 .local-room-step-slider input::-webkit-slider-thumb {
   appearance: none;
@@ -163,5 +171,156 @@
   }
   .local-room-step-slider input[type="range"] {
     appearance: auto;
+  }
+}
+
+/* Subtle inset focus keeps keyboard navigation visible without purple frames. */
+:root body :focus-visible {
+  outline: 1px dotted currentColor !important;
+  outline-offset: -3px !important;
+}
+:root body :is(.local-room-fullscreen, .local-room-ready-words__search):focus-visible {
+  outline: none !important;
+}
+.local-room-ready-words__search:focus-within {
+  outline: none;
+  border-color: var(--text);
+}
+.room-view {
+  display: block;
+}
+.room-view > .page-header {
+  width: 100%;
+  margin-bottom: 24px;
+}
+.room-view > .local-room-preparation {
+  min-height: calc(100dvh - 170px);
+  display: grid;
+  align-items: center;
+}
+.local-room-fullscreen > .local-room-session {
+  margin-inline: auto;
+}
+.local-room-session--lobby > .local-room-session__header {
+  max-width: 680px;
+  margin-inline: auto;
+}
+.local-room-lobby--created .local-room-lobby__main > .local-room-share {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.local-room-copy-icon--paper {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  color: #087e8b;
+  --editor-icon-facet: #70d7d0;
+}
+.local-room-copy-icon--paper .paper-editor-icon {
+  width: 100%;
+  height: 100%;
+  color: #087e8b;
+}
+.local-room-ready-words__subject {
+  width: 100%;
+  min-height: 64px;
+  padding: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+}
+.local-room-ready-words__subject-label {
+  display: grid;
+  gap: 3px;
+}
+.local-room-ready-words__subject > .local-room-ready-words__subject-label {
+  margin-left: 0;
+  color: var(--text);
+  text-align: left;
+}
+.local-room-ready-words__subject > .local-room-ready-words__disclosure {
+  margin-left: 0;
+}
+.local-room-ready-words__subject[aria-expanded="true"] {
+  border-color: #087e8b;
+  box-shadow: 0 3px 0 #087e8b;
+}
+.local-room-ready-words__disclosure {
+  flex: 0 0 24px;
+  color: var(--text);
+  transition: transform 200ms ease;
+}
+.local-room-ready-words__subject[aria-expanded="true"] .local-room-ready-words__disclosure {
+  transform: rotate(45deg);
+}
+.local-room-ready-words__body {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+  transform-origin: top;
+  animation: room-paper-unfold 240ms ease-out both;
+}
+.local-room-ready-words__check .paper-editor-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--text);
+  --editor-icon-facet: var(--surface);
+}
+.local-room-ready-words__results button {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    translate 180ms ease;
+}
+.local-room-ready-words__results button[aria-checked="true"] {
+  animation: room-word-picked 240ms ease-out;
+}
+.local-room-ready-words__selected button {
+  animation: room-chip-arrive 240ms ease-out both;
+}
+@keyframes room-paper-unfold {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes room-word-picked {
+  50% {
+    transform: translateY(-2px);
+  }
+}
+@keyframes room-chip-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9) rotate(-3deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .local-room-ready-words__body,
+  .local-room-ready-words__selected button,
+  .local-room-ready-words__results button {
+    animation: none;
+    transition: none;
+  }
+  .local-room-ready-words__disclosure {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  :root body :focus-visible {
+    outline: 2px solid Highlight !important;
   }
 }

@@ -68,6 +68,7 @@ describe("contagem regressiva do início da rodada", () => {
     expect(screen.queryByText("Prepare a escuta")).toBeNull();
     expect(screen.getByLabelText("Código da sala").textContent).toBe("ABCDE");
     expect(screen.getByRole("button", { name: "Iniciar atividade" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Entrar com código" })).toBeNull();
     expect(updateSettings).not.toHaveBeenCalled();
   });
 

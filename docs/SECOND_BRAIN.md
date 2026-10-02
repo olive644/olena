@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Banco da sala abre pela opção Inglês; seleção imediata permanece ao recolher.
+Slider usa --room-slider-progress para comunicar o passo atual. Foco de teclado
+é interno e discreto, não desativado. Convite do anfitrião não tem Entrar com código,
+mantém Helena e QR sem cartão de fundo e usa ícones de copiar turquesa.
+
 Artes de public/room-art usam referências diretas do onboarding 1, 2 e 4.
 Preservar corpo compacto e facetas limpas, sem textura fibrosa carregada.
 As quatro poses são distintas; conferir membros e cauda ao gerar substituições.

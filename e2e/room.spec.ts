@@ -41,6 +41,8 @@ for (const activity of ["listening", "bingo"] as const) {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     });
     await page.goto("/sala");
+    await expect(page.locator(".page-header .user-profile")).toBeVisible();
+    await expect(page.locator(".page-header .appearance-picker__trigger")).toBeVisible();
     const preparation = page.locator(".local-room-preparation");
     await expect(preparation.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
     await expect(preparation.locator(".local-room-session__header")).toHaveCount(0);
@@ -72,6 +74,8 @@ for (const activity of ["listening", "bingo"] as const) {
         .locator(".local-room-activities")
         .screenshot({ path: testInfo.outputPath("minigames-selected.png") });
       const words = preparation.locator(".local-room-ready-words__results button");
+      await expect(preparation.getByRole("searchbox")).toHaveCount(0);
+      await preparation.getByRole("button", { name: "Inglês", exact: true }).click();
       await expect(words).toHaveCount(100);
       const first = words.first();
       const bounds = await first.boundingBox();
@@ -83,6 +87,22 @@ for (const activity of ["listening", "bingo"] as const) {
         .toBeLessThan(viewport.height - 150);
       await first.click();
       await expect(first).toHaveAttribute("aria-checked", "true");
+      await expect(first.locator('[data-paper-editor-icon="add"]')).toHaveCount(0);
+      await expect(preparation.getByRole("button", { name: "Remover school" })).toBeVisible();
+      const timer = preparation.getByRole("slider", { name: "Tempo por pergunta" });
+      await timer.focus();
+      await timer.press("Home");
+      await timer.press("ArrowRight");
+      await expect(timer).toHaveValue("1");
+      await expect(timer).toHaveAttribute("aria-valuetext", "10s");
+      expect(
+        await timer.evaluate((input) =>
+          getComputedStyle(input).getPropertyValue("--room-slider-progress").trim(),
+        ),
+      ).toBe("33.33333333333333%");
+      await preparation
+        .locator(".local-room-ready-words")
+        .screenshot({ path: testInfo.outputPath("english-words.png") });
       await expect(words).toHaveCount(100);
       await expect(preparation.getByRole("button", { name: "Aplicar seleção" })).toHaveCount(0);
       await page.screenshot({ path: testInfo.outputPath("words-selectable.png") });
@@ -165,6 +185,7 @@ for (const source of ["bank", "files", "files-retry"] as const) {
     await expect(page.getByRole("button", { name: "Criar sala", exact: true })).toHaveCount(0);
     await page.getByRole("radio", { name: /Escuta coletiva/ }).click();
     if (source === "bank") {
+      await page.getByRole("button", { name: "Inglês", exact: true }).click();
       const search = page.getByRole("searchbox", {
         name: "Buscar palavras em inglês ou português",
       });
@@ -201,7 +222,21 @@ for (const source of ["bank", "files", "files-retry"] as const) {
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     await page.getByRole("button", { name: "Criar sala", exact: true }).click();
     await expect(page.getByLabel("Código da sala", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Entrar com código", exact: true })).toHaveCount(
+      0,
+    );
+    await expect(page.locator(".local-room-share")).toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)",
+    );
+    await expect(page.locator(".local-room-share")).toHaveCSS("border-top-width", "0px");
+    const invite = await page.locator(".local-room-share").boundingBox();
+    expect(invite).not.toBeNull();
+    expect(Math.abs(invite!.x + invite!.width / 2 - page.viewportSize()!.width / 2)).toBeLessThan(
+      10,
+    );
     await expect(page.getByRole("button", { name: "Iniciar atividade" })).toBeDisabled();
+    await page.screenshot({ path: testInfo.outputPath("created-lobby.png") });
     await expect(page.getByText("Criando sala…")).toHaveCount(0);
     await expect(page.getByText("Preparando atividade…")).toHaveCount(0);
     if (source === "files-retry") {
@@ -353,6 +388,7 @@ for (const activity of ["listening", "bingo"] as const) {
       await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
       await expect(host.locator(".local-room-share")).toHaveCount(0);
       await host.getByRole("radio", { name: /Escuta coletiva/ }).click();
+      await host.getByRole("button", { name: "Inglês", exact: true }).click();
       await host
         .getByRole("searchbox", { name: "Buscar palavras em inglês ou português" })
         .fill("bus");
