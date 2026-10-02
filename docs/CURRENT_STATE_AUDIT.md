@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Controles da sala e investigação do Foco (2026-10-02)
+
+- Banco mantém as 100 palavras selecionáveis com aplicação imediata, sem seleção em lote ou contador redundante de palavras na rodada. O plus é o PaperActionIcon da Agenda.
+- Alfabeto monocromático reutiliza os recortes existentes com grafite/creme do Foco. Bandeira aparece somente no fundo em hover/foco. Respostas usam duas opções ilustradas acessíveis, sem select nativo.
+- Tempo por pergunta ocupa as duas colunas e conserva os quatro passos igualmente distribuídos de 5 a 30 segundos.
+- Foco: cronômetro usa Date.now, preserva pausa e reinício. PaperDigits é apenas apresentação. Testes conferem valores acessíveis com a fonte nova.
+- Pomodoro: dias concluídos persistem em noteoli.pomodoro-streak.v1, incluído na sincronização. Semana vai de segunda a domingo; dias antigos ficam salvos, mas não acendem na semana seguinte. Pausas e sessões interrompidas não contam como Pomodoros concluídos.
+- Limitação confirmada por teste: Pomodoro desconta um segundo por callback, sem recuperar tempo real após suspensão de aba. Nenhuma alteração de regra foi feita nesta investigação. O ciclo em andamento também não persiste ao sair da view; o histórico de dias é independente e permanece.
+- Ao concluir o foco, writeSyncedStorage é chamado dentro do atualizador de estado. O evento síncrono pode atualizar PageHeader durante o render de FocusView, gerando aviso do React. Registrado como achado da investigação, sem ampliar esta mudança de interface.
+
 ## Rota da sala na hospedagem (2026-10-02)
 
 - /sala retornava 404 ao abrir diretamente na Vercel: a navegação interna usava History API, mas faltava rewrite para index.html na hospedagem.

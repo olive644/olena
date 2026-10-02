@@ -78,6 +78,15 @@ for (const activity of ["listening", "bingo"] as const) {
       await preparation.getByRole("button", { name: "Inglês", exact: true }).click();
       await expect(words).toHaveCount(100);
       const first = words.first();
+      await expect(first.locator('[data-paper-icon="plus"]')).toHaveCount(1);
+      await expect(preparation.getByRole("button", { name: "Selecionar exibidas" })).toHaveCount(0);
+      await first.hover();
+      await expect
+        .poll(() => first.evaluate((button) => getComputedStyle(button, "::before").opacity))
+        .toBe("0.18");
+      expect(
+        await first.evaluate((button) => getComputedStyle(button, "::before").backgroundImage),
+      ).toContain("room-icons/english.svg");
       const bounds = await first.boundingBox();
       expect(bounds).not.toBeNull();
       const viewport = page.viewportSize()!;
@@ -90,6 +99,10 @@ for (const activity of ["listening", "bingo"] as const) {
       await expect(first.locator('[data-paper-editor-icon="add"]')).toHaveCount(0);
       await expect(preparation.getByRole("button", { name: "Remover school" })).toBeVisible();
       const timer = preparation.getByRole("slider", { name: "Tempo por pergunta" });
+      await expect(preparation.locator(".local-room-step-slider")).toHaveCSS(
+        "grid-column",
+        "1 / -1",
+      );
       await timer.focus();
       await timer.press("Home");
       await timer.press("ArrowRight");
@@ -199,7 +212,10 @@ for (const source of ["bank", "files", "files-retry"] as const) {
       await page.getByRole("button", { name: "Limpar", exact: true }).click();
       await expect(page.getByRole("button", { name: "Criar sala", exact: true })).toBeDisabled();
       await search.fill("");
-      await page.getByRole("button", { name: "Selecionar exibidas" }).click();
+      await page
+        .locator(".local-room-ready-words__results")
+        .getByRole("checkbox", { name: /bus/ })
+        .click();
     } else {
       await page.getByRole("button", { name: "Enviar arquivos", exact: true }).click();
       await page.getByLabel("Palavra em inglês da fala 1").fill("hello");
@@ -218,7 +234,10 @@ for (const source of ["bank", "files", "files-retry"] as const) {
     });
     await page.screenshot({ path: testInfo.outputPath(`preparing-${source}.png`) });
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-    await page.screenshot({ path: testInfo.outputPath(`preparing-${source}-dark.png`) });
+    await page.screenshot({
+      path: testInfo.outputPath(`preparing-${source}-dark.png`),
+      animations: "disabled",
+    });
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
     await page.getByRole("button", { name: "Criar sala", exact: true }).click();
     await expect(page.getByLabel("Código da sala", { exact: true })).toBeVisible();
@@ -273,7 +292,7 @@ for (const source of ["bank", "files", "files-retry"] as const) {
       );
       await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
       expect((await audioResponse).status()).toBe(200);
-      await expect(page.getByText("Pergunta 1 de 100", { exact: true })).toBeVisible();
+      await expect(page.getByText("Pergunta 1 de 1", { exact: true })).toBeVisible();
     }
   });
 }
@@ -392,7 +411,10 @@ for (const activity of ["listening", "bingo"] as const) {
       await host
         .getByRole("searchbox", { name: "Buscar palavras em inglês ou português" })
         .fill("bus");
-      await host.getByRole("button", { name: "Selecionar exibidas" }).click();
+      await host
+        .locator(".local-room-ready-words__results")
+        .getByRole("checkbox", { name: /bus/ })
+        .click();
       await expect(host.getByRole("combobox", { name: "Material da sala" })).toHaveCount(0);
       await expect(
         host.getByRole("checkbox", { name: "Aceitar um pequeno erro de digitação" }),

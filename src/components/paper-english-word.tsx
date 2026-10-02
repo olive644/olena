@@ -12,7 +12,7 @@ export function PaperEnglishWord({ value }: { value: string }) {
         {letters.map((letter, index) => (
           <use
             key={index}
-            href={`/paper-english-alphabet.svg#letter-${letter}`}
+            href={`/paper-monochrome-alphabet.svg#letter-${letter}`}
             x={index * 62}
             width="66"
             height="98"

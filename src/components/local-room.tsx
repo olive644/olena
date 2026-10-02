@@ -37,6 +37,7 @@ import { useListeningOnline } from "../hooks/use-listening-online";
 import { ListeningOnlineNotice } from "./listening-online-notice";
 import { LOCAL_ROOM_SESSION_KEY, useLocalRoom } from "../hooks/use-local-room";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperActionIcon } from "./paper-action-icon";
 import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
@@ -1041,7 +1042,7 @@ export function LocalRoom({
                                 : `${READY_LISTENING_DECK.length} palavras com áudio`}
                             </span>
                             <span className="local-room-ready-words__disclosure" aria-hidden="true">
-                              <PaperEditorIcon name="add" />
+                              <PaperActionIcon name="plus" />
                             </span>
                           </button>
                           {readyWordsOpen && (
@@ -1083,17 +1084,6 @@ export function LocalRoom({
                               )}
                               <div className="local-room-ready-words__tools">
                                 <strong>{readyDraftIds.length} selecionadas</strong>
-                                <button
-                                  type="button"
-                                  disabled={readyApplying}
-                                  onClick={() =>
-                                    setReadyDraftIds((ids) => [
-                                      ...new Set([...ids, ...readyMatches.map((card) => card.id)]),
-                                    ])
-                                  }
-                                >
-                                  Selecionar exibidas
-                                </button>
                                 {readyDraftIds.length > 0 && (
                                   <button
                                     type="button"
@@ -1130,7 +1120,7 @@ export function LocalRoom({
                                       {readySelected.has(card.id) ? (
                                         <PaperCheckIcon />
                                       ) : (
-                                        <PaperEditorIcon name="add" />
+                                        <PaperActionIcon name="plus" />
                                       )}
                                     </span>
                                     <span>
@@ -1408,18 +1398,40 @@ export function LocalRoom({
                           </p>
                         </>
                       )}
-                      <label>
-                        <span>Respostas</span>
-                        <select
-                          value={state.settings.teams ? "teams" : "individual"}
-                          onChange={(event) =>
-                            void room.updateSettings({ teams: event.target.value === "teams" })
-                          }
-                        >
-                          <option value="individual">Individuais</option>
-                          <option value="teams">Equipes Roxo e Amarelo · soma dos pontos</option>
-                        </select>
-                      </label>
+                      <div
+                        className="local-room-response-options"
+                        role="group"
+                        aria-label="Respostas"
+                      >
+                        {[false, true].map((teams) => (
+                          <button
+                            className="secondary-button"
+                            type="button"
+                            key={String(teams)}
+                            aria-label={
+                              teams ? "Responder em equipes" : "Responder individualmente"
+                            }
+                            aria-pressed={Boolean(state.settings.teams) === teams}
+                            onClick={() => void room.updateSettings({ teams })}
+                          >
+                            <svg viewBox="0 0 48 48" aria-hidden="true">
+                              <path
+                                fill={teams ? "#7c3aed" : "#087e8b"}
+                                d="M18 4h12l5 8-5 10H18l-5-10ZM12 26h24l6 17H6Z"
+                              />
+                              <path
+                                fill={teams ? "#facc15" : "#70d7d0"}
+                                d={
+                                  teams
+                                    ? "M5 10h8l3 6-3 7H5l-3-7ZM2 28h12l4 15H0Z M35 10h8l3 6-3 7h-8l-3-7ZM34 28h12l2 15H30Z"
+                                    : "M18 4h12l-8 8h-9Z M12 26h10L6 43Z"
+                                }
+                              />
+                            </svg>
+                            <span>{teams ? "Em equipes" : "Cada pessoa"}</span>
+                          </button>
+                        ))}
+                      </div>
                       <label>
                         <input
                           type="checkbox"
@@ -1463,12 +1475,6 @@ export function LocalRoom({
                             </option>
                           </select>
                         </label>
-                      )}
-                      {state.settings.activity !== "bingo" && (
-                        <p className="local-room-manual__quantity">
-                          {usesManualList ? manualDeck.length : readyDraftIds.length} palavras na
-                          rodada
-                        </p>
                       )}
                       <RoomStepSlider
                         label="Tempo por pergunta"

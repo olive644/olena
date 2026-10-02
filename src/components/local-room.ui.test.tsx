@@ -49,14 +49,26 @@ describe("chegada por link de convite", () => {
     fireEvent.click(english);
     expect(english.getAttribute("aria-expanded")).toBe("true");
     expect(document.querySelectorAll(".local-room-ready-words__results button")).toHaveLength(100);
-    fireEvent.click(screen.getByRole("button", { name: "Selecionar exibidas" }));
+    expect(screen.queryByRole("button", { name: "Selecionar exibidas" })).toBeNull();
+    expect(screen.queryByText("0 palavras na rodada")).toBeNull();
+    expect(screen.queryByRole("combobox", { name: "Respostas" })).toBeNull();
+    expect(
+      screen
+        .getByRole("button", { name: "Responder individualmente" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Responder em equipes" }));
+    expect(
+      screen.getByRole("button", { name: "Responder em equipes" }).getAttribute("aria-pressed"),
+    ).toBe("true");
+    fireEvent.click(screen.getByRole("checkbox", { name: /school/ }));
     expect(screen.queryByRole("button", { name: "Aplicar seleção" })).toBeNull();
     await waitFor(() => expect(create.hasAttribute("disabled")).toBe(false));
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(create.hasAttribute("disabled")).toBe(false);
     fireEvent.click(english);
     expect(screen.queryByRole("searchbox")).toBeNull();
-    expect(english.textContent).toContain("100 selecionadas");
+    expect(english.textContent).toContain("1 selecionadas");
   });
 
   it("preenche a barra somente até o passo do tempo selecionado", () => {

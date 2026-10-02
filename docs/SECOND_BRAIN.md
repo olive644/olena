@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Sala: seleção de palavras é individual e imediata, sem Selecionar exibidas.
+PaperActionIcon plus mantém o desenho da Agenda; alfabeto monocromático usa
+variáveis de cor do Foco. Modos de resposta são botões ilustrados com aria-pressed.
+Histórico semanal do Pomodoro persiste localmente e sincroniza; não confundir
+com ciclo em andamento, que é estado da view. A investigação encontrou atraso
+do Pomodoro sob suspensão de callbacks, reproduzido em focus-persistence.ui.test.tsx.
+
 Rotas SPA precisam de rewrite na Vercel além do History API. /sala tem regra exata
 para index.html, coberta por room-hosting-route.test.ts. Validar HTTP em produção
 após deploy; sucesso no servidor local não prova o roteamento da hospedagem.
