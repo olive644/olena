@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+Modo Sala começa sem minigame selecionado. A seleção revela a configuração e a
+criação. Banco mantém 100 palavras com aplicação imediata, sem importação de lista.
+Uma nova fala só é adicionada após completar palavra, tradução e arquivo de áudio
+da anterior. Autoplay pertence ao criador da sala, não aos alunos nem ao projetor;
+alunos podem reproduzir manualmente, com repetições ilimitadas e cooldown preservado.
+PaperCheckIcon e paper-controls.css unificam o confere de papel. Artes da Helena
+ficam em public/room-art e os briefs em docs/ROOM_ART.md.
+
 Bloqueio de rolagem local-room-active é controlado por LocalRoomFullscreen e só
 ocorre no modo modal. Preparação usa rolagem normal da página, sem cabeçalho
 redundante nem Voltar. As 100 opções do banco não foram removidas; seleção é

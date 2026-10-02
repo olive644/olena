@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   submitAnswer: vi.fn<() => Promise<undefined>>(),
   generateAudio: vi.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(true),
   roomState: undefined as PublicLocalRoomState | undefined,
+  isHost: false,
 }));
 
 vi.mock("../data/listening-audio", () => ({
@@ -51,10 +52,10 @@ const PLAYING_STATE: PublicLocalRoomState = {
 vi.mock("../hooks/use-local-room", () => ({
   LOCAL_ROOM_SESSION_KEY: "helena:local-room-session:v1",
   useLocalRoom: () => ({
-    role: "participant" as const,
+    role: mocks.isHost ? ("host" as const) : ("participant" as const),
     state: mocks.roomState ?? PLAYING_STATE,
     error: "",
-    isHost: false,
+    isHost: mocks.isHost,
     participantId: "p1",
     isRestoring: false,
     connectionStatus: "online" as const,
@@ -78,6 +79,7 @@ describe("resposta do participante", () => {
   afterEach(() => {
     vi.clearAllMocks();
     mocks.roomState = undefined;
+    mocks.isHost = false;
     vi.useRealTimers();
   });
 
@@ -91,6 +93,36 @@ describe("resposta do participante", () => {
 
     expect(screen.getByRole("button", { name: "Enviando…" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByText("Enviando resposta…").closest('[role="status"]')).toBeTruthy();
+  });
+
+  it("não reproduz automaticamente no aluno, mas permite ouvir novamente", () => {
+    render(<LocalRoom />);
+    expect(mocks.generateAudio).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+  });
+
+  it("reproduz automaticamente somente no criador mesmo com configuração antiga desativada", () => {
+    mocks.isHost = true;
+    mocks.roomState = {
+      ...PLAYING_STATE,
+      settings: { ...PLAYING_STATE.settings, autoPlayAudio: false },
+    };
+    render(<LocalRoom />);
+    expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+  });
+
+  it("não limita repetições em salas com configuração antiga", () => {
+    vi.useFakeTimers();
+    mocks.roomState = {
+      ...PLAYING_STATE,
+      settings: { ...PLAYING_STATE.settings, audioRepetitions: 1 },
+    };
+    render(<LocalRoom />);
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    act(() => vi.advanceTimersByTime(5_000));
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    expect(mocks.generateAudio).toHaveBeenCalledTimes(2);
   });
 
   it("bloqueia uma nova reprodução por cinco segundos", () => {

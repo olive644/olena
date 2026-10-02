@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Escolha de minigame e áudio do criador (2026-10-01)
+
+- A entrada no Modo Sala apresenta apenas os quatro minigames, sem seleção. Configuração e Criar sala aparecem após escolher uma atividade disponível.
+- Palavras prontas mantêm as 100 opções e seleção imediata, sem Importar lista. Enviar arquivos não permite acumular falas vazias: a anterior precisa de palavra, tradução e áudio guardado.
+- Configurações de áudio foram removidas da preparação. Novas salas usam repetição ilimitada e reprodução automática; somente o criador reproduz automaticamente. Alunos continuam com Ouvir novamente e o cooldown existente.
+- Checks visuais compartilham o símbolo facetado de papel; caixas nativas usam papel amarelo, inclusive configurações de handwriting. Slider de tempo conserva passos e teclado, com trilho roxo e cursor de papel amarelo.
+- Quatro cenas da Helena com cenários foram geradas a partir do onboarding e otimizadas em WebP de 384px, cerca de 22 a 26 KB cada. Ficam no final dos cartões e aparecem suavemente no hover/foco e integralmente na atividade selecionada. Flashcards e quiz continuam indisponíveis.
+- Testes cobrem estado inicial vazio, seleção automática, bloqueio de fala incompleta, ausência de importação e controles de áudio, autoplay exclusivo do criador e replay do aluno.
+
 ## Rolagem da preparação da sala (2026-10-01)
 
 - O bloqueio de rolagem do body pertence somente ao painel de sala em tela cheia. A preparação embutida não recebe mais local-room-active.

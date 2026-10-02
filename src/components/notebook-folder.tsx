@@ -1,6 +1,7 @@
 import type { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import type { StudyNotebook, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
+import { PaperCheckIcon } from "./paper-check-icon";
 import { TextNotePreview } from "./text-note";
 import { notebookPaperTabs, PaperMoonMark } from "./notebook-paper-tools";
 import "./notebook-folder.css";
@@ -89,7 +90,7 @@ export function NotebookFolder({
               <img className="paper-folder-star" src="/favicon-star.svg" alt="" draggable={false} />
               {selectionMode && (
                 <span className={`notebook-card__check ${selected ? "is-selected" : ""}`}>
-                  {selected ? "✓" : ""}
+                  {selected ? <PaperCheckIcon /> : null}
                 </span>
               )}
             </span>

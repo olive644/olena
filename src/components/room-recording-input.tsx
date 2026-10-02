@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { PaperCheckIcon } from "./paper-check-icon";
 import { MAX_ROOM_RECORDING_BYTES, uploadRoomRecording } from "../data/room-recording";
 import { HelenaLoading } from "./helena-loading";
 
@@ -74,10 +75,11 @@ export function RoomRecordingInput({
           {blob
             ? "Arquivo ainda não guardado"
             : audioId
-              ? "Áudio guardado ✓"
+              ? "Áudio guardado"
               : staged
-                ? "Áudio preparado ✓"
+                ? "Áudio preparado"
                 : "Áudio pendente"}
+          {!blob && (audioId || staged) && <PaperCheckIcon size={14} />}
         </small>
       </div>
       <button

@@ -1,4 +1,5 @@
 import { NotebookPageBook } from "../components/notebook-page-book";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import { notebookShelves, SHELF_CAPACITY } from "../domain/notebook-shelves";
 import { PaperObjectIcon } from "../components/paper-object-icon";
 import { NotebookSearch } from "../components/notebook-search";
@@ -1037,7 +1038,9 @@ export function NotesView({
                                   className={`notebook-card__check ${selectedNotebookIds.includes(notebook.id) ? "is-selected" : ""}`}
                                   aria-hidden="true"
                                 >
-                                  {selectedNotebookIds.includes(notebook.id) ? "✓" : ""}
+                                  {selectedNotebookIds.includes(notebook.id) ? (
+                                    <PaperCheckIcon />
+                                  ) : null}
                                 </span>
                               )}
                               {notebook.kind === "note" ? (

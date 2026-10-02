@@ -1,5 +1,6 @@
 import { useState, type Dispatch, type FormEvent } from "react";
 import { PageHeader } from "../components/app-navigation";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { toDateKey, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
 
@@ -76,7 +77,7 @@ export function HabitsView({ workspace, dispatch }: HabitsViewProps) {
                       onClick={() => dispatch({ type: "habit/toggled", id: habit.id, date: today })}
                     >
                       <span className="habit-check">
-                        <span aria-hidden="true">✓</span>
+                        <PaperCheckIcon />
                       </span>
                       <span>
                         <strong>{habit.title}</strong>

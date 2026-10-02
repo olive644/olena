@@ -1,4 +1,5 @@
 import type { Dispatch } from "react";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import {
   minutesFocusedOn,
   toDateKey,
@@ -132,7 +133,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
                     aria-label={`Concluir ${task.title}`}
                     onClick={() => dispatch({ type: "task/toggled", id: task.id })}
                   >
-                    <span aria-hidden="true">✓</span>
+                    <PaperCheckIcon />
                   </button>
                   <div>
                     <strong>{task.title}</strong>

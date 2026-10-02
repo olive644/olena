@@ -1,4 +1,5 @@
-import { Check, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import "../components/paper-object-controls.css";
@@ -687,7 +688,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                       aria-label={`${goal.completed ? "Reabrir" : "Concluir"} ${goal.title}`}
                       onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
                     >
-                      <Check size={15} />
+                      <PaperCheckIcon size={15} />
                     </button>
                     <div>
                       <strong>{goal.title}</strong>

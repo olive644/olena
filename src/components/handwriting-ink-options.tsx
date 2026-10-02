@@ -1,4 +1,5 @@
 import type { HandwritingTool } from "./handwriting-types";
+import { PaperCheckIcon } from "./paper-check-icon";
 import { PaperObjectIcon } from "./paper-object-icon";
 
 type HandwritingInkOptionsProps = {
@@ -72,7 +73,9 @@ export function HandwritingInkOptions({
               style={{ backgroundColor: ink }}
               onClick={() => ink && onColorChange(ink)}
             >
-              <span aria-hidden="true">{color.toLowerCase() === ink ? "✓" : ""}</span>
+              <span aria-hidden="true">
+                {color.toLowerCase() === ink ? <PaperCheckIcon /> : null}
+              </span>
             </button>
           ))}
           <label className="ink-custom" title="Escolher outra cor">
