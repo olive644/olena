@@ -22,6 +22,68 @@ function silentWav(): Buffer {
   return audio;
 }
 
+for (const activity of ["listening", "bingo"] as const) {
+  test(`preparação de ${activity} permite rolar até palavras e criar sem cortes`, async ({
+    page,
+    browserName,
+  }, testInfo) => {
+    const scrollPage = async (distance: number) => {
+      // Mobile WebKit does not expose wheel input. Keep document-height and
+      // viewport assertions there, and real wheel coverage in Chromium.
+      if (browserName === "webkit" && testInfo.project.name === "mobile") {
+        await page.evaluate((delta) => window.scrollBy(0, delta), distance);
+      } else {
+        await page.mouse.move(page.viewportSize()!.width - 4, 150);
+        await page.mouse.wheel(0, distance);
+      }
+    };
+    await page.addInitScript(() => {
+      localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    });
+    await page.goto("/sala");
+    const preparation = page.locator(".local-room-preparation");
+    await expect(preparation.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+    await expect(preparation.locator(".local-room-session__header")).toHaveCount(0);
+    expect(await page.evaluate(() => getComputedStyle(document.body).overflowY)).not.toBe("hidden");
+    if (activity === "bingo") {
+      await preparation.getByRole("radio", { name: /^Bingo/ }).click();
+    } else {
+      const words = preparation.locator(".local-room-ready-words__results button");
+      await expect(words).toHaveCount(100);
+      const first = words.first();
+      const bounds = await first.boundingBox();
+      expect(bounds).not.toBeNull();
+      const viewport = page.viewportSize()!;
+      await scrollPage(bounds!.y - 150);
+      await expect
+        .poll(async () => (await first.boundingBox())?.y ?? -1)
+        .toBeLessThan(viewport.height - 150);
+      await first.click();
+      await expect(first).toHaveAttribute("aria-checked", "true");
+      await expect(words).toHaveCount(100);
+      await expect(preparation.getByRole("button", { name: "Aplicar seleção" })).toHaveCount(0);
+      await page.screenshot({ path: testInfo.outputPath("words-selectable.png") });
+    }
+    const viewport = page.viewportSize()!;
+    await scrollPage(8000);
+    const create = preparation.getByRole("button", { name: "Criar sala", exact: true });
+    await expect
+      .poll(async () => {
+        const bounds = await create.boundingBox();
+        return Boolean(
+          bounds &&
+          bounds.y >= 0 &&
+          bounds.y + bounds.height <
+            viewport.height - (testInfo.project.name === "mobile" ? 120 : 0),
+        );
+      })
+      .toBe(true);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    await expect(create).toBeEnabled();
+    await page.screenshot({ path: testInfo.outputPath(`create-${activity}-reachable.png`) });
+  });
+}
+
 for (const source of ["bank", "files", "files-retry"] as const) {
   test(`prepara ${source} antes de criar a sala`, async ({ page }, testInfo) => {
     const store = createMemoryRoomStore();
@@ -76,7 +138,7 @@ for (const source of ["bank", "files", "files-retry"] as const) {
       });
     });
     await page.goto("/sala");
-    await expect(page.getByRole("heading", { name: "Modo Sala", exact: true })).toBeVisible();
+    await expect(page.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
     if (source === "bank") {
       const search = page.getByRole("searchbox", {
         name: "Buscar palavras em inglês ou português",

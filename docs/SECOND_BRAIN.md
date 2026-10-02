@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Bloqueio de rolagem local-room-active é controlado por LocalRoomFullscreen e só
+ocorre no modo modal. Preparação usa rolagem normal da página, sem cabeçalho
+redundante nem Voltar. As 100 opções do banco não foram removidas; seleção é
+automática. Testar alcance por wheel evita falso positivo de scrollIntoView.
+
 Preparação do Modo Sala mantém a navegação desktop e móvel. A seleção no banco
 de palavras já integra o rascunho, sem confirmação adicional. Depois de criar,
 somente convite, participantes e início ficam visíveis; minigames e controles

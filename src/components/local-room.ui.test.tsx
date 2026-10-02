@@ -22,7 +22,10 @@ describe("chegada por link de convite", () => {
 
   it("sem código de convite, mostra a tela inicial normal", () => {
     render(<LocalRoom accountName="Ana" />);
-    expect(screen.getByText(/^modo sala$/i)).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /^modo sala$/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Voltar" })).toBeNull();
+    expect(document.body.classList.contains("local-room-active")).toBe(false);
+    expect(document.querySelectorAll(".local-room-ready-words__results button")).toHaveLength(100);
     expect(screen.getByRole("button", { name: /criar sala/i })).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "Atividades da sala" })).toBeTruthy();
     expect(screen.queryByLabelText("Código da sala")).toBeNull();
