@@ -443,8 +443,9 @@ distintos são conciliadas por identificador e versões antigas recebidas são i
 Edições simultâneas do mesmo objeto podem prevalecer pela última alteração recebida.
 
 Os testes usam navegador real com servidor de colaboração em memória. Eles não comprovam
-a configuração da conta Firebase, App Check ou variáveis do ambiente de produção. Publicar
-os índices de `firebase-room.rules.json` habilita a limpeza programada das novas cópias.
+a configuração da conta Firebase, App Check ou variáveis do ambiente de produção. Os
+índices de `firebase-room.rules.json` que habilitam a limpeza programada das novas
+cópias foram publicados em 2026-10-02.
 Modelo de ameaça e limites: `docs/NOTEBOOK_SHARING_SECURITY.md`.
 
 ## Novos avatares oficiais
@@ -1093,7 +1094,7 @@ Três ajustes vindos da auditoria de segurança, sem mudança de fluxo para o us
 - Os tokens de anfitrião e de participante passaram a ser comparados em tempo constante por `safeEqual` (`src/backend/secure-compare.ts`), em vez de `===`. Um token ausente nunca autoriza.
 - `vercel.json` ganhou `Strict-Transport-Security` e `Cross-Origin-Opener-Policy: same-origin-allow-popups`. O valor `same-origin` foi descartado de propósito, porque quebraria o `signInWithPopup` do login Google. `src/security-headers.test.ts` trava esses cabeçalhos e a ausência de `unsafe-inline` e `unsafe-eval` no `script-src`.
 
-Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. Pendência fora do repositório: confirmar na Vercel se `FIREBASE_APPCHECK_ENFORCE` está `true`, porque sem ele o App Check só registra e não bloqueia.
+Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. O dono confirmou em 2026-10-02 que `FIREBASE_APPCHECK_ENFORCE` está `true` na Vercel: o App Check bloqueia de verdade, não só registra.
 
 # Convite de edição do caderno, setembro de 2026
 
@@ -1577,3 +1578,9 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `room-guard.ts` agora chama `checkRateLimit` (namespace `"room-limits"`, identidade `endereço:ação`, limite por ação, janela de 60s) em vez de repetir o laço de `compareAndSet`. A chave gerada (`room-limits/sha256(endereço:ação)`), a janela e o TTL de 120s continuam exatamente os mesmos de antes.
 - Única diferença observável: o evento de observabilidade que distinguia "limite atingido" (`rate_limited`) de "contenção depois de 40 tentativas" (`rate_limit_contention`) passou a registrar os dois casos como `rate_limited`, já que o resultado para quem usa a sala é o mesmo (`429`) nos dois casos, e nenhum teste dependia dessa distinção.
 - Testes: `room-guard.test.ts` continua cobrindo o limite atômico e independente por endereço, agora através do caminho compartilhado.
+
+## Regras do Firebase publicadas em produção (2026-10-02)
+
+- Fechamento de uma pendência levantada numa auditoria ampla desta sessão: o `firebase-room.rules.json` do repositório tinha cinco nós (`notebook-collab`, `notebook-views`, `speech-audio`, `speech-rate-limit`, `speech-generation-rate-limit`, `room-recordings`) que nunca tinham sido publicados no console do Firebase, desde os PRs que os introduziram (#205, #307, #311). O dono confirmou a publicação do arquivo completo no Laboratório de testes de regras.
+- Todos os nós que faltavam são `.read: false`/`.write: false`: publicá-los não abriu nenhum acesso novo ao navegador (só a conta de serviço do backend, que ignora regras, já os usava). O ganho real é o `.indexOn: ["expiresAt"]` de cada um, necessário para `api/room-cleanup.ts` varrer e apagar itens vencidos de forma eficiente; antes da publicação, essas três funcionalidades (colaboração em cadernos, voz natural/áudio da sala, gravações do professor) rodavam sem limpeza automática programada.
+- Continua pendente, sem relação com esta mudança: a verificação do App Check (`docs/SECOND_BRAIN.md`) ainda está sem enforcement ativo declarado em produção.

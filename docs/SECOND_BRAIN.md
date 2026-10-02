@@ -208,7 +208,8 @@ O editor usa `NotebookFileActions` para salvar, exportar seleção e criar links
 `?notebook-view=<token>` abre `NotebookReader`, sem ferramentas de edição. A API
 `notebook-collab` aceita `view-create` e `view-read`, guarda cópias por sete dias e limita
 criação a seis pedidos por minuto por endereço. O cron existente também limpa
-`notebook-collab` e `notebook-views`; publicar seus índices nas regras Firebase.
+`notebook-collab` e `notebook-views`; seus índices nas regras Firebase foram publicados
+em 2026-10-02.
 
 `HandwritingStudio` salva uma imagem fora do canvas visível e o documento editável no
 workspace, usando um identificador estável durante a sessão. O workspace segue a
@@ -318,8 +319,8 @@ isso não substitui a validação física nem ativa App Check/cron em produção
 - O lobby flat mantém a arte aprovada da Helena no convite, usa os ícones existentes e apresenta atividades futuras desabilitadas. Somente Escuta coletiva e Bingo iniciam rodadas.
 - O Quiz de Escuta prioriza uma lista personalizada de até 30 pares, aceita separadores comuns, explica erros por linha e não expõe a palavra na tela projetada. A resposta privada inclui correção, par esperado e XP por três segundos. A sala sincroniza limite de repetições e reprodução automática; a velocidade é fixa em 1×. O primeiro tempo de resposta começa após três segundos de contagem agendada no servidor.
 - O modelo básico de cinco palavras continua disponível no quiz individual e não é usado na Escuta coletiva do Modo Sala. O catálogo próprio de 100 palavras da sala tem arquivos MP3 estáticos. A base local de 10 mil frequências e seu gerador Python foram removidos; classificação fora da sala usa cache, Datamuse e estimativa offline.
-- SDK Firebase App Check é importado dinamicamente apenas se configurado. JWT é verificado com jose no servidor; configuração externa ainda pendente, sem enforcement ativo declarado.
-- Limpeza autenticada diária em `api/room-cleanup.ts` depende de CRON_SECRET e regras/índices em `firebase-room.rules.json`. Não publicar as regras sem considerar salas legadas sem expiresAt.
+- SDK Firebase App Check é importado dinamicamente apenas se configurado. JWT é verificado com jose no servidor; `FIREBASE_APPCHECK_ENFORCE=true` confirmado na Vercel em 2026-10-02, com enforcement ativo (bloqueia de verdade, não só registra).
+- Limpeza autenticada diária em `api/room-cleanup.ts` depende de CRON_SECRET e regras/índices em `firebase-room.rules.json`, publicadas em 2026-10-02 (todos os nós além de `rooms`/`private-rooms`/`room-limits`/`users` são `.read: false`/`.write: false`, então publicar não abriu acesso novo ao navegador). Monitorar se salas legadas sem `expiresAt` são varridas corretamente pela limpeza.
 - `npm run verify` reúne lint, formatação, testes, build e orçamento. `PLAYWRIGHT_SYSTEM_EDGE=1` permite validar com Edge local quando os browsers Playwright não estão disponíveis; CI mantém Chromium/WebKit. E2E multiplayer usa transportes de teste, não produção. `npm run dev` e `npm run build` copiam antes o worker, o núcleo WebAssembly e o idioma do OCR para `public/ocr/` (`scripts/copy-ocr-assets.mjs`); o OCR não usa CDN. `vite preview` serve os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP de produção.
 - Estado e pendências detalhados em `CURRENT_STATE_AUDIT.md` e procedimento em `ROOM_SETUP.md`.
 
