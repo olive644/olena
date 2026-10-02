@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Rolagem da preparação da sala (2026-10-01)
+
+- O bloqueio de rolagem do body pertence somente ao painel de sala em tela cheia. A preparação embutida não recebe mais local-room-active.
+- As 100 palavras continuam disponíveis, com seleção automática. A lista e Criar sala são alcançáveis por rolagem real, inclusive em telas baixas.
+- O cabeçalho redundante Modo Sala e Voltar foram removidos da preparação. A navegação do aplicativo permanece disponível.
+- Regressão visual verifica rolagem por wheel, não apenas scrollIntoView, que poderia ocultar o defeito.
+- Listas roláveis contêm os textos acessíveis absolutos das letras decorativas. Sem esse contexto, as palavras fora da lista ampliavam a altura da página no celular.
+
 ## Preparação e convite separados (2026-10-01)
 
 - Preparação permanece dentro da navegação do app no desktop e celular.

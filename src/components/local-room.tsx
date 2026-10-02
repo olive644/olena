@@ -186,10 +186,13 @@ function LocalRoomFullscreen({
     const previous = document.activeElement;
     const root = document.getElementById("root");
     const wasInert = root?.inert ?? false;
+    const wasRoomActive = document.body.classList.contains("local-room-active");
+    document.body.classList.add("local-room-active");
     if (root) root.inert = true;
     ref.current?.focus();
     return () => {
       if (root) root.inert = wasInert;
+      if (!wasRoomActive) document.body.classList.remove("local-room-active");
       if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
     };
   }, [embedded]);
@@ -464,16 +467,6 @@ export function LocalRoom({
   const [feedbackMsLeft, setFeedbackMsLeft] = useState(() =>
     Math.max(0, (state?.feedbackUntil ?? 0) - serverNow()),
   );
-
-  // Modo Sala toma a tela toda enquanto estiver aberto, pra ficar bem
-  // visível projetado ou compartilhado. Some de novo assim que a pessoa
-  // troca de aba/modo e este componente é desmontado.
-  useEffect(() => {
-    document.body.classList.add("local-room-active");
-    return () => {
-      document.body.classList.remove("local-room-active");
-    };
-  }, []);
 
   useEffect(() => {
     if (!currentQuestionFront || state?.phase !== "playing" || projectorMode) return;
@@ -859,37 +852,36 @@ export function LocalRoom({
     <LocalRoomFullscreen embedded={preparing}>
       {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
       <div className={`local-room-session local-room-session--${state.phase}`}>
-        <header className="local-room-session__header">
-          {preparing && (
-            <h2>
-              <NavigationIcon name="room" /> Modo Sala
-            </h2>
-          )}
-          <div className="local-room-session__actions">
-            {isHost && !preparing && state.phase === "lobby" && (
-              <button
-                className="secondary-button"
-                type="button"
-                onClick={() => window.open(`/?sala=${state.code}`, "_blank", "noopener,noreferrer")}
-              >
-                <img src="/room-icons/join.svg" alt="" width="24" height="24" /> Entrar com código
+        {!preparing && (
+          <header className="local-room-session__header">
+            <div className="local-room-session__actions">
+              {isHost && !preparing && state.phase === "lobby" && (
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() =>
+                    window.open(`/?sala=${state.code}`, "_blank", "noopener,noreferrer")
+                  }
+                >
+                  <img src="/room-icons/join.svg" alt="" width="24" height="24" /> Entrar com código
+                </button>
+              )}
+              {isHost && !preparing && (
+                <button
+                  className="secondary-button local-room-open-projector"
+                  type="button"
+                  onClick={openProjector}
+                >
+                  <img className="room-paper-icon" src="/room-icons/projector.svg" alt="" /> Modo
+                  Projetor
+                </button>
+              )}
+              <button className="secondary-button local-room-exit" type="button" onClick={exitRoom}>
+                <PaperEditorIcon name="exit" /> Sair da sala
               </button>
-            )}
-            {isHost && !preparing && (
-              <button
-                className="secondary-button local-room-open-projector"
-                type="button"
-                onClick={openProjector}
-              >
-                <img className="room-paper-icon" src="/room-icons/projector.svg" alt="" /> Modo
-                Projetor
-              </button>
-            )}
-            <button className="secondary-button local-room-exit" type="button" onClick={exitRoom}>
-              <PaperEditorIcon name="exit" /> {preparing ? "Voltar" : "Sair da sala"}
-            </button>
-          </div>
-        </header>
+            </div>
+          </header>
+        )}
         {room.error && <p role="alert">{room.error}</p>}
         {!room.isRestoring &&
           (room.connectionStatus === "reconnecting" || room.connectionStatus === "offline") && (

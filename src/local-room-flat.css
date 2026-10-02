@@ -872,6 +872,7 @@
   cursor: pointer;
 }
 .local-room-ready-words__results {
+  position: relative;
   display: grid;
   max-height: 224px;
   overflow-y: auto;
@@ -1841,7 +1842,15 @@
 
 .local-room-preparation {
   width: 100%;
-  padding-block: 24px;
+  padding-block: 0 32px;
+}
+
+.local-room-preparation .local-room-action-bar {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+.local-room-ready-words__selected {
+  position: relative;
 }
 
 .local-room-lobby--created {
