@@ -104,6 +104,79 @@
   background: transparent;
   touch-action: pan-y;
 }
+.local-room-step-slider {
+  grid-column: 1 / -1;
+}
+.local-room-step-slider__ticks {
+  display: flex;
+  justify-content: space-between;
+}
+.local-room-response-options {
+  display: flex;
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+.app-shell .local-room-response-options button {
+  flex: 1;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text);
+  border-color: var(--line-strong);
+  background-color: var(--surface);
+  background-image: linear-gradient(135deg, var(--soft) 0 12px, transparent 12px);
+  box-shadow: 0 3px 0 var(--line-strong);
+}
+.local-room-response-options svg {
+  width: 32px;
+  height: 32px;
+}
+.local-room-ready-words__check .paper-action-icon,
+.local-room-ready-words__disclosure .paper-action-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.app-shell .local-room-response-options button[aria-pressed="true"] {
+  border-color: #087e8b;
+  box-shadow: 0 3px 0 #087e8b;
+}
+.paper-english-word {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+}
+:root[data-theme="dark"] .paper-english-word {
+  --digit-face: #fff9ef;
+  --digit-depth: #847291;
+}
+.local-room-ready-words__selected .paper-english-word {
+  --digit-face: #fff9ef;
+  --digit-depth: #292432;
+}
+.local-room-ready-words__results button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.local-room-ready-words__results button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("/room-icons/english.svg") right center / auto 100% no-repeat;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.local-room-ready-words__results button:is(:hover, :focus-visible)::before {
+  opacity: 0.18;
+}
+@media (prefers-reduced-motion: reduce) {
+  .local-room-ready-words__results button::before {
+    transition: none;
+  }
+}
 .local-room-step-slider input::-webkit-slider-runnable-track {
   height: 8px;
   border-radius: 2px;
