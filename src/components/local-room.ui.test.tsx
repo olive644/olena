@@ -25,8 +25,11 @@ describe("chegada por link de convite", () => {
     expect(screen.queryByRole("heading", { name: /^modo sala$/i })).toBeNull();
     expect(screen.queryByRole("button", { name: "Voltar" })).toBeNull();
     expect(document.body.classList.contains("local-room-active")).toBe(false);
-    expect(document.querySelectorAll(".local-room-ready-words__results button")).toHaveLength(100);
-    expect(screen.getByRole("button", { name: /criar sala/i })).toBeTruthy();
+    expect(document.querySelectorAll(".local-room-ready-words__results button")).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: /criar sala/i })).toBeNull();
+    expect(
+      screen.getAllByRole("radio").every((radio) => radio.getAttribute("aria-checked") === "false"),
+    ).toBe(true);
     expect(screen.getByRole("radiogroup", { name: "Atividades da sala" })).toBeTruthy();
     expect(screen.queryByLabelText("Código da sala")).toBeNull();
     expect(screen.queryByRole("heading", { name: "Participantes" })).toBeNull();
@@ -37,6 +40,7 @@ describe("chegada por link de convite", () => {
   it("prepara o minigame e as palavras sem criar nem alterar uma sala remota", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
     render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
     const create = screen.getByRole("button", { name: /^Criar sala$/ });
     expect(create.hasAttribute("disabled")).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Selecionar exibidas" }));
@@ -44,6 +48,24 @@ describe("chegada por link de convite", () => {
     await waitFor(() => expect(create.hasAttribute("disabled")).toBe(false));
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(create.hasAttribute("disabled")).toBe(false);
+  });
+
+  it("não adiciona falas vazias e remove configurações redundantes de áudio", async () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    expect(screen.queryByText("Prepare a escuta")).toBeNull();
+    expect(screen.queryByText("Configurações de áudio")).toBeNull();
+    expect(screen.queryByText("Importar lista")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /^Enviar arquivos$/ }));
+    const add = screen.getByRole("button", { name: "Adicionar fala" });
+    expect(add.hasAttribute("disabled")).toBe(true);
+    fireEvent.click(add);
+    expect(screen.queryByLabelText("Palavra em inglês da fala 2")).toBeNull();
+    fireEvent.change(screen.getByLabelText("Palavra em inglês da fala 1"), {
+      target: { value: "book" },
+    });
+    fireEvent.change(screen.getByLabelText("Tradução da fala 1"), { target: { value: "livro" } });
+    expect(add.hasAttribute("disabled")).toBe(true);
   });
 
   it("normaliza o código colado e só libera a entrada com os dois campos válidos", () => {

@@ -9,6 +9,7 @@ import "./notebook-editor.css";
 import "./notebook-workspace.css";
 import "./notebook-mobile.css";
 import "./navigation-refinements.css";
+import "./paper-controls.css";
 
 const NotebookReader = lazy(() => import("./views/notebook-reader"));
 const NotebookCollaborationInvite = lazy(() => import("./views/notebook-collaboration-invite"));

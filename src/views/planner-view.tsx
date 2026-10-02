@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaLoading } from "../components/helena-loading";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PageHeader } from "../components/app-navigation";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { toDateKey, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
@@ -293,7 +294,7 @@ export function PlannerView({ workspace, dispatch }: PlannerViewProps) {
                     aria-label={`${goal.completed ? "Reabrir" : "Concluir"} ${goal.title}`}
                     onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
                   >
-                    <span aria-hidden="true">✓</span>
+                    <PaperCheckIcon />
                   </button>
                   <div>
                     <strong>{goal.title}</strong>
@@ -328,7 +329,7 @@ export function PlannerView({ workspace, dispatch }: PlannerViewProps) {
                     aria-label={`${task.completed ? "Reabrir" : "Concluir"} ${task.title}`}
                     onClick={() => dispatch({ type: "task/toggled", id: task.id })}
                   >
-                    <span aria-hidden="true">✓</span>
+                    <PaperCheckIcon />
                   </button>
                   <div>
                     <strong>{task.title}</strong>

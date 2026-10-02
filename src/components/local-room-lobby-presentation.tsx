@@ -7,6 +7,7 @@ import {
 } from "../domain/local-room";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { RoomQrCode } from "./room-qr-code";
+import { PaperCheckIcon } from "./paper-check-icon";
 
 export function ShareRoom({ code }: { code: string }) {
   const [copyStatus, setCopyStatus] = useState("");
@@ -29,7 +30,7 @@ export function ShareRoom({ code }: { code: string }) {
         <button
           className="icon-button"
           type="button"
-          onClick={() => void copy(code, "Código copiado ✓")}
+          onClick={() => void copy(code, "Código copiado")}
           aria-label="Copiar código da sala"
         >
           <span className="local-room-copy-icon local-room-copy-icon--generic" aria-hidden="true">
@@ -51,7 +52,7 @@ export function ShareRoom({ code }: { code: string }) {
           <button
             className="secondary-button"
             type="button"
-            onClick={() => void copy(joinUrl, "Link copiado ✓")}
+            onClick={() => void copy(joinUrl, "Link copiado")}
           >
             <span className="local-room-copy-label">
               <span
@@ -69,6 +70,7 @@ export function ShareRoom({ code }: { code: string }) {
         </div>
         <p className="local-room-copy-status" role="status" aria-live="polite">
           {copyStatus}
+          {copyStatus.endsWith("copiado") && <PaperCheckIcon size={14} />}
         </p>
       </div>
     </div>

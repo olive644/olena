@@ -44,10 +44,33 @@ for (const activity of ["listening", "bingo"] as const) {
     const preparation = page.locator(".local-room-preparation");
     await expect(preparation.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
     await expect(preparation.locator(".local-room-session__header")).toHaveCount(0);
+    await expect(preparation.locator('.local-room-activity[aria-checked="true"]')).toHaveCount(0);
+    await expect(preparation.locator(".local-room-settings__panel")).toHaveCount(0);
+    await expect(preparation.locator(".local-room-activity__art")).toHaveCount(4);
+    await expect
+      .poll(() =>
+        preparation
+          .locator(".local-room-activity__art")
+          .evaluateAll((images) =>
+            images.every(
+              (image) =>
+                image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0,
+            ),
+          ),
+      )
+      .toBe(true);
+    await page.screenshot({ path: testInfo.outputPath("minigames-unselected.png") });
     expect(await page.evaluate(() => getComputedStyle(document.body).overflowY)).not.toBe("hidden");
     if (activity === "bingo") {
       await preparation.getByRole("radio", { name: /^Bingo/ }).click();
     } else {
+      await preparation.getByRole("radio", { name: /Escuta coletiva/ }).click();
+      await expect(
+        preparation.locator('.local-room-activity[aria-checked="true"] .local-room-activity__art'),
+      ).toHaveCSS("opacity", "1");
+      await preparation
+        .locator(".local-room-activities")
+        .screenshot({ path: testInfo.outputPath("minigames-selected.png") });
       const words = preparation.locator(".local-room-ready-words__results button");
       await expect(words).toHaveCount(100);
       const first = words.first();
@@ -139,6 +162,8 @@ for (const source of ["bank", "files", "files-retry"] as const) {
     });
     await page.goto("/sala");
     await expect(page.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Criar sala", exact: true })).toHaveCount(0);
+    await page.getByRole("radio", { name: /Escuta coletiva/ }).click();
     if (source === "bank") {
       const search = page.getByRole("searchbox", {
         name: "Buscar palavras em inglês ou português",
@@ -162,7 +187,7 @@ for (const source of ["bank", "files", "files-retry"] as const) {
         .getByLabel("Enviar áudio de hello")
         .setInputFiles({ name: "hello.wav", mimeType: "audio/wav", buffer: silentWav() });
       await page.getByRole("button", { name: "Guardar áudio" }).click();
-      await expect(page.getByText("Áudio preparado ✓")).toBeVisible();
+      await expect(page.getByText("Áudio preparado", { exact: true })).toBeVisible();
       await page.getByRole("button", { name: "Aplicar palavras", exact: true }).click();
     }
     expect(actions).toEqual([]);
@@ -327,6 +352,7 @@ for (const activity of ["listening", "bingo"] as const) {
       await host.goto("/sala");
       await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
       await expect(host.locator(".local-room-share")).toHaveCount(0);
+      await host.getByRole("radio", { name: /Escuta coletiva/ }).click();
       await host
         .getByRole("searchbox", { name: "Buscar palavras em inglês ou português" })
         .fill("bus");
@@ -366,7 +392,7 @@ for (const activity of ["listening", "bingo"] as const) {
           buffer: silentWav(),
         });
         await host.getByRole("button", { name: "Guardar áudio" }).click();
-        await expect(host.getByText("Áudio preparado ✓")).toBeVisible();
+        await expect(host.getByText("Áudio preparado", { exact: true })).toBeVisible();
         await host
           .locator(".local-room-manual")
           .screenshot({ path: testInfo.outputPath("manual-recording.png") });
@@ -381,18 +407,19 @@ for (const activity of ["listening", "bingo"] as const) {
           if (index > 0) await host.getByRole("button", { name: "Adicionar fala" }).click();
           await host.getByLabel(`Palavra em inglês da fala ${index + 1}`).fill(pair[0]!);
           await host.getByLabel(`Tradução da fala ${index + 1}`, { exact: true }).fill(pair[1]!);
-        }
-        for (const card of (await host.locator(".local-room-recording").all()).slice(1)) {
-          await card.locator('input[type="file"]').setInputFiles({
-            name: "fala.wav",
-            mimeType: "audio/wav",
-            buffer: silentWav(),
-          });
-          await card.getByRole("button", { name: "Guardar áudio" }).click();
-          await expect(card.getByText("Áudio preparado ✓")).toBeVisible();
+          if (index > 0) {
+            const card = host.locator(".local-room-recording").nth(index);
+            await card.locator('input[type="file"]').setInputFiles({
+              name: "fala.wav",
+              mimeType: "audio/wav",
+              buffer: silentWav(),
+            });
+            await card.getByRole("button", { name: "Guardar áudio" }).click();
+            await expect(card.getByText("Áudio preparado", { exact: true })).toBeVisible();
+          }
         }
         await host.getByRole("button", { name: "Aplicar palavras", exact: true }).click();
-        await expect(host.getByText("5 falas adicionadas à rodada ✓")).toBeVisible();
+        await expect(host.getByText("5 falas adicionadas à rodada", { exact: true })).toBeVisible();
       }
       await host.getByRole("button", { name: "Criar sala", exact: true }).click();
       await expect(host.locator(".local-room-share")).toBeVisible();

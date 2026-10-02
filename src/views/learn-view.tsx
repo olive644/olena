@@ -1,4 +1,5 @@
-import { Check, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import { useCallback, useEffect, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
 import { NavigationIcon } from "../components/navigation-icon";
@@ -306,7 +307,7 @@ function ReviewSession({
   if (!card)
     return (
       <div className="study-finished">
-        <Check size={22} />
+        <PaperCheckIcon size={22} />
         <h3>Revisão em dia</h3>
         <p>Nenhum cartão pendente para esta matéria.</p>
       </div>
@@ -484,7 +485,7 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
       </div>
       {won && (
         <div className="bingo-success" role="status">
-          <Check size={18} /> Bingo! Você completou uma sequência.
+          <PaperCheckIcon size={18} /> Bingo! Você completou uma sequência.
         </div>
       )}
       <div className="bingo-grid" role="group" aria-label="Cartela de bingo">
@@ -498,7 +499,7 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
             }
             key={cell.id}
           >
-            <Check size={16} />
+            <PaperCheckIcon size={16} />
             <span>{cell.label}</span>
           </button>
         ))}

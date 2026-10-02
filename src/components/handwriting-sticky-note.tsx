@@ -1,4 +1,5 @@
 import { reviewPortugueseText } from "../domain/text-review";
+import { PaperCheckIcon } from "./paper-check-icon";
 import type { HandwritingSticky } from "../domain/handwriting";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import {
@@ -306,7 +307,7 @@ export function HandwritingStickyNote({
                   onUpdateChecklistItem(item.id, { done: !item.done });
                 }}
               >
-                {item.done ? "✓" : ""}
+                {item.done ? <PaperCheckIcon /> : null}
               </button>
               <input
                 aria-label="Item do checklist"

@@ -1,0 +1,167 @@
+/* Shared cut-paper selection mark, including handwriting preferences. */
+:root body input[type="checkbox"] {
+  appearance: none;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 7px 4px 6px;
+  background: var(--surface);
+  cursor: pointer;
+  vertical-align: middle;
+}
+:root body input[type="checkbox"]::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: url("/room-icons/check.svg") center / contain no-repeat;
+  clip-path: none;
+  transform: scale(0);
+}
+:root body input[type="checkbox"]:checked {
+  background: #facc15;
+  border-color: #b99100;
+  box-shadow: 0 2px 0 #a98200;
+}
+:root body input[type="checkbox"]:checked::after {
+  transform: scale(1);
+}
+:root body input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 4px;
+}
+:root body input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.paper-check-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.local-room-ready-words__check {
+  color: #292432;
+}
+.local-room-ready-words__results button[aria-checked="true"] .local-room-ready-words__check {
+  border-color: #b99100;
+  background: #facc15;
+  box-shadow: 0 2px 0 #a98200;
+  color: #292432;
+}
+.local-room-activity {
+  overflow: hidden;
+}
+.local-room-activity > :not(.local-room-activity__art):not(.local-room-activity__badge) {
+  position: relative;
+  z-index: 1;
+}
+.local-room-activity__badge {
+  z-index: 2;
+}
+.local-room-activity strong {
+  max-width: 55%;
+}
+.local-room-activity small {
+  max-width: 55%;
+}
+.local-room-activity[aria-checked="true"] small {
+  color: #fff9ef;
+}
+.local-room-activity::after {
+  display: none;
+}
+.local-room-activity__art {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 42%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%, 6% 48%);
+  opacity: 0;
+  transform: translateX(12px) rotate(4deg);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  pointer-events: none;
+}
+.local-room-activity:hover .local-room-activity__art,
+.local-room-activity:focus-visible .local-room-activity__art {
+  opacity: 0.3;
+  transform: translateX(0);
+}
+.local-room-activity[aria-checked="true"] .local-room-activity__art {
+  opacity: 1;
+  transform: translateX(0);
+}
+.local-room-step-slider input[type="range"] {
+  appearance: none;
+  width: 100%;
+  min-height: 44px;
+  background: transparent;
+  touch-action: pan-y;
+}
+.local-room-step-slider input::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 2px;
+  background: #7c3aed;
+  box-shadow: 0 3px 0 #51259b;
+}
+.local-room-step-slider input::-moz-range-track {
+  height: 8px;
+  border-radius: 2px;
+  background: #7c3aed;
+  box-shadow: 0 3px 0 #51259b;
+}
+.local-room-step-slider input::-webkit-slider-thumb {
+  appearance: none;
+  width: 26px;
+  height: 28px;
+  margin-top: -10px;
+  border: 0;
+  border-radius: 0;
+  background: #facc15;
+  clip-path: polygon(20% 0, 80% 0, 100% 25%, 88% 88%, 50% 100%, 6% 85%, 0 20%);
+  box-shadow:
+    inset -6px -5px 0 #d9aa08,
+    inset 5px 4px 0 #ffe88d;
+}
+.local-room-step-slider input::-moz-range-thumb {
+  width: 26px;
+  height: 28px;
+  border: 0;
+  border-radius: 0;
+  background: #facc15;
+  clip-path: polygon(20% 0, 80% 0, 100% 25%, 88% 88%, 50% 100%, 6% 85%, 0 20%);
+  box-shadow:
+    inset -6px -5px 0 #d9aa08,
+    inset 5px 4px 0 #ffe88d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .local-room-activity__art {
+    transition: none;
+    transform: none;
+  }
+}
+@media (max-width: 600px) {
+  .local-room-activities {
+    grid-template-columns: 1fr;
+  }
+  .local-room-activity {
+    min-height: 164px;
+  }
+}
+@media (forced-colors: active) {
+  :root body input[type="checkbox"] {
+    appearance: auto;
+  }
+  :root body input[type="checkbox"]::after {
+    display: none;
+  }
+  .local-room-step-slider input[type="range"] {
+    appearance: auto;
+  }
+}

@@ -1,4 +1,5 @@
-import { Check, Gauge, Headphones, Play, RotateCcw, Square, Volume2, X } from "lucide-react";
+import { Gauge, Headphones, Play, RotateCcw, Square, Volume2, X } from "lucide-react";
+import { PaperCheckIcon } from "./paper-check-icon";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import type { Flashcard } from "../domain/workspace";
 import {
@@ -369,7 +370,7 @@ export function ListeningQuiz({
           aria-live="polite"
         >
           <span className="listening-result-icon">
-            {wasCorrect ? <Check size={30} /> : <X size={30} />}
+            {wasCorrect ? <PaperCheckIcon size={30} /> : <X size={30} />}
           </span>
           <small>{wasCorrect ? "Resposta correta" : "Ainda não"}</small>
           {!wasCorrect && (
