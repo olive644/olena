@@ -34,6 +34,12 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // The compact stroke storage format (read path in the initial workspace loader) adds 1.6 KiB
 // (276.3 KiB measured); the ceiling moves to 278 KiB.
 const MAX_INITIAL_JS_BYTES = 278 * 1024;
+// Teto absoluto, separado do orçamento acima: o orçamento normal sobe a cada funcionalidade,
+// com uma frase de justificativa por cima, e isso é esperado. Mas nada nesse processo avisa
+// se a soma dessas subidas pequenas virar um problema grande sem ninguém perceber. Este teto
+// não deveria precisar subir no dia a dia; se um PR legítimo precisar passar dele, é hora de
+// uma conversa consciente sobre code-splitting ou lazy-loading, não de só editar o número.
+const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 400 KiB: App Check oficial adiciona ~44 KiB de chunks carregados somente
 // quando a proteção está configurada e a sala faz uma requisição. Bingo,
 // presença, material próprio e o editor manual completam o crescimento. O
@@ -151,9 +157,29 @@ const MAX_INITIAL_JS_BYTES = 278 * 1024;
 // on cross-device sync) adds about 4 KiB more: 926.3 KiB measured on Windows. No new
 // dependency.
 const MAX_TOTAL_JS_BYTES = 930 * 1024;
+// Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
+// justificadas comentário por comentário não deveria crescer sem limite, sozinha.
+const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
 const MAX_PDF_JS_BYTES = 1800 * 1024;
 const MAX_TTS_WORKER_BYTES = 2.25 * 1024 * 1024;
 const MAX_TTS_WASM_BYTES = 22 * 1024 * 1024;
+// Checagem da configuração, não do build: garante que ninguém suba o orçamento normal além
+// do teto absoluto sem antes subir o teto conscientemente (uma mudança própria, não um bump
+// de rotina), o que é exatamente o atrito que este teto existe para impor.
+if (MAX_INITIAL_JS_BYTES > HARD_CEILING_INITIAL_JS_BYTES) {
+  throw new Error(
+    `O orçamento da entrada inicial (${MAX_INITIAL_JS_BYTES / 1024} KiB) passou do teto absoluto ` +
+      `de ${HARD_CEILING_INITIAL_JS_BYTES / 1024} KiB. Isso não é um bump de rotina: revise se dá ` +
+      `para carregar menos coisa de início (code-splitting, lazy-loading) antes de subir o teto.`,
+  );
+}
+if (MAX_TOTAL_JS_BYTES > HARD_CEILING_TOTAL_JS_BYTES) {
+  throw new Error(
+    `O orçamento total da aplicação (${MAX_TOTAL_JS_BYTES / 1024} KiB) passou do teto absoluto ` +
+      `de ${HARD_CEILING_TOTAL_JS_BYTES / 1024} KiB. Isso não é um bump de rotina: revise se dá ` +
+      `para carregar menos coisa (code-splitting, lazy-loading) antes de subir o teto.`,
+  );
+}
 const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", distDirectory), "utf8"));
 const entry = Object.values(manifest).find((item) => item.isEntry === true);
 if (!entry?.file) throw new Error("Entrada principal ausente do manifesto do build.");
