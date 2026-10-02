@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Artes alinhadas ao onboarding (2026-10-01)
+
+- As quatro cenas foram reconstruídas usando diretamente as artes do onboarding, com corpo compacto, facetas limpas e cenários simplificados.
+- Escuta relaxada, flashcards junto ao quadro, quiz em movimento e bingo no banquinho substituem a pose frontal repetida. A revisão visual conferiu os quatro membros e a cauda, removendo o terceiro braço e o pé extra na mesa.
+- Apenas imagens e documentação mudam. Caminhos, interação, regras de áudio e disponibilidade dos minigames permanecem iguais.
+
 ## Escolha de minigame e áudio do criador (2026-10-01)
 
 - A entrada no Modo Sala apresenta apenas os quatro minigames, sem seleção. Configuração e Criar sala aparecem após escolher uma atividade disponível.

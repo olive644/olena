@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Artes de public/room-art usam referências diretas do onboarding 1, 2 e 4.
+Preservar corpo compacto e facetas limpas, sem textura fibrosa carregada.
+As quatro poses são distintas; conferir membros e cauda ao gerar substituições.
+Prompts e ações estão documentados em docs/ROOM_ART.md.
+
 Modo Sala começa sem minigame selecionado. A seleção revela a configuração e a
 criação. Banco mantém 100 palavras com aplicação imediata, sem importação de lista.
 Uma nova fala só é adicionada após completar palavra, tradução e arquivo de áudio
