@@ -1,6 +1,6 @@
-import { createHash } from "node:crypto";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { KvStore } from "./kv-store.js";
+import { checkRateLimit } from "./rate-limit.js";
 
 const keys = createRemoteJWKSet(new URL("https://firebaseappcheck.googleapis.com/v1/jwks"));
 export function createRoomGuard(
@@ -89,29 +89,11 @@ export function createRoomGuard(
           : action === "join" || action === "view-read"
             ? 90
             : 600;
-    const bucket = Math.floor(Date.now() / 60000);
-    const key = `room-limits/${createHash("sha256").update(`${address}:${action}`).digest("hex")}`;
-    for (let attempt = 0; attempt < 40; attempt++) {
-      const entry = await store.readVersion!(key);
-      const saved = entry.value
-        ? (JSON.parse(entry.value) as { bucket: number; count: number })
-        : undefined;
-      const count = saved?.bucket === bucket ? saved.count : 0;
-      if (count >= limit) {
-        log("rate_limited", 429);
-        return reject(429, "Muitas tentativas. Aguarde um minuto e tente novamente.");
-      }
-      if (
-        await store.compareAndSet!(
-          key,
-          JSON.stringify({ bucket, count: count + 1 }),
-          120,
-          entry.version,
-        )
-      )
-        return undefined;
+    const allowed = await checkRateLimit(store, "room-limits", `${address}:${action}`, limit, 60);
+    if (!allowed) {
+      log("rate_limited", 429);
+      return reject(429, "Muitas tentativas. Aguarde um minuto e tente novamente.");
     }
-    log("rate_limit_contention", 429);
-    return reject(429, "Muitas tentativas simultâneas. Aguarde um minuto.");
+    return undefined;
   };
 }

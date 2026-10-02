@@ -1548,3 +1548,10 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - O stream só avisa quando algo muda de fato no lado de fora: uma mudança local que falhou em subir por falta de rede não gera nenhum evento novo até a rede voltar. Por isso, um listener do evento `online` do navegador tenta de novo nesse momento, no lugar do que antes era coberto pelo próprio ciclo do polling.
 - O envio de mudanças locais (debounce de 350 ms após qualquer edição, e o `PUT` em si) não mudou; só a forma de **receber** mudanças de outros dispositivos deixou de ser polling.
 - Testes: `use-cloud-sync.test.tsx` (uma mudança publicada no stream chega sem esperar nenhum polling, o stream é refeito com o token novo quando o login renova, e uma mudança que falhou por falta de rede sobe de novo quando o navegador avisa que a conexão voltou).
+
+## Unificação dos dois sistemas de rate limit (2026-10-01)
+
+- `src/backend/room-guard.ts` tinha sua própria repetição da mesma lógica de limite por janela fixa (bucket por minuto, `compareAndSet` com até 40 tentativas) que já existia em `src/backend/rate-limit.ts` (`checkRateLimit`, usada por `speech.ts` e `google-calendar.ts`). Dois sistemas paralelos fazendo a mesma conta é dívida técnica: um endpoint novo podia esquecer de aplicar um dos dois sem ninguém notar.
+- `room-guard.ts` agora chama `checkRateLimit(store, "room-limits", `${endereço}:${ação}`, limite, 60)` em vez de repetir o laço de `compareAndSet`. A chave gerada (`room-limits/sha256(endereço:ação)`), a janela de 60s e o TTL de 120s continuam exatamente os mesmos de antes.
+- Única diferença observável: o evento de observabilidade que distinguia "limite atingido" (`rate_limited`) de "contenção depois de 40 tentativas" (`rate_limit_contention`) passou a registrar os dois casos como `rate_limited`, já que o resultado para quem usa a sala é o mesmo (`429`) nos dois casos, e nenhum teste dependia dessa distinção.
+- Testes: `room-guard.test.ts` continua cobrindo o limite atômico e independente por endereço, agora através do caminho compartilhado.
