@@ -3,9 +3,17 @@
 Sala: seleção de palavras é individual e imediata, sem Selecionar exibidas.
 PaperActionIcon plus mantém o desenho da Agenda; alfabeto monocromático usa
 variáveis de cor do Foco. Modos de resposta são botões ilustrados com aria-pressed.
-Histórico semanal do Pomodoro persiste localmente e sincroniza; não confundir
-com ciclo em andamento, que é estado da view. A investigação encontrou atraso
-do Pomodoro sob suspensão de callbacks, reproduzido em focus-persistence.ui.test.tsx.
+Histórico semanal do Pomodoro persiste localmente e sincroniza. Sessão em andamento
+usa olena.focus-session.v1 somente no dispositivo e retoma pausada depois de 24 horas.
+Pomodoro calcula prazo com Date.now, recuperando callbacks suspensos e transições.
+Não publicar eventos síncronos de armazenamento dentro de atualizadores de estado React.
+
+No lobby em equipes, API action=team permite ao participante mudar só a si mesmo,
+ou ao anfitrião mover qualquer participante ativo. Credenciais são verificadas no servidor.
+Não reembaralhar equipes ao iniciar. RoomTeamBoard oferece puxador de arraste com Pointer
+Events e botão Mudar de lado para teclado/toque. Placar aparece somente após o lobby.
+Modalidades coletivas recolhe a grade com inert e transição; palavras removidas deixam
+uma cópia visual desabilitada por 220 ms, enquanto a seleção funcional muda imediatamente.
 
 Rotas SPA precisam de rewrite na Vercel além do History API. /sala tem regra exata
 para index.html, coberta por room-hosting-route.test.ts. Validar HTTP em produção

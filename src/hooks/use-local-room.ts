@@ -558,6 +558,25 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
+  async function assignTeam(participantId: string, team: "Roxo" | "Amarelo") {
+    try {
+      const payload = await requestRoom<{ state: PublicLocalRoomState }>("team", {
+        code: codeRef.current,
+        participantId,
+        team,
+        ...(role === "host"
+          ? { hostToken: hostTokenRef.current }
+          : { participantToken: participantTokenRef.current }),
+      });
+      setState(payload.state);
+      setError("");
+      return true;
+    } catch (caught) {
+      setError(roomErrorMessage(caught, "Não foi possível mudar de equipe."));
+      return false;
+    }
+  }
+
   async function startRound() {
     try {
       const payload = await requestRoom<{ state: PublicLocalRoomState }>("start", {
@@ -686,6 +705,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     createRoom,
     joinRoom,
     updateSettings,
+    assignTeam,
     startRound,
     nextQuestion,
     endRoom,

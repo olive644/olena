@@ -1,4 +1,5 @@
 import { Volume2 } from "lucide-react";
+import { RoomTeamBoard } from "./room-team-board";
 import {
   useEffect,
   useRef,
@@ -274,7 +275,29 @@ export function LocalRoom({
   const preparing = connection.role === "choose" && !connection.isRestoring;
   const [draftSettings, setDraftSettings] = useState(DEFAULT_SETTINGS);
   const [selectedActivity, setSelectedActivity] = useState<"listening" | "bingo" | null>(null);
+  const [activitiesExpanded, setActivitiesExpanded] = useState(true);
+  const modalitiesButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (selectedActivity) modalitiesButton.current?.focus();
+  }, [selectedActivity]);
   const [readyDraftIds, setReadyDraftIds] = useState<string[]>([]);
+  const [removingReadyIds, setRemovingReadyIds] = useState<string[]>([]);
+  const removalTimers = useRef<Set<number>>(new Set());
+  useEffect(() => {
+    const timers = removalTimers.current;
+    return () => {
+      for (const timer of timers) window.clearTimeout(timer);
+    };
+  }, []);
+  function removeReadyWords(ids: string[]) {
+    setRemovingReadyIds((current) => [...new Set([...current, ...ids])]);
+    setReadyDraftIds((current) => current.filter((id) => !ids.includes(id)));
+    const timer = window.setTimeout(() => {
+      setRemovingReadyIds((current) => current.filter((id) => !ids.includes(id)));
+      removalTimers.current.delete(timer);
+    }, 220);
+    removalTimers.current.add(timer);
+  }
   const [draftDeck, setDraftDeck] = useState<ListeningCard[]>([]);
   const [creating, setCreating] = useState(false);
   const [creationError, setCreationError] = useState("");
@@ -598,8 +621,14 @@ export function LocalRoom({
   }, []);
 
   async function selectActivity(activity: "listening" | "bingo") {
-    if (activityRequestRef.current || (selectedActivity === activity && preparing)) return;
+    if (activityRequestRef.current) return;
+    if (selectedActivity === activity && preparing) {
+      setActivitiesExpanded(false);
+      modalitiesButton.current?.focus();
+      return;
+    }
     setSelectedActivity(activity);
+    setActivitiesExpanded(false);
     activityRequestRef.current = true;
     setPendingActivity(activity);
     try {
@@ -891,7 +920,7 @@ export function LocalRoom({
           (room.connectionStatus === "reconnecting" || room.connectionStatus === "offline") && (
             <HelenaLoading compact label="Reconectando sala…" />
           )}
-        {state.settings.teams && (
+        {state.settings.teams && state.phase !== "lobby" && (
           <p aria-label="Placar por equipe">
             {teamScores.map((t) => `${t.team}: ${t.score} XP`).join(" · ")}
           </p>
@@ -906,33 +935,69 @@ export function LocalRoom({
                 <div className="local-room-lobby__main">
                   <ShareRoom code={state.code} />
                   <div className="local-room-lobby__invite">
-                    <section
-                      className="local-room-participants"
-                      aria-labelledby="participants-title"
-                    >
-                      <div className="local-room-section-heading">
-                        <h3 id="participants-title">Participantes</h3>
-                        <span>
-                          {participantCount}/{MAX_ROOM_PARTICIPANTS}
-                        </span>
-                      </div>
-                      {participantCount === 0 ? (
-                        <div className="local-room-participants__empty">
-                          <strong>Aguardando participantes…</strong>
-                          <p>Compartilhe o código {state.code}. A rodada começa com uma pessoa.</p>
+                    {!state.settings.teams && (
+                      <section
+                        className="local-room-participants"
+                        aria-labelledby="participants-title"
+                      >
+                        <div className="local-room-section-heading">
+                          <h3 id="participants-title">Participantes</h3>
+                          <span>
+                            {participantCount}/{MAX_ROOM_PARTICIPANTS}
+                          </span>
                         </div>
-                      ) : (
-                        <LobbyParticipants participants={state.participants} />
-                      )}
-                    </section>
+                        {participantCount === 0 ? (
+                          <div className="local-room-participants__empty">
+                            <strong>Aguardando participantes…</strong>
+                            <p>
+                              Compartilhe o código {state.code}. A rodada começa com uma pessoa.
+                            </p>
+                          </div>
+                        ) : (
+                          !state.settings.teams && (
+                            <LobbyParticipants participants={state.participants} />
+                          )
+                        )}
+                      </section>
+                    )}
                   </div>
+                  {state.settings.teams && (
+                    <RoomTeamBoard
+                      participants={state.participants}
+                      isHost
+                      participantId=""
+                      onAssign={room.assignTeam}
+                    />
+                  )}
                 </div>
               )}
 
               {preparing && (
                 <div className="local-room-settings" inert={creating}>
+                  {selectedActivity && (
+                    <button
+                      type="button"
+                      className="secondary-button local-room-modalities"
+                      ref={modalitiesButton}
+                      aria-expanded={activitiesExpanded}
+                      aria-controls="room-modalities"
+                      onClick={() => setActivitiesExpanded((open) => !open)}
+                    >
+                      <img src="/room-icons/modalities.svg" alt="" width="36" height="36" />
+                      Modalidades coletivas
+                      <span>
+                        {
+                          ROOM_ACTIVITY_OPTIONS.find(
+                            (activity) => activity.key === selectedActivity,
+                          )?.title
+                        }
+                      </span>
+                    </button>
+                  )}
                   <div
-                    className="local-room-activities"
+                    id="room-modalities"
+                    className={`local-room-activities${!activitiesExpanded ? " local-room-activities--collapsed" : ""}`}
+                    inert={!activitiesExpanded}
                     role="radiogroup"
                     aria-label="Atividades da sala"
                   >
@@ -1057,23 +1122,37 @@ export function LocalRoom({
                                   aria-label="Buscar palavras em inglês ou português"
                                 />
                               </label>
-                              {readyDraftIds.length > 0 && (
+                              {(readyDraftIds.length > 0 || removingReadyIds.length > 0) && (
                                 <div
                                   className="local-room-ready-words__selected"
                                   aria-label="Palavras selecionadas"
                                 >
-                                  {READY_LISTENING_DECK.filter((card) =>
-                                    readySelected.has(card.id),
+                                  {READY_LISTENING_DECK.filter(
+                                    (card) =>
+                                      readySelected.has(card.id) ||
+                                      removingReadyIds.includes(card.id),
                                   ).map((card) => (
                                     <button
                                       type="button"
                                       key={card.id}
-                                      disabled={readyApplying}
-                                      onClick={() =>
-                                        setReadyDraftIds((ids) =>
-                                          ids.filter((id) => id !== card.id),
-                                        )
+                                      className={
+                                        removingReadyIds.includes(card.id) &&
+                                        !readySelected.has(card.id)
+                                          ? "is-removing"
+                                          : ""
                                       }
+                                      aria-hidden={
+                                        removingReadyIds.includes(card.id) &&
+                                        !readySelected.has(card.id)
+                                          ? true
+                                          : undefined
+                                      }
+                                      disabled={
+                                        readyApplying ||
+                                        (removingReadyIds.includes(card.id) &&
+                                          !readySelected.has(card.id))
+                                      }
+                                      onClick={() => removeReadyWords([card.id])}
                                       aria-label={`Remover ${card.front}`}
                                     >
                                       <PaperEnglishWord value={card.front} />
@@ -1088,7 +1167,7 @@ export function LocalRoom({
                                   <button
                                     type="button"
                                     disabled={readyApplying}
-                                    onClick={() => setReadyDraftIds([])}
+                                    onClick={() => removeReadyWords(readyDraftIds)}
                                   >
                                     Limpar
                                   </button>
@@ -1103,14 +1182,18 @@ export function LocalRoom({
                                     type="button"
                                     role="checkbox"
                                     aria-checked={readySelected.has(card.id)}
+                                    className={
+                                      removingReadyIds.includes(card.id) &&
+                                      !readySelected.has(card.id)
+                                        ? "is-removing"
+                                        : ""
+                                    }
                                     key={card.id}
                                     disabled={readyApplying}
                                     onClick={() =>
-                                      setReadyDraftIds((ids) =>
-                                        ids.includes(card.id)
-                                          ? ids.filter((id) => id !== card.id)
-                                          : [...ids, card.id],
-                                      )
+                                      readySelected.has(card.id)
+                                        ? removeReadyWords([card.id])
+                                        : setReadyDraftIds((ids) => [...ids, card.id])
                                     }
                                   >
                                     <span
@@ -1416,11 +1499,11 @@ export function LocalRoom({
                           >
                             <svg viewBox="0 0 48 48" aria-hidden="true">
                               <path
-                                fill={teams ? "#7c3aed" : "#087e8b"}
+                                fill={teams ? "#27834A" : "#FACC15"}
                                 d="M18 4h12l5 8-5 10H18l-5-10ZM12 26h24l6 17H6Z"
                               />
                               <path
-                                fill={teams ? "#facc15" : "#70d7d0"}
+                                fill={teams ? "#83CA8A" : "#FFE88D"}
                                 d={
                                   teams
                                     ? "M5 10h8l3 6-3 7H5l-3-7ZM2 28h12l4 15H0Z M35 10h8l3 6-3 7h-8l-3-7ZM34 28h12l2 15H30Z"
@@ -1598,10 +1681,18 @@ export function LocalRoom({
               )}
             </div>
           ) : (
-            <div className="local-room-waiting" role="status">
+            <div className="local-room-waiting">
               <PaperEditorIcon name="team" />
               <h3>Aguardando o início</h3>
               <p>O organizador controla esta sala. Código: {state.code}</p>
+              {state.settings.teams && (
+                <RoomTeamBoard
+                  participants={state.participants}
+                  isHost={false}
+                  participantId={room.participantId}
+                  onAssign={room.assignTeam}
+                />
+              )}
               {state.settings.activity === "bingo" && (
                 <ListeningOnlineNotice
                   choice={online.choice}

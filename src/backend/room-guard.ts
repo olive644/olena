@@ -26,6 +26,7 @@ export function createRoomGuard(
       "heartbeat",
       "leave",
       "settings",
+      "team",
       "start",
       "answer",
       "next",

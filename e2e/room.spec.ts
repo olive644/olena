@@ -70,8 +70,11 @@ for (const activity of ["listening", "bingo"] as const) {
       await expect(
         preparation.locator('.local-room-activity[aria-checked="true"] .local-room-activity__art'),
       ).toHaveCSS("opacity", "1");
+      await expect(
+        preparation.getByRole("button", { name: /Modalidades coletivas/ }),
+      ).toHaveAttribute("aria-expanded", "false");
       await preparation
-        .locator(".local-room-activities")
+        .locator(".local-room-modalities")
         .screenshot({ path: testInfo.outputPath("minigames-selected.png") });
       const words = preparation.locator(".local-room-ready-words__results button");
       await expect(preparation.getByRole("searchbox")).toHaveCount(0);
@@ -464,6 +467,7 @@ for (const activity of ["listening", "bingo"] as const) {
         });
       }
       const selectedActivity = host.locator('.local-room-activity[aria-checked="true"]');
+      await host.getByRole("button", { name: /Modalidades coletivas/ }).click();
       await selectedActivity.hover();
       await expect(selectedActivity).toHaveCSS("background-color", "rgb(116, 51, 224)");
       await expect(selectedActivity).toHaveCSS("color", "rgb(255, 249, 239)");
