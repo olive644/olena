@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 130" preserveAspectRatio="none" aria-hidden="true">
+  <defs><pattern id="stripes" width="260" height="20" patternUnits="userSpaceOnUse"><path fill="#BE3341" d="M0 0h260v10H0Z"/><path fill="#FFF9EF" d="M0 10h260v10H0Z"/></pattern></defs>
+  <path fill="url(#stripes)" d="M0 0h260v130H0Z"/>
+  <path fill="#FFF9EF" opacity=".12" d="M260 90v40h-70Z"/>
+</svg>
