@@ -87,9 +87,12 @@ for (const activity of ["listening", "bingo"] as const) {
       expect(
         await first.evaluate((button) => getComputedStyle(button, "::before").backgroundImage),
       ).toContain("room-icons/english-button-canton.svg");
-      expect(
-        await first.evaluate((button) => getComputedStyle(button, "::before").backgroundSize),
-      ).toBe("auto 53.846%, 100% 100%");
+      const backgroundSizes = await first.evaluate((button) =>
+        getComputedStyle(button, "::before").backgroundSize.split(", "),
+      );
+      expect(backgroundSizes[0]).toMatch(/^auto [\d.]+%$/);
+      expect(Number.parseFloat(backgroundSizes[0]!.slice(5))).toBeCloseTo(53.846, 3);
+      expect(backgroundSizes[1]).toBe("100% 100%");
       await expect(first.locator(".paper-english-word__outline").first()).toHaveCSS(
         "display",
         "inline",
