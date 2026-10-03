@@ -1,0 +1,98 @@
+.room-team-board {
+  min-width: 0;
+  width: 100%;
+}
+.room-team-board > p {
+  color: var(--muted);
+}
+.room-team-board__sides {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.room-team-board__side {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line-strong);
+  border-top: 6px solid #7c3aed;
+  border-radius: 4px 18px 4px 12px;
+  background: var(--surface);
+  background-image: linear-gradient(135deg, var(--soft) 0 16px, transparent 16px);
+  box-shadow: 0 4px 0 var(--line-strong);
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+.room-team-board__side--yellow {
+  border-top-color: #facc15;
+}
+.room-team-board__side.is-target {
+  background: var(--soft);
+  transform: translateY(-3px);
+}
+.room-team-board__side h4 {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 12px;
+}
+.room-team-board__side ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+.room-team-board__side li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--soft);
+  border-radius: 3px 10px 3px 6px;
+}
+.room-team-board__side li.is-dragging {
+  opacity: 0.5;
+}
+.room-team-board__side li strong {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.room-team-board__side img {
+  border-radius: 50%;
+}
+.room-team-board__grip,
+.room-team-board__move {
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.room-team-board__grip {
+  min-width: 44px;
+  touch-action: none;
+  cursor: grab;
+  font-size: 24px;
+}
+.room-team-board__move {
+  width: 100%;
+  border-radius: 3px 8px 3px 6px;
+}
+.room-team-board__status {
+  min-height: 1.5em;
+}
+@media (max-width: 540px) {
+  .room-team-board__sides {
+    gap: 8px;
+  }
+  .room-team-board__side {
+    padding: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-team-board__side {
+    transition: none;
+  }
+}

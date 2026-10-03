@@ -10,6 +10,31 @@ describe("resumo da duração da sala", () => {
 });
 
 describe("chegada por link de convite", () => {
+  it("recolhe modalidades e anima remoção individual e limpeza", async () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    const modalities = screen.getByRole("button", { name: /Modalidades coletivas/ });
+    expect(modalities.getAttribute("aria-expanded")).toBe("false");
+    expect(document.getElementById("room-modalities")?.hasAttribute("inert")).toBe(true);
+    fireEvent.click(modalities);
+    expect(modalities.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Inglês" }));
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "school" } });
+    fireEvent.click(screen.getByRole("checkbox", { name: /school/ }));
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "book" } });
+    fireEvent.click(screen.getByRole("checkbox", { name: /book/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Remover school" }));
+    expect(document.querySelector(".local-room-ready-words__selected .is-removing")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Remover school" })).toBeNull();
+    await waitFor(() =>
+      expect(document.querySelector(".local-room-ready-words__selected .is-removing")).toBeNull(),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Limpar" }));
+    expect(document.querySelector(".local-room-ready-words__selected .is-removing")).toBeTruthy();
+    await waitFor(() =>
+      expect(document.querySelector(".local-room-ready-words__selected")).toBeNull(),
+    );
+  }, 15000);
   afterEach(() => {
     vi.restoreAllMocks();
   });

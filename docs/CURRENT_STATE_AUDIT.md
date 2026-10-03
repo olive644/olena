@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Equipes, modalidades e retomada do Foco (2026-10-03)
+
+- Seleção de modalidade recolhe as opções em Modalidades coletivas, com ícone de papel autoral e reabertura acessível. Remoção individual e limpeza das palavras mantêm o recorte por 220 ms para animar a saída, sem atrasar a atualização da seleção. Movimento reduzido desativa efeitos.
+- Seleções antes turquesa usam o amarelo oficial #FACC15. Em equipes usa papel verde com facetas claras, reaproveitando a paleta da flor de Foco; placar de XP só aparece depois do lobby.
+- Lobby em equipes oferece dois lados. Participantes escolhem seu próprio lado, anfitrião arrasta pelo puxador ou usa Mudar de lado. A API team valida credenciais e fase, publica via transporte existente e preserva equipes ao iniciar. Novas entradas recebem o lado com menos pessoas, sem impor equilíbrio obrigatório.
+- Resolvidas as pendências de Foco registradas em 2026-10-02: Pomodoro usa prazo real para recuperar callbacks suspensos, registra conclusões no horário correto e grava histórico fora do atualizador React.
+- Sessão ativa persiste localmente em olena.focus-session.v1 e retoma ao reabrir Foco ou recarregar. Após mais de 24 horas sem atualização retoma pausada. Essa sessão não sincroniza entre dispositivos; histórico semanal continua sincronizado. Trocar explicitamente de método ou reiniciar continua zerando o contador.
+- Cobertura inclui controle de acesso da API, preservação de equipes, escolha e arraste no navegador, saída animada, retomada e avanço real do relógio.
+
 ## Fundo das palavras na Escuta coletiva (2026-10-03)
 
 - Hover e foco por teclado mostram as cores sólidas da bandeira dos Estados Unidos em toda a superfície do botão. Faixas preenchem a largura, enquanto o campo azul usa altura proporcional e largura automática para preservar o formato das estrelas.

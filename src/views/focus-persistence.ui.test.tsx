@@ -7,6 +7,20 @@ import { FocusView } from "./focus-view";
 const streakKey = "noteoli.pomodoro-streak.v1";
 
 describe("persistência semanal e dígitos do Foco", () => {
+  it("retoma um Pomodoro em andamento após remontar sem perder o tempo real", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 9, 2, 12));
+    const props = { workspace: createInitialWorkspace(), dispatch: vi.fn() };
+    const view = render(<FocusView {...props} />);
+    fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Começar" }));
+    view.unmount();
+    vi.setSystemTime(new Date(2026, 9, 2, 12, 2));
+    render(<FocusView {...props} />);
+    act(() => vi.advanceTimersByTime(1000));
+    expect(screen.getByRole("heading", { name: "22:59" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Pausar" })).toBeTruthy();
+  });
   afterEach(() => vi.useRealTimers());
 
   it("preserva os dias após remontar e mostra somente a semana atual", () => {
@@ -20,7 +34,6 @@ describe("persistência semanal e dígitos do Foco", () => {
     expect(screen.getByRole("heading", { name: "25:00" })).toBeTruthy();
     view.unmount();
     render(<FocusView {...props} />);
-    fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
     expect(document.querySelectorAll(".streak-tomato.is-active")).toHaveLength(2);
     act(() => applySyncedStorage({ [streakKey]: JSON.stringify(["2026-10-02"]) }));
     expect(document.querySelectorAll(".streak-tomato.is-active")).toHaveLength(1);
@@ -39,7 +52,7 @@ describe("persistência semanal e dígitos do Foco", () => {
     expect(screen.getByRole("heading", { name: "00:00:00" })).toBeTruthy();
   });
 
-  it("documenta que Pomodoro não recupera um salto do relógio sem ticks", () => {
+  it("Pomodoro recupera um salto do relógio sem depender dos ticks", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 9, 2, 12));
     render(<FocusView workspace={createInitialWorkspace()} dispatch={vi.fn()} />);
@@ -47,7 +60,7 @@ describe("persistência semanal e dígitos do Foco", () => {
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     vi.setSystemTime(new Date(2026, 9, 2, 12, 1));
     act(() => vi.advanceTimersByTime(1000));
-    expect(screen.getByRole("heading", { name: "24:59" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "23:59" })).toBeTruthy();
   });
 
   it("não perde o histórico na segunda-feira, mas inicia uma nova semana visual", () => {
@@ -69,7 +82,8 @@ describe("persistência semanal e dígitos do Foco", () => {
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     const advanceSeconds = (seconds: number) => {
-      for (let tick = 0; tick < seconds; tick++) act(() => vi.advanceTimersByTime(1000));
+      vi.setSystemTime(Date.now() + seconds * 1000);
+      act(() => vi.advanceTimersByTime(250));
     };
     advanceSeconds(1500);
     expect(JSON.parse(localStorage.getItem(streakKey)!)).toEqual(["2026-10-02"]);
@@ -78,5 +92,5 @@ describe("persistência semanal e dígitos do Foco", () => {
     advanceSeconds(300);
     expect(dispatch).toHaveBeenCalledTimes(1);
     expect(JSON.parse(localStorage.getItem(streakKey)!)).toEqual(["2026-10-02"]);
-  }, 90000);
+  });
 });

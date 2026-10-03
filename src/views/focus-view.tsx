@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
@@ -252,15 +253,37 @@ function FocusPaperControlIcon({ paused }: { paused: boolean }) {
 
 export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const defaultSubject = workspace.subjects[0];
-  const [mode, setMode] = useState<TimerMode>("timer");
+  const [restored] = useState(() => {
+    const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), Date.now());
+    if (
+      session &&
+      !session.running &&
+      session.phase === "focus" &&
+      session.secondsRemaining === session.duration * 60
+    ) {
+      const duration = workspace.focusPreferences.pomodoroMinutes;
+      return { ...session, duration, secondsRemaining: duration * 60 };
+    }
+    return session;
+  });
+  const [mode, setMode] = useState<TimerMode>(restored?.mode ?? "timer");
   const [modeDirection, setModeDirection] = useState(1);
-  const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>("focus");
-  const [completedPomodoros, setCompletedPomodoros] = useState(0);
-  const [duration, setDuration] = useState<number>(workspace.focusPreferences.pomodoroMinutes);
-  const [secondsRemaining, setSecondsRemaining] = useState(duration * 60);
-  const [timerElapsedMilliseconds, setTimerElapsedMilliseconds] = useState(0);
-  const timerStartedAt = useRef<number | null>(null);
-  const [running, setRunning] = useState(false);
+  const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>(restored?.phase ?? "focus");
+  const [completedPomodoros, setCompletedPomodoros] = useState(restored?.completed ?? 0);
+  const [duration, setDuration] = useState<number>(
+    restored?.duration ?? workspace.focusPreferences.pomodoroMinutes,
+  );
+  const [secondsRemaining, setSecondsRemaining] = useState(
+    restored?.secondsRemaining ?? duration * 60,
+  );
+  const [timerElapsedMilliseconds, setTimerElapsedMilliseconds] = useState(() =>
+    restored?.running && restored.mode === "timer" && restored.timerStartedAt !== null
+      ? Date.now() - restored.timerStartedAt
+      : (restored?.elapsedMilliseconds ?? 0),
+  );
+  const timerStartedAt = useRef<number | null>(restored?.timerStartedAt ?? null);
+  const pomodoroDeadline = useRef<number | null>(restored?.pomodoroDeadline ?? null);
+  const [running, setRunning] = useState(restored?.running ?? false);
   const [pomodoroDays, setPomodoroDays] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem(POMODORO_STREAK_KEY) ?? "[]") as string[];
@@ -292,49 +315,83 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const pomodoroElapsedSeconds = duration * 60 - secondsRemaining;
   const elapsedSeconds =
     mode === "timer" ? Math.floor(timerElapsedMilliseconds / 1000) : pomodoroElapsedSeconds;
+  const persistedTimerSeconds = Math.floor(timerElapsedMilliseconds / 1000);
+  useEffect(() => {
+    const session: FocusSession = {
+      mode,
+      phase: pomodoroPhase,
+      completed: completedPomodoros,
+      duration,
+      secondsRemaining,
+      elapsedMilliseconds: persistedTimerSeconds * 1000,
+      running,
+      timerStartedAt: timerStartedAt.current,
+      pomodoroDeadline: pomodoroDeadline.current,
+      savedAt: Date.now(),
+    };
+    localStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
+  }, [
+    mode,
+    pomodoroPhase,
+    completedPomodoros,
+    duration,
+    secondsRemaining,
+    persistedTimerSeconds,
+    running,
+  ]);
 
   useEffect(() => {
     if (!running || mode !== "timer") return;
-    timerStartedAt.current ??= Date.now() - timerElapsedMilliseconds;
+    timerStartedAt.current ??= Date.now();
     const timer = window.setInterval(() => {
       setTimerElapsedMilliseconds(Date.now() - (timerStartedAt.current ?? Date.now()));
-    }, 10);
+    }, 250);
     return () => window.clearInterval(timer);
-  }, [mode, running, timerElapsedMilliseconds]);
+  }, [mode, running]);
 
   useEffect(() => {
     if (!running || mode !== "pomodoro") return;
-    const timer = window.setTimeout(() => {
-      if (secondsRemaining > 1) {
-        setSecondsRemaining(secondsRemaining - 1);
-        return;
+    pomodoroDeadline.current ??= Date.now() + secondsRemaining * 1000;
+    const timer = window.setInterval(() => {
+      const now = Date.now();
+      let deadline = pomodoroDeadline.current!;
+      let phase = pomodoroPhase;
+      let completed = completedPomodoros;
+      let minutes = duration;
+      const days: string[] = [];
+      while (now >= deadline) {
+        if (phase === "focus") {
+          dispatch({
+            type: "focus/recorded",
+            subjectId: defaultSubject?.id ?? "",
+            durationMinutes: minutes,
+            completedAt: new Date(deadline).toISOString(),
+          });
+          days.push(toDateKey(new Date(deadline)));
+        }
+        const next = nextPomodoroStep(
+          phase,
+          completed,
+          workspace.focusPreferences.longBreaks,
+          workspace.focusPreferences.pomodoroMinutes,
+        );
+        phase = next.phase;
+        completed = next.completed;
+        minutes = next.duration;
+        deadline += minutes * 60_000;
       }
-      if (pomodoroPhase === "focus") {
-        dispatch({
-          type: "focus/recorded",
-          subjectId: defaultSubject?.id ?? "",
-          durationMinutes: duration,
-          completedAt: new Date().toISOString(),
-        });
-        const today = toDateKey(new Date());
-        setPomodoroDays((current) => {
-          const nextDays = current.includes(today) ? current : [...current, today];
-          writeSyncedStorage(POMODORO_STREAK_KEY, JSON.stringify(nextDays));
-          return nextDays;
-        });
+      pomodoroDeadline.current = deadline;
+      setPomodoroPhase(phase);
+      setCompletedPomodoros(completed);
+      setDuration(minutes);
+      setSecondsRemaining(Math.ceil((deadline - now) / 1000));
+      if (days.length) {
+        const nextDays = [...new Set([...pomodoroDays, ...days])];
+        setPomodoroDays(nextDays);
+        writeSyncedStorage(POMODORO_STREAK_KEY, JSON.stringify(nextDays));
       }
-      const next = nextPomodoroStep(
-        pomodoroPhase,
-        completedPomodoros,
-        workspace.focusPreferences.longBreaks,
-        workspace.focusPreferences.pomodoroMinutes,
-      );
-      setPomodoroPhase(next.phase);
-      setCompletedPomodoros(next.completed);
-      setDuration(next.duration);
-      setSecondsRemaining(next.duration * 60);
-    }, 1000);
-    return () => window.clearTimeout(timer);
+    }, 250);
+    return () => window.clearInterval(timer);
   }, [
     completedPomodoros,
     defaultSubject?.id,
@@ -344,6 +401,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     pomodoroPhase,
     running,
     secondsRemaining,
+    pomodoroDays,
     workspace.focusPreferences.longBreaks,
     workspace.focusPreferences.pomodoroMinutes,
   ]);
@@ -355,6 +413,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     setDuration(minutes);
     setSecondsRemaining(minutes * 60);
     setRunning(false);
+    pomodoroDeadline.current = null;
   }
 
   function chooseMode(nextMode: TimerMode) {
@@ -374,6 +433,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
 
   function reset() {
     setRunning(false);
+    pomodoroDeadline.current = null;
     if (mode === "timer") {
       setTimerElapsedMilliseconds(0);
       timerStartedAt.current = null;
@@ -383,11 +443,18 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function toggleRunning() {
-    setRunning((current) => {
-      const next = !current;
-      timerStartedAt.current = next ? Date.now() - timerElapsedMilliseconds : null;
-      return next;
-    });
+    const next = !running;
+    if (!next && mode === "timer" && timerStartedAt.current !== null) {
+      setTimerElapsedMilliseconds(Date.now() - timerStartedAt.current);
+    }
+    timerStartedAt.current =
+      next && mode === "timer" ? Date.now() - timerElapsedMilliseconds : null;
+    if (mode === "pomodoro") {
+      if (!next && pomodoroDeadline.current !== null)
+        setSecondsRemaining(Math.max(0, Math.ceil((pomodoroDeadline.current - Date.now()) / 1000)));
+      pomodoroDeadline.current = next ? Date.now() + secondsRemaining * 1000 : null;
+    }
+    setRunning(next);
   }
 
   function finish() {

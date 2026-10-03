@@ -1,5 +1,8 @@
 import {
   addLocalParticipant,
+  assignRoomTeam,
+  ROOM_TEAMS,
+  type RoomTeam,
   advanceRoomQuestion,
   canAdvanceRoomQuestion,
   createLocalRoomCode,
@@ -287,7 +290,13 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
           lastSeenAt: now(),
           online: true,
           ...(state.settings.teams
-            ? { team: state.participants.length % 2 === 0 ? "Roxo" : "Amarelo" }
+            ? {
+                team:
+                  state.participants.filter((p) => p.team === "Roxo").length <=
+                  state.participants.filter((p) => p.team === "Amarelo").length
+                    ? "Roxo"
+                    : "Amarelo",
+              }
             : {}),
         },
         now(),
@@ -360,6 +369,38 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         streamUrl: dependencies.streamUrl(code),
         ...(role === "host" ? { sourceDeck: updated.sourceDeck ?? [] } : {}),
       });
+    }
+
+    if (action === "team" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const code = typeof body["code"] === "string" ? normalizeLocalRoomCode(body["code"]) : "";
+      const participantId = body["participantId"];
+      const team = body["team"];
+      if (
+        !isValidLocalRoomCode(code) ||
+        typeof participantId !== "string" ||
+        !ROOM_TEAMS.includes(team as RoomTeam)
+      )
+        return jsonResponse(400, { error: "Equipe ou participante inválido." });
+      const state = await loadRoom(dependencies.store, code);
+      if (!state) return jsonResponse(404, { error: "Sala não encontrada." });
+      const participant = state.participants.find((p) => p.id === participantId);
+      const hostAuthorized =
+        typeof body["hostToken"] === "string" && safeEqual(state.hostToken, body["hostToken"]);
+      const selfAuthorized =
+        participant &&
+        typeof body["participantToken"] === "string" &&
+        safeEqual(participant.token, body["participantToken"]);
+      if (!hostAuthorized && !selfAuthorized)
+        return jsonResponse(403, { error: "Não autorizado a mover esta pessoa." });
+      if (state.phase !== "lobby" || !state.settings.teams)
+        return jsonResponse(409, {
+          error: "As equipes só podem mudar antes de iniciar a atividade.",
+        });
+      if (!participant || participant.online === false)
+        return jsonResponse(404, { error: "Participante não está na sala." });
+      const updated = assignRoomTeam(state, participantId, team as RoomTeam, now());
+      return jsonResponse(200, { state: await saveRoom(updated) });
     }
 
     if (action === "settings" && request.method === "POST") {

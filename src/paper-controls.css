@@ -140,8 +140,8 @@
   flex-shrink: 0;
 }
 .app-shell .local-room-response-options button[aria-pressed="true"] {
-  border-color: #087e8b;
-  box-shadow: 0 3px 0 #087e8b;
+  border-color: #facc15;
+  box-shadow: 0 3px 0 #b99100;
 }
 .paper-english-word {
   --digit-face: #292432;
@@ -342,8 +342,8 @@
   margin-left: 0;
 }
 .local-room-ready-words__subject[aria-expanded="true"] {
-  border-color: #087e8b;
-  box-shadow: 0 3px 0 #087e8b;
+  border-color: #facc15;
+  box-shadow: 0 3px 0 #b99100;
 }
 .local-room-ready-words__disclosure {
   flex: 0 0 24px;
@@ -378,6 +378,55 @@
 .local-room-ready-words__selected button {
   animation: room-chip-arrive 240ms ease-out both;
 }
+.local-room-ready-words__selected button.is-removing {
+  animation: room-chip-leave 220ms ease-in both;
+  pointer-events: none;
+}
+.local-room-ready-words__results button.is-removing {
+  animation: room-word-released 220ms ease-out;
+}
+.local-room-modalities {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  animation: room-paper-unfold 240ms ease-out both;
+}
+.local-room-modalities span {
+  margin-left: auto;
+  font-size: 0.8rem;
+}
+.app-shell .local-room-source__option[aria-pressed="true"] {
+  border-color: #facc15;
+  box-shadow: 0 3px 0 #b99100;
+}
+.local-room-activities {
+  max-height: 750px;
+  opacity: 1;
+  overflow: hidden;
+  padding-bottom: 6px;
+  transition:
+    max-height 280ms ease,
+    opacity 180ms ease,
+    padding 280ms ease;
+}
+.local-room-activities--collapsed {
+  max-height: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes room-chip-leave {
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.85);
+  }
+}
+@keyframes room-word-released {
+  50% {
+    transform: scale(0.96);
+  }
+}
 @keyframes room-paper-unfold {
   from {
     opacity: 0;
@@ -411,6 +460,13 @@
     transition: none;
   }
   .local-room-ready-words__disclosure {
+    transition: none;
+  }
+  .local-room-modalities,
+  .local-room-ready-words__selected button.is-removing {
+    animation: none;
+  }
+  .local-room-activities {
     transition: none;
   }
 }

@@ -50,6 +50,75 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it("valida escolha própria, controle do anfitrião e bloqueio após começar", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    await handler(post("settings", { code, hostToken, settings: { teams: true } }));
+    const ana = (await (await handler(post("join", { code, displayName: "Ana" }))).json()) as {
+      participantId: string;
+      participantToken: string;
+    };
+    const bia = (await (await handler(post("join", { code, displayName: "Bia" }))).json()) as {
+      participantId: string;
+      participantToken: string;
+    };
+    expect(
+      (
+        await handler(
+          post("team", {
+            code,
+            participantId: bia.participantId,
+            participantToken: ana.participantToken,
+            team: "Roxo",
+          }),
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await handler(
+          post("team", {
+            code,
+            participantId: ana.participantId,
+            participantToken: ana.participantToken,
+            team: "Azul",
+          }),
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await handler(
+          post("team", {
+            code,
+            participantId: ana.participantId,
+            participantToken: ana.participantToken,
+            team: "Amarelo",
+          }),
+        )
+      ).status,
+    ).toBe(200);
+    const moved = await handler(
+      post("team", { code, participantId: bia.participantId, hostToken, team: "Roxo" }),
+    );
+    const movedPayload = (await moved.json()) as { state: PublicLocalRoomState };
+    expect(movedPayload.state.participants.map((p) => p.team)).toEqual(["Amarelo", "Roxo"]);
+    const started = (await (await handler(post("start", { code, hostToken }))).json()) as {
+      state: PublicLocalRoomState;
+    };
+    expect(started.state.participants.map((p) => p.team)).toEqual(["Amarelo", "Roxo"]);
+    expect(
+      (
+        await handler(
+          post("team", {
+            code,
+            participantId: ana.participantId,
+            participantToken: ana.participantToken,
+            team: "Roxo",
+          }),
+        )
+      ).status,
+    ).toBe(409);
+  });
   it("inicia uma rodada de palavras prontas sem gravação e ignora material antigo", async () => {
     const response = await handler(
       post("create", {

@@ -7,6 +7,8 @@ import {
 import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "./ready-listening-words.js";
 
 export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
+export const ROOM_TEAMS = ["Roxo", "Amarelo"] as const;
+export type RoomTeam = (typeof ROOM_TEAMS)[number];
 
 export type LocalRoomDifficulty = "mixed" | "easy" | "medium" | "hard";
 
@@ -236,7 +238,34 @@ export function updateRoomSettings(
   now: number,
 ): LocalRoomState {
   if (state.phase !== "lobby") return state;
-  return { ...state, settings: { ...state.settings, ...settings }, updatedAt: now };
+  return {
+    ...state,
+    settings: { ...state.settings, ...settings },
+    participants:
+      settings.teams === undefined || settings.teams === state.settings.teams
+        ? state.participants
+        : state.participants.map((participant, index) => ({
+            ...participant,
+            team: settings.teams ? (index % 2 === 0 ? "Roxo" : "Amarelo") : "",
+          })),
+    updatedAt: now,
+  };
+}
+
+export function assignRoomTeam(
+  state: LocalRoomState,
+  participantId: string,
+  team: RoomTeam,
+  now: number,
+): LocalRoomState {
+  if (state.phase !== "lobby" || !state.settings.teams || !ROOM_TEAMS.includes(team)) return state;
+  return {
+    ...state,
+    participants: state.participants.map((participant) =>
+      participant.id === participantId ? { ...participant, team } : participant,
+    ),
+    updatedAt: now,
+  };
 }
 
 export function localRoomPool(
@@ -297,7 +326,15 @@ export function startRoom(
     ),
     participants: state.participants.map((participant, index) => ({
       ...participant,
-      ...(state.settings.teams ? { team: index % 2 === 0 ? "Roxo" : "Amarelo" } : { team: "" }),
+      ...(state.settings.teams
+        ? {
+            team: ROOM_TEAMS.includes(participant.team as RoomTeam)
+              ? participant.team!
+              : index % 2 === 0
+                ? "Roxo"
+                : "Amarelo",
+          }
+        : { team: "" }),
       score: 0,
       bingoMarks: [],
       bingoCard: createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
