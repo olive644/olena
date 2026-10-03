@@ -9,6 +9,11 @@ import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "./ready-listening-
 export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
 export const ROOM_TEAMS = ["Roxo", "Amarelo"] as const;
 export type RoomTeam = (typeof ROOM_TEAMS)[number];
+export const ROOM_TEAM_LABELS: Record<RoomTeam, string> = {
+  Roxo: "Lado Lunar",
+  Amarelo: "Lado Solar",
+};
+export type RoomXpReward = { id: string; place: number; xp: number; completedAt: number };
 
 export type LocalRoomDifficulty = "mixed" | "easy" | "medium" | "hard";
 
@@ -37,6 +42,8 @@ export type LocalRoomParticipant = {
   displayName: string;
   avatarUrl?: string;
   score: number;
+  answersCount?: number;
+  reward?: RoomXpReward | undefined;
   token?: string;
   // UID da conta Google, quando a pessoa está logada (nunca exposto no estado público da
   // sala): usado só para impedir que a mesma conta entre duas vezes por dispositivos diferentes.
@@ -66,7 +73,7 @@ export type LocalRoomQuestion = { id: string; front: string };
 
 export type LocalRoomAnswerFeedback = {
   correct: boolean;
-  xpChange: number;
+  pointsChange: number;
   question?: { front: string; back: string };
 };
 
@@ -94,7 +101,8 @@ export type LocalRoomState = {
     string,
     {
       correct?: boolean;
-      xpChange?: number;
+      pointsChange?: number;
+      xpChange?: number; // Recibos antigos, apenas compatibilidade de transporte.
       question?: { front: string; back: string };
       participantId?: string;
       participantToken?: string;
@@ -102,6 +110,7 @@ export type LocalRoomState = {
   >;
   createRequestId?: string;
   generation?: string;
+  roundId?: string;
   sourceDeck?: ListeningCard[];
   recordingIds?: string[];
 };
@@ -158,8 +167,44 @@ export function formatRoomEstimatedDuration(
 // Quanto vale acertar, e quanto quem está na liderança perde ao errar. Dá
 // um motivo real pra quem está na frente continuar prestando atenção, em
 // vez de só acumular pontos sem risco.
-export const CORRECT_ANSWER_XP = 10;
-export const LEADER_WRONG_ANSWER_PENALTY_XP = 5;
+export const MAX_CORRECT_ANSWER_POINTS = 100;
+export const MIN_CORRECT_ANSWER_POINTS = 20;
+export const LEADER_WRONG_ANSWER_PENALTY_POINTS = 5;
+
+export function roomAnswerPoints(seconds: number, elapsedMs: number): number {
+  const ratio = Math.max(0, Math.min(1, elapsedMs / (seconds * 1000)));
+  return (
+    MIN_CORRECT_ANSWER_POINTS +
+    Math.round((MAX_CORRECT_ANSWER_POINTS - MIN_CORRECT_ANSWER_POINTS) * (1 - ratio))
+  );
+}
+
+export function roomPlacement(
+  participants: readonly LocalRoomParticipant[],
+  score: number,
+): number {
+  return 1 + participants.filter((p) => p.score > score).length;
+}
+
+export function roomPlacementXp(place: number): number {
+  return [100, 75, 50][place - 1] ?? Math.max(10, 40 - (place - 4) * 5);
+}
+
+function completeRoom(state: LocalRoomState, now: number): LocalRoomState {
+  const participants = state.participants.map((participant) => {
+    const place = roomPlacement(state.participants, participant.score);
+    return {
+      ...participant,
+      reward: {
+        id: `${state.code}:${state.generation}:${state.roundId}:${participant.id}`,
+        place,
+        xp: (participant.answersCount ?? 0) > 0 ? roomPlacementXp(place) : 0,
+        completedAt: now,
+      },
+    };
+  });
+  return { ...state, participants, phase: "results", updatedAt: now };
+}
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const ROOM_CODE_LENGTH = 5;
@@ -315,6 +360,7 @@ export function startRoom(
     ...state,
     phase: "playing",
     deck,
+    roundId: `${state.generation}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
     questionIndex: 0,
     questionStartedAt:
       dependencies.now + (state.settings.activity === "bingo" ? 0 : ROOM_START_COUNTDOWN_MS),
@@ -336,6 +382,8 @@ export function startRoom(
           }
         : { team: "" }),
       score: 0,
+      answersCount: 0,
+      reward: undefined,
       bingoMarks: [],
       bingoCard: createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
         (card) => card.id,
@@ -366,7 +414,7 @@ export function submitRoomAnswer(
     state.answeredParticipantIds.includes(dependencies.participantId) ||
     !state.participants.some((item) => item.id === dependencies.participantId)
   ) {
-    return { state, correct: false, xpChange: 0 };
+    return { state, correct: false, pointsChange: 0 };
   }
   const correct =
     state.settings.activity === "bingo"
@@ -381,12 +429,17 @@ export function submitRoomAnswer(
     state.settings.activity !== "bingo" &&
     !correct &&
     isLeading(state.participants, dependencies.participantId);
-  const xpChange = correct ? CORRECT_ANSWER_XP : wasLeading ? -LEADER_WRONG_ANSWER_PENALTY_XP : 0;
+  const pointsChange = correct
+    ? roomAnswerPoints(state.settings.roundSeconds, dependencies.now - state.questionStartedAt)
+    : wasLeading
+      ? -LEADER_WRONG_ANSWER_PENALTY_POINTS
+      : 0;
   const participants = state.participants.map((participant) =>
     participant.id === dependencies.participantId
       ? {
           ...participant,
-          score: Math.max(0, participant.score + xpChange),
+          score: Math.max(0, participant.score + pointsChange),
+          answersCount: (participant.answersCount ?? 0) + 1,
           ...(correct && state.settings.activity === "bingo"
             ? { bingoMarks: [...(participant.bingoMarks ?? []), card.id] }
             : {}),
@@ -410,14 +463,14 @@ export function submitRoomAnswer(
     );
   return {
     state: bingo
-      ? { ...answered, phase: "results" }
+      ? completeRoom(answered, dependencies.now)
       : state.settings.activity === "bingo" && allAnswered
         ? advanceRoomQuestion(answered, dependencies.now)
         : allAnswered
           ? { ...answered, feedbackUntil: dependencies.now + ROOM_FEEDBACK_MS }
           : answered,
     correct,
-    xpChange,
+    pointsChange,
     question: { front: card.front, back: card.back },
   };
 }
@@ -457,7 +510,7 @@ export function advanceRoomQuestion(state: LocalRoomState, now: number): LocalRo
   if (state.phase !== "playing") return state;
   const nextIndex = state.questionIndex + 1;
   if (nextIndex >= state.deck.length) {
-    return { ...state, phase: "results", updatedAt: now };
+    return completeRoom(state, now);
   }
   return {
     ...state,

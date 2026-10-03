@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+Salas usam pontos na partida, não XP. roomAnswerPoints usa o relógio do servidor
+para acertos entre 100 e 20. XP nasce somente em completeRoom: 100/75/50 no top 3,
+40 no quarto, decrescendo 5 até 10. Empates compartilham colocação. Ausentes sem
+respostas não recebem recompensa e encerramento antecipado não concede XP.
+O recibo inclui geração, roundId e participante, impedindo duplicação ao reabrir.
+room-xp grava recibos e saldo SOMENTE no dispositivo. Não chamar isso de carteira
+global nem incluir essa chave no sync. Próxima etapa: carteira autenticada no
+backend com reivindicação idempotente e saldo exibido no Perfil, sem confiar em
+XP enviado pelo cliente. A notificação atual informa falha de armazenamento.
+Lado Lunar/Solar são rótulos; IDs de transporte continuam Roxo/Amarelo.
+Um next antecipado retorna o estado inalterado sem erro, mantendo auth e fase.
+
 Sala: seleção de palavras é individual e imediata, sem Selecionar exibidas.
 PaperActionIcon plus mantém o desenho da Agenda; alfabeto monocromático usa
 variáveis de cor do Foco. Modos de resposta são botões ilustrados com aria-pressed.

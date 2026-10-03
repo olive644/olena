@@ -1,4 +1,8 @@
-import { Volume2 } from "lucide-react";
+import { RoomAudioIcon, RoomPointsIcon } from "./room-paper-icons";
+import { PaperMoonMark } from "./paper-moon-mark";
+import { PaperDigits } from "./paper-digits";
+import { PaperArrow } from "./paper-arrow";
+import { RoomRewardNotice } from "./room-reward-notice";
 import { RoomTeamBoard } from "./room-team-board";
 import {
   useEffect,
@@ -18,6 +22,8 @@ import {
   roomSecondsLeft,
   roomCountdownValue,
   ROOM_FEEDBACK_MS,
+  ROOM_TEAMS,
+  ROOM_TEAM_LABELS,
   type LocalRoomAnswerFeedback,
   ROOM_CATEGORIES,
   type LocalRoomSettings,
@@ -180,7 +186,7 @@ function CountdownOverlay({ value }: { value: number }) {
   return (
     <div className="local-room-countdown" role="status" aria-live="assertive">
       <span key={value} className="local-room-countdown__value">
-        {value > 0 ? value : "Vai!"}
+        {value > 0 ? <PaperDigits value={String(value)} /> : "Vai!"}
       </span>
     </div>
   );
@@ -397,6 +403,9 @@ export function LocalRoom({
   const online = useListeningOnline();
   const isAllowed = online.isAllowed;
   const roomCodeRef = useRef(state?.code);
+  useEffect(() => {
+    document.querySelector(".local-room-fullscreen")?.scrollTo?.({ top: 0, behavior: "instant" });
+  }, [state?.phase]);
   useEffect(() => {
     roomCodeRef.current = state?.code;
   }, [state?.code]);
@@ -846,7 +855,7 @@ export function LocalRoom({
       appliedManualWords !== manualWords ||
       appliedRecordingSignature !== recordingSignature);
   const ownParticipant = state.participants.find((p) => p.id === room.participantId);
-  const teamScores = ["Roxo", "Amarelo"].map((team) => ({
+  const teamScores = ROOM_TEAMS.map((team) => ({
     team,
     score: state.participants.filter((p) => p.team === team).reduce((sum, p) => sum + p.score, 0),
   }));
@@ -898,6 +907,13 @@ export function LocalRoom({
       <div className={`local-room-session local-room-session--${state.phase}`}>
         {!preparing && (
           <header className="local-room-session__header">
+            <button
+              type="button"
+              className="secondary-button room-back"
+              onClick={onExit ?? exitRoom}
+            >
+              <PaperArrow back /> Voltar
+            </button>
             <div className="local-room-session__actions">
               {isHost && !preparing && (
                 <button
@@ -921,9 +937,19 @@ export function LocalRoom({
             <HelenaLoading compact label="Reconectando sala…" />
           )}
         {state.settings.teams && state.phase !== "lobby" && (
-          <p aria-label="Placar por equipe">
-            {teamScores.map((t) => `${t.team}: ${t.score} XP`).join(" · ")}
-          </p>
+          <div className="room-team-scores" aria-label="Placar por equipe">
+            {teamScores.map((t) => (
+              <span key={t.team}>
+                <PaperMoonMark
+                  compact
+                  motif={t.team === "Roxo" ? "moon" : "sun"}
+                  className="room-side-icon"
+                />
+                {ROOM_TEAM_LABELS[t.team]} <PaperDigits value={String(t.score)} />
+                <span>pontos</span>
+              </span>
+            ))}
+          </div>
         )}
 
         {state.phase === "lobby" ? (
@@ -1710,14 +1736,20 @@ export function LocalRoom({
                 Pergunta {state.questionIndex + 1} de {state.totalQuestions}
               </span>
               <span className="local-room-round__timer">
-                <NavigationIcon name="timer" /> {secondsLeft}s
+                <NavigationIcon name="timer" /> <PaperDigits value={String(secondsLeft)} />s
               </span>
             </div>
             {isHost ? (
               <>
                 <div className="local-room-round__host-question">
-                  <Volume2 size={20} />
-                  <span>{revealHostWord ? state.currentQuestion.front : "Áudio reproduzido"}</span>
+                  <RoomAudioIcon playing={naturalState.status === "playing"} />
+                  <span>
+                    {revealHostWord
+                      ? state.currentQuestion.front
+                      : naturalState.status === "playing"
+                        ? "Áudio reproduzindo"
+                        : "Áudio reproduzido"}
+                  </span>
                 </div>
                 <button
                   className="secondary-button local-room-host-audio"
@@ -1725,7 +1757,7 @@ export function LocalRoom({
                   disabled={naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
-                  <Volume2 size={18} /> Reproduzir áudio
+                  <RoomAudioIcon /> Reproduzir áudio
                 </button>
                 <button
                   className="secondary-button local-room-host-reveal"
@@ -1792,7 +1824,7 @@ export function LocalRoom({
                   disabled={naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
-                  <Volume2 size={18} /> Ouvir palavra
+                  <RoomAudioIcon /> Ouvir palavra
                 </button>
                 {naturalState.message && naturalState.status !== "ready" && (
                   <p className="local-room-audio-status" role="status">
@@ -1854,10 +1886,10 @@ export function LocalRoom({
                     <span>{lastResult.question.back}</span>
                   </div>
                 )}
-                {lastResult && lastResult.xpChange !== 0 && (
+                {lastResult && lastResult.pointsChange !== 0 && (
                   <p className="local-room-xp-feedback">
-                    <NavigationIcon name="xp" /> {lastResult.xpChange > 0 ? "+" : ""}
-                    {lastResult.xpChange} XP
+                    <RoomPointsIcon /> {lastResult.pointsChange > 0 ? "+" : ""}
+                    {lastResult.pointsChange} pontos
                   </p>
                 )}
                 {lastResult?.question && (
@@ -1867,7 +1899,7 @@ export function LocalRoom({
                     disabled={replayCooldownSeconds > 0 || naturalState.status === "generating"}
                     onClick={() => replayQuestionAudio(lastResult.question!.front)}
                   >
-                    <Volume2 size={18} />
+                    <RoomAudioIcon />
                     {replayCooldownSeconds > 0
                       ? `Ouvir novamente em ${replayCooldownSeconds}s`
                       : "Ouvir novamente"}
@@ -1897,7 +1929,7 @@ export function LocalRoom({
                   disabled={replayCooldownSeconds > 0 || naturalState.status === "generating"}
                   onClick={() => replayQuestionAudio(state.currentQuestion!.front)}
                 >
-                  <Volume2 size={18} />
+                  <RoomAudioIcon />
                   {replayCooldownSeconds > 0
                     ? `Ouvir novamente em ${replayCooldownSeconds}s`
                     : "Ouvir novamente"}
@@ -1929,9 +1961,9 @@ export function LocalRoom({
           </div>
         ) : state.phase === "results" ? (
           <div className="local-room-finished">
-            <div className="local-room-waiting" role="status">
-              <NavigationIcon name="medal-first" />
+            <div className="room-results-heading" role="status">
               <h3>Atividade concluída</h3>
+              <p>Seu lugar no pódio define o XP. Empates em pontos recebem o mesmo XP.</p>
             </div>
             <Podium participants={state.participants} />
             {room.isHost ? (
@@ -1966,6 +1998,9 @@ export function LocalRoom({
               Sair
             </button>
           </div>
+        )}
+        {!isHost && (state.phase === "results" || state.phase === "finished") && (
+          <RoomRewardNotice reward={ownParticipant?.reward} />
         )}
       </div>
     </LocalRoomFullscreen>

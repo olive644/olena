@@ -116,6 +116,15 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
             typeof p.id !== "string" ||
             typeof p.displayName !== "string" ||
             !Number.isFinite(p.score) ||
+            (p.reward !== undefined &&
+              (!p.reward ||
+                typeof p.reward.id !== "string" ||
+                !Number.isSafeInteger(p.reward.place) ||
+                p.reward.place < 1 ||
+                !Number.isSafeInteger(p.reward.xp) ||
+                p.reward.xp < 0 ||
+                p.reward.xp > 100 ||
+                !Number.isFinite(p.reward.completedAt))) ||
             !strings(p.bingoCard) ||
             !strings(p.bingoMarks),
         ))) ||
@@ -597,6 +606,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         questionIndex: state?.questionIndex,
       });
       setState(payload.state);
+      setError("");
     } catch (caught) {
       setError(roomErrorMessage(caught, "Não foi possível avançar."));
     }
@@ -646,7 +656,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     try {
       const payload = await requestRoom<{
         correct: boolean;
-        xpChange: number;
+        pointsChange: number;
         question?: { front: string; back: string };
         state: PublicLocalRoomState;
       }>("answer", {
@@ -659,7 +669,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       return {
         correct: payload.correct,
-        xpChange: payload.xpChange,
+        pointsChange: payload.pointsChange,
         ...(payload.question ? { question: payload.question } : {}),
       };
     } catch (caught) {

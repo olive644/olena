@@ -159,7 +159,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Team selection, accessible drag controls and local focus-session recovery add
 // about 6 KiB to lazy room/focus routes: 934.5 KiB measured on Windows. No new
 // dependency or initial-route growth; retain a narrow allowance for Linux CI.
-const MAX_TOTAL_JS_BYTES = 938 * 1024;
+// Paper podium frames, shared bookmark symbols, speed-based points and the local
+// idempotent XP receipt ledger bring the measured total to 940.4 KiB. All remain
+// in lazy room/notebook chunks; initial entry stays at 273.8 KiB.
+const MAX_TOTAL_JS_BYTES = 944 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

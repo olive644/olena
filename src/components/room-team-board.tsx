@@ -2,10 +2,13 @@ import { useState, type PointerEvent } from "react";
 import "./room-team-board.css";
 import {
   ROOM_TEAMS,
+  ROOM_TEAM_LABELS,
   sanitizeRoomAvatar,
   type LocalRoomParticipant,
   type RoomTeam,
 } from "../domain/local-room";
+import { PaperMoonMark } from "./paper-moon-mark";
+import { PaperDigits } from "./paper-digits";
 
 export function RoomTeamBoard({
   participants,
@@ -28,7 +31,7 @@ export function RoomTeamBoard({
     try {
       if (await onAssign(id, team))
         setStatus(
-          `${participants.find((p) => p.id === id)?.displayName ?? "Participante"} na equipe ${team}.`,
+          `${participants.find((p) => p.id === id)?.displayName ?? "Participante"} no ${ROOM_TEAM_LABELS[team]}.`,
         );
     } finally {
       setMoving(null);
@@ -54,10 +57,18 @@ export function RoomTeamBoard({
             key={team}
             data-room-team={team}
             className={`room-team-board__side room-team-board__side--${team === "Roxo" ? "purple" : "yellow"}${target === team ? " is-target" : ""}`}
-            aria-label={`Equipe ${team}`}
+            aria-label={ROOM_TEAM_LABELS[team]}
           >
             <h4>
-              {team} <span>{participants.filter((p) => p.team === team).length}</span>
+              <PaperMoonMark
+                compact
+                motif={team === "Roxo" ? "moon" : "sun"}
+                className="room-side-icon"
+              />
+              {ROOM_TEAM_LABELS[team]}{" "}
+              <span>
+                <PaperDigits value={String(participants.filter((p) => p.team === team).length)} />
+              </span>
             </h4>
             {!isHost && (
               <button
@@ -68,7 +79,7 @@ export function RoomTeamBoard({
                 }
                 onClick={() => void move(participantId, team)}
               >
-                Entrar na equipe {team}
+                Entrar no {ROOM_TEAM_LABELS[team]}
               </button>
             )}
             <ul>
@@ -124,7 +135,7 @@ export function RoomTeamBoard({
                           type="button"
                           className="secondary-button room-team-board__move"
                           disabled={moving !== null}
-                          aria-label={`Mover ${participant.displayName} para ${team === "Roxo" ? "Amarelo" : "Roxo"}`}
+                          aria-label={`Mover ${participant.displayName} para ${ROOM_TEAM_LABELS[team === "Roxo" ? "Amarelo" : "Roxo"]}`}
                           onClick={() =>
                             void move(participant.id, team === "Roxo" ? "Amarelo" : "Roxo")
                           }

@@ -525,7 +525,13 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const receipt = state.receipts?.[key];
       if (receipt) {
         await dependencies.publish(code, toPublicRoomState(state));
-        return jsonResponse(200, { ...receipt, state: toPublicRoomState(state) });
+        const pointsChange = receipt.pointsChange ?? receipt.xpChange ?? 0;
+        return jsonResponse(200, {
+          ...receipt,
+          pointsChange,
+          xpChange: pointsChange,
+          state: toPublicRoomState(state),
+        });
       }
       if (now() < state.questionStartedAt)
         return jsonResponse(409, { error: "Aguarde a contagem para responder." });
@@ -538,14 +544,15 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         ...result.state.receipts,
         [key]: {
           correct: result.correct,
-          xpChange: result.xpChange,
+          pointsChange: result.pointsChange,
           ...(result.question ? { question: result.question } : {}),
         },
       };
       const publicState = await saveRoom(result.state);
       return jsonResponse(200, {
         correct: result.correct,
-        xpChange: result.xpChange,
+        pointsChange: result.pointsChange,
+        xpChange: result.pointsChange, // Compatibilidade com abas abertas antes da atualização.
         question: result.question,
         state: publicState,
       });
@@ -558,9 +565,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (body["questionIndex"] !== undefined && body["questionIndex"] !== state.questionIndex)
         return jsonResponse(200, { state: toPublicRoomState(state) });
       if (!canAdvanceRoomQuestion(state, now())) {
-        return jsonResponse(409, {
-          error: "Ainda dá tempo: espere todo mundo responder ou o tempo acabar.",
-        });
+        return jsonResponse(200, { state: toPublicRoomState(state) });
       }
       const advanced = advanceRoomQuestion(state, now());
       const publicState = await saveRoom(advanced);

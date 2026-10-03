@@ -57,7 +57,7 @@ describe("sala concorrente", () => {
     }
     expect(h.state().phase).toBe("results");
     expect(h.state().participants[0]!.bingoMarks).toHaveLength(5);
-    expect(h.state().participants[0]!.score).toBe(50);
+    expect(h.state().participants[0]!.score).toBe(500);
   });
 
   it("aceita material pessoal validado e preserva o verso privado no quiz", async () => {
@@ -119,10 +119,10 @@ describe("sala concorrente", () => {
       ),
     );
     expect(answers.every((r) => r.status === 200)).toBe(true);
-    expect(h.state().participants.every((p) => p.score === 10)).toBe(true);
+    expect(h.state().participants.every((p) => p.score === 100)).toBe(true);
     expect(h.state().questionIndex).toBe(0);
     await h.post("answer", { code: room.code, ...users[0], questionIndex: 0, answer: "again" });
-    expect(h.state().participants[0]!.score).toBe(10);
+    expect(h.state().participants[0]!.score).toBe(100);
   });
 
   it("rejeita o uso de um id público como credencial e respostas atrasadas", async () => {
@@ -202,6 +202,6 @@ describe("sala concorrente", () => {
     expect((await h.post("answer", answer)).status).toBe(200);
     h.time(90000);
     expect((await h.post("answer", answer)).status).toBe(200);
-    expect(h.state().participants[0]!.score).toBe(10);
+    expect(h.state().participants[0]!.score).toBe(100);
   });
 });

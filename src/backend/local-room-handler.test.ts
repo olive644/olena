@@ -50,6 +50,59 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it("ignora pontos e XP enviados pelo cliente e usa tempo do servidor", async () => {
+    const { code, hostToken } = await createRoomViaApi(30);
+    await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: { questionCount: "all", shuffle: false },
+        sourceDeck: [{ id: "book", front: "book", back: "livro" }],
+      }),
+    );
+    const first = await (await handler(post("join", { code, displayName: "Ana" }))).json();
+    const second = await (await handler(post("join", { code, displayName: "Bia" }))).json();
+    await handler(post("start", { code, hostToken }));
+    currentTime += ROOM_START_COUNTDOWN_MS;
+    const fast = await (
+      await handler(
+        post("answer", {
+          code,
+          participantId: first.participantId,
+          participantToken: first.participantToken,
+          questionIndex: 0,
+          answer: "livro",
+          points: 9999,
+          xp: 9999,
+          elapsedMs: 0,
+        }),
+      )
+    ).json();
+    expect(fast.pointsChange).toBe(100);
+    expect(fast.state.participants.every((p: { reward?: unknown }) => !p.reward)).toBe(true);
+    currentTime += 15000;
+    const slow = await (
+      await handler(
+        post("answer", {
+          code,
+          participantId: second.participantId,
+          participantToken: second.participantToken,
+          questionIndex: 0,
+          answer: "livro",
+          points: 9999,
+          elapsedMs: 0,
+        }),
+      )
+    ).json();
+    expect(slow.pointsChange).toBe(60);
+    currentTime += 3000;
+    const result = await (await handler(post("next", { code, hostToken }))).json();
+    expect(result.state.participants.map((p: { reward: { xp: number } }) => p.reward.xp)).toEqual([
+      100, 75,
+    ]);
+    const again = await (await handler(post("next", { code, hostToken }))).json();
+    expect(again.state.participants).toEqual(result.state.participants);
+  });
   it("valida escolha própria, controle do anfitrião e bloqueio após começar", async () => {
     const { code, hostToken } = await createRoomViaApi();
     await handler(post("settings", { code, hostToken, settings: { teams: true } }));
@@ -469,7 +522,7 @@ describe("handler da sala local", () => {
     expect(answerResponse.status).toBe(200);
     const answerPayload = (await answerResponse.json()) as {
       correct: boolean;
-      xpChange: number;
+      pointsChange: number;
       question: { front: string; back: string };
       state: { questionIndex: number };
     };
@@ -539,7 +592,10 @@ describe("handler da sala local", () => {
       post("answer", { code, participantId, participantToken, questionIndex: 0, answer: "livro" }),
     );
     const tooSoon = await handler(post("next", { code, hostToken, questionIndex: 0 }));
-    expect(tooSoon.status).toBe(409);
+    expect(tooSoon.status).toBe(200);
+    expect((await tooSoon.json()).state).toEqual(
+      expect.objectContaining({ phase: "playing", questionIndex: 0 }),
+    );
     currentTime += 3_000;
     const resultResponse = await handler(post("next", { code, hostToken, questionIndex: 0 }));
     expect((await resultResponse.json()).state.phase).toBe("results");
@@ -550,14 +606,15 @@ describe("handler da sala local", () => {
     );
   });
 
-  it("recusa avançar manualmente antes do tempo, e aceita depois que o tempo acaba", async () => {
+  it("mantém a pergunta sem erro antes do tempo, e avança quando o tempo acaba", async () => {
     const { code, hostToken } = await createRoomViaApi(15);
     await handler(post("join", { code, displayName: "Ana" }));
     await handler(post("join", { code, displayName: "Bia" }));
     await handler(post("start", { code, hostToken }));
 
     const tooEarly = await handler(post("next", { code, hostToken }));
-    expect(tooEarly.status).toBe(409);
+    expect(tooEarly.status).toBe(200);
+    expect((await tooEarly.json()).state.questionIndex).toBe(0);
 
     currentTime += ROOM_START_COUNTDOWN_MS + 15_000;
     const onTime = await handler(post("next", { code, hostToken }));
