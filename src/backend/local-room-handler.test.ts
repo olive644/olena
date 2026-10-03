@@ -606,6 +606,48 @@ describe("handler da sala local", () => {
     );
   });
 
+  it("recusa repetir após saída ou expiração de presença e aceita após reconectar", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    const joined = await (await handler(post("join", { code, displayName: "Ana" }))).json();
+    await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: { questionCount: "all", shuffle: false },
+        sourceDeck: [{ id: "one", front: "book", back: "livro" }],
+      }),
+    );
+    await handler(post("start", { code, hostToken }));
+    currentTime += ROOM_START_COUNTDOWN_MS;
+    await handler(
+      post("answer", {
+        code,
+        participantId: joined.participantId,
+        participantToken: joined.participantToken,
+        questionIndex: 0,
+        answer: "livro",
+      }),
+    );
+    currentTime += 3000;
+    await handler(post("next", { code, hostToken, questionIndex: 0 }));
+    await handler(
+      post("leave", { code, role: "participant", credential: joined.participantToken }),
+    );
+    expect((await handler(post("repeat", { code, hostToken }))).status).toBe(409);
+    await handler(
+      post("resume", { code, role: "participant", credential: joined.participantToken }),
+    );
+    currentTime += 60000;
+    await handler(post("heartbeat", { code, role: "host", credential: hostToken }));
+    currentTime += 60001;
+    expect((await handler(post("repeat", { code, hostToken }))).status).toBe(409);
+    await handler(post("resume", { code, role: "host", credential: hostToken }));
+    await handler(
+      post("resume", { code, role: "participant", credential: joined.participantToken }),
+    );
+    expect((await handler(post("repeat", { code, hostToken }))).status).toBe(200);
+  });
+
   it("mantém a pergunta sem erro antes do tempo, e avança quando o tempo acaba", async () => {
     const { code, hostToken } = await createRoomViaApi(15);
     await handler(post("join", { code, displayName: "Ana" }));

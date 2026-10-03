@@ -637,8 +637,25 @@ for (const activity of ["listening", "bingo"] as const) {
               if (question === 0 && page === players[0])
                 await page.screenshot({ path: testInfo.outputPath("round-mobile.png") });
               if (activity === "listening") {
-                await page.getByLabel("Digite a tradução").fill(word);
+                const wrong = question === 0 && page === players[1];
+                await page
+                  .getByLabel("Digite a tradução")
+                  .fill(wrong ? "resposta incorreta" : word);
                 await page.getByRole("button", { name: "Responder", exact: true }).click();
+                if (question === 0) {
+                  const feedback = page.locator(".local-room-answer-feedback");
+                  await expect(feedback).toHaveClass(wrong ? /is-wrong/ : /is-correct/);
+                  await expect(feedback.locator(".paper-english-word__outline").first()).toHaveCSS(
+                    "display",
+                    "inline",
+                  );
+                  await expect(feedback.locator(".local-room-xp-feedback")).toContainText(
+                    wrong ? "-5 pontos" : "pontos",
+                  );
+                  await page.screenshot({
+                    path: testInfo.outputPath(wrong ? "answer-wrong.png" : "answer-correct.png"),
+                  });
+                }
               } else {
                 const current = states.get(code)!;
                 const label = current.bingoWords!.find(
@@ -653,7 +670,7 @@ for (const activity of ["listening", "bingo"] as const) {
           ),
         );
       }
-      await expect(host.getByRole("heading", { name: "Atividade concluída" })).toBeVisible();
+      await expect(host.getByRole("heading", { name: "Classificação", exact: true })).toBeVisible();
       await expect(host.getByRole("button", { name: "Repetir" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Trocar atividade" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Encerrar sala" })).toBeVisible();

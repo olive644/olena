@@ -585,7 +585,13 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const body = await readJsonBody(request);
       const state = await requireHost(dependencies.store, body);
       if (state instanceof Response) return state;
-      const repeated = repeatRoom(state, { now: now() });
+      const time = now();
+      const present = state.participants.filter(
+        (p) => p.online !== false && time - (p.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS,
+      );
+      if (!present.length)
+        return jsonResponse(409, { error: "Aguarde um participante online para repetir." });
+      const repeated = repeatRoom({ ...state, participants: present }, { now: time });
       if (repeated.phase !== "playing")
         return jsonResponse(409, { error: "A atividade ainda não terminou." });
       const publicState = await saveRoom(repeated);

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <g id="banner">
+      <path fill="var(--trophy-depth)" d="M8 8h144v154l-72 28-72-28Z" />
+      <path fill="var(--eclipse-face)" d="M14 8h132v145l-66 27-66-27Z" />
+      <path fill="var(--eclipse-fold)" d="m14 8 66 23 66-23v23L80 47 14 31Z" />
+      <path fill="var(--trophy-face)" opacity=".22" d="m14 8 66 23 66-23v123l-66 31-66-31Z" />
+      <path fill="var(--eclipse-fold)" d="m30 49 5 9 9 4-9 4-5 10-4-10-9-4 9-4Zm98 73 4 7 8 3-8 4-4 8-3-8-8-4 8-3Z" />
+    </g>
+    <path id="solar" fill="var(--trophy-face)" opacity=".2" d="m28 148 16-14 18-6 21 4 17 15-18-8-20 2-16 10-8 14Z" />
+    <path id="moon" fill="var(--trophy-face)" opacity=".2" d="m126 142-17 11-5 13-20-7 18-5 12-16Z" />
+    <g id="audio">
+      <path fill="#176C73" d="M8 23h14l19-14v48L22 43H8Z" />
+      <path fill="#269BA5" d="M6 19h14L39 5v48L20 39H6Z" />
+      <path fill="#85D8CE" d="m6 19 14 0 19-14-19 22H6Z" />
+      <path fill="#FFF9EF" d="m20 27 19-22v48L20 39Z" />
+      <path fill="#FACC15" d="m44 20 7-7 7 11v16l-7 11-7-7 6-8v-8Zm13-16 7 14v28l-7 14-5-5 7-13V22L52 9Z" />
+    </g>
+    <g id="clock">
+      <path fill="var(--points-depth)" d="m20 9 24 0 15 18v23L43 62H20L5 49V26Z" />
+      <path fill="currentColor" d="m21 5 22 0 15 17v23L43 58H21L6 45V22Z" />
+      <path fill="var(--points-fold)" d="M21 5h22L32 17 6 22ZM43 58 32 47l26-2Z" />
+      <path fill="var(--page)" d="M29 15h6v18l12 7-3 5-15-9Z" />
+      <path fill="currentColor" d="M23 0h18v5H23Z" />
+    </g>
+    <g id="seconds">
+      <path fill="var(--points-depth)" d="M18 10H49L61 22V35H45V28L41 24H27L23 28V41L59 58V81L46 94H18L5 81V68H21V75L25 79H39L43 75V66L7 49V23Z" />
+      <path fill="currentColor" d="M15 5H46L58 17V30H42V23L38 19H24L20 23V36L56 53V76L43 89H15L2 76V63H18V70L22 74H36L40 70V61L4 44V18Z" />
+      <path fill="var(--points-fold)" d="m15 5 5 18-16 21V18ZM56 53 40 61l-20-25Z" />
+    </g>
+  </defs>
+</svg>

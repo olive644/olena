@@ -1,5 +1,24 @@
 # OlenaStudy: Second Brain
 
+Pódio: frames temáticos externos em room-trophies.svg, inscrições claras sobre
+as bandeiras. PodiumPlace conta pontos com requestAnimationFrame e easing cúbico,
+dependendo somente de score/place, não da identidade de cada snapshot da sala.
+Cancela callbacks ao desmontar; placar e recompensa continuam autoritativos.
+Movimento reduzido elimina contagem e celebração. Som de vitória é um arpejo
+Web Audio local. O gesto de responder habilita o contexto, que é reaproveitado
+na vitória e fechado ao terminar ou após 3 minutos de inatividade. Fontes e ganhos
+de cada resposta são desconectados ao terminar. Contextos suspensos na vitória
+são fechados, sem tentativa de contornar a política de autoplay.
+
+Sala: lastAnswer publica somente pergunta e acerto, nunca tradução. Scoreboard usa
+deslocamento animado da posição anterior à atual, com fallback estático e movimento
+reduzido. Qualquer erro de escuta desconta 5 pontos sem saldo negativo; Bingo não.
+Repetir valida online e lastSeenAt com a tolerância de presença de 120 segundos no
+servidor e reinicia só com presentes. Voltar limpa a sessão e retorna às modalidades,
+não ao Home. Pódio de eclipses e classificação ficam lado a lado no PC, empilhados
+no celular. Som de resposta é síntese Web Audio local; não usa microfone nem rede.
+Notificação individual de XP fica no topo por 6 segundos ou até fechar pelo X.
+
 Salas usam pontos na partida, não XP. roomAnswerPoints usa o relógio do servidor
 para acertos entre 100 e 20. XP nasce somente em completeRoom: 100/75/50 no top 3,
 40 no quarto, decrescendo 5 até 10. Empates compartilham colocação. Ausentes sem
