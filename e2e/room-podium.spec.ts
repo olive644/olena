@@ -146,7 +146,7 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
   now += 3000;
   await api("next", { code, hostToken, questionIndex: 0 });
   await expect(page.locator(".local-room-podium__place")).toHaveCount(3);
-  await expect(page.locator(".local-room-scoreboard li")).toHaveCount(5);
+  await expect(page.locator(".local-room-scoreboard li")).toHaveCount(8);
   await expect
     .poll(async () => {
       const header = await page.locator(".local-room-session__header").boundingBox();
@@ -174,14 +174,19 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
     { code, credential: credentials[0]!.participantToken },
   );
   await page.reload();
-  await expect(page.locator(".room-reward-notice")).toContainText("Você ganhou 100 XP");
+  await expect(page.locator(".room-reward-notice")).toContainText("+100 XP pelo 1º lugar!");
   const notice = await page.locator(".room-reward-notice").boundingBox();
   expect(notice!.y).toBeGreaterThanOrEqual(0);
   expect(notice!.y + notice!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  expect(notice!.y).toBeLessThan(80);
+  await expect(page.locator(".room-reward-notice")).toBeHidden({ timeout: 8000 });
   const ledger = await page.evaluate(() => localStorage.getItem("helena.room-xp.v1"));
   expect(JSON.parse(ledger!).total).toBe(100);
   await page.reload();
   await expect(page.locator(".local-room-podium__place")).toHaveCount(3);
   expect(await page.evaluate(() => localStorage.getItem("helena.room-xp.v1"))).toBe(ledger);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("button", { name: "Voltar", exact: true }).click();
+  await expect(page.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+  await expect(page).toHaveURL(/\/sala$/);
 });

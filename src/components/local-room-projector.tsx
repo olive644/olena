@@ -8,7 +8,15 @@ import { NavigationIcon } from "./navigation-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { RoomQrCode } from "./room-qr-code";
 import { RoomAvatar } from "./room-avatar";
-import { RoomPointsIcon, RoomTrophyFrame } from "./room-paper-icons";
+import {
+  RoomPointsIcon,
+  RoomTrophyFrame,
+  RoomClockIcon,
+  RoomConfetti,
+  RoomEclipseBanner,
+  RoomSecondsUnit,
+} from "./room-paper-icons";
+import { useLayoutEffect, useRef } from "react";
 import { PaperDigits } from "./paper-digits";
 import { ROOM_TEAM_LABELS, type RoomTeam } from "../domain/local-room";
 import "./room-stage.css";
@@ -20,15 +28,56 @@ function countLabel(count: number, singular: string, plural: string) {
 export function Scoreboard({
   participants,
   offset = 0,
+  questionIndex,
 }: {
   participants: readonly LocalRoomParticipant[];
   offset?: number;
+  questionIndex?: number;
 }) {
   const ranked = rankLocalRoomParticipants(participants);
+  const list = useRef<HTMLOListElement>(null);
+  const positions = useRef(new Map<string, number>());
+  useLayoutEffect(() => {
+    const next = new Map<string, number>();
+    for (const row of list.current?.querySelectorAll<HTMLElement>("[data-player]") ?? []) {
+      const id = row.dataset["player"]!;
+      const top = row.offsetTop;
+      const before = positions.current.get(id);
+      next.set(id, top);
+      if (
+        before !== undefined &&
+        before !== top &&
+        !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+      ) {
+        row.animate?.(
+          [{ transform: `translateY(${before - top}px)` }, { transform: "translateY(0)" }],
+          { duration: 480, easing: "cubic-bezier(.2,.8,.2,1)" },
+        );
+      }
+    }
+    positions.current = next;
+  });
   return (
-    <ol className="local-room-scoreboard">
+    <ol ref={list} className="local-room-scoreboard">
       {ranked.map((participant, index) => (
-        <li key={participant.id}>
+        <li
+          key={participant.id}
+          data-player={participant.id}
+          className={
+            questionIndex !== undefined && participant.lastAnswer?.questionIndex === questionIndex
+              ? participant.lastAnswer.correct
+                ? "is-correct"
+                : "is-wrong"
+              : ""
+          }
+        >
+          {questionIndex !== undefined &&
+            participant.lastAnswer?.questionIndex === questionIndex && (
+              <span className="room-answer-mark">
+                {participant.lastAnswer.correct ? "Acertou" : "Errou"}
+                {participant.lastAnswer.correct && <RoomConfetti />}
+              </span>
+            )}
           <span className="local-room-scoreboard__rank">
             <PaperDigits value={String(participant.reward?.place ?? index + 1 + offset)} />
           </span>
@@ -55,7 +104,7 @@ export function Podium({ participants }: { participants: readonly LocalRoomParti
   const top3 = ranked.slice(0, 3);
   const rest = ranked.slice(3);
   return (
-    <>
+    <div className="room-results-layout">
       <ol className="local-room-podium">
         {top3.map((participant, index) => (
           <li
@@ -66,6 +115,10 @@ export function Podium({ participants }: { participants: readonly LocalRoomParti
               <RoomAvatar participant={participant} />
               <RoomTrophyFrame place={index + 1} />
             </div>
+            <small className="room-eclipse-name">
+              {index === 0 ? "Eclipse Solar" : index === 1 ? "Eclipse Lunar" : "Lua Sangrenta"}
+            </small>
+            <RoomEclipseBanner place={index + 1} />
             <span className="room-podium-rank">
               <PaperDigits value={String(participant.reward?.place ?? index + 1)} />
             </span>
@@ -77,8 +130,14 @@ export function Podium({ participants }: { participants: readonly LocalRoomParti
           </li>
         ))}
       </ol>
-      {rest.length > 0 && <Scoreboard participants={rest} offset={3} />}
-    </>
+      <section className="room-results-ranking" aria-label="Classificação final">
+        <h3>Classificação</h3>
+        <Scoreboard participants={ranked} />
+        {rest.length > 0 && (
+          <span className="visually-hidden">Inclui participantes abaixo do top 3</span>
+        )}
+      </section>
+    </div>
   );
 }
 
@@ -124,7 +183,8 @@ export function ProjectorRoom({
               Pergunta {state.questionIndex + 1} de {state.totalQuestions}
             </span>
             <span className="local-room-round__timer">
-              <NavigationIcon name="timer" /> <PaperDigits value={String(secondsLeft)} />s
+              <RoomClockIcon /> <PaperDigits value={String(secondsLeft)} />
+              <RoomSecondsUnit />
             </span>
           </div>
           <div className="local-room-projector__prompt">
@@ -138,7 +198,7 @@ export function ProjectorRoom({
               {state.answeredParticipantIds.length} de {connected.length} respostas recebidas
             </p>
           </div>
-          <Scoreboard participants={state.participants} />
+          <Scoreboard participants={state.participants} questionIndex={state.questionIndex} />
         </main>
       ) : (
         <main className="local-room-projector__results">

@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Eclipses e feedback da sala (2026-10-03)
+
+- Ranking anima a troca de posições por deslocamento das linhas, preservando identidade e respeitando movimento reduzido. O último acerto ou erro é publicado pelo servidor por pergunta, sem expor a tradução, e pinta a linha verde ou vermelha. Confetes são recortes locais.
+- Qualquer resposta errada de escuta desconta 5 pontos, com saldo mínimo zero. Bingo mantém a regra de passar sem penalização. Pontos de acerto continuam entre 100 e 20 pelo relógio do servidor; mensagens contextualizam a rapidez sem alterar a pontuação.
+- Feedback usa painel de papel facetado, cores de resultado, bandeira proporcional no fundo e no contorno da palavra, efeitos sonoros sintetizados localmente. Não há upload ou serviço de som.
+- Repetir exige presença online válida no servidor, usando a tolerância existente de 120 segundos; remove ausentes da nova rodada. Sem pessoas online retorna conflito com aviso. Voltar retorna às modalidades da sala e limpa a sessão anterior, sem navegar ao início.
+- Pódio mantém molduras dos avatares e incorpora bandeiras de Eclipse Solar, Eclipse Lunar e Lua Sangrenta. No PC, pódio fica à esquerda e classificação completa à direita. No celular, os blocos se empilham e o cabeçalho respeita a área segura.
+- Aviso de XP é compacto no topo, com X, barra de duração e fechamento após 6 segundos. Recibo e saldo continuam locais e idempotentes. Removidos os textos redundantes de atividade concluída e espera pela próxima escolha.
+
 ## Lobby, pontos e pódio coletivo (2026-10-03)
 
 - Lado Lunar e Lado Solar reutilizam os símbolos dos marcadores de handwriting. Identificadores internos Roxo/Amarelo permanecem compatíveis com salas existentes. Contagens e placares usam PaperDigits do Foco.

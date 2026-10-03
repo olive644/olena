@@ -12,17 +12,50 @@ export function RoomAudioIcon({ playing = false }: { playing?: boolean }) {
   return (
     <svg
       className={`room-audio-icon${playing ? " is-playing" : ""}`}
-      viewBox="0 0 64 64"
+      viewBox="0 0 72 68"
       aria-hidden="true"
     >
-      <path fill="#51259B" d="M8 23h14l19-14v48L22 43H8Z" />
-      <path fill="#7C3AED" d="M6 19h14L39 5v48L20 39H6Z" />
-      <path fill="#A779EF" d="m6 19 14 0 19-14-19 22H6Z" />
-      <path fill="#FFF9EF" d="m20 27 19-22v48L20 39Z" />
-      <path
-        fill="#FACC15"
-        d="m44 20 7-7 7 11v16l-7 11-7-7 6-8v-8Zm13-16 7 14v28l-7 14-5-5 7-13V22L52 9Z"
-      />
+      <use href="/room-icons/room-stage.svg#audio" />
+    </svg>
+  );
+}
+
+export function RoomSecondsUnit() {
+  return (
+    <svg
+      className="room-seconds-unit room-points-icon"
+      viewBox="0 0 66 98"
+      aria-label="segundos"
+      role="img"
+    >
+      <use href="/room-icons/room-stage.svg#seconds" />
+    </svg>
+  );
+}
+
+export function RoomClockIcon() {
+  return (
+    <svg className="room-clock-icon room-points-icon" viewBox="0 0 64 64" aria-hidden="true">
+      <use href="/room-icons/room-stage.svg#clock" />
+    </svg>
+  );
+}
+
+export function RoomConfetti() {
+  return (
+    <span className="room-confetti" aria-hidden="true">
+      {Array.from({ length: 14 }, (_, i) => (
+        <i key={i} style={{ "--piece": i } as import("react").CSSProperties} />
+      ))}
+    </span>
+  );
+}
+
+export function RoomEclipseBanner({ place }: { place: number }) {
+  return (
+    <svg className="room-eclipse-banner" viewBox="0 0 160 190" aria-hidden="true">
+      <use href="/room-icons/room-stage.svg#banner" />
+      <use href={`/room-icons/room-stage.svg#${place === 1 ? "solar" : "moon"}`} />
     </svg>
   );
 }

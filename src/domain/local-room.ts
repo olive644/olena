@@ -43,6 +43,7 @@ export type LocalRoomParticipant = {
   avatarUrl?: string;
   score: number;
   answersCount?: number;
+  lastAnswer?: { questionIndex: number; correct: boolean } | undefined;
   reward?: RoomXpReward | undefined;
   token?: string;
   // UID da conta Google, quando a pessoa está logada (nunca exposto no estado público da
@@ -164,12 +165,11 @@ export function formatRoomEstimatedDuration(
   return seconds ? `${minutes}min${seconds}s` : `${minutes} min`;
 }
 
-// Quanto vale acertar, e quanto quem está na liderança perde ao errar. Dá
-// um motivo real pra quem está na frente continuar prestando atenção, em
-// vez de só acumular pontos sem risco.
+// Acertos premiam rapidez. Qualquer erro de escuta desconta cinco pontos,
+// mantendo o saldo mínimo em zero e sem aplicar penalidade ao Bingo.
 export const MAX_CORRECT_ANSWER_POINTS = 100;
 export const MIN_CORRECT_ANSWER_POINTS = 20;
-export const LEADER_WRONG_ANSWER_PENALTY_POINTS = 5;
+export const WRONG_ANSWER_PENALTY_POINTS = 5;
 
 export function roomAnswerPoints(seconds: number, elapsedMs: number): number {
   const ratio = Math.max(0, Math.min(1, elapsedMs / (seconds * 1000)));
@@ -340,7 +340,7 @@ export function startRoom(
   state: LocalRoomState,
   dependencies: { random?: () => number; now: number },
 ): LocalRoomState {
-  if (state.phase !== "lobby" || state.participants.length === 0) return state;
+  if (state.phase !== "lobby" || !state.participants.some((p) => p.online !== false)) return state;
   const pool = localRoomPool(state.settings, state.sourceDeck);
   if (!pool.length) return state;
   if (
@@ -384,6 +384,7 @@ export function startRoom(
       score: 0,
       answersCount: 0,
       reward: undefined,
+      lastAnswer: undefined,
       bingoMarks: [],
       bingoCard: createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
         (card) => card.id,
@@ -391,13 +392,6 @@ export function startRoom(
     })),
     updatedAt: dependencies.now,
   };
-}
-
-function isLeading(participants: readonly LocalRoomParticipant[], participantId: string): boolean {
-  const top = Math.max(...participants.map((item) => item.score));
-  if (top <= 0) return false;
-  const leader = participants.find((item) => item.id === participantId);
-  return leader?.score === top;
 }
 
 export function submitRoomAnswer(
@@ -425,14 +419,10 @@ export function submitRoomAnswer(
             ?.bingoCard?.includes(card.id),
         )
       : isListeningAnswerCorrect(card, dependencies.answer, state.settings.acceptMinorTypos);
-  const wasLeading =
-    state.settings.activity !== "bingo" &&
-    !correct &&
-    isLeading(state.participants, dependencies.participantId);
   const pointsChange = correct
     ? roomAnswerPoints(state.settings.roundSeconds, dependencies.now - state.questionStartedAt)
-    : wasLeading
-      ? -LEADER_WRONG_ANSWER_PENALTY_POINTS
+    : state.settings.activity !== "bingo"
+      ? -WRONG_ANSWER_PENALTY_POINTS
       : 0;
   const participants = state.participants.map((participant) =>
     participant.id === dependencies.participantId
@@ -440,6 +430,7 @@ export function submitRoomAnswer(
           ...participant,
           score: Math.max(0, participant.score + pointsChange),
           answersCount: (participant.answersCount ?? 0) + 1,
+          lastAnswer: { questionIndex: state.questionIndex, correct },
           ...(correct && state.settings.activity === "bingo"
             ? { bingoMarks: [...(participant.bingoMarks ?? []), card.id] }
             : {}),
