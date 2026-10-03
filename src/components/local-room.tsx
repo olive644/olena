@@ -1,4 +1,11 @@
-import { RoomAudioIcon, RoomPointsIcon } from "./room-paper-icons";
+import {
+  RoomAudioIcon,
+  RoomPointsIcon,
+  RoomClockIcon,
+  RoomConfetti,
+  RoomSecondsUnit,
+} from "./room-paper-icons";
+import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
 import { PaperMoonMark } from "./paper-moon-mark";
 import { PaperDigits } from "./paper-digits";
 import { PaperArrow } from "./paper-arrow";
@@ -593,10 +600,14 @@ export function LocalRoom({
     )
       return;
     setIsSubmittingAnswer(true);
+    const feedbackAudio = prepareRoomFeedbackSound();
     const submittedAnswer = answer.trim();
     try {
       const result = await room.submitAnswer(state.questionIndex, submittedAnswer);
-      if (result) setLastResult({ ...result, submittedAnswer });
+      if (result) {
+        setLastResult({ ...result, submittedAnswer });
+        playRoomFeedbackSound(result.correct, feedbackAudio);
+      } else if (feedbackAudio) void feedbackAudio.close();
     } finally {
       setIsSubmittingAnswer(false);
     }
@@ -618,6 +629,13 @@ export function LocalRoom({
   function exitRoom() {
     room.reset();
     onExit?.();
+  }
+
+  function backToModalities() {
+    room.reset();
+    setSelectedActivity(null);
+    setActivitiesExpanded(true);
+    setAppliedJoinCode(true);
   }
 
   function prepareRoomProtection() {
@@ -907,11 +925,7 @@ export function LocalRoom({
       <div className={`local-room-session local-room-session--${state.phase}`}>
         {!preparing && (
           <header className="local-room-session__header">
-            <button
-              type="button"
-              className="secondary-button room-back"
-              onClick={onExit ?? exitRoom}
-            >
+            <button type="button" className="secondary-button room-back" onClick={backToModalities}>
               <PaperArrow back /> Voltar
             </button>
             <div className="local-room-session__actions">
@@ -1736,7 +1750,8 @@ export function LocalRoom({
                 Pergunta {state.questionIndex + 1} de {state.totalQuestions}
               </span>
               <span className="local-room-round__timer">
-                <NavigationIcon name="timer" /> <PaperDigits value={String(secondsLeft)} />s
+                <RoomClockIcon /> <PaperDigits value={String(secondsLeft)} />
+                <RoomSecondsUnit />
               </span>
             </div>
             {isHost ? (
@@ -1804,7 +1819,7 @@ export function LocalRoom({
                   {state.answeredParticipantIds.length} de {state.participants.length} já
                   responderam. Quando todos responderem, o resultado permanece por três segundos.
                 </p>
-                <Scoreboard participants={state.participants} />
+                <Scoreboard participants={state.participants} questionIndex={state.questionIndex} />
                 <button
                   className="secondary-button"
                   type="button"
@@ -1872,9 +1887,21 @@ export function LocalRoom({
                 {lastResult?.correct ? (
                   <PaperCheckIcon size={28} />
                 ) : (
-                  <PaperEditorIcon name="team" />
+                  <PaperEditorIcon name="close" />
                 )}
                 <h3>{lastResult?.correct ? "Correto!" : "Ainda não foi dessa vez"}</h3>
+                {lastResult?.correct && <RoomConfetti />}
+                {lastResult?.correct && (
+                  <strong className="room-speed-label">
+                    {lastResult.pointsChange >= 85
+                      ? "MUITO RÁPIDO!"
+                      : lastResult.pointsChange >= 60
+                        ? "BOM RITMO!"
+                        : lastResult.pointsChange >= 40
+                          ? "BOA RESPOSTA!"
+                          : "MUITO DEVAGAR, TENTE ACELERAR"}
+                  </strong>
+                )}
                 {!lastResult?.correct && lastResult?.submittedAnswer && (
                   <p>
                     Você respondeu: <strong>{lastResult.submittedAnswer}</strong>
@@ -1882,7 +1909,9 @@ export function LocalRoom({
                 )}
                 {lastResult?.question && (
                   <div className="local-room-answer-feedback__pair">
-                    <strong>{lastResult.question.front}</strong>
+                    <strong>
+                      <PaperEnglishWord value={lastResult.question.front} />
+                    </strong>
                     <span>{lastResult.question.back}</span>
                   </div>
                 )}
@@ -1961,14 +1990,15 @@ export function LocalRoom({
           </div>
         ) : state.phase === "results" ? (
           <div className="local-room-finished">
-            <div className="room-results-heading" role="status">
-              <h3>Atividade concluída</h3>
-              <p>Seu lugar no pódio define o XP. Empates em pontos recebem o mesmo XP.</p>
-            </div>
             <Podium participants={state.participants} />
             {room.isHost ? (
               <div className="local-room-results-actions">
-                <button className="primary-button" type="button" onClick={room.repeatRound}>
+                <button
+                  className="primary-button"
+                  type="button"
+                  disabled={!state.participants.some((p) => p.online !== false)}
+                  onClick={room.repeatRound}
+                >
                   <HelenaRoomIcon name="play" size={18} /> Repetir
                 </button>
                 <button className="secondary-button" type="button" onClick={room.returnToLobby}>
@@ -1978,14 +2008,7 @@ export function LocalRoom({
                   <HelenaRoomIcon name="close" size={18} /> Encerrar sala
                 </button>
               </div>
-            ) : (
-              <div className="local-room-answer-received" role="status">
-                <strong>
-                  Atividade concluída <PaperCheckIcon />
-                </strong>
-                <p>Aguardando a próxima escolha do professor.</p>
-              </div>
-            )}
+            ) : null}
           </div>
         ) : (
           <div className="local-room-finished">

@@ -1,5 +1,14 @@
 # OlenaStudy: Second Brain
 
+Sala: lastAnswer publica somente pergunta e acerto, nunca tradução. Scoreboard usa
+deslocamento animado da posição anterior à atual, com fallback estático e movimento
+reduzido. Qualquer erro de escuta desconta 5 pontos sem saldo negativo; Bingo não.
+Repetir valida online e lastSeenAt com a tolerância de presença de 120 segundos no
+servidor e reinicia só com presentes. Voltar limpa a sessão e retorna às modalidades,
+não ao Home. Pódio de eclipses e classificação ficam lado a lado no PC, empilhados
+no celular. Som de resposta é síntese Web Audio local; não usa microfone nem rede.
+Notificação individual de XP fica no topo por 6 segundos ou até fechar pelo X.
+
 Salas usam pontos na partida, não XP. roomAnswerPoints usa o relógio do servidor
 para acertos entre 100 e 20. XP nasce somente em completeRoom: 100/75/50 no top 3,
 40 no quarto, decrescendo 5 até 10. Empates compartilham colocação. Ausentes sem

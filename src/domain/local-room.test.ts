@@ -9,7 +9,7 @@ import {
   createRoom,
   endRoom,
   isValidLocalRoomCode,
-  LEADER_WRONG_ANSWER_PENALTY_POINTS,
+  WRONG_ANSWER_PENALTY_POINTS,
   normalizeLocalRoomCode,
   rankLocalRoomParticipants,
   repeatRoom,
@@ -207,7 +207,7 @@ describe("sala local", () => {
     expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBeNull();
   });
 
-  it("dá pontos ao acertar e nada ao errar sem estar liderando", () => {
+  it("dá pontos ao acertar e penaliza erro sem saldo negativo", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
     const firstAt = started.questionStartedAt + 1;
@@ -231,7 +231,7 @@ describe("sala local", () => {
       now: firstAt + 1,
     });
     expect(second.correct).toBe(false);
-    expect(second.pointsChange).toBe(0);
+    expect(second.pointsChange).toBe(-WRONG_ANSWER_PENALTY_POINTS);
     expect(second.state.participants.find((item) => item.id === "p2")?.score).toBe(0);
   });
 
@@ -255,7 +255,7 @@ describe("sala local", () => {
     expect(again.state).toBe(first.state);
   });
 
-  it("tira pontos de quem está liderando se errar, e trava em zero", () => {
+  it("tira cinco pontos de qualquer resposta errada, e trava o saldo em zero", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
     const firstAt = started.questionStartedAt + 1;
@@ -275,8 +275,12 @@ describe("sala local", () => {
       answer: "errada",
       now: firstAt + 1,
     });
-    // p2 não lidera (0 contra MAX_CORRECT_ANSWER_POINTS de p1), então não perde nada.
-    expect(stillTwoAnswered.pointsChange).toBe(0);
+    expect(stillTwoAnswered.pointsChange).toBe(-WRONG_ANSWER_PENALTY_POINTS);
+    expect(stillTwoAnswered.state.participants.find((p) => p.id === "p2")?.score).toBe(0);
+    expect(stillTwoAnswered.state.participants.find((p) => p.id === "p2")?.lastAnswer).toEqual({
+      questionIndex: 0,
+      correct: false,
+    });
 
     const nextState = advanceRoomQuestion(stillTwoAnswered.state, firstAt + 2);
     const nextCard = nextState.deck[nextState.questionIndex]!;
@@ -286,9 +290,9 @@ describe("sala local", () => {
       answer: "errada",
       now: firstAt + 3,
     });
-    expect(p1Wrong.pointsChange).toBe(-LEADER_WRONG_ANSWER_PENALTY_POINTS);
+    expect(p1Wrong.pointsChange).toBe(-WRONG_ANSWER_PENALTY_POINTS);
     expect(p1Wrong.state.participants.find((item) => item.id === "p1")?.score).toBe(
-      Math.max(0, MAX_CORRECT_ANSWER_POINTS - LEADER_WRONG_ANSWER_PENALTY_POINTS),
+      Math.max(0, MAX_CORRECT_ANSWER_POINTS - WRONG_ANSWER_PENALTY_POINTS),
     );
     expect(nextCard).toBeTruthy();
   });
