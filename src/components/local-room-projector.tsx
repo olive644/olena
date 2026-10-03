@@ -16,7 +16,8 @@ import {
   RoomEclipseBanner,
   RoomSecondsUnit,
 } from "./room-paper-icons";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { playRoomVictorySound } from "../data/room-feedback-sound";
 import { PaperDigits } from "./paper-digits";
 import { ROOM_TEAM_LABELS, type RoomTeam } from "../domain/local-room";
 import "./room-stage.css";
@@ -99,6 +100,58 @@ export function Scoreboard({
   );
 }
 
+function PodiumPlace({ participant, place }: { participant: LocalRoomParticipant; place: number }) {
+  const [score, setScore] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const target = participant.score;
+  useEffect(() => {
+    let frame = 0;
+    let start: number | undefined;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    function tick(time: number) {
+      start ??= time;
+      const progress = reduced ? 1 : Math.min(1, Math.max(0, time - start - 120 * place) / 1800);
+      setScore(Math.floor(target * (1 - (1 - progress) ** 3)));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+      else {
+        setComplete(true);
+        if (place === 1 && !reduced) playRoomVictorySound();
+      }
+    }
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [target, place]);
+  return (
+    <li className={`local-room-podium__place local-room-podium__place--${place}`}>
+      <div className="room-podium-medallion">
+        <RoomAvatar participant={participant} />
+        <RoomTrophyFrame place={place} />
+      </div>
+      <div className="room-podium-standard" data-complete={complete}>
+        <RoomEclipseBanner place={place} />
+        <div className="room-podium-inscription">
+          <small className="room-eclipse-name">
+            {place === 1 ? "Eclipse Solar" : place === 2 ? "Eclipse Lunar" : "Lua Sangrenta"}
+          </small>
+          <span className="room-podium-rank">
+            <PaperDigits value={String(participant.reward?.place ?? place)} />
+          </span>
+          <span className="room-podium-name" title={participant.displayName}>
+            {participant.displayName}
+          </span>
+          <strong className="room-podium-score" aria-label={`${target} pontos`}>
+            <span aria-hidden="true">
+              <PaperDigits value={String(score)} />
+            </span>
+            <RoomPointsIcon />
+          </strong>
+        </div>
+        {place === 1 && complete && <RoomConfetti />}
+      </div>
+    </li>
+  );
+}
+
 export function Podium({ participants }: { participants: readonly LocalRoomParticipant[] }) {
   const ranked = rankLocalRoomParticipants(participants);
   const top3 = ranked.slice(0, 3);
@@ -107,27 +160,7 @@ export function Podium({ participants }: { participants: readonly LocalRoomParti
     <div className="room-results-layout">
       <ol className="local-room-podium">
         {top3.map((participant, index) => (
-          <li
-            className={`local-room-podium__place local-room-podium__place--${index + 1}`}
-            key={participant.id}
-          >
-            <div className="room-podium-medallion">
-              <RoomAvatar participant={participant} />
-              <RoomTrophyFrame place={index + 1} />
-            </div>
-            <small className="room-eclipse-name">
-              {index === 0 ? "Eclipse Solar" : index === 1 ? "Eclipse Lunar" : "Lua Sangrenta"}
-            </small>
-            <RoomEclipseBanner place={index + 1} />
-            <span className="room-podium-rank">
-              <PaperDigits value={String(participant.reward?.place ?? index + 1)} />
-            </span>
-            <span>{participant.displayName}</span>
-            <strong>
-              <PaperDigits value={String(participant.score)} /> <RoomPointsIcon />
-              <span className="visually-hidden"> pontos</span>
-            </strong>
-          </li>
+          <PodiumPlace key={participant.id} participant={participant} place={index + 1} />
         ))}
       </ol>
       <section className="room-results-ranking" aria-label="Classificação final">

@@ -34,7 +34,7 @@ export function RoomRewardNotice({ reward }: { reward: RoomXpReward | undefined 
   }, [notice]);
   return notice ? (
     <aside className="room-reward-notice" role="status">
-      <RoomPointsIcon />
+      <RoomPointsIcon xp />
       <p>{notice}</p>
       <button
         type="button"

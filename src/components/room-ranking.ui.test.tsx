@@ -1,7 +1,80 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Scoreboard, Podium } from "./local-room-projector";
+import { playRoomVictorySound } from "../data/room-feedback-sound";
+vi.mock("../data/room-feedback-sound", () => ({ playRoomVictorySound: vi.fn() }));
 describe("ranking de papel da sala", () => {
+  it("conta pontos, celebra uma vez e não reinicia com snapshots idênticos", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.stubGlobal(
+      "requestAnimationFrame",
+      vi.fn((callback: FrameRequestCallback) => {
+        frames.push(callback);
+        return frames.length;
+      }),
+    );
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({ matches: false })),
+    );
+    vi.mocked(playRoomVictorySound).mockClear();
+    const player = { id: "a", displayName: "Ana", score: 100 };
+    const view = render(<Podium participants={[player]} />);
+    const digits = () =>
+      view.container.querySelector(".room-podium-score .visually-hidden")?.textContent;
+    try {
+      act(() => frames.shift()!(0));
+      expect(digits()).toBe("0");
+      act(() => frames.shift()!(1020));
+      expect(Number(digits())).toBeGreaterThan(0);
+      expect(Number(digits())).toBeLessThan(100);
+      view.rerender(<Podium participants={[{ ...player }]} />);
+      act(() => frames.shift()!(2200));
+      expect(digits()).toBe("100");
+      expect(playRoomVictorySound).toHaveBeenCalledTimes(1);
+      expect(
+        view.container.querySelector(".room-podium-standard")?.getAttribute("data-complete"),
+      ).toBe("true");
+      view.rerender(<Podium participants={[{ ...player }]} />);
+      expect(frames).toHaveLength(0);
+      expect(playRoomVictorySound).toHaveBeenCalledTimes(1);
+    } finally {
+      view.unmount();
+      vi.unstubAllGlobals();
+    }
+  });
+  it("respeita movimento reduzido e cancela a contagem ao desmontar", () => {
+    const frames: FrameRequestCallback[] = [];
+    const cancel = vi.fn();
+    vi.stubGlobal(
+      "requestAnimationFrame",
+      vi.fn((callback: FrameRequestCallback) => {
+        frames.push(callback);
+        return 7;
+      }),
+    );
+    vi.stubGlobal("cancelAnimationFrame", cancel);
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({ matches: true })),
+    );
+    vi.mocked(playRoomVictorySound).mockClear();
+    const view = render(<Podium participants={[{ id: "a", displayName: "Ana", score: 80 }]} />);
+    try {
+      act(() => frames.shift()!(0));
+      expect(view.container.querySelector(".room-podium-score .visually-hidden")?.textContent).toBe(
+        "80",
+      );
+      expect(playRoomVictorySound).not.toHaveBeenCalled();
+      expect(frames).toHaveLength(0);
+      view.unmount();
+      expect(cancel).toHaveBeenCalledWith(7);
+    } finally {
+      view.unmount();
+      vi.unstubAllGlobals();
+    }
+  });
   it("anima deslocamentos opostos quando duas pessoas trocam de posição", () => {
     const animate = vi.fn();
     const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "animate");

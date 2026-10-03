@@ -128,7 +128,7 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
   await expect(page.locator(".local-room-host-audio")).toBeVisible();
   await expect(page.locator(".local-room-scoreboard .room-player-avatar")).toHaveCount(8);
   await expect(page.locator(".local-room-countdown")).toHaveCount(0);
-  await expect(page.locator(".room-points-icon").first()).toHaveCSS("color", "rgb(255, 249, 239)");
+  await expect(page.locator(".room-clock-icon").first()).toHaveCSS("color", "rgb(38, 155, 165)");
   await page.screenshot({ path: testInfo.outputPath("round-dark.png"), fullPage: true });
   now += 3001;
   for (const credential of credentials) {
@@ -146,6 +146,8 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
   now += 3000;
   await api("next", { code, hostToken, questionIndex: 0 });
   await expect(page.locator(".local-room-podium__place")).toHaveCount(3);
+  await expect(page.locator(".room-podium-standard[data-complete=true]")).toHaveCount(3);
+  await expect(page.locator(".local-room-podium__place--1 .room-confetti")).toHaveCount(1);
   await expect(page.locator(".local-room-scoreboard li")).toHaveCount(8);
   await expect
     .poll(async () => {
@@ -163,7 +165,10 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
   expect(first!.height).toBeGreaterThan(second!.height);
   await page.screenshot({ path: testInfo.outputPath("podium-dark.png"), fullPage: true });
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
-  await expect(page.locator(".room-points-icon").first()).toHaveCSS("color", "rgb(41, 36, 50)");
+  await expect(page.locator(".room-podium-score .room-points-icon").first()).toHaveCSS(
+    "color",
+    "rgb(250, 204, 21)",
+  );
   await page.screenshot({ path: testInfo.outputPath("podium-light.png"), fullPage: true });
   await page.evaluate(
     ({ code, credential }) =>

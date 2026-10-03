@@ -1,5 +1,15 @@
 # OlenaStudy: Second Brain
 
+Pódio: frames temáticos externos em room-trophies.svg, inscrições claras sobre
+as bandeiras. PodiumPlace conta pontos com requestAnimationFrame e easing cúbico,
+dependendo somente de score/place, não da identidade de cada snapshot da sala.
+Cancela callbacks ao desmontar; placar e recompensa continuam autoritativos.
+Movimento reduzido elimina contagem e celebração. Som de vitória é um arpejo
+Web Audio local. O gesto de responder habilita o contexto, que é reaproveitado
+na vitória e fechado ao terminar ou após 3 minutos de inatividade. Fontes e ganhos
+de cada resposta são desconectados ao terminar. Contextos suspensos na vitória
+são fechados, sem tentativa de contornar a política de autoplay.
+
 Sala: lastAnswer publica somente pergunta e acerto, nunca tradução. Scoreboard usa
 deslocamento animado da posição anterior à atual, com fallback estático e movimento
 reduzido. Qualquer erro de escuta desconta 5 pontos sem saldo negativo; Bingo não.

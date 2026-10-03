@@ -2,6 +2,9 @@
 
 ## Eclipses e feedback da sala (2026-10-03)
 
+- Refinamento do pódio: molduras SVG próprias de raios solares, crescentes lunares e lua rubra; colocação, nome e pontos diretamente nas bandeiras, sem placas recortando o fundo. Bandeiras crescem a partir da base e medalhões entram com movimento suave; pontos contam de zero até o valor final, sem alterar o placar do servidor. Atualizações idênticas da sala não reiniciam a animação. Movimento reduzido mostra o resultado diretamente, sem confetes ou som de vitória.
+- Primeiro colocado celebra ao terminar a contagem com confetes e arpejo sintetizado localmente. Restrições de áudio do navegador são respeitadas: sem contexto liberado, permanece silencioso. Pontos usam dourado, XP violeta e relógio turquesa; os pontos do pódio seguem a cor de cada eclipse.
+
 - Ranking anima a troca de posições por deslocamento das linhas, preservando identidade e respeitando movimento reduzido. O último acerto ou erro é publicado pelo servidor por pergunta, sem expor a tradução, e pinta a linha verde ou vermelha. Confetes são recortes locais.
 - Qualquer resposta errada de escuta desconta 5 pontos, com saldo mínimo zero. Bingo mantém a regra de passar sem penalização. Pontos de acerto continuam entre 100 e 20 pelo relógio do servidor; mensagens contextualizam a rapidez sem alterar a pontuação.
 - Feedback usa painel de papel facetado, cores de resultado, bandeira proporcional no fundo e no contorno da palavra, efeitos sonoros sintetizados localmente. Não há upload ou serviço de som.
