@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Fundo das palavras na Escuta coletiva (2026-10-03)
+
+- Hover e foco por teclado mostram as cores da bandeira dos Estados Unidos em toda a superfície do botão, com SVG próprio sem margem e tamanho de fundo 100% por 100%.
+- Faixas e campo azul mantêm facetas de papel, com opacidade moderada para preservar o contraste das palavras e traduções nos temas claro e escuro. A seleção e a aplicação das palavras permanecem imediatas.
+- Teste da preparação verifica preenchimento completo e ativação por hover e foco.
+
 ## Controles da sala e investigação do Foco (2026-10-02)
 
 - Banco mantém as 100 palavras selecionáveis com aplicação imediata, sem seleção em lote ou contador redundante de palavras na rodada. O plus é o PaperActionIcon da Agenda.

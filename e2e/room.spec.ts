@@ -83,10 +83,29 @@ for (const activity of ["listening", "bingo"] as const) {
       await first.hover();
       await expect
         .poll(() => first.evaluate((button) => getComputedStyle(button, "::before").opacity))
-        .toBe("0.18");
+        .toBe("0.3");
       expect(
         await first.evaluate((button) => getComputedStyle(button, "::before").backgroundImage),
-      ).toContain("room-icons/english.svg");
+      ).toContain("room-icons/english-button-background.svg");
+      expect(
+        await first.evaluate((button) => getComputedStyle(button, "::before").backgroundSize),
+      ).toBe("100% 100%");
+      await first.focus();
+      await page.mouse.move(0, 0);
+      await first.press("Tab");
+      await page.keyboard.press("Shift+Tab");
+      await expect
+        .poll(() => first.evaluate((button) => getComputedStyle(button, "::before").opacity))
+        .toBe("0.3");
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate((value) => {
+          document.documentElement.dataset["theme"] = value;
+        }, theme);
+        await first.screenshot({ path: testInfo.outputPath(`word-background-${theme}.png`) });
+      }
+      await page.evaluate(() => {
+        document.documentElement.dataset["theme"] = "light";
+      });
       const bounds = await first.boundingBox();
       expect(bounds).not.toBeNull();
       const viewport = page.viewportSize()!;

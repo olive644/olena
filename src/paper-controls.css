@@ -165,12 +165,12 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: url("/room-icons/english.svg") right center / auto 100% no-repeat;
+  background: url("/room-icons/english-button-background.svg") center / 100% 100% no-repeat;
   opacity: 0;
   transition: opacity 180ms ease;
 }
 .local-room-ready-words__results button:is(:hover, :focus-visible)::before {
-  opacity: 0.18;
+  opacity: 0.3;
 }
 @media (prefers-reduced-motion: reduce) {
   .local-room-ready-words__results button::before {
