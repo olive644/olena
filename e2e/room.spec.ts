@@ -83,10 +83,42 @@ for (const activity of ["listening", "bingo"] as const) {
       await first.hover();
       await expect
         .poll(() => first.evaluate((button) => getComputedStyle(button, "::before").opacity))
-        .toBe("0.18");
+        .toBe("1");
       expect(
         await first.evaluate((button) => getComputedStyle(button, "::before").backgroundImage),
-      ).toContain("room-icons/english.svg");
+      ).toContain("room-icons/english-button-canton.svg");
+      const backgroundSizes = await first.evaluate((button) =>
+        getComputedStyle(button, "::before").backgroundSize.split(", "),
+      );
+      expect(backgroundSizes[0]).toMatch(/^auto [\d.]+%$/);
+      expect(Number.parseFloat(backgroundSizes[0]!.slice(5))).toBeCloseTo(53.846, 3);
+      expect(backgroundSizes[1]).toBe("100% 100%");
+      await expect(first.locator(".paper-english-word__outline").first()).toHaveCSS(
+        "display",
+        "inline",
+      );
+      await expect(first.locator('.paper-english-word pattern rect[fill="#BE3341"]')).toHaveCount(
+        1,
+      );
+      await expect(first.locator('.paper-english-word pattern rect[fill="#333C88"]')).toHaveCount(
+        1,
+      );
+      await first.focus();
+      await page.mouse.move(0, 0);
+      await first.press("Tab");
+      await page.keyboard.press("Shift+Tab");
+      await expect
+        .poll(() => first.evaluate((button) => getComputedStyle(button, "::before").opacity))
+        .toBe("1");
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate((value) => {
+          document.documentElement.dataset["theme"] = value;
+        }, theme);
+        await first.screenshot({ path: testInfo.outputPath(`word-background-${theme}.png`) });
+      }
+      await page.evaluate(() => {
+        document.documentElement.dataset["theme"] = "light";
+      });
       const bounds = await first.boundingBox();
       expect(bounds).not.toBeNull();
       const viewport = page.viewportSize()!;

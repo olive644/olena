@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 70" aria-hidden="true">
+  <defs>
+    <path id="star" fill="#FFF9EF" d="m0-3 1 2h2l-2 2 1 2-2-1-2 1 1-2-2-2h2Z"/>
+    <g id="row"><use href="#star" x="8"/><use href="#star" x="24"/><use href="#star" x="40"/><use href="#star" x="56"/><use href="#star" x="72"/><use href="#star" x="88"/></g>
+    <g id="offset-row"><use href="#star" x="16"/><use href="#star" x="32"/><use href="#star" x="48"/><use href="#star" x="64"/><use href="#star" x="80"/></g>
+  </defs>
+  <path fill="#333C88" d="M0 0h100v70H0Z"/>
+  <use href="#row" y="8"/><use href="#row" y="21"/><use href="#row" y="34"/><use href="#row" y="47"/><use href="#row" y="60"/>
+  <use href="#offset-row" y="14"/><use href="#offset-row" y="27"/><use href="#offset-row" y="40"/><use href="#offset-row" y="53"/>
+  <path fill="#FFF9EF" opacity=".12" d="M0 0h100L0 70Z"/>
+</svg>
