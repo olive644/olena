@@ -286,9 +286,15 @@ for (const source of ["bank", "files", "files-retry"] as const) {
     await expect(page.locator(".local-room-share")).toHaveCSS("border-top-width", "0px");
     const invite = await page.locator(".local-room-share").boundingBox();
     expect(invite).not.toBeNull();
-    expect(Math.abs(invite!.x + invite!.width / 2 - page.viewportSize()!.width / 2)).toBeLessThan(
-      10,
-    );
+    if (testInfo.project.name === "desktop") {
+      expect(invite!.x + invite!.width / 2).toBeLessThan(page.viewportSize()!.width / 2);
+      const people = await page.locator(".local-room-lobby__invite").boundingBox();
+      expect(people!.x).toBeGreaterThanOrEqual(invite!.x + invite!.width);
+    } else {
+      expect(Math.abs(invite!.x + invite!.width / 2 - page.viewportSize()!.width / 2)).toBeLessThan(
+        10,
+      );
+    }
     await expect(page.getByRole("button", { name: "Iniciar atividade" })).toBeDisabled();
     await page.screenshot({ path: testInfo.outputPath("created-lobby.png") });
     await expect(page.getByText("Criando sala…")).toHaveCount(0);
@@ -652,9 +658,11 @@ for (const activity of ["listening", "bingo"] as const) {
       await expect(host.getByRole("button", { name: "Trocar atividade" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Encerrar sala" })).toBeVisible();
       expect(states.get(code)!.participants).toHaveLength(2);
-      if (activity === "listening")
-        expect(states.get(code)!.participants.map((p) => p.score)).toEqual([50, 50]);
-      else expect(Math.max(...states.get(code)!.participants.map((p) => p.score))).toBe(50);
+      for (const participant of states.get(code)!.participants) {
+        expect(participant.score).toBeGreaterThanOrEqual(activity === "listening" ? 100 : 0);
+        expect(participant.score).toBeLessThanOrEqual(500);
+        expect(participant.reward?.xp).toBeGreaterThan(0);
+      }
       if (activity === "listening") expect(playbackRequests).toBeGreaterThan(0);
       await host.getByRole("button", { name: "Trocar atividade", exact: true }).click();
       for (let index = 2; index < 7; index++) {

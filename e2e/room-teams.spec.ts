@@ -93,11 +93,11 @@ test("participante escolhe equipe e anfitrião move com arraste ou botão", asyn
     await player.goto(`/?sala=${code}`);
     await player.getByRole("button", { name: "Entrar", exact: true }).click();
     await expect(player.getByRole("heading", { name: "Escolha sua equipe" })).toBeVisible();
-    await player.getByRole("button", { name: "Entrar na equipe Amarelo" }).click();
-    await expect(host.getByRole("button", { name: "Mover Ana para Roxo" })).toBeVisible();
+    await player.getByRole("button", { name: "Entrar no Lado Solar" }).click();
+    await expect(host.getByRole("button", { name: "Mover Ana para Lado Lunar" })).toBeVisible();
     await expect(host.getByLabel("Placar por equipe")).toHaveCount(0);
     if (mobile) {
-      await host.getByRole("button", { name: "Mover Ana para Roxo" }).click();
+      await host.getByRole("button", { name: "Mover Ana para Lado Lunar" }).click();
     } else {
       const grip = host.getByRole("button", { name: "Arrastar Ana" });
       await grip.scrollIntoViewIfNeeded();
@@ -108,8 +108,8 @@ test("participante escolhe equipe e anfitrião move com arraste ou botão", asyn
       await host.mouse.move(to!.x + to!.width / 2, to!.y + 20, { steps: 8 });
       await host.mouse.up();
     }
-    await expect(host.getByRole("button", { name: "Mover Ana para Amarelo" })).toBeVisible();
-    await expect(player.getByRole("button", { name: "Entrar na equipe Roxo" })).toBeDisabled();
+    await expect(host.getByRole("button", { name: "Mover Ana para Lado Solar" })).toBeVisible();
+    await expect(player.getByRole("button", { name: "Entrar no Lado Lunar" })).toBeDisabled();
     await host.locator(".room-team-board").screenshot({
       path: testInfo.outputPath("team-selection-light.png"),
       animations: "disabled",

@@ -20,6 +20,28 @@ beforeEach(() => {
 });
 
 describe("normalizeRoomState", () => {
+  it("preserva recompensas válidas e rejeita valores fora do limite", () => {
+    const reward = { id: "round:player", place: 1, xp: 100, completedAt: 1000 };
+    const base: Partial<PublicLocalRoomState> = {
+      code: "ABCDE",
+      phase: "results",
+      settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 30 },
+    };
+    expect(
+      normalizeRoomState({
+        ...base,
+        participants: [{ id: "p", displayName: "Ana", score: 100, reward }],
+      }).participants[0]?.reward,
+    ).toEqual(reward);
+    expect(() =>
+      normalizeRoomState({
+        ...base,
+        participants: [
+          { id: "p", displayName: "Ana", score: 100, reward: { ...reward, xp: 1000 } },
+        ],
+      }),
+    ).toThrow("dados inválidos");
+  });
   it("rejeita dados de participantes inválidos", () => {
     expect(() =>
       normalizeRoomState({

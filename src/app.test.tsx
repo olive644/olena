@@ -17,7 +17,11 @@ describe("App", () => {
     localStorage.removeItem("helena.onboarding.v1");
     render(<App />);
     expect(
-      await screen.findByRole("heading", { name: "Em que fase dos estudos você está?" }),
+      await screen.findByRole(
+        "heading",
+        { name: "Em que fase dos estudos você está?" },
+        { timeout: 5000 },
+      ),
     ).toBeTruthy();
   });
 
@@ -217,7 +221,7 @@ describe("App", () => {
     expect(screen.queryByRole("button", { name: /Anotações/ })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
     expect(screen.getByRole("button", { name: "Criar primeira folha" })).toBeTruthy();
-  });
+  }, 15000);
 
   it("cria a primeira folha diretamente na prévia do caderno", async () => {
     render(<App />);
@@ -226,14 +230,19 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Criar caderno" }));
     fireEvent.click(screen.getByRole("button", { name: "Criar primeira folha" }));
 
-    expect(await screen.findByRole("dialog", { name: "Escrever à mão" })).toBeTruthy();
+    // O estúdio é um chunk lazy separado do caderno, inclusive em execução fria.
+    expect(
+      await screen.findByRole("dialog", { name: "Escrever à mão" }, { timeout: 5000 }),
+    ).toBeTruthy();
     expect(screen.getByRole("button", { name: "Upload" })).toBeTruthy();
-  });
+  }, 15000);
 
   it("abre as configurações pelo Perfil da navegação desktop", async () => {
     render(<App />);
     navigate("Perfil");
-    expect(await screen.findByRole("heading", { name: "Preferências de estudo" })).toBeTruthy();
+    expect(
+      await screen.findByRole("heading", { name: "Preferências de estudo" }, { timeout: 5000 }),
+    ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Seus estudos em todos os dispositivos" }),
     ).toBeTruthy();

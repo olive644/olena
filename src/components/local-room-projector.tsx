@@ -7,27 +7,42 @@ import {
 import { NavigationIcon } from "./navigation-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { RoomQrCode } from "./room-qr-code";
-
-const MEDAL_ICON_BY_RANK = ["medal-first", "medal-second", "medal-third"] as const;
+import { RoomAvatar } from "./room-avatar";
+import { RoomPointsIcon, RoomTrophyFrame } from "./room-paper-icons";
+import { PaperDigits } from "./paper-digits";
+import { ROOM_TEAM_LABELS, type RoomTeam } from "../domain/local-room";
+import "./room-stage.css";
 
 function countLabel(count: number, singular: string, plural: string) {
   return `${count} ${count === 1 ? singular : plural}`;
 }
 
-export function Scoreboard({ participants }: { participants: readonly LocalRoomParticipant[] }) {
+export function Scoreboard({
+  participants,
+  offset = 0,
+}: {
+  participants: readonly LocalRoomParticipant[];
+  offset?: number;
+}) {
   const ranked = rankLocalRoomParticipants(participants);
   return (
     <ol className="local-room-scoreboard">
       {ranked.map((participant, index) => (
         <li key={participant.id}>
-          <span className="local-room-scoreboard__rank">{index + 1}</span>
+          <span className="local-room-scoreboard__rank">
+            <PaperDigits value={String(participant.reward?.place ?? index + 1 + offset)} />
+          </span>
+          <RoomAvatar participant={participant} />
           <span>
             {participant.displayName}
-            {participant.team ? ` · ${participant.team}` : ""}
+            {participant.team
+              ? ` · ${ROOM_TEAM_LABELS[participant.team as RoomTeam] ?? participant.team}`
+              : ""}
             {participant.online === false ? " · ausente" : ""}
           </span>
           <strong>
-            {participant.score} <NavigationIcon name="xp" />
+            <PaperDigits value={String(participant.score)} /> <RoomPointsIcon />
+            <span className="visually-hidden"> pontos</span>
           </strong>
         </li>
       ))}
@@ -47,15 +62,22 @@ export function Podium({ participants }: { participants: readonly LocalRoomParti
             className={`local-room-podium__place local-room-podium__place--${index + 1}`}
             key={participant.id}
           >
-            <NavigationIcon name={MEDAL_ICON_BY_RANK[index]!} />
+            <div className="room-podium-medallion">
+              <RoomAvatar participant={participant} />
+              <RoomTrophyFrame place={index + 1} />
+            </div>
+            <span className="room-podium-rank">
+              <PaperDigits value={String(participant.reward?.place ?? index + 1)} />
+            </span>
             <span>{participant.displayName}</span>
             <strong>
-              {participant.score} <NavigationIcon name="xp" />
+              <PaperDigits value={String(participant.score)} /> <RoomPointsIcon />
+              <span className="visually-hidden"> pontos</span>
             </strong>
           </li>
         ))}
       </ol>
-      {rest.length > 0 && <Scoreboard participants={rest} />}
+      {rest.length > 0 && <Scoreboard participants={rest} offset={3} />}
     </>
   );
 }
@@ -102,7 +124,7 @@ export function ProjectorRoom({
               Pergunta {state.questionIndex + 1} de {state.totalQuestions}
             </span>
             <span className="local-room-round__timer">
-              <NavigationIcon name="timer" /> {secondsLeft}s
+              <NavigationIcon name="timer" /> <PaperDigits value={String(secondsLeft)} />s
             </span>
           </div>
           <div className="local-room-projector__prompt">

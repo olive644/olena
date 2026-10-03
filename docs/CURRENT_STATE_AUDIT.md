@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Lobby, pontos e pódio coletivo (2026-10-03)
+
+- Lado Lunar e Lado Solar reutilizam os símbolos dos marcadores de handwriting. Identificadores internos Roxo/Amarelo permanecem compatíveis com salas existentes. Contagens e placares usam PaperDigits do Foco.
+- Lobby desktop separa convite e participantes em colunas, com ação de início visível e rolagem interna para listas grandes. Mobile mantém acesso ao conteúdo inteiro. Voltar usa a seta amarela original; Sair da sala continua explícito.
+- Reprodução de áudio recebe ícone geométrico de papel e movimento reduzido. Placares mostram avatares com fallback, pontos grafite no claro e creme no escuro. Pódio tem molduras autorais, primeiro lugar central mais alto, segundo à esquerda, terceiro à direita e demais posições abaixo.
+- Acertos valem de 100 a 20 pontos, reduzidos linearmente pelo tempo decorrido medido no servidor. Erro do líder continua descontando 5 pontos sem saldo negativo. Valores enviados pelo cliente não determinam pontos. Tentativa antecipada de avançar é um no-op sem erro e não pula perguntas/feedback.
+- XP só é calculado na conclusão: 100/75/50 para os três primeiros, 40 no quarto e menos 5 por posição até o mínimo de 10. Empates recebem a mesma colocação e XP. Quem não respondeu não recebe XP, e encerramento antecipado não concede recompensa.
+- Cada conclusão tem recibo por sala, geração, rodada e participante. Notificação individual grava o XP uma única vez em helena.room-xp.v1 ao receber o resultado; recarga não duplica o crédito. Falha de armazenamento é avisada. O saldo é local ao dispositivo, não sincronizado nem uma carteira global autenticada; essa integração permanece futura.
+- Cobertura inclui rapidez, ausência, empate, repetição, idempotência do crédito, no-op antecipado, lobby em 1280x720, avatares, temas e pódio responsivo.
+
 ## Equipes, modalidades e retomada do Foco (2026-10-03)
 
 - Seleção de modalidade recolhe as opções em Modalidades coletivas, com ícone de papel autoral e reabertura acessível. Remoção individual e limpeza das palavras mantêm o recorte por 220 ms para animar a saída, sem atrasar a atualização da seleção. Movimento reduzido desativa efeitos.

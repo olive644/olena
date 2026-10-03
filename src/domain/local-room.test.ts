@@ -4,18 +4,20 @@ import {
   advanceRoomQuestion,
   buildLocalRoomJoinUrl,
   canAdvanceRoomQuestion,
-  CORRECT_ANSWER_XP,
+  MAX_CORRECT_ANSWER_POINTS,
   createLocalRoomCode,
   createRoom,
   endRoom,
   isValidLocalRoomCode,
-  LEADER_WRONG_ANSWER_PENALTY_XP,
+  LEADER_WRONG_ANSWER_PENALTY_POINTS,
   normalizeLocalRoomCode,
   rankLocalRoomParticipants,
   repeatRoom,
   readLocalRoomCodeFromUrl,
   returnRoomToLobby,
   roomSecondsLeft,
+  roomAnswerPoints,
+  roomPlacementXp,
   roomCountdownValue,
   ROOM_START_COUNTDOWN_MS,
   sanitizeDisplayName,
@@ -46,6 +48,61 @@ function startedWithTwo() {
 }
 
 describe("sala local", () => {
+  it("reduz os pontos de 100 a 20 conforme o tempo de resposta", () => {
+    expect(roomAnswerPoints(30, 0)).toBe(100);
+    expect(roomAnswerPoints(30, 15000)).toBe(60);
+    expect(roomAnswerPoints(30, 29999)).toBe(20);
+    expect(roomAnswerPoints(5, 2500)).toBe(60);
+  });
+  it("concede XP somente no resultado, preserva recibo e renova ao repetir", () => {
+    const started = startedWithTwo();
+    const single = { ...started, deck: started.deck.slice(0, 1) };
+    const fast = submitRoomAnswer(single, {
+      participantId: "p1",
+      questionIndex: 0,
+      answer: single.deck[0]!.back,
+      now: single.questionStartedAt + 1,
+    });
+    const slow = submitRoomAnswer(fast.state, {
+      participantId: "p2",
+      questionIndex: 0,
+      answer: single.deck[0]!.back,
+      now: single.questionStartedAt + 15000,
+    });
+    expect(fast.pointsChange).toBeGreaterThan(slow.pointsChange);
+    expect(slow.state.participants.every((p) => p.reward === undefined)).toBe(true);
+    const result = advanceRoomQuestion(slow.state, single.questionStartedAt + 18000);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 75]);
+    expect(result.participants.map((p) => p.reward?.place)).toEqual([1, 2]);
+    expect(advanceRoomQuestion(result, single.questionStartedAt + 19000)).toBe(result);
+    expect(endRoom(result, single.questionStartedAt + 19000).participants[0]?.reward).toEqual(
+      result.participants[0]?.reward,
+    );
+    const repeat = repeatRoom(result, { now: single.questionStartedAt + 20000 });
+    expect(repeat.roundId).not.toBe(result.roundId);
+    expect(repeat.participants.every((p) => p.reward === undefined && p.answersCount === 0)).toBe(
+      true,
+    );
+  });
+  it("empates compartilham XP, ausência e interrupção não dão recompensa", () => {
+    const started = startedWithTwo();
+    const result = advanceRoomQuestion(
+      {
+        ...started,
+        deck: started.deck.slice(0, 1),
+        participants: [
+          ...started.participants.map((p) => ({ ...p, score: 100, answersCount: 1 })),
+          { id: "absent", displayName: "Ausente", score: 0 },
+        ],
+      },
+      started.questionStartedAt + 30000,
+    );
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 100, 0]);
+    expect(
+      endRoom(started, started.questionStartedAt + 1).participants.every((p) => !p.reward),
+    ).toBe(true);
+    expect([1, 2, 3, 4, 5, 100].map(roomPlacementXp)).toEqual([100, 75, 50, 40, 35, 10]);
+  });
   it("gera e valida um código curto sem caracteres ambíguos", () => {
     const code = createLocalRoomCode(() => 0);
     expect(code).toBe("AAAAA");
@@ -133,7 +190,7 @@ describe("sala local", () => {
       now: listening.questionStartedAt - 1,
     });
     expect(early.state).toBe(listening);
-    expect(early.xpChange).toBe(0);
+    expect(early.pointsChange).toBe(0);
 
     const bingo = startRoom(
       addLocalParticipant(
@@ -150,7 +207,7 @@ describe("sala local", () => {
     expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBeNull();
   });
 
-  it("dá XP ao acertar e nada ao errar sem estar liderando", () => {
+  it("dá pontos ao acertar e nada ao errar sem estar liderando", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
     const firstAt = started.questionStartedAt + 1;
@@ -161,9 +218,9 @@ describe("sala local", () => {
       now: firstAt,
     });
     expect(first.correct).toBe(true);
-    expect(first.xpChange).toBe(CORRECT_ANSWER_XP);
+    expect(first.pointsChange).toBe(MAX_CORRECT_ANSWER_POINTS);
     expect(first.state.participants.find((item) => item.id === "p1")?.score).toBe(
-      CORRECT_ANSWER_XP,
+      MAX_CORRECT_ANSWER_POINTS,
     );
     expect(first.state.answeredParticipantIds).toEqual(["p1"]);
 
@@ -174,7 +231,7 @@ describe("sala local", () => {
       now: firstAt + 1,
     });
     expect(second.correct).toBe(false);
-    expect(second.xpChange).toBe(0);
+    expect(second.pointsChange).toBe(0);
     expect(second.state.participants.find((item) => item.id === "p2")?.score).toBe(0);
   });
 
@@ -198,7 +255,7 @@ describe("sala local", () => {
     expect(again.state).toBe(first.state);
   });
 
-  it("tira XP de quem está liderando se errar, e trava em zero", () => {
+  it("tira pontos de quem está liderando se errar, e trava em zero", () => {
     const started = startedWithTwo();
     const card = started.deck[0]!;
     const firstAt = started.questionStartedAt + 1;
@@ -209,7 +266,7 @@ describe("sala local", () => {
       now: firstAt,
     });
     expect(leading.state.participants.find((item) => item.id === "p1")?.score).toBe(
-      CORRECT_ANSWER_XP,
+      MAX_CORRECT_ANSWER_POINTS,
     );
 
     const stillTwoAnswered = submitRoomAnswer(leading.state, {
@@ -218,8 +275,8 @@ describe("sala local", () => {
       answer: "errada",
       now: firstAt + 1,
     });
-    // p2 não lidera (0 contra CORRECT_ANSWER_XP de p1), então não perde nada.
-    expect(stillTwoAnswered.xpChange).toBe(0);
+    // p2 não lidera (0 contra MAX_CORRECT_ANSWER_POINTS de p1), então não perde nada.
+    expect(stillTwoAnswered.pointsChange).toBe(0);
 
     const nextState = advanceRoomQuestion(stillTwoAnswered.state, firstAt + 2);
     const nextCard = nextState.deck[nextState.questionIndex]!;
@@ -229,9 +286,9 @@ describe("sala local", () => {
       answer: "errada",
       now: firstAt + 3,
     });
-    expect(p1Wrong.xpChange).toBe(-LEADER_WRONG_ANSWER_PENALTY_XP);
+    expect(p1Wrong.pointsChange).toBe(-LEADER_WRONG_ANSWER_PENALTY_POINTS);
     expect(p1Wrong.state.participants.find((item) => item.id === "p1")?.score).toBe(
-      Math.max(0, CORRECT_ANSWER_XP - LEADER_WRONG_ANSWER_PENALTY_XP),
+      Math.max(0, MAX_CORRECT_ANSWER_POINTS - LEADER_WRONG_ANSWER_PENALTY_POINTS),
     );
     expect(nextCard).toBeTruthy();
   });

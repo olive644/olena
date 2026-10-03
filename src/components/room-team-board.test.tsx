@@ -19,9 +19,9 @@ describe("organização de equipes", () => {
     );
     expect(screen.queryByRole("button", { name: /Mover/ })).toBeNull();
     expect(
-      screen.getByRole("button", { name: "Entrar na equipe Roxo" }).hasAttribute("disabled"),
+      screen.getByRole("button", { name: "Entrar no Lado Lunar" }).hasAttribute("disabled"),
     ).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "Entrar na equipe Amarelo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Entrar no Lado Solar" }));
     expect(onAssign).toHaveBeenCalledWith("ana", "Amarelo");
   });
   it("oferece ao criador alternativa acessível ao arraste", () => {
@@ -30,7 +30,7 @@ describe("organização de equipes", () => {
       <RoomTeamBoard participants={participants} isHost participantId="" onAssign={onAssign} />,
     );
     expect(screen.getByRole("button", { name: "Arrastar Ana" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Mover Bia para Roxo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Mover Bia para Lado Lunar" }));
     expect(onAssign).toHaveBeenCalledWith("bia", "Roxo");
   });
 });
