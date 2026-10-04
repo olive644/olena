@@ -216,6 +216,7 @@
 }
 .room-answer-helena {
   --frame-crop: 0%;
+  clip-path: inset(0 2%);
   width: clamp(130px, 22vh, 190px);
   aspect-ratio: 1;
   overflow: hidden;

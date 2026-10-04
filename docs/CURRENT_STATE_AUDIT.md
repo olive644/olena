@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Bloqueio de áudio e recorte dos sprites (2026-10-03)
+
+- Reprodução manual e automática aguardam questionStartedAt no horário do servidor. Botões de áudio permanecem desabilitados durante a contagem inicial, e as funções de reprodução/repetição também recusam pedidos antecipados, sem iniciar cooldown.
+- participantAudio é configuração compartilhada, desligada por padrão e controlada pelo criador. Quando ligada, vale para todos que entram, sem botão de ativação individual no lobby. O gesto de Entrar já libera o player; toque/teclado na sala também tenta liberar reprodução. Autoplay após recarregar ainda depende das regras do navegador e oferece reprodução manual em caso de bloqueio.
+- Sprites aprovados permanecem intactos. O viewport de cada sequência oculta 2% nas bordas laterais, evitando o pontinho de quadros vizinhos durante a reprodução e na pose final, inclusive com movimento reduzido.
+
 ## Helena animada nos resultados (2026-10-03)
 
 - Acerto e erro utilizam as duas sequências quadro a quadro aprovadas: Helena com confere verde ou triste com X vermelho. Cada sprite transparente possui 12 poses completas em grade 4 por 3, evitando articulação que deforma partes do personagem. As imagens são carregadas antecipadamente ao entrar no Modo Sala. A sequência executa uma vez por resposta e conserva a pose final. Movimento reduzido mostra apenas a pose final.

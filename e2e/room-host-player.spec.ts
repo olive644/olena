@@ -81,6 +81,7 @@ test("organizador joga, contador centralizado e API recupera sala sem stream", a
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const countdown = page.locator(".local-room-countdown");
   await expect(countdown).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ouvir novamente", exact: true })).toBeDisabled();
   const viewport = page.viewportSize()!;
   const overlay = await countdown.boundingBox();
   expect(overlay!.width).toBe(viewport.width);
@@ -100,6 +101,7 @@ test("organizador joga, contador centralizado e API recupera sala sem stream", a
   expect(digit!.y + digit!.height).toBeLessThan(viewport.height);
   await page.screenshot({ path: testInfo.outputPath("countdown-centered.png") });
   await expect(countdown).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Ouvir novamente", exact: true })).toBeEnabled();
   await expect(page.getByLabel("Digite a tradução")).toBeVisible();
   await expect(page.getByRole("button", { name: "Revelar palavra" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Modo Projetor" })).toHaveCount(0);
