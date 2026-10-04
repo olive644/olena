@@ -404,6 +404,7 @@ export function LocalRoom({
   const [revealHostWord, setRevealHostWord] = useState(false);
   const [confirmRevealHostWord, setConfirmRevealHostWord] = useState(false);
   const [answer, setAnswer] = useState("");
+  const answerInputRef = useRef<HTMLInputElement>(null);
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
   const [lastResult, setLastResult] = useState<
     (LocalRoomAnswerFeedback & { submittedAnswer: string }) | undefined
@@ -1682,7 +1683,7 @@ export function LocalRoom({
                             }
                           />
                           Áudio nos dispositivos dos participantes
-                          <small>
+                          <small className="local-room-participant-audio-help">
                             Ao ativar, o áudio toca automaticamente para todos que entrarem na sala,
                             depois da contagem inicial.
                           </small>
@@ -2081,6 +2082,13 @@ export function LocalRoom({
                 <button
                   className="secondary-button"
                   type="button"
+                  onPointerDown={(event) => {
+                    if (
+                      event.pointerType === "touch" &&
+                      document.activeElement === answerInputRef.current
+                    )
+                      event.preventDefault();
+                  }}
                   disabled={
                     roundAudioLocked ||
                     replayCooldownSeconds > 0 ||
@@ -2101,6 +2109,7 @@ export function LocalRoom({
                 <label>
                   <span>Digite a tradução</span>
                   <input
+                    ref={answerInputRef}
                     value={answer}
                     onChange={(event) => setAnswer(event.target.value)}
                     disabled={isSubmittingAnswer || room.serverNow() < state.questionStartedAt}

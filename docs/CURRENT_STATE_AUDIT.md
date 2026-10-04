@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Densidade móvel da sala e teclado (2026-10-04)
+
+- Até 600 px, preparação fica alinhada ao topo, modalidades usam grade 2 por 2 e palavras usam duas colunas. Espaçamentos, ícones e cartões são compactos, mantendo alvos de toque de pelo menos 44 px. Navegação superior/inferior e visual desktop permanecem.
+- Explicação longa de participantAudio fica oculta apenas no celular; a configuração compartilhada não muda.
+- Toque em Ouvir novamente cancela a transferência de foco somente se a resposta ainda estiver focada. Reprodução/cooldown continuam normais; sair do campo ou navegar pelo teclado permanece permitido. Não há refoco forçado nem tentativa de controlar o teclado virtual pelo JavaScript.
+
 ## Bloqueio de áudio e recorte dos sprites (2026-10-03)
 
 - Reprodução manual e automática aguardam questionStartedAt no horário do servidor. Botões de áudio permanecem desabilitados durante a contagem inicial, e as funções de reprodução/repetição também recusam pedidos antecipados, sem iniciar cooldown.

@@ -79,6 +79,32 @@ vi.mock("../hooks/use-local-room", () => ({
 }));
 
 describe("resposta do participante", () => {
+  it("mantém o foco da resposta ao tocar em Ouvir novamente", () => {
+    render(<LocalRoom />);
+    const input = screen.getByLabelText("Digite a tradução");
+    input.focus();
+    const replay = screen.getByRole("button", { name: "Ouvir novamente" });
+    const pointer = new Event("pointerdown", { bubbles: true, cancelable: true });
+    Object.defineProperty(pointer, "pointerType", { value: "touch" });
+    fireEvent(replay, pointer);
+    expect(pointer.defaultPrevented).toBe(true);
+    fireEvent.click(replay);
+    expect(document.activeElement).toBe(input);
+    expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+    input.blur();
+    expect(document.activeElement).not.toBe(input);
+  });
+
+  it("não intercepta o toque quando a pessoa já saiu do campo de resposta", () => {
+    render(<LocalRoom />);
+    const input = screen.getByLabelText("Digite a tradução");
+    input.blur();
+    const pointer = new Event("pointerdown", { bubbles: true, cancelable: true });
+    Object.defineProperty(pointer, "pointerType", { value: "touch" });
+    fireEvent(screen.getByRole("button", { name: "Ouvir novamente" }), pointer);
+    expect(pointer.defaultPrevented).toBe(false);
+  });
+
   it.each([false, true])(
     "bloqueia ouvir antes do início, inclusive para o criador: %s",
     (isHost) => {
