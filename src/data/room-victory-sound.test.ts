@@ -3,6 +3,7 @@ import {
   playRoomFeedbackSound,
   playRoomVictorySound,
   prepareRoomFeedbackSound,
+  playRoomCountdownSound,
 } from "./room-feedback-sound";
 
 afterEach(() => {
@@ -10,6 +11,49 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("celebração sonora local", () => {
+  it("contagem tem notas distintas, acorde de início e alerta duplo nos últimos segundos", async () => {
+    vi.useFakeTimers();
+    const pitches: number[] = [];
+    const context = {
+      state: "running",
+      currentTime: 0,
+      destination: {},
+      close: vi.fn(),
+      resume: vi.fn().mockResolvedValue(undefined),
+      createGain: () => ({
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() },
+      }),
+      createOscillator: () => ({
+        type: "",
+        frequency: { setValueAtTime: (pitch: number) => pitches.push(pitch) },
+        connect: vi.fn(),
+        disconnect: vi.fn(),
+        start: vi.fn(),
+        stop: vi.fn(),
+        onended: null,
+      }),
+    };
+    vi.stubGlobal(
+      "AudioContext",
+      vi.fn(function () {
+        return context;
+      }),
+    );
+    prepareRoomFeedbackSound();
+    await Promise.resolve();
+    for (const value of [3, 2, 1, 0]) playRoomCountdownSound(value, false);
+    vi.advanceTimersByTime(179000);
+    playRoomCountdownSound(3, true);
+    vi.advanceTimersByTime(2000);
+    expect(context.close).not.toHaveBeenCalled();
+    expect(pitches).toEqual([440, 554, 659, 880, 1108, 1320, 980, 740]);
+    context.state = "suspended";
+    playRoomCountdownSound(2, true);
+    expect(pitches).toHaveLength(8);
+    playRoomVictorySound();
+  });
   it("reaproveita o contexto habilitado na resposta até celebrar a vitória", async () => {
     const tones = Array.from({ length: 5 }, () => ({
       type: "",

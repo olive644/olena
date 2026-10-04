@@ -86,6 +86,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "subjectName",
           "audioRepetitions",
           "autoPlayAudio",
+          "participantAudio",
           "recordedAudioRequired",
           "acceptMinorTypos",
         ].includes(key),
@@ -106,9 +107,14 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   )
     return false;
   if (
-    ["shuffle", "teams", "autoPlayAudio", "recordedAudioRequired", "acceptMinorTypos"].some(
-      (key) => key in candidate && typeof candidate[key] !== "boolean",
-    )
+    [
+      "shuffle",
+      "teams",
+      "autoPlayAudio",
+      "participantAudio",
+      "recordedAudioRequired",
+      "acceptMinorTypos",
+    ].some((key) => key in candidate && typeof candidate[key] !== "boolean")
   )
     return false;
   if ("readyWordIds" in candidate && !validReadyListeningWordIds(candidate["readyWordIds"]))
@@ -315,6 +321,63 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       });
     }
 
+    if (action === "host-player" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const state = await requireHost(dependencies.store, body);
+      if (state instanceof Response) return state;
+      if (state.phase !== "lobby" || typeof body["active"] !== "boolean")
+        return jsonResponse(400, { error: "Escolha sua participação antes de iniciar." });
+      let updated = { ...state };
+      if (body["active"] && !state.participants.some((p) => p.id === state.hostParticipantId)) {
+        if (state.participants.length >= MAX_ROOM_PARTICIPANTS)
+          return jsonResponse(409, { error: "A sala está cheia." });
+        const id = randomId();
+        const baseName =
+          sanitizeDisplayName(
+            typeof body["displayName"] === "string" ? body["displayName"] : "Organizador",
+          ) || "Organizador";
+        let displayName = baseName;
+        let suffix = 1;
+        while (state.participants.some((p) => p.displayName === displayName)) {
+          displayName = `${baseName.slice(0, 19)} ${suffix++}`;
+        }
+        const avatarUrl = sanitizeRoomAvatar(body["avatarUrl"]);
+        updated = addLocalParticipant(
+          updated,
+          {
+            id,
+            token: randomId(),
+            displayName,
+            score: 0,
+            online: true,
+            lastSeenAt: now(),
+            ...(avatarUrl ? { avatarUrl } : {}),
+            ...(state.hostAccountId ? { accountId: state.hostAccountId } : {}),
+            ...(state.settings.teams
+              ? {
+                  team:
+                    state.participants.filter((p) => p.team === "Roxo").length <=
+                    state.participants.filter((p) => p.team === "Amarelo").length
+                      ? ("Roxo" as const)
+                      : ("Amarelo" as const),
+                }
+              : {}),
+          },
+          now(),
+        );
+        updated.hostParticipantId = id;
+      } else if (!body["active"]) {
+        updated.participants = state.participants.filter((p) => p.id !== state.hostParticipantId);
+        delete updated.hostParticipantId;
+      }
+      const participant = updated.participants.find((p) => p.id === updated.hostParticipantId);
+      return jsonResponse(200, {
+        state: await saveRoom(updated),
+        participantId: participant?.id,
+        participantToken: participant?.token,
+      });
+    }
+
     if (["resume", "heartbeat", "leave"].includes(action ?? "") && request.method === "POST") {
       const body = await readJsonBody(request);
       const code = typeof body["code"] === "string" ? normalizeLocalRoomCode(body["code"]) : "";
@@ -343,9 +406,13 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       let updated: LocalRoomState = {
         ...state,
         participants: state.participants.map((p) =>
-          safeEqual(p.token, credential)
+          safeEqual(p.token, credential) || (role === "host" && p.id === state.hostParticipantId)
             ? { ...p, lastSeenAt: time, online: action !== "leave" }
-            : { ...p, online: time - (p.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS },
+            : {
+                ...p,
+                online:
+                  p.online !== false && time - (p.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS,
+              },
         ),
         ...(role === "host" ? { hostLastSeenAt: time } : {}),
         updatedAt: time,
@@ -365,9 +432,17 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const publicState = await saveRoom(updated);
       return jsonResponse(200, {
         state: publicState,
-        participantId: state.participants.find((p) => safeEqual(p.token, credential))?.id,
+        participantId: state.participants.find((p) =>
+          role === "host" ? p.id === updated.hostParticipantId : safeEqual(p.token, credential),
+        )?.id,
         streamUrl: dependencies.streamUrl(code),
-        ...(role === "host" ? { sourceDeck: updated.sourceDeck ?? [] } : {}),
+        ...(role === "host"
+          ? {
+              sourceDeck: updated.sourceDeck ?? [],
+              participantToken: updated.participants.find((p) => p.id === updated.hostParticipantId)
+                ?.token,
+            }
+          : {}),
       });
     }
 
@@ -651,7 +726,9 @@ export function createLocalRoomHandler(dependencies: LocalRoomHandlerDependencie
         (typeof requestId !== "string" || !/^[a-f0-9-]{36}$/i.test(requestId))
       )
         return jsonResponse(400, { error: "Identificador de pedido inválido." });
-      const blocked = await dependencies.guard?.(request);
+      const blocked = await dependencies.guard?.(
+        new Request(request.url, { method: "POST", headers: request.headers, body: text }),
+      );
       if (blocked) return blocked;
       const identity = await dependencies.authenticate?.(request);
       for (let attempt = 0; attempt < 40; attempt++) {

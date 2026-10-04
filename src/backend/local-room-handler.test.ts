@@ -8,6 +8,7 @@ import {
   type PublicLocalRoomState,
 } from "../domain/local-room";
 import { READY_LISTENING_SOURCE } from "../domain/ready-listening-words";
+import { createRoomGuard } from "./room-guard";
 
 const origin = "https://helena.example";
 
@@ -50,6 +51,115 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it("guard consegue ler heartbeat sem reutilizar um corpo já consumido", async () => {
+    handler = createLocalRoomHandler({
+      store,
+      publish: async () => {},
+      streamUrl: () => "https://example.com/stream",
+      guard: createRoomGuard(store, "project", "app", false),
+      now: () => currentTime,
+    });
+    const { code, hostToken } = await createRoomViaApi();
+    const response = await handler(
+      post("heartbeat", { code, role: "host", credential: hostToken }),
+    );
+    expect(response.status).toBe(200);
+  });
+  it("organizador participa com credencial própria, sem expor tokens públicos", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    const forbidden = await handler(
+      post("host-player", { code, hostToken: "outro", active: true }),
+    );
+    expect(forbidden.status).toBe(403);
+    const player = await (
+      await handler(post("host-player", { code, hostToken, active: true, displayName: "Oli" }))
+    ).json();
+    expect(player.participantToken).toBeTruthy();
+    expect(player.participantToken).not.toBe(hostToken);
+    expect(player.state.participants).toHaveLength(1);
+    expect(player.state).not.toHaveProperty("hostParticipantId");
+    expect(player.state.participants[0]).not.toHaveProperty("token");
+    const duplicate = await (
+      await handler(post("host-player", { code, hostToken, active: true, displayName: "Oli" }))
+    ).json();
+    expect(duplicate.participantId).toBe(player.participantId);
+    expect(duplicate.state.participants).toHaveLength(1);
+    currentTime += 90_000;
+    const resumed = await (
+      await handler(post("resume", { code, role: "host", credential: hostToken }))
+    ).json();
+    expect(resumed.participantToken).toBe(player.participantToken);
+    expect(resumed.state.participants[0].online).toBe(true);
+    const guest = await (await handler(post("join", { code, displayName: "Ana" }))).json();
+    const guestResume = await (
+      await handler(
+        post("resume", { code, role: "participant", credential: guest.participantToken }),
+      )
+    ).json();
+    expect(guestResume).not.toHaveProperty("participantToken");
+    const removed = await (
+      await handler(post("host-player", { code, hostToken, active: false }))
+    ).json();
+    expect(removed.state.participants).toHaveLength(1);
+    expect(removed.state.participants[0].id).toBe(guest.participantId);
+  });
+
+  it("áudio dos participantes é opt-in validado e só o organizador configura", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    const initial = await (
+      await handler(post("resume", { code, role: "host", credential: hostToken }))
+    ).json();
+    expect(initial.state.settings.participantAudio === true).toBe(false);
+    expect(
+      (await handler(post("settings", { code, hostToken, settings: { participantAudio: "sim" } })))
+        .status,
+    ).toBe(400);
+    const enabled = await (
+      await handler(post("settings", { code, hostToken, settings: { participantAudio: true } }))
+    ).json();
+    expect(enabled.state.settings.participantAudio).toBe(true);
+    expect(
+      (
+        await handler(
+          post("settings", { code, hostToken: "outro", settings: { participantAudio: false } }),
+        )
+      ).status,
+    ).toBe(403);
+  });
+
+  it("organizador responde como participante e não troca de modo durante a rodada", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    await handler(
+      post("settings", {
+        code,
+        hostToken,
+        settings: { questionCount: "all", shuffle: false },
+        sourceDeck: [{ id: "book", front: "book", back: "livro" }],
+      }),
+    );
+    const player = await (
+      await handler(post("host-player", { code, hostToken, active: true, displayName: "Oli" }))
+    ).json();
+    expect((await handler(post("start", { code, hostToken }))).status).toBe(200);
+    expect((await handler(post("host-player", { code, hostToken, active: false }))).status).toBe(
+      400,
+    );
+    currentTime += ROOM_START_COUNTDOWN_MS;
+    const answer = await (
+      await handler(
+        post("answer", {
+          code,
+          participantId: player.participantId,
+          participantToken: player.participantToken,
+          questionIndex: 0,
+          answer: "livro",
+        }),
+      )
+    ).json();
+    expect(answer.correct).toBe(true);
+    expect(answer.pointsChange).toBe(100);
+  });
+
   it("ignora pontos e XP enviados pelo cliente e usa tempo do servidor", async () => {
     const { code, hostToken } = await createRoomViaApi(30);
     await handler(

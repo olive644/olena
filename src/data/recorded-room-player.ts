@@ -7,6 +7,18 @@ export class RecordedRoomPlayer {
   private audio: HTMLAudioElement | undefined;
   private url: string | undefined;
   private requestId = 0;
+  private context: AudioContext | undefined;
+  private source: AudioBufferSourceNode | undefined;
+
+  unlock(): void {
+    if (typeof AudioContext === "undefined") return;
+    try {
+      if (!this.context || this.context.state === "closed") this.context = new AudioContext();
+      void this.context.resume().catch(() => undefined);
+    } catch {
+      // Reprodução manual continua disponível sem Web Audio.
+    }
+  }
 
   constructor(
     private readonly onState: (state: NaturalVoiceState) => void,
@@ -27,6 +39,23 @@ export class RecordedRoomPlayer {
     try {
       const blob = await this.load(questionIndex, readyAudioId);
       if (requestId !== this.requestId) return false;
+      if (this.context?.state === "running") {
+        const buffer = await this.context.decodeAudioData(await blob.arrayBuffer());
+        if (requestId !== this.requestId) return false;
+        const source = this.context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.context.destination);
+        this.source = source;
+        source.onended = () => {
+          source.disconnect();
+          if (this.source !== source) return;
+          this.source = undefined;
+          this.onState({ status: "ready" });
+        };
+        this.onState({ status: "playing" });
+        source.start();
+        return true;
+      }
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       this.url = url;
@@ -68,10 +97,18 @@ export class RecordedRoomPlayer {
 
   dispose(): void {
     this.stop();
+    if (this.context && this.context.state !== "closed") void this.context.close();
   }
 
   private stopPlayback(): void {
     this.requestId += 1;
+    const source = this.source;
+    this.source = undefined;
+    if (source) {
+      source.onended = null;
+      source.stop();
+      source.disconnect();
+    }
     this.audio?.pause();
     this.audio = undefined;
     if (this.url) URL.revokeObjectURL(this.url);

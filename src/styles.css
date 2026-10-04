@@ -2740,9 +2740,17 @@ body.local-room-active {
   place-items: center;
   background: color-mix(in srgb, var(--ink) 55%, transparent);
   pointer-events: none;
+  max-width: none;
+  width: 100%;
+  overflow: visible;
 }
 
 .local-room-countdown__value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  overflow: visible;
   font-size: clamp(4rem, 22vw, 8rem);
   font-weight: 800;
   color: var(--surface);

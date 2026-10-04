@@ -162,7 +162,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Paper podium frames, shared bookmark symbols, speed-based points and the local
 // idempotent XP receipt ledger bring the measured total to 940.4 KiB. All remain
 // in lazy room/notebook chunks; initial entry stays at 273.8 KiB.
-const MAX_TOTAL_JS_BYTES = 944 * 1024;
+// Opt-in participant audio, host-player mode and deadline-aware recovery add
+// 3.7 KiB to lazy room code: measured 947.2 KiB, initial entry still 273.8 KiB.
+// No new dependency; retain a narrow allowance for Linux CI.
+const MAX_TOTAL_JS_BYTES = 950 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

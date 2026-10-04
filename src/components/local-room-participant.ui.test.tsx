@@ -23,6 +23,7 @@ vi.mock("../data/listening-audio", () => ({
 
 vi.mock("../data/recorded-room-player", () => ({
   RecordedRoomPlayer: class {
+    unlock() {}
     dispose() {}
     stop() {}
     preload() {}
@@ -56,6 +57,7 @@ vi.mock("../hooks/use-local-room", () => ({
     state: mocks.roomState ?? PLAYING_STATE,
     error: "",
     isHost: mocks.isHost,
+    isOrganizer: mocks.isHost,
     participantId: "p1",
     isRestoring: false,
     connectionStatus: "online" as const,
@@ -100,6 +102,18 @@ describe("resposta do participante", () => {
     expect(mocks.generateAudio).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
     expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+  });
+
+  it("reproduz no participante somente quando o organizador ativa a opção", () => {
+    mocks.roomState = {
+      ...PLAYING_STATE,
+      settings: { ...PLAYING_STATE.settings, participantAudio: true },
+    };
+    render(<LocalRoom />);
+    expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button", { name: "Revelar palavra" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Modo Projetor" })).toBeNull();
+    expect(screen.getByLabelText("Digite a tradução")).toBeTruthy();
   });
 
   it("reproduz automaticamente somente no criador mesmo com configuração antiga desativada", () => {
@@ -148,7 +162,7 @@ describe("resposta do participante", () => {
     act(() => vi.advanceTimersByTime(1_100));
     expect(screen.getByText("Próxima pergunta em 2 segundos.")).toBeTruthy();
     act(() => vi.advanceTimersByTime(1_900));
-    expect(screen.getByText("Próxima pergunta em 0 segundos.")).toBeTruthy();
+    expect(screen.getByText("Atualizando pergunta…")).toBeTruthy();
   });
 
   it("pede áudio da sala sem passar a voz do navegador como alternativa", () => {

@@ -76,7 +76,7 @@ export function Scoreboard({
             participant.lastAnswer?.questionIndex === questionIndex && (
               <span className="room-answer-mark">
                 {participant.lastAnswer.correct ? "Acertou" : "Errou"}
-                {participant.lastAnswer.correct && <RoomConfetti />}
+                {participant.lastAnswer.correct && <RoomConfetti compact />}
               </span>
             )}
           <span className="local-room-scoreboard__rank">

@@ -1,6 +1,7 @@
 import { it, expect, vi } from "vitest";
 import { createRoomGuard } from "./room-guard";
 import { createMemoryRoomStore } from "./room-transaction";
+import { createHash } from "node:crypto";
 
 vi.mock("jose", () => ({
   createRemoteJWKSet: () => "fake-jwks",
@@ -68,6 +69,28 @@ it("deixa passar quando o token do App Check é válido", async () => {
     headers: { "X-Firebase-AppCheck": "valid-token" },
   });
   expect(await guard(request)).toBeUndefined();
+});
+
+it("fallback de uma turma no mesmo IP mantém limites por dispositivo e endereço", async () => {
+  const store = createMemoryRoomStore();
+  const guard = createRoomGuard(store, "project", "app", false);
+  const address = "1.2.3.4";
+  const bucket = Math.floor(Date.now() / 60000);
+  const ipKey = `room-limits/${createHash("sha256").update(`${address}:heartbeat`).digest("hex")}`;
+  await store.set(ipKey, JSON.stringify({ bucket, count: 1800 }), 120);
+  const request = (credential: string) =>
+    new Request("https://app.example/api/local-room?action=heartbeat", {
+      method: "POST",
+      headers: { "x-vercel-forwarded-for": address, "Content-Type": "application/json" },
+      body: JSON.stringify({ credential }),
+    });
+  expect(await guard(request("aluno-1"))).toBeUndefined();
+  const deviceKey = `room-limits/${createHash("sha256").update(`heartbeat-device:${address}:aluno-1`).digest("hex")}`;
+  await store.set(deviceKey, JSON.stringify({ bucket, count: 90 }), 120);
+  expect((await guard(request("aluno-1")))?.status).toBe(429);
+  expect(await guard(request("aluno-2"))).toBeUndefined();
+  await store.set(ipKey, JSON.stringify({ bucket, count: 2400 }), 120);
+  expect((await guard(request("aluno-3")))?.status).toBe(429);
 });
 
 it("recusa quando o token do App Check é inválido", async () => {

@@ -45,11 +45,22 @@ export function RoomClockIcon() {
   );
 }
 
-export function RoomConfetti() {
+export function RoomConfetti({ compact = false }: { compact?: boolean }) {
   return (
     <span className="room-confetti" aria-hidden="true">
-      {Array.from({ length: 14 }, (_, i) => (
-        <i key={i} style={{ "--piece": i } as import("react").CSSProperties} />
+      {Array.from({ length: 48 }, (_, i) => (
+        <i
+          key={i}
+          style={
+            {
+              "--piece": i,
+              "--burst-x": `${Math.cos(i * 2.4) * (compact ? 18 + (i % 7) * 2 : 70 + (i % 7) * 14)}px`,
+              "--burst-y": `${compact ? -16 - (i % 9) * 2 : -60 - (i % 9) * 14}px`,
+              "--fall-x": `${Math.cos(i * 2.4) * (compact ? 22 + (i % 7) * 2 : 100 + (i % 7) * 14)}px`,
+              "--turn": `${180 + i * 23}deg`,
+            } as import("react").CSSProperties
+          }
+        />
       ))}
     </span>
   );

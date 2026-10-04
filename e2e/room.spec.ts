@@ -89,23 +89,18 @@ for (const activity of ["listening", "bingo"] as const) {
         .toBe("1");
       expect(
         await first.evaluate((button) => getComputedStyle(button, "::before").backgroundImage),
-      ).toContain("room-icons/english-button-canton.svg");
+      ).toContain("room-art/english-study.webp");
       const backgroundSizes = await first.evaluate((button) =>
         getComputedStyle(button, "::before").backgroundSize.split(", "),
       );
       expect(backgroundSizes[0]).toMatch(/^auto [\d.]+%$/);
-      expect(Number.parseFloat(backgroundSizes[0]!.slice(5))).toBeCloseTo(53.846, 3);
-      expect(backgroundSizes[1]).toBe("100% 100%");
+      expect(Number.parseFloat(backgroundSizes[0]!.slice(5))).toBe(130);
+      expect(backgroundSizes).toHaveLength(1);
       await expect(first.locator(".paper-english-word__outline").first()).toHaveCSS(
         "display",
         "inline",
       );
-      await expect(first.locator('.paper-english-word pattern rect[fill="#BE3341"]')).toHaveCount(
-        1,
-      );
-      await expect(first.locator('.paper-english-word pattern rect[fill="#333C88"]')).toHaveCount(
-        1,
-      );
+      await expect(first.locator(".paper-english-word pattern")).toHaveCount(0);
       await first.focus();
       await page.mouse.move(0, 0);
       await first.press("Tab");
@@ -647,8 +642,15 @@ for (const activity of ["listening", "bingo"] as const) {
                   await expect(feedback).toHaveClass(wrong ? /is-wrong/ : /is-correct/);
                   await expect(feedback.locator(".paper-english-word__outline").first()).toHaveCSS(
                     "display",
-                    "inline",
+                    "none",
                   );
+                  await expect(feedback.locator(".local-room-answer-feedback__pair")).toHaveCSS(
+                    "background-image",
+                    /english-study\.webp/,
+                  );
+                  await expect(
+                    feedback.locator(".local-room-answer-feedback__pair > span"),
+                  ).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
                   await expect(feedback.locator(".local-room-xp-feedback")).toContainText(
                     wrong ? "-5 pontos" : "pontos",
                   );

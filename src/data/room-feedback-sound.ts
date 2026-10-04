@@ -2,6 +2,14 @@
 let victoryContext: AudioContext | undefined;
 let victoryExpiry: ReturnType<typeof setTimeout> | undefined;
 
+function keepRoomSoundAlive(context: AudioContext): void {
+  clearTimeout(victoryExpiry);
+  victoryExpiry = setTimeout(() => {
+    if (victoryContext === context) victoryContext = undefined;
+    if (context.state !== "closed") void context.close();
+  }, 180_000);
+}
+
 export function playRoomVictorySound(): void {
   if (typeof AudioContext === "undefined") return;
   try {
@@ -47,11 +55,7 @@ export function prepareRoomFeedbackSound(): AudioContext | undefined {
         ? new AudioContext()
         : (victoryContext ?? new AudioContext());
     victoryContext = context;
-    clearTimeout(victoryExpiry);
-    victoryExpiry = setTimeout(() => {
-      victoryContext = undefined;
-      if (context.state !== "closed") void context.close();
-    }, 180_000);
+    keepRoomSoundAlive(context);
     void context.resume().catch(() => context.close());
     return context;
   } catch {
@@ -66,12 +70,12 @@ export function playRoomFeedbackSound(correct: boolean, context: AudioContext | 
     .then(() => {
       const gain = context.createGain();
       gain.connect(context.destination);
-      gain.gain.setValueAtTime(0.06, context.currentTime);
+      gain.gain.setValueAtTime(correct ? 0.07 : 0.09, context.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.32);
       const tone = context.createOscillator();
-      tone.type = correct ? "triangle" : "sine";
-      tone.frequency.setValueAtTime(correct ? 880 : 220, context.currentTime);
-      tone.frequency.exponentialRampToValueAtTime(correct ? 1320 : 110, context.currentTime + 0.2);
+      tone.type = "triangle";
+      tone.frequency.setValueAtTime(correct ? 880 : 620, context.currentTime);
+      tone.frequency.exponentialRampToValueAtTime(correct ? 1320 : 260, context.currentTime + 0.2);
       tone.connect(gain);
       tone.start();
       tone.stop(context.currentTime + 0.32);
@@ -98,4 +102,34 @@ export function playRoomFeedbackSound(correct: boolean, context: AudioContext | 
     .catch(() => {
       void context.close();
     });
+}
+
+// Usa somente o contexto liberado por um gesto do usuário.
+export function playRoomCountdownSound(value: number, warning: boolean): void {
+  const context = victoryContext;
+  if (!context || context.state !== "running") return;
+  keepRoomSoundAlive(context);
+  const pitches = warning
+    ? [980, 740]
+    : value === 0
+      ? [880, 1108, 1320]
+      : [value === 3 ? 440 : value === 2 ? 554 : 659];
+  pitches.forEach((frequency, index) => {
+    const start = context.currentTime + index * (warning ? 0.09 : 0.065);
+    const gain = context.createGain();
+    const tone = context.createOscillator();
+    gain.connect(context.destination);
+    tone.connect(gain);
+    tone.type = "triangle";
+    tone.frequency.setValueAtTime(frequency, start);
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.exponentialRampToValueAtTime(0.065, start + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + (value === 0 ? 0.24 : 0.13));
+    tone.start(start);
+    tone.stop(start + 0.25);
+    tone.onended = () => {
+      tone.disconnect();
+      gain.disconnect();
+    };
+  });
 }

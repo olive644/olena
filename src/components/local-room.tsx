@@ -5,7 +5,11 @@ import {
   RoomConfetti,
   RoomSecondsUnit,
 } from "./room-paper-icons";
-import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
+import {
+  playRoomFeedbackSound,
+  prepareRoomFeedbackSound,
+  playRoomCountdownSound,
+} from "../data/room-feedback-sound";
 import { PaperMoonMark } from "./paper-moon-mark";
 import { PaperDigits } from "./paper-digits";
 import { PaperArrow } from "./paper-arrow";
@@ -69,6 +73,7 @@ const DEFAULT_SETTINGS: LocalRoomSettings = {
   readyWordIds: [],
   audioRepetitions: "unlimited",
   autoPlayAudio: true,
+  participantAudio: false,
   recordedAudioRequired: true,
 };
 
@@ -514,16 +519,48 @@ export function LocalRoom({
   const [feedbackMsLeft, setFeedbackMsLeft] = useState(() =>
     Math.max(0, (state?.feedbackUntil ?? 0) - serverNow()),
   );
+  const lastCueRef = useRef("");
+  useEffect(() => {
+    if (!isPlaying || projectorMode) return;
+    const opening = countdownValue !== null;
+    if (!opening && (secondsLeft < 1 || secondsLeft > 3 || state?.feedbackUntil !== undefined))
+      return;
+    const value = opening ? countdownValue : secondsLeft;
+    const key = `${questionStartedAt}/${opening ? "start" : "warning"}/${value}`;
+    if (lastCueRef.current === key) return;
+    lastCueRef.current = key;
+    playRoomCountdownSound(value, !opening);
+  }, [
+    countdownValue,
+    secondsLeft,
+    questionStartedAt,
+    isPlaying,
+    projectorMode,
+    state?.feedbackUntil,
+  ]);
 
   useEffect(() => {
-    if (!currentQuestionFront || state?.phase !== "playing" || projectorMode || !room.isHost)
+    if (
+      !currentQuestionFront ||
+      state?.phase !== "playing" ||
+      projectorMode ||
+      (!room.isHost && state.settings.participantAudio !== true)
+    )
       return;
     if (clockNow < state.questionStartedAt || autoPlayedQuestionRef.current === questionKey) return;
     autoPlayedQuestionRef.current = questionKey;
     playQuestionAudio(currentQuestionFront);
     // O horário do servidor, não a animação local, libera o áudio da rodada.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clockNow, currentQuestionFront, projectorMode, questionKey, state?.phase, room.isHost]);
+  }, [
+    clockNow,
+    currentQuestionFront,
+    projectorMode,
+    questionKey,
+    state?.phase,
+    state?.settings.participantAudio,
+    room.isHost,
+  ]);
 
   useEffect(() => {
     if (!replayCooldownUntil) return;
@@ -558,7 +595,7 @@ export function LocalRoom({
       setSecondsLeft(remaining);
       if (
         remaining === 0 &&
-        room.isHost &&
+        room.isOrganizer &&
         !projectorMode &&
         state?.feedbackUntil === undefined &&
         !advancing
@@ -573,20 +610,22 @@ export function LocalRoom({
     const timer = window.setInterval(tick, 250);
     return () => window.clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying, projectorMode, questionStartedAt, roundSeconds, room.isHost, state]);
+  }, [isPlaying, projectorMode, questionStartedAt, roundSeconds, room.isOrganizer, state]);
 
   useEffect(() => {
-    if (!isPlaying || !room.isHost || projectorMode || !state?.feedbackUntil) return;
+    if (!isPlaying || !room.isOrganizer || projectorMode || !state?.feedbackUntil) return;
     const timer = window.setTimeout(
       () => void room.nextQuestion(),
       Math.max(0, state.feedbackUntil - room.serverNow()),
     );
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying, projectorMode, questionStartedAt, room.isHost, state?.feedbackUntil]);
+  }, [isPlaying, projectorMode, questionStartedAt, room.isOrganizer, state?.feedbackUntil]);
 
   function joinRoom(event: FormEvent) {
     event.preventDefault();
+    prepareRoomFeedbackSound();
+    recordedPlayerRef.current?.unlock();
     void room.joinRoom(code, name, profile.avatarUrl);
   }
 
@@ -754,7 +793,7 @@ export function LocalRoom({
       </LocalRoomFullscreen>
     );
 
-  if (projectorMode && (!state || !room.isHost))
+  if (projectorMode && (!state || !room.isOrganizer))
     return (
       <LocalRoomFullscreen>
         <div className="local-room-restoring" role="alert">
@@ -873,6 +912,11 @@ export function LocalRoom({
       appliedManualWords !== manualWords ||
       appliedRecordingSignature !== recordingSignature);
   const ownParticipant = state.participants.find((p) => p.id === room.participantId);
+  const savedAnswer =
+    ownParticipant?.lastAnswer?.questionIndex === state.questionIndex
+      ? ownParticipant.lastAnswer
+      : undefined;
+  const feedbackCorrect = lastResult?.correct ?? savedAnswer?.correct;
   const teamScores = ROOM_TEAMS.map((team) => ({
     team,
     score: state.participants.filter((p) => p.team === team).reduce((sum, p) => sum + p.score, 0),
@@ -922,7 +966,17 @@ export function LocalRoom({
   return (
     <LocalRoomFullscreen embedded={preparing}>
       {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
-      <div className={`local-room-session local-room-session--${state.phase}`}>
+      <div
+        className={`local-room-session local-room-session--${state.phase}`}
+        onPointerDownCapture={() => {
+          prepareRoomFeedbackSound();
+          recordedPlayerRef.current?.unlock();
+        }}
+        onKeyDownCapture={() => {
+          prepareRoomFeedbackSound();
+          recordedPlayerRef.current?.unlock();
+        }}
+      >
         {!preparing && (
           <header className="local-room-session__header">
             <button type="button" className="secondary-button room-back" onClick={backToModalities}>
@@ -948,7 +1002,16 @@ export function LocalRoom({
         {room.error && <p role="alert">{room.error}</p>}
         {!room.isRestoring &&
           (room.connectionStatus === "reconnecting" || room.connectionStatus === "offline") && (
-            <HelenaLoading compact label="Reconectando sala…" />
+            <div className="local-room-connection">
+              <HelenaLoading
+                compact
+                label={
+                  room.connectionStatus === "offline"
+                    ? "Sem conexão. Retomando sala…"
+                    : "Reconectando sala…"
+                }
+              />
+            </div>
           )}
         {state.settings.teams && state.phase !== "lobby" && (
           <div className="room-team-scores" aria-label="Placar por equipe">
@@ -1136,7 +1199,7 @@ export function LocalRoom({
                             aria-label="Inglês"
                             onClick={() => setReadyWordsOpen((open) => !open)}
                           >
-                            <img src="/room-icons/english.svg" alt="" width="35" height="35" />
+                            <img src="/room-art/english-study.webp" alt="" width="48" height="48" />
                             <span className="local-room-ready-words__subject-label">
                               <small>MATÉRIA</small>
                               <strong>Inglês</strong>
@@ -1599,6 +1662,22 @@ export function LocalRoom({
                           </select>
                         </label>
                       )}
+                      {state.settings.activity !== "bingo" && (
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={state.settings.participantAudio === true}
+                            onChange={(event) =>
+                              void room.updateSettings({ participantAudio: event.target.checked })
+                            }
+                          />
+                          Áudio nos dispositivos dos participantes
+                          <small>
+                            Desativado por padrão. Cada pessoa precisa liberar o áudio no seu
+                            navegador.
+                          </small>
+                        </label>
+                      )}
                       <RoomStepSlider
                         label="Tempo por pergunta"
                         value={state.settings.roundSeconds}
@@ -1615,6 +1694,25 @@ export function LocalRoom({
               )}
               {(!preparing || selectedActivity) && (
                 <div className="local-room-action-bar">
+                  {!preparing && (
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      aria-pressed={room.hostPlaying}
+                      disabled={room.busy}
+                      onClick={() => {
+                        prepareRoomFeedbackSound();
+                        void room.setHostParticipation(
+                          !room.hostPlaying,
+                          name || "Organizador",
+                          profile.avatarUrl,
+                        );
+                      }}
+                    >
+                      <PaperEditorIcon name="team" />
+                      {room.hostPlaying ? "Participando da atividade" : "Também quero participar"}
+                    </button>
+                  )}
                   <div>
                     <button
                       className="primary-button"
@@ -1630,6 +1728,7 @@ export function LocalRoom({
                         pendingActivity !== null
                       }
                       onClick={() => {
+                        prepareRoomFeedbackSound();
                         void (async () => {
                           if (preparing) {
                             setCreating(true);
@@ -1692,7 +1791,7 @@ export function LocalRoom({
                       type="button"
                       disabled={creating}
                       onClick={() => {
-                        const credential = connection.speechCredential();
+                        const credential = connection.organizerCredential();
                         if (!credential) return;
                         setCreating(true);
                         setCreationError("");
@@ -1725,6 +1824,18 @@ export function LocalRoom({
               <PaperEditorIcon name="team" />
               <h3>Aguardando o início</h3>
               <p>O organizador controla esta sala. Código: {state.code}</p>
+              {state.settings.participantAudio === true && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => {
+                    prepareRoomFeedbackSound();
+                    recordedPlayerRef.current?.unlock();
+                  }}
+                >
+                  <RoomAudioIcon /> Ativar áudio neste dispositivo
+                </button>
+              )}
               {state.settings.teams && (
                 <RoomTeamBoard
                   participants={state.participants}
@@ -1880,16 +1991,22 @@ export function LocalRoom({
               </div>
             ) : answered ? (
               <div
-                className={`local-room-answer-feedback ${lastResult?.correct ? "is-correct" : "is-wrong"}`}
+                className={`local-room-answer-feedback ${feedbackCorrect === true ? "is-correct" : feedbackCorrect === false ? "is-wrong" : ""}`}
                 role="status"
                 aria-live="polite"
               >
-                {lastResult?.correct ? (
+                {feedbackCorrect !== false ? (
                   <PaperCheckIcon size={28} />
                 ) : (
                   <PaperEditorIcon name="close" />
                 )}
-                <h3>{lastResult?.correct ? "Correto!" : "Ainda não foi dessa vez"}</h3>
+                <h3>
+                  {feedbackCorrect === true
+                    ? "Correto!"
+                    : feedbackCorrect === false
+                      ? "Ainda não foi dessa vez"
+                      : "Resposta recebida"}
+                </h3>
                 {lastResult?.correct && <RoomConfetti />}
                 {lastResult?.correct && (
                   <strong className="room-speed-label">
@@ -1936,7 +2053,11 @@ export function LocalRoom({
                 )}
                 {state.feedbackUntil !== undefined ? (
                   <div className="local-room-feedback-countdown">
-                    <p>Próxima pergunta em {Math.ceil(feedbackMsLeft / 1_000)} segundos.</p>
+                    <p>
+                      {feedbackMsLeft > 0
+                        ? `Próxima pergunta em ${Math.ceil(feedbackMsLeft / 1_000)} segundos.`
+                        : "Atualizando pergunta…"}
+                    </p>
                     <span aria-hidden="true">
                       <i style={{ transform: `scaleX(${feedbackMsLeft / ROOM_FEEDBACK_MS})` }} />
                     </span>
