@@ -649,6 +649,10 @@ for (const activity of ["listening", "bingo"] as const) {
                     /linear-gradient/,
                   );
                   await expect(feedback.getByRole("img", { name: /Helena/ })).toBeVisible();
+                  await expect(feedback.locator(".room-answer-helena")).toHaveCSS(
+                    "clip-path",
+                    "inset(0px 2%)",
+                  );
                   await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
                     "background-image",
                     wrong ? /helena-wrong-frames/ : /helena-correct-frames/,

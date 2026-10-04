@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   generateAudio: vi.fn<(...args: unknown[]) => Promise<boolean>>().mockResolvedValue(true),
   roomState: undefined as PublicLocalRoomState | undefined,
   isHost: false,
+  serverOffset: 0,
 }));
 
 vi.mock("../data/listening-audio", () => ({
@@ -72,16 +73,81 @@ vi.mock("../hooks/use-local-room", () => ({
     returnToLobby: vi.fn(),
     submitAnswer: mocks.submitAnswer,
     reset: vi.fn(),
-    serverNow: () => Date.now(),
+    serverNow: () => Date.now() + mocks.serverOffset,
     speechCredential: () => "participant-token",
   }),
 }));
 
 describe("resposta do participante", () => {
+  it.each([false, true])(
+    "bloqueia ouvir antes do início, inclusive para o criador: %s",
+    (isHost) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(1000);
+      mocks.isHost = isHost;
+      mocks.roomState = {
+        ...PLAYING_STATE,
+        questionStartedAt: 4000,
+        countdownStartedAt: 1000,
+        settings: { ...PLAYING_STATE.settings, participantAudio: true },
+      };
+      render(<LocalRoom />);
+      const listen = screen.getByRole("button", {
+        name: isHost ? "Reproduzir áudio" : "Ouvir novamente",
+      });
+      expect(listen.hasAttribute("disabled")).toBe(true);
+      fireEvent.click(listen);
+      expect(mocks.generateAudio).not.toHaveBeenCalled();
+      act(() => vi.advanceTimersByTime(2999));
+      expect(mocks.generateAudio).not.toHaveBeenCalled();
+      act(() => vi.advanceTimersByTime(1));
+      expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+      expect(listen.hasAttribute("disabled")).toBe(false);
+    },
+  );
+
+  it("ouvir bloqueado não inicia o cooldown nem toca áudio quando a sala está sem áudio automático", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+    mocks.roomState = { ...PLAYING_STATE, questionStartedAt: 4000, countdownStartedAt: 1000 };
+    render(<LocalRoom />);
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    expect(mocks.generateAudio).not.toHaveBeenCalled();
+    expect(screen.queryByRole("button", { name: "Ouvir novamente em 5s" })).toBeNull();
+    act(() => vi.advanceTimersByTime(3000));
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    expect(mocks.generateAudio).toHaveBeenCalledTimes(1);
+  });
+
+  it("áudio compartilhado é uma opção da sala, sem ativação individual no lobby", () => {
+    mocks.roomState = {
+      ...PLAYING_STATE,
+      phase: "lobby",
+      settings: { ...PLAYING_STATE.settings, participantAudio: true },
+    };
+    render(<LocalRoom />);
+    expect(screen.getByText(/Áudio da sala ativado/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Ativar áudio neste dispositivo" })).toBeNull();
+    expect(mocks.generateAudio).not.toHaveBeenCalled();
+  });
+
+  it("mantém o cooldown de cinco segundos mesmo com diferença entre o relógio local e o servidor", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+    mocks.serverOffset = 100000;
+    mocks.roomState = { ...PLAYING_STATE, questionStartedAt: 101000 };
+    render(<LocalRoom />);
+    fireEvent.click(screen.getByRole("button", { name: "Ouvir novamente" }));
+    expect(screen.getByRole("button", { name: "Ouvir novamente em 5s" })).toBeTruthy();
+    act(() => vi.advanceTimersByTime(5000));
+    expect(screen.getByRole("button", { name: "Ouvir novamente" })).toBeTruthy();
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
     mocks.roomState = undefined;
     mocks.isHost = false;
+    mocks.serverOffset = 0;
     vi.useRealTimers();
   });
 

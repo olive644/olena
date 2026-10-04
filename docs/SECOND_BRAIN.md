@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Reprodução de áudio da sala usa questionStartedAt e serverNow como trava, tanto
+no botão quanto na função. Tentativa antecipada não inicia o cooldown de replay.
+participantAudio ativa todos os participantes, sem opção individual no lobby.
+O gesto de Entrar libera o RecordedRoomPlayer; o navegador continua controlando
+autoplay em sessões restauradas. Sprites da Helena têm máscara lateral de 2%
+no viewport, sem regenerar as poses aprovadas.
+
 Feedback de resposta utiliza RoomAnswerHelena com sprites WebP de 12 quadros,
 em grade 4 por 3. Poses completas preservam a anatomia da Helena aprovada.
 A chave da sala/pergunta controla a remontagem, sem reiniciar a animação por

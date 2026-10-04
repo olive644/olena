@@ -452,6 +452,7 @@ export function LocalRoom({
   }, [speechCredential]);
 
   function playQuestionAudio(text: string) {
+    if (!state || state.phase !== "playing" || room.serverNow() < state.questionStartedAt) return;
     const playback =
       (state?.settings.activity ?? "listening") === "listening"
         ? state?.settings.subjectName === READY_LISTENING_SOURCE && state.currentQuestion
@@ -462,9 +463,10 @@ export function LocalRoom({
   }
 
   function replayQuestionAudio(text: string) {
-    if (Date.now() < replayCooldownUntil) return;
+    if (!state || state.phase !== "playing" || room.serverNow() < state.questionStartedAt) return;
+    if (room.serverNow() < replayCooldownUntil) return;
     playQuestionAudio(text);
-    const cooldownUntil = Date.now() + AUDIO_REPLAY_COOLDOWN_MS;
+    const cooldownUntil = room.serverNow() + AUDIO_REPLAY_COOLDOWN_MS;
     setReplayCooldownUntil(cooldownUntil);
     setReplayCooldownSeconds(5);
   }
@@ -520,6 +522,7 @@ export function LocalRoom({
   const roundSeconds = state?.settings.roundSeconds ?? 30;
   const [clockNow, setClockNow] = useState(() => serverNow());
   const countdownValue = state ? roomCountdownValue(state, clockNow) : null;
+  const roundAudioLocked = isPlaying && clockNow < questionStartedAt;
   const [secondsLeft, setSecondsLeft] = useState(() =>
     state ? roomSecondsLeft(state, serverNow()) : roundSeconds,
   );
@@ -572,14 +575,14 @@ export function LocalRoom({
   useEffect(() => {
     if (!replayCooldownUntil) return;
     const update = () => {
-      const remaining = Math.max(0, Math.ceil((replayCooldownUntil - Date.now()) / 1000));
+      const remaining = Math.max(0, Math.ceil((replayCooldownUntil - serverNow()) / 1000));
       setReplayCooldownSeconds(remaining);
       if (!remaining) setReplayCooldownUntil(0);
     };
     update();
     const timer = window.setInterval(update, 250);
     return () => window.clearInterval(timer);
-  }, [replayCooldownUntil]);
+  }, [replayCooldownUntil, serverNow]);
 
   useEffect(() => {
     const deadline = state?.feedbackUntil;
@@ -1680,8 +1683,8 @@ export function LocalRoom({
                           />
                           Áudio nos dispositivos dos participantes
                           <small>
-                            Desativado por padrão. Cada pessoa precisa liberar o áudio no seu
-                            navegador.
+                            Ao ativar, o áudio toca automaticamente para todos que entrarem na sala,
+                            depois da contagem inicial.
                           </small>
                         </label>
                       )}
@@ -1832,16 +1835,9 @@ export function LocalRoom({
               <h3>Aguardando o início</h3>
               <p>O organizador controla esta sala. Código: {state.code}</p>
               {state.settings.participantAudio === true && (
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => {
-                    prepareRoomFeedbackSound();
-                    recordedPlayerRef.current?.unlock();
-                  }}
-                >
-                  <RoomAudioIcon /> Ativar áudio neste dispositivo
-                </button>
+                <p className="local-room-audio-status" role="status">
+                  <RoomAudioIcon /> Áudio da sala ativado. A reprodução começa com a rodada.
+                </p>
               )}
               {state.settings.teams && (
                 <RoomTeamBoard
@@ -1887,7 +1883,7 @@ export function LocalRoom({
                 <button
                   className="secondary-button local-room-host-audio"
                   type="button"
-                  disabled={naturalState.status === "generating"}
+                  disabled={roundAudioLocked || naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
                   <RoomAudioIcon /> Reproduzir áudio
@@ -1954,7 +1950,7 @@ export function LocalRoom({
                 </p>
                 <button
                   className="secondary-button"
-                  disabled={naturalState.status === "generating"}
+                  disabled={roundAudioLocked || naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
                   <RoomAudioIcon /> Ouvir palavra
@@ -2047,7 +2043,11 @@ export function LocalRoom({
                   <button
                     className="secondary-button"
                     type="button"
-                    disabled={replayCooldownSeconds > 0 || naturalState.status === "generating"}
+                    disabled={
+                      roundAudioLocked ||
+                      replayCooldownSeconds > 0 ||
+                      naturalState.status === "generating"
+                    }
                     onClick={() => replayQuestionAudio(lastResult.question!.front)}
                   >
                     <RoomAudioIcon />
@@ -2081,7 +2081,11 @@ export function LocalRoom({
                 <button
                   className="secondary-button"
                   type="button"
-                  disabled={replayCooldownSeconds > 0 || naturalState.status === "generating"}
+                  disabled={
+                    roundAudioLocked ||
+                    replayCooldownSeconds > 0 ||
+                    naturalState.status === "generating"
+                  }
                   onClick={() => replayQuestionAudio(state.currentQuestion!.front)}
                 >
                   <RoomAudioIcon />
