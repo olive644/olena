@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Feedback de resposta utiliza RoomAnswerHelena com sprites WebP de 12 quadros,
+em grade 4 por 3. Poses completas preservam a anatomia da Helena aprovada.
+A chave da sala/pergunta controla a remontagem, sem reiniciar a animação por
+heartbeat. Movimento reduzido conserva a pose final. RoomSpeedNotice remove
+o aviso após 1200 ms, limpa o timer ao desmontar e não ocupa espaço no fluxo.
+A arte inglesa continua nas palavras selecionáveis, não nos resultados.
+
 Recuperação da sala: SSE saudável mantém heartbeat de presença a cada 15 segundos;
 stream com erro ou prazo vencido usa fallback de 1 segundo, serializado. Resposta
 válida da API limpa reconectando; visibilitychange busca imediatamente. Revisão

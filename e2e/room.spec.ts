@@ -646,7 +646,12 @@ for (const activity of ["listening", "bingo"] as const) {
                   );
                   await expect(feedback.locator(".local-room-answer-feedback__pair")).toHaveCSS(
                     "background-image",
-                    /english-study\.webp/,
+                    /linear-gradient/,
+                  );
+                  await expect(feedback.getByRole("img", { name: /Helena/ })).toBeVisible();
+                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                    "background-image",
+                    wrong ? /helena-wrong-frames/ : /helena-correct-frames/,
                   );
                   await expect(
                     feedback.locator(".local-room-answer-feedback__pair > span"),
@@ -654,9 +659,39 @@ for (const activity of ["listening", "bingo"] as const) {
                   await expect(feedback.locator(".local-room-xp-feedback")).toContainText(
                     wrong ? "-5 pontos" : "pontos",
                   );
+                  await page.evaluate(
+                    async (result) => {
+                      const sprite = new Image();
+                      sprite.src = `/room-art/helena-${result}-frames.webp`;
+                      await sprite.decode();
+                    },
+                    wrong ? "wrong" : "correct",
+                  );
+                  await expect
+                    .poll(() =>
+                      feedback
+                        .locator(".room-answer-helena")
+                        .evaluate((element) =>
+                          element
+                            .getAnimations()
+                            .some((animation) => Number(animation.currentTime) >= 650),
+                        ),
+                    )
+                    .toBe(true);
                   await page.screenshot({
                     path: testInfo.outputPath(wrong ? "answer-wrong.png" : "answer-correct.png"),
                   });
+                  if (!wrong) await expect(feedback.locator(".room-speed-label")).toHaveCount(0);
+                  await page.emulateMedia({ reducedMotion: "reduce" });
+                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                    "animation-name",
+                    "none",
+                  );
+                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                    "background-position",
+                    "100% 100%",
+                  );
+                  await page.emulateMedia({ reducedMotion: "no-preference" });
                 }
               } else {
                 const current = states.get(code)!;

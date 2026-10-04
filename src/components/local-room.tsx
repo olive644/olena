@@ -11,6 +11,7 @@ import {
   playRoomCountdownSound,
 } from "../data/room-feedback-sound";
 import { PaperMoonMark } from "./paper-moon-mark";
+import { RoomAnswerHelena, RoomSpeedNotice } from "./room-answer-helena";
 import { PaperDigits } from "./paper-digits";
 import { PaperArrow } from "./paper-arrow";
 import { RoomRewardNotice } from "./room-reward-notice";
@@ -290,6 +291,12 @@ export function LocalRoom({
   requireAccount = false,
 }: LocalRoomProps) {
   const connection = useLocalRoom(initialJoinCode);
+  useEffect(() => {
+    for (const result of ["correct", "wrong"]) {
+      const sprite = new Image();
+      sprite.src = `/room-art/helena-${result}-frames.webp`;
+    }
+  }, []);
   const preparing = connection.role === "choose" && !connection.isRestoring;
   const [draftSettings, setDraftSettings] = useState(DEFAULT_SETTINGS);
   const [selectedActivity, setSelectedActivity] = useState<"listening" | "bingo" | null>(null);
@@ -1995,10 +2002,13 @@ export function LocalRoom({
                 role="status"
                 aria-live="polite"
               >
-                {feedbackCorrect !== false ? (
-                  <PaperCheckIcon size={28} />
+                {feedbackCorrect !== undefined ? (
+                  <RoomAnswerHelena
+                    key={`${state.code}:${state.questionIndex}:${state.questionStartedAt}`}
+                    correct={feedbackCorrect}
+                  />
                 ) : (
-                  <PaperEditorIcon name="close" />
+                  <PaperCheckIcon size={28} />
                 )}
                 <h3>
                   {feedbackCorrect === true
@@ -2009,15 +2019,10 @@ export function LocalRoom({
                 </h3>
                 {lastResult?.correct && <RoomConfetti />}
                 {lastResult?.correct && (
-                  <strong className="room-speed-label">
-                    {lastResult.pointsChange >= 85
-                      ? "MUITO RÁPIDO!"
-                      : lastResult.pointsChange >= 60
-                        ? "BOM RITMO!"
-                        : lastResult.pointsChange >= 40
-                          ? "BOA RESPOSTA!"
-                          : "MUITO DEVAGAR, TENTE ACELERAR"}
-                  </strong>
+                  <RoomSpeedNotice
+                    key={`${state.code}:${state.questionIndex}:${state.questionStartedAt}`}
+                    points={lastResult.pointsChange}
+                  />
                 )}
                 {!lastResult?.correct && lastResult?.submittedAnswer && (
                   <p>

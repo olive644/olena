@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Helena animada nos resultados (2026-10-03)
+
+- Acerto e erro utilizam as duas sequências quadro a quadro aprovadas: Helena com confere verde ou triste com X vermelho. Cada sprite transparente possui 12 poses completas em grade 4 por 3, evitando articulação que deforma partes do personagem. As imagens são carregadas antecipadamente ao entrar no Modo Sala. A sequência executa uma vez por resposta e conserva a pose final. Movimento reduzido mostra apenas a pose final.
+- Avisos de velocidade entram e saem animados em 1,2 segundo e são removidos do DOM, sem espaço reservado. Atualizações da sala não reiniciam o prazo; a próxima pergunta pode disparar um novo aviso.
+- Arte conceitual inglesa permanece na seleção de palavras, mas sai do painel de acerto/erro. Palavra e tradução mantêm o papel violeta facetado. Sprites aprovados anteriormente com geração nativa foram convertidos para WebP transparente de 1200 por 900, sem novos serviços ou dependências.
+
 ## Recuperação, áudio compartilhado e inglês (2026-10-03)
 
 - Stream continua sendo o transporte principal. Falhas acionam recuperação pela API em intervalos de 1 segundo, sem sobrepor pedidos. Uma resposta válida limpa o estado de reconexão. Prazos vencidos de pergunta/feedback também acionam recuperação rápida; retorno à aba busca o estado imediatamente. Revisões antigas e callbacks de streams substituídos são ignorados.

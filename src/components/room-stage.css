@@ -161,14 +161,13 @@
 }
 .local-room-answer-feedback__pair {
   background-color: #51259b;
-  background-image: url("/room-art/english-study.webp");
-  background-position: right center;
-  background-size: auto 115%;
-  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(135deg, #7147b6 0 8%, transparent 8%),
+    linear-gradient(315deg, #351560 0 10%, transparent 10%);
   border-radius: 4px 16px 4px 4px;
   border-bottom: 4px solid #351560;
-  padding: 22px max(85px, 26%) 22px 16px;
-  min-height: 120px;
+  padding: 12px 20px;
+  min-height: 80px;
   position: relative;
 }
 .local-room-answer-feedback__pair .paper-english-word {
@@ -196,6 +195,120 @@
 .room-speed-label {
   letter-spacing: 0.04em;
   font-size: 0.85rem;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  z-index: 3;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 10px 18px;
+  color: #292432;
+  background:
+    linear-gradient(135deg, #ffe88d 0 12%, transparent 12%),
+    linear-gradient(315deg, #d9aa09 0 12%, #facc15 12%);
+  border-radius: 4px 12px 4px 4px;
+  border-bottom: 3px solid #a77e05;
+  transform: translateX(-50%);
+  animation: room-speed-notice 1.2s ease both;
+}
+.local-room-answer-feedback {
+  position: relative;
+}
+.room-answer-helena {
+  --frame-crop: 0%;
+  width: clamp(130px, 22vh, 190px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  animation: room-helena-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.room-answer-helena__frames {
+  width: 100%;
+  height: 100%;
+  background-size: 400% 300%;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  animation: room-helena-frames 2.2s steps(1, end) both;
+}
+.room-answer-helena.is-correct .room-answer-helena__frames {
+  --frame-crop: 4%;
+  background-image: url("/room-art/helena-correct-frames.webp");
+}
+.room-answer-helena.is-wrong .room-answer-helena__frames {
+  background-image: url("/room-art/helena-wrong-frames.webp");
+}
+@keyframes room-helena-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes room-helena-frames {
+  0% {
+    background-position: 0% 0%;
+    clip-path: inset(0 0 var(--frame-crop) 0);
+  }
+  8.33% {
+    background-position: 33.333% 0%;
+  }
+  16.67% {
+    background-position: 66.667% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  33.33% {
+    background-position: 0% 50%;
+  }
+  41.67% {
+    background-position: 33.333% 50%;
+  }
+  50% {
+    background-position: 66.667% 50%;
+  }
+  58.33% {
+    background-position: 100% 50%;
+  }
+  66.67% {
+    background-position: 0% 100%;
+    clip-path: inset(0);
+  }
+  75% {
+    background-position: 33.333% 100%;
+  }
+  83.33% {
+    background-position: 66.667% 100%;
+  }
+  91.67%,
+  100% {
+    background-position: 100% 100%;
+    clip-path: inset(0);
+  }
+}
+@keyframes room-speed-notice {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 12px) scale(0.92);
+  }
+  16%,
+  65% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -16px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-answer-helena,
+  .room-answer-helena__frames,
+  .room-speed-label {
+    animation: none;
+  }
 }
 .local-room-lobby--created .local-room-action-bar {
   align-self: stretch;
