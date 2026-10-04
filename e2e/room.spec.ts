@@ -670,7 +670,7 @@ for (const activity of ["listening", "bingo"] as const) {
                   await expect
                     .poll(() =>
                       feedback
-                        .locator(".room-answer-helena")
+                        .locator(".room-answer-helena__frames")
                         .evaluate((element) =>
                           element
                             .getAnimations()
