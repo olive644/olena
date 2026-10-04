@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Preparação móvel da sala usa overrides até 600 px em paper-controls.css, sem
+centralização vertical: modalidades 2 por 2 e palavras em duas colunas.
+answerInputRef verifica o foco atual no pointerdown de Ouvir novamente. Apenas
+toque com resposta focada cancela o foco padrão do botão, preservando o teclado
+sem forçar refoco. Teclado físico e saída deliberada continuam livres.
+
 Reprodução de áudio da sala usa questionStartedAt e serverNow como trava, tanto
 no botão quanto na função. Tentativa antecipada não inicia o cooldown de replay.
 participantAudio ativa todos os participantes, sem opção individual no lobby.

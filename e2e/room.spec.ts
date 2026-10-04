@@ -44,6 +44,25 @@ for (const activity of ["listening", "bingo"] as const) {
     await expect(page.locator(".page-header .user-profile")).toBeVisible();
     await expect(page.locator(".page-header .appearance-picker__trigger")).toBeVisible();
     const preparation = page.locator(".local-room-preparation");
+    await expect(preparation.locator(".local-room-activity")).toHaveCount(4);
+    if (testInfo.project.name === "mobile") {
+      for (const viewport of [
+        { width: 320, height: 640 },
+        { width: 390, height: 844 },
+      ]) {
+        await page.setViewportSize(viewport);
+        const bottomNav = await page.locator(".mobile-nav").boundingBox();
+        const cards = await preparation.locator(".local-room-activity").all();
+        for (const card of cards) {
+          const bounds = await card.boundingBox();
+          expect(bounds!.y).toBeGreaterThanOrEqual(0);
+          expect(bounds!.y + bounds!.height).toBeLessThan(bottomNav!.y);
+        }
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+        ).toBe(true);
+      }
+    }
     await expect(preparation.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
     await expect(preparation.locator(".local-room-session__header")).toHaveCount(0);
     await expect(preparation.locator('.local-room-activity[aria-checked="true"]')).toHaveCount(0);
@@ -67,6 +86,12 @@ for (const activity of ["listening", "bingo"] as const) {
       await preparation.getByRole("radio", { name: /^Bingo/ }).click();
     } else {
       await preparation.getByRole("radio", { name: /Escuta coletiva/ }).click();
+      if (testInfo.project.name === "mobile") {
+        const header = await page.locator(".page-header").boundingBox();
+        const modalities = await preparation.locator(".local-room-modalities").boundingBox();
+        expect(modalities!.y).toBeLessThan(header!.y + header!.height + 40);
+        await expect(preparation.locator(".local-room-participant-audio-help")).toBeHidden();
+      }
       await expect(
         preparation.locator('.local-room-activity[aria-checked="true"] .local-room-activity__art'),
       ).toHaveCSS("opacity", "1");
@@ -80,6 +105,18 @@ for (const activity of ["listening", "bingo"] as const) {
       await expect(preparation.getByRole("searchbox")).toHaveCount(0);
       await preparation.getByRole("button", { name: "Inglês", exact: true }).click();
       await expect(words).toHaveCount(100);
+      if (testInfo.project.name === "mobile") {
+        const [firstWord, secondWord] = await words.evaluateAll((buttons) =>
+          buttons.slice(0, 2).map((button) => {
+            const { x, y, height } = button.getBoundingClientRect();
+            return { x, y, height };
+          }),
+        );
+        expect(secondWord.x).toBeGreaterThan(firstWord.x);
+        expect(Math.abs(secondWord.y - firstWord.y)).toBeLessThan(1);
+        expect(firstWord.height).toBeGreaterThanOrEqual(44);
+        await page.screenshot({ path: testInfo.outputPath("compact-mobile-words.png") });
+      }
       const first = words.first();
       await expect(first.locator('[data-paper-icon="plus"]')).toHaveCount(1);
       await expect(preparation.getByRole("button", { name: "Selecionar exibidas" })).toHaveCount(0);
@@ -633,6 +670,15 @@ for (const activity of ["listening", "bingo"] as const) {
                 await page.screenshot({ path: testInfo.outputPath("round-mobile.png") });
               if (activity === "listening") {
                 const wrong = question === 0 && page === players[1];
+                if (question === 0) {
+                  const input = page.getByLabel("Digite a tradução");
+                  await input.tap();
+                  await expect(input).toBeFocused();
+                  await page.getByRole("button", { name: "Ouvir novamente", exact: true }).tap();
+                  await expect(input).toBeFocused();
+                  await page.getByRole("button", { name: "Voltar", exact: true }).focus();
+                  await expect(input).not.toBeFocused();
+                }
                 await page
                   .getByLabel("Digite a tradução")
                   .fill(wrong ? "resposta incorreta" : word);

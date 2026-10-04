@@ -473,3 +473,149 @@
     outline: 2px solid Highlight !important;
   }
 }
+
+@media (max-width: 600px) {
+  .room-view {
+    padding-inline: 12px;
+  }
+  .room-view > .page-header {
+    margin-bottom: 12px;
+  }
+  .room-view > .local-room-preparation {
+    min-height: 0;
+    align-items: start;
+  }
+  .local-room-lobby--preparing {
+    padding-top: 0;
+    gap: 12px;
+  }
+  .local-room-preparation .local-room-settings {
+    padding: 8px;
+    gap: 8px;
+  }
+  .local-room-preparation .local-room-activities {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .local-room-preparation .local-room-activity {
+    min-height: 140px;
+    padding: 10px;
+    gap: 4px;
+    grid-template-rows: 32px auto 1fr;
+    align-content: start;
+  }
+  .local-room-preparation .local-room-activity__icon,
+  .local-room-preparation .local-room-activity__icon img {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+  }
+  .local-room-preparation .local-room-activity strong,
+  .local-room-preparation .local-room-activity small {
+    max-width: 100%;
+  }
+  .local-room-preparation .local-room-activity strong {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  .local-room-preparation .local-room-activity small {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  .local-room-preparation .local-room-activity__badge {
+    top: 10px;
+    right: 8px;
+    max-width: calc(100% - 44px);
+    font-size: 9px;
+    padding: 3px 4px;
+  }
+  .local-room-preparation .local-room-modalities {
+    min-height: 48px;
+    padding: 8px 10px;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .local-room-preparation .local-room-modalities img {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  .local-room-preparation .local-room-modalities span {
+    font-size: 11px;
+  }
+  .local-room-preparation .local-room-settings__panel {
+    padding: 10px;
+    gap: 10px;
+  }
+  .local-room-preparation .local-room-settings__panel h4 {
+    margin: 0;
+    font-size: 14px;
+  }
+  .local-room-preparation .local-room-source {
+    gap: 8px;
+  }
+  .local-room-preparation .local-room-source__option {
+    min-height: 52px;
+    flex-direction: row;
+    gap: 6px;
+    padding: 8px;
+    font-size: 11px;
+    text-align: left;
+  }
+  .local-room-preparation .local-room-source__option img {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+  }
+  .local-room-preparation .local-room-ready-words {
+    padding: 8px;
+    gap: 8px;
+  }
+  .local-room-preparation .local-room-ready-words__subject {
+    min-height: 54px;
+    padding: 6px;
+    gap: 6px;
+  }
+  .local-room-preparation .local-room-ready-words__subject > img {
+    width: 40px;
+    height: 40px;
+  }
+  .local-room-preparation .local-room-ready-words__body {
+    gap: 8px;
+  }
+  .local-room-preparation .local-room-ready-words__results {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 232px;
+    gap: 6px;
+  }
+  .local-room-preparation .local-room-ready-words__results button {
+    min-height: 50px;
+    padding: 5px;
+    gap: 4px;
+  }
+  .local-room-preparation .local-room-ready-words__results .paper-english-word {
+    font-size: clamp(16px, 4.4vw, 20px);
+    max-width: 100%;
+  }
+  .local-room-preparation .local-room-ready-words__results .paper-english-word svg {
+    max-width: 100%;
+  }
+  .local-room-preparation .local-room-ready-words__check {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+  }
+  .local-room-preparation .local-room-ready-words__tools,
+  .local-room-preparation .local-room-ready-words__apply {
+    font-size: 11px;
+  }
+  .local-room-preparation .local-room-settings__panel > label:has(input[type="checkbox"]) {
+    min-height: 44px;
+    padding: 8px;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .local-room-participant-audio-help {
+    display: none;
+  }
+}
