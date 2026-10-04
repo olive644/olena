@@ -33,6 +33,7 @@ export type LocalRoomSettings = {
   audioRate?: 0.75 | 1;
   audioRepetitions?: 1 | 2 | 3 | "unlimited";
   autoPlayAudio?: boolean;
+  participantAudio?: boolean;
   recordedAudioRequired?: boolean;
   acceptMinorTypos?: boolean;
 };
@@ -97,6 +98,7 @@ export type LocalRoomState = {
   updatedAt: number;
   revision?: number;
   hostLastSeenAt?: number;
+  hostParticipantId?: string;
   expiresAt?: number;
   receipts?: Record<
     string,

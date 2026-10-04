@@ -18,6 +18,7 @@ export type StoredLocalRoomSession = {
   role: Exclude<Role, "choose">;
   code: string;
   credential: string;
+  participating?: boolean;
 };
 export type RoomConnectionStatus =
   "disconnected" | "connecting" | "online" | "reconnecting" | "offline";
@@ -45,6 +46,7 @@ export function readStoredLocalRoomSession(
       role: value.role,
       code: normalizeLocalRoomCode(value.code),
       credential: value.credential,
+      ...(value.participating === true ? { participating: true } : {}),
     };
   } catch {
     return undefined;
@@ -270,6 +272,7 @@ export function useLocalRoom(initialJoinCode?: string) {
   const [hasSavedSession, setHasSavedSession] = useState(Boolean(storedSession));
   const [state, updateState] = useState<PublicLocalRoomState>();
   const [hostDeck, setHostDeck] = useState<ListeningCard[]>([]);
+  const [hostPlaying, setHostPlaying] = useState(storedSession?.participating === true);
   function setState(next: PublicLocalRoomState | undefined) {
     updateState((current) =>
       !next
@@ -293,12 +296,12 @@ export function useLocalRoom(initialJoinCode?: string) {
   const serverNow = useCallback(() => Date.now() + clockOffsetRef.current, []);
   const speechCredential = useCallback(
     () =>
-      role === "host"
+      role === "host" && !hostPlaying
         ? hostTokenRef.current
-        : role === "participant"
+        : role === "participant" || hostPlaying
           ? participantTokenRef.current
           : undefined,
-    [role],
+    [role, hostPlaying],
   );
   const pendingRef = useRef(false);
   const createRequestRef = useRef(crypto.randomUUID());
@@ -306,8 +309,10 @@ export function useLocalRoom(initialJoinCode?: string) {
   const [busy, setBusy] = useState(false);
   const codeRef = useRef(storedSession?.code ?? "");
   const eventSourceRef = useRef<EventSource | undefined>(undefined);
+  const streamHealthyRef = useRef(false);
 
   function stopStreaming() {
+    streamHealthyRef.current = false;
     eventSourceRef.current?.close();
     eventSourceRef.current = undefined;
     setConnectionStatus("disconnected");
@@ -321,19 +326,35 @@ export function useLocalRoom(initialJoinCode?: string) {
     stopStreaming();
     setConnectionStatus(navigator.onLine ? "connecting" : "offline");
     const source = new EventSource(streamUrl);
-    source.onopen = () => setConnectionStatus("online");
-    source.onerror = () => setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
+    eventSourceRef.current = source;
+    source.onopen = () => {
+      if (eventSourceRef.current !== source) return;
+      streamHealthyRef.current = true;
+      setConnectionStatus("online");
+    };
+    source.onerror = () => {
+      if (eventSourceRef.current !== source) return;
+      streamHealthyRef.current = false;
+      setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
+    };
     source.addEventListener("cancel", () => {
-      stopStreaming();
-      setError("A sala não está mais disponível. Volte para entrar em outra sala.");
+      if (eventSourceRef.current !== source) return;
+      source.close();
+      streamHealthyRef.current = false;
+      setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
     });
     source.addEventListener("put", (event) => {
+      if (eventSourceRef.current !== source) return;
       try {
         const payload = JSON.parse((event as MessageEvent<string>).data) as {
           path: string;
           data: PublicLocalRoomState | null;
         };
-        if (payload.path === "/" && payload.data) setState(normalizeRoomState(payload.data));
+        if (payload.path === "/" && payload.data) {
+          setState(normalizeRoomState(payload.data));
+          streamHealthyRef.current = true;
+          setConnectionStatus("online");
+        }
         if (payload.path === "/" && payload.data === null) {
           stopStreaming();
           setError("Esta sala expirou ou foi encerrada.");
@@ -342,7 +363,6 @@ export function useLocalRoom(initialJoinCode?: string) {
         // Evento malformado: ignora e espera o próximo.
       }
     });
-    eventSourceRef.current = source;
   }
 
   useEffect(() => {
@@ -356,6 +376,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       streamUrl: string;
       participantId?: string;
       sourceDeck?: ListeningCard[];
+      participantToken?: string;
     }>("resume", {
       code: session.code,
       role: session.role,
@@ -365,7 +386,11 @@ export function useLocalRoom(initialJoinCode?: string) {
         if (!active) return;
         setState(payload.state);
         setError("");
-        if (session.role === "host") setHostDeck(payload.sourceDeck ?? []);
+        if (session.role === "host") {
+          setHostDeck(payload.sourceDeck ?? []);
+          participantTokenRef.current = payload.participantToken ?? "";
+          setHostPlaying(Boolean(payload.participantToken));
+        }
         if (payload.participantId) setParticipantId(payload.participantId);
         startStreaming(payload.streamUrl);
       })
@@ -402,16 +427,27 @@ export function useLocalRoom(initialJoinCode?: string) {
     if (!state || state.phase === "finished") return;
     let active = true;
     let running = false;
+    let lastBeat = 0;
     const beat = async () => {
       if (running || !navigator.onLine) return;
+      const deadlinePassed =
+        state.phase === "playing" &&
+        Date.now() + clockOffsetRef.current >=
+          (state.feedbackUntil ?? state.questionStartedAt + state.settings.roundSeconds * 1000);
+      const interval = streamHealthyRef.current && !deadlinePassed ? 15000 : 1000;
+      if (Date.now() - lastBeat < interval) return;
       running = true;
+      lastBeat = Date.now();
       try {
         const payload = await requestRoom<{ state: PublicLocalRoomState }>("heartbeat", {
           code: codeRef.current,
           role,
           credential: role === "host" ? hostTokenRef.current : participantTokenRef.current,
         });
-        if (active) setState(payload.state);
+        if (active) {
+          setState(payload.state);
+          setConnectionStatus("online");
+        }
       } catch (caught) {
         if (
           active &&
@@ -428,9 +464,12 @@ export function useLocalRoom(initialJoinCode?: string) {
         running = false;
       }
     };
-    const timer = window.setInterval(() => void beat(), 15000);
+    const timer = window.setInterval(() => void beat(), 1000);
     const visible = () => {
-      if (document.visibilityState === "visible") void beat();
+      if (document.visibilityState === "visible") {
+        lastBeat = 0;
+        void beat();
+      }
     };
     window.addEventListener("online", beat);
     document.addEventListener("visibilitychange", visible);
@@ -442,12 +481,15 @@ export function useLocalRoom(initialJoinCode?: string) {
     };
     // The identity changes only when joining or leaving the room.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state?.code, state?.phase, role]);
+  }, [state?.code, state?.phase, state?.questionStartedAt, state?.feedbackUntil, role]);
 
   useEffect(() => {
     const requests = requestsRef.current;
     const handleOffline = () => eventSourceRef.current && setConnectionStatus("offline");
-    const handleOnline = () => eventSourceRef.current && setConnectionStatus("reconnecting");
+    const handleOnline = () => {
+      streamHealthyRef.current = false;
+      if (eventSourceRef.current) setConnectionStatus("reconnecting");
+    };
     window.addEventListener("offline", handleOffline);
     window.addEventListener("online", handleOnline);
     return () => {
@@ -696,7 +738,46 @@ export function useLocalRoom(initialJoinCode?: string) {
     setRole("choose");
     hostTokenRef.current = "";
     setParticipantId("");
+    participantTokenRef.current = "";
+    setHostPlaying(false);
     codeRef.current = "";
+  }
+
+  async function setHostParticipation(active: boolean, displayName: string, avatarUrl?: string) {
+    if (pendingRef.current) return false;
+    pendingRef.current = true;
+    setBusy(true);
+    try {
+      const payload = await requestRoom<{
+        state: PublicLocalRoomState;
+        participantId?: string;
+        participantToken?: string;
+      }>("host-player", {
+        code: codeRef.current,
+        hostToken: hostTokenRef.current,
+        active,
+        displayName,
+        avatarUrl,
+      });
+      setState(payload.state);
+      participantTokenRef.current = payload.participantToken ?? "";
+      setParticipantId(payload.participantId ?? "");
+      setHostPlaying(Boolean(payload.participantToken));
+      writeStoredLocalRoomSession({
+        role: "host",
+        code: codeRef.current,
+        credential: hostTokenRef.current,
+        participating: Boolean(payload.participantToken),
+      });
+      setError("");
+      return true;
+    } catch (caught) {
+      setError(roomErrorMessage(caught, "Não foi possível mudar sua participação."));
+      return false;
+    } finally {
+      pendingRef.current = false;
+      setBusy(false);
+    }
   }
 
   return {
@@ -704,7 +785,10 @@ export function useLocalRoom(initialJoinCode?: string) {
     state,
     hostDeck,
     error,
-    isHost: role === "host",
+    isHost: role === "host" && !(hostPlaying && state?.phase === "playing"),
+    isOrganizer: role === "host",
+    hostPlaying,
+    setHostParticipation,
     participantId,
     isRestoring,
     hasSavedSession,
@@ -725,5 +809,6 @@ export function useLocalRoom(initialJoinCode?: string) {
     reset,
     serverNow,
     speechCredential,
+    organizerCredential: () => (role === "host" ? hostTokenRef.current : undefined),
   };
 }

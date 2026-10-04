@@ -29,6 +29,7 @@ vi.mock("../hooks/use-local-room", () => ({
       state,
       error: "",
       isHost: true,
+      isOrganizer: true,
       participantId: "",
       isRestoring: restoring,
       connectionStatus: "online" as const,

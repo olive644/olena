@@ -165,12 +165,10 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image:
-    url("/room-icons/english-button-canton.svg"), url("/room-icons/english-button-stripes.svg");
-  background-position: left top;
-  background-size:
-    auto 53.846%,
-    100% 100%;
+  background-color: #e6daf5;
+  background-image: url("/room-art/english-study.webp");
+  background-position: right center;
+  background-size: auto 130%;
   background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 180ms ease;
@@ -190,7 +188,7 @@
 }
 .local-room-ready-words__results button:is(:hover, :focus-visible) small {
   color: #292432;
-  background: #fff9ef;
+  background: transparent;
   padding-inline: 4px;
   width: fit-content;
 }

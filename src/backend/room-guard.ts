@@ -27,6 +27,7 @@ export function createRoomGuard(
       "leave",
       "settings",
       "team",
+      "host-player",
       "start",
       "answer",
       "next",
@@ -89,11 +90,38 @@ export function createRoomGuard(
           ? 30
           : action === "join" || action === "view-read"
             ? 90
-            : 600;
+            : action === "heartbeat"
+              ? 2400
+              : 600;
     const allowed = await checkRateLimit(store, "room-limits", `${address}:${action}`, limit, 60);
     if (!allowed) {
       log("rate_limited", 429);
       return reject(429, "Muitas tentativas. Aguarde um minuto e tente novamente.");
+    }
+    if (action === "heartbeat") {
+      const payload: unknown = await request
+        .clone()
+        .json()
+        .catch(() => undefined);
+      if (
+        payload &&
+        typeof payload === "object" &&
+        "credential" in payload &&
+        typeof payload.credential === "string"
+      ) {
+        // A chave é hash pelo rate limiter. Não grava a credencial em claro.
+        const perDevice = await checkRateLimit(
+          store,
+          "room-limits",
+          `heartbeat-device:${address}:${payload.credential}`,
+          90,
+          60,
+        );
+        if (!perDevice) {
+          log("rate_limited", 429);
+          return reject(429, "Muitas tentativas. Aguarde um minuto e tente novamente.");
+        }
+      }
     }
     return undefined;
   };

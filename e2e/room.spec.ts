@@ -89,23 +89,18 @@ for (const activity of ["listening", "bingo"] as const) {
         .toBe("1");
       expect(
         await first.evaluate((button) => getComputedStyle(button, "::before").backgroundImage),
-      ).toContain("room-icons/english-button-canton.svg");
+      ).toContain("room-art/english-study.webp");
       const backgroundSizes = await first.evaluate((button) =>
         getComputedStyle(button, "::before").backgroundSize.split(", "),
       );
       expect(backgroundSizes[0]).toMatch(/^auto [\d.]+%$/);
-      expect(Number.parseFloat(backgroundSizes[0]!.slice(5))).toBeCloseTo(53.846, 3);
-      expect(backgroundSizes[1]).toBe("100% 100%");
+      expect(Number.parseFloat(backgroundSizes[0]!.slice(5))).toBe(130);
+      expect(backgroundSizes).toHaveLength(1);
       await expect(first.locator(".paper-english-word__outline").first()).toHaveCSS(
         "display",
         "inline",
       );
-      await expect(first.locator('.paper-english-word pattern rect[fill="#BE3341"]')).toHaveCount(
-        1,
-      );
-      await expect(first.locator('.paper-english-word pattern rect[fill="#333C88"]')).toHaveCount(
-        1,
-      );
+      await expect(first.locator(".paper-english-word pattern")).toHaveCount(0);
       await first.focus();
       await page.mouse.move(0, 0);
       await first.press("Tab");
@@ -647,14 +642,56 @@ for (const activity of ["listening", "bingo"] as const) {
                   await expect(feedback).toHaveClass(wrong ? /is-wrong/ : /is-correct/);
                   await expect(feedback.locator(".paper-english-word__outline").first()).toHaveCSS(
                     "display",
-                    "inline",
+                    "none",
                   );
+                  await expect(feedback.locator(".local-room-answer-feedback__pair")).toHaveCSS(
+                    "background-image",
+                    /linear-gradient/,
+                  );
+                  await expect(feedback.getByRole("img", { name: /Helena/ })).toBeVisible();
+                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                    "background-image",
+                    wrong ? /helena-wrong-frames/ : /helena-correct-frames/,
+                  );
+                  await expect(
+                    feedback.locator(".local-room-answer-feedback__pair > span"),
+                  ).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
                   await expect(feedback.locator(".local-room-xp-feedback")).toContainText(
                     wrong ? "-5 pontos" : "pontos",
                   );
+                  await page.evaluate(
+                    async (result) => {
+                      const sprite = new Image();
+                      sprite.src = `/room-art/helena-${result}-frames.webp`;
+                      await sprite.decode();
+                    },
+                    wrong ? "wrong" : "correct",
+                  );
+                  await expect
+                    .poll(() =>
+                      feedback
+                        .locator(".room-answer-helena__frames")
+                        .evaluate((element) =>
+                          element
+                            .getAnimations()
+                            .some((animation) => Number(animation.currentTime) >= 650),
+                        ),
+                    )
+                    .toBe(true);
                   await page.screenshot({
                     path: testInfo.outputPath(wrong ? "answer-wrong.png" : "answer-correct.png"),
                   });
+                  if (!wrong) await expect(feedback.locator(".room-speed-label")).toHaveCount(0);
+                  await page.emulateMedia({ reducedMotion: "reduce" });
+                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                    "animation-name",
+                    "none",
+                  );
+                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                    "background-position",
+                    "100% 100%",
+                  );
+                  await page.emulateMedia({ reducedMotion: "no-preference" });
                 }
               } else {
                 const current = states.get(code)!;

@@ -28,19 +28,6 @@ export function PaperEnglishWord({ value }: { value: string }) {
       >
         <defs>
           <g id={glyphId}>{glyphs}</g>
-          <pattern id={flagId} patternUnits="userSpaceOnUse" width={width} height="98">
-            <rect width={width} height="98" fill="#BE3341" />
-            {Array.from({ length: 6 }, (_, index) => (
-              <rect
-                key={index}
-                y={((index * 2 + 1) * 98) / 13}
-                width={width}
-                height={98 / 13}
-                fill="#FFF9EF"
-              />
-            ))}
-            <rect width={Math.min(140, width * 0.38)} height={(98 * 7) / 13} fill="#333C88" />
-          </pattern>
         </defs>
         <g
           className="paper-english-word__outline"
@@ -52,7 +39,7 @@ export function PaperEnglishWord({ value }: { value: string }) {
         </g>
         <g
           className="paper-english-word__outline"
-          stroke={`url(#${flagId})`}
+          stroke="#A779EF"
           strokeWidth="20"
           strokeLinejoin="round"
         >

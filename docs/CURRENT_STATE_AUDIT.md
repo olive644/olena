@@ -1,5 +1,22 @@
 # Auditoria do estado atual
 
+## Helena animada nos resultados (2026-10-03)
+
+- Acerto e erro utilizam as duas sequências quadro a quadro aprovadas: Helena com confere verde ou triste com X vermelho. Cada sprite transparente possui 12 poses completas em grade 4 por 3, evitando articulação que deforma partes do personagem. As imagens são carregadas antecipadamente ao entrar no Modo Sala. A sequência executa uma vez por resposta e conserva a pose final. Movimento reduzido mostra apenas a pose final.
+- Avisos de velocidade entram e saem animados em 1,2 segundo e são removidos do DOM, sem espaço reservado. Atualizações da sala não reiniciam o prazo; a próxima pergunta pode disparar um novo aviso.
+- Arte conceitual inglesa permanece na seleção de palavras, mas sai do painel de acerto/erro. Palavra e tradução mantêm o papel violeta facetado. Sprites aprovados anteriormente com geração nativa foram convertidos para WebP transparente de 1200 por 900, sem novos serviços ou dependências.
+
+## Recuperação, áudio compartilhado e inglês (2026-10-03)
+
+- Stream continua sendo o transporte principal. Falhas acionam recuperação pela API em intervalos de 1 segundo, sem sobrepor pedidos. Uma resposta válida limpa o estado de reconexão. Prazos vencidos de pergunta/feedback também acionam recuperação rápida; retorno à aba busca o estado imediatamente. Revisões antigas e callbacks de streams substituídos são ignorados.
+- Recuperação de uma turma atrás do mesmo IP não deve consumir o limite antigo de 600 heartbeats por minuto. Somente heartbeat recebe 2400/IP/minuto e limite adicional de 90 por credencial/IP/minuto, com chave hash e sem gravar tokens em claro. App Check e validação de credencial permanecem; outros limites não mudam. Aviso transitório de conexão fica em uma faixa compacta, sem deslocar a pergunta.
+- Organizador pode escolher participar no lobby. A API host-player cria uma credencial de participante distinta da credencial administrativa, de forma idempotente, valida fase e autorização e não publica tokens. Resume do organizador recupera a participação; heartbeat mantém sua presença. Durante a rodada sua interface mostra resposta, não revelação ou projetor. Ele continua organizador no servidor e retoma os controles no resultado. Não é uma separação de privilégios contra o próprio dono da sala.
+- Áudio em todos os dispositivos é opcional e desligado por padrão. Participantes liberam reprodução no lobby por um gesto, respeitando autoplay. RecordedRoomPlayer usa Web Audio após liberação, mantém reprodução manual como alternativa e cancela fontes ao mudar de pergunta ou desmontar. Não há microfone ou novo serviço externo neste fluxo.
+- Contagem inicial possui três tons distintos e acorde de início. Últimos três segundos têm alerta duplo. Sons não são reproduzidos retroativamente após recuperar uma aba. Erro usa faixa mais audível; efeitos seguem sintetizados localmente.
+- Contador inicial ocupa o viewport inteiro, sem o limite de largura do conteúdo nem limitação do SVG. Bandeira cresce separadamente das inscrições, evitando esticar nomes e pontos. Confetes passam de 14 para 48 recortes com trajetórias radiais, queda e formas variadas, respeitando movimento reduzido.
+- Arte inglesa autoral da Helena substitui bandeiras nas palavras e feedback. Tradução integra o painel violeta, sem placa branca. Verdes e vermelhos recebem contraste mais forte e mantêm facetas de papel. Estado retomado sem feedback local não inventa um erro.
+- Imagem gerada com a ferramenta nativa de geração, usando a ilustração de Escuta coletiva como referência, exportada em WebP transparente de 640 px (aproximadamente 78 KiB). Prompt: Helena no estilo de papel recortado original, outra pose, apresentando letras e livro, sem bandeira ou marca externa. Nenhum material privado foi enviado.
+
 ## Eclipses e feedback da sala (2026-10-03)
 
 - Refinamento do pódio: molduras SVG próprias de raios solares, crescentes lunares e lua rubra; colocação, nome e pontos diretamente nas bandeiras, sem placas recortando o fundo. Bandeiras crescem a partir da base e medalhões entram com movimento suave; pontos contam de zero até o valor final, sem alterar o placar do servidor. Atualizações idênticas da sala não reiniciam a animação. Movimento reduzido mostra o resultado diretamente, sem confetes ou som de vitória.

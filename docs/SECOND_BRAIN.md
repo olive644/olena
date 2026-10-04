@@ -1,5 +1,34 @@
 # OlenaStudy: Second Brain
 
+Feedback de resposta utiliza RoomAnswerHelena com sprites WebP de 12 quadros,
+em grade 4 por 3. Poses completas preservam a anatomia da Helena aprovada.
+A chave da sala/pergunta controla a remontagem, sem reiniciar a animação por
+heartbeat. Movimento reduzido conserva a pose final. RoomSpeedNotice remove
+o aviso após 1200 ms, limpa o timer ao desmontar e não ocupa espaço no fluxo.
+A arte inglesa continua nas palavras selecionáveis, não nos resultados.
+
+Recuperação da sala: SSE saudável mantém heartbeat de presença a cada 15 segundos;
+stream com erro ou prazo vencido usa fallback de 1 segundo, serializado. Resposta
+válida da API limpa reconectando; visibilitychange busca imediatamente. Revisão
+impede rollback de snapshots. A conexão ainda depende da rede e não elimina
+latência real nem restrições de suspensão de navegadores móveis.
+Fallback admite até 2400 heartbeats/IP/minuto e 90 por credencial/IP, mantendo
+App Check e autorização. Outros limites não mudam. Chaves de limite são hashes;
+o limite por endereço continua sendo uma barreira independente do cliente.
+
+host-player é ação autenticada por hostToken e restrita ao lobby. Cria/remove
+hostParticipantId privado e token próprio; resume só devolve esse token ao dono.
+isOrganizer mantém avanço de rodada; isHost controla a interface administrativa
+e fica falso durante a partida se hostPlaying. O dono não perde sua autoridade
+no servidor: este é um modo de interface, não proteção antitrapaça contra ele.
+
+participantAudio é booleano opt-in. RecordedRoomPlayer.unlock libera Web Audio
+por gesto; participantes têm ação no lobby. Áudios automáticos usam o horário do
+servidor. Decodificação e fontes são canceladas por requestId/stop/dispose; sons
+do relógio usam somente contexto previamente liberado e deduplicam por pergunta,
+tipo e segundo. Arte em public/room-art/english-study.webp gerada com referência
+visual de listening.webp; ícone de modalidades continua SVG nativo.
+
 Pódio: frames temáticos externos em room-trophies.svg, inscrições claras sobre
 as bandeiras. PodiumPlace conta pontos com requestAnimationFrame e easing cúbico,
 dependendo somente de score/place, não da identidade de cada snapshot da sala.
