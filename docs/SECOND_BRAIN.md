@@ -1,5 +1,8 @@
 # OlenaStudy: Second Brain
 
+Seleção aleatória usa public/room-icons/helena-word-choice.svg, ícone exclusivo
+do rostinho da Helena em papel recortado, sem cartas ou patinhas. Não reutilizar modalities.svg.
+
 Entradas por código/QR ficam abaixo das modalidades antes da criação. O leitor
 room-qr-scanner é lazy, usa jsQR e câmera local sem upload, encerra tracks ao
 desmontar e só extrai códigos de convites confiáveis. Falha mantém entrada manual.

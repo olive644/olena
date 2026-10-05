@@ -19,6 +19,12 @@ describe("chegada por link de convite", () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
     fireEvent.click(screen.getByRole("button", { name: "Palavras escolhidas pela Helena" }));
+    expect(
+      screen
+        .getByRole("button", { name: "Palavras escolhidas pela Helena" })
+        .querySelector("img")
+        ?.getAttribute("src"),
+    ).toBe("/room-icons/helena-word-choice.svg");
     expect(screen.queryByRole("checkbox", { name: "Embaralhar questões" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Inglês" })).toBeNull();
     const count = screen.getByRole("slider", { name: "Quantidade de palavras" });
