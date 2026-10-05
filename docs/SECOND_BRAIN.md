@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Preparação do bingo é independente dos controles da escuta coletiva. Não mostrar
+em equipes, embaralhar questões, matéria/tema, dificuldade ou tempo por pergunta.
+Cartelas são individuais; selectActivity define teams: false e shuffle: true ao
+escolher bingo. Escuta conserva seus controles. Esta mudança de preparação usa
+o bingo de vocabulário existente; o protótipo de globo numérico não foi integrado.
+
 Seleção aleatória usa public/room-icons/helena-word-choice.svg, ícone exclusivo
 do rostinho da Helena em papel recortado, sem cartas ou patinhas. Não reutilizar modalities.svg.
 
