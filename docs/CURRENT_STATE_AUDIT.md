@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Preparação própria do bingo (2026-10-05)
+
+- Bingo não exibe seleção de equipes, embaralhamento de questões, matéria/tema, dificuldade ou tempo por pergunta. O resumo de questões filtradas também foi removido, e a preparação informa que cada pessoa recebe uma cartela com sorteio compartilhado.
+- Ao escolher bingo, teams é falso e shuffle é verdadeiro, evitando herdar equipes ou ordem fixa da escuta. O contrato existente de bingo de vocabulário e seu sorteio permanecem; esta alteração não integra o protótipo do globo numérico.
+- Os controles de equipes, embaralhamento e tempo continuam disponíveis na escuta coletiva. Testes de interface cobrem o bingo e a troca de modalidades.
+- Verificação completa e testes de navegador dependem do CI: o ambiente desta alteração está sem dependências instaladas e não conseguiu acesso de rede para preparar a execução local.
+
 ## Ícone da seleção da Helena (2026-10-04)
 
 - Palavras escolhidas pela Helena usa helena-word-choice.svg exclusivo: somente o rostinho da gata grafite facetada, olhos amarelos com pupilas verticais e estrela na orelha. Cartas e patinha removidas conforme a revisão do proprietário. SVG estático, sem fonte externa, dependência ou alteração no fluxo; o ícone de modalidades permanece separado.
