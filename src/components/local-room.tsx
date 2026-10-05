@@ -1278,7 +1278,12 @@ export function LocalRoom({
                               })
                             }
                           >
-                            <img src="/room-icons/modalities.svg" alt="" width="40" height="40" />
+                            <img
+                              src="/room-icons/helena-word-choice.svg"
+                              alt=""
+                              width="40"
+                              height="40"
+                            />
                             <span>Palavras escolhidas pela Helena</span>
                           </button>
                         </div>

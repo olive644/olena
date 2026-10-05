@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Ícone da seleção da Helena (2026-10-04)
+
+- Palavras escolhidas pela Helena usa helena-word-choice.svg exclusivo: somente o rostinho da gata grafite facetada, olhos amarelos com pupilas verticais e estrela na orelha. Cartas e patinha removidas conforme a revisão do proprietário. SVG estático, sem fonte externa, dependência ou alteração no fluxo; o ícone de modalidades permanece separado.
+
 ## Convites e seleção da Helena (2026-10-04)
 
 - Preparação alinhada ao topo também no desktop. Dois botões compactos abaixo das modalidades oferecem entrada por código e leitura de QR, sem escolher um minigame primeiro.
