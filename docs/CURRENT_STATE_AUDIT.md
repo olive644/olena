@@ -9,7 +9,7 @@
 - Autoplay continua funcionando no dispositivo do organizador mesmo quando ele responde como participante. A opção compartilhada de áudio dos alunos permanece inalterada.
 - Fundos escuros dos canvases principais recebem sol, lua e estrelas geométricas em papel, com baixa opacidade, também no celular. Não substitui fundos de cartões nem interfere nos alvos interativos.
 - jsQR 1.4.0 (Apache-2.0), auditoria sem vulnerabilidades. Decoder lazy: 128,8 KiB sem compressão / 47,5 KiB gzip. Entrada inicial 273,9 KiB inalterada; total 1079,4 KiB, orçamento 1088 KiB com teto absoluto preservado.
-- Validação local: verify passou com 982 testes; 18 cenários de sala passaram em Edge desktop e em viewport móvel. Leitura usa QR real gerado em pixels no teste unitário; câmera recusada e liberação tardia têm regressões. Permissão e hardware de câmeras físicas dependem do dispositivo e não foram testados aqui.
+- Validação local: verify passou com 982 testes; 20 cenários de sala passaram em Edge desktop e em viewport móvel, incluindo o cenário de reconexão do criador atualizado para cinco palavras aleatórias. Leitura usa QR real gerado em pixels no teste unitário; câmera recusada e liberação tardia têm regressões. Permissão e hardware de câmeras físicas dependem do dispositivo e não foram testados aqui.
 
 ## Densidade móvel da sala e teclado (2026-10-04)
 
