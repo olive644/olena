@@ -6,6 +6,7 @@ import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "../src/domain/read
 test("organizador joga, contador centralizado e API recupera sala sem stream", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(60000);
   const handler = createLocalRoomHandler({
     store: createMemoryRoomStore(),
     publish: async () => {},
@@ -28,9 +29,9 @@ test("organizador joga, contador centralizado e API recupera sala sem stream", a
       questionCount: "all",
       roundSeconds: 30,
       recordedAudioRequired: false,
-      shuffle: false,
+      helenaWords: true,
+      helenaWordCount: 5,
       subjectName: READY_LISTENING_SOURCE,
-      readyWordIds: [READY_LISTENING_DECK[0]!.id],
     },
   });
   await page.route("**/api/local-room?*", async (route) => {
@@ -108,13 +109,34 @@ test("organizador joga, contador centralizado e API recupera sala sem stream", a
   await page.reload();
   await expect(page.getByLabel("Digite a tradução")).toBeVisible();
   await expect(page.getByText("Reconectando sala…", { exact: true })).toHaveCount(0);
-  await page.getByLabel("Digite a tradução").fill(READY_LISTENING_DECK[0]!.back);
+  const current = await api("resume", { code, role: "host", credential: hostToken });
+  const answer = READY_LISTENING_DECK.find(
+    (word) => word.id === current.state.currentQuestion.id,
+  )!.back;
+  await page.getByLabel("Digite a tradução").fill(answer);
   await page.getByRole("button", { name: "Responder", exact: true }).click();
   await expect(page.locator(".local-room-answer-feedback")).toHaveClass(/is-correct/);
   await expect(page.locator(".room-confetti i")).toHaveCount(48);
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => (document.documentElement.dataset["theme"] = value), theme);
     await page.screenshot({ path: testInfo.outputPath(`english-feedback-${theme}.png`) });
+  }
+  for (let questionIndex = 1; questionIndex < 5; questionIndex++) {
+    await expect
+      .poll(
+        async () => {
+          const resumed = await api("resume", { code, role: "host", credential: hostToken });
+          return resumed.state.questionIndex;
+        },
+        { timeout: 8000 },
+      )
+      .toBe(questionIndex);
+    const resumed = await api("resume", { code, role: "host", credential: hostToken });
+    const word = READY_LISTENING_DECK.find((card) => card.id === resumed.state.currentQuestion.id)!;
+    await expect(page.getByLabel("Digite a tradução")).toBeEnabled();
+    await page.getByLabel("Digite a tradução").fill(word.back);
+    await page.getByRole("button", { name: "Responder", exact: true }).click();
+    await expect(page.locator(".local-room-answer-feedback")).toHaveClass(/is-correct/);
   }
   await expect(page.getByRole("button", { name: "Repetir", exact: true })).toBeVisible({
     timeout: 8000,

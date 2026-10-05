@@ -48,6 +48,34 @@ function startedWithTwo() {
 }
 
 describe("sala local", () => {
+  it.each([5, 10, 50])(
+    "Helena sorteia %i palavras sem repetição e sem prévia para o criador",
+    (count) => {
+      const initial = createRoom(
+        {
+          ...settings,
+          helenaWords: true,
+          helenaWordCount: count,
+          readyWordIds: ["school"],
+          category: "inexistente",
+          shuffle: false,
+        },
+        { code: "ABCDE", hostToken: "secret", now: 1 },
+      );
+      expect(toPublicRoomState(initial).content?.preview).toEqual([]);
+      const joined = addLocalParticipant(initial, participant(), 2);
+      const started = startRoom(joined, { now: 3, random: () => 0 });
+      expect(started.deck).toHaveLength(count);
+      expect(new Set(started.deck.map((card) => card.id)).size).toBe(count);
+      expect(toPublicRoomState(started).content?.preview).toEqual([]);
+      expect(toPublicRoomState(started)).not.toHaveProperty("deck");
+      const repeated = repeatRoom(
+        { ...started, phase: "results" },
+        { now: 100, random: () => 0.99 },
+      );
+      expect(repeated.deck.map((card) => card.id)).not.toEqual(started.deck.map((card) => card.id));
+    },
+  );
   it("reduz os pontos de 100 a 20 conforme o tempo de resposta", () => {
     expect(roomAnswerPoints(30, 0)).toBe(100);
     expect(roomAnswerPoints(30, 15000)).toBe(60);

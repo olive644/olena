@@ -7,7 +7,7 @@ import {
   ROOM_START_COUNTDOWN_MS,
   type PublicLocalRoomState,
 } from "../domain/local-room";
-import { READY_LISTENING_SOURCE } from "../domain/ready-listening-words";
+import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "../domain/ready-listening-words";
 import { createRoomGuard } from "./room-guard";
 
 const origin = "https://helena.example";
@@ -51,6 +51,77 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
+  it("permite o criador na escuta somente com a seleção da Helena", async () => {
+    const { code, hostToken } = await createRoomViaApi();
+    expect((await handler(post("host-player", { code, hostToken, active: true }))).status).toBe(
+      409,
+    );
+    for (const helenaWordCount of [4, 51, 5.5, "10"]) {
+      expect(
+        (
+          await handler(
+            post("settings", { code, hostToken, settings: { helenaWords: true, helenaWordCount } }),
+          )
+        ).status,
+      ).toBe(400);
+    }
+    expect(
+      (
+        await handler(
+          post("settings", {
+            code,
+            hostToken,
+            settings: { helenaWords: true, helenaWordCount: 50 },
+          }),
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (await handler(post("host-player", { code, hostToken, active: true, displayName: "Ana" })))
+        .status,
+    ).toBe(200);
+    expect(
+      (await handler(post("settings", { code, hostToken, settings: { helenaWords: false } })))
+        .status,
+    ).toBe(409);
+    const started = await (await handler(post("start", { code, hostToken }))).json();
+    expect(started.state.totalQuestions).toBe(50);
+    expect(started.state.content.preview).toEqual([]);
+    expect(
+      (await handler(post("settings", { code, hostToken, settings: { helenaWordCount: 5 } })))
+        .status,
+    ).toBe(409);
+  });
+  it("recusa sorteio da Helena no bingo e fonte própria misturada ao sorteio", async () => {
+    expect(
+      (
+        await handler(
+          post("create", {
+            settings: {
+              difficulty: "mixed",
+              questionCount: 5,
+              roundSeconds: 15,
+              activity: "bingo",
+              helenaWords: true,
+            },
+          }),
+        )
+      ).status,
+    ).toBe(400);
+    const { code, hostToken } = await createRoomViaApi();
+    expect(
+      (
+        await handler(
+          post("settings", {
+            code,
+            hostToken,
+            settings: { helenaWords: true },
+            sourceDeck: [{ id: "x", front: "x", back: "y" }],
+          }),
+        )
+      ).status,
+    ).toBe(400);
+  });
   it("guard consegue ler heartbeat sem reutilizar um corpo já consumido", async () => {
     handler = createLocalRoomHandler({
       store,
@@ -67,6 +138,7 @@ describe("handler da sala local", () => {
   });
   it("organizador participa com credencial própria, sem expor tokens públicos", async () => {
     const { code, hostToken } = await createRoomViaApi();
+    await handler(post("settings", { code, hostToken, settings: { helenaWords: true } }));
     const forbidden = await handler(
       post("host-player", { code, hostToken: "outro", active: true }),
     );
@@ -133,14 +205,18 @@ describe("handler da sala local", () => {
       post("settings", {
         code,
         hostToken,
-        settings: { questionCount: "all", shuffle: false },
-        sourceDeck: [{ id: "book", front: "book", back: "livro" }],
+        settings: { helenaWords: true, helenaWordCount: 5 },
       }),
     );
     const player = await (
       await handler(post("host-player", { code, hostToken, active: true, displayName: "Oli" }))
     ).json();
-    expect((await handler(post("start", { code, hostToken }))).status).toBe(200);
+    const started = await handler(post("start", { code, hostToken }));
+    expect(started.status).toBe(200);
+    const startedBody = await started.json();
+    const word = READY_LISTENING_DECK.find(
+      (card) => card.id === startedBody.state.currentQuestion.id,
+    )!;
     expect((await handler(post("host-player", { code, hostToken, active: false }))).status).toBe(
       400,
     );
@@ -152,7 +228,7 @@ describe("handler da sala local", () => {
           participantId: player.participantId,
           participantToken: player.participantToken,
           questionIndex: 0,
-          answer: "livro",
+          answer: word.back,
         }),
       )
     ).json();

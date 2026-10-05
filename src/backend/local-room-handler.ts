@@ -83,6 +83,8 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "shuffle",
           "teams",
           "readyWordIds",
+          "helenaWordCount",
+          "helenaWords",
           "subjectName",
           "audioRepetitions",
           "autoPlayAudio",
@@ -109,6 +111,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   if (
     [
       "shuffle",
+      "helenaWords",
       "teams",
       "autoPlayAudio",
       "participantAudio",
@@ -118,6 +121,14 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   )
     return false;
   if ("readyWordIds" in candidate && !validReadyListeningWordIds(candidate["readyWordIds"]))
+    return false;
+  if (
+    "helenaWordCount" in candidate &&
+    candidate["helenaWordCount"] !== undefined &&
+    (!Number.isInteger(candidate["helenaWordCount"]) ||
+      Number(candidate["helenaWordCount"]) < 5 ||
+      Number(candidate["helenaWordCount"]) > 50)
+  )
     return false;
   if (
     "difficulty" in candidate &&
@@ -219,6 +230,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         return jsonResponse(409, { error: "Este código está ocupado. Tente criar uma nova sala." });
       }
       const hostToken = randomId();
+      if (settings.helenaWords && settings.activity === "bingo")
+        return jsonResponse(400, {
+          error: "A seleção da Helena está disponível na escuta coletiva.",
+        });
       const state = createRoom(settings, {
         code,
         hostToken,
@@ -327,6 +342,14 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (state instanceof Response) return state;
       if (state.phase !== "lobby" || typeof body["active"] !== "boolean")
         return jsonResponse(400, { error: "Escolha sua participação antes de iniciar." });
+      if (
+        body["active"] &&
+        state.settings.activity !== "bingo" &&
+        state.settings.helenaWords !== true
+      )
+        return jsonResponse(409, {
+          error: "Ative Palavras escolhidas pela Helena para participar da escuta.",
+        });
       let updated = { ...state };
       if (body["active"] && !state.participants.some((p) => p.id === state.hostParticipantId)) {
         if (state.participants.length >= MAX_ROOM_PARTICIPANTS)
@@ -482,6 +505,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const body = await readJsonBody(request);
       const state = await requireHost(dependencies.store, body);
       if (state instanceof Response) return state;
+      if (state.phase !== "lobby") return jsonResponse(409, { error: "A rodada já começou." });
       if (!isSettingsPayload(body["settings"])) {
         return jsonResponse(400, { error: "Configurações inválidas." });
       }
@@ -490,6 +514,25 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         body["settings"] as Partial<LocalRoomSettings>,
         now(),
       );
+      if (
+        updated.settings.helenaWords === true &&
+        (updated.settings.activity === "bingo" || body["sourceDeck"] !== undefined)
+      )
+        return jsonResponse(400, { error: "A seleção da Helena usa somente o banco de escuta." });
+      if (updated.settings.helenaWords === true) {
+        delete updated.sourceDeck;
+        updated.settings.readyWordIds = [];
+        updated.settings.subjectName = READY_LISTENING_SOURCE;
+        updated.settings.questionCount = "all";
+      }
+      if (
+        updated.settings.activity !== "bingo" &&
+        updated.settings.helenaWords !== true &&
+        updated.hostParticipantId
+      )
+        return jsonResponse(409, {
+          error: "Saia da participação antes de escolher as palavras manualmente.",
+        });
       if (body["sourceDeck"] !== undefined) {
         if (state.phase !== "lobby") return jsonResponse(409, { error: "A rodada já começou." });
         const cards = body["sourceDeck"];
@@ -552,6 +595,14 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const body = await readJsonBody(request);
       const state = await requireHost(dependencies.store, body);
       if (state instanceof Response) return state;
+      if (
+        (state.settings.activity ?? "listening") === "listening" &&
+        state.hostParticipantId &&
+        !state.settings.helenaWords
+      )
+        return jsonResponse(409, {
+          error: "O criador só participa da escuta com palavras escolhidas pela Helena.",
+        });
       if (
         (state.settings.activity ?? "listening") === "listening" &&
         state.settings.recordedAudioRequired &&

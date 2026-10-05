@@ -286,10 +286,76 @@
   width: 100%;
   margin-bottom: 24px;
 }
-.room-view > .local-room-preparation {
-  min-height: calc(100dvh - 170px);
-  display: grid;
+.local-room-join-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+.app-shell .local-room-join-actions button {
+  min-height: 44px;
+  display: inline-flex;
   align-items: center;
+  gap: 7px;
+  font-size: 0.75rem;
+}
+.local-room-helena-help {
+  grid-column: 1 / -1;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.local-room-source:has(button:nth-child(3)) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.room-qr-scanner {
+  display: grid;
+  gap: 12px;
+}
+.room-qr-scanner video {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border: 2px solid var(--violet);
+  border-radius: 6px 18px 9px 14px;
+  background: #17151c;
+}
+:root[data-theme="dark"] :is(body, .main-content, .local-room-fullscreen, .local-room-projector) {
+  background-color: var(--page);
+  background-image: url("/paper-sky-pattern.svg");
+  background-size: 720px 580px;
+}
+@media (max-width: 600px) {
+  .app-shell .local-room-join-actions {
+    gap: 8px;
+  }
+  .app-shell .local-room-join-actions button {
+    flex: 1 1 0;
+    justify-content: center;
+    padding-inline: 7px;
+    gap: 5px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .app-shell .local-room-join-actions button :is(img, .paper-action-icon) {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+  .local-room-source:has(button:nth-child(3)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .local-room-source > button:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  :root[data-theme="dark"] :is(body, .main-content, .local-room-fullscreen, .local-room-projector) {
+    background-size: 480px auto;
+  }
+}
+.room-view > .local-room-preparation {
+  min-height: 0;
+  display: grid;
+  align-items: start;
 }
 .local-room-fullscreen > .local-room-session {
   margin-inline: auto;
