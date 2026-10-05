@@ -39,7 +39,6 @@ import {
   ROOM_TEAMS,
   ROOM_TEAM_LABELS,
   type LocalRoomAnswerFeedback,
-  ROOM_CATEGORIES,
   type LocalRoomSettings,
   type PublicLocalRoomState,
 } from "../domain/local-room";
@@ -730,6 +729,8 @@ export function LocalRoom({
               difficulty: "mixed",
               questionCount: 5,
               helenaWords: false,
+              teams: false,
+              shuffle: true,
             }
           : {
               activity,
@@ -1218,7 +1219,14 @@ export function LocalRoom({
                       inert={pendingActivity !== null || readyApplying}
                       aria-busy={pendingActivity !== null || readyApplying}
                     >
-                      {state.settings.activity === "bingo" && <h3>Prepare o bingo</h3>}
+                      {state.settings.activity === "bingo" && (
+                        <>
+                          <h3>Prepare o bingo</h3>
+                          <p>
+                            Cada pessoa recebe sua cartela. O sorteio é compartilhado pela sala.
+                          </p>
+                        </>
+                      )}
                       {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
                       {state.settings.activity !== "bingo" && (
                         <div
@@ -1671,69 +1679,43 @@ export function LocalRoom({
                           <option value="bingo">Bingo de vocabulário</option>
                         </select>
                       </label>
-                      {state.settings.activity === "bingo" && (
-                        <>
-                          <label>
-                            <span>Matéria / tema</span>
-                            <select
-                              value={state.settings.category ?? ""}
-                              disabled={Boolean(state.settings.subjectName)}
-                              onChange={(event) =>
-                                void room.updateSettings({ category: event.target.value })
+                      {state.settings.activity !== "bingo" && (
+                        <div
+                          className="local-room-response-options"
+                          role="group"
+                          aria-label="Respostas"
+                        >
+                          {[false, true].map((teams) => (
+                            <button
+                              className="secondary-button"
+                              type="button"
+                              key={String(teams)}
+                              aria-label={
+                                teams ? "Responder em equipes" : "Responder individualmente"
                               }
+                              aria-pressed={Boolean(state.settings.teams) === teams}
+                              onClick={() => void room.updateSettings({ teams })}
                             >
-                              <option value="">Inglês · todos os temas</option>
-                              {ROOM_CATEGORIES.map((category) => (
-                                <option key={category} value={category}>
-                                  {category}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                          <p>
-                            {availableCount} questões disponíveis neste filtro. Prévia:{" "}
-                            {(
-                              state.content?.preview ?? pool.slice(0, 3).map((card) => card.front)
-                            ).join(", ") || "Nenhuma questão"}
-                            .
-                          </p>
-                        </>
+                              <svg viewBox="0 0 48 48" aria-hidden="true">
+                                <path
+                                  fill={teams ? "#27834A" : "#FACC15"}
+                                  d="M18 4h12l5 8-5 10H18l-5-10ZM12 26h24l6 17H6Z"
+                                />
+                                <path
+                                  fill={teams ? "#83CA8A" : "#FFE88D"}
+                                  d={
+                                    teams
+                                      ? "M5 10h8l3 6-3 7H5l-3-7ZM2 28h12l4 15H0Z M35 10h8l3 6-3 7h-8l-3-7ZM34 28h12l2 15H30Z"
+                                      : "M18 4h12l-8 8h-9Z M12 26h10L6 43Z"
+                                  }
+                                />
+                              </svg>
+                              <span>{teams ? "Em equipes" : "Cada pessoa"}</span>
+                            </button>
+                          ))}
+                        </div>
                       )}
-                      <div
-                        className="local-room-response-options"
-                        role="group"
-                        aria-label="Respostas"
-                      >
-                        {[false, true].map((teams) => (
-                          <button
-                            className="secondary-button"
-                            type="button"
-                            key={String(teams)}
-                            aria-label={
-                              teams ? "Responder em equipes" : "Responder individualmente"
-                            }
-                            aria-pressed={Boolean(state.settings.teams) === teams}
-                            onClick={() => void room.updateSettings({ teams })}
-                          >
-                            <svg viewBox="0 0 48 48" aria-hidden="true">
-                              <path
-                                fill={teams ? "#27834A" : "#FACC15"}
-                                d="M18 4h12l5 8-5 10H18l-5-10ZM12 26h24l6 17H6Z"
-                              />
-                              <path
-                                fill={teams ? "#83CA8A" : "#FFE88D"}
-                                d={
-                                  teams
-                                    ? "M5 10h8l3 6-3 7H5l-3-7ZM2 28h12l4 15H0Z M35 10h8l3 6-3 7h-8l-3-7ZM34 28h12l2 15H30Z"
-                                    : "M18 4h12l-8 8h-9Z M12 26h10L6 43Z"
-                                }
-                              />
-                            </svg>
-                            <span>{teams ? "Em equipes" : "Cada pessoa"}</span>
-                          </button>
-                        ))}
-                      </div>
-                      {!usesHelenaWords && (
+                      {state.settings.activity !== "bingo" && !usesHelenaWords && (
                         <label>
                           <input
                             type="checkbox"
@@ -1743,40 +1725,6 @@ export function LocalRoom({
                             }
                           />{" "}
                           Embaralhar questões
-                        </label>
-                      )}
-                      {state.settings.activity === "bingo" && (
-                        <label>
-                          <span>Dificuldade</span>
-                          <select
-                            value={state.settings.difficulty}
-                            onChange={(event) =>
-                              void room.updateSettings({
-                                difficulty: event.target.value as LocalRoomSettings["difficulty"],
-                              })
-                            }
-                          >
-                            <option value="mixed">
-                              Misto ·{" "}
-                              {state.content?.difficultyCounts?.mixed ??
-                                localRoomPool({ ...state.settings, difficulty: "mixed" }).length}
-                            </option>
-                            <option value="easy">
-                              Fácil ·{" "}
-                              {state.content?.difficultyCounts?.easy ??
-                                localRoomPool({ ...state.settings, difficulty: "easy" }).length}
-                            </option>
-                            <option value="medium">
-                              Médio ·{" "}
-                              {state.content?.difficultyCounts?.medium ??
-                                localRoomPool({ ...state.settings, difficulty: "medium" }).length}
-                            </option>
-                            <option value="hard">
-                              Difícil ·{" "}
-                              {state.content?.difficultyCounts?.hard ??
-                                localRoomPool({ ...state.settings, difficulty: "hard" }).length}
-                            </option>
-                          </select>
                         </label>
                       )}
                       {state.settings.activity !== "bingo" && (
@@ -1795,15 +1743,17 @@ export function LocalRoom({
                           </small>
                         </label>
                       )}
-                      <RoomStepSlider
-                        label="Tempo por pergunta"
-                        value={state.settings.roundSeconds}
-                        steps={TIME_STEPS}
-                        suffix="s"
-                        onCommit={(value) =>
-                          void room.updateSettings({ roundSeconds: value as 5 | 10 | 15 | 30 })
-                        }
-                      />
+                      {state.settings.activity !== "bingo" && (
+                        <RoomStepSlider
+                          label="Tempo por pergunta"
+                          value={state.settings.roundSeconds}
+                          steps={TIME_STEPS}
+                          suffix="s"
+                          onCommit={(value) =>
+                            void room.updateSettings({ roundSeconds: value as 5 | 10 | 15 | 30 })
+                          }
+                        />
+                      )}
                       {room.error && <p role="alert">{room.error}</p>}
                     </div>
                   )}
