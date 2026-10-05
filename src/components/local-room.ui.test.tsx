@@ -36,6 +36,11 @@ describe("chegada por link de convite", () => {
   it("não leva equipes da escuta para o bingo e mantém os controles ao voltar", async () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    await waitFor(() =>
+      expect(
+        document.querySelector(".local-room-settings__panel")?.getAttribute("aria-busy"),
+      ).toBe("false"),
+    );
     fireEvent.click(screen.getByRole("button", { name: "Responder em equipes" }));
     expect(
       screen.getByRole("button", { name: "Responder em equipes" }).getAttribute("aria-pressed"),
@@ -44,6 +49,11 @@ describe("chegada por link de convite", () => {
     fireEvent.click(screen.getByRole("radio", { name: /^Bingo/ }));
     await waitFor(() =>
       expect(screen.getByRole("heading", { name: "Prepare o bingo" })).toBeTruthy(),
+    );
+    await waitFor(() =>
+      expect(
+        document.querySelector(".local-room-settings__panel")?.getAttribute("aria-busy"),
+      ).toBe("false"),
     );
     fireEvent.click(screen.getByRole("button", { name: /Modalidades coletivas/ }));
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
