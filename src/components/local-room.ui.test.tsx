@@ -10,6 +10,31 @@ describe("resumo da duração da sala", () => {
 });
 
 describe("chegada por link de convite", () => {
+  it("oferece entrada independente da modalidade e seleção aleatória de 5 a 50", () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("button", { name: /entrar com código/i }));
+    expect(screen.getByLabelText(/código/i)).toBeTruthy();
+  });
+  it("seleção da Helena dispensa escolher palavras manualmente", async () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Palavras escolhidas pela Helena" }));
+    expect(screen.queryByRole("checkbox", { name: "Embaralhar questões" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Inglês" })).toBeNull();
+    const count = screen.getByRole("slider", { name: "Quantidade de palavras" });
+    fireEvent.change(count, { target: { value: "9" } });
+    fireEvent.pointerUp(count);
+    expect(screen.getAllByText("50")).toHaveLength(2);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /^Criar sala$/ }).hasAttribute("disabled")).toBe(
+        false,
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Palavras prontas" }));
+    expect(screen.getByRole("button", { name: /^Criar sala$/ }).hasAttribute("disabled")).toBe(
+      true,
+    );
+  });
   it("recolhe modalidades e anima remoção individual e limpeza", async () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
@@ -59,7 +84,8 @@ describe("chegada por link de convite", () => {
     expect(screen.queryByLabelText("Código da sala")).toBeNull();
     expect(screen.queryByRole("heading", { name: "Participantes" })).toBeNull();
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(screen.queryByRole("button", { name: /entrar com código/i })).toBeNull();
+    expect(screen.getByRole("button", { name: /entrar com código/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /entrar com qr code/i })).toBeTruthy();
   });
 
   it("prepara o minigame e as palavras sem criar nem alterar uma sala remota", async () => {

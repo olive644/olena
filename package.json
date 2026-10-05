@@ -28,6 +28,7 @@
   "dependencies": {
     "firebase": "^12.19.0",
     "jose": "^6.2.12",
+    "jsqr": "^1.4.0",
     "lucide-react": "^1.49.0",
     "pdfjs-dist": "^6.3.289",
     "qrcode-generator": "^2.0.4",

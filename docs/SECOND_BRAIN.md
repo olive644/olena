@@ -1,5 +1,15 @@
 # OlenaStudy: Second Brain
 
+Entradas por código/QR ficam abaixo das modalidades antes da criação. O leitor
+room-qr-scanner é lazy, usa jsQR e câmera local sem upload, encerra tracks ao
+desmontar e só extrai códigos de convites confiáveis. Falha mantém entrada manual.
+helenaWords é uma fonte alternativa exclusiva da escuta; helenaWordCount escolhe
+5 a 50. Servidor sorteia o banco pronto ao iniciar, sem repetição nem preview.
+host-player na escuta exige essa configuração, inclusive pela API; bingo permanece.
+Não permitir editar settings fora do lobby. Autoplay verifica isOrganizer também,
+pois isHost vira false enquanto o criador participa. Fundos escuros usam o SVG
+paper-sky-pattern, sem imagem nova de mascote ou dependência gráfica.
+
 Preparação móvel da sala usa overrides até 600 px em paper-controls.css, sem
 centralização vertical: modalidades 2 por 2 e palavras em duas colunas.
 answerInputRef verifica o foco atual no pointerdown de Ouvir novamente. Apenas

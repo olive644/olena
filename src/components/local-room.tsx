@@ -20,6 +20,8 @@ import {
   useEffect,
   useRef,
   useState,
+  lazy,
+  Suspense,
   type CSSProperties,
   type FormEvent,
   type ReactNode,
@@ -66,6 +68,8 @@ import { PaperEnglishWord } from "./paper-english-word";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
+const RoomQrScanner = lazy(() => import("./room-qr-scanner"));
+
 const DEFAULT_SETTINGS: LocalRoomSettings = {
   difficulty: "mixed",
   questionCount: "all",
@@ -77,6 +81,7 @@ const DEFAULT_SETTINGS: LocalRoomSettings = {
   participantAudio: false,
   recordedAudioRequired: true,
 };
+const HELENA_WORD_STEPS = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50] as const;
 
 const ROOM_ACTIVITY_OPTIONS = [
   {
@@ -126,7 +131,12 @@ function RoomStepSlider({
   onCommit(value: number): void;
 }) {
   const current = steps.indexOf(value as number);
-  const inputId = label === "Perguntas" ? "room-slider-questions" : "room-slider-seconds";
+  const inputId =
+    label === "Quantidade de palavras"
+      ? "room-slider-words"
+      : label === "Perguntas"
+        ? "room-slider-questions"
+        : "room-slider-seconds";
   const [index, setIndex] = useState(current < 0 ? steps.length - 1 : current);
   const indexRef = useRef(index);
   const [touched, setTouched] = useState(false);
@@ -300,6 +310,7 @@ export function LocalRoom({
   const preparing = connection.role === "choose" && !connection.isRestoring;
   const [draftSettings, setDraftSettings] = useState(DEFAULT_SETTINGS);
   const [selectedActivity, setSelectedActivity] = useState<"listening" | "bingo" | null>(null);
+  const [scanningQr, setScanningQr] = useState(false);
   const [activitiesExpanded, setActivitiesExpanded] = useState(true);
   const modalitiesButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -555,7 +566,7 @@ export function LocalRoom({
       !currentQuestionFront ||
       state?.phase !== "playing" ||
       projectorMode ||
-      (!room.isHost && state.settings.participantAudio !== true)
+      (!room.isHost && !room.isOrganizer && state.settings.participantAudio !== true)
     )
       return;
     if (clockNow < state.questionStartedAt || autoPlayedQuestionRef.current === questionKey) return;
@@ -571,6 +582,7 @@ export function LocalRoom({
     state?.phase,
     state?.settings.participantAudio,
     room.isHost,
+    room.isOrganizer,
   ]);
 
   useEffect(() => {
@@ -711,13 +723,21 @@ export function LocalRoom({
     try {
       await room.updateSettings(
         activity === "bingo"
-          ? { activity, subjectName: "", category: "", difficulty: "mixed", questionCount: 5 }
+          ? {
+              activity,
+              subjectName: "",
+              category: "",
+              difficulty: "mixed",
+              questionCount: 5,
+              helenaWords: false,
+            }
           : {
               activity,
               subjectName: READY_LISTENING_SOURCE,
               category: "",
               difficulty: "mixed",
               questionCount: "all",
+              helenaWords: false,
             },
       );
     } finally {
@@ -828,6 +848,21 @@ export function LocalRoom({
           </button>
           <h3>Entrar em uma sala</h3>
           <p>Use o código do professor. Você participa com o nome da sua conta.</p>
+          {scanningQr && (
+            <Suspense fallback={<HelenaLoading compact label="Preparando leitor de QR code…" />}>
+              <RoomQrScanner
+                onRead={(value) => {
+                  setCode(value);
+                  setScanningQr(false);
+                }}
+              />
+            </Suspense>
+          )}
+          {scanningQr && (
+            <button type="button" className="secondary-button" onClick={() => setScanningQr(false)}>
+              Fechar câmera
+            </button>
+          )}
           <label>
             <span>Código</span>
             <input
@@ -907,9 +942,13 @@ export function LocalRoom({
     Boolean(recordingIds[normalizeListeningAnswer(card.front)]),
   );
   const manualDeckIsValid = manualDeck.length > 0 && manualErrors.length === 0 && recordingsReady;
+  const usesHelenaWords =
+    state.settings.activity !== "bingo" && state.settings.helenaWords === true;
   const usesReadyWords =
-    state.settings.activity !== "bingo" && state.settings.subjectName === READY_LISTENING_SOURCE;
-  const usesManualList = state.settings.activity !== "bingo" && !usesReadyWords;
+    !usesHelenaWords &&
+    state.settings.activity !== "bingo" &&
+    state.settings.subjectName === READY_LISTENING_SOURCE;
+  const usesManualList = state.settings.activity !== "bingo" && !usesReadyWords && !usesHelenaWords;
   const readySelectionPending =
     usesReadyWords &&
     JSON.stringify(readyDraftIds) !== JSON.stringify(state.settings.readyWordIds ?? []);
@@ -1149,6 +1188,30 @@ export function LocalRoom({
                     ))}
                   </div>
                   {pendingActivity && <HelenaLoading compact label="Preparando atividade…" />}
+                  <div className="local-room-join-actions">
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => {
+                        setScanningQr(false);
+                        room.setRole("participant");
+                      }}
+                    >
+                      <img src="/room-icons/join.svg" alt="" width="22" height="22" />
+                      Entrar com código
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => {
+                        setScanningQr(true);
+                        room.setRole("participant");
+                      }}
+                    >
+                      <PaperActionIcon name="scan" />
+                      Entrar com QR code
+                    </button>
+                  </div>
                   {selectedActivity && (
                     <div
                       className="local-room-settings__panel"
@@ -1169,7 +1232,10 @@ export function LocalRoom({
                             aria-pressed={usesManualList}
                             disabled={readyApplying}
                             onClick={() =>
-                              void room.updateSettings({ subjectName: MANUAL_LISTENING_SOURCE })
+                              void room.updateSettings({
+                                subjectName: MANUAL_LISTENING_SOURCE,
+                                helenaWords: false,
+                              })
                             }
                           >
                             <img src="/room-icons/upload.svg" alt="" width="40" height="40" />
@@ -1185,6 +1251,7 @@ export function LocalRoom({
                               void room.updateSettings(
                                 {
                                   subjectName: READY_LISTENING_SOURCE,
+                                  helenaWords: false,
                                   difficulty: "mixed",
                                   category: "",
                                   questionCount: "all",
@@ -1198,7 +1265,39 @@ export function LocalRoom({
                             <img src="/room-icons/word-bank.svg" alt="" width="40" height="40" />
                             <span>Palavras prontas</span>
                           </button>
+                          <button
+                            type="button"
+                            className="local-room-source__option"
+                            aria-pressed={usesHelenaWords}
+                            onClick={() =>
+                              void room.updateSettings({
+                                helenaWords: true,
+                                helenaWordCount: draftSettings.helenaWordCount ?? 10,
+                                subjectName: READY_LISTENING_SOURCE,
+                                questionCount: "all",
+                              })
+                            }
+                          >
+                            <img src="/room-icons/modalities.svg" alt="" width="40" height="40" />
+                            <span>Palavras escolhidas pela Helena</span>
+                          </button>
                         </div>
+                      )}
+                      {usesHelenaWords && (
+                        <>
+                          <p className="local-room-helena-help">
+                            A Helena sorteia palavras do banco ao começar, sem repetir. Você também
+                            pode participar sem ver a lista antes.
+                          </p>
+                          <RoomStepSlider
+                            label="Quantidade de palavras"
+                            value={state.settings.helenaWordCount ?? 10}
+                            steps={HELENA_WORD_STEPS}
+                            onCommit={(helenaWordCount) =>
+                              void room.updateSettings({ helenaWordCount })
+                            }
+                          />
+                        </>
                       )}
                       {usesReadyWords && (
                         <div className="local-room-ready-words" aria-busy={readyApplying}>
@@ -1567,7 +1666,7 @@ export function LocalRoom({
                           <option value="bingo">Bingo de vocabulário</option>
                         </select>
                       </label>
-                      {!usesManualList && !usesReadyWords && (
+                      {state.settings.activity === "bingo" && (
                         <>
                           <label>
                             <span>Matéria / tema</span>
@@ -1629,17 +1728,19 @@ export function LocalRoom({
                           </button>
                         ))}
                       </div>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={state.settings.shuffle !== false}
-                          onChange={(event) =>
-                            void room.updateSettings({ shuffle: event.target.checked })
-                          }
-                        />{" "}
-                        Embaralhar questões
-                      </label>
-                      {!usesManualList && !usesReadyWords && (
+                      {!usesHelenaWords && (
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={state.settings.shuffle !== false}
+                            onChange={(event) =>
+                              void room.updateSettings({ shuffle: event.target.checked })
+                            }
+                          />{" "}
+                          Embaralhar questões
+                        </label>
+                      )}
+                      {state.settings.activity === "bingo" && (
                         <label>
                           <span>Dificuldade</span>
                           <select
@@ -1705,7 +1806,7 @@ export function LocalRoom({
               )}
               {(!preparing || selectedActivity) && (
                 <div className="local-room-action-bar">
-                  {!preparing && (
+                  {!preparing && (state.settings.activity === "bingo" || usesHelenaWords) && (
                     <button
                       type="button"
                       className="secondary-button"

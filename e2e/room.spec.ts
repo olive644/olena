@@ -4,6 +4,90 @@ import { createMemoryRoomStore } from "../src/backend/room-transaction";
 import { createRoomRecordingHandler } from "../src/backend/room-recording-handler";
 import type { PublicLocalRoomState } from "../src/domain/local-room";
 
+test("convites ficam visíveis sem escolher modalidade e câmera tem alternativa manual", async ({
+  page,
+}, testInfo) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    Object.defineProperty(navigator, "mediaDevices", {
+      value: {
+        getUserMedia: async () => {
+          throw new Error("permission denied");
+        },
+      },
+    });
+  });
+  await page.goto("/sala");
+  const code = page.getByRole("button", { name: "Entrar com código", exact: true });
+  const qr = page.getByRole("button", { name: "Entrar com QR code", exact: true });
+  await expect(code).toBeInViewport();
+  await expect(qr).toBeInViewport();
+  if (testInfo.project.name === "desktop") {
+    const grid = await page.getByRole("radiogroup", { name: "Atividades da sala" }).boundingBox();
+    expect(grid!.y).toBeLessThan(180);
+  }
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await expect(page.locator(".main-content")).toHaveCSS("background-image", /paper-sky-pattern/);
+  await page.screenshot({
+    path: testInfo.outputPath("room-invites-dark.png"),
+    animations: "disabled",
+  });
+  await qr.click();
+  await expect(page.getByRole("alert")).toContainText("entre com o código");
+  await expect(page.getByRole("textbox", { name: "Código", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /fechar câmera/i }).click();
+  await expect(page.getByLabel("Câmera para ler o QR code da sala")).toHaveCount(0);
+});
+
+test("Helena sorteia 50 palavras e libera o criador para responder", async ({ page }, testInfo) => {
+  const store = createMemoryRoomStore();
+  const handler = createLocalRoomHandler({
+    store,
+    publish: async () => {},
+    streamUrl: () => "/test-stream",
+  });
+  await page.route("**/api/local-room?*", async (route) => {
+    const response = await handler(
+      new Request(route.request().url(), {
+        method: "POST",
+        body: route.request().postData() ?? "{}",
+      }),
+    );
+    await route.fulfill({
+      status: response.status,
+      body: await response.text(),
+      contentType: "application/json",
+    });
+  });
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    Object.defineProperty(window, "EventSource", {
+      value: class extends EventTarget {
+        onopen = null;
+        onerror = null;
+        close() {}
+      },
+    });
+  });
+  await page.goto("/sala");
+  await page.getByRole("radio", { name: /Escuta coletiva/ }).click();
+  await page.getByRole("button", { name: "Palavras escolhidas pela Helena" }).click();
+  const count = page.getByRole("slider", { name: "Quantidade de palavras" });
+  await count.fill("9");
+  await count.press("End");
+  await expect(count).toHaveAttribute("aria-valuetext", "50");
+  await page.screenshot({ path: testInfo.outputPath("helena-random-configuration.png") });
+  await page.getByRole("button", { name: "Criar sala", exact: true }).click();
+  const participate = page.getByRole("button", { name: /Também quero participar/ });
+  await expect(participate).toBeVisible();
+  await participate.click();
+  await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "Digite a tradução" })).toBeVisible({
+    timeout: 15000,
+  });
+  await expect(page.getByRole("button", { name: /Revelar resposta/i })).toHaveCount(0);
+});
+
 function silentWav(): Buffer {
   const samples = 2000;
   const audio = Buffer.alloc(44 + samples * 2);

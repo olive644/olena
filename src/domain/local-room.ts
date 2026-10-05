@@ -30,6 +30,8 @@ export type LocalRoomSettings = {
   allowLateJoin?: boolean;
   subjectName?: string;
   readyWordIds?: string[];
+  helenaWordCount?: number;
+  helenaWords?: boolean;
   audioRate?: 0.75 | 1;
   audioRepetitions?: 1 | 2 | 3 | "unlimited";
   autoPlayAudio?: boolean;
@@ -249,7 +251,17 @@ export function createRoom(
     hostToken: dependencies.hostToken,
     ...(dependencies.hostAccountId ? { hostAccountId: dependencies.hostAccountId } : {}),
     phase: "lobby",
-    settings,
+    settings: settings.helenaWords
+      ? {
+          ...settings,
+          activity: "listening",
+          subjectName: READY_LISTENING_SOURCE,
+          questionCount: "all",
+          difficulty: "mixed",
+          category: "",
+          readyWordIds: [],
+        }
+      : settings,
     participants: [],
     deck: [],
     questionIndex: 0,
@@ -320,12 +332,15 @@ export function localRoomPool(
   source?: readonly ListeningCard[],
 ): readonly ListeningCard[] {
   const cards =
-    source ??
-    (settings.activity !== "bingo" && settings.subjectName === READY_LISTENING_SOURCE
-      ? settings.readyWordIds === undefined
-        ? READY_LISTENING_DECK
-        : READY_LISTENING_DECK.filter((card) => settings.readyWordIds?.includes(card.id))
-      : STARTER_DECK);
+    settings.helenaWords === true
+      ? READY_LISTENING_DECK
+      : (source ??
+        (settings.activity !== "bingo" && settings.subjectName === READY_LISTENING_SOURCE
+          ? settings.readyWordIds === undefined
+            ? READY_LISTENING_DECK
+            : READY_LISTENING_DECK.filter((card) => settings.readyWordIds?.includes(card.id))
+          : STARTER_DECK));
+  if (settings.helenaWords === true) return cards;
   return cards.filter(
     (card) =>
       (settings.difficulty === "mixed" || card.difficulty === settings.difficulty) &&
@@ -352,12 +367,14 @@ export function startRoom(
   )
     return state;
   const deck =
-    state.settings.shuffle === false
-      ? pool.slice(
-          0,
-          state.settings.questionCount === "all" ? undefined : state.settings.questionCount,
-        )
-      : createListeningRound(pool, state.settings.questionCount, dependencies.random);
+    state.settings.helenaWords === true
+      ? createListeningRound(pool, state.settings.helenaWordCount ?? 10, dependencies.random)
+      : state.settings.shuffle === false
+        ? pool.slice(
+            0,
+            state.settings.questionCount === "all" ? undefined : state.settings.questionCount,
+          )
+        : createListeningRound(pool, state.settings.questionCount, dependencies.random);
   return {
     ...state,
     phase: "playing",
@@ -580,7 +597,10 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
         medium: localRoomPool({ ...state.settings, difficulty: "medium" }, state.sourceDeck).length,
         hard: localRoomPool({ ...state.settings, difficulty: "hard" }, state.sourceDeck).length,
       },
-      preview: localRoomPool(state.settings, state.sourceDeck)
+      preview: (state.settings.helenaWords === true
+        ? []
+        : localRoomPool(state.settings, state.sourceDeck)
+      )
         .slice(0, 3)
         .map((item) => item.front),
     },
