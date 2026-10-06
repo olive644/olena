@@ -1,8 +1,15 @@
+import "./paper-digits.css";
+
 const bodies = ["#50bdc4", "#ff8e77", "#f0ba65", "#7c3aed", "#6996df"];
 const shadows = ["#147b83", "#c95649", "#b87941", "#51259b", "#345580"];
-export function BingoPlanet({ index }: { index: number }) {
+export function BingoPlanet({ index, number }: { index: number; number?: string }) {
   return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className="bingo-planet">
+    <svg
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+      className={number ? "bingo-cell-planet" : "bingo-planet"}
+      data-planet={["earth", "mars", "jupiter", "saturn", "neptune"][index]}
+    >
       {index === 3 && <path d="M5 40 47 13 61 19 19 49Z" fill="#c99a00" />}
       <path d="m19 10 23-2 16 17-3 22-20 12-22-10-8-21Z" fill={bodies[index]} />
       <path d="m42 8 16 17-3 22-20 12-22-10 23-5 12-19Z" fill={shadows[index]} />
@@ -24,6 +31,22 @@ export function BingoPlanet({ index }: { index: number }) {
       )}
       {index === 3 && <path d="m3 39 51-24 8 4-51 29-8-3 46-25Z" fill="#facc15" />}
       {index === 4 && <path d="m12 25 39-5 6 6-44 7Zm7 14 33-5-3 8-22 4Z" fill="#a4e8eb" />}
+      {number && (
+        <g className="bingo-planet-digits">
+          {[...number].map((digit, i) => (
+            <svg
+              key={i}
+              x={32 - number.length * 7.5 + i * 15}
+              y="23"
+              width="15"
+              height="23"
+              viewBox="0 0 66 98"
+            >
+              <use href={`/paper-digits.svg#digit-${digit}`} />
+            </svg>
+          ))}
+        </g>
+      )}
     </svg>
   );
 }

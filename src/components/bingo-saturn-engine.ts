@@ -1,4 +1,4 @@
-import { PAPER_BALL_FACES, PAPER_BALL_LABEL } from "./bingo-paper-geometry";
+import { PAPER_BALL_FACES } from "./bingo-paper-geometry";
 // Physics and paper geometry ported from the owner's approved Saturn prototype.
 type Body = {
   n: number;
@@ -647,12 +647,17 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
           ];
         });
       for (const face of PAPER_BALL_FACES) polygon(transform(face.points), palette[face.tone]);
-      polygon(transform(PAPER_BALL_LABEL), "#fff9ef");
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(roll);
       ctx.fillStyle = "#292432";
-      ctx.font = "800 " + Math.max(7, r * 0.8) + "px Manrope,system-ui";
+      ctx.font = "800 " + Math.max(3, r * 0.24) + "px Manrope,system-ui";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(String(n), x, y + 0.5);
+      ctx.fillText(["B", "I", "N", "G", "O"][g]!, -r * 0.02, -r * 0.29);
+      ctx.font = "800 " + Math.max(5, r * 0.6) + "px Manrope,system-ui";
+      ctx.fillText(String(n), -r * 0.02, r * 0.12);
+      ctx.restore();
     }
     // Brilho de papel atrás da bolinha escolhida enquanto ela sobe e espera.
     function halo(x: number, y: number, r: number, strength: number) {

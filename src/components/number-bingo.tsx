@@ -7,7 +7,6 @@ import {
   type BingoMode,
 } from "../domain/number-bingo";
 import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/local-room";
-import { PaperDigits } from "./paper-digits";
 import { BingoSaturn } from "./bingo-saturn";
 import { BingoPlanet } from "./bingo-planet";
 import "./number-bingo.css";
@@ -83,12 +82,12 @@ export default function NumberBingo({
               onClick={() => onMode(item)}
             >
               <BingoIcon mode={item} />
-              <span>
+              <span className="bingo-mode-copy">
                 <strong>{BINGO_MODE_LABELS[item]}</strong>
                 <small>{BINGO_MODE_RULES[item]}</small>
               </span>
               <span className="bingo-mode-art" aria-hidden="true">
-                <BingoIcon mode={item} />
+                <img src={`/room-art/poliana-bingo-${item}.webp`} alt="" width="384" height="384" />
               </span>
             </button>
           ))}
@@ -157,6 +156,23 @@ export default function NumberBingo({
               </svg>
             </header>
             <svg
+              className="bingo-card-blackhole"
+              viewBox="0 0 480 580"
+              preserveAspectRatio="xMidYMid slice"
+              aria-hidden="true"
+            >
+              <path
+                d="m-45 420 95-214 158-56 162 15 146 143-36 182-180 109-194-39Z"
+                fill="#312663"
+              />
+              <path d="m-45 420 95-214 158-56 162 15-159 53-114 119Z" fill="#7661ae" />
+              <path d="m-43 423 121-85 190-89 217-14 38 40-232 27-201 103Z" fill="#a779ef" />
+              <path d="m-43 423 133-18 201-103 232-27-10 39-214 24-178 94Z" fill="#e7bc88" />
+              <path d="m119 380 44-151 157-29 117 109-60 159-157 49Z" fill="#241c4d" />
+              <path d="m119 380 44-151 157-29-108 73-53 110Z" fill="#403579" />
+              <path d="m-7 466 123 37 190-13 191-94-26 71-170 76-190-3Z" fill="#7661ae" />
+            </svg>
+            <svg
               className="bingo-card-orbits"
               viewBox="0 0 440 520"
               preserveAspectRatio="none"
@@ -220,18 +236,8 @@ export default function NumberBingo({
                       </>
                     ) : (
                       <>
-                        <svg className="bingo-cell-orbit" viewBox="0 0 80 64" aria-hidden="true">
-                          <path
-                            d="m12 17 20-9 24 8 10 20-11 22-26-1-18-18Z"
-                            fill="var(--planet-face)"
-                          />
-                          <path d="m56 16 10 20-11 22-26-1 23-15Z" fill="var(--planet-depth)" />
-                          <path d="m12 17 20-9 24 8-27 2-18 21Z" fill="var(--planet-fold)" />
-                          <path d="M3 40 63 15 76 21 13 49Z" fill="#a779ef" />
-                          <path d="m3 40 63-25 10 6-6 3-5-4L13 44Z" fill="#fff0c7" />
-                        </svg>
+                        <BingoPlanet index={i % 5} number={id} />
                         <span className="bingo-cell-star" aria-hidden="true" />
-                        <PaperDigits value={id} />
                       </>
                     )}
                   </button>

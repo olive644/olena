@@ -1,5 +1,16 @@
 # OlenaStudy: Second Brain
 
+As bolinhas imprimem letra e número na mesma malha de Canvas e SVG, sem selo vazio.
+No voo, o último transform fica inline antes de cancelar cada animação. travelling
+oculta a cópia no histórico enquanto a mesma bola termina a revelação e pousa.
+Não animar a escala do destino enquanto sua caixa está sendo medida.
+BingoPlanet aceita number opcional e reutiliza as formas dos cinco planetas com
+os símbolos de paper-digits.svg dentro do SVG. A cartela índigo/lavanda tem buraco
+negro facetado e não muda de identidade com o tema. As cinco artes de Poliana ficam
+em public/room-art/poliana-bingo-*.webp; prompts e referências em BINGO_POLIANA_ART.md.
+number-bingo.spec.ts também percorre sorteios reais até vitória nos quatro cantos,
+sem adulterar o deck ou a condição de vitória, usando handler real e store local.
+
 BingoSaturn aceita a cartela como children para compor duas colunas sem duplicar
 o histórico que recebe a bolinha animada. Sua comparação memo inclui children,
 para as marcas atualizarem sem reiniciar a viagem. A ação Bingo fica após o painel.

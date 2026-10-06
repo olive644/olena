@@ -134,7 +134,7 @@ describe("server-driven Saturn animation", () => {
     expect(onReveal).toHaveBeenCalledWith(["1", "32"]);
     expect(sound.reveal).toHaveBeenCalledOnce();
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(1500);
+      await vi.advanceTimersByTimeAsync(2200);
     });
     expect(screen.getByRole("list").children).toHaveLength(2);
     expect(screen.getByRole("listitem", { name: "N 32" })).toBeTruthy();
@@ -159,6 +159,53 @@ describe("server-driven Saturn animation", () => {
     expect(renderer.releaseBall).not.toHaveBeenCalled();
     expect(renderer.burst).not.toHaveBeenCalled();
     expect(onReveal).not.toHaveBeenCalledWith(["1", "32"]);
+  });
+  it("mantém a exibição inteira e esconde o destino até a mesma bola pousar", async () => {
+    let landed: () => void = () => {};
+    vi.mocked(HTMLElement.prototype.animate)
+      .mockImplementationOnce(
+        () => ({ finished: Promise.resolve(), cancel: vi.fn() }) as unknown as Animation,
+      )
+      .mockImplementationOnce(
+        () =>
+          ({
+            finished: new Promise<void>((resolve) => {
+              landed = resolve;
+            }),
+            cancel: vi.fn(),
+          }) as unknown as Animation,
+      );
+    const view = render(<BingoSaturn {...props} drawn={["1"]} />);
+    view.rerender(<BingoSaturn {...props} drawn={["1", "32"]} />);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1800 + EXIT_JOURNEY_MS + 20);
+    });
+    expect(
+      view.container.querySelector(".bingo-flying-focus svg text:last-child")?.textContent,
+    ).toBe("32");
+    expect(view.container.querySelector(".bingo-result")).toBeNull();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1300);
+    });
+    expect(screen.getByRole("list").children).toHaveLength(1);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(220);
+    });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(50);
+    });
+    expect(screen.getByRole("listitem", { name: "N 32" }).className).toContain("bingo-arriving");
+    expect(screen.getByRole("button", { name: "Girando…" }).hasAttribute("disabled")).toBe(true);
+    await act(async () => {
+      landed();
+    });
+    expect(screen.getByRole("listitem", { name: "N 32" }).className).not.toContain(
+      "bingo-arriving",
+    );
+    expect(view.container.querySelector(".bingo-flying")?.getAttribute("style")).toContain(
+      "visibility: hidden",
+    );
+    view.unmount();
   });
   it("não reinicia a animação quando o pai renderiza de novo com o mesmo sorteio", async () => {
     const view = render(<BingoSaturn {...props} drawn={["1", "2"]} />);
