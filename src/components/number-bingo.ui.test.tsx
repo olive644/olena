@@ -81,6 +81,14 @@ describe("solar bingo interface", () => {
     expect(screen.queryByRole("button", { name: /Ouvir/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /Sortear/ })).toBeNull();
     expect(screen.queryByText("Complete sua constelação")).toBeNull();
+    expect(screen.queryByText(/Última bolinha:/)).toBeNull();
+    expect(screen.queryByText("O Sol já conta como marcado.")).toBeNull();
+    expect(document.querySelector(".bingo-machine-column .bingo-history")).toBeTruthy();
+    expect(document.querySelector(".bingo-card-column .bingo-solar-card")).toBeTruthy();
+    expect(document.querySelectorAll(".bingo-cell-orbit")).toHaveLength(24);
+    expect(document.querySelector(".bingo-claim img")?.getAttribute("src")).toBe(
+      "/room-icons/bingo-claim.svg",
+    );
     expect(document.querySelector(".bingo-rule")).toBeNull();
     expect(screen.getByLabelText("Globo Saturno com as bolinhas restantes")).toBeTruthy();
   });

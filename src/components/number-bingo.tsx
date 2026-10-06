@@ -142,15 +142,8 @@ export default function NumberBingo({
   }
   return (
     <section className="number-bingo" aria-label="Bingo de números">
-      <BingoSaturn
-        drawn={drawn}
-        isHost={isHost}
-        pending={pending}
-        onDraw={draw}
-        onReveal={reveal}
-      />
-      {participant?.bingoCard && (
-        <div className="bingo-card-layout">
+      <BingoSaturn drawn={drawn} isHost={isHost} pending={pending} onDraw={draw} onReveal={reveal}>
+        {participant?.bingoCard && (
           <section className="bingo-solar-card" aria-label="Minha cartela">
             <header>
               <div>
@@ -227,6 +220,16 @@ export default function NumberBingo({
                       </>
                     ) : (
                       <>
+                        <svg className="bingo-cell-orbit" viewBox="0 0 80 64" aria-hidden="true">
+                          <path
+                            d="m12 17 20-9 24 8 10 20-11 22-26-1-18-18Z"
+                            fill="var(--planet-face)"
+                          />
+                          <path d="m56 16 10 20-11 22-26-1 23-15Z" fill="var(--planet-depth)" />
+                          <path d="m12 17 20-9 24 8-27 2-18 21Z" fill="var(--planet-fold)" />
+                          <path d="M3 40 63 15 76 21 13 49Z" fill="#a779ef" />
+                          <path d="m3 40 63-25 10 6-6 3-5-4L13 44Z" fill="#fff0c7" />
+                        </svg>
                         <span className="bingo-cell-star" aria-hidden="true" />
                         <PaperDigits value={id} />
                       </>
@@ -235,19 +238,21 @@ export default function NumberBingo({
                 );
               })}
             </div>
-            <p>O Sol já conta como marcado.</p>
           </section>
-          <div className="bingo-claim">
-            <button
-              type="button"
-              className="primary-button"
-              disabled={pending}
-              onClick={() => void claim()}
-            >
-              Bingo!
-            </button>
-            <p role="status">{message}</p>
-          </div>
+        )}
+      </BingoSaturn>
+      {participant?.bingoCard && (
+        <div className="bingo-claim">
+          <button
+            type="button"
+            className="primary-button"
+            disabled={pending}
+            onClick={() => void claim()}
+          >
+            <img src="/room-icons/bingo-claim.svg" alt="" width="32" height="32" />
+            Bingo!
+          </button>
+          <p role="status">{message}</p>
         </div>
       )}
     </section>
