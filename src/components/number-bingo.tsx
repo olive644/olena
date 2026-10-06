@@ -9,6 +9,7 @@ import {
 import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/local-room";
 import { PaperDigits } from "./paper-digits";
 import { BingoSaturn } from "./bingo-saturn";
+import { BingoPlanet } from "./bingo-planet";
 import "./number-bingo.css";
 
 function BingoIcon({ mode }: { mode: BingoMode }) {
@@ -152,21 +153,39 @@ export default function NumberBingo({
         <div className="bingo-card-layout">
           <section className="bingo-solar-card" aria-label="Minha cartela">
             <header>
-              <h3>Minha cartela</h3>
-              <small>Sistema solar</small>
+              <div>
+                <small>Sistema solar</small>
+                <h3>Minha cartela</h3>
+              </div>
+              <svg className="bingo-card-comet" viewBox="0 0 100 60" aria-hidden="true">
+                <path fill="#a779ef" d="M12 45 93 5 73 30 96 18 54 51Z" />
+                <path fill="#ffe88d" d="m12 45 63-22-26 24Z" />
+                <path fill="#facc15" d="m19 24 8 12 16 1-12 10 3 13-15-7-12 7 2-16L0 35l15-2Z" />
+              </svg>
             </header>
+            <svg
+              className="bingo-card-orbits"
+              viewBox="0 0 440 520"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M-70 390Q220-80 510 390M-60 440Q220-20 500 440M-60 490Q220 40 500 490"
+                fill="none"
+                stroke="#a779ef"
+                strokeWidth="2"
+              />
+              <path
+                d="m26 120 4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1ZM403 245l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1Z"
+                fill="#ffe88d"
+              />
+            </svg>
             <div className="bingo-card-heading" aria-hidden="true">
               {letters.map((letter, i) => (
                 <div key={letter}>
-                  <svg viewBox="0 0 40 40">
-                    <path
-                      fill={["#50BDC4", "#A779EF", "#FF8E77", "#FACC15", "#7C3AED"][i]}
-                      d="m13 4 14 1 9 11-3 14-13 7L7 29 3 16Z"
-                    />
-                    <path fill="#292432" opacity=".2" d="m27 5 9 11-3 14-13 7L7 29l18-7Z" />
-                    {i === 4 && <path fill="#FACC15" d="m1 26 36-16 2 5L4 32Z" />}
-                  </svg>
+                  <BingoPlanet index={i} />
                   <strong>{letter}</strong>
+                  <small>{["Terra", "Marte", "Júpiter", "Saturno", "Netuno"][i]}</small>
                 </div>
               ))}
             </div>
@@ -188,17 +207,29 @@ export default function NumberBingo({
                         : "")
                     }
                     aria-pressed={marked}
+                    data-orbit={i % 5}
                     aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
                     disabled={id === BINGO_FREE || marked || !revealed.includes(id)}
                     onClick={() => mark(id)}
                   >
                     {id === BINGO_FREE ? (
                       <>
-                        <BingoIcon mode="full" />
+                        <svg className="bingo-card-sun" viewBox="0 0 64 64" aria-hidden="true">
+                          <path
+                            d="m32 0 6 14 14-7-3 16 15 9-15 8 3 17-14-7-6 14-6-14-14 7 3-17L0 32l15-9-3-16 14 7Z"
+                            fill="#c99a00"
+                          />
+                          <path d="m22 14 21 2 10 17-11 18-22-2L11 31Z" fill="#fff0c7" />
+                          <path d="m22 14 21 2-14 12-18 3Z" fill="#fff9ef" />
+                          <path d="m53 33-11 18-22-2 20-10 3-23Z" fill="#ffe88d" />
+                        </svg>
                         <small>Livre</small>
                       </>
                     ) : (
-                      <PaperDigits value={id} />
+                      <>
+                        <span className="bingo-cell-star" aria-hidden="true" />
+                        <PaperDigits value={id} />
+                      </>
                     )}
                   </button>
                 );

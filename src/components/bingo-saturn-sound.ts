@@ -1,8 +1,7 @@
 // Locally synthesized effects from the approved Saturn prototype.
 export function createSaturnSound() {
   let audio: AudioContext | null = null,
-    audioMaster: GainNode | null = null,
-    muted = false;
+    audioMaster: GainNode | null = null;
   let mixNodes: { source: AudioScheduledSourceNode; gain: GainNode }[] = [];
   async function ensureAudio() {
     const Constructor = globalThis.AudioContext;
@@ -11,7 +10,7 @@ export function createSaturnSound() {
       if (!audio) {
         audio = new Constructor();
         audioMaster = audio.createGain();
-        audioMaster.gain.value = muted ? 0 : 0.32;
+        audioMaster.gain.value = 0.32;
         audioMaster.connect(audio.destination);
       }
       if (audio.state === "suspended") await audio.resume();
@@ -21,7 +20,7 @@ export function createSaturnSound() {
     }
   }
   function canSound() {
-    return audio && audio.state === "running" && !muted && !document.hidden;
+    return audio && audio.state === "running" && !document.hidden;
   }
   function noise(duration: number, frequency: number, level: number, delay = 0, track = false) {
     if (!audio || !audioMaster || !canSound()) return;
@@ -132,12 +131,6 @@ export function createSaturnSound() {
     reveal: playReveal,
     land: playLand,
     stop: stopMix,
-    setMuted(value: boolean) {
-      muted = value;
-      if (value) stopMix();
-      if (audio && audioMaster)
-        audioMaster.gain.setTargetAtTime(value ? 0 : 0.32, audio.currentTime, 0.02);
-    },
     dispose() {
       stopMix();
       if (audio) void audio.close().catch(() => {});

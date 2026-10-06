@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Papercraft solar do bingo (2026-10-06)
+
+- Bolinhas redesenhadas como sólidos de papel com seis facetas, face creme e profundidade. Canvas e SVG compartilham geometria na mistura, saída, voo, revelação e histórico. Globo aprovado e sorteio do servidor preservados.
+- Saída pelo funil permanece no relógio físico; voo e transferência têm 61 quadros interpolados, pouso e tempo de leitura maior. Marcação só libera após revelação; movimento reduzido e cancelamento preservados.
+- Cartela tem placa grafite facetada, cometa, órbitas e cinco planetas nas colunas. Casas creme têm cantos nas cores dos planetas, marcas amarelas e Sol de papel central. Dígitos grafite explícitos mantêm contraste no tema escuro.
+- Botão e estado de silêncio removidos. Efeitos habilitados por padrão; primeira interação de ponteiro/teclado desbloqueia áudio conforme política do navegador. Aba oculta ainda pausa sons e saída libera o contexto.
+- Sem dependências novas; geometria e ilustrações permanecem lazy. Total 1111,0 KiB, entrada mantida em 274,6 KiB. Orçamento normal 1112 KiB, teto absoluto inalterado.
+- Verificação geral passou com 1032 testes, tipos, build, formato, API e orçamento. Após a revisão final de pouso, 19 testes focados passaram novamente, junto de novo build e lint dos arquivos alterados sem warnings. Os 20 cenários de sala/bingo no Edge desktop e móvel passaram. Capturas da saída, revelação e cartela foram inspecionadas; regressões verificam contraste no escuro e ausência do controle de silêncio.
+
 ## Apelido do convidado na sala e animação do Bingo (2026-10-06)
 
 - **Apelido do convidado.** No Modo Sala, quem entrou como convidado vê o campo "Seu apelido na sala", começando em Guest, na entrada por código e ao escolher "Também quero participar". O apelido segue a mesma regra de nome da sala (sem `<` e `>`, até 24 caracteres), fica só neste aparelho em `helena.guest-nickname.v1` (fora das chaves sincronizadas) e some quando a pessoa entra com Google. O Perfil e o resto do app continuam como Guest. Apelido vazio volta a Guest. O servidor continua recusando nomes repetidos na mesma sala, e agora o convidado pode trocar o apelido para entrar.

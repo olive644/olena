@@ -1,3 +1,4 @@
+import { PAPER_BALL_FACES, PAPER_BALL_LABEL } from "./bingo-paper-geometry";
 // Physics and paper geometry ported from the owner's approved Saturn prototype.
 type Body = {
   n: number;
@@ -592,29 +593,25 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
     cage(false);
     function drawBall(n: number, x: number, y: number, r: number, roll: number) {
       const g = group(n);
-      shape(x, y, r, 10, colors[g]!, roll);
-      polygon(
-        [
-          [x - r * 0.85, y + r * 0.3],
-          [x - r * 0.2, y + r * 0.94],
-          [x + r * 0.68, y + r * 0.67],
-          [x + r * 0.97, y - r * 0.12],
-          [x + r * 0.2, y + r * 0.35],
-        ],
-        shades[g]!,
-      );
-      polygon(
-        [
-          [x - r * 0.89, y - r * 0.29],
-          [x - r * 0.43, y - r * 0.86],
-          [x + r * 0.45, y - r * 0.83],
-          [x - r * 0.19, y - r * 0.55],
-        ],
-        lights[g]!,
-      );
-      shape(x, y, r * 0.61, 8, "#fff9ef", Math.PI / 8);
+      const palette = {
+        base: colors[g]!,
+        light: lights[g]!,
+        shade: shades[g]!,
+        dark: ["#997207", "#0c5965", "#382066", "#8e383e", "#9b7d35"][g]!,
+      };
+      const transform = (points: readonly (readonly number[])[]) =>
+        points.map((p) => {
+          const px = (p[0]! / 50 - 1) * r,
+            py = (p[1]! / 50 - 1) * r;
+          return [
+            x + px * Math.cos(roll) - py * Math.sin(roll),
+            y + px * Math.sin(roll) + py * Math.cos(roll),
+          ];
+        });
+      for (const face of PAPER_BALL_FACES) polygon(transform(face.points), palette[face.tone]);
+      polygon(transform(PAPER_BALL_LABEL), "#fff9ef");
       ctx.fillStyle = "#292432";
-      ctx.font = "800 " + Math.max(8, r * 0.88) + "px Manrope,system-ui";
+      ctx.font = "800 " + Math.max(7, r * 0.8) + "px Manrope,system-ui";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(String(n), x, y + 0.5);
