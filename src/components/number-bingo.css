@@ -146,9 +146,10 @@
 .bingo-saturn {
   position: relative;
 }
-.bingo-saturn > svg {
+.bingo-saturn > img {
   display: block;
   width: 100%;
+  height: auto;
   max-height: 360px;
 }
 .bingo-saturn-cage {

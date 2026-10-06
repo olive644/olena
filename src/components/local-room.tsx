@@ -740,6 +740,7 @@ export function LocalRoom({
               questionCount: 5,
               bingoMode: "line",
               teams: false,
+              shuffle: true,
               participantAudio: false,
               helenaWords: false,
             }

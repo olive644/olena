@@ -24,3 +24,7 @@ As variáveis `VITE_` identificam o projeto Firebase e são públicas por defini
 O convite para edição exige login Google. A função `/api/notebook-collab` valida o ID token com as chaves públicas do Firebase; `VITE_FIREBASE_PROJECT_ID` também precisa estar disponível no ambiente da função na Vercel. O nome da equipe vem da conta autenticada e o avatar escolhido é sincronizado em `helena.profile.v1`. O link de visualização continua acessível sem login e não permite editar.
 
 O estado principal da conta prevalece sobre um backup local antigo no login. Só alterações feitas durante a busca inicial são preservadas por cima da nuvem. A sequência de Pomodoro também sincroniza; dados antigos do dispositivo são migrados quando essa chave ainda não existe na conta. Rascunhos manuscritos locais, histórico e cópias de conflito continuam como recuperação local. A edição colaborativa é uma sala temporária de uma folha, não um arquivo permanente salvo automaticamente na biblioteca de todos os convidados.
+
+## Convidado
+
+A tela de login também oferece "Entrar como convidado". O convidado se chama Guest, não tem conta nem sincronização e guarda tudo somente neste aparelho (chave local `helena.guest.v1`, que não é sincronizada). Ao entrar com Google depois, a marca some e o conteúdo local segue a regra de primeira conta: sobe para a nuvem se a conta ainda estiver vazia. O convite de edição de caderno continua exigindo login Google.

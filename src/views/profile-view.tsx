@@ -9,6 +9,7 @@ import {
   type StudyModality,
   type StudyPreferences,
 } from "../domain/study-preferences";
+import { GUEST_NAME } from "../domain/guest-session";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import type { WorkspaceHistoryEntry } from "../data/workspace-history";
 
@@ -16,6 +17,8 @@ type ProfileViewProps = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
   cloud: CloudSyncState;
+  guest?: boolean;
+  onSignIn?: () => void;
   history: WorkspaceHistoryEntry[];
   onRestoreSnapshot: (entry: WorkspaceHistoryEntry) => void;
 };
@@ -24,6 +27,8 @@ export function ProfileView({
   workspace,
   dispatch,
   cloud,
+  guest = false,
+  onSignIn,
   history,
   onRestoreSnapshot,
 }: ProfileViewProps) {
@@ -78,38 +83,44 @@ export function ProfileView({
           <span className="section-label">Conta e sincronização</span>
           <h2 id="account-sync-title">Seus estudos em todos os dispositivos</h2>
           <p>
-            {!cloud.enabled
-              ? "A nuvem ainda não está configurada. Seus estudos continuam salvos somente neste dispositivo."
-              : cloud.status === "offline"
-                ? "Sem conexão. Suas alterações ficam neste dispositivo e serão enviadas quando a internet voltar."
-                : cloud.status === "conflict"
-                  ? "Conflito conciliado: suas alterações locais foram preservadas e a versão remota foi guardada neste dispositivo."
-                  : cloud.status === "syncing" || cloud.status === "loading"
-                    ? "Sincronizando suas alterações com segurança…"
-                    : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
+            {guest
+              ? "Você está como convidado. Seus estudos ficam somente neste aparelho. Entre com Google para usá-los também em outros dispositivos."
+              : !cloud.enabled
+                ? "A nuvem ainda não está configurada. Seus estudos continuam salvos somente neste dispositivo."
+                : cloud.status === "offline"
+                  ? "Sem conexão. Suas alterações ficam neste dispositivo e serão enviadas quando a internet voltar."
+                  : cloud.status === "conflict"
+                    ? "Conflito conciliado: suas alterações locais foram preservadas e a versão remota foi guardada neste dispositivo."
+                    : cloud.status === "syncing" || cloud.status === "loading"
+                      ? "Sincronizando suas alterações com segurança…"
+                      : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
           </p>
         </div>
         <dl>
           <div>
             <dt>Conta</dt>
             <dd>
-              {cloud.enabled
-                ? cloud.displayName || cloud.email || "Conta Google conectada"
-                : "Somente neste dispositivo"}
+              {guest
+                ? `${GUEST_NAME} (convidado)`
+                : cloud.enabled
+                  ? cloud.displayName || cloud.email || "Conta Google conectada"
+                  : "Somente neste dispositivo"}
             </dd>
           </div>
           <div>
             <dt>Estado</dt>
             <dd data-sync-status={cloud.status}>
-              {!cloud.enabled
-                ? "Nuvem indisponível"
-                : cloud.status === "offline"
-                  ? "Aguardando conexão"
-                  : cloud.status === "conflict"
-                    ? "Conflito preservado"
-                    : cloud.status === "syncing" || cloud.status === "loading"
-                      ? "Sincronizando"
-                      : "Sincronizado"}
+              {guest
+                ? "Somente neste aparelho"
+                : !cloud.enabled
+                  ? "Nuvem indisponível"
+                  : cloud.status === "offline"
+                    ? "Aguardando conexão"
+                    : cloud.status === "conflict"
+                      ? "Conflito preservado"
+                      : cloud.status === "syncing" || cloud.status === "loading"
+                        ? "Sincronizando"
+                        : "Sincronizado"}
             </dd>
           </div>
           <div>
@@ -125,21 +136,29 @@ export function ProfileView({
           </div>
         </dl>
         <div className="account-sync-settings__actions">
-          <button
-            type="button"
-            disabled={!cloud.syncNow || cloud.status === "syncing"}
-            onClick={cloud.syncNow}
-          >
-            Sincronizar agora
-          </button>
-          <button
-            type="button"
-            className="secondary-button"
-            disabled={!cloud.signOut}
-            onClick={() => void cloud.signOut?.()}
-          >
-            Sair desta conta
-          </button>
+          {guest ? (
+            <button type="button" disabled={!onSignIn} onClick={onSignIn}>
+              Entrar com Google
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                disabled={!cloud.syncNow || cloud.status === "syncing"}
+                onClick={cloud.syncNow}
+              >
+                Sincronizar agora
+              </button>
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={!cloud.signOut}
+                onClick={() => void cloud.signOut?.()}
+              >
+                Sair desta conta
+              </button>
+            </>
+          )}
         </div>
       </section>
 

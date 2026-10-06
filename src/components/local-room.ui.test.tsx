@@ -15,6 +15,60 @@ describe("chegada por link de convite", () => {
     fireEvent.click(screen.getByRole("button", { name: /entrar com código/i }));
     expect(screen.getByLabelText(/código/i)).toBeTruthy();
   });
+  it("prepara o bingo sem configurações da escuta coletiva", async () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /^Bingo/ }));
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Modo de partida" })).toBeTruthy(),
+    );
+    expect(screen.queryByRole("button", { name: "Responder em equipes" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Responder individualmente" })).toBeNull();
+    expect(screen.queryByRole("checkbox", { name: "Embaralhar questões" })).toBeNull();
+    expect(screen.queryByLabelText("Matéria / tema")).toBeNull();
+    expect(screen.queryByLabelText("Dificuldade")).toBeNull();
+    expect(screen.queryByRole("slider", { name: "Tempo por pergunta" })).toBeNull();
+    expect(screen.queryByText(/questões disponíveis neste filtro/)).toBeNull();
+    expect(screen.getByRole("button", { name: /^Criar sala$/ }).hasAttribute("disabled")).toBe(
+      false,
+    );
+  });
+
+  it("não leva equipes da escuta para o bingo e mantém os controles ao voltar", async () => {
+    render(<LocalRoom accountName="Ana" />);
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    await waitFor(() =>
+      expect(document.querySelector(".local-room-settings__panel")?.getAttribute("aria-busy")).toBe(
+        "false",
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Responder em equipes" }));
+    expect(
+      screen.getByRole("button", { name: "Responder em equipes" }).getAttribute("aria-pressed"),
+    ).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: /Modalidades coletivas/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /^Bingo/ }));
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Modo de partida" })).toBeTruthy(),
+    );
+    await waitFor(() =>
+      expect(document.querySelector(".local-room-settings__panel")?.getAttribute("aria-busy")).toBe(
+        "false",
+      ),
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Modalidades coletivas/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
+    await waitFor(() =>
+      expect(
+        screen
+          .getByRole("button", { name: "Responder individualmente" })
+          .getAttribute("aria-pressed"),
+      ).toBe("true"),
+    );
+    expect(screen.getByRole("button", { name: "Responder em equipes" })).toBeTruthy();
+    expect(screen.getByRole("checkbox", { name: "Embaralhar questões" })).toBeTruthy();
+    expect(screen.getByRole("slider", { name: "Tempo por pergunta" })).toBeTruthy();
+  });
+
   it("seleção da Helena dispensa escolher palavras manualmente", async () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));

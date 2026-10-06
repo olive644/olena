@@ -4,6 +4,7 @@ import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
+import { GUEST_NAME, endGuestSession, startGuestSession } from "../domain/guest-session";
 import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
 
@@ -70,6 +71,7 @@ export function GoogleLogin({
   const [busy, setBusy] = useState(true);
   // Nunca vem marcada: o aceite da política precisa ser um ato da pessoa.
   const [accepted, setAccepted] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const pending = useRef(false);
 
   useEffect(() => {
@@ -83,6 +85,7 @@ export function GoogleLogin({
         // persistência) porque o Firebase só entrega esse resultado uma vez.
         if (hasPendingGoogleRedirect()) {
           if (loaded.redirectResult) {
+            endGuestSession();
             applyGoogleLogin(readPendingGoogleAnswers());
             clearPendingAnswers();
             if (active) onFinish();
@@ -110,6 +113,7 @@ export function GoogleLogin({
   async function login() {
     if (!services || pending.current || !accepted) return;
     pending.current = true;
+    setSigningIn(true);
     // O aceite é registrado antes de sair para o Google: o login pode virar um
     // redirecionamento de página inteira e a pessoa voltaria sem o registro.
     recordPrivacyConsent(window.localStorage);
@@ -119,6 +123,7 @@ export function GoogleLogin({
     provider.setCustomParameters({ prompt: "select_account" });
     try {
       await services.authApi.signInWithPopup(services.auth, provider);
+      endGuestSession();
       applyGoogleLogin(answers);
       onFinish();
     } catch (cause) {
@@ -140,14 +145,25 @@ export function GoogleLogin({
           clearPendingAnswers();
           setError(googleLoginError(redirectCause));
           pending.current = false;
+          setSigningIn(false);
           setBusy(false);
           return;
         }
       }
       setError(googleLoginError(cause));
       pending.current = false;
+      setSigningIn(false);
       setBusy(false);
     }
+  }
+
+  // Nada é enviado a servidor nenhum: os estudos ficam só neste aparelho, então
+  // não há aceite de política a registrar como no login com Google.
+  function continueAsGuest() {
+    if (pending.current) return;
+    startGuestSession();
+    applyGoogleLogin(answers);
+    onFinish();
   }
 
   return (
@@ -230,6 +246,15 @@ export function GoogleLogin({
             </button>
           </div>
           <p className="login-page__local">Seus estudos ficam sincronizados na sua conta.</p>
+          <div className="login-page__guest">
+            <button type="button" disabled={signingIn} onClick={continueAsGuest}>
+              Entrar como convidado
+            </button>
+            <p>
+              Como convidado, você aparece como {GUEST_NAME} e seus estudos ficam somente neste
+              aparelho.
+            </p>
+          </div>
           <div className="login-page__divider" />
           {onBack && (
             <button className="login-page__back" type="button" disabled={busy} onClick={onBack}>

@@ -66,6 +66,12 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await page.getByRole("button", { name: /Também quero participar/ }).click();
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const card = page.getByRole("region", { name: "Minha cartela" });
+  await expect(page.locator(".bingo-saturn > img")).toBeVisible();
+  await expect
+    .poll(() =>
+      page.locator(".bingo-saturn > img").evaluate((el) => (el as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
   await expect(card.locator(".bingo-card-grid button")).toHaveCount(25);
   await expect(page.getByRole("button", { name: "Sol, centro livre" })).toHaveAttribute(
     "aria-pressed",

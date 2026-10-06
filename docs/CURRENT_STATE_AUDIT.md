@@ -2,6 +2,7 @@
 
 ## Bingo numérico solar (2026-10-05)
 
+- Reconciliação com a main de #348 e #349 preserva entrada como convidado e separação de controles. Saturno passou a SVG estático com animação interna para manter o orçamento após combinar as mudanças: verify passou com 1.005 testes e JavaScript total de 1087,1 KiB, sem aumentar o teto.
 - A modalidade Bingo na aplicação oferece Linha, Coluna, Diagonal, Quatro cantos e Cartela cheia, com seleção imediata e ícones autorais de papel: cometa, foguete, estrela cadente, quatro estrelas e Sol. Botões compartilham o acabamento dos controles da escuta e ilustram a seleção com facetas, sem as miniaturas de tabelas rejeitadas.
 - Novas salas usam bingoMode, deck de 75 números sem repetição e cartelas BINGO 5 × 5 geradas pelo servidor, com centro livre. Criador controla o sorteio manualmente, inclusive quando participa. Não há áudio de vocabulário nem avanço por cronômetro neste fluxo.
 - API aceita marcas apenas de números já sorteados que pertencem à cartela autenticada. Marcas repetidas não somam pontos; pedido Bingo só encerra com o padrão escolhido completo. Vencedor fica acima da pontuação de marcação no pódio. Ordem futura do sorteio não é publicada. Salas antigas sem bingoMode mantêm o fluxo anterior, sem reinterpretar cartelas em andamento.
@@ -12,6 +13,23 @@
 
 - Sol e lua agora têm padrão próprio no tema claro, com papel ocre e lilás. A regra anterior aplicava o fundo somente no tema escuro. O padrão escuro permanece inalterado.
 - A física detalhada do globo permanece como estudo HTML local; a aplicação agora tem um sorteador Saturno em papel com os modos e cartelas numéricos integrados.
+
+## Entrar como convidado (2026-10-05)
+
+- A tela de login do fim do onboarding ganhou o botão "Entrar como convidado", abaixo de "Entrar com Google". A pessoa aparece como Guest e usa o app sem conta. Os estudos ficam somente neste aparelho: nada é enviado à nuvem e não há sincronização, e a tela e o Perfil dizem isso com clareza (recurso local, nunca apresentado como conta ou nuvem).
+- A marca fica em `helena.guest.v1` (`src/domain/guest-session.ts`), fora das chaves sincronizadas. Com a nuvem ativa o app antes mandava toda pessoa desconectada de volta ao login; `requiresLogin` agora exclui o convidado, então ele continua no app ao recarregar.
+- O botão de convidado não pede o aceite da Política de Privacidade, porque nenhum dado sai do aparelho; o aceite continua obrigatório para entrar com Google. O botão funciona mesmo sem o Firebase configurado.
+- Entrar com Google (pop-up ou retorno do redirecionamento) apaga a marca de convidado. Na primeira conta sem dados na nuvem, o conteúdo local do convidado sobe para a conta, pela regra já existente. O Perfil do convidado mostra "Guest (convidado)", "Somente neste aparelho" e o botão "Entrar com Google", sem sincronizar nem sair da conta.
+- No Modo Sala o convidado entra com o nome Guest. Limite conhecido: o servidor recusa nomes repetidos na mesma sala, então só um convidado por sala consegue entrar com esse nome. Convites de edição de caderno continuam exigindo login Google.
+- O e2e de preparação do bingo (`e2e/room.spec.ts`) exigia rolagem da página, mas a preparação do bingo ficou curta com o #348 e cabe na janela do desktop. A exigência agora vale só quando a página é mais alta que a janela; a checagem de que "Criar sala" fica visível e habilitada não mudou.
+- Testes: domínio (`guest-session.test.ts`), tela de login e Perfil (`google-login.test.tsx`, `profile-view.guest.test.tsx`) e e2e do onboarding até virar convidado e continuar após voltar ao app. Não verificado em produção: o efeito com o Firebase configurado depende de testar no domínio publicado.
+
+## Preparação própria do bingo (2026-10-05)
+
+- Bingo não exibe seleção de equipes, embaralhamento de questões, matéria/tema, dificuldade ou tempo por pergunta. O resumo de questões filtradas também foi removido, e a preparação informa que cada pessoa recebe uma cartela com sorteio compartilhado.
+- Ao escolher bingo, teams é falso e shuffle é verdadeiro, evitando herdar equipes ou ordem fixa da escuta. O contrato existente de bingo de vocabulário e seu sorteio permanecem; esta alteração não integra o protótipo do globo numérico.
+- Os controles de equipes, embaralhamento e tempo continuam disponíveis na escuta coletiva. Testes de interface cobrem o bingo e a troca de modalidades.
+- Verificação completa e testes de navegador dependem do CI: o ambiente desta alteração está sem dependências instaladas e não conseguiu acesso de rede para preparar a execução local.
 
 ## Ícone da seleção da Helena (2026-10-04)
 

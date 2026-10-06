@@ -127,6 +127,40 @@
   color: #726579;
   margin-top: 20px;
 }
+.login-page__guest {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  text-align: center;
+}
+.login-page__guest button {
+  min-height: 52px;
+  padding: 0 22px;
+  border: 2px solid #292432;
+  border-radius: 16px 26px 16px 26px;
+  background: #fff9ef;
+  color: #292432;
+  font: inherit;
+  font-weight: 800;
+  box-shadow: 0 5px 0 #d9ccb4;
+  cursor: pointer;
+}
+.login-page__guest button:hover:not(:disabled) {
+  background: #ffe88d;
+}
+.login-page__guest button:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: 3px;
+}
+.login-page__guest button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.login-page__guest p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #726579;
+}
 .login-page__divider {
   border-top: 1px dashed #ddd2c3;
   margin: 26px 0 18px;

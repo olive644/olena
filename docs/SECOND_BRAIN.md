@@ -11,6 +11,9 @@ Repetição e retorno ao lobby preservam o modo e geram novas cartelas ao inicia
 Fundo de papel usa paper-sky-pattern-light.svg no tema claro e
 paper-sky-pattern.svg no escuro, na regra compartilhada de paper-controls.css.
 
+Preparação do bingo é independente dos controles da escuta. Cartelas são individuais;
+a seleção da modalidade define teams: false e shuffle: true.
+
 Seleção aleatória usa public/room-icons/helena-word-choice.svg, ícone exclusivo
 do rostinho da Helena em papel recortado, sem cartas ou patinhas. Não reutilizar modalities.svg.
 
@@ -428,7 +431,7 @@ O rail desktop usa papel creme e texto grafite no claro, papel grafite e texto c
 
 No celular, Mais fica no cabeçalho ao lado do seletor de aparência e da foto circular. `MobileMenuContext` conecta esse acionador à gaveta; o quinto item inferior, Perfil, usa ícone próprio e fica desabilitado, reservado para configurações futuras de perfil, conta e aplicativo. O seletor de aparência é compartilhado com o desktop. Regressões de recorte e navegação são verificadas em `e2e/responsive-navigation.spec.ts`.
 
-Configuração e modelo de ameaça do login Google: GOOGLE_LOGIN.md. O resumo abre uma etapa de autenticação com preparação antecipada do SDK.
+Quem não quer logar usa "Entrar como convidado" na mesma tela: aparece como Guest, os estudos ficam só neste aparelho (marca `helena.guest.v1`, sem sincronização) e o Perfil oferece entrar com Google depois. Configuração e modelo de ameaça do login Google: GOOGLE_LOGIN.md. O resumo abre uma etapa de autenticação com preparação antecipada do SDK.
 
 ## Onboarding de prévia e padrão visual
 

@@ -285,7 +285,12 @@ for (const activity of ["listening", "bingo"] as const) {
         );
       })
       .toBe(true);
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    // A preparação do bingo é curta e cabe na janela do desktop: só há rolagem para exigir
+    // quando a página é mais alta que a janela.
+    const scrollable = await page.evaluate(
+      () => document.documentElement.scrollHeight > window.innerHeight + 1,
+    );
+    if (scrollable) await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
     await expect(create).toBeEnabled();
     await page.screenshot({ path: testInfo.outputPath(`create-${activity}-reachable.png`) });
   });

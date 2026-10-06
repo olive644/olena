@@ -103,51 +103,7 @@ export default function NumberBingo({
       </div>
       <div className="bingo-saturn-panel">
         <div className="bingo-saturn">
-          <svg viewBox="0 0 440 360" aria-hidden="true">
-            <path fill="#51259B" d="m78 280 287 0 22 25-20 12H74l-21-12Z" />
-            <path fill="#A779EF" d="m78 280 287 0-15 12H91Z" />
-            <path fill="#7C3AED" d="m75 170 22-6 35 125h-25ZM326 103l26 4-26 181h-30Z" />
-            <path fill="#A779EF" d="m75 170 11-3 33 122h-12ZM341 105l11 2-26 181h-12Z" />
-            <path fill="#C69A06" d="M30 188c-12-44 332-159 365-101l-21 15C323 65 62 156 49 187Z" />
-            <g key={number} className="bingo-saturn-cage">
-              <path
-                fill="#51259B"
-                d="m173 28 72 0 66 40 34 67-7 66-44 58-73 24-70-23-46-51-15-71 27-67Z"
-              />
-              <path
-                fill="#FFF9EF"
-                d="m174 35 70 0 61 38 33 62-7 62-41 55-69 23-66-22-44-48-14-65 26-66Z"
-              />
-              <path
-                fill="#EDE1FF"
-                d="m174 35 70 0-83 113-64-8 26-66ZM305 73l33 62-7 62-41 55-69 23 41-147Z"
-              />
-              <path
-                fill="none"
-                stroke="#A779EF"
-                strokeWidth="2"
-                d="M123 74q180 4 182 0M105 115q118 33 225 0M99 172q117 35 237 0M112 211q107 40 211 0M153 47q-32 150 9 214M210 35v239M267 47q38 128 5 211"
-              />
-              {Array.from({ length: 16 }, (_, i) => (
-                <g
-                  key={i}
-                  transform={`translate(${133 + (i % 5) * 34} ${185 + Math.floor(i / 5) * 18})`}
-                >
-                  <path
-                    fill={["#FACC15", "#50BDC4", "#A779EF", "#FF8E77"][i % 4]}
-                    d="m-9-6 10-4 8 7-2 9-10 4-8-8Z"
-                  />
-                  <path fill="#FFF9EF" d="m-4-4 6-1 3 5-3 5-6-2Z" />
-                </g>
-              ))}
-            </g>
-            <path fill="#FACC15" d="M30 185C67 217 351 139 395 88l-5 25C322 174 70 246 30 201Z" />
-            <path fill="#FFE88D" d="M30 185C67 217 351 139 395 88l-3 10C320 163 69 235 30 193Z" />
-            <path fill="#51259B" d="m202 260 30 0v21l98 22v13l-125-34Z" />
-            <path fill="#FFF9EF" d="m208 268 21 1 102 27-1 7-108-26Z" />
-            <path fill="#A779EF" d="m208 268 14 9 108 26-9 6-116-27Z" />
-            <path fill="#FACC15" d="M208 259h19v15h-19Z" />
-          </svg>
+          <img key={number} src="/room-icons/bingo-saturn.svg" alt="" width="440" height="360" />
           <div className="bingo-current" role="status" aria-live="polite">
             <small>Bolinha sorteada</small>
             <span>{letters[Math.floor((Number(number) - 1) / 15)]}</span>
