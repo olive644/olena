@@ -167,7 +167,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // No new dependency; retain a narrow allowance for Linux CI.
 // Local cross-browser QR decoding is lazy and downloaded only when opening the
 // camera. Measured total: 1079.4 KiB (decoder 128.8 KiB); initial entry unchanged.
-const MAX_TOTAL_JS_BYTES = 1088 * 1024;
+// Approved Saturn: 3D ball collisions, gate/chute motion, reveal/history flight
+// and local sound synthesis replace the static SVG. All stay inside lazy bingo.
+// Measured total: 1102.1 KiB; initial entry unchanged at 274.2 KiB. No dependency.
+const MAX_TOTAL_JS_BYTES = 1104 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

@@ -2005,15 +2005,6 @@ export function LocalRoom({
               onDraw={room.nextQuestion}
               onAnswer={room.submitAnswer}
             />
-            {room.isOrganizer && (
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => void room.endRoom()}
-              >
-                Encerrar sala
-              </button>
-            )}
           </Suspense>
         ) : state.phase === "playing" && state.currentQuestion ? (
           <div className="local-room-round">

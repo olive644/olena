@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Saturno aprovado integrado (2026-10-06)
+
+- O globo em bingo-globo-oficial.html, aprovado pelo proprietário, foi portado para o bingo da aplicação: mesmo desenho de papel dos suportes, anel facetado, gaiola em camadas, comporta e rampa. Não usa mais o SVG simplificado de #350.
+- Bolinhas têm gravidade, colisão, atrito e rotação, com passo físico de 1/120 s. O servidor continua sendo o único sorteador; a física só apresenta o número já confirmado. A sequência mistura, abre a comporta, faz a bolinha percorrer a rampa, destaca o número e o leva ao histórico. Efeitos sonoros sintetizados localmente e botão de silêncio, sem arquivos remotos.
+- Entrada e reconexão mostram o histórico existente sem repetir sorteios. Saída cancela timers, animações, RAF, observador e áudio. Aba oculta suspende a física e os sons; movimento reduzido usa o mesmo resultado sem voo nem loop de animação. Física em repouso para após estabilização.
+- Removidos do jogo o título/regra do modo, os textos Complete sua constelação e sua explicação, e o botão Encerrar sala abaixo da cartela. Escolha dos cinco modos permanece na preparação; Bingo continua conferindo a vitória e Sair da sala permanece no cabeçalho.
+- Física, apresentação e sons permanecem no chunk lazy do bingo, sem dependências e sem aumentar a entrada inicial (274,2 KiB). A implementação completa adiciona cerca de 15 KiB ao total; orçamento normal documentado em 1104 KiB, sem alterar tetos absolutos.
+- Validação: npm run verify passou (lint, formato, API, suíte unitária, tipos, build e orçamento). Os 20 cenários de bingo numérico e sala passaram no Edge desktop/móvel; após ajustar também a margem do destaque, os dois cenários numéricos foram repetidos e passaram. Capturas de saída, revelação, cartela e temas claro/escuro foram inspecionadas. Testes unitários cobrem exclusão dos números confirmados, reconexão sem replay, cancelamento ao desmontar e movimento reduzido sem voo.
+
 ## Auditoria de dependências (2026-10-05)
 
 - source-map-js transitivo atualizado de 1.2.1 para 1.2.2 somente no lockfile, corrigindo GHSA-68fv-2mgg-jv7q. As faixas já aceitas por PostCSS/Vite e css-tree/jsdom foram mantidas. A auditoria retornou zero vulnerabilidades após a atualização; não houve mudança nas dependências diretas nem no comportamento do bingo.

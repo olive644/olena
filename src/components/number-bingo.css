@@ -146,23 +146,17 @@
 .bingo-saturn {
   position: relative;
 }
-.bingo-saturn > img {
+.bingo-saturn > canvas {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: 360px;
-}
-.bingo-saturn-cage {
-  transform-origin: 218px 155px;
-  animation: bingo-mix 1.2s ease-out;
+  aspect-ratio: 3 / 2;
 }
 .bingo-current {
   margin: 0 auto 14px;
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  font-size: 36px;
+  min-height: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
 }
 .bingo-current small {
   font-size: 12px;
@@ -177,7 +171,8 @@
 .bingo-history h3 small {
   font-size: 12px;
 }
-.bingo-history > div {
+.bingo-history > [role="list"] {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -193,14 +188,137 @@
   color: var(--ink);
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
   font-weight: 800;
   clip-path: polygon(20% 0, 75% 0, 100% 30%, 95% 75%, 65% 100%, 20% 90%, 0 60%, 0 25%);
 }
-.bingo-history [role="listitem"].latest {
-  background: #facc15;
+.bingo-saturn-panel .bingo-ball {
+  position: relative;
+  display: grid;
+  place-content: center;
+  text-align: center;
   color: #292432;
+  background: var(--ball-color, #facc15);
+  clip-path: polygon(
+    35% 0,
+    61% 0,
+    82% 10%,
+    96% 28%,
+    100% 52%,
+    92% 76%,
+    74% 93%,
+    49% 100%,
+    25% 93%,
+    8% 76%,
+    0 50%,
+    6% 26%,
+    19% 10%
+  );
+}
+.bingo-ball::before,
+.bingo-ball::after,
+.bingo-ball-facet {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.bingo-ball::before {
+  background: var(--ball-shade, #c69a06);
+  clip-path: polygon(100% 22%, 100% 100%, 0 100%, 10% 73%, 35% 87%, 76% 74%, 89% 43%);
+}
+.bingo-ball::after {
+  inset: 16%;
+  background: #fff9ef;
+  clip-path: polygon(35% 0, 66% 3%, 91% 23%, 100% 54%, 85% 85%, 54% 100%, 20% 89%, 0 58%, 8% 23%);
+}
+.bingo-ball-facet {
+  background: var(--ball-light, #ffe88d);
+  clip-path: polygon(7% 26%, 20% 10%, 61% 0, 80% 9%, 36% 13%, 15% 39%);
+}
+.bingo-ball small,
+.bingo-ball strong {
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+.bingo-ball small {
+  font-size: 10px;
+  color: #51259b;
+}
+.bingo-ball strong {
+  font-size: 22px;
+}
+.bingo-saturn .bingo-result {
+  position: absolute;
+  right: 32px;
+  bottom: 42px;
+  width: clamp(70px, 19%, 116px);
+  aspect-ratio: 1;
+  visibility: hidden;
+  pointer-events: none;
+}
+.bingo-saturn .bingo-result-focus {
+  visibility: visible;
+  background: transparent;
+  overflow: visible;
+  clip-path: none;
+  filter: drop-shadow(6px 5px 0 #51259b33);
+}
+.bingo-result-focus::before {
+  inset: -20%;
+  background: #ffe88d;
+  clip-path: polygon(
+    45% 0,
+    58% 17%,
+    88% 8%,
+    83% 34%,
+    100% 47%,
+    82% 59%,
+    92% 91%,
+    63% 82%,
+    48% 100%,
+    38% 82%,
+    9% 94%,
+    18% 65%,
+    0 48%,
+    19% 35%,
+    9% 10%,
+    36% 19%
+  );
+}
+.bingo-result-focus::after {
+  background: #fff9ef;
+  inset: -2%;
+}
+.bingo-saturn .bingo-flying {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  visibility: hidden;
+  z-index: 6;
+  pointer-events: none;
+  will-change: transform;
+}
+.bingo-machine-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bingo-claim {
+  display: grid;
+  justify-items: start;
+}
+@media (max-width: 600px) {
+  .bingo-saturn > canvas {
+    aspect-ratio: 1.35;
+  }
+  .bingo-saturn .bingo-result {
+    right: 32px;
+    bottom: 54px;
+  }
 }
 .bingo-history button {
   margin-top: 16px;
@@ -319,7 +437,7 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  .bingo-history > div {
+  .bingo-history > [role="list"] {
     max-height: 130px;
   }
   .bingo-solar-card {
