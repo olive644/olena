@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Auditoria de dependências (2026-10-05)
+
+- source-map-js transitivo atualizado de 1.2.1 para 1.2.2 somente no lockfile, corrigindo GHSA-68fv-2mgg-jv7q. As faixas já aceitas por PostCSS/Vite e css-tree/jsdom foram mantidas. A auditoria retornou zero vulnerabilidades após a atualização; não houve mudança nas dependências diretas nem no comportamento do bingo.
+
 ## Bingo numérico solar (2026-10-05)
 
 - Reconciliação com a main de #348 e #349 preserva entrada como convidado e separação de controles. Saturno passou a SVG estático com animação interna para manter o orçamento após combinar as mudanças: verify passou com 1.005 testes e JavaScript total de 1087,1 KiB, sem aumentar o teto.
