@@ -7,6 +7,7 @@
 - O botão de convidado não pede o aceite da Política de Privacidade, porque nenhum dado sai do aparelho; o aceite continua obrigatório para entrar com Google. O botão funciona mesmo sem o Firebase configurado.
 - Entrar com Google (pop-up ou retorno do redirecionamento) apaga a marca de convidado. Na primeira conta sem dados na nuvem, o conteúdo local do convidado sobe para a conta, pela regra já existente. O Perfil do convidado mostra "Guest (convidado)", "Somente neste aparelho" e o botão "Entrar com Google", sem sincronizar nem sair da conta.
 - No Modo Sala o convidado entra com o nome Guest. Limite conhecido: o servidor recusa nomes repetidos na mesma sala, então só um convidado por sala consegue entrar com esse nome. Convites de edição de caderno continuam exigindo login Google.
+- O e2e de preparação do bingo (`e2e/room.spec.ts`) exigia rolagem da página, mas a preparação do bingo ficou curta com o #348 e cabe na janela do desktop. A exigência agora vale só quando a página é mais alta que a janela; a checagem de que "Criar sala" fica visível e habilitada não mudou.
 - Testes: domínio (`guest-session.test.ts`), tela de login e Perfil (`google-login.test.tsx`, `profile-view.guest.test.tsx`) e e2e do onboarding até virar convidado e continuar após voltar ao app. Não verificado em produção: o efeito com o Firebase configurado depende de testar no domínio publicado.
 
 ## Preparação própria do bingo (2026-10-05)
