@@ -1,4 +1,5 @@
 import { act, render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { expect, it, vi } from "vitest";
 import type { PublicLocalRoomState } from "../domain/local-room";
 import { createNumberBingoCard } from "../domain/number-bingo";
@@ -8,9 +9,15 @@ const globe = vi.hoisted(() => ({
   reveal: undefined as ((ids: readonly string[]) => void) | undefined,
 }));
 vi.mock("./bingo-saturn", () => ({
-  BingoSaturn: ({ onReveal }: { onReveal?: (ids: readonly string[]) => void }) => {
+  BingoSaturn: ({
+    onReveal,
+    children,
+  }: {
+    onReveal?: (ids: readonly string[]) => void;
+    children?: ReactNode;
+  }) => {
     globe.reveal = onReveal;
-    return null;
+    return children;
   },
 }));
 

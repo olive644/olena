@@ -501,12 +501,49 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
         ],
         "#a779ef",
       );
+      // Dobras de reforço formam um cavalete, com pés largos e encaixe no anel.
+      polygon(
+        [
+          [cx + side * R * 0.86, cy + R * 1.36],
+          [cx + side * R * 0.56, cy + R * 1.36],
+          [x, y + R * 0.32],
+        ],
+        "#51259b",
+      );
+      polygon(
+        [
+          [cx + side * R * 0.86, cy + R * 1.36],
+          [cx + side * R * 0.73, cy + R * 1.36],
+          [x, y + R * 0.32],
+        ],
+        "#a779ef",
+      );
+      polygon(
+        [
+          [cx + side * R * 0.87 - R * 0.21, cy + R * 1.29],
+          [cx + side * R * 0.87 + R * 0.23, cy + R * 1.29],
+          [cx + side * R * 0.87 + R * 0.3, cy + R * 1.39],
+          [cx + side * R * 0.87 - R * 0.28, cy + R * 1.39],
+        ],
+        "#facc15",
+      );
+      polygon(
+        [
+          [cx + side * R * 0.87 - R * 0.21, cy + R * 1.29],
+          [cx + side * R * 0.87 + R * 0.23, cy + R * 1.29],
+          [cx + side * R * 0.87 + R * 0.3, cy + R * 1.33],
+          [cx + side * R * 0.87 - R * 0.28, cy + R * 1.33],
+        ],
+        "#ffe88d",
+      );
+      shape(x, y + R * 0.1, R * 0.145, 6, "#51259b", Math.PI / 6);
+      shape(x, y + R * 0.1, R * 0.075, 6, "#ffe88d", Math.PI / 6);
     }
     function ring(front: boolean) {
       const begin = front ? 0 : Math.PI;
-      for (let j = 0; j < 32; j++) {
-        const a = begin + (j / 32) * Math.PI,
-          b = begin + ((j + 1) / 32) * Math.PI;
+      for (let j = 0; j < 20; j++) {
+        const a = begin + (j / 20) * Math.PI,
+          b = begin + ((j + 1) / 20) * Math.PI;
         polygon(
           [ringPoint(a), ringPoint(b), ringPoint(b, false), ringPoint(a, false)],
           j % 6 === 0 ? "#ffe88d" : front ? "#facc15" : "#d4a600",
@@ -523,6 +560,7 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
     }
     ring(false);
     // Faceted rim and cream paper core, not a plastic sphere.
+    shape(cx + R * 0.018, cy + R * 0.026, R * 1.063, 24, "#292432", Math.PI / 24);
     shape(cx, cy, R * 1.045, 24, "#51259b", Math.PI / 24);
     shape(cx, cy, R * 1.012, 24, "#a779ef", Math.PI / 24);
     shape(cx, cy, R * 0.973, 24, "#fff9ef", Math.PI / 24);

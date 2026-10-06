@@ -176,6 +176,123 @@
   margin-inline: auto;
   scroll-margin-top: 84px;
 }
+.number-bingo .bingo-saturn-panel {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 650px;
+  margin-inline: auto;
+  align-items: start;
+}
+.number-bingo .bingo-saturn-panel.bingo-has-card {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  max-width: none;
+  gap: 30px;
+}
+.bingo-machine-column,
+.bingo-card-column {
+  min-width: 0;
+}
+.bingo-machine-column .bingo-history > [role="list"] {
+  max-height: 160px;
+  min-height: 76px;
+  padding: 12px;
+}
+.number-bingo .bingo-claim {
+  justify-items: center;
+  margin-top: 26px;
+}
+.bingo-claim .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 156px;
+  font-size: 17px;
+}
+.bingo-claim .primary-button img {
+  flex: 0 0 32px;
+}
+.bingo-card-grid [data-orbit] {
+  --planet-face: #50bdc4;
+  --planet-depth: #147b83;
+  --planet-fold: #a4e8eb;
+}
+.bingo-card-grid [data-orbit="1"] {
+  --planet-face: #ff8e77;
+  --planet-depth: #c95649;
+  --planet-fold: #ffd3c5;
+}
+.bingo-card-grid [data-orbit="2"] {
+  --planet-face: #f0ba65;
+  --planet-depth: #b87941;
+  --planet-fold: #fff0c7;
+}
+.bingo-card-grid [data-orbit="3"] {
+  --planet-face: #a779ef;
+  --planet-depth: #51259b;
+  --planet-fold: #d7baff;
+}
+.bingo-card-grid [data-orbit="4"] {
+  --planet-face: #6996df;
+  --planet-depth: #345580;
+  --planet-fold: #b5d1f1;
+}
+.bingo-cell-orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+:root
+  body
+  :is(.local-room-fullscreen, .local-room-preparation)
+  .number-bingo
+  .bingo-card-grid
+  .secondary-button {
+  background: #383040;
+  border: 1px solid #51465d;
+  box-shadow: 0 3px 0 #17131d;
+  min-height: 64px;
+  padding: 6px;
+}
+.number-bingo .bingo-card-grid .secondary-button::after {
+  display: none;
+}
+.number-bingo .bingo-card-grid .paper-digits {
+  background: #fff9ef;
+  padding: 5px 3px;
+  clip-path: polygon(12% 0, 84% 0, 100% 25%, 94% 82%, 75% 100%, 12% 94%, 0 65%, 2% 20%);
+}
+.number-bingo .bingo-card-grid .secondary-button[aria-pressed="true"] .bingo-cell-orbit {
+  transform: rotate(-8deg);
+}
+.number-bingo .bingo-card-grid .secondary-button[aria-pressed="true"] .paper-digits {
+  background: #ffe88d;
+}
+.number-bingo .bingo-card-grid .bingo-cell-star {
+  top: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+}
+@media (max-width: 780px) {
+  .number-bingo .bingo-saturn-panel.bingo-has-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .number-bingo .bingo-solar-card {
+    padding: 12px;
+  }
+  :root
+    body
+    :is(.local-room-fullscreen, .local-room-preparation)
+    .number-bingo
+    .bingo-card-grid
+    .secondary-button {
+    min-height: 54px;
+    padding: 3px;
+  }
+}
 :root body :is(.local-room-fullscreen, .local-room-preparation) .bingo-mode.secondary-button {
   color: var(--text);
   background-color: var(--surface);

@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+BingoSaturn aceita a cartela como children para compor duas colunas sem duplicar
+o histórico que recebe a bolinha animada. Sua comparação memo inclui children,
+para as marcas atualizarem sem reiniciar a viagem. A ação Bingo fica após o painel.
+Ícones de modos e vitória vivem em public/room-icons/bingo-*.svg.
+
 bingo-paper-geometry.ts compartilha as facetas das bolinhas entre Canvas e SVG.
 bingo-paper-ball.tsx desenha a pele no voo e no histórico; bingo-planet.tsx fornece
 os cinco planetas da cartela. Não alterar a geometria só em um dos renderizadores.

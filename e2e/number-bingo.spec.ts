@@ -37,6 +37,13 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await page.getByRole("radio", { name: /^Bingo/ }).click();
   const modes = page.getByRole("group", { name: "Modo de partida" });
   await expect(modes.getByRole("button")).toHaveCount(5);
+  await expect
+    .poll(() =>
+      modes
+        .locator("img")
+        .evaluateAll((images) => images.every((img) => (img as HTMLImageElement).naturalWidth > 0)),
+    )
+    .toBe(true);
   for (const name of ["Linha", "Coluna", "Diagonal", "Quatro cantos", "Cartela cheia"]) {
     const button = modes.getByRole("button", { name: new RegExp("^" + name) });
     await button.click();
@@ -74,6 +81,26 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
   await expect(card.locator(".bingo-card-grid button")).toHaveCount(25);
   await expect(card.locator(".bingo-planet")).toHaveCount(5);
+  await expect(card.locator(".bingo-cell-orbit")).toHaveCount(24);
+  await expect(page.getByText("O Sol já conta como marcado.")).toHaveCount(0);
+  await expect(page.getByText(/^Última bolinha:/)).toHaveCount(0);
+  const machineBox = await page.locator(".bingo-machine-column").boundingBox();
+  const cardBox = await card.boundingBox();
+  const globeBox = await globe.boundingBox();
+  const historyBox = await page.locator(".bingo-history").boundingBox();
+  expect(historyBox!.y).toBeGreaterThan(globeBox!.y + globeBox!.height);
+  if (testInfo.project.name === "desktop") {
+    expect(cardBox!.x).toBeGreaterThan(machineBox!.x + machineBox!.width);
+    expect(Math.abs(cardBox!.y - machineBox!.y)).toBeLessThan(10);
+  } else {
+    expect(cardBox!.y).toBeGreaterThan(historyBox!.y);
+  }
+  const claimBox = await page.getByRole("button", { name: "Bingo!", exact: true }).boundingBox();
+  expect(claimBox!.y).toBeGreaterThan(cardBox!.y + cardBox!.height);
+  await expect(page.locator(".bingo-claim img")).toHaveAttribute(
+    "src",
+    "/room-icons/bingo-claim.svg",
+  );
   await expect(
     page.getByRole("button", { name: /Som ligado|Som desligado|Desativar sons/ }),
   ).toHaveCount(0);
@@ -130,6 +157,10 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await card.evaluate((el) => el.scrollIntoView({ block: "center" }));
   await card.screenshot({
     path: testInfo.outputPath("bingo-card-dark.png"),
+    animations: "disabled",
+  });
+  await page.locator(".bingo-claim").screenshot({
+    path: testInfo.outputPath("bingo-action-dark.png"),
     animations: "disabled",
   });
 });

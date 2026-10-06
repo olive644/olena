@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Composição solar da partida (2026-10-06)
+
+- Em desktop, globo e histórico ocupam a coluna esquerda; cartela fica à direita. Em telas até 780 px, a sequência é globo, histórico, cartela e ação Bingo no rodapé. O destino do voo continua sendo a própria bolinha do histórico, sem duplicar painéis ou usar posições fixas.
+- Removidos Última bolinha e a explicação do Sol livre. Anúncios de mistura, saída e revelação continuam disponíveis. Ícone autoral de Bingo combina cartela, estrela e marca de vitória. Os cinco modos usam cartelas de papel facetadas que ilustram o padrão vencedor.
+- Casas numéricas são planetas de papel com anéis e face creme para os dígitos; cores seguem as colunas. Marca e centro livre permanecem amarelos. Saturno tem aro em camadas, facetas maiores no anel, reforços triangulares, pés dourados e encaixes hexagonais. Física, regras, áudio e sorteio não mudam.
+- Sem dependências. Composição e ilustrações acrescentam cerca de 1,1 KiB ao bingo lazy. Total 1112,1 KiB, entrada 274,6 KiB. Orçamento normal 1114 KiB documentado, sem alterar teto absoluto.
+- Validação: `npm run verify` passou com 1032 testes em 166 arquivos, build, API ESM, formatação e orçamento. Lint sem erros, com dez avisos existentes. Playwright passou 20 casos de bingo e sala em desktop e celular, incluindo posição do histórico/cartela/ação, 24 casas solares, carregamento dos cinco ícones, revelação, transferência ao histórico e regressões de entrada/reconexão. Capturas claras e escuras inspecionadas. O mock de revelação agora renderiza a cartela recebida como filha, preservando a checagem de bloqueio antes da revelação.
+
 ## Papercraft solar do bingo (2026-10-06)
 
 - Bolinhas redesenhadas como sólidos de papel com seis facetas, face creme e profundidade. Canvas e SVG compartilham geometria na mistura, saída, voo, revelação e histórico. Globo aprovado e sorteio do servidor preservados.

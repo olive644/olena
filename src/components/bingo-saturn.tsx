@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
+import { memo, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   createApprovedSaturn,
   EXIT_TIMING,
@@ -83,12 +83,14 @@ function BingoSaturnView({
   pending,
   onDraw,
   onReveal,
+  children,
 }: {
   drawn: readonly string[];
   isHost: boolean;
   pending: boolean;
   onDraw: () => Promise<void>;
   onReveal?: (ids: readonly string[]) => void;
+  children?: ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<ApprovedSaturn | null>(null);
@@ -340,71 +342,71 @@ function BingoSaturnView({
   }, [key]);
 
   return (
-    <div className="bingo-saturn-panel" aria-busy={animating}>
-      <div className="bingo-saturn">
-        <canvas ref={canvasRef} aria-label="Globo Saturno com as bolinhas restantes" />
-        <div
-          ref={targetRef}
-          className={"bingo-result bingo-ball" + (focus ? " bingo-result-focus" : "")}
-          style={ballStyle(number)}
-          aria-hidden="true"
-        >
-          {focus && matchMedia("(prefers-reduced-motion: reduce)").matches && (
+    <div
+      className={"bingo-saturn-panel" + (children ? " bingo-has-card" : "")}
+      aria-busy={animating}
+    >
+      <div className="bingo-machine-column">
+        <div className="bingo-saturn">
+          <canvas ref={canvasRef} aria-label="Globo Saturno com as bolinhas restantes" />
+          <div
+            ref={targetRef}
+            className={"bingo-result bingo-ball" + (focus ? " bingo-result-focus" : "")}
+            style={ballStyle(number)}
+            aria-hidden="true"
+          >
+            {focus && matchMedia("(prefers-reduced-motion: reduce)").matches && (
+              <Ball number={number} />
+            )}
+          </div>
+          <div
+            ref={flyRef}
+            className={"bingo-flying bingo-ball" + (focus ? " bingo-flying-focus" : "")}
+            style={ballStyle(number)}
+            aria-hidden="true"
+          >
             <Ball number={number} />
-          )}
+          </div>
+          <div className="bingo-current" role="status" aria-live="polite">
+            {caption}
+          </div>
         </div>
-        <div
-          ref={flyRef}
-          className={"bingo-flying bingo-ball" + (focus ? " bingo-flying-focus" : "")}
-          style={ballStyle(number)}
-          aria-hidden="true"
-        >
-          <Ball number={number} />
-        </div>
-        <div className="bingo-current" role="status" aria-live="polite">
-          {caption ||
-            (latestVisible
-              ? "Última bolinha: " +
-                letters[Math.floor((Number(latestVisible) - 1) / 15)] +
-                " " +
-                latestVisible
-              : "")}
-        </div>
-      </div>
-      <div className="bingo-history">
-        <h3>
-          Números sorteados <small>{visible.length}/75</small>
-        </h3>
-        <div ref={historyRef} role="list" aria-label="Números sorteados">
-          {visible.map((id) => (
-            <span
-              role="listitem"
-              key={id}
-              data-bingo-number={id}
-              className={"bingo-ball" + (id === latestVisible ? " latest" : "")}
-              style={ballStyle(id)}
-              aria-label={letters[Math.floor((Number(id) - 1) / 15)] + " " + id}
-            >
-              <Ball number={id} />
-            </span>
-          ))}
-        </div>
-        <div className="bingo-machine-actions">
-          {isHost && (
-            <button
-              className="primary-button"
-              type="button"
-              disabled={pending || animating || drawn.length >= 75}
-              onClick={async () => {
-                await soundRef.current?.unlock();
-                await onDraw();
-              }}
-            >
-              {animating ? "Girando…" : "Sortear próxima bolinha"}
-            </button>
-          )}
+        <div className="bingo-history">
+          <h3>
+            Números sorteados <small>{visible.length}/75</small>
+          </h3>
+          <div ref={historyRef} role="list" aria-label="Números sorteados">
+            {visible.map((id) => (
+              <span
+                role="listitem"
+                key={id}
+                data-bingo-number={id}
+                className={"bingo-ball" + (id === latestVisible ? " latest" : "")}
+                style={ballStyle(id)}
+                aria-label={letters[Math.floor((Number(id) - 1) / 15)] + " " + id}
+              >
+                <Ball number={id} />
+              </span>
+            ))}
+          </div>
+          <div className="bingo-machine-actions">
+            {isHost && (
+              <button
+                className="primary-button"
+                type="button"
+                disabled={pending || animating || drawn.length >= 75}
+                onClick={async () => {
+                  await soundRef.current?.unlock();
+                  await onDraw();
+                }}
+              >
+                {animating ? "Girando…" : "Sortear próxima bolinha"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
+      {children && <div className="bingo-card-column">{children}</div>}
     </div>
   );
 }
@@ -418,5 +420,6 @@ export const BingoSaturn = memo(
     before.pending === after.pending &&
     before.onDraw === after.onDraw &&
     before.onReveal === after.onReveal &&
+    before.children === after.children &&
     before.drawn.join(",") === after.drawn.join(","),
 );
