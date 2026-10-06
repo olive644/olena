@@ -1817,6 +1817,17 @@
   gap: 12px;
 }
 
+.local-room-nickname {
+  display: grid;
+  gap: 6px;
+}
+
+.local-room-nickname small {
+  color: var(--muted, #726579);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
 .local-room-session__header h2 {
   margin-right: auto;
   font-size: clamp(1rem, 3vw, 1.4rem);

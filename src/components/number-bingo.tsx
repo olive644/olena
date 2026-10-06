@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BINGO_MODES,
   BINGO_MODE_LABELS,
@@ -41,6 +41,33 @@ export default function NumberBingo({
   const mode = state.settings.bingoMode ?? "line";
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+  // Números já revelados pela animação do globo: só eles podem ser marcados, e a cartela não
+  // entrega o número antes de a bolinha aparecer.
+  const [revealed, setRevealed] = useState<readonly string[]>(state.drawnIds ?? []);
+  // Marcações pedidas e ainda não confirmadas pelo servidor: aparecem na hora.
+  const [optimistic, setOptimistic] = useState<readonly string[]>([]);
+  const [stamped, setStamped] = useState<string | null>(null);
+  const markQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const drawRef = useRef(onDraw);
+  const indexRef = useRef(state.questionIndex);
+  useEffect(() => {
+    drawRef.current = onDraw;
+    indexRef.current = state.questionIndex;
+  });
+  const draw = useCallback(async () => {
+    setPending(true);
+    try {
+      await drawRef.current();
+    } finally {
+      setPending(false);
+    }
+  }, []);
+  const reveal = useCallback((ids: readonly string[]) => setRevealed(ids), []);
+  useEffect(() => {
+    if (!stamped) return;
+    const timer = window.setTimeout(() => setStamped(null), 650);
+    return () => window.clearTimeout(timer);
+  }, [stamped]);
   if (state.phase === "lobby")
     return (
       <section className="bingo-settings">
@@ -74,20 +101,40 @@ export default function NumberBingo({
   const participant = state.participants.find((item) => item.id === participantId);
   const drawn = state.drawnIds ?? [];
   const letters = ["B", "I", "N", "G", "O"];
-  async function answer(id: string) {
+  // A casa marca na hora; o servidor confirma em seguida. Se ele recusar ou falhar, a marca
+  // volta atrás e a pessoa é avisada. Os pedidos seguem em fila para não competirem entre si.
+  function mark(id: string) {
+    if (optimistic.includes(id) || participant?.bingoMarks?.includes(id)) return;
+    setOptimistic((current) => [...current, id]);
+    setStamped(id);
+    setMessage("");
+    markQueue.current = markQueue.current.then(async () => {
+      // O índice é lido só na hora de enviar: se saiu outra bolinha enquanto a fila andava, o
+      // pedido leva o sorteio atual em vez de ser recusado por um índice velho.
+      const result = await onAnswer(indexRef.current, id).catch(() => undefined);
+      if (!result?.correct) {
+        setMessage(
+          result
+            ? "Esse número ainda não pode ser marcado."
+            : "Não foi possível marcar. Tente de novo.",
+        );
+      }
+      setOptimistic((current) => current.filter((item) => item !== id));
+    });
+  }
+  async function claim() {
     if (pending) return;
     setPending(true);
     setMessage("");
     try {
-      const result = await onAnswer(state.questionIndex, id);
-      if (id === "bingo")
-        setMessage(
-          result?.correct
-            ? "Bingo confirmado!"
-            : result
-              ? "Ainda não completou o objetivo. Confira sua cartela."
-              : "Não foi possível conferir. Tente novamente.",
-        );
+      const result = await onAnswer(state.questionIndex, "bingo");
+      setMessage(
+        result?.correct
+          ? "Bingo confirmado!"
+          : result
+            ? "Ainda não completou o objetivo. Confira sua cartela."
+            : "Não foi possível conferir. Tente novamente.",
+      );
     } finally {
       setPending(false);
     }
@@ -98,14 +145,8 @@ export default function NumberBingo({
         drawn={drawn}
         isHost={isHost}
         pending={pending}
-        onDraw={async () => {
-          setPending(true);
-          try {
-            await onDraw();
-          } finally {
-            setPending(false);
-          }
-        }}
+        onDraw={draw}
+        onReveal={reveal}
       />
       {participant?.bingoCard && (
         <div className="bingo-card-layout">
@@ -130,31 +171,38 @@ export default function NumberBingo({
               ))}
             </div>
             <div className="bingo-card-grid">
-              {participant.bingoCard.map((id, i) => (
-                <button
-                  key={id}
-                  type="button"
-                  className="secondary-button"
-                  aria-pressed={id === BINGO_FREE || participant.bingoMarks?.includes(id) || false}
-                  aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
-                  disabled={
-                    pending ||
-                    id === BINGO_FREE ||
-                    !drawn.includes(id) ||
-                    participant.bingoMarks?.includes(id)
-                  }
-                  onClick={() => void answer(id)}
-                >
-                  {id === BINGO_FREE ? (
-                    <>
-                      <BingoIcon mode="full" />
-                      <small>Livre</small>
-                    </>
-                  ) : (
-                    <PaperDigits value={id} />
-                  )}
-                </button>
-              ))}
+              {participant.bingoCard.map((id, i) => {
+                const marked =
+                  id === BINGO_FREE ||
+                  participant.bingoMarks?.includes(id) ||
+                  optimistic.includes(id);
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    className={
+                      "secondary-button" +
+                      (stamped === id ? " bingo-stamp" : "") +
+                      (id !== BINGO_FREE && !marked && revealed.includes(id)
+                        ? " bingo-callable"
+                        : "")
+                    }
+                    aria-pressed={marked}
+                    aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
+                    disabled={id === BINGO_FREE || marked || !revealed.includes(id)}
+                    onClick={() => mark(id)}
+                  >
+                    {id === BINGO_FREE ? (
+                      <>
+                        <BingoIcon mode="full" />
+                        <small>Livre</small>
+                      </>
+                    ) : (
+                      <PaperDigits value={id} />
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <p>O Sol já conta como marcado.</p>
           </section>
@@ -163,7 +211,7 @@ export default function NumberBingo({
               type="button"
               className="primary-button"
               disabled={pending}
-              onClick={() => void answer("bingo")}
+              onClick={() => void claim()}
             >
               Bingo!
             </button>

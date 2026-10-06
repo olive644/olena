@@ -3,7 +3,7 @@ import { useAppView } from "./hooks/use-app-view";
 import { MobileNavigation, Sidebar } from "./components/app-navigation";
 import { HelenaLoading } from "./components/helena-loading";
 import { MobileMenuContext } from "./components/mobile-menu-context";
-import { GUEST_NAME, isGuestSession, requiresLogin } from "./domain/guest-session";
+import { isGuestSession, requiresLogin } from "./domain/guest-session";
 import { readLocalRoomCodeFromUrl, readLocalRoomProjectorCodeFromUrl } from "./domain/room-code";
 import { useWorkspace } from "./hooks/use-workspace";
 import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
@@ -106,7 +106,8 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             <RoomView
               joinCode={joinCode}
               projectorMode={Boolean(projectorCode)}
-              accountName={cloud.displayName ?? (guest ? GUEST_NAME : undefined)}
+              accountName={cloud.displayName}
+              guest={guest}
               accountLoading={cloud.enabled && cloud.authenticated === undefined && !cloud.ready}
               requireAccount={cloud.enabled}
               onExit={() => setView("today")}

@@ -104,6 +104,10 @@ export function createSaturnSound() {
       noise(0.035, 1000 + (i % 5) * 110, 0.027, delay, true);
     }
   }
+  function playPick() {
+    tone(420, 880, 0.16, 0.12, 0, "triangle");
+    tone(660, 1180, 0.12, 0.05, 0.08, "sine");
+  }
   function playExit() {
     tone(330, 125, 0.075, 0.17);
     noise(0.08, 1200, 0.12);
@@ -123,6 +127,7 @@ export function createSaturnSound() {
   return {
     unlock: ensureAudio,
     mix: playMix,
+    pick: playPick,
     exit: playExit,
     reveal: playReveal,
     land: playLand,

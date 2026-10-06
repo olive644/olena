@@ -409,6 +409,78 @@
 .bingo-claim button {
   margin-block: 16px;
 }
+/* A bolinha que acabou de sair aparece com um pulo e abre a estrela de papel atrás dela. */
+.bingo-saturn .bingo-result-focus {
+  animation: bingo-reveal-pop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.bingo-saturn .bingo-result-focus::before {
+  animation: bingo-burst-open 0.7s cubic-bezier(0.2, 1.1, 0.3, 1) both;
+}
+.bingo-history .bingo-ball.latest {
+  animation: bingo-land 0.42s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+/* A casa marcada recebe um carimbo imediato; o servidor confirma depois. */
+.bingo-card-grid .secondary-button {
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease,
+    transform 0.12s ease;
+}
+.bingo-card-grid .secondary-button:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.bingo-card-grid .bingo-stamp {
+  animation: bingo-stamp 0.45s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.bingo-card-grid .bingo-callable {
+  box-shadow: 0 0 0 3px #facc15;
+  animation: bingo-callable 1.3s ease-in-out infinite;
+}
+@keyframes bingo-reveal-pop {
+  0% {
+    transform: scale(0.35) rotate(-14deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.14) rotate(3deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+@keyframes bingo-burst-open {
+  0% {
+    transform: scale(0.2) rotate(-40deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+@keyframes bingo-land {
+  0% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes bingo-stamp {
+  0% {
+    transform: scale(1.3) rotate(-6deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes bingo-callable {
+  50% {
+    box-shadow: 0 0 0 6px #facc1566;
+  }
+}
 @keyframes bingo-mix {
   0% {
     transform: rotate(-14deg);
@@ -452,6 +524,16 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .bingo-saturn .bingo-result-focus,
+  .bingo-saturn .bingo-result-focus::before,
+  .bingo-history .bingo-ball.latest,
+  .bingo-card-grid .bingo-stamp,
+  .bingo-card-grid .bingo-callable {
+    animation: none;
+  }
+  .bingo-card-grid .secondary-button {
+    transition: none;
+  }
   .bingo-mode-art {
     transition: none;
   }

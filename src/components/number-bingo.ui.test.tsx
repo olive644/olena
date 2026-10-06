@@ -1,8 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import NumberBingo from "./number-bingo";
 import { createNumberBingoCard } from "../domain/number-bingo";
-import type { PublicLocalRoomState } from "../domain/local-room";
+import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/local-room";
+
+type Answer = (index: number, answer: string) => Promise<LocalRoomAnswerFeedback | undefined>;
 
 function state(): PublicLocalRoomState {
   return {
@@ -53,7 +55,7 @@ describe("solar bingo interface", () => {
     expect(onMode).toHaveBeenCalledWith("corners");
     expect(screen.queryByRole("button", { name: /Aplicar/ })).toBeNull();
   });
-  it("shows a solar 5x5 card, locks undrawn numbers and submits marks and claims", () => {
+  it("shows a solar 5x5 card, locks undrawn numbers and submits marks and claims", async () => {
     const onAnswer = vi.fn().mockResolvedValue({ correct: false, pointsChange: 0 });
     render(
       <NumberBingo
@@ -75,11 +77,94 @@ describe("solar bingo interface", () => {
     ).toBe("true");
     expect(screen.getByRole("button", { name: "B 2" }).hasAttribute("disabled")).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "B 1" }));
-    expect(onAnswer).toHaveBeenCalledWith(0, "1");
+    await waitFor(() => expect(onAnswer).toHaveBeenCalledWith(0, "1"));
     expect(screen.queryByRole("button", { name: /Ouvir/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /Sortear/ })).toBeNull();
     expect(screen.queryByText("Complete sua constelação")).toBeNull();
     expect(document.querySelector(".bingo-rule")).toBeNull();
     expect(screen.getByLabelText("Globo Saturno com as bolinhas restantes")).toBeTruthy();
+  });
+
+  describe("marcação na cartela", () => {
+    function playing(marks: string[] = []): PublicLocalRoomState {
+      const base = state();
+      return {
+        ...base,
+        phase: "playing",
+        questionIndex: 1,
+        drawnIds: ["1", "2"],
+        participants: [{ ...base.participants[0]!, bingoMarks: marks }],
+      };
+    }
+    function mount(onAnswer: Answer, current = playing()) {
+      return render(
+        <NumberBingo
+          state={current}
+          isHost={false}
+          participantId="p"
+          onMode={vi.fn()}
+          onDraw={vi.fn()}
+          onAnswer={onAnswer}
+        />,
+      );
+    }
+    it("marca na hora, sem esperar o servidor, e mantém as outras casas livres", async () => {
+      let confirm: (value: { correct: boolean; pointsChange: number }) => void = () => {};
+      const onAnswer = vi.fn<Answer>(
+        () =>
+          new Promise<{ correct: boolean; pointsChange: number }>((resolve) => {
+            confirm = resolve;
+          }),
+      );
+      mount(onAnswer);
+      const first = screen.getByRole("button", { name: "B 1" });
+      fireEvent.click(first);
+      // O servidor ainda não respondeu e a casa já aparece marcada.
+      expect(first.getAttribute("aria-pressed")).toBe("true");
+      expect(first.hasAttribute("disabled")).toBe(true);
+      expect(screen.getByRole("button", { name: "B 2" }).hasAttribute("disabled")).toBe(false);
+      fireEvent.click(screen.getByRole("button", { name: "B 2" }));
+      expect(screen.getByRole("button", { name: "B 2" }).getAttribute("aria-pressed")).toBe("true");
+      // Os pedidos seguem em fila: o segundo só sai depois de o primeiro ser confirmado.
+      await waitFor(() => expect(onAnswer).toHaveBeenCalledTimes(1));
+      expect(onAnswer).toHaveBeenLastCalledWith(1, "1");
+      await act(async () => confirm({ correct: true, pointsChange: 1 }));
+      await waitFor(() => expect(onAnswer).toHaveBeenCalledTimes(2));
+      expect(onAnswer).toHaveBeenLastCalledWith(1, "2");
+    });
+    it("desfaz a marca e avisa quando o servidor recusa ou falha", async () => {
+      const onAnswer = vi
+        .fn<Answer>()
+        .mockResolvedValueOnce({ correct: false, pointsChange: 0 })
+        .mockResolvedValueOnce(undefined);
+      mount(onAnswer);
+      fireEvent.click(screen.getByRole("button", { name: "B 1" }));
+      await waitFor(() =>
+        expect(screen.getByText("Esse número ainda não pode ser marcado.")).toBeTruthy(),
+      );
+      expect(screen.getByRole("button", { name: "B 1" }).getAttribute("aria-pressed")).toBe(
+        "false",
+      );
+      fireEvent.click(screen.getByRole("button", { name: "B 1" }));
+      await waitFor(() =>
+        expect(screen.getByText("Não foi possível marcar. Tente de novo.")).toBeTruthy(),
+      );
+      expect(screen.getByRole("button", { name: "B 1" }).getAttribute("aria-pressed")).toBe(
+        "false",
+      );
+    });
+    it("não repete o pedido de uma casa que já está marcada", async () => {
+      const onAnswer = vi.fn<Answer>().mockResolvedValue({ correct: true, pointsChange: 1 });
+      mount(onAnswer, playing(["1"]));
+      expect(screen.getByRole("button", { name: "B 1" }).getAttribute("aria-pressed")).toBe("true");
+      fireEvent.click(screen.getByRole("button", { name: "B 1" }));
+      await act(async () => {});
+      expect(onAnswer).not.toHaveBeenCalled();
+    });
+    it("destaca as casas que já podem ser marcadas", () => {
+      mount(vi.fn<Answer>(), playing(["1"]));
+      expect(screen.getByRole("button", { name: "B 2" }).className).toContain("bingo-callable");
+      expect(screen.getByRole("button", { name: "B 1" }).className).not.toContain("bingo-callable");
+    });
   });
 });

@@ -6,6 +6,13 @@ import {
   RoomSecondsUnit,
 } from "./room-paper-icons";
 import {
+  GUEST_NAME,
+  GUEST_NICKNAME_MAX,
+  normalizeGuestNickname,
+  readGuestNickname,
+  writeGuestNickname,
+} from "../domain/guest-session";
+import {
   playRoomFeedbackSound,
   prepareRoomFeedbackSound,
   playRoomCountdownSound,
@@ -288,6 +295,7 @@ type LocalRoomProps = {
   onExit?: () => void;
   onSignIn?: () => void;
   accountName?: string | undefined;
+  guest?: boolean;
   accountLoading?: boolean;
   requireAccount?: boolean;
 };
@@ -298,6 +306,7 @@ export function LocalRoom({
   onExit,
   onSignIn,
   accountName,
+  guest = false,
   accountLoading = false,
   requireAccount = false,
 }: LocalRoomProps) {
@@ -377,7 +386,31 @@ export function LocalRoom({
     }
   });
   const [code, setCode] = useState(initialJoinCode ?? "");
-  const name = accountName?.trim() || (!requireAccount ? profile.name : "");
+  const [guestNickname, setGuestNickname] = useState(() => readGuestNickname());
+  const isGuest = guest && !accountName?.trim();
+  const name = isGuest
+    ? normalizeGuestNickname(guestNickname) || GUEST_NAME
+    : accountName?.trim() || (!requireAccount ? profile.name : "");
+  const nicknameField = isGuest ? (
+    <div className="local-room-nickname">
+      <label htmlFor="local-room-nickname-input">Seu apelido na sala</label>
+      <input
+        id="local-room-nickname-input"
+        value={guestNickname}
+        maxLength={GUEST_NICKNAME_MAX}
+        autoComplete="nickname"
+        placeholder={GUEST_NAME}
+        aria-describedby="local-room-nickname-help"
+        onChange={(event) => {
+          setGuestNickname(event.target.value);
+          writeGuestNickname(event.target.value);
+        }}
+      />
+      <small id="local-room-nickname-help">
+        Vale só aqui na sala. No resto do app você continua como {GUEST_NAME}.
+      </small>
+    </div>
+  ) : null;
   const [pendingActivity, setPendingActivity] = useState<"listening" | "bingo" | null>(null);
   const activityRequestRef = useRef(false);
   const [manualRows, setManualRows] = useState<
@@ -893,13 +926,17 @@ export function LocalRoom({
               required
             />
           </label>
-          <div className="local-room-account">
-            <PaperEditorIcon name="team" />
-            <span>
-              {name ||
-                (accountLoading ? "Carregando sua conta…" : "Entre na sua conta para participar.")}
-            </span>
-          </div>
+          {nicknameField ?? (
+            <div className="local-room-account">
+              <PaperEditorIcon name="team" />
+              <span>
+                {name ||
+                  (accountLoading
+                    ? "Carregando sua conta…"
+                    : "Entre na sua conta para participar.")}
+              </span>
+            </div>
+          )}
           {requireAccount && !accountLoading && !name && onSignIn && (
             <button className="secondary-button" type="button" onClick={onSignIn}>
               <PaperEditorIcon name="team" /> Entrar na conta
@@ -1840,6 +1877,10 @@ export function LocalRoom({
               )}
               {(!preparing || selectedActivity) && (
                 <div className="local-room-action-bar">
+                  {!preparing &&
+                    !room.hostPlaying &&
+                    (state.settings.activity === "bingo" || usesHelenaWords) &&
+                    nicknameField}
                   {!preparing && (state.settings.activity === "bingo" || usesHelenaWords) && (
                     <button
                       type="button"

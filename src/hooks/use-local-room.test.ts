@@ -20,6 +20,31 @@ beforeEach(() => {
 });
 
 describe("normalizeRoomState", () => {
+  it("mantém os números sorteados do bingo de números, que não tem bingoWords", () => {
+    // Sem isto o estado vindo do canal em tempo real apagava o sorteio: o globo reiniciava,
+    // o histórico zerava e a cartela travava logo depois de cada bolinha.
+    const state = normalizeRoomState({
+      code: "ABCDE",
+      phase: "playing",
+      settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 30, bingoMode: "line" },
+      drawnIds: ["12", "47"],
+      participants: [
+        { id: "p", displayName: "Ana", score: 0, bingoCard: ["12", "free"], bingoMarks: ["12"] },
+      ],
+    });
+    expect(state.drawnIds).toEqual(["12", "47"]);
+    expect(state.bingoWords).toBeUndefined();
+    expect(state.participants[0]?.bingoMarks).toEqual(["12"]);
+  });
+  it("continua sem drawnIds quando não é bingo", () => {
+    expect(
+      normalizeRoomState({
+        code: "ABCDE",
+        phase: "lobby",
+        settings: { difficulty: "mixed", questionCount: 5, roundSeconds: 30 },
+      }).drawnIds,
+    ).toBeUndefined();
+  });
   it("preserva recompensas válidas e rejeita valores fora do limite", () => {
     const reward = { id: "round:player", place: 1, xp: 100, completedAt: 1000 };
     const base: Partial<PublicLocalRoomState> = {

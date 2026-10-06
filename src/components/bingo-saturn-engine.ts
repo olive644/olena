@@ -12,6 +12,31 @@ type Body = {
   spinY: number;
   spinZ: number;
 };
+// A viagem da bolinha sorteada é medida no relógio, não por quadro: em celulares lentos o
+// desenho pode perder quadros, mas nunca sai de sincronia com o restante da animação.
+export const EXIT_TIMING = { lift: 460, hover: 170, drop: 360, chute: 560 } as const;
+export const EXIT_JOURNEY_MS =
+  EXIT_TIMING.lift + EXIT_TIMING.hover + EXIT_TIMING.drop + EXIT_TIMING.chute;
+export type ChuteEnd = { x: number; y: number; radius: number; rotation: number };
+type Journey = {
+  body: Body;
+  startedAt: number;
+  onArrive: (end: ChuteEnd) => void;
+  arrived: boolean;
+  effectShown: boolean;
+};
+type Particle = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  rotation: number;
+  spin: number;
+  size: number;
+  color: string;
+  age: number;
+  life: number;
+};
 export function createApprovedSaturn(canvas: HTMLCanvasElement) {
   const context = canvas.getContext("2d");
   if (!context) return null;
@@ -31,7 +56,9 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
     physicsAccumulator = 0,
     gate = 0,
     exitEffect = 0;
-  let exiting: (Body & { progress: number }) | null = null;
+  let journey: Journey | null = null;
+  let nowMs = 0;
+  const particles: Particle[] = [];
   const bodies = new Map<number, Body>();
   const PHYSICS = { radius: 0.092, wall: 0.89, gravity: 3.1, restitution: 0.28, friction: 0.22 };
   const group = (n: number) => Math.floor((n - 1) / 15);
@@ -217,6 +244,137 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
     ctx.closePath();
     ctx.fill();
   }
+  const PICK = { x: 0, y: -0.1, z: 0.78 },
+    GATE = { x: 0, y: 0.94, z: 0.14 };
+  // A bolinha escolhida cresce ao subir para que se veja qual foi, no meio das outras.
+  const PICK_SCALE = 2.15;
+  const mix = (from: number, to: number, k: number) => from + (to - from) * k;
+  // Pontos do funil em coordenadas de tela, no centro da bolinha que desce por ele.
+  function chutePath(R: number, cx: number, cy: number, gate: number[]) {
+    const lift = R * PHYSICS.radius * 0.6;
+    return [
+      [gate[0]!, gate[1]!],
+      [cx + R * 0.02, cy + R * 1.09],
+      [cx + R * 0.33, cy + R * 1.235 - lift],
+      [cx + R * 1.1, cy + R * 1.43 - lift],
+    ] as const;
+  }
+  function journeyPose(
+    elapsed: number,
+    R: number,
+    cx: number,
+    cy: number,
+    project: (x: number, y: number, z: number) => number[],
+    body: Body,
+  ) {
+    const { lift, hover, drop, chute } = EXIT_TIMING;
+    const radius = R * PHYSICS.radius * 1.03;
+    if (elapsed < lift) {
+      const u = elapsed / lift,
+        e = 1 - Math.pow(1 - u, 3);
+      return {
+        free: false,
+        x: mix(body.x, PICK.x, e),
+        y: mix(body.y, PICK.y, e) - Math.sin(u * Math.PI) * 0.14,
+        z: mix(body.z, PICK.z, e),
+        scale: mix(1, PICK_SCALE, e),
+        glow: e,
+        roll: body.roll + e * 3,
+        sx: 0,
+        sy: 0,
+        radius,
+      };
+    }
+    if (elapsed < lift + hover) {
+      const u = (elapsed - lift) / hover;
+      return {
+        free: false,
+        x: PICK.x,
+        y: PICK.y + Math.sin(u * Math.PI * 2) * 0.012,
+        z: PICK.z,
+        scale: PICK_SCALE * (1 + Math.sin(u * Math.PI) * 0.06),
+        glow: 1,
+        roll: body.roll + 3 + u * 0.8,
+        sx: 0,
+        sy: 0,
+        radius,
+      };
+    }
+    if (elapsed < lift + hover + drop) {
+      const u = (elapsed - lift - hover) / drop,
+        e = u * u;
+      return {
+        free: u > 0.5,
+        x: mix(PICK.x, GATE.x, e),
+        y: mix(PICK.y, GATE.y, e),
+        z: mix(PICK.z, GATE.z, e),
+        scale: mix(PICK_SCALE, 1, e),
+        glow: 1 - e,
+        roll: body.roll + 3.8 + e * 2.2,
+        sx: project(
+          mix(PICK.x, GATE.x, e) * R,
+          mix(PICK.y, GATE.y, e) * R,
+          mix(PICK.z, GATE.z, e) * R,
+        )[0]!,
+        sy: project(
+          mix(PICK.x, GATE.x, e) * R,
+          mix(PICK.y, GATE.y, e) * R,
+          mix(PICK.z, GATE.z, e) * R,
+        )[1]!,
+        radius: radius * mix(PICK_SCALE, 1, e),
+      };
+    }
+    // Funil: a bolinha acelera pela rampa e rola até a ponta.
+    const u = Math.min(1, (elapsed - lift - hover - drop) / chute),
+      along = Math.pow(u, 1.8),
+      path = chutePath(R, cx, cy, project(GATE.x * R, GATE.y * R, GATE.z * R)),
+      lengths = path.slice(1).map((q, i) => Math.hypot(q[0] - path[i]![0], q[1] - path[i]![1])),
+      total = lengths.reduce((sum, length) => sum + length, 0);
+    let remainingLength = along * total,
+      sx: number = path[path.length - 1]![0],
+      sy: number = path[path.length - 1]![1];
+    for (let i = 0; i < lengths.length; i++) {
+      if (remainingLength <= lengths[i]!) {
+        const k = lengths[i]! > 0 ? remainingLength / lengths[i]! : 0;
+        sx = mix(path[i]![0], path[i + 1]![0], k);
+        sy = mix(path[i]![1], path[i + 1]![1], k);
+        break;
+      }
+      remainingLength -= lengths[i]!;
+    }
+    return {
+      free: true,
+      x: 0,
+      y: 0,
+      z: 0,
+      scale: 1,
+      glow: 0,
+      roll: body.roll + 6 + along * 8,
+      sx,
+      sy,
+      radius,
+    };
+  }
+  function arrive() {
+    if (!journey || journey.arrived) return;
+    journey.arrived = true;
+    const { R, cx, cy } = geometry(width, height),
+      end = journeyPose(
+        EXIT_JOURNEY_MS,
+        R,
+        cx,
+        cy,
+        (x, y, z) => [cx + x, cy + y, z, 1],
+        journey.body,
+      );
+    journey.onArrive({
+      x: end.sx,
+      y: end.sy,
+      radius: end.radius,
+      rotation: (end.roll * 180) / Math.PI,
+    });
+  }
+
   // Saturn is drawn in separate back-ring, globe and front-ring paper layers.
   function paint() {
     ctx.clearRect(0, 0, width, height);
@@ -432,53 +590,100 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
       }
     }
     cage(false);
-    const scene = remaining
-      .map((n) => bodies.get(n))
-      .filter((body): body is Body => body !== undefined)
-      .map(({ n, x, y, z, roll }) => ({ n, x, y, z, roll }));
-    if (exiting) {
-      const t = Math.min(1, exiting.progress),
-        ease = t * t * (3 - 2 * t);
-      scene.push({
-        n: exiting.n,
-        x: exiting.x * (1 - ease),
-        y: exiting.y * (1 - ease) + 0.97 * ease,
-        z: exiting.z * (1 - ease) + 0.14 * ease,
-        roll: exiting.roll,
-      });
-    }
-    const balls = scene
-      .map((b) => ({ n: b.n, roll: b.roll, p: project(b.x * R, b.y * R, b.z * R) }))
-      .sort((a, b) => a.p[2]! - b.p[2]!);
-    for (const { n, p, roll } of balls) {
-      const r = R * PHYSICS.radius * p[3]!,
-        g = group(n);
-      shape(p[0]!, p[1]!, r, 10, colors[g]!, roll);
+    function drawBall(n: number, x: number, y: number, r: number, roll: number) {
+      const g = group(n);
+      shape(x, y, r, 10, colors[g]!, roll);
       polygon(
         [
-          [p[0]! - r * 0.85, p[1]! + r * 0.3],
-          [p[0]! - r * 0.2, p[1]! + r * 0.94],
-          [p[0]! + r * 0.68, p[1]! + r * 0.67],
-          [p[0]! + r * 0.97, p[1]! - r * 0.12],
-          [p[0]! + r * 0.2, p[1]! + r * 0.35],
+          [x - r * 0.85, y + r * 0.3],
+          [x - r * 0.2, y + r * 0.94],
+          [x + r * 0.68, y + r * 0.67],
+          [x + r * 0.97, y - r * 0.12],
+          [x + r * 0.2, y + r * 0.35],
         ],
         shades[g]!,
       );
       polygon(
         [
-          [p[0]! - r * 0.89, p[1]! - r * 0.29],
-          [p[0]! - r * 0.43, p[1]! - r * 0.86],
-          [p[0]! + r * 0.45, p[1]! - r * 0.83],
-          [p[0]! - r * 0.19, p[1]! - r * 0.55],
+          [x - r * 0.89, y - r * 0.29],
+          [x - r * 0.43, y - r * 0.86],
+          [x + r * 0.45, y - r * 0.83],
+          [x - r * 0.19, y - r * 0.55],
         ],
         lights[g]!,
       );
-      shape(p[0]!, p[1]!, r * 0.61, 8, "#fff9ef", Math.PI / 8);
+      shape(x, y, r * 0.61, 8, "#fff9ef", Math.PI / 8);
       ctx.fillStyle = "#292432";
       ctx.font = "800 " + Math.max(8, r * 0.88) + "px Manrope,system-ui";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(String(n), p[0]!, p[1]! + 0.5);
+      ctx.fillText(String(n), x, y + 0.5);
+    }
+    // Brilho de papel atrás da bolinha escolhida enquanto ela sobe e espera.
+    function halo(x: number, y: number, r: number, strength: number) {
+      const pulse = 1 + Math.sin(nowMs / 85) * 0.07,
+        k = Math.min(1, strength),
+        base = r / PICK_SCALE;
+      ctx.save();
+      // Duas estrelas de papel girando em sentidos opostos: roxa por baixo para dar contraste
+      // com o fundo claro, amarela por cima.
+      for (const [spin, outer, inner, color, alpha] of [
+        [-nowMs / 700, 3.6, 2.5, "#7c3aed", 0.9],
+        [nowMs / 900, 3.2, 2.1, "#facc15", 1],
+      ] as const) {
+        ctx.globalAlpha = k * alpha;
+        const points: number[][] = [];
+        for (let i = 0; i < 16; i++) {
+          const radius = (i % 2 ? inner : outer) * base * pulse,
+            angle = (i * Math.PI) / 8 + spin;
+          points.push([x + Math.cos(angle) * radius, y + Math.sin(angle) * radius]);
+        }
+        polygon(points, color);
+      }
+      ctx.globalAlpha = k;
+      shape(x, y, r * 1.22 * pulse, 14, "#fff9ef", nowMs / 600);
+      ctx.restore();
+    }
+    const scene: {
+      n: number;
+      x: number;
+      y: number;
+      z: number;
+      roll: number;
+      scale: number;
+      glow: number;
+    }[] = remaining
+      .map((n) => bodies.get(n))
+      .filter((body): body is Body => body !== undefined)
+      .map(({ n, x, y, z, roll }) => ({ n, x, y, z, roll, scale: 1, glow: 0 }));
+    const pose = journey
+      ? journeyPose(nowMs - journey.startedAt, R, cx, cy, project, journey.body)
+      : null;
+    // Dentro do globo a bolinha respeita o recorte e a gaiola; ao chegar ao portão ela sai do
+    // recorte e é desenhada por cima do funil, senão a borda do globo a cortaria ao meio.
+    if (journey && pose && !pose.free)
+      scene.push({
+        n: journey.body.n,
+        x: pose.x,
+        y: pose.y,
+        z: pose.z,
+        roll: pose.roll,
+        scale: pose.scale,
+        glow: pose.glow,
+      });
+    const balls = scene
+      .map((b) => ({
+        n: b.n,
+        roll: b.roll,
+        scale: b.scale,
+        glow: b.glow,
+        p: project(b.x * R, b.y * R, b.z * R),
+      }))
+      .sort((a, b) => a.p[2]! - b.p[2]!);
+    for (const { n, p, roll, scale, glow } of balls) {
+      const r = R * PHYSICS.radius * p[3]! * scale;
+      if (glow > 0.02) halo(p[0]!, p[1]!, r, glow);
+      drawBall(n, p[0]!, p[1]!, r, roll);
     }
     cage(true);
     ctx.restore();
@@ -533,12 +738,26 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
       "#7c3aed",
     );
     polygon([e, d, [d[0]!, d[1]! + R * 0.06], [e[0]!, e[1]! + R * 0.075]], "#292432");
+    if (journey && pose?.free) {
+      if (pose.glow > 0.02) halo(pose.sx, pose.sy, pose.radius, pose.glow);
+      drawBall(journey.body.n, pose.sx, pose.sy, pose.radius, pose.roll);
+    }
     if (speed > 0.5 && !reduced) {
       for (let i = 0; i < 3; i++) {
         const t = angle * 0.25 + i * 1.8,
           p = ringPoint(t);
         shape(p[0]!, p[1]!, R * 0.025, 4, "#fff9ef", t);
       }
+    }
+    for (const piece of particles) {
+      const k = piece.age / piece.life;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - k * k);
+      ctx.translate(piece.x, piece.y);
+      ctx.rotate(piece.rotation);
+      ctx.fillStyle = piece.color;
+      ctx.fillRect(-piece.size, -piece.size * 0.45, piece.size * 2, piece.size * 0.9);
+      ctx.restore();
     }
     if (exitEffect > 0 && !reduced) {
       const t = 1 - exitEffect;
@@ -557,27 +776,60 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
   let disposed = false,
     frameId = 0,
     activeUntil = 0;
+  function updateParticles(dt: number) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const piece = particles[i]!;
+      piece.age += dt;
+      if (piece.age >= piece.life) {
+        particles.splice(i, 1);
+        continue;
+      }
+      piece.vy += 900 * dt;
+      piece.vx *= Math.exp(-dt * 1.6);
+      piece.x += piece.vx * dt;
+      piece.y += piece.vy * dt;
+      piece.rotation += piece.spin * dt;
+    }
+  }
   function frame(time: number) {
     if (disposed) return;
     const dt = Math.min((time - lastTime || 16) / 1000, 0.04);
     lastTime = time;
-    if (!reduced && !document.hidden && (spinning || time < activeUntil)) {
+    nowMs = time;
+    const busy = spinning || time < activeUntil || journey !== null || particles.length > 0;
+    if (!reduced && !document.hidden && busy) {
       speed += ((spinning ? 3.8 : 0) - speed) * (1 - Math.exp(-dt * (spinning ? 3.8 : 7)));
       angle -= speed * dt;
+      if (journey) {
+        const elapsed = time - journey.startedAt;
+        // O portão abre um instante antes de a bolinha começar a cair.
+        exitOpen = elapsed >= EXIT_TIMING.lift + EXIT_TIMING.hover - 80;
+        if (exitOpen && !journey.effectShown) {
+          journey.effectShown = true;
+          exitEffect = 1;
+        }
+      }
       gate += ((exitOpen ? 1 : 0) - gate) * (1 - Math.exp(-dt * 12));
       exitEffect = Math.max(0, exitEffect - dt / 1.1);
       physicsAccumulator += dt;
-      while (physicsAccumulator >= 1 / 120) {
+      // No máximo quatro passos por quadro: em aparelho lento a física desacelera um pouco
+      // em vez de gastar o quadro inteiro tentando alcançar o relógio.
+      let steps = 0;
+      while (physicsAccumulator >= 1 / 120 && steps < 4) {
         stepPhysics(1 / 120);
         physicsAccumulator -= 1 / 120;
+        steps++;
       }
-      if (exiting) exiting.progress = Math.min(1, exiting.progress + dt / 0.6);
+      if (steps === 4) physicsAccumulator = 0;
+      updateParticles(dt);
       paint();
+      if (journey && !journey.arrived && time - journey.startedAt >= EXIT_JOURNEY_MS) arrive();
     }
     frameId = requestAnimationFrame(frame);
   }
   function resize() {
     const rect = canvas.getBoundingClientRect();
+    if (canvas.width > 0 && rect.width === width && rect.height === height) return;
     width = rect.width;
     height = rect.height;
     const d = Math.min(devicePixelRatio || 1, 2);
@@ -612,36 +864,80 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
       activeUntil = performance.now() + 2500;
       if (reduced) paint();
     },
-    beginExit(n: number) {
-      const body = bodies.get(n);
-      if (body) exiting = { ...body, progress: 0 };
+    // Sobe a bolinha escolhida pelo servidor, espera, deixa cair pelo portão e rola pelo funil.
+    // `onArrive` roda quando ela chega à ponta do funil, medida no relógio do navegador.
+    beginExit(n: number, onArrive: (end: ChuteEnd) => void = () => {}) {
+      const body = bodies.get(n) ?? {
+        n,
+        x: 0,
+        y: 0.5,
+        z: 0.3,
+        vx: 0,
+        vy: 0,
+        vz: 0,
+        roll: n * 0.31,
+        spinX: 0,
+        spinY: 0,
+        spinZ: 0,
+      };
       remaining = remaining.filter((value) => value !== n);
       bodies.delete(n);
-      exitOpen = true;
-      exitEffect = 1;
-      activeUntil = performance.now() + 2500;
+      journey = {
+        body: { ...body },
+        startedAt: performance.now(),
+        onArrive,
+        arrived: false,
+        effectShown: false,
+      };
+      exitOpen = false;
+      activeUntil = performance.now() + EXIT_JOURNEY_MS + 400;
+      if (reduced) {
+        journey.startedAt = performance.now() - EXIT_JOURNEY_MS;
+        arrive();
+      }
       paint();
     },
     finishExit() {
-      exiting = null;
+      journey = null;
       exitOpen = false;
       activeUntil = performance.now() + 1600;
       paint();
     },
+    // A bolinha deixa de ser desenhada no globo no mesmo quadro em que a bolinha de papel da
+    // página assume a posição, então nunca há duas nem nenhuma.
     releaseBall() {
-      exiting = null;
+      journey = null;
       paint();
     },
-    outlet() {
-      const rect = canvas.getBoundingClientRect();
-      const { R, cx, cy } = geometry(rect.width, rect.height);
-      return { x: cx, y: cy + R * 0.98, radius: R, rampX: R * 1.12, rampY: R * 0.45 };
+    // Confete de papel na posição (em pixels do canvas) onde a bolinha aparece.
+    burst(x: number, y: number) {
+      if (reduced) return;
+      const palette = ["#facc15", "#a779ef", "#50bdc4", "#ff8e77", "#fff0c7", "#7c3aed"];
+      for (let i = 0; i < 26; i++) {
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.5,
+          speed = 140 + Math.random() * 260;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          rotation: Math.random() * Math.PI,
+          spin: (Math.random() - 0.5) * 14,
+          size: 3 + Math.random() * 3,
+          color: palette[i % palette.length]!,
+          age: 0,
+          life: 0.8 + Math.random() * 0.5,
+        });
+      }
+      activeUntil = Math.max(activeUntil, performance.now() + 1500);
     },
     dispose() {
       disposed = true;
       cancelAnimationFrame(frameId);
       observer.disconnect();
       bodies.clear();
+      particles.length = 0;
+      journey = null;
     },
   };
 }
