@@ -6,6 +6,7 @@ import {
   PRIVACY_POLICY_PATH,
   PRIVACY_POLICY_VERSION,
 } from "../domain/privacy-policy";
+import { GUEST_SESSION_KEY, isGuestSession, startGuestSession } from "../domain/guest-session";
 import { GoogleLogin } from "./google-login";
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
@@ -280,5 +281,57 @@ describe("rodapé da Galeria.Oli no login", () => {
     expect(footer?.textContent).toBe("Todos os direitos Galeria.Oli - OlenaStudy");
     expect(footer?.firstElementChild?.tagName).toBe("IMG");
     await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
+  });
+});
+
+describe("entrar como convidado", () => {
+  afterEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it("entra como Guest sem Google, sem aceitar a política e sem a nuvem configurada", async () => {
+    vi.mocked(getFirebaseAccountServices).mockRejectedValue(new Error("setup"));
+    const finish = vi.fn();
+    render(<GoogleLogin answers={["Inglês"]} onFinish={finish} />);
+    await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
+    expect(screen.getByText(/você aparece como Guest/)).toBeTruthy();
+    const guest = screen.getByRole("button", { name: "Entrar como convidado" });
+    expect(guest.hasAttribute("disabled")).toBe(false);
+
+    fireEvent.click(guest);
+
+    expect(finish).toHaveBeenCalledOnce();
+    expect(localStorage.getItem(GUEST_SESSION_KEY)).toBe("1");
+    expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}")).toEqual({
+      answers: ["Inglês"],
+      completed: true,
+    });
+    expect(localStorage.getItem(PRIVACY_CONSENT_ITEM)).toBeNull();
+  });
+
+  it("deixa de ser convidado quando a pessoa entra com Google", async () => {
+    startGuestSession();
+    vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+      auth: {},
+      authApi: {
+        GoogleAuthProvider: FakeGoogleAuthProvider,
+        signInWithPopup: vi.fn().mockResolvedValue(undefined),
+        signInWithRedirect: vi.fn(),
+      },
+      databaseURL: "https://project.firebaseio.com",
+      redirectResult: null,
+    } as never);
+    const finish = vi.fn();
+    render(<GoogleLogin answers={[]} onFinish={finish} />);
+    fireEvent.click(await screen.findByRole("checkbox", { name: /Li e concordo/ }));
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Entrar com Google" }).hasAttribute("disabled"),
+      ).toBe(false),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Entrar com Google" }));
+    await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+    expect(isGuestSession()).toBe(false);
   });
 });
