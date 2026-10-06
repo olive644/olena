@@ -67,6 +67,17 @@ describe("server-driven Saturn animation", () => {
     else Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
   });
   const props = { isHost: true, pending: false, onDraw: vi.fn().mockResolvedValue(undefined) };
+  it("mantém efeitos habilitados sem botão de silêncio e libera áudio na interação", async () => {
+    const view = render(<BingoSaturn {...props} drawn={["1"]} />);
+    expect(screen.queryByRole("button", { name: /sons|Som ligado|Som desligado/i })).toBeNull();
+    await act(async () => {
+      document.dispatchEvent(new Event("pointerdown"));
+    });
+    expect(sound.unlock).toHaveBeenCalledOnce();
+    expect(sound.setMuted).not.toHaveBeenCalled();
+    expect(view.container.querySelectorAll(".bingo-ball-skin").length).toBeGreaterThan(0);
+    view.unmount();
+  });
   it("keeps the same number and history with reduced motion without flying animations", async () => {
     vi.stubGlobal(
       "matchMedia",
@@ -123,7 +134,7 @@ describe("server-driven Saturn animation", () => {
     expect(onReveal).toHaveBeenCalledWith(["1", "32"]);
     expect(sound.reveal).toHaveBeenCalledOnce();
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(1000);
+      await vi.advanceTimersByTimeAsync(1500);
     });
     expect(screen.getByRole("list").children).toHaveLength(2);
     expect(screen.getByRole("listitem", { name: "N 32" })).toBeTruthy();

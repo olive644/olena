@@ -6,14 +6,15 @@ import {
   type ChuteEnd,
 } from "./bingo-saturn-engine";
 import { createSaturnSound, type SaturnSound } from "./bingo-saturn-sound";
+import { PaperBallSkin } from "./bingo-paper-ball";
 
 // Tempos da sequência de um sorteio, em milissegundos. A viagem da bolinha dentro do globo
 // (EXIT_TIMING) é medida pelo próprio motor.
 const MIX_MS = 1400;
 const SETTLE_MS = 320;
-const FLIGHT_MS = 560;
-const HOLD_MS = 800;
-const HISTORY_MS = 520;
+const FLIGHT_MS = 900;
+const HOLD_MS = 1100;
+const HISTORY_MS = 700;
 const letters = ["B", "I", "N", "G", "O"];
 const easeOutBack = (t: number) => {
   const c1 = 1.4,
@@ -32,17 +33,20 @@ function tossFrames(
   // Termina sempre na vertical (múltiplo de 360°), senão a caixa da bolinha inclinada passaria
   // das bordas do palco ao pousar.
   const toRotation = Math.ceil((fromRotation + 300) / 360) * 360;
-  return Array.from({ length: 37 }, (_, i) => {
-    const t = i / 36,
-      e = 1 - Math.pow(1 - t, 2.2);
+  return Array.from({ length: 61 }, (_, i) => {
+    const t = i / 60,
+      travel = Math.min(1, t / 0.72),
+      bounceTime = Math.max(0, (t - 0.72) / 0.28),
+      bounce = Math.abs(Math.sin(bounceTime * Math.PI * 2)) * 14 * (1 - bounceTime),
+      e = 1 - Math.pow(1 - travel, 2.2);
     return {
       transform:
         "translate(" +
         dx * e +
         "px," +
-        (dy * e - Math.sin(Math.PI * t) * arc * (1 - 0.3 * t)) +
+        (dy * e - Math.sin(Math.PI * travel) * arc * (1 - 0.3 * travel) - bounce) +
         "px) scale(" +
-        (fromScale + (toScale - fromScale) * easeOutBack(t)) +
+        (fromScale + (toScale - fromScale) * easeOutBack(travel)) +
         ") rotate(" +
         (fromRotation + (toRotation - fromRotation) * e) +
         "deg)",
@@ -56,15 +60,17 @@ const lights = ["#ffe88d", "#a4e8eb", "#d7baff", "#ffd3c5", "#fff9ef"];
 function ballStyle(number: string): CSSProperties {
   const group = Math.floor((Number(number) - 1) / 15);
   return {
+    "--ball-base": colors[group],
     "--ball-color": colors[group],
     "--ball-shade": shades[group],
+    "--ball-dark": ["#997207", "#0c5965", "#382066", "#8e383e", "#9b7d35"][group],
     "--ball-light": lights[group],
   } as CSSProperties;
 }
 function Ball({ number }: { number: string }) {
   return (
     <>
-      <i className="bingo-ball-facet" aria-hidden="true" />
+      <PaperBallSkin />
       <small>{letters[Math.floor((Number(number) - 1) / 15)]}</small>
       <strong>{number}</strong>
     </>
@@ -95,7 +101,6 @@ function BingoSaturnView({
   const [visible, setVisible] = useState([...drawn]);
   const [animating, setAnimating] = useState(false);
   const [focus, setFocus] = useState(false);
-  const [muted, setMuted] = useState(false);
   const [caption, setCaption] = useState("");
   const key = drawn.join(",");
   const number = drawn.at(-1) ?? "";
@@ -111,6 +116,12 @@ function BingoSaturnView({
     const engine = createApprovedSaturn(canvas);
     engineRef.current = engine;
     soundRef.current = createSaturnSound();
+    // O navegador exige uma interação antes do áudio. Os efeitos permanecem ativados.
+    const unlock = () => {
+      void soundRef.current?.unlock();
+    };
+    document.addEventListener("pointerdown", unlock, { once: true });
+    document.addEventListener("keydown", unlock, { once: true });
     const stop = () => {
       if (document.hidden) soundRef.current?.stop();
     };
@@ -121,6 +132,8 @@ function BingoSaturnView({
       engineRef.current = null;
       soundRef.current = null;
       document.removeEventListener("visibilitychange", stop);
+      document.removeEventListener("pointerdown", unlock);
+      document.removeEventListener("keydown", unlock);
     };
   }, []);
 
@@ -271,8 +284,8 @@ function BingoSaturnView({
         fly.style.transform = "";
         const dx = to.left + to.width / 2 - from.left - from.width / 2,
           dy = to.top + to.height / 2 - from.top - from.height / 2;
-        const frames = Array.from({ length: 37 }, (_, i) => {
-          const t = i / 36,
+        const frames = Array.from({ length: 61 }, (_, i) => {
+          const t = i / 60,
             ease = t * t * (3 - 2 * t);
           return {
             transform:
@@ -390,20 +403,6 @@ function BingoSaturnView({
               {animating ? "Girando…" : "Sortear próxima bolinha"}
             </button>
           )}
-          <button
-            className="secondary-button"
-            type="button"
-            aria-label={muted ? "Ativar sons" : "Desativar sons"}
-            aria-pressed={!muted}
-            onClick={async () => {
-              const next = !muted;
-              setMuted(next);
-              soundRef.current?.setMuted(next);
-              if (!next) await soundRef.current?.unlock();
-            }}
-          >
-            {muted ? "Som desligado" : "Som ligado"}
-          </button>
         </div>
       </div>
     </div>

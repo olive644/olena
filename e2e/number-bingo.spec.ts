@@ -73,6 +73,10 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.getByText("Complete sua constelação")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
   await expect(card.locator(".bingo-card-grid button")).toHaveCount(25);
+  await expect(card.locator(".bingo-planet")).toHaveCount(5);
+  await expect(
+    page.getByRole("button", { name: /Som ligado|Som desligado|Desativar sons/ }),
+  ).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Sol, centro livre" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -121,6 +125,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     animations: "disabled",
   });
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await expect(card.locator(".paper-digits").first()).toHaveCSS("--digit-face", "#292432");
   await page.screenshot({ path: testInfo.outputPath("bingo-solar-dark.png"), fullPage: true });
   await card.evaluate((el) => el.scrollIntoView({ block: "center" }));
   await card.screenshot({

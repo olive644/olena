@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+bingo-paper-geometry.ts compartilha as facetas das bolinhas entre Canvas e SVG.
+bingo-paper-ball.tsx desenha a pele no voo e no histórico; bingo-planet.tsx fornece
+os cinco planetas da cartela. Não alterar a geometria só em um dos renderizadores.
+Áudio do bingo permanece habilitado, desbloqueado por interação e liberado ao sair.
+
 Bingo de números entra pela modalidade da sala, não pelo HTML de estudo.
 number-bingo.ts concentra cartela 5 × 5, faixas BINGO e padrões de vitória.
 bingoMode identifica novas salas e preserva salas legadas sem o campo.
