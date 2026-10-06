@@ -32,6 +32,7 @@ import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 import { safeEqual } from "./secure-compare.js";
 import { createHash } from "node:crypto";
+import { BINGO_MODES } from "../domain/number-bingo.js";
 import {
   READY_LISTENING_SOURCE,
   validReadyListeningWordIds,
@@ -79,6 +80,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "questionCount",
           "roundSeconds",
           "activity",
+          "bingoMode",
           "category",
           "shuffle",
           "teams",
@@ -101,6 +103,11 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   )
     return false;
   if ("activity" in candidate && !["listening", "bingo"].includes(candidate["activity"] as string))
+    return false;
+  if (
+    "bingoMode" in candidate &&
+    !BINGO_MODES.includes(candidate["bingoMode"] as (typeof BINGO_MODES)[number])
+  )
     return false;
   if (
     "category" in candidate &&
@@ -647,7 +654,8 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         (p) => p.id === participantId && safeEqual(p.token, participantToken),
       );
       if (!participant) return jsonResponse(403, { error: "Não autorizado." });
-      const key = `answer:${participantId}:${questionIndex}`;
+      const numberBingo = state.settings.activity === "bingo" && Boolean(state.settings.bingoMode);
+      const key = `answer:${participantId}:${questionIndex}${numberBingo ? ":" + answer : ""}`;
       const receipt = state.receipts?.[key];
       if (receipt) {
         await dependencies.publish(code, toPublicRoomState(state));
@@ -661,18 +669,22 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       }
       if (now() < state.questionStartedAt)
         return jsonResponse(409, { error: "Aguarde a contagem para responder." });
-      if (now() >= state.questionStartedAt + state.settings.roundSeconds * 1000)
+      if (!numberBingo && now() >= state.questionStartedAt + state.settings.roundSeconds * 1000)
         return jsonResponse(409, { error: "O tempo desta pergunta acabou." });
       if (questionIndex !== state.questionIndex)
         return jsonResponse(409, { error: "Esta pergunta já terminou." });
       const result = submitRoomAnswer(state, { participantId, questionIndex, answer, now: now() });
       result.state.receipts = {
         ...result.state.receipts,
-        [key]: {
-          correct: result.correct,
-          pointsChange: result.pointsChange,
-          ...(result.question ? { question: result.question } : {}),
-        },
+        ...(numberBingo && !result.correct
+          ? {}
+          : {
+              [key]: {
+                correct: result.correct,
+                pointsChange: result.pointsChange,
+                ...(result.question ? { question: result.question } : {}),
+              },
+            }),
       };
       const publicState = await saveRoom(result.state);
       return jsonResponse(200, {
@@ -690,10 +702,19 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (state instanceof Response) return state;
       if (body["questionIndex"] !== undefined && body["questionIndex"] !== state.questionIndex)
         return jsonResponse(200, { state: toPublicRoomState(state) });
-      if (!canAdvanceRoomQuestion(state, now())) {
+      if (
+        !(state.settings.activity === "bingo" && state.settings.bingoMode) &&
+        !canAdvanceRoomQuestion(state, now())
+      ) {
         return jsonResponse(200, { state: toPublicRoomState(state) });
       }
       const advanced = advanceRoomQuestion(state, now());
+      if (
+        state.settings.activity === "bingo" &&
+        state.settings.bingoMode &&
+        state.questionIndex >= 74
+      )
+        return jsonResponse(200, { state: toPublicRoomState(state) });
       const publicState = await saveRoom(advanced);
       return jsonResponse(200, { state: publicState });
     }

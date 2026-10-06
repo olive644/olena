@@ -39,6 +39,7 @@ import {
   ROOM_TEAMS,
   ROOM_TEAM_LABELS,
   type LocalRoomAnswerFeedback,
+  ROOM_CATEGORIES,
   type LocalRoomSettings,
   type PublicLocalRoomState,
 } from "../domain/local-room";
@@ -68,6 +69,7 @@ import { PaperCheckIcon } from "./paper-check-icon";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
 const RoomQrScanner = lazy(() => import("./room-qr-scanner"));
+const NumberBingo = lazy(() => import("./number-bingo"));
 
 const DEFAULT_SETTINGS: LocalRoomSettings = {
   difficulty: "mixed",
@@ -542,7 +544,12 @@ export function LocalRoom({
   );
   const lastCueRef = useRef("");
   useEffect(() => {
-    if (!isPlaying || projectorMode) return;
+    if (
+      !isPlaying ||
+      projectorMode ||
+      (state?.settings.activity === "bingo" && state.settings.bingoMode)
+    )
+      return;
     const opening = countdownValue !== null;
     if (!opening && (secondsLeft < 1 || secondsLeft > 3 || state?.feedbackUntil !== undefined))
       return;
@@ -558,11 +565,14 @@ export function LocalRoom({
     isPlaying,
     projectorMode,
     state?.feedbackUntil,
+    state?.settings.activity,
+    state?.settings.bingoMode,
   ]);
 
   useEffect(() => {
     if (
       !currentQuestionFront ||
+      (state?.settings.activity === "bingo" && state.settings.bingoMode) ||
       state?.phase !== "playing" ||
       projectorMode ||
       (!room.isHost && !room.isOrganizer && state.settings.participantAudio !== true)
@@ -608,7 +618,7 @@ export function LocalRoom({
   // Só o navegador do organizador tenta avançar quando o tempo acaba.
   // O intervalo curto também corrige pequenas diferenças entre relógios.
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || (state?.settings.activity === "bingo" && state.settings.bingoMode)) return;
     let advancing = false;
     const tick = () => {
       const now = room.serverNow();
@@ -728,9 +738,11 @@ export function LocalRoom({
               category: "",
               difficulty: "mixed",
               questionCount: 5,
-              helenaWords: false,
+              bingoMode: "line",
               teams: false,
               shuffle: true,
+              participantAudio: false,
+              helenaWords: false,
             }
           : {
               activity,
@@ -1007,7 +1019,7 @@ export function LocalRoom({
     }
   }
 
-  if (projectorMode)
+  if (projectorMode && !(state.settings.activity === "bingo" && state.settings.bingoMode))
     return (
       <LocalRoomFullscreen>
         <ProjectorRoom state={state} secondsLeft={secondsLeft} />
@@ -1220,12 +1232,16 @@ export function LocalRoom({
                       aria-busy={pendingActivity !== null || readyApplying}
                     >
                       {state.settings.activity === "bingo" && (
-                        <>
-                          <h3>Prepare o bingo</h3>
-                          <p>
-                            Cada pessoa recebe sua cartela. O sorteio é compartilhado pela sala.
-                          </p>
-                        </>
+                        <Suspense fallback={<HelenaLoading compact label="Preparando bingo…" />}>
+                          <NumberBingo
+                            state={state}
+                            isHost={isHost}
+                            participantId={room.participantId}
+                            onMode={(bingoMode) => void room.updateSettings({ bingoMode })}
+                            onDraw={room.nextQuestion}
+                            onAnswer={room.submitAnswer}
+                          />
+                        </Suspense>
                       )}
                       {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
                       {state.settings.activity !== "bingo" && (
@@ -1676,10 +1692,38 @@ export function LocalRoom({
                           }
                         >
                           <option value="listening">Quiz de escuta</option>
-                          <option value="bingo">Bingo de vocabulário</option>
+                          <option value="bingo">Bingo de números</option>
                         </select>
                       </label>
-                      {state.settings.activity !== "bingo" && (
+                      {state.settings.activity === "bingo" && !state.settings.bingoMode && (
+                        <>
+                          <label>
+                            <span>Matéria / tema</span>
+                            <select
+                              value={state.settings.category ?? ""}
+                              disabled={Boolean(state.settings.subjectName)}
+                              onChange={(event) =>
+                                void room.updateSettings({ category: event.target.value })
+                              }
+                            >
+                              <option value="">Inglês · todos os temas</option>
+                              {ROOM_CATEGORIES.map((category) => (
+                                <option key={category} value={category}>
+                                  {category}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <p>
+                            {availableCount} questões disponíveis neste filtro. Prévia:{" "}
+                            {(
+                              state.content?.preview ?? pool.slice(0, 3).map((card) => card.front)
+                            ).join(", ") || "Nenhuma questão"}
+                            .
+                          </p>
+                        </>
+                      )}
+                      {!(state.settings.activity === "bingo" && state.settings.bingoMode) && (
                         <div
                           className="local-room-response-options"
                           role="group"
@@ -1715,16 +1759,51 @@ export function LocalRoom({
                           ))}
                         </div>
                       )}
-                      {state.settings.activity !== "bingo" && !usesHelenaWords && (
+                      {!usesHelenaWords &&
+                        !(state.settings.activity === "bingo" && state.settings.bingoMode) && (
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={state.settings.shuffle !== false}
+                              onChange={(event) =>
+                                void room.updateSettings({ shuffle: event.target.checked })
+                              }
+                            />{" "}
+                            Embaralhar questões
+                          </label>
+                        )}
+                      {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                         <label>
-                          <input
-                            type="checkbox"
-                            checked={state.settings.shuffle !== false}
+                          <span>Dificuldade</span>
+                          <select
+                            value={state.settings.difficulty}
                             onChange={(event) =>
-                              void room.updateSettings({ shuffle: event.target.checked })
+                              void room.updateSettings({
+                                difficulty: event.target.value as LocalRoomSettings["difficulty"],
+                              })
                             }
-                          />{" "}
-                          Embaralhar questões
+                          >
+                            <option value="mixed">
+                              Misto ·{" "}
+                              {state.content?.difficultyCounts?.mixed ??
+                                localRoomPool({ ...state.settings, difficulty: "mixed" }).length}
+                            </option>
+                            <option value="easy">
+                              Fácil ·{" "}
+                              {state.content?.difficultyCounts?.easy ??
+                                localRoomPool({ ...state.settings, difficulty: "easy" }).length}
+                            </option>
+                            <option value="medium">
+                              Médio ·{" "}
+                              {state.content?.difficultyCounts?.medium ??
+                                localRoomPool({ ...state.settings, difficulty: "medium" }).length}
+                            </option>
+                            <option value="hard">
+                              Difícil ·{" "}
+                              {state.content?.difficultyCounts?.hard ??
+                                localRoomPool({ ...state.settings, difficulty: "hard" }).length}
+                            </option>
+                          </select>
                         </label>
                       )}
                       {state.settings.activity !== "bingo" && (
@@ -1743,7 +1822,7 @@ export function LocalRoom({
                           </small>
                         </label>
                       )}
-                      {state.settings.activity !== "bingo" && (
+                      {!(state.settings.activity === "bingo" && state.settings.bingoMode) && (
                         <RoomStepSlider
                           label="Tempo por pergunta"
                           value={state.settings.roundSeconds}
@@ -1904,7 +1983,7 @@ export function LocalRoom({
                   onAssign={room.assignTeam}
                 />
               )}
-              {state.settings.activity === "bingo" && (
+              {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                 <ListeningOnlineNotice
                   choice={online.choice}
                   onChoose={online.choose}
@@ -1914,6 +1993,28 @@ export function LocalRoom({
               )}
             </div>
           )
+        ) : state.phase === "playing" &&
+          state.settings.activity === "bingo" &&
+          state.settings.bingoMode ? (
+          <Suspense fallback={<HelenaLoading label="Carregando cartelas…" />}>
+            <NumberBingo
+              state={state}
+              isHost={room.isOrganizer}
+              participantId={room.participantId}
+              onMode={() => {}}
+              onDraw={room.nextQuestion}
+              onAnswer={room.submitAnswer}
+            />
+            {room.isOrganizer && (
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => void room.endRoom()}
+              >
+                Encerrar sala
+              </button>
+            )}
+          </Suspense>
         ) : state.phase === "playing" && state.currentQuestion ? (
           <div className="local-room-round">
             <div className="local-room-round__progress">

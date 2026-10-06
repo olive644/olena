@@ -432,6 +432,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       if (running || !navigator.onLine) return;
       const deadlinePassed =
         state.phase === "playing" &&
+        !(state.settings.activity === "bingo" && state.settings.bingoMode) &&
         Date.now() + clockOffsetRef.current >=
           (state.feedbackUntil ?? state.questionStartedAt + state.settings.roundSeconds * 1000);
       const interval = streamHealthyRef.current && !deadlinePassed ? 15000 : 1000;

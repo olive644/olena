@@ -1,0 +1,343 @@
+.bingo-settings {
+  grid-column: 1 / -1;
+}
+.number-bingo {
+  max-width: 1040px;
+  margin-inline: auto;
+  scroll-margin-top: 84px;
+}
+:root body :is(.local-room-fullscreen, .local-room-preparation) .bingo-mode.secondary-button {
+  color: var(--text);
+  background-color: var(--surface);
+  border-color: var(--line-strong);
+  background-image: none;
+  box-shadow: 0 4px 0 var(--line-strong);
+  text-align: left;
+}
+:root body :is(.local-room-fullscreen, .local-room-preparation) .bingo-mode.secondary-button small {
+  color: var(--muted);
+}
+:root
+  body
+  :is(.local-room-fullscreen, .local-room-preparation)
+  .bingo-mode.secondary-button[aria-pressed="true"] {
+  color: #fff9ef;
+  background-color: #7c3aed;
+  border-color: #51259b;
+  box-shadow: 0 4px 0 #51259b;
+}
+:root
+  body
+  :is(.local-room-fullscreen, .local-room-preparation)
+  .bingo-mode.secondary-button[aria-pressed="true"]
+  small {
+  color: #fff9ef;
+}
+:root body :is(.local-room-fullscreen, .local-room-preparation) .bingo-card-grid .secondary-button {
+  color: var(--text);
+  background-color: var(--surface);
+  background-image: none;
+  border-color: var(--line-strong);
+  box-shadow: 0 3px 0 var(--line-strong);
+}
+:root
+  body
+  :is(.local-room-fullscreen, .local-room-preparation)
+  .bingo-card-grid
+  .secondary-button[aria-pressed="true"] {
+  background-color: #7c3aed;
+  color: #fff9ef;
+  border-color: #51259b;
+  box-shadow: 0 3px 0 #51259b;
+}
+:root
+  body
+  .local-room-fullscreen
+  .bingo-card-grid
+  .secondary-button[aria-label="Sol, centro livre"] {
+  background-color: #facc15;
+  color: #292432;
+}
+.bingo-settings > p {
+  margin-top: 16px;
+  font-size: 12px;
+}
+.bingo-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.bingo-modes .bingo-mode {
+  position: relative;
+  min-height: 106px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+  overflow: hidden;
+  isolation: isolate;
+}
+.bingo-mode-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+.bingo-mode > span:not(.bingo-mode-art) {
+  display: grid;
+  gap: 7px;
+  z-index: 1;
+}
+.bingo-mode small {
+  font-size: 12px;
+  max-width: 240px;
+  color: var(--muted);
+}
+.bingo-mode[aria-pressed="true"] {
+  background: #7c3aed;
+  color: #fff9ef;
+  border-color: #51259b;
+}
+.bingo-mode[aria-pressed="true"] small {
+  color: #fff9ef;
+}
+.bingo-mode-art {
+  position: absolute;
+  right: -10px;
+  bottom: -16px;
+  z-index: -1;
+  transform: rotate(-12deg);
+  opacity: 0;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+}
+.bingo-mode-art .bingo-mode-icon {
+  width: 112px;
+  height: 112px;
+}
+.bingo-mode:is(:hover, :focus-visible) .bingo-mode-art {
+  opacity: 0.13;
+  transform: rotate(-6deg);
+}
+.bingo-mode[aria-pressed="true"] .bingo-mode-art {
+  opacity: 0.22;
+  transform: rotate(0);
+}
+.bingo-rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.bingo-rule h3 {
+  margin: 0;
+}
+.bingo-rule p {
+  font-size: 13px;
+}
+.bingo-saturn-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+}
+.bingo-saturn {
+  position: relative;
+}
+.bingo-saturn > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+}
+.bingo-saturn-cage {
+  transform-origin: 218px 155px;
+  animation: bingo-mix 1.2s ease-out;
+}
+.bingo-current {
+  margin: 0 auto 14px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+}
+.bingo-current small {
+  font-size: 12px;
+  margin-right: 10px;
+  color: var(--muted);
+}
+.bingo-history h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bingo-history h3 small {
+  font-size: 12px;
+}
+.bingo-history > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--soft);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px 16px 4px 16px;
+}
+.bingo-history [role="listitem"] {
+  background: var(--surface);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  font-weight: 800;
+  clip-path: polygon(20% 0, 75% 0, 100% 30%, 95% 75%, 65% 100%, 20% 90%, 0 60%, 0 25%);
+}
+.bingo-history [role="listitem"].latest {
+  background: #facc15;
+  color: #292432;
+}
+.bingo-history button {
+  margin-top: 16px;
+}
+.bingo-card-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 26px;
+  align-items: center;
+  margin-top: 28px;
+}
+.bingo-solar-card {
+  background: var(--soft);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 5px 0 var(--line-strong);
+  padding: 16px;
+  border-radius: 4px 20px 4px 20px;
+}
+.bingo-solar-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+.bingo-solar-card header small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.bingo-card-heading,
+.bingo-card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+.bingo-card-heading {
+  margin-bottom: 12px;
+}
+.bingo-card-heading > div {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+}
+.bingo-card-heading svg {
+  width: 30px;
+  height: 30px;
+}
+.bingo-card-heading strong {
+  font-size: 24px;
+}
+.bingo-card-grid .secondary-button {
+  min-width: 0;
+  min-height: 58px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+  font-size: 25px;
+}
+.bingo-card-grid .secondary-button:disabled {
+  opacity: 1;
+}
+.bingo-card-grid .secondary-button[aria-pressed="true"] {
+  background: #7c3aed;
+  color: #fff9ef;
+  border-color: #51259b;
+}
+.bingo-card-grid .secondary-button[aria-label="Sol, centro livre"] {
+  background: #facc15;
+  color: #292432;
+}
+.bingo-card-grid .bingo-mode-icon {
+  width: 30px;
+  height: 30px;
+  flex-basis: 30px;
+}
+.bingo-card-grid small {
+  font-size: 9px;
+}
+.bingo-solar-card > p {
+  font-size: 11px;
+  margin: 14px 0 0;
+}
+.bingo-claim p {
+  font-size: 13px;
+}
+.bingo-claim button {
+  margin-block: 16px;
+}
+@keyframes bingo-mix {
+  0% {
+    transform: rotate(-14deg);
+  }
+  30% {
+    transform: rotate(15deg);
+  }
+  60% {
+    transform: rotate(-8deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+@media (max-width: 600px) {
+  .bingo-modes {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .bingo-modes .bingo-mode {
+    min-height: 84px;
+    padding: 12px;
+  }
+  .bingo-saturn-panel,
+  .bingo-card-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .bingo-history > div {
+    max-height: 130px;
+  }
+  .bingo-solar-card {
+    padding: 12px;
+  }
+  .bingo-card-grid {
+    gap: 6px;
+  }
+  .bingo-card-grid .secondary-button {
+    min-height: 48px;
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bingo-mode-art {
+    transition: none;
+  }
+  .bingo-saturn-cage {
+    animation: none;
+  }
+}

@@ -19,7 +19,7 @@ describe("chegada por link de convite", () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /^Bingo/ }));
     await waitFor(() =>
-      expect(screen.getByRole("heading", { name: "Prepare o bingo" })).toBeTruthy(),
+      expect(screen.getByRole("heading", { name: "Modo de partida" })).toBeTruthy(),
     );
     expect(screen.queryByRole("button", { name: "Responder em equipes" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Responder individualmente" })).toBeNull();
@@ -48,7 +48,7 @@ describe("chegada por link de convite", () => {
     fireEvent.click(screen.getByRole("button", { name: /Modalidades coletivas/ }));
     fireEvent.click(screen.getByRole("radio", { name: /^Bingo/ }));
     await waitFor(() =>
-      expect(screen.getByRole("heading", { name: "Prepare o bingo" })).toBeTruthy(),
+      expect(screen.getByRole("heading", { name: "Modo de partida" })).toBeTruthy(),
     );
     await waitFor(() =>
       expect(document.querySelector(".local-room-settings__panel")?.getAttribute("aria-busy")).toBe(

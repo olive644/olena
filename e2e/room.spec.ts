@@ -462,7 +462,7 @@ for (const source of ["bank", "files", "files-retry"] as const) {
 // Real room handler and optimistic transactions, with a deterministic transport
 // adapter instead of production Firebase. Each participant has isolated storage.
 for (const activity of ["listening", "bingo"] as const) {
-  test(`dois dispositivos completam ${activity} e retomam a identidade`, async ({
+  test(`dois dispositivos completam ${activity === "bingo" ? "bingo legado" : activity} e retomam a identidade`, async ({
     browser,
   }, testInfo) => {
     test.setTimeout(120_000);
@@ -490,7 +490,13 @@ for (const activity of ["listening", "bingo"] as const) {
       for (const context of contexts) {
         await context.route("**/api/local-room?*", async (route) => {
           const request = route.request();
-          const body = request.postDataJSON() as { settings?: { activity?: string } };
+          const body = request.postDataJSON() as {
+            settings?: { activity?: string; bingoMode?: string };
+          };
+          // Simula uma sala criada pelo cliente anterior, sem reinterpretar a cartela legada.
+          if (activity === "bingo" && request.url().includes("action=create") && body.settings) {
+            delete body.settings.bingoMode;
+          }
           if (request.url().includes("action=settings") && body.settings?.activity) {
             await new Promise((resolve) => setTimeout(resolve, 700));
           }
@@ -498,7 +504,7 @@ for (const activity of ["listening", "bingo"] as const) {
             new Request(request.url(), {
               method: request.method(),
               headers: request.headers(),
-              body: request.postData() ?? "{}",
+              body: JSON.stringify(body),
             }),
           );
           await route.fulfill({

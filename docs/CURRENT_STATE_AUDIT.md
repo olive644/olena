@@ -1,5 +1,23 @@
 # Auditoria do estado atual
 
+## Auditoria de dependências (2026-10-05)
+
+- source-map-js transitivo atualizado de 1.2.1 para 1.2.2 somente no lockfile, corrigindo GHSA-68fv-2mgg-jv7q. As faixas já aceitas por PostCSS/Vite e css-tree/jsdom foram mantidas. A auditoria retornou zero vulnerabilidades após a atualização; não houve mudança nas dependências diretas nem no comportamento do bingo.
+
+## Bingo numérico solar (2026-10-05)
+
+- Reconciliação com a main de #348 e #349 preserva entrada como convidado e separação de controles. Saturno passou a SVG estático com animação interna para manter o orçamento após combinar as mudanças: verify passou com 1.005 testes e JavaScript total de 1087,1 KiB, sem aumentar o teto.
+- A modalidade Bingo na aplicação oferece Linha, Coluna, Diagonal, Quatro cantos e Cartela cheia, com seleção imediata e ícones autorais de papel: cometa, foguete, estrela cadente, quatro estrelas e Sol. Botões compartilham o acabamento dos controles da escuta e ilustram a seleção com facetas, sem as miniaturas de tabelas rejeitadas.
+- Novas salas usam bingoMode, deck de 75 números sem repetição e cartelas BINGO 5 × 5 geradas pelo servidor, com centro livre. Criador controla o sorteio manualmente, inclusive quando participa. Não há áudio de vocabulário nem avanço por cronômetro neste fluxo.
+- API aceita marcas apenas de números já sorteados que pertencem à cartela autenticada. Marcas repetidas não somam pontos; pedido Bingo só encerra com o padrão escolhido completo. Vencedor fica acima da pontuação de marcação no pódio. Ordem futura do sorteio não é publicada. Salas antigas sem bingoMode mantêm o fluxo anterior, sem reinterpretar cartelas em andamento.
+- Fundo claro inclui sol, lua e estrelas ocre/lilás sem bloquear interação. Tema escuro mantém seu SVG separado. A prévia HTML local não é o fluxo de produção.
+- Validação: verify passou com 995 testes, tipos, build e orçamento preservado (273,9 KiB inicial / 1087,7 KiB total). Regressões de sala passaram em 22 cenários desktop/móvel. Reexecução dos arquivos de cadernos que falharam sob alta concorrência, junto do bingo, passou com 29 cenários e 3 pulados previstos; não é uma alegação de nova execução integral dos 190 cenários. Cartelas e modos inspecionados por captura nos dois temas.
+
+## Fundo claro (2026-10-05)
+
+- Sol e lua agora têm padrão próprio no tema claro, com papel ocre e lilás. A regra anterior aplicava o fundo somente no tema escuro. O padrão escuro permanece inalterado.
+- A física detalhada do globo permanece como estudo HTML local; a aplicação agora tem um sorteador Saturno em papel com os modos e cartelas numéricos integrados.
+
 ## Entrar como convidado (2026-10-05)
 
 - A tela de login do fim do onboarding ganhou o botão "Entrar como convidado", abaixo de "Entrar com Google". A pessoa aparece como Guest e usa o app sem conta. Os estudos ficam somente neste aparelho: nada é enviado à nuvem e não há sincronização, e a tela e o Perfil dizem isso com clareza (recurso local, nunca apresentado como conta ou nuvem).

@@ -1,10 +1,18 @@
 # OlenaStudy: Second Brain
 
-Preparação do bingo é independente dos controles da escuta coletiva. Não mostrar
-em equipes, embaralhar questões, matéria/tema, dificuldade ou tempo por pergunta.
-Cartelas são individuais; selectActivity define teams: false e shuffle: true ao
-escolher bingo. Escuta conserva seus controles. Esta mudança de preparação usa
-o bingo de vocabulário existente; o protótipo de globo numérico não foi integrado.
+Bingo de números entra pela modalidade da sala, não pelo HTML de estudo.
+number-bingo.ts concentra cartela 5 × 5, faixas BINGO e padrões de vitória.
+bingoMode identifica novas salas e preserva salas legadas sem o campo.
+number-bingo.tsx é lazy, mostra modos em papel, Saturno e cartela solar.
+Sorteio é controlado pelo host via next, sem expiração por pergunta.
+answer aceita marca já sorteada ou bingo, com validação da cartela no servidor.
+Repetição e retorno ao lobby preservam o modo e geram novas cartelas ao iniciar.
+
+Fundo de papel usa paper-sky-pattern-light.svg no tema claro e
+paper-sky-pattern.svg no escuro, na regra compartilhada de paper-controls.css.
+
+Preparação do bingo é independente dos controles da escuta. Cartelas são individuais;
+a seleção da modalidade define teams: false e shuffle: true.
 
 Seleção aleatória usa public/room-icons/helena-word-choice.svg, ícone exclusivo
 do rostinho da Helena em papel recortado, sem cartas ou patinhas. Não reutilizar modalities.svg.
