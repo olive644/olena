@@ -133,3 +133,28 @@ export function playRoomCountdownSound(value: number, warning: boolean): void {
     };
   });
 }
+
+// Fanfarra do bingo usa o contexto já liberado, sem autoplay forçado ou arquivos remotos.
+export function playBingoClaimSound(): void {
+  const context = victoryContext;
+  if (!context || context.state !== "running" || document.hidden) return;
+  keepRoomSoundAlive(context);
+  [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5].forEach((frequency, index) => {
+    const start = context.currentTime + index * 0.13;
+    const gain = context.createGain();
+    const tone = context.createOscillator();
+    gain.connect(context.destination);
+    tone.connect(gain);
+    tone.type = "triangle";
+    tone.frequency.setValueAtTime(frequency, start);
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.exponentialRampToValueAtTime(0.07, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + 0.42);
+    tone.start(start);
+    tone.stop(start + 0.45);
+    tone.onended = () => {
+      tone.disconnect();
+      gain.disconnect();
+    };
+  });
+}

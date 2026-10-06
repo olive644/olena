@@ -20,6 +20,37 @@ beforeEach(() => {
 });
 
 describe("normalizeRoomState", () => {
+  it("retains zero draws, pending claims and accepted winners on the realtime channel", () => {
+    const base: Partial<PublicLocalRoomState> = {
+      code: "ABCDE",
+      phase: "playing",
+      settings: {
+        activity: "bingo",
+        bingoMode: "line",
+        difficulty: "mixed",
+        questionCount: 5,
+        roundSeconds: 5,
+      },
+    };
+    const claim = { id: "claim", participantId: "p", claimedAt: 1000 };
+    const state = normalizeRoomState({
+      ...base,
+      bingoDrawCount: 0,
+      roundId: "new-round",
+      bingoClaim: claim,
+      bingoWinnerIds: ["previous"],
+    });
+    expect(state.bingoDrawCount).toBe(0);
+    expect(state.roundId).toBe("new-round");
+    expect(state.drawnIds).toEqual([]);
+    expect(state.bingoClaim).toEqual(claim);
+    expect(state.bingoWinnerIds).toEqual(["previous"]);
+    for (const bingoDrawCount of [-1, 0.5, 76, Number.NaN])
+      expect(() => normalizeRoomState({ ...base, bingoDrawCount })).toThrow("dados inválidos");
+    expect(() => normalizeRoomState({ ...base, bingoClaim: { ...claim, claimedAt: -1 } })).toThrow(
+      "dados inválidos",
+    );
+  });
   it("mantém os números sorteados do bingo de números, que não tem bingoWords", () => {
     // Sem isto o estado vindo do canal em tempo real apagava o sorteio: o globo reiniciava,
     // o histórico zerava e a cartela travava logo depois de cada bolinha.

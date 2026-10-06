@@ -14,6 +14,7 @@ import {
   startRoom,
   submitRoomAnswer,
   toPublicRoomState,
+  reviewNumberBingo,
 } from "./local-room";
 
 function started() {
@@ -71,12 +72,14 @@ describe("number bingo", () => {
     expect(state.participants[0]!.bingoCard).toHaveLength(25);
     expect(canAdvanceRoomQuestion(state, 100_000)).toBe(false);
     const publicState = toPublicRoomState(state);
-    expect(publicState.drawnIds).toHaveLength(1);
+    expect(publicState.drawnIds).toHaveLength(0);
+    expect(publicState.currentQuestion).toBeUndefined();
+    expect(toPublicRoomState(advanceRoomQuestion(state, 3)).drawnIds).toHaveLength(1);
     expect(publicState.bingoWords).toBeUndefined();
   });
-  it("allows late marks, prevents duplicate points, requires Bingo and ranks the winner first", () => {
+  it("allows late marks, requires Bingo and waits for the host instead of ending on a podium", () => {
     let state = started();
-    for (let i = 0; i < 74; i++) state = advanceRoomQuestion(state, 3 + i);
+    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3 + i);
     const row = state.participants[0]!.bingoCard!.slice(0, 5);
     const answer = (id: string) =>
       submitRoomAnswer(state, { participantId: "p", questionIndex: 74, answer: id, now: 100_000 });
@@ -88,8 +91,46 @@ describe("number bingo", () => {
     expect(duplicate.state.participants[0]!.score).toBe(5);
     const winner = answer("bingo");
     expect(winner.correct).toBe(true);
-    expect(winner.state.phase).toBe("results");
-    expect(winner.state.participants[0]!.score).toBeGreaterThan(24);
+    expect(winner.state.phase).toBe("playing");
+    expect(winner.state.bingoClaim?.participantId).toBe("p");
+    expect(winner.state.participants[0]!.score).toBe(5);
+    expect(advanceRoomQuestion(winner.state, 100_001)).toBe(winner.state);
+    const accepted = reviewNumberBingo(
+      winner.state,
+      winner.state.bingoClaim!.id,
+      "continue",
+      100_002,
+    );
+    expect(accepted.phase).toBe("playing");
+    expect(accepted.bingoWinnerIds).toEqual(["p"]);
+    expect(accepted.participants[0]!.score).toBe(105);
+    expect(accepted.bingoClaim).toBeUndefined();
+    expect(
+      submitRoomAnswer(accepted, {
+        participantId: "p",
+        questionIndex: 74,
+        answer: "bingo",
+        now: 100_003,
+      }).correct,
+    ).toBe(false);
+    const rejected = reviewNumberBingo(
+      winner.state,
+      winner.state.bingoClaim!.id,
+      "reject",
+      100_004,
+    );
+    expect(rejected.bingoWinnerIds).toEqual([]);
+    expect(rejected.participants[0]!.score).toBe(5);
+    const restarted = reviewNumberBingo(
+      winner.state,
+      winner.state.bingoClaim!.id,
+      "restart",
+      100_005,
+    );
+    expect(toPublicRoomState(restarted).drawnIds).toEqual([]);
+    expect(restarted.participants[0]!.bingoMarks).toEqual([]);
+    expect(restarted.participants[0]!.score).toBe(0);
+    expect(reviewNumberBingo(winner.state, "stale", "reject", 100_006)).toBe(winner.state);
   });
   it("rejects undrawn numbers and foreign participant/card entries", () => {
     const state = started();
@@ -99,5 +140,47 @@ describe("number bingo", () => {
     expect(attempt("unknown", state.deck[0]!.id).correct).toBe(false);
     expect(attempt("p", BINGO_FREE).correct).toBe(false);
     expect(attempt("p", "bingo").state).toBe(state);
+  });
+  it.each(BINGO_MODES)("requires a host decision for %s and allows a second winner", (mode) => {
+    let state = started();
+    state = {
+      ...state,
+      settings: { ...state.settings, bingoMode: mode },
+      participants: [
+        ...state.participants,
+        { ...state.participants[0]!, id: "p2", displayName: "Bia" },
+      ],
+    };
+    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3 + i);
+    for (const participantId of ["p", "p2"]) {
+      const card = state.participants.find((p) => p.id === participantId)!.bingoCard!;
+      for (const i of bingoPatterns(mode)[0]!)
+        if (i !== 12)
+          state = submitRoomAnswer(state, {
+            participantId,
+            questionIndex: 74,
+            answer: card[i]!,
+            now: 100,
+          }).state;
+      expect(state.bingoClaim).toBeUndefined();
+      state = submitRoomAnswer(state, {
+        participantId,
+        questionIndex: 74,
+        answer: "bingo",
+        now: 101,
+      }).state;
+      expect(state.phase).toBe("playing");
+      expect(state.bingoClaim?.participantId).toBe(participantId);
+      expect(
+        submitRoomAnswer(state, {
+          participantId: "p2",
+          questionIndex: 74,
+          answer: "bingo",
+          now: 102,
+        }).correct,
+      ).toBe(false);
+      state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 103);
+    }
+    expect(state.bingoWinnerIds).toEqual(["p", "p2"]);
   });
 });

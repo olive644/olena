@@ -31,6 +31,7 @@ export function createRoomGuard(
       "start",
       "answer",
       "next",
+      "bingo-review",
       "end",
       "update",
       "cursor",

@@ -168,6 +168,8 @@ for (const activity of ["listening", "bingo"] as const) {
     expect(await page.evaluate(() => getComputedStyle(document.body).overflowY)).not.toBe("hidden");
     if (activity === "bingo") {
       await preparation.getByRole("radio", { name: /^Bingo/ }).click();
+      await expect(preparation.getByRole("group", { name: "Modo de partida" })).toBeVisible();
+      await expect(preparation.locator(".local-room-join-actions")).toHaveCSS("max-height", "0px");
     } else {
       await preparation.getByRole("radio", { name: /Escuta coletiva/ }).click();
       if (testInfo.project.name === "mobile") {
@@ -852,7 +854,11 @@ for (const activity of ["listening", "bingo"] as const) {
           ),
         );
       }
-      await expect(host.getByRole("heading", { name: "Classificação", exact: true })).toBeVisible();
+      if (activity === "listening")
+        await expect(
+          host.getByRole("heading", { name: "Classificação", exact: true }),
+        ).toBeVisible();
+      else await expect(host.locator(".local-room-podium")).toHaveCount(0);
       await expect(host.getByRole("button", { name: "Repetir" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Trocar atividade" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Encerrar sala" })).toBeVisible();

@@ -96,6 +96,21 @@ describe("approved Saturn renderer", () => {
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
     expect(createApprovedSaturn(document.createElement("canvas"))).toBeNull();
   });
+  it("skips expensive distances for separated pairs while keeping all 75 balls moving", () => {
+    vi.spyOn(performance, "now").mockReturnValue(1000);
+    const engine = createApprovedSaturn(sizedCanvas())!;
+    engine.setDrawn([]);
+    engine.spin(true);
+    const distances = vi.spyOn(Math, "hypot");
+    context.fillText.mockClear();
+    frameCallback!(1016);
+    // Quatro passos completos antes faziam mais de 33 mil chamadas por quadro.
+    expect(distances.mock.calls.length).toBeLessThan(4000);
+    expect(
+      context.fillText.mock.calls.filter((call) => /^\d+$/.test(String(call[0]))),
+    ).toHaveLength(75);
+    engine.dispose();
+  });
 
   it("avisa a chegada ao fim do funil pelo relógio, uma única vez, mesmo com quadros perdidos", () => {
     vi.spyOn(performance, "now").mockReturnValue(1000);

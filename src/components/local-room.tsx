@@ -1136,7 +1136,7 @@ export function LocalRoom({
             >
               {!preparing && (
                 <div className="local-room-lobby__main">
-                  <ShareRoom code={state.code} />
+                  <ShareRoom code={state.code} bingo={state.settings.activity === "bingo"} />
                   <div className="local-room-lobby__invite">
                     {!state.settings.teams && (
                       <section
@@ -1216,7 +1216,7 @@ export function LocalRoom({
                       >
                         <img
                           className="local-room-activity__art"
-                          src={`/room-art/${activity.key}.webp`}
+                          src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
                           alt=""
                           width="160"
                           height="160"
@@ -1238,7 +1238,13 @@ export function LocalRoom({
                     ))}
                   </div>
                   {pendingActivity && <HelenaLoading compact label="Preparando atividade…" />}
-                  <div className="local-room-join-actions">
+                  <div
+                    className={
+                      "local-room-join-actions" +
+                      (!activitiesExpanded ? " local-room-join-actions--collapsed" : "")
+                    }
+                    inert={!activitiesExpanded}
+                  >
                     <button
                       type="button"
                       className="secondary-button"
@@ -1258,7 +1264,7 @@ export function LocalRoom({
                         room.setRole("participant");
                       }}
                     >
-                      <PaperActionIcon name="scan" />
+                      <img src="/room-icons/join-qr.svg" alt="" width="22" height="22" />
                       Entrar com QR code
                     </button>
                   </div>
@@ -2039,12 +2045,14 @@ export function LocalRoom({
           state.settings.bingoMode ? (
           <Suspense fallback={<HelenaLoading label="Carregando cartelas…" />}>
             <NumberBingo
+              key={state.roundId}
               state={state}
               isHost={room.isOrganizer}
               participantId={room.participantId}
               onMode={() => {}}
               onDraw={room.nextQuestion}
               onAnswer={room.submitAnswer}
+              onReview={room.reviewBingo}
             />
           </Suspense>
         ) : state.phase === "playing" && state.currentQuestion ? (
@@ -2318,7 +2326,7 @@ export function LocalRoom({
           </div>
         ) : state.phase === "results" ? (
           <div className="local-room-finished">
-            <Podium participants={state.participants} />
+            {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}
             {room.isHost ? (
               <div className="local-room-results-actions">
                 <button
@@ -2344,15 +2352,17 @@ export function LocalRoom({
               <HelenaRoomIcon name="close" size={24} />
               <h3>Sala encerrada</h3>
             </div>
-            <Podium participants={state.participants} />
+            {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}
             <button className="secondary-button" type="button" onClick={room.reset}>
               Sair
             </button>
           </div>
         )}
-        {!isHost && (state.phase === "results" || state.phase === "finished") && (
-          <RoomRewardNotice reward={ownParticipant?.reward} />
-        )}
+        {!isHost &&
+          state.settings.activity !== "bingo" &&
+          (state.phase === "results" || state.phase === "finished") && (
+            <RoomRewardNotice reward={ownParticipant?.reward} />
+          )}
       </div>
     </LocalRoomFullscreen>
   );

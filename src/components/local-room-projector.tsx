@@ -207,7 +207,7 @@ export function ProjectorRoom({
             <strong>{state.code}</strong>
             <p>Aponte a câmera para o QR code.</p>
           </div>
-          <RoomQrCode value={joinUrl} />
+          <RoomQrCode value={joinUrl} bingo={state.settings.activity === "bingo"} />
         </main>
       ) : state.phase === "playing" ? (
         <main className="local-room-projector__round">
@@ -237,7 +237,7 @@ export function ProjectorRoom({
         <main className="local-room-projector__results">
           <NavigationIcon name="medal-first" />
           <h1>{state.phase === "finished" ? "Sala encerrada" : "Resultado da turma"}</h1>
-          <Podium participants={state.participants} />
+          {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}
         </main>
       )}
     </div>

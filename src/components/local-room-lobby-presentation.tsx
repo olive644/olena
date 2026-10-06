@@ -8,7 +8,7 @@ import { PaperEditorIcon } from "./paper-editor-icon";
 import { RoomQrCode } from "./room-qr-code";
 import { PaperCheckIcon } from "./paper-check-icon";
 
-export function ShareRoom({ code }: { code: string }) {
+export function ShareRoom({ code, bingo = false }: { code: string; bingo?: boolean }) {
   const [copyStatus, setCopyStatus] = useState("");
   const joinUrl = buildLocalRoomJoinUrl(window.location.href, code);
 
@@ -39,7 +39,7 @@ export function ShareRoom({ code }: { code: string }) {
       </div>
       <details className="local-room-share__qr" open>
         <summary>Mostrar ou recolher QR code</summary>
-        <RoomQrCode value={joinUrl} />
+        <RoomQrCode value={joinUrl} bingo={bingo} />
       </details>
       <div className="local-room-share__link">
         <p>Escaneie o QR code ou compartilhe o convite.</p>

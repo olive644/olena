@@ -1,7 +1,15 @@
 import { test, expect } from "@playwright/test";
+import { writeFile } from "node:fs/promises";
 import { createLocalRoomHandler } from "../src/backend/local-room-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
 import type { PublicLocalRoomState } from "../src/domain/local-room";
+
+type BallContinuity = {
+  maxSpeed: number;
+  maxSizeJump: number;
+  duplicate: boolean;
+  samples: number;
+};
 
 test("bingo solar entra pela modalidade, cria sala e confere a cartela", async ({
   page,
@@ -25,6 +33,16 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     });
   });
   await page.addInitScript(() => {
+    const costs: number[] = [];
+    (window as unknown as { bingoFrameCosts: number[] }).bingoFrameCosts = costs;
+    const raf = window.requestAnimationFrame.bind(window);
+    window.requestAnimationFrame = (callback) =>
+      raf((time) => {
+        const start = performance.now();
+        callback(time);
+        if (document.querySelector('.bingo-saturn-panel[aria-busy="true"]'))
+          costs.push(performance.now() - start);
+      });
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     Object.defineProperty(window, "EventSource", {
       value: class extends EventTarget {
@@ -35,6 +53,15 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     });
   });
   await page.goto("/sala");
+  await expect(page.locator(".local-room-join-actions")).toBeVisible();
+  await expect(
+    page.locator('.local-room-activities img[src="/room-art/poliana-bingo.webp"]'),
+  ).toHaveCount(1);
+  await page.getByRole("radio", { name: /^Bingo/ }).click();
+  await expect(page.locator(".local-room-join-actions")).toHaveCSS("opacity", "0");
+  await expect(page.getByRole("button", { name: "Entrar com código", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: /Modalidades coletivas/ }).click();
+  await expect(page.getByRole("button", { name: "Entrar com código", exact: true })).toBeVisible();
   await page.getByRole("radio", { name: /^Bingo/ }).click();
   const modes = page.getByRole("group", { name: "Modo de partida" });
   await expect(modes.getByRole("button")).toHaveCount(5);
@@ -74,12 +101,23 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     animations: "disabled",
   });
   await page.getByRole("button", { name: "Criar sala", exact: true }).click();
+  await expect(page.locator(".poliana-room-qr img")).toHaveAttribute(
+    "src",
+    "/poliana-room-invite.webp",
+  );
+  await page
+    .locator(".poliana-room-qr")
+    .screenshot({ path: testInfo.outputPath("convite-poliana.png") });
   await page.getByRole("button", { name: /Também quero participar/ }).click();
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const card = page.getByRole("region", { name: "Minha cartela" });
   const globe = page.getByLabel("Globo Saturno com as bolinhas restantes");
   await expect(globe).toBeVisible();
-  await expect(globe).toHaveAttribute("data-remaining", "74");
+  await expect(globe).toHaveAttribute("data-remaining", "75");
+  await expect(
+    page.getByRole("list", { name: "Números sorteados" }).getByRole("listitem"),
+  ).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath("bingo-zero-bolas.png"), fullPage: true });
   await expect(page.locator(".bingo-rule")).toHaveCount(0);
   await expect(page.getByText("Complete sua constelação")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
@@ -121,6 +159,55 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.getByRole("button", { name: /Ouvir/ })).toHaveCount(0);
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: /Ainda não completou/ })).toBeVisible();
+  // Começa a observar antes do sorteio, não depois das capturas. Em WebKit a captura
+  // pode consumir quase toda a exibição do número e deixar só o fim do voo para medir.
+  await page.evaluate(() => {
+    const observation = new Promise<BallContinuity>((resolve) => {
+      let started = false;
+      let previous: { x: number; y: number; width: number; time: number } | undefined;
+      const result = { maxSpeed: 0, maxSizeJump: 0, duplicate: false, samples: 0 };
+      const deadline = performance.now() + 20_000;
+      function frame(time: number) {
+        const flying = document.querySelector<HTMLElement>(".bingo-flying");
+        const canvas = document.querySelector<HTMLCanvasElement>(".bingo-saturn canvas");
+        const isFlying = !!flying && getComputedStyle(flying).visibility === "visible";
+        started ||= isFlying && flying.classList.contains("bingo-flying-focus");
+        if (started && isFlying && canvas) {
+          const id = flying.querySelector("text:last-child")?.textContent;
+          const history = document.querySelector<HTMLElement>(
+            `.bingo-history [data-bingo-number="${id}"]`,
+          );
+          result.duplicate ||= !!history && getComputedStyle(history).visibility === "visible";
+          const rect = flying.getBoundingClientRect(),
+            stage = canvas.getBoundingClientRect();
+          const next = {
+            x: rect.x + rect.width / 2 - stage.x,
+            y: rect.y + rect.height / 2 - stage.y,
+            width: rect.width,
+            time,
+          };
+          if (previous) {
+            result.maxSpeed = Math.max(
+              result.maxSpeed,
+              Math.hypot(next.x - previous.x, next.y - previous.y) /
+                Math.max(1, time - previous.time),
+            );
+            result.maxSizeJump = Math.max(
+              result.maxSizeJump,
+              Math.abs(next.width - previous.width),
+            );
+          }
+          previous = next;
+          result.samples++;
+        }
+        if ((started && !isFlying) || time >= deadline) resolve(result);
+        else requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+    (window as unknown as { bingoContinuity: Promise<BallContinuity> }).bingoContinuity =
+      observation;
+  });
   await page.getByRole("button", { name: "Sortear próxima bolinha" }).click();
   await globe.scrollIntoViewIfNeeded();
   await expect(page.getByRole("button", { name: "Girando…", exact: true })).toBeDisabled();
@@ -152,49 +239,9 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.locator(".bingo-result")).toHaveCount(0);
   await expect(page.locator(".bingo-flying strong")).toHaveCount(0);
   await expect(page.locator(`.bingo-history [data-bingo-number="${movingId}"]`)).toBeHidden();
-  const continuity = await page.evaluate(async (id) => {
-    const flying = document.querySelector<HTMLElement>(".bingo-flying")!;
-    const canvas = document.querySelector<HTMLCanvasElement>(".bingo-saturn canvas")!;
-    let previous: { x: number; y: number; width: number; time: number } | undefined;
-    let maxSpeed = 0,
-      maxSizeJump = 0,
-      duplicate = false,
-      samples = 0;
-    const start = performance.now();
-    await new Promise<void>((resolve) => {
-      function frame(time: number) {
-        const history = document.querySelector<HTMLElement>(
-          `.bingo-history [data-bingo-number="${id}"]`,
-        );
-        const isFlying = getComputedStyle(flying).visibility === "visible";
-        if (isFlying) {
-          duplicate ||= !!history && getComputedStyle(history).visibility === "visible";
-          const rect = flying.getBoundingClientRect(),
-            stage = canvas.getBoundingClientRect();
-          const next = {
-            x: rect.x + rect.width / 2 - stage.x,
-            y: rect.y + rect.height / 2 - stage.y,
-            width: rect.width,
-            time,
-          };
-          if (previous) {
-            maxSpeed = Math.max(
-              maxSpeed,
-              Math.hypot(next.x - previous.x, next.y - previous.y) /
-                Math.max(1, time - previous.time),
-            );
-            maxSizeJump = Math.max(maxSizeJump, Math.abs(next.width - previous.width));
-          }
-          previous = next;
-          samples++;
-        }
-        if (time - start > 3100) resolve();
-        else requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    });
-    return { maxSpeed, maxSizeJump, duplicate, samples };
-  }, movingId);
+  const continuity = await page.evaluate(
+    () => (window as unknown as { bingoContinuity: Promise<BallContinuity> }).bingoContinuity,
+  );
   expect(continuity.samples).toBeGreaterThan(10);
   expect(continuity.duplicate).toBe(false);
   expect(continuity.maxSpeed).toBeLessThan(1.5);
@@ -203,6 +250,21 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     body: JSON.stringify(continuity),
     contentType: "application/json",
   });
+  const frameCosts = await page.evaluate(() => {
+    const costs = (window as unknown as { bingoFrameCosts: number[] }).bingoFrameCosts
+      .filter((n) => n > 0.1)
+      .sort((a, b) => a - b);
+    return {
+      samples: costs.length,
+      median: costs[Math.floor(costs.length / 2)],
+      p95: costs[Math.floor(costs.length * 0.95)],
+    };
+  });
+  await testInfo.attach("custo-dos-quadros", {
+    body: JSON.stringify(frameCosts),
+    contentType: "application/json",
+  });
+  await writeFile(testInfo.outputPath("custo-dos-quadros.json"), JSON.stringify(frameCosts));
   await page
     .locator(`.bingo-history [data-bingo-number="${movingId}"]`)
     .waitFor({ state: "attached", timeout: 5000 });
@@ -215,9 +277,9 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   );
   await expect(
     page.getByRole("list", { name: "Números sorteados" }).getByRole("listitem"),
-  ).toHaveCount(2, { timeout: 12000 });
+  ).toHaveCount(1, { timeout: 12000 });
   await expect(page.getByRole("button", { name: "Sortear próxima bolinha" })).toBeEnabled();
-  await expect(globe).toHaveAttribute("data-remaining", "73");
+  await expect(globe).toHaveAttribute("data-remaining", "74");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
     true,
   );
@@ -253,7 +315,8 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
 test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(150_000);
+  // Duas rodadas aleatórias podem exigir 150 sorteios pela interface em WebKit.
+  test.setTimeout(240_000);
   let latest: PublicLocalRoomState | undefined;
   const claims: boolean[] = [];
   const handler = createLocalRoomHandler({
@@ -306,7 +369,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   expect(claims).toEqual([false]);
   await expect(page.getByRole("status").filter({ hasText: "Ainda não completou" })).toBeVisible();
-  for (let draw = 0; draw < 75; draw++) {
+  for (let draw = 0; draw <= 75; draw++) {
     for (const id of goals) {
       if (
         current().drawnIds?.includes(id) &&
@@ -320,10 +383,16 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
       }
     }
     if (goals.every((id) => current().participants[0]!.bingoMarks?.includes(id))) break;
+    const before = current().drawnIds!.length;
+    expect(before).toBeLessThan(75);
     const drawButton = page.getByRole("button", { name: "Sortear próxima bolinha", exact: true });
     await expect(drawButton).toBeEnabled();
     await drawButton.click();
-    if (current().drawnIds!.length < 75) await expect(drawButton).toBeEnabled({ timeout: 5000 });
+    await expect.poll(() => current().drawnIds!.length).toBe(before + 1);
+    await expect(page.getByLabel("Globo Saturno com as bolinhas restantes")).toHaveAttribute(
+      "data-remaining",
+      String(75 - before - 1),
+    );
   }
   const finalPlaying = current();
   expect(new Set(finalPlaying.drawnIds).size).toBe(finalPlaying.drawnIds!.length);
@@ -334,16 +403,62 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
     .screenshot({ path: testInfo.outputPath("cartela-quatro-cantos-completa.png") });
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   expect(claims).toEqual([false, true]);
-  expect(current().phase).toBe("results");
+  expect(current().phase).toBe("playing");
+  expect(current().participants[0]!.score).toBe(4);
+  const announcement = page.getByRole("dialog", { name: `${player.displayName} FEZ BINGO!` });
+  await expect(announcement).toBeVisible();
+  await expect(
+    announcement.getByRole("region", { name: "Cartela para conferência" }),
+  ).toBeVisible();
+  await expect(page.locator(".local-room-podium")).toHaveCount(0);
+  await announcement.screenshot({ path: testInfo.outputPath("aviso-bingo-poliana.png") });
+  await announcement.getByRole("button", { name: "Foi engano!", exact: true }).click();
+  await expect(announcement).toHaveCount(0);
+  expect(current().bingoWinnerIds).toEqual([]);
+  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
+  await expect(announcement).toBeVisible();
+  await announcement.getByRole("button", { name: "Recomeçar", exact: true }).click();
+  await expect(announcement).toHaveCount(0);
+  expect(current().drawnIds).toEqual([]);
+  expect(current().participants[0]!.bingoMarks).toEqual([]);
+  await expect(page.getByLabel("Globo Saturno com as bolinhas restantes")).toHaveAttribute(
+    "data-remaining",
+    "75",
+  );
+  // Confere de novo uma rodada reiniciada, usando o mesmo backend e os botões reais.
+  const restartGoals = [0, 4, 20, 24].map((i) => current().participants[0]!.bingoCard![i]!);
+  for (let draw = 0; draw <= 75; draw++) {
+    for (const id of restartGoals)
+      if (
+        current().drawnIds?.includes(id) &&
+        !current().participants[0]!.bingoMarks?.includes(id)
+      ) {
+        await page
+          .getByRole("button", {
+            name: ["B", "I", "N", "G", "O"][Math.floor((Number(id) - 1) / 15)] + " " + id,
+            exact: true,
+          })
+          .click();
+        await expect.poll(() => current().participants[0]!.bingoMarks?.includes(id)).toBe(true);
+      }
+    if (restartGoals.every((id) => current().participants[0]!.bingoMarks?.includes(id))) break;
+    const before = current().drawnIds!.length;
+    expect(before).toBeLessThan(75);
+    await page.getByRole("button", { name: "Sortear próxima bolinha", exact: true }).click();
+    await expect.poll(() => current().drawnIds!.length).toBe(before + 1);
+    await expect(page.getByLabel("Globo Saturno com as bolinhas restantes")).toHaveAttribute(
+      "data-remaining",
+      String(75 - before - 1),
+    );
+  }
+  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
+  await expect(announcement).toBeVisible();
+  await announcement.getByRole("button", { name: "Continuar partida", exact: true }).click();
+  await expect(announcement).toHaveCount(0);
+  expect(current().phase).toBe("playing");
+  expect(current().bingoWinnerIds).toEqual([player.id]);
   expect(current().participants[0]!.score).toBe(104);
-  await expect(page.locator(".local-room-podium__place--1 .room-podium-name")).toHaveText(
-    player.displayName,
-  );
-  await expect(page.locator(".local-room-podium__place--1 .room-podium-score")).toHaveAttribute(
-    "aria-label",
-    "104 pontos",
-  );
-  await expect(page.getByRole("button", { name: "Repetir", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
   await page.screenshot({
     path: testInfo.outputPath("vitoria-bingo-confirmada.png"),
     fullPage: true,

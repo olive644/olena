@@ -84,6 +84,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     typeof data.code !== "string" ||
     !isValidLocalRoomCode(data.code) ||
     !["lobby", "playing", "results", "finished"].includes(data.phase ?? "") ||
+    (data.roundId !== undefined && typeof data.roundId !== "string") ||
     !data.settings ||
     ![5, 10, 15, 30, 45, 60].includes(data.settings.roundSeconds) ||
     !["mixed", "easy", "medium", "hard"].includes(data.settings.difficulty) ||
@@ -110,6 +111,17 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ].some((value) => value !== undefined && (!Number.isFinite(value) || value < 0)) ||
     !strings(data.answeredParticipantIds) ||
     !strings(data.drawnIds) ||
+    !strings(data.bingoWinnerIds) ||
+    (data.bingoDrawCount !== undefined &&
+      (!Number.isInteger(data.bingoDrawCount) ||
+        data.bingoDrawCount < 0 ||
+        data.bingoDrawCount > 75)) ||
+    (data.bingoClaim !== undefined &&
+      (!data.bingoClaim ||
+        typeof data.bingoClaim.id !== "string" ||
+        typeof data.bingoClaim.participantId !== "string" ||
+        !Number.isFinite(data.bingoClaim.claimedAt) ||
+        data.bingoClaim.claimedAt < 0)) ||
     (data.participants !== undefined &&
       (!Array.isArray(data.participants) ||
         data.participants.some(
@@ -148,11 +160,17 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ...(data.revision === undefined ? {} : { revision: data.revision }),
     ...(data.expiresAt === undefined ? {} : { expiresAt: data.expiresAt }),
     ...(data.generation === undefined ? {} : { generation: data.generation }),
+    ...(data.roundId === undefined ? {} : { roundId: data.roundId }),
+    ...(data.bingoDrawCount === undefined ? {} : { bingoDrawCount: data.bingoDrawCount }),
+    ...(data.bingoClaim ? { bingoClaim: data.bingoClaim } : {}),
+    ...(data.bingoWinnerIds ? { bingoWinnerIds: data.bingoWinnerIds } : {}),
     ...(data.content ? { content: data.content } : {}),
     // O bingo de números não tem bingoWords, mas os números sorteados precisam chegar pelo
     // canal em tempo real: sem eles o globo, o histórico e a cartela voltam ao início.
     ...(data.bingoWords ? { bingoWords: data.bingoWords } : {}),
-    ...(data.bingoWords || data.drawnIds ? { drawnIds: data.drawnIds ?? [] } : {}),
+    ...(data.bingoWords || data.drawnIds || data.bingoDrawCount !== undefined
+      ? { drawnIds: data.drawnIds ?? [] }
+      : {}),
     code: data.code ?? "",
     phase: data.phase ?? "lobby",
     settings: data.settings ?? { difficulty: "mixed", questionCount: 10, roundSeconds: 30 },
@@ -650,6 +668,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         code: codeRef.current,
         hostToken: hostTokenRef.current,
         questionIndex: state?.questionIndex,
+        bingoDrawCount: state?.bingoDrawCount,
       });
       setState(payload.state);
       setError("");
@@ -668,6 +687,22 @@ export function useLocalRoom(initialJoinCode?: string) {
       stopStreaming();
     } catch (caught) {
       setError(roomErrorMessage(caught, "Não foi possível encerrar a sala."));
+    }
+  }
+
+  async function reviewBingo(claimId: string, decision: "reject" | "continue" | "restart") {
+    try {
+      const payload = await requestRoom<{ state: PublicLocalRoomState }>("bingo-review", {
+        code: codeRef.current,
+        hostToken: hostTokenRef.current,
+        claimId,
+        decision,
+      });
+      setState(payload.state);
+      setError("");
+    } catch (caught) {
+      setError(roomErrorMessage(caught, "Não foi possível concluir a conferência."));
+      throw caught;
     }
   }
 
@@ -806,6 +841,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     assignTeam,
     startRound,
     nextQuestion,
+    reviewBingo,
     endRoom,
     repeatRound,
     returnToLobby,

@@ -3,6 +3,16 @@ import { describe, expect, it } from "vitest";
 import { RoomQrCode } from "./room-qr-code";
 
 describe("RoomQrCode", () => {
+  it("uses Poliana only for bingo and retains a functional QR", () => {
+    const { container } = render(
+      <RoomQrCode value="https://olenastudy.vercel.app/?sala=ABCDE" bingo />,
+    );
+    expect(container.querySelector(".poliana-room-qr img")?.getAttribute("src")).toBe(
+      "/poliana-room-invite.webp",
+    );
+    expect(container.querySelectorAll("[data-qr-finder]")).toHaveLength(3);
+    expect(container.querySelector("svg")?.getAttribute("data-qr-error-correction")).toBe("H");
+  });
   it("renderiza um QR transparente com a Helena integrada e três marcadores", () => {
     const { container } = render(
       <RoomQrCode value="https://olenastudy.vercel.app/?sala=ABCDE" size={120} />,
