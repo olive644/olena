@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+O teste de continuidade instala o observador RAF antes do sorteio e mede desde
+o foco da revelação até o pouso. Não iniciar a medição depois das capturas de tela:
+WebKit pode consumir a maior parte da janela de exibição durante a captura.
+A prova de vitória marca também após o 75º sorteio e espera a contagem confirmada
+do backend e data-remaining do globo, não apenas um botão momentaneamente habilitado.
+
 No bingo numérico, bingoDrawCount começa em zero. questionIndex continua zero na
 primeira bola para compatibilidade com o protocolo. next envia também a contagem
 para deduplicar dois pedidos da primeira bola. Salas antigas sem a contagem usam

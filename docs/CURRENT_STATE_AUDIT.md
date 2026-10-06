@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Correção da validação de bingo no CI (2026-10-06)
+
+- O primeiro CI da PR 356 confirmou build, tipos, testes unitários, orçamento e segurança, mas falhou na contagem de amostras da animação em WebKit: sete ou oito quadros após as capturas, em três tentativas. A observação começava tarde, depois de capturar a saída e a revelação. O observador agora é instalado antes do sorteio, mede desde o foco da revelação até o pouso e mantém os mesmos limites de quantidade de quadros, velocidade, mudança de tamanho e ausência de duplicação. Não alterados tempos, física ou design para satisfazer o teste.
+- A prova aleatória de vitória tinha um limite de 75 iterações que marcava antes de sortear. Se o último canto era o 75º sorteio, ele não chegava à etapa de marcação. Incluída a última passagem de marcação, e cada sorteio espera confirmação da contagem do backend e das bolas restantes no globo antes de prosseguir. As duas rodadas continuam reais, sem adulterar baralho, resposta ou regra vencedora. O limite do teste passa a 240 segundos para até 150 sorteios pela interface em WebKit.
+- O primeiro CI terminou com 155 cenários aprovados, um reprovado, dois que passaram somente após repetição e 42 pulados. A nova tentativa precisa passar antes da mesclagem autorizada. Nesta sessão o Playwright local não iniciou porque a criação de subprocessos foi recusada com EPERM; isso não é evidência de aprovação nem de regressão do produto. A correção é restrita ao teste e à documentação.
+
 ## Bingo começa vazio e passa por conferência do criador (2026-10-06)
 
 - Causa da primeira bola: o índice inicial zero era convertido em uma bola sorteada pela fatia index + 1. Introduzida bingoDrawCount, zero ao iniciar/recomeçar, sem usar índice negativo ou quebrar o protocolo das salas antigas. A primeira chamada next mantém index zero e passa count para um; pedidos duplicados com a mesma contagem não sorteiam de novo. Sem currentQuestion antes do primeiro sorteio.

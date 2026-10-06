@@ -4,6 +4,13 @@ import { createLocalRoomHandler } from "../src/backend/local-room-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
 import type { PublicLocalRoomState } from "../src/domain/local-room";
 
+type BallContinuity = {
+  maxSpeed: number;
+  maxSizeJump: number;
+  duplicate: boolean;
+  samples: number;
+};
+
 test("bingo solar entra pela modalidade, cria sala e confere a cartela", async ({
   page,
 }, testInfo) => {
@@ -152,6 +159,55 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.getByRole("button", { name: /Ouvir/ })).toHaveCount(0);
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: /Ainda não completou/ })).toBeVisible();
+  // Começa a observar antes do sorteio, não depois das capturas. Em WebKit a captura
+  // pode consumir quase toda a exibição do número e deixar só o fim do voo para medir.
+  await page.evaluate(() => {
+    const observation = new Promise<BallContinuity>((resolve) => {
+      let started = false;
+      let previous: { x: number; y: number; width: number; time: number } | undefined;
+      const result = { maxSpeed: 0, maxSizeJump: 0, duplicate: false, samples: 0 };
+      const deadline = performance.now() + 20_000;
+      function frame(time: number) {
+        const flying = document.querySelector<HTMLElement>(".bingo-flying");
+        const canvas = document.querySelector<HTMLCanvasElement>(".bingo-saturn canvas");
+        const isFlying = !!flying && getComputedStyle(flying).visibility === "visible";
+        started ||= isFlying && flying.classList.contains("bingo-flying-focus");
+        if (started && isFlying && canvas) {
+          const id = flying.querySelector("text:last-child")?.textContent;
+          const history = document.querySelector<HTMLElement>(
+            `.bingo-history [data-bingo-number="${id}"]`,
+          );
+          result.duplicate ||= !!history && getComputedStyle(history).visibility === "visible";
+          const rect = flying.getBoundingClientRect(),
+            stage = canvas.getBoundingClientRect();
+          const next = {
+            x: rect.x + rect.width / 2 - stage.x,
+            y: rect.y + rect.height / 2 - stage.y,
+            width: rect.width,
+            time,
+          };
+          if (previous) {
+            result.maxSpeed = Math.max(
+              result.maxSpeed,
+              Math.hypot(next.x - previous.x, next.y - previous.y) /
+                Math.max(1, time - previous.time),
+            );
+            result.maxSizeJump = Math.max(
+              result.maxSizeJump,
+              Math.abs(next.width - previous.width),
+            );
+          }
+          previous = next;
+          result.samples++;
+        }
+        if ((started && !isFlying) || time >= deadline) resolve(result);
+        else requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    });
+    (window as unknown as { bingoContinuity: Promise<BallContinuity> }).bingoContinuity =
+      observation;
+  });
   await page.getByRole("button", { name: "Sortear próxima bolinha" }).click();
   await globe.scrollIntoViewIfNeeded();
   await expect(page.getByRole("button", { name: "Girando…", exact: true })).toBeDisabled();
@@ -183,49 +239,9 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.locator(".bingo-result")).toHaveCount(0);
   await expect(page.locator(".bingo-flying strong")).toHaveCount(0);
   await expect(page.locator(`.bingo-history [data-bingo-number="${movingId}"]`)).toBeHidden();
-  const continuity = await page.evaluate(async (id) => {
-    const flying = document.querySelector<HTMLElement>(".bingo-flying")!;
-    const canvas = document.querySelector<HTMLCanvasElement>(".bingo-saturn canvas")!;
-    let previous: { x: number; y: number; width: number; time: number } | undefined;
-    let maxSpeed = 0,
-      maxSizeJump = 0,
-      duplicate = false,
-      samples = 0;
-    const start = performance.now();
-    await new Promise<void>((resolve) => {
-      function frame(time: number) {
-        const history = document.querySelector<HTMLElement>(
-          `.bingo-history [data-bingo-number="${id}"]`,
-        );
-        const isFlying = getComputedStyle(flying).visibility === "visible";
-        if (isFlying) {
-          duplicate ||= !!history && getComputedStyle(history).visibility === "visible";
-          const rect = flying.getBoundingClientRect(),
-            stage = canvas.getBoundingClientRect();
-          const next = {
-            x: rect.x + rect.width / 2 - stage.x,
-            y: rect.y + rect.height / 2 - stage.y,
-            width: rect.width,
-            time,
-          };
-          if (previous) {
-            maxSpeed = Math.max(
-              maxSpeed,
-              Math.hypot(next.x - previous.x, next.y - previous.y) /
-                Math.max(1, time - previous.time),
-            );
-            maxSizeJump = Math.max(maxSizeJump, Math.abs(next.width - previous.width));
-          }
-          previous = next;
-          samples++;
-        }
-        if (time - start > 3100) resolve();
-        else requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    });
-    return { maxSpeed, maxSizeJump, duplicate, samples };
-  }, movingId);
+  const continuity = await page.evaluate(
+    () => (window as unknown as { bingoContinuity: Promise<BallContinuity> }).bingoContinuity,
+  );
   expect(continuity.samples).toBeGreaterThan(10);
   expect(continuity.duplicate).toBe(false);
   expect(continuity.maxSpeed).toBeLessThan(1.5);
@@ -299,7 +315,8 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
 test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(150_000);
+  // Duas rodadas aleatórias podem exigir 150 sorteios pela interface em WebKit.
+  test.setTimeout(240_000);
   let latest: PublicLocalRoomState | undefined;
   const claims: boolean[] = [];
   const handler = createLocalRoomHandler({
@@ -352,7 +369,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   expect(claims).toEqual([false]);
   await expect(page.getByRole("status").filter({ hasText: "Ainda não completou" })).toBeVisible();
-  for (let draw = 0; draw < 75; draw++) {
+  for (let draw = 0; draw <= 75; draw++) {
     for (const id of goals) {
       if (
         current().drawnIds?.includes(id) &&
@@ -366,10 +383,16 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
       }
     }
     if (goals.every((id) => current().participants[0]!.bingoMarks?.includes(id))) break;
+    const before = current().drawnIds!.length;
+    expect(before).toBeLessThan(75);
     const drawButton = page.getByRole("button", { name: "Sortear próxima bolinha", exact: true });
     await expect(drawButton).toBeEnabled();
     await drawButton.click();
-    if (current().drawnIds!.length < 75) await expect(drawButton).toBeEnabled({ timeout: 5000 });
+    await expect.poll(() => current().drawnIds!.length).toBe(before + 1);
+    await expect(page.getByLabel("Globo Saturno com as bolinhas restantes")).toHaveAttribute(
+      "data-remaining",
+      String(75 - before - 1),
+    );
   }
   const finalPlaying = current();
   expect(new Set(finalPlaying.drawnIds).size).toBe(finalPlaying.drawnIds!.length);
@@ -419,11 +442,14 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
         await expect.poll(() => current().participants[0]!.bingoMarks?.includes(id)).toBe(true);
       }
     if (restartGoals.every((id) => current().participants[0]!.bingoMarks?.includes(id))) break;
+    const before = current().drawnIds!.length;
+    expect(before).toBeLessThan(75);
     await page.getByRole("button", { name: "Sortear próxima bolinha", exact: true }).click();
-    if (current().drawnIds!.length < 75)
-      await expect(
-        page.getByRole("button", { name: "Sortear próxima bolinha", exact: true }),
-      ).toBeEnabled();
+    await expect.poll(() => current().drawnIds!.length).toBe(before + 1);
+    await expect(page.getByLabel("Globo Saturno com as bolinhas restantes")).toHaveAttribute(
+      "data-remaining",
+      String(75 - before - 1),
+    );
   }
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   await expect(announcement).toBeVisible();
