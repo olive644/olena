@@ -5,6 +5,12 @@ import {
   type ListeningCard,
 } from "./listening-quiz.js";
 import { READY_LISTENING_DECK, READY_LISTENING_SOURCE } from "./ready-listening-words.js";
+import {
+  createNumberBingoCard,
+  hasNumberBingo,
+  NUMBER_BINGO_DECK,
+  type BingoMode,
+} from "./number-bingo.js";
 
 export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
 export const ROOM_TEAMS = ["Roxo", "Amarelo"] as const;
@@ -24,6 +30,7 @@ export type LocalRoomSettings = {
   questionCount: 5 | 10 | 15 | 20 | "all";
   roundSeconds: LocalRoomRoundSeconds;
   activity?: "listening" | "bingo";
+  bingoMode?: BingoMode;
   category?: string;
   shuffle?: boolean;
   teams?: boolean;
@@ -331,6 +338,7 @@ export function localRoomPool(
   settings: LocalRoomSettings,
   source?: readonly ListeningCard[],
 ): readonly ListeningCard[] {
+  if (settings.activity === "bingo" && settings.bingoMode) return NUMBER_BINGO_DECK;
   const cards =
     settings.helenaWords === true
       ? READY_LISTENING_DECK
@@ -367,14 +375,16 @@ export function startRoom(
   )
     return state;
   const deck =
-    state.settings.helenaWords === true
-      ? createListeningRound(pool, state.settings.helenaWordCount ?? 10, dependencies.random)
-      : state.settings.shuffle === false
-        ? pool.slice(
-            0,
-            state.settings.questionCount === "all" ? undefined : state.settings.questionCount,
-          )
-        : createListeningRound(pool, state.settings.questionCount, dependencies.random);
+    state.settings.activity === "bingo" && state.settings.bingoMode
+      ? createListeningRound(pool, "all", dependencies.random)
+      : state.settings.helenaWords === true
+        ? createListeningRound(pool, state.settings.helenaWordCount ?? 10, dependencies.random)
+        : state.settings.shuffle === false
+          ? pool.slice(
+              0,
+              state.settings.questionCount === "all" ? undefined : state.settings.questionCount,
+            )
+          : createListeningRound(pool, state.settings.questionCount, dependencies.random);
   return {
     ...state,
     phase: "playing",
@@ -405,9 +415,12 @@ export function startRoom(
       reward: undefined,
       lastAnswer: undefined,
       bingoMarks: [],
-      bingoCard: createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
-        (card) => card.id,
-      ),
+      bingoCard:
+        state.settings.activity === "bingo" && state.settings.bingoMode
+          ? createNumberBingoCard(dependencies.random)
+          : createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
+              (card) => card.id,
+            ),
     })),
     updatedAt: dependencies.now,
   };
@@ -417,6 +430,56 @@ export function submitRoomAnswer(
   state: LocalRoomState,
   dependencies: { participantId: string; questionIndex: number; answer: string; now: number },
 ): { state: LocalRoomState } & LocalRoomAnswerFeedback {
+  if (state.settings.activity === "bingo" && state.settings.bingoMode) {
+    const participant = state.participants.find((item) => item.id === dependencies.participantId);
+    if (
+      state.phase !== "playing" ||
+      !participant ||
+      dependencies.questionIndex !== state.questionIndex
+    )
+      return { state, correct: false, pointsChange: 0 };
+    const drawn = state.deck.slice(0, state.questionIndex + 1).map((item) => item.id);
+    if (dependencies.answer === "bingo") {
+      const correct = hasNumberBingo(
+        participant.bingoCard ?? [],
+        participant.bingoMarks ?? [],
+        drawn,
+        state.settings.bingoMode,
+      );
+      const won = {
+        ...state,
+        participants: state.participants.map((item) =>
+          item.id === participant.id
+            ? { ...item, score: 100 + (item.bingoMarks?.length ?? 0) }
+            : item,
+        ),
+      };
+      return {
+        state: correct ? completeRoom(won, dependencies.now) : state,
+        correct,
+        pointsChange: 0,
+      };
+    }
+    const correct =
+      drawn.includes(dependencies.answer) &&
+      Boolean(participant.bingoCard?.includes(dependencies.answer));
+    if (!correct || participant.bingoMarks?.includes(dependencies.answer))
+      return { state, correct, pointsChange: 0 };
+    const updated = {
+      ...state,
+      updatedAt: dependencies.now,
+      participants: state.participants.map((item) =>
+        item.id === participant.id
+          ? {
+              ...item,
+              bingoMarks: [...(item.bingoMarks ?? []), dependencies.answer],
+              score: item.score + 1,
+            }
+          : item,
+      ),
+    };
+    return { state: updated, correct: true, pointsChange: 1 };
+  }
   const card = state.deck[dependencies.questionIndex];
   if (
     state.phase !== "playing" ||
@@ -489,6 +552,7 @@ export function submitRoomAnswer(
 // Se ninguém concluiu a rodada, vale o limite de tempo da pergunta.
 export function canAdvanceRoomQuestion(state: LocalRoomState, now: number): boolean {
   if (state.phase !== "playing") return false;
+  if (state.settings.activity === "bingo" && state.settings.bingoMode) return false;
   if (state.feedbackUntil !== undefined) return now >= state.feedbackUntil;
   return now >= state.questionStartedAt + state.settings.roundSeconds * 1000;
 }
@@ -606,7 +670,9 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
     },
     ...(state.settings.activity === "bingo"
       ? {
-          bingoWords: state.deck.map((item) => ({ id: item.id, text: item.back })),
+          ...(state.settings.bingoMode
+            ? {}
+            : { bingoWords: state.deck.map((item) => ({ id: item.id, text: item.back })) }),
           drawnIds: state.deck.slice(0, state.questionIndex + 1).map((item) => item.id),
         }
       : {}),

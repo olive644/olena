@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Bingo numérico solar (2026-10-05)
+
+- A modalidade Bingo na aplicação oferece Linha, Coluna, Diagonal, Quatro cantos e Cartela cheia, com seleção imediata e ícones autorais de papel: cometa, foguete, estrela cadente, quatro estrelas e Sol. Botões compartilham o acabamento dos controles da escuta e ilustram a seleção com facetas, sem as miniaturas de tabelas rejeitadas.
+- Novas salas usam bingoMode, deck de 75 números sem repetição e cartelas BINGO 5 × 5 geradas pelo servidor, com centro livre. Criador controla o sorteio manualmente, inclusive quando participa. Não há áudio de vocabulário nem avanço por cronômetro neste fluxo.
+- API aceita marcas apenas de números já sorteados que pertencem à cartela autenticada. Marcas repetidas não somam pontos; pedido Bingo só encerra com o padrão escolhido completo. Vencedor fica acima da pontuação de marcação no pódio. Ordem futura do sorteio não é publicada. Salas antigas sem bingoMode mantêm o fluxo anterior, sem reinterpretar cartelas em andamento.
+- Fundo claro inclui sol, lua e estrelas ocre/lilás sem bloquear interação. Tema escuro mantém seu SVG separado. A prévia HTML local não é o fluxo de produção.
+- Validação: verify passou com 995 testes, tipos, build e orçamento preservado (273,9 KiB inicial / 1087,7 KiB total). Regressões de sala passaram em 22 cenários desktop/móvel. Reexecução dos arquivos de cadernos que falharam sob alta concorrência, junto do bingo, passou com 29 cenários e 3 pulados previstos; não é uma alegação de nova execução integral dos 190 cenários. Cartelas e modos inspecionados por captura nos dois temas.
+
+## Fundo claro (2026-10-05)
+
+- Sol e lua agora têm padrão próprio no tema claro, com papel ocre e lilás. A regra anterior aplicava o fundo somente no tema escuro. O padrão escuro permanece inalterado.
+- A física detalhada do globo permanece como estudo HTML local; a aplicação agora tem um sorteador Saturno em papel com os modos e cartelas numéricos integrados.
+
 ## Ícone da seleção da Helena (2026-10-04)
 
 - Palavras escolhidas pela Helena usa helena-word-choice.svg exclusivo: somente o rostinho da gata grafite facetada, olhos amarelos com pupilas verticais e estrela na orelha. Cartas e patinha removidas conforme a revisão do proprietário. SVG estático, sem fonte externa, dependência ou alteração no fluxo; o ícone de modalidades permanece separado.

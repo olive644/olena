@@ -320,6 +320,11 @@
   border-radius: 6px 18px 9px 14px;
   background: #17151c;
 }
+:root :is(body, .main-content, .local-room-fullscreen, .local-room-projector) {
+  background-color: var(--page);
+  background-image: url("/paper-sky-pattern-light.svg");
+  background-size: 720px 580px;
+}
 :root[data-theme="dark"] :is(body, .main-content, .local-room-fullscreen, .local-room-projector) {
   background-color: var(--page);
   background-image: url("/paper-sky-pattern.svg");

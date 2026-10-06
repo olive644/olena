@@ -1,5 +1,16 @@
 # OlenaStudy: Second Brain
 
+Bingo de números entra pela modalidade da sala, não pelo HTML de estudo.
+number-bingo.ts concentra cartela 5 × 5, faixas BINGO e padrões de vitória.
+bingoMode identifica novas salas e preserva salas legadas sem o campo.
+number-bingo.tsx é lazy, mostra modos em papel, Saturno e cartela solar.
+Sorteio é controlado pelo host via next, sem expiração por pergunta.
+answer aceita marca já sorteada ou bingo, com validação da cartela no servidor.
+Repetição e retorno ao lobby preservam o modo e geram novas cartelas ao iniciar.
+
+Fundo de papel usa paper-sky-pattern-light.svg no tema claro e
+paper-sky-pattern.svg no escuro, na regra compartilhada de paper-controls.css.
+
 Seleção aleatória usa public/room-icons/helena-word-choice.svg, ícone exclusivo
 do rostinho da Helena em papel recortado, sem cartas ou patinhas. Não reutilizar modalities.svg.
 

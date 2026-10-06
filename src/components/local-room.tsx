@@ -69,6 +69,7 @@ import { PaperCheckIcon } from "./paper-check-icon";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
 
 const RoomQrScanner = lazy(() => import("./room-qr-scanner"));
+const NumberBingo = lazy(() => import("./number-bingo"));
 
 const DEFAULT_SETTINGS: LocalRoomSettings = {
   difficulty: "mixed",
@@ -543,7 +544,12 @@ export function LocalRoom({
   );
   const lastCueRef = useRef("");
   useEffect(() => {
-    if (!isPlaying || projectorMode) return;
+    if (
+      !isPlaying ||
+      projectorMode ||
+      (state?.settings.activity === "bingo" && state.settings.bingoMode)
+    )
+      return;
     const opening = countdownValue !== null;
     if (!opening && (secondsLeft < 1 || secondsLeft > 3 || state?.feedbackUntil !== undefined))
       return;
@@ -559,11 +565,14 @@ export function LocalRoom({
     isPlaying,
     projectorMode,
     state?.feedbackUntil,
+    state?.settings.activity,
+    state?.settings.bingoMode,
   ]);
 
   useEffect(() => {
     if (
       !currentQuestionFront ||
+      (state?.settings.activity === "bingo" && state.settings.bingoMode) ||
       state?.phase !== "playing" ||
       projectorMode ||
       (!room.isHost && !room.isOrganizer && state.settings.participantAudio !== true)
@@ -609,7 +618,7 @@ export function LocalRoom({
   // Só o navegador do organizador tenta avançar quando o tempo acaba.
   // O intervalo curto também corrige pequenas diferenças entre relógios.
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || (state?.settings.activity === "bingo" && state.settings.bingoMode)) return;
     let advancing = false;
     const tick = () => {
       const now = room.serverNow();
@@ -729,6 +738,9 @@ export function LocalRoom({
               category: "",
               difficulty: "mixed",
               questionCount: 5,
+              bingoMode: "line",
+              teams: false,
+              participantAudio: false,
               helenaWords: false,
             }
           : {
@@ -1006,7 +1018,7 @@ export function LocalRoom({
     }
   }
 
-  if (projectorMode)
+  if (projectorMode && !(state.settings.activity === "bingo" && state.settings.bingoMode))
     return (
       <LocalRoomFullscreen>
         <ProjectorRoom state={state} secondsLeft={secondsLeft} />
@@ -1218,7 +1230,18 @@ export function LocalRoom({
                       inert={pendingActivity !== null || readyApplying}
                       aria-busy={pendingActivity !== null || readyApplying}
                     >
-                      {state.settings.activity === "bingo" && <h3>Prepare o bingo</h3>}
+                      {state.settings.activity === "bingo" && (
+                        <Suspense fallback={<HelenaLoading compact label="Preparando bingo…" />}>
+                          <NumberBingo
+                            state={state}
+                            isHost={isHost}
+                            participantId={room.participantId}
+                            onMode={(bingoMode) => void room.updateSettings({ bingoMode })}
+                            onDraw={room.nextQuestion}
+                            onAnswer={room.submitAnswer}
+                          />
+                        </Suspense>
+                      )}
                       {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
                       {state.settings.activity !== "bingo" && (
                         <div
@@ -1668,10 +1691,10 @@ export function LocalRoom({
                           }
                         >
                           <option value="listening">Quiz de escuta</option>
-                          <option value="bingo">Bingo de vocabulário</option>
+                          <option value="bingo">Bingo de números</option>
                         </select>
                       </label>
-                      {state.settings.activity === "bingo" && (
+                      {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                         <>
                           <label>
                             <span>Matéria / tema</span>
@@ -1699,53 +1722,56 @@ export function LocalRoom({
                           </p>
                         </>
                       )}
-                      <div
-                        className="local-room-response-options"
-                        role="group"
-                        aria-label="Respostas"
-                      >
-                        {[false, true].map((teams) => (
-                          <button
-                            className="secondary-button"
-                            type="button"
-                            key={String(teams)}
-                            aria-label={
-                              teams ? "Responder em equipes" : "Responder individualmente"
-                            }
-                            aria-pressed={Boolean(state.settings.teams) === teams}
-                            onClick={() => void room.updateSettings({ teams })}
-                          >
-                            <svg viewBox="0 0 48 48" aria-hidden="true">
-                              <path
-                                fill={teams ? "#27834A" : "#FACC15"}
-                                d="M18 4h12l5 8-5 10H18l-5-10ZM12 26h24l6 17H6Z"
-                              />
-                              <path
-                                fill={teams ? "#83CA8A" : "#FFE88D"}
-                                d={
-                                  teams
-                                    ? "M5 10h8l3 6-3 7H5l-3-7ZM2 28h12l4 15H0Z M35 10h8l3 6-3 7h-8l-3-7ZM34 28h12l2 15H30Z"
-                                    : "M18 4h12l-8 8h-9Z M12 26h10L6 43Z"
-                                }
-                              />
-                            </svg>
-                            <span>{teams ? "Em equipes" : "Cada pessoa"}</span>
-                          </button>
-                        ))}
-                      </div>
-                      {!usesHelenaWords && (
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={state.settings.shuffle !== false}
-                            onChange={(event) =>
-                              void room.updateSettings({ shuffle: event.target.checked })
-                            }
-                          />{" "}
-                          Embaralhar questões
-                        </label>
+                      {!(state.settings.activity === "bingo" && state.settings.bingoMode) && (
+                        <div
+                          className="local-room-response-options"
+                          role="group"
+                          aria-label="Respostas"
+                        >
+                          {[false, true].map((teams) => (
+                            <button
+                              className="secondary-button"
+                              type="button"
+                              key={String(teams)}
+                              aria-label={
+                                teams ? "Responder em equipes" : "Responder individualmente"
+                              }
+                              aria-pressed={Boolean(state.settings.teams) === teams}
+                              onClick={() => void room.updateSettings({ teams })}
+                            >
+                              <svg viewBox="0 0 48 48" aria-hidden="true">
+                                <path
+                                  fill={teams ? "#27834A" : "#FACC15"}
+                                  d="M18 4h12l5 8-5 10H18l-5-10ZM12 26h24l6 17H6Z"
+                                />
+                                <path
+                                  fill={teams ? "#83CA8A" : "#FFE88D"}
+                                  d={
+                                    teams
+                                      ? "M5 10h8l3 6-3 7H5l-3-7ZM2 28h12l4 15H0Z M35 10h8l3 6-3 7h-8l-3-7ZM34 28h12l2 15H30Z"
+                                      : "M18 4h12l-8 8h-9Z M12 26h10L6 43Z"
+                                  }
+                                />
+                              </svg>
+                              <span>{teams ? "Em equipes" : "Cada pessoa"}</span>
+                            </button>
+                          ))}
+                        </div>
                       )}
-                      {state.settings.activity === "bingo" && (
+                      {!usesHelenaWords &&
+                        !(state.settings.activity === "bingo" && state.settings.bingoMode) && (
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={state.settings.shuffle !== false}
+                              onChange={(event) =>
+                                void room.updateSettings({ shuffle: event.target.checked })
+                              }
+                            />{" "}
+                            Embaralhar questões
+                          </label>
+                        )}
+                      {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                         <label>
                           <span>Dificuldade</span>
                           <select
@@ -1795,15 +1821,17 @@ export function LocalRoom({
                           </small>
                         </label>
                       )}
-                      <RoomStepSlider
-                        label="Tempo por pergunta"
-                        value={state.settings.roundSeconds}
-                        steps={TIME_STEPS}
-                        suffix="s"
-                        onCommit={(value) =>
-                          void room.updateSettings({ roundSeconds: value as 5 | 10 | 15 | 30 })
-                        }
-                      />
+                      {!(state.settings.activity === "bingo" && state.settings.bingoMode) && (
+                        <RoomStepSlider
+                          label="Tempo por pergunta"
+                          value={state.settings.roundSeconds}
+                          steps={TIME_STEPS}
+                          suffix="s"
+                          onCommit={(value) =>
+                            void room.updateSettings({ roundSeconds: value as 5 | 10 | 15 | 30 })
+                          }
+                        />
+                      )}
                       {room.error && <p role="alert">{room.error}</p>}
                     </div>
                   )}
@@ -1954,7 +1982,7 @@ export function LocalRoom({
                   onAssign={room.assignTeam}
                 />
               )}
-              {state.settings.activity === "bingo" && (
+              {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                 <ListeningOnlineNotice
                   choice={online.choice}
                   onChoose={online.choose}
@@ -1964,6 +1992,28 @@ export function LocalRoom({
               )}
             </div>
           )
+        ) : state.phase === "playing" &&
+          state.settings.activity === "bingo" &&
+          state.settings.bingoMode ? (
+          <Suspense fallback={<HelenaLoading label="Carregando cartelas…" />}>
+            <NumberBingo
+              state={state}
+              isHost={room.isOrganizer}
+              participantId={room.participantId}
+              onMode={() => {}}
+              onDraw={room.nextQuestion}
+              onAnswer={room.submitAnswer}
+            />
+            {room.isOrganizer && (
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => void room.endRoom()}
+              >
+                Encerrar sala
+              </button>
+            )}
+          </Suspense>
         ) : state.phase === "playing" && state.currentQuestion ? (
           <div className="local-room-round">
             <div className="local-room-round__progress">
