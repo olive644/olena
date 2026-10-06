@@ -133,9 +133,14 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
             dx = b.x - a.x,
             dy = b.y - a.y,
             dz = b.z - a.z,
-            d = Math.hypot(dx, dy, dz),
             minimum = radius * 2;
-          if (d >= minimum || d < 0.00001) continue;
+          // A maioria dos pares não se toca. Descartar pelo quadrado evita milhares de
+          // raízes por quadro sem mudar os impulsos nem os três passos de resolução.
+          if (Math.abs(dx) >= minimum || Math.abs(dy) >= minimum || Math.abs(dz) >= minimum)
+            continue;
+          const distanceSquared = dx * dx + dy * dy + dz * dz;
+          if (distanceSquared >= minimum * minimum || distanceSquared < 0.0000000001) continue;
+          const d = Math.sqrt(distanceSquared);
           const nx = dx / d,
             ny = dy / d,
             nz = dz / d,
@@ -380,19 +385,18 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
   function paint() {
     ctx.clearRect(0, 0, width, height);
     const { R, cx, cy } = geometry(width, height);
+    const tiltCos = Math.cos(0.2),
+      tiltSin = Math.sin(0.2),
+      angleCos = Math.cos(angle),
+      angleSin = Math.sin(angle);
     const project = (x: number, y: number, z: number): number[] => {
-      const tilt = 0.2,
-        X = x * Math.cos(tilt) + z * Math.sin(tilt),
-        Z = z * Math.cos(tilt) - x * Math.sin(tilt),
+      const X = x * tiltCos + z * tiltSin,
+        Z = z * tiltCos - x * tiltSin,
         scale = 1 / (1 - Z / (R * 5));
       return [cx + X * scale, cy + y * scale, Z, scale];
     };
     const rotate = (x: number, y: number, z: number) =>
-      project(
-        x,
-        y * Math.cos(angle) - z * Math.sin(angle),
-        y * Math.sin(angle) + z * Math.cos(angle),
-      );
+      project(x, y * angleCos - z * angleSin, y * angleSin + z * angleCos);
     function line(points: readonly number[][], color: string, w: number) {
       ctx.strokeStyle = color;
       ctx.lineWidth = w;
@@ -631,6 +635,8 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
     cage(false);
     function drawBall(n: number, x: number, y: number, r: number, roll: number) {
       const g = group(n);
+      const rollCos = Math.cos(roll),
+        rollSin = Math.sin(roll);
       const palette = {
         base: colors[g]!,
         light: lights[g]!,
@@ -641,10 +647,7 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
         points.map((p) => {
           const px = (p[0]! / 50 - 1) * r,
             py = (p[1]! / 50 - 1) * r;
-          return [
-            x + px * Math.cos(roll) - py * Math.sin(roll),
-            y + px * Math.sin(roll) + py * Math.cos(roll),
-          ];
+          return [x + px * rollCos - py * rollSin, y + px * rollSin + py * rollCos];
         });
       for (const face of PAPER_BALL_FACES) polygon(transform(face.points), palette[face.tone]);
       ctx.save();

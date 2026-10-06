@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { writeFile } from "node:fs/promises";
 import { createLocalRoomHandler } from "../src/backend/local-room-handler";
 import { createMemoryRoomStore } from "../src/backend/room-transaction";
 import type { PublicLocalRoomState } from "../src/domain/local-room";
@@ -25,6 +26,16 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     });
   });
   await page.addInitScript(() => {
+    const costs: number[] = [];
+    (window as unknown as { bingoFrameCosts: number[] }).bingoFrameCosts = costs;
+    const raf = window.requestAnimationFrame.bind(window);
+    window.requestAnimationFrame = (callback) =>
+      raf((time) => {
+        const start = performance.now();
+        callback(time);
+        if (document.querySelector('.bingo-saturn-panel[aria-busy="true"]'))
+          costs.push(performance.now() - start);
+      });
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     Object.defineProperty(window, "EventSource", {
       value: class extends EventTarget {
@@ -35,6 +46,15 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     });
   });
   await page.goto("/sala");
+  await expect(page.locator(".local-room-join-actions")).toBeVisible();
+  await expect(
+    page.locator('.local-room-activities img[src="/room-art/poliana-bingo.webp"]'),
+  ).toHaveCount(1);
+  await page.getByRole("radio", { name: /^Bingo/ }).click();
+  await expect(page.locator(".local-room-join-actions")).toHaveCSS("opacity", "0");
+  await expect(page.getByRole("button", { name: "Entrar com código", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: /Modalidades coletivas/ }).click();
+  await expect(page.getByRole("button", { name: "Entrar com código", exact: true })).toBeVisible();
   await page.getByRole("radio", { name: /^Bingo/ }).click();
   const modes = page.getByRole("group", { name: "Modo de partida" });
   await expect(modes.getByRole("button")).toHaveCount(5);
@@ -74,12 +94,23 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     animations: "disabled",
   });
   await page.getByRole("button", { name: "Criar sala", exact: true }).click();
+  await expect(page.locator(".poliana-room-qr img")).toHaveAttribute(
+    "src",
+    "/poliana-room-invite.webp",
+  );
+  await page
+    .locator(".poliana-room-qr")
+    .screenshot({ path: testInfo.outputPath("convite-poliana.png") });
   await page.getByRole("button", { name: /Também quero participar/ }).click();
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const card = page.getByRole("region", { name: "Minha cartela" });
   const globe = page.getByLabel("Globo Saturno com as bolinhas restantes");
   await expect(globe).toBeVisible();
-  await expect(globe).toHaveAttribute("data-remaining", "74");
+  await expect(globe).toHaveAttribute("data-remaining", "75");
+  await expect(
+    page.getByRole("list", { name: "Números sorteados" }).getByRole("listitem"),
+  ).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath("bingo-zero-bolas.png"), fullPage: true });
   await expect(page.locator(".bingo-rule")).toHaveCount(0);
   await expect(page.getByText("Complete sua constelação")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
@@ -203,6 +234,21 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     body: JSON.stringify(continuity),
     contentType: "application/json",
   });
+  const frameCosts = await page.evaluate(() => {
+    const costs = (window as unknown as { bingoFrameCosts: number[] }).bingoFrameCosts
+      .filter((n) => n > 0.1)
+      .sort((a, b) => a - b);
+    return {
+      samples: costs.length,
+      median: costs[Math.floor(costs.length / 2)],
+      p95: costs[Math.floor(costs.length * 0.95)],
+    };
+  });
+  await testInfo.attach("custo-dos-quadros", {
+    body: JSON.stringify(frameCosts),
+    contentType: "application/json",
+  });
+  await writeFile(testInfo.outputPath("custo-dos-quadros.json"), JSON.stringify(frameCosts));
   await page
     .locator(`.bingo-history [data-bingo-number="${movingId}"]`)
     .waitFor({ state: "attached", timeout: 5000 });
@@ -215,9 +261,9 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   );
   await expect(
     page.getByRole("list", { name: "Números sorteados" }).getByRole("listitem"),
-  ).toHaveCount(2, { timeout: 12000 });
+  ).toHaveCount(1, { timeout: 12000 });
   await expect(page.getByRole("button", { name: "Sortear próxima bolinha" })).toBeEnabled();
-  await expect(globe).toHaveAttribute("data-remaining", "73");
+  await expect(globe).toHaveAttribute("data-remaining", "74");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
     true,
   );
@@ -334,16 +380,59 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
     .screenshot({ path: testInfo.outputPath("cartela-quatro-cantos-completa.png") });
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   expect(claims).toEqual([false, true]);
-  expect(current().phase).toBe("results");
+  expect(current().phase).toBe("playing");
+  expect(current().participants[0]!.score).toBe(4);
+  const announcement = page.getByRole("dialog", { name: `${player.displayName} FEZ BINGO!` });
+  await expect(announcement).toBeVisible();
+  await expect(
+    announcement.getByRole("region", { name: "Cartela para conferência" }),
+  ).toBeVisible();
+  await expect(page.locator(".local-room-podium")).toHaveCount(0);
+  await announcement.screenshot({ path: testInfo.outputPath("aviso-bingo-poliana.png") });
+  await announcement.getByRole("button", { name: "Foi engano!", exact: true }).click();
+  await expect(announcement).toHaveCount(0);
+  expect(current().bingoWinnerIds).toEqual([]);
+  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
+  await expect(announcement).toBeVisible();
+  await announcement.getByRole("button", { name: "Recomeçar", exact: true }).click();
+  await expect(announcement).toHaveCount(0);
+  expect(current().drawnIds).toEqual([]);
+  expect(current().participants[0]!.bingoMarks).toEqual([]);
+  await expect(page.getByLabel("Globo Saturno com as bolinhas restantes")).toHaveAttribute(
+    "data-remaining",
+    "75",
+  );
+  // Confere de novo uma rodada reiniciada, usando o mesmo backend e os botões reais.
+  const restartGoals = [0, 4, 20, 24].map((i) => current().participants[0]!.bingoCard![i]!);
+  for (let draw = 0; draw <= 75; draw++) {
+    for (const id of restartGoals)
+      if (
+        current().drawnIds?.includes(id) &&
+        !current().participants[0]!.bingoMarks?.includes(id)
+      ) {
+        await page
+          .getByRole("button", {
+            name: ["B", "I", "N", "G", "O"][Math.floor((Number(id) - 1) / 15)] + " " + id,
+            exact: true,
+          })
+          .click();
+        await expect.poll(() => current().participants[0]!.bingoMarks?.includes(id)).toBe(true);
+      }
+    if (restartGoals.every((id) => current().participants[0]!.bingoMarks?.includes(id))) break;
+    await page.getByRole("button", { name: "Sortear próxima bolinha", exact: true }).click();
+    if (current().drawnIds!.length < 75)
+      await expect(
+        page.getByRole("button", { name: "Sortear próxima bolinha", exact: true }),
+      ).toBeEnabled();
+  }
+  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
+  await expect(announcement).toBeVisible();
+  await announcement.getByRole("button", { name: "Continuar partida", exact: true }).click();
+  await expect(announcement).toHaveCount(0);
+  expect(current().phase).toBe("playing");
+  expect(current().bingoWinnerIds).toEqual([player.id]);
   expect(current().participants[0]!.score).toBe(104);
-  await expect(page.locator(".local-room-podium__place--1 .room-podium-name")).toHaveText(
-    player.displayName,
-  );
-  await expect(page.locator(".local-room-podium__place--1 .room-podium-score")).toHaveAttribute(
-    "aria-label",
-    "104 pontos",
-  );
-  await expect(page.getByRole("button", { name: "Repetir", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
   await page.screenshot({
     path: testInfo.outputPath("vitoria-bingo-confirmada.png"),
     fullPage: true,

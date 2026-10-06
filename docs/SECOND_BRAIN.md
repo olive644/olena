@@ -1,5 +1,34 @@
 # OlenaStudy: Second Brain
 
+No bingo numérico, bingoDrawCount começa em zero. questionIndex continua zero na
+primeira bola para compatibilidade com o protocolo. next envia também a contagem
+para deduplicar dois pedidos da primeira bola. Salas antigas sem a contagem usam
+o índice anterior, sem apagar um sorteio já em andamento.
+
+Uma vitória válida só vira bingoClaim quando a pessoa aperta Bingo. Não finalizar
+a sala, conceder XP ou usar o pódio da escuta. Pausar sorteios e novas marcações
+até bingo-review, protegido pela credencial de host. reject limpa o anúncio sem
+registrar vitória; continue confirma o vencedor e mantém as outras cartelas e
+sorteios; restart chama startRoom, troca baralho/cartelas e zera marcas e sorteios.
+O claimId impede que uma decisão repetida resolva outro anúncio. Remover o receipt
+de Bingo ao resolver a conferência permite anunciar novamente após Foi engano.
+roundId público dá a chave do componente numérico: reiniciar desmonta a animação
+anterior, em vez de reaproveitar marcações otimistas ou avisos locais da rodada.
+
+Poliana aparece na seleção de bingo e segura o QR apenas no bingo. SVG funcional
+fica separado da ilustração; convites da escuta continuam com Helena. Prompts,
+referências e arquivos estão em BINGO_POLIANA_ART.md. Convites da página inicial
+usam ícones coral e turquesa; colapsam com opacity/altura e ficam inert ao escolher
+uma modalidade. Expandir Modalidades coletivas restaura os convites.
+
+Globo mantém RAF e física em passos de 120 Hz. Descartar pares afastados pelas
+distâncias ao quadrado antes da raiz e reutilizar seno/cosseno por quadro/faceta
+reduz trabalho, sem reduzir quantidade de bolas, resolução ou duração da viagem.
+BingoReview celebra cada claim uma só vez e mostra a cartela somente ao host.
+O som reaproveita o contexto já desbloqueado pela interação, respeitando autoplay.
+e2e/bingo-review-live.spec.ts exercita host e dois participantes com canal real
+de estados do handler e store em memória. Isto não é prova de Firebase publicado.
+
 As bolinhas imprimem letra e número na mesma malha de Canvas e SVG, sem selo vazio.
 No voo, o último transform fica inline antes de cancelar cada animação. travelling
 oculta a cópia no histórico enquanto a mesma bola termina a revelação e pousa.

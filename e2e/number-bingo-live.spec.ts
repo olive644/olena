@@ -70,21 +70,21 @@ test("o sorteio do bingo continua na tela depois de o canal em tempo real repeti
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const globe = page.getByLabel("Globo Saturno com as bolinhas restantes");
   const history = page.getByRole("list", { name: "Números sorteados" }).getByRole("listitem");
-  await expect(globe).toHaveAttribute("data-remaining", "74");
-  await expect(history).toHaveCount(1);
+  await expect(globe).toHaveAttribute("data-remaining", "75");
+  await expect(history).toHaveCount(0);
   // Deixa o canal repetir o estado algumas vezes antes de sortear.
   await page.waitForTimeout(600);
-  await expect(history).toHaveCount(1);
-  await expect(globe).toHaveAttribute("data-remaining", "74");
+  await expect(history).toHaveCount(0);
+  await expect(globe).toHaveAttribute("data-remaining", "75");
 
   await page.getByRole("button", { name: "Sortear próxima bolinha" }).click();
   await expect(page.getByRole("button", { name: "Girando…" })).toBeDisabled();
-  await expect(history).toHaveCount(2, { timeout: 15_000 });
+  await expect(history).toHaveCount(1, { timeout: 15_000 });
   await expect(page.getByRole("button", { name: "Sortear próxima bolinha" })).toBeEnabled({
     timeout: 15_000,
   });
   // O estado do canal continua chegando: o sorteio não pode sumir nem voltar ao início.
   await page.waitForTimeout(1500);
-  await expect(history).toHaveCount(2);
-  await expect(globe).toHaveAttribute("data-remaining", "73");
+  await expect(history).toHaveCount(1);
+  await expect(globe).toHaveAttribute("data-remaining", "74");
 });

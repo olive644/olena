@@ -9,6 +9,8 @@ import {
 import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/local-room";
 import { BingoSaturn } from "./bingo-saturn";
 import { BingoPlanet } from "./bingo-planet";
+import { BingoReview } from "./bingo-review";
+import type { BingoReviewDecision } from "../domain/local-room";
 import "./number-bingo.css";
 
 function BingoIcon({ mode }: { mode: BingoMode }) {
@@ -30,6 +32,7 @@ export default function NumberBingo({
   onMode,
   onDraw,
   onAnswer,
+  onReview,
 }: {
   state: PublicLocalRoomState;
   isHost: boolean;
@@ -37,6 +40,7 @@ export default function NumberBingo({
   onMode: (mode: BingoMode) => void;
   onDraw: () => Promise<void>;
   onAnswer: (index: number, answer: string) => Promise<LocalRoomAnswerFeedback | undefined>;
+  onReview?: ((claimId: string, decision: BingoReviewDecision) => Promise<void>) | undefined;
 }) {
   const mode = state.settings.bingoMode ?? "line";
   const [pending, setPending] = useState(false);
@@ -130,7 +134,7 @@ export default function NumberBingo({
       const result = await onAnswer(state.questionIndex, "bingo");
       setMessage(
         result?.correct
-          ? "Bingo confirmado!"
+          ? ""
           : result
             ? "Ainda não completou o objetivo. Confira sua cartela."
             : "Não foi possível conferir. Tente novamente.",
@@ -141,7 +145,13 @@ export default function NumberBingo({
   }
   return (
     <section className="number-bingo" aria-label="Bingo de números">
-      <BingoSaturn drawn={drawn} isHost={isHost} pending={pending} onDraw={draw} onReveal={reveal}>
+      <BingoSaturn
+        drawn={drawn}
+        isHost={isHost}
+        pending={pending || !!state.bingoClaim}
+        onDraw={draw}
+        onReveal={reveal}
+      >
         {participant?.bingoCard && (
           <section className="bingo-solar-card" aria-label="Minha cartela">
             <header>
@@ -218,7 +228,9 @@ export default function NumberBingo({
                     aria-pressed={marked}
                     data-orbit={i % 5}
                     aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
-                    disabled={id === BINGO_FREE || marked || !revealed.includes(id)}
+                    disabled={
+                      !!state.bingoClaim || id === BINGO_FREE || marked || !revealed.includes(id)
+                    }
                     onClick={() => mark(id)}
                   >
                     {id === BINGO_FREE ? (
@@ -252,15 +264,22 @@ export default function NumberBingo({
           <button
             type="button"
             className="primary-button"
-            disabled={pending}
+            disabled={
+              pending || !!state.bingoClaim || state.bingoWinnerIds?.includes(participantId)
+            }
             onClick={() => void claim()}
           >
             <img src="/room-icons/bingo-claim.svg" alt="" width="32" height="32" />
             Bingo!
           </button>
-          <p role="status">{message}</p>
+          <p role="status">
+            {state.bingoWinnerIds?.includes(participantId)
+              ? "Seu Bingo foi confirmado. A partida continua!"
+              : message}
+          </p>
         </div>
       )}
+      {state.bingoClaim && <BingoReview state={state} isHost={isHost} onReview={onReview} />}
     </section>
   );
 }

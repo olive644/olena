@@ -292,6 +292,31 @@
   flex-wrap: wrap;
   gap: 10px;
   grid-column: 1 / -1;
+  max-height: 120px;
+  opacity: 1;
+  overflow: hidden;
+  padding-bottom: 5px;
+  visibility: visible;
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s ease,
+    max-height 0.3s ease,
+    padding 0.3s ease,
+    visibility 0s;
+}
+.local-room-join-actions--collapsed {
+  max-height: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  visibility: hidden;
+  transition-delay: 0s, 0s, 0s, 0s, 0.3s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .local-room-join-actions {
+    transition: none;
+  }
 }
 .app-shell .local-room-join-actions button {
   min-height: 44px;

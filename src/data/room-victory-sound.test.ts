@@ -4,6 +4,7 @@ import {
   playRoomVictorySound,
   prepareRoomFeedbackSound,
   playRoomCountdownSound,
+  playBingoClaimSound,
 } from "./room-feedback-sound";
 
 afterEach(() => {
@@ -49,9 +50,12 @@ describe("celebração sonora local", () => {
     vi.advanceTimersByTime(2000);
     expect(context.close).not.toHaveBeenCalled();
     expect(pitches).toEqual([440, 554, 659, 880, 1108, 1320, 980, 740]);
+    playBingoClaimSound();
+    expect(pitches.slice(8)).toEqual([523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5]);
     context.state = "suspended";
     playRoomCountdownSound(2, true);
-    expect(pitches).toHaveLength(8);
+    playBingoClaimSound();
+    expect(pitches).toHaveLength(15);
     playRoomVictorySound();
   });
   it("reaproveita o contexto habilitado na resposta até celebrar a vitória", async () => {

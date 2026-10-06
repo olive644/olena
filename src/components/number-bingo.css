@@ -369,6 +369,175 @@
   margin-top: 16px;
   font-size: 12px;
 }
+.number-bingo .bingo-review {
+  box-sizing: border-box;
+  width: min(900px, calc(100vw - 28px));
+  max-height: calc(100dvh - 28px);
+  padding: 24px;
+  overflow: auto;
+  color: #fff9ef;
+  background: #544586;
+  border: 2px solid #d7baff;
+  border-radius: 4px 30px 4px 30px;
+  box-shadow: 0 8px 0 #312663;
+}
+.bingo-review::backdrop {
+  background: #17131deb;
+}
+.bingo-review-burst {
+  position: relative;
+  isolation: isolate;
+  text-align: center;
+  padding: 8px 16px 12px;
+  overflow: hidden;
+}
+.bingo-review-burst::before {
+  content: "";
+  position: absolute;
+  inset: 0 12%;
+  background: #7661ae;
+  clip-path: polygon(
+    50% 0,
+    61% 19%,
+    90% 6%,
+    83% 35%,
+    100% 50%,
+    80% 63%,
+    92% 90%,
+    60% 81%,
+    50% 100%,
+    37% 81%,
+    8% 94%,
+    17% 65%,
+    0 50%,
+    20% 37%,
+    7% 10%,
+    38% 19%
+  );
+  z-index: -1;
+}
+.bingo-review-burst > img {
+  width: 52px;
+  height: 52px;
+  animation: bingo-reveal-pop 0.7s ease-out both;
+}
+.bingo-review-burst h2 {
+  font-size: clamp(25px, 3.6vw, 38px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  margin: 12px 0 8px;
+  color: #ffe88d;
+  text-shadow: 2px 3px 0 #312663;
+  animation: bingo-reveal-pop 0.55s 0.12s ease-out both;
+}
+.bingo-review-burst p {
+  color: #fff0c7;
+  margin: 0;
+}
+.bingo-review-content {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: center;
+  margin-block: 12px 16px;
+}
+.bingo-review-instructions p {
+  color: #fff9ef;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.bingo-review-instructions > img {
+  border-radius: 50%;
+}
+.number-bingo .bingo-review .bingo-solar-card {
+  padding: 14px;
+  background: #403579;
+}
+.number-bingo .bingo-review .bingo-solar-card header {
+  margin-bottom: 8px;
+}
+.number-bingo .bingo-review .bingo-solar-card header h3 {
+  font-size: 20px;
+  margin: 0;
+}
+.bingo-review .bingo-card-heading {
+  margin-bottom: 8px;
+}
+.bingo-review .bingo-card-heading svg {
+  width: 24px;
+  height: 24px;
+}
+.bingo-review .bingo-card-heading strong {
+  font-size: 16px;
+}
+.number-bingo .bingo-review .bingo-card-grid {
+  gap: 6px;
+  padding: 6px;
+}
+.number-bingo .bingo-review .bingo-cell-planet {
+  height: 40px;
+}
+:root
+  body
+  :is(.local-room-fullscreen, .local-room-preparation)
+  .number-bingo
+  .bingo-review
+  .bingo-card-grid
+  .secondary-button {
+  min-height: 42px;
+  padding: 2px;
+}
+.bingo-review-actions {
+  position: sticky;
+  bottom: -24px;
+  background: #544586;
+  padding-block: 8px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.bingo-review-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 52px;
+}
+.bingo-review-wait {
+  text-align: center;
+  color: #fff9ef;
+  line-height: 1.6;
+}
+@media (max-width: 600px) {
+  .number-bingo .bingo-review {
+    padding: 12px;
+  }
+  .bingo-review-content {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .bingo-review-instructions {
+    text-align: center;
+  }
+  .bingo-review-instructions > img {
+    width: 64px;
+    height: 64px;
+  }
+  .bingo-review-actions button {
+    flex: 1 1 160px;
+    justify-content: center;
+  }
+  .bingo-review-actions {
+    bottom: -12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bingo-review-burst > img,
+  .bingo-review-burst h2 {
+    animation: none;
+  }
+}
 .bingo-modes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

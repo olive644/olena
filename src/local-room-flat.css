@@ -163,6 +163,11 @@
   height: auto;
   aspect-ratio: 1;
 }
+.helena-room-qr--holding.poliana-room-qr svg {
+  top: 17%;
+  left: 12%;
+  width: 40%;
+}
 
 .local-room-projector__late-join .helena-room-qr--holding img {
   display: none;

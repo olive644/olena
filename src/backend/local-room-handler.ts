@@ -9,6 +9,7 @@ import {
   createRoom,
   endRoom,
   repeatRoom,
+  reviewNumberBingo,
   returnRoomToLobby,
   isValidLocalRoomCode,
   MAX_ROOM_PARTICIPANTS,
@@ -700,6 +701,8 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const body = await readJsonBody(request);
       const state = await requireHost(dependencies.store, body);
       if (state instanceof Response) return state;
+      if (body["bingoDrawCount"] !== undefined && body["bingoDrawCount"] !== state.bingoDrawCount)
+        return jsonResponse(200, { state: toPublicRoomState(state) });
       if (body["questionIndex"] !== undefined && body["questionIndex"] !== state.questionIndex)
         return jsonResponse(200, { state: toPublicRoomState(state) });
       if (
@@ -716,6 +719,22 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       )
         return jsonResponse(200, { state: toPublicRoomState(state) });
       const publicState = await saveRoom(advanced);
+      return jsonResponse(200, { state: publicState });
+    }
+
+    if (action === "bingo-review" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const state = await requireHost(dependencies.store, body);
+      if (state instanceof Response) return state;
+      const decision = body["decision"];
+      if (
+        (decision !== "reject" && decision !== "continue" && decision !== "restart") ||
+        typeof body["claimId"] !== "string"
+      )
+        return jsonResponse(400, { error: "Conferência inválida." });
+      const reviewed = reviewNumberBingo(state, body["claimId"], decision, now());
+      // Reenvio de uma decisão não pode resolver outro anúncio nem conceder pontos de novo.
+      const publicState = reviewed === state ? toPublicRoomState(state) : await saveRoom(reviewed);
       return jsonResponse(200, { state: publicState });
     }
 

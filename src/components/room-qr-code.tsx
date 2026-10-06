@@ -35,7 +35,15 @@ function FinderMark({ x, y, cell }: { x: number; y: number; cell: number }) {
   );
 }
 
-export function RoomQrCode({ value, size = 152 }: { value: string; size?: number }) {
+export function RoomQrCode({
+  value,
+  size = 152,
+  bingo = false,
+}: {
+  value: string;
+  size?: number;
+  bingo?: boolean;
+}) {
   const qr = qrcode(0, "H");
   qr.addData(value);
   qr.make();
@@ -63,10 +71,10 @@ export function RoomQrCode({ value, size = 152 }: { value: string; size?: number
   const logoSize = qrSize * 0.24;
 
   return (
-    <div className="helena-room-qr helena-room-qr--holding">
+    <div className={"helena-room-qr helena-room-qr--holding" + (bingo ? " poliana-room-qr" : "")}>
       <img
-        src="/helena-room-invite.webp"
-        alt="Helena erguendo a placa de convite da sala"
+        src={bingo ? "/poliana-room-invite.webp" : "/helena-room-invite.webp"}
+        alt={(bingo ? "Poliana" : "Helena") + " erguendo a placa de convite da sala"}
         width="840"
         height="840"
         fetchPriority="high"
