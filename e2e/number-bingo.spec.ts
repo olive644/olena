@@ -66,12 +66,12 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await page.getByRole("button", { name: /Também quero participar/ }).click();
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const card = page.getByRole("region", { name: "Minha cartela" });
-  await expect(page.locator(".bingo-saturn > img")).toBeVisible();
-  await expect
-    .poll(() =>
-      page.locator(".bingo-saturn > img").evaluate((el) => (el as HTMLImageElement).naturalWidth),
-    )
-    .toBeGreaterThan(0);
+  const globe = page.getByLabel("Globo Saturno com as bolinhas restantes");
+  await expect(globe).toBeVisible();
+  await expect(globe).toHaveAttribute("data-remaining", "74");
+  await expect(page.locator(".bingo-rule")).toHaveCount(0);
+  await expect(page.getByText("Complete sua constelação")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
   await expect(card.locator(".bingo-card-grid button")).toHaveCount(25);
   await expect(page.getByRole("button", { name: "Sol, centro livre" })).toHaveAttribute(
     "aria-pressed",
@@ -81,9 +81,34 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: /Ainda não completou/ })).toBeVisible();
   await page.getByRole("button", { name: "Sortear próxima bolinha" }).click();
+  await expect(page.getByRole("button", { name: "Girando…", exact: true })).toBeDisabled();
+  const during = await globe.evaluate((el) => (el as HTMLCanvasElement).toDataURL());
+  await expect
+    .poll(() => globe.evaluate((el) => (el as HTMLCanvasElement).toDataURL()))
+    .not.toBe(during);
+  await expect(page.getByRole("status").filter({ hasText: "A bolinha está saindo" })).toBeVisible();
+  await page
+    .locator(".bingo-saturn-panel")
+    .screenshot({ path: testInfo.outputPath("approved-saturn-exit.png") });
+  await expect(page.getByRole("status").filter({ hasText: /^Saiu / })).toBeVisible({
+    timeout: 6000,
+  });
+  const flight = await page.locator(".bingo-flying").boundingBox();
+  const stage = await globe.boundingBox();
+  expect(flight).not.toBeNull();
+  expect(stage).not.toBeNull();
+  expect(flight!.x).toBeGreaterThanOrEqual(stage!.x - 1);
+  expect(flight!.x + flight!.width).toBeLessThanOrEqual(stage!.x + stage!.width + 1);
+  expect(flight!.y).toBeGreaterThanOrEqual(stage!.y - 1);
+  expect(flight!.y + flight!.height).toBeLessThanOrEqual(stage!.y + stage!.height + 1);
+  await page
+    .locator(".bingo-saturn-panel")
+    .screenshot({ path: testInfo.outputPath("approved-saturn-reveal.png") });
   await expect(
     page.getByRole("list", { name: "Números sorteados" }).getByRole("listitem"),
-  ).toHaveCount(2);
+  ).toHaveCount(2, { timeout: 12000 });
+  await expect(page.getByRole("button", { name: "Sortear próxima bolinha" })).toBeEnabled();
+  await expect(globe).toHaveAttribute("data-remaining", "73");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
     true,
   );

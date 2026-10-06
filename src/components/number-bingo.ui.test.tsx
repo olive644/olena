@@ -78,5 +78,8 @@ describe("solar bingo interface", () => {
     expect(onAnswer).toHaveBeenCalledWith(0, "1");
     expect(screen.queryByRole("button", { name: /Ouvir/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /Sortear/ })).toBeNull();
+    expect(screen.queryByText("Complete sua constelação")).toBeNull();
+    expect(document.querySelector(".bingo-rule")).toBeNull();
+    expect(screen.getByLabelText("Globo Saturno com as bolinhas restantes")).toBeTruthy();
   });
 });

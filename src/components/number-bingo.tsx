@@ -8,6 +8,7 @@ import {
 } from "../domain/number-bingo";
 import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/local-room";
 import { PaperDigits } from "./paper-digits";
+import { BingoSaturn } from "./bingo-saturn";
 import "./number-bingo.css";
 
 function BingoIcon({ mode }: { mode: BingoMode }) {
@@ -72,7 +73,6 @@ export default function NumberBingo({
     );
   const participant = state.participants.find((item) => item.id === participantId);
   const drawn = state.drawnIds ?? [];
-  const number = state.currentQuestion?.id ?? drawn.at(-1) ?? "";
   const letters = ["B", "I", "N", "G", "O"];
   async function answer(id: string) {
     if (pending) return;
@@ -94,54 +94,19 @@ export default function NumberBingo({
   }
   return (
     <section className="number-bingo" aria-label="Bingo de números">
-      <div className="bingo-rule">
-        <BingoIcon mode={mode} />
-        <div>
-          <h3>{BINGO_MODE_LABELS[mode]}</h3>
-          <p>{BINGO_MODE_RULES[mode]}</p>
-        </div>
-      </div>
-      <div className="bingo-saturn-panel">
-        <div className="bingo-saturn">
-          <img key={number} src="/room-icons/bingo-saturn.svg" alt="" width="440" height="360" />
-          <div className="bingo-current" role="status" aria-live="polite">
-            <small>Bolinha sorteada</small>
-            <span>{letters[Math.floor((Number(number) - 1) / 15)]}</span>
-            <PaperDigits value={number} />
-          </div>
-        </div>
-        <div className="bingo-history">
-          <h3>
-            Números sorteados <small>{drawn.length}/75</small>
-          </h3>
-          <div role="list" aria-label="Números sorteados">
-            {drawn.map((id) => (
-              <span role="listitem" key={id} className={id === number ? "latest" : ""}>
-                {id}
-              </span>
-            ))}
-          </div>
-          {isHost ? (
-            <button
-              className="primary-button"
-              type="button"
-              disabled={pending || drawn.length >= 75}
-              onClick={async () => {
-                setPending(true);
-                try {
-                  await onDraw();
-                } finally {
-                  setPending(false);
-                }
-              }}
-            >
-              Sortear próxima bolinha
-            </button>
-          ) : (
-            <p>O criador controla o sorteio.</p>
-          )}
-        </div>
-      </div>
+      <BingoSaturn
+        drawn={drawn}
+        isHost={isHost}
+        pending={pending}
+        onDraw={async () => {
+          setPending(true);
+          try {
+            await onDraw();
+          } finally {
+            setPending(false);
+          }
+        }}
+      />
       {participant?.bingoCard && (
         <div className="bingo-card-layout">
           <section className="bingo-solar-card" aria-label="Minha cartela">
@@ -194,10 +159,6 @@ export default function NumberBingo({
             <p>O Sol já conta como marcado.</p>
           </section>
           <div className="bingo-claim">
-            <h3>Complete sua constelação</h3>
-            <p>
-              Marque os números sorteados. Quando completar o objetivo, aperte Bingo para conferir.
-            </p>
             <button
               type="button"
               className="primary-button"
