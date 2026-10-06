@@ -7,9 +7,17 @@ number-bingo.tsx é lazy, mostra modos em papel, Saturno e cartela solar.
 bingo-saturn-engine.ts porta geometria e física do HTML aprovado para Canvas.
 bingo-saturn.tsx apresenta só os IDs sorteados pelo servidor, com cancelamento
 de voo, timers, RAF, observador e áudio ao sair. Reconexão não repete a sequência.
+A viagem da bolinha (sobe com brilho, cai pelo portão e rola o funil) é medida no relógio
+pelo motor, que avisa a chegada uma única vez (beginExit com callback, EXIT_TIMING). A bolinha
+sai do recorte do globo ao passar para o funil e a troca para a bolinha da página ocorre no
+mesmo quadro. O globo só redesenha quando o sorteio muda (memo) e o pouso solta confete.
 bingo-saturn-sound.ts sintetiza os efeitos localmente, sem acesso remoto.
 Sorteio é controlado pelo host via next, sem expiração por pergunta.
-answer aceita marca já sorteada ou bingo, com validação da cartela no servidor.
+normalizeRoomState precisa manter drawnIds no bingo de números (sem bingoWords): o estado
+do canal em tempo real é a fonte do globo, do histórico e da cartela.
+answer aceita marca já sorteada ou bingo, com validação da cartela no servidor. A cartela
+marca na hora, confirma em fila e desfaz com aviso se o servidor recusar; a casa só é
+liberada depois que a bolinha aparece (onReveal do globo).
 Repetição e retorno ao lobby preservam o modo e geram novas cartelas ao iniciar.
 
 Fundo de papel usa paper-sky-pattern-light.svg no tema claro e
@@ -435,7 +443,7 @@ O rail desktop usa papel creme e texto grafite no claro, papel grafite e texto c
 
 No celular, Mais fica no cabeçalho ao lado do seletor de aparência e da foto circular. `MobileMenuContext` conecta esse acionador à gaveta; o quinto item inferior, Perfil, usa ícone próprio e fica desabilitado, reservado para configurações futuras de perfil, conta e aplicativo. O seletor de aparência é compartilhado com o desktop. Regressões de recorte e navegação são verificadas em `e2e/responsive-navigation.spec.ts`.
 
-Quem não quer logar usa "Entrar como convidado" na mesma tela: aparece como Guest, os estudos ficam só neste aparelho (marca `helena.guest.v1`, sem sincronização) e o Perfil oferece entrar com Google depois. Configuração e modelo de ameaça do login Google: GOOGLE_LOGIN.md. O resumo abre uma etapa de autenticação com preparação antecipada do SDK.
+Quem não quer logar usa "Entrar como convidado" na mesma tela: aparece como Guest, os estudos ficam só neste aparelho (marca `helena.guest.v1`, sem sincronização) e o Perfil oferece entrar com Google depois. No Modo Sala o convidado pode escolher um apelido (`helena.guest-nickname.v1`, só neste aparelho e só ali); o Perfil continua como Guest. Configuração e modelo de ameaça do login Google: GOOGLE_LOGIN.md. O resumo abre uma etapa de autenticação com preparação antecipada do SDK.
 
 ## Onboarding de prévia e padrão visual
 

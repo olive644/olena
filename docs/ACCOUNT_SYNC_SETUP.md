@@ -28,3 +28,5 @@ O estado principal da conta prevalece sobre um backup local antigo no login. Só
 ## Convidado
 
 A tela de login também oferece "Entrar como convidado". O convidado se chama Guest, não tem conta nem sincronização e guarda tudo somente neste aparelho (chave local `helena.guest.v1`, que não é sincronizada). Ao entrar com Google depois, a marca some e o conteúdo local segue a regra de primeira conta: sobe para a nuvem se a conta ainda estiver vazia. O convite de edição de caderno continua exigindo login Google.
+
+No Modo Sala o convidado vê o campo "Seu apelido na sala", que começa em Guest. O apelido fica só neste aparelho (chave `helena.guest-nickname.v1`, também fora das chaves sincronizadas), vale apenas ali e some quando a pessoa entra com Google.

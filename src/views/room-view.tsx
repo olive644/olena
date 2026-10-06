@@ -6,6 +6,7 @@ type Props = {
   joinCode?: string | undefined;
   projectorMode: boolean;
   accountName?: string | undefined;
+  guest?: boolean;
   accountLoading: boolean;
   requireAccount: boolean;
   onExit(): void;

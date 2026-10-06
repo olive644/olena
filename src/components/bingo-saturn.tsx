@@ -1,8 +1,55 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { createApprovedSaturn, type ApprovedSaturn } from "./bingo-saturn-engine";
+import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  createApprovedSaturn,
+  EXIT_TIMING,
+  type ApprovedSaturn,
+  type ChuteEnd,
+} from "./bingo-saturn-engine";
 import { createSaturnSound, type SaturnSound } from "./bingo-saturn-sound";
 
+// Tempos da sequência de um sorteio, em milissegundos. A viagem da bolinha dentro do globo
+// (EXIT_TIMING) é medida pelo próprio motor.
+const MIX_MS = 1400;
+const SETTLE_MS = 320;
+const FLIGHT_MS = 560;
+const HOLD_MS = 800;
+const HISTORY_MS = 520;
 const letters = ["B", "I", "N", "G", "O"];
+const easeOutBack = (t: number) => {
+  const c1 = 1.4,
+    c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+};
+// Quadros de um arremesso: desacelera ao pousar, faz um arco curto e cresce com um leve pulo.
+function tossFrames(
+  dx: number,
+  dy: number,
+  fromScale: number,
+  toScale: number,
+  fromRotation: number,
+): Keyframe[] {
+  const arc = Math.min(70, Math.abs(dx) * 0.2 + 30);
+  // Termina sempre na vertical (múltiplo de 360°), senão a caixa da bolinha inclinada passaria
+  // das bordas do palco ao pousar.
+  const toRotation = Math.ceil((fromRotation + 300) / 360) * 360;
+  return Array.from({ length: 37 }, (_, i) => {
+    const t = i / 36,
+      e = 1 - Math.pow(1 - t, 2.2);
+    return {
+      transform:
+        "translate(" +
+        dx * e +
+        "px," +
+        (dy * e - Math.sin(Math.PI * t) * arc * (1 - 0.3 * t)) +
+        "px) scale(" +
+        (fromScale + (toScale - fromScale) * easeOutBack(t)) +
+        ") rotate(" +
+        (fromRotation + (toRotation - fromRotation) * e) +
+        "deg)",
+      offset: t,
+    };
+  });
+}
 const colors = ["#facc15", "#50bdc4", "#a779ef", "#ff8e77", "#fff0c7"];
 const shades = ["#d4a600", "#147b83", "#51259b", "#c95649", "#d7b84b"];
 const lights = ["#ffe88d", "#a4e8eb", "#d7baff", "#ffd3c5", "#fff9ef"];
@@ -24,16 +71,18 @@ function Ball({ number }: { number: string }) {
   );
 }
 
-export function BingoSaturn({
+function BingoSaturnView({
   drawn,
   isHost,
   pending,
   onDraw,
+  onReveal,
 }: {
   drawn: readonly string[];
   isHost: boolean;
   pending: boolean;
   onDraw: () => Promise<void>;
+  onReveal?: (ids: readonly string[]) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<ApprovedSaturn | null>(null);
@@ -42,6 +91,7 @@ export function BingoSaturn({
   const targetRef = useRef<HTMLDivElement>(null);
   const flyRef = useRef<HTMLDivElement>(null);
   const previousRef = useRef(drawn.join(","));
+  const onRevealRef = useRef(onReveal);
   const [visible, setVisible] = useState([...drawn]);
   const [animating, setAnimating] = useState(false);
   const [focus, setFocus] = useState(false);
@@ -50,6 +100,10 @@ export function BingoSaturn({
   const key = drawn.join(",");
   const number = drawn.at(-1) ?? "";
   const latestVisible = visible.at(-1) ?? "";
+
+  useEffect(() => {
+    onRevealRef.current = onReveal;
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -85,12 +139,14 @@ export function BingoSaturn({
       setAnimating(false);
       setFocus(false);
       setCaption("");
+      onRevealRef.current?.(ids);
       return;
     }
     const n = ids.at(-1)!;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const controller = new AbortController();
     const motions = new Set<Animation>();
+    const timers = new Set<number>();
     const sound = soundRef.current;
     const flyingNode = flyRef.current;
     const historyNode = historyRef.current;
@@ -127,73 +183,61 @@ export function BingoSaturn({
     async function run() {
       engine!.setDrawn(previous);
       setVisible(previous);
+      onRevealRef.current?.(previous);
       setAnimating(true);
       setFocus(false);
       setCaption("Misturando as bolinhas…");
       engine!.spin(true);
       sound?.mix();
-      if (!(await wait(2100))) return;
+      if (!(await wait(MIX_MS))) return;
       engine!.spin(false);
       sound?.stop();
-      if (!(await wait(420))) return;
-      engine!.beginExit(Number(n));
+      if (!(await wait(SETTLE_MS))) return;
       setCaption("A bolinha está saindo");
-      if (!(await wait(620))) return;
-      engine!.releaseBall();
+      sound?.pick();
+      timers.add(window.setTimeout(() => sound?.exit(), EXIT_TIMING.lift + EXIT_TIMING.hover));
+      // A bolinha sobe, espera, cai pelo portão e rola pelo funil dentro do próprio globo. O motor
+      // avisa quando ela chega à ponta, sem depender de temporizadores da página.
+      const end = await new Promise<ChuteEnd | null>((resolve) => {
+        const cancelled = () => resolve(null);
+        controller.signal.addEventListener("abort", cancelled, { once: true });
+        engine!.beginExit(Number(n), (arrival) => {
+          controller.signal.removeEventListener("abort", cancelled);
+          resolve(arrival);
+        });
+      });
+      if (!end || controller.signal.aborted) return;
       const canvas = canvasRef.current,
         fly = flyRef.current,
         target = targetRef.current;
       if (!canvas || !fly || !target) return;
-      const outlet = engine!.outlet();
       const rect = canvas.getBoundingClientRect(),
-        end = target.getBoundingClientRect();
-      const sourceX = rect.left + outlet.x,
-        sourceY = rect.top + outlet.y;
-      const x = end.left + end.width / 2 - sourceX,
-        y = end.top + end.height / 2 - sourceY;
-      fly.style.left = outlet.x - 34 + "px";
-      fly.style.top = outlet.y - 34 + "px";
+        goal = target.getBoundingClientRect();
+      const goalX = goal.left + goal.width / 2,
+        goalY = goal.top + goal.height / 2;
+      fly.style.left = end.x - 34 + "px";
+      fly.style.top = end.y - 34 + "px";
+      fly.style.transform = "scale(" + (2 * end.radius) / 68 + ") rotate(" + end.rotation + "deg)";
       fly.style.visibility = reduced ? "hidden" : "visible";
-      const startScale = (2 * outlet.radius * 0.092) / 68,
-        endScale = end.width / 68;
-      const frames: Keyframe[] = [];
-      for (let i = 0; i <= 90; i++) {
-        const t = i / 90;
-        let px = 0,
-          py: number,
-          scale = startScale,
-          rotation: number;
-        if (t < 0.14) {
-          const q = t / 0.14;
-          py = 5 * q * q;
-          rotation = 15 * q;
-        } else if (t < 0.52) {
-          const q = (t - 0.14) / 0.38,
-            travel = q * q * 0.65 + q * 0.35;
-          px = outlet.rampX * travel;
-          py = 5 + (outlet.rampY - 5) * travel;
-          rotation = 15 + travel * 175;
-        } else {
-          const q = (t - 0.52) / 0.48,
-            ease = q * q * (3 - 2 * q);
-          px = outlet.rampX + (x - outlet.rampX) * ease;
-          py = outlet.rampY + (y - outlet.rampY) * ease - Math.sin(q * Math.PI) * 25;
-          scale = startScale + (endScale - startScale) * ease;
-          rotation = 190 + 170 * ease;
-        }
-        frames.push({
-          transform:
-            "translate(" + px + "px," + py + "px) scale(" + scale + ") rotate(" + rotation + "deg)",
-          offset: t,
-        });
+      // No mesmo quadro: a bolinha de papel da página assume e a do globo deixa de ser desenhada.
+      engine!.releaseBall();
+      if (!reduced) {
+        const frames = tossFrames(
+          goalX - (rect.left + end.x),
+          goalY - (rect.top + end.y),
+          (2 * end.radius) / 68,
+          goal.width / 68,
+          end.rotation,
+        );
+        if (!(await animate(fly, frames, FLIGHT_MS))) return;
       }
-      sound?.exit();
-      if (!reduced && !(await animate(fly, frames, 1500))) return;
       engine!.finishExit();
+      engine!.burst(goalX - rect.left, goalY - rect.top);
       setCaption("Saiu " + letters[Math.floor((Number(n) - 1) / 15)] + " " + n + "!");
       setFocus(true);
       sound?.reveal();
-      if (!(await wait(1400))) return;
+      onRevealRef.current?.(ids);
+      if (!(await wait(HOLD_MS))) return;
       setFocus(false);
       setVisible(ids);
       if (!(await wait(40))) return;
@@ -210,32 +254,43 @@ export function BingoSaturn({
           );
         const from = fly.getBoundingClientRect(),
           to = destination.getBoundingClientRect();
-        for (const motion of motions) motion.cancel();
+        // Fixa a posição de pouso no próprio elemento antes de cancelar o arremesso: cancelar
+        // sozinho devolveria a bolinha ao ponto de partida por um quadro.
+        for (const motion of motions) {
+          try {
+            motion.commitStyles();
+          } catch {
+            // Sem commitStyles a posição é refeita logo abaixo.
+          }
+          motion.cancel();
+        }
         motions.clear();
         const currentRect = canvas.getBoundingClientRect();
         fly.style.left = from.left + from.width / 2 - currentRect.left - 34 + "px";
         fly.style.top = from.top + from.height / 2 - currentRect.top - 34 + "px";
+        fly.style.transform = "";
         const dx = to.left + to.width / 2 - from.left - from.width / 2,
           dy = to.top + to.height / 2 - from.top - from.height / 2;
-        const frames = Array.from({ length: 49 }, (_, i) => {
-          const t = i / 48,
-            ease = 1 - Math.pow(1 - t, 3);
+        const frames = Array.from({ length: 37 }, (_, i) => {
+          const t = i / 36,
+            ease = t * t * (3 - 2 * t);
           return {
             transform:
               "translate(" +
               dx * ease +
               "px," +
-              (dy * ease - Math.sin(t * Math.PI) * 12) +
+              (dy * ease - Math.sin(t * Math.PI) * 14) +
               "px) scale(" +
               (from.width / 68 + (to.width / 68 - from.width / 68) * ease) +
               ")",
             offset: t,
           };
         });
-        if (!(await animate(fly, frames, 650))) return;
+        if (!(await animate(fly, frames, HISTORY_MS))) return;
         destination.style.visibility = "";
       }
       fly.style.visibility = "hidden";
+      fly.style.transform = "";
       engine!.setDrawn(ids);
       sound?.land();
       setAnimating(false);
@@ -250,16 +305,21 @@ export function BingoSaturn({
         setAnimating(false);
         setFocus(false);
         setCaption("");
+        onRevealRef.current?.(ids);
         if (flyRef.current) flyRef.current.style.visibility = "hidden";
       }
     });
     return () => {
       controller.abort();
       for (const motion of motions) motion.cancel();
+      for (const timer of timers) clearTimeout(timer);
       sound?.stop();
       engine.spin(false);
       engine.finishExit();
-      if (flyingNode) flyingNode.style.visibility = "hidden";
+      if (flyingNode) {
+        flyingNode.style.visibility = "hidden";
+        flyingNode.style.transform = "";
+      }
       historyNode?.querySelectorAll<HTMLElement>("[data-bingo-number]").forEach((el) => {
         el.style.visibility = "";
       });
@@ -349,3 +409,15 @@ export function BingoSaturn({
     </div>
   );
 }
+
+// O estado da sala chega várias vezes por minuto (presença, respostas). O globo só precisa
+// redesenhar quando o sorteio muda, senão a animação disputa o quadro com renderizações inúteis.
+export const BingoSaturn = memo(
+  BingoSaturnView,
+  (before, after) =>
+    before.isHost === after.isHost &&
+    before.pending === after.pending &&
+    before.onDraw === after.onDraw &&
+    before.onReveal === after.onReveal &&
+    before.drawn.join(",") === after.drawn.join(","),
+);

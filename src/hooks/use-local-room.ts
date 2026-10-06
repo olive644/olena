@@ -149,7 +149,10 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ...(data.expiresAt === undefined ? {} : { expiresAt: data.expiresAt }),
     ...(data.generation === undefined ? {} : { generation: data.generation }),
     ...(data.content ? { content: data.content } : {}),
-    ...(data.bingoWords ? { bingoWords: data.bingoWords, drawnIds: data.drawnIds ?? [] } : {}),
+    // O bingo de números não tem bingoWords, mas os números sorteados precisam chegar pelo
+    // canal em tempo real: sem eles o globo, o histórico e a cartela voltam ao início.
+    ...(data.bingoWords ? { bingoWords: data.bingoWords } : {}),
+    ...(data.bingoWords || data.drawnIds ? { drawnIds: data.drawnIds ?? [] } : {}),
     code: data.code ?? "",
     phase: data.phase ?? "lobby",
     settings: data.settings ?? { difficulty: "mixed", questionCount: 10, roundSeconds: 30 },
