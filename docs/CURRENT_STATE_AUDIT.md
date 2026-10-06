@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Continuidade das bolinhas, planetas e Poliana (2026-10-06)
+
+- Causa do salto: a cópia do histórico ficava visível durante a espera de montagem, e a animação CSS de pouso mudava sua escala enquanto o voo media esse destino. Removidas as duas concorrências. A mesma bola numerada passa pela saída, revelação de 1600 ms e transferência, com o último quadro mantido antes de cancelar cada animação. A cópia fica invisível até o pouso terminar; o alvo de medição não tem arte vazia.
+- Canvas e SVG imprimem número e letra nas próprias facetas, sem placa branca central. No Canvas a impressão gira junto com a bolinha. A cartela reutiliza os cinco planetas do cabeçalho, agora com numerais de papel dentro do SVG. Apenas Saturno tem anel, Terra tem continentes, Marte tem crateras, Júpiter tem faixas e Netuno tem faixas azuis.
+- Cartela em papel índigo e lavanda tem um buraco negro facetado ao fundo; a bandeja do histórico também ganha papel lavanda com dobra, nos dois temas. O ícone de Modalidades coletivas mantém a geometria aprovada e muda para turquesa.
+- Cinco artes separadas da Poliana, com cenários e poses distintos, usam seu avatar como identidade e as artes aprovadas da Helena como referência de estilo. São WebP 512 × 512, cerca de 234 KiB juntos, sem biblioteca nova. Arquivos, prompts completos e modo da ferramenta estão em `docs/BINGO_POLIANA_ART.md`. Os botões reservam espaço para imagem e texto, revelam a arte ao inspecionar e mantêm a arte selecionada visível.
+- Testes incluem ausência de cópia visível durante o voo, medição de continuidade por RAF no navegador e uma partida inteira nos quatro cantos. A vitória usa sorteios aleatórios, marcas pela interface e o handler real com store em memória: uma tentativa prematura é recusada, a completa encerra em results e recebe 104 pontos. Não é prova de produção Firebase nem sincronização entre aparelhos. Regras, áudio, sorteio e primeira bolinha automática permanecem como antes.
+- Validação: `npm run verify` passou com 1033 testes em 166 arquivos, API ESM, tipos, build, formato e orçamento. Lint sem erros, com dez avisos preexistentes; o lint dos arquivos alterados e a formatação foram conferidos novamente após o ajuste final de encaixe das artes. Playwright passou os 32 casos dos sete arquivos de sala/bingo em Edge desktop e móvel, incluindo continuidade, ausência de duplicação, vitória confirmada, canal em tempo real, entrada e reconexão. Capturas inspecionadas nos dois temas e larguras. JavaScript inicial 274,6 KiB e total 1112,8 KiB, sem elevar o orçamento ou adicionar dependência.
+
 ## Composição solar da partida (2026-10-06)
 
 - Em desktop, globo e histórico ocupam a coluna esquerda; cartela fica à direita. Em telas até 780 px, a sequência é globo, histórico, cartela e ação Bingo no rodapé. O destino do voo continua sendo a própria bolinha do histórico, sem duplicar painéis ou usar posições fixas.

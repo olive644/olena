@@ -53,6 +53,11 @@ describe("solar bingo interface", () => {
     ).toHaveLength(5);
     fireEvent.click(screen.getByRole("button", { name: /Quatro cantos/ }));
     expect(onMode).toHaveBeenCalledWith("corners");
+    for (const mode of ["line", "column", "diagonal", "corners", "full"]) {
+      expect(
+        document.querySelector(`.bingo-mode-art img[src="/room-art/poliana-bingo-${mode}.webp"]`),
+      ).toBeTruthy();
+    }
     expect(screen.queryByRole("button", { name: /Aplicar/ })).toBeNull();
   });
   it("shows a solar 5x5 card, locks undrawn numbers and submits marks and claims", async () => {
@@ -85,7 +90,13 @@ describe("solar bingo interface", () => {
     expect(screen.queryByText("O Sol já conta como marcado.")).toBeNull();
     expect(document.querySelector(".bingo-machine-column .bingo-history")).toBeTruthy();
     expect(document.querySelector(".bingo-card-column .bingo-solar-card")).toBeTruthy();
-    expect(document.querySelectorAll(".bingo-cell-orbit")).toHaveLength(24);
+    expect(document.querySelectorAll(".bingo-cell-planet")).toHaveLength(24);
+    for (const planet of ["earth", "mars", "jupiter", "saturn", "neptune"]) {
+      expect(document.querySelectorAll(`.bingo-cell-planet[data-planet="${planet}"]`)).toHaveLength(
+        planet === "jupiter" ? 4 : 5,
+      );
+    }
+    expect(document.querySelector(".bingo-card-blackhole")).toBeTruthy();
     expect(document.querySelector(".bingo-claim img")?.getAttribute("src")).toBe(
       "/room-icons/bingo-claim.svg",
     );

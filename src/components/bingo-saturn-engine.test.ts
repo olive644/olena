@@ -74,7 +74,9 @@ describe("approved Saturn renderer", () => {
     context.fillText.mockClear();
     engine.setDrawn(["1", "2"]);
     expect(canvas.dataset["remaining"]).toBe("73");
-    const labels = context.fillText.mock.calls.map((call) => call[0]);
+    const labels = context.fillText.mock.calls
+      .map((call) => call[0])
+      .filter((label) => /^\d+$/.test(String(label)));
     expect(labels).toHaveLength(73);
     expect(labels).not.toContain("1");
     expect(labels).not.toContain("2");
@@ -120,7 +122,9 @@ describe("approved Saturn renderer", () => {
     engine.setDrawn(["1"]);
     context.fillText.mockClear();
     engine.beginExit(9);
-    const labels = context.fillText.mock.calls.map((call) => call[0]);
+    const labels = context.fillText.mock.calls
+      .map((call) => call[0])
+      .filter((label) => /^\d+$/.test(String(label)));
     expect(labels.filter((label) => label === "9")).toHaveLength(1);
     expect(labels).toHaveLength(74);
     engine.finishExit();

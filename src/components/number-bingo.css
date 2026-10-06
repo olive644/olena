@@ -27,10 +27,10 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background: #292432;
-  border: 2px solid #51465d;
+  background: #544586;
+  border: 2px solid #9c89c4;
   box-shadow:
-    0 6px 0 #51465d,
+    0 6px 0 #312663,
     7px 10px 0 #a779ef33;
   padding: 20px;
   border-radius: 3px 26px 3px 26px;
@@ -43,7 +43,7 @@
   height: 100px;
   top: 0;
   right: 0;
-  background: #51465d;
+  background: #7661ae;
   clip-path: polygon(100% 0, 100% 100%, 0 0);
   z-index: -1;
 }
@@ -53,6 +53,14 @@
   width: 100%;
   height: 100%;
   opacity: 0.25;
+  pointer-events: none;
+  z-index: -1;
+}
+.bingo-card-blackhole {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: -1;
 }
@@ -80,8 +88,8 @@
 }
 .number-bingo .bingo-card-grid {
   padding: 8px;
-  background: #51465d66;
-  border: 1px solid #a779ef55;
+  background: #241c4d44;
+  border: 1px solid #d7baff66;
   border-radius: 3px 12px 3px 12px;
 }
 :root
@@ -236,12 +244,18 @@
   --planet-depth: #345580;
   --planet-fold: #b5d1f1;
 }
-.bingo-cell-orbit {
-  position: absolute;
-  inset: 0;
+.bingo-cell-planet {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: 66px;
   pointer-events: none;
+}
+.bingo-planet-digits {
+  --digit-face: #fff9ef;
+  --digit-depth: #241c4d;
+  --digit-fold: #fff0c7;
+  --digit-edge: #403579;
+  filter: drop-shadow(0 1px 0 #241c4d);
 }
 :root
   body
@@ -249,25 +263,23 @@
   .number-bingo
   .bingo-card-grid
   .secondary-button {
-  background: #383040;
-  border: 1px solid #51465d;
-  box-shadow: 0 3px 0 #17131d;
+  background: #d7baff22;
+  border: 1px solid #d7baff55;
+  box-shadow: 0 3px 0 #312663;
   min-height: 64px;
   padding: 6px;
 }
 .number-bingo .bingo-card-grid .secondary-button::after {
   display: none;
 }
-.number-bingo .bingo-card-grid .paper-digits {
-  background: #fff9ef;
-  padding: 5px 3px;
-  clip-path: polygon(12% 0, 84% 0, 100% 25%, 94% 82%, 75% 100%, 12% 94%, 0 65%, 2% 20%);
+.number-bingo .bingo-card-grid .secondary-button[aria-pressed="true"] .bingo-planet-digits {
+  --digit-face: #ffe88d;
+  --digit-fold: #fff0c7;
+  --digit-edge: #241c4d;
+  filter: drop-shadow(0 1px 0 #ffe88d);
 }
-.number-bingo .bingo-card-grid .secondary-button[aria-pressed="true"] .bingo-cell-orbit {
-  transform: rotate(-8deg);
-}
-.number-bingo .bingo-card-grid .secondary-button[aria-pressed="true"] .paper-digits {
-  background: #ffe88d;
+.number-bingo .bingo-card-grid .secondary-button[aria-pressed="true"] .bingo-cell-planet {
+  transform: rotate(-5deg);
 }
 .number-bingo .bingo-card-grid .bingo-cell-star {
   top: 4px;
@@ -283,6 +295,9 @@
   .number-bingo .bingo-solar-card {
     padding: 12px;
   }
+  .bingo-cell-planet {
+    height: 52px;
+  }
   :root
     body
     :is(.local-room-fullscreen, .local-room-preparation)
@@ -294,6 +309,11 @@
   }
 }
 :root body :is(.local-room-fullscreen, .local-room-preparation) .bingo-mode.secondary-button {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  justify-content: start;
+  min-height: 124px;
+  padding: 14px 144px 14px 14px;
   color: var(--text);
   background-color: var(--surface);
   border-color: var(--line-strong);
@@ -357,7 +377,7 @@
 }
 .bingo-modes .bingo-mode {
   position: relative;
-  min-height: 106px;
+  min-height: 136px;
   padding: 16px;
   display: flex;
   gap: 14px;
@@ -371,10 +391,14 @@
   height: 44px;
   flex: 0 0 44px;
 }
-.bingo-mode > span:not(.bingo-mode-art) {
+:root body .bingo-modes .bingo-mode > .bingo-mode-copy {
   display: grid;
   gap: 7px;
   z-index: 1;
+  min-width: 0;
+  max-width: none;
+  text-align: left;
+  overflow-wrap: normal;
 }
 .bingo-mode small {
   font-size: 12px;
@@ -391,26 +415,32 @@
 }
 .bingo-mode-art {
   position: absolute;
-  right: -10px;
-  bottom: -16px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 124px;
   z-index: -1;
-  transform: rotate(-12deg);
-  opacity: 0;
+  transform: translateX(12px);
+  opacity: 0.12;
+  clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
   transition:
     opacity 0.25s,
     transform 0.25s;
 }
-.bingo-mode-art .bingo-mode-icon {
-  width: 112px;
-  height: 112px;
+.bingo-mode-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff0c7;
 }
 .bingo-mode:is(:hover, :focus-visible) .bingo-mode-art {
-  opacity: 0.13;
-  transform: rotate(-6deg);
+  opacity: 0.6;
+  transform: translateX(0);
 }
 .bingo-mode[aria-pressed="true"] .bingo-mode-art {
-  opacity: 0.22;
-  transform: rotate(0);
+  opacity: 1;
+  transform: translateX(0);
 }
 .bingo-rule {
   display: flex;
@@ -466,9 +496,29 @@
   max-height: 250px;
   overflow-y: auto;
   padding: 8px;
-  background: var(--soft);
-  border: 1px solid var(--line-strong);
+  background: #e6dcf4;
+  border: 2px solid #b8a5d5;
+  box-shadow: 0 5px 0 #7661ae;
   border-radius: 4px 16px 4px 16px;
+}
+.bingo-history > [role="list"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #c9b4e8;
+  clip-path: polygon(0 0, 100% 0, 93% 10%, 6% 10%, 0 75%);
+  pointer-events: none;
+}
+[data-theme="dark"] .bingo-history > [role="list"] {
+  background: #403579;
+  border-color: #9c89c4;
+  box-shadow: 0 5px 0 #312663;
+}
+[data-theme="dark"] .bingo-history > [role="list"]::before {
+  background: #7661ae;
+}
+.bingo-history .bingo-arriving {
+  visibility: hidden;
 }
 .bingo-history [role="listitem"] {
   background: var(--surface);
@@ -538,7 +588,7 @@
 .bingo-ball strong {
   font-size: 22px;
 }
-.bingo-saturn .bingo-result {
+.bingo-saturn .bingo-reveal-anchor {
   position: absolute;
   right: 32px;
   bottom: 42px;
@@ -547,15 +597,9 @@
   visibility: hidden;
   pointer-events: none;
 }
-.bingo-saturn .bingo-result-focus {
-  visibility: visible;
-  background: transparent;
-  overflow: visible;
-  clip-path: none;
-  filter: drop-shadow(6px 5px 0 #51259b33);
-}
-.bingo-result-focus::before {
-  inset: -20%;
+.number-bingo .bingo-saturn .bingo-flying-focus::before {
+  display: block;
+  inset: -16%;
   background: #ffe88d;
   clip-path: polygon(
     45% 0,
@@ -575,13 +619,13 @@
     9% 10%,
     36% 19%
   );
-}
-.bingo-result-focus::after {
-  background: #fff9ef;
-  inset: -2%;
+  z-index: -1;
+  animation: bingo-burst-open 0.7s ease-out both;
 }
 .bingo-saturn .bingo-flying {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 68px;
   height: 68px;
   visibility: hidden;
@@ -602,7 +646,7 @@
   .bingo-saturn > canvas {
     aspect-ratio: 1.35;
   }
-  .bingo-saturn .bingo-result {
+  .bingo-saturn .bingo-reveal-anchor {
     right: 32px;
     bottom: 54px;
   }
@@ -696,16 +740,6 @@
 .bingo-claim button {
   margin-block: 16px;
 }
-/* A bolinha que acabou de sair aparece com um pulo e abre a estrela de papel atrás dela. */
-.bingo-saturn .bingo-result-focus {
-  animation: bingo-reveal-pop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
-}
-.bingo-saturn .bingo-result-focus::before {
-  animation: bingo-burst-open 0.7s cubic-bezier(0.2, 1.1, 0.3, 1) both;
-}
-.bingo-history .bingo-ball.latest {
-  animation: bingo-land 0.42s cubic-bezier(0.2, 1.5, 0.4, 1) both;
-}
 /* A casa marcada recebe um carimbo imediato; o servidor confirma depois. */
 .bingo-card-grid .secondary-button {
   transition:
@@ -788,7 +822,7 @@
     gap: 10px;
   }
   .bingo-modes .bingo-mode {
-    min-height: 84px;
+    min-height: 124px;
     padding: 12px;
   }
   .bingo-saturn-panel,
@@ -812,7 +846,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .bingo-saturn .bingo-result-focus,
-  .bingo-saturn .bingo-result-focus::before,
+  .number-bingo .bingo-flying-focus::before,
   .bingo-history .bingo-ball.latest,
   .bingo-card-grid .bingo-stamp,
   .bingo-card-grid .bingo-callable {

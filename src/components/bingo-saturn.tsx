@@ -13,7 +13,7 @@ import { PaperBallSkin } from "./bingo-paper-ball";
 const MIX_MS = 1400;
 const SETTLE_MS = 320;
 const FLIGHT_MS = 900;
-const HOLD_MS = 1100;
+const HOLD_MS = 1600;
 const HISTORY_MS = 700;
 const letters = ["B", "I", "N", "G", "O"];
 const easeOutBack = (t: number) => {
@@ -68,13 +68,7 @@ function ballStyle(number: string): CSSProperties {
   } as CSSProperties;
 }
 function Ball({ number }: { number: string }) {
-  return (
-    <>
-      <PaperBallSkin />
-      <small>{letters[Math.floor((Number(number) - 1) / 15)]}</small>
-      <strong>{number}</strong>
-    </>
-  );
+  return <PaperBallSkin number={number} />;
 }
 
 function BingoSaturnView({
@@ -104,6 +98,7 @@ function BingoSaturnView({
   const [animating, setAnimating] = useState(false);
   const [focus, setFocus] = useState(false);
   const [caption, setCaption] = useState("");
+  const [travelling, setTravelling] = useState<string | null>(null);
   const key = drawn.join(",");
   const number = drawn.at(-1) ?? "";
   const latestVisible = visible.at(-1) ?? "";
@@ -154,6 +149,7 @@ function BingoSaturnView({
       setAnimating(false);
       setFocus(false);
       setCaption("");
+      setTravelling(null);
       onRevealRef.current?.(ids);
       return;
     }
@@ -190,6 +186,11 @@ function BingoSaturnView({
       motions.add(motion);
       try {
         await motion.finished;
+        // Copiar o último quadro antes de cancelar mantém uma só posição, sem medir
+        // uma caixa transformada nem depender de commitStyles entre dois voos.
+        element.style.transform = String(frames.at(-1)?.["transform"] ?? "");
+        motion.cancel();
+        motions.delete(motion);
         return !controller.signal.aborted;
       } catch {
         return false;
@@ -200,6 +201,7 @@ function BingoSaturnView({
       setVisible(previous);
       onRevealRef.current?.(previous);
       setAnimating(true);
+      setTravelling(n);
       setFocus(false);
       setCaption("Misturando as bolinhas…");
       engine!.spin(true);
@@ -230,9 +232,9 @@ function BingoSaturnView({
         goal = target.getBoundingClientRect();
       const goalX = goal.left + goal.width / 2,
         goalY = goal.top + goal.height / 2;
-      fly.style.left = end.x - 34 + "px";
-      fly.style.top = end.y - 34 + "px";
-      fly.style.transform = "scale(" + (2 * end.radius) / 68 + ") rotate(" + end.rotation + "deg)";
+      const origin = "translate(" + (end.x - 34) + "px," + (end.y - 34) + "px) ";
+      fly.style.transform =
+        origin + "scale(" + (2 * end.radius) / 68 + ") rotate(" + end.rotation + "deg)";
       fly.style.visibility = reduced ? "hidden" : "visible";
       // No mesmo quadro: a bolinha de papel da página assume e a do globo deixa de ser desenhada.
       engine!.releaseBall();
@@ -243,7 +245,7 @@ function BingoSaturnView({
           (2 * end.radius) / 68,
           goal.width / 68,
           end.rotation,
-        );
+        ).map((frame) => ({ ...frame, transform: origin + frame["transform"] }));
         if (!(await animate(fly, frames, FLIGHT_MS))) return;
       }
       engine!.finishExit();
@@ -260,7 +262,6 @@ function BingoSaturnView({
         '[data-bingo-number="' + n + '"]',
       );
       if (destination && !reduced) {
-        destination.style.visibility = "hidden";
         const history = historyRef.current;
         if (history)
           history.scrollTop = Math.max(
@@ -269,21 +270,9 @@ function BingoSaturnView({
           );
         const from = fly.getBoundingClientRect(),
           to = destination.getBoundingClientRect();
-        // Fixa a posição de pouso no próprio elemento antes de cancelar o arremesso: cancelar
-        // sozinho devolveria a bolinha ao ponto de partida por um quadro.
-        for (const motion of motions) {
-          try {
-            motion.commitStyles();
-          } catch {
-            // Sem commitStyles a posição é refeita logo abaixo.
-          }
-          motion.cancel();
-        }
-        motions.clear();
         const currentRect = canvas.getBoundingClientRect();
-        fly.style.left = from.left + from.width / 2 - currentRect.left - 34 + "px";
-        fly.style.top = from.top + from.height / 2 - currentRect.top - 34 + "px";
-        fly.style.transform = "";
+        const startX = from.left + from.width / 2 - currentRect.left - 34,
+          startY = from.top + from.height / 2 - currentRect.top - 34;
         const dx = to.left + to.width / 2 - from.left - from.width / 2,
           dy = to.top + to.height / 2 - from.top - from.height / 2;
         const frames = Array.from({ length: 61 }, (_, i) => {
@@ -292,9 +281,9 @@ function BingoSaturnView({
           return {
             transform:
               "translate(" +
-              dx * ease +
+              (startX + dx * ease) +
               "px," +
-              (dy * ease - Math.sin(t * Math.PI) * 14) +
+              (startY + dy * ease - Math.sin(t * Math.PI) * 14) +
               "px) scale(" +
               (from.width / 68 + (to.width / 68 - from.width / 68) * ease) +
               ")",
@@ -302,10 +291,10 @@ function BingoSaturnView({
           };
         });
         if (!(await animate(fly, frames, HISTORY_MS))) return;
-        destination.style.visibility = "";
       }
       fly.style.visibility = "hidden";
       fly.style.transform = "";
+      setTravelling(null);
       engine!.setDrawn(ids);
       sound?.land();
       setAnimating(false);
@@ -320,6 +309,7 @@ function BingoSaturnView({
         setAnimating(false);
         setFocus(false);
         setCaption("");
+        setTravelling(null);
         onRevealRef.current?.(ids);
         if (flyRef.current) flyRef.current.style.visibility = "hidden";
       }
@@ -349,16 +339,7 @@ function BingoSaturnView({
       <div className="bingo-machine-column">
         <div className="bingo-saturn">
           <canvas ref={canvasRef} aria-label="Globo Saturno com as bolinhas restantes" />
-          <div
-            ref={targetRef}
-            className={"bingo-result bingo-ball" + (focus ? " bingo-result-focus" : "")}
-            style={ballStyle(number)}
-            aria-hidden="true"
-          >
-            {focus && matchMedia("(prefers-reduced-motion: reduce)").matches && (
-              <Ball number={number} />
-            )}
-          </div>
+          <div ref={targetRef} className="bingo-reveal-anchor" aria-hidden="true" />
           <div
             ref={flyRef}
             className={"bingo-flying bingo-ball" + (focus ? " bingo-flying-focus" : "")}
@@ -381,7 +362,11 @@ function BingoSaturnView({
                 role="listitem"
                 key={id}
                 data-bingo-number={id}
-                className={"bingo-ball" + (id === latestVisible ? " latest" : "")}
+                className={
+                  "bingo-ball" +
+                  (id === travelling ? " bingo-arriving" : "") +
+                  (id === latestVisible ? " latest" : "")
+                }
                 style={ballStyle(id)}
                 aria-label={letters[Math.floor((Number(id) - 1) / 15)] + " " + id}
               >

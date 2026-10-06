@@ -64,12 +64,3 @@ export const PAPER_BALL_FACES = [
     tone: "light",
   },
 ] as const;
-export const PAPER_BALL_LABEL = [
-  [32, 31],
-  [53, 27],
-  [73, 41],
-  [71, 63],
-  [49, 74],
-  [30, 63],
-  [25, 46],
-] as const;
