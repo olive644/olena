@@ -15,6 +15,7 @@ import {
   RoomConfetti,
   RoomEclipseBanner,
   RoomSecondsUnit,
+  RoomSolarTrophyFrame,
 } from "./room-paper-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { playRoomVictorySound } from "../data/room-feedback-sound";
@@ -100,7 +101,15 @@ export function Scoreboard({
   );
 }
 
-function PodiumPlace({ participant, place }: { participant: LocalRoomParticipant; place: number }) {
+function PodiumPlace({
+  participant,
+  place,
+  solar = false,
+}: {
+  participant: LocalRoomParticipant;
+  place: number;
+  solar?: boolean;
+}) {
   const [score, setScore] = useState(0);
   const [complete, setComplete] = useState(false);
   const target = participant.score;
@@ -125,13 +134,19 @@ function PodiumPlace({ participant, place }: { participant: LocalRoomParticipant
     <li className={`local-room-podium__place local-room-podium__place--${place}`}>
       <div className="room-podium-medallion">
         <RoomAvatar participant={participant} />
-        <RoomTrophyFrame place={place} />
+        {solar ? <RoomSolarTrophyFrame place={place} /> : <RoomTrophyFrame place={place} />}
       </div>
       <div className="room-podium-standard" data-complete={complete}>
-        <RoomEclipseBanner place={place} />
+        <RoomEclipseBanner place={place} solar={solar} />
         <div className="room-podium-inscription">
           <small className="room-eclipse-name">
-            {place === 1 ? "Eclipse Solar" : place === 2 ? "Eclipse Lunar" : "Lua Sangrenta"}
+            {solar
+              ? ["Saturno", "Júpiter", "Terra"][place - 1]
+              : place === 1
+                ? "Eclipse Solar"
+                : place === 2
+                  ? "Eclipse Lunar"
+                  : "Lua Sangrenta"}
           </small>
           <span className="room-podium-rank">
             <PaperDigits value={String(participant.reward?.place ?? place)} />
@@ -145,6 +160,7 @@ function PodiumPlace({ participant, place }: { participant: LocalRoomParticipant
             </span>
             <RoomPointsIcon />
           </strong>
+          {solar && <small>+{participant.reward?.xp ?? 0} XP</small>}
         </div>
         {place === 1 && complete && <RoomConfetti />}
       </div>
@@ -152,20 +168,48 @@ function PodiumPlace({ participant, place }: { participant: LocalRoomParticipant
   );
 }
 
-export function Podium({ participants }: { participants: readonly LocalRoomParticipant[] }) {
-  const ranked = rankLocalRoomParticipants(participants);
+export function Podium({
+  participants,
+  solar = false,
+}: {
+  participants: readonly LocalRoomParticipant[];
+  solar?: boolean;
+}) {
+  const ranked = solar ? [...participants] : rankLocalRoomParticipants(participants);
   const top3 = ranked.slice(0, 3);
   const rest = ranked.slice(3);
   return (
-    <div className="room-results-layout">
+    <div className={`room-results-layout${solar ? " bingo-solar-podium" : ""}`}>
       <ol className="local-room-podium">
         {top3.map((participant, index) => (
-          <PodiumPlace key={participant.id} participant={participant} place={index + 1} />
+          <PodiumPlace
+            key={participant.id}
+            participant={participant}
+            place={index + 1}
+            solar={solar}
+          />
         ))}
       </ol>
       <section className="room-results-ranking" aria-label="Classificação final">
         <h3>Classificação</h3>
-        <Scoreboard participants={ranked} />
+        {solar ? (
+          <ol className="bingo-winners-order">
+            {ranked.map((p, i) => (
+              <li key={p.id}>
+                <span className="bingo-ranking-place">{i + 1}º</span>
+                <RoomAvatar participant={p} />
+                <span className="bingo-ranking-copy">
+                  <strong>{p.displayName}</strong>
+                  <small>
+                    {p.score} pontos · +{p.reward?.xp ?? 0} XP
+                  </small>
+                </span>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <Scoreboard participants={ranked} />
+        )}
         {rest.length > 0 && (
           <span className="visually-hidden">Inclui participantes abaixo do top 3</span>
         )}

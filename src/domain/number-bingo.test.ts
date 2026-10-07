@@ -88,12 +88,12 @@ describe("number bingo", () => {
     expect(state.phase).toBe("playing");
     const duplicate = answer(row[0]!);
     expect(duplicate.pointsChange).toBe(0);
-    expect(duplicate.state.participants[0]!.score).toBe(5);
+    expect(duplicate.state.participants[0]!.score).toBe(10);
     const winner = answer("bingo");
     expect(winner.correct).toBe(true);
     expect(winner.state.phase).toBe("playing");
     expect(winner.state.bingoClaim?.participantId).toBe("p");
-    expect(winner.state.participants[0]!.score).toBe(5);
+    expect(winner.state.participants[0]!.score).toBe(10);
     expect(advanceRoomQuestion(winner.state, 100_001)).toBe(winner.state);
     const accepted = reviewNumberBingo(
       winner.state,
@@ -103,7 +103,7 @@ describe("number bingo", () => {
     );
     expect(accepted.phase).toBe("playing");
     expect(accepted.bingoWinnerIds).toEqual(["p"]);
-    expect(accepted.participants[0]!.score).toBe(105);
+    expect(accepted.participants[0]!.score).toBe(50);
     expect(accepted.bingoClaim).toBeUndefined();
     expect(
       submitRoomAnswer(accepted, {
@@ -120,7 +120,7 @@ describe("number bingo", () => {
       100_004,
     );
     expect(rejected.bingoWinnerIds).toEqual([]);
-    expect(rejected.participants[0]!.score).toBe(5);
+    expect(rejected.participants[0]!.score).toBe(10);
     const restarted = reviewNumberBingo(
       winner.state,
       winner.state.bingoClaim!.id,

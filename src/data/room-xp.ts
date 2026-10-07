@@ -25,7 +25,7 @@ export function recordRoomXp(
     !reward.id ||
     !Number.isSafeInteger(reward.xp) ||
     reward.xp < 0 ||
-    reward.xp > 100 ||
+    reward.xp > 10000 ||
     !Number.isSafeInteger(reward.place) ||
     reward.place < 1
   )

@@ -86,6 +86,8 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     !["lobby", "playing", "results", "finished"].includes(data.phase ?? "") ||
     (data.roundId !== undefined && typeof data.roundId !== "string") ||
     !data.settings ||
+    (data.settings.bingoPhysical !== undefined &&
+      typeof data.settings.bingoPhysical !== "boolean") ||
     ![5, 10, 15, 30, 45, 60].includes(data.settings.roundSeconds) ||
     !["mixed", "easy", "medium", "hard"].includes(data.settings.difficulty) ||
     ![5, 10, 15, 20, "all"].includes(data.settings.questionCount) ||
@@ -137,7 +139,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
                 p.reward.place < 1 ||
                 !Number.isSafeInteger(p.reward.xp) ||
                 p.reward.xp < 0 ||
-                p.reward.xp > 100 ||
+                p.reward.xp > 10000 ||
                 !Number.isFinite(p.reward.completedAt))) ||
             !strings(p.bingoCard) ||
             !strings(p.bingoMarks),
@@ -205,14 +207,24 @@ function roomErrorMessage(caught: unknown, fallback: string): string {
   return caught instanceof RoomRequestError ? caught.message : fallback;
 }
 
+// O pedido passou do prazo do próprio app. Diferente de um cancelamento de propósito (sair da
+// sala), vale tentar de novo.
+class RoomTimeoutError extends Error {}
+
+const DEFAULT_REQUEST_TIMEOUT_MS = 15000;
+// Rodadas de 5 a 15 s: esperar 15 s por uma resposta que já expirou no servidor não ajuda.
+const ANSWER_REQUEST_TIMEOUT_MS = 6000;
+const EVENT_SOURCE_CLOSED = 2;
+
 async function sendRoom<T>(
   action: string,
   body: Record<string, unknown>,
   signal: AbortSignal,
   onServerTime: (offsetMs: number) => void,
+  timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS,
 ): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   const combinedSignal = AbortSignal.any([controller.signal, signal]);
   let cancelTokenWait: (() => void) | undefined;
   try {
@@ -261,6 +273,9 @@ async function sendRoom<T>(
     if (payload && typeof payload === "object" && "state" in payload)
       normalizeRoomState(payload.state as Partial<PublicLocalRoomState>);
     return payload;
+  } catch (caught) {
+    if (controller.signal.aborted && !signal.aborted) throw new RoomTimeoutError();
+    throw caught;
   } finally {
     if (cancelTokenWait) combinedSignal.removeEventListener("abort", cancelTokenWait);
     clearTimeout(timeout);
@@ -270,13 +285,23 @@ async function sendRoom<T>(
 export function useLocalRoom(initialJoinCode?: string) {
   const requestsRef = useRef(new Set<AbortController>());
   const clockOffsetRef = useRef(0);
-  async function requestRoom<T>(action: string, body: Record<string, unknown>): Promise<T> {
+  async function requestRoom<T>(
+    action: string,
+    body: Record<string, unknown>,
+    options: { timeoutMs?: number } = {},
+  ): Promise<T> {
     const controller = new AbortController();
     requestsRef.current.add(controller);
     try {
-      return await sendRoom<T>(action, body, controller.signal, (offset) => {
-        clockOffsetRef.current = offset;
-      });
+      return await sendRoom<T>(
+        action,
+        body,
+        controller.signal,
+        (offset) => {
+          clockOffsetRef.current = offset;
+        },
+        options.timeoutMs,
+      );
     } finally {
       requestsRef.current.delete(controller);
     }
@@ -331,8 +356,12 @@ export function useLocalRoom(initialJoinCode?: string) {
   const codeRef = useRef(storedSession?.code ?? "");
   const eventSourceRef = useRef<EventSource | undefined>(undefined);
   const streamHealthyRef = useRef(false);
+  const reopenTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const reopenAttemptsRef = useRef(0);
 
   function stopStreaming() {
+    clearTimeout(reopenTimerRef.current);
+    reopenTimerRef.current = undefined;
     streamHealthyRef.current = false;
     eventSourceRef.current?.close();
     eventSourceRef.current = undefined;
@@ -344,12 +373,18 @@ export function useLocalRoom(initialJoinCode?: string) {
   // polling: cada mudança que o servidor grava em /rooms/<code> chega aqui
   // instantaneamente.
   function startStreaming(streamUrl: string) {
+    reopenAttemptsRef.current = 0;
+    openStream(streamUrl);
+  }
+
+  function openStream(streamUrl: string) {
     stopStreaming();
     setConnectionStatus(navigator.onLine ? "connecting" : "offline");
     const source = new EventSource(streamUrl);
     eventSourceRef.current = source;
     source.onopen = () => {
       if (eventSourceRef.current !== source) return;
+      reopenAttemptsRef.current = 0;
       streamHealthyRef.current = true;
       setConnectionStatus("online");
     };
@@ -357,6 +392,15 @@ export function useLocalRoom(initialJoinCode?: string) {
       if (eventSourceRef.current !== source) return;
       streamHealthyRef.current = false;
       setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
+      // Em queda de rede o navegador reconecta sozinho. Mas se o servidor recusar a conexão ele
+      // desiste (CLOSED) e o app ficaria só no batimento a cada segundo, que pesa muito mais
+      // para o servidor com uma turma inteira. Abre de novo, com espera crescente.
+      if (source.readyState === EVENT_SOURCE_CLOSED) {
+        const delay = Math.min(1000 * 2 ** reopenAttemptsRef.current, 15000);
+        reopenAttemptsRef.current += 1;
+        source.close();
+        reopenTimerRef.current = setTimeout(() => openStream(streamUrl), delay);
+      }
     };
     source.addEventListener("cancel", () => {
       if (eventSourceRef.current !== source) return;
@@ -690,7 +734,10 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
-  async function reviewBingo(claimId: string, decision: "reject" | "continue" | "restart") {
+  async function reviewBingo(
+    claimId: string,
+    decision: "reject" | "continue" | "restart" | "finish",
+  ) {
     try {
       const payload = await requestRoom<{ state: PublicLocalRoomState }>("bingo-review", {
         code: codeRef.current,
@@ -718,6 +765,20 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
+  async function finalizeBingo() {
+    try {
+      const payload = await requestRoom<{ state: PublicLocalRoomState }>("bingo-finalize", {
+        code: codeRef.current,
+        hostToken: hostTokenRef.current,
+      });
+      setState(payload.state);
+      setError("");
+    } catch (caught) {
+      setError(roomErrorMessage(caught, "Não foi possível definir os ganhadores."));
+      throw caught;
+    }
+  }
+
   async function returnToLobby() {
     try {
       const payload = await requestRoom<{ state: PublicLocalRoomState }>("lobby", {
@@ -735,17 +796,26 @@ export function useLocalRoom(initialJoinCode?: string) {
     answer: string,
   ): Promise<LocalRoomAnswerFeedback | undefined> {
     try {
-      const payload = await requestRoom<{
+      type AnswerPayload = {
         correct: boolean;
         pointsChange: number;
         question?: { front: string; back: string };
         state: PublicLocalRoomState;
-      }>("answer", {
+      };
+      const body = {
         code: codeRef.current,
         participantId,
         participantToken: participantTokenRef.current,
         questionIndex,
         answer,
+      };
+      const send = () =>
+        requestRoom<AnswerPayload>("answer", body, { timeoutMs: ANSWER_REQUEST_TIMEOUT_MS });
+      // O servidor guarda um recibo por pergunta e participante: repetir o mesmo pedido devolve
+      // a resposta já registrada, sem contar duas vezes.
+      const payload = await send().catch((caught: unknown) => {
+        if (caught instanceof RoomTimeoutError || caught instanceof TypeError) return send();
+        throw caught;
       });
       setState(payload.state);
       return {
@@ -842,6 +912,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     startRound,
     nextQuestion,
     reviewBingo,
+    finalizeBingo,
     endRoom,
     repeatRound,
     returnToLobby,
