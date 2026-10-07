@@ -40,9 +40,9 @@ type Joined = {
   state: PublicLocalRoomState;
 };
 
-async function startedRoomWithAna() {
+async function startedRoomWithAna(settings: object = {}) {
   const h = harness();
-  const room = await (await h.post("create", { settings: {} })).json();
+  const room = await (await h.post("create", { settings })).json();
   const ana = (await (
     await h.post("join", { code: room.code, displayName: "Ana" }, "conta-ana")
   ).json()) as Joined;
@@ -76,6 +76,56 @@ async function stayPresentUntil(
 }
 
 describe("reentrada da mesma conta na sala", () => {
+  it.each([false, true])(
+    "recupera cartela, marcas, pontos e conferência no bingo presencial=%s",
+    async (physical) => {
+      const { h, room, ana, bia } = await startedRoomWithAna({
+        activity: "bingo",
+        bingoMode: "corners",
+        bingoPhysical: physical,
+      });
+      h.time(10_000);
+      for (let i = 0; i < 75; i++)
+        await h.post("next", { code: room.code, hostToken: room.hostToken });
+      const snapshot = await (
+        await h.post("heartbeat", { code: room.code, role: "host", credential: room.hostToken })
+      ).json();
+      const card: string[] = snapshot.state.participants.find(
+        (p: { id: string }) => p.id === ana.participantId,
+      ).bingoCard;
+      if (!physical) {
+        for (const id of card.filter((n) => n !== "bingo-free"))
+          await h.post("answer", {
+            code: room.code,
+            participantId: ana.participantId,
+            participantToken: ana.participantToken,
+            questionIndex: snapshot.state.questionIndex,
+            answer: id,
+          });
+      }
+      const before = await (
+        await h.post("answer", {
+          code: room.code,
+          participantId: ana.participantId,
+          participantToken: ana.participantToken,
+          questionIndex: snapshot.state.questionIndex,
+          answer: "bingo",
+        })
+      ).json();
+      expect(before.correct).toBe(true);
+      await stayPresentUntil(h, room, bia, away + 20_000);
+      const response = await h.post("join", { code: room.code, displayName: "Ana" }, "conta-ana");
+      const back = (await response.json()) as Joined;
+      expect(response.status).toBe(200);
+      const own = (state: PublicLocalRoomState) =>
+        state.participants.find((p) => p.id === ana.participantId)!;
+      expect(own(back.state).bingoCard).toEqual(own(before.state).bingoCard);
+      expect(own(back.state).bingoMarks).toEqual(own(before.state).bingoMarks);
+      expect(own(back.state).score).toBe(own(before.state).score);
+      expect(back.state.bingoClaim).toEqual(before.state.bingoClaim);
+      expect(back.state.drawnIds).toEqual(before.state.drawnIds);
+    },
+  );
   it("quem perdeu a sessão e já passou da tolerância volta no meio da atividade, com a mesma identidade", async () => {
     const { h, room, ana, bia } = await startedRoomWithAna();
     // A Ana sumiu e o servidor percebe pelo batimento dos outros.

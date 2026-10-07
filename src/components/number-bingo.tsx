@@ -178,7 +178,8 @@ export default function NumberBingo({
     setPending(true);
     setMessage("");
     try {
-      const result = await onAnswer(state.questionIndex, "bingo");
+      await markQueue.current;
+      const result = await onAnswer(indexRef.current, "bingo");
       setMessage(
         result?.correct
           ? ""
@@ -271,8 +272,19 @@ export default function NumberBingo({
                     data-orbit={i % 5}
                     data-number={id}
                     aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
+                    aria-description={
+                      marked
+                        ? "Marcado"
+                        : revealed.includes(id)
+                          ? "Sorteado, pode marcar"
+                          : "Ainda não sorteado"
+                    }
                     disabled={
-                      !!state.bingoClaim ||
+                      pending ||
+                      state.bingoClaim?.participantId === participantId ||
+                      state.bingoClaimQueue?.some(
+                        (claim) => claim.participantId === participantId,
+                      ) ||
                       state.bingoWinnerIds?.includes(participantId) ||
                       id === BINGO_FREE ||
                       marked ||
@@ -327,7 +339,8 @@ export default function NumberBingo({
             disabled={
               !drawn.length ||
               pending ||
-              !!state.bingoClaim ||
+              state.bingoClaim?.participantId === participantId ||
+              state.bingoClaimQueue?.some((claim) => claim.participantId === participantId) ||
               state.bingoWinnerIds?.includes(participantId)
             }
             onClick={() => void claim()}
@@ -338,7 +351,11 @@ export default function NumberBingo({
           <p role="status">
             {state.bingoWinnerIds?.includes(participantId)
               ? "Seu Bingo foi confirmado. A partida continua!"
-              : message}
+              : state.bingoClaim?.participantId === participantId
+                ? "Seu pedido de Bingo está em conferência."
+                : state.bingoClaimQueue?.some((claim) => claim.participantId === participantId)
+                  ? "Seu pedido de Bingo está na fila de conferência."
+                  : message}
           </p>
         </div>
       )}
@@ -363,7 +380,9 @@ export default function NumberBingo({
         </button>
       )}
       {isHost && !participant && message && <p role="status">{message}</p>}
-      {state.bingoClaim && <BingoReview state={state} isHost={isHost} onReview={onReview} />}
+      {state.bingoClaim && isHost && (
+        <BingoReview state={state} isHost={isHost} onReview={onReview} />
+      )}
     </section>
   );
 }

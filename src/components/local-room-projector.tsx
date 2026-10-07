@@ -1,3 +1,4 @@
+import { isMotionReduced } from "../data/accessibility-preferences";
 import {
   buildLocalRoomJoinUrl,
   rankLocalRoomParticipants,
@@ -46,11 +47,7 @@ export function Scoreboard({
       const top = row.offsetTop;
       const before = positions.current.get(id);
       next.set(id, top);
-      if (
-        before !== undefined &&
-        before !== top &&
-        !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-      ) {
+      if (before !== undefined && before !== top && !isMotionReduced()) {
         row.animate?.(
           [{ transform: `translateY(${before - top}px)` }, { transform: "translateY(0)" }],
           { duration: 480, easing: "cubic-bezier(.2,.8,.2,1)" },
@@ -116,7 +113,7 @@ function PodiumPlace({
   useEffect(() => {
     let frame = 0;
     let start: number | undefined;
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const reduced = isMotionReduced();
     function tick(time: number) {
       start ??= time;
       const progress = reduced ? 1 : Math.min(1, Math.max(0, time - start - 120 * place) / 1800);

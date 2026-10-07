@@ -114,6 +114,17 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     !strings(data.answeredParticipantIds) ||
     !strings(data.drawnIds) ||
     !strings(data.bingoWinnerIds) ||
+    (data.bingoClaimQueue !== undefined &&
+      (!Array.isArray(data.bingoClaimQueue) ||
+        data.bingoClaimQueue.length > 30 ||
+        data.bingoClaimQueue.some(
+          (claim) =>
+            !claim ||
+            typeof claim.id !== "string" ||
+            typeof claim.participantId !== "string" ||
+            !Number.isFinite(claim.claimedAt) ||
+            claim.claimedAt < 0,
+        ))) ||
     (data.bingoDrawCount !== undefined &&
       (!Number.isInteger(data.bingoDrawCount) ||
         data.bingoDrawCount < 0 ||
@@ -165,6 +176,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ...(data.roundId === undefined ? {} : { roundId: data.roundId }),
     ...(data.bingoDrawCount === undefined ? {} : { bingoDrawCount: data.bingoDrawCount }),
     ...(data.bingoClaim ? { bingoClaim: data.bingoClaim } : {}),
+    ...(data.bingoClaimQueue ? { bingoClaimQueue: data.bingoClaimQueue } : {}),
     ...(data.bingoWinnerIds ? { bingoWinnerIds: data.bingoWinnerIds } : {}),
     ...(data.content ? { content: data.content } : {}),
     // O bingo de números não tem bingoWords, mas os números sorteados precisam chegar pelo

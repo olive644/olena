@@ -1,4 +1,5 @@
 import { useNotebookPreferences } from "../data/notebook-preferences";
+import { isMotionReduced } from "../data/accessibility-preferences";
 import { NotebookSettings } from "./notebook-settings";
 import { NotebookFileActions } from "./notebook-file-actions";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -618,7 +619,7 @@ export function HandwritingStudio({
       remoteDocument.strokes.some((stroke) => stroke.id === reveal.stroke.id),
     );
     revealsRef.current = stillHere;
-    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const reducedMotion = isMotionReduced();
     if (remoteAuthor && !reducedMotion && shouldReveal(incoming)) {
       revealsRef.current = [...stillHere, ...planReveal(incoming, performance.now())];
       scheduleLivePaint();
