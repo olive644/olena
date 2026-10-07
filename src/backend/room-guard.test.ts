@@ -53,6 +53,16 @@ it.each(["create", "view-create"])(
   },
 );
 
+it.each(["kick", "lock", "repeat", "lobby", "team", "host-player", "bingo-review"])(
+  "reconhece a ação %s da sala em vez de agrupá-la como desconhecida",
+  async (action) => {
+    const observe = vi.fn();
+    const guard = createRoomGuard(createMemoryRoomStore(), "project", "app", false, observe);
+    await guard(new Request(`https://app.example/api/local-room?action=${action}`));
+    expect(observe).toHaveBeenLastCalledWith(expect.objectContaining({ action }));
+  },
+);
+
 it("exige App Check quando habilitado e recusa configuração incompleta", async () => {
   const request = new Request("https://app.example/api/local-room?action=create");
   expect(

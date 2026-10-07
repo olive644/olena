@@ -67,10 +67,69 @@ export function ShareRoom({ code, bingo = false }: { code: string; bingo?: boole
   );
 }
 
+export function LobbyLockToggle({
+  locked,
+  onChange,
+}: {
+  locked: boolean;
+  onChange(locked: boolean): Promise<boolean>;
+}) {
+  const [busy, setBusy] = useState(false);
+  async function toggle() {
+    setBusy(true);
+    try {
+      await onChange(!locked);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="local-room-lock">
+      <button
+        type="button"
+        className="secondary-button"
+        disabled={busy}
+        onClick={() => void toggle()}
+      >
+        {locked ? "Reabrir entrada" : "Fechar entrada"}
+      </button>
+      <p role="status">
+        {locked
+          ? "Entrada fechada: ninguém novo consegue entrar com o código."
+          : "Quem tem o código ainda pode entrar."}
+      </p>
+    </div>
+  );
+}
+
+export function RemoveParticipantButton({
+  name,
+  disabled = false,
+  onRemove,
+}: {
+  name: string;
+  disabled?: boolean;
+  onRemove(): void;
+}) {
+  return (
+    <button
+      type="button"
+      className="secondary-button local-room-remove"
+      disabled={disabled}
+      aria-label={`Remover ${name} da sala`}
+      onClick={onRemove}
+    >
+      Remover
+    </button>
+  );
+}
+
 export function LobbyParticipants({
   participants,
+  onRemove,
 }: {
   participants: readonly LocalRoomParticipant[];
+  onRemove?: (id: string) => Promise<boolean>;
 }) {
   return (
     <ul className="local-room-participant-list">
@@ -96,6 +155,12 @@ export function LobbyParticipants({
               {participant.online === false ? "Ausente" : "Pronto"}
             </small>
           </div>
+          {onRemove && (
+            <RemoveParticipantButton
+              name={participant.displayName}
+              onRemove={() => void onRemove(participant.id)}
+            />
+          )}
         </li>
       ))}
     </ul>

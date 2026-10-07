@@ -1879,3 +1879,19 @@
   grid-column: 1;
   grid-row: 1;
 }
+
+.local-room-lock {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.local-room-lock p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.local-room-remove {
+  margin-left: auto;
+  min-height: 44px;
+}

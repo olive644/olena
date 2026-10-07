@@ -110,6 +110,8 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
       data.expiresAt,
     ].some((value) => value !== undefined && (!Number.isFinite(value) || value < 0)) ||
     !strings(data.answeredParticipantIds) ||
+    !strings(data.removedParticipantIds) ||
+    (data.locked !== undefined && typeof data.locked !== "boolean") ||
     !strings(data.drawnIds) ||
     !strings(data.bingoWinnerIds) ||
     (data.bingoDrawCount !== undefined &&
@@ -163,6 +165,10 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ...(data.roundId === undefined ? {} : { roundId: data.roundId }),
     ...(data.bingoDrawCount === undefined ? {} : { bingoDrawCount: data.bingoDrawCount }),
     ...(data.bingoClaim ? { bingoClaim: data.bingoClaim } : {}),
+    ...(data.locked ? { locked: true } : {}),
+    ...(data.removedParticipantIds?.length
+      ? { removedParticipantIds: data.removedParticipantIds }
+      : {}),
     ...(data.bingoWinnerIds ? { bingoWinnerIds: data.bingoWinnerIds } : {}),
     ...(data.content ? { content: data.content } : {}),
     // O bingo de números não tem bingoWords, mas os números sorteados precisam chegar pelo
@@ -332,6 +338,11 @@ export function useLocalRoom(initialJoinCode?: string) {
   const eventSourceRef = useRef<EventSource | undefined>(undefined);
   const streamHealthyRef = useRef(false);
 
+  const identityRef = useRef({ role, participantId });
+  useEffect(() => {
+    identityRef.current = { role, participantId };
+  }, [role, participantId]);
+
   function stopStreaming() {
     streamHealthyRef.current = false;
     eventSourceRef.current?.close();
@@ -343,6 +354,25 @@ export function useLocalRoom(initialJoinCode?: string) {
   // app) por Server-Sent Events nativos do navegador, sem SDK, sem
   // polling: cada mudança que o servidor grava em /rooms/<code> chega aqui
   // instantaneamente.
+  // Quem o anfitrião removeu sai da sala sem avisar o servidor (o token já não vale mais) e
+  // volta à tela inicial com a explicação, em vez de ficar preso numa sala que o ignora.
+  function removedFromRoom(next: PublicLocalRoomState) {
+    // O stream guarda esta função da hora em que abriu, então lê a identidade atual por ref.
+    const { role: currentRole, participantId: currentId } = identityRef.current;
+    if (currentRole !== "participant" || !currentId) return false;
+    if (!next.removedParticipantIds?.includes(currentId)) return false;
+    stopStreaming();
+    clearStoredLocalRoomSession();
+    setHasSavedSession(false);
+    setState(undefined);
+    setRole("choose");
+    setParticipantId("");
+    participantTokenRef.current = "";
+    codeRef.current = "";
+    setError("O anfitrião removeu você desta sala.");
+    return true;
+  }
+
   function startStreaming(streamUrl: string) {
     stopStreaming();
     setConnectionStatus(navigator.onLine ? "connecting" : "offline");
@@ -372,7 +402,9 @@ export function useLocalRoom(initialJoinCode?: string) {
           data: PublicLocalRoomState | null;
         };
         if (payload.path === "/" && payload.data) {
-          setState(normalizeRoomState(payload.data));
+          const next = normalizeRoomState(payload.data);
+          if (removedFromRoom(next)) return;
+          setState(next);
           streamHealthyRef.current = true;
           setConnectionStatus("online");
         }
@@ -650,6 +682,43 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
+  async function kickParticipant(targetId: string) {
+    try {
+      const payload = await requestRoom<{ state: PublicLocalRoomState }>("kick", {
+        code: codeRef.current,
+        hostToken: hostTokenRef.current,
+        participantId: targetId,
+      });
+      setState(payload.state);
+      setError("");
+      return true;
+    } catch (caught) {
+      setError(roomErrorMessage(caught, "Não foi possível remover o participante."));
+      return false;
+    }
+  }
+
+  async function setRoomLocked(locked: boolean) {
+    try {
+      const payload = await requestRoom<{ state: PublicLocalRoomState }>("lock", {
+        code: codeRef.current,
+        hostToken: hostTokenRef.current,
+        locked,
+      });
+      setState(payload.state);
+      setError("");
+      return true;
+    } catch (caught) {
+      setError(
+        roomErrorMessage(
+          caught,
+          locked ? "Não foi possível fechar a entrada." : "Não foi possível reabrir a entrada.",
+        ),
+      );
+      return false;
+    }
+  }
+
   async function startRound() {
     try {
       const payload = await requestRoom<{ state: PublicLocalRoomState }>("start", {
@@ -839,6 +908,8 @@ export function useLocalRoom(initialJoinCode?: string) {
     joinRoom,
     updateSettings,
     assignTeam,
+    kickParticipant,
+    setRoomLocked,
     startRound,
     nextQuestion,
     reviewBingo,
