@@ -417,6 +417,18 @@ describe("handler da sala local", () => {
     );
   });
 
+  it("recusa nomes invisíveis e entrega o nome sem caracteres de direção", async () => {
+    const { code } = await createRoomViaApi();
+    for (const displayName of ["​​", "ㅤ", "⠀"]) {
+      const response = await handler(post("join", { code, displayName }));
+      expect(response.status).toBe(400);
+    }
+    const joined = await handler(post("join", { code, displayName: "Ana‮" }));
+    expect(joined.status).toBe(200);
+    const payload = (await joined.json()) as { state: PublicLocalRoomState };
+    expect(payload.state.participants.map((p) => p.displayName)).toEqual(["Ana"]);
+  });
+
   it("recusa IDs do catálogo inválidos e bloqueia novas entradas após iniciar", async () => {
     const { code, hostToken } = await createRoomViaApi();
     const invalid = await handler(
