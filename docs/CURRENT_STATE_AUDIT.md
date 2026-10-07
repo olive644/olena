@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Leo e atualização de Alice e Soso Estrelinha (2026-10-07)
+
+- Leo entra no seletor de perfis com o retrato aprovado do besourinho, sem estrelas no fundo.
+- Alice usa a nova arte do ratinho e Soso Estrelinha usa a borboleta enviada pelo proprietário.
+- Os caminhos de Alice e Soso permanecem iguais para preservar os perfis já selecionados.
+- Artes otimizadas para 512 × 512 em WebP incorporado em SVG, com recorte circular e cantos transparentes.
+- O teste de navegador cobre transparência dos três avatares e seleção persistente do Leo nos temas claro e escuro.
+
 ## Reação de pontos junto da bola (2026-10-06)
 
 - Removidos contador e aviso de pontos do topo. Marca aceita com pointsChange positivo mostra WOW! +pontos junto da célula correspondente, com papel dourado, confete e som compartilhado. Posição usa limites reais da cartela e mantém a reação dentro do cartão, inclusive nos cantos. Dura 1,5 segundo e não altera layout nem bloqueia cliques.
