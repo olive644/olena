@@ -1,5 +1,28 @@
 # OlenaStudy: Second Brain
 
+Bingo presencial usa settings.bingoPhysical. Não gerar ou mostrar cartela digital;
+não aceitar marcação de número digital. A pessoa anuncia Bingo após um sorteio,
+e o host verifica a cartela de papel antes de confirmar. No modo online,
+hasNumberBingo continua obrigatório tanto no anúncio quanto na confirmação.
+
+bingo-review finish confirma o anúncio e finaliza; bingo-finalize finaliza somente
+vencedores já confirmados depois de Continuar partida. Ambos exigem host.
+Todos os bingoWinnerIds recebem 100 XP, com recibo estável por geração/rodada/pessoa.
+BingoWinners não usa o pódio. Reabrir o resultado não deve duplicar XP.
+
+BingoParticipant é o palco sem Canvas dos participantes: mini Saturno em CSS/SVG,
+aviso, revelação e histórico. Não montar o motor físico nos clientes participantes.
+Reentrada não reproduz o histórico e mudanças de rodada cancelam a sequência.
+O host mantém BingoSaturn; seu atlas de bolinhas é local, invalidado ao carregar
+fontes e descartado ao desmontar. Não substituir física por animação em quadros fixos.
+
+paperBallStyle mantém a paleta comum no voo e no histórico de host e participante.
+A janela de conferência rola somente o corpo: não mover os botões com translate
+de hover, pois o cursor na borda podia criar uma oscilação permanente do alvo.
+Resultados importam seus estilos sem depender de visitar a etapa playing.
+RoomRewardNotice também recupera XP de bingo na fase finished, com o mesmo recibo,
+para quem perdeu o evento results e reconectou depois de Encerrar sala.
+
 O teste de continuidade instala o observador RAF antes do sorteio e mede desde
 o foco da revelação até o pouso. Não iniciar a medição depois das capturas de tela:
 WebKit pode consumir a maior parte da janela de exibição durante a captura.

@@ -86,6 +86,8 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     !["lobby", "playing", "results", "finished"].includes(data.phase ?? "") ||
     (data.roundId !== undefined && typeof data.roundId !== "string") ||
     !data.settings ||
+    (data.settings.bingoPhysical !== undefined &&
+      typeof data.settings.bingoPhysical !== "boolean") ||
     ![5, 10, 15, 30, 45, 60].includes(data.settings.roundSeconds) ||
     !["mixed", "easy", "medium", "hard"].includes(data.settings.difficulty) ||
     ![5, 10, 15, 20, "all"].includes(data.settings.questionCount) ||
@@ -690,7 +692,10 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
-  async function reviewBingo(claimId: string, decision: "reject" | "continue" | "restart") {
+  async function reviewBingo(
+    claimId: string,
+    decision: "reject" | "continue" | "restart" | "finish",
+  ) {
     try {
       const payload = await requestRoom<{ state: PublicLocalRoomState }>("bingo-review", {
         code: codeRef.current,
@@ -715,6 +720,20 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
     } catch (caught) {
       setError(roomErrorMessage(caught, "Não foi possível repetir a atividade."));
+    }
+  }
+
+  async function finalizeBingo() {
+    try {
+      const payload = await requestRoom<{ state: PublicLocalRoomState }>("bingo-finalize", {
+        code: codeRef.current,
+        hostToken: hostTokenRef.current,
+      });
+      setState(payload.state);
+      setError("");
+    } catch (caught) {
+      setError(roomErrorMessage(caught, "Não foi possível definir os ganhadores."));
+      throw caught;
     }
   }
 
@@ -842,6 +861,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     startRound,
     nextQuestion,
     reviewBingo,
+    finalizeBingo,
     endRoom,
     repeatRound,
     returnToLobby,

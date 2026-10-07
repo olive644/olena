@@ -78,7 +78,13 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     await expect(button).toHaveAttribute("aria-pressed", "true");
     const copy = await button.locator(".bingo-mode-copy").boundingBox();
     const art = await button.locator(".bingo-mode-art").boundingBox();
-    expect(copy!.x + copy!.width).toBeLessThanOrEqual(art!.x);
+    if (testInfo.project.name === "desktop")
+      expect(copy!.x + copy!.width).toBeLessThanOrEqual(art!.x);
+    else {
+      const bounds = await button.boundingBox();
+      expect(copy!.x + copy!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
+      expect(bounds!.height).toBeLessThanOrEqual(100);
+    }
   }
   await modes.getByRole("button", { name: /^Linha/ }).click();
   await expect(page.getByRole("slider", { name: "Tempo por pergunta" })).toHaveCount(0);
@@ -157,8 +163,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     "true",
   );
   await expect(page.getByRole("button", { name: /Ouvir/ })).toHaveCount(0);
-  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
-  await expect(page.getByRole("status").filter({ hasText: /Ainda não completou/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
   // Começa a observar antes do sorteio, não depois das capturas. Em WebKit a captura
   // pode consumir quase toda a exibição do número e deixar só o fim do voo para medir.
   await page.evaluate(() => {
@@ -366,9 +371,8 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   const player = current().participants[0]!;
   const card = player.bingoCard!;
   const goals = [0, 4, 20, 24].map((i) => card[i]!);
-  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
-  expect(claims).toEqual([false]);
-  await expect(page.getByRole("status").filter({ hasText: "Ainda não completou" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
+  expect(claims).toEqual([]);
   for (let draw = 0; draw <= 75; draw++) {
     for (const id of goals) {
       if (
@@ -402,7 +406,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
     .getByRole("region", { name: "Minha cartela" })
     .screenshot({ path: testInfo.outputPath("cartela-quatro-cantos-completa.png") });
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
-  expect(claims).toEqual([false, true]);
+  expect(claims).toEqual([true]);
   expect(current().phase).toBe("playing");
   expect(current().participants[0]!.score).toBe(4);
   const announcement = page.getByRole("dialog", { name: `${player.displayName} FEZ BINGO!` });

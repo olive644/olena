@@ -192,7 +192,7 @@
 }
 .number-bingo .bingo-saturn-panel.bingo-has-card {
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
-  max-width: none;
+  max-width: 1120px;
   gap: 30px;
 }
 .bingo-machine-column,
@@ -247,7 +247,7 @@
 .bingo-cell-planet {
   display: block;
   width: 100%;
-  height: 66px;
+  height: 56px;
   pointer-events: none;
 }
 .bingo-planet-digits {
@@ -1029,5 +1029,478 @@
   }
   .bingo-saturn-cage {
     animation: none;
+  }
+}
+
+.bingo-settings,
+.number-bingo,
+.bingo-winners {
+  --bingo-ocean: #0c5965;
+  --bingo-fold: #147b83;
+  --bingo-edge: #50bdc4;
+  --bingo-paper: #fff9ef;
+  --bingo-star: #ffe88d;
+}
+.room-view:has(.bingo-settings) {
+  align-content: start;
+  row-gap: 12px;
+}
+.room-view:has(.bingo-settings) > .page-header {
+  margin-bottom: 8px;
+}
+.bingo-physical-setting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px;
+  cursor: pointer;
+}
+:root body .local-room-preparation .bingo-physical-setting.secondary-button {
+  margin-top: 16px;
+  padding: 12px;
+  text-align: left;
+  color: var(--text);
+  border-color: #50bdc4;
+  box-shadow: 0 4px 0 #147b83;
+}
+:root body .local-room-preparation .bingo-mode.secondary-button {
+  min-height: 106px;
+}
+.local-room-preparation:has(.bingo-settings) {
+  gap: 16px;
+}
+.local-room-fullscreen > .local-room-session:has(.number-bingo) {
+  padding-bottom: 24px;
+}
+.bingo-physical-setting span {
+  display: grid;
+  gap: 4px;
+  flex: 1;
+}
+.bingo-physical-setting input {
+  width: 22px;
+  height: 22px;
+  accent-color: #147b83;
+}
+.number-bingo .bingo-review {
+  background: var(--bingo-ocean);
+  border-color: #a4e8eb;
+  box-shadow: 0 8px 0 #083d47;
+}
+.number-bingo .bingo-review[open] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.bingo-review-burst {
+  flex-shrink: 0;
+}
+:root body .local-room-fullscreen .number-bingo .bingo-review-actions button {
+  translate: none;
+  transform: none;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.bingo-review-content {
+  min-height: 0;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+.bingo-review-burst::before {
+  background: #147b83;
+}
+.bingo-review-actions {
+  background: var(--bingo-ocean);
+  position: relative;
+  bottom: auto;
+  flex-shrink: 0;
+}
+.number-bingo .bingo-review .bingo-solar-card {
+  background: #345580;
+}
+.bingo-review-content:has(.bingo-review-instructions:only-child) {
+  display: block;
+  text-align: center;
+}
+.bingo-finalize {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px auto;
+}
+.bingo-participant-stage {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  max-width: 440px;
+  margin: auto;
+}
+.number-bingo .bingo-solar-card > header {
+  align-items: center;
+  margin-bottom: 10px;
+}
+.number-bingo .bingo-participant-stage .bingo-solar-card {
+  padding: 12px;
+}
+.bingo-participant-stage .bingo-history h3 {
+  font-size: 16px;
+  margin: 8px 0;
+}
+.number-bingo .bingo-participant-stage .bingo-card-heading strong {
+  font-size: 20px;
+}
+.bingo-participant-stage .bingo-card-heading > div {
+  gap: 2px;
+}
+.bingo-participant-stage .bingo-card-sun {
+  width: 28px;
+  height: 28px;
+}
+.bingo-participant-stage .bingo-card-grid small {
+  font-size: 9px;
+  line-height: 12px;
+}
+.number-bingo:has(.bingo-participant-stage) .bingo-claim {
+  margin-top: 12px;
+}
+.number-bingo:has(.bingo-participant-stage) .bingo-claim button {
+  margin-block: 0;
+}
+.bingo-claim > p:empty {
+  display: none;
+}
+.bingo-participant-stage .bingo-card-comet {
+  width: 60px;
+  height: 36px;
+  flex-basis: 60px;
+}
+.number-bingo .bingo-participant-stage .bingo-card-heading svg {
+  width: 32px;
+  height: 32px;
+}
+.number-bingo .bingo-participant-stage .bingo-cell-planet {
+  height: 42px;
+}
+.number-bingo .bingo-participant-stage .bingo-card-grid {
+  gap: 6px;
+  padding: 6px;
+}
+:root
+  body
+  .local-room-fullscreen
+  .number-bingo
+  .bingo-participant-stage
+  .bingo-card-grid
+  .secondary-button {
+  min-height: 48px;
+  padding: 2px;
+}
+.bingo-spin-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bingo-ocean);
+  color: var(--bingo-paper);
+  border: 2px solid #50bdc4;
+  border-radius: 4px 20px 4px 20px;
+  padding: 8px 14px;
+  box-shadow: 0 5px 0 #147b83;
+  animation: bingo-banner-in 0.3s ease-out both;
+}
+.bingo-spin-banner--leaving {
+  animation: bingo-banner-out 0.22s ease-in both;
+}
+.bingo-mini-saturn {
+  width: 68px;
+  height: 54px;
+  flex-shrink: 0;
+}
+.bingo-mini-core {
+  transform-origin: 50px 40px;
+  animation: bingo-orbit-spin 1s linear infinite;
+}
+.bingo-spin-stars {
+  color: #ffe88d;
+  animation: bingo-star-pulse 0.6s ease-in-out infinite alternate;
+}
+.bingo-participant-reveal {
+  position: absolute;
+  top: 8px;
+  left: calc(50% - 50px);
+  z-index: 3;
+  width: 100px;
+  height: 100px;
+  margin: 0;
+  animation: bingo-reveal-pop 0.55s ease-out both;
+}
+.bingo-participant-ball svg {
+  width: 100%;
+  height: 100%;
+}
+.bingo-participant-ball {
+  position: relative;
+}
+.bingo-participant-stage .bingo-history [role="listitem"] {
+  background: none;
+  clip-path: none;
+}
+.bingo-winners {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--bingo-ocean);
+  color: var(--bingo-paper);
+  border: 2px solid #50bdc4;
+  padding: 24px;
+  border-radius: 4px 28px 4px 28px;
+  box-shadow: 0 8px 0 #147b83;
+  max-width: 900px;
+  width: 100%;
+}
+.bingo-winners h2 {
+  color: var(--bingo-star);
+  font-size: clamp(24px, 4vw, 38px);
+  margin: 12px 0 24px;
+}
+.bingo-winners-mascot {
+  border: 4px solid #ffe88d;
+  border-radius: 50%;
+}
+.bingo-winners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+}
+.bingo-winner {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  background: #fff0c7;
+  color: #292432;
+  border: 2px solid #e7bc88;
+  padding: 16px;
+  border-radius: 4px 20px 4px 20px;
+  box-shadow: 0 5px 0 #c99a00;
+  animation: bingo-reveal-pop 0.5s ease-out both;
+}
+.bingo-winner > img:first-child {
+  border-radius: 50%;
+}
+.bingo-winner h3 {
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.bingo-winner strong {
+  background: var(--bingo-ocean);
+  color: var(--bingo-paper);
+  padding: 6px 12px;
+  border-radius: 3px 10px;
+}
+@keyframes bingo-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-25px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bingo-banner-out {
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+}
+@keyframes bingo-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes bingo-star-pulse {
+  to {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+@media (max-width: 600px) {
+  .bingo-modes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  :root
+    body
+    :is(.local-room-fullscreen, .local-room-preparation)
+    .bingo-modes
+    .bingo-mode.secondary-button {
+    min-height: 92px;
+    display: flex;
+    padding: 10px;
+    gap: 6px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .bingo-mode-icon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+  .bingo-mode-copy strong {
+    font-size: 12px;
+  }
+  :root
+    body
+    :is(.local-room-fullscreen, .local-room-preparation)
+    .bingo-mode.secondary-button
+    small {
+    display: none;
+  }
+  .bingo-mode-art {
+    width: 52px;
+    opacity: 0.12;
+  }
+  .bingo-mode[aria-pressed="true"] .bingo-mode-art {
+    opacity: 0.25;
+  }
+  .number-bingo .bingo-modes .bingo-mode-copy {
+    padding-right: 0;
+  }
+  .bingo-solar-card > header {
+    margin-bottom: 10px;
+  }
+  .bingo-card-heading {
+    margin-bottom: 10px;
+  }
+  .number-bingo .bingo-card-heading svg,
+  .number-bingo .bingo-participant-stage .bingo-card-heading svg {
+    width: 28px;
+    height: 28px;
+  }
+  .bingo-card-heading small {
+    display: none;
+  }
+  .bingo-card-heading strong {
+    font-size: 18px;
+  }
+  .number-bingo .bingo-cell-planet {
+    height: 44px;
+  }
+  .bingo-participant-stage .bingo-card-grid {
+    gap: 4px;
+    padding: 4px;
+  }
+  :root body .local-room-fullscreen .number-bingo .bingo-card-grid .secondary-button {
+    padding: 2px;
+    min-height: 48px;
+  }
+  .bingo-participant-stage .bingo-history [role="listitem"] {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+  .bingo-history h3 {
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  .bingo-review .bingo-review-content {
+    grid-template-columns: 64px 1fr;
+    align-items: start;
+    gap: 8px;
+  }
+  .bingo-review-actions {
+    gap: 8px;
+  }
+  .bingo-review-actions button {
+    flex: 1 1 130px;
+    font-size: 12px;
+    padding: 8px;
+  }
+  .bingo-winners {
+    padding: 16px;
+  }
+  .bingo-winners-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .bingo-winners-mascot {
+    width: 58px;
+    height: 58px;
+  }
+  .bingo-winners h2 {
+    font-size: 24px;
+    margin: 10px 0 16px;
+  }
+  .bingo-winner {
+    padding: 10px;
+    gap: 6px;
+  }
+  .bingo-winner > img:first-child {
+    width: 44px;
+    height: 44px;
+  }
+  .bingo-winner > img:last-child {
+    width: 24px;
+    height: 24px;
+  }
+  .bingo-winner h3 {
+    font-size: 16px;
+  }
+  .bingo-winner strong {
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bingo-spin-banner,
+  .bingo-mini-core,
+  .bingo-spin-stars,
+  .bingo-participant-reveal,
+  .bingo-winner {
+    animation: none;
+  }
+}
+@media (max-height: 760px) {
+  .bingo-participant-stage .bingo-card-heading small {
+    display: none;
+  }
+  .bingo-participant-stage .bingo-card-heading {
+    margin-bottom: 8px;
+  }
+}
+@media (max-height: 700px) {
+  .number-bingo .bingo-participant-stage .bingo-solar-card > header small {
+    display: none;
+  }
+  .number-bingo .bingo-participant-stage .bingo-solar-card > header h3 {
+    margin-top: 0;
+  }
+  .number-bingo .bingo-participant-stage .bingo-cell-planet {
+    height: 36px;
+  }
+  :root
+    body
+    .local-room-fullscreen
+    .number-bingo
+    .bingo-participant-stage
+    .bingo-card-grid
+    .secondary-button {
+    min-height: 44px;
+    padding: 1px;
+  }
+}
+@media (max-width: 600px) and (max-height: 700px) {
+  :root
+    body
+    :is(.local-room-fullscreen, .local-room-preparation)
+    .bingo-modes
+    .bingo-mode.secondary-button {
+    min-height: 80px;
+    padding: 8px;
   }
 }

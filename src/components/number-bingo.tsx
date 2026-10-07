@@ -10,6 +10,7 @@ import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/lo
 import { BingoSaturn } from "./bingo-saturn";
 import { BingoPlanet } from "./bingo-planet";
 import { BingoReview } from "./bingo-review";
+import { BingoParticipant } from "./bingo-participant";
 import type { BingoReviewDecision } from "../domain/local-room";
 import "./number-bingo.css";
 
@@ -33,6 +34,8 @@ export default function NumberBingo({
   onDraw,
   onAnswer,
   onReview,
+  onPhysical,
+  onFinalize,
 }: {
   state: PublicLocalRoomState;
   isHost: boolean;
@@ -41,8 +44,11 @@ export default function NumberBingo({
   onDraw: () => Promise<void>;
   onAnswer: (index: number, answer: string) => Promise<LocalRoomAnswerFeedback | undefined>;
   onReview?: ((claimId: string, decision: BingoReviewDecision) => Promise<void>) | undefined;
+  onPhysical?: ((value: boolean) => void) | undefined;
+  onFinalize?: (() => Promise<void>) | undefined;
 }) {
   const mode = state.settings.bingoMode ?? "line";
+  const Machine = isHost ? BingoSaturn : BingoParticipant;
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   // Números já revelados pela animação do globo: só eles podem ser marcados, e a cartela não
@@ -96,10 +102,18 @@ export default function NumberBingo({
             </button>
           ))}
         </div>
-        <p>
-          75 números, cartelas individuais 5 × 5 e um Sol livre no centro. O criador controla os
-          sorteios.
-        </p>
+        <label className="bingo-physical-setting secondary-button">
+          <img src="/room-icons/bingo-corners.svg" width="32" height="32" alt="" />
+          <span>
+            <strong>Bingo presencial</strong>
+            <small>Usar cartelas de papel, sem cartela digital.</small>
+          </span>
+          <input
+            type="checkbox"
+            checked={state.settings.bingoPhysical === true}
+            onChange={(e) => onPhysical?.(e.target.checked)}
+          />
+        </label>
       </section>
     );
   const participant = state.participants.find((item) => item.id === participantId);
@@ -145,14 +159,14 @@ export default function NumberBingo({
   }
   return (
     <section className="number-bingo" aria-label="Bingo de números">
-      <BingoSaturn
+      <Machine
         drawn={drawn}
         isHost={isHost}
         pending={pending || !!state.bingoClaim}
         onDraw={draw}
         onReveal={reveal}
       >
-        {participant?.bingoCard && (
+        {!state.settings.bingoPhysical && !!participant?.bingoCard?.length && (
           <section className="bingo-solar-card" aria-label="Minha cartela">
             <header>
               <div>
@@ -258,14 +272,17 @@ export default function NumberBingo({
             </div>
           </section>
         )}
-      </BingoSaturn>
-      {participant?.bingoCard && (
+      </Machine>
+      {participant && (
         <div className="bingo-claim">
           <button
             type="button"
             className="primary-button"
             disabled={
-              pending || !!state.bingoClaim || state.bingoWinnerIds?.includes(participantId)
+              !drawn.length ||
+              pending ||
+              !!state.bingoClaim ||
+              state.bingoWinnerIds?.includes(participantId)
             }
             onClick={() => void claim()}
           >
@@ -279,6 +296,27 @@ export default function NumberBingo({
           </p>
         </div>
       )}
+      {isHost && !!state.bingoWinnerIds?.length && !state.bingoClaim && (
+        <button
+          type="button"
+          className="secondary-button bingo-finalize"
+          disabled={pending || !onFinalize}
+          onClick={async () => {
+            setPending(true);
+            try {
+              await onFinalize?.();
+            } catch {
+              setMessage("Não foi possível definir os ganhadores. Tente novamente.");
+            } finally {
+              setPending(false);
+            }
+          }}
+        >
+          <img src="/room-icons/bingo-finish.svg" width="32" height="32" alt="" />
+          {state.bingoWinnerIds.length === 1 ? "Definir ganhador" : "Definir ganhadores"}
+        </button>
+      )}
+      {isHost && !participant && message && <p role="status">{message}</p>}
       {state.bingoClaim && <BingoReview state={state} isHost={isHost} onReview={onReview} />}
     </section>
   );
