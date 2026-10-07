@@ -8,6 +8,7 @@ import {
   createLocalRoomCode,
   createRoom,
   endRoom,
+  ROOM_FINISHED_RETENTION_MS,
   isValidLocalRoomCode,
   WRONG_ANSWER_PENALTY_POINTS,
   normalizeLocalRoomCode,
@@ -473,6 +474,23 @@ describe("sala local", () => {
 
   it("permite encerrar a sala a qualquer momento", () => {
     expect(endRoom(room(), 2).phase).toBe("finished");
+  });
+
+  it("ao encerrar, a sala deixa de ser pública em 30 minutos em vez das horas que sobravam", () => {
+    const now = 5_000_000;
+    const ended = endRoom({ ...room(), expiresAt: now + 4 * 60 * 60 * 1000 }, now);
+    expect(ended.expiresAt).toBe(now + ROOM_FINISHED_RETENTION_MS);
+    expect(toPublicRoomState(ended).expiresAt).toBe(now + ROOM_FINISHED_RETENTION_MS);
+  });
+
+  it("encerrar nunca estende uma sala que já estava perto de vencer", () => {
+    const now = 5_000_000;
+    expect(endRoom({ ...room(), expiresAt: now + 1000 }, now).expiresAt).toBe(now + 1000);
+  });
+
+  it("encerrar uma sala já encerrada não mexe na validade", () => {
+    const ended = endRoom({ ...room(), expiresAt: 9_000_000 }, 5_000_000);
+    expect(endRoom(ended, 6_000_000).expiresAt).toBe(ended.expiresAt);
   });
 
   it("monta o link de convite com o código em maiúsculas", () => {

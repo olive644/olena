@@ -1828,6 +1828,12 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Todos os nós que faltavam são `.read: false`/`.write: false`: publicá-los não abriu nenhum acesso novo ao navegador (só a conta de serviço do backend, que ignora regras, já os usava). O ganho real é o `.indexOn: ["expiresAt"]` de cada um, necessário para `api/room-cleanup.ts` varrer e apagar itens vencidos de forma eficiente; antes da publicação, essas três funcionalidades (colaboração em cadernos, voz natural/áudio da sala, gravações do professor) rodavam sem limpeza automática programada.
 - Continua pendente, sem relação com esta mudança: a verificação do App Check (`docs/SECOND_BRAIN.md`) ainda está sem enforcement ativo declarado em produção.
 
+## Sala encerrada deixa de ser pública em 30 minutos (2026-10-06)
+
+- Auditoria completa do Modo Sala, oitava correção. O `expiresAt` da sala é definido só na criação (4 horas) e `endRoom` não o encurtava: depois de encerrada, a projeção pública em `/rooms/<código>` (nomes e avatares, legível sem login pelas regras do Firebase) continuava acessível pelas horas que sobravam.
+- `endRoom` (`src/domain/local-room.ts`) agora limita `expiresAt` a 30 minutos depois do encerramento (`ROOM_FINISHED_RETENTION_MS`), o que vale para encerramento pelo anfitrião, pela ausência dele e pelo fim da atividade. As regras já bloqueiam a leitura depois de `expiresAt`, e o TTL do estado privado e a varredura de `api/room-cleanup.ts` seguem o mesmo valor. A janela de 30 minutos cobre a tela de resultados de quem já estava conectado. Nunca estende uma sala que já estava perto de vencer, e encerrar uma sala já encerrada não mexe na validade.
+- Testes: três casos em `local-room.test.ts`; o principal falha sem a mudança.
+
 ## Quem perde a sessão volta para o mesmo lugar na sala (2026-10-06)
 
 - Auditoria completa do Modo Sala, sexta correção. Um aluno logado que perdia a sessão da aba (aba fechada, celular que descarregou o app: a credencial vive no `sessionStorage`) não conseguia voltar: o `join` recusava fora do lobby ("Esta sala já começou a atividade.") e, no lobby, recusava o próprio nome antigo ("Esse nome já está em uso nesta sala."), e só depois olhava a conta. O resultado era ficar de fora até o fim da atividade.
@@ -1892,3 +1898,9 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Auditoria completa do Modo Sala, primeira correção. Em `src/backend/local-room-handler.ts`, as ações `resume` e `heartbeat` encerravam a sala quando o anfitrião estava há mais de 2 minutos sem aparecer (`ROOM_PRESENCE_GRACE_MS`), inclusive quando quem chamava era o próprio anfitrião. Com a sala ainda vazia (ninguém para notar a ausência), um professor que bloqueou a tela do celular por três minutos voltava e via a sala encerrada.
 - Agora só os participantes encerram a sala por ausência do anfitrião; o anfitrião chamando `resume` ou `heartbeat` prova que está de volta. Sair de propósito (`leave`) continua encerrando para todos.
 - Testes: `room-concurrency.test.ts` (o anfitrião que volta depois da tolerância, por `resume` e por `heartbeat`, mantém a sala no lobby; o anfitrião que sai de propósito ainda encerra).
+
+## Primeiro corte na divisão de `local-room.tsx` (2026-10-07)
+
+- Auditoria completa do Modo Sala, nona e última correção. `src/components/local-room.tsx` tinha mais de 2300 linhas, com um único componente `LocalRoom` de cerca de 2000.
+- Mudança sem alteração de comportamento: as constantes e o rótulo de contagem foram para `local-room-config.ts` (`DEFAULT_SETTINGS`, `ROOM_ACTIVITY_OPTIONS`, passos de tempo e palavras, cooldown de áudio, `countLabel`) e os componentes auto-contidos para `local-room-parts.tsx` (`RoomStepSlider`, `CountdownOverlay`, `LocalRoomFullscreen`, com a armadilha de Tab e o portal). O arquivo principal perdeu cerca de 220 linhas; os 1068 testes e o e2e de sala passam sem alteração. O orçamento total de JS subiu 2 KiB (1126 para 1128) por causa da sobrecarga dos módulos novos.
+- Pendente de propósito: quebrar o corpo de `LocalRoom` (estado e efeitos na primeira metade, JSX na outra) em subcomponentes exige passar dezenas de estados e callbacks por props, e esse arquivo recebe edições paralelas do bingo. Fica para um momento em que o arquivo esteja parado, para não gerar conflito nem regressão.
