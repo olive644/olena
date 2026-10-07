@@ -294,6 +294,10 @@ for (const physical of [false, true])
     // Quem reconecta somente depois de Encerrar sala também recupera seu XP.
     await pages[2]!.evaluate(() => localStorage.removeItem("helena.room-xp.v1"));
     await page.getByRole("button", { name: "Encerrar sala", exact: true }).click();
+    await page
+      .getByRole("dialog", { name: "Encerrar a sala?" })
+      .getByRole("button", { name: "Encerrar sala", exact: true })
+      .click();
     await expect(
       pages[2]!.getByRole("heading", { name: "Sala encerrada", exact: true }),
     ).toBeVisible();
