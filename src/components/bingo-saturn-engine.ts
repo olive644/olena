@@ -1,4 +1,5 @@
 import { PAPER_BALL_FACES } from "./bingo-paper-geometry";
+import { isMotionReduced } from "../data/accessibility-preferences";
 // Physics and paper geometry ported from the owner's approved Saturn prototype.
 type Body = {
   n: number;
@@ -43,7 +44,7 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
   if (!context) return null;
   let ctx: CanvasRenderingContext2D = context;
   const ballAtlas = new Map<number, HTMLCanvasElement>();
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced = isMotionReduced();
   const colors = ["#facc15", "#50bdc4", "#a779ef", "#ff8e77", "#fff0c7"],
     shades = ["#d4a600", "#147b83", "#51259b", "#c95649", "#d7b84b"],
     lights = ["#ffe88d", "#a4e8eb", "#d7baff", "#ffd3c5", "#fff9ef"];

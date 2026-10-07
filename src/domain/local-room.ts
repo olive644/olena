@@ -104,6 +104,7 @@ export type LocalRoomState = {
   questionIndex: number;
   bingoDrawCount?: number | undefined;
   bingoClaim?: BingoClaim | undefined;
+  bingoClaimQueue?: BingoClaim[] | undefined;
   bingoWinnerIds?: string[] | undefined;
   questionStartedAt: number;
   countdownStartedAt?: number | undefined;
@@ -142,6 +143,7 @@ export type PublicLocalRoomState = {
   questionIndex: number;
   bingoDrawCount?: number | undefined;
   bingoClaim?: BingoClaim | undefined;
+  bingoClaimQueue?: BingoClaim[] | undefined;
   bingoWinnerIds?: string[] | undefined;
   questionStartedAt: number;
   countdownStartedAt?: number | undefined;
@@ -425,6 +427,7 @@ export function startRoom(
       dependencies.now + (state.settings.activity === "bingo" ? 0 : ROOM_START_COUNTDOWN_MS),
     bingoDrawCount: state.settings.activity === "bingo" && state.settings.bingoMode ? 0 : undefined,
     bingoClaim: undefined,
+    bingoClaimQueue: [],
     bingoWinnerIds: [],
     countdownStartedAt: state.settings.activity === "bingo" ? undefined : dependencies.now,
     answeredParticipantIds: [],
@@ -471,15 +474,20 @@ export function submitRoomAnswer(
       state.phase !== "playing" ||
       !participant ||
       state.bingoWinnerIds?.includes(participant.id) ||
-      state.bingoClaim ||
       dependencies.questionIndex !== state.questionIndex
     )
       return { state, correct: false, pointsChange: 0 };
     const drawn = numberBingoDrawnIds(state);
     if (dependencies.answer === "bingo") {
       if (
+        state.bingoClaim?.participantId === participant.id ||
+        state.bingoClaimQueue?.some((claim) => claim.participantId === participant.id)
+      )
+        return { state, correct: true, pointsChange: 0 };
+      if (
         state.bingoWinnerIds?.includes(participant.id) ||
-        (state.bingoWinnerIds?.length ?? 0) >= 3
+        (state.bingoWinnerIds?.length ?? 0) >= 3 ||
+        (state.bingoClaimQueue?.length ?? 0) >= MAX_ROOM_PARTICIPANTS
       )
         return { state, correct: false, pointsChange: 0 };
       const correct = state.settings.bingoPhysical
@@ -490,13 +498,16 @@ export function submitRoomAnswer(
             drawn,
             state.settings.bingoMode,
           );
+      const claim: BingoClaim = {
+        id: `${state.roundId}:${participant.id}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
+        participantId: participant.id,
+        claimedAt: dependencies.now,
+      };
       const claimed: LocalRoomState = {
         ...state,
-        bingoClaim: {
-          id: `${state.roundId}:${participant.id}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
-          participantId: participant.id,
-          claimedAt: dependencies.now,
-        },
+        ...(state.bingoClaim
+          ? { bingoClaimQueue: [...(state.bingoClaimQueue ?? []), claim] }
+          : { bingoClaim: claim }),
         updatedAt: dependencies.now,
       };
       return {
@@ -505,7 +516,12 @@ export function submitRoomAnswer(
         pointsChange: 0,
       };
     }
-    if (state.settings.bingoPhysical) return { state, correct: false, pointsChange: 0 };
+    if (
+      state.settings.bingoPhysical ||
+      state.bingoClaim?.participantId === participant.id ||
+      state.bingoClaimQueue?.some((claim) => claim.participantId === participant.id)
+    )
+      return { state, correct: false, pointsChange: 0 };
     const correct =
       drawn.includes(dependencies.answer) &&
       Boolean(participant.bingoCard?.includes(dependencies.answer));
@@ -715,7 +731,8 @@ export function reviewNumberBingo(
     return state;
   const reviewed: LocalRoomState = {
     ...state,
-    bingoClaim: undefined,
+    bingoClaim: decision === "finish" ? undefined : state.bingoClaimQueue?.[0],
+    bingoClaimQueue: decision === "finish" ? [] : (state.bingoClaimQueue ?? []).slice(1),
     bingoWinnerIds:
       decision === "continue" || decision === "finish"
         ? [...new Set([...(state.bingoWinnerIds ?? []), claim.participantId])]
@@ -733,7 +750,7 @@ export function reviewNumberBingo(
     updatedAt: now,
   };
   return decision === "finish" || reviewed.bingoWinnerIds!.length >= 3
-    ? finishNumberBingo(reviewed, now)
+    ? finishNumberBingo({ ...reviewed, bingoClaim: undefined, bingoClaimQueue: [] }, now)
     : reviewed;
 }
 
@@ -796,6 +813,7 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
       : {}),
     ...(state.bingoDrawCount === undefined ? {} : { bingoDrawCount: state.bingoDrawCount }),
     ...(state.bingoClaim ? { bingoClaim: state.bingoClaim } : {}),
+    ...(state.bingoClaimQueue ? { bingoClaimQueue: state.bingoClaimQueue } : {}),
     ...(state.bingoWinnerIds ? { bingoWinnerIds: state.bingoWinnerIds } : {}),
     questionStartedAt: state.questionStartedAt,
     ...(state.countdownStartedAt === undefined

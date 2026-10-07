@@ -283,6 +283,43 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
           streamUrl: dependencies.streamUrl(code),
         });
       }
+      // Retoma a mesma identidade após perder a sessão, sem recriar cartela nem pontos.
+      if (identity?.uid) {
+        const alreadyHere = {
+          error: "Esta conta já está nesta sala em outro dispositivo.",
+          code: "already_in_room",
+        };
+        if (state.hostAccountId === identity.uid) return jsonResponse(409, alreadyHere);
+        const own = state.participants.find((p) => p.accountId === identity.uid);
+        if (own) {
+          const time = now();
+          if (own.online !== false && time - (own.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS)
+            return jsonResponse(409, alreadyHere);
+          if (state.phase === "finished")
+            return jsonResponse(409, { error: "Esta sala já foi encerrada." });
+          const participantToken = randomId();
+          const rejoined: LocalRoomState = {
+            ...state,
+            participants: state.participants.map((p) =>
+              p.id === own.id
+                ? { ...p, token: participantToken, online: true, lastSeenAt: time }
+                : p,
+            ),
+            updatedAt: time,
+          };
+          if (requestId)
+            rejoined.receipts = {
+              ...rejoined.receipts,
+              [`join:${requestId}`]: { participantId: own.id, participantToken },
+            };
+          return jsonResponse(200, {
+            participantId: own.id,
+            participantToken,
+            state: await saveRoom(rejoined),
+            streamUrl: dependencies.streamUrl(code),
+          });
+        }
+      }
       if (state.phase !== "lobby") {
         return jsonResponse(409, { error: "Esta sala já começou a atividade." });
       }
@@ -453,7 +490,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       };
       if (
         (role === "host" && action === "leave") ||
-        time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS
+        (role !== "host" && time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS)
       )
         updated = endRoom(updated, time);
       if (updated.phase === "lobby")

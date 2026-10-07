@@ -36,6 +36,33 @@ function state(): PublicLocalRoomState {
 }
 
 describe("solar bingo interface", () => {
+  it("permite pedir Bingo durante outra conferência e informa a fila sem bloquear com modal", async () => {
+    const base = {
+      ...state(),
+      phase: "playing" as const,
+      bingoClaim: { id: "other", participantId: "other", claimedAt: 1 },
+    };
+    const props = {
+      isHost: false,
+      participantId: "p",
+      onMode: vi.fn(),
+      onDraw: vi.fn(),
+      onAnswer: vi.fn().mockResolvedValue({ correct: true, pointsChange: 0 }),
+    };
+    const { rerender } = render(<NumberBingo state={base} {...props} />);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByLabelText("Última bola: B 1")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Bingo!" }));
+    await waitFor(() => expect(props.onAnswer).toHaveBeenCalledWith(0, "bingo"));
+    rerender(
+      <NumberBingo
+        state={{ ...base, bingoClaimQueue: [{ id: "own", participantId: "p", claimedAt: 2 }] }}
+        {...props}
+      />,
+    );
+    expect(screen.getByText("Seu pedido de Bingo está na fila de conferência.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Bingo!" }).hasAttribute("disabled")).toBe(true);
+  });
   it("reage junto à bola aceita e some, sem pontos pairando no topo", async () => {
     const base = { ...state(), phase: "playing" as const };
     const props = {

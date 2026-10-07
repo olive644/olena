@@ -176,6 +176,21 @@ describe("sala concorrente", () => {
     expect(h.state().phase).toBe("finished");
   });
 
+  it.each(["resume", "heartbeat"])(
+    "anfitrião do bingo retorna por %s sem encerrar a própria sala",
+    async (action) => {
+      const h = harness();
+      const room = await (
+        await h.post("create", { settings: { activity: "bingo", bingoMode: "corners" } })
+      ).json();
+      h.time(ROOM_PRESENCE_GRACE_MS + 2000);
+      expect(
+        (await h.post(action, { code: room.code, role: "host", credential: room.hostToken }))
+          .status,
+      ).toBe(200);
+      expect(h.state().phase).toBe("lobby");
+    },
+  );
   it("mantém criação e entrada idempotentes ao repetir o pedido", async () => {
     const h = harness();
     const create = { settings: {}, requestId: crypto.randomUUID() };

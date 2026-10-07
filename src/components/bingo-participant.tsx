@@ -3,6 +3,8 @@ import { PaperBallSkin } from "./bingo-paper-ball";
 import { createSaturnSound } from "./bingo-saturn-sound";
 import { EXIT_JOURNEY_MS } from "./bingo-saturn-engine";
 import { paperBallStyle } from "./bingo-ball-palette";
+import { BingoLatest } from "./bingo-latest";
+import { isMotionReduced, useAccessibility } from "../data/accessibility-preferences";
 
 export function BingoParticipant({
   drawn,
@@ -17,6 +19,7 @@ export function BingoParticipant({
   onDraw: () => Promise<void>;
   questionStartedAt?: number;
 }) {
+  const { reduceMotion } = useAccessibility();
   const previous = useRef(drawn.join(","));
   const reveal = useRef(onReveal);
   const sound = useRef<ReturnType<typeof createSaturnSound> | null>(null);
@@ -52,7 +55,7 @@ export function BingoParticipant({
     if (
       ids.length !== old.length + 1 ||
       !old.every((id, i) => ids[i] === id) ||
-      matchMedia("(prefers-reduced-motion: reduce)").matches
+      isMotionReduced()
     ) {
       after(0, () => {
         setVisible(ids);
@@ -86,7 +89,7 @@ export function BingoParticipant({
       timers.forEach(window.clearTimeout);
       sound.current?.stop();
     };
-  }, [key]);
+  }, [key, reduceMotion]);
   return (
     <div className="bingo-participant-stage">
       {(phase === "mix" || phase === "leaving") && (
@@ -129,16 +132,20 @@ export function BingoParticipant({
         </div>
       )}
       <section className="bingo-history" aria-label="Histórico do bingo">
-        <h3>
-          Números sorteados <small>{visible.length}/75</small>
-        </h3>
+        <div className="bingo-history-heading">
+          <h3>
+            Números sorteados <small>{visible.length}/75</small>
+          </h3>
+          <BingoLatest number={visible.at(-1)} />
+        </div>
         <div role="list" aria-label="Números sorteados">
           {visible.map((id) => (
             <span
               role="listitem"
               data-bingo-number={id}
               key={id}
-              className="bingo-participant-ball"
+              className={"bingo-participant-ball" + (id === visible.at(-1) ? " latest" : "")}
+              aria-label={`${id}${id === visible.at(-1) ? ", última bola" : ""}`}
               style={paperBallStyle(id)}
             >
               <PaperBallSkin number={id} />

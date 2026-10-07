@@ -114,6 +114,17 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     !strings(data.answeredParticipantIds) ||
     !strings(data.drawnIds) ||
     !strings(data.bingoWinnerIds) ||
+    (data.bingoClaimQueue !== undefined &&
+      (!Array.isArray(data.bingoClaimQueue) ||
+        data.bingoClaimQueue.length > 30 ||
+        data.bingoClaimQueue.some(
+          (claim) =>
+            !claim ||
+            typeof claim.id !== "string" ||
+            typeof claim.participantId !== "string" ||
+            !Number.isFinite(claim.claimedAt) ||
+            claim.claimedAt < 0,
+        ))) ||
     (data.bingoDrawCount !== undefined &&
       (!Number.isInteger(data.bingoDrawCount) ||
         data.bingoDrawCount < 0 ||
@@ -165,6 +176,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
     ...(data.roundId === undefined ? {} : { roundId: data.roundId }),
     ...(data.bingoDrawCount === undefined ? {} : { bingoDrawCount: data.bingoDrawCount }),
     ...(data.bingoClaim ? { bingoClaim: data.bingoClaim } : {}),
+    ...(data.bingoClaimQueue ? { bingoClaimQueue: data.bingoClaimQueue } : {}),
     ...(data.bingoWinnerIds ? { bingoWinnerIds: data.bingoWinnerIds } : {}),
     ...(data.content ? { content: data.content } : {}),
     // O bingo de números não tem bingoWords, mas os números sorteados precisam chegar pelo
@@ -333,8 +345,12 @@ export function useLocalRoom(initialJoinCode?: string) {
   const codeRef = useRef(storedSession?.code ?? "");
   const eventSourceRef = useRef<EventSource | undefined>(undefined);
   const streamHealthyRef = useRef(false);
+  const reopenTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const reopenAttemptsRef = useRef(0);
 
   function stopStreaming() {
+    clearTimeout(reopenTimerRef.current);
+    reopenTimerRef.current = undefined;
     streamHealthyRef.current = false;
     eventSourceRef.current?.close();
     eventSourceRef.current = undefined;
@@ -346,12 +362,18 @@ export function useLocalRoom(initialJoinCode?: string) {
   // polling: cada mudança que o servidor grava em /rooms/<code> chega aqui
   // instantaneamente.
   function startStreaming(streamUrl: string) {
+    reopenAttemptsRef.current = 0;
+    openStream(streamUrl);
+  }
+
+  function openStream(streamUrl: string) {
     stopStreaming();
     setConnectionStatus(navigator.onLine ? "connecting" : "offline");
     const source = new EventSource(streamUrl);
     eventSourceRef.current = source;
     source.onopen = () => {
       if (eventSourceRef.current !== source) return;
+      reopenAttemptsRef.current = 0;
       streamHealthyRef.current = true;
       setConnectionStatus("online");
     };
@@ -359,6 +381,12 @@ export function useLocalRoom(initialJoinCode?: string) {
       if (eventSourceRef.current !== source) return;
       streamHealthyRef.current = false;
       setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
+      if (source.readyState === 2) {
+        const delay = Math.min(1000 * 2 ** reopenAttemptsRef.current, 15000);
+        reopenAttemptsRef.current += 1;
+        source.close();
+        reopenTimerRef.current = setTimeout(() => openStream(streamUrl), delay);
+      }
     };
     source.addEventListener("cancel", () => {
       if (eventSourceRef.current !== source) return;

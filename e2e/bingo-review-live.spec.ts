@@ -217,9 +217,8 @@ for (const physical of [false, true])
             .getByRole("button")
             .last(),
         ).toBeInViewport();
-      await expect(
-        client.getByRole("dialog", { name: `${player.displayName} FEZ BINGO!` }),
-      ).toBeVisible();
+      await expect(client.getByText("Seu pedido de Bingo está em conferência.")).toBeVisible();
+      await expect(client.locator(".bingo-review")).toHaveCount(0);
       await expect(
         client.getByRole("button", { name: "Continuar partida", exact: true }),
       ).toHaveCount(0);

@@ -184,7 +184,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Physical bingo, the lightweight guest animation and equal-XP winner celebration add
 // 5.7 KiB to lazy room/bingo chunks. Measured total 1123.6 KiB, entry unchanged
 // at 274.7 KiB. No dependency; retain only a small cross-platform allowance.
-const MAX_TOTAL_JS_BYTES = 1126 * 1024;
+// General accessibility preferences, shared motion guards and the compact latest-ball
+// badge add 3.5 KiB. Measured total: 1129.5 KiB, entry 275.7 KiB (below 278).
+// No runtime dependency; retain a narrow cross-platform allowance.
+const MAX_TOTAL_JS_BYTES = 1131 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
