@@ -187,6 +187,7 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // General accessibility preferences, shared motion guards and the compact latest-ball
 // badge add 3.5 KiB. Measured total: 1129.5 KiB, entry 275.7 KiB (below 278).
 // No runtime dependency; retain a narrow cross-platform allowance.
+// Main also includes the answer retry from PR #359 (0.4 KiB), within this allowance.
 const MAX_TOTAL_JS_BYTES = 1131 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
