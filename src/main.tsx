@@ -10,6 +10,10 @@ import "./notebook-workspace.css";
 import "./notebook-mobile.css";
 import "./navigation-refinements.css";
 import "./paper-controls.css";
+import "./accessibility.css";
+import { initializeAccessibility } from "./data/accessibility-preferences";
+
+initializeAccessibility();
 
 const NotebookReader = lazy(() => import("./views/notebook-reader"));
 const NotebookCollaborationInvite = lazy(() => import("./views/notebook-collaboration-invite"));

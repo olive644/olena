@@ -62,6 +62,8 @@ import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
 import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
 import { RoomRecordingInput } from "./room-recording-input";
+import { RoomConfirmButton } from "./room-confirm-button";
+import { RoomExpiryNotice } from "./room-expiry-notice";
 import { PaperEnglishWord } from "./paper-english-word";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { Podium, ProjectorRoom, Scoreboard } from "./local-room-projector";
@@ -238,6 +240,8 @@ export function LocalRoom({
   const readyAppliedRef = useRef("");
   const [revealHostWord, setRevealHostWord] = useState(false);
   const [confirmRevealHostWord, setConfirmRevealHostWord] = useState(false);
+  const [markPending, setMarkPending] = useState(false);
+  const [markFeedback, setMarkFeedback] = useState("");
   const [answer, setAnswer] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
@@ -520,6 +524,22 @@ export function LocalRoom({
     }
   }
 
+  async function markBingoWord(questionIndex: number, id: string) {
+    if (markPending) return;
+    setMarkPending(true);
+    const result = await room.submitAnswer(questionIndex, id);
+    setMarkPending(false);
+    setMarkFeedback(
+      !result
+        ? ""
+        : id === "pass"
+          ? "Resposta enviada."
+          : result.correct
+            ? "Marcado!"
+            : "Essa palavra não foi a sorteada.",
+    );
+  }
+
   function exitRoom() {
     room.reset();
     onExit?.();
@@ -766,6 +786,18 @@ export function LocalRoom({
       </LocalRoomFullscreen>
     );
   const isHost = room.isHost;
+  // Sair ou voltar como anfitrião de uma sala ainda aberta encerra a sala para todo mundo.
+  const hostSessionActive = isHost && state.phase !== "finished";
+  // Leitores de tela só ouviam o feedback e a contagem: mudar de pergunta ou de fase passava em
+  // silêncio. Não menciona a palavra, que é justamente o que o exercício de escuta esconde.
+  const phaseAnnouncement =
+    state.phase === "playing" && state.settings.activity !== "bingo" && state.totalQuestions > 0
+      ? `Pergunta ${state.questionIndex + 1} de ${state.totalQuestions}.`
+      : state.phase === "results"
+        ? "Atividade encerrada. Confira o resultado."
+        : state.phase === "finished"
+          ? "Sala encerrada."
+          : "";
   const answered = state.answeredParticipantIds.includes(room.participantId);
   const pool = localRoomPool(state.settings);
   const availableCount =
@@ -869,9 +901,16 @@ export function LocalRoom({
       >
         {!preparing && (
           <header className="local-room-session__header">
-            <button type="button" className="secondary-button room-back" onClick={backToModalities}>
+            <RoomConfirmButton
+              className="secondary-button room-back"
+              needsConfirmation={hostSessionActive}
+              title="Voltar e encerrar a sala?"
+              warning="Como anfitrião, voltar encerra a sala para todos os participantes e não pode ser desfeito."
+              confirmLabel="Encerrar sala"
+              onConfirm={backToModalities}
+            >
               <PaperArrow back /> Voltar
-            </button>
+            </RoomConfirmButton>
             <div className="local-room-session__actions">
               {isHost && !preparing && (
                 <button
@@ -883,13 +922,26 @@ export function LocalRoom({
                   Projetor
                 </button>
               )}
-              <button className="secondary-button local-room-exit" type="button" onClick={exitRoom}>
+              <RoomConfirmButton
+                className="secondary-button local-room-exit"
+                needsConfirmation={hostSessionActive}
+                title="Sair e encerrar a sala?"
+                warning="Como anfitrião, sair encerra a sala para todos os participantes e não pode ser desfeito."
+                confirmLabel="Encerrar sala"
+                onConfirm={exitRoom}
+              >
                 <PaperEditorIcon name="exit" /> Sair da sala
-              </button>
+              </RoomConfirmButton>
             </div>
           </header>
         )}
+        <p className="visually-hidden" role="status" aria-live="polite">
+          {phaseAnnouncement}
+        </p>
         {room.error && <p role="alert">{room.error}</p>}
+        {state.phase !== "finished" && (
+          <RoomExpiryNotice expiresAt={state.expiresAt} now={room.serverNow} isHost={isHost} />
+        )}
         {!room.isRestoring &&
           (room.connectionStatus === "reconnecting" || room.connectionStatus === "offline") && (
             <div className="local-room-connection">
@@ -1926,13 +1978,14 @@ export function LocalRoom({
                   responderam. Quando todos responderem, o resultado permanece por três segundos.
                 </p>
                 <Scoreboard participants={state.participants} questionIndex={state.questionIndex} />
-                <button
-                  className="secondary-button"
-                  type="button"
-                  onClick={() => void room.endRoom()}
+                <RoomConfirmButton
+                  title="Encerrar a sala?"
+                  warning="Isso encerra a sala para todos os participantes e não pode ser desfeito."
+                  confirmLabel="Encerrar sala"
+                  onConfirm={() => void room.endRoom()}
                 >
                   Encerrar sala
-                </button>
+                </RoomConfirmButton>
               </>
             ) : state.settings.activity === "bingo" ? (
               <div className="local-room-bingo">
@@ -1967,9 +2020,12 @@ export function LocalRoom({
                       className="secondary-button"
                       aria-pressed={ownParticipant?.bingoMarks?.includes(id) ?? false}
                       disabled={
-                        answered || secondsLeft === 0 || ownParticipant?.bingoMarks?.includes(id)
+                        markPending ||
+                        answered ||
+                        secondsLeft === 0 ||
+                        ownParticipant?.bingoMarks?.includes(id)
                       }
-                      onClick={() => void room.submitAnswer(state.questionIndex, id)}
+                      onClick={() => void markBingoWord(state.questionIndex, id)}
                     >
                       {state.bingoWords?.find((word) => word.id === id)?.text ?? id}
                       {ownParticipant?.bingoMarks?.includes(id) ? <PaperCheckIcon /> : null}
@@ -1978,11 +2034,17 @@ export function LocalRoom({
                 </div>
                 <button
                   className="secondary-button"
-                  disabled={answered || secondsLeft === 0}
-                  onClick={() => void room.submitAnswer(state.questionIndex, "pass")}
+                  disabled={markPending || answered || secondsLeft === 0}
+                  onClick={() => void markBingoWord(state.questionIndex, "pass")}
                 >
                   Não está na minha cartela
                 </button>
+                {markFeedback && (
+                  <p className="local-room-audio-status" role="status">
+                    {markFeedback}
+                  </p>
+                )}
+                {markPending && <HelenaLoading compact label="Enviando…" />}
               </div>
             ) : answered ? (
               <div
@@ -2105,6 +2167,10 @@ export function LocalRoom({
                     onChange={(event) => setAnswer(event.target.value)}
                     disabled={isSubmittingAnswer || room.serverNow() < state.questionStartedAt}
                     autoFocus
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
                   />
                 </label>
                 <button
@@ -2137,9 +2203,14 @@ export function LocalRoom({
                 <button className="secondary-button" type="button" onClick={room.returnToLobby}>
                   Trocar atividade
                 </button>
-                <button className="secondary-button" type="button" onClick={room.endRoom}>
+                <RoomConfirmButton
+                  title="Encerrar a sala?"
+                  warning="Isso encerra a sala para todos os participantes e não pode ser desfeito."
+                  confirmLabel="Encerrar sala"
+                  onConfirm={() => void room.endRoom()}
+                >
                   <HelenaRoomIcon name="close" size={18} /> Encerrar sala
-                </button>
+                </RoomConfirmButton>
               </div>
             ) : null}
           </div>

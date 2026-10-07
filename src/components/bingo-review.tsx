@@ -55,6 +55,9 @@ export function BingoReview({
           {player.displayName} FEZ BINGO!
         </h2>
         <p>{BINGO_MODE_LABELS[state.settings.bingoMode ?? "line"]}</p>
+        {!!state.bingoClaimQueue?.length && (
+          <p role="status">Mais {state.bingoClaimQueue.length} pedido(s) aguardando conferência.</p>
+        )}
       </div>
       {isHost ? (
         <>
