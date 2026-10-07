@@ -53,18 +53,12 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     });
     await page.screenshot({ path: testInfo.outputPath(`avatares-${theme}.png`) });
     await profileMenu.getByRole("button", { name: "Leo", exact: true }).click();
-    await expect(profileMenu.locator("summary")).toHaveAttribute(
-      "aria-label",
-      "Perfil de Leo",
-    );
+    await expect(profileMenu.locator("summary")).toHaveAttribute("aria-label", "Perfil de Leo");
     await expect(profileMenu.locator("summary img")).toHaveAttribute(
       "src",
       "/profile-avatars/leo.svg",
     );
     await page.reload();
-    await expect(profileMenu.locator("summary")).toHaveAttribute(
-      "aria-label",
-      "Perfil de Leo",
-    );
+    await expect(profileMenu.locator("summary")).toHaveAttribute("aria-label", "Perfil de Leo");
   }
 });
