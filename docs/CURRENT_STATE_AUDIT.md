@@ -1828,6 +1828,14 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Todos os nós que faltavam são `.read: false`/`.write: false`: publicá-los não abriu nenhum acesso novo ao navegador (só a conta de serviço do backend, que ignora regras, já os usava). O ganho real é o `.indexOn: ["expiresAt"]` de cada um, necessário para `api/room-cleanup.ts` varrer e apagar itens vencidos de forma eficiente; antes da publicação, essas três funcionalidades (colaboração em cadernos, voz natural/áudio da sala, gravações do professor) rodavam sem limpeza automática programada.
 - Continua pendente, sem relação com esta mudança: a verificação do App Check (`docs/SECOND_BRAIN.md`) ainda está sem enforcement ativo declarado em produção.
 
+## Nome de exibição sem caracteres invisíveis (2026-10-06)
+
+- Auditoria completa do Modo Sala, quarta correção. `sanitizeDisplayName` (`src/domain/local-room.ts`) só tirava `<` e `>` e juntava espaços, então passavam caracteres de largura zero, inversões de direção como U+202E (que embaralham o texto ao redor na tela projetada) e letras de preenchimento (U+3164, espaço braille U+2800) que desenham um espaço em branco sem contar como espaço: dava para entrar na sala com um nome que parece vazio ou que desloca o placar.
+- Agora controles e caracteres de formatação invisíveis saem do nome, exceto ZWNJ e ZWJ (U+200C e U+200D), que escritas como o persa e as sequências de emoji (👩‍💻) precisam; as letras de preenchimento e o espaço braille também saem; o texto é normalizado em NFC (acento solto vira acento composto); quebras de linha e tabulações viram espaço antes disso, para "Ana
+  Silva" não virar "AnaSilva". Um nome que sobra vazio é recusado como antes (`400` na entrada). O limite de 24 passa a contar caracteres e não unidades UTF-16, para um emoji nunca ser cortado ao meio. A função é a mesma usada pelos colaboradores de caderno, que ganham o mesmo reforço.
+- Nomes só de emoji continuam valendo (têm glifo visível); a sala é para turmas, onde 🦊 é um nome plausível.
+- Testes: `local-room.test.ts` (largura zero, direção e controle removidos; nomes que parecem vazios recusados; acento, emoji, ZWJ e quebra de linha preservados ou convertidos; truncamento sem cortar emoji), `local-room-handler.test.ts` (entrada com nome invisível recusada, nome com override de direção chega limpo).
+
 ## Confirmação ao encerrar, aviso de expiração e acessibilidade na sala (2026-10-06)
 
 - Auditoria completa do Modo Sala, terceira correção, na camada de interface (`src/components/local-room.tsx`).

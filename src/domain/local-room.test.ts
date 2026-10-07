@@ -173,6 +173,36 @@ describe("sala local", () => {
     );
   });
 
+  it("remove caracteres invisíveis e de direção que disfarçam o nome na tela projetada", () => {
+    // Largura zero, inversão de direção (U+202E, U+2066) e marcas de direção.
+    expect(sanitizeDisplayName("A​n‮a⁦")).toBe("Ana");
+    expect(sanitizeDisplayName("﻿Ana‎")).toBe("Ana");
+    expect(sanitizeDisplayName("A\u0000na")).toBe("Ana");
+  });
+
+  it("recusa nomes feitos só de caracteres que parecem vazios", () => {
+    expect(sanitizeDisplayName("​​")).toBe("");
+    expect(sanitizeDisplayName("ㅤ")).toBe("");
+    expect(sanitizeDisplayName("⠀ ⠀")).toBe("");
+    expect(sanitizeDisplayName("  　 ")).toBe("");
+    expect(sanitizeDisplayName("<>")).toBe("");
+  });
+
+  it("mantém nomes comuns, acentos, emoji e quebras de linha viram espaço", () => {
+    expect(sanitizeDisplayName("José da Silva")).toBe("José da Silva");
+    expect(sanitizeDisplayName("José")).toBe("José");
+    expect(sanitizeDisplayName("🦊")).toBe("🦊");
+    expect(sanitizeDisplayName("Ana\nSilva\tLima")).toBe("Ana Silva Lima");
+    // O ZWJ junta as partes de um emoji, então precisa ficar.
+    expect(sanitizeDisplayName("👩‍💻")).toBe("👩‍💻");
+  });
+
+  it("limita o nome por caractere visível, sem cortar um emoji no meio", () => {
+    const name = sanitizeDisplayName("a".repeat(23) + "🦊🦊");
+    expect(name).toBe("a".repeat(23) + "🦊");
+    expect(name.endsWith("\uD83E")).toBe(false);
+  });
+
   it("não duplica participante e bloqueia entrada após o início", () => {
     const joined = addLocalParticipant(room(), participant(), 2);
     expect(addLocalParticipant(joined, participant(), 3).participants).toHaveLength(1);

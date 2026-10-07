@@ -280,8 +280,28 @@ export function createLocalRoomCode(random?: () => number): string {
   return Array.from(bytes, (byte) => ROOM_CODE_ALPHABET[byte & 31]).join("");
 }
 
+// Controles e caracteres de formatação invisíveis (largura zero, marcas e inversões de direção
+// como U+202E, BOM). Ficam de fora o ZWNJ e o ZWJ (U+200C e U+200D), que escritas como o persa
+// e as sequências de emoji (👩‍💻) precisam para se formar.
+const INVISIBLE_CHARACTERS = /(?![‌‍])[\p{Cc}\p{Cf}]/gu;
+// Letras de preenchimento e o espaço braille: desenham um espaço em branco, mas não contam como
+// espaço, o que permitia nomes que parecem vazios na tela projetada.
+const BLANK_LOOKALIKES = /[⠀ㅤᅟᅠﾠ]/g;
+const DISPLAY_NAME_MAX_CHARACTERS = 24;
+
 export function sanitizeDisplayName(value: string): string {
-  return value.replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 24);
+  // Quebras de linha e tabulações viram espaço antes de os controles saírem, senão "Ana\nSilva"
+  // viraria "AnaSilva".
+  const cleaned = value
+    .normalize("NFC")
+    .replace(/[\t\n\r\v\f]/g, " ")
+    .replace(INVISIBLE_CHARACTERS, "")
+    .replace(BLANK_LOOKALIKES, "")
+    .replace(/[<>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  // Conta caracteres, não unidades UTF-16: cortar no meio de um emoji deixaria um símbolo quebrado.
+  return Array.from(cleaned).slice(0, DISPLAY_NAME_MAX_CHARACTERS).join("").trim();
 }
 
 export function localRoomStorageKey(code: string): string {
