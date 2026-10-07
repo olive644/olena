@@ -32,6 +32,7 @@ export function createRoomGuard(
       "answer",
       "next",
       "bingo-review",
+      "bingo-finalize",
       "end",
       "kick",
       "lock",

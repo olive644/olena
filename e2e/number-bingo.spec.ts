@@ -78,7 +78,13 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     await expect(button).toHaveAttribute("aria-pressed", "true");
     const copy = await button.locator(".bingo-mode-copy").boundingBox();
     const art = await button.locator(".bingo-mode-art").boundingBox();
-    expect(copy!.x + copy!.width).toBeLessThanOrEqual(art!.x);
+    if (testInfo.project.name === "desktop")
+      expect(copy!.x + copy!.width).toBeLessThanOrEqual(art!.x);
+    else {
+      const bounds = await button.boundingBox();
+      expect(copy!.x + copy!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
+      expect(bounds!.height).toBeLessThanOrEqual(100);
+    }
   }
   await modes.getByRole("button", { name: /^Linha/ }).click();
   await expect(page.getByRole("slider", { name: "Tempo por pergunta" })).toHaveCount(0);
@@ -122,7 +128,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.getByText("Complete sua constelação")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
   await expect(card.locator(".bingo-card-grid button")).toHaveCount(25);
-  await expect(card.locator(".bingo-planet")).toHaveCount(5);
+  await expect(card.locator(".bingo-card-heading .bingo-planet")).toHaveCount(5);
   await expect(card.locator(".bingo-cell-planet")).toHaveCount(24);
   for (const planet of ["earth", "mars", "jupiter", "saturn", "neptune"]) {
     await expect(card.locator(`.bingo-cell-planet[data-planet="${planet}"]`)).toHaveCount(
@@ -157,8 +163,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     "true",
   );
   await expect(page.getByRole("button", { name: /Ouvir/ })).toHaveCount(0);
-  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
-  await expect(page.getByRole("status").filter({ hasText: /Ainda não completou/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
   // Começa a observar antes do sorteio, não depois das capturas. Em WebKit a captura
   // pode consumir quase toda a exibição do número e deixar só o fim do voo para medir.
   await page.evaluate(() => {
@@ -366,9 +371,8 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   const player = current().participants[0]!;
   const card = player.bingoCard!;
   const goals = [0, 4, 20, 24].map((i) => card[i]!);
-  await page.getByRole("button", { name: "Bingo!", exact: true }).click();
-  expect(claims).toEqual([false]);
-  await expect(page.getByRole("status").filter({ hasText: "Ainda não completou" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
+  expect(claims).toEqual([]);
   for (let draw = 0; draw <= 75; draw++) {
     for (const id of goals) {
       if (
@@ -402,9 +406,9 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
     .getByRole("region", { name: "Minha cartela" })
     .screenshot({ path: testInfo.outputPath("cartela-quatro-cantos-completa.png") });
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
-  expect(claims).toEqual([false, true]);
+  expect(claims).toEqual([true]);
   expect(current().phase).toBe("playing");
-  expect(current().participants[0]!.score).toBe(4);
+  expect(current().participants[0]!.score).toBe(8);
   const announcement = page.getByRole("dialog", { name: `${player.displayName} FEZ BINGO!` });
   await expect(announcement).toBeVisible();
   await expect(
@@ -457,7 +461,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   await expect(announcement).toHaveCount(0);
   expect(current().phase).toBe("playing");
   expect(current().bingoWinnerIds).toEqual([player.id]);
-  expect(current().participants[0]!.score).toBe(104);
+  expect(current().participants[0]!.score).toBe(38);
   await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
   await page.screenshot({
     path: testInfo.outputPath("vitoria-bingo-confirmada.png"),
@@ -471,7 +475,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
       marks: finalPlaying.participants[0]!.bingoMarks,
       claims,
       phase: current().phase,
-      score: 104,
+      score: 38,
       transport: "handler real, store em memória",
     }),
     contentType: "application/json",

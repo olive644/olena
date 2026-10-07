@@ -284,7 +284,7 @@ describe("handler da sala local", () => {
     currentTime += 3000;
     const result = await (await handler(post("next", { code, hostToken }))).json();
     expect(result.state.participants.map((p: { reward: { xp: number } }) => p.reward.xp)).toEqual([
-      100, 75,
+      50, 30,
     ]);
     const again = await (await handler(post("next", { code, hostToken }))).json();
     expect(again.state.participants).toEqual(result.state.participants);
@@ -415,6 +415,18 @@ describe("handler da sala local", () => {
     expect(selected).toContain(
       ((await start.json()) as { state: PublicLocalRoomState }).state.currentQuestion?.id,
     );
+  });
+
+  it("recusa nomes invisíveis e entrega o nome sem caracteres de direção", async () => {
+    const { code } = await createRoomViaApi();
+    for (const displayName of ["​​", "ㅤ", "⠀"]) {
+      const response = await handler(post("join", { code, displayName }));
+      expect(response.status).toBe(400);
+    }
+    const joined = await handler(post("join", { code, displayName: "Ana‮" }));
+    expect(joined.status).toBe(200);
+    const payload = (await joined.json()) as { state: PublicLocalRoomState };
+    expect(payload.state.participants.map((p) => p.displayName)).toEqual(["Ana"]);
   });
 
   it("recusa IDs do catálogo inválidos e bloqueia novas entradas após iniciar", async () => {

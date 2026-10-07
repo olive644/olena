@@ -12,6 +12,7 @@ import {
   WRONG_ANSWER_PENALTY_POINTS,
   normalizeLocalRoomCode,
   rankLocalRoomParticipants,
+  roomExpiryWarningMinutes,
   repeatRoom,
   readLocalRoomCodeFromUrl,
   removeRoomParticipant,
@@ -102,7 +103,7 @@ describe("sala local", () => {
     expect(fast.pointsChange).toBeGreaterThan(slow.pointsChange);
     expect(slow.state.participants.every((p) => p.reward === undefined)).toBe(true);
     const result = advanceRoomQuestion(slow.state, single.questionStartedAt + 18000);
-    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 75]);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([50, 30]);
     expect(result.participants.map((p) => p.reward?.place)).toEqual([1, 2]);
     expect(advanceRoomQuestion(result, single.questionStartedAt + 19000)).toBe(result);
     expect(endRoom(result, single.questionStartedAt + 19000).participants[0]?.reward).toEqual(
@@ -127,7 +128,7 @@ describe("sala local", () => {
       },
       started.questionStartedAt + 30000,
     );
-    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 100, 0]);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([50, 50, 0]);
     expect(
       endRoom(started, started.questionStartedAt + 1).participants.every((p) => !p.reward),
     ).toBe(true);
@@ -172,6 +173,36 @@ describe("sala local", () => {
     expect(sanitizeDisplayName(" <Ana>   estudante com um nome enorme ")).toBe(
       "Ana estudante com um nom",
     );
+  });
+
+  it("remove caracteres invisíveis e de direção que disfarçam o nome na tela projetada", () => {
+    // Largura zero, inversão de direção (U+202E, U+2066) e marcas de direção.
+    expect(sanitizeDisplayName("A​n‮a⁦")).toBe("Ana");
+    expect(sanitizeDisplayName("﻿Ana‎")).toBe("Ana");
+    expect(sanitizeDisplayName("A\u0000na")).toBe("Ana");
+  });
+
+  it("recusa nomes feitos só de caracteres que parecem vazios", () => {
+    expect(sanitizeDisplayName("​​")).toBe("");
+    expect(sanitizeDisplayName("ㅤ")).toBe("");
+    expect(sanitizeDisplayName("⠀ ⠀")).toBe("");
+    expect(sanitizeDisplayName("  　 ")).toBe("");
+    expect(sanitizeDisplayName("<>")).toBe("");
+  });
+
+  it("mantém nomes comuns, acentos, emoji e quebras de linha viram espaço", () => {
+    expect(sanitizeDisplayName("José da Silva")).toBe("José da Silva");
+    expect(sanitizeDisplayName("José")).toBe("José");
+    expect(sanitizeDisplayName("🦊")).toBe("🦊");
+    expect(sanitizeDisplayName("Ana\nSilva\tLima")).toBe("Ana Silva Lima");
+    // O ZWJ junta as partes de um emoji, então precisa ficar.
+    expect(sanitizeDisplayName("👩‍💻")).toBe("👩‍💻");
+  });
+
+  it("limita o nome por caractere visível, sem cortar um emoji no meio", () => {
+    const name = sanitizeDisplayName("a".repeat(23) + "🦊🦊");
+    expect(name).toBe("a".repeat(23) + "🦊");
+    expect(name.endsWith("\uD83E")).toBe(false);
   });
 
   it("não duplica participante e bloqueia entrada após o início", () => {
@@ -557,5 +588,29 @@ describe("remover participante (domínio)", () => {
     const publicState = toPublicRoomState(state);
     expect(publicState.locked).toBe(true);
     expect(publicState.removedParticipantIds).toEqual(["p9"]);
+  });
+});
+
+describe("aviso de expiração da sala", () => {
+  const minute = 60_000;
+  const expiresAt = 100 * minute;
+
+  it("não avisa sem prazo definido, com a sala longe do fim ou depois de expirar", () => {
+    expect(roomExpiryWarningMinutes(undefined, 0)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt - 11 * minute)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt + minute)).toBeUndefined();
+  });
+
+  it("agrupa o tempo restante em faixas de 10, 5, 2 e 1 minuto", () => {
+    const at = (remaining: number) => roomExpiryWarningMinutes(expiresAt, expiresAt - remaining);
+    expect(at(10 * minute)).toBe(10);
+    expect(at(9.9 * minute)).toBe(10);
+    expect(at(5 * minute)).toBe(5);
+    expect(at(4.9 * minute)).toBe(5);
+    expect(at(2 * minute)).toBe(2);
+    expect(at(1.5 * minute)).toBe(2);
+    expect(at(minute)).toBe(1);
+    expect(at(1000)).toBe(1);
   });
 });

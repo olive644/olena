@@ -20,6 +20,18 @@ vi.mock("./bingo-saturn", () => ({
     return children;
   },
 }));
+vi.mock("./bingo-participant", () => ({
+  BingoParticipant: ({
+    onReveal,
+    children,
+  }: {
+    onReveal?: (ids: readonly string[]) => void;
+    children?: ReactNode;
+  }) => {
+    globe.reveal = onReveal;
+    return children;
+  },
+}));
 
 const state: PublicLocalRoomState = {
   code: "ABCDE",
@@ -48,11 +60,11 @@ const state: PublicLocalRoomState = {
   currentQuestion: { id: "2", front: "2" },
 };
 
-it("só libera na cartela os números que a animação do globo já revelou", () => {
+it.each([true, false])("só libera números revelados, criador=%s", (isHost) => {
   render(
     <NumberBingo
       state={state}
-      isHost={false}
+      isHost={isHost}
       participantId="p"
       onMode={vi.fn()}
       onDraw={vi.fn()}

@@ -179,14 +179,14 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
     { code, credential: credentials[0]!.participantToken },
   );
   await page.reload();
-  await expect(page.locator(".room-reward-notice")).toContainText("+100 XP pelo 1º lugar!");
+  await expect(page.locator(".room-reward-notice")).toContainText("+50 XP pelo 1º lugar!");
   const notice = await page.locator(".room-reward-notice").boundingBox();
   expect(notice!.y).toBeGreaterThanOrEqual(0);
   expect(notice!.y + notice!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   expect(notice!.y).toBeLessThan(80);
   await expect(page.locator(".room-reward-notice")).toBeHidden({ timeout: 8000 });
   const ledger = await page.evaluate(() => localStorage.getItem("helena.room-xp.v1"));
-  expect(JSON.parse(ledger!).total).toBe(100);
+  expect(JSON.parse(ledger!).total).toBe(50);
   await page.reload();
   await expect(page.locator(".local-room-podium__place")).toHaveCount(3);
   expect(await page.evaluate(() => localStorage.getItem("helena.room-xp.v1"))).toBe(ledger);

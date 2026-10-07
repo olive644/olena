@@ -1,5 +1,41 @@
 # OlenaStudy: Second Brain
 
+Bingo presencial usa settings.bingoPhysical. Não gerar ou mostrar cartela digital;
+não aceitar marcação de número digital. A pessoa anuncia Bingo após um sorteio,
+e o host verifica a cartela de papel antes de confirmar. No modo online,
+hasNumberBingo continua obrigatório tanto no anúncio quanto na confirmação.
+
+bingo-review finish confirma o anúncio e finaliza; bingo-finalize finaliza somente
+vencedores já confirmados depois de Continuar partida. Ambos exigem host.
+Bingo limita vencedores a três, em ordem de confirmação, sem ordenar por pontos.
+A terceira confirmação finaliza automaticamente. BingoWinners reutiliza Podium
+com variante solar (Saturno, Júpiter, Terra). Reabrir não deve duplicar XP.
+Resultado sem fundo verde ou retrato avulso. RoomSolarTrophyFrame reaproveita
+anel de room-trophies.svg e cria coroas planetárias e ramos facetados.
+Lista ordenada usa RoomAvatar também, com nomes, pontos e XP.
+Marcação confirmada reage perto da própria bola: WOW! +pontos, confete e som.
+Não mostrar contador ou aviso pairando no topo. Reação dura 1,5 s, posicionada
+dentro dos limites da cartela. Resposta recusada ou duplicada não cria reação.
+Cada marca digital verificada vale 2 pontos. Bônus confirmado: cantos 30;
+linha, coluna e diagonal 40; cartela cheia 100. Presencial recebe só bônus,
+pois não há prova digital das marcações. Vencedores não continuam pontuando.
+XP final por esforço: Bingo arredonda score * .35; escuta score * .5.
+Não há mais teto fixo de 100 XP. Recibos e normalização aceitam até 10000
+como limite defensivo, com identidade estável por geração/rodada/pessoa.
+
+BingoParticipant é o palco sem Canvas dos participantes: mini Saturno em CSS/SVG,
+aviso, revelação e histórico. Não montar o motor físico nos clientes participantes.
+Reentrada não reproduz o histórico e mudanças de rodada cancelam a sequência.
+O host mantém BingoSaturn; seu atlas de bolinhas é local, invalidado ao carregar
+fontes e descartado ao desmontar. Não substituir física por animação em quadros fixos.
+
+paperBallStyle mantém a paleta comum no voo e no histórico de host e participante.
+A janela de conferência rola somente o corpo: não mover os botões com translate
+de hover, pois o cursor na borda podia criar uma oscilação permanente do alvo.
+Resultados importam seus estilos sem depender de visitar a etapa playing.
+RoomRewardNotice também recupera XP de bingo na fase finished, com o mesmo recibo,
+para quem perdeu o evento results e reconectou depois de Encerrar sala.
+
 O teste de continuidade instala o observador RAF antes do sorteio e mede desde
 o foco da revelação até o pouso. Não iniciar a medição depois das capturas de tela:
 WebKit pode consumir a maior parte da janela de exibição durante a captura.

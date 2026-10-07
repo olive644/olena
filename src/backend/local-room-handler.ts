@@ -11,6 +11,7 @@ import {
   repeatRoom,
   reviewNumberBingo,
   removeRoomParticipant,
+  finishNumberBingo,
   returnRoomToLobby,
   isValidLocalRoomCode,
   MAX_ROOM_PARTICIPANTS,
@@ -83,6 +84,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "roundSeconds",
           "activity",
           "bingoMode",
+          "bingoPhysical",
           "category",
           "shuffle",
           "teams",
@@ -120,6 +122,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   if (
     [
       "shuffle",
+      "bingoPhysical",
       "helenaWords",
       "teams",
       "autoPlayAudio",
@@ -199,6 +202,31 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
     );
     const publicState = toPublicRoomState(state);
     await dependencies.publish(state.code, publicState);
+    return publicState;
+  }
+
+  // Batimentos acontecem a cada poucos segundos por participante. Quando eles não mudam nada que
+  // o público veja (só o horário de presença, que é privado), não há motivo para subir a
+  // revisão: cada revisão nova é uma gravação no banco repassada a todos os streams da sala.
+  // O estado privado é gravado do mesmo jeito, para a tolerância de presença continuar valendo, e
+  // o publicador ainda é chamado: com a mesma revisão ele só consulta e não regrava, mas se a
+  // publicação anterior falhou depois de gravar, é aqui que ela se repara.
+  async function savePresence(
+    previous: LocalRoomState,
+    updated: LocalRoomState,
+  ): Promise<PublicLocalRoomState> {
+    const publicState = toPublicRoomState(updated);
+    if (JSON.stringify(publicState) !== JSON.stringify(toPublicRoomState(previous)))
+      return saveRoom(updated);
+    await dependencies.store.set(
+      localRoomStorageKey(updated.code),
+      JSON.stringify(updated),
+      Math.max(
+        1,
+        Math.ceil(((updated.expiresAt ?? now() + ROOM_TTL_SECONDS * 1000) - now()) / 1000),
+      ),
+    );
+    await dependencies.publish(updated.code, publicState);
     return publicState;
   }
 
@@ -480,9 +508,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         ...(role === "host" ? { hostLastSeenAt: time } : {}),
         updatedAt: time,
       };
+      // Quem avisa que o anfitrião sumiu são os participantes. O próprio anfitrião chamando
+      // `resume` ou `heartbeat` prova que ele está de volta, mesmo depois de a tela do celular
+      // ter ficado bloqueada além da tolerância.
       if (
         (role === "host" && action === "leave") ||
-        time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS
+        (role !== "host" && time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS)
       )
         updated = endRoom(updated, time);
       if (updated.phase === "lobby")
@@ -492,7 +523,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         };
       if (updated.phase === "playing" && canAdvanceRoomQuestion(updated, time))
         updated = advanceRoomQuestion(updated, time);
-      const publicState = await saveRoom(updated);
+      const publicState = await savePresence(state, updated);
       return jsonResponse(200, {
         state: publicState,
         participantId: state.participants.find((p) =>
@@ -787,7 +818,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (state instanceof Response) return state;
       const decision = body["decision"];
       if (
-        (decision !== "reject" && decision !== "continue" && decision !== "restart") ||
+        (decision !== "reject" &&
+          decision !== "continue" &&
+          decision !== "restart" &&
+          decision !== "finish") ||
         typeof body["claimId"] !== "string"
       )
         return jsonResponse(400, { error: "Conferência inválida." });
@@ -795,6 +829,22 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       // Reenvio de uma decisão não pode resolver outro anúncio nem conceder pontos de novo.
       const publicState = reviewed === state ? toPublicRoomState(state) : await saveRoom(reviewed);
       return jsonResponse(200, { state: publicState });
+    }
+
+    if (action === "bingo-finalize" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const state = await requireHost(dependencies.store, body);
+      if (state instanceof Response) return state;
+      if (state.settings.activity !== "bingo" || !state.settings.bingoMode)
+        return jsonResponse(409, { error: "Esta sala não é de Bingo numérico." });
+      const finished = finishNumberBingo(state, now());
+      if (finished === state && state.phase !== "results")
+        return jsonResponse(409, {
+          error: "Confirme pelo menos um Bingo antes de definir ganhadores.",
+        });
+      return jsonResponse(200, {
+        state: finished === state ? toPublicRoomState(state) : await saveRoom(finished),
+      });
     }
 
     if (action === "end" && request.method === "POST") {
