@@ -204,6 +204,31 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
     return publicState;
   }
 
+  // Batimentos acontecem a cada poucos segundos por participante. Quando eles não mudam nada que
+  // o público veja (só o horário de presença, que é privado), não há motivo para subir a
+  // revisão: cada revisão nova é uma gravação no banco repassada a todos os streams da sala.
+  // O estado privado é gravado do mesmo jeito, para a tolerância de presença continuar valendo, e
+  // o publicador ainda é chamado: com a mesma revisão ele só consulta e não regrava, mas se a
+  // publicação anterior falhou depois de gravar, é aqui que ela se repara.
+  async function savePresence(
+    previous: LocalRoomState,
+    updated: LocalRoomState,
+  ): Promise<PublicLocalRoomState> {
+    const publicState = toPublicRoomState(updated);
+    if (JSON.stringify(publicState) !== JSON.stringify(toPublicRoomState(previous)))
+      return saveRoom(updated);
+    await dependencies.store.set(
+      localRoomStorageKey(updated.code),
+      JSON.stringify(updated),
+      Math.max(
+        1,
+        Math.ceil(((updated.expiresAt ?? now() + ROOM_TTL_SECONDS * 1000) - now()) / 1000),
+      ),
+    );
+    await dependencies.publish(updated.code, publicState);
+    return publicState;
+  }
+
   return async function handleLocalRoom(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const action = url.searchParams.get("action");
@@ -283,7 +308,9 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
           streamUrl: dependencies.streamUrl(code),
         });
       }
-      // Retoma a mesma identidade após perder a sessão, sem recriar cartela nem pontos.
+      // Quem entrou logado e perdeu a sessão (aba fechada, celular que descarregou o app) precisa
+      // conseguir voltar para o mesmo lugar, inclusive no meio da atividade, sem esbarrar na regra
+      // de nome repetido nem na de "a atividade já começou". Isso vem antes das outras checagens.
       if (identity?.uid) {
         const alreadyHere = {
           error: "Esta conta já está nesta sala em outro dispositivo.",
@@ -293,8 +320,9 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         const own = state.participants.find((p) => p.accountId === identity.uid);
         if (own) {
           const time = now();
-          if (own.online !== false && time - (own.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS)
-            return jsonResponse(409, alreadyHere);
+          const stillPresent =
+            own.online !== false && time - (own.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS;
+          if (stillPresent) return jsonResponse(409, alreadyHere);
           if (state.phase === "finished")
             return jsonResponse(409, { error: "Esta sala já foi encerrada." });
           const participantToken = randomId();
@@ -332,18 +360,6 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         )
       ) {
         return jsonResponse(409, { error: "Esse nome já está em uso nesta sala." });
-      }
-      if (
-        identity?.uid &&
-        (state.hostAccountId === identity.uid ||
-          state.participants.some(
-            (participant) => participant.accountId === identity.uid && participant.online !== false,
-          ))
-      ) {
-        return jsonResponse(409, {
-          error: "Esta conta já está nesta sala em outro dispositivo.",
-          code: "already_in_room",
-        });
       }
       const participantId = randomId();
       const participantToken = randomId();
@@ -503,7 +519,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         };
       if (updated.phase === "playing" && canAdvanceRoomQuestion(updated, time))
         updated = advanceRoomQuestion(updated, time);
-      const publicState = await saveRoom(updated);
+      const publicState = await savePresence(state, updated);
       return jsonResponse(200, {
         state: publicState,
         participantId: state.participants.find((p) =>
