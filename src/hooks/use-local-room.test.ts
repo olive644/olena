@@ -93,7 +93,7 @@ describe("normalizeRoomState", () => {
       normalizeRoomState({
         ...base,
         participants: [
-          { id: "p", displayName: "Ana", score: 100, reward: { ...reward, xp: 1000 } },
+          { id: "p", displayName: "Ana", score: 100, reward: { ...reward, xp: 10001 } },
         ],
       }),
     ).toThrow("dados inválidos");

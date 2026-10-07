@@ -1879,3 +1879,37 @@
   grid-column: 1;
   grid-row: 1;
 }
+
+/* Diálogo de confirmação antes de encerrar a sala como anfitrião. Vai por portal para o body,
+   então usa cores fixas (como o diálogo de revisão do bingo) em vez das variáveis da sala. */
+dialog.room-confirm-dialog {
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 28px));
+  padding: 24px;
+  color: #fff9ef;
+  background: #544586;
+  border: 2px solid #d7baff;
+  border-radius: 4px 30px 4px 30px;
+  box-shadow: 0 8px 0 #312663;
+}
+
+dialog.room-confirm-dialog::backdrop {
+  background: #17131deb;
+}
+
+dialog.room-confirm-dialog h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+dialog.room-confirm-dialog p {
+  margin: 0 0 1.25rem;
+  line-height: 1.45;
+}
+
+.room-confirm-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

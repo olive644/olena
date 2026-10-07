@@ -10,8 +10,11 @@ import type { LocalRoomAnswerFeedback, PublicLocalRoomState } from "../domain/lo
 import { BingoSaturn } from "./bingo-saturn";
 import { BingoPlanet } from "./bingo-planet";
 import { BingoReview } from "./bingo-review";
+import { BingoParticipant } from "./bingo-participant";
 import type { BingoReviewDecision } from "../domain/local-room";
 import "./number-bingo.css";
+import { RoomConfetti } from "./room-paper-icons";
+import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
 
 function BingoIcon({ mode }: { mode: BingoMode }) {
   return (
@@ -33,6 +36,8 @@ export default function NumberBingo({
   onDraw,
   onAnswer,
   onReview,
+  onPhysical,
+  onFinalize,
 }: {
   state: PublicLocalRoomState;
   isHost: boolean;
@@ -41,10 +46,26 @@ export default function NumberBingo({
   onDraw: () => Promise<void>;
   onAnswer: (index: number, answer: string) => Promise<LocalRoomAnswerFeedback | undefined>;
   onReview?: ((claimId: string, decision: BingoReviewDecision) => Promise<void>) | undefined;
+  onPhysical?: ((value: boolean) => void) | undefined;
+  onFinalize?: (() => Promise<void>) | undefined;
 }) {
   const mode = state.settings.bingoMode ?? "line";
+  const Machine = isHost ? BingoSaturn : BingoParticipant;
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+  const cardRef = useRef<HTMLElement>(null);
+  const [reaction, setReaction] = useState<{
+    number: string;
+    points: number;
+    left: number;
+    top: number;
+    key: number;
+  } | null>(null);
+  useEffect(() => {
+    if (!reaction) return;
+    const timer = window.setTimeout(() => setReaction(null), 1500);
+    return () => window.clearTimeout(timer);
+  }, [reaction]);
   // Números já revelados pela animação do globo: só eles podem ser marcados, e a cartela não
   // entrega o número antes de a bolinha aparecer.
   const [revealed, setRevealed] = useState<readonly string[]>(state.drawnIds ?? []);
@@ -96,10 +117,18 @@ export default function NumberBingo({
             </button>
           ))}
         </div>
-        <p>
-          75 números, cartelas individuais 5 × 5 e um Sol livre no centro. O criador controla os
-          sorteios.
-        </p>
+        <label className="bingo-physical-setting secondary-button">
+          <img src="/room-icons/bingo-corners.svg" width="32" height="32" alt="" />
+          <span>
+            <strong>Bingo presencial</strong>
+            <small>Usar cartelas de papel, sem cartela digital.</small>
+          </span>
+          <input
+            type="checkbox"
+            checked={state.settings.bingoPhysical === true}
+            onChange={(e) => onPhysical?.(e.target.checked)}
+          />
+        </label>
       </section>
     );
   const participant = state.participants.find((item) => item.id === participantId);
@@ -122,6 +151,24 @@ export default function NumberBingo({
             ? "Esse número ainda não pode ser marcado."
             : "Não foi possível marcar. Tente de novo.",
         );
+      } else if (result.pointsChange > 0) {
+        const card = cardRef.current;
+        const cell = card?.querySelector<HTMLButtonElement>(`[data-number="${id}"]`);
+        if (card && cell) {
+          const bounds = card.getBoundingClientRect();
+          const ball = cell.getBoundingClientRect();
+          setReaction((last) => ({
+            number: id,
+            points: result.pointsChange,
+            key: (last?.key ?? 0) + 1,
+            left: Math.max(
+              62,
+              Math.min(bounds.width - 62, ball.left - bounds.left + ball.width / 2),
+            ),
+            top: Math.max(64, ball.top - bounds.top - 28),
+          }));
+          playRoomFeedbackSound(true, prepareRoomFeedbackSound());
+        }
       }
       setOptimistic((current) => current.filter((item) => item !== id));
     });
@@ -145,25 +192,20 @@ export default function NumberBingo({
   }
   return (
     <section className="number-bingo" aria-label="Bingo de números">
-      <BingoSaturn
+      <Machine
         drawn={drawn}
         isHost={isHost}
         pending={pending || !!state.bingoClaim}
         onDraw={draw}
         onReveal={reveal}
       >
-        {participant?.bingoCard && (
-          <section className="bingo-solar-card" aria-label="Minha cartela">
+        {!state.settings.bingoPhysical && !!participant?.bingoCard?.length && (
+          <section ref={cardRef} className="bingo-solar-card" aria-label="Minha cartela">
             <header>
               <div>
                 <small>Sistema solar</small>
                 <h3>Minha cartela</h3>
               </div>
-              <svg className="bingo-card-comet" viewBox="0 0 100 60" aria-hidden="true">
-                <path fill="#a779ef" d="M12 45 93 5 73 30 96 18 54 51Z" />
-                <path fill="#ffe88d" d="m12 45 63-22-26 24Z" />
-                <path fill="#facc15" d="m19 24 8 12 16 1-12 10 3 13-15-7-12 7 2-16L0 35l15-2Z" />
-              </svg>
             </header>
             <svg
               className="bingo-card-blackhole"
@@ -227,9 +269,14 @@ export default function NumberBingo({
                     }
                     aria-pressed={marked}
                     data-orbit={i % 5}
+                    data-number={id}
                     aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
                     disabled={
-                      !!state.bingoClaim || id === BINGO_FREE || marked || !revealed.includes(id)
+                      !!state.bingoClaim ||
+                      state.bingoWinnerIds?.includes(participantId) ||
+                      id === BINGO_FREE ||
+                      marked ||
+                      !revealed.includes(id)
                     }
                     onClick={() => mark(id)}
                   >
@@ -256,16 +303,32 @@ export default function NumberBingo({
                 );
               })}
             </div>
+            {reaction && (
+              <span
+                key={reaction.key}
+                className="bingo-ball-reaction"
+                role="status"
+                aria-label={`Bola ${reaction.number}: WOW! +${reaction.points} pontos!`}
+                style={{ left: reaction.left, top: reaction.top }}
+              >
+                <RoomConfetti compact />
+                <strong>WOW!</strong>
+                <small>+{reaction.points} pontos!</small>
+              </span>
+            )}
           </section>
         )}
-      </BingoSaturn>
-      {participant?.bingoCard && (
+      </Machine>
+      {participant && (
         <div className="bingo-claim">
           <button
             type="button"
             className="primary-button"
             disabled={
-              pending || !!state.bingoClaim || state.bingoWinnerIds?.includes(participantId)
+              !drawn.length ||
+              pending ||
+              !!state.bingoClaim ||
+              state.bingoWinnerIds?.includes(participantId)
             }
             onClick={() => void claim()}
           >
@@ -279,6 +342,27 @@ export default function NumberBingo({
           </p>
         </div>
       )}
+      {isHost && !!state.bingoWinnerIds?.length && !state.bingoClaim && (
+        <button
+          type="button"
+          className="secondary-button bingo-finalize"
+          disabled={pending || !onFinalize}
+          onClick={async () => {
+            setPending(true);
+            try {
+              await onFinalize?.();
+            } catch {
+              setMessage("Não foi possível definir os ganhadores. Tente novamente.");
+            } finally {
+              setPending(false);
+            }
+          }}
+        >
+          <img src="/room-icons/bingo-finish.svg" width="32" height="32" alt="" />
+          {state.bingoWinnerIds.length === 1 ? "Definir ganhador" : "Definir ganhadores"}
+        </button>
+      )}
+      {isHost && !participant && message && <p role="status">{message}</p>}
       {state.bingoClaim && <BingoReview state={state} isHost={isHost} onReview={onReview} />}
     </section>
   );
