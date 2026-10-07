@@ -92,7 +92,7 @@ describe("number bingo transport", () => {
     };
     expect(won.correct).toBe(true);
     expect(won.state.phase).toBe("playing");
-    expect(won.state.participants[0]!.score).toBe(5);
+    expect(won.state.participants[0]!.score).toBe(10);
     const review = (
       decision: string,
       hostToken = created.hostToken,
@@ -115,7 +115,7 @@ describe("number bingo transport", () => {
       }
     ).state;
     expect(accepted.bingoWinnerIds).toEqual([joined.participantId]);
-    expect(accepted.participants[0]!.score).toBe(105);
+    expect(accepted.participants[0]!.score).toBe(50);
     expect(accepted.phase).toBe("playing");
     expect(accepted.drawnIds).toEqual(won.state.drawnIds);
     expect(((await (await submit("bingo")).json()) as { correct: boolean }).correct).toBe(false);

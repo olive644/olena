@@ -181,7 +181,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Host-reviewed bingo claims, the account-name announcement and a read-only solar
 // card add 5.0 KiB, all in lazy room/bingo chunks. Measured total 1117.8 KiB,
 // initial entry 274.7 KiB. Retain only a narrow allowance for CI variance.
-const MAX_TOTAL_JS_BYTES = 1120 * 1024;
+// Physical bingo, the lightweight guest animation and equal-XP winner celebration add
+// 5.7 KiB to lazy room/bingo chunks. Measured total 1123.6 KiB, entry unchanged
+// at 274.7 KiB. No dependency; retain only a small cross-platform allowance.
+const MAX_TOTAL_JS_BYTES = 1126 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

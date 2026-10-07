@@ -15,6 +15,7 @@ describe("approved Saturn renderer", () => {
     restore: vi.fn(),
     clip: vi.fn(),
     fillText: vi.fn(),
+    drawImage: vi.fn(),
     translate: vi.fn(),
     rotate: vi.fn(),
     fillRect: vi.fn(),
@@ -71,20 +72,20 @@ describe("approved Saturn renderer", () => {
       top: 0,
     } as DOMRect);
     const engine = createApprovedSaturn(canvas)!;
-    context.fillText.mockClear();
+    context.drawImage.mockClear();
     engine.setDrawn(["1", "2"]);
     expect(canvas.dataset["remaining"]).toBe("73");
-    const labels = context.fillText.mock.calls
-      .map((call) => call[0])
-      .filter((label) => /^\d+$/.test(String(label)));
+    const labels = context.drawImage.mock.calls.map((call) => call[0].dataset.ballNumber);
     expect(labels).toHaveLength(73);
     expect(labels).not.toContain("1");
     expect(labels).not.toContain("2");
     engine.beginExit(3);
     engine.finishExit();
-    context.fillText.mockClear();
+    context.drawImage.mockClear();
     engine.setDrawn(["1", "2", "3"]);
-    expect(context.fillText.mock.calls.map((call) => call[0])).not.toContain("3");
+    expect(context.drawImage.mock.calls.map((call) => call[0].dataset.ballNumber)).not.toContain(
+      "3",
+    );
     expect(canvas.dataset["remaining"]).toBe("72");
     engine.setDrawn([]);
     expect(canvas.dataset["remaining"]).toBe("75");
@@ -103,12 +104,12 @@ describe("approved Saturn renderer", () => {
     engine.spin(true);
     const distances = vi.spyOn(Math, "hypot");
     context.fillText.mockClear();
+    context.drawImage.mockClear();
     frameCallback!(1016);
     // Quatro passos completos antes faziam mais de 33 mil chamadas por quadro.
     expect(distances.mock.calls.length).toBeLessThan(4000);
-    expect(
-      context.fillText.mock.calls.filter((call) => /^\d+$/.test(String(call[0]))),
-    ).toHaveLength(75);
+    expect(context.drawImage).toHaveBeenCalledTimes(75);
+    expect(context.fillText).not.toHaveBeenCalled();
     engine.dispose();
   });
 
@@ -135,11 +136,9 @@ describe("approved Saturn renderer", () => {
   it("não desenha a bolinha duas vezes: o número sorteado sai do globo ao começar a viagem", () => {
     const engine = createApprovedSaturn(sizedCanvas())!;
     engine.setDrawn(["1"]);
-    context.fillText.mockClear();
+    context.drawImage.mockClear();
     engine.beginExit(9);
-    const labels = context.fillText.mock.calls
-      .map((call) => call[0])
-      .filter((label) => /^\d+$/.test(String(label)));
+    const labels = context.drawImage.mock.calls.map((call) => call[0].dataset.ballNumber);
     expect(labels.filter((label) => label === "9")).toHaveLength(1);
     expect(labels).toHaveLength(74);
     engine.finishExit();
