@@ -184,7 +184,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Physical bingo, the lightweight guest animation and equal-XP winner celebration add
 // 5.7 KiB to lazy room/bingo chunks. Measured total 1123.6 KiB, entry unchanged
 // at 274.7 KiB. No dependency; retain only a small cross-platform allowance.
-const MAX_TOTAL_JS_BYTES = 1126 * 1024;
+// Splitting local-room.tsx into config and parts modules adds 0.1 KiB of module wrapper
+// overhead to the lazy room chunk (measured 1126.1 KiB). No behavior or dependency change.
+const MAX_TOTAL_JS_BYTES = 1128 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
