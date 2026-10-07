@@ -32,9 +32,13 @@ jobs:
         run: npm run verify
 
   e2e:
-    name: Desktop and mobile smoke tests
+    name: Desktop and mobile smoke tests (parte ${{ matrix.shard }} de 2)
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -45,10 +49,38 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      # A instalação dos navegadores depende da rede do runner e já levou de 46 segundos a mais
+      # de 25 minutos (estourando o limite do job). Cada tentativa tem tempo máximo e, se
+      # travar, é repetida em vez de gastar o job inteiro.
       - name: Install browsers
-        run: npx playwright install --with-deps chromium webkit
+        timeout-minutes: 20
+        run: |
+          for attempt in 1 2 3; do
+            if timeout --kill-after=10s 6m npx playwright install --with-deps chromium webkit; then
+              exit 0
+            fi
+            echo "Tentativa $attempt da instalação dos navegadores falhou ou passou do tempo."
+            sleep 5
+          done
+          exit 1
       - name: Run end-to-end tests
-        run: npm run test:e2e
+        timeout-minutes: 20
+        run: npm run test:e2e -- --shard=${{ matrix.shard }}/2
+
+  # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
+  e2e-result:
+    name: Desktop and mobile smoke tests
+    needs: e2e
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every end-to-end part to pass
+        env:
+          E2E_RESULT: ${{ needs.e2e.result }}
+        run: |
+          echo "Resultado das partes do e2e: $E2E_RESULT"
+          test "$E2E_RESULT" = "success"
 
   dependency-audit:
     name: Dependency audit and SBOM
