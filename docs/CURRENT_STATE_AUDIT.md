@@ -1828,6 +1828,12 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Todos os nós que faltavam são `.read: false`/`.write: false`: publicá-los não abriu nenhum acesso novo ao navegador (só a conta de serviço do backend, que ignora regras, já os usava). O ganho real é o `.indexOn: ["expiresAt"]` de cada um, necessário para `api/room-cleanup.ts` varrer e apagar itens vencidos de forma eficiente; antes da publicação, essas três funcionalidades (colaboração em cadernos, voz natural/áudio da sala, gravações do professor) rodavam sem limpeza automática programada.
 - Continua pendente, sem relação com esta mudança: a verificação do App Check (`docs/SECOND_BRAIN.md`) ainda está sem enforcement ativo declarado em produção.
 
+## Sala encerrada deixa de ser pública em 30 minutos (2026-10-06)
+
+- Auditoria completa do Modo Sala, oitava correção. O `expiresAt` da sala é definido só na criação (4 horas) e `endRoom` não o encurtava: depois de encerrada, a projeção pública em `/rooms/<código>` (nomes e avatares, legível sem login pelas regras do Firebase) continuava acessível pelas horas que sobravam.
+- `endRoom` (`src/domain/local-room.ts`) agora limita `expiresAt` a 30 minutos depois do encerramento (`ROOM_FINISHED_RETENTION_MS`), o que vale para encerramento pelo anfitrião, pela ausência dele e pelo fim da atividade. As regras já bloqueiam a leitura depois de `expiresAt`, e o TTL do estado privado e a varredura de `api/room-cleanup.ts` seguem o mesmo valor. A janela de 30 minutos cobre a tela de resultados de quem já estava conectado. Nunca estende uma sala que já estava perto de vencer, e encerrar uma sala já encerrada não mexe na validade.
+- Testes: três casos em `local-room.test.ts`; o principal falha sem a mudança.
+
 ## Quem perde a sessão volta para o mesmo lugar na sala (2026-10-06)
 
 - Auditoria completa do Modo Sala, sexta correção. Um aluno logado que perdia a sessão da aba (aba fechada, celular que descarregou o app: a credencial vive no `sessionStorage`) não conseguia voltar: o `join` recusava fora do lobby ("Esta sala já começou a atividade.") e, no lobby, recusava o próprio nome antigo ("Esse nome já está em uso nesta sala."), e só depois olhava a conta. O resultado era ficar de fora até o fim da atividade.

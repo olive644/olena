@@ -173,6 +173,9 @@ export {
 export const MAX_ROOM_PARTICIPANTS = 30;
 export const ROOM_TTL_SECONDS = 60 * 60 * 4;
 export const ROOM_PRESENCE_GRACE_MS = 120_000;
+// Depois de encerrada, a sala só precisa continuar legível o bastante para a tela de resultados
+// de quem já estava conectado. Nomes e avatares não ficam públicos pelas horas que sobravam.
+export const ROOM_FINISHED_RETENTION_MS = 30 * 60 * 1000;
 
 // Faixas do aviso de que a sala está perto de acabar (a sala dura 4 horas e encerra sozinha,
 // no meio da atividade). Só a faixa muda, não cada minuto, para o leitor de tela não ficar
@@ -821,7 +824,13 @@ export function finishNumberBingo(state: LocalRoomState, now: number): LocalRoom
 
 export function endRoom(state: LocalRoomState, now: number): LocalRoomState {
   if (state.phase === "finished") return state;
-  return { ...state, phase: "finished", updatedAt: now };
+  const retainedUntil = now + ROOM_FINISHED_RETENTION_MS;
+  return {
+    ...state,
+    phase: "finished",
+    updatedAt: now,
+    expiresAt: Math.min(state.expiresAt ?? retainedUntil, retainedUntil),
+  };
 }
 
 export function rankLocalRoomParticipants(
