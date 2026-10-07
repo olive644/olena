@@ -41,7 +41,8 @@ type Particle = {
 export function createApprovedSaturn(canvas: HTMLCanvasElement) {
   const context = canvas.getContext("2d");
   if (!context) return null;
-  const ctx: CanvasRenderingContext2D = context;
+  let ctx: CanvasRenderingContext2D = context;
+  const ballAtlas = new Map<number, HTMLCanvasElement>();
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const colors = ["#facc15", "#50bdc4", "#a779ef", "#ff8e77", "#fff0c7"],
     shades = ["#d4a600", "#147b83", "#51259b", "#c95649", "#d7b84b"],
@@ -633,7 +634,7 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
       }
     }
     cage(false);
-    function drawBall(n: number, x: number, y: number, r: number, roll: number) {
+    function paintBall(n: number, x: number, y: number, r: number, roll: number) {
       const g = group(n);
       const rollCos = Math.cos(roll),
         rollSin = Math.sin(roll);
@@ -660,6 +661,34 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
       ctx.fillText(["B", "I", "N", "G", "O"][g]!, -r * 0.02, -r * 0.29);
       ctx.font = "800 " + Math.max(5, r * 0.6) + "px Manrope,system-ui";
       ctx.fillText(String(n), -r * 0.02, r * 0.12);
+      ctx.restore();
+    }
+    function drawBall(n: number, x: number, y: number, r: number, roll: number) {
+      let sprite = ballAtlas.get(n);
+      if (!sprite) {
+        const tile = document.createElement("canvas");
+        tile.width = 128;
+        tile.height = 128;
+        tile.dataset["ballNumber"] = String(n);
+        const tileContext = tile.getContext("2d");
+        if (!tileContext) {
+          paintBall(n, x, y, r, roll);
+          return;
+        }
+        const sceneContext = ctx;
+        try {
+          ctx = tileContext;
+          paintBall(n, 64, 64, 62, 0);
+        } finally {
+          ctx = sceneContext;
+        }
+        ballAtlas.set(n, tile);
+        sprite = tile;
+      }
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(roll);
+      ctx.drawImage(sprite, (-r * 64) / 62, (-r * 64) / 62, (r * 128) / 62, (r * 128) / 62);
       ctx.restore();
     }
     // Brilho de papel atrás da bolinha escolhida enquanto ela sobe e espera.
@@ -882,6 +911,12 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
     paint();
   }
   const observer = new ResizeObserver(resize);
+  const refreshFonts = () => {
+    if (disposed) return;
+    ballAtlas.clear();
+    paint();
+  };
+  document.fonts?.addEventListener("loadingdone", refreshFonts);
   observer.observe(canvas);
   makeBodies();
   resize();
@@ -978,7 +1013,9 @@ export function createApprovedSaturn(canvas: HTMLCanvasElement) {
       disposed = true;
       cancelAnimationFrame(frameId);
       observer.disconnect();
+      document.fonts?.removeEventListener("loadingdone", refreshFonts);
       bodies.clear();
+      ballAtlas.clear();
       particles.length = 0;
       journey = null;
     },

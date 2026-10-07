@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   createApprovedSaturn,
   EXIT_TIMING,
@@ -7,6 +7,7 @@ import {
 } from "./bingo-saturn-engine";
 import { createSaturnSound, type SaturnSound } from "./bingo-saturn-sound";
 import { PaperBallSkin } from "./bingo-paper-ball";
+import { paperBallStyle as ballStyle } from "./bingo-ball-palette";
 
 // Tempos da sequência de um sorteio, em milissegundos. A viagem da bolinha dentro do globo
 // (EXIT_TIMING) é medida pelo próprio motor.
@@ -53,19 +54,6 @@ function tossFrames(
       offset: t,
     };
   });
-}
-const colors = ["#facc15", "#50bdc4", "#a779ef", "#ff8e77", "#fff0c7"];
-const shades = ["#d4a600", "#147b83", "#51259b", "#c95649", "#d7b84b"];
-const lights = ["#ffe88d", "#a4e8eb", "#d7baff", "#ffd3c5", "#fff9ef"];
-function ballStyle(number: string): CSSProperties {
-  const group = Math.floor((Number(number) - 1) / 15);
-  return {
-    "--ball-base": colors[group],
-    "--ball-color": colors[group],
-    "--ball-shade": shades[group],
-    "--ball-dark": ["#997207", "#0c5965", "#382066", "#8e383e", "#9b7d35"][group],
-    "--ball-light": lights[group],
-  } as CSSProperties;
 }
 function Ball({ number }: { number: string }) {
   return <PaperBallSkin number={number} />;

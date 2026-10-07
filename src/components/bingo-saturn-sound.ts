@@ -10,7 +10,7 @@ export function createSaturnSound() {
       if (!audio) {
         audio = new Constructor();
         audioMaster = audio.createGain();
-        audioMaster.gain.value = 0.32;
+        audioMaster.gain.value = 0.28;
         audioMaster.connect(audio.destination);
       }
       if (audio.state === "suspended") await audio.resume();
@@ -95,12 +95,12 @@ export function createSaturnSound() {
   function playMix() {
     stopMix();
     if (!audio || !audioMaster || !canSound()) return;
-    noise(2.6, 730, 0.095, 0, true);
-    for (let i = 0; i < 17; i++) {
-      const delay = 0.05 + i * 0.13,
-        level = 0.035 + Math.sin(i * 1.7) * 0.012;
-      tone(190 + (i % 4) * 23, 75, 0.065, level, delay, "triangle", true);
-      noise(0.035, 1000 + (i % 5) * 110, 0.027, delay, true);
+    noise(1.45, 480, 0.055, 0, true);
+    for (let i = 0; i < 10; i++) {
+      const delay = 0.03 + i * 0.13,
+        level = 0.04 + Math.sin(i * 1.7) * 0.008;
+      tone(160 + (i % 4) * 34, 70, 0.09, level, delay, "triangle", true);
+      noise(0.04, 850 + (i % 5) * 90, 0.024, delay, true);
     }
   }
   function playPick() {
@@ -108,15 +108,17 @@ export function createSaturnSound() {
     tone(660, 1180, 0.12, 0.05, 0.08, "sine");
   }
   function playExit() {
-    tone(330, 125, 0.075, 0.17);
-    noise(0.08, 1200, 0.12);
-    tone(210, 90, 0.075, 0.12, 0.22);
-    tone(175, 100, 0.09, 0.08, 0.4);
+    noise(0.32, 700, 0.06);
+    tone(420, 130, 0.18, 0.12, 0, "triangle");
+    tone(250, 110, 0.1, 0.08, 0.23);
+    tone(195, 90, 0.08, 0.055, 0.4);
+    tone(150, 75, 0.06, 0.035, 0.52);
   }
   function playReveal() {
-    tone(784, 784, 0.26, 0.14, 0, "triangle");
-    tone(1046.5, 1046.5, 0.33, 0.12, 0.1, "triangle");
-    tone(1318.5, 1318.5, 0.38, 0.055, 0.19, "sine");
+    [523.25, 659.25, 783.99, 1046.5].forEach((frequency, index) =>
+      tone(frequency, frequency, 0.4, 0.1, index * 0.085, "triangle"),
+    );
+    tone(1568, 1568, 0.55, 0.025, 0.28, "sine");
   }
   function playLand() {
     tone(150, 65, 0.075, 0.11);
