@@ -191,6 +191,30 @@ describe("sala concorrente", () => {
       expect(h.state().phase).toBe("lobby");
     },
   );
+  it.each(["resume", "heartbeat"])(
+    "o anfitrião que volta depois da tolerância (%s) não encerra a própria sala",
+    async (action) => {
+      const h = harness();
+      const room = await (await h.post("create", { settings: {} })).json();
+      // Sem ninguém conectado para notar a ausência, a tela do professor ficou bloqueada.
+      h.time(ROOM_PRESENCE_GRACE_MS + 2000);
+      const response = await h.post(action, {
+        code: room.code,
+        role: "host",
+        credential: room.hostToken,
+      });
+      expect(response.status).toBe(200);
+      expect(h.state().phase).toBe("lobby");
+    },
+  );
+
+  it("o anfitrião que sai de propósito ainda encerra a sala", async () => {
+    const h = harness();
+    const room = await (await h.post("create", { settings: {} })).json();
+    await h.post("leave", { code: room.code, role: "host", credential: room.hostToken });
+    expect(h.state().phase).toBe("finished");
+  });
+
   it("mantém criação e entrada idempotentes ao repetir o pedido", async () => {
     const h = harness();
     const create = { settings: {}, requestId: crypto.randomUUID() };

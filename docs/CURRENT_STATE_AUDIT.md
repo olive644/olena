@@ -1826,7 +1826,7 @@ duas pequenas divisões, mantendo todo o restante da composição.
 
 - Fechamento de uma pendência levantada numa auditoria ampla desta sessão: o `firebase-room.rules.json` do repositório tinha cinco nós (`notebook-collab`, `notebook-views`, `speech-audio`, `speech-rate-limit`, `speech-generation-rate-limit`, `room-recordings`) que nunca tinham sido publicados no console do Firebase, desde os PRs que os introduziram (#205, #307, #311). O dono confirmou a publicação do arquivo completo no Laboratório de testes de regras.
 - Todos os nós que faltavam são `.read: false`/`.write: false`: publicá-los não abriu nenhum acesso novo ao navegador (só a conta de serviço do backend, que ignora regras, já os usava). O ganho real é o `.indexOn: ["expiresAt"]` de cada um, necessário para `api/room-cleanup.ts` varrer e apagar itens vencidos de forma eficiente; antes da publicação, essas três funcionalidades (colaboração em cadernos, voz natural/áudio da sala, gravações do professor) rodavam sem limpeza automática programada.
-- Continua pendente, sem relação com esta mudança: a verificação do App Check (`docs/SECOND_BRAIN.md`) ainda está sem enforcement ativo declarado em produção.
+- O App Check já estava com enforcement ativo em produção (`FIREBASE_APPCHECK_ENFORCE=true` na Vercel, confirmado pelo dono no mesmo dia), então essa pendência da auditoria também ficou fechada.
 
 ## Bingo: recuperação, fila de conferência e acessibilidade geral (2026-10-07)
 
@@ -1835,3 +1835,9 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Última bola destacada em um selo solar compacto no cabeçalho do histórico, após a revelação, sem antecipar o resultado. O número também permanece no histórico.
 - Perfil oferece Reduzir movimento e Realçar seleções para toda a aplicação. Preferências locais, persistentes neste dispositivo, não sincronizadas em nuvem. Reduzir movimento respeita também a preferência do sistema e alcança CSS, globo, revelação, pódio e transições dos cadernos. Marcações conservam símbolos e estados acessíveis além da cor. Áudio não foi desativado.
 - Testes de reentrada digital/presencial, fila nos cinco modos, três pedidos concorrentes reais no handler, recuperação do stream do bingo, interface não bloqueante e persistência das configurações. Bundle medido: entrada 275,7 KiB e total 1129,5 KiB; teto total 1131 KiB, sem dependência nova.
+
+## Anfitrião que volta não encerra mais a própria sala (2026-10-06)
+
+- Auditoria completa do Modo Sala, primeira correção. Em `src/backend/local-room-handler.ts`, as ações `resume` e `heartbeat` encerravam a sala quando o anfitrião estava há mais de 2 minutos sem aparecer (`ROOM_PRESENCE_GRACE_MS`), inclusive quando quem chamava era o próprio anfitrião. Com a sala ainda vazia (ninguém para notar a ausência), um professor que bloqueou a tela do celular por três minutos voltava e via a sala encerrada.
+- Agora só os participantes encerram a sala por ausência do anfitrião; o anfitrião chamando `resume` ou `heartbeat` prova que está de volta. Sair de propósito (`leave`) continua encerrando para todos.
+- Testes: `room-concurrency.test.ts` (o anfitrião que volta depois da tolerância, por `resume` e por `heartbeat`, mantém a sala no lobby; o anfitrião que sai de propósito ainda encerra).
