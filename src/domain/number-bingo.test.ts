@@ -178,7 +178,7 @@ describe("number bingo", () => {
           answer: "bingo",
           now: 102,
         }).correct,
-      ).toBe(false);
+      ).toBe(participantId === "p2");
       state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 103);
     }
     expect(state.bingoWinnerIds).toEqual(["p", "p2"]);

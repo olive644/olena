@@ -1879,6 +1879,14 @@ duas pequenas divisões, mantendo todo o restante da composição.
 
 - O App Check já estava com enforcement ativo em produção (`FIREBASE_APPCHECK_ENFORCE=true` na Vercel, confirmado pelo dono no mesmo dia), então essa pendência da auditoria também ficou fechada.
 
+## Bingo: recuperação, fila de conferência e acessibilidade geral (2026-10-07)
+
+- Reaproveita a reentrada por conta proposta na PR #363 e os mecanismos de recuperação das PRs #358/#359. No bingo digital e presencial, perder a sessão não recria participante, cartela, marcas, pontos ou conferência. Reentrada pela mesma conta após a tolerância de ausência de 2 minutos; token anterior invalidado. Convidados ainda precisam da credencial da sessão. Não reabre uma sala encerrada.
+- Pedidos válidos de Bingo chegam a uma fila transacional. O anfitrião confere um por vez, em ordem de aceitação pelo servidor, não pelo relógio do aparelho. Novos sorteios ficam pausados, mas os demais participantes podem marcar números já sorteados e anunciar seu Bingo sem um modal bloquear a tela. Rejeição promove o próximo; reinício limpa fila e sorteios; terceiro vencedor confirmado encerra. Finalização antecipada mantém apenas os confirmados. Marcar não confirma vitória nem concede o bônus do objetivo.
+- Última bola destacada em um selo solar compacto no cabeçalho do histórico, após a revelação, sem antecipar o resultado. O número também permanece no histórico.
+- Perfil oferece Reduzir movimento e Realçar seleções para toda a aplicação. Preferências locais, persistentes neste dispositivo, não sincronizadas em nuvem. Reduzir movimento respeita também a preferência do sistema e alcança CSS, globo, revelação, pódio e transições dos cadernos. Marcações conservam símbolos e estados acessíveis além da cor. Áudio não foi desativado.
+- Testes de reentrada digital/presencial, fila nos cinco modos, três pedidos concorrentes reais no handler, recuperação do stream do bingo, interface não bloqueante e persistência das configurações. Bundle medido: entrada 275,7 KiB e total 1129,5 KiB; teto total 1131 KiB, sem dependência nova.
+
 ## Anfitrião que volta não encerra mais a própria sala (2026-10-06)
 
 - Auditoria completa do Modo Sala, primeira correção. Em `src/backend/local-room-handler.ts`, as ações `resume` e `heartbeat` encerravam a sala quando o anfitrião estava há mais de 2 minutos sem aparecer (`ROOM_PRESENCE_GRACE_MS`), inclusive quando quem chamava era o próprio anfitrião. Com a sala ainda vazia (ninguém para notar a ausência), um professor que bloqueou a tela do celular por três minutos voltava e via a sala encerrada.

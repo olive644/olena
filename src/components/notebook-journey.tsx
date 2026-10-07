@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
+import { isMotionReduced } from "../data/accessibility-preferences";
 import { createPortal } from "react-dom";
 import type { NotebookTab, StudyNotebook } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
@@ -21,10 +22,7 @@ export function notebookShelfCover(id: string) {
 }
 
 export function canAnimateNotebook() {
-  return (
-    typeof Element.prototype.animate === "function" &&
-    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  return typeof Element.prototype.animate === "function" && !isMotionReduced();
 }
 
 export function notebookPageSnapshot() {

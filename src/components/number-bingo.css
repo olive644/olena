@@ -1507,6 +1507,48 @@
 .number-bingo {
   position: relative;
 }
+.bingo-history .bingo-latest {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  background: #fff0c7;
+  color: #292432;
+  border-radius: 3px 18px 3px 18px;
+  border-left: 5px solid #d4a600;
+  box-shadow: 0 3px 0 #d7b84b;
+}
+.bingo-latest small,
+.bingo-latest strong {
+  display: block;
+}
+.bingo-latest strong {
+  font-size: 16px;
+  font-weight: 900;
+}
+.bingo-history .latest {
+  filter: drop-shadow(0 2px 0 #d4a600);
+}
+.bingo-latest .bingo-participant-ball {
+  width: 30px;
+  height: 30px;
+}
+.bingo-latest small {
+  font-size: 10px;
+}
+.bingo-history-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.bingo-history .bingo-history-heading h3 {
+  margin: 0;
+}
+.bingo-history-heading h3 small {
+  margin-left: 8px;
+}
 .bingo-ball-reaction {
   position: absolute;
   z-index: 10;
