@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
+import { isMotionReduced } from "../data/accessibility-preferences";
 import {
   NotebookJourney,
   canAnimateNotebook,
@@ -47,9 +48,7 @@ type Turn = {
   settling: boolean;
   automatic?: boolean;
 };
-const reducedMotion = () =>
-  typeof window.matchMedia === "function" &&
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reducedMotion = isMotionReduced;
 
 function PageImage({
   page,

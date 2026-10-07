@@ -104,6 +104,7 @@ export type LocalRoomState = {
   questionIndex: number;
   bingoDrawCount?: number | undefined;
   bingoClaim?: BingoClaim | undefined;
+  bingoClaimQueue?: BingoClaim[] | undefined;
   bingoWinnerIds?: string[] | undefined;
   questionStartedAt: number;
   countdownStartedAt?: number | undefined;
@@ -142,6 +143,7 @@ export type PublicLocalRoomState = {
   questionIndex: number;
   bingoDrawCount?: number | undefined;
   bingoClaim?: BingoClaim | undefined;
+  bingoClaimQueue?: BingoClaim[] | undefined;
   bingoWinnerIds?: string[] | undefined;
   questionStartedAt: number;
   countdownStartedAt?: number | undefined;
@@ -174,6 +176,21 @@ export const ROOM_PRESENCE_GRACE_MS = 120_000;
 // Depois de encerrada, a sala só precisa continuar legível o bastante para a tela de resultados
 // de quem já estava conectado. Nomes e avatares não ficam públicos pelas horas que sobravam.
 export const ROOM_FINISHED_RETENTION_MS = 30 * 60 * 1000;
+
+// Faixas do aviso de que a sala está perto de acabar (a sala dura 4 horas e encerra sozinha,
+// no meio da atividade). Só a faixa muda, não cada minuto, para o leitor de tela não ficar
+// anunciando a contagem inteira.
+const ROOM_EXPIRY_WARNING_BANDS_MINUTES = [1, 2, 5, 10] as const;
+
+export function roomExpiryWarningMinutes(
+  expiresAt: number | undefined,
+  now: number,
+): number | undefined {
+  if (expiresAt === undefined) return undefined;
+  const remainingMinutes = (expiresAt - now) / 60_000;
+  if (remainingMinutes <= 0) return undefined;
+  return ROOM_EXPIRY_WARNING_BANDS_MINUTES.find((band) => remainingMinutes <= band);
+}
 export const ROOM_FEEDBACK_MS = 3_000;
 export const ROOM_START_COUNTDOWN_MS = 3_000;
 
@@ -268,8 +285,28 @@ export function createLocalRoomCode(random?: () => number): string {
   return Array.from(bytes, (byte) => ROOM_CODE_ALPHABET[byte & 31]).join("");
 }
 
+// Controles e caracteres de formatação invisíveis (largura zero, marcas e inversões de direção
+// como U+202E, BOM). Ficam de fora o ZWNJ e o ZWJ (U+200C e U+200D), que escritas como o persa
+// e as sequências de emoji (👩‍💻) precisam para se formar.
+const INVISIBLE_CHARACTERS = /(?![‌‍])[\p{Cc}\p{Cf}]/gu;
+// Letras de preenchimento e o espaço braille: desenham um espaço em branco, mas não contam como
+// espaço, o que permitia nomes que parecem vazios na tela projetada.
+const BLANK_LOOKALIKES = /[⠀ㅤᅟᅠﾠ]/g;
+const DISPLAY_NAME_MAX_CHARACTERS = 24;
+
 export function sanitizeDisplayName(value: string): string {
-  return value.replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 24);
+  // Quebras de linha e tabulações viram espaço antes de os controles saírem, senão "Ana\nSilva"
+  // viraria "AnaSilva".
+  const cleaned = value
+    .normalize("NFC")
+    .replace(/[\t\n\r\v\f]/g, " ")
+    .replace(INVISIBLE_CHARACTERS, "")
+    .replace(BLANK_LOOKALIKES, "")
+    .replace(/[<>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  // Conta caracteres, não unidades UTF-16: cortar no meio de um emoji deixaria um símbolo quebrado.
+  return Array.from(cleaned).slice(0, DISPLAY_NAME_MAX_CHARACTERS).join("").trim();
 }
 
 export function localRoomStorageKey(code: string): string {
@@ -428,6 +465,7 @@ export function startRoom(
       dependencies.now + (state.settings.activity === "bingo" ? 0 : ROOM_START_COUNTDOWN_MS),
     bingoDrawCount: state.settings.activity === "bingo" && state.settings.bingoMode ? 0 : undefined,
     bingoClaim: undefined,
+    bingoClaimQueue: [],
     bingoWinnerIds: [],
     countdownStartedAt: state.settings.activity === "bingo" ? undefined : dependencies.now,
     answeredParticipantIds: [],
@@ -474,15 +512,20 @@ export function submitRoomAnswer(
       state.phase !== "playing" ||
       !participant ||
       state.bingoWinnerIds?.includes(participant.id) ||
-      state.bingoClaim ||
       dependencies.questionIndex !== state.questionIndex
     )
       return { state, correct: false, pointsChange: 0 };
     const drawn = numberBingoDrawnIds(state);
     if (dependencies.answer === "bingo") {
       if (
+        state.bingoClaim?.participantId === participant.id ||
+        state.bingoClaimQueue?.some((claim) => claim.participantId === participant.id)
+      )
+        return { state, correct: true, pointsChange: 0 };
+      if (
         state.bingoWinnerIds?.includes(participant.id) ||
-        (state.bingoWinnerIds?.length ?? 0) >= 3
+        (state.bingoWinnerIds?.length ?? 0) >= 3 ||
+        (state.bingoClaimQueue?.length ?? 0) >= MAX_ROOM_PARTICIPANTS
       )
         return { state, correct: false, pointsChange: 0 };
       const correct = state.settings.bingoPhysical
@@ -493,13 +536,16 @@ export function submitRoomAnswer(
             drawn,
             state.settings.bingoMode,
           );
+      const claim: BingoClaim = {
+        id: `${state.roundId}:${participant.id}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
+        participantId: participant.id,
+        claimedAt: dependencies.now,
+      };
       const claimed: LocalRoomState = {
         ...state,
-        bingoClaim: {
-          id: `${state.roundId}:${participant.id}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
-          participantId: participant.id,
-          claimedAt: dependencies.now,
-        },
+        ...(state.bingoClaim
+          ? { bingoClaimQueue: [...(state.bingoClaimQueue ?? []), claim] }
+          : { bingoClaim: claim }),
         updatedAt: dependencies.now,
       };
       return {
@@ -508,7 +554,12 @@ export function submitRoomAnswer(
         pointsChange: 0,
       };
     }
-    if (state.settings.bingoPhysical) return { state, correct: false, pointsChange: 0 };
+    if (
+      state.settings.bingoPhysical ||
+      state.bingoClaim?.participantId === participant.id ||
+      state.bingoClaimQueue?.some((claim) => claim.participantId === participant.id)
+    )
+      return { state, correct: false, pointsChange: 0 };
     const correct =
       drawn.includes(dependencies.answer) &&
       Boolean(participant.bingoCard?.includes(dependencies.answer));
@@ -718,7 +769,8 @@ export function reviewNumberBingo(
     return state;
   const reviewed: LocalRoomState = {
     ...state,
-    bingoClaim: undefined,
+    bingoClaim: decision === "finish" ? undefined : state.bingoClaimQueue?.[0],
+    bingoClaimQueue: decision === "finish" ? [] : (state.bingoClaimQueue ?? []).slice(1),
     bingoWinnerIds:
       decision === "continue" || decision === "finish"
         ? [...new Set([...(state.bingoWinnerIds ?? []), claim.participantId])]
@@ -736,7 +788,7 @@ export function reviewNumberBingo(
     updatedAt: now,
   };
   return decision === "finish" || reviewed.bingoWinnerIds!.length >= 3
-    ? finishNumberBingo(reviewed, now)
+    ? finishNumberBingo({ ...reviewed, bingoClaim: undefined, bingoClaimQueue: [] }, now)
     : reviewed;
 }
 
@@ -797,6 +849,9 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
       const publicParticipant = { ...participant };
       delete publicParticipant.token;
       delete publicParticipant.accountId;
+      // Só o servidor usa o horário de presença. Público, ele mudaria a cada batimento e
+      // obrigaria a republicar a sala inteira para todos os participantes.
+      delete publicParticipant.lastSeenAt;
       return publicParticipant;
     }),
     questionIndex: state.questionIndex,
@@ -805,6 +860,7 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
       : {}),
     ...(state.bingoDrawCount === undefined ? {} : { bingoDrawCount: state.bingoDrawCount }),
     ...(state.bingoClaim ? { bingoClaim: state.bingoClaim } : {}),
+    ...(state.bingoClaimQueue ? { bingoClaimQueue: state.bingoClaimQueue } : {}),
     ...(state.bingoWinnerIds ? { bingoWinnerIds: state.bingoWinnerIds } : {}),
     questionStartedAt: state.questionStartedAt,
     ...(state.countdownStartedAt === undefined

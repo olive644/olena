@@ -1,4 +1,9 @@
-import type { Dispatch } from "react";
+import { useState, type Dispatch } from "react";
+import {
+  useAccessibility,
+  updateAccessibility,
+  type AccessibilityPreferences,
+} from "../data/accessibility-preferences";
 import { PageHeader } from "../components/app-navigation";
 import { DeleteAccountPanel } from "../components/delete-account-panel";
 import { accountConfirmationName } from "../data/account-deletion";
@@ -32,6 +37,15 @@ export function ProfileView({
   history,
   onRestoreSnapshot,
 }: ProfileViewProps) {
+  const accessibility = useAccessibility();
+  const [accessibilityError, setAccessibilityError] = useState("");
+  function changeAccessibility(update: Partial<AccessibilityPreferences>) {
+    setAccessibilityError(
+      updateAccessibility(update)
+        ? ""
+        : "Não foi possível salvar neste dispositivo. Tente novamente.",
+    );
+  }
   function updatePomodoroMinutes(pomodoroMinutes: 25 | 50) {
     dispatch({
       type: "focus/preferences-updated",
@@ -78,6 +92,38 @@ export function ProfileView({
         <h1>Personalizar métodos de estudos</h1>
       </header>
 
+      <section className="accessibility-settings" aria-labelledby="accessibility-title">
+        <span className="section-label">Aplicativo</span>
+        <h2 id="accessibility-title">Acessibilidade</h2>
+        <p>Vale para todo o aplicativo neste dispositivo.</p>
+        <label>
+          <span>
+            <strong>Reduzir movimento</strong>
+            <small>
+              Menos giros, saltos e efeitos animados. A preferência do sistema também é respeitada.
+            </small>
+          </span>
+          <input
+            type="checkbox"
+            checked={accessibility.reduceMotion}
+            onChange={(e) => changeAccessibility({ reduceMotion: e.target.checked })}
+          />
+        </label>
+        <label>
+          <span>
+            <strong>Realçar seleções</strong>
+            <small>
+              Contornos mais fortes nas opções selecionadas, além das cores e dos símbolos.
+            </small>
+          </span>
+          <input
+            type="checkbox"
+            checked={accessibility.highlightSelections}
+            onChange={(e) => changeAccessibility({ highlightSelections: e.target.checked })}
+          />
+        </label>
+        {accessibilityError && <p role="alert">{accessibilityError}</p>}
+      </section>
       <section className="account-sync-settings" aria-labelledby="account-sync-title">
         <div>
           <span className="section-label">Conta e sincronização</span>

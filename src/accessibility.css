@@ -1,0 +1,47 @@
+:root[data-reduce-motion="true"] *,
+:root[data-reduce-motion="true"] *::before,
+:root[data-reduce-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+:root[data-highlight-selections="true"] [aria-pressed="true"],
+:root[data-highlight-selections="true"] [aria-selected="true"],
+:root[data-highlight-selections="true"] input:checked {
+  outline: 3px solid var(--text, #292432);
+  outline-offset: 2px;
+}
+:root[data-reduce-motion="true"] .bingo-ball-reaction {
+  animation: none !important;
+}
+.accessibility-settings {
+  padding: 20px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px 24px 4px 24px;
+  box-shadow: 0 4px 0 var(--line);
+}
+.accessibility-settings > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 60px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.accessibility-settings strong,
+.accessibility-settings small {
+  display: block;
+}
+.accessibility-settings small {
+  color: var(--muted);
+  margin-top: 4px;
+}
+.accessibility-settings input {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}

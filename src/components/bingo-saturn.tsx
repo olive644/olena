@@ -8,6 +8,8 @@ import {
 import { createSaturnSound, type SaturnSound } from "./bingo-saturn-sound";
 import { PaperBallSkin } from "./bingo-paper-ball";
 import { paperBallStyle as ballStyle } from "./bingo-ball-palette";
+import { BingoLatest } from "./bingo-latest";
+import { isMotionReduced } from "../data/accessibility-preferences";
 
 // Tempos da sequência de um sorteio, em milissegundos. A viagem da bolinha dentro do globo
 // (EXIT_TIMING) é medida pelo próprio motor.
@@ -142,7 +144,7 @@ function BingoSaturnView({
       return;
     }
     const n = ids.at(-1)!;
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = isMotionReduced();
     const controller = new AbortController();
     const motions = new Set<Animation>();
     const timers = new Set<number>();
@@ -341,9 +343,12 @@ function BingoSaturnView({
           </div>
         </div>
         <div className="bingo-history">
-          <h3>
-            Números sorteados <small>{visible.length}/75</small>
-          </h3>
+          <div className="bingo-history-heading">
+            <h3>
+              Números sorteados <small>{visible.length}/75</small>
+            </h3>
+            <BingoLatest number={latestVisible || undefined} />
+          </div>
           <div ref={historyRef} role="list" aria-label="Números sorteados">
             {visible.map((id) => (
               <span

@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
+import { isMotionReduced } from "../data/accessibility-preferences";
 import { createPortal } from "react-dom";
 
 export type NotebookPageJourneyState = {
@@ -64,10 +65,7 @@ export function NotebookPageJourney({
       if (!target || started || completed) return;
       started = true;
       observer.disconnect();
-      if (
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-        typeof element.animate !== "function"
-      ) {
+      if (isMotionReduced() || typeof element.animate !== "function") {
         finish();
         return;
       }
