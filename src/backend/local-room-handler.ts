@@ -280,6 +280,46 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
           streamUrl: dependencies.streamUrl(code),
         });
       }
+      // Quem entrou logado e perdeu a sessão (aba fechada, celular que descarregou o app) precisa
+      // conseguir voltar para o mesmo lugar, inclusive no meio da atividade, sem esbarrar na regra
+      // de nome repetido nem na de "a atividade já começou". Isso vem antes das outras checagens.
+      if (identity?.uid) {
+        const alreadyHere = {
+          error: "Esta conta já está nesta sala em outro dispositivo.",
+          code: "already_in_room",
+        };
+        if (state.hostAccountId === identity.uid) return jsonResponse(409, alreadyHere);
+        const own = state.participants.find((p) => p.accountId === identity.uid);
+        if (own) {
+          const time = now();
+          const stillPresent =
+            own.online !== false && time - (own.lastSeenAt ?? time) < ROOM_PRESENCE_GRACE_MS;
+          if (stillPresent) return jsonResponse(409, alreadyHere);
+          if (state.phase === "finished")
+            return jsonResponse(409, { error: "Esta sala já foi encerrada." });
+          const participantToken = randomId();
+          const rejoined: LocalRoomState = {
+            ...state,
+            participants: state.participants.map((p) =>
+              p.id === own.id
+                ? { ...p, token: participantToken, online: true, lastSeenAt: time }
+                : p,
+            ),
+            updatedAt: time,
+          };
+          if (requestId)
+            rejoined.receipts = {
+              ...rejoined.receipts,
+              [`join:${requestId}`]: { participantId: own.id, participantToken },
+            };
+          return jsonResponse(200, {
+            participantId: own.id,
+            participantToken,
+            state: await saveRoom(rejoined),
+            streamUrl: dependencies.streamUrl(code),
+          });
+        }
+      }
       if (state.phase !== "lobby") {
         return jsonResponse(409, { error: "Esta sala já começou a atividade." });
       }
@@ -292,18 +332,6 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         )
       ) {
         return jsonResponse(409, { error: "Esse nome já está em uso nesta sala." });
-      }
-      if (
-        identity?.uid &&
-        (state.hostAccountId === identity.uid ||
-          state.participants.some(
-            (participant) => participant.accountId === identity.uid && participant.online !== false,
-          ))
-      ) {
-        return jsonResponse(409, {
-          error: "Esta conta já está nesta sala em outro dispositivo.",
-          code: "already_in_room",
-        });
       }
       const participantId = randomId();
       const participantToken = randomId();
