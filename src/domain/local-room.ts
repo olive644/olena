@@ -823,6 +823,9 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
       const publicParticipant = { ...participant };
       delete publicParticipant.token;
       delete publicParticipant.accountId;
+      // Só o servidor usa o horário de presença. Público, ele mudaria a cada batimento e
+      // obrigaria a republicar a sala inteira para todos os participantes.
+      delete publicParticipant.lastSeenAt;
       return publicParticipant;
     }),
     questionIndex: state.questionIndex,

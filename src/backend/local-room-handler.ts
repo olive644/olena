@@ -204,6 +204,31 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
     return publicState;
   }
 
+  // Batimentos acontecem a cada poucos segundos por participante. Quando eles não mudam nada que
+  // o público veja (só o horário de presença, que é privado), não há motivo para subir a
+  // revisão: cada revisão nova é uma gravação no banco repassada a todos os streams da sala.
+  // O estado privado é gravado do mesmo jeito, para a tolerância de presença continuar valendo, e
+  // o publicador ainda é chamado: com a mesma revisão ele só consulta e não regrava, mas se a
+  // publicação anterior falhou depois de gravar, é aqui que ela se repara.
+  async function savePresence(
+    previous: LocalRoomState,
+    updated: LocalRoomState,
+  ): Promise<PublicLocalRoomState> {
+    const publicState = toPublicRoomState(updated);
+    if (JSON.stringify(publicState) !== JSON.stringify(toPublicRoomState(previous)))
+      return saveRoom(updated);
+    await dependencies.store.set(
+      localRoomStorageKey(updated.code),
+      JSON.stringify(updated),
+      Math.max(
+        1,
+        Math.ceil(((updated.expiresAt ?? now() + ROOM_TTL_SECONDS * 1000) - now()) / 1000),
+      ),
+    );
+    await dependencies.publish(updated.code, publicState);
+    return publicState;
+  }
+
   return async function handleLocalRoom(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const action = url.searchParams.get("action");
@@ -466,7 +491,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         };
       if (updated.phase === "playing" && canAdvanceRoomQuestion(updated, time))
         updated = advanceRoomQuestion(updated, time);
-      const publicState = await saveRoom(updated);
+      const publicState = await savePresence(state, updated);
       return jsonResponse(200, {
         state: publicState,
         participantId: state.participants.find((p) =>
