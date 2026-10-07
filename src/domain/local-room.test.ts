@@ -12,6 +12,7 @@ import {
   WRONG_ANSWER_PENALTY_POINTS,
   normalizeLocalRoomCode,
   rankLocalRoomParticipants,
+  roomExpiryWarningMinutes,
   repeatRoom,
   readLocalRoomCodeFromUrl,
   returnRoomToLobby,
@@ -500,5 +501,29 @@ describe("sala local", () => {
     expect(roomSecondsLeft(state, state.questionStartedAt - 500)).toBe(30);
     expect(roomSecondsLeft(state, state.questionStartedAt + 1)).toBe(30);
     expect(roomSecondsLeft(state, state.questionStartedAt + 30_000)).toBe(0);
+  });
+});
+
+describe("aviso de expiração da sala", () => {
+  const minute = 60_000;
+  const expiresAt = 100 * minute;
+
+  it("não avisa sem prazo definido, com a sala longe do fim ou depois de expirar", () => {
+    expect(roomExpiryWarningMinutes(undefined, 0)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt - 11 * minute)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt + minute)).toBeUndefined();
+  });
+
+  it("agrupa o tempo restante em faixas de 10, 5, 2 e 1 minuto", () => {
+    const at = (remaining: number) => roomExpiryWarningMinutes(expiresAt, expiresAt - remaining);
+    expect(at(10 * minute)).toBe(10);
+    expect(at(9.9 * minute)).toBe(10);
+    expect(at(5 * minute)).toBe(5);
+    expect(at(4.9 * minute)).toBe(5);
+    expect(at(2 * minute)).toBe(2);
+    expect(at(1.5 * minute)).toBe(2);
+    expect(at(minute)).toBe(1);
+    expect(at(1000)).toBe(1);
   });
 });
