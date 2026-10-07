@@ -42,23 +42,27 @@ type NavigationItem = {
 
 type StoredProfile = { name?: string; photoUrl?: string };
 
+function profileAvatar(name: string, photoUrl: string): StoredProfile {
+  return { name, photoUrl };
+}
+
 const PROFILE_AVATARS = [
-  { name: "Poliana", photoUrl: "/profile-avatars/poliana.webp" },
-  { name: "Oliver", photoUrl: "/profile-avatars/oliver.webp" },
-  { name: "Andreyna", photoUrl: "/profile-avatars/andreyna.webp" },
-  { name: "Jairo", photoUrl: "/profile-avatars/jairo.webp" },
-  { name: "Helena", photoUrl: "/profile-avatars/helena.webp" },
-  { name: "Alice", photoUrl: "/profile-avatars/alice.svg" },
-  { name: "Soso Estrelinha", photoUrl: "/profile-avatars/soso-estrelinha.svg" },
-  { name: "Nicolas", photoUrl: "/profile-avatars/nicolas.svg" },
-  { name: "Guilherme", photoUrl: "/profile-avatars/guilherme.svg" },
-  { name: "Erick", photoUrl: "/profile-avatars/erick.svg" },
-  { name: "Miau", photoUrl: "/profile-avatars/miau.svg" },
-  { name: "Luizão", photoUrl: "/profile-avatars/luizao.svg" },
-  { name: "Leticia", photoUrl: "/profile-avatars/leticia-coelho.svg" },
-  { name: "Anonha", photoUrl: "/profile-avatars/anonha-panda.svg" },
-  { name: "Moguel", photoUrl: "/profile-avatars/moguel-porquinho.svg" },
-  { name: "Leo", photoUrl: "/profile-avatars/leo.svg" },
+  profileAvatar("Poliana", "/profile-avatars/poliana.webp"),
+  profileAvatar("Oliver", "/profile-avatars/oliver.webp"),
+  profileAvatar("Andreyna", "/profile-avatars/andreyna.webp"),
+  profileAvatar("Jairo", "/profile-avatars/jairo.webp"),
+  profileAvatar("Helena", "/profile-avatars/helena.webp"),
+  profileAvatar("Alice", "/profile-avatars/alice.svg"),
+  profileAvatar("Soso Estrelinha", "/profile-avatars/soso-estrelinha.svg"),
+  profileAvatar("Nicolas", "/profile-avatars/nicolas.svg"),
+  profileAvatar("Guilherme", "/profile-avatars/guilherme.svg"),
+  profileAvatar("Erick", "/profile-avatars/erick.svg"),
+  profileAvatar("Miau", "/profile-avatars/miau.svg"),
+  profileAvatar("Luizão", "/profile-avatars/luizao.svg"),
+  profileAvatar("Leticia", "/profile-avatars/leticia-coelho.svg"),
+  profileAvatar("Anonha", "/profile-avatars/anonha-panda.svg"),
+  profileAvatar("Moguel", "/profile-avatars/moguel-porquinho.svg"),
+  profileAvatar("Leo", "/profile-avatars/leo.svg"),
 ] as const;
 
 function readStoredProfile(): StoredProfile {
