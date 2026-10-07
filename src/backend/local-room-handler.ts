@@ -448,9 +448,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         ...(role === "host" ? { hostLastSeenAt: time } : {}),
         updatedAt: time,
       };
+      // Quem avisa que o anfitrião sumiu são os participantes. O próprio anfitrião chamando
+      // `resume` ou `heartbeat` prova que ele está de volta, mesmo depois de a tela do celular
+      // ter ficado bloqueada além da tolerância.
       if (
         (role === "host" && action === "leave") ||
-        time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS
+        (role !== "host" && time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS)
       )
         updated = endRoom(updated, time);
       if (updated.phase === "lobby")
