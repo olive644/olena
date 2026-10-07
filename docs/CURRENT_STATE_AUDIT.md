@@ -1826,4 +1826,10 @@ duas pequenas divisões, mantendo todo o restante da composição.
 
 - Fechamento de uma pendência levantada numa auditoria ampla desta sessão: o `firebase-room.rules.json` do repositório tinha cinco nós (`notebook-collab`, `notebook-views`, `speech-audio`, `speech-rate-limit`, `speech-generation-rate-limit`, `room-recordings`) que nunca tinham sido publicados no console do Firebase, desde os PRs que os introduziram (#205, #307, #311). O dono confirmou a publicação do arquivo completo no Laboratório de testes de regras.
 - Todos os nós que faltavam são `.read: false`/`.write: false`: publicá-los não abriu nenhum acesso novo ao navegador (só a conta de serviço do backend, que ignora regras, já os usava). O ganho real é o `.indexOn: ["expiresAt"]` de cada um, necessário para `api/room-cleanup.ts` varrer e apagar itens vencidos de forma eficiente; antes da publicação, essas três funcionalidades (colaboração em cadernos, voz natural/áudio da sala, gravações do professor) rodavam sem limpeza automática programada.
-- Continua pendente, sem relação com esta mudança: a verificação do App Check (`docs/SECOND_BRAIN.md`) ainda está sem enforcement ativo declarado em produção.
+- O App Check já estava com enforcement ativo em produção (`FIREBASE_APPCHECK_ENFORCE=true` na Vercel, confirmado pelo dono no mesmo dia), então essa pendência da auditoria também ficou fechada.
+
+## Anfitrião que volta não encerra mais a própria sala (2026-10-06)
+
+- Auditoria completa do Modo Sala, primeira correção. Em `src/backend/local-room-handler.ts`, as ações `resume` e `heartbeat` encerravam a sala quando o anfitrião estava há mais de 2 minutos sem aparecer (`ROOM_PRESENCE_GRACE_MS`), inclusive quando quem chamava era o próprio anfitrião. Com a sala ainda vazia (ninguém para notar a ausência), um professor que bloqueou a tela do celular por três minutos voltava e via a sala encerrada.
+- Agora só os participantes encerram a sala por ausência do anfitrião; o anfitrião chamando `resume` ou `heartbeat` prova que está de volta. Sair de propósito (`leave`) continua encerrando para todos.
+- Testes: `room-concurrency.test.ts` (o anfitrião que volta depois da tolerância, por `resume` e por `heartbeat`, mantém a sala no lobby; o anfitrião que sai de propósito ainda encerra).
