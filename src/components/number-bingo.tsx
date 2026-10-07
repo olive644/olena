@@ -14,7 +14,6 @@ import { BingoParticipant } from "./bingo-participant";
 import type { BingoReviewDecision } from "../domain/local-room";
 import "./number-bingo.css";
 import { RoomConfetti } from "./room-paper-icons";
-import { PaperDigits } from "./paper-digits";
 import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
 
 function BingoIcon({ mode }: { mode: BingoMode }) {
@@ -54,18 +53,19 @@ export default function NumberBingo({
   const Machine = isHost ? BingoSaturn : BingoParticipant;
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
-  const ownScore = state.participants.find((p) => p.id === participantId)?.score ?? 0;
-  const previousScore = useRef(ownScore);
-  const [pointsBurst, setPointsBurst] = useState({ points: 0, key: 0 });
+  const cardRef = useRef<HTMLElement>(null);
+  const [reaction, setReaction] = useState<{
+    number: string;
+    points: number;
+    left: number;
+    top: number;
+    key: number;
+  } | null>(null);
   useEffect(() => {
-    const gained = ownScore - previousScore.current;
-    previousScore.current = ownScore;
-    if (gained <= 0) return;
-    setPointsBurst((last) => ({ points: gained, key: last.key + 1 }));
-    playRoomFeedbackSound(true, prepareRoomFeedbackSound());
-    const timer = window.setTimeout(() => setPointsBurst((last) => ({ ...last, points: 0 })), 1600);
+    if (!reaction) return;
+    const timer = window.setTimeout(() => setReaction(null), 1500);
     return () => window.clearTimeout(timer);
-  }, [ownScore]);
+  }, [reaction]);
   // Números já revelados pela animação do globo: só eles podem ser marcados, e a cartela não
   // entrega o número antes de a bolinha aparecer.
   const [revealed, setRevealed] = useState<readonly string[]>(state.drawnIds ?? []);
@@ -151,6 +151,24 @@ export default function NumberBingo({
             ? "Esse número ainda não pode ser marcado."
             : "Não foi possível marcar. Tente de novo.",
         );
+      } else if (result.pointsChange > 0) {
+        const card = cardRef.current;
+        const cell = card?.querySelector<HTMLButtonElement>(`[data-number="${id}"]`);
+        if (card && cell) {
+          const bounds = card.getBoundingClientRect();
+          const ball = cell.getBoundingClientRect();
+          setReaction((last) => ({
+            number: id,
+            points: result.pointsChange,
+            key: (last?.key ?? 0) + 1,
+            left: Math.max(
+              62,
+              Math.min(bounds.width - 62, ball.left - bounds.left + ball.width / 2),
+            ),
+            top: Math.max(64, ball.top - bounds.top - 28),
+          }));
+          playRoomFeedbackSound(true, prepareRoomFeedbackSound());
+        }
       }
       setOptimistic((current) => current.filter((item) => item !== id));
     });
@@ -172,21 +190,8 @@ export default function NumberBingo({
       setPending(false);
     }
   }
-  const pointsPanel = (
-    <div className="bingo-points-meter" aria-label={`${ownScore} pontos`}>
-      <BingoPlanet index={2} />
-      <PaperDigits value={String(ownScore)} />
-      <small>pontos</small>
-      {pointsBurst.points > 0 && (
-        <span key={pointsBurst.key} className="bingo-points-burst" role="status">
-          <RoomConfetti compact />+{pointsBurst.points} pontos
-        </span>
-      )}
-    </div>
-  );
   return (
     <section className="number-bingo" aria-label="Bingo de números">
-      {state.settings.bingoPhysical && participant && pointsPanel}
       <Machine
         drawn={drawn}
         isHost={isHost}
@@ -195,13 +200,12 @@ export default function NumberBingo({
         onReveal={reveal}
       >
         {!state.settings.bingoPhysical && !!participant?.bingoCard?.length && (
-          <section className="bingo-solar-card" aria-label="Minha cartela">
+          <section ref={cardRef} className="bingo-solar-card" aria-label="Minha cartela">
             <header>
               <div>
                 <small>Sistema solar</small>
                 <h3>Minha cartela</h3>
               </div>
-              {pointsPanel}
             </header>
             <svg
               className="bingo-card-blackhole"
@@ -265,6 +269,7 @@ export default function NumberBingo({
                     }
                     aria-pressed={marked}
                     data-orbit={i % 5}
+                    data-number={id}
                     aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
                     disabled={
                       !!state.bingoClaim ||
@@ -298,6 +303,19 @@ export default function NumberBingo({
                 );
               })}
             </div>
+            {reaction && (
+              <span
+                key={reaction.key}
+                className="bingo-ball-reaction"
+                role="status"
+                aria-label={`Bola ${reaction.number}: WOW! +${reaction.points} pontos!`}
+                style={{ left: reaction.left, top: reaction.top }}
+              >
+                <RoomConfetti compact />
+                <strong>WOW!</strong>
+                <small>+{reaction.points} pontos!</small>
+              </span>
+            )}
           </section>
         )}
       </Machine>

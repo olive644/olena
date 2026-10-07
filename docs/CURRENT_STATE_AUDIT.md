@@ -1,5 +1,10 @@
 # Auditoria do estado atual
 
+## Reação de pontos junto da bola (2026-10-06)
+
+- Removidos contador e aviso de pontos do topo. Marca aceita com pointsChange positivo mostra WOW! +pontos junto da célula correspondente, com papel dourado, confete e som compartilhado. Posição usa limites reais da cartela e mantém a reação dentro do cartão, inclusive nos cantos. Dura 1,5 segundo e não altera layout nem bloqueia cliques.
+- Reação nasce da resposta confirmada da marcação, não de mudanças gerais de score ou reconexão. Falhas e duplicatas não animam; timer cancela ao desmontar ou substituir a reação. Movimento reduzido mantém o feedback estático e temporário. Regras de pontos, XP e pódio não mudam.
+
 ## Bingo: três lugares e recompensa proporcional (2026-10-06)
 
 - Substitui o resultado anterior sem pódio: reaproveitado Podium da escuta com variante solar e planetas de papel. A classificação segue bingoWinnerIds, não score. A terceira confirmação encerra automaticamente, impedindo quarto vencedor.

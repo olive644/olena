@@ -36,26 +36,30 @@ function state(): PublicLocalRoomState {
 }
 
 describe("solar bingo interface", () => {
-  it("mostra efeitos somente para novos pontos confirmados", async () => {
+  it("reage junto à bola aceita e some, sem pontos pairando no topo", async () => {
     const base = { ...state(), phase: "playing" as const };
     const props = {
       isHost: false,
       participantId: "p",
       onMode: vi.fn(),
       onDraw: vi.fn(),
-      onAnswer: vi.fn(),
+      onAnswer: vi.fn().mockResolvedValue({ correct: true, pointsChange: 2 }),
     };
     const { rerender } = render(<NumberBingo state={base} {...props} />);
-    expect(document.querySelector(".bingo-points-burst")).toBeNull();
+    expect(document.querySelector(".bingo-ball-reaction")).toBeNull();
     const scored = { ...base, participants: base.participants.map((p) => ({ ...p, score: 2 })) };
     rerender(<NumberBingo state={scored} {...props} />);
-    await waitFor(() =>
-      expect(document.querySelector(".bingo-points-burst")?.textContent).toContain("+2 pontos"),
-    );
-    expect(screen.getByLabelText("2 pontos")).toBeTruthy();
-    const key = document.querySelector(".bingo-points-burst");
+    expect(document.querySelector(".bingo-ball-reaction")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "B 1" }));
+    await waitFor(() => expect(screen.getByLabelText("Bola 1: WOW! +2 pontos!")).toBeTruthy());
+    expect(document.querySelector(".bingo-solar-card .bingo-ball-reaction")).toBeTruthy();
+    expect(document.querySelector(".bingo-points-meter")).toBeNull();
+    const key = document.querySelector(".bingo-ball-reaction");
     rerender(<NumberBingo state={{ ...scored }} {...props} />);
-    expect(document.querySelector(".bingo-points-burst")).toBe(key);
+    expect(document.querySelector(".bingo-ball-reaction")).toBe(key);
+    await waitFor(() => expect(document.querySelector(".bingo-ball-reaction")).toBeNull(), {
+      timeout: 2000,
+    });
   });
   it("oferece Bingo presencial antes da criação e remove a legenda antiga", () => {
     const onPhysical = vi.fn();

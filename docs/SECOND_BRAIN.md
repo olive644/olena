@@ -13,6 +13,9 @@ com variante solar (Saturno, Júpiter, Terra). Reabrir não deve duplicar XP.
 Resultado sem fundo verde ou retrato avulso. RoomSolarTrophyFrame reaproveita
 anel de room-trophies.svg e cria coroas planetárias e ramos facetados.
 Lista ordenada usa RoomAvatar também, com nomes, pontos e XP.
+Marcação confirmada reage perto da própria bola: WOW! +pontos, confete e som.
+Não mostrar contador ou aviso pairando no topo. Reação dura 1,5 s, posicionada
+dentro dos limites da cartela. Resposta recusada ou duplicada não cria reação.
 Cada marca digital verificada vale 2 pontos. Bônus confirmado: cantos 30;
 linha, coluna e diagonal 40; cartela cheia 100. Presencial recebe só bônus,
 pois não há prova digital das marcações. Vencedores não continuam pontuando.

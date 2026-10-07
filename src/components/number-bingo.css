@@ -1504,64 +1504,55 @@
     padding: 8px;
   }
 }
-.bingo-points-meter {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 0 auto;
-  color: var(--text);
-}
 .number-bingo {
   position: relative;
 }
-.number-bingo > .bingo-points-meter {
-  position: absolute;
-  top: 0;
-  right: 16px;
-  z-index: 3;
-  font-size: 11px;
-}
-.number-bingo > .bingo-points-meter > svg {
-  width: 22px;
-  height: 22px;
-}
-.bingo-points-meter > svg {
-  width: 32px;
-  height: 32px;
-}
-.bingo-points-meter .paper-digits {
-  height: 24px;
-}
-.bingo-solar-card .bingo-points-meter {
-  color: #fff9ef;
-}
-.bingo-points-burst {
+.bingo-ball-reaction {
   position: absolute;
   z-index: 10;
-  top: 28px;
-  background: #147b83;
-  color: #fff9ef;
-  border-bottom: 4px solid #0c5965;
-  padding: 10px 20px;
-  border-radius: 3px 16px 3px 16px;
+  pointer-events: none;
+  display: grid;
+  justify-items: center;
+  width: 116px;
+  padding: 6px 8px;
+  background: #facc15;
+  color: #292432;
+  border-bottom: 4px solid #c99a00;
+  border-radius: 3px 14px 3px 14px;
   white-space: nowrap;
-  animation: bingo-points-flight 1600ms ease-out both;
+  transform: translateX(-50%);
+  animation: bingo-points-flight 1500ms ease-out both;
+}
+.bingo-ball-reaction::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-top: 12px solid #ffe88d;
+  border-left: 16px solid transparent;
+}
+.bingo-ball-reaction strong {
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+}
+.bingo-ball-reaction small {
+  font-size: 11px;
+  font-weight: 800;
 }
 @keyframes bingo-points-flight {
   0% {
     opacity: 0;
-    transform: translateY(12px) scale(0.85);
+    transform: translate(-50%, 10px) scale(0.75) rotate(-6deg);
   }
   20%,
   70% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate(-50%, 0) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translate(-50%, -14px) scale(1.05);
   }
 }
 .bingo-winners .bingo-solar-podium .local-room-podium__place--1 {
@@ -1618,7 +1609,7 @@
   font-size: 12px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .bingo-points-burst {
+  .bingo-ball-reaction {
     animation: none;
   }
 }
