@@ -7,7 +7,7 @@ test.afterEach(async ({ browser }) => {
 });
 
 for (const physical of [false, true])
-  test(`quatro ganhadores e XP sem pódio, presencial=${physical}`, async ({
+  test(`três ganhadores em ordem e XP por esforço, presencial=${physical}`, async ({
     page,
     context,
     browser,
@@ -169,7 +169,7 @@ for (const physical of [false, true])
     await guest.emulateMedia({ reducedMotion: "reduce" });
     // Percorre os sorteios reais, sem alterar baralho ou regra das cartelas independentes.
     for (let draw = 1; draw < 75; draw++) await api("next", room);
-    for (const [index, player] of players.entries()) {
+    for (const [index, player] of players.slice(0, 3).entries()) {
       const client = pages[index + 1]!;
       const card = latest!.participants.find((p) => p.id === player.participantId)!.bingoCard!;
       for (const i of physical ? [] : [0, 4, 20, 24]) {
@@ -221,21 +221,31 @@ for (const physical of [false, true])
       });
       await hostAnnouncement
         .getByRole("button", {
-          name: index === 3 && !physical ? "Definir ganhadores" : "Continuar partida",
+          name: "Continuar partida",
           exact: true,
         })
         .click({ timeout: 10_000 });
       await expect(hostAnnouncement).toHaveCount(0);
       await expect(client.locator(".bingo-review")).toHaveCount(0);
-      expect(latest!.phase).toBe(index === 3 && !physical ? "results" : "playing");
+      expect(latest!.phase).toBe(index === 2 ? "results" : "playing");
       expect(latest!.bingoWinnerIds).toContain(player.participantId);
-      await expect(page.locator(".local-room-podium")).toHaveCount(0);
-      await expect(client.locator(".local-room-podium")).toHaveCount(0);
+      await expect(page.locator(".local-room-podium")).toHaveCount(index === 2 ? 1 : 0);
+      await expect(client.locator(".local-room-podium")).toHaveCount(index === 2 ? 1 : 0);
     }
-    if (physical)
-      await page.getByRole("button", { name: "Definir ganhadores", exact: true }).click();
-    expect(latest!.bingoWinnerIds).toEqual(players.map((p) => p.participantId));
-    expect(latest!.participants.map((p) => p.reward?.xp)).toEqual([100, 100, 100, 100]);
+    expect(latest!.bingoWinnerIds).toEqual(players.slice(0, 3).map((p) => p.participantId));
+    const expectedXp = physical ? 11 : 13;
+    expect(latest!.participants.map((p) => p.reward?.xp)).toEqual([
+      expectedXp,
+      expectedXp,
+      expectedXp,
+      undefined,
+    ]);
+    expect(latest!.participants.map((p) => p.reward?.place)).toEqual([1, 2, 3, undefined]);
+    await expect(page.locator(".local-room-podium__place")).toHaveCount(3);
+    await expect(page.locator(".room-solar-trophy")).toHaveCount(3);
+    await expect(page.locator(".bingo-winners-order .room-player-avatar")).toHaveCount(3);
+    await expect(page.getByAltText("Poliana celebrando")).toHaveCount(0);
+    await expect(page.locator(".room-eclipse-name")).toHaveText(["Saturno", "Júpiter", "Terra"]);
     await expect(page.getByRole("region", { name: "Ganhadores do bingo" })).toBeVisible();
     await page.screenshot({
       path: testInfo.outputPath(`ganhadores-presencial-${physical}.png`),
@@ -247,19 +257,19 @@ for (const physical of [false, true])
           () => JSON.parse(localStorage.getItem("helena.room-xp.v1") ?? "{}").total,
         ),
       )
-      .toBe(100);
+      .toBe(expectedXp);
     await pages[1]!.reload();
     await expect(pages[1]!.getByRole("region", { name: "Ganhadores do bingo" })).toBeVisible();
     await expect(pages[1]!.locator(".bingo-winners")).toHaveCSS(
       "background-color",
-      "rgb(12, 89, 101)",
+      "rgba(0, 0, 0, 0)",
     );
     expect(
       await pages[1]!.evaluate(
         () => JSON.parse(localStorage.getItem("helena.room-xp.v1") ?? "{}").total,
       ),
-    ).toBe(100);
-    for (const client of pages.slice(1)) {
+    ).toBe(expectedXp);
+    for (const client of pages.slice(1, 4)) {
       await expect(client.getByRole("region", { name: "Ganhadores do bingo" })).toBeVisible();
       await expect
         .poll(() =>
@@ -267,7 +277,7 @@ for (const physical of [false, true])
             () => JSON.parse(localStorage.getItem("helena.room-xp.v1") ?? "{}").total,
           ),
         )
-        .toBe(100);
+        .toBe(expectedXp);
     }
     // Quem reconecta somente depois de Encerrar sala também recupera seu XP.
     await pages[2]!.evaluate(() => localStorage.removeItem("helena.room-xp.v1"));
@@ -281,7 +291,7 @@ for (const physical of [false, true])
           () => JSON.parse(localStorage.getItem("helena.room-xp.v1") ?? "{}").total,
         ),
       )
-      .toBe(100);
+      .toBe(expectedXp);
     await pages[2]!.reload();
     await expect(
       pages[2]!.getByRole("heading", { name: "Sala encerrada", exact: true }),
@@ -290,6 +300,6 @@ for (const physical of [false, true])
       await pages[2]!.evaluate(
         () => JSON.parse(localStorage.getItem("helena.room-xp.v1") ?? "{}").total,
       ),
-    ).toBe(100);
+    ).toBe(expectedXp);
     for (const guest of guestContexts) await guest.close();
   });

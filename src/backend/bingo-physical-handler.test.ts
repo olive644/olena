@@ -55,7 +55,7 @@ it("protege conferência presencial e finalização, mantém recibos em reenvios
     (await (await post("bingo-finalize", room)).json()) as { state: PublicLocalRoomState }
   ).state;
   expect(finished.phase).toBe("results");
-  expect(finished.participants[0]!.reward?.xp).toBe(100);
+  expect(finished.participants[0]!.reward?.xp).toBe(35);
   const retry = (
     (await (await post("bingo-finalize", room)).json()) as { state: PublicLocalRoomState }
   ).state;

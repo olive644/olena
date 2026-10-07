@@ -100,7 +100,7 @@ describe("sala local", () => {
     expect(fast.pointsChange).toBeGreaterThan(slow.pointsChange);
     expect(slow.state.participants.every((p) => p.reward === undefined)).toBe(true);
     const result = advanceRoomQuestion(slow.state, single.questionStartedAt + 18000);
-    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 75]);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([50, 30]);
     expect(result.participants.map((p) => p.reward?.place)).toEqual([1, 2]);
     expect(advanceRoomQuestion(result, single.questionStartedAt + 19000)).toBe(result);
     expect(endRoom(result, single.questionStartedAt + 19000).participants[0]?.reward).toEqual(
@@ -125,7 +125,7 @@ describe("sala local", () => {
       },
       started.questionStartedAt + 30000,
     );
-    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 100, 0]);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([50, 50, 0]);
     expect(
       endRoom(started, started.questionStartedAt + 1).participants.every((p) => !p.reward),
     ).toBe(true);

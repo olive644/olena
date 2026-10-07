@@ -7,8 +7,18 @@ hasNumberBingo continua obrigatório tanto no anúncio quanto na confirmação.
 
 bingo-review finish confirma o anúncio e finaliza; bingo-finalize finaliza somente
 vencedores já confirmados depois de Continuar partida. Ambos exigem host.
-Todos os bingoWinnerIds recebem 100 XP, com recibo estável por geração/rodada/pessoa.
-BingoWinners não usa o pódio. Reabrir o resultado não deve duplicar XP.
+Bingo limita vencedores a três, em ordem de confirmação, sem ordenar por pontos.
+A terceira confirmação finaliza automaticamente. BingoWinners reutiliza Podium
+com variante solar (Saturno, Júpiter, Terra). Reabrir não deve duplicar XP.
+Resultado sem fundo verde ou retrato avulso. RoomSolarTrophyFrame reaproveita
+anel de room-trophies.svg e cria coroas planetárias e ramos facetados.
+Lista ordenada usa RoomAvatar também, com nomes, pontos e XP.
+Cada marca digital verificada vale 2 pontos. Bônus confirmado: cantos 30;
+linha, coluna e diagonal 40; cartela cheia 100. Presencial recebe só bônus,
+pois não há prova digital das marcações. Vencedores não continuam pontuando.
+XP final por esforço: Bingo arredonda score * .35; escuta score * .5.
+Não há mais teto fixo de 100 XP. Recibos e normalização aceitam até 10000
+como limite defensivo, com identidade estável por geração/rodada/pessoa.
 
 BingoParticipant é o palco sem Canvas dos participantes: mini Saturno em CSS/SVG,
 aviso, revelação e histórico. Não montar o motor físico nos clientes participantes.

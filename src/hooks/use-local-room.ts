@@ -139,7 +139,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
                 p.reward.place < 1 ||
                 !Number.isSafeInteger(p.reward.xp) ||
                 p.reward.xp < 0 ||
-                p.reward.xp > 100 ||
+                p.reward.xp > 10000 ||
                 !Number.isFinite(p.reward.completedAt))) ||
             !strings(p.bingoCard) ||
             !strings(p.bingoMarks),

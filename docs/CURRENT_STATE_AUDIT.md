@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Bingo: três lugares e recompensa proporcional (2026-10-06)
+
+- Substitui o resultado anterior sem pódio: reaproveitado Podium da escuta com variante solar e planetas de papel. A classificação segue bingoWinnerIds, não score. A terceira confirmação encerra automaticamente, impedindo quarto vencedor.
+- Marca digital válida vale 2 pontos, sem duplicação; objetivos confirmados valem 30 (cantos), 40 (linha/coluna/diagonal) ou 100 (cheia). Recusa não dá bônus. Presencial dá somente bônus conferido pelo host. Após vitória, marcações ficam bloqueadas.
+- XP final arredonda score multiplicado por 0,35 no Bingo e 0,5 na escuta. A escuta mantém seus pontos de acerto e velocidade, mas deixa XP fixo por colocação. Teto defensivo de 10000 substitui o teto de 100 na normalização e no ledger; recibos continuam idempotentes.
+- Feedback de ganho somente após score confirmado: contador, confete compacto, placa turquesa animada e som de acerto compartilhado. Movimento reduzido não anima. Resultado exibe pontos e XP dos três vencedores. Sem dependências novas.
+- Ajuste visual solicitado: resultado sem painel verde nem avatar solto da Poliana. Cada foto recebe a moldura facetada de troféu compartilhada, com coroa de Saturno, Júpiter ou Terra e ramos de papel, sem sobrepor o rosto. A escuta mantém as molduras originais.
+- Validação: verify passou com 1065 testes em 172 arquivos, tipos, APIs, build e orçamento. Ajustes visuais finais receberam testes direcionados e lint; seis cenários de regras/animação/pódio da escuta e quatro cenários finais de Bingo online/presencial passaram em Edge desktop e móvel. Provas usam handler real com store em memória, não produção Firebase. JavaScript inicial 274,7 KiB e total 1125,9 KiB.
+
 ## Bingo presencial, participantes e finalização (2026-10-06)
 
 - bingoPhysical é configurável antes de criar a sala. Rodadas presenciais não geram cartelas digitais, bloqueiam marcações digitais e deixam a conferência da cartela de papel a cargo do criador autenticado. O anúncio exige pelo menos um sorteio. O online preserva a validação dos cinco padrões pelo servidor.

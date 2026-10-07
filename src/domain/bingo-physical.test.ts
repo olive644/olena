@@ -10,6 +10,7 @@ import {
   toPublicRoomState,
 } from "./local-room";
 import { BINGO_MODES, bingoPatterns } from "./number-bingo";
+import { BINGO_OBJECTIVE_POINTS, roomEffortXp } from "./local-room";
 
 function round(physical: boolean, mode: (typeof BINGO_MODES)[number] = "corners") {
   let state = createRoom(
@@ -29,6 +30,12 @@ function round(physical: boolean, mode: (typeof BINGO_MODES)[number] = "corners"
 }
 
 describe("Bingo presencial e ganhadores", () => {
+  it("XP cresce com esforço e escuta converte mais que bingo", () => {
+    expect(roomEffortXp(200, "listening")).toBe(100);
+    expect(roomEffortXp(600, "listening")).toBe(300);
+    expect(roomEffortXp(600, "bingo")).toBe(210);
+    expect(roomEffortXp(0, "listening")).toBe(0);
+  });
   it("não disponibiliza cartelas nem aceita marcação digital e exige sorteio antes do anúncio", () => {
     const state = round(true);
     expect(toPublicRoomState(state).participants.every((p) => p.bingoCard?.length === 0)).toBe(
@@ -54,10 +61,10 @@ describe("Bingo presencial e ganhadores", () => {
     expect(rejected.bingoWinnerIds).toEqual([]);
     expect(finishNumberBingo(rejected, 8)).toBe(rejected);
   });
-  it.each(BINGO_MODES)("finaliza %s com quatro ganhadores, mesmo XP e recibos estáveis", (mode) => {
+  it.each(BINGO_MODES)("finaliza %s com três ganhadores em ordem e XP por esforço", (mode) => {
     let state = round(false, mode);
     for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3 + i);
-    for (const id of ["Ana", "Bia", "Caio", "Duda"]) {
+    for (const id of ["Caio", "Bia", "Ana"]) {
       const card = state.participants.find((p) => p.id === id)!.bingoCard!;
       for (const index of bingoPatterns(mode)[0]!)
         if (index !== 12)
@@ -74,17 +81,24 @@ describe("Bingo presencial e ganhadores", () => {
         now: 101,
       }).state;
       expect(state.bingoClaim?.participantId).toBe(id);
-      state = reviewNumberBingo(
-        state,
-        state.bingoClaim!.id,
-        id === "Duda" ? "finish" : "continue",
-        102,
-      );
+      state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 102);
     }
     expect(state.phase).toBe("results");
-    expect(state.bingoWinnerIds).toEqual(["Ana", "Bia", "Caio", "Duda"]);
-    expect(state.participants.slice(0, 4).map((p) => p.reward?.xp)).toEqual([100, 100, 100, 100]);
-    expect(new Set(state.participants.slice(0, 4).map((p) => p.reward?.id)).size).toBe(4);
+    expect(state.bingoWinnerIds).toEqual(["Caio", "Bia", "Ana"]);
+    expect(state.participants.slice(0, 3).map((p) => p.reward?.place)).toEqual([3, 2, 1]);
+    const marks = bingoPatterns(mode)[0]!.filter((index) => index !== 12).length;
+    const xp = roomEffortXp(marks * 2 + BINGO_OBJECTIVE_POINTS[mode], "bingo");
+    expect(state.participants.slice(0, 3).map((p) => p.reward?.xp)).toEqual([xp, xp, xp]);
+    expect(new Set(state.participants.slice(0, 3).map((p) => p.reward?.id)).size).toBe(3);
+    expect(state.participants[3]!.reward).toBeUndefined();
+    expect(
+      submitRoomAnswer(state, {
+        participantId: "Duda",
+        questionIndex: 74,
+        answer: "bingo",
+        now: 103,
+      }).correct,
+    ).toBe(false);
     expect(state.participants[4]!.reward).toBeUndefined();
     expect(finishNumberBingo(state, 200)).toBe(state);
   });
@@ -98,7 +112,7 @@ describe("Bingo presencial e ganhadores", () => {
     }).state;
     state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 5);
     state = finishNumberBingo(state, 6);
-    expect(state.participants[0]!.reward?.xp).toBe(100);
+    expect(state.participants[0]!.reward?.xp).toBe(11);
     const fresh = startRoom({ ...state, phase: "lobby" }, { now: 7 });
     expect(toPublicRoomState(fresh).drawnIds).toEqual([]);
     expect(fresh.bingoWinnerIds).toEqual([]);

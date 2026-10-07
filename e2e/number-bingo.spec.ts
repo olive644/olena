@@ -128,7 +128,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await expect(page.getByText("Complete sua constelação")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Encerrar sala", exact: true })).toHaveCount(0);
   await expect(card.locator(".bingo-card-grid button")).toHaveCount(25);
-  await expect(card.locator(".bingo-planet")).toHaveCount(5);
+  await expect(card.locator(".bingo-card-heading .bingo-planet")).toHaveCount(5);
   await expect(card.locator(".bingo-cell-planet")).toHaveCount(24);
   for (const planet of ["earth", "mars", "jupiter", "saturn", "neptune"]) {
     await expect(card.locator(`.bingo-cell-planet[data-planet="${planet}"]`)).toHaveCount(
@@ -408,7 +408,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   await page.getByRole("button", { name: "Bingo!", exact: true }).click();
   expect(claims).toEqual([true]);
   expect(current().phase).toBe("playing");
-  expect(current().participants[0]!.score).toBe(4);
+  expect(current().participants[0]!.score).toBe(8);
   const announcement = page.getByRole("dialog", { name: `${player.displayName} FEZ BINGO!` });
   await expect(announcement).toBeVisible();
   await expect(
@@ -461,7 +461,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
   await expect(announcement).toHaveCount(0);
   expect(current().phase).toBe("playing");
   expect(current().bingoWinnerIds).toEqual([player.id]);
-  expect(current().participants[0]!.score).toBe(104);
+  expect(current().participants[0]!.score).toBe(38);
   await expect(page.getByRole("button", { name: "Bingo!", exact: true })).toBeDisabled();
   await page.screenshot({
     path: testInfo.outputPath("vitoria-bingo-confirmada.png"),
@@ -475,7 +475,7 @@ test("uma sala numérica confirma uma vitória verdadeira nos quatro cantos", as
       marks: finalPlaying.participants[0]!.bingoMarks,
       claims,
       phase: current().phase,
-      score: 104,
+      score: 38,
       transport: "handler real, store em memória",
     }),
     contentType: "application/json",

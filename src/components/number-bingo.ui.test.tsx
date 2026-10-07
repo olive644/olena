@@ -36,6 +36,27 @@ function state(): PublicLocalRoomState {
 }
 
 describe("solar bingo interface", () => {
+  it("mostra efeitos somente para novos pontos confirmados", async () => {
+    const base = { ...state(), phase: "playing" as const };
+    const props = {
+      isHost: false,
+      participantId: "p",
+      onMode: vi.fn(),
+      onDraw: vi.fn(),
+      onAnswer: vi.fn(),
+    };
+    const { rerender } = render(<NumberBingo state={base} {...props} />);
+    expect(document.querySelector(".bingo-points-burst")).toBeNull();
+    const scored = { ...base, participants: base.participants.map((p) => ({ ...p, score: 2 })) };
+    rerender(<NumberBingo state={scored} {...props} />);
+    await waitFor(() =>
+      expect(document.querySelector(".bingo-points-burst")?.textContent).toContain("+2 pontos"),
+    );
+    expect(screen.getByLabelText("2 pontos")).toBeTruthy();
+    const key = document.querySelector(".bingo-points-burst");
+    rerender(<NumberBingo state={{ ...scored }} {...props} />);
+    expect(document.querySelector(".bingo-points-burst")).toBe(key);
+  });
   it("oferece Bingo presencial antes da criação e remove a legenda antiga", () => {
     const onPhysical = vi.fn();
     render(
