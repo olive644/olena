@@ -22,6 +22,7 @@ import { RoomAnswerHelena, RoomSpeedNotice } from "./room-answer-helena";
 import { PaperDigits } from "./paper-digits";
 import { PaperArrow } from "./paper-arrow";
 import { RoomRewardNotice } from "./room-reward-notice";
+import { BingoWinners } from "./bingo-winners";
 import { RoomTeamBoard } from "./room-team-board";
 import {
   useEffect,
@@ -1333,6 +1334,9 @@ export function LocalRoom({
                             isHost={isHost}
                             participantId={room.participantId}
                             onMode={(bingoMode) => void room.updateSettings({ bingoMode })}
+                            onPhysical={(bingoPhysical) =>
+                              void room.updateSettings({ bingoPhysical })
+                            }
                             onDraw={room.nextQuestion}
                             onAnswer={room.submitAnswer}
                           />
@@ -2105,6 +2109,7 @@ export function LocalRoom({
               onDraw={room.nextQuestion}
               onAnswer={room.submitAnswer}
               onReview={room.reviewBingo}
+              onFinalize={room.finalizeBingo}
             />
           </Suspense>
         ) : state.phase === "playing" && state.currentQuestion ? (
@@ -2392,6 +2397,9 @@ export function LocalRoom({
           </div>
         ) : state.phase === "results" ? (
           <div className="local-room-finished">
+            {state.settings.activity === "bingo" && state.settings.bingoMode && (
+              <BingoWinners state={state} participantId={room.participantId} />
+            )}
             {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}
             {room.isHost ? (
               <div className="local-room-results-actions">
@@ -2434,6 +2442,9 @@ export function LocalRoom({
           (state.phase === "results" || state.phase === "finished") && (
             <RoomRewardNotice reward={ownParticipant?.reward} />
           )}
+        {state.settings.activity === "bingo" && state.phase === "finished" && (
+          <RoomRewardNotice bingo reward={ownParticipant?.reward} />
+        )}
       </div>
     </LocalRoomFullscreen>
   );

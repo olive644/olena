@@ -13,7 +13,7 @@ import {
 } from "./number-bingo.js";
 
 export type LocalRoomPhase = "lobby" | "playing" | "results" | "finished";
-export type BingoReviewDecision = "reject" | "continue" | "restart";
+export type BingoReviewDecision = "reject" | "continue" | "restart" | "finish";
 export type BingoClaim = { id: string; participantId: string; claimedAt: number };
 export const ROOM_TEAMS = ["Roxo", "Amarelo"] as const;
 export type RoomTeam = (typeof ROOM_TEAMS)[number];
@@ -33,6 +33,7 @@ export type LocalRoomSettings = {
   roundSeconds: LocalRoomRoundSeconds;
   activity?: "listening" | "bingo";
   bingoMode?: BingoMode;
+  bingoPhysical?: boolean;
   category?: string;
   shuffle?: boolean;
   teams?: boolean;
@@ -225,6 +226,20 @@ export function roomPlacementXp(place: number): number {
   return [100, 75, 50][place - 1] ?? Math.max(10, 40 - (place - 4) * 5);
 }
 
+export const BINGO_MARK_POINTS = 2;
+export const BINGO_OBJECTIVE_POINTS: Record<BingoMode, number> = {
+  corners: 30,
+  line: 40,
+  column: 40,
+  diagonal: 40,
+  full: 100,
+};
+
+// Listening rewards attention and response speed; bingo rewards verified marks and objectives.
+export function roomEffortXp(score: number, activity: "listening" | "bingo"): number {
+  return Math.min(10000, Math.max(0, Math.round(score * (activity === "bingo" ? 0.35 : 0.5))));
+}
+
 function completeRoom(state: LocalRoomState, now: number): LocalRoomState {
   const participants = state.participants.map((participant) => {
     const place = roomPlacement(state.participants, participant.score);
@@ -233,7 +248,13 @@ function completeRoom(state: LocalRoomState, now: number): LocalRoomState {
       reward: {
         id: `${state.code}:${state.generation}:${state.roundId}:${participant.id}`,
         place,
-        xp: (participant.answersCount ?? 0) > 0 ? roomPlacementXp(place) : 0,
+        xp:
+          (participant.answersCount ?? 0) > 0
+            ? roomEffortXp(
+                participant.score,
+                state.settings.activity === "bingo" ? "bingo" : "listening",
+              )
+            : 0,
         completedAt: now,
       },
     };
@@ -443,11 +464,13 @@ export function startRoom(
       lastAnswer: undefined,
       bingoMarks: [],
       bingoCard:
-        state.settings.activity === "bingo" && state.settings.bingoMode
-          ? createNumberBingoCard(dependencies.random)
-          : createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
-              (card) => card.id,
-            ),
+        state.settings.activity === "bingo" && state.settings.bingoPhysical
+          ? []
+          : state.settings.activity === "bingo" && state.settings.bingoMode
+            ? createNumberBingoCard(dependencies.random)
+            : createListeningRound(deck, Math.min(9, deck.length), dependencies.random).map(
+                (card) => card.id,
+              ),
     })),
     updatedAt: dependencies.now,
   };
@@ -462,20 +485,26 @@ export function submitRoomAnswer(
     if (
       state.phase !== "playing" ||
       !participant ||
+      state.bingoWinnerIds?.includes(participant.id) ||
       state.bingoClaim ||
       dependencies.questionIndex !== state.questionIndex
     )
       return { state, correct: false, pointsChange: 0 };
     const drawn = numberBingoDrawnIds(state);
     if (dependencies.answer === "bingo") {
-      if (state.bingoWinnerIds?.includes(participant.id))
+      if (
+        state.bingoWinnerIds?.includes(participant.id) ||
+        (state.bingoWinnerIds?.length ?? 0) >= 3
+      )
         return { state, correct: false, pointsChange: 0 };
-      const correct = hasNumberBingo(
-        participant.bingoCard ?? [],
-        participant.bingoMarks ?? [],
-        drawn,
-        state.settings.bingoMode,
-      );
+      const correct = state.settings.bingoPhysical
+        ? drawn.length > 0
+        : hasNumberBingo(
+            participant.bingoCard ?? [],
+            participant.bingoMarks ?? [],
+            drawn,
+            state.settings.bingoMode,
+          );
       const claimed: LocalRoomState = {
         ...state,
         bingoClaim: {
@@ -491,6 +520,7 @@ export function submitRoomAnswer(
         pointsChange: 0,
       };
     }
+    if (state.settings.bingoPhysical) return { state, correct: false, pointsChange: 0 };
     const correct =
       drawn.includes(dependencies.answer) &&
       Boolean(participant.bingoCard?.includes(dependencies.answer));
@@ -504,12 +534,12 @@ export function submitRoomAnswer(
           ? {
               ...item,
               bingoMarks: [...(item.bingoMarks ?? []), dependencies.answer],
-              score: item.score + 1,
+              score: item.score + BINGO_MARK_POINTS,
             }
           : item,
       ),
     };
-    return { state: updated, correct: true, pointsChange: 1 };
+    return { state: updated, correct: true, pointsChange: BINGO_MARK_POINTS };
   }
   const card = state.deck[dependencies.questionIndex];
   if (
@@ -680,32 +710,34 @@ export function reviewNumberBingo(
     state.settings.activity !== "bingo" ||
     !state.settings.bingoMode ||
     !claim ||
-    claim.id !== claimId
+    claim.id !== claimId ||
+    (state.bingoWinnerIds?.length ?? 0) >= 3
   )
     return state;
   if (decision === "restart") return startRoom({ ...state, phase: "lobby" }, { now });
   const participant = state.participants.find((p) => p.id === claim.participantId);
   if (
-    decision === "continue" &&
+    (decision === "continue" || decision === "finish") &&
     (!participant ||
-      !hasNumberBingo(
-        participant.bingoCard ?? [],
-        participant.bingoMarks ?? [],
-        numberBingoDrawnIds(state),
-        state.settings.bingoMode,
-      ))
+      (!state.settings.bingoPhysical &&
+        !hasNumberBingo(
+          participant.bingoCard ?? [],
+          participant.bingoMarks ?? [],
+          numberBingoDrawnIds(state),
+          state.settings.bingoMode,
+        )))
   )
     return state;
-  return {
+  const reviewed: LocalRoomState = {
     ...state,
     bingoClaim: undefined,
     bingoWinnerIds:
-      decision === "continue"
+      decision === "continue" || decision === "finish"
         ? [...new Set([...(state.bingoWinnerIds ?? []), claim.participantId])]
         : (state.bingoWinnerIds ?? []),
     participants: state.participants.map((p) =>
-      decision === "continue" && p.id === claim.participantId
-        ? { ...p, score: 100 + (p.bingoMarks?.length ?? 0) }
+      (decision === "continue" || decision === "finish") && p.id === claim.participantId
+        ? { ...p, score: p.score + BINGO_OBJECTIVE_POINTS[state.settings.bingoMode!] }
         : p,
     ),
     receipts: Object.fromEntries(
@@ -714,6 +746,39 @@ export function reviewNumberBingo(
       ),
     ),
     updatedAt: now,
+  };
+  return decision === "finish" || reviewed.bingoWinnerIds!.length >= 3
+    ? finishNumberBingo(reviewed, now)
+    : reviewed;
+}
+
+export function finishNumberBingo(state: LocalRoomState, now: number): LocalRoomState {
+  if (
+    state.phase !== "playing" ||
+    state.settings.activity !== "bingo" ||
+    !state.settings.bingoMode ||
+    state.bingoClaim ||
+    !state.bingoWinnerIds?.length
+  )
+    return state;
+  const winners = new Set(state.bingoWinnerIds);
+  return {
+    ...state,
+    phase: "results",
+    updatedAt: now,
+    participants: state.participants.map((p) =>
+      winners.has(p.id)
+        ? {
+            ...p,
+            reward: {
+              id: `${state.code}:${state.generation}:${state.roundId}:${p.id}`,
+              place: state.bingoWinnerIds!.indexOf(p.id) + 1,
+              xp: roomEffortXp(p.score, "bingo"),
+              completedAt: now,
+            },
+          }
+        : p,
+    ),
   };
 }
 

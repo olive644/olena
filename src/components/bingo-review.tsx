@@ -61,54 +61,50 @@ export function BingoReview({
           <div className="bingo-review-content">
             <div className="bingo-review-instructions">
               <img src="/profile-avatars/poliana.webp" alt="" width="100" height="100" />
-              <h3>Confira a cartela</h3>
-              <p>
-                Online, confira os números marcados ao lado. Presencialmente, confira também a
-                cartela da pessoa.
-              </p>
-              <p>O sorteio fica pausado até você decidir.</p>
             </div>
-            <section className="bingo-solar-card" aria-label="Cartela para conferência">
-              <header>
-                <h3>{player.displayName}</h3>
-                <small>Cartela anunciada</small>
-              </header>
-              <div className="bingo-card-heading" aria-hidden="true">
-                {["B", "I", "N", "G", "O"].map((letter, i) => (
-                  <div key={letter}>
-                    <BingoPlanet index={i} />
-                    <strong>{letter}</strong>
-                  </div>
-                ))}
-              </div>
-              <div className="bingo-card-grid">
-                {player.bingoCard?.map((id, i) => {
-                  const marked = id === BINGO_FREE || player.bingoMarks?.includes(id) === true;
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      className="secondary-button"
-                      data-orbit={i % 5}
-                      disabled
-                      aria-pressed={marked}
-                      aria-label={
-                        id === BINGO_FREE
-                          ? "Sol, centro livre"
-                          : `${["B", "I", "N", "G", "O"][i % 5]} ${id}`
-                      }
-                    >
-                      {id === BINGO_FREE ? (
-                        <img src="/favicon-star.svg" alt="" width="34" height="34" />
-                      ) : (
-                        <BingoPlanet index={i % 5} number={id} />
-                      )}
-                      {marked && <span className="bingo-cell-star" aria-hidden="true" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
+            {!state.settings.bingoPhysical && (
+              <section className="bingo-solar-card" aria-label="Cartela para conferência">
+                <header>
+                  <h3>{player.displayName}</h3>
+                  <small>Cartela anunciada</small>
+                </header>
+                <div className="bingo-card-heading" aria-hidden="true">
+                  {["B", "I", "N", "G", "O"].map((letter, i) => (
+                    <div key={letter}>
+                      <BingoPlanet index={i} />
+                      <strong>{letter}</strong>
+                    </div>
+                  ))}
+                </div>
+                <div className="bingo-card-grid">
+                  {player.bingoCard?.map((id, i) => {
+                    const marked = id === BINGO_FREE || player.bingoMarks?.includes(id) === true;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        className="secondary-button"
+                        data-orbit={i % 5}
+                        disabled
+                        aria-pressed={marked}
+                        aria-label={
+                          id === BINGO_FREE
+                            ? "Sol, centro livre"
+                            : `${["B", "I", "N", "G", "O"][i % 5]} ${id}`
+                        }
+                      >
+                        {id === BINGO_FREE ? (
+                          <img src="/favicon-star.svg" alt="" width="34" height="34" />
+                        ) : (
+                          <BingoPlanet index={i % 5} number={id} />
+                        )}
+                        {marked && <span className="bingo-cell-star" aria-hidden="true" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
           </div>
           <div className="bingo-review-actions">
             {(
@@ -116,6 +112,12 @@ export function BingoReview({
                 ["reject", "Foi engano!"],
                 ["continue", "Continuar partida"],
                 ["restart", "Recomeçar"],
+                [
+                  "finish",
+                  (state.bingoWinnerIds?.length ?? 0) > 0
+                    ? "Definir ganhadores"
+                    : "Definir ganhador",
+                ],
               ] as const
             ).map(([decision, label]) => (
               <button

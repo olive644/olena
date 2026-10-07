@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { recordRoomXp } from "../data/room-xp";
 import type { RoomXpReward } from "../domain/local-room";
 import { RoomPointsIcon } from "./room-paper-icons";
-export function RoomRewardNotice({ reward }: { reward: RoomXpReward | undefined }) {
+export function RoomRewardNotice({
+  reward,
+  bingo = false,
+}: {
+  reward: RoomXpReward | undefined;
+  bingo?: boolean;
+}) {
   const [notice, setNotice] = useState("");
   const id = reward?.id,
     place = reward?.place,
@@ -16,7 +22,9 @@ export function RoomRewardNotice({ reward }: { reward: RoomXpReward | undefined 
         if (result.added)
           setNotice(
             xp > 0
-              ? `+${xp} XP pelo ${place}º lugar!`
+              ? bingo
+                ? `+${xp} XP pela vitória no Bingo!`
+                : `+${xp} XP pelo ${place}º lugar!`
               : "Participe das respostas na próxima atividade para conquistar XP.",
           );
       } catch {
@@ -26,7 +34,7 @@ export function RoomRewardNotice({ reward }: { reward: RoomXpReward | undefined 
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [id, place, xp, completedAt]);
+  }, [id, place, xp, completedAt, bingo]);
   useEffect(() => {
     if (!notice) return;
     const timer = window.setTimeout(() => setNotice(""), 6000);

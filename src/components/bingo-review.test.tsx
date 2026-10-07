@@ -50,6 +50,7 @@ describe("Bingo announcement and host review", () => {
     ["reject", "Foi engano!"],
     ["continue", "Continuar partida"],
     ["restart", "Recomeçar"],
+    ["finish", "Definir ganhador"],
   ] as const)(
     "sends %s with the pending claim id and celebrates only once",
     async (decision, label) => {
