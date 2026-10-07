@@ -10,6 +10,7 @@ import {
   endRoom,
   repeatRoom,
   reviewNumberBingo,
+  finishNumberBingo,
   returnRoomToLobby,
   isValidLocalRoomCode,
   MAX_ROOM_PARTICIPANTS,
@@ -82,6 +83,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
           "roundSeconds",
           "activity",
           "bingoMode",
+          "bingoPhysical",
           "category",
           "shuffle",
           "teams",
@@ -119,6 +121,7 @@ function isSettingsPayload(value: unknown): value is Partial<LocalRoomSettings> 
   if (
     [
       "shuffle",
+      "bingoPhysical",
       "helenaWords",
       "teams",
       "autoPlayAudio",
@@ -448,9 +451,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         ...(role === "host" ? { hostLastSeenAt: time } : {}),
         updatedAt: time,
       };
+      // Quem avisa que o anfitrião sumiu são os participantes. O próprio anfitrião chamando
+      // `resume` ou `heartbeat` prova que ele está de volta, mesmo depois de a tela do celular
+      // ter ficado bloqueada além da tolerância.
       if (
         (role === "host" && action === "leave") ||
-        time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS
+        (role !== "host" && time - (state.hostLastSeenAt ?? time) >= ROOM_PRESENCE_GRACE_MS)
       )
         updated = endRoom(updated, time);
       if (updated.phase === "lobby")
@@ -728,7 +734,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (state instanceof Response) return state;
       const decision = body["decision"];
       if (
-        (decision !== "reject" && decision !== "continue" && decision !== "restart") ||
+        (decision !== "reject" &&
+          decision !== "continue" &&
+          decision !== "restart" &&
+          decision !== "finish") ||
         typeof body["claimId"] !== "string"
       )
         return jsonResponse(400, { error: "Conferência inválida." });
@@ -736,6 +745,22 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       // Reenvio de uma decisão não pode resolver outro anúncio nem conceder pontos de novo.
       const publicState = reviewed === state ? toPublicRoomState(state) : await saveRoom(reviewed);
       return jsonResponse(200, { state: publicState });
+    }
+
+    if (action === "bingo-finalize" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const state = await requireHost(dependencies.store, body);
+      if (state instanceof Response) return state;
+      if (state.settings.activity !== "bingo" || !state.settings.bingoMode)
+        return jsonResponse(409, { error: "Esta sala não é de Bingo numérico." });
+      const finished = finishNumberBingo(state, now());
+      if (finished === state && state.phase !== "results")
+        return jsonResponse(409, {
+          error: "Confirme pelo menos um Bingo antes de definir ganhadores.",
+        });
+      return jsonResponse(200, {
+        state: finished === state ? toPublicRoomState(state) : await saveRoom(finished),
+      });
     }
 
     if (action === "end" && request.method === "POST") {

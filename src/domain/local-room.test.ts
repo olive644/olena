@@ -12,6 +12,7 @@ import {
   WRONG_ANSWER_PENALTY_POINTS,
   normalizeLocalRoomCode,
   rankLocalRoomParticipants,
+  roomExpiryWarningMinutes,
   repeatRoom,
   readLocalRoomCodeFromUrl,
   returnRoomToLobby,
@@ -100,7 +101,7 @@ describe("sala local", () => {
     expect(fast.pointsChange).toBeGreaterThan(slow.pointsChange);
     expect(slow.state.participants.every((p) => p.reward === undefined)).toBe(true);
     const result = advanceRoomQuestion(slow.state, single.questionStartedAt + 18000);
-    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 75]);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([50, 30]);
     expect(result.participants.map((p) => p.reward?.place)).toEqual([1, 2]);
     expect(advanceRoomQuestion(result, single.questionStartedAt + 19000)).toBe(result);
     expect(endRoom(result, single.questionStartedAt + 19000).participants[0]?.reward).toEqual(
@@ -125,7 +126,7 @@ describe("sala local", () => {
       },
       started.questionStartedAt + 30000,
     );
-    expect(result.participants.map((p) => p.reward?.xp)).toEqual([100, 100, 0]);
+    expect(result.participants.map((p) => p.reward?.xp)).toEqual([50, 50, 0]);
     expect(
       endRoom(started, started.questionStartedAt + 1).participants.every((p) => !p.reward),
     ).toBe(true);
@@ -530,5 +531,29 @@ describe("sala local", () => {
     expect(roomSecondsLeft(state, state.questionStartedAt - 500)).toBe(30);
     expect(roomSecondsLeft(state, state.questionStartedAt + 1)).toBe(30);
     expect(roomSecondsLeft(state, state.questionStartedAt + 30_000)).toBe(0);
+  });
+});
+
+describe("aviso de expiração da sala", () => {
+  const minute = 60_000;
+  const expiresAt = 100 * minute;
+
+  it("não avisa sem prazo definido, com a sala longe do fim ou depois de expirar", () => {
+    expect(roomExpiryWarningMinutes(undefined, 0)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt - 11 * minute)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt)).toBeUndefined();
+    expect(roomExpiryWarningMinutes(expiresAt, expiresAt + minute)).toBeUndefined();
+  });
+
+  it("agrupa o tempo restante em faixas de 10, 5, 2 e 1 minuto", () => {
+    const at = (remaining: number) => roomExpiryWarningMinutes(expiresAt, expiresAt - remaining);
+    expect(at(10 * minute)).toBe(10);
+    expect(at(9.9 * minute)).toBe(10);
+    expect(at(5 * minute)).toBe(5);
+    expect(at(4.9 * minute)).toBe(5);
+    expect(at(2 * minute)).toBe(2);
+    expect(at(1.5 * minute)).toBe(2);
+    expect(at(minute)).toBe(1);
+    expect(at(1000)).toBe(1);
   });
 });

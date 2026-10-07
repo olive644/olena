@@ -284,7 +284,7 @@ describe("handler da sala local", () => {
     currentTime += 3000;
     const result = await (await handler(post("next", { code, hostToken }))).json();
     expect(result.state.participants.map((p: { reward: { xp: number } }) => p.reward.xp)).toEqual([
-      100, 75,
+      50, 30,
     ]);
     const again = await (await handler(post("next", { code, hostToken }))).json();
     expect(again.state.participants).toEqual(result.state.participants);

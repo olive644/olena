@@ -25,7 +25,8 @@ describe("recompensas de salas neste dispositivo", () => {
     storage.setItem(ROOM_XP_KEY, "corrompido");
     expect(() => recordRoomXp(reward, storage)).toThrow();
     expect(storage.getItem(ROOM_XP_KEY)).toBe("corrompido");
-    expect(() => recordRoomXp({ ...reward, xp: 1000 }, memory())).toThrow();
+    expect(() => recordRoomXp({ ...reward, xp: 10001 }, memory())).toThrow();
+    expect(recordRoomXp({ ...reward, xp: 250 }, memory()).total).toBe(250);
   });
   it("falha de armazenamento não confirma o crédito", () => {
     expect(() =>

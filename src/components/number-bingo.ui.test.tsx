@@ -36,6 +36,48 @@ function state(): PublicLocalRoomState {
 }
 
 describe("solar bingo interface", () => {
+  it("reage junto à bola aceita e some, sem pontos pairando no topo", async () => {
+    const base = { ...state(), phase: "playing" as const };
+    const props = {
+      isHost: false,
+      participantId: "p",
+      onMode: vi.fn(),
+      onDraw: vi.fn(),
+      onAnswer: vi.fn().mockResolvedValue({ correct: true, pointsChange: 2 }),
+    };
+    const { rerender } = render(<NumberBingo state={base} {...props} />);
+    expect(document.querySelector(".bingo-ball-reaction")).toBeNull();
+    const scored = { ...base, participants: base.participants.map((p) => ({ ...p, score: 2 })) };
+    rerender(<NumberBingo state={scored} {...props} />);
+    expect(document.querySelector(".bingo-ball-reaction")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "B 1" }));
+    await waitFor(() => expect(screen.getByLabelText("Bola 1: WOW! +2 pontos!")).toBeTruthy());
+    expect(document.querySelector(".bingo-solar-card .bingo-ball-reaction")).toBeTruthy();
+    expect(document.querySelector(".bingo-points-meter")).toBeNull();
+    const key = document.querySelector(".bingo-ball-reaction");
+    rerender(<NumberBingo state={{ ...scored }} {...props} />);
+    expect(document.querySelector(".bingo-ball-reaction")).toBe(key);
+    await waitFor(() => expect(document.querySelector(".bingo-ball-reaction")).toBeNull(), {
+      timeout: 2000,
+    });
+  });
+  it("oferece Bingo presencial antes da criação e remove a legenda antiga", () => {
+    const onPhysical = vi.fn();
+    render(
+      <NumberBingo
+        state={state()}
+        isHost
+        participantId="p"
+        onMode={vi.fn()}
+        onDraw={vi.fn()}
+        onAnswer={vi.fn()}
+        onPhysical={onPhysical}
+      />,
+    );
+    fireEvent.click(screen.getByRole("checkbox", { name: /Bingo presencial/ }));
+    expect(onPhysical).toHaveBeenCalledWith(true);
+    expect(screen.queryByText(/75 números, cartelas/)).toBeNull();
+  });
   it("offers five illustrated modes and applies selection immediately", () => {
     const onMode = vi.fn();
     render(
@@ -88,7 +130,8 @@ describe("solar bingo interface", () => {
     expect(screen.queryByText("Complete sua constelação")).toBeNull();
     expect(screen.queryByText(/Última bolinha:/)).toBeNull();
     expect(screen.queryByText("O Sol já conta como marcado.")).toBeNull();
-    expect(document.querySelector(".bingo-machine-column .bingo-history")).toBeTruthy();
+    expect(document.querySelector(".bingo-participant-stage .bingo-history")).toBeTruthy();
+    expect(document.querySelector("canvas")).toBeNull();
     expect(document.querySelector(".bingo-card-column .bingo-solar-card")).toBeTruthy();
     expect(document.querySelectorAll(".bingo-cell-planet")).toHaveLength(24);
     for (const planet of ["earth", "mars", "jupiter", "saturn", "neptune"]) {
@@ -101,7 +144,7 @@ describe("solar bingo interface", () => {
       "/room-icons/bingo-claim.svg",
     );
     expect(document.querySelector(".bingo-rule")).toBeNull();
-    expect(screen.getByLabelText("Globo Saturno com as bolinhas restantes")).toBeTruthy();
+    expect(screen.queryByLabelText("Globo Saturno com as bolinhas restantes")).toBeNull();
   });
 
   describe("marcação na cartela", () => {
