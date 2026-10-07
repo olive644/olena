@@ -1841,6 +1841,15 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Não muda para quem entra como convidado: sem conta não há como saber quem é quem, então continua sem entrar depois de a atividade começar, e nome repetido continua recusado.
 - Testes: `local-room-rejoin.test.ts` (volta no meio da atividade com a mesma identidade, token antigo invalidado e novo válido, ainda barrado enquanto o primeiro dispositivo está presente, no lobby o próprio nome não conta como repetido, pedido repetido devolve o mesmo token, ninguém volta depois de a sala encerrar, convidado segue barrado depois do início); 4 dos 7 falham sem a mudança, os outros 3 são guardas.
 
+## Anfitrião remove participantes e fecha a entrada (2026-10-06)
+
+- Auditoria completa do Modo Sala, sétima correção. Antes, quem tinha o código entrava com nome livre e aparecia na tela projetada, e o anfitrião não tinha como tirar ninguém nem impedir novas entradas.
+- Novas ações no backend, ambas só com token de anfitrião e registradas na lista de ações do `room-guard` (junto com `repeat` e `lobby`, que faltavam na lista): `kick` remove um participante (404 se o id não existe, 409 se for o próprio organizador jogando) e `lock` fecha ou reabre a entrada (400 se `locked` não for booleano). Com a entrada fechada, `join` responde 409 com "O anfitrião fechou a entrada desta sala."; quem já estava na sala, logado, continua podendo voltar.
+- Decisão de produto: remover não é banimento. Não há como banir sem conta, e o anfitrião tem o botão de fechar a entrada para o caso de reentrada indesejada. O login obrigatório para entrar não foi implementado: ele troca a facilidade de entrar por QR code por uma barreira que o anfitrião já resolve com remover e fechar.
+- `locked` e `removedParticipantIds` (os 30 mais recentes) entram no estado público. O cliente participante, ao ver o próprio id na lista, para o stream, apaga a sessão salva e volta à tela inicial com "O anfitrião removeu você desta sala.". Quem some da lista também deixa de contar entre os que responderam.
+- Interface do anfitrião: botão "Remover" por pessoa na lista do lobby e no quadro de equipes, e botão "Fechar entrada"/"Reabrir entrada" com texto de estado. Tudo funciona com teclado e toque.
+- Testes: `local-room-moderation.test.ts` (10, backend), `use-local-room-removal.test.ts` (normalização do estado e saída de quem foi removido; falham sem a mudança), `local-room-moderation.ui.test.tsx` (botões e alternância), mais casos em `local-room.test.ts` e `room-guard.test.ts`.
+
 ## Batimento da sala sem republicar o estado inteiro (2026-10-06)
 
 - Auditoria completa do Modo Sala, quinta correção. Cada participante bate no servidor a cada 15 s (a cada 1 s depois do prazo de uma pergunta ou com o stream caído), e cada batimento gravava o estado privado, subia a revisão e publicava a sala inteira. O horário de presença (`lastSeenAt`) era público, então todo batimento mudava o estado público: com 30 alunos, cerca de 2 gravações por segundo no Realtime Database, cada uma repassada para os 30 streams.

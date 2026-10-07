@@ -60,7 +60,7 @@ import { PaperActionIcon } from "./paper-action-icon";
 import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
-import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
+import { LobbyLockToggle, LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
 import { RoomRecordingInput } from "./room-recording-input";
 import { RoomConfirmButton } from "./room-confirm-button";
 import { RoomExpiryNotice } from "./room-expiry-notice";
@@ -979,6 +979,7 @@ export function LocalRoom({
               {!preparing && (
                 <div className="local-room-lobby__main">
                   <ShareRoom code={state.code} bingo={state.settings.activity === "bingo"} />
+                  <LobbyLockToggle locked={state.locked === true} onChange={room.setRoomLocked} />
                   <div className="local-room-lobby__invite">
                     {!state.settings.teams && (
                       <section
@@ -1000,7 +1001,10 @@ export function LocalRoom({
                           </div>
                         ) : (
                           !state.settings.teams && (
-                            <LobbyParticipants participants={state.participants} />
+                            <LobbyParticipants
+                              participants={state.participants}
+                              onRemove={room.kickParticipant}
+                            />
                           )
                         )}
                       </section>
@@ -1012,6 +1016,7 @@ export function LocalRoom({
                       isHost
                       participantId=""
                       onAssign={room.assignTeam}
+                      onRemove={room.kickParticipant}
                     />
                   )}
                 </div>

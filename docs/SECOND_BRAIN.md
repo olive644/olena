@@ -151,6 +151,13 @@ heartbeat. Movimento reduzido conserva a pose final. RoomSpeedNotice remove
 o aviso após 1200 ms, limpa o timer ao desmontar e não ocupa espaço no fluxo.
 A arte inglesa continua nas palavras selecionáveis, não nos resultados.
 
+Moderação da sala: o anfitrião remove participantes (ação `kick`) e fecha ou reabre a
+entrada (ação `lock`), ambas por token de anfitrião. `locked` e `removedParticipantIds`
+(últimos 30) vão no estado público; o participante removido percebe pelo stream e volta
+à tela inicial com a explicação. Remover não bane: quem foi removido entra de novo se a
+entrada estiver aberta. A conta logada que já estava na sala volta mesmo com a entrada
+fechada.
+
 Recuperação da sala: SSE saudável mantém heartbeat de presença a cada 15 segundos;
 stream com erro ou prazo vencido usa fallback de 1 segundo, serializado. Resposta
 válida da API limpa reconectando; visibilitychange busca imediatamente. Revisão

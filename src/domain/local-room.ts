@@ -116,6 +116,11 @@ export type LocalRoomState = {
   hostLastSeenAt?: number;
   hostParticipantId?: string;
   expiresAt?: number;
+  // Entrada fechada pelo anfitrião: ninguém novo entra, quem já estava na sala pode voltar.
+  locked?: boolean;
+  // Quem o anfitrião removeu (as últimas 30), para o aparelho da pessoa saber
+  // que foi removida e não só que perdeu a conexão.
+  removedParticipantIds?: string[];
   receipts?: Record<
     string,
     {
@@ -134,6 +139,8 @@ export type LocalRoomState = {
   recordingIds?: string[];
 };
 
+export const ROOM_REMOVED_MEMORY = 30;
+
 export type PublicLocalRoomState = {
   code: string;
   roundId?: string;
@@ -145,6 +152,8 @@ export type PublicLocalRoomState = {
   bingoClaim?: BingoClaim | undefined;
   bingoClaimQueue?: BingoClaim[] | undefined;
   bingoWinnerIds?: string[] | undefined;
+  locked?: boolean;
+  removedParticipantIds?: string[];
   questionStartedAt: number;
   countdownStartedAt?: number | undefined;
   totalQuestions: number;
@@ -822,6 +831,28 @@ export function finishNumberBingo(state: LocalRoomState, now: number): LocalRoom
   };
 }
 
+// O anfitrião tira alguém da sala (nome ofensivo, pessoa que não é da turma). A pessoa some da
+// lista e do placar, e a resposta dela deixa de contar como "já respondeu" para a pergunta atual.
+// Se ela tinha uma conferência de bingo pendente, a conferência cai junto.
+export function removeRoomParticipant(
+  state: LocalRoomState,
+  participantId: string,
+  now: number,
+): LocalRoomState {
+  if (!state.participants.some((participant) => participant.id === participantId)) return state;
+  return {
+    ...state,
+    participants: state.participants.filter((participant) => participant.id !== participantId),
+    answeredParticipantIds: state.answeredParticipantIds.filter((id) => id !== participantId),
+    bingoWinnerIds: state.bingoWinnerIds?.filter((id) => id !== participantId),
+    bingoClaim: state.bingoClaim?.participantId === participantId ? undefined : state.bingoClaim,
+    removedParticipantIds: [...(state.removedParticipantIds ?? []), participantId].slice(
+      -ROOM_REMOVED_MEMORY,
+    ),
+    updatedAt: now,
+  };
+}
+
 export function endRoom(state: LocalRoomState, now: number): LocalRoomState {
   if (state.phase === "finished") return state;
   const retainedUntil = now + ROOM_FINISHED_RETENTION_MS;
@@ -871,6 +902,10 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
     ...(state.feedbackUntil === undefined ? {} : { feedbackUntil: state.feedbackUntil }),
     ...(state.revision === undefined ? {} : { revision: state.revision }),
     ...(state.expiresAt === undefined ? {} : { expiresAt: state.expiresAt }),
+    ...(state.locked ? { locked: true } : {}),
+    ...(state.removedParticipantIds?.length
+      ? { removedParticipantIds: state.removedParticipantIds }
+      : {}),
     ...(state.generation === undefined ? {} : { generation: state.generation }),
     content: {
       count: localRoomPool(state.settings, state.sourceDeck).length,
