@@ -185,7 +185,8 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 5.7 KiB to lazy room/bingo chunks. Measured total 1123.6 KiB, entry unchanged
 // at 274.7 KiB. No dependency; retain only a small cross-platform allowance.
 // Room live-connection fixes (stream reopen, answer retry) add 0.4 KiB over main. Measured 1126.4 KiB; no dependency.
-const MAX_TOTAL_JS_BYTES = 1128 * 1024;
+// Room confirmations, expiry notice and accessibility announcements add 3.5 KiB, all in the lazy room chunk. Measured 1129.5 KiB; no dependency.
+const MAX_TOTAL_JS_BYTES = 1132 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

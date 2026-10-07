@@ -171,6 +171,21 @@ export {
 export const MAX_ROOM_PARTICIPANTS = 30;
 export const ROOM_TTL_SECONDS = 60 * 60 * 4;
 export const ROOM_PRESENCE_GRACE_MS = 120_000;
+
+// Faixas do aviso de que a sala está perto de acabar (a sala dura 4 horas e encerra sozinha,
+// no meio da atividade). Só a faixa muda, não cada minuto, para o leitor de tela não ficar
+// anunciando a contagem inteira.
+const ROOM_EXPIRY_WARNING_BANDS_MINUTES = [1, 2, 5, 10] as const;
+
+export function roomExpiryWarningMinutes(
+  expiresAt: number | undefined,
+  now: number,
+): number | undefined {
+  if (expiresAt === undefined) return undefined;
+  const remainingMinutes = (expiresAt - now) / 60_000;
+  if (remainingMinutes <= 0) return undefined;
+  return ROOM_EXPIRY_WARNING_BANDS_MINUTES.find((band) => remainingMinutes <= band);
+}
 export const ROOM_FEEDBACK_MS = 3_000;
 export const ROOM_START_COUNTDOWN_MS = 3_000;
 
