@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Praticar usa useStoredProfile, compartilhado com o cabeçalho, e PracticeUserPortrait.
+A foto paira no carrossel. Entrada em Idiomas mede origem e destino após enquadrar
+o nível atual e usa Web Animations; cópia decorativa temporária tem cleanup ao voltar
+ou desmontar. isMotionReduced evita o voo. Apenas Idiomas tem trilha disponível.
+
 Praticar: PracticeIslandCarousel exibe atual e vizinhas sem painel nem abas de matérias.
 Pointer Events compartilham mouse/toque, pan-y preserva rolagem vertical; teclado/setas
 continuam disponíveis. FocusPaperArrow é compartilhado com Foco.

@@ -1,6 +1,6 @@
 import { Lock } from "lucide-react";
 import { PaperCheckIcon } from "../components/paper-check-icon";
-import { useCallback, useEffect, useState, type Dispatch, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
 import { NavigationIcon } from "../components/navigation-icon";
 import { PageHeader } from "../components/app-navigation";
@@ -9,6 +9,9 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
+import { PracticeUserPortrait } from "../components/practice-user-portrait";
+import { useStoredProfile } from "../hooks/use-stored-profile";
+import { isMotionReduced } from "../data/accessibility-preferences";
 import "../practice-islands.css";
 import {
   buildBingoLabels,
@@ -78,13 +81,14 @@ function PracticeHub({
 }) {
   const [worldIndex, setWorldIndex] = useState(0);
   const [insideWorld, setInsideWorld] = useState(false);
-  const [jump, setJump] = useState({ count: 0, direction: 1 });
+  const [profile] = useStoredProfile();
+  const [entryPending, setEntryPending] = useState(false);
+  const entryOrigin = useRef<DOMRect | null>(null);
   const [worldTransition, setWorldTransition] = useState(false);
   const world = SOLO_WORLDS[worldIndex]!;
 
   function visitWorld(index: number) {
     if (index === worldIndex || index < 0 || index >= SOLO_WORLDS.length) return;
-    setJump((current) => ({ count: current.count + 1, direction: index > worldIndex ? 1 : -1 }));
     setWorldIndex(index);
     setWorldTransition(true);
   }
@@ -97,12 +101,62 @@ function PracticeHub({
 
   useEffect(() => {
     if (!insideWorld) return;
+    let secondFrame = 0;
+    let flight: HTMLElement | null = null;
+    let destination: HTMLElement | null = null;
+    let animation: Animation | null = null;
     const frame = requestAnimationFrame(() => {
       document
         .querySelector(`.solo-path-level--${Math.min(unlockedLevel, 4)}`)
         ?.scrollIntoView?.({ block: "center", behavior: "instant" });
+      secondFrame = requestAnimationFrame(() => {
+        const origin = entryOrigin.current;
+        entryOrigin.current = null;
+        destination = document.querySelector<HTMLElement>(".solo-path-avatar");
+        if (
+          !origin ||
+          !destination ||
+          typeof destination.animate !== "function" ||
+          isMotionReduced()
+        ) {
+          setEntryPending(false);
+          return;
+        }
+        const target = destination.getBoundingClientRect();
+        flight = destination.cloneNode(true) as HTMLElement;
+        flight.className = "practice-user-portrait practice-avatar-flight";
+        flight.setAttribute("aria-hidden", "true");
+        Object.assign(flight.style, {
+          left: `${origin.left}px`,
+          top: `${origin.top}px`,
+          width: `${origin.width}px`,
+          height: `${origin.height}px`,
+        });
+        document.body.append(flight);
+        destination.style.visibility = "hidden";
+        animation = flight.animate(
+          [
+            { transform: "translate(0, 0) scale(1)" },
+            {
+              transform: `translate(${target.left - origin.left}px, ${target.top - origin.top}px) scale(${target.width / origin.width})`,
+            },
+          ],
+          { duration: 950, easing: "cubic-bezier(.22,.7,.2,1)", fill: "forwards" },
+        );
+        animation.onfinish = () => {
+          if (destination) destination.style.visibility = "";
+          flight?.remove();
+          setEntryPending(false);
+        };
+      });
     });
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(secondFrame);
+      animation?.cancel();
+      flight?.remove();
+      if (destination) destination.style.visibility = "";
+    };
   }, [insideWorld, unlockedLevel]);
 
   useEffect(() => {
@@ -170,7 +224,7 @@ function PracticeHub({
   if (insideWorld) {
     return (
       <div
-        className={`practice-hub solo-world-enter${worldTransition ? " is-switching-world" : ""}`}
+        className={`practice-hub solo-world-enter practice-avatar-journey${worldTransition ? " is-switching-world" : ""}`}
       >
         <section className="solo-journey" aria-labelledby="solo-world-title">
           <div className="solo-journey__heading">
@@ -231,10 +285,10 @@ function PracticeHub({
                     key={game.mode}
                   >
                     {game.level === unlockedLevel && (
-                      <img
-                        className="solo-path-mascot"
-                        src="/helena-loading.svg"
-                        alt={`Helena no nível ${game.level}`}
+                      <PracticeUserPortrait
+                        profile={profile}
+                        className={`solo-path-avatar${entryPending ? " is-entering" : ""}`}
+                        level={game.level}
                       />
                     )}
                     <span className="solo-path-level__badge">
@@ -258,17 +312,23 @@ function PracticeHub({
 
   return (
     <div className="practice-hub practice-hub--carousel">
-      <PracticeIslandCarousel
-        index={worldIndex}
-        onVisit={visitWorld}
-        jump={jump}
-        onPlay={() => setJump((current) => ({ ...current, count: current.count + 1 }))}
-      />
+      <PracticeIslandCarousel index={worldIndex} onVisit={visitWorld} profile={profile} />
       <div className="solo-world-card" aria-live="polite">
         <span className="section-label">{world.subject}</span>
         <h3>{world.title}</h3>
         <p>{world.description}</p>
-        <button className="primary-button" type="button" onClick={() => setInsideWorld(true)}>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => {
+            entryOrigin.current =
+              document
+                .querySelector(".practice-island-avatar .practice-user-portrait")
+                ?.getBoundingClientRect() ?? null;
+            setEntryPending(world.number === 1 && !!entryOrigin.current && !isMotionReduced());
+            setInsideWorld(true);
+          }}
+        >
           <HelenaRoomIcon name="play" /> {world.number === 1 ? "Entrar no mundo" : "Explorar ilha"}
         </button>
       </div>

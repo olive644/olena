@@ -1,5 +1,72 @@
 import { test, expect } from "@playwright/test";
 
+test("foto do perfil acompanha a entrada até o nível atual", async ({ page }, testInfo) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.soloProgress", "3");
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({
+        name: "Poliana",
+        photoUrl: "/profile-avatars/poliana.webp",
+      }),
+    );
+  });
+  await page.goto("/aprender");
+  const portrait = page.getByAltText("Sua foto sobre a ilha");
+  await expect(portrait).toHaveAttribute("src", "/profile-avatars/poliana.webp");
+  await expect
+    .poll(() =>
+      page
+        .locator(".is-current .solo-island-art")
+        .evaluate((element) => (element as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+  await expect(page.locator(".solo-traveler")).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath("foto-na-ilha.png") });
+  await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
+  const flight = page.locator(".practice-avatar-flight");
+  await expect(flight).toBeVisible();
+  await flight.evaluate((element) => element.getAnimations()[0]!.pause());
+  const alignment = await flight.evaluate((element) => {
+    const animation = element.getAnimations()[0]!;
+    animation.currentTime = 950;
+    const from = element.getBoundingClientRect();
+    const to = document.querySelector(".solo-path-avatar")!.getBoundingClientRect();
+    const difference =
+      Math.abs(from.x - to.x) + Math.abs(from.y - to.y) + Math.abs(from.width - to.width);
+    animation.play();
+    return difference;
+  });
+  expect(alignment).toBeLessThan(2);
+  await expect(flight).toHaveCount(0);
+  await expect(page.getByAltText("Sua foto no nível 3")).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("foto-no-nivel.png") });
+  await page.getByRole("button", { name: "Voltar aos mundos", exact: true }).click();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
+  await expect(page.getByAltText("Sua foto no nível 3")).toBeVisible();
+  await expect(flight).toHaveCount(0);
+  await page.getByRole("button", { name: "Voltar aos mundos", exact: true }).click();
+  await page.evaluate(() => {
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({
+        name: "Oliver",
+        photoUrl: "/profile-avatars/oliver.webp",
+      }),
+    );
+    window.dispatchEvent(new Event("helena:synced-storage-applied"));
+  });
+  await expect(portrait).toHaveAttribute("src", "/profile-avatars/oliver.webp");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
+  await expect(flight).toBeVisible();
+  await page.getByRole("button", { name: "Voltar aos mundos", exact: true }).click();
+  await expect(flight).toHaveCount(0);
+  await expect(portrait).toBeVisible();
+});
+
 test("navega com gesto de toque real sem entrar na ilha", async ({
   page,
   browserName,

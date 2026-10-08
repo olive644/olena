@@ -7,11 +7,8 @@ import {
 } from "react";
 import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
-import {
-  SYNCED_STORAGE_APPLIED_EVENT,
-  SYNCED_STORAGE_EVENT,
-  writeSyncedStorage,
-} from "../data/synced-storage";
+import { writeSyncedStorage } from "../data/synced-storage";
+import { useStoredProfile, type StoredProfile } from "../hooks/use-stored-profile";
 import { AppearanceToggle } from "./appearance-picker";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
 
@@ -40,8 +37,6 @@ type NavigationItem = {
   icon: NavigationIconName;
 };
 
-type StoredProfile = { name?: string; photoUrl?: string };
-
 function profileAvatar(name: string, photoUrl: string): StoredProfile {
   return { name, photoUrl };
 }
@@ -64,28 +59,6 @@ const PROFILE_AVATARS = [
   profileAvatar("Moguel", "/profile-avatars/moguel-porquinho.svg"),
   profileAvatar("Leo", "/profile-avatars/leo.svg"),
 ] as const;
-
-function readStoredProfile(): StoredProfile {
-  try {
-    return JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as StoredProfile;
-  } catch {
-    return {};
-  }
-}
-
-function useStoredProfile() {
-  const [profile, setProfile] = useState(readStoredProfile);
-  useEffect(() => {
-    const refresh = () => setProfile(readStoredProfile());
-    window.addEventListener(SYNCED_STORAGE_EVENT, refresh);
-    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
-    return () => {
-      window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
-      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
-    };
-  }, []);
-  return [profile, setProfile] as const;
-}
 
 function ProfileChoices({ onChoose }: { onChoose: (profile: StoredProfile) => void }) {
   return (

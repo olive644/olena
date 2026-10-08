@@ -1,17 +1,17 @@
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { FocusPaperArrow } from "./focus-paper-arrow";
+import { PracticeUserPortrait } from "./practice-user-portrait";
+import type { StoredProfile } from "../hooks/use-stored-profile";
 
 export function PracticeIslandCarousel({
   index,
   onVisit,
-  jump,
-  onPlay,
+  profile,
 }: {
   index: number;
   onVisit: (index: number) => void;
-  jump: { count: number; direction: number };
-  onPlay: () => void;
+  profile: StoredProfile;
 }) {
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
   const [drag, setDrag] = useState(0);
@@ -99,22 +99,13 @@ export function PracticeIslandCarousel({
               )}
               {active && (
                 <div
-                  className={`solo-traveler solo-traveler--${island.number}`}
+                  className="practice-island-avatar"
                   style={{
                     left: `${island.traveler.left}%`,
                     top: `${island.traveler.top}%`,
-                    width: `${island.traveler.width}%`,
                   }}
                 >
-                  <button
-                    key={jump.count}
-                    className={`solo-traveler__jump${jump.count ? " is-jumping" : ""} ${jump.direction < 0 ? "is-backward" : ""}`}
-                    type="button"
-                    aria-label="Brincar com a Helena"
-                    onClick={onPlay}
-                  >
-                    <img src="/helena-loading.svg" alt="Helena" draggable={false} />
-                  </button>
+                  <PracticeUserPortrait profile={profile} />
                 </div>
               )}
             </div>
