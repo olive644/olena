@@ -2,6 +2,7 @@
 export const PRACTICE_ISLANDS = [
   {
     number: 1,
+    id: "languages",
     subject: "Idiomas",
     title: "Porto das Vozes",
     description: "Um porto de palavras, conversas e novas descobertas.",
@@ -11,6 +12,7 @@ export const PRACTICE_ISLANDS = [
   },
   {
     number: 2,
+    id: "portuguese",
     subject: "Português",
     title: "Vale das Histórias",
     description: "Bibliotecas, histórias e caminhos para se expressar.",
@@ -20,6 +22,7 @@ export const PRACTICE_ISLANDS = [
   },
   {
     number: 3,
+    id: "chemistry",
     subject: "Química",
     title: "Ilhas dos Elementos",
     description: "Um laboratório de elementos, moléculas e transformações.",
@@ -29,6 +32,7 @@ export const PRACTICE_ISLANDS = [
   },
   {
     number: 4,
+    id: "biology",
     subject: "Biologia",
     title: "Jardim da Vida",
     description: "Um jardim vivo para explorar a natureza.",
@@ -38,6 +42,7 @@ export const PRACTICE_ISLANDS = [
   },
   {
     number: 5,
+    id: "mathematics",
     subject: "Matemática",
     title: "Picos dos Padrões",
     description: "Formas, padrões e ideias que se conectam.",
@@ -47,6 +52,7 @@ export const PRACTICE_ISLANDS = [
   },
   {
     number: 6,
+    id: "programming",
     subject: "Programação",
     title: "Oficina do Código",
     description: "Uma oficina de código para construir suas ideias.",

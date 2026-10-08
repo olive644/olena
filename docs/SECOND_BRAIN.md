@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+api/olena.ts expõe handleOlena, somente GET de catálogo/ilhas/metodologias, versão 1.
+src/domain/olena.ts deriva metadados de PRACTICE_ISLANDS, agora com IDs estáveis.
+Registro de metodologias vazio até a etapa pedagógica. Nada de IA simulada ou voz:
+textGeneration not_configured, voice not_supported. Sem dados privados ou escrita.
+Consultar docs/OLENA_API.md antes de acrescentar execução, fornecedor ou atividades.
+
 Praticar usa useStoredProfile, compartilhado com o cabeçalho, e PracticeUserPortrait.
 A foto paira no carrossel. Entrada em Idiomas mede origem e destino após enquadrar
 o nível atual e usa Web Animations; cópia decorativa temporária tem cleanup ao voltar
@@ -879,6 +885,8 @@ Política de Privacidade: `public/politica-de-privacidade.html` (versão em `src
 Pastas da vitrine: `NotebookFolder` recebe cadernos, páginas e matérias de `NotesView`, e usa `notebookPaperTabs` para mostrar as abas reais nos previews internos. A pasta ocupa uma coluna do grid (220px no desktop e 164px no mobile); as capas ficam ancoradas pela base dentro do bolso translúcido e sobem em leque ao abrir. O mesmo `NotebookJourney` leva cada capa até o preview. `useNotebookShelfDrag` rola continuamente `.notebook-shelf--objects` ao arrastar junto à borda, permitindo levar o caderno até uma pasta fora da tela no celular. `use-selection-gesture` trata a seleção no modo mão com `moveOnly`, sem criar laço novo; clicar de novo na ferramenta ativa seleciona a mão. `e2e/editor-movement-design.spec.ts` e `e2e/notebook-folders-ink.spec.ts` exercitam esses fluxos.
 
 # Notes de texto
+
+O avatar de Praticar pertence ao palco do carrossel, não à ilha selecionada. left/bottom derivam de traveler e das variáveis de tamanho/base do palco; transições de 550 ms acompanham os cenários e --drag-x acompanha o gesto. Não remontar a foto ao alterar index. Movimento reduzido remove as transições, e o voo de entrada na trilha mede a mesma moldura persistente.
 
 Gestos de seleção usam a geometria inicial e limites de grupo. A escala é projetada
 na diagonal do arrasto, com âncora no canto oposto do conteúdo. A barra de preview

@@ -1,5 +1,19 @@
 # Auditoria do estado atual
 
+## Avatar contínuo na troca de ilhas (2026-10-08)
+
+- Um único avatar permanece montado no carrossel. A moldura desliza entre as posições próprias das ilhas, no mesmo tempo da transição dos cenários, sem sumir nem duplicar a foto.
+- Arraste por mouse ou toque desloca foto e ilha juntos. Setas e teclado compartilham a transição; movimento reduzido mantém troca imediata. Entrada na trilha continua medindo a posição real da foto.
+- Os testes de retorno da sala agora verificam o carrossel, não o título introdutório removido por solicitação do proprietário.
+- Validação: verify aprovado com 1206 testes, tipos, build, formato, API e orçamento. Doze cenários Edge desktop/mobile aprovados, incluindo continuidade da foto, arraste, teclado, movimento reduzido, voo até o nível e retorno de duas salas. JavaScript inicial 275,6 KiB e total 1145,6 KiB, sem dependências novas.
+
+## API oficial da Olena, base de metodologias (2026-10-08)
+
+- GET /api/olena versão 1 consulta catálogo, ilhas e metodologias por ID estável. Metadados derivados das mesmas ilhas de Praticar; apenas Idiomas tem trilha.
+- Sem fornecedor conectado, voz, geração de texto simulada, metodologias ou exercícios inventados. Lista de metodologias vazia e status foundation explícito.
+- Somente consultas públicas, sem dados pessoais, escrita, banco ou chamadas externas. Filtros estritos, erros versionados e função Vercel real com contrato Request/Response testado.
+- Serviço de áudio dos minigames permanece intacto. Contrato, limites e próximos passos em OLENA_API.md.
+
 ## Foto do perfil nas ilhas e entrada na trilha (2026-10-08)
 
 - A foto do perfil paira sobre a ilha selecionada em moldura de papel. O mesmo hook do cabeçalho acompanha alterações do perfil, sem cadastro ou persistência novos.

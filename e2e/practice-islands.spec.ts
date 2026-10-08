@@ -1,5 +1,66 @@
 import { test, expect } from "@playwright/test";
 
+test("avatar desliza entre ilhas sem remontar e acompanha o arraste", async ({ page }) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/aprender");
+  const avatar = page.locator(".practice-island-avatar");
+  await expect(avatar).toBeVisible();
+  const original = (await avatar.elementHandle())!;
+  await page.getByRole("button", { name: "Próximo mundo" }).click();
+  expect(
+    await original.evaluate(
+      (element) => element === document.querySelector(".practice-island-avatar"),
+    ),
+  ).toBe(true);
+  const movement = await avatar.evaluate((element) => {
+    const animations = element.getAnimations();
+    const measure = () => {
+      const rect = element.getBoundingClientRect();
+      return { x: rect.x, y: rect.y };
+    };
+    animations.forEach((animation) => {
+      animation.pause();
+      animation.currentTime = 0;
+    });
+    const start = measure();
+    animations.forEach((animation) => (animation.currentTime = 275));
+    const middle = measure();
+    animations.forEach((animation) => (animation.currentTime = 550));
+    const end = measure();
+    animations.forEach((animation) => animation.play());
+    return { count: animations.length, start, middle, end };
+  });
+  expect(movement.count).toBeGreaterThan(0);
+  expect(movement.middle.y).toBeGreaterThan(Math.min(movement.start.y, movement.end.y));
+  expect(movement.middle.y).toBeLessThan(Math.max(movement.start.y, movement.end.y));
+  await expect.poll(() => avatar.evaluate((element) => element.getAnimations().length)).toBe(0);
+
+  const stage = page.locator(".practice-carousel-stage");
+  const box = (await stage.boundingBox())!;
+  const before = (await avatar.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height * 0.85);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 - 80, box.y + box.height * 0.85, { steps: 5 });
+  await expect.poll(async () => (await avatar.boundingBox())!.x).toBeLessThan(before.x - 65);
+  await page.mouse.up();
+  await expect(page.getByAltText("Mundo 3: Química")).toBeVisible();
+  expect(
+    await original.evaluate(
+      (element) => element === document.querySelector(".practice-island-avatar"),
+    ),
+  ).toBe(true);
+  await expect(avatar.locator(".practice-user-portrait")).toHaveCount(1);
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.getByRole("button", { name: "Próximo mundo" }).click();
+  expect(
+    await avatar.evaluate((element) => parseFloat(getComputedStyle(element).transitionDuration)),
+  ).toBeLessThanOrEqual(0.01);
+  await expect(page.getByAltText("Mundo 4: Biologia")).toBeVisible();
+});
+
 test("foto do perfil acompanha a entrada até o nível atual", async ({ page }, testInfo) => {
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));

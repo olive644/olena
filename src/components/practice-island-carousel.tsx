@@ -15,6 +15,7 @@ export function PracticeIslandCarousel({
 }) {
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
   const [drag, setDrag] = useState(0);
+  const currentIsland = PRACTICE_ISLANDS[index]!;
 
   function finish(event: PointerEvent<HTMLDivElement>, cancelled = false) {
     const start = gesture.current;
@@ -97,20 +98,18 @@ export function PracticeIslandCarousel({
                   fetchPriority={active ? "high" : "low"}
                 />
               )}
-              {active && (
-                <div
-                  className="practice-island-avatar"
-                  style={{
-                    left: `${island.traveler.left}%`,
-                    top: `${island.traveler.top}%`,
-                  }}
-                >
-                  <PracticeUserPortrait profile={profile} />
-                </div>
-              )}
             </div>
           );
         })}
+        <div
+          className="practice-island-avatar"
+          style={{
+            left: `calc(50% + ${currentIsland.traveler.left / 100 - 0.5} * var(--island-size) + var(--drag-x))`,
+            bottom: `calc(var(--island-floor) + ${1 - currentIsland.traveler.top / 100} * var(--island-size))`,
+          }}
+        >
+          <PracticeUserPortrait profile={profile} />
+        </div>
       </div>
       <button
         className="focus-mode-arrow practice-carousel-arrow practice-carousel-arrow--previous"
