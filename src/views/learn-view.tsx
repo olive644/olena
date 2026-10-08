@@ -8,6 +8,7 @@ import { ListeningQuiz } from "../components/listening-quiz";
 import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
+import { PracticeIslandCarousel } from "../components/practice-island-carousel";
 import "../practice-islands.css";
 import {
   buildBingoLabels,
@@ -86,8 +87,13 @@ function PracticeHub({
     setJump((current) => ({ count: current.count + 1, direction: index > worldIndex ? 1 : -1 }));
     setWorldIndex(index);
     setWorldTransition(true);
-    window.setTimeout(() => setWorldTransition(false), 550);
   }
+
+  useEffect(() => {
+    if (!worldTransition) return;
+    const timer = window.setTimeout(() => setWorldTransition(false), 550);
+    return () => window.clearTimeout(timer);
+  }, [worldIndex, worldTransition]);
 
   useEffect(() => {
     if (!insideWorld) return;
@@ -123,7 +129,12 @@ function PracticeHub({
             <img
               key={world.number}
               src={world.art}
+              srcSet={`${world.art.replace(".webp", "-small.webp")} 480w, ${world.art} 800w`}
+              sizes="(max-width: 600px) calc(100vw - 32px), 580px"
+              width="800"
+              height="800"
               alt={`Ilha de ${world.subject} em papel recortado`}
+              decoding="async"
             />
           </div>
           <ul className="solo-subject-topics" aria-label={`Temas de ${world.subject}`}>
@@ -246,93 +257,21 @@ function PracticeHub({
   }
 
   return (
-    <div className="practice-hub">
-      <section className="solo-journey" aria-labelledby="solo-journey-title">
-        <div className="solo-journey__heading">
-          <div>
-            <h2 id="solo-journey-title" className="section-label">
-              Ilhas do conhecimento
-            </h2>
-          </div>
-          <div className="solo-journey__progress" aria-label="Progresso no mundo atual">
-            <span>Mundo {world.number}</span>
-            <strong>
-              {world.number === 1 ? `${Math.min(unlockedLevel, 4)}/4 níveis` : "Explorar"}
-            </strong>
-          </div>
-        </div>
-
-        <div className={`solo-world-map solo-world-map--${world.number}`}>
-          <div className="solo-islands" aria-label="Mundos da Helena">
-            <img
-              key={world.number}
-              className={`solo-island-art ${jump.direction < 0 ? "is-backward" : ""}`}
-              src={world.art}
-              alt={`Mundo ${world.number}: ${world.subject}`}
-              decoding="async"
-              fetchPriority="high"
-            />
-            <div
-              className={`solo-traveler solo-traveler--${world.number}`}
-              style={{
-                left: `${world.traveler.left}%`,
-                top: `${world.traveler.top}%`,
-                width: `${world.traveler.width}%`,
-              }}
-            >
-              <button
-                key={jump.count}
-                className={`solo-traveler__jump${jump.count ? " is-jumping" : ""} ${jump.direction < 0 ? "is-backward" : ""}`}
-                type="button"
-                aria-label="Brincar com a Helena"
-                onClick={() => setJump((current) => ({ ...current, count: current.count + 1 }))}
-              >
-                <img src="/helena-loading.svg" alt="Helena" />
-              </button>
-            </div>
-          </div>
-          <button
-            className="solo-world-map__arrow solo-world-map__arrow--previous"
-            type="button"
-            onClick={() => visitWorld(worldIndex - 1)}
-            disabled={worldIndex === 0}
-            aria-label="Mundo anterior"
-          >
-            <HelenaRoomIcon name="back" />
-          </button>
-          <button
-            className="solo-world-map__arrow solo-world-map__arrow--next"
-            type="button"
-            onClick={() => visitWorld(worldIndex + 1)}
-            disabled={worldIndex === SOLO_WORLDS.length - 1}
-            aria-label="Próximo mundo"
-          >
-            <HelenaRoomIcon name="back" />
-          </button>
-          <div className="solo-world-card" aria-live="polite">
-            <span className="section-label">{world.subject}</span>
-            <h3>{world.title}</h3>
-            <p>{world.description}</p>
-            <button className="primary-button" type="button" onClick={() => setInsideWorld(true)}>
-              <HelenaRoomIcon name="play" />{" "}
-              {world.number === 1 ? "Entrar no mundo" : "Explorar ilha"}
-            </button>
-          </div>
-        </div>
-        <nav className="solo-island-tabs" aria-label="Ilhas de estudo">
-          {SOLO_WORLDS.map((island, index) => (
-            <button
-              className="secondary-button"
-              type="button"
-              key={island.number}
-              aria-current={index === worldIndex ? "true" : undefined}
-              onClick={() => visitWorld(index)}
-            >
-              {island.subject}
-            </button>
-          ))}
-        </nav>
-      </section>
+    <div className="practice-hub practice-hub--carousel">
+      <PracticeIslandCarousel
+        index={worldIndex}
+        onVisit={visitWorld}
+        jump={jump}
+        onPlay={() => setJump((current) => ({ ...current, count: current.count + 1 }))}
+      />
+      <div className="solo-world-card" aria-live="polite">
+        <span className="section-label">{world.subject}</span>
+        <h3>{world.title}</h3>
+        <p>{world.description}</p>
+        <button className="primary-button" type="button" onClick={() => setInsideWorld(true)}>
+          <HelenaRoomIcon name="play" /> {world.number === 1 ? "Entrar no mundo" : "Explorar ilha"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -594,24 +533,32 @@ export function LearnView({ workspace, dispatch }: LearnViewProps) {
     workspace.subjects.find((subject) => subject.id === subjectId) ?? defaultSubject;
 
   return (
-    <main className="main-content" id="main-content">
+    <main
+      className={`main-content${mode === "hub" ? " practice-island-page" : ""}`}
+      id="main-content"
+    >
       <PageHeader />
-      <header className="view-heading view-heading--with-action">
-        <div>
-          <span className="section-label">Praticar</span>
-          <h1>Pratique para lembrar.</h1>
-        </div>
-        <label className="view-select">
-          <span>Matéria</span>
-          <select value={selectedSubject.id} onChange={(event) => setSubjectId(event.target.value)}>
-            {workspace.subjects.map((subject) => (
-              <option value={subject.id} key={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </header>
+      {mode !== "hub" && (
+        <header className="view-heading view-heading--with-action">
+          <div>
+            <span className="section-label">Praticar</span>
+            <h1>Pratique para lembrar.</h1>
+          </div>
+          <label className="view-select">
+            <span>Matéria</span>
+            <select
+              value={selectedSubject.id}
+              onChange={(event) => setSubjectId(event.target.value)}
+            >
+              {workspace.subjects.map((subject) => (
+                <option value={subject.id} key={subject.id}>
+                  {subject.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </header>
+      )}
 
       <div className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : ""}`}>
         <section className="module-panel study-panel" aria-label="Praticar">

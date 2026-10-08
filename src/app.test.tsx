@@ -368,8 +368,11 @@ describe("App", () => {
   it("navega pelas seis ilhas sem anunciar exercícios ainda inexistentes", async () => {
     render(<App />);
     navigate("Praticar");
-    const navigation = await screen.findByRole("navigation", { name: "Ilhas de estudo" });
-    expect(within(navigation).getAllByRole("button")).toHaveLength(6);
+    await screen.findByRole("region", { name: "Ilhas de estudo" });
+    expect(screen.queryByRole("navigation", { name: "Ilhas de estudo" })).toBeNull();
+    expect(screen.queryByText("Ilhas do conhecimento")).toBeNull();
+    expect(screen.queryByText("Pratique para lembrar.")).toBeNull();
+    expect(screen.queryByRole("combobox")).toBeNull();
     expect(screen.getByRole("heading", { name: "Porto das Vozes" })).toBeTruthy();
     for (const [title, islandName] of [
       ["Português", "Vale das Histórias"],
@@ -378,11 +381,7 @@ describe("App", () => {
       ["Matemática", "Picos dos Padrões"],
       ["Programação", "Oficina do Código"],
     ] as const) {
-      fireEvent.click(
-        within(screen.getByRole("navigation", { name: "Ilhas de estudo" })).getByRole("button", {
-          name: title,
-        }),
-      );
+      fireEvent.click(screen.getByRole("button", { name: "Próximo mundo" }));
       expect(screen.getByRole("heading", { name: islandName })).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Explorar ilha" }));
       expect(screen.getByRole("img", { name: `Ilha de ${title} em papel recortado` })).toBeTruthy();

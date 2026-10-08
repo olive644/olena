@@ -1,13 +1,81 @@
-.solo-island-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
+:root body .practice-island-page .study-panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
 }
-.solo-island-tabs button[aria-current="true"] {
-  border-color: #facc15;
-  box-shadow: 0 4px 0 #b99100;
+.practice-hub--carousel {
+  gap: 0;
+  padding: 12px 0 28px;
+}
+.practice-carousel {
+  position: relative;
+  width: 100%;
+  outline-offset: -4px;
+}
+.practice-carousel:focus-visible {
+  outline: 3px solid #facc15;
+}
+.practice-hub .practice-carousel-stage {
+  --island-size: min(420px, 45vw, calc(100dvh - 260px));
+  --preview-rise: clamp(-160px, -15vw, -100px);
+  --island-gap: min(340px, 32vw);
+  width: 100%;
+  height: calc(var(--island-size) + 44px);
+  aspect-ratio: auto;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+.practice-carousel-stage.is-dragging {
+  cursor: grabbing;
+}
+.practice-carousel-island {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: var(--island-size);
+  aspect-ratio: 1;
+  transform: translateX(calc(-50% + var(--island-offset) * var(--island-gap) + var(--drag-x)))
+    translateY(var(--island-rise)) scale(var(--island-scale));
+  transition:
+    transform 550ms cubic-bezier(0.22, 0.75, 0.25, 1),
+    opacity 450ms ease;
+  transform-origin: center bottom;
+  pointer-events: none;
+}
+.practice-carousel-island.is-current {
+  z-index: 2;
+  pointer-events: auto;
+}
+.practice-carousel-island .solo-island-art {
+  animation: none;
+}
+.practice-carousel-stage.is-dragging .practice-carousel-island {
+  transition: none;
+}
+:root body .practice-carousel .practice-carousel-arrow {
+  position: absolute;
+  top: 58%;
+  z-index: 5;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.practice-carousel-arrow--previous {
+  left: max(4px, calc(50% - 295px));
+}
+.practice-carousel-arrow--next {
+  right: max(4px, calc(50% - 295px));
+}
+.practice-hub--carousel .solo-world-card {
+  margin: 0 auto;
+  padding: 8px 12px;
 }
 .solo-subject-scene {
   display: grid;
@@ -55,7 +123,7 @@
   .main-content:has(.practice-hub) .view-heading {
     display: none;
   }
-  .practice-hub .solo-islands {
+  .practice-hub .solo-islands:not(.practice-carousel-stage) {
     width: min(300px, 100%);
   }
   .practice-hub .solo-world-card {
@@ -84,15 +152,28 @@
     border-radius: 4px 11px 4px 9px;
     box-shadow: 0 3px 0 var(--line-strong);
   }
-  .solo-island-tabs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+  .practice-hub .practice-carousel-stage {
+    --island-size: min(300px, 66vw);
+    --island-gap: 51vw;
+    height: calc(var(--island-size) + 35px);
   }
-  .solo-island-tabs .secondary-button {
-    padding: 10px 5px;
-    font-size: 11px;
-    justify-content: center;
+  .practice-carousel-island {
+    bottom: 0;
+  }
+  .practice-carousel-arrow--previous {
+    left: 0;
+  }
+  .practice-carousel-arrow--next {
+    right: 0;
+  }
+  :root body .practice-carousel .practice-carousel-arrow {
+    top: 61%;
+    width: 44px;
+    height: 44px;
+  }
+  .practice-carousel .focus-paper-arrow {
+    width: 42px;
+    height: 42px;
   }
   .solo-subject-scene img {
     max-height: 48dvh;
@@ -103,6 +184,9 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .practice-carousel-island {
+    transition: none;
+  }
   .solo-subject-scene img {
     animation: none;
   }
