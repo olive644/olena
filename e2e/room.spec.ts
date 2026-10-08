@@ -764,102 +764,100 @@ for (const activity of ["listening", "bingo"] as const) {
           await expect(host.locator(".local-room-round__host-question span")).toHaveText(word);
           await host.getByRole("button", { name: "Ocultar palavra" }).click();
         }
-        await Promise.all(
-          (activity === "bingo" && question === 4 ? players.slice(0, 1) : players).map(
-            async (page) => {
-              await expect(
-                page.getByText(`Pergunta ${question + 1} de 5`, { exact: true }),
-              ).toBeVisible();
-              if (question === 0 && page === players[0])
-                await page.screenshot({ path: testInfo.outputPath("round-mobile.png") });
-              if (activity === "listening") {
-                const wrong = question === 0 && page === players[1];
-                if (question === 0) {
-                  const input = page.getByLabel("Digite a tradução");
-                  await input.tap();
-                  await expect(input).toBeFocused();
-                  await page.getByRole("button", { name: "Ouvir novamente", exact: true }).tap();
-                  await expect(input).toBeFocused();
-                  await page.getByRole("button", { name: "Voltar", exact: true }).focus();
-                  await expect(input).not.toBeFocused();
-                }
-                await page
-                  .getByLabel("Digite a tradução")
-                  .fill(wrong ? "resposta incorreta" : word);
-                await page.getByRole("button", { name: "Responder", exact: true }).click();
-                if (question === 0) {
-                  const feedback = page.locator(".local-room-answer-feedback");
-                  await expect(feedback).toHaveClass(wrong ? /is-wrong/ : /is-correct/);
-                  await expect(feedback.locator(".paper-english-word__outline").first()).toHaveCSS(
-                    "display",
-                    "none",
-                  );
-                  await expect(feedback.locator(".local-room-answer-feedback__pair")).toHaveCSS(
-                    "background-image",
-                    /linear-gradient/,
-                  );
-                  await expect(feedback.getByRole("img", { name: /Helena/ })).toBeVisible();
-                  await expect(feedback.locator(".room-answer-helena")).toHaveCSS(
-                    "clip-path",
-                    "inset(0px 2%)",
-                  );
-                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
-                    "background-image",
-                    wrong ? /helena-wrong-frames/ : /helena-correct-frames/,
-                  );
-                  await expect(
-                    feedback.locator(".local-room-answer-feedback__pair > span"),
-                  ).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
-                  await expect(feedback.locator(".local-room-xp-feedback")).toContainText(
-                    wrong ? "-5 pontos" : "pontos",
-                  );
-                  await page.evaluate(
-                    async (result) => {
-                      const sprite = new Image();
-                      sprite.src = `/room-art/helena-${result}-frames.webp`;
-                      await sprite.decode();
-                    },
-                    wrong ? "wrong" : "correct",
-                  );
-                  await expect
-                    .poll(() =>
-                      feedback
-                        .locator(".room-answer-helena__frames")
-                        .evaluate((element) =>
-                          element
-                            .getAnimations()
-                            .some((animation) => Number(animation.currentTime) >= 650),
-                        ),
-                    )
-                    .toBe(true);
-                  await page.screenshot({
-                    path: testInfo.outputPath(wrong ? "answer-wrong.png" : "answer-correct.png"),
-                  });
-                  if (!wrong) await expect(feedback.locator(".room-speed-label")).toHaveCount(0);
-                  await page.emulateMedia({ reducedMotion: "reduce" });
-                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
-                    "animation-name",
-                    "none",
-                  );
-                  await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
-                    "background-position",
-                    "100% 100%",
-                  );
-                  await page.emulateMedia({ reducedMotion: "no-preference" });
-                }
-              } else {
-                const current = states.get(code)!;
-                const label = current.bingoWords!.find(
-                  (card) => card.id === current.currentQuestion!.id,
-                )!.text;
-                await page
-                  .locator(".local-room-bingo-grid")
-                  .getByRole("button", { name: label, exact: true })
-                  .click();
-              }
-            },
-          ),
-        );
+        for (const page of activity === "bingo" && question === 4 ? players.slice(0, 1) : players) {
+          await page.bringToFront();
+          await expect(
+            page.getByText(`Pergunta ${question + 1} de 5`, { exact: true }),
+          ).toBeVisible();
+          if (question === 0 && page === players[0])
+            await page.screenshot({ path: testInfo.outputPath("round-mobile.png") });
+          if (activity === "listening") {
+            const wrong = question === 0 && page === players[1];
+            if (question === 0) {
+              const input = page.getByLabel("Digite a tradução");
+              await input.tap();
+              await expect(input).toBeFocused();
+              await page.getByRole("button", { name: "Ouvir novamente", exact: true }).tap();
+              await expect(input).toBeFocused();
+              await page.getByRole("button", { name: "Voltar", exact: true }).focus();
+              await expect(input).not.toBeFocused();
+            }
+            if (question === 0) {
+              await page.evaluate(
+                async (result) => {
+                  const sprite = new Image();
+                  sprite.src = `/room-art/helena-${result}-frames.webp`;
+                  await sprite.decode();
+                },
+                wrong ? "wrong" : "correct",
+              );
+            }
+            await page.getByLabel("Digite a tradução").fill(wrong ? "resposta incorreta" : word);
+            await page.getByRole("button", { name: "Responder", exact: true }).click();
+            if (question === 0) {
+              const feedback = page.locator(".local-room-answer-feedback");
+              await expect(feedback).toHaveClass(wrong ? /is-wrong/ : /is-correct/);
+              await expect(feedback.locator(".paper-english-word__outline").first()).toHaveCSS(
+                "display",
+                "none",
+              );
+              await expect(feedback.locator(".local-room-answer-feedback__pair")).toHaveCSS(
+                "background-image",
+                /linear-gradient/,
+              );
+              await expect(feedback.getByRole("img", { name: /Helena/ })).toBeVisible();
+              await expect(feedback.locator(".room-answer-helena")).toHaveCSS(
+                "clip-path",
+                "inset(0px 2%)",
+              );
+              await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                "background-image",
+                wrong ? /helena-wrong-frames/ : /helena-correct-frames/,
+              );
+              await expect(feedback.locator(".local-room-answer-feedback__pair > span")).toHaveCSS(
+                "background-color",
+                "rgba(0, 0, 0, 0)",
+              );
+              await expect(feedback.locator(".local-room-xp-feedback")).toContainText(
+                wrong ? "-5 pontos" : "pontos",
+              );
+              if (!wrong) await expect(feedback.locator(".room-speed-label")).toHaveCount(0);
+              await page.emulateMedia({ reducedMotion: "reduce" });
+              await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                "animation-name",
+                "none",
+              );
+              await expect(feedback.locator(".room-answer-helena__frames")).toHaveCSS(
+                "background-position",
+                "100% 100%",
+              );
+              await page.emulateMedia({ reducedMotion: "no-preference" });
+              await expect
+                .poll(() =>
+                  feedback
+                    .locator(".room-answer-helena__frames")
+                    .evaluate((element) =>
+                      element
+                        .getAnimations()
+                        .some((animation) => Number(animation.currentTime) >= 650),
+                    ),
+                )
+                .toBe(true);
+              await page.screenshot({
+                path: testInfo.outputPath(wrong ? "answer-wrong.png" : "answer-correct.png"),
+              });
+            }
+          } else {
+            const current = states.get(code)!;
+            const label = current.bingoWords!.find(
+              (card) => card.id === current.currentQuestion!.id,
+            )!.text;
+            await page
+              .locator(".local-room-bingo-grid")
+              .getByRole("button", { name: label, exact: true })
+              .click();
+          }
+        }
       }
       if (activity === "listening")
         await expect(
