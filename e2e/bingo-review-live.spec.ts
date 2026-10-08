@@ -185,7 +185,7 @@ for (const physical of [false, true])
         const captureReaction = index === 0 && i === 0;
         if (captureReaction) {
           await client.clock.install();
-          await client.clock.pauseAt(new Date());
+          await client.clock.pauseAt(new Date(Date.now() + 1000));
         }
         await cell.click();
         if (captureReaction) {

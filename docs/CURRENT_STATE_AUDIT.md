@@ -8,6 +8,8 @@
 - A duração e o comportamento da aplicação permanecem iguais.
 - Testes da sala agora verificam as imagens dentro de picture e a borda dourada da seleção atual.
 - O teste de nitidez lê largura e altura do canvas juntas para evitar misturar dois redimensionamentos.
+- WebKit mantinha proporção panorâmica no celular por especificidade CSS, sobrepondo as modalidades. Largura limitada à coluna e seletor móvel equivalente corrigem o toque; a regressão verifica os limites horizontais em 320 e 390 px.
+- A pausa do relógio usa um instante futuro para evitar divergência de milissegundos entre Node e WebKit.
 
 ## Leo e atualização de Alice e Soso Estrelinha (2026-10-07)
 

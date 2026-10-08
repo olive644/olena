@@ -140,6 +140,8 @@ for (const activity of ["listening", "bingo"] as const) {
         for (const card of cards) {
           const bounds = await card.boundingBox();
           expect(bounds!.y).toBeGreaterThanOrEqual(0);
+          expect(bounds!.x).toBeGreaterThanOrEqual(0);
+          expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
           expect(bounds!.y + bounds!.height).toBeLessThan(bottomNav!.y);
         }
         expect(
