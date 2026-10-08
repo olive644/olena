@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Foto do perfil nas ilhas e entrada na trilha (2026-10-08)
+
+- A foto do perfil paira sobre a ilha selecionada em moldura de papel. O mesmo hook do cabeçalho acompanha alterações do perfil, sem cadastro ou persistência novos.
+- Entrar em Idiomas leva a foto da posição visível no carrossel ao nível atual, após enquadrar a trilha. A transição mede origem e destino reais para desktop e celular, limpa animação ao sair e respeita movimento reduzido do sistema e do Perfil.
+- As outras cinco ilhas permanecem cenários exploráveis, sem inventar trilhas ou exercícios. Artes aprovadas, gestos e progressão foram preservados.
+
 ## Carrossel aberto e imagens responsivas de Praticar (2026-10-08)
 
 - Removidos título introdutório, seletor de matéria, painel branco, contador de mundo/níveis e botões inferiores de disciplinas da tela de ilhas. Seleção de conteúdo continua disponível dentro dos minigames existentes.

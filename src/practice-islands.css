@@ -53,6 +53,91 @@
 .practice-carousel-island .solo-island-art {
   animation: none;
 }
+.practice-user-portrait {
+  display: block;
+  width: 64px;
+  height: 64px;
+  padding: 4px;
+  border: 2px solid #f8d34b;
+  border-radius: 50%;
+  background: #fff7df;
+  box-shadow:
+    0 4px 0 #b28a31,
+    0 8px 0 #29243220;
+  box-sizing: border-box;
+}
+.practice-user-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.practice-island-avatar {
+  position: absolute;
+  transform: translate(-50%, -75%);
+  pointer-events: none;
+  z-index: 3;
+}
+.practice-island-avatar .practice-user-portrait {
+  animation: practice-photo-float 2800ms ease-in-out infinite;
+}
+.practice-island-avatar::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 6px);
+  bottom: -12px;
+  width: 12px;
+  height: 8px;
+  background: #f8d34b;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.solo-path-avatar {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 12px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+.practice-avatar-flight {
+  position: fixed;
+  z-index: 100;
+  pointer-events: none;
+  transform-origin: top left;
+}
+.solo-path-avatar.is-entering {
+  visibility: hidden;
+}
+.practice-avatar-journey .solo-level-path {
+  animation: none;
+}
+body.solo-world-open .app-shell > .sidebar ~ .main-content,
+.practice-avatar-journey .solo-level-track {
+  transition: none;
+}
+.practice-avatar-journey .solo-level-scenery {
+  animation: practice-scene-enter 950ms ease-out;
+}
+@keyframes practice-photo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes practice-scene-enter {
+  from {
+    opacity: 0.35;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 .practice-carousel-stage.is-dragging .practice-carousel-island {
   transition: none;
 }
@@ -120,6 +205,18 @@
   margin: 16px 0;
 }
 @media (max-width: 600px) {
+  .practice-island-avatar .practice-user-portrait {
+    width: 52px;
+    height: 52px;
+  }
+  .solo-path-avatar {
+    width: 52px;
+    height: 52px;
+    bottom: calc(100% - 24px);
+  }
+  .solo-path-level:has(.solo-path-avatar) {
+    z-index: 3;
+  }
   .main-content:has(.practice-hub) .view-heading {
     display: none;
   }
@@ -184,6 +281,10 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .practice-island-avatar .practice-user-portrait,
+  .practice-avatar-journey .solo-level-scenery {
+    animation: none;
+  }
   .practice-carousel-island {
     transition: none;
   }

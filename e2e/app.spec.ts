@@ -103,7 +103,9 @@ test("usa o ícone grafite original em Começar prática", async ({ page }) => {
   }
 });
 
-test("explora mundos com a Helena e abre a trilha de níveis", async ({ page }, testInfo) => {
+test("explora mundos com a foto do perfil e abre a trilha de níveis", async ({
+  page,
+}, testInfo) => {
   await page
     .getByRole("navigation", {
       name: testInfo.project.name === "mobile" ? "Navegação móvel" : "Navegação principal",
@@ -116,19 +118,16 @@ test("explora mundos com a Helena e abre a trilha de níveis", async ({ page }, 
     "src",
     "/practice-islands/portuguese.webp",
   );
-  await expect(page.locator(".solo-traveler")).toHaveClass(/solo-traveler--2/);
+  await expect(page.getByAltText("Sua foto sobre a ilha")).toBeVisible();
   await expect(page.getByRole("button", { name: "Explorar ilha", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Mundo anterior" }).click();
-  await expect(page.locator(".solo-traveler__jump img")).toHaveCSS(
-    "transform",
-    "matrix(-1, 0, 0, 1, 0, 0)",
-  );
+  await expect(page.getByAltText("Sua foto sobre a ilha")).toBeVisible();
   await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
   await expect(page.locator("body")).toHaveClass(/solo-world-open/);
   await expect(page.locator(".solo-level-path")).toHaveClass(/solo-level-path--world-1/);
   await expect(page.getByRole("button", { name: /Nível 1: Escuta/ })).toBeEnabled();
   await expect(
-    page.getByRole("button", { name: /Nível 1: Escuta/ }).getByAltText("Helena no nível 1"),
+    page.getByRole("button", { name: /Nível 1: Escuta/ }).getByAltText("Sua foto no nível 1"),
   ).toBeVisible();
   await expect(page.getByRole("button", { name: /Nível 2: Flashcards/ })).toBeDisabled();
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -303,9 +302,9 @@ test("cria um flashcard e conclui a revisão", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Voltar aos mundos", exact: true }).click();
   await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
   const nextLevel = page.getByRole("button", { name: /Nível 3: Quiz/ });
-  await expect(nextLevel.getByAltText("Helena no nível 3")).toBeVisible();
+  await expect(nextLevel.getByAltText("Sua foto no nível 3")).toBeVisible();
   const alignment = await nextLevel.evaluate((element) => {
-    const mascot = element.querySelector(".solo-path-mascot")!.getBoundingClientRect();
+    const mascot = element.querySelector(".solo-path-avatar")!.getBoundingClientRect();
     const tile = element.querySelector(".solo-path-level__badge")!.getBoundingClientRect();
     return Math.abs(mascot.x + mascot.width / 2 - tile.x - tile.width / 2);
   });
