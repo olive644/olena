@@ -36,6 +36,27 @@ function state(): PublicLocalRoomState {
 }
 
 describe("solar bingo interface", () => {
+  it("bloqueia sorteios até a contagem inicial terminar", async () => {
+    const initial: PublicLocalRoomState = { ...state(), phase: "playing", drawnIds: [] };
+    delete initial.currentQuestion;
+    const props = {
+      state: initial,
+      isHost: true,
+      participantId: "p",
+      onMode: vi.fn(),
+      onDraw: vi.fn().mockResolvedValue(undefined),
+      onAnswer: vi.fn(),
+    };
+    const { rerender } = render(<NumberBingo {...props} starting />);
+    const button = screen.getByRole("button", { name: "Sortear próxima bolinha" });
+    expect(button.hasAttribute("disabled")).toBe(true);
+    fireEvent.click(button);
+    expect(props.onDraw).not.toHaveBeenCalled();
+    rerender(<NumberBingo {...props} starting={false} />);
+    expect(button.hasAttribute("disabled")).toBe(false);
+    fireEvent.click(button);
+    await waitFor(() => expect(props.onDraw).toHaveBeenCalledTimes(1));
+  });
   it("permite pedir Bingo durante outra conferência e informa a fila sem bloquear com modal", async () => {
     const base = {
       ...state(),
@@ -124,7 +145,9 @@ describe("solar bingo interface", () => {
     expect(onMode).toHaveBeenCalledWith("corners");
     for (const mode of ["line", "column", "diagonal", "corners", "full"]) {
       expect(
-        document.querySelector(`.bingo-mode-art img[src="/room-art/poliana-bingo-${mode}.webp"]`),
+        document.querySelector(
+          `.bingo-mode-art img[src="/room-art/poliana-bingo-${mode}-panorama.webp"]`,
+        ),
       ).toBeTruthy();
     }
     expect(screen.queryByRole("button", { name: /Aplicar/ })).toBeNull();

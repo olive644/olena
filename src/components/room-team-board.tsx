@@ -9,7 +9,7 @@ import {
 } from "../domain/local-room";
 import { PaperMoonMark } from "./paper-moon-mark";
 import { PaperDigits } from "./paper-digits";
-import { RemoveParticipantButton } from "./local-room-lobby-presentation";
+import { ParticipantLevel, RemoveParticipantButton } from "./local-room-lobby-presentation";
 
 export function RoomTeamBoard({
   participants,
@@ -93,6 +93,7 @@ export function RoomTeamBoard({
                     key={participant.id}
                     className={dragging === participant.id ? "is-dragging" : ""}
                   >
+                    <ParticipantLevel level={participant.level} />
                     <img
                       src={
                         sanitizeRoomAvatar(participant.avatarUrl) ?? "/profile-avatars/helena.webp"

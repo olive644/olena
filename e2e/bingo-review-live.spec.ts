@@ -118,6 +118,8 @@ for (const physical of [false, true])
       await client.goto("/sala");
     }
     await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
+    await expect(page.locator(".local-room-countdown")).toBeVisible();
+    await expect(page.locator(".local-room-countdown")).toHaveCount(0);
     if (physical)
       await expect(pages[1]!.getByRole("region", { name: "Minha cartela" })).toHaveCount(0);
     else await expect(pages[1]!.getByRole("region", { name: "Minha cartela" })).toBeVisible();
@@ -127,6 +129,7 @@ for (const physical of [false, true])
     const guest = pages[1]!;
     await expect(guest.locator(".bingo-participant-stage")).toBeVisible();
     await guest.emulateMedia({ reducedMotion: "no-preference" });
+    await expect(guest.locator(".local-room-countdown")).toHaveCount(0);
     await api("next", room);
     await expect(guest.getByText("GLOBO RODANDO")).toBeVisible();
     await guest.screenshot({
@@ -294,10 +297,6 @@ for (const physical of [false, true])
     // Quem reconecta somente depois de Encerrar sala também recupera seu XP.
     await pages[2]!.evaluate(() => localStorage.removeItem("helena.room-xp.v1"));
     await page.getByRole("button", { name: "Encerrar sala", exact: true }).click();
-    await page
-      .getByRole("dialog", { name: "Encerrar a sala?" })
-      .getByRole("button", { name: "Encerrar sala", exact: true })
-      .click();
     await expect(
       pages[2]!.getByRole("heading", { name: "Sala encerrada", exact: true }),
     ).toBeVisible();

@@ -54,6 +54,8 @@ export type LocalRoomParticipant = {
   id: string;
   displayName: string;
   avatarUrl?: string;
+  /** Metadado visual de progresso; nunca usado para pontos ou recompensas. */
+  level?: number;
   score: number;
   answersCount?: number;
   lastAnswer?: { questionIndex: number; correct: boolean } | undefined;
@@ -470,13 +472,12 @@ export function startRoom(
     deck,
     roundId: `${state.generation}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
     questionIndex: 0,
-    questionStartedAt:
-      dependencies.now + (state.settings.activity === "bingo" ? 0 : ROOM_START_COUNTDOWN_MS),
+    questionStartedAt: dependencies.now + ROOM_START_COUNTDOWN_MS,
     bingoDrawCount: state.settings.activity === "bingo" && state.settings.bingoMode ? 0 : undefined,
     bingoClaim: undefined,
     bingoClaimQueue: [],
     bingoWinnerIds: [],
-    countdownStartedAt: state.settings.activity === "bingo" ? undefined : dependencies.now,
+    countdownStartedAt: dependencies.now,
     answeredParticipantIds: [],
     feedbackUntil: undefined,
     receipts: Object.fromEntries(
@@ -692,11 +693,13 @@ export function roomCountdownValue(state: PublicLocalRoomState, now: number): nu
 export function advanceRoomQuestion(state: LocalRoomState, now: number): LocalRoomState {
   if (state.phase !== "playing") return state;
   if (state.settings.activity === "bingo" && state.settings.bingoMode) {
+    if (state.countdownStartedAt !== undefined && now < state.questionStartedAt) return state;
     const count = state.bingoDrawCount ?? state.questionIndex + 1;
     if (state.bingoClaim || count >= state.deck.length) return state;
     return {
       ...state,
       bingoDrawCount: count + 1,
+      countdownStartedAt: undefined,
       questionIndex: count,
       questionStartedAt: now,
       updatedAt: now,

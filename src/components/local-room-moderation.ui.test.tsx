@@ -48,7 +48,7 @@ it("o quadro de equipes do participante não oferece remover", () => {
 it("o botão de entrada alterna entre fechar e reabrir e explica o estado", async () => {
   const onChange = vi.fn(async () => true);
   const { rerender } = render(<LobbyLockToggle locked={false} onChange={onChange} />);
-  expect(screen.getByText("Quem tem o código ainda pode entrar.")).toBeTruthy();
+  expect(screen.queryByText("Quem tem o código ainda pode entrar.")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Fechar entrada" }));
   await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
 

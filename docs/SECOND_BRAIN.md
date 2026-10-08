@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+Sala: Voltar apenas usa browsingRoom, sem reset/leave nem trocar credenciais.
+Retomar sala retorna ao mesmo estado transmitido, inclusive durante partida.
+Confirmação de encerramento somente em Sair da sala para host ativo.
+level é metadado de progresso Solo, enviado no join/host-player e limitado no
+servidor; nunca usar para pontos/XP. Convidado inicia em nível 1.
+RoomPresenceEffects observa mudanças de ids/online; snapshots iniciais e
+batimentos sem alteração não animam. Timers terminam mesmo com novos snapshots.
+Todos os starts usam ROOM_START_COUNTDOWN_MS. Bingo bloqueia advance antes
+de questionStartedAt e limpa countdownStartedAt no primeiro sorteio.
+Artes usam picture: panoramas no desktop, referência completa no celular.
+Não reintroduzir opacity por hover nem recorte lateral nos banners.
+
 Bingo presencial usa settings.bingoPhysical. Não gerar ou mostrar cartela digital;
 não aceitar marcação de número digital. A pessoa anuncia Bingo após um sorteio,
 e o host verifica a cartela de papel antes de confirmar. No modo online,

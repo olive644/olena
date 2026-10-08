@@ -192,6 +192,6 @@ test("lobby cabe no PC, pódio tem avatares e XP não duplica ao reabrir", async
   expect(await page.evaluate(() => localStorage.getItem("helena.room-xp.v1"))).toBe(ledger);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("button", { name: "Voltar", exact: true }).click();
-  await expect(page.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Retomar sala/ })).toBeVisible();
   await expect(page).toHaveURL(/\/sala$/);
 });

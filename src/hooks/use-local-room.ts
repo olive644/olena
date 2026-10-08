@@ -646,7 +646,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     }
   }
 
-  async function joinRoom(code: string, name: string, avatarUrl?: string) {
+  async function joinRoom(code: string, name: string, avatarUrl?: string, level = 1) {
     setError("");
     const roomCode = normalizeLocalRoomCode(code);
     const displayName = sanitizeDisplayName(name);
@@ -670,7 +670,13 @@ export function useLocalRoom(initialJoinCode?: string) {
         participantToken: string;
         state: PublicLocalRoomState;
         streamUrl: string;
-      }>("join", { code: roomCode, displayName, avatarUrl, requestId: joinRequestRef.current.id });
+      }>("join", {
+        code: roomCode,
+        displayName,
+        avatarUrl,
+        level,
+        requestId: joinRequestRef.current.id,
+      });
       setParticipantId(payload.participantId);
       participantTokenRef.current = payload.participantToken;
       codeRef.current = roomCode;
@@ -933,7 +939,12 @@ export function useLocalRoom(initialJoinCode?: string) {
     codeRef.current = "";
   }
 
-  async function setHostParticipation(active: boolean, displayName: string, avatarUrl?: string) {
+  async function setHostParticipation(
+    active: boolean,
+    displayName: string,
+    avatarUrl?: string,
+    level = 1,
+  ) {
     if (pendingRef.current) return false;
     pendingRef.current = true;
     setBusy(true);
@@ -948,6 +959,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         active,
         displayName,
         avatarUrl,
+        level,
       });
       setState(payload.state);
       participantTokenRef.current = payload.participantToken ?? "";

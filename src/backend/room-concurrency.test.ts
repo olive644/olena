@@ -43,6 +43,7 @@ describe("sala concorrente", () => {
     ).json();
     const user = await (await h.post("join", { code: room.code, displayName: "Ana" })).json();
     await h.post("start", room);
+    h.time(1000 + ROOM_START_COUNTDOWN_MS);
     for (let questionIndex = 0; questionIndex < 5; questionIndex++) {
       const answer = h.state().currentQuestion!.id;
       expect(h.state().participants[0]!.bingoCard).toContain(answer);

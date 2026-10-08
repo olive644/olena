@@ -4,11 +4,22 @@ import {
   sanitizeRoomAvatar,
   type LocalRoomParticipant,
 } from "../domain/local-room";
-import { PaperEditorIcon } from "./paper-editor-icon";
+import { RoomSocialIcon } from "./room-social-icon";
+import { PaperDigits } from "./paper-digits";
 import { RoomQrCode } from "./room-qr-code";
 import { PaperCheckIcon } from "./paper-check-icon";
 
-export function ShareRoom({ code, bingo = false }: { code: string; bingo?: boolean }) {
+export function ShareRoom({
+  code,
+  bingo = false,
+  locked = false,
+  onLock,
+}: {
+  code: string;
+  bingo?: boolean;
+  locked?: boolean;
+  onLock?: (locked: boolean) => Promise<boolean>;
+}) {
   const [copyStatus, setCopyStatus] = useState("");
   const joinUrl = buildLocalRoomJoinUrl(window.location.href, code);
 
@@ -33,7 +44,7 @@ export function ShareRoom({ code, bingo = false }: { code: string; bingo?: boole
           aria-label="Copiar código da sala"
         >
           <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
-            <PaperEditorIcon name="copyLink" />
+            <RoomSocialIcon kind="copy" />
           </span>
         </button>
       </div>
@@ -52,11 +63,12 @@ export function ShareRoom({ code, bingo = false }: { code: string; bingo?: boole
           >
             <span className="local-room-copy-label">
               <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
-                <PaperEditorIcon name="copyLink" />
+                <RoomSocialIcon kind="copy" />
               </span>
               Copiar link
             </span>
           </button>
+          {onLock && <LobbyLockToggle locked={locked} onChange={onLock} />}
         </div>
         <p className="local-room-copy-status" role="status" aria-live="polite">
           {copyStatus}
@@ -91,13 +103,14 @@ export function LobbyLockToggle({
         disabled={busy}
         onClick={() => void toggle()}
       >
+        <RoomSocialIcon kind={locked ? "open" : "lock"} />
         {locked ? "Reabrir entrada" : "Fechar entrada"}
       </button>
-      <p role="status">
-        {locked
-          ? "Entrada fechada: ninguém novo consegue entrar com o código."
-          : "Quem tem o código ainda pode entrar."}
-      </p>
+      {locked && (
+        <p className="visually-hidden" role="status">
+          Entrada fechada: ninguém novo consegue entrar com o código.
+        </p>
+      )}
     </div>
   );
 }
@@ -119,7 +132,7 @@ export function RemoveParticipantButton({
       aria-label={`Remover ${name} da sala`}
       onClick={onRemove}
     >
-      Remover
+      <RoomSocialIcon kind="remove" />
     </button>
   );
 }
@@ -135,6 +148,7 @@ export function LobbyParticipants({
     <ul className="local-room-participant-list">
       {participants.map((participant) => (
         <li key={participant.id}>
+          <ParticipantLevel level={participant.level} />
           <img
             className="local-room-avatar"
             src={sanitizeRoomAvatar(participant.avatarUrl) ?? "/profile-avatars/helena.webp"}
@@ -151,7 +165,7 @@ export function LobbyParticipants({
           <div className="local-room-participant-list__identity">
             <span className="local-room-participant-list__name">{participant.displayName}</span>
             <small className={participant.online === false ? "is-offline" : ""}>
-              <span aria-hidden="true" />
+              <RoomSocialIcon kind={participant.online === false ? "away" : "ready"} />
               {participant.online === false ? "Ausente" : "Pronto"}
             </small>
           </div>
@@ -164,5 +178,15 @@ export function LobbyParticipants({
         </li>
       ))}
     </ul>
+  );
+}
+
+export function ParticipantLevel({ level = 1 }: { level?: number | undefined }) {
+  const safe = Number.isSafeInteger(level) && level >= 1 ? Math.min(level, 100) : 1;
+  return (
+    <span className="room-participant-level" aria-label={`Nível ${safe}`}>
+      <small aria-hidden="true">NV</small>
+      <PaperDigits value={String(safe)} />
+    </span>
   );
 }
