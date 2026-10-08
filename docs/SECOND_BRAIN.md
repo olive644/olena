@@ -886,6 +886,8 @@ Pastas da vitrine: `NotebookFolder` recebe cadernos, páginas e matérias de `No
 
 # Notes de texto
 
+O avatar de Praticar pertence ao palco do carrossel, não à ilha selecionada. left/bottom derivam de traveler e das variáveis de tamanho/base do palco; transições de 550 ms acompanham os cenários e --drag-x acompanha o gesto. Não remontar a foto ao alterar index. Movimento reduzido remove as transições, e o voo de entrada na trilha mede a mesma moldura persistente.
+
 Gestos de seleção usam a geometria inicial e limites de grupo. A escala é projetada
 na diagonal do arrasto, com âncora no canto oposto do conteúdo. A barra de preview
 expande o botão no fluxo; `data-notebook-open` oculta a navegação inferior móvel

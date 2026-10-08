@@ -577,7 +577,7 @@ for (const activity of ["listening", "bingo"] as const) {
           exact: true,
         })
         .click();
-      await expect(host.getByRole("heading", { name: "Pratique para lembrar." })).toBeVisible();
+      await expect(host.getByRole("region", { name: "Ilhas de estudo" })).toBeVisible();
       await host.screenshot({ path: testInfo.outputPath("practice.png") });
       await host.goto("/sala");
       await expect(host.getByRole("radiogroup", { name: "Atividades da sala" })).toBeVisible();
@@ -610,9 +610,9 @@ for (const activity of ["listening", "bingo"] as const) {
       const selectedActivity = host.locator('.local-room-activity[aria-checked="true"]');
       await host.getByRole("button", { name: /Modalidades coletivas/ }).click();
       await selectedActivity.hover();
-      await expect(selectedActivity).toHaveCSS("background-color", "rgb(22, 52, 84)");
+      await expect(selectedActivity).toHaveCSS("background-color", "rgb(255, 255, 255)");
       await expect(selectedActivity).toHaveCSS("border-color", "rgb(250, 204, 21)");
-      await expect(selectedActivity).toHaveCSS("color", "rgb(255, 249, 239)");
+      await expect(selectedActivity.locator(".local-room-activity__art")).toHaveCSS("opacity", "1");
       if (activity === "bingo") {
         const bingo = host.getByRole("radio", { name: /^Bingo/ });
         await bingo.click();

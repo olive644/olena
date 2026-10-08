@@ -21,6 +21,7 @@
   --island-size: min(420px, 45vw, calc(100dvh - 260px));
   --preview-rise: clamp(-160px, -15vw, -100px);
   --island-gap: min(340px, 32vw);
+  --island-floor: 8px;
   width: 100%;
   height: calc(var(--island-size) + 44px);
   aspect-ratio: auto;
@@ -75,9 +76,12 @@
 }
 .practice-island-avatar {
   position: absolute;
-  transform: translate(-50%, -75%);
+  transform: translate(-50%, 25%);
   pointer-events: none;
   z-index: 3;
+  transition:
+    left 550ms cubic-bezier(0.22, 0.75, 0.25, 1),
+    bottom 550ms cubic-bezier(0.22, 0.75, 0.25, 1);
 }
 .practice-island-avatar .practice-user-portrait {
   animation: practice-photo-float 2800ms ease-in-out infinite;
@@ -138,7 +142,8 @@ body.solo-world-open .app-shell > .sidebar ~ .main-content,
     transform: scale(1);
   }
 }
-.practice-carousel-stage.is-dragging .practice-carousel-island {
+.practice-carousel-stage.is-dragging .practice-carousel-island,
+.practice-carousel-stage.is-dragging .practice-island-avatar {
   transition: none;
 }
 :root body .practice-carousel .practice-carousel-arrow {
@@ -252,6 +257,7 @@ body.solo-world-open .app-shell > .sidebar ~ .main-content,
   .practice-hub .practice-carousel-stage {
     --island-size: min(300px, 66vw);
     --island-gap: 51vw;
+    --island-floor: 0px;
     height: calc(var(--island-size) + 35px);
   }
   .practice-carousel-island {
@@ -286,6 +292,9 @@ body.solo-world-open .app-shell > .sidebar ~ .main-content,
     animation: none;
   }
   .practice-carousel-island {
+    transition: none;
+  }
+  .practice-island-avatar {
     transition: none;
   }
   .solo-subject-scene img {
