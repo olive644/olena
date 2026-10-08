@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## API oficial da Olena, base de metodologias (2026-10-08)
+
+- GET /api/olena versão 1 consulta catálogo, ilhas e metodologias por ID estável. Metadados derivados das mesmas ilhas de Praticar; apenas Idiomas tem trilha.
+- Sem fornecedor conectado, voz, geração de texto simulada, metodologias ou exercícios inventados. Lista de metodologias vazia e status foundation explícito.
+- Somente consultas públicas, sem dados pessoais, escrita, banco ou chamadas externas. Filtros estritos, erros versionados e função Vercel real com contrato Request/Response testado.
+- Serviço de áudio dos minigames permanece intacto. Contrato, limites e próximos passos em OLENA_API.md.
+
 ## Foto do perfil nas ilhas e entrada na trilha (2026-10-08)
 
 - A foto do perfil paira sobre a ilha selecionada em moldura de papel. O mesmo hook do cabeçalho acompanha alterações do perfil, sem cadastro ou persistência novos.

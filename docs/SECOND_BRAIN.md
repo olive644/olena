@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+api/olena.ts expõe handleOlena, somente GET de catálogo/ilhas/metodologias, versão 1.
+src/domain/olena.ts deriva metadados de PRACTICE_ISLANDS, agora com IDs estáveis.
+Registro de metodologias vazio até a etapa pedagógica. Nada de IA simulada ou voz:
+textGeneration not_configured, voice not_supported. Sem dados privados ou escrita.
+Consultar docs/OLENA_API.md antes de acrescentar execução, fornecedor ou atividades.
+
 Praticar usa useStoredProfile, compartilhado com o cabeçalho, e PracticeUserPortrait.
 A foto paira no carrossel. Entrada em Idiomas mede origem e destino após enquadrar
 o nível atual e usa Web Animations; cópia decorativa temporária tem cleanup ao voltar

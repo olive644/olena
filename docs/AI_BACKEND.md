@@ -2,6 +2,11 @@
 
 ## Estado da decisão
 
+A API oficial da Olena começa em `GET /api/olena`, com catálogo e consultas de metodologias
+independentes de fornecedor. Veja [OLENA_API.md](OLENA_API.md). Essa base não executa
+o contrato da tutora abaixo, não gera respostas nem possui voz. A Olena será somente texto;
+o áudio dos minigames continua como serviço separado.
+
 A fronteira da futura tutora Helena está definida como contrato independente de provedor e permanece
 desativada. Separadamente, o Quiz individual e o Bingo usam o serviço de voz natural
 descrito abaixo. A Escuta Coletiva oferece gravações enviadas pelo professor ou 50 palavras
