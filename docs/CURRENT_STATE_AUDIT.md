@@ -10,6 +10,8 @@
 - O teste de nitidez lê largura e altura do canvas juntas para evitar misturar dois redimensionamentos.
 - WebKit mantinha proporção panorâmica no celular por especificidade CSS, sobrepondo as modalidades. Largura limitada à coluna e seletor móvel equivalente corrigem o toque; a regressão verifica os limites horizontais em 320 e 390 px.
 - A pausa do relógio usa um instante futuro para evitar divergência de milissegundos entre Node e WebKit.
+- O transporte simulado de sala e bingo envia eventos somente quando o estado muda, como o stream real, evitando renderizações repetidas a cada sondagem.
+- CI móvel executa um cenário por vez para limitar o pico de processos WebKit nos testes com vários dispositivos; todos os cenários continuam ativos.
 
 ## Leo e atualização de Alice e Soso Estrelinha (2026-10-07)
 

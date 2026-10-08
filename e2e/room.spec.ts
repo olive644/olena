@@ -543,6 +543,7 @@ for (const activity of ["listening", "bingo"] as const) {
           class TestStream extends EventTarget {
             onopen: (() => void) | null = null;
             onerror: (() => void) | null = null;
+            lastData = "";
             timer: ReturnType<typeof setInterval>;
             constructor(url: string) {
               super();
@@ -551,6 +552,8 @@ for (const activity of ["listening", "bingo"] as const) {
                   .then((r) => r.text())
                   .then((data) => {
                     this.onopen?.();
+                    if (data === this.lastData) return;
+                    this.lastData = data;
                     this.dispatchEvent(new MessageEvent("put", { data }));
                   })
                   .catch(() => this.onerror?.());

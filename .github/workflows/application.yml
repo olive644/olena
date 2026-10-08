@@ -41,8 +41,10 @@ jobs:
         include:
           - project: desktop
             browser: chromium
+            workers: 2
           - project: mobile
             browser: webkit
+            workers: 1
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -68,7 +70,7 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
       - name: Run end-to-end tests
         timeout-minutes: 20
-        run: npm run test:e2e -- --project=${{ matrix.project }}
+        run: npm run test:e2e -- --project=${{ matrix.project }} --workers=${{ matrix.workers }}
 
   # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
   e2e-result:
