@@ -194,7 +194,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Full-art room controls, original social icons, roster effects and non-destructive
 // return/resume add 7.4 KiB to the lazy room/bingo path. Measured total 1140.2 KiB;
 // entry remains 275.7 KiB. No dependency; retain 2.8 KiB for platform variance.
-const MAX_TOTAL_JS_BYTES = 1143 * 1024;
+// Six subject islands, scene navigation, individual sprite anchors and readable
+// island names add 2.8 KiB in the lazy practice route. Measured total: 1143.0 KiB,
+// entry unchanged at 275.6 KiB. No dependency; retain 3 KiB platform allowance.
+const MAX_TOTAL_JS_BYTES = 1146 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

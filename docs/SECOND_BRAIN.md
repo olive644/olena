@@ -9,8 +9,20 @@ RoomPresenceEffects observa mudanças de ids/online; snapshots iniciais e
 batimentos sem alteração não animam. Timers terminam mesmo com novos snapshots.
 Todos os starts usam ROOM_START_COUNTDOWN_MS. Bingo bloqueia advance antes
 de questionStartedAt e limpa countdownStartedAt no primeiro sorteio.
-Artes usam picture: panoramas no desktop, referência completa no celular.
-Não reintroduzir opacity por hover nem recorte lateral nos banners.
+Artes da sala usam referências quadradas na ponta direita, sempre visíveis.
+Não reintroduzir opacity por hover nem fundos ilustrados no botão inteiro.
+Bingo presencial usa grafite e base dourada, não preenchimento amarelo.
+
+PRACTICE_ISLANDS define seis cenários com caminhos de assets fixos.
+Idiomas preserva SoloLevels; as outras cinco ilhas têm navegação e temas,
+sem exercícios novos nesta etapa. Programação mostra Python, JavaScript,
+HTML e CSS. Atalhos e carrossel compartilham worldIndex em PracticeHub.
+Artes e prompts estão documentados em PRACTICE_ISLAND_ART.md.
+As três solo-world originais são referências diretas para as seis novas artes.
+Não simplificar em SVG nem usar textura realista de papel. traveler em cada
+ilha define a posição do sprite sobre o terreno, não repetir a mesma âncora.
+Visuais aprovados, paletas próprias sem roxo nas ilhas. subject mantém nomes de
+matérias; title dá identidade a cada ilha, sem mudar rotas ou progresso.
 
 Bingo presencial usa settings.bingoPhysical. Não gerar ou mostrar cartela digital;
 não aceitar marcação de número digital. A pessoa anuncia Bingo após um sorteio,

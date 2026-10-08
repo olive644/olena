@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Ilhas por matéria e retorno das artes laterais (2026-10-08)
+
+- Após rejeição das primeiras propostas e da prova SVG, as seis artes foram refeitas com as três ilhas existentes como referências diretas. Preservam volumes, facetas, paleta e densidade de detalhes, com terrenos próprios sem a praça circular repetida. O conceito SVG foi retirado dos assets, preservado fora do repositório. Cada cenário tem posição própria para a Helena.
+- Visuais aprovados pelo proprietário, com edição posterior somente das cores: Porto das Vozes (Idiomas), Vale das Histórias (Português), Ilhas dos Elementos (Química), Jardim da Vida (Biologia), Picos dos Padrões (Matemática) e Oficina do Código (Programação). Tons roxos substituídos por paletas relacionadas às disciplinas. subject permanece separado de title para identificação e acessibilidade.
+
+- Modalidades coletivas e os cinco padrões de bingo voltam às artes quadradas na ponta direita dos botões. Todas ficam visíveis sem hover, com textos fora da ilustração e seleção dourada.
+- Bingo presencial usa papel grafite, texto creme e base amarela, sem preencher o botão inteiro de amarelo.
+- Praticar apresenta seis ilhas próprias: Idiomas, Português, Química, Biologia, Matemática e Programação. Carrossel e atalhos semânticos permitem visitar todos os cenários.
+- Conforme escolha do proprietário, esta etapa entrega cenários e navegação, não exercícios novos. Idiomas preserva os minigames existentes. As outras cinco ilhas informam que os exercícios chegam depois.
+- Programação inclui temas Python, JavaScript, HTML e CSS. Imagens transparentes próprias usam o padrão de papel recortado, sem dependência nova. Prompts e referências em PRACTICE_ISLAND_ART.md.
+- Validação final: npm run verify aprovado, 1175 testes em 185 arquivos, tipos, build, formato, APIs ESM e orçamento. Oito cenários finais de Edge desktop/móvel nos temas claro/escuro aprovados para navegação das seis ilhas e artes laterais. Seis cenários de regressão já aprovados para trilha Solo, criação/sorteio/cartela e vitória real nos quatro cantos. JavaScript inicial 275,6 KiB, total 1143,0 KiB, sem dependência nova. Os cenários de sala usam handler real com store em memória, não produção.
+
 ## Captura determinística da reação do bingo (2026-10-08)
 
 - O teste móvel congelava na captura de um elemento temporário removido após 1,5 segundo.

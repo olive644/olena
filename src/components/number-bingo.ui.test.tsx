@@ -145,9 +145,7 @@ describe("solar bingo interface", () => {
     expect(onMode).toHaveBeenCalledWith("corners");
     for (const mode of ["line", "column", "diagonal", "corners", "full"]) {
       expect(
-        document.querySelector(
-          `.bingo-mode-art img[src="/room-art/poliana-bingo-${mode}-panorama.webp"]`,
-        ),
+        document.querySelector(`.bingo-mode-art img[src="/room-art/poliana-bingo-${mode}.webp"]`),
       ).toBeTruthy();
     }
     expect(screen.queryByRole("button", { name: /Aplicar/ })).toBeNull();

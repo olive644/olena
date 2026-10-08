@@ -55,7 +55,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await page.goto("/sala");
   await expect(page.locator(".local-room-join-actions")).toBeVisible();
   await expect(
-    page.locator('.local-room-activities img[src="/room-art/poliana-bingo-panorama.webp"]'),
+    page.locator('.local-room-activities img[src="/room-art/poliana-bingo.webp"]'),
   ).toHaveCount(1);
   await page.getByRole("radio", { name: /^Bingo/ }).click();
   await expect(page.locator(".local-room-join-actions")).toHaveCSS("opacity", "0");
@@ -79,8 +79,8 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     const copy = await button.locator(".bingo-mode-copy").boundingBox();
     const art = await button.locator(".bingo-mode-art").boundingBox();
     const bounds = await button.boundingBox();
-    expect(copy!.x + copy!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
-    expect(Math.abs(art!.width - bounds!.width)).toBeLessThan(6);
+    expect(copy!.x + copy!.width).toBeLessThanOrEqual(art!.x + 6);
+    expect(art!.width / bounds!.width).toBeLessThan(0.5);
     await expect(button.locator(".bingo-mode-art")).toHaveCSS("opacity", "1");
     if (testInfo.project.name === "mobile") expect(bounds!.height).toBeLessThanOrEqual(180);
   }
@@ -97,7 +97,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   );
   await expect(modes.getByRole("button", { name: /^Coluna/ })).toHaveCSS(
     "color",
-    "rgb(255, 249, 239)",
+    "rgb(15, 15, 20)",
   );
   await page.screenshot({
     path: testInfo.outputPath("bingo-modes-light.png"),

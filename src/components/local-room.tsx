@@ -940,7 +940,7 @@ export function LocalRoom({
                     srcSet={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
                   />
                   <img
-                    src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}-panorama.webp`}
+                    src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
                     alt=""
                   />
                 </picture>
@@ -1137,7 +1137,7 @@ export function LocalRoom({
                             srcSet={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
                           />
                           <img
-                            src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}-panorama.webp`}
+                            src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
                             alt=""
                             width="160"
                             height="160"
