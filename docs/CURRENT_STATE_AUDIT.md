@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 64157)
-Total output lines: 1945
-
 # Auditoria do estado atual
 
 ## Captura determinística da reação do bingo (2026-10-08)
@@ -846,7 +843,582 @@ O Pomodoro executa automaticamente 25 minutos de foco e 5 minutos de pausa. A ca
 
 ## Mostrador Pomodoro em maçã, 16/09/2026
 
-O contador fica no centro da silhueta vazada de uma maçã em papel recortado. O contorno roxo acompanha o tempo restante e muda para verde durante a pausa. Facetas, folha dobrada e base deslocada seguem a identidade OlenaStudy.…14157 tokens truncated…r um contorno de largura variável preenchido de uma vez. Isso elimina os degraus de espessura, as "contas" nas juntas e o escurecimento onde segmentos translúcidos se sobrepunham. O raio é suavizado ao longo do traço e só depende dos pontos até o vizinho seguinte, então a ponta ao vivo e o traço pronto usam a mesma conta. Cantos fechados ganham um disco limitado ao menor raio vizinho. Os fios do pincel macio seguem o traço em caminhos únicos.
+O contador fica no centro da silhueta vazada de uma maçã em papel recortado. O contorno roxo acompanha o tempo restante e muda para verde durante a pausa. Facetas, folha dobrada e base deslocada seguem a identidade OlenaStudy. A lógica de ciclos permanece igual.
+
+## Barra desktop e Espaço do aluno, 15/09/2026
+
+O rail desktop usa fundo grafite e ícones claros no tema claro. No tema escuro, usa fundo branco e ícones grafite em todos os estados. O cartão inicial do Espaço do aluno não mostra a antiga mascote 2D. A identidade aprovada da Helena permanece nos fluxos de onboarding, login e mundos.
+
+## Onboarding e loading em papel, 14/09/2026
+
+Preview disponível em /?onboarding=1, sem bloquear visitantes existentes ou convites de sala. Cinco perguntas e cinco poses WebP, com pré-carregamento da próxima imagem. Login Google requer VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN e VITE_FIREBASE_PROJECT_ID, provedor Google habilitado e domínio autorizado. A sincronização de estudos e a autorização da colaboração foram implementadas posteriormente, como descrito nas seções mais recentes.
+
+Autenticação usa SDK Firebase existente, preparado ao abrir a etapa de login, antes do clique. Popup cancelado ou configuração ausente mostram erro, nunca simulam sucesso; nenhum token é salvo manualmente. Google confirmado ativo no Firebase. Configuração local adicionada em arquivo ignorado pelo Git. Publicação das variáveis na Vercel e validação real com uma conta continuam pendentes. Consultar GOOGLE_LOGIN.md. Habilitação geral e persistência de rascunho continuam pendentes.
+
+Budget revisado com medição: entrada 223,6 KiB (limite 226); total 555,1 KiB (limite 560), incluindo SDK Auth opcional (~124 KiB) e onboarding (~12 KiB). Não é todo baixado na abertura. Padrão visual e atribuição do loading em DESIGN_SYSTEM.md. Navegação móvel no escuro usa barra branca e ícones grafite. Trilha usa rolagem em vez de deslocar a estrada.
+
+## Iconografia em papel recortado (14/09/2026)
+
+- Os 12 ícones de marca da navegação e do tema usam 36 SVGs em `public/navigation-icons/paper/`, com fundo transparente, faces poligonais e dobras discretas. Fontes PNG anteriores preservadas.
+- As variantes roxas existem: estados ativos do menu móvel e Mais, hover/foco de ações rápidas, ação principal do Espaço e sol do seletor de tema. A seleção CSS existente foi preservada.
+- Claro usa grafite; escuro usa creme; ativo usa roxo. Amarelo permanece como detalhe. Nenhuma textura raster ou dependência adicional.
+- Ícones utilitários, troféus, Helena animada e artes aprovadas do Modo Sala permanecem inalterados. Todas as abas existentes já possuem ícones, sem novas funções fictícias.
+
+## Carregamento das artes Solo (14/09/2026)
+
+- Ilhas e trilhas usam WebP otimizado. As ilhas ficam entre 129 e 151 KB, as trilhas móveis entre 207 e 230 KB e as panorâmicas entre 292 e 331 KB.
+- O navegador prioriza a ilha e a trilha visíveis. As demais artes só são baixadas quando necessárias, evitando disputar a rede com a imagem atual.
+- PNGs originais permanecem no repositório como fontes aprovadas. A interface usa os WebPs.
+
+## Trilhas panorâmicas no desktop (14/09/2026)
+
+- Acima de 900px, `picture` seleciona `public/solo-interior-{1,2,3}-desktop.webp`. No celular, os PNGs aprovados continuam inalterados.
+- WebP sem perda, sem redimensionamento artificial. Resolução entregue: 1672 por 941 pixels. Melhora o enquadramento panorâmico, mas não equivale a uma fonte 4K.
+- Ferramenta integrada Imagegen. Prompt aplicado às três referências `solo-interior`: expandir horizontalmente a cena aprovada para 16:9, solicitar 3840 por 2160, preservar centro, câmera, cores e papel recortado, completar laterais com cenário correspondente, sem esticar, personagens, texto, interface ou estrada. A resolução solicitada não foi entregue; foi preservada a resolução real.
+- Arte original, progressão, animação e posições dos níveis preservadas. Em revisão local, sem merge.
+
+## Interiores dos mundos Solo (13/09/2026)
+
+- As trilhas usam cenários contínuos próprios em `public/solo-interior-1.png`, `public/solo-interior-2.png` e `public/solo-interior-3.png`, em vez da ilha de seleção ampliada.
+- Artes criadas com a ferramenta integrada Imagegen, usando cada `solo-world` aprovado como referência. Brief aplicado: ambiente visto de cima dentro do mundo, papel recortado facetado, terreno até as bordas, centro livre para estrada interativa, sem personagens, texto ou interface. Variações: bosque com bibliotecas e lanternas, cidade com prédios-livro e canais, observatório com cúpulas e jardins rochosos.
+- Estrada e níveis compartilham um quadro proporcional, com os centros dos marcadores nos pontos da curva. Mascote, ilhas de seleção e bloqueios foram preservados.
+- Alteração local em revisão visual, sem publicação ou merge nesta etapa.
+
+## Helena animada, proporções revisadas (13/09/2026)
+
+- O SVG compartilhado pelo loading e pela jornada Solo segue a silhueta original: cabeça ampla, orelhas equilibradas, olhos amarelos e estrela regular de cinco pontas.
+- As duas patas têm espaço entre si e alternam deslocamento vertical, sem a rotação que sobrepunha os pés. Mochila roxa e caderninho foram mantidos a pedido do usuário, com balanço suave do braço que segura o caderno, sem encobrir os pés.
+- Mantidos fundo transparente, encaixe no nível atual e suporte a movimento reduzido. Os mundos e a arte aprovada do QR code não foram alterados.
+
+## Modo Sala, endurecimento em revisão (12/09/2026)
+
+Esta seção atualiza o diagnóstico histórico abaixo; código na branch não significa configuração ativa em produção.
+
+Atualização: o CI da PR #98 passou em Chromium/WebKit. A limpeza agora percorre até
+10 lotes de 100 por caminho, com orçamento global de 45 segundos e relatório
+`pendingPaths`; substitui o limite inicial de um único lote citado abaixo. Permanece
+pendente a ativação externa e a validação em aparelhos físicos/Firebase real.
+
+- Concorrência: leitura ETag e gravação condicional no estado privado, repetição de conflitos e publicação pública monotônica por geração/revisão. Criação, entrada e resposta têm recibos idempotentes. Publicação e estado privado ainda são duas gravações; heartbeat/repetição repara falha intermediária.
+- Identidade: token privado de participante separado do identificador público. Credenciais e respostas do quiz não entram na projeção pública.
+- Presença: heartbeat de 15 segundos; tolerância de 2 minutos; inativos saem do lobby e ficam sinalizados na partida. Anfitrião ausente encerra a sala na próxima interação. Não há transferência de controle nem detecção instantânea por onDisconnect; se todos saírem, a expiração limita a vida da sala.
+- Abuso: limites distribuídos por origem de rede e ação; App Check com verificação de assinatura/claims implementado, mas **não ativado**. O projeto appstudyoli não tinha aplicativo Web registrado na consulta desta execução. Falta chave pública reCAPTCHA Enterprise/domínio e configuração do app.
+- Expiração: prazo absoluto de 4 horas, regras de leitura por expiresAt e limpeza autenticada agendada de projeção pública/privada/contadores. **Regras e cron ainda não publicados**. O lote atual remove até 100 itens por caminho/execução; monitorar acúmulo e ampliar frequência/capacidade antes de maior escala. Projeções legadas sem expiresAt exigem migração/remoção separada.
+- Rodada: categoria, contagem por dificuldade, prévia, até 30 flashcards de matéria própria, equipes alternadas, embaralhamento e entrada tardia configuráveis. Compartilhar matéria envia frente/verso temporariamente ao servidor; aviso explícito no seletor. Material próprio usa dificuldade média.
+- Escuta em sala: a lista personalizada aceita pares colados com `=`, ponto e vírgula, vírgula, tabulação ou hífen e informa erros por linha. A interface da sala usa somente a lista manual, sem modelo pronto, materiais salvos ou controle de tolerância a erros. A tela do anfitrião oculta a palavra por padrão; cada participante recebe feedback privado com resposta, tradução e XP antes do avanço. Repetições e reprodução automática são sincronizadas na sala; a velocidade da voz é fixa.
+- Feedback da escuta: quando todas as pessoas ativas respondem, o servidor grava o prazo de três segundos no estado privado e público. Nem o avanço pedido pelo anfitrião nem a retomada da sala pulam esse prazo, mesmo se o tempo da pergunta terminar antes. A contagem e a barra dos participantes usam o prazo compartilhado. Sem conclusão de todos, a rodada ainda termina pelo tempo configurado.
+- Bingo: cartelas e marcas validadas no servidor; primeira cartela completa encerra a partida. Entrada tardia recebe até 9 itens restantes e pode ter cartela menor; desabilitar entrada tardia quando a igualdade competitiva for importante.
+- Resiliência: Error Boundary da sala, cancelamento de requisições, timeout, retomada com retry sem apagar credencial em falha transitória, validação de payloads, logs de ação/status/duração, foco de teclado contido no diálogo.
+- Evidência local: concorrência de 30 entradas/respostas em armazenamento atômico de teste; ETags/412 com HTTP simulado; partidas completas de quiz e bingo com anfitrião e dois jogadores em contextos separados, incluindo reload. Transporte E2E usa handler real + adaptador em memória, **não Firebase real**. Edge instalado substituiu browsers cujo download falhou; Safari/WebKit, bloqueio físico de celular, carga real de 30 dispositivos e auditoria assistiva completa continuam pendentes.
+- Dependências: firebase (App Check oficial, carregamento dinâmico) e jose (JWT/JWKS no servidor). Entrada inicial permanece abaixo de 222 KiB; orçamento total passa a 395 KiB por ~44 KiB opcionais do SDK e novos controles.
+
+Ativação e limites operacionais: ver `ROOM_SETUP.md`.
+
+## Sistema oficial de ícones OlenaStudy
+
+- A navegação usa glifos preenchidos e arredondados próprios para Espaço, Agenda, Foco, Praticar, Mais, Biblioteca, Hábitos, Notas, Planos e Banco.
+- A mesma geometria assume grafite sobre superfícies claras, roxo no estado ativo e creme sobre a navegação escura.
+- O amarelo permanece reservado aos pequenos acentos de cada símbolo, de acordo com a identidade da OlenaStudy.
+- Os mesmos componentes são reutilizados na barra lateral, na navegação móvel, no menu Mais, nos atalhos e no botão Começar prática.
+- No celular, a barra é preta no tema claro e roxa no tema escuro; em ambos os casos ela reutiliza a variante branca dos ícones oficiais.
+- A aba ativa recebe um pulso curto e o novo módulo entra suavemente, com as animações removidas quando `prefers-reduced-motion` está ativo.
+
+## Dificuldade automática do vocabulário
+
+- O quiz de escuta classifica palavras como fáceis, médias ou difíceis usando frequência Zipf.
+- Não existe catálogo local extenso nem gerador Python. A lista personalizada é o fluxo principal e o Modelo pronto mantém somente cinco palavras.
+- A classificação opcional consulta a Datamuse e fica em cache local. Se a rede falhar, uma estimativa determinística mantém a atividade disponível.
+- O aluno pode escolher nível misto, fácil, médio ou difícil antes da rodada.
+
+## Correção da navegação desktop
+
+- A barra lateral desktop mantém o fundo preto definido no redesign, mesmo após as camadas legadas de CSS.
+- Os ícones autorais recebem dimensões fixas e cores específicas no desktop para evitar encolhimento e deformação.
+- O estado ativo usa o roxo da marca, enquanto os ícones inativos permanecem creme sobre o fundo escuro.
+
+## Quiz de escuta e pronúncia
+
+- A área Praticar agora oferece uma sessão de escuta baseada nos flashcards da matéria selecionada.
+- Quando não há flashcards suficientes, um conjunto inicial de lugares em inglês mantém a atividade utilizável.
+- Cada rodada pronuncia o termo com a Web Speech API, apresenta uma contagem regressiva, aceita respostas em inglês ou português e revela o resultado somente após a tentativa.
+- Termos errados podem formar uma nova sessão de reforço, sem envio de áudio ou conteúdo a serviços externos.
+- A experiência oferece feedback textual e respeita `prefers-reduced-motion`.
+
+## Redesign visual completo
+
+- A aplicação passa a usar uma linguagem visual de “mesa de estudos”, com base creme, navegação preta e destaques violeta e amarelo.
+- A navegação reutiliza os ícones autorais já existentes e mantém a silhueta da Helena em todos os módulos.
+- Foram adicionadas transições curtas para navegação, painéis, ações rápidas e abertura do menu móvel, sempre respeitando `prefers-reduced-motion`.
+- O ícone de Planos de aula recebeu uma nova geometria interna para impedir o corte da letra A em tamanhos reduzidos.
+- A alteração é exclusivamente visual e preserva os fluxos, dados locais e funcionalidades existentes.
+
+## 1. Fundação inicial: 2026-08-29
+
+O repositório nasceu contendo apenas um README. A primeira base estabelece:
+
+- produto focado em planejamento de aulas para professores de inglês;
+- React, TypeScript estrito e Vite;
+- identidade OlenaStudy com assinatura Oli;
+- criação determinística de um rascunho de aula no navegador;
+- interface responsiva sem autenticação;
+- lint, formatação, testes, build, orçamento de bundle e E2E;
+- auditoria de dependências, SBOM, Gitleaks, Semgrep, CodeQL e Dependabot.
+
+Autenticação, IA, uploads, banco e exportações foram deliberadamente adiados. A interface não deve
+dar a entender que esses recursos já existem.
+
+## 2. Primeiro contrato E2E mobile
+
+A primeira execução da CI rodou o teste chamado “mantém o conteúdo dentro da tela no celular” nos
+dois projetos do Playwright. O fluxo mobile passou, mas o mesmo teste exigiu a barra móvel no
+desktop e falhou corretamente. O contrato passou a ser explicitamente restrito ao projeto
+`mobile`; a verificação de overflow e a presença da navegação continuam obrigatórias no iPhone.
+
+## 3. Redução da aparência artificial e retorno ao desenho original
+
+A primeira interface usava gradientes de fundo, transparências, sombras grandes, muitos cartões
+arredondados e uma releitura genérica da cabeça da mascote. O conjunto parecia uma demonstração
+gerada, não uma ferramenta de trabalho.
+
+A direção foi simplificada para fundo neutro, painéis planos, bordas discretas, cantos pequenos,
+tipografia de sistema e textos mais diretos. A fala da mascote e os elementos decorativos foram
+removidos. `public/helena.svg` agora preserva a silhueta irregular, os olhos amarelos e as pupilas
+do desenho original fornecido para a marca. A navegação desktop agora usa um rail compacto com os ícones oficiais em variantes
+clara, roxa e escura, nomes revelados no hover/foco e alternância de tema no canto superior direito.
+O retrato de Helena usa o PNG transparente `public/helena-mark.png`, sem moldura de aplicativo. A
+navegação desktop pode ser expandida pelo botão de três linhas para revelar categorias e nomes,
+enquanto o cabeçalho mantém a assinatura OlenaStudy com o sufixo roxo. Os arquivos
+individuais em `public/navigation-icons/` mantêm os desenhos aprovados sem reinterpretá-los e evitam
+dependência de posicionamento por sprite no navegador.
+
+## 4. Fundação da central de estudos
+
+O escopo foi ampliado por decisão de produto: o planejador de aulas permanece, mas passa a fazer
+parte de uma central pessoal de estudos e rotina. A primeira entrega adiciona:
+
+- tela Hoje derivada de tarefas, agenda, hábitos e sessões de foco;
+- criação de matérias compartilhadas pelos demais módulos;
+- criação e conclusão de tarefas;
+- compromissos com data e horário;
+- cronômetro de 25 ou 50 minutos e registro da sessão realizada;
+- hábitos diários marcáveis;
+- cadernos com edição e salvamento automático;
+- workspace local compartilhado, validado e versionado.
+
+Os dados são salvos em `localStorage` e a interface informa esse limite. Não existe conta, nuvem,
+IA, notificação nativa ou bloqueio real de aplicativos. O aviso do módulo Foco deixa explícito que
+o modo sem distrações depende de uma futura versão mobile.
+
+## 5. Sistema local de estudos
+
+A segunda etapa amplia o workspace para a versão 2 e migra automaticamente dados da versão 1. A
+entrega adiciona:
+
+- Biblioteca com links e textos cadastrados manualmente;
+- flashcards vinculados a matérias;
+- revisão programada com opções Errei, Difícil e Fácil;
+- questionários determinísticos criados a partir dos próprios cartões;
+- metas relacionadas aos minutos registrados no módulo Foco;
+- histórico local de resultados de questionários;
+- carregamento sob demanda de Biblioteca, Aprender e planos de aula.
+
+Não há geração por IA nem leitura automática de arquivos. Links só são abertos quando usam HTTP ou
+HTTPS. O novo orçamento separa a entrada inicial de módulos assíncronos, mantendo limites de 220
+KiB inicial e 300 KiB total.
+
+## 6. Definição segura do backend de IA
+
+A terceira etapa começa pela fronteira de segurança, sem ativar uma IA na interface. A entrega
+define:
+
+- contrato versionado para tutoria, explicação, resumo e plano de estudos;
+- seleção explícita de fontes, sem serializar o workspace completo;
+- consentimento obrigatório por solicitação e retenção inicial `none`;
+- cliente restrito a `/api/helena` na mesma origem;
+- handler portável com validação de origem, tipo, tamanho e limite de uso;
+- interfaces independentes para provedor, identificação e rate limit;
+- respostas e erros limitados, sem detalhes internos;
+- modelo de ameaça e requisitos prévios à ativação.
+
+Não existe provedor conectado, segredo versionado ou chamada externa. A interface continua sem
+afirmar que oferece IA. A ativação depende de uma nova mudança com runtime, provedor, política de
+retenção, orçamento e implantação aprovados.
+
+## 7. Redesign de conforto e navegação
+
+A navegação e a hierarquia visual foram reorganizadas sem alterar o domínio ou a persistência. A
+entrega mantém a paleta original e o SVG da Helena, mas reduz títulos excessivos, melhora tamanhos
+de toque, espaçamento, leitura de formulários e clareza dos estados ativos.
+
+No desktop, os módulos ficam agrupados em Principal, Estudar e Organizar. No celular, a barra
+inferior prioriza Hoje, Agenda, Foco e Aprender; as demais ferramentas ficam em um painel Mais com
+acesso direto. A interface não usa gradientes, vidro, neon ou elementos decorativos que simulem uma
+demonstração de IA.
+
+A assinatura visível da marca secundária foi removida a pedido do proprietário. O nome exibido é
+somente OlenaStudy, sem alterar a origem ou as regras de engenharia do repositório.
+
+## 8. Fundação do Espaço do aluno
+
+A tela inicial passa a se chamar **Espaço do aluno** no desktop e usa o rótulo curto **Espaço** na
+barra móvel. O conteúdo continua derivado do mesmo workspace local, preservando tarefas, agenda,
+hábitos, foco e materiais já existentes.
+
+Um catálogo tipado separa módulos disponíveis, fundações técnicas e recursos planejados. Os atalhos
+da tela inicial são gerados apenas para ferramentas funcionais. O mapa mental e o roadmap registram
+vestibulares, banco de questões, documentos, OCR, mapas conectados, cultura, bingo e Helena
+inteligente sem apresentá-los como recursos prontos.
+
+Esta fase não adiciona dependências. React, TypeScript e CSS existentes atendem à mudança; futuras
+bibliotecas ou linguagens exigirão justificativa, auditoria e medição na fase correspondente.
+
+## 9. Digitalização, escrita à mão, quizzes e bingo
+
+Os Cadernos passam a oferecer duas ferramentas locais. **Digitalizar** abre a câmera traseira em
+navegadores compatíveis ou permite escolher uma imagem, girar, realçar o contraste e anexar o
+resultado à anotação. **Escrever à mão** oferece uma tela sensível a mouse, caneta e toque, com cor,
+espessura e limpeza antes de salvar.
+
+As imagens são processadas no navegador, não são enviadas para serviços externos e ficam limitadas
+a 1 MB por item. O OCR local opcional do editor reconhece apenas a seleção de traços quando o
+usuário solicita, e mantém o resultado como sugestão revisável. Reconhecimento matemático avançado
+ou conversão confiável para LaTeX continuam dependentes de um provedor especializado e consentido.
+
+O módulo antes chamado Aprender agora aparece como **Praticar** no desktop e no celular. A entrada
+mostra um mundo por vez, com três PNGs transparentes em estilo de papel recortado e sem personagens
+incorporados. As setas trocam as ilhas e Helena vira para a direção do salto. Na trilha sem moldura, a mascote fica sobre o nível
+liberado, acompanhando o progresso local, enquanto recortes das artes aprovadas de cada mundo formam o cenário da trilha. No desktop, a trilha abre em tela cheia. A entrada mantém a transição para a trilha.
+A trilha usa plataformas numeradas em um caminho sinuoso, respeitando movimento reduzido.
+A entrada
+organiza Escuta, Flashcards, Quiz e Bingo como minigames Solo em três mundos navegáveis, com o
+Modo Sala destacado logo abaixo. O Mundo 1 possui um caminho de quatro níveis com desbloqueio
+progressivo local; os Mundos 2 e 3 podem ser inspecionados e permanecem bloqueados. A cartela 3 por 3 combina
+desafios gerais com flashcards da matéria, salva o progresso no workspace e reconhece linhas,
+colunas e diagonais.
+
+O workspace evolui para a versão 3 e migra automaticamente as versões 1 e 2. Nenhuma dependência
+foi adicionada; Canvas, Pointer Events e captura de arquivo do navegador atendem à primeira versão.
+
+## 10. Iconografia própria da OlenaStudy
+
+A navegação desktop, a barra inferior mobile e o painel Mais passam a compartilhar uma família de
+ícones SVG criada para o produto. Cada módulo mantém um símbolo reconhecível, mas usa a assimetria,
+as pontas e os olhos amarelos derivados da silhueta original da Helena.
+
+Os ícones são componentes locais, herdam a cor do estado ativo e não dependem de imagens geradas,
+fontes de ícones ou novos pacotes. Os rótulos textuais continuam visíveis e responsáveis pelo nome
+acessível de cada aba.
+
+## 11. Vocabulário e voz do quiz de escuta
+
+O quiz de escuta combina os flashcards do aluno com um modelo local pequeno de cinco palavras
+em inglês, sem duplicar termos. As respostas aceitam a palavra ou expressão ouvida, a tradução
+principal e equivalentes cadastrados. Os filtros Fácil, Médio e Difícil continuam sendo calculados
+pela base local de frequência, com os mesmos fallbacks já documentados.
+
+A pronúncia neural do Quiz individual e do Bingo usa o **Cloudflare Workers AI**
+(modelo `@cf/myshell-ai/melotts`), chamado por `/api/speech` com token protegido.
+Na Escuta Coletiva, o professor grava ou envia uma fala por palavra com sua tradução.
+Cada participante recebe a mesma gravação, sem MeloTTS nem voz do navegador.
+
+Existe um serviço próprio Kokoro+Piper (`services/tts`, container separado, Kokoro como voz principal
+e Piper como reserva automática) totalmente implementado e testado, mas **fora de uso em produção no
+momento**: nenhuma hospedagem grátis viável foi encontrada pra rodar os dois modelos juntos (ver
+`docs/AI_BACKEND.md` para o histórico completo da investigação). O Cloudflare Workers AI resolveu isso
+porque roda na infraestrutura deles mesmo, sem precisar hospedar nada.
+
+Uma tentativa ainda mais antiga de rodar o Kokoro-82M direto no navegador (worker) também foi removida,
+porque o download e a inicialização locais prejudicavam o tempo até a primeira pronúncia, problema que
+nenhuma das abordagens server-side repete. O áudio é reutilizado por texto normalizado e velocidade no
+cache do navegador (durante a sessão). Requisições antigas são canceladas quando a seleção muda. Se o
+Cloudflare Workers AI falhar ou não estiver configurado, a melhor voz em inglês instalada no
+dispositivo é acionada automaticamente somente no Quiz de Escuta individual. No Modo Sala, falhas
+mostram uma tentativa manual, sem voz do aparelho. O Bingo compartilha a voz gerada por
+frase por uma hora; a Escuta Coletiva usa as gravações do professor até a sala expirar,
+conforme `docs/AI_BACKEND.md`.
+
+As rodadas são embaralhadas sem repetição e aceitam 5, 10, 15 ou todas as palavras disponíveis. O
+modelo embutido foi reduzido a cinco exemplos; listas personalizadas e cartões do aluno são o fluxo
+principal. O feedback correto e incorreto possui ícones, textos e ações distintos, e uma trava impede
+que a mesma submissão altere a pontuação duas vezes.
+
+## 12. Modo Sala online
+
+O Modo Sala usa uma função same-origin como autoridade e o Firebase Realtime Database como
+armazenamento temporário e transporte realtime. O professor cria um código temporário, configura a
+rodada e compartilha link ou QR code. Participantes entram em outros dispositivos com nome de
+exibição e recebem as mudanças por Server-Sent Events nativos do navegador.
+
+Tokens do anfitrião e o baralho completo ficam apenas no armazenamento privado. A projeção pública
+expõe somente o estado necessário à partida; o servidor valida início, respostas, cronômetro e
+placar. Salas expiram após quatro horas e aceitam até 30 participantes. Não há conta ou ranking
+global. Reconexão com identidade preservada, presença após fechamento abrupto, App Check e rate
+limiting continuam pendentes.
+
+O lobby mostra conexão, participantes e convite. A entrada normaliza o
+código e informa separadamente sala inexistente, iniciada, cheia ou nome duplicado. No celular, o
+cabeçalho da sala permanece visível e oferece uma ação textual para sair.
+O lobby do anfitrião usa layout responsivo em papel recortado. No desktop, convite e participantes
+ficam na coluna esquerda, atividades e configurações na direita. No celular, convite/QR aparece
+primeiro, participantes logo abaixo e os controles seguem em uma coluna sem rolagem horizontal.
+Escuta coletiva e Bingo estão disponíveis; Flashcards em grupo e Quiz competitivo aparecem
+desabilitados como “Em breve”.
+A ação de início continua visível. Os ícones aprovados do projeto,
+a arte da Helena segurando a placa e o QR SVG dinâmico foram preservados.
+Na Escuta coletiva, o anfitrião escolhe entre gravações manuais ou um banco de 100 palavras em inglês
+com áudio Kokoro incluído no aplicativo. O banco permite busca pela palavra em inglês ou pela tradução
+em português sem exigir acentos, seleção em chips e confirmação antes de começar. A matéria usa a
+bandeira dos EUA do onboarding. As palavras do banco usam um alfabeto A a Z em papel com a temática
+dos EUA, guardado em um único sprite SVG leve e com texto acessível para leitores de tela.
+O modo manual abre com um microfone em cada fala, permite gravar antes de informar a palavra e
+oferece campos separados para inglês e tradução, até 30 falas. Respostas equivalentes podem ser
+cadastradas com barra vertical. O formulário aponta erros e duplicatas por fala, mostra uma prévia
+e confirma quando as gravações são aplicadas. O áudio fica ligado à fala ao editar seus campos;
+selecionar uma nova gravação exige guardá-la novamente antes de iniciar. Controles
+incompatíveis ficam ocultos. Os checks de configuração usam o mesmo papel amarelo das opções de
+Handwriting. Perguntas (5, 10, 15 ou 20) e tempo (5, 10, 15 ou 30 segundos) são selecionados em
+controles de arrastar. A opção para aceitar erros de digitação não aparece mais na sala; a entrada
+de participantes fecha ao iniciar a rodada, inclusive para configurações antigas.
+Durante a rodada, o painel do professor esconde a palavra por padrão e exige confirmação antes de
+revelá-la. Cada aluno recebe a resposta esperada e o XP após responder; quando todos terminam, há três
+segundos de feedback com uma barra regressiva antes da próxima pergunta. A estimativa da rodada inclui
+esse intervalo. O envio da resposta fica bloqueado enquanto a rede processa a ação e mostra o loading
+compacto da Helena. Depois de “Vai!”, a palavra é reproduzida automaticamente quando essa opção está
+ativa. O aluno pode ouvi-la novamente, com cinco segundos de espera entre os acionamentos.
+As respostas equivalentes cadastradas no material manual são preservadas pelo backend. Ao terminar a
+atividade, a sala continua ativa: o professor pode repetir a configuração, escolher outra atividade ou
+encerrar a sala explicitamente.
+O anfitrião pode abrir a rota protegida `/sala/<código>/projetor` em outra tela. Ela mantém o código,
+o QR com a arte aprovada da Helena, o cronômetro, as respostas recebidas e o placar, mas não oferece
+controles administrativos nem revela a palavra.
+Anfitrião e participante guardam a credencial somente na aba atual e retomam a mesma sala após uma
+atualização da página, inclusive durante a rodada. Uma sessão expirada ou inválida é descartada com
+mensagem clara, sem criar um participante duplicado.
+
+Na Escuta Coletiva manual, cada fala precisa de uma gravação enviada pelo professor antes de iniciar.
+As palavras prontas já trazem MP3 locais e não precisam de envio ou serviço de voz ativo.
+O microfone e o envio de arquivo aceitam até 256 KB por fala. A gravação limita a taxa de áudio
+solicitada e libera a captura quando o navegador interrompe ou recusa o gravador. A versão
+2026-09-30 da Política de Privacidade informa que o microfone só é solicitado ao professor que
+escolhe gravar e que as gravações duram até quatro horas após a criação da sala. Os áudios ficam privados na sala
+por até quatro horas e não são usados para treinar modelos. O Bingo mantém o caminho de voz
+gerada do Quiz individual. Trocar de pergunta cancela a reprodução anterior.
+
+## 13. Experiência de estudo renovada
+
+A foto aprovada da Helena, sem óculos e com fundo roxo, é usada no ícone da aba e na marca do menu,
+por meio do arquivo local `public/helena-portrait.png`.
+
+O painel e a navegação adotam uma hierarquia inspirada em aplicativos de revisão como SimpleStudy:
+próxima ação evidente, atalhos de prática, progresso diário visível e cartões fáceis de reconhecer.
+A referência é apenas de experiência; cores, componentes, textos e iconografia continuam próprios.
+
+A identidade OlenaStudy permanece baseada em preto, amarelo, violeta e na mascote original. A nova
+família de ícones usa traço consistente e pequenos acentos da marca, sem substituir a Helena por uma
+identidade genérica. As animações são curtas, comunicam mudança de estado e são removidas quando o
+sistema solicita redução de movimento.
+
+Os carregamentos de módulos e ferramentas usam uma única animação vetorial da Helena caminhando,
+com mensagem anunciada por leitor de tela, tipografia Manrope e versões responsivas para telas
+completas ou painéis compactos. O ciclo fica estático quando `prefers-reduced-motion` está ativo.
+
+No celular, a navegação flutua acima do conteúdo, os atalhos aparecem em uma grade de toque amplo e
+o painel mantém resumo, prioridades e início rápido sem rolagem horizontal. Nenhum fluxo, dado local
+ou contrato de domínio foi alterado pelo redesign.
+
+# Navegação e painel principal
+
+## Proteção das salas: observabilidade
+
+O guard emite eventos `room_protection` com ação normalizada, enforcement,
+resultado da verificação e status da proteção. Tokens, IPs, nomes e respostas
+não são registrados. A assinatura também é verificada no modo de observação.
+O status 200 nesse evento significa aprovação do guard, não sucesso da ação.
+Bloqueios por limite de tentativas também são registrados nesse evento.
+
+O convite do Modo Sala usa a arte aprovada da Helena segurando uma placa. O QR
+continua sendo SVG dinâmico com margem branca de quatro módulos, posicionado
+na área livre da placa sem cobrir as patas. A imagem é apenas apresentação;
+o endereço codificado continua sendo gerado a partir da sala atual.
+
+- No desktop, a barra lateral é o ponto único de acesso aos módulos.
+- O Espaço do aluno concentra contexto diário, métricas, tarefas e agenda; atalhos que duplicavam a
+  navegação foram removidos.
+- No celular, a navegação inferior e a gaveta esquerda “Mais ferramentas” continuam oferecendo todos os módulos.
+- O acionador de menu compartilha o mesmo estado de papel roxo da navegação, nos temas claro e escuro.
+- O cabeçalho mostra a foto do perfil Google no canto superior direito e permite escolher Poliana, Oliver, Andreyna, Jairo ou Helena.
+- O Espaço do aluno usa cabeçalho neutro e ações de papel branco. Campos no tema escuro usam superfície grafite para evitar branco saturado.
+
+# Entrada e navegação, setembro de 2026
+
+Primeira visita abre onboarding e termina no login Google aprovado. A conclusão é guardada na chave helena.onboarding.v1 após autenticação bem-sucedida. Convites de sala mantêm entrada direta. Mais no mobile fica no canto superior esquerdo; a barra inferior mantém quatro destinos. Menus desktop e mobile usam tiras facetadas com transição para X.
+
+# Foco, setembro de 2026
+
+Temporizador e Pomodoro ocupam uma área aberta, sem cartão de fundo, e são escolhidos por setas laterais de papel recortado. A troca usa o mesmo deslocamento direcional de 550 ms dos mundos de Praticar, respeita redução de movimento e fica bloqueada durante uma sessão em andamento ou pausada. O temporizador permite escolher horas, minutos e segundos em três seletores, enquanto a rosa permanece ligada aos minutos registrados e protegida pela redoma facetada. No Pomodoro, mordidas animadas consomem a maçã conforme a sessão avança e sete maçãs cheias registram os dias da semana em que pelo menos um ciclo foi concluído. O botão de início também usa um ícone próprio de papel recortado.
+
+# Marca OlenaStudy, setembro de 2026
+
+A marca exibida na interface, nos metadados e nos materiais públicos passou a ser OlenaStudy. Helena continua sendo o nome da gatinha e da assistente; identificadores internos antigos foram preservados para não quebrar dados locais, links e integrações existentes.
+
+A troca de nome substituiu os nomes anteriores (OliStudy, HelenaStudy e Pepopsia) em textos da interface, metadados, documentação, licença, comentários e no nome do pacote. Ficaram propositalmente inalterados, porque renomeá-los sem migração apagaria dados salvos ou quebraria integrações ativas:
+
+- chaves de localStorage e de sincronização (`helenastudy.workspace.v1`, `helenastudy.theme`, `helenastudy.workspace.history.v1`, `helenastudy.sync-conflict.v1`, `helenastudy.handwriting.draft.*` e `helena-study:word-frequency:v1`);
+- o domínio de produção `helenastudy.vercel.app` e as URLs que dependem dele (canonical, sitemap, robots, Open Graph e redirecionamento do Google Agenda);
+- nomes de infraestrutura nos comandos do serviço de voz (imagem Docker, serviço Cloud Run e URL do Railway) e valores fictícios de teste do Firebase.
+
+Trocar esses itens exige uma migração própria das chaves, no aparelho e na nuvem, e a renomeação real do projeto na Vercel.
+
+# Cadernos e folhas, setembro de 2026
+
+A área Cadernos abre em uma vitrine, sem a antiga lista lateral de anotações. Cada caderno pertence a
+uma matéria e usa uma capa facetada própria, com folhas que se movem no hover. Ao abrir o caderno, a
+pessoa pode criar uma folha ou entrar em uma folha existente; digitalização, escrita à mão, imagens e
+salvamento automático continuam disponíveis no editor.
+
+O workspace v7 mantém `notes` como coleção normalizada de folhas e acrescenta `notebooks`, que guarda
+metadados do caderno e a ordem dos identificadores de suas folhas. A migração de v6 cria um caderno para
+cada anotação existente, preservando título, texto e imagens. Novos cadernos começam vazios e recebem
+nomes baseados na matéria escolhida.
+
+A ação Escrever à mão abre um estúdio de anotação em tela ampla, com papel pautado, quadriculado,
+pontilhado ou em branco. A ferramenta aceita mouse, toque e canetas compatíveis com Pointer Events,
+incluindo variação de espessura por pressão quando o navegador informa esse valor. Caneta,
+marca-texto, borracha por traço, histórico, limpeza e zoom ficam disponíveis no mesmo espaço de
+trabalho. O ajuste inteligente é local e determinístico: suaviza pequenas oscilações e reduz a
+inclinação acidental de traços longos quase horizontais, sem alegar reconhecimento de escrita ou IA.
+A folha final é rasterizada no navegador e anexada à folha atual usando o mesmo limite local das
+imagens digitalizadas. O modal é renderizado sobre o documento para não ficar atrás da navegação
+móvel ou ser recortado pelas animações da tela principal.
+
+As folhas manuscritas novas também guardam papel e traços vetoriais no próprio `NoteAsset`, sem
+alterar a versão do workspace porque o campo é opcional. A pessoa pode abrir a imagem na folha,
+continuar a escrita e salvar de novo no mesmo anexo. Imagens manuscritas antigas continuam
+consultáveis, mas não oferecem edição por traços porque esses dados nunca foram guardados. A lupa
+tem modos de ampliar e reduzir: cada toque no papel muda um nível de zoom no ponto tocado. O modo
+Mover desloca a folha sem marcar. A opção Só caneta faz o toque deslocar a folha enquanto a caneta
+continua escrevendo. O traço usa eventos de ponteiro coalescidos quando disponíveis, curvas suaves
+e estabilização local com detecção de linhas quase retas.
+
+O estúdio agora guarda rascunhos manuscritos no armazenamento deste dispositivo e confirma o
+fechamento quando há alterações. Seleção retangular permite mover, alinhar e apagar grupos de
+traços, com histórico. A janela de escrita ampliada modifica a mesma folha e pode avançar pela
+linha ou descer para a próxima. Post-its de papel recortado ficam sobre a folha, com texto, cor,
+reposicionamento e exportação junto com a imagem. A versão 1 do documento manuscrito ganhou um
+campo opcional `stickies`, preservando a leitura de folhas anteriores. A navegação do caderno
+permite criar, percorrer e reordenar folhas. PNG é baixado localmente; Imprimir/PDF usa o diálogo
+do navegador, que oferece salvar como PDF quando disponível. Nenhum desses fluxos sincroniza
+rascunhos entre dispositivos.
+
+# Divisão do editor do Caderno, setembro de 2026
+
+O arquivo `handwriting-studio.tsx` passou de 4342 para cerca de 3700 linhas: as funções auxiliares que viviam soltas no topo foram movidas, sem mudança de comportamento, para módulos próprios em `src/components`. `handwriting-types.ts` guarda tipos e constantes do editor, `handwriting-geometry.ts` guarda as caixas delimitadoras, a seleção e a detecção de toque da borracha, `handwriting-canvas.ts` guarda o desenho de papel, traços, post-its e eixos, `handwriting-export.ts` guarda a exportação para PNG, JPEG e PDF, e `handwriting-draft.ts` guarda a leitura do rascunho local. A chave de rascunho `helenastudy.handwriting.draft.*` continua a mesma para não perder rascunhos salvos. As funções de geometria agora têm testes próprios em `handwriting-geometry.test.ts`.
+
+O componente `HandwritingStudio` continua com cerca de 3600 linhas em uma única função e deve ser dividido em hooks e subcomponentes em etapas seguintes, começando pelos painéis de ferramentas e pelo tratamento de ponteiro.
+
+# Estabilização de traço ao vivo, setembro de 2026
+
+O Ajuste inteligente do editor de escrita à mão passou a filtrar as amostras da caneta enquanto o traço é desenhado, inspirado nas opções Inertia e Deadzone do Xournal++. A zona morta ignora tremores menores que 2,5 pixels da folha. A inércia usa uma caneta virtual com massa 2 e amortecimento 0,7, valores em que a resposta não oscila, então o traço não balança no fim de um movimento. Ao levantar a caneta, o traço é completado até o ponto exato em que a mão parou. A média móvel aplicada depois do traço foi substituída por essa etapa; a correção de linhas quase retas continua. Ele vale para a folha, sem dependência nova e sem enviar dados a serviços externos. Na janela de escrita ampliada a inércia não se aplica: como a janela amplia o traço, o atraso aparecia como tinta ficando para trás da ponta da caneta. Lá a tinta fica sob a caneta durante o traço e a suavização acontece só ao terminar, como antes. Um teste e2e cobre esse comportamento. Os parâmetros ainda não são ajustáveis pela pessoa usuária: ficam em `DEFAULT_LIVE_STABILIZER`.
+
+# Divisão do componente do editor, etapa 2, setembro de 2026
+
+Quatro blocos de interface do `HandwritingStudio` viraram componentes próprios, sem mudança de comportamento: `handwriting-history-bar.tsx` (desfazer, refazer, limpar e zoom), `handwriting-paper-picker.tsx` (tipo e cor do papel), `handwriting-writing-window.tsx` (janela de escrita ampliada) e `handwriting-footer.tsx` (estado de salvamento e sincronização). Cada um recebe apenas as props de que precisa e não conhece o estado do editor. Os botões da janela de escrita que tinham lógica dentro do JSX passaram a chamar `goBackWritingWindow` e `nextWritingLine`, com o mesmo código de antes. O componente principal caiu de 3773 para 3615 linhas. Os quatro blocos têm testes próprios em `handwriting-panels.test.tsx`. Os próximos cortes previstos são o painel de instrumentos, as opções de tinta e a renderização dos post-its dentro da folha, depois a lógica de ponteiro em um hook.
+
+# Divisão do componente do editor, etapa 2b, setembro de 2026
+
+Mais três blocos de interface saíram do `HandwritingStudio`: `handwriting-tool-group.tsx` (grupo de instrumentos), `handwriting-selection-actions.tsx` (ações da seleção, com o assistente de fórmula e o OCR local) e `handwriting-ink-options.tsx` (cor, espessura, ajuste inteligente e modo só caneta). O componente principal caiu de 3615 para cerca de 3340 linhas. A divisão não muda comportamento, com uma correção de texto: o contador da seleção dizia "2 items selecionados" e agora diz "2 itens selecionados". Os três componentes têm testes próprios em `handwriting-toolbar.test.tsx`. Ficam para as próximas etapas a renderização dos post-its e da seleção dentro da folha e a lógica de ponteiro em um hook.
+
+# Bundle enxuto, setembro de 2026
+
+O `tesseract.js` carrega o `regenerator-runtime` apenas para navegadores sem async e await nativos. Como o build é ES2022, o polyfill de 6,6 KB nunca era usado, mas entrava no total de JavaScript. Ele agora é redirecionado para um módulo vazio (`src/build-empty-module.ts`) em `vite.config.ts`. O total da aplicação caiu de 777,3 para 770,8 KiB, sem mudar o limite de 780 KiB, o que reabre margem para as próximas divisões do editor. O OCR local foi conferido de ponta a ponta em navegador real, com o mesmo desenho, antes e depois: mesma leitura, mesmo tempo e nenhum erro de console. Fica registrado, como próximos candidatos, mover a arte vetorial embutida em `paper-editor-icon.tsx`, `onboarding-paper-icon.tsx` e `paper-action-icon.tsx` (cerca de 14 KiB) para um sprite servido como arquivo, no modelo já usado por `navigation-icons.svg`.
+
+# Folha ao vivo na janela de escrita, setembro de 2026
+
+Ao escrever na janela de escrita ampliada, a folha voltou a mostrar o traço enquanto ele acontece. Desde a otimização de latência da caneta, a janela desenhava só no próprio canvas e a folha só recebia o traço ao levantar a caneta. Agora cada segmento é desenhado também direto no canvas da folha, do mesmo modo que na escrita normal, sem atualizar o estado a cada ponto e portanto sem perder o ganho de latência. O e2e da janela de escrita cobre a tinta sob a caneta e a tinta na folha durante o traço.
+
+# Divisão do componente do editor, etapa 2c, setembro de 2026
+
+Os quatro painéis laterais do editor (pincéis, régua, coordenadas e camadas) saíram do `HandwritingStudio` para `handwriting-side-panels.tsx`, sem mudança de comportamento. Cada painel recebe apenas as props de que precisa. O componente principal caiu de 3338 para cerca de 3140 linhas, e os painéis têm testes próprios em `handwriting-side-panels.test.tsx`. Ficam para as próximas etapas a camada de post-its dentro da folha, as sobreposições de imagem, régua e coordenadas, e a lógica de ponteiro em um hook.
+
+# Divisão do componente do editor, etapa 2d, setembro de 2026
+
+Cada post-it e cada texto solto da folha agora é renderizado por `HandwritingStickyNote` (`handwriting-sticky-note.tsx`), sem mudança de comportamento. O componente cuida do rótulo, do menu de opções, das cores, do checklist, do campo de texto com correção automática, do arraste por teclado e dos puxadores de mover e redimensionar. O estado e a lógica de arrastar e redimensionar continuam no `HandwritingStudio`, que os entrega por props. O componente principal caiu de 3145 para cerca de 2950 linhas, e o novo componente tem 17 testes próprios em `handwriting-sticky-note.test.tsx`. Ficam para a próxima etapa as sobreposições de imagem, régua e coordenadas dentro da folha e a lógica de ponteiro em um hook.
+
+# Seletor de tema no celular, setembro de 2026
+
+Ao restaurar o layout móvel original, o commit `662f6c9` tirou o seletor de aparência da barra inferior e o do cabeçalho continuava escondido abaixo de 900px por uma regra antiga em `styles.css`. Com isso, telas menores ficaram sem forma de trocar o tema. A regra que escondia `.page-header__theme` foi removida, e o seletor aparece no cabeçalho móvel ao lado do menu e do perfil, verificado em 320px.
+
+O teste `responsive-navigation.spec.ts` foi ajustado ao layout atual: o perfil móvel é o botão "Perfil" da barra inferior, e o seletor de tema é o do cabeçalho em todas as larguras.
+
+Os testes do projeto móvel que dependiam do layout antigo (`app.spec.ts` e `profile-avatars.spec.ts`) também foram ajustados: o seletor de tema e o menu de perfil são os do cabeçalho em todas as larguras. O projeto móvel foi rodado localmente com `PLAYWRIGHT_SYSTEM_EDGE=1` (Edge com o perfil do iPhone 13), já que o WebKit não está instalado nesta máquina.
+
+# Domínio olenastudy.vercel.app, setembro de 2026
+
+O projeto da Vercel passou a se chamar `olenastudy` e o domínio `olenastudy.vercel.app` foi anexado como produção, com `helenastudy.vercel.app` redirecionando (307) para ele. As URLs do repositório (canonical, Open Graph, sitemap, robots, `llms.txt`, guia do Google Agenda e testes de URL de sala) passaram a usar o domínio novo.
+
+As chaves do `localStorage` continuam com o prefixo antigo de propósito. Três delas (`helenastudy.workspace.v1`, `helenastudy.theme` e `helena-study:word-frequency:v1`) são sincronizadas com a nuvem pelo nome, e `applySyncedStorage` apaga a chave local que não vier do servidor. Renomear sem migrar o dado na nuvem apagaria o caderno de quem está logado. As demais são locais e invisíveis ao usuário, então renomear não traz ganho. Pendências fora do repositório: domínio autorizado no Firebase Auth, URI de redirecionamento do OAuth do Google e `GOOGLE_REDIRECT_URI` na Vercel.
+
+O nome escrito como `Oli<span>Study</span>` na marca do onboarding, do login e da barra lateral não foi pego pela busca por texto corrido e ainda mostrava "OliStudy". Agora é `Olena<span>Study</span>`, com teste em `onboarding-view.test.tsx`.
+
+# Endurecimento da sala e dos cabeçalhos, setembro de 2026
+
+Três ajustes vindos da auditoria de segurança, sem mudança de fluxo para o usuário:
+
+- O código da sala (5 caracteres, alfabeto de 32 símbolos) passou a ser sorteado com `crypto.getRandomValues` em vez de `Math.random`. Como o código é a barreira para entrar numa sala, ele não pode ser previsível. Cada byte sorteado é mascarado com 31 para escolher o símbolo (o alfabeto tem 32, uma potência de dois), sem divisão nem viés. A primeira versão dividia um inteiro de 32 bits e o CodeQL a apontou como `js/biased-cryptographic-random`, então o mascaramento foi adotado.
+- Os tokens de anfitrião e de participante passaram a ser comparados em tempo constante por `safeEqual` (`src/backend/secure-compare.ts`), em vez de `===`. Um token ausente nunca autoriza.
+- `vercel.json` ganhou `Strict-Transport-Security` e `Cross-Origin-Opener-Policy: same-origin-allow-popups`. O valor `same-origin` foi descartado de propósito, porque quebraria o `signInWithPopup` do login Google. `src/security-headers.test.ts` trava esses cabeçalhos e a ausência de `unsafe-inline` e `unsafe-eval` no `script-src`.
+
+Limite conhecido: o servidor de desenvolvimento e o e2e não aplicam os cabeçalhos do `vercel.json`, então o efeito real do COOP sobre o popup de login só se confirma no deploy. O dono confirmou em 2026-10-02 que `FIREBASE_APPCHECK_ENFORCE` está `true` na Vercel: o App Check bloqueia de verdade, não só registra.
+
+# Convite de edição do caderno, setembro de 2026
+
+O cabeçalho da folha mostra os participantes da sala como avatares e um botão de adicionar pessoa. Ao criar a sala, o editor oferece um link de convite. O link abre diretamente a folha compartilhada, sem exigir que o convidado tenha um caderno local ou passe pelo onboarding, mas exige login Google. O nome vem da conta; o limite segue em quatro participantes. A sessão da sala usa o identificador da página, estável antes e depois do salvamento do anexo.
+
+O editor só notifica mudanças reais do documento ao hook de colaboração. Uma renderização causada pela chegada de uma atualização remota não reenvia a versão local antiga. O seletor de tipo e cor do papel mantém seus dois botões na primeira linha, com rótulos acessíveis e títulos de inspeção sem expansão nem deslocamento. Os três botões de arquivo usam fundo claro e cores distintas nos ícones.
+
+Limite atual: cada sala sincroniza uma folha manuscrita, não todas as folhas do caderno. A sala expira após oito horas; para continuar depois disso, o anfitrião cria outro convite.
+
+# Identidade, convite e sincronização da conta, setembro de 2026
+
+O convite de edição mostra só um link. Quem o abre precisa entrar com Google; a entrada na sala ocorre automaticamente depois que a conta fica pronta. O backend verifica a assinatura, emissor, público, validade e `auth_time` do Firebase ID token e liga a credencial da sala ao UID. O nome vem do token validado, não de um campo digitável. O avatar escolhido vem de `helena.profile.v1`, chave sincronizada entre dispositivos, e o servidor só aceita caminhos de avatar do aplicativo. Um token de outra conta não pode retomar a credencial. Links de visualização continuam públicos e sem edição.
+
+O aviso de atividade mostra apenas uma ação nova de documento feita por outra pessoa, por quatro segundos. Entradas, batimentos de presença, carregamento inicial e ações antigas não exibem "editou o caderno". O desenho ao vivo usa resposta espacial mais rápida e zona morta menor, sem a inércia que deixava a tinta atrás da ponta.
+
+Inventário de persistência: `helenastudy.workspace.v1` guarda cadernos, páginas, anexos e preferências da área de estudo; `helena.profile.v1` guarda o avatar escolhido; tema, onboarding, progresso solo, frequência de palavras e a sequência do Pomodoro também são chaves sincronizadas. O Firebase RTDB em `/users/<uid>/state` é a fonte principal após o login. Um backup local anterior não substitui o estado existente da conta; somente alterações feitas durante a busca inicial são mescladas sobre ele. A chave recém-incluída do Pomodoro é migrada do dispositivo quando ainda não existe na nuvem. `helenastudy.handwriting.draft.*`, identificadores de anexo salvo, histórico local e registro de conflitos são backups locais; credenciais da sala e retorno do login usam `sessionStorage` por sessão.
+
+Limites que continuam: a sala é temporária (oito horas) e transmite uma folha, não o caderno inteiro nem uma cópia permanente para cada convidado. O convidado vê e edita a folha compartilhada, mas ela não vira automaticamente uma página da biblioteca da própria conta. A sincronização da área de estudo ocorre por chave inteira; edições simultâneas do mesmo workspace em dois aparelhos produzem um conflito com cópia local recuperável, não uma fusão perfeita de campos. A tela deve comunicar estado `offline` ou `conflict` antes de prometer disponibilidade em outro dispositivo. Há testes de identidade, conflito de login, convite e atividade; o fluxo real entre duas contas requer teste no domínio implantado com App Check e Firebase Auth configurados.
+
+# OCR local sob o CSP de produção, setembro de 2026
+
+O OCR do caderno estava quebrado em produção. O CSP só libera `'self'` e o `tesseract.js` cria o worker a partir de um blob e busca worker, núcleo WebAssembly e idioma no `cdn.jsdelivr.net`. O erro aparecia como "Não foi possível reconhecer a fórmula". O problema passou despercebido porque o servidor de desenvolvimento e o e2e não aplicavam o CSP.
+
+Agora o OCR roda todo no mesmo domínio, sem enviar o IP do aluno a terceiros:
+
+- `scripts/copy-ocr-assets.mjs` copia para `public/ocr/` (não versionado) o worker, os dois núcleos LSTM e o idioma `eng` (`4.0.0_best_int`, 2,9 MB) dos pacotes instalados. Roda em `predev` e `prebuild`. Esses arquivos ficam fora do orçamento de JS, que só conta `dist/assets`.
+- `@tesseract.js-data/eng` entrou como devDependency (MIT, sem dependências, `npm audit` limpo). Não vai para o bundle: só fornece o arquivo de idioma na hora do build.
+- `handwriting-ocr.ts` define `workerPath`, `corePath`, `langPath` e `workerBlobURL: false`.
+- O CSP ganhou `worker-src 'self'` e `'wasm-unsafe-eval'` no `script-src`. Esse valor libera WebAssembly, não `eval` de JavaScript. Os arquivos de `/ocr/` têm cache de 7 dias, porque os nomes não levam hash.
+- `vite preview` passou a servir os cabeçalhos do `vercel.json`, então o e2e roda sob o CSP real. `e2e/ocr-csp.spec.ts` desenha uma fórmula, roda o OCR e exige resposta preenchida, nenhuma violação de CSP e nenhuma requisição externa durante o reconhecimento. Sem a correção, o teste falha.
+
+As fontes do Google continuam sendo carregadas de fora com a página e serão tratadas em outra mudança de privacidade.
+
+# Limpeza dos dados pessoais ao sair da conta, setembro de 2026
+
+Ao sair da conta, o app apagava só as seis chaves sincronizadas do `localStorage`. O histórico de versões (`helenastudy.workspace.history.v1`, listado e restaurável na página de perfil), os rascunhos e folhas salvas do caderno, o progresso, o perfil, a sequência do pomodoro (`noteoli.pomodoro-streak.v1`), as sessões de sala e o cookie de sessão do Google Agenda continuavam no aparelho. Em um computador compartilhado, a próxima pessoa via e podia restaurar o que a anterior estudou.
+
+- `src/data/personal-data.ts` apaga do `localStorage` e do `sessionStorage` toda chave com prefixo `helena` ou `noteoli.`. Chaves de outros aplicativos da mesma origem não são tocadas.
+- `signOut` em `use-cloud-sync.ts` chama essa limpeza e pede ao servidor para apagar o cookie do Google Agenda (`POST /api/google-calendar?action=disconnect`), já que o cookie é HttpOnly e o navegador não consegue removê-lo.
+- Troca de conta sem sair: `helena.account.v1` guarda a conta dona dos dados do aparelho. Se entra uma conta diferente, os dados da anterior são apagados antes da sincronização, senão o espaço dela seria enviado para a conta nova. A marca de onboarding é preservada, porque o login a grava no mesmo instante e apagá-la devolveria a pessoa ao onboarding. A primeira conta a entrar num aparelho com uso local anterior mantém esse uso, que continua sendo sincronizado para ela como antes.
+
+Limites conhecidos: quem usa o app sem entrar em conta e sem sair não tem o que limpar, porque o modo local guarda tudo no navegador de propósito. Um botão manual de "apagar dados deste aparelho" fica como melhoria futura. O histórico de versões continua pertencendo à conta enquanto ela estiver ativa.
+
+# Motor de traço profissional, etapa 1, setembro de 2026
+
+A escrita à mão passou a usar um motor de traço próprio, na linha do perfect-freehand e do filtro 1€, sem nova dependência. As queixas eram tinta com degraus, tremor, "salto" ao soltar a caneta e traço sem nitidez. Esta etapa cobre suavidade, precisão e o fim do salto; a nitidez em telas de alta densidade e a colaboração ficam nas etapas seguintes.
+
+O que mudou:
+
+- **Contorno único (`handwriting-ink.ts`).** Caneta-tinteiro e pincel macio deixaram de ser um `stroke()` por segmento e passaram a ser um contorno de largura variável preenchido de uma vez. Isso elimina os degraus de espessura, as "contas" nas juntas e o escurecimento onde segmentos translúcidos se sobrepunham. O raio é suavizado ao longo do traço e só depende dos pontos até o vizinho seguinte, então a ponta ao vivo e o traço pronto usam a mesma conta. Cantos fechados ganham um disco limitado ao menor raio vizinho. Os fios do pincel macio seguem o traço em caminhos únicos.
 - **Filtro na entrada (`handwriting-stabilization.ts`).** A zona morta com inércia foi trocada por um filtro 1€ (a suavização cresce quando a mão é lenta e some quando é rápida) sobre um preditor de velocidade (alfa-beta). O preditor zera o atraso em movimento uniforme, então dá para suavizar bem mais sem a tinta ficar atrás da ponta. Cantos fechados (virada acima de ~78° com passo real) travam no ponto da caneta em vez de serem arredondados. A pressão também é suavizada. O filtro usa os timestamps dos eventos coalescidos.
 - **Camada de tinta ao vivo.** O traço em andamento é redesenhado por inteiro uma vez por quadro em um canvas sobreposto (`.handwriting-live-layer`), com uma ponta prevista de até 18 unidades enquanto a mão se move. Ao soltar, o traço final é desenhado na folha no mesmo instante em que a camada é limpa, sem quadro em branco. A folha não desenha o traço em andamento, então nada é desenhado duas vezes. A janela de escrita ampliada usa o mesmo caminho, com a tinta vetorial na resolução da janela.
 
