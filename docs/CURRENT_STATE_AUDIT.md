@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Sala: artes integrais e navegação preservada (2026-10-07)
+
+- Modalidades e cinco padrões de bingo usam artes panorâmicas integrais no desktop, permanentemente visíveis. No celular, as referências quadradas completas mantêm as duas colunas compactas sem cortar personagens. Ícones/textos continuam semânticos e a seleção aparece em borda/base dourada. Bingo presencial usa amarelo original.
+- Voltar não chama reset/leave: mantém stream, presença, credenciais e sala, com cartão Retomar sala. Áudio da pergunta para ao recolher a tela. Apenas Sair da sala do criador abre a confirmação, redesenhada em papel creme e com Cancelar legível.
+- Controle de entrada fica abaixo de Copiar link. Novos ícones facetados para cópia, entrada fechada/aberta, pronto/ausente e remoção por X acessível. Nível de progresso Solo fica antes da foto, como metadado visual, sem interferir em pontos/XP e com valor validado no servidor.
+- Entrada, saída e retorno de presença produzem reação temporária por sala; hidratação não reproduz entradas antigas. Batimentos sem mudança não prolongam efeitos. Movimento reduzido mantém aviso estático. Todas as modalidades recebem contagem inicial; bingo permanece com zero bolas e bloqueia sorteio antes dos três segundos no servidor.
+- Prompts, referências e preparação dos nove assets registrados em ROOM_PANORAMA_ART.md. Originais preservados.
+- Validação final em 2026-10-08: npm run verify aprovado, 1174 testes em 185 arquivos, tipos, build, formato, APIs ESM e orçamento. Lint sem erros, dez avisos anteriores. Dezoito cenários direcionados de Edge desktop/móvel aprovados nas rodadas por arquivo, incluindo vitória real nos quatro cantos, três vencedores em bingo digital/presencial, retomada, presença e contraste. Sorteio também fica desabilitado no cliente durante a contagem. JavaScript inicial 275,7 KiB e total 1140,3 KiB, sem dependência nova. Cenários usam handler real com store em memória, não Firebase de produção.
+
 ## Reação de pontos junto da bola (2026-10-06)
 
 - Removidos contador e aviso de pontos do topo. Marca aceita com pointsChange positivo mostra WOW! +pontos junto da célula correspondente, com papel dourado, confete e som compartilhado. Posição usa limites reais da cartela e mantém a reação dentro do cartão, inclusive nos cantos. Dura 1,5 segundo e não altera layout nem bloqueia cliques.

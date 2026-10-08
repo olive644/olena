@@ -101,10 +101,14 @@ describe("confirmação antes de encerrar a sala como anfitrião", () => {
     expect(document.activeElement).toBe(within(dialog).getByRole("button", { name: "Cancelar" }));
   });
 
-  it("o Voltar do anfitrião também pede confirmação", () => {
+  it.each([true, false])("Voltar preserva a sala e permite retomada, anfitrião %s", (isHost) => {
+    room.isHost = isHost;
     render(<LocalRoom />);
     fireEvent.click(screen.getByRole("button", { name: /Voltar/ }));
-    expect(screen.getByRole("dialog", { name: "Voltar e encerrar a sala?" })).toBeTruthy();
+    expect(screen.queryByRole("dialog", { name: "Encerrar a sala?" })).toBeNull();
+    expect(room.reset).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: /Retomar sala ABCDE/ }));
+    expect(screen.getByRole("button", { name: /Sair da sala/ })).toBeTruthy();
     expect(room.reset).not.toHaveBeenCalled();
   });
 
@@ -123,13 +127,11 @@ describe("confirmação antes de encerrar a sala como anfitrião", () => {
     expect(room.reset).toHaveBeenCalledTimes(1);
   });
 
-  it("Encerrar sala no resultado também pede confirmação", () => {
+  it("a confirmação de saída não aparece na ação explícita Encerrar sala", () => {
     room.state = roomState({ phase: "results" });
     render(<LocalRoom />);
     fireEvent.click(screen.getByRole("button", { name: /Encerrar sala/ }));
-    const dialog = screen.getByRole("dialog", { name: "Encerrar a sala?" });
-    expect(room.endRoom).not.toHaveBeenCalled();
-    fireEvent.click(within(dialog).getByRole("button", { name: "Encerrar sala" }));
+    expect(screen.queryByRole("dialog", { name: "Encerrar a sala?" })).toBeNull();
     expect(room.endRoom).toHaveBeenCalledTimes(1);
   });
 });

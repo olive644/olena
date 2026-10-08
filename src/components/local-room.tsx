@@ -60,7 +60,8 @@ import { PaperActionIcon } from "./paper-action-icon";
 import { HelenaLoading } from "./helena-loading";
 import { NavigationIcon } from "./navigation-icon";
 import { HelenaRoomIcon } from "./helena-room-icon";
-import { LobbyLockToggle, LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
+import { LobbyParticipants, ShareRoom } from "./local-room-lobby-presentation";
+import { RoomPresenceEffects } from "./room-presence-effects";
 import { RoomRecordingInput } from "./room-recording-input";
 import { RoomConfirmButton } from "./room-confirm-button";
 import { RoomExpiryNotice } from "./room-expiry-notice";
@@ -114,6 +115,7 @@ export function LocalRoom({
   const [selectedActivity, setSelectedActivity] = useState<"listening" | "bingo" | null>(null);
   const [scanningQr, setScanningQr] = useState(false);
   const [activitiesExpanded, setActivitiesExpanded] = useState(true);
+  const [browsingRoom, setBrowsingRoom] = useState(false);
   const modalitiesButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (selectedActivity) modalitiesButton.current?.focus();
@@ -175,6 +177,14 @@ export function LocalRoom({
       };
     } catch {
       return { name: "", avatarUrl: undefined };
+    }
+  });
+  const [accountLevel] = useState(() => {
+    try {
+      const value = Number(localStorage.getItem("helena.soloProgress"));
+      return Number.isInteger(value) && value >= 1 ? Math.min(4, value) : 1;
+    } catch {
+      return 1;
     }
   });
   const [code, setCode] = useState(initialJoinCode ?? "");
@@ -372,9 +382,10 @@ export function LocalRoom({
   const lastCueRef = useRef("");
   useEffect(() => {
     if (
+      browsingRoom ||
       !isPlaying ||
       projectorMode ||
-      (state?.settings.activity === "bingo" && state.settings.bingoMode)
+      (state?.settings.activity === "bingo" && state.settings.bingoMode && countdownValue === null)
     )
       return;
     const opening = countdownValue !== null;
@@ -386,6 +397,7 @@ export function LocalRoom({
     lastCueRef.current = key;
     playRoomCountdownSound(value, !opening);
   }, [
+    browsingRoom,
     countdownValue,
     secondsLeft,
     questionStartedAt,
@@ -398,6 +410,7 @@ export function LocalRoom({
 
   useEffect(() => {
     if (
+      browsingRoom ||
       !currentQuestionFront ||
       (state?.settings.activity === "bingo" && state.settings.bingoMode) ||
       state?.phase !== "playing" ||
@@ -412,6 +425,7 @@ export function LocalRoom({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     clockNow,
+    browsingRoom,
     currentQuestionFront,
     projectorMode,
     questionKey,
@@ -445,11 +459,12 @@ export function LocalRoom({
   // Só o navegador do organizador tenta avançar quando o tempo acaba.
   // O intervalo curto também corrige pequenas diferenças entre relógios.
   useEffect(() => {
-    if (!isPlaying || (state?.settings.activity === "bingo" && state.settings.bingoMode)) return;
+    if (!isPlaying) return;
     let advancing = false;
     const tick = () => {
       const now = room.serverNow();
       setClockNow(now);
+      if (state?.settings.activity === "bingo" && state.settings.bingoMode) return;
       const remaining = state ? roomSecondsLeft(state, now) : 0;
       setSecondsLeft(remaining);
       if (
@@ -485,7 +500,7 @@ export function LocalRoom({
     event.preventDefault();
     prepareRoomFeedbackSound();
     recordedPlayerRef.current?.unlock();
-    void room.joinRoom(code, name, profile.avatarUrl);
+    void room.joinRoom(code, name, profile.avatarUrl, isGuest ? 1 : accountLevel);
   }
 
   async function submitAnswer(event: FormEvent) {
@@ -546,7 +561,9 @@ export function LocalRoom({
   }
 
   function backToModalities() {
-    room.reset();
+    naturalPlayerRef.current?.stop();
+    recordedPlayerRef.current?.stop();
+    setBrowsingRoom(true);
     setSelectedActivity(null);
     setActivitiesExpanded(true);
     setAppliedJoinCode(true);
@@ -881,12 +898,68 @@ export function LocalRoom({
   if (projectorMode && !(state.settings.activity === "bingo" && state.settings.bingoMode))
     return (
       <LocalRoomFullscreen>
+        {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
         <ProjectorRoom state={state} secondsLeft={secondsLeft} />
+      </LocalRoomFullscreen>
+    );
+
+  if (browsingRoom && !preparing)
+    return (
+      <LocalRoomFullscreen embedded>
+        <section className="local-room-session room-return-hub">
+          <h2>Modalidades coletivas</h2>
+          <button
+            className="secondary-button room-resume"
+            type="button"
+            onClick={() => setBrowsingRoom(false)}
+          >
+            <img
+              src={
+                state.settings.activity === "bingo"
+                  ? "/room-icons/bingo.svg"
+                  : "/room-icons/listening.svg"
+              }
+              width="40"
+              height="40"
+              alt=""
+            />
+            <span>
+              <strong>Retomar sala {state.code}</strong>
+              <small>
+                {state.phase === "finished" ? "Sala encerrada" : "Sua sala continua disponível"}
+              </small>
+            </span>
+            <PaperArrow />
+          </button>
+          <div className="local-room-activities" aria-label="Modalidades disponíveis">
+            {ROOM_ACTIVITY_OPTIONS.map((activity) => (
+              <div className="local-room-activity room-activity-preview" key={activity.key}>
+                <picture className="local-room-activity__art">
+                  <source
+                    media="(max-width: 540px)"
+                    srcSet={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
+                  />
+                  <img
+                    src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}-panorama.webp`}
+                    alt=""
+                  />
+                </picture>
+                <span className="local-room-activity__icon">
+                  <img src={`/room-icons/${activity.key}.svg`} width="40" height="40" alt="" />
+                </span>
+                <strong>{activity.title}</strong>
+                <small>{activity.description}</small>
+              </div>
+            ))}
+          </div>
+          <p>Retome a sala para continuar ou sair antes de criar outra.</p>
+        </section>
       </LocalRoomFullscreen>
     );
 
   return (
     <LocalRoomFullscreen embedded={preparing}>
+      {!preparing && <RoomPresenceEffects code={state.code} participants={state.participants} />}
       {countdownValue !== null && <CountdownOverlay value={countdownValue} />}
       <div
         className={`local-room-session local-room-session--${state.phase}`}
@@ -901,16 +974,9 @@ export function LocalRoom({
       >
         {!preparing && (
           <header className="local-room-session__header">
-            <RoomConfirmButton
-              className="secondary-button room-back"
-              needsConfirmation={hostSessionActive}
-              title="Voltar e encerrar a sala?"
-              warning="Como anfitrião, voltar encerra a sala para todos os participantes e não pode ser desfeito."
-              confirmLabel="Encerrar sala"
-              onConfirm={backToModalities}
-            >
+            <button type="button" className="secondary-button room-back" onClick={backToModalities}>
               <PaperArrow back /> Voltar
-            </RoomConfirmButton>
+            </button>
             <div className="local-room-session__actions">
               {isHost && !preparing && (
                 <button
@@ -978,8 +1044,12 @@ export function LocalRoom({
             >
               {!preparing && (
                 <div className="local-room-lobby__main">
-                  <ShareRoom code={state.code} bingo={state.settings.activity === "bingo"} />
-                  <LobbyLockToggle locked={state.locked === true} onChange={room.setRoomLocked} />
+                  <ShareRoom
+                    code={state.code}
+                    bingo={state.settings.activity === "bingo"}
+                    locked={state.locked === true}
+                    onLock={room.setRoomLocked}
+                  />
                   <div className="local-room-lobby__invite">
                     {!state.settings.teams && (
                       <section
@@ -1061,13 +1131,18 @@ export function LocalRoom({
                         onClick={() => activity.enabled && void selectActivity(activity.key)}
                         key={activity.key}
                       >
-                        <img
-                          className="local-room-activity__art"
-                          src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
-                          alt=""
-                          width="160"
-                          height="160"
-                        />
+                        <picture className="local-room-activity__art">
+                          <source
+                            media="(max-width: 540px)"
+                            srcSet={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}.webp`}
+                          />
+                          <img
+                            src={`/room-art/${activity.key === "bingo" ? "poliana-bingo" : activity.key}-panorama.webp`}
+                            alt=""
+                            width="160"
+                            height="160"
+                          />
+                        </picture>
                         <span className="local-room-activity__icon">
                           <img
                             src={`/room-icons/${activity.key}.svg`}
@@ -1749,6 +1824,7 @@ export function LocalRoom({
                           !room.hostPlaying,
                           name || "Organizador",
                           profile.avatarUrl,
+                          isGuest ? 1 : accountLevel,
                         );
                       }}
                     >
@@ -1901,6 +1977,7 @@ export function LocalRoom({
               participantId={room.participantId}
               onMode={() => {}}
               onDraw={room.nextQuestion}
+              starting={countdownValue !== null}
               onAnswer={room.submitAnswer}
               onReview={room.reviewBingo}
               onFinalize={room.finalizeBingo}
@@ -1984,6 +2061,7 @@ export function LocalRoom({
                 </p>
                 <Scoreboard participants={state.participants} questionIndex={state.questionIndex} />
                 <RoomConfirmButton
+                  needsConfirmation={false}
                   title="Encerrar a sala?"
                   warning="Isso encerra a sala para todos os participantes e não pode ser desfeito."
                   confirmLabel="Encerrar sala"
@@ -2209,6 +2287,7 @@ export function LocalRoom({
                   Trocar atividade
                 </button>
                 <RoomConfirmButton
+                  needsConfirmation={false}
                   title="Encerrar a sala?"
                   warning="Isso encerra a sala para todos os participantes e não pode ser desfeito."
                   confirmLabel="Encerrar sala"

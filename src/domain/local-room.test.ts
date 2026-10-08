@@ -243,7 +243,7 @@ describe("sala local", () => {
     ).toBeNull();
   });
 
-  it("não pontua antes do começo e mantém o Bingo sem contagem inicial", () => {
+  it("não pontua antes do começo e usa a mesma contagem no Bingo", () => {
     const listening = startedWithTwo();
     const early = submitRoomAnswer(listening, {
       participantId: "p1",
@@ -265,8 +265,8 @@ describe("sala local", () => {
       ),
       { now: 3, random: () => 0 },
     );
-    expect(bingo.questionStartedAt).toBe(3);
-    expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBeNull();
+    expect(bingo.questionStartedAt).toBe(3003);
+    expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBe(3);
   });
 
   it("dá pontos ao acertar e penaliza erro sem saldo negativo", () => {

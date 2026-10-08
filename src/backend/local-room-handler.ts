@@ -374,6 +374,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
           token: participantToken,
           displayName,
           ...(avatarUrl ? { avatarUrl } : {}),
+          level:
+            typeof body["level"] === "number" && Number.isSafeInteger(body["level"])
+              ? Math.max(1, Math.min(100, body["level"]))
+              : 1,
           ...(identity?.uid ? { accountId: identity.uid } : {}),
           score: 0,
           lastSeenAt: now(),
@@ -443,6 +447,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
             online: true,
             lastSeenAt: now(),
             ...(avatarUrl ? { avatarUrl } : {}),
+            level:
+              typeof body["level"] === "number" && Number.isSafeInteger(body["level"])
+                ? Math.max(1, Math.min(100, body["level"]))
+                : 1,
             ...(state.hostAccountId ? { accountId: state.hostAccountId } : {}),
             ...(state.settings.teams
               ? {

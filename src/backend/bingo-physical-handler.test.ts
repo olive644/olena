@@ -3,7 +3,9 @@ import { createLocalRoomHandler } from "./local-room-handler";
 import { createMemoryRoomStore } from "./room-transaction";
 import type { PublicLocalRoomState } from "../domain/local-room";
 it("protege conferência presencial e finalização, mantém recibos em reenvios", async () => {
+  let now = 1000;
   const handler = createLocalRoomHandler({
+    now: () => now,
     store: createMemoryRoomStore(),
     publish: async () => {},
     streamUrl: () => "/stream",
@@ -40,6 +42,7 @@ it("protege conferência presencial e finalização, mantém recibos em reenvios
     (await post("bingo-finalize", { ...room, hostToken: player.participantToken })).status,
   ).toBe(403);
   expect((await post("bingo-finalize", room)).status).toBe(409);
+  now += 3000;
   await post("next", room);
   state = (
     (await (

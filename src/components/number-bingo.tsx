@@ -38,9 +38,11 @@ export default function NumberBingo({
   onReview,
   onPhysical,
   onFinalize,
+  starting = false,
 }: {
   state: PublicLocalRoomState;
   isHost: boolean;
+  starting?: boolean;
   participantId: string;
   onMode: (mode: BingoMode) => void;
   onDraw: () => Promise<void>;
@@ -74,12 +76,15 @@ export default function NumberBingo({
   const [stamped, setStamped] = useState<string | null>(null);
   const markQueue = useRef<Promise<unknown>>(Promise.resolve());
   const drawRef = useRef(onDraw);
+  const startingRef = useRef(starting);
   const indexRef = useRef(state.questionIndex);
   useEffect(() => {
     drawRef.current = onDraw;
+    startingRef.current = starting;
     indexRef.current = state.questionIndex;
   });
   const draw = useCallback(async () => {
+    if (startingRef.current) return;
     setPending(true);
     try {
       await drawRef.current();
@@ -112,7 +117,18 @@ export default function NumberBingo({
                 <small>{BINGO_MODE_RULES[item]}</small>
               </span>
               <span className="bingo-mode-art" aria-hidden="true">
-                <img src={`/room-art/poliana-bingo-${item}.webp`} alt="" width="384" height="384" />
+                <picture>
+                  <source
+                    media="(max-width: 540px)"
+                    srcSet={`/room-art/poliana-bingo-${item}.webp`}
+                  />
+                  <img
+                    src={`/room-art/poliana-bingo-${item}-panorama.webp`}
+                    alt=""
+                    width="1200"
+                    height="400"
+                  />
+                </picture>
               </span>
             </button>
           ))}
@@ -196,7 +212,7 @@ export default function NumberBingo({
       <Machine
         drawn={drawn}
         isHost={isHost}
-        pending={pending || !!state.bingoClaim}
+        pending={starting || pending || !!state.bingoClaim}
         onDraw={draw}
         onReveal={reveal}
       >

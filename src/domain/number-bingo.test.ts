@@ -74,12 +74,12 @@ describe("number bingo", () => {
     const publicState = toPublicRoomState(state);
     expect(publicState.drawnIds).toHaveLength(0);
     expect(publicState.currentQuestion).toBeUndefined();
-    expect(toPublicRoomState(advanceRoomQuestion(state, 3)).drawnIds).toHaveLength(1);
+    expect(toPublicRoomState(advanceRoomQuestion(state, 3003)).drawnIds).toHaveLength(1);
     expect(publicState.bingoWords).toBeUndefined();
   });
   it("allows late marks, requires Bingo and waits for the host instead of ending on a podium", () => {
     let state = started();
-    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3 + i);
+    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3003 + i);
     const row = state.participants[0]!.bingoCard!.slice(0, 5);
     const answer = (id: string) =>
       submitRoomAnswer(state, { participantId: "p", questionIndex: 74, answer: id, now: 100_000 });
@@ -151,7 +151,7 @@ describe("number bingo", () => {
         { ...state.participants[0]!, id: "p2", displayName: "Bia" },
       ],
     };
-    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3 + i);
+    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3003 + i);
     for (const participantId of ["p", "p2"]) {
       const card = state.participants.find((p) => p.id === participantId)!.bingoCard!;
       for (const i of bingoPatterns(mode)[0]!)
@@ -160,14 +160,14 @@ describe("number bingo", () => {
             participantId,
             questionIndex: 74,
             answer: card[i]!,
-            now: 100,
+            now: 3100,
           }).state;
       expect(state.bingoClaim).toBeUndefined();
       state = submitRoomAnswer(state, {
         participantId,
         questionIndex: 74,
         answer: "bingo",
-        now: 101,
+        now: 3101,
       }).state;
       expect(state.phase).toBe("playing");
       expect(state.bingoClaim?.participantId).toBe(participantId);
@@ -176,10 +176,10 @@ describe("number bingo", () => {
           participantId: "p2",
           questionIndex: 74,
           answer: "bingo",
-          now: 102,
+          now: 3102,
         }).correct,
       ).toBe(participantId === "p2");
-      state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 103);
+      state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 3103);
     }
     expect(state.bingoWinnerIds).toEqual(["p", "p2"]);
   });
