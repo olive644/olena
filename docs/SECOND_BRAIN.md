@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Praticar: PracticeIslandCarousel exibe atual e vizinhas sem painel nem abas de matérias.
+Pointer Events compartilham mouse/toque, pan-y preserva rolagem vertical; teclado/setas
+continuam disponíveis. FocusPaperArrow é compartilhado com Foco.
+WebPs de ilhas têm 800/480 px em srcset; montar somente atual e vizinhas, sem
+baixar todas as seis antecipadamente. Artes aprovadas e minigames preservados.
+
 Sala: Voltar apenas usa browsingRoom, sem reset/leave nem trocar credenciais.
 Retomar sala retorna ao mesmo estado transmitido, inclusive durante partida.
 Confirmação de encerramento somente em Sair da sala para host ativo.

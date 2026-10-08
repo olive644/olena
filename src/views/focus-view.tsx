@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { FocusPaperArrow } from "../components/focus-paper-arrow";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperDigits } from "../components/paper-digits";
@@ -213,16 +214,6 @@ function PomodoroTomato({ progress }: { progress: number }) {
         className="pomodoro-tomato__leaf-fold"
         d="m140 78-42 40 42-24 39 24-13-26 44-12-48 3 14-37Z"
       />
-    </svg>
-  );
-}
-
-function FocusPaperArrow() {
-  return (
-    <svg className="focus-paper-arrow" viewBox="0 0 48 48" aria-hidden="true">
-      <path className="focus-paper-arrow__depth" d="m7 25 21-20 14 8-12 12 11 10-14 8Z" />
-      <path className="focus-paper-arrow__face" d="m5 21 23-18 12 8-13 11 12 10-13 8Z" />
-      <path className="focus-paper-arrow__fold" d="m5 21 22 1 13-11-12-8Z" />
     </svg>
   );
 }

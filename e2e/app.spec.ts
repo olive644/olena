@@ -111,8 +111,8 @@ test("explora mundos com a Helena e abre a trilha de níveis", async ({ page }, 
     .getByRole("button", { name: "Praticar", exact: true })
     .click();
   await page.getByRole("button", { name: "Próximo mundo" }).click();
-  await expect(page.locator(".solo-island-art")).toHaveCount(1);
-  await expect(page.locator(".solo-island-art")).toHaveAttribute(
+  await expect(page.locator(".is-current .solo-island-art")).toHaveCount(1);
+  await expect(page.locator(".is-current .solo-island-art")).toHaveAttribute(
     "src",
     "/practice-islands/portuguese.webp",
   );

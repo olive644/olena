@@ -1,5 +1,14 @@
 # Artes das ilhas de Praticar
 
+## Otimização posterior sem redesenho
+
+Em 2026-10-08 os WebPs de 1000 px foram redimensionados para 800 px com qualidade
+82, mantendo transparência. Conjunto principal: 981018 para 595114 bytes, 39,3%
+menor. Variantes -small.webp de 480 px com qualidade 80 atendem previews/telas
+menores via srcset e sizes. Conversão mecânica com Sharp do runtime disponível,
+sem nova dependência do aplicativo. Originais aprovados permanecem no histórico
+Git. Não converter para SVG com bitmap embutido.
+
 ## Direção visual e escopo
 
 Cenários e navegação primeiro, conforme escolha do proprietário. Sem exercícios

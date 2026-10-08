@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Carrossel aberto e imagens responsivas de Praticar (2026-10-08)
+
+- Removidos título introdutório, seletor de matéria, painel branco, contador de mundo/níveis e botões inferiores de disciplinas da tela de ilhas. Seleção de conteúdo continua disponível dentro dos minigames existentes.
+- Ilha atual central com vizinhas menores, mais altas e transparentes. Transição mantém posição por ilha; imagens somente da atual e das vizinhas são montadas. Sem redesenhar as artes aprovadas.
+- Mesma seta de papel do Foco, extraída para componente compartilhado. Navegação por setas, teclado e Pointer Events para mouse/toque. Arraste vertical não troca a ilha, cancelamento limpa o gesto e movimento reduzido evita transições perceptíveis.
+- WebPs maiores passam de 981018 para 595114 bytes no conjunto, redução de 39,3%. Variantes de 480 px para previews e telas menores, srcset/sizes e prioridade alta apenas da ilha atual. Sem SVG com bitmap embutido, dependências novas ou alterações nos exercícios.
+- Validação: npm run verify aprovado, 1175 testes em 185 arquivos, lint sem erros (dez avisos anteriores), tipos/build/formato/APIs/orçamento. Nove cenários direcionados de Edge desktop/móvel aprovados, incluindo quatro combinações tema/tela, arraste, teclado, limites, rolagem vertical, movimento reduzido, gesto de toque nativo e cancelamento, trilha Solo e Foco. Prova nativa de toque não se aplica ao projeto desktop. Entrada baixa somente Idiomas e o preview de Português; botão principal fica dentro do viewport. JavaScript inicial 275,6 KiB e total 1144,4 KiB.
+
 ## Ilhas por matéria e retorno das artes laterais (2026-10-08)
 
 - Após rejeição das primeiras propostas e da prova SVG, as seis artes foram refeitas com as três ilhas existentes como referências diretas. Preservam volumes, facetas, paleta e densidade de detalhes, com terrenos próprios sem a praça circular repetida. O conceito SVG foi retirado dos assets, preservado fora do repositório. Cada cenário tem posição própria para a Helena.

@@ -1,62 +1,144 @@
 import { test, expect } from "@playwright/test";
 
+test("navega com gesto de toque real sem entrar na ilha", async ({
+  page,
+  browserName,
+}, testInfo) => {
+  test.skip(
+    browserName !== "chromium" || testInfo.project.name !== "mobile",
+    "Prova nativa de toque via Chromium",
+  );
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/aprender");
+  const stage = page.locator(".practice-carousel-stage");
+  const box = (await stage.boundingBox())!;
+  const session = await page.context().newCDPSession(page);
+  const y = box.y + box.height * 0.85;
+  const x = box.x + box.width * 0.72;
+  await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+  for (let step = 1; step <= 8; step++)
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: x - step * 12, y }],
+    });
+  await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await expect(page.getByRole("heading", { name: "Vale das Histórias" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Explorar ilha" })).toBeVisible();
+  await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+  await session.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x: x + 65, y }],
+  });
+  await session.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] });
+  await expect(page.getByRole("heading", { name: "Vale das Histórias" })).toBeVisible();
+  await expect(stage).not.toHaveClass(/is-dragging/);
+  await session.detach();
+});
+
 for (const theme of ["light", "dark"])
-  test(`seis ilhas de papel navegáveis, ${theme}`, async ({ page }, testInfo) => {
+  test(`carrossel de ilhas por setas, arraste e teclado, ${theme}`, async ({ page }, testInfo) => {
+    const islandRequests: string[] = [];
+    page.on("request", (request) => {
+      if (request.url().includes("/practice-islands/")) islandRequests.push(request.url());
+    });
     await page.addInitScript((value) => {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
       localStorage.setItem("helenastudy.theme", value);
     }, theme);
     await page.goto("/aprender");
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-    const navigation = page.getByRole("navigation", { name: "Ilhas de estudo" });
-    await expect(navigation.getByRole("button")).toHaveCount(6);
-    for (const [title, islandName] of [
-      ["Idiomas", "Porto das Vozes"],
-      ["Português", "Vale das Histórias"],
-      ["Química", "Ilhas dos Elementos"],
-      ["Biologia", "Jardim da Vida"],
-      ["Matemática", "Picos dos Padrões"],
-      ["Programação", "Oficina do Código"],
-    ] as const) {
-      await navigation.getByRole("button", { name: title, exact: true }).click();
-      await expect(page.getByRole("heading", { name: islandName, exact: true })).toBeVisible();
-      const art = page.locator(".solo-island-art");
-      await expect(art).toHaveAttribute("alt", new RegExp(title));
-      await art.evaluate(async (img: HTMLImageElement) => img.decode());
-      const box = await art.boundingBox();
-      expect(box!.width).toBeLessThanOrEqual(testInfo.project.use.viewport!.width);
-      await page.locator(".solo-islands").screenshot({
-        path: testInfo.outputPath(`ilha-${title}-${theme}.png`),
-        animations: "disabled",
-      });
-      if (title !== "Idiomas") {
-        await page.getByRole("button", { name: "Explorar ilha" }).click();
-        await expect(page.getByText(/Os exercícios desta ilha chegam depois/)).toBeVisible();
-        await expect(
-          page.getByRole("img", { name: `Ilha de ${title} em papel recortado` }),
-        ).toBeVisible();
-        if (title === "Programação") {
-          for (const topic of ["Python", "JavaScript", "HTML", "CSS"])
-            await expect(page.getByText(topic, { exact: true })).toBeVisible();
-          await page.screenshot({
-            path: testInfo.outputPath(`programacao-${theme}.png`),
-            fullPage: true,
-            animations: "disabled",
-          });
-        }
-        await page.getByRole("button", { name: "Voltar aos mundos" }).click();
-      }
-    }
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > innerWidth + 1,
+    const carousel = page.getByRole("region", { name: "Ilhas de estudo" });
+    const stage = page.locator(".practice-carousel-stage");
+    const current = page.locator(".is-current .solo-island-art");
+    await expect(page.getByRole("navigation", { name: "Ilhas de estudo" })).toHaveCount(0);
+    await expect(page.getByText("Pratique para lembrar.", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Ilhas do conhecimento", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("combobox")).toHaveCount(0);
+    await expect(page.locator(".study-panel")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(page.getByRole("button", { name: "Mundo anterior" })).toBeDisabled();
+    await expect(page.locator(".practice-carousel-arrow svg").first()).toHaveClass(
+      "focus-paper-arrow",
     );
-    expect(overflow).toBe(false);
+    const preview = page.locator(".is-preview").first();
+    await expect(preview).toHaveCSS("opacity", "0.38");
+    await current.evaluate(async (img: HTMLImageElement) => img.decode());
+    await preview.locator("img").evaluate(async (img: HTMLImageElement) => img.decode());
+    expect(islandRequests.every((url) => /languages|portuguese/.test(url))).toBe(true);
+    expect(islandRequests.length).toBeLessThanOrEqual(2);
+    const enterBox = await page.getByRole("button", { name: "Entrar no mundo" }).boundingBox();
+    expect(enterBox!.y + enterBox!.height).toBeLessThanOrEqual(
+      testInfo.project.use.viewport!.height,
+    );
+    const activeBox = await current.boundingBox();
+    const previewBox = await preview.boundingBox();
+    expect(previewBox!.width).toBeLessThan(activeBox!.width);
+    expect(previewBox!.y).toBeLessThan(activeBox!.y);
     await page.screenshot({
-      path: testInfo.outputPath(`ilhas-${theme}.png`),
+      path: testInfo.outputPath(`primeira-ilha-${theme}.png`),
       fullPage: true,
       animations: "disabled",
     });
-    await navigation.getByRole("button", { name: "Idiomas", exact: true }).click();
+    for (const [position, [subject, title]] of (
+      [
+        ["Idiomas", "Porto das Vozes"],
+        ["Português", "Vale das Histórias"],
+        ["Química", "Ilhas dos Elementos"],
+        ["Biologia", "Jardim da Vida"],
+        ["Matemática", "Picos dos Padrões"],
+        ["Programação", "Oficina do Código"],
+      ] as const
+    ).entries()) {
+      if (position > 0) await page.getByRole("button", { name: "Próximo mundo" }).click();
+      await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+      await expect(current).toHaveAttribute("alt", new RegExp(subject));
+      await current.evaluate(async (img: HTMLImageElement) => img.decode());
+      const box = await current.boundingBox();
+      expect(box!.width).toBeLessThanOrEqual(testInfo.project.use.viewport!.width);
+      await expect(current).toHaveAttribute("srcset", /480w, .*800w/);
+      if (position === 1)
+        await page.screenshot({
+          path: testInfo.outputPath(`tres-ilhas-${theme}.png`),
+          fullPage: true,
+          animations: "disabled",
+        });
+      if (position > 0) {
+        await page.getByRole("button", { name: "Explorar ilha" }).click();
+        await expect(page.getByText(/Os exercícios desta ilha chegam depois/)).toBeVisible();
+        await expect(
+          page.getByRole("img", { name: `Ilha de ${subject} em papel recortado` }),
+        ).toBeVisible();
+        await page.getByRole("button", { name: "Voltar aos mundos" }).click();
+      }
+    }
+    await expect(page.getByRole("button", { name: "Próximo mundo" })).toBeDisabled();
+    await carousel.focus();
+    await page.keyboard.press("ArrowLeft");
+    await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();
+    const dragBox = await stage.boundingBox();
+    const x = dragBox!.x + dragBox!.width * 0.3;
+    const y = dragBox!.y + dragBox!.height * 0.85;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + 90, y, { steps: 8 });
+    await page.mouse.up();
+    await expect(page.getByRole("heading", { name: "Jardim da Vida" })).toBeVisible();
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + 5, y - 90, { steps: 8 });
+    await page.mouse.up();
+    await expect(page.getByRole("heading", { name: "Jardim da Vida" })).toBeVisible();
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const duration = await page
+      .locator(".practice-carousel-island")
+      .first()
+      .evaluate((element) => parseFloat(getComputedStyle(element).transitionDuration));
+    expect(duration).toBeLessThanOrEqual(0.001);
+    for (let i = 0; i < 3; i++) await page.getByRole("button", { name: "Mundo anterior" }).click();
     await page.getByRole("button", { name: "Entrar no mundo" }).click();
     await expect(page.getByRole("button", { name: /Nível 1: Escuta/ })).toBeEnabled();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)).toBe(
+      false,
+    );
   });
