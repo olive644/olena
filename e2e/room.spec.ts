@@ -493,11 +493,12 @@ for (const activity of ["listening", "bingo"] as const) {
         await context.route("**/api/local-room?*", async (route) => {
           const request = route.request();
           const body = request.postDataJSON() as {
-            settings?: { activity?: string; bingoMode?: string };
+            settings?: { activity?: string; bingoMode?: string; roundSeconds?: number };
           };
           // Simula uma sala criada pelo cliente anterior, sem reinterpretar a cartela legada.
           if (activity === "bingo" && request.url().includes("action=create") && body.settings) {
             delete body.settings.bingoMode;
+            body.settings.roundSeconds = 5;
           }
           if (request.url().includes("action=settings") && body.settings?.activity) {
             await new Promise((resolve) => setTimeout(resolve, 700));
@@ -742,9 +743,9 @@ for (const activity of ["listening", "bingo"] as const) {
         await expect(projector.getByRole("heading", { name: "Ouça com atenção" })).toBeVisible();
       await players[0]!.reload();
       for (let question = 0; question < 5; question++) {
-        await expect(
-          host.getByText(`Pergunta ${question + 1} de 5`, { exact: true }),
-        ).toBeVisible();
+        await expect(host.getByText(`Pergunta ${question + 1} de 5`, { exact: true })).toBeVisible({
+          timeout: 12_000,
+        });
         await expect(host.locator(".local-room-round__host-question span")).toHaveText(
           "Áudio reproduzido",
         );
@@ -860,7 +861,7 @@ for (const activity of ["listening", "bingo"] as const) {
           host.getByRole("heading", { name: "Classificação", exact: true }),
         ).toBeVisible();
       else await expect(host.locator(".local-room-podium")).toHaveCount(0);
-      await expect(host.getByRole("button", { name: "Repetir" })).toBeVisible();
+      await expect(host.getByRole("button", { name: "Repetir" })).toBeVisible({ timeout: 12_000 });
       await expect(host.getByRole("button", { name: "Trocar atividade" })).toBeVisible();
       await expect(host.getByRole("button", { name: "Encerrar sala" })).toBeVisible();
       expect(states.get(code)!.participants).toHaveLength(2);
@@ -892,10 +893,10 @@ for (const activity of ["listening", "bingo"] as const) {
           return { x: bounds.x, y: bounds.y };
         }),
       );
-      expect(positions[5]!.x).toBeCloseTo(positions[0]!.x);
-      expect(positions[5]!.y).toBeGreaterThan(positions[0]!.y);
-      expect(positions[6]!.x).toBeGreaterThan(positions[0]!.x);
-      expect(positions[6]!.y).toBeCloseTo(positions[0]!.y);
+      for (let index = 1; index < positions.length; index++) {
+        expect(positions[index]!.x).toBeCloseTo(positions[0]!.x);
+        expect(positions[index]!.y).toBeGreaterThan(positions[index - 1]!.y);
+      }
       await participants.first().scrollIntoViewIfNeeded();
       await host.screenshot({ path: testInfo.outputPath("participants.png") });
       await expect(host.locator(".local-room-settings")).toHaveCount(0);
