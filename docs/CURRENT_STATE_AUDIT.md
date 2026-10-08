@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Captura determinística da reação do bingo (2026-10-08)
+
+- O teste móvel congelava na captura de um elemento temporário removido após 1,5 segundo.
+- O relógio do participante fica pausado somente durante a conferência e a captura da reação.
+- O teste avança 1500 ms, confirma a remoção e retoma o relógio antes de continuar a partida.
+- A duração e o comportamento da aplicação permanecem iguais.
+
 ## Leo e atualização de Alice e Soso Estrelinha (2026-10-07)
 
 - Leo entra no seletor de perfis com o retrato aprovado do besourinho, sem estrelas no fundo.
