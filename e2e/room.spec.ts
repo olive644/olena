@@ -155,7 +155,7 @@ for (const activity of ["listening", "bingo"] as const) {
     await expect
       .poll(() =>
         preparation
-          .locator(".local-room-activity__art")
+          .locator(".local-room-activity__art img")
           .evaluateAll((images) =>
             images.every(
               (image) =>
@@ -604,7 +604,8 @@ for (const activity of ["listening", "bingo"] as const) {
       const selectedActivity = host.locator('.local-room-activity[aria-checked="true"]');
       await host.getByRole("button", { name: /Modalidades coletivas/ }).click();
       await selectedActivity.hover();
-      await expect(selectedActivity).toHaveCSS("background-color", "rgb(116, 51, 224)");
+      await expect(selectedActivity).toHaveCSS("background-color", "rgb(22, 52, 84)");
+      await expect(selectedActivity).toHaveCSS("border-color", "rgb(250, 204, 21)");
       await expect(selectedActivity).toHaveCSS("color", "rgb(255, 249, 239)");
       if (activity === "bingo") {
         const bingo = host.getByRole("radio", { name: /^Bingo/ });

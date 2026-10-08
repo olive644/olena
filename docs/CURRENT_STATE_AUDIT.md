@@ -6,6 +6,8 @@
 - O relógio do participante fica pausado somente durante a conferência e a captura da reação.
 - O teste avança 1500 ms, confirma a remoção e retoma o relógio antes de continuar a partida.
 - A duração e o comportamento da aplicação permanecem iguais.
+- Testes da sala agora verificam as imagens dentro de picture e a borda dourada da seleção atual.
+- O teste de nitidez lê largura e altura do canvas juntas para evitar misturar dois redimensionamentos.
 
 ## Leo e atualização de Alice e Soso Estrelinha (2026-10-07)
 
