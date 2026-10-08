@@ -54,6 +54,8 @@ export type LocalRoomParticipant = {
   id: string;
   displayName: string;
   avatarUrl?: string;
+  /** Metadado visual de progresso; nunca usado para pontos ou recompensas. */
+  level?: number;
   score: number;
   answersCount?: number;
   lastAnswer?: { questionIndex: number; correct: boolean } | undefined;
@@ -116,6 +118,11 @@ export type LocalRoomState = {
   hostLastSeenAt?: number;
   hostParticipantId?: string;
   expiresAt?: number;
+  // Entrada fechada pelo anfitrião: ninguém novo entra, quem já estava na sala pode voltar.
+  locked?: boolean;
+  // Quem o anfitrião removeu (as últimas 30), para o aparelho da pessoa saber
+  // que foi removida e não só que perdeu a conexão.
+  removedParticipantIds?: string[];
   receipts?: Record<
     string,
     {
@@ -134,6 +141,8 @@ export type LocalRoomState = {
   recordingIds?: string[];
 };
 
+export const ROOM_REMOVED_MEMORY = 30;
+
 export type PublicLocalRoomState = {
   code: string;
   roundId?: string;
@@ -145,6 +154,8 @@ export type PublicLocalRoomState = {
   bingoClaim?: BingoClaim | undefined;
   bingoClaimQueue?: BingoClaim[] | undefined;
   bingoWinnerIds?: string[] | undefined;
+  locked?: boolean;
+  removedParticipantIds?: string[];
   questionStartedAt: number;
   countdownStartedAt?: number | undefined;
   totalQuestions: number;
@@ -461,13 +472,12 @@ export function startRoom(
     deck,
     roundId: `${state.generation}:${(state.revision ?? 0) + 1}:${dependencies.now}`,
     questionIndex: 0,
-    questionStartedAt:
-      dependencies.now + (state.settings.activity === "bingo" ? 0 : ROOM_START_COUNTDOWN_MS),
+    questionStartedAt: dependencies.now + ROOM_START_COUNTDOWN_MS,
     bingoDrawCount: state.settings.activity === "bingo" && state.settings.bingoMode ? 0 : undefined,
     bingoClaim: undefined,
     bingoClaimQueue: [],
     bingoWinnerIds: [],
-    countdownStartedAt: state.settings.activity === "bingo" ? undefined : dependencies.now,
+    countdownStartedAt: dependencies.now,
     answeredParticipantIds: [],
     feedbackUntil: undefined,
     receipts: Object.fromEntries(
@@ -683,11 +693,13 @@ export function roomCountdownValue(state: PublicLocalRoomState, now: number): nu
 export function advanceRoomQuestion(state: LocalRoomState, now: number): LocalRoomState {
   if (state.phase !== "playing") return state;
   if (state.settings.activity === "bingo" && state.settings.bingoMode) {
+    if (state.countdownStartedAt !== undefined && now < state.questionStartedAt) return state;
     const count = state.bingoDrawCount ?? state.questionIndex + 1;
     if (state.bingoClaim || count >= state.deck.length) return state;
     return {
       ...state,
       bingoDrawCount: count + 1,
+      countdownStartedAt: undefined,
       questionIndex: count,
       questionStartedAt: now,
       updatedAt: now,
@@ -822,6 +834,28 @@ export function finishNumberBingo(state: LocalRoomState, now: number): LocalRoom
   };
 }
 
+// O anfitrião tira alguém da sala (nome ofensivo, pessoa que não é da turma). A pessoa some da
+// lista e do placar, e a resposta dela deixa de contar como "já respondeu" para a pergunta atual.
+// Se ela tinha uma conferência de bingo pendente, a conferência cai junto.
+export function removeRoomParticipant(
+  state: LocalRoomState,
+  participantId: string,
+  now: number,
+): LocalRoomState {
+  if (!state.participants.some((participant) => participant.id === participantId)) return state;
+  return {
+    ...state,
+    participants: state.participants.filter((participant) => participant.id !== participantId),
+    answeredParticipantIds: state.answeredParticipantIds.filter((id) => id !== participantId),
+    bingoWinnerIds: state.bingoWinnerIds?.filter((id) => id !== participantId),
+    bingoClaim: state.bingoClaim?.participantId === participantId ? undefined : state.bingoClaim,
+    removedParticipantIds: [...(state.removedParticipantIds ?? []), participantId].slice(
+      -ROOM_REMOVED_MEMORY,
+    ),
+    updatedAt: now,
+  };
+}
+
 export function endRoom(state: LocalRoomState, now: number): LocalRoomState {
   if (state.phase === "finished") return state;
   const retainedUntil = now + ROOM_FINISHED_RETENTION_MS;
@@ -871,6 +905,10 @@ export function toPublicRoomState(state: LocalRoomState): PublicLocalRoomState {
     ...(state.feedbackUntil === undefined ? {} : { feedbackUntil: state.feedbackUntil }),
     ...(state.revision === undefined ? {} : { revision: state.revision }),
     ...(state.expiresAt === undefined ? {} : { expiresAt: state.expiresAt }),
+    ...(state.locked ? { locked: true } : {}),
+    ...(state.removedParticipantIds?.length
+      ? { removedParticipantIds: state.removedParticipantIds }
+      : {}),
     ...(state.generation === undefined ? {} : { generation: state.generation }),
     content: {
       count: localRoomPool(state.settings, state.sourceDeck).length,

@@ -42,28 +42,32 @@ describe("Bingo presencial e ganhadores", () => {
       true,
     );
     expect(
-      submitRoomAnswer(state, { participantId: "Ana", questionIndex: 0, answer: "bingo", now: 3 })
-        .correct,
+      submitRoomAnswer(state, {
+        participantId: "Ana",
+        questionIndex: 0,
+        answer: "bingo",
+        now: 3003,
+      }).correct,
     ).toBe(false);
-    const drawn = advanceRoomQuestion(state, 4);
+    const drawn = advanceRoomQuestion(state, 3004);
     expect(
-      submitRoomAnswer(drawn, { participantId: "Ana", questionIndex: 0, answer: "1", now: 5 })
+      submitRoomAnswer(drawn, { participantId: "Ana", questionIndex: 0, answer: "1", now: 3005 })
         .correct,
     ).toBe(false);
     const claim = submitRoomAnswer(drawn, {
       participantId: "Ana",
       questionIndex: 0,
       answer: "bingo",
-      now: 6,
+      now: 3006,
     }).state;
     expect(claim.bingoClaim?.participantId).toBe("Ana");
-    const rejected = reviewNumberBingo(claim, claim.bingoClaim!.id, "reject", 7);
+    const rejected = reviewNumberBingo(claim, claim.bingoClaim!.id, "reject", 3007);
     expect(rejected.bingoWinnerIds).toEqual([]);
-    expect(finishNumberBingo(rejected, 8)).toBe(rejected);
+    expect(finishNumberBingo(rejected, 3008)).toBe(rejected);
   });
   it.each(BINGO_MODES)("finaliza %s com três ganhadores em ordem e XP por esforço", (mode) => {
     let state = round(false, mode);
-    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3 + i);
+    for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3003 + i);
     for (const id of ["Caio", "Bia", "Ana"]) {
       const card = state.participants.find((p) => p.id === id)!.bingoCard!;
       for (const index of bingoPatterns(mode)[0]!)
@@ -72,16 +76,16 @@ describe("Bingo presencial e ganhadores", () => {
             participantId: id,
             questionIndex: 74,
             answer: card[index]!,
-            now: 100,
+            now: 3100,
           }).state;
       state = submitRoomAnswer(state, {
         participantId: id,
         questionIndex: 74,
         answer: "bingo",
-        now: 101,
+        now: 3101,
       }).state;
       expect(state.bingoClaim?.participantId).toBe(id);
-      state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 102);
+      state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 3102);
     }
     expect(state.phase).toBe("results");
     expect(state.bingoWinnerIds).toEqual(["Caio", "Bia", "Ana"]);
@@ -96,24 +100,24 @@ describe("Bingo presencial e ganhadores", () => {
         participantId: "Duda",
         questionIndex: 74,
         answer: "bingo",
-        now: 103,
+        now: 3103,
       }).correct,
     ).toBe(false);
     expect(state.participants[4]!.reward).toBeUndefined();
-    expect(finishNumberBingo(state, 200)).toBe(state);
+    expect(finishNumberBingo(state, 3200)).toBe(state);
   });
   it("confirma cartela de papel e recomeça sem números usados ou XP antigo", () => {
-    let state = advanceRoomQuestion(round(true), 3);
+    let state = advanceRoomQuestion(round(true), 3003);
     state = submitRoomAnswer(state, {
       participantId: "Ana",
       questionIndex: 0,
       answer: "bingo",
-      now: 4,
+      now: 3004,
     }).state;
-    state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 5);
-    state = finishNumberBingo(state, 6);
+    state = reviewNumberBingo(state, state.bingoClaim!.id, "continue", 3005);
+    state = finishNumberBingo(state, 3006);
     expect(state.participants[0]!.reward?.xp).toBe(11);
-    const fresh = startRoom({ ...state, phase: "lobby" }, { now: 7 });
+    const fresh = startRoom({ ...state, phase: "lobby" }, { now: 3007 });
     expect(toPublicRoomState(fresh).drawnIds).toEqual([]);
     expect(fresh.bingoWinnerIds).toEqual([]);
     expect(fresh.participants.every((p) => !p.reward && !p.bingoCard?.length)).toBe(true);

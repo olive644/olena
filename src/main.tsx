@@ -11,6 +11,7 @@ import "./notebook-mobile.css";
 import "./navigation-refinements.css";
 import "./paper-controls.css";
 import "./accessibility.css";
+import "./room-social.css";
 import { initializeAccessibility } from "./data/accessibility-preferences";
 
 initializeAccessibility();

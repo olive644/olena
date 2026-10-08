@@ -16,6 +16,7 @@ import {
   roomExpiryWarningMinutes,
   repeatRoom,
   readLocalRoomCodeFromUrl,
+  removeRoomParticipant,
   returnRoomToLobby,
   roomSecondsLeft,
   roomAnswerPoints,
@@ -28,6 +29,7 @@ import {
   toPublicRoomState,
   updateRoomSettings,
   type LocalRoomSettings,
+  type LocalRoomState,
 } from "./local-room";
 
 const settings: LocalRoomSettings = { difficulty: "mixed", questionCount: 5, roundSeconds: 30 };
@@ -241,7 +243,7 @@ describe("sala local", () => {
     ).toBeNull();
   });
 
-  it("não pontua antes do começo e mantém o Bingo sem contagem inicial", () => {
+  it("não pontua antes do começo e usa a mesma contagem no Bingo", () => {
     const listening = startedWithTwo();
     const early = submitRoomAnswer(listening, {
       participantId: "p1",
@@ -263,8 +265,8 @@ describe("sala local", () => {
       ),
       { now: 3, random: () => 0 },
     );
-    expect(bingo.questionStartedAt).toBe(3);
-    expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBeNull();
+    expect(bingo.questionStartedAt).toBe(3003);
+    expect(roomCountdownValue(toPublicRoomState(bingo), 3)).toBe(3);
   });
 
   it("dá pontos ao acertar e penaliza erro sem saldo negativo", () => {
@@ -549,6 +551,61 @@ describe("sala local", () => {
     expect(roomSecondsLeft(state, state.questionStartedAt - 500)).toBe(30);
     expect(roomSecondsLeft(state, state.questionStartedAt + 1)).toBe(30);
     expect(roomSecondsLeft(state, state.questionStartedAt + 30_000)).toBe(0);
+  });
+});
+
+describe("remover participante (domínio)", () => {
+  function twoPlayers() {
+    return addLocalParticipant(
+      addLocalParticipant(room(), participant("p1", "Ana"), 2),
+      participant("p2", "Bia"),
+      2,
+    );
+  }
+
+  it("tira a pessoa da lista e das respostas e lembra quem foi removido", () => {
+    const state = { ...twoPlayers(), answeredParticipantIds: ["p1", "p2"] };
+    const removed = removeRoomParticipant(state, "p1", 9);
+    expect(removed.participants.map((p) => p.id)).toEqual(["p2"]);
+    expect(removed.answeredParticipantIds).toEqual(["p2"]);
+    expect(removed.removedParticipantIds).toEqual(["p1"]);
+    expect(removed.updatedAt).toBe(9);
+  });
+
+  it("derruba a conferência de bingo pendente de quem saiu e tira a pessoa dos vencedores", () => {
+    const state = {
+      ...twoPlayers(),
+      bingoClaim: { id: "c1", participantId: "p1", claimedAt: 5 },
+      bingoWinnerIds: ["p1", "p2"],
+    };
+    const removed = removeRoomParticipant(state, "p1", 9);
+    expect(removed.bingoClaim).toBeUndefined();
+    expect(removed.bingoWinnerIds).toEqual(["p2"]);
+    const other = removeRoomParticipant(state, "p2", 9);
+    expect(other.bingoClaim).toEqual(state.bingoClaim);
+  });
+
+  it("não muda nada quando a pessoa não está na sala e guarda só os 30 últimos removidos", () => {
+    const state = twoPlayers();
+    expect(removeRoomParticipant(state, "ninguem", 9)).toBe(state);
+    let current: LocalRoomState = {
+      ...state,
+      removedParticipantIds: Array.from({ length: 30 }, (_, index) => `old-${index}`),
+    };
+    current = removeRoomParticipant(current, "p1", 9);
+    expect(current.removedParticipantIds).toHaveLength(30);
+    expect(current.removedParticipantIds?.at(-1)).toBe("p1");
+    expect(current.removedParticipantIds?.[0]).toBe("old-1");
+  });
+
+  it("o estado público mostra a entrada fechada e os removidos só quando existem", () => {
+    const base = room();
+    expect(toPublicRoomState(base)).not.toHaveProperty("locked");
+    expect(toPublicRoomState(base)).not.toHaveProperty("removedParticipantIds");
+    const state = { ...base, locked: true, removedParticipantIds: ["p9"] };
+    const publicState = toPublicRoomState(state);
+    expect(publicState.locked).toBe(true);
+    expect(publicState.removedParticipantIds).toEqual(["p9"]);
   });
 });
 

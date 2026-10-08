@@ -55,7 +55,7 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
   await page.goto("/sala");
   await expect(page.locator(".local-room-join-actions")).toBeVisible();
   await expect(
-    page.locator('.local-room-activities img[src="/room-art/poliana-bingo.webp"]'),
+    page.locator('.local-room-activities img[src="/room-art/poliana-bingo-panorama.webp"]'),
   ).toHaveCount(1);
   await page.getByRole("radio", { name: /^Bingo/ }).click();
   await expect(page.locator(".local-room-join-actions")).toHaveCSS("opacity", "0");
@@ -78,13 +78,11 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     await expect(button).toHaveAttribute("aria-pressed", "true");
     const copy = await button.locator(".bingo-mode-copy").boundingBox();
     const art = await button.locator(".bingo-mode-art").boundingBox();
-    if (testInfo.project.name === "desktop")
-      expect(copy!.x + copy!.width).toBeLessThanOrEqual(art!.x);
-    else {
-      const bounds = await button.boundingBox();
-      expect(copy!.x + copy!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
-      expect(bounds!.height).toBeLessThanOrEqual(100);
-    }
+    const bounds = await button.boundingBox();
+    expect(copy!.x + copy!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
+    expect(Math.abs(art!.width - bounds!.width)).toBeLessThan(6);
+    await expect(button.locator(".bingo-mode-art")).toHaveCSS("opacity", "1");
+    if (testInfo.project.name === "mobile") expect(bounds!.height).toBeLessThanOrEqual(180);
   }
   await modes.getByRole("button", { name: /^Linha/ }).click();
   await expect(page.getByRole("slider", { name: "Tempo por pergunta" })).toHaveCount(0);
@@ -94,12 +92,12 @@ test("bingo solar entra pela modalidade, cria sala e confere a cartela", async (
     /paper-sky-pattern-light/,
   );
   await expect(modes.getByRole("button", { name: /^Linha/ })).toHaveCSS(
-    "background-color",
-    "rgb(124, 58, 237)",
+    "border-top-color",
+    "rgb(250, 204, 21)",
   );
   await expect(modes.getByRole("button", { name: /^Coluna/ })).toHaveCSS(
     "color",
-    "rgb(15, 15, 20)",
+    "rgb(255, 249, 239)",
   );
   await page.screenshot({
     path: testInfo.outputPath("bingo-modes-light.png"),

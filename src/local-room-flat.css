@@ -1880,6 +1880,22 @@
   grid-row: 1;
 }
 
+.local-room-lock {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.local-room-lock p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.local-room-remove {
+  margin-left: auto;
+  min-height: 44px;
+}
+
 /* Diálogo de confirmação antes de encerrar a sala como anfitrião. Vai por portal para o body,
    então usa cores fixas (como o diálogo de revisão do bingo) em vez das variáveis da sala. */
 dialog.room-confirm-dialog {

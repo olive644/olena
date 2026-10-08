@@ -18,7 +18,7 @@ it.each(BINGO_MODES)("pedidos quase simultâneos em %s não se perdem e mantêm 
   for (const id of ["Ana", "Bia", "Caio", "Duda"])
     state = addLocalParticipant(state, { id, displayName: id, score: 0 }, 1);
   state = startRoom(state, { now: 2, random: () => 0 });
-  for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 10 + i);
+  for (let i = 0; i < 75; i++) state = advanceRoomQuestion(state, 3010 + i);
   const answer = (participantId: string, answer: string) => {
     const result = submitRoomAnswer(state, {
       participantId,
@@ -73,7 +73,7 @@ it("recusa, reinício e encerramento não deixam pedidos antigos na fila", () =>
   );
   for (const id of ["Ana", "Bia"])
     state = addLocalParticipant(state, { id, displayName: id, score: 0 }, 1);
-  state = advanceRoomQuestion(startRoom(state, { now: 2 }), 3);
+  state = advanceRoomQuestion(startRoom(state, { now: 2 }), 3003);
   for (const id of ["Ana", "Bia"])
     state = submitRoomAnswer(state, {
       participantId: id,

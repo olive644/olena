@@ -32,9 +32,17 @@ jobs:
         run: npm run verify
 
   e2e:
-    name: Desktop and mobile smoke tests
+    name: Desktop and mobile smoke tests (${{ matrix.project }})
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: desktop
+            browser: chromium
+          - project: mobile
+            browser: webkit
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -45,10 +53,37 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Install browsers
-        run: npx playwright install --with-deps chromium webkit
+      # Os pacotes do WebKit (cerca de 180, 115 MB) vêm do espelho do Ubuntu e o download já
+      # parou por minutos. Com tempo máximo e repetição por arquivo, uma parada vira nova
+      # tentativa em vez de travar o job (matar o processo não serve: o apt filho segura o lock).
+      - name: Make apt downloads resilient
+        run: |
+          sudo tee /etc/apt/apt.conf.d/80-ci-downloads >/dev/null <<'APT'
+          Acquire::Retries "5";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          APT
+      - name: Install browser
+        timeout-minutes: 15
+        run: npx playwright install --with-deps ${{ matrix.browser }}
       - name: Run end-to-end tests
-        run: npm run test:e2e
+        timeout-minutes: 20
+        run: npm run test:e2e -- --project=${{ matrix.project }}
+
+  # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
+  e2e-result:
+    name: Desktop and mobile smoke tests
+    needs: e2e
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require desktop and mobile to pass
+        env:
+          E2E_RESULT: ${{ needs.e2e.result }}
+        run: |
+          echo "Resultado do e2e: $E2E_RESULT"
+          test "$E2E_RESULT" = "success"
 
   dependency-audit:
     name: Dependency audit and SBOM

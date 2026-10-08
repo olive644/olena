@@ -15,6 +15,15 @@
 - Artes otimizadas para 512 × 512 em WebP incorporado em SVG, com recorte circular e cantos transparentes.
 - O teste de navegador cobre transparência dos três avatares e seleção persistente do Leo nos temas claro e escuro.
 
+## Sala: artes integrais e navegação preservada (2026-10-07)
+
+- Modalidades e cinco padrões de bingo usam artes panorâmicas integrais no desktop, permanentemente visíveis. No celular, as referências quadradas completas mantêm as duas colunas compactas sem cortar personagens. Ícones/textos continuam semânticos e a seleção aparece em borda/base dourada. Bingo presencial usa amarelo original.
+- Voltar não chama reset/leave: mantém stream, presença, credenciais e sala, com cartão Retomar sala. Áudio da pergunta para ao recolher a tela. Apenas Sair da sala do criador abre a confirmação, redesenhada em papel creme e com Cancelar legível.
+- Controle de entrada fica abaixo de Copiar link. Novos ícones facetados para cópia, entrada fechada/aberta, pronto/ausente e remoção por X acessível. Nível de progresso Solo fica antes da foto, como metadado visual, sem interferir em pontos/XP e com valor validado no servidor.
+- Entrada, saída e retorno de presença produzem reação temporária por sala; hidratação não reproduz entradas antigas. Batimentos sem mudança não prolongam efeitos. Movimento reduzido mantém aviso estático. Todas as modalidades recebem contagem inicial; bingo permanece com zero bolas e bloqueia sorteio antes dos três segundos no servidor.
+- Prompts, referências e preparação dos nove assets registrados em ROOM_PANORAMA_ART.md. Originais preservados.
+- Validação final em 2026-10-08: npm run verify aprovado, 1174 testes em 185 arquivos, tipos, build, formato, APIs ESM e orçamento. Lint sem erros, dez avisos anteriores. Dezoito cenários direcionados de Edge desktop/móvel aprovados nas rodadas por arquivo, incluindo vitória real nos quatro cantos, três vencedores em bingo digital/presencial, retomada, presença e contraste. Sorteio também fica desabilitado no cliente durante a contagem. JavaScript inicial 275,7 KiB e total 1140,3 KiB, sem dependência nova. Cenários usam handler real com store em memória, não Firebase de produção.
+
 ## Reação de pontos junto da bola (2026-10-06)
 
 - Removidos contador e aviso de pontos do topo. Marca aceita com pointsChange positivo mostra WOW! +pontos junto da célula correspondente, com papel dourado, confete e som compartilhado. Posição usa limites reais da cartela e mantém a reação dentro do cartão, inclusive nos cantos. Dura 1,5 segundo e não altera layout nem bloqueia cliques.
@@ -1856,6 +1865,15 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Não muda para quem entra como convidado: sem conta não há como saber quem é quem, então continua sem entrar depois de a atividade começar, e nome repetido continua recusado.
 - Testes: `local-room-rejoin.test.ts` (volta no meio da atividade com a mesma identidade, token antigo invalidado e novo válido, ainda barrado enquanto o primeiro dispositivo está presente, no lobby o próprio nome não conta como repetido, pedido repetido devolve o mesmo token, ninguém volta depois de a sala encerrar, convidado segue barrado depois do início); 4 dos 7 falham sem a mudança, os outros 3 são guardas.
 
+## Anfitrião remove participantes e fecha a entrada (2026-10-06)
+
+- Auditoria completa do Modo Sala, sétima correção. Antes, quem tinha o código entrava com nome livre e aparecia na tela projetada, e o anfitrião não tinha como tirar ninguém nem impedir novas entradas.
+- Novas ações no backend, ambas só com token de anfitrião e registradas na lista de ações do `room-guard` (junto com `repeat` e `lobby`, que faltavam na lista): `kick` remove um participante (404 se o id não existe, 409 se for o próprio organizador jogando) e `lock` fecha ou reabre a entrada (400 se `locked` não for booleano). Com a entrada fechada, `join` responde 409 com "O anfitrião fechou a entrada desta sala."; quem já estava na sala, logado, continua podendo voltar.
+- Decisão de produto: remover não é banimento. Não há como banir sem conta, e o anfitrião tem o botão de fechar a entrada para o caso de reentrada indesejada. O login obrigatório para entrar não foi implementado: ele troca a facilidade de entrar por QR code por uma barreira que o anfitrião já resolve com remover e fechar.
+- `locked` e `removedParticipantIds` (os 30 mais recentes) entram no estado público. O cliente participante, ao ver o próprio id na lista, para o stream, apaga a sessão salva e volta à tela inicial com "O anfitrião removeu você desta sala.". Quem some da lista também deixa de contar entre os que responderam.
+- Interface do anfitrião: botão "Remover" por pessoa na lista do lobby e no quadro de equipes, e botão "Fechar entrada"/"Reabrir entrada" com texto de estado. Tudo funciona com teclado e toque.
+- Testes: `local-room-moderation.test.ts` (10, backend), `use-local-room-removal.test.ts` (normalização do estado e saída de quem foi removido; falham sem a mudança), `local-room-moderation.ui.test.tsx` (botões e alternância), mais casos em `local-room.test.ts` e `room-guard.test.ts`.
+
 ## Batimento da sala sem republicar o estado inteiro (2026-10-06)
 
 - Auditoria completa do Modo Sala, quinta correção. Cada participante bate no servidor a cada 15 s (a cada 1 s depois do prazo de uma pergunta ou com o stream caído), e cada batimento gravava o estado privado, subia a revisão e publicava a sala inteira. O horário de presença (`lastSeenAt`) era público, então todo batimento mudava o estado público: com 30 alunos, cerca de 2 gravações por segundo no Realtime Database, cada uma repassada para os 30 streams.
@@ -1910,3 +1928,11 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Auditoria completa do Modo Sala, nona e última correção. `src/components/local-room.tsx` tinha mais de 2300 linhas, com um único componente `LocalRoom` de cerca de 2000.
 - Mudança sem alteração de comportamento: as constantes e o rótulo de contagem foram para `local-room-config.ts` (`DEFAULT_SETTINGS`, `ROOM_ACTIVITY_OPTIONS`, passos de tempo e palavras, cooldown de áudio, `countLabel`) e os componentes auto-contidos para `local-room-parts.tsx` (`RoomStepSlider`, `CountdownOverlay`, `LocalRoomFullscreen`, com a armadilha de Tab e o portal). O arquivo principal perdeu cerca de 220 linhas; os 1068 testes e o e2e de sala passam sem alteração. O orçamento total de JS subiu 2 KiB (1126 para 1128) por causa da sobrecarga dos módulos novos.
 - Pendente de propósito: quebrar o corpo de `LocalRoom` (estado e efeitos na primeira metade, JSX na outra) em subcomponentes exige passar dezenas de estados e callbacks por props, e esse arquivo recebe edições paralelas do bingo. Fica para um momento em que o arquivo esteja parado, para não gerar conflito nem regressão.
+
+## CI do e2e dividido por projeto e downloads do apt resilientes (2026-10-07)
+
+- Medição de hoje no workflow `Application CI`: só o job "Desktop and mobile smoke tests" era lento. Os outros sete checks levam de 2 segundos a 3 minutos. A etapa `playwright install --with-deps chromium webkit` oscilou de 46 segundos a 8 min 56 s e, na PR do anfitrião (#368), consumiu os 25 minutos do job (o check apareceu como "cancelled", sem nenhum teste ter rodado). Os testes em si levam de 10 a 15 minutos.
+- Causa da oscilação, vista no log da primeira versão desta PR: o `apt-get` baixa cerca de 180 pacotes do WebKit (115 MB) do espelho `azure.archive.ubuntu.com` e o download parou por mais de 4 minutos. Uma primeira tentativa com `timeout` em volta do `npx` não funcionou: o `apt-get` filho continuou rodando e segurando o lock do dpkg, e as tentativas seguintes falharam na hora.
+- O job `e2e` agora roda um projeto por job, em paralelo: desktop (Chromium) e mobile (WebKit). O job de desktop não baixa mais as dependências do WebKit. Antes de instalar, `Acquire::Retries "5"` e `Acquire::http::Timeout "30"` fazem uma parada de download virar nova tentativa. As etapas de instalação (15 min) e de testes (20 min) têm limite próprio.
+- Um job `e2e-result` mantém o nome histórico do check, "Desktop and mobile smoke tests", e só passa se os dois projetos passarem. Quem exige esse nome na proteção da branch continua funcionando.
+- Não entrou cache dos navegadores: exigiria uma nova action de terceiros fixada por hash, e a regra do projeto é justificar e auditar dependências novas. Fica como opção se a instalação continuar instável.

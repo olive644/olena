@@ -121,7 +121,9 @@ describe("number bingo transport", () => {
     expect(((await (await submit("bingo")).json()) as { correct: boolean }).correct).toBe(false);
   });
   it("deduplicates the first draw and restarts a confirmed review with zero balls", async () => {
+    let now = 1000;
     const handler = createLocalRoomHandler({
+      now: () => now,
       store: createMemoryRoomStore(),
       publish: async () => {},
       streamUrl: () => "/stream",
@@ -148,6 +150,7 @@ describe("number bingo transport", () => {
       await post("join", { code: created.code, displayName: "Ana" })
     ).json()) as { participantId: string; participantToken: string };
     await post("start", created);
+    now += 3000;
     const next = { ...created, questionIndex: 0, bingoDrawCount: 0 };
     await Promise.all([post("next", next), post("next", next)]);
     const snapshot = async () =>

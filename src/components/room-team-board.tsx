@@ -9,17 +9,20 @@ import {
 } from "../domain/local-room";
 import { PaperMoonMark } from "./paper-moon-mark";
 import { PaperDigits } from "./paper-digits";
+import { ParticipantLevel, RemoveParticipantButton } from "./local-room-lobby-presentation";
 
 export function RoomTeamBoard({
   participants,
   isHost,
   participantId,
   onAssign,
+  onRemove,
 }: {
   participants: readonly LocalRoomParticipant[];
   isHost: boolean;
   participantId: string;
   onAssign(id: string, team: RoomTeam): Promise<boolean>;
+  onRemove?: (id: string) => Promise<boolean>;
 }) {
   const [moving, setMoving] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
@@ -90,6 +93,7 @@ export function RoomTeamBoard({
                     key={participant.id}
                     className={dragging === participant.id ? "is-dragging" : ""}
                   >
+                    <ParticipantLevel level={participant.level} />
                     <img
                       src={
                         sanitizeRoomAvatar(participant.avatarUrl) ?? "/profile-avatars/helena.webp"
@@ -142,6 +146,13 @@ export function RoomTeamBoard({
                         >
                           Mudar de lado
                         </button>
+                        {onRemove && (
+                          <RemoveParticipantButton
+                            name={participant.displayName}
+                            disabled={moving !== null}
+                            onRemove={() => void onRemove(participant.id)}
+                          />
+                        )}
                       </>
                     )}
                   </li>

@@ -10,6 +10,7 @@ import {
   endRoom,
   repeatRoom,
   reviewNumberBingo,
+  removeRoomParticipant,
   finishNumberBingo,
   returnRoomToLobby,
   isValidLocalRoomCode,
@@ -351,6 +352,9 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (state.phase !== "lobby") {
         return jsonResponse(409, { error: "Esta sala já começou a atividade." });
       }
+      if (state.locked) {
+        return jsonResponse(409, { error: "O anfitrião fechou a entrada desta sala." });
+      }
       if (state.participants.filter((p) => p.online !== false).length >= MAX_ROOM_PARTICIPANTS) {
         return jsonResponse(409, { error: "Esta sala atingiu o limite de participantes." });
       }
@@ -370,6 +374,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
           token: participantToken,
           displayName,
           ...(avatarUrl ? { avatarUrl } : {}),
+          level:
+            typeof body["level"] === "number" && Number.isSafeInteger(body["level"])
+              ? Math.max(1, Math.min(100, body["level"]))
+              : 1,
           ...(identity?.uid ? { accountId: identity.uid } : {}),
           score: 0,
           lastSeenAt: now(),
@@ -439,6 +447,10 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
             online: true,
             lastSeenAt: now(),
             ...(avatarUrl ? { avatarUrl } : {}),
+            level:
+              typeof body["level"] === "number" && Number.isSafeInteger(body["level"])
+                ? Math.max(1, Math.min(100, body["level"]))
+                : 1,
             ...(state.hostAccountId ? { accountId: state.hostAccountId } : {}),
             ...(state.settings.teams
               ? {
@@ -565,6 +577,33 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       if (!participant || participant.online === false)
         return jsonResponse(404, { error: "Participante não está na sala." });
       const updated = assignRoomTeam(state, participantId, team as RoomTeam, now());
+      return jsonResponse(200, { state: await saveRoom(updated) });
+    }
+
+    if (action === "kick" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const state = await requireHost(dependencies.store, body);
+      if (state instanceof Response) return state;
+      const participantId = typeof body["participantId"] === "string" ? body["participantId"] : "";
+      if (!state.participants.some((participant) => participant.id === participantId))
+        return jsonResponse(404, { error: "Essa pessoa não está mais na sala." });
+      // O organizador que também joga aparece na lista como qualquer participante, mas sair dela
+      // sem sair da sala deixaria o painel dele sem jogador.
+      if (participantId === state.hostParticipantId)
+        return jsonResponse(409, { error: "O organizador não pode ser removido da própria sala." });
+      const removed = removeRoomParticipant(state, participantId, now());
+      return jsonResponse(200, { state: await saveRoom(removed) });
+    }
+
+    if (action === "lock" && request.method === "POST") {
+      const body = await readJsonBody(request);
+      const state = await requireHost(dependencies.store, body);
+      if (state instanceof Response) return state;
+      if (typeof body["locked"] !== "boolean")
+        return jsonResponse(400, { error: "Escolha entre fechar e reabrir a entrada." });
+      const updated: LocalRoomState = { ...state, updatedAt: now() };
+      if (body["locked"]) updated.locked = true;
+      else delete updated.locked;
       return jsonResponse(200, { state: await saveRoom(updated) });
     }
 

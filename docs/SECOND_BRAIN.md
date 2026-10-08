@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+Sala: Voltar apenas usa browsingRoom, sem reset/leave nem trocar credenciais.
+Retomar sala retorna ao mesmo estado transmitido, inclusive durante partida.
+Confirmação de encerramento somente em Sair da sala para host ativo.
+level é metadado de progresso Solo, enviado no join/host-player e limitado no
+servidor; nunca usar para pontos/XP. Convidado inicia em nível 1.
+RoomPresenceEffects observa mudanças de ids/online; snapshots iniciais e
+batimentos sem alteração não animam. Timers terminam mesmo com novos snapshots.
+Todos os starts usam ROOM_START_COUNTDOWN_MS. Bingo bloqueia advance antes
+de questionStartedAt e limpa countdownStartedAt no primeiro sorteio.
+Artes usam picture: panoramas no desktop, referência completa no celular.
+Não reintroduzir opacity por hover nem recorte lateral nos banners.
+
 Bingo presencial usa settings.bingoPhysical. Não gerar ou mostrar cartela digital;
 não aceitar marcação de número digital. A pessoa anuncia Bingo após um sorteio,
 e o host verifica a cartela de papel antes de confirmar. No modo online,
@@ -150,6 +162,13 @@ A chave da sala/pergunta controla a remontagem, sem reiniciar a animação por
 heartbeat. Movimento reduzido conserva a pose final. RoomSpeedNotice remove
 o aviso após 1200 ms, limpa o timer ao desmontar e não ocupa espaço no fluxo.
 A arte inglesa continua nas palavras selecionáveis, não nos resultados.
+
+Moderação da sala: o anfitrião remove participantes (ação `kick`) e fecha ou reabre a
+entrada (ação `lock`), ambas por token de anfitrião. `locked` e `removedParticipantIds`
+(últimos 30) vão no estado público; o participante removido percebe pelo stream e volta
+à tela inicial com a explicação. Remover não bane: quem foi removido entra de novo se a
+entrada estiver aberta. A conta logada que já estava na sala volta mesmo com a entrada
+fechada.
 
 Recuperação da sala: SSE saudável mantém heartbeat de presença a cada 15 segundos;
 stream com erro ou prazo vencido usa fallback de 1 segundo, serializado. Resposta
