@@ -1,5 +1,27 @@
 # Auditoria do estado atual
 
+## Captura determinística da reação do bingo (2026-10-08)
+
+- O teste móvel congelava na captura de um elemento temporário removido após 1,5 segundo.
+- O relógio do participante fica pausado somente durante a conferência e a captura da reação.
+- O teste avança 1500 ms, confirma a remoção e retoma o relógio antes de continuar a partida.
+- A duração e o comportamento da aplicação permanecem iguais.
+- Testes da sala agora verificam as imagens dentro de picture e a borda dourada da seleção atual.
+- O teste de nitidez lê largura e altura do canvas juntas para evitar misturar dois redimensionamentos.
+- WebKit mantinha proporção panorâmica no celular por especificidade CSS, sobrepondo as modalidades. Largura limitada à coluna e seletor móvel equivalente corrigem o toque; a regressão verifica os limites horizontais em 320 e 390 px.
+- A pausa do relógio usa um instante futuro para evitar divergência de milissegundos entre Node e WebKit.
+- O transporte simulado de sala e bingo envia eventos somente quando o estado muda, como o stream real, evitando renderizações repetidas a cada sondagem.
+- A prova entre dispositivos da escuta traz cada participante para frente, carrega o sprite antes da resposta e confere movimento reduzido antes da captura. Isso evita verificar feedback já expirado ou animações suspensas em abas de fundo, sem alterar os três segundos da aplicação.
+- CI móvel executa um cenário por vez para limitar o pico de processos WebKit nos testes com vários dispositivos; todos os cenários continuam ativos.
+
+## Leo e atualização de Alice e Soso Estrelinha (2026-10-07)
+
+- Leo entra no seletor de perfis com o retrato aprovado do besourinho, sem estrelas no fundo.
+- Alice usa a nova arte do ratinho e Soso Estrelinha usa a borboleta enviada pelo proprietário.
+- Os caminhos de Alice e Soso permanecem iguais para preservar os perfis já selecionados.
+- Artes otimizadas para 512 × 512 em WebP incorporado em SVG, com recorte circular e cantos transparentes.
+- O teste de navegador cobre transparência dos três avatares e seleção persistente do Leo nos temas claro e escuro.
+
 ## Sala: artes integrais e navegação preservada (2026-10-07)
 
 - Modalidades e cinco padrões de bingo usam artes panorâmicas integrais no desktop, permanentemente visíveis. No celular, as referências quadradas completas mantêm as duas colunas compactas sem cortar personagens. Ícones/textos continuam semânticos e a seleção aparece em borda/base dourada. Bingo presencial usa amarelo original.

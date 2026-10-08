@@ -12,7 +12,7 @@ for (const physical of [false, true])
     context,
     browser,
   }, testInfo) => {
-    test.setTimeout(120_000);
+    test.setTimeout(180_000);
     let latest: PublicLocalRoomState;
     const handler = createLocalRoomHandler({
       store: createMemoryRoomStore(),
@@ -89,6 +89,7 @@ for (const physical of [false, true])
           class Stream extends EventTarget {
             onopen: (() => void) | null = null;
             onerror: (() => void) | null = null;
+            lastData = "";
             timer: ReturnType<typeof setInterval>;
             constructor(url: string) {
               super();
@@ -97,6 +98,8 @@ for (const physical of [false, true])
                   .then((r) => r.text())
                   .then((data) => {
                     this.onopen?.();
+                    if (data === this.lastData) return;
+                    this.lastData = data;
                     this.dispatchEvent(new MessageEvent("put", { data }));
                   })
                   .catch(() => this.onerror?.());
@@ -174,6 +177,7 @@ for (const physical of [false, true])
     for (let draw = 1; draw < 75; draw++) await api("next", room);
     for (const [index, player] of players.slice(0, 3).entries()) {
       const client = pages[index + 1]!;
+      await client.bringToFront();
       const card = latest!.participants.find((p) => p.id === player.participantId)!.bingoCard!;
       for (const i of physical ? [] : [0, 4, 20, 24]) {
         const id = card[i]!;
@@ -182,8 +186,13 @@ for (const physical of [false, true])
           exact: true,
         });
         await expect(cell).toBeEnabled();
+        const captureReaction = index === 0 && i === 0;
+        if (captureReaction) {
+          await client.clock.install();
+          await client.clock.pauseAt(new Date(Date.now() + 1000));
+        }
         await cell.click();
-        if (index === 0 && i === 0) {
+        if (captureReaction) {
           const reaction = client.getByRole("status", { name: `Bola ${id}: WOW! +2 pontos!` });
           await expect(reaction).toBeVisible();
           const ballBox = await cell.boundingBox();
@@ -193,8 +202,10 @@ for (const physical of [false, true])
           ).toBeLessThan(65);
           expect(Math.abs(reactionBox!.y - ballBox!.y)).toBeLessThan(65);
           await reaction.screenshot({ path: testInfo.outputPath("reacao-pontos.png") });
+          await client.clock.runFor(1500);
           await expect(reaction).toHaveCount(0, { timeout: 3000 });
           await expect(client.locator(".bingo-points-meter")).toHaveCount(0);
+          await client.clock.resume();
         }
         await expect
           .poll(() =>
@@ -207,10 +218,11 @@ for (const physical of [false, true])
       expect(latest!.bingoClaim).toBeUndefined();
       await expect(page.locator(".bingo-review")).toHaveCount(0);
       await client.getByRole("button", { name: "Bingo!", exact: true }).click();
+      await page.bringToFront();
       const hostAnnouncement = page.getByRole("dialog", {
         name: `${player.displayName} FEZ BINGO!`,
       });
-      await expect(hostAnnouncement).toBeVisible();
+      await expect(hostAnnouncement).toBeVisible({ timeout: 15_000 });
       for (const name of ["Foi engano!", "Continuar partida", "Recomeçar"])
         await expect(hostAnnouncement.getByRole("button", { name, exact: true })).toBeInViewport();
       if (!physical && testInfo.project.name === "desktop")

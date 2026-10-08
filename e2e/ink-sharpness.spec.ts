@@ -36,10 +36,12 @@ test("a folha ganha resolução em tela densa e com zoom, e a tinta cai onde a c
       return width > 1200 && width === liveWidth;
     })
     .toBe(true);
-  const initial = await bitmapWidth();
-  expect(await sheet.evaluate((element) => (element as HTMLCanvasElement).height)).toBe(
-    Math.round((initial / 1200) * 1600),
-  );
+  const initialSize = await sheet.evaluate((element) => {
+    const canvas = element as HTMLCanvasElement;
+    return { width: canvas.width, height: canvas.height };
+  });
+  const initial = initialSize.width;
+  expect(initialSize.height).toBe(Math.round((initial / 1200) * 1600));
 
   // A tinta cai onde a caneta está, mesmo com o bitmap em outra escala.
   const box = (await sheet.boundingBox())!;
