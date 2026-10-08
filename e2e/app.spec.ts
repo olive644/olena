@@ -112,9 +112,12 @@ test("explora mundos com a Helena e abre a trilha de níveis", async ({ page }, 
     .click();
   await page.getByRole("button", { name: "Próximo mundo" }).click();
   await expect(page.locator(".solo-island-art")).toHaveCount(1);
-  await expect(page.locator(".solo-island-art")).toHaveAttribute("src", "/solo-world-2.webp");
+  await expect(page.locator(".solo-island-art")).toHaveAttribute(
+    "src",
+    "/practice-islands/portuguese.webp",
+  );
   await expect(page.locator(".solo-traveler")).toHaveClass(/solo-traveler--2/);
-  await expect(page.getByText("Mundo bloqueado", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Explorar ilha", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Mundo anterior" }).click();
   await expect(page.locator(".solo-traveler__jump img")).toHaveCSS(
     "transform",

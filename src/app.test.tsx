@@ -331,19 +331,18 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: /ouvir novamente/i })).toBeTruthy();
   });
 
-  it("permite inspecionar mundos bloqueados e inicia o caminho no nível 1", async () => {
+  it("permite explorar as ilhas e mantém o caminho de Idiomas no nível 1", async () => {
     render(<App />);
     navigate("Praticar");
 
-    expect(
-      (await screen.findByRole("img", { name: /Mundo 1: Bosque das palavras/ })).getAttribute(
-        "src",
-      ),
-    ).toBe("/solo-world-1.webp");
+    expect((await screen.findByRole("img", { name: /Mundo 1: Idiomas/ })).getAttribute("src")).toBe(
+      "/practice-islands/languages.webp",
+    );
 
     fireEvent.click(await screen.findByRole("button", { name: "Próximo mundo" }));
-    expect(screen.getByRole("heading", { name: "Cidade das ideias" })).toBeTruthy();
-    expect(screen.getByText("Mundo bloqueado")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Vale das Histórias" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Explorar ilha" })).toBeTruthy();
+    expect(screen.queryByText("Mundo bloqueado")).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Mundo anterior" }));
     fireEvent.click(screen.getByRole("button", { name: /entrar no mundo/i }));
@@ -364,6 +363,40 @@ describe("App", () => {
     expect(
       (screen.getByRole("button", { name: /Nível 4: Bingo/ }) as HTMLButtonElement).disabled,
     ).toBe(true);
+  });
+
+  it("navega pelas seis ilhas sem anunciar exercícios ainda inexistentes", async () => {
+    render(<App />);
+    navigate("Praticar");
+    const navigation = await screen.findByRole("navigation", { name: "Ilhas de estudo" });
+    expect(within(navigation).getAllByRole("button")).toHaveLength(6);
+    expect(screen.getByRole("heading", { name: "Porto das Vozes" })).toBeTruthy();
+    for (const [title, islandName] of [
+      ["Português", "Vale das Histórias"],
+      ["Química", "Ilhas dos Elementos"],
+      ["Biologia", "Jardim da Vida"],
+      ["Matemática", "Picos dos Padrões"],
+      ["Programação", "Oficina do Código"],
+    ] as const) {
+      fireEvent.click(
+        within(screen.getByRole("navigation", { name: "Ilhas de estudo" })).getByRole("button", {
+          name: title,
+        }),
+      );
+      expect(screen.getByRole("heading", { name: islandName })).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Explorar ilha" }));
+      expect(screen.getByRole("img", { name: `Ilha de ${title} em papel recortado` })).toBeTruthy();
+      expect(screen.getByText(/Os exercícios desta ilha chegam depois/)).toBeTruthy();
+      expect(screen.queryByRole("button", { name: /Nível 1: Escuta/ })).toBeNull();
+      if (title === "Programação") {
+        for (const topic of ["Python", "JavaScript", "HTML", "CSS"])
+          expect(screen.getByText(topic, { exact: true })).toBeTruthy();
+        expect(
+          (screen.getByRole("button", { name: "Próxima ilha" }) as HTMLButtonElement).disabled,
+        ).toBe(true);
+      }
+      fireEvent.click(screen.getByRole("button", { name: "Voltar aos mundos" }));
+    }
   });
 
   it("mantém dados após remontar o aplicativo", () => {

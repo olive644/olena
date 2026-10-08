@@ -123,7 +123,7 @@ export default function NumberBingo({
                     srcSet={`/room-art/poliana-bingo-${item}.webp`}
                   />
                   <img
-                    src={`/room-art/poliana-bingo-${item}-panorama.webp`}
+                    src={`/room-art/poliana-bingo-${item}.webp`}
                     alt=""
                     width="1200"
                     height="400"

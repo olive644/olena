@@ -1,4 +1,4 @@
-/* Artes panorâmicas inteiras, integradas ao recorte do próprio botão. */
+/* Artes na ponta dos botões, sempre visíveis sem disputar espaço com os textos. */
 :root
   body
   :is(.local-room-preparation, .local-room-session)
@@ -19,24 +19,24 @@
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  aspect-ratio: 3 / 1;
+  aspect-ratio: auto;
   min-height: 140px;
   padding: 14px 16px;
   overflow: hidden;
-  border: 1px solid #6e62a0;
+  border: 1px solid var(--line-strong);
   border-radius: 5px 13px 6px 11px;
-  background: #163454;
-  color: #fff9ef;
-  box-shadow: 0 4px 0 #3b2c64;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 4px 0 var(--line-strong);
   opacity: 1;
 }
 :root body :is(.local-room-activity__art, .bingo-mode-art) {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  inset: 0 0 0 auto;
+  width: 42%;
   height: 100%;
   z-index: -1;
-  clip-path: none;
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%, 6% 48%);
   opacity: 1;
   transform: none;
   pointer-events: none;
@@ -44,15 +44,15 @@
 :root
   body
   :is(
-    .local-room-activity__art,
     .local-room-activity__art img,
+    .local-room-activity__art picture,
     .bingo-mode-art picture,
     .bingo-mode-art img
   ) {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
   background: transparent;
 }
 :root
@@ -77,12 +77,18 @@
   box-shadow: 0 4px 0 #b99100;
 }
 :root body :is(.local-room-activity strong, .local-room-activity small, .bingo-mode-copy) {
-  max-width: 45%;
-  color: #fff9ef;
-  text-shadow: 0 1px 2px #102441;
+  max-width: 55%;
+  color: inherit;
+  text-shadow: none;
 }
-:root body .bingo-modes .bingo-mode > .bingo-mode-copy {
-  max-width: 45%;
+:root
+  body
+  :is(.local-room-fullscreen, .local-room-preparation)
+  .bingo-modes
+  .bingo-mode
+  > .bingo-mode-copy {
+  width: 55%;
+  max-width: 55%;
 }
 :root
   body
@@ -91,7 +97,7 @@
   .bingo-mode.secondary-button
   .bingo-mode-copy
   small {
-  color: #fff9ef;
+  color: inherit;
   font-size: 11px;
 }
 :root body :is(.local-room-activity__icon, .bingo-mode-icon) {
@@ -111,12 +117,12 @@
 }
 :root body .local-room-preparation .bingo-settings .bingo-physical-setting.secondary-button {
   border: 1px solid #b99100;
-  background: #ffe88d;
-  color: #292432;
+  background: #292432;
+  color: #fff9ef;
   box-shadow: 0 4px 0 #b99100;
 }
 :root body .bingo-physical-setting small {
-  color: #51465d;
+  color: #fff9ef;
 }
 .room-social-icon {
   width: 28px;
@@ -345,26 +351,24 @@ dialog.room-confirm-dialog button:focus-visible {
     :is(.local-room-fullscreen, .local-room-preparation)
     .bingo-modes
     .bingo-mode.secondary-button {
-    min-height: 140px;
-    aspect-ratio: 1;
-    justify-content: flex-end;
+    min-height: 120px;
+    aspect-ratio: auto;
+    justify-content: center;
     padding: 10px 12px;
   }
   :root body :is(.local-room-activity__icon, .bingo-mode-icon) {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+    position: relative;
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
   }
   :root body .bingo-modes .bingo-mode > .bingo-mode-copy,
   :root body .local-room-activity strong {
-    max-width: 100%;
+    max-width: 55%;
   }
   :root body :is(.bingo-mode-copy strong, .local-room-activity strong) {
     font-size: 12px;
-    text-shadow:
-      1px 1px 0 #292432,
-      -1px -1px 0 #292432,
-      0 2px 3px #292432;
+    text-shadow: none;
   }
   :root body .local-room-activity small {
     display: none;

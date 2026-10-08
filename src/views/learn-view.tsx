@@ -7,6 +7,8 @@ import { PageHeader } from "../components/app-navigation";
 import { ListeningQuiz } from "../components/listening-quiz";
 import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
+import { PRACTICE_ISLANDS } from "../data/practice-islands";
+import "../practice-islands.css";
 import {
   buildBingoLabels,
   dueFlashcards,
@@ -61,11 +63,7 @@ const SOLO_LEVELS: Array<{
   },
 ];
 
-const SOLO_WORLDS = [
-  { number: 1, title: "Bosque das palavras", description: "Escuta, memória e desafios." },
-  { number: 2, title: "Cidade das ideias", description: "Novas aventuras em breve." },
-  { number: 3, title: "Observatório do saber", description: "Novas aventuras em breve." },
-] as const;
+const SOLO_WORLDS = PRACTICE_ISLANDS;
 
 const SOLO_PROGRESS_KEY = "helena.soloProgress";
 const SOLO_ROUTE = "M135 620 C135 550 225 540 225 450 S135 370 135 280 S180 190 180 100";
@@ -106,6 +104,57 @@ function PracticeHub({
     document.body.classList.add("solo-world-open");
     return () => document.body.classList.remove("solo-world-open");
   }, [insideWorld]);
+
+  if (insideWorld && world.number !== 1) {
+    return (
+      <div className="practice-hub solo-world-enter practice-subject-island">
+        <section className="solo-journey" aria-labelledby="solo-subject-title">
+          <div className="solo-journey__heading">
+            <div>
+              <button className="link-button" type="button" onClick={() => setInsideWorld(false)}>
+                <HelenaRoomIcon name="back" size={18} /> Voltar aos mundos
+              </button>
+              <span className="section-label">{world.subject}</span>
+              <h2 id="solo-subject-title">{world.title}</h2>
+              <p>{world.description}</p>
+            </div>
+          </div>
+          <div className="solo-subject-scene">
+            <img
+              key={world.number}
+              src={world.art}
+              alt={`Ilha de ${world.subject} em papel recortado`}
+            />
+          </div>
+          <ul className="solo-subject-topics" aria-label={`Temas de ${world.subject}`}>
+            {world.topics.map((topic) => (
+              <li key={topic}>{topic}</li>
+            ))}
+          </ul>
+          <p className="solo-subject-note">
+            Explore o cenário. Os exercícios desta ilha chegam depois.
+          </p>
+          <div className="solo-subject-navigation">
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={() => visitWorld(worldIndex - 1)}
+            >
+              <HelenaRoomIcon name="back" size={18} /> Ilha anterior
+            </button>
+            <button
+              className="secondary-button"
+              type="button"
+              disabled={worldIndex === SOLO_WORLDS.length - 1}
+              onClick={() => visitWorld(worldIndex + 1)}
+            >
+              Próxima ilha <HelenaRoomIcon name="play" size={18} />
+            </button>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   if (insideWorld) {
     return (
@@ -202,13 +251,13 @@ function PracticeHub({
         <div className="solo-journey__heading">
           <div>
             <h2 id="solo-journey-title" className="section-label">
-              Minigames Solo
+              Ilhas do conhecimento
             </h2>
           </div>
           <div className="solo-journey__progress" aria-label="Progresso no mundo atual">
             <span>Mundo {world.number}</span>
             <strong>
-              {world.number === 1 ? `${Math.min(unlockedLevel, 4)}/4 níveis` : "Bloqueado"}
+              {world.number === 1 ? `${Math.min(unlockedLevel, 4)}/4 níveis` : "Explorar"}
             </strong>
           </div>
         </div>
@@ -218,12 +267,19 @@ function PracticeHub({
             <img
               key={world.number}
               className={`solo-island-art ${jump.direction < 0 ? "is-backward" : ""}`}
-              src={`/solo-world-${world.number}.webp`}
-              alt={`Mundo ${world.number}: ${world.title}`}
+              src={world.art}
+              alt={`Mundo ${world.number}: ${world.subject}`}
               decoding="async"
               fetchPriority="high"
             />
-            <div className={`solo-traveler solo-traveler--${world.number}`}>
+            <div
+              className={`solo-traveler solo-traveler--${world.number}`}
+              style={{
+                left: `${world.traveler.left}%`,
+                top: `${world.traveler.top}%`,
+                width: `${world.traveler.width}%`,
+              }}
+            >
               <button
                 key={jump.count}
                 className={`solo-traveler__jump${jump.count ? " is-jumping" : ""} ${jump.direction < 0 ? "is-backward" : ""}`}
@@ -254,20 +310,28 @@ function PracticeHub({
             <HelenaRoomIcon name="back" />
           </button>
           <div className="solo-world-card" aria-live="polite">
-            <span className="section-label">Mundo {world.number}</span>
+            <span className="section-label">{world.subject}</span>
             <h3>{world.title}</h3>
             <p>{world.description}</p>
-            {world.number === 1 ? (
-              <button className="primary-button" type="button" onClick={() => setInsideWorld(true)}>
-                <HelenaRoomIcon name="play" /> Entrar no mundo
-              </button>
-            ) : (
-              <span className="solo-world-card__locked">
-                <Lock size={16} /> Mundo bloqueado
-              </span>
-            )}
+            <button className="primary-button" type="button" onClick={() => setInsideWorld(true)}>
+              <HelenaRoomIcon name="play" />{" "}
+              {world.number === 1 ? "Entrar no mundo" : "Explorar ilha"}
+            </button>
           </div>
         </div>
+        <nav className="solo-island-tabs" aria-label="Ilhas de estudo">
+          {SOLO_WORLDS.map((island, index) => (
+            <button
+              className="secondary-button"
+              type="button"
+              key={island.number}
+              aria-current={index === worldIndex ? "true" : undefined}
+              onClick={() => visitWorld(index)}
+            >
+              {island.subject}
+            </button>
+          ))}
+        </nav>
       </section>
     </div>
   );
