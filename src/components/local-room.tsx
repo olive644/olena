@@ -914,7 +914,11 @@ export function LocalRoom({
             onClick={() => setBrowsingRoom(false)}
           >
             <img
-              src={`/room-icons/${state.settings.activity ?? "listening"}.svg`}
+              src={
+                state.settings.activity === "bingo"
+                  ? "/room-icons/bingo.svg"
+                  : "/room-icons/listening.svg"
+              }
               width="40"
               height="40"
               alt=""
