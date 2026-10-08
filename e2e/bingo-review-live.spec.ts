@@ -179,8 +179,13 @@ for (const physical of [false, true])
           exact: true,
         });
         await expect(cell).toBeEnabled();
+        const captureReaction = index === 0 && i === 0;
+        if (captureReaction) {
+          await client.clock.install();
+          await client.clock.pauseAt(new Date());
+        }
         await cell.click();
-        if (index === 0 && i === 0) {
+        if (captureReaction) {
           const reaction = client.getByRole("status", { name: `Bola ${id}: WOW! +2 pontos!` });
           await expect(reaction).toBeVisible();
           const ballBox = await cell.boundingBox();
@@ -190,8 +195,10 @@ for (const physical of [false, true])
           ).toBeLessThan(65);
           expect(Math.abs(reactionBox!.y - ballBox!.y)).toBeLessThan(65);
           await reaction.screenshot({ path: testInfo.outputPath("reacao-pontos.png") });
+          await client.clock.runFor(1500);
           await expect(reaction).toHaveCount(0, { timeout: 3000 });
           await expect(client.locator(".bingo-points-meter")).toHaveCount(0);
+          await client.clock.resume();
         }
         await expect
           .poll(() =>
