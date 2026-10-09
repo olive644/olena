@@ -10,6 +10,7 @@ import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
 import { PracticeUserPortrait } from "../components/practice-user-portrait";
+import { PracticeSubjectTrail } from "../components/practice-subject-trail";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import "../practice-islands.css";
@@ -86,6 +87,7 @@ function PracticeHub({
   const entryOrigin = useRef<DOMRect | null>(null);
   const [worldTransition, setWorldTransition] = useState(false);
   const world = SOLO_WORLDS[worldIndex]!;
+  const entryLevel = world.id === "languages" ? unlockedLevel : 1;
 
   function visitWorld(index: number) {
     if (index === worldIndex || index < 0 || index >= SOLO_WORLDS.length) return;
@@ -107,7 +109,7 @@ function PracticeHub({
     let animation: Animation | null = null;
     const frame = requestAnimationFrame(() => {
       document
-        .querySelector(`.solo-path-level--${Math.min(unlockedLevel, 4)}`)
+        .querySelector(`.solo-path-level--${Math.min(entryLevel, 4)}`)
         ?.scrollIntoView?.({ block: "center", behavior: "instant" });
       secondFrame = requestAnimationFrame(() => {
         const origin = entryOrigin.current;
@@ -157,7 +159,7 @@ function PracticeHub({
       flight?.remove();
       if (destination) destination.style.visibility = "";
     };
-  }, [insideWorld, unlockedLevel]);
+  }, [insideWorld, entryLevel]);
 
   useEffect(() => {
     if (!insideWorld) return;
@@ -165,59 +167,15 @@ function PracticeHub({
     return () => document.body.classList.remove("solo-world-open");
   }, [insideWorld]);
 
-  if (insideWorld && world.number !== 1) {
+  if (insideWorld && world.id !== "languages") {
     return (
-      <div className="practice-hub solo-world-enter practice-subject-island">
-        <section className="solo-journey" aria-labelledby="solo-subject-title">
-          <div className="solo-journey__heading">
-            <div>
-              <button className="link-button" type="button" onClick={() => setInsideWorld(false)}>
-                <HelenaRoomIcon name="back" size={18} /> Voltar aos mundos
-              </button>
-              <span className="section-label">{world.subject}</span>
-              <h2 id="solo-subject-title">{world.title}</h2>
-              <p>{world.description}</p>
-            </div>
-          </div>
-          <div className="solo-subject-scene">
-            <img
-              key={world.number}
-              src={world.art}
-              srcSet={`${world.art.replace(".webp", "-small.webp")} 480w, ${world.art} 800w`}
-              sizes="(max-width: 600px) calc(100vw - 32px), 580px"
-              width="800"
-              height="800"
-              alt={`Ilha de ${world.subject} em papel recortado`}
-              decoding="async"
-            />
-          </div>
-          <ul className="solo-subject-topics" aria-label={`Temas de ${world.subject}`}>
-            {world.topics.map((topic) => (
-              <li key={topic}>{topic}</li>
-            ))}
-          </ul>
-          <p className="solo-subject-note">
-            Explore o cenário. Os exercícios desta ilha chegam depois.
-          </p>
-          <div className="solo-subject-navigation">
-            <button
-              className="secondary-button"
-              type="button"
-              onClick={() => visitWorld(worldIndex - 1)}
-            >
-              <HelenaRoomIcon name="back" size={18} /> Ilha anterior
-            </button>
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={worldIndex === SOLO_WORLDS.length - 1}
-              onClick={() => visitWorld(worldIndex + 1)}
-            >
-              Próxima ilha <HelenaRoomIcon name="play" size={18} />
-            </button>
-          </div>
-        </section>
-      </div>
+      <PracticeSubjectTrail
+        key={world.id}
+        island={world}
+        profile={profile}
+        entering={entryPending}
+        onBack={() => setInsideWorld(false)}
+      />
     );
   }
 
@@ -325,7 +283,7 @@ function PracticeHub({
               document
                 .querySelector(".practice-island-avatar .practice-user-portrait")
                 ?.getBoundingClientRect() ?? null;
-            setEntryPending(world.number === 1 && !!entryOrigin.current && !isMotionReduced());
+            setEntryPending(!!entryOrigin.current && !isMotionReduced());
             setInsideWorld(true);
           }}
         >

@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Trilhas exploráveis das seis ilhas (2026-10-08)
+
+- Idiomas conserva trilha, exercícios e progresso existentes. Português, Química, Biologia, Matemática e Programação ganham interiores próprios e quatro etapas exploráveis, derivadas dos temas de cada ilha. Não há avanço de progresso, XP ou exercícios simulados nessas cinco trilhas.
+- A foto do perfil acompanha a entrada em qualquer ilha e se desloca até a etapa escolhida. Botões numerados no centro de plataformas facetadas de papel, estado acessível, controle por teclado, movimento reduzido e retorno ao mesmo ponto do carrossel. As cinco trilhas abrem em tela cheia por portal, sem contenção pela página ou navegação sobreposta. No celular, o cabeçalho compacto mantém o retorno acessível durante a subida.
+- Validação: npm run verify verde, 1211 testes, build e orçamento de performance. E2E do carrossel e das trilhas: 13 passaram, 1 caso de toque ignorado no desktop. Verificação adicional de número centralizado, tela cheia e retorno visível nos dois temas e tamanhos. JavaScript inicial 275,6 KiB, total 1152,9 KiB.
+- Após avaliação do proprietário, os primeiros interiores com corredor gramado repetido foram descartados. Terrenos e composições finais são próprios: páginas e terra vermelha, plataformas minerais hexagonais, raízes e riachos, terraços geométricos e passarelas de circuito. As artes externas aprovadas não foram alteradas.
+- API mantém IDs e contrato de consulta, com preview explícito para as cinco trilhas visuais. Metodologias continuam vazias. Matemática fica preparada com Números, Álgebra, Geometria e Estatística para a próxima etapa de conteúdo.
+
 ## Avatar contínuo na troca de ilhas (2026-10-08)
 
 - Um único avatar permanece montado no carrossel. A moldura desliza entre as posições próprias das ilhas, no mesmo tempo da transição dos cenários, sem sumir nem duplicar a foto.

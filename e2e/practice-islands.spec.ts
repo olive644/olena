@@ -1,5 +1,96 @@
 import { test, expect } from "@playwright/test";
 
+for (const theme of ["light", "dark"] as const) {
+  test(`trilhas das cinco disciplinas preservam perfil e progresso, ${theme}`, async ({
+    page,
+  }, testInfo) => {
+    await page.addInitScript((appearance) => {
+      localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+      localStorage.setItem("helena.soloProgress", "4");
+      localStorage.setItem(
+        "helena.profile.v1",
+        JSON.stringify({ name: "Aluno", photoUrl: "/profile-avatars/oliver.webp" }),
+      );
+      localStorage.setItem("helenastudy.theme", appearance);
+    }, theme);
+    await page.goto("/aprender");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+    const subjects = ["Português", "Química", "Biologia", "Matemática", "Programação"];
+    for (const [index, subject] of subjects.entries()) {
+      await page.getByRole("button", { name: "Próximo mundo" }).click();
+      if (index === 4) await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.getByRole("button", { name: "Explorar ilha" }).click();
+      const trail = page.getByRole("region", { name: `Trilha de ${subject}` });
+      await expect(trail).toBeVisible();
+      const viewport = page.viewportSize()!;
+      await expect
+        .poll(async () => {
+          const rect = (await trail.boundingBox())!;
+          return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+        })
+        .toEqual({ x: 0, y: 0, width: viewport.width, height: viewport.height });
+      await trail
+        .locator(".solo-level-scenery__art")
+        .evaluate(async (image: HTMLImageElement) => image.decode());
+      await expect(page.locator(".practice-avatar-flight")).toHaveCount(0);
+      const photo = trail.getByAltText("Sua foto no nível 1");
+      await expect(photo).toHaveAttribute("src", "/profile-avatars/oliver.webp");
+      const original = (await photo.elementHandle())!;
+      const stages = trail.getByRole("button", { name: /^Etapa/ });
+      await expect(stages).toHaveCount(4);
+      for (let stage = 0; stage < 4; stage++) {
+        await expect(stages.nth(stage).locator(".solo-path-level__badge b")).toHaveText(
+          String(stage + 1),
+        );
+        const center = await stages
+          .nth(stage)
+          .locator(".solo-path-level__badge")
+          .evaluate((element) => {
+            const badge = element.getBoundingClientRect();
+            const number = element.querySelector("b")!.getBoundingClientRect();
+            return {
+              x: Math.abs(number.x + number.width / 2 - (badge.x + badge.width / 2)),
+              y: Math.abs(number.y + number.height / 2 - (badge.y + badge.height * 0.46)),
+            };
+          });
+        expect(center.x).toBeLessThan(1);
+        expect(center.y).toBeLessThan(1);
+        await stages.nth(stage).click();
+        await expect(trail.getByRole("button", { name: "Voltar aos mundos" })).toBeInViewport();
+        await expect(stages.nth(stage)).toHaveAttribute("aria-pressed", "true");
+        const portrait = trail.getByAltText(`Sua foto no nível ${stage + 1}`);
+        await expect(portrait).toHaveAttribute("src", "/profile-avatars/oliver.webp");
+        expect(await original.evaluate((element) => element.isConnected)).toBe(true);
+        await expect
+          .poll(() =>
+            trail
+              .locator(".practice-trail-traveler")
+              .evaluate(
+                (element) =>
+                  element.getAnimations().filter((animation) => animation.playState === "running")
+                    .length,
+              ),
+          )
+          .toBe(0);
+      }
+      await expect(trail.locator(".practice-trail-detail")).toContainText(
+        "Exercícios em preparação",
+      );
+      if (subject === "Matemática") {
+        await expect(trail.locator(".practice-trail-detail")).toContainText("Mirante dos dados");
+        await page.screenshot({ path: testInfo.outputPath(`trilha-matematica-${theme}.png`) });
+      }
+      expect(
+        await trail.evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
+      ).toBe(true);
+      expect(await page.evaluate(() => localStorage.getItem("helena.soloProgress"))).toBe("4");
+      await trail.getByRole("button", { name: "Voltar aos mundos" }).click();
+      await expect(page.getByRole("region", { name: "Ilhas de estudo" })).toBeVisible();
+      await expect(page.locator(".practice-avatar-flight")).toHaveCount(0);
+    }
+  });
+}
+
 test("avatar desliza entre ilhas sem remontar e acompanha o arraste", async ({ page }) => {
   await page.addInitScript(() =>
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
@@ -233,10 +324,13 @@ for (const theme of ["light", "dark"])
         });
       if (position > 0) {
         await page.getByRole("button", { name: "Explorar ilha" }).click();
-        await expect(page.getByText(/Os exercícios desta ilha chegam depois/)).toBeVisible();
-        await expect(
-          page.getByRole("img", { name: `Ilha de ${subject} em papel recortado` }),
-        ).toBeVisible();
+        const trail = page.getByRole("region", { name: `Trilha de ${subject}` });
+        await expect(trail).toBeVisible();
+        await expect(trail.getByRole("button", { name: /^Etapa/ })).toHaveCount(4);
+        await expect(trail.getByText("Exercícios em preparação")).toBeAttached();
+        await trail
+          .locator(".solo-level-scenery__art")
+          .evaluate(async (img: HTMLImageElement) => img.decode());
         await page.getByRole("button", { name: "Voltar aos mundos" }).click();
       }
     }

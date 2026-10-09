@@ -886,6 +886,8 @@ Pastas da vitrine: `NotebookFolder` recebe cadernos, páginas e matérias de `No
 
 # Notes de texto
 
+PracticeSubjectTrail apresenta etapas exploráveis para cinco disciplinas, com configuração em practice-trails.ts, emblemas vetoriais e interiores WebP em public/practice-trails. Não chama SoloMode nem altera helena.soloProgress ou XP. Seleção é local e volta à primeira etapa ao entrar de novo. PracticeHub compartilha o voo de entrada com Idiomas, que permanece com jogos e progresso reais. Catálogo Olena diferencia available (Idiomas) de preview (trilhas visuais sem exercícios). Não confundir exploração com conclusão pedagógica.
+
 O avatar de Praticar pertence ao palco do carrossel, não à ilha selecionada. left/bottom derivam de traveler e das variáveis de tamanho/base do palco; transições de 550 ms acompanham os cenários e --drag-x acompanha o gesto. Não remontar a foto ao alterar index. Movimento reduzido remove as transições, e o voo de entrada na trilha mede a mesma moldura persistente.
 
 Gestos de seleção usam a geometria inicial e limites de grupo. A escala é projetada

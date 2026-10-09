@@ -1,0 +1,250 @@
+.practice-hub.practice-subject-trail {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  isolation: isolate;
+  min-height: 0;
+  background: var(--trail-light);
+}
+.practice-subject-trail .practice-trail-map {
+  position: relative;
+  height: 760px;
+  min-height: 760px;
+  max-width: none;
+  background: var(--trail-light);
+}
+.practice-subject-trail .solo-level-track {
+  width: min(440px, 100%);
+}
+.practice-subject-trail .solo-level-path__road {
+  stroke: var(--trail-light);
+  stroke-width: 30px;
+}
+.practice-subject-trail .solo-level-path__road-shadow {
+  stroke: var(--trail-shade);
+  stroke-width: 36px;
+  opacity: 0.35;
+}
+.practice-subject-trail--biology .solo-level-path__road {
+  stroke: #d8b87d;
+}
+.practice-subject-trail--programming .solo-level-path__road,
+.practice-subject-trail--chemistry .solo-level-path__road {
+  stroke-linejoin: bevel;
+  stroke-linecap: square;
+}
+.practice-trail-heading {
+  position: absolute;
+  z-index: 5;
+  top: 16px;
+  left: 20px;
+  display: grid;
+  gap: 12px;
+  max-width: 310px;
+}
+.practice-trail-heading > div,
+.practice-trail-detail {
+  padding: 14px 18px;
+  border: 1px solid var(--trail-shade);
+  border-bottom: 5px solid var(--trail-shade);
+  border-radius: 5px 16px 5px 12px;
+  background: #fff9ef;
+  color: #292432;
+}
+.practice-trail-heading .section-label,
+.practice-trail-detail .section-label {
+  color: var(--trail-color);
+}
+.practice-trail-heading h2 {
+  margin: 5px 0 0;
+  font-size: 22px;
+}
+.practice-trail-heading .secondary-button {
+  width: fit-content;
+}
+.practice-trail-emblem {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+.practice-subject-trail .solo-path-level__badge {
+  width: 82px;
+  height: 82px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+}
+.practice-subject-trail .solo-path-level__badge b {
+  position: absolute;
+  inset: auto;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: var(--trail-shade);
+  border: 0;
+  border-radius: 0;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 1px 1px 0 #e4c698;
+}
+.practice-trail-number-piece {
+  width: 100%;
+  height: 100%;
+}
+.number-piece-depth,
+.number-piece-edge {
+  fill: var(--trail-shade);
+}
+.number-piece-face {
+  fill: var(--trail-color);
+}
+.number-piece-fold {
+  fill: var(--trail-light);
+}
+.number-piece-paper {
+  fill: #fff9ef;
+}
+.practice-trail-stop.is-selected .number-piece-face {
+  fill: #facc15;
+}
+.practice-trail-stop.is-selected .number-piece-fold {
+  fill: #fff0a4;
+}
+.practice-trail-stop.is-selected .number-piece-edge,
+.practice-trail-stop.is-selected .number-piece-depth {
+  fill: #bf9200;
+}
+.practice-trail-stop {
+  align-items: center;
+  gap: 12px;
+  width: 146px;
+  transform: translate(-50%, -44px);
+}
+.practice-trail-stop > span:last-child {
+  display: grid;
+  gap: 3px;
+  border-radius: 3px 10px 4px 8px;
+  border-bottom: 3px solid var(--trail-shade);
+  max-width: 146px;
+  padding: 6px 8px;
+  font-size: 12px;
+  background: #fff9ef;
+}
+.practice-trail-stop.is-selected .solo-path-level__badge {
+  border-color: #facc15;
+}
+.practice-trail-stop:focus-visible {
+  outline: 3px solid var(--trail-shade);
+  outline-offset: 8px;
+}
+.practice-trail-traveler {
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: 4;
+  pointer-events: none;
+  transition:
+    left 650ms cubic-bezier(0.22, 0.75, 0.25, 1),
+    top 650ms cubic-bezier(0.22, 0.75, 0.25, 1);
+}
+.practice-trail-traveler .solo-path-avatar {
+  bottom: 0;
+}
+.practice-trail-detail {
+  position: absolute;
+  z-index: 5;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(310px, 30vw);
+}
+.practice-trail-detail h3 {
+  margin: 5px 0;
+  font-size: 17px;
+}
+.practice-trail-detail p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.practice-trail-detail small {
+  color: #635344;
+  font-size: 11px;
+}
+@media (min-width: 900px) {
+  .practice-subject-trail .practice-trail-map {
+    height: max(100dvh, 720px);
+    min-height: 720px;
+  }
+}
+@media (max-width: 899px) {
+  .practice-hub.practice-subject-trail {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .practice-subject-trail .practice-trail-map {
+    height: 730px;
+    min-height: 730px;
+  }
+  .practice-trail-heading {
+    position: sticky;
+    top: 0;
+    left: auto;
+    display: flex;
+    align-items: center;
+    max-width: none;
+    padding: max(10px, env(safe-area-inset-top)) 12px 10px;
+    gap: 12px;
+    background: #fff9ef;
+    border-bottom: 4px solid var(--trail-shade);
+  }
+  .practice-trail-heading .secondary-button {
+    flex: 0 0 auto;
+    padding: 10px;
+    font-size: 11px;
+    color: #292432;
+    border-bottom: 4px solid var(--trail-shade);
+    border-radius: 4px 12px 4px 10px;
+  }
+  .practice-trail-heading h2 {
+    font-size: 16px;
+  }
+  .practice-trail-heading .section-label {
+    font-size: 9px;
+  }
+  .practice-trail-heading > div {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .practice-trail-detail {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    margin: 0 12px;
+  }
+  .practice-trail-stop {
+    width: 124px;
+  }
+  .practice-trail-stop > span:last-child {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .practice-trail-traveler {
+    transition: none;
+  }
+}
