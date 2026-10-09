@@ -1,5 +1,24 @@
 # Auditoria do estado atual
 
+## Percurso central e chegada às etapas (2026-10-08)
+
+- As cinco trilhas de disciplinas preservam o papercraft aprovado, mas reorganizam os cenários nas laterais de um caminho central contínuo. Removida a passarela decorativa que não acompanhava o terreno. Artes próprias de desktop e celular, em WebP de qualidade 90; originais preservados como referência.
+- A foto permanece centralizada acima do número. Seleção dispara deslocamento vertical de 850 ms, iluminação do nível por 260 ms e abertura dos temas somente depois da chegada. Trocas rápidas e retorno cancelam chegada pendente; movimento reduzido dispensa a sequência. Esta é navegação de prévia, não conclusão de exercício, XP ou desbloqueio pedagógico.
+- Foto, números e arte usam as mesmas coordenadas por composição. Cabeçalho e painel fixos, níveis compactos no celular e margem de rolagem deixam a primeira etapa visível sem cobrir seu número. Nenhum exercício novo foi adicionado e a trilha real de Idiomas permanece inalterada.
+- Regressões automatizadas: chegada em três fases, troca rápida de destino, movimento reduzido, foto persistente, número centralizado e avatar acima dele em desktop e mobile.
+- Validação local: sete testes do componente e quatro cenários E2E das cinco disciplinas passaram, cobrindo desktop/mobile e claro/escuro. Build, TypeScript, lint, formatação, API e orçamento de desempenho passaram (275,6 KiB iniciais, 1157,5 KiB totais de JavaScript). A suíte unitária geral não foi concluída: o processo Node encerrou por falta de memória, inclusive com um worker. Não considerar a verificação geral verde sem execução completa em ambiente com recursos disponíveis.
+
+## Trilhas exploráveis das seis ilhas (2026-10-08)
+
+- Idiomas conserva trilha, exercícios e progresso existentes. Português, Química, Biologia, Matemática e Programação ganham interiores próprios e quatro etapas exploráveis, derivadas dos temas de cada ilha. Não há avanço de progresso, XP ou exercícios simulados nessas cinco trilhas.
+- A foto do perfil acompanha a entrada em qualquer ilha e se desloca até a etapa escolhida. Botões numerados no centro de plataformas facetadas de papel, estado acessível, controle por teclado, movimento reduzido e retorno ao mesmo ponto do carrossel. As cinco trilhas abrem em tela cheia por portal, sem contenção pela página ou navegação sobreposta. No celular, o cabeçalho compacto mantém o retorno acessível durante a subida.
+- Refinamento visual: peças próprias para cada disciplina, livro, molécula, folha, sólido geométrico e tecla de código, com números centralizados. Seleção preserva a cor da disciplina, destacando apenas as dobras, o papel e a base da legenda.
+- Revisão de Matemática após avaliação visual: removida a trilha artificial. Os quatro níveis usam coordenadas da arte, nos patamares conectados pelas escadas existentes. Cenário e camada de interação compartilham o mesmo canvas 16:9 e a mesma câmera, inclusive no celular. Peças de Números, Álgebra, Geometria e Estatística são ábaco, balança, transferidor e gráfico, com o número direto no objeto e sem placa branca. Seleção enquadra o nível abaixo do cabeçalho, respeitando movimento reduzido.
+- Validação da revisão: 5 testes de componente, 4 E2E nos dois temas e tamanhos, mais 2 E2E móveis após ajuste do enquadramento. Teste compara as posições e dimensões reais do cenário e da camada de níveis, garante ausência da trilha artificial e número centralizado. Build, lint, formato e performance verdes; entrada 275,6 KiB, total 1158,1 KiB.
+- Validação: npm run verify verde, 1211 testes, build e orçamento de performance. E2E do carrossel e das trilhas: 13 passaram, 1 caso de toque ignorado no desktop. Após o refinamento final dos SVGs: 5 testes focados, 4 casos E2E de número centralizado, tela cheia e retorno visível nos dois temas e tamanhos, lint, formatação, build e performance verdes. JavaScript inicial 275,6 KiB, total 1155,6 KiB.
+- Após avaliação do proprietário, os primeiros interiores com corredor gramado repetido foram descartados. Terrenos e composições finais são próprios: páginas e terra vermelha, plataformas minerais hexagonais, raízes e riachos, terraços geométricos e passarelas de circuito. As artes externas aprovadas não foram alteradas.
+- API mantém IDs e contrato de consulta, com preview explícito para as cinco trilhas visuais. Metodologias continuam vazias. Matemática fica preparada com Números, Álgebra, Geometria e Estatística para a próxima etapa de conteúdo.
+
 ## Avatar contínuo na troca de ilhas (2026-10-08)
 
 - Um único avatar permanece montado no carrossel. A moldura desliza entre as posições próprias das ilhas, no mesmo tempo da transição dos cenários, sem sumir nem duplicar a foto.

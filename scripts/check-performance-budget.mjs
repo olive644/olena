@@ -197,7 +197,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Six subject islands, scene navigation, individual sprite anchors and readable
 // island names add 2.8 KiB in the lazy practice route. Measured total: 1143.0 KiB,
 // entry unchanged at 275.6 KiB. No dependency; retain 3 KiB platform allowance.
-const MAX_TOTAL_JS_BYTES = 1146 * 1024;
+// Five fullscreen subject trails, five distinct themed SVG number pieces and metadata
+// add 10 KiB in the lazy practice route. Total: 1155.6 KiB, entry still 275.6 KiB.
+// No dependencies or initial-path growth; retain 3.5 KiB platform allowance.
+const MAX_TOTAL_JS_BYTES = 1159 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

@@ -384,18 +384,19 @@ describe("App", () => {
       fireEvent.click(screen.getByRole("button", { name: "Próximo mundo" }));
       expect(screen.getByRole("heading", { name: islandName })).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Explorar ilha" }));
-      expect(screen.getByRole("img", { name: `Ilha de ${title} em papel recortado` })).toBeTruthy();
-      expect(screen.getByText(/Os exercícios desta ilha chegam depois/)).toBeTruthy();
+      expect(screen.getByRole("region", { name: `Trilha de ${title}` })).toBeTruthy();
+      expect(screen.getAllByRole("button", { name: /^Etapa/ })).toHaveLength(4);
+      expect(screen.getByText("Exercícios em preparação")).toBeTruthy();
       expect(screen.queryByRole("button", { name: /Nível 1: Escuta/ })).toBeNull();
       if (title === "Programação") {
         for (const topic of ["Python", "JavaScript", "HTML", "CSS"])
           expect(screen.getByText(topic, { exact: true })).toBeTruthy();
-        expect(
-          (screen.getByRole("button", { name: "Próxima ilha" }) as HTMLButtonElement).disabled,
-        ).toBe(true);
       }
       fireEvent.click(screen.getByRole("button", { name: "Voltar aos mundos" }));
     }
+    expect(
+      (screen.getByRole("button", { name: "Próximo mundo" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
   });
 
   it("mantém dados após remontar o aplicativo", () => {

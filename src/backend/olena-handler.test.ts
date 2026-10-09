@@ -47,7 +47,7 @@ describe("API oficial da Olena", () => {
     ]);
     expect(payload.islands[0].trail).toBe("available");
     expect(
-      payload.islands.slice(1).every((island: { trail: string }) => island.trail === "planned"),
+      payload.islands.slice(1).every((island: { trail: string }) => island.trail === "preview"),
     ).toBe(true);
     expect(payload.islands.at(-1).topics).toEqual(["Python", "JavaScript", "HTML", "CSS"]);
     for (const island of payload.islands)

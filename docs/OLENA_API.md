@@ -26,7 +26,8 @@ explicitamente. IDs estáveis: `languages`, `portuguese`, `chemistry`, `biology`
 do usuário como identificação da ilha.
 
 O catálogo deriva de `PRACTICE_ISLANDS`, a mesma fonte da interface, sem copiar títulos ou temas
-para outro cadastro. Apenas Idiomas tem trilha disponível. As outras cinco continuam planejadas.
+para outro cadastro. Idiomas tem trilha jogável (`trail: available`). As outras cinco têm
+trilhas visuais exploráveis (`trail: preview`), ainda sem exercícios, metodologias ou XP.
 Todas as listas de metodologias são vazias nesta etapa. Isso é resposta válida,
 não um erro nem uma afirmação de que já há atividades nas ilhas.
 

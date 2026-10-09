@@ -21,7 +21,7 @@ export function olenaIslands() {
     subject: island.subject,
     description: island.description,
     topics: [...island.topics],
-    trail: island.id === "languages" ? ("available" as const) : ("planned" as const),
+    trail: island.id === "languages" ? ("available" as const) : ("preview" as const),
   }));
 }
 

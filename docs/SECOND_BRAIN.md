@@ -886,6 +886,12 @@ Pastas da vitrine: `NotebookFolder` recebe cadernos, páginas e matérias de `No
 
 # Notes de texto
 
+PracticeSubjectTrail apresenta etapas exploráveis para cinco disciplinas, com configuração em practice-trails.ts, emblemas vetoriais e interiores WebP em public/practice-trails. Não chama SoloMode nem altera helena.soloProgress ou XP. Seleção é local e volta à primeira etapa ao entrar de novo. PracticeHub compartilha o voo de entrada com Idiomas, que permanece com jogos e progresso reais. Catálogo Olena diferencia available (Idiomas) de preview (trilhas visuais sem exercícios). Não confundir exploração com conclusão pedagógica.
+
+As cinco trilhas usam um único percurso central incorporado à arte, sem passarela SVG sobreposta. Cenário e solo-level-track compartilham um canvas 16:9 no desktop e 2:3 no mobile, com escala proporcional e corte lateral limitado. public/practice-trails/*-clean.webp contém interiores horizontais e *-mobile.webp contém composições verticais próprias (1024 × 1536), não miniaturas ampliadas. points e MOBILE_TRAIL_Y são coordenadas de cada composição, escolhidas sobre o caminho real. MathLevelArtifact continua dando um objeto próprio a cada tema, sem caixa branca atrás do número.
+
+PracticeSubjectTrail mantém uma única foto acima do número. A seleção local passa por travel (850 ms), arrive (260 ms de iluminação) e open (mostra os temas). Nova seleção cancela o temporizador anterior; desmontagem também cancela. Movimento reduzido abre diretamente. O painel não anuncia conclusão nem cria exercícios, pontos ou progresso: continua mostrando Exercícios em preparação. Cabeçalho e painel fixos permanecem disponíveis durante a câmera vertical, com espaço de rolagem suficiente para a primeira etapa não ficar escondida atrás do painel no celular.
+
 O avatar de Praticar pertence ao palco do carrossel, não à ilha selecionada. left/bottom derivam de traveler e das variáveis de tamanho/base do palco; transições de 550 ms acompanham os cenários e --drag-x acompanha o gesto. Não remontar a foto ao alterar index. Movimento reduzido remove as transições, e o voo de entrada na trilha mede a mesma moldura persistente.
 
 Gestos de seleção usam a geometria inicial e limites de grupo. A escala é projetada
