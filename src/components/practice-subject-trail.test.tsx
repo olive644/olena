@@ -35,6 +35,18 @@ describe("trilhas exploráveis por disciplina", () => {
         expect(stage.querySelector(".solo-path-level__badge b")?.textContent).toBe(
           String(index + 1),
         );
+        expect(stage.querySelectorAll(".number-piece-paper")).toHaveLength(
+          island.id === "portuguese" ? 1 : 0,
+        );
+      }
+      const walkway = screen
+        .getByRole("region", { name: `Trilha de ${island.subject}` })
+        .querySelector(".practice-trail-walkway");
+      if (island.id === "mathematics") expect(walkway).toBeNull();
+      else {
+        expect(walkway!.getAttribute("data-material")).toBe(island.id);
+        expect(walkway!.querySelectorAll("g")).toHaveLength(24);
+        expect(walkway!.querySelector(".solo-level-path__road")).toBeNull();
       }
       const portrait = screen.getByAltText("Sua foto no nível 1");
       for (const [index, stage] of stages.entries()) {

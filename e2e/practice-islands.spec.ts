@@ -4,6 +4,8 @@ for (const theme of ["light", "dark"] as const) {
   test(`trilhas das cinco disciplinas preservam perfil e progresso, ${theme}`, async ({
     page,
   }, testInfo) => {
+    // Five decoded scenes and twenty real avatar transitions share this scenario.
+    test.setTimeout(60_000);
     await page.addInitScript((appearance) => {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
       localStorage.setItem("helena.soloProgress", "4");
@@ -57,6 +59,20 @@ for (const theme of ["light", "dark"] as const) {
         expect(center.y).toBeLessThan(1);
         await stages.nth(stage).click();
         await expect(trail.getByRole("button", { name: "Voltar aos mundos" })).toBeInViewport();
+        if (subject === "Matemática" && viewport.width < 900) {
+          await expect
+            .poll(async () => {
+              const badge = (await stages
+                .nth(stage)
+                .locator(".solo-path-level__badge")
+                .boundingBox())!;
+              const header = (await trail.locator(".practice-trail-heading").boundingBox())!;
+              return (
+                badge.y >= header.y + header.height - 1 && badge.y + badge.height <= viewport.height
+              );
+            })
+            .toBe(true);
+        }
         await expect(stages.nth(stage)).toHaveAttribute("aria-pressed", "true");
         const portrait = trail.getByAltText(`Sua foto no nível ${stage + 1}`);
         await expect(portrait).toHaveAttribute("src", "/profile-avatars/oliver.webp");
@@ -77,6 +93,21 @@ for (const theme of ["light", "dark"] as const) {
         "Exercícios em preparação",
       );
       if (subject === "Matemática") {
+        await expect(trail.locator(".practice-trail-walkway")).toHaveCount(0);
+        await expect
+          .poll(() =>
+            trail.evaluate((element) => {
+              const art = element.querySelector(".solo-level-scenery")!.getBoundingClientRect();
+              const overlay = element.querySelector(".solo-level-track")!.getBoundingClientRect();
+              return Math.max(
+                Math.abs(art.x - overlay.x),
+                Math.abs(art.y - overlay.y),
+                Math.abs(art.width - overlay.width),
+                Math.abs(art.height - overlay.height),
+              );
+            }),
+          )
+          .toBeLessThan(1);
         await expect(trail.locator(".practice-trail-detail")).toContainText("Mirante dos dados");
         await page.screenshot({ path: testInfo.outputPath(`trilha-matematica-${theme}.png`) });
       }

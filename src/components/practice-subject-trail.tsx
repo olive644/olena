@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
+import { isMotionReduced } from "../data/accessibility-preferences";
 import { SUBJECT_TRAILS, type PracticeIsland, type SubjectIslandId } from "../data/practice-trails";
 import type { StoredProfile } from "../hooks/use-stored-profile";
 import { HelenaRoomIcon } from "./helena-room-icon";
@@ -55,7 +56,61 @@ function TrailEmblem({ id }: { id: SubjectIslandId }) {
   );
 }
 
-function TrailNumberPiece({ id }: { id: SubjectIslandId }) {
+function MathLevelArtifact({ level }: { level: number }) {
+  if (level === 1)
+    return (
+      <>
+        <path className="number-piece-depth" d="M6 14h88v78H6Z" />
+        <path className="number-piece-face" d="M6 7h88v78H6Z" />
+        <path className="number-piece-fold" d="M6 7h88l-8 8H14v62l-8 8Z" />
+        <path className="math-tool-gold" d="M16 20h68v3H16Zm0 49h68v3H16Z" />
+        <path
+          className="math-tool-gold"
+          d="m24 14 5 4v8l-5 4-5-4v-8Zm17 0 5 4v8l-5 4-5-4v-8Zm22 49 5 4v8l-5 4-5-4v-8Zm17 0 5 4v8l-5 4-5-4v-8Z"
+        />
+      </>
+    );
+  if (level === 2)
+    return (
+      <>
+        <path className="math-tool-gold" d="M47 2h6v80h23v7H24v-7h23ZM11 13h78v6H11Z" />
+        <path className="number-piece-fold" d="M14 19h3v18h-3Zm69 0h3v18h-3Z" />
+        <path className="number-piece-depth" d="m2 37 13 6 13-6-6 16H8Zm70 0 13 6 13-6-6 16H78Z" />
+        <path className="math-tool-gold" d="M2 34h26l-6 12H8Zm70 0h26l-6 12H78Z" />
+        <path className="number-piece-depth" d="M35 28h30l15 49H20Z" />
+        <path className="number-piece-face" d="M35 22h30l15 49H20Z" />
+        <path className="number-piece-fold" d="M35 22h30l3 10H32Z" />
+      </>
+    );
+  if (level === 3)
+    return (
+      <>
+        <path className="number-piece-depth" d="M4 83V47l14-23L38 10h24l20 14 14 23v36Z" />
+        <path className="math-tool-gold" d="M4 76V40l14-23L38 3h24l20 14 14 23v36Z" />
+        <path className="number-piece-face" d="M17 66V43l12-17 14-9h14l14 9 12 17v23Z" />
+        <path className="number-piece-edge" d="M17 66h66v7H17Z" />
+        <path
+          className="math-tool-ticks"
+          d="M11 43h8M21 22l7 7M50 6v10M79 22l-7 7M89 43h-8M12 70h8M88 70h-8"
+        />
+      </>
+    );
+  return (
+    <>
+      <path
+        className="math-tool-gold"
+        d="M12 15h14v24H12Zm21-7h14v31H33Zm21-6h14v37H54Zm21 18h14v19H75Z"
+      />
+      <path className="number-piece-depth" d="M7 30h86v50L80 91H20L7 80Z" />
+      <path className="number-piece-face" d="M7 24h86v50L80 85H20L7 74Z" />
+      <path className="number-piece-fold" d="M7 24h86l-8 8H15Z" />
+      <path className="number-piece-edge" d="m7 74 13 11h60l13-11H7Z" />
+      <path className="math-tool-gold" d="M20 69h60v3H20Z" />
+    </>
+  );
+}
+
+function TrailNumberPiece({ id, level }: { id: SubjectIslandId; level: number }) {
   return (
     <svg
       viewBox="0 0 100 100"
@@ -70,7 +125,7 @@ function TrailNumberPiece({ id }: { id: SubjectIslandId }) {
           <path className="number-piece-fold" d="M17 82h65v5H17Zm0 7h65v3H17Z" />
           <path className="number-piece-face" d="M13 6h65l10 11v61H13L6 70V14Z" />
           <path className="number-piece-edge" d="M6 14 13 6v72l-7-8Z" />
-          <path className="number-piece-paper" d="M25 18h50v56H25Z" />
+          <path className="number-piece-fold" d="M25 18h30v3H25Zm0 49h30v3H25Z" />
           <path className="number-piece-fold" d="M67 18h8v14l-4-3-4 3ZM17 14h3v57h-3Z" />
         </>
       ) : id === "chemistry" ? (
@@ -82,7 +137,7 @@ function TrailNumberPiece({ id }: { id: SubjectIslandId }) {
           <path className="number-piece-depth" d="m50 16 31 18v36L50 88 19 70V34Z" />
           <path className="number-piece-face" d="m50 8 31 18v36L50 80 19 62V26Z" />
           <path className="number-piece-fold" d="m50 8 31 18-9 5-22-13-22 13-9-5Z" />
-          <path className="number-piece-paper" d="m50 22 22 13v22L50 70 28 57V35Z" />
+          <path className="number-piece-edge" d="m72 31 9-5v36L50 80v-9l22-14Z" />
           <path
             className="number-piece-face"
             d="m12 6 11 7v13l-11 7-11-7V13Zm77 9 10 6v13l-10 6-10-6V21ZM79 78l11 6v12l-11 4-10-6V84Z"
@@ -101,34 +156,72 @@ function TrailNumberPiece({ id }: { id: SubjectIslandId }) {
             d="m48 1 23 11-15 14-26 7-19-1Zm-37 31 19 1-6 17L8 60Z"
           />
           <path className="number-piece-edge" d="m56 26 15-14 22 24-6 28-25 22-7-16 21-17Z" />
-          <path className="number-piece-paper" d="m48 20 19 13 6 20-17 19-24-6-9-23 12-17Z" />
+          <path
+            className="number-piece-fold"
+            d="m35 20 13-19 8 25-6-6-5 6ZM24 50l6 7-6 6-6-8Zm38 14 10-5 5 4-15 9Z"
+          />
           <path
             className="number-piece-fold"
             d="m53 80 9 6-18 14-7-6Zm21-55 9 7-10 7-4-7ZM18 59l12 9-6 5-11-9Z"
           />
         </>
       ) : id === "mathematics" ? (
-        <>
-          <path className="number-piece-depth" d="M13 26 50 8l43 18v54L78 94H13Z" />
-          <path className="number-piece-face" d="M13 20h65v66H13Z" />
-          <path className="number-piece-fold" d="M13 20 50 2l43 18-15 9H22Z" />
-          <path className="number-piece-edge" d="m78 29 15-9v54L78 86Z" />
-          <path className="number-piece-paper" d="M23 28h54v36H23Z" />
-          <path className="number-piece-fold" d="m19 71 11 9H19ZM67 9l11 5-10 5-10-5Z" />
-        </>
+        <MathLevelArtifact level={level} />
       ) : (
         <>
           <path className="number-piece-depth" d="M12 12h76l10 15v63l-10 7H12L2 90V27Z" />
           <path className="number-piece-face" d="M12 5h76l10 15v63l-10 7H12L2 83V20Z" />
           <path className="number-piece-fold" d="M12 5h76l10 15-12 8-8-12H22l-8 12-12-8Z" />
           <path className="number-piece-edge" d="m86 28 12-8v63l-10 7H12L2 83l12-10h72Z" />
-          <path className="number-piece-paper" d="M24 23h52v46H24Z" />
+          <path className="number-piece-fold" d="M24 23h52v3H24Z" />
           <path
             className="number-piece-fold"
             d="m16 37-8 9 8 9 3-4-5-5 5-5Zm68 0 8 9-8 9-3-4 5-5-5-5ZM33 77h34v4H33Z"
           />
         </>
       )}
+    </svg>
+  );
+}
+
+function TrailWalkway({ id }: { id: SubjectIslandId }) {
+  const points = SUBJECT_TRAILS[id].points;
+  const tiles = points.slice(0, -1).flatMap((point, segment) =>
+    Array.from({ length: 8 }, (_, step) => {
+      const next = points[segment + 1]!;
+      const t = step / 8;
+      return {
+        x: (point.x + (next.x - point.x) * t) * 3.6,
+        y: (point.y + (next.y - point.y) * t) * 7.2,
+      };
+    }),
+  );
+  const shape =
+    id === "programming"
+      ? "M-15-7h30v14h-30Z"
+      : id === "portuguese"
+        ? "M-17-7h29l5 5v10h-34Z"
+        : id === "chemistry"
+          ? "m0-11 17 6v12L0 12-17 7V-5Z"
+          : id === "biology"
+            ? "m-10-8 22 2 5 8-9 9-22-3-4-10Z"
+            : "M-14-8h26l6 6-7 11h-25l-5-7Z";
+  return (
+    <svg
+      className="solo-level-path__route practice-trail-walkway"
+      viewBox="0 0 360 720"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      data-material={id}
+    >
+      {tiles.map((tile, index) => (
+        <g key={index} transform={`translate(${tile.x} ${tile.y})`}>
+          <path className="walkway-depth" d={shape} transform="translate(0 5)" />
+          <path className="walkway-surface" d={shape} />
+          <path className="walkway-fold" d="m-12-5 22 1 3 3-24-1Z" />
+          {id === "programming" && <path className="walkway-circuit" d="M-10 3h20M0-6V6" />}
+        </g>
+      ))}
     </svg>
   );
 }
@@ -157,6 +250,7 @@ export function PracticeSubjectTrail({
           "--trail-color": trail.color,
           "--trail-shade": trail.shade,
           "--trail-light": trail.light,
+          "--trail-camera-x": `${position.x}%`,
         } as CSSProperties
       }
     >
@@ -184,16 +278,7 @@ export function PracticeSubjectTrail({
           />
         </picture>
         <div className="solo-level-track">
-          <svg
-            className="solo-level-path__route"
-            viewBox="0 0 360 720"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <path className="solo-level-path__road-shadow" d={trail.route} />
-            <path className="solo-level-path__road" d={trail.route} />
-            <path className="solo-level-path__trail" d={trail.route} />
-          </svg>
+          {island.id !== "mathematics" && <TrailWalkway id={island.id} />}
           {trail.stops.map((item, index) => (
             <button
               key={item.topic}
@@ -203,10 +288,17 @@ export function PracticeSubjectTrail({
               aria-pressed={selected === index}
               aria-controls="practice-trail-detail"
               aria-label={`Etapa ${index + 1}: ${item.title}, ${item.topic}`}
-              onClick={() => setSelected(index)}
+              onClick={(event) => {
+                setSelected(index);
+                if (island.id === "mathematics")
+                  event.currentTarget.scrollIntoView?.({
+                    block: "center",
+                    behavior: isMotionReduced() ? "instant" : "smooth",
+                  });
+              }}
             >
               <span className="solo-path-level__badge">
-                <TrailNumberPiece id={island.id} />
+                <TrailNumberPiece id={island.id} level={index + 1} />
                 <b>{index + 1}</b>
               </span>
               <span>
