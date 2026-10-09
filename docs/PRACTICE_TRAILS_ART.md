@@ -1,5 +1,27 @@
 # Interiores das trilhas de Praticar
 
+## Revisão com caminho limpo e composições móveis (2026-10-08)
+
+Modo: ferramenta integrada image_gen, edição das referências locais inspecionadas. Os interiores anteriores foram preservados; dez arquivos finais foram salvos em public/practice-trails, cinco *-clean.webp (desktop) e cinco *-mobile.webp (mobile). Conversão WebP mecânica com Sharp, qualidade 90, sem redesenho por código. Versões verticais nativas 1024 × 1536, horizontais 1672 × 941. O layout conserva a proporção de cada arte; coordenadas foram ajustadas após inspeção dos patamares.
+
+Conjunto final de prompts:
+
+> Edit the referenced approved Olena learning island interior. Preserve exactly the distinctive handcrafted matte cut-paper low-poly cartoon style, richly faceted objects, folded edges, original material language and discipline palette. Reconstruct composition only. Output a high-resolution portrait 1024x1536 mobile game environment, crisp fine edges, no blur, not a screenshot. A single clean continuous path runs vertically from bottom to top in the central corridor, roughly x=46%-54%, with four clear flat open landings centered at x=50%, y=85%,63%,41%,19%. Keep connecting path obvious and unbroken, restrained gentle bends, steps only where terrain changes elevation. No branching paths, scattered tiles, zigzag stairs, intersections or unrelated paths. Keep buildings, monuments, trees, crystals and decoration in left and right strips x<32% and x>68%. Central corridor uncluttered natural themed terrain, not a blank white stripe. Elevated orthographic view, uniform scale. Preserve original identity. No characters, UI, labels, numerals, buttons, text or white square placeholders.
+
+Temas específicos acrescentados a cada prompt:
+
+- Português: vermilion terracotta canyon, cream folded-paper path, red-leaf trees, little book libraries, quill monuments, amber lanterns.
+- Química: aqua and teal mineral canyon, cream hexagonal stone trail, cyan waterfalls, amber crystals, molecule sculpture, flask laboratory.
+- Biologia: lush green forest, warm earth footpath with sparse cream stepping stones, streams, greenhouse, DNA monument, roots and leafy trees.
+- Matemática: royal blue geometric canyon, cream geometric paving, gold accents, compass monument, protractor arch and faceted solids.
+- Programação: petrol blue circuit valley, dark teal paving with a single subtle gold center circuit trace, keyboard buildings, Python sculpture, code bracket monuments, turquoise bridges.
+
+Segundo prompt, uma edição por disciplina, usando sua versão vertical como referência:
+
+> Image 1 is the approved Olena portrait trail, edit target. Change framing into landscape 1920x1080 desktop game environment. Preserve exactly original matte cut-paper cartoon, folded edges, beautiful faceted architecture, materials and palette. A single restrained vertically continuous main path in central x=46%-54% from bottom to top with four empty flat roomy landings. Every landing physically connected, no forks, maze, intersections or scattered stairs. Scenery and monuments only at left x<32% and right x>68%, never across middle. Middle quiet natural themed trail, no empty white rectangle. Overhead orthographic composition, uniform scale, no horizon. Crisp edges, no blur. No UI, numerals, text, characters, white square placeholders, buttons or painted level markers. Change only composition, keep approved original papercraft identity.
+
+Todos os resultados foram inspecionados antes da integração. A imagem gerada não define o estado dos níveis: marcadores SVG, avatar, seleção, movimento e iluminação continuam sendo interface acessível.
+
 ## Produção
 
 Gerados com a ferramenta integrada image_gen, sem CLI/API externa. Referências: as ilhas aprovadas em public/practice-islands e os primeiros interiores avaliados pelo proprietário. Os primeiros cenários com corredor gramado repetido foram descartados. Os interiores finais têm piso e composição próprios, não só paletas ou objetos diferentes.

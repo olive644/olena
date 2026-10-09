@@ -3,14 +3,22 @@ import type { PRACTICE_ISLANDS } from "./practice-islands";
 export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
 export type SubjectIslandId = Exclude<PracticeIsland["id"], "languages">;
 
+// Coordinates are measured on each portrait's actual flat landings.
+export const MOBILE_TRAIL_Y: Record<SubjectIslandId, readonly number[]> = {
+  portuguese: [85, 63, 41, 19],
+  chemistry: [82, 56, 39, 17],
+  biology: [85, 61, 35, 14],
+  mathematics: [90, 63, 36, 14],
+  programming: [86, 56, 31, 13],
+};
+
 export const SUBJECT_TRAILS = {
   portuguese: {
-    route: "M144 620 C144 540 216 525 216 450 S140 360 140 280 S190 190 190 100",
     points: [
-      { x: 40, y: 86.1111 },
-      { x: 60, y: 62.5 },
-      { x: 38.8889, y: 38.8889 },
-      { x: 52.7778, y: 13.8889 },
+      { x: 50, y: 87 },
+      { x: 50, y: 62 },
+      { x: 50, y: 37 },
+      { x: 50, y: 14 },
     ],
     color: "#b9472c",
     shade: "#843222",
@@ -39,12 +47,11 @@ export const SUBJECT_TRAILS = {
     ],
   },
   chemistry: {
-    route: "M130 620 130 535 220 480 220 430 140 360 140 275 195 210 195 100",
     points: [
-      { x: 36.1111, y: 86.1111 },
-      { x: 61.1111, y: 59.7222 },
-      { x: 38.8889, y: 38.1944 },
-      { x: 54.1667, y: 13.8889 },
+      { x: 50, y: 74 },
+      { x: 50, y: 50 },
+      { x: 50, y: 29 },
+      { x: 50, y: 14 },
     ],
     color: "#087f95",
     shade: "#075367",
@@ -73,12 +80,11 @@ export const SUBJECT_TRAILS = {
     ],
   },
   biology: {
-    route: "M150 620 C110 540 220 520 220 450 S160 355 145 275 S190 180 175 100",
     points: [
-      { x: 41.6667, y: 86.1111 },
-      { x: 61.1111, y: 62.5 },
-      { x: 40.2778, y: 38.1944 },
-      { x: 48.6111, y: 13.8889 },
+      { x: 50, y: 87 },
+      { x: 50, y: 61 },
+      { x: 50, y: 34 },
+      { x: 50, y: 14 },
     ],
     color: "#287443",
     shade: "#184d30",
@@ -107,12 +113,11 @@ export const SUBJECT_TRAILS = {
     ],
   },
   mathematics: {
-    route: "M140 620 140 560 220 490 220 440 135 345 135 270 180 180 180 100",
     points: [
-      { x: 55.1, y: 74.5 },
-      { x: 48.1, y: 52 },
-      { x: 44.9, y: 27.8 },
-      { x: 36.3, y: 18.1 },
+      { x: 50, y: 87 },
+      { x: 50, y: 71 },
+      { x: 50, y: 40 },
+      { x: 50, y: 14 },
     ],
     color: "#2456ba",
     shade: "#193b7c",
@@ -141,12 +146,11 @@ export const SUBJECT_TRAILS = {
     ],
   },
   programming: {
-    route: "M130 620 130 530 220 530 220 445 220 350 140 350 140 275 140 175 190 175 190 100",
     points: [
-      { x: 36.1111, y: 86.1111 },
-      { x: 61.1111, y: 61.8056 },
-      { x: 38.8889, y: 38.1944 },
-      { x: 52.7778, y: 13.8889 },
+      { x: 50, y: 88 },
+      { x: 50, y: 64 },
+      { x: 50, y: 37 },
+      { x: 50, y: 14 },
     ],
     color: "#176784",
     shade: "#114459",
@@ -178,7 +182,6 @@ export const SUBJECT_TRAILS = {
   SubjectIslandId,
   {
     color: string;
-    route: string;
     points: readonly { x: number; y: number }[];
     shade: string;
     light: string;

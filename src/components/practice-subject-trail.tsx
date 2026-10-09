@@ -1,7 +1,12 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { isMotionReduced } from "../data/accessibility-preferences";
-import { SUBJECT_TRAILS, type PracticeIsland, type SubjectIslandId } from "../data/practice-trails";
+import {
+  MOBILE_TRAIL_Y,
+  SUBJECT_TRAILS,
+  type PracticeIsland,
+  type SubjectIslandId,
+} from "../data/practice-trails";
 import type { StoredProfile } from "../hooks/use-stored-profile";
 import { HelenaRoomIcon } from "./helena-room-icon";
 import { PracticeUserPortrait } from "./practice-user-portrait";
@@ -184,48 +189,6 @@ function TrailNumberPiece({ id, level }: { id: SubjectIslandId; level: number })
   );
 }
 
-function TrailWalkway({ id }: { id: SubjectIslandId }) {
-  const points = SUBJECT_TRAILS[id].points;
-  const tiles = points.slice(0, -1).flatMap((point, segment) =>
-    Array.from({ length: 8 }, (_, step) => {
-      const next = points[segment + 1]!;
-      const t = step / 8;
-      return {
-        x: (point.x + (next.x - point.x) * t) * 3.6,
-        y: (point.y + (next.y - point.y) * t) * 7.2,
-      };
-    }),
-  );
-  const shape =
-    id === "programming"
-      ? "M-15-7h30v14h-30Z"
-      : id === "portuguese"
-        ? "M-17-7h29l5 5v10h-34Z"
-        : id === "chemistry"
-          ? "m0-11 17 6v12L0 12-17 7V-5Z"
-          : id === "biology"
-            ? "m-10-8 22 2 5 8-9 9-22-3-4-10Z"
-            : "M-14-8h26l6 6-7 11h-25l-5-7Z";
-  return (
-    <svg
-      className="solo-level-path__route practice-trail-walkway"
-      viewBox="0 0 360 720"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      data-material={id}
-    >
-      {tiles.map((tile, index) => (
-        <g key={index} transform={`translate(${tile.x} ${tile.y})`}>
-          <path className="walkway-depth" d={shape} transform="translate(0 5)" />
-          <path className="walkway-surface" d={shape} />
-          <path className="walkway-fold" d="m-12-5 22 1 3 3-24-1Z" />
-          {id === "programming" && <path className="walkway-circuit" d="M-10 3h20M0-6V6" />}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 export function PracticeSubjectTrail({
   island,
   profile,
@@ -237,12 +200,38 @@ export function PracticeSubjectTrail({
   entering: boolean;
   onBack: () => void;
 }) {
-  const [selected, setSelected] = useState(0);
+  const [journey, setJourney] = useState({
+    target: 0,
+    visit: 0,
+    direction: "up",
+    phase: "open",
+  });
+  const selected = journey.target;
+  const root = useRef<HTMLElement>(null);
+  useEffect(() => {
+    root.current
+      ?.querySelector(".is-selected")
+      ?.scrollIntoView?.({ block: "center", behavior: "instant" });
+  }, []);
+  useEffect(() => {
+    if (journey.phase === "open") return;
+    const timer = window.setTimeout(
+      () => {
+        setJourney((current) => ({
+          ...current,
+          phase: current.phase === "travel" ? "arrive" : "open",
+        }));
+      },
+      journey.phase === "travel" ? 850 : 260,
+    );
+    return () => window.clearTimeout(timer);
+  }, [journey.target, journey.visit, journey.phase]);
   const trail = SUBJECT_TRAILS[island.id];
   const stop = trail.stops[selected]!;
   const position = trail.points[selected]!;
   return createPortal(
     <section
+      ref={root}
       className={`practice-hub solo-world-enter practice-avatar-journey practice-subject-trail practice-subject-trail--${island.id}`}
       aria-label={`Trilha de ${island.subject}`}
       style={
@@ -250,7 +239,6 @@ export function PracticeSubjectTrail({
           "--trail-color": trail.color,
           "--trail-shade": trail.shade,
           "--trail-light": trail.light,
-          "--trail-camera-x": `${position.x}%`,
         } as CSSProperties
       }
     >
@@ -268,33 +256,42 @@ export function PracticeSubjectTrail({
         aria-label={`Caminho de ${island.subject}`}
       >
         <picture className="solo-level-scenery" aria-hidden="true">
-          <source media="(min-width: 900px)" srcSet={`/practice-trails/${island.id}.webp`} />
+          <source media="(min-width: 900px)" srcSet={`/practice-trails/${island.id}-clean.webp`} />
           <img
             className="solo-level-scenery__art"
-            src={`/practice-trails/${island.id}-small.webp`}
+            src={`/practice-trails/${island.id}-mobile.webp`}
             alt=""
             decoding="async"
             fetchPriority="high"
           />
         </picture>
         <div className="solo-level-track">
-          {island.id !== "mathematics" && <TrailWalkway id={island.id} />}
           {trail.stops.map((item, index) => (
             <button
               key={item.topic}
               type="button"
-              className={`solo-path-level solo-path-level--${index + 1} practice-trail-stop${selected === index ? " is-selected" : ""}`}
-              style={{ left: `${trail.points[index]!.x}%`, top: `${trail.points[index]!.y}%` }}
+              className={`solo-path-level solo-path-level--${index + 1} practice-trail-stop${selected === index ? " is-selected" : ""}${selected === index && journey.phase !== "travel" ? " is-arrived" : ""}`}
+              style={
+                {
+                  left: `${trail.points[index]!.x}%`,
+                  "--trail-desktop-y": `${trail.points[index]!.y}%`,
+                  "--trail-mobile-y": `${MOBILE_TRAIL_Y[island.id][index]}%`,
+                } as CSSProperties
+              }
               aria-pressed={selected === index}
               aria-controls="practice-trail-detail"
               aria-label={`Etapa ${index + 1}: ${item.title}, ${item.topic}`}
               onClick={(event) => {
-                setSelected(index);
-                if (island.id === "mathematics")
-                  event.currentTarget.scrollIntoView?.({
-                    block: "center",
-                    behavior: isMotionReduced() ? "instant" : "smooth",
-                  });
+                setJourney((current) => ({
+                  target: index,
+                  visit: current.visit + 1,
+                  direction: index >= current.target ? "up" : "down",
+                  phase: isMotionReduced() ? "open" : "travel",
+                }));
+                event.currentTarget.scrollIntoView?.({
+                  block: "center",
+                  behavior: isMotionReduced() ? "instant" : "smooth",
+                });
               }}
             >
               <span className="solo-path-level__badge">
@@ -308,8 +305,14 @@ export function PracticeSubjectTrail({
             </button>
           ))}
           <div
-            className="practice-trail-traveler"
-            style={{ left: `calc(${position.x}% - 76px)`, top: `calc(${position.y}% + 25px)` }}
+            className={`practice-trail-traveler${journey.phase === "travel" ? ` is-moving is-moving--${journey.direction}` : ""}`}
+            style={
+              {
+                left: `${position.x}%`,
+                "--trail-mobile-y": `${MOBILE_TRAIL_Y[island.id][selected]}%`,
+                "--trail-desktop-y": `calc(${position.y}% - 62px)`,
+              } as CSSProperties
+            }
           >
             <PracticeUserPortrait
               profile={profile}
@@ -319,7 +322,16 @@ export function PracticeSubjectTrail({
           </div>
         </div>
       </div>
-      <aside id="practice-trail-detail" className="practice-trail-detail" aria-live="polite">
+      <span className="practice-trail-status" role="status">
+        {journey.phase === "travel" ? `Indo para a etapa ${selected + 1}` : ""}
+      </span>
+      <aside
+        id="practice-trail-detail"
+        className="practice-trail-detail"
+        aria-live="polite"
+        hidden={journey.phase !== "open"}
+        key={journey.visit}
+      >
         <TrailEmblem id={island.id} />
         <div>
           <span className="section-label">

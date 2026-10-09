@@ -88,6 +88,19 @@ for (const theme of ["light", "dark"] as const) {
               ),
           )
           .toBe(0);
+        await expect(trail.locator(".practice-trail-detail")).toBeVisible();
+        const alignment = await stages.nth(stage).evaluate((level) => {
+          const number = level.querySelector(".solo-path-level__badge b")!.getBoundingClientRect();
+          const avatar = document
+            .querySelector(".practice-trail-traveler img")!
+            .getBoundingClientRect();
+          return {
+            x: Math.abs(avatar.x + avatar.width / 2 - (number.x + number.width / 2)),
+            above: avatar.bottom < number.top,
+          };
+        });
+        expect(alignment.x).toBeLessThan(1);
+        expect(alignment.above).toBe(true);
       }
       await expect(trail.locator(".practice-trail-detail")).toContainText(
         "Exercícios em preparação",

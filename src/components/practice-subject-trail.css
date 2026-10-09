@@ -6,6 +6,7 @@
   width: 100%;
   height: 100dvh;
   overflow-y: auto;
+  padding-bottom: 190px;
   overscroll-behavior: contain;
   isolation: isolate;
   min-height: 0;
@@ -13,27 +14,31 @@
 }
 .practice-subject-trail .practice-trail-map {
   position: relative;
-  height: 760px;
-  min-height: 760px;
+  height: max(100dvh, 940px);
+  min-height: 940px;
   max-width: none;
-  background: var(--trail-light);
-}
-.practice-subject-trail .solo-level-track {
-  width: min(440px, 100%);
-}
-.practice-subject-trail--mathematics .practice-trail-map {
   container-type: size;
   overflow: hidden;
+  background: var(--trail-light);
 }
-.practice-subject-trail.practice-subject-trail--mathematics .solo-level-track,
-.practice-subject-trail.practice-subject-trail--mathematics .solo-level-scenery {
-  inset: auto;
+.practice-subject-trail .solo-level-track,
+.practice-subject-trail .solo-level-scenery {
+  position: absolute;
+  inset: 0 auto 0 50%;
   margin: 0;
-  left: 50%;
-  top: 50%;
   width: max(100cqw, calc(100cqh * 16 / 9));
-  height: max(100cqh, calc(100cqw * 9 / 16));
-  transform: translate(-50%, -50%);
+  height: 100%;
+  transform: translateX(-50%);
+  animation: none;
+}
+.practice-subject-trail .solo-level-scenery__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+  transform: none;
 }
 .math-tool-gold {
   fill: #facc15;
@@ -43,46 +48,8 @@
   stroke: #193b7c;
   stroke-width: 2;
 }
-.walkway-depth {
-  fill: #b89561;
-}
-.walkway-surface {
-  fill: #eed4a0;
-}
-.walkway-fold {
-  fill: #fff0cb;
-}
-.practice-subject-trail--portuguese .walkway-depth {
-  fill: #ae633c;
-}
-.practice-subject-trail--biology .walkway-surface {
-  fill: #bc955e;
-}
-.practice-subject-trail--biology .walkway-depth {
-  fill: #6c4a2d;
-}
-.practice-subject-trail--biology .walkway-fold {
-  fill: #e9c895;
-}
-.practice-subject-trail--chemistry .walkway-surface,
-.practice-subject-trail--programming .walkway-surface {
-  fill: var(--trail-color);
-}
-.practice-subject-trail--chemistry .walkway-depth,
-.practice-subject-trail--programming .walkway-depth {
-  fill: var(--trail-shade);
-}
-.practice-subject-trail--chemistry .walkway-fold,
-.practice-subject-trail--programming .walkway-fold {
-  fill: var(--trail-light);
-}
-.walkway-circuit {
-  fill: none;
-  stroke: #f6c96d;
-  stroke-width: 1.5;
-}
 .practice-trail-heading {
-  position: absolute;
+  position: fixed;
   z-index: 5;
   top: 16px;
   left: 20px;
@@ -160,16 +127,17 @@
 .number-piece-paper {
   fill: #fff9ef;
 }
-.practice-trail-stop.is-selected .number-piece-fold {
+.practice-trail-stop.is-arrived .number-piece-fold {
   fill: #facc15;
 }
-.practice-trail-stop.is-selected .solo-path-level__badge b {
+.practice-trail-stop.is-arrived .solo-path-level__badge b {
   color: #fff0a4;
 }
 .practice-trail-stop.is-selected > span:last-child {
   border-bottom-color: #bf9200;
 }
 .practice-trail-stop {
+  top: var(--trail-desktop-y);
   align-items: center;
   gap: 12px;
   width: 146px;
@@ -200,19 +168,81 @@
 }
 .practice-trail-traveler {
   position: absolute;
+  top: var(--trail-desktop-y);
   width: 0;
   height: 0;
   z-index: 4;
   pointer-events: none;
   transition:
-    left 650ms cubic-bezier(0.22, 0.75, 0.25, 1),
-    top 650ms cubic-bezier(0.22, 0.75, 0.25, 1);
+    left 850ms cubic-bezier(0.22, 0.75, 0.25, 1),
+    top 850ms cubic-bezier(0.22, 0.75, 0.25, 1);
 }
 .practice-trail-traveler .solo-path-avatar {
   bottom: 0;
 }
-.practice-trail-detail {
+.practice-trail-traveler.is-moving .solo-path-avatar {
+  animation: trail-avatar-rise 850ms ease-in-out;
+}
+.practice-trail-traveler.is-moving--down .solo-path-avatar {
+  animation-name: trail-avatar-descend;
+}
+.practice-trail-stop.is-arrived .solo-path-level__badge {
+  animation: trail-level-light 260ms ease-out;
+  filter: drop-shadow(0 0 7px #facc1590);
+}
+.practice-trail-detail[hidden] {
+  display: none;
+}
+.practice-trail-detail:not([hidden]) {
+  animation: trail-stage-open 220ms ease-out;
+}
+.practice-trail-status {
   position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+@keyframes trail-avatar-rise {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  45% {
+    transform: translateX(-50%) translateY(-12px) rotate(-4deg);
+  }
+}
+@keyframes trail-avatar-descend {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  45% {
+    transform: translateX(-50%) translateY(8px) rotate(4deg);
+  }
+}
+@keyframes trail-level-light {
+  from {
+    transform: scale(0.94);
+    filter: brightness(1.4) drop-shadow(0 0 14px #facc15);
+  }
+  to {
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 7px #facc1590);
+  }
+}
+@keyframes trail-stage-open {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.practice-trail-detail {
+  position: fixed;
   z-index: 5;
   right: 20px;
   bottom: 20px;
@@ -234,24 +264,39 @@
   color: #635344;
   font-size: 11px;
 }
-@media (min-width: 900px) {
-  .practice-subject-trail .practice-trail-map {
-    height: max(100dvh, 720px);
-    min-height: 720px;
-  }
-}
 @media (max-width: 899px) {
-  .practice-subject-trail.practice-subject-trail--mathematics .solo-level-track,
-  .practice-subject-trail.practice-subject-trail--mathematics .solo-level-scenery {
-    transform: translate(calc(-1 * var(--trail-camera-x)), -50%);
-    transition: transform 650ms cubic-bezier(0.22, 0.75, 0.25, 1);
-  }
   .practice-hub.practice-subject-trail {
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding-bottom: max(190px, env(safe-area-inset-bottom));
   }
   .practice-subject-trail .practice-trail-map {
-    height: 730px;
-    min-height: 730px;
+    height: max(740px, 150vw);
+    min-height: 740px;
+  }
+  .practice-subject-trail .solo-level-track,
+  .practice-subject-trail .solo-level-scenery {
+    width: calc(100cqh * 2 / 3);
+  }
+  .practice-subject-trail .practice-trail-stop {
+    top: var(--trail-mobile-y);
+    transform: translate(-50%, -32px);
+    gap: 5px;
+  }
+  .practice-subject-trail .solo-path-level__badge {
+    width: 64px;
+    height: 64px;
+  }
+  .practice-subject-trail .solo-path-level__badge b {
+    font-size: 29px;
+  }
+  .practice-subject-trail .practice-trail-stop strong {
+    display: none;
+  }
+  .practice-trail-traveler {
+    top: calc(var(--trail-mobile-y) - 44px);
+  }
+  .practice-trail-traveler .solo-path-avatar {
+    width: 44px;
+    height: 44px;
   }
   .practice-trail-heading {
     position: sticky;
@@ -285,10 +330,11 @@
     background: transparent;
   }
   .practice-trail-detail {
-    position: relative;
+    position: fixed;
     right: auto;
-    bottom: auto;
-    width: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 0;
+    width: calc(100% - 24px);
     margin: 0 12px;
   }
   .practice-trail-stop {
@@ -299,9 +345,20 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .practice-subject-trail.practice-subject-trail--mathematics .solo-level-track,
-  .practice-subject-trail.practice-subject-trail--mathematics .solo-level-scenery,
   .practice-trail-traveler {
     transition: none;
   }
+  .practice-subject-trail .solo-path-avatar,
+  .practice-subject-trail .solo-path-level__badge,
+  .practice-trail-detail {
+    animation: none !important;
+  }
+}
+:root[data-reduce-motion="true"] .practice-trail-traveler {
+  transition: none;
+}
+:root[data-reduce-motion="true"] .practice-subject-trail .solo-path-avatar,
+:root[data-reduce-motion="true"] .practice-subject-trail .solo-path-level__badge,
+:root[data-reduce-motion="true"] .practice-trail-detail {
+  animation: none !important;
 }

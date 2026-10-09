@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Percurso central e chegada às etapas (2026-10-08)
+
+- As cinco trilhas de disciplinas preservam o papercraft aprovado, mas reorganizam os cenários nas laterais de um caminho central contínuo. Removida a passarela decorativa que não acompanhava o terreno. Artes próprias de desktop e celular, em WebP de qualidade 90; originais preservados como referência.
+- A foto permanece centralizada acima do número. Seleção dispara deslocamento vertical de 850 ms, iluminação do nível por 260 ms e abertura dos temas somente depois da chegada. Trocas rápidas e retorno cancelam chegada pendente; movimento reduzido dispensa a sequência. Esta é navegação de prévia, não conclusão de exercício, XP ou desbloqueio pedagógico.
+- Foto, números e arte usam as mesmas coordenadas por composição. Cabeçalho e painel fixos, níveis compactos no celular e margem de rolagem deixam a primeira etapa visível sem cobrir seu número. Nenhum exercício novo foi adicionado e a trilha real de Idiomas permanece inalterada.
+- Regressões automatizadas: chegada em três fases, troca rápida de destino, movimento reduzido, foto persistente, número centralizado e avatar acima dele em desktop e mobile.
+- Validação local: sete testes do componente e quatro cenários E2E das cinco disciplinas passaram, cobrindo desktop/mobile e claro/escuro. Build, TypeScript, lint, formatação, API e orçamento de desempenho passaram (275,6 KiB iniciais, 1157,5 KiB totais de JavaScript). A suíte unitária geral não foi concluída: o processo Node encerrou por falta de memória, inclusive com um worker. Não considerar a verificação geral verde sem execução completa em ambiente com recursos disponíveis.
+
 ## Trilhas exploráveis das seis ilhas (2026-10-08)
 
 - Idiomas conserva trilha, exercícios e progresso existentes. Português, Química, Biologia, Matemática e Programação ganham interiores próprios e quatro etapas exploráveis, derivadas dos temas de cada ilha. Não há avanço de progresso, XP ou exercícios simulados nessas cinco trilhas.
