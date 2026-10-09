@@ -71,7 +71,7 @@ export function PracticeIslandCarousel({
           return (
             <div
               key={island.number}
-              className={`practice-carousel-island${active ? " is-current" : " is-preview"}`}
+              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" ? " is-locked" : ""}`}
               aria-hidden={!active}
               style={
                 {

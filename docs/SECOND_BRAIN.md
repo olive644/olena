@@ -1,5 +1,28 @@
 # OlenaStudy: Second Brain
 
+2026-10-09: usuário suspendeu as trilhas. PracticeHub começa na ilha de Matemática
+e bloqueia as outras cinco, mantendo seus dados. A entrada abre MathArcade, não
+PracticeSubjectTrail nem o piloto Pixi. Protótipo de aritmética rápida com 60s,
+três chances, combo e respostas via teclado/toque. Pontos não concedem XP nem
+alteram progresso salvo. Trilhas e seus cenários são preservados para retomada.
+
+Piloto PixiJS: preview-matematica-pixi.html monta MathPixiTrail com oito níveis.
+math-pixi-renderer é importado sob demanda e desenha terreno contínuo. Canvas
+decorativo e botões HTML compartilham coordenadas de math-pixi-pilot.ts. Sem ticker
+ocioso, ResizeObserver redesenha, cleanup destrói app. Não aplicado em produção
+até aprovação visual e expansão. Não confundir o piloto com minigame pronto.
+
+BASIC_MATH_CHAPTERS define dez capítulos básicos com cinco objetivos específicos
+por capítulo. BasicMathArtifact usa capítulo e passo para desenhar objetos temáticos
+de papel; teste garante 50 variantes reais de SVG. O minigame de contas ainda não
+está implementado. Evitar adicionar matemática avançada nesta primeira ilha.
+
+Matemática básica tem 50 posições exploráveis em BASIC_MATH_LEVELS, sem exercícios
+nem progresso inventado. MATH_SCENE_COUNT organiza trechos do cenário aprovado,
+com sobreposição de bordas e câmera por scrollIntoView. Fundos de todas as trilhas
+usam variantes -fast-desktop/-fast-mobile, WebP comprimido, originais preservados.
+Lazy loading nos trechos fora da tela; prioridade alta apenas no cenário inicial.
+
 api/olena.ts expõe handleOlena, somente GET de catálogo/ilhas/metodologias, versão 1.
 src/domain/olena.ts deriva metadados de PRACTICE_ISLANDS, agora com IDs estáveis.
 Registro de metodologias vazio até a etapa pedagógica. Nada de IA simulada ou voz:
@@ -886,11 +909,11 @@ Pastas da vitrine: `NotebookFolder` recebe cadernos, páginas e matérias de `No
 
 # Notes de texto
 
-PracticeSubjectTrail apresenta etapas exploráveis para cinco disciplinas, com configuração em practice-trails.ts, emblemas vetoriais e interiores WebP em public/practice-trails. Não chama SoloMode nem altera helena.soloProgress ou XP. Seleção é local e volta à primeira etapa ao entrar de novo. PracticeHub compartilha o voo de entrada com Idiomas, que permanece com jogos e progresso reais. Catálogo Olena diferencia available (Idiomas) de preview (trilhas visuais sem exercícios). Não confundir exploração com conclusão pedagógica.
+PracticeSubjectTrail apresenta as seis trilhas em tela cheia. Cinco disciplinas continuam como prévias, sem gravar progresso ou XP. Idiomas recebe unlockedLevel e onOpenLevel de PracticeHub, mantém os minigames reais e abre o jogo somente após a chegada do avatar. Sua arte existente fica em solo-interior-1*.webp, com percurso central vetorial; as outras artes estão em public/practice-trails. Catálogo Olena diferencia available (Idiomas) de preview (trilhas visuais sem exercícios). Não confundir exploração com conclusão pedagógica.
 
 As cinco trilhas usam um único percurso central incorporado à arte, sem passarela SVG sobreposta. Cenário e solo-level-track compartilham um canvas 16:9 no desktop e 2:3 no mobile, com escala proporcional e corte lateral limitado. public/practice-trails/*-clean.webp contém interiores horizontais e *-mobile.webp contém composições verticais próprias (1024 × 1536), não miniaturas ampliadas. points e MOBILE_TRAIL_Y são coordenadas de cada composição, escolhidas sobre o caminho real. MathLevelArtifact continua dando um objeto próprio a cada tema, sem caixa branca atrás do número.
 
-PracticeSubjectTrail mantém uma única foto acima do número. A seleção local passa por travel (850 ms), arrive (260 ms de iluminação) e open (mostra os temas). Nova seleção cancela o temporizador anterior; desmontagem também cancela. Movimento reduzido abre diretamente. O painel não anuncia conclusão nem cria exercícios, pontos ou progresso: continua mostrando Exercícios em preparação. Cabeçalho e painel fixos permanecem disponíveis durante a câmera vertical, com espaço de rolagem suficiente para a primeira etapa não ficar escondida atrás do painel no celular.
+PracticeSubjectTrail mantém uma única foto acima do número. A seleção local passa por travel (850 ms), arrive (260 ms de iluminação) e open. Nova seleção cancela o temporizador anterior; desmontagem também cancela. Movimento reduzido abre diretamente. Não há painel inferior nem faixa de preenchimento abaixo do mapa. O cabeçalho mostra apenas a disciplina, emblema e retorno com a seta amarela oficial. Nas prévias, o status de acessibilidade anuncia a seleção e Exercícios em preparação; em Idiomas, onOpenLevel abre a atividade existente sem desbloquear etapas pela navegação.
 
 O avatar de Praticar pertence ao palco do carrossel, não à ilha selecionada. left/bottom derivam de traveler e das variáveis de tamanho/base do palco; transições de 550 ms acompanham os cenários e --drag-x acompanha o gesto. Não remontar a foto ao alterar index. Movimento reduzido remove as transições, e o voo de entrada na trilha mede a mesma moldura persistente.
 

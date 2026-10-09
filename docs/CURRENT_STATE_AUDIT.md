@@ -1,5 +1,41 @@
 # Auditoria do estado atual
 
+## Praticar: protótipo de contas (2026-10-09)
+
+- Trilhas suspensas na entrada das ilhas por decisão do usuário. Somente Matemática está disponível; as cinco outras ilhas continuam navegáveis, mas bloqueadas mesmo com progresso legado.
+- Matemática abre MathArcade em tela cheia: rodada de 60 segundos, três chances, respostas por toque ou teclas 1 a 4, bônus de sequência e dificuldade baseada em acertos. Apenas aritmética básica, subtrações não negativas e divisões exatas.
+- Pontuação somente local, sem XP, chamadas de IA ou gravação de progresso. O timer pausa quando a aba fica oculta. Saída restaura foco e rolagem; temporizadores são liberados.
+- Idiomas utiliza os mesmos cenários e componentes da trilha compartilhada, sem a sobreposição antiga de estrada ou escala mobile exclusiva. A trilha permanece arquivada no código, não disponível para entrar.
+- Os antigos testes de entrada em trilhas foram substituídos pela validação do novo fluxo. Os testes isolados das trilhas permanecem.
+
+## Piloto de Matemática com PixiJS (2026-10-09)
+
+- Refinamento da rua: calçamento interligado com pedras claras facetadas, meio-fio de blocos, praças octogonais nos níveis e postes de papel. mathStreetCenter deriva o eixo do pavimento dos mesmos pontos dos marcadores; teste cobre cada patamar e a interpolação entre eles. Sem imagens repetidas ou emendas por transparência.
+
+- Preview independente em preview-matematica-pixi.html, com oito posições. Não substitui ainda a trilha de produção: aprovação visual vem antes da expansão para 50 níveis.
+- PixiJS 8 desenha um único terreno, corredor contínuo e facetas em Graphics. Sem mosaico de fundos ou máscaras de emenda. Posições do chão, degraus, botões e avatar derivam de MATH_PILOT_STOPS.
+- Botões HTML mantêm acessibilidade e teclado; canvas decorativo. Renderer carregado dinamicamente, resolução limitada a 2, sem ticker ocioso, redesenho apenas no resize e destruição ao desmontar. Falha de WebGL exibe aviso e conserva controles.
+- Dependência justificada pelo piloto de câmera/cenário solicitado, npm audit sem vulnerabilidades. O piloto não entra no bundle principal enquanto permanecer só no preview. Tipos de mocks existentes foram estreitados para canvas 2D após a declaração adicional de WebGPU do PixiJS.
+
+## Conteúdo básico e marcadores temáticos de Matemática (2026-10-08)
+
+- Os 50 objetivos têm títulos próprios, desde contar até 10 até problemas cotidianos. Dez capítulos: contagem, adição, subtração, multiplicação, divisão, contas mistas, frações, decimais, porcentagens e dia a dia. Nenhum conteúdo de matemática avançada nesta ilha.
+- BasicMathArtifact substitui a repetição de quatro peças por objetos associados ao conteúdo, com cinco variações por capítulo. Ábaco, blocos, peça subtraída, agrupamentos, divisão, operadores, inteiro repartido, casas decimais, percentual e recibo. Cores por capítulo, números incorporados e desenhos em SVG, sem arquivos bitmap adicionais.
+- Minigame de resultados de contas permanece etapa futura. Math-Havoc serve somente de referência de encadeamento de acertos; não houve cópia de arte ou implementação de perguntas, tempo, pontos ou XP nesta alteração.
+
+## Matemática básica com 50 posições e cenários leves (2026-10-08)
+
+- A trilha de Matemática apresenta 50 posições, em dez grupos: contagem, adição, subtração, multiplicação, divisão, frações, decimais, porcentagens, medidas e problemas. São posições exploráveis, sem exercícios, XP ou desbloqueios pedagógicos simulados.
+- O mapa estende o cenário aprovado em trechos com sobreposição nas junções. Selecionar um nível enquadra o destino e desloca o avatar acima do número, nos dois sentidos; redução de movimento permanece respeitada.
+- Todas as trilhas usam barra superior de papel creme e botões facetados. Voltar recebe estado roxo no hover e foco. Novos WebPs comprimidos preservam os originais, com cerca de 44% a 54% menos bytes nas cinco disciplinas. Imagens fora da tela têm carregamento lazy; somente o cenário inicial recebe prioridade alta.
+- Testes de navegador cobrem subida e descida entre 1 e 50 em desktop e mobile, além das seis ilhas em claro e escuro.
+
+## Trilhas sem painéis inferiores e Idiomas integrado (2026-10-08)
+
+- Idiomas usa o mesmo palco em tela cheia das cinco disciplinas, preservando seus minigames reais, bloqueios e progresso. O avatar chega ao nível, o marcador acende e só então abre o jogo. A arte existente de Idiomas permanece, com percurso central em papel e números em balões facetados.
+- Removidos os painéis descritivos inferiores e os nomes de ilha abaixo da matéria no cabeçalho. O fim do mapa não reserva mais uma faixa vazia para esses painéis. Os marcadores continuam numerados e acessíveis, com temas junto ao nível.
+- Voltar aos mundos usa a seta amarela oficial em paper-arrow.svg e acabamento creme de papel. Seleção de etapas sem exercícios não grava progresso; sua condição de prévia continua anunciada de maneira não visual.
+
 ## Percurso central e chegada às etapas (2026-10-08)
 
 - As cinco trilhas de disciplinas preservam o papercraft aprovado, mas reorganizam os cenários nas laterais de um caminho central contínuo. Removida a passarela decorativa que não acompanhava o terreno. Artes próprias de desktop e celular, em WebP de qualidade 90; originais preservados como referência.
