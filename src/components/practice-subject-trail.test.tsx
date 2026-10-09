@@ -28,6 +28,14 @@ describe("trilhas exploráveis por disciplina", () => {
       expect(trail.stops.map((stop) => stop.topic)).toEqual([...island.topics]);
       const stages = screen.getAllByRole("button", { name: /^Etapa/ });
       expect(stages).toHaveLength(4);
+      for (const [index, stage] of stages.entries()) {
+        expect(
+          stage.querySelector(".practice-trail-number-piece")?.getAttribute("data-piece"),
+        ).toBe(island.id);
+        expect(stage.querySelector(".solo-path-level__badge b")?.textContent).toBe(
+          String(index + 1),
+        );
+      }
       const portrait = screen.getByAltText("Sua foto no nível 1");
       for (const [index, stage] of stages.entries()) {
         fireEvent.click(stage);

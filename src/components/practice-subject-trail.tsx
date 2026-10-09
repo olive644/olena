@@ -55,6 +55,84 @@ function TrailEmblem({ id }: { id: SubjectIslandId }) {
   );
 }
 
+function TrailNumberPiece({ id }: { id: SubjectIslandId }) {
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      aria-hidden="true"
+      className="practice-trail-number-piece"
+      data-piece={id}
+    >
+      {id === "portuguese" ? (
+        <>
+          <path className="number-piece-depth" d="M13 12h65l10 11v68H13L6 83V20Z" />
+          <path className="number-piece-paper" d="M17 17h65v65H17Z" />
+          <path className="number-piece-fold" d="M17 82h65v5H17Zm0 7h65v3H17Z" />
+          <path className="number-piece-face" d="M13 6h65l10 11v61H13L6 70V14Z" />
+          <path className="number-piece-edge" d="M6 14 13 6v72l-7-8Z" />
+          <path className="number-piece-paper" d="M25 18h50v56H25Z" />
+          <path className="number-piece-fold" d="M67 18h8v14l-4-3-4 3ZM17 14h3v57h-3Z" />
+        </>
+      ) : id === "chemistry" ? (
+        <>
+          <path
+            className="number-piece-fold"
+            d="m13 18 24 17-4 7L9 24Zm50 19 25-13 4 7-25 13ZM60 66l20 20-6 6-20-20Z"
+          />
+          <path className="number-piece-depth" d="m50 16 31 18v36L50 88 19 70V34Z" />
+          <path className="number-piece-face" d="m50 8 31 18v36L50 80 19 62V26Z" />
+          <path className="number-piece-fold" d="m50 8 31 18-9 5-22-13-22 13-9-5Z" />
+          <path className="number-piece-paper" d="m50 22 22 13v22L50 70 28 57V35Z" />
+          <path
+            className="number-piece-face"
+            d="m12 6 11 7v13l-11 7-11-7V13Zm77 9 10 6v13l-10 6-10-6V21ZM79 78l11 6v12l-11 4-10-6V84Z"
+          />
+          <path
+            className="number-piece-fold"
+            d="m12 6 11 7-11 6-11-6Zm77 9 10 6-10 6-10-6ZM79 78l11 6-11 5-10-5Z"
+          />
+        </>
+      ) : id === "biology" ? (
+        <>
+          <path className="number-piece-depth" d="m48 7 23 11 22 24-6 28-25 22-32-6L8 66l3-28Z" />
+          <path className="number-piece-face" d="m48 1 23 11 22 24-6 28-25 22-32-6L8 60l3-28Z" />
+          <path
+            className="number-piece-fold"
+            d="m48 1 23 11-15 14-26 7-19-1Zm-37 31 19 1-6 17L8 60Z"
+          />
+          <path className="number-piece-edge" d="m56 26 15-14 22 24-6 28-25 22-7-16 21-17Z" />
+          <path className="number-piece-paper" d="m48 20 19 13 6 20-17 19-24-6-9-23 12-17Z" />
+          <path
+            className="number-piece-fold"
+            d="m53 80 9 6-18 14-7-6Zm21-55 9 7-10 7-4-7ZM18 59l12 9-6 5-11-9Z"
+          />
+        </>
+      ) : id === "mathematics" ? (
+        <>
+          <path className="number-piece-depth" d="M13 26 50 8l43 18v54L78 94H13Z" />
+          <path className="number-piece-face" d="M13 20h65v66H13Z" />
+          <path className="number-piece-fold" d="M13 20 50 2l43 18-15 9H22Z" />
+          <path className="number-piece-edge" d="m78 29 15-9v54L78 86Z" />
+          <path className="number-piece-paper" d="M23 28h54v36H23Z" />
+          <path className="number-piece-fold" d="m19 71 11 9H19ZM67 9l11 5-10 5-10-5Z" />
+        </>
+      ) : (
+        <>
+          <path className="number-piece-depth" d="M12 12h76l10 15v63l-10 7H12L2 90V27Z" />
+          <path className="number-piece-face" d="M12 5h76l10 15v63l-10 7H12L2 83V20Z" />
+          <path className="number-piece-fold" d="M12 5h76l10 15-12 8-8-12H22l-8 12-12-8Z" />
+          <path className="number-piece-edge" d="m86 28 12-8v63l-10 7H12L2 83l12-10h72Z" />
+          <path className="number-piece-paper" d="M24 23h52v46H24Z" />
+          <path
+            className="number-piece-fold"
+            d="m16 37-8 9 8 9 3-4-5-5 5-5Zm68 0 8 9-8 9-3-4 5-5-5-5ZM33 77h34v4H33Z"
+          />
+        </>
+      )}
+    </svg>
+  );
+}
+
 export function PracticeSubjectTrail({
   island,
   profile,
@@ -128,20 +206,7 @@ export function PracticeSubjectTrail({
               onClick={() => setSelected(index)}
             >
               <span className="solo-path-level__badge">
-                <svg
-                  viewBox="0 0 100 100"
-                  aria-hidden="true"
-                  className="practice-trail-number-piece"
-                >
-                  <path className="number-piece-depth" d="M22 12h56l16 16v52L78 96H22L6 80V28Z" />
-                  <path className="number-piece-face" d="M22 4h56l16 16v52L78 88H22L6 72V20Z" />
-                  <path className="number-piece-fold" d="M22 4h56l16 16-9 5-12-12H27L15 25l-9-5Z" />
-                  <path
-                    className="number-piece-edge"
-                    d="m85 25 9-5v52L78 88H22L6 72l9-5 12 12h46l12-12Z"
-                  />
-                  <path className="number-piece-paper" d="M28 16h44l10 10v40L72 76H28L18 66V26Z" />
-                </svg>
+                <TrailNumberPiece id={island.id} />
                 <b>{index + 1}</b>
               </span>
               <span>

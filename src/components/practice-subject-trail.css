@@ -115,15 +115,14 @@
 .number-piece-paper {
   fill: #fff9ef;
 }
-.practice-trail-stop.is-selected .number-piece-face {
+.practice-trail-stop.is-selected .number-piece-fold {
   fill: #facc15;
 }
-.practice-trail-stop.is-selected .number-piece-fold {
+.practice-trail-stop.is-selected .number-piece-paper {
   fill: #fff0a4;
 }
-.practice-trail-stop.is-selected .number-piece-edge,
-.practice-trail-stop.is-selected .number-piece-depth {
-  fill: #bf9200;
+.practice-trail-stop.is-selected > span:last-child {
+  border-bottom-color: #bf9200;
 }
 .practice-trail-stop {
   align-items: center;
