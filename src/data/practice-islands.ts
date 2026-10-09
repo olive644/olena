@@ -1,4 +1,4 @@
-/** Cenários navegáveis. Apenas Idiomas mantém os minigames já disponíveis. */
+/** Cenários navegáveis. Somente Matemática está liberada neste protótipo. */
 export const PRACTICE_ISLANDS = [
   {
     number: 1,
@@ -45,10 +45,10 @@ export const PRACTICE_ISLANDS = [
     id: "mathematics",
     subject: "Matemática",
     title: "Picos dos Padrões",
-    description: "Formas, padrões e ideias que se conectam.",
+    description: "Das primeiras contas à matemática básica do dia a dia.",
     art: "/practice-islands/mathematics.webp",
     traveler: { left: 54, top: 45, width: 21 },
-    topics: ["Números", "Álgebra", "Geometria", "Estatística"],
+    topics: ["Operações", "Frações", "Decimais", "Porcentagens"],
   },
   {
     number: 6,

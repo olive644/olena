@@ -190,19 +190,6 @@
 .practice-trail-stop:disabled .solo-path-level__badge {
   filter: saturate(0.5);
 }
-.practice-language-path {
-  position: absolute;
-  left: calc(50% - 50px);
-  top: 10%;
-  height: 82%;
-  width: 100px;
-}
-@media (max-width: 899px) {
-  .practice-subject-trail.practice-subject-trail--languages .solo-level-track,
-  .practice-subject-trail.practice-subject-trail--languages .solo-level-scenery {
-    width: 100cqh;
-  }
-}
 .practice-trail-emblem {
   width: 44px;
   height: 44px;

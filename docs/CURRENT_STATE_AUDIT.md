@@ -1,5 +1,28 @@
 # Auditoria do estado atual
 
+## Praticar: protótipo de contas (2026-10-09)
+
+- Trilhas suspensas na entrada das ilhas por decisão do usuário. Somente Matemática está disponível; as cinco outras ilhas continuam navegáveis, mas bloqueadas mesmo com progresso legado.
+- Matemática abre MathArcade em tela cheia: rodada de 60 segundos, três chances, respostas por toque ou teclas 1 a 4, bônus de sequência e dificuldade baseada em acertos. Apenas aritmética básica, subtrações não negativas e divisões exatas.
+- Pontuação somente local, sem XP, chamadas de IA ou gravação de progresso. O timer pausa quando a aba fica oculta. Saída restaura foco e rolagem; temporizadores são liberados.
+- Idiomas utiliza os mesmos cenários e componentes da trilha compartilhada, sem a sobreposição antiga de estrada ou escala mobile exclusiva. A trilha permanece arquivada no código, não disponível para entrar.
+- Os antigos testes de entrada em trilhas foram substituídos pela validação do novo fluxo. Os testes isolados das trilhas permanecem.
+
+## Piloto de Matemática com PixiJS (2026-10-09)
+
+- Refinamento da rua: calçamento interligado com pedras claras facetadas, meio-fio de blocos, praças octogonais nos níveis e postes de papel. mathStreetCenter deriva o eixo do pavimento dos mesmos pontos dos marcadores; teste cobre cada patamar e a interpolação entre eles. Sem imagens repetidas ou emendas por transparência.
+
+- Preview independente em preview-matematica-pixi.html, com oito posições. Não substitui ainda a trilha de produção: aprovação visual vem antes da expansão para 50 níveis.
+- PixiJS 8 desenha um único terreno, corredor contínuo e facetas em Graphics. Sem mosaico de fundos ou máscaras de emenda. Posições do chão, degraus, botões e avatar derivam de MATH_PILOT_STOPS.
+- Botões HTML mantêm acessibilidade e teclado; canvas decorativo. Renderer carregado dinamicamente, resolução limitada a 2, sem ticker ocioso, redesenho apenas no resize e destruição ao desmontar. Falha de WebGL exibe aviso e conserva controles.
+- Dependência justificada pelo piloto de câmera/cenário solicitado, npm audit sem vulnerabilidades. O piloto não entra no bundle principal enquanto permanecer só no preview. Tipos de mocks existentes foram estreitados para canvas 2D após a declaração adicional de WebGPU do PixiJS.
+
+## Conteúdo básico e marcadores temáticos de Matemática (2026-10-08)
+
+- Os 50 objetivos têm títulos próprios, desde contar até 10 até problemas cotidianos. Dez capítulos: contagem, adição, subtração, multiplicação, divisão, contas mistas, frações, decimais, porcentagens e dia a dia. Nenhum conteúdo de matemática avançada nesta ilha.
+- BasicMathArtifact substitui a repetição de quatro peças por objetos associados ao conteúdo, com cinco variações por capítulo. Ábaco, blocos, peça subtraída, agrupamentos, divisão, operadores, inteiro repartido, casas decimais, percentual e recibo. Cores por capítulo, números incorporados e desenhos em SVG, sem arquivos bitmap adicionais.
+- Minigame de resultados de contas permanece etapa futura. Math-Havoc serve somente de referência de encadeamento de acertos; não houve cópia de arte ou implementação de perguntas, tempo, pontos ou XP nesta alteração.
+
 ## Matemática básica com 50 posições e cenários leves (2026-10-08)
 
 - A trilha de Matemática apresenta 50 posições, em dez grupos: contagem, adição, subtração, multiplicação, divisão, frações, decimais, porcentagens, medidas e problemas. São posições exploráveis, sem exercícios, XP ou desbloqueios pedagógicos simulados.

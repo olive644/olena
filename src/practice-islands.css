@@ -301,3 +301,6 @@ body.solo-world-open .app-shell > .sidebar ~ .main-content,
     animation: none;
   }
 }
+.practice-carousel-island.is-locked .solo-island-art {
+  filter: saturate(0.45);
+}

@@ -1,5 +1,22 @@
 # OlenaStudy: Second Brain
 
+2026-10-09: usuário suspendeu as trilhas. PracticeHub começa na ilha de Matemática
+e bloqueia as outras cinco, mantendo seus dados. A entrada abre MathArcade, não
+PracticeSubjectTrail nem o piloto Pixi. Protótipo de aritmética rápida com 60s,
+três chances, combo e respostas via teclado/toque. Pontos não concedem XP nem
+alteram progresso salvo. Trilhas e seus cenários são preservados para retomada.
+
+Piloto PixiJS: preview-matematica-pixi.html monta MathPixiTrail com oito níveis.
+math-pixi-renderer é importado sob demanda e desenha terreno contínuo. Canvas
+decorativo e botões HTML compartilham coordenadas de math-pixi-pilot.ts. Sem ticker
+ocioso, ResizeObserver redesenha, cleanup destrói app. Não aplicado em produção
+até aprovação visual e expansão. Não confundir o piloto com minigame pronto.
+
+BASIC_MATH_CHAPTERS define dez capítulos básicos com cinco objetivos específicos
+por capítulo. BasicMathArtifact usa capítulo e passo para desenhar objetos temáticos
+de papel; teste garante 50 variantes reais de SVG. O minigame de contas ainda não
+está implementado. Evitar adicionar matemática avançada nesta primeira ilha.
+
 Matemática básica tem 50 posições exploráveis em BASIC_MATH_LEVELS, sem exercícios
 nem progresso inventado. MATH_SCENE_COUNT organiza trechos do cenário aprovado,
 com sobreposição de bordas e câmera por scrollIntoView. Fundos de todas as trilhas

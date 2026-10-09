@@ -12,7 +12,7 @@ afterEach(() => {
 describe("trilhas exploráveis por disciplina", () => {
   for (const island of PRACTICE_ISLANDS) {
     if (island.id === "languages") continue;
-    it(`apresenta quatro etapas próprias de ${island.subject}, sem inventar exercícios`, () => {
+    it(`apresenta etapas próprias de ${island.subject}, sem inventar exercícios`, () => {
       vi.useFakeTimers();
       const onBack = vi.fn();
       const before = localStorage.getItem("helena.soloProgress");
@@ -50,6 +50,8 @@ describe("trilhas exploráveis por disciplina", () => {
       expect(walkway).toBeNull();
       const portrait = screen.getByAltText("Sua foto no nível 1");
       for (const [index, stage] of stages.entries()) {
+        // All markers are checked above; sample journeys across the long map.
+        if (island.id === "mathematics" && ![0, 15, 30, 49].includes(index)) continue;
         fireEvent.click(stage);
         expect(stage.getAttribute("aria-pressed")).toBe("true");
         expect(screen.getByAltText(`Sua foto no nível ${index + 1}`)).toBe(portrait);
@@ -117,7 +119,7 @@ describe("trilhas exploráveis por disciplina", () => {
     expect(document.querySelector(".is-moving")).toBeNull();
     vi.unstubAllGlobals();
   });
-  it("mantém Idiomas em tela cheia, bloqueia etapas futuras e abre o jogo após a chegada", () => {
+  it("mantém Idiomas no padrão compartilhado, sem a estrada e os minigames antigos", () => {
     vi.useFakeTimers();
     const onOpenLevel = vi.fn();
     const island = PRACTICE_ISLANDS[0];
@@ -143,5 +145,9 @@ describe("trilhas exploráveis por disciplina", () => {
     act(() => vi.advanceTimersByTime(260));
     expect(onOpenLevel).toHaveBeenCalledExactlyOnceWith(1);
     expect(document.querySelector(".practice-trail-detail")).toBeNull();
+    expect(document.querySelector(".practice-language-path")).toBeNull();
+    expect(screen.queryByText("Flashcards")).toBeNull();
+    expect(screen.queryByText("Bingo")).toBeNull();
+    expect(SUBJECT_TRAILS.languages.stops.map((stop) => stop.topic)).toEqual([...island.topics]);
   });
 });

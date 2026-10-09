@@ -103,7 +103,7 @@ test("usa o ícone grafite original em Começar prática", async ({ page }) => {
   }
 });
 
-test("explora mundos com a foto do perfil e abre a trilha de níveis", async ({
+test("explora mundos com a foto do perfil e abre somente Matemática", async ({
   page,
 }, testInfo) => {
   await page
@@ -112,26 +112,19 @@ test("explora mundos com a foto do perfil e abre a trilha de níveis", async ({
     })
     .getByRole("button", { name: "Praticar", exact: true })
     .click();
+  await expect(page.getByAltText("Sua foto sobre a ilha")).toBeVisible();
   await page.getByRole("button", { name: "Próximo mundo" }).click();
-  await expect(page.locator(".is-current .solo-island-art")).toHaveCount(1);
   await expect(page.locator(".is-current .solo-island-art")).toHaveAttribute(
     "src",
-    "/practice-islands/portuguese.webp",
+    "/practice-islands/programming.webp",
   );
-  await expect(page.getByAltText("Sua foto sobre a ilha")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Explorar ilha", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ilha bloqueada" })).toBeDisabled();
   await page.getByRole("button", { name: "Mundo anterior" }).click();
+  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await expect(page.getByRole("region", { name: "Laboratório das contas" })).toBeVisible();
+  await expect(page.locator(".practice-trail-map")).toHaveCount(0);
+  await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByAltText("Sua foto sobre a ilha")).toBeVisible();
-  await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
-  await expect(page.locator("body")).toHaveClass(/solo-world-open/);
-  await expect(page.locator(".solo-level-path")).toHaveClass(/solo-level-path--world-1/);
-  await expect(page.getByRole("button", { name: /Nível 1: Escuta/ })).toBeEnabled();
-  await expect(
-    page.getByRole("button", { name: /Nível 1: Escuta/ }).getByAltText("Sua foto no nível 1"),
-  ).toBeVisible();
-  await expect(page.getByRole("button", { name: /Nível 2: Flashcards/ })).toBeDisabled();
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.locator(".solo-level-path")).toHaveCSS("animation-name", "none");
 });
 
 test("troca os modos de foco pelas setas laterais", async ({ page }, testInfo) => {
@@ -275,40 +268,23 @@ test("oculta por enquanto as ferramentas do professor", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Banco de atividades" })).toHaveCount(0);
 });
 
-test("cria um flashcard e conclui a revisão", async ({ page }, testInfo) => {
-  await page.evaluate(() => localStorage.setItem("helena.soloProgress", "2"));
+test("preserva um flashcard ao explorar o protótipo", async ({ page }, testInfo) => {
   await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
   await page.getByLabel("Frente").fill("Improve");
   await page.getByLabel("Verso").fill("Melhorar");
   await page.getByRole("button", { name: /criar flashcard/i }).click();
-
+  await expect(page.getByText("Improve", { exact: true })).toBeVisible();
   await studentSpaceButton(page, testInfo.project.name).click();
   await page
     .getByRole("navigation", {
       name: testInfo.project.name === "mobile" ? "Navegação móvel" : "Navegação principal",
     })
-    .getByRole("button", {
-      name: "Praticar",
-      exact: true,
-    })
+    .getByRole("button", { name: "Praticar", exact: true })
     .click();
-  await page.getByRole("button", { name: /entrar no mundo/i }).click();
-  await page.getByRole("button", { name: /Nível 2: Flashcards/ }).click();
-  await expect(page.getByRole("heading", { name: "Improve" })).toBeVisible();
-  await page.getByRole("button", { name: /mostrar resposta/i }).click();
-  await expect(page.getByRole("heading", { name: "Melhorar" })).toBeVisible();
-  await page.getByRole("button", { name: "Fácil" }).click();
-  await expect(page.getByText(/revisão em dia/i)).toBeVisible();
-  await page.getByRole("button", { name: "Voltar aos mundos", exact: true }).click();
-  await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
-  const nextLevel = page.getByRole("button", { name: /Nível 3: Quiz/ });
-  await expect(nextLevel.getByAltText("Sua foto no nível 3")).toBeVisible();
-  const alignment = await nextLevel.evaluate((element) => {
-    const mascot = element.querySelector(".solo-path-avatar")!.getBoundingClientRect();
-    const tile = element.querySelector(".solo-path-level__badge")!.getBoundingClientRect();
-    return Math.abs(mascot.x + mascot.width / 2 - tile.x - tile.width / 2);
-  });
-  expect(alignment).toBeLessThan(2);
+  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await page.getByRole("button", { name: "Voltar às ilhas" }).click();
+  await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
+  await expect(page.getByText("Improve", { exact: true })).toBeVisible();
 });
 
 test("mantém os módulos acessíveis e sem rolagem horizontal no celular", async ({
@@ -444,12 +420,8 @@ test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }
       exact: true,
     })
     .click();
-  await page.getByRole("button", { name: /entrar no mundo/i }).click();
-  await page.getByRole("button", { name: /Nível 4: Bingo/ }).click();
-  await page.getByRole("button", { name: "Criar bingo" }).click();
-  const board = page.getByRole("group", { name: "Cartela de bingo" });
-  const cells = board.getByRole("button");
-  await expect(cells).toHaveCount(9);
-  for (let index = 0; index < 3; index += 1) await cells.nth(index).click();
-  await expect(page.getByRole("status")).toContainText("Bingo");
+  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await page.getByRole("button", { name: "Vamos calcular!" }).click();
+  await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
+  await page.getByRole("button", { name: "Voltar às ilhas" }).click();
 });

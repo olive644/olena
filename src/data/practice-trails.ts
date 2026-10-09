@@ -4,23 +4,145 @@ export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
 export type SubjectIslandId = Exclude<PracticeIsland["id"], "languages">;
 export type TrailIslandId = PracticeIsland["id"];
 
-const BASIC_MATH_TOPICS = [
-  "Contagem",
-  "Adição",
-  "Subtração",
-  "Multiplicação",
-  "Divisão",
-  "Frações",
-  "Decimais",
-  "Porcentagens",
-  "Medidas",
-  "Problemas",
+export const BASIC_MATH_CHAPTERS = [
+  {
+    topic: "Contagem",
+    color: "#2456ba",
+    shade: "#193b7c",
+    light: "#a4ccff",
+    lessons: [
+      "Contar até 10",
+      "Contar até 20",
+      "Maior e menor",
+      "Dezenas e unidades",
+      "Contar até 100",
+    ],
+  },
+  {
+    topic: "Adição",
+    color: "#218468",
+    shade: "#12503e",
+    light: "#9ae1b3",
+    lessons: [
+      "Somar até 10",
+      "Somar até 20",
+      "Somar dezenas",
+      "Somar com reagrupamento",
+      "Somar três parcelas",
+    ],
+  },
+  {
+    topic: "Subtração",
+    color: "#c6593d",
+    shade: "#823521",
+    light: "#ffb69a",
+    lessons: [
+      "Tirar até 10",
+      "Encontrar a diferença",
+      "Subtrair dezenas",
+      "Subtrair com reagrupamento",
+      "Conferir pela adição",
+    ],
+  },
+  {
+    topic: "Multiplicação",
+    color: "#286aa1",
+    shade: "#174367",
+    light: "#9bd5ec",
+    lessons: [
+      "Grupos iguais",
+      "Dobro e triplo",
+      "Tabuadas de 2, 5 e 10",
+      "Tabuadas de 3, 4 e 6",
+      "Tabuadas de 7, 8 e 9",
+    ],
+  },
+  {
+    topic: "Divisão",
+    color: "#b77720",
+    shade: "#734810",
+    light: "#ffe29b",
+    lessons: [
+      "Repartir igualmente",
+      "Metade e terça parte",
+      "Divisão exata",
+      "Divisão com resto",
+      "Conferir pela multiplicação",
+    ],
+  },
+  {
+    topic: "Contas mistas",
+    color: "#397a7e",
+    shade: "#224c50",
+    light: "#ace0d9",
+    lessons: [
+      "Somar e subtrair",
+      "Multiplicar e dividir",
+      "Ordem das operações",
+      "Contas com parênteses",
+      "Desafio das quatro operações",
+    ],
+  },
+  {
+    topic: "Frações",
+    color: "#ba5267",
+    shade: "#7a3344",
+    light: "#ffc1cf",
+    lessons: [
+      "Partes de um inteiro",
+      "Metades e quartos",
+      "Frações equivalentes",
+      "Comparar frações",
+      "Somar frações de mesmo denominador",
+    ],
+  },
+  {
+    topic: "Decimais",
+    color: "#376db0",
+    shade: "#204573",
+    light: "#b4d8ff",
+    lessons: [
+      "Décimos e centésimos",
+      "Comparar decimais",
+      "Somar decimais",
+      "Subtrair decimais",
+      "Decimais em contas de dinheiro",
+    ],
+  },
+  {
+    topic: "Porcentagens",
+    color: "#b88322",
+    shade: "#735114",
+    light: "#ffe8a6",
+    lessons: [
+      "O que significa por cento",
+      "Calcular 50% e 25%",
+      "Calcular 10% e 1%",
+      "Descontos simples",
+      "Porcentagem de uma quantidade",
+    ],
+  },
+  {
+    topic: "Dia a dia",
+    color: "#4d7b38",
+    shade: "#2b4f20",
+    light: "#c0df98",
+    lessons: [
+      "Compras e troco",
+      "Horas e minutos",
+      "Comprimentos e medidas",
+      "Dobrar e dividir receitas",
+      "Desafio final de matemática básica",
+    ],
+  },
 ] as const;
-export const BASIC_MATH_LEVELS = BASIC_MATH_TOPICS.flatMap((topic) =>
-  Array.from({ length: 5 }, (_, index) => ({
-    title: `${topic}, desafio ${index + 1}`,
-    topic,
-    description: "Matemática básica. Exercícios em preparação.",
+export const BASIC_MATH_LEVELS = BASIC_MATH_CHAPTERS.flatMap((chapter, chapterIndex) =>
+  chapter.lessons.map((title, step) => ({
+    title,
+    topic: chapter.topic,
+    chapter: chapterIndex,
+    step,
+    description: "Matemática básica, exercícios em preparação.",
   })),
 );
 export const MATH_SCENE_COUNT = Math.ceil(BASIC_MATH_LEVELS.length / 4);
@@ -52,14 +174,22 @@ export const SUBJECT_TRAILS = {
     shade: "#114459",
     light: "#d7e8a2",
     stops: [
-      { title: "Escuta", topic: "Escuta", description: "Ouça, reconheça e traduza palavras." },
       {
-        title: "Flashcards",
-        topic: "Flashcards",
-        description: "Revise no seu ritmo e fortaleça a memória.",
+        title: "Primeiras palavras",
+        topic: "Vocabulário",
+        description: "Exercícios em preparação.",
       },
-      { title: "Quiz", topic: "Quiz", description: "Responda desafios e acompanhe seus acertos." },
-      { title: "Bingo", topic: "Bingo", description: "Complete a cartela com seus conteúdos." },
+      {
+        title: "Sons do porto",
+        topic: "Escuta",
+        description: "Exercícios em preparação.",
+      },
+      {
+        title: "Pontes de conversa",
+        topic: "Conversação",
+        description: "Exercícios em preparação.",
+      },
+      { title: "Histórias de viagem", topic: "Leitura", description: "Exercícios em preparação." },
     ],
   },
   portuguese: {
