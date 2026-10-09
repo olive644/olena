@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import {
   MOBILE_TRAIL_Y,
+  MATH_SCENE_COUNT,
   SUBJECT_TRAILS,
   type PracticeIsland,
   type TrailIslandId,
@@ -62,6 +63,7 @@ function TrailEmblem({ id }: { id: TrailIslandId }) {
 }
 
 function MathLevelArtifact({ level }: { level: number }) {
+  level = ((level - 1) % 4) + 1;
   if (level === 1)
     return (
       <>
@@ -201,7 +203,7 @@ export function PracticeSubjectTrail({
   profile,
   entering,
   onBack,
-  unlockedLevel = 4,
+  unlockedLevel = Infinity,
   onOpenLevel,
 }: {
   island: PracticeIsland;
@@ -255,40 +257,61 @@ export function PracticeSubjectTrail({
         } as CSSProperties
       }
     >
-      <header className="practice-trail-heading">
+      <header className="practice-trail-heading" aria-label="Navegação da trilha">
         <button className="secondary-button" type="button" onClick={onBack}>
           <PaperArrow back /> Voltar aos mundos
         </button>
         <div>
           <TrailEmblem id={island.id} />
-          <h2>{island.subject}</h2>
+          <h2>{island.id === "mathematics" ? "Matemática básica" : island.subject}</h2>
         </div>
       </header>
       <div
         className="solo-level-path practice-trail-map"
         aria-label={`Caminho de ${island.subject}`}
+        style={
+          { "--scene-count": island.id === "mathematics" ? MATH_SCENE_COUNT : 1 } as CSSProperties
+        }
       >
-        <picture className="solo-level-scenery" aria-hidden="true">
-          <source
-            media="(min-width: 900px)"
-            srcSet={
-              island.id === "languages"
-                ? "/solo-interior-1-desktop.webp"
-                : `/practice-trails/${island.id}-clean.webp`
-            }
-          />
-          <img
-            className="solo-level-scenery__art"
-            src={
-              island.id === "languages"
-                ? "/solo-interior-1.webp"
-                : `/practice-trails/${island.id}-mobile.webp`
-            }
-            alt=""
-            decoding="async"
-            fetchPriority="high"
-          />
-        </picture>
+        {Array.from({ length: island.id === "mathematics" ? MATH_SCENE_COUNT : 1 }, (_, scene) => (
+          <div
+            key={scene}
+            className="practice-trail-scene"
+            data-edge={scene === 0 ? "top" : scene === MATH_SCENE_COUNT - 1 ? "bottom" : undefined}
+            style={{ "--scene-index": scene } as CSSProperties}
+          >
+            <picture className="solo-level-scenery" aria-hidden="true">
+              <source
+                media="(min-width: 900px)"
+                srcSet={
+                  island.id === "languages"
+                    ? "/practice-trails/languages-fast-desktop.webp"
+                    : `/practice-trails/${island.id}-fast-desktop.webp`
+                }
+              />
+              <img
+                className="solo-level-scenery__art"
+                src={
+                  island.id === "languages"
+                    ? "/practice-trails/languages-fast-mobile.webp"
+                    : `/practice-trails/${island.id}-fast-mobile.webp`
+                }
+                alt=""
+                decoding="async"
+                loading={
+                  scene === (island.id === "mathematics" ? MATH_SCENE_COUNT - 1 : 0)
+                    ? "eager"
+                    : "lazy"
+                }
+                fetchPriority={
+                  scene === (island.id === "mathematics" ? MATH_SCENE_COUNT - 1 : 0)
+                    ? "high"
+                    : "auto"
+                }
+              />
+            </picture>
+          </div>
+        ))}
         <div className="solo-level-track">
           {island.id === "languages" && (
             <svg
@@ -307,7 +330,7 @@ export function PracticeSubjectTrail({
           )}
           {trail.stops.map((item, index) => (
             <button
-              key={item.topic}
+              key={index}
               type="button"
               className={`solo-path-level solo-path-level--${index + 1} practice-trail-stop${selected === index ? " is-selected" : ""}${selected === index && journey.phase !== "travel" ? " is-arrived" : ""}`}
               style={

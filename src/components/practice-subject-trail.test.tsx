@@ -29,9 +29,10 @@ describe("trilhas exploráveis por disciplina", () => {
       expect(
         trail.points.every((point, index) => index === 0 || point.y < trail.points[index - 1]!.y),
       ).toBe(true);
-      expect(trail.stops.map((stop) => stop.topic)).toEqual([...island.topics]);
+      if (island.id !== "mathematics")
+        expect(trail.stops.map((stop) => stop.topic)).toEqual([...island.topics]);
       const stages = screen.getAllByRole("button", { name: /^Etapa/ });
-      expect(stages).toHaveLength(4);
+      expect(stages).toHaveLength(island.id === "mathematics" ? 50 : 4);
       for (const [index, stage] of stages.entries()) {
         expect(
           stage.querySelector(".practice-trail-number-piece")?.getAttribute("data-piece"),
@@ -60,7 +61,11 @@ describe("trilhas exploráveis por disciplina", () => {
         expect(screen.getByRole("status").textContent).toContain(`Etapa ${index + 1} selecionada`);
       }
       expect(document.querySelector(".practice-trail-detail")).toBeNull();
-      expect(screen.getByRole("heading", { name: island.subject })).toBeTruthy();
+      expect(
+        screen.getByRole("heading", {
+          name: island.id === "mathematics" ? "Matemática básica" : island.subject,
+        }),
+      ).toBeTruthy();
       expect(screen.queryByText(island.title)).toBeNull();
       expect(document.querySelector(".practice-trail-heading img")?.getAttribute("src")).toBe(
         "/paper-arrow.svg",

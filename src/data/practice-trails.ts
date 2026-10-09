@@ -4,13 +4,39 @@ export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
 export type SubjectIslandId = Exclude<PracticeIsland["id"], "languages">;
 export type TrailIslandId = PracticeIsland["id"];
 
+const BASIC_MATH_TOPICS = [
+  "Contagem",
+  "Adição",
+  "Subtração",
+  "Multiplicação",
+  "Divisão",
+  "Frações",
+  "Decimais",
+  "Porcentagens",
+  "Medidas",
+  "Problemas",
+] as const;
+export const BASIC_MATH_LEVELS = BASIC_MATH_TOPICS.flatMap((topic) =>
+  Array.from({ length: 5 }, (_, index) => ({
+    title: `${topic}, desafio ${index + 1}`,
+    topic,
+    description: "Matemática básica. Exercícios em preparação.",
+  })),
+);
+export const MATH_SCENE_COUNT = Math.ceil(BASIC_MATH_LEVELS.length / 4);
+function mathPosition(index: number, landings: readonly number[]) {
+  return (
+    ((MATH_SCENE_COUNT - 1 - Math.floor(index / 4)) * 100 + landings[index % 4]!) / MATH_SCENE_COUNT
+  );
+}
+
 // Coordinates are measured on each portrait's actual flat landings.
 export const MOBILE_TRAIL_Y: Record<TrailIslandId, readonly number[]> = {
   languages: [85, 62, 39, 16],
   portuguese: [85, 63, 41, 19],
   chemistry: [82, 56, 39, 17],
   biology: [85, 61, 35, 14],
-  mathematics: [90, 63, 36, 14],
+  mathematics: BASIC_MATH_LEVELS.map((_, index) => mathPosition(index, [90, 63, 36, 14])),
   programming: [86, 56, 31, 13],
 };
 
@@ -136,37 +162,14 @@ export const SUBJECT_TRAILS = {
     ],
   },
   mathematics: {
-    points: [
-      { x: 50, y: 87 },
-      { x: 50, y: 71 },
-      { x: 50, y: 40 },
-      { x: 50, y: 14 },
-    ],
+    points: BASIC_MATH_LEVELS.map((_, index) => ({
+      x: 50,
+      y: mathPosition(index, [87, 71, 40, 14]),
+    })),
     color: "#2456ba",
     shade: "#193b7c",
     light: "#a4ccff",
-    stops: [
-      {
-        title: "Portão dos números",
-        topic: "Números",
-        description: "Quantidades, operações e relações entre os números.",
-      },
-      {
-        title: "Ponte da álgebra",
-        topic: "Álgebra",
-        description: "Padrões, expressões e incógnitas que ajudam a resolver problemas.",
-      },
-      {
-        title: "Praça das formas",
-        topic: "Geometria",
-        description: "Formas, medidas e relações no plano e no espaço.",
-      },
-      {
-        title: "Mirante dos dados",
-        topic: "Estatística",
-        description: "Leitura de dados, gráficos e informações para tirar conclusões.",
-      },
-    ],
+    stops: BASIC_MATH_LEVELS,
   },
   programming: {
     points: [

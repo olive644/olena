@@ -1,5 +1,29 @@
 import { test, expect } from "@playwright/test";
 
+test("Matemática básica acompanha os 50 níveis para cima e para baixo", async ({ page }) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
+  );
+  await page.goto("/aprender");
+  for (let index = 0; index < 4; index++)
+    await page.getByRole("button", { name: "Próximo mundo" }).click();
+  await page.getByRole("button", { name: "Explorar ilha" }).click();
+  const trail = page.getByRole("region", { name: "Trilha de Matemática" });
+  const levels = trail.getByRole("button", { name: /^Etapa/ });
+  await expect(levels).toHaveCount(50);
+  await expect(trail.getByRole("heading", { name: "Matemática básica" })).toBeVisible();
+  await expect(page.locator(".practice-avatar-flight")).toHaveCount(0);
+  await levels.nth(49).click();
+  await expect(trail.getByRole("status")).toContainText("Etapa 50 selecionada");
+  await expect(trail.getByAltText("Sua foto no nível 50")).toBeInViewport();
+  const upper = await trail.evaluate((element) => element.scrollTop);
+  await levels.nth(0).click();
+  await expect(trail.getByRole("status")).toContainText("Etapa 1 selecionada");
+  await expect(trail.getByAltText("Sua foto no nível 1")).toBeInViewport();
+  expect(await trail.evaluate((element) => element.scrollTop)).toBeGreaterThan(upper + 5000);
+  await expect(trail.getByRole("button", { name: "Voltar aos mundos" })).toBeInViewport();
+});
+
 test("Idiomas usa a trilha em tela cheia e abre o jogo depois da chegada", async ({
   page,
 }, testInfo) => {
@@ -63,13 +87,14 @@ for (const theme of ["light", "dark"] as const) {
         .toEqual({ x: 0, y: 0, width: viewport.width, height: viewport.height });
       await trail
         .locator(".solo-level-scenery__art")
+        .last()
         .evaluate(async (image: HTMLImageElement) => image.decode());
       await expect(page.locator(".practice-avatar-flight")).toHaveCount(0);
       const photo = trail.getByAltText("Sua foto no nível 1");
       await expect(photo).toHaveAttribute("src", "/profile-avatars/oliver.webp");
       const original = (await photo.elementHandle())!;
       const stages = trail.getByRole("button", { name: /^Etapa/ });
-      await expect(stages).toHaveCount(4);
+      await expect(stages).toHaveCount(subject === "Matemática" ? 50 : 4);
       for (let stage = 0; stage < 4; stage++) {
         await expect(stages.nth(stage).locator(".solo-path-level__badge b")).toHaveText(
           String(stage + 1),
@@ -133,7 +158,12 @@ for (const theme of ["light", "dark"] as const) {
         expect(alignment.above).toBe(true);
       }
       await expect(trail.locator(".practice-trail-detail")).toHaveCount(0);
-      await expect(trail.getByRole("heading", { name: subject, exact: true })).toBeVisible();
+      await expect(
+        trail.getByRole("heading", {
+          name: subject === "Matemática" ? "Matemática básica" : subject,
+          exact: true,
+        }),
+      ).toBeVisible();
       expect(
         await trail.evaluate((element) => {
           const map = element.querySelector(".practice-trail-map")!;
@@ -146,20 +176,7 @@ for (const theme of ["light", "dark"] as const) {
       ).toBeLessThanOrEqual(1);
       if (subject === "Matemática") {
         await expect(trail.locator(".practice-trail-walkway")).toHaveCount(0);
-        await expect
-          .poll(() =>
-            trail.evaluate((element) => {
-              const art = element.querySelector(".solo-level-scenery")!.getBoundingClientRect();
-              const overlay = element.querySelector(".solo-level-track")!.getBoundingClientRect();
-              return Math.max(
-                Math.abs(art.x - overlay.x),
-                Math.abs(art.y - overlay.y),
-                Math.abs(art.width - overlay.width),
-                Math.abs(art.height - overlay.height),
-              );
-            }),
-          )
-          .toBeLessThan(1);
+        await expect.poll(() => trail.locator(".practice-trail-scene").count()).toBe(13);
         await expect(trail.getByRole("status")).toContainText("Etapa 4 selecionada");
         await page.screenshot({ path: testInfo.outputPath(`trilha-matematica-${theme}.png`) });
       }
@@ -409,7 +426,9 @@ for (const theme of ["light", "dark"])
         await page.getByRole("button", { name: "Explorar ilha" }).click();
         const trail = page.getByRole("region", { name: `Trilha de ${subject}` });
         await expect(trail).toBeVisible();
-        await expect(trail.getByRole("button", { name: /^Etapa/ })).toHaveCount(4);
+        await expect(trail.getByRole("button", { name: /^Etapa/ })).toHaveCount(
+          subject === "Matemática" ? 50 : 4,
+        );
         await expect(trail.locator(".practice-trail-detail")).toHaveCount(0);
         await trail
           .locator(".solo-level-scenery__art")

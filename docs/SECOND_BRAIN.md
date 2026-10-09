@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Matemática básica tem 50 posições exploráveis em BASIC_MATH_LEVELS, sem exercícios
+nem progresso inventado. MATH_SCENE_COUNT organiza trechos do cenário aprovado,
+com sobreposição de bordas e câmera por scrollIntoView. Fundos de todas as trilhas
+usam variantes -fast-desktop/-fast-mobile, WebP comprimido, originais preservados.
+Lazy loading nos trechos fora da tela; prioridade alta apenas no cenário inicial.
+
 api/olena.ts expõe handleOlena, somente GET de catálogo/ilhas/metodologias, versão 1.
 src/domain/olena.ts deriva metadados de PRACTICE_ISLANDS, agora com IDs estáveis.
 Registro de metodologias vazio até a etapa pedagógica. Nada de IA simulada ou voz:

@@ -350,7 +350,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: /entrar no mundo/i }));
 
     expect(document.querySelector(".solo-level-scenery img")?.getAttribute("src")).toBe(
-      "/solo-interior-1.webp",
+      "/practice-trails/languages-fast-mobile.webp",
     );
 
     expect(
@@ -387,7 +387,9 @@ describe("App", () => {
       expect(screen.getByRole("heading", { name: islandName })).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Explorar ilha" }));
       expect(screen.getByRole("region", { name: `Trilha de ${title}` })).toBeTruthy();
-      expect(screen.getAllByRole("button", { name: /^Etapa/ })).toHaveLength(4);
+      expect(screen.getAllByRole("button", { name: /^Etapa/ })).toHaveLength(
+        title === "Matemática" ? 50 : 4,
+      );
       expect(document.querySelector(".practice-trail-detail")).toBeNull();
       expect(screen.queryByRole("button", { name: /Nível 1: Escuta/ })).toBeNull();
       if (title === "Programação") {

@@ -13,13 +13,54 @@
   background: var(--trail-light);
 }
 .practice-subject-trail .practice-trail-map {
+  --scene-height: max(100dvh, 940px);
   position: relative;
-  height: max(100dvh, 940px);
+  height: calc(var(--scene-height) * var(--scene-count, 1));
   min-height: 940px;
   max-width: none;
   container-type: size;
   overflow: hidden;
   background: var(--trail-light);
+}
+.practice-trail-scene {
+  position: absolute;
+  top: calc(var(--scene-index) * 100% / var(--scene-count, 1));
+  width: 100%;
+  height: var(--scene-height);
+  overflow: hidden;
+  container-type: size;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 940px;
+}
+.practice-subject-trail.practice-subject-trail--mathematics .solo-level-track {
+  width: max(100cqw, calc(var(--scene-height) * 16 / 9));
+}
+.practice-subject-trail--mathematics .practice-trail-scene {
+  overflow: visible;
+  content-visibility: visible;
+  mix-blend-mode: plus-lighter;
+}
+.practice-subject-trail--mathematics .practice-trail-map {
+  isolation: isolate;
+  background: #000;
+}
+.practice-subject-trail.practice-subject-trail--mathematics .solo-level-scenery {
+  top: -24px;
+  height: calc(100% + 48px);
+  width: max(100cqw, calc(var(--scene-height) * 16 / 9));
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 48px,
+    #000 calc(100% - 48px),
+    transparent
+  );
+}
+.practice-subject-trail--mathematics .practice-trail-scene[data-edge="top"] .solo-level-scenery {
+  mask-image: linear-gradient(to bottom, #000, #000 calc(100% - 48px), transparent);
+}
+.practice-subject-trail--mathematics .practice-trail-scene[data-edge="bottom"] .solo-level-scenery {
+  mask-image: linear-gradient(to bottom, transparent, #000 48px, #000);
 }
 .practice-subject-trail .solo-level-track,
 .practice-subject-trail .solo-level-scenery {
@@ -49,13 +90,18 @@
   stroke-width: 2;
 }
 .practice-trail-heading {
-  position: fixed;
+  position: sticky;
   z-index: 5;
-  top: 16px;
-  left: 20px;
-  display: grid;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px max(20px, env(safe-area-inset-left));
+  background: #fff9ef;
+  border-bottom: 5px solid #d2c4a6;
   gap: 12px;
-  max-width: 310px;
+  max-width: none;
 }
 .practice-trail-heading > div {
   position: relative;
@@ -108,6 +154,27 @@
   border-radius: 4px 14px 4px 10px;
   background: #fff9ef;
   clip-path: polygon(8% 0, 100% 0, 100% 82%, 93% 100%, 0 100%, 0 18%);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    translate 160ms ease;
+}
+.practice-trail-heading .secondary-button:is(:hover, :focus-visible) {
+  background-color: #7c3aed;
+  color: #fff9ef;
+  border-color: #7c3aed;
+  border-bottom-color: #51259b;
+  outline: 3px solid #a779ef;
+  outline-offset: 3px;
+  background-image:
+    linear-gradient(135deg, #a779ef 0 9%, transparent 9%),
+    linear-gradient(315deg, #51259b 0 12%, transparent 12%);
+}
+.practice-trail-heading .secondary-button:active {
+  translate: 0 3px;
+}
+.practice-trail-heading .secondary-button:hover .onboarding-paper-arrow {
+  translate: -3px 0;
 }
 .practice-trail-heading .onboarding-paper-arrow {
   width: 26px;
@@ -328,12 +395,19 @@
     padding: 0;
   }
   .practice-subject-trail .practice-trail-map {
-    height: max(740px, 100dvh, 150vw);
+    --scene-height: max(740px, 100dvh, 150vw);
+    height: calc(var(--scene-height) * var(--scene-count, 1));
     min-height: 740px;
   }
   .practice-subject-trail .solo-level-track,
   .practice-subject-trail .solo-level-scenery {
     width: calc(100cqh * 2 / 3);
+  }
+  .practice-subject-trail.practice-subject-trail--mathematics .solo-level-track {
+    width: calc(var(--scene-height) * 2 / 3);
+  }
+  .practice-subject-trail.practice-subject-trail--mathematics .solo-level-scenery {
+    width: calc(var(--scene-height) * 2 / 3);
   }
   .practice-subject-trail .practice-trail-stop {
     top: var(--trail-mobile-y);
@@ -367,7 +441,7 @@
     padding: max(10px, env(safe-area-inset-top)) 12px 10px;
     gap: 8px;
     background: #fff9ef;
-    border-bottom: 4px solid var(--trail-shade);
+    border-bottom: 5px solid #d2c4a6;
   }
   .practice-trail-heading .secondary-button {
     flex: 0 0 auto;

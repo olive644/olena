@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Matemática básica com 50 posições e cenários leves (2026-10-08)
+
+- A trilha de Matemática apresenta 50 posições, em dez grupos: contagem, adição, subtração, multiplicação, divisão, frações, decimais, porcentagens, medidas e problemas. São posições exploráveis, sem exercícios, XP ou desbloqueios pedagógicos simulados.
+- O mapa estende o cenário aprovado em trechos com sobreposição nas junções. Selecionar um nível enquadra o destino e desloca o avatar acima do número, nos dois sentidos; redução de movimento permanece respeitada.
+- Todas as trilhas usam barra superior de papel creme e botões facetados. Voltar recebe estado roxo no hover e foco. Novos WebPs comprimidos preservam os originais, com cerca de 44% a 54% menos bytes nas cinco disciplinas. Imagens fora da tela têm carregamento lazy; somente o cenário inicial recebe prioridade alta.
+- Testes de navegador cobrem subida e descida entre 1 e 50 em desktop e mobile, além das seis ilhas em claro e escuro.
+
 ## Trilhas sem painéis inferiores e Idiomas integrado (2026-10-08)
 
 - Idiomas usa o mesmo palco em tela cheia das cinco disciplinas, preservando seus minigames reais, bloqueios e progresso. O avatar chega ao nível, o marcador acende e só então abre o jogo. A arte existente de Idiomas permanece, com percurso central em papel e números em balões facetados.
