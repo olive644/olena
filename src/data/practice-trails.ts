@@ -2,9 +2,11 @@ import type { PRACTICE_ISLANDS } from "./practice-islands";
 
 export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
 export type SubjectIslandId = Exclude<PracticeIsland["id"], "languages">;
+export type TrailIslandId = PracticeIsland["id"];
 
 // Coordinates are measured on each portrait's actual flat landings.
-export const MOBILE_TRAIL_Y: Record<SubjectIslandId, readonly number[]> = {
+export const MOBILE_TRAIL_Y: Record<TrailIslandId, readonly number[]> = {
+  languages: [85, 62, 39, 16],
   portuguese: [85, 63, 41, 19],
   chemistry: [82, 56, 39, 17],
   biology: [85, 61, 35, 14],
@@ -13,6 +15,27 @@ export const MOBILE_TRAIL_Y: Record<SubjectIslandId, readonly number[]> = {
 };
 
 export const SUBJECT_TRAILS = {
+  languages: {
+    points: [
+      { x: 50, y: 85 },
+      { x: 50, y: 62 },
+      { x: 50, y: 39 },
+      { x: 50, y: 16 },
+    ],
+    color: "#176784",
+    shade: "#114459",
+    light: "#d7e8a2",
+    stops: [
+      { title: "Escuta", topic: "Escuta", description: "Ouça, reconheça e traduza palavras." },
+      {
+        title: "Flashcards",
+        topic: "Flashcards",
+        description: "Revise no seu ritmo e fortaleça a memória.",
+      },
+      { title: "Quiz", topic: "Quiz", description: "Responda desafios e acompanhe seus acertos." },
+      { title: "Bingo", topic: "Bingo", description: "Complete a cartela com seus conteúdos." },
+    ],
+  },
   portuguese: {
     points: [
       { x: 50, y: 87 },
@@ -179,7 +202,7 @@ export const SUBJECT_TRAILS = {
     ],
   },
 } as const satisfies Record<
-  SubjectIslandId,
+  TrailIslandId,
   {
     color: string;
     points: readonly { x: number; y: number }[];

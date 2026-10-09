@@ -1,15 +1,12 @@
-import { Lock } from "lucide-react";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { useCallback, useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
-import { NavigationIcon } from "../components/navigation-icon";
 import { PageHeader } from "../components/app-navigation";
 import { ListeningQuiz } from "../components/listening-quiz";
 import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
-import { PracticeUserPortrait } from "../components/practice-user-portrait";
 import { PracticeSubjectTrail } from "../components/practice-subject-trail";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import { isMotionReduced } from "../data/accessibility-preferences";
@@ -71,7 +68,6 @@ const SOLO_LEVELS: Array<{
 const SOLO_WORLDS = PRACTICE_ISLANDS;
 
 const SOLO_PROGRESS_KEY = "helena.soloProgress";
-const SOLO_ROUTE = "M135 620 C135 550 225 540 225 450 S135 370 135 280 S180 190 180 100";
 
 function PracticeHub({
   onSelect,
@@ -167,7 +163,7 @@ function PracticeHub({
     return () => document.body.classList.remove("solo-world-open");
   }, [insideWorld]);
 
-  if (insideWorld && world.id !== "languages") {
+  if (insideWorld) {
     return (
       <PracticeSubjectTrail
         key={world.id}
@@ -175,99 +171,15 @@ function PracticeHub({
         profile={profile}
         entering={entryPending}
         onBack={() => setInsideWorld(false)}
+        {...(world.id === "languages"
+          ? {
+              unlockedLevel,
+              onOpenLevel: (level: number) => onSelect(SOLO_LEVELS[level - 1]!.mode),
+            }
+          : {})}
       />
     );
   }
-
-  if (insideWorld) {
-    return (
-      <div
-        className={`practice-hub solo-world-enter practice-avatar-journey${worldTransition ? " is-switching-world" : ""}`}
-      >
-        <section className="solo-journey" aria-labelledby="solo-world-title">
-          <div className="solo-journey__heading">
-            <div>
-              <button className="link-button" type="button" onClick={() => setInsideWorld(false)}>
-                <HelenaRoomIcon name="back" size={18} /> Voltar aos mundos
-              </button>
-              <span className="section-label">Mundo {world.number}</span>
-              <h2 id="solo-world-title">{world.title}</h2>
-              <p>Avance pelo caminho e libere um desafio de cada vez.</p>
-            </div>
-            <div
-              className="solo-journey__progress"
-              aria-label={`Progresso no Mundo ${world.number}`}
-            >
-              <span>Seu progresso</span>
-              <strong>{Math.min(unlockedLevel, SOLO_LEVELS.length)}/4 níveis</strong>
-            </div>
-          </div>
-
-          <div
-            className={`solo-level-path solo-level-path--world-${world.number}`}
-            aria-label={`Caminho de níveis do Mundo ${world.number}`}
-          >
-            <picture className="solo-level-scenery" aria-hidden="true">
-              <source
-                media="(min-width: 900px)"
-                srcSet={`/solo-interior-${world.number}-desktop.webp`}
-              />
-              <img
-                className="solo-level-scenery__art"
-                src={`/solo-interior-${world.number}.webp`}
-                alt=""
-                decoding="async"
-                fetchPriority="high"
-              />
-            </picture>
-            <div className="solo-level-track">
-              <svg
-                className="solo-level-path__route"
-                viewBox="0 0 360 720"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-              >
-                <path className="solo-level-path__road-shadow" d={SOLO_ROUTE} />
-                <path className="solo-level-path__road" d={SOLO_ROUTE} />
-                <path className="solo-level-path__trail" d={SOLO_ROUTE} />
-              </svg>
-              {SOLO_LEVELS.map((game) => {
-                const unlocked = game.level <= unlockedLevel;
-                return (
-                  <button
-                    className={`solo-path-level solo-path-level--${game.level}${unlocked ? " is-unlocked" : " is-locked"}`}
-                    type="button"
-                    onClick={() => unlocked && onSelect(game.mode)}
-                    disabled={!unlocked}
-                    aria-label={`Nível ${game.level}: ${game.title}. ${unlocked ? game.description : "Bloqueado. Complete o nível anterior para desbloquear."}`}
-                    key={game.mode}
-                  >
-                    {game.level === unlockedLevel && (
-                      <PracticeUserPortrait
-                        profile={profile}
-                        className={`solo-path-avatar${entryPending ? " is-entering" : ""}`}
-                        level={game.level}
-                      />
-                    )}
-                    <span className="solo-path-level__badge">
-                      {unlocked ? <NavigationIcon name={game.icon} /> : <Lock size={22} />}
-                      <b>{game.level}</b>
-                    </span>
-                    <span>
-                      <small>Nível {game.level}</small>
-                      <strong>{game.title}</strong>
-                      {!unlocked && <em>Complete o nível anterior</em>}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
   return (
     <div className="practice-hub practice-hub--carousel">
       <PracticeIslandCarousel index={worldIndex} onVisit={visitWorld} profile={profile} />

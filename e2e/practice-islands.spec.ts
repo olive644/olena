@@ -1,5 +1,35 @@
 import { test, expect } from "@playwright/test";
 
+test("Idiomas usa a trilha em tela cheia e abre o jogo depois da chegada", async ({
+  page,
+}, testInfo) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.soloProgress", "1");
+  });
+  await page.goto("/aprender");
+  await page.getByRole("button", { name: "Entrar no mundo", exact: true }).click();
+  const trail = page.getByRole("region", { name: "Trilha de Idiomas" });
+  await expect(trail).toBeVisible();
+  await expect(trail.getByRole("heading", { name: "Idiomas", exact: true })).toBeVisible();
+  await expect(trail.getByText("Porto das Vozes", { exact: true })).toHaveCount(0);
+  await expect(trail.locator(".practice-trail-detail")).toHaveCount(0);
+  await expect(trail.getByRole("button", { name: /Nível 2: Flashcards/ })).toBeDisabled();
+  await trail
+    .locator(".solo-level-scenery__art")
+    .evaluate(async (image: HTMLImageElement) => image.decode());
+  await expect(page.locator(".practice-avatar-flight")).toHaveCount(0);
+  await expect(trail.locator("header img")).toHaveAttribute("src", "/paper-arrow.svg");
+  await page.screenshot({
+    path: testInfo.outputPath("trilha-idiomas.png"),
+    animations: "disabled",
+  });
+  await trail.getByRole("button", { name: /Nível 1: Escuta/ }).click();
+  await expect(trail.getByRole("status")).toHaveText("Indo para a etapa 1");
+  await expect(page.getByRole("heading", { name: /Ouça e descubra a palavra/ })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("helena.soloProgress"))).toBe("1");
+});
+
 for (const theme of ["light", "dark"] as const) {
   test(`trilhas das cinco disciplinas preservam perfil e progresso, ${theme}`, async ({
     page,
@@ -88,7 +118,7 @@ for (const theme of ["light", "dark"] as const) {
               ),
           )
           .toBe(0);
-        await expect(trail.locator(".practice-trail-detail")).toBeVisible();
+        await expect(trail.getByRole("status")).toContainText(`Etapa ${stage + 1} selecionada`);
         const alignment = await stages.nth(stage).evaluate((level) => {
           const number = level.querySelector(".solo-path-level__badge b")!.getBoundingClientRect();
           const avatar = document
@@ -102,9 +132,18 @@ for (const theme of ["light", "dark"] as const) {
         expect(alignment.x).toBeLessThan(1);
         expect(alignment.above).toBe(true);
       }
-      await expect(trail.locator(".practice-trail-detail")).toContainText(
-        "Exercícios em preparação",
-      );
+      await expect(trail.locator(".practice-trail-detail")).toHaveCount(0);
+      await expect(trail.getByRole("heading", { name: subject, exact: true })).toBeVisible();
+      expect(
+        await trail.evaluate((element) => {
+          const map = element.querySelector(".practice-trail-map")!;
+          return (
+            element.scrollHeight -
+            (map.getBoundingClientRect().height +
+              element.querySelector("header")!.getBoundingClientRect().height)
+          );
+        }),
+      ).toBeLessThanOrEqual(1);
       if (subject === "Matemática") {
         await expect(trail.locator(".practice-trail-walkway")).toHaveCount(0);
         await expect
@@ -121,7 +160,7 @@ for (const theme of ["light", "dark"] as const) {
             }),
           )
           .toBeLessThan(1);
-        await expect(trail.locator(".practice-trail-detail")).toContainText("Mirante dos dados");
+        await expect(trail.getByRole("status")).toContainText("Etapa 4 selecionada");
         await page.screenshot({ path: testInfo.outputPath(`trilha-matematica-${theme}.png`) });
       }
       expect(
@@ -371,7 +410,7 @@ for (const theme of ["light", "dark"])
         const trail = page.getByRole("region", { name: `Trilha de ${subject}` });
         await expect(trail).toBeVisible();
         await expect(trail.getByRole("button", { name: /^Etapa/ })).toHaveCount(4);
-        await expect(trail.getByText("Exercícios em preparação")).toBeAttached();
+        await expect(trail.locator(".practice-trail-detail")).toHaveCount(0);
         await trail
           .locator(".solo-level-scenery__art")
           .evaluate(async (img: HTMLImageElement) => img.decode());

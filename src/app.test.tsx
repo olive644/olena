@@ -311,7 +311,7 @@ describe("App", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: /entrar no mundo/i }));
     fireEvent.click(await screen.findByRole("button", { name: /Nível 4: Bingo/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Criar bingo" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Criar bingo" }, { timeout: 3000 }));
 
     const board = screen.getByRole("group", { name: "Cartela de bingo" });
     const cells = within(board).getAllByRole("button");
@@ -326,7 +326,9 @@ describe("App", () => {
     fireEvent.click(await screen.findByRole("button", { name: /entrar no mundo/i }));
     fireEvent.click(await screen.findByRole("button", { name: /Nível 1: Escuta/ }));
 
-    expect(screen.getByRole("heading", { name: /ouça e descubra a palavra/i })).toBeTruthy();
+    expect(
+      await screen.findByRole("heading", { name: /ouça e descubra a palavra/i }, { timeout: 3000 }),
+    ).toBeTruthy();
     expect(screen.getByRole("button", { name: /iniciar escuta/i })).toBeTruthy();
     expect(screen.getByRole("button", { name: /ouvir novamente/i })).toBeTruthy();
   });
@@ -386,7 +388,7 @@ describe("App", () => {
       fireEvent.click(screen.getByRole("button", { name: "Explorar ilha" }));
       expect(screen.getByRole("region", { name: `Trilha de ${title}` })).toBeTruthy();
       expect(screen.getAllByRole("button", { name: /^Etapa/ })).toHaveLength(4);
-      expect(screen.getByText("Exercícios em preparação")).toBeTruthy();
+      expect(document.querySelector(".practice-trail-detail")).toBeNull();
       expect(screen.queryByRole("button", { name: /Nível 1: Escuta/ })).toBeNull();
       if (title === "Programação") {
         for (const topic of ["Python", "JavaScript", "HTML", "CSS"])
@@ -431,7 +433,7 @@ describe("App", () => {
     navigate("Praticar");
     fireEvent.click(await screen.findByRole("button", { name: /entrar no mundo/i }));
     fireEvent.click(await screen.findByRole("button", { name: /Nível 2: Flashcards/ }));
-    expect(await screen.findByRole("heading", { name: "Improve" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: "Improve" }, { timeout: 3000 })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /mostrar resposta/i }));
     expect(screen.getByRole("heading", { name: "Melhorar" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Fácil" }));

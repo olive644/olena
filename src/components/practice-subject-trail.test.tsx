@@ -52,14 +52,19 @@ describe("trilhas exploráveis por disciplina", () => {
         fireEvent.click(stage);
         expect(stage.getAttribute("aria-pressed")).toBe("true");
         expect(screen.getByAltText(`Sua foto no nível ${index + 1}`)).toBe(portrait);
-        expect(document.querySelector(".practice-trail-detail")?.hasAttribute("hidden")).toBe(true);
+        expect(screen.getByRole("status").textContent).toContain("Indo para a etapa");
         act(() => vi.advanceTimersByTime(850));
         expect(stage.classList.contains("is-arrived")).toBe(true);
-        expect(document.querySelector(".practice-trail-detail")?.hasAttribute("hidden")).toBe(true);
+        expect(screen.getByRole("status").textContent).toBe("");
         act(() => vi.advanceTimersByTime(260));
-        expect(screen.getByRole("heading", { name: trail.stops[index]!.title })).toBeTruthy();
+        expect(screen.getByRole("status").textContent).toContain(`Etapa ${index + 1} selecionada`);
       }
-      expect(screen.getByText("Exercícios em preparação")).toBeTruthy();
+      expect(document.querySelector(".practice-trail-detail")).toBeNull();
+      expect(screen.getByRole("heading", { name: island.subject })).toBeTruthy();
+      expect(screen.queryByText(island.title)).toBeNull();
+      expect(document.querySelector(".practice-trail-heading img")?.getAttribute("src")).toBe(
+        "/paper-arrow.svg",
+      );
       expect(localStorage.getItem("helena.soloProgress")).toBe(before);
       fireEvent.click(screen.getByRole("button", { name: "Voltar aos mundos" }));
       expect(onBack).toHaveBeenCalledOnce();
@@ -84,10 +89,10 @@ describe("trilhas exploráveis por disciplina", () => {
     expect(document.querySelector(".is-moving--down")).toBeTruthy();
     act(() => vi.advanceTimersByTime(350));
     expect(stages[3]!.classList.contains("is-arrived")).toBe(false);
-    expect(document.querySelector(".practice-trail-detail")?.hasAttribute("hidden")).toBe(true);
+    expect(screen.getByRole("status").textContent).toContain("Indo para a etapa 2");
     act(() => vi.advanceTimersByTime(500));
     act(() => vi.advanceTimersByTime(260));
-    expect(screen.getByRole("heading", { name: "Ponte da álgebra" })).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toContain("Etapa 2 selecionada");
     expect(screen.getByAltText("Sua foto no nível 2")).toBeTruthy();
   });
 
@@ -103,8 +108,35 @@ describe("trilhas exploráveis por disciplina", () => {
       />,
     );
     fireEvent.click(screen.getAllByRole("button", { name: /^Etapa/ })[2]!);
-    expect(screen.getByRole("heading", { name: "Praça das formas" })).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toContain("Etapa 3 selecionada");
     expect(document.querySelector(".is-moving")).toBeNull();
     vi.unstubAllGlobals();
+  });
+  it("mantém Idiomas em tela cheia, bloqueia etapas futuras e abre o jogo após a chegada", () => {
+    vi.useFakeTimers();
+    const onOpenLevel = vi.fn();
+    const island = PRACTICE_ISLANDS[0];
+    render(
+      <PracticeSubjectTrail
+        island={island}
+        profile={{ name: "Aluno" }}
+        entering={false}
+        onBack={() => {}}
+        unlockedLevel={2}
+        onOpenLevel={onOpenLevel}
+      />,
+    );
+    const levels = screen.getAllByRole("button", { name: /^Nível/ });
+    expect(screen.getByRole("region", { name: "Trilha de Idiomas" })).toBeTruthy();
+    expect(levels[2]!.hasAttribute("disabled")).toBe(true);
+    expect(levels[3]!.hasAttribute("disabled")).toBe(true);
+    expect(screen.getByAltText("Sua foto no nível 2")).toBeTruthy();
+    expect(onOpenLevel).not.toHaveBeenCalled();
+    fireEvent.click(levels[0]!);
+    act(() => vi.advanceTimersByTime(850));
+    expect(onOpenLevel).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(260));
+    expect(onOpenLevel).toHaveBeenCalledExactlyOnceWith(1);
+    expect(document.querySelector(".practice-trail-detail")).toBeNull();
   });
 });

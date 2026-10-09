@@ -5,17 +5,17 @@ import {
   MOBILE_TRAIL_Y,
   SUBJECT_TRAILS,
   type PracticeIsland,
-  type SubjectIslandId,
+  type TrailIslandId,
 } from "../data/practice-trails";
 import type { StoredProfile } from "../hooks/use-stored-profile";
-import { HelenaRoomIcon } from "./helena-room-icon";
+import { PaperArrow } from "./paper-arrow";
 import { PracticeUserPortrait } from "./practice-user-portrait";
 import "./practice-subject-trail.css";
 
-function TrailEmblem({ id }: { id: SubjectIslandId }) {
+function TrailEmblem({ id }: { id: TrailIslandId }) {
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" className="practice-trail-emblem">
-      {id === "portuguese" ? (
+      {id === "portuguese" || id === "languages" ? (
         <>
           <path d="m4 13 17-4 3 3 3-3 17 4v27l-17-3-3 3-3-3-17 3Z" fill="#843222" />
           <path d="m5 10 16-4 3 4 3-4 16 4v25l-16-3-3 4-3-4-16 3Z" fill="#fff9ef" />
@@ -115,7 +115,7 @@ function MathLevelArtifact({ level }: { level: number }) {
   );
 }
 
-function TrailNumberPiece({ id, level }: { id: SubjectIslandId; level: number }) {
+function TrailNumberPiece({ id, level }: { id: TrailIslandId; level: number }) {
   return (
     <svg
       viewBox="0 0 100 100"
@@ -123,7 +123,14 @@ function TrailNumberPiece({ id, level }: { id: SubjectIslandId; level: number })
       className="practice-trail-number-piece"
       data-piece={id}
     >
-      {id === "portuguese" ? (
+      {id === "languages" ? (
+        <>
+          <path className="number-piece-depth" d="M6 16h88v63H51L30 96V79H6Z" />
+          <path className="number-piece-face" d="M6 8h88v63H51L30 88V71H6Z" />
+          <path className="number-piece-fold" d="M6 8h88l-8 8H14v47l-8 8Z" />
+          <path className="math-tool-gold" d="M22 20h16v3H22Zm40 0h16v3H62ZM22 59h56v3H22Z" />
+        </>
+      ) : id === "portuguese" ? (
         <>
           <path className="number-piece-depth" d="M13 12h65l10 11v68H13L6 83V20Z" />
           <path className="number-piece-paper" d="M17 17h65v65H17Z" />
@@ -194,14 +201,18 @@ export function PracticeSubjectTrail({
   profile,
   entering,
   onBack,
+  unlockedLevel = 4,
+  onOpenLevel,
 }: {
-  island: PracticeIsland & { id: SubjectIslandId };
+  island: PracticeIsland;
   profile: StoredProfile;
   entering: boolean;
   onBack: () => void;
+  unlockedLevel?: number;
+  onOpenLevel?: (level: number) => void;
 }) {
   const [journey, setJourney] = useState({
-    target: 0,
+    target: onOpenLevel ? Math.max(0, Math.min(unlockedLevel, 4) - 1) : 0,
     visit: 0,
     direction: "up",
     phase: "open",
@@ -226,8 +237,10 @@ export function PracticeSubjectTrail({
     );
     return () => window.clearTimeout(timer);
   }, [journey.target, journey.visit, journey.phase]);
+  useEffect(() => {
+    if (journey.phase === "open" && journey.visit > 0) onOpenLevel?.(journey.target + 1);
+  }, [journey.phase, journey.visit, journey.target, onOpenLevel]);
   const trail = SUBJECT_TRAILS[island.id];
-  const stop = trail.stops[selected]!;
   const position = trail.points[selected]!;
   return createPortal(
     <section
@@ -244,11 +257,11 @@ export function PracticeSubjectTrail({
     >
       <header className="practice-trail-heading">
         <button className="secondary-button" type="button" onClick={onBack}>
-          <HelenaRoomIcon name="back" size={18} /> Voltar aos mundos
+          <PaperArrow back /> Voltar aos mundos
         </button>
         <div>
-          <span className="section-label">{island.subject}</span>
-          <h2>{island.title}</h2>
+          <TrailEmblem id={island.id} />
+          <h2>{island.subject}</h2>
         </div>
       </header>
       <div
@@ -256,16 +269,42 @@ export function PracticeSubjectTrail({
         aria-label={`Caminho de ${island.subject}`}
       >
         <picture className="solo-level-scenery" aria-hidden="true">
-          <source media="(min-width: 900px)" srcSet={`/practice-trails/${island.id}-clean.webp`} />
+          <source
+            media="(min-width: 900px)"
+            srcSet={
+              island.id === "languages"
+                ? "/solo-interior-1-desktop.webp"
+                : `/practice-trails/${island.id}-clean.webp`
+            }
+          />
           <img
             className="solo-level-scenery__art"
-            src={`/practice-trails/${island.id}-mobile.webp`}
+            src={
+              island.id === "languages"
+                ? "/solo-interior-1.webp"
+                : `/practice-trails/${island.id}-mobile.webp`
+            }
             alt=""
             decoding="async"
             fetchPriority="high"
           />
         </picture>
         <div className="solo-level-track">
+          {island.id === "languages" && (
+            <svg
+              className="practice-language-path"
+              viewBox="0 0 100 1000"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M12 970V30h76v940Z" fill="#9f8f75" />
+              <path d="M12 958V18h76v940Z" fill="#f2dbac" />
+              <path d="M12 18h12v940H12Z" fill="#fff9ef" />
+              {Array.from({ length: 31 }, (_, index) => (
+                <path key={index} d={`M24 ${35 + index * 30}h64v3H24Z`} fill="#c9ae7f" />
+              ))}
+            </svg>
+          )}
           {trail.stops.map((item, index) => (
             <button
               key={item.topic}
@@ -279,8 +318,8 @@ export function PracticeSubjectTrail({
                 } as CSSProperties
               }
               aria-pressed={selected === index}
-              aria-controls="practice-trail-detail"
-              aria-label={`Etapa ${index + 1}: ${item.title}, ${item.topic}`}
+              disabled={index + 1 > unlockedLevel}
+              aria-label={`${island.id === "languages" ? "Nível" : "Etapa"} ${index + 1}: ${item.title}. ${index + 1 > unlockedLevel ? "Bloqueado. Complete o nível anterior para desbloquear." : item.description}`}
               onClick={(event) => {
                 setJourney((current) => ({
                   target: index,
@@ -323,25 +362,12 @@ export function PracticeSubjectTrail({
         </div>
       </div>
       <span className="practice-trail-status" role="status">
-        {journey.phase === "travel" ? `Indo para a etapa ${selected + 1}` : ""}
+        {journey.phase === "travel"
+          ? `Indo para a etapa ${selected + 1}`
+          : journey.phase === "open" && journey.visit > 0 && !onOpenLevel
+            ? `Etapa ${selected + 1} selecionada. Exercícios em preparação.`
+            : ""}
       </span>
-      <aside
-        id="practice-trail-detail"
-        className="practice-trail-detail"
-        aria-live="polite"
-        hidden={journey.phase !== "open"}
-        key={journey.visit}
-      >
-        <TrailEmblem id={island.id} />
-        <div>
-          <span className="section-label">
-            Etapa {selected + 1} · {stop.topic}
-          </span>
-          <h3>{stop.title}</h3>
-          <p>{stop.description}</p>
-          <small>Exercícios em preparação</small>
-        </div>
-      </aside>
     </section>,
     document.body,
   );

@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Trilhas sem painéis inferiores e Idiomas integrado (2026-10-08)
+
+- Idiomas usa o mesmo palco em tela cheia das cinco disciplinas, preservando seus minigames reais, bloqueios e progresso. O avatar chega ao nível, o marcador acende e só então abre o jogo. A arte existente de Idiomas permanece, com percurso central em papel e números em balões facetados.
+- Removidos os painéis descritivos inferiores e os nomes de ilha abaixo da matéria no cabeçalho. O fim do mapa não reserva mais uma faixa vazia para esses painéis. Os marcadores continuam numerados e acessíveis, com temas junto ao nível.
+- Voltar aos mundos usa a seta amarela oficial em paper-arrow.svg e acabamento creme de papel. Seleção de etapas sem exercícios não grava progresso; sua condição de prévia continua anunciada de maneira não visual.
+
 ## Percurso central e chegada às etapas (2026-10-08)
 
 - As cinco trilhas de disciplinas preservam o papercraft aprovado, mas reorganizam os cenários nas laterais de um caminho central contínuo. Removida a passarela decorativa que não acompanhava o terreno. Artes próprias de desktop e celular, em WebP de qualidade 90; originais preservados como referência.
