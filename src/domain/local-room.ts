@@ -135,6 +135,8 @@ export type LocalRoomState = {
     }
   >;
   createRequestId?: string;
+  // Identificador secreto do caminho público da sala (ver backend/public-stream-id.ts).
+  publicId?: string;
   generation?: string;
   roundId?: string;
   sourceDeck?: ListeningCard[];

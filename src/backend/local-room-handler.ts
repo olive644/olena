@@ -35,6 +35,7 @@ import type { KvStore } from "./kv-store.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 import { safeEqual } from "./secure-compare.js";
 import { createHash } from "node:crypto";
+import { createPublicStreamId, publicStreamIdOf } from "./public-stream-id.js";
 import { BINGO_MODES } from "../domain/number-bingo.js";
 import {
   READY_LISTENING_SOURCE,
@@ -43,11 +44,13 @@ import {
 
 export type LocalRoomHandlerDependencies = {
   store: KvStore;
-  publish(code: string, publicState: PublicLocalRoomState): Promise<void>;
-  streamUrl(code: string): string;
+  // Recebem o identificador público secreto da sala, nunca o código curto (salas novas).
+  publish(publicId: string, publicState: PublicLocalRoomState): Promise<void>;
+  streamUrl(publicId: string): string;
   now?(): number;
   randomCode?(): string;
   randomId?(): string;
+  randomPublicId?(): string;
   guard?(request: Request): Promise<Response | undefined>;
   observe?(event: { action: string; status: number; durationMs: number }): void;
   // Identidade opcional da conta Google por trás do pedido (ver firebase-account-identity.ts).
@@ -192,6 +195,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
   const now = () => dependencies.now?.() ?? Date.now();
   const randomCode = () => dependencies.randomCode?.() ?? createLocalRoomCode();
   const randomId = () => dependencies.randomId?.() ?? crypto.randomUUID();
+  const randomPublicId = () => dependencies.randomPublicId?.() ?? createPublicStreamId();
 
   async function saveRoom(state: LocalRoomState): Promise<PublicLocalRoomState> {
     state = { ...state, revision: (state.revision ?? 0) + 1 };
@@ -201,7 +205,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       Math.max(1, Math.ceil(((state.expiresAt ?? now() + ROOM_TTL_SECONDS * 1000) - now()) / 1000)),
     );
     const publicState = toPublicRoomState(state);
-    await dependencies.publish(state.code, publicState);
+    await dependencies.publish(publicStreamIdOf(state), publicState);
     return publicState;
   }
 
@@ -226,7 +230,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         Math.ceil(((updated.expiresAt ?? now() + ROOM_TTL_SECONDS * 1000) - now()) / 1000),
       ),
     );
-    await dependencies.publish(updated.code, publicState);
+    await dependencies.publish(publicStreamIdOf(updated), publicState);
     return publicState;
   }
 
@@ -256,12 +260,12 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const existing = await loadRoom(dependencies.store, code);
       if (existing) {
         if (requestId && existing.createRequestId === requestId) {
-          await dependencies.publish(code, toPublicRoomState(existing));
+          await dependencies.publish(publicStreamIdOf(existing), toPublicRoomState(existing));
           return jsonResponse(201, {
             code,
             hostToken: existing.hostToken,
             state: toPublicRoomState(existing),
-            streamUrl: dependencies.streamUrl(code),
+            streamUrl: dependencies.streamUrl(publicStreamIdOf(existing)),
           });
         }
         return jsonResponse(409, { error: "Este código está ocupado. Tente criar uma nova sala." });
@@ -278,12 +282,13 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         now: now(),
       });
       if (requestId) state.createRequestId = requestId;
+      state.publicId = randomPublicId();
       const publicState = await saveRoom(state);
       return jsonResponse(201, {
         code,
         hostToken,
         state: publicState,
-        streamUrl: dependencies.streamUrl(code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
       });
     }
 
@@ -302,11 +307,11 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const requestId = typeof body["requestId"] === "string" ? body["requestId"] : "";
       const receipt = requestId ? state.receipts?.[`join:${requestId}`] : undefined;
       if (receipt) {
-        await dependencies.publish(code, toPublicRoomState(state));
+        await dependencies.publish(publicStreamIdOf(state), toPublicRoomState(state));
         return jsonResponse(200, {
           ...receipt,
           state: toPublicRoomState(state),
-          streamUrl: dependencies.streamUrl(code),
+          streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
         });
       }
       // Quem entrou logado e perdeu a sessão (aba fechada, celular que descarregou o app) precisa
@@ -345,7 +350,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
             participantId: own.id,
             participantToken,
             state: await saveRoom(rejoined),
-            streamUrl: dependencies.streamUrl(code),
+            streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
           });
         }
       }
@@ -404,7 +409,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         participantId,
         participantToken,
         state: publicState,
-        streamUrl: dependencies.streamUrl(code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
       });
     }
 
@@ -537,7 +542,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         participantId: state.participants.find((p) =>
           role === "host" ? p.id === updated.hostParticipantId : safeEqual(p.token, credential),
         )?.id,
-        streamUrl: dependencies.streamUrl(code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
         ...(role === "host"
           ? {
               sourceDeck: updated.sourceDeck ?? [],
@@ -757,7 +762,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const key = `answer:${participantId}:${questionIndex}${numberBingo ? ":" + answer : ""}`;
       const receipt = state.receipts?.[key];
       if (receipt) {
-        await dependencies.publish(code, toPublicRoomState(state));
+        await dependencies.publish(publicStreamIdOf(state), toPublicRoomState(state));
         const pointsChange = receipt.pointsChange ?? receipt.xpChange ?? 0;
         return jsonResponse(200, {
           ...receipt,

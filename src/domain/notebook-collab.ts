@@ -50,6 +50,8 @@ export type NotebookCollabState = {
   updatedAt: number;
   expiresAt: number;
   createRequestId?: string;
+  // Identificador secreto do caminho público do caderno (ver backend/public-stream-id.ts).
+  publicId?: string;
   receipts?: Record<string, { participantId: string; participantToken: string }>;
 };
 export type NotebookCollabPage = { id: string; title: string; document?: HandwritingDocument };
@@ -124,7 +126,10 @@ export function sanitizeNotebookCollabCursor(
   };
 }
 
-export type PublicNotebookCollabState = Omit<NotebookCollabState, "hostToken" | "receipts"> & {
+export type PublicNotebookCollabState = Omit<
+  NotebookCollabState,
+  "hostToken" | "receipts" | "publicId"
+> & {
   participants: Omit<NotebookCollabParticipant, "token" | "accountId">[];
   // Escrito à parte, por um canal leve, sem passar pela folha: ver publishCursor.
   cursors?: Record<string, NotebookCollabCursor>;

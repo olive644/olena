@@ -4,6 +4,7 @@ import {
   type GoogleServiceAccount,
 } from "./google-service-account.js";
 import type { KvStore } from "./kv-store.js";
+import { isPublicStreamId } from "./public-stream-id.js";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/firebase.database",
@@ -97,17 +98,25 @@ export function createFirebaseRealtimeStore(
 // autenticação (regras do Realtime Database liberam ".read" só em
 // "/rooms/$code"), para que o navegador escute atualizações via
 // EventSource nativo, sem SDK e sem polling.
+// O identificador entra no caminho da requisição: só o formato conhecido passa, para um valor
+// estranho nunca apontar para outro nó do banco.
+function assertPublicId(publicId: string): string {
+  if (!isPublicStreamId(publicId)) throw new Error("Identificador público inválido.");
+  return publicId;
+}
+
 export function createFirebasePublicRoomPublisher(
   config: FirebaseRealtimeConfig,
   fetchImpl: typeof fetch = fetch,
   now: () => number = () => Date.now(),
   accessToken?: () => Promise<string>,
 ) {
-  return async function publish(code: string, publicState: unknown): Promise<void> {
+  return async function publish(publicId: string, publicState: unknown): Promise<void> {
+    const path = assertPublicId(publicId);
     const token = accessToken
       ? await accessToken()
       : await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
-    const url = `${config.databaseUrl}/rooms/${code}.json`;
+    const url = `${config.databaseUrl}/rooms/${path}.json`;
     for (let attempt = 0; attempt < 40; attempt++) {
       const snapshot = await fetchImpl(url, {
         headers: { Authorization: `Bearer ${token}`, "X-Firebase-ETag": "true" },
@@ -147,7 +156,7 @@ export function createFirebasePublicRoomPublisher(
   };
 }
 
-// Escreve (ou apaga) só o cursor de um participante em rooms/{codigo}/cursors/{id}. É uma
+// Escreve (ou apaga) só o cursor de um participante em rooms/{identificador}/cursors/{id}. É uma
 // gravação pequena e sem condição de versão: a última posição vence, e uma posição perdida
 // é substituída pela próxima em fração de segundo.
 export function createFirebaseCursorPublisher(
@@ -156,13 +165,13 @@ export function createFirebaseCursorPublisher(
   now: () => number = () => Date.now(),
 ) {
   return async function publishCursor(
-    code: string,
+    publicId: string,
     participantId: string,
     cursor: { x: number; y: number; at: number } | null,
   ): Promise<void> {
     const token = await getGoogleAccessToken(config.serviceAccount, SCOPES, fetchImpl, now());
     const response = await fetchImpl(
-      `${config.databaseUrl}/rooms/${code}/cursors/${participantId}.json`,
+      `${config.databaseUrl}/rooms/${assertPublicId(publicId)}/cursors/${encodeURIComponent(participantId)}.json`,
       {
         method: cursor ? "PUT" : "DELETE",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -173,6 +182,6 @@ export function createFirebaseCursorPublisher(
   };
 }
 
-export function firebasePublicStreamUrl(config: FirebaseRealtimeConfig, code: string): string {
-  return `${config.databaseUrl}/rooms/${code}.json`;
+export function firebasePublicStreamUrl(config: FirebaseRealtimeConfig, publicId: string): string {
+  return `${config.databaseUrl}/rooms/${assertPublicId(publicId)}.json`;
 }

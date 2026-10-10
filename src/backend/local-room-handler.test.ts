@@ -524,8 +524,11 @@ describe("handler da sala local", () => {
     expect(payload.code).toBeTruthy();
     expect(payload.hostToken).toBeTruthy();
     expect(payload.state).not.toHaveProperty("hostToken");
-    expect(payload.streamUrl).toContain(payload.code);
-    expect(publish).toHaveBeenCalledWith(payload.code, expect.objectContaining({ phase: "lobby" }));
+    // O caminho público não é o código curto: é um identificador secreto de 128 bits.
+    expect(payload.streamUrl).not.toContain(payload.code);
+    expect(payload.streamUrl).toMatch(/\/rooms\/[a-f0-9]{32}\.json$/);
+    const publicId = /rooms\/([a-f0-9]{32})\.json/.exec(payload.streamUrl)?.[1];
+    expect(publish).toHaveBeenCalledWith(publicId, expect.objectContaining({ phase: "lobby" }));
   });
 
   it("recusa configurações inválidas na criação", async () => {
@@ -572,7 +575,7 @@ describe("handler da sala local", () => {
   });
 
   it("permite participante entrar e recebe a URL de streaming", async () => {
-    const { code } = await createRoomViaApi();
+    const { code, streamUrl } = await createRoomViaApi();
     const joinResponse = await handler(post("join", { code, displayName: "Ana" }));
     expect(joinResponse.status).toBe(200);
     const joinPayload = (await joinResponse.json()) as {
@@ -582,11 +585,12 @@ describe("handler da sala local", () => {
     };
     expect(joinPayload.participantId).toBeTruthy();
     expect(joinPayload.state.participants).toHaveLength(1);
-    expect(joinPayload.streamUrl).toContain(code);
+    expect(joinPayload.streamUrl).toBe(streamUrl);
+    expect(joinPayload.streamUrl).not.toContain(code);
   });
 
   it("retoma a sessão do host e do participante depois de recarregar", async () => {
-    const { code, hostToken } = await createRoomViaApi();
+    const { code, hostToken, streamUrl } = await createRoomViaApi();
     const joinResponse = await handler(post("join", { code, displayName: "Ana" }));
     const { participantToken } = (await joinResponse.json()) as { participantToken: string };
     await handler(post("start", { code, hostToken }));
@@ -598,7 +602,7 @@ describe("handler da sala local", () => {
     expect(await resumedHost.json()).toEqual(
       expect.objectContaining({
         state: expect.objectContaining({ phase: "playing" }),
-        streamUrl: expect.stringContaining(code),
+        streamUrl,
       }),
     );
 
