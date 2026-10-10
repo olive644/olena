@@ -25,25 +25,43 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
       };
   });
   await page.goto("/aprender");
-  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeVisible();
+  await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
   await expect(page.getByRole("button", { name: "Próxima ilha de Matemática" })).toHaveCount(0);
   const stage = await page.locator(".math-journey-stage").boundingBox();
   const x = stage!.x + stage!.width / 2,
     y = stage!.y + stage!.height * 0.5;
   await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move(x, y - 140, { steps: 8 });
+  await page.mouse.move(x - 140, y, { steps: 8 });
   await page.mouse.up();
-  await expect(page.getByRole("heading", { name: "Cidade das Equações" })).toBeVisible();
-  await page.mouse.move(x, y - 140);
+  await expect(page.getByRole("heading", { name: "Oficina das Equações" })).toBeVisible();
+  await page.mouse.move(x - 140, y);
   await page.mouse.down();
   await page.mouse.move(x, y, { steps: 8 });
   await page.mouse.up();
-  await expect(page.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeVisible();
+  await expect(page.locator(".math-journey-avatar")).toHaveCSS("opacity", "1");
+  const avatarBox = await page
+    .locator(".math-journey-avatar .practice-user-portrait")
+    .boundingBox();
+  expect(Math.abs(avatarBox!.width - avatarBox!.height)).toBeLessThan(1);
+  for (let place = 0; place < 6; place++) {
+    const scene = page.locator(".math-journey-island.is-current img.math-place-scene");
+    await expect(scene).toBeVisible();
+    await expect
+      .poll(() => scene.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+    await expect(scene).toHaveCSS("object-fit", "contain");
+    await expect(scene).toHaveCSS("clip-path", "none");
+    if (place < 5) await page.keyboard.press("ArrowRight");
+  }
+  for (let place = 0; place < 5; place++) await page.keyboard.press("ArrowLeft");
+  await expect(page.locator(".math-journey-avatar")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("math-islands.png") });
-  await page.getByRole("button", { name: "Entrar em Vila das Primeiras Contas" }).click();
+  await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
   await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
   for (let index = 0; index < 4; index++) {
@@ -53,6 +71,7 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
     const answer = text!.includes("−") ? nums[0]! - nums[1]! : nums[0]! + nums[1]!;
     await page.getByRole("button", { name: "Resposta " + answer, exact: true }).click();
     await expect(page.locator(".math-answer-reaction")).toBeVisible();
+    await expect(page.locator(".math-answer-reaction .practice-user-portrait")).toHaveCount(0);
     await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
   }
   await expect(page.getByText("Multiplicação", { exact: true })).toBeVisible();
@@ -80,7 +99,7 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   for (let index = 0; index < 3; index++) {
     const text = await page.locator(".math-game-question h1").getAttribute("aria-label");
     const nums = text!.match(/\d+/g)!.map(Number);
-    const value = nums[0]! * nums[1]!;
+    const value = text!.includes("−") ? nums[0]! - nums[1]! : nums[0]! * nums[1]!;
     const buttons = page.getByRole("button", { name: /^Resposta/ });
     const labels = await buttons.evaluateAll((items) =>
       items.map((item) => item.getAttribute("aria-label")),
@@ -94,7 +113,7 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await expect(page.locator(".room-reward-notice")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("math-result.png") });
   await page.getByRole("button", { name: "Tentar de novo" }).click();
-  await expect(page.getByText("Multiplicação", { exact: true })).toBeVisible();
+  await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();

@@ -122,7 +122,7 @@ test("explora mundos com a foto do perfil e abre somente Matemática", async ({
   await page.getByRole("button", { name: "Mundo anterior" }).click();
   await page.getByRole("button", { name: "Entrar no laboratório" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
-  await page.getByRole("button", { name: "Entrar em Vila das Primeiras Contas" }).click();
+  await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
   await expect(page.getByRole("region", { name: "Laboratório das contas" })).toBeVisible();
   await expect(page.locator(".practice-trail-map")).toHaveCount(0);
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
@@ -423,7 +423,7 @@ test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }
     })
     .click();
   await page.getByRole("button", { name: "Entrar no laboratório" }).click();
-  await page.getByRole("button", { name: "Entrar em Vila das Primeiras Contas" }).click();
+  await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
   await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();

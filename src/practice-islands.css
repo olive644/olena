@@ -34,6 +34,9 @@
   cursor: grabbing;
 }
 .practice-carousel-island {
+  border: 0;
+  padding: 0;
+  background: transparent;
   position: absolute;
   left: 50%;
   bottom: 8px;
@@ -50,6 +53,14 @@
 .practice-carousel-island.is-current {
   z-index: 2;
   pointer-events: auto;
+}
+.practice-carousel-island:not(:disabled) {
+  cursor: pointer;
+}
+.practice-carousel-island:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: -8px;
+  border-radius: 25%;
 }
 .practice-carousel-island .solo-island-art {
   animation: none;

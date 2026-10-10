@@ -218,6 +218,8 @@ export function assessMath(
     : 0;
   const mastery = correct ? progress.mastery + (fast ? 2 : 1) : Math.max(0, progress.mastery - 1);
   const advance = mastery >= 4 && progress.level < 5;
+  const errors = correct ? 0 : (progress.errors ?? 0) + 1;
+  const retreat = errors >= 2 && progress.level > 0;
   return {
     correct,
     timedOut: expired,
@@ -232,11 +234,14 @@ export function assessMath(
           : elapsed < question.budget * 0.7
             ? "WOW! BOA!"
             : "BOA, NO SEU RITMO!"
-        : "Poxa! Quem sabe na próxima!",
+        : retreat
+          ? "Vamos retomar uma conta mais simples!"
+          : "Poxa! Quem sabe na próxima!",
     progress: {
       ...progress,
-      level: progress.level + Number(advance),
-      mastery: advance ? 0 : Math.min(3, mastery),
+      level: progress.level + Number(advance) - Number(retreat),
+      mastery: advance || retreat ? 0 : Math.min(3, mastery),
+      errors: retreat ? 0 : Math.min(2, errors),
       correct: progress.correct + Number(correct),
     },
   };

@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+Matemática: lugares horizontais de uma única ilha, em math-islands/places/. Cada
+cenário é reconstruído inteiro com elementos da arte original, sem cortes de um
+panorama. O clique na arte de disciplina ou de lugar também abre a etapa.
+entryOrigin mede a foto antes da troca de tela e preserva sua posição no início
+do voo. Moldura com largura/altura iguais, sem avatar no feedback de resposta.
+Olena recua um assunto após dois erros consecutivos. MathProgress.errors é
+opcional para manter dados antigos; um acerto zera o contador, sem perder recordes.
+
 Refinamento da Matemática: usar a foto do usuário, sem corpo ou Oliver. Ilhas
 centrais clicáveis e troca por arraste, roda ou teclado, sem botões de setas.
 Tempo esgotado custa coração e quatro segundos extras, com mensagem própria.

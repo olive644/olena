@@ -207,6 +207,41 @@
 }
 .math-time > svg:last-child {
   width: 17px;
+  color: #fff5d9;
+  --points-depth: #8c7658;
+  --points-fold: #fff;
+}
+.math-timeout-reaction .room-seconds-unit {
+  color: #fff5d9;
+  --points-depth: #8c7658;
+  --points-fold: #fff;
+}
+.math-background-symbols {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--math-light);
+  opacity: 0.1;
+}
+.math-background-symbols span {
+  position: absolute;
+  left: calc(mod(var(--symbol), 4) * 28% - 1%);
+  top: calc(round(down, var(--symbol) / 4) * 34% + 10%);
+  font-weight: 900;
+  font-size: clamp(40px, 7vw, 95px);
+  transform: rotate(calc(var(--symbol) * 17deg - 15deg));
+}
+.math-game-landscape .math-place-scene {
+  position: absolute;
+  width: min(70vw, 700px);
+  height: min(70vw, 700px);
+  right: -10vw;
+  bottom: -10vh;
+}
+.math-course-emblem > .math-place-scene {
+  position: absolute;
+  inset: 0;
 }
 .math-hearts {
   display: flex;

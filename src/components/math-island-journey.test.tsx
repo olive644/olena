@@ -5,37 +5,51 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
 });
-it("navigates all six distinct themes vertically and clamps both ends", () => {
+it("navigates six places horizontally and clamps both ends", () => {
   render(<MathIslandJourney onBack={() => {}} />);
   expect(screen.queryByRole("button", { name: "Ilha anterior de Matemática" })).toBeNull();
-  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowDown" });
-  expect(screen.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeTruthy();
+  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), { key: "ArrowLeft" });
+  expect(screen.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeTruthy();
   const titles = [
-    "Cidade das Equações",
-    "Observatório das Funções",
-    "Jardins das Tangentes",
+    "Oficina das Equações",
+    "Torre das Funções",
+    "Ponte das Tangentes",
     "Porto das Integrais",
-    "Santuário dos Vetores",
+    "Mirante dos Vetores",
   ];
   for (const title of titles) {
-    fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowUp" });
+    fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), {
+      key: "ArrowRight",
+    });
     expect(screen.getByRole("heading", { name: title })).toBeTruthy();
   }
-  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowUp" });
-  expect(screen.getByRole("heading", { name: "Santuário dos Vetores" })).toBeTruthy();
+  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), { key: "ArrowRight" });
+  expect(screen.getByRole("heading", { name: "Mirante dos Vetores" })).toBeTruthy();
   expect(screen.queryByRole("button", { name: "Próxima ilha de Matemática" })).toBeNull();
-  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowDown" });
+  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), { key: "ArrowLeft" });
   expect(screen.getByRole("heading", { name: "Porto das Integrais" })).toBeTruthy();
 });
 it("animates entering the island and restores it on game exit", () => {
   vi.useFakeTimers();
   render(<MathIslandJourney onBack={() => {}} />);
-  fireEvent.click(screen.getByRole("button", { name: "Entrar em Vila das Primeiras Contas" }));
+  fireEvent.click(screen.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }));
   expect(document.querySelector(".math-journey.is-enter")).toBeTruthy();
   act(() => vi.advanceTimersByTime(850));
   expect(screen.getByRole("button", { name: "Vamos calcular!" })).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Voltar às ilhas" }));
   act(() => vi.advanceTimersByTime(650));
   act(() => vi.advanceTimersByTime(850));
-  expect(screen.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeTruthy();
+});
+it("flies from the discipline avatar before enabling place entry", () => {
+  vi.useFakeTimers();
+  render(<MathIslandJourney onBack={() => {}} entryOrigin={{ x: 50, y: 100, size: 64 }} />);
+  expect(document.querySelector(".math-journey.is-arrive")).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Explorar lugar" }).hasAttribute("disabled")).toBe(
+    true,
+  );
+  act(() => vi.advanceTimersByTime(850));
+  expect(screen.getByRole("button", { name: "Explorar lugar" }).hasAttribute("disabled")).toBe(
+    false,
+  );
 });

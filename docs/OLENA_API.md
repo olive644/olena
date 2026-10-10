@@ -4,8 +4,15 @@
 
 A API é independente de fornecedor e prepara o catálogo de metodologias para as ilhas
 de Praticar. A Olena responderá somente por texto. Não há voz nesta API,
-modelo conectado, geração simulada, exercícios novos ou envio de materiais a terceiros.
+modelo conectado, geração por IA ou envio de materiais a terceiros.
 O áudio existente dos minigames permanece em `/api/speech`, sem alterações.
+
+O minigame de Matemática usa POST `/api/olena?action=math&version=1`: desafios
+calculados e avaliação determinística, sem fornecedor de IA. Acertos e rapidez
+promovem assuntos; dois erros consecutivos recuam um assunto, sem perder pontos
+ou recorde. Um acerto limpa o contador. `MathProgress.errors` é opcional, inteiro
+entre 0 e 2, compatível com progresso antigo sem esse campo. A conta enviada é
+validada pela semente e pelo assunto de origem antes de preparar a próxima.
 
 A função real está em `api/olena.ts`, na mesma implantação Vercel do aplicativo.
 O handler usa Request/Response web e não depende do runtime Vercel. Sem dependências novas,

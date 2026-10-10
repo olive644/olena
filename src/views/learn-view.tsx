@@ -71,11 +71,24 @@ const SOLO_PROGRESS_KEY = "helena.soloProgress";
 function PracticeHub() {
   const [worldIndex, setWorldIndex] = useState(4);
   const [insideWorld, setInsideWorld] = useState(false);
+  const [entryOrigin, setEntryOrigin] = useState<{ x: number; y: number; size: number }>();
   const [profile] = useStoredProfile();
   const world = SOLO_WORLDS[worldIndex]!;
   const available = world.id === "mathematics";
 
-  if (insideWorld && available) return <MathIslandJourney onBack={() => setInsideWorld(false)} />;
+  function enterMath() {
+    if (!available) return;
+    const rect = document.querySelector(".practice-island-avatar")?.getBoundingClientRect();
+    if (rect)
+      setEntryOrigin({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+        size: rect.width,
+      });
+    setInsideWorld(true);
+  }
+  if (insideWorld && available)
+    return <MathIslandJourney entryOrigin={entryOrigin} onBack={() => setInsideWorld(false)} />;
   return (
     <div className="practice-hub practice-hub--carousel">
       <PracticeIslandCarousel
@@ -84,19 +97,13 @@ function PracticeHub() {
           if (index >= 0 && index < SOLO_WORLDS.length) setWorldIndex(index);
         }}
         profile={profile}
+        onEnter={enterMath}
       />
       <div className="solo-world-card" aria-live="polite">
         <span className="section-label">{world.subject}</span>
         <h3>{world.title}</h3>
         <p>{world.description}</p>
-        <button
-          className="primary-button"
-          type="button"
-          disabled={!available}
-          onClick={() => {
-            if (available) setInsideWorld(true);
-          }}
-        >
+        <button className="primary-button" type="button" disabled={!available} onClick={enterMath}>
           {available ? (
             <HelenaRoomIcon name="play" />
           ) : (

@@ -79,7 +79,7 @@ it("uses the API, advances topics, scores once and retains mastery on retry", as
   await tick(1000);
   await tick(1000);
   await tick(1000);
-  expect(screen.getByText("Multiplicação")).toBeTruthy();
+  expect(screen.getByText("Subtração")).toBeTruthy();
   expect(screen.getByLabelText("3 chances restantes")).toBeTruthy();
 });
 
