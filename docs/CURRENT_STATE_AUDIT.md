@@ -2232,6 +2232,13 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `.env.example` removido do repositório, por decisão do dono. Saem também a exceção no `.gitignore`, a linha no `.prettierignore` e as duas referências (README e `services/tts/README.md`). O `.gitignore` continua ignorando `.env` e `.env.*`. Nenhum valor secreto estava no arquivo. A lista de variáveis passa a ficar nos guias de configuração e no painel da Vercel, e novos integrantes precisam receber as variáveis públicas `VITE_*` por canal próprio.
 - Pendente de decisão do dono, sem alteração aqui: canal de contato de segurança em `SECURITY.md` e na Política de Privacidade, e a presença de `docs/CONTRATO_SOCIETARIO.md` no repositório.
 
+## Arquivo security.txt (2026-10-10)
+
+- Auditoria de segurança, item 8. O `SECURITY.md` já descrevia como relatar vulnerabilidades, mas o site não publicava o arquivo padrão que ferramentas e pesquisadores procuram. `public/.well-known/security.txt` (RFC 9116) aponta para o relato privado do GitHub, para o `SECURITY.md` e para o endereço canônico, em português e inglês.
+- Sem e-mail nem telefone pessoal. Quando existir o contato oficial da Galeria.Oli (pendente, junto com a política de privacidade), basta acrescentar uma linha `Contact:`.
+- `Expires` é 2027-10-10 e precisa ser renovado todo ano. `src/security-txt.test.ts` confere o formato e falha quando faltarem menos de 60 dias para vencer.
+- Pendência de configuração, fora do código: o relato privado de vulnerabilidades do GitHub, que o `SECURITY.md` indica como via preferida, está desativado no repositório. Ativar em Settings, Code security, Private vulnerability reporting.
+
 ## Desconectar o Google Agenda revoga a autorização (2026-10-10)
 
 - Auditoria de segurança, item 5. `action=disconnect` só apagava o cookie de sessão, então o token continuava válido na conta Google da pessoa até ela removê-lo por conta própria.
