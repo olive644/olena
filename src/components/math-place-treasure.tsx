@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import type { MathCourseId } from "../data/math-courses";
 import {
   isChestCollected,
+  chestCards,
   MATH_PLACE_REWARDS_KEY,
   parseMathRewards,
   mathPlaceRewards,
@@ -20,6 +21,7 @@ import { OliverCardBooster } from "./oliver-card-booster";
 import { OliverCardCollection } from "./oliver-card-collection";
 import "./math-place-treasure.css";
 import "./oliver-card.css";
+import { MathChestArt } from "./math-chest-art";
 
 function rewardsIdentity(raw: string | null, course: MathCourseId) {
   const value = parseMathRewards(raw ?? "{}")[course];
@@ -34,45 +36,20 @@ function rewardsIdentity(raw: string | null, course: MathCourseId) {
         opened: chest.opened,
         cards: chest.cards ?? [],
         revealed: chest.revealed ?? 0,
+        kind: chest.kind ?? "common",
+        arcana: chest.arcana,
       })),
   });
 }
 
-export function CommonMathChest({ open = false }: { open?: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 140 120"
-      className={`math-common-chest${open ? " is-open" : ""}`}
-      aria-hidden="true"
-    >
-      <ellipse cx="70" cy="107" rx="54" ry="8" fill="#292432" opacity=".15" />
-      <path fill="#211d29" d="m13 55 101-5 15 13v37l-22 14-94-12Z" />
-      <path fill="#bf8d5b" d="M17 60h90v47l-90-9Z" />
-      <path fill="#79543e" d="m107 60 18-9v48l-18 8Z" />
-      <path fill="#daa974" d="m17 60 90 47-90-9Z" />
-      <path fill="#777982" d="m20 62 15 1v37l-15-2Zm66 1h15v43l-15-2Z" />
-      <path fill="#c4c5c7" d="m20 62 5 0v36l-5-1Zm66 1h5v40l-5-1Z" />
-      <path fill="#9a704d" d="m38 75 44 2v3l-44-2Zm0 17 44 2v3l-44-2Z" />
-      <g className="math-chest-lid">
-        <path fill="#211d29" d="m13 57 7-24 13-11 69 0 20 11 8 24-22 10-95-4Z" />
-        <path fill="#bf8d5b" d="m25 35 13-8h61l11 9 7 20H19Z" />
-        <path fill="#e6bf8a" d="m25 35 13-8h61l-24 29H19Z" />
-        <path fill="#9698a0" d="m38 27 12 0-2 29H34Zm49 0h12l6 29H89Z" />
-        <path fill="#c4c5c7" d="m13 57 95 0 22-10v10l-22 10-95-4Z" />
-      </g>
-      <path fill="#777982" d="m55 57 17-3 14 9-3 24-14 7-17-9Z" />
-      <path fill="#c4c5c7" d="m55 57 17-3-3 40-17-9Z" />
-      <path fill="#59413a" d="m67 64 8 3 2 7-6 5-1 8-6-1 1-9-4-6Z" />
-      <path fill="#e6e3dd" d="m23 72 5 2-1 5-5-2Zm72 2 5 2-1 5-5-2Z" />
-      {open && (
-        <path
-          className="math-chest-glow"
-          fill="#facc15"
-          d="m70 10 7 17 18-1-14 12 5 18-16-10-16 10 5-18-14-12 18 1Z"
-        />
-      )}
-    </svg>
-  );
+export function CommonMathChest({
+  open = false,
+  arcane = false,
+}: {
+  open?: boolean;
+  arcane?: boolean;
+}) {
+  return <MathChestArt open={open} arcane={arcane} />;
 }
 export function MathPlaceTreasure({
   course,
@@ -88,7 +65,7 @@ export function MathPlaceTreasure({
   const [opening, setOpening] = useState<string | null>(null);
   const [booster, setBooster] = useState<MathChest | null>(null);
   const [collection, setCollection] = useState(false);
-  const [incomingCards, setIncomingCards] = useState<MathChest["cards"]>([]);
+  const [incomingCards, setIncomingCards] = useState<ReturnType<typeof chestCards>>([]);
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const openingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dock = useRef<HTMLDivElement>(null);
@@ -178,7 +155,9 @@ export function MathPlaceTreasure({
   }, [waiting]);
   const chests = value.chests.filter((chest) => !isChestCollected(chest)).slice(0, 3);
   const previousWaiting = useRef(new Set<string>());
-  const announceReady = useEffectEvent(() => play("chestUnlock"));
+  const announceReady = useEffectEvent((arcane: boolean) =>
+    play(arcane ? "arcaneUnlock" : "chestUnlock"),
+  );
   useEffect(() => {
     if (
       value.chests.some(
@@ -189,14 +168,24 @@ export function MathPlaceTreasure({
           previousWaiting.current.has(chest.id),
       )
     )
-      announceReady();
+      announceReady(
+        value.chests.some(
+          (chest) =>
+            chest.kind === "arcane" &&
+            chest.unlockAt !== null &&
+            chest.unlockAt <= now &&
+            previousWaiting.current.has(chest.id),
+        ),
+      );
     previousWaiting.current = new Set(
       value.chests
         .filter((chest) => !chest.opened && chest.unlockAt !== null && chest.unlockAt > now)
         .map((chest) => chest.id),
     );
   }, [value, now]);
-  function play(cue: "chestUnlock" | "chestOpen" | "cardReveal") {
+  function play(
+    cue: "chestUnlock" | "chestOpen" | "cardReveal" | "arcaneUnlock" | "arcaneOpen" | "tarotReveal",
+  ) {
     audio.current ??= createMathSound();
     audio.current.unlock();
     audio.current.play(cue);
@@ -204,26 +193,26 @@ export function MathPlaceTreasure({
   function action(chest: MathChest, actionTime: number) {
     if (opening) return;
     try {
-      if (chest.opened && chest.cards) {
+      if (chest.opened && chestCards(chest).length) {
         setBooster(chest);
         return;
       }
       if (chest.unlockAt === null) {
-        play("chestUnlock");
+        play(chest.kind === "arcane" ? "arcaneUnlock" : "chestUnlock");
         acceptValue(unlockMathChest(course, chest.id, actionTime));
         setNow(actionTime);
       } else if (chest.unlockAt <= actionTime) {
         const saved = openMathChest(course, chest.id, actionTime);
         acceptValue(saved);
         setOpening(chest.id);
-        play("chestOpen");
+        play(chest.kind === "arcane" ? "arcaneOpen" : "chestOpen");
         const received = saved.chests.find((item) => item.id === chest.id)!;
         openingTimer.current = setTimeout(
           () => {
             setOpening(null);
             setBooster(received);
           },
-          isMotionReduced() ? 0 : 900,
+          isMotionReduced() ? 0 : 500,
         );
       }
       setWarning("");
@@ -239,7 +228,9 @@ export function MathPlaceTreasure({
       </div>
       {deliveryOrigin && (
         <div className="math-chest-flight" ref={delivery} aria-hidden="true">
-          <CommonMathChest />
+          <CommonMathChest
+            arcane={value.chests.find((chest) => chest.id === deliveryOrigin.id)?.kind === "arcane"}
+          />
         </div>
       )}
       <div className="math-chest-dock" ref={dock} aria-label="Três espaços de baús">
@@ -252,11 +243,16 @@ export function MathPlaceTreasure({
                 key={`empty-${index}`}
                 aria-label="Espaço de baú vazio"
               >
-                <img src="/room-icons/add.svg" width="28" height="28" alt="" aria-hidden="true" />
+                <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#138A91" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7Z" />
+                  <path fill="#60CED3" d="M9 2h6l-2 3v6H2V9h7Z" />
+                  <path fill="#0D626B" d="m13 13 9-4v6h-7v7H9l4-3Z" />
+                </svg>
               </div>
             );
           const remaining =
             chest.unlockAt === null ? 0 : Math.max(0, Math.ceil((chest.unlockAt - now) / 1000));
+          const name = chest.kind === "arcane" ? "arcano" : "comum";
           return (
             <button
               key={chest.id}
@@ -267,14 +263,17 @@ export function MathPlaceTreasure({
                 chest.opened
                   ? "Revelar cartas do baú"
                   : chest.unlockAt === null
-                    ? "Destrancar baú comum"
+                    ? `Destrancar baú ${name}`
                     : remaining > 0
-                      ? `Baú comum, ${remaining} segundos restantes`
-                      : "Abrir baú comum"
+                      ? `Baú ${name}, ${remaining} segundos restantes`
+                      : `Abrir baú ${name}`
               }
               onClick={() => action(chest, Date.now())}
             >
-              <CommonMathChest open={chest.opened || opening === chest.id} />
+              <CommonMathChest
+                open={chest.opened || opening === chest.id}
+                arcane={chest.kind === "arcane"}
+              />
               <span className="math-chest-label">
                 {chest.opened ? (
                   "Cartas"
@@ -288,12 +287,12 @@ export function MathPlaceTreasure({
                   "Abrir"
                 )}
               </span>
-              {chest.unlockAt !== null && !chest.opened && (
+              {remaining > 0 && !chest.opened && (
                 <progress
                   className="math-chest-progress"
                   aria-label="Destrancando baú"
                   max={60}
-                  value={Math.max(0, 60 - remaining)}
+                  value={Math.max(0, 60 - (chest.unlockAt! - now) / 1000)}
                 />
               )}
             </button>
@@ -323,7 +322,7 @@ export function MathPlaceTreasure({
               setCollection(true);
             }}
             onClose={() => setBooster(null)}
-            sound={() => play("cardReveal")}
+            sound={() => play(booster.kind === "arcane" ? "tarotReveal" : "cardReveal")}
             onReveal={() => {
               try {
                 const saved = revealMathCard(course, booster.id);

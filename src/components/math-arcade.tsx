@@ -18,7 +18,7 @@ import { PaperDigits } from "./paper-digits";
 import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
-import { COMMON_CHEST_POINTS, finishMathPlace } from "../data/math-place-rewards";
+import { COMMON_CHEST_POINTS, finishMathPlace, type MathChest } from "../data/math-place-rewards";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
 import { SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import { CommonMathChest } from "./math-place-treasure";
@@ -64,7 +64,7 @@ export function MathArcade({
   >(null);
   const [error, setError] = useState("");
   const [storageWarning, setStorageWarning] = useState(false);
-  const [earnedChest, setEarnedChest] = useState(false);
+  const [earnedChest, setEarnedChest] = useState<MathChest | undefined>();
   const [displayedScore, setDisplayedScore] = useState(0);
   const [reward, setReward] = useState<RoomXpReward | undefined>();
   const roundId = useRef("");
@@ -147,7 +147,7 @@ export function MathArcade({
       if (roundOwner.current !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       try {
         const saved = finishMathPlace(courseId, roundId.current, round.points);
-        setEarnedChest(saved.chests.some((chest) => chest.id === roundId.current));
+        setEarnedChest(saved.chests.find((chest) => chest.id === roundId.current));
       } catch {
         setStorageWarning(true);
       }
@@ -187,7 +187,7 @@ export function MathArcade({
     return requestMath(input, AbortSignal.any([current.signal, AbortSignal.timeout(10000)]));
   }
   async function start() {
-    setEarnedChest(false);
+    setEarnedChest(undefined);
     if (answerLock.current || pending) return;
     audio.current ??= createMathSound();
     audio.current.unlock();
@@ -230,6 +230,9 @@ export function MathArcade({
       audio.current.unlock();
     }
     answerLock.current = true;
+    const answeredAt = performance.now();
+    const expired = timedOut || round.elapsed >= question.budget / question.drain;
+    audio.current?.play(expired ? "timeout" : choice === question.answer ? "correct" : "wrong");
     setPending(true);
     setError("");
     retryChoice.current = { choice, timedOut };
@@ -249,7 +252,6 @@ export function MathArcade({
       const progress = { ...result.progress, best: Math.max(result.progress.best, points) };
       setStorageWarning(!saveMathLearning(courseId, progress));
       const missed = result.timedOut;
-      audio.current?.play(missed ? "timeout" : result.correct ? "correct" : "wrong");
       setRound((value) => ({
         ...value,
         progress,
@@ -270,7 +272,7 @@ export function MathArcade({
           setFeedback(null);
           answerLock.current = false;
         },
-        result.correct ? 650 : 1300,
+        Math.max(0, (result.correct ? 260 : 600) - (performance.now() - answeredAt)),
       );
     } catch (cause) {
       if (!controller.current?.signal.aborted)
@@ -367,7 +369,7 @@ export function MathArcade({
         ))}
       </div>
       <div className="math-game-floor" aria-hidden="true" />
-      <main className="math-arcade-stage">
+      <main className="math-arcade-stage" aria-busy={pending}>
         {status === "ready" ? (
           <div className="math-welcome">
             <h1 className="visually-hidden">{course.title}</h1>
@@ -415,7 +417,9 @@ export function MathArcade({
                 aria-label="Levar baú aos espaços da ilha"
                 onClick={(event) => {
                   const rect = event.currentTarget.getBoundingClientRect();
-                  audio.current?.play("chestUnlock");
+                  audio.current?.play(
+                    earnedChest.kind === "arcane" ? "arcaneUnlock" : "chestUnlock",
+                  );
                   if (onChestReturn)
                     onChestReturn({
                       x: rect.x + rect.width / 2,
@@ -426,8 +430,10 @@ export function MathArcade({
                   else setStatus("leaving");
                 }}
               >
-                <CommonMathChest />
-                <span>Você ganhou um baú comum!</span>
+                <CommonMathChest arcane={earnedChest.kind === "arcane"} />
+                <span>
+                  Você ganhou um baú {earnedChest.kind === "arcane" ? "arcano" : "comum"}!
+                </span>
               </button>
             )}
             {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
@@ -576,7 +582,7 @@ export function MathArcade({
             </div>
           </>
         ) : null}
-        {pending && (
+        {pending && status === "ready" && (
           <div className="math-api-loading">
             <HelenaLoading compact label="Preparando conta" />
             <span className="visually-hidden">Preparando conta com a Olena</span>

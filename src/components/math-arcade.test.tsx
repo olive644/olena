@@ -152,6 +152,30 @@ it("shows a recoverable API error instead of inventing questions", async () => {
   expect(screen.getByRole("alert").textContent).toContain("offline");
   expect(screen.queryAllByRole("button", { name: /^Resposta/ })).toHaveLength(0);
 });
+it("overlaps feedback with API latency and does not flash a loading overlay between questions", async () => {
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  const initial = screen.getByRole("heading").getAttribute("aria-label");
+  let release: (() => void) | undefined;
+  vi.mocked(fetch).mockImplementationOnce(async (_url, init) => {
+    await new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    return handleOlena(new Request("http://localhost/api/olena?action=math&version=1", init));
+  });
+  await click("Resposta " + correctAnswer());
+  expect(document.querySelector(".math-api-loading")).toBeNull();
+  expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+  await tick(800);
+  await act(async () => {
+    release!();
+  });
+  await tick(1);
+  expect(screen.getByRole("heading").getAttribute("aria-label")).not.toBe(initial);
+  expect(mathLearning("foundations").correct).toBe(1);
+  expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+});
 it("treats an unanswered deadline separately, deducts four extra seconds and does not mark a fake choice", async () => {
   vi.spyOn(performance, "now").mockImplementation(() => Date.now());
   localStorage.setItem("helena.profile.v1", JSON.stringify({ photoUrl: "/my-photo.png" }));

@@ -1,4 +1,6 @@
 .math-journey {
+  --math-scene-size: min(440px, 64vw, 56dvh, calc(100dvh - 356px));
+  --math-scene-y: calc(86px + var(--math-scene-size) * 0.5);
   position: fixed;
   inset: 0;
   z-index: 145;
@@ -15,6 +17,10 @@
   opacity: 0.12;
   clip-path: polygon(0 0, 30% 0, 0 40%, 0 100%, 100% 100%, 100% 65%, 65% 100%, 100% 0);
   pointer-events: none;
+}
+.math-journey-content {
+  position: relative;
+  height: 100%;
 }
 .math-world-back {
   color: #292432;
@@ -63,8 +69,8 @@
   background: transparent;
   position: absolute;
   left: 50%;
-  top: 42%;
-  width: min(440px, 64vw, 56dvh);
+  top: var(--math-scene-y);
+  width: var(--math-scene-size);
   aspect-ratio: 1;
   transform: translate(calc(-50% + var(--island-x) * 85%), -62%) scale(0.65);
   opacity: 0.24;
@@ -104,7 +110,7 @@
   z-index: 4;
   position: absolute;
   left: 50%;
-  top: calc(42% - min(440px, 64vw, 56dvh) * 0.25);
+  top: calc(var(--math-scene-y) - var(--math-scene-size) * 0.25);
   width: clamp(56px, 12vw, 76px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
@@ -164,7 +170,7 @@
 }
 .math-journey-label {
   position: absolute;
-  bottom: max(25px, 4dvh);
+  top: calc(86px + var(--math-scene-size) + 124px);
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -172,6 +178,8 @@
   z-index: 5;
 }
 .math-journey-label > span {
+  display: block;
+  line-height: 16px;
   color: color-mix(in srgb, var(--math-color), var(--text) 25%);
   font-weight: 800;
   font-size: 12px;
@@ -179,13 +187,15 @@
 }
 .math-journey-label h1 {
   color: var(--text, #292432);
-  font-size: clamp(20px, 3vw, 30px);
-  margin: 8px 0;
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.2;
+  margin: 4px 0;
 }
 .math-journey-label p {
   color: var(--muted, #665a70);
-  margin: 6px 0 16px;
+  margin: 4px 0 8px;
   font-size: 13px;
+  line-height: 18px;
 }
 .math-journey-label .math-start-button {
   display: inline-flex;
@@ -208,7 +218,7 @@
 .math-place-arrow--next {
   right: calc(50% - min(330px, 43vw));
 }
-.math-journey:not(.is-map) .math-place-treasure,
+.math-journey:is(.is-enter, .is-exit) .math-place-treasure,
 .math-journey:not(.is-map) .math-place-arrow {
   opacity: 0;
   pointer-events: none;
@@ -291,15 +301,11 @@
   }
 }
 @media (max-width: 600px) {
-  .math-journey-avatar {
-    top: calc(43% - min(75vw, 48dvh) * 0.25);
-  }
-  .math-journey-island {
-    top: 43%;
-    width: min(75vw, 48dvh);
+  .math-journey {
+    --math-scene-size: min(75vw, 48dvh, calc(100dvh - 324px));
   }
   .math-journey-label {
-    bottom: 3dvh;
+    top: calc(86px + var(--math-scene-size) + 116px);
   }
   .math-journey-up,
   .math-journey-down {

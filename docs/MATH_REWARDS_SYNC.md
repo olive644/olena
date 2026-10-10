@@ -7,6 +7,11 @@ e o mecanismo existente tenta novamente. Não foi adicionado outro login ou serv
 
 ## Migração e conflitos
 
+- `kind` e `arcana` são opcionais e aditivos. Baús sem tipo continuam comuns.
+  Tarot é definido na entrega e unido pelo mesmo ID; diferenças de tipo geram
+  conflito recuperável. Clientes antigos não têm interface de arcano: atualizar
+  todos antes de abrir novos tipos. Regras completas em `CHEST_REWARDS.md`.
+
 - Conta antiga sem a chave importa os dados locais da mesma pessoa no primeiro
   login. A política existente de dono do dispositivo apaga os dados ao trocar
   de conta. Sair ou excluir a conta também limpa as recompensas locais.

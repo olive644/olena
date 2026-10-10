@@ -7,7 +7,7 @@
 }
 .math-place-total {
   position: absolute;
-  top: 12%;
+  top: 62px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -23,11 +23,11 @@
 }
 .math-chest-dock {
   position: absolute;
-  top: calc(42% + min(440px, 64vw, 56dvh) * 0.5 + 8px);
+  top: calc(var(--math-scene-y) + var(--math-scene-size) * 0.5 + 8px);
   left: 50%;
   transform: translateX(-50%);
   display: grid;
-  grid-template-columns: repeat(3, 80px);
+  grid-template-columns: repeat(3, 100px);
   gap: 10px;
   pointer-events: auto;
 }
@@ -38,18 +38,23 @@
 .math-chest-slot,
 .math-chest-empty {
   position: relative;
-  width: 80px;
-  height: 86px;
+  width: 100px;
+  height: 108px;
   border: 1px solid #d5c8b0;
   border-radius: 5px 13px 6px 11px;
   background:
     linear-gradient(135deg, #ede4d2 0 12px, transparent 12px),
     linear-gradient(315deg, #ede4d2 0 10px, transparent 10px), #fff9ef;
   box-shadow: 0 4px #d5c8b0;
-  padding: 0 5px;
+  padding: 4px 8px 6px;
   color: #292432;
 }
 .math-chest-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
   cursor: pointer;
   animation: math-chest-delivery 0.85s both;
   transition: transform 0.2s;
@@ -67,17 +72,15 @@
   outline-offset: 4px;
 }
 .math-chest-slot .math-common-chest {
-  width: 68px;
-  height: 59px;
+  width: 76px;
+  height: 64px;
+  flex-shrink: 0;
 }
 .math-chest-empty {
   display: grid;
   place-items: center;
   font-size: 24px;
   color: #aa9670;
-}
-.math-chest-empty img {
-  opacity: 0.65;
 }
 .math-chest-label {
   display: flex;
@@ -96,10 +99,9 @@
 }
 .math-chest-slot progress {
   display: block;
-  position: absolute;
-  bottom: 3px;
-  left: 5px;
-  width: calc(100% - 10px);
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
   height: 6px;
   border: 1px solid #d5c8b0;
   border-radius: 3px;
@@ -176,7 +178,7 @@
   font-weight: 800;
 }
 .math-chest-lid {
-  transform-origin: 20px 57px;
+  transform-origin: 14px 41px;
   transition: transform 0.65s;
 }
 .math-common-chest.is-open .math-chest-lid {
@@ -242,41 +244,32 @@
 @media (max-width: 600px) {
   .math-place-total {
     font-size: 24px;
-    top: 15%;
+    top: 62px;
   }
   .math-chest-dock {
-    top: calc(43% + min(75vw, 48dvh) * 0.5 + 6px);
-    grid-template-columns: repeat(3, 68px);
+    grid-template-columns: repeat(3, 88px);
     gap: 8px;
   }
   .math-chest-slot,
   .math-chest-empty {
-    width: 68px;
-    height: 74px;
+    width: 88px;
+    height: 100px;
   }
   .math-chest-slot .math-common-chest {
-    width: 56px;
-    height: 48px;
+    width: 66px;
+    height: 60px;
   }
 }
 @media (max-height: 700px) {
-  .math-chest-dock {
-    top: calc(42% + min(440px, 64vw, 56dvh) * 0.43);
-  }
   .math-chest-slot,
   .math-chest-empty {
-    height: 65px;
+    height: 100px;
   }
   .math-chest-slot .math-common-chest {
-    height: 44px;
+    height: 58px;
   }
   .math-card-library {
     min-height: 28px;
-  }
-}
-@media (max-height: 700px) and (max-width: 600px) {
-  .math-chest-dock {
-    top: calc(43% + min(75vw, 48dvh) * 0.43);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -305,4 +298,14 @@ html[data-reduce-motion="true"]
 }
 html[data-reduce-motion="true"] .math-common-chest {
   animation: none !important;
+}
+.math-common-chest.is-arcane {
+  filter: drop-shadow(0 0 5px #a779ef88);
+}
+.math-chest-slot:has(.is-arcane) {
+  border-color: #a779ef;
+  box-shadow: 0 4px #7c3aed;
+}
+.is-opening .math-common-chest.is-arcane {
+  filter: drop-shadow(0 0 14px #a779ef);
 }

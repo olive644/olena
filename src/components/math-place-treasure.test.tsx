@@ -15,7 +15,7 @@ afterEach(() => {
   localStorage.removeItem(MATH_PLACE_REWARDS_KEY);
 });
 it("refreshes rewards received from the account and closes stale boosters on logout", () => {
-  finishMathPlace("foundations", "remote", 180);
+  finishMathPlace("foundations", "remote", 180, () => 0.5);
   unlockMathChest("foundations", "remote", 0);
   openMathChest("foundations", "remote", 60000, () => 0);
   const cloud = readSyncedStorage();
@@ -30,7 +30,7 @@ it("refreshes rewards received from the account and closes stale boosters on log
 });
 it("counts points, survives remount during countdown and opens a backside booster", () => {
   vi.useFakeTimers();
-  finishMathPlace("foundations", "round", 120);
+  finishMathPlace("foundations", "round", 120, () => 0.5);
   const view = render(<MathPlaceTreasure course="foundations" />);
   expect(screen.getByLabelText("120 pontos neste lugar")).toBeTruthy();
   expect(screen.getAllByLabelText("Espaço de baú vazio")).toHaveLength(2);
@@ -44,6 +44,7 @@ it("counts points, survives remount during countdown and opens a backside booste
   expect(screen.getByRole("button", { name: /30 segundos restantes/ })).toBeTruthy();
   act(() => vi.advanceTimersByTime(30000));
   fireEvent.click(screen.getByRole("button", { name: "Abrir baú comum" }));
+  expect(screen.queryByRole("progressbar", { name: "Destrancando baú" })).toBeNull();
   expect(document.querySelector(".math-common-chest.is-open")).toBeTruthy();
   act(() => vi.advanceTimersByTime(900));
   expect(screen.getByRole("dialog", { name: "Cartas do baú comum" })).toBeTruthy();
@@ -51,7 +52,7 @@ it("counts points, survives remount during countdown and opens a backside booste
 });
 it("counts each revealed copy once and resumes unrevealed cards on reopening", () => {
   vi.useFakeTimers();
-  finishMathPlace("foundations", "round", 100);
+  finishMathPlace("foundations", "round", 100, () => 0.5);
   unlockMathChest("foundations", "round", 0);
   const rolls = [0.9, 0, 0];
   openMathChest("foundations", "round", 60000, () => rolls.shift()!);

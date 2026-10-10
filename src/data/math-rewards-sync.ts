@@ -1,4 +1,9 @@
-import { parseMathRewards, type MathChest, type MathPlaceRewards } from "./math-place-rewards";
+import {
+  chestCards,
+  parseMathRewards,
+  type MathChest,
+  type MathPlaceRewards,
+} from "./math-place-rewards";
 
 /** Receipts identify rounds across devices; chest deadlines and reveals only advance. */
 export function mergeMathRewards(baseRaw: string | undefined, localRaw: string, remoteRaw: string) {
@@ -57,12 +62,22 @@ export function mergeMathRewards(baseRaw: string | undefined, localRaw: string, 
         chests.set(chest.id, chest);
         continue;
       }
+      const differentKind = (previous.kind ?? "common") !== (chest.kind ?? "common");
+      if (differentKind) conflict = true;
       const differentLoot =
         previous.cards &&
         chest.cards &&
         JSON.stringify(previous.cards) !== JSON.stringify(chest.cards);
       if (differentLoot) conflict = true;
-      const selected = chest.cards ? chest : previous.cards ? previous : chest;
+      const selected = chest.arcana
+        ? chest
+        : previous.arcana
+          ? previous
+          : chest.cards
+            ? chest
+            : previous.cards
+              ? previous
+              : chest;
       const deadlines = [previous.unlockAt, chest.unlockAt].filter(
         (time): time is number => time !== null,
       );
@@ -70,7 +85,7 @@ export function mergeMathRewards(baseRaw: string | undefined, localRaw: string, 
         ...selected,
         opened: previous.opened || chest.opened,
         unlockAt: deadlines.length ? Math.min(...deadlines) : null,
-        ...(selected.cards
+        ...(chestCards(selected).length
           ? {
               revealed: differentLoot
                 ? selected.revealed
