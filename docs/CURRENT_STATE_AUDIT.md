@@ -2232,6 +2232,13 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `.env.example` removido do repositório, por decisão do dono. Saem também a exceção no `.gitignore`, a linha no `.prettierignore` e as duas referências (README e `services/tts/README.md`). O `.gitignore` continua ignorando `.env` e `.env.*`. Nenhum valor secreto estava no arquivo. A lista de variáveis passa a ficar nos guias de configuração e no painel da Vercel, e novos integrantes precisam receber as variáveis públicas `VITE_*` por canal próprio.
 - Pendente de decisão do dono, sem alteração aqui: canal de contato de segurança em `SECURITY.md` e na Política de Privacidade, e a presença de `docs/CONTRATO_SOCIETARIO.md` no repositório.
 
+## Regras de /users/<uid> validam formato e tamanho (2026-10-10)
+
+- Auditoria de segurança, item 3. As regras só diziam que o próprio usuário lê e escreve `/users/<uid>`; qualquer pessoa com conta Google podia gravar qualquer estrutura, de qualquer tamanho, e gerar custo de armazenamento e tráfego.
+- `firebase-room.rules.json` agora valida `users/<uid>/state`: só existem `version` e `updatedAt` (números) e `items`, em que cada chave tem de 1 a 100 caracteres comuns (letras, números, `.`, `_`, `:`, `-`) e cada valor é texto de até 20 milhões de caracteres. Qualquer outro filho de `users/<uid>` ou de `state` é recusado. `items` é opcional porque o Firebase descarta objetos vazios. Apagar (`DELETE`) segue permitido, porque validação não roda em exclusão: a exclusão de conta não muda.
+- Escolha deliberada: não há lista fixa de chaves. Uma lista exigiria publicar as regras antes de cada nova chave sincronizada, e o histórico deste projeto (regras que ficaram semanas sem publicar) mostra que esse descompasso quebraria a sincronização. O teste `firebase-user-rules.test.ts` garante que toda chave de `SYNCED_STORAGE_KEYS` passa no padrão. Limite que continua em aberto: a quantidade de chaves não é limitada por regra.
+- **Ação do proprietário:** publicar o arquivo no console do Firebase (Realtime Database, Regras) e testar no Laboratório de testes que um salvamento normal de conta passa. Sem a publicação, nada muda em produção.
+
 ## Arquivo security.txt (2026-10-10)
 
 - Auditoria de segurança, item 8. O `SECURITY.md` já descrevia como relatar vulnerabilidades, mas o site não publicava o arquivo padrão que ferramentas e pesquisadores procuram. `public/.well-known/security.txt` (RFC 9116) aponta para o relato privado do GitHub, para o `SECURITY.md` e para o endereço canônico, em português e inglês.

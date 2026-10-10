@@ -18,7 +18,19 @@
     "users": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid"
+        ".write": "auth != null && auth.uid === $uid",
+        "state": {
+          ".validate": "newData.hasChildren(['version', 'updatedAt'])",
+          "version": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "items": {
+            "$key": {
+              ".validate": "$key.matches(/^[A-Za-z0-9._:-]{1,100}$/) && newData.isString() && newData.val().length <= 20000000"
+            }
+          },
+          "$other": { ".validate": false }
+        },
+        "$other": { ".validate": false }
       }
     }
   }
