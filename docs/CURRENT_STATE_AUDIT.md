@@ -1,5 +1,28 @@
 # Auditoria do estado atual
 
+## Contagem bidirecional dos pontos dos lugares (2026-10-10)
+
+- Contador passa do valor atualmente exibido ao saldo do novo lugar em 900 ms,
+  tanto aumentando quanto diminuindo, incluindo 530 para zero. Trocas rápidas
+  cancelam o frame anterior e usam o valor intermediário, sem salto para zero.
+- Mantida a remontagem dos baús por lugar, evitando booster ou baú da seleção
+  anterior. Número visual não altera saldo persistido. Movimento reduzido respeitado.
+- Testes cobrem descida, subida, troca rápida, saldo intacto e movimento reduzido;
+  E2E confirma valores intermediários nos dois sentidos em desktop/mobile.
+
+## Feedback confirmado das respostas de Matemática (2026-10-10)
+
+- Corrigida a regressão que descontava a latência da API da duração do feedback.
+  No app publicado, acertos ficavam visíveis por apenas 74 a 84 ms, menos que a
+  animação de 300 ms. Requisições acima de 260 ms podiam apagar a reação imediatamente.
+- Acertos permanecem 650 ms e erros ou tempo esgotado 1300 ms após confirmação.
+  A reserva de tempo pausa durante requisição e feedback, sem loading entre contas.
+- Áudio de resultado agora usa a confirmação da API, junto da mensagem e pontos.
+  Falhas não celebram nem pontuam; retry fica bloqueado durante a requisição.
+- Provas cobrem latência curta/longa, acerto, erro, timeout, clique duplicado e
+  recuperação da API. E2E acrescenta latência de 800 ms e exige reação totalmente
+  visível, sem pontuação duplicada, em desktop e viewport móvel.
+
 ## Encaixe compacto dos lugares (2026-10-10)
 
 - Removida a área mínima de 920/820px e a rolagem introduzida na correção anterior.

@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, contador dos lugares: MathIslandJourney conserva o último número exibido
+entre montagens de MathPlaceTreasure. A interpolação de 900 ms parte desse número
+para o saldo do lugar selecionado, incluindo descida até zero. Trocas rápidas
+retomam do valor intermediário; movimento reduzido aplica o alvo sem interpolar.
+Somente exibição, sem modificar pontos/baús salvos ou manter booster de outro lugar.
+
+2026-10-10, feedback matemático: MathArcade mantém acertos por 650 ms e erros/timeout
+por 1300 ms após a API confirmar, sem descontar latência. Som e pontuação usam o
+mesmo resultado confirmado; não há loading por resposta. Reserva pausa durante a
+requisição e feedback, duplicatas são bloqueadas e falha pode ser reenviada sem
+premiar antes da confirmação. Provas: math-arcade.test.tsx e math-answer-feedback.spec.ts.
+
 2026-10-10, encaixe compacto: removida a altura mínima rolável de math-journey-content.
 Uma viewport fixa; posições da ilha, baús e legenda derivam de math-scene-size.
 Margens e slots menores reservam a ação sem scroll. Prova: math-journey-fit.spec.ts.
@@ -15,8 +27,9 @@ cards comuns e acrescenta kind/arcana à chave v1; chestCards unifica apresenta�
 e coleção, mergeMathRewards conserva identidade e acusa diferenças. Arcano 5%
 por rodada elegível, uma A Estrela, mesmos três slots e minuto. CHEST_REWARDS.md
 documenta política, compatibilidade e extensão. Booster oferece inspeção imediata;
-tarot tem película óptica e arte sem recorte. Feedback do minigame passa a ser
-max(latência da API, 260/600 ms), sem loader por resposta. API continua obrigatória.
+tarot tem película óptica e arte sem recorte. Feedback do minigame, corrigido após
+regressão por latência, dura 650/1300 ms após confirmação, sem loader por resposta.
+API continua obrigatória.
 
 2026-10-10, documentação e ambiente: README, ARCHITECTURE, PRODUCT_MIND_MAP, IMPLEMENTATION_ROADMAP e
 ROOM_SETUP foram atualizados para o estado real (Praticar, Matemática, cartas do Oliver, Modo Sala

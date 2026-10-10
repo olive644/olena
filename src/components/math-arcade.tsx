@@ -230,9 +230,6 @@ export function MathArcade({
       audio.current.unlock();
     }
     answerLock.current = true;
-    const answeredAt = performance.now();
-    const expired = timedOut || round.elapsed >= question.budget / question.drain;
-    audio.current?.play(expired ? "timeout" : choice === question.answer ? "correct" : "wrong");
     setPending(true);
     setError("");
     retryChoice.current = { choice, timedOut };
@@ -252,6 +249,7 @@ export function MathArcade({
       const progress = { ...result.progress, best: Math.max(result.progress.best, points) };
       setStorageWarning(!saveMathLearning(courseId, progress));
       const missed = result.timedOut;
+      audio.current?.play(missed ? "timeout" : result.correct ? "correct" : "wrong");
       setRound((value) => ({
         ...value,
         progress,
@@ -272,7 +270,7 @@ export function MathArcade({
           setFeedback(null);
           answerLock.current = false;
         },
-        Math.max(0, (result.correct ? 260 : 600) - (performance.now() - answeredAt)),
+        result.correct ? 650 : 1300,
       );
     } catch (cause) {
       if (!controller.current?.signal.aborted)
@@ -594,6 +592,7 @@ export function MathArcade({
             <button
               className="secondary-button"
               type="button"
+              disabled={pending}
               onClick={() =>
                 retryChoice.current === null
                   ? void start()

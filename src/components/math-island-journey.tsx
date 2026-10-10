@@ -32,6 +32,8 @@ export function MathIslandJourney({
   const dragged = useRef(false);
   const [travel, setTravel] = useState({ direction: "right", key: 0 });
   const lastWheel = useRef(0);
+  const displayedPoints = useRef(0);
+  const [pointsOrigin, setPointsOrigin] = useState(0);
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     const overflow = document.body.style.overflow;
@@ -47,6 +49,7 @@ export function MathIslandJourney({
   function visit(next: number) {
     const destination = Math.max(0, Math.min(MATH_COURSES.length - 1, next));
     if (phase === "map" && destination !== index) {
+      setPointsOrigin(displayedPoints.current);
       setTravel((value) => ({
         direction: destination > index ? "right" : "left",
         key: value.key + 1,
@@ -58,7 +61,11 @@ export function MathIslandJourney({
   useEffect(() => {
     if (phase !== "arrive" && phase !== "enter" && phase !== "return" && phase !== "exit") return;
     const timer = setTimeout(
-      () => (phase === "exit" ? onBack() : setPhase(phase === "enter" ? "game" : "map")),
+      () => {
+        setPointsOrigin(displayedPoints.current);
+        if (phase === "exit") onBack();
+        else setPhase(phase === "enter" ? "game" : "map");
+      },
       isMotionReduced() ? 0 : 850,
     );
     return () => clearTimeout(timer);
@@ -68,10 +75,12 @@ export function MathIslandJourney({
       <MathArcade
         courseId={course.id}
         onBack={() => {
+          setPointsOrigin(displayedPoints.current);
           setChestDelivery(undefined);
           setPhase("return");
         }}
         onChestReturn={(origin) => {
+          setPointsOrigin(displayedPoints.current);
           setChestDelivery(origin);
           setPhase("return");
         }}
@@ -211,6 +220,10 @@ export function MathIslandJourney({
         </button>
         <MathPlaceTreasure
           deliveryOrigin={chestDelivery}
+          initialPoints={pointsOrigin}
+          onPointsChange={(points) => {
+            displayedPoints.current = points;
+          }}
           key={`${course.id}:${phase === "return" ? "return" : "map"}`}
           course={course.id}
         />
