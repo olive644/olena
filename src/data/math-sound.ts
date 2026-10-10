@@ -1,5 +1,17 @@
-export type MathSoundCue = "start" | "correct" | "wrong" | "timeout" | "finish" | "xp";
+export type MathSoundCue =
+  | "start"
+  | "correct"
+  | "wrong"
+  | "timeout"
+  | "finish"
+  | "xp"
+  | "chestUnlock"
+  | "chestOpen"
+  | "cardReveal";
 const NOTES: Record<MathSoundCue, number[]> = {
+  chestUnlock: [196, 294, 392],
+  chestOpen: [262, 392, 523, 784],
+  cardReveal: [659, 784, 1046, 1319],
   start: [392, 523, 659],
   correct: [659, 988, 1319],
   wrong: [392, 294, 196],

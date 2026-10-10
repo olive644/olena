@@ -5,6 +5,7 @@ export const SYNCED_STORAGE_KEYS = [
   "helena.profile.v1",
   "helena.soloProgress",
   "helena.mathLearning.v1",
+  "helena.mathPlaceRewards.v1",
   "helena-study:word-frequency:v1",
   "noteoli.pomodoro-streak.v1",
   "helena.notebookPreferences.v1",

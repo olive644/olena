@@ -127,19 +127,89 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await expect(page.locator('.room-reward-notice [data-paper-editor-icon="close"]')).toBeVisible();
   await expect(page.locator(".room-reward-notice")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("math-result.png") });
-  await page.getByRole("button", { name: "Tentar de novo" }).click();
+  await page.getByRole("button", { name: "Levar baú aos espaços da ilha" }).click();
+  await expect(page.locator(".math-chest-flight")).toHaveCount(1);
+  await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
+  await page.getByRole("button", { name: "Explorar lugar" }).click();
+  await page.getByRole("button", { name: "Vamos calcular!" }).click();
   await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
   await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
-  await expect(page.getByRole("button", { name: "Destrancar baú" })).toBeVisible();
-  await page.getByRole("button", { name: "Destrancar baú" }).click();
-  await expect(page.getByRole("button", { name: "Abrir baú" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Destrancar baú comum" })).toBeVisible();
+  await expect(page.locator(".math-chest-slot")).toHaveCSS("opacity", "1");
+  await page.screenshot({ path: testInfo.outputPath("math-place-chest.png") });
+  const sceneBottom = (await page.locator(".math-journey-island.is-current").boundingBox())!;
+  const dock = (await page.locator(".math-chest-dock").boundingBox())!;
+  expect(dock.y).toBeGreaterThan(sceneBottom.y + sceneBottom.height * 0.88);
+  await page.getByRole("button", { name: "Destrancar baú comum" }).click();
+  await expect(
+    page.getByRole("button", { name: /Baú comum, .* segundos restantes/ }),
+  ).toBeDisabled();
   await page.clock.install();
   await page.clock.fastForward(61_000);
-  await page.getByRole("button", { name: "Abrir baú" }).click();
-  await expect(page.getByText("Baú comum aberto!")).toBeVisible();
-  await page.screenshot({ path: testInfo.outputPath("math-place-chest.png") });
+  await page.getByRole("button", { name: "Abrir baú comum" }).click();
+  await page.clock.fastForward(1000);
+  await expect(page.getByRole("dialog", { name: "Cartas do baú comum" })).toBeVisible();
+  await expect(page.locator(".oliver-flip-card")).toHaveCSS("opacity", "1");
+  await page.screenshot({ path: testInfo.outputPath("oliver-card-back.png") });
+  const cardBox = (await page
+    .getByRole("button", { name: "Revelar carta", exact: true })
+    .boundingBox())!;
+  await page.mouse.move(cardBox.x + 40, cardBox.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(cardBox.x + 120, cardBox.y + 100, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.locator(".oliver-flip-card")).toHaveClass(/is-revealed/);
+  await expect
+    .poll(() =>
+      page
+        .locator(".oliver-card-art")
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+  await page.clock.fastForward(1000);
+  await expect(page.locator(".oliver-card-turn")).toHaveCSS(
+    "transform",
+    "matrix3d(-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)",
+  );
+  await expect(page.getByText("Stamina", { exact: true })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("oliver-card-front.png") });
+  if (await page.getByRole("button", { name: "Próxima carta" }).count()) {
+    await page.getByRole("button", { name: "Próxima carta" }).click();
+    await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
+  }
+  await expect(page.getByLabel("0 cartas restantes no baú")).toBeVisible();
+  await page.getByRole("button", { name: "Guardar cartas" }).click();
+  await expect(page.getByLabel("Espaço de baú vazio")).toHaveCount(3);
+  await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("oliver-collection.png") });
+  await page.locator(".oliver-collection-item.is-owned").first().click();
+  const inspect = page.getByRole("button", { name: /Inspecionar carta em 360/ });
+  await inspect.focus();
+  for (let index = 0; index < 8; index++) await inspect.press("ArrowRight");
+  await expect(page.locator(".oliver-inspection-turn")).toHaveAttribute(
+    "style",
+    /rotateY\(200deg\)/,
+  );
+  await page.screenshot({ path: testInfo.outputPath("oliver-card-inspection.png") });
+  await page.getByRole("button", { name: "Recentralizar carta" }).click();
+  await page.getByRole("button", { name: "Voltar à coleção" }).click();
+  await page.getByRole("button", { name: "Ver tarot do Oliver, A Estrela" }).click();
+  await expect(page.getByRole("heading", { name: "A Estrela" })).toBeVisible();
+  await expect
+    .poll(() =>
+      page
+        .locator(".oliver-tarot-front .oliver-card-art")
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+  await page.screenshot({ path: testInfo.outputPath("oliver-tarot.png") });
+  await page
+    .locator(".oliver-tarot-front")
+    .screenshot({ path: testInfo.outputPath("oliver-tarot-card.png") });
+  await page.getByRole("button", { name: "Voltar à coleção" }).click();
+  await page.getByRole("button", { name: "Fechar coleção" }).click();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("helena.soloProgress"))).toBe("4");

@@ -4,6 +4,11 @@ import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
 import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { useCloudSync } from "./use-cloud-sync";
+import {
+  finishMathPlace,
+  mathPlaceRewards,
+  MATH_PLACE_REWARDS_KEY,
+} from "../data/math-place-rewards";
 
 function notebook(id: string, title: string): WorkspaceState["notebooks"][number] {
   return { id, title, subjectId: "subject-english", createdAt: "2026", pageIds: [] };
@@ -55,6 +60,50 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   vi.clearAllMocks();
+});
+
+it("migrates local math rewards into an existing account without this key", async () => {
+  finishMathPlace("foundations", "offline-round", 150);
+  const user = {
+    uid: "math-user",
+    displayName: "Olena",
+    email: "test@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+      signOut: vi.fn(async () => undefined),
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  let uploaded: Record<string, string> = {};
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET")
+        return new Response(JSON.stringify({ items: { "helenastudy.theme": "dark" } }), {
+          status: 200,
+        });
+      if (init?.method === "PUT") uploaded = JSON.parse(String(init.body)).items;
+      return new Response("null", { status: 200 });
+    }),
+  );
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(JSON.parse(uploaded[MATH_PLACE_REWARDS_KEY]!).foundations.points).toBe(150);
+  expect(mathPlaceRewards("foundations").chests).toHaveLength(1);
+  act(() => finishMathPlace("foundations", "online-round", 100));
+  await waitFor(() =>
+    expect(JSON.parse(uploaded[MATH_PLACE_REWARDS_KEY]!).foundations.points).toBe(250),
+  );
+  await act(async () => result.current.signOut?.());
+  expect(localStorage.getItem(MATH_PLACE_REWARDS_KEY)).toBeNull();
 });
 
 it("mantém alteração pendente após falha e permite tentar a sincronização novamente", async () => {

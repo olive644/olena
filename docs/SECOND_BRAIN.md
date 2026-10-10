@@ -1,5 +1,34 @@
 # OlenaStudy: Second Brain
 
+2026-10-10: PaperCardTitle reutiliza símbolos SVG do alfabeto monocromático com acentos. OliverArtworkId separa a vitrine do tarot XVII, A Estrela, dos dez OliverCardId comuns. OliverCardInspection atende ambos, sem alterar chances ou inventário. Arte WebP nova em public/oliver-cards; detalhes de geração em TAROT.md.
+
+2026-10-10, revisão visual: baú comum madeira/cinza, prêmio tocável voa ao slot
+no retorno do minigame. Espera salta, barra roxa e pronto avisa uma vez. Booster
+permite arraste livre; Guardar anima todas as cartas e abre coleção com flip das
+recebidas. OliverCardInspection gira frente/verso em 360 com CSS, mouse/toque e
+setas. Ícones autorais compactos nos atributos; título acima da lore, raridade
+na moldura. Sem nova dependência. Persistência e sync anteriores preservados.
+
+2026-10-10, sincronização: mathPlaceRewards.v1 agora é uma chave de conta.
+writeSyncedStorage agenda envio; math-rewards-sync une rounds por ID, baús e
+revelações. Importa dados locais se nuvem antiga não tem a chave. Totais legados
+e sorteios concorrentes ambíguos geram backup/conflito. Três slots visíveis,
+extras concorrentes preservados em fila. Troca de conta limpa e fecha a partida.
+Ver docs/MATH_REWARDS_SYNC.md para migração, reversão e limites de segurança.
+Substitui descrições de persistência somente local abaixo.
+
+2026-10-10, cartas do Oliver: MathPlaceTreasure agora mostra três espaços sob a
+arte. Toque no baú destranca em 60s e abre um booster de uma ou duas cartas,
+verso Olena, flip por toque/arraste, sons e contador restante. OliverCardCollection
+mostra cópias, atributos ficcionais, lore e chances. Dez cenas independentes em
+public/oliver-cards (WebP responsivo, prompts no README). drawOliverCards usa
+crypto: 80% uma, 20% duas; pesos individuais somam 100%. Tudo comum.
+math-place-rewards adiciona cards/revealed opcionais no schema local v1; sorteio
+salvo antes de mostrar, retomada parcial sem rerrolagem e coleção derivada das
+revelações. Baús abertos antigos preservados sem itens retroativos. Limite três
+pendentes por lugar para novas recompensas, pontuação continua acumulando quando
+cheio. Não confundir com economia de conta remota ou bônus no minigame.
+
 Matemática agora guarda pontos por lugar e baús comuns locais em
 helena.mathPlaceRewards.v1. Uma partida com 100+ pontos concede um baú; destrancar
 aguarda 60 segundos por prazo persistido, então abrir anima a tampa. Não há itens

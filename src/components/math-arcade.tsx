@@ -19,6 +19,8 @@ import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-pap
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
 import { COMMON_CHEST_POINTS, finishMathPlace } from "../data/math-place-rewards";
+import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
+import { SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import { CommonMathChest } from "./math-place-treasure";
 import "./math-arcade.css";
 import "./math-island-journey.css";
@@ -37,9 +39,12 @@ type Round = {
 export function MathArcade({
   onBack,
   courseId = "foundations",
+  onChestReturn,
 }: {
   onBack: () => void;
   courseId?: MathCourseId;
+  onChestReturn?:
+    ((origin: { x: number; y: number; size: number; id: string }) => void) | undefined;
 }) {
   const course = MATH_COURSES.find((item) => item.id === courseId)!;
   const [round, setRound] = useState<Round>(() => ({
@@ -59,9 +64,11 @@ export function MathArcade({
   >(null);
   const [error, setError] = useState("");
   const [storageWarning, setStorageWarning] = useState(false);
+  const [earnedChest, setEarnedChest] = useState(false);
   const [displayedScore, setDisplayedScore] = useState(0);
   const [reward, setReward] = useState<RoomXpReward | undefined>();
   const roundId = useRef("");
+  const roundOwner = useRef<string | null>(null);
   const root = useRef<HTMLElement>(null);
   const controller = useRef<AbortController | null>(null);
   const answerLock = useRef(false);
@@ -71,6 +78,22 @@ export function MathArcade({
   const question = round.question;
   const clock = question ? Math.max(0, question.budget - round.elapsed * question.drain) : 0;
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
+  const exitChangedAccount = useEffectEvent(onBack);
+  useEffect(() => {
+    const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
+    function checkOwner() {
+      if (owner === localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
+      controller.current?.abort();
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      exitChangedAccount();
+    }
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, checkOwner);
+    window.addEventListener("storage", checkOwner);
+    return () => {
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, checkOwner);
+      window.removeEventListener("storage", checkOwner);
+    };
+  }, []);
 
   useEffect(() => {
     const previous = document.activeElement,
@@ -121,13 +144,16 @@ export function MathArcade({
     if (!finished) return;
     audio.current?.play("finish");
     const settlementTimer = window.setTimeout(() => {
+      if (roundOwner.current !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       try {
-        finishMathPlace(courseId, roundId.current, round.points);
+        const saved = finishMathPlace(courseId, roundId.current, round.points);
+        setEarnedChest(saved.chests.some((chest) => chest.id === roundId.current));
       } catch {
         setStorageWarning(true);
       }
     }, 0);
     const rewardTimer = window.setTimeout(() => {
+      if (roundOwner.current !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       if (round.points === 0) return;
       setReward({
         id: roundId.current,
@@ -161,11 +187,13 @@ export function MathArcade({
     return requestMath(input, AbortSignal.any([current.signal, AbortSignal.timeout(10000)]));
   }
   async function start() {
+    setEarnedChest(false);
     if (answerLock.current || pending) return;
     audio.current ??= createMathSound();
     audio.current.unlock();
     audio.current.play("start");
     setPending(true);
+    roundOwner.current = localStorage.getItem(ACCOUNT_OWNER_KEY);
     setError("");
     retryChoice.current = null;
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
@@ -380,11 +408,32 @@ export function MathArcade({
               {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
             </p>
             <span className="math-result-topic">{course.topics[round.progress.level]}</span>
-            {round.points >= COMMON_CHEST_POINTS && (
-              <div className="math-earned-chest">
+            {earnedChest && (
+              <button
+                type="button"
+                className="math-earned-chest"
+                aria-label="Levar baú aos espaços da ilha"
+                onClick={(event) => {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  audio.current?.play("chestUnlock");
+                  if (onChestReturn)
+                    onChestReturn({
+                      x: rect.x + rect.width / 2,
+                      y: rect.y + rect.height / 2,
+                      size: 110,
+                      id: roundId.current,
+                    });
+                  else setStatus("leaving");
+                }}
+              >
                 <CommonMathChest />
                 <span>Você ganhou um baú comum!</span>
-              </div>
+              </button>
+            )}
+            {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
+              <p className="math-result-topic">
+                Os três espaços de baús estão ocupados. Seus pontos foram guardados.
+              </p>
             )}
             <button
               className="primary-button math-start-button"

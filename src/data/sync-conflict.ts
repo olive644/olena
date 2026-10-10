@@ -1,3 +1,4 @@
+import { mergeMathRewards } from "./math-rewards-sync";
 export type SyncedItems = Record<string, string>;
 
 export type SyncedMergeResult = {
@@ -28,6 +29,17 @@ export function mergeSyncedItems(
     const remoteValue = valueAt(remote, key);
     const localChanged = localValue !== baseValue;
     const remoteChanged = remoteValue !== baseValue;
+    if (
+      key === "helena.mathPlaceRewards.v1" &&
+      localValue !== undefined &&
+      remoteValue !== undefined &&
+      localValue !== remoteValue
+    ) {
+      const result = mergeMathRewards(baseValue, localValue, remoteValue);
+      items[key] = result.value;
+      if (result.conflict) conflicts.push(key);
+      continue;
+    }
     const mergedValue =
       localChanged && remoteChanged && localValue !== remoteValue
         ? localValue

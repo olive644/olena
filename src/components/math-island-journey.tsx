@@ -21,6 +21,9 @@ export function MathIslandJourney({
   entryOrigin?: { x: number; y: number; size: number } | undefined;
 }) {
   const [index, setIndex] = useState(0);
+  const [chestDelivery, setChestDelivery] = useState<
+    { x: number; y: number; size: number; id: string } | undefined
+  >();
   const [phase, setPhase] = useState<"arrive" | "map" | "enter" | "game" | "return" | "exit">(
     entryOrigin ? "arrive" : "map",
   );
@@ -49,6 +52,7 @@ export function MathIslandJourney({
         key: value.key + 1,
       }));
       setIndex(destination);
+      setChestDelivery(undefined);
     }
   }
   useEffect(() => {
@@ -60,7 +64,19 @@ export function MathIslandJourney({
     return () => clearTimeout(timer);
   }, [phase, onBack]);
   if (phase === "game")
-    return <MathArcade courseId={course.id} onBack={() => setPhase("return")} />;
+    return (
+      <MathArcade
+        courseId={course.id}
+        onBack={() => {
+          setChestDelivery(undefined);
+          setPhase("return");
+        }}
+        onChestReturn={(origin) => {
+          setChestDelivery(origin);
+          setPhase("return");
+        }}
+      />
+    );
   return createPortal(
     <section
       ref={root}
@@ -187,6 +203,7 @@ export function MathIslandJourney({
         <FocusPaperArrow />
       </button>
       <MathPlaceTreasure
+        deliveryOrigin={chestDelivery}
         key={`${course.id}:${phase === "return" ? "return" : "map"}`}
         course={course.id}
       />
