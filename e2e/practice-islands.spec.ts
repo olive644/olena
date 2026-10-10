@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
-
-test("somente Matemática abre jogo, preservando as outras ilhas bloqueadas", async ({
+test("mathematics islands use the real adaptive API and resume mastery", async ({
   page,
 }, testInfo) => {
   await page.addInitScript(() => {
@@ -8,50 +7,50 @@ test("somente Matemática abre jogo, preservando as outras ilhas bloqueadas", as
     localStorage.setItem("helena.soloProgress", "4");
   });
   await page.goto("/aprender");
-  await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();
-  for (let index = 0; index < 4; index++)
-    await page.getByRole("button", { name: "Mundo anterior" }).click();
-  await expect(page.getByRole("heading", { name: "Porto das Vozes" })).toBeVisible();
-  for (let index = 0; index < 6; index++) {
-    if (index === 4)
-      await expect(page.getByRole("button", { name: "Entrar no laboratório" })).toBeEnabled();
-    else await expect(page.getByRole("button", { name: "Ilha bloqueada" })).toBeDisabled();
-    if (index < 5) await page.getByRole("button", { name: "Próximo mundo" }).click();
-  }
-  await page.getByRole("button", { name: "Mundo anterior" }).click();
   await page.getByRole("button", { name: "Entrar no laboratório" }).click();
-  await expect(page.getByRole("region", { name: "Laboratório das contas" })).toBeVisible();
-  await expect(page.locator(".practice-trail-map")).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeVisible();
+  await page.getByRole("button", { name: "Próxima ilha de Matemática" }).click();
+  await expect(page.getByRole("heading", { name: "Cidade das Equações" })).toBeVisible();
+  await page.getByRole("button", { name: "Ilha anterior de Matemática" }).click();
+  await page.screenshot({ path: testInfo.outputPath("math-islands.png") });
+  await page.getByRole("button", { name: "Explorar ilha" }).click();
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
   await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
-  const equation = await page.locator(".math-arcade-equation h1").innerText();
-  const numbers = equation.match(/\d+/g)!.map(Number);
-  await page
-    .getByRole("button", { name: "Resposta " + (numbers[0]! + numbers[1]!), exact: true })
-    .click();
-  await expect(page.getByRole("status")).toHaveText("BOA! +10");
-  await expect(page.getByRole("status")).toHaveCount(0);
-  await page.screenshot({ path: testInfo.outputPath("math-arcade.png") });
-  const geometry = await page.locator(".math-arcade-answers").boundingBox();
-  const viewport = page.viewportSize()!;
+  for (let index = 0; index < 4; index++) {
+    const question = page.locator(".math-game-question h1");
+    const text = await question.getAttribute("aria-label");
+    const nums = text!.match(/\d+/g)!.map(Number);
+    const answer = text!.includes("−") ? nums[0]! - nums[1]! : nums[0]! + nums[1]!;
+    await page.getByRole("button", { name: "Resposta " + answer, exact: true }).click();
+    await expect(page.locator(".math-answer-reaction")).toBeVisible();
+    await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
+  }
+  await expect(page.getByText("Multiplicação", { exact: true })).toBeVisible();
+  await expect(page.getByText(/VOCÊ ESTÁ INSANO/)).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("math-playing.png") });
+  const geometry = await page.locator(".math-answers").boundingBox();
+  await expect(page.locator(".math-game-stats")).toBeInViewport({ ratio: 1 });
+  await expect(page.getByRole("button", { name: /^Resposta/ }).last()).toBeInViewport({ ratio: 1 });
   expect(geometry!.x).toBeGreaterThanOrEqual(0);
-  expect(geometry!.x + geometry!.width).toBeLessThanOrEqual(viewport.width);
-  await expect(page.getByRole("button", { name: "Voltar às ilhas" })).toBeInViewport();
-  for (let count = 0; count < 3; count++) {
-    const expression = await page.locator(".math-arcade-equation h1").innerText();
-    const operands = expression.match(/\d+/g)!.map(Number);
-    const value = operands[0]! + operands[1]!;
-    const options = page.getByRole("button", { name: /^Resposta/ });
-    const labels = await options.evaluateAll((buttons) =>
-      buttons.map((button) => button.getAttribute("aria-label")),
+  expect(geometry!.x + geometry!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  for (let index = 0; index < 3; index++) {
+    const text = await page.locator(".math-game-question h1").getAttribute("aria-label");
+    const nums = text!.match(/\d+/g)!.map(Number);
+    const value = nums[0]! * nums[1]!;
+    const buttons = page.getByRole("button", { name: /^Resposta/ });
+    const labels = await buttons.evaluateAll((items) =>
+      items.map((item) => item.getAttribute("aria-label")),
     );
-    const index = labels.findIndex((label) => Number(label!.split(" ")[1]) !== value);
-    await options.nth(index).click();
-    if (count < 2) await expect(page.getByRole("status")).toHaveCount(0);
+    await buttons.nth(labels.findIndex((label) => Number(label!.split(" ")[1]) !== value)).click();
+    await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
   }
   await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("math-result.png") });
   await page.getByRole("button", { name: "Tentar de novo" }).click();
-  await expect(page.getByLabel("3 chances restantes")).toBeVisible();
+  await expect(page.getByText("Multiplicação", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Voltar às ilhas" }).click();
+  await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("helena.soloProgress"))).toBe("4");

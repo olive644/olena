@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Matemática adaptativa com Olena (2026-10-09)
+
+- MathIslandJourney substitui a entrada direta no protótipo: seis ilhas verticais próprias, de fundamentos a Cálculo III, previews, teclado, roda e arraste. As outras disciplinas permanecem bloqueadas.
+- POST /api/olena?action=math&version=1 gera desafios numéricos e avalia acertos, rapidez, sequência e domínio por assunto. Conteúdo calculado e validado no servidor, sem LLM, voz ou provedor externo. Seis assuntos iniciais por curso, não uma ementa escolar completa.
+- Questões mais complexas têm orçamento maior e drenagem mais rápida. Acertos reabastecem a reserva. Timer pausa durante feedback, chamadas, erro de rede e aba oculta. Erros de API são visíveis e recuperáveis, sem perguntas inventadas no cliente.
+- Progresso versionado em helena.mathLearning.v1, integrado à sincronização já existente. Nova tentativa preserva domínio e melhor pontuação, sem alterar soloProgress. Não concede XP competitivo: progresso informado pelo cliente é pedagógico, não autoridade para prêmios.
+- PaperDigits, ícone de pontos das salas, contagem 3-2-1, Oliver, corações partidos, combo, sons e reações próximas à resposta. Saída, entrada e resultado animados, respeitando redução de movimento.
+- Seis artes originais de ilha geradas com referência à ilha aprovada e otimizadas em WebP transparente: 480px para celular e 800px para desktop. Cenário decorativo recortado ao viewport para não produzir rolagem extra.
+- API local de desenvolvimento e preview usa o mesmo handleOlena da função Vercel. Nenhuma biblioteca adicional necessária.
+
 ## Praticar: protótipo de contas (2026-10-09)
 
 - Trilhas suspensas na entrada das ilhas por decisão do usuário. Somente Matemática está disponível; as cinco outras ilhas continuam navegáveis, mas bloqueadas mesmo com progresso legado.

@@ -7,6 +7,7 @@ import {
   type OlenaApiError,
   type OlenaErrorCode,
 } from "../domain/olena.js";
+import { mathResponse } from "./math-handler.js";
 
 function json(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), {
@@ -26,8 +27,22 @@ function error(status: number, code: OlenaErrorCode, message: string): Response 
   return json(status, body);
 }
 
-/** API pública de catálogo, sem dados pessoais, escrita, provedor ou geração simulada. */
+/** Catálogo e desafios matemáticos calculados, sem provedor de IA ou escrita no servidor. */
 export async function handleOlena(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  if (url.searchParams.get("action") === "math") {
+    if (
+      [...url.searchParams.keys()].some((key) => !["action", "version"].includes(key)) ||
+      url.searchParams.getAll("action").length !== 1 ||
+      url.searchParams.getAll("version").length > 1 ||
+      (url.searchParams.has("version") && url.searchParams.get("version") !== "1")
+    )
+      return error(400, "invalid_request", "Parâmetros inválidos.");
+    const result = await mathResponse(request);
+    const response = json(result.status, result.body);
+    if (result.status === 405) response.headers.set("Allow", "POST");
+    return response;
+  }
   if (request.method !== "GET") {
     const response = error(405, "method_not_allowed", "Método não permitido.");
     response.headers.set("Allow", "GET");

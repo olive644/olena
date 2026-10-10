@@ -304,17 +304,16 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: /pausar/i })).toBeTruthy();
   });
 
-  it("abre Matemática diretamente no protótipo, sem trilha, e retorna às ilhas", async () => {
+  it("abre as ilhas de Matemática, sem trilha, e retorna aos mundos", async () => {
     render(<App />);
     navigate("Praticar");
     expect(await screen.findByRole("heading", { name: "Picos dos Padrões" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Entrar no laboratório" }));
-    expect(screen.getByRole("region", { name: "Laboratório das contas" })).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Ilhas de Matemática" })).toBeTruthy();
     expect(document.querySelector(".practice-trail-map")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Vamos calcular!" }));
-    expect(screen.getAllByRole("button", { name: /^Resposta/ })).toHaveLength(4);
+    expect(screen.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Voltar às ilhas" }));
-    expect(screen.getByRole("heading", { name: "Picos dos Padrões" })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: "Picos dos Padrões" })).toBeTruthy();
   });
 
   it("bloqueia as cinco outras ilhas mesmo com progresso legado salvo", async () => {

@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+2026-10-09, atualização: Matemática agora abre MathIslandJourney, carrossel vertical
+de seis cursos com artes próprias, e depois MathArcade. Olena gera e avalia desafios
+por POST action=math, sem IA externa. Acertos e rapidez promovem assuntos; retry
+preserva domínio por curso em helena.mathLearning.v1, integrado ao synced-storage.
+Pontuação pedagógica, não XP competitivo ou recompensa confiável de servidor.
+As anotações do protótipo abaixo registram o estado anterior, já substituído.
+
 2026-10-09: usuário suspendeu as trilhas. PracticeHub começa na ilha de Matemática
 e bloqueia as outras cinco, mantendo seus dados. A entrada abre MathArcade, não
 PracticeSubjectTrail nem o piloto Pixi. Protótipo de aritmética rápida com 60s,
