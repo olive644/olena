@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Tempo por questão conforme a etapa de Matemática (2026-10-10)
+
+- Tempos iniciais: fundamental 14 s, ensino médio 16 s, pré-cálculo 18 s,
+  cálculo I 20 s, cálculo II 22 s e cálculo III 24 s.
+- Configuração central em MATH_COURSES, usada pelo gerador e pela validação da API.
+  Mantidos os 3 s adicionais por tópico, aceleração de 0,16 por nível, reserva de
+  60 s e contagem inicial de três segundos. Nada muda em pontos, baús ou progresso.
+- Testes verificam os seis cursos, todos os níveis, limites de timeout e rejeição
+  pela API de tempo adulterado.
+
 ## Contagem bidirecional dos pontos dos lugares (2026-10-10)
 
 - Contador passa do valor atualmente exibido ao saldo do novo lugar em 900 ms,

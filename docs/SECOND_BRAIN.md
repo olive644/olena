@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, tempo das questões: MATH_COURSES define initialQuestionSeconds por etapa
+(14, 16, 18, 20, 22 e 24 s do fundamental ao cálculo III). mathQuestion soma 3 s
+por tópico e mantém a aceleração existente. mathResponse valida budget e drain
+contra a questão regenerada, evitando uma fórmula fixa divergente. Reserva total
+da partida permanece em 60 s, sem alteração de recompensas ou progresso.
+
 2026-10-10, contador dos lugares: MathIslandJourney conserva o último número exibido
 entre montagens de MathPlaceTreasure. A interpolação de 900 ms parte desse número
 para o saldo do lugar selecionado, incluindo descida até zero. Trocas rápidas

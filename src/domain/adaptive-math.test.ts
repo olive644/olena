@@ -2,6 +2,27 @@ import { expect, it } from "vitest";
 import { mathChallenge, assessMath } from "./adaptive-math";
 import { MATH_COURSES, EMPTY_MATH_PROGRESS } from "../data/math-courses";
 import { handleOlena } from "../backend/olena-handler";
+it.each([
+  ["foundations", 14],
+  ["school", 16],
+  ["advanced", 18],
+  ["calculus1", 20],
+  ["calculus2", 22],
+  ["calculus3", 24],
+] as const)("gives %s a modest starting question budget of %i seconds", (course, seconds) => {
+  for (let level = 0; level < 6; level++) {
+    const question = mathChallenge(course, { ...EMPTY_MATH_PROGRESS, level }, 99);
+    expect(question.budget).toBe(seconds + level * 3);
+    expect(question.drain).toBe(1 + level * 0.16);
+    const deadline = question.budget / question.drain;
+    expect(
+      assessMath(EMPTY_MATH_PROGRESS, question, question.answer, deadline - 0.01, 0).correct,
+    ).toBe(true);
+    expect(assessMath(EMPTY_MATH_PROGRESS, question, question.answer, deadline, 0).timedOut).toBe(
+      true,
+    );
+  }
+});
 it("a correct result submitted after the deadline loses the turn rather than scoring", () => {
   const question = mathChallenge("foundations", EMPTY_MATH_PROGRESS, 99);
   const result = assessMath(EMPTY_MATH_PROGRESS, question, question.answer, 14, 4);
@@ -48,29 +69,37 @@ it("retreats one topic after two consecutive errors without losing earned points
   expect(result.progress.level).toBe(0);
   expect(assessMath(progress, question, question.answer, 1, 0).progress.errors).toBe(0);
 });
-it("API validates its generated question independent of JSON key ordering", async () => {
-  const call = (body: unknown) =>
-    handleOlena(
-      new Request("http://localhost/api/olena?action=math&version=1", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      }),
-    );
-  const progress = { ...EMPTY_MATH_PROGRESS };
-  const generated = await call({ action: "question", course: "foundations", progress });
-  const { question } = (await generated.json()) as { question: ReturnType<typeof mathChallenge> };
-  const reordered = Object.fromEntries(Object.entries(question).reverse());
-  const body = {
-    action: "answer",
-    course: "foundations",
-    progress,
-    question: reordered,
-    choice: question.answer,
-    elapsed: 1,
-    streak: 0,
-  };
-  expect((await call(body)).status).toBe(200);
-  expect((await call({ ...body, question: { ...question, answer: 999 } })).status).toBe(400);
-  expect((await call({ ...body, progress: { ...progress, level: 999 } })).status).toBe(400);
-});
+it.each(MATH_COURSES)(
+  "API validates $id timing independent of JSON key ordering",
+  async (course) => {
+    const call = (body: unknown) =>
+      handleOlena(
+        new Request("http://localhost/api/olena?action=math&version=1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }),
+      );
+    const progress = { ...EMPTY_MATH_PROGRESS };
+    const generated = await call({ action: "question", course: course.id, progress });
+    const { question } = (await generated.json()) as { question: ReturnType<typeof mathChallenge> };
+    const reordered = Object.fromEntries(Object.entries(question).reverse());
+    const body = {
+      action: "answer",
+      course: course.id,
+      progress,
+      question: reordered,
+      choice: question.answer,
+      elapsed: 1,
+      streak: 0,
+    };
+    expect((await call(body)).status).toBe(200);
+    expect(question.budget).toBe(course.initialQuestionSeconds);
+    expect((await call({ ...body, elapsed: question.budget - 0.01 })).status).toBe(200);
+    expect(
+      (await call({ ...body, question: { ...question, budget: question.budget + 1 } })).status,
+    ).toBe(400);
+    expect((await call({ ...body, question: { ...question, answer: 999 } })).status).toBe(400);
+    expect((await call({ ...body, progress: { ...progress, level: 999 } })).status).toBe(400);
+  },
+);

@@ -51,9 +51,9 @@ export async function mathResponse(request: Request): Promise<{ status: number; 
     item["choices"].length !== 4 ||
     !item["choices"].every((value) => typeof value === "number" && Number.isFinite(value)) ||
     typeof item["budget"] !== "number" ||
-    item["budget"] !== 14 + progress.level * 3 ||
+    item["budget"] !== expected.budget ||
     typeof item["drain"] !== "number" ||
-    item["drain"] !== 1 + progress.level * 0.16 ||
+    item["drain"] !== expected.drain ||
     typeof item["topic"] !== "string" ||
     typeof input["choice"] !== "number" ||
     !item["choices"].includes(input["choice"]) ||
