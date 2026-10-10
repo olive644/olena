@@ -38,10 +38,16 @@ test("all Oliver cards rotate as one surface without dragging art or selecting l
     await stage.scrollIntoViewIfNeeded();
     const art = page.locator(".oliver-inspection-front img");
     await expect(art).toHaveAttribute("draggable", "false");
-    await expect(page.locator(".oliver-inspection-front .oliver-card-lore")).toHaveCSS(
-      "user-select",
-      "none",
-    );
+    const lore = page.locator(".oliver-inspection-front .oliver-card-lore");
+    // WebKit exposes its selection rule through the prefixed property.
+    await expect
+      .poll(() =>
+        lore.evaluate((element) => {
+          const style = getComputedStyle(element);
+          return [style.userSelect, style.getPropertyValue("-webkit-user-select")];
+        }),
+      )
+      .toContain("none");
     expect(
       await art.evaluate((image) =>
         image.dispatchEvent(new Event("dragstart", { bubbles: true, cancelable: true })),
