@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Cartas comuns do Oliver e baús por lugar (2026-10-10)
+
+- Dez cenas originais do Oliver geradas a partir das capas e artes aprovadas de onboarding/Bingo. WebPs responsivos em public/oliver-cards, 480/720px, 826.820 bytes para as vinte variantes. Molduras e textos HTML nítidos, sem novo pacote de runtime. Prompts e referências no README dos assets.
+- Cada carta comum tem poder, vida, stamina e uma lembrança conectada à história do sino, estrela, mapa e compasso. Atributos ficcionais colecionáveis, sem bônus no minigame.
+- Até três baús pendentes por lugar, abaixo da arte; pontos continuam acima. 100+ pontos numa rodada concedem um baú somente se houver espaço, sem perder o crédito da pontuação. Recibo idempotente. Históricos antigos não são removidos; eventual fila antiga com mais de três aparece em lotes de três.
+- Tocar o próprio baú inicia 60 segundos de destrancamento. Prazo absoluto sobrevive à saída. Após o minuto, o toque abre a tampa com som e entrega cartas de costas. Clique, toque ou arraste horizontal viram uma carta com efeitos. Contador inferior direito mostra quantas faltam; máximo duas por baú.
+- Quantidade: 80% de uma carta, 20% de duas. Cada sorteio independente usa crypto.getRandomValues; pesos por carta somam 100% (18, 15, 13, 12, 10, 9, 8, 6, 5, 4). Chances visíveis na coleção, duplicatas contam como cópias.
+- Sorteio e progresso de revelação gravados antes da animação em helena.mathPlaceRewards.v1. Reabrir não sorteia novamente; fechar um booster parcial permite continuar. Coleção derivada das cartas reveladas, sem segundo armazenamento ou crédito duplicado. Baús legados já abertos não ganham cartas retroativas.
+- Coleção, histórias e chances acessíveis pelo botão Cartas. Modal com foco, teclado, arraste, saída e movimento reduzido. Sons exclusivos de destrancar, tampa e revelação.
+- Persistência local, não economia autoritativa, sincronizada ou protegida contra adulteração no dispositivo. Nenhuma compra ou raridade paga. XP continua na regra existente, sem aviso quando pontuação é zero.
+- Verificação: npm run verify passou, 201 arquivos/1251 testes, lint sem erros (10 avisos anteriores), formatação, API, TypeScript, build e orçamento. E2E do fluxo passou em desktop e viewport móvel com Edge: toque no baú, minuto persistido, flip por arraste, cartas, coleção e retorno. WebKit fica para CI. JS inicial 275,7 KiB, total 1176,6 KiB, teto 1179 KiB.
+
 ## Pontos e baús da Matemática (2026-10-10)
 
 - A reserva começa cheia em 60 segundos, após 3-2-1. A barra anterior dividia 60 por 90 e parecia já consumida. Tempo por questão e reserva continuam independentes. Acertos ainda reabastecem até 90 segundos.

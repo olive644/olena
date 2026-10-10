@@ -1,0 +1,403 @@
+.oliver-booster-backdrop,
+.oliver-collection-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  pointer-events: auto;
+  background: #171320ee;
+  color: #fff9ef;
+  overflow: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  padding: 24px 16px;
+  gap: 16px;
+  touch-action: pan-y;
+}
+.oliver-booster-close {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  width: 48px;
+  height: 48px;
+  padding: 10px;
+  z-index: 3;
+}
+.oliver-booster-close svg {
+  width: 100%;
+  height: 100%;
+}
+.oliver-reveal-label {
+  margin: 0;
+  text-align: center;
+  color: #ffe88d;
+  font-weight: 800;
+}
+.oliver-flip-card {
+  position: relative;
+  width: min(310px, 78vw);
+  height: 535px;
+  perspective: 1400px;
+  flex-shrink: 0;
+  animation: oliver-card-delivery 0.65s both;
+}
+.oliver-flip-button {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  touch-action: pan-y;
+  perspective: inherit;
+}
+.oliver-flip-button:disabled {
+  opacity: 1;
+  cursor: default;
+}
+.oliver-flip-button:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 8px;
+  border-radius: 14px;
+}
+.oliver-card-turn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.2, 0.65, 0.2, 1);
+}
+.is-revealed .oliver-card-turn {
+  transform: rotateY(180deg);
+}
+.oliver-card-side {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.oliver-card-side--front {
+  transform: rotateY(180deg);
+}
+.oliver-card-front {
+  height: 100%;
+  padding: 10px;
+  border: 5px solid #292432;
+  border-radius: 12px 22px 12px 12px;
+  background: #fff1b7;
+  color: #292432;
+  box-shadow: 4px 7px #121017;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: left;
+}
+.oliver-card-front header {
+  padding: 2px 3px 8px;
+}
+.oliver-card-front small {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--card-accent);
+}
+.oliver-card-front h2 {
+  font-size: 20px;
+  line-height: 1.15;
+  margin: 4px 0 0;
+  font-weight: 900;
+}
+.oliver-card-art {
+  display: block;
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  object-position: center 53%;
+  border: 2px solid #292432;
+  border-radius: 3px 12px 3px 3px;
+  flex: 1;
+  min-height: 0;
+}
+.oliver-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin: 8px 0;
+  padding: 0;
+}
+.oliver-card-stats div {
+  padding: 4px 2px;
+  background: #292432;
+  color: #fff1b7;
+  text-align: center;
+  border-bottom: 3px solid var(--card-accent);
+  clip-path: polygon(0 0, 90% 0, 100% 20%, 100% 100%, 0 100%);
+}
+.oliver-card-stats dt {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.oliver-card-stats dd {
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 3px 0 0;
+}
+.oliver-card-lore {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 2px 3px 4px;
+}
+.oliver-card-back {
+  height: 100%;
+  min-height: 100px;
+  border: 7px solid #292432;
+  border-radius: 12px 22px 12px 12px;
+  box-shadow: 4px 7px #121017;
+  background: #7c3aed;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  color: #fff1b7;
+}
+.oliver-card-back::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #b387f4;
+  clip-path: polygon(0 0, 45% 0, 10% 45%, 100% 100%, 65% 100%, 40% 70%, 0 90%);
+  opacity: 0.7;
+}
+.oliver-card-back::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 2px solid #ffe88d;
+  clip-path: polygon(0 0, 90% 0, 100% 8%, 100% 100%, 10% 100%, 0 92%);
+  pointer-events: none;
+}
+.oliver-back-orbit {
+  position: relative;
+  width: 65%;
+  aspect-ratio: 1;
+  background: #fff1b7;
+  clip-path: polygon(50% 0, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0 50%, 15% 15%);
+  display: grid;
+  place-items: center;
+}
+.oliver-back-orbit img {
+  width: 84%;
+  height: 84%;
+  object-fit: contain;
+}
+.oliver-card-back > span {
+  position: relative;
+  letter-spacing: 0.25em;
+  font-size: 24px;
+  font-weight: 900;
+}
+.oliver-back-star {
+  width: 28px;
+  height: 28px;
+  background: #facc15;
+  clip-path: polygon(
+    50% 0,
+    62% 35%,
+    100% 40%,
+    72% 63%,
+    80% 100%,
+    50% 78%,
+    20% 100%,
+    28% 63%,
+    0 40%,
+    38% 35%
+  );
+}
+.oliver-cards-remaining {
+  position: absolute;
+  right: -12px;
+  bottom: -10px;
+  width: 44px;
+  height: 48px;
+  background: #facc15;
+  color: #292432;
+  font-size: 26px;
+  font-weight: 900;
+  border: 3px solid #292432;
+  border-radius: 7px 14px 5px 5px;
+  box-shadow: 0 4px #917028;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+.oliver-booster-actions {
+  min-height: 48px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff1b7;
+}
+.oliver-booster-actions button {
+  min-height: 48px;
+}
+.oliver-reveal-sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.oliver-reveal-sparks i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 25px;
+  background: #facc15;
+  transform-origin: 0 0;
+  animation: oliver-card-spark 0.9s both;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.oliver-collection-panel {
+  position: relative;
+  width: min(960px, 100%);
+  padding: 30px 20px;
+  background: #fff9ef;
+  color: #292432;
+  border: 2px solid #d5c8b0;
+  border-radius: 8px 30px 8px 8px;
+  box-shadow: 0 7px #d5c8b0;
+}
+.oliver-collection-panel h1 {
+  font-size: 24px;
+  margin: 0 50px 8px 0;
+}
+.oliver-collection-panel > p {
+  font-size: 12px;
+  margin: 0 0 22px;
+}
+.oliver-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 16px;
+}
+.oliver-collection-item {
+  border: 0;
+  background: none;
+  text-align: left;
+  padding: 0;
+  color: #292432;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+}
+.oliver-collection-item:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.oliver-collection-item > img,
+.oliver-collection-item > .oliver-card-back {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border: 4px solid #292432;
+  border-radius: 6px 14px 6px 6px;
+  box-shadow: 0 4px #d5c8b0;
+}
+.oliver-collection-item strong {
+  font-size: 12px;
+}
+.oliver-collection-item > span {
+  font-size: 11px;
+  color: #665a70;
+}
+.oliver-collection-item .oliver-card-back {
+  gap: 10px;
+}
+.oliver-collection-item .oliver-card-back > span {
+  font-size: 12px;
+}
+.oliver-collection-item .oliver-back-star {
+  width: 15px;
+  height: 15px;
+}
+.oliver-collection-detail {
+  width: min(310px, 100%);
+  height: 535px;
+  margin: 25px auto 0;
+}
+.oliver-card-chances {
+  margin-top: 28px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.oliver-card-chances summary {
+  cursor: pointer;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 10px 0;
+}
+.oliver-card-chances ul {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 5px;
+}
+.oliver-card-chances li {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+@keyframes oliver-card-delivery {
+  from {
+    opacity: 0;
+    transform: translateY(70px) rotate(-8deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes oliver-card-spark {
+  from {
+    opacity: 1;
+    transform: translateY(-30px) scale(0.3);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-360px) scale(1.3);
+  }
+}
+@media (max-height: 740px) {
+  .oliver-flip-card {
+    height: 480px;
+    width: min(280px, 78vw);
+  }
+  .oliver-booster-backdrop {
+    gap: 12px;
+    padding-top: 70px;
+    padding-bottom: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oliver-card-turn,
+  .oliver-flip-card,
+  .oliver-reveal-sparks i {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+html[data-reduce-motion="true"] :is(.oliver-card-turn, .oliver-flip-card, .oliver-reveal-sparks i) {
+  animation: none !important;
+  transition: none !important;
+}

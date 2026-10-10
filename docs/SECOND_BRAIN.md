@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, cartas do Oliver: MathPlaceTreasure agora mostra três espaços sob a
+arte. Toque no baú destranca em 60s e abre um booster de uma ou duas cartas,
+verso Olena, flip por toque/arraste, sons e contador restante. OliverCardCollection
+mostra cópias, atributos ficcionais, lore e chances. Dez cenas independentes em
+public/oliver-cards (WebP responsivo, prompts no README). drawOliverCards usa
+crypto: 80% uma, 20% duas; pesos individuais somam 100%. Tudo comum.
+math-place-rewards adiciona cards/revealed opcionais no schema local v1; sorteio
+salvo antes de mostrar, retomada parcial sem rerrolagem e coleção derivada das
+revelações. Baús abertos antigos preservados sem itens retroativos. Limite três
+pendentes por lugar para novas recompensas, pontuação continua acumulando quando
+cheio. Não confundir com economia de conta remota ou bônus no minigame.
+
 Matemática agora guarda pontos por lugar e baús comuns locais em
 helena.mathPlaceRewards.v1. Uma partida com 100+ pontos concede um baú; destrancar
 aguarda 60 segundos por prazo persistido, então abrir anima a tampa. Não há itens

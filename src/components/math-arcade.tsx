@@ -59,6 +59,7 @@ export function MathArcade({
   >(null);
   const [error, setError] = useState("");
   const [storageWarning, setStorageWarning] = useState(false);
+  const [earnedChest, setEarnedChest] = useState(false);
   const [displayedScore, setDisplayedScore] = useState(0);
   const [reward, setReward] = useState<RoomXpReward | undefined>();
   const roundId = useRef("");
@@ -122,7 +123,8 @@ export function MathArcade({
     audio.current?.play("finish");
     const settlementTimer = window.setTimeout(() => {
       try {
-        finishMathPlace(courseId, roundId.current, round.points);
+        const saved = finishMathPlace(courseId, roundId.current, round.points);
+        setEarnedChest(saved.chests.some((chest) => chest.id === roundId.current));
       } catch {
         setStorageWarning(true);
       }
@@ -161,6 +163,7 @@ export function MathArcade({
     return requestMath(input, AbortSignal.any([current.signal, AbortSignal.timeout(10000)]));
   }
   async function start() {
+    setEarnedChest(false);
     if (answerLock.current || pending) return;
     audio.current ??= createMathSound();
     audio.current.unlock();
@@ -380,11 +383,16 @@ export function MathArcade({
               {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
             </p>
             <span className="math-result-topic">{course.topics[round.progress.level]}</span>
-            {round.points >= COMMON_CHEST_POINTS && (
+            {earnedChest && (
               <div className="math-earned-chest">
                 <CommonMathChest />
                 <span>Você ganhou um baú comum!</span>
               </div>
+            )}
+            {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
+              <p className="math-result-topic">
+                Os três espaços de baús estão ocupados. Seus pontos foram guardados.
+              </p>
             )}
             <button
               className="primary-button math-start-button"
