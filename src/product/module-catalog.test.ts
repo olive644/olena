@@ -35,4 +35,16 @@ describe("catálogo de módulos", () => {
       entryView: "learn",
     });
   });
+
+  it("marca escrita à mão e Modo Sala como disponíveis e mantém o OCR de digitalizações planejado", () => {
+    expect(PRODUCT_MODULES.find((module) => module.id === "handwriting")).toMatchObject({
+      status: "available",
+      entryView: "notes",
+    });
+    expect(PRODUCT_MODULES.find((module) => module.id === "room")).toMatchObject({
+      status: "available",
+      entryView: "room",
+    });
+    expect(PRODUCT_MODULES.find((module) => module.id === "ocr")?.status).toBe("planned");
+  });
 });

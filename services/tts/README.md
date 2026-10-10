@@ -55,8 +55,8 @@ de verdade (Kokoro e Piper reais, nao mockados).
 | `TTS_MAX_TEXT_LENGTH`       | nao         | `160`                     | Tamanho maximo do texto aceito, em caracteres.                                                |
 
 Nenhuma dessas variaveis deve ser exposta ao navegador (nao usar prefixo
-`VITE_`). `TTS_SERVICE_URL` e `TTS_SERVICE_TOKEN` do lado da Vercel ficam
-descritos em `.env.example`, na raiz do projeto.
+`VITE_`). `TTS_SERVICE_URL` e `TTS_SERVICE_TOKEN` do lado da Vercel são
+configurados somente no painel da Vercel e hoje não estão em uso em produção.
 
 ## Memoria e inicializacao esperadas
 

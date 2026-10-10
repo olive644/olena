@@ -6,4 +6,3 @@ coverage
 playwright-report
 test-results
 package-lock.json
-.env.example

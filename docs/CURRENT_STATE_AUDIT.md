@@ -2166,3 +2166,10 @@ duas pequenas divisões, mantendo todo o restante da composição.
   áudio, booster comum, arcano, arraste, inspeção e ausência de sobreposição/barra
   pronta. WebKit real fica para CI. Entrada inicial 276,0 KiB, total 1190,3 KiB;
   acréscimo de 2,6 KiB carregado sob demanda, sem dependência nova.
+
+## Documentação atualizada e `.env.example` removido (2026-10-10)
+
+- Auditoria dos documentos fora do `SECOND_BRAIN` e do `CURRENT_STATE_AUDIT`, que estavam sem edição desde 26/09. Corrigidos: README (o que existe hoje, desenvolvimento sem variáveis, e2e com WebKit), `docs/ARCHITECTURE.md` (orçamentos que diziam 220 e 300 KiB e hoje são 278 e 1190 KiB, funções de `api/`, Modo Sala com estado privado, projeção pública por SSE, `KvStore` com versão e App Check), `docs/PRODUCT_MIND_MAP.md` (Praticar, Modo Sala, OCR local), `docs/IMPLEMENTATION_ROADMAP.md` (fases 5, 9 e 10 e a linha de OCR) e `docs/ROOM_SETUP.md` (as regras antigas de dois nós foram trocadas por referência a `firebase-room.rules.json`, que hoje tem dez nós; entram `kick`, `lock` e os 30 minutos de retenção depois do encerramento).
+- `src/product/module-catalog.ts`: entram `handwriting` e `room` como disponíveis. O módulo `ocr` segue planejado, agora descrito como OCR de digitalizações, porque o OCR local existe somente na seleção de traços da escrita à mão. Teste novo no catálogo.
+- `.env.example` removido do repositório, por decisão do dono. Saem também a exceção no `.gitignore`, a linha no `.prettierignore` e as duas referências (README e `services/tts/README.md`). O `.gitignore` continua ignorando `.env` e `.env.*`. Nenhum valor secreto estava no arquivo. A lista de variáveis passa a ficar nos guias de configuração e no painel da Vercel, e novos integrantes precisam receber as variáveis públicas `VITE_*` por canal próprio.
+- Pendente de decisão do dono, sem alteração aqui: canal de contato de segurança em `SECURITY.md` e na Política de Privacidade, e a presença de `docs/CONTRATO_SOCIETARIO.md` no repositório.

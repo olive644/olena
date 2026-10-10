@@ -30,39 +30,26 @@ pelo Claude Code.
 
 ## 2. Definir as regras de segurança
 
-Na aba **Regras** do Realtime Database, substitua pelo seguinte e publique:
+As regras vivem no arquivo [`firebase-room.rules.json`](../firebase-room.rules.json), na raiz do
+repositório. Na aba **Regras** do Realtime Database, publique o conteúdo completo desse arquivo,
+preservando quaisquer regras de outros produtos do mesmo projeto. Não copie versões antigas deste
+guia: o arquivo é a única fonte.
 
-```json
-{
-  "rules": {
-    "rooms": {
-      "$code": {
-        ".read": true,
-        ".write": false
-      }
-    },
-    "private-rooms": {
-      ".read": false,
-      ".write": false
-    }
-  }
-}
-```
+- `/rooms/<código>` é a projeção pública da sala (participantes, pergunta atual e placar). Um
+  navegador só **lê** enquanto `expiresAt` for um número no futuro, e ninguém escreve direto. Uma
+  projeção sem `expiresAt` não é legível.
+- `/private-rooms/<código>` guarda o estado completo (com o token do organizador e as respostas
+  certas): ninguém lê nem escreve direto por aqui, nem autenticado.
+- `/room-limits`, `/speech-audio`, `/room-recordings`, `/speech-rate-limit`,
+  `/speech-generation-rate-limit`, `/notebook-collab` e `/notebook-views` guardam limites de
+  pedidos, áudios temporários, gravações do professor e cadernos compartilhados. Leitura e escrita
+  diretas são negadas, e cada nó tem `.indexOn: ["expiresAt"]`, que a limpeza automática usa para
+  varrer o que venceu.
+- `/users/<uid>` é a conta sincronizada: só o próprio usuário autenticado lê e escreve o que é
+  dele (veja [`ACCOUNT_SYNC_SETUP.md`](ACCOUNT_SYNC_SETUP.md)).
 
-- `/rooms/<código>` é a projeção pública da sala (participantes, pergunta
-  atual e placar): qualquer navegador pode **ler**, mas ninguém pode escrever
-  diretamente.
-- `/private-rooms/<código>` guarda o estado completo (com o token do
-  organizador e as respostas certas): ninguém lê nem escreve direto por
-  aqui, nem autenticado.
-- `/speech-audio/<hash>` guarda por pouco tempo as gravações da sala para todos
-  receberem os mesmos bytes. A leitura e a escrita diretas também são negadas.
-- `/room-recordings/<código>-<id>` guarda as falas enviadas pelo professor para
-  Escuta Coletiva. O navegador não lê nem escreve diretamente nesse caminho.
-
-O servidor (a função da Vercel) escreve nos dois caminhos usando uma conta
-de serviço com privilégio de administrador, que **ignora** essas regras;
-por isso elas protegem os dados mesmo assim.
+O servidor (a função da Vercel) escreve nesses caminhos usando uma conta de serviço com privilégio
+de administrador, que **ignora** as regras; por isso elas protegem os dados mesmo assim.
 
 ## 3. Criar a conta de serviço
 
@@ -104,6 +91,14 @@ vigor.
   em tempo real, sem precisar perguntar de novo.
 - `POST ?action=start` / `?action=next` / `?action=end`: só o organizador
   pode iniciar a rodada, avançar pergunta ou encerrar (validado pelo token).
+- `POST ?action=kick` remove um participante (o removido sai sozinho da sala e vê o aviso) e
+  `?action=lock` fecha ou reabre a entrada. Só o organizador pode, e com a entrada fechada o `join`
+  responde 409. Remover não é banimento: sem conta, não há como impedir quem apaga os dados do
+  navegador de voltar, e por isso existe o fechamento da entrada.
+- Quando a sala termina, `expiresAt` é limitado a 30 minutos depois do encerramento
+  (`ROOM_FINISHED_RETENTION_MS`), valendo para encerramento pelo anfitrião, pela ausência dele e
+  pelo fim da atividade. A projeção pública deixa de ser legível nesse prazo, e a janela cobre a
+  tela de resultados de quem já estava conectado.
 - `POST ?action=answer`: cada aluno envia sua resposta; a correção é
   conferida no servidor (o baralho completo com as respostas certas fica só
   em `/private-rooms`, nunca é enviado para o navegador de ninguém).
@@ -139,8 +134,8 @@ vigor.
 
 A sala agora tem prazo absoluto de 4 horas. O código expira a sessão privada;
 a leitura pública só fica protegida pela expiração após publicar as regras novas.
-As regras antigas exibidas anteriormente neste guia são históricas: para esta versão,
-usar `firebase-room.rules.json`, preservando quaisquer regras de outros produtos.
+Para esta versão, publicar `firebase-room.rules.json` (passo 2), preservando quaisquer regras de
+outros produtos.
 
 1. Revisar/publicar a branch por PR, sem merge automático. Não misturar clientes antigos
    com credenciais de participante novas; pedir que salas antigas sejam recriadas.
