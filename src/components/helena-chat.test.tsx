@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { HelenaChatPreview } from "./helena-chat-preview";
+import { HelenaChat as HelenaChatPreview } from "./helena-chat";
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -32,7 +32,7 @@ it("opens from the paper star and restores launcher focus with Escape", () => {
 it("finishes the closing animation before unmounting the chat", () => {
   vi.stubGlobal(
     "matchMedia",
-    vi.fn((query: string) => ({ matches: query === "(min-width: 600px)" })),
+    vi.fn((query: string) => ({ matches: query === "(min-width: 900px)" })),
   );
   render(<HelenaChatPreview initiallyOpen />);
   fireEvent.click(screen.getByRole("button", { name: /^Recolher conversa$/ }));
