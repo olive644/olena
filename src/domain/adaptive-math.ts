@@ -191,12 +191,13 @@ export function mathQuestion(
     const j = Math.floor(random() * (i + 1));
     [choices[i], choices[j]] = [choices[j]!, choices[i]!];
   }
+  const courseConfig = MATH_COURSES.find((item) => item.id === course)!;
   return {
     expression,
     answer,
     choices,
-    topic: MATH_COURSES.find((item) => item.id === course)!.topics[level]!,
-    budget: 14 + level * 3,
+    topic: courseConfig.topics[level]!,
+    budget: courseConfig.initialQuestionSeconds + level * 3,
     drain: 1 + level * 0.16,
   };
 }

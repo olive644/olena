@@ -1,6 +1,7 @@
 export const MATH_COURSES = [
   {
     id: "foundations",
+    initialQuestionSeconds: 14,
     title: "Pátio das Primeiras Contas",
     subject: "Ensino fundamental",
     color: "#167b85",
@@ -10,6 +11,7 @@ export const MATH_COURSES = [
   },
   {
     id: "school",
+    initialQuestionSeconds: 16,
     title: "Oficina das Equações",
     subject: "Ensino médio",
     color: "#b84f39",
@@ -19,6 +21,7 @@ export const MATH_COURSES = [
   },
   {
     id: "advanced",
+    initialQuestionSeconds: 18,
     title: "Torre das Funções",
     subject: "Pré-cálculo",
     color: "#287b5b",
@@ -35,6 +38,7 @@ export const MATH_COURSES = [
   },
   {
     id: "calculus1",
+    initialQuestionSeconds: 20,
     title: "Ponte das Tangentes",
     subject: "Cálculo I",
     color: "#326bb0",
@@ -44,6 +48,7 @@ export const MATH_COURSES = [
   },
   {
     id: "calculus2",
+    initialQuestionSeconds: 22,
     title: "Porto das Integrais",
     subject: "Cálculo II",
     color: "#248e94",
@@ -60,6 +65,7 @@ export const MATH_COURSES = [
   },
   {
     id: "calculus3",
+    initialQuestionSeconds: 24,
     title: "Mirante dos Vetores",
     subject: "Cálculo III",
     color: "#795088",
