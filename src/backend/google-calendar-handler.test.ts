@@ -106,6 +106,43 @@ describe("handler do Google Agenda", () => {
     ).toBe(true);
   });
 
+  it("desconectar revoga o token no Google e limpa o cookie", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(new Response("{}", { status: 200 }));
+    const cookie = `${GOOGLE_SESSION_COOKIE}=${encryptSession(sessionSecret, {
+      accessToken: "a1",
+      refreshToken: "r1",
+      expiresAt: Date.parse("2026-09-10T01:00:00Z"),
+    })}`;
+    const response = await handler(fetchImpl)(post("?action=disconnect", cookie));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ connected: false, revoked: true });
+    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe("https://oauth2.googleapis.com/revoke");
+    expect(String(init.body)).toBe("token=r1");
+  });
+
+  it("se o Google falhar ao revogar, a pessoa ainda sai e o resultado avisa", async () => {
+    const fetchImpl = vi.fn().mockRejectedValue(new Error("rede"));
+    const cookie = `${GOOGLE_SESSION_COOKIE}=${encryptSession(sessionSecret, {
+      accessToken: "a1",
+      refreshToken: "r1",
+      expiresAt: Date.parse("2026-09-10T01:00:00Z"),
+    })}`;
+    const response = await handler(fetchImpl)(post("?action=disconnect", cookie));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ connected: false, revoked: false });
+    expect(response.headers.get("Set-Cookie")).toContain("Max-Age=0");
+  });
+
+  it("desconectar sem sessão não chama o Google", async () => {
+    const fetchImpl = vi.fn();
+    const response = await handler(fetchImpl)(post("?action=disconnect"));
+    expect(await response.json()).toEqual({ connected: false, revoked: true });
+    expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
   it("desconecta limpando o cookie de sessão", async () => {
     const response = await handler(vi.fn())(post("?action=disconnect"));
     expect(response.status).toBe(200);

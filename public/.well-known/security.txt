@@ -1,0 +1,5 @@
+Contact: https://github.com/olive644/olena/security/advisories/new
+Expires: 2027-10-10T00:00:00.000Z
+Preferred-Languages: pt-BR, en
+Canonical: https://olenastudy.vercel.app/.well-known/security.txt
+Policy: https://github.com/olive644/olena/blob/main/SECURITY.md

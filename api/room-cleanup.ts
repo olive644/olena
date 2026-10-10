@@ -1,10 +1,10 @@
+import { isCronAuthorized } from "../src/backend/cron-auth.js";
 import { cleanExpiredRooms } from "../src/backend/room-cleanup.js";
 import { getGoogleAccessToken } from "../src/backend/google-service-account.js";
 import { createVercelHandler } from "../src/backend/vercel-adapter.js";
 
 export default createVercelHandler("/api/room-cleanup", async (request) => {
-  const secret = process.env["CRON_SECRET"];
-  if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`)
+  if (!isCronAuthorized(request, process.env["CRON_SECRET"]))
     return new Response("Unauthorized", { status: 401 });
   const token = await getGoogleAccessToken(
     {
