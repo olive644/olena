@@ -1,5 +1,14 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, documentação e ambiente: README, ARCHITECTURE, PRODUCT_MIND_MAP, IMPLEMENTATION_ROADMAP e
+ROOM_SETUP foram atualizados para o estado real (Praticar, Matemática, cartas do Oliver, Modo Sala
+com remoção e fechamento de entrada, Olena API, funções de `api/`, orçamentos de bundle atuais). O
+catálogo `src/product/module-catalog.ts` ganhou `handwriting` e `room` como disponíveis, e `ocr`
+continua planejado só para digitalizações, pois o OCR local existe apenas na seleção de traços. O
+arquivo `.env.example` foi removido do repositório por decisão do dono: a lista de variáveis agora
+vive nos guias de configuração (`ROOM_SETUP.md`, `ACCOUNT_SYNC_SETUP.md`, `GOOGLE_CALENDAR_SETUP.md`)
+e no painel da Vercel. O e2e do CI roda um projeto por job (desktop e mobile).
+
 2026-10-10: PaperCardTitle reutiliza símbolos SVG do alfabeto monocromático com acentos. OliverArtworkId separa a vitrine do tarot XVII, A Estrela, dos dez OliverCardId comuns. OliverCardInspection atende ambos, sem alterar chances ou inventário. Arte WebP nova em public/oliver-cards; detalhes de geração em TAROT.md.
 
 2026-10-10, revisão visual: baú comum madeira/cinza, prêmio tocável voa ao slot
@@ -750,7 +759,9 @@ Cada aba tem seu caminho (`src/domain/app-routes.ts`, hook `useAppView` com Hist
   movimentos curtos compatíveis com `prefers-reduced-motion`;
 - Vitest e Testing Library para unidade/componente;
 - Playwright para fluxos desktop e mobile;
-- GitHub Actions para qualidade, auditoria, segredos, análise estática e CodeQL.
+- GitHub Actions para qualidade, auditoria, segredos, análise estática e CodeQL. O e2e roda em dois
+  jobs paralelos, desktop (Chromium) e mobile (WebKit), e o check "Desktop and mobile smoke tests"
+  agrega os dois.
 - Cloudflare Workers AI (modelo MeloTTS) continua no Quiz individual e Bingo, sem expor o token no
   navegador; Escuta Coletiva usa áudio gravado pelo professor. Kokoro+Piper (`services/tts`)
   permanece fora de uso em produção por falta de hospedagem grátis viável;

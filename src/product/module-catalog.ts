@@ -101,9 +101,18 @@ export const PRODUCT_MODULES = [
     entryView: "notes",
   },
   {
+    id: "handwriting",
+    name: "Escrita à mão",
+    purpose:
+      "Desenhar e selecionar traços, com assistente de fórmulas e OCR local opcional da seleção.",
+    status: "available",
+    entryView: "notes",
+  },
+  {
     id: "ocr",
-    name: "Reconhecimento de texto",
-    purpose: "Extrair texto de digitalizações com revisão humana antes de salvar.",
+    name: "Reconhecimento de texto em digitalizações",
+    purpose:
+      "Extrair texto de páginas digitalizadas com revisão humana antes de salvar. Hoje só existe o OCR local da seleção de traços.",
     status: "planned",
   },
   {
@@ -130,6 +139,14 @@ export const PRODUCT_MODULES = [
     purpose: "Transformar revisão e metas em atividades leves e opcionais.",
     status: "available",
     entryView: "learn",
+  },
+  {
+    id: "room",
+    name: "Modo Sala",
+    purpose:
+      "Atividades ao vivo em sala, com código: escuta coletiva e bingo, em vários dispositivos.",
+    status: "available",
+    entryView: "room",
   },
 ] as const satisfies readonly ProductModule[];
 
