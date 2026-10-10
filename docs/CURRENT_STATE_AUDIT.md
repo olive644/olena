@@ -2218,3 +2218,10 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `src/product/module-catalog.ts`: entram `handwriting` e `room` como disponíveis. O módulo `ocr` segue planejado, agora descrito como OCR de digitalizações, porque o OCR local existe somente na seleção de traços da escrita à mão. Teste novo no catálogo.
 - `.env.example` removido do repositório, por decisão do dono. Saem também a exceção no `.gitignore`, a linha no `.prettierignore` e as duas referências (README e `services/tts/README.md`). O `.gitignore` continua ignorando `.env` e `.env.*`. Nenhum valor secreto estava no arquivo. A lista de variáveis passa a ficar nos guias de configuração e no painel da Vercel, e novos integrantes precisam receber as variáveis públicas `VITE_*` por canal próprio.
 - Pendente de decisão do dono, sem alteração aqui: canal de contato de segurança em `SECURITY.md` e na Política de Privacidade, e a presença de `docs/CONTRATO_SOCIETARIO.md` no repositório.
+
+## Desconectar o Google Agenda revoga a autorização (2026-10-10)
+
+- Auditoria de segurança, item 5. `action=disconnect` só apagava o cookie de sessão, então o token continuava válido na conta Google da pessoa até ela removê-lo por conta própria.
+- Agora o servidor lê o cookie antes de apagá-lo e chama `https://oauth2.googleapis.com/revoke` com o refresh token (`revokeToken` em `google-calendar-oauth.ts`), o que também invalida o access token. É melhor esforço: se o Google falhar, a pessoa sai do mesmo jeito e a resposta traz `revoked: false`. Sem sessão, nada é chamado.
+- A chamada acontece no servidor, então o `connect-src` do navegador e a política de privacidade não mudam.
+- Testes: três casos novos em `google-calendar-handler.test.ts`; o de revogação falha sem a mudança.
