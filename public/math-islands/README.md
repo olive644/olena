@@ -6,7 +6,10 @@ places/ contém seis artes independentes, geradas com imagegen integrado e a ilh
 original public/practice-islands/mathematics.webp como referência de arquitetura e
 estilo. São lugares da mesma ilha, não recortes de um panorama ou novas ilhas
 completas. Cada desenho preserva seu contorno inteiro e o exterior transparente.
-WebPs 800px e variantes -small de 480px, qualidade 86, sem alterar os PNGs originais.
+WebPs 800px e variantes -small de 480px, qualidade 72, sem alterar os PNGs originais.
+As 12 variantes somam 560.032 bytes, 34% menos que a versão anterior. A cena atual
+usa prioridade alta e os previews prioridade baixa, com sizes correspondentes ao
+tamanho renderizado, assim como as ilhas de disciplinas.
 
 Prompt comum: reconstruir um lugar da ilha azul de Matemática em papel facetado,
 com rochas cobalto, plataformas de pedra creme, instrumentos dourados e pequenas

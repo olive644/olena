@@ -9,6 +9,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   localStorage.removeItem("helena.mathLearning.v1");
   localStorage.removeItem("helena.room-xp.v1");
+  localStorage.removeItem("helena.mathPlaceRewards.v1");
   vi.stubGlobal(
     "fetch",
     vi.fn(async (_url: string, init: RequestInit) =>
@@ -39,6 +40,34 @@ async function begin() {
   await tick(1000);
   await tick(1000);
 }
+it("starts the reservation full only after all three countdown beats", async () => {
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  render(<MathArcade onBack={() => {}} />);
+  await click("Vamos calcular!");
+  await tick(1000);
+  await tick(1000);
+  expect(screen.queryByRole("progressbar")).toBeNull();
+  await tick(1000);
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("60");
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuemax")).toBe("60");
+  expect((document.querySelector(".math-reserve > span") as HTMLElement).style.width).toBe("100%");
+  await tick(1000);
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("59");
+});
+it("does not show or record XP for a zero-point round", async () => {
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  for (let index = 0; index < 3; index++) {
+    const wrong = screen
+      .getAllByRole("button", { name: /^Resposta/ })
+      .find((item) => item.getAttribute("aria-label") !== "Resposta " + correctAnswer())!;
+    await click(wrong.getAttribute("aria-label")!);
+    await tick(1300);
+  }
+  await tick(2000);
+  expect(screen.queryByText(/XP pela prática/)).toBeNull();
+  expect(localStorage.getItem("helena.room-xp.v1")).toBeNull();
+});
 function correctAnswer() {
   const expression = screen.getByRole("heading").getAttribute("aria-label")!;
   const values = expression.match(/\d+/g)!.map(Number);

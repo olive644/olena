@@ -1,0 +1,132 @@
+.math-place-treasure {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+.math-place-total {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 32px;
+  filter: drop-shadow(0 3px 0 #b19a72);
+}
+.math-place-total > svg {
+  width: 32px;
+  height: 32px;
+}
+.math-chest-dock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: math-chest-delivery 850ms both;
+}
+.math-common-chest {
+  width: 90px;
+  overflow: visible;
+}
+.math-chest-dock > div {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.math-chest-dock button {
+  padding: 6px 12px;
+  min-height: 36px;
+  font-size: 12px;
+}
+.math-chest-dock progress {
+  width: 100%;
+  accent-color: #f5c94e;
+}
+.math-chest-lid {
+  transform-origin: 20px 43px;
+  transition: transform 650ms;
+}
+.math-common-chest.is-open .math-chest-lid {
+  transform: rotate(-35deg) translateY(-7px);
+}
+.math-chest-glow {
+  animation: math-chest-shine 800ms both;
+}
+.is-unlocking .math-common-chest {
+  animation: math-chest-wait 2s ease-in-out infinite;
+}
+.math-earned-chest {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  font-size: 14px;
+  color: #fff1b7;
+  animation: math-chest-delivery 850ms both;
+}
+.math-earned-chest .math-common-chest {
+  width: 110px;
+}
+@keyframes math-chest-delivery {
+  from {
+    opacity: 0;
+    transform: translateY(65px) scale(0.5) rotate(-15deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes math-chest-wait {
+  50% {
+    transform: translateY(-4px) rotate(3deg);
+  }
+}
+@keyframes math-chest-shine {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-height: 650px) {
+  .math-place-treasure {
+    top: 15%;
+  }
+  .math-chest-dock {
+    position: absolute;
+    left: calc(100% + 15px);
+    top: 0;
+    width: 200px;
+  }
+}
+@media (max-width: 600px) {
+  .math-place-total {
+    font-size: 24px;
+  }
+  .math-place-treasure {
+    top: 15%;
+  }
+  .math-common-chest {
+    width: 65px;
+  }
+  .math-chest-dock {
+    gap: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .math-common-chest,
+  .math-chest-dock,
+  .math-chest-glow,
+  .math-earned-chest {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+html[data-reduce-motion="true"]
+  :is(.math-common-chest, .math-chest-dock, .math-chest-glow, .math-earned-chest, .math-chest-lid) {
+  animation: none !important;
+  transition: none !important;
+}

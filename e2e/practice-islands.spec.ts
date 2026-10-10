@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 test("mathematics islands use the real adaptive API and resume mastery", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(60_000);
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem("helena.soloProgress", "4");
@@ -38,9 +39,9 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await page.mouse.move(x - 140, y, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByRole("heading", { name: "Oficina das Equações" })).toBeVisible();
-  await page.mouse.move(x - 140, y);
+  await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move(x, y, { steps: 8 });
+  await page.mouse.move(x + 100, y, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeVisible();
   await expect(page.locator(".math-journey-avatar")).toHaveCSS("opacity", "1");
@@ -63,12 +64,21 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await page.screenshot({ path: testInfo.outputPath("math-islands.png") });
   await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
+  await expect(page.locator(".math-countdown")).toBeVisible();
+  await expect(page.locator(".math-reserve")).toHaveCount(0);
   await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
-  for (let index = 0; index < 4; index++) {
+  expect(Number(await page.locator(".math-reserve").getAttribute("aria-valuenow"))).toBeGreaterThan(
+    58,
+  );
+  for (let index = 0; index < 5; index++) {
     const question = page.locator(".math-game-question h1");
     const text = await question.getAttribute("aria-label");
     const nums = text!.match(/\d+/g)!.map(Number);
-    const answer = text!.includes("−") ? nums[0]! - nums[1]! : nums[0]! + nums[1]!;
+    const answer = text!.includes("−")
+      ? nums[0]! - nums[1]!
+      : text!.includes("×")
+        ? nums[0]! * nums[1]!
+        : nums[0]! + nums[1]!;
     await page.getByRole("button", { name: "Resposta " + answer, exact: true }).click();
     await expect(page.locator(".math-answer-reaction")).toBeVisible();
     await expect(page.locator(".math-answer-reaction .practice-user-portrait")).toHaveCount(0);
@@ -99,12 +109,17 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   for (let index = 0; index < 3; index++) {
     const text = await page.locator(".math-game-question h1").getAttribute("aria-label");
     const nums = text!.match(/\d+/g)!.map(Number);
-    const value = text!.includes("−") ? nums[0]! - nums[1]! : nums[0]! * nums[1]!;
+    const value = text!.includes("−")
+      ? nums[0]! - nums[1]!
+      : text!.includes("+")
+        ? nums[0]! + nums[1]!
+        : nums[0]! * nums[1]!;
     const buttons = page.getByRole("button", { name: /^Resposta/ });
     const labels = await buttons.evaluateAll((items) =>
       items.map((item) => item.getAttribute("aria-label")),
     );
     await buttons.nth(labels.findIndex((label) => Number(label!.split(" ")[1]) !== value)).click();
+    await expect(page.locator(".math-answer-reaction")).toBeVisible();
     await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
   }
   await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();
@@ -116,6 +131,15 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
+  await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
+  await expect(page.getByRole("button", { name: "Destrancar baú" })).toBeVisible();
+  await page.getByRole("button", { name: "Destrancar baú" }).click();
+  await expect(page.getByRole("button", { name: "Abrir baú" })).toBeDisabled();
+  await page.clock.install();
+  await page.clock.fastForward(61_000);
+  await page.getByRole("button", { name: "Abrir baú" }).click();
+  await expect(page.getByText("Baú comum aberto!")).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("math-place-chest.png") });
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("helena.soloProgress"))).toBe("4");

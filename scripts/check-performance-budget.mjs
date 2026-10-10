@@ -205,7 +205,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // WebPs; the map loads only the current scene and its adjacent previews.
 // Total measured: 1159.9 KiB; entry unchanged at 275.7 KiB. No new dependency;
 // retain 2.3 KiB for build/platform variance without changing the initial ceiling.
-const MAX_TOTAL_JS_BYTES = 1162 * 1024;
+// Persistent per-place scores and the common chest lifecycle add 4.9 KiB to
+// the lazy practice route. Measured total 1164.8 KiB, entry still 275.7 KiB;
+// retain 2.2 KiB for platform variance, without new dependencies.
+const MAX_TOTAL_JS_BYTES = 1167 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

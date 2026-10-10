@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+Matemática agora guarda pontos por lugar e baús comuns locais em
+helena.mathPlaceRewards.v1. Uma partida com 100+ pontos concede um baú; destrancar
+aguarda 60 segundos por prazo persistido, então abrir anima a tampa. Não há itens
+internos definidos nem recompensa remota. MathPlaceTreasure reaproveita ícone e
+dígitos de pontos; SVG facetado próprio para o baú. XP zero não exibe aviso.
+Reserva inicial cheia após 3-2-1, imagens 34% menores e prioridade responsiva,
+setas de Praticar/Foco e arraste coexistem. Entrada: Explorar Matemática.
+
 Matemática: lugares horizontais de uma única ilha, em math-islands/places/. Cada
 cenário é reconstruído inteiro com elementos da arte original, sem cortes de um
 panorama. O clique na arte de disciplina ou de lugar também abre a etapa.

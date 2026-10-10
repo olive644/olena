@@ -12,9 +12,20 @@ export function createMathSound() {
   let context: AudioContext | undefined;
   let disposed = false;
   function unlock() {
-    if (disposed || typeof AudioContext === "undefined") return;
+    const Constructor =
+      globalThis.AudioContext ??
+      (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (disposed || !Constructor) return;
     try {
-      if (!context || context.state === "closed") context = new AudioContext();
+      if (!context || context.state === "closed") context = new Constructor();
+      // A source started inside the gesture also unlocks audio on mobile Safari.
+      if (context.createBuffer && context.createBufferSource) {
+        const source = context.createBufferSource();
+        source.buffer = context.createBuffer(1, 1, context.sampleRate);
+        source.connect(context.destination);
+        source.start();
+        source.onended = () => source.disconnect();
+      }
       void context.resume().catch(() => {});
     } catch {
       /* O jogo continua disponível sem saída de áudio. */
@@ -36,7 +47,7 @@ export function createMathSound() {
           tone.type = "triangle";
           tone.frequency.setValueAtTime(frequency, start);
           gain.gain.setValueAtTime(0.001, start);
-          gain.gain.exponentialRampToValueAtTime(0.18, start + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.28, start + 0.012);
           gain.gain.exponentialRampToValueAtTime(0.001, start + 0.24);
           tone.connect(gain);
           gain.connect(active.destination);
