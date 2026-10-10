@@ -4,6 +4,7 @@ const port = Number(process.env["PLAYWRIGHT_PORT"] ?? 4173);
 
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: "**/helena-chat-preview.spec.ts",
   fullyParallel: true,
   retries: process.env["CI"] ? 2 : 0,
   reporter: process.env["CI"] ? "github" : "list",

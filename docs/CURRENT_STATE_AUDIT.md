@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Preview da estrela de Helena (2026-10-10, ainda local)
+
+- Preview isolado em preview-helena-chat.html, sem integração ao app publicado.
+  Usa RoomPointsIcon e respostas demonstrativas, sem API, conta ou persistência.
+- Repouso com flutuação, inspeção inclinada pelo ponteiro, abertura e fechamento
+  animados. Arrasto por Pointer Events com captura, deformação suave, pequenas
+  estrelas e encaixe na borda mais próxima. Soltar não abre a conversa.
+- Posição limitada à viewport, com espaço para a navegação móvel. Painel acompanha
+  a posição no desktop e ocupa uma área própria no celular. Movimento reduzido
+  desativa animações; teclado, histórico e foco são preservados.
+- Provas focadas: helena-chat-preview.test.tsx e helena-chat-preview.spec.ts.
+
 ## Tempo por questão conforme a etapa de Matemática (2026-10-10)
 
 - Tempos iniciais: fundamental 14 s, ensino médio 16 s, pré-cálculo 18 s,
