@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Encaixe compacto dos lugares (2026-10-10)
+
+- Removida a área mínima de 920/820px e a rolagem introduzida na correção anterior.
+  Fundo e conteúdo voltam a ocupar uma única viewport, sem emenda ao rolar.
+- Ilha, slots e título têm posições calculadas a partir da mesma dimensão.
+  Reduzidos espaços vazios, margens do título e altura dos widgets, mantendo
+  barra em linha própria. A escala só ajusta quando a altura da tela exige.
+- e2e/math-journey-fit.spec.ts verifica ausência de scroll, sobreposição e corte
+  do botão em seis tamanhos desktop/mobile, nos temas claro e escuro.
+
 ## Correção de escala e integridade das cartas (2026-10-10)
 
 - Restaurado o tamanho anterior dos lugares de Matemática: min(440px, 64vw,

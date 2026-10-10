@@ -1,11 +1,10 @@
 .math-journey {
-  --math-scene-y: 42%;
-  --math-scene-size: min(440px, 64vw, 56dvh);
+  --math-scene-size: min(440px, 64vw, 56dvh, calc(100dvh - 356px));
+  --math-scene-y: calc(86px + var(--math-scene-size) * 0.5);
   position: fixed;
   inset: 0;
   z-index: 145;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--page, #fff9ef);
   color: var(--text, #292432);
   isolation: isolate;
@@ -21,7 +20,7 @@
 }
 .math-journey-content {
   position: relative;
-  height: max(100dvh, 920px);
+  height: 100%;
 }
 .math-world-back {
   color: #292432;
@@ -58,7 +57,7 @@
 .math-journey-stage {
   position: absolute;
   inset: 0;
-  touch-action: pan-y;
+  touch-action: none;
   cursor: grab;
 }
 .math-journey-stage:active {
@@ -171,7 +170,7 @@
 }
 .math-journey-label {
   position: absolute;
-  bottom: max(25px, 4dvh);
+  top: calc(86px + var(--math-scene-size) + 124px);
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -179,6 +178,8 @@
   z-index: 5;
 }
 .math-journey-label > span {
+  display: block;
+  line-height: 16px;
   color: color-mix(in srgb, var(--math-color), var(--text) 25%);
   font-weight: 800;
   font-size: 12px;
@@ -186,13 +187,15 @@
 }
 .math-journey-label h1 {
   color: var(--text, #292432);
-  font-size: clamp(20px, 3vw, 30px);
-  margin: 8px 0;
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.2;
+  margin: 4px 0;
 }
 .math-journey-label p {
   color: var(--muted, #665a70);
-  margin: 6px 0 16px;
+  margin: 4px 0 8px;
   font-size: 13px;
+  line-height: 18px;
 }
 .math-journey-label .math-start-button {
   display: inline-flex;
@@ -299,14 +302,10 @@
 }
 @media (max-width: 600px) {
   .math-journey {
-    --math-scene-y: 43%;
-    --math-scene-size: min(75vw, 48dvh);
-  }
-  .math-journey-content {
-    height: max(100dvh, 820px);
+    --math-scene-size: min(75vw, 48dvh, calc(100dvh - 324px));
   }
   .math-journey-label {
-    bottom: 3dvh;
+    top: calc(86px + var(--math-scene-size) + 116px);
   }
   .math-journey-up,
   .math-journey-down {

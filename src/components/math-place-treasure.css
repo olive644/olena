@@ -7,7 +7,7 @@
 }
 .math-place-total {
   position: absolute;
-  top: 12%;
+  top: 62px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -39,14 +39,14 @@
 .math-chest-empty {
   position: relative;
   width: 100px;
-  height: 120px;
+  height: 108px;
   border: 1px solid #d5c8b0;
   border-radius: 5px 13px 6px 11px;
   background:
     linear-gradient(135deg, #ede4d2 0 12px, transparent 12px),
     linear-gradient(315deg, #ede4d2 0 10px, transparent 10px), #fff9ef;
   box-shadow: 0 4px #d5c8b0;
-  padding: 6px 8px 12px;
+  padding: 4px 8px 6px;
   color: #292432;
 }
 .math-chest-slot {
@@ -54,7 +54,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 5px;
+  gap: 3px;
   cursor: pointer;
   animation: math-chest-delivery 0.85s both;
   transition: transform 0.2s;
@@ -73,7 +73,7 @@
 }
 .math-chest-slot .math-common-chest {
   width: 76px;
-  height: 70px;
+  height: 64px;
   flex-shrink: 0;
 }
 .math-chest-empty {
@@ -244,7 +244,7 @@
 @media (max-width: 600px) {
   .math-place-total {
     font-size: 24px;
-    top: 15%;
+    top: 62px;
   }
   .math-chest-dock {
     grid-template-columns: repeat(3, 88px);
@@ -253,7 +253,7 @@
   .math-chest-slot,
   .math-chest-empty {
     width: 88px;
-    height: 110px;
+    height: 100px;
   }
   .math-chest-slot .math-common-chest {
     width: 66px;
@@ -263,7 +263,7 @@
 @media (max-height: 700px) {
   .math-chest-slot,
   .math-chest-empty {
-    height: 106px;
+    height: 100px;
   }
   .math-chest-slot .math-common-chest {
     height: 58px;

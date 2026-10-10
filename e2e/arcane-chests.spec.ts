@@ -35,8 +35,8 @@ test("arcane chest shares the minute, reveals by dragging and inspects foil taro
   const viewport = page.viewportSize()!;
   const originalSize =
     viewport.width <= 600
-      ? Math.min(viewport.width * 0.75, viewport.height * 0.48)
-      : Math.min(440, viewport.width * 0.64, viewport.height * 0.56);
+      ? Math.min(viewport.width * 0.75, viewport.height * 0.48, viewport.height - 324)
+      : Math.min(440, viewport.width * 0.64, viewport.height * 0.56, viewport.height - 356);
   expect(Math.abs(island.width - originalSize)).toBeLessThan(1);
   await page.clock.install();
   await page.getByRole("button", { name: "Destrancar baú arcano" }).click();

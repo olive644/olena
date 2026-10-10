@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, encaixe compacto: removida a altura mínima rolável de math-journey-content.
+Uma viewport fixa; posições da ilha, baús e legenda derivam de math-scene-size.
+Margens e slots menores reservam a ação sem scroll. Prova: math-journey-fit.spec.ts.
+
 2026-10-10, correção: MathIslandJourney preserva a escala original dos lugares,
 com math-journey-content rolável em telas baixas. OliverCard usa draggable=false
 nas artes e bloqueia dragstart; CSS impede seleção e callout apenas nas cartas.
