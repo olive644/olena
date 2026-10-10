@@ -1,5 +1,14 @@
 # OlenaStudy: Second Brain
 
+Refinamento da Matemática: usar a foto do usuário, sem corpo ou Oliver. Ilhas
+centrais clicáveis e troca por arraste, roda ou teclado, sem botões de setas.
+Tempo esgotado custa coração e quatro segundos extras, com mensagem própria.
+Reutilizar RoomRewardNotice para XP de prática local, uma unidade por cinco
+pontos, recibo único da partida e aviso depois da contagem. Não chamar de XP
+competitivo de servidor. math-sound mantém áudio exclusivo até sair, sem TTL.
+O aviso de XP usa o X recortado do handwriting, não o caractere ×. Ícones estáticos
+da Matemática são SVGs cacheáveis em public/math-islands, com o mesmo desenho.
+
 2026-10-09, atualização: Matemática agora abre MathIslandJourney, carrossel vertical
 de seis cursos com artes próprias, e depois MathArcade. Olena gera e avalia desafios
 por POST action=math, sem IA externa. Acertos e rapidez promovem assuntos; retry

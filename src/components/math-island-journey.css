@@ -58,6 +58,9 @@
   cursor: grabbing;
 }
 .math-journey-island {
+  padding: 0;
+  border: 0;
+  background: transparent;
   position: absolute;
   left: 50%;
   top: 42%;
@@ -71,6 +74,8 @@
   pointer-events: none;
 }
 .math-journey-island.is-current {
+  pointer-events: auto;
+  cursor: pointer;
   transform: translate(-50%, -50%) scale(1);
   opacity: 1;
   z-index: 2;
@@ -82,11 +87,28 @@
   filter: drop-shadow(0 16px 9px #29243218);
 }
 .math-journey-avatar {
+  --avatar-from: 100px;
+  animation: math-avatar-travel 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+  pointer-events: none;
+  z-index: 4;
   position: absolute;
-  left: 48%;
-  top: 25%;
-  width: 16%;
+  left: 50%;
+  top: calc(42% - min(440px, 64vw, 56dvh) * 0.25);
+  width: min(70px, 12vw);
   transform: translate(-50%, -50%);
+}
+.math-journey-avatar.is-moving-down {
+  --avatar-from: -100px;
+}
+@keyframes math-avatar-travel {
+  from {
+    opacity: 0.4;
+    transform: translate(-50%, calc(-50% + var(--avatar-from))) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 .math-journey-avatar .practice-user-portrait {
   width: 100%;
@@ -171,8 +193,14 @@
   opacity: 0;
 }
 .math-journey.is-enter .math-journey-avatar {
-  transform: translate(-50%, 180%) scale(0.8);
-  transition: transform 0.85s;
+  animation: none;
+  top: 55%;
+  transform: translate(-50%, -50%) scale(3);
+  opacity: 0;
+  transition:
+    transform 0.85s,
+    top 0.85s,
+    opacity 0.85s;
 }
 .math-journey.is-enter .math-journey-label,
 .math-journey.is-enter .is-preview {
@@ -207,6 +235,9 @@
   }
 }
 @media (max-width: 600px) {
+  .math-journey-avatar {
+    top: calc(43% - min(75vw, 48dvh) * 0.25);
+  }
   .math-journey-island {
     top: 43%;
     width: min(75vw, 48dvh);

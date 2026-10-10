@@ -3,10 +3,12 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MathArcade } from "./math-arcade";
 import { handleOlena } from "../backend/olena-handler";
 import { mathLearning } from "../data/math-learning";
+import { updateAccessibility } from "../data/accessibility-preferences";
 
 beforeEach(() => {
   vi.useFakeTimers();
   localStorage.removeItem("helena.mathLearning.v1");
+  localStorage.removeItem("helena.room-xp.v1");
   vi.stubGlobal(
     "fetch",
     vi.fn(async (_url: string, init: RequestInit) =>
@@ -19,6 +21,7 @@ afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  updateAccessibility({ reduceMotion: false });
 });
 async function click(name: string) {
   await act(async () => {
@@ -47,6 +50,7 @@ function correctAnswer() {
 }
 
 it("uses the API, advances topics, scores once and retains mastery on retry", async () => {
+  updateAccessibility({ reduceMotion: true });
   render(<MathArcade onBack={() => {}} />);
   await begin();
   for (let index = 0; index < 4; index++) {
@@ -64,6 +68,13 @@ it("uses the API, advances topics, scores once and retains mastery on retry", as
     await tick(1300);
   }
   expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
+  await tick(32);
+  await tick(1);
+  expect(screen.getByText(/XP pela prática de Matemática/)).toBeTruthy();
+  const savedXp = JSON.parse(localStorage.getItem("helena.room-xp.v1")!).total;
+  expect(savedXp).toBeGreaterThan(0);
+  await tick(1);
+  expect(JSON.parse(localStorage.getItem("helena.room-xp.v1")!).total).toBe(savedXp);
   await click("Tentar de novo");
   await tick(1000);
   await tick(1000);
@@ -97,4 +108,23 @@ it("shows a recoverable API error instead of inventing questions", async () => {
   await click("Vamos calcular!");
   expect(screen.getByRole("alert").textContent).toContain("offline");
   expect(screen.queryAllByRole("button", { name: /^Resposta/ })).toHaveLength(0);
+});
+it("treats an unanswered deadline separately, deducts four extra seconds and does not mark a fake choice", async () => {
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ photoUrl: "/my-photo.png" }));
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  await tick(14100);
+  await tick(1);
+  expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
+  expect(Number(screen.getByRole("progressbar").getAttribute("aria-valuenow"))).toBeLessThanOrEqual(
+    42,
+  );
+  expect(document.querySelector('.math-answer-button[data-feedback="wrong"]')).toBeNull();
+  expect(document.querySelector(".math-user-avatar img")?.getAttribute("src")).toBe(
+    "/my-photo.png",
+  );
+  expect(document.querySelector(".math-user-avatar svg")).toBeNull();
+  localStorage.removeItem("helena.profile.v1");
 });

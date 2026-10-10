@@ -7,10 +7,9 @@ afterEach(() => {
 });
 it("navigates all six distinct themes vertically and clamps both ends", () => {
   render(<MathIslandJourney onBack={() => {}} />);
-  expect(screen.getByRole("button", { name: "Ilha anterior de Matemática" })).toHaveProperty(
-    "disabled",
-    true,
-  );
+  expect(screen.queryByRole("button", { name: "Ilha anterior de Matemática" })).toBeNull();
+  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowDown" });
+  expect(screen.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeTruthy();
   const titles = [
     "Cidade das Equações",
     "Observatório das Funções",
@@ -19,20 +18,19 @@ it("navigates all six distinct themes vertically and clamps both ends", () => {
     "Santuário dos Vetores",
   ];
   for (const title of titles) {
-    fireEvent.click(screen.getByRole("button", { name: "Próxima ilha de Matemática" }));
+    fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowUp" });
     expect(screen.getByRole("heading", { name: title })).toBeTruthy();
   }
-  expect(screen.getByRole("button", { name: "Próxima ilha de Matemática" })).toHaveProperty(
-    "disabled",
-    true,
-  );
+  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowUp" });
+  expect(screen.getByRole("heading", { name: "Santuário dos Vetores" })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Próxima ilha de Matemática" })).toBeNull();
   fireEvent.keyDown(screen.getByRole("button", { name: "Explorar ilha" }), { key: "ArrowDown" });
   expect(screen.getByRole("heading", { name: "Porto das Integrais" })).toBeTruthy();
 });
 it("animates entering the island and restores it on game exit", () => {
   vi.useFakeTimers();
   render(<MathIslandJourney onBack={() => {}} />);
-  fireEvent.click(screen.getByRole("button", { name: "Explorar ilha" }));
+  fireEvent.click(screen.getByRole("button", { name: "Entrar em Vila das Primeiras Contas" }));
   expect(document.querySelector(".math-journey.is-enter")).toBeTruthy();
   act(() => vi.advanceTimersByTime(850));
   expect(screen.getByRole("button", { name: "Vamos calcular!" })).toBeTruthy();

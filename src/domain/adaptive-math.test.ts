@@ -2,6 +2,15 @@ import { expect, it } from "vitest";
 import { mathChallenge, assessMath } from "./adaptive-math";
 import { MATH_COURSES, EMPTY_MATH_PROGRESS } from "../data/math-courses";
 import { handleOlena } from "../backend/olena-handler";
+it("a correct result submitted after the deadline loses the turn rather than scoring", () => {
+  const question = mathChallenge("foundations", EMPTY_MATH_PROGRESS, 99);
+  const result = assessMath(EMPTY_MATH_PROGRESS, question, question.answer, 14, 4);
+  expect(result.correct).toBe(false);
+  expect(result.timedOut).toBe(true);
+  expect(result.message).toBe("Putz! Perdeu a vez!");
+  expect(result.points).toBe(0);
+  expect(result.streak).toBe(0);
+});
 it("produces distinct finite choices and longer but faster-draining higher topics", () => {
   for (const course of MATH_COURSES)
     for (let level = 0; level < 6; level++)

@@ -207,9 +207,11 @@ export function assessMath(
   choice: number,
   elapsed: number,
   streak: number,
+  timedOut = false,
 ) {
-  const correct = choice === question.answer;
-  const fast = elapsed <= (question.budget / question.drain) * 0.32;
+  const expired = timedOut || elapsed >= question.budget / question.drain;
+  const correct = !expired && choice === question.answer;
+  const fast = !expired && elapsed <= (question.budget / question.drain) * 0.32;
   const nextStreak = correct ? streak + 1 : 0;
   const points = correct
     ? 10 + progress.level * 4 + (fast ? 6 : 0) + Math.min(5, nextStreak) * 2
@@ -218,16 +220,19 @@ export function assessMath(
   const advance = mastery >= 4 && progress.level < 5;
   return {
     correct,
+    timedOut: expired,
     fast,
     points,
     streak: nextStreak,
-    message: correct
-      ? fast
-        ? "MUITO RÁPIDO!"
-        : elapsed < question.budget * 0.7
-          ? "WOW! BOA!"
-          : "BOA, NO SEU RITMO!"
-      : "Poxa! Quem sabe na próxima!",
+    message: expired
+      ? "Putz! Perdeu a vez!"
+      : correct
+        ? fast
+          ? "MUITO RÁPIDO!"
+          : elapsed < question.budget * 0.7
+            ? "WOW! BOA!"
+            : "BOA, NO SEU RITMO!"
+        : "Poxa! Quem sabe na próxima!",
     progress: {
       ...progress,
       level: progress.level + Number(advance),

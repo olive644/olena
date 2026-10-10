@@ -7,7 +7,7 @@ import { isMotionReduced } from "../data/accessibility-preferences";
 import { PracticeUserPortrait } from "./practice-user-portrait";
 import { PaperArrow } from "./paper-arrow";
 import { MathArcade } from "./math-arcade";
-import { MathActionIcon } from "./math-paper-art";
+import { MathIcon } from "./math-paper-art";
 import "./math-island-journey.css";
 
 export function MathIslandJourney({ onBack }: { onBack: () => void }) {
@@ -15,6 +15,8 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<"map" | "enter" | "game" | "return" | "exit">("map");
   const [profile] = useStoredProfile();
   const gesture = useRef<number | null>(null);
+  const dragged = useRef(false);
+  const [travel, setTravel] = useState({ direction: "up", key: 0 });
   const lastWheel = useRef(0);
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -29,7 +31,14 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
   }, []);
   const course = MATH_COURSES[index]!;
   function visit(next: number) {
-    if (phase === "map") setIndex(Math.max(0, Math.min(MATH_COURSES.length - 1, next)));
+    const destination = Math.max(0, Math.min(MATH_COURSES.length - 1, next));
+    if (phase === "map" && destination !== index) {
+      setTravel((value) => ({
+        direction: destination > index ? "up" : "down",
+        key: value.key + 1,
+      }));
+      setIndex(destination);
+    }
   }
   useEffect(() => {
     if (phase !== "enter" && phase !== "return" && phase !== "exit") return;
@@ -90,13 +99,17 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
         className="math-journey-stage"
         onPointerDown={(event) => {
           if (event.isPrimary && event.button === 0) {
+            dragged.current = false;
             gesture.current = event.clientY;
-            event.currentTarget.setPointerCapture(event.pointerId);
+            const button = event.target instanceof Element ? event.target.closest("button") : null;
+            (button ?? event.currentTarget).setPointerCapture(event.pointerId);
           }
         }}
         onPointerUp={(event) => {
-          if (gesture.current !== null && Math.abs(event.clientY - gesture.current) > 55)
+          if (gesture.current !== null && Math.abs(event.clientY - gesture.current) > 55) {
+            dragged.current = true;
             visit(index + (event.clientY < gesture.current ? 1 : -1));
+          }
           gesture.current = null;
         }}
         onPointerCancel={() => {
@@ -104,8 +117,14 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
         }}
       >
         {MATH_COURSES.map((item, position) => (
-          <div
+          <button
             key={item.id}
+            type="button"
+            aria-label={"Entrar em " + item.title}
+            disabled={position !== index || phase !== "map"}
+            onClick={(event) => {
+              if (!dragged.current || event.detail === 0) setPhase("enter");
+            }}
             className={`math-journey-island ${position === index ? "is-current" : "is-preview"}`}
             aria-hidden={position !== index}
             style={{ "--island-y": position - index } as CSSProperties}
@@ -122,32 +141,12 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
                 decoding="async"
               />
             )}
-            {position === index && (
-              <div className="math-journey-avatar">
-                <PracticeUserPortrait profile={profile} />
-              </div>
-            )}
-          </div>
+          </button>
         ))}
+        <div key={travel.key} className={`math-journey-avatar is-moving-${travel.direction}`}>
+          <PracticeUserPortrait profile={profile} />
+        </div>
       </div>
-      <button
-        className="focus-mode-arrow math-journey-up"
-        type="button"
-        aria-label="Próxima ilha de Matemática"
-        disabled={index === MATH_COURSES.length - 1 || phase !== "map"}
-        onClick={() => visit(index + 1)}
-      >
-        <PaperArrow />
-      </button>
-      <button
-        className="focus-mode-arrow math-journey-down"
-        type="button"
-        aria-label="Ilha anterior de Matemática"
-        disabled={index === 0 || phase !== "map"}
-        onClick={() => visit(index - 1)}
-      >
-        <PaperArrow />
-      </button>
       <div className="math-journey-label" aria-live="polite">
         <span>{course.subject}</span>
         <h1>{course.title}</h1>
@@ -158,7 +157,7 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
           disabled={phase !== "map"}
           onClick={() => setPhase("enter")}
         >
-          <MathActionIcon /> Explorar ilha
+          <MathIcon name="explore" /> Explorar ilha
         </button>
       </div>
     </section>,

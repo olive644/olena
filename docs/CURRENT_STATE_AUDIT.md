@@ -2,11 +2,16 @@
 
 ## Matemática adaptativa com Olena (2026-10-09)
 
+- Refinamento: avatar do usuário sem corpo desenhado, navegação por arraste, roda e teclado sem setas visíveis. Clique na ilha central também entra. Avatar anima o deslocamento nos dois sentidos. Botões reutilizam cores, cortes e profundidade do papel aprovado, sem faixas decorativas cruzadas.
+- Tempo esgotado é avaliado como perda de vez, inclusive resposta correta atrasada: sem pontos, combo zerado, um coração e quatro segundos extras da reserva. Não destaca uma resposta que o usuário não escolheu.
+- XP de prática usa o mesmo recibo e notificação de Bingo/Escuta, com uma unidade por cinco pontos, arredondada para cima. Crédito uma vez por partida no histórico local já existente, preservado se o usuário reiniciar antes; aviso após a contagem enquanto o resultado permanece aberto. Não é recompensa competitiva validada em conta remota.
+- Áudio exclusivo da partida, desbloqueado no clique, sem expiração de três minutos do contexto compartilhado. Sons de início, contagem, acerto, erro, tempo, resultado e XP. Fecha ao sair. Teste de navegador verifica contexto em execução e criação dos tons; não mede volume físico ou configurações do dispositivo.
+
 - MathIslandJourney substitui a entrada direta no protótipo: seis ilhas verticais próprias, de fundamentos a Cálculo III, previews, teclado, roda e arraste. As outras disciplinas permanecem bloqueadas.
 - POST /api/olena?action=math&version=1 gera desafios numéricos e avalia acertos, rapidez, sequência e domínio por assunto. Conteúdo calculado e validado no servidor, sem LLM, voz ou provedor externo. Seis assuntos iniciais por curso, não uma ementa escolar completa.
 - Questões mais complexas têm orçamento maior e drenagem mais rápida. Acertos reabastecem a reserva. Timer pausa durante feedback, chamadas, erro de rede e aba oculta. Erros de API são visíveis e recuperáveis, sem perguntas inventadas no cliente.
-- Progresso versionado em helena.mathLearning.v1, integrado à sincronização já existente. Nova tentativa preserva domínio e melhor pontuação, sem alterar soloProgress. Não concede XP competitivo: progresso informado pelo cliente é pedagógico, não autoridade para prêmios.
-- PaperDigits, ícone de pontos das salas, contagem 3-2-1, Oliver, corações partidos, combo, sons e reações próximas à resposta. Saída, entrada e resultado animados, respeitando redução de movimento.
+- Progresso versionado em helena.mathLearning.v1, integrado à sincronização já existente. Nova tentativa preserva domínio e melhor pontuação, sem alterar soloProgress. XP de prática é local; progresso informado pelo cliente não é autoridade para prêmios competitivos.
+- PaperDigits, ícone de pontos das salas, contagem 3-2-1, avatar do usuário, corações partidos, combo, sons e reações próximas à resposta. Saída, entrada e resultado animados, respeitando redução de movimento.
 - Seis artes originais de ilha geradas com referência à ilha aprovada e otimizadas em WebP transparente: 480px para celular e 800px para desktop. Cenário decorativo recortado ao viewport para não produzir rolagem extra.
 - API local de desenvolvimento e preview usa o mesmo handleOlena da função Vercel. Nenhuma biblioteca adicional necessária.
 

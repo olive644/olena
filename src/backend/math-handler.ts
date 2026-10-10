@@ -62,7 +62,9 @@ export async function mathResponse(request: Request): Promise<{ status: number; 
     input["elapsed"] > 120 ||
     !Number.isSafeInteger(input["streak"]) ||
     Number(input["streak"]) < 0 ||
-    Number(input["streak"]) > 100000
+    Number(input["streak"]) > 100000 ||
+    (input["timedOut"] !== undefined && typeof input["timedOut"] !== "boolean") ||
+    (input["timedOut"] === true && input["elapsed"] < expected.budget / expected.drain - 0.1)
   )
     return { status: 400, body: { error: "Resposta inválida." } };
   const result = assessMath(
@@ -71,6 +73,7 @@ export async function mathResponse(request: Request): Promise<{ status: number; 
     input["choice"],
     input["elapsed"],
     Number(input["streak"]),
+    input["timedOut"] === true,
   );
   return { status: 200, body: { ...result, question: mathChallenge(course, result.progress) } };
 }

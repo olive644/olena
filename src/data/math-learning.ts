@@ -44,6 +44,7 @@ export async function requestMath(
     choice?: number;
     elapsed?: number;
     streak?: number;
+    timedOut?: boolean;
   },
   signal: AbortSignal,
 ): Promise<MathApiResult> {
@@ -73,6 +74,7 @@ export async function requestMath(
     !Number.isSafeInteger(data.question.seed) ||
     (input.action === "answer" &&
       (typeof data.correct !== "boolean" ||
+        typeof data.timedOut !== "boolean" ||
         typeof data.fast !== "boolean" ||
         !Number.isFinite(data.points) ||
         data.points < 0 ||

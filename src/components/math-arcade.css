@@ -97,46 +97,45 @@
   filter: drop-shadow(0 25px 15px #0003);
   animation: math-float 4s ease-in-out infinite;
 }
-.oliver-math-guide {
+.math-user-avatar {
   position: relative;
   width: 150px;
-  height: 165px;
+  height: 150px;
   display: inline-block;
   filter: drop-shadow(0 8px 0 #0002);
 }
-.oliver-math-guide > svg {
+.math-user-avatar .practice-user-portrait {
+  display: block;
   width: 100%;
   height: 100%;
-}
-.oliver-math-guide > img {
   border-radius: 50%;
-  position: absolute;
-  width: 65%;
-  height: 65%;
-  object-fit: contain;
-  top: 0;
-  left: 17%;
+  border: 4px solid #fff4cc;
+  box-shadow:
+    0 5px #ad853f,
+    0 0 0 3px #facc15;
+  overflow: hidden;
 }
-.math-course-emblem > .oliver-math-guide {
+.math-user-avatar .practice-user-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.math-course-emblem > .math-user-avatar {
   position: absolute;
   bottom: -10px;
   right: 0;
   transform: rotate(-8deg);
 }
-.oliver-math-guide.is-correct,
-.oliver-math-guide.is-finished {
+.math-user-avatar.is-correct,
+.math-user-avatar.is-finished {
   animation: math-cheer 0.6s both;
 }
-.oliver-math-guide.is-wrong {
+.math-user-avatar.is-wrong {
   animation: math-sigh 0.5s both;
 }
 .math-start-button {
   position: relative;
-  background: #7c3aed;
-  border: 1px solid #6d28d9;
-  box-shadow: 0 6px #51259b;
-  border-radius: 5px 17px 4px 5px;
-  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -144,15 +143,6 @@
   min-height: 64px;
   padding: 12px 25px;
   font-size: 18px;
-}
-.math-start-button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #ffffff18;
-  clip-path: polygon(0 0, 25% 0, 0 50%, 0 100%, 100% 0, 100% 25%, 75% 100%, 100% 100%);
-  pointer-events: none;
-  z-index: -1;
 }
 .math-action-icon {
   width: 43px;
@@ -226,7 +216,7 @@
   width: 35px;
   display: inline-block;
 }
-.math-hearts svg {
+.math-hearts img {
   width: 100%;
   display: block;
 }
@@ -238,13 +228,13 @@
   position: relative;
   aspect-ratio: 50/48;
 }
-.math-hearts .is-breaking svg {
+.math-hearts .is-breaking img {
   position: absolute;
   inset: 0;
   animation: math-heart-left 1.2s both;
   clip-path: polygon(0 0, 55% 0, 43% 40%, 60% 60%, 45% 100%, 0 100%);
 }
-.math-hearts .is-breaking svg + svg {
+.math-hearts .is-breaking img + img {
   animation: math-heart-right 1.2s both;
   clip-path: polygon(55% 0, 100% 0, 100% 100%, 45% 100%, 60% 60%, 43% 40%);
 }
@@ -286,7 +276,7 @@
   position: relative;
   padding: 20px 0 25px;
 }
-.math-game-question > .oliver-math-guide {
+.math-game-question > .math-user-avatar {
   position: absolute;
   right: -110px;
   bottom: 15px;
@@ -304,7 +294,7 @@
   text-shadow: 2px 4px #0005;
 }
 @media (max-width: 1050px) {
-  .math-game-question > .oliver-math-guide {
+  .math-game-question > .math-user-avatar {
     right: 0;
     top: 0;
     bottom: auto;
@@ -452,7 +442,7 @@
   animation: math-reaction 0.3s both;
   pointer-events: none;
 }
-.math-answer-reaction .oliver-math-guide {
+.math-answer-reaction .math-user-avatar {
   width: 58px;
   height: 64px;
   flex: none;
@@ -476,7 +466,7 @@
   color: #78383a;
   box-shadow: 0 5px #ba6e69;
 }
-.math-results > .oliver-math-guide {
+.math-results > .math-user-avatar {
   width: 190px;
   height: 205px;
 }
@@ -539,6 +529,33 @@
   margin-top: 20px;
   border-radius: 8px 20px 4px 8px;
   box-shadow: 0 5px #bf8767;
+}
+.math-arcade > .room-reward-notice {
+  top: max(16px, env(safe-area-inset-top));
+  bottom: auto;
+  z-index: 15;
+  color: var(--text);
+  background: var(--surface);
+  overflow: hidden;
+  animation: math-arrive 0.35s both;
+}
+.math-timeout-reaction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #ffe9a1;
+  animation: math-cheer 0.4s;
+}
+.math-timeout-reaction > span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 24px;
+}
+.math-timeout-reaction svg {
+  width: 18px;
+  height: 24px;
 }
 .math-storage-warning {
   text-align: center;
@@ -685,11 +702,11 @@
   .math-answer-reaction b {
     font-size: 10px;
   }
-  .math-answer-reaction .oliver-math-guide {
+  .math-answer-reaction .math-user-avatar {
     width: 42px;
     height: 47px;
   }
-  .math-course-emblem > .oliver-math-guide {
+  .math-course-emblem > .math-user-avatar {
     width: 120px;
     height: 132px;
   }
@@ -731,7 +748,7 @@
   .math-answer-button {
     height: 80px;
   }
-  .math-results > .oliver-math-guide {
+  .math-results > .math-user-avatar {
     width: 130px;
     height: 140px;
   }
@@ -751,4 +768,8 @@ html[data-reduce-motion="true"] .math-arcade,
 html[data-reduce-motion="true"] .math-arcade * {
   animation: none !important;
   transition: none !important;
+}
+.math-arcade .math-user-avatar {
+  height: auto;
+  aspect-ratio: 1;
 }

@@ -9,27 +9,18 @@ import {
 } from "../data/math-learning";
 import type { MathChallenge } from "../domain/adaptive-math";
 import { isMotionReduced } from "../data/accessibility-preferences";
-import {
-  prepareRoomFeedbackSound,
-  playRoomFeedbackSound,
-  playRoomCountdownSound,
-  playBingoClaimSound,
-} from "../data/room-feedback-sound";
+import { createMathSound } from "../data/math-sound";
+import type { RoomXpReward } from "../domain/local-room";
+import { RoomRewardNotice } from "./room-reward-notice";
 import { PaperArrow } from "./paper-arrow";
 import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-icons";
 import { PaperDigits } from "./paper-digits";
-import {
-  MathNumber,
-  MathExpression,
-  MathQuestionMark,
-  MathActionIcon,
-  MathHeart,
-  MathFlame,
-  OliverMathGuide,
-} from "./math-paper-art";
+import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
 import { HelenaLoading } from "./helena-loading";
 import "./math-arcade.css";
 import "./math-island-journey.css";
+import "../paper-buttons.css";
+import "./room-stage.css";
 
 type Round = {
   question: MathChallenge | null;
@@ -60,19 +51,23 @@ export function MathArcade({
   const [status, setStatus] = useState<"ready" | "countdown" | "playing" | "leaving">("ready");
   const [countdown, setCountdown] = useState(3);
   const [pending, setPending] = useState(false);
-  const [feedback, setFeedback] = useState<(MathApiResult & { choice: number }) | null>(null);
+  const [feedback, setFeedback] = useState<
+    (MathApiResult & { choice: number | null; timedOut: boolean }) | null
+  >(null);
   const [error, setError] = useState("");
   const [storageWarning, setStorageWarning] = useState(false);
   const [displayedScore, setDisplayedScore] = useState(0);
+  const [reward, setReward] = useState<RoomXpReward | undefined>();
+  const roundId = useRef("");
   const root = useRef<HTMLElement>(null);
   const controller = useRef<AbortController | null>(null);
   const answerLock = useRef(false);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const retryChoice = useRef<number | null>(null);
+  const retryChoice = useRef<{ choice: number; timedOut: boolean } | null>(null);
   const finished = status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0);
   const question = round.question;
   const clock = question ? Math.max(0, question.budget - round.elapsed * question.drain) : 0;
-  const audio = useRef<AudioContext | undefined>(undefined);
+  const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
 
   useEffect(() => {
     const previous = document.activeElement,
@@ -80,6 +75,8 @@ export function MathArcade({
     document.body.style.overflow = "hidden";
     return () => {
       controller.current?.abort();
+      audio.current?.dispose();
+      audio.current = null;
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
       document.body.style.overflow = overflow;
       if (previous instanceof HTMLElement) previous.focus();
@@ -94,7 +91,7 @@ export function MathArcade({
   }, [status, finished]);
   useEffect(() => {
     if (status !== "countdown" || pending) return;
-    playRoomCountdownSound(countdown, false);
+    audio.current?.play(countdown as 1 | 2 | 3);
     const timer = setTimeout(
       () => (countdown === 1 ? setStatus("playing") : setCountdown((value) => value - 1)),
       1000,
@@ -119,16 +116,30 @@ export function MathArcade({
   }, [status, pending, feedback, error, finished]);
   useEffect(() => {
     if (!finished) return;
-    playBingoClaimSound();
+    audio.current?.play("finish");
+    const rewardTimer = window.setTimeout(() => {
+      setReward({
+        id: roundId.current,
+        place: 1,
+        xp: Math.ceil(round.points / 5),
+        completedAt: Date.now(),
+      });
+    }, 0);
     let frame = 0;
     const start = performance.now();
     const animate = () => {
       const ratio = isMotionReduced() ? 1 : Math.min(1, (performance.now() - start) / 1200);
       setDisplayedScore(Math.round(round.points * (1 - (1 - ratio) ** 3)));
       if (ratio < 1) frame = requestAnimationFrame(animate);
+      else if (round.points > 0) {
+        audio.current?.play("xp");
+      }
     };
     frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      window.clearTimeout(rewardTimer);
+      cancelAnimationFrame(frame);
+    };
   }, [finished, round.points]);
 
   async function api(input: Parameters<typeof requestMath>[0]) {
@@ -139,7 +150,9 @@ export function MathArcade({
   }
   async function start() {
     if (answerLock.current || pending) return;
-    audio.current = prepareRoomFeedbackSound();
+    audio.current ??= createMathSound();
+    audio.current.unlock();
+    audio.current.play("start");
     setPending(true);
     setError("");
     retryChoice.current = null;
@@ -158,6 +171,8 @@ export function MathArcade({
         elapsed: 0,
       });
       setFeedback(null);
+      setReward(undefined);
+      roundId.current = "math:" + courseId + ":" + crypto.randomUUID();
       setCountdown(3);
       setStatus("countdown");
       setDisplayedScore(0);
@@ -168,12 +183,16 @@ export function MathArcade({
       setPending(false);
     }
   }
-  async function answer(choice: number) {
+  async function answer(choice: number, timedOut = false) {
     if (!question || status !== "playing" || finished || answerLock.current || feedback) return;
+    if (!timedOut) {
+      audio.current ??= createMathSound();
+      audio.current.unlock();
+    }
     answerLock.current = true;
     setPending(true);
     setError("");
-    retryChoice.current = choice;
+    retryChoice.current = { choice, timedOut };
     try {
       const result = await api({
         action: "answer",
@@ -183,21 +202,27 @@ export function MathArcade({
         choice,
         elapsed: Math.min(120, round.elapsed),
         streak: round.streak,
+        timedOut,
       });
       if (controller.current?.signal.aborted) return;
       const points = round.points + result.points;
       const progress = { ...result.progress, best: Math.max(result.progress.best, points) };
       setStorageWarning(!saveMathLearning(courseId, progress));
-      playRoomFeedbackSound(result.correct, audio.current);
+      const missed = result.timedOut;
+      audio.current?.play(missed ? "timeout" : result.correct ? "correct" : "wrong");
       setRound((value) => ({
         ...value,
         progress,
         points,
         streak: result.streak,
         lives: value.lives - Number(!result.correct),
-        bank: result.correct ? Math.min(90, value.bank + (result.fast ? 3 : 2)) : value.bank,
+        bank: missed
+          ? Math.max(0, value.bank - 4)
+          : result.correct
+            ? Math.min(90, value.bank + (result.fast ? 3 : 2))
+            : value.bank,
       }));
-      setFeedback({ ...result, choice });
+      setFeedback({ ...result, choice: missed ? null : choice });
       retryChoice.current = null;
       feedbackTimer.current = setTimeout(
         () => {
@@ -216,7 +241,11 @@ export function MathArcade({
     }
   }
   const expire = useEffectEvent(() => {
-    if (question) void answer(question.choices.find((choice) => choice !== question.answer)!);
+    if (question)
+      void answer(
+        question.choices.find((choice) => choice !== question.answer)!,
+        true,
+      );
   });
   useEffect(() => {
     if (clock > 0 || !question || status !== "playing" || finished || feedback || pending || error)
@@ -297,7 +326,7 @@ export function MathArcade({
             <h1 className="visually-hidden">{course.title}</h1>
             <div className="math-course-emblem">
               <img src={"/math-islands/" + courseId + ".webp"} alt={course.title} />
-              <OliverMathGuide />
+              <MathUserAvatar />
             </div>
             <button
               className="primary-button math-start-button"
@@ -305,12 +334,12 @@ export function MathArcade({
               disabled={pending}
               onClick={() => void start()}
             >
-              <MathActionIcon /> Vamos calcular!
+              <MathIcon name="start" /> Vamos calcular!
             </button>
           </div>
         ) : status === "countdown" ? (
           <div className="math-countdown" role="status" aria-live="assertive">
-            <OliverMathGuide />
+            <MathUserAvatar />
             <span key={countdown}>
               <PaperDigits value={String(countdown)} />
             </span>
@@ -322,7 +351,7 @@ export function MathArcade({
                 <i key={index} style={{ "--spark-index": index } as CSSProperties} />
               ))}
             </div>
-            <OliverMathGuide mood="finished" />
+            <MathUserAvatar mood="finished" />
             <h1 className="visually-hidden">{round.points + " pontos"}</h1>
             <div className="math-result-score" aria-hidden="true">
               <RoomPointsIcon />
@@ -338,7 +367,7 @@ export function MathArcade({
               disabled={pending}
               onClick={() => void start()}
             >
-              <MathActionIcon retry /> Tentar de novo
+              <MathIcon name="retry" /> Tentar de novo
             </button>
           </div>
         ) : question ? (
@@ -368,8 +397,10 @@ export function MathArcade({
                           : "is-empty"
                     }
                   >
-                    <MathHeart />
-                    {feedback && !feedback.correct && index === round.lives && <MathHeart />}
+                    <MathIcon name="heart" />
+                    {feedback && !feedback.correct && index === round.lives && (
+                      <MathIcon name="heart" />
+                    )}
                   </span>
                 ))}
               </div>
@@ -385,7 +416,7 @@ export function MathArcade({
               <span style={{ width: (round.bank / 90) * 100 + "%" }} />
             </div>
             <div className="math-game-question">
-              <OliverMathGuide />
+              <MathUserAvatar />
               <span className="math-topic">{question.topic}</span>
               <h1 aria-label={"Quanto é " + question.expression + "?"}>
                 <MathExpression value={question.expression} />
@@ -394,15 +425,24 @@ export function MathArcade({
                     <span aria-hidden="true" className="math-equals">
                       =
                     </span>
-                    <MathQuestionMark />
+                    <MathIcon name="question" />
                   </>
                 )}
               </h1>
               {round.streak > 3 && (
                 <div className="math-insane" role="status">
-                  <MathFlame />
+                  <MathIcon name="flame" />
                   <span>
                     VOCÊ ESTÁ INSANO! <b>{round.streak}×</b>
+                  </span>
+                </div>
+              )}
+              {feedback?.timedOut && (
+                <div className="math-timeout-reaction" role="status">
+                  <b>{feedback.message}</b>
+                  <span>
+                    −<MathNumber value={4} />
+                    <RoomSecondsUnit />
                   </span>
                 </div>
               )}
@@ -424,7 +464,10 @@ export function MathArcade({
                     aria-label={"Resposta " + choice}
                     aria-disabled={pending || !!feedback || !!error}
                     onClick={() => {
-                      if (!pending && !error) void answer(choice);
+                      if (!pending && !error) {
+                        audio.current?.unlock();
+                        void answer(choice);
+                      }
                     }}
                   >
                     <span className="math-answer-key" aria-hidden="true">
@@ -440,7 +483,7 @@ export function MathArcade({
                       }
                       role="status"
                     >
-                      <OliverMathGuide mood={feedback.correct ? "correct" : "wrong"} />
+                      <MathUserAvatar mood={feedback.correct ? "correct" : "wrong"} />
                       <div>
                         <b>{feedback.message}</b>
                         {feedback.correct ? (
@@ -473,7 +516,9 @@ export function MathArcade({
               className="secondary-button"
               type="button"
               onClick={() =>
-                retryChoice.current === null ? void start() : void answer(retryChoice.current)
+                retryChoice.current === null
+                  ? void start()
+                  : void answer(retryChoice.current.choice, retryChoice.current.timedOut)
               }
             >
               Tentar novamente
@@ -486,6 +531,13 @@ export function MathArcade({
           </p>
         )}
       </main>
+      {finished && (
+        <RoomRewardNotice
+          reward={reward}
+          activity="mathematics"
+          delayMs={isMotionReduced() ? 0 : 1200}
+        />
+      )}
     </section>,
     document.body,
   );
