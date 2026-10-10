@@ -29,7 +29,8 @@ mindmap
       Documentos
       Notas rápidas
       Digitalização local
-      OCR planejado
+      Escrita à mão com OCR local da seleção
+      OCR de digitalizações planejado
       Mapas conectados
     Aprendizagem
       Flashcards
@@ -37,6 +38,17 @@ mindmap
       Quizzes
       Bingo de revisão
       Cultura e repertório
+    Praticar
+      Ilhas temáticas de papel
+      Idiomas
+      Matemática adaptativa
+      Baús e cartas do Oliver
+      API da Olena
+    Modo Sala
+      Escuta coletiva
+      Bingo ao vivo
+      Moderação do anfitrião
+      Convidado com apelido
     Avaliação
       Vestibulares
       Banco de questões

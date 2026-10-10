@@ -47,8 +47,9 @@ chaves sincronizadas da conta anterior.
 
 Biblioteca, Praticar e o planejador de aulas são carregados sob demanda. As ferramentas de
 captura do Caderno também usam um chunk separado. O manifesto do Vite
-permite medir separadamente o JavaScript inicial e o total assíncrono: 220 KiB para a entrada e 300
-KiB para o conjunto.
+permite medir separadamente o JavaScript inicial e o total assíncrono. O orçamento atual está em
+`scripts/check-performance-budget.mjs`: 278 KiB para a entrada e 1190 KiB para o conjunto, com tetos
+absolutos de 400 KiB e 1500 KiB. Subir um orçamento exige justificativa registrada no próprio script.
 
 O gerador de planos continua independente da interface e da central de estudos. Uma futura IA
 poderá implementar outra estratégia sem substituir o fluxo determinístico existente.
@@ -59,16 +60,48 @@ ao ambiente do servidor. O handler usa `Request` e `Response` web para continuar
 runtime de hospedagem; os adaptadores de provedor, identificação e rate limit ainda precisam ser
 escolhidos antes da ativação.
 
+## Servidor e Modo Sala
+
+O aplicativo é uma SPA estática na Vercel, mais funções em `api/` (Node ESM):
+
+| Função                   | Papel                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| `api/local-room.ts`      | autoridade do Modo Sala: criar, entrar, iniciar, responder, remover, fechar, bingo |
+| `api/room-recording.ts`  | falas gravadas pelo professor para a Escuta Coletiva                               |
+| `api/speech.ts`          | voz natural do quiz (Cloudflare Workers AI), com cache e limites                   |
+| `api/notebook-collab.ts` | colaboração e leitura de cadernos compartilhados                                   |
+| `api/google-calendar.ts` | leitura do Google Agenda, com sessão cifrada                                       |
+| `api/olena.ts`           | Olena API v1: catálogo de Praticar e desafio de Matemática, sem IA                 |
+| `api/room-cleanup.ts`    | limpeza diária (cron) de salas e dados vencidos, protegida por `CRON_SECRET`       |
+
+Cada função é um handler web (`Request` e `Response`) em `src/backend`, independente do runtime da
+Vercel e testável sem rede.
+
+No Modo Sala, o servidor é a única autoridade. O estado completo, com o token do anfitrião e as
+respostas certas, fica em `/private-rooms/<código>` e ninguém o lê pelo navegador. A projeção
+pública, sem segredos, vai para `/rooms/<código>` no Firebase Realtime Database, e cada navegador a
+recebe por Server-Sent Events (`EventSource`) em `src/hooks/use-local-room.ts`, sem o SDK do
+Firebase. O armazenamento passa pela abstração `KvStore` (`src/backend/kv-store.ts`), com
+concorrência otimista por versão (ETag): conflitos são repetidos, nunca sobrescritos. Cada
+requisição passa por `room-guard` (validação, limite de pedidos por origem e verificação do App
+Check, quando ativado). A sala tem prazo absoluto de 4 horas e, depois de encerrada, deixa de ser
+pública em 30 minutos. As regras do Firebase estão em `firebase-room.rules.json`, e a configuração
+completa em [`ROOM_SETUP.md`](ROOM_SETUP.md).
+
 ## Limites
 
 - `src/domain`: regras, modelos do workspace e gerador de plano de aula;
 - `src/ai`: contrato compartilhado e limites da futura integração;
-- `src/backend`: fronteira HTTP portável, sem provedor ou segredo configurado;
+- `src/backend`: handlers HTTP portáveis usados por `api/` (sala, voz, agenda, cadernos, Olena, IA);
+- `api`: funções da Vercel, finas, que apenas montam as dependências dos handlers;
+- `services/tts`: serviço de voz próprio (Kokoro e Piper), mantido fora de uso em produção;
+- `firebase-room.rules.json`: regras do Realtime Database publicadas no console do Firebase;
 - `src/data`: persistência e validação da fronteira local;
 - `src/hooks`: ligação entre React e o domínio;
 - `src/components`: componentes visuais reutilizáveis;
 - `src/product`: catálogo tipado e decisões de composição do produto;
-- `src/views`: experiências do Espaço do aluno, Agenda, Foco, Hábitos, Cadernos e planos de aula;
+- `src/views`: experiências do Espaço do aluno, Agenda, Foco, Hábitos, Cadernos, Praticar, Modo Sala e
+  planos de aula;
 - `src/app.tsx`: roteamento local e composição da aplicação;
 - `src/styles.css`: tokens e layout responsivo;
 - `e2e`: contratos visíveis ao usuário.
