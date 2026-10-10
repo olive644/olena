@@ -3,6 +3,7 @@ import {
   exchangeCodeForTokens,
   listUpcomingEvents,
   refreshAccessToken,
+  revokeToken,
   type GoogleOAuthConfig,
   type GoogleTokens,
 } from "./google-calendar-oauth.js";
@@ -159,9 +160,23 @@ export function createGoogleCalendarHandler(dependencies: GoogleCalendarHandlerD
     }
 
     if (action === "disconnect" && request.method === "POST") {
+      const cookieValue = readCookie(request, GOOGLE_SESSION_COOKIE);
+      const tokens = cookieValue
+        ? decryptSession(dependencies.sessionSecret, cookieValue)
+        : undefined;
+      // Revogar é o melhor esforço: se o Google estiver fora do ar, a pessoa ainda sai daqui,
+      // e a autorização pode ser removida depois em myaccount.google.com/permissions.
+      let revoked = !tokens;
+      if (tokens) {
+        try {
+          revoked = await revokeToken(tokens.refreshToken, fetchImpl);
+        } catch {
+          revoked = false;
+        }
+      }
       return jsonResponse(
         200,
-        { connected: false },
+        { connected: false, revoked },
         { "Set-Cookie": clearCookieHeader(GOOGLE_SESSION_COOKIE) },
       );
     }

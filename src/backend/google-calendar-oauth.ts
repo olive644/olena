@@ -1,5 +1,6 @@
 const AUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
+const REVOKE_ENDPOINT = "https://oauth2.googleapis.com/revoke";
 const EVENTS_ENDPOINT = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
 export const GOOGLE_CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.events.readonly";
 
@@ -104,6 +105,20 @@ type GoogleEventsResponse = {
     end?: { date?: string; dateTime?: string };
   }>;
 };
+
+// Revoga o refresh token no Google (o que também invalida o access token dele). Sem isso,
+// desconectar só apagava o cookie e a autorização continuava válida na conta da pessoa.
+export async function revokeToken(
+  token: string,
+  fetchImpl: typeof fetch = fetch,
+): Promise<boolean> {
+  const response = await fetchImpl(REVOKE_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ token }),
+  });
+  return response.ok;
+}
 
 export async function listUpcomingEvents(
   accessToken: string,
