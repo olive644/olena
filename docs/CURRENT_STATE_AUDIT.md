@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Helena integrada ao aplicativo (2026-10-10)
+
+- A estrela aprovada agora é montada no AppContent real após o onboarding,
+  em todas as abas, exceto projeção de sala. O componente HelenaChat é compartilhado
+  com o preview e preserva conversa e posição durante a navegação.
+- Carregamento separado por lazy import, sem bloquear a primeira tela. Mantidas
+  as animações aprovadas. O breakpoint de 900px acompanha a navegação móvel real;
+  menus e diálogos modais ocultam a estrela sem apagar a conversa.
+- Chat permanece demonstrativo e informa isso no rodapé. Sem API, conta ou
+  persistência nesta entrega. Não mostrar o selo Preview nas telas reais.
+- Prova de integração: e2e/helena-app.spec.ts testa /aprender, Agenda, histórico,
+  espaço para a barra móvel e ausência no onboarding, no build de produção.
+
 ## Preview da estrela de Helena (2026-10-10, ainda local)
 
 - Preview isolado em preview-helena-chat.html, sem integração ao app publicado.

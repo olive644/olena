@@ -11,6 +11,9 @@ import { HabitsView } from "./views/habits-view";
 import { TodayView } from "./views/today-view";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const HelenaChat = lazy(() =>
+  import("./components/helena-chat").then((module) => ({ default: module.HelenaChat })),
+);
 const RoomView = lazy(() => import("./views/room-view"));
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
 const LibraryView = lazy(() => import("./views/library-view"));
@@ -129,6 +132,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           )}
         </Suspense>
         <MobileNavigation view={view} onNavigate={setView} />
+        {!projectorCode && (
+          <Suspense fallback={null}>
+            <HelenaChat />
+          </Suspense>
+        )}
       </div>
     </MobileMenuContext.Provider>
   );
