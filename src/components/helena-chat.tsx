@@ -11,7 +11,7 @@ import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperArrow } from "./paper-arrow";
 import { HelenaLoading } from "./helena-loading";
 import { RoomPointsIcon } from "./room-paper-icons";
-import "./helena-chat-preview.css";
+import "./helena-chat.css";
 
 type Message = { id: number; role: "user" | "helena"; text: string };
 type Position = { x: number; y: number };
@@ -23,7 +23,7 @@ function reducedMotion() {
   );
 }
 function constrain(position: Position) {
-  const mobile = window.innerWidth < 600;
+  const mobile = window.innerWidth < 900;
   const size = mobile ? 56 : 64;
   return {
     x: Math.max(16, Math.min(window.innerWidth - size - 16, position.x)),
@@ -42,8 +42,14 @@ function demonstrationReply(text: string) {
   return "Pode me contar um pouco mais? Diga o assunto e o que está difícil. Vamos começar pelo primeiro passo, no seu ritmo.";
 }
 
-/** Preview isolado: respostas demonstrativas, sem API, conta ou persistência. */
-export function HelenaChatPreview({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+/** Interface compartilhada. Respostas demonstrativas, sem API ou persistência. */
+export function HelenaChat({
+  initiallyOpen = false,
+  preview = false,
+}: {
+  initiallyOpen?: boolean;
+  preview?: boolean;
+}) {
   const [open, setOpen] = useState(initiallyOpen);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -76,7 +82,7 @@ export function HelenaChatPreview({ initiallyOpen = false }: { initiallyOpen?: b
     return () => window.removeEventListener("resize", resize);
   }, []);
   useEffect(() => {
-    if (open && window.matchMedia("(min-width: 600px)").matches) composer.current?.focus();
+    if (open && window.matchMedia("(min-width: 900px)").matches) composer.current?.focus();
   }, [open]);
   useEffect(() => {
     conversation.current?.scrollTo?.({
@@ -163,7 +169,7 @@ export function HelenaChatPreview({ initiallyOpen = false }: { initiallyOpen?: b
       x: current.origin.x + event.clientX - current.start.x,
       y: current.origin.y + event.clientY - current.start.y,
     });
-    const size = window.innerWidth < 600 ? 56 : 64;
+    const size = window.innerWidth < 900 ? 56 : 64;
     setPosition({
       x: value.x + size / 2 < window.innerWidth / 2 ? 16 : window.innerWidth - size - 16,
       y: value.y,
@@ -194,7 +200,7 @@ export function HelenaChatPreview({ initiallyOpen = false }: { initiallyOpen?: b
 
   return (
     <aside
-      className="helena-chat"
+      className={`helena-chat${preview ? "" : " helena-chat--application"}`}
       aria-label="Assistente Helena"
       data-motion={motion}
       data-edge={position && position.x < window.innerWidth / 2 ? "left" : "right"}
@@ -206,7 +212,7 @@ export function HelenaChatPreview({ initiallyOpen = false }: { initiallyOpen?: b
         <section
           className={`helena-chat-panel${motion === "closing" ? " is-closing" : ""}`}
           style={
-            position && window.innerWidth >= 600
+            position && window.innerWidth >= 900
               ? {
                   position: "fixed",
                   right: "auto",
@@ -259,7 +265,8 @@ export function HelenaChatPreview({ initiallyOpen = false }: { initiallyOpen?: b
             <span className="helena-chat-star" aria-hidden="true">
               <RoomPointsIcon />
             </span>{" "}
-            Um passo de cada vez.<span className="helena-chat-preview-tag">Preview</span>
+            Um passo de cada vez.
+            {preview && <span className="helena-chat-preview-tag">Preview</span>}
           </div>
           <div className="helena-chat-conversation" ref={conversation}>
             {messages.length === 0 ? (

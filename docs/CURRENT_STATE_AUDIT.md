@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Helena integrada ao aplicativo (2026-10-10)
+
+- A estrela aprovada agora é montada no AppContent real após o onboarding,
+  em todas as abas, exceto projeção de sala. O componente HelenaChat é compartilhado
+  com o preview e preserva conversa e posição durante a navegação.
+- Carregamento separado por lazy import, sem bloquear a primeira tela. Mantidas
+  as animações aprovadas. O breakpoint de 900px acompanha a navegação móvel real;
+  menus e diálogos modais ocultam a estrela sem apagar a conversa.
+- Chat permanece demonstrativo e informa isso no rodapé. Sem API, conta ou
+  persistência nesta entrega. Não mostrar o selo Preview nas telas reais.
+- Prova de integração: e2e/helena-app.spec.ts testa /aprender, Agenda, histórico,
+  espaço para a barra móvel e ausência no onboarding, no build de produção.
+
 ## Preview da estrela de Helena (2026-10-10, ainda local)
 
 - Preview isolado em preview-helena-chat.html, sem integração ao app publicado.
@@ -2225,3 +2238,30 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `firebase-room.rules.json` agora valida `users/<uid>/state`: só existem `version` e `updatedAt` (números) e `items`, em que cada chave tem de 1 a 100 caracteres comuns (letras, números, `.`, `_`, `:`, `-`) e cada valor é texto de até 20 milhões de caracteres. Qualquer outro filho de `users/<uid>` ou de `state` é recusado. `items` é opcional porque o Firebase descarta objetos vazios. Apagar (`DELETE`) segue permitido, porque validação não roda em exclusão: a exclusão de conta não muda.
 - Escolha deliberada: não há lista fixa de chaves. Uma lista exigiria publicar as regras antes de cada nova chave sincronizada, e o histórico deste projeto (regras que ficaram semanas sem publicar) mostra que esse descompasso quebraria a sincronização. O teste `firebase-user-rules.test.ts` garante que toda chave de `SYNCED_STORAGE_KEYS` passa no padrão. Limite que continua em aberto: a quantidade de chaves não é limitada por regra.
 - **Ação do proprietário:** publicar o arquivo no console do Firebase (Realtime Database, Regras) e testar no Laboratório de testes que um salvamento normal de conta passa. Sem a publicação, nada muda em produção.
+
+## Arquivo security.txt (2026-10-10)
+
+- Auditoria de segurança, item 8. O `SECURITY.md` já descrevia como relatar vulnerabilidades, mas o site não publicava o arquivo padrão que ferramentas e pesquisadores procuram. `public/.well-known/security.txt` (RFC 9116) aponta para o relato privado do GitHub, para o `SECURITY.md` e para o endereço canônico, em português e inglês.
+- Sem e-mail nem telefone pessoal. Quando existir o contato oficial da Galeria.Oli (pendente, junto com a política de privacidade), basta acrescentar uma linha `Contact:`.
+- `Expires` é 2027-10-10 e precisa ser renovado todo ano. `src/security-txt.test.ts` confere o formato e falha quando faltarem menos de 60 dias para vencer.
+- Pendência de configuração, fora do código: o relato privado de vulnerabilidades do GitHub, que o `SECURITY.md` indica como via preferida, está desativado no repositório. Ativar em Settings, Code security, Private vulnerability reporting.
+
+## Desconectar o Google Agenda revoga a autorização (2026-10-10)
+
+- Auditoria de segurança, item 5. `action=disconnect` só apagava o cookie de sessão, então o token continuava válido na conta Google da pessoa até ela removê-lo por conta própria.
+- Agora o servidor lê o cookie antes de apagá-lo e chama `https://oauth2.googleapis.com/revoke` com o refresh token (`revokeToken` em `google-calendar-oauth.ts`), o que também invalida o access token. É melhor esforço: se o Google falhar, a pessoa sai do mesmo jeito e a resposta traz `revoked: false`. Sem sessão, nada é chamado.
+- A chamada acontece no servidor, então o `connect-src` do navegador e a política de privacidade não mudam.
+- Testes: três casos novos em `google-calendar-handler.test.ts`; o de revogação falha sem a mudança.
+
+## Segredo do cron e endereço do cliente (2026-10-10)
+
+- Auditoria de segurança, itens 6 e 7.
+- `api/room-cleanup.ts` comparava o segredo do cron com `!==`, que revela pelo tempo de resposta quantos caracteres iniciais batem. A checagem foi para `isCronAuthorized` (`src/backend/cron-auth.ts`), que usa `safeEqual` (hash e `timingSafeEqual`) e recusa tudo quando `CRON_SECRET` não está configurado.
+- `api/speech.ts` identificava o cliente pelo `x-forwarded-for`, que quem chama pode montar. Agora usa `clientAddress` (`src/backend/client-address.ts`), que lê só `x-vercel-forwarded-for`, o mesmo cabeçalho que o `room-guard` e o Google Agenda já usavam. Sem o cabeçalho (desenvolvimento local), o limite cai no balde `anonymous`.
+- Testes: `cron-auth.test.ts` e `client-address.test.ts`.
+
+## Câmera liberada para o próprio site (2026-10-10)
+
+- Auditoria de segurança, item 9. O cabeçalho `Permissions-Policy: camera=()` de `vercel.json` desligava a câmera para o site inteiro, o que impedia o leitor de QR code da sala (`room-qr-scanner.tsx`, único uso de `getUserMedia`) de funcionar em produção.
+- Agora é `camera=(self)`: só o próprio site pode pedir a câmera, e nenhum frame de terceiro. Microfone e geolocalização continuam negados.
+- Teste: `security-headers.test.ts` confere os três; o novo falha sem a mudança.
