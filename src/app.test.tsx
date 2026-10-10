@@ -9,6 +9,7 @@ function navigate(label: string) {
 
 describe("App", () => {
   beforeEach(() => {
+    window.history.replaceState({}, "", "/");
     localStorage.clear();
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
