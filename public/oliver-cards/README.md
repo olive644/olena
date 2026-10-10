@@ -23,4 +23,4 @@ Prompt-base: portrait 2:3, original conceptual illustration. Lock Oliver as roun
 
 ## Distribuição
 
-80% de uma carta e 20% de duas. Sorteios independentes, duplicatas permitidas. Pesos por carta: 18%, 15%, 13%, 12%, 10%, 9%, 8%, 6%, 5%, 4% na ordem acima. Persistência local antes da revelação, sem nova rolagem ao reabrir. Até três baús pendentes por lugar, desbloqueio de 60 segundos. Não é economia remota ou recompensa competitiva.
+80% de uma carta e 20% de duas. Sorteios independentes, duplicatas permitidas. Pesos por carta: 18%, 15%, 13%, 12%, 10%, 9%, 8%, 6%, 5%, 4% na ordem acima. Persistência antes da revelação, sem nova rolagem ao reabrir. Até três espaços por lugar, desbloqueio de 60 segundos. Pontos, baús e cartas usam a sincronização de conta existente; não é economia competitiva validada no servidor. Limites e conflitos documentados em docs/MATH_REWARDS_SYNC.md.

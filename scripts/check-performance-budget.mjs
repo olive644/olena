@@ -212,7 +212,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // and collection UI add 11.4 KiB in the lazy practice route. Measured total:
 // 1176.6 KiB; initial entry unchanged at 275.7 KiB. No runtime dependency.
 // Artwork is responsive WebP loaded on reveal, not bundled as JavaScript.
-const MAX_TOTAL_JS_BYTES = 1179 * 1024;
+// Account reward merge adds 3.4 KiB including compatibility validation.
+// Measured total 1180.0 KiB, initial 276.0 KiB; no added dependency.
+const MAX_TOTAL_JS_BYTES = 1182 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

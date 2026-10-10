@@ -4,8 +4,10 @@ import { MathArcade } from "./math-arcade";
 import { handleOlena } from "../backend/olena-handler";
 import { mathLearning } from "../data/math-learning";
 import { updateAccessibility } from "../data/accessibility-preferences";
+import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
 
 beforeEach(() => {
+  localStorage.removeItem(ACCOUNT_OWNER_KEY);
   vi.useFakeTimers();
   localStorage.removeItem("helena.mathLearning.v1");
   localStorage.removeItem("helena.room-xp.v1");
@@ -18,11 +20,23 @@ beforeEach(() => {
   );
 });
 afterEach(() => {
+  localStorage.removeItem(ACCOUNT_OWNER_KEY);
   cleanup();
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
   updateAccessibility({ reduceMotion: false });
+});
+it("exits an active game when another account claims the device", async () => {
+  claimDeviceForAccount(localStorage, "first-account");
+  const back = vi.fn();
+  render(<MathArcade onBack={back} />);
+  await begin();
+  act(() => {
+    claimDeviceForAccount(localStorage, "second-account");
+  });
+  expect(back).toHaveBeenCalledOnce();
+  expect(localStorage.getItem("helena.mathPlaceRewards.v1")).toBeNull();
 });
 async function click(name: string) {
   await act(async () => {

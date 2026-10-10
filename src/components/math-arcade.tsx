@@ -19,6 +19,8 @@ import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-pap
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
 import { COMMON_CHEST_POINTS, finishMathPlace } from "../data/math-place-rewards";
+import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
+import { SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import { CommonMathChest } from "./math-place-treasure";
 import "./math-arcade.css";
 import "./math-island-journey.css";
@@ -63,6 +65,7 @@ export function MathArcade({
   const [displayedScore, setDisplayedScore] = useState(0);
   const [reward, setReward] = useState<RoomXpReward | undefined>();
   const roundId = useRef("");
+  const roundOwner = useRef<string | null>(null);
   const root = useRef<HTMLElement>(null);
   const controller = useRef<AbortController | null>(null);
   const answerLock = useRef(false);
@@ -72,6 +75,22 @@ export function MathArcade({
   const question = round.question;
   const clock = question ? Math.max(0, question.budget - round.elapsed * question.drain) : 0;
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
+  const exitChangedAccount = useEffectEvent(onBack);
+  useEffect(() => {
+    const owner = localStorage.getItem(ACCOUNT_OWNER_KEY);
+    function checkOwner() {
+      if (owner === localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
+      controller.current?.abort();
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      exitChangedAccount();
+    }
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, checkOwner);
+    window.addEventListener("storage", checkOwner);
+    return () => {
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, checkOwner);
+      window.removeEventListener("storage", checkOwner);
+    };
+  }, []);
 
   useEffect(() => {
     const previous = document.activeElement,
@@ -122,6 +141,7 @@ export function MathArcade({
     if (!finished) return;
     audio.current?.play("finish");
     const settlementTimer = window.setTimeout(() => {
+      if (roundOwner.current !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       try {
         const saved = finishMathPlace(courseId, roundId.current, round.points);
         setEarnedChest(saved.chests.some((chest) => chest.id === roundId.current));
@@ -130,6 +150,7 @@ export function MathArcade({
       }
     }, 0);
     const rewardTimer = window.setTimeout(() => {
+      if (roundOwner.current !== localStorage.getItem(ACCOUNT_OWNER_KEY)) return;
       if (round.points === 0) return;
       setReward({
         id: roundId.current,
@@ -169,6 +190,7 @@ export function MathArcade({
     audio.current.unlock();
     audio.current.play("start");
     setPending(true);
+    roundOwner.current = localStorage.getItem(ACCOUNT_OWNER_KEY);
     setError("");
     retryChoice.current = null;
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);

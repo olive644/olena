@@ -10,6 +10,7 @@ const PERSONAL_KEYS = [
   "helenastudy.sync-conflict.v1",
   "helena.profile.v1",
   "helena.soloProgress",
+  "helena.mathPlaceRewards.v1",
   "helena:local-room-session:v1",
   "helena-study:word-frequency:v1",
   "noteoli.pomodoro-streak.v1",

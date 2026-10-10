@@ -1,5 +1,13 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, sincronização: mathPlaceRewards.v1 agora é uma chave de conta.
+writeSyncedStorage agenda envio; math-rewards-sync une rounds por ID, baús e
+revelações. Importa dados locais se nuvem antiga não tem a chave. Totais legados
+e sorteios concorrentes ambíguos geram backup/conflito. Três slots visíveis,
+extras concorrentes preservados em fila. Troca de conta limpa e fecha a partida.
+Ver docs/MATH_REWARDS_SYNC.md para migração, reversão e limites de segurança.
+Substitui descrições de persistência somente local abaixo.
+
 2026-10-10, cartas do Oliver: MathPlaceTreasure agora mostra três espaços sob a
 arte. Toque no baú destranca em 60s e abre um booster de uma ou duas cartas,
 verso Olena, flip por toque/arraste, sons e contador restante. OliverCardCollection

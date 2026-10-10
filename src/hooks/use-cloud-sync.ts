@@ -243,6 +243,24 @@ export function useCloudSync() {
           let lastItems = "";
           if (cloud?.items) {
             const merged = { ...cloud.items };
+            const rewardsKey = "helena.mathPlaceRewards.v1";
+            const localRewards = localAfterGet[rewardsKey];
+            if (localRewards !== undefined) {
+              const rewardsMerge = await mergeItems(
+                {},
+                { [rewardsKey]: localRewards },
+                cloud.items,
+              );
+              if (!active) return;
+              if (rewardsMerge.conflicts.length)
+                rememberConflict(
+                  {},
+                  { [rewardsKey]: localRewards },
+                  cloud.items,
+                  rewardsMerge.conflicts,
+                );
+              merged[rewardsKey] = rewardsMerge.items[rewardsKey] ?? localRewards;
+            }
             // Chave introduzida depois da primeira versão da nuvem: não apague
             // a sequência local antiga antes de enviá-la à conta.
             const localPomodoro = localAfterGet["noteoli.pomodoro-streak.v1"];
@@ -252,6 +270,7 @@ export function useCloudSync() {
               ...Object.keys(localBeforeGet),
               ...Object.keys(localAfterGet),
             ])) {
+              if (key === rewardsKey) continue;
               if (key === "helena.profile.v1" && cloud.items[key] !== undefined) continue;
               if (localBeforeGet[key] !== localAfterGet[key]) {
                 if (localAfterGet[key] === undefined) delete merged[key];

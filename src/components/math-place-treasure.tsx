@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import type { MathCourseId } from "../data/math-courses";
 import {
   isChestCollected,
+  MATH_PLACE_REWARDS_KEY,
   mathPlaceRewards,
   openMathChest,
   revealMathCard,
@@ -66,8 +67,16 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
   const [collection, setCollection] = useState(false);
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const openingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const storedRewards = useRef(localStorage.getItem(MATH_PLACE_REWARDS_KEY));
+  function acceptValue(next: ReturnType<typeof mathPlaceRewards>) {
+    storedRewards.current = localStorage.getItem(MATH_PLACE_REWARDS_KEY);
+    setValue(next);
+  }
   useEffect(() => {
     function refresh() {
+      const incoming = localStorage.getItem(MATH_PLACE_REWARDS_KEY);
+      if (incoming === storedRewards.current) return;
+      storedRewards.current = incoming;
       if (openingTimer.current) clearTimeout(openingTimer.current);
       setValue(mathPlaceRewards(course));
       setNow(Date.now());
@@ -123,11 +132,11 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
       }
       if (chest.unlockAt === null) {
         play("chestUnlock");
-        setValue(unlockMathChest(course, chest.id, actionTime));
+        acceptValue(unlockMathChest(course, chest.id, actionTime));
         setNow(actionTime);
       } else if (chest.unlockAt <= actionTime) {
         const saved = openMathChest(course, chest.id, actionTime);
-        setValue(saved);
+        acceptValue(saved);
         setOpening(chest.id);
         play("chestOpen");
         const received = saved.chests.find((item) => item.id === chest.id)!;
@@ -228,7 +237,7 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
             onReveal={() => {
               try {
                 const saved = revealMathCard(course, booster.id);
-                setValue(saved);
+                acceptValue(saved);
                 return true;
               } catch {
                 setWarning("Não foi possível guardar a carta. Tente novamente.");

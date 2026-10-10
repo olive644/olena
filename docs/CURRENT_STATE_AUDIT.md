@@ -1,5 +1,21 @@
 # Auditoria do estado atual
 
+## Sincronização das recompensas de Matemática (2026-10-10)
+
+- Pontos, baús, prazo e cartas agora entram na sincronização Firebase existente.
+  Recibos com valores por partida permitem combinar dispositivos sem duplicar
+  pontos; dados locais antigos são preservados no login. Troca de conta limpa
+  recompensas e encerra a partida. Interface recebe alterações da nuvem.
+- Conflitos de sorteio ou totais legados ficam sinalizados com backup existente.
+  Limites, ameaça, migração e reversão em MATH_REWARDS_SYNC.md. Coleção pessoal,
+  não economia autoritativa. Prova de login/upload com mocks; duas contas reais
+  ainda não testadas.
+- Baú em grafite/dourado facetado, espaços creme do app e ícone + de room-icons.
+  Esta seção substitui a limitação local das seções históricas abaixo.
+- Verificação passou: 202 arquivos, 1260 testes, build e orçamento. JS inicial
+  276,0 KiB, total 1180,1 KiB, teto 1182 KiB. E2E desktop e viewport móvel Edge
+  passaram. Eco de sincronização não fecha o booster se as recompensas não mudaram.
+
 ## Cartas comuns do Oliver e baús por lugar (2026-10-10)
 
 - Dez cenas originais do Oliver geradas a partir das capas e artes aprovadas de onboarding/Bingo. WebPs responsivos em public/oliver-cards, 480/720px, 826.820 bytes para as vinte variantes. Molduras e textos HTML nítidos, sem novo pacote de runtime. Prompts e referências no README dos assets.
