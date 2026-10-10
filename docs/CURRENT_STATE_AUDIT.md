@@ -2231,3 +2231,9 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `src/product/module-catalog.ts`: entram `handwriting` e `room` como disponíveis. O módulo `ocr` segue planejado, agora descrito como OCR de digitalizações, porque o OCR local existe somente na seleção de traços da escrita à mão. Teste novo no catálogo.
 - `.env.example` removido do repositório, por decisão do dono. Saem também a exceção no `.gitignore`, a linha no `.prettierignore` e as duas referências (README e `services/tts/README.md`). O `.gitignore` continua ignorando `.env` e `.env.*`. Nenhum valor secreto estava no arquivo. A lista de variáveis passa a ficar nos guias de configuração e no painel da Vercel, e novos integrantes precisam receber as variáveis públicas `VITE_*` por canal próprio.
 - Pendente de decisão do dono, sem alteração aqui: canal de contato de segurança em `SECURITY.md` e na Política de Privacidade, e a presença de `docs/CONTRATO_SOCIETARIO.md` no repositório.
+
+## Câmera liberada para o próprio site (2026-10-10)
+
+- Auditoria de segurança, item 9. O cabeçalho `Permissions-Policy: camera=()` de `vercel.json` desligava a câmera para o site inteiro, o que impedia o leitor de QR code da sala (`room-qr-scanner.tsx`, único uso de `getUserMedia`) de funcionar em produção.
+- Agora é `camera=(self)`: só o próprio site pode pedir a câmera, e nenhum frame de terceiro. Microfone e geolocalização continuam negados.
+- Teste: `security-headers.test.ts` confere os três; o novo falha sem a mudança.
