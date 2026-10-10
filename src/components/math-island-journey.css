@@ -66,7 +66,7 @@
   top: 42%;
   width: min(440px, 64vw, 56dvh);
   aspect-ratio: 1;
-  transform: translate(-50%, calc(-50% - var(--island-y) * 78%)) scale(0.55);
+  transform: translate(calc(-50% + var(--island-x) * 85%), -62%) scale(0.65);
   opacity: 0.24;
   transition:
     transform 0.7s cubic-bezier(0.22, 0.7, 0.2, 1),
@@ -86,6 +86,17 @@
   object-fit: contain;
   filter: drop-shadow(0 16px 9px #29243218);
 }
+.math-place-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.math-journey-island:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: -5px;
+  border-radius: 18%;
+}
 .math-journey-avatar {
   --avatar-from: 100px;
   animation: math-avatar-travel 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) both;
@@ -94,16 +105,17 @@
   position: absolute;
   left: 50%;
   top: calc(42% - min(440px, 64vw, 56dvh) * 0.25);
-  width: min(70px, 12vw);
+  width: clamp(56px, 12vw, 76px);
+  aspect-ratio: 1;
   transform: translate(-50%, -50%);
 }
-.math-journey-avatar.is-moving-down {
+.math-journey-avatar.is-moving-left {
   --avatar-from: -100px;
 }
 @keyframes math-avatar-travel {
   from {
     opacity: 0.4;
-    transform: translate(-50%, calc(-50% + var(--avatar-from))) scale(0.8);
+    transform: translate(calc(-50% + var(--avatar-from)), -65%) scale(0.85);
   }
   to {
     opacity: 1;
@@ -112,6 +124,7 @@
 }
 .math-journey-avatar .practice-user-portrait {
   width: 100%;
+  height: 100%;
   display: block;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -120,6 +133,28 @@
     0 5px #b69347,
     0 0 0 3px #facc15;
   overflow: hidden;
+}
+.math-journey.is-arrive .math-journey-avatar {
+  animation: math-avatar-arrive 850ms cubic-bezier(0.22, 0.75, 0.25, 1) both;
+}
+@keyframes math-avatar-arrive {
+  from {
+    left: var(--entry-x);
+    top: var(--entry-y);
+    width: var(--entry-size);
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  45% {
+    transform: translate(-50%, -90%) scale(1.18);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+.math-journey.is-arrive .math-place-scene {
+  animation: math-map-return 850ms both;
 }
 .math-journey-avatar .practice-user-portrait img {
   width: 100%;

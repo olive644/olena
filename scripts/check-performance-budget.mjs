@@ -200,7 +200,12 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Five fullscreen subject trails, five distinct themed SVG number pieces and metadata
 // add 10 KiB in the lazy practice route. Total: 1155.6 KiB, entry still 275.6 KiB.
 // No dependencies or initial-path growth; retain 3.5 KiB platform allowance.
-const MAX_TOTAL_JS_BYTES = 1159 * 1024;
+// Click-to-enter artwork, measured avatar arrival and adaptive topic retreat add
+// 0.8 KiB to the lazy practice route. Whole place illustrations use responsive
+// WebPs; the map loads only the current scene and its adjacent previews.
+// Total measured: 1159.9 KiB; entry unchanged at 275.7 KiB. No new dependency;
+// retain 2.3 KiB for build/platform variance without changing the initial ceiling.
+const MAX_TOTAL_JS_BYTES = 1162 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

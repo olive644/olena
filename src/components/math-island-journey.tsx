@@ -8,15 +8,24 @@ import { PracticeUserPortrait } from "./practice-user-portrait";
 import { PaperArrow } from "./paper-arrow";
 import { MathArcade } from "./math-arcade";
 import { MathIcon } from "./math-paper-art";
+import { MathPlaceScene } from "./math-place-scene";
 import "./math-island-journey.css";
 
-export function MathIslandJourney({ onBack }: { onBack: () => void }) {
+export function MathIslandJourney({
+  onBack,
+  entryOrigin,
+}: {
+  onBack: () => void;
+  entryOrigin?: { x: number; y: number; size: number } | undefined;
+}) {
   const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<"map" | "enter" | "game" | "return" | "exit">("map");
+  const [phase, setPhase] = useState<"arrive" | "map" | "enter" | "game" | "return" | "exit">(
+    entryOrigin ? "arrive" : "map",
+  );
   const [profile] = useStoredProfile();
   const gesture = useRef<number | null>(null);
   const dragged = useRef(false);
-  const [travel, setTravel] = useState({ direction: "up", key: 0 });
+  const [travel, setTravel] = useState({ direction: "right", key: 0 });
   const lastWheel = useRef(0);
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -34,14 +43,14 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
     const destination = Math.max(0, Math.min(MATH_COURSES.length - 1, next));
     if (phase === "map" && destination !== index) {
       setTravel((value) => ({
-        direction: destination > index ? "up" : "down",
+        direction: destination > index ? "right" : "left",
         key: value.key + 1,
       }));
       setIndex(destination);
     }
   }
   useEffect(() => {
-    if (phase !== "enter" && phase !== "return" && phase !== "exit") return;
+    if (phase !== "arrive" && phase !== "enter" && phase !== "return" && phase !== "exit") return;
     const timer = setTimeout(
       () => (phase === "exit" ? onBack() : setPhase(phase === "enter" ? "game" : "map")),
       isMotionReduced() ? 0 : 850,
@@ -60,6 +69,9 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
           "--math-color": course.color,
           "--math-shade": course.shade,
           "--math-light": course.light,
+          "--entry-x": `${entryOrigin?.x ?? 0}px`,
+          "--entry-y": `${entryOrigin?.y ?? 0}px`,
+          "--entry-size": `${entryOrigin?.size ?? 64}px`,
         } as CSSProperties
       }
       onKeyDown={(event) => {
@@ -76,15 +88,16 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
             first?.focus();
           }
         }
-        if (["ArrowUp", "ArrowDown"].includes(event.key)) {
+        if (["ArrowLeft", "ArrowRight"].includes(event.key)) {
           event.preventDefault();
-          visit(index + (event.key === "ArrowUp" ? 1 : -1));
+          visit(index + (event.key === "ArrowRight" ? 1 : -1));
         }
       }}
       onWheel={(event) => {
-        if (Math.abs(event.deltaY) > 20 && Date.now() - lastWheel.current > 650) {
+        const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+        if (Math.abs(delta) > 20 && Date.now() - lastWheel.current > 650) {
           lastWheel.current = Date.now();
-          visit(index + (event.deltaY < 0 ? 1 : -1));
+          visit(index + (delta > 0 ? 1 : -1));
         }
       }}
     >
@@ -100,15 +113,15 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
         onPointerDown={(event) => {
           if (event.isPrimary && event.button === 0) {
             dragged.current = false;
-            gesture.current = event.clientY;
+            gesture.current = event.clientX;
             const button = event.target instanceof Element ? event.target.closest("button") : null;
             (button ?? event.currentTarget).setPointerCapture(event.pointerId);
           }
         }}
         onPointerUp={(event) => {
-          if (gesture.current !== null && Math.abs(event.clientY - gesture.current) > 55) {
+          if (gesture.current !== null && Math.abs(event.clientX - gesture.current) > 55) {
             dragged.current = true;
-            visit(index + (event.clientY < gesture.current ? 1 : -1));
+            visit(index + (event.clientX < gesture.current ? 1 : -1));
           }
           gesture.current = null;
         }}
@@ -127,20 +140,13 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
             }}
             className={`math-journey-island ${position === index ? "is-current" : "is-preview"}`}
             aria-hidden={position !== index}
-            style={{ "--island-y": position - index } as CSSProperties}
+            style={
+              {
+                "--island-x": position - index,
+              } as CSSProperties
+            }
           >
-            {Math.abs(position - index) <= 1 && (
-              <img
-                src={`/math-islands/${item.id}.webp`}
-                srcSet={`/math-islands/${item.id}-small.webp 480w, /math-islands/${item.id}.webp 800w`}
-                sizes="(max-width: 600px) 75vw, 440px"
-                alt={position === index ? item.title : ""}
-                width="800"
-                height="800"
-                draggable={false}
-                decoding="async"
-              />
-            )}
+            {Math.abs(position - index) <= 1 && <MathPlaceScene course={item.id} />}
           </button>
         ))}
         <div key={travel.key} className={`math-journey-avatar is-moving-${travel.direction}`}>
@@ -157,7 +163,7 @@ export function MathIslandJourney({ onBack }: { onBack: () => void }) {
           disabled={phase !== "map"}
           onClick={() => setPhase("enter")}
         >
-          <MathIcon name="explore" /> Explorar ilha
+          <MathIcon name="explore" /> Explorar lugar
         </button>
       </div>
     </section>,

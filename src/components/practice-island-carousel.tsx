@@ -8,12 +8,15 @@ export function PracticeIslandCarousel({
   index,
   onVisit,
   profile,
+  onEnter,
 }: {
   index: number;
   onVisit: (index: number) => void;
   profile: StoredProfile;
+  onEnter?: () => void;
 }) {
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
+  const dragged = useRef(false);
   const [drag, setDrag] = useState(0);
   const currentIsland = PRACTICE_ISLANDS[index]!;
 
@@ -26,8 +29,10 @@ export function PracticeIslandCarousel({
     setDrag(0);
     if (event.currentTarget.hasPointerCapture(event.pointerId))
       event.currentTarget.releasePointerCapture(event.pointerId);
-    if (!cancelled && Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.3)
+    if (!cancelled && Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      dragged.current = true;
       onVisit(index + (dx < 0 ? 1 : -1));
+    }
   }
 
   return (
@@ -47,9 +52,12 @@ export function PracticeIslandCarousel({
         style={{ "--drag-x": `${drag}px` } as CSSProperties}
         onPointerDown={(event) => {
           if (!event.isPrimary || event.button !== 0) return;
-          if (event.target instanceof Element && event.target.closest("button")) return;
+          if (event.target instanceof Element && event.target.closest(".practice-carousel-arrow"))
+            return;
+          dragged.current = false;
           gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
-          event.currentTarget.setPointerCapture(event.pointerId);
+          const button = event.target instanceof Element ? event.target.closest("button") : null;
+          (button ?? event.currentTarget).setPointerCapture(event.pointerId);
         }}
         onPointerMove={(event) => {
           const start = gesture.current;
@@ -69,8 +77,14 @@ export function PracticeIslandCarousel({
           const offset = position - index;
           const active = offset === 0;
           return (
-            <div
+            <button
               key={island.number}
+              type="button"
+              aria-label={`Entrar em ${island.title}`}
+              disabled={!active || island.id !== "mathematics"}
+              onClick={(event) => {
+                if (!dragged.current || event.detail === 0) onEnter?.();
+              }}
               className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" ? " is-locked" : ""}`}
               aria-hidden={!active}
               style={
@@ -98,7 +112,7 @@ export function PracticeIslandCarousel({
                   fetchPriority={active ? "high" : "low"}
                 />
               )}
-            </div>
+            </button>
           );
         })}
         <div

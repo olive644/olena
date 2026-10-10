@@ -17,6 +17,7 @@ import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-ico
 import { PaperDigits } from "./paper-digits";
 import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
 import { HelenaLoading } from "./helena-loading";
+import { MathPlaceScene } from "./math-place-scene";
 import "./math-arcade.css";
 import "./math-island-journey.css";
 import "../paper-buttons.css";
@@ -317,7 +318,14 @@ export function MathArcade({
         <PaperArrow back /> Voltar às ilhas
       </button>
       <div className="math-game-landscape" aria-hidden="true">
-        <img src={"/math-islands/" + courseId + ".webp"} alt="" />
+        <MathPlaceScene course={courseId} />
+      </div>
+      <div className="math-background-symbols" aria-hidden="true">
+        {["+", "−", "×", "÷", "=", "%", "π", "√", "∑", "∞", "±", "∫"].map((symbol, index) => (
+          <span key={symbol} style={{ "--symbol": index } as CSSProperties}>
+            {symbol}
+          </span>
+        ))}
       </div>
       <div className="math-game-floor" aria-hidden="true" />
       <main className="math-arcade-stage">
@@ -325,7 +333,7 @@ export function MathArcade({
           <div className="math-welcome">
             <h1 className="visually-hidden">{course.title}</h1>
             <div className="math-course-emblem">
-              <img src={"/math-islands/" + courseId + ".webp"} alt={course.title} />
+              <MathPlaceScene course={courseId} />
               <MathUserAvatar />
             </div>
             <button
@@ -483,7 +491,6 @@ export function MathArcade({
                       }
                       role="status"
                     >
-                      <MathUserAvatar mood={feedback.correct ? "correct" : "wrong"} />
                       <div>
                         <b>{feedback.message}</b>
                         {feedback.correct ? (

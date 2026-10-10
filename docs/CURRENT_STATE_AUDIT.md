@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Lugares da Matemática (2026-10-09)
+
+- A ilha de disciplina também abre por clique/toque na arte; disciplinas bloqueadas permanecem sem entrada. Arrastar a arte navega, sem abrir acidentalmente.
+- Dentro da Matemática, navegação horizontal entre seis lugares reconstruídos da mesma ilha. Cada cenário tem composição completa e transparente, inspirado nos elementos da ilha original, sem recortes de panorama. IDs e domínio pedagógico continuam compatíveis.
+- A foto chega da posição real do avatar de Praticar, com voo de 850 ms e movimento reduzido respeitado. Moldura circular sem deformação; feedback de resposta não exibe avatar.
+- Após dois erros consecutivos, Olena recua um assunto, sem apagar pontos, acertos ou recorde. Um acerto limpa a sequência de erros. O contador opcional `errors` preserva compatibilidade com registros antigos em `helena.mathLearning.v1`.
+- Símbolos matemáticos decoram o fundo sem bloquear controles. Unidade de segundos usa as mesmas cores de papel dos dígitos.
+- Validação final (2026-10-10): 37 testes focados, E2E desktop/mobile com as seis artes carregadas, TypeScript, build e orçamento passaram (inicial 275,7 KiB; total 1159,9 KiB). Lint sem erros, formatação e API passaram. A execução completa de verify foi interrompida no Vitest, sem resultado final; não foi apresentada como aprovação integral.
+
 ## Matemática adaptativa com Olena (2026-10-09)
 
 - Refinamento: avatar do usuário sem corpo desenhado, navegação por arraste, roda e teclado sem setas visíveis. Clique na ilha central também entra. Avatar anima o deslocamento nos dois sentidos. Botões reutilizam cores, cortes e profundidade do papel aprovado, sem faixas decorativas cruzadas.

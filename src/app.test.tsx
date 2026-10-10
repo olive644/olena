@@ -311,7 +311,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Entrar no laboratório" }));
     expect(screen.getByRole("region", { name: "Ilhas de Matemática" })).toBeTruthy();
     expect(document.querySelector(".practice-trail-map")).toBeNull();
-    expect(screen.getByRole("heading", { name: "Vila das Primeiras Contas" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Voltar às ilhas" }));
     expect(await screen.findByRole("heading", { name: "Picos dos Padrões" })).toBeTruthy();
   });

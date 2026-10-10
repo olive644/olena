@@ -34,6 +34,20 @@ it("advances on mastery and preserves levels after mistakes", () => {
   expect(wrong.progress.level).toBe(1);
   expect(wrong.points).toBe(0);
 });
+it("retreats one topic after two consecutive errors without losing earned points or going below zero", () => {
+  let progress = { ...EMPTY_MATH_PROGRESS, level: 3, best: 100 };
+  for (let index = 0; index < 2; index++) {
+    const question = mathChallenge("foundations", progress, 99);
+    progress = assessMath(progress, question, question.answer + 1, 1, 0).progress;
+  }
+  expect(progress.level).toBe(2);
+  expect(progress.best).toBe(100);
+  expect(mathChallenge("foundations", progress, 99).topic).toBe("Multiplicação");
+  const question = mathChallenge("foundations", EMPTY_MATH_PROGRESS, 99);
+  const result = assessMath({ ...EMPTY_MATH_PROGRESS, errors: 2 }, question, 999, 1, 0);
+  expect(result.progress.level).toBe(0);
+  expect(assessMath(progress, question, question.answer, 1, 0).progress.errors).toBe(0);
+});
 it("API validates its generated question independent of JSON key ordering", async () => {
   const call = (body: unknown) =>
     handleOlena(
