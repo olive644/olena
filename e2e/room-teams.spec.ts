@@ -9,10 +9,14 @@ test("participante escolhe equipe e anfitrião move com arraste ou botão", asyn
   const states = new Map<string, PublicLocalRoomState>();
   const handler = createLocalRoomHandler({
     store: createMemoryRoomStore(),
-    publish: async (code, state) => {
-      if ((state.revision ?? 0) >= (states.get(code)?.revision ?? 0)) states.set(code, state);
+    // O navegador lê pelo identificador público; os testes conferem pelo código da sala.
+    publish: async (publicId, state) => {
+      if ((state.revision ?? 0) >= (states.get(publicId)?.revision ?? 0)) {
+        states.set(publicId, state);
+        states.set(state.code, state);
+      }
     },
-    streamUrl: (code) => `${testInfo.project.use.baseURL}/test-room/${code}`,
+    streamUrl: (publicId) => `${testInfo.project.use.baseURL}/test-room/${publicId}`,
   });
   const mobile = testInfo.project.name === "mobile";
   const contexts = await Promise.all([

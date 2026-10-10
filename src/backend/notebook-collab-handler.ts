@@ -23,6 +23,7 @@ import type { HandwritingDocument } from "../domain/handwriting.js";
 import { isNotebookCollabPages } from "../domain/notebook-collab.js";
 import { mergeHandwriting } from "../domain/merge-handwriting.js";
 import type { KvStore } from "./kv-store.js";
+import { createPublicStreamId, publicStreamIdOf } from "./public-stream-id.js";
 import { RoomConflict, versionedStore } from "./room-transaction.js";
 import { safeEqual } from "./secure-compare.js";
 
@@ -30,17 +31,19 @@ const MAX_REQUEST_BYTES = 900_000;
 
 export type NotebookCollabHandlerDependencies = {
   store: KvStore;
-  publish(code: string, state: PublicNotebookCollabState): Promise<void>;
+  // Recebem o identificador público secreto do caderno, nunca o código curto (cadernos novos).
+  publish(publicId: string, state: PublicNotebookCollabState): Promise<void>;
   // Canal leve do cursor: escreve só a posição de um participante (ou apaga com null), sem regravar
   // a folha. Opcional: sem ele o pedido de cursor é aceito e ignorado.
   publishCursor?(
-    code: string,
+    publicId: string,
     participantId: string,
     cursor: { x: number; y: number; at: number } | null,
   ): Promise<void>;
-  streamUrl(code: string): string;
+  streamUrl(publicId: string): string;
   now?(): number;
   randomCode?(): string;
+  randomPublicId?(): string;
   randomId?(): string;
   guard?(request: Request): Promise<Response | undefined>;
   authenticate?(request: Request): Promise<{ uid: string; name: string } | undefined>;
@@ -85,6 +88,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
   const now = () => dependencies.now?.() ?? Date.now();
   const randomId = () => dependencies.randomId?.() ?? crypto.randomUUID();
   const randomCode = () => dependencies.randomCode?.() ?? createNotebookCollabCode();
+  const randomPublicId = () => dependencies.randomPublicId?.() ?? createPublicStreamId();
 
   async function save(state: NotebookCollabState): Promise<PublicNotebookCollabState> {
     const next = {
@@ -103,7 +107,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       NOTEBOOK_COLLAB_TTL_SECONDS,
     );
     const publicState = toPublicNotebookCollabState(next);
-    await dependencies.publish(next.code, publicState);
+    await dependencies.publish(publicStreamIdOf(next), publicState);
     return publicState;
   }
 
@@ -208,6 +212,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         now(),
       );
       if (requestId) state.createRequestId = requestId;
+      state.publicId = randomPublicId();
       if (isNotebookCollabPages(body["pages"])) state.pages = body["pages"];
       if (typeof body["title"] === "string") state.title = body["title"].slice(0, 120);
       if (isHandwritingDocument(body["document"]))
@@ -219,7 +224,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         hostToken,
         participantId: host?.id,
         state: publicState,
-        streamUrl: dependencies.streamUrl(code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
       });
     }
 
@@ -249,7 +254,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
           participantId: existing.id,
           participantToken: existing.token,
           state: await save(updated),
-          streamUrl: dependencies.streamUrl(code),
+          streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
         });
       }
       if (receipt && state.participants.some((item) => item.id === receipt.participantId)) {
@@ -258,7 +263,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
           participantId: receipt.participantId,
           participantToken: receipt.participantToken,
           state: toPublicNotebookCollabState(state),
-          streamUrl: dependencies.streamUrl(code),
+          streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
           ...(participant ? { displayName: participant.displayName } : {}),
         });
       }
@@ -298,7 +303,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
         participantId,
         participantToken,
         state: publicState,
-        streamUrl: dependencies.streamUrl(code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(state)),
       });
     }
 
@@ -315,7 +320,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       return jsonResponse(200, {
         participantId: authorized.participantId,
         state: publicState,
-        streamUrl: dependencies.streamUrl(updated.code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(updated)),
       });
     }
 
@@ -326,7 +331,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       const cursor = sanitizeNotebookCollabCursor(body, now());
       if (!cursor) return jsonResponse(400, { error: "Posição inválida." });
       await dependencies
-        .publishCursor?.(authorized.state.code, authorized.participantId, cursor)
+        .publishCursor?.(publicStreamIdOf(authorized.state), authorized.participantId, cursor)
         .catch(() => undefined);
       return jsonResponse(200, { ok: true });
     }
@@ -348,7 +353,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
           ),
         );
         await dependencies
-          .publishCursor?.(state.code, authorized.participantId, null)
+          .publishCursor?.(publicStreamIdOf(state), authorized.participantId, null)
           .catch(() => undefined);
         return jsonResponse(200, { state: await save(state) });
       }
@@ -367,7 +372,7 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
       const publicState = await save(updated);
       return jsonResponse(200, {
         state: publicState,
-        streamUrl: dependencies.streamUrl(updated.code),
+        streamUrl: dependencies.streamUrl(publicStreamIdOf(updated)),
       });
     }
 

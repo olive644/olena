@@ -393,7 +393,7 @@ export function useLocalRoom(initialJoinCode?: string) {
 
   // Conecta direto no Realtime Database do Firebase (fora do domínio do
   // app) por Server-Sent Events nativos do navegador, sem SDK, sem
-  // polling: cada mudança que o servidor grava em /rooms/<code> chega aqui
+  // polling: cada mudança que o servidor grava em /rooms/<identificador secreto> chega aqui
   // instantaneamente.
   // Quem o anfitrião removeu sai da sala sem avisar o servidor (o token já não vale mais) e
   // volta à tela inicial com a explicação, em vez de ficar preso numa sala que o ignora.

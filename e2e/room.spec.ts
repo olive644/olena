@@ -475,7 +475,11 @@ for (const activity of ["listening", "bingo"] as const) {
     const handler = createLocalRoomHandler({
       store,
       publish: async (code, state) => {
-        if ((state.revision ?? 0) >= (states.get(code)?.revision ?? 0)) states.set(code, state);
+        // O navegador lê pelo identificador público; os testes conferem pelo código da sala.
+        if ((state.revision ?? 0) >= (states.get(code)?.revision ?? 0)) {
+          states.set(code, state);
+          states.set(state.code, state);
+        }
       },
       streamUrl: (code) => `${testInfo.project.use.baseURL}/test-room/${code}`,
     });

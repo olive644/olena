@@ -29,7 +29,7 @@ const handler = createNotebookCollabHandler({
   ),
   publish: createFirebasePublicRoomPublisher(config),
   publishCursor: createFirebaseCursorPublisher(config),
-  streamUrl: (code) => firebasePublicStreamUrl(config, code),
+  streamUrl: (publicId) => firebasePublicStreamUrl(config, publicId),
 });
 
 export default createVercelHandler("/api/notebook-collab", handler);

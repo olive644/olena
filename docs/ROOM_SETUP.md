@@ -35,7 +35,11 @@ repositório. Na aba **Regras** do Realtime Database, publique o conteúdo compl
 preservando quaisquer regras de outros produtos do mesmo projeto. Não copie versões antigas deste
 guia: o arquivo é a única fonte.
 
-- `/rooms/<código>` é a projeção pública da sala (participantes, pergunta atual e placar). Um
+- `/rooms/<identificador>` é a projeção pública da sala ou do caderno compartilhado
+  (participantes, pergunta atual e placar). O identificador é um valor aleatório de 128 bits,
+  guardado no estado privado e entregue só a quem entra pela API; o código de 5 letras que as
+  pessoas digitam não é o caminho. Salas criadas antes dessa mudança seguem pelo código até
+  acabarem. Um
   navegador só **lê** enquanto `expiresAt` for um número no futuro, e ninguém escreve direto. Uma
   projeção sem `expiresAt` não é legível.
 - `/private-rooms/<código>` guarda o estado completo (com o token do organizador e as respostas
@@ -86,7 +90,7 @@ vigor.
   apresenta novamente a credencial temporária do organizador ou participante
   e recebe o estado atual sem criar uma nova entrada na sala.
 - O navegador de cada participante conecta direto em
-  `https://SEU-PROJETO-default-rtdb.firebaseio.com/rooms/<código>.json`
+  `https://SEU-PROJETO-default-rtdb.firebaseio.com/rooms/<identificador>.json`
   usando `EventSource` (API nativa do navegador) e recebe cada atualização
   em tempo real, sem precisar perguntar de novo.
 - `POST ?action=start` / `?action=next` / `?action=end`: só o organizador

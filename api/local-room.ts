@@ -33,7 +33,7 @@ const handler = createLocalRoomHandler({
   ),
   observe: (event) => console.info(JSON.stringify({ event: "room_request", ...event })),
   publish: createFirebasePublicRoomPublisher(config, fetch, () => Date.now(), accessToken),
-  streamUrl: (code) => firebasePublicStreamUrl(config, code),
+  streamUrl: (publicId) => firebasePublicStreamUrl(config, publicId),
 });
 
 export default createVercelHandler("/api/local-room", handler);

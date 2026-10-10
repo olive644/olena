@@ -261,32 +261,39 @@ describe("notebook collaboration handler", () => {
 
 describe("cursor ao vivo", () => {
   async function room() {
-    const published: { code: string; participantId: string; cursor: unknown }[] = [];
+    const published: { publicId: string; participantId: string; cursor: unknown }[] = [];
     const handler = createNotebookCollabHandler({
       store: createMemoryRoomStore(),
       now: () => 5000,
       publish: async () => {},
-      publishCursor: async (code, participantId, cursor) => {
-        published.push({ code, participantId, cursor });
+      publishCursor: async (publicId, participantId, cursor) => {
+        published.push({ publicId, participantId, cursor });
       },
-      streamUrl: () => "",
+      streamUrl: (publicId) => publicId,
     });
     const created = await handler(request("create", { notebookId: "sheet", displayName: "Alice" }));
-    const { code, hostToken, participantId } = (await created.json()) as {
+    const {
+      code,
+      hostToken,
+      participantId,
+      streamUrl: publicId,
+    } = (await created.json()) as {
       code: string;
       hostToken: string;
       participantId: string;
+      streamUrl: string;
     };
-    return { handler, published, code, hostToken, participantId };
+    return { handler, published, code, hostToken, participantId, publicId };
   }
 
   it("publica só a posição do participante autenticado, com a hora do servidor", async () => {
-    const { handler, published, code, hostToken, participantId } = await room();
+    const { handler, published, code, hostToken, participantId, publicId } = await room();
     const answer = await handler(
       request("cursor", { code, credential: hostToken, x: 120.6, y: 300 }),
     );
     expect(answer.status).toBe(200);
-    expect(published).toEqual([{ code, participantId, cursor: { x: 121, y: 300, at: 5000 } }]);
+    expect(publicId).toMatch(/^[a-f0-9]{32}$/);
+    expect(published).toEqual([{ publicId, participantId, cursor: { x: 121, y: 300, at: 5000 } }]);
   });
 
   it("limita a posição à folha e recusa valores que não são números", async () => {
@@ -323,8 +330,8 @@ describe("cursor ao vivo", () => {
   });
 
   it("sair da sala apaga o cursor", async () => {
-    const { handler, published, code, hostToken, participantId } = await room();
+    const { handler, published, code, hostToken, participantId, publicId } = await room();
     await handler(request("leave", { code, credential: hostToken }));
-    expect(published.at(-1)).toEqual({ code, participantId, cursor: null });
+    expect(published.at(-1)).toEqual({ publicId, participantId, cursor: null });
   });
 });

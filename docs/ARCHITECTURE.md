@@ -79,7 +79,7 @@ Vercel e testável sem rede.
 
 No Modo Sala, o servidor é a única autoridade. O estado completo, com o token do anfitrião e as
 respostas certas, fica em `/private-rooms/<código>` e ninguém o lê pelo navegador. A projeção
-pública, sem segredos, vai para `/rooms/<código>` no Firebase Realtime Database, e cada navegador a
+pública, sem segredos, vai para `/rooms/<identificador secreto>` no Firebase Realtime Database, e cada navegador a
 recebe por Server-Sent Events (`EventSource`) em `src/hooks/use-local-room.ts`, sem o SDK do
 Firebase. O armazenamento passa pela abstração `KvStore` (`src/backend/kv-store.ts`), com
 concorrência otimista por versão (ETag): conflitos são repetidos, nunca sobrescritos. Cada
