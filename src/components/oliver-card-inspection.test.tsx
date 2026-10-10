@@ -18,3 +18,13 @@ it("puts title above lore, rarity in the border and allows a full keyboard rotat
     "rotateY(0deg)",
   );
 });
+it("shows the special Star arcana without common rarity or combat stats", () => {
+  render(<OliverCardInspection id="oliver-star-tarot" />);
+  expect(screen.getByRole("heading", { name: "A Estrela" })).toBeTruthy();
+  expect(screen.queryByLabelText("Raridade comum")).toBeNull();
+  expect(screen.queryByText("Stamina")).toBeNull();
+  expect(screen.getByText("XVII")).toBeTruthy();
+  expect(screen.getByAltText(/Oliver devolve a luz/).getAttribute("src")).toContain(
+    "oliver-star-tarot",
+  );
+});

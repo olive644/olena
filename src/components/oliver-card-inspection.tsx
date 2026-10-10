@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
-import type { OliverCardId } from "../data/oliver-cards";
+import type { OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
 
-export function OliverCardInspection({ id }: { id: OliverCardId }) {
+export function OliverCardInspection({ id }: { id: OliverArtworkId }) {
   const [angle, setAngle] = useState({ x: 0, y: 0 });
   const gesture = useRef<{ x: number; y: number; angle: typeof angle } | null>(null);
   const front = Math.cos((angle.y * Math.PI) / 180) >= 0;

@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Identidade das cartas e arcano do Oliver (2026-10-10)
+
+- Comuns usam o alfabeto de papel existente, com acentos acessíveis, e PaperDigits nos atributos. Moldura prata e trilhos coloridos preservam a raridade comum e cada paleta narrativa.
+- Nova arte original: XVII, A Estrela. Composição noturna com rio, sino e duas correntes conecta a história do Oliver. Moldura arqueada azul e ouro, sem atributos de combate. Verso próprio e inspeção 360 reutilizada.
+- Tarot é uma vitrine de arte na coleção, não uma carta concedida ou sorteada nos baús. Probabilidades, inventário e sincronização de conta permanecem inalterados. WebP 480/720 sob demanda; nenhuma dependência nova.
+
 ## Baús comuns e inspeção das cartas (2026-10-10)
 
 - Baú comum agora é madeira clara com ferragens cinza, sem joia ou dourado de

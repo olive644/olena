@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-10: PaperCardTitle reutiliza símbolos SVG do alfabeto monocromático com acentos. OliverArtworkId separa a vitrine do tarot XVII, A Estrela, dos dez OliverCardId comuns. OliverCardInspection atende ambos, sem alterar chances ou inventário. Arte WebP nova em public/oliver-cards; detalhes de geração em TAROT.md.
+
 2026-10-10, revisão visual: baú comum madeira/cinza, prêmio tocável voa ao slot
 no retorno do minigame. Espera salta, barra roxa e pronto avisa uma vez. Booster
 permite arraste livre; Guardar anima todas as cartas e abre coleção com flip das

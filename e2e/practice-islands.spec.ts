@@ -195,6 +195,20 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await page.screenshot({ path: testInfo.outputPath("oliver-card-inspection.png") });
   await page.getByRole("button", { name: "Recentralizar carta" }).click();
   await page.getByRole("button", { name: "Voltar à coleção" }).click();
+  await page.getByRole("button", { name: "Ver tarot do Oliver, A Estrela" }).click();
+  await expect(page.getByRole("heading", { name: "A Estrela" })).toBeVisible();
+  await expect
+    .poll(() =>
+      page
+        .locator(".oliver-tarot-front .oliver-card-art")
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+  await page.screenshot({ path: testInfo.outputPath("oliver-tarot.png") });
+  await page
+    .locator(".oliver-tarot-front")
+    .screenshot({ path: testInfo.outputPath("oliver-tarot-card.png") });
+  await page.getByRole("button", { name: "Voltar à coleção" }).click();
   await page.getByRole("button", { name: "Fechar coleção" }).click();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();

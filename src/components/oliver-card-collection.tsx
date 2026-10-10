@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { oliverCollection } from "../data/math-place-rewards";
 import { OLIVER_CARDS, type OliverCardId } from "../data/oliver-cards";
+import { OLIVER_TAROT, type OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
 import { OliverCardInspection } from "./oliver-card-inspection";
 import { PaperCloseIcon } from "./paper-close-icon";
@@ -13,7 +14,7 @@ export function OliverCardCollection({
   incoming?: OliverCardId[] | undefined;
 }) {
   const owned = oliverCollection();
-  const [selected, setSelected] = useState<OliverCardId | null>(null);
+  const [selected, setSelected] = useState<OliverArtworkId | null>(null);
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => {
     panel.current?.querySelector<HTMLButtonElement>("button")?.focus();
@@ -71,8 +72,8 @@ export function OliverCardCollection({
         >
           <PaperCloseIcon />
         </button>
-        <h1>As lembranças do Oliver</h1>
-        <p>{Object.keys(owned).length}/10 descobertas · Todas comuns</p>
+        <h1>{selected === OLIVER_TAROT.id ? "O arcano do Oliver" : "As lembranças do Oliver"}</h1>
+        {!selected && <p>{Object.keys(owned).length}/10 descobertas · Todas comuns</p>}
         {selected ? (
           <div className="oliver-collection-detail">
             <OliverCardInspection id={selected} />
@@ -109,6 +110,23 @@ export function OliverCardCollection({
                 </button>
               ))}
             </div>
+            <button
+              className="oliver-tarot-showcase"
+              onClick={() => setSelected(OLIVER_TAROT.id)}
+              aria-label="Ver tarot do Oliver, A Estrela"
+            >
+              <img
+                src="/oliver-cards/oliver-star-tarot-small.webp"
+                alt=""
+                width="480"
+                height="720"
+                loading="lazy"
+              />
+              <span>
+                <strong>XVII · A Estrela</strong>
+                <small>Arte especial do Oliver. Fora dos baús comuns.</small>
+              </span>
+            </button>
             <details className="oliver-card-chances">
               <summary>Chances dos baús comuns</summary>
               <p>
