@@ -71,6 +71,9 @@ jobs:
       - name: Run end-to-end tests
         timeout-minutes: 20
         run: npm run test:e2e -- --project=${{ matrix.project }} --workers=${{ matrix.workers }}
+      - name: Verify isolated Helena preview
+        timeout-minutes: 5
+        run: npx playwright test --config playwright.helena.config.ts --project=${{ matrix.project }} --workers=1
 
   # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
   e2e-result:

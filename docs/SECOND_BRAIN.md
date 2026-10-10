@@ -1,5 +1,15 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, preview local Helena: preview-helena-chat.html demonstra chat com
+estrela original RoomPointsIcon, sem IA/API, sincronização ou persistência.
+HelenaChatPreview captura mouse/toque, limita a posição e encaixa na borda;
+limiar de 6px separa clique de arrasto. Estados de movimento controlam flutuação,
+inclinação, abertura, fechamento, arrasto e pouso. Fechamento aguarda 220ms,
+exceto com movimento reduzido. Testes focados cobrem conversa, toque, teclado,
+fechamento e arrasto/encaixe em desktop e viewport móvel. Não integrado ao app.
+Prova do preview: npx playwright test --config playwright.helena.config.ts.
+Servidor Vite separado do smoke de produção, sem adicionar a demo ao bundle.
+
 2026-10-10, tempo das questões: MATH_COURSES define initialQuestionSeconds por etapa
 (14, 16, 18, 20, 22 e 24 s do fundamental ao cálculo III). mathQuestion soma 3 s
 por tópico e mantém a aceleração existente. mathResponse valida budget e drain

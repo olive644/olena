@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Olena · Helena virtual</title>
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import React from "react";
+      import { createRoot } from "react-dom/client";
+      import "/src/styles.css";
+      import { HelenaChatPreviewPage } from "/src/views/helena-chat-preview-page.tsx";
+      createRoot(document.getElementById("root")).render(
+        React.createElement(HelenaChatPreviewPage),
+      );
+    </script>
+  </body>
+</html>
