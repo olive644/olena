@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, integração Helena: AppContent monta HelenaChat por lazy import fora
+do Suspense das abas. Estado sobrevive à navegação. Arquivos compartilhados agora
+são helena-chat.tsx/css/test.tsx; preview reutiliza o componente com preview=true.
+Não aparece no onboarding/projetor e fica oculto sob diálogos modais. Breakpoint
+de 900px evita conflito com a barra móvel. Respostas ainda são demonstrativas,
+sem API ou armazenamento. Prova no app real: e2e/helena-app.spec.ts.
+
 2026-10-10, preview local Helena: preview-helena-chat.html demonstra chat com
 estrela original RoomPointsIcon, sem IA/API, sincronização ou persistência.
 HelenaChatPreview captura mouse/toque, limita a posição e encaixa na borda;

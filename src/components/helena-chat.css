@@ -649,7 +649,13 @@
     transform: translateY(-3px) rotate(3deg);
   }
 }
-@media (max-width: 599px) {
+/* Não disputar foco ou cliques com os diálogos e o menu do aplicativo. */
+body:has(dialog[open]) .helena-chat--application,
+body:has([aria-modal="true"]) .helena-chat--application {
+  visibility: hidden;
+  pointer-events: none;
+}
+@media (max-width: 899px) {
   .helena-chat {
     right: max(16px, env(safe-area-inset-right));
     bottom: calc(100px + env(safe-area-inset-bottom));

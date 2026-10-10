@@ -48,10 +48,15 @@ for (const width of [320, 360, 390, 768, 1280]) {
     } else {
       await expect(profile).toBeVisible();
       await expect(profile).toHaveCSS("border-radius", "50%");
-      const sidebarBox = await page.getByRole("complementary").boundingBox();
+      const sidebarBox = await page
+        .getByRole("complementary", { name: "", exact: true })
+        .boundingBox();
       const mainBox = await page.getByRole("main").boundingBox();
       expect(mainBox!.x).toBeCloseTo(sidebarBox!.x + sidebarBox!.width, 0);
-      await expect(page.getByRole("complementary")).toHaveCSS("box-shadow", "none");
+      await expect(page.getByRole("complementary", { name: "", exact: true })).toHaveCSS(
+        "box-shadow",
+        "none",
+      );
     }
     await navigation.getByRole("button", { name: "Foco", exact: true }).click();
     if (mobile) {
