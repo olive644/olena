@@ -18,6 +18,8 @@ import { PaperDigits } from "./paper-digits";
 import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
+import { COMMON_CHEST_POINTS, finishMathPlace } from "../data/math-place-rewards";
+import { CommonMathChest } from "./math-place-treasure";
 import "./math-arcade.css";
 import "./math-island-journey.css";
 import "../paper-buttons.css";
@@ -118,7 +120,15 @@ export function MathArcade({
   useEffect(() => {
     if (!finished) return;
     audio.current?.play("finish");
+    const settlementTimer = window.setTimeout(() => {
+      try {
+        finishMathPlace(courseId, roundId.current, round.points);
+      } catch {
+        setStorageWarning(true);
+      }
+    }, 0);
     const rewardTimer = window.setTimeout(() => {
+      if (round.points === 0) return;
       setReward({
         id: roundId.current,
         place: 1,
@@ -139,9 +149,10 @@ export function MathArcade({
     frame = requestAnimationFrame(animate);
     return () => {
       window.clearTimeout(rewardTimer);
+      window.clearTimeout(settlementTimer);
       cancelAnimationFrame(frame);
     };
-  }, [finished, round.points]);
+  }, [finished, round.points, courseId]);
 
   async function api(input: Parameters<typeof requestMath>[0]) {
     controller.current?.abort();
@@ -268,7 +279,7 @@ export function MathArcade({
       className={
         "math-arcade math-arcade--adaptive is-" + status + (finished ? " is-finished" : "")
       }
-      aria-label="Laboratório das contas"
+      aria-label="Desafio de Matemática"
       style={
         {
           "--math-color": course.color,
@@ -369,6 +380,12 @@ export function MathArcade({
               {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
             </p>
             <span className="math-result-topic">{course.topics[round.progress.level]}</span>
+            {round.points >= COMMON_CHEST_POINTS && (
+              <div className="math-earned-chest">
+                <CommonMathChest />
+                <span>Você ganhou um baú comum!</span>
+              </div>
+            )}
             <button
               className="primary-button math-start-button"
               type="button"
@@ -418,10 +435,10 @@ export function MathArcade({
               role="progressbar"
               aria-label="Reserva de tempo"
               aria-valuemin={0}
-              aria-valuemax={90}
-              aria-valuenow={Math.round(round.bank)}
+              aria-valuemax={60}
+              aria-valuenow={Math.min(60, Math.round(round.bank))}
             >
-              <span style={{ width: (round.bank / 90) * 100 + "%" }} />
+              <span style={{ width: Math.min(100, (round.bank / 60) * 100) + "%" }} />
             </div>
             <div className="math-game-question">
               <MathUserAvatar />

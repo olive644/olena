@@ -7,7 +7,9 @@ import { isMotionReduced } from "../data/accessibility-preferences";
 import { PracticeUserPortrait } from "./practice-user-portrait";
 import { PaperArrow } from "./paper-arrow";
 import { MathArcade } from "./math-arcade";
-import { MathIcon } from "./math-paper-art";
+import { HelenaRoomIcon } from "./helena-room-icon";
+import { FocusPaperArrow } from "./focus-paper-arrow";
+import { MathPlaceTreasure } from "./math-place-treasure";
 import { MathPlaceScene } from "./math-place-scene";
 import "./math-island-journey.css";
 
@@ -32,7 +34,7 @@ export function MathIslandJourney({
     const overflow = document.body.style.overflow;
     const previous = document.activeElement;
     document.body.style.overflow = "hidden";
-    root.current?.querySelector<HTMLButtonElement>(".math-start-button")?.focus();
+    root.current?.querySelector<HTMLButtonElement>(".math-place-start")?.focus();
     return () => {
       document.body.style.overflow = overflow;
       if (previous instanceof HTMLElement) previous.focus();
@@ -146,7 +148,9 @@ export function MathIslandJourney({
               } as CSSProperties
             }
           >
-            {Math.abs(position - index) <= 1 && <MathPlaceScene course={item.id} />}
+            {Math.abs(position - index) <= 1 && (
+              <MathPlaceScene course={item.id} active={position === index} />
+            )}
           </button>
         ))}
         <div key={travel.key} className={`math-journey-avatar is-moving-${travel.direction}`}>
@@ -158,14 +162,34 @@ export function MathIslandJourney({
         <h1>{course.title}</h1>
         <p>{course.topics[mathLearning(course.id).level]}</p>
         <button
-          className="primary-button math-start-button"
+          className="primary-button math-place-start"
           type="button"
           disabled={phase !== "map"}
           onClick={() => setPhase("enter")}
         >
-          <MathIcon name="explore" /> Explorar lugar
+          <HelenaRoomIcon name="play" /> Explorar lugar
         </button>
       </div>
+      <button
+        className="focus-mode-arrow math-place-arrow math-place-arrow--previous"
+        aria-label="Lugar anterior"
+        disabled={index === 0 || phase !== "map"}
+        onClick={() => visit(index - 1)}
+      >
+        <FocusPaperArrow />
+      </button>
+      <button
+        className="focus-mode-arrow focus-mode-arrow--next math-place-arrow math-place-arrow--next"
+        aria-label="Próximo lugar"
+        disabled={index === MATH_COURSES.length - 1 || phase !== "map"}
+        onClick={() => visit(index + 1)}
+      >
+        <FocusPaperArrow />
+      </button>
+      <MathPlaceTreasure
+        key={`${course.id}:${phase === "return" ? "return" : "map"}`}
+        course={course.id}
+      />
     </section>,
     document.body,
   );

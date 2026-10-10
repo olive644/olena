@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Pontos e baús da Matemática (2026-10-10)
+
+- A reserva começa cheia em 60 segundos, após 3-2-1. A barra anterior dividia 60 por 90 e parecia já consumida. Tempo por questão e reserva continuam independentes. Acertos ainda reabastecem até 90 segundos.
+- Som exclusivo reforçado, com desbloqueio de fonte no gesto e fallback webkitAudioContext para Safari. Teste de navegador verifica contexto e tons, não saída física do aparelho.
+- Artes responsivas com prioridade atual/preview e compressão WebP: 12 variantes, 560.032 bytes, redução de 34%. Nenhuma arte foi recortada.
+- Explorar lugar usa o botão e ícone de jogar do app sem inspeção do ícone. Voltar mantém creme. Setas roxas de Foco/Praticar junto com arraste, roda e teclado. Entrada principal renomeada Explorar Matemática.
+- Pontos de partidas encerradas acumulam por lugar, com recibo idempotente e contagem animada sobre a arte. Partida com zero pontos não emite nem registra XP.
+- Regra inicial: uma partida com pelo menos 100 pontos concede um baú comum. Destrancar inicia 60 segundos, persistidos como prazo absoluto; Abrir só fica disponível após o prazo. Entrega, espera e tampa animadas em SVG de papel; movimento reduzido respeitado.
+- Pontos e baús persistem localmente em helena.mathPlaceRewards.v1, sem autoridade competitiva ou sincronização de conta. Baús têm abertura visual e histórico, mas não concedem itens ou bônus internos nesta versão. Essa economia fica para uma decisão de produto posterior.
+- Verificado: lint (sem erros), formatação, API, 200 arquivos/1243 testes, TypeScript, build e orçamento passaram. E2E desktop/mobile passou com início cheio, áudio em execução, pontos, XP e abertura do baú após o minuto. JS inicial 275,7 KiB, total 1164,8 KiB.
+
 ## Lugares da Matemática (2026-10-09)
 
 - A ilha de disciplina também abre por clique/toque na arte; disciplinas bloqueadas permanecem sem entrada. Arrastar a arte navega, sem abrir acidentalmente.

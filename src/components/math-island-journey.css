@@ -41,9 +41,9 @@
 }
 .math-world-back:hover {
   transform: translateY(-3px);
-  color: #fff9ef;
-  background: #7c3aed;
-  box-shadow: 0 8px #51259b;
+  color: #292432;
+  background: #fff9ef;
+  box-shadow: 0 8px #d5c8b0;
 }
 .math-world-back:hover img {
   animation: math-back-arrow 0.5s ease-in-out;
@@ -191,6 +191,27 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+}
+.math-place-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.math-place-arrow {
+  position: absolute;
+  top: 48%;
+  z-index: 8;
+}
+.math-place-arrow--previous {
+  left: calc(50% - min(330px, 43vw));
+}
+.math-place-arrow--next {
+  right: calc(50% - min(330px, 43vw));
+}
+.math-journey:not(.is-map) .math-place-treasure,
+.math-journey:not(.is-map) .math-place-arrow {
+  opacity: 0;
+  pointer-events: none;
 }
 .math-action-icon {
   width: 32px;

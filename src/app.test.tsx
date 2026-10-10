@@ -308,7 +308,7 @@ describe("App", () => {
     render(<App />);
     navigate("Praticar");
     expect(await screen.findByRole("heading", { name: "Picos dos Padrões" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Entrar no laboratório" }));
+    fireEvent.click(screen.getByRole("button", { name: "Explorar Matemática" }));
     expect(screen.getByRole("region", { name: "Ilhas de Matemática" })).toBeTruthy();
     expect(document.querySelector(".practice-trail-map")).toBeNull();
     expect(screen.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeTruthy();
@@ -325,7 +325,7 @@ describe("App", () => {
       fireEvent.click(screen.getByRole("button", { name: "Mundo anterior" }));
     for (let index = 0; index < 6; index++) {
       const button = screen.getByRole("button", {
-        name: index === 4 ? "Entrar no laboratório" : "Ilha bloqueada",
+        name: index === 4 ? "Explorar Matemática" : "Ilha bloqueada",
       }) as HTMLButtonElement;
       expect(button.disabled).toBe(index !== 4);
       if (index !== 4) fireEvent.click(button);
@@ -387,7 +387,7 @@ describe("App", () => {
     expect(screen.getByText("Improve")).toBeTruthy();
 
     navigate("Praticar");
-    fireEvent.click(await screen.findByRole("button", { name: "Entrar no laboratório" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Explorar Matemática" }));
     fireEvent.click(screen.getByRole("button", { name: "Voltar às ilhas" }));
     navigate("Biblioteca");
     expect(await screen.findByText("Improve")).toBeTruthy();

@@ -114,7 +114,7 @@ function PracticeHub() {
               <path d="M11 14h2v4h-2Z" fill="#333142" />
             </svg>
           )}
-          {available ? "Entrar no laboratório" : "Ilha bloqueada"}
+          {available ? "Explorar Matemática" : "Ilha bloqueada"}
         </button>
       </div>
     </div>

@@ -120,10 +120,10 @@ test("explora mundos com a foto do perfil e abre somente Matemática", async ({
   );
   await expect(page.getByRole("button", { name: "Ilha bloqueada" })).toBeDisabled();
   await page.getByRole("button", { name: "Mundo anterior" }).click();
-  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await page.getByRole("button", { name: "Explorar Matemática" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
   await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
-  await expect(page.getByRole("region", { name: "Laboratório das contas" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Desafio de Matemática" })).toBeVisible();
   await expect(page.locator(".practice-trail-map")).toHaveCount(0);
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByAltText("Sua foto sobre a ilha")).toBeVisible();
@@ -283,7 +283,7 @@ test("preserva um flashcard ao explorar o protótipo", async ({ page }, testInfo
     })
     .getByRole("button", { name: "Praticar", exact: true })
     .click();
-  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await page.getByRole("button", { name: "Explorar Matemática" }).click();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
   await expect(page.getByText("Improve", { exact: true })).toBeVisible();
@@ -422,7 +422,7 @@ test("abre escrita à mão, retoma a folha e completa um bingo", async ({ page }
       exact: true,
     })
     .click();
-  await page.getByRole("button", { name: "Entrar no laboratório" }).click();
+  await page.getByRole("button", { name: "Explorar Matemática" }).click();
   await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
   await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
