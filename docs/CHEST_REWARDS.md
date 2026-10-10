@@ -66,8 +66,10 @@ sintetizados pelo WebAudio do app, desbloqueados por gesto e respeitando silênc
 Arcano usa timbre e sequência diferentes para destrancamento, abertura e revelação.
 Não há novo serviço ou dependência.
 
-As respostas continuam sendo validadas pela API Olena. O áudio começa no gesto;
-a pontuação só muda após validação. A pausa mínima de feedback, 260 ms ao acertar
-e 600 ms ao errar, se sobrepõe ao tempo da requisição em vez de ser somada a ele.
+As respostas continuam sendo validadas pela API Olena. O gesto desbloqueia o áudio;
+som de resultado, mensagem e pontuação só confirmam o retorno validado da API.
+O feedback permanece 650 ms ao acertar e 1300 ms ao errar ou esgotar o prazo,
+contados após a confirmação. A latência não é descontada da duração visível.
+Reserva de tempo e prazo da questão pausam durante requisição e feedback.
 Não há loading de página entre questões. Rede lenta ainda pode exigir espera;
 respostas duplicadas permanecem bloqueadas e erros permitem tentar novamente.

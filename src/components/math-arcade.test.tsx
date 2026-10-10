@@ -5,6 +5,7 @@ import { handleOlena } from "../backend/olena-handler";
 import { mathLearning } from "../data/math-learning";
 import { updateAccessibility } from "../data/accessibility-preferences";
 import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
+import * as mathSound from "../data/math-sound";
 
 beforeEach(() => {
   localStorage.removeItem(ACCOUNT_OWNER_KEY);
@@ -152,11 +153,101 @@ it("shows a recoverable API error instead of inventing questions", async () => {
   expect(screen.getByRole("alert").textContent).toContain("offline");
   expect(screen.queryAllByRole("button", { name: /^Resposta/ })).toHaveLength(0);
 });
-it("overlaps feedback with API latency and does not flash a loading overlay between questions", async () => {
-  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+it.each([
+  { correct: true, latency: 80, duration: 650 },
+  { correct: true, latency: 800, duration: 650 },
+  { correct: false, latency: 80, duration: 1300 },
+  { correct: false, latency: 1800, duration: 1300 },
+])(
+  "keeps confirmed feedback visible for $duration ms with $latency ms API latency ($correct)",
+  async ({ correct, latency, duration }) => {
+    vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+    const play = vi.fn();
+    vi.spyOn(mathSound, "createMathSound").mockReturnValue({
+      play,
+      unlock: vi.fn(),
+      dispose: vi.fn(),
+    });
+    render(<MathArcade onBack={() => {}} />);
+    await begin();
+    play.mockClear();
+    const answer = correctAnswer();
+    const choice = correct
+      ? answer
+      : Number(
+          screen
+            .getAllByRole("button", { name: /^Resposta/ })
+            .find((item) => item.getAttribute("aria-label") !== "Resposta " + answer)!
+            .getAttribute("aria-label")!
+            .replace("Resposta ", ""),
+        );
+    const button = screen.getByRole("button", { name: "Resposta " + choice });
+    let release: (() => void) | undefined;
+    vi.mocked(fetch).mockImplementationOnce(async (_url, init) => {
+      await new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      return handleOlena(new Request("http://localhost/api/olena?action=math&version=1", init));
+    });
+    await click("Resposta " + choice);
+    expect(document.querySelector(".math-api-loading")).toBeNull();
+    expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
+    expect(document.querySelector(".math-answer-reaction")).toBeNull();
+    expect(play).not.toHaveBeenCalled();
+    await tick(latency);
+    await act(async () => {
+      release!();
+    });
+    expect(button.getAttribute("data-feedback")).toBe(correct ? "correct" : "wrong");
+    expect(play).toHaveBeenCalledExactlyOnceWith(correct ? "correct" : "wrong");
+    const reserve = screen.getByRole("progressbar").getAttribute("aria-valuenow");
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    await tick(duration - 1);
+    expect(document.querySelector(".math-answer-reaction")).not.toBeNull();
+    expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe(reserve);
+    expect(mathLearning("foundations").correct).toBe(Number(correct));
+    expect(fetch).toHaveBeenCalledTimes(2);
+    await tick(1);
+    expect(document.querySelector(".math-answer-reaction")).toBeNull();
+    expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+  },
+);
+
+it("retries a failed answer without celebrating or awarding it before API confirmation", async () => {
+  const play = vi.fn();
+  vi.spyOn(mathSound, "createMathSound").mockReturnValue({
+    play,
+    unlock: vi.fn(),
+    dispose: vi.fn(),
+  });
   render(<MathArcade onBack={() => {}} />);
   await begin();
-  const initial = screen.getByRole("heading").getAttribute("aria-label");
+  play.mockClear();
+  vi.mocked(fetch).mockRejectedValueOnce(new Error("offline"));
+  await click("Resposta " + correctAnswer());
+  expect(screen.getByRole("alert").textContent).toContain("offline");
+  expect(document.querySelector(".math-answer-reaction")).toBeNull();
+  expect(mathLearning("foundations").correct).toBe(0);
+  expect(play).not.toHaveBeenCalled();
+  await tick(2000);
+  await click("Tentar novamente");
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(document.querySelector('.math-answer-button[data-feedback="correct"]')).not.toBeNull();
+  expect(mathLearning("foundations").correct).toBe(1);
+  expect(play).toHaveBeenCalledExactlyOnceWith("correct");
+});
+it("keeps a delayed timeout message and broken heart visible before continuing", async () => {
+  const play = vi.fn();
+  vi.spyOn(mathSound, "createMathSound").mockReturnValue({
+    play,
+    unlock: vi.fn(),
+    dispose: vi.fn(),
+  });
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  play.mockClear();
   let release: (() => void) | undefined;
   vi.mocked(fetch).mockImplementationOnce(async (_url, init) => {
     await new Promise<void>((resolve) => {
@@ -164,17 +255,24 @@ it("overlaps feedback with API latency and does not flash a loading overlay betw
     });
     return handleOlena(new Request("http://localhost/api/olena?action=math&version=1", init));
   });
-  await click("Resposta " + correctAnswer());
-  expect(document.querySelector(".math-api-loading")).toBeNull();
-  expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
-  await tick(800);
+  await tick(14100);
+  await tick(1);
+  expect(play).not.toHaveBeenCalled();
+  await tick(2000);
   await act(async () => {
     release!();
   });
+  expect(play).toHaveBeenCalledExactlyOnceWith("timeout");
+  const reserve = screen.getByRole("progressbar").getAttribute("aria-valuenow");
+  await tick(1299);
+  expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
+  expect(document.querySelector(".math-hearts .is-breaking")).not.toBeNull();
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe(reserve);
+  expect(fetch).toHaveBeenCalledTimes(2);
   await tick(1);
-  expect(screen.getByRole("heading").getAttribute("aria-label")).not.toBe(initial);
-  expect(mathLearning("foundations").correct).toBe(1);
-  expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
+  expect(screen.queryByText("Putz! Perdeu a vez!")).toBeNull();
+  expect(document.querySelector(".math-hearts .is-breaking")).toBeNull();
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
 });
 it("treats an unanswered deadline separately, deducts four extra seconds and does not mark a fake choice", async () => {
   vi.spyOn(performance, "now").mockImplementation(() => Date.now());

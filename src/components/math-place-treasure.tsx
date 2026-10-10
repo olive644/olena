@@ -54,13 +54,19 @@ export function CommonMathChest({
 export function MathPlaceTreasure({
   course,
   deliveryOrigin,
+  initialPoints = 0,
+  onPointsChange,
 }: {
   course: MathCourseId;
   deliveryOrigin?: { x: number; y: number; size: number; id: string } | undefined;
+  initialPoints?: number;
+  onPointsChange?: (points: number) => void;
 }) {
   const [value, setValue] = useState(() => mathPlaceRewards(course));
   const [now, setNow] = useState(Date.now);
-  const [points, setPoints] = useState(0);
+  const [points, setPoints] = useState(initialPoints);
+  const displayedPoints = useRef(initialPoints);
+  const reportPoints = useEffectEvent((next: number) => onPointsChange?.(next));
   const [warning, setWarning] = useState("");
   const [opening, setOpening] = useState<string | null>(null);
   const [booster, setBooster] = useState<MathChest | null>(null);
@@ -136,10 +142,14 @@ export function MathPlaceTreasure({
   );
   useEffect(() => {
     const start = performance.now();
+    const from = displayedPoints.current;
     let frame = 0;
     function animate() {
       const ratio = isMotionReduced() ? 1 : Math.min(1, (performance.now() - start) / 900);
-      setPoints(Math.round(value.points * (1 - (1 - ratio) ** 3)));
+      const next = Math.round(from + (value.points - from) * (1 - (1 - ratio) ** 3));
+      displayedPoints.current = next;
+      setPoints(next);
+      reportPoints(next);
       if (ratio < 1) frame = requestAnimationFrame(animate);
     }
     frame = requestAnimationFrame(animate);

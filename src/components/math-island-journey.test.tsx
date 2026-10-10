@@ -1,9 +1,76 @@
 import { cleanup, fireEvent, render, screen, act } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MathIslandJourney } from "./math-island-journey";
+import {
+  finishMathPlace,
+  mathPlaceRewards,
+  MATH_PLACE_REWARDS_KEY,
+} from "../data/math-place-rewards";
+import { updateAccessibility } from "../data/accessibility-preferences";
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.restoreAllMocks();
+  localStorage.removeItem(MATH_PLACE_REWARDS_KEY);
+  updateAccessibility({ reduceMotion: false });
+});
+function shownPoints() {
+  return Number(
+    document.querySelector(".math-place-total .math-number")?.getAttribute("aria-label"),
+  );
+}
+it("counts down to zero and back up from the previous place without changing saved points", () => {
+  vi.useFakeTimers();
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  localStorage.removeItem(MATH_PLACE_REWARDS_KEY);
+  finishMathPlace("foundations", "points", 530, () => 0.5);
+  render(<MathIslandJourney onBack={() => {}} />);
+  act(() => vi.advanceTimersByTime(1000));
+  expect(shownPoints()).toBe(530);
+  fireEvent.click(screen.getByRole("button", { name: "Próximo lugar" }));
+  expect(shownPoints()).toBe(530);
+  act(() => vi.advanceTimersByTime(160));
+  expect(shownPoints()).toBeGreaterThan(0);
+  expect(shownPoints()).toBeLessThan(530);
+  act(() => vi.advanceTimersByTime(1000));
+  expect(shownPoints()).toBe(0);
+  fireEvent.click(screen.getByRole("button", { name: "Lugar anterior" }));
+  expect(shownPoints()).toBe(0);
+  act(() => vi.advanceTimersByTime(160));
+  expect(shownPoints()).toBeGreaterThan(0);
+  expect(shownPoints()).toBeLessThan(530);
+  act(() => vi.advanceTimersByTime(1000));
+  expect(shownPoints()).toBe(530);
+  expect(mathPlaceRewards("foundations").points).toBe(530);
+  expect(mathPlaceRewards("school").points).toBe(0);
+});
+it("retargets from the visible intermediate value when places change quickly", () => {
+  vi.useFakeTimers();
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  localStorage.removeItem(MATH_PLACE_REWARDS_KEY);
+  finishMathPlace("foundations", "points", 530, () => 0.5);
+  finishMathPlace("advanced", "points", 50, () => 0.5);
+  render(<MathIslandJourney onBack={() => {}} />);
+  act(() => vi.advanceTimersByTime(1000));
+  fireEvent.click(screen.getByRole("button", { name: "Próximo lugar" }));
+  act(() => vi.advanceTimersByTime(160));
+  const intermediate = shownPoints();
+  fireEvent.click(screen.getByRole("button", { name: "Próximo lugar" }));
+  expect(shownPoints()).toBe(intermediate);
+  act(() => vi.advanceTimersByTime(1000));
+  expect(shownPoints()).toBe(50);
+});
+it("sets the selected place points directly with reduced motion", () => {
+  vi.useFakeTimers();
+  updateAccessibility({ reduceMotion: true });
+  localStorage.removeItem(MATH_PLACE_REWARDS_KEY);
+  finishMathPlace("foundations", "points", 530, () => 0.5);
+  render(<MathIslandJourney onBack={() => {}} />);
+  act(() => vi.advanceTimersByTime(16));
+  expect(shownPoints()).toBe(530);
+  fireEvent.click(screen.getByRole("button", { name: "Próximo lugar" }));
+  act(() => vi.advanceTimersByTime(16));
+  expect(shownPoints()).toBe(0);
 });
 it("navigates six places horizontally and clamps both ends", () => {
   render(<MathIslandJourney onBack={() => {}} />);
