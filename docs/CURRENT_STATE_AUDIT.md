@@ -2218,3 +2218,10 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - `src/product/module-catalog.ts`: entram `handwriting` e `room` como disponíveis. O módulo `ocr` segue planejado, agora descrito como OCR de digitalizações, porque o OCR local existe somente na seleção de traços da escrita à mão. Teste novo no catálogo.
 - `.env.example` removido do repositório, por decisão do dono. Saem também a exceção no `.gitignore`, a linha no `.prettierignore` e as duas referências (README e `services/tts/README.md`). O `.gitignore` continua ignorando `.env` e `.env.*`. Nenhum valor secreto estava no arquivo. A lista de variáveis passa a ficar nos guias de configuração e no painel da Vercel, e novos integrantes precisam receber as variáveis públicas `VITE_*` por canal próprio.
 - Pendente de decisão do dono, sem alteração aqui: canal de contato de segurança em `SECURITY.md` e na Política de Privacidade, e a presença de `docs/CONTRATO_SOCIETARIO.md` no repositório.
+
+## Segredo do cron e endereço do cliente (2026-10-10)
+
+- Auditoria de segurança, itens 6 e 7.
+- `api/room-cleanup.ts` comparava o segredo do cron com `!==`, que revela pelo tempo de resposta quantos caracteres iniciais batem. A checagem foi para `isCronAuthorized` (`src/backend/cron-auth.ts`), que usa `safeEqual` (hash e `timingSafeEqual`) e recusa tudo quando `CRON_SECRET` não está configurado.
+- `api/speech.ts` identificava o cliente pelo `x-forwarded-for`, que quem chama pode montar. Agora usa `clientAddress` (`src/backend/client-address.ts`), que lê só `x-vercel-forwarded-for`, o mesmo cabeçalho que o `room-guard` e o Google Agenda já usavam. Sem o cabeçalho (desenvolvimento local), o limite cai no balde `anonymous`.
+- Testes: `cron-auth.test.ts` e `client-address.test.ts`.

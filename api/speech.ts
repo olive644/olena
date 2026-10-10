@@ -1,6 +1,7 @@
 import { createCloudflareTtsProvider } from "../src/backend/cloudflare-tts-provider.js";
 import { createFirebaseRealtimeStore } from "../src/backend/firebase-realtime-store.js";
 import { checkRateLimit } from "../src/backend/rate-limit.js";
+import { clientAddress } from "../src/backend/client-address.js";
 import { createSharedSpeechProvider } from "../src/backend/shared-speech-provider.js";
 import { createSpeechHandler } from "../src/backend/speech-handler.js";
 import { createRoomAudioAuthorizer } from "../src/backend/room-audio-authorizer.js";
@@ -26,7 +27,7 @@ const handler = createSpeechHandler({
   ),
   observe: (event) => console.info(JSON.stringify({ event: "speech_request", ...event })),
   identifyClient(request) {
-    return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "anonymous";
+    return clientAddress(request) ?? "anonymous";
   },
   rateLimiter: {
     // Store compartilhado (Firebase) em vez de Map em memória: o limite vale
