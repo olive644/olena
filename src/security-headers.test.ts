@@ -23,6 +23,13 @@ describe("cabeçalhos de segurança da Vercel", () => {
     expect(headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
   });
 
+  it("libera a câmera só para o próprio site, por causa do leitor de QR da sala, e nega o resto", () => {
+    const policy = headers.get("Permissions-Policy") ?? "";
+    expect(policy).toContain("camera=(self)");
+    expect(policy).toContain("microphone=()");
+    expect(policy).toContain("geolocation=()");
+  });
+
   it("não deixa executar script inline nem eval, e bloqueia plugins e enquadramento externo", () => {
     const csp = headers.get("Content-Security-Policy") ?? "";
     const scriptSrc = csp.split(";").find((part) => part.trim().startsWith("script-src")) ?? "";
