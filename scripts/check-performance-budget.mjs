@@ -214,7 +214,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Artwork is responsive WebP loaded on reveal, not bundled as JavaScript.
 // Account reward merge adds 3.4 KiB including compatibility validation.
 // Measured total 1180.0 KiB, initial 276.0 KiB; no added dependency.
-const MAX_TOTAL_JS_BYTES = 1182 * 1024;
+// Free card dragging, CSS 360 inspection and chest/collection delivery add
+// 5.0 KiB to the optional practice route. Total 1185.1 KiB, entry 276.0 KiB.
+const MAX_TOTAL_JS_BYTES = 1187 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

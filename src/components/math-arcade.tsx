@@ -39,9 +39,12 @@ type Round = {
 export function MathArcade({
   onBack,
   courseId = "foundations",
+  onChestReturn,
 }: {
   onBack: () => void;
   courseId?: MathCourseId;
+  onChestReturn?:
+    ((origin: { x: number; y: number; size: number; id: string }) => void) | undefined;
 }) {
   const course = MATH_COURSES.find((item) => item.id === courseId)!;
   const [round, setRound] = useState<Round>(() => ({
@@ -406,10 +409,26 @@ export function MathArcade({
             </p>
             <span className="math-result-topic">{course.topics[round.progress.level]}</span>
             {earnedChest && (
-              <div className="math-earned-chest">
+              <button
+                type="button"
+                className="math-earned-chest"
+                aria-label="Levar baú aos espaços da ilha"
+                onClick={(event) => {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  audio.current?.play("chestUnlock");
+                  if (onChestReturn)
+                    onChestReturn({
+                      x: rect.x + rect.width / 2,
+                      y: rect.y + rect.height / 2,
+                      size: 110,
+                      id: roundId.current,
+                    });
+                  else setStatus("leaving");
+                }}
+              >
                 <CommonMathChest />
                 <span>Você ganhou um baú comum!</span>
-              </div>
+              </button>
             )}
             {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
               <p className="math-result-topic">

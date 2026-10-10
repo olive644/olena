@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { MathCourseId } from "../data/math-courses";
 import {
   isChestCollected,
   MATH_PLACE_REWARDS_KEY,
+  parseMathRewards,
   mathPlaceRewards,
   openMathChest,
   revealMathCard,
@@ -20,6 +21,23 @@ import { OliverCardCollection } from "./oliver-card-collection";
 import "./math-place-treasure.css";
 import "./oliver-card.css";
 
+function rewardsIdentity(raw: string | null, course: MathCourseId) {
+  const value = parseMathRewards(raw ?? "{}")[course];
+  return JSON.stringify({
+    points: value?.points ?? 0,
+    receipts: [...(value?.receipts ?? [])].sort(),
+    chests: [...(value?.chests ?? [])]
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .map((chest) => ({
+        id: chest.id,
+        unlockAt: chest.unlockAt,
+        opened: chest.opened,
+        cards: chest.cards ?? [],
+        revealed: chest.revealed ?? 0,
+      })),
+  });
+}
+
 export function CommonMathChest({ open = false }: { open?: boolean }) {
   return (
     <svg
@@ -29,24 +47,23 @@ export function CommonMathChest({ open = false }: { open?: boolean }) {
     >
       <ellipse cx="70" cy="107" rx="54" ry="8" fill="#292432" opacity=".15" />
       <path fill="#211d29" d="m13 55 101-5 15 13v37l-22 14-94-12Z" />
-      <path fill="#494152" d="M17 60h90v47l-90-9Z" />
-      <path fill="#302a3a" d="m107 60 18-9v48l-18 8Z" />
-      <path fill="#645b70" d="m17 60 90 47-90-9Z" />
-      <path fill="#efbd3d" d="m20 62 15 1v37l-15-2Zm66 1h15v43l-15-2Z" />
-      <path fill="#ffe88d" d="m20 62 5 0v36l-5-1Zm66 1h5v40l-5-1Z" />
-      <path fill="#292432" d="m38 75 44 2v6l-44-2Zm0 17 44 2v5l-44-2Z" />
+      <path fill="#bf8d5b" d="M17 60h90v47l-90-9Z" />
+      <path fill="#79543e" d="m107 60 18-9v48l-18 8Z" />
+      <path fill="#daa974" d="m17 60 90 47-90-9Z" />
+      <path fill="#777982" d="m20 62 15 1v37l-15-2Zm66 1h15v43l-15-2Z" />
+      <path fill="#c4c5c7" d="m20 62 5 0v36l-5-1Zm66 1h5v40l-5-1Z" />
+      <path fill="#9a704d" d="m38 75 44 2v3l-44-2Zm0 17 44 2v3l-44-2Z" />
       <g className="math-chest-lid">
         <path fill="#211d29" d="m13 57 7-24 13-11 69 0 20 11 8 24-22 10-95-4Z" />
-        <path fill="#494152" d="m25 35 13-8h61l11 9 7 20H19Z" />
-        <path fill="#70647e" d="m25 35 13-8h61l-24 29H19Z" />
-        <path fill="#f2cf86" d="m38 27 12 0-2 29H34Zm49 0h12l6 29H89Z" />
-        <path fill="#efbd3d" d="m13 57 95 0 22-10v10l-22 10-95-4Z" />
-        <path fill="#fff1b7" d="m59 24 8-7 8 7-8 8Z" />
+        <path fill="#bf8d5b" d="m25 35 13-8h61l11 9 7 20H19Z" />
+        <path fill="#e6bf8a" d="m25 35 13-8h61l-24 29H19Z" />
+        <path fill="#9698a0" d="m38 27 12 0-2 29H34Zm49 0h12l6 29H89Z" />
+        <path fill="#c4c5c7" d="m13 57 95 0 22-10v10l-22 10-95-4Z" />
       </g>
-      <path fill="#facc15" d="m55 57 17-3 14 9-3 24-14 7-17-9Z" />
-      <path fill="#ffe88d" d="m55 57 17-3-3 40-17-9Z" />
+      <path fill="#777982" d="m55 57 17-3 14 9-3 24-14 7-17-9Z" />
+      <path fill="#c4c5c7" d="m55 57 17-3-3 40-17-9Z" />
       <path fill="#59413a" d="m67 64 8 3 2 7-6 5-1 8-6-1 1-9-4-6Z" />
-      <path fill="#fff1b7" d="m23 72 5 2-1 5-5-2Zm72 2 5 2-1 5-5-2Z" />
+      <path fill="#e6e3dd" d="m23 72 5 2-1 5-5-2Zm72 2 5 2-1 5-5-2Z" />
       {open && (
         <path
           className="math-chest-glow"
@@ -57,7 +74,13 @@ export function CommonMathChest({ open = false }: { open?: boolean }) {
     </svg>
   );
 }
-export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
+export function MathPlaceTreasure({
+  course,
+  deliveryOrigin,
+}: {
+  course: MathCourseId;
+  deliveryOrigin?: { x: number; y: number; size: number; id: string } | undefined;
+}) {
   const [value, setValue] = useState(() => mathPlaceRewards(course));
   const [now, setNow] = useState(Date.now);
   const [points, setPoints] = useState(0);
@@ -65,8 +88,37 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
   const [opening, setOpening] = useState<string | null>(null);
   const [booster, setBooster] = useState<MathChest | null>(null);
   const [collection, setCollection] = useState(false);
+  const [incomingCards, setIncomingCards] = useState<MathChest["cards"]>([]);
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const openingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dock = useRef<HTMLDivElement>(null);
+  const delivery = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const ghost = delivery.current;
+    const slot = Array.from(
+      dock.current?.querySelectorAll<HTMLButtonElement>("[data-chest-id]") ?? [],
+    ).find((item) => item.dataset["chestId"] === deliveryOrigin?.id);
+    if (!ghost || !slot || !deliveryOrigin) return;
+    if (isMotionReduced()) {
+      ghost.hidden = true;
+      return;
+    }
+    const target = slot.getBoundingClientRect();
+    ghost.style.left = `${target.x}px`;
+    ghost.style.top = `${target.y}px`;
+    const animation = ghost.animate(
+      [
+        {
+          transform: `translate(${deliveryOrigin.x - target.x - target.width / 2}px, ${deliveryOrigin.y - target.y - target.height / 2}px) scale(1.5) rotate(-12deg)`,
+          opacity: 1,
+        },
+        { transform: "translate(0, -35px) scale(1.1) rotate(8deg)", opacity: 1, offset: 0.75 },
+        { transform: "none", opacity: 0 },
+      ],
+      { duration: 950, easing: "cubic-bezier(.2,.7,.2,1)", fill: "forwards" },
+    );
+    return () => animation.cancel();
+  }, [deliveryOrigin]);
   const storedRewards = useRef(localStorage.getItem(MATH_PLACE_REWARDS_KEY));
   function acceptValue(next: ReturnType<typeof mathPlaceRewards>) {
     storedRewards.current = localStorage.getItem(MATH_PLACE_REWARDS_KEY);
@@ -76,13 +128,20 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
     function refresh() {
       const incoming = localStorage.getItem(MATH_PLACE_REWARDS_KEY);
       if (incoming === storedRewards.current) return;
+      const changed =
+        rewardsIdentity(incoming, course) !== rewardsIdentity(storedRewards.current, course);
       storedRewards.current = incoming;
+      if (!changed) {
+        setValue(mathPlaceRewards(course));
+        return;
+      }
       if (openingTimer.current) clearTimeout(openingTimer.current);
       setValue(mathPlaceRewards(course));
       setNow(Date.now());
       setOpening(null);
       setBooster(null);
       setCollection(false);
+      setIncomingCards([]);
     }
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
     window.addEventListener("storage", refresh);
@@ -118,6 +177,25 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
     return () => clearInterval(timer);
   }, [waiting]);
   const chests = value.chests.filter((chest) => !isChestCollected(chest)).slice(0, 3);
+  const previousWaiting = useRef(new Set<string>());
+  const announceReady = useEffectEvent(() => play("chestUnlock"));
+  useEffect(() => {
+    if (
+      value.chests.some(
+        (chest) =>
+          !chest.opened &&
+          chest.unlockAt !== null &&
+          chest.unlockAt <= now &&
+          previousWaiting.current.has(chest.id),
+      )
+    )
+      announceReady();
+    previousWaiting.current = new Set(
+      value.chests
+        .filter((chest) => !chest.opened && chest.unlockAt !== null && chest.unlockAt > now)
+        .map((chest) => chest.id),
+    );
+  }, [value, now]);
   function play(cue: "chestUnlock" | "chestOpen" | "cardReveal") {
     audio.current ??= createMathSound();
     audio.current.unlock();
@@ -159,7 +237,12 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
         <RoomPointsIcon />
         <MathNumber value={points} />
       </div>
-      <div className="math-chest-dock" aria-label="Três espaços de baús">
+      {deliveryOrigin && (
+        <div className="math-chest-flight" ref={delivery} aria-hidden="true">
+          <CommonMathChest />
+        </div>
+      )}
+      <div className="math-chest-dock" ref={dock} aria-label="Três espaços de baús">
         {Array.from({ length: 3 }, (_, index) => {
           const chest = chests[index];
           if (!chest)
@@ -177,7 +260,8 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
           return (
             <button
               key={chest.id}
-              className={`math-chest-slot${remaining > 0 ? " is-unlocking" : ""}${opening === chest.id ? " is-opening" : ""}`}
+              data-chest-id={chest.id}
+              className={`math-chest-slot${remaining > 0 ? " is-unlocking" : chest.unlockAt !== null && !chest.opened ? " is-ready" : ""}${opening === chest.id ? " is-opening" : ""}`}
               disabled={remaining > 0 || opening !== null}
               aria-label={
                 chest.opened
@@ -206,6 +290,7 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
               </span>
               {chest.unlockAt !== null && !chest.opened && (
                 <progress
+                  className="math-chest-progress"
                   aria-label="Destrancando baú"
                   max={60}
                   value={Math.max(0, 60 - remaining)}
@@ -232,6 +317,11 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
         createPortal(
           <OliverCardBooster
             chest={booster}
+            onStore={(cards) => {
+              setIncomingCards(cards);
+              setBooster(null);
+              setCollection(true);
+            }}
             onClose={() => setBooster(null)}
             sound={() => play("cardReveal")}
             onReveal={() => {
@@ -248,7 +338,16 @@ export function MathPlaceTreasure({ course }: { course: MathCourseId }) {
           document.body,
         )}
       {collection &&
-        createPortal(<OliverCardCollection onClose={() => setCollection(false)} />, document.body)}
+        createPortal(
+          <OliverCardCollection
+            incoming={incomingCards}
+            onClose={() => {
+              setIncomingCards([]);
+              setCollection(false);
+            }}
+          />,
+          document.body,
+        )}
     </div>
   );
 }

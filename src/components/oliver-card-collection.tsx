@@ -2,9 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { oliverCollection } from "../data/math-place-rewards";
 import { OLIVER_CARDS, type OliverCardId } from "../data/oliver-cards";
 import { OliverCard } from "./oliver-card";
+import { OliverCardInspection } from "./oliver-card-inspection";
 import { PaperCloseIcon } from "./paper-close-icon";
 
-export function OliverCardCollection({ onClose }: { onClose: () => void }) {
+export function OliverCardCollection({
+  onClose,
+  incoming = [],
+}: {
+  onClose: () => void;
+  incoming?: OliverCardId[] | undefined;
+}) {
   const owned = oliverCollection();
   const [selected, setSelected] = useState<OliverCardId | null>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -34,7 +41,9 @@ export function OliverCardCollection({ onClose }: { onClose: () => void }) {
         }
         if (event.key === "Tab") {
           const buttons = Array.from(
-            panel.current!.querySelectorAll<HTMLElement>("button:not([disabled]), summary"),
+            panel.current!.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), summary, [tabindex="0"]',
+            ),
           );
           const first = buttons[0]!,
             last = buttons.at(-1)!;
@@ -66,19 +75,24 @@ export function OliverCardCollection({ onClose }: { onClose: () => void }) {
         <p>{Object.keys(owned).length}/10 descobertas · Todas comuns</p>
         {selected ? (
           <div className="oliver-collection-detail">
-            <OliverCard id={selected} />
+            <OliverCardInspection id={selected} />
           </div>
         ) : (
           <>
             <div className="oliver-collection-grid">
               {OLIVER_CARDS.map((card) => (
                 <button
-                  className={`oliver-collection-item${owned[card.id] ? " is-owned" : ""}`}
+                  className={`oliver-collection-item${owned[card.id] ? " is-owned" : ""}${incoming.includes(card.id) ? " is-arriving" : ""}`}
                   key={card.id}
                   disabled={!owned[card.id]}
                   onClick={() => setSelected(card.id)}
                   aria-label={`${card.title}, ${owned[card.id] ?? 0} cópias`}
                 >
+                  {incoming.includes(card.id) && (
+                    <div className="oliver-arrival-back">
+                      <OliverCard id={card.id} back />
+                    </div>
+                  )}
                   {owned[card.id] ? (
                     <img
                       src={`/oliver-cards/${card.id}-small.webp`}

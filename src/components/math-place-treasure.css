@@ -97,11 +97,66 @@
 .math-chest-slot progress {
   display: block;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  accent-color: #facc15;
+  bottom: 3px;
+  left: 5px;
+  width: calc(100% - 10px);
+  height: 6px;
+  border: 1px solid #d5c8b0;
+  border-radius: 3px;
+  overflow: hidden;
+  appearance: none;
+  background: #ede4d2;
+  accent-color: #7433e0;
+}
+.math-chest-progress::-webkit-progress-bar {
+  background: #ede4d2;
+}
+.math-chest-progress::-webkit-progress-value {
+  background: linear-gradient(135deg, #a779ef 0 25%, #7433e0 25% 80%, #5924b4 80%);
+}
+.math-chest-progress::-moz-progress-bar {
+  background: #7433e0;
+}
+.is-unlocking .math-common-chest {
+  animation: math-chest-wait 1.8s ease-in-out infinite;
+}
+.is-ready .math-common-chest {
+  animation: math-chest-ready 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px #fff1b7);
+}
+.math-chest-flight {
+  position: fixed;
+  z-index: 270;
+  width: 80px;
+  pointer-events: none;
+}
+@keyframes math-chest-wait {
+  0%,
+  65%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+  42% {
+    transform: translateY(0) scaleY(0.95);
+  }
+}
+@keyframes math-chest-ready {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-7deg);
+  }
+  35% {
+    transform: rotate(7deg);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 .math-card-library {
   position: absolute;
@@ -150,6 +205,10 @@
   justify-items: center;
   font-size: 14px;
   color: #fff1b7;
+  border: 0;
+  padding: 8px;
+  background: none;
+  cursor: pointer;
   animation: math-chest-delivery 0.85s both;
 }
 .math-earned-chest .math-common-chest {
@@ -229,6 +288,9 @@
     animation: none !important;
     transition: none !important;
   }
+  .math-common-chest {
+    animation: none !important;
+  }
 }
 html[data-reduce-motion="true"]
   :is(
@@ -240,4 +302,7 @@ html[data-reduce-motion="true"]
   ) {
   animation: none !important;
   transition: none !important;
+}
+html[data-reduce-motion="true"] .math-common-chest {
+  animation: none !important;
 }

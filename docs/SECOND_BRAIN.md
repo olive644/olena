@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, revisão visual: baú comum madeira/cinza, prêmio tocável voa ao slot
+no retorno do minigame. Espera salta, barra roxa e pronto avisa uma vez. Booster
+permite arraste livre; Guardar anima todas as cartas e abre coleção com flip das
+recebidas. OliverCardInspection gira frente/verso em 360 com CSS, mouse/toque e
+setas. Ícones autorais compactos nos atributos; título acima da lore, raridade
+na moldura. Sem nova dependência. Persistência e sync anteriores preservados.
+
 2026-10-10, sincronização: mathPlaceRewards.v1 agora é uma chave de conta.
 writeSyncedStorage agenda envio; math-rewards-sync une rounds por ID, baús e
 revelações. Importa dados locais se nuvem antiga não tem a chave. Totais legados

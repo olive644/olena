@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { OLIVER_CARDS, type OliverCardId } from "../data/oliver-cards";
+import { OliverAttributeIcon } from "./oliver-card-icons";
 export function OliverCard({ id, back = false }: { id: OliverCardId; back?: boolean }) {
   const card = OLIVER_CARDS.find((item) => item.id === id)!;
   if (back)
@@ -18,10 +19,9 @@ export function OliverCard({ id, back = false }: { id: OliverCardId; back?: bool
       style={{ "--card-accent": card.color } as CSSProperties}
       aria-label={card.title}
     >
-      <header>
-        <small>Oliver · Comum</small>
-        <h2>{card.title}</h2>
-      </header>
+      <span className="oliver-card-rarity" aria-label="Raridade comum">
+        COMUM
+      </span>
       <img
         className="oliver-card-art"
         src={`/oliver-cards/${id}.webp`}
@@ -34,18 +34,22 @@ export function OliverCard({ id, back = false }: { id: OliverCardId; back?: bool
       />
       <dl className="oliver-card-stats">
         <div>
+          <OliverAttributeIcon kind="power" />
           <dt>Poder</dt>
           <dd>{card.power}</dd>
         </div>
         <div>
+          <OliverAttributeIcon kind="life" />
           <dt>Vida</dt>
           <dd>{card.life}</dd>
         </div>
         <div>
+          <OliverAttributeIcon kind="stamina" />
           <dt>Stamina</dt>
           <dd>{card.stamina}</dd>
         </div>
       </dl>
+      <h2>{card.title}</h2>
       <p className="oliver-card-lore">{card.lore}</p>
     </article>
   );

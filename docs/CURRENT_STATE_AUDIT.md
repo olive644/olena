@@ -1,5 +1,22 @@
 # Auditoria do estado atual
 
+## Baús comuns e inspeção das cartas (2026-10-10)
+
+- Baú comum agora é madeira clara com ferragens cinza, sem joia ou dourado de
+  raridade alta. Toque no prêmio ao finalizar leva de volta ao lugar, com voo
+  até o espaço correspondente. Relógio, barra de papel roxa, pulinhos durante
+  espera, aviso sonoro de pronto, balanço e abertura animada.
+- Carta com raridade na moldura cinza, arte maior, nome acima da história e
+  atributos compactos com ícones de poder, vida e stamina. Sem Oliver Comum
+  no cabeçalho. Guardar usa botão original, anima todas as cartas até a coleção
+  e vira as recebidas no catálogo, inclusive cópias repetidas.
+- Arraste livre com mouse/toque no booster; coleção inspeciona frente e verso
+  com rotação CSS 3D contínua de 360 graus, teclado e botão de recentralizar.
+  Não usa novo motor 3D ou pacote. Movimento reduzido preserva ações essenciais.
+- E2E desktop e viewport móvel Edge passou com entrega do baú, booster,
+  armazenamento na coleção e inspeção. Verificação geral passou, 203 arquivos
+  e 1261 testes. JS inicial 276,0 KiB; total 1185,1 KiB; teto 1187 KiB.
+
 ## Sincronização das recompensas de Matemática (2026-10-10)
 
 - Pontos, baús, prazo e cartas agora entram na sincronização Firebase existente.

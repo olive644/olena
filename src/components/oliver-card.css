@@ -51,8 +51,11 @@
   background: none;
   color: inherit;
   cursor: pointer;
-  touch-action: pan-y;
+  touch-action: none;
   perspective: inherit;
+  transition:
+    translate 200ms ease,
+    rotate 200ms ease;
 }
 .oliver-flip-button:disabled {
   opacity: 1;
@@ -83,16 +86,17 @@
   transform: rotateY(180deg);
 }
 .oliver-card-front {
+  position: relative;
   height: 100%;
   padding: 10px;
-  border: 5px solid #292432;
+  border: 7px solid #a3a5ad;
   border-radius: 12px 22px 12px 12px;
-  background: #fff1b7;
+  background: #fff9ef;
   color: #292432;
   box-shadow: 4px 7px #121017;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
   text-align: left;
 }
 .oliver-card-front header {
@@ -106,9 +110,9 @@
   color: var(--card-accent);
 }
 .oliver-card-front h2 {
-  font-size: 20px;
+  font-size: 17px;
   line-height: 1.15;
-  margin: 4px 0 0;
+  margin: 0 0 4px;
   font-weight: 900;
 }
 .oliver-card-art {
@@ -130,12 +134,19 @@
   padding: 0;
 }
 .oliver-card-stats div {
-  padding: 4px 2px;
-  background: #292432;
-  color: #fff1b7;
+  padding: 2px;
+  background: #ede4d2;
+  color: #292432;
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
   text-align: center;
-  border-bottom: 3px solid var(--card-accent);
-  clip-path: polygon(0 0, 90% 0, 100% 20%, 100% 100%, 0 100%);
+  border-radius: 3px 8px 3px 3px;
+}
+.oliver-card-stats svg {
+  width: 24px;
+  height: 24px;
+  grid-row: span 2;
 }
 .oliver-card-stats dt {
   font-size: 9px;
@@ -143,10 +154,22 @@
   letter-spacing: 0.06em;
 }
 .oliver-card-stats dd {
-  font-size: 23px;
+  font-size: 19px;
   font-weight: 900;
   line-height: 1.1;
-  margin: 3px 0 0;
+  margin: 0;
+}
+.oliver-card-rarity {
+  position: absolute;
+  top: -7px;
+  left: 14px;
+  padding: 1px 8px;
+  background: #a3a5ad;
+  border-radius: 0 0 4px 4px;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  font-weight: 900;
+  color: #292432;
 }
 .oliver-card-lore {
   font-size: 11px;
@@ -290,6 +313,8 @@
   gap: 16px;
 }
 .oliver-collection-item {
+  position: relative;
+  perspective: 1000px;
   border: 0;
   background: none;
   text-align: left;
@@ -333,7 +358,7 @@
 }
 .oliver-collection-detail {
   width: min(310px, 100%);
-  height: 535px;
+  height: auto;
   margin: 25px auto 0;
 }
 .oliver-card-chances {
@@ -357,6 +382,160 @@
   display: flex;
   justify-content: space-between;
   gap: 15px;
+}
+.oliver-inspection {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
+.oliver-inspection-stage {
+  width: min(310px, 78vw);
+  height: 535px;
+  perspective: 1400px;
+  touch-action: none;
+  cursor: grab;
+}
+.oliver-inspection-stage:active {
+  cursor: grabbing;
+}
+.oliver-inspection-stage:focus-visible {
+  outline: 3px solid #7433e0;
+  outline-offset: 8px;
+}
+.oliver-inspection-turn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.oliver-inspection-front,
+.oliver-inspection-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.oliver-inspection-back {
+  transform: rotateY(180deg);
+}
+.oliver-arrival-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 2/3;
+  pointer-events: none;
+  animation: oliver-arrival-back 950ms both;
+  backface-visibility: hidden;
+}
+.oliver-collection-item.is-arriving > img {
+  animation: oliver-arrival-front 950ms both;
+  backface-visibility: hidden;
+}
+.oliver-flip-card.is-storing .oliver-flip-button {
+  opacity: 0;
+  transition: opacity 180ms;
+}
+.oliver-store-flight {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.oliver-store-flight > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130px;
+  height: 225px;
+  animation: oliver-store-flight 700ms var(--flight-delay) both;
+}
+.oliver-store-flight .oliver-card-front {
+  width: 310px;
+  height: 535px;
+  transform: scale(0.42);
+  transform-origin: top left;
+}
+@keyframes oliver-store-flight {
+  from {
+    transform: translate(-50%, -50%) rotate(-8deg);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(calc(50vw - 80px), calc(-50vh + 45px)) rotate(20deg) scale(0.15);
+    opacity: 0;
+  }
+}
+@keyframes oliver-arrival-back {
+  0%,
+  25% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    opacity: 0;
+  }
+}
+@keyframes oliver-arrival-front {
+  0%,
+  25% {
+    transform: rotateY(180deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop) .primary-button {
+  min-height: 44px;
+  padding: 12px 20px;
+  border: 1px solid #7433e0;
+  border-radius: 5px 13px 6px 11px;
+  background:
+    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%), #7433e0;
+  color: #fff9ef;
+  box-shadow: 0 4px #4b209b;
+  font-weight: 800;
+  transition:
+    translate 160ms,
+    box-shadow 160ms;
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop) .secondary-button {
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #d5c8b0;
+  border-radius: 5px 13px 6px 11px;
+  background: linear-gradient(135deg, #ede4d2 0 10px, transparent 10px), #fff9ef;
+  color: #292432;
+  box-shadow: 0 4px #d5c8b0;
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop) button:focus-visible {
+  outline: 3px solid #a779ef;
+  outline-offset: 4px;
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop) .primary-button:hover:enabled {
+  translate: 0 -2px;
+  box-shadow: 0 6px #4b209b;
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop) .primary-button:active:enabled {
+  translate: 0 3px;
+  box-shadow: 0 1px #4b209b;
+}
+@media (prefers-reduced-motion: reduce) {
+  .oliver-store-flight > div,
+  .oliver-arrival-back,
+  .oliver-collection-item.is-arriving > img {
+    animation-duration: 1ms;
+  }
+}
+html[data-reduce-motion="true"]
+  :is(.oliver-store-flight > div, .oliver-arrival-back, .oliver-collection-item.is-arriving > img) {
+  animation-duration: 1ms;
 }
 @keyframes oliver-card-delivery {
   from {

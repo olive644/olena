@@ -60,6 +60,17 @@ it("counts each revealed copy once and resumes unrevealed cards on reopening", (
   const reveal = screen.getByRole("button", { name: "Revelar carta" });
   fireEvent.click(reveal);
   act(() => applySyncedStorage(readSyncedStorage()));
+  const echo = readSyncedStorage();
+  const current = JSON.parse(echo[MATH_PLACE_REWARDS_KEY]!).foundations;
+  echo[MATH_PLACE_REWARDS_KEY] = JSON.stringify({
+    foundations: {
+      chests: current.chests,
+      receipts: current.receipts,
+      rounds: current.rounds,
+      points: current.points,
+    },
+  });
+  act(() => applySyncedStorage(echo));
   expect(screen.getByRole("dialog", { name: "Cartas do baú comum" })).toBeTruthy();
   fireEvent.click(reveal);
   expect(mathPlaceRewards("foundations").chests[0]!.revealed).toBe(1);
@@ -68,7 +79,9 @@ it("counts each revealed copy once and resumes unrevealed cards on reopening", (
   fireEvent.click(screen.getByRole("button", { name: "Revelar carta" }));
   expect(screen.getByLabelText("0 cartas restantes no baú")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Guardar cartas" }));
+  expect(document.querySelectorAll(".oliver-store-flight > div")).toHaveLength(2);
+  act(() => vi.advanceTimersByTime(900));
   expect(screen.getAllByLabelText("Espaço de baú vazio")).toHaveLength(3);
-  fireEvent.click(screen.getByRole("button", { name: "Cartas do Oliver" }));
+  expect(screen.getByRole("dialog", { name: "Coleção do Oliver" })).toBeTruthy();
   expect(screen.getByRole("button", { name: "A primeira estrela, 2 cópias" })).toBeTruthy();
 });

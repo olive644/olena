@@ -127,7 +127,11 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await expect(page.locator('.room-reward-notice [data-paper-editor-icon="close"]')).toBeVisible();
   await expect(page.locator(".room-reward-notice")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("math-result.png") });
-  await page.getByRole("button", { name: "Tentar de novo" }).click();
+  await page.getByRole("button", { name: "Levar baú aos espaços da ilha" }).click();
+  await expect(page.locator(".math-chest-flight")).toHaveCount(1);
+  await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
+  await page.getByRole("button", { name: "Explorar lugar" }).click();
+  await page.getByRole("button", { name: "Vamos calcular!" }).click();
   await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
@@ -178,9 +182,19 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await expect(page.getByLabel("0 cartas restantes no baú")).toBeVisible();
   await page.getByRole("button", { name: "Guardar cartas" }).click();
   await expect(page.getByLabel("Espaço de baú vazio")).toHaveCount(3);
-  await page.getByRole("button", { name: "Cartas do Oliver" }).click();
   await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("oliver-collection.png") });
+  await page.locator(".oliver-collection-item.is-owned").first().click();
+  const inspect = page.getByRole("button", { name: /Inspecionar carta em 360/ });
+  await inspect.focus();
+  for (let index = 0; index < 8; index++) await inspect.press("ArrowRight");
+  await expect(page.locator(".oliver-inspection-turn")).toHaveAttribute(
+    "style",
+    /rotateY\(200deg\)/,
+  );
+  await page.screenshot({ path: testInfo.outputPath("oliver-card-inspection.png") });
+  await page.getByRole("button", { name: "Recentralizar carta" }).click();
+  await page.getByRole("button", { name: "Voltar à coleção" }).click();
   await page.getByRole("button", { name: "Fechar coleção" }).click();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("heading", { name: "Picos dos Padrões" })).toBeVisible();
