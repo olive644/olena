@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { oliverCollection } from "../data/math-place-rewards";
-import { OLIVER_CARDS, type OliverCardId } from "../data/oliver-cards";
+import { OLIVER_CARDS } from "../data/oliver-cards";
 import { OLIVER_TAROT, type OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
 import { OliverCardInspection } from "./oliver-card-inspection";
@@ -11,7 +11,7 @@ export function OliverCardCollection({
   incoming = [],
 }: {
   onClose: () => void;
-  incoming?: OliverCardId[] | undefined;
+  incoming?: OliverArtworkId[] | undefined;
 }) {
   const owned = oliverCollection();
   const [selected, setSelected] = useState<OliverArtworkId | null>(null);
@@ -73,7 +73,11 @@ export function OliverCardCollection({
           <PaperCloseIcon />
         </button>
         <h1>{selected === OLIVER_TAROT.id ? "O arcano do Oliver" : "As lembranças do Oliver"}</h1>
-        {!selected && <p>{Object.keys(owned).length}/10 descobertas · Todas comuns</p>}
+        {!selected && (
+          <p>
+            {OLIVER_CARDS.filter((card) => owned[card.id]).length}/10 descobertas · Todas comuns
+          </p>
+        )}
         {selected ? (
           <div className="oliver-collection-detail">
             <OliverCardInspection id={selected} />
@@ -101,6 +105,7 @@ export function OliverCardCollection({
                       width="480"
                       height="720"
                       loading="lazy"
+                      draggable={false}
                     />
                   ) : (
                     <OliverCard id={card.id} back />
@@ -121,10 +126,15 @@ export function OliverCardCollection({
                 width="480"
                 height="720"
                 loading="lazy"
+                draggable={false}
               />
               <span>
                 <strong>XVII · A Estrela</strong>
-                <small>Arte especial do Oliver. Fora dos baús comuns.</small>
+                <small>
+                  {owned[OLIVER_TAROT.id]
+                    ? `${owned[OLIVER_TAROT.id]} ${owned[OLIVER_TAROT.id] === 1 ? "cópia" : "cópias"} · Baú arcano`
+                    : "Por descobrir · Baú arcano, 5% por partida elegível."}
+                </small>
               </span>
             </button>
             <details className="oliver-card-chances">

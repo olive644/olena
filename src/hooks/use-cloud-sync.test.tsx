@@ -63,7 +63,7 @@ afterEach(() => {
 });
 
 it("migrates local math rewards into an existing account without this key", async () => {
-  finishMathPlace("foundations", "offline-round", 150);
+  finishMathPlace("foundations", "offline-round", 150, () => 0.5);
   const user = {
     uid: "math-user",
     displayName: "Olena",
@@ -98,7 +98,7 @@ it("migrates local math rewards into an existing account without this key", asyn
   await waitFor(() => expect(result.current.status).toBe("synced"));
   expect(JSON.parse(uploaded[MATH_PLACE_REWARDS_KEY]!).foundations.points).toBe(150);
   expect(mathPlaceRewards("foundations").chests).toHaveLength(1);
-  act(() => finishMathPlace("foundations", "online-round", 100));
+  act(() => finishMathPlace("foundations", "online-round", 100, () => 0.5));
   await waitFor(() =>
     expect(JSON.parse(uploaded[MATH_PLACE_REWARDS_KEY]!).foundations.points).toBe(250),
   );

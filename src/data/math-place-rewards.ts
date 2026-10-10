@@ -1,20 +1,30 @@
 import { isMathCourse, type MathCourseId } from "./math-courses";
-import { drawOliverCards, isOliverCard, type OliverCardId } from "./oliver-cards";
+import { drawOliverCards, isOliverCard, randomCardRoll, type OliverCardId } from "./oliver-cards";
+import { OLIVER_TAROT, type OliverArtworkId } from "./oliver-tarot";
 import { writeSyncedStorage } from "./synced-storage";
 
 export const MATH_PLACE_REWARDS_KEY = "helena.mathPlaceRewards.v1";
 export const COMMON_CHEST_POINTS = 100;
 export const COMMON_CHEST_WAIT = 60_000;
 export const MAX_MATH_CHESTS = 3;
+export const ARCANE_CHEST_CHANCE = 0.05;
 export type MathChest = {
   id: string;
   unlockAt: number | null;
   opened: boolean;
   cards?: OliverCardId[];
   revealed?: number;
+  kind?: "common" | "arcane";
+  arcana?: typeof OLIVER_TAROT.id;
 };
+export function chestCards(chest: MathChest): OliverArtworkId[] {
+  return chest.arcana ? [chest.arcana] : (chest.cards ?? []);
+}
 export function isChestCollected(chest: MathChest) {
-  return chest.opened && (!chest.cards || chest.revealed === chest.cards.length);
+  return (
+    chest.opened &&
+    (chestCards(chest).length === 0 || (chest.revealed ?? 0) >= chestCards(chest).length)
+  );
 }
 export type MathPlaceRewards = {
   points: number;
@@ -53,6 +63,15 @@ export function parseMathRewards(
               chest &&
               typeof chest.id === "string" &&
               typeof chest.opened === "boolean" &&
+              (chest.kind === undefined || chest.kind === "common" || chest.kind === "arcane") &&
+              (chest.arcana === undefined ||
+                (chest.kind === "arcane" &&
+                  chest.arcana === OLIVER_TAROT.id &&
+                  (!chest.opened ||
+                    (Number.isInteger(chest.revealed) &&
+                      chest.revealed! >= 0 &&
+                      chest.revealed! <= 2)))) &&
+              (chest.kind !== "arcane" || chest.arcana === OLIVER_TAROT.id) &&
               (chest.cards === undefined ||
                 (Array.isArray(chest.cards) &&
                   chest.cards.length >= 1 &&
@@ -82,7 +101,12 @@ function save(course: MathCourseId, value: MathPlaceRewards) {
   writeSyncedStorage(MATH_PLACE_REWARDS_KEY, JSON.stringify({ ...readAll(), [course]: value }));
   return value;
 }
-export function finishMathPlace(course: MathCourseId, id: string, points: number) {
+export function finishMathPlace(
+  course: MathCourseId,
+  id: string,
+  points: number,
+  random = randomCardRoll,
+) {
   const value = mathPlaceRewards(course);
   if (
     !id ||
@@ -92,15 +116,28 @@ export function finishMathPlace(course: MathCourseId, id: string, points: number
   )
     throw new Error("Pontuação inválida.");
   if (value.receipts.includes(id)) return value;
+  const eligible =
+    points >= COMMON_CHEST_POINTS &&
+    value.chests.filter((chest) => !isChestCollected(chest)).length < MAX_MATH_CHESTS;
+  const roll = eligible ? random() : 1;
+  if (!Number.isFinite(roll) || roll < 0 || (eligible && roll >= 1))
+    throw new Error("Sorteio inválido.");
+  const arcane = roll < ARCANE_CHEST_CHANCE;
   return save(course, {
     points: value.points + points,
     receipts: [...value.receipts, id],
     rounds: { ...value.rounds, [id]: points },
-    chests:
-      points >= COMMON_CHEST_POINTS &&
-      value.chests.filter((chest) => !isChestCollected(chest)).length < MAX_MATH_CHESTS
-        ? [...value.chests, { id, unlockAt: null, opened: false }]
-        : value.chests,
+    chests: eligible
+      ? [
+          ...value.chests,
+          {
+            id,
+            unlockAt: null,
+            opened: false,
+            ...(arcane ? { kind: "arcane" as const, arcana: OLIVER_TAROT.id } : {}),
+          },
+        ]
+      : value.chests,
   });
 }
 export function unlockMathChest(course: MathCourseId, id: string, now = Date.now()) {
@@ -125,7 +162,12 @@ export function openMathChest(
     ...value,
     chests: value.chests.map((chest) =>
       chest.id === id && !chest.opened && chest.unlockAt !== null && chest.unlockAt <= now
-        ? { ...chest, opened: true, cards: drawOliverCards(random), revealed: 0 }
+        ? {
+            ...chest,
+            opened: true,
+            ...(chest.arcana ? {} : { cards: drawOliverCards(random) }),
+            revealed: 0,
+          }
         : chest,
     ),
   });
@@ -135,17 +177,17 @@ export function revealMathCard(course: MathCourseId, id: string) {
   return save(course, {
     ...value,
     chests: value.chests.map((chest) =>
-      chest.id === id && chest.opened && chest.cards && (chest.revealed ?? 0) < chest.cards.length
+      chest.id === id && chest.opened && (chest.revealed ?? 0) < chestCards(chest).length
         ? { ...chest, revealed: (chest.revealed ?? 0) + 1 }
         : chest,
     ),
   });
 }
-export function oliverCollection(): Partial<Record<OliverCardId, number>> {
-  const collection: Partial<Record<OliverCardId, number>> = {};
+export function oliverCollection(): Partial<Record<OliverArtworkId, number>> {
+  const collection: Partial<Record<OliverArtworkId, number>> = {};
   for (const place of Object.values(readAll()))
     for (const chest of place.chests) {
-      for (const card of (chest.cards ?? []).slice(0, chest.revealed ?? 0))
+      for (const card of chestCards(chest).slice(0, chest.revealed ?? 0))
         collection[card] = (collection[card] ?? 0) + 1;
     }
   return collection;

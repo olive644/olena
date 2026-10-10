@@ -1,5 +1,26 @@
 # Auditoria do estado atual
 
+## Encaixe compacto dos lugares (2026-10-10)
+
+- Removida a área mínima de 920/820px e a rolagem introduzida na correção anterior.
+  Fundo e conteúdo voltam a ocupar uma única viewport, sem emenda ao rolar.
+- Ilha, slots e título têm posições calculadas a partir da mesma dimensão.
+  Reduzidos espaços vazios, margens do título e altura dos widgets, mantendo
+  barra em linha própria. A escala só ajusta quando a altura da tela exige.
+- e2e/math-journey-fit.spec.ts verifica ausência de scroll, sobreposição e corte
+  do botão em seis tamanhos desktop/mobile, nos temas claro e escuro.
+
+## Correção de escala e integridade das cartas (2026-10-10)
+
+- Restaurado o tamanho anterior dos lugares de Matemática: min(440px, 64vw,
+  56dvh) no desktop, min(75vw, 48dvh) no celular. Telas baixas rolam a área
+  verticalmente, preservando tamanho, slots maiores e separação dos títulos.
+- Cartas comuns e tarot têm imagens não arrastáveis e texto não selecionável.
+  O gesto de inspeção captura o ponteiro e impede o comportamento nativo do
+  navegador; a arte, moldura e história permanecem uma única superfície.
+- Provas de regressão medem a escala original e giram todas as onze cartas
+  com mouse, verificando ausência de arraste nativo ou seleção de texto.
+
 ## Identidade das cartas e arcano do Oliver (2026-10-10)
 
 - Comuns usam o alfabeto de papel existente, com acentos acessíveis, e PaperDigits nos atributos. Moldura prata e trilhos coloridos preservam a raridade comum e cada paleta narrativa.
@@ -2124,3 +2145,24 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - O job `e2e` agora roda um projeto por job, em paralelo: desktop (Chromium) e mobile (WebKit). O job de desktop não baixa mais as dependências do WebKit. Antes de instalar, `Acquire::Retries "5"` e `Acquire::http::Timeout "30"` fazem uma parada de download virar nova tentativa. As etapas de instalação (15 min) e de testes (20 min) têm limite próprio.
 - Um job `e2e-result` mantém o nome histórico do check, "Desktop and mobile smoke tests", e só passa se os dois projetos passarem. Quem exige esse nome na proteção da branch continua funcionando.
 - Não entrou cache dos navegadores: exigiria uma nova action de terceiros fixada por hash, e a regra do projeto é justificar e auditar dependências novas. Fica como opção se a instalação continuar instável.
+
+## Baús arcanos e latência da Matemática (2026-10-10)
+
+- Baús redesenhados em SVG de papel a partir dos ícones existentes de biblioteca,
+  banco de atividades e Bingo. Comum discreto; arcano roxo com selo de estrela.
+  Slots maiores, reserva vertical responsiva, barra separada que desaparece pronta
+  e símbolos + inline, visíveis junto da entrada da ilha.
+- Partidas elegíveis entregam um baú: 95% comum, 5% arcano. Compartilham os três
+  slots e o minuto de destrancamento. Arcano concede uma A Estrela; IDs e sorteio
+  são persistidos antes da revelação. Sem novas dependências ou serviços.
+- Booster permite arrastar e inspecionar a carta em 360 graus imediatamente.
+  Tarot sem recorte da arte, moldura própria e película brilhante na inspeção.
+  Sons próprios via WebAudio; busca disponível não encontrou FX Studio.
+- Feedback de 260/600 ms se sobrepõe à requisição, sem overlay de loading por
+  resposta. API continua validando progresso e pontos. Não é economia antitrapaça.
+- Schema v1 aditivo e sincronização preservam históricos e sinalizam conflitos
+  de tipo. Política, limites de clientes antigos e futuros tipos: CHEST_REWARDS.md.
+- Quatro provas E2E passaram em Edge desktop e viewport móvel: minigame completo,
+  áudio, booster comum, arcano, arraste, inspeção e ausência de sobreposição/barra
+  pronta. WebKit real fica para CI. Entrada inicial 276,0 KiB, total 1190,3 KiB;
+  acréscimo de 2,6 KiB carregado sob demanda, sem dependência nova.

@@ -8,7 +8,11 @@ export type MathSoundCue =
   | "chestUnlock"
   | "chestOpen"
   | "cardReveal";
-const NOTES: Record<MathSoundCue, number[]> = {
+export type ArcaneSoundCue = "arcaneUnlock" | "arcaneOpen" | "tarotReveal";
+const NOTES: Record<MathSoundCue | ArcaneSoundCue, number[]> = {
+  arcaneUnlock: [220, 330, 440, 660],
+  arcaneOpen: [261, 392, 622, 784, 1046, 1568],
+  tarotReveal: [523, 740, 1046, 1480, 2093],
   chestUnlock: [196, 294, 392],
   chestOpen: [262, 392, 523, 784],
   cardReveal: [659, 784, 1046, 1319],
@@ -43,7 +47,7 @@ export function createMathSound() {
       /* O jogo continua disponível sem saída de áudio. */
     }
   }
-  function play(cue: MathSoundCue | 1 | 2 | 3) {
+  function play(cue: MathSoundCue | ArcaneSoundCue | 1 | 2 | 3) {
     const active = context;
     if (!active || disposed || active.state === "closed") return;
     void active
@@ -53,10 +57,12 @@ export function createMathSound() {
         const notes =
           typeof cue === "number" ? [cue === 3 ? 440 : cue === 2 ? 554 : 659] : NOTES[cue];
         notes.forEach((frequency, index) => {
-          const start = active.currentTime + index * 0.09;
+          const arcane =
+            typeof cue === "string" && ["arcaneUnlock", "arcaneOpen", "tarotReveal"].includes(cue);
+          const start = active.currentTime + index * (arcane ? 0.12 : 0.09);
           const tone = active.createOscillator(),
             gain = active.createGain();
-          tone.type = "triangle";
+          tone.type = arcane ? "sine" : "triangle";
           tone.frequency.setValueAtTime(frequency, start);
           gain.gain.setValueAtTime(0.001, start);
           gain.gain.exponentialRampToValueAtTime(0.28, start + 0.012);

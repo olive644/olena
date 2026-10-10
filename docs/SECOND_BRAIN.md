@@ -1,5 +1,23 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, encaixe compacto: removida a altura mínima rolável de math-journey-content.
+Uma viewport fixa; posições da ilha, baús e legenda derivam de math-scene-size.
+Margens e slots menores reservam a ação sem scroll. Prova: math-journey-fit.spec.ts.
+
+2026-10-10, correção: MathIslandJourney preserva a escala original dos lugares,
+com math-journey-content rolável em telas baixas. OliverCard usa draggable=false
+nas artes e bloqueia dragstart; CSS impede seleção e callout apenas nas cartas.
+Booster e inspeção previnem o comportamento nativo no início do gesto. Provas:
+e2e/card-integrity.spec.ts (todas as onze cartas) e escala em arcane-chests.
+
+2026-10-10: MathChestArt desenha comum e arcano no padrão de papel. MathChest mantém
+cards comuns e acrescenta kind/arcana à chave v1; chestCards unifica apresentação
+e coleção, mergeMathRewards conserva identidade e acusa diferenças. Arcano 5%
+por rodada elegível, uma A Estrela, mesmos três slots e minuto. CHEST_REWARDS.md
+documenta política, compatibilidade e extensão. Booster oferece inspeção imediata;
+tarot tem película óptica e arte sem recorte. Feedback do minigame passa a ser
+max(latência da API, 260/600 ms), sem loader por resposta. API continua obrigatória.
+
 2026-10-10: PaperCardTitle reutiliza símbolos SVG do alfabeto monocromático com acentos. OliverArtworkId separa a vitrine do tarot XVII, A Estrela, dos dez OliverCardId comuns. OliverCardInspection atende ambos, sem alterar chances ou inventário. Arte WebP nova em public/oliver-cards; detalhes de geração em TAROT.md.
 
 2026-10-10, revisão visual: baú comum madeira/cinza, prêmio tocável voa ao slot

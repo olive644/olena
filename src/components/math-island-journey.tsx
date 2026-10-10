@@ -112,6 +112,11 @@ export function MathIslandJourney({
         }
       }}
       onWheel={(event) => {
+        if (
+          Math.abs(event.deltaY) >= Math.abs(event.deltaX) &&
+          event.currentTarget.scrollHeight > event.currentTarget.clientHeight
+        )
+          return;
         const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
         if (Math.abs(delta) > 20 && Date.now() - lastWheel.current > 650) {
           lastWheel.current = Date.now();
@@ -119,94 +124,97 @@ export function MathIslandJourney({
         }
       }}
     >
-      <button
-        className="secondary-button math-world-back"
-        type="button"
-        onClick={() => setPhase("exit")}
-      >
-        <PaperArrow back /> Voltar às ilhas
-      </button>
-      <div
-        className="math-journey-stage"
-        onPointerDown={(event) => {
-          if (event.isPrimary && event.button === 0) {
-            dragged.current = false;
-            gesture.current = event.clientX;
-            const button = event.target instanceof Element ? event.target.closest("button") : null;
-            (button ?? event.currentTarget).setPointerCapture(event.pointerId);
-          }
-        }}
-        onPointerUp={(event) => {
-          if (gesture.current !== null && Math.abs(event.clientX - gesture.current) > 55) {
-            dragged.current = true;
-            visit(index + (event.clientX < gesture.current ? 1 : -1));
-          }
-          gesture.current = null;
-        }}
-        onPointerCancel={() => {
-          gesture.current = null;
-        }}
-      >
-        {MATH_COURSES.map((item, position) => (
-          <button
-            key={item.id}
-            type="button"
-            aria-label={"Entrar em " + item.title}
-            disabled={position !== index || phase !== "map"}
-            onClick={(event) => {
-              if (!dragged.current || event.detail === 0) setPhase("enter");
-            }}
-            className={`math-journey-island ${position === index ? "is-current" : "is-preview"}`}
-            aria-hidden={position !== index}
-            style={
-              {
-                "--island-x": position - index,
-              } as CSSProperties
-            }
-          >
-            {Math.abs(position - index) <= 1 && (
-              <MathPlaceScene course={item.id} active={position === index} />
-            )}
-          </button>
-        ))}
-        <div key={travel.key} className={`math-journey-avatar is-moving-${travel.direction}`}>
-          <PracticeUserPortrait profile={profile} />
-        </div>
-      </div>
-      <div className="math-journey-label" aria-live="polite">
-        <span>{course.subject}</span>
-        <h1>{course.title}</h1>
-        <p>{course.topics[mathLearning(course.id).level]}</p>
+      <div className="math-journey-content">
         <button
-          className="primary-button math-place-start"
+          className="secondary-button math-world-back"
           type="button"
-          disabled={phase !== "map"}
-          onClick={() => setPhase("enter")}
+          onClick={() => setPhase("exit")}
         >
-          <HelenaRoomIcon name="play" /> Explorar lugar
+          <PaperArrow back /> Voltar às ilhas
         </button>
+        <div
+          className="math-journey-stage"
+          onPointerDown={(event) => {
+            if (event.isPrimary && event.button === 0) {
+              dragged.current = false;
+              gesture.current = event.clientX;
+              const button =
+                event.target instanceof Element ? event.target.closest("button") : null;
+              (button ?? event.currentTarget).setPointerCapture(event.pointerId);
+            }
+          }}
+          onPointerUp={(event) => {
+            if (gesture.current !== null && Math.abs(event.clientX - gesture.current) > 55) {
+              dragged.current = true;
+              visit(index + (event.clientX < gesture.current ? 1 : -1));
+            }
+            gesture.current = null;
+          }}
+          onPointerCancel={() => {
+            gesture.current = null;
+          }}
+        >
+          {MATH_COURSES.map((item, position) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-label={"Entrar em " + item.title}
+              disabled={position !== index || phase !== "map"}
+              onClick={(event) => {
+                if (!dragged.current || event.detail === 0) setPhase("enter");
+              }}
+              className={`math-journey-island ${position === index ? "is-current" : "is-preview"}`}
+              aria-hidden={position !== index}
+              style={
+                {
+                  "--island-x": position - index,
+                } as CSSProperties
+              }
+            >
+              {Math.abs(position - index) <= 1 && (
+                <MathPlaceScene course={item.id} active={position === index} />
+              )}
+            </button>
+          ))}
+          <div key={travel.key} className={`math-journey-avatar is-moving-${travel.direction}`}>
+            <PracticeUserPortrait profile={profile} />
+          </div>
+        </div>
+        <div className="math-journey-label" aria-live="polite">
+          <span>{course.subject}</span>
+          <h1>{course.title}</h1>
+          <p>{course.topics[mathLearning(course.id).level]}</p>
+          <button
+            className="primary-button math-place-start"
+            type="button"
+            disabled={phase !== "map"}
+            onClick={() => setPhase("enter")}
+          >
+            <HelenaRoomIcon name="play" /> Explorar lugar
+          </button>
+        </div>
+        <button
+          className="focus-mode-arrow math-place-arrow math-place-arrow--previous"
+          aria-label="Lugar anterior"
+          disabled={index === 0 || phase !== "map"}
+          onClick={() => visit(index - 1)}
+        >
+          <FocusPaperArrow />
+        </button>
+        <button
+          className="focus-mode-arrow focus-mode-arrow--next math-place-arrow math-place-arrow--next"
+          aria-label="Próximo lugar"
+          disabled={index === MATH_COURSES.length - 1 || phase !== "map"}
+          onClick={() => visit(index + 1)}
+        >
+          <FocusPaperArrow />
+        </button>
+        <MathPlaceTreasure
+          deliveryOrigin={chestDelivery}
+          key={`${course.id}:${phase === "return" ? "return" : "map"}`}
+          course={course.id}
+        />
       </div>
-      <button
-        className="focus-mode-arrow math-place-arrow math-place-arrow--previous"
-        aria-label="Lugar anterior"
-        disabled={index === 0 || phase !== "map"}
-        onClick={() => visit(index - 1)}
-      >
-        <FocusPaperArrow />
-      </button>
-      <button
-        className="focus-mode-arrow focus-mode-arrow--next math-place-arrow math-place-arrow--next"
-        aria-label="Próximo lugar"
-        disabled={index === MATH_COURSES.length - 1 || phase !== "map"}
-        onClick={() => visit(index + 1)}
-      >
-        <FocusPaperArrow />
-      </button>
-      <MathPlaceTreasure
-        deliveryOrigin={chestDelivery}
-        key={`${course.id}:${phase === "return" ? "return" : "map"}`}
-        course={course.id}
-      />
     </section>,
     document.body,
   );

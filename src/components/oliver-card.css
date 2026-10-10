@@ -52,6 +52,8 @@
   color: inherit;
   cursor: pointer;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   perspective: inherit;
   transition:
     translate 200ms ease,
@@ -73,6 +75,12 @@
   transform-style: preserve-3d;
   transition: transform 0.75s cubic-bezier(0.2, 0.65, 0.2, 1);
 }
+.oliver-flip-card:not(.is-revealed) .oliver-card-turn {
+  transform: rotateY(var(--reveal-turn, 0deg));
+}
+.is-revealed .oliver-flip-button .oliver-card-turn {
+  transform: rotateY(180deg);
+}
 .is-revealed .oliver-card-turn {
   transform: rotateY(180deg);
 }
@@ -86,6 +94,9 @@
   transform: rotateY(180deg);
 }
 .oliver-card-front {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   --digit-face: #292432;
   --digit-depth: #a39785;
   --digit-fold: #51465d;
@@ -202,8 +213,10 @@
 }
 .oliver-tarot-front .oliver-card-art {
   border: 1px solid #e6c56e;
-  border-radius: 80px 80px 3px 3px;
+  border-radius: 5px;
   object-position: center;
+  object-fit: contain;
+  background: #142949;
 }
 .oliver-tarot-front h2 {
   padding: 10px 0 4px;
@@ -223,6 +236,47 @@
   text-align: center;
   margin-top: 6px;
   color: #e6c56e;
+}
+.oliver-flip-card:has(.oliver-tarot-front),
+.oliver-inspection-stage:has(.oliver-tarot-front) {
+  height: 610px;
+}
+.oliver-tarot-front::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 15%,
+    #7cebe9 30%,
+    #f7d870 40%,
+    #a779ef 50%,
+    transparent 65%
+  );
+  background-size: 250% 250%;
+  background-position: var(--foil-x, 50%) var(--foil-y, 30%);
+  mix-blend-mode: screen;
+  opacity: 0.17;
+  box-shadow: inset 0 0 0 1px #fff2bc;
+  animation: oliver-foil 5s ease-in-out infinite alternate;
+}
+@keyframes oliver-foil {
+  from {
+    opacity: 0.08;
+  }
+  to {
+    opacity: 0.22;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oliver-tarot-front::after {
+    animation: none;
+  }
+}
+html[data-reduce-motion="true"] .oliver-tarot-front::after {
+  animation: none;
 }
 .oliver-card-back.oliver-tarot-back {
   border-color: #e6c56e;
@@ -288,6 +342,9 @@
   padding: 2px 3px 4px;
 }
 .oliver-card-back {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   height: 100%;
   min-height: 100px;
   border: 7px solid #292432;
@@ -332,6 +389,11 @@
   width: 84%;
   height: 84%;
   object-fit: contain;
+}
+.oliver-card-front img,
+.oliver-card-back img {
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .oliver-card-back > span {
   position: relative;
@@ -398,6 +460,14 @@
   transform-origin: 0 0;
   animation: oliver-card-spark 0.9s both;
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.is-arcane .oliver-reveal-sparks i:nth-child(even) {
+  background: #a779ef;
+  filter: drop-shadow(0 0 5px #a779ef);
+}
+.is-arcane .oliver-reveal-sparks i:nth-child(odd) {
+  background: #ffe88d;
+  clip-path: polygon(50% 0, 62% 35%, 100% 50%, 62% 65%, 50% 100%, 38% 65%, 0 50%, 38% 35%);
 }
 .oliver-collection-panel {
   position: relative;
@@ -499,6 +569,9 @@
   gap: 16px;
 }
 .oliver-inspection-stage {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   width: min(310px, 78vw);
   height: 535px;
   perspective: 1400px;
@@ -541,6 +614,17 @@
 .oliver-collection-item.is-arriving > img {
   animation: oliver-arrival-front 950ms both;
   backface-visibility: hidden;
+}
+.oliver-collection-item,
+.oliver-tarot-showcase {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.oliver-collection-item img,
+.oliver-tarot-showcase img {
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .oliver-flip-card.is-storing .oliver-flip-button {
   opacity: 0;
