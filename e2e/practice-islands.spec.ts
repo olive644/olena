@@ -4,6 +4,16 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
 }, testInfo) => {
   test.setTimeout(60_000);
   await page.addInitScript(() => {
+    const randomValues = crypto.getRandomValues.bind(crypto);
+    Object.defineProperty(crypto, "getRandomValues", {
+      value: (values: ArrayBufferView) => {
+        if (values instanceof Uint32Array && values.length === 1) {
+          values[0] = 2147483648;
+          return values;
+        }
+        return randomValues(values);
+      },
+    });
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem("helena.soloProgress", "4");
     localStorage.setItem(
@@ -175,6 +185,9 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   );
   await expect(page.getByText("Stamina", { exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("oliver-card-front.png") });
+  await page.getByRole("button", { name: "Inspecionar carta em 3D" }).click();
+  await expect(page.getByRole("button", { name: /Inspecionar carta em 360/ })).toBeVisible();
+  await page.getByRole("button", { name: "Voltar à carta" }).click();
   if (await page.getByRole("button", { name: "Próxima carta" }).count()) {
     await page.getByRole("button", { name: "Próxima carta" }).click();
     await page.getByRole("button", { name: "Revelar carta", exact: true }).click();

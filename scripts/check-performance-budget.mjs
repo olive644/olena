@@ -219,7 +219,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Paper alphabet titles and the optional Star tarot showcase add 2.6 KiB.
 // Measured total 1187.7 KiB, entry unchanged at 276.0 KiB; retain platform
 // allowance. Glyphs reuse the existing external SVG; no new dependency.
-const MAX_TOTAL_JS_BYTES = 1190 * 1024;
+// Arcane reward identity, native chest SVG and immediate card inspection add
+// 2.6 KiB to the lazy application graph. Measured total: 1190.3 KiB; entry
+// remains 276.0 KiB. Preserve a narrow cross-platform allowance.
+const MAX_TOTAL_JS_BYTES = 1192 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

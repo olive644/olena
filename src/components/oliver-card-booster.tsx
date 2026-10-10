@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { MathChest } from "../data/math-place-rewards";
-import type { OliverCardId } from "../data/oliver-cards";
+import { chestCards, type MathChest } from "../data/math-place-rewards";
+import type { OliverArtworkId } from "../data/oliver-tarot";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { OliverCard } from "./oliver-card";
+import { OliverCardInspection } from "./oliver-card-inspection";
+import { PaperDigits } from "./paper-digits";
 
 export function OliverCardBooster({
   chest,
@@ -16,11 +18,12 @@ export function OliverCardBooster({
   onReveal: () => boolean;
   onClose: () => void;
   sound: () => void;
-  onStore?: ((cards: OliverCardId[]) => void) | undefined;
+  onStore?: ((cards: OliverArtworkId[]) => void) | undefined;
 }) {
-  const cards = chest.cards!;
+  const cards = chestCards(chest);
   const [index, setIndex] = useState(Math.min(chest.revealed ?? 0, cards.length - 1));
   const [flipped, setFlipped] = useState(false);
+  const [inspecting, setInspecting] = useState(false);
   const [saveError, setSaveError] = useState("");
   const lock = useRef(false);
   const start = useRef<{ x: number; y: number } | null>(null);
@@ -59,18 +62,23 @@ export function OliverCardBooster({
   const remaining = cards.length - index - Number(flipped);
   return (
     <div
-      className="oliver-booster-backdrop"
+      className={`oliver-booster-backdrop${chest.kind === "arcane" ? " is-arcane" : ""}`}
       ref={surface}
       role="dialog"
       aria-modal="true"
-      aria-label="Cartas do baú comum"
+      aria-label={chest.kind === "arcane" ? "Carta do baú arcano" : "Cartas do baú comum"}
       onWheel={(event) => event.stopPropagation()}
       onKeyDown={(event) => {
         event.stopPropagation();
-        if (event.key === "Escape") onClose();
+        if (event.key === "Escape") {
+          if (inspecting) setInspecting(false);
+          else onClose();
+        }
         if (event.key === "Tab") {
           const buttons = Array.from(
-            surface.current!.querySelectorAll<HTMLButtonElement>("button:not([disabled])"),
+            surface.current!.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), [tabindex="0"]',
+            ),
           );
           const first = buttons[0]!,
             last = buttons.at(-1)!;
@@ -97,62 +105,72 @@ export function OliverCardBooster({
       <p className="oliver-reveal-label" role="status">
         {flipped ? "Lembrança descoberta" : "Toque ou arraste para revelar"}
       </p>
-      <div
-        className={`oliver-flip-card${flipped ? " is-revealed" : ""}${storing ? " is-storing" : ""}`}
-        key={index}
-      >
-        <button
-          className="oliver-flip-button"
-          aria-label={flipped ? "Carta revelada" : "Revelar carta"}
-          disabled={storing}
-          style={{ translate: `${drag.x}px ${drag.y}px`, rotate: `${drag.x / 18}deg` }}
-          onClick={flip}
-          onPointerDown={(event) => {
-            if (!event.isPrimary || event.button !== 0) return;
-            start.current = { x: event.clientX, y: event.clientY };
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onPointerMove={(event) => {
-            if (!start.current) return;
-            setDrag({ x: event.clientX - start.current.x, y: event.clientY - start.current.y });
-          }}
-          onPointerUp={(event) => {
-            if (
-              start.current !== null &&
-              Math.hypot(event.clientX - start.current.x, event.clientY - start.current.y) > 35
-            )
-              flip();
-            start.current = null;
-            setDrag({ x: 0, y: 0 });
-          }}
-          onPointerCancel={() => {
-            start.current = null;
-            setDrag({ x: 0, y: 0 });
-          }}
+      {inspecting ? (
+        <OliverCardInspection id={cards[index]!} />
+      ) : (
+        <div
+          className={`oliver-flip-card${flipped ? " is-revealed" : ""}${storing ? " is-storing" : ""}`}
+          key={index}
         >
-          <div className="oliver-card-turn">
-            <div className="oliver-card-side oliver-card-side--back" aria-hidden={flipped}>
-              <OliverCard id={cards[index]!} back />
+          <button
+            className="oliver-flip-button"
+            aria-label={flipped ? "Carta revelada" : "Revelar carta"}
+            disabled={storing}
+            style={
+              {
+                translate: `${drag.x}px ${drag.y}px`,
+                rotate: `${drag.x / 18}deg`,
+                "--reveal-turn": `${Math.min(70, Math.hypot(drag.x, drag.y))}deg`,
+              } as CSSProperties
+            }
+            onClick={flip}
+            onPointerDown={(event) => {
+              if (!event.isPrimary || event.button !== 0) return;
+              start.current = { x: event.clientX, y: event.clientY };
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerMove={(event) => {
+              if (!start.current) return;
+              setDrag({ x: event.clientX - start.current.x, y: event.clientY - start.current.y });
+            }}
+            onPointerUp={(event) => {
+              if (
+                start.current !== null &&
+                Math.hypot(event.clientX - start.current.x, event.clientY - start.current.y) > 35
+              )
+                flip();
+              start.current = null;
+              setDrag({ x: 0, y: 0 });
+            }}
+            onPointerCancel={() => {
+              start.current = null;
+              setDrag({ x: 0, y: 0 });
+            }}
+          >
+            <div className="oliver-card-turn">
+              <div className="oliver-card-side oliver-card-side--back" aria-hidden={flipped}>
+                <OliverCard id={cards[index]!} back />
+              </div>
+              <div className="oliver-card-side oliver-card-side--front" aria-hidden={!flipped}>
+                <OliverCard id={cards[index]!} />
+              </div>
             </div>
-            <div className="oliver-card-side oliver-card-side--front" aria-hidden={!flipped}>
-              <OliverCard id={cards[index]!} />
+          </button>
+          <span
+            className="oliver-cards-remaining"
+            aria-label={`${remaining} cartas restantes no baú`}
+          >
+            <PaperDigits value={String(remaining)} />
+          </span>
+          {flipped && (
+            <div className="oliver-reveal-sparks" aria-hidden="true">
+              {Array.from({ length: 12 }, (_, i) => (
+                <i key={i} style={{ rotate: `${i * 30}deg` }} />
+              ))}
             </div>
-          </div>
-        </button>
-        <span
-          className="oliver-cards-remaining"
-          aria-label={`${remaining} cartas restantes no baú`}
-        >
-          {remaining}
-        </span>
-        {flipped && (
-          <div className="oliver-reveal-sparks" aria-hidden="true">
-            {Array.from({ length: 12 }, (_, i) => (
-              <i key={i} style={{ rotate: `${i * 30}deg` }} />
-            ))}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
       {storing && (
         <div className="oliver-store-flight" aria-hidden="true">
           {cards.map((id, position) => (
@@ -166,6 +184,15 @@ export function OliverCardBooster({
         </div>
       )}
       <div className="oliver-booster-actions">
+        {flipped && (
+          <button
+            className="secondary-button"
+            disabled={storing}
+            onClick={() => setInspecting(!inspecting)}
+          >
+            {inspecting ? "Voltar à carta" : "Inspecionar carta em 3D"}
+          </button>
+        )}
         {saveError && <p role="alert">{saveError}</p>}
         {flipped ? (
           <button
@@ -183,6 +210,7 @@ export function OliverCardBooster({
               } else {
                 lock.current = false;
                 setFlipped(false);
+                setInspecting(false);
                 setIndex(index + 1);
               }
             }}

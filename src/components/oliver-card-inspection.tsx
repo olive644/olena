@@ -1,15 +1,17 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import type { OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
 
 export function OliverCardInspection({ id }: { id: OliverArtworkId }) {
   const [angle, setAngle] = useState({ x: 0, y: 0 });
+  const [shine, setShine] = useState({ x: 50, y: 30 });
   const gesture = useRef<{ x: number; y: number; angle: typeof angle } | null>(null);
   const front = Math.cos((angle.y * Math.PI) / 180) >= 0;
   return (
     <div className="oliver-inspection">
       <div
         className="oliver-inspection-stage"
+        style={{ "--foil-x": `${shine.x}%`, "--foil-y": `${shine.y}%` } as CSSProperties}
         role="button"
         tabIndex={0}
         aria-label="Inspecionar carta em 360 graus. Arraste ou use as setas."
@@ -42,6 +44,11 @@ export function OliverCardInspection({ id }: { id: OliverArtworkId }) {
           event.currentTarget.setPointerCapture(event.pointerId);
         }}
         onPointerMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          setShine({
+            x: Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100)),
+            y: Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100)),
+          });
           const start = gesture.current;
           if (!start) return;
           setAngle({

@@ -1,4 +1,6 @@
 .math-journey {
+  --math-scene-y: 37%;
+  --math-scene-size: min(440px, 64vw, 56dvh, max(140px, calc(100dvh - 470px)));
   position: fixed;
   inset: 0;
   z-index: 145;
@@ -63,8 +65,8 @@
   background: transparent;
   position: absolute;
   left: 50%;
-  top: 42%;
-  width: min(440px, 64vw, 56dvh);
+  top: var(--math-scene-y);
+  width: var(--math-scene-size);
   aspect-ratio: 1;
   transform: translate(calc(-50% + var(--island-x) * 85%), -62%) scale(0.65);
   opacity: 0.24;
@@ -104,7 +106,7 @@
   z-index: 4;
   position: absolute;
   left: 50%;
-  top: calc(42% - min(440px, 64vw, 56dvh) * 0.25);
+  top: calc(var(--math-scene-y) - var(--math-scene-size) * 0.25);
   width: clamp(56px, 12vw, 76px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
@@ -208,7 +210,7 @@
 .math-place-arrow--next {
   right: calc(50% - min(330px, 43vw));
 }
-.math-journey:not(.is-map) .math-place-treasure,
+.math-journey:is(.is-enter, .is-exit) .math-place-treasure,
 .math-journey:not(.is-map) .math-place-arrow {
   opacity: 0;
   pointer-events: none;
@@ -291,12 +293,8 @@
   }
 }
 @media (max-width: 600px) {
-  .math-journey-avatar {
-    top: calc(43% - min(75vw, 48dvh) * 0.25);
-  }
-  .math-journey-island {
-    top: 43%;
-    width: min(75vw, 48dvh);
+  .math-journey {
+    --math-scene-size: min(75vw, 48dvh, max(140px, calc(100dvh - 410px)));
   }
   .math-journey-label {
     bottom: 3dvh;
