@@ -1,10 +1,11 @@
 .math-journey {
-  --math-scene-y: 37%;
-  --math-scene-size: min(440px, 64vw, 56dvh, max(140px, calc(100dvh - 470px)));
+  --math-scene-y: 42%;
+  --math-scene-size: min(440px, 64vw, 56dvh);
   position: fixed;
   inset: 0;
   z-index: 145;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: var(--page, #fff9ef);
   color: var(--text, #292432);
   isolation: isolate;
@@ -17,6 +18,10 @@
   opacity: 0.12;
   clip-path: polygon(0 0, 30% 0, 0 40%, 0 100%, 100% 100%, 100% 65%, 65% 100%, 100% 0);
   pointer-events: none;
+}
+.math-journey-content {
+  position: relative;
+  height: max(100dvh, 920px);
 }
 .math-world-back {
   color: #292432;
@@ -53,7 +58,7 @@
 .math-journey-stage {
   position: absolute;
   inset: 0;
-  touch-action: none;
+  touch-action: pan-y;
   cursor: grab;
 }
 .math-journey-stage:active {
@@ -294,7 +299,11 @@
 }
 @media (max-width: 600px) {
   .math-journey {
-    --math-scene-size: min(75vw, 48dvh, max(140px, calc(100dvh - 410px)));
+    --math-scene-y: 43%;
+    --math-scene-size: min(75vw, 48dvh);
+  }
+  .math-journey-content {
+    height: max(100dvh, 820px);
   }
   .math-journey-label {
     bottom: 3dvh;

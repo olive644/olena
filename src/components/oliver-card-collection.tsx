@@ -105,6 +105,7 @@ export function OliverCardCollection({
                       width="480"
                       height="720"
                       loading="lazy"
+                      draggable={false}
                     />
                   ) : (
                     <OliverCard id={card.id} back />
@@ -125,6 +126,7 @@ export function OliverCardCollection({
                 width="480"
                 height="720"
                 loading="lazy"
+                draggable={false}
               />
               <span>
                 <strong>XVII · A Estrela</strong>

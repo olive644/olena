@@ -30,6 +30,14 @@ test("arcane chest shares the minute, reveals by dragging and inspects foil taro
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   await expect(page.getByLabel("Espaço de baú vazio")).toBeVisible();
   await expect(page.getByRole("button", { name: "Destrancar baú arcano" })).toBeVisible();
+  await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
+  const island = (await page.locator(".math-journey-island.is-current").boundingBox())!;
+  const viewport = page.viewportSize()!;
+  const originalSize =
+    viewport.width <= 600
+      ? Math.min(viewport.width * 0.75, viewport.height * 0.48)
+      : Math.min(440, viewport.width * 0.64, viewport.height * 0.56);
+  expect(Math.abs(island.width - originalSize)).toBeLessThan(1);
   await page.clock.install();
   await page.getByRole("button", { name: "Destrancar baú arcano" }).click();
   await page.clock.fastForward(30_000);
@@ -49,11 +57,16 @@ test("arcane chest shares the minute, reveals by dragging and inspects foil taro
   await page.clock.fastForward(600);
   await expect(page.getByRole("dialog", { name: "Carta do baú arcano" })).toBeVisible();
   const card = page.getByRole("button", { name: "Revelar carta", exact: true });
+  await card.scrollIntoViewIfNeeded();
   const box = (await card.boundingBox())!;
-  await page.mouse.move(box.x + 30, box.y + 100);
-  await page.mouse.down();
-  await page.mouse.move(box.x + 100, box.y + 105, { steps: 6 });
-  await page.mouse.up();
+  if (info.project.name === "mobile") {
+    await page.touchscreen.tap(box.x + 30, box.y + 100);
+  } else {
+    await page.mouse.move(box.x + 30, box.y + 100);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 100, box.y + 105, { steps: 6 });
+    await page.mouse.up();
+  }
   await page.clock.fastForward(1000);
   await expect(page.getByRole("heading", { name: "A Estrela" })).toBeVisible();
   await page.getByRole("button", { name: "Inspecionar carta em 3D" }).click();

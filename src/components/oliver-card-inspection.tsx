@@ -40,6 +40,8 @@ export function OliverCardInspection({ id }: { id: OliverArtworkId }) {
         }}
         onPointerDown={(event) => {
           if (!event.isPrimary || event.button !== 0) return;
+          event.preventDefault();
+          event.currentTarget.focus({ preventScroll: true });
           gesture.current = { x: event.clientX, y: event.clientY, angle };
           event.currentTarget.setPointerCapture(event.pointerId);
         }}

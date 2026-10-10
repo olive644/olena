@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, correção: MathIslandJourney preserva a escala original dos lugares,
+com math-journey-content rolável em telas baixas. OliverCard usa draggable=false
+nas artes e bloqueia dragstart; CSS impede seleção e callout apenas nas cartas.
+Booster e inspeção previnem o comportamento nativo no início do gesto. Provas:
+e2e/card-integrity.spec.ts (todas as onze cartas) e escala em arcane-chests.
+
 2026-10-10: MathChestArt desenha comum e arcano no padrão de papel. MathChest mantém
 cards comuns e acrescenta kind/arcana à chave v1; chestCards unifica apresentação
 e coleção, mergeMathRewards conserva identidade e acusa diferenças. Arcano 5%

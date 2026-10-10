@@ -52,6 +52,8 @@
   color: inherit;
   cursor: pointer;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   perspective: inherit;
   transition:
     translate 200ms ease,
@@ -92,6 +94,9 @@
   transform: rotateY(180deg);
 }
 .oliver-card-front {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   --digit-face: #292432;
   --digit-depth: #a39785;
   --digit-fold: #51465d;
@@ -337,6 +342,9 @@ html[data-reduce-motion="true"] .oliver-tarot-front::after {
   padding: 2px 3px 4px;
 }
 .oliver-card-back {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   height: 100%;
   min-height: 100px;
   border: 7px solid #292432;
@@ -381,6 +389,11 @@ html[data-reduce-motion="true"] .oliver-tarot-front::after {
   width: 84%;
   height: 84%;
   object-fit: contain;
+}
+.oliver-card-front img,
+.oliver-card-back img {
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .oliver-card-back > span {
   position: relative;
@@ -556,6 +569,9 @@ html[data-reduce-motion="true"] .oliver-tarot-front::after {
   gap: 16px;
 }
 .oliver-inspection-stage {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   width: min(310px, 78vw);
   height: 535px;
   perspective: 1400px;
@@ -598,6 +614,17 @@ html[data-reduce-motion="true"] .oliver-tarot-front::after {
 .oliver-collection-item.is-arriving > img {
   animation: oliver-arrival-front 950ms both;
   backface-visibility: hidden;
+}
+.oliver-collection-item,
+.oliver-tarot-showcase {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.oliver-collection-item img,
+.oliver-tarot-showcase img {
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .oliver-flip-card.is-storing .oliver-flip-button {
   opacity: 0;

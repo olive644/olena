@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Correção de escala e integridade das cartas (2026-10-10)
+
+- Restaurado o tamanho anterior dos lugares de Matemática: min(440px, 64vw,
+  56dvh) no desktop, min(75vw, 48dvh) no celular. Telas baixas rolam a área
+  verticalmente, preservando tamanho, slots maiores e separação dos títulos.
+- Cartas comuns e tarot têm imagens não arrastáveis e texto não selecionável.
+  O gesto de inspeção captura o ponteiro e impede o comportamento nativo do
+  navegador; a arte, moldura e história permanecem uma única superfície.
+- Provas de regressão medem a escala original e giram todas as onze cartas
+  com mouse, verificando ausência de arraste nativo ou seleção de texto.
+
 ## Identidade das cartas e arcano do Oliver (2026-10-10)
 
 - Comuns usam o alfabeto de papel existente, com acentos acessíveis, e PaperDigits nos atributos. Moldura prata e trilhos coloridos preservam a raridade comum e cada paleta narrativa.

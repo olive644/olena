@@ -11,9 +11,10 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
       <div
         className={`oliver-card-back${id === OLIVER_TAROT.id ? " oliver-tarot-back" : ""}`}
         aria-hidden="true"
+        onDragStart={(event) => event.preventDefault()}
       >
         <div className="oliver-back-orbit">
-          <img src="/olena-favicon-180.png" alt="" width="180" height="180" />
+          <img src="/olena-favicon-180.png" alt="" width="180" height="180" draggable={false} />
         </div>
         <span>OLENA</span>
         <i className="oliver-back-star" />
@@ -21,7 +22,11 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
     );
   if (id === OLIVER_TAROT.id)
     return (
-      <article className="oliver-card-front oliver-tarot-front" aria-label="XVII, A Estrela">
+      <article
+        className="oliver-card-front oliver-tarot-front"
+        aria-label="XVII, A Estrela"
+        onDragStart={(event) => event.preventDefault()}
+      >
         <div className="oliver-tarot-crown">
           <span aria-hidden="true">✦</span>
           <PaperCardTitle value={OLIVER_TAROT.arcana} />
@@ -36,6 +41,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
           width="720"
           height="1080"
           decoding="async"
+          draggable={false}
         />
         <h2>
           <PaperCardTitle value={OLIVER_TAROT.title} />
@@ -49,6 +55,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
       className="oliver-card-front"
       style={{ "--card-accent": card.color } as CSSProperties}
       aria-label={card.title}
+      onDragStart={(event) => event.preventDefault()}
     >
       <span className="oliver-card-rarity" aria-label="Raridade comum">
         COMUM
@@ -62,6 +69,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
         width="720"
         height="1080"
         decoding="async"
+        draggable={false}
       />
       <dl className="oliver-card-stats">
         <div>

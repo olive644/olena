@@ -126,6 +126,8 @@ export function OliverCardBooster({
             onClick={flip}
             onPointerDown={(event) => {
               if (!event.isPrimary || event.button !== 0) return;
+              event.preventDefault();
+              event.currentTarget.focus({ preventScroll: true });
               start.current = { x: event.clientX, y: event.clientY };
               event.currentTarget.setPointerCapture(event.pointerId);
             }}
@@ -133,12 +135,8 @@ export function OliverCardBooster({
               if (!start.current) return;
               setDrag({ x: event.clientX - start.current.x, y: event.clientY - start.current.y });
             }}
-            onPointerUp={(event) => {
-              if (
-                start.current !== null &&
-                Math.hypot(event.clientX - start.current.x, event.clientY - start.current.y) > 35
-              )
-                flip();
+            onPointerUp={() => {
+              if (start.current !== null) flip();
               start.current = null;
               setDrag({ x: 0, y: 0 });
             }}
