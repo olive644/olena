@@ -1,0 +1,275 @@
+.math-journey {
+  position: fixed;
+  inset: 0;
+  z-index: 145;
+  overflow: hidden;
+  background: var(--page, #fff9ef);
+  color: var(--text, #292432);
+  isolation: isolate;
+}
+.math-journey::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--math-light);
+  opacity: 0.12;
+  clip-path: polygon(0 0, 30% 0, 0 40%, 0 100%, 100% 100%, 100% 65%, 65% 100%, 100% 0);
+  pointer-events: none;
+}
+.math-world-back {
+  color: #292432;
+  background: #fff9ef;
+  border: 1px solid #d5c8b0;
+  box-shadow: 0 5px #d5c8b0;
+  border-radius: 6px 16px 4px 6px;
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  left: max(18px, env(safe-area-inset-left));
+  z-index: 8;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.math-world-back img {
+  width: 25px;
+  height: 25px;
+  transform: rotate(180deg);
+  object-fit: contain;
+}
+.math-world-back:hover {
+  transform: translateY(-3px);
+  color: #fff9ef;
+  background: #7c3aed;
+  box-shadow: 0 8px #51259b;
+}
+.math-world-back:hover img {
+  animation: math-back-arrow 0.5s ease-in-out;
+}
+.math-journey-stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: grab;
+}
+.math-journey-stage:active {
+  cursor: grabbing;
+}
+.math-journey-island {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: min(440px, 64vw, 56dvh);
+  aspect-ratio: 1;
+  transform: translate(-50%, calc(-50% - var(--island-y) * 78%)) scale(0.55);
+  opacity: 0.24;
+  transition:
+    transform 0.7s cubic-bezier(0.22, 0.7, 0.2, 1),
+    opacity 0.55s;
+  pointer-events: none;
+}
+.math-journey-island.is-current {
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  z-index: 2;
+}
+.math-journey-island img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 9px #29243218);
+}
+.math-journey-avatar {
+  --avatar-from: 100px;
+  animation: math-avatar-travel 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+  pointer-events: none;
+  z-index: 4;
+  position: absolute;
+  left: 50%;
+  top: calc(42% - min(440px, 64vw, 56dvh) * 0.25);
+  width: min(70px, 12vw);
+  transform: translate(-50%, -50%);
+}
+.math-journey-avatar.is-moving-down {
+  --avatar-from: -100px;
+}
+@keyframes math-avatar-travel {
+  from {
+    opacity: 0.4;
+    transform: translate(-50%, calc(-50% + var(--avatar-from))) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+.math-journey-avatar .practice-user-portrait {
+  width: 100%;
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px solid #fff3bc;
+  box-shadow:
+    0 5px #b69347,
+    0 0 0 3px #facc15;
+  overflow: hidden;
+}
+.math-journey-avatar .practice-user-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.math-journey-label {
+  position: absolute;
+  bottom: max(25px, 4dvh);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: min(500px, 84%);
+  z-index: 5;
+}
+.math-journey-label > span {
+  color: color-mix(in srgb, var(--math-color), var(--text) 25%);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+}
+.math-journey-label h1 {
+  color: var(--text, #292432);
+  font-size: clamp(20px, 3vw, 30px);
+  margin: 8px 0;
+}
+.math-journey-label p {
+  color: var(--muted, #665a70);
+  margin: 6px 0 16px;
+  font-size: 13px;
+}
+.math-journey-label .math-start-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.math-action-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+}
+.math-journey-up,
+.math-journey-down {
+  border: 1px solid #d5c8b0;
+  border-radius: 6px 16px 4px 6px;
+  background: #fff9ef;
+  box-shadow: 0 5px #d5c8b0;
+  position: absolute;
+  left: calc(50% + min(280px, 36vw));
+  z-index: 6;
+}
+.math-journey-up {
+  top: 29%;
+}
+.math-journey-down {
+  top: 51%;
+}
+.math-journey-up img {
+  width: 30px;
+  height: 30px;
+  transform: rotate(-90deg);
+}
+.math-journey-down img {
+  width: 30px;
+  height: 30px;
+  transform: rotate(90deg);
+}
+.math-journey.is-enter .is-current {
+  transform: translate(-50%, -35%) scale(3);
+  opacity: 0;
+}
+.math-journey.is-enter .math-journey-avatar {
+  animation: none;
+  top: 55%;
+  transform: translate(-50%, -50%) scale(3);
+  opacity: 0;
+  transition:
+    transform 0.85s,
+    top 0.85s,
+    opacity 0.85s;
+}
+.math-journey.is-enter .math-journey-label,
+.math-journey.is-enter .is-preview {
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+.math-journey.is-return {
+  animation: math-map-return 0.85s both;
+}
+.math-journey.is-exit {
+  animation: math-map-exit 0.85s both;
+}
+@keyframes math-back-arrow {
+  50% {
+    transform: rotate(180deg) translateX(5px);
+  }
+}
+@keyframes math-map-return {
+  from {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes math-map-exit {
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@media (max-width: 600px) {
+  .math-journey-avatar {
+    top: calc(43% - min(75vw, 48dvh) * 0.25);
+  }
+  .math-journey-island {
+    top: 43%;
+    width: min(75vw, 48dvh);
+  }
+  .math-journey-label {
+    bottom: 3dvh;
+  }
+  .math-journey-up,
+  .math-journey-down {
+    left: auto;
+    right: 12px;
+  }
+  .math-journey-up {
+    top: 26%;
+  }
+  .math-journey-down {
+    top: 57%;
+  }
+  .math-world-back {
+    font-size: 12px;
+    padding: 11px 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .math-journey *,
+  .math-journey {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+html[data-reduce-motion="true"] .math-journey,
+html[data-reduce-motion="true"] .math-journey * {
+  animation: none !important;
+  transition: none !important;
+}

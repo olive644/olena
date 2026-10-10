@@ -1,55 +1,130 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MathArcade } from "./math-arcade";
+import { handleOlena } from "../backend/olena-handler";
+import { mathLearning } from "../data/math-learning";
+import { updateAccessibility } from "../data/accessibility-preferences";
 
+beforeEach(() => {
+  vi.useFakeTimers();
+  localStorage.removeItem("helena.mathLearning.v1");
+  localStorage.removeItem("helena.room-xp.v1");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_url: string, init: RequestInit) =>
+      handleOlena(new Request("http://localhost/api/olena?action=math&version=1", init)),
+    ),
+  );
+});
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  updateAccessibility({ reduceMotion: false });
 });
+async function click(name: string) {
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name }));
+  });
+}
+async function tick(time: number) {
+  await act(async () => {
+    vi.advanceTimersByTime(time);
+  });
+}
+async function begin() {
+  await click("Vamos calcular!");
+  await tick(1000);
+  await tick(1000);
+  await tick(1000);
+}
+function correctAnswer() {
+  const expression = screen.getByRole("heading").getAttribute("aria-label")!;
+  const values = expression.match(/\d+/g)!.map(Number);
+  return expression.includes("−")
+    ? values[0]! - values[1]!
+    : expression.includes("×")
+      ? values[0]! * values[1]!
+      : values[0]! + values[1]!;
+}
 
-it("scores once per question, resets combo on error and restarts without saved XP", () => {
-  vi.useFakeTimers();
-  vi.spyOn(Math, "random").mockReturnValue(0);
-  const saved = localStorage.getItem("helena.soloProgress");
+it("uses the API, advances topics, scores once and retains mastery on retry", async () => {
+  updateAccessibility({ reduceMotion: true });
   render(<MathArcade onBack={() => {}} />);
-  act(() => vi.advanceTimersByTime(10000));
-  expect(screen.getByRole("button", { name: "Vamos calcular!" })).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Vamos calcular!" }));
-  const answer = screen.getByRole("button", { name: "Resposta 2" });
-  fireEvent.click(answer);
-  fireEvent.click(answer);
-  expect(screen.getByRole("status").textContent).toBe("BOA! +10");
-  act(() => vi.advanceTimersByTime(500));
-  fireEvent.keyDown(document.activeElement!, { key: "4" });
-  expect(screen.getByRole("status").textContent).toBe("BOA! +12");
-  act(() => vi.advanceTimersByTime(500));
-  fireEvent.click(screen.getByRole("button", { name: "Resposta 3" }));
-  expect(screen.getByRole("status").textContent).toBe("Resposta: 2");
-  act(() => vi.advanceTimersByTime(1100));
-  fireEvent.click(screen.getByRole("button", { name: "Resposta 2" }));
-  expect(screen.getByRole("status").textContent).toBe("BOA! +10");
-  act(() => vi.advanceTimersByTime(60000));
-  expect(screen.getByRole("heading", { name: "32 pontos" })).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Tentar de novo" }));
+  await begin();
+  for (let index = 0; index < 4; index++) {
+    await click("Resposta " + correctAnswer());
+    await tick(650);
+  }
+  expect(mathLearning("foundations").level).toBe(2);
+  expect(mathLearning("foundations").correct).toBe(4);
+  expect(screen.getByText(/VOCÊ ESTÁ INSANO/)).toBeTruthy();
+  for (let index = 0; index < 3; index++) {
+    const wrong = screen
+      .getAllByRole("button", { name: /^Resposta/ })
+      .find((item) => item.getAttribute("aria-label") !== "Resposta " + correctAnswer())!;
+    await click(wrong.getAttribute("aria-label")!);
+    await tick(1300);
+  }
+  expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
+  await tick(32);
+  await tick(1);
+  expect(screen.getByText(/XP pela prática de Matemática/)).toBeTruthy();
+  const savedXp = JSON.parse(localStorage.getItem("helena.room-xp.v1")!).total;
+  expect(savedXp).toBeGreaterThan(0);
+  await tick(1);
+  expect(JSON.parse(localStorage.getItem("helena.room-xp.v1")!).total).toBe(savedXp);
+  await click("Tentar de novo");
+  await tick(1000);
+  await tick(1000);
+  await tick(1000);
+  expect(screen.getByText("Multiplicação")).toBeTruthy();
   expect(screen.getByLabelText("3 chances restantes")).toBeTruthy();
-  expect(localStorage.getItem("helena.soloProgress")).toBe(saved);
 });
 
-it("ends on the third error and releases timers and page scroll on exit", () => {
-  vi.useFakeTimers();
-  vi.spyOn(Math, "random").mockReturnValue(0);
+it("rejects double answers and animates leaving before releasing scroll", async () => {
   const back = vi.fn();
   const view = render(<MathArcade onBack={back} />);
-  fireEvent.click(screen.getByRole("button", { name: "Vamos calcular!" }));
-  for (let index = 0; index < 3; index++) {
-    fireEvent.click(screen.getByRole("button", { name: "Resposta 3" }));
-    act(() => vi.advanceTimersByTime(1100));
-  }
-  expect(screen.getByRole("heading", { name: "0 pontos" })).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Voltar às ilhas" }));
+  await begin();
+  const answer = screen.getByRole("button", { name: "Resposta " + correctAnswer() });
+  await act(async () => {
+    fireEvent.click(answer);
+    fireEvent.click(answer);
+  });
+  expect(mathLearning("foundations").correct).toBe(1);
+  await tick(650);
+  await click("Voltar às ilhas");
+  expect(back).not.toHaveBeenCalled();
+  await tick(650);
   expect(back).toHaveBeenCalledOnce();
   view.unmount();
-  expect(vi.getTimerCount()).toBe(0);
   expect(document.body.style.overflow).not.toBe("hidden");
+});
+
+it("shows a recoverable API error instead of inventing questions", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+  render(<MathArcade onBack={() => {}} />);
+  await click("Vamos calcular!");
+  expect(screen.getByRole("alert").textContent).toContain("offline");
+  expect(screen.queryAllByRole("button", { name: /^Resposta/ })).toHaveLength(0);
+});
+it("treats an unanswered deadline separately, deducts four extra seconds and does not mark a fake choice", async () => {
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ photoUrl: "/my-photo.png" }));
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  await tick(14100);
+  await tick(1);
+  expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
+  expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
+  expect(Number(screen.getByRole("progressbar").getAttribute("aria-valuenow"))).toBeLessThanOrEqual(
+    42,
+  );
+  expect(document.querySelector('.math-answer-button[data-feedback="wrong"]')).toBeNull();
+  expect(document.querySelector(".math-user-avatar img")?.getAttribute("src")).toBe(
+    "/my-photo.png",
+  );
+  expect(document.querySelector(".math-user-avatar svg")).toBeNull();
+  localStorage.removeItem("helena.profile.v1");
 });

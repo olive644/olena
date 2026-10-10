@@ -5,12 +5,43 @@ import { ROOM_XP_KEY } from "../data/room-xp";
 const reward = { id: "round:player", place: 2, xp: 75, completedAt: 1000 };
 describe("notificação final de XP", () => {
   beforeEach(() => localStorage.clear());
+  it("credita Matemática antes de exibir o aviso atrasado e preserva o recibo se sair", async () => {
+    vi.useFakeTimers();
+    try {
+      const view = render(
+        <RoomRewardNotice reward={reward} activity="mathematics" delayMs={1200} />,
+      );
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
+      expect(JSON.parse(localStorage.getItem(ROOM_XP_KEY)!).total).toBe(75);
+      expect(screen.queryByRole("status")).toBeNull();
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1200);
+      });
+      expect(screen.getByRole("status").textContent).toContain(
+        "+75 XP pela prática de Matemática!",
+      );
+      view.unmount();
+      render(<RoomRewardNotice reward={reward} activity="mathematics" delayMs={1200} />);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1201);
+      });
+      expect(screen.queryByRole("status")).toBeNull();
+      expect(JSON.parse(localStorage.getItem(ROOM_XP_KEY)!).total).toBe(75);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   it("avisa a colocação, permite fechar e não credita outra vez ao reabrir", async () => {
     const view = render(<RoomRewardNotice reward={reward} />);
     await waitFor(() =>
       expect(screen.getByRole("status").textContent).toContain("+75 XP pelo 2º lugar!"),
     );
-    fireEvent.click(screen.getByRole("button", { name: "Fechar notificação de XP" }));
+    const close = screen.getByRole("button", { name: "Fechar notificação de XP" });
+    expect(close.querySelector('[data-paper-editor-icon="close"]')).toBeTruthy();
+    expect(close.textContent).toBe("");
+    fireEvent.click(close);
     expect(screen.queryByRole("status")).toBeNull();
     view.unmount();
     render(<RoomRewardNotice reward={reward} />);

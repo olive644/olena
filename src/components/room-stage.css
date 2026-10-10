@@ -577,8 +577,13 @@
 }
 .room-reward-notice .secondary-button {
   min-width: 44px;
+  min-height: 44px;
   padding: 4px;
   font-size: 24px;
+}
+.room-reward-notice .paper-editor-icon {
+  width: 28px;
+  height: 28px;
 }
 .room-reward-notice__countdown {
   position: absolute;

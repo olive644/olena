@@ -7,7 +7,7 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import "../solo-journey.css";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { PracticeIslandCarousel } from "../components/practice-island-carousel";
-import { MathArcade } from "../components/math-arcade";
+import { MathIslandJourney } from "../components/math-island-journey";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import "../practice-islands.css";
 import {
@@ -75,7 +75,7 @@ function PracticeHub() {
   const world = SOLO_WORLDS[worldIndex]!;
   const available = world.id === "mathematics";
 
-  if (insideWorld && available) return <MathArcade onBack={() => setInsideWorld(false)} />;
+  if (insideWorld && available) return <MathIslandJourney onBack={() => setInsideWorld(false)} />;
   return (
     <div className="practice-hub practice-hub--carousel">
       <PracticeIslandCarousel
