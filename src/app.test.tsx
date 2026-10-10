@@ -29,7 +29,7 @@ describe("App", () => {
     render(<App />);
     expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
     expect(screen.queryByText(/dados salvos neste dispositivo/i)).toBeNull();
-    const sidebar = screen.getByRole("complementary");
+    const sidebar = screen.getByRole("complementary", { name: "" });
     fireEvent.click(within(sidebar).getByRole("button", { name: "Expandir menu lateral" }));
     expect(within(sidebar).getByLabelText("OlenaStudy")).toBeTruthy();
     expect(screen.queryByAltText(/rosto da helena/i)).toBeNull();
@@ -50,7 +50,7 @@ describe("App", () => {
 
   it("expande a navegação lateral para revelar categorias e nomes", () => {
     render(<App />);
-    const sidebar = screen.getByRole("complementary");
+    const sidebar = screen.getByRole("complementary", { name: "" });
     const toggle = within(sidebar).getByRole("button", { name: "Expandir menu lateral" });
 
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
@@ -75,6 +75,16 @@ describe("App", () => {
     for (const profile of profiles) {
       expect(profile.querySelector("img")?.getAttribute("src")).toBe("https://example.com/ana.png");
     }
+  });
+
+  it("mantém a estrela da Helena montada ao trocar de aba", async () => {
+    render(<App />);
+    const star = await screen.findByRole("button", { name: "Conversar com Helena" });
+    expect(screen.getByRole("complementary", { name: "Assistente Helena" })).toBeTruthy();
+    navigate("Agenda");
+    expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
+    navigate("Foco");
+    expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
   });
 
   it("permite escolher um avatar oficial para o perfil", () => {
