@@ -65,6 +65,11 @@ e sua política de uso aceitável, não são permissivos sem condições.
 - Currículo, quantidade, modelo, origem e revisão base são fixos, sem remote code.
 - Artefatos são públicos: contêm apenas pesos candidatos e metadados sintéticos.
 - O job não tem permissão de escrita no código, nem credenciais de alunos.
+- Disparo manual exige permissão de escrita no GitHub e pode testar branches
+  confiáveis; nunca roda automaticamente em pull requests ou forks. Agenda usa main.
+- Ambiente de treinamento atualiza pip/setuptools antes da auditoria. Build CPU
+  do Torch é verificado também pelo OSV com versão base, pois pip-audit não
+  reconhece o sufixo local `+cpu` do índice oficial.
 - Checagem aritmética limitada pode deixar erros textuais passarem; não promove.
 
 ## Configuração privada
