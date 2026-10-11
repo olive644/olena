@@ -1103,6 +1103,11 @@ ampla e hospedagem antes de substituir professor. Ver `docs/OLENA_LEARNING.md`.
 
 # Agenda integrada
 
+Verificação de propriedade no Google Search Console: meta pública no head de
+`index.html`, sem depender de JavaScript. Não remover depois da confirmação.
+`src/google-site-verification.test.ts` impede perda ou duplicação da meta.
+A verificação OAuth de marca/escopos continua sendo um processo separado no Google.
+
 `planner-view.tsx` usa calendário Hoje/Semana/Mês e formulário único. `domain/agenda.ts`
 centraliza datas locais e recorrência; o Espaço usa o mesmo seletor. Eventos de estudo
 ligam Foco via metadados opcionais do contador; `focus/recorded` agrega por ocorrência.
