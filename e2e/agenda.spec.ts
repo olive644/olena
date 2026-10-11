@@ -52,7 +52,10 @@ test("agenda displays real legacy math progress and filtered Pomodoro weeks in b
     await drag.evaluate((element) => element.scrollIntoView({ block: "center" }));
     const box = await drag.boundingBox();
     expect(box!.width).toBeGreaterThan(100);
-    if (info.project.name === "mobile") {
+    if (
+      info.project.name === "mobile" &&
+      page.context().browser()?.browserType().name() === "chromium"
+    ) {
       const touch = await page.context().newCDPSession(page);
       await touch.send("Input.dispatchTouchEvent", {
         type: "touchStart",
