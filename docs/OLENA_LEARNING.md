@@ -6,9 +6,65 @@ O aplicativo usa `/api/helena` para respostas reais, com Cloudflare como profess
 inicial. O preview continua demonstrativo. Sem credenciais, a API falha de forma
 honesta, sem substituir a resposta por texto simulado.
 
-Esta entrega não contém modelo treinado. Há um pipeline executável de geração,
-revisão e exportação, uma receita LoRA e roteamento para um modelo próprio que
-for avaliado e hospedado posteriormente. Salvar exemplos não altera pesos.
+Há geração agendada de exemplos públicos e treinamento CPU de adaptadores
+candidatos. O chat continua com o professor Cloudflare. A execução efetiva de
+cada treino e sua avaliação ficam nos relatórios do GitHub Actions. Salvar
+exemplos não altera pesos; somente um job de treino concluído faz isso.
+
+## Ativação diária e orçamento zero
+
+O proprietário confirmou Workers Free. `OLENA_LEARNING_FREE_CONFIRMED=true`
+habilita `/api/olena-learning`, exclusivamente POST vazio autenticado com
+`OLENA_LEARNING_SERVICE_TOKEN` (64 caracteres aleatórios). O mesmo segredo
+fica no servidor Vercel e nos secrets do GitHub, nunca no cliente. Desabilitar
+a flag ou pausar o workflow interrompe novas gerações. Nenhuma alteração de
+plano pago é feita.
+
+O workflow `Olena learning candidate` roda diariamente às 04:17 UTC, com no
+máximo duas chamadas adicionais por dia, incluídas no limite global do chat.
+O corpus inicial tem 40 exercícios públicos de adição e multiplicação. Não
+é aprendizado ilimitado: ao completar o corpus, a geração para. Se seu hash
+não mudar e o último candidato for recuperável, o treinamento também para.
+Novos temas precisam de currículo e testes próprios.
+
+O runner CPU padrão é gratuito neste repositório público. Não usa GPU paga,
+runner ampliado ou serviço de treinamento externo. Os adaptadores pequenos
+ficam por sete dias; não publicamos pesos base, caches ou conversas. Storage
+e cotas do GitHub/Firebase/Vercel continuam sujeitos aos planos existentes.
+Workers Free bloqueia chamadas após sua franquia, em vez de migrar para pago.
+
+## Candidato experimental, não promoção automática
+
+`scripts/olena-candidate-data.mjs` exporta somente o corpus sintético permitido.
+Checagem automática confirma a equação e rejeita equações simples contraditórias.
+Isso NÃO é revisão humana nem prova de qualidade pedagógica. O caminho antigo
+`approve`/`export` permanece separado para dados efetivamente revisados.
+
+`scripts/train-olena-candidate.py` treina de fato 16 passos LoRA em CPU sobre
+Qwen2.5-0.5B-Instruct, revisão fixa, rank 4. Só tokens da resposta recebem
+supervisão. Retoma o último adaptador sem regressão no smoke test quando
+disponível; caso contrário inicia do base com corpus cumulativo. Quatro somas
+reservadas medem apenas um smoke test, não competência geral, segurança ou
+Português. `production_approved` permanece falso em todos os relatórios.
+O aplicativo nunca muda de provedor sozinho. Ainda falta avaliação abrangente
+e hospedagem de inferência antes de um modelo próprio assumir tarefas do chat.
+
+O modelo base tem licença Apache-2.0. O professor atual é Llama 3.3; candidatos
+se chamam `Llama-Olena-Qwen-Candidate`, incluem `Built with Llama`, NOTICE e as
+licenças junto ao artefato. Uso e distribuição devem seguir a licença Llama 3.3
+e sua política de uso aceitável, não são permissivos sem condições.
+
+## Modelo de ameaça do job
+
+- Endpoint sem token não lê corpus nem chama o professor; comparação constante.
+- Não aceita prompts, IDs de conta, URLs, fontes ou material privado do chamador.
+- Corpus em namespace Firebase privado (negação padrão), acesso só pelo servidor.
+- CAS com lease impede geração simultânea; falhas fecham sem revelar segredos.
+- Consome quota antes de gerar; erro não faz retries automáticos do professor.
+- Currículo, quantidade, modelo, origem e revisão base são fixos, sem remote code.
+- Artefatos são públicos: contêm apenas pesos candidatos e metadados sintéticos.
+- O job não tem permissão de escrita no código, nem credenciais de alunos.
+- Checagem aritmética limitada pode deixar erros textuais passarem; não promove.
 
 ## Configuração privada
 

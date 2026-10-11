@@ -1074,3 +1074,13 @@ StudyNotebook.kind admite note. Uma Note possui uma StudyNote de texto em pageId
 - Reconexão por credencial preserva a partida; reentrada após perda da sessão depende da mesma conta autenticada e da tolerância de 2 minutos. Reaproveita propostas das PRs #363, #358 e recuperação de stream da #359; há sobreposição intencional que precisa ser considerada ao integrar as PRs pendentes.
 - src/data/accessibility-preferences.ts centraliza preferências locais e isMotionReduced. Inicialização em main.tsx; Perfil edita; CSS usa atributos na raiz; motores/transições JS usam o mesmo guard. Chave olena:accessibility:v1. Não alterar o workspace nem alegar sincronização em nuvem para essas escolhas.
 - src/components/bingo-latest.tsx usa apenas os números já revelados, tanto para criador quanto participantes. Nunca usar drawn.at(-1) para o selo antes de a animação terminar.
+
+# Aprendizado candidato agendado (2026-10-10)
+
+Workflow `olena-learning.yml`: POST protegido, até dois exemplos públicos/dia,
+CPU LoRA rank 4 com base fixa, avaliação smoke e artefato pequeno por sete dias.
+`gh workflow run olena-learning.yml` dispara manualmente respeitando as quotas.
+Segredo compartilhado `OLENA_LEARNING_SERVICE_TOKEN`; servidor requer flag
+`OLENA_LEARNING_FREE_CONFIRMED=true`. Pausar workflow ou remover flag desativa.
+Não usa conversas nem altera `/api/helena`. Candidato precisa de avaliação
+ampla e hospedagem antes de substituir professor. Ver `docs/OLENA_LEARNING.md`.
