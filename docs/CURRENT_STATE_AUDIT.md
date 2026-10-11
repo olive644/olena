@@ -2358,8 +2358,13 @@ seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
   navegação. Não grava planos em lote nem modifica eventos existentes.
 - Dias estudados recebem faixas turquesa. Resumo por mês/intervalo com minutos
   reais, dias ativos e maior sequência consecutiva, inclusive entre meses.
-- Linha de registros usa horário local de conclusão do Foco. Não afirma conhecer
-  início ou pausas. Lista horários, matéria e minutos sem fabricar sessões.
+- Dashboard compacto substitui a linha de horários, com ícones originais de
+  cronômetro, caderno, tomate Pomodoro e ilha de Matemática. Minutos, dias e
+  sequência vêm do Foco; cadernos representam a biblioteca completa e Pomodoro
+  mostra a duração configurada, não um total inventado de sessões.
+- Intervalo inclusivo amarelo nos dois temas, com grafite para contraste e contorno
+  roxo no dia ativo. PaperDigits nos dias, anos, horários e totais da Agenda;
+  o ano mantém texto nativo durante a edição para preservar usabilidade.
 - Conta/persistência reaproveitadas sem migração ou dependência. Seleção da tela
   não é persistida. X vermelho em nova arte facetada exclusiva da Agenda.
 - Provas: `agenda-history.test.ts` e E2E de intervalo por arraste, teclado e toque.

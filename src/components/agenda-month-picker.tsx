@@ -2,6 +2,7 @@ import { useId, useRef, useState } from "react";
 import { NavigationIcon } from "./navigation-icon";
 import { PaperArrow } from "./paper-arrow";
 import { AgendaCloseIcon } from "./agenda-close-icon";
+import { PaperDigits } from "./paper-digits";
 
 const months = Array.from({ length: 12 }, (_, index) =>
   new Date(2026, index, 1).toLocaleDateString("pt-BR", { month: "long" }),
@@ -37,8 +38,13 @@ export function AgendaMonthPicker({
         aria-haspopup="dialog"
         aria-expanded={open}
         popoverTarget={id}
+        onClick={() => {
+          if (!open) setYear(Number(value.slice(0, 4)));
+        }}
       >
-        {months[Number(value.slice(5, 7)) - 1]} de {value.slice(0, 4)}
+        <span>
+          {months[Number(value.slice(5, 7)) - 1]} de <PaperDigits value={value.slice(0, 4)} />
+        </span>
         <NavigationIcon name="planner" />
       </button>
       <div
@@ -51,7 +57,6 @@ export function AgendaMonthPicker({
         onToggle={(event) => {
           const visible = event.currentTarget.matches(":popover-open");
           setOpen(visible);
-          if (visible) setYear(Number(value.slice(0, 4)));
         }}
       >
         <header>
@@ -78,6 +83,9 @@ export function AgendaMonthPicker({
           </button>
           <label>
             <span>Ano</span>
+            <span className="agenda-year-value">
+              <PaperDigits value={String(year)} />
+            </span>
             <input
               aria-label="Ano"
               type="text"

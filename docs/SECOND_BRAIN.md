@@ -1114,8 +1114,10 @@ foram substituídas, mantendo o formulário único e a data selecionada ao recol
 `AgendaMonthPicker` substitui o input de mês nativo por popover HTML com Escape,
 botões originais, 12 meses e ano editável. Sem biblioteca ou mudança de persistência.
 `domain/agenda-history.ts` agrega Foco por data local de conclusão e calcula maior
-sequência no intervalo. `AgendaStudyHistory` exibe totais e horários reais de
-registro. Intervalos por Pointer Events ou início/fim por botões são estado local
+sequência no intervalo. `AgendaStudyHistory` exibe um dashboard compacto com
+totais reais e atalhos para Foco, Cadernos e Ilhas. Pomodoro mostra a preferência
+de duração, pois sessões antigas não guardam modalidade nem ilha. Intervalos
+amarelos e PaperDigits respeitam ambos os temas. Intervalos por Pointer Events ou início/fim por botões são estado local
 da tela, sem mutação do workspace. O início exato das sessões não é conhecido.
 `AgendaCloseIcon` mantém o X vermelho em camadas, restrito aos controles da Agenda.
 `domain/agenda.ts`

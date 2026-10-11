@@ -17,6 +17,7 @@ import { AgendaCloseIcon } from "../components/agenda-close-icon";
 import { NavigationIcon } from "../components/navigation-icon";
 import { AgendaMonthPicker } from "../components/agenda-month-picker";
 import { AgendaStudyHistory } from "../components/agenda-study-history";
+import { PaperDigits } from "../components/paper-digits";
 import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
 import {
   agendaPrompt,
@@ -66,6 +67,12 @@ const labels: Record<Kind, string> = {
   subject: "Matéria",
   goal: "Meta de foco",
 };
+function PaperCalendarText({ value }: { value: string }) {
+  return value
+    .split(/(\d[\d:]*)/)
+    .map((part, index) => (/^\d/.test(part) ? <PaperDigits key={index} value={part} /> : part));
+}
+
 function dayLabel(date: string, long = false) {
   return dateForKey(date).toLocaleDateString(
     "pt-BR",
@@ -305,25 +312,34 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
         className={`agenda-item agenda-item--timed${event.kind === "study" ? " agenda-item--study" : ""}${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
         key={`${event.id}:${date}`}
       >
-        <time>{event.time}</time>
+        <time>
+          <PaperDigits value={event.time} />
+        </time>
         <div className="agenda-item-copy">
           <strong>{event.title}</strong>
           <small>
             {subjectName(event.subjectId)} ·{" "}
-            {event.kind === "study"
-              ? `${event.durationMinutes ?? 25} min de estudo`
-              : "Compromisso"}
+            <PaperCalendarText
+              value={
+                event.kind === "study"
+                  ? `${event.durationMinutes ?? 25} min de estudo`
+                  : "Compromisso"
+              }
+            />
             {event.recurrence === "weekly" ? " · Semanal" : ""}
           </small>
           {reminder && (
             <span className="agenda-reminder">
-              {minutesAway === 0 ? "Está na hora" : `Começa em ${minutesAway} min`}
+              <PaperCalendarText
+                value={minutesAway === 0 ? "Está na hora" : `Começa em ${minutesAway} min`}
+              />
             </span>
           )}
           {complete && <small>Concluído</small>}
           {event.kind === "study" && recorded > 0 && (
             <small>
-              {recorded}/{event.durationMinutes ?? 25} min registrados
+              <PaperDigits value={String(recorded)} />/
+              <PaperDigits value={String(event.durationMinutes ?? 25)} /> min registrados
             </small>
           )}
         </div>
@@ -534,11 +550,13 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                     chooseDate(date, event.shiftKey);
                   }}
                 >
-                  <span>{dateForKey(date).getDate()}</span>
+                  <span>
+                    <PaperDigits value={String(dateForKey(date).getDate())} />
+                  </span>
                   {minutes > 0 && <i className="agenda-study-ribbon" aria-hidden="true" />}
                   {count > 0 && (
                     <small>
-                      {count}
+                      <PaperDigits value={String(count)} />
                       <span className="agenda-count-desktop">
                         {" "}
                         {count === 1 ? "item" : "itens"}
@@ -554,7 +572,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       {calendarOpen && (
         <AgendaStudyHistory
           history={history}
-          selected={selected}
+          {...(onNavigate ? { onNavigate } : {})}
           workspace={workspace}
           range={range ?? monthRange}
         />
@@ -563,8 +581,12 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
         <div>
           <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
             <div className="module-heading">
-              <h2 id="agenda-day-title">{dayLabel(selected, true)}</h2>
-              <span>{scheduled.length + tasks.length} itens</span>
+              <h2 id="agenda-day-title">
+                <PaperCalendarText value={dayLabel(selected, true)} />
+              </h2>
+              <span>
+                <PaperDigits value={String(scheduled.length + tasks.length)} /> itens
+              </span>
             </div>
             {scheduled.length > 0 && (
               <>

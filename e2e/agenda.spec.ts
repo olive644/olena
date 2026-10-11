@@ -281,8 +281,8 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   await page.keyboard.press("Escape");
   await page.mouse.up();
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
-  await expect(history.getByRole("listitem")).toHaveCount(1);
-  await expect(history.getByRole("listitem")).toContainText("14:00");
+  await expect(history.getByRole("button")).toHaveCount(4);
+  await expect(history.getByRole("button", { name: /Cronômetro/ })).toContainText("65");
   await expect(page.locator(".agenda-month-grid .has-study")).toHaveCount(3);
   await page.getByRole("button", { name: "Limpar intervalo", exact: true }).click();
   await page.getByRole("button", { name: "Selecionar intervalo", exact: true }).click();
@@ -300,9 +300,23 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   }
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(3);
   await expect(history.locator("dd").nth(0)).toHaveText("50");
-  await expect(history.getByRole("listitem")).toHaveCount(2);
-  await expect(history.getByRole("listitem").first()).toContainText("12:00");
-  await expect(history.getByRole("listitem").last()).toContainText("18:00");
+  await expect(history.getByRole("button", { name: /Cronômetro/ })).toContainText("50");
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    const rangeDays = page.locator(".agenda-month-grid .is-in-range");
+    await expect(rangeDays).toHaveCount(3);
+    for (const day of await rangeDays.all()) {
+      await expect(day).toHaveCSS("background-color", "rgb(250, 204, 21)");
+      await expect(day.locator(".paper-digits").first()).toHaveCSS("--digit-face", "#292432");
+    }
+    await expect(page.locator(".agenda-month-grid button > span > .paper-digits")).toHaveCount(35);
+    await history.screenshot({
+      path: info.outputPath(`dashboard-${theme}-${info.project.name}.png`),
+    });
+  }
   if (
     info.project.name === "mobile" &&
     page.context().browser()?.browserType().name() === "chromium"
