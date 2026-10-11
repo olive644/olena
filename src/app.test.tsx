@@ -114,7 +114,7 @@ describe("App", () => {
     fireEvent.click(screen.getByText("Matérias e metas"));
     fireEvent.click(screen.getByRole("button", { name: "Criar meta de foco" }));
     expect(screen.getByRole("dialog", { name: "Adicionar à agenda" })).toBeTruthy();
-    expect((screen.getByLabelText("Tipo") as HTMLSelectElement).value).toBe("goal");
+    expect(screen.getByRole("button", { name: "Tipo" }).textContent).toContain("Meta de foco");
   });
 
   it("mantém as ferramentas na navegação sem duplicá-las no painel principal", () => {
@@ -211,11 +211,9 @@ describe("App", () => {
   it("cria uma tarefa, mostra no Espaço do aluno e permite concluí-la", async () => {
     render(<App />);
     navigate("Agenda");
-    const add = await screen.findByRole("button", { name: "Adicionar" });
+    const add = await screen.findByRole("button", { name: "Criar tarefa" });
     expect(add.querySelector('[data-paper-icon="plus"]')).toBeTruthy();
     fireEvent.click(add);
-    fireEvent.click(screen.getByRole("button", { name: "Criar tarefa" }));
-    fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
     fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Revisar phrasal verbs" },
     });
@@ -382,9 +380,7 @@ describe("App", () => {
   it("mantém dados após remontar o aplicativo", async () => {
     const firstRender = render(<App />);
     navigate("Agenda");
-    fireEvent.click(await screen.findByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Criar tarefa" }));
-    fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
+    fireEvent.click(await screen.findByRole("button", { name: "Criar tarefa" }));
     fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Preparar apresentação" },
     });

@@ -69,13 +69,21 @@ O contador em andamento continua local ao dispositivo, como já era no Foco.
 
 ## Verificação
 
-Adicionar e clique/toque/Enter em um dia abrem a folha contextual com ações para
+Clique/toque/Enter em um dia abre a folha contextual com ações para
 tarefa, estudo e compromisso. O calendário permanece acessível para filtros e
 intervalos. O formulário preenche a data selecionada, aceita horário/duração e
 persiste nas mesmas coleções sincronizadas do workspace. Voltar não altera dados.
 Feriados nacionais têm marcador e nome do dia. Datas móveis usam o Computus;
 Carnaval/Corpus Christi são pontos facultativos, não feriados nacionais nesta lista.
 Feriados estaduais/municipais não são inferidos sem localização.
+
+O botão Adicionar do topo foi removido. Formulário usa seletores/painéis de papel
+para tipo, matérias do catálogo de ilhas, calendário e horário, sem widgets
+nativos azuis. Repetição é escolhida por dois ícones com nomes acessíveis.
+Novo ID de matéria é estável, adicionado só ao salvar e não duplicado no merge.
+Matérias antigas personalizadas são preservadas na edição. Check amarelo/grafite
+e seleção/gráficos/painéis animados respeitam movimento reduzido. Ver DESIGN_SYSTEM.md
+para a exceção dos X monocromáticos e o fechamento colorido sem placa.
 
 O calendário permanece visível e o ícone de papel abre somente o seletor de mês.
 Gráficos filtram o dia selecionado ou o intervalo, incluindo dias com zero registros.

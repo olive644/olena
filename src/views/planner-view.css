@@ -123,6 +123,91 @@
   border: 1px solid var(--agenda-line);
   box-shadow: 0 3px 0 var(--agenda-line);
 }
+:root body .agenda-page .agenda-check[aria-pressed="true"] {
+  background: #facc15;
+  color: #292432;
+  border-color: #b99100;
+  box-shadow: 0 3px 0 #b99100;
+}
+.agenda-check[aria-pressed="true"] .paper-check-icon {
+  animation: agenda-check-pop 300ms ease-out;
+}
+@keyframes agenda-donut-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.85) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.agenda-page .agenda-check {
+  transition:
+    background-color 160ms,
+    box-shadow 160ms,
+    transform 160ms;
+}
+.agenda-heading--minimal {
+  margin: 0;
+  height: 0;
+}
+.agenda-repeat-options {
+  display: flex;
+  gap: 12px;
+}
+.agenda-repeat-options .paper-action-icon {
+  width: 34px;
+  height: 34px;
+}
+.agenda-repeat-options button {
+  min-width: 60px;
+  min-height: 54px;
+}
+:root body .agenda-repeat-options button[aria-pressed="true"] {
+  background: #facc15;
+  box-shadow: 0 3px 0 #b99100;
+  border-color: #b99100;
+}
+.agenda-month-grid .is-selected,
+.agenda-month-grid .is-in-range {
+  animation: agenda-day-pick 220ms ease-out;
+}
+.agenda-item {
+  animation: agenda-chart-change 200ms ease-out;
+}
+.agenda-item.is-complete {
+  animation: agenda-complete-fold 280ms ease-out;
+}
+@keyframes agenda-check-pop {
+  0% {
+    transform: scale(0.4) rotate(-12deg);
+  }
+  65% {
+    transform: scale(1.18) rotate(4deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes agenda-complete-fold {
+  50% {
+    transform: translateY(-2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-check[aria-pressed="true"] .paper-check-icon,
+  .agenda-month-grid .is-selected,
+  .agenda-month-grid .is-in-range,
+  .agenda-item,
+  .agenda-item.is-complete,
+  .agenda-donut {
+    animation: none;
+  }
+  .agenda-page .agenda-check {
+    transition: none;
+  }
+}
 .agenda-check svg {
   width: 24px;
   height: 24px;
@@ -1145,7 +1230,7 @@
   animation: agenda-bar-grow 260ms ease-out;
 }
 .agenda-donut {
-  animation: agenda-chart-change 280ms ease-out;
+  animation: agenda-donut-grow 320ms ease-out;
 }
 @keyframes agenda-chart-change {
   from {

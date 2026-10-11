@@ -15,6 +15,104 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
+test("paper form offers all islands, custom date/time, icon repeat and yellow completion in both themes", async ({
+  page,
+}, info) => {
+  await page.goto("/planejador");
+  await expect(page.getByRole("button", { name: "Adicionar", exact: true })).toHaveCount(0);
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page.locator('button[data-date="2026-10-12"]').click();
+    const back = page.getByRole("button", { name: "Voltar ao calendário" });
+    await expect(back).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await page.getByRole("button", { name: "Criar compromisso", exact: true }).click();
+    const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+    const close = form.getByRole("button", { name: "Fechar formulário" });
+    await expect(close).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(close).toHaveCSS("box-shadow", "none");
+    await form.getByRole("button", { name: "Matéria", exact: true }).focus();
+    await page.keyboard.press("ArrowDown");
+    const subjects = page.getByRole("listbox", { name: "Opções de Matéria" });
+    await expect(subjects.getByRole("option")).toHaveCount(6);
+    for (const name of ["Idiomas", "Português", "Química", "Biologia", "Matemática", "Programação"])
+      await expect(subjects.getByRole("option", { name, exact: true })).toBeVisible();
+    await page.keyboard.press("End");
+    await page.keyboard.press("ArrowUp");
+    await page.keyboard.press("Enter");
+    await expect(form.getByRole("button", { name: "Matéria", exact: true })).toContainText(
+      "Matemática",
+    );
+    await form.getByRole("textbox", { name: "Título", exact: true }).fill(`Compromisso ${theme}`);
+    await form.getByRole("button", { name: "Escolher data", exact: true }).click();
+    const calendar = page.getByRole("dialog", { name: "Calendário de data" });
+    await expect(calendar).toBeVisible();
+    await calendar.screenshot({
+      path: info.outputPath(`date-${theme}.png`),
+      animations: "disabled",
+    });
+    await calendar.getByRole("button", { name: "13 de outubro de 2026", exact: true }).click();
+    await expect(form.getByLabel("Data", { exact: true })).toHaveValue("13/10/2026");
+    await form.getByRole("button", { name: "Escolher horário", exact: true }).click();
+    const time = page.getByRole("dialog", { name: "Escolher horário", exact: true });
+    await time.getByRole("button", { name: "09 horas", exact: true }).click();
+    await time.getByRole("button", { name: "15 minutos", exact: true }).click();
+    await time.screenshot({ path: info.outputPath(`time-${theme}.png`), animations: "disabled" });
+    await time.getByRole("button", { name: "Confirmar horário" }).click();
+    await expect(form.getByLabel("Horário", { exact: true })).toHaveValue("09:15");
+    await form.getByRole("button", { name: "Repetir semanalmente", exact: true }).click();
+    await expect(form.getByRole("button", { name: "Repetir semanalmente" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(form.locator('select, input[type="date"], input[type="time"]')).toHaveCount(0);
+    await form.screenshot({ path: info.outputPath(`form-${theme}.png`), animations: "disabled" });
+    await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+    await expect(page.locator('button[data-date="2026-10-13"]')).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    const complete = page.getByRole("button", { name: `Concluir Compromisso ${theme}` });
+    await complete.click();
+    await expect(page.getByRole("button", { name: `Reabrir Compromisso ${theme}` })).toHaveCSS(
+      "background-color",
+      "rgb(250, 204, 21)",
+    );
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page.locator(".agenda-month-grid .is-selected")).toHaveCSS(
+    "animation-name",
+    "agenda-day-pick",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.locator('button[data-date="2026-10-14"]').click();
+  await expect(page.locator(".agenda-month-grid .is-selected")).toHaveCSS("animation-name", "none");
+});
+
+test("monochrome editor close artwork is preserved by the global colored close rule", async ({
+  page,
+}) => {
+  await page.goto("/cadernos");
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
+  const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+  await editor.getByRole("button", { name: "Configurações do editor" }).click();
+  const close = page.getByRole("button", { name: "Fechar configurações" });
+  await expect(close.locator('svg[data-paper-editor-icon="close"]')).toHaveCount(1);
+  expect(
+    await close.evaluate((element) =>
+      element.matches(
+        'button:has(> .agenda-close-icon), button:has(> img[src="/navigation-icons/paper/close.svg"])',
+      ),
+    ),
+  ).toBe(false);
+  await close.click();
+  await expect(page.getByRole("dialog", { name: "Configurações do editor" })).not.toBeVisible();
+});
+
 test("day planning saves hours and marks Brazilian holidays in both themes", async ({
   page,
 }, info) => {
@@ -25,7 +123,7 @@ test("day planning saves hours and marks Brazilian holidays in both themes", asy
   ).toBeVisible();
   await page.getByRole("button", { name: "Criar compromisso", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
-  await expect(form.getByLabel("Data", { exact: true })).toHaveValue("2026-10-12");
+  await expect(form.getByLabel("Data", { exact: true })).toHaveValue("12/10/2026");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisão com colega");
   await form.getByLabel("Horário", { exact: true }).fill("14:30");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
@@ -215,7 +313,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
 }, info) => {
   await page.goto("/planejador");
   await expect(page.getByRole("button", { name: "Escolher mês", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.locator(".agenda-month-grid .is-selected").click();
   await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisar frações");
@@ -270,10 +368,10 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   await expect(picker).not.toBeVisible();
   await calendar.getByRole("button", { name: "segunda-feira, 15 de fevereiro, 0 itens" }).click();
   await expect(page.locator("#agenda-day-title")).toHaveText("segunda-feira, 15 de fevereiro");
-  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.locator(".agenda-month-grid .is-selected").click();
   await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
-  await expect(form.getByLabel("Prazo", { exact: true })).toHaveValue("2027-02-15");
+  await expect(form.getByLabel("Prazo", { exact: true })).toHaveValue("15/02/2027");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Plano do dia escolhido");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
@@ -339,13 +437,12 @@ test("weekly study opens focus without completing, records real minutes and retu
   page,
 }) => {
   await page.goto("/planejador");
-  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.locator(".agenda-month-grid .is-selected").click();
   await page.getByRole("button", { name: "Reservar estudo", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
-  await form.getByLabel("Tipo", { exact: true }).selectOption("study");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Estudar frações");
   await form.getByLabel("Duração em minutos").fill("1");
-  await form.getByLabel("Repetir", { exact: true }).selectOption("weekly");
+  await form.getByRole("button", { name: "Repetir semanalmente", exact: true }).click();
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await page.getByRole("button", { name: "Começar estudo Estudar frações" }).click();
   await expect(page).toHaveURL(/\/foco/);

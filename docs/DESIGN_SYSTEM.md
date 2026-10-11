@@ -14,6 +14,24 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 - O acabamento compartilhado está em src/paper-buttons.css: cantos assimétricos, facetas sólidas e base deslocada. Botões primários usam roxo e secundários usam creme. Setas de ação usam exclusivamente o SVG de papel da OlenaStudy. As transições do menu lateral e Mais usam três tiras de papel que formam um X, com movimento reduzido e estado acessível. No celular, Mais abre uma gaveta pela esquerda. O topo reserva o canto direito para o perfil do usuário, usando a foto Google quando disponível ou os avatares oficiais Poliana, Oliver, Andreyna, Jairo e Helena. A animação foi adaptada do exemplo de Ali-Tahmazi99 no Uiverse.io.
 - Espaço do aluno: cabeçalho neutro, sem bloco roxo. Começar prática e Ver meu dia usam papel branco com texto e ícones grafite. Em tema escuro, campos de texto usam grafite elevado e contraste creme em vez de branco saturado.
 
+## Controles da Agenda e fechamento
+
+X colorido de fechamento usa agenda-close.svg sem placa roxa, fundo ou sombra
+de botão, com área de 44px e sublinhado amarelo no teclado. A regra global em
+paper-controls.css aplica-se a AgendaCloseIcon e PaperCloseIcon. Os SVGs
+monocromáticos grafite/creme de PaperEditorIcon são exceção e permanecem intactos.
+
+Agenda usa PaperChoice para menus, PaperDateField para calendário e PaperTimeField
+para horas/minutos, com painéis de papel no top layer do navegador. Sem dropdowns
+nativos azuis de tipo/matéria/repetição/data/hora. Entrada numérica manual aplica
+máscaras dd/mm/aaaa e hh:mm. No celular, data/horário ficam em linhas separadas.
+Matérias seguem PRACTICE_ISLANDS e os IDs existentes; não recriar matérias com
+IDs aleatórios. Repetição usa dois ícones com rótulos acessíveis e estado amarelo.
+Study, appointment, once e weekly são SVGs novos na pasta de ícones de papel,
+carregados apenas na Agenda. Concluir usa PaperCheckIcon existente sobre papel
+amarelo/grafite; animações de check, seleção, painéis e gráficos respeitam
+prefers-reduced-motion.
+
 ## Tela de login
 
 Login usa página creme, balão de papel e cartão branco com sombra em camadas. Helena espia por cima do cartão, com as patinhas apoiadas na borda, acima de Bem-vindo ao seu espaço. A placa incorporada na arte fica ocultada pelo recorte CSS. Preservar proporções compactas, Manrope, marca Helena preta e Study roxa, botão roxo facetado e seta de papel. Preview direto: /?onboarding=1&login=1.

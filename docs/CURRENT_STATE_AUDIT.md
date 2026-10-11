@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Formulário de papel e fechamento uniforme (2026-10-11)
+
+- Adicionar do topo removido. Os dias abrem as ações contextuais, com novos SVGs para reservar estudo e criar compromisso. O formulário mantém somente seu botão de salvar/adicionar.
+- Tipo e Matéria usam PaperChoice; datas usam PaperDateField com calendário de papel e entrada dd/mm/aaaa, horário usa PaperTimeField com colunas de horas/minutos e entrada hh:mm. Máscaras aceitam teclado numérico, datas impossíveis não são salvas e data final anterior ao início é revalidada. Popovers usam o top layer, Escape, foco restaurado e navegação por teclado, sem campos/selects nativos azuis.
+- Matérias vêm de PRACTICE_ISLANDS: Idiomas, Português, Química, Biologia, Matemática e Programação. IDs existentes são reaproveitados; novos IDs de catálogo são determinísticos e subject/added é idempotente por ID. O merge existente combina edições dos dispositivos sem criar matérias duplicadas. Itens antigos com matéria personalizada continuam editáveis, sem reatribuição destrutiva.
+- X coloridos adotam agenda-close.svg globalmente, sem fundo roxo, placa, sombra ou facetas de botão. Mantêm área de 44px, resposta ao hover e sublinhado amarelo no teclado. PaperEditorIcon monocromático permanece intacto, validado no editor real de cadernos.
+- Concluir usa o PaperCheckIcon existente com papel amarelo e grafite, animação de encaixe e cartão concluído. Dias/intervalos ganham seleção animada; barras crescem, rosca aparece com escala e painéis se desdobram. Movimento reduzido suprime animações novas e rolagem suave.
+- Agenda e navegação validadas em Edge desktop/mobile, claro/escuro, com 45 cenários aprovados e 5 skips específicos de plataforma. Widgets e filtros revalidados em quatro cenários focados. Nenhuma dependência nova, redefinição de progresso ou mudança de esquema.
+- Verificação geral passou, além dos testes de datas impossíveis, máscara numérica, limite da repetição e IDs de matérias no merge. Build final: entrada 279,7 KiB, total 1249,8 KiB. O formulário adiciona 7,8 KiB sob demanda; ícones novos são assets SVG. Orçamento inicial 280 KiB e tetos absolutos intactos, total normal 1252 KiB. WebKit nativo fica para o CI; mobile local usa viewport de iPhone em Chromium.
+
 ## Planejamento por dia e notificações beta (2026-10-11)
 
 - Cada dia abre a folha de planejamento sem bloquear o calendário ou o filtro. Adicionar abre as ações Tarefa, Estudo e Compromisso. Data e horário usam o formulário/reducer existentes; salvar marca o dia, voltar conserva a seleção e devolve foco ao calendário.
