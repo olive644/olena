@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { HelenaChat as HelenaChatPreview } from "./helena-chat";
+import { HELENA_PLAN_DRAFT_EVENT } from "../domain/agenda";
 import { demonstrationReply } from "../data/helena-preview";
 const { ask, account } = vi.hoisted(() => ({ ask: vi.fn(), account: vi.fn() }));
 vi.mock("../data/helena-client", async (original) => ({
@@ -16,6 +17,27 @@ beforeEach(() => {
   vi.stubGlobal(
     "matchMedia",
     vi.fn(() => ({ matches: true })),
+  );
+});
+
+it("accepts a planning draft without contacting the provider and rejects oversized context", () => {
+  render(<HelenaChatPreview currentView="planner" />);
+  act(() =>
+    window.dispatchEvent(
+      new CustomEvent(HELENA_PLAN_DRAFT_EVENT, { detail: "Planeje sem alterar minha agenda." }),
+    ),
+  );
+  expect(screen.getByRole("textbox").getAttribute("aria-label")).toBe("Escreva para a Helena");
+  expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe(
+    "Planeje sem alterar minha agenda.",
+  );
+  expect(ask).not.toHaveBeenCalled();
+  expect(account).not.toHaveBeenCalled();
+  act(() =>
+    window.dispatchEvent(new CustomEvent(HELENA_PLAN_DRAFT_EVENT, { detail: "x".repeat(2001) })),
+  );
+  expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe(
+    "Planeje sem alterar minha agenda.",
   );
 });
 

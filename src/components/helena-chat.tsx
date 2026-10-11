@@ -13,6 +13,7 @@ import { HelenaLoading } from "./helena-loading";
 import { RoomPointsIcon } from "./room-paper-icons";
 import { streamHelena, HelenaClientError } from "../data/helena-client";
 import { getFirebaseAccountServices } from "../data/firebase-account";
+import { HELENA_PLAN_DRAFT_EVENT } from "../domain/agenda";
 import "./helena-chat.css";
 
 type Message = { id: number; role: "user" | "helena"; text: string; interrupted?: boolean };
@@ -69,6 +70,31 @@ export function HelenaChat({
   const sending = useRef(false);
   const responseId = useRef<number | null>(null);
   const followResponse = useRef(true);
+  useEffect(() => {
+    const prepare = (event: Event) => {
+      if (
+        !(event instanceof CustomEvent) ||
+        typeof event.detail !== "string" ||
+        event.detail.length > 2000 ||
+        sending.current
+      )
+        return;
+      setDraft(event.detail);
+      setOpen(true);
+      setError("");
+      setMotion("opening");
+      if (motionTimer.current) clearTimeout(motionTimer.current);
+      motionTimer.current = setTimeout(
+        () => {
+          setMotion("idle");
+          composer.current?.focus();
+        },
+        reducedMotion() ? 0 : 350,
+      );
+    };
+    window.addEventListener(HELENA_PLAN_DRAFT_EVENT, prepare);
+    return () => window.removeEventListener(HELENA_PLAN_DRAFT_EVENT, prepare);
+  }, []);
 
   useEffect(
     () => () => {

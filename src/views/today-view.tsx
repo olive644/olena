@@ -11,6 +11,7 @@ import { PageHeader } from "../components/app-navigation";
 import { NavigationIcon } from "../components/navigation-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { buildStudyRoute } from "../domain/study-route";
+import { eventsOn } from "../domain/agenda";
 
 type TodayViewProps = {
   workspace: WorkspaceState;
@@ -30,9 +31,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   const now = new Date();
   const today = toDateKey(now);
   const pendingTasks = workspace.tasks.filter((task) => !task.completed);
-  const todayEvents = workspace.events
-    .filter((event) => event.date === today)
-    .sort((left, right) => left.time.localeCompare(right.time));
+  const todayEvents = eventsOn(workspace, today);
   const completedHabits = workspace.habits.filter((habit) =>
     habit.completedDates.includes(today),
   ).length;

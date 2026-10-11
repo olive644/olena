@@ -29,6 +29,11 @@ export type StudyEvent = {
   subjectId: string;
   date: string;
   time: string;
+  kind?: "appointment" | "study";
+  durationMinutes?: number;
+  recurrence?: "none" | "weekly";
+  recurrenceUntil?: string;
+  completedDates?: string[];
 };
 
 export type Habit = {
@@ -87,6 +92,8 @@ export type FocusSession = {
   subjectId: string;
   durationMinutes: number;
   completedAt: string;
+  agendaEventId?: string;
+  agendaDate?: string;
 };
 
 export type StudyMaterial = {
@@ -194,7 +201,26 @@ export type WorkspaceAction =
   | { type: "note/subject-changed"; id: string; subjectId: string; updatedAt: string }
   | { type: "task/added"; title: string; subjectId: string; dueDate: string }
   | { type: "task/toggled"; id: string }
-  | { type: "event/added"; title: string; subjectId: string; date: string; time: string }
+  | {
+      type: "task/updated";
+      id: string;
+      changes: Pick<StudyTask, "title" | "subjectId" | "dueDate">;
+    }
+  | { type: "task/removed"; id: string }
+  | {
+      type: "event/added";
+      title: string;
+      subjectId: string;
+      date: string;
+      time: string;
+      kind?: StudyEvent["kind"];
+      durationMinutes?: number;
+      recurrence?: StudyEvent["recurrence"];
+      recurrenceUntil?: string;
+    }
+  | { type: "event/updated"; id: string; changes: Omit<StudyEvent, "id" | "completedDates"> }
+  | { type: "event/removed"; id: string }
+  | { type: "event/toggled"; id: string; date: string }
   | { type: "habit/added"; title: string }
   | { type: "habit/toggled"; id: string; date: string }
   | {
@@ -255,6 +281,8 @@ export type WorkspaceAction =
       subjectId: string;
       durationMinutes: number;
       completedAt: string;
+      agendaEventId?: string;
+      agendaDate?: string;
     }
   | { type: "focus/preferences-updated"; preferences: FocusPreferences }
   | { type: "study/preferences-updated"; preferences: StudyPreferences }
@@ -409,6 +437,38 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           task.id === action.id ? { ...task, completed: !task.completed } : task,
         ),
       };
+    case "task/updated":
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.id ? { ...task, ...action.changes } : task,
+        ),
+      };
+    case "task/removed":
+      return { ...state, tasks: state.tasks.filter((task) => task.id !== action.id) };
+    case "event/updated":
+      return {
+        ...state,
+        events: state.events.map((event) =>
+          event.id === action.id ? { ...event, ...action.changes } : event,
+        ),
+      };
+    case "event/removed":
+      return { ...state, events: state.events.filter((event) => event.id !== action.id) };
+    case "event/toggled":
+      return {
+        ...state,
+        events: state.events.map((event) =>
+          event.id !== action.id
+            ? event
+            : {
+                ...event,
+                completedDates: event.completedDates?.includes(action.date)
+                  ? event.completedDates.filter((date) => date !== action.date)
+                  : [...(event.completedDates ?? []), action.date],
+              },
+        ),
+      };
     case "event/added":
       return {
         ...state,
@@ -420,6 +480,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             subjectId: action.subjectId,
             date: action.date,
             time: action.time,
+            ...(action.kind ? { kind: action.kind } : {}),
+            ...(action.durationMinutes ? { durationMinutes: action.durationMinutes } : {}),
+            ...(action.recurrence ? { recurrence: action.recurrence } : {}),
+            ...(action.recurrenceUntil ? { recurrenceUntil: action.recurrenceUntil } : {}),
           },
         ],
       };
@@ -736,6 +800,28 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
     case "focus/recorded":
       return {
         ...state,
+        events: state.events.map((event) => {
+          if (
+            event.id !== action.agendaEventId ||
+            !action.agendaDate ||
+            event.kind !== "study" ||
+            event.subjectId !== action.subjectId
+          )
+            return event;
+          const recorded = state.focusSessions
+            .filter(
+              (session) =>
+                session.agendaEventId === event.id &&
+                session.agendaDate === action.agendaDate &&
+                session.subjectId === event.subjectId,
+            )
+            .reduce((sum, session) => sum + session.durationMinutes, 0);
+          if (recorded + action.durationMinutes < (event.durationMinutes ?? 25)) return event;
+          return {
+            ...event,
+            completedDates: [...new Set([...(event.completedDates ?? []), action.agendaDate])],
+          };
+        }),
         focusSessions: [
           ...state.focusSessions,
           {
@@ -743,6 +829,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             subjectId: action.subjectId,
             durationMinutes: action.durationMinutes,
             completedAt: action.completedAt,
+            ...(action.agendaEventId
+              ? { agendaEventId: action.agendaEventId, agendaDate: action.agendaDate }
+              : {}),
           },
         ],
       };

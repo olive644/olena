@@ -10,6 +10,10 @@ export type FocusSession = {
   timerStartedAt: number | null;
   pomodoroDeadline: number | null;
   savedAt: number;
+  agendaEventId?: string;
+  agendaDate?: string;
+  subjectId?: string;
+  plannedMinutes?: number;
 };
 
 export function readFocusSession(value: string | null, now: number): FocusSession | undefined {
@@ -17,6 +21,14 @@ export function readFocusSession(value: string | null, now: number): FocusSessio
     const saved: unknown = JSON.parse(value ?? "null");
     if (!saved || typeof saved !== "object") return;
     const s = saved as Partial<FocusSession>;
+    if (
+      (s.agendaEventId !== undefined && typeof s.agendaEventId !== "string") ||
+      (s.agendaDate !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(s.agendaDate)) ||
+      (s.subjectId !== undefined && typeof s.subjectId !== "string") ||
+      (s.plannedMinutes !== undefined &&
+        (!Number.isFinite(s.plannedMinutes) || s.plannedMinutes < 1 || s.plannedMinutes > 180))
+    )
+      return;
     if (
       !["timer", "pomodoro"].includes(s.mode ?? "") ||
       !["focus", "shortBreak", "longBreak"].includes(s.phase ?? "") ||

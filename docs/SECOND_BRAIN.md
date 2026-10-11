@@ -1100,3 +1100,13 @@ ampla e hospedagem antes de substituir professor. Ver `docs/OLENA_LEARNING.md`.
 - `streamHelena` entrega texto parcial; o widget cancela ao interromper/recolher.
 - Prova HTTP sem tokens reais: `npx vitest run src/backend/helena-stream.test.ts`.
 - O envio ao Cloudflare ocorre ao enviar a mensagem, não ao abrir o widget.
+
+# Agenda integrada
+
+`planner-view.tsx` usa calendário Hoje/Semana/Mês e formulário único. `domain/agenda.ts`
+centraliza datas locais e recorrência; o Espaço usa o mesmo seletor. Eventos de estudo
+ligam Foco via metadados opcionais do contador; `focus/recorded` agrega por ocorrência.
+O workspace e o merge por ID existentes continuam responsáveis pela conta/persistência.
+`HELENA_PLAN_DRAFT_EVENT` abre pedido revisável, sem API até confirmar envio no chat.
+Provas: `src/domain/agenda.test.ts` e `e2e/agenda.spec.ts`. Ver `docs/AGENDA.md` para
+compatibilidade, rollback, Google somente leitura e lembretes locais sem push.

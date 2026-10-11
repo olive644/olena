@@ -110,10 +110,11 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: /metas de estudo/i })).toBeNull();
 
     navigate("Agenda");
-    expect(
-      await screen.findByRole("heading", { name: "Nova meta de foco" }, { timeout: 3_000 }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Metas de foco" })).toBeTruthy();
+    await screen.findByRole("heading", { name: "Minha agenda" });
+    fireEvent.click(screen.getByText("Matérias e metas"));
+    fireEvent.click(screen.getByRole("button", { name: "Criar meta de foco" }));
+    expect(screen.getByRole("dialog", { name: "Adicionar à agenda" })).toBeTruthy();
+    expect((screen.getByLabelText("Tipo") as HTMLSelectElement).value).toBe("goal");
   });
 
   it("mantém as ferramentas na navegação sem duplicá-las no painel principal", () => {
@@ -210,17 +211,14 @@ describe("App", () => {
   it("cria uma tarefa, mostra no Espaço do aluno e permite concluí-la", async () => {
     render(<App />);
     navigate("Agenda");
-    await screen.findByLabelText(/o que precisa ser feito/i);
-    expect(document.querySelector('.subject-list [data-paper-icon="flag-us"]')).toBeTruthy();
-    expect(
-      screen
-        .getByRole("button", { name: /adicionar matéria/i })
-        .querySelector('[data-paper-icon="plus"]'),
-    ).toBeTruthy();
-    fireEvent.change(screen.getByLabelText(/o que precisa ser feito/i), {
+    const add = await screen.findByRole("button", { name: "Adicionar" });
+    expect(add.querySelector('[data-paper-icon="plus"]')).toBeTruthy();
+    fireEvent.click(add);
+    fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
+    fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Revisar phrasal verbs" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /adicionar tarefa/i }));
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Adicionar" }));
 
     navigate("Espaço do aluno");
     expect(screen.getByText("Revisar phrasal verbs")).toBeTruthy();
@@ -380,13 +378,15 @@ describe("App", () => {
     ).toBe(true);
   });
 
-  it("mantém dados após remontar o aplicativo", () => {
+  it("mantém dados após remontar o aplicativo", async () => {
     const firstRender = render(<App />);
     navigate("Agenda");
-    fireEvent.change(screen.getByLabelText(/o que precisa ser feito/i), {
+    fireEvent.click(await screen.findByRole("button", { name: "Adicionar" }));
+    fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
+    fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Preparar apresentação" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /adicionar tarefa/i }));
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Adicionar" }));
     firstRender.unmount();
 
     render(<App />);

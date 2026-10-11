@@ -97,7 +97,9 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           {view === "today" && (
             <TodayView workspace={workspace} dispatch={dispatch} onNavigate={setView} />
           )}
-          {view === "planner" && <PlannerView workspace={workspace} dispatch={dispatch} />}
+          {view === "planner" && (
+            <PlannerView workspace={workspace} dispatch={dispatch} onNavigate={setView} />
+          )}
           {view === "focus" && <FocusView workspace={workspace} dispatch={dispatch} />}
           {view === "habits" && <HabitsView workspace={workspace} dispatch={dispatch} />}
           {view === "notes" && (

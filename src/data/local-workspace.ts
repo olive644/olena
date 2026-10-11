@@ -57,7 +57,18 @@ function isEvent(value: unknown): boolean {
     isString(value["title"]) &&
     isString(value["subjectId"]) &&
     isString(value["date"]) &&
-    isString(value["time"])
+    isString(value["time"]) &&
+    (value["kind"] === undefined || ["appointment", "study"].includes(String(value["kind"]))) &&
+    (value["recurrence"] === undefined ||
+      ["none", "weekly"].includes(String(value["recurrence"]))) &&
+    (value["recurrenceUntil"] === undefined || isString(value["recurrenceUntil"])) &&
+    (value["durationMinutes"] === undefined ||
+      (typeof value["durationMinutes"] === "number" &&
+        Number.isFinite(value["durationMinutes"]) &&
+        value["durationMinutes"] >= 1 &&
+        value["durationMinutes"] <= 180)) &&
+    (value["completedDates"] === undefined ||
+      (Array.isArray(value["completedDates"]) && value["completedDates"].every(isString)))
   );
 }
 
@@ -425,7 +436,9 @@ function isFocusSession(value: unknown): boolean {
     typeof value["durationMinutes"] === "number" &&
     Number.isFinite(value["durationMinutes"]) &&
     value["durationMinutes"] > 0 &&
-    isString(value["completedAt"])
+    isString(value["completedAt"]) &&
+    (value["agendaEventId"] === undefined || isString(value["agendaEventId"])) &&
+    (value["agendaDate"] === undefined || isString(value["agendaDate"]))
   );
 }
 
