@@ -1092,6 +1092,8 @@ ampla e hospedagem antes de substituir professor. Ver `docs/OLENA_LEARNING.md`.
 
 # Chat incremental Helena
 
+- Sugestões do chat: branco/grafite no claro, roxo/creme no escuro, SVGs sem filtros. CSS fica
+  isolado em `helena-chat.css`; prova visual em `helena-chat-preview.spec.ts`.
 - `src/ai/event-stream.ts` decodifica SSE limitado e valida deltas de modelos.
 - `helena-handler`, `helena-teacher`, `olena-student` e `vercel-adapter` mantêm
   streaming real, sem `arrayBuffer()` no caminho SSE.

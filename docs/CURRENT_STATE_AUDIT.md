@@ -2305,6 +2305,8 @@ em `docs/OLENA_LEARNING.md`. Nenhuma alteração visual ou no provedor do chat.
 
 # Chat Helena: streaming e acabamento
 
+- As três sugestões usam papel branco e SVGs originais grafite no claro,
+  papel roxo e SVGs creme no escuro, sem filtros, com facetas e estados de pressão.
 - Widget usa acabamento de papel, sugestões e ações no padrão original.
 - Removidos o contexto decorativo, subtítulo de boas-vindas, rótulo visível do
   compositor e checkbox; envio ocorre somente por ação do aluno, com aviso no rodapé.

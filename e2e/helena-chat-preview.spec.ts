@@ -21,6 +21,13 @@ test("onboarding Helena chat fits, sends locally and minimizes on desktop and mo
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
   expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const suggestions = page.locator(".helena-chat-suggestions button");
+  await expect(suggestions).toHaveCount(3);
+  for (const button of await suggestions.all()) {
+    await expect(button).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(button.locator(".helena-chat-suggestion-icon--light")).toBeVisible();
+    await expect(button.locator("img").first()).toHaveCSS("filter", "none");
+  }
   await page.screenshot({
     path: testInfo.outputPath(`helena-chat-${testInfo.project.name}.png`),
   });
@@ -29,8 +36,13 @@ test("onboarding Helena chat fits, sends locally and minimizes on desktop and mo
   });
   await expect(page.locator(".helena-chat-suggestions button").first()).toHaveCSS(
     "background-color",
-    "rgb(52, 45, 64)",
+    "rgb(116, 51, 224)",
   );
+  for (const button of await suggestions.all()) {
+    await expect(button).toHaveCSS("background-color", "rgb(116, 51, 224)");
+    await expect(button.locator(".helena-chat-suggestion-icon--dark")).toBeVisible();
+    await expect(button.locator(".helena-chat-suggestion-icon--dark")).toHaveCSS("filter", "none");
+  }
   await page.screenshot({
     path: testInfo.outputPath(`helena-chat-${testInfo.project.name}-dark.png`),
   });

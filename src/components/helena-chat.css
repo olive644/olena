@@ -500,27 +500,35 @@
   display: grid;
   gap: 9px;
 }
-.helena-chat-suggestions button {
+.helena-chat .helena-chat-suggestions button {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 9px 12px;
   min-height: 49px;
-  border: 1px solid var(--hc-line);
-  border-radius: 5px 12px 6px 10px;
-  background: #fffdf8;
-  box-shadow: 0 3px 0 #e3d8c2;
-  color: var(--hc-ink);
+  border: 1px solid #d8cdb9;
+  border-radius: 5px 13px 6px 11px;
+  background-color: #fff;
+  background-image:
+    linear-gradient(135deg, #f1e8d6 0 9%, transparent 9%),
+    linear-gradient(315deg, #f1e8d6 0 12%, transparent 12%);
+  box-shadow: 0 4px 0 #cabda5;
+  color: #292432;
   text-align: left;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   transition:
     translate 160ms ease,
+    box-shadow 160ms ease,
     border-color 160ms ease;
 }
-.helena-chat-suggestions button:hover {
+.helena-chat .helena-chat-suggestions button:hover {
   translate: 0 -2px;
   border-color: #a779ef;
+}
+.helena-chat .helena-chat-suggestions button:active {
+  translate: 0 3px;
+  box-shadow: 0 1px 0 #cabda5;
 }
 .helena-chat-suggestions button > span {
   flex: 1;
@@ -666,12 +674,7 @@
 }
 :root[data-theme="dark"]
   .helena-chat
-  :is(
-    .helena-chat-composer,
-    .helena-chat-message.is-helena,
-    .helena-chat-suggestions button,
-    .helena-chat-tool
-  ) {
+  :is(.helena-chat-composer, .helena-chat-message.is-helena, .helena-chat-tool) {
   background: #342d40;
   border-color: #51465d;
   box-shadow: 0 3px 0 #211c2a;
@@ -681,6 +684,22 @@
 }
 .helena-chat-suggestion-icon--dark {
   display: none;
+}
+:root[data-theme="dark"] .helena-chat .helena-chat-suggestions button {
+  background-color: #7433e0;
+  background-image:
+    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
+  border-color: #7433e0;
+  color: #fff;
+  box-shadow: 0 4px 0 #4b209b;
+}
+:root[data-theme="dark"] .helena-chat .helena-chat-suggestions button:hover {
+  background-color: #6d28d9;
+  box-shadow: 0 6px 0 #4b209b;
+}
+:root[data-theme="dark"] .helena-chat .helena-chat-suggestions button:active {
+  box-shadow: 0 1px 0 #4b209b;
 }
 :root[data-theme="dark"] .helena-chat-suggestion-icon--light {
   display: none;
