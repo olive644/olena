@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { HelenaChat } from "../components/helena-chat";
+import { demonstrationReply } from "../data/helena-preview";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import "./helena-chat-preview-page.css";
 
@@ -124,7 +125,11 @@ export function HelenaChatPreviewPage() {
           </section>
         </div>
       </main>
-      <HelenaChat preview initiallyOpen={new URLSearchParams(location.search).has("open")} />
+      <HelenaChat
+        preview
+        previewReply={demonstrationReply}
+        initiallyOpen={new URLSearchParams(location.search).has("open")}
+      />
     </div>
   );
 }

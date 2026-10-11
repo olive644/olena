@@ -88,7 +88,13 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
     }
 
     const clientId = await dependencies.identifyClient(request);
-    if (!clientId || !(await dependencies.rateLimiter.consume(clientId))) {
+    if (!clientId)
+      return errorResponse(
+        401,
+        "invalid_request",
+        "Entre na sua conta para conversar com a Helena.",
+      );
+    if (!(await dependencies.rateLimiter.consume(clientId))) {
       return errorResponse(
         429,
         "rate_limited",

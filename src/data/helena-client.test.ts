@@ -11,6 +11,17 @@ const request: HelenaRequest = {
 };
 
 describe("cliente da Helena", () => {
+  it("não envia dados sem consentimento", async () => {
+    const fetcher = vi.fn<typeof fetch>();
+    await expect(
+      requestHelena(
+        { ...request, privacy: { consent: false, retention: "none" } } as unknown as HelenaRequest,
+        { fetcher },
+      ),
+    ).rejects.toMatchObject({ code: "invalid_request" });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
   it("usa apenas o endpoint same-origin e não envia credenciais de provedor", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
       new Response(
@@ -38,7 +49,7 @@ describe("cliente da Helena", () => {
     });
   });
 
-  it("preserva códigos de erro seguros retornados pelo backend", async () => {
+  it("identifica limites sem exibir texto arbitrário do backend", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
       new Response(
         JSON.stringify({

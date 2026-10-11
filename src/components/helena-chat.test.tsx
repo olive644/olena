@@ -1,13 +1,61 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { HelenaChat as HelenaChatPreview } from "./helena-chat";
+import { demonstrationReply } from "../data/helena-preview";
+const { ask, account } = vi.hoisted(() => ({ ask: vi.fn(), account: vi.fn() }));
+vi.mock("../data/helena-client", async (original) => ({
+  ...(await original<typeof import("../data/helena-client")>()),
+  requestHelena: ask,
+}));
+vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: account }));
 
 beforeEach(() => {
+  ask.mockReset();
+  account.mockReset();
   vi.useFakeTimers();
   vi.stubGlobal(
     "matchMedia",
     vi.fn(() => ({ matches: true })),
   );
+});
+
+it("requires explicit consent before sending any content externally", () => {
+  render(<HelenaChatPreview initiallyOpen />);
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique divisão" } });
+  fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" }));
+  expect(screen.getByRole("alert").textContent).toContain("Autorize");
+  expect(ask).not.toHaveBeenCalled();
+  expect(account).not.toHaveBeenCalled();
+});
+
+it("uses the authenticated teacher with screen context and no training retention", async () => {
+  account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
+  ask.mockResolvedValue({ answer: "Dividir é formar grupos iguais." });
+  render(<HelenaChatPreview initiallyOpen currentView="learn" />);
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique divisão" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  expect(screen.getByText("Dividir é formar grupos iguais.")).toBeTruthy();
+  expect(ask).toHaveBeenCalledWith(
+    expect.objectContaining({
+      prompt: "Explique divisão",
+      privacy: { consent: true, retention: "none" },
+      sources: [expect.objectContaining({ content: expect.stringContaining("learn") })],
+    }),
+    expect.objectContaining({ token: "test-token" }),
+  );
+});
+
+it("shows service failure honestly and restores the draft", async () => {
+  account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
+  ask.mockRejectedValue(new Error("server secret"));
+  render(<HelenaChatPreview initiallyOpen />);
+  fireEvent.click(screen.getByRole("checkbox"));
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique divisão" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  expect(screen.getByRole("alert").textContent).not.toContain("server secret");
+  expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe("Explique divisão");
+  expect(screen.queryByText(/Pode me contar um pouco mais/)).toBeNull();
 });
 afterEach(() => {
   cleanup();
@@ -34,7 +82,7 @@ it("finishes the closing animation before unmounting the chat", () => {
     "matchMedia",
     vi.fn((query: string) => ({ matches: query === "(min-width: 900px)" })),
   );
-  render(<HelenaChatPreview initiallyOpen />);
+  render(<HelenaChatPreview initiallyOpen preview />);
   fireEvent.click(screen.getByRole("button", { name: /^Recolher conversa$/ }));
   expect(screen.getByRole("dialog").classList.contains("is-closing")).toBe(true);
   act(() => vi.advanceTimersByTime(219));
@@ -77,7 +125,7 @@ it("captures a touch drag, animates it and suppresses the release click", () => 
 it("sends a local demonstration, locks duplicates and preserves history when minimized", async () => {
   const network = vi.fn();
   vi.stubGlobal("fetch", network);
-  render(<HelenaChatPreview initiallyOpen />);
+  render(<HelenaChatPreview initiallyOpen preview previewReply={demonstrationReply} />);
   fireEvent.click(screen.getByRole("button", { name: "Organizar meus estudos" }));
   expect(screen.getByRole("status").textContent).toContain("Helena está respondendo");
   const input = screen.getByRole("textbox");
@@ -94,7 +142,7 @@ it("sends a local demonstration, locks duplicates and preserves history when min
   expect(screen.getByText("Organizar meus estudos")).toBeTruthy();
 });
 it("does not send blank text and lets Shift Enter insert a line break", () => {
-  render(<HelenaChatPreview initiallyOpen />);
+  render(<HelenaChatPreview initiallyOpen preview />);
   const input = screen.getByRole("textbox");
   fireEvent.change(input, { target: { value: "   " } });
   fireEvent.keyDown(input, { key: "Enter" });

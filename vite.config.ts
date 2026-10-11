@@ -4,6 +4,12 @@ import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { handleOlena } from "./src/backend/olena-handler";
+import { createVercelHandler } from "./src/backend/vercel-adapter";
+
+async function helenaMiddleware(request: IncomingMessage, response: ServerResponse) {
+  const { handleHelenaRuntime } = await import("./src/backend/helena-runtime");
+  await createVercelHandler("/api/helena", handleHelenaRuntime)(request, response);
+}
 
 // O preview (e2e e teste local do build) serve os mesmos cabeçalhos de segurança da
 // produção, inclusive o CSP. Sem isso, algo que o CSP bloqueia só falha depois do deploy.
@@ -51,9 +57,21 @@ export default defineConfig({
       name: "olena-local-api",
       configureServer(server) {
         server.middlewares.use("/api/olena", olenaMiddleware);
+        server.middlewares.use("/api/helena", (request, response) => {
+          void helenaMiddleware(request, response).catch(() => {
+            response.statusCode = 503;
+            response.end();
+          });
+        });
       },
       configurePreviewServer(server) {
         server.middlewares.use("/api/olena", olenaMiddleware);
+        server.middlewares.use("/api/helena", (request, response) => {
+          void helenaMiddleware(request, response).catch(() => {
+            response.statusCode = 503;
+            response.end();
+          });
+        });
       },
     },
   ],

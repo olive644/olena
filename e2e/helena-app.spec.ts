@@ -25,7 +25,10 @@ test("Helena appears in the real app, keeps history between tabs and stays above
   await expect(dialog.getByText("Preview", { exact: true })).toHaveCount(0);
   await dialog.getByRole("textbox").fill("Quero revisar matemática");
   await dialog.getByRole("button", { name: "Enviar mensagem" }).click();
-  await expect(dialog.getByText(/Uma revisão curta/)).toBeVisible();
+  await expect(dialog.getByRole("alert")).toContainText("Autorize");
+  await dialog.getByRole("checkbox").check();
+  await dialog.getByRole("button", { name: "Enviar mensagem" }).click();
+  await expect(dialog.getByRole("alert")).toContainText(/Entre na conta/);
   await dialog.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(dialog).toHaveCount(0);
   const navigation = page.getByRole("navigation", {
@@ -36,7 +39,9 @@ test("Helena appears in the real app, keeps history between tabs and stays above
   await expect(page).toHaveURL(/\/planejador/);
   await expect(launcher).toBeVisible();
   await launcher.click();
-  await expect(dialog.getByText("Quero revisar matemática", { exact: true })).toBeVisible();
+  await expect(
+    dialog.getByRole("log").getByText("Quero revisar matemática", { exact: true }),
+  ).toBeVisible();
   await dialog.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   if (testInfo.project.name === "mobile") {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
