@@ -2329,3 +2329,11 @@ em `docs/OLENA_LEARNING.md`. Nenhuma alteração visual ou no provedor do chat.
 - Lembretes somente com Agenda aberta. Helena recebe um rascunho, nunca envio automático.
 - Google Agenda e tarefas de aula preservados. Sem dependências, serviços ou custos novos.
 - Provas, limites e rollback documentados em `docs/AGENDA.md`. Ainda não mesclado.
+
+# Verificação pública de propriedade do site
+
+`index.html` contém a meta `google-site-verification` fornecida pelo proprietário
+para a propriedade de prefixo `https://olenastudy.vercel.app/` no Search Console.
+É um token público, não uma credencial OAuth. Deve permanecer no HTML inicial após
+a confirmação. Não comprova aprovação de marca ou dos escopos do Google Agenda.
+Prova de presença no head: `src/google-site-verification.test.ts`.
