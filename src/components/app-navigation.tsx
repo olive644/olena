@@ -326,14 +326,9 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
       <nav className="mobile-nav" aria-label="Navegação móvel">
         {MOBILE_ITEMS.map((item) => {
           const active = view === item.view;
-          const featured = item.view === "learn";
           return (
             <button
-              className={[
-                "mobile-nav__item",
-                active ? "mobile-nav__item--active" : "",
-                featured ? "mobile-nav__item--featured" : "",
-              ]
+              className={["mobile-nav__item", active ? "mobile-nav__item--active" : ""]
                 .filter(Boolean)
                 .join(" ")}
               type="button"
@@ -342,11 +337,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
               key={item.view}
             >
               <span className="mobile-nav__icon">
-                {item.view === "learn" ? (
-                  <NavigationIcon name={item.icon} paperVariant={active ? "escuro" : "claro"} />
-                ) : (
-                  <NavigationIcon name={item.icon} />
-                )}
+                <NavigationIcon name={item.icon} />
               </span>
               <span>{item.mobileLabel ?? item.label}</span>
             </button>

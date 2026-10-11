@@ -144,6 +144,18 @@ describe("App", () => {
     expect(screen.queryByRole("dialog", { name: "Mais ferramentas" })).toBeNull();
   });
 
+  it("mantém Praticar no mesmo padrão dos outros itens móveis", () => {
+    render(<App />);
+    const navigation = screen.getByRole("navigation", { name: "Navegação móvel" });
+    const practice = within(navigation).getByRole("button", { name: "Praticar" });
+    const agenda = within(navigation).getByRole("button", { name: "Agenda" });
+    expect(practice.className).toBe(agenda.className);
+    expect(practice.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
+    fireEvent.click(practice);
+    expect(practice.getAttribute("aria-current")).toBe("page");
+    expect(practice.className).toBe("mobile-nav__item mobile-nav__item--active");
+  });
+
   it("usa a iconografia própria da Helena em todas as abas", () => {
     render(<App />);
     const navigation = screen.getByRole("navigation", { name: "Navegação principal" });

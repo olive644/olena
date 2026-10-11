@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Navegação móvel uniforme (2026-10-11)
+
+- Praticar usa o mesmo botão e a mesma seleção de ícones dos demais itens.
+- Removidos o deslocamento elevado e o fundo roxo exclusivo, inclusive no tema escuro.
+- O estado ativo e a navegação por toque ou teclado permanecem compartilhados.
+
 ## Professor e aprendizado da Olena (2026-10-10)
 
 - Chat real usa API autenticada com consentimento, Cloudflare como professor e

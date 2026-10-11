@@ -44,14 +44,6 @@
     gap: 1px;
     font-size: 0.58rem;
   }
-  .app-shell .mobile-nav__item--featured .mobile-nav__icon,
-  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured .mobile-nav__icon {
-    width: 42px;
-    height: 42px;
-    margin-top: -14px;
-    border-radius: 7px 12px 8px 10px;
-    box-shadow: 0 3px 0 #4b209b;
-  }
   :root[data-theme="dark"] .app-shell .page-header,
   :root[data-theme="dark"] .app-shell .mobile-nav {
     border-color: #51465d;
@@ -65,18 +57,11 @@
   :root[data-theme="dark"] .app-shell .mobile-nav__item {
     color: #fff9ef;
   }
-  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured {
-    color: #d7b6ff;
-  }
-  :root[data-theme="dark"] .app-shell .mobile-nav .navigation-icon__variant--claro,
-  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured .navigation-icon__variant--claro {
+  :root[data-theme="dark"] .app-shell .mobile-nav .navigation-icon__variant--claro {
     display: none;
   }
   :root[data-theme="dark"] .app-shell .mobile-nav .navigation-icon__variant--escuro {
     display: block;
-  }
-  :root[data-theme="dark"] .app-shell .mobile-nav__item--featured .mobile-nav__icon {
-    border-color: #292432;
   }
   :root[data-theme="dark"] .app-shell .mobile-nav__profile .navigation-icon--profile img {
     filter: brightness(0) invert(1);
