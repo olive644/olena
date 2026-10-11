@@ -1,6 +1,7 @@
 import { parseHelenaResponse, type HelenaCapability } from "../ai/helena-contract.js";
 import { HELENA_TEACHER_POLICY } from "./helena-teacher.js";
 import type { HelenaProvider } from "./helena-handler.js";
+import { readModelStream } from "../ai/event-stream.js";
 
 /** Promoção explícita por capacidade, nunca baseada em confiança declarada pela IA. */
 export function createProgressiveProvider(
@@ -9,10 +10,27 @@ export function createProgressiveProvider(
   approvedCapabilities: readonly HelenaCapability[],
 ): HelenaProvider {
   return {
-    async generate(request) {
+    async *stream(request, signal) {
+      if (student?.stream && approvedCapabilities.includes(request.capability)) {
+        let started = false;
+        try {
+          for await (const delta of student.stream(request, signal)) {
+            started = true;
+            yield delta;
+          }
+          if (started) return;
+        } catch (error) {
+          if (started || signal.aborted) throw error;
+        }
+      }
+      signal.throwIfAborted();
+      if (!teacher.stream) throw new Error("Streaming unavailable");
+      yield* teacher.stream(request, signal);
+    },
+    async generate(request, signal) {
       if (student && approvedCapabilities.includes(request.capability)) {
         try {
-          const candidate = await student.generate(request);
+          const candidate = await student.generate(request, signal);
           const valid = parseHelenaResponse({
             ...candidate,
             version: 1,
@@ -24,7 +42,8 @@ export function createProgressiveProvider(
           /* O professor atende se o candidato aprovado falhar. */
         }
       }
-      return teacher.generate(request);
+      signal?.throwIfAborted();
+      return teacher.generate(request, signal);
     },
   };
 }
@@ -36,7 +55,48 @@ export function createOlenaStudent(
   token: string,
   fetcher: typeof fetch = fetch,
 ): HelenaProvider {
+  const streamUrl = () => {
+    const url = new URL(endpoint);
+    if (
+      (url.protocol !== "https:" &&
+        !(url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname))) ||
+      url.username ||
+      url.password ||
+      !model
+    )
+      throw new Error("Endpoint da Olena inválido.");
+    return url;
+  };
   return {
+    async *stream(request, signal) {
+      const response = await fetcher(streamUrl(), {
+        method: "POST",
+        redirect: "error",
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          model,
+          stream: true,
+          max_tokens: 700,
+          messages: [
+            { role: "system", content: HELENA_TEACHER_POLICY },
+            {
+              role: "user",
+              content: JSON.stringify({
+                prompt: request.prompt,
+                capability: request.capability,
+                sources: request.sources,
+                subject: request.subject,
+              }),
+            },
+          ],
+        }),
+      });
+      yield* readModelStream(response, signal);
+    },
     async generate(request) {
       const url = new URL(endpoint);
       if (

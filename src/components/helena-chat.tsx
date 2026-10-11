@@ -11,11 +11,11 @@ import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperArrow } from "./paper-arrow";
 import { HelenaLoading } from "./helena-loading";
 import { RoomPointsIcon } from "./room-paper-icons";
-import { requestHelena, HelenaClientError } from "../data/helena-client";
+import { streamHelena, HelenaClientError } from "../data/helena-client";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import "./helena-chat.css";
 
-type Message = { id: number; role: "user" | "helena"; text: string };
+type Message = { id: number; role: "user" | "helena"; text: string; interrupted?: boolean };
 type Position = { x: number; y: number };
 type Motion = "idle" | "opening" | "closing" | "dragging" | "docking";
 function reducedMotion() {
@@ -34,7 +34,7 @@ function constrain(position: Position) {
 }
 const suggestions = ["Organizar meus estudos", "Me ajudar com uma dúvida", "Revisar uma matéria"];
 
-/** Preview local; no aplicativo, professor externo com consentimento por sessão. */
+/** Preview local; no aplicativo, envio externo somente ao enviar uma mensagem. */
 export function HelenaChat({
   initiallyOpen = false,
   preview = false,
@@ -50,7 +50,7 @@ export function HelenaChat({
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [pending, setPending] = useState(false);
-  const [consent, setConsent] = useState(false);
+  const [hasPartialResponse, setHasPartialResponse] = useState(false);
   const [error, setError] = useState("");
   const controller = useRef<AbortController | null>(null);
   const [motion, setMotion] = useState<Motion>("idle");
@@ -67,6 +67,8 @@ export function HelenaChat({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nextId = useRef(0);
   const sending = useRef(false);
+  const responseId = useRef<number | null>(null);
+  const followResponse = useRef(true);
 
   useEffect(
     () => () => {
@@ -85,10 +87,11 @@ export function HelenaChat({
     if (open && window.matchMedia("(min-width: 900px)").matches) composer.current?.focus();
   }, [open]);
   useEffect(() => {
-    conversation.current?.scrollTo?.({
-      top: conversation.current.scrollHeight,
-      behavior: "instant",
-    });
+    if (followResponse.current)
+      conversation.current?.scrollTo?.({
+        top: conversation.current.scrollHeight,
+        behavior: "instant",
+      });
   }, [messages, pending, open]);
 
   function animate(next: Motion, duration: number, complete?: () => void) {
@@ -105,6 +108,7 @@ export function HelenaChat({
   }
   function close() {
     if (motion === "closing") return;
+    stop();
     const finish = () => {
       setOpen(false);
       launcher.current?.focus();
@@ -179,18 +183,18 @@ export function HelenaChat({
   function send(text: string) {
     const value = text.trim();
     if (!value || sending.current) return;
-    if (!preview && !consent) {
-      setError("Autorize o envio ao Cloudflare.");
-      return;
-    }
     setError("");
+    followResponse.current = true;
     sending.current = true;
     setMessages((items) => [...items, { id: ++nextId.current, role: "user", text: value }]);
     setDraft("");
     setPending(true);
+    setHasPartialResponse(false);
     if (!preview) {
       const abort = new AbortController();
       controller.current = abort;
+      const replyId = ++nextId.current;
+      responseId.current = replyId;
       const previous = messages
         .slice(-6)
         .map((item) => `${item.role === "user" ? "Aluno" : "Helena"}: ${item.text}`)
@@ -202,7 +206,7 @@ export function HelenaChat({
           const token = await auth.currentUser?.getIdToken();
           if (!token) throw new Error();
           if (abort.signal.aborted) return;
-          const response = await requestHelena(
+          await streamHelena(
             {
               version: 1,
               capability: "tutor",
@@ -217,13 +221,20 @@ export function HelenaChat({
               ],
               privacy: { consent: true, retention: "none" },
             },
-            { token, signal: abort.signal },
+            {
+              token,
+              signal: abort.signal,
+              onText(answer) {
+                if (abort.signal.aborted) return;
+                setHasPartialResponse(true);
+                setMessages((items) =>
+                  items.some((item) => item.id === replyId)
+                    ? items.map((item) => (item.id === replyId ? { ...item, text: answer } : item))
+                    : [...items, { id: replyId, role: "helena", text: answer }],
+                );
+              },
+            },
           );
-          if (!abort.signal.aborted)
-            setMessages((items) => [
-              ...items,
-              { id: ++nextId.current, role: "helena", text: response.answer },
-            ]);
         } catch (failure) {
           if (!abort.signal.aborted) {
             setError(
@@ -232,9 +243,14 @@ export function HelenaChat({
                 : "Entre na conta ou tente mais tarde.",
             );
             setDraft(value);
+            setMessages((items) =>
+              items.map((item) => (item.id === replyId ? { ...item, interrupted: true } : item)),
+            );
           }
         } finally {
-          if (!abort.signal.aborted) {
+          if (controller.current === abort) {
+            controller.current = null;
+            responseId.current = null;
             setPending(false);
             sending.current = false;
           }
@@ -251,6 +267,20 @@ export function HelenaChat({
       sending.current = false;
       timer.current = null;
     }, 800);
+  }
+  function stop() {
+    const id = responseId.current;
+    controller.current?.abort();
+    controller.current = null;
+    responseId.current = null;
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+    if (id !== null)
+      setMessages((items) =>
+        items.map((item) => (item.id === id ? { ...item, interrupted: true } : item)),
+      );
+    setPending(false);
+    sending.current = false;
   }
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -286,8 +316,8 @@ export function HelenaChat({
                   top: Math.max(
                     12,
                     Math.min(
-                      window.innerHeight - Math.min(610, window.innerHeight - 140) - 18,
-                      position.y - Math.min(610, window.innerHeight - 140) - 20,
+                      window.innerHeight - Math.min(560, window.innerHeight - 140) - 18,
+                      position.y - Math.min(560, window.innerHeight - 140) - 20,
                     ),
                   ),
                 }
@@ -320,26 +350,40 @@ export function HelenaChat({
               <PaperCloseIcon />
             </button>
           </header>
-          <div className="helena-chat-context">
-            <span className="helena-chat-star" aria-hidden="true">
-              <RoomPointsIcon />
-            </span>{" "}
-            Um passo de cada vez.
-            {preview && <span className="helena-chat-preview-tag">Preview</span>}
-          </div>
-          <div className="helena-chat-conversation" ref={conversation}>
+          {preview && <span className="helena-chat-preview-tag">Preview</span>}
+          <div
+            className="helena-chat-conversation"
+            ref={conversation}
+            onScroll={(event) => {
+              const element = event.currentTarget;
+              followResponse.current =
+                element.scrollHeight - element.scrollTop - element.clientHeight < 60;
+            }}
+          >
             {messages.length === 0 ? (
               <div className="helena-chat-welcome">
                 <div className="helena-chat-welcome-art">
                   <RoomPointsIcon />
                 </div>
                 <h3>Oi! Vamos pensar juntos?</h3>
-                <p>Uma dúvida, uma revisão ou um plano para hoje. Por onde começamos?</p>
                 <div className="helena-chat-suggestions">
                   {suggestions.map((text, index) => (
-                    <button key={text} type="button" onClick={() => send(text)}>
+                    <button
+                      key={text}
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => send(text)}
+                    >
                       <img
+                        className="helena-chat-suggestion-icon--light"
                         src={`/navigation-icons/paper/claro/${["planner", "notes", "library"][index]}.svg`}
+                        alt=""
+                        width="28"
+                        height="28"
+                      />
+                      <img
+                        className="helena-chat-suggestion-icon--dark"
+                        src={`/navigation-icons/paper/escuro/${["planner", "notes", "library"][index]}.svg`}
                         alt=""
                         width="28"
                         height="28"
@@ -355,50 +399,35 @@ export function HelenaChat({
                 className="helena-chat-messages"
                 role="log"
                 aria-label="Mensagens"
-                aria-live="polite"
+                aria-live={pending ? "off" : "polite"}
                 aria-relevant="additions text"
               >
-                <div className="helena-chat-message is-helena">
-                  <span className="helena-chat-message-author">Helena</span>
-                  <p>Estou aqui. Vamos resolver uma coisa de cada vez?</p>
-                </div>
                 {messages.map((message) => (
                   <div key={message.id} className={`helena-chat-message is-${message.role}`}>
                     <span className="helena-chat-message-author">
                       {message.role === "user" ? "Você" : "Helena"}
                     </span>
                     <p>{message.text}</p>
+                    {message.interrupted && (
+                      <span className="helena-chat-interrupted">Resposta interrompida</span>
+                    )}
                   </div>
                 ))}
               </div>
             )}
-            {pending && (
+            {pending && !hasPartialResponse && (
               <div className="helena-chat-thinking">
                 <HelenaLoading label="Helena está respondendo" compact />
               </div>
             )}
           </div>
           <footer className="helena-chat-footer">
-            {!preview && (
-              <label>
-                <input
-                  type="checkbox"
-                  checked={consent}
-                  disabled={pending}
-                  onChange={(event) => setConsent(event.target.checked)}
-                />
-                Enviar mensagens, histórico e nome da tela ao Cloudflare. Minha conversa não será
-                usada no treinamento.
-              </label>
-            )}
             {error && <p role="alert">{error}</p>}
             <form onSubmit={submit} className="helena-chat-composer">
-              <label className="sr-only" htmlFor="helena-chat-input">
-                Mensagem para Helena
-              </label>
               <textarea
                 ref={composer}
                 id="helena-chat-input"
+                aria-label="Escreva para a Helena"
                 value={draft}
                 maxLength={2000}
                 rows={2}
@@ -411,19 +440,34 @@ export function HelenaChat({
                   }
                 }}
               />
-              <button
-                type="submit"
-                className="helena-chat-send"
-                aria-label="Enviar mensagem"
-                disabled={!draft.trim() || pending}
-              >
-                <PaperArrow />
-              </button>
+              {pending ? (
+                <button
+                  type="button"
+                  className="helena-chat-send secondary-button"
+                  aria-label="Interromper resposta"
+                  onClick={stop}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="helena-chat-stop-icon">
+                    <path fill="#51465D" d="M5 7h14v14H5z" />
+                    <path fill="#FFF9EF" d="M4 4h14v14H4z" />
+                    <path fill="#D8CDB9" d="M4 4h5l-5 5zM18 18h-5l5-5z" />
+                  </svg>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="helena-chat-send primary-button"
+                  aria-label="Enviar mensagem"
+                  disabled={!draft.trim()}
+                >
+                  <PaperArrow />
+                </button>
+              )}
             </form>
             <p>
               {preview
                 ? "Conversa demonstrativa. Nada é enviado ou salvo."
-                : "IA pode errar. Confira a resposta. A Olena não salva esta conversa."}
+                : "Ao enviar, sua mensagem e o contexto vão ao Cloudflare. Sem uso no treino da Olena. IA pode errar."}
             </p>
           </footer>
         </section>

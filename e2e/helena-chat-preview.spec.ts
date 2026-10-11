@@ -24,6 +24,19 @@ test("onboarding Helena chat fits, sends locally and minimizes on desktop and mo
   await page.screenshot({
     path: testInfo.outputPath(`helena-chat-${testInfo.project.name}.png`),
   });
+  await page.evaluate(() => {
+    document.documentElement.dataset["theme"] = "dark";
+  });
+  await expect(page.locator(".helena-chat-suggestions button").first()).toHaveCSS(
+    "background-color",
+    "rgb(52, 45, 64)",
+  );
+  await page.screenshot({
+    path: testInfo.outputPath(`helena-chat-${testInfo.project.name}-dark.png`),
+  });
+  await page.evaluate(() => {
+    document.documentElement.dataset["theme"] = "light";
+  });
   await page.getByRole("button", { name: "Organizar meus estudos" }).click();
   await expect(page.getByText(/Qual matéria você quer estudar/)).toBeVisible();
   await page.getByRole("textbox").fill("Preciso de ajuda com matemática");

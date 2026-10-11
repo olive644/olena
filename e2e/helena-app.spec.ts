@@ -25,9 +25,7 @@ test("Helena appears in the real app, keeps history between tabs and stays above
   await expect(dialog.getByText("Preview", { exact: true })).toHaveCount(0);
   await dialog.getByRole("textbox").fill("Quero revisar matemática");
   await dialog.getByRole("button", { name: "Enviar mensagem" }).click();
-  await expect(dialog.getByRole("alert")).toContainText("Autorize");
-  await dialog.getByRole("checkbox").check();
-  await dialog.getByRole("button", { name: "Enviar mensagem" }).click();
+  await expect(dialog.getByRole("checkbox")).toHaveCount(0);
   await expect(dialog.getByRole("alert")).toContainText(/Entre na conta/);
   await dialog.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(dialog).toHaveCount(0);

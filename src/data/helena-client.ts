@@ -4,6 +4,7 @@ import {
   type HelenaRequest,
   type HelenaResponse,
 } from "../ai/helena-contract";
+import { readEventStream } from "../ai/event-stream";
 
 const HELENA_ENDPOINT = "/api/helena";
 const MAX_RESPONSE_LENGTH = 32_000;
@@ -24,6 +25,69 @@ type HelenaClientOptions = {
   signal?: AbortSignal;
   token?: string;
 };
+
+export async function streamHelena(
+  request: HelenaRequest,
+  options: HelenaClientOptions & { onText(text: string): void },
+): Promise<HelenaResponse> {
+  if (request.privacy?.consent !== true || request.privacy.retention !== "none")
+    throw new HelenaClientError("invalid_request", "Autorize o envio primeiro.");
+  const signal = options.signal
+    ? AbortSignal.any([options.signal, AbortSignal.timeout(55_000)])
+    : AbortSignal.timeout(55_000);
+  const response = await (options.fetcher ?? fetch)(HELENA_ENDPOINT, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      Accept: "text/event-stream",
+      "Content-Type": "application/json",
+      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
+    },
+    body: JSON.stringify(request),
+    signal,
+  });
+  if (
+    !response.ok ||
+    !response.body ||
+    !response.headers.get("Content-Type")?.includes("text/event-stream")
+  ) {
+    await response.body?.cancel();
+    throw new HelenaClientError(
+      response.status === 429 ? "rate_limited" : "provider_unavailable",
+      response.status === 401
+        ? "Entre na conta para conversar."
+        : "Serviço indisponível. Tente mais tarde.",
+    );
+  }
+  let answer = "";
+  try {
+    for await (const data of readEventStream(response.body, signal)) {
+      const event: unknown = JSON.parse(data);
+      if (!event || typeof event !== "object" || !("type" in event)) throw new Error();
+      if (
+        event.type === "delta" &&
+        "text" in event &&
+        typeof event.text === "string" &&
+        event.text
+      ) {
+        answer += event.text;
+        if (answer.length > 12_000) throw new Error();
+        options.onText(answer);
+      } else if (event.type === "done" && "response" in event) {
+        const completed = parseHelenaResponse(event.response);
+        if (!completed.ok || completed.value.answer !== answer) throw new Error();
+        return completed.value;
+      } else throw new Error();
+    }
+    throw new Error();
+  } catch (error) {
+    if (options.signal?.aborted) throw error;
+    throw new HelenaClientError(
+      "provider_unavailable",
+      "A resposta foi interrompida. Tente novamente.",
+    );
+  }
+}
 
 export async function requestHelena(
   request: HelenaRequest,

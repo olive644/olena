@@ -353,18 +353,36 @@
   right: 0;
   bottom: 84px;
   width: 392px;
-  height: min(610px, calc(100dvh - 140px));
+  height: min(560px, calc(100dvh - 140px));
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--hc-line);
-  border-radius: 12px 24px 13px 22px;
+  border-radius: 5px 22px 7px 18px;
   background: var(--hc-cream);
   box-shadow:
     0 6px 0 #cdbfa4,
     0 20px 65px #29243226;
   transform-origin: bottom right;
   animation: hc-unfold 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.helena-chat-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hc-line);
+  opacity: 0.45;
+  clip-path: polygon(
+    0 0,
+    34px 0,
+    0 34px,
+    0 100%,
+    calc(100% - 30px) 100%,
+    100% calc(100% - 30px),
+    100% 100%,
+    0 100%
+  );
+  pointer-events: none;
 }
 .helena-chat-header {
   display: flex;
@@ -446,7 +464,7 @@
 .helena-chat-welcome-art {
   width: 78px;
   height: 78px;
-  margin: 12px auto 22px;
+  margin: 4px auto 18px;
   position: relative;
 }
 .helena-chat-welcome-art::before {
@@ -466,7 +484,7 @@
   user-select: none;
 }
 .helena-chat-welcome h3 {
-  margin: 12px 0 8px;
+  margin: 12px 0 24px;
   font-size: 21px;
   font-weight: 800;
   letter-spacing: -0.8px;
@@ -560,7 +578,7 @@
   flex-shrink: 0;
   padding: 12px 14px 13px;
   border-top: 1px solid #e6ddcd;
-  background: #fff9ef;
+  background: var(--hc-cream);
 }
 .helena-chat-footer > label {
   display: flex;
@@ -579,12 +597,13 @@
 }
 .helena-chat-composer {
   display: flex;
-  align-items: end;
+  align-items: center;
   gap: 8px;
   border: 1px solid var(--hc-line);
   border-radius: 8px 15px 7px 14px;
   padding: 8px;
   background: #fffdf8;
+  box-shadow: 0 3px 0 var(--hc-line);
 }
 .helena-chat-composer:focus-within {
   border-color: #a779ef;
@@ -628,6 +647,51 @@
   height: 27px;
   margin: 0;
   position: relative;
+}
+.helena-chat-stop-icon {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.helena-chat-interrupted {
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+  color: #716878;
+}
+:root[data-theme="dark"] .helena-chat {
+  --hc-cream: #292432;
+  --hc-ink: #fff9ef;
+  --hc-line: #51465d;
+}
+:root[data-theme="dark"]
+  .helena-chat
+  :is(
+    .helena-chat-composer,
+    .helena-chat-message.is-helena,
+    .helena-chat-suggestions button,
+    .helena-chat-tool
+  ) {
+  background: #342d40;
+  border-color: #51465d;
+  box-shadow: 0 3px 0 #211c2a;
+}
+:root[data-theme="dark"] .helena-chat-message-author {
+  color: #a779ef;
+}
+.helena-chat-suggestion-icon--dark {
+  display: none;
+}
+:root[data-theme="dark"] .helena-chat-suggestion-icon--light {
+  display: none;
+}
+:root[data-theme="dark"] .helena-chat-suggestion-icon--dark {
+  display: block;
+}
+:root[data-theme="dark"]
+  .helena-chat
+  :is(.helena-chat-header p, .helena-chat-footer > p, .helena-chat-interrupted) {
+  color: #d8cdb9;
 }
 .helena-chat-footer > p {
   text-align: center;

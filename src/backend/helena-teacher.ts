@@ -1,5 +1,6 @@
 import type { HelenaRequest } from "../ai/helena-contract.js";
 import type { HelenaProvider } from "./helena-handler.js";
+import { readModelStream } from "../ai/event-stream.js";
 
 export const HELENA_TEACHER_POLICY =
   "Você é Helena, tutora da OlenaStudy. Responda em português brasileiro, com clareza e gentileza. " +
@@ -15,6 +16,40 @@ export function createCloudflareTeacher(
   fetcher: typeof fetch = fetch,
 ): HelenaProvider {
   return {
+    async *stream(request, signal) {
+      if (
+        !/^[a-f0-9]{32}$/i.test(config.accountId) ||
+        !config.token ||
+        !/^@cf\/[\w./-]+$/.test(config.model)
+      )
+        throw new Error("Professor não configurado.");
+      const response = await fetcher(
+        `https://api.cloudflare.com/client/v4/accounts/${config.accountId}/ai/run/${config.model}`,
+        {
+          method: "POST",
+          redirect: "error",
+          signal,
+          headers: { Authorization: `Bearer ${config.token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [
+              { role: "system", content: HELENA_TEACHER_POLICY },
+              {
+                role: "user",
+                content: JSON.stringify({
+                  capability: request.capability,
+                  subject: request.subject,
+                  sources: request.sources,
+                  prompt: request.prompt,
+                }),
+              },
+            ],
+            max_tokens: 700,
+            stream: true,
+          }),
+        },
+      );
+      yield* readModelStream(response, signal);
+    },
     async generate(request: HelenaRequest) {
       if (
         !/^[a-f0-9]{32}$/i.test(config.accountId) ||

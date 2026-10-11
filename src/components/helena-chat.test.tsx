@@ -5,7 +5,7 @@ import { demonstrationReply } from "../data/helena-preview";
 const { ask, account } = vi.hoisted(() => ({ ask: vi.fn(), account: vi.fn() }));
 vi.mock("../data/helena-client", async (original) => ({
   ...(await original<typeof import("../data/helena-client")>()),
-  requestHelena: ask,
+  streamHelena: ask,
 }));
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: account }));
 
@@ -19,20 +19,23 @@ beforeEach(() => {
   );
 });
 
-it("requires explicit consent before sending any content externally", () => {
+it("removes the obsolete copy and does not send anything merely on opening", () => {
   render(<HelenaChatPreview initiallyOpen />);
-  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique divisão" } });
-  fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" }));
-  expect(screen.getByRole("alert").textContent).toContain("Autorize");
+  expect(screen.queryByRole("checkbox")).toBeNull();
+  expect(screen.queryByText("Um passo de cada vez.")).toBeNull();
+  expect(screen.queryByText("Mensagem para Helena")).toBeNull();
+  expect(screen.queryByText(/Por onde começamos/)).toBeNull();
   expect(ask).not.toHaveBeenCalled();
   expect(account).not.toHaveBeenCalled();
 });
 
 it("uses the authenticated teacher with screen context and no training retention", async () => {
   account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
-  ask.mockResolvedValue({ answer: "Dividir é formar grupos iguais." });
+  ask.mockImplementation(async (_request, options) => {
+    options.onText("Dividir é formar grupos iguais.");
+    return { answer: "Dividir é formar grupos iguais." };
+  });
   render(<HelenaChatPreview initiallyOpen currentView="learn" />);
-  fireEvent.click(screen.getByRole("checkbox"));
   fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique divisão" } });
   await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
   expect(screen.getByText("Dividir é formar grupos iguais.")).toBeTruthy();
@@ -50,12 +53,67 @@ it("shows service failure honestly and restores the draft", async () => {
   account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
   ask.mockRejectedValue(new Error("server secret"));
   render(<HelenaChatPreview initiallyOpen />);
-  fireEvent.click(screen.getByRole("checkbox"));
   fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique divisão" } });
   await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
   expect(screen.getByRole("alert").textContent).not.toContain("server secret");
   expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe("Explique divisão");
   expect(screen.queryByText(/Pode me contar um pouco mais/)).toBeNull();
+});
+
+it("shows partial text immediately, stops upstream and ignores late text after a new send", async () => {
+  account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
+  const turns: { signal: AbortSignal; onText(text: string): void; finish(): void }[] = [];
+  ask.mockImplementation(
+    (_request, options) =>
+      new Promise<void>((resolve) => {
+        turns.push({ ...options, finish: resolve });
+      }),
+  );
+  render(<HelenaChatPreview initiallyOpen />);
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Primeira" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  act(() => turns[0]!.onText("Começando a explicar"));
+  expect(screen.getByText("Começando a explicar")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Interromper resposta" }));
+  expect(turns[0]!.signal.aborted).toBe(true);
+  expect(screen.getByText("Resposta interrompida")).toBeTruthy();
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Segunda" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  await act(async () => {
+    turns[0]!.onText("stale overwrite");
+    turns[0]!.finish();
+  });
+  expect(screen.queryByText("stale overwrite")).toBeNull();
+  expect(screen.getByRole("button", { name: "Interromper resposta" })).toBeTruthy();
+  await act(async () => {
+    turns[1]!.onText("Nova resposta");
+    turns[1]!.finish();
+  });
+  expect(screen.getByText("Nova resposta")).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Interromper resposta" })).toBeNull();
+});
+
+it("interrupts on closing without deleting the partial conversation", async () => {
+  account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
+  const abort = vi.fn();
+  ask.mockImplementation(async (_request, options) => {
+    options.onText("Texto parcial");
+    await new Promise<void>((resolve) =>
+      options.signal.addEventListener("abort", () => {
+        abort();
+        resolve();
+      }),
+    );
+  });
+  render(<HelenaChatPreview initiallyOpen />);
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Pergunta" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  await act(async () =>
+    fireEvent.click(screen.getByRole("button", { name: /^Recolher conversa$/ })),
+  );
+  expect(abort).toHaveBeenCalledOnce();
+  fireEvent.click(screen.getByRole("button", { name: "Conversar com Helena" }));
+  expect(screen.getByText("Texto parcial")).toBeTruthy();
 });
 afterEach(() => {
   cleanup();

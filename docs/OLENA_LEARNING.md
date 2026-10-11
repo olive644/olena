@@ -96,8 +96,10 @@ requer conta Firebase real, sem bypass de convidado.
 
 ## Privacidade e ameaça
 
-Antes do primeiro envio, o aluno autoriza mensagens, até seis mensagens anteriores
-e o nome do módulo atual. Não há captura de tela, leitura automática de cadernos,
+O chat não exige mais checkbox por sessão. Ao enviar ou escolher uma sugestão,
+o aluno solicita a resposta externa; o rodapé informa o envio de mensagens,
+até seis mensagens anteriores e o nome do módulo atual ao Cloudflare.
+Abrir o chat não envia conteúdo. Não há captura de tela, leitura automática de cadernos,
 gravação de áudio ou coleta integral do workspace. O histórico fica só na memória
 da sessão. O professor pode cometer erros, e a interface informa isso.
 
@@ -111,6 +113,22 @@ Credenciais e endpoints são exclusivos do servidor; pedidos não escolhem URL o
 modelo. Conteúdo fornecido é dado não confiável, separado das instruções de sistema.
 Sem ferramentas de escrita, a Helena não modifica Agenda nem progresso. Respostas
 são texto React, nunca HTML. Erros não revelam respostas internas ou segredos.
+
+## Streaming e interrupção
+
+O chat pede SSE em `/api/helena`. Cloudflare gera com `stream: true`; o servidor
+valida e repassa deltas sem aguardar a resposta inteira. O adaptador HTTP escreve
+os pacotes incrementalmente e respeita backpressure. O cliente verifica eventos
+de conclusão para não tratar respostas cortadas como completas.
+
+Interromper ou recolher o chat cancela a leitura e propaga abort até o provedor.
+Texto parcial permanece identificado; uma resposta antiga não altera a nova.
+O fluxo limita texto a 12.000 caracteres, eventos a 32.000 caracteres, tráfego
+a 512.000 bytes e geração no servidor a 45 segundos (cliente a 55 segundos).
+Cancelar não devolve tokens já consumidos nem a chamada descontada da cota.
+O modelo próprio continua exigindo aprovação explícita por capacidade. Falha
+antes do primeiro delta permite fallback; após texto parcial, não mistura provedores.
+O preview permanece demonstrativo, sem chamadas ao provedor.
 
 ## Aprendizado incremental
 
