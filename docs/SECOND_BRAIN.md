@@ -1108,7 +1108,10 @@ Verificação de propriedade no Google Search Console: meta pública no head de
 `src/google-site-verification.test.ts` impede perda ou duplicação da meta.
 A verificação OAuth de marca/escopos continua sendo um processo separado no Google.
 
-`planner-view.tsx` usa calendário Hoje/Semana/Mês e formulário único. `domain/agenda.ts`
+`planner-view.tsx` usa ícone original para abrir o calendário mensal compacto, seletor
+de mês sem setas e planejamento do dia escolhido abaixo. As abas Hoje/Semana/Mês
+foram substituídas, mantendo o formulário único e a data selecionada ao recolher.
+`domain/agenda.ts`
 centraliza datas locais e recorrência; o Espaço usa o mesmo seletor. Eventos de estudo
 ligam Foco via metadados opcionais do contador; `focus/recorded` agrega por ocorrência.
 O workspace e o merge por ID existentes continuam responsáveis pela conta/persistência.

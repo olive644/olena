@@ -18,7 +18,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   page,
 }, info) => {
   await page.goto("/planejador");
-  await expect(page.getByRole("heading", { name: "Minha agenda" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Calendário", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisar frações");
@@ -34,14 +34,14 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   );
   await page.reload();
   await expect(page.getByRole("button", { name: "Reabrir Revisar porcentagens" })).toBeVisible();
-  await page.getByRole("button", { name: "Semana", exact: true }).click();
-  await expect(page.getByRole("region", { name: "Plano da semana" })).toBeVisible();
-  await page.getByRole("button", { name: "Mês", exact: true }).click();
-  await expect(
-    page.getByRole("region", { name: "Calendário mensal" }).getByRole("button"),
-  ).toHaveCount(42);
+  await page.getByRole("button", { name: "Calendário", exact: true }).click();
+  const count = await page.locator(".agenda-month-grid button").count();
+  expect([35, 42]).toContain(count);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: info.outputPath(`agenda-${info.project.name}.png`) });
+  await page.screenshot({
+    path: info.outputPath(`agenda-${info.project.name}.png`),
+    animations: "disabled",
+  });
   await page.evaluate(() => {
     document.documentElement.dataset["theme"] = "dark";
   });
@@ -50,6 +50,39 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
     "rgb(41, 36, 50)",
   );
   await page.screenshot({ path: info.outputPath(`agenda-${info.project.name}-dark.png`) });
+});
+
+test("calendar icon opens a compact date picker with the selected day's planning below", async ({
+  page,
+}) => {
+  await page.goto("/planejador");
+  const toggle = page.getByRole("button", { name: "Calendário", exact: true });
+  const calendar = page.getByRole("region", { name: "Calendário mensal" });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(calendar).toHaveCount(0);
+  await expect(page.getByText("Estudos, tarefas e compromissos em um só lugar.")).toHaveCount(0);
+  for (const name of ["Hoje", "Semana", "Mês", "Período anterior", "Próximo período"]) {
+    await expect(page.getByRole("button", { name, exact: true })).toHaveCount(0);
+  }
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await calendar.getByLabel("Escolher mês").fill("2027-02");
+  await calendar.getByRole("button", { name: "segunda-feira, 15 de fevereiro, 0 itens" }).click();
+  await expect(page.locator("#agenda-day-title")).toHaveText("segunda-feira, 15 de fevereiro");
+  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+  await expect(form.getByLabel("Prazo", { exact: true })).toHaveValue("2027-02-15");
+  await form.getByRole("textbox", { name: "Título", exact: true }).fill("Plano do dia escolhido");
+  await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
+  const calendarBox = await calendar.boundingBox();
+  const planningBox = await page.locator(".agenda-day").boundingBox();
+  expect(planningBox!.y).toBeGreaterThan(calendarBox!.y + calendarBox!.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await toggle.click();
+  await expect(calendar).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
 });
 test("weekly study opens focus without completing, records real minutes and returns to agenda", async ({
   page,

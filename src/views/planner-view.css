@@ -5,9 +5,7 @@
   --agenda-line: #d8cdb9;
   --agenda-fold: #eee5d2;
 }
-.agenda-heading,
-.agenda-toolbar,
-.agenda-period {
+.agenda-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -16,38 +14,11 @@
 .agenda-heading {
   margin: 22px 0;
 }
-.agenda-heading h1 {
-  margin: 7px 0;
-  font-size: clamp(25px, 3vw, 36px);
-  letter-spacing: -0.04em;
-}
-.agenda-heading p,
 .agenda-aside p,
 .agenda-empty p {
   color: var(--agenda-muted);
   line-height: 1.6;
   font-size: 14px;
-}
-.agenda-modes {
-  display: flex;
-  gap: 9px;
-}
-.agenda-page .agenda-modes button[aria-pressed="false"] {
-  background-color: var(--agenda-paper);
-  background-image:
-    linear-gradient(135deg, var(--agenda-fold) 0 9%, transparent 9%),
-    linear-gradient(315deg, var(--agenda-fold) 0 12%, transparent 12%);
-  color: var(--agenda-ink);
-  border-color: var(--agenda-line);
-  box-shadow: 0 4px 0 var(--agenda-line);
-}
-.agenda-period {
-  gap: 9px;
-  font-size: 13px;
-  text-transform: capitalize;
-}
-.agenda-period .icon-button {
-  padding: 8px;
 }
 .agenda-page .onboarding-paper-arrow {
   width: 22px;
@@ -59,61 +30,19 @@
   height: 26px;
 }
 .agenda-notice {
-  min-height: 20px;
-  margin: 10px 0;
+  margin: 0 0 12px;
   color: var(--agenda-muted);
   font-size: 13px;
 }
-.agenda-day-strip {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 9px;
-  margin-bottom: 22px;
-}
-.agenda-page .agenda-day-strip button {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
-  min-height: 86px;
-  padding: 10px 4px;
-  color: var(--agenda-ink);
-  background: var(--agenda-paper);
-  border: 1px solid var(--agenda-line);
-  box-shadow: 0 4px 0 var(--agenda-line);
-}
-.agenda-day-strip small {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.agenda-day-strip strong {
-  font-size: 23px;
-}
-.agenda-day-strip button > span {
-  width: 5px;
-  height: 5px;
-}
-.agenda-today-dot {
-  background: #facc15;
-  transform: rotate(45deg);
-}
-.agenda-page .agenda-day-strip button.is-selected {
-  color: #fff9ef;
-  background-color: #7433e0;
-  background-image:
-    linear-gradient(135deg, #8a4ce5 0 9%, transparent 9%),
-    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
-  border-color: #7433e0;
-  box-shadow: 0 4px 0 #4b209b;
-}
 .agenda-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 22px;
   align-items: start;
 }
 .agenda-aside {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 .agenda-page .module-panel {
@@ -142,12 +71,20 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--agenda-line);
+  padding: 14px 12px;
+  margin-bottom: 12px;
+  background: var(--agenda-paper);
+  border: 1px solid var(--agenda-line);
+  border-left: 4px solid #facc15;
+  border-radius: 4px 16px 4px 12px;
+  box-shadow: 0 3px 0 var(--agenda-line);
   animation: agenda-arrive 180ms ease-out;
 }
-.agenda-item:last-child {
-  border-bottom: 0;
+.agenda-item--task {
+  border-left-color: #38a4ad;
+}
+.agenda-item--study {
+  border-left-color: #a779ef;
 }
 .agenda-item time {
   color: #7c3aed;
@@ -272,6 +209,7 @@
 }
 .agenda-month {
   margin-bottom: 22px;
+  animation: agenda-arrive 180ms ease-out;
 }
 .agenda-weekdays,
 .agenda-month-grid {
@@ -287,10 +225,10 @@
 }
 .agenda-page .agenda-month-grid button {
   min-width: 0;
-  min-height: 65px;
+  min-height: 44px;
   display: grid;
   align-content: space-between;
-  justify-items: start;
+  justify-items: center;
   padding: 8px;
   background: var(--agenda-paper);
   color: var(--agenda-ink);
@@ -310,51 +248,6 @@
 .agenda-month-grid small {
   color: #7c3aed;
   font-size: 11px;
-}
-.agenda-week-board {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 9px;
-}
-.agenda-week-board > section {
-  padding: 12px 9px;
-  background: var(--agenda-paper);
-  border: 1px solid var(--agenda-line);
-  border-radius: 5px 13px 6px 11px;
-  box-shadow: 0 4px 0 var(--agenda-line);
-  min-width: 0;
-}
-.agenda-week-board h2 {
-  font-size: 12px;
-  margin: 0 0 15px;
-}
-.agenda-free {
-  color: var(--agenda-muted);
-  font-size: 12px;
-  line-height: 1.6;
-}
-.agenda-week-board .agenda-item {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-}
-.agenda-week-board .agenda-item-actions {
-  justify-content: flex-start;
-}
-.agenda-week-board .agenda-check {
-  width: 44px;
-}
-.agenda-week-board .agenda-item-copy strong {
-  font-size: 12px;
-}
-.agenda-week-board .text-button {
-  font-size: 11px;
-}
-.agenda-page.is-week .agenda-layout {
-  grid-template-columns: 1fr;
-}
-.agenda-page.is-week .agenda-aside {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .agenda-dialog {
   --agenda-paper: #fffdf8;
@@ -426,23 +319,14 @@
   .agenda-aside {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .agenda-week-board {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-  }
 }
 @media (max-width: 760px) {
   .agenda-heading {
     margin: 14px 0;
   }
-  .agenda-heading h1 {
-    font-size: 24px;
-  }
   .agenda-heading {
     align-items: flex-start;
     gap: 12px;
-  }
-  .agenda-heading p {
-    font-size: 12px;
   }
   .agenda-heading > button {
     font-size: 12px;
@@ -452,31 +336,10 @@
   .agenda-heading > button .paper-action-icon {
     width: 20px;
   }
-  .agenda-toolbar {
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  .agenda-period {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .agenda-day-strip {
-    gap: 5px;
-  }
-  .agenda-page .agenda-day-strip button {
-    min-height: 74px;
-  }
-  .agenda-day-strip strong {
-    font-size: 18px;
-  }
-  .agenda-day-strip small {
-    font-size: 9px;
-  }
   .agenda-page .module-panel {
     padding: 18px;
   }
-  .agenda-aside,
-  .agenda-page.is-week .agenda-aside {
+  .agenda-aside {
     grid-template-columns: 1fr;
   }
   .agenda-item--timed {
@@ -484,22 +347,6 @@
   }
   .agenda-item-actions {
     width: 100%;
-  }
-  .agenda-week-board {
-    display: block;
-  }
-  .agenda-week-board > section:not(.is-selected) {
-    display: none;
-  }
-  .agenda-week-board .agenda-item {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .agenda-week-board .agenda-item-copy strong {
-    font-size: 14px;
-  }
-  .agenda-week-board h2 {
-    font-size: 18px;
   }
   .agenda-count-desktop {
     display: none;
@@ -513,7 +360,7 @@
   }
   .agenda-page .agenda-month-grid button {
     padding: 6px;
-    min-height: 53px;
+    min-height: 44px;
   }
   .agenda-dialog {
     padding: 20px;
@@ -529,5 +376,94 @@
   }
   .agenda-page button {
     transition: none;
+  }
+}
+
+.agenda-accessible-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.agenda-heading,
+.agenda-month,
+.agenda-layout,
+.agenda-notice {
+  max-width: 860px;
+  margin-inline: auto;
+}
+.agenda-calendar-toggle {
+  width: 64px;
+  height: 60px;
+  padding: 12px;
+}
+.agenda-calendar-toggle .navigation-icon,
+.agenda-calendar-toggle .navigation-icon img {
+  width: 34px;
+  height: 34px;
+}
+.agenda-calendar-controls {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.agenda-calendar-controls .field {
+  margin: 0;
+  min-width: 0;
+}
+.agenda-calendar-controls input {
+  max-width: 100%;
+  min-height: 44px;
+  background: var(--agenda-paper);
+  color: var(--agenda-ink);
+  border: 1px solid var(--agenda-line);
+  border-radius: 4px 12px 4px 10px;
+  padding: 8px 12px;
+  font: inherit;
+}
+.agenda-calendar-controls .field > span {
+  color: var(--agenda-muted);
+  font-size: 11px;
+}
+.agenda-page .agenda-month-grid .is-selected {
+  background-color: #7c3aed;
+  background-image:
+    linear-gradient(135deg, #a779ef 0 12%, transparent 12%),
+    linear-gradient(315deg, #51259b 0 14%, transparent 14%);
+  color: #fff9ef;
+  box-shadow: 0 3px 0 #51259b;
+  border-color: #7c3aed;
+}
+.agenda-page .agenda-month-grid .is-selected :is(span, small) {
+  color: #fff9ef;
+}
+:root[data-theme="dark"] .agenda-page .agenda-month-grid .is-selected :is(span, small) {
+  color: #fff9ef;
+}
+.agenda-month-grid button:focus-visible,
+.agenda-calendar-toggle:focus-visible {
+  outline: 3px solid #a779ef;
+  outline-offset: 3px;
+}
+@media (max-width: 400px) {
+  .agenda-calendar-controls {
+    gap: 8px;
+  }
+  .agenda-calendar-controls input {
+    width: 170px;
+    padding-inline: 6px;
+  }
+  .agenda-calendar-controls button {
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-month {
+    animation: none;
   }
 }

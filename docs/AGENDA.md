@@ -2,8 +2,10 @@
 
 ## Fluxo
 
-`/planejador` abre Hoje. Semana usa sete colunas no computador e o dia selecionado
-no celular. Mês mostra contagens compactas; selecionar uma data abre a lista abaixo.
+`/planejador` abre o planejamento do dia atual. O ícone de calendário abre e recolhe
+o mês, com seletor de mês sem setas, destaque roxo e contagens compactas. Selecionar
+uma data atualiza o planejamento logo abaixo, no computador e celular. Recolher o
+calendário preserva a data escolhida. As abas Hoje/Semana/Mês foram substituídas.
 Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco.
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.

@@ -2337,3 +2337,13 @@ para a propriedade de prefixo `https://olenastudy.vercel.app/` no Search Console
 É um token público, não uma credencial OAuth. Deve permanecer no HTML inicial após
 a confirmação. Não comprova aprovação de marca ou dos escopos do Google Agenda.
 Prova de presença no head: `src/google-site-verification.test.ts`.
+
+# Agenda com calendário recolhível
+
+Cabeçalho textual e abas Hoje/Semana/Mês substituídos pelo ícone original de
+calendário. O botão expõe o estado aberto e controla um calendário mensal com
+seletor de mês, destaque roxo do dia escolhido e contagem dos itens. Os
+planejamentos aparecem abaixo, inclusive no desktop. Adicionar usa a data
+selecionada; recolher não perde a seleção. Teclado, toque, temas e movimento
+reduzido preservados. Conta, Google Agenda, recorrência e Foco não mudaram.
+Prova de navegação, posicionamento e formulário: `e2e/agenda.spec.ts`.
