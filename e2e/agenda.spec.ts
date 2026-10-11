@@ -18,7 +18,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   page,
 }, info) => {
   await page.goto("/planejador");
-  await expect(page.getByRole("button", { name: "Calendário", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Escolher mês", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisar frações");
@@ -34,7 +34,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   );
   await page.reload();
   await expect(page.getByRole("button", { name: "Reabrir Revisar porcentagens" })).toBeVisible();
-  await page.getByRole("button", { name: "Calendário", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Calendário mensal" })).toBeVisible();
   const count = await page.locator(".agenda-month-grid button").count();
   expect([35, 42]).toContain(count);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -52,22 +52,21 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   await page.screenshot({ path: info.outputPath(`agenda-${info.project.name}-dark.png`) });
 });
 
-test("calendar icon opens a compact date picker with the selected day's planning below", async ({
-  page,
-}) => {
+test("calendar stays visible and its icon opens the month selector", async ({ page }) => {
   await page.goto("/planejador");
-  const toggle = page.getByRole("button", { name: "Calendário", exact: true });
+  const toggle = page.getByRole("button", { name: "Escolher mês", exact: true });
   const calendar = page.getByRole("region", { name: "Calendário mensal" });
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
-  await expect(calendar).toHaveCount(0);
+  await expect(calendar).toBeVisible();
   await expect(page.getByText("Estudos, tarefas e compromissos em um só lugar.")).toHaveCount(0);
   for (const name of ["Hoje", "Semana", "Mês", "Período anterior", "Próximo período"]) {
     await expect(page.getByRole("button", { name, exact: true })).toHaveCount(0);
   }
   await toggle.focus();
+  await expect(toggle).toHaveCSS("outline-style", "none");
+  await expect(toggle).toHaveCSS("text-decoration-line", "underline");
   await page.keyboard.press("Enter");
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await calendar.getByRole("button", { name: "Escolher mês", exact: true }).click();
   const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
   await picker.getByLabel("Ano", { exact: true }).fill("2027");
   await picker.getByRole("button", { name: "fevereiro", exact: true }).click();
@@ -84,9 +83,59 @@ test("calendar icon opens a compact date picker with the selected day's planning
   const planningBox = await page.locator(".agenda-day").boundingBox();
   expect(planningBox!.y).toBeGreaterThan(calendarBox!.y + calendarBox!.height);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await toggle.click();
-  await expect(calendar).toHaveCount(0);
+  await expect(calendar).toBeVisible();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
+});
+test("a selected day automatically filters focus and practice, including an empty day", async ({
+  page,
+}) => {
+  const state = createInitialWorkspace();
+  state.focusSessions = ["timer", "pomodoro"].map((mode, index) => ({
+    id: mode,
+    mode: mode as "timer" | "pomodoro",
+    subjectId: state.subjects[0]!.id,
+    durationMinutes: index ? 25 : 12,
+    completedAt: "2026-10-01T12:00:00",
+  }));
+  state.practiceActivities = [
+    {
+      id: "math-day-1",
+      islandId: "mathematics:school",
+      islandName: "Matemática · Ensino médio",
+      completedAt: "2026-10-01T12:30:00",
+      answers: 3,
+      correct: 2,
+    },
+  ];
+  await page.addInitScript(
+    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
+    state,
+  );
+  await page.goto("/planejador");
+  await page.getByRole("button", { name: "Escolher mês", exact: true }).click();
+  const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
+  await picker.getByLabel("Ano", { exact: true }).fill("2026");
+  await picker.getByRole("button", { name: "outubro", exact: true }).click();
+  const history = page.getByRole("region", { name: "Histórico de estudo" });
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("12 min");
+  await expect(history.locator("header .paper-digits")).toHaveCount(0);
+  await expect(history.locator(".agenda-bar-column small .paper-digits")).toHaveCount(0);
+  await history.getByRole("button", { name: "Pomodoro", exact: true }).click();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("25 min");
+  await history.getByRole("button", { name: "Praticar", exact: true }).click();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("3 respostas");
+  await expect(history.locator('[data-icon="gamepad"]')).toHaveCount(1);
+  await page.locator('button[data-date="2026-10-02"]').click();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 respostas");
+  await expect(history.getByRole("img", { name: "Sem dados para distribuição" })).toBeVisible();
+  await history.getByRole("button", { name: "Foco", exact: true }).click();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 min");
+  await history.getByRole("button", { name: "Cronômetro", exact: true }).click();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 min");
+  await page.locator('button[data-date="2026-10-01"]').click();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("12 min");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(history.locator(".agenda-charts")).toHaveCSS("animation-name", "none");
 });
 test("weekly study opens focus without completing, records real minutes and returns to agenda", async ({
   page,
@@ -132,7 +181,6 @@ test("paper month selector supports years, keyboard dismissal, themes and touch-
   page,
 }, info) => {
   await page.goto("/planejador");
-  await page.getByRole("button", { name: "Calendário", exact: true }).click();
   const trigger = page.getByRole("button", { name: "Escolher mês", exact: true });
   await trigger.click();
   const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
@@ -174,7 +222,7 @@ test("paper month selector supports years, keyboard dismissal, themes and touch-
   await expect(trigger).toHaveAttribute("aria-expanded", "false");
   await trigger.click();
   await picker.getByRole("button", { name: "janeiro", exact: true }).click();
-  await expect(trigger).toContainText("janeiro de 2026");
+  await expect(page.locator(".agenda-visible-month")).toHaveText("janeiro de 2026");
   await expect(trigger).toBeFocused();
   await trigger.click();
   await picker.getByRole("button", { name: "Este mês", exact: true }).click();
@@ -256,7 +304,6 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     state,
   );
   await page.goto("/planejador");
-  await page.getByRole("button", { name: "Calendário", exact: true }).click();
   await page.getByRole("button", { name: "Escolher mês", exact: true }).click();
   const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
   await expect(picker.locator(".agenda-close-icon")).toHaveAttribute(
@@ -266,11 +313,11 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   await picker.getByLabel("Ano", { exact: true }).fill("2026");
   await picker.getByRole("button", { name: "outubro", exact: true }).click();
   const history = page.getByRole("region", { name: "Histórico de estudo" });
-  await expect(page.getByRole("button", { name: "Calendário", exact: true })).toHaveCSS(
+  await expect(page.getByRole("button", { name: "Escolher mês", exact: true })).toHaveCSS(
     "background-color",
     "rgb(255, 253, 248)",
   );
-  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("65 min");
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 min");
   const first = page.locator('button[data-date="2026-10-05"]');
   const last = page.locator('button[data-date="2026-10-08"]');
   await first.scrollIntoViewIfNeeded();
@@ -290,7 +337,7 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
   await expect(
     history.getByRole("group", { name: "Categorias do estudo" }).getByRole("button"),
-  ).toHaveCount(4);
+  ).toHaveCount(3);
   await expect(history.getByRole("button", { name: /^Minutos por período:/ })).toBeVisible();
   await expect(page.locator(".agenda-month-grid .has-study")).toHaveCount(3);
   await page.getByRole("button", { name: "Limpar intervalo", exact: true }).click();
@@ -315,7 +362,7 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
       theme,
     );
     const rangeDays = page.locator(".agenda-month-grid .is-in-range");
-    await expect(page.getByRole("button", { name: "Calendário", exact: true })).toHaveCSS(
+    await expect(page.getByRole("button", { name: "Escolher mês", exact: true })).toHaveCSS(
       "background-color",
       "rgb(255, 253, 248)",
     );
@@ -358,10 +405,10 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     else await page.mouse.click(x, y);
     await expect(history.locator(".agenda-chart-inspection")).toContainText("40% do total");
     await history.screenshot({
-      style: ".mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
+      style: ".page-header, .mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
       path: info.outputPath(`dashboard-${theme}-${info.project.name}.png`),
     });
-    for (const category of ["Caderno", "Pomodoro", "Ilhas", "Cronômetro"]) {
+    for (const category of ["Caderno", "Praticar", "Foco", "Pomodoro", "Cronômetro"]) {
       const button = history.getByRole("button", { name: category, exact: true });
       await button.click();
       await expect(button).toHaveAttribute("aria-pressed", "true");

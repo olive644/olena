@@ -89,8 +89,9 @@
 }
 
 :is(.app-shell, .local-room-fullscreen) button:focus-visible {
-  outline: 3px solid #a779ef;
-  outline-offset: 4px;
+  outline: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 :is(.app-shell, .local-room-fullscreen) button:disabled {

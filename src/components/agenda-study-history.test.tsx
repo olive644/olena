@@ -40,7 +40,13 @@ describe("agenda category dashboard", () => {
     );
     const region = screen.getByRole("region", { name: "Histórico de estudo" });
     expect(region.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("12 min");
-    expect(region.textContent).toContain("1 sessões antigas sem modalidade");
+    expect(region.textContent).toContain("1 sessão antiga sem modalidade");
+    expect(
+      within(region)
+        .getByRole("group", { name: "Categorias do estudo" })
+        .querySelectorAll("button"),
+    ).toHaveLength(3);
+    expect(region.querySelector("header .paper-digits")).toBeNull();
     fireEvent.click(within(region).getByRole("button", { name: "Pomodoro" }));
     expect(region.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("25 min");
     expect(
@@ -49,9 +55,9 @@ describe("agenda category dashboard", () => {
     expect(onNavigate).not.toHaveBeenCalled();
     fireEvent.click(within(region).getByRole("button", { name: "Caderno" }));
     expect(within(region).getByRole("button", { name: /^Cadernos criados:/ })).toBeTruthy();
-    fireEvent.click(within(region).getByRole("button", { name: "Ilhas" }));
-    expect(region.textContent).toContain("sem filtro de datas");
-    fireEvent.click(within(region).getByRole("button", { name: "Explorar ilhas" }));
+    fireEvent.click(within(region).getByRole("button", { name: "Praticar" }));
+    expect(region.textContent).toContain("Atividades registradas por dia");
+    fireEvent.click(within(region).getByRole("button", { name: "Abrir Praticar" }));
     expect(onNavigate).toHaveBeenLastCalledWith("learn");
   });
   it("keeps categories usable with empty charts and without a navigation callback", () => {

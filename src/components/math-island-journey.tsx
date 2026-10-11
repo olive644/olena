@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { MATH_COURSES } from "../data/math-courses";
+import type { PracticeActivity } from "../domain/workspace";
 import { mathLearning } from "../data/math-learning";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import { isMotionReduced } from "../data/accessibility-preferences";
@@ -16,8 +17,10 @@ import "./math-island-journey.css";
 export function MathIslandJourney({
   onBack,
   entryOrigin,
+  onPractice,
 }: {
   onBack: () => void;
+  onPractice?: ((activity: PracticeActivity) => void) | undefined;
   entryOrigin?: { x: number; y: number; size: number } | undefined;
 }) {
   const [index, setIndex] = useState(0);
@@ -73,6 +76,7 @@ export function MathIslandJourney({
   if (phase === "game")
     return (
       <MathArcade
+        onPractice={onPractice}
         courseId={course.id}
         onBack={() => {
           setPointsOrigin(displayedPoints.current);

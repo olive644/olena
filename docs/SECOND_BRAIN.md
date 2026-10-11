@@ -1137,3 +1137,13 @@ O workspace e o merge por ID existentes continuam responsáveis pela conta/persi
 `HELENA_PLAN_DRAFT_EVENT` abre pedido revisável, sem API até confirmar envio no chat.
 Provas: `src/domain/agenda.test.ts` e `e2e/agenda.spec.ts`. Ver `docs/AGENDA.md` para
 compatibilidade, rollback, Google somente leitura e lembretes locais sem push.
+
+Atualização da Agenda: calendário permanente, ícone branco abre só o mês; filtro
+é dia selecionado ou intervalo explícito. Foco agrupa Cronômetro/Pomodoro,
+Praticar usa ícone oficial e registros datados opcionais `practiceActivities`.
+MathArcade envia respostas avaliadas ao workspace via callback da rota, sem
+alterar a API. Histórico antigo sem data não é atribuído a dias fictícios.
+Merge preserva a coleção quando versões antigas omitem o campo. Tipografia
+comum nas datas/legendas do dashboard, transições com movimento reduzido.
+Outlines de foco/seleção são proibidos; paper-controls.css centraliza destaque
+amarelo e sublinhado no teclado. Ver regras em AGENTS.md e DESIGN_SYSTEM.md.

@@ -93,13 +93,7 @@ export function AgendaCharts({
               <div className="agenda-bar-track">
                 <span style={{ height: `${(item.value / maximum) * 80}px` }} />
               </div>
-              <small>
-                {item.label
-                  .split(/(\d+)/)
-                  .map((part, index) =>
-                    /^\d/.test(part) ? <PaperDigits key={index} value={part} /> : part,
-                  )}
-              </small>
+              <small>{item.label}</small>
             </div>
           ))}
         </div>
@@ -211,15 +205,10 @@ export function AgendaCharts({
           <>
             <strong>{inspected.label}</strong>
             <span>
-              <PaperDigits value={String(inspected.value)} /> {unit} ·{" "}
-              <PaperDigits
-                value={String(
-                  Math.round(
-                    (inspected.value / ((inspection?.source === "bar" ? barTotal : total) || 1)) *
-                      100,
-                  ),
-                )}
-              />
+              {inspected.value} {unit} ·{" "}
+              {Math.round(
+                (inspected.value / ((inspection?.source === "bar" ? barTotal : total) || 1)) * 100,
+              )}
               % do total
             </span>
           </>

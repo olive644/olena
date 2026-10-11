@@ -2396,3 +2396,31 @@ seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
   entrada 278,0 KiB, total 1230,2 KiB. Orçamento normal total 1232 KiB, com os mesmos
   tetos absolutos e sem dependência de gráficos. Campo opcional `mode` não altera
   a versão do workspace e preserva registros sem modalidade no rollback.
+
+### Agenda permanente e atividade diária (11/10/2026)
+
+- Calendário e dashboard sempre visíveis; o calendário de papel branco agora
+  abre somente o seletor de mês. Dia selecionado é o filtro padrão, sem ampliar
+  implicitamente para o mês. Intervalos inclusivos filtram as mesmas fontes.
+- Categorias Foco, Caderno e Praticar. Foco contém Cronômetro e Pomodoro;
+  Praticar reutiliza o ícone oficial da navegação e comporta futuras ilhas.
+- Datas de Meu estudo, resumo, legendas de datas das barras e texto da inspeção
+  usam números tipográficos comuns. Valores gráficos e dias do calendário mantêm
+  PaperDigits. Troca de filtro/categoria anima entrada e barras em 220/280ms,
+  com preferência de movimento reduzido preservada.
+- `practiceActivities` é coleção opcional na versão 7 do workspace, com ID,
+  ilha, nome, data de conclusão, respostas e acertos. Cada resposta avaliada no
+  MathArcade real despacha `practice/recorded` por callback da rota Praticar.
+  ID da rodada + seed da pergunta evita duplicação. Erros também contam como
+  prática; falhas de API não produzem atividade. Sem reconstrução de datas antigas.
+- Reducer/leitor validam o registro e o merge por ID mantém dispositivos
+  independentes. Ausência do campo em leitor anterior não significa exclusão.
+  Rollback preserva a coleção extra, sem reset de progresso ou migração destrutiva.
+- Foco/seleção não usam molduras automáticas, outlines roxos/pretos ou realce
+  azul nativo de toque. Regra compartilhada usa sublinhado e destaque amarelo;
+  bordas estruturais e desenhos do usuário permanecem. Proibição em AGENTS.md
+  e DESIGN_SYSTEM.md. E2E verifica foco visível sem outline, ambos os temas e
+  dia com/sem atividades; testes provam persistência, retry e merge compatível.
+- Validação: 1386 testes unitários, tipos/build e orçamento de desempenho;
+  14 cenários E2E da Agenda em desktop/mobile Edge, com temas claro/escuro.
+  JS inicial 278,5 KiB e total 1229,8 KiB, sem dependências nem aumento de orçamento.

@@ -8,7 +8,7 @@
 .agenda-heading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
 }
 .agenda-heading {
@@ -414,6 +414,13 @@
 }
 .agenda-month-picker {
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.agenda-visible-month {
+  font-size: 13px;
+  text-transform: capitalize;
 }
 .agenda-month-caption {
   display: block;
@@ -535,8 +542,8 @@
 }
 .agenda-month-grid button:focus-visible,
 .agenda-calendar-toggle:focus-visible {
-  outline: 3px solid #a779ef;
-  outline-offset: 3px;
+  outline: none;
+  text-decoration: underline;
 }
 @media (max-width: 400px) {
   .agenda-calendar-controls {
@@ -597,8 +604,8 @@
   opacity: 1;
 }
 .agenda-page .agenda-month-grid .is-in-range.is-selected {
-  outline: 2px solid #7c3aed;
-  outline-offset: -4px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .agenda-page .agenda-month-grid .is-in-range :is(span, small),
 :root[data-theme="dark"] .agenda-page .agenda-month-grid .is-in-range :is(span, small) {
@@ -699,7 +706,7 @@
 }
 .agenda-dashboard {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 14px;
 }
@@ -743,7 +750,7 @@
 }
 @media (max-width: 1100px) {
   .agenda-dashboard {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -756,7 +763,7 @@
   box-shadow: 0 4px 0 #cabb9f;
 }
 .agenda-page .agenda-calendar-toggle[aria-expanded="true"] {
-  outline: 2px solid #7c3aed;
+  outline: none;
   outline-offset: 3px;
 }
 .agenda-page .agenda-dashboard .secondary-button {
@@ -844,8 +851,7 @@
   touch-action: manipulation;
 }
 .agenda-bars:focus-visible {
-  outline: 2px solid #a779ef;
-  outline-offset: 4px;
+  text-decoration: underline;
 }
 .agenda-bar-column.is-inspected .agenda-bar-track > span {
   box-shadow: inset 0 0 0 2px #38a4ad;
@@ -936,6 +942,59 @@
   gap: 8px;
   font-size: 10px;
 }
+.agenda-focus-modes {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+.app-shell .agenda-page .agenda-focus-modes button {
+  min-height: 44px;
+  font-size: 12px;
+}
+.app-shell .agenda-page .agenda-focus-modes button[aria-pressed="true"] {
+  background:
+    linear-gradient(135deg, #ffe88d 10px, transparent 10px),
+    linear-gradient(315deg, #e4ae13 10px, transparent 10px), #facc15;
+  color: #292432;
+  border-color: #c39a21;
+  box-shadow: 0 4px 0 #b28b24;
+}
+.agenda-charts {
+  animation: agenda-chart-change 220ms ease-out;
+}
+.agenda-bar-track > span {
+  transform-origin: bottom;
+  animation: agenda-bar-grow 260ms ease-out;
+}
+.agenda-donut {
+  animation: agenda-chart-change 280ms ease-out;
+}
+@keyframes agenda-chart-change {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes agenda-bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-charts,
+  .agenda-bar-track > span,
+  .agenda-donut {
+    animation: none;
+  }
+}
 .app-shell .agenda-page .agenda-chart-legend button.agenda-legend-inspect {
   display: grid;
   grid-template-columns: 8px 1fr;
@@ -982,7 +1041,7 @@
     gap: 10px;
   }
   .agenda-dashboard {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 5px;
   }
   .agenda-page .agenda-dashboard .secondary-button {

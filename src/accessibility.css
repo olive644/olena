@@ -9,8 +9,10 @@
 :root[data-highlight-selections="true"] [aria-pressed="true"],
 :root[data-highlight-selections="true"] [aria-selected="true"],
 :root[data-highlight-selections="true"] input:checked {
-  outline: 3px solid var(--text, #292432);
-  outline-offset: 2px;
+  text-decoration: underline;
+  text-decoration-color: #facc15;
+  text-underline-offset: 4px;
+  filter: drop-shadow(0 3px 0 #facc15);
 }
 :root[data-reduce-motion="true"] .bingo-ball-reaction {
   animation: none !important;

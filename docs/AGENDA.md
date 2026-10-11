@@ -69,6 +69,15 @@ O contador em andamento continua local ao dispositivo, como já era no Foco.
 
 ## Verificação
 
+O calendário permanece visível e o ícone de papel abre somente o seletor de mês.
+Gráficos filtram o dia selecionado ou o intervalo, incluindo dias com zero registros.
+Praticar recebe `practiceActivities` opcional no workspace 7. Cada atividade contém
+ID, identificação/nome da ilha, data de conclusão, respostas e acertos. Novas ilhas
+devem despachar `practice/recorded` após avaliação confirmada, com ID estável para
+retries. Não inventar duração nem converter progresso acumulado sem data em diário.
+Leitores anteriores aceitam o campo extra e o merge trata ausência como coleção
+desconhecida, não como exclusão; rollback não altera os dados existentes.
+
 - `npx vitest run src/domain/agenda.test.ts src/domain/focus-session.test.ts src/components/helena-chat.test.tsx`
 - `npx playwright test e2e/agenda.spec.ts`
 - `npm run verify`

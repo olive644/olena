@@ -1,7 +1,6 @@
 import { dateForKey, shiftDate } from "./agenda";
 import { type AgendaRange } from "./agenda-history";
 import { toDateKey, type FocusSession, type WorkspaceState } from "./workspace";
-import { MATH_COURSES, type MathCourseId, type MathProgress } from "../data/math-courses";
 
 export type AgendaCategory = "timer" | "notes" | "pomodoro" | "islands";
 export type ChartItem = { label: string; value: number };
@@ -9,7 +8,6 @@ export function agendaDashboard(
   workspace: WorkspaceState,
   range: AgendaRange,
   category: AgendaCategory,
-  progress: Partial<Record<MathCourseId, MathProgress>> = {},
   sessions: FocusSession[] = workspace.focusSessions,
 ) {
   const inside = (date: string) => date >= range.start && date <= range.end;
@@ -22,24 +20,6 @@ export function agendaDashboard(
   const legacy = valid.filter(
     (session) => !session.mode && inside(toDateKey(new Date(session.completedAt))),
   ).length;
-  if (category === "islands") {
-    const bars = MATH_COURSES.map((course) => ({
-      label: course.subject,
-      value: progress[course.id]?.correct ?? 0,
-    }));
-    return {
-      bars,
-      pie: [
-        ...bars.slice(0, 4),
-        { label: "Outras ilhas", value: bars.slice(4).reduce((sum, item) => sum + item.value, 0) },
-      ],
-      unit: "acertos",
-      barTitle: "Acertos por ilha",
-      pieTitle: "Distribuição entre ilhas",
-      note: "Progresso acumulado das ilhas, sem filtro de datas.",
-      legacy: 0,
-    };
-  }
   const daily = new Map<string, number>();
   const subjects = new Map<string, number>();
   const record = (date: string, subjectId: string, amount: number) => {
@@ -49,7 +29,17 @@ export function agendaDashboard(
       workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? "Sem matéria";
     subjects.set(label, (subjects.get(label) ?? 0) + amount);
   };
-  if (category === "notes") {
+  if (category === "islands") {
+    for (const activity of workspace.practiceActivities ?? []) {
+      const date = toDateKey(new Date(activity.completedAt));
+      if (!inside(date)) continue;
+      daily.set(date, (daily.get(date) ?? 0) + activity.answers);
+      subjects.set(
+        activity.islandName,
+        (subjects.get(activity.islandName) ?? 0) + activity.answers,
+      );
+    }
+  } else if (category === "notes") {
     for (const notebook of workspace.notebooks) {
       if (notebook.kind === "folder" || notebook.kind === "collection") continue;
       const date = new Date(notebook.createdAt);
@@ -90,13 +80,20 @@ export function agendaDashboard(
   return {
     bars,
     pie,
-    unit: category === "notes" ? "cadernos" : "min",
-    barTitle: category === "notes" ? "Cadernos criados" : "Minutos por período",
-    pieTitle: "Por matéria",
-    note:
+    unit: category === "notes" ? "cadernos" : category === "islands" ? "respostas" : "min",
+    barTitle:
       category === "notes"
-        ? "Criação de cadernos no intervalo, não tempo de escrita."
-        : "Sessões com modalidade registrada no intervalo.",
-    legacy: category === "notes" ? 0 : legacy,
+        ? "Cadernos criados"
+        : category === "islands"
+          ? "Respostas por período"
+          : "Minutos por período",
+    pieTitle: category === "islands" ? "Por ilha" : "Por matéria",
+    note:
+      category === "islands"
+        ? "Atividades registradas por dia. Progresso antigo sem data não entra no filtro."
+        : category === "notes"
+          ? "Criação de cadernos no intervalo, não tempo de escrita."
+          : "Sessões com modalidade registrada no intervalo.",
+    legacy: category === "notes" || category === "islands" ? 0 : legacy,
   };
 }

@@ -170,6 +170,7 @@ export type WorkspaceState = {
   notebooks: StudyNotebook[];
   notes: StudyNote[];
   focusSessions: FocusSession[];
+  practiceActivities?: PracticeActivity[];
   materials: StudyMaterial[];
   flashcards: Flashcard[];
   goals: StudyGoal[];
@@ -180,7 +181,17 @@ export type WorkspaceState = {
   studyPreferences: StudyPreferences;
 };
 
+export type PracticeActivity = {
+  id: string;
+  islandId: string;
+  islandName: string;
+  completedAt: string;
+  answers: number;
+  correct: number;
+};
+
 export type WorkspaceAction =
+  | { type: "practice/recorded"; activity: PracticeActivity }
   | { type: "workspace/replaced"; workspace: WorkspaceState }
   | { type: "subject/added"; id?: string; name: string; color: string }
   | { type: "notebook/subject-linked"; id: string; subjectId: string }
@@ -799,6 +810,23 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             : note,
         ),
       };
+    case "practice/recorded": {
+      const activity = action.activity;
+      if (
+        !activity.id ||
+        !activity.islandId ||
+        !activity.islandName ||
+        !Number.isFinite(new Date(activity.completedAt).getTime()) ||
+        !Number.isSafeInteger(activity.answers) ||
+        activity.answers <= 0 ||
+        !Number.isSafeInteger(activity.correct) ||
+        activity.correct < 0 ||
+        activity.correct > activity.answers ||
+        state.practiceActivities?.some((item) => item.id === activity.id)
+      )
+        return state;
+      return { ...state, practiceActivities: [...(state.practiceActivities ?? []), activity] };
+    }
     case "focus/recorded":
       return {
         ...state,

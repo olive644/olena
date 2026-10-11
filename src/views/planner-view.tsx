@@ -86,7 +86,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const [now, setNow] = useState(() => new Date());
   const today = toDateKey(now);
   const [selected, setSelected] = useState(today);
-  const [calendarOpen, setCalendarOpen] = useState(false);
   const [range, setRange] = useState<AgendaRange | null>(null);
   const [intervalMode, setIntervalMode] = useState(false);
   const [intervalStart, setIntervalStart] = useState<string | null>(null);
@@ -114,10 +113,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     }
   }, [draft]);
   const month = monthDates(selected);
-  const monthRange = {
-    start: `${selected.slice(0, 7)}-01`,
-    end: month.filter((date) => date.slice(0, 7) === selected.slice(0, 7)).at(-1)!,
-  };
   const dates = month.slice(35).some((date) => date.slice(0, 7) === selected.slice(0, 7))
     ? month
     : month.slice(0, 35);
@@ -382,31 +377,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       <PageHeader />
       <header className="agenda-heading">
         <h1 className="agenda-accessible-title">Minha agenda</h1>
-        <button
-          type="button"
-          className="secondary-button agenda-calendar-toggle"
-          aria-label="Calendário"
-          aria-expanded={calendarOpen}
-          aria-controls="agenda-calendar"
-          onClick={() => setCalendarOpen((open) => !open)}
-        >
-          <svg
-            viewBox="0 0 48 48"
-            width="34"
-            height="34"
-            aria-hidden="true"
-            data-icon="agenda-calendar"
-          >
-            <path fill="#17131d" d="M7 12h34v29l-5 4H7Z" />
-            <path fill="#292432" d="M5 9h36v29l-5 4H5Z" />
-            <path fill="#51465d" d="M5 9h36l-5 6H5Z" />
-            <path fill="#fff9ef" d="M9 20h28v15l-4 3H9Z" />
-            <path fill="#d8cdb9" d="m33 38 4-3h-4Z" />
-            <path fill="#facc15" d="M12 4h5v11h-5Zm18 0h5v11h-5Z" />
-            <path fill="#292432" d="M13 23h5v4h-5Zm9 0h5v4h-5Zm-9 8h5v4h-5Z" />
-            <path fill="#7c3aed" d="M22 30h6v6h-6Z" />
-          </svg>
-        </button>
         <button ref={addButton} type="button" className="primary-button" onClick={() => create()}>
           <PaperActionIcon name="plus" /> Adicionar
         </button>
@@ -414,7 +384,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       <p className="agenda-notice" role="status">
         {notice}
       </p>
-      {calendarOpen && (
+      {
         <section
           id="agenda-calendar"
           className="agenda-month module-panel"
@@ -576,15 +546,15 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             })}
           </div>
         </section>
-      )}
-      {calendarOpen && (
+      }
+      {
         <AgendaStudyHistory
           history={history}
           {...(onNavigate ? { onNavigate } : {})}
           workspace={workspace}
-          range={range ?? monthRange}
+          range={range ?? { start: selected, end: selected }}
         />
-      )}
+      }
       <div className="agenda-layout">
         <div>
           <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
