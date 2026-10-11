@@ -1077,6 +1077,11 @@ StudyNotebook.kind admite note. Uma Note possui uma StudyNote de texto em pageId
 
 # Aprendizado candidato agendado (2026-10-10)
 
+Disparo manual em branch confiável permite validar o treinamento antes da
+mesclagem. Renovação conserva pesos sem retreinamento com corpus inalterado.
+Auditoria do ambiente é obrigatória; inclui checagem OSV da versão base do
+Torch CPU, que o pip-audit não resolve pelo sufixo local.
+
 Workflow `olena-learning.yml`: POST protegido, até dois exemplos públicos/dia,
 CPU LoRA rank 4 com base fixa, avaliação smoke e artefato pequeno por sete dias.
 `gh workflow run olena-learning.yml` dispara manualmente respeitando as quotas.

@@ -2291,6 +2291,11 @@ duas pequenas divisões, mantendo todo o restante da composição.
 
 # Ativação do aprendizado candidato (2026-10-10)
 
+Primeira geração real salvou um exemplo elegível. Auditoria bloqueou o treino
+por pip 24.0 e setuptools 78.1.0 do runner, antes de carregar pesos. Correção
+atualiza o ambiente, sem ignorar vulnerabilidades, e permite prova CPU por
+disparo manual em branch confiável. Nenhum candidato foi promovido ao chat.
+
 Geração diária protegida de até dois exemplos públicos, corpus inicial de 40
 itens, armazenamento privado Firebase e treinamento LoRA CPU no GitHub Actions.
 Proprietário confirmou Workers Free. Sem conversas dos alunos, sem promoção

@@ -65,6 +65,11 @@ e sua política de uso aceitável, não são permissivos sem condições.
 - Currículo, quantidade, modelo, origem e revisão base são fixos, sem remote code.
 - Artefatos são públicos: contêm apenas pesos candidatos e metadados sintéticos.
 - O job não tem permissão de escrita no código, nem credenciais de alunos.
+- Disparo manual exige permissão de escrita no GitHub e pode testar branches
+  confiáveis; nunca roda automaticamente em pull requests ou forks. Agenda usa main.
+- Ambiente de treinamento atualiza pip/setuptools antes da auditoria. Build CPU
+  do Torch é verificado também pelo OSV com versão base, pois pip-audit não
+  reconhece o sufixo local `+cpu` do índice oficial.
 - Checagem aritmética limitada pode deixar erros textuais passarem; não promove.
 
 ## Configuração privada
@@ -137,10 +142,11 @@ para prometer qualidade geral ou substituir o professor.
    executada ou validada com GPU nesta entrega. Não instala dependências no app.
    O resultado é um adaptador LoRA, que ainda requer o modelo base.
 
-Não existe job periódico ativado, treinamento online durante conversas ou promoção
-automática. Um agendamento futuro deve ter orçamento de chamadas, dataset maior,
-revisão, retenção definida e máquina disponível para treinamento. Nunca treinar
-diretamente em mensagens privadas por assumir que retirar o nome anonimiza tudo.
+Este fluxo manual de dados revisados permanece separado do job diário experimental
+descrito acima. Não há treinamento durante conversas nem promoção automática.
+Expandir o job exige orçamento de chamadas, currículo, revisão, retenção definida
+e máquina disponível para treinamento. Nunca treinar diretamente em mensagens
+privadas por assumir que retirar o nome anonimiza tudo.
 
 ## Avaliação e independência
 
