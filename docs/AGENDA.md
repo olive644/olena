@@ -69,11 +69,21 @@ O contador em andamento continua local ao dispositivo, como já era no Foco.
 
 ## Verificação
 
+Adicionar e clique/toque/Enter em um dia abrem a folha contextual com ações para
+tarefa, estudo e compromisso. O calendário permanece acessível para filtros e
+intervalos. O formulário preenche a data selecionada, aceita horário/duração e
+persiste nas mesmas coleções sincronizadas do workspace. Voltar não altera dados.
+Feriados nacionais têm marcador e nome do dia. Datas móveis usam o Computus;
+Carnaval/Corpus Christi são pontos facultativos, não feriados nacionais nesta lista.
+Feriados estaduais/municipais não são inferidos sem localização.
+
 O calendário permanece visível e o ícone de papel abre somente o seletor de mês.
 Gráficos filtram o dia selecionado ou o intervalo, incluindo dias com zero registros.
 Em Praticar, dias/intervalos sem respostas positivas não exibem gráficos nem
 prévias. Progresso acumulado sem data fica somente em Matemática. A prévia compacta
-mostra respostas/acertos do filtro, com setas roxas, teclado e arraste. Flores e
+tem arte centralizada de 80px. Sem registros, uma mensagem explica a ausência de
+atividade datada. Textos de sequência e instrução visual da ilha foram removidos.
+A legenda mostra respostas/acertos do filtro, com setas roxas, teclado e arraste. Flores e
 tomates semanais continuam visíveis no Foco mesmo sem minutos, como exceção visual.
 Praticar recebe `practiceActivities` opcional no workspace 7. Cada atividade contém
 ID, identificação/nome da ilha, data de conclusão, respostas e acertos. Novas ilhas

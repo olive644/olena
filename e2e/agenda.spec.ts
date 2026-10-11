@@ -14,6 +14,95 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ json: { connected: false } }),
   );
 });
+
+test("day planning saves hours and marks Brazilian holidays in both themes", async ({
+  page,
+}, info) => {
+  await page.goto("/planejador");
+  await page.locator('button[data-date="2026-10-12"]').click();
+  await expect(
+    page.getByText("Feriado nacional: Nossa Senhora Aparecida", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Criar compromisso", exact: true }).click();
+  const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+  await expect(form.getByLabel("Data", { exact: true })).toHaveValue("2026-10-12");
+  await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisão com colega");
+  await form.getByLabel("Horário", { exact: true }).fill("14:30");
+  await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.getByRole("button", { name: "Voltar ao calendário", exact: true }).click();
+  await expect(page.locator('button[data-date="2026-10-12"]')).toHaveAccessibleName(
+    /1 itens.*feriado nacional: Nossa Senhora Aparecida/,
+  );
+  await page.reload();
+  await page.locator('button[data-date="2026-10-12"]').click();
+  await expect(page.getByRole("button", { name: "Editar Revisão com colega" })).toBeVisible();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page
+      .locator(".agenda-day--open")
+      .screenshot({ path: info.outputPath(`day-${theme}.png`), animations: "disabled" });
+  }
+  await page.getByRole("button", { name: "Editar Revisão com colega" }).click();
+  await expect(page.getByLabel("Horário", { exact: true })).toHaveValue("14:30");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("update bell shows red unread counts, keyboard controls and synced reading in both themes", async ({
+  page,
+}, info) => {
+  let feed = [
+    { id: 408, version: "beta.408", title: "Agenda publicada", date: "2026-10-11T12:00:00Z" },
+  ];
+  await page.route("**/system-updates.json", (route) => route.fulfill({ json: feed }));
+  await page.goto("/planejador");
+  const bell = page.locator(".system-updates-trigger");
+  await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");
+  const appearance = page.locator(".page-header__theme");
+  const bellBox = await bell.boundingBox(),
+    themeBox = await appearance.boundingBox();
+  expect(bellBox!.x + bellBox!.width).toBeLessThanOrEqual(themeBox!.x);
+  const panel = page.getByRole("region", { name: "Notificações de atualização" });
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await bell.focus();
+    await page.keyboard.press("Enter");
+    await expect(panel).toBeVisible();
+    await expect(panel.getByText(/Versão beta.408/)).toBeVisible();
+    await expect(page.locator(".system-update-badge")).toHaveCSS(
+      "background-color",
+      "rgb(201, 39, 56)",
+    );
+    await panel.screenshot({
+      path: info.outputPath(`updates-${theme}.png`),
+      animations: "disabled",
+    });
+    await page.keyboard.press("Escape");
+    await expect(panel).not.toBeVisible();
+  }
+  await bell.click();
+  await panel.getByRole("button", { name: "Marcar como lidas" }).click();
+  await expect(page.locator(".system-update-badge")).toHaveCount(0);
+  feed = [
+    ...feed,
+    { id: 409, version: "beta.409", title: "Novidade publicada", date: "2026-10-12T12:00:00Z" },
+  ];
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");
+  await page.evaluate(() => {
+    localStorage.setItem("helena.systemUpdates.read.v1", "[408,409]");
+    window.dispatchEvent(new Event("helena:synced-storage-applied"));
+  });
+  await expect(page.locator(".system-update-badge")).toHaveCount(0);
+  await page.reload();
+  await expect(bell).toHaveAccessibleName("Atualizações do sistema, 0 não lidas");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
 test("agenda displays compact filtered islands and Pomodoro weeks in both themes", async ({
   page,
 }, info) => {
@@ -127,6 +216,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   await page.goto("/planejador");
   await expect(page.getByRole("button", { name: "Escolher mês", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisar frações");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
@@ -181,6 +271,7 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   await calendar.getByRole("button", { name: "segunda-feira, 15 de fevereiro, 0 itens" }).click();
   await expect(page.locator("#agenda-day-title")).toHaveText("segunda-feira, 15 de fevereiro");
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await expect(form.getByLabel("Prazo", { exact: true })).toHaveValue("2027-02-15");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Plano do dia escolhido");
@@ -249,6 +340,7 @@ test("weekly study opens focus without completing, records real minutes and retu
 }) => {
   await page.goto("/planejador");
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.getByRole("button", { name: "Reservar estudo", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByLabel("Tipo", { exact: true }).selectOption("study");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Estudar frações");

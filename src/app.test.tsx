@@ -214,6 +214,7 @@ describe("App", () => {
     const add = await screen.findByRole("button", { name: "Adicionar" });
     expect(add.querySelector('[data-paper-icon="plus"]')).toBeTruthy();
     fireEvent.click(add);
+    fireEvent.click(screen.getByRole("button", { name: "Criar tarefa" }));
     fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
     fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Revisar phrasal verbs" },
@@ -382,6 +383,7 @@ describe("App", () => {
     const firstRender = render(<App />);
     navigate("Agenda");
     fireEvent.click(await screen.findByRole("button", { name: "Adicionar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar tarefa" }));
     fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
     fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Preparar apresentação" },

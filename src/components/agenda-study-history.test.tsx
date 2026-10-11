@@ -112,6 +112,9 @@ it("hides undated math progress and shows only practice from the selected dates"
   rerender(<AgendaStudyHistory {...props} range={{ start: "2026-10-08", end: "2026-10-08" }} />);
   expect(document.querySelector(".agenda-island-progress")).toBeNull();
   expect(document.querySelector(".agenda-charts")).toBeNull();
+  expect(screen.getByText(/Nenhuma resposta registrada nas ilhas neste período/)).toBeTruthy();
+  expect(screen.queryByText(/Melhor sequência no período/)).toBeNull();
+  expect(screen.queryByText(/Use as setas, arraste a ilha/)).toBeNull();
 });
 
 it("keeps the Pomodoro week and timer garden visible on empty dates", () => {

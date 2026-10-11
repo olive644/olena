@@ -907,10 +907,24 @@
   display: grid;
   gap: 8px;
 }
+.agenda-history:has(.agenda-island-progress) .agenda-charts {
+  row-gap: 8px;
+}
+.agenda-history:has(.agenda-island-progress) .agenda-chart-inspection {
+  min-height: 24px;
+  padding-block: 2px;
+}
+.agenda-history:has(.agenda-island-progress) .agenda-study-details {
+  margin-top: 8px;
+}
 .agenda-island-carousel {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  gap: 8px;
 }
 .agenda-island-carousel .focus-mode-arrow {
   position: static;
@@ -930,27 +944,77 @@
   cursor: grab;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(60px, 110px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
-  max-width: 440px;
+  gap: 6px;
+  max-width: 250px;
   width: 100%;
   justify-self: center;
+}
+.agenda-data-empty {
+  margin: 12px 0 0;
+  color: var(--agenda-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+.agenda-day-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block: 14px;
+}
+.agenda-day-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.agenda-day-actions :is(.navigation-icon, .paper-action-icon) {
+  width: 24px;
+  height: 24px;
+}
+.agenda-day--open {
+  scroll-margin-top: 80px;
+  animation: agenda-chart-change 220ms ease-out;
+}
+.agenda-holiday-mark {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  background: #facc15;
+  box-shadow: 1px 1px 0 #b99100;
+  transform: rotate(45deg);
+}
+.agenda-holiday-caption,
+.agenda-holiday-legend {
+  color: var(--agenda-muted);
+  font-size: 11px;
+}
+.agenda-holiday-legend {
+  display: block;
+  margin-top: 10px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-day--open {
+    animation: none;
+  }
 }
 .agenda-island-drag:active {
   cursor: grabbing;
 }
 .agenda-island-drag img {
-  width: 100%;
+  width: min(100%, 80px);
+  justify-self: center;
   height: auto;
   user-select: none;
   transition: transform 160ms ease;
   animation: agenda-chart-change 220ms ease-out;
 }
 .agenda-island-caption {
-  text-align: left;
+  text-align: center;
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 .agenda-island-caption p {
   color: var(--agenda-muted);

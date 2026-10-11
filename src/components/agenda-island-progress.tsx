@@ -102,7 +102,6 @@ export function AgendaIslandProgress({ activities }: { activities: PracticeActiv
           <FocusPaperArrow />
         </button>
       </div>
-      <small>Use as setas, arraste a ilha ou use o teclado para explorar as prévias.</small>
     </section>
   );
 }

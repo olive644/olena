@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useContext,
   useEffect,
   useRef,
@@ -11,6 +13,9 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { useStoredProfile, type StoredProfile } from "../hooks/use-stored-profile";
 import { AppearanceToggle } from "./appearance-picker";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
+const SystemUpdates = lazy(() =>
+  import("./system-updates").then((module) => ({ default: module.SystemUpdates })),
+);
 
 export type AppView =
   | "today"
@@ -393,6 +398,9 @@ export function PageHeader() {
         <span aria-hidden="true" />
       </button>
       <div className="page-header__actions">
+        <Suspense fallback={null}>
+          <SystemUpdates />
+        </Suspense>
         <div className="page-header__theme">
           <AppearanceToggle />
         </div>

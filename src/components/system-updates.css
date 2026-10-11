@@ -1,0 +1,60 @@
+.system-updates-trigger {
+  position: relative;
+}
+:root .system-updates-trigger {
+  overflow: visible;
+}
+.system-bell {
+  width: 24px;
+  height: 24px;
+}
+.system-update-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 2px 4px;
+  background: #c92738;
+  color: #fff9ef;
+  border-radius: 5px 9px 6px 8px;
+  box-shadow: 0 2px 0 #8e1729;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+.system-update-sheet {
+  position: fixed;
+  top: 76px;
+  right: 16px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(100dvh - 170px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.system-update-sheet article {
+  padding: 12px 0;
+  border-top: 1px solid var(--line-strong);
+}
+.system-update-sheet article > strong,
+.system-update-sheet article > small {
+  display: block;
+}
+.system-update-sheet p {
+  margin: 7px 0;
+  font-size: 12px;
+}
+.system-update-sheet small {
+  font-size: 11px;
+}
+.system-update-sheet .is-unread > strong {
+  color: #51259b;
+}
+:root[data-theme="dark"] .system-update-sheet {
+  background: #292432;
+  color: #fff9ef;
+  border-color: #51465d;
+}
+:root[data-theme="dark"] .system-update-sheet .is-unread > strong {
+  color: #ffe88d;
+}

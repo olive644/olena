@@ -1,12 +1,23 @@
 # Auditoria do estado atual
 
+## Planejamento por dia e notificações beta (2026-10-11)
+
+- Cada dia abre a folha de planejamento sem bloquear o calendário ou o filtro. Adicionar abre as ações Tarefa, Estudo e Compromisso. Data e horário usam o formulário/reducer existentes; salvar marca o dia, voltar conserva a seleção e devolve foco ao calendário.
+- Agenda não cria armazenamento paralelo: compromissos e tarefas permanecem nas coleções do workspace, com o merge por ID já existente e persistência entre recargas. Nenhuma mudança no esquema do workspace.
+- Feriados nacionais recebem marcador amarelo e nome na folha do dia, incluindo a Paixão de Cristo móvel. Fonte: [Portaria MGI 11.460/2025, calendário 2026](https://legis.sigepe.gov.br/sigepe-bgp-ws-legis/legis-service/download/?id=0026440285-ALPDF/2025). Carnaval e Corpus Christi não são rotulados como feriados nacionais; feriados locais dependem de localização e não estão incluídos.
+- Prévias de ilha usam arte de 80px centralizada e legenda curta, sem texto de sequência ou instrução visual. Sem dados, cada categoria explica a ausência de registros no filtro, sem gráficos fictícios. Semanas de flores/tomates continuam como exceção solicitada.
+- Sino antes da aparência, apenas ícone e badge vermelho. Feed gerado no build Vercel por PRs mescladas/publicadas; versões beta identificadas pelo número da PR. Não anuncia PR em rascunho. GitHub é consultado somente no build; navegador acessa manifesto do próprio app.
+- Leitura de notificações sincronizada por `helena.systemUpdates.read.v1`, união de IDs no login e merge concorrente; aplica mudanças remotas e limpa dados na troca/saída da conta. Ver docs/SYSTEM_UPDATES.md para limites, fallback e rollback.
+- Build medido: entrada 279,7 KiB e total 1242,0 KiB. Novas funções adicionam 6,3 KiB, principalmente sob demanda. Orçamento total normal 1244 KiB; orçamento inicial 280 KiB e tetos absolutos intactos. Sem dependências novas.
+- Validação: 1395 testes em 227 arquivos, 20 cenários E2E desktop/mobile Edge nos dois temas e seis cenários revalidados após os ajustes finais. Teste de publicação no build também passou, além do merge/leitura de notificações e preservação de horários de dois dispositivos. Mobile local é Chromium com viewport de iPhone; WebKit nativo fica para o CI.
+
 ## Indicadores reais na Agenda (2026-10-11)
 
 - Gráficos, valores e inspeção vazios ou zerados não são exibidos. Inspeção em itálico, sem faixa amarela.
 - Praticar exibe apenas `practiceActivities` datadas no dia ou intervalo selecionado. Sem respostas positivas, não aparecem gráficos, prévias nem indicadores. O progresso antigo sem data permanece salvo em Matemática, fora da Agenda.
 - Pomodoro reutiliza os dias de ciclos concluídos, filtrados pelo período e pela semana da data final. Cronômetro mostra dias de foco e sequência diária positiva. Sem minutos, as semanas continuam visíveis: flores murchas/vivas e tomates apagados/vivos.
-- Matemática mostra a melhor sequência de acertos por rodada nos registros datados do período, nunca interpreta pontuação como streak diário.
-- Um único par de gráficos mostra respostas por período e distribuição por ilha. A prévia compacta combina arte de até 110px e legenda com respostas/acertos filtrados, sem recordes acumulados ou gráficos duplicados. Mantém seis ilhas, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Matemática usa registros datados do período, nunca interpreta pontuação como streak diário. Texto de melhor sequência removido a pedido do proprietário.
+- Um único par de gráficos mostra respostas por período e distribuição por ilha. A prévia compacta combina arte de 80px centralizada e legenda com respostas/acertos filtrados, sem recordes acumulados ou gráficos duplicados. Mantém seis ilhas, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
 - Bingo presencial usa papel creme e texto grafite nos dois temas, mantendo o acabamento amarelo e a opção de cartelas físicas.
 - Ajuste validado com `npm run verify`, 16 testes unitários focados e 20 cenários E2E em Edge desktop/mobile, claro/escuro. Prévias respeitam filtro diário/intervalo e altura menor que 180px; zeros e progresso legado sem data não produzem conteúdo. A validação móvel local usa Chromium com viewport de iPhone, não WebKit nativo.
 - Bundle medido: entrada 278,6 KiB e total 1236,5 KiB, aumento de 6,7 KiB nas rotas sob demanda, sem dependência nova. Orçamento total 1240 KiB, teto absoluto e orçamento inicial preservados.

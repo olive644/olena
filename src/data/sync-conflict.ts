@@ -1,4 +1,5 @@
 import { mergeMathRewards } from "./math-rewards-sync";
+import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "./system-updates";
 export type SyncedItems = Record<string, string>;
 
 export type SyncedMergeResult = {
@@ -27,6 +28,10 @@ export function mergeSyncedItems(
     const baseValue = valueAt(base, key);
     const localValue = valueAt(local, key);
     const remoteValue = valueAt(remote, key);
+    if (key === SYSTEM_UPDATES_READ_KEY) {
+      items[key] = mergeReadUpdates(baseValue, localValue, remoteValue);
+      continue;
+    }
     const localChanged = localValue !== baseValue;
     const remoteChanged = remoteValue !== baseValue;
     if (

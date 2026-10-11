@@ -18,6 +18,7 @@ import { NavigationIcon } from "../components/navigation-icon";
 import { AgendaMonthPicker } from "../components/agenda-month-picker";
 import { AgendaStudyHistory } from "../components/agenda-study-history";
 import { PaperDigits } from "../components/paper-digits";
+import { brazilianHoliday } from "../domain/brazilian-holidays";
 import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
 import {
   agendaPrompt,
@@ -99,8 +100,22 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const history = useMemo(() => focusHistory(workspace.focusSessions), [workspace.focusSessions]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [notice, setNotice] = useState("");
+  const [dayOpen, setDayOpen] = useState(false);
+  const daySheet = useRef<HTMLElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
+  const formTrigger = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (dayOpen) {
+      daySheet.current?.scrollIntoView({
+        block: "nearest",
+        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+      daySheet.current?.querySelector<HTMLHeadingElement>("h2")?.focus({ preventScroll: true });
+    }
+  }, [dayOpen, selected]);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
     return () => window.clearInterval(timer);
@@ -109,7 +124,8 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     if (draft) dialog.current?.showModal();
     else if (dialog.current?.open) {
       dialog.current.close();
-      addButton.current?.focus();
+      if (formTrigger.current?.isConnected) formTrigger.current.focus();
+      else addButton.current?.focus();
     }
   }, [draft]);
   const month = monthDates(selected);
@@ -126,6 +142,13 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     setRange(null);
     setIntervalStart(null);
     setIntervalMode(false);
+    setDayOpen(false);
+  }
+  function backToCalendar() {
+    setDayOpen(false);
+    const button = document.querySelector<HTMLButtonElement>(`button[data-date="${selected}"]`);
+    button?.focus();
+    button?.scrollIntoView({ block: "center", behavior: "smooth" });
   }
   function chooseDate(date: string, extend = false) {
     if (extend) setRange(orderedRange(range?.start ?? selected, date));
@@ -142,6 +165,8 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     setSelected(date);
   }
   function create(kind: Kind = "task") {
+    formTrigger.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft({
       kind,
       title: "",
@@ -154,6 +179,8 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     });
   }
   function edit(item: StudyEvent | StudyTask) {
+    formTrigger.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft(
       "dueDate" in item
         ? {
@@ -372,12 +399,74 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       </article>
     );
   }
+  const dayPanel = (
+    <section
+      ref={daySheet}
+      tabIndex={-1}
+      className={`module-panel agenda-day${dayOpen ? " agenda-day--open" : ""}`}
+      aria-labelledby="agenda-day-title"
+    >
+      <div className="module-heading">
+        <h2 id="agenda-day-title" tabIndex={-1}>
+          <PaperCalendarText value={dayLabel(selected, true)} />
+        </h2>
+        {dayOpen && (
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Voltar ao calendário"
+            onClick={backToCalendar}
+          >
+            <AgendaCloseIcon />
+          </button>
+        )}
+      </div>
+      {brazilianHoliday(selected) && (
+        <p className="agenda-holiday-caption">Feriado nacional: {brazilianHoliday(selected)}</p>
+      )}
+      <div className="agenda-day-actions" role="group" aria-label="Planejar este dia">
+        <button type="button" className="secondary-button" onClick={() => create("task")}>
+          <PaperActionIcon name="plus" /> Criar tarefa
+        </button>
+        <button type="button" className="primary-button" onClick={() => create("study")}>
+          <NavigationIcon name="focus" paperVariant="escuro" /> Reservar estudo
+        </button>
+        <button type="button" className="secondary-button" onClick={() => create("appointment")}>
+          <NavigationIcon name="planner" paperVariant="escuro" /> Criar compromisso
+        </button>
+      </div>
+      {scheduled.length > 0 && (
+        <>
+          <h3 className="agenda-section-title">Com horário</h3>
+          {scheduled.map((event) => eventCard(event))}
+        </>
+      )}
+      {tasks.length > 0 && (
+        <>
+          <h3 className="agenda-section-title">No seu ritmo</h3>
+          {tasks.map(taskCard)}
+        </>
+      )}
+      {scheduled.length + tasks.length === 0 && (
+        <p className="agenda-data-empty">
+          Nenhum compromisso ou tarefa neste dia. Escolha uma ação acima para planejar.
+        </p>
+      )}
+    </section>
+  );
   return (
     <main className="main-content agenda-page" id="main-content">
       <PageHeader />
       <header className="agenda-heading">
         <h1 className="agenda-accessible-title">Minha agenda</h1>
-        <button ref={addButton} type="button" className="primary-button" onClick={() => create()}>
+        <button
+          ref={addButton}
+          type="button"
+          className="primary-button"
+          onClick={() => setDayOpen(true)}
+          aria-expanded={dayOpen}
+          aria-controls="agenda-day-title"
+        >
           <PaperActionIcon name="plus" /> Adicionar
         </button>
       </header>
@@ -402,6 +491,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               className={intervalMode ? "primary-button" : "secondary-button"}
               aria-pressed={intervalMode}
               onClick={() => {
+                setDayOpen(false);
                 setIntervalMode(!intervalMode);
                 setIntervalStart(null);
               }}
@@ -477,6 +567,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               }, 0);
               setSelected(active.end);
               setRange(active.start === active.end ? null : orderedRange(active.start, active.end));
+              setDayOpen(active.start === active.end);
               event.currentTarget.releasePointerCapture(event.pointerId);
             }}
             onPointerCancel={() => {
@@ -509,6 +600,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 eventsOn(workspace, date).length +
                 workspace.tasks.filter((task) => task.dueDate === date && !task.completed).length;
               const minutes = history.get(date)?.minutes ?? 0;
+              const holiday = brazilianHoliday(date);
               const inRange = range && date >= range.start && date <= range.end;
               return (
                 <button
@@ -516,7 +608,8 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                   key={date}
                   data-date={date}
                   className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected " : ""}${inRange ? "is-in-range " : ""}${minutes > 0 ? "has-study " : ""}${history.has(shiftDate(date, -1)) ? "study-continues-left " : ""}${history.has(shiftDate(date, 1)) ? "study-continues-right" : ""}`}
-                  aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}`}
+                  aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}${holiday ? `, feriado nacional: ${holiday}` : ""}`}
+                  title={holiday}
                   aria-pressed={date === selected}
                   aria-current={date === today ? "date" : undefined}
                   onClick={(event) => {
@@ -526,12 +619,14 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                     }
                     suppressClick.current = false;
                     chooseDate(date, event.shiftKey);
+                    setDayOpen(!event.shiftKey && !intervalMode);
                   }}
                 >
                   <span>
                     <PaperDigits value={String(dateForKey(date).getDate())} />
                   </span>
                   {minutes > 0 && <i className="agenda-study-ribbon" aria-hidden="true" />}
+                  {holiday && <i className="agenda-holiday-mark" aria-hidden="true" />}
                   {count > 0 && (
                     <small>
                       <PaperDigits value={String(count)} />
@@ -545,8 +640,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               );
             })}
           </div>
+          <small className="agenda-holiday-legend">◆ Feriado nacional brasileiro</small>
         </section>
       }
+      {dayOpen && dayPanel}
       {
         <AgendaStudyHistory
           history={history}
@@ -557,38 +654,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       }
       <div className="agenda-layout">
         <div>
-          <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
-            <div className="module-heading">
-              <h2 id="agenda-day-title">
-                <PaperCalendarText value={dayLabel(selected, true)} />
-              </h2>
-              <span>
-                <PaperDigits value={String(scheduled.length + tasks.length)} /> itens
-              </span>
-            </div>
-            {scheduled.length > 0 && (
-              <>
-                <h3 className="agenda-section-title">Com horário</h3>
-                {scheduled.map((event) => eventCard(event))}
-              </>
-            )}
-            {tasks.length > 0 && (
-              <>
-                <h3 className="agenda-section-title">No seu ritmo</h3>
-                {tasks.map(taskCard)}
-              </>
-            )}
-            {scheduled.length + tasks.length === 0 && (
-              <div className="agenda-empty">
-                <NavigationIcon name="planner" />
-                <h3>Seu dia ainda está livre.</h3>
-                <p>Reserve um estudo curto ou anote o que precisa fazer.</p>
-                <button type="button" className="secondary-button" onClick={() => create("study")}>
-                  Planejar estudo <PaperArrow />
-                </button>
-              </div>
-            )}
-          </section>
+          {!dayOpen && dayPanel}
           <details className="agenda-extra">
             <summary>Google Agenda e tarefas de aula</summary>
             <Suspense

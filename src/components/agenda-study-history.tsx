@@ -2,7 +2,7 @@ import { dateForKey } from "../domain/agenda";
 import { historySummary, focusHistory, type AgendaRange } from "../domain/agenda-history";
 import { useEffect, useState } from "react";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
-import { mathAnswerSequence, pomodoroWeek } from "../domain/agenda-insights";
+import { pomodoroWeek } from "../domain/agenda-insights";
 import { agendaDashboard, type AgendaCategory } from "../domain/agenda-dashboard";
 import { AgendaCharts } from "./agenda-charts";
 import { toDateKey, type WorkspaceState } from "../domain/workspace";
@@ -63,7 +63,6 @@ export function AgendaStudyHistory({
     history.get(key)?.sessions.some((session) => session.mode === "timer"),
   );
   const week = pomodoroWeek(category === "timer" ? timerDays : pomodoroDays, range);
-  const sequence = mathAnswerSequence(workspace.practiceActivities ?? [], range);
   const focusStats = historySummary(
     focusHistory(
       [...history.values()]
@@ -167,6 +166,15 @@ export function AgendaStudyHistory({
           </div>
         )}
         <AgendaCharts key={`${category}:${range.start}:${range.end}`} {...data} />
+        {summary.minutes === 0 && (
+          <p className="agenda-data-empty" role="status">
+            {category === "islands"
+              ? "Nenhuma resposta registrada nas ilhas neste período. O progresso antigo sem data não entra neste filtro."
+              : category === "notes"
+                ? "Nenhum caderno criado neste período. Os seus cadernos continuam na biblioteca."
+                : `Nenhuma sessão de ${category === "timer" ? "cronômetro" : "Pomodoro"} concluída neste período.`}
+          </p>
+        )}
         <div
           className="agenda-study-details"
           key={`details:${category}:${range.start}:${range.end}`}
@@ -178,12 +186,6 @@ export function AgendaStudyHistory({
             </p>
           )}
           {section === "focus" && <AgendaFocusWeek week={week} mode={focusMode} />}
-          {category === "islands" && sequence > 0 && (
-            <p>
-              Melhor sequência no período: {sequence} {sequence === 1 ? "acerto" : "acertos"}{" "}
-              consecutivos na rodada.
-            </p>
-          )}
           {category === "islands" && practice.length > 0 && (
             <AgendaIslandProgress activities={practice} />
           )}
