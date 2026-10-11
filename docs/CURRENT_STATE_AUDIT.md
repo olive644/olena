@@ -2288,3 +2288,12 @@ duas pequenas divisões, mantendo todo o restante da composição.
 - Auditoria de segurança, item 9. O cabeçalho `Permissions-Policy: camera=()` de `vercel.json` desligava a câmera para o site inteiro, o que impedia o leitor de QR code da sala (`room-qr-scanner.tsx`, único uso de `getUserMedia`) de funcionar em produção.
 - Agora é `camera=(self)`: só o próprio site pode pedir a câmera, e nenhum frame de terceiro. Microfone e geolocalização continuam negados.
 - Teste: `security-headers.test.ts` confere os três; o novo falha sem a mudança.
+
+# Ativação do aprendizado candidato (2026-10-10)
+
+Geração diária protegida de até dois exemplos públicos, corpus inicial de 40
+itens, armazenamento privado Firebase e treinamento LoRA CPU no GitHub Actions.
+Proprietário confirmou Workers Free. Sem conversas dos alunos, sem promoção
+automática e sem mudança para plano pago. Pesos só existem após job concluído;
+relatório de candidato não comprova qualidade para produção. Detalhes e ameaças
+em `docs/OLENA_LEARNING.md`. Nenhuma alteração visual ou no provedor do chat.

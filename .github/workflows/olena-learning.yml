@@ -1,0 +1,67 @@
+name: Olena learning candidate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: olena-learning-public-candidate
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    if: github.ref == 'refs/heads/main' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - name: Generate at most two public examples per day
+        env:
+          OLENA_LEARNING_SERVICE_TOKEN: ${{ secrets.OLENA_LEARNING_SERVICE_TOKEN }}
+        run: node scripts/olena-candidate-data.mjs
+      - name: Restore last candidate for bounded incremental training
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .olena-learning/previous
+          run_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=Llama-Olena-Qwen-Candidate&per_page=10" --jq '[.artifacts[] | select(.expired == false and .workflow_run.head_branch == "main")][0].workflow_run.id // empty')
+          if [ -n "$run_id" ]; then
+            gh run download "$run_id" --name Llama-Olena-Qwen-Candidate --dir .olena-learning/previous || echo "No retained adapter. Start from base."
+          fi
+      - name: Install isolated CPU training dependencies
+        run: |
+          python3 scripts/test_train_olena_candidate.py
+          python3 -m venv .olena-learning/venv
+          .olena-learning/venv/bin/pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+          .olena-learning/venv/bin/pip install transformers==5.19.0 peft==0.21.2 accelerate==1.15.0 safetensors==0.8.0
+      - name: Audit training dependencies before loading weights
+        run: |
+          .olena-learning/venv/bin/pip install pip-audit==2.10.1
+          .olena-learning/venv/bin/pip-audit --progress-spinner off
+      - name: Train and smoke-evaluate actual LoRA weights
+        id: train
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+          HF_HOME: ${{ runner.temp }}/olena-model-cache
+        run: .olena-learning/venv/bin/python scripts/train-olena-candidate.py
+      - name: Include model licenses
+        if: steps.train.outputs.artifact == 'true'
+        run: |
+          curl --fail --max-time 30 https://raw.githubusercontent.com/meta-llama/llama-models/0e0b8c519242d5833d8c11bffc1232b77ad7f301/models/llama3_3/LICENSE -o .olena-learning/candidate/LLAMA_LICENSE
+          curl --fail --max-time 30 https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct/raw/7ae557604adf67be50417f59c2c2f167def9a775/LICENSE -o .olena-learning/candidate/QWEN_LICENSE
+      - name: Keep small candidate adapter only, never base weights
+        if: steps.train.outputs.artifact == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: Llama-Olena-Qwen-Candidate
+          path: .olena-learning/candidate/
+          retention-days: 7
+          if-no-files-found: error

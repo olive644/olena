@@ -2,18 +2,10 @@ import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { resolve, join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { lessons } from "../src/ai/olena-corpus.ts";
+export { lessons };
 
 // Somente exemplos sintéticos. Nenhuma conversa ou material privado entra aqui.
-export const lessons = Array.from({ length: 40 }, (_, index) => {
-  const a = index + 3;
-  const b = (index % 9) + 2;
-  const multiply = index % 2 === 1;
-  return {
-    id: `basic-math-${index + 1}`,
-    prompt: `Explique para um aluno como resolver ${a} ${multiply ? "×" : "+"} ${b}. Dê passos curtos, sem dados pessoais.`,
-    reference: `${a} ${multiply ? "×" : "+"} ${b} = ${multiply ? a * b : a + b}`,
-  };
-});
 
 export const digest = (text) => createHash("sha256").update(text).digest("hex");
 export const draftDigest = (draft) =>
