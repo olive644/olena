@@ -6,6 +6,7 @@ import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperCloseIcon } from "../components/paper-close-icon";
 import { NavigationIcon } from "../components/navigation-icon";
+import { AgendaMonthPicker } from "../components/agenda-month-picker";
 import {
   agendaPrompt,
   dateForKey,
@@ -349,18 +350,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           aria-label="Calendário mensal"
         >
           <div className="agenda-calendar-controls">
-            <label className="field">
-              <span>Escolher mês</span>
-              <input
-                type="month"
-                aria-label="Escolher mês"
-                value={selected.slice(0, 7)}
-                onChange={(event) => {
-                  if (/^\d{4}-\d{2}$/.test(event.target.value))
-                    setSelected(`${event.target.value}-01`);
-                }}
-              />
-            </label>
+            <AgendaMonthPicker value={selected} today={today} onChange={setSelected} />
             <button type="button" className="secondary-button" onClick={() => setSelected(today)}>
               Ir para hoje
             </button>

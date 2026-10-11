@@ -2347,3 +2347,6 @@ planejamentos aparecem abaixo, inclusive no desktop. Adicionar usa a data
 selecionada; recolher não perde a seleção. Teclado, toque, temas e movimento
 reduzido preservados. Conta, Google Agenda, recorrência e Foco não mudaram.
 Prova de navegação, posicionamento e formulário: `e2e/agenda.spec.ts`.
+O menu de meses também usa papel original: `AgendaMonthPicker`, sem input nativo
+de mês. Popover com fechamento por Escape/clique fora, ano editável, 12 meses,
+seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.

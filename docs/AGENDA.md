@@ -6,6 +6,8 @@
 o mês, com seletor de mês sem setas, destaque roxo e contagens compactas. Selecionar
 uma data atualiza o planejamento logo abaixo, no computador e celular. Recolher o
 calendário preserva a data escolhida. As abas Hoje/Semana/Mês foram substituídas.
+O seletor de mês é um painel próprio com 12 botões de papel e ano editável,
+sem calendário nativo do navegador. Escape e clique fora fecham o painel.
 Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco.
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.

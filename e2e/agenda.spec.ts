@@ -67,7 +67,11 @@ test("calendar icon opens a compact date picker with the selected day's planning
   await toggle.focus();
   await page.keyboard.press("Enter");
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await calendar.getByLabel("Escolher mês").fill("2027-02");
+  await calendar.getByRole("button", { name: "Escolher mês", exact: true }).click();
+  const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
+  await picker.getByLabel("Ano", { exact: true }).fill("2027");
+  await picker.getByRole("button", { name: "fevereiro", exact: true }).click();
+  await expect(picker).not.toBeVisible();
   await calendar.getByRole("button", { name: "segunda-feira, 15 de fevereiro, 0 itens" }).click();
   await expect(page.locator("#agenda-day-title")).toHaveText("segunda-feira, 15 de fevereiro");
   await page.getByRole("button", { name: "Adicionar", exact: true }).click();
@@ -122,6 +126,62 @@ test("weekly study opens focus without completing, records real minutes and retu
     .filter({ visible: true });
   await navigation.getByRole("button", { name: "Agenda", exact: true }).click();
   await expect(page.getByText("Concluído", { exact: true })).toBeVisible();
+});
+
+test("paper month selector supports years, keyboard dismissal, themes and touch-sized months", async ({
+  page,
+}, info) => {
+  await page.goto("/planejador");
+  await page.getByRole("button", { name: "Calendário", exact: true }).click();
+  const trigger = page.getByRole("button", { name: "Escolher mês", exact: true });
+  await trigger.click();
+  const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
+  await expect(picker).toBeVisible();
+  await expect(picker.getByRole("group", { name: "Meses do ano" }).getByRole("button")).toHaveCount(
+    12,
+  );
+  await expect(page.locator('input[type="month"]')).toHaveCount(0);
+  const year = picker.getByLabel("Ano", { exact: true });
+  await year.fill("2026");
+  await picker.getByRole("button", { name: "Próximo ano", exact: true }).click();
+  await expect(year).toHaveValue("2027");
+  await picker.getByRole("button", { name: "Ano anterior", exact: true }).click();
+  await expect(year).toHaveValue("2026");
+  const buttonBox = await picker
+    .getByRole("button", { name: "janeiro", exact: true })
+    .boundingBox();
+  expect(buttonBox!.height).toBeGreaterThanOrEqual(44);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({
+    path: info.outputPath(`month-picker-${info.project.name}.png`),
+    animations: "disabled",
+  });
+  await page.evaluate(() => {
+    document.documentElement.dataset["theme"] = "dark";
+  });
+  await expect(picker).toHaveCSS("background-color", "rgb(41, 36, 50)");
+  await expect(picker.locator('button[aria-pressed="false"]').first()).toHaveCSS(
+    "background-color",
+    "rgb(41, 36, 50)",
+  );
+  await page.screenshot({
+    path: info.outputPath(`month-picker-${info.project.name}-dark.png`),
+    animations: "disabled",
+  });
+  await page.keyboard.press("Escape");
+  await expect(picker).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await expect(trigger).toHaveAttribute("aria-expanded", "false");
+  await trigger.click();
+  await picker.getByRole("button", { name: "janeiro", exact: true }).click();
+  await expect(trigger).toContainText("janeiro de 2026");
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await picker.getByRole("button", { name: "Este mês", exact: true }).click();
+  await expect(page.locator(".agenda-month-grid button[aria-current='date']")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
 });
 test("overdue tasks move to today and Helena only gets a draft after user action", async ({
   page,
