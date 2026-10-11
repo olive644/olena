@@ -3,11 +3,12 @@
 ## Indicadores reais na Agenda (2026-10-11)
 
 - Gráficos, valores e inspeção vazios ou zerados não são exibidos. Inspeção em itálico, sem faixa amarela.
-- Praticar lê o progresso matemático salvo e o mostra como acumulado, separado dos registros por data. Não são inventadas datas antigas.
+- Praticar exibe apenas `practiceActivities` datadas no dia ou intervalo selecionado. Sem respostas positivas, não aparecem gráficos, prévias nem indicadores. O progresso antigo sem data permanece salvo em Matemática, fora da Agenda.
 - Pomodoro reutiliza os dias de ciclos concluídos, filtrados pelo período e pela semana da data final. Cronômetro mostra dias de foco e sequência diária positiva. Sem minutos, as semanas continuam visíveis: flores murchas/vivas e tomates apagados/vivos.
 - Matemática mostra a melhor sequência de acertos por rodada nos registros datados do período, nunca interpreta pontuação como streak diário.
-- Indicadores acumulados acompanham atualizações do armazenamento sincronizado e desaparecem quando não há progresso positivo.
-- Acertos acumulados alimentam barras e distribuição por ilha; recordes de pontos ficam em barras separadas. Nenhum registro antigo ganha data inventada. Prévias das seis ilhas usam artes existentes, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Um único par de gráficos mostra respostas por período e distribuição por ilha. A prévia compacta combina arte de até 110px e legenda com respostas/acertos filtrados, sem recordes acumulados ou gráficos duplicados. Mantém seis ilhas, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Bingo presencial usa papel creme e texto grafite nos dois temas, mantendo o acabamento amarelo e a opção de cartelas físicas.
+- Ajuste validado com `npm run verify`, 16 testes unitários focados e 20 cenários E2E em Edge desktop/mobile, claro/escuro. Prévias respeitam filtro diário/intervalo e altura menor que 180px; zeros e progresso legado sem data não produzem conteúdo. A validação móvel local usa Chromium com viewport de iPhone, não WebKit nativo.
 - Bundle medido: entrada 278,6 KiB e total 1236,5 KiB, aumento de 6,7 KiB nas rotas sob demanda, sem dependência nova. Orçamento total 1240 KiB, teto absoluto e orçamento inicial preservados.
 
 ## Navegação móvel uniforme (2026-10-11)

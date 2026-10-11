@@ -926,31 +926,34 @@
 }
 .agenda-island-drag {
   touch-action: pan-y;
+  user-select: none;
   cursor: grab;
   overflow: hidden;
   display: grid;
-  place-items: center;
+  grid-template-columns: minmax(60px, 110px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  max-width: 440px;
+  width: 100%;
+  justify-self: center;
 }
 .agenda-island-drag:active {
   cursor: grabbing;
 }
 .agenda-island-drag img {
-  width: min(100%, 210px);
+  width: 100%;
   height: auto;
   user-select: none;
   transition: transform 160ms ease;
   animation: agenda-chart-change 220ms ease-out;
 }
 .agenda-island-caption {
-  text-align: center;
+  text-align: left;
   display: grid;
   gap: 4px;
 }
 .agenda-island-caption p {
   color: var(--agenda-muted);
-}
-.agenda-island-progress .agenda-charts:has(> figure:only-of-type) {
-  grid-template-columns: 1fr;
 }
 .agenda-week-flower {
   width: 30px;

@@ -71,6 +71,10 @@ O contador em andamento continua local ao dispositivo, como já era no Foco.
 
 O calendário permanece visível e o ícone de papel abre somente o seletor de mês.
 Gráficos filtram o dia selecionado ou o intervalo, incluindo dias com zero registros.
+Em Praticar, dias/intervalos sem respostas positivas não exibem gráficos nem
+prévias. Progresso acumulado sem data fica somente em Matemática. A prévia compacta
+mostra respostas/acertos do filtro, com setas roxas, teclado e arraste. Flores e
+tomates semanais continuam visíveis no Foco mesmo sem minutos, como exceção visual.
 Praticar recebe `practiceActivities` opcional no workspace 7. Cada atividade contém
 ID, identificação/nome da ilha, data de conclusão, respostas e acertos. Novas ilhas
 devem despachar `practice/recorded` após avaliação confirmada, com ID estável para

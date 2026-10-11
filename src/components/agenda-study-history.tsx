@@ -1,12 +1,11 @@
 import { dateForKey } from "../domain/agenda";
 import { historySummary, focusHistory, type AgendaRange } from "../domain/agenda-history";
 import { useEffect, useState } from "react";
-import { readMathLearning } from "../data/math-learning";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import { mathAnswerSequence, pomodoroWeek } from "../domain/agenda-insights";
 import { agendaDashboard, type AgendaCategory } from "../domain/agenda-dashboard";
 import { AgendaCharts } from "./agenda-charts";
-import { type WorkspaceState } from "../domain/workspace";
+import { toDateKey, type WorkspaceState } from "../domain/workspace";
 import { type AppView } from "./app-navigation";
 import { NavigationIcon } from "./navigation-icon";
 import { AgendaIslandProgress } from "./agenda-island-progress";
@@ -48,7 +47,12 @@ export function AgendaStudyHistory({
     [...history.values()].flatMap((day) => day.sessions),
   );
   const summary = { minutes: data.pie.reduce((sum, item) => sum + item.value, 0) };
-  const learning = readMathLearning();
+  const practice = (workspace.practiceActivities ?? []).filter((activity) => {
+    const date = new Date(activity.completedAt);
+    if (!Number.isFinite(date.getTime()) || activity.answers <= 0) return false;
+    const key = toDateKey(date);
+    return key >= range.start && key <= range.end;
+  });
   let pomodoroDays: unknown = [];
   try {
     pomodoroDays = JSON.parse(localStorage.getItem("noteoli.pomodoro-streak.v1") ?? "[]");
@@ -180,7 +184,9 @@ export function AgendaStudyHistory({
               consecutivos na rodada.
             </p>
           )}
-          {category === "islands" && <AgendaIslandProgress learning={learning} />}
+          {category === "islands" && practice.length > 0 && (
+            <AgendaIslandProgress activities={practice} />
+          )}
         </div>
       </div>
     </section>

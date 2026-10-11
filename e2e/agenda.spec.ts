@@ -14,9 +14,24 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ json: { connected: false } }),
   );
 });
-test("agenda displays real legacy math progress and filtered Pomodoro weeks in both themes", async ({
+test("agenda displays compact filtered islands and Pomodoro weeks in both themes", async ({
   page,
 }, info) => {
+  const state = createInitialWorkspace();
+  state.practiceActivities = [
+    {
+      id: "math-day6",
+      islandId: "mathematics:foundations",
+      islandName: "Matemática · Ensino fundamental",
+      completedAt: "2026-10-06T12:00:00",
+      answers: 15,
+      correct: 12,
+    },
+  ];
+  await page.addInitScript(
+    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
+    state,
+  );
   await page.goto("/planejador");
   await page.evaluate(() => {
     localStorage.setItem(
@@ -34,9 +49,12 @@ test("agenda displays real legacy math progress and filtered Pomodoro weeks in b
       theme,
     );
     await history.getByRole("button", { name: "Praticar", exact: true }).click();
-    await expect(history.getByText("12 acertos acumulados")).toBeVisible();
-    await expect(history.getByText("Melhor rodada: 80 pontos")).toBeVisible();
-    await expect(history.locator(".agenda-island-progress .agenda-charts")).toHaveCount(2);
+    await expect(history.getByText("12 acertos no período")).toBeVisible();
+    await expect(history.getByText("Melhor rodada: 80 pontos")).toHaveCount(0);
+    await expect(history.locator(".agenda-charts")).toHaveCount(1);
+    expect((await history.locator(".agenda-island-carousel").boundingBox())!.height).toBeLessThan(
+      180,
+    );
     await expect(history.getByRole("button", { name: /^Abrir/ })).toHaveCount(0);
     await history
       .locator(".agenda-island-carousel")
@@ -89,6 +107,11 @@ test("agenda displays real legacy math progress and filtered Pomodoro weeks in b
       style: ".page-header, .mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
     });
     await page.locator('button[data-date="2026-10-07"]').click();
+    await history.getByRole("button", { name: "Praticar", exact: true }).click();
+    await expect(history.locator(".agenda-island-progress")).toHaveCount(0);
+    await expect(history.locator(".agenda-charts")).toHaveCount(0);
+    await history.getByRole("button", { name: "Foco", exact: true }).click();
+    await history.getByRole("button", { name: "Pomodoro", exact: true }).click();
     await expect(history.locator(".agenda-pomodoro-week")).toHaveCount(1);
     await expect(history.locator(".agenda-pomodoro-day.is-active")).toHaveCount(0);
     await history.getByRole("button", { name: "Cronômetro", exact: true }).click();

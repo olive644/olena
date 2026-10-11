@@ -1,6 +1,6 @@
 # OlenaStudy: Second Brain
 
-2026-10-11, Agenda: progresso legado vem de helena.mathLearning.v1 e alimenta gráficos acumulados, sem datas fabricadas. best significa pontos da melhor rodada, com barras separadas dos acertos. Sequência matemática é derivada dos acertos datados por rodada; Pomodoro usa noteoli.pomodoro-streak.v1 e respeita o intervalo selecionado. Resultados zero são ocultos, exceto semanas visuais sempre presentes com flores/tomates inativos. Inspeção em itálico, sem faixa e IDs únicos por gráfico. Prévias reais das seis ilhas permitem setas roxas, teclado e arraste; não há botões Abrir no dashboard. Nenhuma alteração no esquema ou no treinamento.
+2026-10-11, Agenda: Praticar usa somente practiceActivities do dia/intervalo selecionado. Sem respostas positivas, oculta gráficos, prévias e indicadores. Progresso legado sem data continua salvo em Matemática, nunca atribuído ao calendário. Um par de gráficos por período/ilha, sem recordes acumulados duplicados. Prévia compacta com arte de até 110px e respostas/acertos filtrados, seis ilhas, setas roxas, teclado e arraste. Sequência matemática usa acertos datados por rodada. Semanas de flores/tomates continuam visíveis sem minutos, conforme exceção solicitada. Inspeção em itálico; sem botões Abrir. Bingo presencial usa papel creme e texto grafite em ambos os temas. Sem mudanças no esquema ou treinamento.
 
 2026-10-10, professor Helena: api/helena.ts monta handler autenticado e limites
 Firebase compartilhados. Chat real exige consentimento por sessão, envia nome
@@ -1123,7 +1123,7 @@ teclado; valor e percentual aparecem em output acessível, sem portal/tooltip.
 Distribuição usa rosca de segmentos SVG proporcionais com relevo de papel,
 separações discretas e total PaperDigits central, sem biblioteca de gráficos.
 `agenda-dashboard.ts` agrega modalidades explícitas do Foco e criação de cadernos
-no intervalo; ilhas usam `readMathLearning` com progresso acumulado sem datas.
+no intervalo; ilhas usam apenas `practiceActivities` datadas no mesmo filtro.
 Campo `mode` opcional é gravado pelo Foco e preservado pelo reducer/storage/sync,
 sem reescrever registros antigos nem alterar versão. Leitores anteriores ignoram
 o campo, leitores novos aceitam ausência e validam valores; rollback não perde
