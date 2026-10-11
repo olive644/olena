@@ -68,7 +68,7 @@ const SOLO_WORLDS = PRACTICE_ISLANDS;
 
 const SOLO_PROGRESS_KEY = "helena.soloProgress";
 
-function PracticeHub() {
+function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
   const [worldIndex, setWorldIndex] = useState(4);
   const [insideWorld, setInsideWorld] = useState(false);
   const [entryOrigin, setEntryOrigin] = useState<{ x: number; y: number; size: number }>();
@@ -88,7 +88,13 @@ function PracticeHub() {
     setInsideWorld(true);
   }
   if (insideWorld && available)
-    return <MathIslandJourney entryOrigin={entryOrigin} onBack={() => setInsideWorld(false)} />;
+    return (
+      <MathIslandJourney
+        entryOrigin={entryOrigin}
+        onBack={() => setInsideWorld(false)}
+        onPractice={(activity) => dispatch({ type: "practice/recorded", activity })}
+      />
+    );
   return (
     <div className="practice-hub practice-hub--carousel">
       <PracticeIslandCarousel
@@ -407,7 +413,7 @@ export function LearnView({ workspace, dispatch }: LearnViewProps) {
       <div className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : ""}`}>
         <section className="module-panel study-panel" aria-label="Praticar">
           {mode === "hub" ? (
-            <PracticeHub />
+            <PracticeHub dispatch={dispatch} />
           ) : (
             <>
               <div className="module-heading solo-session-heading">

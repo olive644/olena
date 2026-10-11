@@ -8,6 +8,7 @@ import {
   type MathApiResult,
 } from "../data/math-learning";
 import type { MathChallenge } from "../domain/adaptive-math";
+import type { PracticeActivity } from "../domain/workspace";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { createMathSound } from "../data/math-sound";
 import type { RoomXpReward } from "../domain/local-room";
@@ -40,8 +41,10 @@ export function MathArcade({
   onBack,
   courseId = "foundations",
   onChestReturn,
+  onPractice,
 }: {
   onBack: () => void;
+  onPractice?: ((activity: PracticeActivity) => void) | undefined;
   courseId?: MathCourseId;
   onChestReturn?:
     ((origin: { x: number; y: number; size: number; id: string }) => void) | undefined;
@@ -248,6 +251,14 @@ export function MathArcade({
       const points = round.points + result.points;
       const progress = { ...result.progress, best: Math.max(result.progress.best, points) };
       setStorageWarning(!saveMathLearning(courseId, progress));
+      onPractice?.({
+        id: `${roundId.current}:${question.seed}`,
+        islandId: `mathematics:${courseId}`,
+        islandName: `Matemática · ${course.subject}`,
+        completedAt: new Date().toISOString(),
+        answers: 1,
+        correct: Number(result.correct),
+      });
       const missed = result.timedOut;
       audio.current?.play(missed ? "timeout" : result.correct ? "correct" : "wrong");
       setRound((value) => ({

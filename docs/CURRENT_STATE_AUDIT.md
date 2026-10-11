@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Indicadores reais na Agenda (2026-10-11)
+
+- Gráficos, valores e inspeção vazios ou zerados não são exibidos. Inspeção em itálico, sem faixa amarela.
+- Praticar lê o progresso matemático salvo e o mostra como acumulado, separado dos registros por data. Não são inventadas datas antigas.
+- Pomodoro reutiliza os dias de ciclos concluídos, filtrados pelo período e pela semana da data final. Cronômetro mostra dias de foco e sequência diária positiva. Sem minutos, as semanas continuam visíveis: flores murchas/vivas e tomates apagados/vivos.
+- Matemática mostra a melhor sequência de acertos por rodada nos registros datados do período, nunca interpreta pontuação como streak diário.
+- Indicadores acumulados acompanham atualizações do armazenamento sincronizado e desaparecem quando não há progresso positivo.
+- Acertos acumulados alimentam barras e distribuição por ilha; recordes de pontos ficam em barras separadas. Nenhum registro antigo ganha data inventada. Prévias das seis ilhas usam artes existentes, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Bundle medido: entrada 278,6 KiB e total 1236,5 KiB, aumento de 6,7 KiB nas rotas sob demanda, sem dependência nova. Orçamento total 1240 KiB, teto absoluto e orçamento inicial preservados.
+
 ## Navegação móvel uniforme (2026-10-11)
 
 - Praticar usa o mesmo botão e a mesma seleção de ícones dos demais itens.
@@ -2337,3 +2347,90 @@ para a propriedade de prefixo `https://olenastudy.vercel.app/` no Search Console
 É um token público, não uma credencial OAuth. Deve permanecer no HTML inicial após
 a confirmação. Não comprova aprovação de marca ou dos escopos do Google Agenda.
 Prova de presença no head: `src/google-site-verification.test.ts`.
+
+# Agenda com calendário recolhível
+
+Cabeçalho textual e abas Hoje/Semana/Mês substituídos pelo ícone original de
+calendário. O botão expõe o estado aberto e controla um calendário mensal com
+seletor de mês, destaque roxo do dia escolhido e contagem dos itens. Os
+planejamentos aparecem abaixo, inclusive no desktop. Adicionar usa a data
+selecionada; recolher não perde a seleção. Teclado, toque, temas e movimento
+reduzido preservados. Conta, Google Agenda, recorrência e Foco não mudaram.
+Prova de navegação, posicionamento e formulário: `e2e/agenda.spec.ts`.
+O menu de meses também usa papel original: `AgendaMonthPicker`, sem input nativo
+de mês. Popover com fechamento por Escape/clique fora, ano editável, 12 meses,
+seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
+
+# Intervalos e histórico na Agenda
+
+- Seleção inclusiva por arraste com mouse/toque, início/fim por clique/teclado e
+  Shift + clique. Limpar, cancelamento de ponteiro e perda de captura preservam a
+  navegação. Não grava planos em lote nem modifica eventos existentes.
+- Dias estudados recebem faixas turquesa. Resumo por mês/intervalo com minutos
+  reais, dias ativos e maior sequência consecutiva, inclusive entre meses.
+- Quatro categorias selecionáveis substituem os atalhos do dashboard: cronômetro,
+  caderno, Pomodoro e ilhas. Cada uma atualiza barras e pizza em SVG/CSS de papel,
+  sem biblioteca nova. Barras temporais agrupam o intervalo em até sete blocos;
+  legendas e nomes acessíveis preservam valores exatos, inclusive no gráfico vazio.
+- Cronômetro/Pomodoro usam somente sessões com modalidade registrada. Novas
+  sessões guardam `mode` opcional; registros antigos permanecem intactos e são
+  informados como sem modalidade, nunca reclassificados por duração. Cadernos
+  mostram criação por data e matéria; ilhas mostram acertos acumulados por ilha
+  e sua distribuição entre as ilhas, explicitamente sem filtro temporal. O campo
+  adaptativo de erros é uma sequência recente, não total histórico, e não é usado.
+- Ícone do expansor agora é um calendário facetado sobre botão branco nos dois
+  temas; contorno roxo identifica o estado aberto.
+- Barras e primeira fatia amarelas, outras fatias turquesa, coral, roxo e ocre.
+  Inspeção por ponteiro/toque, fatias e legendas clicáveis; teclado percorre barras
+  com setas/Home/End e ativa fatias com Enter/Espaço. Painel inline anuncia valor
+  e percentual. Seleção é reiniciada ao mudar categoria ou intervalo, sem tooltip
+  fora da tela; legendas oferecem alvos de toque de 44px mesmo para fatias pequenas.
+- Barras têm somente a área proporcional colorida, sem bloco de fundo que pareça
+  uma segunda barra. Altura numérica compartilhada de 80px para o maior valor;
+  testes de navegador medem a razão 20/30 e altura zero para valores vazios.
+  Pizza não inclui faceta decorativa simulando fatia: grupos reais têm cores
+  distintas, e grupo único é informado explicitamente como 100%.
+- Distribuição em rosca: segmentos anulares proporcionais, pequenas separações,
+  profundidade na mesma geometria em papel e total PaperDigits no centro.
+  O centro permanece vazio para seleção; nenhuma camada decorativa inventa dados.
+- Intervalo inclusivo amarelo nos dois temas, com grafite para contraste e contorno
+  roxo no dia ativo. PaperDigits nos dias, anos, horários e totais da Agenda;
+  o ano mantém texto nativo durante a edição para preservar usabilidade.
+- Conta/persistência reaproveitadas com campo opcional compatível e sem dependência. Seleção da tela
+  não é persistida. X vermelho em nova arte facetada exclusiva da Agenda.
+- Provas: `agenda-history.test.ts` e E2E de intervalo por arraste, teclado e toque.
+- Build medido: entrada inicial 277,8 KiB, total 1220,8 KiB. O orçamento normal
+  total acompanha o recurso sob demanda, de 1217 para 1223 KiB. Tetos absolutos
+  de entrada e total intactos, sem dependências novas.
+- Gráficos por categoria e inspeção adicionam aproximadamente 7 KiB sob demanda:
+  entrada 278,0 KiB, total 1230,2 KiB. Orçamento normal total 1232 KiB, com os mesmos
+  tetos absolutos e sem dependência de gráficos. Campo opcional `mode` não altera
+  a versão do workspace e preserva registros sem modalidade no rollback.
+
+### Agenda permanente e atividade diária (11/10/2026)
+
+- Calendário e dashboard sempre visíveis; o calendário de papel branco agora
+  abre somente o seletor de mês. Dia selecionado é o filtro padrão, sem ampliar
+  implicitamente para o mês. Intervalos inclusivos filtram as mesmas fontes.
+- Categorias Foco, Caderno e Praticar. Foco contém Cronômetro e Pomodoro;
+  Praticar reutiliza o ícone oficial da navegação e comporta futuras ilhas.
+- Datas de Meu estudo, resumo, legendas de datas das barras e texto da inspeção
+  usam números tipográficos comuns. Valores gráficos e dias do calendário mantêm
+  PaperDigits. Troca de filtro/categoria anima entrada e barras em 220/280ms,
+  com preferência de movimento reduzido preservada.
+- `practiceActivities` é coleção opcional na versão 7 do workspace, com ID,
+  ilha, nome, data de conclusão, respostas e acertos. Cada resposta avaliada no
+  MathArcade real despacha `practice/recorded` por callback da rota Praticar.
+  ID da rodada + seed da pergunta evita duplicação. Erros também contam como
+  prática; falhas de API não produzem atividade. Sem reconstrução de datas antigas.
+- Reducer/leitor validam o registro e o merge por ID mantém dispositivos
+  independentes. Ausência do campo em leitor anterior não significa exclusão.
+  Rollback preserva a coleção extra, sem reset de progresso ou migração destrutiva.
+- Foco/seleção não usam molduras automáticas, outlines roxos/pretos ou realce
+  azul nativo de toque. Regra compartilhada usa sublinhado e destaque amarelo;
+  bordas estruturais e desenhos do usuário permanecem. Proibição em AGENTS.md
+  e DESIGN_SYSTEM.md. E2E verifica foco visível sem outline, ambos os temas e
+  dia com/sem atividades; testes provam persistência, retry e merge compatível.
+- Validação: 1386 testes unitários, tipos/build e orçamento de desempenho;
+  14 cenários E2E da Agenda em desktop/mobile Edge, com temas claro/escuro.
+  JS inicial 278,5 KiB e total 1229,8 KiB, sem dependências nem aumento de orçamento.

@@ -2,8 +2,24 @@
 
 ## Fluxo
 
-`/planejador` abre Hoje. Semana usa sete colunas no computador e o dia selecionado
-no celular. Mês mostra contagens compactas; selecionar uma data abre a lista abaixo.
+`/planejador` abre o planejamento do dia atual. O ícone de calendário abre e recolhe
+o mês, com seletor de mês sem setas, destaque roxo e contagens compactas. Selecionar
+uma data atualiza o planejamento logo abaixo, no computador e celular. Recolher o
+calendário preserva a data escolhida. As abas Hoje/Semana/Mês foram substituídas.
+O seletor de mês é um painel próprio com 12 botões de papel e ano editável,
+sem calendário nativo do navegador. Escape e clique fora fecham o painel.
+Arrastar com mouse/toque seleciona um intervalo inclusivo; o botão Selecionar
+intervalo oferece início/fim por clique ou teclado. Shift + clique estende a
+seleção. A seleção é temporária, não cria ou modifica eventos. O dia final mostra
+o planejamento e os registros de Foco desse dia. Limpar retorna ao resumo mensal.
+
+Faixas turquesa marcam dias com minutos reais de Foco. Seu ritmo agrega minutos,
+dias estudados e maior sequência dentro do mês ou intervalo escolhido. Os horários
+da linha do tempo são de conclusão (`completedAt`), não de início: o formato atual
+não guarda início, pausas ou intervalos exatos. Não há tempos inventados. As datas
+usam o fuso local do dispositivo. O histórico usa os registros já sincronizados do
+workspace, sem alterar esquema, conta ou persistência. O X da Agenda usa arte
+vermelha facetada própria, sem alterar os outros controles do aplicativo.
 Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco.
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.
@@ -52,6 +68,15 @@ Nenhuma rotina é expandida no armazenamento e nenhum histórico é apagado no r
 O contador em andamento continua local ao dispositivo, como já era no Foco.
 
 ## Verificação
+
+O calendário permanece visível e o ícone de papel abre somente o seletor de mês.
+Gráficos filtram o dia selecionado ou o intervalo, incluindo dias com zero registros.
+Praticar recebe `practiceActivities` opcional no workspace 7. Cada atividade contém
+ID, identificação/nome da ilha, data de conclusão, respostas e acertos. Novas ilhas
+devem despachar `practice/recorded` após avaliação confirmada, com ID estável para
+retries. Não inventar duração nem converter progresso acumulado sem data em diário.
+Leitores anteriores aceitam o campo extra e o merge trata ausência como coleção
+desconhecida, não como exclusão; rollback não altera os dados existentes.
 
 - `npx vitest run src/domain/agenda.test.ts src/domain/focus-session.test.ts src/components/helena-chat.test.tsx`
 - `npx playwright test e2e/agenda.spec.ts`

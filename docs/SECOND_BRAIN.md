@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-11, Agenda: progresso legado vem de helena.mathLearning.v1 e alimenta gráficos acumulados, sem datas fabricadas. best significa pontos da melhor rodada, com barras separadas dos acertos. Sequência matemática é derivada dos acertos datados por rodada; Pomodoro usa noteoli.pomodoro-streak.v1 e respeita o intervalo selecionado. Resultados zero são ocultos, exceto semanas visuais sempre presentes com flores/tomates inativos. Inspeção em itálico, sem faixa e IDs únicos por gráfico. Prévias reais das seis ilhas permitem setas roxas, teclado e arraste; não há botões Abrir no dashboard. Nenhuma alteração no esquema ou no treinamento.
+
 2026-10-10, professor Helena: api/helena.ts monta handler autenticado e limites
 Firebase compartilhados. Chat real exige consentimento por sessão, envia nome
 da tela e histórico curto, sem gravação ou treinamento de conversas. Preview
@@ -1108,10 +1110,42 @@ Verificação de propriedade no Google Search Console: meta pública no head de
 `src/google-site-verification.test.ts` impede perda ou duplicação da meta.
 A verificação OAuth de marca/escopos continua sendo um processo separado no Google.
 
-`planner-view.tsx` usa calendário Hoje/Semana/Mês e formulário único. `domain/agenda.ts`
+`planner-view.tsx` usa ícone original para abrir o calendário mensal compacto, seletor
+de mês sem setas e planejamento do dia escolhido abaixo. As abas Hoje/Semana/Mês
+foram substituídas, mantendo o formulário único e a data selecionada ao recolher.
+`AgendaMonthPicker` substitui o input de mês nativo por popover HTML com Escape,
+botões originais, 12 meses e ano editável. Sem biblioteca ou mudança de persistência.
+`domain/agenda-history.ts` agrega Foco por data local de conclusão e calcula maior
+sequência no intervalo. `AgendaStudyHistory` exibe um dashboard compacto com
+gráficos de barras/pizza por categoria selecionada, sem navegação automática.
+`AgendaCharts` usa amarelo como cor principal e inspeção local por toque, mouse e
+teclado; valor e percentual aparecem em output acessível, sem portal/tooltip.
+Distribuição usa rosca de segmentos SVG proporcionais com relevo de papel,
+separações discretas e total PaperDigits central, sem biblioteca de gráficos.
+`agenda-dashboard.ts` agrega modalidades explícitas do Foco e criação de cadernos
+no intervalo; ilhas usam `readMathLearning` com progresso acumulado sem datas.
+Campo `mode` opcional é gravado pelo Foco e preservado pelo reducer/storage/sync,
+sem reescrever registros antigos nem alterar versão. Leitores anteriores ignoram
+o campo, leitores novos aceitam ausência e validam valores; rollback não perde
+sessões. Histórico sem modalidade fica fora dos gráficos e aparece em aviso.
+Intervalos
+amarelos e PaperDigits respeitam ambos os temas. Intervalos por Pointer Events ou início/fim por botões são estado local
+da tela, sem mutação do workspace. O início exato das sessões não é conhecido.
+`AgendaCloseIcon` mantém o X vermelho em camadas, restrito aos controles da Agenda.
+`domain/agenda.ts`
 centraliza datas locais e recorrência; o Espaço usa o mesmo seletor. Eventos de estudo
 ligam Foco via metadados opcionais do contador; `focus/recorded` agrega por ocorrência.
 O workspace e o merge por ID existentes continuam responsáveis pela conta/persistência.
 `HELENA_PLAN_DRAFT_EVENT` abre pedido revisável, sem API até confirmar envio no chat.
 Provas: `src/domain/agenda.test.ts` e `e2e/agenda.spec.ts`. Ver `docs/AGENDA.md` para
 compatibilidade, rollback, Google somente leitura e lembretes locais sem push.
+
+Atualização da Agenda: calendário permanente, ícone branco abre só o mês; filtro
+é dia selecionado ou intervalo explícito. Foco agrupa Cronômetro/Pomodoro,
+Praticar usa ícone oficial e registros datados opcionais `practiceActivities`.
+MathArcade envia respostas avaliadas ao workspace via callback da rota, sem
+alterar a API. Histórico antigo sem data não é atribuído a dias fictícios.
+Merge preserva a coleção quando versões antigas omitem o campo. Tipografia
+comum nas datas/legendas do dashboard, transições com movimento reduzido.
+Outlines de foco/seleção são proibidos; paper-controls.css centraliza destaque
+amarelo e sublinhado no teclado. Ver regras em AGENTS.md e DESIGN_SYSTEM.md.

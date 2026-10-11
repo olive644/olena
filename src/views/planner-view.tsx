@@ -1,11 +1,24 @@
-import { lazy, Suspense, useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type FormEvent,
+} from "react";
 import { PageHeader, type AppView } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
-import { PaperCloseIcon } from "../components/paper-close-icon";
+import { AgendaCloseIcon } from "../components/agenda-close-icon";
 import { NavigationIcon } from "../components/navigation-icon";
+import { AgendaMonthPicker } from "../components/agenda-month-picker";
+import { AgendaStudyHistory } from "../components/agenda-study-history";
+import { PaperDigits } from "../components/paper-digits";
+import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
 import {
   agendaPrompt,
   dateForKey,
@@ -13,7 +26,6 @@ import {
   HELENA_PLAN_DRAFT_EVENT,
   monthDates,
   shiftDate,
-  weekDates,
 } from "../domain/agenda";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import {
@@ -55,6 +67,12 @@ const labels: Record<Kind, string> = {
   subject: "Matéria",
   goal: "Meta de foco",
 };
+function PaperCalendarText({ value }: { value: string }) {
+  return value
+    .split(/(\d[\d:]*)/)
+    .map((part, index) => (/^\d/.test(part) ? <PaperDigits key={index} value={part} /> : part));
+}
+
 function dayLabel(date: string, long = false) {
   return dateForKey(date).toLocaleDateString(
     "pt-BR",
@@ -68,7 +86,17 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const [now, setNow] = useState(() => new Date());
   const today = toDateKey(now);
   const [selected, setSelected] = useState(today);
-  const [mode, setMode] = useState<"day" | "week" | "month">("day");
+  const [range, setRange] = useState<AgendaRange | null>(null);
+  const [intervalMode, setIntervalMode] = useState(false);
+  const [intervalStart, setIntervalStart] = useState<string | null>(null);
+  const drag = useRef<{
+    pointer: number;
+    start: string;
+    end: string;
+    previous: AgendaRange | null;
+  } | null>(null);
+  const suppressClick = useRef(false);
+  const history = useMemo(() => focusHistory(workspace.focusSessions), [workspace.focusSessions]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [notice, setNotice] = useState("");
   const dialog = useRef<HTMLDialogElement>(null);
@@ -84,12 +112,35 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       addButton.current?.focus();
     }
   }, [draft]);
-  const dates = mode === "month" ? monthDates(selected) : weekDates(selected);
+  const month = monthDates(selected);
+  const dates = month.slice(35).some((date) => date.slice(0, 7) === selected.slice(0, 7))
+    ? month
+    : month.slice(0, 35);
   const pending = workspace.tasks.filter((task) => !task.completed && task.dueDate < today);
   const scheduled = eventsOn(workspace, selected);
   const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
   const subjectName = (id: string) =>
     workspace.subjects.find((subject) => subject.id === id)?.name ?? "Sem matéria";
+  function resetDate(date: string) {
+    setSelected(date);
+    setRange(null);
+    setIntervalStart(null);
+    setIntervalMode(false);
+  }
+  function chooseDate(date: string, extend = false) {
+    if (extend) setRange(orderedRange(range?.start ?? selected, date));
+    else if (intervalMode) {
+      if (intervalStart) {
+        setRange(orderedRange(intervalStart, date));
+        setIntervalMode(false);
+        setIntervalStart(null);
+      } else {
+        setIntervalStart(date);
+        setRange(orderedRange(date, date));
+      }
+    } else setRange(null);
+    setSelected(date);
+  }
   function create(kind: Kind = "task") {
     setDraft({
       kind,
@@ -207,17 +258,12 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       );
     }
   }
-  function movePeriod(direction: -1 | 1) {
-    if (mode === "month") {
-      const date = dateForKey(selected);
-      date.setDate(1);
-      date.setMonth(date.getMonth() + direction);
-      setSelected(toDateKey(date));
-    } else setSelected(shiftDate(selected, direction * (mode === "week" ? 7 : 1)));
-  }
   function taskCard(task: StudyTask) {
     return (
-      <article className={`agenda-item${task.completed ? " is-complete" : ""}`} key={task.id}>
+      <article
+        className={`agenda-item agenda-item--task${task.completed ? " is-complete" : ""}`}
+        key={task.id}
+      >
         <button
           type="button"
           className="agenda-check"
@@ -258,28 +304,37 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     const reminder = date === today && !complete && minutesAway >= 0 && minutesAway <= 15;
     return (
       <article
-        className={`agenda-item agenda-item--timed${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
+        className={`agenda-item agenda-item--timed${event.kind === "study" ? " agenda-item--study" : ""}${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
         key={`${event.id}:${date}`}
       >
-        <time>{event.time}</time>
+        <time>
+          <PaperDigits value={event.time} />
+        </time>
         <div className="agenda-item-copy">
           <strong>{event.title}</strong>
           <small>
             {subjectName(event.subjectId)} ·{" "}
-            {event.kind === "study"
-              ? `${event.durationMinutes ?? 25} min de estudo`
-              : "Compromisso"}
+            <PaperCalendarText
+              value={
+                event.kind === "study"
+                  ? `${event.durationMinutes ?? 25} min de estudo`
+                  : "Compromisso"
+              }
+            />
             {event.recurrence === "weekly" ? " · Semanal" : ""}
           </small>
           {reminder && (
             <span className="agenda-reminder">
-              {minutesAway === 0 ? "Está na hora" : `Começa em ${minutesAway} min`}
+              <PaperCalendarText
+                value={minutesAway === 0 ? "Está na hora" : `Começa em ${minutesAway} min`}
+              />
             </span>
           )}
           {complete && <small>Concluído</small>}
           {event.kind === "study" && recorded > 0 && (
             <small>
-              {recorded}/{event.durationMinutes ?? 25} min registrados
+              <PaperDigits value={String(recorded)} />/
+              <PaperDigits value={String(event.durationMinutes ?? 25)} /> min registrados
             </small>
           )}
         </div>
@@ -317,112 +372,169 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       </article>
     );
   }
-  function planDay(date: string) {
-    setSelected(date);
-    setDraft({
-      kind: "study",
-      title: "",
-      date,
-      time: "18:00",
-      subjectId: workspace.subjects[0]?.id ?? "",
-      minutes: 25,
-      recurrence: "none",
-      until: "",
-    });
-  }
   return (
-    <main
-      className={`main-content agenda-page${mode === "week" ? " is-week" : ""}`}
-      id="main-content"
-    >
+    <main className="main-content agenda-page" id="main-content">
       <PageHeader />
       <header className="agenda-heading">
-        <div>
-          <span className="section-label">Agenda</span>
-          <h1>Minha agenda</h1>
-          <p>Estudos, tarefas e compromissos em um só lugar.</p>
-        </div>
+        <h1 className="agenda-accessible-title">Minha agenda</h1>
         <button ref={addButton} type="button" className="primary-button" onClick={() => create()}>
           <PaperActionIcon name="plus" /> Adicionar
         </button>
       </header>
-      <div className="agenda-toolbar">
-        <div className="agenda-modes" role="group" aria-label="Visualização da agenda">
-          {(["day", "week", "month"] as const).map((value, index) => (
-            <button
-              type="button"
-              key={value}
-              aria-pressed={mode === value}
-              className={mode === value ? "primary-button" : "secondary-button"}
-              onClick={() => {
-                setMode(value);
-                if (value === "day") setSelected(today);
-              }}
-            >
-              {["Hoje", "Semana", "Mês"][index]}
-            </button>
-          ))}
-        </div>
-        <div className="agenda-period">
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Período anterior"
-            onClick={() => movePeriod(-1)}
-          >
-            <PaperArrow back />
-          </button>
-          <strong>
-            {dateForKey(selected).toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
-          </strong>
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Próximo período"
-            onClick={() => movePeriod(1)}
-          >
-            <PaperArrow />
-          </button>
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => {
-              setSelected(today);
-              setMode("day");
-            }}
-          >
-            Ir para hoje
-          </button>
-        </div>
-      </div>
       <p className="agenda-notice" role="status">
         {notice}
       </p>
-      {mode === "month" ? (
-        <section className="agenda-month module-panel" aria-label="Calendário mensal">
+      {
+        <section
+          id="agenda-calendar"
+          className="agenda-month module-panel"
+          aria-label="Calendário mensal"
+        >
+          <div className="agenda-calendar-controls">
+            <AgendaMonthPicker value={selected} today={today} onChange={resetDate} />
+            <button type="button" className="secondary-button" onClick={() => resetDate(today)}>
+              Ir para hoje
+            </button>
+          </div>
+          <div className="agenda-range-tools">
+            <button
+              type="button"
+              className={intervalMode ? "primary-button" : "secondary-button"}
+              aria-pressed={intervalMode}
+              onClick={() => {
+                setIntervalMode(!intervalMode);
+                setIntervalStart(null);
+              }}
+            >
+              {intervalMode
+                ? intervalStart
+                  ? "Escolher fim"
+                  : "Escolher início"
+                : "Selecionar intervalo"}
+            </button>
+            {range && (
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => {
+                  setRange(null);
+                  setIntervalStart(null);
+                  setIntervalMode(false);
+                }}
+              >
+                Limpar intervalo
+              </button>
+            )}
+            <small id="agenda-range-hint">Arraste pelos dias ou escolha início e fim.</small>
+          </div>
           <div className="agenda-weekdays">
             {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((name) => (
               <span key={name}>{name}</span>
             ))}
           </div>
-          <div className="agenda-month-grid">
+          <div
+            className="agenda-month-grid"
+            aria-describedby="agenda-range-hint"
+            onPointerDown={(event) => {
+              if (!drag.current) suppressClick.current = false;
+              if (
+                event.button !== 0 ||
+                !event.isPrimary ||
+                intervalMode ||
+                event.shiftKey ||
+                drag.current
+              )
+                return;
+              const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
+                "button[data-date]",
+              );
+              const date = button?.dataset["date"];
+              if (!date) return;
+              event.preventDefault();
+              button.focus();
+              suppressClick.current = false;
+              drag.current = { pointer: event.pointerId, start: date, end: date, previous: range };
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerMove={(event) => {
+              const active = drag.current;
+              if (!active || active.pointer !== event.pointerId) return;
+              const button = document
+                .elementFromPoint(event.clientX, event.clientY)
+                ?.closest<HTMLButtonElement>("button[data-date]");
+              const date = button?.dataset["date"];
+              if (!date || !event.currentTarget.contains(button)) return;
+              active.end = date;
+              setRange(orderedRange(active.start, active.end));
+            }}
+            onPointerUp={(event) => {
+              const active = drag.current;
+              if (!active || active.pointer !== event.pointerId) return;
+              drag.current = null;
+              suppressClick.current = true;
+              window.setTimeout(() => {
+                suppressClick.current = false;
+              }, 0);
+              setSelected(active.end);
+              setRange(active.start === active.end ? null : orderedRange(active.start, active.end));
+              event.currentTarget.releasePointerCapture(event.pointerId);
+            }}
+            onPointerCancel={() => {
+              if (drag.current) setRange(drag.current.previous);
+              drag.current = null;
+              suppressClick.current = true;
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== "Escape") return;
+              if (drag.current) {
+                const active = drag.current;
+                drag.current = null;
+                suppressClick.current = true;
+                setRange(active.previous);
+                event.currentTarget.releasePointerCapture(active.pointer);
+              }
+              setIntervalMode(false);
+              setIntervalStart(null);
+            }}
+            onLostPointerCapture={() => {
+              if (drag.current) {
+                setRange(drag.current.previous);
+                suppressClick.current = true;
+              }
+              drag.current = null;
+            }}
+          >
             {dates.map((date) => {
               const count =
                 eventsOn(workspace, date).length +
                 workspace.tasks.filter((task) => task.dueDate === date && !task.completed).length;
+              const minutes = history.get(date)?.minutes ?? 0;
+              const inRange = range && date >= range.start && date <= range.end;
               return (
                 <button
                   type="button"
                   key={date}
-                  className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected" : ""}`}
-                  aria-label={`${dayLabel(date, true)}, ${count} itens`}
+                  data-date={date}
+                  className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected " : ""}${inRange ? "is-in-range " : ""}${minutes > 0 ? "has-study " : ""}${history.has(shiftDate(date, -1)) ? "study-continues-left " : ""}${history.has(shiftDate(date, 1)) ? "study-continues-right" : ""}`}
+                  aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}`}
                   aria-pressed={date === selected}
-                  onClick={() => setSelected(date)}
+                  aria-current={date === today ? "date" : undefined}
+                  onClick={(event) => {
+                    if (suppressClick.current && event.detail > 0) {
+                      suppressClick.current = false;
+                      return;
+                    }
+                    suppressClick.current = false;
+                    chooseDate(date, event.shiftKey);
+                  }}
                 >
-                  <span>{dateForKey(date).getDate()}</span>
+                  <span>
+                    <PaperDigits value={String(dateForKey(date).getDate())} />
+                  </span>
+                  {minutes > 0 && <i className="agenda-study-ribbon" aria-hidden="true" />}
                   {count > 0 && (
                     <small>
-                      {count}
+                      <PaperDigits value={String(count)} />
                       <span className="agenda-count-desktop">
                         {" "}
                         {count === 1 ? "item" : "itens"}
@@ -434,85 +546,49 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             })}
           </div>
         </section>
-      ) : (
-        <div className="agenda-day-strip" role="group" aria-label="Dias da semana">
-          {dates.map((date) => (
-            <button
-              key={date}
-              type="button"
-              aria-pressed={date === selected}
-              className={date === selected ? "is-selected" : ""}
-              onClick={() => setSelected(date)}
-            >
-              <small>
-                {dateForKey(date)
-                  .toLocaleDateString("pt-BR", { weekday: "short" })
-                  .replace(".", "")}
-              </small>
-              <strong>{dateForKey(date).getDate()}</strong>
-              <span className={date === today ? "agenda-today-dot" : ""} />
-            </button>
-          ))}
-        </div>
-      )}
+      }
+      {
+        <AgendaStudyHistory
+          history={history}
+          {...(onNavigate ? { onNavigate } : {})}
+          workspace={workspace}
+          range={range ?? { start: selected, end: selected }}
+        />
+      }
       <div className="agenda-layout">
         <div>
-          {mode === "week" ? (
-            <section className="agenda-week-board" aria-label="Plano da semana">
-              {dates.map((date) => (
-                <section className={date === selected ? "is-selected" : ""} key={date}>
-                  <h2>{dayLabel(date)}</h2>
-                  {eventsOn(workspace, date).map((event) => eventCard(event, date))}
-                  {workspace.tasks.filter((task) => task.dueDate === date).map(taskCard)}
-                  {eventsOn(workspace, date).length === 0 &&
-                    !workspace.tasks.some((task) => task.dueDate === date) && (
-                      <p className="agenda-free">Espaço para respirar.</p>
-                    )}
-                  <button
-                    type="button"
-                    className="text-button"
-                    aria-label={`Planejar ${dayLabel(date)}`}
-                    onClick={() => planDay(date)}
-                  >
-                    Planejar <PaperActionIcon name="plus" />
-                  </button>
-                </section>
-              ))}
-            </section>
-          ) : (
-            <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
-              <div className="module-heading">
-                <h2 id="agenda-day-title">{dayLabel(selected, true)}</h2>
-                <span>{scheduled.length + tasks.length} itens</span>
+          <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
+            <div className="module-heading">
+              <h2 id="agenda-day-title">
+                <PaperCalendarText value={dayLabel(selected, true)} />
+              </h2>
+              <span>
+                <PaperDigits value={String(scheduled.length + tasks.length)} /> itens
+              </span>
+            </div>
+            {scheduled.length > 0 && (
+              <>
+                <h3 className="agenda-section-title">Com horário</h3>
+                {scheduled.map((event) => eventCard(event))}
+              </>
+            )}
+            {tasks.length > 0 && (
+              <>
+                <h3 className="agenda-section-title">No seu ritmo</h3>
+                {tasks.map(taskCard)}
+              </>
+            )}
+            {scheduled.length + tasks.length === 0 && (
+              <div className="agenda-empty">
+                <NavigationIcon name="planner" />
+                <h3>Seu dia ainda está livre.</h3>
+                <p>Reserve um estudo curto ou anote o que precisa fazer.</p>
+                <button type="button" className="secondary-button" onClick={() => create("study")}>
+                  Planejar estudo <PaperArrow />
+                </button>
               </div>
-              {scheduled.length > 0 && (
-                <>
-                  <h3 className="agenda-section-title">Com horário</h3>
-                  {scheduled.map((event) => eventCard(event))}
-                </>
-              )}
-              {tasks.length > 0 && (
-                <>
-                  <h3 className="agenda-section-title">No seu ritmo</h3>
-                  {tasks.map(taskCard)}
-                </>
-              )}
-              {scheduled.length + tasks.length === 0 && (
-                <div className="agenda-empty">
-                  <NavigationIcon name="planner" />
-                  <h3>Seu dia ainda está livre.</h3>
-                  <p>Reserve um estudo curto ou anote o que precisa fazer.</p>
-                  <button
-                    type="button"
-                    className="secondary-button"
-                    onClick={() => create("study")}
-                  >
-                    Planejar estudo <PaperArrow />
-                  </button>
-                </div>
-              )}
-            </section>
-          )}
+            )}
+          </section>
           <details className="agenda-extra">
             <summary>Google Agenda e tarefas de aula</summary>
             <Suspense
@@ -619,7 +695,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 aria-label="Fechar formulário"
                 onClick={() => setDraft(null)}
               >
-                <PaperCloseIcon />
+                <AgendaCloseIcon />
               </button>
             </header>
             <form onSubmit={save} className="compact-form">

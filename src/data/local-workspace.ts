@@ -437,6 +437,7 @@ function isFocusSession(value: unknown): boolean {
     Number.isFinite(value["durationMinutes"]) &&
     value["durationMinutes"] > 0 &&
     isString(value["completedAt"]) &&
+    (value["mode"] === undefined || value["mode"] === "timer" || value["mode"] === "pomodoro") &&
     (value["agendaEventId"] === undefined || isString(value["agendaEventId"])) &&
     (value["agendaDate"] === undefined || isString(value["agendaDate"]))
   );
@@ -657,6 +658,24 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
   if (!isRecord(value) || value["version"] !== WORKSPACE_VERSION) return false;
 
   return (
+    (value["practiceActivities"] === undefined ||
+      (Array.isArray(value["practiceActivities"]) &&
+        value["practiceActivities"].every(
+          (activity: unknown) =>
+            isRecord(activity) &&
+            isString(activity["id"]) &&
+            isString(activity["islandId"]) &&
+            isString(activity["islandName"]) &&
+            isString(activity["completedAt"]) &&
+            Number.isFinite(new Date(activity["completedAt"]).getTime()) &&
+            typeof activity["answers"] === "number" &&
+            Number.isSafeInteger(activity["answers"]) &&
+            activity["answers"] > 0 &&
+            typeof activity["correct"] === "number" &&
+            Number.isSafeInteger(activity["correct"]) &&
+            activity["correct"] >= 0 &&
+            activity["correct"] <= activity["answers"],
+        ))) &&
     hasCoreCollections(value, isNote) &&
     Array.isArray(value["materials"]) &&
     value["materials"].every(isMaterial) &&

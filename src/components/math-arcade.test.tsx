@@ -69,6 +69,21 @@ it("starts the reservation full only after all three countdown beats", async () 
   await tick(1000);
   expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("59");
 });
+it("records dated island activity once after an assessed answer", async () => {
+  const onPractice = vi.fn();
+  render(<MathArcade onBack={() => {}} onPractice={onPractice} />);
+  await begin();
+  await click("Resposta " + correctAnswer());
+  expect(onPractice).toHaveBeenCalledOnce();
+  expect(onPractice.mock.calls[0]?.[0]).toMatchObject({
+    islandId: "mathematics:foundations",
+    answers: 1,
+    correct: 1,
+    completedAt: new Date().toISOString(),
+  });
+  await tick(650);
+  expect(onPractice).toHaveBeenCalledOnce();
+});
 it("does not show or record XP for a zero-point round", async () => {
   render(<MathArcade onBack={() => {}} />);
   await begin();

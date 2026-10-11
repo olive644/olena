@@ -96,6 +96,15 @@ export function mergeWorkspaceStates(
     notebooks: list(base.notebooks, local.notebooks, remote.notebooks),
     notes: list(base.notes, local.notes, remote.notes),
     focusSessions: list(base.focusSessions, local.focusSessions, remote.focusSessions),
+    ...(base.practiceActivities || local.practiceActivities || remote.practiceActivities
+      ? {
+          practiceActivities: list(
+            base.practiceActivities ?? [],
+            local.practiceActivities ?? base.practiceActivities ?? [],
+            remote.practiceActivities ?? base.practiceActivities ?? [],
+          ),
+        }
+      : {}),
     materials: list(base.materials, local.materials, remote.materials),
     flashcards: list(base.flashcards, local.flashcards, remote.flashcards),
     goals: list(base.goals, local.goals, remote.goals),

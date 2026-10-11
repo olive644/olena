@@ -267,10 +267,17 @@
   }
 }
 
-/* Subtle inset focus keeps keyboard navigation visible without purple frames. */
+/* Shared focus uses paper emphasis, never rectangular browser frames. */
+:root body *,
+:root body :is(:focus, :focus-visible, [aria-pressed], [aria-selected], [aria-expanded]) {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
 :root body :focus-visible {
-  outline: 1px dotted currentColor !important;
-  outline-offset: -3px !important;
+  text-decoration: underline;
+  text-decoration-color: #facc15;
+  text-underline-offset: 4px;
+  filter: drop-shadow(0 3px 0 #facc15);
 }
 :root body :is(.local-room-fullscreen, .local-room-ready-words__search):focus-visible {
   outline: none !important;
@@ -566,7 +573,8 @@
 }
 @media (forced-colors: active) {
   :root body :focus-visible {
-    outline: 2px solid Highlight !important;
+    outline: none !important;
+    text-decoration-color: Highlight;
   }
 }
 
