@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Professor e aprendizado da Olena (2026-10-10)
+
+- Chat real usa API autenticada com consentimento, Cloudflare como professor e
+  limites compartilhados. Preview mantém demonstração explicitamente local.
+- Nenhuma conversa do aluno é guardada para treinamento. Dados didáticos
+  sintéticos passam por revisão obrigatória antes de exportação.
+- Receita LoRA fornecida, não executada. Nenhum peso treinado ou aprendizado
+  automático em produção. Modelo próprio só assume capacidades após avaliação
+  e configuração manual, com fallback ao professor e rollback explícito.
+- Credenciais e execução real dependem de configuração no servidor.
+  Decisões, limitações, comandos e modelo de ameaça: docs/OLENA_LEARNING.md.
+
 ## Helena integrada ao aplicativo (2026-10-10)
 
 - A estrela aprovada agora é montada no AppContent real após o onboarding,

@@ -38,6 +38,12 @@ function post(body: unknown, requestOrigin = origin): Request {
 }
 
 describe("handler da Helena", () => {
+  it("não gera para usuário sem autenticação", async () => {
+    const deps = dependencies({ identifyClient: () => "" });
+    expect((await createHelenaHandler(deps)(post(validRequest))).status).toBe(401);
+    expect(deps.provider.generate).not.toHaveBeenCalled();
+    expect(deps.rateLimiter.consume).not.toHaveBeenCalled();
+  });
   it("valida, limita e encaminha somente o contrato permitido", async () => {
     const deps = dependencies();
     const response = await createHelenaHandler(deps)(post(validRequest));

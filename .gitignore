@@ -10,6 +10,7 @@ test-results
 .DS_Store
 .vercel
 .venv
+.olena-learning
 work
 src/graphify-out
 .claude/settings.json

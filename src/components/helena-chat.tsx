@@ -11,6 +11,8 @@ import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperArrow } from "./paper-arrow";
 import { HelenaLoading } from "./helena-loading";
 import { RoomPointsIcon } from "./room-paper-icons";
+import { requestHelena, HelenaClientError } from "../data/helena-client";
+import { getFirebaseAccountServices } from "../data/firebase-account";
 import "./helena-chat.css";
 
 type Message = { id: number; role: "user" | "helena"; text: string };
@@ -32,28 +34,25 @@ function constrain(position: Position) {
 }
 const suggestions = ["Organizar meus estudos", "Me ajudar com uma dúvida", "Revisar uma matéria"];
 
-function demonstrationReply(text: string) {
-  if (/organizar|agenda|rotina|estudos/i.test(text))
-    return "Vamos por partes. Qual matéria você quer estudar e quanto tempo tem hoje? Podemos começar com um bloco curto e deixar uma pausa entre as atividades.";
-  if (/revisar|revisão|materia|matéria/i.test(text))
-    return "Uma revisão curta pode ajudar bastante. Me diga a matéria e o assunto. A ideia é relembrar o essencial e depois praticar com uma pergunta por vez.";
-  if (/matem|conta|equação/i.test(text))
-    return "Pode me mostrar a conta ou dizer onde você travou. Vamos separar o problema em passos pequenos, para você entender o caminho, não só o resultado.";
-  return "Pode me contar um pouco mais? Diga o assunto e o que está difícil. Vamos começar pelo primeiro passo, no seu ritmo.";
-}
-
-/** Interface compartilhada. Respostas demonstrativas, sem API ou persistência. */
+/** Preview local; no aplicativo, professor externo com consentimento por sessão. */
 export function HelenaChat({
   initiallyOpen = false,
   preview = false,
+  previewReply,
+  currentView = "today",
 }: {
   initiallyOpen?: boolean;
   preview?: boolean;
+  previewReply?: (text: string) => string;
+  currentView?: string;
 }) {
   const [open, setOpen] = useState(initiallyOpen);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [pending, setPending] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const [error, setError] = useState("");
+  const controller = useRef<AbortController | null>(null);
   const [motion, setMotion] = useState<Motion>("idle");
   const [position, setPosition] = useState<Position | null>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -72,6 +71,7 @@ export function HelenaChat({
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current);
+      controller.current?.abort();
       if (motionTimer.current) clearTimeout(motionTimer.current);
     },
     [],
@@ -179,14 +179,73 @@ export function HelenaChat({
   function send(text: string) {
     const value = text.trim();
     if (!value || sending.current) return;
+    if (!preview && !consent) {
+      setError("Autorize o envio ao Cloudflare.");
+      return;
+    }
+    setError("");
     sending.current = true;
     setMessages((items) => [...items, { id: ++nextId.current, role: "user", text: value }]);
     setDraft("");
     setPending(true);
+    if (!preview) {
+      const abort = new AbortController();
+      controller.current = abort;
+      const previous = messages
+        .slice(-6)
+        .map((item) => `${item.role === "user" ? "Aluno" : "Helena"}: ${item.text}`)
+        .join("\n")
+        .slice(-6000);
+      void (async () => {
+        try {
+          const { auth } = await getFirebaseAccountServices();
+          const token = await auth.currentUser?.getIdToken();
+          if (!token) throw new Error();
+          if (abort.signal.aborted) return;
+          const response = await requestHelena(
+            {
+              version: 1,
+              capability: "tutor",
+              prompt: value,
+              sources: [
+                {
+                  id: "current-screen",
+                  kind: "note",
+                  title: "Tela e conversa atual",
+                  content: `Módulo aberto: ${currentView}. Histórico desta sessão:\n${previous || "Sem histórico."}`,
+                },
+              ],
+              privacy: { consent: true, retention: "none" },
+            },
+            { token, signal: abort.signal },
+          );
+          if (!abort.signal.aborted)
+            setMessages((items) => [
+              ...items,
+              { id: ++nextId.current, role: "helena", text: response.answer },
+            ]);
+        } catch (failure) {
+          if (!abort.signal.aborted) {
+            setError(
+              failure instanceof HelenaClientError
+                ? failure.message
+                : "Entre na conta ou tente mais tarde.",
+            );
+            setDraft(value);
+          }
+        } finally {
+          if (!abort.signal.aborted) {
+            setPending(false);
+            sending.current = false;
+          }
+        }
+      })();
+      return;
+    }
     timer.current = setTimeout(() => {
       setMessages((items) => [
         ...items,
-        { id: ++nextId.current, role: "helena", text: demonstrationReply(value) },
+        { id: ++nextId.current, role: "helena", text: previewReply?.(value) ?? "Preview local." },
       ]);
       setPending(false);
       sending.current = false;
@@ -320,6 +379,19 @@ export function HelenaChat({
             )}
           </div>
           <footer className="helena-chat-footer">
+            {!preview && (
+              <label>
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  disabled={pending}
+                  onChange={(event) => setConsent(event.target.checked)}
+                />
+                Enviar mensagens, histórico e nome da tela ao Cloudflare. Minha conversa não será
+                usada no treinamento.
+              </label>
+            )}
+            {error && <p role="alert">{error}</p>}
             <form onSubmit={submit} className="helena-chat-composer">
               <label className="sr-only" htmlFor="helena-chat-input">
                 Mensagem para Helena
@@ -348,7 +420,11 @@ export function HelenaChat({
                 <PaperArrow />
               </button>
             </form>
-            <p>Conversa demonstrativa. Nada é enviado ou salvo.</p>
+            <p>
+              {preview
+                ? "Conversa demonstrativa. Nada é enviado ou salvo."
+                : "IA pode errar. Confira a resposta. A Olena não salva esta conversa."}
+            </p>
           </footer>
         </section>
       )}

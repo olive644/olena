@@ -1,5 +1,16 @@
 # OlenaStudy: Second Brain
 
+2026-10-10, professor Helena: api/helena.ts monta handler autenticado e limites
+Firebase compartilhados. Chat real exige consentimento por sessão, envia nome
+da tela e histórico curto, sem gravação ou treinamento de conversas. Preview
+continua local. CloudflareTeacher usa credenciais privadas e timeout; a Olena
+avaliada pode assumir capacidades via createProgressiveProvider sem chamada
+externa no sucesso. Scripts olena-learning.mjs e train-olena.py separam rascunho,
+revisão por hash, exportação e treinamento LoRA explícito. Não existe modelo
+treinado ou job automático nesta entrega. Configuração, ameaças, avaliação e
+rollback em docs/OLENA_LEARNING.md. Testes do pipeline: node --test
+scripts/olena-learning.test.mjs.
+
 2026-10-10, integração Helena: AppContent monta HelenaChat por lazy import fora
 do Suspense das abas. Estado sobrevive à navegação. Arquivos compartilhados agora
 são helena-chat.tsx/css/test.tsx; preview reutiliza o componente com preview=true.
