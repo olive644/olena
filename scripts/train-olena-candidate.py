@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 
 BASE = "Qwen/Qwen2.5-0.5B-Instruct"
@@ -34,7 +35,11 @@ def main():
         and (previous / "adapter_model.safetensors").exists()
     )
     if resumable and previous_report.get("dataset_sha256") == digest:
-        print("Corpus unchanged. No training or artifact duplication.")
+        shutil.copytree(previous, OUTPUT)
+        if os.environ.get("GITHUB_OUTPUT"):
+            with open(os.environ["GITHUB_OUTPUT"], "a") as stream:
+                stream.write("trained=false\nartifact=true\n")
+        print("Corpus unchanged. No training. Renew small adapter retention only.")
         return
     tokenizer = AutoTokenizer.from_pretrained(BASE, revision=REVISION, trust_remote_code=False)
     model = AutoModelForCausalLM.from_pretrained(
@@ -119,7 +124,7 @@ def main():
     )
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as stream:
-            stream.write("trained=true\n")
+            stream.write("trained=true\nartifact=true\n")
     print("Actual weights saved. Production approval remains false.")
 
 

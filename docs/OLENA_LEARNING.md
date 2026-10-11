@@ -24,7 +24,8 @@ O workflow `Olena learning candidate` roda diariamente às 04:17 UTC, com no
 máximo duas chamadas adicionais por dia, incluídas no limite global do chat.
 O corpus inicial tem 40 exercícios públicos de adição e multiplicação. Não
 é aprendizado ilimitado: ao completar o corpus, a geração para. Se seu hash
-não mudar e o último candidato for recuperável, o treinamento também para.
+não mudar e o último candidato for recuperável, o treinamento também para;
+o job apenas renova a retenção do adaptador pequeno para não perder os pesos.
 Novos temas precisam de currículo e testes próprios.
 
 O runner CPU padrão é gratuito neste repositório público. Não usa GPU paga,

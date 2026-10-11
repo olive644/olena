@@ -38,6 +38,7 @@ jobs:
           fi
       - name: Install isolated CPU training dependencies
         run: |
+          python3 scripts/test_train_olena_candidate.py
           python3 -m venv .olena-learning/venv
           .olena-learning/venv/bin/pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
           .olena-learning/venv/bin/pip install transformers==5.19.0 peft==0.21.2 accelerate==1.15.0 safetensors==0.8.0
@@ -52,12 +53,12 @@ jobs:
           HF_HOME: ${{ runner.temp }}/olena-model-cache
         run: .olena-learning/venv/bin/python scripts/train-olena-candidate.py
       - name: Include model licenses
-        if: steps.train.outputs.trained == 'true'
+        if: steps.train.outputs.artifact == 'true'
         run: |
           curl --fail --max-time 30 https://raw.githubusercontent.com/meta-llama/llama-models/0e0b8c519242d5833d8c11bffc1232b77ad7f301/models/llama3_3/LICENSE -o .olena-learning/candidate/LLAMA_LICENSE
           curl --fail --max-time 30 https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct/raw/7ae557604adf67be50417f59c2c2f167def9a775/LICENSE -o .olena-learning/candidate/QWEN_LICENSE
       - name: Keep small candidate adapter only, never base weights
-        if: steps.train.outputs.trained == 'true'
+        if: steps.train.outputs.artifact == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: Llama-Olena-Qwen-Candidate
