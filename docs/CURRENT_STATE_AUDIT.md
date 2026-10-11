@@ -2319,3 +2319,13 @@ em `docs/OLENA_LEARNING.md`. Nenhuma alteração visual ou no provedor do chat.
 - SSE incremental do provedor ao navegador, cancelamento propagado e preservação
   de texto parcial. Limites de conta, origem e quota continuam ativos.
 - Treinamento e promoção do modelo próprio não mudam nesta entrega.
+
+# Agenda consistente do aluno
+
+- Hoje/Semana/Mês, formulário único, edição, exclusão confirmada e reagendamento.
+- Recorrência semanal calculada sem copiar registros. Conclusão por ocorrência.
+- Sessões ligadas ao Foco: abrir não conclui; minutos registrados completam a meta.
+- Persistência e sincronização reaproveitam o workspace, com campos opcionais compatíveis.
+- Lembretes somente com Agenda aberta. Helena recebe um rascunho, nunca envio automático.
+- Google Agenda e tarefas de aula preservados. Sem dependências, serviços ou custos novos.
+- Provas, limites e rollback documentados em `docs/AGENDA.md`. Ainda não mesclado.

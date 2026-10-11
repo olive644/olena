@@ -33,7 +33,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Validated paper-tab persistence: measured 274.2 KiB, with a narrow CI allowance.
 // The compact stroke storage format (read path in the initial workspace loader) adds 1.6 KiB
 // (276.3 KiB measured); the ceiling moves to 278 KiB.
-const MAX_INITIAL_JS_BYTES = 278 * 1024;
+// Compatible agenda metadata and occurrence selection add 1.6 KiB (277.9 measured).
+// Retain a small Linux bundler allowance without changing the hard ceiling.
+const MAX_INITIAL_JS_BYTES = 280 * 1024;
 // Teto absoluto, separado do orçamento acima: o orçamento normal sobe a cada funcionalidade,
 // com uma frase de justificativa por cima, e isso é esperado. Mas nada nesse processo avisa
 // se a soma dessas subidas pequenas virar um problema grande sem ninguém perceber. Este teto
@@ -227,7 +229,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Preserve the initial-entry limit and a narrow cross-platform allowance.
 // End-to-end Helena SSE adds 1.4 KiB to the lazy chat, with no new dependency
 // or initial-entry growth (276.3 KiB unchanged). Reserve 2 KiB for this feature.
-const MAX_TOTAL_JS_BYTES = 1204 * 1024;
+// Agenda calendar, unified editing, recurrence and Focus linkage add 11.6 KiB.
+// Measured total: 1215.2 KiB. Calendar UI/CSS remain in the lazy planner route.
+const MAX_TOTAL_JS_BYTES = 1217 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

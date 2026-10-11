@@ -28,6 +28,10 @@ export function GoogleCalendarPanel() {
           </button>
         )}
       </div>
+      <p>
+        Eventos do Google são somente leitura aqui. Abra o evento no Google para alterar. Eles não
+        são copiados para sua agenda local.
+      </p>
       {googleCalendar.status === "checking" && (
         <HelenaLoading label="Verificando conexão…" compact />
       )}

@@ -13,6 +13,22 @@ const session: FocusSession = {
   savedAt: 10_000,
 };
 describe("sessão local de Foco", () => {
+  it("preserves validated agenda context and rejects invalid targets", () => {
+    const planned = {
+      ...session,
+      agendaEventId: "study-1",
+      agendaDate: "2026-10-11",
+      subjectId: "math",
+      plannedMinutes: 15,
+    };
+    expect(readFocusSession(JSON.stringify(planned), 60_000)).toEqual(planned);
+    expect(
+      readFocusSession(JSON.stringify({ ...planned, plannedMinutes: 0 }), 60_000),
+    ).toBeUndefined();
+    expect(
+      readFocusSession(JSON.stringify({ ...planned, agendaDate: "not-a-date" }), 60_000),
+    ).toBeUndefined();
+  });
   it("restaura o prazo, não só os segundos exibidos", () => {
     expect(readFocusSession(JSON.stringify(session), 60_000)).toEqual(session);
   });

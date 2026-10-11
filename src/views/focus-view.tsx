@@ -243,7 +243,6 @@ function FocusPaperControlIcon({ paused }: { paused: boolean }) {
 }
 
 export function FocusView({ workspace, dispatch }: FocusViewProps) {
-  const defaultSubject = workspace.subjects[0];
   const [restored] = useState(() => {
     const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), Date.now());
     if (
@@ -257,6 +256,9 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     }
     return session;
   });
+  const defaultSubject =
+    workspace.subjects.find((subject) => subject.id === restored?.subjectId) ??
+    workspace.subjects[0];
   const [mode, setMode] = useState<TimerMode>(restored?.mode ?? "timer");
   const [modeDirection, setModeDirection] = useState(1);
   const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>(restored?.phase ?? "focus");
@@ -319,6 +321,14 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       timerStartedAt: timerStartedAt.current,
       pomodoroDeadline: pomodoroDeadline.current,
       savedAt: Date.now(),
+      ...(restored?.agendaEventId
+        ? {
+            agendaEventId: restored.agendaEventId,
+            agendaDate: restored.agendaDate,
+            subjectId: restored.subjectId,
+            plannedMinutes: restored.plannedMinutes,
+          }
+        : {}),
     };
     localStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
   }, [
@@ -329,6 +339,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     secondsRemaining,
     persistedTimerSeconds,
     running,
+    restored,
   ]);
 
   useEffect(() => {
@@ -357,6 +368,9 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
             subjectId: defaultSubject?.id ?? "",
             durationMinutes: minutes,
             completedAt: new Date(deadline).toISOString(),
+            ...(restored?.agendaEventId
+              ? { agendaEventId: restored.agendaEventId, agendaDate: restored.agendaDate }
+              : {}),
           });
           days.push(toDateKey(new Date(deadline)));
         }
@@ -395,6 +409,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     pomodoroDays,
     workspace.focusPreferences.longBreaks,
     workspace.focusPreferences.pomodoroMinutes,
+    restored,
   ]);
 
   if (!defaultSubject) return null;
@@ -449,13 +464,18 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function finish() {
-    if (elapsedSeconds <= 0) return;
+    if (elapsedSeconds < (restored?.agendaEventId ? 60 : 1)) return;
     if (mode === "timer" || pomodoroPhase === "focus") {
       dispatch({
         type: "focus/recorded",
         subjectId: subject.id,
-        durationMinutes: Math.max(1, Math.round(elapsedSeconds / 60)),
+        durationMinutes: restored?.agendaEventId
+          ? Math.floor(elapsedSeconds / 60)
+          : Math.max(1, Math.round(elapsedSeconds / 60)),
         completedAt: new Date().toISOString(),
+        ...(restored?.agendaEventId
+          ? { agendaEventId: restored.agendaEventId, agendaDate: restored.agendaDate }
+          : {}),
       });
     }
     reset();
@@ -492,6 +512,18 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   return (
     <main className="main-content focus-page" id="main-content">
       <PageHeader />
+      {restored?.agendaEventId && (
+        <section className="module-panel" aria-label="Estudo da agenda">
+          <strong>
+            {workspace.events.find((event) => event.id === restored.agendaEventId)?.title ??
+              "Estudo planejado"}
+          </strong>
+          <p>
+            {subject.name} · Meta de {restored.plannedMinutes ?? 25} min. Inicie o cronômetro e
+            registre ao encerrar. Abrir esta tela não conclui o estudo.
+          </p>
+        </section>
+      )}
       <div className="focus-layout">
         <section className="focus-card" aria-labelledby="focus-timer-title">
           <div className="focus-mode-carousel">
@@ -608,7 +640,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     className="secondary-button"
                     type="button"
                     onClick={finish}
-                    disabled={elapsedSeconds <= 0}
+                    disabled={elapsedSeconds < (restored?.agendaEventId ? 60 : 1)}
                   >
                     Encerrar e registrar
                   </button>

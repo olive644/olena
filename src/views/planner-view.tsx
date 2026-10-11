@@ -1,378 +1,791 @@
-import { lazy, Suspense, useState, type Dispatch, type FormEvent } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
+import { PageHeader, type AppView } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
-import { PaperCheckIcon } from "../components/paper-check-icon";
-import { PageHeader } from "../components/app-navigation";
 import { PaperActionIcon } from "../components/paper-action-icon";
-import { toDateKey, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
+import { PaperArrow } from "../components/paper-arrow";
+import { PaperCheckIcon } from "../components/paper-check-icon";
+import { PaperCloseIcon } from "../components/paper-close-icon";
+import { NavigationIcon } from "../components/navigation-icon";
+import {
+  agendaPrompt,
+  dateForKey,
+  eventsOn,
+  HELENA_PLAN_DRAFT_EVENT,
+  monthDates,
+  shiftDate,
+  weekDates,
+} from "../domain/agenda";
+import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
+import {
+  toDateKey,
+  type StudyEvent,
+  type StudyTask,
+  type WorkspaceAction,
+  type WorkspaceState,
+} from "../domain/workspace";
+import "./planner-view.css";
 
-const HomeworkSection = lazy(() =>
-  import("./homework-section").then((module) => ({ default: module.HomeworkSection })),
-);
 const GoogleCalendarPanel = lazy(() =>
   import("./google-calendar-panel").then((module) => ({ default: module.GoogleCalendarPanel })),
 );
-
-type PlannerViewProps = {
+const HomeworkSection = lazy(() =>
+  import("./homework-section").then((module) => ({ default: module.HomeworkSection })),
+);
+type Kind = "task" | "appointment" | "study" | "subject" | "goal";
+type Draft = {
+  kind: Kind;
+  id?: string;
+  title: string;
+  date: string;
+  time: string;
+  subjectId: string;
+  minutes: number;
+  recurrence: "none" | "weekly";
+  until: string;
+};
+type Props = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
+  onNavigate?: (view: AppView) => void;
 };
-
-function subjectIcon(name: string): "flag-us" | "flag-br" | "flag-es" | "book" {
-  const normalized = name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-  if (normalized.includes("ingles")) return "flag-us";
-  if (normalized.includes("portugues")) return "flag-br";
-  if (normalized.includes("espanhol")) return "flag-es";
-  return "book";
+const labels: Record<Kind, string> = {
+  task: "Tarefa",
+  appointment: "Compromisso",
+  study: "Sessão de estudo",
+  subject: "Matéria",
+  goal: "Meta de foco",
+};
+function dayLabel(date: string, long = false) {
+  return dateForKey(date).toLocaleDateString(
+    "pt-BR",
+    long
+      ? { weekday: "long", day: "numeric", month: "long" }
+      : { weekday: "short", day: "numeric" },
+  );
 }
 
-export function PlannerView({ workspace, dispatch }: PlannerViewProps) {
-  const today = toDateKey(new Date());
-  const defaultSubject = workspace.subjects[0];
-  const [subjectName, setSubjectName] = useState("");
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDate, setTaskDate] = useState(today);
-  const [taskSubjectId, setTaskSubjectId] = useState(defaultSubject?.id ?? "");
-  const [eventTitle, setEventTitle] = useState("");
-  const [eventDate, setEventDate] = useState(today);
-  const [eventTime, setEventTime] = useState("18:00");
-  const [eventSubjectId, setEventSubjectId] = useState(defaultSubject?.id ?? "");
-  const [goalTitle, setGoalTitle] = useState("");
-  const [goalMinutes, setGoalMinutes] = useState(300);
-  const [goalDeadline, setGoalDeadline] = useState(today);
-
-  if (!defaultSubject) return null;
-
-  function addSubject(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const name = subjectName.trim();
-    if (!name) return;
-    const colors = ["#cf5f4b", "#247a73", "#a07319", "#4568a8"];
-    const color = colors[workspace.subjects.length % colors.length] ?? "#7257e8";
-    dispatch({ type: "subject/added", name, color });
-    setSubjectName("");
-  }
-
-  function addTask(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const title = taskTitle.trim();
-    if (!title) return;
-    dispatch({ type: "task/added", title, subjectId: taskSubjectId, dueDate: taskDate });
-    setTaskTitle("");
-  }
-
-  function addEvent(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const title = eventTitle.trim();
-    if (!title) return;
-    dispatch({
-      type: "event/added",
-      title,
-      subjectId: eventSubjectId,
-      date: eventDate,
-      time: eventTime,
+export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
+  const [now, setNow] = useState(() => new Date());
+  const today = toDateKey(now);
+  const [selected, setSelected] = useState(today);
+  const [mode, setMode] = useState<"day" | "week" | "month">("day");
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [notice, setNotice] = useState("");
+  const dialog = useRef<HTMLDialogElement>(null);
+  const addButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
+  useEffect(() => {
+    if (draft) dialog.current?.showModal();
+    else if (dialog.current?.open) {
+      dialog.current.close();
+      addButton.current?.focus();
+    }
+  }, [draft]);
+  const dates = mode === "month" ? monthDates(selected) : weekDates(selected);
+  const pending = workspace.tasks.filter((task) => !task.completed && task.dueDate < today);
+  const scheduled = eventsOn(workspace, selected);
+  const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
+  const subjectName = (id: string) =>
+    workspace.subjects.find((subject) => subject.id === id)?.name ?? "Sem matéria";
+  function create(kind: Kind = "task") {
+    setDraft({
+      kind,
+      title: "",
+      date: selected,
+      time: "18:00",
+      subjectId: workspace.subjects[0]?.id ?? "",
+      minutes: kind === "goal" ? 300 : 25,
+      recurrence: "none",
+      until: "",
     });
-    setEventTitle("");
   }
-
-  function addFocusGoal(event: FormEvent<HTMLFormElement>) {
+  function edit(item: StudyEvent | StudyTask) {
+    setDraft(
+      "dueDate" in item
+        ? {
+            kind: "task",
+            id: item.id,
+            title: item.title,
+            date: item.dueDate,
+            time: "18:00",
+            subjectId: item.subjectId,
+            minutes: 25,
+            recurrence: "none",
+            until: "",
+          }
+        : {
+            kind: item.kind ?? "appointment",
+            id: item.id,
+            title: item.title,
+            date: item.date,
+            time: item.time,
+            subjectId: item.subjectId,
+            minutes: item.durationMinutes ?? 25,
+            recurrence: item.recurrence ?? "none",
+            until: item.recurrenceUntil ?? "",
+          },
+    );
+  }
+  function save(event: FormEvent) {
     event.preventDefault();
-    const title = goalTitle.trim();
-    if (!title) return;
-    dispatch({
-      type: "goal/added",
-      subjectId: defaultSubject?.id ?? "",
-      title,
-      targetMinutes: goalMinutes,
-      deadline: goalDeadline,
-    });
-    setGoalTitle("");
+    if (!draft || !draft.title.trim()) return;
+    const title = draft.title.trim();
+    if (draft.kind === "subject")
+      dispatch({ type: "subject/added", name: title, color: "#7c3aed" });
+    else if (draft.kind === "goal")
+      dispatch({
+        type: "goal/added",
+        title,
+        subjectId: draft.subjectId,
+        targetMinutes: draft.minutes,
+        deadline: draft.date,
+      });
+    else if (draft.kind === "task") {
+      const changes = { title, subjectId: draft.subjectId, dueDate: draft.date };
+      dispatch(
+        draft.id
+          ? { type: "task/updated", id: draft.id, changes }
+          : { type: "task/added", ...changes },
+      );
+    } else {
+      const changes = {
+        title,
+        subjectId: draft.subjectId,
+        date: draft.date,
+        time: draft.time,
+        kind: draft.kind,
+        durationMinutes: draft.minutes,
+        recurrence: draft.recurrence,
+        recurrenceUntil: draft.until,
+      };
+      dispatch(
+        draft.id
+          ? { type: "event/updated", id: draft.id, changes }
+          : { type: "event/added", ...changes },
+      );
+    }
+    setNotice(draft.id ? "Alteração salva." : "Adicionado à sua agenda.");
+    setDraft(null);
   }
-
-  const orderedTasks = [...workspace.tasks].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
-  const orderedEvents = [...workspace.events].sort((a, b) =>
-    `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`),
-  );
-
-  return (
-    <main className="main-content" id="main-content">
-      <PageHeader />
-      <header className="view-heading">
-        <span className="section-label">Agenda</span>
-        <h1>Planeje sem complicar.</h1>
-        <p>Organize tarefas e compromissos por data.</p>
-      </header>
-
-      <div className="planner-grid">
-        <section className="module-panel" aria-labelledby="new-subject-title">
-          <div className="module-heading">
-            <h2 id="new-subject-title">Matérias</h2>
-            <span>{workspace.subjects.length}</span>
-          </div>
-          <ul className="subject-list">
-            {workspace.subjects.map((item) => (
-              <li key={item.id}>
-                <PaperActionIcon name={subjectIcon(item.name)} />
-                {item.name}
-              </li>
-            ))}
-          </ul>
-          <form className="inline-form" onSubmit={addSubject}>
-            <label className="field">
-              <span>Nova matéria</span>
-              <input
-                value={subjectName}
-                onChange={(event) => setSubjectName(event.target.value)}
-                placeholder="Ex.: Matemática"
-                required
-              />
-            </label>
-            <button className="icon-button" type="submit" aria-label="Adicionar matéria">
-              <PaperActionIcon name="plus" />
-            </button>
-          </form>
-        </section>
-
-        <section className="module-panel" aria-labelledby="new-task-title">
-          <div className="module-heading">
-            <h2 id="new-task-title">Nova tarefa</h2>
-          </div>
-          <form className="compact-form" onSubmit={addTask}>
-            <label className="field">
-              <span>O que precisa ser feito?</span>
-              <input
-                value={taskTitle}
-                onChange={(event) => setTaskTitle(event.target.value)}
-                placeholder="Ex.: Revisar vocabulário"
-                required
-              />
-            </label>
-            <label className="field">
-              <span>Prazo</span>
-              <input
-                type="date"
-                value={taskDate}
-                onChange={(event) => setTaskDate(event.target.value)}
-                required
-              />
-            </label>
-            <label className="field">
-              <span>Matéria</span>
-              <select
-                value={taskSubjectId}
-                onChange={(event) => setTaskSubjectId(event.target.value)}
-              >
-                {workspace.subjects.map((item) => (
-                  <option value={item.id} key={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button className="primary-button" type="submit">
-              <PaperActionIcon name="plus" /> <span>Adicionar tarefa</span>
-            </button>
-          </form>
-        </section>
-
-        <section className="module-panel" aria-labelledby="new-event-title">
-          <div className="module-heading">
-            <h2 id="new-event-title">Novo compromisso</h2>
-          </div>
-          <form className="compact-form" onSubmit={addEvent}>
-            <label className="field field--full">
-              <span>Título</span>
-              <input
-                value={eventTitle}
-                onChange={(event) => setEventTitle(event.target.value)}
-                placeholder="Ex.: Aula de conversação"
-                required
-              />
-            </label>
-            <div className="field-row">
-              <label className="field">
-                <span>Data</span>
-                <input
-                  type="date"
-                  value={eventDate}
-                  onChange={(event) => setEventDate(event.target.value)}
-                  required
-                />
-              </label>
-              <label className="field">
-                <span>Horário</span>
-                <input
-                  type="time"
-                  value={eventTime}
-                  onChange={(event) => setEventTime(event.target.value)}
-                  required
-                />
-              </label>
-            </div>
-            <label className="field">
-              <span>Matéria</span>
-              <select
-                value={eventSubjectId}
-                onChange={(event) => setEventSubjectId(event.target.value)}
-              >
-                {workspace.subjects.map((item) => (
-                  <option value={item.id} key={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button className="secondary-button" type="submit">
-              <PaperActionIcon name="plus" /> <span>Adicionar compromisso</span>
-            </button>
-          </form>
-        </section>
-      </div>
-
-      <div className="learn-grid focus-goals">
-        <section className="module-panel" aria-labelledby="new-goal-title">
-          <div className="module-heading">
-            <h2 id="new-goal-title">Nova meta de foco</h2>
-          </div>
-          <form className="compact-form" onSubmit={addFocusGoal}>
-            <label className="field">
-              <span>Objetivo</span>
-              <input
-                value={goalTitle}
-                onChange={(event) => setGoalTitle(event.target.value)}
-                placeholder="Ex.: Preparar prova final"
-                required
-              />
-            </label>
-            <div className="field-row">
-              <label className="field">
-                <span>Meta em minutos</span>
-                <input
-                  type="number"
-                  min="1"
-                  step="5"
-                  value={goalMinutes}
-                  onChange={(event) => setGoalMinutes(Number(event.target.value))}
-                  required
-                />
-              </label>
-              <label className="field">
-                <span>Prazo</span>
-                <input
-                  type="date"
-                  value={goalDeadline}
-                  onChange={(event) => setGoalDeadline(event.target.value)}
-                  required
-                />
-              </label>
-            </div>
-            <button className="secondary-button" type="submit">
-              <PaperActionIcon name="plus" /> Criar meta
-            </button>
-          </form>
-        </section>
-        <section className="module-panel goals-panel" aria-labelledby="goal-list-title">
-          <div className="module-heading">
-            <h2 id="goal-list-title">Metas de foco</h2>
-            <span>
-              {workspace.focusSessions.reduce((sum, session) => sum + session.durationMinutes, 0)}{" "}
-              min registrados
+  function startStudy(event: StudyEvent, date: string, timestamp: number) {
+    const active = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), timestamp);
+    if (
+      active?.running ||
+      (active?.elapsedMilliseconds ?? 0) > 0 ||
+      (active && active.secondsRemaining < active.duration * 60)
+    ) {
+      setNotice(
+        "Você já tem uma sessão em andamento. Encerre ou registre no Foco antes de começar outra.",
+      );
+      return;
+    }
+    const session: FocusSession = {
+      mode: "timer",
+      phase: "focus",
+      completed: 0,
+      duration: workspace.focusPreferences.pomodoroMinutes,
+      secondsRemaining: workspace.focusPreferences.pomodoroMinutes * 60,
+      elapsedMilliseconds: 0,
+      running: false,
+      timerStartedAt: null,
+      pomodoroDeadline: null,
+      savedAt: timestamp,
+      agendaEventId: event.id,
+      agendaDate: date,
+      subjectId: event.subjectId,
+      plannedMinutes: event.durationMinutes ?? 25,
+    };
+    try {
+      localStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
+      onNavigate?.("focus");
+    } catch {
+      setNotice(
+        "Não foi possível preparar o estudo. Libere espaço no dispositivo e tente novamente.",
+      );
+    }
+  }
+  function movePeriod(direction: -1 | 1) {
+    if (mode === "month") {
+      const date = dateForKey(selected);
+      date.setDate(1);
+      date.setMonth(date.getMonth() + direction);
+      setSelected(toDateKey(date));
+    } else setSelected(shiftDate(selected, direction * (mode === "week" ? 7 : 1)));
+  }
+  function taskCard(task: StudyTask) {
+    return (
+      <article className={`agenda-item${task.completed ? " is-complete" : ""}`} key={task.id}>
+        <button
+          type="button"
+          className="agenda-check"
+          aria-label={`${task.completed ? "Reabrir" : "Concluir"} ${task.title}`}
+          aria-pressed={task.completed}
+          onClick={() => dispatch({ type: "task/toggled", id: task.id })}
+        >
+          <PaperCheckIcon />
+        </button>
+        <div className="agenda-item-copy">
+          <strong>{task.title}</strong>
+          <small>{subjectName(task.subjectId)} · Sem horário</small>
+        </div>
+        <button
+          type="button"
+          className="text-button"
+          aria-label={`Editar ${task.title}`}
+          onClick={() => edit(task)}
+        >
+          Editar
+        </button>
+      </article>
+    );
+  }
+  function eventCard(event: StudyEvent, date = selected) {
+    const complete = event.completedDates?.includes(date) ?? false;
+    const recorded = workspace.focusSessions
+      .filter(
+        (session) =>
+          session.agendaEventId === event.id &&
+          session.agendaDate === date &&
+          session.subjectId === event.subjectId,
+      )
+      .reduce((sum, session) => sum + session.durationMinutes, 0);
+    const minutesAway = Math.round(
+      (new Date(`${date}T${event.time}`).getTime() - now.getTime()) / 60_000,
+    );
+    const reminder = date === today && !complete && minutesAway >= 0 && minutesAway <= 15;
+    return (
+      <article
+        className={`agenda-item agenda-item--timed${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
+        key={`${event.id}:${date}`}
+      >
+        <time>{event.time}</time>
+        <div className="agenda-item-copy">
+          <strong>{event.title}</strong>
+          <small>
+            {subjectName(event.subjectId)} ·{" "}
+            {event.kind === "study"
+              ? `${event.durationMinutes ?? 25} min de estudo`
+              : "Compromisso"}
+            {event.recurrence === "weekly" ? " · Semanal" : ""}
+          </small>
+          {reminder && (
+            <span className="agenda-reminder">
+              {minutesAway === 0 ? "Está na hora" : `Começa em ${minutesAway} min`}
             </span>
+          )}
+          {complete && <small>Concluído</small>}
+          {event.kind === "study" && recorded > 0 && (
+            <small>
+              {recorded}/{event.durationMinutes ?? 25} min registrados
+            </small>
+          )}
+        </div>
+        <div className="agenda-item-actions">
+          {event.kind === "study" && !complete && (
+            <button
+              type="button"
+              className="primary-button"
+              aria-label={`Começar estudo ${event.title}`}
+              onClick={() => startStudy(event, date, Date.now())}
+            >
+              Começar <PaperArrow />
+            </button>
+          )}
+          <button
+            type="button"
+            className="text-button"
+            aria-label={`Editar ${event.title}`}
+            onClick={() => edit(event)}
+          >
+            Editar
+          </button>
+          {event.kind !== "study" && (
+            <button
+              type="button"
+              className="agenda-check"
+              aria-label={`${complete ? "Reabrir" : "Concluir"} ${event.title}`}
+              aria-pressed={complete}
+              onClick={() => dispatch({ type: "event/toggled", id: event.id, date })}
+            >
+              <PaperCheckIcon />
+            </button>
+          )}
+        </div>
+      </article>
+    );
+  }
+  function planDay(date: string) {
+    setSelected(date);
+    setDraft({
+      kind: "study",
+      title: "",
+      date,
+      time: "18:00",
+      subjectId: workspace.subjects[0]?.id ?? "",
+      minutes: 25,
+      recurrence: "none",
+      until: "",
+    });
+  }
+  return (
+    <main
+      className={`main-content agenda-page${mode === "week" ? " is-week" : ""}`}
+      id="main-content"
+    >
+      <PageHeader />
+      <header className="agenda-heading">
+        <div>
+          <span className="section-label">Agenda</span>
+          <h1>Minha agenda</h1>
+          <p>Estudos, tarefas e compromissos em um só lugar.</p>
+        </div>
+        <button ref={addButton} type="button" className="primary-button" onClick={() => create()}>
+          <PaperActionIcon name="plus" /> Adicionar
+        </button>
+      </header>
+      <div className="agenda-toolbar">
+        <div className="agenda-modes" role="group" aria-label="Visualização da agenda">
+          {(["day", "week", "month"] as const).map((value, index) => (
+            <button
+              type="button"
+              key={value}
+              aria-pressed={mode === value}
+              className={mode === value ? "primary-button" : "secondary-button"}
+              onClick={() => {
+                setMode(value);
+                if (value === "day") setSelected(today);
+              }}
+            >
+              {["Hoje", "Semana", "Mês"][index]}
+            </button>
+          ))}
+        </div>
+        <div className="agenda-period">
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Período anterior"
+            onClick={() => movePeriod(-1)}
+          >
+            <PaperArrow back />
+          </button>
+          <strong>
+            {dateForKey(selected).toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}
+          </strong>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Próximo período"
+            onClick={() => movePeriod(1)}
+          >
+            <PaperArrow />
+          </button>
+          <button
+            type="button"
+            className="text-button"
+            onClick={() => {
+              setSelected(today);
+              setMode("day");
+            }}
+          >
+            Ir para hoje
+          </button>
+        </div>
+      </div>
+      <p className="agenda-notice" role="status">
+        {notice}
+      </p>
+      {mode === "month" ? (
+        <section className="agenda-month module-panel" aria-label="Calendário mensal">
+          <div className="agenda-weekdays">
+            {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((name) => (
+              <span key={name}>{name}</span>
+            ))}
           </div>
-          {workspace.goals.length === 0 ? (
-            <div className="empty-state">
-              <p>Crie uma meta para acompanhar seu tempo de foco.</p>
-            </div>
-          ) : (
-            <ul className="goal-list">
-              {workspace.goals.map((goal) => (
-                <li className={goal.completed ? "is-complete" : undefined} key={goal.id}>
-                  <button
-                    type="button"
-                    aria-label={`${goal.completed ? "Reabrir" : "Concluir"} ${goal.title}`}
-                    onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
-                  >
-                    <PaperCheckIcon />
-                  </button>
-                  <div>
-                    <strong>{goal.title}</strong>
+          <div className="agenda-month-grid">
+            {dates.map((date) => {
+              const count =
+                eventsOn(workspace, date).length +
+                workspace.tasks.filter((task) => task.dueDate === date && !task.completed).length;
+              return (
+                <button
+                  type="button"
+                  key={date}
+                  className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected" : ""}`}
+                  aria-label={`${dayLabel(date, true)}, ${count} itens`}
+                  aria-pressed={date === selected}
+                  onClick={() => setSelected(date)}
+                >
+                  <span>{dateForKey(date).getDate()}</span>
+                  {count > 0 && (
                     <small>
-                      Meta de {goal.targetMinutes} min · até {goal.deadline}
+                      {count}
+                      <span className="agenda-count-desktop">
+                        {" "}
+                        {count === 1 ? "item" : "itens"}
+                      </span>
                     </small>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
-
-      <div className="planner-grid planner-grid--lists">
-        <section className="module-panel" aria-labelledby="task-list-title">
-          <div className="module-heading">
-            <h2 id="task-list-title">Tarefas</h2>
-            <span>{workspace.tasks.length}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
-          {orderedTasks.length === 0 ? (
-            <div className="empty-state">
-              <p>As tarefas adicionadas aparecerão aqui.</p>
-            </div>
-          ) : (
-            <ul className="check-list">
-              {orderedTasks.map((task) => (
-                <li className={task.completed ? "is-complete" : undefined} key={task.id}>
+        </section>
+      ) : (
+        <div className="agenda-day-strip" role="group" aria-label="Dias da semana">
+          {dates.map((date) => (
+            <button
+              key={date}
+              type="button"
+              aria-pressed={date === selected}
+              className={date === selected ? "is-selected" : ""}
+              onClick={() => setSelected(date)}
+            >
+              <small>
+                {dateForKey(date)
+                  .toLocaleDateString("pt-BR", { weekday: "short" })
+                  .replace(".", "")}
+              </small>
+              <strong>{dateForKey(date).getDate()}</strong>
+              <span className={date === today ? "agenda-today-dot" : ""} />
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="agenda-layout">
+        <div>
+          {mode === "week" ? (
+            <section className="agenda-week-board" aria-label="Plano da semana">
+              {dates.map((date) => (
+                <section className={date === selected ? "is-selected" : ""} key={date}>
+                  <h2>{dayLabel(date)}</h2>
+                  {eventsOn(workspace, date).map((event) => eventCard(event, date))}
+                  {workspace.tasks.filter((task) => task.dueDate === date).map(taskCard)}
+                  {eventsOn(workspace, date).length === 0 &&
+                    !workspace.tasks.some((task) => task.dueDate === date) && (
+                      <p className="agenda-free">Espaço para respirar.</p>
+                    )}
                   <button
-                    className="check-button"
                     type="button"
-                    aria-label={`${task.completed ? "Reabrir" : "Concluir"} ${task.title}`}
-                    onClick={() => dispatch({ type: "task/toggled", id: task.id })}
+                    className="text-button"
+                    aria-label={`Planejar ${dayLabel(date)}`}
+                    onClick={() => planDay(date)}
                   >
-                    <PaperCheckIcon />
+                    Planejar <PaperActionIcon name="plus" />
                   </button>
-                  <div>
-                    <strong>{task.title}</strong>
-                    <small>{task.dueDate}</small>
-                  </div>
-                </li>
+                </section>
               ))}
-            </ul>
-          )}
-        </section>
-
-        <section className="module-panel" aria-labelledby="event-list-title">
-          <div className="module-heading">
-            <h2 id="event-list-title">Compromissos</h2>
-            <span>{workspace.events.length}</span>
-          </div>
-          {orderedEvents.length === 0 ? (
-            <div className="empty-state">
-              <p>Os compromissos adicionados aparecerão aqui.</p>
-            </div>
+            </section>
           ) : (
-            <ul className="schedule-list schedule-list--dated">
-              {orderedEvents.map((event) => (
-                <li key={event.id}>
-                  <time>{event.time}</time>
-                  <div>
-                    <strong>{event.title}</strong>
-                    <small>{event.date}</small>
-                  </div>
-                </li>
+            <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
+              <div className="module-heading">
+                <h2 id="agenda-day-title">{dayLabel(selected, true)}</h2>
+                <span>{scheduled.length + tasks.length} itens</span>
+              </div>
+              {scheduled.length > 0 && (
+                <>
+                  <h3 className="agenda-section-title">Com horário</h3>
+                  {scheduled.map((event) => eventCard(event))}
+                </>
+              )}
+              {tasks.length > 0 && (
+                <>
+                  <h3 className="agenda-section-title">No seu ritmo</h3>
+                  {tasks.map(taskCard)}
+                </>
+              )}
+              {scheduled.length + tasks.length === 0 && (
+                <div className="agenda-empty">
+                  <NavigationIcon name="planner" />
+                  <h3>Seu dia ainda está livre.</h3>
+                  <p>Reserve um estudo curto ou anote o que precisa fazer.</p>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => create("study")}
+                  >
+                    Planejar estudo <PaperArrow />
+                  </button>
+                </div>
+              )}
+            </section>
+          )}
+          <details className="agenda-extra">
+            <summary>Google Agenda e tarefas de aula</summary>
+            <Suspense
+              fallback={<HelenaLoading label="Carregando ferramentas da agenda…" compact />}
+            >
+              <GoogleCalendarPanel />
+              <HomeworkSection workspace={workspace} dispatch={dispatch} />
+            </Suspense>
+          </details>
+        </div>
+        <aside className="agenda-aside">
+          <section className="module-panel">
+            <h2>Retomar com calma</h2>
+            {pending.length === 0 ? (
+              <p>Nenhuma tarefa atrasada. Você pode cuidar do próximo passo.</p>
+            ) : (
+              pending.map((task) => (
+                <article className="agenda-pending" key={task.id}>
+                  <strong>{task.title}</strong>
+                  <small>Prazo: {dateForKey(task.dueDate).toLocaleDateString("pt-BR")}</small>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    aria-label={`Mover ${task.title} para hoje`}
+                    onClick={() => {
+                      dispatch({
+                        type: "task/updated",
+                        id: task.id,
+                        changes: { title: task.title, subjectId: task.subjectId, dueDate: today },
+                      });
+                      setNotice("Tarefa movida para hoje.");
+                    }}
+                  >
+                    Mover para hoje <PaperArrow />
+                  </button>
+                </article>
+              ))
+            )}
+          </section>
+          <section className="module-panel agenda-helena">
+            <NavigationIcon name="planner" />
+            <h2>Uma semana possível</h2>
+            <p>Peça sugestões à Helena. Você decide o que entra na agenda.</p>
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent(HELENA_PLAN_DRAFT_EVENT, {
+                    detail: agendaPrompt(workspace, selected),
+                  }),
+                )
+              }
+            >
+              Planejar com Helena <PaperArrow />
+            </button>
+            <small>O pedido abre no chat para você revisar antes de enviar.</small>
+          </section>
+          <details className="module-panel agenda-extra">
+            <summary>Matérias e metas</summary>
+            <ul className="agenda-subjects">
+              {workspace.subjects.map((subject) => (
+                <li key={subject.id}>{subject.name}</li>
               ))}
             </ul>
-          )}
-        </section>
+            <button type="button" className="secondary-button" onClick={() => create("subject")}>
+              Adicionar matéria
+            </button>
+            {workspace.goals.map((goal) => (
+              <article className="agenda-pending" key={goal.id}>
+                <strong>{goal.title}</strong>
+                <small>
+                  {goal.targetMinutes} min · até{" "}
+                  {dateForKey(goal.deadline).toLocaleDateString("pt-BR")}
+                </small>
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
+                >
+                  {goal.completed ? "Reabrir meta" : "Concluir meta"}
+                </button>
+              </article>
+            ))}
+            <button type="button" className="secondary-button" onClick={() => create("goal")}>
+              Criar meta de foco
+            </button>
+          </details>
+        </aside>
       </div>
-
-      <Suspense fallback={<HelenaLoading label="Carregando Google Agenda…" compact />}>
-        <GoogleCalendarPanel />
-      </Suspense>
-
-      <Suspense fallback={<HelenaLoading label="Carregando tarefas…" compact />}>
-        <HomeworkSection workspace={workspace} dispatch={dispatch} />
-      </Suspense>
+      <dialog
+        ref={dialog}
+        className="agenda-dialog"
+        aria-labelledby="agenda-dialog-title"
+        onCancel={() => setDraft(null)}
+      >
+        {draft && (
+          <>
+            <header>
+              <h2 id="agenda-dialog-title">{draft.id ? "Editar" : "Adicionar à agenda"}</h2>
+              <button
+                type="button"
+                className="icon-button"
+                aria-label="Fechar formulário"
+                onClick={() => setDraft(null)}
+              >
+                <PaperCloseIcon />
+              </button>
+            </header>
+            <form onSubmit={save} className="compact-form">
+              <label className="field">
+                <span>Tipo</span>
+                <select
+                  aria-label="Tipo"
+                  value={draft.kind}
+                  disabled={Boolean(draft.id)}
+                  onChange={(event) =>
+                    setDraft({
+                      ...draft,
+                      kind: event.target.value as Kind,
+                      minutes: event.target.value === "goal" ? 300 : 25,
+                    })
+                  }
+                >
+                  {Object.entries(labels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="field">
+                <span>{draft.kind === "subject" ? "Nome da matéria" : "Título"}</span>
+                <input
+                  autoFocus
+                  value={draft.title}
+                  maxLength={120}
+                  required
+                  onChange={(event) => setDraft({ ...draft, title: event.target.value })}
+                  placeholder={
+                    draft.kind === "study" ? "Ex.: Revisar frações" : "O que você quer organizar?"
+                  }
+                />
+              </label>
+              {draft.kind !== "subject" && (
+                <>
+                  <label className="field">
+                    <span>Matéria</span>
+                    <select
+                      aria-label="Matéria"
+                      value={draft.subjectId}
+                      required
+                      onChange={(event) => setDraft({ ...draft, subjectId: event.target.value })}
+                    >
+                      {workspace.subjects.map((subject) => (
+                        <option key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="field-row">
+                    <label className="field">
+                      <span>
+                        {draft.kind === "task" || draft.kind === "goal" ? "Prazo" : "Data"}
+                      </span>
+                      <input
+                        type="date"
+                        required
+                        value={draft.date}
+                        onChange={(event) => setDraft({ ...draft, date: event.target.value })}
+                      />
+                    </label>
+                    {(draft.kind === "study" || draft.kind === "appointment") && (
+                      <label className="field">
+                        <span>Horário</span>
+                        <input
+                          type="time"
+                          required
+                          value={draft.time}
+                          onChange={(event) => setDraft({ ...draft, time: event.target.value })}
+                        />
+                      </label>
+                    )}
+                  </div>
+                  {draft.kind !== "task" && (
+                    <label className="field">
+                      <span>
+                        {draft.kind === "goal" ? "Meta em minutos" : "Duração em minutos"}
+                      </span>
+                      <input
+                        type="number"
+                        min="1"
+                        max={draft.kind === "goal" ? "10000" : "180"}
+                        required
+                        value={draft.minutes}
+                        onChange={(event) =>
+                          setDraft({ ...draft, minutes: Number(event.target.value) })
+                        }
+                      />
+                    </label>
+                  )}
+                  {(draft.kind === "study" || draft.kind === "appointment") && (
+                    <>
+                      <label className="field">
+                        <span>Repetir</span>
+                        <select
+                          aria-label="Repetir"
+                          value={draft.recurrence}
+                          onChange={(event) =>
+                            setDraft({
+                              ...draft,
+                              recurrence: event.target.value as Draft["recurrence"],
+                            })
+                          }
+                        >
+                          <option value="none">Não repetir</option>
+                          <option value="weekly">Toda semana neste dia</option>
+                        </select>
+                      </label>
+                      {draft.recurrence === "weekly" && (
+                        <label className="field">
+                          <span>Repetir até (opcional)</span>
+                          <input
+                            type="date"
+                            min={draft.date}
+                            value={draft.until}
+                            onChange={(event) => setDraft({ ...draft, until: event.target.value })}
+                          />
+                        </label>
+                      )}
+                      {draft.id && draft.recurrence === "weekly" && (
+                        <p>
+                          Alterações valem para a rotina inteira. Os estudos já registrados
+                          permanecem no histórico.
+                        </p>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+              <footer>
+                {draft.id && (
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() => {
+                      if (
+                        !window.confirm(
+                          `Excluir ${draft.title}${draft.recurrence === "weekly" ? " e suas próximas repetições" : ""}?`,
+                        )
+                      )
+                        return;
+                      dispatch(
+                        draft.kind === "task"
+                          ? { type: "task/removed", id: draft.id! }
+                          : { type: "event/removed", id: draft.id! },
+                      );
+                      setDraft(null);
+                      setNotice("Item removido da agenda. O histórico de foco foi preservado.");
+                    }}
+                  >
+                    Excluir
+                  </button>
+                )}
+                <button className="primary-button" type="submit">
+                  {draft.id ? "Salvar alterações" : "Adicionar"} <PaperArrow />
+                </button>
+              </footer>
+            </form>
+          </>
+        )}
+      </dialog>
     </main>
   );
 }

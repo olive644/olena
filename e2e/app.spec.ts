@@ -256,8 +256,11 @@ test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, t
   await expect(page.getByAltText("Helena, a mascote do OlenaStudy")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Agenda", exact: true }).click();
-  await page.getByLabel(/o que precisa ser feito/i).fill("Revisar Simple Past");
-  await page.getByRole("button", { name: /adicionar tarefa/i }).click();
+  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+  await form.getByLabel("Tipo", { exact: true }).selectOption("task");
+  await form.getByLabel("Título", { exact: true }).fill("Revisar Simple Past");
+  await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await studentSpaceButton(page, testInfo.project.name).click();
   await expect(page.getByText("Revisar Simple Past")).toBeVisible();
 
