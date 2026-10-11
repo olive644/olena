@@ -1,11 +1,16 @@
 import { dateForKey } from "../domain/agenda";
-import { type AgendaRange, type focusHistory } from "../domain/agenda-history";
-import { useState } from "react";
+import { historySummary, focusHistory, type AgendaRange } from "../domain/agenda-history";
+import { useEffect, useState } from "react";
+import { readMathLearning } from "../data/math-learning";
+import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
+import { mathAnswerSequence, pomodoroWeek } from "../domain/agenda-insights";
 import { agendaDashboard, type AgendaCategory } from "../domain/agenda-dashboard";
 import { AgendaCharts } from "./agenda-charts";
 import { type WorkspaceState } from "../domain/workspace";
 import { type AppView } from "./app-navigation";
 import { NavigationIcon } from "./navigation-icon";
+import { AgendaIslandProgress } from "./agenda-island-progress";
+import { AgendaFocusWeek } from "./agenda-focus-week";
 
 function RangeDate({ date }: { date: string }) {
   const value = dateForKey(date);
@@ -20,7 +25,6 @@ export function AgendaStudyHistory({
   history,
   range,
   workspace,
-  onNavigate,
 }: {
   history: ReturnType<typeof focusHistory>;
   range: AgendaRange;
@@ -29,6 +33,13 @@ export function AgendaStudyHistory({
 }) {
   const [section, setSection] = useState<"focus" | "notes" | "islands">("focus");
   const [focusMode, setFocusMode] = useState<"timer" | "pomodoro">("timer");
+  const [, refreshStorage] = useState(0);
+  useEffect(() => {
+    const refresh = () => refreshStorage((value) => value + 1);
+    const events = ["storage", SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT];
+    events.forEach((event) => window.addEventListener(event, refresh));
+    return () => events.forEach((event) => window.removeEventListener(event, refresh));
+  }, []);
   const category: AgendaCategory = section === "focus" ? focusMode : section;
   const data = agendaDashboard(
     workspace,
@@ -37,6 +48,26 @@ export function AgendaStudyHistory({
     [...history.values()].flatMap((day) => day.sessions),
   );
   const summary = { minutes: data.pie.reduce((sum, item) => sum + item.value, 0) };
+  const learning = readMathLearning();
+  let pomodoroDays: unknown = [];
+  try {
+    pomodoroDays = JSON.parse(localStorage.getItem("noteoli.pomodoro-streak.v1") ?? "[]");
+  } catch {
+    /* Invalid persisted data does not create activity. */
+  }
+  const timerDays = [...history.keys()].filter((key) =>
+    history.get(key)?.sessions.some((session) => session.mode === "timer"),
+  );
+  const week = pomodoroWeek(category === "timer" ? timerDays : pomodoroDays, range);
+  const sequence = mathAnswerSequence(workspace.practiceActivities ?? [], range);
+  const focusStats = historySummary(
+    focusHistory(
+      [...history.values()]
+        .flatMap((day) => day.sessions)
+        .filter((session) => session.mode === category),
+    ),
+    range,
+  );
   return (
     <section className="agenda-history module-panel" aria-label="Histórico de estudo">
       <header>
@@ -114,39 +145,43 @@ export function AgendaStudyHistory({
             ))}
           </div>
         )}
-        <div className="agenda-chart-heading" role="status">
-          <strong>
-            {summary.minutes} {data.unit}
-          </strong>
-          <small>
-            {data.note}
-            {data.legacy > 0 && (
-              <>
-                {" "}
-                {data.legacy} {data.legacy === 1 ? "sessão antiga" : "sessões antigas"} sem
-                modalidade, fora destes gráficos.
-              </>
-            )}
-          </small>
-        </div>
-        <AgendaCharts key={`${category}:${range.start}:${range.end}`} {...data} />
-        {onNavigate && (
-          <button
-            type="button"
-            className="secondary-button agenda-chart-action"
-            onClick={() =>
-              onNavigate(
-                category === "notes" ? "notes" : category === "islands" ? "learn" : "focus",
-              )
-            }
-          >
-            {category === "notes"
-              ? "Abrir cadernos"
-              : category === "islands"
-                ? "Abrir Praticar"
-                : "Abrir Foco"}
-          </button>
+        {summary.minutes > 0 && (
+          <div className="agenda-chart-heading" role="status">
+            <strong>
+              {summary.minutes} {data.unit}
+            </strong>
+            <small>
+              {data.note}
+              {data.legacy > 0 && (
+                <>
+                  {" "}
+                  {data.legacy} {data.legacy === 1 ? "sessão antiga" : "sessões antigas"} sem
+                  modalidade, fora destes gráficos.
+                </>
+              )}
+            </small>
+          </div>
         )}
+        <AgendaCharts key={`${category}:${range.start}:${range.end}`} {...data} />
+        <div
+          className="agenda-study-details"
+          key={`details:${category}:${range.start}:${range.end}`}
+        >
+          {section === "focus" && focusStats.days > 0 && (
+            <p>
+              {focusStats.days} {focusStats.days === 1 ? "dia de foco" : "dias de foco"} no período
+              {focusStats.longest > 1 && ` · ${focusStats.longest} dias consecutivos`}
+            </p>
+          )}
+          {section === "focus" && <AgendaFocusWeek week={week} mode={focusMode} />}
+          {category === "islands" && sequence > 0 && (
+            <p>
+              Melhor sequência no período: {sequence} {sequence === 1 ? "acerto" : "acertos"}{" "}
+              consecutivos na rodada.
+            </p>
+          )}
+          {category === "islands" && <AgendaIslandProgress learning={learning} />}
+        </div>
       </div>
     </section>
   );

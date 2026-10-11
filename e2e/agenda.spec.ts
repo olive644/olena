@@ -14,6 +14,87 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ json: { connected: false } }),
   );
 });
+test("agenda displays real legacy math progress and filtered Pomodoro weeks in both themes", async ({
+  page,
+}, info) => {
+  await page.goto("/planejador");
+  await page.evaluate(() => {
+    localStorage.setItem(
+      "helena.mathLearning.v1",
+      JSON.stringify({ foundations: { level: 1, mastery: 1, correct: 12, best: 80 } }),
+    );
+    localStorage.setItem("noteoli.pomodoro-streak.v1", JSON.stringify(["2026-10-06"]));
+    window.dispatchEvent(new Event("helena:synced-storage-applied"));
+  });
+  const history = page.getByRole("region", { name: "Histórico de estudo" });
+  await page.locator('button[data-date="2026-10-06"]').click();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await history.getByRole("button", { name: "Praticar", exact: true }).click();
+    await expect(history.getByText("12 acertos acumulados")).toBeVisible();
+    await expect(history.getByText("Melhor rodada: 80 pontos")).toBeVisible();
+    await expect(history.locator(".agenda-island-progress .agenda-charts")).toHaveCount(2);
+    await expect(history.getByRole("button", { name: /^Abrir/ })).toHaveCount(0);
+    await history
+      .locator(".agenda-island-carousel")
+      .evaluate((element) => element.scrollIntoView({ block: "center" }));
+    await history.getByRole("button", { name: "Próxima ilha" }).click();
+    await expect(history.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeVisible();
+    const carousel = history.getByRole("group", { name: "Prévia das ilhas" });
+    await carousel.focus();
+    await page.keyboard.press("End");
+    await expect(history.getByRole("button", { name: "Próxima ilha" })).toBeDisabled();
+    await page.keyboard.press("Home");
+    const drag = history.locator(".agenda-island-drag");
+    await drag.evaluate((element) => element.scrollIntoView({ block: "center" }));
+    const box = await drag.boundingBox();
+    expect(box!.width).toBeGreaterThan(100);
+    if (info.project.name === "mobile") {
+      const touch = await page.context().newCDPSession(page);
+      await touch.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: box!.x + box!.width * 0.75, y: box!.y + box!.height / 2 }],
+      });
+      await touch.send("Input.dispatchTouchEvent", {
+        type: "touchMove",
+        touchPoints: [{ x: box!.x + box!.width * 0.25, y: box!.y + box!.height / 2 }],
+      });
+      await touch.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+      await touch.detach();
+    } else {
+      await page.mouse.move(box!.x + box!.width * 0.75, box!.y + box!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box!.x + box!.width * 0.25, box!.y + box!.height / 2, { steps: 6 });
+      await page.mouse.up();
+    }
+    await expect(history.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeVisible();
+    await history.getByRole("button", { name: "Ilha anterior" }).click();
+    await history.screenshot({
+      path: info.outputPath(`progress-${theme}.png`),
+      animations: "disabled",
+      style: ".page-header, .mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
+    });
+    await history.getByRole("button", { name: "Foco", exact: true }).click();
+    await history.getByRole("button", { name: "Pomodoro", exact: true }).click();
+    await expect(history.locator(".agenda-pomodoro-day.is-active")).toHaveCount(1);
+    await history.screenshot({
+      path: info.outputPath(`pomodoro-${theme}.png`),
+      animations: "disabled",
+      style: ".page-header, .mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
+    });
+    await page.locator('button[data-date="2026-10-07"]').click();
+    await expect(history.locator(".agenda-pomodoro-week")).toHaveCount(1);
+    await expect(history.locator(".agenda-pomodoro-day.is-active")).toHaveCount(0);
+    await history.getByRole("button", { name: "Cronômetro", exact: true }).click();
+    await expect(history.locator(".agenda-week-flower")).toHaveCount(7);
+    await expect(history.locator(".agenda-week-flower.is-active")).toHaveCount(0);
+    await page.locator('button[data-date="2026-10-06"]').click();
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
 test("agenda creates, edits, completes, reschedules and persists tasks on desktop and mobile", async ({
   page,
 }, info) => {
@@ -126,12 +207,12 @@ test("a selected day automatically filters focus and practice, including an empt
   await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("3 respostas");
   await expect(history.locator('[data-icon="gamepad"]')).toHaveCount(1);
   await page.locator('button[data-date="2026-10-02"]').click();
-  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 respostas");
-  await expect(history.getByRole("img", { name: "Sem dados para distribuição" })).toBeVisible();
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveCount(0);
+  await expect(history.locator(".agenda-charts")).toHaveCount(0);
   await history.getByRole("button", { name: "Foco", exact: true }).click();
-  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 min");
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveCount(0);
   await history.getByRole("button", { name: "Cronômetro", exact: true }).click();
-  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 min");
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveCount(0);
   await page.locator('button[data-date="2026-10-01"]').click();
   await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("12 min");
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -317,7 +398,7 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     "background-color",
     "rgb(255, 253, 248)",
   );
-  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("0 min");
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveCount(0);
   const first = page.locator('button[data-date="2026-10-05"]');
   const last = page.locator('button[data-date="2026-10-08"]');
   await first.scrollIntoViewIfNeeded();
@@ -377,7 +458,7 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     await page.keyboard.press("Home");
     await expect(history.locator(".agenda-chart-inspection")).toContainText("30 min");
     await page.keyboard.press("ArrowRight");
-    await expect(history.locator(".agenda-chart-inspection")).toContainText("0 min");
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("20 min");
     const fills = await history
       .locator(".agenda-pie-slice")
       .evaluateAll((slices) => slices.map((slice) => slice.getAttribute("fill")));
@@ -389,8 +470,8 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     const heights = await history
       .locator(".agenda-bar-track > span")
       .evaluateAll((bars) => bars.map((bar) => bar.getBoundingClientRect().height));
-    expect(heights[1]).toBe(0);
-    expect(heights[2]! / heights[0]!).toBeCloseTo(20 / 30, 1);
+    expect(heights).toHaveLength(2);
+    expect(heights[1]! / heights[0]!).toBeCloseTo(20 / 30, 1);
     await history.locator(".agenda-pie-slice").first().focus();
     await expect(history.locator(".agenda-chart-inspection")).toContainText("60% do total");
     await history
@@ -412,7 +493,9 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
       const button = history.getByRole("button", { name: category, exact: true });
       await button.click();
       await expect(button).toHaveAttribute("aria-pressed", "true");
-      await expect(history.locator(".agenda-chart")).toHaveCount(2);
+      await expect(history.locator(".agenda-chart")).toHaveCount(
+        category === "Foco" || category === "Cronômetro" ? 2 : 0,
+      );
       await expect(page).toHaveURL(/\/planejador$/);
     }
   }

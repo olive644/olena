@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Indicadores reais na Agenda (2026-10-11)
+
+- Gráficos, valores e inspeção vazios ou zerados não são exibidos. Inspeção em itálico, sem faixa amarela.
+- Praticar lê o progresso matemático salvo e o mostra como acumulado, separado dos registros por data. Não são inventadas datas antigas.
+- Pomodoro reutiliza os dias de ciclos concluídos, filtrados pelo período e pela semana da data final. Cronômetro mostra dias de foco e sequência diária positiva. Sem minutos, as semanas continuam visíveis: flores murchas/vivas e tomates apagados/vivos.
+- Matemática mostra a melhor sequência de acertos por rodada nos registros datados do período, nunca interpreta pontuação como streak diário.
+- Indicadores acumulados acompanham atualizações do armazenamento sincronizado e desaparecem quando não há progresso positivo.
+- Acertos acumulados alimentam barras e distribuição por ilha; recordes de pontos ficam em barras separadas. Nenhum registro antigo ganha data inventada. Prévias das seis ilhas usam artes existentes, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Bundle medido: entrada 278,6 KiB e total 1236,5 KiB, aumento de 6,7 KiB nas rotas sob demanda, sem dependência nova. Orçamento total 1240 KiB, teto absoluto e orçamento inicial preservados.
+
 ## Navegação móvel uniforme (2026-10-11)
 
 - Praticar usa o mesmo botão e a mesma seleção de ícones dos demais itens.

@@ -1,75 +1,97 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
+import { AgendaStudyHistory } from "./agenda-study-history";
 import { createInitialWorkspace } from "../domain/workspace";
 import { focusHistory } from "../domain/agenda-history";
-import { AgendaStudyHistory } from "./agenda-study-history";
+import { SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 
-afterEach(cleanup);
-describe("agenda category dashboard", () => {
-  it("switches charts without navigating and keeps legacy sessions separate", () => {
-    const workspace = createInitialWorkspace();
-    const onNavigate = vi.fn();
-    render(
-      <AgendaStudyHistory
-        workspace={workspace}
-        onNavigate={onNavigate}
-        history={focusHistory([
-          {
-            id: "timer",
-            mode: "timer",
-            subjectId: "math",
-            durationMinutes: 12,
-            completedAt: "2026-10-06T12:00:00",
-          },
-          {
-            id: "pomo",
-            mode: "pomodoro",
-            subjectId: "math",
-            durationMinutes: 25,
-            completedAt: "2026-10-06T12:30:00",
-          },
-          {
-            id: "legacy",
-            subjectId: "math",
-            durationMinutes: 8,
-            completedAt: "2026-10-06T13:00:00",
-          },
-        ])}
-        range={{ start: "2026-10-06", end: "2026-10-08" }}
-      />,
-    );
-    const region = screen.getByRole("region", { name: "Histórico de estudo" });
-    expect(region.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("12 min");
-    expect(region.textContent).toContain("1 sessão antiga sem modalidade");
-    expect(
-      within(region)
-        .getByRole("group", { name: "Categorias do estudo" })
-        .querySelectorAll("button"),
-    ).toHaveLength(3);
-    expect(region.querySelector("header .paper-digits")).toBeNull();
-    fireEvent.click(within(region).getByRole("button", { name: "Pomodoro" }));
-    expect(region.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("25 min");
-    expect(
-      within(region).getByRole("button", { name: "Pomodoro" }).getAttribute("aria-pressed"),
-    ).toBe("true");
-    expect(onNavigate).not.toHaveBeenCalled();
-    fireEvent.click(within(region).getByRole("button", { name: "Caderno" }));
-    expect(within(region).getByRole("button", { name: /^Cadernos criados:/ })).toBeTruthy();
-    fireEvent.click(within(region).getByRole("button", { name: "Praticar" }));
-    expect(region.textContent).toContain("Atividades registradas por dia");
-    fireEvent.click(within(region).getByRole("button", { name: "Abrir Praticar" }));
-    expect(onNavigate).toHaveBeenLastCalledWith("learn");
-  });
-  it("keeps categories usable with empty charts and without a navigation callback", () => {
-    render(
-      <AgendaStudyHistory
-        workspace={createInitialWorkspace()}
-        history={focusHistory([])}
-        range={{ start: "2026-10-06", end: "2026-10-08" }}
-      />,
-    );
-    expect(screen.getByRole("img", { name: "Sem dados para distribuição" })).toBeTruthy();
-    for (const button of screen.getAllByRole("button"))
-      expect(button.hasAttribute("disabled")).toBe(false);
-  });
+afterEach(() => {
+  cleanup();
+  localStorage.clear();
+});
+it("preserves modality switching and legacy explanations without open buttons", () => {
+  const workspace = createInitialWorkspace();
+  const onNavigate = vi.fn();
+  const sessions = [
+    {
+      id: "timer",
+      mode: "timer" as const,
+      subjectId: "math",
+      durationMinutes: 12,
+      completedAt: "2026-10-06T12:00:00",
+    },
+    {
+      id: "pomo",
+      mode: "pomodoro" as const,
+      subjectId: "math",
+      durationMinutes: 25,
+      completedAt: "2026-10-06T12:30:00",
+    },
+    { id: "legacy", subjectId: "math", durationMinutes: 8, completedAt: "2026-10-06T13:00:00" },
+  ];
+  render(
+    <AgendaStudyHistory
+      workspace={workspace}
+      history={focusHistory(sessions)}
+      onNavigate={onNavigate}
+      range={{ start: "2026-10-06", end: "2026-10-08" }}
+    />,
+  );
+  expect(document.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("12 min");
+  expect(screen.getByText(/1 sessão antiga sem modalidade/)).toBeTruthy();
+  expect(document.querySelectorAll(".agenda-dashboard button")).toHaveLength(3);
+  fireEvent.click(screen.getByRole("button", { name: "Pomodoro" }));
+  expect(document.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("25 min");
+  expect(onNavigate).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Caderno" }));
+  fireEvent.click(screen.getByRole("button", { name: "Praticar" }));
+  expect(document.querySelector(".agenda-charts")).toBeNull();
+  expect(screen.queryByRole("button", { name: /^Abrir/ })).toBeNull();
+  expect(onNavigate).not.toHaveBeenCalled();
+  expect(screen.getByRole("img", { name: "Prévia: Pátio das Primeiras Contas" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Próxima ilha" }));
+  expect(screen.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeTruthy();
+  fireEvent.keyDown(screen.getByRole("group", { name: "Prévia das ilhas" }), { key: "End" });
+  expect(screen.getByRole("button", { name: "Próxima ilha" }).hasAttribute("disabled")).toBe(true);
+});
+it("shows saved math progress separately without assigning legacy answers to dates, and refreshes sync", () => {
+  localStorage.setItem(
+    "helena.mathLearning.v1",
+    JSON.stringify({ foundations: { level: 1, mastery: 1, correct: 12, best: 80 } }),
+  );
+  const workspace = createInitialWorkspace();
+  render(
+    <AgendaStudyHistory
+      workspace={workspace}
+      history={focusHistory([])}
+      range={{ start: "2026-10-06", end: "2026-10-06" }}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Praticar" }));
+  expect(screen.getByText("12 acertos acumulados")).toBeTruthy();
+  expect(screen.getByText("Melhor rodada: 80 pontos")).toBeTruthy();
+  expect(document.querySelectorAll(".agenda-charts")).toHaveLength(2);
+  expect(document.querySelector(".agenda-chart-heading")).toBeNull();
+  localStorage.removeItem("helena.mathLearning.v1");
+  fireEvent(window, new Event(SYNCED_STORAGE_APPLIED_EVENT));
+  expect(screen.queryByText("Progresso acumulado de Matemática")).toBeNull();
+});
+
+it("keeps the Pomodoro week and timer garden visible on empty dates", () => {
+  localStorage.setItem("noteoli.pomodoro-streak.v1", JSON.stringify(["2026-10-06"]));
+  const workspace = createInitialWorkspace();
+  const props = { workspace, history: focusHistory([]) };
+  const { rerender } = render(
+    <AgendaStudyHistory {...props} range={{ start: "2026-10-06", end: "2026-10-06" }} />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Pomodoro" }));
+  expect(screen.getByText("Sua semana de Pomodoro")).toBeTruthy();
+  expect(document.querySelectorAll(".agenda-pomodoro-day.is-active")).toHaveLength(1);
+  rerender(<AgendaStudyHistory {...props} range={{ start: "2026-10-07", end: "2026-10-07" }} />);
+  expect(screen.getByText("Sua semana de Pomodoro")).toBeTruthy();
+  expect(document.querySelectorAll(".agenda-pomodoro-day.is-active")).toHaveLength(0);
+  expect(document.querySelectorAll(".streak-tomato")).toHaveLength(7);
+  fireEvent.click(screen.getByRole("button", { name: "Cronômetro" }));
+  expect(document.querySelectorAll(".agenda-week-flower")).toHaveLength(7);
+  expect(document.querySelectorAll(".agenda-week-flower.is-active")).toHaveLength(0);
 });

@@ -838,9 +838,10 @@
   align-items: flex-end;
   border-bottom: 2px solid var(--agenda-line);
   background: transparent;
+  justify-content: center;
 }
 .agenda-bar-track > span {
-  width: 100%;
+  width: min(100%, 44px);
   min-height: 0;
   background:
     linear-gradient(135deg, #ffe88d 6px, transparent 6px),
@@ -885,9 +886,7 @@
   gap: 6px 12px;
   padding: 8px 10px;
   min-height: 44px;
-  border-left: 3px solid #facc15;
-  background: var(--agenda-fold);
-  border-radius: 3px 10px 3px 8px;
+  font-style: italic;
   font-size: 11px;
 }
 .agenda-chart-inspection .paper-digits {
@@ -896,6 +895,117 @@
 .agenda-chart-inspection small {
   font-size: 10px;
   color: var(--agenda-muted);
+}
+.agenda-study-details {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  animation: agenda-chart-change 220ms ease-out;
+}
+.agenda-island-progress {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.agenda-island-carousel {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+}
+.agenda-island-carousel .focus-mode-arrow {
+  position: static;
+  inset: auto;
+  width: 44px;
+  height: 44px;
+  scroll-margin-block: 90px;
+  touch-action: manipulation;
+}
+.agenda-island-carousel .focus-paper-arrow {
+  width: 36px;
+  height: 36px;
+}
+.agenda-island-drag {
+  touch-action: pan-y;
+  cursor: grab;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.agenda-island-drag:active {
+  cursor: grabbing;
+}
+.agenda-island-drag img {
+  width: min(100%, 210px);
+  height: auto;
+  user-select: none;
+  transition: transform 160ms ease;
+  animation: agenda-chart-change 220ms ease-out;
+}
+.agenda-island-caption {
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+.agenda-island-caption p {
+  color: var(--agenda-muted);
+}
+.agenda-island-progress .agenda-charts:has(> figure:only-of-type) {
+  grid-template-columns: 1fr;
+}
+.agenda-week-flower {
+  width: 30px;
+  height: 38px;
+  overflow: visible;
+}
+.agenda-focus-week .agenda-pomodoro-week {
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-bottom: 8px;
+}
+.agenda-focus-week .streak-tomato {
+  width: 26px;
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-island-drag img {
+    animation: none;
+    transition: none;
+  }
+}
+.agenda-study-details h3 {
+  margin: 0;
+  font-size: 13px;
+}
+.agenda-study-details p {
+  margin: 0;
+  font-size: 12px;
+}
+.agenda-study-details small {
+  color: var(--agenda-muted);
+  font-style: italic;
+}
+.agenda-study-metric {
+  padding: 12px;
+  background: var(--agenda-fold);
+  border-radius: 3px 12px 3px 10px;
+}
+.agenda-pomodoro-week {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.agenda-pomodoro-day {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  width: 34px;
+  font-size: 11px;
+  color: var(--agenda-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-study-details {
+    animation: none;
+  }
 }
 .agenda-pie-content {
   display: flex;

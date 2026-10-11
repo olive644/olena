@@ -6,6 +6,7 @@ it("inspects bars by keyboard and pie slices by click with exact values", () => 
   render(
     <AgendaCharts
       bars={[
+        { label: "Dia vazio", value: 0 },
         { label: "1/10", value: 10 },
         { label: "2/10", value: 30 },
       ]}
@@ -19,6 +20,7 @@ it("inspects bars by keyboard and pie slices by click with exact values", () => 
     />,
   );
   const bars = screen.getByRole("button", { name: /^Minutos por período:/ });
+  expect(screen.queryByText("Dia vazio")).toBeNull();
   fireEvent.focus(bars);
   expect(screen.getByRole("status").textContent).toBe("1/1010 min · 25% do total");
   fireEvent.keyDown(bars, { key: "ArrowRight" });
@@ -43,7 +45,7 @@ it("inspects bars by keyboard and pie slices by click with exact values", () => 
 it("keeps an empty or single-group donut honest", () => {
   const props = { bars: [], unit: "min", barTitle: "Tempo", pieTitle: "Matérias" };
   const { rerender } = render(<AgendaCharts {...props} pie={[]} />);
-  expect(screen.getByRole("img", { name: "Sem dados para distribuição" })).toBeTruthy();
+  expect(document.querySelector(".agenda-charts")).toBeNull();
   expect(document.querySelectorAll(".agenda-pie-slice")).toHaveLength(0);
   rerender(<AgendaCharts {...props} pie={[{ label: "Inglês", value: 12 }]} />);
   const ring = screen.getByRole("button", { name: "Inglês: 12 min, 100%" });

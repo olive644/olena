@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-11, Agenda: progresso legado vem de helena.mathLearning.v1 e alimenta gráficos acumulados, sem datas fabricadas. best significa pontos da melhor rodada, com barras separadas dos acertos. Sequência matemática é derivada dos acertos datados por rodada; Pomodoro usa noteoli.pomodoro-streak.v1 e respeita o intervalo selecionado. Resultados zero são ocultos, exceto semanas visuais sempre presentes com flores/tomates inativos. Inspeção em itálico, sem faixa e IDs únicos por gráfico. Prévias reais das seis ilhas permitem setas roxas, teclado e arraste; não há botões Abrir no dashboard. Nenhuma alteração no esquema ou no treinamento.
+
 2026-10-10, professor Helena: api/helena.ts monta handler autenticado e limites
 Firebase compartilhados. Chat real exige consentimento por sessão, envia nome
 da tela e histórico curto, sem gravação ou treinamento de conversas. Preview

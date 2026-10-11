@@ -239,7 +239,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 7 KiB to the lazy route, including accessible chart inspection.
 // Measured total with donut: 1230.2 KiB, initial: 278.0 KiB.
 // Keep a narrow CI allowance; no chart dependency or absolute-ceiling change.
-const MAX_TOTAL_JS_BYTES = 1232 * 1024;
+// Real streaks, accumulated math charts and a draggable island preview add
+// 6.7 KiB in lazy routes. Measured total: 1236.5 KiB; initial entry: 278.6 KiB.
+const MAX_TOTAL_JS_BYTES = 1240 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
