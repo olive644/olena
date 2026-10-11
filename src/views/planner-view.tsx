@@ -1,18 +1,30 @@
-import { lazy, Suspense, useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type FormEvent,
+} from "react";
 import { PageHeader, type AppView } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
-import { PaperCloseIcon } from "../components/paper-close-icon";
+import { AgendaCloseIcon } from "../components/agenda-close-icon";
 import { NavigationIcon } from "../components/navigation-icon";
 import { AgendaMonthPicker } from "../components/agenda-month-picker";
+import { AgendaStudyHistory } from "../components/agenda-study-history";
+import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
 import {
   agendaPrompt,
   dateForKey,
   eventsOn,
   HELENA_PLAN_DRAFT_EVENT,
   monthDates,
+  shiftDate,
 } from "../domain/agenda";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import {
@@ -68,6 +80,17 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const today = toDateKey(now);
   const [selected, setSelected] = useState(today);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [range, setRange] = useState<AgendaRange | null>(null);
+  const [intervalMode, setIntervalMode] = useState(false);
+  const [intervalStart, setIntervalStart] = useState<string | null>(null);
+  const drag = useRef<{
+    pointer: number;
+    start: string;
+    end: string;
+    previous: AgendaRange | null;
+  } | null>(null);
+  const suppressClick = useRef(false);
+  const history = useMemo(() => focusHistory(workspace.focusSessions), [workspace.focusSessions]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [notice, setNotice] = useState("");
   const dialog = useRef<HTMLDialogElement>(null);
@@ -84,6 +107,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     }
   }, [draft]);
   const month = monthDates(selected);
+  const monthRange = {
+    start: `${selected.slice(0, 7)}-01`,
+    end: month.filter((date) => date.slice(0, 7) === selected.slice(0, 7)).at(-1)!,
+  };
   const dates = month.slice(35).some((date) => date.slice(0, 7) === selected.slice(0, 7))
     ? month
     : month.slice(0, 35);
@@ -92,6 +119,26 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
   const subjectName = (id: string) =>
     workspace.subjects.find((subject) => subject.id === id)?.name ?? "Sem matéria";
+  function resetDate(date: string) {
+    setSelected(date);
+    setRange(null);
+    setIntervalStart(null);
+    setIntervalMode(false);
+  }
+  function chooseDate(date: string, extend = false) {
+    if (extend) setRange(orderedRange(range?.start ?? selected, date));
+    else if (intervalMode) {
+      if (intervalStart) {
+        setRange(orderedRange(intervalStart, date));
+        setIntervalMode(false);
+        setIntervalStart(null);
+      } else {
+        setIntervalStart(date);
+        setRange(orderedRange(date, date));
+      }
+    } else setRange(null);
+    setSelected(date);
+  }
   function create(kind: Kind = "task") {
     setDraft({
       kind,
@@ -350,32 +397,145 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           aria-label="Calendário mensal"
         >
           <div className="agenda-calendar-controls">
-            <AgendaMonthPicker value={selected} today={today} onChange={setSelected} />
-            <button type="button" className="secondary-button" onClick={() => setSelected(today)}>
+            <AgendaMonthPicker value={selected} today={today} onChange={resetDate} />
+            <button type="button" className="secondary-button" onClick={() => resetDate(today)}>
               Ir para hoje
             </button>
+          </div>
+          <div className="agenda-range-tools">
+            <button
+              type="button"
+              className={intervalMode ? "primary-button" : "secondary-button"}
+              aria-pressed={intervalMode}
+              onClick={() => {
+                setIntervalMode(!intervalMode);
+                setIntervalStart(null);
+              }}
+            >
+              {intervalMode
+                ? intervalStart
+                  ? "Escolher fim"
+                  : "Escolher início"
+                : "Selecionar intervalo"}
+            </button>
+            {range && (
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => {
+                  setRange(null);
+                  setIntervalStart(null);
+                  setIntervalMode(false);
+                }}
+              >
+                Limpar intervalo
+              </button>
+            )}
+            <small id="agenda-range-hint">Arraste pelos dias ou escolha início e fim.</small>
           </div>
           <div className="agenda-weekdays">
             {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((name) => (
               <span key={name}>{name}</span>
             ))}
           </div>
-          <div className="agenda-month-grid">
+          <div
+            className="agenda-month-grid"
+            aria-describedby="agenda-range-hint"
+            onPointerDown={(event) => {
+              if (!drag.current) suppressClick.current = false;
+              if (
+                event.button !== 0 ||
+                !event.isPrimary ||
+                intervalMode ||
+                event.shiftKey ||
+                drag.current
+              )
+                return;
+              const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
+                "button[data-date]",
+              );
+              const date = button?.dataset["date"];
+              if (!date) return;
+              event.preventDefault();
+              button.focus();
+              suppressClick.current = false;
+              drag.current = { pointer: event.pointerId, start: date, end: date, previous: range };
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerMove={(event) => {
+              const active = drag.current;
+              if (!active || active.pointer !== event.pointerId) return;
+              const button = document
+                .elementFromPoint(event.clientX, event.clientY)
+                ?.closest<HTMLButtonElement>("button[data-date]");
+              const date = button?.dataset["date"];
+              if (!date || !event.currentTarget.contains(button)) return;
+              active.end = date;
+              setRange(orderedRange(active.start, active.end));
+            }}
+            onPointerUp={(event) => {
+              const active = drag.current;
+              if (!active || active.pointer !== event.pointerId) return;
+              drag.current = null;
+              suppressClick.current = true;
+              window.setTimeout(() => {
+                suppressClick.current = false;
+              }, 0);
+              setSelected(active.end);
+              setRange(active.start === active.end ? null : orderedRange(active.start, active.end));
+              event.currentTarget.releasePointerCapture(event.pointerId);
+            }}
+            onPointerCancel={() => {
+              if (drag.current) setRange(drag.current.previous);
+              drag.current = null;
+              suppressClick.current = true;
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== "Escape") return;
+              if (drag.current) {
+                const active = drag.current;
+                drag.current = null;
+                suppressClick.current = true;
+                setRange(active.previous);
+                event.currentTarget.releasePointerCapture(active.pointer);
+              }
+              setIntervalMode(false);
+              setIntervalStart(null);
+            }}
+            onLostPointerCapture={() => {
+              if (drag.current) {
+                setRange(drag.current.previous);
+                suppressClick.current = true;
+              }
+              drag.current = null;
+            }}
+          >
             {dates.map((date) => {
               const count =
                 eventsOn(workspace, date).length +
                 workspace.tasks.filter((task) => task.dueDate === date && !task.completed).length;
+              const minutes = history.get(date)?.minutes ?? 0;
+              const inRange = range && date >= range.start && date <= range.end;
               return (
                 <button
                   type="button"
                   key={date}
-                  className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected" : ""}`}
-                  aria-label={`${dayLabel(date, true)}, ${count} itens`}
+                  data-date={date}
+                  className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected " : ""}${inRange ? "is-in-range " : ""}${minutes > 0 ? "has-study " : ""}${history.has(shiftDate(date, -1)) ? "study-continues-left " : ""}${history.has(shiftDate(date, 1)) ? "study-continues-right" : ""}`}
+                  aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}`}
                   aria-pressed={date === selected}
                   aria-current={date === today ? "date" : undefined}
-                  onClick={() => setSelected(date)}
+                  onClick={(event) => {
+                    if (suppressClick.current && event.detail > 0) {
+                      suppressClick.current = false;
+                      return;
+                    }
+                    suppressClick.current = false;
+                    chooseDate(date, event.shiftKey);
+                  }}
                 >
                   <span>{dateForKey(date).getDate()}</span>
+                  {minutes > 0 && <i className="agenda-study-ribbon" aria-hidden="true" />}
                   {count > 0 && (
                     <small>
                       {count}
@@ -390,6 +550,14 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             })}
           </div>
         </section>
+      )}
+      {calendarOpen && (
+        <AgendaStudyHistory
+          history={history}
+          selected={selected}
+          workspace={workspace}
+          range={range ?? monthRange}
+        />
       )}
       <div className="agenda-layout">
         <div>
@@ -527,7 +695,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 aria-label="Fechar formulário"
                 onClick={() => setDraft(null)}
               >
-                <PaperCloseIcon />
+                <AgendaCloseIcon />
               </button>
             </header>
             <form onSubmit={save} className="compact-form">

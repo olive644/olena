@@ -231,7 +231,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // or initial-entry growth (276.3 KiB unchanged). Reserve 2 KiB for this feature.
 // Agenda calendar, unified editing, recurrence and Focus linkage add 11.6 KiB.
 // Measured total: 1215.2 KiB. Calendar UI/CSS remain in the lazy planner route.
-const MAX_TOTAL_JS_BYTES = 1217 * 1024;
+// Agenda ranges, accessible pointer selection and real focus-history summaries
+// add about 5 KiB to the existing lazy planner route. Measured total: 1220.8 KiB;
+// initial entry stays at 277.8 KiB. Keep a narrow CI allowance, no dependencies
+// and no change to either absolute ceiling.
+const MAX_TOTAL_JS_BYTES = 1223 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

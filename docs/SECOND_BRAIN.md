@@ -1113,6 +1113,11 @@ de mês sem setas e planejamento do dia escolhido abaixo. As abas Hoje/Semana/M�
 foram substituídas, mantendo o formulário único e a data selecionada ao recolher.
 `AgendaMonthPicker` substitui o input de mês nativo por popover HTML com Escape,
 botões originais, 12 meses e ano editável. Sem biblioteca ou mudança de persistência.
+`domain/agenda-history.ts` agrega Foco por data local de conclusão e calcula maior
+sequência no intervalo. `AgendaStudyHistory` exibe totais e horários reais de
+registro. Intervalos por Pointer Events ou início/fim por botões são estado local
+da tela, sem mutação do workspace. O início exato das sessões não é conhecido.
+`AgendaCloseIcon` mantém o X vermelho em camadas, restrito aos controles da Agenda.
 `domain/agenda.ts`
 centraliza datas locais e recorrência; o Espaço usa o mesmo seletor. Eventos de estudo
 ligam Foco via metadados opcionais do contador; `focus/recorded` agrega por ocorrência.

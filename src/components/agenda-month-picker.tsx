@@ -1,7 +1,7 @@
 import { useId, useRef, useState } from "react";
 import { NavigationIcon } from "./navigation-icon";
 import { PaperArrow } from "./paper-arrow";
-import { PaperCloseIcon } from "./paper-close-icon";
+import { AgendaCloseIcon } from "./agenda-close-icon";
 
 const months = Array.from({ length: 12 }, (_, index) =>
   new Date(2026, index, 1).toLocaleDateString("pt-BR", { month: "long" }),
@@ -63,7 +63,7 @@ export function AgendaMonthPicker({
             popoverTarget={id}
             popoverTargetAction="hide"
           >
-            <PaperCloseIcon />
+            <AgendaCloseIcon />
           </button>
         </header>
         <div className="agenda-year-controls">

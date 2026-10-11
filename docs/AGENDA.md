@@ -8,6 +8,18 @@ uma data atualiza o planejamento logo abaixo, no computador e celular. Recolher 
 calendário preserva a data escolhida. As abas Hoje/Semana/Mês foram substituídas.
 O seletor de mês é um painel próprio com 12 botões de papel e ano editável,
 sem calendário nativo do navegador. Escape e clique fora fecham o painel.
+Arrastar com mouse/toque seleciona um intervalo inclusivo; o botão Selecionar
+intervalo oferece início/fim por clique ou teclado. Shift + clique estende a
+seleção. A seleção é temporária, não cria ou modifica eventos. O dia final mostra
+o planejamento e os registros de Foco desse dia. Limpar retorna ao resumo mensal.
+
+Faixas turquesa marcam dias com minutos reais de Foco. Seu ritmo agrega minutos,
+dias estudados e maior sequência dentro do mês ou intervalo escolhido. Os horários
+da linha do tempo são de conclusão (`completedAt`), não de início: o formato atual
+não guarda início, pausas ou intervalos exatos. Não há tempos inventados. As datas
+usam o fuso local do dispositivo. O histórico usa os registros já sincronizados do
+workspace, sem alterar esquema, conta ou persistência. O X da Agenda usa arte
+vermelha facetada própria, sem alterar os outros controles do aplicativo.
 Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco.
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.

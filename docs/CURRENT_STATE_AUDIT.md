@@ -2350,3 +2350,19 @@ Prova de navegação, posicionamento e formulário: `e2e/agenda.spec.ts`.
 O menu de meses também usa papel original: `AgendaMonthPicker`, sem input nativo
 de mês. Popover com fechamento por Escape/clique fora, ano editável, 12 meses,
 seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
+
+# Intervalos e histórico na Agenda
+
+- Seleção inclusiva por arraste com mouse/toque, início/fim por clique/teclado e
+  Shift + clique. Limpar, cancelamento de ponteiro e perda de captura preservam a
+  navegação. Não grava planos em lote nem modifica eventos existentes.
+- Dias estudados recebem faixas turquesa. Resumo por mês/intervalo com minutos
+  reais, dias ativos e maior sequência consecutiva, inclusive entre meses.
+- Linha de registros usa horário local de conclusão do Foco. Não afirma conhecer
+  início ou pausas. Lista horários, matéria e minutos sem fabricar sessões.
+- Conta/persistência reaproveitadas sem migração ou dependência. Seleção da tela
+  não é persistida. X vermelho em nova arte facetada exclusiva da Agenda.
+- Provas: `agenda-history.test.ts` e E2E de intervalo por arraste, teclado e toque.
+- Build medido: entrada inicial 277,8 KiB, total 1220,8 KiB. O orçamento normal
+  total acompanha o recurso sob demanda, de 1217 para 1223 KiB. Tetos absolutos
+  de entrada e total intactos, sem dependências novas.

@@ -215,3 +215,132 @@ test("overdue tasks move to today and Helena only gets a draft after user action
     ),
   ).toBe(toDateKey(new Date()));
 });
+
+test("agenda selects ranges by drag and clicks and shows only real focus history", async ({
+  page,
+}, info) => {
+  const state = createInitialWorkspace();
+  state.focusSessions = [
+    {
+      id: "one",
+      subjectId: state.subjects[0]!.id,
+      durationMinutes: 15,
+      completedAt: "2026-10-05T09:00:00",
+    },
+    {
+      id: "two",
+      subjectId: state.subjects[0]!.id,
+      durationMinutes: 25,
+      completedAt: "2026-10-06T12:00:00",
+    },
+    {
+      id: "three",
+      subjectId: state.subjects[0]!.id,
+      durationMinutes: 5,
+      completedAt: "2026-10-06T18:00:00",
+    },
+    {
+      id: "four",
+      subjectId: state.subjects[0]!.id,
+      durationMinutes: 20,
+      completedAt: "2026-10-08T14:00:00",
+    },
+  ];
+  await page.addInitScript(
+    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
+    state,
+  );
+  await page.goto("/planejador");
+  await page.getByRole("button", { name: "Calendário", exact: true }).click();
+  await page.getByRole("button", { name: "Escolher mês", exact: true }).click();
+  const picker = page.getByRole("dialog", { name: "Escolher mês e ano" });
+  await expect(picker.locator(".agenda-close-icon")).toHaveAttribute(
+    "src",
+    "/navigation-icons/paper/agenda-close.svg",
+  );
+  await picker.getByLabel("Ano", { exact: true }).fill("2026");
+  await picker.getByRole("button", { name: "outubro", exact: true }).click();
+  const history = page.getByRole("region", { name: "Histórico de estudo" });
+  await expect(history.locator("dd").nth(0)).toHaveText("65");
+  await expect(history.locator("dd").nth(1)).toHaveText("3");
+  await expect(history.locator("dd").nth(2)).toHaveText("2 dias");
+  const first = page.locator('button[data-date="2026-10-05"]');
+  const last = page.locator('button[data-date="2026-10-08"]');
+  await first.scrollIntoViewIfNeeded();
+  const a = await first.boundingBox();
+  const b = await last.boundingBox();
+  await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 });
+  await page.mouse.up();
+  await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
+  await expect(history.locator("dd").nth(0)).toHaveText("65");
+  await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2, { steps: 6 });
+  await page.keyboard.press("Escape");
+  await page.mouse.up();
+  await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
+  await expect(history.getByRole("listitem")).toHaveCount(1);
+  await expect(history.getByRole("listitem")).toContainText("14:00");
+  await expect(page.locator(".agenda-month-grid .has-study")).toHaveCount(3);
+  await page.getByRole("button", { name: "Limpar intervalo", exact: true }).click();
+  await page.getByRole("button", { name: "Selecionar intervalo", exact: true }).click();
+  if (info.project.name === "mobile") await last.tap();
+  else {
+    await last.focus();
+    await page.keyboard.press("Enter");
+  }
+  await expect(page.getByRole("button", { name: "Escolher fim", exact: true })).toBeVisible();
+  const second = page.locator('button[data-date="2026-10-06"]');
+  if (info.project.name === "mobile") await second.tap();
+  else {
+    await second.focus();
+    await page.keyboard.press("Enter");
+  }
+  await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(3);
+  await expect(history.locator("dd").nth(0)).toHaveText("50");
+  await expect(history.getByRole("listitem")).toHaveCount(2);
+  await expect(history.getByRole("listitem").first()).toContainText("12:00");
+  await expect(history.getByRole("listitem").last()).toContainText("18:00");
+  if (
+    info.project.name === "mobile" &&
+    page.context().browser()?.browserType().name() === "chromium"
+  ) {
+    await first.scrollIntoViewIfNeeded();
+    const from = await last.boundingBox();
+    const to = await first.boundingBox();
+    const touch = await page.context().newCDPSession(page);
+    await touch.send("Input.dispatchTouchEvent", {
+      type: "touchStart",
+      touchPoints: [{ x: from!.x + from!.width / 2, y: from!.y + from!.height / 2, id: 1 }],
+    });
+    for (let step = 1; step <= 6; step++) {
+      await touch.send("Input.dispatchTouchEvent", {
+        type: "touchMove",
+        touchPoints: [
+          {
+            x: from!.x + from!.width / 2 + ((to!.x - from!.x) * step) / 6,
+            y: from!.y + from!.height / 2 + ((to!.y - from!.y) * step) / 6,
+            id: 1,
+          },
+        ],
+      });
+    }
+    await touch.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await touch.detach();
+    await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
+    await expect(history.locator("dd").nth(0)).toHaveText("65");
+  }
+  await page.screenshot({
+    path: info.outputPath(`agenda-history-${info.project.name}.png`),
+    animations: "disabled",
+    fullPage: true,
+  });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions.length,
+    ),
+  ).toBe(4);
+});
