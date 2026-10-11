@@ -142,10 +142,11 @@ para prometer qualidade geral ou substituir o professor.
    executada ou validada com GPU nesta entrega. Não instala dependências no app.
    O resultado é um adaptador LoRA, que ainda requer o modelo base.
 
-Não existe job periódico ativado, treinamento online durante conversas ou promoção
-automática. Um agendamento futuro deve ter orçamento de chamadas, dataset maior,
-revisão, retenção definida e máquina disponível para treinamento. Nunca treinar
-diretamente em mensagens privadas por assumir que retirar o nome anonimiza tudo.
+Este fluxo manual de dados revisados permanece separado do job diário experimental
+descrito acima. Não há treinamento durante conversas nem promoção automática.
+Expandir o job exige orçamento de chamadas, currículo, revisão, retenção definida
+e máquina disponível para treinamento. Nunca treinar diretamente em mensagens
+privadas por assumir que retirar o nome anonimiza tudo.
 
 ## Avaliação e independência
 
