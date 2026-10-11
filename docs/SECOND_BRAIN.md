@@ -1115,8 +1115,18 @@ foram substituídas, mantendo o formulário único e a data selecionada ao recol
 botões originais, 12 meses e ano editável. Sem biblioteca ou mudança de persistência.
 `domain/agenda-history.ts` agrega Foco por data local de conclusão e calcula maior
 sequência no intervalo. `AgendaStudyHistory` exibe um dashboard compacto com
-totais reais e atalhos para Foco, Cadernos e Ilhas. Pomodoro mostra a preferência
-de duração, pois sessões antigas não guardam modalidade nem ilha. Intervalos
+gráficos de barras/pizza por categoria selecionada, sem navegação automática.
+`AgendaCharts` usa amarelo como cor principal e inspeção local por toque, mouse e
+teclado; valor e percentual aparecem em output acessível, sem portal/tooltip.
+Distribuição usa rosca de segmentos SVG proporcionais com relevo de papel,
+separações discretas e total PaperDigits central, sem biblioteca de gráficos.
+`agenda-dashboard.ts` agrega modalidades explícitas do Foco e criação de cadernos
+no intervalo; ilhas usam `readMathLearning` com progresso acumulado sem datas.
+Campo `mode` opcional é gravado pelo Foco e preservado pelo reducer/storage/sync,
+sem reescrever registros antigos nem alterar versão. Leitores anteriores ignoram
+o campo, leitores novos aceitam ausência e validam valores; rollback não perde
+sessões. Histórico sem modalidade fica fora dos gráficos e aparece em aviso.
+Intervalos
 amarelos e PaperDigits respeitam ambos os temas. Intervalos por Pointer Events ou início/fim por botões são estado local
 da tela, sem mutação do workspace. O início exato das sessões não é conhecido.
 `AgendaCloseIcon` mantém o X vermelho em camadas, restrito aos controles da Agenda.

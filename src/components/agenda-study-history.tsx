@@ -1,5 +1,9 @@
 import { dateForKey } from "../domain/agenda";
-import { historySummary, type AgendaRange, type focusHistory } from "../domain/agenda-history";
+import { type AgendaRange, type focusHistory } from "../domain/agenda-history";
+import { useState } from "react";
+import { agendaDashboard, type AgendaCategory } from "../domain/agenda-dashboard";
+import { readMathLearning } from "../data/math-learning";
+import { AgendaCharts } from "./agenda-charts";
 import { type WorkspaceState } from "../domain/workspace";
 import { type AppView } from "./app-navigation";
 import { NavigationIcon } from "./navigation-icon";
@@ -26,7 +30,15 @@ export function AgendaStudyHistory({
   workspace: WorkspaceState;
   onNavigate?: (view: AppView) => void;
 }) {
-  const summary = historySummary(history, range);
+  const [category, setCategory] = useState<AgendaCategory>("timer");
+  const data = agendaDashboard(
+    workspace,
+    range,
+    category,
+    category === "islands" ? readMathLearning() : {},
+    [...history.values()].flatMap((day) => day.sessions),
+  );
+  const summary = { minutes: data.pie.reduce((sum, item) => sum + item.value, 0) };
   return (
     <section className="agenda-history module-panel" aria-label="Histórico de estudo">
       <header>
@@ -41,40 +53,43 @@ export function AgendaStudyHistory({
           )}
         </span>
       </header>
-      <div className="agenda-dashboard">
+      <div className="agenda-dashboard" role="group" aria-label="Categorias do estudo">
         <button
           type="button"
           className="secondary-button"
-          onClick={() => onNavigate?.("focus")}
-          disabled={!onNavigate}
+          onClick={() => setCategory("timer")}
+          aria-pressed={category === "timer"}
+          aria-controls="agenda-category-panel"
         >
-          <NavigationIcon name="focus" />
+          <NavigationIcon
+            name="focus"
+            {...(category === "timer" ? { paperVariant: "escuro" as const } : {})}
+          />
           <span>
             <strong>Cronômetro</strong>
-            <span>
-              <PaperDigits value={String(summary.minutes)} /> min de foco
-            </span>
           </span>
         </button>
         <button
           type="button"
           className="secondary-button"
-          onClick={() => onNavigate?.("notes")}
-          disabled={!onNavigate}
+          onClick={() => setCategory("notes")}
+          aria-pressed={category === "notes"}
+          aria-controls="agenda-category-panel"
         >
-          <NavigationIcon name="notes" />
+          <NavigationIcon
+            name="notes"
+            {...(category === "notes" ? { paperVariant: "escuro" as const } : {})}
+          />
           <span>
             <strong>Caderno</strong>
-            <span>
-              <PaperDigits value={String(workspace.notebooks.length)} /> na biblioteca
-            </span>
           </span>
         </button>
         <button
           type="button"
           className="secondary-button"
-          onClick={() => onNavigate?.("focus")}
-          disabled={!onNavigate}
+          onClick={() => setCategory("pomodoro")}
+          aria-pressed={category === "pomodoro"}
+          aria-controls="agenda-category-panel"
         >
           <svg className="agenda-pomodoro-icon" viewBox="0 0 280 290" aria-hidden="true">
             <path
@@ -94,17 +109,14 @@ export function AgendaStudyHistory({
           </svg>
           <span>
             <strong>Pomodoro</strong>
-            <span>
-              Ciclo de <PaperDigits value={String(workspace.focusPreferences.pomodoroMinutes)} />{" "}
-              min
-            </span>
           </span>
         </button>
         <button
           type="button"
           className="secondary-button"
-          onClick={() => onNavigate?.("learn")}
-          disabled={!onNavigate}
+          onClick={() => setCategory("islands")}
+          aria-pressed={category === "islands"}
+          aria-controls="agenda-category-panel"
         >
           <img
             className="agenda-island-icon"
@@ -114,31 +126,44 @@ export function AgendaStudyHistory({
           />
           <span>
             <strong>Ilhas</strong>
-            <span>Explorar Matemática</span>
           </span>
         </button>
       </div>
-      <dl className="agenda-history-stats" aria-live="polite">
-        <div>
-          <dt>Minutos no intervalo</dt>
-          <dd>
-            <PaperDigits value={String(summary.minutes)} />
-          </dd>
+      <div id="agenda-category-panel" className="agenda-category-panel">
+        <div className="agenda-chart-heading" role="status">
+          <strong>
+            <PaperDigits value={String(summary.minutes)} /> {data.unit}
+          </strong>
+          <small>
+            {data.note}
+            {data.legacy > 0 && (
+              <>
+                {" "}
+                <PaperDigits value={String(data.legacy)} /> sessões antigas sem modalidade, fora
+                destes gráficos.
+              </>
+            )}
+          </small>
         </div>
-        <div>
-          <dt>Dias estudados</dt>
-          <dd>
-            <PaperDigits value={String(summary.days)} />
-          </dd>
-        </div>
-        <div>
-          <dt>Maior sequência</dt>
-          <dd>
-            <PaperDigits value={String(summary.longest)} />
-            <small>{summary.longest === 1 ? " dia" : " dias"}</small>
-          </dd>
-        </div>
-      </dl>
+        <AgendaCharts key={`${category}:${range.start}:${range.end}`} {...data} />
+        {onNavigate && (
+          <button
+            type="button"
+            className="secondary-button agenda-chart-action"
+            onClick={() =>
+              onNavigate(
+                category === "notes" ? "notes" : category === "islands" ? "learn" : "focus",
+              )
+            }
+          >
+            {category === "notes"
+              ? "Abrir cadernos"
+              : category === "islands"
+                ? "Explorar ilhas"
+                : "Abrir Foco"}
+          </button>
+        )}
+      </div>
     </section>
   );
 }

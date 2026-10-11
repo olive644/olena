@@ -437,6 +437,7 @@ function isFocusSession(value: unknown): boolean {
     Number.isFinite(value["durationMinutes"]) &&
     value["durationMinutes"] > 0 &&
     isString(value["completedAt"]) &&
+    (value["mode"] === undefined || value["mode"] === "timer" || value["mode"] === "pomodoro") &&
     (value["agendaEventId"] === undefined || isString(value["agendaEventId"])) &&
     (value["agendaDate"] === undefined || isString(value["agendaDate"]))
   );

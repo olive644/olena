@@ -365,6 +365,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
         if (phase === "focus") {
           dispatch({
             type: "focus/recorded",
+            mode: "pomodoro",
             subjectId: defaultSubject?.id ?? "",
             durationMinutes: minutes,
             completedAt: new Date(deadline).toISOString(),
@@ -468,6 +469,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     if (mode === "timer" || pomodoroPhase === "focus") {
       dispatch({
         type: "focus/recorded",
+        mode,
         subjectId: subject.id,
         durationMinutes: restored?.agendaEventId
           ? Math.floor(elapsedSeconds / 60)

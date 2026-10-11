@@ -92,6 +92,7 @@ export type FocusSession = {
   subjectId: string;
   durationMinutes: number;
   completedAt: string;
+  mode?: "timer" | "pomodoro";
   agendaEventId?: string;
   agendaDate?: string;
 };
@@ -281,6 +282,7 @@ export type WorkspaceAction =
       subjectId: string;
       durationMinutes: number;
       completedAt: string;
+      mode?: "timer" | "pomodoro";
       agendaEventId?: string;
       agendaDate?: string;
     }
@@ -829,6 +831,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             subjectId: action.subjectId,
             durationMinutes: action.durationMinutes,
             completedAt: action.completedAt,
+            ...(action.mode ? { mode: action.mode } : {}),
             ...(action.agendaEventId
               ? { agendaEventId: action.agendaEventId, agendaDate: action.agendaDate }
               : {}),

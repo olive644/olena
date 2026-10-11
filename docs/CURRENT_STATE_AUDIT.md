@@ -2358,16 +2358,41 @@ seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
   navegação. Não grava planos em lote nem modifica eventos existentes.
 - Dias estudados recebem faixas turquesa. Resumo por mês/intervalo com minutos
   reais, dias ativos e maior sequência consecutiva, inclusive entre meses.
-- Dashboard compacto substitui a linha de horários, com ícones originais de
-  cronômetro, caderno, tomate Pomodoro e ilha de Matemática. Minutos, dias e
-  sequência vêm do Foco; cadernos representam a biblioteca completa e Pomodoro
-  mostra a duração configurada, não um total inventado de sessões.
+- Quatro categorias selecionáveis substituem os atalhos do dashboard: cronômetro,
+  caderno, Pomodoro e ilhas. Cada uma atualiza barras e pizza em SVG/CSS de papel,
+  sem biblioteca nova. Barras temporais agrupam o intervalo em até sete blocos;
+  legendas e nomes acessíveis preservam valores exatos, inclusive no gráfico vazio.
+- Cronômetro/Pomodoro usam somente sessões com modalidade registrada. Novas
+  sessões guardam `mode` opcional; registros antigos permanecem intactos e são
+  informados como sem modalidade, nunca reclassificados por duração. Cadernos
+  mostram criação por data e matéria; ilhas mostram acertos acumulados por ilha
+  e sua distribuição entre as ilhas, explicitamente sem filtro temporal. O campo
+  adaptativo de erros é uma sequência recente, não total histórico, e não é usado.
+- Ícone do expansor agora é um calendário facetado sobre botão branco nos dois
+  temas; contorno roxo identifica o estado aberto.
+- Barras e primeira fatia amarelas, outras fatias turquesa, coral, roxo e ocre.
+  Inspeção por ponteiro/toque, fatias e legendas clicáveis; teclado percorre barras
+  com setas/Home/End e ativa fatias com Enter/Espaço. Painel inline anuncia valor
+  e percentual. Seleção é reiniciada ao mudar categoria ou intervalo, sem tooltip
+  fora da tela; legendas oferecem alvos de toque de 44px mesmo para fatias pequenas.
+- Barras têm somente a área proporcional colorida, sem bloco de fundo que pareça
+  uma segunda barra. Altura numérica compartilhada de 80px para o maior valor;
+  testes de navegador medem a razão 20/30 e altura zero para valores vazios.
+  Pizza não inclui faceta decorativa simulando fatia: grupos reais têm cores
+  distintas, e grupo único é informado explicitamente como 100%.
+- Distribuição em rosca: segmentos anulares proporcionais, pequenas separações,
+  profundidade na mesma geometria em papel e total PaperDigits no centro.
+  O centro permanece vazio para seleção; nenhuma camada decorativa inventa dados.
 - Intervalo inclusivo amarelo nos dois temas, com grafite para contraste e contorno
   roxo no dia ativo. PaperDigits nos dias, anos, horários e totais da Agenda;
   o ano mantém texto nativo durante a edição para preservar usabilidade.
-- Conta/persistência reaproveitadas sem migração ou dependência. Seleção da tela
+- Conta/persistência reaproveitadas com campo opcional compatível e sem dependência. Seleção da tela
   não é persistida. X vermelho em nova arte facetada exclusiva da Agenda.
 - Provas: `agenda-history.test.ts` e E2E de intervalo por arraste, teclado e toque.
 - Build medido: entrada inicial 277,8 KiB, total 1220,8 KiB. O orçamento normal
   total acompanha o recurso sob demanda, de 1217 para 1223 KiB. Tetos absolutos
   de entrada e total intactos, sem dependências novas.
+- Gráficos por categoria e inspeção adicionam aproximadamente 7 KiB sob demanda:
+  entrada 278,0 KiB, total 1230,2 KiB. Orçamento normal total 1232 KiB, com os mesmos
+  tetos absolutos e sem dependência de gráficos. Campo opcional `mode` não altera
+  a versão do workspace e preserva registros sem modalidade no rollback.

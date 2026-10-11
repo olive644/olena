@@ -220,28 +220,33 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   page,
 }, info) => {
   const state = createInitialWorkspace();
+  state.subjects.push({ id: "chart-math", name: "Matemática", color: "#38a4ad" });
   state.focusSessions = [
     {
       id: "one",
+      mode: "timer",
       subjectId: state.subjects[0]!.id,
       durationMinutes: 15,
       completedAt: "2026-10-05T09:00:00",
     },
     {
       id: "two",
+      mode: "timer",
       subjectId: state.subjects[0]!.id,
       durationMinutes: 25,
       completedAt: "2026-10-06T12:00:00",
     },
     {
       id: "three",
+      mode: "timer",
       subjectId: state.subjects[0]!.id,
       durationMinutes: 5,
       completedAt: "2026-10-06T18:00:00",
     },
     {
       id: "four",
-      subjectId: state.subjects[0]!.id,
+      mode: "timer",
+      subjectId: "chart-math",
       durationMinutes: 20,
       completedAt: "2026-10-08T14:00:00",
     },
@@ -261,9 +266,11 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   await picker.getByLabel("Ano", { exact: true }).fill("2026");
   await picker.getByRole("button", { name: "outubro", exact: true }).click();
   const history = page.getByRole("region", { name: "Histórico de estudo" });
-  await expect(history.locator("dd").nth(0)).toHaveText("65");
-  await expect(history.locator("dd").nth(1)).toHaveText("3");
-  await expect(history.locator("dd").nth(2)).toHaveText("2 dias");
+  await expect(page.getByRole("button", { name: "Calendário", exact: true })).toHaveCSS(
+    "background-color",
+    "rgb(255, 253, 248)",
+  );
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("65 min");
   const first = page.locator('button[data-date="2026-10-05"]');
   const last = page.locator('button[data-date="2026-10-08"]');
   await first.scrollIntoViewIfNeeded();
@@ -274,15 +281,17 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 });
   await page.mouse.up();
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
-  await expect(history.locator("dd").nth(0)).toHaveText("65");
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("65 min");
   await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2);
   await page.mouse.down();
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2, { steps: 6 });
   await page.keyboard.press("Escape");
   await page.mouse.up();
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
-  await expect(history.getByRole("button")).toHaveCount(4);
-  await expect(history.getByRole("button", { name: /Cronômetro/ })).toContainText("65");
+  await expect(
+    history.getByRole("group", { name: "Categorias do estudo" }).getByRole("button"),
+  ).toHaveCount(4);
+  await expect(history.getByRole("button", { name: /^Minutos por período:/ })).toBeVisible();
   await expect(page.locator(".agenda-month-grid .has-study")).toHaveCount(3);
   await page.getByRole("button", { name: "Limpar intervalo", exact: true }).click();
   await page.getByRole("button", { name: "Selecionar intervalo", exact: true }).click();
@@ -299,29 +308,74 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     await page.keyboard.press("Enter");
   }
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(3);
-  await expect(history.locator("dd").nth(0)).toHaveText("50");
-  await expect(history.getByRole("button", { name: /Cronômetro/ })).toContainText("50");
+  await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("50 min");
   for (const theme of ["light", "dark"]) {
     await page.evaluate(
       (value) => document.documentElement.setAttribute("data-theme", value),
       theme,
     );
     const rangeDays = page.locator(".agenda-month-grid .is-in-range");
+    await expect(page.getByRole("button", { name: "Calendário", exact: true })).toHaveCSS(
+      "background-color",
+      "rgb(255, 253, 248)",
+    );
     await expect(rangeDays).toHaveCount(3);
     for (const day of await rangeDays.all()) {
       await expect(day).toHaveCSS("background-color", "rgb(250, 204, 21)");
       await expect(day.locator(".paper-digits").first()).toHaveCSS("--digit-face", "#292432");
     }
     await expect(page.locator(".agenda-month-grid button > span > .paper-digits")).toHaveCount(35);
+    const bars = history.getByRole("button", { name: /^Minutos por período:/ });
+    await bars.focus();
+    await page.keyboard.press("Home");
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("30 min");
+    await page.keyboard.press("ArrowRight");
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("0 min");
+    const fills = await history
+      .locator(".agenda-pie-slice")
+      .evaluateAll((slices) => slices.map((slice) => slice.getAttribute("fill")));
+    expect(new Set(fills).size).toBe(2);
+    await expect(history.locator(".agenda-donut-total")).toHaveText("50min");
+    expect(await history.locator(".agenda-pie-slice").first().getAttribute("d")).toContain(
+      "A34 34",
+    );
+    const heights = await history
+      .locator(".agenda-bar-track > span")
+      .evaluateAll((bars) => bars.map((bar) => bar.getBoundingClientRect().height));
+    expect(heights[1]).toBe(0);
+    expect(heights[2]! / heights[0]!).toBeCloseTo(20 / 30, 1);
+    await history.locator(".agenda-pie-slice").first().focus();
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("60% do total");
+    await history
+      .locator(".agenda-pie")
+      .evaluate((ring) => ring.scrollIntoView({ block: "center", behavior: "instant" }));
+    const ringBox = await history.locator(".agenda-pie").boundingBox();
+    // The second segment's midpoint is 198 degrees, on the ring, not its empty center.
+    const angle = (198 * Math.PI) / 180;
+    const x = ringBox!.x + ((60 + 42 * Math.cos(angle)) / 120) * ringBox!.width;
+    const y = ringBox!.y + ((60 + 42 * Math.sin(angle)) / 128) * ringBox!.height;
+    if (info.project.name === "mobile") await page.touchscreen.tap(x, y);
+    else await page.mouse.click(x, y);
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("40% do total");
     await history.screenshot({
+      style: ".mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
       path: info.outputPath(`dashboard-${theme}-${info.project.name}.png`),
     });
+    for (const category of ["Caderno", "Pomodoro", "Ilhas", "Cronômetro"]) {
+      const button = history.getByRole("button", { name: category, exact: true });
+      await button.click();
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+      await expect(history.locator(".agenda-chart")).toHaveCount(2);
+      await expect(page).toHaveURL(/\/planejador$/);
+    }
   }
   if (
     info.project.name === "mobile" &&
     page.context().browser()?.browserType().name() === "chromium"
   ) {
-    await first.scrollIntoViewIfNeeded();
+    await page
+      .locator(".agenda-month-grid")
+      .evaluate((grid) => grid.scrollIntoView({ block: "center", behavior: "instant" }));
     const from = await last.boundingBox();
     const to = await first.boundingBox();
     const touch = await page.context().newCDPSession(page);
@@ -344,7 +398,7 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     await touch.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
     await touch.detach();
     await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
-    await expect(history.locator("dd").nth(0)).toHaveText("65");
+    await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("65 min");
   }
   await page.screenshot({
     path: info.outputPath(`agenda-history-${info.project.name}.png`),
