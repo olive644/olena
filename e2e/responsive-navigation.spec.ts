@@ -34,17 +34,19 @@ for (const width of [320, 360, 390, 768, 1280]) {
       await expect(moreDialog.locator(".user-profile")).toHaveCount(0);
       await page.keyboard.press("Escape");
       await expect(more).toBeFocused();
-      await navigation.getByRole("button", { name: "Praticar", exact: true }).click();
-      await expect(navigation.locator(".mobile-nav__item--featured .mobile-nav__icon")).toHaveCSS(
-        "background-color",
-        "rgb(116, 51, 224)",
-      );
-      await expect(
-        navigation.locator(".mobile-nav__item--featured .navigation-icon__variant--escuro"),
-      ).toBeVisible();
-      await expect(
-        navigation.locator(".mobile-nav__item--featured .mobile-nav__icon"),
-      ).not.toHaveCSS("border-radius", "50%");
+      const practice = navigation.getByRole("button", { name: "Praticar", exact: true });
+      const agenda = navigation.getByRole("button", { name: "Agenda", exact: true });
+      await practice.click();
+      await expect(practice).toHaveAttribute("aria-current", "page");
+      await expect(practice).not.toHaveClass(/mobile-nav__item--featured/);
+      const practiceIcon = practice.locator(".mobile-nav__icon");
+      const practiceBox = await practiceIcon.boundingBox();
+      await expect(practiceIcon).toHaveCSS("margin-top", "0px");
+      await agenda.click();
+      const agendaBox = await agenda.locator(".mobile-nav__icon").boundingBox();
+      expect(practiceBox!.width).toBe(agendaBox!.width);
+      expect(practiceBox!.height).toBe(agendaBox!.height);
+      expect(practiceBox!.y).toBeCloseTo(agendaBox!.y, 0);
     } else {
       await expect(profile).toBeVisible();
       await expect(profile).toHaveCSS("border-radius", "50%");
