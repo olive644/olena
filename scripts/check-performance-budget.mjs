@@ -225,7 +225,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Shared animated Helena chat adds 8.8 KiB, loaded separately after onboarding.
 // Measured total: 1199.8 KiB, initial entry: 276.3 KiB. No new dependency.
 // Preserve the initial-entry limit and a narrow cross-platform allowance.
-const MAX_TOTAL_JS_BYTES = 1202 * 1024;
+// End-to-end Helena SSE adds 1.4 KiB to the lazy chat, with no new dependency
+// or initial-entry growth (276.3 KiB unchanged). Reserve 2 KiB for this feature.
+const MAX_TOTAL_JS_BYTES = 1204 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

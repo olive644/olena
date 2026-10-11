@@ -2308,3 +2308,14 @@ Proprietário confirmou Workers Free. Sem conversas dos alunos, sem promoção
 automática e sem mudança para plano pago. Pesos só existem após job concluído;
 relatório de candidato não comprova qualidade para produção. Detalhes e ameaças
 em `docs/OLENA_LEARNING.md`. Nenhuma alteração visual ou no provedor do chat.
+
+# Chat Helena: streaming e acabamento
+
+- As três sugestões usam papel branco e SVGs originais grafite no claro,
+  papel roxo e SVGs creme no escuro, sem filtros, com facetas e estados de pressão.
+- Widget usa acabamento de papel, sugestões e ações no padrão original.
+- Removidos o contexto decorativo, subtítulo de boas-vindas, rótulo visível do
+  compositor e checkbox; envio ocorre somente por ação do aluno, com aviso no rodapé.
+- SSE incremental do provedor ao navegador, cancelamento propagado e preservação
+  de texto parcial. Limites de conta, origem e quota continuam ativos.
+- Treinamento e promoção do modelo próprio não mudam nesta entrega.

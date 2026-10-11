@@ -1089,3 +1089,14 @@ Segredo compartilhado `OLENA_LEARNING_SERVICE_TOKEN`; servidor requer flag
 `OLENA_LEARNING_FREE_CONFIRMED=true`. Pausar workflow ou remover flag desativa.
 Não usa conversas nem altera `/api/helena`. Candidato precisa de avaliação
 ampla e hospedagem antes de substituir professor. Ver `docs/OLENA_LEARNING.md`.
+
+# Chat incremental Helena
+
+- Sugestões do chat: branco/grafite no claro, roxo/creme no escuro, SVGs sem filtros. CSS fica
+  isolado em `helena-chat.css`; prova visual em `helena-chat-preview.spec.ts`.
+- `src/ai/event-stream.ts` decodifica SSE limitado e valida deltas de modelos.
+- `helena-handler`, `helena-teacher`, `olena-student` e `vercel-adapter` mantêm
+  streaming real, sem `arrayBuffer()` no caminho SSE.
+- `streamHelena` entrega texto parcial; o widget cancela ao interromper/recolher.
+- Prova HTTP sem tokens reais: `npx vitest run src/backend/helena-stream.test.ts`.
+- O envio ao Cloudflare ocorre ao enviar a mensagem, não ao abrir o widget.

@@ -58,7 +58,7 @@ describe("handler da Helena", () => {
       generatedAt: "2026-08-30T00:00:00.000Z",
     });
     expect(deps.rateLimiter.consume).toHaveBeenCalledWith("anonymous:test-client");
-    expect(deps.provider.generate).toHaveBeenCalledWith(validRequest);
+    expect(deps.provider.generate).toHaveBeenCalledWith(validRequest, expect.any(AbortSignal));
   });
 
   it("bloqueia outra origem antes de chamar o provedor", async () => {

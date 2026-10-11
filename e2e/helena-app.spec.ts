@@ -23,11 +23,26 @@ test("Helena appears in the real app, keeps history between tabs and stays above
   const dialog = page.getByRole("dialog", { name: "Helena" });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByText("Preview", { exact: true })).toHaveCount(0);
+  const suggestions = dialog.locator(".helena-chat-suggestions button");
+  await expect(suggestions).toHaveCount(3);
+  for (const theme of ["light", "dark"] as const) {
+    await page.evaluate((value) => {
+      document.documentElement.dataset["theme"] = value;
+    }, theme);
+    for (const button of await suggestions.all()) {
+      await expect(button).toHaveCSS(
+        "background-color",
+        theme === "light" ? "rgb(255, 255, 255)" : "rgb(116, 51, 224)",
+      );
+      await expect(button.locator(`.helena-chat-suggestion-icon--${theme}`)).toBeVisible();
+    }
+  }
+  await page.evaluate(() => {
+    document.documentElement.dataset["theme"] = "light";
+  });
   await dialog.getByRole("textbox").fill("Quero revisar matemática");
   await dialog.getByRole("button", { name: "Enviar mensagem" }).click();
-  await expect(dialog.getByRole("alert")).toContainText("Autorize");
-  await dialog.getByRole("checkbox").check();
-  await dialog.getByRole("button", { name: "Enviar mensagem" }).click();
+  await expect(dialog.getByRole("checkbox")).toHaveCount(0);
   await expect(dialog.getByRole("alert")).toContainText(/Entre na conta/);
   await dialog.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(dialog).toHaveCount(0);
