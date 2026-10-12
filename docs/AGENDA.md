@@ -38,9 +38,8 @@ com menos de um minuto não podem ser registradas. Ao atingir a duração planej
 ocorrência fica concluída. Registros parciais continuam visíveis na Agenda.
 
 Agenda e Espaço do aluno usam a mesma seleção de ocorrências, inclusive rotinas semanais.
-Google Agenda permanece separado e identificado: leitura dos próximos 14 dias, link
-para editar no Google, sem importar cópias nem fingir edição local. Tarefas de aula,
-matérias e metas existentes continuam disponíveis.
+Google Agenda e Listas de estudo não aparecem mais nesta tela. A conexão e os dados
+existentes permanecem salvos, sem exclusão ou alteração da sincronização.
 
 Meu estudo agrega Foco por dia, nunca pela matéria padrão não escolhida.
 Caderno conta criações datadas na estante, separando cadernos, pastas e Notes
@@ -52,7 +51,10 @@ sem gráficos fictícios. Flores e tomates mantêm a exceção visual do Foco.
 Retomar com calma aparece apenas para tarefas realmente vencidas, com data
 válida e não concluídas. Matérias e metas não têm widget duplicado na Agenda;
 os dados existentes permanecem salvos. O widget Uma semana possível foi removido.
-Painel do dia, calendário e Meu estudo compartilham largura máxima de 860px.
+Em telas a partir de 1200px, calendário/painel do dia e Meu estudo ficam lado a lado
+em um conjunto de até 1600px. Em telas menores, ficam empilhados em até 860px.
+As sete flores/tomates e as três ações do dia ficam em uma linha, inclusive no celular.
+Textos auxiliares da semana e do dia vazio foram removidos; status acessíveis permanecem.
 O título da data usa números comuns, sem alterar os números da grade.
 Controles e ícones não entram na seleção de texto; informações e campos
 editáveis continuam selecionáveis.

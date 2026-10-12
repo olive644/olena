@@ -175,4 +175,6 @@ it("keeps the Pomodoro week and timer garden visible on empty dates", () => {
   fireEvent.click(screen.getByRole("button", { name: "Cronômetro" }));
   expect(document.querySelectorAll(".agenda-week-flower")).toHaveLength(7);
   expect(document.querySelectorAll(".agenda-week-flower.is-active")).toHaveLength(0);
+  expect(screen.queryByText(/Dias registrados dentro do filtro ficam vivos/)).toBeNull();
+  expect(screen.queryByText(/Semana de 05\/10\/2026/)).toBeNull();
 });
