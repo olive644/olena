@@ -3,6 +3,7 @@ import { PageHeader, type AppView } from "../components/app-navigation";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { AgendaActionIcon } from "../components/agenda-action-icon";
+import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { AgendaCloseIcon } from "../components/agenda-close-icon";
@@ -681,15 +682,15 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
         <div className="agenda-sync-caption" aria-live="polite">
           <small>
             {!cloud?.enabled || cloud.status === "signed-out"
-              ? "Agenda local neste dispositivo"
+              ? "Entre na sua conta para sincronizar Agenda e Foco"
               : (
                   {
-                    disabled: "Agenda local",
-                    "signed-out": "Agenda local",
+                    disabled: "Sincronização com a conta indisponível neste ambiente",
+                    "signed-out": "Entre na sua conta para sincronizar Agenda e Foco",
                     loading: "Carregando agenda da conta",
                     syncing: "Sincronizando alterações",
                     synced: "Agenda sincronizada com sua conta",
-                    offline: "Offline. Alterações locais aguardam conexão",
+                    offline: "Envio à conta pendente. Confira a conexão e o acesso no Perfil",
                     conflict: "Alterações simultâneas. Revise a sincronização no Perfil",
                   } as const
                 )[cloud.status]}
@@ -701,16 +702,6 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               onClick={() => onNavigate("profile")}
             >
               Revisar sincronização
-            </button>
-          )}
-          {cloud?.syncNow && cloud.status !== "loading" && (
-            <button
-              type="button"
-              className="text-button"
-              disabled={cloud.status === "syncing"}
-              onClick={cloud.syncNow}
-            >
-              Sincronizar agora
             </button>
           )}
         </div>
@@ -726,49 +717,15 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             <button
               type="button"
               key={value}
-              className={calendarView === value ? "primary-button" : "secondary-button"}
+              className="secondary-button agenda-tool"
+              aria-label={label}
+              title={label}
               aria-pressed={calendarView === value}
               onClick={() => setCalendarView(value)}
             >
-              {label}
+              <AgendaToolbarIcon name={value} />
             </button>
           ))}
-          <button
-            type="button"
-            className="secondary-button"
-            aria-label="Período anterior"
-            onClick={() =>
-              resetDate(
-                calendarView === "month"
-                  ? `${new Date(dateForKey(selected).getFullYear(), dateForKey(selected).getMonth() - 1, 1).getFullYear()}-${String(new Date(dateForKey(selected).getFullYear(), dateForKey(selected).getMonth() - 1, 1).getMonth() + 1).padStart(2, "0")}-01`
-                  : shiftDate(selected, calendarView === "week" ? -7 : -1),
-              )
-            }
-          >
-            <span className="agenda-arrow-back">
-              <PaperArrow />
-            </span>
-          </button>
-          <button
-            type="button"
-            className="secondary-button"
-            aria-label="Próximo período"
-            onClick={() =>
-              resetDate(
-                calendarView === "month"
-                  ? toDateKey(
-                      new Date(
-                        dateForKey(selected).getFullYear(),
-                        dateForKey(selected).getMonth() + 1,
-                        1,
-                      ),
-                    )
-                  : shiftDate(selected, calendarView === "week" ? 7 : 1),
-              )
-            }
-          >
-            <PaperArrow />
-          </button>
         </div>
         <div className="agenda-filter-fields">
           <label className="field">
@@ -802,7 +759,9 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
         <div className="agenda-calendar-tools">
           <button
             type="button"
-            className="secondary-button"
+            className="secondary-button agenda-tool"
+            aria-label="Exportar .ics"
+            title="Exportar .ics"
             onClick={() => {
               const blob = new Blob([exportAgenda(visibleEvents)], {
                 type: "text/calendar;charset=utf-8",
@@ -813,15 +772,15 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               anchor.download = "olenastudy-agenda.ics";
               anchor.click();
               setTimeout(() => URL.revokeObjectURL(url), 1000);
-              setNotice("Eventos filtrados exportados. Anexos e histórico não foram incluídos.");
             }}
           >
-            Exportar .ics
+            <AgendaToolbarIcon name="export" />
           </button>
-          <label className="secondary-button agenda-import-label">
-            Importar .ics
+          <label className="secondary-button agenda-tool agenda-import-label" title="Importar .ics">
+            <AgendaToolbarIcon name="import" />
             <input
               type="file"
+              aria-label="Importar .ics"
               accept=".ics,text/calendar"
               onChange={async (event) => {
                 const file = event.target.files?.[0];
@@ -862,12 +821,20 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               }}
             />
           </label>
-          <button type="button" className="secondary-button" onClick={() => window.print()}>
-            Imprimir
+          <button
+            type="button"
+            className="secondary-button agenda-tool"
+            aria-label="Imprimir"
+            title="Imprimir"
+            onClick={() => window.print()}
+          >
+            <AgendaToolbarIcon name="print" />
           </button>
           <button
             type="button"
-            className="secondary-button"
+            className="secondary-button agenda-tool"
+            aria-label="Ativar lembretes"
+            title="Ativar lembretes"
             onClick={async () => {
               if (typeof Notification === "undefined") {
                 setNotificationStatus(
@@ -887,7 +854,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               }
             }}
           >
-            Ativar lembretes
+            <AgendaToolbarIcon name="reminders" />
           </button>
         </div>
         {notificationStatus && <p role="status">{notificationStatus}</p>}

@@ -16,6 +16,13 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 
 ## Controles da Agenda e fechamento
 
+Barra da Agenda usa AgendaToolbarIcon para Dia/Semana/Mês/Lista, importar/exportar,
+imprimir e lembretes. Símbolos facetados em grafite/creme, acentos roxo/amarelo,
+sem ícones genéricos de contorno. Placas permanecem creme nos dois temas; estado
+ativo usa base amarela. Nome acessível e tooltip identificam ações sem texto
+visível. Foco de teclado tem sublinhado amarelo, área mínima de 44px e movimento
+reduzido preservado. Não acrescentar setas que dupliquem o seletor de datas.
+
 Botões, summary, controles role=button e ícones decorativos não são selecionáveis
 como texto. Aplicar a regra global de paper-controls.css, sem bloquear a seleção
 da página inteira. Textos informativos, input, textarea e contenteditable continuam

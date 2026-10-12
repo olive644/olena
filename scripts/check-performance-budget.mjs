@@ -37,7 +37,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Retain a small Linux bundler allowance without changing the hard ceiling.
 // Internal calendar date/zone invariants are shared with workspace and Today.
 // Measured entry: 280.9 KiB; calendar views and reminders stay lazy-loaded.
-const MAX_INITIAL_JS_BYTES = 282 * 1024;
+// Account focus recovery, safe cache hydration and v2 wire codec: measured 284.7 KiB.
+// Narrow CI allowance; absolute ceiling remains unchanged.
+const MAX_INITIAL_JS_BYTES = 285 * 1024;
 // Teto absoluto, separado do orçamento acima: o orçamento normal sobe a cada funcionalidade,
 // com uma frase de justificativa por cima, e isso é esperado. Mas nada nesse processo avisa
 // se a soma dessas subidas pequenas virar um problema grande sem ninguém perceber. Este teto

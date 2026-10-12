@@ -3,6 +3,9 @@ import { ACCOUNT_OWNER_KEY, claimDeviceForAccount, clearPersonalData } from "./p
 import { SYNCED_STORAGE_APPLIED_EVENT } from "./synced-storage";
 
 const PERSONAL_KEYS = [
+  "olena.focus-session.v1",
+  "helena.focus-device.v1",
+  "agenda-local-reminders:account:queue",
   "helenastudy.workspace.v1",
   "helenastudy.workspace.history.v1",
   "helenastudy.handwriting.draft.abc",

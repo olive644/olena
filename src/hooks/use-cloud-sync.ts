@@ -11,6 +11,8 @@ import {
 import { mergeWorkspaceStates } from "../domain/workspace-sync-merge";
 import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "../data/system-updates";
+import { FOCUS_SESSION_KEY } from "../domain/focus-session";
+import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
 const SYNC_CONFLICT_STORAGE_KEY = "helenastudy.sync-conflict.v1";
@@ -36,7 +38,10 @@ async function mergeItems(
   // mudaram, ele descarta um bloco inteiro, mesmo quando as mudanças foram em cadernos ou
   // folhas diferentes (o caso comum de usar o mesmo app em dois aparelhos). Quando é
   // exatamente esse o conflito, mescla por item em vez de aceitar essa perda.
-  if (result.conflicts.includes(WORKSPACE_STORAGE_KEY)) {
+  if (
+    result.conflicts.includes(WORKSPACE_STORAGE_KEY) ||
+    (local[WORKSPACE_STORAGE_KEY] !== undefined && remote[WORKSPACE_STORAGE_KEY] !== undefined)
+  ) {
     const asWorkspace = (raw: string | undefined) => loadWorkspace({ getItem: () => raw ?? null });
     const { workspace, conflicts } = mergeWorkspaceStates(
       asWorkspace(base[WORKSPACE_STORAGE_KEY]),
@@ -46,6 +51,8 @@ async function mergeItems(
     result.items[WORKSPACE_STORAGE_KEY] = serializeWorkspace(workspace);
     if (conflicts === 0) {
       result.conflicts = result.conflicts.filter((key) => key !== WORKSPACE_STORAGE_KEY);
+    } else if (!result.conflicts.includes(WORKSPACE_STORAGE_KEY)) {
+      result.conflicts.push(WORKSPACE_STORAGE_KEY);
     }
   }
   return result;
@@ -93,6 +100,7 @@ export function useCloudSync() {
     let dirty = false;
     let changeRevision = 0;
     let conflictPending = false;
+    let accountRevision = 0;
 
     function parseItems(serialized: string): SyncedItems {
       try {
@@ -138,7 +146,8 @@ export function useCloudSync() {
     void getFirebaseAccountServices()
       .then(({ auth, authApi, databaseURL }) => {
         if (!active) return;
-        async function syncUser(user: (typeof auth)["currentUser"]) {
+        async function syncUser(user: (typeof auth)["currentUser"], accountAttempt: number) {
+          const currentAccount = () => active && accountRevision === accountAttempt;
           eventSource?.close();
           eventSource = undefined;
           stopIdToken?.();
@@ -152,7 +161,7 @@ export function useCloudSync() {
             setState((current) => ({
               enabled: current.enabled,
               ready: true,
-              revision: current.revision,
+              revision: current.revision + 1,
               authenticated: false,
               status: "signed-out",
             }));
@@ -215,18 +224,26 @@ export function useCloudSync() {
             deleteAccount,
           }));
           // Outra conta já usou este aparelho: os dados dela não podem ir para a conta nova.
-          claimDeviceForAccount(localStorage, user.uid);
-          const url = `${databaseURL}/users/${user.uid}/state.json`;
-          const request = async (method: "GET" | "PUT", body?: CloudState) => {
+          if (claimDeviceForAccount(localStorage, user.uid))
+            setState((current) => ({ ...current, revision: current.revision + 1 }));
+          const url = `${databaseURL}/users/${user.uid}/stateV2.json`;
+          const legacyUrl = `${databaseURL}/users/${user.uid}/state.json`;
+          const request = async (method: "GET" | "PUT", body?: CloudState, legacy = false) => {
             const token = await user.getIdToken();
+            if (!currentAccount()) throw new Error("Account changed");
             const init: RequestInit = { method };
             if (body) {
-              init.body = JSON.stringify(body);
+              init.body = JSON.stringify({ ...body, items: encodeCloudItems(body.items ?? {}) });
               init.headers = { "Content-Type": "application/json" };
             }
-            const response = await fetch(`${url}?auth=${encodeURIComponent(token)}`, init);
+            const response = await fetch(
+              `${legacy ? legacyUrl : url}?auth=${encodeURIComponent(token)}`,
+              init,
+            );
             if (!response.ok) throw new Error("sync");
-            return (await response.json()) as CloudState | null;
+            const result = (await response.json()) as CloudState | null;
+            if (!currentAccount()) throw new Error("Account changed");
+            return result?.items ? { ...result, items: decodeCloudItems(result.items) } : result;
           };
           // O login com Google (GoogleLogin) grava localmente que o
           // onboarding foi concluido assim que a autenticacao termina, no
@@ -237,13 +254,38 @@ export function useCloudSync() {
           // onboarding concluido que acabou de ser salva, jogando a pessoa
           // de volta pro onboarding mesmo apos o login funcionar.
           const localBeforeGet = readSyncedStorage();
-          const cloud = await request("GET");
-          if (!active) return;
+          const modernCloud = await request("GET");
+          const cloud = modernCloud ?? (await request("GET", undefined, true));
+          let migrationPending = modernCloud === null && cloud !== null;
+          if (!currentAccount()) return;
           const localAfterGet = readSyncedStorage();
 
           let lastItems = "";
           if (cloud?.items) {
             const merged = { ...cloud.items };
+            // Recorded focus is append-only. A stale account snapshot must not erase
+            // sessions completed offline before this page was reloaded.
+            const localWorkspace = localAfterGet[WORKSPACE_STORAGE_KEY];
+            if (localWorkspace) {
+              if (!cloud.items[WORKSPACE_STORAGE_KEY])
+                merged[WORKSPACE_STORAGE_KEY] = localWorkspace;
+              else {
+                const cached = loadWorkspace({ getItem: () => localWorkspace });
+                const accountSerialized = cloud.items[WORKSPACE_STORAGE_KEY]!;
+                const account = loadWorkspace({
+                  getItem: () => accountSerialized,
+                });
+                const sessions = new Map(
+                  account.focusSessions.map((session) => [session.id, session]),
+                );
+                for (const session of cached.focusSessions)
+                  if (!sessions.has(session.id)) sessions.set(session.id, session);
+                merged[WORKSPACE_STORAGE_KEY] = serializeWorkspace({
+                  ...account,
+                  focusSessions: [...sessions.values()],
+                });
+              }
+            }
             if (localAfterGet[SYSTEM_UPDATES_READ_KEY] || cloud.items[SYSTEM_UPDATES_READ_KEY])
               merged[SYSTEM_UPDATES_READ_KEY] = mergeReadUpdates(
                 localBeforeGet[SYSTEM_UPDATES_READ_KEY],
@@ -258,7 +300,7 @@ export function useCloudSync() {
                 { [rewardsKey]: localRewards },
                 cloud.items,
               );
-              if (!active) return;
+              if (!currentAccount()) return;
               if (rewardsMerge.conflicts.length)
                 rememberConflict(
                   {},
@@ -270,24 +312,59 @@ export function useCloudSync() {
             }
             // Chave introduzida depois da primeira versão da nuvem: não apague
             // a sequência local antiga antes de enviá-la à conta.
-            const localPomodoro = localAfterGet["noteoli.pomodoro-streak.v1"];
-            if (cloud.items["noteoli.pomodoro-streak.v1"] === undefined && localPomodoro)
-              merged["noteoli.pomodoro-streak.v1"] = localPomodoro;
+            const streakKey = "noteoli.pomodoro-streak.v1";
+            if (localAfterGet[streakKey] || cloud.items[streakKey]) {
+              const streakMerge = await mergeItems(
+                {},
+                { [streakKey]: localAfterGet[streakKey] ?? "[]" },
+                { [streakKey]: cloud.items[streakKey] ?? "[]" },
+              );
+              if (!currentAccount()) return;
+              merged[streakKey] = streakMerge.items[streakKey]!;
+            }
+            if (localAfterGet[FOCUS_SESSION_KEY] || cloud.items[FOCUS_SESSION_KEY]) {
+              const activeMerge = await mergeItems(
+                {},
+                { [FOCUS_SESSION_KEY]: localAfterGet[FOCUS_SESSION_KEY] ?? "null" },
+                { [FOCUS_SESSION_KEY]: cloud.items[FOCUS_SESSION_KEY] ?? "null" },
+              );
+              if (!currentAccount()) return;
+              if (activeMerge.items[FOCUS_SESSION_KEY])
+                merged[FOCUS_SESSION_KEY] = activeMerge.items[FOCUS_SESSION_KEY];
+            }
             for (const key of new Set([
               ...Object.keys(localBeforeGet),
               ...Object.keys(localAfterGet),
             ])) {
-              if (key === rewardsKey || key === SYSTEM_UPDATES_READ_KEY) continue;
+              if (
+                key === rewardsKey ||
+                key === SYSTEM_UPDATES_READ_KEY ||
+                key === streakKey ||
+                key === FOCUS_SESSION_KEY
+              )
+                continue;
               if (key === "helena.profile.v1" && cloud.items[key] !== undefined) continue;
               if (localBeforeGet[key] !== localAfterGet[key]) {
+                if (key === WORKSPACE_STORAGE_KEY && localAfterGet[key]) {
+                  const changed = await mergeItems(
+                    { [key]: localBeforeGet[key] ?? "" },
+                    { [key]: localAfterGet[key] },
+                    cloud.items,
+                  );
+                  if (!currentAccount()) return;
+                  merged[key] = changed.items[key]!;
+                  if (changed.conflicts.length)
+                    rememberConflict(localBeforeGet, localAfterGet, cloud.items, changed.conflicts);
+                  continue;
+                }
                 if (localAfterGet[key] === undefined) delete merged[key];
                 else merged[key] = localAfterGet[key];
               }
             }
             applySyncedStorage(merged);
             const remoteSerialized = JSON.stringify(cloud.items);
-            lastItems = JSON.stringify(merged) === remoteSerialized ? remoteSerialized : "";
-            if (!lastItems) {
+            lastItems = remoteSerialized;
+            if (JSON.stringify(merged) !== remoteSerialized) {
               dirty = true;
               changeRevision += 1;
             }
@@ -296,10 +373,14 @@ export function useCloudSync() {
             changeRevision += 1;
           }
 
+          if (migrationPending) {
+            dirty = true;
+            changeRevision += 1;
+          }
           saveCloud = async () => {
             let items = readSyncedStorage();
             let serialized = JSON.stringify(items);
-            if (serialized === lastItems) {
+            if (serialized === lastItems && !migrationPending) {
               dirty = false;
               setState((current) => ({
                 ...current,
@@ -315,7 +396,11 @@ export function useCloudSync() {
                 const latestItems = latest?.items;
                 const latestSerialized = latestItems ? JSON.stringify(latestItems) : "";
                 if (latestItems && latestSerialized && latestSerialized !== lastItems) {
-                  const merged = await mergeItems(parseItems(lastItems), items, latestItems);
+                  const merged = await mergeItems(
+                    parseItems(lastItems),
+                    readSyncedStorage(),
+                    latestItems,
+                  );
                   if (merged.conflicts.length)
                     rememberConflict(parseItems(lastItems), items, latestItems, merged.conflicts);
                   items = merged.items;
@@ -323,9 +408,10 @@ export function useCloudSync() {
                   applySyncedStorage(items);
                 }
               }
-              await request("PUT", { version: 1, updatedAt: Date.now(), items });
-              if (!active) return;
+              await request("PUT", { version: 2, updatedAt: Date.now(), items });
+              if (!currentAccount()) return;
               lastItems = serialized;
+              migrationPending = false;
               if (savingRevision === changeRevision) dirty = false;
               const savedAt = Date.now();
               setState((current) => ({
@@ -338,20 +424,22 @@ export function useCloudSync() {
                 uploadTimer = setTimeout(() => void saveCloud?.(), 350);
               }
             } catch {
-              if (active) setState((current) => ({ ...current, status: "offline" }));
+              if (currentAccount()) setState((current) => ({ ...current, status: "offline" }));
             }
           };
 
           const receiveCloud = async (next: CloudState | null) => {
+            if (!currentAccount()) return;
             const serialized = next?.items ? JSON.stringify(next.items) : undefined;
             const changed = Boolean(serialized && serialized !== lastItems);
             if (changed && next?.items && serialized) {
               const localItems = readSyncedStorage();
-              const localSerialized = JSON.stringify(localItems);
-              if (localSerialized !== lastItems) {
-                const merged = await mergeItems(parseItems(lastItems), localItems, next.items);
+              const merged = await mergeItems(parseItems(lastItems), localItems, next.items);
+              if (!currentAccount()) return;
+              if (JSON.stringify(merged.items) !== serialized) {
                 if (merged.conflicts.length)
                   rememberConflict(parseItems(lastItems), localItems, next.items, merged.conflicts);
+                lastItems = serialized;
                 applySyncedStorage(merged.items);
                 dirty = true;
                 changeRevision += 1;
@@ -359,7 +447,7 @@ export function useCloudSync() {
                 void saveCloud?.();
               } else {
                 lastItems = serialized;
-                applySyncedStorage(next.items);
+                applySyncedStorage(merged.items);
               }
             }
             setState((current) => ({
@@ -384,7 +472,9 @@ export function useCloudSync() {
             setState((current) => ({ ...current, status: "syncing" }));
             void request("GET")
               .then(receiveCloud)
-              .catch(() => setState((current) => ({ ...current, status: "offline" })));
+              .catch(() => {
+                if (currentAccount()) setState((current) => ({ ...current, status: "offline" }));
+              });
           };
 
           setState((current) => ({
@@ -411,10 +501,11 @@ export function useCloudSync() {
           // sempre que ele for renovado (onIdTokenChanged), e também se o próprio Firebase
           // avisar que o token usado na conexão não vale mais (auth_revoked).
           function openStream(streamUser: NonNullable<(typeof auth)["currentUser"]>) {
+            if (!currentAccount()) return;
             eventSource?.close();
             eventSource = undefined;
             void streamUser.getIdToken().then((token) => {
-              if (!active) return;
+              if (!currentAccount()) return;
               const source = new EventSource(`${url}?auth=${encodeURIComponent(token)}`);
               source.addEventListener("put", (event) => {
                 try {
@@ -422,7 +513,12 @@ export function useCloudSync() {
                     path: string;
                     data: CloudState | null;
                   };
-                  if (payload.path === "/") void receiveCloud(payload.data);
+                  if (payload.path === "/")
+                    void receiveCloud(
+                      payload.data?.items
+                        ? { ...payload.data, items: decodeCloudItems(payload.data.items) }
+                        : payload.data,
+                    );
                 } catch {
                   // Evento malformado: ignora e espera o próximo.
                 }
@@ -444,16 +540,22 @@ export function useCloudSync() {
           };
           window.addEventListener("online", onlineListener);
         }
-        stopAuth = authApi.onAuthStateChanged(auth, (user) => {
-          void syncUser(user).catch(() =>
+        const synchronize = (user: (typeof auth)["currentUser"]) => {
+          const attempt = ++accountRevision;
+          void syncUser(user, attempt).catch(() => {
+            if (!active || accountRevision !== attempt) return;
             setState((current) => ({
               ...current,
               ready: true,
               authenticated: Boolean(user),
               status: "offline",
-            })),
-          );
-        });
+            }));
+            if (onlineListener) window.removeEventListener("online", onlineListener);
+            onlineListener = () => synchronize(auth.currentUser);
+            window.addEventListener("online", onlineListener);
+          });
+        };
+        stopAuth = authApi.onAuthStateChanged(auth, synchronize);
       })
       .catch(() => setState((current) => ({ ...current, ready: true, status: "offline" })));
 

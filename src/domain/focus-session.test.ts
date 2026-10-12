@@ -13,6 +13,22 @@ const session: FocusSession = {
   savedAt: 10_000,
 };
 describe("sessão local de Foco", () => {
+  it("restores another device's snapshot paused without losing elapsed time", () => {
+    const timer = {
+      ...session,
+      mode: "timer" as const,
+      deviceId: "phone",
+      elapsedMilliseconds: 120000,
+      timerStartedAt: 10000,
+      pomodoroDeadline: null,
+      savedAt: 130000,
+    };
+    const restored = readFocusSession(JSON.stringify(timer), 140000, "desktop");
+    expect(restored?.running).toBe(false);
+    expect(restored?.elapsedMilliseconds).toBe(120000);
+    expect(restored?.timerStartedAt).toBeNull();
+    expect(readFocusSession(JSON.stringify(timer), 140000, "phone")?.running).toBe(true);
+  });
   it("preserves validated agenda context and rejects invalid targets", () => {
     const planned = {
       ...session,

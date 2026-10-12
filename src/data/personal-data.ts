@@ -6,7 +6,12 @@ export const ACCOUNT_OWNER_KEY = "helena.account.v1";
 // Tudo o que o app guarda no navegador começa com um destes prefixos: espaço do
 // aluno, histórico de versões, rascunhos do caderno, progresso, perfil e salas.
 // "noteoli." é o prefixo da sequência do pomodoro, de um nome antigo do app.
-const PERSONAL_KEY_PREFIXES = ["helena", "noteoli."];
+const PERSONAL_KEY_PREFIXES = [
+  "helena",
+  "noteoli.",
+  "olena.focus-session.",
+  "agenda-local-reminders:",
+];
 
 function personalKeys(storage: Storage): string[] {
   const keys: string[] = [];

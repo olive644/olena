@@ -630,7 +630,7 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   for (const name of ["Hoje"]) {
     await expect(page.getByRole("button", { name, exact: true })).toHaveCount(0);
   }
-  for (const name of ["Dia", "Semana", "Mês", "Lista", "Período anterior", "Próximo período"])
+  for (const name of ["Dia", "Semana", "Mês", "Lista"])
     await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
   await toggle.focus();
   await expect(toggle).toHaveCSS("outline-style", "none");
