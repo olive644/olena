@@ -61,12 +61,52 @@ function isEvent(value: unknown): boolean {
     (value["kind"] === undefined || ["appointment", "study"].includes(String(value["kind"]))) &&
     (value["recurrence"] === undefined ||
       ["none", "weekly"].includes(String(value["recurrence"]))) &&
+    (value["recurrenceFrequency"] === undefined ||
+      ["none", "daily", "weekly", "monthly", "yearly"].includes(
+        String(value["recurrenceFrequency"]),
+      )) &&
     (value["recurrenceUntil"] === undefined || isString(value["recurrenceUntil"])) &&
     (value["durationMinutes"] === undefined ||
       (typeof value["durationMinutes"] === "number" &&
         Number.isFinite(value["durationMinutes"]) &&
         value["durationMinutes"] >= 1 &&
         value["durationMinutes"] <= 180)) &&
+    (value["calendarDurationMinutes"] === undefined ||
+      (typeof value["calendarDurationMinutes"] === "number" &&
+        Number.isFinite(value["calendarDurationMinutes"]) &&
+        value["calendarDurationMinutes"] >= 1 &&
+        value["calendarDurationMinutes"] <= 600000)) &&
+    ["endDate", "endTime", "timeZone", "description", "location"].every(
+      (key) => value[key] === undefined || isString(value[key]),
+    ) &&
+    (value["allDay"] === undefined || typeof value["allDay"] === "boolean") &&
+    (value["recurrenceInterval"] === undefined ||
+      (Number.isInteger(value["recurrenceInterval"]) &&
+        Number(value["recurrenceInterval"]) >= 1 &&
+        Number(value["recurrenceInterval"]) <= 365)) &&
+    ["links", "guests", "excludedDates"].every(
+      (key) =>
+        value[key] === undefined || (Array.isArray(value[key]) && value[key].every(isString)),
+    ) &&
+    (value["recurrenceDays"] === undefined ||
+      (Array.isArray(value["recurrenceDays"]) &&
+        value["recurrenceDays"].every((day) => Number.isInteger(day) && day >= 0 && day <= 6))) &&
+    (value["reminders"] === undefined ||
+      (Array.isArray(value["reminders"]) &&
+        value["reminders"].length <= 5 &&
+        value["reminders"].every(
+          (minutes) => Number.isInteger(minutes) && minutes >= 0 && minutes <= 10080,
+        ))) &&
+    (value["attachments"] === undefined ||
+      (Array.isArray(value["attachments"]) &&
+        value["attachments"].length <= 3 &&
+        value["attachments"].every(
+          (asset) =>
+            isRecord(asset) &&
+            ["id", "name", "mime", "data"].every((key) => isString(asset[key])) &&
+            String(asset["data"]).length <= 500000 &&
+            /^data:(application\/pdf|image\/(png|jpeg|webp));base64,/.test(String(asset["data"])),
+        ))) &&
     (value["completedDates"] === undefined ||
       (Array.isArray(value["completedDates"]) && value["completedDates"].every(isString)))
   );

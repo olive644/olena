@@ -1,0 +1,29 @@
+.agenda-live-reminders {
+  position: fixed;
+  z-index: 1000;
+  right: 18px;
+  bottom: 24px;
+  width: min(360px, calc(100vw - 36px));
+  display: grid;
+  gap: 8px;
+}
+.agenda-live-reminders article {
+  padding: 16px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 4px 18px 4px 12px;
+  box-shadow: 0 5px 0 var(--line);
+}
+.agenda-live-reminders article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+@media (max-width: 900px) {
+  .agenda-live-reminders {
+    bottom: 106px;
+  }
+}

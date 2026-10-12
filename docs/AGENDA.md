@@ -5,7 +5,7 @@
 `/planejador` abre o planejamento do dia atual. Calendário e categorias ficam
 sempre visíveis. O ícone abre o seletor de mês, com destaque roxo e contagens
 compactas. Selecionar uma data atualiza planejamento e gráficos logo abaixo,
-no computador e celular. As abas Hoje/Semana/Mês foram substituídas.
+no computador e celular. A agenda oferece Dia, Semana, Mês e Lista.
 O seletor de mês é um painel próprio com 12 botões de papel e ano editável,
 sem calendário nativo do navegador. Escape e clique fora fecham o painel.
 Arrastar com mouse/toque seleciona um intervalo inclusivo; o botão Selecionar
@@ -24,9 +24,44 @@ Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.
 
-Rotinas semanais são um único evento com ocorrências calculadas, não cópias materializadas.
-O fim opcional é inclusivo. Editar ou excluir uma rotina afeta a série inteira;
-o histórico de Foco permanece preservado. Cada ocorrência guarda sua conclusão separada.
+Rotinas são um único evento com ocorrências calculadas, não cópias materializadas.
+O fim opcional é inclusivo. Há repetição diária, semanal com dias escolhidos, mensal
+e anual, com intervalo. Datas inexistentes, como 31 em fevereiro, são puladas.
+Editar ou excluir permite escolher só a ocorrência, esta e seguintes ou toda a série.
+Registros antigos de Foco não são apagados nem transferidos para outra data.
+
+## Agenda interna completa, primeira etapa
+
+A grade do dia e da semana permite criar por horário, arrastar para reagendar e
+redimensionar a duração. Toda alteração abre o editor para confirmação antes de
+gravar. Teclado oferece Mover e escolha de horário. Busca e filtros limitam eventos
+por texto, matéria e tipo. Compromissos aceitam dia inteiro, múltiplos dias, fuso IANA,
+descrição, local, links http/https, participantes e lembretes. Estudos mantêm o
+limite de 180 minutos do Foco. Datas de dia inteiro são flutuantes; horários são
+projetados no fuso do dispositivo, sem mudar o instante armazenado.
+
+Até três imagens ou PDFs de 300 KB podem ser anexados por evento. São dados privados
+do workspace e podem entrar na sincronização existente da conta. Não são enviados
+a novos serviços e não entram no arquivo .ics. Participantes são metadados, sem
+convites automáticos. Compartilhar gera um .ics, não oferece edição colaborativa.
+
+Importação .ics limita arquivos a 2 MB e 1000 eventos, usa UID para evitar duplicatas
+e não substitui eventos existentes. Suporta recorrências básicas e EXDATE; séries
+com exceções RECURRENCE-ID ou regras não suportadas são ignoradas e contabilizadas.
+Exportação inclui datas, fuso, detalhes, participantes e alarmes, sem histórico.
+
+Lembretes funcionam enquanto o aplicativo estiver aberto. Alertas internos não
+dependem de permissão; notificações do navegador exigem autorização explícita.
+Adiar guarda uma fila local por conta. Não há push com o aplicativo fechado nem
+garantia de execução pontual em abas suspensas pelo navegador.
+
+A agenda reutiliza a sincronização do workspace. Eventos e tarefas mesclam campos
+independentes; conflitos no mesmo campo continuam no fluxo de reconciliação do
+Perfil. Conclusões e exclusões de ocorrências são mescladas por data. Não há nova
+integração Google nesta etapa. O formato v7 mantém campos antigos compatíveis e
+metadados opcionais; duração completa usa calendarDurationMinutes e campos de fim,
+com durationMinutes limitado a 180 para leitores antigos. Clientes antigos devem
+ser atualizados antes de editar recursos avançados.
 
 ## Estudo e histórico
 
@@ -69,13 +104,17 @@ não entram no treinamento. Nenhum provedor ou serviço novo foi acrescentado.
 
 ## Compatibilidade e conta
 
-Campos opcionais adicionados aos eventos: kind, durationMinutes, recurrence,
-recurrenceUntil e completedDates. Registros antigos sem esses campos continuam
+Campos opcionais de eventos incluem kind, durationMinutes, recurrence,
+recurrenceUntil, completedDates, recurrenceFrequency, recurrenceInterval,
+recurrenceDays, excludedDates, endDate, endTime, allDay, timeZone, description,
+location, links, guests, reminders, attachments e calendarDurationMinutes.
+Registros antigos sem esses campos continuam
 compromissos únicos. Registros de Foco recebem agendaEventId e agendaDate opcionais.
 O leitor valida metadados e mantém a versão 7, sem migração destrutiva ou mudança
 de regras de nuvem. IndexedDB, espelho local e sincronização por conta reaproveitam
-o workspace existente. O merge por ID preserva itens independentes; edições concorrentes
-do mesmo item continuam sujeitas à política de conflito existente (local prevalece).
+o workspace existente. O merge por ID preserva itens independentes; eventos e tarefas
+mesclam campos independentes. Edições concorrentes do mesmo campo continuam sujeitas
+à política de conflito existente (local prevalece com conflito informado).
 
 Rollback: reverter os componentes e seletores, preservando os dados. Leitores antigos
 aceitam campos extras e reducers existentes conservam os metadados ao atualizar itens.

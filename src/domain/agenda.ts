@@ -1,4 +1,5 @@
 import { toDateKey, type StudyEvent, type WorkspaceState } from "./workspace";
+import { displayEventsOn, occurrenceOn } from "./agenda-calendar";
 
 export const HELENA_PLAN_DRAFT_EVENT = "olena:helena-plan-draft";
 export function dateForKey(key: string): Date {
@@ -20,18 +21,12 @@ export function monthDates(key: string): string[] {
   return Array.from({ length: 42 }, (_, index) => shiftDate(first, index));
 }
 export function eventOccursOn(event: StudyEvent, date: string): boolean {
-  if (event.date === date) return true;
-  return (
-    event.recurrence === "weekly" &&
-    date > event.date &&
-    (!event.recurrenceUntil || date <= event.recurrenceUntil) &&
-    dateForKey(date).getDay() === dateForKey(event.date).getDay()
-  );
+  return occurrenceOn(event, date) !== null;
 }
-export function eventsOn(workspace: WorkspaceState, date: string): StudyEvent[] {
-  return workspace.events
-    .filter((event) => eventOccursOn(event, date))
-    .sort((a, b) => a.time.localeCompare(b.time));
+export function eventsOn(workspace: Pick<WorkspaceState, "events">, date: string): StudyEvent[] {
+  const orderedIds = [...new Set(displayEventsOn(workspace.events, date).map((event) => event.id))];
+  const originals = new Map(workspace.events.map((event) => [event.id, event]));
+  return orderedIds.flatMap((id) => (originals.get(id) ? [originals.get(id)!] : []));
 }
 export function overdueTasks(workspace: WorkspaceState, today: string) {
   return workspace.tasks.filter((task) => {

@@ -1,6 +1,7 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
 import type { HandwritingDocument } from "./handwriting";
 import { SHARED_PAGE_PLACEHOLDER } from "./handwriting.js";
+import { occurrenceDuration } from "./agenda-calendar.js";
 
 export const WORKSPACE_VERSION = 7 as const;
 
@@ -31,8 +32,23 @@ export type StudyEvent = {
   time: string;
   kind?: "appointment" | "study";
   durationMinutes?: number;
+  calendarDurationMinutes?: number;
   recurrence?: "none" | "weekly";
+  recurrenceFrequency?: "none" | "daily" | "weekly" | "monthly" | "yearly";
   recurrenceUntil?: string;
+  recurrenceInterval?: number;
+  recurrenceDays?: number[];
+  excludedDates?: string[];
+  endDate?: string;
+  endTime?: string;
+  allDay?: boolean;
+  timeZone?: string;
+  description?: string;
+  location?: string;
+  links?: string[];
+  reminders?: number[];
+  guests?: string[];
+  attachments?: { id: string; name: string; mime: string; data: string }[];
   completedDates?: string[];
 };
 
@@ -219,17 +235,8 @@ export type WorkspaceAction =
       changes: Pick<StudyTask, "title" | "subjectId" | "dueDate">;
     }
   | { type: "task/removed"; id: string }
-  | {
-      type: "event/added";
-      title: string;
-      subjectId: string;
-      date: string;
-      time: string;
-      kind?: StudyEvent["kind"];
-      durationMinutes?: number;
-      recurrence?: StudyEvent["recurrence"];
-      recurrenceUntil?: string;
-    }
+  | ({ type: "event/added" } & Omit<StudyEvent, "id" | "completedDates">)
+  | { type: "event/series-changed"; removeIds: string[]; events: StudyEvent[] }
   | { type: "event/updated"; id: string; changes: Omit<StudyEvent, "id" | "completedDates"> }
   | { type: "event/removed"; id: string }
   | { type: "event/toggled"; id: string; date: string }
@@ -483,22 +490,26 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
               },
         ),
       };
-    case "event/added":
+    case "event/added": {
+      const { type: _type, ...event } = action;
+      void _type;
       return {
         ...state,
         events: [
           ...state.events,
           {
             id: createId("event"),
-            title: action.title,
-            subjectId: action.subjectId,
-            date: action.date,
-            time: action.time,
-            ...(action.kind ? { kind: action.kind } : {}),
-            ...(action.durationMinutes ? { durationMinutes: action.durationMinutes } : {}),
-            ...(action.recurrence ? { recurrence: action.recurrence } : {}),
-            ...(action.recurrenceUntil ? { recurrenceUntil: action.recurrenceUntil } : {}),
+            ...event,
           },
+        ],
+      };
+    }
+    case "event/series-changed":
+      return {
+        ...state,
+        events: [
+          ...state.events.filter((event) => !action.removeIds.includes(event.id)),
+          ...action.events,
         ],
       };
     case "habit/added":
@@ -847,7 +858,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 session.subjectId === event.subjectId,
             )
             .reduce((sum, session) => sum + session.durationMinutes, 0);
-          if (recorded + action.durationMinutes < (event.durationMinutes ?? 25)) return event;
+          if (recorded + action.durationMinutes < occurrenceDuration(event, action.agendaDate))
+            return event;
           return {
             ...event,
             completedDates: [...new Set([...(event.completedDates ?? []), action.agendaDate])],

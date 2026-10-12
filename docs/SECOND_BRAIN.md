@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, agenda interna ampliada: agenda-calendar concentra recorrência, fuso, projeção e escopos; agenda-ics valida intercâmbio sem duplicar UID; agenda-grid-layout distribui conflitos na grade. Planner confirma movimento antes de dispatch event/series-changed. AgendaReminders é carregado sob demanda, guarda fila local por conta e não oferece push fechado. Eventos/tarefas usam merge por campo com reconciliação existente. Metadados opcionais mantêm workspace v7; clientes antigos precisam atualizar para editar recursos avançados. Google bidirecional e colaboração remota ficam para etapa posterior. Fluxo e limites em docs/AGENDA.md.
+
 2026-10-12, cursor autoral: paper-cursor.css usa SVGs locais de seta e mão facetadas com hotspots explícitos e fallback nativo. Somente mouse fino com hover e fora de forced-colors; sem JavaScript. Texto e ferramentas mantêm cursores semânticos, mobile não muda. Sem alterações de persistência ou sincronização.
 
 2026-10-11, layout responsivo da Agenda: overview em duas colunas a partir de 1200px; calendário e painel do dia agrupados à esquerda, Meu estudo à direita. No celular, sete indicadores de Foco e três ações permanecem em uma linha compacta. Textos auxiliares solicitados e widgets Google/Listas removidos somente da tela, preservando armazenamento e sincronização.

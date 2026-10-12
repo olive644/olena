@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Agenda interna ampliada (2026-10-12)
+
+- Visualizações Dia/Semana/Mês/Lista, filtros, detalhes, recorrências com escopo, grade com confirmação de movimento/duração e intercâmbio .ics, sem integração Google nova.
+- Metadados opcionais no workspace v7 preservam dados antigos. Compromissos longos guardam duração completa separada do campo limitado legado. Fuso IANA projeta horários; conclusões não são transferidas para datas reagendadas.
+- Merge de eventos/tarefas por campo e conjuntos de datas reutiliza reconciliação existente. Anexos limitados permanecem privados; lembretes locais por conta só executam com app aberto. Não há promessa de push, envio de convites ou edição colaborativa.
+- Verificação geral aprovada: 232 arquivos e 1415 testes locais. Navegador: 61 cenários aprovados, 5 exclusivos de outro projeto ignorados, em Edge/Chromium desktop e viewport móvel. Temas claro/escuro, persistência, anexos, ICS, teclado, movimento e redimensionamento cobertos. WebKit nativo fica no CI.
+- Entrada inicial 280,9 KiB e JavaScript da aplicação 1280,4 KiB. Limites normais passam a 282/1288 KiB com justificativa medida; tetos absolutos preservados. Sem dependência nova. Alterações locais de Pixi e testes alheios não integram esta entrega.
+
 ## Cursor de papel (2026-10-12)
 
 - Dois SVGs locais de 32px aplicados via CSS nativo para mouse com hover: seta e mão de ação com estrela. Paleta aprovada e borda creme/grafite legível nos dois temas.

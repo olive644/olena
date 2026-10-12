@@ -11,6 +11,9 @@ import { HabitsView } from "./views/habits-view";
 import { TodayView } from "./views/today-view";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const AgendaReminders = lazy(() =>
+  import("./components/agenda-reminders").then((module) => ({ default: module.AgendaReminders })),
+);
 const HelenaChat = lazy(() =>
   import("./components/helena-chat").then((module) => ({ default: module.HelenaChat })),
 );
@@ -87,6 +90,15 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           </p>
         )}
         <Sidebar view={view} onNavigate={setView} />
+        {workspace.events.some((event) => event.reminders?.length) && (
+          <Suspense fallback={null}>
+            <AgendaReminders
+              key={cloud.email ?? "guest"}
+              scope={cloud.email ?? "guest"}
+              events={workspace.events}
+            />
+          </Suspense>
+        )}
         <Suspense
           fallback={
             <div className="main-content loading-view">
@@ -98,7 +110,12 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             <TodayView workspace={workspace} dispatch={dispatch} onNavigate={setView} />
           )}
           {view === "planner" && (
-            <PlannerView workspace={workspace} dispatch={dispatch} onNavigate={setView} />
+            <PlannerView
+              workspace={workspace}
+              dispatch={dispatch}
+              onNavigate={setView}
+              cloud={cloud}
+            />
           )}
           {view === "focus" && <FocusView workspace={workspace} dispatch={dispatch} />}
           {view === "habits" && <HabitsView workspace={workspace} dispatch={dispatch} />}
