@@ -12259,7 +12259,7 @@ function Hl(e, t, n) {
 function Ul(e, t, n, r, i) {
 	return Hl(t, n, e) * (1 - Hl(r, i, e));
 }
-var Wl = !1, Gl = !1, Kl, ql, Jl, Yl, Xl = [], Zl = !1, Ql = !1, $l = !1, Q = null, eu = 0, tu = performance.now(), nu = 0, ru = 0, iu = 0, au = null, ou = 0, su = -20, cu = 0, lu = 0, uu = 0, du = 0, fu = {
+var Wl = !1, Gl = matchMedia("(pointer: coarse)").matches, Kl = 0, ql = !1, Jl, Yl, Xl, Zl, Ql = [], $l = !1, eu = !1, tu = !1, Q = null, nu = 0, ru = performance.now(), iu = 0, au = 0, ou = 0, su = null, cu = 0, lu = -20, uu = 0, du = 0, fu = 0, pu = 0, mu = {
 	x: 0,
 	y: 0
 }, $ = {
@@ -12267,60 +12267,60 @@ var Wl = !1, Gl = !1, Kl, ql, Jl, Yl, Xl = [], Zl = !1, Ql = !1, $l = !1, Q = nu
 	y: 0,
 	vx: 0,
 	vy: 0
-}, pu = {
+}, hu = {
 	x: 0,
 	y: 0
-}, mu = new ko();
-mu.background = null;
-var hu = new kr(-1.38, 1.38, 1.38, -1.38, .1, 40);
-hu.position.set(.12, 1.05, 8.5), hu.lookAt(0, .05, 0), mu.add(new rc(16774369, 7561336, 1.75));
-function gu(e, t, n) {
+}, gu = new ko();
+gu.background = null;
+var _u = new kr(-1.38, 1.38, 1.38, -1.38, .1, 40);
+_u.position.set(.12, 1.05, 8.5), _u.lookAt(0, .05, 0), gu.add(new rc(16774369, 7561336, 1.75));
+function vu(e, t, n) {
 	let r = new gc(e, t);
-	return r.position.set(...n), mu.add(r), r;
+	return r.position.set(...n), gu.add(r), r;
 }
-gu(16768950, 3, [
+vu(16768950, 3, [
 	-3,
 	4.5,
 	4
-]), gu(11834879, 2.7, [
+]), vu(11834879, 2.7, [
 	3,
 	2,
 	-3
-]), gu(16775920, .9, [
+]), vu(16775920, .9, [
 	3,
 	1,
 	4
 ]);
-function _u() {
+function yu() {
 	let e = document.createElement("canvas");
 	e.width = e.height = 256;
 	let t = e.getContext("2d"), n = t.createRadialGradient(128, 128, 0, 128, 128, 124);
 	return n.addColorStop(0, "rgba(69,35,82,.32)"), n.addColorStop(.28, "rgba(95,49,88,.16)"), n.addColorStop(.6, "rgba(123,90,100,.045)"), n.addColorStop(1, "rgba(123,90,100,0)"), t.fillStyle = n, t.fillRect(0, 0, 256, 256), new ws(e);
 }
-var vu = new Vn(new vr(2.45, .55), new hn({
-	map: _u(),
+var bu = new Vn(new vr(2.45, .55), new hn({
+	map: yu(),
 	transparent: !0,
 	depthWrite: !1
 }));
-vu.rotation.x = -Math.PI / 2, vu.position.set(0, -.8, 0), mu.add(vu);
-var yu = new J("#211829"), bu = new J("#ffcd16"), xu = new kn(), Su = [];
+bu.rotation.x = -Math.PI / 2, bu.position.set(0, -.8, 0), gu.add(bu);
+var xu = new J("#211829"), Su = new J("#ffcd16"), Cu = new kn(), wu = [];
 for (let e = 0; e < 10; e++) {
 	let t = Math.PI / 2 + e * Math.PI / 5, n = e % 2 ? .052 : .11;
-	Su.push(Math.cos(t) * n, Math.sin(t) * n, 0);
+	wu.push(Math.cos(t) * n, Math.sin(t) * n, 0);
 }
-var Cu = [];
-for (let e = 0; e < 10; e++) Cu.push(0, 0, 0, ...Su.slice(e * 3, e * 3 + 3), ...Su.slice((e + 1) % 10 * 3, (e + 1) % 10 * 3 + 3));
-xu.setAttribute("position", new xn(Cu, 3)), xu.computeVertexNormals();
-var wu = Array.from({ length: 7 }, (e, t) => {
-	let n = new Vn(xu, new hn({
+var Tu = [];
+for (let e = 0; e < 10; e++) Tu.push(0, 0, 0, ...wu.slice(e * 3, e * 3 + 3), ...wu.slice((e + 1) % 10 * 3, (e + 1) % 10 * 3 + 3));
+Cu.setAttribute("position", new xn(Tu, 3)), Cu.computeVertexNormals();
+var Eu = Array.from({ length: 7 }, (e, t) => {
+	let n = new Vn(Cu, new hn({
 		color: t % 2 ? 12818943 : 16765764,
 		transparent: !0,
 		depthWrite: !1,
 		side: 2
 	}));
-	return n.visible = !1, mu.add(n), n;
+	return n.visible = !1, gu.add(n), n;
 });
-function Tu(t) {
+function Du(t) {
 	let n = document.createElement("canvas");
 	n.width = n.height = 128;
 	let r = n.getContext("2d"), i = r.createImageData(128, 128), a = 644;
@@ -12331,7 +12331,7 @@ function Tu(t) {
 	}
 	r.putImageData(i, 0, 0);
 	let o = new ws(n);
-	o.wrapS = o.wrapT = e, o.repeat.set(4, 4), o.anisotropy = Math.min(4, Kl.capabilities.getMaxAnisotropy());
+	o.wrapS = o.wrapT = e, o.repeat.set(4, 4), o.anisotropy = Math.min(4, Jl.capabilities.getMaxAnisotropy());
 	let s = t.geometry.attributes.position, c = new Float32Array(s.count * 2);
 	for (let e = 0; e < s.count; e++) {
 		let t = s.getX(e), n = s.getY(e), r = s.getZ(e), i = Math.hypot(t, n, r) || 1;
@@ -12339,48 +12339,48 @@ function Tu(t) {
 	}
 	t.geometry.setAttribute("uv", new vn(c, 2)), t.material.bumpMap = o, t.material.bumpScale = .004, t.material.needsUpdate = !0;
 }
-function Eu(e, t, n) {
+function Ou(e, t, n) {
 	let r = e.morphTargetDictionary?.[t];
 	r !== void 0 && (e.morphTargetInfluences[r] = n);
 }
-function Du(e, t) {
+function ku(e, t) {
 	for (let n of e.children) if (n.name.startsWith("Pálpebra")) {
 		n.visible = t > .004 && t < .996;
-		for (let e = 1; e <= 8; e++) Eu(n, `Pálpebra ${e}/8`, Math.max(0, 1 - Math.abs(t - e / 8) * 8));
+		for (let e = 1; e <= 8; e++) Ou(n, `Pálpebra ${e}/8`, Math.max(0, 1 - Math.abs(t - e / 8) * 8));
 	} else n.visible = n.name.startsWith("Contorno") ? t > .92 : t < .93;
 }
-function Ou(e, t = !1) {
-	if (Zl) {
-		if (ou = t ? eu : ou, Il.matches || Ll) {
-			nu = iu = e, au = null, ru = eu, Au(eu, 0);
+function Au(e, t = !1) {
+	if ($l) {
+		if (cu = t ? nu : cu, Il.matches || Ll) {
+			iu = ou = e, su = null, au = nu, Mu(nu, 0);
 			return;
 		}
-		au = {
-			at: eu,
-			from: iu,
+		su = {
+			at: nu,
+			from: ou,
 			to: e,
 			duration: .94
 		}, Ml.textContent = e ? "Um brilho… e ela aparece ✨" : "Preparar… virar estrela! ✨", Pl.textContent = e ? "Helena aparece." : "Helena se transforma em estrela.";
 	}
 }
-function ku() {
-	Ou(au ? 1 - au.to : iu > .5 ? 0 : 1, !0);
+function ju() {
+	Au(su ? 1 - su.to : ou > .5 ? 0 : 1, !0);
 }
-function Au(e, t) {
-	let n = e - ou, r = !Q && n > 1.3, i = r ? Math.min(1, (n - 1.3) / .8) : 0, a = 1, o = 1, s = 1, c = 0, l = 0, u = 0, d = 0, f = 0;
-	if (!zl && !au && !Ql && !(Il.matches || Ll) && !Q && (nu === 0 && e - ru > 2.8 ? Ou(1) : nu === 1 && e - ru > 13 && n > 3.5 && !$l && Ou(0)), au) {
-		let t = (e - au.at) / au.duration, n = au.to, r = Ul(t, 0, .14, .18, .34);
+function Mu(e, t) {
+	let n = e - cu, r = !Q && n > 1.3, i = r ? Math.min(1, (n - 1.3) / .8) : 0, a = 1, o = 1, s = 1, c = 0, l = 0, u = 0, d = 0, f = 0;
+	if (!zl && !su && !eu && !(Il.matches || Ll) && !Q && (iu === 0 && e - au > 2.8 ? Au(1) : iu === 1 && e - au > 13 && n > 3.5 && !tu && Au(0)), su) {
+		let t = (e - su.at) / su.duration, n = su.to, r = Ul(t, 0, .14, .18, .34);
 		u = r;
 		let i = Hl(.2, .68, t);
-		iu = Vl(au.from, n, i);
+		ou = Vl(su.from, n, i);
 		let p = Ul(t, .45, .64, .7, .99), m = t > .68 ? Math.sin((t - .68) * Math.PI * 5) * Math.exp(-(t - .68) * 8) : 0;
-		a = 1 + .17 * r - .1 * p + .06 * m, o = 1 - .16 * r + .19 * p - .055 * m, s = 1 + .06 * r, c = (n ? -.13 : .15) * r + (n ? .08 : -.12) * p + .035 * m, l = .07 * p, d = Ul(t, .47, .63, .75, 1.18), f = n ? 1 - Hl(.66, .88, t) : Hl(0, .16, t), t >= 1 && (nu = iu = n, ru = e, au = null, Ml.textContent = "Passe o mouse · arraste para brincar");
-	} else iu = nu;
+		a = 1 + .17 * r - .1 * p + .06 * m, o = 1 - .16 * r + .19 * p - .055 * m, s = 1 + .06 * r, c = (n ? -.13 : .15) * r + (n ? .08 : -.12) * p + .035 * m, l = .07 * p, d = Ul(t, .47, .63, .75, 1.18), f = n ? 1 - Hl(.66, .88, t) : Hl(0, .16, t), t >= 1 && (iu = ou = n, au = e, su = null, Ml.textContent = "Passe o mouse · arraste para brincar");
+	} else ou = iu;
 	(Il.matches || Ll) && (a = o = s = 1, c = l = u = d = f = 0);
-	let p = Hl(.05, .95, iu), m = 1 - p, h = (e - ru) % 12, g = Ul(h, .7, 1.05, 1.8, 2.25) * i, _ = Ul(h, 3, 3.25, 4, 4.35) * i, v = Ul(h, 6.3, 6.7, 7.65, 8.15) * i, y = Ul(h, 9.1, 9.4, 10, 10.45) * i, b = Ul(h, 8.05, 8.3, 8.5, 8.95) * i, x = Il.matches || Ll ? 0 : Math.sin(e * 2), S = Ul(e - su, 0, .07, .38, .85), C = Bl(Math.hypot($.vx, $.vy), 0, 8);
-	du += ((Q ? C / 8 : 0) - du) * (1 - Math.exp(-12 * t)), uu += (Bl($.vx * .04, -.34, .34) - uu) * (1 - Math.exp(-10 * t));
-	let w = Q ? .05 * Math.sin(e * 16) * du : S * .055 * Math.sin((e - su) * 15), T = iu * Bl(.08 + .64 * g + .65 * v + .24 * u + (Q ? .6 + .25 * Math.sin(e * 11) : 0) + S * .45 * Math.sin((e - su) * 11), -.2, 1.15), E = iu * Bl(.06 + .48 * y + .56 * v + .2 * u + (Q ? .45 + .22 * Math.sin(e * 11 - 1) : 0) + S * .35 * Math.sin((e - su) * 11 - 1), -.2, 1.15), D = Il.matches || Ll ? 0 : .7 * y;
-	Eu(Jl, "Cabeça da Helena, orelhas fundidas", iu - (Il.matches || Ll ? 0 : T + E) - D), Eu(Jl, "Orelhas, reação suave", 0), Eu(Jl, "Orelha esquerda, cartoon", Il.matches || Ll ? 0 : T), Eu(Jl, "Orelha direita, cartoon", Il.matches || Ll ? 0 : E), Eu(Jl, "Bochechas, sorriso sem boca", D), Jl.material.color.copy(bu).lerp(yu, Hl(.22, .9, iu)), Jl.material.roughness = Vl(.29, .69, iu), Jl.material.clearcoat = Vl(.23, .025, iu), Jl.material.specularIntensity = Vl(.4, .32, iu), Jl.material.metalness = .015, Jl.material.bumpScale = .004 * p, Jl.material.sheen = .12 * p, Jl.material.sheenColor.set("#77577c"), Jl.material.sheenRoughness = .8;
+	let p = Hl(.05, .95, ou), m = 1 - p, h = (e - au) % 12, g = Ul(h, .7, 1.05, 1.8, 2.25) * i, _ = Ul(h, 3, 3.25, 4, 4.35) * i, v = Ul(h, 6.3, 6.7, 7.65, 8.15) * i, y = Ul(h, 9.1, 9.4, 10, 10.45) * i, b = Ul(h, 8.05, 8.3, 8.5, 8.95) * i, x = Il.matches || Ll ? 0 : Math.sin(e * 2), S = Ul(e - lu, 0, .07, .38, .85), C = Bl(Math.hypot($.vx, $.vy), 0, 8);
+	pu += ((Q ? C / 8 : 0) - pu) * (1 - Math.exp(-12 * t)), fu += (Bl($.vx * .04, -.34, .34) - fu) * (1 - Math.exp(-10 * t));
+	let w = Q ? .05 * Math.sin(e * 16) * pu : S * .055 * Math.sin((e - lu) * 15), T = ou * Bl(.08 + .64 * g + .65 * v + .24 * u + (Q ? .6 + .25 * Math.sin(e * 11) : 0) + S * .45 * Math.sin((e - lu) * 11), -.2, 1.15), E = ou * Bl(.06 + .48 * y + .56 * v + .2 * u + (Q ? .45 + .22 * Math.sin(e * 11 - 1) : 0) + S * .35 * Math.sin((e - lu) * 11 - 1), -.2, 1.15), D = Il.matches || Ll ? 0 : .7 * y;
+	Ou(Xl, "Cabeça da Helena, orelhas fundidas", ou - (Il.matches || Ll ? 0 : T + E) - D), Ou(Xl, "Orelhas, reação suave", 0), Ou(Xl, "Orelha esquerda, cartoon", Il.matches || Ll ? 0 : T), Ou(Xl, "Orelha direita, cartoon", Il.matches || Ll ? 0 : E), Ou(Xl, "Bochechas, sorriso sem boca", D), Xl.material.color.copy(Su).lerp(xu, Hl(.22, .9, ou)), Xl.material.roughness = Vl(.29, .69, ou), Xl.material.clearcoat = Vl(.23, .025, ou), Xl.material.specularIntensity = Vl(.4, .32, ou), Xl.material.metalness = .015, Xl.material.bumpScale = .004 * p, Xl.material.sheen = .12 * p, Xl.material.sheenColor.set("#77577c"), Xl.material.sheenRoughness = .8;
 	let O = 0, k = 0, A = (e + .45) % 3.45;
 	A < .26 && (O = k = A < .095 ? Hl(0, .095, A) : 1 - Hl(.125, .26, A));
 	let j = h - 2.35;
@@ -12389,50 +12389,54 @@ function Au(e, t) {
 		O = k = Math.max(O, (e < .09 ? Hl(0, .09, e) : 1 - Hl(.12, .26, e)) * i);
 	}
 	let M = Hl(.05, .35, v), ee = Hl(.05, .35, y);
-	O = Math.max(O, M, ee), k = Math.max(k, M), (au || iu < .995) && (O = k = Math.max(f, +(iu < .985))), (Il.matches || Ll) && (O = k = 0);
-	let N = $l || Q ? fu.x : i ? Vl(-.8, .7, Hl(.6, 4.5, h)) : .22 * Math.sin(e * .9), te = Q ? .45 : g * .4 + b * .4 - v * .18, P = Il.matches || Ll ? 1 : 1 - Math.exp(-11 * t);
-	cu += (N - cu) * P, lu += (te - lu) * P;
-	for (let e of Xl) {
-		let t = e.name.includes("esquerda"), n = Hl(.94, .995, iu), r = 1 + .075 * b + .025 * g;
-		e.scale.set(Math.max(1e-5, n * r), Math.max(1e-5, n * (r - .04 * y - (Q ? .06 : 0))), Math.max(1e-5, n)), Du(e, t ? O : k);
-		for (let t of e.children) Eu(t, "Olhar esquerda", Math.max(0, -cu)), Eu(t, "Olhar direita", Math.max(0, cu)), Eu(t, "Olhar cima", Math.max(0, lu)), Eu(t, "Olhar baixo", Math.max(0, -lu));
+	O = Math.max(O, M, ee), k = Math.max(k, M), (su || ou < .995) && (O = k = Math.max(f, +(ou < .985))), (Il.matches || Ll) && (O = k = 0);
+	let N = tu || Q ? mu.x : i ? Vl(-.8, .7, Hl(.6, 4.5, h)) : .22 * Math.sin(e * .9), te = Q ? .45 : g * .4 + b * .4 - v * .18, P = Il.matches || Ll ? 1 : 1 - Math.exp(-11 * t);
+	uu += (N - uu) * P, du += (te - du) * P;
+	for (let e of Ql) {
+		let t = e.name.includes("esquerda"), n = Hl(.94, .995, ou), r = 1 + .075 * b + .025 * g;
+		e.scale.set(Math.max(1e-5, n * r), Math.max(1e-5, n * (r - .04 * y - (Q ? .06 : 0))), Math.max(1e-5, n)), ku(e, t ? O : k);
+		for (let t of e.children) Ou(t, "Olhar esquerda", Math.max(0, -uu)), Ou(t, "Olhar direita", Math.max(0, uu)), Ou(t, "Olhar cima", Math.max(0, du)), Ou(t, "Olhar baixo", Math.max(0, -du));
 	}
-	if (Yl.scale.setScalar(Math.max(1e-5, Hl(.945, .995, iu))), Yl.position.copy(Yl.userData.anchor), Yl.position.x -= .075 * E, Yl.position.y -= .058 * E, !Q && t > 0) {
+	if (Zl.scale.setScalar(Math.max(1e-5, Hl(.945, .995, ou))), Zl.position.copy(Zl.userData.anchor), Zl.position.x -= .075 * E, Zl.position.y -= .058 * E, !Q && t > 0) {
 		let e = Math.ceil(t / .016), n = t / e;
-		for (let t = 0; t < e; t++) $.vx += (pu.x - $.x) * 78 * n, $.vy += (pu.y - $.y) * 78 * n, $.vx *= Math.exp(-9 * n), $.vy *= Math.exp(-9 * n), $.x += $.vx * n, $.y += $.vy * n;
+		for (let t = 0; t < e; t++) $.vx += (hu.x - $.x) * 78 * n, $.vy += (hu.y - $.y) * 78 * n, $.vx *= Math.exp(-9 * n), $.vy *= Math.exp(-9 * n), $.x += $.vx * n, $.y += $.vy * n;
 	}
-	let F = m * (.045 + .045 * Math.sin(e * 3.4)) + p * (.032 * x + .065 * _ * Math.sin(h * 15) + .12 * b), I = (e - ru) % 5.2, ne = !au && nu === 0 && I > .75 && I < 1.45 ? Math.PI * 2 * Hl(.75, 1.45, I) : 0, re = m * (.065 * Math.sin(e * 2.6) + .025 * Math.sin(e * 5.2)), ie = p * (-.11 * g + .095 * y + .045 * v * Math.sin(e * .8));
-	ql.position.set($.x, $.y + (Il.matches || Ll ? 0 : F + l - .045 * v), 0), ql.rotation.set(.025 + (Il.matches || Ll ? 0 : p * (.07 * v + .055 * _ * Math.sin(h * 15))) + ($l ? lu * .05 : 0), .045 + ($l || Q ? cu * .14 : p * .055 * Math.sin(e * .65)), Vl(-.548, -.1, iu) + (Il.matches || Ll ? 0 : c + re + ne + ie + (Q ? uu : S * .08 * Math.sin((e - su) * 12)) + w), "XYZ");
-	let ae = Q ? du * .1 : 0, oe = Il.matches || Ll ? 0 : p * .012 * x, se = Il.matches || Ll ? 0 : m * .035 * Math.sin(e * 3.4);
-	ql.scale.set(.63 * a * (1 + oe - ae + .05 * y - se), .63 * o * (1 - oe + ae - .045 * y + se), .63 * s);
-	let ce = ql.position.y;
-	vu.position.x = $.x * .65, vu.scale.set(1 + Math.max(0, ce) * .28, 1 + Math.max(0, ce) * .25, 1), vu.material.opacity = Bl(.95 - ce * .65, .25, 1), wu.forEach((t, n) => {
+	let F = m * (.045 + .045 * Math.sin(e * 3.4)) + p * (.032 * x + .065 * _ * Math.sin(h * 15) + .12 * b), I = (e - au) % 5.2, ne = !su && iu === 0 && I > .75 && I < 1.45 ? Math.PI * 2 * Hl(.75, 1.45, I) : 0, re = m * (.065 * Math.sin(e * 2.6) + .025 * Math.sin(e * 5.2)), ie = p * (-.11 * g + .095 * y + .045 * v * Math.sin(e * .8));
+	Yl.position.set($.x, $.y + (Il.matches || Ll ? 0 : F + l - .045 * v), 0), Yl.rotation.set(.025 + (Il.matches || Ll ? 0 : p * (.07 * v + .055 * _ * Math.sin(h * 15))) + (tu ? du * .05 : 0), .045 + (tu || Q ? uu * .14 : p * .055 * Math.sin(e * .65)), Vl(-.548, -.1, ou) + (Il.matches || Ll ? 0 : c + re + ne + ie + (Q ? fu : S * .08 * Math.sin((e - lu) * 12)) + w), "XYZ");
+	let ae = Q ? pu * .1 : 0, oe = Il.matches || Ll ? 0 : p * .012 * x, se = Il.matches || Ll ? 0 : m * .035 * Math.sin(e * 3.4);
+	Yl.scale.set(.63 * a * (1 + oe - ae + .05 * y - se), .63 * o * (1 - oe + ae - .045 * y + se), .63 * s);
+	let ce = Yl.position.y;
+	bu.position.x = $.x * .65, bu.scale.set(1 + Math.max(0, ce) * .28, 1 + Math.max(0, ce) * .25, 1), bu.material.opacity = Bl(.95 - ce * .65, .25, 1), Eu.forEach((t, n) => {
 		let r = m * .38 * Ul((e + n * .47) % 3.4, .1, .55, .65, 1), i = Il.matches || Ll ? 0 : Math.max(d, r);
 		if (t.visible = i > .015, !t.visible) return;
 		let a = n * Math.PI * 2 / 7 + e * .45, o = .95 + d * .3;
 		t.position.set($.x + Math.cos(a) * o, $.y + .08 + Math.sin(a) * o, .25), t.scale.setScalar(i * (n % 2 ? .5 : .7)), t.rotation.z = e * (n % 2 ? 1 : -1), t.material.opacity = i * .75;
-	}), Fl.style.width = `${au ? Bl((e - au.at) / .94, 0, 1) * 100 : Bl((e - ru) / (nu ? 13 : 2.8), 0, 1) * 100}%`, Al.dataset.form = iu > .995 ? "helena" : iu < .005 ? "star" : "transforming", Al.dataset.behavior = Q ? "dragging" : au ? "transforming" : $l && n < 1.3 ? "following" : r ? "resting" : "idle", Al.dataset.pose = au ? "transforming" : iu < .05 ? "star" : Q ? "drag" : v > .8 ? "sleep" : y > .8 ? "wink" : g > .5 ? "curious" : _ > .3 ? "nod" : b > .4 ? "wake" : "breathing", Al.dataset.offset = `${$.x.toFixed(3)},${$.y.toFixed(3)}`;
+	}), Fl.style.width = `${su ? Bl((e - su.at) / .94, 0, 1) * 100 : Bl((e - au) / (iu ? 13 : 2.8), 0, 1) * 100}%`, Al.dataset.form = ou > .995 ? "helena" : ou < .005 ? "star" : "transforming", Al.dataset.behavior = Q ? "dragging" : su ? "transforming" : tu && n < 1.3 ? "following" : r ? "resting" : "idle", Al.dataset.pose = su ? "transforming" : ou < .05 ? "star" : Q ? "drag" : v > .8 ? "sleep" : y > .8 ? "wink" : g > .5 ? "curious" : _ > .3 ? "nod" : b > .4 ? "wake" : "breathing", Al.dataset.offset = `${$.x.toFixed(3)},${$.y.toFixed(3)}`;
 }
-function ju(e) {
-	requestAnimationFrame(ju);
-	let t = Wl && !$l && !Q && !au ? 12 : 30;
-	if (e - tu < 1e3 / t) return;
-	let n = Math.min(.25, (e - tu) / 1e3), r = n;
-	tu = e, Zl && Rl && !document.hidden && (!Ql && !(Il.matches || Ll) && (eu += n), Au(eu, Ql || Il.matches || Ll ? 0 : r), Kl.render(mu, hu), Gl || (Gl = !0, window.parent.postMessage({
+function Nu() {
+	!Kl && $l && Rl && !document.hidden && (ru = performance.now(), Kl = requestAnimationFrame(Pu));
+}
+function Pu(e) {
+	if (Kl = 0, !$l || !Rl || document.hidden) return;
+	Kl = requestAnimationFrame(Pu);
+	let t = tu || Q || su, n = !t && Wl ? 12 : !t && Gl ? 18 : 30;
+	if (e - ru < 1e3 / n) return;
+	let r = Math.min(.25, (e - ru) / 1e3), i = r;
+	ru = e, $l && Rl && !document.hidden && (!eu && !(Il.matches || Ll) && (nu += r), Mu(nu, eu || Il.matches || Ll ? 0 : i), Jl.render(gu, _u), Al.dataset.time = nu.toFixed(2), ql || (ql = !0, window.parent.postMessage({
 		type: "helena-ready",
 		ready: !0
 	}, location.origin)));
 }
-function Mu(e) {
+function Fu(e) {
 	let t = jl.getBoundingClientRect();
-	return fu.x = Bl((e.clientX - t.left) / t.width * 2 - 1, -1, 1), fu.y = Bl(1 - (e.clientY - t.top) / t.height * 2, -1, 1), ou = eu, t;
+	return mu.x = Bl((e.clientX - t.left) / t.width * 2 - 1, -1, 1), mu.y = Bl(1 - (e.clientY - t.top) / t.height * 2, -1, 1), cu = nu, t;
 }
 jl.addEventListener("pointerenter", (e) => {
-	e.pointerType === "mouse" && ($l = !0, Mu(e), Ml.textContent = "Ela está de olho em você 👀");
+	e.pointerType === "mouse" && (tu = !0, Fu(e), Ml.textContent = "Ela está de olho em você 👀");
 }), jl.addEventListener("pointerleave", () => {
-	Q || ($l = !1, Ml.textContent = "Passe o mouse · arraste para brincar");
+	Q || (tu = !1, Ml.textContent = "Passe o mouse · arraste para brincar");
 }), jl.addEventListener("pointerdown", (e) => {
-	Zl && e.button === 0 && (Mu(e), Q = {
+	$l && e.button === 0 && (Fu(e), Q = {
 		id: e.pointerId,
 		x: e.clientX,
 		y: e.clientY,
@@ -12441,7 +12445,7 @@ jl.addEventListener("pointerenter", (e) => {
 		moved: !1
 	}, jl.setPointerCapture(e.pointerId), Ml.textContent = "Segure… e solte!");
 }), jl.addEventListener("pointermove", (e) => {
-	let t = Mu(e);
+	let t = Fu(e);
 	if (Q && Q.id === e.pointerId) {
 		let n = (e.clientX - Q.x) / t.width * 4.7, r = -(e.clientY - Q.y) / t.height * 4.7;
 		Q.moved ||= Math.abs(n) + Math.abs(r) > .075;
@@ -12449,13 +12453,13 @@ jl.addEventListener("pointerenter", (e) => {
 		$.vx = Vl($.vx, (i - $.x) * 25, .6), $.vy = Vl($.vy, (a - $.y) * 25, .6), $.x = i, $.y = a;
 	}
 });
-function Nu(e) {
+function Iu(e) {
 	if (!Q || Q.id !== e.pointerId) return;
 	let t = Q.moved;
-	Q = null, pu.x = pu.y = 0, $.vx = Bl($.vx, -3, 3), $.vy = Bl($.vy, -3, 3), su = eu, (Il.matches || Ll) && ($.x = $.y = $.vx = $.vy = 0), jl.hasPointerCapture(e.pointerId) && jl.releasePointerCapture(e.pointerId), e.type !== "pointercancel" && !t ? ku() : Ml.textContent = "Boing! De volta ao lugar ✨", e.pointerType !== "mouse" && ($l = !1), ou = eu;
+	Q = null, hu.x = hu.y = 0, $.vx = Bl($.vx, -3, 3), $.vy = Bl($.vy, -3, 3), lu = nu, (Il.matches || Ll) && ($.x = $.y = $.vx = $.vy = 0), jl.hasPointerCapture(e.pointerId) && jl.releasePointerCapture(e.pointerId), e.type !== "pointercancel" && !t ? ju() : Ml.textContent = "Boing! De volta ao lugar ✨", e.pointerType !== "mouse" && (tu = !1), cu = nu;
 }
-jl.addEventListener("pointerup", Nu), jl.addEventListener("pointercancel", Nu), jl.addEventListener("lostpointercapture", () => {
-	Q && (Q = null, pu.x = pu.y = 0, su = eu);
+jl.addEventListener("pointerup", Iu), jl.addEventListener("pointercancel", Iu), jl.addEventListener("lostpointercapture", () => {
+	Q && (Q = null, hu.x = hu.y = 0, lu = nu);
 }), jl.addEventListener("keydown", (e) => {
 	[
 		"ArrowLeft",
@@ -12464,24 +12468,24 @@ jl.addEventListener("pointerup", Nu), jl.addEventListener("pointercancel", Nu), 
 		"ArrowDown",
 		"Enter",
 		" "
-	].includes(e.key) && (e.preventDefault(), ou = eu, e.key === "Enter" || e.key === " " ? ku() : ($.x = Bl($.x + (e.key === "ArrowLeft" ? -.2 : e.key === "ArrowRight" ? .2 : 0), -.88, .88), $.y = Bl($.y + (e.key === "ArrowUp" ? .2 : e.key === "ArrowDown" ? -.2 : 0), -.3, .72), su = eu));
+	].includes(e.key) && (e.preventDefault(), cu = nu, e.key === "Enter" || e.key === " " ? ju() : ($.x = Bl($.x + (e.key === "ArrowLeft" ? -.2 : e.key === "ArrowRight" ? .2 : 0), -.88, .88), $.y = Bl($.y + (e.key === "ArrowUp" ? .2 : e.key === "ArrowDown" ? -.2 : 0), -.3, .72), lu = nu));
 }), Nl.onclick = () => {
-	Ql = !Ql, Nl.textContent = Ql ? "Continuar animação" : "Pausar animação", Nl.setAttribute("aria-pressed", String(Ql));
+	eu = !eu, Nl.textContent = eu ? "Continuar animação" : "Pausar animação", Nl.setAttribute("aria-pressed", String(eu));
 }, document.querySelector("#replay").onclick = () => {
-	eu = ru = ou = 0, nu = iu = 0, au = null, Ql = !1, su = -20, $.x = $.y = $.vx = $.vy = 0, cu = lu = 0, Nl.textContent = "Pausar animação", Nl.setAttribute("aria-pressed", "false"), tu = performance.now(), Zl && Au(0, 0), Pl.textContent = "Ciclo reiniciado.";
+	nu = au = cu = 0, iu = ou = 0, su = null, eu = !1, lu = -20, $.x = $.y = $.vx = $.vy = 0, uu = du = 0, Nl.textContent = "Pausar animação", Nl.setAttribute("aria-pressed", "false"), ru = performance.now(), $l && Mu(0, 0), Pl.textContent = "Ciclo reiniciado.";
 };
 try {
-	Kl = new Oo({
+	Jl = new Oo({
 		canvas: jl,
 		alpha: !0,
 		antialias: !0,
-		powerPreference: "high-performance"
+		powerPreference: "low-power"
 	});
-	let e = Kl.getContext(), t = e.getExtension("WEBGL_debug_renderer_info");
-	Wl = !!t && /swiftshader|llvmpipe|softpipe|software/i.test(String(e.getParameter(t.UNMASKED_RENDERER_WEBGL))), Kl.setPixelRatio(Wl ? 1 : Math.min(devicePixelRatio, 2)), Kl.outputColorSpace = w, Kl.toneMapping = 4, Kl.toneMappingExposure = 1.05;
-	let n = () => Kl.setSize(Al.clientWidth, Al.clientHeight, !1);
-	new ResizeObserver(n).observe(Al), n(), ql = (await new Mc().loadAsync("./helena.glb?v=1")).scene.children[0], mu.add(ql), ql.traverse((e) => {
-		if (e.name.startsWith("Cabeça") && (Jl = e), e.name.startsWith("Estrela") && (Yl = e), e.name.startsWith("Revelação") && Xl.push(e), e.isMesh) {
+	let e = Jl.getContext(), t = e.getExtension("WEBGL_debug_renderer_info");
+	Wl = !!t && /swiftshader|llvmpipe|softpipe|software/i.test(String(e.getParameter(t.UNMASKED_RENDERER_WEBGL))), Jl.setPixelRatio(Wl ? 1 : Math.min(devicePixelRatio, Gl ? 1.25 : 1.5)), Jl.outputColorSpace = w, Jl.toneMapping = 4, Jl.toneMappingExposure = 1.05;
+	let n = () => Jl.setSize(Al.clientWidth, Al.clientHeight, !1);
+	new ResizeObserver(n).observe(Al), n(), Yl = (await new Mc().loadAsync("./helena.glb?v=1")).scene.children[0], gu.add(Yl), Yl.traverse((e) => {
+		if (e.name.startsWith("Cabeça") && (Xl = e), e.name.startsWith("Estrela") && (Zl = e), e.name.startsWith("Revelação") && Ql.push(e), e.isMesh) {
 			if (e.frustumCulled = !1, Wl) {
 				let t = e.material;
 				e.material = new Ds({
@@ -12492,11 +12496,22 @@ try {
 					side: 2
 				}), e.material.sheenColor = new J(), t.dispose();
 			}
-			e.material.side = 2, e.name.startsWith("Pupila") && (e.material.roughness = .38, e.material.clearcoat = .09, e.material.specularIntensity = .16), e.name.startsWith("Íris") && (e.material.color.set("#ffce13"), e.material.roughness = .37, e.material.specularIntensity = .3, e.material.clearcoat = .09), e.name.startsWith("Pálpebra") && (e.material.color.copy(yu), e.material.roughness = .69, e.material.clearcoat = .025, e.material.specularIntensity = .32);
+			if (Gl && !Wl) {
+				let t = e.material;
+				e.material = new Ts({
+					color: t.color,
+					map: t.map,
+					roughness: t.roughness,
+					metalness: t.metalness,
+					transparent: t.transparent,
+					opacity: t.opacity
+				}), e.material.sheenColor = new J(), t.dispose();
+			}
+			e.material.side = 2, e.name.startsWith("Pupila") && (e.material.roughness = .38, e.material.clearcoat = .09, e.material.specularIntensity = .16), e.name.startsWith("Íris") && (e.material.color.set("#ffce13"), e.material.roughness = .37, e.material.specularIntensity = .3, e.material.clearcoat = .09), e.name.startsWith("Pálpebra") && (e.material.color.copy(xu), e.material.roughness = .69, e.material.clearcoat = .025, e.material.specularIntensity = .32);
 		}
-	}), Tu(Jl), Yl.userData.anchor = Yl.position.clone(), Zl = !0, Al.classList.add("ready"), Al.dataset.ready = "true", zl && Ou(1, !0), Il.addEventListener("change", () => {
-		(Il.matches || Ll) && (nu = iu = +(iu > .5), au = null, $.x = $.y = $.vx = $.vy = 0), ru = eu;
-	}), requestAnimationFrame(ju);
+	}), !Gl && !Wl && Du(Xl), Zl.userData.anchor = Zl.position.clone(), $l = !0, Al.classList.add("ready"), Al.dataset.ready = "true", zl && Au(1, !0), Il.addEventListener("change", () => {
+		(Il.matches || Ll) && (iu = ou = +(ou > .5), su = null, $.x = $.y = $.vx = $.vy = 0), au = nu;
+	}), Nu();
 } catch {
 	jl.hidden = !0, window.parent.postMessage({
 		type: "helena-ready",
@@ -12507,17 +12522,17 @@ window.addEventListener("message", (e) => {
 	if (e.origin !== location.origin || e.source !== window.parent) return;
 	let t = e.data;
 	if (!t || t.type !== "helena-state") return;
-	Rl = t.visible === !0, Ll = t.reduced === !0, typeof t.open == "boolean" && t.open !== zl && (zl = t.open, Zl && Ou(+!!zl, !0)), $l = t.hover === !0;
+	Rl = t.visible === !0, Rl ? Nu() : (cancelAnimationFrame(Kl), Kl = 0), Ll = t.reduced === !0, typeof t.open == "boolean" && t.open !== zl && (zl = t.open, $l && Au(+!!zl, !0)), tu = t.hover === !0;
 	let n = typeof t.x == "number" && Number.isFinite(t.x) ? Bl(t.x, -1, 1) : 0, r = typeof t.y == "number" && Number.isFinite(t.y) ? Bl(t.y, -1, 1) : 0;
-	(n !== fu.x || r !== fu.y) && (fu.x = n, fu.y = r, ou = eu), t.motion === "dragging" ? (Q = { virtual: !0 }, $.vx = n * 5, $.vy = r * 5) : Q && (Q = null, $.vx = $.vy = 0, su = eu), Ll && Zl && (nu = iu = +!!zl, au = null, $.x = $.y = $.vx = $.vy = 0);
-}), jl.addEventListener("webglcontextlost", (e) => {
-	e.preventDefault(), Zl = !1, window.parent.postMessage({
+	(n !== mu.x || r !== mu.y) && (mu.x = n, mu.y = r, cu = nu), t.motion === "dragging" ? (Q = { virtual: !0 }, $.vx = n * 5, $.vy = r * 5) : Q && (Q = null, $.vx = $.vy = 0, lu = nu), Ll && $l && (iu = ou = +!!zl, su = null, $.x = $.y = $.vx = $.vy = 0);
+}), document.addEventListener("visibilitychange", Nu), jl.addEventListener("webglcontextlost", (e) => {
+	e.preventDefault(), $l = !1, cancelAnimationFrame(Kl), Kl = 0, window.parent.postMessage({
 		type: "helena-ready",
 		ready: !1
 	}, location.origin);
 }), window.addEventListener("pagehide", () => {
-	mu.traverse((e) => {
+	cancelAnimationFrame(Kl), gu.traverse((e) => {
 		e.isMesh && (e.geometry.dispose(), e.material.map && e.material.map.dispose(), e.material.bumpMap && e.material.bumpMap.dispose(), e.material.dispose());
-	}), Kl?.dispose();
+	}), Jl?.dispose();
 });
 //#endregion

@@ -110,3 +110,38 @@ test("star animates while dragged, docks without opening and keeps the chat insi
   await expect(dialog).toHaveCount(0);
   await expect(star).toBeVisible();
 });
+
+test("one live mascot moves to the header and returns without reloading its model", async ({
+  page,
+}) => {
+  const models: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/helena-assistant/helena.glb")) models.push(request.url());
+  });
+  await page.goto("/preview-helena-chat.html");
+  const mascot = page.locator(".helena-virtual-mascot");
+  await expect(mascot).toHaveAttribute("data-ready", "true", { timeout: 15000 });
+  const frame = page.frameLocator(".helena-virtual-mascot iframe");
+  await mascot
+    .locator("iframe")
+    .evaluate((element) => element.setAttribute("data-instance", "original"));
+  await page.getByRole("button", { name: "Conversar com Helena" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.locator(".helena-chat-welcome-art")).toHaveCount(0);
+  await expect(mascot).toHaveCount(1);
+  await expect
+    .poll(async () => {
+      const target = await page.locator(".helena-chat-header-mascot").boundingBox();
+      const actual = await mascot.boundingBox();
+      return Math.abs(target!.x - actual!.x) + Math.abs(target!.y - actual!.y);
+    })
+    .toBeLessThan(2);
+  const stage = frame.locator("#stage");
+  const before = await stage.getAttribute("data-time");
+  await expect.poll(() => stage.getAttribute("data-time")).not.toBe(before);
+  await page.getByRole("button", { name: "Recolher conversa", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(mascot.locator("iframe")).toHaveAttribute("data-instance", "original");
+  await expect(page.getByRole("button", { name: "Conversar com Helena" })).toBeVisible();
+  expect(models).toHaveLength(1);
+});
