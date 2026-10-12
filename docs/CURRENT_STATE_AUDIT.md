@@ -2550,3 +2550,7 @@ A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque 
 ### Treinamento matemático candidato v2 (2026-10-12)
 
 Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.
+
+### Segunda rodada de treinamento da Olena (2026-10-12)
+
+Corpus v3 tem 192 exemplos originais, com maior cobertura de frações e equações. Treino CPU limitado a 192 passos. Mantém 32 perguntas de desenvolvimento e acrescenta auditoria independente de 32 questões, sem sobreposição com o treino, inclusive frações equivalentes. Aceitação exige 75% global, mínimo por tema e ausência de regressões em ambos os conjuntos. A métrica é explicitamente valor exato com formato curto, não correção pedagógica geral. Artefatos e validação de retomada v3 guardam os dois gates e hashes; pesos rejeitados não são carregados nem promovidos. Ver `docs/OLENA_LEARNING.md`.

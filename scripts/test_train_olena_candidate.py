@@ -11,22 +11,31 @@ from olena_training_data import TOPICS, records, solution, validate_rows, write_
 PROGRAM = runpy.run_path(str(Path(__file__).with_name("train-olena-candidate.py")))
 
 
-def scores(correct=True):
-    return [{"id": r["id"], "topic": r["topic"], "correct": correct, "expected": r["expected"], "answer": r["expected"] if correct else "999"} for r in records("evaluation")]
+def scores(correct=True, split="evaluation"):
+    return [{"id": r["id"], "topic": r["topic"], "correct": correct, "expected": r["expected"], "answer": r["expected"] if correct else "999"} for r in records(split)]
 
 
 class TrainingTests(unittest.TestCase):
     def test_diverse_disjoint_corpus_and_known_answers(self):
         training, evaluation = records("train"), records("evaluation")
-        self.assertEqual(len(training), 96)
+        self.assertEqual(len(training), 192)
         self.assertEqual(len(evaluation), 32)
-        self.assertFalse({r["task_key"] for r in training} & {r["task_key"] for r in evaluation})
-        self.assertEqual({topic: sum(r["topic"] == topic for r in training) for topic in TOPICS}, dict.fromkeys(TOPICS, 12))
+        audit = records("audit")
+        self.assertEqual(len(audit), 32)
+        self.assertFalse({r["task_key"] for r in training} & {r["task_key"] for r in evaluation + audit})
+        self.assertFalse({r["task_key"] for r in evaluation} & {r["task_key"] for r in audit})
+        self.assertEqual({topic: sum(r["topic"] == topic for r in training) for topic in TOPICS}, {topic: 48 if topic in {"fractions", "linear-equations"} else 16 for topic in TOPICS})
         self.assertEqual(str(solution("fractions", [1, 3, 1, 6])[0]), "1/2")
         self.assertEqual(str(solution("percentages", [20, 150])[0]), "30")
         self.assertEqual(str(solution("linear-equations", [2, 3, 11])[0]), "4")
         self.assertEqual(str(solution("subtraction", [4, 5])[0]), "-1")
         self.assertEqual(str(solution("division", [3, 2])[0]), "3/2")
+
+    def test_audit_cannot_pass_if_it_regresses_or_loses_a_topic(self):
+        base, prior, candidate = scores(True, "audit"), scores(True, "audit"), scores(True, "audit")
+        self.assertTrue(PROGRAM["quality_gate"](base, prior, candidate)["passed"])
+        candidate[0]["correct"] = False
+        self.assertFalse(PROGRAM["quality_gate"](base, prior, candidate)["passed"])
 
     def test_changed_expected_or_explanation_is_rejected(self):
         for field in ("expected", "source", "operands"):
@@ -80,7 +89,8 @@ class TrainingTests(unittest.TestCase):
                 weights = b"test fixture, not real weights"
                 (previous / "adapter_model.safetensors").write_bytes(weights)
                 (previous / "adapter_config.json").write_text(json.dumps({"base_model_name_or_path":PROGRAM["BASE"],"peft_type":"LORA","task_type":"CAUSAL_LM","r":4,"lora_alpha":8,"target_modules":["q_proj","v_proj"]}))
-                report = {"status":"accepted","base_revision": PROGRAM["REVISION"], "trainer_version":PROGRAM["TRAINER_VERSION"],"schema":"olena-authored-math-v2","gate":PROGRAM["quality_gate"](scores(),scores(),scores()),"baseline":scores(),"prior_candidate":scores(),"candidate":scores(),"production_approved":False,"adapter_sha256":digest(weights),"dataset_sha256":digest(Path(".olena-learning/candidate-train.jsonl").read_bytes()),"evaluation_sha256":digest(Path(".olena-learning/candidate-eval.jsonl").read_bytes())}
+                report = {"status":"accepted","base_revision": PROGRAM["REVISION"], "trainer_version":PROGRAM["TRAINER_VERSION"],"schema":"olena-authored-math-v3","gate":PROGRAM["quality_gate"](scores(),scores(),scores()),"baseline":scores(),"prior_candidate":scores(),"candidate":scores(),"production_approved":False,"adapter_sha256":digest(weights),"dataset_sha256":digest(Path(".olena-learning/candidate-train.jsonl").read_bytes()),"evaluation_sha256":digest(Path(".olena-learning/candidate-eval.jsonl").read_bytes()),"audit_sha256":digest(Path(".olena-learning/candidate-audit.jsonl").read_bytes())}
+                report["audit"] = {"baseline":scores(split="audit"),"prior_candidate":scores(split="audit"),"candidate":scores(split="audit"),"gate":PROGRAM["quality_gate"](scores(split="audit"),scores(split="audit"),scores(split="audit"))}
                 (previous / "report.json").write_text(json.dumps(report))
                 output = str(Path(directory) / "outputs")
                 with patch.dict(os.environ, {"GITHUB_OUTPUT":output,"OLENA_FORCE_TRAINING":"false"}), patch.dict("sys.modules", {"torch":None}):
@@ -88,8 +98,13 @@ class TrainingTests(unittest.TestCase):
                 self.assertEqual(Path(".olena-learning/candidate/adapter_model.safetensors").read_bytes(),weights)
                 self.assertIn("artifact=true",Path(output).read_text())
                 self.assertFalse(json.loads(Path(".olena-learning/training-report.json").read_text())["trained_this_run"])
+                report["audit"]["candidate"][0]["correct"] = False
+                (previous / "report.json").write_text(json.dumps(report))
+                self.assertIsNone(PROGRAM["verified_previous"](previous,report["evaluation_sha256"],report["audit_sha256"]))
+                report["audit"]["candidate"][0]["correct"] = True
+                (previous / "report.json").write_text(json.dumps(report))
                 (previous / "adapter_model.safetensors").write_bytes(b"tampered")
-                self.assertIsNone(PROGRAM["verified_previous"](previous,report["evaluation_sha256"]))
+                self.assertIsNone(PROGRAM["verified_previous"](previous,report["evaluation_sha256"],report["audit_sha256"]))
             finally:
                 os.chdir(initial)
 
@@ -119,7 +134,7 @@ class TrainingTests(unittest.TestCase):
                 write_corpus()
                 path = Path(".olena-learning/last-attempt")
                 path.mkdir()
-                report = {"status":"rejected","base_revision":PROGRAM["REVISION"],"trainer_version":PROGRAM["TRAINER_VERSION"],"dataset_sha256":digest(Path(".olena-learning/candidate-train.jsonl").read_bytes()),"evaluation_sha256":digest(Path(".olena-learning/candidate-eval.jsonl").read_bytes())}
+                report = {"status":"rejected","base_revision":PROGRAM["REVISION"],"trainer_version":PROGRAM["TRAINER_VERSION"],"dataset_sha256":digest(Path(".olena-learning/candidate-train.jsonl").read_bytes()),"evaluation_sha256":digest(Path(".olena-learning/candidate-eval.jsonl").read_bytes()),"audit_sha256":digest(Path(".olena-learning/candidate-audit.jsonl").read_bytes())}
                 (path / "training-report.json").write_text(json.dumps(report))
                 with patch.dict(os.environ,{"OLENA_FORCE_TRAINING":"false"}),patch.dict("sys.modules",{"torch":None}):
                     PROGRAM["main"]()

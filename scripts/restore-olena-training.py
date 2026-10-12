@@ -8,7 +8,7 @@ from pathlib import Path
 def main():
     repo = os.environ["GITHUB_REPOSITORY"]
     branch = os.environ["GITHUB_REF_NAME"]
-    selections = [("Olena-Math-Qwen-Candidate-v2", "previous"), ("Olena-Math-Training-Report-v2", "last-attempt")]
+    selections = [("Olena-Math-Qwen-Candidate-v3", "previous"), ("Olena-Math-Training-Report-v3", "last-attempt")]
     for name, directory in selections:
         response = subprocess.run(["gh", "api", f"repos/{repo}/actions/artifacts?name={name}&per_page=30"], capture_output=True, text=True, timeout=30)
         if response.returncode:
