@@ -6,6 +6,7 @@
 - Botões Editar e concluir recebem dimensões explícitas de 44px, centralização em grid, padding uniforme e cantos de papel iguais. Sem mudanças em outros botões ou dados.
 - Teste de navegador verifica ícone carregado, ausência de texto, dimensões/alinhamento e abertura da edição por Enter em claro/escuro e desktop/mobile.
 - Quatro cenários focados de formulário/edição passaram. Verificação geral: 1401 testes, tipos, lint, formatação, APIs, build e desempenho aprovados. Entrada 279,9 KiB e aplicação 1250,8 KiB, dentro dos orçamentos existentes.
+- Logs do CI mobile apontaram seletor antigo em e2e/room.spec.ts que confundia sino e aparência, ambos com appearance-picker__trigger. O teste agora usa page-header__theme, como os demais testes de aparência. Listening e bingo revalidados localmente no viewport móvel; sem alteração de produto ou redução das asserções. Resultado WebKit nativo depende do CI.
 
 ## Dados e inspeção da Agenda (2026-10-11)
 
