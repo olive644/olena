@@ -113,8 +113,24 @@ test("star animates while dragged, docks without opening and keeps the chat insi
 
 test("one live mascot moves to the header and returns without reloading its model", async ({
   page,
-}) => {
+}, testInfo) => {
+  // No toque também cobre GPUs que não expõem seu identificador ao aplicativo.
+  if (testInfo.project.name === "mobile") {
+    await page.addInitScript(() => {
+      const original = WebGL2RenderingContext.prototype.getExtension;
+      Object.defineProperty(WebGL2RenderingContext.prototype, "getExtension", {
+        value: function (this: WebGL2RenderingContext, name: string) {
+          return name === "WEBGL_debug_renderer_info" ? null : original.call(this, name);
+        },
+      });
+    });
+  }
   const models: string[] = [];
+  const shaderErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && /WebGLProgram|Shader Error/.test(message.text()))
+      shaderErrors.push(message.text());
+  });
   page.on("request", (request) => {
     if (request.url().includes("/helena-assistant/helena.glb")) models.push(request.url());
   });
@@ -137,11 +153,14 @@ test("one live mascot moves to the header and returns without reloading its mode
     })
     .toBeLessThan(2);
   const stage = frame.locator("#stage");
+  await expect(stage).toHaveAttribute("data-form", "helena");
   const before = await stage.getAttribute("data-time");
   await expect.poll(() => stage.getAttribute("data-time")).not.toBe(before);
   await page.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(mascot.locator("iframe")).toHaveAttribute("data-instance", "original");
+  await expect(stage).toHaveAttribute("data-form", "star");
   await expect(page.getByRole("button", { name: "Conversar com Helena" })).toBeVisible();
   expect(models).toHaveLength(1);
+  expect(shaderErrors).toEqual([]);
 });

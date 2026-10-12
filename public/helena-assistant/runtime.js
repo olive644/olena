@@ -12380,7 +12380,7 @@ function Mu(e, t) {
 	let p = Hl(.05, .95, ou), m = 1 - p, h = (e - au) % 12, g = Ul(h, .7, 1.05, 1.8, 2.25) * i, _ = Ul(h, 3, 3.25, 4, 4.35) * i, v = Ul(h, 6.3, 6.7, 7.65, 8.15) * i, y = Ul(h, 9.1, 9.4, 10, 10.45) * i, b = Ul(h, 8.05, 8.3, 8.5, 8.95) * i, x = Il.matches || Ll ? 0 : Math.sin(e * 2), S = Ul(e - lu, 0, .07, .38, .85), C = Bl(Math.hypot($.vx, $.vy), 0, 8);
 	pu += ((Q ? C / 8 : 0) - pu) * (1 - Math.exp(-12 * t)), fu += (Bl($.vx * .04, -.34, .34) - fu) * (1 - Math.exp(-10 * t));
 	let w = Q ? .05 * Math.sin(e * 16) * pu : S * .055 * Math.sin((e - lu) * 15), T = ou * Bl(.08 + .64 * g + .65 * v + .24 * u + (Q ? .6 + .25 * Math.sin(e * 11) : 0) + S * .45 * Math.sin((e - lu) * 11), -.2, 1.15), E = ou * Bl(.06 + .48 * y + .56 * v + .2 * u + (Q ? .45 + .22 * Math.sin(e * 11 - 1) : 0) + S * .35 * Math.sin((e - lu) * 11 - 1), -.2, 1.15), D = Il.matches || Ll ? 0 : .7 * y;
-	Ou(Xl, "Cabeça da Helena, orelhas fundidas", ou - (Il.matches || Ll ? 0 : T + E) - D), Ou(Xl, "Orelhas, reação suave", 0), Ou(Xl, "Orelha esquerda, cartoon", Il.matches || Ll ? 0 : T), Ou(Xl, "Orelha direita, cartoon", Il.matches || Ll ? 0 : E), Ou(Xl, "Bochechas, sorriso sem boca", D), Xl.material.color.copy(Su).lerp(xu, Hl(.22, .9, ou)), Xl.material.roughness = Vl(.29, .69, ou), Xl.material.clearcoat = Vl(.23, .025, ou), Xl.material.specularIntensity = Vl(.4, .32, ou), Xl.material.metalness = .015, Xl.material.bumpScale = .004 * p, Xl.material.sheen = .12 * p, Xl.material.sheenColor.set("#77577c"), Xl.material.sheenRoughness = .8;
+	Ou(Xl, "Cabeça da Helena, orelhas fundidas", ou - (Il.matches || Ll ? 0 : T + E) - D), Ou(Xl, "Orelhas, reação suave", 0), Ou(Xl, "Orelha esquerda, cartoon", Il.matches || Ll ? 0 : T), Ou(Xl, "Orelha direita, cartoon", Il.matches || Ll ? 0 : E), Ou(Xl, "Bochechas, sorriso sem boca", D), Xl.material.color.copy(Su).lerp(xu, Hl(.22, .9, ou)), Xl.material.roughness = Vl(.29, .69, ou), Xl.material.isMeshPhysicalMaterial && (Xl.material.clearcoat = Vl(.23, .025, ou), Xl.material.specularIntensity = Vl(.4, .32, ou), Xl.material.sheen = .12 * p, Xl.material.sheenColor.set("#77577c"), Xl.material.sheenRoughness = .8), Xl.material.metalness = .015, Xl.material.bumpScale = .004 * p;
 	let O = 0, k = 0, A = (e + .45) % 3.45;
 	A < .26 && (O = k = A < .095 ? Hl(0, .095, A) : 1 - Hl(.125, .26, A));
 	let j = h - 2.35;
@@ -12494,7 +12494,7 @@ try {
 					transparent: t.transparent,
 					opacity: t.opacity,
 					side: 2
-				}), e.material.sheenColor = new J(), t.dispose();
+				}), t.dispose();
 			}
 			if (Gl && !Wl) {
 				let t = e.material;
@@ -12505,9 +12505,9 @@ try {
 					metalness: t.metalness,
 					transparent: t.transparent,
 					opacity: t.opacity
-				}), e.material.sheenColor = new J(), t.dispose();
+				}), t.dispose();
 			}
-			e.material.side = 2, e.name.startsWith("Pupila") && (e.material.roughness = .38, e.material.clearcoat = .09, e.material.specularIntensity = .16), e.name.startsWith("Íris") && (e.material.color.set("#ffce13"), e.material.roughness = .37, e.material.specularIntensity = .3, e.material.clearcoat = .09), e.name.startsWith("Pálpebra") && (e.material.color.copy(xu), e.material.roughness = .69, e.material.clearcoat = .025, e.material.specularIntensity = .32);
+			e.material.side = 2, e.name.startsWith("Pupila") && (e.material.roughness = .38, e.material.isMeshPhysicalMaterial && (e.material.clearcoat = .09), e.material.isMeshPhysicalMaterial && (e.material.specularIntensity = .16)), e.name.startsWith("Íris") && (e.material.color.set("#ffce13"), e.material.roughness = .37, e.material.isMeshPhysicalMaterial && (e.material.specularIntensity = .3), e.material.isMeshPhysicalMaterial && (e.material.clearcoat = .09)), e.name.startsWith("Pálpebra") && (e.material.color.copy(xu), e.material.roughness = .69, e.material.isMeshPhysicalMaterial && (e.material.clearcoat = .025), e.material.isMeshPhysicalMaterial && (e.material.specularIntensity = .32));
 		}
 	}), !Gl && !Wl && Du(Xl), Zl.userData.anchor = Zl.position.clone(), $l = !0, Al.classList.add("ready"), Al.dataset.ready = "true", zl && Au(1, !0), Il.addEventListener("change", () => {
 		(Il.matches || Ll) && (iu = ou = +(ou > .5), su = null, $.x = $.y = $.vx = $.vy = 0), au = nu;

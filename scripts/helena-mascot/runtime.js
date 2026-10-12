@@ -279,13 +279,15 @@ function apply(t, dt) {
   morph(head, "Bochechas, sorriso sem boca", cheek);
   head.material.color.copy(gold).lerp(dark, smooth(0.22, 0.9, shape));
   head.material.roughness = lerp(0.29, 0.69, shape);
-  head.material.clearcoat = lerp(0.23, 0.025, shape);
-  head.material.specularIntensity = lerp(0.4, 0.32, shape);
+  if (head.material.isMeshPhysicalMaterial) {
+    head.material.clearcoat = lerp(0.23, 0.025, shape);
+    head.material.specularIntensity = lerp(0.4, 0.32, shape);
+    head.material.sheen = 0.12 * headAmount;
+    head.material.sheenColor.set("#77577c");
+    head.material.sheenRoughness = 0.8;
+  }
   head.material.metalness = 0.015;
   head.material.bumpScale = 0.004 * headAmount;
-  head.material.sheen = 0.12 * headAmount;
-  head.material.sheenColor.set("#77577c");
-  head.material.sheenRoughness = 0.8;
   let blinkL = 0,
     blinkR = 0;
   const b = (t + 0.45) % 3.45;
@@ -612,7 +614,6 @@ try {
           opacity: original.opacity,
           side: THREE.DoubleSide,
         });
-        o.material.sheenColor = new THREE.Color();
         original.dispose();
       }
       if (mobile && !software) {
@@ -625,26 +626,25 @@ try {
           transparent: original.transparent,
           opacity: original.opacity,
         });
-        o.material.sheenColor = new THREE.Color();
         original.dispose();
       }
       o.material.side = THREE.DoubleSide;
       if (o.name.startsWith("Pupila")) {
         o.material.roughness = 0.38;
-        o.material.clearcoat = 0.09;
-        o.material.specularIntensity = 0.16;
+        if (o.material.isMeshPhysicalMaterial) o.material.clearcoat = 0.09;
+        if (o.material.isMeshPhysicalMaterial) o.material.specularIntensity = 0.16;
       }
       if (o.name.startsWith("Íris")) {
         o.material.color.set("#ffce13");
         o.material.roughness = 0.37;
-        o.material.specularIntensity = 0.3;
-        o.material.clearcoat = 0.09;
+        if (o.material.isMeshPhysicalMaterial) o.material.specularIntensity = 0.3;
+        if (o.material.isMeshPhysicalMaterial) o.material.clearcoat = 0.09;
       }
       if (o.name.startsWith("Pálpebra")) {
         o.material.color.copy(dark);
         o.material.roughness = 0.69;
-        o.material.clearcoat = 0.025;
-        o.material.specularIntensity = 0.32;
+        if (o.material.isMeshPhysicalMaterial) o.material.clearcoat = 0.025;
+        if (o.material.isMeshPhysicalMaterial) o.material.specularIntensity = 0.32;
       }
     }
   });
