@@ -1,4 +1,5 @@
 import type { WorkspaceState } from "./workspace.js";
+import { validateCalendarEvent } from "./agenda-calendar";
 
 // Compara dois valores por conteúdo, não por referência nem por ordem de chaves (duas cópias
 // do mesmo objeto, espalhadas em ordens diferentes, contam como iguais).
@@ -26,6 +27,7 @@ function mergeById<T extends Identified>(
   base: readonly T[],
   local: readonly T[],
   remote: readonly T[],
+  fields = false,
 ): { items: T[]; conflicts: number } {
   const baseMap = new Map(base.map((item) => [item.id, item] as const));
   const localMap = new Map(local.map((item) => [item.id, item] as const));
@@ -43,6 +45,49 @@ function mergeById<T extends Identified>(
     const localChanged = !equal(localItem, baseItem);
     const remoteChanged = !equal(remoteItem, baseItem);
     if (localChanged && remoteChanged && !equal(localItem, remoteItem)) {
+      if (fields && baseItem && localItem && remoteItem) {
+        const baseRecord = baseItem as T & Record<string, unknown>,
+          localRecord = localItem as T & Record<string, unknown>,
+          remoteRecord = remoteItem as T & Record<string, unknown>;
+        const merged: Record<string, unknown> = {};
+        let conflict = false;
+        for (const key of new Set([
+          ...Object.keys(baseRecord),
+          ...Object.keys(localRecord),
+          ...Object.keys(remoteRecord),
+        ])) {
+          if (["completedDates", "excludedDates"].includes(key)) {
+            const baseDates = (baseRecord[key] ?? []) as string[],
+              localDates = (localRecord[key] ?? []) as string[],
+              remoteDates = (remoteRecord[key] ?? []) as string[];
+            merged[key] = [...new Set([...baseDates, ...localDates, ...remoteDates])]
+              .filter(
+                (date) =>
+                  mergeValue(
+                    baseDates.includes(date),
+                    localDates.includes(date),
+                    remoteDates.includes(date),
+                  ).value,
+              )
+              .sort();
+          } else {
+            const value = mergeValue(baseRecord[key], localRecord[key], remoteRecord[key]);
+            if (value.value !== undefined) merged[key] = value.value;
+            conflict ||= value.conflict;
+          }
+        }
+        if (
+          "time" in merged &&
+          validateCalendarEvent(merged as unknown as WorkspaceState["events"][number])
+        ) {
+          items.push(localItem);
+          conflicts++;
+        } else {
+          items.push(merged as T);
+          if (conflict) conflicts++;
+        }
+        continue;
+      }
       conflicts += 1;
       if (localItem) items.push(localItem);
       continue;
@@ -90,8 +135,16 @@ export function mergeWorkspaceStates(
   const workspace: WorkspaceState = {
     version: local.version,
     subjects: list(base.subjects, local.subjects, remote.subjects),
-    tasks: list(base.tasks, local.tasks, remote.tasks),
-    events: list(base.events, local.events, remote.events),
+    tasks: (() => {
+      const result = mergeById(base.tasks, local.tasks, remote.tasks, true);
+      conflicts += result.conflicts;
+      return result.items;
+    })(),
+    events: (() => {
+      const result = mergeById(base.events, local.events, remote.events, true);
+      conflicts += result.conflicts;
+      return result.items;
+    })(),
     habits: list(base.habits, local.habits, remote.habits),
     notebooks: list(base.notebooks, local.notebooks, remote.notebooks),
     notes: list(base.notes, local.notes, remote.notes),

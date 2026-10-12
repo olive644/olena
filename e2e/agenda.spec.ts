@@ -627,9 +627,11 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   await expect(calendar).toBeVisible();
   await expect(page.getByText("Estudos, tarefas e compromissos em um só lugar.")).toHaveCount(0);
-  for (const name of ["Hoje", "Semana", "Mês", "Período anterior", "Próximo período"]) {
+  for (const name of ["Hoje"]) {
     await expect(page.getByRole("button", { name, exact: true })).toHaveCount(0);
   }
+  for (const name of ["Dia", "Semana", "Mês", "Lista", "Período anterior", "Próximo período"])
+    await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
   await toggle.focus();
   await expect(toggle).toHaveCSS("outline-style", "none");
   await expect(toggle).toHaveCSS("text-decoration-line", "underline");

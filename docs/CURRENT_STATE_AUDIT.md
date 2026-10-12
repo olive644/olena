@@ -7,6 +7,16 @@
 - A CSP permite frames de mesma origem para este renderizador, mantendo os hosts de autenticação existentes e sem permitir script inline. Modelo carregado depois da montagem do chat. Pausa fora da aba, sob modais ou com o botão oculto no celular. Movimento reduzido não carrega o renderizador; falta de WebGL conserva os renders estáticos e a conversa.
 - Three.js 0.170.0 vendorizado com licença MIT, bundle reproduzível com o Vite existente. Nenhuma alteração de dependências npm. Consulta OSV da versão não retornou avisos em 2026-10-12. Assets têm orçamento próprio de 768 KiB JS e 4 MiB GLB; o orçamento e os tetos do React continuam verificados.
 
+- Validação local: 1400 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 279,4 KiB e aplicação 1244,4 KiB; renderizador opcional 660,4 KiB e modelo 3,5 MiB.
+
+## Agenda interna ampliada (2026-10-12)
+
+- Visualizações Dia/Semana/Mês/Lista, filtros, detalhes, recorrências com escopo, grade com confirmação de movimento/duração e intercâmbio .ics, sem integração Google nova.
+- Metadados opcionais no workspace v7 preservam dados antigos. Compromissos longos guardam duração completa separada do campo limitado legado. Fuso IANA projeta horários; conclusões não são transferidas para datas reagendadas.
+- Merge de eventos/tarefas por campo e conjuntos de datas reutiliza reconciliação existente. Anexos limitados permanecem privados; lembretes locais por conta só executam com app aberto. Não há promessa de push, envio de convites ou edição colaborativa.
+- Verificação geral aprovada: 232 arquivos e 1415 testes locais. Navegador: 61 cenários aprovados, 5 exclusivos de outro projeto ignorados, em Edge/Chromium desktop e viewport móvel. Temas claro/escuro, persistência, anexos, ICS, teclado, movimento e redimensionamento cobertos. WebKit nativo fica no CI.
+- Entrada inicial 280,9 KiB e JavaScript da aplicação 1280,4 KiB. Limites normais passam a 282/1288 KiB com justificativa medida; tetos absolutos preservados. Sem dependência nova. Alterações locais de Pixi e testes alheios não integram esta entrega.
+
 ## Cursor de papel (2026-10-12)
 
 - Dois SVGs locais de 32px aplicados via CSS nativo para mouse com hover: seta e mão de ação com estrela. Paleta aprovada e borda creme/grafite legível nos dois temas.
@@ -2506,4 +2516,3 @@ seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
 - Validação: 1386 testes unitários, tipos/build e orçamento de desempenho;
   14 cenários E2E da Agenda em desktop/mobile Edge, com temas claro/escuro.
   JS inicial 278,5 KiB e total 1229,8 KiB, sem dependências nem aumento de orçamento.
-- Validação local: 1400 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 279,4 KiB e aplicação 1244,4 KiB; renderizador opcional 660,4 KiB e modelo 3,5 MiB.
