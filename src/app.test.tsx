@@ -103,7 +103,7 @@ describe("App", () => {
     });
   });
 
-  it("mantém as metas em Agenda e deixa Foco dedicado ao timer", async () => {
+  it("evita o widget duplicado de matérias e metas na Agenda", async () => {
     render(<App />);
 
     navigate("Praticar");
@@ -111,10 +111,9 @@ describe("App", () => {
 
     navigate("Agenda");
     await screen.findByRole("heading", { name: "Minha agenda" });
-    fireEvent.click(screen.getByText("Matérias e metas"));
-    fireEvent.click(screen.getByRole("button", { name: "Criar meta de foco" }));
-    expect(screen.getByRole("dialog", { name: "Adicionar à agenda" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Tipo" }).textContent).toContain("Meta de foco");
+    expect(screen.queryByText("Matérias e metas")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Retomar com calma" })).toBeNull();
+    expect(screen.getByRole("group", { name: "Planejamento da semana selecionada" })).toBeTruthy();
   });
 
   it("mantém as ferramentas na navegação sem duplicá-las no painel principal", () => {

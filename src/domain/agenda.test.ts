@@ -1,10 +1,38 @@
 import { describe, expect, it } from "vitest";
-import { agendaPrompt, eventOccursOn, eventsOn, monthDates, shiftDate, weekDates } from "./agenda";
+import {
+  agendaPrompt,
+  eventOccursOn,
+  eventsOn,
+  monthDates,
+  overdueTasks,
+  shiftDate,
+  weekDates,
+} from "./agenda";
 import { createInitialWorkspace, workspaceReducer, type StudyEvent } from "./workspace";
 import { loadWorkspace, serializeWorkspace } from "../data/local-workspace";
 import { mergeWorkspaceStates } from "./workspace-sync-merge";
 
 describe("agenda", () => {
+  it("only marks unfinished tasks with a real expired due date as overdue", () => {
+    const state = createInitialWorkspace();
+    state.tasks = ["", "invalid", "2026-02-31", "2026-10-10", "2026-10-11", "2026-10-12"].map(
+      (dueDate) => ({
+        id: dueDate,
+        title: "Tarefa",
+        subjectId: "",
+        dueDate,
+        completed: false,
+      }),
+    );
+    state.tasks.push({
+      id: "done",
+      title: "Concluída",
+      subjectId: "",
+      dueDate: "2026-10-01",
+      completed: true,
+    });
+    expect(overdueTasks(state, "2026-10-11").map((task) => task.id)).toEqual(["2026-10-10"]);
+  });
   const event: StudyEvent = {
     id: "a",
     title: "Revisar frações",

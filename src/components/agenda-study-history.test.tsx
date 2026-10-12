@@ -102,7 +102,7 @@ it("hides undated math progress and shows only practice from the selected dates"
   expect(screen.getByText("2 acertos no período")).toBeTruthy();
   expect(document.querySelectorAll(".agenda-charts")).toHaveLength(1);
   fireEvent.click(screen.getByRole("button", { name: "Próxima ilha" }));
-  expect(screen.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeTruthy();
+  expect(screen.queryByRole("img", { name: "Prévia: Oficina das Equações" })).toBeNull();
   fireEvent.keyDown(screen.getByRole("group", { name: "Prévia das ilhas" }), { key: "End" });
   expect(screen.getByRole("button", { name: "Próxima ilha" }).hasAttribute("disabled")).toBe(true);
   fireEvent.keyDown(screen.getByRole("group", { name: "Prévia das ilhas" }), { key: "Home" });
@@ -115,6 +115,47 @@ it("hides undated math progress and shows only practice from the selected dates"
   expect(screen.getByText(/Nenhuma resposta registrada nas ilhas neste período/)).toBeTruthy();
   expect(screen.queryByText(/Melhor sequência no período/)).toBeNull();
   expect(screen.queryByText(/Use as setas, arraste a ilha/)).toBeNull();
+});
+it("filters charts through only islands practiced in the selected dates", () => {
+  const workspace = createInitialWorkspace();
+  workspace.practiceActivities = [
+    {
+      id: "a",
+      islandId: "mathematics:foundations",
+      islandName: "Fundamental",
+      completedAt: "2026-10-11T12:00:00",
+      answers: 2,
+      correct: 1,
+    },
+    {
+      id: "b",
+      islandId: "mathematics:school",
+      islandName: "Médio",
+      completedAt: "2026-10-11T13:00:00",
+      answers: 7,
+      correct: 3,
+    },
+    {
+      id: "c",
+      islandId: "mathematics:college",
+      islandName: "Superior",
+      completedAt: "2026-10-12T12:00:00",
+      answers: 9,
+      correct: 4,
+    },
+  ];
+  const props = { workspace, history: focusHistory([]) };
+  const { rerender } = render(
+    <AgendaStudyHistory {...props} range={{ start: "2026-10-11", end: "2026-10-11" }} />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Praticar" }));
+  expect(document.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("2 respostas");
+  fireEvent.click(screen.getByRole("button", { name: "Próxima ilha" }));
+  expect(document.querySelector(".agenda-chart-heading > strong")?.textContent).toBe("7 respostas");
+  expect(screen.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Próxima ilha" }).hasAttribute("disabled")).toBe(true);
+  rerender(<AgendaStudyHistory {...props} range={{ start: "2026-10-13", end: "2026-10-13" }} />);
+  expect(screen.queryByRole("group", { name: "Prévia das ilhas" })).toBeNull();
 });
 
 it("keeps the Pomodoro week and timer garden visible on empty dates", () => {

@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Dados e inspeção da Agenda (2026-10-11)
+
+- Foco agrupa minutos por dia e modalidade, sem apresentar subjectId padrão como matéria escolhida pelo aluno. O armazenamento original não é alterado.
+- Caderno usa os itens da estante com createdAt válido no período: cadernos sem kind, pastas collection/folder e Notes kind=note. Páginas internas não são contadas novamente. Total é identificado como itens, pizza separa tipos com cores distintas e a lista preserva os títulos. Não inventa data de criação a partir de updatedAt.
+- Praticar lista somente ilhas de Matemática com respostas positivas nas datas selecionadas. Setas, arraste e teclado filtram também os gráficos pela ilha exibida; troca de período reconcilia a seleção com as ilhas disponíveis. Progresso sem data não entra no filtro.
+- PaperChoice define texto creme sobre roxo e grafite sobre amarelo em seleção/hover/foco. Ano é texto comum nos dois seletores de calendário. Inspeção da pizza preserva contraste de papel nos dois temas.
+- Retomar com calma existe somente com tarefas incompletas e prazo válido anterior ao dia atual. Sem prazo, data impossível, hoje, futuro ou conclusão não criam atrasos.
+- Widget duplicado Matérias e metas removido, sem apagar matérias/metas. Uma semana possível mostra sete dias e contagens reais de tarefas/ocorrências pendentes; clicar abre o dia e Helena continua recebendo somente rascunho explícito.
+- Sem mudança de esquema, gravação extra ou dependência nova. Todos os resumos derivam do workspace sincronizado existente.
+- Verificação geral passou: 1401 testes unitários, tipos, lint, formatação, APIs, build e orçamento de desempenho. Agenda/navegação: 47 E2E aprovados e 5 skips específicos de plataforma; estante e semana clicável revalidadas em dois cenários finais. Claro/escuro, hover, foco, teclado e arraste validados em Edge desktop e viewport móvel. WebKit nativo permanece no CI. Build: entrada 279,9 KiB e total 1250,6 KiB, dentro dos orçamentos existentes.
+
 ## Formulário de papel e fechamento uniforme (2026-10-11)
 
 - Adicionar do topo removido. Os dias abrem as ações contextuais, com novos SVGs para reservar estudo e criar compromisso. O formulário mantém somente seu botão de salvar/adicionar.

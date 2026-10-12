@@ -90,6 +90,15 @@
 }
 :root body .agenda-choice-options button {
   min-height: 44px;
+  background-color: #7433e0;
+  color: #fff9ef;
+  border-color: #7433e0;
+}
+:root body .agenda-choice-options button:is(:hover, :focus-visible, [aria-selected="true"]) {
+  background: #facc15;
+  color: #292432;
+  border-color: #b99100;
+  box-shadow: 0 3px 0 #b99100;
 }
 .agenda-date-month strong {
   text-align: center;

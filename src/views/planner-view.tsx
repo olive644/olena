@@ -29,7 +29,9 @@ import {
   eventsOn,
   HELENA_PLAN_DRAFT_EVENT,
   monthDates,
+  overdueTasks,
   shiftDate,
+  weekDates,
 } from "../domain/agenda";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import {
@@ -134,7 +136,13 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const dates = month.slice(35).some((date) => date.slice(0, 7) === selected.slice(0, 7))
     ? month
     : month.slice(0, 35);
-  const pending = workspace.tasks.filter((task) => !task.completed && task.dueDate < today);
+  const pending = overdueTasks(workspace, today);
+  const week = weekDates(selected).map((date) => ({
+    date,
+    items:
+      eventsOn(workspace, date).filter((event) => !event.completedDates?.includes(date)).length +
+      workspace.tasks.filter((task) => !task.completed && task.dueDate === date).length,
+  }));
   const scheduled = eventsOn(workspace, selected);
   const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
   const subjects = agendaSubjects(workspace);
@@ -687,12 +695,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           </details>
         </div>
         <aside className="agenda-aside">
-          <section className="module-panel">
-            <h2>Retomar com calma</h2>
-            {pending.length === 0 ? (
-              <p>Nenhuma tarefa atrasada. Você pode cuidar do próximo passo.</p>
-            ) : (
-              pending.map((task) => (
+          {pending.length > 0 && (
+            <section className="module-panel">
+              <h2>Retomar com calma</h2>
+              {pending.map((task) => (
                 <article className="agenda-pending" key={task.id}>
                   <strong>{task.title}</strong>
                   <small>Prazo: {dateForKey(task.dueDate).toLocaleDateString("pt-BR")}</small>
@@ -712,13 +718,41 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                     Mover para hoje <PaperArrow />
                   </button>
                 </article>
-              ))
-            )}
-          </section>
+              ))}
+            </section>
+          )}
           <section className="module-panel agenda-helena">
             <NavigationIcon name="planner" />
             <h2>Uma semana possível</h2>
-            <p>Peça sugestões à Helena. Você decide o que entra na agenda.</p>
+            <p>
+              {week.reduce((sum, day) => sum + day.items, 0)} itens pendentes nesta semana. Reserve
+              espaço para estudar e descansar.
+            </p>
+            <div
+              className="agenda-week-plan"
+              role="group"
+              aria-label="Planejamento da semana selecionada"
+            >
+              {week.map((day) => (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  key={day.date}
+                  aria-label={`${dayLabel(day.date)}, ${day.items} itens planejados`}
+                  aria-pressed={day.date === selected}
+                  onClick={() => {
+                    resetDate(day.date);
+                    setDayOpen(true);
+                  }}
+                >
+                  <small>
+                    {dateForKey(day.date).toLocaleDateString("pt-BR", { weekday: "short" })}
+                  </small>
+                  <strong>{dateForKey(day.date).getDate()}</strong>
+                  <span>{day.items > 0 ? `${day.items} itens` : "Livre"}</span>
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               className="primary-button"
@@ -734,36 +768,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             </button>
             <small>O pedido abre no chat para você revisar antes de enviar.</small>
           </section>
-          <details className="module-panel agenda-extra">
-            <summary>Matérias e metas</summary>
-            <ul className="agenda-subjects">
-              {workspace.subjects.map((subject) => (
-                <li key={subject.id}>{subject.name}</li>
-              ))}
-            </ul>
-            <button type="button" className="secondary-button" onClick={() => create("subject")}>
-              Adicionar matéria
-            </button>
-            {workspace.goals.map((goal) => (
-              <article className="agenda-pending" key={goal.id}>
-                <strong>{goal.title}</strong>
-                <small>
-                  {goal.targetMinutes} min · até{" "}
-                  {dateForKey(goal.deadline).toLocaleDateString("pt-BR")}
-                </small>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
-                >
-                  {goal.completed ? "Reabrir meta" : "Concluir meta"}
-                </button>
-              </article>
-            ))}
-            <button type="button" className="secondary-button" onClick={() => create("goal")}>
-              Criar meta de foco
-            </button>
-          </details>
         </aside>
       </div>
       <dialog

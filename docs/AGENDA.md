@@ -2,10 +2,10 @@
 
 ## Fluxo
 
-`/planejador` abre o planejamento do dia atual. O ícone de calendário abre e recolhe
-o mês, com seletor de mês sem setas, destaque roxo e contagens compactas. Selecionar
-uma data atualiza o planejamento logo abaixo, no computador e celular. Recolher o
-calendário preserva a data escolhida. As abas Hoje/Semana/Mês foram substituídas.
+`/planejador` abre o planejamento do dia atual. Calendário e categorias ficam
+sempre visíveis. O ícone abre o seletor de mês, com destaque roxo e contagens
+compactas. Selecionar uma data atualiza planejamento e gráficos logo abaixo,
+no computador e celular. As abas Hoje/Semana/Mês foram substituídas.
 O seletor de mês é um painel próprio com 12 botões de papel e ano editável,
 sem calendário nativo do navegador. Escape e clique fora fecham o painel.
 Arrastar com mouse/toque seleciona um intervalo inclusivo; o botão Selecionar
@@ -18,8 +18,8 @@ dias estudados e maior sequência dentro do mês ou intervalo escolhido. Os hor�
 da linha do tempo são de conclusão (`completedAt`), não de início: o formato atual
 não guarda início, pausas ou intervalos exatos. Não há tempos inventados. As datas
 usam o fuso local do dispositivo. O histórico usa os registros já sincronizados do
-workspace, sem alterar esquema, conta ou persistência. O X da Agenda usa arte
-vermelha facetada própria, sem alterar os outros controles do aplicativo.
+workspace, sem alterar esquema, conta ou persistência. X coloridos usam arte
+vermelha facetada sem placa; os X monocromáticos permanecem intactos.
 Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco.
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.
@@ -41,6 +41,18 @@ Agenda e Espaço do aluno usam a mesma seleção de ocorrências, inclusive roti
 Google Agenda permanece separado e identificado: leitura dos próximos 14 dias, link
 para editar no Google, sem importar cópias nem fingir edição local. Tarefas de aula,
 matérias e metas existentes continuam disponíveis.
+
+Meu estudo agrega Foco por dia, nunca pela matéria padrão não escolhida.
+Caderno conta criações datadas na estante, separando cadernos, pastas e Notes
+na pizza e exibindo seus nomes. Não duplica as páginas internas da Note.
+Praticar mostra somente ilhas com respostas no período; navegar pela prévia
+filtra também os gráficos da ilha exibida. Datas vazias têm explicação,
+sem gráficos fictícios. Flores e tomates mantêm a exceção visual do Foco.
+
+Retomar com calma aparece apenas para tarefas realmente vencidas, com data
+válida e não concluídas. Matérias e metas não têm widget duplicado na Agenda;
+os dados existentes permanecem salvos. Uma semana possível resume sete dias
+clicáveis com contagens de pendências reais e mantém o planejamento com Helena.
 
 ## Lembretes e Helena
 

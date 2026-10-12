@@ -219,8 +219,7 @@ export function PaperDateField({
             <PaperArrow back />
           </button>
           <strong>
-            {dateForKey(month).toLocaleDateString("pt-BR", { month: "long" })}{" "}
-            <PaperDigits value={month.slice(0, 4)} />
+            {dateForKey(month).toLocaleDateString("pt-BR", { month: "long" })} {month.slice(0, 4)}
           </strong>
           <button
             type="button"

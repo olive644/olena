@@ -45,6 +45,58 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
+.agenda-helena {
+  grid-column: 1 / -1;
+}
+.agenda-week-plan {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin: 14px 0 18px;
+}
+:root body .agenda-week-plan button {
+  display: grid;
+  gap: 4px;
+  padding: 8px 2px;
+  background: var(--agenda-paper);
+  color: var(--agenda-ink);
+  border-color: var(--agenda-line);
+  box-shadow: 0 3px 0 var(--agenda-line);
+}
+:root body .agenda-week-plan button[aria-pressed="true"] {
+  background: #facc15;
+  color: #292432;
+  border-color: #b99100;
+}
+.agenda-week-plan small,
+.agenda-week-plan span {
+  font-size: 10px;
+}
+.agenda-shelf-entries {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.agenda-shelf-entries li {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--agenda-line);
+  border-radius: 4px 12px 4px 9px;
+  background: var(--agenda-paper);
+  overflow-wrap: anywhere;
+}
+.agenda-shelf-entries small {
+  color: var(--agenda-muted);
+}
+:root body .agenda-page .agenda-focus-modes button:is(:hover, :focus-visible),
+:root body .agenda-page .agenda-month-options button:is(:hover, :focus-visible) {
+  background: #facc15;
+  color: #292432;
+  border-color: #b99100;
+}
 .agenda-page .module-panel {
   background: var(--agenda-paper);
   border-color: var(--agenda-line);
@@ -713,21 +765,6 @@
 }
 .agenda-year-controls label {
   position: relative;
-}
-.agenda-year-value {
-  position: absolute;
-  bottom: 13px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  pointer-events: none;
-  font-size: 22px;
-}
-.agenda-year-controls input:not(:focus) {
-  color: transparent;
-}
-.agenda-year-controls label:focus-within .agenda-year-value {
-  visibility: hidden;
 }
 .agenda-study-ribbon {
   position: absolute;

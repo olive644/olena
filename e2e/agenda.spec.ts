@@ -39,6 +39,15 @@ test("paper form offers all islands, custom date/time, icon repeat and yellow co
     await expect(subjects.getByRole("option")).toHaveCount(6);
     for (const name of ["Idiomas", "Português", "Química", "Biologia", "Matemática", "Programação"])
       await expect(subjects.getByRole("option", { name, exact: true })).toBeVisible();
+    const chemistry = subjects.getByRole("option", { name: "Química", exact: true });
+    await chemistry.hover();
+    await expect(chemistry).toHaveCSS("color", "rgb(41, 36, 50)");
+    await expect(chemistry).toHaveCSS("background-color", "rgb(250, 204, 21)");
+    await subjects.getByRole("option", { name: "Idiomas", exact: true }).focus();
+    await expect(subjects.getByRole("option", { name: "Idiomas", exact: true })).toHaveCSS(
+      "color",
+      "rgb(41, 36, 50)",
+    );
     await page.keyboard.press("End");
     await page.keyboard.press("ArrowUp");
     await page.keyboard.press("Enter");
@@ -214,6 +223,22 @@ test("agenda displays compact filtered islands and Pomodoro weeks in both themes
       answers: 15,
       correct: 12,
     },
+    {
+      id: "school-day6",
+      islandId: "mathematics:school",
+      islandName: "Matemática · Ensino médio",
+      completedAt: "2026-10-06T13:00:00",
+      answers: 5,
+      correct: 3,
+    },
+    {
+      id: "college-day8",
+      islandId: "mathematics:college",
+      islandName: "Matemática · Ensino superior",
+      completedAt: "2026-10-08T12:00:00",
+      answers: 8,
+      correct: 4,
+    },
   ];
   await page.addInitScript(
     (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
@@ -248,6 +273,7 @@ test("agenda displays compact filtered islands and Pomodoro weeks in both themes
       .evaluate((element) => element.scrollIntoView({ block: "center" }));
     await history.getByRole("button", { name: "Próxima ilha" }).click();
     await expect(history.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeVisible();
+    await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("5 respostas");
     const carousel = history.getByRole("group", { name: "Prévia das ilhas" });
     await carousel.focus();
     await page.keyboard.press("End");
@@ -307,6 +333,93 @@ test("agenda displays compact filtered islands and Pomodoro weeks in both themes
     await page.locator('button[data-date="2026-10-06"]').click();
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("shelf charts count actual types and focus never infers an unchosen subject", async ({
+  page,
+}, info) => {
+  const state = createInitialWorkspace();
+  state.notebooks = [undefined, undefined, "collection", "note"].map((kind, index) => ({
+    id: `shelf-${index}`,
+    title: ["Meu caderno", "Ciências", "Minha pasta", "Minha Note"][index]!,
+    subjectId: "",
+    pageIds: [],
+    createdAt: "2026-10-11T12:00:00",
+    ...(kind ? { kind: kind as "collection" | "note" } : {}),
+  }));
+  state.focusSessions = [
+    {
+      id: "timer",
+      mode: "timer",
+      subjectId: state.subjects[0]!.id,
+      durationMinutes: 3,
+      completedAt: "2026-10-11T12:00:00",
+    },
+  ];
+  state.tasks = [
+    { id: "undated", title: "Sem prazo", subjectId: "", dueDate: "", completed: false },
+  ];
+  await page.addInitScript(
+    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
+    state,
+  );
+  await page.goto("/planejador");
+  const history = page.getByRole("region", { name: "Histórico de estudo" });
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page.locator('button[data-date="2026-10-11"]').click();
+    await history.getByRole("button", { name: "Foco", exact: true }).click();
+    await expect(history.getByText("Por dia", { exact: true })).toBeVisible();
+    await expect(history.getByText("Por matéria", { exact: true })).toHaveCount(0);
+    await history.getByRole("button", { name: "Pomodoro", exact: true }).hover();
+    await expect(history.getByRole("button", { name: "Pomodoro", exact: true })).toHaveCSS(
+      "color",
+      "rgb(41, 36, 50)",
+    );
+    await history.getByRole("button", { name: "Caderno", exact: true }).click();
+    await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("4 itens");
+    for (const name of ["Meu caderno", "Ciências", "Minha pasta", "Minha Note"])
+      await expect(history.getByText(name, { exact: true })).toBeVisible();
+    const slices = history.locator(".agenda-pie-slice");
+    await expect(slices).toHaveCount(3);
+    expect(
+      new Set(
+        await slices.evaluateAll((elements) =>
+          elements.map((element) => element.getAttribute("fill")),
+        ),
+      ).size,
+    ).toBe(3);
+    const inspect = history.getByRole("button", { name: "Inspecionar Cadernos", exact: true });
+    await inspect.hover();
+    await inspect.focus();
+    await expect(inspect).toHaveCSS(
+      "color",
+      theme === "dark" ? "rgb(255, 249, 239)" : "rgb(41, 36, 50)",
+    );
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("2 itens");
+    await history.screenshot({
+      path: info.outputPath(`shelf-${theme}.png`),
+      animations: "disabled",
+    });
+    await expect(page.getByRole("heading", { name: "Retomar com calma" })).toHaveCount(0);
+    await expect(page.getByText("Matérias e metas", { exact: true })).toHaveCount(0);
+    await expect(
+      page.getByRole("group", { name: "Planejamento da semana selecionada" }).getByRole("button"),
+    ).toHaveCount(7);
+    const week = page.getByRole("group", { name: "Planejamento da semana selecionada" });
+    await week.getByRole("button").first().click();
+    await expect(page.locator('button[data-date="2026-10-05"]')).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await week.screenshot({ path: info.outputPath(`week-${theme}.png`), animations: "disabled" });
+    await page.locator('button[data-date="2026-10-12"]').click();
+    await expect(history.locator(".agenda-charts")).toHaveCount(0);
+    await expect(history.getByText(/Nenhum caderno, pasta ou Note criado/)).toBeVisible();
+  }
 });
 test("agenda creates, edits, completes, reschedules and persists tasks on desktop and mobile", async ({
   page,

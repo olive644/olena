@@ -41,7 +41,54 @@ describe("agenda dashboard data", () => {
     const data = agendaDashboard(state, { start: "2026-10-01", end: "2026-10-31" }, "notes");
     expect(data.bars.length).toBeLessThanOrEqual(7);
     expect(data.bars.reduce((sum, item) => sum + item.value, 0)).toBe(2);
-    expect(data.pie).toEqual([{ label: "Sem matéria", value: 2 }]);
+    expect(data.pie).toEqual([{ label: "Cadernos", value: 2 }]);
+  });
+  it("does not attribute unchosen focus subjects and counts shelf types without double counting Note pages", () => {
+    const state = createInitialWorkspace();
+    state.focusSessions = [
+      {
+        id: "timer",
+        mode: "timer",
+        subjectId: state.subjects[0]!.id,
+        completedAt: "2026-10-11T12:00:00",
+        durationMinutes: 4,
+      },
+    ];
+    const range = { start: "2026-10-11", end: "2026-10-11" };
+    const focus = agendaDashboard(state, range, "timer");
+    expect(focus.pieTitle).toBe("Por dia");
+    expect(focus.pie).toEqual([{ label: "11/10", value: 4 }]);
+    state.notebooks = [undefined, undefined, "collection", "note"].map((kind, index) => ({
+      id: String(index),
+      title: ["Meu caderno", "Ciências", "Minha pasta", "Minha Note"][index]!,
+      subjectId: "",
+      pageIds: index === 3 ? ["note-page"] : [],
+      createdAt: "2026-10-11T12:00:00",
+      ...(kind ? { kind: kind as "collection" | "note" } : {}),
+    }));
+    state.notes = [
+      {
+        id: "note-page",
+        kind: "note",
+        title: "",
+        content: "",
+        subjectId: "",
+        updatedAt: "2026-10-11T12:00:00",
+        assets: [],
+      },
+    ];
+    const notes = agendaDashboard(state, range, "notes");
+    expect(notes.pie).toEqual([
+      { label: "Cadernos", value: 2 },
+      { label: "Pastas", value: 1 },
+      { label: "Notes", value: 1 },
+    ]);
+    expect(notes.bars[0]?.value).toBe(4);
+    expect(notes.entries.map((entry) => entry.title)).toContain("Meu caderno");
+    expect(notes.unit).toBe("itens");
+    expect(
+      agendaDashboard(state, { start: "2026-10-12", end: "2026-10-12" }, "notes").entries,
+    ).toEqual([]);
   });
   it("filters dated island activity and preserves old workspaces, retries and sync", () => {
     const base = createInitialWorkspace();
