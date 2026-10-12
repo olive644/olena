@@ -93,6 +93,24 @@ class TrainingTests(unittest.TestCase):
             finally:
                 os.chdir(initial)
 
+    def test_preserving_accepted_weights_does_not_replace_their_report(self):
+        initial = Path.cwd()
+        with tempfile.TemporaryDirectory() as directory:
+            try:
+                os.chdir(directory)
+                previous = Path(".olena-learning/previous")
+                previous.mkdir(parents=True)
+                (previous / "adapter_model.safetensors").write_bytes(b"accepted fixture")
+                (previous / "report.json").write_text('{"status":"accepted"}')
+                PROGRAM["retain_previous"](previous)
+                self.assertEqual(Path(".olena-learning/candidate/adapter_model.safetensors").read_bytes(),b"accepted fixture")
+                self.assertEqual(json.loads(Path(".olena-learning/candidate/report.json").read_text())["status"],"accepted")
+                PROGRAM["write_report"]({"status":"rejected"})
+                self.assertEqual(json.loads(Path(".olena-learning/candidate/report.json").read_text())["status"],"accepted")
+                self.assertEqual(json.loads(Path(".olena-learning/training-report.json").read_text())["status"],"rejected")
+            finally:
+                os.chdir(initial)
+
     def test_identical_rejected_attempt_is_not_retrained(self):
         initial = Path.cwd()
         with tempfile.TemporaryDirectory() as directory:

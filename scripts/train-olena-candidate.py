@@ -87,6 +87,13 @@ def verified_previous(path, evaluation_digest):
         return None
 
 
+def retain_previous(previous):
+    if OUTPUT.exists():
+        raise ValueError("Output already exists")
+    shutil.copytree(previous, OUTPUT)
+    outputs(artifact=True)
+
+
 def write_report(report):
     ROOT.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -112,9 +119,7 @@ def main():
               "production_approved": False, "review": "Exact-answer math benchmark only; tutoring quality requires human review"}
     force = os.environ.get("OLENA_FORCE_TRAINING") == "true"
     if previous_report and previous_report.get("dataset_sha256") == data_digest and not force:
-        if OUTPUT.exists():
-            raise ValueError("Output already exists")
-        shutil.copytree(previous, OUTPUT)
+        retain_previous(previous)
         write_report({**previous_report, "status": "retained", "trained_this_run": False})
         outputs(artifact=True)
         print("Verified accepted corpus unchanged. Retaining accepted weights, no retraining.")
@@ -126,6 +131,8 @@ def main():
                 and attempt.get("trainer_version") == TRAINER_VERSION
                 and attempt.get("dataset_sha256") == data_digest and attempt.get("evaluation_sha256") == evaluation_digest
                 and attempt.get("base_revision") == REVISION):
+            if previous_report:
+                retain_previous(previous)
             write_report({**attempt, "status": "unchanged-rejection", "trained_this_run": False})
             print("Same rejected experiment. No repeated training without new data, configuration or explicit retry.")
             return
@@ -207,6 +214,9 @@ def main():
         (OUTPUT / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         (OUTPUT / "README.md").write_text("# Olena Math Qwen Candidate v2\n\nExperimental LoRA adapter for pinned Qwen2.5-0.5B-Instruct (Apache-2.0). Original authored public exercises. Exact-answer benchmark passed; no production or tutoring approval.\n", encoding="utf-8")
         outputs(artifact=True)
+    elif previous_report:
+        retain_previous(previous)
+        report["retained_previous_accepted"] = True
     write_report(report)
     outputs(trained=True, accepted=gate["passed"])
     print(f"Evaluation: baseline={sum(r['correct'] for r in baseline)}/32, candidate={gate['correct']}/32, regressions={len(gate['regressions'])}, accepted={gate['passed']}. Production approval remains false.")
