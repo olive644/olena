@@ -282,9 +282,11 @@ export function PaperDateField({
 export function PaperTimeField({
   value,
   onChange,
+  label = "Horário",
 }: {
   value: string;
   onChange: (value: string) => void;
+  label?: string;
 }) {
   const id = useId(),
     inputId = useId();
@@ -301,7 +303,7 @@ export function PaperTimeField({
   };
   return (
     <div className="field agenda-paper-field">
-      <label htmlFor={inputId}>Horário</label>
+      <label htmlFor={inputId}>{label}</label>
       <div className="agenda-field-input">
         <input
           ref={input}
@@ -322,7 +324,7 @@ export function PaperTimeField({
         <button
           type="button"
           className="agenda-field-icon"
-          aria-label="Escolher horário"
+          aria-label={`Escolher ${label.toLocaleLowerCase("pt-BR")}`}
           aria-haspopup="dialog"
           aria-expanded={open}
           popoverTarget={id}
@@ -335,7 +337,7 @@ export function PaperTimeField({
         ref={panel}
         popover="auto"
         role="dialog"
-        aria-label="Escolher horário"
+        aria-label={`Escolher ${label.toLocaleLowerCase("pt-BR")}`}
         className="agenda-field-popover agenda-time-popover"
         onToggle={(event) => {
           const visible = event.currentTarget.matches(":popover-open");

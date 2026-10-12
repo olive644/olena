@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent } from "react";
 import { PageHeader, type AppView } from "../components/app-navigation";
+import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { AgendaActionIcon } from "../components/agenda-action-icon";
 import { PaperArrow } from "../components/paper-arrow";
@@ -7,6 +8,30 @@ import { PaperCheckIcon } from "../components/paper-check-icon";
 import { AgendaCloseIcon } from "../components/agenda-close-icon";
 import { AgendaMonthPicker } from "../components/agenda-month-picker";
 import { AgendaStudyHistory } from "../components/agenda-study-history";
+import {
+  AgendaEventDetails,
+  initialEventDetails,
+  type EventDetailsDraft,
+} from "../components/agenda-event-details";
+import { AgendaCalendarViews, type CalendarView } from "../components/agenda-calendar-views";
+import {
+  addDays,
+  changeSeries,
+  displayEventsOn,
+  eventEnd,
+  eventInstant,
+  eventSpan,
+  frequency,
+  matchesCalendarFilter,
+  occurrenceOn,
+  occurrenceDuration,
+  recurrenceLabels,
+  safeWebLink,
+  validateCalendarEvent,
+  validDate,
+  zonedDateTime,
+} from "../domain/agenda-calendar";
+import { exportAgenda, importAgenda } from "../domain/agenda-ics";
 import { PaperDigits } from "../components/paper-digits";
 import { PaperChoice, PaperDateField, PaperTimeField } from "../components/agenda-paper-fields";
 import { agendaSubjects } from "../domain/agenda-subjects";
@@ -22,9 +47,10 @@ import {
   type WorkspaceState,
 } from "../domain/workspace";
 import "./planner-view.css";
+import "./agenda-calendar.css";
 
 type Kind = "task" | "appointment" | "study" | "subject" | "goal";
-type Draft = {
+type Draft = EventDetailsDraft & {
   kind: Kind;
   id?: string;
   title: string;
@@ -32,13 +58,14 @@ type Draft = {
   time: string;
   subjectId: string;
   minutes: number;
-  recurrence: "none" | "weekly";
+  recurrence: NonNullable<StudyEvent["recurrenceFrequency"]>;
   until: string;
 };
 type Props = {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
   onNavigate?: (view: AppView) => void;
+  cloud?: CloudSyncState;
 };
 const labels: Record<Kind, string> = {
   task: "Tarefa",
@@ -62,7 +89,7 @@ function dayLabel(date: string, long = false) {
   );
 }
 
-export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
+export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
   const [now, setNow] = useState(() => new Date());
   const today = toDateKey(now);
   const [selected, setSelected] = useState(today);
@@ -80,6 +107,14 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [notice, setNotice] = useState("");
   const [dayOpen, setDayOpen] = useState(false);
+  const [calendarView, setCalendarView] = useState<CalendarView>("month");
+  const [query, setQuery] = useState("");
+  const [subjectFilter, setSubjectFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [notificationStatus, setNotificationStatus] = useState("");
+  const [formError, setFormError] = useState("");
+  const [formBusy, setFormBusy] = useState(false);
+  const [deleteRequested, setDeleteRequested] = useState(false);
   const daySheet = useRef<HTMLElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const formTrigger = useRef<HTMLElement | null>(null);
@@ -111,8 +146,17 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     ? month
     : month.slice(0, 35);
   const pending = overdueTasks(workspace, today);
-  const scheduled = eventsOn(workspace, selected);
-  const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
+  const visibleEvents = workspace.events.filter((event) =>
+    matchesCalendarFilter(event, query, subjectFilter, typeFilter),
+  );
+  const visibleTasks = workspace.tasks.filter(
+    (task) =>
+      (!subjectFilter || task.subjectId === subjectFilter) &&
+      (!typeFilter || typeFilter === "task") &&
+      task.title.toLocaleLowerCase("pt-BR").includes(query.toLocaleLowerCase("pt-BR")),
+  );
+  const scheduled = eventsOn({ ...workspace, events: visibleEvents }, selected);
+  const tasks = visibleTasks.filter((task) => task.dueDate === selected);
   const subjects = agendaSubjects(workspace);
   const selectedSubject = workspace.subjects.find((subject) => subject.id === draft?.subjectId);
   const subjectOptions =
@@ -155,26 +199,38 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     } else setRange(null);
     setSelected(date);
   }
-  function create(kind: Kind = "task") {
+  function create(kind: Kind = "task", date = selected, time = "18:00") {
     formTrigger.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft({
+      ...initialEventDetails(date),
       kind,
       title: "",
-      date: selected,
-      time: "18:00",
+      date,
+      time,
+      ...(() => {
+        const end = eventEnd({ id: "", title: "", subjectId: "", date, time, durationMinutes: 25 });
+        return { endDate: end.date, endTime: end.time };
+      })(),
       subjectId: subjects[0]?.value ?? "",
       minutes: kind === "goal" ? 300 : 25,
       recurrence: "none",
       until: "",
     });
+    setFormError("");
+    setDeleteRequested(false);
   }
-  function edit(item: StudyEvent | StudyTask) {
+  function edit(
+    item: StudyEvent | StudyTask,
+    occurrence = "dueDate" in item ? item.dueDate : item.date,
+  ) {
+    if (!("dueDate" in item)) item = workspace.events.find((event) => event.id === item.id) ?? item;
     formTrigger.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft(
       "dueDate" in item
         ? {
+            ...initialEventDetails(item.dueDate),
             kind: "task",
             id: item.id,
             title: item.title,
@@ -186,17 +242,21 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             until: "",
           }
         : {
+            ...initialEventDetails(item.date, item),
+            occurrence,
             kind: item.kind ?? "appointment",
             id: item.id,
             title: item.title,
             date: item.date,
             time: item.time,
             subjectId: item.subjectId,
-            minutes: item.durationMinutes ?? 25,
-            recurrence: item.recurrence ?? "none",
+            minutes: occurrenceDuration(item),
+            recurrence: frequency(item),
             until: item.recurrenceUntil ?? "",
           },
     );
+    setFormError("");
+    setDeleteRequested(false);
   }
   function save(event: FormEvent) {
     event.preventDefault();
@@ -231,31 +291,97 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           : { type: "task/added", ...changes },
       );
     } else {
-      const changes = {
+      const changes: StudyEvent = {
+        id: draft.id ?? crypto.randomUUID(),
         title,
         subjectId: draft.subjectId,
         date: draft.date,
         time: draft.time,
         kind: draft.kind,
         durationMinutes: draft.minutes,
-        recurrence: draft.recurrence,
-        recurrenceUntil: draft.until,
+        recurrence: draft.recurrence === "weekly" ? "weekly" : "none",
+        recurrenceFrequency: draft.recurrence,
+        recurrenceUntil: draft.recurrence === "none" ? "" : draft.until,
+        recurrenceInterval: draft.interval,
+        recurrenceDays: draft.weekdays,
+        endDate: draft.endDate,
+        endTime: draft.endTime,
+        allDay: draft.allDay,
+        timeZone: draft.timeZone,
+        description: draft.description,
+        location: draft.location,
+        links: draft.links
+          .split(/\r?\n/)
+          .map((link) => link.trim())
+          .filter(Boolean),
+        guests: draft.guests
+          .split(",")
+          .map((email) => email.trim())
+          .filter(Boolean),
+        reminders: draft.reminders,
+        attachments: draft.attachments,
       };
-      dispatch(
-        draft.id
-          ? { type: "event/updated", id: draft.id, changes }
-          : { type: "event/added", ...changes },
-      );
+      const error = validateCalendarEvent(changes);
+      if (error) {
+        setFormError(error);
+        return;
+      }
+      const end = eventEnd(changes);
+      changes.durationMinutes = draft.allDay
+        ? (Math.round(
+            (Date.parse(`${draft.endDate}T00:00:00Z`) - Date.parse(`${draft.date}T00:00:00Z`)) /
+              86400000,
+          ) +
+            1) *
+          1440
+        : Math.round(
+            (eventInstant(end.date, end.time, draft.timeZone) -
+              eventInstant(draft.date, draft.time, draft.timeZone)) /
+              60000,
+          );
+      if (draft.kind === "study" && changes.durationMinutes > 180) {
+        setFormError(
+          "Reserve estudos em sessões de até 180 minutos. Para períodos maiores, use um compromisso.",
+        );
+        return;
+      }
+      // Keep the v7 carrier readable by old clients; end fields retain the complete schedule.
+      changes.calendarDurationMinutes = changes.durationMinutes;
+      changes.durationMinutes = Math.min(180, changes.durationMinutes);
+      const original = workspace.events.find((item) => item.id === draft.id);
+      dispatch({
+        type: "event/series-changed",
+        ...(original
+          ? changeSeries(original, draft.occurrence, draft.scope, changes)
+          : { removeIds: [], events: [changes] }),
+      });
     }
     setNotice(draft.id ? "Alteração salva." : "Adicionado à sua agenda.");
     if (draft.kind === "task" || draft.kind === "study" || draft.kind === "appointment") {
-      setSelected(draft.date);
+      const localDate =
+        draft.kind === "task" || draft.allDay
+          ? draft.date
+          : zonedDateTime(
+              eventInstant(draft.date, draft.time, draft.timeZone),
+              Intl.DateTimeFormat().resolvedOptions().timeZone,
+            ).date;
+      const original = workspace.events.find((item) => item.id === draft.id);
+      setSelected(
+        original && draft.scope === "all" && original.date === draft.date ? selected : localDate,
+      );
       setRange(null);
       setDayOpen(true);
     }
     setDraft(null);
   }
   function startStudy(event: StudyEvent, date: string, timestamp: number) {
+    const plannedMinutes = occurrenceDuration(event, date);
+    if (plannedMinutes > 180) {
+      setNotice(
+        "Este estudo passa de 180 minutos. Divida a reserva em sessões menores antes de iniciar o Foco.",
+      );
+      return;
+    }
     const active = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), timestamp);
     if (
       active?.running ||
@@ -281,7 +407,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       agendaEventId: event.id,
       agendaDate: date,
       subjectId: event.subjectId,
-      plannedMinutes: event.durationMinutes ?? 25,
+      plannedMinutes,
     };
     try {
       localStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
@@ -324,7 +450,15 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     );
   }
   function eventCard(event: StudyEvent, date = selected) {
-    const complete = event.completedDates?.includes(date) ?? false;
+    const original = workspace.events.find((item) => item.id === event.id) ?? event;
+    const displays = displayEventsOn([original], date);
+    const displayed =
+      "displayOccurrence" in event
+        ? displays.find((item) => item.displayOccurrence === event.displayOccurrence)
+        : displays[0];
+    const occurrence = displayed?.displayOccurrence ?? occurrenceOn(original, date) ?? date;
+    const plannedMinutes = occurrenceDuration(original, occurrence);
+    const complete = event.completedDates?.includes(occurrence) ?? false;
     const recorded = workspace.focusSessions
       .filter(
         (session) =>
@@ -334,30 +468,100 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       )
       .reduce((sum, session) => sum + session.durationMinutes, 0);
     const minutesAway = Math.round(
-      (new Date(`${date}T${event.time}`).getTime() - now.getTime()) / 60_000,
+      (eventInstant(occurrence, original.allDay ? "09:00" : original.time, original.timeZone) -
+        now.getTime()) /
+        60_000,
     );
-    const reminder = date === today && !complete && minutesAway >= 0 && minutesAway <= 15;
+    const reminder =
+      !event.allDay && date === today && !complete && minutesAway >= 0 && minutesAway <= 15;
     return (
       <article
         className={`agenda-item agenda-item--timed${event.kind === "study" ? " agenda-item--study" : ""}${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
         key={`${event.id}:${date}`}
       >
         <time>
-          <PaperDigits value={event.time} />
+          {event.allDay ? "Dia inteiro" : <PaperDigits value={displayed?.time ?? event.time} />}
         </time>
         <div className="agenda-item-copy">
           <strong>{event.title}</strong>
           <small>
             {subjectName(event.subjectId)} ·{" "}
             <PaperCalendarText
-              value={
-                event.kind === "study"
-                  ? `${event.durationMinutes ?? 25} min de estudo`
-                  : "Compromisso"
-              }
+              value={event.kind === "study" ? `${plannedMinutes} min de estudo` : "Compromisso"}
             />
-            {event.recurrence === "weekly" ? " · Semanal" : ""}
+            {frequency(original) !== "none" ? ` · ${recurrenceLabels[frequency(original)]}` : ""}
           </small>
+          {original.timeZone && (
+            <small>Hora local · evento em {original.timeZone.replace(/_/g, " ")}</small>
+          )}
+          {displayed?.endDate && (
+            <small>
+              {event.allDay ? "Até" : "Termina"}{" "}
+              {displayed.endDate === date ? "" : dayLabel(displayed.endDate)}{" "}
+              {!event.allDay && displayed.endTime}
+            </small>
+          )}
+          {event.id && (
+            <details className="agenda-event-info">
+              <summary>Detalhes</summary>
+              {event.description && <p>{event.description}</p>}
+              {event.location && <p>Local: {event.location}</p>}
+              {event.links?.filter(safeWebLink).map((link) => (
+                <a key={link} href={link} target="_blank" rel="noopener noreferrer">
+                  {link}
+                </a>
+              ))}
+              {event.guests?.length ? <p>Participantes: {event.guests.join(", ")}</p> : null}
+              {event.attachments?.map((asset) => (
+                <button
+                  key={asset.id}
+                  type="button"
+                  className="text-button"
+                  onClick={() => {
+                    const anchor = document.createElement("a");
+                    anchor.href = asset.data;
+                    anchor.download = asset.name;
+                    anchor.click();
+                  }}
+                >
+                  {asset.name}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={async () => {
+                  const file = new File([exportAgenda([original])], "evento-olenastudy.ics", {
+                    type: "text/calendar",
+                  });
+                  try {
+                    if (navigator.canShare?.({ files: [file] })) {
+                      await navigator.share({ files: [file], title: original.title });
+                      return;
+                    }
+                  } catch {
+                    setNotice("Compartilhamento cancelado ou indisponível.");
+                    return;
+                  }
+                  const url = URL.createObjectURL(file);
+                  const anchor = document.createElement("a");
+                  anchor.href = url;
+                  anchor.download = file.name;
+                  anchor.click();
+                  setTimeout(() => URL.revokeObjectURL(url), 1000);
+                  setNotice(
+                    "Arquivo do evento preparado para compartilhar. Anexos não foram incluídos.",
+                  );
+                }}
+              >
+                Compartilhar .ics <PaperArrow />
+              </button>
+              <small>
+                O arquivo inclui os detalhes e participantes desta série, mas não seus anexos nem o
+                histórico de estudo.
+              </small>
+            </details>
+          )}
           {reminder && (
             <span className="agenda-reminder">
               <PaperCalendarText
@@ -369,7 +573,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           {event.kind === "study" && recorded > 0 && (
             <small>
               <PaperDigits value={String(recorded)} />/
-              <PaperDigits value={String(event.durationMinutes ?? 25)} /> min registrados
+              <PaperDigits value={String(plannedMinutes)} /> min registrados
             </small>
           )}
         </div>
@@ -379,7 +583,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               type="button"
               className="primary-button"
               aria-label={`Começar estudo ${event.title}`}
-              onClick={() => startStudy(event, date, Date.now())}
+              onClick={() => startStudy(event, occurrence, Date.now())}
             >
               Começar <PaperArrow />
             </button>
@@ -389,7 +593,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             className="primary-button agenda-edit"
             aria-label={`Editar ${event.title}`}
             title={`Editar ${event.title}`}
-            onClick={() => edit(event)}
+            onClick={() => edit(event, occurrence)}
           >
             <AgendaActionIcon name="edit" />
           </button>
@@ -399,7 +603,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               className="agenda-check"
               aria-label={`${complete ? "Reabrir" : "Concluir"} ${event.title}`}
               aria-pressed={complete}
-              onClick={() => dispatch({ type: "event/toggled", id: event.id, date })}
+              onClick={() => dispatch({ type: "event/toggled", id: event.id, date: occurrence })}
             >
               <PaperCheckIcon />
             </button>
@@ -444,10 +648,16 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           <AgendaActionIcon name="appointment" /> Criar compromisso
         </button>
       </div>
-      {scheduled.length > 0 && (
+      {scheduled.some((event) => event.allDay) && (
+        <>
+          <h3 className="agenda-section-title">Dia inteiro</h3>
+          {scheduled.filter((event) => event.allDay).map((event) => eventCard(event))}
+        </>
+      )}
+      {scheduled.some((event) => !event.allDay) && (
         <>
           <h3 className="agenda-section-title">Com horário</h3>
-          {scheduled.map((event) => eventCard(event))}
+          {scheduled.filter((event) => !event.allDay).map((event) => eventCard(event))}
         </>
       )}
       {tasks.length > 0 && (
@@ -467,13 +677,228 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       <p className="agenda-notice" role="status">
         {notice}
       </p>
+      <section className="agenda-toolbar module-panel" aria-label="Controles da agenda">
+        <div className="agenda-sync-caption" aria-live="polite">
+          <small>
+            {!cloud?.enabled || cloud.status === "signed-out"
+              ? "Agenda local neste dispositivo"
+              : (
+                  {
+                    disabled: "Agenda local",
+                    "signed-out": "Agenda local",
+                    loading: "Carregando agenda da conta",
+                    syncing: "Sincronizando alterações",
+                    synced: "Agenda sincronizada com sua conta",
+                    offline: "Offline. Alterações locais aguardam conexão",
+                    conflict: "Alterações simultâneas. Revise a sincronização no Perfil",
+                  } as const
+                )[cloud.status]}
+          </small>
+          {cloud?.status === "conflict" && onNavigate && (
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => onNavigate("profile")}
+            >
+              Revisar sincronização
+            </button>
+          )}
+          {cloud?.syncNow && cloud.status !== "loading" && (
+            <button
+              type="button"
+              className="text-button"
+              disabled={cloud.status === "syncing"}
+              onClick={cloud.syncNow}
+            >
+              Sincronizar agora
+            </button>
+          )}
+        </div>
+        <div className="agenda-view-buttons" role="group" aria-label="Visualização">
+          {(
+            [
+              ["day", "Dia"],
+              ["week", "Semana"],
+              ["month", "Mês"],
+              ["list", "Lista"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              type="button"
+              key={value}
+              className={calendarView === value ? "primary-button" : "secondary-button"}
+              aria-pressed={calendarView === value}
+              onClick={() => setCalendarView(value)}
+            >
+              {label}
+            </button>
+          ))}
+          <button
+            type="button"
+            className="secondary-button"
+            aria-label="Período anterior"
+            onClick={() =>
+              resetDate(
+                calendarView === "month"
+                  ? `${new Date(dateForKey(selected).getFullYear(), dateForKey(selected).getMonth() - 1, 1).getFullYear()}-${String(new Date(dateForKey(selected).getFullYear(), dateForKey(selected).getMonth() - 1, 1).getMonth() + 1).padStart(2, "0")}-01`
+                  : shiftDate(selected, calendarView === "week" ? -7 : -1),
+              )
+            }
+          >
+            <span className="agenda-arrow-back">
+              <PaperArrow />
+            </span>
+          </button>
+          <button
+            type="button"
+            className="secondary-button"
+            aria-label="Próximo período"
+            onClick={() =>
+              resetDate(
+                calendarView === "month"
+                  ? toDateKey(
+                      new Date(
+                        dateForKey(selected).getFullYear(),
+                        dateForKey(selected).getMonth() + 1,
+                        1,
+                      ),
+                    )
+                  : shiftDate(selected, calendarView === "week" ? 7 : 1),
+              )
+            }
+          >
+            <PaperArrow />
+          </button>
+        </div>
+        <div className="agenda-filter-fields">
+          <label className="field">
+            Buscar na agenda
+            <input
+              type="search"
+              value={query}
+              maxLength={120}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Título, descrição ou local"
+            />
+          </label>
+          <PaperChoice
+            label="Filtrar matéria"
+            value={subjectFilter}
+            onChange={setSubjectFilter}
+            options={[{ value: "", label: "Todas as matérias" }, ...subjects]}
+          />
+          <PaperChoice
+            label="Filtrar tipo"
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={[
+              { value: "", label: "Todos os tipos" },
+              { value: "appointment", label: "Compromissos" },
+              { value: "study", label: "Estudos" },
+              { value: "task", label: "Tarefas" },
+            ]}
+          />
+        </div>
+        <div className="agenda-calendar-tools">
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => {
+              const blob = new Blob([exportAgenda(visibleEvents)], {
+                type: "text/calendar;charset=utf-8",
+              });
+              const url = URL.createObjectURL(blob);
+              const anchor = document.createElement("a");
+              anchor.href = url;
+              anchor.download = "olenastudy-agenda.ics";
+              anchor.click();
+              setTimeout(() => URL.revokeObjectURL(url), 1000);
+              setNotice("Eventos filtrados exportados. Anexos e histórico não foram incluídos.");
+            }}
+          >
+            Exportar .ics
+          </button>
+          <label className="secondary-button agenda-import-label">
+            Importar .ics
+            <input
+              type="file"
+              accept=".ics,text/calendar"
+              onChange={async (event) => {
+                const file = event.target.files?.[0];
+                event.target.value = "";
+                if (!file) return;
+                if (file.size > 2000000) {
+                  setNotice("Escolha um arquivo .ics de até 2 MB.");
+                  return;
+                }
+                try {
+                  const imported = importAgenda(
+                    await file.text(),
+                    subjectFilter || subjects[0]!.value,
+                  );
+                  const ids = new Set(workspace.events.map((item) => item.id));
+                  const events = imported.events.filter((item) => {
+                    if (ids.has(item.id)) return false;
+                    ids.add(item.id);
+                    return true;
+                  });
+                  const subject = subjects.find(
+                    (item) => item.value === (subjectFilter || subjects[0]!.value),
+                  );
+                  if (subject && !workspace.subjects.some((item) => item.id === subject.value))
+                    dispatch({
+                      type: "subject/added",
+                      id: subject.value,
+                      name: subject.label,
+                      color: "#7c3aed",
+                    });
+                  dispatch({ type: "event/series-changed", removeIds: [], events });
+                  setNotice(
+                    `${events.length} eventos importados; ${imported.skipped} incompatíveis ignorados; ${imported.events.length - events.length} já existentes. Nenhum evento anterior foi alterado.`,
+                  );
+                } catch (error) {
+                  setNotice(error instanceof Error ? error.message : "Não foi possível importar.");
+                }
+              }}
+            />
+          </label>
+          <button type="button" className="secondary-button" onClick={() => window.print()}>
+            Imprimir
+          </button>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={async () => {
+              if (typeof Notification === "undefined") {
+                setNotificationStatus(
+                  "Este navegador não oferece notificações do sistema. Os alertas internos continuam disponíveis.",
+                );
+                return;
+              }
+              try {
+                const permission = await Notification.requestPermission();
+                setNotificationStatus(
+                  permission === "granted"
+                    ? "Notificações permitidas enquanto o aplicativo estiver aberto."
+                    : "Notificações não permitidas. Os alertas internos continuam disponíveis.",
+                );
+              } catch {
+                setNotificationStatus("Não foi possível habilitar notificações neste navegador.");
+              }
+            }}
+          >
+            Ativar lembretes
+          </button>
+        </div>
+        {notificationStatus && <p role="status">{notificationStatus}</p>}
+      </section>
       <div className="agenda-overview">
         <div className="agenda-calendar-column">
           {
             <section
               id="agenda-calendar"
               className="agenda-month module-panel"
-              aria-label="Calendário mensal"
+              aria-label={calendarView === "month" ? "Calendário mensal" : "Calendário"}
             >
               <div className="agenda-calendar-controls">
                 <AgendaMonthPicker value={selected} today={today} onChange={resetDate} />
@@ -481,7 +906,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                   Ir para hoje
                 </button>
               </div>
-              <div className="agenda-range-tools">
+              <div className="agenda-range-tools" hidden={calendarView !== "month"}>
                 <button
                   type="button"
                   className={intervalMode ? "primary-button" : "secondary-button"}
@@ -513,13 +938,14 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 )}
                 <small id="agenda-range-hint">Arraste pelos dias ou escolha início e fim.</small>
               </div>
-              <div className="agenda-weekdays">
+              <div className="agenda-weekdays" hidden={calendarView !== "month"}>
                 {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((name) => (
                   <span key={name}>{name}</span>
                 ))}
               </div>
               <div
                 className="agenda-month-grid"
+                hidden={calendarView !== "month"}
                 aria-describedby="agenda-range-hint"
                 onPointerDown={(event) => {
                   if (!drag.current) suppressClick.current = false;
@@ -599,10 +1025,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 }}
               >
                 {dates.map((date) => {
+                  const dayEvents = eventsOn({ events: visibleEvents }, date);
                   const count =
-                    eventsOn(workspace, date).length +
-                    workspace.tasks.filter((task) => task.dueDate === date && !task.completed)
-                      .length;
+                    dayEvents.length +
+                    visibleTasks.filter((task) => task.dueDate === date && !task.completed).length;
                   const minutes = history.get(date)?.minutes ?? 0;
                   const holiday = brazilianHoliday(date);
                   const inRange = range && date >= range.start && date <= range.end;
@@ -613,7 +1039,9 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                       data-date={date}
                       className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected " : ""}${inRange ? "is-in-range " : ""}${minutes > 0 ? "has-study " : ""}${history.has(shiftDate(date, -1)) ? "study-continues-left " : ""}${history.has(shiftDate(date, 1)) ? "study-continues-right" : ""}`}
                       aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}${holiday ? `, feriado nacional: ${holiday}` : ""}`}
-                      title={holiday}
+                      title={[holiday, ...dayEvents.map((item) => item.title)]
+                        .filter(Boolean)
+                        .join("\n")}
                       aria-pressed={date === selected}
                       aria-current={date === today ? "date" : undefined}
                       onClick={(event) => {
@@ -640,11 +1068,91 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                           </span>
                         </small>
                       )}
+                      {dayEvents.slice(0, 2).map((item) => (
+                        <small className="agenda-month-event-title" key={item.id}>
+                          <i
+                            style={{ background: item.kind === "study" ? "#7c3aed" : "#facc15" }}
+                          />
+                          {item.title}
+                        </small>
+                      ))}
+                      {count > 2 && (
+                        <small className="agenda-month-more">+{count - 2} outros</small>
+                      )}
                     </button>
                   );
                 })}
               </div>
-              <small className="agenda-holiday-legend">◆ Feriado nacional brasileiro</small>
+              <small className="agenda-holiday-legend" hidden={calendarView !== "month"}>
+                ◆ Feriado nacional brasileiro
+              </small>
+              {calendarView !== "month" && (
+                <AgendaCalendarViews
+                  view={calendarView}
+                  selected={selected}
+                  events={visibleEvents}
+                  tasks={visibleTasks}
+                  onSelect={(date) => {
+                    chooseDate(date);
+                    setDayOpen(true);
+                  }}
+                  onCreate={(date, time) => create("appointment", date, time)}
+                  onEdit={edit}
+                  renderEvent={eventCard}
+                  renderTask={taskCard}
+                  onMove={(event, from, to, time) => {
+                    const original = workspace.events.find((item) => item.id === event.id) ?? event;
+                    edit(original, from);
+                    const moved = zonedDateTime(
+                      eventInstant(to, time),
+                      original.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    );
+                    const end = eventEnd({
+                      ...original,
+                      date: moved.date,
+                      time: moved.time,
+                      endDate: "",
+                      endTime: "",
+                    });
+                    setDraft((current) =>
+                      current
+                        ? {
+                            ...current,
+                            date: moved.date,
+                            time: moved.time,
+                            endDate: end.date,
+                            endTime: end.time,
+                            scope: frequency(original) === "none" ? "all" : "this",
+                          }
+                        : null,
+                    );
+                  }}
+                  onResize={(event, date, minutes) => {
+                    const original = workspace.events.find((item) => item.id === event.id) ?? event;
+                    edit(original, date);
+                    const end = eventEnd({
+                      ...original,
+                      date,
+                      durationMinutes: minutes,
+                      calendarDurationMinutes: minutes,
+                      endDate: "",
+                      endTime: "",
+                    });
+                    setDraft((current) =>
+                      current
+                        ? {
+                            ...current,
+                            date,
+                            minutes,
+                            endDate: end.date,
+                            endTime: end.time,
+                            scope: frequency(original) === "none" ? "all" : "this",
+                          }
+                        : null,
+                    );
+                  }}
+                />
+              )}
             </section>
           }
           {dayPanel}
@@ -692,7 +1200,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
         ref={dialog}
         className="agenda-dialog"
         aria-labelledby="agenda-dialog-title"
-        onCancel={() => setDraft(null)}
+        onCancel={(event) => {
+          if (formBusy) event.preventDefault();
+          else setDraft(null);
+        }}
       >
         {draft && (
           <>
@@ -702,6 +1213,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 type="button"
                 className="icon-button"
                 aria-label="Fechar formulário"
+                disabled={formBusy}
                 onClick={() => setDraft(null)}
               >
                 <AgendaCloseIcon />
@@ -742,16 +1254,42 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                     <PaperDateField
                       label={draft.kind === "task" || draft.kind === "goal" ? "Prazo" : "Data"}
                       value={draft.date}
-                      onChange={(value) => setDraft({ ...draft, date: value })}
+                      onChange={(value) =>
+                        setDraft({
+                          ...draft,
+                          date: value,
+                          endDate:
+                            validDate(value) && validDate(draft.date) && validDate(draft.endDate)
+                              ? shiftDate(
+                                  draft.endDate,
+                                  Math.round(
+                                    (Date.parse(`${value}T00:00:00Z`) -
+                                      Date.parse(`${draft.date}T00:00:00Z`)) /
+                                      86400000,
+                                  ),
+                                )
+                              : value,
+                        })
+                      }
                     />
-                    {(draft.kind === "study" || draft.kind === "appointment") && (
+                    {(draft.kind === "study" || draft.kind === "appointment") && !draft.allDay && (
                       <PaperTimeField
                         value={draft.time}
-                        onChange={(value) => setDraft({ ...draft, time: value })}
+                        onChange={(value) => {
+                          const end = eventEnd({
+                            id: "",
+                            title: "",
+                            subjectId: "",
+                            date: draft.date,
+                            time: value,
+                            durationMinutes: draft.minutes,
+                          });
+                          setDraft({ ...draft, time: value, endDate: end.date, endTime: end.time });
+                        }}
                       />
                     )}
                   </div>
-                  {draft.kind !== "task" && (
+                  {draft.kind !== "task" && !draft.allDay && (
                     <label className="field">
                       <span>
                         {draft.kind === "goal" ? "Meta em minutos" : "Duração em minutos"}
@@ -759,12 +1297,27 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                       <input
                         type="number"
                         min="1"
-                        max={draft.kind === "goal" ? "10000" : "180"}
+                        max={
+                          draft.kind === "goal"
+                            ? "10000"
+                            : draft.kind === "study"
+                              ? "180"
+                              : "527040"
+                        }
                         required
                         value={draft.minutes}
-                        onChange={(event) =>
-                          setDraft({ ...draft, minutes: Number(event.target.value) })
-                        }
+                        onChange={(event) => {
+                          const minutes = Number(event.target.value);
+                          const end = eventEnd({
+                            id: "",
+                            title: "",
+                            subjectId: "",
+                            date: draft.date,
+                            time: draft.time,
+                            durationMinutes: minutes,
+                          });
+                          setDraft({ ...draft, minutes, endDate: end.date, endTime: end.time });
+                        }}
                       />
                     </label>
                   )}
@@ -788,7 +1341,35 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                           ))}
                         </div>
                       </div>
-                      {draft.recurrence === "weekly" && (
+                      <PaperChoice
+                        label="Frequência"
+                        value={draft.recurrence}
+                        options={Object.entries(recurrenceLabels).map(([value, label]) => ({
+                          value,
+                          label,
+                        }))}
+                        onChange={(value) =>
+                          setDraft({ ...draft, recurrence: value as Draft["recurrence"] })
+                        }
+                      />
+                      <AgendaEventDetails
+                        allowAllDay={draft.kind === "appointment"}
+                        value={draft}
+                        date={draft.date}
+                        repeating={draft.recurrence}
+                        onChange={(value) =>
+                          setDraft((current) => (current ? { ...current, ...value } : null))
+                        }
+                        onBusy={setFormBusy}
+                        onAttachment={(asset) =>
+                          setDraft((current) =>
+                            current
+                              ? { ...current, attachments: [...current.attachments, asset] }
+                              : null,
+                          )
+                        }
+                      />
+                      {draft.recurrence !== "none" && (
                         <PaperDateField
                           label="Repetir até (opcional)"
                           optional
@@ -797,41 +1378,84 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                           onChange={(value) => setDraft({ ...draft, until: value })}
                         />
                       )}
-                      {draft.id && draft.recurrence === "weekly" && (
-                        <p>
-                          Alterações valem para a rotina inteira. Os estudos já registrados
-                          permanecem no histórico.
-                        </p>
-                      )}
+                      {draft.id &&
+                        frequency(workspace.events.find((item) => item.id === draft.id)!) !==
+                          "none" && (
+                          <PaperChoice
+                            label="Aplicar alteração ou exclusão"
+                            value={draft.scope}
+                            options={[
+                              { value: "all", label: "Toda a série" },
+                              { value: "this", label: "Só este evento" },
+                              { value: "following", label: "Este e os próximos" },
+                            ]}
+                            onChange={(value) => {
+                              const original = workspace.events.find(
+                                (item) => item.id === draft.id,
+                              )!;
+                              const date = value === "all" ? original.date : draft.occurrence;
+                              setDraft({
+                                ...draft,
+                                scope: value as Draft["scope"],
+                                date,
+                                endDate: addDays(date, eventSpan(original)),
+                              });
+                            }}
+                          />
+                        )}
                     </>
                   )}
                 </>
               )}
               <footer>
+                {formError && <p role="alert">{formError}</p>}
+                {deleteRequested && (
+                  <div className="agenda-delete-confirm" role="alert">
+                    <p>
+                      Excluir {draft.title}?{" "}
+                      {draft.scope === "this"
+                        ? "Só esta ocorrência."
+                        : draft.scope === "following"
+                          ? "Esta ocorrência e as próximas."
+                          : "Toda a série."}{" "}
+                      O histórico de estudo será preservado.
+                    </p>
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => setDeleteRequested(false)}
+                    >
+                      Cancelar exclusão
+                    </button>
+                  </div>
+                )}
                 {draft.id && (
                   <button
                     type="button"
                     className="text-button"
+                    disabled={formBusy}
                     onClick={() => {
-                      if (
-                        !window.confirm(
-                          `Excluir ${draft.title}${draft.recurrence === "weekly" ? " e suas próximas repetições" : ""}?`,
-                        )
-                      )
+                      if (!deleteRequested) {
+                        setDeleteRequested(true);
                         return;
-                      dispatch(
-                        draft.kind === "task"
-                          ? { type: "task/removed", id: draft.id! }
-                          : { type: "event/removed", id: draft.id! },
-                      );
+                      }
+                      if (draft.kind === "task") dispatch({ type: "task/removed", id: draft.id! });
+                      else {
+                        const original = workspace.events.find((item) => item.id === draft.id);
+                        if (original)
+                          dispatch({
+                            type: "event/series-changed",
+                            ...changeSeries(original, draft.occurrence, draft.scope, null),
+                          });
+                      }
                       setDraft(null);
                       setNotice("Item removido da agenda. O histórico de foco foi preservado.");
                     }}
                   >
-                    Excluir
+                    {deleteRequested ? "Confirmar exclusão" : "Excluir"}
                   </button>
                 )}
-                <button className="primary-button" type="submit">
+                <button className="primary-button" type="submit" disabled={formBusy}>
                   {draft.id ? "Salvar alterações" : "Adicionar"} <PaperArrow />
                 </button>
               </footer>

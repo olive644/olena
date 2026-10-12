@@ -11,7 +11,7 @@ import { PageHeader } from "../components/app-navigation";
 import { NavigationIcon } from "../components/navigation-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { buildStudyRoute } from "../domain/study-route";
-import { eventsOn } from "../domain/agenda";
+import { displayEventsOn } from "../domain/agenda-calendar";
 
 type TodayViewProps = {
   workspace: WorkspaceState;
@@ -31,7 +31,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   const now = new Date();
   const today = toDateKey(now);
   const pendingTasks = workspace.tasks.filter((task) => !task.completed);
-  const todayEvents = eventsOn(workspace, today);
+  const todayEvents = displayEventsOn(workspace.events, today);
   const completedHabits = workspace.habits.filter((habit) =>
     habit.completedDates.includes(today),
   ).length;
@@ -164,8 +164,8 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           ) : (
             <ul className="schedule-list">
               {todayEvents.map((event) => (
-                <li key={event.id}>
-                  <time>{event.time}</time>
+                <li key={`${event.id}:${event.displayOccurrence}`}>
+                  <time>{event.allDay ? "Dia inteiro" : event.time}</time>
                   <div>
                     <strong>{event.title}</strong>
                     <small>{subjectName(event.subjectId)}</small>
