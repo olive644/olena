@@ -33,6 +33,49 @@ test.beforeEach(async ({ page }) => {
   }, workspace);
   await page.goto("/planejador");
 });
+
+test("agenda toolbar uses accessible cream paper icons without duplicate arrows", async ({
+  page,
+}, info) => {
+  const toolbar = page.getByRole("region", { name: "Controles da agenda" });
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    for (const name of [
+      "Dia",
+      "Semana",
+      "Mês",
+      "Lista",
+      "Exportar .ics",
+      "Imprimir",
+      "Ativar lembretes",
+    ]) {
+      const button = toolbar.getByRole("button", { name, exact: true });
+      await expect(button).toHaveText("");
+      await expect(button.locator("svg")).toHaveCount(1);
+      await expect(button).toHaveCSS("background-color", "rgb(255, 249, 239)");
+      await button.focus();
+      await expect(button).toHaveCSS("outline-style", "none");
+    }
+    await expect(toolbar.getByLabel("Importar .ics", { exact: true })).toHaveCount(1);
+    await expect(toolbar.getByRole("button", { name: "Período anterior" })).toHaveCount(0);
+    await expect(toolbar.getByRole("button", { name: "Sincronizar agora" })).toHaveCount(0);
+    const downloaded = page.waitForEvent("download");
+    await toolbar.getByRole("button", { name: "Exportar .ics", exact: true }).click();
+    await downloaded;
+    await expect(
+      page.getByText("Eventos filtrados exportados. Anexos e histórico não foram incluídos.", {
+        exact: true,
+      }),
+    ).toHaveCount(0);
+    await toolbar.screenshot({
+      path: info.outputPath(`toolbar-${theme}.png`),
+      animations: "disabled",
+    });
+  }
+});
 test("paper calendar offers all views, filters, all-day events and persists details in both themes", async ({
   page,
 }, info) => {

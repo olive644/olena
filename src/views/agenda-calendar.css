@@ -5,6 +5,59 @@
   max-width: 1600px;
   margin: 0 auto 18px;
 }
+.agenda-sync-caption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+:root .app-shell .agenda-page .agenda-toolbar .agenda-tool {
+  width: 52px;
+  height: 48px;
+  min-width: 48px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid #d7cbb7;
+  border-radius: 5px 13px 6px 11px;
+  background-color: #fff9ef;
+  background-image:
+    linear-gradient(135deg, #eee5d5 0 15%, transparent 15%),
+    linear-gradient(315deg, #e9ddc6 0 13%, transparent 13%);
+  color: #292432;
+  box-shadow: 0 4px 0 #c8baa4;
+}
+:root .app-shell .agenda-page .agenda-toolbar .agenda-tool[aria-pressed="true"] {
+  box-shadow: 0 4px 0 #facc15;
+}
+.agenda-tool .paper-action-icon {
+  width: 30px;
+  height: 30px;
+}
+:root .app-shell .agenda-page .agenda-toolbar .agenda-tool:focus-visible,
+:root .app-shell .agenda-page .agenda-toolbar .agenda-tool:focus-within {
+  border-bottom: 3px solid #facc15;
+}
+.agenda-tool:hover .paper-action-icon {
+  transform: translateY(-1px) rotate(-3deg);
+}
+.agenda-tool .paper-action-icon {
+  transition: transform 160ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-tool .paper-action-icon {
+    transition: none;
+  }
+  .agenda-tool:hover .paper-action-icon {
+    transform: none;
+  }
+}
+.agenda-import-label:focus-within {
+  text-decoration: underline #facc15 3px;
+  text-underline-offset: 5px;
+}
 .agenda-view-buttons,
 .agenda-calendar-tools {
   display: flex;

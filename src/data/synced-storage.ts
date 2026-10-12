@@ -10,6 +10,7 @@ export const SYNCED_STORAGE_KEYS = [
   "noteoli.pomodoro-streak.v1",
   "helena.notebookPreferences.v1",
   "helena.systemUpdates.read.v1",
+  "olena.focus-session.v1",
 ] as const;
 
 export const SYNCED_STORAGE_EVENT = "helena:synced-storage-change";

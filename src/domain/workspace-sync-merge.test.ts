@@ -18,6 +18,18 @@ function note(id: string, content: string): WorkspaceState["notes"][number] {
 }
 
 describe("mergeWorkspaceStates", () => {
+  it("does not erase completed focus records when an older device sends a shorter history", () => {
+    const session = {
+      id: "focus-saved",
+      subjectId: "",
+      mode: "timer" as const,
+      durationMinutes: 3,
+      completedAt: "2026-10-12T12:00:00Z",
+    };
+    const base = { ...createInitialWorkspace(), focusSessions: [session] };
+    const result = mergeWorkspaceStates(base, base, { ...base, focusSessions: [] });
+    expect(result.workspace.focusSessions).toEqual([session]);
+  });
   it("mantém o que cada dispositivo adicionou quando editam itens diferentes", () => {
     const base = createInitialWorkspace();
     const local = { ...base, notebooks: [notebook("n1", "Caderno do PC")] };

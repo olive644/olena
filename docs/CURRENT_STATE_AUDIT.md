@@ -9,6 +9,17 @@
 
 - Validação local após reconciliar a main: 1415 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 280,9 KiB e aplicação 1283,2 KiB; renderizador opcional 662,8 KiB e modelo 3,5 MiB.
 
+## Agenda e Foco pela conta (2026-10-12, em validação)
+
+- Causa de transporte confirmada: chaves de localStorage com pontos eram enviadas como nomes de filhos, rejeitados pelo Realtime Database antes das Security Rules. Novo codec base64url usa stateV2, com leitura/cópia do legado sem apagá-lo. Regras expandidas mantêm restrição ao próprio UID.
+- Regra stateV2 publicada em 2026-10-12, com autorização do proprietário, no projeto appstudyoli e instância appstudyoli-default-rtdb pelo CLI oficial autenticado. Backup anterior preservado. Comparação estrutural confirmou que a única mudança foi users/$uid/stateV2; validações legadas presentes apenas no repositório não foram publicadas. Firebase validou a sintaxe e confirmou a publicação. Nova leitura das regras publicadas corresponde integralmente à candidata aprovada. Nenhum registro de usuário foi alterado. Publicação do cliente e validação de sincronização real continuam pendentes.
+
+- Reproduzidos três casos de perda: GET inicial antigo apagava registros offline, updates recebidos não atualizavam IndexedDB e leitura tardia de cache substituía mudanças da conta. Proteção por revisão, cache remoto atualizado e histórico de Foco aditivo por ID evitam o retorno ao zero.
+- Sessão em andamento entra nas chaves sincronizadas com snapshot válido mais recente e deviceId opcional compatível. Mesmo aparelho retoma; outro mostra pausado e só assume após ação. Estado inicial vazio não grava zero sobre a nuvem. Publicação limitada a 30 segundos e ações, não por segundo.
+- Dias de Pomodoro são unidos sem duplicação; carga inicial offline repete ao voltar a conexão. Logout/troca de conta limpam sessão de Foco e filas locais de lembretes.
+- Ícones autorais de papel e botões creme substituem ações/visualizações na barra, preservando nomes acessíveis e estado ativo amarelo. Removidos setas duplicadas, sincronização manual na Agenda e aviso textual de exportação. Regra registrada em AGENTS.md e docs/AGENDA.md.
+- Verificação final do workspace: npm run verify aprovado, 233 arquivos e 1427 testes; entrada 284,7 KiB e JavaScript da aplicação 1285,9 KiB. Navegador Edge/Chromium desktop e móvel: 69 cenários aprovados, 5 exclusivos de outra configuração ignorados, cobrindo claro/escuro, ícones creme, recarga durante o contador e histórico após duas recargas. WebKit nativo e implantação do cliente ficam no fluxo da PR. Alterações paralelas de dependências, Pixi e testes alheios não integram a entrega.
+
 ## Agenda interna ampliada (2026-10-12)
 
 - Visualizações Dia/Semana/Mês/Lista, filtros, detalhes, recorrências com escopo, grade com confirmação de movimento/duração e intercâmbio .ics, sem integração Google nova.

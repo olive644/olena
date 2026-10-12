@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
+import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { useCloudSync } from "./use-cloud-sync";
 import {
@@ -62,6 +63,105 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+it("keeps timer and Pomodoro records made before reload when account data is older", async () => {
+  const workspace = createInitialWorkspace();
+  workspace.focusSessions = [
+    {
+      id: "timer-offline",
+      subjectId: "subject-english",
+      mode: "timer",
+      durationMinutes: 4,
+      completedAt: "2026-10-12T12:00:00Z",
+    },
+  ];
+  const remote = createInitialWorkspace();
+  remote.focusSessions = [
+    {
+      id: "pomodoro-remote",
+      subjectId: "subject-english",
+      mode: "pomodoro",
+      durationMinutes: 25,
+      completedAt: "2026-10-11T12:00:00Z",
+    },
+  ];
+  localStorage.setItem("helena.account.v1", "focus-user");
+  localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
+  localStorage.setItem("noteoli.pomodoro-streak.v1", JSON.stringify(["2026-10-12"]));
+  const activeSession = {
+    mode: "timer",
+    phase: "focus",
+    completed: 0,
+    duration: 25,
+    secondsRemaining: 1500,
+    elapsedMilliseconds: 120000,
+    running: true,
+    timerStartedAt: Date.now() - 120000,
+    pomodoroDeadline: null,
+    savedAt: Date.now(),
+    deviceId: "pc",
+  };
+  localStorage.setItem("olena.focus-session.v1", JSON.stringify(activeSession));
+  const user = { uid: "focus-user", getIdToken: vi.fn(async () => "token") };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  let uploaded: Record<string, string> = {};
+  let writes = 0;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_: unknown, init?: RequestInit) => {
+      if (init?.method === "GET")
+        return new Response(
+          JSON.stringify({
+            items: {
+              "helenastudy.workspace.v1": JSON.stringify(remote),
+              "noteoli.pomodoro-streak.v1": JSON.stringify(["2026-10-11"]),
+            },
+          }),
+        );
+      if (init?.method === "PUT") {
+        writes++;
+        uploaded = decodeCloudItems(JSON.parse(String(init.body)).items);
+      }
+      return new Response("null");
+    }),
+  );
+  const first = renderHook(() => useCloudSync());
+  await waitFor(() => expect(first.result.current.status).toBe("synced"));
+  expect(JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions).toHaveLength(
+    2,
+  );
+  expect(JSON.parse(uploaded["helenastudy.workspace.v1"]!).focusSessions).toHaveLength(2);
+  expect(JSON.parse(uploaded["noteoli.pomodoro-streak.v1"]!)).toEqual(["2026-10-11", "2026-10-12"]);
+  expect(JSON.parse(uploaded["olena.focus-session.v1"]!).elapsedMilliseconds).toBe(120000);
+  await waitFor(() => expect(FakeEventSource.instances.length).toBeGreaterThan(0));
+  const previousWrites = writes;
+  act(() =>
+    FakeEventSource.instances.at(-1)!.emit("put", {
+      path: "/",
+      data: { items: { "helenastudy.workspace.v1": JSON.stringify(remote) } },
+    }),
+  );
+  await waitFor(() => expect(writes).toBeGreaterThan(previousWrites));
+  expect(JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions).toHaveLength(
+    2,
+  );
+  first.unmount();
+  const second = renderHook(() => useCloudSync());
+  await waitFor(() => expect(second.result.current.status).toBe("synced"));
+  expect(JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions).toHaveLength(
+    2,
+  );
+});
+
 it("migrates local math rewards into an existing account without this key", async () => {
   finishMathPlace("foundations", "offline-round", 150, () => 0.5);
   const user = {
@@ -90,7 +190,7 @@ it("migrates local math rewards into an existing account without this key", asyn
         return new Response(JSON.stringify({ items: { "helenastudy.theme": "dark" } }), {
           status: 200,
         });
-      if (init?.method === "PUT") uploaded = JSON.parse(String(init.body)).items;
+      if (init?.method === "PUT") uploaded = decodeCloudItems(JSON.parse(String(init.body)).items);
       return new Response("null", { status: 200 });
     }),
   );
@@ -104,6 +204,126 @@ it("migrates local math rewards into an existing account without this key", asyn
   );
   await act(async () => result.current.signOut?.());
   expect(localStorage.getItem(MATH_PLACE_REWARDS_KEY)).toBeNull();
+});
+
+it("retries initial account loading automatically when the connection returns", async () => {
+  const user = { uid: "offline-user", getIdToken: vi.fn(async () => "token") };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  let offline = true;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => {
+      if (offline) throw new Error("offline");
+      return new Response("null");
+    }),
+  );
+  const hook = renderHook(() => useCloudSync());
+  await waitFor(() => expect(hook.result.current.status).toBe("offline"));
+  offline = false;
+  act(() => window.dispatchEvent(new Event("online")));
+  await waitFor(() => expect(hook.result.current.status).toBe("synced"));
+});
+
+it("ignores the previous account's late response after switching users", async () => {
+  const firstUser = {
+    uid: "first",
+    email: "first@example.com",
+    getIdToken: vi.fn(async () => "token"),
+  };
+  const secondUser = { ...firstUser, uid: "second", email: "second@example.com" };
+  let authenticate!: (value: typeof firstUser) => void;
+  let resolveOld!: (value: Response) => void;
+  localStorage.setItem("helena.account.v1", firstUser.uid);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: firstUser },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, listener: typeof authenticate) => {
+        authenticate = listener;
+        listener(firstUser);
+        return () => undefined;
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "GET" && String(input).includes("/first/"))
+        return new Promise<Response>((resolve) => {
+          resolveOld = resolve;
+        });
+      return new Response("null");
+    }),
+  );
+  const hook = renderHook(() => useCloudSync());
+  await waitFor(() => expect(resolveOld).toBeDefined());
+  act(() => authenticate(secondUser));
+  await waitFor(() => expect(hook.result.current.status).toBe("synced"));
+  const old = createInitialWorkspace();
+  old.focusSessions = [
+    { id: "private-first", subjectId: "", durationMinutes: 5, completedAt: "2026-10-12T12:00:00Z" },
+  ];
+  await act(async () =>
+    resolveOld(
+      new Response(JSON.stringify({ items: { "helenastudy.workspace.v1": JSON.stringify(old) } })),
+    ),
+  );
+  expect(hook.result.current.email).toBe(secondUser.email);
+  expect(localStorage.getItem("helenastudy.workspace.v1") ?? "").not.toContain("private-first");
+});
+
+it("migrates to safe Firebase keys on stateV2 without writing over the legacy account node", async () => {
+  const user = { uid: "wire-user", getIdToken: vi.fn(async () => "token") };
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  const legacy = {
+    version: 1,
+    updatedAt: 1,
+    items: { "helenastudy.workspace.v1": JSON.stringify(createInitialWorkspace()) },
+  };
+  let modern: typeof legacy | null = null;
+  const writes: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const path = String(input);
+      if (init?.method === "GET")
+        return new Response(JSON.stringify(path.includes("stateV2.json") ? modern : legacy));
+      writes.push(path);
+      const wire = JSON.parse(String(init?.body));
+      const invalid = Object.keys(wire.items).some((key) => /[.$#[\]/]/.test(key));
+      if (invalid) return new Response("Invalid Firebase child name", { status: 400 });
+      modern = wire;
+      return new Response("null");
+    }),
+  );
+  const hook = renderHook(() => useCloudSync());
+  await waitFor(() => expect(hook.result.current.status).toBe("synced"));
+  expect(writes.length).toBeGreaterThan(0);
+  expect(writes.every((path) => path.includes("/wire-user/stateV2.json"))).toBe(true);
+  expect(decodeCloudItems(modern!.items)).toEqual(legacy.items);
+  expect(legacy.version).toBe(1);
+  expect(Object.keys(modern!.items)).toEqual(Object.keys(encodeCloudItems(legacy.items)));
 });
 
 it("mantém alteração pendente após falha e permite tentar a sincronização novamente", async () => {
@@ -181,13 +401,18 @@ it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busc
   } as never);
 
   let resolveGet: (value: Response) => void = () => undefined;
+  let cloudResponse: Response | undefined;
   const puts: string[] = [];
   vi.stubGlobal(
     "fetch",
     vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
       if (init?.method === "GET") {
+        if (cloudResponse) return cloudResponse.clone();
         return new Promise<Response>((resolve) => {
-          resolveGet = resolve;
+          resolveGet = (response) => {
+            cloudResponse = response.clone();
+            resolve(response);
+          };
         });
       }
       puts.push(init?.body as string);
@@ -218,7 +443,7 @@ it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busc
     completed: true,
   });
   expect(puts).toHaveLength(1);
-  expect(JSON.parse(puts[0]!).items["helena.onboarding.v1"]).toBe(
+  expect(decodeCloudItems(JSON.parse(puts[0]!).items)["helena.onboarding.v1"]).toBe(
     JSON.stringify({ completed: true }),
   );
 });
@@ -244,14 +469,20 @@ it("prioriza o estado da conta sobre um backup local antigo e preserva só a mud
   } as never);
   localStorage.setItem("helena.profile.v1", "avatar-antigo");
   let resolveGet: (value: Response) => void = () => undefined;
+  let cloudResponse: Response | undefined;
   const puts: string[] = [];
   vi.stubGlobal(
     "fetch",
     vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
-      if (init?.method === "GET")
+      if (init?.method === "GET") {
+        if (cloudResponse) return cloudResponse.clone();
         return new Promise<Response>((resolve) => {
-          resolveGet = resolve;
+          resolveGet = (response) => {
+            cloudResponse = response.clone();
+            resolve(response);
+          };
         });
+      }
       puts.push(init?.body as string);
       return new Response("null", { status: 200 });
     }),
@@ -276,7 +507,7 @@ it("prioriza o estado da conta sobre um backup local antigo e preserva só a mud
   await waitFor(() => expect(result.current.status).toBe("synced"));
   expect(localStorage.getItem("helena.profile.v1")).toBe("avatar-da-nuvem");
   expect(localStorage.getItem("helena.onboarding.v1")).toBe("nova sessão");
-  expect(JSON.parse(puts[0]!).items["helena.profile.v1"]).toBe("avatar-da-nuvem");
+  expect(decodeCloudItems(JSON.parse(puts[0]!).items)["helena.profile.v1"]).toBe("avatar-da-nuvem");
 });
 
 it("concilia alterações simultâneas por chave e preserva o conflito local", async () => {
@@ -326,7 +557,7 @@ it("concilia alterações simultâneas por chave e preserva o conflito local", a
   act(() => writeSyncedStorage("helena.profile.v1", "local"));
   await waitFor(() => expect(result.current.status).toBe("conflict"));
 
-  expect(JSON.parse(puts.at(-1)!).items).toEqual({
+  expect(decodeCloudItems(JSON.parse(puts.at(-1)!).items)).toEqual({
     "helena.profile.v1": "local",
     "helenastudy.theme": "dark",
   });
@@ -387,7 +618,9 @@ it("mescla cadernos adicionados em cada dispositivo, em vez de descartar um dos 
   act(() => writeSyncedStorage("helenastudy.workspace.v1", JSON.stringify(fromPc)));
   await waitFor(() => expect(result.current.status).toBe("synced"));
 
-  const uploaded = JSON.parse(puts.at(-1)!).items["helenastudy.workspace.v1"] as string;
+  const uploaded = decodeCloudItems(JSON.parse(puts.at(-1)!).items)[
+    "helenastudy.workspace.v1"
+  ] as string;
   const mergedNotebooks = (JSON.parse(uploaded) as WorkspaceState).notebooks.map((n) => n.id);
   expect(mergedNotebooks.sort()).toEqual(["do-celular", "do-pc"]);
   expect(localStorage.getItem("helenastudy.sync-conflict.v1")).toBeNull();
@@ -428,7 +661,7 @@ it("recebe uma mudança de outro dispositivo pelo stream do Firebase, sem espera
   await waitFor(() => expect(FakeEventSource.instances).toHaveLength(1));
 
   const stream = FakeEventSource.instances[0]!;
-  expect(stream.url).toContain("/users/user-1/state.json");
+  expect(stream.url).toContain("/users/user-1/stateV2.json");
   act(() =>
     stream.emit("put", {
       path: "/",

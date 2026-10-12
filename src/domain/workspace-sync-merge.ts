@@ -148,7 +148,8 @@ export function mergeWorkspaceStates(
     habits: list(base.habits, local.habits, remote.habits),
     notebooks: list(base.notebooks, local.notebooks, remote.notebooks),
     notes: list(base.notes, local.notes, remote.notes),
-    focusSessions: list(base.focusSessions, local.focusSessions, remote.focusSessions),
+    // Completed focus entries are immutable history, never a shorter-device snapshot deletion.
+    focusSessions: list([], local.focusSessions, remote.focusSessions),
     ...(base.practiceActivities || local.practiceActivities || remote.practiceActivities
       ? {
           practiceActivities: list(

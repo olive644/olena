@@ -1,5 +1,38 @@
 # Agenda do aluno
 
+## Regra de sincronização pela conta
+
+A publicação das regras `stateV2` descrita em docs/ACCOUNT_SYNC_SETUP.md é
+pré-requisito da sincronização nova. Chaves locais com pontos são codificadas
+somente no transporte; o caminho legado fica intacto para não afetar abas antigas.
+
+Agenda, minutos registrados de Cronômetro/Pomodoro, sequências e recuperação da
+sessão em andamento usam a conta autenticada. Não existe um modo de sincronização
+local. LocalStorage e IndexedDB são cache e recuperação offline: uma atualização
+da página não pode substituir histórico concluído por uma cópia antiga ou vazia.
+O primeiro carregamento conserva registros de Foco por ID, sem duplicar minutos,
+une os dias de Pomodoro e mantém a sessão válida mais recente. Mudanças recebidas
+da conta também atualizam IndexedDB; leituras antigas não substituem edições ou
+troca de conta. Histórico concluído é aditivo; remoção de dados pessoais continua
+no fluxo explícito de exclusão da conta.
+
+O contador grava recuperação no dispositivo e compartilha snapshots a cada 30
+segundos, nas mudanças de controles e ao sair da tela. Isso evita enviar o workspace
+inteiro a cada segundo. Atualizar no mesmo aparelho mantém início/prazo; em outro,
+a sessão aparece pausada e só passa a ser controlada ali após uma ação do usuário.
+Abrir o Foco vazio não grava um snapshot zero sobre um contador existente na conta.
+Snapshots não contam como minutos registrados, nem recriam sessões concluídas.
+Ao sair da conta, sessão e identificador do aparelho são limpos. Voltar à conexão
+repete a carga inicial que falhou e envia alterações pendentes automaticamente.
+Sem rede, informar envio pendente; sem login/configuração, não afirmar salvamento
+na conta. Novos registros não recuperam dados já apagados de todos os backups.
+
+Barra da Agenda usa ícones facetados com rótulos acessíveis, botões creme e base
+amarela para a visualização ativa. Setas duplicadas e ação manual de sincronização
+foram retiradas. Navegação de datas permanece no seletor do calendário. Exportar
+inicia download sem o aviso textual anterior. Erros de importação/notificações
+continuam explícitos; os limites de .ics e lembretes continuam documentados abaixo.
+
 ## Fluxo
 
 `/planejador` abre o planejamento do dia atual. Calendário e categorias ficam

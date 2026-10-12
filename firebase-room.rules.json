@@ -30,6 +30,17 @@
           },
           "$other": { ".validate": false }
         },
+        "stateV2": {
+          ".validate": "newData.hasChildren(['version', 'updatedAt']) && newData.child('version').val() === 2",
+          "version": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "items": {
+            "$key": {
+              ".validate": "$key.matches(/^k_[A-Za-z0-9_-]{1,98}$/) && newData.isString() && newData.val().length <= 20000000"
+            }
+          },
+          "$other": { ".validate": false }
+        },
         "$other": { ".validate": false }
       }
     }
