@@ -51,18 +51,19 @@ sem gráficos fictícios. Flores e tomates mantêm a exceção visual do Foco.
 
 Retomar com calma aparece apenas para tarefas realmente vencidas, com data
 válida e não concluídas. Matérias e metas não têm widget duplicado na Agenda;
-os dados existentes permanecem salvos. Uma semana possível resume sete dias
-clicáveis com contagens de pendências reais e mantém o planejamento com Helena.
+os dados existentes permanecem salvos. O widget Uma semana possível foi removido.
+Painel do dia, calendário e Meu estudo compartilham largura máxima de 860px.
+O título da data usa números comuns, sem alterar os números da grade.
+Controles e ícones não entram na seleção de texto; informações e campos
+editáveis continuam selecionáveis.
 
 ## Lembretes e Helena
 
 Com a Agenda aberta, horários a até 15 minutos são destacados e recalculados a cada
 30 segundos. Não há push, notificação com aplicativo fechado ou serviço pago.
-Planejar com Helena abre um rascunho com semana local e até oito pendências. Não
-envia por si só: o aluno revisa e confirma no chat. O professor existente responde
-em streaming, sujeito à autenticação e quotas já configuradas. Não altera a Agenda
-automaticamente e não recebe eventos do Google por esse atalho. Conversas não entram
-no treinamento. Nenhum provedor ou serviço novo foi acrescentado.
+O atalho Planejar com Helena foi removido junto com o widget semanal. O chat
+existente continua disponível e não altera a Agenda automaticamente. Conversas
+não entram no treinamento. Nenhum provedor ou serviço novo foi acrescentado.
 
 ## Compatibilidade e conta
 

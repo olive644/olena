@@ -15,6 +15,67 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
+test("day panel matches the calendar width, keeps a plain date and only text selectable", async ({
+  page,
+}, info) => {
+  if (info.project.name === "desktop") await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto("/planejador");
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page.locator('button[data-date="2026-10-12"]').click();
+    const day = page.locator(".agenda-day--open");
+    await expect(day).toBeVisible();
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const calendar = document.querySelector(".agenda-month")!.getBoundingClientRect();
+          const panel = document.querySelector(".agenda-day--open")!.getBoundingClientRect();
+          return Math.max(Math.abs(calendar.width - panel.width), Math.abs(calendar.x - panel.x));
+        }),
+      )
+      .toBeLessThan(1);
+    await expect(day.locator("h2 .paper-digits")).toHaveCount(0);
+    await expect(day.locator("h2")).toContainText("12 de outubro");
+    await page.keyboard.press("Tab");
+    await day.locator("h2").focus();
+    await expect(day.locator("h2")).toHaveCSS("text-decoration-line", "none");
+    await expect(day.locator("h2")).toHaveCSS("filter", "none");
+    await expect(page.getByRole("heading", { name: "Uma semana possível" })).toHaveCount(0);
+    const action = day.getByRole("button", { name: "Criar tarefa", exact: true });
+    await expect(action).toHaveCSS("user-select", "none");
+    await action.focus();
+    await expect(action).toHaveCSS("text-decoration-line", "underline");
+    await expect(action.locator("svg")).toHaveCSS("user-select", "none");
+    const copy = day.locator(".agenda-data-empty");
+    expect(await copy.evaluate((element) => getComputedStyle(element).userSelect)).not.toBe("none");
+    await copy.evaluate((element) => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    });
+    expect(await page.evaluate(() => window.getSelection()?.toString())).toContain(
+      "Nenhum compromisso",
+    );
+    await page.evaluate(() => window.getSelection()?.removeAllRanges());
+    await day.screenshot({ path: info.outputPath(`day-${theme}.png`), animations: "disabled" });
+    await action.click();
+    const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+    await expect(form.getByRole("textbox", { name: "Título", exact: true })).toHaveCSS(
+      "user-select",
+      "text",
+    );
+    await form.getByRole("button", { name: "Fechar formulário" }).click();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+});
+
 test("paper form offers all islands, custom date/time, icon repeat and yellow completion in both themes", async ({
   page,
 }, info) => {
@@ -437,16 +498,7 @@ test("shelf charts count actual types and focus never infers an unchosen subject
     });
     await expect(page.getByRole("heading", { name: "Retomar com calma" })).toHaveCount(0);
     await expect(page.getByText("Matérias e metas", { exact: true })).toHaveCount(0);
-    await expect(
-      page.getByRole("group", { name: "Planejamento da semana selecionada" }).getByRole("button"),
-    ).toHaveCount(7);
-    const week = page.getByRole("group", { name: "Planejamento da semana selecionada" });
-    await week.getByRole("button").first().click();
-    await expect(page.locator('button[data-date="2026-10-05"]')).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    await week.screenshot({ path: info.outputPath(`week-${theme}.png`), animations: "disabled" });
+    await expect(page.getByRole("heading", { name: "Uma semana possível" })).toHaveCount(0);
     await page.locator('button[data-date="2026-10-12"]').click();
     await expect(history.locator(".agenda-charts")).toHaveCount(0);
     await expect(history.getByText(/Nenhum caderno, pasta ou Note criado/)).toBeVisible();
@@ -671,9 +723,7 @@ test("paper month selector supports years, keyboard dismissal, themes and touch-
     "true",
   );
 });
-test("overdue tasks move to today and Helena only gets a draft after user action", async ({
-  page,
-}) => {
+test("overdue tasks move to today without the removed weekly planning widget", async ({ page }) => {
   const state = createInitialWorkspace();
   state.tasks = [
     {
@@ -692,11 +742,7 @@ test("overdue tasks move to today and Helena only gets a draft after user action
   await page.getByRole("button", { name: "Mover Entrega pendente para hoje" }).click();
   await expect(page.getByRole("button", { name: "Concluir Entrega pendente" })).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Planejar com Helena" }).click();
-  await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "Escreva para a Helena" })).toHaveValue(
-    /Não altere minha agenda/,
-  );
+  await expect(page.getByRole("button", { name: "Planejar com Helena" })).toHaveCount(0);
   expect(
     await page.evaluate(
       () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks[0].dueDate,

@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-11, Agenda compacta: removido o widget Uma semana possível. Painel do dia passa a compartilhar largura máxima/centralização de 860px com calendário e Meu estudo. Cabeçalho da data é texto comum e mantém foco programático sem efeito amarelo; controles continuam com foco visível. Demais números do calendário preservados. paper-controls.css bloqueia seleção de controles/ícones, preservando texto comum e campos editáveis. Sem alteração de armazenamento, sincronização ou dados.
+
 2026-10-11, último acabamento antes do merge da Agenda: AgendaActionIcon inclui edit com asset SVG de lápis de papel; tarefas e compromissos mostram só o ícone, mantendo aria-label/title e o editor existente. Editar e check ficam em grid centralizado de 44px, com cantos e padding uniformes. Sem dependências ou mudanças de estado.
 
 2026-10-11, correção dos dados da Agenda: agendaDashboard não trata subjectId padrão do Foco como seleção de matéria; pizza por dia. Estante distingue cadernos, pastas e Notes, mostra títulos e conta cada notebook uma vez, sem duplicar a página da Note. AgendaIslandProgress recebe seleção controlada, limita cursos às atividades positivas do período e filtra os gráficos ao navegar. overdueTasks exige prazo válido vencido e tarefa não concluída. Widget duplicado de matérias/metas removido sem apagar dados; semana mostra sete dias clicáveis com pendências reais. Ano sem PaperDigits, menus com contraste explícito no hover/foco. Não altera persistência ou merge.
