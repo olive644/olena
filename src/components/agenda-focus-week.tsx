@@ -38,10 +38,6 @@ export function AgendaFocusWeek({
   return (
     <div className="agenda-study-metric agenda-focus-week">
       <h3>{mode === "timer" ? "Seu jardim de foco" : "Sua semana de Pomodoro"}</h3>
-      <small>
-        Semana de {week[0]!.key.split("-").reverse().join("/")}. Dias registrados dentro do filtro
-        ficam vivos.
-      </small>
       <div className="agenda-pomodoro-week" role="list">
         {week.map((day) => (
           <span

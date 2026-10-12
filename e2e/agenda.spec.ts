@@ -15,6 +15,83 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
+test("compact agenda keeps seven days and three actions in one row and desktop columns", async ({
+  page,
+}, info) => {
+  const widths = info.project.name === "desktop" ? [1280, 1920] : [320, 390];
+  await page.goto("/planejador");
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate(
+        (value) => document.documentElement.setAttribute("data-theme", value),
+        theme,
+      );
+      await page.locator('button[data-date="2026-10-11"]').click();
+      const day = page.locator(".agenda-day--open");
+      await expect(day).toBeVisible();
+      const actions = day.locator(".agenda-day-actions button");
+      await expect(actions).toHaveCount(3);
+      expect(
+        await actions.evaluateAll((elements) => {
+          const boxes = elements.map((element) => element.getBoundingClientRect());
+          return Math.max(...boxes.map((box) => box.y)) - Math.min(...boxes.map((box) => box.y));
+        }),
+      ).toBeLessThan(1);
+      const history = page.getByRole("region", { name: "Histórico de estudo" });
+      for (const mode of ["Cronômetro", "Pomodoro"]) {
+        await history.getByRole("button", { name: mode, exact: true }).click();
+        const days = history.locator(".agenda-pomodoro-day");
+        await expect(days).toHaveCount(7);
+        expect(
+          await days.evaluateAll((elements) => {
+            const tops = elements.map((element) => element.getBoundingClientRect().y);
+            return Math.max(...tops) - Math.min(...tops);
+          }),
+        ).toBeLessThan(1);
+      }
+      await expect(page.getByText(/Dias registrados dentro do filtro ficam vivos/)).toHaveCount(0);
+      await expect(page.getByText(/Nenhum compromisso ou tarefa neste dia/)).toHaveCount(0);
+      await expect(page.getByRole("heading", { name: "Google Agenda", exact: true })).toHaveCount(
+        0,
+      );
+      await expect(
+        page.getByRole("heading", { name: "Listas de estudo", exact: true }),
+      ).toHaveCount(0);
+      const layout = await page.evaluate(() => {
+        const calendar = document.querySelector(".agenda-month")!.getBoundingClientRect();
+        const study = document.querySelector(".agenda-history")!.getBoundingClientRect();
+        return {
+          sameTop: Math.abs(calendar.y - study.y),
+          side: study.x >= calendar.right,
+          below: study.y >= calendar.bottom,
+          overflow: document.documentElement.scrollWidth > innerWidth,
+        };
+      });
+      expect(layout.overflow).toBe(false);
+      if (width >= 1200) {
+        expect(layout.side).toBe(true);
+        await page.mouse.move(0, 0);
+        await expect
+          .poll(() =>
+            page.evaluate(() => {
+              const calendar = document.querySelector(".agenda-month")!.getBoundingClientRect();
+              const study = document.querySelector(".agenda-history")!.getBoundingClientRect();
+              return Math.abs(calendar.y - study.y);
+            }),
+          )
+          .toBeLessThan(1);
+      } else expect(layout.below).toBe(true);
+      await page.locator(".agenda-overview").screenshot({
+        path: info.outputPath(`compact-${width}-${theme}.png`),
+        animations: "disabled",
+        style:
+          ".page-header, .mobile-nav, .helena-chat-launcher, .skip-link { visibility: hidden !important; }",
+      });
+    }
+  }
+});
+
 test("day panel matches the calendar width, keeps a plain date and only text selectable", async ({
   page,
 }, info) => {
@@ -49,7 +126,7 @@ test("day panel matches the calendar width, keeps a plain date and only text sel
     await action.focus();
     await expect(action).toHaveCSS("text-decoration-line", "underline");
     await expect(action.locator("svg")).toHaveCSS("user-select", "none");
-    const copy = day.locator(".agenda-data-empty");
+    const copy = day.locator("h2");
     expect(await copy.evaluate((element) => getComputedStyle(element).userSelect)).not.toBe("none");
     await copy.evaluate((element) => {
       const range = document.createRange();
@@ -58,9 +135,9 @@ test("day panel matches the calendar width, keeps a plain date and only text sel
       selection?.removeAllRanges();
       selection?.addRange(range);
     });
-    expect(await page.evaluate(() => window.getSelection()?.toString())).toContain(
-      "Nenhum compromisso",
-    );
+    expect(
+      (await page.evaluate(() => window.getSelection()?.toString()))?.toLocaleLowerCase("pt-BR"),
+    ).toContain("12 de outubro");
     await page.evaluate(() => window.getSelection()?.removeAllRanges());
     await day.screenshot({ path: info.outputPath(`day-${theme}.png`), animations: "disabled" });
     await action.click();

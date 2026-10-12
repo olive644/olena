@@ -1076,15 +1076,17 @@
   font-style: italic;
 }
 .agenda-day-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
   margin-block: 14px;
 }
 .agenda-day-actions button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  min-width: 0;
+  justify-content: center;
 }
 .agenda-day-actions :is(.navigation-icon, .paper-action-icon) {
   width: 24px;
@@ -1143,13 +1145,72 @@
   overflow: visible;
 }
 .agenda-focus-week .agenda-pomodoro-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
   justify-content: space-between;
-  margin-top: 12px;
-  padding-bottom: 8px;
+  margin-top: 8px;
+  padding-bottom: 0;
+}
+.agenda-focus-week .agenda-pomodoro-day {
+  width: auto;
+  min-width: 0;
+  font-size: 10px;
+  gap: 2px;
+}
+.agenda-focus-week .agenda-week-flower {
+  width: min(26px, 100%);
+  height: 34px;
 }
 .agenda-focus-week .streak-tomato {
-  width: 26px;
+  width: min(22px, 100%);
   display: block;
+}
+
+.agenda-overview,
+.agenda-calendar-column {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+  min-width: 0;
+}
+.agenda-overview {
+  max-width: 860px;
+  margin-inline: auto;
+}
+.agenda-overview .agenda-month,
+.agenda-overview .agenda-day,
+.agenda-overview > .agenda-history {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+}
+@media (min-width: 1200px) {
+  .agenda-overview {
+    max-width: 1600px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .agenda-overview .agenda-charts {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  }
+}
+@media (max-width: 600px) {
+  :root body .agenda-page .agenda-day-actions button {
+    flex-direction: column;
+    min-height: 64px;
+    padding: 6px 3px;
+    font-size: 10px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+    gap: 4px;
+  }
+  .agenda-day-actions :is(.navigation-icon, .paper-action-icon) {
+    width: 20px;
+    height: 20px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .agenda-island-drag img {

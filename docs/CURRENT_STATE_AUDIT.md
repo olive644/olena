@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Agenda responsiva compacta (2026-10-11)
+
+- Sete flores/tomates e três ações do dia ocupam uma linha no celular; ícones e textos reutilizam o design existente.
+- Calendário e Meu estudo ficam lado a lado a partir de 1200px, com painel do dia sob o calendário. Telas menores mantêm o empilhamento.
+- Removidos os textos auxiliares da semana e do dia vazio, além dos widgets Google Agenda e Listas de estudo. Dados, conexão, persistência e sincronização não mudam.
+- Regressões cobrem 320/390px e 1280/1920px nos dois temas, ausência de overflow e alinhamento dos controles.
+- Verificação geral aprovada: 1401 testes, lint sem erros, formatação, tipos, APIs, build e desempenho. Entrada 279,4 KiB e aplicação 1242,3 KiB. Navegador local usa Edge/Chromium nos dois projetos; WebKit nativo fica para o CI.
+
 ## Painel do dia e seleção de controles (2026-10-11)
 
 - Uma semana possível foi removido da Agenda, incluindo seus botões/resumo. Dados, calendário, metas e chat existentes permanecem intactos.
