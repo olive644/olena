@@ -48,3 +48,27 @@ it("endpoint do modelo próprio é privado, usa limite e proíbe redirecionament
     headers: { Authorization: "Bearer private" },
   });
 });
+
+it("an evaluated future model receives the same math grounding in streaming and generation", async () => {
+  const inputs: Record<string, unknown>[] = [];
+  const fetcher = vi.fn<typeof fetch>().mockImplementation(async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    inputs.push(JSON.parse(body.messages[1].content));
+    return body.stream
+      ? new Response('data: {"choices":[{"delta":{"content":"4"}}]}\n\ndata: [DONE]\n\n', {
+          headers: { "Content-Type": "text/event-stream" },
+        })
+      : new Response(JSON.stringify({ choices: [{ message: { content: "4" } }] }));
+  });
+  const provider = createOlenaStudent(
+    "https://student.example/v1/chat/completions",
+    "olena-v1",
+    "private",
+    fetcher,
+  );
+  await provider.generate(request);
+  for await (const delta of provider.stream!(request, new AbortController().signal))
+    expect(delta).toBe("4");
+  expect(inputs[0]).toEqual(inputs[1]);
+  expect(inputs[0]).toMatchObject({ math: { calculator: { status: "checked", exact: "4" } } });
+});
