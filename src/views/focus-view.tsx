@@ -15,6 +15,8 @@ import {
 } from "react";
 import { PageHeader } from "../components/app-navigation";
 import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
+import { SYNCED_STORAGE_EVENT } from "../data/synced-storage";
+import { focusDeviceId } from "../data/focus-device";
 import {
   minutesFocusedOn,
   minutesFocusedForSubject,
@@ -243,8 +245,10 @@ function FocusPaperControlIcon({ paused }: { paused: boolean }) {
 }
 
 export function FocusView({ workspace, dispatch }: FocusViewProps) {
+  const [deviceId] = useState(focusDeviceId);
+  const sharedSnapshot = useRef("");
   const [restored] = useState(() => {
-    const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), Date.now());
+    const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), Date.now(), deviceId);
     if (
       session &&
       !session.running &&
@@ -256,6 +260,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     }
     return session;
   });
+  const hasSession = useRef(Boolean(restored));
+  const ownsSession = useRef(!restored?.deviceId || restored.deviceId === deviceId);
   const defaultSubject =
     workspace.subjects.find((subject) => subject.id === restored?.subjectId) ??
     workspace.subjects[0];
@@ -310,6 +316,17 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     mode === "timer" ? Math.floor(timerElapsedMilliseconds / 1000) : pomodoroElapsedSeconds;
   const persistedTimerSeconds = Math.floor(timerElapsedMilliseconds / 1000);
   useEffect(() => {
+    if (!ownsSession.current) return;
+    if (
+      !hasSession.current &&
+      mode === "timer" &&
+      !running &&
+      persistedTimerSeconds === 0 &&
+      pomodoroPhase === "focus" &&
+      completedPomodoros === 0
+    )
+      return;
+    hasSession.current = true;
     const session: FocusSession = {
       mode,
       phase: pomodoroPhase,
@@ -321,6 +338,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       timerStartedAt: timerStartedAt.current,
       pomodoroDeadline: pomodoroDeadline.current,
       savedAt: Date.now(),
+      deviceId,
       ...(restored?.agendaEventId
         ? {
             agendaEventId: restored.agendaEventId,
@@ -331,6 +349,11 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
         : {}),
     };
     localStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
+    const signature = `${mode}:${pomodoroPhase}:${completedPomodoros}:${duration}:${running}:${Math.floor(persistedTimerSeconds / 30)}:${Math.floor(secondsRemaining / 30)}`;
+    if (sharedSnapshot.current !== signature) {
+      sharedSnapshot.current = signature;
+      window.dispatchEvent(new Event(SYNCED_STORAGE_EVENT));
+    }
   }, [
     mode,
     pomodoroPhase,
@@ -340,7 +363,16 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     persistedTimerSeconds,
     running,
     restored,
+    deviceId,
   ]);
+  useEffect(() => {
+    const publish = () => window.dispatchEvent(new Event(SYNCED_STORAGE_EVENT));
+    window.addEventListener("pagehide", publish);
+    return () => {
+      window.removeEventListener("pagehide", publish);
+      publish();
+    };
+  }, []);
 
   useEffect(() => {
     if (!running || mode !== "timer") return;
@@ -417,6 +449,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const subject = defaultSubject;
 
   function chooseDuration(minutes: number) {
+    ownsSession.current = true;
     setDuration(minutes);
     setSecondsRemaining(minutes * 60);
     setRunning(false);
@@ -439,6 +472,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function reset() {
+    ownsSession.current = true;
     setRunning(false);
     pomodoroDeadline.current = null;
     if (mode === "timer") {
@@ -450,6 +484,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function toggleRunning() {
+    ownsSession.current = true;
     const next = !running;
     if (!next && mode === "timer" && timerStartedAt.current !== null) {
       setTimerElapsedMilliseconds(Date.now() - timerStartedAt.current);

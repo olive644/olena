@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useReducer, useRef, useSyncExternalStore } from "react";
 import { WORKSPACE_STORAGE_KEY, loadWorkspace, serializeWorkspace } from "../data/local-workspace";
 import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 import {
@@ -6,6 +6,7 @@ import {
   type WorkspaceKeyValueStore,
 } from "../data/indexed-workspace-store";
 import { workspaceReducer } from "../domain/workspace";
+import type { WorkspaceAction } from "../domain/workspace";
 import {
   WORKSPACE_HISTORY_KEY,
   loadWorkspaceHistory,
@@ -32,6 +33,7 @@ const storageFullStore = {
 
 export function useWorkspace() {
   const remoteUpdate = useRef(false);
+  const revision = useRef(0);
   // Armazenamento em IndexedDB (etapa 2 da migração, ver docs/CURRENT_STATE_AUDIT.md): é quem
   // garante o salvamento de verdade agora, com bem mais espaço que os cerca de 5 MB por site
   // do localStorage. Nulo quando o navegador não tem IndexedDB disponível (por exemplo,
@@ -46,9 +48,13 @@ export function useWorkspace() {
     storageFullStore.snapshot,
     () => false,
   );
-  const [workspace, dispatch] = useReducer(workspaceReducer, undefined, () =>
+  const [workspace, reduce] = useReducer(workspaceReducer, undefined, () =>
     loadWorkspace(window.localStorage),
   );
+  const dispatch = useCallback((action: WorkspaceAction) => {
+    revision.current += 1;
+    reduce(action);
+  }, []);
 
   // Ao abrir, o espaço já apareceu na tela vindo do localStorage (síncrono, sem atraso), que
   // aqui serve só de leitura rápida inicial. Se o IndexedDB (a gravação de verdade) tiver algo,
@@ -58,14 +64,19 @@ export function useWorkspace() {
   // primeiro e sobrescreve no IndexedDB o que já estava lá antes de dar tempo de lê-lo.
   useEffect(() => {
     let cancelled = false;
+    const readingRevision = revision.current;
     indexedStoreRef.current
       ?.get()
       .then((serialized) => {
-        if (cancelled || serialized === undefined) return;
-        remoteUpdate.current = true;
-        dispatch({
+        if (cancelled || serialized === undefined || revision.current !== readingRevision) return;
+        const indexed = loadWorkspace({ getItem: () => serialized });
+        const cached = loadWorkspace(window.localStorage);
+        const sessions = new Map(indexed.focusSessions.map((session) => [session.id, session]));
+        for (const session of cached.focusSessions)
+          if (!sessions.has(session.id)) sessions.set(session.id, session);
+        reduce({
           type: "workspace/replaced",
-          workspace: loadWorkspace({ getItem: () => serialized }),
+          workspace: { ...indexed, focusSessions: [...sessions.values()] },
         });
       })
       .catch(() => {
@@ -118,8 +129,14 @@ export function useWorkspace() {
 
   useEffect(() => {
     const refresh = () => {
+      revision.current += 1;
       remoteUpdate.current = true;
-      dispatch({ type: "workspace/replaced", workspace: loadWorkspace(window.localStorage) });
+      const accountWorkspace = loadWorkspace(window.localStorage);
+      reduce({ type: "workspace/replaced", workspace: accountWorkspace });
+      // Mirror received account state too, not only edits from this device.
+      void indexedStoreRef.current
+        ?.set(serializeWorkspace(accountWorkspace))
+        .catch(() => undefined);
     };
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
     return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);

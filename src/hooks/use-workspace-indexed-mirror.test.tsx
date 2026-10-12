@@ -9,6 +9,7 @@ vi.mock("../data/indexed-workspace-store", () => ({
 }));
 
 import { useWorkspace } from "./use-workspace";
+import { applySyncedStorage } from "../data/synced-storage";
 
 // Armazenamento falso em memória: o mesmo formato do IndexedDB de verdade (get/set
 // assíncronos).
@@ -32,6 +33,56 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 describe("IndexedDB como gravação de verdade (etapa 2)", () => {
+  it("writes account updates to IndexedDB so reload cannot restore old focus totals", async () => {
+    const base = createInitialWorkspace();
+    const indexed = fakeStore(JSON.stringify(base));
+    spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);
+    const first = renderHook(() => useWorkspace());
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const account = {
+      ...base,
+      focusSessions: [
+        {
+          id: "saved",
+          subjectId: "",
+          mode: "timer" as const,
+          durationMinutes: 2,
+          completedAt: "2026-10-12T12:00:00Z",
+        },
+      ],
+    };
+    act(() => applySyncedStorage({ [WORKSPACE_STORAGE_KEY]: JSON.stringify(account) }));
+    await waitFor(() => expect(JSON.parse(indexed.read()!).focusSessions).toHaveLength(1));
+    first.unmount();
+    const second = renderHook(() => useWorkspace());
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(second.result.current.workspace.focusSessions).toHaveLength(1);
+  });
+  it("ignores a late IndexedDB read after the account replaces the workspace", async () => {
+    const old = createInitialWorkspace();
+    old.notebooks = [
+      { id: "old", title: "Outra conta", subjectId: "", createdAt: "2026", pageIds: [] },
+    ];
+    let resolve!: (value: string) => void;
+    const indexed = fakeStore();
+    indexed.store.get = vi.fn(
+      () =>
+        new Promise<string>((done) => {
+          resolve = done;
+        }),
+    );
+    spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);
+    const view = renderHook(() => useWorkspace());
+    act(() =>
+      applySyncedStorage({ [WORKSPACE_STORAGE_KEY]: JSON.stringify(createInitialWorkspace()) }),
+    );
+    await act(async () => resolve(JSON.stringify(old)));
+    expect(view.result.current.workspace.notebooks).toHaveLength(0);
+  });
   it("grava no IndexedDB o mesmo texto salvo no localStorage", async () => {
     const indexed = fakeStore();
     spies.openIndexedWorkspaceStore.mockReturnValue(indexed.store);

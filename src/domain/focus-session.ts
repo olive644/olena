@@ -10,18 +10,24 @@ export type FocusSession = {
   timerStartedAt: number | null;
   pomodoroDeadline: number | null;
   savedAt: number;
+  deviceId?: string;
   agendaEventId?: string;
   agendaDate?: string;
   subjectId?: string;
   plannedMinutes?: number;
 };
 
-export function readFocusSession(value: string | null, now: number): FocusSession | undefined {
+export function readFocusSession(
+  value: string | null,
+  now: number,
+  deviceId?: string,
+): FocusSession | undefined {
   try {
     const saved: unknown = JSON.parse(value ?? "null");
     if (!saved || typeof saved !== "object") return;
     const s = saved as Partial<FocusSession>;
     if (
+      (s.deviceId !== undefined && (typeof s.deviceId !== "string" || s.deviceId.length > 100)) ||
       (s.agendaEventId !== undefined && typeof s.agendaEventId !== "string") ||
       (s.agendaDate !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(s.agendaDate)) ||
       (s.subjectId !== undefined && typeof s.subjectId !== "string") ||
@@ -66,7 +72,8 @@ export function readFocusSession(value: string | null, now: number): FocusSessio
       return;
     const session = s as FocusSession;
     // Sessions older than a day resume paused rather than registering unattended cycles.
-    return now - session.savedAt > 86_400_000
+    return now - session.savedAt > 86_400_000 ||
+      (deviceId !== undefined && session.deviceId !== undefined && session.deviceId !== deviceId)
       ? { ...session, running: false, timerStartedAt: null, pomodoroDeadline: null }
       : session;
   } catch {

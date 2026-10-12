@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { SYNCED_STORAGE_KEYS } from "./data/synced-storage";
+import { encodeCloudItems } from "./data/cloud-state-codec";
 
 type Rule = Record<string, unknown>;
 const rules = JSON.parse(readFileSync("firebase-room.rules.json", "utf8")) as {
@@ -14,6 +15,22 @@ const user = rules.rules.users.$uid as {
 };
 
 describe("regras de /users/<uid>", () => {
+  it("accepts safe v2 wire names without changing the owner-only access or legacy node", () => {
+    const modern = rules.rules.users.$uid["stateV2"] as {
+      ".validate": string;
+      items: { $key: { ".validate": string } };
+      $other: { ".validate": boolean };
+    };
+    expect(modern[".validate"]).toContain("=== 2");
+    expect(modern.$other[".validate"]).toBe(false);
+    const literal = /matches\(\/(.+)\/\)/.exec(modern.items.$key[".validate"])?.[1];
+    const pattern = new RegExp(literal!);
+    for (const key of Object.keys(
+      encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.map((name) => [name, "value"]))),
+    ))
+      expect(pattern.test(key)).toBe(true);
+    expect(pattern.test("helenastudy.workspace.v1")).toBe(false);
+  });
   it("continuam limitando leitura e escrita ao próprio usuário autenticado", () => {
     expect(user[".read"]).toBe("auth != null && auth.uid === $uid");
     expect(user[".write"]).toBe("auth != null && auth.uid === $uid");
@@ -39,6 +56,12 @@ describe("regras de /users/<uid>", () => {
     expect(literal).toBeDefined();
     const pattern = new RegExp(literal ?? "");
     for (const key of SYNCED_STORAGE_KEYS) expect(pattern.test(key)).toBe(true);
+    for (const key of Object.keys(
+      encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.map((name) => [name, "value"]))),
+    )) {
+      expect(pattern.test(key)).toBe(true);
+      expect(key).not.toMatch(/[.$#[\]/]/);
+    }
     expect(pattern.test("a".repeat(101))).toBe(false);
     expect(pattern.test("com/barra")).toBe(false);
     expect(pattern.test("")).toBe(false);
