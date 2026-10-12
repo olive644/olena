@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Validação da navegação da Agenda (2026-10-12)
+
+- O teste responsivo media Agenda antes da ativação após carregar a página sob demanda. Comparava Praticar ativo, deslocado 2 px pelo design, com Agenda ainda inativa. A comparação agora aguarda aria-current="page", como já fazia para Praticar, preservando a animação e a exigência de alinhamento em 320/360/390/768/1280 px.
+
+## Agenda, detalhes dinâmicos em papel (2026-10-12, validado localmente)
+
+- Regressão reproduzida: snapshot antigo do stream após PUT confirmado interpretava evento recém-criado como exclusão. Marcador updatedAt por conta descarta respostas anteriores ao último estado confirmado; novas escritas usam valor monotônico relativo ao servidor observado. Escritas deste cliente são serializadas e respostas após troca de conta são ignoradas. Teste falhou antes e passou depois da correção. Não há revisão transacional global nem edição colaborativa nova.
+- Barra recupera textos; importar/exportar reutilizam PaperEditorIcon da escrita. Nova impressora, relógio de duração arrastável/teclado, painéis de metadados com resumo, slider compartilhado da Escuta coletiva e aviso na hora padrão.
+- Fuso brasileiro automático pertence à conta por helena.agendaTimeZone.v1. Cadastro não fornece localização; usa fuso brasileiro do dispositivo no primeiro uso ou Brasília fora do Brasil. Sem seletor por evento, acesso geográfico ou dados de localização inventados.
+- Área de anexos aceita seleção múltipla e arraste, valida cada arquivo e limita quantidade/tamanho. Fotos reais em Dia/Semana/Mês/Lista, sem upload a serviço adicional nem mudança no formato de workspace. Animações respeitam movimento reduzido. Não inclui alterações paralelas de Pixi/dependências/testes.
+- npm run verify aprovado em cópia limpa do índice, 233 arquivos e 1427 testes, lint/formatação/API/build/orçamentos. Entrada 285,3 KiB e aplicação 1295,1 KiB; limites normais 286/1296 KiB, tetos absolutos preservados. Navegador Edge/Chromium: 52 cenários de Agenda/Foco aprovados, mais 4 cenários focados repetidos após ajustes finais, em computador/celular e temas claro/escuro. Fuso da conta foi exercitado em navegador de Portugal. Teclado, ponteiros reais, Enter no campo expansível, arraste de anexo, imagens carregadas nas quatro vistas e recarga cobertos. WebKit nativo e publicação desta etapa ficam no fluxo da PR.
+- Após conciliar a main atualizada com a Helena da PR #414: npm run verify aprovado, 234 arquivos e 1430 testes. Mais 16 cenários de Agenda em Edge/Chromium desktop/móvel passaram na combinação. Entrada 285,3 KiB e aplicação 1297,9 KiB; orçamento normal combinado 286/1299 KiB, sem alterar tetos absolutos ou orçamento próprio da Helena. Conflitos documentais preservam as duas entregas. Normalização de finais de linha ocorreu apenas na cópia temporária, sem mudar conteúdo ou alterações locais do proprietário.
+
 ## Helena cartoon no assistente (2026-10-12)
 
 - A versão 3D aprovada pelo proprietário substitui a estrela do botão flutuante. Cliques abrem a conversa; fechar a conversa volta à estrela. Repouso e arraste reutilizam o repertório cartoon aprovado.
@@ -9,10 +22,10 @@
 
 - Validação local após reconciliar a main: 1415 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 280,9 KiB e aplicação 1283,2 KiB; renderizador opcional 662,8 KiB e modelo 3,5 MiB.
 
-## Agenda e Foco pela conta (2026-10-12, em validação)
+## Agenda e Foco pela conta (2026-10-12, publicado na PR #415)
 
 - Causa de transporte confirmada: chaves de localStorage com pontos eram enviadas como nomes de filhos, rejeitados pelo Realtime Database antes das Security Rules. Novo codec base64url usa stateV2, com leitura/cópia do legado sem apagá-lo. Regras expandidas mantêm restrição ao próprio UID.
-- Regra stateV2 publicada em 2026-10-12, com autorização do proprietário, no projeto appstudyoli e instância appstudyoli-default-rtdb pelo CLI oficial autenticado. Backup anterior preservado. Comparação estrutural confirmou que a única mudança foi users/$uid/stateV2; validações legadas presentes apenas no repositório não foram publicadas. Firebase validou a sintaxe e confirmou a publicação. Nova leitura das regras publicadas corresponde integralmente à candidata aprovada. Nenhum registro de usuário foi alterado. Publicação do cliente e validação de sincronização real continuam pendentes.
+- Regra stateV2 publicada em 2026-10-12, com autorização do proprietário, no projeto appstudyoli e instância appstudyoli-default-rtdb pelo CLI oficial autenticado. Backup anterior preservado. Comparação estrutural confirmou que a única mudança foi users/$uid/stateV2; validações legadas presentes apenas no repositório não foram publicadas. Firebase validou a sintaxe e confirmou a publicação. Nova leitura das regras publicadas corresponde integralmente à candidata aprovada. Nenhum registro de usuário foi alterado. Cliente publicado a partir do commit mesclado b3e152d da PR #415; produção retornou HTTP 200 e transporte stateV2 confirmado no bundle. CI da PR incluiu WebKit móvel aprovado. Isso não equivale a um teste manual com dados reais da conta.
 
 - Reproduzidos três casos de perda: GET inicial antigo apagava registros offline, updates recebidos não atualizavam IndexedDB e leitura tardia de cache substituía mudanças da conta. Proteção por revisão, cache remoto atualizado e histórico de Foco aditivo por ID evitam o retorno ao zero.
 - Sessão em andamento entra nas chaves sincronizadas com snapshot válido mais recente e deviceId opcional compatível. Mesmo aparelho retoma; outro mostra pausado e só assume após ação. Estado inicial vazio não grava zero sobre a nuvem. Publicação limitada a 30 segundos e ações, não por segundo.

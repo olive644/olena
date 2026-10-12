@@ -12,14 +12,15 @@
   margin-bottom: 12px;
 }
 :root .app-shell .agenda-page .agenda-toolbar .agenda-tool {
-  width: 52px;
+  width: auto;
   height: 48px;
   min-width: 48px;
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 8px 12px;
+  gap: 8px;
   border: 1px solid #d7cbb7;
   border-radius: 5px 13px 6px 11px;
   background-color: #fff9ef;
@@ -32,9 +33,23 @@
 :root .app-shell .agenda-page .agenda-toolbar .agenda-tool[aria-pressed="true"] {
   box-shadow: 0 4px 0 #facc15;
 }
-.agenda-tool .paper-action-icon {
+.agenda-tool :is(.paper-action-icon, .paper-editor-icon) {
   width: 30px;
   height: 30px;
+}
+@media (max-width: 560px) {
+  :root .app-shell .agenda-page .agenda-toolbar .agenda-tool {
+    flex-direction: column;
+    height: auto;
+    min-height: 66px;
+    padding: 7px 10px;
+    gap: 3px;
+    font-size: 11px;
+  }
+  .agenda-tool :is(.paper-action-icon, .paper-editor-icon) {
+    width: 26px;
+    height: 26px;
+  }
 }
 :root .app-shell .agenda-page .agenda-toolbar .agenda-tool:focus-visible,
 :root .app-shell .agenda-page .agenda-toolbar .agenda-tool:focus-within {

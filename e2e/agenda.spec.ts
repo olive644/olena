@@ -716,7 +716,10 @@ test("weekly study opens focus without completing, records real minutes and retu
   await page.getByRole("button", { name: "Reservar estudo", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Estudar frações");
-  await form.getByLabel("Duração em minutos").fill("1");
+  await form.getByRole("button", { name: "Duração em minutos", exact: true }).click();
+  const duration = page.getByRole("dialog", { name: "Escolher duração", exact: true });
+  await duration.getByRole("spinbutton", { name: "Minutos", exact: true }).fill("1");
+  await duration.getByRole("button", { name: "Concluir", exact: true }).click();
   await form.getByRole("button", { name: "Repetir semanalmente", exact: true }).click();
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await page.getByRole("button", { name: "Começar estudo Estudar frações" }).click();

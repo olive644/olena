@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, prova de navegação responsiva: aguardar aria-current="page" antes de medir o ícone ativo após troca para Agenda. O carregamento sob demanda pode manter temporariamente a página anterior; não comparar a posição de ícones em estados diferentes nem remover a animação para esconder a corrida do teste.
+
+2026-10-12, detalhes da Agenda: marcador de estado confirmado descarta stream/GET anterior a PUT recente, evitando remoção falsa de eventos; PUTs do mesmo cliente são serializados. Fuso brasileiro automático sincroniza por helena.agendaTimeZone.v1, não usa geolocalização nem cadastro inexistente de cidade. AgendaDurationClock/agenda-duration controlam ponteiros, teclado, virada de hora e limites. AgendaMetadataField expande campos com resumo. RoomStepSlider recebe formatValue e ID único fora dos controles da sala, reaproveitando arraste para lembretes. AgendaAttachmentPreview mostra imagens reais em todas as visualizações; drop/seleção compartilham validação existente. Toolbar mantém placas creme, textos e os ícones cloudUpload/download da escrita.
+
 2026-10-12, mascote do assistente: HelenaMascot mantém a ponte tipada entre o
 botão existente e o frame gráfico local. O estado visual não recebe conversa ou
 autenticação. Movimento reduzido desliga o 3D; a imagem estática mantém o botão.

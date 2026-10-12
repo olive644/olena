@@ -11,6 +11,7 @@ export const SYNCED_STORAGE_KEYS = [
   "helena.notebookPreferences.v1",
   "helena.systemUpdates.read.v1",
   "olena.focus-session.v1",
+  "helena.agendaTimeZone.v1",
 ] as const;
 
 export const SYNCED_STORAGE_EVENT = "helena:synced-storage-change";
