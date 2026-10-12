@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Agenda compacta e ajustes diretos (2026-10-12)
+
+- Filtros matéria/tipo agrupados em painel acessível, ao lado de Pesquisar. Quatro ações de arquivo/lembretes ficam na mesma linha móvel. No desktop, painel do dia abaixo de Meu estudo; no celular, ordem calendário/dia/estudo preservada.
+- Relógio reutiliza números SVG originais, exclusão reutiliza lixeira da escrita. Textos auxiliares solicitados e avisos permanentes de adição/sincronização concluída removidos; falhas e envio pendente continuam explícitos. Metadados abertos/focados usam grafite sobre papel para contraste nos dois temas.
+- Arraste e duração salvam diretamente com validação, projeção pelo fuso da conta e escopo de ocorrência para rotinas. Atalhos Alt/setas e Shift/Alt/setas preservam alternativa ao arraste. Histórico permanece na data original.
+- Cor opcional hexadecimal pertence ao evento, sem novo serviço nem versão do workspace. Carregamento rejeita cores inválidas; merge existente preserva alterações independentes. Aviso de permissão segue duração e barra de 6 segundos do XP, com ícone de sino, fechamento e cooldown do botão. Movimento reduzido preservado.
+- Validação local: npm run verify passou, 234 arquivos e 1432 testes, lint/formatação/API/build/orçamento. Agenda/Foco passaram em 56 cenários Edge/Chromium desktop/móvel; mais 6 cenários de movimento/teclado passaram após o ajuste final de foco, incluindo vizinhos com o mesmo título. Contraste dos metadados abertos/focados é medido em ambos os temas, mínimo 4,5:1; troca de cor não interpola pares temporariamente ilegíveis. 16 repetições dos cenários afetados também passaram. Entrada 285,3 KiB, aplicação 1301,9 KiB; orçamento normal 1303 KiB, tetos absolutos preservados. WebKit nativo fica no CI, sem alegar teste de conta real entre aparelhos.
+
 ## Validação da navegação da Agenda (2026-10-12)
 
 - O teste responsivo media Agenda antes da ativação após carregar a página sob demanda. Comparava Praticar ativo, deslocado 2 px pelo design, com Agenda ainda inativa. A comparação agora aguarda aria-current="page", como já fazia para Praticar, preservando a animação e a exigência de alinhamento em 320/360/390/768/1280 px.

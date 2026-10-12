@@ -92,7 +92,7 @@ test("compact agenda keeps seven days and three actions in one row and desktop c
   }
 });
 
-test("day panel matches the calendar width, keeps a plain date and only text selectable", async ({
+test("day panel matches its column, keeps a plain date and only text selectable", async ({
   page,
 }, info) => {
   if (info.project.name === "desktop") await page.setViewportSize({ width: 1920, height: 1080 });
@@ -108,7 +108,9 @@ test("day panel matches the calendar width, keeps a plain date and only text sel
     await expect
       .poll(() =>
         page.evaluate(() => {
-          const calendar = document.querySelector(".agenda-month")!.getBoundingClientRect();
+          const calendar = document
+            .querySelector(innerWidth >= 1200 ? ".agenda-history" : ".agenda-month")!
+            .getBoundingClientRect();
           const panel = document.querySelector(".agenda-day--open")!.getBoundingClientRect();
           return Math.max(Math.abs(calendar.width - panel.width), Math.abs(calendar.x - panel.x));
         }),
@@ -620,7 +622,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   await page.screenshot({ path: info.outputPath(`agenda-${info.project.name}-dark.png`) });
 });
 
-test("calendar stays visible and its icon opens the month selector", async ({ page }) => {
+test("calendar stays visible and its icon opens the month selector", async ({ page }, info) => {
   await page.goto("/planejador");
   const toggle = page.getByRole("button", { name: "Escolher mês", exact: true });
   const calendar = page.getByRole("region", { name: "Calendário mensal" });
@@ -650,9 +652,11 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Plano do dia escolhido");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
-  const calendarBox = await calendar.boundingBox();
   const planningBox = await page.locator(".agenda-day").boundingBox();
-  expect(planningBox!.y).toBeGreaterThan(calendarBox!.y + calendarBox!.height);
+  const preceding = await page
+    .locator(info.project.name === "desktop" ? ".agenda-history" : ".agenda-month")
+    .boundingBox();
+  expect(planningBox!.y).toBeGreaterThan(preceding!.y + preceding!.height);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(calendar).toBeVisible();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();

@@ -257,7 +257,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Helena tipada e prioridade de interação acrescentam 2,8 KiB ao módulo lazy.
 // Total combinado com conta/Agenda: 1288,7 KiB. Teto absoluto preservado.
 // Combined with dynamic Agenda controls: measured 1297.9 KiB, hard ceiling unchanged.
-const MAX_TOTAL_JS_BYTES = 1299 * 1024;
+// Compact filters, account event colors and keyboard/direct grid movement: measured 1301.9 KiB.
+// Keep narrow bundler variance; initial entry and absolute ceilings remain unchanged.
+const MAX_TOTAL_JS_BYTES = 1303 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

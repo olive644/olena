@@ -262,6 +262,8 @@ export function validateCalendarEvent(event: StudyEvent): string | null {
   )
     return "O fim deve estar entre o início e 366 dias depois.";
   if (event.timeZone && !validZone(event.timeZone)) return "Escolha um fuso horário válido.";
+  if (event.color !== undefined && !/^#[0-9a-f]{6}$/i.test(event.color))
+    return "Escolha uma cor válida para o evento.";
   if (
     event.recurrenceInterval !== undefined &&
     (!Number.isInteger(event.recurrenceInterval) ||
