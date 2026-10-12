@@ -4,10 +4,10 @@
 
 - A versão 3D aprovada pelo proprietário substitui a estrela do botão flutuante. Cliques abrem a conversa; fechar a conversa volta à estrela. Repouso e arraste reutilizam o repertório cartoon aprovado.
 - Canvas transparente em frame local decorativo, sem captura de foco ou ponteiro. O componente React mantém teclado, captura de toque, encaixe na borda, histórico e streaming existentes. A ponte só envia estado visual, nunca mensagens, autenticação ou dados do aluno.
-- A CSP permite frames de mesma origem para este renderizador, mantendo os hosts de autenticação existentes e sem permitir script inline. Modelo carregado depois da montagem do chat. Pausa fora da aba, sob modais ou com o botão oculto no celular. Movimento reduzido não carrega o renderizador; falta de WebGL conserva os renders estáticos e a conversa.
+- A CSP permite frames de mesma origem para este renderizador, mantendo os hosts de autenticação existentes e sem permitir script inline. Modelo carregado depois da montagem do chat. Pausa fora da aba, sob modais, com o botão oculto no celular ou por 1,5 segundo após interação em outra tela. Renderização por software usa materiais mais leves e 12 quadros/s em repouso, mantendo 30 em hover, transformação e arraste. Movimento reduzido não carrega o renderizador; falta de WebGL conserva os renders estáticos e a conversa.
 - Three.js 0.170.0 vendorizado com licença MIT, bundle reproduzível com o Vite existente. Nenhuma alteração de dependências npm. Consulta OSV da versão não retornou avisos em 2026-10-12. Assets têm orçamento próprio de 768 KiB JS e 4 MiB GLB; o orçamento e os tetos do React continuam verificados.
 
-- Validação local após reconciliar a main: 1414 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 280,9 KiB e aplicação 1282,5 KiB; renderizador opcional 660,4 KiB e modelo 3,5 MiB.
+- Validação local após reconciliar a main: 1415 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 280,9 KiB e aplicação 1283,2 KiB; renderizador opcional 662,8 KiB e modelo 3,5 MiB.
 
 ## Agenda interna ampliada (2026-10-12)
 

@@ -11,6 +11,7 @@ type MascotProps = {
 export function HelenaMascot(props: MascotProps) {
   const frame = useRef<HTMLIFrameElement>(null);
   const state = useRef(props);
+  const interaction = useRef(false);
   const [active, setActive] = useState(false);
   const [ready, setReady] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -30,6 +31,7 @@ export function HelenaMascot(props: MascotProps) {
           document.documentElement.dataset["reduceMotion"] === "true",
         visible:
           !document.hidden &&
+          !interaction.current &&
           !(value.open && window.innerWidth < 900) &&
           !document.querySelector('dialog[open], [aria-modal="true"]'),
       },
@@ -44,6 +46,7 @@ export function HelenaMascot(props: MascotProps) {
   useEffect(() => {
     const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     let activation: ReturnType<typeof setTimeout> | undefined;
+    let resume: ReturnType<typeof setTimeout> | undefined;
     const refresh = () => {
       const quiet =
         (media?.matches ?? true) || document.documentElement.dataset["reduceMotion"] === "true";
@@ -53,9 +56,33 @@ export function HelenaMascot(props: MascotProps) {
         setActive(false);
         setReady(false);
       } else if (!document.hidden) {
-        activation = setTimeout(() => setActive(true), 350);
+        activation = setTimeout(() => setActive(true), 1500);
       }
       send();
+    };
+    const input = (event: Event) => {
+      if (event.target instanceof Element && event.target.closest(".helena-chat")) {
+        interaction.current = false;
+        if (resume) clearTimeout(resume);
+        if (
+          !(media?.matches ?? true) &&
+          document.documentElement.dataset["reduceMotion"] !== "true"
+        )
+          setActive(true);
+        send();
+        return;
+      }
+      interaction.current = true;
+      if (resume) clearTimeout(resume);
+      if (activation) clearTimeout(activation);
+      send();
+      resume = setTimeout(() => {
+        interaction.current = false;
+        refresh();
+      }, 1500);
+    };
+    const approach = (event: Event) => {
+      if (event.target instanceof Element && event.target.closest(".helena-chat")) input(event);
     };
     const message = (event: MessageEvent<unknown>) => {
       if (event.origin !== window.location.origin || event.source !== frame.current?.contentWindow)
@@ -84,15 +111,24 @@ export function HelenaMascot(props: MascotProps) {
     document.addEventListener("visibilitychange", refresh);
     window.addEventListener("resize", send);
     window.addEventListener("message", message);
+    window.addEventListener("pointerdown", input, true);
+    window.addEventListener("pointerover", approach, true);
+    window.addEventListener("keydown", input, true);
+    window.addEventListener("input", input, true);
     refresh();
     return () => {
       if (activation) clearTimeout(activation);
+      if (resume) clearTimeout(resume);
       preferences.disconnect();
       dialogs.disconnect();
       media?.removeEventListener?.("change", refresh);
       document.removeEventListener("visibilitychange", refresh);
       window.removeEventListener("resize", send);
       window.removeEventListener("message", message);
+      window.removeEventListener("pointerdown", input, true);
+      window.removeEventListener("pointerover", approach, true);
+      window.removeEventListener("keydown", input, true);
+      window.removeEventListener("input", input, true);
     };
   }, [send]);
 

@@ -24,7 +24,7 @@ it("rejects spoofed ready messages and sends only visual state to the owned fram
   vi.useFakeTimers();
   vi.stubGlobal("matchMedia", () => ({ matches: false }));
   const view = render(<HelenaMascot {...props} />);
-  act(() => vi.advanceTimersByTime(350));
+  act(() => vi.advanceTimersByTime(1500));
   const frame = view.container.querySelector("iframe")!;
   const post = vi.spyOn(frame.contentWindow!, "postMessage");
   fireEvent.load(frame);
@@ -76,4 +76,25 @@ it("rejects spoofed ready messages and sends only visual state to the owned fram
     "x",
     "y",
   ]);
+});
+
+it("yields rendering to other screens and resumes after their interaction", () => {
+  vi.useFakeTimers();
+  vi.stubGlobal("matchMedia", () => ({ matches: false }));
+  const view = render(<HelenaMascot {...props} />);
+  act(() => vi.advanceTimersByTime(1500));
+  const frame = view.container.querySelector("iframe")!;
+  const post = vi.spyOn(frame.contentWindow!, "postMessage");
+  const other = document.createElement("button");
+  document.body.append(other);
+  try {
+    fireEvent.pointerDown(other);
+    expect(post.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ visible: false }));
+    act(() => vi.advanceTimersByTime(1499));
+    expect(post.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ visible: false }));
+    act(() => vi.advanceTimersByTime(1));
+    expect(post.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ visible: true }));
+  } finally {
+    other.remove();
+  }
 });

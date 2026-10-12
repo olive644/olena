@@ -19,6 +19,8 @@ function smooth(a, b, x) {
 function pulse(t, a, b, c, d) {
   return smooth(a, b, t) * (1 - smooth(c, d, t));
 }
+let software = false;
+let notified = false;
 let renderer,
   root,
   head,
@@ -435,7 +437,8 @@ function apply(t, dt) {
 }
 function tick(now) {
   requestAnimationFrame(tick);
-  if (now - last < 1000 / 30) return;
+  const fps = software && !hover && !drag && !transition ? 12 : 30;
+  if (now - last < 1000 / fps) return;
   const elapsed = Math.min(0.25, (now - last) / 1000),
     dt = elapsed;
   last = now;
@@ -443,6 +446,10 @@ function tick(now) {
   if (!paused && !(reduced.matches || hostReduced)) clock += elapsed;
   apply(clock, paused || reduced.matches || hostReduced ? 0 : dt);
   renderer.render(scene, camera);
+  if (!notified) {
+    notified = true;
+    window.parent.postMessage({ type: "helena-ready", ready: true }, location.origin);
+  }
 }
 function coords(e) {
   const r = canvas.getBoundingClientRect();
@@ -561,7 +568,14 @@ try {
     antialias: true,
     powerPreference: "high-performance",
   });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const context = renderer.getContext();
+  const debug = context.getExtension("WEBGL_debug_renderer_info");
+  software =
+    !!debug &&
+    /swiftshader|llvmpipe|softpipe|software/i.test(
+      String(context.getParameter(debug.UNMASKED_RENDERER_WEBGL)),
+    );
+  renderer.setPixelRatio(software ? 1 : Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -577,6 +591,18 @@ try {
     if (o.name.startsWith("Revelação")) eyes.push(o);
     if (o.isMesh) {
       o.frustumCulled = false;
+      if (software) {
+        const original = o.material;
+        o.material = new THREE.MeshLambertMaterial({
+          color: original.color,
+          map: original.map,
+          transparent: original.transparent,
+          opacity: original.opacity,
+          side: THREE.DoubleSide,
+        });
+        o.material.sheenColor = new THREE.Color();
+        original.dispose();
+      }
       o.material.side = THREE.DoubleSide;
       if (o.name.startsWith("Pupila")) {
         o.material.roughness = 0.38;
@@ -602,7 +628,6 @@ try {
   ready = true;
   stage.classList.add("ready");
   stage.dataset.ready = "true";
-  window.parent.postMessage({ type: "helena-ready", ready: true }, location.origin);
   if (hostOpen) startTransform(1, true);
   reduced.addEventListener("change", () => {
     if (reduced.matches || hostReduced) {

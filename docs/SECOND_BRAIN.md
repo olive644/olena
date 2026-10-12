@@ -8,7 +8,9 @@ vendorizado com MIT em scripts/helena-mascot/vendor; regenerar o bundle com
 node scripts/build-helena-mascot.mjs, sem copiar o diretório public para ele mesmo.
 Modelos e renders de Blender ficam em public/helena-assistant. Testar o app real,
 preview do chat e mensagens da ponte. Orçamento gráfico próprio verificado por
-npm run performance:check. Aprovação visual limitada ao assistente registrada no
+npm run performance:check. A interação em outras telas suspende o gráfico por 1,5 segundo; a montagem espera
+um intervalo ocioso. Renderizador por software mantém as poses com material leve.
+Aprovação visual limitada ao assistente registrada no
 design system. Nenhuma mudança no provedor de IA, envio ou retenção de conversa.
 
 2026-10-12, agenda interna ampliada: agenda-calendar concentra recorrência, fuso, projeção e escopos; agenda-ics valida intercâmbio sem duplicar UID; agenda-grid-layout distribui conflitos na grade. Planner confirma movimento antes de dispatch event/series-changed. AgendaReminders é carregado sob demanda, guarda fila local por conta e não oferece push fechado. Eventos/tarefas usam merge por campo com reconciliação existente. Metadados opcionais mantêm workspace v7; clientes antigos precisam atualizar para editar recursos avançados. Google bidirecional e colaboração remota ficam para etapa posterior. Fluxo e limites em docs/AGENDA.md.
