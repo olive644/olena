@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, cursor autoral: paper-cursor.css usa SVGs locais de seta e mão facetadas com hotspots explícitos e fallback nativo. Somente mouse fino com hover e fora de forced-colors; sem JavaScript. Texto e ferramentas mantêm cursores semânticos, mobile não muda. Sem alterações de persistência ou sincronização.
+
 2026-10-11, layout responsivo da Agenda: overview em duas colunas a partir de 1200px; calendário e painel do dia agrupados à esquerda, Meu estudo à direita. No celular, sete indicadores de Foco e três ações permanecem em uma linha compacta. Textos auxiliares solicitados e widgets Google/Listas removidos somente da tela, preservando armazenamento e sincronização.
 
 2026-10-11, Agenda compacta: removido o widget Uma semana possível. Painel do dia passa a compartilhar largura máxima/centralização de 860px com calendário e Meu estudo. Cabeçalho da data é texto comum e mantém foco programático sem efeito amarelo; controles continuam com foco visível. Demais números do calendário preservados. paper-controls.css bloqueia seleção de controles/ícones, preservando texto comum e campos editáveis. Sem alteração de armazenamento, sincronização ou dados.

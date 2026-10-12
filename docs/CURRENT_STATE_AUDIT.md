@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Cursor de papel (2026-10-12)
+
+- Dois SVGs locais de 32px aplicados via CSS nativo para mouse com hover: seta e mão de ação com estrela. Paleta aprovada e borda creme/grafite legível nos dois temas.
+- Campos mantêm cursor text; ferramentas mantêm crosshair/grab/resize; controles desabilitados mantêm not-allowed. Sem mudança de dados, sincronização ou eventos do mouse.
+- Toque e forced-colors ficam com o comportamento original. Sem overlay, listeners ou dependências novas. Regressão de navegador cobre ambos os temas e estados funcionais.
+- Verificação geral aprovada com 1401 testes. App e cursor: 23 cenários de navegador aprovados, 5 exclusivos de outro projeto ignorados. Edge/Chromium local; WebKit nativo no CI. JavaScript inicial 279,4 KiB e aplicação 1242,3 KiB, sem aumento.
+
 ## Agenda responsiva compacta (2026-10-11)
 
 - Sete flores/tomates e três ações do dia ocupam uma linha no celular; ícones e textos reutilizam o design existente.

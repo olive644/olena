@@ -1,0 +1,58 @@
+/* Native cursors: no tracking layer, hidden pointer or touch interception. */
+@media (hover: hover) and (pointer: fine) and (forced-colors: none) {
+  :root {
+    --paper-cursor-arrow: url("/cursors/paper-arrow.svg") 3 3, default;
+    --paper-cursor-hand: url("/cursors/paper-hand.svg") 13 3, pointer;
+  }
+  html,
+  body {
+    cursor: var(--paper-cursor-arrow);
+  }
+  :root
+    body
+    :is(
+      button,
+      a[href],
+      summary,
+      select,
+      label[for],
+      [role="button"],
+      [role="link"],
+      [role="tab"],
+      [role="option"],
+      input[type="checkbox"],
+      input[type="radio"],
+      input[type="range"],
+      input[type="submit"],
+      input[type="button"],
+      input[type="file"]
+    ) {
+    cursor: var(--paper-cursor-hand) !important;
+  }
+  :root
+    body
+    :is(
+      textarea,
+      [contenteditable="true"],
+      input:not([type]),
+      input[type="text"],
+      input[type="search"],
+      input[type="email"],
+      input[type="password"],
+      input[type="tel"],
+      input[type="url"],
+      input[type="number"],
+      input[type="date"],
+      input[type="time"]
+    ) {
+    cursor: text !important;
+  }
+  :root
+    body
+    :is(button, input, select, textarea, [role="button"], [role="option"]):is(
+      :disabled,
+      [aria-disabled="true"]
+    ) {
+    cursor: not-allowed !important;
+  }
+}
