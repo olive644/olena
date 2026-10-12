@@ -9,10 +9,13 @@ Origem: https://cdn.jsdelivr.net/npm/three@0.170.0/.
 Consulta de segurança: OSV npm/three 0.170.0 não retornou avisos em 2026-10-12.
 Fontes de terceiros são mantidas sem alterações de formatação; apenas o import
 relativo de BufferGeometryUtils foi ajustado para esta disposição de diretórios.
+O gerador UUID do Three usa crypto.getRandomValues em vez de Math.random,
+preservando o formato UUID v4 e evitando identificadores de baixa entropia.
+Regressão: node --test scripts/helena-mascot/uuid.test.mjs.
 
 SHA-256 das fontes vendorizadas:
 
-- three.module.js: ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb
+- three.module.js: 167666105118d10284cbab97308db7d67889771f413feb9a98b7979cfcd82645
 - GLTFLoader.js: 8a7db5a19d1018d79fb9a7a8b8372f317682027321a67d86023002e264ea479d
 - BufferGeometryUtils.js: c25b7930e570e9ec56173cd3b866ec8d2e10016630db3937efb439daf1cedbf6
 
