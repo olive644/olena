@@ -2536,3 +2536,9 @@ seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
 - Validação: 1386 testes unitários, tipos/build e orçamento de desempenho;
   14 cenários E2E da Agenda em desktop/mobile Edge, com temas claro/escuro.
   JS inicial 278,5 KiB e total 1229,8 KiB, sem dependências nem aumento de orçamento.
+
+### Helena no cabeçalho e renderização móvel
+
+A mascote gráfica mantém uma única instância ao abrir e recolher a conversa. O botão se alinha ao espaço de identificação do cabeçalho, sem outro modelo ou imagem acima da saudação. Ao recolher, a transformação em estrela começa imediatamente e continua no botão flutuante. O cabeçalho permanece animado também no celular.
+
+A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque e 1,5 no desktop. No toque, materiais Standard preservam cor e iluminação sem as camadas físicas e o relevo invisível nesse tamanho. Animações ociosas móveis usam 18 quadros por segundo, com 30 nas transformações e interações. Não há solicitação de quadros enquanto o documento ou a mascote estão ocultos. Mudanças de texto no chat não reenviam estado gráfico, salvo quando realmente alteram a presença de um diálogo modal. O modelo e o bundle são carregados uma vez por instância, e redução de movimento continua usando imagem estática.
