@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Validação da navegação da Agenda (2026-10-12)
+
+- O teste responsivo media Agenda antes da ativação após carregar a página sob demanda. Comparava Praticar ativo, deslocado 2 px pelo design, com Agenda ainda inativa. A comparação agora aguarda aria-current="page", como já fazia para Praticar, preservando a animação e a exigência de alinhamento em 320/360/390/768/1280 px.
+
 ## Agenda, detalhes dinâmicos em papel (2026-10-12, validado localmente)
 
 - Regressão reproduzida: snapshot antigo do stream após PUT confirmado interpretava evento recém-criado como exclusão. Marcador updatedAt por conta descarta respostas anteriores ao último estado confirmado; novas escritas usam valor monotônico relativo ao servidor observado. Escritas deste cliente são serializadas e respostas após troca de conta são ignoradas. Teste falhou antes e passou depois da correção. Não há revisão transacional global nem edição colaborativa nova.

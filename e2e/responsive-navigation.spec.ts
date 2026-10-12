@@ -43,6 +43,7 @@ for (const width of [320, 360, 390, 768, 1280]) {
       const practiceBox = await practiceIcon.boundingBox();
       await expect(practiceIcon).toHaveCSS("margin-top", "0px");
       await agenda.click();
+      await expect(agenda).toHaveAttribute("aria-current", "page");
       const agendaBox = await agenda.locator(".mobile-nav__icon").boundingBox();
       expect(practiceBox!.width).toBe(agendaBox!.width);
       expect(practiceBox!.height).toBe(agendaBox!.height);
