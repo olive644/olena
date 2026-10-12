@@ -203,3 +203,23 @@ do modelo próprio garantida por este pipeline.
 Fontes: [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/),
 [destilação TRL](https://huggingface.co/docs/trl/distillation_trainer),
 [PEFT](https://huggingface.co/docs/peft/).
+
+## Treinamento matemático v2
+
+O workflow candidato agora usa `scripts/olena_training_data.py`: 96 exemplos originais e públicos, em oito temas, com 32 questões de avaliação separadas. Metade do treino pede apenas resultado, metade explicação curta. Os temas são adição, subtração, multiplicação, divisão, frações, porcentagens, equações lineares e potências. Referências exatas usam Fraction; IDs, respostas, explicações, operandos e prompts devem corresponder ao corpus canônico. Nem perguntas de alunos nem respostas do professor entram nesse corpus. O gerador antigo e o endpoint protegido permanecem ferramentas separadas e não são chamados por esse workflow.
+
+A base permanece Qwen2.5-0.5B-Instruct na revisão fixa documentada, com LoRA rank 4, dois threads CPU e até 96 passos embaralhados. Cada exemplo participa uma vez nessa tentativa, com taxa 0,00005 e gradientes limitados. Máscara de perda confere o prefixo tokenizado; apenas tokens da resposta recebem supervisão. A auditoria do ambiente continua obrigatória antes do carregamento. Modelos não executam código remoto e adaptadores usam safetensors.
+
+A avaliação usa as mesmas instruções de formato no modelo base, no último candidato válido e no novo candidato. Resultados são comparados como valores racionais exatos, com resposta curta completa; não aceita números extraídos de explicações arbitrárias. A aprovação experimental exige pelo menos 24/32 acertos, pelo menos 2/4 em cada tema e nenhuma perda de questão que a base ou o candidato anterior acertava. Esse teste não comprova qualidade pedagógica e nunca configura aprovação de produção.
+
+Somente pesos aprovados são enviados ao artefato `Olena-Math-Qwen-Candidate-v2`, por sete dias. Se uma tentativa nova falha, renova os pesos aprovados anteriores sem substituí-los pelos rejeitados. Relatórios, inclusive de rejeição, ficam em `Olena-Math-Training-Report-v2`, por 30 dias. Retomada exige revisão de base, versão do treino, corpus de avaliação, gate recalculado, configuração LoRA e hash dos pesos compatíveis. Só aceita artefatos da main ou da própria branch confiável. Uma falha de download não vira reinício silencioso. Artefatos antigos Llama-Olena-Qwen-Candidate não são promovidos a essa cadeia.
+
+Se um candidato aprovado tem corpus inalterado, renova a retenção sem treinar. Uma tentativa rejeitada idêntica também não se repete automaticamente. Alterar conteúdo, avaliação ou versão do treino permite nova tentativa; `workflow_dispatch` com `force_training=true` permite repetição explícita e limitada. O agendamento permanece diário, mas não significa que pesos mudam diariamente sem dados novos.
+
+Comandos locais sem download de modelo:
+
+- `python3 scripts/olena_training_data.py`
+- `python3 scripts/test_train_olena_candidate.py`
+- `python3 scripts/test_audit_olena_runtime.py`
+
+Treino real com ambiente auditado é executado pelo workflow em uma branch revisada ou na main. Relatório registra resultado da base, candidato anterior, novo candidato, regressões, cobertura dos temas e losses. Queda da loss não substitui o gate de avaliação. A publicação do chat permanece uma decisão separada, após revisão humana e hospedagem do modelo.
