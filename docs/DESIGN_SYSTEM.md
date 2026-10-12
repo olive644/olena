@@ -16,6 +16,14 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 
 ## Controles da Agenda e fechamento
 
+Botões, summary, controles role=button e ícones decorativos não são selecionáveis
+como texto. Aplicar a regra global de paper-controls.css, sem bloquear a seleção
+da página inteira. Textos informativos, input, textarea e contenteditable continuam
+selecionáveis e copiáveis. Não usar preventDefault global para impedir seleção.
+O título informativo do dia mantém foco programático para acessibilidade, mas
+não usa filtro/sublinhado amarelo de botão. A exceção é restrita ao título;
+controles continuam com foco visível.
+
 X colorido de fechamento usa agenda-close.svg sem placa roxa, fundo ou sombra
 de botão, com área de 44px e sublinhado amarelo no teclado. A regra global em
 paper-controls.css aplica-se a AgendaCloseIcon e PaperCloseIcon. Os SVGs

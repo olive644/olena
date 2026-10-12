@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Painel do dia e seleção de controles (2026-10-11)
+
+- Uma semana possível foi removido da Agenda, incluindo seus botões/resumo. Dados, calendário, metas e chat existentes permanecem intactos.
+- agenda-day compartilha o limite de 860px e centralização do calendário e Meu estudo, incluindo o painel aberto diretamente sob o calendário. Título da data usa texto comum, sem PaperDigits; números dos dias da grade permanecem no design de papel.
+- O título continua recebendo foco programático para orientação acessível, mas não recebe o sublinhado/filtro amarelo de controles interativos. A exceção fica restrita a agenda-day-title; botões e campos preservam foco visível.
+- Regra global em paper-controls.css impede seleção de botões, summary, controles role=button e ícones decorativos. Campos input/textarea/contenteditable mantêm seleção de texto; textos informativos continuam copiáveis. Não desativa foco, clique, teclado ou gestos do calendário.
+- Verificação geral passou com 1401 testes, tipos, lint, formatação, APIs, build e desempenho. Testes de navegador verificam mesma largura/alinhamento a 1920px e viewport móvel, datas sem PaperDigits, cópia de texto e campos selecionáveis em claro/escuro. Entrada 279,4 KiB e total 1249,0 KiB, dentro dos orçamentos existentes. Mobile local usa Edge/Chromium; WebKit nativo fica no CI.
+- Rodada final da Agenda/navegação: 49 E2E aprovados e 5 skips específicos de plataforma. Exceção de foco do título revalidada em dois cenários focados, preservando sublinhado nos controles. Rodar build e preview E2E sequencialmente no mesmo checkout: reconstruir dist enquanto o preview serve os testes pode gerar 404 transitório.
+
 ## Editar com ícone e alinhamento (2026-10-11)
 
 - Ações Editar em tarefas e compromissos usam agenda-edit.svg, lápis facetado amarelo/creme. Texto visual removido, aria-label e title continuam identificando o item; a edição mantém o fluxo e a persistência existentes.

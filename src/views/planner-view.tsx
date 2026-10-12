@@ -15,7 +15,6 @@ import { AgendaActionIcon } from "../components/agenda-action-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { AgendaCloseIcon } from "../components/agenda-close-icon";
-import { NavigationIcon } from "../components/navigation-icon";
 import { AgendaMonthPicker } from "../components/agenda-month-picker";
 import { AgendaStudyHistory } from "../components/agenda-study-history";
 import { PaperDigits } from "../components/paper-digits";
@@ -23,16 +22,7 @@ import { PaperChoice, PaperDateField, PaperTimeField } from "../components/agend
 import { agendaSubjects } from "../domain/agenda-subjects";
 import { brazilianHoliday } from "../domain/brazilian-holidays";
 import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
-import {
-  agendaPrompt,
-  dateForKey,
-  eventsOn,
-  HELENA_PLAN_DRAFT_EVENT,
-  monthDates,
-  overdueTasks,
-  shiftDate,
-  weekDates,
-} from "../domain/agenda";
+import { dateForKey, eventsOn, monthDates, overdueTasks, shiftDate } from "../domain/agenda";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import {
   toDateKey,
@@ -137,12 +127,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     ? month
     : month.slice(0, 35);
   const pending = overdueTasks(workspace, today);
-  const week = weekDates(selected).map((date) => ({
-    date,
-    items:
-      eventsOn(workspace, date).filter((event) => !event.completedDates?.includes(date)).length +
-      workspace.tasks.filter((task) => !task.completed && task.dueDate === date).length,
-  }));
   const scheduled = eventsOn(workspace, selected);
   const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
   const subjects = agendaSubjects(workspace);
@@ -449,7 +433,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     >
       <div className="module-heading">
         <h2 id="agenda-day-title" tabIndex={-1}>
-          <PaperCalendarText value={dayLabel(selected, true)} />
+          {dayLabel(selected, true)}
         </h2>
         {dayOpen && (
           <button
@@ -723,53 +707,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               ))}
             </section>
           )}
-          <section className="module-panel agenda-helena">
-            <NavigationIcon name="planner" />
-            <h2>Uma semana possível</h2>
-            <p>
-              {week.reduce((sum, day) => sum + day.items, 0)} itens pendentes nesta semana. Reserve
-              espaço para estudar e descansar.
-            </p>
-            <div
-              className="agenda-week-plan"
-              role="group"
-              aria-label="Planejamento da semana selecionada"
-            >
-              {week.map((day) => (
-                <button
-                  type="button"
-                  className="secondary-button"
-                  key={day.date}
-                  aria-label={`${dayLabel(day.date)}, ${day.items} itens planejados`}
-                  aria-pressed={day.date === selected}
-                  onClick={() => {
-                    resetDate(day.date);
-                    setDayOpen(true);
-                  }}
-                >
-                  <small>
-                    {dateForKey(day.date).toLocaleDateString("pt-BR", { weekday: "short" })}
-                  </small>
-                  <strong>{dateForKey(day.date).getDate()}</strong>
-                  <span>{day.items > 0 ? `${day.items} itens` : "Livre"}</span>
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="primary-button"
-              onClick={() =>
-                window.dispatchEvent(
-                  new CustomEvent(HELENA_PLAN_DRAFT_EVENT, {
-                    detail: agendaPrompt(workspace, selected),
-                  }),
-                )
-              }
-            >
-              Planejar com Helena <PaperArrow />
-            </button>
-            <small>O pedido abre no chat para você revisar antes de enviar.</small>
-          </section>
         </aside>
       </div>
       <dialog

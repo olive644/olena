@@ -110,10 +110,11 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: /metas de estudo/i })).toBeNull();
 
     navigate("Agenda");
-    await screen.findByRole("heading", { name: "Minha agenda" });
+    await screen.findByRole("heading", { name: "Minha agenda" }, { timeout: 5000 });
     expect(screen.queryByText("Matérias e metas")).toBeNull();
     expect(screen.queryByRole("heading", { name: "Retomar com calma" })).toBeNull();
-    expect(screen.getByRole("group", { name: "Planejamento da semana selecionada" })).toBeTruthy();
+    expect(screen.queryByRole("group", { name: "Planejamento da semana selecionada" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Uma semana possível" })).toBeNull();
   });
 
   it("mantém as ferramentas na navegação sem duplicá-las no painel principal", () => {

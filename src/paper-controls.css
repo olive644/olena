@@ -766,3 +766,23 @@
     display: none;
   }
 }
+:root body :is(button, [role="button"], summary),
+:root body :is(button, [role="button"], summary) *,
+:root
+  body
+  :is(
+    .navigation-icon,
+    [data-icon],
+    [data-paper-icon],
+    [data-paper-editor-icon],
+    img[aria-hidden="true"],
+    svg[aria-hidden="true"]
+  ) {
+  -webkit-user-select: none;
+  user-select: none;
+}
+:root body :is(input, textarea, [contenteditable="true"]),
+:root body [contenteditable="true"] * {
+  -webkit-user-select: text;
+  user-select: text;
+}
