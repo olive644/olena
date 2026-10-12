@@ -4,6 +4,7 @@ test("arcane chest shares the minute, reveals by dragging and inspects foil taro
   page,
 }, info) => {
   await page.addInitScript(() => {
+    if (window !== window.top) return;
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem(
       "helena.mathPlaceRewards.v1",

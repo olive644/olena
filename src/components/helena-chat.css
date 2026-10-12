@@ -826,3 +826,57 @@ body:has([aria-modal="true"]) .helena-chat--application {
   animation: none !important;
   transition: none !important;
 }
+
+/* O modelo controla os movimentos sem sobrepor a animação antiga da estrela. */
+.helena-chat .helena-chat-launcher-art,
+.helena-chat[data-motion] .helena-chat-launcher-art {
+  animation: none;
+  rotate: none;
+  width: 64px;
+  height: 64px;
+}
+.helena-chat-launcher:hover,
+.helena-chat-launcher:active {
+  translate: none;
+}
+.helena-virtual-mascot {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.helena-virtual-mascot iframe,
+.helena-virtual-mascot > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  mix-blend-mode: normal;
+  pointer-events: none;
+}
+.helena-virtual-mascot iframe {
+  opacity: 0;
+}
+.helena-virtual-mascot[data-ready="true"] iframe {
+  opacity: 1;
+}
+.helena-virtual-mascot[data-ready="true"] > img {
+  visibility: hidden;
+}
+.helena-chat-header-mascot img,
+.helena-chat-welcome-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: normal;
+}
+@media (max-width: 899px) {
+  .helena-chat .helena-chat-launcher-art,
+  .helena-chat[data-motion] .helena-chat-launcher-art {
+    width: 56px;
+    height: 56px;
+  }
+}

@@ -143,15 +143,17 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("opens from the paper star and restores launcher focus with Escape", () => {
+it("opens from the animated mascot and restores launcher focus with Escape", () => {
   render(<HelenaChatPreview />);
   const launcher = screen.getByRole("button", { name: "Conversar com Helena" });
   expect(screen.queryByRole("dialog")).toBeNull();
   fireEvent.click(launcher);
   expect(screen.getByRole("dialog", { name: "Helena" })).toBeTruthy();
   expect(screen.getByRole("textbox")).toBe(document.activeElement);
-  expect(document.querySelector(".helena-chat-launcher .room-points-icon")).toBeTruthy();
-  expect(document.querySelector(".helena-virtual-mascot")).toBeNull();
+  expect(document.querySelector(".helena-chat-launcher .helena-virtual-mascot")).toBeTruthy();
+  expect(document.querySelector(".helena-virtual-mascot img")?.getAttribute("src")).toBe(
+    "/helena-assistant/helena.png",
+  );
   fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(launcher).toBe(document.activeElement);
