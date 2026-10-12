@@ -5,6 +5,9 @@ import { PaperActionIcon } from "../components/paper-action-icon";
 import { AgendaActionIcon } from "../components/agenda-action-icon";
 import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
 import { AgendaDurationClock } from "../components/agenda-duration-clock";
+import { AgendaFilters } from "../components/agenda-filters";
+import { AgendaDetailIcon } from "../components/agenda-detail-icon";
+import { PaperEditorIcon } from "../components/paper-editor-icon";
 import { AgendaAttachmentPreview } from "../components/agenda-attachment-preview";
 import { agendaTimeZone, AGENDA_ZONE_KEY } from "../data/agenda-time-zone";
 import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
@@ -127,6 +130,12 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
   const [subjectFilter, setSubjectFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [notificationStatus, setNotificationStatus] = useState("");
+  const searchInput = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!notificationStatus) return;
+    const timer = window.setTimeout(() => setNotificationStatus(""), 6000);
+    return () => window.clearTimeout(timer);
+  }, [notificationStatus]);
   const [formError, setFormError] = useState("");
   const [formBusy, setFormBusy] = useState(false);
   const [deleteRequested, setDeleteRequested] = useState(false);
@@ -134,7 +143,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const formTrigger = useRef<HTMLElement | null>(null);
   useEffect(() => {
-    if (dayOpen) {
+    if (dayOpen && !document.activeElement?.classList.contains("agenda-block-title")) {
       daySheet.current?.scrollIntoView({
         block: "nearest",
         behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
@@ -182,6 +191,32 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     subjects.find((subject) => subject.value === id)?.label ??
     workspace.subjects.find((subject) => subject.id === id)?.name ??
     "Sem matéria";
+  function saveGridEvent(original: StudyEvent, occurrence: string, changes: StudyEvent) {
+    const adjusted =
+      frequency(original) === "none"
+        ? changes
+        : {
+            ...changes,
+            recurrence: "none" as const,
+            recurrenceFrequency: "none" as const,
+            recurrenceUntil: "",
+          };
+    const error = validateCalendarEvent(adjusted);
+    if (error || (changes.kind === "study" && (changes.calendarDurationMinutes ?? 25) > 180)) {
+      setNotice(error ?? "Reserve estudos em sessões de até 180 minutos.");
+      return false;
+    }
+    dispatch({
+      type: "event/series-changed",
+      ...changeSeries(
+        original,
+        occurrence,
+        frequency(original) === "none" ? "all" : "this",
+        adjusted,
+      ),
+    });
+    return true;
+  }
   function resetDate(date: string) {
     setSelected(date);
     setRange(null);
@@ -349,6 +384,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
           .filter(Boolean),
         reminders: draft.reminders,
         attachments: draft.attachments,
+        color: draft.color,
       };
       const error = validateCalendarEvent(changes);
       if (error) {
@@ -385,7 +421,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
           : { removeIds: [], events: [changes] }),
       });
     }
-    setNotice(draft.id ? "Alteração salva." : "Adicionado à sua agenda.");
+    setNotice("");
     if (draft.kind === "task" || draft.kind === "study" || draft.kind === "appointment") {
       const localDate =
         draft.kind === "task" || draft.allDay
@@ -504,6 +540,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       <article
         className={`agenda-item agenda-item--timed${event.kind === "study" ? " agenda-item--study" : ""}${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
         key={`${event.id}:${date}`}
+        style={event.color ? { borderLeftColor: event.color } : undefined}
       >
         <time>
           {event.allDay ? "Dia inteiro" : <PaperDigits value={displayed?.time ?? event.time} />}
@@ -583,10 +620,6 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               >
                 Compartilhar .ics <PaperArrow />
               </button>
-              <small>
-                O arquivo inclui os detalhes e participantes desta série, mas não seus anexos nem o
-                histórico de estudo.
-              </small>
             </details>
           )}
           {reminder && (
@@ -715,7 +748,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                     "signed-out": "Entre na sua conta para sincronizar Agenda e Foco",
                     loading: "Carregando agenda da conta",
                     syncing: "Sincronizando alterações",
-                    synced: "Agenda sincronizada com sua conta",
+                    synced: "",
                     offline: "Envio à conta pendente. Confira a conexão e o acesso no Perfil",
                     conflict: "Alterações simultâneas. Revise a sincronização no Perfil",
                   } as const
@@ -758,6 +791,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
           <label className="field">
             Buscar na agenda
             <input
+              ref={searchInput}
               type="search"
               value={query}
               maxLength={120}
@@ -765,23 +799,24 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               placeholder="Título, descrição ou local"
             />
           </label>
-          <PaperChoice
-            label="Filtrar matéria"
-            value={subjectFilter}
-            onChange={setSubjectFilter}
-            options={[{ value: "", label: "Todas as matérias" }, ...subjects]}
-          />
-          <PaperChoice
-            label="Filtrar tipo"
-            value={typeFilter}
-            onChange={setTypeFilter}
-            options={[
-              { value: "", label: "Todos os tipos" },
-              { value: "appointment", label: "Compromissos" },
-              { value: "study", label: "Estudos" },
-              { value: "task", label: "Tarefas" },
-            ]}
-          />
+          <div className="agenda-search-actions">
+            <button
+              type="button"
+              className="secondary-button agenda-tool"
+              aria-label="Pesquisar"
+              onClick={() => searchInput.current?.focus()}
+            >
+              <AgendaDetailIcon name="search" />
+              <span>Pesquisar</span>
+            </button>
+            <AgendaFilters
+              subjects={subjects}
+              subject={subjectFilter}
+              type={typeFilter}
+              onSubject={setSubjectFilter}
+              onType={setTypeFilter}
+            />
+          </div>
         </div>
         <div className="agenda-calendar-tools">
           <button
@@ -865,6 +900,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             className="secondary-button agenda-tool"
             aria-label="Ativar lembretes"
             title="Ativar lembretes"
+            disabled={Boolean(notificationStatus)}
             onClick={async () => {
               if (typeof Notification === "undefined") {
                 setNotificationStatus(
@@ -888,7 +924,21 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             <span>Lembretes</span>
           </button>
         </div>
-        {notificationStatus && <p role="status">{notificationStatus}</p>}
+        {notificationStatus && (
+          <aside className="agenda-notification" role="status">
+            <AgendaToolbarIcon name="reminders" />
+            <p>{notificationStatus}</p>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Fechar notificação de lembretes"
+              onClick={() => setNotificationStatus("")}
+            >
+              <AgendaCloseIcon />
+            </button>
+            <span className="agenda-notification-countdown" aria-hidden="true" />
+          </aside>
+        )}
       </section>
       <div className="agenda-overview">
         <div className="agenda-calendar-column">
@@ -1070,7 +1120,10 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                         <small className="agenda-month-event-title" key={item.id}>
                           <AgendaAttachmentPreview attachments={item.attachments} compact />
                           <i
-                            style={{ background: item.kind === "study" ? "#7c3aed" : "#facc15" }}
+                            style={{
+                              background:
+                                item.color ?? (item.kind === "study" ? "#7c3aed" : "#facc15"),
+                            }}
                           />
                           {item.title}
                         </small>
@@ -1102,69 +1155,57 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   renderTask={taskCard}
                   onMove={(event, from, to, time) => {
                     const original = workspace.events.find((item) => item.id === event.id) ?? event;
-                    edit(original, from);
                     const moved = zonedDateTime(
-                      eventInstant(to, time),
+                      eventInstant(to, time, timeZone),
                       original.timeZone ?? timeZone,
                     );
-                    const end = eventEnd({
+                    const changes = {
                       ...original,
                       date: moved.date,
                       time: moved.time,
+                      calendarDurationMinutes: occurrenceDuration(original, from),
                       endDate: "",
                       endTime: "",
+                    };
+                    const end = eventEnd(changes);
+                    const saved = saveGridEvent(original, from, {
+                      ...changes,
+                      endDate: end.date,
+                      endTime: end.time,
                     });
-                    setDraft((current) =>
-                      current
-                        ? {
-                            ...current,
-                            date: moved.date,
-                            time: moved.time,
-                            endDate: end.date,
-                            endTime: end.time,
-                            scope: frequency(original) === "none" ? "all" : "this",
-                          }
-                        : null,
-                    );
+                    if (saved) setSelected(to);
                   }}
                   onResize={(event, date, minutes) => {
                     const original = workspace.events.find((item) => item.id === event.id) ?? event;
-                    edit(original, date);
-                    const end = eventEnd({
+                    const changes = {
                       ...original,
                       date,
-                      durationMinutes: minutes,
+                      durationMinutes: Math.min(180, minutes),
                       calendarDurationMinutes: minutes,
                       endDate: "",
                       endTime: "",
+                    };
+                    const end = eventEnd(changes);
+                    saveGridEvent(original, date, {
+                      ...changes,
+                      endDate: end.date,
+                      endTime: end.time,
                     });
-                    setDraft((current) =>
-                      current
-                        ? {
-                            ...current,
-                            date,
-                            minutes,
-                            endDate: end.date,
-                            endTime: end.time,
-                            scope: frequency(original) === "none" ? "all" : "this",
-                          }
-                        : null,
-                    );
                   }}
                 />
               )}
             </section>
           }
-          {dayPanel}
         </div>
-        {
+        <div className="agenda-study-column">
           <AgendaStudyHistory
             history={history}
             {...(onNavigate ? { onNavigate } : {})}
             workspace={workspace}
             range={range ?? { start: selected, end: selected }}
           />
-        }
+          {dayPanel}
+        </div>
       </div>
       <div className="agenda-layout">
         <aside className="agenda-aside">
@@ -1429,7 +1470,9 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                 {draft.id && (
                   <button
                     type="button"
-                    className="text-button"
+                    className="secondary-button agenda-delete"
+                    aria-label={deleteRequested ? "Confirmar exclusão" : "Excluir"}
+                    title={deleteRequested ? "Confirmar exclusão" : "Excluir"}
                     disabled={formBusy}
                     onClick={() => {
                       if (!deleteRequested) {
@@ -1449,7 +1492,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                       setNotice("Item removido da agenda. O histórico de foco foi preservado.");
                     }}
                   >
-                    {deleteRequested ? "Confirmar exclusão" : "Excluir"}
+                    <PaperEditorIcon name="trash" />
                   </button>
                 )}
                 <button className="primary-button" type="submit" disabled={formBusy}>

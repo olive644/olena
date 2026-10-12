@@ -97,15 +97,22 @@ export function AgendaDurationClock({
           {Array.from({ length: 12 }, (_, index) => {
             const angle = (index * Math.PI) / 6;
             return (
-              <text
+              <svg
                 key={index}
-                x={120 + Math.sin(angle) * 88}
-                y={125 - Math.cos(angle) * 88}
-                textAnchor="middle"
+                x={120 + Math.sin(angle) * 88 - (index === 0 || index >= 10 ? 9 : 4.5)}
+                y={120 - Math.cos(angle) * 88 - 7}
+                width={index === 0 || index >= 10 ? 18 : 9}
+                height={14}
+                viewBox={`0 0 ${index === 0 || index >= 10 ? 132 : 66} 98`}
                 fill="#292432"
+                aria-hidden="true"
               >
-                {index || 12}
-              </text>
+                {[...String(index || 12)].map((digit, position) => (
+                  <svg key={position} x={position * 66} width="66" height="98" viewBox="0 0 66 98">
+                    <use href={`/paper-digits.svg#digit-${digit}`} />
+                  </svg>
+                ))}
+              </svg>
             );
           })}
           {(["minutes", "hours"] as const).map((hand) => (
@@ -174,9 +181,6 @@ export function AgendaDurationClock({
             />
           </label>
         </div>
-        <small>
-          Arraste o ponteiro curto para horas e o longo para minutos. No teclado, use as setas.
-        </small>
         <button type="button" className="primary-button" onClick={close}>
           Concluir
         </button>

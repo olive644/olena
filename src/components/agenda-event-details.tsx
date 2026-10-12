@@ -24,6 +24,7 @@ export type EventDetailsDraft = {
   weekdays: number[];
   scope: EventScope;
   occurrence: string;
+  color: string;
 };
 export function initialEventDetails(date: string, event?: StudyEvent): EventDetailsDraft {
   const end = event ? eventEnd(event, date) : { date, time: "18:25" };
@@ -42,6 +43,7 @@ export function initialEventDetails(date: string, event?: StudyEvent): EventDeta
     weekdays: event?.recurrenceDays ?? [],
     scope: "all",
     occurrence: date,
+    color: event?.color ?? (event?.kind === "study" ? "#7c3aed" : "#facc15"),
   };
 }
 export function AgendaEventDetails({
@@ -178,6 +180,14 @@ export function AgendaEventDetails({
           onChange={(event) => change("description", event.target.value)}
         />
       </label>
+      <label className="field agenda-event-color">
+        Cor do evento
+        <input
+          type="color"
+          value={value.color}
+          onChange={(event) => change("color", event.target.value)}
+        />
+      </label>
       <div className="agenda-metadata-options">
         <AgendaMetadataField
           name="location"
@@ -208,12 +218,6 @@ export function AgendaEventDetails({
           }
           onCommit={(minutes) => change("reminders", minutes === 0 ? [0] : [0, minutes])}
         />
-        <small>
-          {value.reminders.includes(0)
-            ? "Na hora já está incluído. "
-            : "Lembretes existentes preservados. "}
-          Alertas enquanto o aplicativo estiver aberto, com permissão do navegador.
-        </small>
       </div>
       <div
         className={`agenda-attachment-drop${dragging ? " is-dragging" : ""}`}

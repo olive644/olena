@@ -1,9 +1,14 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { StudyEvent, StudyTask } from "../domain/workspace";
-import { addDays, displayEventsOn, eventSpan } from "../domain/agenda-calendar";
+import {
+  addDays,
+  displayEventsOn,
+  eventInstant,
+  eventSpan,
+  zonedDateTime,
+} from "../domain/agenda-calendar";
 import { layoutAgendaDay } from "../domain/agenda-grid-layout";
 import { weekDates } from "../domain/agenda";
-import { PaperArrow } from "./paper-arrow";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { AgendaAttachmentPreview } from "./agenda-attachment-preview";
 
@@ -42,8 +47,31 @@ export function AgendaCalendarViews({
         ? Array.from({ length: 30 }, (_, index) => addDays(selected, index))
         : [selected];
   const root = useRef<HTMLDivElement>(null);
+  const keyboardDestination = useRef<{
+    date: string;
+    time: string;
+    title: string;
+    previousIds: string[];
+  } | null>(null);
+  useEffect(() => {
+    const destination = keyboardDestination.current;
+    if (!destination) return;
+    const candidates = [
+      ...(root.current?.querySelectorAll<HTMLButtonElement>(".agenda-block-title") ?? []),
+    ].filter(
+      (element) =>
+        element.dataset["eventDate"] === destination.date &&
+        element.dataset["eventTime"] === destination.time &&
+        element.dataset["eventTitle"] === destination.title,
+    );
+    const button =
+      candidates.find(
+        (element) => !destination.previousIds.includes(element.dataset["eventId"] ?? ""),
+      ) ?? candidates[0];
+    if (button) button.focus();
+    keyboardDestination.current = null;
+  }, [events]);
   const suppressGestureClick = useRef(false);
-  const [moving, setMoving] = useState<{ id: string; date: string } | null>(null);
   const gesture = useRef<{
     pointer: number;
     event: StudyEvent;
@@ -99,7 +127,6 @@ export function AgendaCalendarViews({
       aria-label={view === "week" ? "Grade semanal" : "Grade do dia"}
       onKeyDown={(key) => {
         if (key.key === "Escape") {
-          setMoving(null);
           gesture.current = null;
           setHint("");
         }
@@ -145,7 +172,7 @@ export function AgendaCalendarViews({
     >
       <p className="agenda-time-hint" role="status">
         {hint ||
-          `Horários da conta (${timeZone.replace(/_/g, " ")}). Arraste o bloco ou use os controles para mover e editar.`}
+          `Horários da conta (${timeZone.replace(/_/g, " ")}). Arraste o evento para mudar o horário.`}
       </p>
       <div className="agenda-time-scroll">
         <div
@@ -196,6 +223,7 @@ export function AgendaCalendarViews({
                         key={event.id}
                         type="button"
                         className="secondary-button"
+                        style={event.color ? { borderBottomColor: event.color } : undefined}
                         onClick={() => onEdit(event, event.displayOccurrence)}
                       >
                         {event.title}
@@ -215,11 +243,7 @@ export function AgendaCalendarViews({
                         data-slot-time={time}
                         aria-label={`Planejar ${dated(date)} às ${time}`}
                         onClick={() => {
-                          if (moving) {
-                            const event = events.find((item) => item.id === moving.id);
-                            if (event) onMove(event, moving.date, date, time);
-                            setMoving(null);
-                          } else onCreate(date, time);
+                          onCreate(date, time);
                         }}
                       />
                     );
@@ -248,11 +272,39 @@ export function AgendaCalendarViews({
                             height: drawnHeight,
                             width: `${width}%`,
                             left: `${lane * width}%`,
+                            ...(event.color ? { borderLeftColor: event.color } : {}),
                           }}
                         >
                           <button
                             type="button"
                             className="agenda-block-title"
+                            data-event-date={date}
+                            data-event-time={event.time}
+                            data-event-title={event.title}
+                            data-event-id={event.id}
+                            aria-description="Arraste para mover. No teclado, Alt e setas ajustam o horário; Shift, Alt e setas mudam o dia. Enter abre os detalhes."
+                            onKeyDown={(key) => {
+                              if (
+                                !key.altKey ||
+                                !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
+                                  key.key,
+                                )
+                              )
+                                return;
+                              key.preventDefault();
+                              const step = ["ArrowUp", "ArrowLeft"].includes(key.key) ? -1 : 1;
+                              const moved = zonedDateTime(
+                                eventInstant(date, event.time, timeZone) +
+                                  step * (key.shiftKey ? 86400000 : 15 * 60000),
+                                timeZone,
+                              );
+                              keyboardDestination.current = {
+                                ...moved,
+                                title: event.title,
+                                previousIds: events.map((item) => item.id),
+                              };
+                              onMove(event, startDate, moved.date, moved.time);
+                            }}
                             onClick={() => {
                               if (suppressGestureClick.current) {
                                 suppressGestureClick.current = false;
@@ -283,41 +335,6 @@ export function AgendaCalendarViews({
                             </small>
                           </button>
                           <div className="agenda-block-actions">
-                            <button
-                              className="agenda-block-move"
-                              type="button"
-                              aria-label={`Mover ${event.title}`}
-                              aria-pressed={moving?.id === event.id}
-                              onClick={() => {
-                                if (suppressGestureClick.current) {
-                                  suppressGestureClick.current = false;
-                                  return;
-                                }
-                                setMoving({ id: event.id, date: startDate });
-                                setHint("Escolha o novo horário na grade. Escape cancela.");
-                              }}
-                              onKeyDown={(key) => {
-                                if (key.key === "Escape") {
-                                  setMoving(null);
-                                  setHint("");
-                                }
-                              }}
-                              onPointerDown={(pointer) => {
-                                if (pointer.button !== 0) return;
-                                pointer.currentTarget.setPointerCapture(pointer.pointerId);
-                                gesture.current = {
-                                  pointer: pointer.pointerId,
-                                  event,
-                                  date: startDate,
-                                  resize: false,
-                                  y: pointer.clientY,
-                                  x: pointer.clientX,
-                                  height,
-                                };
-                              }}
-                            >
-                              Mover <PaperArrow />
-                            </button>
                             {eventSpan(event) === 0 && (
                               <button
                                 className="agenda-block-resize"

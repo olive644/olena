@@ -76,6 +76,139 @@ test("agenda toolbar uses accessible cream paper icons without duplicate arrows"
     });
   }
 });
+
+test("compact filters, custom colors and paper details remain readable in both themes", async ({
+  page,
+}, info) => {
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await expect(
+      page.getByRole("button", { name: "Filtrar matéria", exact: true }),
+    ).not.toBeVisible();
+    await page.getByRole("button", { name: "Filtros", exact: true }).click();
+    const filters = page.getByRole("dialog", { name: "Filtros da agenda", exact: true });
+    await expect(filters.getByRole("button", { name: "Filtrar tipo", exact: true })).toBeVisible();
+    await filters.getByRole("button", { name: "Filtrar matéria", exact: true }).click();
+    await page.getByRole("option", { name: "Todas as matérias", exact: true }).click();
+    await filters.getByRole("button", { name: "Fechar filtros", exact: true }).click();
+    const tools = page.locator(".agenda-calendar-tools > :is(button,label)");
+    const positions = await tools.evaluateAll((elements) =>
+      elements.map((element) => element.getBoundingClientRect().y),
+    );
+    expect(Math.max(...positions) - Math.min(...positions)).toBeLessThan(1);
+    await page.locator('button[data-date="2026-10-12"]').click();
+    if (info.project.name === "desktop") {
+      const day = await page.locator(".agenda-day").boundingBox();
+      const history = await page.locator(".agenda-history").boundingBox();
+      const calendar = await page.locator(".agenda-month").boundingBox();
+      expect(day!.x).toBeCloseTo(history!.x, 0);
+      expect(day!.y).toBeGreaterThan(history!.y + history!.height);
+      expect(day!.x).toBeGreaterThan(calendar!.x);
+    }
+    await page
+      .locator(".agenda-day")
+      .getByRole("button", { name: "Editar Prova de álgebra", exact: true })
+      .click();
+    const editor = page.locator(".agenda-dialog");
+    await editor.getByLabel("Cor do evento", { exact: true }).fill("#1a8599");
+    for (const name of ["Local", "Links", "Participantes"]) {
+      const button = editor.getByRole("button", { name: `Preencher ${name}`, exact: true });
+      await button.focus();
+      await button.click();
+      await expect(button).toHaveAttribute("aria-expanded", "true");
+      const ratio = await button.evaluate((element) => {
+        const style = getComputedStyle(element);
+        const luminance = (color: string) => {
+          const channels = color
+            .match(/[\d.]+/g)!
+            .slice(0, 3)
+            .map(Number)
+            .map((v) => {
+              const s = v / 255;
+              return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+            });
+          return channels[0]! * 0.2126 + channels[1]! * 0.7152 + channels[2]! * 0.0722;
+        };
+        const a = luminance(style.color),
+          b = luminance(style.backgroundColor);
+        return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      });
+      expect(ratio).toBeGreaterThanOrEqual(4.5);
+      await page
+        .getByRole("dialog", { name, exact: true })
+        .getByRole("button", { name: "Concluir", exact: true })
+        .click();
+    }
+    await editor.getByRole("button", { name: "Duração em minutos", exact: true }).click();
+    const clock = page.getByRole("dialog", { name: "Escolher duração", exact: true });
+    await expect(clock.locator('use[href*="paper-digits.svg"]')).toHaveCount(15);
+    await expect(clock.getByText(/Arraste o ponteiro curto/)).toHaveCount(0);
+    await clock.getByRole("button", { name: "Concluir", exact: true }).click();
+    await expect(
+      editor.getByRole("button", { name: "Excluir", exact: true }).locator("svg"),
+    ).toHaveCount(1);
+    await expect(editor.getByText(/Na hora já está incluído/)).toHaveCount(0);
+    await editor.screenshot({
+      path: info.outputPath(`compact-details-${theme}.png`),
+      animations: "disabled",
+    });
+    await editor.getByRole("button", { name: "Salvar alterações", exact: true }).click();
+    for (const view of ["Dia", "Semana", "Lista"]) {
+      await page.getByRole("button", { name: view, exact: true }).click();
+      await expect(
+        page
+          .locator(view === "Lista" ? ".agenda-schedule-list .agenda-item" : ".agenda-time-block")
+          .first(),
+      ).toHaveCSS("border-left-color", "rgb(26, 133, 153)");
+    }
+    await page.getByRole("button", { name: "Mês", exact: true }).click();
+    await expect(
+      page.locator('button[data-date="2026-10-12"] .agenda-month-event-title i').first(),
+    ).toHaveCSS("background-color", "rgb(26, 133, 153)");
+    await page.reload();
+  }
+});
+
+test("notification permission uses a six-second paper notice with cooldown", async ({ page }) => {
+  await page.evaluate(() => {
+    Object.defineProperty(window, "Notification", {
+      configurable: true,
+      value: { requestPermission: async () => "granted" },
+    });
+  });
+  const trigger = page.getByRole("button", { name: "Ativar lembretes", exact: true });
+  await trigger.click();
+  const notice = page.locator(".agenda-notification");
+  await expect(notice).toContainText(
+    "Notificações permitidas enquanto o aplicativo estiver aberto.",
+  );
+  await expect(notice.locator(".agenda-notification-countdown")).toBeVisible();
+  await expect(trigger).toBeDisabled();
+  await page.clock.fastForward(6001);
+  await expect(notice).toHaveCount(0);
+  await expect(trigger).toBeEnabled();
+});
+
+test("keyboard day movement keeps focus on the detached occurrence, not its same-title neighbor", async ({
+  page,
+}) => {
+  await page.locator('button[data-date="2026-10-12"]').click();
+  await page.getByRole("button", { name: "Dia", exact: true }).click();
+  await page.locator(".agenda-block-title").first().focus();
+  await page.keyboard.press("Shift+Alt+ArrowDown");
+  const moved = page.locator('.agenda-block-title:not([data-event-id="calendar-one"])');
+  await expect(moved).toHaveCount(1);
+  await expect(moved).toHaveAttribute("data-event-date", "2026-10-13");
+  await expect(moved).toBeFocused();
+  await page.keyboard.press("Alt+ArrowDown");
+  await expect(moved).toContainText("14:15");
+  await expect(page.locator('.agenda-block-title[data-event-id="calendar-one"]')).toContainText(
+    "14:00",
+  );
+});
 test("paper calendar offers all views, filters, all-day events and persists details in both themes", async ({
   page,
 }, info) => {
@@ -316,9 +449,7 @@ test.describe("Brazilian account zone outside Brazil", () => {
     ).toBeVisible();
   });
 });
-test("changes only the chosen occurrence and moving by keyboard confirms the new time", async ({
-  page,
-}) => {
+test("changes only the chosen occurrence and moves directly by keyboard", async ({ page }) => {
   await page.locator('button[data-date="2026-10-13"]').click();
   await page
     .locator(".agenda-day")
@@ -340,23 +471,48 @@ test("changes only the chosen occurrence and moving by keyboard confirms the new
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Dia", exact: true }).click();
   await page.locator(".agenda-block-title").first().focus();
-  const mover = page
-    .locator(".agenda-time-view")
-    .getByRole("button", { name: "Mover Só terça", exact: true });
-  await mover.focus();
-  await page.keyboard.press("Enter");
-  const slot = page.locator('[data-slot-time="16:00"]');
-  await slot.focus();
-  await page.keyboard.press("Enter");
-  await expect(editor.getByLabel("Horário", { exact: true })).toHaveValue("16:00");
-  await editor.getByRole("button", { name: "Salvar alterações", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Mover Só terça", exact: true })).toHaveCount(0);
+  await page.keyboard.press("Alt+ArrowDown");
+  await expect(page.locator(".agenda-block-title").first()).toContainText("14:15");
+  await expect(page.locator(".agenda-block-title").first()).toBeFocused();
+  await expect(editor).not.toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          new Promise<string | undefined>((resolve, reject) => {
+            const opening = indexedDB.open("helenastudy");
+            opening.onerror = () => reject(opening.error);
+            opening.onsuccess = () => {
+              const database = opening.result;
+              const request = database
+                .transaction("workspace", "readonly")
+                .objectStore("workspace")
+                .get("current");
+              request.onerror = () => {
+                database.close();
+                reject(request.error);
+              };
+              request.onsuccess = () => {
+                database.close();
+                const events = JSON.parse(String(request.result)).events as {
+                  title: string;
+                  time: string;
+                }[];
+                resolve(events.find((item) => item.title === "Só terça")?.time);
+              };
+            };
+          }),
+      ),
+    )
+    .toBe("14:15");
   await page.reload();
   await page.locator('button[data-date="2026-10-13"]').click();
   await page
     .locator(".agenda-day")
     .getByRole("button", { name: "Editar Só terça", exact: true })
     .click();
-  await expect(editor.getByLabel("Horário", { exact: true })).toHaveValue("16:00");
+  await expect(editor.getByLabel("Horário", { exact: true })).toHaveValue("14:15");
 });
 test("ICS exchange imports without duplicates and exports only event data", async ({ page }) => {
   const ics = exportAgenda([{ ...event, id: "external", title: "Evento externo" }]);
@@ -378,9 +534,7 @@ test("ICS exchange imports without duplicates and exports only event data", asyn
   expect((await download).suggestedFilename()).toBe("olenastudy-agenda.ics");
 });
 
-test("dragging and resizing open confirmation without changing saved data early", async ({
-  page,
-}) => {
+test("dragging and resizing save directly and persist in event settings", async ({ page }) => {
   await page.getByRole("button", { name: "Dia", exact: true }).click();
   const title = page.locator(".agenda-block-title").first();
   await title.scrollIntoViewIfNeeded();
@@ -391,15 +545,14 @@ test("dragging and resizing open confirmation without changing saved data early"
   await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2 + 48, { steps: 6 });
   await page.mouse.up();
   const editor = page.locator(".agenda-dialog");
-  await expect(editor).toBeVisible();
-  const movedTime = await editor.getByLabel("Horário", { exact: true }).inputValue();
-  expect(movedTime).not.toBe("14:00");
-  expect(
-    await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).events[0].time,
-    ),
-  ).toBe("14:00");
-  await editor.getByRole("button", { name: "Salvar alterações", exact: true }).click();
+  await expect(editor).not.toBeVisible();
+  await expect(title).not.toContainText("14:00");
+  const movedTime = await page.evaluate(() => {
+    const events = JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).events;
+    return events.find(
+      (item: { recurrenceFrequency: string }) => item.recurrenceFrequency === "none",
+    ).time as string;
+  });
   await title.focus();
   const handle = page.locator(".agenda-block-resize").first();
   await handle.scrollIntoViewIfNeeded();
@@ -412,9 +565,17 @@ test("dragging and resizing open confirmation without changing saved data early"
     steps: 6,
   });
   await page.mouse.up();
-  await expect(editor).toBeVisible();
-  await expect(editor.getByLabel("Duração em minutos", { exact: true })).toHaveText("1 h 30 min");
-  await editor.getByRole("button", { name: "Salvar alterações", exact: true }).click();
+  await expect(editor).not.toBeVisible();
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const events = JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).events;
+        return events.some(
+          (item: { calendarDurationMinutes: number }) => item.calendarDurationMinutes === 90,
+        );
+      }),
+    )
+    .toBe(true);
   await page.reload();
   const events = await page.evaluate(
     () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).events,

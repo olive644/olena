@@ -66,11 +66,19 @@ Registros antigos de Foco não são apagados nem transferidos para outra data.
 ## Agenda interna completa, primeira etapa
 
 A grade do dia e da semana permite criar por horário, arrastar para reagendar e
-redimensionar a duração. Toda alteração abre o editor para confirmação antes de
-gravar. Teclado oferece Mover e escolha de horário. Busca e filtros limitam eventos
+redimensionar a duração. Arraste e redimensionamento salvam ao soltar; rotinas mudam
+somente a ocorrência escolhida, sem transferir histórico de foco. No teclado, Alt
+com setas ajusta 15 minutos; Shift e Alt com setas muda o dia. Enter abre detalhes.
+Não há botão Mover. Busca e o painel recolhido de filtros limitam eventos
 por texto, matéria e tipo. Compromissos aceitam dia inteiro, múltiplos dias, fuso IANA,
-descrição, local, links http/https, participantes e lembretes. Estudos mantêm o
-limite de 180 minutos do Foco. Datas de dia inteiro são flutuantes; horários são
+descrição, local, links http/https, participantes e lembretes.
+Cor hexadecimal opcional do evento colore marcadores e bordas nas
+quatro visualizações, mantendo texto sobre superfície neutra legível nos dois temas.
+A cor é preservada por serialização, reconciliação por campo e sincronização da conta.
+Notificações de permissão usam aviso em papel com sino, fechamento e contagem de
+6 segundos, como XP. O acionador fica bloqueado durante o aviso; alertas continuam
+limitados ao aplicativo aberto. Não há promessa de notificação com aplicativo fechado.
+Estudos mantêm o limite de 180 minutos do Foco. Datas de dia inteiro são flutuantes; horários são
 projetados no fuso brasileiro da conta, sem mudar o instante armazenado. Não há
 seletor de fuso por evento. helena.agendaTimeZone.v1 sincroniza a escolha automática
 inicial: fuso IANA brasileiro do dispositivo, ou America/Sao_Paulo se o dispositivo

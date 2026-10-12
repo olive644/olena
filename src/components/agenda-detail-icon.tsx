@@ -1,7 +1,7 @@
 export function AgendaDetailIcon({
   name,
 }: {
-  name: "clock" | "location" | "links" | "guests" | "attachment" | "print";
+  name: "clock" | "location" | "links" | "guests" | "attachment" | "print" | "filter" | "search";
 }) {
   return (
     <svg
@@ -10,6 +10,21 @@ export function AgendaDetailIcon({
       aria-hidden="true"
       data-agenda-detail-icon={name}
     >
+      {name === "filter" && (
+        <>
+          <path fill="#292432" d="M4 6h40v8L28 30v12l-9-4V30L4 14Z" />
+          <path fill="#51465D" d="M4 6h40l-6 6H10Z" />
+          <path fill="#FACC15" d="m20 26 8 4v12l-8-4Z" />
+        </>
+      )}
+      {name === "search" && (
+        <>
+          <path fill="#292432" d="m18 3 12 4 7 13-5 12-13 5-12-6L3 18 8 8Z" />
+          <path fill="#FFF9EF" d="m18 9 9 3 4 8-4 8-9 3-8-5-2-8 5-7Z" />
+          <path fill="#7C3AED" d="m30 28 15 13-5 6-15-15Z" />
+          <path fill="#FACC15" d="m35 33 10 8-3 3-10-8Z" />
+        </>
+      )}
       {name === "clock" && (
         <>
           <path fill="#51465D" d="m24 3 15 6 6 15-6 15-15 6-15-6-6-15L9 9Z" />

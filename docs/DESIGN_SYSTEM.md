@@ -16,6 +16,15 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 
 ## Controles da Agenda e fechamento
 
+Filtros matéria/tipo ficam em único botão creme facetado, ao lado de Pesquisar.
+No celular, Exportar/Importar/Imprimir/Lembretes ocupam uma linha com quatro colunas.
+Metadados abertos/focados usam texto grafite sobre papel creme, nos dois temas.
+Relógio de duração reutiliza os símbolos de paper-digits.svg; exclusão reutiliza
+a lixeira de PaperEditorIcon. Cores pessoais dos eventos aparecem nos marcadores
+e bordas, sem recolorir o texto ou comprometer seu contraste. Seletor de cor
+segue o controle nativo já utilizado na escrita à mão. Aviso de permissão usa
+sino, X recortado e contagem de 6 segundos, como o aviso de XP.
+
 Barra da Agenda usa AgendaToolbarIcon para Dia/Semana/Mês/Lista, importar/exportar,
 imprimir e lembretes. Símbolos facetados em grafite/creme, acentos roxo/amarelo,
 sem ícones genéricos de contorno. Placas permanecem creme nos dois temas; estado

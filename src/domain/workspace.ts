@@ -25,6 +25,7 @@ export type StudyTask = {
 };
 
 export type StudyEvent = {
+  color?: string;
   id: string;
   title: string;
   subjectId: string;
