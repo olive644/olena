@@ -103,7 +103,7 @@ describe("App", () => {
     });
   });
 
-  it("mantém as metas em Agenda e deixa Foco dedicado ao timer", async () => {
+  it("evita o widget duplicado de matérias e metas na Agenda", async () => {
     render(<App />);
 
     navigate("Praticar");
@@ -111,10 +111,9 @@ describe("App", () => {
 
     navigate("Agenda");
     await screen.findByRole("heading", { name: "Minha agenda" });
-    fireEvent.click(screen.getByText("Matérias e metas"));
-    fireEvent.click(screen.getByRole("button", { name: "Criar meta de foco" }));
-    expect(screen.getByRole("dialog", { name: "Adicionar à agenda" })).toBeTruthy();
-    expect((screen.getByLabelText("Tipo") as HTMLSelectElement).value).toBe("goal");
+    expect(screen.queryByText("Matérias e metas")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Retomar com calma" })).toBeNull();
+    expect(screen.getByRole("group", { name: "Planejamento da semana selecionada" })).toBeTruthy();
   });
 
   it("mantém as ferramentas na navegação sem duplicá-las no painel principal", () => {
@@ -211,10 +210,9 @@ describe("App", () => {
   it("cria uma tarefa, mostra no Espaço do aluno e permite concluí-la", async () => {
     render(<App />);
     navigate("Agenda");
-    const add = await screen.findByRole("button", { name: "Adicionar" });
+    const add = await screen.findByRole("button", { name: "Criar tarefa" });
     expect(add.querySelector('[data-paper-icon="plus"]')).toBeTruthy();
     fireEvent.click(add);
-    fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
     fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Revisar phrasal verbs" },
     });
@@ -381,8 +379,7 @@ describe("App", () => {
   it("mantém dados após remontar o aplicativo", async () => {
     const firstRender = render(<App />);
     navigate("Agenda");
-    fireEvent.click(await screen.findByRole("button", { name: "Adicionar" }));
-    fireEvent.change(screen.getByLabelText("Tipo"), { target: { value: "task" } });
+    fireEvent.click(await screen.findByRole("button", { name: "Criar tarefa" }));
     fireEvent.change(screen.getByLabelText("Título"), {
       target: { value: "Preparar apresentação" },
     });

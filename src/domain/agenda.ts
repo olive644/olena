@@ -33,6 +33,14 @@ export function eventsOn(workspace: WorkspaceState, date: string): StudyEvent[] 
     .filter((event) => eventOccursOn(event, date))
     .sort((a, b) => a.time.localeCompare(b.time));
 }
+export function overdueTasks(workspace: WorkspaceState, today: string) {
+  return workspace.tasks.filter((task) => {
+    if (task.completed || !/^\d{4}-\d{2}-\d{2}$/.test(task.dueDate) || task.dueDate >= today)
+      return false;
+    const date = dateForKey(task.dueDate);
+    return Number.isFinite(date.getTime()) && toDateKey(date) === task.dueDate;
+  });
+}
 export function agendaPrompt(workspace: WorkspaceState, date: string): string {
   const days = weekDates(date).map(
     (day) =>

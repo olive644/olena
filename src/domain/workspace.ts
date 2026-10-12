@@ -391,6 +391,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
     case "workspace/replaced":
       return action.workspace;
     case "subject/added":
+      if (action.id && state.subjects.some((subject) => subject.id === action.id)) return state;
       return {
         ...state,
         subjects: [

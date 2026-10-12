@@ -10,6 +10,7 @@ import {
 } from "../data/synced-storage";
 import { mergeWorkspaceStates } from "../domain/workspace-sync-merge";
 import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
+import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "../data/system-updates";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
 const SYNC_CONFLICT_STORAGE_KEY = "helenastudy.sync-conflict.v1";
@@ -243,6 +244,12 @@ export function useCloudSync() {
           let lastItems = "";
           if (cloud?.items) {
             const merged = { ...cloud.items };
+            if (localAfterGet[SYSTEM_UPDATES_READ_KEY] || cloud.items[SYSTEM_UPDATES_READ_KEY])
+              merged[SYSTEM_UPDATES_READ_KEY] = mergeReadUpdates(
+                localBeforeGet[SYSTEM_UPDATES_READ_KEY],
+                localAfterGet[SYSTEM_UPDATES_READ_KEY],
+                cloud.items[SYSTEM_UPDATES_READ_KEY],
+              );
             const rewardsKey = "helena.mathPlaceRewards.v1";
             const localRewards = localAfterGet[rewardsKey];
             if (localRewards !== undefined) {
@@ -270,7 +277,7 @@ export function useCloudSync() {
               ...Object.keys(localBeforeGet),
               ...Object.keys(localAfterGet),
             ])) {
-              if (key === rewardsKey) continue;
+              if (key === rewardsKey || key === SYSTEM_UPDATES_READ_KEY) continue;
               if (key === "helena.profile.v1" && cloud.items[key] !== undefined) continue;
               if (localBeforeGet[key] !== localAfterGet[key]) {
                 if (localAfterGet[key] === undefined) delete merged[key];

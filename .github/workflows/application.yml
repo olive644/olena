@@ -30,6 +30,8 @@ jobs:
         run: npm ci
       - name: Verify application
         run: npm run verify
+      - name: Verify system update publication
+        run: node --test scripts/generate-system-updates.test.js
 
   e2e:
     name: Desktop and mobile smoke tests (${{ matrix.project }})

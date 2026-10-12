@@ -1,4 +1,5 @@
 {
+  "buildCommand": "npm run build && node scripts/generate-system-updates.mjs",
   "crons": [{ "path": "/api/room-cleanup", "schedule": "0 4 * * *" }],
   "rewrites": [
     { "source": "/sala", "destination": "/index.html" },

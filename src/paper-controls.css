@@ -42,6 +42,49 @@
   flex-shrink: 0;
   vertical-align: middle;
 }
+/* Fechamento colorido sem placa. Ícones vetoriais grafite/creme são preservados. */
+:root body button:has(> .agenda-close-icon),
+:root body button:has(> img[src="/navigation-icons/paper/close.svg"]) {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 8px;
+  display: inline-grid;
+  place-items: center;
+}
+:root body button:has(> .agenda-close-icon)::before,
+:root body button:has(> .agenda-close-icon)::after,
+:root body button:has(> img[src="/navigation-icons/paper/close.svg"])::before,
+:root body button:has(> img[src="/navigation-icons/paper/close.svg"])::after {
+  display: none !important;
+}
+:root body button:has(> .agenda-close-icon) > img,
+:root body button:has(> img[src="/navigation-icons/paper/close.svg"]) > img {
+  width: 28px;
+  height: 28px;
+  transition: transform 160ms ease;
+}
+:root body button:has(> .agenda-close-icon):hover > img,
+:root body button:has(> img[src="/navigation-icons/paper/close.svg"]):hover > img {
+  transform: rotate(7deg) scale(1.08);
+}
+:root body button:has(> .agenda-close-icon):focus-visible,
+:root body button:has(> img[src="/navigation-icons/paper/close.svg"]):focus-visible {
+  border-bottom: 3px solid #facc15 !important;
+  border-radius: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root body button:has(> .agenda-close-icon) > img,
+  :root body button:has(> img[src="/navigation-icons/paper/close.svg"]) > img {
+    transition: none;
+    transform: none !important;
+  }
+}
 .local-room-ready-words__check {
   color: #292432;
 }

@@ -14,9 +14,267 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ json: { connected: false } }),
   );
 });
-test("agenda displays real legacy math progress and filtered Pomodoro weeks in both themes", async ({
+
+test("paper form offers all islands, custom date/time, icon repeat and yellow completion in both themes", async ({
   page,
 }, info) => {
+  await page.goto("/planejador");
+  await expect(page.getByRole("button", { name: "Adicionar", exact: true })).toHaveCount(0);
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page.locator('button[data-date="2026-10-12"]').click();
+    const back = page.getByRole("button", { name: "Voltar ao calendário" });
+    await expect(back).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await page.getByRole("button", { name: "Criar compromisso", exact: true }).click();
+    const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+    const close = form.getByRole("button", { name: "Fechar formulário" });
+    await expect(close).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(close).toHaveCSS("box-shadow", "none");
+    await form.getByRole("button", { name: "Matéria", exact: true }).focus();
+    await page.keyboard.press("ArrowDown");
+    const subjects = page.getByRole("listbox", { name: "Opções de Matéria" });
+    await expect(subjects.getByRole("option")).toHaveCount(6);
+    for (const name of ["Idiomas", "Português", "Química", "Biologia", "Matemática", "Programação"])
+      await expect(subjects.getByRole("option", { name, exact: true })).toBeVisible();
+    const chemistry = subjects.getByRole("option", { name: "Química", exact: true });
+    await chemistry.hover();
+    await expect(chemistry).toHaveCSS("color", "rgb(41, 36, 50)");
+    await expect(chemistry).toHaveCSS("background-color", "rgb(250, 204, 21)");
+    await subjects.getByRole("option", { name: "Idiomas", exact: true }).focus();
+    await expect(subjects.getByRole("option", { name: "Idiomas", exact: true })).toHaveCSS(
+      "color",
+      "rgb(41, 36, 50)",
+    );
+    await page.keyboard.press("End");
+    await page.keyboard.press("ArrowUp");
+    await page.keyboard.press("Enter");
+    await expect(form.getByRole("button", { name: "Matéria", exact: true })).toContainText(
+      "Matemática",
+    );
+    await form.getByRole("textbox", { name: "Título", exact: true }).fill(`Compromisso ${theme}`);
+    await form.getByRole("button", { name: "Escolher data", exact: true }).click();
+    const calendar = page.getByRole("dialog", { name: "Calendário de data" });
+    await expect(calendar).toBeVisible();
+    await calendar.screenshot({
+      path: info.outputPath(`date-${theme}.png`),
+      animations: "disabled",
+    });
+    await calendar.getByRole("button", { name: "13 de outubro de 2026", exact: true }).click();
+    await expect(form.getByLabel("Data", { exact: true })).toHaveValue("13/10/2026");
+    await form.getByRole("button", { name: "Escolher horário", exact: true }).click();
+    const time = page.getByRole("dialog", { name: "Escolher horário", exact: true });
+    await time.getByRole("button", { name: "09 horas", exact: true }).click();
+    await time.getByRole("button", { name: "15 minutos", exact: true }).click();
+    await time.screenshot({ path: info.outputPath(`time-${theme}.png`), animations: "disabled" });
+    await time.getByRole("button", { name: "Confirmar horário" }).click();
+    await expect(form.getByLabel("Horário", { exact: true })).toHaveValue("09:15");
+    await form.getByRole("button", { name: "Repetir semanalmente", exact: true }).click();
+    await expect(form.getByRole("button", { name: "Repetir semanalmente" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(form.locator('select, input[type="date"], input[type="time"]')).toHaveCount(0);
+    await form.screenshot({ path: info.outputPath(`form-${theme}.png`), animations: "disabled" });
+    await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+    await expect(page.locator('button[data-date="2026-10-13"]')).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    const complete = page.getByRole("button", { name: `Concluir Compromisso ${theme}` });
+    const edit = page.getByRole("button", { name: `Editar Compromisso ${theme}` });
+    await expect(edit).toHaveText("");
+    await expect(edit.locator('img[data-paper-icon="edit"]')).toBeVisible();
+    for (const control of [edit, complete]) {
+      await expect(control).toHaveCSS("width", "44px");
+      await expect(control).toHaveCSS("height", "44px");
+    }
+    await expect
+      .poll(() =>
+        page
+          .locator(".agenda-item")
+          .filter({ has: edit })
+          .evaluate((item) =>
+            Math.abs(
+              item.querySelector(".agenda-edit")!.getBoundingClientRect().y -
+                item.querySelector(".agenda-check")!.getBoundingClientRect().y,
+            ),
+          ),
+      )
+      .toBeLessThan(1);
+    await page
+      .locator(".agenda-item")
+      .filter({ has: edit })
+      .screenshot({
+        path: info.outputPath(`edit-${theme}.png`),
+        animations: "disabled",
+      });
+    await edit.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("dialog", { name: "Editar", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Fechar formulário" }).click();
+    await complete.click();
+    await expect(page.getByRole("button", { name: `Reabrir Compromisso ${theme}` })).toHaveCSS(
+      "background-color",
+      "rgb(250, 204, 21)",
+    );
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page.locator(".agenda-month-grid .is-selected")).toHaveCSS(
+    "animation-name",
+    "agenda-day-pick",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.locator('button[data-date="2026-10-14"]').click();
+  await expect(page.locator(".agenda-month-grid .is-selected")).toHaveCSS("animation-name", "none");
+});
+
+test("monochrome editor close artwork is preserved by the global colored close rule", async ({
+  page,
+}) => {
+  await page.goto("/cadernos");
+  await page.getByRole("button", { name: "Crie", exact: true }).click();
+  await page.getByRole("button", { name: "Criar caderno", exact: true }).click();
+  await page.getByRole("button", { name: "Criar primeira folha", exact: true }).click();
+  const editor = page.getByRole("dialog", { name: "Escrever à mão", exact: true });
+  await editor.getByRole("button", { name: "Configurações do editor" }).click();
+  const close = page.getByRole("button", { name: "Fechar configurações" });
+  await expect(close.locator('svg[data-paper-editor-icon="close"]')).toHaveCount(1);
+  expect(
+    await close.evaluate((element) =>
+      element.matches(
+        'button:has(> .agenda-close-icon), button:has(> img[src="/navigation-icons/paper/close.svg"])',
+      ),
+    ),
+  ).toBe(false);
+  await close.click();
+  await expect(page.getByRole("dialog", { name: "Configurações do editor" })).not.toBeVisible();
+});
+
+test("day planning saves hours and marks Brazilian holidays in both themes", async ({
+  page,
+}, info) => {
+  await page.goto("/planejador");
+  await page.locator('button[data-date="2026-10-12"]').click();
+  await expect(
+    page.getByText("Feriado nacional: Nossa Senhora Aparecida", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Criar compromisso", exact: true }).click();
+  const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
+  await expect(form.getByLabel("Data", { exact: true })).toHaveValue("12/10/2026");
+  await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisão com colega");
+  await form.getByLabel("Horário", { exact: true }).fill("14:30");
+  await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.getByRole("button", { name: "Voltar ao calendário", exact: true }).click();
+  await expect(page.locator('button[data-date="2026-10-12"]')).toHaveAccessibleName(
+    /1 itens.*feriado nacional: Nossa Senhora Aparecida/,
+  );
+  await page.reload();
+  await page.locator('button[data-date="2026-10-12"]').click();
+  await expect(page.getByRole("button", { name: "Editar Revisão com colega" })).toBeVisible();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page
+      .locator(".agenda-day--open")
+      .screenshot({ path: info.outputPath(`day-${theme}.png`), animations: "disabled" });
+  }
+  await page.getByRole("button", { name: "Editar Revisão com colega" }).click();
+  await expect(page.getByLabel("Horário", { exact: true })).toHaveValue("14:30");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("update bell shows red unread counts, keyboard controls and synced reading in both themes", async ({
+  page,
+}, info) => {
+  let feed = [
+    { id: 408, version: "beta.408", title: "Agenda publicada", date: "2026-10-11T12:00:00Z" },
+  ];
+  await page.route("**/system-updates.json", (route) => route.fulfill({ json: feed }));
+  await page.goto("/planejador");
+  const bell = page.locator(".system-updates-trigger");
+  await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");
+  const appearance = page.locator(".page-header__theme");
+  const bellBox = await bell.boundingBox(),
+    themeBox = await appearance.boundingBox();
+  expect(bellBox!.x + bellBox!.width).toBeLessThanOrEqual(themeBox!.x);
+  const panel = page.getByRole("region", { name: "Notificações de atualização" });
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await bell.focus();
+    await page.keyboard.press("Enter");
+    await expect(panel).toBeVisible();
+    await expect(panel.getByText(/Versão beta.408/)).toBeVisible();
+    await expect(page.locator(".system-update-badge")).toHaveCSS(
+      "background-color",
+      "rgb(201, 39, 56)",
+    );
+    await panel.screenshot({
+      path: info.outputPath(`updates-${theme}.png`),
+      animations: "disabled",
+    });
+    await page.keyboard.press("Escape");
+    await expect(panel).not.toBeVisible();
+  }
+  await bell.click();
+  await panel.getByRole("button", { name: "Marcar como lidas" }).click();
+  await expect(page.locator(".system-update-badge")).toHaveCount(0);
+  feed = [
+    ...feed,
+    { id: 409, version: "beta.409", title: "Novidade publicada", date: "2026-10-12T12:00:00Z" },
+  ];
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");
+  await page.evaluate(() => {
+    localStorage.setItem("helena.systemUpdates.read.v1", "[408,409]");
+    window.dispatchEvent(new Event("helena:synced-storage-applied"));
+  });
+  await expect(page.locator(".system-update-badge")).toHaveCount(0);
+  await page.reload();
+  await expect(bell).toHaveAccessibleName("Atualizações do sistema, 0 não lidas");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+test("agenda displays compact filtered islands and Pomodoro weeks in both themes", async ({
+  page,
+}, info) => {
+  const state = createInitialWorkspace();
+  state.practiceActivities = [
+    {
+      id: "math-day6",
+      islandId: "mathematics:foundations",
+      islandName: "Matemática · Ensino fundamental",
+      completedAt: "2026-10-06T12:00:00",
+      answers: 15,
+      correct: 12,
+    },
+    {
+      id: "school-day6",
+      islandId: "mathematics:school",
+      islandName: "Matemática · Ensino médio",
+      completedAt: "2026-10-06T13:00:00",
+      answers: 5,
+      correct: 3,
+    },
+    {
+      id: "college-day8",
+      islandId: "mathematics:college",
+      islandName: "Matemática · Ensino superior",
+      completedAt: "2026-10-08T12:00:00",
+      answers: 8,
+      correct: 4,
+    },
+  ];
+  await page.addInitScript(
+    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
+    state,
+  );
   await page.goto("/planejador");
   await page.evaluate(() => {
     localStorage.setItem(
@@ -34,15 +292,19 @@ test("agenda displays real legacy math progress and filtered Pomodoro weeks in b
       theme,
     );
     await history.getByRole("button", { name: "Praticar", exact: true }).click();
-    await expect(history.getByText("12 acertos acumulados")).toBeVisible();
-    await expect(history.getByText("Melhor rodada: 80 pontos")).toBeVisible();
-    await expect(history.locator(".agenda-island-progress .agenda-charts")).toHaveCount(2);
+    await expect(history.getByText("12 acertos no período")).toBeVisible();
+    await expect(history.getByText("Melhor rodada: 80 pontos")).toHaveCount(0);
+    await expect(history.locator(".agenda-charts")).toHaveCount(1);
+    expect((await history.locator(".agenda-island-carousel").boundingBox())!.height).toBeLessThan(
+      180,
+    );
     await expect(history.getByRole("button", { name: /^Abrir/ })).toHaveCount(0);
     await history
       .locator(".agenda-island-carousel")
       .evaluate((element) => element.scrollIntoView({ block: "center" }));
     await history.getByRole("button", { name: "Próxima ilha" }).click();
     await expect(history.getByRole("img", { name: "Prévia: Oficina das Equações" })).toBeVisible();
+    await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("5 respostas");
     const carousel = history.getByRole("group", { name: "Prévia das ilhas" });
     await carousel.focus();
     await page.keyboard.press("End");
@@ -89,6 +351,11 @@ test("agenda displays real legacy math progress and filtered Pomodoro weeks in b
       style: ".page-header, .mobile-nav, .helena-chat-launcher { visibility: hidden !important; }",
     });
     await page.locator('button[data-date="2026-10-07"]').click();
+    await history.getByRole("button", { name: "Praticar", exact: true }).click();
+    await expect(history.locator(".agenda-island-progress")).toHaveCount(0);
+    await expect(history.locator(".agenda-charts")).toHaveCount(0);
+    await history.getByRole("button", { name: "Foco", exact: true }).click();
+    await history.getByRole("button", { name: "Pomodoro", exact: true }).click();
     await expect(history.locator(".agenda-pomodoro-week")).toHaveCount(1);
     await expect(history.locator(".agenda-pomodoro-day.is-active")).toHaveCount(0);
     await history.getByRole("button", { name: "Cronômetro", exact: true }).click();
@@ -98,12 +365,100 @@ test("agenda displays real legacy math progress and filtered Pomodoro weeks in b
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+test("shelf charts count actual types and focus never infers an unchosen subject", async ({
+  page,
+}, info) => {
+  const state = createInitialWorkspace();
+  state.notebooks = [undefined, undefined, "collection", "note"].map((kind, index) => ({
+    id: `shelf-${index}`,
+    title: ["Meu caderno", "Ciências", "Minha pasta", "Minha Note"][index]!,
+    subjectId: "",
+    pageIds: [],
+    createdAt: "2026-10-11T12:00:00",
+    ...(kind ? { kind: kind as "collection" | "note" } : {}),
+  }));
+  state.focusSessions = [
+    {
+      id: "timer",
+      mode: "timer",
+      subjectId: state.subjects[0]!.id,
+      durationMinutes: 3,
+      completedAt: "2026-10-11T12:00:00",
+    },
+  ];
+  state.tasks = [
+    { id: "undated", title: "Sem prazo", subjectId: "", dueDate: "", completed: false },
+  ];
+  await page.addInitScript(
+    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
+    state,
+  );
+  await page.goto("/planejador");
+  const history = page.getByRole("region", { name: "Histórico de estudo" });
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page.locator('button[data-date="2026-10-11"]').click();
+    await history.getByRole("button", { name: "Foco", exact: true }).click();
+    await expect(history.getByText("Por dia", { exact: true })).toBeVisible();
+    await expect(history.getByText("Por matéria", { exact: true })).toHaveCount(0);
+    await history.getByRole("button", { name: "Pomodoro", exact: true }).hover();
+    await expect(history.getByRole("button", { name: "Pomodoro", exact: true })).toHaveCSS(
+      "color",
+      "rgb(41, 36, 50)",
+    );
+    await history.getByRole("button", { name: "Caderno", exact: true }).click();
+    await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("4 itens");
+    for (const name of ["Meu caderno", "Ciências", "Minha pasta", "Minha Note"])
+      await expect(history.getByText(name, { exact: true })).toBeVisible();
+    const slices = history.locator(".agenda-pie-slice");
+    await expect(slices).toHaveCount(3);
+    expect(
+      new Set(
+        await slices.evaluateAll((elements) =>
+          elements.map((element) => element.getAttribute("fill")),
+        ),
+      ).size,
+    ).toBe(3);
+    const inspect = history.getByRole("button", { name: "Inspecionar Cadernos", exact: true });
+    await inspect.hover();
+    await inspect.focus();
+    await expect(inspect).toHaveCSS(
+      "color",
+      theme === "dark" ? "rgb(255, 249, 239)" : "rgb(41, 36, 50)",
+    );
+    await expect(history.locator(".agenda-chart-inspection")).toContainText("2 itens");
+    await history.screenshot({
+      path: info.outputPath(`shelf-${theme}.png`),
+      animations: "disabled",
+    });
+    await expect(page.getByRole("heading", { name: "Retomar com calma" })).toHaveCount(0);
+    await expect(page.getByText("Matérias e metas", { exact: true })).toHaveCount(0);
+    await expect(
+      page.getByRole("group", { name: "Planejamento da semana selecionada" }).getByRole("button"),
+    ).toHaveCount(7);
+    const week = page.getByRole("group", { name: "Planejamento da semana selecionada" });
+    await week.getByRole("button").first().click();
+    await expect(page.locator('button[data-date="2026-10-05"]')).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await week.screenshot({ path: info.outputPath(`week-${theme}.png`), animations: "disabled" });
+    await page.locator('button[data-date="2026-10-12"]').click();
+    await expect(history.locator(".agenda-charts")).toHaveCount(0);
+    await expect(history.getByText(/Nenhum caderno, pasta ou Note criado/)).toBeVisible();
+  }
+});
 test("agenda creates, edits, completes, reschedules and persists tasks on desktop and mobile", async ({
   page,
 }, info) => {
   await page.goto("/planejador");
   await expect(page.getByRole("button", { name: "Escolher mês", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.locator(".agenda-month-grid .is-selected").click();
+  await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Revisar frações");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
@@ -157,9 +512,10 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   await expect(picker).not.toBeVisible();
   await calendar.getByRole("button", { name: "segunda-feira, 15 de fevereiro, 0 itens" }).click();
   await expect(page.locator("#agenda-day-title")).toHaveText("segunda-feira, 15 de fevereiro");
-  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.locator(".agenda-month-grid .is-selected").click();
+  await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
-  await expect(form.getByLabel("Prazo", { exact: true })).toHaveValue("2027-02-15");
+  await expect(form.getByLabel("Prazo", { exact: true })).toHaveValue("15/02/2027");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Plano do dia escolhido");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
@@ -225,12 +581,12 @@ test("weekly study opens focus without completing, records real minutes and retu
   page,
 }) => {
   await page.goto("/planejador");
-  await page.getByRole("button", { name: "Adicionar", exact: true }).click();
+  await page.locator(".agenda-month-grid .is-selected").click();
+  await page.getByRole("button", { name: "Reservar estudo", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
-  await form.getByLabel("Tipo", { exact: true }).selectOption("study");
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Estudar frações");
   await form.getByLabel("Duração em minutos").fill("1");
-  await form.getByLabel("Repetir", { exact: true }).selectOption("weekly");
+  await form.getByRole("button", { name: "Repetir semanalmente", exact: true }).click();
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await page.getByRole("button", { name: "Começar estudo Estudar frações" }).click();
   await expect(page).toHaveURL(/\/foco/);

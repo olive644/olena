@@ -1,7 +1,6 @@
 import { useId, useRef, useState } from "react";
 import { PaperArrow } from "./paper-arrow";
 import { AgendaCloseIcon } from "./agenda-close-icon";
-import { PaperDigits } from "./paper-digits";
 
 const months = Array.from({ length: 12 }, (_, index) =>
   new Date(2026, index, 1).toLocaleDateString("pt-BR", { month: "long" }),
@@ -96,9 +95,6 @@ export function AgendaMonthPicker({
           </button>
           <label>
             <span>Ano</span>
-            <span className="agenda-year-value">
-              <PaperDigits value={String(year)} />
-            </span>
             <input
               aria-label="Ano"
               type="text"

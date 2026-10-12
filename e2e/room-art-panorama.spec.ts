@@ -42,7 +42,11 @@ for (const theme of ["light", "dark"])
     }
     await expect(
       page.getByText("Bingo presencial", { exact: true }).locator("..").locator(".."),
-    ).toHaveCSS("background-color", "rgb(41, 36, 50)");
+    ).toHaveCSS("background-color", "rgb(255, 249, 239)");
+    await expect(page.locator(".bingo-physical-setting small")).toHaveCSS(
+      "color",
+      "rgb(41, 36, 50)",
+    );
     await page.screenshot({
       path: testInfo.outputPath(`bingo-modos-${theme}.png`),
       fullPage: true,

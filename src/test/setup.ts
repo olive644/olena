@@ -2,6 +2,9 @@ import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 
 beforeEach(() => {
+  // jsdom não executa rolagem; os testes de navegador validam o comportamento real.
+  HTMLElement.prototype.scrollIntoView = vi.fn();
+  HTMLElement.prototype.hidePopover = vi.fn();
   HTMLDialogElement.prototype.showModal = function () {
     this.setAttribute("open", "");
   };

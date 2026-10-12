@@ -241,7 +241,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Keep a narrow CI allowance; no chart dependency or absolute-ceiling change.
 // Real streaks, accumulated math charts and a draggable island preview add
 // 6.7 KiB in lazy routes. Measured total: 1236.5 KiB; initial entry: 278.6 KiB.
-const MAX_TOTAL_JS_BYTES = 1240 * 1024;
+// System notifications and daily planning add 6.3 KiB, mostly lazy-loaded.
+// Measured entry: 279.7 KiB; application: 1242.0 KiB. Hard ceilings unchanged.
+// Custom calendar/time popovers and icon controls add 7.8 KiB in the planner.
+// New icon art is served as SVG assets, keeping the entry inside 280 KiB.
+const MAX_TOTAL_JS_BYTES = 1252 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

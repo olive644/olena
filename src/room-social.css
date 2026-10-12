@@ -117,12 +117,12 @@
 }
 :root body .local-room-preparation .bingo-settings .bingo-physical-setting.secondary-button {
   border: 1px solid #b99100;
-  background: #292432;
-  color: #fff9ef;
+  background: #fff9ef;
+  color: #292432;
   box-shadow: 0 4px 0 #b99100;
 }
 :root body .bingo-physical-setting small {
-  color: #fff9ef;
+  color: inherit;
 }
 .room-social-icon {
   width: 28px;

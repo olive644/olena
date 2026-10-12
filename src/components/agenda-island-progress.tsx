@@ -1,29 +1,38 @@
 import { useRef, useState } from "react";
 import { MATH_COURSES } from "../data/math-courses";
-import { type readMathLearning } from "../data/math-learning";
-import { AgendaCharts } from "./agenda-charts";
+import { type PracticeActivity } from "../domain/workspace";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 
 export function AgendaIslandProgress({
-  learning,
+  activities,
+  selectedId,
+  onSelect,
 }: {
-  learning: ReturnType<typeof readMathLearning>;
+  activities: PracticeActivity[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }) {
-  const [index, setIndex] = useState(0);
   const [offset, setOffset] = useState(0);
   const gesture = useRef<{ x: number; y: number } | null>(null);
-  const course = MATH_COURSES[index]!;
-  const progress = learning[course.id];
-  const acertos = MATH_COURSES.map((item) => ({
-    label: item.subject,
-    value: learning[item.id]?.correct ?? 0,
-  }));
-  const records = MATH_COURSES.map((item) => ({
-    label: item.subject,
-    value: learning[item.id]?.best ?? 0,
-  }));
+  const courses = MATH_COURSES.filter((course) =>
+    activities.some(
+      (activity) => activity.islandId === `mathematics:${course.id}` && activity.answers > 0,
+    ),
+  );
+  const selectedIndex = Math.max(
+    0,
+    courses.findIndex((course) => `mathematics:${course.id}` === selectedId),
+  );
+  const course = courses[selectedIndex];
+  if (!course) return null;
+  const progress = activities.filter(
+    (activity) => activity.islandId === `mathematics:${course.id}`,
+  );
+  const answers = progress.reduce((sum, activity) => sum + activity.answers, 0);
+  const correct = progress.reduce((sum, activity) => sum + activity.correct, 0);
   const visit = (next: number) => {
-    setIndex(Math.max(0, Math.min(MATH_COURSES.length - 1, next)));
+    const nextCourse = courses[Math.max(0, Math.min(courses.length - 1, next))];
+    if (nextCourse) onSelect(`mathematics:${nextCourse.id}`);
     setOffset(0);
   };
   return (
@@ -40,8 +49,8 @@ export function AgendaIslandProgress({
               event.key === "Home"
                 ? 0
                 : event.key === "End"
-                  ? MATH_COURSES.length - 1
-                  : index + (event.key === "ArrowRight" ? 1 : -1),
+                  ? courses.length - 1
+                  : selectedIndex + (event.key === "ArrowRight" ? 1 : -1),
             );
           }
         }}
@@ -50,8 +59,8 @@ export function AgendaIslandProgress({
           type="button"
           className="focus-mode-arrow"
           aria-label="Ilha anterior"
-          disabled={index === 0}
-          onClick={() => visit(index - 1)}
+          disabled={selectedIndex === 0}
+          onClick={() => visit(selectedIndex - 1)}
         >
           <FocusPaperArrow />
         </button>
@@ -71,7 +80,8 @@ export function AgendaIslandProgress({
             const dx = event.clientX - gesture.current.x,
               dy = event.clientY - gesture.current.y;
             gesture.current = null;
-            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) visit(index + (dx < 0 ? 1 : -1));
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy))
+              visit(selectedIndex + (dx < 0 ? 1 : -1));
             else setOffset(0);
           }}
           onPointerCancel={() => {
@@ -92,55 +102,25 @@ export function AgendaIslandProgress({
             height={480}
             style={{ transform: `translateX(${offset}px) rotate(${offset / 25}deg)` }}
           />
+          <div className="agenda-island-caption" aria-live="polite">
+            <small>
+              {course.subject} · {selectedIndex + 1}/{courses.length}
+            </small>
+            <h3>{course.title}</h3>
+            {answers > 0 && <p>{answers} respostas no período</p>}
+            {correct > 0 && <p>{correct} acertos no período</p>}
+          </div>
         </div>
         <button
           type="button"
           className="focus-mode-arrow focus-mode-arrow--next"
           aria-label="Próxima ilha"
-          disabled={index === MATH_COURSES.length - 1}
-          onClick={() => visit(index + 1)}
+          disabled={selectedIndex === courses.length - 1}
+          onClick={() => visit(selectedIndex + 1)}
         >
           <FocusPaperArrow />
         </button>
       </div>
-      <div className="agenda-island-caption" aria-live="polite">
-        <small>
-          {course.subject} · {index + 1}/{MATH_COURSES.length}
-        </small>
-        <h3>{course.title}</h3>
-        <p>{course.topics.join(" · ")}</p>
-        {(progress?.correct ?? 0) > 0 && <p>{progress!.correct} acertos acumulados</p>}
-        {(progress?.best ?? 0) > 0 && <p>Melhor rodada: {progress!.best} pontos</p>}
-      </div>
-      {acertos.some((item) => item.value > 0) && (
-        <>
-          <h3>Progresso acumulado de Matemática</h3>
-          <small>Acertos salvos em todas as ilhas. Independente das datas selecionadas.</small>
-          <AgendaCharts
-            bars={acertos}
-            pie={acertos}
-            unit="acertos"
-            barTitle="Acertos acumulados por ilha"
-            pieTitle="Distribuição dos acertos"
-          />
-        </>
-      )}
-      {records.some((item) => item.value > 0) && (
-        <>
-          <h3>Recordes das ilhas</h3>
-          <small>
-            Pontos da melhor rodada de cada ilha, não pontos totais nem atividade por data.
-          </small>
-          <AgendaCharts
-            bars={records}
-            pie={[]}
-            unit="pontos"
-            barTitle="Melhor rodada por ilha"
-            pieTitle=""
-          />
-        </>
-      )}
-      <small>Use as setas, arraste a ilha ou use o teclado para explorar as prévias.</small>
     </section>
   );
 }

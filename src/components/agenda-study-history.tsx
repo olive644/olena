@@ -1,16 +1,16 @@
 import { dateForKey } from "../domain/agenda";
 import { historySummary, focusHistory, type AgendaRange } from "../domain/agenda-history";
 import { useEffect, useState } from "react";
-import { readMathLearning } from "../data/math-learning";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
-import { mathAnswerSequence, pomodoroWeek } from "../domain/agenda-insights";
+import { pomodoroWeek } from "../domain/agenda-insights";
 import { agendaDashboard, type AgendaCategory } from "../domain/agenda-dashboard";
 import { AgendaCharts } from "./agenda-charts";
-import { type WorkspaceState } from "../domain/workspace";
+import { toDateKey, type WorkspaceState } from "../domain/workspace";
 import { type AppView } from "./app-navigation";
 import { NavigationIcon } from "./navigation-icon";
 import { AgendaIslandProgress } from "./agenda-island-progress";
 import { AgendaFocusWeek } from "./agenda-focus-week";
+import { MATH_COURSES } from "../data/math-courses";
 
 function RangeDate({ date }: { date: string }) {
   const value = dateForKey(date);
@@ -33,6 +33,7 @@ export function AgendaStudyHistory({
 }) {
   const [section, setSection] = useState<"focus" | "notes" | "islands">("focus");
   const [focusMode, setFocusMode] = useState<"timer" | "pomodoro">("timer");
+  const [islandId, setIslandId] = useState<string | null>(null);
   const [, refreshStorage] = useState(0);
   useEffect(() => {
     const refresh = () => refreshStorage((value) => value + 1);
@@ -41,14 +42,32 @@ export function AgendaStudyHistory({
     return () => events.forEach((event) => window.removeEventListener(event, refresh));
   }, []);
   const category: AgendaCategory = section === "focus" ? focusMode : section;
+  const practice = (workspace.practiceActivities ?? []).filter((activity) => {
+    const date = new Date(activity.completedAt);
+    if (!Number.isFinite(date.getTime()) || activity.answers <= 0) return false;
+    const key = toDateKey(date);
+    return key >= range.start && key <= range.end;
+  });
+  const available = MATH_COURSES.filter((course) =>
+    practice.some((activity) => activity.islandId === `mathematics:${course.id}`),
+  );
+  const activeIsland = available.some((course) => `mathematics:${course.id}` === islandId)
+    ? islandId
+    : available[0]
+      ? `mathematics:${available[0].id}`
+      : null;
   const data = agendaDashboard(
-    workspace,
+    category === "islands" && activeIsland
+      ? {
+          ...workspace,
+          practiceActivities: practice.filter((activity) => activity.islandId === activeIsland),
+        }
+      : workspace,
     range,
     category,
     [...history.values()].flatMap((day) => day.sessions),
   );
   const summary = { minutes: data.pie.reduce((sum, item) => sum + item.value, 0) };
-  const learning = readMathLearning();
   let pomodoroDays: unknown = [];
   try {
     pomodoroDays = JSON.parse(localStorage.getItem("noteoli.pomodoro-streak.v1") ?? "[]");
@@ -59,7 +78,6 @@ export function AgendaStudyHistory({
     history.get(key)?.sessions.some((session) => session.mode === "timer"),
   );
   const week = pomodoroWeek(category === "timer" ? timerDays : pomodoroDays, range);
-  const sequence = mathAnswerSequence(workspace.practiceActivities ?? [], range);
   const focusStats = historySummary(
     focusHistory(
       [...history.values()]
@@ -162,11 +180,35 @@ export function AgendaStudyHistory({
             </small>
           </div>
         )}
-        <AgendaCharts key={`${category}:${range.start}:${range.end}`} {...data} />
+        <AgendaCharts
+          key={`${category}:${range.start}:${range.end}:${category === "islands" ? activeIsland : ""}`}
+          {...data}
+        />
+        {summary.minutes === 0 && (
+          <p className="agenda-data-empty" role="status">
+            {category === "islands"
+              ? "Nenhuma resposta registrada nas ilhas neste período. O progresso antigo sem data não entra neste filtro."
+              : category === "notes"
+                ? "Nenhum caderno, pasta ou Note criado neste período. Os seus itens continuam na estante."
+                : `Nenhuma sessão de ${category === "timer" ? "cronômetro" : "Pomodoro"} concluída neste período.`}
+          </p>
+        )}
         <div
           className="agenda-study-details"
           key={`details:${category}:${range.start}:${range.end}`}
         >
+          {category === "notes" && data.entries.length > 0 && (
+            <ul className="agenda-shelf-entries" aria-label="Itens da estante no período">
+              {data.entries.map((entry) => (
+                <li key={entry.id}>
+                  <strong>{entry.title || "Sem título"}</strong>
+                  <small>
+                    {entry.label} · <RangeDate date={entry.date} />
+                  </small>
+                </li>
+              ))}
+            </ul>
+          )}
           {section === "focus" && focusStats.days > 0 && (
             <p>
               {focusStats.days} {focusStats.days === 1 ? "dia de foco" : "dias de foco"} no período
@@ -174,13 +216,13 @@ export function AgendaStudyHistory({
             </p>
           )}
           {section === "focus" && <AgendaFocusWeek week={week} mode={focusMode} />}
-          {category === "islands" && sequence > 0 && (
-            <p>
-              Melhor sequência no período: {sequence} {sequence === 1 ? "acerto" : "acertos"}{" "}
-              consecutivos na rodada.
-            </p>
+          {category === "islands" && practice.length > 0 && (
+            <AgendaIslandProgress
+              activities={practice}
+              selectedId={activeIsland}
+              onSelect={setIslandId}
+            />
           )}
-          {category === "islands" && <AgendaIslandProgress learning={learning} />}
         </div>
       </div>
     </section>

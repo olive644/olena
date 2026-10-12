@@ -11,6 +11,7 @@ import {
 import { PageHeader, type AppView } from "../components/app-navigation";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperActionIcon } from "../components/paper-action-icon";
+import { AgendaActionIcon } from "../components/agenda-action-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { AgendaCloseIcon } from "../components/agenda-close-icon";
@@ -18,6 +19,9 @@ import { NavigationIcon } from "../components/navigation-icon";
 import { AgendaMonthPicker } from "../components/agenda-month-picker";
 import { AgendaStudyHistory } from "../components/agenda-study-history";
 import { PaperDigits } from "../components/paper-digits";
+import { PaperChoice, PaperDateField, PaperTimeField } from "../components/agenda-paper-fields";
+import { agendaSubjects } from "../domain/agenda-subjects";
+import { brazilianHoliday } from "../domain/brazilian-holidays";
 import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
 import {
   agendaPrompt,
@@ -25,7 +29,9 @@ import {
   eventsOn,
   HELENA_PLAN_DRAFT_EVENT,
   monthDates,
+  overdueTasks,
   shiftDate,
+  weekDates,
 } from "../domain/agenda";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import {
@@ -99,8 +105,21 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
   const history = useMemo(() => focusHistory(workspace.focusSessions), [workspace.focusSessions]);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [notice, setNotice] = useState("");
+  const [dayOpen, setDayOpen] = useState(false);
+  const daySheet = useRef<HTMLElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
-  const addButton = useRef<HTMLButtonElement>(null);
+  const formTrigger = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (dayOpen) {
+      daySheet.current?.scrollIntoView({
+        block: "nearest",
+        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+      daySheet.current?.querySelector<HTMLHeadingElement>("h2")?.focus({ preventScroll: true });
+    }
+  }, [dayOpen, selected]);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
     return () => window.clearInterval(timer);
@@ -109,23 +128,50 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     if (draft) dialog.current?.showModal();
     else if (dialog.current?.open) {
       dialog.current.close();
-      addButton.current?.focus();
+      if (formTrigger.current?.isConnected) formTrigger.current.focus();
+      else daySheet.current?.querySelector<HTMLHeadingElement>("h2")?.focus();
     }
   }, [draft]);
   const month = monthDates(selected);
   const dates = month.slice(35).some((date) => date.slice(0, 7) === selected.slice(0, 7))
     ? month
     : month.slice(0, 35);
-  const pending = workspace.tasks.filter((task) => !task.completed && task.dueDate < today);
+  const pending = overdueTasks(workspace, today);
+  const week = weekDates(selected).map((date) => ({
+    date,
+    items:
+      eventsOn(workspace, date).filter((event) => !event.completedDates?.includes(date)).length +
+      workspace.tasks.filter((task) => !task.completed && task.dueDate === date).length,
+  }));
   const scheduled = eventsOn(workspace, selected);
   const tasks = workspace.tasks.filter((task) => task.dueDate === selected);
+  const subjects = agendaSubjects(workspace);
+  const selectedSubject = workspace.subjects.find((subject) => subject.id === draft?.subjectId);
+  const subjectOptions =
+    selectedSubject && !subjects.some((subject) => subject.value === selectedSubject.id)
+      ? [...subjects, { value: selectedSubject.id, label: selectedSubject.name }]
+      : subjects;
   const subjectName = (id: string) =>
-    workspace.subjects.find((subject) => subject.id === id)?.name ?? "Sem matéria";
+    subjects.find((subject) => subject.value === id)?.label ??
+    workspace.subjects.find((subject) => subject.id === id)?.name ??
+    "Sem matéria";
   function resetDate(date: string) {
     setSelected(date);
     setRange(null);
     setIntervalStart(null);
     setIntervalMode(false);
+    setDayOpen(false);
+  }
+  function backToCalendar() {
+    setDayOpen(false);
+    const button = document.querySelector<HTMLButtonElement>(`button[data-date="${selected}"]`);
+    button?.focus();
+    button?.scrollIntoView({
+      block: "center",
+      behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
   }
   function chooseDate(date: string, extend = false) {
     if (extend) setRange(orderedRange(range?.start ?? selected, date));
@@ -142,18 +188,22 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     setSelected(date);
   }
   function create(kind: Kind = "task") {
+    formTrigger.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft({
       kind,
       title: "",
       date: selected,
       time: "18:00",
-      subjectId: workspace.subjects[0]?.id ?? "",
+      subjectId: subjects[0]?.value ?? "",
       minutes: kind === "goal" ? 300 : 25,
       recurrence: "none",
       until: "",
     });
   }
   function edit(item: StudyEvent | StudyTask) {
+    formTrigger.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft(
       "dueDate" in item
         ? {
@@ -184,6 +234,17 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
     event.preventDefault();
     if (!draft || !draft.title.trim()) return;
     const title = draft.title.trim();
+    if (
+      draft.kind !== "subject" &&
+      !workspace.subjects.some((subject) => subject.id === draft.subjectId)
+    ) {
+      const subject = subjects.find((item) => item.value === draft.subjectId);
+      if (!subject) {
+        setNotice("Escolha uma matéria das ilhas.");
+        return;
+      }
+      dispatch({ type: "subject/added", id: subject.value, name: subject.label, color: "#7c3aed" });
+    }
     if (draft.kind === "subject")
       dispatch({ type: "subject/added", name: title, color: "#7c3aed" });
     else if (draft.kind === "goal")
@@ -219,6 +280,11 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       );
     }
     setNotice(draft.id ? "Alteração salva." : "Adicionado à sua agenda.");
+    if (draft.kind === "task" || draft.kind === "study" || draft.kind === "appointment") {
+      setSelected(draft.date);
+      setRange(null);
+      setDayOpen(true);
+    }
     setDraft(null);
   }
   function startStudy(event: StudyEvent, date: string, timestamp: number) {
@@ -279,11 +345,12 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
         </div>
         <button
           type="button"
-          className="text-button"
+          className="primary-button agenda-edit"
           aria-label={`Editar ${task.title}`}
+          title={`Editar ${task.title}`}
           onClick={() => edit(task)}
         >
-          Editar
+          <AgendaActionIcon name="edit" />
         </button>
       </article>
     );
@@ -351,11 +418,12 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           )}
           <button
             type="button"
-            className="text-button"
+            className="primary-button agenda-edit"
             aria-label={`Editar ${event.title}`}
+            title={`Editar ${event.title}`}
             onClick={() => edit(event)}
           >
-            Editar
+            <AgendaActionIcon name="edit" />
           </button>
           {event.kind !== "study" && (
             <button
@@ -372,14 +440,66 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       </article>
     );
   }
+  const dayPanel = (
+    <section
+      ref={daySheet}
+      tabIndex={-1}
+      className={`module-panel agenda-day${dayOpen ? " agenda-day--open" : ""}`}
+      aria-labelledby="agenda-day-title"
+    >
+      <div className="module-heading">
+        <h2 id="agenda-day-title" tabIndex={-1}>
+          <PaperCalendarText value={dayLabel(selected, true)} />
+        </h2>
+        {dayOpen && (
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Voltar ao calendário"
+            onClick={backToCalendar}
+          >
+            <AgendaCloseIcon />
+          </button>
+        )}
+      </div>
+      {brazilianHoliday(selected) && (
+        <p className="agenda-holiday-caption">Feriado nacional: {brazilianHoliday(selected)}</p>
+      )}
+      <div className="agenda-day-actions" role="group" aria-label="Planejar este dia">
+        <button type="button" className="secondary-button" onClick={() => create("task")}>
+          <PaperActionIcon name="plus" /> Criar tarefa
+        </button>
+        <button type="button" className="primary-button" onClick={() => create("study")}>
+          <AgendaActionIcon name="study" /> Reservar estudo
+        </button>
+        <button type="button" className="secondary-button" onClick={() => create("appointment")}>
+          <AgendaActionIcon name="appointment" /> Criar compromisso
+        </button>
+      </div>
+      {scheduled.length > 0 && (
+        <>
+          <h3 className="agenda-section-title">Com horário</h3>
+          {scheduled.map((event) => eventCard(event))}
+        </>
+      )}
+      {tasks.length > 0 && (
+        <>
+          <h3 className="agenda-section-title">No seu ritmo</h3>
+          {tasks.map(taskCard)}
+        </>
+      )}
+      {scheduled.length + tasks.length === 0 && (
+        <p className="agenda-data-empty">
+          Nenhum compromisso ou tarefa neste dia. Escolha uma ação acima para planejar.
+        </p>
+      )}
+    </section>
+  );
   return (
     <main className="main-content agenda-page" id="main-content">
       <PageHeader />
-      <header className="agenda-heading">
+      <header className="agenda-heading agenda-heading--minimal">
         <h1 className="agenda-accessible-title">Minha agenda</h1>
-        <button ref={addButton} type="button" className="primary-button" onClick={() => create()}>
-          <PaperActionIcon name="plus" /> Adicionar
-        </button>
       </header>
       <p className="agenda-notice" role="status">
         {notice}
@@ -402,6 +522,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               className={intervalMode ? "primary-button" : "secondary-button"}
               aria-pressed={intervalMode}
               onClick={() => {
+                setDayOpen(false);
                 setIntervalMode(!intervalMode);
                 setIntervalStart(null);
               }}
@@ -477,6 +598,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               }, 0);
               setSelected(active.end);
               setRange(active.start === active.end ? null : orderedRange(active.start, active.end));
+              setDayOpen(active.start === active.end);
               event.currentTarget.releasePointerCapture(event.pointerId);
             }}
             onPointerCancel={() => {
@@ -509,6 +631,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                 eventsOn(workspace, date).length +
                 workspace.tasks.filter((task) => task.dueDate === date && !task.completed).length;
               const minutes = history.get(date)?.minutes ?? 0;
+              const holiday = brazilianHoliday(date);
               const inRange = range && date >= range.start && date <= range.end;
               return (
                 <button
@@ -516,7 +639,8 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                   key={date}
                   data-date={date}
                   className={`${date.slice(0, 7) !== selected.slice(0, 7) ? "is-outside " : ""}${date === today ? "is-today " : ""}${date === selected ? "is-selected " : ""}${inRange ? "is-in-range " : ""}${minutes > 0 ? "has-study " : ""}${history.has(shiftDate(date, -1)) ? "study-continues-left " : ""}${history.has(shiftDate(date, 1)) ? "study-continues-right" : ""}`}
-                  aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}`}
+                  aria-label={`${dayLabel(date, true)}, ${count} itens${minutes > 0 ? `, ${minutes} min de foco` : ""}${holiday ? `, feriado nacional: ${holiday}` : ""}`}
+                  title={holiday}
                   aria-pressed={date === selected}
                   aria-current={date === today ? "date" : undefined}
                   onClick={(event) => {
@@ -526,12 +650,14 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                     }
                     suppressClick.current = false;
                     chooseDate(date, event.shiftKey);
+                    setDayOpen(!event.shiftKey && !intervalMode);
                   }}
                 >
                   <span>
                     <PaperDigits value={String(dateForKey(date).getDate())} />
                   </span>
                   {minutes > 0 && <i className="agenda-study-ribbon" aria-hidden="true" />}
+                  {holiday && <i className="agenda-holiday-mark" aria-hidden="true" />}
                   {count > 0 && (
                     <small>
                       <PaperDigits value={String(count)} />
@@ -545,8 +671,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               );
             })}
           </div>
+          <small className="agenda-holiday-legend">◆ Feriado nacional brasileiro</small>
         </section>
       }
+      {dayOpen && dayPanel}
       {
         <AgendaStudyHistory
           history={history}
@@ -557,38 +685,7 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
       }
       <div className="agenda-layout">
         <div>
-          <section className="module-panel agenda-day" aria-labelledby="agenda-day-title">
-            <div className="module-heading">
-              <h2 id="agenda-day-title">
-                <PaperCalendarText value={dayLabel(selected, true)} />
-              </h2>
-              <span>
-                <PaperDigits value={String(scheduled.length + tasks.length)} /> itens
-              </span>
-            </div>
-            {scheduled.length > 0 && (
-              <>
-                <h3 className="agenda-section-title">Com horário</h3>
-                {scheduled.map((event) => eventCard(event))}
-              </>
-            )}
-            {tasks.length > 0 && (
-              <>
-                <h3 className="agenda-section-title">No seu ritmo</h3>
-                {tasks.map(taskCard)}
-              </>
-            )}
-            {scheduled.length + tasks.length === 0 && (
-              <div className="agenda-empty">
-                <NavigationIcon name="planner" />
-                <h3>Seu dia ainda está livre.</h3>
-                <p>Reserve um estudo curto ou anote o que precisa fazer.</p>
-                <button type="button" className="secondary-button" onClick={() => create("study")}>
-                  Planejar estudo <PaperArrow />
-                </button>
-              </div>
-            )}
-          </section>
+          {!dayOpen && dayPanel}
           <details className="agenda-extra">
             <summary>Google Agenda e tarefas de aula</summary>
             <Suspense
@@ -600,12 +697,10 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           </details>
         </div>
         <aside className="agenda-aside">
-          <section className="module-panel">
-            <h2>Retomar com calma</h2>
-            {pending.length === 0 ? (
-              <p>Nenhuma tarefa atrasada. Você pode cuidar do próximo passo.</p>
-            ) : (
-              pending.map((task) => (
+          {pending.length > 0 && (
+            <section className="module-panel">
+              <h2>Retomar com calma</h2>
+              {pending.map((task) => (
                 <article className="agenda-pending" key={task.id}>
                   <strong>{task.title}</strong>
                   <small>Prazo: {dateForKey(task.dueDate).toLocaleDateString("pt-BR")}</small>
@@ -625,13 +720,41 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                     Mover para hoje <PaperArrow />
                   </button>
                 </article>
-              ))
-            )}
-          </section>
+              ))}
+            </section>
+          )}
           <section className="module-panel agenda-helena">
             <NavigationIcon name="planner" />
             <h2>Uma semana possível</h2>
-            <p>Peça sugestões à Helena. Você decide o que entra na agenda.</p>
+            <p>
+              {week.reduce((sum, day) => sum + day.items, 0)} itens pendentes nesta semana. Reserve
+              espaço para estudar e descansar.
+            </p>
+            <div
+              className="agenda-week-plan"
+              role="group"
+              aria-label="Planejamento da semana selecionada"
+            >
+              {week.map((day) => (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  key={day.date}
+                  aria-label={`${dayLabel(day.date)}, ${day.items} itens planejados`}
+                  aria-pressed={day.date === selected}
+                  onClick={() => {
+                    resetDate(day.date);
+                    setDayOpen(true);
+                  }}
+                >
+                  <small>
+                    {dateForKey(day.date).toLocaleDateString("pt-BR", { weekday: "short" })}
+                  </small>
+                  <strong>{dateForKey(day.date).getDate()}</strong>
+                  <span>{day.items > 0 ? `${day.items} itens` : "Livre"}</span>
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               className="primary-button"
@@ -647,36 +770,6 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
             </button>
             <small>O pedido abre no chat para você revisar antes de enviar.</small>
           </section>
-          <details className="module-panel agenda-extra">
-            <summary>Matérias e metas</summary>
-            <ul className="agenda-subjects">
-              {workspace.subjects.map((subject) => (
-                <li key={subject.id}>{subject.name}</li>
-              ))}
-            </ul>
-            <button type="button" className="secondary-button" onClick={() => create("subject")}>
-              Adicionar matéria
-            </button>
-            {workspace.goals.map((goal) => (
-              <article className="agenda-pending" key={goal.id}>
-                <strong>{goal.title}</strong>
-                <small>
-                  {goal.targetMinutes} min · até{" "}
-                  {dateForKey(goal.deadline).toLocaleDateString("pt-BR")}
-                </small>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
-                >
-                  {goal.completed ? "Reabrir meta" : "Concluir meta"}
-                </button>
-              </article>
-            ))}
-            <button type="button" className="secondary-button" onClick={() => create("goal")}>
-              Criar meta de foco
-            </button>
-          </details>
         </aside>
       </div>
       <dialog
@@ -699,27 +792,15 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               </button>
             </header>
             <form onSubmit={save} className="compact-form">
-              <label className="field">
-                <span>Tipo</span>
-                <select
-                  aria-label="Tipo"
-                  value={draft.kind}
-                  disabled={Boolean(draft.id)}
-                  onChange={(event) =>
-                    setDraft({
-                      ...draft,
-                      kind: event.target.value as Kind,
-                      minutes: event.target.value === "goal" ? 300 : 25,
-                    })
-                  }
-                >
-                  {Object.entries(labels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <PaperChoice
+                label="Tipo"
+                value={draft.kind}
+                disabled={Boolean(draft.id)}
+                options={Object.entries(labels).map(([value, label]) => ({ value, label }))}
+                onChange={(value) =>
+                  setDraft({ ...draft, kind: value as Kind, minutes: value === "goal" ? 300 : 25 })
+                }
+              />
               <label className="field">
                 <span>{draft.kind === "subject" ? "Nome da matéria" : "Título"}</span>
                 <input
@@ -735,43 +816,23 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
               </label>
               {draft.kind !== "subject" && (
                 <>
-                  <label className="field">
-                    <span>Matéria</span>
-                    <select
-                      aria-label="Matéria"
-                      value={draft.subjectId}
-                      required
-                      onChange={(event) => setDraft({ ...draft, subjectId: event.target.value })}
-                    >
-                      {workspace.subjects.map((subject) => (
-                        <option key={subject.id} value={subject.id}>
-                          {subject.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  <PaperChoice
+                    label="Matéria"
+                    value={draft.subjectId}
+                    options={subjectOptions}
+                    onChange={(value) => setDraft({ ...draft, subjectId: value })}
+                  />
                   <div className="field-row">
-                    <label className="field">
-                      <span>
-                        {draft.kind === "task" || draft.kind === "goal" ? "Prazo" : "Data"}
-                      </span>
-                      <input
-                        type="date"
-                        required
-                        value={draft.date}
-                        onChange={(event) => setDraft({ ...draft, date: event.target.value })}
-                      />
-                    </label>
+                    <PaperDateField
+                      label={draft.kind === "task" || draft.kind === "goal" ? "Prazo" : "Data"}
+                      value={draft.date}
+                      onChange={(value) => setDraft({ ...draft, date: value })}
+                    />
                     {(draft.kind === "study" || draft.kind === "appointment") && (
-                      <label className="field">
-                        <span>Horário</span>
-                        <input
-                          type="time"
-                          required
-                          value={draft.time}
-                          onChange={(event) => setDraft({ ...draft, time: event.target.value })}
-                        />
-                      </label>
+                      <PaperTimeField
+                        value={draft.time}
+                        onChange={(value) => setDraft({ ...draft, time: value })}
+                      />
                     )}
                   </div>
                   {draft.kind !== "task" && (
@@ -793,32 +854,32 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
                   )}
                   {(draft.kind === "study" || draft.kind === "appointment") && (
                     <>
-                      <label className="field">
-                        <span>Repetir</span>
-                        <select
-                          aria-label="Repetir"
-                          value={draft.recurrence}
-                          onChange={(event) =>
-                            setDraft({
-                              ...draft,
-                              recurrence: event.target.value as Draft["recurrence"],
-                            })
-                          }
-                        >
-                          <option value="none">Não repetir</option>
-                          <option value="weekly">Toda semana neste dia</option>
-                        </select>
-                      </label>
+                      <div className="field">
+                        <span>Repetição</span>
+                        <div className="agenda-repeat-options" role="group" aria-label="Repetição">
+                          {(["none", "weekly"] as const).map((value) => (
+                            <button
+                              type="button"
+                              key={value}
+                              aria-label={value === "none" ? "Não repetir" : "Repetir semanalmente"}
+                              title={value === "none" ? "Não repetir" : "Toda semana neste dia"}
+                              aria-pressed={draft.recurrence === value}
+                              className="secondary-button"
+                              onClick={() => setDraft({ ...draft, recurrence: value })}
+                            >
+                              <AgendaActionIcon name={value === "none" ? "once" : "weekly"} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       {draft.recurrence === "weekly" && (
-                        <label className="field">
-                          <span>Repetir até (opcional)</span>
-                          <input
-                            type="date"
-                            min={draft.date}
-                            value={draft.until}
-                            onChange={(event) => setDraft({ ...draft, until: event.target.value })}
-                          />
-                        </label>
+                        <PaperDateField
+                          label="Repetir até (opcional)"
+                          optional
+                          min={draft.date}
+                          value={draft.until}
+                          onChange={(value) => setDraft({ ...draft, until: value })}
+                        />
                       )}
                       {draft.id && draft.recurrence === "weekly" && (
                         <p>

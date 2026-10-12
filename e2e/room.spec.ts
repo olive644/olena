@@ -126,7 +126,7 @@ for (const activity of ["listening", "bingo"] as const) {
     });
     await page.goto("/sala");
     await expect(page.locator(".page-header .user-profile")).toBeVisible();
-    await expect(page.locator(".page-header .appearance-picker__trigger")).toBeVisible();
+    await expect(page.locator(".page-header__theme .appearance-picker__trigger")).toBeVisible();
     const preparation = page.locator(".local-room-preparation");
     await expect(preparation.locator(".local-room-activity")).toHaveCount(4);
     if (testInfo.project.name === "mobile") {

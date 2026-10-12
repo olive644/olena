@@ -33,6 +33,7 @@ Estas regras herdam o padrão de engenharia do OliQualidade e valem para todo o 
 
 - Seguir docs/DESIGN_SYSTEM.md: Helena, ícones e novos elementos visuais usam o padrão aprovado de papel recortado. Loadings usam HelenaLoading.
 - São proibidas molduras de foco/seleção por outline e contornos automáticos roxos ou pretos. Usar a regra compartilhada de foco em papel: sublinhado e destaque amarelo, sem ocultar a indicação de navegação por teclado. Bordas estruturais dos cartões não são molduras de foco.
+- Controles de fechar com X colorido usam o recorte aprovado sem placa, fundo ou sombra de botão. Preservar área de toque e sublinhado amarelo no teclado. Não alterar os X monocromáticos grafite/creme de PaperEditorIcon.
 
 - É proibido usar travessões em textos da interface, documentação, comentários ou qualquer outro conteúdo do repositório. Reescrever a frase com vírgula, ponto, dois-pontos ou parênteses.
 - Registrar decisões arquiteturais e mudanças de estado em `docs/CURRENT_STATE_AUDIT.md`.

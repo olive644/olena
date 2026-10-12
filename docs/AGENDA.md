@@ -2,10 +2,10 @@
 
 ## Fluxo
 
-`/planejador` abre o planejamento do dia atual. O ícone de calendário abre e recolhe
-o mês, com seletor de mês sem setas, destaque roxo e contagens compactas. Selecionar
-uma data atualiza o planejamento logo abaixo, no computador e celular. Recolher o
-calendário preserva a data escolhida. As abas Hoje/Semana/Mês foram substituídas.
+`/planejador` abre o planejamento do dia atual. Calendário e categorias ficam
+sempre visíveis. O ícone abre o seletor de mês, com destaque roxo e contagens
+compactas. Selecionar uma data atualiza planejamento e gráficos logo abaixo,
+no computador e celular. As abas Hoje/Semana/Mês foram substituídas.
 O seletor de mês é um painel próprio com 12 botões de papel e ano editável,
 sem calendário nativo do navegador. Escape e clique fora fecham o painel.
 Arrastar com mouse/toque seleciona um intervalo inclusivo; o botão Selecionar
@@ -18,8 +18,8 @@ dias estudados e maior sequência dentro do mês ou intervalo escolhido. Os hor�
 da linha do tempo são de conclusão (`completedAt`), não de início: o formato atual
 não guarda início, pausas ou intervalos exatos. Não há tempos inventados. As datas
 usam o fuso local do dispositivo. O histórico usa os registros já sincronizados do
-workspace, sem alterar esquema, conta ou persistência. O X da Agenda usa arte
-vermelha facetada própria, sem alterar os outros controles do aplicativo.
+workspace, sem alterar esquema, conta ou persistência. X coloridos usam arte
+vermelha facetada sem placa; os X monocromáticos permanecem intactos.
 Adicionar reúne tarefa, compromisso, sessão de estudo, matéria e meta de foco.
 Editar permite reagendar pela data e excluir com confirmação. Pendências podem ser
 movidas para hoje, sem alterar conclusão ou criar cópias.
@@ -41,6 +41,18 @@ Agenda e Espaço do aluno usam a mesma seleção de ocorrências, inclusive roti
 Google Agenda permanece separado e identificado: leitura dos próximos 14 dias, link
 para editar no Google, sem importar cópias nem fingir edição local. Tarefas de aula,
 matérias e metas existentes continuam disponíveis.
+
+Meu estudo agrega Foco por dia, nunca pela matéria padrão não escolhida.
+Caderno conta criações datadas na estante, separando cadernos, pastas e Notes
+na pizza e exibindo seus nomes. Não duplica as páginas internas da Note.
+Praticar mostra somente ilhas com respostas no período; navegar pela prévia
+filtra também os gráficos da ilha exibida. Datas vazias têm explicação,
+sem gráficos fictícios. Flores e tomates mantêm a exceção visual do Foco.
+
+Retomar com calma aparece apenas para tarefas realmente vencidas, com data
+válida e não concluídas. Matérias e metas não têm widget duplicado na Agenda;
+os dados existentes permanecem salvos. Uma semana possível resume sete dias
+clicáveis com contagens de pendências reais e mantém o planejamento com Helena.
 
 ## Lembretes e Helena
 
@@ -69,8 +81,30 @@ O contador em andamento continua local ao dispositivo, como já era no Foco.
 
 ## Verificação
 
+Clique/toque/Enter em um dia abre a folha contextual com ações para
+tarefa, estudo e compromisso. O calendário permanece acessível para filtros e
+intervalos. O formulário preenche a data selecionada, aceita horário/duração e
+persiste nas mesmas coleções sincronizadas do workspace. Voltar não altera dados.
+Feriados nacionais têm marcador e nome do dia. Datas móveis usam o Computus;
+Carnaval/Corpus Christi são pontos facultativos, não feriados nacionais nesta lista.
+Feriados estaduais/municipais não são inferidos sem localização.
+
+O botão Adicionar do topo foi removido. Formulário usa seletores/painéis de papel
+para tipo, matérias do catálogo de ilhas, calendário e horário, sem widgets
+nativos azuis. Repetição é escolhida por dois ícones com nomes acessíveis.
+Novo ID de matéria é estável, adicionado só ao salvar e não duplicado no merge.
+Matérias antigas personalizadas são preservadas na edição. Check amarelo/grafite
+e seleção/gráficos/painéis animados respeitam movimento reduzido. Ver DESIGN_SYSTEM.md
+para a exceção dos X monocromáticos e o fechamento colorido sem placa.
+
 O calendário permanece visível e o ícone de papel abre somente o seletor de mês.
 Gráficos filtram o dia selecionado ou o intervalo, incluindo dias com zero registros.
+Em Praticar, dias/intervalos sem respostas positivas não exibem gráficos nem
+prévias. Progresso acumulado sem data fica somente em Matemática. A prévia compacta
+tem arte centralizada de 80px. Sem registros, uma mensagem explica a ausência de
+atividade datada. Textos de sequência e instrução visual da ilha foram removidos.
+A legenda mostra respostas/acertos do filtro, com setas roxas, teclado e arraste. Flores e
+tomates semanais continuam visíveis no Foco mesmo sem minutos, como exceção visual.
 Praticar recebe `practiceActivities` opcional no workspace 7. Cada atividade contém
 ID, identificação/nome da ilha, data de conclusão, respostas e acertos. Novas ilhas
 devem despachar `practice/recorded` após avaliação confirmada, com ID estável para

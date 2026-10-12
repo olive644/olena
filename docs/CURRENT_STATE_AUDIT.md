@@ -1,13 +1,54 @@
 # Auditoria do estado atual
 
+## Editar com ícone e alinhamento (2026-10-11)
+
+- Ações Editar em tarefas e compromissos usam agenda-edit.svg, lápis facetado amarelo/creme. Texto visual removido, aria-label e title continuam identificando o item; a edição mantém o fluxo e a persistência existentes.
+- Botões Editar e concluir recebem dimensões explícitas de 44px, centralização em grid, padding uniforme e cantos de papel iguais. Sem mudanças em outros botões ou dados.
+- Teste de navegador verifica ícone carregado, ausência de texto, dimensões/alinhamento e abertura da edição por Enter em claro/escuro e desktop/mobile.
+- Quatro cenários focados de formulário/edição passaram. Verificação geral: 1401 testes, tipos, lint, formatação, APIs, build e desempenho aprovados. Entrada 279,9 KiB e aplicação 1250,8 KiB, dentro dos orçamentos existentes.
+- Logs do CI mobile apontaram seletor antigo em e2e/room.spec.ts que confundia sino e aparência, ambos com appearance-picker__trigger. O teste agora usa page-header__theme, como os demais testes de aparência. Listening e bingo revalidados localmente no viewport móvel; sem alteração de produto ou redução das asserções. Resultado WebKit nativo depende do CI.
+
+## Dados e inspeção da Agenda (2026-10-11)
+
+- Foco agrupa minutos por dia e modalidade, sem apresentar subjectId padrão como matéria escolhida pelo aluno. O armazenamento original não é alterado.
+- Caderno usa os itens da estante com createdAt válido no período: cadernos sem kind, pastas collection/folder e Notes kind=note. Páginas internas não são contadas novamente. Total é identificado como itens, pizza separa tipos com cores distintas e a lista preserva os títulos. Não inventa data de criação a partir de updatedAt.
+- Praticar lista somente ilhas de Matemática com respostas positivas nas datas selecionadas. Setas, arraste e teclado filtram também os gráficos pela ilha exibida; troca de período reconcilia a seleção com as ilhas disponíveis. Progresso sem data não entra no filtro.
+- PaperChoice define texto creme sobre roxo e grafite sobre amarelo em seleção/hover/foco. Ano é texto comum nos dois seletores de calendário. Inspeção da pizza preserva contraste de papel nos dois temas.
+- Retomar com calma existe somente com tarefas incompletas e prazo válido anterior ao dia atual. Sem prazo, data impossível, hoje, futuro ou conclusão não criam atrasos.
+- Widget duplicado Matérias e metas removido, sem apagar matérias/metas. Uma semana possível mostra sete dias e contagens reais de tarefas/ocorrências pendentes; clicar abre o dia e Helena continua recebendo somente rascunho explícito.
+- Sem mudança de esquema, gravação extra ou dependência nova. Todos os resumos derivam do workspace sincronizado existente.
+- Verificação geral passou: 1401 testes unitários, tipos, lint, formatação, APIs, build e orçamento de desempenho. Agenda/navegação: 47 E2E aprovados e 5 skips específicos de plataforma; estante e semana clicável revalidadas em dois cenários finais. Claro/escuro, hover, foco, teclado e arraste validados em Edge desktop e viewport móvel. WebKit nativo permanece no CI. Build: entrada 279,9 KiB e total 1250,6 KiB, dentro dos orçamentos existentes.
+
+## Formulário de papel e fechamento uniforme (2026-10-11)
+
+- Adicionar do topo removido. Os dias abrem as ações contextuais, com novos SVGs para reservar estudo e criar compromisso. O formulário mantém somente seu botão de salvar/adicionar.
+- Tipo e Matéria usam PaperChoice; datas usam PaperDateField com calendário de papel e entrada dd/mm/aaaa, horário usa PaperTimeField com colunas de horas/minutos e entrada hh:mm. Máscaras aceitam teclado numérico, datas impossíveis não são salvas e data final anterior ao início é revalidada. Popovers usam o top layer, Escape, foco restaurado e navegação por teclado, sem campos/selects nativos azuis.
+- Matérias vêm de PRACTICE_ISLANDS: Idiomas, Português, Química, Biologia, Matemática e Programação. IDs existentes são reaproveitados; novos IDs de catálogo são determinísticos e subject/added é idempotente por ID. O merge existente combina edições dos dispositivos sem criar matérias duplicadas. Itens antigos com matéria personalizada continuam editáveis, sem reatribuição destrutiva.
+- X coloridos adotam agenda-close.svg globalmente, sem fundo roxo, placa, sombra ou facetas de botão. Mantêm área de 44px, resposta ao hover e sublinhado amarelo no teclado. PaperEditorIcon monocromático permanece intacto, validado no editor real de cadernos.
+- Concluir usa o PaperCheckIcon existente com papel amarelo e grafite, animação de encaixe e cartão concluído. Dias/intervalos ganham seleção animada; barras crescem, rosca aparece com escala e painéis se desdobram. Movimento reduzido suprime animações novas e rolagem suave.
+- Agenda e navegação validadas em Edge desktop/mobile, claro/escuro, com 45 cenários aprovados e 5 skips específicos de plataforma. Widgets e filtros revalidados em quatro cenários focados. Nenhuma dependência nova, redefinição de progresso ou mudança de esquema.
+- Verificação geral passou, além dos testes de datas impossíveis, máscara numérica, limite da repetição e IDs de matérias no merge. Build final: entrada 279,7 KiB, total 1249,8 KiB. O formulário adiciona 7,8 KiB sob demanda; ícones novos são assets SVG. Orçamento inicial 280 KiB e tetos absolutos intactos, total normal 1252 KiB. WebKit nativo fica para o CI; mobile local usa viewport de iPhone em Chromium.
+
+## Planejamento por dia e notificações beta (2026-10-11)
+
+- Cada dia abre a folha de planejamento sem bloquear o calendário ou o filtro. Adicionar abre as ações Tarefa, Estudo e Compromisso. Data e horário usam o formulário/reducer existentes; salvar marca o dia, voltar conserva a seleção e devolve foco ao calendário.
+- Agenda não cria armazenamento paralelo: compromissos e tarefas permanecem nas coleções do workspace, com o merge por ID já existente e persistência entre recargas. Nenhuma mudança no esquema do workspace.
+- Feriados nacionais recebem marcador amarelo e nome na folha do dia, incluindo a Paixão de Cristo móvel. Fonte: [Portaria MGI 11.460/2025, calendário 2026](https://legis.sigepe.gov.br/sigepe-bgp-ws-legis/legis-service/download/?id=0026440285-ALPDF/2025). Carnaval e Corpus Christi não são rotulados como feriados nacionais; feriados locais dependem de localização e não estão incluídos.
+- Prévias de ilha usam arte de 80px centralizada e legenda curta, sem texto de sequência ou instrução visual. Sem dados, cada categoria explica a ausência de registros no filtro, sem gráficos fictícios. Semanas de flores/tomates continuam como exceção solicitada.
+- Sino antes da aparência, apenas ícone e badge vermelho. Feed gerado no build Vercel por PRs mescladas/publicadas; versões beta identificadas pelo número da PR. Não anuncia PR em rascunho. GitHub é consultado somente no build; navegador acessa manifesto do próprio app.
+- Leitura de notificações sincronizada por `helena.systemUpdates.read.v1`, união de IDs no login e merge concorrente; aplica mudanças remotas e limpa dados na troca/saída da conta. Ver docs/SYSTEM_UPDATES.md para limites, fallback e rollback.
+- Build medido: entrada 279,7 KiB e total 1242,0 KiB. Novas funções adicionam 6,3 KiB, principalmente sob demanda. Orçamento total normal 1244 KiB; orçamento inicial 280 KiB e tetos absolutos intactos. Sem dependências novas.
+- Validação: 1395 testes em 227 arquivos, 20 cenários E2E desktop/mobile Edge nos dois temas e seis cenários revalidados após os ajustes finais. Teste de publicação no build também passou, além do merge/leitura de notificações e preservação de horários de dois dispositivos. Mobile local é Chromium com viewport de iPhone; WebKit nativo fica para o CI.
+
 ## Indicadores reais na Agenda (2026-10-11)
 
 - Gráficos, valores e inspeção vazios ou zerados não são exibidos. Inspeção em itálico, sem faixa amarela.
-- Praticar lê o progresso matemático salvo e o mostra como acumulado, separado dos registros por data. Não são inventadas datas antigas.
+- Praticar exibe apenas `practiceActivities` datadas no dia ou intervalo selecionado. Sem respostas positivas, não aparecem gráficos, prévias nem indicadores. O progresso antigo sem data permanece salvo em Matemática, fora da Agenda.
 - Pomodoro reutiliza os dias de ciclos concluídos, filtrados pelo período e pela semana da data final. Cronômetro mostra dias de foco e sequência diária positiva. Sem minutos, as semanas continuam visíveis: flores murchas/vivas e tomates apagados/vivos.
-- Matemática mostra a melhor sequência de acertos por rodada nos registros datados do período, nunca interpreta pontuação como streak diário.
-- Indicadores acumulados acompanham atualizações do armazenamento sincronizado e desaparecem quando não há progresso positivo.
-- Acertos acumulados alimentam barras e distribuição por ilha; recordes de pontos ficam em barras separadas. Nenhum registro antigo ganha data inventada. Prévias das seis ilhas usam artes existentes, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Matemática usa registros datados do período, nunca interpreta pontuação como streak diário. Texto de melhor sequência removido a pedido do proprietário.
+- Um único par de gráficos mostra respostas por período e distribuição por ilha. A prévia compacta combina arte de 80px centralizada e legenda com respostas/acertos filtrados, sem recordes acumulados ou gráficos duplicados. Mantém seis ilhas, setas roxas, teclado e arraste horizontal com cancelamento seguro. Botões Abrir removidos do dashboard.
+- Bingo presencial usa papel creme e texto grafite nos dois temas, mantendo o acabamento amarelo e a opção de cartelas físicas.
+- Ajuste validado com `npm run verify`, 16 testes unitários focados e 20 cenários E2E em Edge desktop/mobile, claro/escuro. Prévias respeitam filtro diário/intervalo e altura menor que 180px; zeros e progresso legado sem data não produzem conteúdo. A validação móvel local usa Chromium com viewport de iPhone, não WebKit nativo.
 - Bundle medido: entrada 278,6 KiB e total 1236,5 KiB, aumento de 6,7 KiB nas rotas sob demanda, sem dependência nova. Orçamento total 1240 KiB, teto absoluto e orçamento inicial preservados.
 
 ## Navegação móvel uniforme (2026-10-11)

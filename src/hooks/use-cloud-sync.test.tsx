@@ -599,6 +599,26 @@ it("outra conta no mesmo aparelho não recebe os dados da anterior", async () =>
   expect(localStorage.getItem("helena.onboarding.v1")).toBe('{"completed":true}');
 });
 
+it("combines notification reading from both devices during login", async () => {
+  signedInServices({ uid: "ana", displayName: "Ana", email: "ana@example.com" });
+  const key = "helena.systemUpdates.read.v1";
+  localStorage.setItem(key, "[408]");
+  const uploads: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "PUT") uploads.push(String(init.body));
+      return new Response(JSON.stringify({ version: 1, updatedAt: 1, items: { [key]: "[409]" } }), {
+        status: 200,
+      });
+    }),
+  );
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(localStorage.getItem(key)).toBe("[408,409]");
+  expect(uploads.join("")).toContain("408,409");
+});
+
 it("a mesma conta voltando ao aparelho mantém o que já estava nele", async () => {
   signedInServices({ uid: "ana", displayName: "Ana", email: "ana@example.com" });
   vi.stubGlobal(
