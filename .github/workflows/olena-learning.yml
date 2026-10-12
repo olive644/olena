@@ -60,7 +60,7 @@ jobs:
           curl --fail --max-time 30 https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct/raw/7ae557604adf67be50417f59c2c2f167def9a775/LICENSE -o .olena-learning/candidate/QWEN_LICENSE
       - name: Keep small candidate adapter only, never base weights
         if: steps.train.outputs.artifact == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: Olena-Math-Qwen-Candidate-v2
           path: .olena-learning/candidate/
@@ -68,7 +68,7 @@ jobs:
           if-no-files-found: error
       - name: Keep evaluation report even when weights are rejected
         if: always() && steps.train.outputs.report == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: Olena-Math-Training-Report-v2
           path: |
