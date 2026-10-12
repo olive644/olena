@@ -1,4 +1,8 @@
-export function AgendaActionIcon({ name }: { name: "study" | "appointment" | "once" | "weekly" }) {
+export function AgendaActionIcon({
+  name,
+}: {
+  name: "study" | "appointment" | "once" | "weekly" | "edit";
+}) {
   return (
     <img
       className="paper-action-icon"

@@ -278,6 +278,26 @@
 .agenda-item-actions button {
   font-size: 12px;
 }
+:root body .agenda-page button.agenda-edit,
+:root body .agenda-page button.agenda-check {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  flex: 0 0 44px;
+  border-radius: 4px 12px 4px 9px;
+}
+:root body .agenda-page button.agenda-edit {
+  box-shadow: 0 3px 0 #4b209b;
+  transform: none;
+}
+.agenda-edit .paper-action-icon {
+  width: 26px;
+  height: 26px;
+}
 .agenda-item.is-due {
   border-left: 4px solid #facc15;
   padding-left: 10px;

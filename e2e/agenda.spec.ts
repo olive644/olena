@@ -84,6 +84,37 @@ test("paper form offers all islands, custom date/time, icon repeat and yellow co
       "true",
     );
     const complete = page.getByRole("button", { name: `Concluir Compromisso ${theme}` });
+    const edit = page.getByRole("button", { name: `Editar Compromisso ${theme}` });
+    await expect(edit).toHaveText("");
+    await expect(edit.locator('img[data-paper-icon="edit"]')).toBeVisible();
+    for (const control of [edit, complete]) {
+      await expect(control).toHaveCSS("width", "44px");
+      await expect(control).toHaveCSS("height", "44px");
+    }
+    await expect
+      .poll(() =>
+        page
+          .locator(".agenda-item")
+          .filter({ has: edit })
+          .evaluate((item) =>
+            Math.abs(
+              item.querySelector(".agenda-edit")!.getBoundingClientRect().y -
+                item.querySelector(".agenda-check")!.getBoundingClientRect().y,
+            ),
+          ),
+      )
+      .toBeLessThan(1);
+    await page
+      .locator(".agenda-item")
+      .filter({ has: edit })
+      .screenshot({
+        path: info.outputPath(`edit-${theme}.png`),
+        animations: "disabled",
+      });
+    await edit.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("dialog", { name: "Editar", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Fechar formulário" }).click();
     await complete.click();
     await expect(page.getByRole("button", { name: `Reabrir Compromisso ${theme}` })).toHaveCSS(
       "background-color",

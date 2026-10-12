@@ -345,11 +345,12 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
         </div>
         <button
           type="button"
-          className="text-button"
+          className="primary-button agenda-edit"
           aria-label={`Editar ${task.title}`}
+          title={`Editar ${task.title}`}
           onClick={() => edit(task)}
         >
-          Editar
+          <AgendaActionIcon name="edit" />
         </button>
       </article>
     );
@@ -417,11 +418,12 @@ export function PlannerView({ workspace, dispatch, onNavigate }: Props) {
           )}
           <button
             type="button"
-            className="text-button"
+            className="primary-button agenda-edit"
             aria-label={`Editar ${event.title}`}
+            title={`Editar ${event.title}`}
             onClick={() => edit(event)}
           >
-            Editar
+            <AgendaActionIcon name="edit" />
           </button>
           {event.kind !== "study" && (
             <button
