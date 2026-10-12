@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { PaperDigits } from "./paper-digits";
 
@@ -8,20 +8,26 @@ export function RoomStepSlider({
   steps,
   suffix = "",
   onCommit,
+  formatValue,
 }: {
   label: string;
   value: number | "all";
   steps: readonly number[];
   suffix?: string;
   onCommit(value: number): void;
+  formatValue?: (value: number) => string;
 }) {
+  const uniqueId = useId();
+  const formatted = (step: number) => formatValue?.(step) ?? `${step}${suffix}`;
   const current = steps.indexOf(value as number);
   const inputId =
     label === "Quantidade de palavras"
       ? "room-slider-words"
       : label === "Perguntas"
         ? "room-slider-questions"
-        : "room-slider-seconds";
+        : label === "Tempo por pergunta"
+          ? "room-slider-seconds"
+          : uniqueId;
   const [index, setIndex] = useState(current < 0 ? steps.length - 1 : current);
   const indexRef = useRef(index);
   const [touched, setTouched] = useState(false);
@@ -50,7 +56,7 @@ export function RoomStepSlider({
     <div className="local-room-step-slider">
       <div className="local-room-step-slider__heading">
         <label htmlFor={inputId}>{label}</label>
-        <strong>{shown === "all" ? "Todas" : `${shown}${suffix}`}</strong>
+        <strong>{shown === "all" ? "Todas" : formatted(shown!)}</strong>
       </div>
       <input
         id={inputId}
@@ -62,7 +68,7 @@ export function RoomStepSlider({
         style={
           { "--room-slider-progress": `${(index / (steps.length - 1)) * 100}%` } as CSSProperties
         }
-        aria-valuetext={shown === "all" ? "Todas" : `${shown}${suffix}`}
+        aria-valuetext={shown === "all" ? "Todas" : formatted(shown!)}
         onChange={(event) => {
           const next = Number(event.target.value);
           if (next !== index) navigator.vibrate?.(8);
@@ -76,10 +82,7 @@ export function RoomStepSlider({
       />
       <div className="local-room-step-slider__ticks" aria-hidden="true">
         {steps.map((step) => (
-          <span key={step}>
-            {step}
-            {suffix}
-          </span>
+          <span key={step}>{formatted(step)}</span>
         ))}
       </div>
     </div>

@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { StudyEvent } from "../domain/workspace";
-import { PaperChoice, PaperDateField, PaperTimeField } from "./agenda-paper-fields";
-import { PaperCheckIcon } from "./paper-check-icon";
+import { PaperDateField, PaperTimeField } from "./agenda-paper-fields";
+import { agendaTimeZone } from "../data/agenda-time-zone";
+import { RoomStepSlider } from "./local-room-parts";
+import { AgendaMetadataField } from "./agenda-metadata-field";
+import { AgendaDetailIcon } from "./agenda-detail-icon";
+import { AgendaAttachmentPreview } from "./agenda-attachment-preview";
+import { HelenaLoading } from "./helena-loading";
 import { eventEnd, recurrenceLabels, type EventScope } from "../domain/agenda-calendar";
 
 export type EventDetailsDraft = {
@@ -26,12 +31,12 @@ export function initialEventDetails(date: string, event?: StudyEvent): EventDeta
     endDate: end.date,
     endTime: end.time,
     allDay: event?.allDay ?? false,
-    timeZone: event?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timeZone: event?.timeZone || agendaTimeZone(),
     description: event?.description ?? "",
     location: event?.location ?? "",
     links: event?.links?.join("\n") ?? "",
     guests: event?.guests?.join(", ") ?? "",
-    reminders: event?.reminders ?? [],
+    reminders: event?.reminders?.length ? event.reminders : [0],
     attachments: event?.attachments ?? [],
     interval: event?.recurrenceInterval ?? 1,
     weekdays: event?.recurrenceDays ?? [],
@@ -58,20 +63,48 @@ export function AgendaEventDetails({
 }) {
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const busy = useRef(false),
+    input = useRef<HTMLInputElement>(null);
   const change = <K extends keyof EventDetailsDraft>(key: K, next: EventDetailsDraft[K]) =>
     onChange({ ...value, [key]: next });
-  const zones = [
-    ...new Set([
-      value.timeZone,
-      "America/Sao_Paulo",
-      "America/Manaus",
-      "America/Rio_Branco",
-      "America/Noronha",
-      "Europe/Lisbon",
-      "UTC",
-      ...Intl.supportedValuesOf("timeZone"),
-    ]),
-  ];
+  async function upload(files: readonly File[]) {
+    if (busy.current || !files.length) return;
+    busy.current = true;
+    setUploading(true);
+    onBusy(true);
+    setError("");
+    let count = value.attachments.length;
+    try {
+      for (const file of files) {
+        if (count >= 3) {
+          setError("Máximo de 3 anexos por evento.");
+          break;
+        }
+        if (
+          file.size > 300000 ||
+          !["application/pdf", "image/png", "image/jpeg", "image/webp"].includes(file.type)
+        ) {
+          setError("Escolha imagem ou PDF de até 300 KB. Máximo de 3 anexos.");
+          continue;
+        }
+        const data = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => reject(new Error("Falha na leitura"));
+          reader.readAsDataURL(file);
+        });
+        onAttachment({ id: crypto.randomUUID(), name: file.name, mime: file.type, data });
+        count++;
+      }
+    } catch {
+      setError("Não foi possível ler o arquivo.");
+    } finally {
+      busy.current = false;
+      setUploading(false);
+      onBusy(false);
+    }
+  }
   return (
     <div className="agenda-event-details">
       {allowAllDay && (
@@ -99,14 +132,6 @@ export function AgendaEventDetails({
           />
         )}
       </div>
-      {!value.allDay && (
-        <PaperChoice
-          label="Fuso horário"
-          value={value.timeZone}
-          options={zones.map((zone) => ({ value: zone, label: zone.replace(/_/g, " ") }))}
-          onChange={(next) => change("timeZone", next)}
-        />
-      )}
       {repeating !== "none" && (
         <>
           <label className="field">
@@ -153,97 +178,88 @@ export function AgendaEventDetails({
           onChange={(event) => change("description", event.target.value)}
         />
       </label>
-      <label className="field">
-        Local
-        <input
-          maxLength={300}
+      <div className="agenda-metadata-options">
+        <AgendaMetadataField
+          name="location"
+          label="Local"
           value={value.location}
-          onChange={(event) => change("location", event.target.value)}
+          onChange={(next) => change("location", next)}
         />
-      </label>
-      <label className="field">
-        Links, um por linha
-        <textarea
-          rows={2}
+        <AgendaMetadataField
+          name="links"
+          label="Links"
           value={value.links}
-          onChange={(event) => change("links", event.target.value)}
-          placeholder="https://"
+          onChange={(next) => change("links", next)}
         />
-      </label>
-      <label className="field">
-        Participantes, e-mails separados por vírgula
-        <input
-          maxLength={1000}
+        <AgendaMetadataField
+          name="guests"
+          label="Participantes"
           value={value.guests}
-          onChange={(event) => change("guests", event.target.value)}
+          onChange={(next) => change("guests", next)}
+        />
+      </div>
+      <div className="agenda-reminder-slider">
+        <RoomStepSlider
+          label="Lembrar antes"
+          value={Math.max(0, ...value.reminders)}
+          steps={REMINDER_STEPS}
+          formatValue={(minutes) =>
+            minutes === 0 ? "Na hora" : minutes === 1440 ? "1 dia" : `${minutes} min`
+          }
+          onCommit={(minutes) => change("reminders", minutes === 0 ? [0] : [0, minutes])}
         />
         <small>
-          Guardados no evento e incluídos no .ics. Nenhum convite é enviado automaticamente.
+          {value.reminders.includes(0)
+            ? "Na hora já está incluído. "
+            : "Lembretes existentes preservados. "}
+          Alertas enquanto o aplicativo estiver aberto, com permissão do navegador.
         </small>
-      </label>
-      <fieldset className="agenda-reminder-picks">
-        <legend>Lembrar antes</legend>
-        {[0, 5, 15, 30, 60, 1440].map((minutes) => (
-          <button
-            key={minutes}
-            type="button"
-            aria-pressed={value.reminders.includes(minutes)}
-            className={value.reminders.includes(minutes) ? "primary-button" : "secondary-button"}
-            onClick={() =>
-              change(
-                "reminders",
-                value.reminders.includes(minutes)
-                  ? value.reminders.filter((item) => item !== minutes)
-                  : [...value.reminders, minutes].slice(-5),
-              )
-            }
-          >
-            {value.reminders.includes(minutes) && <PaperCheckIcon />}
-            {minutes === 0 ? "Na hora" : minutes === 1440 ? "1 dia" : `${minutes} min`}
-          </button>
-        ))}
-        <small>Alertas enquanto o aplicativo estiver aberto, com permissão do navegador.</small>
-      </fieldset>
-      <label className="field">
-        Anexos
+      </div>
+      <div
+        className={`agenda-attachment-drop${dragging ? " is-dragging" : ""}`}
+        onDragOver={(event) => {
+          event.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(event) => {
+          event.preventDefault();
+          setDragging(false);
+          void upload(Array.from(event.dataTransfer.files));
+        }}
+      >
+        <AgendaDetailIcon name="attachment" />
+        <strong>Anexos</strong>
+        <p>Arraste imagens ou PDFs aqui</p>
+        <button
+          type="button"
+          className="secondary-button"
+          disabled={uploading || value.attachments.length >= 3}
+          onClick={() => input.current?.click()}
+        >
+          Selecionar arquivos
+        </button>
         <input
+          ref={input}
+          className="agenda-attachment-input"
+          aria-label="Anexos"
           type="file"
+          multiple
           accept="application/pdf,image/png,image/jpeg,image/webp"
           disabled={uploading || value.attachments.length >= 3}
-          onChange={async (event) => {
-            const file = event.target.files?.[0];
+          onChange={(event) => {
+            const files = Array.from(event.target.files ?? []);
             event.target.value = "";
-            if (!file) return;
-            if (
-              file.size > 300000 ||
-              !["application/pdf", "image/png", "image/jpeg", "image/webp"].includes(file.type)
-            ) {
-              setError("Escolha imagem ou PDF de até 300 KB. Máximo de 3 anexos.");
-              return;
-            }
-            setUploading(true);
-            onBusy(true);
-            setError("");
-            try {
-              const data = await new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(String(reader.result));
-                reader.onerror = () => reject(new Error("Falha na leitura"));
-                reader.readAsDataURL(file);
-              });
-              onAttachment({ id: crypto.randomUUID(), name: file.name, mime: file.type, data });
-            } catch {
-              setError("Não foi possível ler o arquivo.");
-            } finally {
-              setUploading(false);
-              onBusy(false);
-            }
+            void upload(files);
           }}
         />
-        <small>Anexos entram no armazenamento da sua conta. Não são exportados no .ics.</small>
-      </label>
+        <small>
+          Até 3 arquivos de 300 KB cada. Sincronizados com a conta, não incluídos no .ics.
+        </small>
+      </div>
       {value.attachments.map((asset) => (
         <div className="agenda-attachment" key={asset.id}>
+          <AgendaAttachmentPreview attachments={[asset]} />
           <span>{asset.name}</span>
           <button
             type="button"
@@ -260,8 +276,9 @@ export function AgendaEventDetails({
           </button>
         </div>
       ))}
-      {uploading && <p role="status">Lendo anexo...</p>}
+      {uploading && <HelenaLoading label="Lendo anexos" compact />}
       {error && <p role="alert">{error}</p>}
     </div>
   );
 }
+const REMINDER_STEPS = [0, 5, 15, 30, 60, 1440] as const;

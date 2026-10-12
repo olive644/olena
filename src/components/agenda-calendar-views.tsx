@@ -5,10 +5,12 @@ import { layoutAgendaDay } from "../domain/agenda-grid-layout";
 import { weekDates } from "../domain/agenda";
 import { PaperArrow } from "./paper-arrow";
 import { PaperCheckIcon } from "./paper-check-icon";
+import { AgendaAttachmentPreview } from "./agenda-attachment-preview";
 
 export type CalendarView = "month" | "week" | "day" | "list";
 export function AgendaCalendarViews({
   view,
+  timeZone,
   selected,
   events,
   tasks,
@@ -21,6 +23,7 @@ export function AgendaCalendarViews({
   renderTask,
 }: {
   view: CalendarView;
+  timeZone: string;
   selected: string;
   events: StudyEvent[];
   tasks: StudyTask[];
@@ -51,7 +54,7 @@ export function AgendaCalendarViews({
     height: number;
   } | null>(null);
   const [hint, setHint] = useState("");
-  const eventsFor = (date: string) => displayEventsOn(events, date);
+  const eventsFor = (date: string) => displayEventsOn(events, date, timeZone);
   const slotAt = (x: number, y: number) => {
     const column = document.elementFromPoint(x, y)?.closest<HTMLElement>(".agenda-time-column");
     const bounds = column?.querySelector(".agenda-hour-slots")?.getBoundingClientRect();
@@ -142,7 +145,7 @@ export function AgendaCalendarViews({
     >
       <p className="agenda-time-hint" role="status">
         {hint ||
-          `Horários locais (${Intl.DateTimeFormat().resolvedOptions().timeZone}). Arraste o bloco ou use os controles para mover e editar.`}
+          `Horários da conta (${timeZone.replace(/_/g, " ")}). Arraste o bloco ou use os controles para mover e editar.`}
       </p>
       <div className="agenda-time-scroll">
         <div
@@ -196,6 +199,7 @@ export function AgendaCalendarViews({
                         onClick={() => onEdit(event, event.displayOccurrence)}
                       >
                         {event.title}
+                        <AgendaAttachmentPreview attachments={event.attachments} compact />
                       </button>
                     ))}
                 </div>
@@ -272,6 +276,7 @@ export function AgendaCalendarViews({
                             title={`${event.title}, ${event.timeZone ?? "fuso do dispositivo"}`}
                           >
                             <strong>{event.title}</strong>
+                            <AgendaAttachmentPreview attachments={event.attachments} compact />
                             <small>
                               {event.time} ·{" "}
                               {event.timeZone?.split("/").at(-1)?.replace(/_/g, " ") ?? "Local"}

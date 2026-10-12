@@ -4,6 +4,10 @@ import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import { PaperActionIcon } from "../components/paper-action-icon";
 import { AgendaActionIcon } from "../components/agenda-action-icon";
 import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
+import { AgendaDurationClock } from "../components/agenda-duration-clock";
+import { AgendaAttachmentPreview } from "../components/agenda-attachment-preview";
+import { agendaTimeZone, AGENDA_ZONE_KEY } from "../data/agenda-time-zone";
+import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { AgendaCloseIcon } from "../components/agenda-close-icon";
@@ -38,10 +42,9 @@ import { PaperChoice, PaperDateField, PaperTimeField } from "../components/agend
 import { agendaSubjects } from "../domain/agenda-subjects";
 import { brazilianHoliday } from "../domain/brazilian-holidays";
 import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
-import { dateForKey, eventsOn, monthDates, overdueTasks, shiftDate } from "../domain/agenda";
+import { dateForKey, monthDates, overdueTasks, shiftDate } from "../domain/agenda";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import {
-  toDateKey,
   type StudyEvent,
   type StudyTask,
   type WorkspaceAction,
@@ -49,6 +52,7 @@ import {
 } from "../domain/workspace";
 import "./planner-view.css";
 import "./agenda-calendar.css";
+import "../components/agenda-detail-controls.css";
 
 type Kind = "task" | "appointment" | "study" | "subject" | "goal";
 type Draft = EventDetailsDraft & {
@@ -92,7 +96,17 @@ function dayLabel(date: string, long = false) {
 
 export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
   const [now, setNow] = useState(() => new Date());
-  const today = toDateKey(now);
+  const [timeZone, setTimeZone] = useState(agendaTimeZone);
+  useEffect(() => {
+    const refresh = () => setTimeZone(agendaTimeZone());
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+  }, []);
+  useEffect(() => {
+    if ((cloud?.ready ?? true) && localStorage.getItem(AGENDA_ZONE_KEY) !== timeZone)
+      writeSyncedStorage(AGENDA_ZONE_KEY, timeZone);
+  }, [timeZone, cloud?.ready, cloud?.revision]);
+  const today = zonedDateTime(now.getTime(), timeZone).date;
   const [selected, setSelected] = useState(today);
   const [range, setRange] = useState<AgendaRange | null>(null);
   const [intervalMode, setIntervalMode] = useState(false);
@@ -156,7 +170,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       (!typeFilter || typeFilter === "task") &&
       task.title.toLocaleLowerCase("pt-BR").includes(query.toLocaleLowerCase("pt-BR")),
   );
-  const scheduled = eventsOn({ ...workspace, events: visibleEvents }, selected);
+  const scheduled = displayEventsOn(visibleEvents, selected, timeZone);
   const tasks = visibleTasks.filter((task) => task.dueDate === selected);
   const subjects = agendaSubjects(workspace);
   const selectedSubject = workspace.subjects.find((subject) => subject.id === draft?.subjectId);
@@ -205,6 +219,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft({
       ...initialEventDetails(date),
+      timeZone,
       kind,
       title: "",
       date,
@@ -226,6 +241,19 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     occurrence = "dueDate" in item ? item.dueDate : item.date,
   ) {
     if (!("dueDate" in item)) item = workspace.events.find((event) => event.id === item.id) ?? item;
+    if (!("dueDate" in item) && !item.allDay && item.timeZone && item.timeZone !== timeZone) {
+      const start = zonedDateTime(eventInstant(item.date, item.time, item.timeZone), timeZone);
+      const end = eventEnd(item);
+      const finish = zonedDateTime(eventInstant(end.date, end.time, item.timeZone), timeZone);
+      item = {
+        ...item,
+        date: start.date,
+        time: start.time,
+        endDate: finish.date,
+        endTime: finish.time,
+        timeZone,
+      };
+    }
     formTrigger.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setDraft(
@@ -362,10 +390,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       const localDate =
         draft.kind === "task" || draft.allDay
           ? draft.date
-          : zonedDateTime(
-              eventInstant(draft.date, draft.time, draft.timeZone),
-              Intl.DateTimeFormat().resolvedOptions().timeZone,
-            ).date;
+          : zonedDateTime(eventInstant(draft.date, draft.time, draft.timeZone), timeZone).date;
       const original = workspace.events.find((item) => item.id === draft.id);
       setSelected(
         original && draft.scope === "all" && original.date === draft.date ? selected : localDate,
@@ -452,7 +477,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
   }
   function eventCard(event: StudyEvent, date = selected) {
     const original = workspace.events.find((item) => item.id === event.id) ?? event;
-    const displays = displayEventsOn([original], date);
+    const displays = displayEventsOn([original], date, timeZone);
     const displayed =
       "displayOccurrence" in event
         ? displays.find((item) => item.displayOccurrence === event.displayOccurrence)
@@ -502,6 +527,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               {!event.allDay && displayed.endTime}
             </small>
           )}
+          <AgendaAttachmentPreview attachments={event.attachments} />
           {event.id && (
             <details className="agenda-event-info">
               <summary>Detalhes</summary>
@@ -724,6 +750,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               onClick={() => setCalendarView(value)}
             >
               <AgendaToolbarIcon name={value} />
+              <span>{label}</span>
             </button>
           ))}
         </div>
@@ -775,9 +802,11 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             }}
           >
             <AgendaToolbarIcon name="export" />
+            <span>Exportar</span>
           </button>
           <label className="secondary-button agenda-tool agenda-import-label" title="Importar .ics">
             <AgendaToolbarIcon name="import" />
+            <span>Importar</span>
             <input
               type="file"
               aria-label="Importar .ics"
@@ -829,6 +858,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             onClick={() => window.print()}
           >
             <AgendaToolbarIcon name="print" />
+            <span>Imprimir</span>
           </button>
           <button
             type="button"
@@ -855,6 +885,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             }}
           >
             <AgendaToolbarIcon name="reminders" />
+            <span>Lembretes</span>
           </button>
         </div>
         {notificationStatus && <p role="status">{notificationStatus}</p>}
@@ -992,7 +1023,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                 }}
               >
                 {dates.map((date) => {
-                  const dayEvents = eventsOn({ events: visibleEvents }, date);
+                  const dayEvents = displayEventsOn(visibleEvents, date, timeZone);
                   const count =
                     dayEvents.length +
                     visibleTasks.filter((task) => task.dueDate === date && !task.completed).length;
@@ -1037,6 +1068,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                       )}
                       {dayEvents.slice(0, 2).map((item) => (
                         <small className="agenda-month-event-title" key={item.id}>
+                          <AgendaAttachmentPreview attachments={item.attachments} compact />
                           <i
                             style={{ background: item.kind === "study" ? "#7c3aed" : "#facc15" }}
                           />
@@ -1055,6 +1087,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               </small>
               {calendarView !== "month" && (
                 <AgendaCalendarViews
+                  timeZone={timeZone}
                   view={calendarView}
                   selected={selected}
                   events={visibleEvents}
@@ -1072,7 +1105,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                     edit(original, from);
                     const moved = zonedDateTime(
                       eventInstant(to, time),
-                      original.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      original.timeZone ?? timeZone,
                     );
                     const end = eventEnd({
                       ...original,
@@ -1257,36 +1290,21 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                     )}
                   </div>
                   {draft.kind !== "task" && !draft.allDay && (
-                    <label className="field">
-                      <span>
-                        {draft.kind === "goal" ? "Meta em minutos" : "Duração em minutos"}
-                      </span>
-                      <input
-                        type="number"
-                        min="1"
-                        max={
-                          draft.kind === "goal"
-                            ? "10000"
-                            : draft.kind === "study"
-                              ? "180"
-                              : "527040"
-                        }
-                        required
-                        value={draft.minutes}
-                        onChange={(event) => {
-                          const minutes = Number(event.target.value);
-                          const end = eventEnd({
-                            id: "",
-                            title: "",
-                            subjectId: "",
-                            date: draft.date,
-                            time: draft.time,
-                            durationMinutes: minutes,
-                          });
-                          setDraft({ ...draft, minutes, endDate: end.date, endTime: end.time });
-                        }}
-                      />
-                    </label>
+                    <AgendaDurationClock
+                      value={draft.minutes}
+                      max={draft.kind === "goal" ? 10000 : draft.kind === "study" ? 180 : 527040}
+                      onChange={(minutes) => {
+                        const end = eventEnd({
+                          id: "",
+                          title: "",
+                          subjectId: "",
+                          date: draft.date,
+                          time: draft.time,
+                          durationMinutes: minutes,
+                        });
+                        setDraft({ ...draft, minutes, endDate: end.date, endTime: end.time });
+                      }}
+                    />
                   )}
                   {(draft.kind === "study" || draft.kind === "appointment") && (
                     <>
@@ -1325,7 +1343,19 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                         date={draft.date}
                         repeating={draft.recurrence}
                         onChange={(value) =>
-                          setDraft((current) => (current ? { ...current, ...value } : null))
+                          setDraft((current) => {
+                            if (!current) return null;
+                            const minutes = Math.round(
+                              (eventInstant(value.endDate, value.endTime, value.timeZone) -
+                                eventInstant(current.date, current.time, value.timeZone)) /
+                                60000,
+                            );
+                            return {
+                              ...current,
+                              ...value,
+                              ...(Number.isFinite(minutes) && minutes > 0 ? { minutes } : {}),
+                            };
+                          })
                         }
                         onBusy={setFormBusy}
                         onAttachment={(asset) =>

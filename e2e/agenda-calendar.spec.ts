@@ -53,7 +53,7 @@ test("agenda toolbar uses accessible cream paper icons without duplicate arrows"
       "Ativar lembretes",
     ]) {
       const button = toolbar.getByRole("button", { name, exact: true });
-      await expect(button).toHaveText("");
+      await expect(button).not.toHaveText("");
       await expect(button.locator("svg")).toHaveCount(1);
       await expect(button).toHaveCSS("background-color", "rgb(255, 249, 239)");
       await button.focus();
@@ -103,7 +103,10 @@ test("paper calendar offers all views, filters, all-day events and persists deta
     await form.getByRole("checkbox", { name: "Dia inteiro" }).check();
     await form.getByRole("textbox", { name: "Data de término", exact: true }).fill("13/10/2026");
     await form.getByRole("textbox", { name: "Descrição", exact: true }).fill("Levar caderno");
-    await form.getByRole("textbox", { name: "Local", exact: true }).fill("Museu");
+    await form.getByRole("button", { name: "Preencher Local", exact: true }).click();
+    const place = page.getByRole("dialog", { name: "Local", exact: true });
+    await place.getByRole("textbox", { name: "Onde será?", exact: true }).fill("Museu");
+    await place.getByRole("button", { name: "Concluir", exact: true }).click();
     await form.getByRole("button", { name: "Adicionar", exact: true }).click();
     await expect(form).not.toBeVisible();
     await expect(
@@ -165,6 +168,153 @@ test("attachments reject oversized input and persist an accepted local image", a
   );
   expect(attachments).toHaveLength(1);
   expect(attachments[0].data).toMatch(/^data:image\/png;base64,/);
+});
+
+test("paper details use rotating hands, expandable metadata, a reminder slider and image previews in every view", async ({
+  page,
+}, info) => {
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    await page.getByRole("button", { name: "Dia", exact: true }).click();
+    await page.locator(`[data-slot-time="${theme === "light" ? "08:00" : "10:00"}"]`).click();
+    const editor = page.getByRole("dialog", { name: "Adicionar à agenda", exact: true });
+    await editor.getByRole("textbox", { name: "Título", exact: true }).fill(`Detalhes ${theme}`);
+    await expect(editor.getByRole("button", { name: "Fuso horário", exact: true })).toHaveCount(0);
+    await editor.getByRole("button", { name: "Duração em minutos", exact: true }).click();
+    const dial = page.getByRole("dialog", { name: "Escolher duração", exact: true });
+    await dial.getByRole("slider", { name: "Ponteiro das horas", exact: true }).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(dial.getByRole("spinbutton", { name: "Horas", exact: true })).toHaveValue("1");
+    await expect(dial).toHaveCSS("transform", "none");
+    const clock = await dial.locator("svg.agenda-duration-dial").boundingBox();
+    if (!clock) throw new Error("Relógio não visível");
+    await page.mouse.move(
+      clock.x + (clock.width * 157.5) / 240,
+      clock.y + (clock.height * 185) / 240,
+    );
+    await page.mouse.down();
+    await page.mouse.move(clock.x + (clock.width * 35) / 240, clock.y + clock.height / 2, {
+      steps: 8,
+    });
+    await page.mouse.up();
+    await expect(dial.getByRole("spinbutton", { name: "Minutos", exact: true })).toHaveValue("45");
+    await dial.screenshot({
+      path: info.outputPath(`duration-${theme}.png`),
+      animations: "disabled",
+    });
+    await dial.getByRole("button", { name: "Concluir", exact: true }).click();
+    await expect(
+      editor.getByRole("button", { name: "Duração em minutos", exact: true }),
+    ).toHaveText("1 h 45 min");
+    for (const [label, inputLabel, value] of [
+      ["Local", "Onde será?", "Sala de estudos"],
+      ["Links", "Um link por linha", "https://example.com"],
+      ["Participantes", "E-mails separados por vírgula", "estudo@example.com"],
+    ]) {
+      await editor.getByRole("button", { name: `Preencher ${label}`, exact: true }).click();
+      const field = page.getByRole("dialog", { name: label, exact: true });
+      await field.getByRole("textbox", { name: inputLabel, exact: true }).fill(value!);
+      if (label === "Local")
+        await field.getByRole("textbox", { name: inputLabel, exact: true }).press("Enter");
+      else await field.getByRole("button", { name: "Concluir", exact: true }).click();
+      await expect(editor).toBeVisible();
+      await expect(
+        editor.locator(".agenda-metadata-preview").filter({ hasText: value }),
+      ).toBeVisible();
+    }
+    const reminder = editor.getByRole("slider", { name: "Lembrar antes", exact: true });
+    await reminder.focus();
+    await page.keyboard.press("End");
+    await page.keyboard.press("ArrowLeft");
+    await expect(reminder).toHaveAttribute("aria-valuetext", "60 min");
+    await expect(editor.getByRole("button", { name: "Na hora", exact: true })).toHaveCount(0);
+    const transfer = await page.evaluateHandle(() => {
+      const raw = atob(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aL9sAAAAASUVORK5CYII=",
+      );
+      const data = new DataTransfer();
+      data.items.add(
+        new File([Uint8Array.from(raw, (char) => char.charCodeAt(0))], "foto.png", {
+          type: "image/png",
+        }),
+      );
+      return data;
+    });
+    await editor
+      .locator(".agenda-attachment-drop")
+      .dispatchEvent("drop", { dataTransfer: transfer });
+    await expect(editor.getByRole("img", { name: "foto.png", exact: true })).toBeVisible();
+    await editor.screenshot({
+      path: info.outputPath(`details-${theme}.png`),
+      animations: "disabled",
+    });
+    await editor.getByRole("button", { name: "Adicionar", exact: true }).click();
+    await expect(editor).not.toBeVisible();
+    for (const view of ["Semana", "Dia", "Mês", "Lista"]) {
+      await page.getByRole("button", { name: view, exact: true }).click();
+      const image = page
+        .locator(
+          view === "Mês"
+            ? ".agenda-month-grid"
+            : view === "Lista"
+              ? ".agenda-schedule-list"
+              : ".agenda-time-view",
+        )
+        .getByRole("img", { name: "foto.png", exact: true })
+        .first();
+      await expect(image).toBeVisible();
+      await expect
+        .poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth))
+        .toBeGreaterThan(0);
+    }
+    const saved = await page.evaluate(
+      (title) =>
+        JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).events.find(
+          (item: { title: string }) => item.title === title,
+        ),
+      `Detalhes ${theme}`,
+    );
+    expect(saved.timeZone).toBe("America/Sao_Paulo");
+    expect(saved.calendarDurationMinutes).toBe(105);
+    expect(saved.reminders).toEqual([0, 60]);
+  }
+  await page.reload();
+  await page.getByRole("button", { name: "Dia", exact: true }).click();
+  await expect(
+    page.locator(".agenda-time-view").getByText("Detalhes dark", { exact: true }),
+  ).toBeVisible();
+});
+
+test.describe("Brazilian account zone outside Brazil", () => {
+  test.use({ timezoneId: "Europe/Lisbon" });
+  test("keeps the account wall time in the grid and editor without asking for a zone", async ({
+    page,
+  }) => {
+    await page.evaluate(() => localStorage.setItem("helena.agendaTimeZone.v1", "America/Manaus"));
+    await page.reload();
+    await page.getByRole("button", { name: "Dia", exact: true }).click();
+    const grid = page.locator(".agenda-time-view");
+    await expect(grid.locator(".agenda-time-hint")).toContainText("America/Manaus");
+    await expect(
+      grid.locator(".agenda-time-block").getByText("13:00", { exact: false }),
+    ).toBeVisible();
+    await grid.locator('[data-slot-time="07:00"]').click();
+    const form = page.getByRole("dialog", { name: "Adicionar à agenda", exact: true });
+    await form.getByRole("textbox", { name: "Título", exact: true }).fill("Horário brasileiro");
+    await expect(form.getByRole("button", { name: "Fuso horário", exact: true })).toHaveCount(0);
+    await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+    await page.reload();
+    await page.getByRole("button", { name: "Dia", exact: true }).click();
+    await expect(
+      page
+        .locator(".agenda-time-block")
+        .filter({ hasText: "Horário brasileiro" })
+        .getByText("07:00", { exact: false }),
+    ).toBeVisible();
+  });
 });
 test("changes only the chosen occurrence and moving by keyboard confirms the new time", async ({
   page,
@@ -263,7 +413,7 @@ test("dragging and resizing open confirmation without changing saved data early"
   });
   await page.mouse.up();
   await expect(editor).toBeVisible();
-  await expect(editor.getByLabel("Duração em minutos", { exact: true })).toHaveValue("90");
+  await expect(editor.getByLabel("Duração em minutos", { exact: true })).toHaveText("1 h 30 min");
   await editor.getByRole("button", { name: "Salvar alterações", exact: true }).click();
   await page.reload();
   const events = await page.evaluate(

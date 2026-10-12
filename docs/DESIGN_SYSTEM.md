@@ -19,8 +19,10 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 Barra da Agenda usa AgendaToolbarIcon para Dia/Semana/Mês/Lista, importar/exportar,
 imprimir e lembretes. Símbolos facetados em grafite/creme, acentos roxo/amarelo,
 sem ícones genéricos de contorno. Placas permanecem creme nos dois temas; estado
-ativo usa base amarela. Nome acessível e tooltip identificam ações sem texto
-visível. Foco de teclado tem sublinhado amarelo, área mínima de 44px e movimento
+ativo usa base amarela. Nome acessível, tooltip e texto visível identificam ações.
+Importar/exportar reaproveitam cloudUpload/download de PaperEditorIcon, como na
+escrita à mão. Imprimir usa nova silhueta facetada AgendaDetailIcon, com folhas
+visíveis e indicador amarelo. Foco de teclado tem sublinhado amarelo, área mínima de 44px e movimento
 reduzido preservado. Não acrescentar setas que dupliquem o seletor de datas.
 
 Botões, summary, controles role=button e ícones decorativos não são selecionáveis
@@ -46,6 +48,15 @@ Study, appointment, once e weekly são SVGs novos na pasta de ícones de papel,
 carregados apenas na Agenda. Concluir usa PaperCheckIcon existente sobre papel
 amarelo/grafite; animações de check, seleção, painéis e gráficos respeitam
 prefers-reduced-motion.
+
+Duração abre relógio de papel grande com ponteiros arrastáveis de horas/minutos,
+setas do teclado e entrada numérica alternativa. A passagem por 12/60 leva ou
+retira uma hora sem voltar arbitrariamente ao início; limites de estudo continuam.
+Local, Links e Participantes abrem painéis por botão com ícone e mostram resumo
+preenchido. Lembrar antes reaproveita RoomStepSlider da Escuta coletiva. Na hora é
+padrão sem botão separado. Anexos usam área de papel para arrastar ou selecionar,
+com prévias reais nas visualizações Dia/Semana/Mês/Lista. Transições e facetas
+preservam movimento reduzido, X sem placa e foco amarelo.
 
 ## Cursor desktop
 

@@ -63,6 +63,75 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+it("does not delete a newly saved calendar event when an older stream snapshot arrives", async () => {
+  const remote = createInitialWorkspace();
+  const key = "helenastudy.workspace.v1";
+  const user = { uid: "calendar-user", getIdToken: vi.fn(async () => "token") };
+  localStorage.setItem("helena.account.v1", user.uid);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+  const old = { updatedAt: 100, items: encodeCloudItems({ [key]: JSON.stringify(remote) }) };
+  let server = old;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_: unknown, init?: RequestInit) => {
+      if (init?.method === "PUT") server = JSON.parse(String(init.body));
+      return new Response(JSON.stringify(server));
+    }),
+  );
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await waitFor(() => expect(FakeEventSource.instances.length).toBeGreaterThan(0));
+  const event = {
+    id: "new-slot",
+    title: "Consulta",
+    subjectId: "subject-english",
+    date: "2026-10-14",
+    time: "07:00",
+    durationMinutes: 25,
+  };
+  act(() =>
+    writeSyncedStorage(key, JSON.stringify({ ...remote, events: [...remote.events, event] })),
+  );
+  await waitFor(() =>
+    expect(
+      JSON.parse(decodeCloudItems(server.items)[key]!).events.some(
+        (item: { id: string }) => item.id === event.id,
+      ),
+    ).toBe(true),
+  );
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await act(async () => {
+    FakeEventSource.instances.at(-1)!.emit("put", { path: "/", data: old });
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  });
+  expect(
+    JSON.parse(localStorage.getItem(key)!).events.some(
+      (item: { id: string }) => item.id === event.id,
+    ),
+  ).toBe(true);
+  await act(async () => {
+    server = { ...old, updatedAt: server.updatedAt + 1 };
+    FakeEventSource.instances.at(-1)!.emit("put", { path: "/", data: server });
+  });
+  await waitFor(() =>
+    expect(
+      JSON.parse(localStorage.getItem(key)!).events.some(
+        (item: { id: string }) => item.id === event.id,
+      ),
+    ).toBe(false),
+  );
+});
+
 it("keeps timer and Pomodoro records made before reload when account data is older", async () => {
   const workspace = createInitialWorkspace();
   workspace.focusSessions = [

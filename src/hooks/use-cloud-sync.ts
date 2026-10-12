@@ -257,6 +257,7 @@ export function useCloudSync() {
           const modernCloud = await request("GET");
           const cloud = modernCloud ?? (await request("GET", undefined, true));
           let migrationPending = modernCloud === null && cloud !== null;
+          let cloudUpdatedAt = Number.isFinite(cloud?.updatedAt) ? cloud!.updatedAt! : 0;
           if (!currentAccount()) return;
           const localAfterGet = readSyncedStorage();
 
@@ -377,7 +378,13 @@ export function useCloudSync() {
             dirty = true;
             changeRevision += 1;
           }
+          let saving = false;
           saveCloud = async () => {
+            if (!currentAccount()) return;
+            if (saving) {
+              dirty = true;
+              return;
+            }
             let items = readSyncedStorage();
             let serialized = JSON.stringify(items);
             if (serialized === lastItems && !migrationPending) {
@@ -389,27 +396,41 @@ export function useCloudSync() {
               return;
             }
             const savingRevision = changeRevision;
+            saving = true;
             setState((current) => ({ ...current, status: "syncing" }));
             try {
               if (lastItems) {
                 const latest = await request("GET");
                 const latestItems = latest?.items;
                 const latestSerialized = latestItems ? JSON.stringify(latestItems) : "";
-                if (latestItems && latestSerialized && latestSerialized !== lastItems) {
+                if (
+                  latestItems &&
+                  latestSerialized &&
+                  latestSerialized !== lastItems &&
+                  !(Number.isFinite(latest?.updatedAt) && latest!.updatedAt! < cloudUpdatedAt)
+                ) {
                   const merged = await mergeItems(
                     parseItems(lastItems),
                     readSyncedStorage(),
                     latestItems,
                   );
+                  if (!currentAccount()) return;
                   if (merged.conflicts.length)
                     rememberConflict(parseItems(lastItems), items, latestItems, merged.conflicts);
                   items = merged.items;
                   serialized = JSON.stringify(items);
                   applySyncedStorage(items);
                 }
+                if (Number.isFinite(latest?.updatedAt))
+                  cloudUpdatedAt = Math.max(cloudUpdatedAt, latest!.updatedAt!);
               }
-              await request("PUT", { version: 2, updatedAt: Date.now(), items });
               if (!currentAccount()) return;
+              items = readSyncedStorage();
+              serialized = JSON.stringify(items);
+              const updatedAt = Math.max(Date.now(), cloudUpdatedAt + 1);
+              await request("PUT", { version: 2, updatedAt, items });
+              if (!currentAccount()) return;
+              cloudUpdatedAt = Math.max(cloudUpdatedAt, updatedAt);
               lastItems = serialized;
               migrationPending = false;
               if (savingRevision === changeRevision) dirty = false;
@@ -425,17 +446,23 @@ export function useCloudSync() {
               }
             } catch {
               if (currentAccount()) setState((current) => ({ ...current, status: "offline" }));
+            } finally {
+              saving = false;
             }
           };
 
           const receiveCloud = async (next: CloudState | null) => {
             if (!currentAccount()) return;
+            // A delayed stream/GET from before our acknowledged write is not a deletion.
+            if (Number.isFinite(next?.updatedAt) && next!.updatedAt! < cloudUpdatedAt) return;
             const serialized = next?.items ? JSON.stringify(next.items) : undefined;
             const changed = Boolean(serialized && serialized !== lastItems);
             if (changed && next?.items && serialized) {
               const localItems = readSyncedStorage();
               const merged = await mergeItems(parseItems(lastItems), localItems, next.items);
               if (!currentAccount()) return;
+              if (Number.isFinite(next.updatedAt) && next.updatedAt! < cloudUpdatedAt) return;
+              if (Number.isFinite(next.updatedAt)) cloudUpdatedAt = next.updatedAt!;
               if (JSON.stringify(merged.items) !== serialized) {
                 if (merged.conflicts.length)
                   rememberConflict(parseItems(lastItems), localItems, next.items, merged.conflicts);
