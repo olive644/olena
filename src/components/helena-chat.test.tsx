@@ -11,6 +11,13 @@ vi.mock("../data/helena-client", async (original) => ({
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: account }));
 
 beforeEach(() => {
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  );
   ask.mockReset();
   account.mockReset();
   vi.useFakeTimers();
@@ -150,7 +157,9 @@ it("opens from the animated mascot and restores launcher focus with Escape", () 
   fireEvent.click(launcher);
   expect(screen.getByRole("dialog", { name: "Helena" })).toBeTruthy();
   expect(screen.getByRole("textbox")).toBe(document.activeElement);
-  expect(document.querySelector(".helena-chat-launcher .helena-virtual-mascot")).toBeTruthy();
+  expect(document.querySelectorAll(".helena-virtual-mascot")).toHaveLength(1);
+  expect(document.querySelector(".helena-chat-welcome-art")).toBeNull();
+  expect(document.querySelector(".helena-chat-header-mascot img")).toBeNull();
   expect(document.querySelector(".helena-virtual-mascot img")?.getAttribute("src")).toBe(
     "/helena-assistant/helena.png",
   );

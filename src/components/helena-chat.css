@@ -6,6 +6,8 @@
   position: fixed;
   right: max(24px, env(safe-area-inset-right));
   bottom: max(24px, env(safe-area-inset-bottom));
+  width: 64px;
+  height: 64px;
   z-index: 100;
   color: var(--hc-ink);
   font-family: Manrope, sans-serif;
@@ -771,9 +773,6 @@ body:has([aria-modal="true"]) .helena-chat--application {
     width: 52px;
     height: 52px;
   }
-  .helena-chat:has(.helena-chat-panel) {
-    bottom: max(12px, env(safe-area-inset-bottom));
-  }
   .helena-chat-panel {
     position: fixed;
     right: max(10px, env(safe-area-inset-right));
@@ -783,9 +782,6 @@ body:has([aria-modal="true"]) .helena-chat--application {
     width: auto;
     height: auto;
     max-height: 740px;
-  }
-  .helena-chat-launcher.is-open {
-    visibility: hidden;
   }
   .helena-chat-header {
     padding: 12px 14px 10px;
@@ -878,5 +874,28 @@ body:has([aria-modal="true"]) .helena-chat--application {
   .helena-chat[data-motion] .helena-chat-launcher-art {
     width: 56px;
     height: 56px;
+  }
+}
+
+/* Uma única Helena se desloca para a identificação do chat e retorna ao recolher. */
+.helena-chat-launcher {
+  transform-origin: top left;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.helena-chat-launcher.is-open {
+  z-index: 1;
+  transform: translate3d(var(--hc-header-x, 0px), var(--hc-header-y, 0px), 0)
+    scale(var(--hc-header-scale, 1));
+}
+.helena-chat[data-motion="closing"] .helena-chat-launcher {
+  transform: none;
+}
+@media (max-width: 899px) {
+  .helena-chat {
+    width: 56px;
+    height: 56px;
+  }
+  .helena-chat-launcher.is-open {
+    width: 56px;
   }
 }

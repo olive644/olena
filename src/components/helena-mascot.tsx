@@ -32,7 +32,6 @@ export function HelenaMascot(props: MascotProps) {
         visible:
           !document.hidden &&
           !interaction.current &&
-          !(value.open && window.innerWidth < 900) &&
           !document.querySelector('dialog[open], [aria-modal="true"]'),
       },
       window.location.origin,
@@ -100,7 +99,14 @@ export function HelenaMascot(props: MascotProps) {
       attributes: true,
       attributeFilter: ["data-reduce-motion"],
     });
-    const dialogs = new MutationObserver(send);
+    let modalVisible = !!document.querySelector('dialog[open], [aria-modal="true"]');
+    const dialogs = new MutationObserver(() => {
+      const next = !!document.querySelector('dialog[open], [aria-modal="true"]');
+      if (next !== modalVisible) {
+        modalVisible = next;
+        send();
+      }
+    });
     dialogs.observe(document.body, {
       childList: true,
       subtree: true,
@@ -149,7 +155,7 @@ export function HelenaMascot(props: MascotProps) {
       {active && (
         <iframe
           ref={frame}
-          src="/helena-assistant/index.html?v=1"
+          src="/helena-assistant/index.html?v=2"
           title="Animação decorativa da Helena"
           tabIndex={-1}
           aria-hidden="true"

@@ -20,6 +20,8 @@ function pulse(t, a, b, c, d) {
   return smooth(a, b, t) * (1 - smooth(c, d, t));
 }
 let software = false;
+const mobile = matchMedia("(pointer: coarse)").matches;
+let animationFrame = 0;
 let notified = false;
 let renderer,
   root,
@@ -277,13 +279,15 @@ function apply(t, dt) {
   morph(head, "Bochechas, sorriso sem boca", cheek);
   head.material.color.copy(gold).lerp(dark, smooth(0.22, 0.9, shape));
   head.material.roughness = lerp(0.29, 0.69, shape);
-  head.material.clearcoat = lerp(0.23, 0.025, shape);
-  head.material.specularIntensity = lerp(0.4, 0.32, shape);
+  if (head.material.isMeshPhysicalMaterial) {
+    head.material.clearcoat = lerp(0.23, 0.025, shape);
+    head.material.specularIntensity = lerp(0.4, 0.32, shape);
+    head.material.sheen = 0.12 * headAmount;
+    head.material.sheenColor.set("#77577c");
+    head.material.sheenRoughness = 0.8;
+  }
   head.material.metalness = 0.015;
   head.material.bumpScale = 0.004 * headAmount;
-  head.material.sheen = 0.12 * headAmount;
-  head.material.sheenColor.set("#77577c");
-  head.material.sheenRoughness = 0.8;
   let blinkL = 0,
     blinkR = 0;
   const b = (t + 0.45) % 3.45;
@@ -435,9 +439,18 @@ function apply(t, dt) {
                   : "breathing";
   stage.dataset.offset = `${pos.x.toFixed(3)},${pos.y.toFixed(3)}`;
 }
+function resumeRendering() {
+  if (!animationFrame && ready && hostVisible && !document.hidden) {
+    last = performance.now();
+    animationFrame = requestAnimationFrame(tick);
+  }
+}
 function tick(now) {
-  requestAnimationFrame(tick);
-  const fps = software && !hover && !drag && !transition ? 12 : 30;
+  animationFrame = 0;
+  if (!ready || !hostVisible || document.hidden) return;
+  animationFrame = requestAnimationFrame(tick);
+  const busy = hover || drag || transition;
+  const fps = !busy && software ? 12 : !busy && mobile ? 18 : 30;
   if (now - last < 1000 / fps) return;
   const elapsed = Math.min(0.25, (now - last) / 1000),
     dt = elapsed;
@@ -446,6 +459,7 @@ function tick(now) {
   if (!paused && !(reduced.matches || hostReduced)) clock += elapsed;
   apply(clock, paused || reduced.matches || hostReduced ? 0 : dt);
   renderer.render(scene, camera);
+  stage.dataset.time = clock.toFixed(2);
   if (!notified) {
     notified = true;
     window.parent.postMessage({ type: "helena-ready", ready: true }, location.origin);
@@ -566,7 +580,7 @@ try {
     canvas,
     alpha: true,
     antialias: true,
-    powerPreference: "high-performance",
+    powerPreference: "low-power",
   });
   const context = renderer.getContext();
   const debug = context.getExtension("WEBGL_debug_renderer_info");
@@ -575,7 +589,7 @@ try {
     /swiftshader|llvmpipe|softpipe|software/i.test(
       String(context.getParameter(debug.UNMASKED_RENDERER_WEBGL)),
     );
-  renderer.setPixelRatio(software ? 1 : Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(software ? 1 : Math.min(devicePixelRatio, mobile ? 1.25 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -600,30 +614,41 @@ try {
           opacity: original.opacity,
           side: THREE.DoubleSide,
         });
-        o.material.sheenColor = new THREE.Color();
+        original.dispose();
+      }
+      if (mobile && !software) {
+        const original = o.material;
+        o.material = new THREE.MeshStandardMaterial({
+          color: original.color,
+          map: original.map,
+          roughness: original.roughness,
+          metalness: original.metalness,
+          transparent: original.transparent,
+          opacity: original.opacity,
+        });
         original.dispose();
       }
       o.material.side = THREE.DoubleSide;
       if (o.name.startsWith("Pupila")) {
         o.material.roughness = 0.38;
-        o.material.clearcoat = 0.09;
-        o.material.specularIntensity = 0.16;
+        if (o.material.isMeshPhysicalMaterial) o.material.clearcoat = 0.09;
+        if (o.material.isMeshPhysicalMaterial) o.material.specularIntensity = 0.16;
       }
       if (o.name.startsWith("Íris")) {
         o.material.color.set("#ffce13");
         o.material.roughness = 0.37;
-        o.material.specularIntensity = 0.3;
-        o.material.clearcoat = 0.09;
+        if (o.material.isMeshPhysicalMaterial) o.material.specularIntensity = 0.3;
+        if (o.material.isMeshPhysicalMaterial) o.material.clearcoat = 0.09;
       }
       if (o.name.startsWith("Pálpebra")) {
         o.material.color.copy(dark);
         o.material.roughness = 0.69;
-        o.material.clearcoat = 0.025;
-        o.material.specularIntensity = 0.32;
+        if (o.material.isMeshPhysicalMaterial) o.material.clearcoat = 0.025;
+        if (o.material.isMeshPhysicalMaterial) o.material.specularIntensity = 0.32;
       }
     }
   });
-  velvet(head);
+  if (!mobile && !software) velvet(head);
   star.userData.anchor = star.position.clone();
   ready = true;
   stage.classList.add("ready");
@@ -637,7 +662,7 @@ try {
     }
     formSince = clock;
   });
-  requestAnimationFrame(tick);
+  resumeRendering();
 } catch {
   canvas.hidden = true;
   window.parent.postMessage({ type: "helena-ready", ready: false }, location.origin);
@@ -648,6 +673,11 @@ window.addEventListener("message", (event) => {
   const data = event.data;
   if (!data || data.type !== "helena-state") return;
   hostVisible = data.visible === true;
+  if (hostVisible) resumeRendering();
+  else {
+    cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+  }
   hostReduced = data.reduced === true;
   if (typeof data.open === "boolean" && data.open !== hostOpen) {
     hostOpen = data.open;
@@ -677,12 +707,16 @@ window.addEventListener("message", (event) => {
     pos.x = pos.y = pos.vx = pos.vy = 0;
   }
 });
+document.addEventListener("visibilitychange", resumeRendering);
 canvas.addEventListener("webglcontextlost", (event) => {
   event.preventDefault();
   ready = false;
+  cancelAnimationFrame(animationFrame);
+  animationFrame = 0;
   window.parent.postMessage({ type: "helena-ready", ready: false }, location.origin);
 });
 window.addEventListener("pagehide", () => {
+  cancelAnimationFrame(animationFrame);
   scene.traverse((object) => {
     if (object.isMesh) {
       object.geometry.dispose();

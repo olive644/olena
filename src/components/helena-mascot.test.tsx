@@ -98,3 +98,22 @@ it("yields rendering to other screens and resumes after their interaction", () =
     other.remove();
   }
 });
+
+it("keeps rendering while the mobile chat is open and starts the return during closing", () => {
+  vi.useFakeTimers();
+  vi.stubGlobal("matchMedia", () => ({ matches: false }));
+  vi.stubGlobal("innerWidth", 390);
+  const view = render(<HelenaMascot {...props} open />);
+  act(() => vi.advanceTimersByTime(1500));
+  const frame = view.container.querySelector("iframe")!;
+  const post = vi.spyOn(frame.contentWindow!, "postMessage");
+  fireEvent.load(frame);
+  expect(post.mock.calls.at(-1)?.[0]).toEqual(
+    expect.objectContaining({ open: true, visible: true }),
+  );
+  view.rerender(<HelenaMascot {...props} motion="closing" />);
+  expect(view.container.querySelector("iframe")).toBe(frame);
+  expect(post.mock.calls.at(-1)?.[0]).toEqual(
+    expect.objectContaining({ open: false, visible: true }),
+  );
+});

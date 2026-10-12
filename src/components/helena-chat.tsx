@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type FormEvent,
@@ -63,6 +64,7 @@ export function HelenaChat({
   );
   const suppressClick = useRef(false);
   const launcher = useRef<HTMLButtonElement>(null);
+  const headerMascot = useRef<HTMLDivElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const conversation = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -119,6 +121,47 @@ export function HelenaChat({
         behavior: "instant",
       });
   }, [messages, pending, open]);
+
+  // A mesma instância gráfica acompanha o botão até o cabeçalho, sem recarregar o modelo.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const button = launcher.current;
+    const anchor = headerMascot.current;
+    const container = button?.parentElement;
+    if (!button || !anchor || !container) return;
+    const align = () => {
+      const target = anchor.getBoundingClientRect();
+      const origin = container.getBoundingClientRect();
+      button.style.setProperty("--hc-header-x", `${target.left - origin.left}px`);
+      button.style.setProperty("--hc-header-y", `${target.top - origin.top}px`);
+      button.style.setProperty("--hc-header-scale", `${target.width / button.offsetWidth}`);
+    };
+    align();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(align);
+    observer?.observe(anchor);
+    if (anchor.parentElement) observer?.observe(anchor.parentElement);
+    const panel = anchor.closest(".helena-chat-panel");
+    const entered = (event: Event) => {
+      if (event.target === panel && (event as AnimationEvent).animationName === "hc-unfold")
+        align();
+    };
+    panel?.addEventListener("animationend", entered);
+    window.addEventListener("resize", align);
+    // O recorte do painel muda de posição apenas durante sua entrada.
+    let frame = 0;
+    const until = performance.now() + 260;
+    const follow = () => {
+      align();
+      if (performance.now() < until) frame = requestAnimationFrame(follow);
+    };
+    frame = requestAnimationFrame(follow);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      panel?.removeEventListener("animationend", entered);
+      window.removeEventListener("resize", align);
+    };
+  }, [open, position]);
 
   function animate(next: Motion, duration: number, complete?: () => void) {
     if (motionTimer.current) clearTimeout(motionTimer.current);
@@ -360,9 +403,7 @@ export function HelenaChat({
           }}
         >
           <header className="helena-chat-header">
-            <div className="helena-chat-header-mascot">
-              <img src="/helena-assistant/helena.png" alt="" />
-            </div>
+            <div className="helena-chat-header-mascot" ref={headerMascot} aria-hidden="true" />
             <div>
               <h2 id="helena-chat-title">Helena</h2>
               <p>Sua companhia nos estudos</p>
@@ -388,9 +429,6 @@ export function HelenaChat({
           >
             {messages.length === 0 ? (
               <div className="helena-chat-welcome">
-                <div className="helena-chat-welcome-art">
-                  <img src="/helena-assistant/helena.png" alt="" />
-                </div>
                 <h3>Oi! Vamos pensar juntos?</h3>
                 <div className="helena-chat-suggestions">
                   {suggestions.map((text, index) => (
@@ -524,7 +562,12 @@ export function HelenaChat({
         onDragStart={(event) => event.preventDefault()}
       >
         <span className="helena-chat-launcher-art">
-          <HelenaMascot open={open} motion={motion} tilt={tilt} hover={hover} />
+          <HelenaMascot
+            open={open && motion !== "closing"}
+            motion={motion}
+            tilt={tilt}
+            hover={hover}
+          />
         </span>
         {!open && (
           <span className="helena-chat-hint" aria-hidden="true">
