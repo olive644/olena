@@ -4,6 +4,8 @@ Executada em 2026-10-12, na branch fix/olena-training-quality. [Execução real]
 
 Treino: 96 exemplos originais, 96 passos CPU, Qwen2.5-0.5B-Instruct, LoRA rank 4. Avaliação: 32 questões separadas do treino. Resultado global da base: 2/32 (6,25%). Resultado candidato: 22/32 (68,75%). Loss do primeiro passo: 4,4364; último: 1,0994. A loss não define aprovação.
 
+A métrica exige valor exato e resposta completa no formato curto solicitado. Algumas respostas da base continham contas corretas, mas acompanhadas de texto ou igualdade, e por isso foram rejeitadas pelo avaliador. Portanto o ganho de 2 para 22 inclui melhora de formato e não deve ser apresentado como medida isolada de habilidade matemática. O relatório preserva todas as respostas para inspeção. Os erros de frações e equações do candidato foram valores incorretos, mesmo no formato pedido.
+
 | Tema              | Base | Candidato |
 | ----------------- | ---- | --------- |
 | Adição            | 0/4  | 3/4       |
