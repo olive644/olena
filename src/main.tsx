@@ -10,6 +10,7 @@ import "./notebook-workspace.css";
 import "./notebook-mobile.css";
 import "./navigation-refinements.css";
 import "./paper-controls.css";
+import "./paper-cursor.css";
 import "./accessibility.css";
 import "./room-social.css";
 import { initializeAccessibility } from "./data/accessibility-preferences";

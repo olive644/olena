@@ -40,6 +40,15 @@ carregados apenas na Agenda. Concluir usa PaperCheckIcon existente sobre papel
 amarelo/grafite; animações de check, seleção, painéis e gráficos respeitam
 prefers-reduced-motion.
 
+## Cursor desktop
+
+Cursor nativo com SVG de 32px: seta facetada roxa/creme com dobra amarela,
+mão de papel com estrela para ações. Arquivos em public/cursors, aplicação em
+paper-cursor.css somente para mouse fino com hover. Creme delimita a silhueta
+no tema escuro e grafite delimita no claro. Campos de texto, desenho, arraste e
+controles desabilitados preservam seus cursores funcionais. Alto contraste e
+toque não recebem a personalização. Sem camada que segue o mouse ou dependências.
+
 ## Tela de login
 
 Login usa página creme, balão de papel e cartão branco com sombra em camadas. Helena espia por cima do cartão, com as patinhas apoiadas na borda, acima de Bem-vindo ao seu espaço. A placa incorporada na arte fica ocultada pelo recorte CSS. Preservar proporções compactas, Manrope, marca Helena preta e Study roxa, botão roxo facetado e seta de papel. Preview direto: /?onboarding=1&login=1.
