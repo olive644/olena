@@ -251,7 +251,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // New icon art is served as SVG assets, keeping the entry inside 280 KiB.
 // Internal calendar views, validated ICS exchange and local reminders:
 // measured application JS 1280.5 KiB, no new dependency or absolute ceiling change.
-const MAX_TOTAL_JS_BYTES = 1288 * 1024;
+// Helena tipada e prioridade de interação acrescentam 2,8 KiB ao módulo lazy.
+// Total combinado com conta/Agenda: 1288,7 KiB. Teto absoluto preservado.
+const MAX_TOTAL_JS_BYTES = 1292 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
