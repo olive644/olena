@@ -1,5 +1,18 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, mascote do assistente: HelenaMascot mantém a ponte tipada entre o
+botão existente e o frame gráfico local. O estado visual não recebe conversa ou
+autenticação. Movimento reduzido desliga o 3D; a imagem estática mantém o botão.
+Fonte do renderizador: scripts/helena-mascot/runtime.js. Three.js 0.170.0 fica
+vendorizado com MIT em scripts/helena-mascot/vendor; regenerar o bundle com
+node scripts/build-helena-mascot.mjs, sem copiar o diretório public para ele mesmo.
+Modelos e renders de Blender ficam em public/helena-assistant. Testar o app real,
+preview do chat e mensagens da ponte. Orçamento gráfico próprio verificado por
+npm run performance:check. A interação em outras telas suspende o gráfico por 1,5 segundo; a montagem espera
+um intervalo ocioso. Renderizador por software mantém as poses com material leve.
+Aprovação visual limitada ao assistente registrada no
+design system. Nenhuma mudança no provedor de IA, envio ou retenção de conversa.
+
 2026-10-12, publicação Firebase: validação de users/$uid/stateV2 aplicada e relida no projeto appstudyoli, instância appstudyoli-default-rtdb. Apenas o novo filho foi acrescentado às regras obtidas do servidor; todos os demais nós e permissões foram preservados. Não publicar o arquivo completo do repositório sem comparar com as regras atuais, pois contém validações legadas que não estão em produção. Cliente novo ainda precisa ser implantado.
 
 2026-10-12, transporte da conta: Realtime Database rejeita pontos nos nomes de filhos. cloud-state-codec converte só nomes sincronizados para base64url k_, sem mudar valores/chaves locais. Cliente escreve em users/{uid}/stateV2 (version 2), lê state como fallback de migração e não o altera. Isso impede clientes antigos de receber um formato desconhecido e apagar o cache. Publicar regras expandidas antes do cliente, atualizar abas e manter codec v2 em rollback. Detalhes em ACCOUNT_SYNC_SETUP.md.

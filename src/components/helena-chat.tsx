@@ -2,7 +2,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
   type FormEvent,
   type MouseEvent,
   type PointerEvent,
@@ -10,7 +9,7 @@ import {
 import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperArrow } from "./paper-arrow";
 import { HelenaLoading } from "./helena-loading";
-import { RoomPointsIcon } from "./room-paper-icons";
+import { HelenaMascot } from "./helena-mascot";
 import { streamHelena, HelenaClientError } from "../data/helena-client";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { HELENA_PLAN_DRAFT_EVENT } from "../domain/agenda";
@@ -56,6 +55,7 @@ export function HelenaChat({
   const controller = useRef<AbortController | null>(null);
   const [motion, setMotion] = useState<Motion>("idle");
   const [position, setPosition] = useState<Position | null>(null);
+  const [hover, setHover] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const motionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drag = useRef<{ id: number; start: Position; origin: Position; moved: boolean } | null>(
@@ -361,7 +361,7 @@ export function HelenaChat({
         >
           <header className="helena-chat-header">
             <div className="helena-chat-header-mascot">
-              <RoomPointsIcon />
+              <img src="/helena-assistant/helena.png" alt="" />
             </div>
             <div>
               <h2 id="helena-chat-title">Helena</h2>
@@ -389,7 +389,7 @@ export function HelenaChat({
             {messages.length === 0 ? (
               <div className="helena-chat-welcome">
                 <div className="helena-chat-welcome-art">
-                  <RoomPointsIcon />
+                  <img src="/helena-assistant/helena.png" alt="" />
                 </div>
                 <h3>Oi! Vamos pensar juntos?</h3>
                 <div className="helena-chat-suggestions">
@@ -512,31 +512,19 @@ export function HelenaChat({
         onLostPointerCapture={(event) => {
           if (drag.current) pointerEnd(event);
         }}
+        onPointerEnter={() => setHover(true)}
         onPointerLeave={() => {
+          setHover(false);
           if (!drag.current) setTilt({ x: 0, y: 0 });
         }}
-        onBlur={() => setTilt({ x: 0, y: 0 })}
+        onBlur={() => {
+          setHover(false);
+          setTilt({ x: 0, y: 0 });
+        }}
         onDragStart={(event) => event.preventDefault()}
       >
-        <span
-          className="helena-chat-launcher-art"
-          style={
-            {
-              "--hc-tilt-x": `${tilt.x}deg`,
-              "--hc-tilt-y": `${tilt.y}deg`,
-              "--hc-drag-lean": `${tilt.y * 0.65}deg`,
-            } as CSSProperties
-          }
-        >
-          <span className="helena-chat-star-fold">
-            <RoomPointsIcon />
-          </span>
-          <span className="helena-chat-orbit is-one" aria-hidden="true">
-            <RoomPointsIcon />
-          </span>
-          <span className="helena-chat-orbit is-two" aria-hidden="true">
-            <RoomPointsIcon />
-          </span>
+        <span className="helena-chat-launcher-art">
+          <HelenaMascot open={open} motion={motion} tilt={tilt} hover={hover} />
         </span>
         {!open && (
           <span className="helena-chat-hint" aria-hidden="true">

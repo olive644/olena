@@ -251,7 +251,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // New icon art is served as SVG assets, keeping the entry inside 280 KiB.
 // Internal calendar views, validated ICS exchange and local reminders:
 // measured application JS 1280.5 KiB, no new dependency or absolute ceiling change.
-const MAX_TOTAL_JS_BYTES = 1288 * 1024;
+// Helena tipada e prioridade de interação acrescentam 2,8 KiB ao módulo lazy.
+// Total combinado com conta/Agenda: 1288,7 KiB. Teto absoluto preservado.
+const MAX_TOTAL_JS_BYTES = 1292 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
@@ -322,3 +324,16 @@ if ((ttsWorker?.bytes ?? 0) > MAX_TTS_WORKER_BYTES)
   throw new Error(`Worker TTS excedido: ${(ttsWorker?.bytes ?? 0) / 1024} KiB.`);
 if (wasmBytes > MAX_TTS_WASM_BYTES)
   throw new Error(`WASM TTS excedido: ${(wasmBytes / 1024 / 1024).toFixed(1)} MiB.`);
+
+// O renderizador opcional usa assets próprios e não compõe a entrada do React.
+// Medição: 660,3 KiB de JavaScript (152,4 KiB gzip) e modelo GLB de 3,6 MiB.
+// Orçamento explícito separado, sem ampliar os tetos da aplicação.
+const mascotRoot = new URL("../dist/helena-assistant/", import.meta.url);
+const mascotRuntime = (await stat(new URL("runtime.js", mascotRoot))).size;
+const mascotModel = (await stat(new URL("helena.glb", mascotRoot))).size;
+console.log(
+  `Helena 3D opcional: ${(mascotRuntime / 1024).toFixed(1)} KiB JS, ${(mascotModel / 1024 / 1024).toFixed(1)} MiB GLB`,
+);
+if (mascotRuntime > 768 * 1024 || mascotModel > 4 * 1024 * 1024) {
+  throw new Error("Assets da Helena excederam 768 KiB de JS ou 4 MiB de modelo.");
+}

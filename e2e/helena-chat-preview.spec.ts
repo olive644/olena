@@ -77,11 +77,9 @@ test("star animates while dragged, docks without opening and keeps the chat insi
   await page.mouse.down();
   await page.mouse.move(45, 170, { steps: 12 });
   await expect(shell).toHaveAttribute("data-motion", "dragging");
-  expect(
-    await page
-      .locator(".helena-chat-launcher-art")
-      .evaluate((element) => getComputedStyle(element).animationName),
-  ).toBe("hc-star-carried");
+  await expect(page.locator(".helena-virtual-mascot")).toHaveAttribute("data-ready", "true");
+  const graphic = page.frameLocator(".helena-virtual-mascot iframe");
+  await expect(graphic.locator("#stage")).toHaveAttribute("data-behavior", "dragging");
   await page.mouse.up();
   await expect(shell).toHaveAttribute("data-edge", "left");
   await expect(shell).toHaveAttribute("data-motion", "idle");
@@ -96,8 +94,19 @@ test("star animates while dragged, docks without opening and keeps the chat insi
   expect(panel.y).toBeGreaterThanOrEqual(0);
   expect(panel.x + panel.width).toBeLessThanOrEqual(viewport.width);
   expect(panel.y + panel.height).toBeLessThanOrEqual(viewport.height);
+  await page.evaluate(() => {
+    const shell = document.querySelector(".helena-chat");
+    if (!(shell instanceof HTMLElement)) throw new Error("Assistente ausente");
+    const observer = new MutationObserver(() => {
+      if (shell.dataset["motion"] === "closing") {
+        shell.dataset["closingObserved"] = "true";
+        observer.disconnect();
+      }
+    });
+    observer.observe(shell, { attributes: true, attributeFilter: ["data-motion"] });
+  });
   await page.getByRole("button", { name: "Recolher conversa", exact: true }).click();
-  await expect(shell).toHaveAttribute("data-motion", "closing");
+  await expect(shell).toHaveAttribute("data-closing-observed", "true");
   await expect(dialog).toHaveCount(0);
   await expect(star).toBeVisible();
 });

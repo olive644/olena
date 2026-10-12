@@ -65,3 +65,12 @@ Login usa página creme, balão de papel e cartão branco com sombra em camadas.
 Usar o componente HelenaLoading, com label contextual e compact quando necessário. O lápis animado é uma adaptação do SVG e CSS de gustavofusco no Uiverse.io, fornecidos pelo proprietário. Manter essa atribuição. Movimento de 3 segundos, cores e ponta/borracha no padrão de papel recortado. O status é anunciado uma vez pelo texto; o SVG é decorativo. Movimento reduzido apresenta desenho estático. Classes exclusivas evitam regras globais de ícones. Não há IDs de clipPath compartilhados entre instâncias.
 
 O arquivo helena-loading.svg antigo permanece disponível para referências legadas: não substituí-lo pelo lápis. Em Praticar, a navegação pelas ilhas usa a foto do perfil em moldura de papel, não uma pose da Helena. Novos estados de espera devem usar o componente compartilhado, nunca reutilizar o personagem como spinner nem criar animações independentes.
+
+## Assistente flutuante Helena (2026-10-12)
+
+O proprietário aprovou a versão cartoon 3D da cabeça e a transformação entre
+estrela e Helena para substituir a estrela do assistente virtual. Esta exceção
+fica restrita ao assistente. Preservar o restante da interface em papel recortado.
+O modelo é autoral, preparado no Blender, com olhos amarelos, pupilas verticais,
+orelhas fundidas e estrela dourada. O botão conserva 64px no desktop e 56px no
+celular. Movimento reduzido usa renders transparentes do mesmo modelo.
