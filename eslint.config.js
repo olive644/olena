@@ -14,6 +14,8 @@ export default tseslint.config(
       "playwright-report",
       "test-results",
       "public/ocr",
+      "scripts/helena-mascot/vendor",
+      "public/helena-assistant/runtime.js",
       ".vercel",
     ],
   },

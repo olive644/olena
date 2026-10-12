@@ -1,5 +1,16 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, mascote do assistente: HelenaMascot mantém a ponte tipada entre o
+botão existente e o frame gráfico local. O estado visual não recebe conversa ou
+autenticação. Movimento reduzido desliga o 3D; a imagem estática mantém o botão.
+Fonte do renderizador: scripts/helena-mascot/runtime.js. Three.js 0.170.0 fica
+vendorizado com MIT em scripts/helena-mascot/vendor; regenerar o bundle com
+node scripts/build-helena-mascot.mjs, sem copiar o diretório public para ele mesmo.
+Modelos e renders de Blender ficam em public/helena-assistant. Testar o app real,
+preview do chat e mensagens da ponte. Orçamento gráfico próprio verificado por
+npm run performance:check. Aprovação visual limitada ao assistente registrada no
+design system. Nenhuma mudança no provedor de IA, envio ou retenção de conversa.
+
 2026-10-12, cursor autoral: paper-cursor.css usa SVGs locais de seta e mão facetadas com hotspots explícitos e fallback nativo. Somente mouse fino com hover e fora de forced-colors; sem JavaScript. Texto e ferramentas mantêm cursores semânticos, mobile não muda. Sem alterações de persistência ou sincronização.
 
 2026-10-11, layout responsivo da Agenda: overview em duas colunas a partir de 1200px; calendário e painel do dia agrupados à esquerda, Meu estudo à direita. No celular, sete indicadores de Foco e três ações permanecem em uma linha compacta. Textos auxiliares solicitados e widgets Google/Listas removidos somente da tela, preservando armazenamento e sincronização.

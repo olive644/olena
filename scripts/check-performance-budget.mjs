@@ -316,3 +316,16 @@ if ((ttsWorker?.bytes ?? 0) > MAX_TTS_WORKER_BYTES)
   throw new Error(`Worker TTS excedido: ${(ttsWorker?.bytes ?? 0) / 1024} KiB.`);
 if (wasmBytes > MAX_TTS_WASM_BYTES)
   throw new Error(`WASM TTS excedido: ${(wasmBytes / 1024 / 1024).toFixed(1)} MiB.`);
+
+// O renderizador opcional usa assets próprios e não compõe a entrada do React.
+// Medição: 660,3 KiB de JavaScript (152,4 KiB gzip) e modelo GLB de 3,6 MiB.
+// Orçamento explícito separado, sem ampliar os tetos da aplicação.
+const mascotRoot = new URL("../dist/helena-assistant/", import.meta.url);
+const mascotRuntime = (await stat(new URL("runtime.js", mascotRoot))).size;
+const mascotModel = (await stat(new URL("helena.glb", mascotRoot))).size;
+console.log(
+  `Helena 3D opcional: ${(mascotRuntime / 1024).toFixed(1)} KiB JS, ${(mascotModel / 1024 / 1024).toFixed(1)} MiB GLB`,
+);
+if (mascotRuntime > 768 * 1024 || mascotModel > 4 * 1024 * 1024) {
+  throw new Error("Assets da Helena excederam 768 KiB de JS ou 4 MiB de modelo.");
+}

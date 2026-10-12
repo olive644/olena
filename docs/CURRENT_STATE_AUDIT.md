@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Helena cartoon no assistente (2026-10-12)
+
+- A versão 3D aprovada pelo proprietário substitui a estrela do botão flutuante. Cliques abrem a conversa; fechar a conversa volta à estrela. Repouso e arraste reutilizam o repertório cartoon aprovado.
+- Canvas transparente em frame local decorativo, sem captura de foco ou ponteiro. O componente React mantém teclado, captura de toque, encaixe na borda, histórico e streaming existentes. A ponte só envia estado visual, nunca mensagens, autenticação ou dados do aluno.
+- A CSP permite frames de mesma origem para este renderizador, mantendo os hosts de autenticação existentes e sem permitir script inline. Modelo carregado depois da montagem do chat. Pausa fora da aba, sob modais ou com o botão oculto no celular. Movimento reduzido não carrega o renderizador; falta de WebGL conserva os renders estáticos e a conversa.
+- Three.js 0.170.0 vendorizado com licença MIT, bundle reproduzível com o Vite existente. Nenhuma alteração de dependências npm. Consulta OSV da versão não retornou avisos em 2026-10-12. Assets têm orçamento próprio de 768 KiB JS e 4 MiB GLB; o orçamento e os tetos do React continuam verificados.
+
 ## Cursor de papel (2026-10-12)
 
 - Dois SVGs locais de 32px aplicados via CSS nativo para mouse com hover: seta e mão de ação com estrela. Paleta aprovada e borda creme/grafite legível nos dois temas.
@@ -2499,3 +2506,4 @@ seleção roxa e retorno de foco ao selecionar. Temas e toque validados no E2E.
 - Validação: 1386 testes unitários, tipos/build e orçamento de desempenho;
   14 cenários E2E da Agenda em desktop/mobile Edge, com temas claro/escuro.
   JS inicial 278,5 KiB e total 1229,8 KiB, sem dependências nem aumento de orçamento.
+- Validação local: 1400 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 279,4 KiB e aplicação 1244,4 KiB; renderizador opcional 660,4 KiB e modelo 3,5 MiB.
