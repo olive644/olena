@@ -1206,3 +1206,13 @@ A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque 
 ### Treinamento matemático candidato v2 (2026-10-12)
 
 Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.
+
+### Segunda rodada de treinamento da Olena (2026-10-12)
+
+Corpus v3 tem 192 exemplos originais, com maior cobertura de frações e equações. Treino CPU limitado a 192 passos. Mantém 32 perguntas de desenvolvimento e acrescenta auditoria independente de 32 questões, sem sobreposição com o treino, inclusive frações equivalentes. Aceitação exige 75% global, mínimo por tema e ausência de regressões em ambos os conjuntos. A métrica é explicitamente valor exato com formato curto, não correção pedagógica geral. Artefatos e validação de retomada v3 guardam os dois gates e hashes; pesos rejeitados não são carregados nem promovidos. Ver `docs/OLENA_LEARNING.md`.
+
+### Ensino antes da tentativa independente (v3.2)
+
+O corpus permanece idêntico: 192 exemplos, sem novas questões ou respostas. O currículo apresenta primeiro as 96 soluções explicadas, depois 48 respostas com dicas gerais de método e finalmente 48 respostas sem dicas. Cada registro aparece uma única vez, em 192 passos. As dicas não contêm questões da avaliação. As duas avaliações permanecem independentes, sem dicas e com os mesmos critérios de aceitação; pesos rejeitados continuam bloqueados. O relatório registra os tamanhos das etapas e o hash da ordem. Esta mudança ensina procedimentos antes da prática, mas não garante aprovação ou promove o modelo para produção.
+
+Resultado real do currículo v3.2 (2026-10-13): 21/32 na validação e 19/32 na auditoria, contra 23/32 e 20/32 da rodada anterior. Frações e equações continuam com zero acertos. Candidato rejeitado e sem pesos publicados. Preservar os 192 exemplos por decisão do proprietário. Relatório público e execução em docs/OLENA_TRAINING_RESULTS.md.

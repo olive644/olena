@@ -1,21 +1,21 @@
 """Bounded CPU LoRA training. Rejected weights are never retained as candidates."""
 import json
 import os
-import random
 import re
 import shutil
 from fractions import Fraction
 from pathlib import Path
 
 from olena_training_data import SCHEMA, TOPICS, digest, validate_rows
+from olena_teaching_curriculum import STAGES, curriculum, teaching_messages
 
 BASE = "Qwen/Qwen2.5-0.5B-Instruct"
 REVISION = "7ae557604adf67be50417f59c2c2f167def9a775"
-TRAINER_VERSION = "math-gate-v2.1"
+TRAINER_VERSION = "math-teaching-v3.2"
 ROOT = Path(".olena-learning")
 OUTPUT = ROOT / "candidate"
 REPORT = ROOT / "training-report.json"
-MAX_STEPS = 96
+MAX_STEPS = 192
 
 
 def outputs(**values):
@@ -57,7 +57,7 @@ def quality_gate(baseline, prior, candidate):
             "minimum_accuracy": 0.75, "minimum_correct_per_topic": 2}
 
 
-def verified_previous(path, evaluation_digest):
+def verified_previous(path, evaluation_digest, audit_digest):
     try:
         report_file = path / "report.json"
         if not report_file.is_file() or report_file.stat().st_size > 100000:
@@ -67,11 +67,14 @@ def verified_previous(path, evaluation_digest):
         config_file = path / "adapter_config.json"
         if (report.get("base_revision") != REVISION or report.get("trainer_version") != TRAINER_VERSION
                 or report.get("schema") != SCHEMA or report.get("status") not in {"accepted", "retained"}
-                or report.get("evaluation_sha256") != evaluation_digest
+                or report.get("evaluation_sha256") != evaluation_digest or report.get("audit_sha256") != audit_digest
                 or report.get("gate", {}).get("passed") is not True or report.get("production_approved") is not False
                 or not weights.is_file() or weights.stat().st_size > 5000000 or not config_file.is_file()):
             return None
         if quality_gate(report["baseline"], report["prior_candidate"], report["candidate"]) != report["gate"]:
+            return None
+        audit = report["audit"]
+        if audit["gate"].get("passed") is not True or quality_gate(audit["baseline"], audit["prior_candidate"], audit["candidate"]) != audit["gate"]:
             return None
         if config_file.stat().st_size > 20000:
             return None
@@ -104,18 +107,23 @@ def main():
     outputs(trained=False, artifact=False, report=False)
     raw = (ROOT / "candidate-train.jsonl").read_bytes()
     raw_eval = (ROOT / "candidate-eval.jsonl").read_bytes()
-    if len(raw) > 300000 or len(raw_eval) > 100000:
+    raw_audit = (ROOT / "candidate-audit.jsonl").read_bytes()
+    if len(raw) > 600000 or len(raw_eval) > 100000 or len(raw_audit) > 100000:
         raise ValueError("Corpus too large")
     rows = validate_rows([json.loads(line) for line in raw.decode().splitlines() if line], "train")
     evaluation = validate_rows([json.loads(line) for line in raw_eval.decode().splitlines() if line], "evaluation")
-    if {r["task_key"] for r in rows} & {r["task_key"] for r in evaluation}:
+    audit_rows = validate_rows([json.loads(line) for line in raw_audit.decode().splitlines() if line], "audit")
+    sets = [{r["task_key"] for r in split} for split in (rows, evaluation, audit_rows)]
+    if any(sets[a] & sets[b] for a, b in ((0, 1), (0, 2), (1, 2))):
         raise ValueError("Evaluation leakage")
-    data_digest, evaluation_digest = digest(raw), digest(raw_eval)
+    data_digest, evaluation_digest, audit_digest = digest(raw), digest(raw_eval), digest(raw_audit)
     previous = ROOT / "previous"
-    previous_report = verified_previous(previous, evaluation_digest)
-    common = {"name": "Olena-Math-Qwen-Candidate-v2", "base": BASE, "base_revision": REVISION,
+    previous_report = verified_previous(previous, evaluation_digest, audit_digest)
+    common = {"name": "Olena-Math-Qwen-Candidate-v3", "base": BASE, "base_revision": REVISION,
               "schema": SCHEMA, "trainer_version": TRAINER_VERSION, "dataset_sha256": data_digest,
-              "evaluation_sha256": evaluation_digest, "examples": len(rows), "evaluation_examples": len(evaluation),
+              "evaluation_sha256": evaluation_digest, "audit_sha256": audit_digest, "examples": len(rows),
+              "evaluation_examples": len(evaluation), "audit_examples": len(audit_rows),
+              "metric": "exact_value_and_short_requested_format",
               "production_approved": False, "review": "Exact-answer math benchmark only; tutoring quality requires human review"}
     force = os.environ.get("OLENA_FORCE_TRAINING") == "true"
     if previous_report and previous_report.get("dataset_sha256") == data_digest and not force:
@@ -130,6 +138,7 @@ def main():
         if (attempt.get("status") in {"rejected", "unchanged-rejection"}
                 and attempt.get("trainer_version") == TRAINER_VERSION
                 and attempt.get("dataset_sha256") == data_digest and attempt.get("evaluation_sha256") == evaluation_digest
+                and attempt.get("audit_sha256") == audit_digest
                 and attempt.get("base_revision") == REVISION):
             if previous_report:
                 retain_previous(previous)
@@ -147,11 +156,11 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(BASE, revision=REVISION, trust_remote_code=False, dtype=torch.float32, use_safetensors=True)
     model.config.use_cache = False
 
-    def evaluate():
+    def evaluate(items):
         model.eval()
         results = []
         with torch.no_grad():
-            for item in evaluation:
+            for item in items:
                 prompt = tokenizer.apply_chat_template(item["messages"], tokenize=False, add_generation_prompt=True)
                 tokens = tokenizer(prompt, return_tensors="pt")
                 generated = model.generate(**tokens, max_new_tokens=16, do_sample=False,
@@ -161,23 +170,27 @@ def main():
                                 "answer": answer, "correct": numeric_answer(answer) == Fraction(item["expected"])})
         return results
 
-    baseline = evaluate()
+    baseline = evaluate(evaluation)
+    baseline_audit = evaluate(audit_rows)
     if previous_report:
         model = PeftModel.from_pretrained(model, previous, is_trainable=True, use_safetensors=True)
-        prior_candidate = evaluate()
+        prior_candidate = evaluate(evaluation)
+        prior_audit = evaluate(audit_rows)
     else:
         prior_candidate = baseline
+        prior_audit = baseline_audit
         model = get_peft_model(model, LoraConfig(r=4, lora_alpha=8, target_modules=["q_proj", "v_proj"],
                                                lora_dropout=0.05, task_type="CAUSAL_LM"))
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
     optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad), lr=0.00005)
-    order = list(range(len(rows)))
-    random.Random(42).shuffle(order)
+    plan = curriculum(rows)
+    order = [item["index"] for item in plan]
     losses = []
     model.train()
-    for index in order[:MAX_STEPS]:
-        messages = rows[index]["messages"]
+    for item in plan[:MAX_STEPS]:
+        index = item["index"]
+        messages = teaching_messages(rows[index], item["stage"])
         prefix = tokenizer.apply_chat_template(messages[:-1], tokenize=False, add_generation_prompt=True)
         full = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
         tokens = tokenizer(full, return_tensors="pt", truncation=True, max_length=384)
@@ -197,14 +210,20 @@ def main():
         torch.nn.utils.clip_grad_norm_((p for p in model.parameters() if p.requires_grad), 1.0)
         optimizer.step()
         losses.append(float(loss.detach()))
-        print(f"CPU step {len(losses)}/{min(len(rows), MAX_STEPS)} loss={losses[-1]:.4f}", flush=True)
-    candidate = evaluate()
+        print(f"CPU step {len(losses)}/{min(len(rows), MAX_STEPS)} stage={item['stage']} loss={losses[-1]:.4f}", flush=True)
+    candidate = evaluate(evaluation)
+    candidate_audit = evaluate(audit_rows)
     gate = quality_gate(baseline, prior_candidate, candidate)
-    report = {**common, "status": "accepted" if gate["passed"] else "rejected", "trained_this_run": True,
-              "steps": len(losses), "losses": losses, "resumed_adapter": previous_report is not None,
+    audit_gate = quality_gate(baseline_audit, prior_audit, candidate_audit)
+    accepted = gate["passed"] and audit_gate["passed"]
+    report = {**common, "status": "accepted" if accepted else "rejected", "trained_this_run": True,
+              "steps": len(losses), "losses": losses,
+              "curriculum": {"stages": {stage: sum(item["stage"] == stage for item in plan[:MAX_STEPS]) for stage in STAGES},
+                             "order_sha256": digest(json.dumps(plan, sort_keys=True).encode()), "evaluation_hints": False}, "resumed_adapter": previous_report is not None,
               "baseline": baseline, "prior_candidate": prior_candidate, "candidate": candidate, "gate": gate,
+              "audit": {"baseline": baseline_audit, "prior_candidate": prior_audit, "candidate": candidate_audit, "gate": audit_gate},
               "training_topics": {topic: sum(rows[i]["topic"] == topic for i in order[:MAX_STEPS]) for topic in TOPICS}}
-    if gate["passed"]:
+    if accepted:
         if OUTPUT.exists():
             raise ValueError("Output already exists")
         OUTPUT.mkdir(parents=True)
@@ -212,14 +231,14 @@ def main():
         tokenizer.save_pretrained(OUTPUT)
         report["adapter_sha256"] = digest((OUTPUT / "adapter_model.safetensors").read_bytes())
         (OUTPUT / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-        (OUTPUT / "README.md").write_text("# Olena Math Qwen Candidate v2\n\nExperimental LoRA adapter for pinned Qwen2.5-0.5B-Instruct (Apache-2.0). Original authored public exercises. Exact-answer benchmark passed; no production or tutoring approval.\n", encoding="utf-8")
+        (OUTPUT / "README.md").write_text("# Olena Math Qwen Candidate v3\n\nExperimental LoRA adapter for pinned Qwen2.5-0.5B-Instruct (Apache-2.0). Original authored public exercises. Exact-answer benchmark passed; no production or tutoring approval.\n", encoding="utf-8")
         outputs(artifact=True)
     elif previous_report:
         retain_previous(previous)
         report["retained_previous_accepted"] = True
     write_report(report)
-    outputs(trained=True, accepted=gate["passed"])
-    print(f"Evaluation: baseline={sum(r['correct'] for r in baseline)}/32, candidate={gate['correct']}/32, regressions={len(gate['regressions'])}, accepted={gate['passed']}. Production approval remains false.")
+    outputs(trained=True, accepted=accepted)
+    print(f"Evaluation: baseline={sum(r['correct'] for r in baseline)}/32, candidate={gate['correct']}/32, regressions={len(gate['regressions'])}, new audit={audit_gate['correct']}/32, accepted={accepted}. Production approval remains false.")
 
 
 if __name__ == "__main__":

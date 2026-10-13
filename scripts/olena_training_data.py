@@ -4,7 +4,7 @@ import json
 from fractions import Fraction
 from pathlib import Path
 
-SCHEMA = "olena-authored-math-v2"
+SCHEMA = "olena-authored-math-v3"
 SYSTEM = "Você é Helena, tutora da OlenaStudy. Responda em português brasileiro. Explique com passos curtos quando solicitado e respeite o formato pedido."
 TOPICS = ("addition", "subtraction", "multiplication", "division", "fractions", "percentages", "linear-equations", "powers")
 
@@ -16,6 +16,9 @@ def exact(value):
 
 def task_key(topic, operands):
     values = sorted(operands) if topic in {"addition", "multiplication"} else operands
+    if topic == "fractions":
+        a, b, c, d = operands
+        values = sorted([exact(Fraction(a, b)), exact(Fraction(c, d))])
     return json.dumps([topic, values], separators=(",", ":"))
 
 
@@ -67,12 +70,18 @@ def solution(topic, operands):
 
 def tasks(split):
     if split == "train":
-        pairs = [[3, 2], [4, 5], [7, 3], [9, 6], [11, 4], [13, 7]]
+        pairs = [[3, 2], [4, 5], [7, 3], [9, 6], [11, 4], [13, 7], [8, 3], [14, 5]]
         special = {
-            "fractions": [[1, 3, 1, 6], [2, 5, 1, 10], [1, 4, 1, 8], [2, 3, 1, 9], [3, 7, 2, 7], [2, 9, 1, 6]],
-            "percentages": [[10, 60], [20, 80], [25, 120], [30, 150], [40, 200], [50, 240]],
-            "linear-equations": [[2, 3, 11], [3, 4, 19], [4, 5, 29], [5, 7, 22], [6, 2, 44], [7, 6, 34]],
-            "powers": [[2, 3], [3, 2], [4, 2], [5, 2], [6, 2], [2, 4]],
+            "fractions": [[1, 3, 1, 6], [2, 5, 1, 10], [1, 4, 1, 8], [2, 3, 1, 9], [3, 7, 2, 7], [2, 9, 1, 6],
+                          [1, 2, 1, 4], [1, 3, 1, 3], [1, 4, 2, 4], [2, 5, 1, 5], [1, 6, 2, 6], [3, 8, 1, 8],
+                          [1, 2, 1, 6], [1, 3, 1, 12], [1, 4, 1, 12], [2, 3, 1, 6], [2, 5, 1, 15], [3, 4, 1, 8],
+                          [1, 3, 1, 4], [1, 5, 1, 6], [2, 7, 1, 3], [3, 5, 1, 4], [1, 8, 1, 5], [2, 9, 1, 4]],
+            "percentages": [[10, 60], [20, 80], [25, 120], [30, 150], [40, 200], [50, 240], [5, 300], [35, 180]],
+            "linear-equations": [[2, 3, 11], [3, 4, 19], [4, 5, 29], [5, 7, 22], [6, 2, 44], [7, 6, 34],
+                                 [1, 5, 9], [1, 8, 11], [2, 5, 17], [2, 7, 21], [3, 2, 20], [3, 5, 26],
+                                 [4, 3, 23], [4, 9, 41], [5, 2, 32], [5, 8, 43], [6, 7, 25], [6, 5, 59],
+                                 [7, 2, 51], [7, 9, 65], [8, 5, 29], [8, 7, 71], [9, 4, 40], [10, 3, 53]],
+            "powers": [[2, 3], [3, 2], [4, 2], [5, 2], [6, 2], [2, 4], [3, 4], [4, 4]],
         }
     elif split == "evaluation":
         pairs = [[6, 10], [12, 8], [17, 6], [19, 5]]
@@ -81,6 +90,14 @@ def tasks(split):
             "percentages": [[15, 160], [35, 80], [60, 50], [75, 120]],
             "linear-equations": [[4, 7, 35], [8, 3, 43], [9, 5, 32], [11, 4, 70]],
             "powers": [[3, 3], [4, 3], [5, 3], [7, 2]],
+        }
+    elif split == "audit":
+        pairs = [[8, 7], [15, 9], [18, 7], [23, 6]]
+        special = {
+            "fractions": [[1, 6, 1, 4], [2, 5, 1, 4], [3, 10, 1, 5], [5, 12, 1, 8]],
+            "percentages": [[12, 250], [45, 160], [80, 75], [65, 200]],
+            "linear-equations": [[3, 8, 29], [5, 9, 49], [7, 3, 45], [10, 6, 46]],
+            "powers": [[2, 5], [6, 3], [8, 2], [9, 2]],
         }
     else:
         raise ValueError("Unknown split")
@@ -95,7 +112,7 @@ def records(split):
             suffix = " Responda somente o número ou a fração simplificada, sem explicação." if style == "number" else " Explique por etapas curtas."
             rows.append({
                 "id": f"{split}-{topic}-{index+1}-{style}", "source": SCHEMA,
-                "publicSynthetic": True, "check": "verified-math-v2", "topic": topic,
+                "publicSynthetic": True, "check": "verified-math-v3", "topic": topic,
                 "operands": operands, "format": style, "expected": exact(value),
                 "task_key": task_key(topic, operands),
                 "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": question + suffix},
@@ -115,16 +132,17 @@ def validate_rows(rows, split):
 
 
 def write_corpus(root=Path(".olena-learning")):
-    training, evaluation = records("train"), records("evaluation")
-    if {r["task_key"] for r in training} & {r["task_key"] for r in evaluation}:
+    training, evaluation, audit = records("train"), records("evaluation"), records("audit")
+    sets = [{r["task_key"] for r in rows} for rows in (training, evaluation, audit)]
+    if any(sets[a] & sets[b] for a, b in ((0, 1), (0, 2), (1, 2))):
         raise ValueError("Evaluation leakage")
     root.mkdir(parents=True, exist_ok=True)
-    for name, rows in [("candidate-train.jsonl", training), ("candidate-eval.jsonl", evaluation)]:
+    for name, rows in [("candidate-train.jsonl", training), ("candidate-eval.jsonl", evaluation), ("candidate-audit.jsonl", audit)]:
         (root / name).write_text("".join(json.dumps(r, ensure_ascii=False, sort_keys=True)+"\n" for r in rows), encoding="utf-8")
-    manifest = {"schema": SCHEMA, "train_examples": len(training), "evaluation_examples": len(evaluation),
+    manifest = {"schema": SCHEMA, "train_examples": len(training), "evaluation_examples": len(evaluation), "audit_examples": len(audit),
                 "topics": list(TOPICS), "origin": "Original authored exercises, no student conversations or teacher API calls"}
     (root / "corpus-manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    print(f"Verified authored corpus: {len(training)} training examples, {len(evaluation)} separate evaluation questions.")
+    print(f"Verified authored corpus: {len(training)} training examples, {len(evaluation)} validation questions, {len(audit)} new audit questions.")
 
 
 def digest(data):

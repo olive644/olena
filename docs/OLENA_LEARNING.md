@@ -223,3 +223,17 @@ Comandos locais sem download de modelo:
 - `python3 scripts/test_audit_olena_runtime.py`
 
 Treino real com ambiente auditado é executado pelo workflow em uma branch revisada ou na main. Relatório registra resultado da base, candidato anterior, novo candidato, regressões, cobertura dos temas e losses. Queda da loss não substitui o gate de avaliação. A publicação do chat permanece uma decisão separada, após revisão humana e hospedagem do modelo.
+
+## Segunda rodada: corpus v3 e avaliação nova
+
+A segunda rodada amplia o treino para 192 exemplos originais: 48 de frações, 48 de equações lineares e 16 de cada um dos outros seis temas. Metade são respostas curtas e metade explicações. Frações incluem denominadores iguais, múltiplos e diferentes; equações variam coeficientes e constantes. A máscara e o limite de 384 tokens permanecem iguais; o teto passa a 192 passos em uma passagem embaralhada, ainda com dois threads CPU e timeout de 25 minutos.
+
+As 32 perguntas da primeira rodada passam a ser a avaliação de desenvolvimento. Outras 32 perguntas compõem a auditoria nova, em arquivo separado. Os três conjuntos não compartilham operações iguais ou comutadas; frações também são normalizadas para detectar representações equivalentes. A avaliação usa o mesmo critério estrito de valor exato e formato curto, registrado explicitamente no relatório. Não confundir o placar com correção matemática isolada ou qualidade pedagógica.
+
+A aprovação exige que os dois conjuntos passem, cada qual com pelo menos 24/32, pelo menos 2/4 em cada tema e nenhum acerto da base ou do último modelo aprovado perdido. Nenhum piso foi reduzido. A auditoria não entra no treinamento ou na seleção de exemplos. O resultado completo de ambas só é examinado ao final da rodada; se novas decisões forem tomadas a partir dele, outra avaliação independente será necessária antes de uma eventual aprovação de produção.
+
+Dados usam schema olena-authored-math-v3 e o treinador math-gate-v3.1. Artefatos são Olena-Math-Qwen-Candidate-v3 e Olena-Math-Training-Report-v3. Retomada também confere hash da auditoria e recalcula seu gate. Relatórios e pesos v2 continuam como histórico e não são reinterpretados como aprovação nesse protocolo. Como não há candidato v2 aprovado, esta rodada parte da base, sem carregar os pesos rejeitados.
+
+### Ensino antes da tentativa independente (v3.2)
+
+O corpus permanece idêntico: 192 exemplos, sem novas questões ou respostas. O currículo apresenta primeiro as 96 soluções explicadas, depois 48 respostas com dicas gerais de método e finalmente 48 respostas sem dicas. Cada registro aparece uma única vez, em 192 passos. As dicas não contêm questões da avaliação. As duas avaliações permanecem independentes, sem dicas e com os mesmos critérios de aceitação; pesos rejeitados continuam bloqueados. O relatório registra os tamanhos das etapas e o hash da ordem. Esta mudança ensina procedimentos antes da prática, mas não garante aprovação ou promove o modelo para produção.
