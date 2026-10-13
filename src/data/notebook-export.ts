@@ -1,4 +1,6 @@
+import { brandedExportCanvas, loadPaperExportMascot } from "./paper-export-art";
 export async function downloadNotebookPdf(images: string[]) {
+  const mascot = await loadPaperExportMascot();
   const encoder = new TextEncoder();
   const chunks: Uint8Array[] = [];
   const offsets: number[] = [0];
@@ -30,22 +32,23 @@ export async function downloadNotebookPdf(images: string[]) {
     context.fillStyle = "white";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0);
+    const exported = brandedExportCanvas(canvas, mascot);
     const bytes = Uint8Array.from(
-      atob(canvas.toDataURL("image/jpeg", 0.92).split(",")[1]!),
+      atob(exported.toDataURL("image/jpeg", 0.92).split(",")[1]!),
       (char) => char.charCodeAt(0),
     );
     const id = 3 + i * 3;
     object(
       id,
-      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${canvas.width} ${canvas.height}] /Resources << /XObject << /Im0 ${id + 1} 0 R >> >> /Contents ${id + 2} 0 R >>`,
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${exported.width} ${exported.height}] /Resources << /XObject << /Im0 ${id + 1} 0 R >> >> /Contents ${id + 2} 0 R >>`,
     );
     offsets[id + 1] = length;
     append(
-      `${id + 1} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bytes.length} >>\nstream\n`,
+      `${id + 1} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${exported.width} /Height ${exported.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bytes.length} >>\nstream\n`,
     );
     append(bytes);
     append("\nendstream\nendobj\n");
-    const content = `q\n${canvas.width} 0 0 ${canvas.height} 0 0 cm\n/Im0 Do\nQ\n`;
+    const content = `q\n${exported.width} 0 0 ${exported.height} 0 0 cm\n/Im0 Do\nQ\n`;
     object(id + 2, `<< /Length ${encoder.encode(content).length} >>\nstream\n${content}endstream`);
   }
   const xref = length;

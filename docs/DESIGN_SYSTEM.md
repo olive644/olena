@@ -16,6 +16,21 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 
 ## Controles da Agenda e fechamento
 
+Paleta do evento usa seis cores existentes (roxo, amarelo, rosa, verde, azul e
+grafite), em botões de papel com check original, nome acessível, dica por foco/hover
+e movimento de vizinhos inspirado no exemplo Uiverse.io de Cobp fornecido pelo
+proprietário. Sem seletor nativo; cores personalizadas anteriores continuam salvas
+até escolha explícita. Movimento reduzido desativa escala/transição. Metadados
+em hover/foco/abertos mantêm grafite sobre papel, sem pares de contraste transitórios.
+
+PNG da Agenda e PNG/PDF/impressão de cadernos compartilham arte autoral desenhada
+em canvas: facetas creme, marca OlenaStudy, marca d'água no rodapé e selo de Helena
+do favicon original /olena-favicon.png, em alta resolução. Selo é identidade visual,
+não certificação. Moldura fica fora do
+conteúdo, sem apagar ou cobrir anotações. Somente cópias exportadas recebem arte;
+miniaturas, documento editável e autosave permanecem originais. Não usar arte de
+exportação em interfaces interativas nem enviar documentos a serviços externos.
+
 Filtros matéria/tipo ficam em único botão creme facetado, ao lado de Pesquisar.
 No celular, Exportar/Importar/Imprimir/Lembretes ocupam uma linha com quatro colunas.
 Metadados abertos/focados usam texto grafite sobre papel creme, nos dois temas.

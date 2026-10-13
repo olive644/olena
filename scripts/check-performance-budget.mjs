@@ -259,7 +259,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Combined with dynamic Agenda controls: measured 1297.9 KiB, hard ceiling unchanged.
 // Compact filters, account event colors and keyboard/direct grid movement: measured 1301.9 KiB.
 // Keep narrow bundler variance; initial entry and absolute ceilings remain unchanged.
-const MAX_TOTAL_JS_BYTES = 1303 * 1024;
+// Branded exports, palette, drag preview and cross-date search: measured 1309.7 KiB.
+// No new dependency; initial entry and absolute ceilings remain unchanged.
+const MAX_TOTAL_JS_BYTES = 1311 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

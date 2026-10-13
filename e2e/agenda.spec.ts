@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { createInitialWorkspace, toDateKey } from "../src/domain/workspace";
+import { createInitialWorkspace } from "../src/domain/workspace";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -728,9 +728,12 @@ test("weekly study opens focus without completing, records real minutes and retu
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await page.getByRole("button", { name: "Começar estudo Estudar frações" }).click();
   await expect(page).toHaveURL(/\/foco/);
-  await expect(page.getByRole("region", { name: "Estudo da agenda" })).toContainText(
-    "Meta de 1 min",
-  );
+  await expect(page.getByRole("region", { name: "Estudo da agenda" })).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("olena.focus-session.v1") ?? "null")?.plannedMinutes,
+    ),
+  ).toBe(1);
   await expect(page.getByRole("button", { name: "Encerrar e registrar" })).toBeDisabled();
   expect(
     await page.evaluate(
@@ -809,32 +812,38 @@ test("paper month selector supports years, keyboard dismissal, themes and touch-
     "true",
   );
 });
-test("overdue tasks move to today without the removed weekly planning widget", async ({ page }) => {
-  const state = createInitialWorkspace();
-  state.tasks = [
-    {
-      id: "past",
-      title: "Entrega pendente",
-      subjectId: state.subjects[0]!.id,
-      dueDate: "2020-01-01",
-      completed: false,
-    },
-  ];
-  await page.addInitScript(
-    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
-    state,
-  );
-  await page.goto("/planejador");
-  await page.getByRole("button", { name: "Mover Entrega pendente para hoje" }).click();
-  await expect(page.getByRole("button", { name: "Concluir Entrega pendente" })).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Planejar com Helena" })).toHaveCount(0);
-  expect(
-    await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks[0].dueDate,
-    ),
-  ).toBe(toDateKey(new Date()));
-});
+for (const [instant, today] of [
+  ["2026-10-13T00:30:00Z", "2026-10-12"],
+  ["2026-10-13T03:30:00Z", "2026-10-13"],
+] as const) {
+  test(`overdue tasks move to the account date ${today} at ${instant}`, async ({ page }) => {
+    await page.clock.install({ time: new Date(instant) });
+    const state = createInitialWorkspace();
+    state.tasks = [
+      {
+        id: "past",
+        title: "Entrega pendente",
+        subjectId: state.subjects[0]!.id,
+        dueDate: "2020-01-01",
+        completed: false,
+      },
+    ];
+    await page.addInitScript((workspace) => {
+      localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
+      localStorage.setItem("helena.agendaTimeZone.v1", "America/Sao_Paulo");
+    }, state);
+    await page.goto("/planejador");
+    await page.getByRole("button", { name: "Mover Entrega pendente para hoje" }).click();
+    await expect(page.getByRole("button", { name: "Concluir Entrega pendente" })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Planejar com Helena" })).toHaveCount(0);
+    expect(
+      await page.evaluate(
+        () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks[0].dueDate,
+      ),
+    ).toBe(today);
+  });
+}
 
 test("agenda selects ranges by drag and clicks and shows only real focus history", async ({
   page,

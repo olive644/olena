@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, teste de mover tarefa para hoje: não comparar data da conta com new Date() do runner UTC. Fixar relógio e fuso da conta no fixture e exigir datas literais antes/depois de meia-noite brasileira. Produto permanece inalterado.
+
+2026-10-12, busca da Agenda: botão/Enter ativam Lista de resultados sem limite do mês aberto. agendaSearchDate escolhe uma ocorrência válida por série, sem materializar rotinas infinitas; filtros compartilham normalização de acentos/caixa/espaços. Limpar volta aos próximos 30 dias. loadPaperExportMascot carrega e reutiliza /olena-favicon.png original no selo, sem redesenhar Helena; erros permitem tentar novamente.
+
+2026-10-12, exportação autoral: paper-export-art produz moldura de cópia, selo Helena/estrela e marca d'água; não usar no autosave. agenda-event-png gera cartão local e AgendaEventShare prepara prévia antes do clique nativo de compartilhar, com download alternativo. PNG restrito à Lista, sem e-mails/anexos/histórico; .ics da barra preservado. Paleta fixa mantém valores antigos sem migração. Grade mostra ghost do ponteiro, Escape cancela e alça de duração permanece dentro do bloco. Remoções de avisos e dicas não alteram contexto de Foco, sincronização ou acessibilidade da Helena.
+
 2026-10-12, Agenda compacta: AgendaFilters reúne os dois filtros em popover. Grade salva movimento/redimensionamento ao soltar; rotinas destacam só a ocorrência via changeSeries, sem mover histórico. Alt/setas ajusta horário e Shift/Alt/setas muda dia. Cor opcional hexadecimal integra StudyEvent, validador local e merge por campo; marcadores coloridos mantêm texto neutro legível. Permissão de notificações aparece em aviso temporário de 6 segundos com sino, barra e cooldown, em vez de texto permanente. Desktop agrupa painel do dia abaixo de Meu estudo; mobile mantém ordem calendário/dia/estudo.
 
 2026-10-12, prova de navegação responsiva: aguardar aria-current="page" antes de medir o ícone ativo após troca para Agenda. O carregamento sob demanda pode manter temporariamente a página anterior; não comparar a posição de ícones em estados diferentes nem remover a animação para esconder a corrida do teste.

@@ -549,18 +549,6 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   return (
     <main className="main-content focus-page" id="main-content">
       <PageHeader />
-      {restored?.agendaEventId && (
-        <section className="module-panel" aria-label="Estudo da agenda">
-          <strong>
-            {workspace.events.find((event) => event.id === restored.agendaEventId)?.title ??
-              "Estudo planejado"}
-          </strong>
-          <p>
-            {subject.name} · Meta de {restored.plannedMinutes ?? 25} min. Inicie o cronômetro e
-            registre ao encerrar. Abrir esta tela não conclui o estudo.
-          </p>
-        </section>
-      )}
       <div className="focus-layout">
         <section className="focus-card" aria-labelledby="focus-timer-title">
           <div className="focus-mode-carousel">

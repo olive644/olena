@@ -22,10 +22,12 @@
     transform 160ms ease,
     box-shadow 160ms ease;
 }
-.app-shell
+:root
+  body
+  .app-shell
   .agenda-page
   .agenda-metadata-field
-  > button:is(:focus, :focus-visible, [aria-expanded="true"]) {
+  > button:is(:hover, :focus, :focus-visible, [aria-expanded="true"]) {
   color: #292432;
   background-color: #e9ddc6;
   background-image: none;
@@ -33,12 +35,97 @@
 .agenda-metadata-field > button[aria-expanded="true"] {
   box-shadow: 0 4px #facc15;
 }
-.agenda-event-color input[type="color"] {
-  width: 72px;
+/* Movimento adaptado de Uiverse.io, Cobp; facetas, seleção e cores OlenaStudy. */
+.agenda-color-palette {
+  margin: 0;
+  padding: 16px 8px;
+  min-width: 0;
+  border: 0;
+}
+.agenda-color-palette legend {
+  font-size: 13px;
+}
+.agenda-color-items {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  perspective: 1000px;
+}
+:root body .agenda-color-items > button {
+  position: relative;
+  width: 44px;
   height: 48px;
-  padding: 6px;
-  cursor: pointer;
-  border-radius: 5px 12px 5px 9px;
+  flex: 0 0 44px;
+  min-width: 44px;
+  padding: 0;
+  border: 1px solid #51465d;
+  border-radius: 5px 10px 4px 8px;
+  box-shadow: 0 4px #51465d;
+  transition: transform 350ms cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+:root body .agenda-color-items > button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #fff9ef;
+  opacity: 0.22;
+  clip-path: polygon(0 0, 48% 0, 0 48%);
+}
+:root body .agenda-color-items > button::after {
+  display: none;
+}
+.agenda-color-name {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: #292432;
+  background: #fff9ef;
+  padding: 3px 6px;
+  border-radius: 4px 8px;
+  opacity: 0;
+  pointer-events: none;
+  font-size: 11px;
+  box-shadow: 0 2px #d8cdb9;
+}
+.agenda-color-items > button:is(:hover, :focus-visible) {
+  transform: translateY(-7px) scale(1.12);
+  z-index: 3;
+}
+.agenda-color-items > button:is(:hover, :focus-visible) .agenda-color-name {
+  opacity: 1;
+}
+.agenda-color-items > button:has(+ button:is(:hover, :focus-visible)),
+.agenda-color-items > button:is(:hover, :focus-visible) + button {
+  transform: translateY(-3px) scale(1.04);
+}
+.agenda-color-check {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  margin: auto;
+  background: #fff9ef;
+  border-radius: 3px 7px;
+}
+.agenda-color-check svg {
+  width: 21px;
+  height: 21px;
+}
+@media (max-width: 360px) {
+  .agenda-color-items {
+    gap: 2px;
+  }
+  .agenda-color-palette {
+    padding-inline: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root body .agenda-color-items > button {
+    transition: none;
+    transform: none;
+  }
 }
 .agenda-delete .paper-editor-icon {
   width: 28px;

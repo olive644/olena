@@ -35,6 +35,12 @@ continuam explícitos; os limites de .ics e lembretes continuam documentados aba
 
 ## Fluxo
 
+Pesquisar ou Enter no campo abre a Lista de resultados de todas as datas salvas,
+incluindo eventos e tarefas anteriores/futuros ao mês aberto. Cada série aparece
+uma vez, na primeira ocorrência válida, respeitando exclusões e término. Matéria
+e tipo continuam filtrando; texto ignora acentos, caixa e espaços extras. Limpar
+o campo restaura a Lista dos próximos 30 dias.
+
 `/planejador` abre o planejamento do dia atual. Calendário e categorias ficam
 sempre visíveis. O ícone abre o seletor de mês, com destaque roxo e contagens
 compactas. Selecionar uma data atualiza planejamento e gráficos logo abaixo,
@@ -98,7 +104,13 @@ coletiva, com aviso na hora por padrão e opção de antecipação sem botões a
 Até três imagens ou PDFs de 300 KB podem ser anexados por evento. São dados privados
 do workspace e podem entrar na sincronização existente da conta. Não são enviados
 a novos serviços e não entram no arquivo .ics. Participantes são metadados, sem
-convites automáticos. Compartilhar gera um .ics, não oferece edição colaborativa.
+convites automáticos. Compartilhar aparece somente na Lista, como ícone, e prepara
+uma prévia PNG da ocorrência com título, matéria, data/horário, local e descrição.
+Não inclui e-mails de participantes, anexos ou histórico. Exportar .ics da barra
+continua disponível para intercâmbio de calendário. Compartilhar PNG é acionado
+por segundo clique após preparar o arquivo, preservando ativação do usuário exigida
+no celular. Sem suporte, baixa PNG; erros oferecem download explícito e cancelamento
+não provoca download involuntário. Sem edição colaborativa ou serviço adicional.
 Arrastar ou selecionar arquivos utiliza a mesma validação e limite. Fotos aparecem
 como imagens reais no formulário, nos cartões e nas quatro visualizações; anexos
 de PDF continuam disponíveis para baixar. Blocos com foto têm altura visual mínima

@@ -5,6 +5,7 @@ import { agendaTimeZone } from "../data/agenda-time-zone";
 import { RoomStepSlider } from "./local-room-parts";
 import { AgendaMetadataField } from "./agenda-metadata-field";
 import { AgendaDetailIcon } from "./agenda-detail-icon";
+import { AgendaColorPalette } from "./agenda-color-palette";
 import { AgendaAttachmentPreview } from "./agenda-attachment-preview";
 import { HelenaLoading } from "./helena-loading";
 import { eventEnd, recurrenceLabels, type EventScope } from "../domain/agenda-calendar";
@@ -180,14 +181,7 @@ export function AgendaEventDetails({
           onChange={(event) => change("description", event.target.value)}
         />
       </label>
-      <label className="field agenda-event-color">
-        Cor do evento
-        <input
-          type="color"
-          value={value.color}
-          onChange={(event) => change("color", event.target.value)}
-        />
-      </label>
+      <AgendaColorPalette value={value.color} onChange={(color) => change("color", color)} />
       <div className="agenda-metadata-options">
         <AgendaMetadataField
           name="location"

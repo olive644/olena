@@ -26,6 +26,11 @@ beforeEach(() => {
     vi.fn(() => ({ matches: true })),
   );
 });
+it("keeps the launcher accessible without a hover instruction balloon", () => {
+  const view = render(<HelenaChatPreview currentView="planner" />);
+  expect(view.container.querySelector(".helena-chat-hint")).toBeNull();
+  expect(screen.getByRole("button", { name: /Helena/ })).toBeTruthy();
+});
 
 it("accepts a planning draft without contacting the provider and rejects oversized context", () => {
   render(<HelenaChatPreview currentView="planner" />);
