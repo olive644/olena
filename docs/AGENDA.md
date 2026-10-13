@@ -27,13 +27,19 @@ repete a carga inicial que falhou e envia alterações pendentes automaticamente
 Sem rede, informar envio pendente; sem login/configuração, não afirmar salvamento
 na conta. Novos registros não recuperam dados já apagados de todos os backups.
 
-Barra da Agenda usa ícones facetados com rótulos acessíveis, botões creme e base
+Barra da Agenda usa ícones facetados com textos visíveis e rótulos acessíveis, botões creme e base
 amarela para a visualização ativa. Setas duplicadas e ação manual de sincronização
 foram retiradas. Navegação de datas permanece no seletor do calendário. Exportar
 inicia download sem o aviso textual anterior. Erros de importação/notificações
 continuam explícitos; os limites de .ics e lembretes continuam documentados abaixo.
 
 ## Fluxo
+
+Pesquisar ou Enter no campo abre a Lista de resultados de todas as datas salvas,
+incluindo eventos e tarefas anteriores/futuros ao mês aberto. Cada série aparece
+uma vez, na primeira ocorrência válida, respeitando exclusões e término. Matéria
+e tipo continuam filtrando; texto ignora acentos, caixa e espaços extras. Limpar
+o campo restaura a Lista dos próximos 30 dias.
 
 `/planejador` abre o planejamento do dia atual. Calendário e categorias ficam
 sempre visíveis. O ícone abre o seletor de mês, com destaque roxo e contagens
@@ -66,17 +72,49 @@ Registros antigos de Foco não são apagados nem transferidos para outra data.
 ## Agenda interna completa, primeira etapa
 
 A grade do dia e da semana permite criar por horário, arrastar para reagendar e
-redimensionar a duração. Toda alteração abre o editor para confirmação antes de
-gravar. Teclado oferece Mover e escolha de horário. Busca e filtros limitam eventos
+redimensionar a duração. Arraste e redimensionamento salvam ao soltar; rotinas mudam
+somente a ocorrência escolhida, sem transferir histórico de foco. No teclado, Alt
+com setas ajusta 15 minutos; Shift e Alt com setas muda o dia. Enter abre detalhes.
+Não há botão Mover. Busca e o painel recolhido de filtros limitam eventos
 por texto, matéria e tipo. Compromissos aceitam dia inteiro, múltiplos dias, fuso IANA,
-descrição, local, links http/https, participantes e lembretes. Estudos mantêm o
-limite de 180 minutos do Foco. Datas de dia inteiro são flutuantes; horários são
-projetados no fuso do dispositivo, sem mudar o instante armazenado.
+descrição, local, links http/https, participantes e lembretes.
+Cor hexadecimal opcional do evento colore marcadores e bordas nas
+quatro visualizações, mantendo texto sobre superfície neutra legível nos dois temas.
+A cor é preservada por serialização, reconciliação por campo e sincronização da conta.
+Notificações de permissão usam aviso em papel com sino, fechamento e contagem de
+6 segundos, como XP. O acionador fica bloqueado durante o aviso; alertas continuam
+limitados ao aplicativo aberto. Não há promessa de notificação com aplicativo fechado.
+Estudos mantêm o limite de 180 minutos do Foco. Datas de dia inteiro são flutuantes; horários são
+projetados no fuso brasileiro da conta, sem mudar o instante armazenado. Não há
+seletor de fuso por evento. helena.agendaTimeZone.v1 sincroniza a escolha automática
+inicial: fuso IANA brasileiro do dispositivo, ou America/Sao_Paulo se o dispositivo
+não estiver no Brasil. O cadastro atual tem apenas nome/foto, sem cidade/estado;
+não se presume uma localização ausente nem se solicita geolocalização. Fusos
+brasileiros aceitos seguem a [tabela IANA](https://data.iana.org/time-zones/tzdb/zone1970.tab).
+Eventos importados preservam seu instante; o editor converte para o fuso da conta.
+Após implantar esta etapa, atualizar as abas em todos os dispositivos. Clientes
+anteriores desconhecem a nova preferência de fuso, portanto não garantem a mesma
+projeção brasileira compartilhada enquanto permanecerem abertos.
+
+Duração abre um relógio com ponteiros arrastáveis, teclado e entradas alternativas.
+Local, Links e Participantes só exibem entrada após abrir seus painéis; resumo
+preenchido permanece no formulário. Lembrar antes usa RoomStepSlider da Escuta
+coletiva, com aviso na hora por padrão e opção de antecipação sem botões avulsos.
 
 Até três imagens ou PDFs de 300 KB podem ser anexados por evento. São dados privados
 do workspace e podem entrar na sincronização existente da conta. Não são enviados
 a novos serviços e não entram no arquivo .ics. Participantes são metadados, sem
-convites automáticos. Compartilhar gera um .ics, não oferece edição colaborativa.
+convites automáticos. Compartilhar aparece somente na Lista, como ícone, e prepara
+uma prévia PNG da ocorrência com título, matéria, data/horário, local e descrição.
+Não inclui e-mails de participantes, anexos ou histórico. Exportar .ics da barra
+continua disponível para intercâmbio de calendário. Compartilhar PNG é acionado
+por segundo clique após preparar o arquivo, preservando ativação do usuário exigida
+no celular. Sem suporte, baixa PNG; erros oferecem download explícito e cancelamento
+não provoca download involuntário. Sem edição colaborativa ou serviço adicional.
+Arrastar ou selecionar arquivos utiliza a mesma validação e limite. Fotos aparecem
+como imagens reais no formulário, nos cartões e nas quatro visualizações; anexos
+de PDF continuam disponíveis para baixar. Blocos com foto têm altura visual mínima
+maior para que a prévia não fique cortada, sem mudar sua duração real.
 
 Importação .ics limita arquivos a 2 MB e 1000 eventos, usa UID para evitar duplicatas
 e não substitui eventos existentes. Suporta recorrências básicas e EXDATE; séries

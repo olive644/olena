@@ -262,6 +262,8 @@ export function validateCalendarEvent(event: StudyEvent): string | null {
   )
     return "O fim deve estar entre o início e 366 dias depois.";
   if (event.timeZone && !validZone(event.timeZone)) return "Escolha um fuso horário válido.";
+  if (event.color !== undefined && !/^#[0-9a-f]{6}$/i.test(event.color))
+    return "Escolha uma cor válida para o evento.";
   if (
     event.recurrenceInterval !== undefined &&
     (!Number.isInteger(event.recurrenceInterval) ||
@@ -355,22 +357,25 @@ export function changeSeries(
     ],
   };
 }
+export function agendaSearchText(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 export function matchesCalendarFilter(
   event: StudyEvent,
   query: string,
   subject: string,
   type: string,
 ): boolean {
-  const normalize = (text: string) =>
-    text
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLocaleLowerCase("pt-BR");
   return (
     (!subject || event.subjectId === subject) &&
     (!type || (event.kind ?? "appointment") === type) &&
-    normalize(`${event.title} ${event.description ?? ""} ${event.location ?? ""}`).includes(
-      normalize(query),
+    agendaSearchText(`${event.title} ${event.description ?? ""} ${event.location ?? ""}`).includes(
+      agendaSearchText(query),
     )
   );
 }

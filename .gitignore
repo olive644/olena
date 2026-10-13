@@ -17,3 +17,7 @@ src/graphify-out
 
 # OCR local: copiado de node_modules por scripts/copy-ocr-assets.mjs
 public/ocr
+
+# Python training scripts
+__pycache__/
+*.pyc

@@ -1,5 +1,41 @@
 # Auditoria do estado atual
 
+## Data da conta no teste de reagendamento (2026-10-12)
+
+- CI desktop falhou após meia-noite UTC: teste esperava o dia do runner, enquanto a Agenda corretamente usava o fuso brasileiro da conta. Correção restrita ao teste, com relógio fixo e America/Sao_Paulo explícito. Casos 00:30 UTC (12/10 no Brasil) e 03:30 UTC (13/10 no Brasil) preservam a exigência de data exata, sem mudar produto ou afrouxar a asserção.
+
+## Compartilhamento em papel e arraste visível (2026-10-12)
+
+- Paleta fixa reaproveita cores originais e check, substituindo seletor nativo. Adaptação do movimento Uiverse.io de Cobp, fornecido pelo usuário, mantém teclado, foco amarelo e movimento reduzido. Valores personalizados existentes não são reescritos automaticamente.
+- Compartilhar evento é ícone exclusivo da Lista, com prévia PNG local e segundo clique para Web Share. Arquivo pronto preserva ativação transitória do navegador; suporte ausente baixa PNG, falhas orientam download e cancelamento não baixa. PNG omite participantes/anexos/histórico. Exportar .ics na barra permanece.
+- paper-export-art usa Helena do favicon original /olena-favicon.png no selo e desenha marca d'água em moldura externa. Reutilizado nas cópias PNG/PDF/impressão, folha atual e PDF de várias folhas. Nenhum canvas original, autosave, documento ou conta é modificado para adicionar marca.
+- Pesquisar antes só focava o campo, com resultados limitados ao período aberto. Botão e Enter agora abrem resultados de todas as datas salvas, com uma ocorrência válida por série e tarefas vencidas/futuras. Texto ignora acentos, caixa e espaços extras; filtros continuam aplicados. Limpar campo restaura a Lista de 30 dias.
+- Prévia de arraste acompanha ponteiro; origem atenuada e horário de destino visível. Escape cancela sem gravar. Alça de duração fica na borda do evento, sem painel flutuante vazio. Configurações e sincronização usam o caminho validado existente.
+- Removidos banner informativo de Foco, mensagens transitórias de carregar/sincronizar na Agenda e balão de dicas da Helena. Preservados vínculos de estudo, alertas de erro/envio pendente, nome acessível da assistente, teclado e movimento do mascote.
+- npm run verify passou: 236 arquivos, 1437 testes, lint/formatação/API/build/orçamento. Entrada 285,4 KiB e aplicação 1309,7 KiB; orçamento normal 1311 KiB conserva pequena margem para o bundle Linux, sem mudar teto absoluto. Busca fora do mês, compartilhamento real de PNG com ativação do usuário, cancelamento do arraste, recarga e contraste são exercitados em Edge/Chromium desktop/móvel. Teste do slider aguarda a atualização após End antes da próxima tecla; seis repetições passaram.
+- Repetição final: 35 cenários de calendário/Foco/exportação aprovados em desktop/móvel, um teste legado de desenho em PDF intencionalmente só desktop. Os 32 cenários adicionais da Agenda também passaram na execução anterior. PNGs reais de evento e caderno foram inspecionados com o favicon original no selo. WebKit nativo fica no CI; conta real entre aparelhos não foi exercitada.
+
+## Agenda compacta e ajustes diretos (2026-10-12)
+
+- Filtros matéria/tipo agrupados em painel acessível, ao lado de Pesquisar. Quatro ações de arquivo/lembretes ficam na mesma linha móvel. No desktop, painel do dia abaixo de Meu estudo; no celular, ordem calendário/dia/estudo preservada.
+- Relógio reutiliza números SVG originais, exclusão reutiliza lixeira da escrita. Textos auxiliares solicitados e avisos permanentes de adição/sincronização concluída removidos; falhas e envio pendente continuam explícitos. Metadados abertos/focados usam grafite sobre papel para contraste nos dois temas.
+- Arraste e duração salvam diretamente com validação, projeção pelo fuso da conta e escopo de ocorrência para rotinas. Atalhos Alt/setas e Shift/Alt/setas preservam alternativa ao arraste. Histórico permanece na data original.
+- Cor opcional hexadecimal pertence ao evento, sem novo serviço nem versão do workspace. Carregamento rejeita cores inválidas; merge existente preserva alterações independentes. Aviso de permissão segue duração e barra de 6 segundos do XP, com ícone de sino, fechamento e cooldown do botão. Movimento reduzido preservado.
+- Validação local: npm run verify passou, 234 arquivos e 1432 testes, lint/formatação/API/build/orçamento. Agenda/Foco passaram em 56 cenários Edge/Chromium desktop/móvel; mais 6 cenários de movimento/teclado passaram após o ajuste final de foco, incluindo vizinhos com o mesmo título. Contraste dos metadados abertos/focados é medido em ambos os temas, mínimo 4,5:1; troca de cor não interpola pares temporariamente ilegíveis. 16 repetições dos cenários afetados também passaram. Entrada 285,3 KiB, aplicação 1301,9 KiB; orçamento normal 1303 KiB, tetos absolutos preservados. WebKit nativo fica no CI, sem alegar teste de conta real entre aparelhos.
+
+## Validação da navegação da Agenda (2026-10-12)
+
+- O teste responsivo media Agenda antes da ativação após carregar a página sob demanda. Comparava Praticar ativo, deslocado 2 px pelo design, com Agenda ainda inativa. A comparação agora aguarda aria-current="page", como já fazia para Praticar, preservando a animação e a exigência de alinhamento em 320/360/390/768/1280 px.
+
+## Agenda, detalhes dinâmicos em papel (2026-10-12, validado localmente)
+
+- Regressão reproduzida: snapshot antigo do stream após PUT confirmado interpretava evento recém-criado como exclusão. Marcador updatedAt por conta descarta respostas anteriores ao último estado confirmado; novas escritas usam valor monotônico relativo ao servidor observado. Escritas deste cliente são serializadas e respostas após troca de conta são ignoradas. Teste falhou antes e passou depois da correção. Não há revisão transacional global nem edição colaborativa nova.
+- Barra recupera textos; importar/exportar reutilizam PaperEditorIcon da escrita. Nova impressora, relógio de duração arrastável/teclado, painéis de metadados com resumo, slider compartilhado da Escuta coletiva e aviso na hora padrão.
+- Fuso brasileiro automático pertence à conta por helena.agendaTimeZone.v1. Cadastro não fornece localização; usa fuso brasileiro do dispositivo no primeiro uso ou Brasília fora do Brasil. Sem seletor por evento, acesso geográfico ou dados de localização inventados.
+- Área de anexos aceita seleção múltipla e arraste, valida cada arquivo e limita quantidade/tamanho. Fotos reais em Dia/Semana/Mês/Lista, sem upload a serviço adicional nem mudança no formato de workspace. Animações respeitam movimento reduzido. Não inclui alterações paralelas de Pixi/dependências/testes.
+- npm run verify aprovado em cópia limpa do índice, 233 arquivos e 1427 testes, lint/formatação/API/build/orçamentos. Entrada 285,3 KiB e aplicação 1295,1 KiB; limites normais 286/1296 KiB, tetos absolutos preservados. Navegador Edge/Chromium: 52 cenários de Agenda/Foco aprovados, mais 4 cenários focados repetidos após ajustes finais, em computador/celular e temas claro/escuro. Fuso da conta foi exercitado em navegador de Portugal. Teclado, ponteiros reais, Enter no campo expansível, arraste de anexo, imagens carregadas nas quatro vistas e recarga cobertos. WebKit nativo e publicação desta etapa ficam no fluxo da PR.
+- Após conciliar a main atualizada com a Helena da PR #414: npm run verify aprovado, 234 arquivos e 1430 testes. Mais 16 cenários de Agenda em Edge/Chromium desktop/móvel passaram na combinação. Entrada 285,3 KiB e aplicação 1297,9 KiB; orçamento normal combinado 286/1299 KiB, sem alterar tetos absolutos ou orçamento próprio da Helena. Conflitos documentais preservam as duas entregas. Normalização de finais de linha ocorreu apenas na cópia temporária, sem mudar conteúdo ou alterações locais do proprietário.
+
 ## Helena cartoon no assistente (2026-10-12)
 
 - A versão 3D aprovada pelo proprietário substitui a estrela do botão flutuante. Cliques abrem a conversa; fechar a conversa volta à estrela. Repouso e arraste reutilizam o repertório cartoon aprovado.
@@ -9,10 +45,10 @@
 
 - Validação local após reconciliar a main: 1415 testes passaram, com tipos, lint, formatação, APIs, build e orçamento aprovados. App real: 6 cenários; preview: 4; CSP de produção e movimento reduzido: 2. Navegador local usa Chromium também no viewport móvel; WebKit nativo fica no CI. Entrada 280,9 KiB e aplicação 1283,2 KiB; renderizador opcional 662,8 KiB e modelo 3,5 MiB.
 
-## Agenda e Foco pela conta (2026-10-12, em validação)
+## Agenda e Foco pela conta (2026-10-12, publicado na PR #415)
 
 - Causa de transporte confirmada: chaves de localStorage com pontos eram enviadas como nomes de filhos, rejeitados pelo Realtime Database antes das Security Rules. Novo codec base64url usa stateV2, com leitura/cópia do legado sem apagá-lo. Regras expandidas mantêm restrição ao próprio UID.
-- Regra stateV2 publicada em 2026-10-12, com autorização do proprietário, no projeto appstudyoli e instância appstudyoli-default-rtdb pelo CLI oficial autenticado. Backup anterior preservado. Comparação estrutural confirmou que a única mudança foi users/$uid/stateV2; validações legadas presentes apenas no repositório não foram publicadas. Firebase validou a sintaxe e confirmou a publicação. Nova leitura das regras publicadas corresponde integralmente à candidata aprovada. Nenhum registro de usuário foi alterado. Publicação do cliente e validação de sincronização real continuam pendentes.
+- Regra stateV2 publicada em 2026-10-12, com autorização do proprietário, no projeto appstudyoli e instância appstudyoli-default-rtdb pelo CLI oficial autenticado. Backup anterior preservado. Comparação estrutural confirmou que a única mudança foi users/$uid/stateV2; validações legadas presentes apenas no repositório não foram publicadas. Firebase validou a sintaxe e confirmou a publicação. Nova leitura das regras publicadas corresponde integralmente à candidata aprovada. Nenhum registro de usuário foi alterado. Cliente publicado a partir do commit mesclado b3e152d da PR #415; produção retornou HTTP 200 e transporte stateV2 confirmado no bundle. CI da PR incluiu WebKit móvel aprovado. Isso não equivale a um teste manual com dados reais da conta.
 
 - Reproduzidos três casos de perda: GET inicial antigo apagava registros offline, updates recebidos não atualizavam IndexedDB e leitura tardia de cache substituía mudanças da conta. Proteção por revisão, cache remoto atualizado e histórico de Foco aditivo por ID evitam o retorno ao zero.
 - Sessão em andamento entra nas chaves sincronizadas com snapshot válido mais recente e deviceId opcional compatível. Mesmo aparelho retoma; outro mostra pausado e só assume após ação. Estado inicial vazio não grava zero sobre a nuvem. Publicação limitada a 30 segundos e ações, não por segundo.
@@ -2537,3 +2573,7 @@ A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque 
 ### Referências matemáticas e cálculo da Helena (2026-10-12)
 
 `src/backend/helena-model-input.ts` acrescenta no servidor até três referências originais de 17 tópicos de matemática básica/ensino médio, selecionadas pelo pedido atual. Um parser racional limitado confere operações, porcentagens, igualdades e equações lineares explícitas. Resultados exatos, aproximações, operações inválidas e fora do escopo são distintos. Professor e futuro modelo aprovado recebem o mesmo contexto em geração e streaming, sem nova chamada externa. Não há alteração no corpus de treino, promoção do candidato, consentimento, retenção ou quotas. Conteúdo não é uma biblioteca completa, e a explicação gerada não é certificada pela ferramenta. Escopo, autoria, limites, ameaças e manutenção estão em `docs/HELENA_MATH_KNOWLEDGE.md`.
+
+### Treinamento matemático candidato v2 (2026-10-12)
+
+Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.

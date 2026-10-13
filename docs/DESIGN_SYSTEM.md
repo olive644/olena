@@ -16,11 +16,37 @@ O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elem
 
 ## Controles da Agenda e fechamento
 
+Paleta do evento usa seis cores existentes (roxo, amarelo, rosa, verde, azul e
+grafite), em botões de papel com check original, nome acessível, dica por foco/hover
+e movimento de vizinhos inspirado no exemplo Uiverse.io de Cobp fornecido pelo
+proprietário. Sem seletor nativo; cores personalizadas anteriores continuam salvas
+até escolha explícita. Movimento reduzido desativa escala/transição. Metadados
+em hover/foco/abertos mantêm grafite sobre papel, sem pares de contraste transitórios.
+
+PNG da Agenda e PNG/PDF/impressão de cadernos compartilham arte autoral desenhada
+em canvas: facetas creme, marca OlenaStudy, marca d'água no rodapé e selo de Helena
+do favicon original /olena-favicon.png, em alta resolução. Selo é identidade visual,
+não certificação. Moldura fica fora do
+conteúdo, sem apagar ou cobrir anotações. Somente cópias exportadas recebem arte;
+miniaturas, documento editável e autosave permanecem originais. Não usar arte de
+exportação em interfaces interativas nem enviar documentos a serviços externos.
+
+Filtros matéria/tipo ficam em único botão creme facetado, ao lado de Pesquisar.
+No celular, Exportar/Importar/Imprimir/Lembretes ocupam uma linha com quatro colunas.
+Metadados abertos/focados usam texto grafite sobre papel creme, nos dois temas.
+Relógio de duração reutiliza os símbolos de paper-digits.svg; exclusão reutiliza
+a lixeira de PaperEditorIcon. Cores pessoais dos eventos aparecem nos marcadores
+e bordas, sem recolorir o texto ou comprometer seu contraste. Seletor de cor
+segue o controle nativo já utilizado na escrita à mão. Aviso de permissão usa
+sino, X recortado e contagem de 6 segundos, como o aviso de XP.
+
 Barra da Agenda usa AgendaToolbarIcon para Dia/Semana/Mês/Lista, importar/exportar,
 imprimir e lembretes. Símbolos facetados em grafite/creme, acentos roxo/amarelo,
 sem ícones genéricos de contorno. Placas permanecem creme nos dois temas; estado
-ativo usa base amarela. Nome acessível e tooltip identificam ações sem texto
-visível. Foco de teclado tem sublinhado amarelo, área mínima de 44px e movimento
+ativo usa base amarela. Nome acessível, tooltip e texto visível identificam ações.
+Importar/exportar reaproveitam cloudUpload/download de PaperEditorIcon, como na
+escrita à mão. Imprimir usa nova silhueta facetada AgendaDetailIcon, com folhas
+visíveis e indicador amarelo. Foco de teclado tem sublinhado amarelo, área mínima de 44px e movimento
 reduzido preservado. Não acrescentar setas que dupliquem o seletor de datas.
 
 Botões, summary, controles role=button e ícones decorativos não são selecionáveis
@@ -46,6 +72,15 @@ Study, appointment, once e weekly são SVGs novos na pasta de ícones de papel,
 carregados apenas na Agenda. Concluir usa PaperCheckIcon existente sobre papel
 amarelo/grafite; animações de check, seleção, painéis e gráficos respeitam
 prefers-reduced-motion.
+
+Duração abre relógio de papel grande com ponteiros arrastáveis de horas/minutos,
+setas do teclado e entrada numérica alternativa. A passagem por 12/60 leva ou
+retira uma hora sem voltar arbitrariamente ao início; limites de estudo continuam.
+Local, Links e Participantes abrem painéis por botão com ícone e mostram resumo
+preenchido. Lembrar antes reaproveita RoomStepSlider da Escuta coletiva. Na hora é
+padrão sem botão separado. Anexos usam área de papel para arrastar ou selecionar,
+com prévias reais nas visualizações Dia/Semana/Mês/Lista. Transições e facetas
+preservam movimento reduzido, X sem placa e foco amarelo.
 
 ## Cursor desktop
 

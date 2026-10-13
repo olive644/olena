@@ -58,6 +58,7 @@ function isEvent(value: unknown): boolean {
     isString(value["subjectId"]) &&
     isString(value["date"]) &&
     isString(value["time"]) &&
+    (value["color"] === undefined || /^#[0-9a-f]{6}$/i.test(String(value["color"]))) &&
     (value["kind"] === undefined || ["appointment", "study"].includes(String(value["kind"]))) &&
     (value["recurrence"] === undefined ||
       ["none", "weekly"].includes(String(value["recurrence"]))) &&

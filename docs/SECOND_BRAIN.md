@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, teste de mover tarefa para hoje: não comparar data da conta com new Date() do runner UTC. Fixar relógio e fuso da conta no fixture e exigir datas literais antes/depois de meia-noite brasileira. Produto permanece inalterado.
+
+2026-10-12, busca da Agenda: botão/Enter ativam Lista de resultados sem limite do mês aberto. agendaSearchDate escolhe uma ocorrência válida por série, sem materializar rotinas infinitas; filtros compartilham normalização de acentos/caixa/espaços. Limpar volta aos próximos 30 dias. loadPaperExportMascot carrega e reutiliza /olena-favicon.png original no selo, sem redesenhar Helena; erros permitem tentar novamente.
+
+2026-10-12, exportação autoral: paper-export-art produz moldura de cópia, selo Helena/estrela e marca d'água; não usar no autosave. agenda-event-png gera cartão local e AgendaEventShare prepara prévia antes do clique nativo de compartilhar, com download alternativo. PNG restrito à Lista, sem e-mails/anexos/histórico; .ics da barra preservado. Paleta fixa mantém valores antigos sem migração. Grade mostra ghost do ponteiro, Escape cancela e alça de duração permanece dentro do bloco. Remoções de avisos e dicas não alteram contexto de Foco, sincronização ou acessibilidade da Helena.
+
+2026-10-12, Agenda compacta: AgendaFilters reúne os dois filtros em popover. Grade salva movimento/redimensionamento ao soltar; rotinas destacam só a ocorrência via changeSeries, sem mover histórico. Alt/setas ajusta horário e Shift/Alt/setas muda dia. Cor opcional hexadecimal integra StudyEvent, validador local e merge por campo; marcadores coloridos mantêm texto neutro legível. Permissão de notificações aparece em aviso temporário de 6 segundos com sino, barra e cooldown, em vez de texto permanente. Desktop agrupa painel do dia abaixo de Meu estudo; mobile mantém ordem calendário/dia/estudo.
+
+2026-10-12, prova de navegação responsiva: aguardar aria-current="page" antes de medir o ícone ativo após troca para Agenda. O carregamento sob demanda pode manter temporariamente a página anterior; não comparar a posição de ícones em estados diferentes nem remover a animação para esconder a corrida do teste.
+
+2026-10-12, detalhes da Agenda: marcador de estado confirmado descarta stream/GET anterior a PUT recente, evitando remoção falsa de eventos; PUTs do mesmo cliente são serializados. Fuso brasileiro automático sincroniza por helena.agendaTimeZone.v1, não usa geolocalização nem cadastro inexistente de cidade. AgendaDurationClock/agenda-duration controlam ponteiros, teclado, virada de hora e limites. AgendaMetadataField expande campos com resumo. RoomStepSlider recebe formatValue e ID único fora dos controles da sala, reaproveitando arraste para lembretes. AgendaAttachmentPreview mostra imagens reais em todas as visualizações; drop/seleção compartilham validação existente. Toolbar mantém placas creme, textos e os ícones cloudUpload/download da escrita.
+
 2026-10-12, mascote do assistente: HelenaMascot mantém a ponte tipada entre o
 botão existente e o frame gráfico local. O estado visual não recebe conversa ou
 autenticação. Movimento reduzido desliga o 3D; a imagem estática mantém o botão.
@@ -1194,3 +1206,7 @@ A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque 
 ### Referências matemáticas e cálculo da Helena (2026-10-12)
 
 `src/backend/helena-model-input.ts` acrescenta no servidor até três referências originais de 17 tópicos de matemática básica/ensino médio, selecionadas pelo pedido atual. Um parser racional limitado confere operações, porcentagens, igualdades e equações lineares explícitas. Resultados exatos, aproximações, operações inválidas e fora do escopo são distintos. Professor e futuro modelo aprovado recebem o mesmo contexto em geração e streaming, sem nova chamada externa. Não há alteração no corpus de treino, promoção do candidato, consentimento, retenção ou quotas. Conteúdo não é uma biblioteca completa, e a explicação gerada não é certificada pela ferramenta. Escopo, autoria, limites, ameaças e manutenção estão em `docs/HELENA_MATH_KNOWLEDGE.md`.
+
+### Treinamento matemático candidato v2 (2026-10-12)
+
+Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.

@@ -33,6 +33,7 @@ import type { ImportedPage } from "../components/page-import";
 import type { SearchHit } from "../domain/notebook-search";
 import type { HandwritingDocument } from "../domain/handwriting";
 import { openPrintWindow } from "../data/print-window";
+import { brandedExportCanvas, loadPaperExportMascot } from "../data/paper-export-art";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import {
   createWorkspaceId,
@@ -619,10 +620,30 @@ export function NotesView({
               image.addEventListener("error", () => resolve(), { once: true });
             }),
       ),
-    ).then(() => {
-      printWindow.focus();
-      printWindow.print();
-    });
+    )
+      .then(async () => {
+        const mascot = await loadPaperExportMascot();
+        for (const image of images) {
+          if (!image.naturalWidth)
+            throw new Error("Não foi possível carregar uma folha para exportar.");
+          const canvas = document.createElement("canvas");
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("Não foi possível preparar a arte de exportação.");
+          context.drawImage(image, 0, 0);
+          image.src = brandedExportCanvas(canvas, mascot).toDataURL("image/png");
+          await image.decode();
+        }
+        printWindow.focus();
+        printWindow.print();
+      })
+      .catch((caught) => {
+        printWindow.close();
+        setMoveMessage(
+          caught instanceof Error ? caught.message : "Não foi possível exportar o caderno.",
+        );
+      });
   }
 
   return (

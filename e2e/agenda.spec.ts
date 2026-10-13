@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { createInitialWorkspace, toDateKey } from "../src/domain/workspace";
+import { createInitialWorkspace } from "../src/domain/workspace";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -92,7 +92,7 @@ test("compact agenda keeps seven days and three actions in one row and desktop c
   }
 });
 
-test("day panel matches the calendar width, keeps a plain date and only text selectable", async ({
+test("day panel matches its column, keeps a plain date and only text selectable", async ({
   page,
 }, info) => {
   if (info.project.name === "desktop") await page.setViewportSize({ width: 1920, height: 1080 });
@@ -108,7 +108,9 @@ test("day panel matches the calendar width, keeps a plain date and only text sel
     await expect
       .poll(() =>
         page.evaluate(() => {
-          const calendar = document.querySelector(".agenda-month")!.getBoundingClientRect();
+          const calendar = document
+            .querySelector(innerWidth >= 1200 ? ".agenda-history" : ".agenda-month")!
+            .getBoundingClientRect();
           const panel = document.querySelector(".agenda-day--open")!.getBoundingClientRect();
           return Math.max(Math.abs(calendar.width - panel.width), Math.abs(calendar.x - panel.x));
         }),
@@ -620,7 +622,7 @@ test("agenda creates, edits, completes, reschedules and persists tasks on deskto
   await page.screenshot({ path: info.outputPath(`agenda-${info.project.name}-dark.png`) });
 });
 
-test("calendar stays visible and its icon opens the month selector", async ({ page }) => {
+test("calendar stays visible and its icon opens the month selector", async ({ page }, info) => {
   await page.goto("/planejador");
   const toggle = page.getByRole("button", { name: "Escolher mês", exact: true });
   const calendar = page.getByRole("region", { name: "Calendário mensal" });
@@ -650,9 +652,11 @@ test("calendar stays visible and its icon opens the month selector", async ({ pa
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Plano do dia escolhido");
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
-  const calendarBox = await calendar.boundingBox();
   const planningBox = await page.locator(".agenda-day").boundingBox();
-  expect(planningBox!.y).toBeGreaterThan(calendarBox!.y + calendarBox!.height);
+  const preceding = await page
+    .locator(info.project.name === "desktop" ? ".agenda-history" : ".agenda-month")
+    .boundingBox();
+  expect(planningBox!.y).toBeGreaterThan(preceding!.y + preceding!.height);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(calendar).toBeVisible();
   await expect(page.getByRole("button", { name: "Concluir Plano do dia escolhido" })).toBeVisible();
@@ -716,14 +720,20 @@ test("weekly study opens focus without completing, records real minutes and retu
   await page.getByRole("button", { name: "Reservar estudo", exact: true }).click();
   const form = page.getByRole("dialog", { name: "Adicionar à agenda" });
   await form.getByRole("textbox", { name: "Título", exact: true }).fill("Estudar frações");
-  await form.getByLabel("Duração em minutos").fill("1");
+  await form.getByRole("button", { name: "Duração em minutos", exact: true }).click();
+  const duration = page.getByRole("dialog", { name: "Escolher duração", exact: true });
+  await duration.getByRole("spinbutton", { name: "Minutos", exact: true }).fill("1");
+  await duration.getByRole("button", { name: "Concluir", exact: true }).click();
   await form.getByRole("button", { name: "Repetir semanalmente", exact: true }).click();
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await page.getByRole("button", { name: "Começar estudo Estudar frações" }).click();
   await expect(page).toHaveURL(/\/foco/);
-  await expect(page.getByRole("region", { name: "Estudo da agenda" })).toContainText(
-    "Meta de 1 min",
-  );
+  await expect(page.getByRole("region", { name: "Estudo da agenda" })).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("olena.focus-session.v1") ?? "null")?.plannedMinutes,
+    ),
+  ).toBe(1);
   await expect(page.getByRole("button", { name: "Encerrar e registrar" })).toBeDisabled();
   expect(
     await page.evaluate(
@@ -802,32 +812,38 @@ test("paper month selector supports years, keyboard dismissal, themes and touch-
     "true",
   );
 });
-test("overdue tasks move to today without the removed weekly planning widget", async ({ page }) => {
-  const state = createInitialWorkspace();
-  state.tasks = [
-    {
-      id: "past",
-      title: "Entrega pendente",
-      subjectId: state.subjects[0]!.id,
-      dueDate: "2020-01-01",
-      completed: false,
-    },
-  ];
-  await page.addInitScript(
-    (workspace) => localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace)),
-    state,
-  );
-  await page.goto("/planejador");
-  await page.getByRole("button", { name: "Mover Entrega pendente para hoje" }).click();
-  await expect(page.getByRole("button", { name: "Concluir Entrega pendente" })).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Planejar com Helena" })).toHaveCount(0);
-  expect(
-    await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks[0].dueDate,
-    ),
-  ).toBe(toDateKey(new Date()));
-});
+for (const [instant, today] of [
+  ["2026-10-13T00:30:00Z", "2026-10-12"],
+  ["2026-10-13T03:30:00Z", "2026-10-13"],
+] as const) {
+  test(`overdue tasks move to the account date ${today} at ${instant}`, async ({ page }) => {
+    await page.clock.install({ time: new Date(instant) });
+    const state = createInitialWorkspace();
+    state.tasks = [
+      {
+        id: "past",
+        title: "Entrega pendente",
+        subjectId: state.subjects[0]!.id,
+        dueDate: "2020-01-01",
+        completed: false,
+      },
+    ];
+    await page.addInitScript((workspace) => {
+      localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
+      localStorage.setItem("helena.agendaTimeZone.v1", "America/Sao_Paulo");
+    }, state);
+    await page.goto("/planejador");
+    await page.getByRole("button", { name: "Mover Entrega pendente para hoje" }).click();
+    await expect(page.getByRole("button", { name: "Concluir Entrega pendente" })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Planejar com Helena" })).toHaveCount(0);
+    expect(
+      await page.evaluate(
+        () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks[0].dueDate,
+      ),
+    ).toBe(today);
+  });
+}
 
 test("agenda selects ranges by drag and clicks and shows only real focus history", async ({
   page,

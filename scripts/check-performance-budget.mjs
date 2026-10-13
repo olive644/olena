@@ -39,7 +39,8 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Measured entry: 280.9 KiB; calendar views and reminders stay lazy-loaded.
 // Account focus recovery, safe cache hydration and v2 wire codec: measured 284.7 KiB.
 // Narrow CI allowance; absolute ceiling remains unchanged.
-const MAX_INITIAL_JS_BYTES = 285 * 1024;
+// Guard stale account snapshots and automatic Brazilian account zone: measured 285.3 KiB.
+const MAX_INITIAL_JS_BYTES = 286 * 1024;
 // Teto absoluto, separado do orçamento acima: o orçamento normal sobe a cada funcionalidade,
 // com uma frase de justificativa por cima, e isso é esperado. Mas nada nesse processo avisa
 // se a soma dessas subidas pequenas virar um problema grande sem ninguém perceber. Este teto
@@ -251,9 +252,16 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // New icon art is served as SVG assets, keeping the entry inside 280 KiB.
 // Internal calendar views, validated ICS exchange and local reminders:
 // measured application JS 1280.5 KiB, no new dependency or absolute ceiling change.
+// Rotating paper clock, expandable metadata and shared attachment previews stay lazy.
+// Reused editor icons/listening slider, no new dependency: measured 1295.1 KiB.
 // Helena tipada e prioridade de interação acrescentam 2,8 KiB ao módulo lazy.
 // Total combinado com conta/Agenda: 1288,7 KiB. Teto absoluto preservado.
-const MAX_TOTAL_JS_BYTES = 1292 * 1024;
+// Combined with dynamic Agenda controls: measured 1297.9 KiB, hard ceiling unchanged.
+// Compact filters, account event colors and keyboard/direct grid movement: measured 1301.9 KiB.
+// Keep narrow bundler variance; initial entry and absolute ceilings remain unchanged.
+// Branded exports, palette, drag preview and cross-date search: measured 1309.7 KiB.
+// No new dependency; initial entry and absolute ceilings remain unchanged.
+const MAX_TOTAL_JS_BYTES = 1311 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

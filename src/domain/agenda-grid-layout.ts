@@ -19,7 +19,10 @@ export function layoutAgendaDay(events: StudyEvent[], date: string) {
         occurrence,
         start,
         finish,
-        height: Math.max(48, ((finish - start) / 60) * 48),
+        height: Math.max(
+          event.attachments?.some((asset) => asset.mime.startsWith("image/")) ? 96 : 48,
+          ((finish - start) / 60) * 48,
+        ),
         lane: 0,
         lanes: 1,
       };

@@ -23,6 +23,17 @@ const base: StudyEvent = {
   timeZone: "America/Sao_Paulo",
 };
 describe("calendar events", () => {
+  it("preserves custom colors on reload and field-wise account reconciliation", () => {
+    const workspace = createInitialWorkspace();
+    workspace.events = [{ ...base, color: "#1a8599" }];
+    const reloaded = loadWorkspace({ getItem: () => serializeWorkspace(workspace) });
+    expect(reloaded.events[0]?.color).toBe("#1a8599");
+    const local = { ...workspace, events: [{ ...workspace.events[0]!, color: "#abcdef" }] };
+    const remote = { ...workspace, events: [{ ...workspace.events[0]!, title: "Outra tela" }] };
+    const merged = mergeWorkspaceStates(workspace, local, remote);
+    expect(merged.workspace.events[0]).toMatchObject({ color: "#abcdef", title: "Outra tela" });
+    expect(validateCalendarEvent({ ...base, color: "url(bad)" })).toBeTruthy();
+  });
   it("does not transfer a completed occurrence onto a different date", () => {
     const original = {
       ...base,
