@@ -230,6 +230,13 @@ domain/island-motion.ts. A imagem parada continua no DOM como texto alternativo 
 alternativa, e só fica transparente após o primeiro quadro. O avatar acompanha a ilha via
 onShift. Movimento reduzido (preferência do app ou do sistema, useMotionReduced) mantém
 a imagem parada, sem baixar a arte nem montar canvas.
+Os seis lugares da ilha (Pátio, Oficina, Torre, Ponte, Porto, Mirante) usam o mesmo motor por
+AnimatedPlace, carregado sob demanda por MathPlaceScene (prop animate, só na jornada e no
+emblema de entrada; o fundo do jogo fica parado para não distrair). data/place-rigs.ts lista as
+partes de cada arte (semente de cor, região, movimento); domain/place-rig.ts recorta cada parte
+da própria arte, preenche o que a saída dela revela e calcula a pose. Trocar a arte pede revisar
+as sementes. O avatar não se mexe nesses lugares (group falso). O Porto tem reflexo ondulante
+na água.
 Pointer Events compartilham mouse/toque, pan-y preserva rolagem vertical; teclado/setas
 continuam disponíveis. FocusPaperArrow é compartilhado com Foco.
 WebPs de ilhas têm 800/480 px em srcset; montar somente atual e vizinhas, sem

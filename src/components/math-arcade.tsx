@@ -431,7 +431,7 @@ export function MathArcade({
             <div className="math-welcome">
               <h1 className="visually-hidden">{course.title}</h1>
               <div className="math-course-emblem">
-                <MathPlaceScene course={courseId} />
+                <MathPlaceScene course={courseId} animate />
                 <MathUserAvatar />
               </div>
               <button

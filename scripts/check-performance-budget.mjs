@@ -263,10 +263,12 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // No new dependency; initial entry and absolute ceilings remain unchanged.
 // Ilha animada de Matemática (canvas e worker de análise), carregada sob demanda e sem nova
 // dependência: medido 1326.1 KiB. Entrada inicial e tetos absolutos não mudam.
+// Partes animadas dos seis lugares de Matemática (motor de recorte e listas de partes), sob demanda
+// e sem dependência nova: medido 1349.2 KiB. Entrada inicial e tetos absolutos não mudam.
 // Correção imediata, conquista, espelho compatível e números SVG originais incorporados
-// à partida offline: medido 1339.1 KiB, entrada 285.7 KiB. Sem dependência nova;
+// à partida offline combinados às animações: medido 1362.2 KiB, entrada 285.7 KiB. Sem dependência nova;
 // manter pequena margem de CI, com os mesmos tetos absolutos e orçamento de entrada.
-const MAX_TOTAL_JS_BYTES = 1341 * 1024;
+const MAX_TOTAL_JS_BYTES = 1364 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

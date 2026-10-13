@@ -190,7 +190,7 @@ export function MathIslandJourney({
               }
             >
               {Math.abs(position - index) <= 1 && (
-                <MathPlaceScene course={item.id} active={position === index} />
+                <MathPlaceScene course={item.id} active={position === index} animate />
               )}
             </button>
           ))}

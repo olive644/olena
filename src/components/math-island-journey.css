@@ -98,6 +98,19 @@
   height: 100%;
   object-fit: contain;
 }
+/* O canvas das partes móveis cobre a arte (com folga para o brilho); a imagem só some depois do primeiro quadro. */
+.math-place-canvas {
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  pointer-events: none;
+  filter: drop-shadow(0 16px 9px #29243218);
+}
+.math-place-scene.is-animated {
+  opacity: 0;
+}
 .math-journey-island:focus-visible {
   outline: 3px solid #7c3aed;
   outline-offset: -5px;

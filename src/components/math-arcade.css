@@ -164,6 +164,16 @@
   height: min(430px, 49dvh);
   position: relative;
   margin: 0 auto 20px;
+  container-type: size;
+}
+/* A arte aparece contida no quadro: o canvas acompanha o lado do quadrado contido, com folga. */
+.math-course-emblem > .math-place-canvas {
+  top: 50%;
+  left: 50%;
+  width: min(110cqw, 110cqh);
+  height: min(110cqw, 110cqh);
+  transform: translate(-50%, -50%);
+  filter: none;
 }
 .math-course-emblem > img {
   width: 100%;

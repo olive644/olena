@@ -11,7 +11,11 @@ vi.mock("./island-sprites", () => ({
   groupDelta: () => ({ dx: 2, dy: -3 }),
 }));
 
-const fakeSprites = { size: 800, logicalSize: 880 } as unknown as IslandSprites;
+const fakeSprites = {
+  size: 800,
+  logicalSize: 880,
+  model: { group: true },
+} as unknown as IslandSprites;
 
 class FakeImage {
   onload: (() => void) | null = null;
