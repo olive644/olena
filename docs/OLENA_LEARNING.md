@@ -160,7 +160,7 @@ para prometer qualidade geral ou substituir o professor.
    executada ou validada com GPU nesta entrega. Não instala dependências no app.
    O resultado é um adaptador LoRA, que ainda requer o modelo base.
 
-Este fluxo manual de dados revisados permanece separado do job diário experimental
+Este fluxo manual de dados revisados permanece separado do job experimental, agora também manual
 descrito acima. Não há treinamento durante conversas nem promoção automática.
 Expandir o job exige orçamento de chamadas, currículo, revisão, retenção definida
 e máquina disponível para treinamento. Nunca treinar diretamente em mensagens
@@ -174,20 +174,16 @@ Comparar professor, candidato e versão anterior. Não promover somente por o mo
 afirmar confiança ou por perda de treinamento cair. Não aprender continuamente de
 respostas não revisadas, para evitar repetição de erros e regressões.
 
-Hospedar modelo base + adaptador em um runtime compatível com Chat Completions.
-Depois de avaliação humana registrada, configurar:
+O caminho de modelo próprio permanece como código experimental, fora do runtime atual do chat. As configurações abaixo são históricas e não ativam o candidato na Helena. Uma futura retomada exige integração própria e avaliação humana registrada. Hospedagem experimental de base + adaptador usa:
 
 - `OLENA_STUDENT_ENDPOINT`: URL fixa de chat completions, HTTPS em produção.
 - `OLENA_STUDENT_MODEL` e, quando necessário, `OLENA_STUDENT_TOKEN`.
 - `OLENA_STUDENT_EVALUATED=true`, atestado manual do operador, não avaliação automática.
 - `OLENA_STUDENT_CAPABILITIES`, subconjunto de tutor, explain, summarize, study-plan.
 
-Capacidades aprovadas usam a Olena primeiro. Resposta válida evita chamada ao
-professor. Falha, timeout ou resposta estruturalmente inválida usa o professor
-uma vez. Isso não detecta respostas plausíveis porém incorretas, por isso a avaliação
-prévia é obrigatória. Sem aprovação, o professor continua sendo usado.
+O helper experimental permite selecionar capacidades aprovadas, mas não é conectado ao chat em produção. Atualmente, a calculadora responde contas explícitas suportadas e o professor Cloudflare atende os demais pedidos com referências matemáticas originais. Não há promoção do candidato por variável de ambiente.
 
-Rollback: retirar OLENA_STUDENT_EVALUATED ou a capacidade aprovada. Versões novas
+Na integração experimental anterior, o rollback retirava OLENA_STUDENT_EVALUATED ou a capacidade aprovada. Versões novas
 não devem apagar datasets anteriores nem o adaptador de produção. Futuros modelos
 locais no aparelho do aluno requerem uma entrega própria de compatibilidade.
 Treinar não elimina o custo de executar: não há hospedagem ilimitada gratuita
@@ -214,7 +210,7 @@ A avaliação usa as mesmas instruções de formato no modelo base, no último c
 
 Somente pesos aprovados são enviados ao artefato `Olena-Math-Qwen-Candidate-v2`, por sete dias. Se uma tentativa nova falha, renova os pesos aprovados anteriores sem substituí-los pelos rejeitados. Relatórios, inclusive de rejeição, ficam em `Olena-Math-Training-Report-v2`, por 30 dias. Retomada exige revisão de base, versão do treino, corpus de avaliação, gate recalculado, configuração LoRA e hash dos pesos compatíveis. Só aceita artefatos da main ou da própria branch confiável. Uma falha de download não vira reinício silencioso. Artefatos antigos Llama-Olena-Qwen-Candidate não são promovidos a essa cadeia.
 
-Se um candidato aprovado tem corpus inalterado, renova a retenção sem treinar. Uma tentativa rejeitada idêntica também não se repete automaticamente. Alterar conteúdo, avaliação ou versão do treino permite nova tentativa; `workflow_dispatch` com `force_training=true` permite repetição explícita e limitada. O agendamento permanece diário, mas não significa que pesos mudam diariamente sem dados novos.
+Se um candidato aprovado tem corpus inalterado, renova a retenção sem treinar. Uma tentativa rejeitada idêntica também não se repete automaticamente. Alterar conteúdo, avaliação ou versão do treino permite nova tentativa; `workflow_dispatch` com `force_training=true` permite repetição explícita e limitada. O agendamento diário foi removido em 2026-10-13. O treino agora exige acionamento manual; preservar os corpus existentes.
 
 Comandos locais sem download de modelo:
 

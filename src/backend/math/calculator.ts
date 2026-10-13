@@ -7,6 +7,7 @@ export type MathCalculation =
       expression: string;
       kind: "arithmetic" | "linear-equation" | "equality";
       exact: string;
+      steps: readonly string[];
       approximate?: string;
     }
   | { status: "unsupported" | "invalid"; expression: string; reason: string };
@@ -82,7 +83,31 @@ function power(a: Linear, b: Linear): Linear {
 }
 class Parser {
   private index = 0;
-  constructor(private readonly tokens: string[]) {}
+  constructor(
+    private readonly tokens: string[],
+    private readonly steps: string[],
+  ) {}
+  private record(a: Linear, operator: string, b: Linear, result: Linear) {
+    if (a.coefficient.n || b.coefficient.n || result.coefficient.n || this.steps.length >= 12)
+      return;
+    const display = (v: Rational) => {
+      const text = formatted(v).exact;
+      return v.n < 0n ? `(${text})` : text;
+    };
+    if (
+      (operator === "+" || operator === "−") &&
+      a.constant.d !== b.constant.d &&
+      this.steps.length < 11
+    ) {
+      const denominator = rational(a.constant.d, b.constant.d).n * b.constant.d;
+      this.steps.push(
+        `Use o denominador comum ${denominator}: ${a.constant.n * (denominator / a.constant.d)}/${denominator} ${operator} ${b.constant.n * (denominator / b.constant.d)}/${denominator}.`,
+      );
+    }
+    this.steps.push(
+      `${display(a.constant)} ${operator} ${display(b.constant)} = ${formatted(result.constant).exact}.`,
+    );
+  }
   private peek() {
     return this.tokens[this.index];
   }
@@ -103,10 +128,12 @@ class Parser {
       const minus = this.take("-");
       if (!minus) this.take("+");
       const next = this.product(depth);
-      value = plus(
+      const result = plus(
         value,
         minus ? { constant: negate(next.constant), coefficient: negate(next.coefficient) } : next,
       );
+      this.record(value, minus ? "−" : "+", next, result);
+      value = result;
     }
     return value;
   }
@@ -116,7 +143,9 @@ class Parser {
       const division = this.take("/");
       if (!division) this.take("*");
       const next = this.unary(depth);
-      value = division ? quotient(value, next) : times(value, next);
+      const result = division ? quotient(value, next) : times(value, next);
+      this.record(value, division ? "÷" : "×", next, result);
+      value = result;
     }
     return value;
   }
@@ -125,11 +154,23 @@ class Parser {
     if (this.take("+")) return this.unary(depth + 1);
     if (this.take("-")) {
       const v = this.unary(depth + 1);
-      return { constant: negate(v.constant), coefficient: negate(v.coefficient) };
+      const result = { constant: negate(v.constant), coefficient: negate(v.coefficient) };
+      this.record(scalar(ZERO), "−", v, result);
+      return result;
     }
     let value = this.atom(depth);
-    if (this.take("%")) value = quotient(value, scalar(rational(100n)));
-    if (this.take("^")) value = power(value, this.unary(depth + 1));
+    if (this.take("%")) {
+      const hundred = scalar(rational(100n));
+      const result = quotient(value, hundred);
+      this.record(value, "÷", hundred, result);
+      value = result;
+    }
+    if (this.take("^")) {
+      const exponent = this.unary(depth + 1);
+      const result = power(value, exponent);
+      this.record(value, "^", exponent, result);
+      value = result;
+    }
     return value;
   }
   private atom(depth: number): Linear {
@@ -160,7 +201,7 @@ function normalized(expression: string): string {
     .replace(/\bde\b/g, "*")
     .replace(/\s+/g, "");
 }
-function parse(expression: string): Linear {
+function parse(expression: string, steps: string[]): Linear {
   // Somente multiplicação implícita inequívoca: 2x, 2(x+1), (x+1)2.
   const text = expression.replace(/(\d|\))(?=x|\()/g, "$1*").replace(/\)(?=\d)/g, ")*");
   const tokens = text.match(/\d+(?:\.\d+)?|[x+*/^%()=-]/g) ?? [];
@@ -169,7 +210,7 @@ function parse(expression: string): Linear {
       "unsupported",
       "Use números, x, parênteses e operações básicas; sem funções ou código.",
     );
-  return new Parser(tokens).parse();
+  return new Parser(tokens, steps).parse();
 }
 function formatted(value: Rational) {
   const exact = value.d === 1n ? String(value.n) : `${value.n}/${value.d}`;
@@ -199,13 +240,20 @@ export function calculateMath(expression: string): MathCalculation {
     const text = normalized(expression),
       sides = text.split("=");
     if (sides.length > 2) throw new CalculationError("unsupported", "Use uma única igualdade.");
-    const left = parse(sides[0]!);
+    const steps: string[] = [];
+    const left = parse(sides[0]!, steps);
     if (sides.length === 1) {
       if (left.coefficient.n)
         throw new CalculationError("unsupported", "Informe uma equação para determinar x.");
-      return { status: "checked", expression, kind: "arithmetic", ...formatted(left.constant) };
+      return {
+        status: "checked",
+        expression,
+        kind: "arithmetic",
+        steps,
+        ...formatted(left.constant),
+      };
     }
-    const right = parse(sides[1]!);
+    const right = parse(sides[1]!, steps);
     const coefficient = add(left.coefficient, negate(right.coefficient));
     const constant = add(right.constant, negate(left.constant));
     if (!coefficient.n) {
@@ -215,20 +263,36 @@ export function calculateMath(expression: string): MathCalculation {
           expression,
           kind: "linear-equation",
           exact: constant.n ? "sem solução" : "infinitas soluções",
+          steps: [
+            `Reunindo os termos, obtemos 0 × x = ${formatted(constant).exact}.`,
+            constant.n
+              ? "Nenhum valor de x satisfaz essa igualdade."
+              : "Qualquer valor de x satisfaz essa igualdade.",
+          ],
         };
       return {
         status: "checked",
         expression,
         kind: "equality",
         exact: constant.n ? "falso" : "verdadeiro",
+        steps: [
+          `O lado esquerdo vale ${formatted(left.constant).exact} e o direito vale ${formatted(right.constant).exact}.`,
+        ],
       };
     }
-    const result = formatted(divide(constant, coefficient));
+    const value = divide(constant, coefficient);
+    const result = formatted(value);
+    const substituted = add(left.constant, multiply(left.coefficient, value));
     return {
       status: "checked",
       expression,
       kind: "linear-equation",
       exact: `x = ${result.exact}`,
+      steps: [
+        `Reúna os termos com x de um lado e os constantes do outro: ${formatted(coefficient).exact} × x = ${formatted(constant).exact}.`,
+        `Divida os dois lados por ${formatted(coefficient).exact}: x = ${result.exact}.`,
+        `Substituindo x = ${result.exact}, os dois lados valem ${formatted(substituted).exact}.`,
+      ],
       ...(result.approximate ? { approximate: `x ≈ ${result.approximate}` } : {}),
     };
   } catch (error) {
@@ -241,10 +305,20 @@ export function calculateMath(expression: string): MathCalculation {
     };
   }
 }
+const NUMBER_ONLY_SUFFIX =
+  /\s+Responda (?:somente|apenas) o número ou a fração simplificada, sem explicação\.?$/i;
+const EXPLANATION_SUFFIX = /\s+Explique por etapas curtas\.?$/i;
+
+export function requestsNumberOnly(prompt: string): boolean {
+  return NUMBER_ONLY_SUFFIX.test(prompt.trim());
+}
+
 /** Nunca extrai uma conta de histórico, material enviado ou enunciado ambíguo. */
 export function requestedCalculation(prompt: string): MathCalculation | undefined {
   let expression = prompt
     .trim()
+    .replace(NUMBER_ONLY_SUFFIX, "")
+    .replace(EXPLANATION_SUFFIX, "")
     .replace(/[?.]+$/, "")
     .trim()
     .replace(/²/g, "^2")

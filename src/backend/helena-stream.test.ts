@@ -7,6 +7,8 @@ import { createVercelHandler } from "./vercel-adapter";
 import { streamHelena } from "../data/helena-client";
 import { readEventStream, readModelStream } from "../ai/event-stream";
 import type { HelenaRequest } from "../ai/helena-contract";
+import { createMathGroundedProvider } from "./helena-math-provider";
+import evaluations from "./math/existing-evaluations.test-data.json";
 
 const payload: HelenaRequest = {
   version: 1,
@@ -50,6 +52,41 @@ async function serve(provider: HelenaProvider, authenticated = true, quota = tru
     });
   return fetcher;
 }
+
+it("the HTTP chat answers the existing 64 evaluation questions exactly without model output", async () => {
+  const generate = vi
+    .fn<HelenaProvider["generate"]>()
+    .mockResolvedValue({ answer: "999", suggestions: [] });
+  const stream = vi
+    .fn<NonNullable<HelenaProvider["stream"]>>()
+    .mockImplementation(async function* () {
+      yield "999";
+    });
+  const fetcher = await serve(createMathGroundedProvider({ generate, stream }));
+  for (const row of evaluations) {
+    const onText = vi.fn();
+    const result = await streamHelena({ ...payload, prompt: row.prompt }, { fetcher, onText });
+    expect(result.answer, row.id).toBe(row.expected);
+    expect(onText).toHaveBeenLastCalledWith(row.expected);
+  }
+  expect(generate).not.toHaveBeenCalled();
+  expect(stream).not.toHaveBeenCalled();
+});
+
+it("calculator streaming remains behind the existing authentication and quota", async () => {
+  const teacher: HelenaProvider = { generate: vi.fn(), stream: vi.fn() };
+  for (const [authenticated, quota] of [
+    [false, true],
+    [true, false],
+  ]) {
+    const fetcher = await serve(createMathGroundedProvider(teacher), authenticated, quota);
+    await expect(
+      streamHelena({ ...payload, prompt: "Quanto é 1/3 + 1/6?" }, { fetcher, onText: vi.fn() }),
+    ).rejects.toThrow();
+  }
+  expect(teacher.generate).not.toHaveBeenCalled();
+  expect(teacher.stream).not.toHaveBeenCalled();
+});
 
 it("delivers real incremental upstream bytes through the HTTP adapter before completion", async () => {
   let upstream: ReadableStreamDefaultController<Uint8Array> | undefined;

@@ -2577,3 +2577,9 @@ A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque 
 ### Treinamento matemático candidato v2 (2026-10-12)
 
 Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.
+
+### Helena com cálculo determinístico e professor Cloudflare (2026-10-13)
+
+A integração preparada foi atualizada sobre a main atual. O chat usa `createMathGroundedProvider`: pedidos de conta explícita suportada recebem resultado e etapas do parser racional, sem usar texto gerado para definir a resposta. Pedidos somente numéricos mantêm esse formato. Teoria, conversa e operações fora do escopo usam Cloudflare, com as 17 referências originais e limites da ferramenta no contexto. Autenticação, consentimento e quotas permanecem antes dos dois caminhos. O aviso de privacidade refere o envio ao Cloudflare às respostas de IA.
+
+O runtime deixa de usar o modelo candidato, inclusive com antigas variáveis de promoção. O treino perde o cron diário e continua disponível por workflow_dispatch. Os exemplos de treinamento não foram ampliados. As mesmas 64 questões anteriores foram preservadas como testes do provedor e do streaming HTTP, sem usar suas respostas como implementação. Esse resultado mede a calculadora integrada, não aprendizado do modelo. Limites e manutenção em docs/HELENA_MATH_KNOWLEDGE.md.

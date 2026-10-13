@@ -2,7 +2,7 @@
 
 ## Escopo
 
-A Helena recebe referências matemáticas locais e resultados de uma ferramenta de cálculo no contexto da resposta. O fluxo funciona tanto no professor Cloudflare quanto em um futuro modelo próprio aprovado, em geração e streaming. Não modifica treinamento, promoção de candidatos, provedor, autorização, quotas ou destino das mensagens.
+A Helena usa uma calculadora exata no servidor para contas explícitas suportadas e o professor Cloudflare para teoria, conversa e problemas fora desse escopo. Os dois caminhos funcionam em geração e streaming, atrás da autenticação, consentimento e quotas existentes. O modelo candidato próprio deixa de atender o chat, inclusive se houver configuração antiga de promoção. O treino experimental fica disponível somente por acionamento manual, sem agendamento diário.
 
 O conteúdo é original da OlenaStudy, escrito para este projeto e versionado em `src/backend/math/knowledge.ts`. Não copia livros, sites ou APIs e não adiciona dependências, contas ou um índice externo. A busca lexical consulta somente o pedido atual e seleciona até três referências, sem analisar histórico privado ou materiais do aluno para indexação. Esta é uma primeira base consultável, não uma biblioteca completa nem um sistema de busca semântica.
 
@@ -26,12 +26,18 @@ Limites: expressão de 240 caracteres, até 96 tokens, aninhamento máximo de 16
 
 ## Integração e limites da resposta
 
-`helenaModelInput` monta o contexto no servidor. O contrato público não aceita o campo `math`; fontes do aluno ficam separadas e não podem passar por referência interna ou cálculo confiável. O contexto interno registra versão, origem, tópicos e, quando cabível, estado da calculadora. Planejamento e resumo não disparam cálculo automático. Cada resposta continua fazendo uma única chamada ao provedor existente.
+`helenaModelInput` monta o contexto no servidor. O contrato público não aceita o campo `math`; fontes do aluno ficam separadas e não podem passar por referência interna ou cálculo confiável. O contexto interno registra versão, origem, tópicos e, quando cabível, estado da calculadora. Planejamento e resumo não disparam cálculo automático. Contas suportadas não fazem chamada ao modelo: o servidor devolve o resultado e etapas produzidas pelas mesmas operações racionais. Frações apresentam denominador comum; equações apresentam redução linear, divisão e substituição. Pedidos explícitos de resposta somente numérica recebem apenas o número ou a fração exata. Divisão por zero e expressões inválidas retornam seu limite, sem valor inventado. Os demais pedidos fazem uma única chamada ao professor Cloudflare com referências relevantes e o estado da ferramenta, quando houver.
 
-A política pede explicação por etapas, identificação do tópico usado, respeito ao resultado exato e declaração honesta de limites. Apenas `status=checked` permite afirmar que a ferramenta conferiu aquela expressão. O modelo ainda pode errar ao explicar ou desobedecer ao contexto; esta mudança não certifica toda resposta textual e não remove o aviso de IA do chat. Não há execução automática de ferramentas escolhidas pelo modelo.
+A política pede explicação por etapas, identificação do tópico usado, respeito ao resultado exato e declaração honesta de limites. Apenas `status=checked` permite afirmar que a ferramenta conferiu aquela expressão. Nas contas suportadas, o resultado e as etapas são determinísticos e não dependem da obediência do modelo. Nas respostas de teoria ou texto livre, o modelo ainda pode errar; esta mudança não certifica toda resposta textual e não remove o aviso de IA do chat. Não há execução automática de ferramentas escolhidas pelo modelo. O aviso de envio ao Cloudflare passa a se referir às respostas que usam IA, pois contas calculadas permanecem no servidor da aplicação.
 
 Não são guardadas conversas, perguntas ou resultados para aprendizado. As referências próprias não entram automaticamente no corpus de treinamento candidato. Autenticação e consentimento existentes continuam obrigatórios. Nenhum exemplo de teste é enviado a um provedor real.
 
 ## Validação e manutenção
 
 `npm run verify` cobre os testes do parser, exemplos didáticos, seleção de referências, separação de fontes, contrato e os dois provedores. Testes de geração e streaming capturam a requisição enviada ao provedor simulado para provar que recebem o mesmo contexto. Alterações nos textos devem incrementar `MATH_KNOWLEDGE_VERSION`, manter condições de domínio e incluir provas numéricas quando o parser suporta a operação.
+
+## Mesmos exercícios, resultado da integração
+
+Os 32 exercícios de validação e 32 de auditoria da rodada v3 foram preservados, sem novos enunciados, em `src/backend/math/existing-evaluations.test-data.json`. Os testes usam o prompt original, inclusive a instrução de resposta numérica. A integração exige o valor exato em 64/64, tanto pelo provedor quanto pelo cliente real de streaming passando pelo adaptador HTTP. Não há chamada externa nesses testes. Isso mede a calculadora e a integração, não aprendizado ou qualidade geral do modelo Cloudflare.
+
+Os cálculos permanecem restritos ao pedido atual, sem buscar contas em materiais privados ou extrair pedaços de enunciados ambíguos. O parser limita execução e tamanho, não usa eval nem bibliotecas externas. A apresentação de etapas é limitada a 12 operações, com o resultado final exato sempre separado. As avaliações originais foram copiadas apenas para testes, não para lógica de respostas.
