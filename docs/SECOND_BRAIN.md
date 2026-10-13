@@ -18,18 +18,18 @@ Matemática usa action=math&version=2 para consumidores das conquistas. version=
 
 2026-10-12, detalhes da Agenda: marcador de estado confirmado descarta stream/GET anterior a PUT recente, evitando remoção falsa de eventos; PUTs do mesmo cliente são serializados. Fuso brasileiro automático sincroniza por helena.agendaTimeZone.v1, não usa geolocalização nem cadastro inexistente de cidade. AgendaDurationClock/agenda-duration controlam ponteiros, teclado, virada de hora e limites. AgendaMetadataField expande campos com resumo. RoomStepSlider recebe formatValue e ID único fora dos controles da sala, reaproveitando arraste para lembretes. AgendaAttachmentPreview mostra imagens reais em todas as visualizações; drop/seleção compartilham validação existente. Toolbar mantém placas creme, textos e os ícones cloudUpload/download da escrita.
 
-2026-10-12, mascote do assistente: HelenaMascot mantém a ponte tipada entre o
-botão existente e o frame gráfico local. O estado visual não recebe conversa ou
-autenticação. Movimento reduzido desliga o 3D; a imagem estática mantém o botão.
-Fonte do renderizador: scripts/helena-mascot/runtime.js. Three.js 0.170.0 fica
-vendorizado com MIT em scripts/helena-mascot/vendor; regenerar o bundle com
-node scripts/build-helena-mascot.mjs, sem copiar o diretório public para ele mesmo.
-Modelos e renders de Blender ficam em public/helena-assistant. Testar o app real,
-preview do chat e mensagens da ponte. Orçamento gráfico próprio verificado por
-npm run performance:check. A interação em outras telas suspende o gráfico por 1,5 segundo; a montagem espera
-um intervalo ocioso. Renderizador por software mantém as poses com material leve.
-Aprovação visual limitada ao assistente registrada no
-design system. Nenhuma mudança no provedor de IA, envio ou retenção de conversa.
+2026-10-13, mascote do assistente em Rive: HelenaMascot desenha a Helena num canvas com o
+runtime oficial do Rive (@rive-app/canvas 2.43.0, MIT), vendorizado em public/helena-assistant
+(rive.js, rive.wasm) e carregado sob demanda por src/data/rive-runtime.ts, fora do bundle. O
+arquivo public/helena-assistant/helena.riv é gerado por scripts/helena-rive (slice.cjs fatia o
+favicon, generate.cjs monta o binário, saída determinística). Máquina "Helena": entradas aberta,
+arrastando, lado, atenta, olharX e clique. O componente passa só estado visual (aberta, arrasto e
+inclinação, ponteiro por perto); nada da conversa ou da conta. Recolhida, alterna estrela por
+2,8 s e Helena por 13 s, segurando a Helena com o ponteiro por perto; ao recolher a conversa volta
+a ser estrela na hora. Interação em outras telas pausa o desenho por 1,5 s; modal aberto e aba
+oculta também pausam. Movimento reduzido não baixa nada e mostra as imagens estáticas. O span
+expõe data-ready, data-form, data-state e data-behavior para os testes. O three.js e o modelo
+3D foram removidos. Orçamento próprio em npm run performance:check.
 
 2026-10-12, publicação Firebase: validação de users/$uid/stateV2 aplicada e relida no projeto appstudyoli, instância appstudyoli-default-rtdb. Apenas o novo filho foi acrescentado às regras obtidas do servidor; todos os demais nós e permissões foram preservados. Não publicar o arquivo completo do repositório sem comparar com as regras atuais, pois contém validações legadas que não estão em produção. Cliente novo ainda precisa ser implantado.
 
