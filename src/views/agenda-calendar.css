@@ -343,7 +343,7 @@
 }
 .agenda-hour-axis {
   position: relative;
-  height: 1240px;
+  height: calc(1196px + var(--agenda-strip-height, 56px));
 }
 .agenda-hour-axis > span {
   font-size: 10px;
@@ -367,15 +367,19 @@
   z-index: 3;
 }
 .agenda-all-day-strip {
-  height: 44px;
+  box-sizing: border-box;
+  height: var(--agenda-strip-height, 56px);
+  padding: 4px 0 8px;
   overflow-y: auto;
   font-size: 10px;
 }
 .agenda-all-day-strip button {
-  min-height: 32px;
-  padding: 2px;
+  min-height: 44px;
+  margin-bottom: 4px;
+  padding: 4px;
   width: 100%;
   font-size: 10px;
+  overflow-wrap: anywhere;
 }
 .agenda-hour-slots {
   position: relative;

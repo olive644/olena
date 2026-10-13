@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Tarefas coloridas e navegação desktop (2026-10-13)
+
+- A faixa de tarefas e eventos de dia inteiro na grade reservava 44 px, cortando a base dos botões. Agora reserva altura compartilhada entre colunas, padding para a base e área de toque de 44 px; os horários do eixo acompanham essa altura. Até três itens ficam visíveis, com rolagem para os demais.
+- Tarefas aceitam cor hexadecimal opcional, usando a mesma paleta de papel dos eventos. O editor, a lista, os marcadores mensais e a grade compartilham a cor. Registros antigos sem cor seguem válidos. O campo pertence ao workspace sincronizado da conta, sem armazenamento independente ou mudança nas regras do Firebase.
+- A própria barra desktop recolhida se alarga temporariamente de 84 para 260 px ao passar o mouse sobre um ícone ou focá-lo pelo teclado, revelando os nomes dentro da barra, inclusive Perfil. Recolhe ao sair, não cria etiqueta flutuante e não desloca o conteúdo. Usa o menu expandido existente, respeita movimento reduzido e conserva temas claro/escuro. A navegação móvel não recebe comportamento dependente de hover.
+- Desktop e celular continuam usando PlannerView, AgendaCalendarViews, editor, filtros e ações comuns; diferenças são de layout, sem versão funcional móvel separada.
+
 ## Matemática imediata e conquista por tema (2026-10-13)
 
 - Causa encontrada: acerto, erro, som e próxima questão aguardavam um POST por resposta, com timeout de 10 segundos. A partida agora usa mathChallenge/assessMath, o mesmo motor determinístico da API, sem depender de HTTP. Não é IA nem confirmação remota de pontos. A API continua validando questões, escolhas e prazos para seus consumidores.

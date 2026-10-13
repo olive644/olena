@@ -1,4 +1,34 @@
 @media (min-width: 900px) {
+  .app-shell > .sidebar.sidebar--preview ~ .main-content {
+    width: calc(100% - 84px);
+    margin-left: 84px;
+  }
+  .app-shell > .sidebar.sidebar--preview .nav-section__label {
+    display: none;
+  }
+  .app-shell > .sidebar.sidebar--preview .nav-item {
+    min-height: 52px;
+  }
+  .app-shell > .sidebar.sidebar--preview .nav-section {
+    gap: 7px;
+  }
+  .app-shell > .sidebar.sidebar--preview .nav-item > span:last-child {
+    white-space: nowrap;
+    animation: rail-label-reveal 220ms ease both;
+  }
+  .app-shell > .sidebar.sidebar--preview .nav-item--active > span:last-child {
+    color: #fff9ef;
+  }
+  @keyframes rail-label-reveal {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
   .app-shell > .sidebar > .sidebar__nav {
     grid-template-rows: auto auto 1fr;
     align-content: stretch;
@@ -16,9 +46,6 @@
     padding: 0;
     justify-content: center;
   }
-  .app-shell > .sidebar:not(.sidebar--expanded) .sidebar__profile .nav-item > span:last-child {
-    display: none;
-  }
   .app-shell > .sidebar.sidebar--expanded .sidebar__profile {
     width: 100%;
   }
@@ -26,6 +53,14 @@
     width: 100%;
     justify-content: flex-start;
     gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell > .sidebar,
+  .app-shell > .sidebar .nav-item > span:last-child {
+    transition: none;
+    animation: none;
   }
 }
 

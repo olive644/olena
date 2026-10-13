@@ -17,6 +17,7 @@ export type Subject = {
 };
 
 export type StudyTask = {
+  color?: string;
   id: string;
   title: string;
   subjectId: string;
@@ -228,12 +229,12 @@ export type WorkspaceAction =
       >;
     }
   | { type: "note/subject-changed"; id: string; subjectId: string; updatedAt: string }
-  | { type: "task/added"; title: string; subjectId: string; dueDate: string }
+  | { type: "task/added"; title: string; subjectId: string; dueDate: string; color?: string }
   | { type: "task/toggled"; id: string }
   | {
       type: "task/updated";
       id: string;
-      changes: Pick<StudyTask, "title" | "subjectId" | "dueDate">;
+      changes: Pick<StudyTask, "title" | "subjectId" | "dueDate" | "color">;
     }
   | { type: "task/removed"; id: string }
   | ({ type: "event/added" } & Omit<StudyEvent, "id" | "completedDates">)
@@ -448,6 +449,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             title: action.title,
             subjectId: action.subjectId,
             dueDate: action.dueDate,
+            ...(action.color ? { color: action.color } : {}),
             completed: false,
           },
         ],

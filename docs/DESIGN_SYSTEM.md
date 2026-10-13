@@ -84,6 +84,14 @@ preservam movimento reduzido, X sem placa e foco amarelo.
 
 ## Cursor desktop
 
+Navegação recolhida no desktop alarga a própria barra em hover sobre um ícone
+ou foco de teclado, mostrando nomes dentro dela sem deslocar a página. Ao sair,
+recolhe; não usar uma etiqueta separada do ícone. Item ativo mantém
+roxo e texto creme; demais usam superfície e texto do tema. Movimento reduzido
+desativa a transição. Tarefas usam a mesma paleta dos eventos, como marcador ou
+borda, nunca como cor de texto. Faixas da grade reservam espaço para base dos
+botões e toque de 44 px, com horários alinhados entre todos os dias.
+
 Cursor nativo com SVG de 32px: seta facetada roxa/creme com dobra amarela,
 mão de papel com estrela para ações. Arquivos em public/cursors, aplicação em
 paper-cursor.css somente para mouse fino com hover. Creme delimita a silhueta

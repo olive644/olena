@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import type { StudyEvent, StudyTask } from "../domain/workspace";
 import {
@@ -101,6 +101,20 @@ export function AgendaCalendarViews({
   } | null>(null);
   const [hint, setHint] = useState("");
   const eventsFor = (date: string) => displayEventsOn(events, date, timeZone);
+  const stripHeight =
+    Math.min(
+      3,
+      Math.max(
+        1,
+        ...days.map(
+          (date) =>
+            tasks.filter((task) => task.dueDate === date).length +
+            eventsFor(date).filter((event) => event.allDay).length,
+        ),
+      ),
+    ) *
+      48 +
+    8;
   const searchDatesById = new Map(
     searchResults
       ? events.map((event) => [event.id, agendaSearchDate(event, timeZone)] as const)
@@ -161,6 +175,7 @@ export function AgendaCalendarViews({
     <div
       ref={root}
       className="agenda-time-view"
+      style={{ "--agenda-strip-height": `${stripHeight}px` } as CSSProperties}
       aria-label={view === "week" ? "Grade semanal" : "Grade do dia"}
       onKeyDown={(key) => {
         if (key.key === "Escape") {
@@ -261,7 +276,7 @@ export function AgendaCalendarViews({
           <div className="agenda-hour-axis">
             <span>Hora</span>
             {Array.from({ length: 24 }, (_, hour) => (
-              <small key={hour} style={{ top: 88 + hour * 48 }}>
+              <small key={hour} style={{ top: 44 + stripHeight + hour * 48 }}>
                 {String(hour).padStart(2, "0")}:00
               </small>
             ))}
@@ -286,6 +301,7 @@ export function AgendaCalendarViews({
                         key={task.id}
                         type="button"
                         className="secondary-button"
+                        style={task.color ? { borderBottomColor: task.color } : undefined}
                         aria-label={`Ver tarefa ${task.title}`}
                         onClick={() => onSelect(date)}
                       >
