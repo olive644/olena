@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-test("mathematics islands use the real adaptive API and resume mastery", async ({
+test("mathematics islands use the shared adaptive engine and resume mastery", async ({
   page,
 }, testInfo) => {
   test.setTimeout(60_000);
@@ -80,7 +80,7 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   expect(Number(await page.locator(".math-reserve").getAttribute("aria-valuenow"))).toBeGreaterThan(
     58,
   );
-  for (let index = 0; index < 5; index++) {
+  for (let index = 0; index < 6; index++) {
     const question = page.locator(".math-game-question h1");
     const text = await question.getAttribute("aria-label");
     const nums = text!.match(/\d+/g)!.map(Number);
@@ -93,8 +93,12 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
     await expect(page.locator(".math-answer-reaction")).toBeVisible();
     await expect(page.locator(".math-answer-reaction .practice-user-portrait")).toHaveCount(0);
     await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
+    if (index === 5) {
+      await expect(page.getByRole("heading", { name: "Parabéns, você se superou!" })).toBeVisible();
+      await page.getByRole("button", { name: "Continuar explorando" }).click();
+    }
   }
-  await expect(page.getByText("Multiplicação", { exact: true })).toBeVisible();
+  await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
   await expect(page.getByText(/VOCÊ ESTÁ INSANO/)).toBeVisible();
   const audioProof = await page.evaluate(() => {
     const proof = (
@@ -142,7 +146,7 @@ test("mathematics islands use the real adaptive API and resume mastery", async (
   await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
   await page.getByRole("button", { name: "Explorar lugar" }).click();
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
-  await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
+  await expect(page.getByText("Adição", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
   await expect(page.locator(".math-journey")).toHaveClass(/is-map/);

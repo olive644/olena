@@ -23,6 +23,81 @@
   font-family: inherit;
   animation: math-arrive 0.65s both;
 }
+.math-digit-definitions {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.math-mastery {
+  position: relative;
+  padding: clamp(22px, 5vw, 44px);
+  text-align: center;
+  color: #292432;
+  background: #fff9ef;
+  border-radius: 8px 30px 5px 22px;
+  box-shadow: 0 8px #d7cbb6;
+  animation: math-arrive 0.5s both;
+}
+.math-mastery::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #ffe88d;
+  clip-path: polygon(0 0, 48px 0, 0 48px);
+}
+.math-mastery h1 {
+  font-size: clamp(24px, 5vw, 36px);
+  line-height: 1.2;
+}
+.math-mastery p {
+  line-height: 1.6;
+}
+.math-mastery > strong {
+  color: #51259b;
+  font-size: 22px;
+}
+.math-mastery-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 32px;
+  margin: 12px 0;
+}
+.math-arcade .math-mastery .math-mastery-seal .paper-digits {
+  --digit-face: #7c3aed;
+  --digit-depth: #51259b;
+  --digit-fold: #a779ef;
+  --digit-edge: #51259b;
+}
+.math-mastery-seal > svg {
+  width: 36px;
+  height: 36px;
+}
+.math-mastery-continue {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  min-height: 48px;
+  font-size: 16px;
+}
+.math-arcade .onboarding-paper-arrow {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+.math-results > .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
 .math-arcade::before {
   content: "";
   position: fixed;

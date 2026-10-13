@@ -88,6 +88,7 @@ export type MathProgress = {
   correct: number;
   best: number;
   errors?: number;
+  mastered?: number;
 };
 export const EMPTY_MATH_PROGRESS: MathProgress = { level: 0, mastery: 0, correct: 0, best: 0 };
 export function isMathCourse(value: unknown): value is MathCourseId {
@@ -98,8 +99,12 @@ export function validMathProgress(value: unknown): value is MathProgress {
   const item = value as Record<string, unknown>;
   return (
     Object.keys(item).every((key) =>
-      ["level", "mastery", "correct", "best", "errors"].includes(key),
+      ["level", "mastery", "correct", "best", "errors", "mastered"].includes(key),
     ) &&
+    (item["mastered"] === undefined ||
+      (Number.isSafeInteger(item["mastered"]) &&
+        Number(item["mastered"]) >= 0 &&
+        Number(item["mastered"]) <= 63)) &&
     (item["errors"] === undefined ||
       (Number.isSafeInteger(item["errors"]) &&
         Number(item["errors"]) >= 0 &&
@@ -108,7 +113,7 @@ export function validMathProgress(value: unknown): value is MathProgress {
       (key) => Number.isSafeInteger(item[key]) && Number(item[key]) >= 0,
     ) &&
     Number(item["level"]) <= 5 &&
-    Number(item["mastery"]) <= 3 &&
+    Number(item["mastery"]) <= 5 &&
     Number(item["correct"]) <= 100000 &&
     Number(item["best"]) <= 1000000
   );

@@ -577,9 +577,8 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             </small>
           )}
           <AgendaAttachmentPreview attachments={event.attachments} />
-          {event.id && (
-            <details className="agenda-event-info">
-              <summary>Detalhes</summary>
+          {event.description || event.location || event.links?.length || event.guests?.length ? (
+            <div className="agenda-event-info">
               {event.description && <p>{event.description}</p>}
               {event.location && <p>Local: {event.location}</p>}
               {event.links?.filter(safeWebLink).map((link) => (
@@ -603,8 +602,8 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   {asset.name}
                 </button>
               ))}
-            </details>
-          )}
+            </div>
+          ) : null}
           {reminder && (
             <span className="agenda-reminder">
               <PaperCalendarText

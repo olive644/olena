@@ -45,7 +45,7 @@ it("produces distinct finite choices and longer but faster-draining higher topic
       }
 });
 it("advances on mastery and preserves levels after mistakes", () => {
-  const progress = { ...EMPTY_MATH_PROGRESS, mastery: 2 };
+  const progress = { ...EMPTY_MATH_PROGRESS, mastery: 5 };
   const question = mathChallenge("foundations", progress, 99);
   const good = assessMath(progress, question, question.answer, 1, 0);
   expect(good.progress.level).toBe(1);

@@ -6,11 +6,13 @@ import { mathLearning } from "../data/math-learning";
 import { updateAccessibility } from "../data/accessibility-preferences";
 import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
 import * as mathSound from "../data/math-sound";
+import { EMPTY_MATH_PROGRESS } from "../data/math-courses";
 
 beforeEach(() => {
   localStorage.removeItem(ACCOUNT_OWNER_KEY);
   vi.useFakeTimers();
   localStorage.removeItem("helena.mathLearning.v1");
+  localStorage.removeItem("helena.mathLearning.v2");
   localStorage.removeItem("helena.room-xp.v1");
   localStorage.removeItem("helena.mathPlaceRewards.v1");
   vi.stubGlobal(
@@ -84,6 +86,52 @@ it("records dated island activity once after an assessed answer", async () => {
   await tick(650);
   expect(onPractice).toHaveBeenCalledOnce();
 });
+it("celebrates a mastered topic once, pauses the clock and continues with keyboard focus", async () => {
+  localStorage.setItem(
+    "helena.mathLearning.v2",
+    JSON.stringify({ foundations: { ...EMPTY_MATH_PROGRESS, mastery: 5 } }),
+  );
+  const play = vi.fn();
+  vi.spyOn(mathSound, "createMathSound").mockReturnValue({
+    play,
+    unlock: vi.fn(),
+    dispose: vi.fn(),
+  });
+  const onPractice = vi.fn();
+  render(<MathArcade onBack={() => {}} onPractice={onPractice} />);
+  await begin();
+  await click("Resposta " + correctAnswer());
+  await tick(650);
+  expect(screen.getByRole("heading", { name: "Parabéns, você se superou!" })).toBeTruthy();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Continuar explorando" }));
+  expect(play.mock.calls.filter(([cue]) => cue === "mastery")).toHaveLength(1);
+  await tick(10000);
+  expect(mathLearning("foundations")).toMatchObject({ level: 1, mastered: 1, correct: 1 });
+  expect(onPractice).toHaveBeenCalledOnce();
+  await click("Continuar explorando");
+  expect(document.activeElement).toBe(screen.getAllByRole("button", { name: /^Resposta/ })[0]);
+  expect(screen.getByText("Subtração")).toBeTruthy();
+  expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("60");
+});
+it("settles the completed place once and recommends the real next place", async () => {
+  localStorage.setItem(
+    "helena.mathLearning.v2",
+    JSON.stringify({ foundations: { ...EMPTY_MATH_PROGRESS, level: 5, mastery: 5, mastered: 31 } }),
+  );
+  const next = vi.fn();
+  render(<MathArcade onBack={() => {}} onNextCourse={next} />);
+  await begin();
+  const expression = screen.getByRole("heading").getAttribute("aria-label")!;
+  const numbers = expression.match(/\d+/g)!.map(Number);
+  await click("Resposta " + (numbers[0]! * numbers[1]!) / 100);
+  await tick(650);
+  await tick(1);
+  expect(screen.getByText(/Próxima parada: Oficina das Equações/)).toBeTruthy();
+  await click("Ver minha conquista");
+  await click("Explorar Oficina das Equações");
+  expect(next).toHaveBeenCalledExactlyOnceWith("school");
+  expect(mathLearning("foundations").mastered).toBe(63);
+});
 it("does not show or record XP for a zero-point round", async () => {
   render(<MathArcade onBack={() => {}} />);
   await begin();
@@ -108,7 +156,7 @@ function correctAnswer() {
       : values[0]! + values[1]!;
 }
 
-it("uses the API, advances topics, scores once and retains mastery on retry", async () => {
+it("uses the shared engine, scores once and retains progress on retry", async () => {
   updateAccessibility({ reduceMotion: true });
   render(<MathArcade onBack={() => {}} />);
   await begin();
@@ -116,7 +164,7 @@ it("uses the API, advances topics, scores once and retains mastery on retry", as
     await click("Resposta " + correctAnswer());
     await tick(650);
   }
-  expect(mathLearning("foundations").level).toBe(2);
+  expect(mathLearning("foundations").level).toBe(0);
   expect(mathLearning("foundations").correct).toBe(4);
   expect(screen.getByText(/VOCÊ ESTÁ INSANO/)).toBeTruthy();
   for (let index = 0; index < 3; index++) {
@@ -138,7 +186,7 @@ it("uses the API, advances topics, scores once and retains mastery on retry", as
   await tick(1000);
   await tick(1000);
   await tick(1000);
-  expect(screen.getByText("Subtração")).toBeTruthy();
+  expect(screen.getByText("Adição")).toBeTruthy();
   expect(screen.getByLabelText("3 chances restantes")).toBeTruthy();
 });
 
@@ -161,21 +209,22 @@ it("rejects double answers and animates leaving before releasing scroll", async 
   expect(document.body.style.overflow).not.toBe("hidden");
 });
 
-it("shows a recoverable API error instead of inventing questions", async () => {
+it("starts and scores even when the server is unavailable", async () => {
   vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
   render(<MathArcade onBack={() => {}} />);
-  await click("Vamos calcular!");
-  expect(screen.getByRole("alert").textContent).toContain("offline");
-  expect(screen.queryAllByRole("button", { name: /^Resposta/ })).toHaveLength(0);
+  await begin();
+  await click("Resposta " + correctAnswer());
+  expect(screen.queryByRole("alert")).toBeNull();
+  expect(document.querySelector('.math-answer-button[data-feedback="correct"]')).not.toBeNull();
+  expect(mathLearning("foundations").correct).toBe(1);
+  expect(fetch).not.toHaveBeenCalled();
 });
 it.each([
-  { correct: true, latency: 80, duration: 650 },
-  { correct: true, latency: 800, duration: 650 },
-  { correct: false, latency: 80, duration: 1300 },
-  { correct: false, latency: 1800, duration: 1300 },
+  { correct: true, duration: 650 },
+  { correct: false, duration: 1300 },
 ])(
-  "keeps confirmed feedback visible for $duration ms with $latency ms API latency ($correct)",
-  async ({ correct, latency, duration }) => {
+  "immediately shows feedback for $duration ms when the server never responds ($correct)",
+  async ({ correct, duration }) => {
     vi.spyOn(performance, "now").mockImplementation(() => Date.now());
     const play = vi.fn();
     vi.spyOn(mathSound, "createMathSound").mockReturnValue({
@@ -197,22 +246,10 @@ it.each([
             .replace("Resposta ", ""),
         );
     const button = screen.getByRole("button", { name: "Resposta " + choice });
-    let release: (() => void) | undefined;
-    vi.mocked(fetch).mockImplementationOnce(async (_url, init) => {
-      await new Promise<void>((resolve) => {
-        release = resolve;
-      });
-      return handleOlena(new Request("http://localhost/api/olena?action=math&version=1", init));
-    });
+    vi.mocked(fetch).mockImplementationOnce(() => new Promise<Response>(() => {}));
     await click("Resposta " + choice);
     expect(document.querySelector(".math-api-loading")).toBeNull();
-    expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("true");
-    expect(document.querySelector(".math-answer-reaction")).toBeNull();
-    expect(play).not.toHaveBeenCalled();
-    await tick(latency);
-    await act(async () => {
-      release!();
-    });
+    expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
     expect(button.getAttribute("data-feedback")).toBe(correct ? "correct" : "wrong");
     expect(play).toHaveBeenCalledExactlyOnceWith(correct ? "correct" : "wrong");
     const reserve = screen.getByRole("progressbar").getAttribute("aria-valuenow");
@@ -223,14 +260,14 @@ it.each([
     expect(document.querySelector(".math-answer-reaction")).not.toBeNull();
     expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe(reserve);
     expect(mathLearning("foundations").correct).toBe(Number(correct));
-    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch).not.toHaveBeenCalled();
     await tick(1);
     expect(document.querySelector(".math-answer-reaction")).toBeNull();
     expect(document.querySelector("main")?.getAttribute("aria-busy")).toBe("false");
   },
 );
 
-it("retries a failed answer without celebrating or awarding it before API confirmation", async () => {
+it("does not let a server error interrupt or duplicate a correctly assessed answer", async () => {
   const play = vi.fn();
   vi.spyOn(mathSound, "createMathSound").mockReturnValue({
     play,
@@ -242,18 +279,12 @@ it("retries a failed answer without celebrating or awarding it before API confir
   play.mockClear();
   vi.mocked(fetch).mockRejectedValueOnce(new Error("offline"));
   await click("Resposta " + correctAnswer());
-  expect(screen.getByRole("alert").textContent).toContain("offline");
-  expect(document.querySelector(".math-answer-reaction")).toBeNull();
-  expect(mathLearning("foundations").correct).toBe(0);
-  expect(play).not.toHaveBeenCalled();
-  await tick(2000);
-  await click("Tentar novamente");
   expect(screen.queryByRole("alert")).toBeNull();
   expect(document.querySelector('.math-answer-button[data-feedback="correct"]')).not.toBeNull();
   expect(mathLearning("foundations").correct).toBe(1);
   expect(play).toHaveBeenCalledExactlyOnceWith("correct");
 });
-it("keeps a delayed timeout message and broken heart visible before continuing", async () => {
+it("shows a timeout immediately without waiting for the server", async () => {
   const play = vi.fn();
   vi.spyOn(mathSound, "createMathSound").mockReturnValue({
     play,
@@ -263,27 +294,16 @@ it("keeps a delayed timeout message and broken heart visible before continuing",
   render(<MathArcade onBack={() => {}} />);
   await begin();
   play.mockClear();
-  let release: (() => void) | undefined;
-  vi.mocked(fetch).mockImplementationOnce(async (_url, init) => {
-    await new Promise<void>((resolve) => {
-      release = resolve;
-    });
-    return handleOlena(new Request("http://localhost/api/olena?action=math&version=1", init));
-  });
+  vi.mocked(fetch).mockImplementationOnce(() => new Promise<Response>(() => {}));
   await tick(14100);
   await tick(1);
-  expect(play).not.toHaveBeenCalled();
-  await tick(2000);
-  await act(async () => {
-    release!();
-  });
   expect(play).toHaveBeenCalledExactlyOnceWith("timeout");
   const reserve = screen.getByRole("progressbar").getAttribute("aria-valuenow");
   await tick(1299);
   expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
   expect(document.querySelector(".math-hearts .is-breaking")).not.toBeNull();
   expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe(reserve);
-  expect(fetch).toHaveBeenCalledTimes(2);
+  expect(fetch).not.toHaveBeenCalled();
   await tick(1);
   expect(screen.queryByText("Putz! Perdeu a vez!")).toBeNull();
   expect(document.querySelector(".math-hearts .is-breaking")).toBeNull();

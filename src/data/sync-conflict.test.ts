@@ -3,6 +3,22 @@ import { mergeSyncedItems } from "./sync-conflict";
 import { FOCUS_SESSION_KEY, type FocusSession } from "../domain/focus-session";
 
 describe("mergeSyncedItems", () => {
+  it("preserves math achievements across stale tabs, other devices and missing v2 keys", () => {
+    const key = "helena.mathLearning.v2";
+    const a = { level: 2, mastery: 1, correct: 18, best: 210, mastered: 3 };
+    const b = { level: 1, mastery: 2, correct: 12, best: 300, mastered: 4 };
+    const merged = mergeSyncedItems(
+      {},
+      { [key]: JSON.stringify({ foundations: a }) },
+      { [key]: JSON.stringify({ foundations: b }) },
+    );
+    expect(JSON.parse(merged.items[key]!)).toEqual({
+      foundations: { ...a, best: 300, mastered: 7 },
+    });
+    expect(
+      mergeSyncedItems({ [key]: merged.items[key]! }, { [key]: merged.items[key]! }, {}).items[key],
+    ).toBe(merged.items[key]);
+  });
   it("keeps the latest valid active focus snapshot and combines Pomodoro days", () => {
     const snapshot: FocusSession = {
       mode: "timer",

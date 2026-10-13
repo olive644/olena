@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+Matemática usa action=math&version=2 para consumidores das conquistas. version=1 mantém contrato e avanço legados. O catálogo geral continua v1. Respostas mais novas de abas v1 são reconhecidas na leitura, preservando conquistas v2 e reiniciando só a sequência parcial incompatível.
+
+2026-10-13, Matemática: requestMath calcula imediatamente com o mesmo mathChallenge/assessMath da API, sem HTTP durante a partida. Domínio do desafio exige seis acertos seguidos por tema; mastered é máscara de seis bits, celebra uma vez e preserva conquistas ao recuar. Todos os temas completos encerram a rodada e sugerem o próximo lugar. MathArcade pausa a contagem no cartão de conquista e reutiliza papel, partículas e createMathSound. v2 amplia progresso e sincroniza pela conta; v1 é espelho compatível, fallback de leitura e não recebe os campos novos. Merge conserva máscaras e melhor pontuação; não somar contadores de respostas replicadas. Na Agenda, metadados úteis ficam visíveis sem summary Detalhes.
+
 2026-10-12, teste de mover tarefa para hoje: não comparar data da conta com new Date() do runner UTC. Fixar relógio e fuso da conta no fixture e exigir datas literais antes/depois de meia-noite brasileira. Produto permanece inalterado.
 
 2026-10-12, busca da Agenda: botão/Enter ativam Lista de resultados sem limite do mês aberto. agendaSearchDate escolhe uma ocorrência válida por série, sem materializar rotinas infinitas; filtros compartilham normalização de acentos/caixa/espaços. Limpar volta aos próximos 30 dias. loadPaperExportMascot carrega e reutiliza /olena-favicon.png original no selo, sem redesenhar Helena; erros permitem tentar novamente.

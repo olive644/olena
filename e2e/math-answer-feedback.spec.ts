@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import type { MathChallenge } from "../src/domain/adaptive-math";
+import { shownMathQuestion } from "./math-question";
 
 test("place points animate down to zero and up again without changing stored rewards", async ({
   page,
@@ -34,46 +34,29 @@ test("place points animate down to zero and up again without changing stored rew
   ).toBe(530);
 });
 
-test("API latency does not erase correct or wrong feedback, or score twice", async ({ page }) => {
+test("server disconnection cannot delay feedback or score an answer twice", async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   let answers = 0;
   await page.route("**/api/olena?action=math&version=1", async (route) => {
-    if (route.request().postDataJSON().action !== "answer") return route.continue();
     answers++;
-    const response = await route.fetch();
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    await route.fulfill({ response });
+    await route.abort("connectionfailed");
   });
   await page.goto("/aprender");
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
-  const initial = page.waitForResponse(
-    (response) =>
-      response.url().includes("action=math") &&
-      response.request().postDataJSON().action === "question",
-  );
   await page.getByRole("button", { name: "Vamos calcular!" }).click();
-  let question: MathChallenge = (await (await initial).json()).question;
   await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
   for (const correct of [true, false]) {
+    const question = await shownMathQuestion(page, "foundations");
     const choice = correct
       ? question.answer
       : question.choices.find((value) => value !== question.answer)!;
     const button = page.getByRole("button", { name: "Resposta " + choice, exact: true });
-    const response = page.waitForResponse(
-      (item) =>
-        item.url().includes("action=math") && item.request().postDataJSON().action === "answer",
-    );
     await button.click();
     await button.dispatchEvent("click");
-    expect(await page.locator(".math-answer-reaction").count()).toBe(0);
     await expect(page.locator(".math-api-loading")).toHaveCount(0);
-    const confirmed = await response;
-    expect(confirmed.status()).toBe(200);
-    const result = await confirmed.json();
-    expect(result.correct).toBe(correct);
     const reaction = page.locator(".math-answer-reaction");
     await expect(reaction).toBeVisible();
     await expect(button).toHaveAttribute("data-feedback", correct ? "correct" : "wrong");
@@ -81,14 +64,80 @@ test("API latency does not erase correct or wrong feedback, or score twice", asy
     await expect(reaction).toBeVisible();
     await expect(reaction).toHaveCSS("opacity", "1");
     await expect(reaction).toHaveCount(0);
-    question = result.question;
   }
-  expect(answers).toBe(2);
+  expect(answers).toBe(0);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathLearning.v1")!).foundations.correct,
+      () => JSON.parse(localStorage.getItem("helena.mathLearning.v2")!).foundations.correct,
     ),
   ).toBe(1);
   await expect(page.locator(".math-arcade-stage")).toHaveAttribute("aria-busy", "false");
   await expect(page.getByLabel("2 chances restantes")).toBeVisible();
+});
+
+test("mastery celebrates offline, retains progress after reload and opens the next real place", async ({
+  page,
+  context,
+}, info) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    if (!sessionStorage.getItem("mastery-seeded")) {
+      localStorage.setItem(
+        "helena.mathLearning.v2",
+        JSON.stringify({
+          foundations: { level: 5, mastery: 5, mastered: 31, correct: 35, best: 500 },
+        }),
+      );
+      sessionStorage.setItem("mastery-seeded", "1");
+    }
+  });
+  await page.goto("/aprender");
+  await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
+  await page.getByRole("button", { name: "Entrar em Pátio das Primeiras Contas" }).click();
+  await page.getByRole("button", { name: "Vamos calcular!" }).click();
+  await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4, { timeout: 10000 });
+  const question = await shownMathQuestion(page, "foundations");
+  await context.setOffline(true);
+  await page.getByRole("button", { name: "Resposta " + question.answer, exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Parabéns, você se superou!" })).toBeVisible();
+  await expect(page.locator(".math-mastery")).toHaveCSS("opacity", "1");
+  await expect
+    .poll(() =>
+      page
+        .locator(".math-mastery-seal use")
+        .first()
+        .evaluate((element) => (element as SVGGraphicsElement).getBBox().width),
+    )
+    .toBeGreaterThan(0);
+  const button = page.getByRole("button", { name: "Ver minha conquista" });
+  await expect(button).toBeFocused();
+  await expect(button).toBeInViewport({ ratio: 1 });
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    expect(
+      await page
+        .locator(".math-mastery-seal .paper-digits")
+        .evaluate((element) => getComputedStyle(element).getPropertyValue("--digit-face").trim()),
+    ).toBe("#7c3aed");
+    await expect(page.locator(".math-mastery h1")).toHaveCSS("color", "rgb(41, 36, 50)");
+  }
+  await page.screenshot({ path: info.outputPath("math-mastery.png") });
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("helena.mathLearning.v2")!).foundations.mastered,
+    ),
+  ).toBe(63);
+  await button.click();
+  await page.getByRole("button", { name: "Explorar Oficina das Equações" }).click();
+  await expect(page.getByRole("heading", { name: "Oficina das Equações" })).toBeVisible();
+  await context.setOffline(false);
+  await page.reload();
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("helena.mathLearning.v2")!).foundations.mastered,
+    ),
+  ).toBe(63);
 });

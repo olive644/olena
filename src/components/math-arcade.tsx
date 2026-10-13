@@ -15,7 +15,8 @@ import type { RoomXpReward } from "../domain/local-room";
 import { RoomRewardNotice } from "./room-reward-notice";
 import { PaperArrow } from "./paper-arrow";
 import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-icons";
-import { PaperDigits } from "./paper-digits";
+import { PaperDigits, PaperDigitsSource } from "./paper-digits";
+import paperDigitsSvg from "../../public/paper-digits.svg?raw";
 import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
@@ -37,14 +38,20 @@ type Round = {
   bank: number;
   elapsed: number;
 };
+// Arte estática do repositório, nunca HTML fornecido pelo usuário.
+const mathDigitsSvg = paperDigitsSvg
+  .replaceAll('id="', 'id="math-')
+  .replaceAll("url(#", "url(#math-");
 export function MathArcade({
   onBack,
   courseId = "foundations",
   onChestReturn,
   onPractice,
+  onNextCourse,
 }: {
   onBack: () => void;
   onPractice?: ((activity: PracticeActivity) => void) | undefined;
+  onNextCourse?: ((course: MathCourseId) => void) | undefined;
   courseId?: MathCourseId;
   onChestReturn?:
     ((origin: { x: number; y: number; size: number; id: string }) => void) | undefined;
@@ -66,6 +73,9 @@ export function MathArcade({
     (MathApiResult & { choice: number | null; timedOut: boolean }) | null
   >(null);
   const [error, setError] = useState("");
+  const [milestone, setMilestone] = useState<MathApiResult["milestone"]>(null);
+  const [completedCourse, setCompletedCourse] = useState(false);
+  const nextCourse = MATH_COURSES[MATH_COURSES.findIndex((item) => item.id === courseId) + 1];
   const [storageWarning, setStorageWarning] = useState(false);
   const [earnedChest, setEarnedChest] = useState<MathChest | undefined>();
   const [displayedScore, setDisplayedScore] = useState(0);
@@ -77,7 +87,8 @@ export function MathArcade({
   const answerLock = useRef(false);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryChoice = useRef<{ choice: number; timedOut: boolean } | null>(null);
-  const finished = status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0);
+  const finished =
+    status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0 || completedCourse);
   const question = round.question;
   const clock = question ? Math.max(0, question.budget - round.elapsed * question.drain) : 0;
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
@@ -117,7 +128,7 @@ export function MathArcade({
         status === "playing" && !finished ? ".math-answer-button" : ".math-start-button",
       )
       ?.focus();
-  }, [status, finished]);
+  }, [status, finished, milestone]);
   useEffect(() => {
     if (status !== "countdown" || pending) return;
     audio.current?.play(countdown as 1 | 2 | 3);
@@ -128,7 +139,7 @@ export function MathArcade({
     return () => clearTimeout(timer);
   }, [status, countdown, pending]);
   useEffect(() => {
-    if (status !== "playing" || pending || feedback || error || finished) return;
+    if (status !== "playing" || pending || feedback || milestone || error || finished) return;
     let previous = performance.now();
     const timer = setInterval(() => {
       const now = performance.now(),
@@ -142,7 +153,7 @@ export function MathArcade({
       }));
     }, 100);
     return () => clearInterval(timer);
-  }, [status, pending, feedback, error, finished]);
+  }, [status, pending, feedback, milestone, error, finished]);
   useEffect(() => {
     if (!finished) return;
     audio.current?.play("finish");
@@ -198,6 +209,8 @@ export function MathArcade({
     setPending(true);
     roundOwner.current = localStorage.getItem(ACCOUNT_OWNER_KEY);
     setError("");
+    setMilestone(null);
+    setCompletedCourse(false);
     retryChoice.current = null;
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     try {
@@ -227,7 +240,15 @@ export function MathArcade({
     }
   }
   async function answer(choice: number, timedOut = false) {
-    if (!question || status !== "playing" || finished || answerLock.current || feedback) return;
+    if (
+      !question ||
+      status !== "playing" ||
+      finished ||
+      answerLock.current ||
+      feedback ||
+      milestone
+    )
+      return;
     if (!timedOut) {
       audio.current ??= createMathSound();
       audio.current.unlock();
@@ -279,13 +300,18 @@ export function MathArcade({
         () => {
           setRound((value) => ({ ...value, question: result.question, elapsed: 0 }));
           setFeedback(null);
+          if (result.milestone) {
+            setMilestone(result.milestone);
+            setCompletedCourse(result.milestone.courseComplete);
+            audio.current?.play("mastery");
+          }
           answerLock.current = false;
         },
         result.correct ? 650 : 1300,
       );
-    } catch (cause) {
+    } catch {
       if (!controller.current?.signal.aborted)
-        setError(cause instanceof Error ? cause.message : "Não foi possível avaliar a resposta.");
+        setError("Não foi possível avaliar esta conta. Tente novamente ou volte à ilha.");
       answerLock.current = false;
     } finally {
       setPending(false);
@@ -299,13 +325,26 @@ export function MathArcade({
       );
   });
   useEffect(() => {
-    if (clock > 0 || !question || status !== "playing" || finished || feedback || pending || error)
+    if (
+      clock > 0 ||
+      !question ||
+      status !== "playing" ||
+      finished ||
+      feedback ||
+      milestone ||
+      pending ||
+      error
+    )
       return;
     const timer = setTimeout(() => {
       expire();
     }, 0);
     return () => clearTimeout(timer);
-  }, [clock, question, status, finished, feedback, pending, error]);
+  }, [clock, question, status, finished, feedback, milestone, pending, error]);
+  useEffect(() => {
+    if (milestone)
+      root.current?.querySelector<HTMLButtonElement>(".math-mastery-continue")?.focus();
+  }, [milestone]);
   useEffect(() => {
     if (status !== "leaving") return;
     const timer = setTimeout(onBack, isMotionReduced() ? 0 : 650);
@@ -313,321 +352,378 @@ export function MathArcade({
   }, [status, onBack]);
 
   return createPortal(
-    <section
-      ref={root}
-      className={
-        "math-arcade math-arcade--adaptive is-" + status + (finished ? " is-finished" : "")
-      }
-      aria-label="Desafio de Matemática"
-      style={
-        {
-          "--math-color": course.color,
-          "--math-shade": course.shade,
-          "--math-light": course.light,
-        } as CSSProperties
-      }
-      onKeyDown={(event) => {
-        if (event.key === "Tab") {
-          const buttons =
-            root.current?.querySelectorAll<HTMLButtonElement>("button:not([disabled])");
-          const first = buttons?.[0],
-            last = buttons?.[buttons.length - 1];
-          if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last?.focus();
-          } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first?.focus();
+    <PaperDigitsSource source="#math-">
+      <section
+        ref={root}
+        className={
+          "math-arcade math-arcade--adaptive is-" + status + (finished ? " is-finished" : "")
+        }
+        aria-label="Desafio de Matemática"
+        style={
+          {
+            "--math-color": course.color,
+            "--math-shade": course.shade,
+            "--math-light": course.light,
+          } as CSSProperties
+        }
+        onKeyDown={(event) => {
+          if (event.key === "Tab") {
+            const buttons =
+              root.current?.querySelectorAll<HTMLButtonElement>("button:not([disabled])");
+            const first = buttons?.[0],
+              last = buttons?.[buttons.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last?.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first?.focus();
+            }
           }
-        }
-        if (
-          !event.repeat &&
-          /^[1-4]$/.test(event.key) &&
-          status === "playing" &&
-          !finished &&
-          !pending &&
-          !error &&
-          !feedback
-        ) {
-          event.preventDefault();
-          const index = Number(event.key) - 1;
-          root.current?.querySelectorAll<HTMLButtonElement>(".math-answer-button")[index]?.focus();
-          void answer(question!.choices[index]!);
-        }
-      }}
-    >
-      <button
-        className="secondary-button math-world-back"
-        type="button"
-        disabled={status === "leaving"}
-        onClick={() => {
-          controller.current?.abort();
-          setStatus("leaving");
+          if (
+            !event.repeat &&
+            /^[1-4]$/.test(event.key) &&
+            status === "playing" &&
+            !finished &&
+            !pending &&
+            !error &&
+            !feedback &&
+            !milestone
+          ) {
+            event.preventDefault();
+            const index = Number(event.key) - 1;
+            root.current
+              ?.querySelectorAll<HTMLButtonElement>(".math-answer-button")
+              [index]?.focus();
+            void answer(question!.choices[index]!);
+          }
         }}
       >
-        <PaperArrow back /> Voltar às ilhas
-      </button>
-      <div className="math-game-landscape" aria-hidden="true">
-        <MathPlaceScene course={courseId} />
-      </div>
-      <div className="math-background-symbols" aria-hidden="true">
-        {["+", "−", "×", "÷", "=", "%", "π", "√", "∑", "∞", "±", "∫"].map((symbol, index) => (
-          <span key={symbol} style={{ "--symbol": index } as CSSProperties}>
-            {symbol}
-          </span>
-        ))}
-      </div>
-      <div className="math-game-floor" aria-hidden="true" />
-      <main className="math-arcade-stage" aria-busy={pending}>
-        {status === "ready" ? (
-          <div className="math-welcome">
-            <h1 className="visually-hidden">{course.title}</h1>
-            <div className="math-course-emblem">
-              <MathPlaceScene course={courseId} animate />
-              <MathUserAvatar />
-            </div>
-            <button
-              className="primary-button math-start-button"
-              type="button"
-              disabled={pending}
-              onClick={() => void start()}
-            >
-              <MathIcon name="start" /> Vamos calcular!
-            </button>
-          </div>
-        ) : status === "countdown" ? (
-          <div className="math-countdown" role="status" aria-live="assertive">
-            <MathUserAvatar />
-            <span key={countdown}>
-              <PaperDigits value={String(countdown)} />
+        <div
+          className="math-digit-definitions"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: mathDigitsSvg }}
+        />
+        <button
+          className="secondary-button math-world-back"
+          type="button"
+          disabled={status === "leaving"}
+          onClick={() => {
+            controller.current?.abort();
+            setStatus("leaving");
+          }}
+        >
+          <PaperArrow back /> Voltar às ilhas
+        </button>
+        <div className="math-game-landscape" aria-hidden="true">
+          <MathPlaceScene course={courseId} />
+        </div>
+        <div className="math-background-symbols" aria-hidden="true">
+          {["+", "−", "×", "÷", "=", "%", "π", "√", "∑", "∞", "±", "∫"].map((symbol, index) => (
+            <span key={symbol} style={{ "--symbol": index } as CSSProperties}>
+              {symbol}
             </span>
-          </div>
-        ) : finished ? (
-          <div className="math-results" aria-live="polite">
-            <div className="math-result-burst" aria-hidden="true">
-              {Array.from({ length: 16 }, (_, index) => (
-                <i key={index} style={{ "--spark-index": index } as CSSProperties} />
-              ))}
-            </div>
-            <MathUserAvatar mood="finished" />
-            <h1 className="visually-hidden">{round.points + " pontos"}</h1>
-            <div className="math-result-score" aria-hidden="true">
-              <RoomPointsIcon />
-              <MathNumber value={displayedScore} />
-            </div>
-            <p>
-              {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
-            </p>
-            <span className="math-result-topic">{course.topics[round.progress.level]}</span>
-            {earnedChest && (
+          ))}
+        </div>
+        <div className="math-game-floor" aria-hidden="true" />
+        <main className="math-arcade-stage" aria-busy={pending} data-question-seed={question?.seed}>
+          {status === "ready" ? (
+            <div className="math-welcome">
+              <h1 className="visually-hidden">{course.title}</h1>
+              <div className="math-course-emblem">
+                <MathPlaceScene course={courseId} animate />
+                <MathUserAvatar />
+              </div>
               <button
+                className="primary-button math-start-button"
                 type="button"
-                className="math-earned-chest"
-                aria-label="Levar baú aos espaços da ilha"
-                onClick={(event) => {
-                  const rect = event.currentTarget.getBoundingClientRect();
-                  audio.current?.play(
-                    earnedChest.kind === "arcane" ? "arcaneUnlock" : "chestUnlock",
-                  );
-                  if (onChestReturn)
-                    onChestReturn({
-                      x: rect.x + rect.width / 2,
-                      y: rect.y + rect.height / 2,
-                      size: 110,
-                      id: roundId.current,
-                    });
-                  else setStatus("leaving");
-                }}
+                disabled={pending}
+                onClick={() => void start()}
               >
-                <CommonMathChest arcane={earnedChest.kind === "arcane"} />
-                <span>
-                  Você ganhou um baú {earnedChest.kind === "arcane" ? "arcano" : "comum"}!
-                </span>
+                <MathIcon name="start" /> Vamos calcular!
               </button>
-            )}
-            {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
-              <p className="math-result-topic">
-                Os três espaços de baús estão ocupados. Seus pontos foram guardados.
-              </p>
-            )}
-            <button
-              className="primary-button math-start-button"
-              type="button"
-              disabled={pending}
-              onClick={() => void start()}
-            >
-              <MathIcon name="retry" /> Tentar de novo
-            </button>
-          </div>
-        ) : question ? (
-          <>
-            <div className="math-game-stats">
-              <div className="math-score" aria-label={round.points + " pontos"}>
-                <RoomPointsIcon />
-                <MathNumber value={round.points} />
-              </div>
-              <div
-                className="math-time"
-                aria-label={Math.ceil(clock) + " segundos para esta conta"}
-              >
-                <RoomClockIcon />
-                <MathNumber value={Math.ceil(clock)} />
-                <RoomSecondsUnit />
-              </div>
-              <div className="math-hearts" aria-label={round.lives + " chances restantes"}>
-                {Array.from({ length: 3 }, (_, index) => (
-                  <span
-                    key={index}
-                    className={
-                      index < round.lives
-                        ? ""
-                        : feedback && !feedback.correct && index === round.lives
-                          ? "is-breaking"
-                          : "is-empty"
-                    }
-                  >
-                    <MathIcon name="heart" />
-                    {feedback && !feedback.correct && index === round.lives && (
-                      <MathIcon name="heart" />
-                    )}
-                  </span>
+            </div>
+          ) : status === "countdown" ? (
+            <div className="math-countdown" role="status" aria-live="assertive">
+              <MathUserAvatar />
+              <span key={countdown}>
+                <PaperDigits value={String(countdown)} />
+              </span>
+            </div>
+          ) : milestone ? (
+            <div className="math-mastery" role="status">
+              <div className="math-result-burst" aria-hidden="true">
+                {Array.from({ length: 16 }, (_, index) => (
+                  <i key={index} style={{ "--spark-index": index } as CSSProperties} />
                 ))}
               </div>
-            </div>
-            <div
-              className="math-reserve"
-              role="progressbar"
-              aria-label="Reserva de tempo"
-              aria-valuemin={0}
-              aria-valuemax={60}
-              aria-valuenow={Math.min(60, Math.round(round.bank))}
-            >
-              <span style={{ width: Math.min(100, (round.bank / 60) * 100) + "%" }} />
-            </div>
-            <div className="math-game-question">
-              <MathUserAvatar />
-              <span className="math-topic">{question.topic}</span>
-              <h1 aria-label={"Quanto é " + question.expression + "?"}>
-                <MathExpression value={question.expression} />
-                {!question.expression.includes("?") && (
-                  <>
-                    <span aria-hidden="true" className="math-equals">
-                      =
-                    </span>
-                    <MathIcon name="question" />
-                  </>
-                )}
-              </h1>
-              {round.streak > 3 && (
-                <div className="math-insane" role="status">
-                  <MathIcon name="flame" />
-                  <span>
-                    VOCÊ ESTÁ INSANO! <b>{round.streak}×</b>
-                  </span>
-                </div>
+              <MathUserAvatar mood="correct" />
+              <div className="math-mastery-seal" aria-hidden="true">
+                <RoomPointsIcon />
+                <MathNumber value={100} />%
+              </div>
+              <h1>Parabéns, você se superou!</h1>
+              <strong>{milestone.topic}</strong>
+              <p>Você concluiu 100% deste desafio com seis acertos seguidos.</p>
+              {milestone.courseComplete ? (
+                <p>
+                  Você concluiu todos os temas de {course.subject}.{" "}
+                  {nextCourse
+                    ? `Próxima parada: ${nextCourse.title}.`
+                    : "Você chegou ao último lugar desta ilha!"}
+                </p>
+              ) : (
+                <p>Próximo tema: {course.topics[round.progress.level]}.</p>
               )}
-              {feedback?.timedOut && (
-                <div className="math-timeout-reaction" role="status">
-                  <b>{feedback.message}</b>
-                  <span>
-                    −<MathNumber value={4} />
-                    <RoomSecondsUnit />
-                  </span>
-                </div>
-              )}
+              <button
+                type="button"
+                className="primary-button math-mastery-continue"
+                onClick={() => {
+                  audio.current?.unlock();
+                  setMilestone(null);
+                }}
+              >
+                {milestone.courseComplete ? "Ver minha conquista" : "Continuar explorando"}
+                <PaperArrow />
+              </button>
             </div>
-            <div className="math-answers">
-              {question.choices.map((choice, index) => (
-                <div className="math-answer-wrap" key={index}>
-                  <button
-                    className="math-answer-button"
-                    type="button"
-                    data-tone={index}
-                    data-feedback={
-                      feedback?.choice === choice
-                        ? feedback.correct
-                          ? "correct"
-                          : "wrong"
-                        : undefined
-                    }
-                    aria-label={"Resposta " + choice}
-                    aria-disabled={pending || !!feedback || !!error}
-                    onClick={() => {
-                      if (!pending && !error) {
-                        audio.current?.unlock();
-                        void answer(choice);
-                      }
-                    }}
-                  >
-                    <span className="math-answer-key" aria-hidden="true">
-                      {index + 1}
-                    </span>
-                    <MathNumber value={choice} />
-                    <span className="math-answer-fold" aria-hidden="true" />
-                  </button>
-                  {feedback?.choice === choice && (
-                    <div
+          ) : finished ? (
+            <div className="math-results" aria-live="polite">
+              <div className="math-result-burst" aria-hidden="true">
+                {Array.from({ length: 16 }, (_, index) => (
+                  <i key={index} style={{ "--spark-index": index } as CSSProperties} />
+                ))}
+              </div>
+              <MathUserAvatar mood="finished" />
+              <h1 className="visually-hidden">{round.points + " pontos"}</h1>
+              <div className="math-result-score" aria-hidden="true">
+                <RoomPointsIcon />
+                <MathNumber value={displayedScore} />
+              </div>
+              <p>
+                {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
+              </p>
+              <span className="math-result-topic">{course.topics[round.progress.level]}</span>
+              {completedCourse && nextCourse && onNextCourse && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => onNextCourse(nextCourse.id)}
+                >
+                  Explorar {nextCourse.title}
+                  <PaperArrow />
+                </button>
+              )}
+              {earnedChest && (
+                <button
+                  type="button"
+                  className="math-earned-chest"
+                  aria-label="Levar baú aos espaços da ilha"
+                  onClick={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    audio.current?.play(
+                      earnedChest.kind === "arcane" ? "arcaneUnlock" : "chestUnlock",
+                    );
+                    if (onChestReturn)
+                      onChestReturn({
+                        x: rect.x + rect.width / 2,
+                        y: rect.y + rect.height / 2,
+                        size: 110,
+                        id: roundId.current,
+                      });
+                    else setStatus("leaving");
+                  }}
+                >
+                  <CommonMathChest arcane={earnedChest.kind === "arcane"} />
+                  <span>
+                    Você ganhou um baú {earnedChest.kind === "arcane" ? "arcano" : "comum"}!
+                  </span>
+                </button>
+              )}
+              {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
+                <p className="math-result-topic">
+                  Os três espaços de baús estão ocupados. Seus pontos foram guardados.
+                </p>
+              )}
+              <button
+                className="primary-button math-start-button"
+                type="button"
+                disabled={pending}
+                onClick={() => void start()}
+              >
+                <MathIcon name="retry" /> Tentar de novo
+              </button>
+            </div>
+          ) : question ? (
+            <>
+              <div className="math-game-stats">
+                <div className="math-score" aria-label={round.points + " pontos"}>
+                  <RoomPointsIcon />
+                  <MathNumber value={round.points} />
+                </div>
+                <div
+                  className="math-time"
+                  aria-label={Math.ceil(clock) + " segundos para esta conta"}
+                >
+                  <RoomClockIcon />
+                  <MathNumber value={Math.ceil(clock)} />
+                  <RoomSecondsUnit />
+                </div>
+                <div className="math-hearts" aria-label={round.lives + " chances restantes"}>
+                  {Array.from({ length: 3 }, (_, index) => (
+                    <span
+                      key={index}
                       className={
-                        "math-answer-reaction " + (feedback.correct ? "is-correct" : "is-wrong")
+                        index < round.lives
+                          ? ""
+                          : feedback && !feedback.correct && index === round.lives
+                            ? "is-breaking"
+                            : "is-empty"
                       }
-                      role="status"
                     >
-                      <div>
-                        <b>{feedback.message}</b>
-                        {feedback.correct ? (
-                          <span>
-                            <RoomPointsIcon />+<MathNumber value={feedback.points} />
-                          </span>
-                        ) : (
-                          <span>
-                            Era <MathNumber value={question.answer} />
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                      <MathIcon name="heart" />
+                      {feedback && !feedback.correct && index === round.lives && (
+                        <MathIcon name="heart" />
+                      )}
+                    </span>
+                  ))}
                 </div>
-              ))}
+              </div>
+              <div
+                className="math-reserve"
+                role="progressbar"
+                aria-label="Reserva de tempo"
+                aria-valuemin={0}
+                aria-valuemax={60}
+                aria-valuenow={Math.min(60, Math.round(round.bank))}
+              >
+                <span style={{ width: Math.min(100, (round.bank / 60) * 100) + "%" }} />
+              </div>
+              <div className="math-game-question">
+                <MathUserAvatar />
+                <span className="math-topic">{question.topic}</span>
+                <h1 aria-label={"Quanto é " + question.expression + "?"}>
+                  <MathExpression value={question.expression} />
+                  {!question.expression.includes("?") && (
+                    <>
+                      <span aria-hidden="true" className="math-equals">
+                        =
+                      </span>
+                      <MathIcon name="question" />
+                    </>
+                  )}
+                </h1>
+                {round.streak > 3 && (
+                  <div className="math-insane" role="status">
+                    <MathIcon name="flame" />
+                    <span>
+                      VOCÊ ESTÁ INSANO! <b>{round.streak}×</b>
+                    </span>
+                  </div>
+                )}
+                {feedback?.timedOut && (
+                  <div className="math-timeout-reaction" role="status">
+                    <b>{feedback.message}</b>
+                    <span>
+                      −<MathNumber value={4} />
+                      <RoomSecondsUnit />
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="math-answers">
+                {question.choices.map((choice, index) => (
+                  <div className="math-answer-wrap" key={index}>
+                    <button
+                      className="math-answer-button"
+                      type="button"
+                      data-tone={index}
+                      data-feedback={
+                        feedback?.choice === choice
+                          ? feedback.correct
+                            ? "correct"
+                            : "wrong"
+                          : undefined
+                      }
+                      aria-label={"Resposta " + choice}
+                      aria-disabled={pending || !!feedback || !!error}
+                      onClick={() => {
+                        if (!pending && !error) {
+                          audio.current?.unlock();
+                          void answer(choice);
+                        }
+                      }}
+                    >
+                      <span className="math-answer-key" aria-hidden="true">
+                        {index + 1}
+                      </span>
+                      <MathNumber value={choice} />
+                      <span className="math-answer-fold" aria-hidden="true" />
+                    </button>
+                    {feedback?.choice === choice && (
+                      <div
+                        className={
+                          "math-answer-reaction " + (feedback.correct ? "is-correct" : "is-wrong")
+                        }
+                        role="status"
+                      >
+                        <div>
+                          <b>{feedback.message}</b>
+                          {feedback.correct ? (
+                            <span>
+                              <RoomPointsIcon />+<MathNumber value={feedback.points} />
+                            </span>
+                          ) : (
+                            <span>
+                              Era <MathNumber value={question.answer} />
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : null}
+          {pending && status === "ready" && (
+            <div className="math-api-loading">
+              <HelenaLoading compact label="Preparando conta" />
+              <span className="visually-hidden">Preparando conta com a Olena</span>
             </div>
-          </>
-        ) : null}
-        {pending && status === "ready" && (
-          <div className="math-api-loading">
-            <HelenaLoading compact label="Preparando conta" />
-            <span className="visually-hidden">Preparando conta com a Olena</span>
-          </div>
+          )}
+          {error && (
+            <div role="alert" className="math-api-error">
+              <p>{error}</p>
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={pending}
+                onClick={() =>
+                  retryChoice.current === null
+                    ? void start()
+                    : void answer(retryChoice.current.choice, retryChoice.current.timedOut)
+                }
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+          {storageWarning && (
+            <p role="alert" className="math-storage-warning">
+              Não foi possível salvar seu avanço neste aparelho.
+            </p>
+          )}
+        </main>
+        {finished && (
+          <RoomRewardNotice
+            reward={reward}
+            activity="mathematics"
+            delayMs={isMotionReduced() ? 0 : 1200}
+          />
         )}
-        {error && (
-          <div role="alert" className="math-api-error">
-            <p>{error}</p>
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={pending}
-              onClick={() =>
-                retryChoice.current === null
-                  ? void start()
-                  : void answer(retryChoice.current.choice, retryChoice.current.timedOut)
-              }
-            >
-              Tentar novamente
-            </button>
-          </div>
-        )}
-        {storageWarning && (
-          <p role="alert" className="math-storage-warning">
-            Não foi possível salvar seu avanço neste aparelho.
-          </p>
-        )}
-      </main>
-      {finished && (
-        <RoomRewardNotice
-          reward={reward}
-          activity="mathematics"
-          delayMs={isMotionReduced() ? 0 : 1200}
-        />
-      )}
-    </section>,
+      </section>
+    </PaperDigitsSource>,
     document.body,
   );
 }
