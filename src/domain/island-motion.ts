@@ -6,6 +6,8 @@
  * as partículas são camadas por cima. Este módulo só calcula: nada aqui desenha ou toca o DOM.
  */
 
+import { analyzePlace, type PlaceModel, type PlaceRig } from "./place-rig";
+
 export const ISLAND_CYCLE_SECONDS = 6;
 const TAU = Math.PI * 2;
 /** Acima disto um pixel conta como "visível" para separar peças. */
@@ -34,7 +36,15 @@ export type FloatingPiece = {
   free: { up: number; down: number; left: number; right: number };
 };
 
-export type Spark = { x: number; y: number; radius: number; phase: number; period: number };
+export type Spark = {
+  x: number;
+  y: number;
+  radius: number;
+  phase: number;
+  period: number;
+  /** Índice da parte móvel que carrega a faísca (ouro que anda junto), ou -1 se ela fica parada. */
+  part: number;
+};
 export type Mote = {
   x: number;
   y: number;
@@ -53,6 +63,10 @@ export type IslandModel = {
   gold: Uint8Array;
   sparks: Spark[];
   motes: Mote[];
+  /** Partes móveis recortadas da arte (lugares da ilha), ou `null` na ilha das disciplinas. */
+  place: PlaceModel | null;
+  /** Se o conjunto todo flutua junto (a ilha das disciplinas) ou só as partes se mexem. */
+  group: boolean;
 };
 
 type Component = { pixels: Int32Array; area: number };
@@ -309,6 +323,7 @@ function sparksFrom(gold: Uint8Array, size: number): Spark[] {
         radius: Math.max(9, Math.min(20, Math.sqrt(component.area) * 0.9)),
         phase: (index * 0.173) % 1,
         period: index % 3 === 2 ? 6 : 3,
+        part: -1,
       };
     });
 }
@@ -339,7 +354,11 @@ function motesFrom(labels: Int32Array, size: number): Mote[] {
 }
 
 /** Analisa a arte (RGBA quadrado) e devolve tudo o que a animação precisa. */
-export function analyzeIsland(rgba: Uint8ClampedArray, size: number): IslandModel {
+export function analyzeIsland(
+  rgba: Uint8ClampedArray,
+  size: number,
+  rig?: PlaceRig,
+): IslandModel {
   const { labels, solid, count } = labelPixels(rgba, size);
   const total = size * size;
   const solidMain = new Uint8Array(total);
@@ -403,13 +422,19 @@ export function analyzeIsland(rgba: Uint8ClampedArray, size: number): IslandMode
   }
 
   const gold = goldMask(rgba, labels);
+  const place = rig ? analyzePlace(rgba, size, rig) : null;
+  const sparks = sparksFrom(gold, size);
+  if (place)
+    for (const spark of sparks) spark.part = (place.partMask[spark.y * size + spark.x] ?? 0) - 1;
   return {
     size,
     labels,
     pieces,
     gold,
-    sparks: sparksFrom(gold, size),
+    sparks,
     motes: motesFrom(labels, size),
+    place,
+    group: rig?.group !== false,
   };
 }
 

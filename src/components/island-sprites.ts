@@ -1,4 +1,5 @@
 import {
+  ISLAND_CYCLE_SECONDS,
   glowPulse,
   groupPose,
   moteState,
@@ -8,6 +9,7 @@ import {
   type IslandModel,
   type FloatingPiece,
 } from "../domain/island-motion";
+import { movePoint, partPose, type PartModel, type PlaceRig } from "../domain/place-rig";
 import { analyzeOffThread, type IslandAnalyzer } from "./island-analyzer";
 
 const TAU = Math.PI * 2;
@@ -28,6 +30,15 @@ export type IslandSprites = {
   glow: HTMLCanvasElement;
   glowPadding: number;
   sweep: HTMLCanvasElement;
+  /** Partes móveis recortadas da arte (lugares da ilha), na ordem em que são desenhadas. */
+  parts: { part: PartModel; canvas: HTMLCanvasElement }[];
+  /** A arte inteira parada, só para o reflexo de luz cobrir também o que se mexe. */
+  outline: HTMLCanvasElement | null;
+  /** Máscara da água recortada na sua caixa, ou `null`. */
+  water: HTMLCanvasElement | null;
+  waterBox: { x: number; y: number; w: number; h: number };
+  /** Folha onde o reflexo da água é desenhado a cada quadro. */
+  shimmer: HTMLCanvasElement | null;
 };
 
 function makeCanvas(width: number, height: number): HTMLCanvasElement {
@@ -42,16 +53,18 @@ export async function buildIslandSprites(
   image: HTMLImageElement,
   size: number,
   analyze: IslandAnalyzer = analyzeOffThread,
+  rig?: PlaceRig,
 ): Promise<IslandSprites | null> {
   const source = makeCanvas(size, size);
   const sourceContext = source.getContext("2d", { willReadFrequently: true });
   if (!sourceContext) return null;
   sourceContext.drawImage(image, 0, 0, size, size);
   const rgba = sourceContext.getImageData(0, 0, size, size).data;
-  const model = await analyze(rgba, size);
+  const model = await analyze(rgba, size, rig);
+  const place = model.place;
 
   const paint = (
-    label: (value: number) => boolean,
+    label: (value: number, index: number) => boolean,
     box?: { x: number; y: number; w: number; h: number },
   ) => {
     const x0 = box?.x ?? 0;
@@ -66,7 +79,7 @@ export async function buildIslandSprites(
         const gy = y0 + y;
         if (gx < 0 || gy < 0 || gx >= size || gy >= size) continue;
         const k = gy * size + gx;
-        if (!label(model.labels[k] ?? -1)) continue;
+        if (!label(model.labels[k] ?? -1, k)) continue;
         const from = k * 4;
         const to = (y * w + x) * 4;
         for (let channel = 0; channel < 4; channel++)
@@ -76,7 +89,57 @@ export async function buildIslandSprites(
     return canvas;
   };
 
-  const main = paint((label) => label === 0);
+  const main = paint((label, index) => label === 0 && !place?.partMask[index]);
+  if (place) {
+    // O que a saída de uma parte revela: o entorno, em cima do recorte que ela deixou.
+    const mainContext = main.getContext("2d");
+    if (mainContext) {
+      const fills = new ImageData(size, size);
+      for (let slot = 0; slot < place.fillIndex.length; slot++) {
+        const target = (place.fillIndex[slot] ?? 0) * 4;
+        for (let channel = 0; channel < 4; channel++)
+          fills.data[target + channel] = place.fillColor[slot * 4 + channel] ?? 0;
+      }
+      const layer = makeCanvas(size, size);
+      layer.getContext("2d")?.putImageData(fills, 0, 0);
+      mainContext.drawImage(layer, 0, 0);
+    }
+  }
+  const parts = (place?.parts ?? []).map((part, index) => ({
+    part,
+    canvas: paint(
+      (_label, pixel) => place?.partMask[pixel] === index + 1,
+      part.area > 0 ? part.box : { x: 0, y: 0, w: 1, h: 1 },
+    ),
+  }));
+  const outline = place ? paint((label) => label === 0) : null;
+  let water: HTMLCanvasElement | null = null;
+  let waterBox = { x: 0, y: 0, w: 1, h: 1 };
+  if (place?.water) {
+    let minX = size;
+    let minY = size;
+    let maxX = 0;
+    let maxY = 0;
+    for (let k = 0; k < place.water.length; k++) {
+      if (!place.water[k]) continue;
+      const x = k % size;
+      const y = (k - x) / size;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+    if (maxX >= minX) {
+      waterBox = { x: minX, y: minY, w: maxX - minX + 1, h: maxY - minY + 1 };
+      const mask = new ImageData(waterBox.w, waterBox.h);
+      for (let y = 0; y < waterBox.h; y++)
+        for (let x = 0; x < waterBox.w; x++)
+          if (place.water[(waterBox.y + y) * size + waterBox.x + x])
+            mask.data[(y * waterBox.w + x) * 4 + 3] = 255;
+      water = makeCanvas(waterBox.w, waterBox.h);
+      water.getContext("2d")?.putImageData(mask, 0, 0);
+    }
+  }
   const pieces = model.pieces.map((piece) => ({
     piece,
     canvas: paint((label) => label === piece.label, piece.box),
@@ -85,7 +148,7 @@ export async function buildIslandSprites(
   const goldCanvas = makeCanvas(size, size);
   const goldImage = new ImageData(size, size);
   for (let k = 0; k < model.gold.length; k++) {
-    if (!model.gold[k]) continue;
+    if (!model.gold[k] || place?.partMask[k]) continue;
     const i = k * 4;
     goldImage.data[i] = rgba[i] ?? 0;
     goldImage.data[i + 1] = rgba[i + 1] ?? 0;
@@ -119,6 +182,11 @@ export async function buildIslandSprites(
     glow,
     glowPadding,
     sweep: makeCanvas(size, size),
+    parts,
+    outline,
+    water,
+    waterBox,
+    shimmer: water ? makeCanvas(waterBox.w, waterBox.h) : null,
   };
 }
 
@@ -183,6 +251,49 @@ function drawMote(g: CanvasRenderingContext2D, x: number, y: number, size: numbe
 }
 
 /**
+ * Reflexos que correm pela água: dois jogos de riscos pontilhados em sentidos opostos, cortados
+ * pela máscara da água. Os deslocamentos são múltiplos exatos do espaçamento, então o ciclo fecha.
+ */
+function drawWater(g: CanvasRenderingContext2D, sprites: IslandSprites, t: number, k: number) {
+  const { water, shimmer, size, padding, waterBox } = sprites;
+  const context = shimmer?.getContext("2d");
+  if (!water || !shimmer || !context) return;
+  const unit = size / 800;
+  const progress =
+    (((t % ISLAND_CYCLE_SECONDS) + ISLAND_CYCLE_SECONDS) % ISLAND_CYCLE_SECONDS) /
+    ISLAND_CYCLE_SECONDS;
+  const gap = 34 * unit;
+  const dash = [16 * unit, 20 * unit];
+  context.globalCompositeOperation = "source-over";
+  context.clearRect(0, 0, waterBox.w, waterBox.h);
+  context.lineCap = "round";
+  context.lineWidth = 3.2 * unit;
+  const lines = (direction: number, drift: number, alpha: number) => {
+    context.strokeStyle = `rgba(196, 232, 255, ${alpha})`;
+    context.setLineDash(dash);
+    context.lineDashOffset = direction * progress * (dash[0]! + dash[1]!);
+    const reach = waterBox.w * 0.5 + gap;
+    for (let c = -reach - gap; c < waterBox.h + gap; c += gap) {
+      const y0 = c + drift * progress * gap;
+      context.beginPath();
+      context.moveTo(-20, y0 - 10);
+      context.lineTo(waterBox.w + 20, y0 + (waterBox.w + 40) * 0.5 - 10);
+      context.stroke();
+    }
+  };
+  lines(1, 1, 0.55);
+  lines(-1, -1, 0.3);
+  context.setLineDash([]);
+  context.globalCompositeOperation = "destination-in";
+  context.drawImage(water, 0, 0);
+  g.save();
+  g.globalCompositeOperation = "screen";
+  g.globalAlpha = 0.5 * k;
+  g.drawImage(shimmer, padding + waterBox.x, padding + waterBox.y);
+  g.restore();
+}
+
+/**
  * Desenha um quadro. `k` (0 a 1) é o envelope da animação: com 0 o desenho é exatamente a arte
  * parada, e a animação entra e sai por ele, sem saltos. `deviceScale` leva o canvas lógico aos
  * pixels reais da tela.
@@ -198,7 +309,7 @@ export function drawIsland(
   const unit = size / 800;
   g.setTransform(deviceScale, 0, 0, deviceScale, 0, 0);
   g.clearRect(0, 0, logicalSize, logicalSize);
-  const pose = groupPose(t, k);
+  const pose = model.group ? groupPose(t, k) : { bob: 0, rotation: 0, scale: 1 };
   const px = padding + size * PIVOT.x;
   const py = padding + size * PIVOT.y;
   g.save();
@@ -213,6 +324,23 @@ export function drawIsland(
     g.drawImage(canvas, padding + piece.box.x + dx, padding + piece.box.y + dy);
   }
   g.drawImage(sprites.main, padding, padding);
+  if (sprites.water && sprites.shimmer && k > 0.001) drawWater(g, sprites, t, k);
+  for (const { part, canvas } of sprites.parts) {
+    if (part.area === 0) continue;
+    const pose = partPose(part.motion, t, k);
+    g.save();
+    g.translate(padding + part.pivot.x + pose.dx * unit, padding + part.pivot.y + pose.dy * unit);
+    if (pose.rot) g.rotate(pose.rot);
+    if (pose.sx !== 1 || pose.sy !== 1) g.scale(pose.sx, pose.sy);
+    g.translate(-part.pivot.x, -part.pivot.y);
+    g.drawImage(canvas, part.box.x, part.box.y);
+    if (part.glow && k > 0.001) {
+      g.globalCompositeOperation = "lighter";
+      g.globalAlpha = (0.04 + 0.2 * glowPulse(t - part.motion.phase * part.motion.period)) * k;
+      g.drawImage(canvas, part.box.x, part.box.y);
+    }
+    g.restore();
+  }
 
   if (k > 0.001) {
     const pulse = glowPulse(t);
@@ -245,7 +373,7 @@ export function drawIsland(
         sweep.fillStyle = gradient;
         sweep.fillRect(0, 0, size, size);
         sweep.globalCompositeOperation = "destination-in";
-        sweep.drawImage(sprites.main, 0, 0);
+        sweep.drawImage(sprites.outline ?? sprites.main, 0, 0);
         g.save();
         g.globalCompositeOperation = "screen";
         g.globalAlpha = Math.sin(Math.PI * progress) * k;
@@ -255,10 +383,25 @@ export function drawIsland(
     }
     for (const spark of model.sparks) {
       const e = sparkIntensity(spark, t);
+      // A faísca de uma parte móvel anda junto com ela.
+      const carrier = spark.part >= 0 ? sprites.parts[spark.part]?.part : undefined;
+      let sx = spark.x;
+      let sy = spark.y;
+      if (carrier && carrier.area > 0) {
+        const pose = partPose(carrier.motion, t, k);
+        const moved = movePoint(
+          { ...pose, dx: pose.dx * unit, dy: pose.dy * unit },
+          carrier.pivot,
+          spark.x,
+          spark.y,
+        );
+        sx = moved.x;
+        sy = moved.y;
+      }
       drawSparkle(
         g,
-        padding + spark.x,
-        padding + spark.y,
+        padding + sx,
+        padding + sy,
         spark.radius * unit * (0.6 + 0.6 * e),
         0.35 * e,
         e * k,
