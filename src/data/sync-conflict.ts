@@ -1,6 +1,7 @@
 import { mergeMathRewards } from "./math-rewards-sync";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "./system-updates";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
+import { isMathCourse, validMathProgress, type MathProgress } from "./math-courses";
 export type SyncedItems = Record<string, string>;
 
 export type SyncedMergeResult = {
@@ -29,6 +30,40 @@ export function mergeSyncedItems(
     const baseValue = valueAt(base, key);
     const localValue = valueAt(local, key);
     const remoteValue = valueAt(remote, key);
+    if (key === "helena.mathLearning.v2") {
+      const read = (raw: string | undefined): Record<string, MathProgress> => {
+        try {
+          const value: unknown = JSON.parse(raw ?? "{}");
+          if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+          return Object.fromEntries(
+            Object.entries(value).filter(
+              ([id, progress]) => isMathCourse(id) && validMathProgress(progress),
+            ),
+          );
+        } catch {
+          return {};
+        }
+      };
+      const left = read(localValue),
+        right = read(remoteValue);
+      const merged: Record<string, MathProgress> = {};
+      for (const id of new Set([...Object.keys(left), ...Object.keys(right)])) {
+        const a = left[id],
+          b = right[id];
+        if (!a || !b) {
+          merged[id] = (a ?? b)!;
+          continue;
+        }
+        const latest = a.correct >= b.correct ? a : b;
+        merged[id] = {
+          ...latest,
+          best: Math.max(a.best, b.best),
+          mastered: (a.mastered ?? 0) | (b.mastered ?? 0),
+        };
+      }
+      items[key] = JSON.stringify(merged);
+      continue;
+    }
     if (key === SYSTEM_UPDATES_READ_KEY) {
       items[key] = mergeReadUpdates(baseValue, localValue, remoteValue);
       continue;

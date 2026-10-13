@@ -78,6 +78,11 @@ export function MathIslandJourney({
       <MathArcade
         onPractice={onPractice}
         courseId={course.id}
+        onNextCourse={(next) => {
+          setIndex(MATH_COURSES.findIndex((item) => item.id === next));
+          setChestDelivery(undefined);
+          setPhase("return");
+        }}
         onBack={() => {
           setPointsOrigin(displayedPoints.current);
           setChestDelivery(undefined);

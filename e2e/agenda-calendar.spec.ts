@@ -61,6 +61,15 @@ test.beforeEach(async ({ page }, info) => {
   await page.goto("/planejador");
 });
 
+test("day list has no obsolete Details expander and preserves event metadata", async ({ page }) => {
+  await page.getByRole("button", { name: "Ir para hoje" }).click();
+  await page.locator('button[data-date="2026-10-12"]').click();
+  const item = page.locator(".agenda-day");
+  await expect(page.getByText("Detalhes", { exact: true })).toHaveCount(0);
+  await expect(item.locator(".agenda-event-info")).toContainText("Sala 2");
+  await expect(item.locator("summary")).toHaveCount(0);
+});
+
 test("agenda toolbar uses accessible cream paper icons without duplicate arrows", async ({
   page,
 }, info) => {

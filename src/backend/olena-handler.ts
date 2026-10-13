@@ -35,11 +35,13 @@ export async function handleOlena(request: Request): Promise<Response> {
       [...url.searchParams.keys()].some((key) => !["action", "version"].includes(key)) ||
       url.searchParams.getAll("action").length !== 1 ||
       url.searchParams.getAll("version").length > 1 ||
-      (url.searchParams.has("version") && url.searchParams.get("version") !== "1")
+      (url.searchParams.has("version") && !["1", "2"].includes(url.searchParams.get("version")!))
     )
       return error(400, "invalid_request", "Parâmetros inválidos.");
-    const result = await mathResponse(request);
+    const mathVersion = url.searchParams.get("version") === "2" ? 2 : 1;
+    const result = await mathResponse(request, mathVersion);
     const response = json(result.status, result.body);
+    response.headers.set("X-Olena-API-Version", String(mathVersion));
     if (result.status === 405) response.headers.set("Allow", "POST");
     return response;
   }

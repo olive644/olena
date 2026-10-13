@@ -217,8 +217,13 @@ export function assessMath(
   const points = correct
     ? 10 + progress.level * 4 + (fast ? 6 : 0) + Math.min(5, nextStreak) * 2
     : 0;
-  const mastery = correct ? progress.mastery + (fast ? 2 : 1) : Math.max(0, progress.mastery - 1);
-  const advance = mastery >= 4 && progress.level < 5;
+  // Domínio do desafio exige seis acertos seguidos, sem premiar velocidade.
+  const mastery = correct ? progress.mastery + 1 : 0;
+  const completed = mastery >= 6;
+  const topicBit = 1 << progress.level;
+  const mastered = (progress.mastered ?? 0) | (completed ? topicBit : 0);
+  const topicMastered = completed && ((progress.mastered ?? 0) & topicBit) === 0;
+  const advance = completed && progress.level < 5;
   const errors = correct ? 0 : (progress.errors ?? 0) + 1;
   const retreat = errors >= 2 && progress.level > 0;
   return {
@@ -227,6 +232,7 @@ export function assessMath(
     fast,
     points,
     streak: nextStreak,
+    milestone: topicMastered ? { topic: question.topic, courseComplete: mastered === 63 } : null,
     message: expired
       ? "Putz! Perdeu a vez!"
       : correct
@@ -241,7 +247,8 @@ export function assessMath(
     progress: {
       ...progress,
       level: progress.level + Number(advance) - Number(retreat),
-      mastery: advance || retreat ? 0 : Math.min(3, mastery),
+      mastery: advance || retreat ? 0 : Math.min(5, mastery),
+      mastered,
       errors: retreat ? 0 : Math.min(2, errors),
       correct: progress.correct + Number(correct),
     },

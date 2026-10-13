@@ -1,7 +1,10 @@
 import { isMathCourse, validMathProgress } from "../data/math-courses.js";
 import { mathChallenge, assessMath } from "../domain/adaptive-math.js";
 
-export async function mathResponse(request: Request): Promise<{ status: number; body: unknown }> {
+export async function mathResponse(
+  request: Request,
+  version: 1 | 2 = 1,
+): Promise<{ status: number; body: unknown }> {
   if (request.method !== "POST") return { status: 405, body: { error: "Método não permitido." } };
   if (!request.headers.get("content-type")?.startsWith("application/json"))
     return { status: 415, body: { error: "Envie JSON." } };
@@ -22,6 +25,8 @@ export async function mathResponse(request: Request): Promise<{ status: number; 
     return { status: 400, body: { error: "Progresso inválido." } };
   const course = input["course"],
     progress = input["progress"];
+  if (version === 1 && (progress.mastery > 3 || progress.mastered !== undefined))
+    return { status: 400, body: { error: "Progresso inválido." } };
   if (input["action"] === "question")
     return { status: 200, body: { question: mathChallenge(course, progress), progress } };
   const question = input["question"];
@@ -75,5 +80,33 @@ export async function mathResponse(request: Request): Promise<{ status: number; 
     Number(input["streak"]),
     input["timedOut"] === true,
   );
+  if (version === 1) {
+    const mastery = result.correct
+      ? progress.mastery + (result.fast ? 2 : 1)
+      : Math.max(0, progress.mastery - 1);
+    const advance = mastery >= 4 && progress.level < 5;
+    const errors = result.correct ? 0 : (progress.errors ?? 0) + 1;
+    const retreat = errors >= 2 && progress.level > 0;
+    const legacy = {
+      level: progress.level + Number(advance) - Number(retreat),
+      mastery: advance || retreat ? 0 : Math.min(3, mastery),
+      errors: retreat ? 0 : Math.min(2, errors),
+      correct: result.progress.correct,
+      best: progress.best,
+    };
+    return {
+      status: 200,
+      body: {
+        correct: result.correct,
+        timedOut: result.timedOut,
+        fast: result.fast,
+        points: result.points,
+        streak: result.streak,
+        message: result.message,
+        progress: legacy,
+        question: mathChallenge(course, legacy),
+      },
+    };
+  }
   return { status: 200, body: { ...result, question: mathChallenge(course, result.progress) } };
 }
