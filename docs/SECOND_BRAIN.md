@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-13, revisão do rail: proprietário rejeitou a expansão automática. Sidebar voltou ao único estado de abertura manual; navigation-refinements mostra dicas pequenas de papel nos rótulos existentes por hover/focus-visible, mantendo 84 px. Validar claro/escuro, Perfil, item ativo, teclado e abertura manual no teste agenda-task-navigation. Não reintroduzir sidebar--preview ou reposicionar o conteúdo ao inspecionar ícones.
+
 2026-10-13, tarefas e navegação: StudyTask.color é opcional e validado como hex de seis dígitos, persistido e sincronizado no mesmo workspace dos eventos. AgendaColorPalette aceita rótulo para reutilização em tarefas. AgendaCalendarViews dimensiona faixa compartilhada para até três itens sem cortar bases de papel e ajusta o eixo horário. Sidebar reutiliza o menu expandido para alargar temporariamente a barra de 84 para 260 px por hover sobre ícone ou foco, sem etiqueta solta, deslocamento do conteúdo ou mudança na navegação móvel. Regressões: task-color.test.ts e agenda-task-navigation.spec.ts em desktop/mobile.
 
 Matemática usa action=math&version=2 para consumidores das conquistas. version=1 mantém contrato e avanço legados. O catálogo geral continua v1. Respostas mais novas de abas v1 são reconhecidas na leitura, preservando conquistas v2 e reiniciando só a sequência parcial incompatível.

@@ -65,10 +65,11 @@ test("task colors and unclipped day/week strips stay current on desktop and mobi
   await expect(dialog).not.toBeVisible();
 });
 
-test("desktop rail extends labels on hover and keyboard without shifting content", async ({
+test("desktop rail stays compact with small paper labels in both themes", async ({
   page,
 }, info) => {
   test.skip(info.project.name !== "desktop", "Desktop hover rail only");
+  await expect(page.getByRole("searchbox", { name: "Buscar na agenda" })).toBeVisible();
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => {
       document.documentElement.dataset["theme"] = value;
@@ -79,27 +80,65 @@ test("desktop rail extends labels on hover and keyboard without shifting content
     const item = rail.getByRole("button", { name: "Hábitos", exact: true });
     const label = item.locator("span").last();
     await item.hover();
-    await expect(rail).toHaveCSS("width", "260px");
+    await expect(rail).toHaveCSS("width", "84px");
     await expect(label).toBeVisible();
-    await expect(rail.locator(".nav-item--active > span:last-child")).toHaveCSS(
+    await expect(label).toHaveCSS(
       "color",
-      "rgb(255, 249, 239)",
+      theme === "dark" ? "rgb(255, 249, 239)" : "rgb(41, 36, 50)",
     );
+    await expect(label).toHaveCSS(
+      "background-color",
+      theme === "dark" ? "rgb(41, 36, 50)" : "rgb(255, 249, 239)",
+    );
+    const tip = await label.boundingBox();
+    expect(tip!.height).toBeLessThan(32);
+    expect(tip!.width).toBeLessThan(180);
     expect((await page.locator(".main-content").boundingBox())!.x).toBe(mainBefore!.x);
     await page.mouse.move(500, 100);
     await expect(rail).toHaveCSS("width", "84px");
     await expect(label).not.toBeVisible();
     await page.keyboard.press("Tab");
     await item.focus();
-    await expect(rail).toHaveCSS("width", "260px");
+    await expect(rail).toHaveCSS("width", "84px");
     await expect(label).toBeVisible();
+    await expect(label).toHaveCSS("opacity", "1");
     await page.screenshot({ path: `test-results/agenda-nav-${theme}.png` });
     await item.blur();
     const profile = page.locator(".sidebar").getByRole("button", { name: "Perfil", exact: true });
     await profile.hover();
-    await expect(rail).toHaveCSS("width", "260px");
+    await expect(rail).toHaveCSS("width", "84px");
     await expect(profile.locator("span").last()).toBeVisible();
     await page.mouse.move(500, 100);
     await expect(rail).toHaveCSS("width", "84px");
+    await expect(profile.locator("span").last()).not.toBeVisible();
+    const active = rail.getByRole("button", { name: "Agenda", exact: true });
+    await active.hover();
+    await expect(active.locator("span").last()).toHaveCSS(
+      "color",
+      theme === "dark" ? "rgb(255, 249, 239)" : "rgb(41, 36, 50)",
+    );
+    await page.mouse.move(500, 100);
   }
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect
+    .poll(() =>
+      page
+        .locator(".sidebar .nav-item > span:last-child")
+        .first()
+        .evaluate((label) =>
+          Math.max(...getComputedStyle(label).transitionDuration.split(",").map(parseFloat)),
+        ),
+    )
+    .toBeLessThanOrEqual(0.001);
+  await page.getByRole("button", { name: "Expandir menu lateral", exact: true }).click();
+  await expect(page.locator(".sidebar")).toHaveCSS("width", "260px");
+  await expect(
+    page
+      .locator(".sidebar")
+      .getByRole("button", { name: "Hábitos", exact: true })
+      .locator("span")
+      .last(),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Recolher menu lateral", exact: true }).click();
+  await expect(page.locator(".sidebar")).toHaveCSS("width", "84px");
 });

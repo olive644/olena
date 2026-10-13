@@ -4,7 +4,7 @@
 
 - A faixa de tarefas e eventos de dia inteiro na grade reservava 44 px, cortando a base dos botões. Agora reserva altura compartilhada entre colunas, padding para a base e área de toque de 44 px; os horários do eixo acompanham essa altura. Até três itens ficam visíveis, com rolagem para os demais.
 - Tarefas aceitam cor hexadecimal opcional, usando a mesma paleta de papel dos eventos. O editor, a lista, os marcadores mensais e a grade compartilham a cor. Registros antigos sem cor seguem válidos. O campo pertence ao workspace sincronizado da conta, sem armazenamento independente ou mudança nas regras do Firebase.
-- A própria barra desktop recolhida se alarga temporariamente de 84 para 260 px ao passar o mouse sobre um ícone ou focá-lo pelo teclado, revelando os nomes dentro da barra, inclusive Perfil. Recolhe ao sair, não cria etiqueta flutuante e não desloca o conteúdo. Usa o menu expandido existente, respeita movimento reduzido e conserva temas claro/escuro. A navegação móvel não recebe comportamento dependente de hover.
+- Revisão visual solicitada pelo proprietário: removida a expansão automática da barra. O rail conserva 84 px e apresenta apenas o nome do botão em dica pequena de papel por hover/foco, inclusive Perfil e item ativo. Superfície creme com texto grafite no claro, grafite com texto creme no escuro, dobra discreta e base de 3 px. O botão de menu ainda abre manualmente a navegação completa. Tarefas e navegação móvel preservadas; sem deslocamento de conteúdo, sem nova dependência e sem estado React para hover.
 - Desktop e celular continuam usando PlannerView, AgendaCalendarViews, editor, filtros e ações comuns; diferenças são de layout, sem versão funcional móvel separada.
 
 ## Matemática imediata e conquista por tema (2026-10-13)

@@ -84,11 +84,12 @@ preservam movimento reduzido, X sem placa e foco amarelo.
 
 ## Cursor desktop
 
-Navegação recolhida no desktop alarga a própria barra em hover sobre um ícone
-ou foco de teclado, mostrando nomes dentro dela sem deslocar a página. Ao sair,
-recolhe; não usar uma etiqueta separada do ícone. Item ativo mantém
-roxo e texto creme; demais usam superfície e texto do tema. Movimento reduzido
-desativa a transição. Tarefas usam a mesma paleta dos eventos, como marcador ou
+Navegação recolhida no desktop conserva a barra compacta de 84 px. Hover sobre um
+ícone ou foco de teclado revela apenas seu nome em dica pequena de papel, sem
+expandir a barra. Usar Manrope de 0.7rem, dobra discreta e base de 3 px. Dica creme
+com texto grafite no claro, grafite com texto creme no escuro, inclusive no item
+ativo. O menu completo só abre pelo botão. Movimento reduzido desativa a
+transição. Tarefas usam a mesma paleta dos eventos, como marcador ou
 borda, nunca como cor de texto. Faixas da grade reservam espaço para base dos
 botões e toque de 44 px, com horários alinhados entre todos os dias.
 

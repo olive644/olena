@@ -1,33 +1,45 @@
 @media (min-width: 900px) {
-  .app-shell > .sidebar.sidebar--preview ~ .main-content {
-    width: calc(100% - 84px);
-    margin-left: 84px;
+  .app-shell > .sidebar {
+    --nav-tip-paper: #fff9ef;
+    --nav-tip-ink: #292432;
+    --nav-tip-fold: #eee5d3;
   }
-  .app-shell > .sidebar.sidebar--preview .nav-section__label {
-    display: none;
+  :root[data-theme="dark"] .app-shell > .sidebar {
+    --nav-tip-paper: #292432;
+    --nav-tip-ink: #fff9ef;
+    --nav-tip-fold: #393244;
   }
-  .app-shell > .sidebar.sidebar--preview .nav-item {
-    min-height: 52px;
-  }
-  .app-shell > .sidebar.sidebar--preview .nav-section {
-    gap: 7px;
-  }
-  .app-shell > .sidebar.sidebar--preview .nav-item > span:last-child {
+  .app-shell > .sidebar:not(.sidebar--expanded) .nav-item > span:last-child {
+    display: block;
+    left: calc(100% + 8px);
+    top: 50%;
+    width: max-content;
+    max-width: 180px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 3px 9px 3px 6px;
+    background-color: var(--nav-tip-paper);
+    background-image: linear-gradient(135deg, var(--nav-tip-fold) 0 7px, transparent 7px);
+    color: var(--nav-tip-ink);
+    box-shadow: 0 3px 0 var(--line);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.3;
     white-space: nowrap;
-    animation: rail-label-reveal 220ms ease both;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(3px, -50%);
+    transition:
+      opacity 120ms ease,
+      transform 120ms ease,
+      visibility 120ms;
   }
-  .app-shell > .sidebar.sidebar--preview .nav-item--active > span:last-child {
-    color: #fff9ef;
-  }
-  @keyframes rail-label-reveal {
-    from {
-      opacity: 0;
-      transform: translateX(-6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  .app-shell > .sidebar:not(.sidebar--expanded) .nav-item:hover > span:last-child,
+  .app-shell > .sidebar:not(.sidebar--expanded) .nav-item:focus-visible > span:last-child {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -50%);
   }
   .app-shell > .sidebar > .sidebar__nav {
     grid-template-rows: auto auto 1fr;
@@ -58,7 +70,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .app-shell > .sidebar,
-  .app-shell > .sidebar .nav-item > span:last-child {
+  .app-shell > .sidebar .nav-item > span:last-child,
+  .app-shell > .sidebar:not(.sidebar--expanded) .nav-item > span:last-child {
     transition: none;
     animation: none;
   }
