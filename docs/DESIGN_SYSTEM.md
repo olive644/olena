@@ -110,11 +110,13 @@ Usar o componente HelenaLoading, com label contextual e compact quando necessár
 
 O arquivo helena-loading.svg antigo permanece disponível para referências legadas: não substituí-lo pelo lápis. Em Praticar, a navegação pelas ilhas usa a foto do perfil em moldura de papel, não uma pose da Helena. Novos estados de espera devem usar o componente compartilhado, nunca reutilizar o personagem como spinner nem criar animações independentes.
 
-## Assistente flutuante Helena (2026-10-12)
+## Assistente flutuante Helena (2026-10-13)
 
-O proprietário aprovou a versão cartoon 3D da cabeça e a transformação entre
-estrela e Helena para substituir a estrela do assistente virtual. Esta exceção
-fica restrita ao assistente. Preservar o restante da interface em papel recortado.
-O modelo é autoral, preparado no Blender, com olhos amarelos, pupilas verticais,
-orelhas fundidas e estrela dourada. O botão conserva 64px no desktop e 56px no
-celular. Movimento reduzido usa renders transparentes do mesmo modelo.
+O proprietário aprovou a Helena em Rive no lugar da versão 3D: a estrela de papel do
+assistente antigo, em vetor, se transforma na Helena do favicon (cabeça facetada, olhos
+amarelos de pupila vertical, estrelinha dourada na orelha) e volta a ser estrela, com a mesma
+coreografia de antes. O favicon é fatiado em camadas para piscar de verdade, mexer as orelhas,
+seguir o cursor com o olhar e reagir ao arraste. Fica restrita ao assistente; o restante da
+interface segue em papel recortado. O botão conserva 64px no desktop e 56px no celular.
+Movimento reduzido usa as imagens estáticas de estrela e Helena. Fonte e regras de edição em
+scripts/helena-rive/README.md.

@@ -270,7 +270,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Correção imediata, conquista, espelho compatível e números SVG originais incorporados
 // à partida offline combinados às animações: medido 1362.2 KiB, entrada 285.7 KiB. Sem dependência nova;
 // manter pequena margem de CI, com os mesmos tetos absolutos e orçamento de entrada.
-const MAX_TOTAL_JS_BYTES = 1364 * 1024;
+// Helena em Rive: o componente do mascote e o carregador tipado do runtime (o runtime em si fica
+// fora do bundle): medido 1364.6 KiB. Entrada inicial e tetos absolutos sem mudança.
+const MAX_TOTAL_JS_BYTES = 1366 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
@@ -342,15 +344,16 @@ if ((ttsWorker?.bytes ?? 0) > MAX_TTS_WORKER_BYTES)
 if (wasmBytes > MAX_TTS_WASM_BYTES)
   throw new Error(`WASM TTS excedido: ${(wasmBytes / 1024 / 1024).toFixed(1)} MiB.`);
 
-// O renderizador opcional usa assets próprios e não compõe a entrada do React.
-// Medição: 660,3 KiB de JavaScript (152,4 KiB gzip) e modelo GLB de 3,6 MiB.
+// A Helena do assistente usa o runtime oficial do Rive, vendorizado e carregado sob demanda,
+// fora da entrada do React. Medição: rive.js 445 KiB, rive.wasm 1,86 MiB e helena.riv 829 KiB.
 // Orçamento explícito separado, sem ampliar os tetos da aplicação.
 const mascotRoot = new URL("../dist/helena-assistant/", import.meta.url);
-const mascotRuntime = (await stat(new URL("runtime.js", mascotRoot))).size;
-const mascotModel = (await stat(new URL("helena.glb", mascotRoot))).size;
+const mascotRuntime = (await stat(new URL("rive.js", mascotRoot))).size;
+const mascotWasm = (await stat(new URL("rive.wasm", mascotRoot))).size;
+const mascotFile = (await stat(new URL("helena.riv", mascotRoot))).size;
 console.log(
-  `Helena 3D opcional: ${(mascotRuntime / 1024).toFixed(1)} KiB JS, ${(mascotModel / 1024 / 1024).toFixed(1)} MiB GLB`,
+  `Helena Rive opcional: ${(mascotRuntime / 1024).toFixed(1)} KiB JS, ${(mascotWasm / 1024 / 1024).toFixed(2)} MiB WASM, ${(mascotFile / 1024).toFixed(1)} KiB .riv`,
 );
-if (mascotRuntime > 768 * 1024 || mascotModel > 4 * 1024 * 1024) {
-  throw new Error("Assets da Helena excederam 768 KiB de JS ou 4 MiB de modelo.");
+if (mascotRuntime > 512 * 1024 || mascotWasm > 2.25 * 1024 * 1024 || mascotFile > 1024 * 1024) {
+  throw new Error("Assets da Helena excederam 512 KiB de JS, 2,25 MiB de WASM ou 1 MiB de .riv.");
 }

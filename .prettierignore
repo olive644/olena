@@ -7,5 +7,4 @@ playwright-report
 test-results
 package-lock.json
 # Código de terceiros e bundle reproduzível do renderizador da Helena.
-scripts/helena-mascot/vendor
-public/helena-assistant/runtime.js
+public/helena-assistant/rive.js

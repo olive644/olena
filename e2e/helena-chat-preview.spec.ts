@@ -78,8 +78,7 @@ test("star animates while dragged, docks without opening and keeps the chat insi
   await page.mouse.move(45, 170, { steps: 12 });
   await expect(shell).toHaveAttribute("data-motion", "dragging");
   await expect(page.locator(".helena-virtual-mascot")).toHaveAttribute("data-ready", "true");
-  const graphic = page.frameLocator(".helena-virtual-mascot iframe");
-  await expect(graphic.locator("#stage")).toHaveAttribute("data-behavior", "dragging");
+  await expect(page.locator(".helena-virtual-mascot")).toHaveAttribute("data-behavior", "dragging");
   await page.mouse.up();
   await expect(shell).toHaveAttribute("data-edge", "left");
   await expect(shell).toHaveAttribute("data-motion", "idle");
@@ -132,14 +131,13 @@ test("one live mascot moves to the header and returns without reloading its mode
       shaderErrors.push(message.text());
   });
   page.on("request", (request) => {
-    if (request.url().includes("/helena-assistant/helena.glb")) models.push(request.url());
+    if (request.url().includes("/helena-assistant/helena.riv")) models.push(request.url());
   });
   await page.goto("/preview-helena-chat.html");
   const mascot = page.locator(".helena-virtual-mascot");
   await expect(mascot).toHaveAttribute("data-ready", "true", { timeout: 15000 });
-  const frame = page.frameLocator(".helena-virtual-mascot iframe");
   await mascot
-    .locator("iframe")
+    .locator("canvas")
     .evaluate((element) => element.setAttribute("data-instance", "original"));
   await page.getByRole("button", { name: "Conversar com Helena" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -152,14 +150,16 @@ test("one live mascot moves to the header and returns without reloading its mode
       return Math.abs(target!.x - actual!.x) + Math.abs(target!.y - actual!.y);
     })
     .toBeLessThan(2);
-  const stage = frame.locator("#stage");
-  await expect(stage).toHaveAttribute("data-form", "helena");
-  const before = await stage.getAttribute("data-time");
-  await expect.poll(() => stage.getAttribute("data-time")).not.toBe(before);
+  await expect(mascot).toHaveAttribute("data-form", "helena", { timeout: 15000 });
+  // A animacao segue viva: o desenho do canvas muda com o tempo.
+  const picture = () =>
+    mascot.locator("canvas").evaluate((element) => (element as HTMLCanvasElement).toDataURL());
+  const before = await picture();
+  await expect.poll(picture).not.toBe(before);
   await page.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await expect(mascot.locator("iframe")).toHaveAttribute("data-instance", "original");
-  await expect(stage).toHaveAttribute("data-form", "star");
+  await expect(mascot.locator("canvas")).toHaveAttribute("data-instance", "original");
+  await expect(mascot).toHaveAttribute("data-form", "star", { timeout: 15000 });
   await expect(page.getByRole("button", { name: "Conversar com Helena" })).toBeVisible();
   expect(models).toHaveLength(1);
   expect(shaderErrors).toEqual([]);
