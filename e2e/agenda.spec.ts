@@ -728,9 +728,12 @@ test("weekly study opens focus without completing, records real minutes and retu
   await form.getByRole("button", { name: "Adicionar", exact: true }).click();
   await page.getByRole("button", { name: "Começar estudo Estudar frações" }).click();
   await expect(page).toHaveURL(/\/foco/);
-  await expect(page.getByRole("region", { name: "Estudo da agenda" })).toContainText(
-    "Meta de 1 min",
-  );
+  await expect(page.getByRole("region", { name: "Estudo da agenda" })).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("olena.focus-session.v1") ?? "null")?.plannedMinutes,
+    ),
+  ).toBe(1);
   await expect(page.getByRole("button", { name: "Encerrar e registrar" })).toBeDisabled();
   expect(
     await page.evaluate(

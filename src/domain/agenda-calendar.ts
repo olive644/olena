@@ -357,22 +357,25 @@ export function changeSeries(
     ],
   };
 }
+export function agendaSearchText(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 export function matchesCalendarFilter(
   event: StudyEvent,
   query: string,
   subject: string,
   type: string,
 ): boolean {
-  const normalize = (text: string) =>
-    text
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLocaleLowerCase("pt-BR");
   return (
     (!subject || event.subjectId === subject) &&
     (!type || (event.kind ?? "appointment") === type) &&
-    normalize(`${event.title} ${event.description ?? ""} ${event.location ?? ""}`).includes(
-      normalize(query),
+    agendaSearchText(`${event.title} ${event.description ?? ""} ${event.location ?? ""}`).includes(
+      agendaSearchText(query),
     )
   );
 }

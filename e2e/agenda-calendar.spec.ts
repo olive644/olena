@@ -18,10 +18,37 @@ const event = {
   description: "Sala 2",
   timeZone: "America/Sao_Paulo",
 };
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, info) => {
   await page.clock.install({ time: new Date("2026-10-12T12:00:00Z") });
   const workspace = createInitialWorkspace();
   workspace.events = [event];
+  if (info.title.startsWith("search button")) {
+    workspace.events.push(
+      {
+        ...event,
+        id: "past",
+        title: "Reunião passada",
+        date: "2025-02-01",
+        endDate: "2025-02-01",
+        recurrenceFrequency: "none",
+      },
+      {
+        ...event,
+        id: "future",
+        title: "Reunião futura",
+        date: "2028-01-01",
+        endDate: "2028-01-01",
+        recurrenceFrequency: "none",
+      },
+    );
+    workspace.tasks.push({
+      id: "future-task",
+      title: "Reunião: preparar roteiro",
+      dueDate: "2028-02-01",
+      subjectId: "subject-english",
+      completed: false,
+    });
+  }
   await page.addInitScript((state) => {
     if (!sessionStorage.getItem("calendar-seeded")) {
       localStorage.clear();
@@ -113,9 +140,11 @@ test("compact filters, custom colors and paper details remain readable in both t
       .getByRole("button", { name: "Editar Prova de álgebra", exact: true })
       .click();
     const editor = page.locator(".agenda-dialog");
-    await editor.getByLabel("Cor do evento", { exact: true }).fill("#1a8599");
+    await editor.getByRole("button", { name: "Cor Verde", exact: true }).click();
     for (const name of ["Local", "Links", "Participantes"]) {
       const button = editor.getByRole("button", { name: `Preencher ${name}`, exact: true });
+      await button.hover();
+      await expect(button).toHaveCSS("color", "rgb(41, 36, 50)");
       await button.focus();
       await button.click();
       await expect(button).toHaveAttribute("aria-expanded", "true");
@@ -162,12 +191,12 @@ test("compact filters, custom colors and paper details remain readable in both t
         page
           .locator(view === "Lista" ? ".agenda-schedule-list .agenda-item" : ".agenda-time-block")
           .first(),
-      ).toHaveCSS("border-left-color", "rgb(26, 133, 153)");
+      ).toHaveCSS("border-left-color", "rgb(45, 138, 103)");
     }
     await page.getByRole("button", { name: "Mês", exact: true }).click();
     await expect(
       page.locator('button[data-date="2026-10-12"] .agenda-month-event-title i').first(),
-    ).toHaveCSS("background-color", "rgb(26, 133, 153)");
+    ).toHaveCSS("background-color", "rgb(45, 138, 103)");
     await page.reload();
   }
 });
@@ -190,6 +219,114 @@ test("notification permission uses a six-second paper notice with cooldown", asy
   await page.clock.fastForward(6001);
   await expect(notice).toHaveCount(0);
   await expect(trigger).toBeEnabled();
+});
+
+test("search button and Enter find events and tasks beyond the selected month", async ({
+  page,
+}) => {
+  const input = page.getByRole("searchbox", { name: "Buscar na agenda", exact: true });
+  await input.fill("  REUNIAO ");
+  await page.getByRole("button", { name: "Pesquisar", exact: true }).click();
+  const results = page.getByLabel("Resultados da busca", { exact: true });
+  await expect(results.getByText("Reunião passada", { exact: true })).toBeVisible();
+  await expect(results.getByText("Reunião futura", { exact: true })).toBeVisible();
+  await expect(results.getByText("Reunião: preparar roteiro", { exact: true })).toBeVisible();
+  await input.fill("  SALA 2 ");
+  await input.press("Enter");
+  await expect(results.getByText("Prova de álgebra", { exact: true })).toHaveCount(1);
+  await input.fill("nenhum resultado abc");
+  await input.press("Enter");
+  await expect(results.getByRole("status")).toHaveText("Nenhum resultado encontrado.");
+  await input.fill("");
+  await expect(page.getByLabel("Próximos 30 dias", { exact: true })).toBeVisible();
+});
+
+test("paper PNG sharing exists only in List and survives unsupported native sharing", async ({
+  page,
+}, info) => {
+  await page.locator('button[data-date="2026-10-12"]').click();
+  await expect(
+    page.getByRole("button", { name: "Compartilhar Prova de álgebra", exact: true }),
+  ).toHaveCount(0);
+  for (const view of ["Dia", "Semana"]) {
+    await page.getByRole("button", { name: view, exact: true }).click();
+    await expect(page.locator(".agenda-block-actions")).toHaveCount(0);
+    await expect(
+      page.getByRole("button", { name: "Compartilhar Prova de álgebra", exact: true }),
+    ).toHaveCount(0);
+  }
+  await page.getByRole("button", { name: "Lista", exact: true }).click();
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, "canShare", { configurable: true, value: () => true });
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: async (data: ShareData) => {
+        sessionStorage.setItem(
+          "png-shared",
+          JSON.stringify({
+            type: data.files?.[0]?.type,
+            active: navigator.userActivation.isActive,
+          }),
+        );
+        throw new DOMException("Sharing unavailable", "NotAllowedError");
+      },
+    });
+  });
+  await page
+    .getByRole("button", { name: "Compartilhar Prova de álgebra", exact: true })
+    .first()
+    .click();
+  const dialog = page.getByRole("dialog", { name: "Compartilhar evento", exact: true });
+  const image = dialog.getByRole("img");
+  await expect
+    .poll(() => image.evaluate((element) => (element as HTMLImageElement).naturalWidth))
+    .toBe(856);
+  await expect
+    .poll(() => image.evaluate((element) => (element as HTMLImageElement).naturalHeight))
+    .toBe(708);
+  await dialog.getByRole("button", { name: "Compartilhar PNG", exact: true }).click();
+  await expect(dialog.getByRole("alert")).toContainText("Use Baixar PNG");
+  expect(await page.evaluate(() => JSON.parse(sessionStorage.getItem("png-shared")!))).toEqual({
+    type: "image/png",
+    active: true,
+  });
+  const download = page.waitForEvent("download");
+  await dialog.getByRole("button", { name: "Baixar PNG", exact: true }).click();
+  const png = await download;
+  expect(png.suggestedFilename()).toBe("evento-olenastudy.png");
+  await png.saveAs(info.outputPath("event-export.png"));
+  await dialog.screenshot({ path: info.outputPath("paper-share.png"), animations: "disabled" });
+  await dialog.getByRole("button", { name: "Fechar compartilhamento", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+});
+
+test("drag preview follows the pointer and Escape cancels without changing stored events", async ({
+  page,
+}, info) => {
+  await page.getByRole("button", { name: "Dia", exact: true }).click();
+  const title = page.locator(".agenda-block-title").first();
+  await title.scrollIntoViewIfNeeded();
+  const box = (await title.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 15);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2, box.y + 63, { steps: 6 });
+  const ghost = page.locator(".agenda-drag-preview");
+  await expect(ghost).toContainText("Prova de álgebra");
+  const first = (await ghost.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2 + 12, box.y + 111, { steps: 3 });
+  const next = (await ghost.boundingBox())!;
+  expect(next.y - first.y).toBeCloseTo(48, 0);
+  expect(next.x - first.x).toBeCloseTo(12, 0);
+  await page.screenshot({ path: info.outputPath("drag-preview.png"), animations: "disabled" });
+  await page.keyboard.press("Escape");
+  await page.mouse.up();
+  await expect(ghost).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).events[0].time,
+    ),
+  ).toBe("14:00");
+  await expect(page.locator(".agenda-dialog")).not.toBeVisible();
 });
 
 test("keyboard day movement keeps focus on the detached occurrence, not its same-title neighbor", async ({
@@ -361,6 +498,7 @@ test("paper details use rotating hands, expandable metadata, a reminder slider a
     const reminder = editor.getByRole("slider", { name: "Lembrar antes", exact: true });
     await reminder.focus();
     await page.keyboard.press("End");
+    await expect(reminder).toHaveAttribute("aria-valuetext", "1 dia");
     await page.keyboard.press("ArrowLeft");
     await expect(reminder).toHaveAttribute("aria-valuetext", "60 min");
     await expect(editor.getByRole("button", { name: "Na hora", exact: true })).toHaveCount(0);

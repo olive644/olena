@@ -124,6 +124,7 @@ import {
   sizePageCanvas,
 } from "./handwriting-canvas";
 import { exportPage, downloadCanvasAsPdf } from "./handwriting-export";
+import { brandedExportCanvas, loadPaperExportMascot } from "../data/paper-export-art";
 import { readDraft, strokeId } from "./handwriting-draft";
 
 const PageImport = lazy(() =>
@@ -2251,15 +2252,16 @@ export function HandwritingStudio({
     return exportPage(canvas);
   }
 
-  function exportPng() {
+  async function exportPng() {
     try {
+      const mascot = await loadPaperExportMascot();
       if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
       if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
       renderPageScene(canvas, pageScene);
       const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
+      link.href = brandedExportCanvas(canvas, mascot).toDataURL("image/png");
       link.download = "folha-do-caderno.png";
       link.click();
     } catch (caught) {
@@ -2267,11 +2269,17 @@ export function HandwritingStudio({
     }
   }
 
-  function printPage() {
+  async function printPage() {
+    const printWindow = openPrintWindow();
     try {
-      const imageUrl = pageImage();
-      const printWindow = openPrintWindow();
       if (!printWindow) throw new Error("Permita a janela de impressão para salvar em PDF.");
+      const mascot = await loadPaperExportMascot();
+      if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
+      if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
+      const canvas = document.createElement("canvas");
+      sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
+      renderPageScene(canvas, pageScene);
+      const imageUrl = brandedExportCanvas(canvas, mascot).toDataURL("image/png");
       const image = printWindow.document.createElement("img");
       image.alt = "Folha do caderno";
       image.style.cssText = "display:block;width:100%;height:auto;max-width:210mm;margin:auto";
@@ -2280,18 +2288,20 @@ export function HandwritingStudio({
       printWindow.document.body.append(image);
       image.src = imageUrl;
     } catch (caught) {
+      printWindow?.close();
       setError(caught instanceof Error ? caught.message : "Não foi possível abrir a impressão.");
     }
   }
 
-  function exportPdf() {
+  async function exportPdf() {
     try {
+      const mascot = await loadPaperExportMascot();
       if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
       if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
       const canvas = canvasRef.current;
       if (!canvas) throw new Error("Não foi possível preparar a folha.");
       renderPageScene(canvas, pageScene);
-      downloadCanvasAsPdf(canvas, "folha-do-caderno.pdf");
+      downloadCanvasAsPdf(brandedExportCanvas(canvas, mascot), "folha-do-caderno.pdf");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Não foi possível exportar o PDF.");
     }

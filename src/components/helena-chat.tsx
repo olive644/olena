@@ -569,16 +569,6 @@ export function HelenaChat({
             hover={hover}
           />
         </span>
-        {!open && (
-          <span className="helena-chat-hint" aria-hidden="true">
-            <strong>Helena</strong>
-            <span>
-              Clique para conversar.
-              <br />
-              Arraste para mover.
-            </span>
-          </span>
-        )}
       </button>
     </aside>
   );

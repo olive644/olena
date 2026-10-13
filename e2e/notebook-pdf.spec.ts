@@ -32,9 +32,26 @@ test("exportar PDF permanece disponível dentro da folha", async ({ page }, test
     await page.waitForTimeout(8);
   }
   await page.mouse.up();
+  const originalSize = await canvas.evaluate((element) => ({
+    width: (element as HTMLCanvasElement).width,
+    height: (element as HTMLCanvasElement).height,
+  }));
+  await dialog.getByRole("button", { name: "Compartilhar", exact: true }).click();
+  const pngDownload = page.waitForEvent("download");
+  await dialog.getByRole("button", { name: "PNG", exact: true }).click();
+  const png = await pngDownload;
+  await png.saveAs(testInfo.outputPath("notebook-export.png"));
+  expect(png.suggestedFilename()).toBe("folha-do-caderno.png");
+  const unchangedSize = await canvas.evaluate((element) => ({
+    width: (element as HTMLCanvasElement).width,
+    height: (element as HTMLCanvasElement).height,
+  }));
+  expect(unchangedSize).toEqual(originalSize);
   await dialog.getByRole("button", { name: "Compartilhar", exact: true }).click();
   const download = page.waitForEvent("download");
   await dialog.getByRole("button", { name: "Baixar PDF", exact: true }).click();
-  expect((await download).suggestedFilename()).toBe("folha-do-caderno.pdf");
+  const pdf = await download;
+  expect(pdf.suggestedFilename()).toBe("folha-do-caderno.pdf");
+  await pdf.saveAs(testInfo.outputPath("notebook-export.pdf"));
   await expect(page.getByRole("button", { name: "Exportar PDF" })).toHaveCount(0);
 });

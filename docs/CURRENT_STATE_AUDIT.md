@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Compartilhamento em papel e arraste visível (2026-10-12)
+
+- Paleta fixa reaproveita cores originais e check, substituindo seletor nativo. Adaptação do movimento Uiverse.io de Cobp, fornecido pelo usuário, mantém teclado, foco amarelo e movimento reduzido. Valores personalizados existentes não são reescritos automaticamente.
+- Compartilhar evento é ícone exclusivo da Lista, com prévia PNG local e segundo clique para Web Share. Arquivo pronto preserva ativação transitória do navegador; suporte ausente baixa PNG, falhas orientam download e cancelamento não baixa. PNG omite participantes/anexos/histórico. Exportar .ics na barra permanece.
+- paper-export-art usa Helena do favicon original /olena-favicon.png no selo e desenha marca d'água em moldura externa. Reutilizado nas cópias PNG/PDF/impressão, folha atual e PDF de várias folhas. Nenhum canvas original, autosave, documento ou conta é modificado para adicionar marca.
+- Pesquisar antes só focava o campo, com resultados limitados ao período aberto. Botão e Enter agora abrem resultados de todas as datas salvas, com uma ocorrência válida por série e tarefas vencidas/futuras. Texto ignora acentos, caixa e espaços extras; filtros continuam aplicados. Limpar campo restaura a Lista de 30 dias.
+- Prévia de arraste acompanha ponteiro; origem atenuada e horário de destino visível. Escape cancela sem gravar. Alça de duração fica na borda do evento, sem painel flutuante vazio. Configurações e sincronização usam o caminho validado existente.
+- Removidos banner informativo de Foco, mensagens transitórias de carregar/sincronizar na Agenda e balão de dicas da Helena. Preservados vínculos de estudo, alertas de erro/envio pendente, nome acessível da assistente, teclado e movimento do mascote.
+- npm run verify passou: 236 arquivos, 1437 testes, lint/formatação/API/build/orçamento. Entrada 285,4 KiB e aplicação 1309,7 KiB; orçamento normal 1311 KiB conserva pequena margem para o bundle Linux, sem mudar teto absoluto. Busca fora do mês, compartilhamento real de PNG com ativação do usuário, cancelamento do arraste, recarga e contraste são exercitados em Edge/Chromium desktop/móvel. Teste do slider aguarda a atualização após End antes da próxima tecla; seis repetições passaram.
+- Repetição final: 35 cenários de calendário/Foco/exportação aprovados em desktop/móvel, um teste legado de desenho em PDF intencionalmente só desktop. Os 32 cenários adicionais da Agenda também passaram na execução anterior. PNGs reais de evento e caderno foram inspecionados com o favicon original no selo. WebKit nativo fica no CI; conta real entre aparelhos não foi exercitada.
+
 ## Agenda compacta e ajustes diretos (2026-10-12)
 
 - Filtros matéria/tipo agrupados em painel acessível, ao lado de Pesquisar. Quatro ações de arquivo/lembretes ficam na mesma linha móvel. No desktop, painel do dia abaixo de Meu estudo; no celular, ordem calendário/dia/estudo preservada.

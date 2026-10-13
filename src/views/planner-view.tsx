@@ -6,6 +6,7 @@ import { AgendaActionIcon } from "../components/agenda-action-icon";
 import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
 import { AgendaDurationClock } from "../components/agenda-duration-clock";
 import { AgendaFilters } from "../components/agenda-filters";
+import { AgendaEventShare } from "../components/agenda-event-share";
 import { AgendaDetailIcon } from "../components/agenda-detail-icon";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import { AgendaAttachmentPreview } from "../components/agenda-attachment-preview";
@@ -24,6 +25,7 @@ import {
 import { AgendaCalendarViews, type CalendarView } from "../components/agenda-calendar-views";
 import {
   addDays,
+  agendaSearchText,
   changeSeries,
   displayEventsOn,
   eventEnd,
@@ -127,6 +129,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
   const [dayOpen, setDayOpen] = useState(false);
   const [calendarView, setCalendarView] = useState<CalendarView>("month");
   const [query, setQuery] = useState("");
+  const [searching, setSearching] = useState(false);
   const [subjectFilter, setSubjectFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [notificationStatus, setNotificationStatus] = useState("");
@@ -177,7 +180,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     (task) =>
       (!subjectFilter || task.subjectId === subjectFilter) &&
       (!typeFilter || typeFilter === "task") &&
-      task.title.toLocaleLowerCase("pt-BR").includes(query.toLocaleLowerCase("pt-BR")),
+      agendaSearchText(task.title).includes(agendaSearchText(query)),
   );
   const scheduled = displayEventsOn(visibleEvents, selected, timeZone);
   const tasks = visibleTasks.filter((task) => task.dueDate === selected);
@@ -191,6 +194,15 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     subjects.find((subject) => subject.value === id)?.label ??
     workspace.subjects.find((subject) => subject.id === id)?.name ??
     "Sem matéria";
+  function searchAgenda() {
+    if (!query.trim()) {
+      searchInput.current?.focus();
+      return;
+    }
+    setSearching(true);
+    setCalendarView("list");
+    setDayOpen(false);
+  }
   function saveGridEvent(original: StudyEvent, occurrence: string, changes: StudyEvent) {
     const adjusted =
       frequency(original) === "none"
@@ -511,7 +523,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       </article>
     );
   }
-  function eventCard(event: StudyEvent, date = selected) {
+  function eventCard(event: StudyEvent, date = selected, share = false) {
     const original = workspace.events.find((item) => item.id === event.id) ?? event;
     const displays = displayEventsOn([original], date, timeZone);
     const displayed =
@@ -591,35 +603,6 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   {asset.name}
                 </button>
               ))}
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={async () => {
-                  const file = new File([exportAgenda([original])], "evento-olenastudy.ics", {
-                    type: "text/calendar",
-                  });
-                  try {
-                    if (navigator.canShare?.({ files: [file] })) {
-                      await navigator.share({ files: [file], title: original.title });
-                      return;
-                    }
-                  } catch {
-                    setNotice("Compartilhamento cancelado ou indisponível.");
-                    return;
-                  }
-                  const url = URL.createObjectURL(file);
-                  const anchor = document.createElement("a");
-                  anchor.href = url;
-                  anchor.download = file.name;
-                  anchor.click();
-                  setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  setNotice(
-                    "Arquivo do evento preparado para compartilhar. Anexos não foram incluídos.",
-                  );
-                }}
-              >
-                Compartilhar .ics <PaperArrow />
-              </button>
             </details>
           )}
           {reminder && (
@@ -638,6 +621,13 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
           )}
         </div>
         <div className="agenda-item-actions">
+          {share && (
+            <AgendaEventShare
+              event={displayed ?? event}
+              date={date}
+              subject={subjectName(event.subjectId)}
+            />
+          )}
           {event.kind === "study" && !complete && (
             <button
               type="button"
@@ -746,8 +736,8 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   {
                     disabled: "Sincronização com a conta indisponível neste ambiente",
                     "signed-out": "Entre na sua conta para sincronizar Agenda e Foco",
-                    loading: "Carregando agenda da conta",
-                    syncing: "Sincronizando alterações",
+                    loading: "",
+                    syncing: "",
                     synced: "",
                     offline: "Envio à conta pendente. Confira a conexão e o acesso no Perfil",
                     conflict: "Alterações simultâneas. Revise a sincronização no Perfil",
@@ -780,7 +770,10 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               aria-label={label}
               title={label}
               aria-pressed={calendarView === value}
-              onClick={() => setCalendarView(value)}
+              onClick={() => {
+                setSearching(false);
+                setCalendarView(value);
+              }}
             >
               <AgendaToolbarIcon name={value} />
               <span>{label}</span>
@@ -795,7 +788,16 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               type="search"
               value={query}
               maxLength={120}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                if (!event.target.value.trim()) setSearching(false);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  searchAgenda();
+                }
+              }}
               placeholder="Título, descrição ou local"
             />
           </label>
@@ -804,7 +806,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               type="button"
               className="secondary-button agenda-tool"
               aria-label="Pesquisar"
-              onClick={() => searchInput.current?.focus()}
+              onClick={searchAgenda}
             >
               <AgendaDetailIcon name="search" />
               <span>Pesquisar</span>
@@ -1141,6 +1143,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               {calendarView !== "month" && (
                 <AgendaCalendarViews
                   timeZone={timeZone}
+                  searchResults={searching}
                   view={calendarView}
                   selected={selected}
                   events={visibleEvents}
@@ -1151,7 +1154,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   }}
                   onCreate={(date, time) => create("appointment", date, time)}
                   onEdit={edit}
-                  renderEvent={eventCard}
+                  renderEvent={(event, date) => eventCard(event, date, true)}
                   renderTask={taskCard}
                   onMove={(event, from, to, time) => {
                     const original = workspace.events.find((item) => item.id === event.id) ?? event;
