@@ -388,7 +388,7 @@ describe("App", () => {
     firstRender.unmount();
 
     render(<App />);
-    expect(screen.getByText("Preparar apresentação")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Editar Preparar apresentação" })).toBeTruthy();
   });
 
   it("oculta as ferramentas do professor da navegação por enquanto", () => {

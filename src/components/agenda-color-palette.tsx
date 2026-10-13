@@ -12,13 +12,15 @@ const COLORS = [
 export function AgendaColorPalette({
   value,
   onChange,
+  label = "Cor do evento",
 }: {
   value: string;
   onChange: (color: string) => void;
+  label?: string;
 }) {
   return (
     <fieldset className="agenda-color-palette">
-      <legend>Cor do evento</legend>
+      <legend>{label}</legend>
       <div className="agenda-color-items">
         {COLORS.map(([color, label]) => (
           <button

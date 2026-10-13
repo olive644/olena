@@ -40,7 +40,9 @@ const assetsDirectory = new URL("../dist/assets/", import.meta.url);
 // Account focus recovery, safe cache hydration and v2 wire codec: measured 284.7 KiB.
 // Narrow CI allowance; absolute ceiling remains unchanged.
 // Guard stale account snapshots and automatic Brazilian account zone: measured 285.3 KiB.
-const MAX_INITIAL_JS_BYTES = 286 * 1024;
+// Expansão temporária do rail por mouse/teclado e cor opcional de tarefas:
+// entrada medida 286.1 KiB, sem dependência nova; teto absoluto preservado.
+const MAX_INITIAL_JS_BYTES = 286.5 * 1024;
 // Teto absoluto, separado do orçamento acima: o orçamento normal sobe a cada funcionalidade,
 // com uma frase de justificativa por cima, e isso é esperado. Mas nada nesse processo avisa
 // se a soma dessas subidas pequenas virar um problema grande sem ninguém perceber. Este teto

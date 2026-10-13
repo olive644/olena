@@ -46,6 +46,7 @@ function isTask(value: unknown): boolean {
     isString(value["title"]) &&
     isString(value["subjectId"]) &&
     isString(value["dueDate"]) &&
+    (value["color"] === undefined || /^#[0-9a-f]{6}$/i.test(String(value["color"]))) &&
     typeof value["completed"] === "boolean"
   );
 }

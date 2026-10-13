@@ -22,6 +22,7 @@ import {
   initialEventDetails,
   type EventDetailsDraft,
 } from "../components/agenda-event-details";
+import { AgendaColorPalette } from "../components/agenda-color-palette";
 import { AgendaCalendarViews, type CalendarView } from "../components/agenda-calendar-views";
 import {
   addDays,
@@ -307,6 +308,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       "dueDate" in item
         ? {
             ...initialEventDetails(item.dueDate),
+            ...(item.color ? { color: item.color } : {}),
             kind: "task",
             id: item.id,
             title: item.title,
@@ -360,7 +362,12 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
         deadline: draft.date,
       });
     else if (draft.kind === "task") {
-      const changes = { title, subjectId: draft.subjectId, dueDate: draft.date };
+      const changes = {
+        title,
+        subjectId: draft.subjectId,
+        dueDate: draft.date,
+        color: draft.color,
+      };
       dispatch(
         draft.id
           ? { type: "task/updated", id: draft.id, changes }
@@ -496,6 +503,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     return (
       <article
         className={`agenda-item agenda-item--task${task.completed ? " is-complete" : ""}`}
+        style={task.color ? { borderLeft: `4px solid ${task.color}` } : undefined}
         key={task.id}
       >
         <button
@@ -1075,6 +1083,9 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               >
                 {dates.map((date) => {
                   const dayEvents = displayEventsOn(visibleEvents, date, timeZone);
+                  const dayTasks = visibleTasks.filter(
+                    (task) => task.dueDate === date && !task.completed,
+                  );
                   const count =
                     dayEvents.length +
                     visibleTasks.filter((task) => task.dueDate === date && !task.completed).length;
@@ -1127,6 +1138,12 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                             }}
                           />
                           {item.title}
+                        </small>
+                      ))}
+                      {dayTasks.slice(0, Math.max(0, 2 - dayEvents.length)).map((task) => (
+                        <small className="agenda-month-event-title" key={task.id}>
+                          <i style={{ background: task.color ?? "#7c3aed" }} />
+                          {task.title}
                         </small>
                       ))}
                       {count > 2 && (
@@ -1332,6 +1349,13 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                       />
                     )}
                   </div>
+                  {draft.kind === "task" && (
+                    <AgendaColorPalette
+                      label="Cor da tarefa"
+                      value={draft.color}
+                      onChange={(color) => setDraft({ ...draft, color })}
+                    />
+                  )}
                   {draft.kind !== "task" && !draft.allDay && (
                     <AgendaDurationClock
                       value={draft.minutes}

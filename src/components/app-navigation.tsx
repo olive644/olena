@@ -177,16 +177,35 @@ export function ThemeToggle({ showLabel }: { showLabel?: boolean }) {
 
 export function Sidebar({ view, onNavigate }: NavigationProps) {
   const [expanded, setExpanded] = useState(false);
+  const [preview, setPreview] = useState(false);
 
   return (
-    <aside className={expanded ? "sidebar sidebar--expanded" : "sidebar"}>
+    <aside
+      className={`sidebar${expanded || preview ? " sidebar--expanded" : ""}${preview && !expanded ? " sidebar--preview" : ""}`}
+      onPointerOver={(event) => {
+        if (event.pointerType === "mouse" && (event.target as HTMLElement).closest(".nav-item"))
+          setPreview(true);
+      }}
+      onPointerLeave={(event) => {
+        if (!event.currentTarget.querySelector(":focus-visible")) setPreview(false);
+      }}
+      onFocusCapture={(event) => {
+        if ((event.target as HTMLElement).closest(".nav-item")) setPreview(true);
+      }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPreview(false);
+      }}
+    >
       <div className="sidebar__top">
         <button
           className="sidebar__toggle"
           type="button"
           aria-label={expanded ? "Recolher menu lateral" : "Expandir menu lateral"}
           aria-expanded={expanded}
-          onClick={() => setExpanded((current) => !current)}
+          onClick={() => {
+            setPreview(false);
+            setExpanded((current) => !current);
+          }}
         >
           <span aria-hidden="true" />
           <span aria-hidden="true" />
