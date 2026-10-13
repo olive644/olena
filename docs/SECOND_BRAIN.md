@@ -1206,3 +1206,5 @@ Corpus v3 tem 192 exemplos originais, com maior cobertura de frações e equaç�
 ### Ensino antes da tentativa independente (v3.2)
 
 O corpus permanece idêntico: 192 exemplos, sem novas questões ou respostas. O currículo apresenta primeiro as 96 soluções explicadas, depois 48 respostas com dicas gerais de método e finalmente 48 respostas sem dicas. Cada registro aparece uma única vez, em 192 passos. As dicas não contêm questões da avaliação. As duas avaliações permanecem independentes, sem dicas e com os mesmos critérios de aceitação; pesos rejeitados continuam bloqueados. O relatório registra os tamanhos das etapas e o hash da ordem. Esta mudança ensina procedimentos antes da prática, mas não garante aprovação ou promove o modelo para produção.
+
+Resultado real do currículo v3.2 (2026-10-13): 21/32 na validação e 19/32 na auditoria, contra 23/32 e 20/32 da rodada anterior. Frações e equações continuam com zero acertos. Candidato rejeitado e sem pesos publicados. Preservar os 192 exemplos por decisão do proprietário. Relatório público e execução em docs/OLENA_TRAINING_RESULTS.md.

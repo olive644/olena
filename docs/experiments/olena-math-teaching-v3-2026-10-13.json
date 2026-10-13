@@ -1,0 +1,1484 @@
+{
+  "name": "Olena-Math-Qwen-Candidate-v3",
+  "base": "Qwen/Qwen2.5-0.5B-Instruct",
+  "base_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "schema": "olena-authored-math-v3",
+  "trainer_version": "math-teaching-v3.2",
+  "dataset_sha256": "f720c055804bbb301bd19aa53057235da7b17dc46b7f6e1dee071fded376d95f",
+  "evaluation_sha256": "4e23fd9c844ad5ca03fc28335c36cd9ca5d0c7ec58020a5f72feda08eb3c0b74",
+  "audit_sha256": "1e4f50a9af300e98b28e3065f46d825b8aa52d422cffa5f18ca7a88c49f17ccb",
+  "examples": 192,
+  "evaluation_examples": 32,
+  "audit_examples": 32,
+  "metric": "exact_value_and_short_requested_format",
+  "production_approved": false,
+  "review": "Exact-answer math benchmark only; tutoring quality requires human review",
+  "status": "rejected",
+  "trained_this_run": true,
+  "steps": 192,
+  "losses": [
+    1.168721318244934, 1.121760606765747, 1.0816494226455688, 1.0697435140609741,
+    0.9992747902870178, 0.9834910035133362, 1.0546176433563232, 0.9084210991859436,
+    1.5935472249984741, 1.6746573448181152, 1.5295161008834839, 1.5156065225601196,
+    1.3741130828857422, 1.3966848850250244, 1.5048562288284302, 1.3639980554580688,
+    1.6187479496002197, 1.4649187326431274, 1.4854034185409546, 1.4718362092971802,
+    1.3606340885162354, 1.3610191345214844, 1.4393914937973022, 1.3196474313735962,
+    1.7373912334442139, 1.676789402961731, 1.7663650512695312, 2.001734733581543,
+    1.5564721822738647, 1.5988587141036987, 1.691292405128479, 1.6710625886917114,
+    1.2537614107131958, 1.2614444494247437, 1.2620376348495483, 1.2686518430709839, 1.264404296875,
+    1.214123249053955, 1.2891968488693237, 1.3466484546661377, 1.2396219968795776,
+    1.2641072273254395, 1.2136197090148926, 1.3084132671356201, 1.090545892715454,
+    1.015718936920166, 1.1048184633255005, 1.0634803771972656, 1.0784021615982056,
+    1.112139105796814, 1.000946044921875, 0.9421362280845642, 0.9843313097953796,
+    0.9063032865524292, 0.9273138642311096, 0.919854998588562, 0.982856273651123, 1.027355670928955,
+    0.9987716674804688, 0.9909582734107971, 0.9955754280090332, 0.9863236546516418,
+    1.0074244737625122, 0.9614824056625366, 0.8130137920379639, 0.7889928221702576,
+    0.8253338932991028, 0.8026267886161804, 0.7385271787643433, 0.8116097450256348,
+    0.8938688039779663, 0.8611781001091003, 0.7581959962844849, 0.7200208902359009,
+    0.6607709527015686, 0.7091043591499329, 0.6722692251205444, 0.70069420337677,
+    0.6254761219024658, 0.6521781086921692, 0.6419441103935242, 0.6337764859199524,
+    0.6271613240242004, 0.5956964492797852, 0.592568576335907, 0.6028187274932861,
+    0.5406001210212708, 0.4909006655216217, 1.797389268875122, 1.9861352443695068,
+    1.9101381301879883, 1.9236652851104736, 1.8448028564453125, 1.497469186782837,
+    1.5071669816970825, 1.5477122068405151, 2.611436605453491, 3.4611799716949463,
+    0.8233669400215149, 1.0198670625686646, 1.127083659172058, 1.8005759716033936,
+    1.0428789854049683, 0.92336505651474, 1.088226079940796, 0.1674216091632843, 0.410890132188797,
+    0.20606985688209534, 0.6966702938079834, 0.6510134935379028, 0.9526975750923157,
+    1.2101908922195435, 0.303337961435318, 1.2054007053375244, 0.215599924325943,
+    0.5406419634819031, 0.055965669453144073, 0.45930466055870056, 0.1560492068529129,
+    0.1532532423734665, 0.0649246796965599, 0.058072060346603394, 0.7666800618171692,
+    0.7612629532814026, 0.15109768509864807, 0.145896777510643, 0.4919576346874237,
+    0.09632082283496857, 1.359438419342041, 1.0396593809127808, 1.0981696844100952,
+    0.644085705280304, 1.74201500415802, 0.709435760974884, 0.8281223177909851, 1.5310002565383911,
+    1.2933591604232788, 1.586344838142395, 0.7869195938110352, 0.9772923588752747,
+    0.019112002104520798, 0.0007519464124925435, 0.0008880474488250911, 0.0012494882103055716,
+    0.008169698528945446, 1.788992166519165, 0.09848745912313461, 0.014582579024136066,
+    0.005903591867536306, 0.0014234255068004131, 0.0028075871523469687, 0.004765756893903017,
+    0.002446690108627081, 0.009132144041359425, 0.0008167652413249016, 0.11574823409318924,
+    1.259440302848816, 0.585374653339386, 2.515706777572632, 2.026177167892456, 1.5687466859817505,
+    0.7074839472770691, 0.31499364972114563, 0.5457329750061035, 0.46257832646369934,
+    0.18794439733028412, 0.29828333854675293, 0.14924637973308563, 0.4149896502494812,
+    0.4473285377025604, 0.17850850522518158, 0.5389696359634399, 0.04283512383699417,
+    0.05911625549197197, 0.002399564255028963, 1.5615121126174927, 1.284759759902954,
+    1.0200217962265015, 1.6679267883300781, 1.3765960931777954, 1.1695374250411987,
+    1.5913335084915161, 4.864826679229736, 1.5199590921401978, 0.9294037818908691,
+    7.456386089324951, 1.322627067565918, 1.023901104927063, 0.0016840107273310423,
+    0.0026445782277733088, 0.001034858520142734, 0.07999753952026367
+  ],
+  "curriculum": {
+    "stages": {
+      "teaching": 96,
+      "guided": 48,
+      "independent": 48
+    },
+    "order_sha256": "ec0da771218475299eb71e4e63927b3476663dec52e21c1b5ecec02b2d5d050c",
+    "evaluation_hints": false
+  },
+  "resumed_adapter": false,
+  "baseline": [
+    {
+      "id": "evaluation-addition-1-number",
+      "topic": "addition",
+      "expected": "16",
+      "answer": "Simplificada: 16/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-2-number",
+      "topic": "addition",
+      "expected": "20",
+      "answer": "Simplificada: 10/2\n\nResposta: 1",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-3-number",
+      "topic": "addition",
+      "expected": "23",
+      "answer": "Simplificada: 23/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-4-number",
+      "topic": "addition",
+      "expected": "24",
+      "answer": "Simplificada: 24/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-5-number",
+      "topic": "subtraction",
+      "expected": "-4",
+      "answer": "Simplificada: 6 - 10 = -4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-6-number",
+      "topic": "subtraction",
+      "expected": "4",
+      "answer": "0.4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-7-number",
+      "topic": "subtraction",
+      "expected": "11",
+      "answer": "0.5",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-8-number",
+      "topic": "subtraction",
+      "expected": "14",
+      "answer": "0.4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-9-number",
+      "topic": "multiplication",
+      "expected": "60",
+      "answer": "6 × 10 = 60",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-10-number",
+      "topic": "multiplication",
+      "expected": "96",
+      "answer": "12 × 8 = 96",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-11-number",
+      "topic": "multiplication",
+      "expected": "102",
+      "answer": "17 × 6 = 102",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-12-number",
+      "topic": "multiplication",
+      "expected": "95",
+      "answer": "19 × 5 = 95",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-13-number",
+      "topic": "division",
+      "expected": "3/5",
+      "answer": "0.6",
+      "correct": true
+    },
+    {
+      "id": "evaluation-division-14-number",
+      "topic": "division",
+      "expected": "3/2",
+      "answer": "0.15",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-15-number",
+      "topic": "division",
+      "expected": "17/6",
+      "answer": "0.283333333333 (ou",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-16-number",
+      "topic": "division",
+      "expected": "19/5",
+      "answer": "0,38",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-17-number",
+      "topic": "fractions",
+      "expected": "3/10",
+      "answer": "3/10",
+      "correct": true
+    },
+    {
+      "id": "evaluation-fractions-18-number",
+      "topic": "fractions",
+      "expected": "11/12",
+      "answer": "2/12",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-19-number",
+      "topic": "fractions",
+      "expected": "5/14",
+      "answer": "3/14",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-20-number",
+      "topic": "fractions",
+      "expected": "11/24",
+      "answer": "3/8 + 1/12 = 9/24 +",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-21-number",
+      "topic": "percentages",
+      "expected": "24",
+      "answer": "0.15",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-22-number",
+      "topic": "percentages",
+      "expected": "28",
+      "answer": "17/4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-23-number",
+      "topic": "percentages",
+      "expected": "30",
+      "answer": "30/10",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-24-number",
+      "topic": "percentages",
+      "expected": "90",
+      "answer": "30/4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-25-number",
+      "topic": "linear-equations",
+      "expected": "7",
+      "answer": "A resposta é: x = 10\n\nExplicação:\n1.",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-26-number",
+      "topic": "linear-equations",
+      "expected": "5",
+      "answer": "A resposta é: 5\n\nExplicação:\n1. Subtrai",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-27-number",
+      "topic": "linear-equations",
+      "expected": "3",
+      "answer": "A resposta é: 4\n\nExplicação:\n1. Subtrai",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-28-number",
+      "topic": "linear-equations",
+      "expected": "6",
+      "answer": "A resposta é: 6\n\nExplicação:\n11x +",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-29-number",
+      "topic": "powers",
+      "expected": "27",
+      "answer": "10/4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-30-number",
+      "topic": "powers",
+      "expected": "64",
+      "answer": "4^3 = 64",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-31-number",
+      "topic": "powers",
+      "expected": "125",
+      "answer": "5^3 = 125",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-32-number",
+      "topic": "powers",
+      "expected": "49",
+      "answer": "14",
+      "correct": false
+    }
+  ],
+  "prior_candidate": [
+    {
+      "id": "evaluation-addition-1-number",
+      "topic": "addition",
+      "expected": "16",
+      "answer": "Simplificada: 16/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-2-number",
+      "topic": "addition",
+      "expected": "20",
+      "answer": "Simplificada: 10/2\n\nResposta: 1",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-3-number",
+      "topic": "addition",
+      "expected": "23",
+      "answer": "Simplificada: 23/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-4-number",
+      "topic": "addition",
+      "expected": "24",
+      "answer": "Simplificada: 24/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-5-number",
+      "topic": "subtraction",
+      "expected": "-4",
+      "answer": "Simplificada: 6 - 10 = -4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-6-number",
+      "topic": "subtraction",
+      "expected": "4",
+      "answer": "0.4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-7-number",
+      "topic": "subtraction",
+      "expected": "11",
+      "answer": "0.5",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-8-number",
+      "topic": "subtraction",
+      "expected": "14",
+      "answer": "0.4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-9-number",
+      "topic": "multiplication",
+      "expected": "60",
+      "answer": "6 × 10 = 60",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-10-number",
+      "topic": "multiplication",
+      "expected": "96",
+      "answer": "12 × 8 = 96",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-11-number",
+      "topic": "multiplication",
+      "expected": "102",
+      "answer": "17 × 6 = 102",
+      "correct": false
+    },
+    {
+      "id": "evaluation-multiplication-12-number",
+      "topic": "multiplication",
+      "expected": "95",
+      "answer": "19 × 5 = 95",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-13-number",
+      "topic": "division",
+      "expected": "3/5",
+      "answer": "0.6",
+      "correct": true
+    },
+    {
+      "id": "evaluation-division-14-number",
+      "topic": "division",
+      "expected": "3/2",
+      "answer": "0.15",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-15-number",
+      "topic": "division",
+      "expected": "17/6",
+      "answer": "0.283333333333 (ou",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-16-number",
+      "topic": "division",
+      "expected": "19/5",
+      "answer": "0,38",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-17-number",
+      "topic": "fractions",
+      "expected": "3/10",
+      "answer": "3/10",
+      "correct": true
+    },
+    {
+      "id": "evaluation-fractions-18-number",
+      "topic": "fractions",
+      "expected": "11/12",
+      "answer": "2/12",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-19-number",
+      "topic": "fractions",
+      "expected": "5/14",
+      "answer": "3/14",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-20-number",
+      "topic": "fractions",
+      "expected": "11/24",
+      "answer": "3/8 + 1/12 = 9/24 +",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-21-number",
+      "topic": "percentages",
+      "expected": "24",
+      "answer": "0.15",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-22-number",
+      "topic": "percentages",
+      "expected": "28",
+      "answer": "17/4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-23-number",
+      "topic": "percentages",
+      "expected": "30",
+      "answer": "30/10",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-24-number",
+      "topic": "percentages",
+      "expected": "90",
+      "answer": "30/4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-25-number",
+      "topic": "linear-equations",
+      "expected": "7",
+      "answer": "A resposta é: x = 10\n\nExplicação:\n1.",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-26-number",
+      "topic": "linear-equations",
+      "expected": "5",
+      "answer": "A resposta é: 5\n\nExplicação:\n1. Subtrai",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-27-number",
+      "topic": "linear-equations",
+      "expected": "3",
+      "answer": "A resposta é: 4\n\nExplicação:\n1. Subtrai",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-28-number",
+      "topic": "linear-equations",
+      "expected": "6",
+      "answer": "A resposta é: 6\n\nExplicação:\n11x +",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-29-number",
+      "topic": "powers",
+      "expected": "27",
+      "answer": "10/4",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-30-number",
+      "topic": "powers",
+      "expected": "64",
+      "answer": "4^3 = 64",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-31-number",
+      "topic": "powers",
+      "expected": "125",
+      "answer": "5^3 = 125",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-32-number",
+      "topic": "powers",
+      "expected": "49",
+      "answer": "14",
+      "correct": false
+    }
+  ],
+  "candidate": [
+    {
+      "id": "evaluation-addition-1-number",
+      "topic": "addition",
+      "expected": "16",
+      "answer": "16",
+      "correct": true
+    },
+    {
+      "id": "evaluation-addition-2-number",
+      "topic": "addition",
+      "expected": "20",
+      "answer": "10",
+      "correct": false
+    },
+    {
+      "id": "evaluation-addition-3-number",
+      "topic": "addition",
+      "expected": "23",
+      "answer": "23",
+      "correct": true
+    },
+    {
+      "id": "evaluation-addition-4-number",
+      "topic": "addition",
+      "expected": "24",
+      "answer": "24",
+      "correct": true
+    },
+    {
+      "id": "evaluation-subtraction-5-number",
+      "topic": "subtraction",
+      "expected": "-4",
+      "answer": "-2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-subtraction-6-number",
+      "topic": "subtraction",
+      "expected": "4",
+      "answer": "4",
+      "correct": true
+    },
+    {
+      "id": "evaluation-subtraction-7-number",
+      "topic": "subtraction",
+      "expected": "11",
+      "answer": "11",
+      "correct": true
+    },
+    {
+      "id": "evaluation-subtraction-8-number",
+      "topic": "subtraction",
+      "expected": "14",
+      "answer": "14",
+      "correct": true
+    },
+    {
+      "id": "evaluation-multiplication-9-number",
+      "topic": "multiplication",
+      "expected": "60",
+      "answer": "60",
+      "correct": true
+    },
+    {
+      "id": "evaluation-multiplication-10-number",
+      "topic": "multiplication",
+      "expected": "96",
+      "answer": "96",
+      "correct": true
+    },
+    {
+      "id": "evaluation-multiplication-11-number",
+      "topic": "multiplication",
+      "expected": "102",
+      "answer": "102",
+      "correct": true
+    },
+    {
+      "id": "evaluation-multiplication-12-number",
+      "topic": "multiplication",
+      "expected": "95",
+      "answer": "95",
+      "correct": true
+    },
+    {
+      "id": "evaluation-division-13-number",
+      "topic": "division",
+      "expected": "3/5",
+      "answer": "0.6",
+      "correct": true
+    },
+    {
+      "id": "evaluation-division-14-number",
+      "topic": "division",
+      "expected": "3/2",
+      "answer": "1.5",
+      "correct": true
+    },
+    {
+      "id": "evaluation-division-15-number",
+      "topic": "division",
+      "expected": "17/6",
+      "answer": "2,9",
+      "correct": false
+    },
+    {
+      "id": "evaluation-division-16-number",
+      "topic": "division",
+      "expected": "19/5",
+      "answer": "3.8",
+      "correct": true
+    },
+    {
+      "id": "evaluation-fractions-17-number",
+      "topic": "fractions",
+      "expected": "3/10",
+      "answer": "1/2",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-18-number",
+      "topic": "fractions",
+      "expected": "11/12",
+      "answer": "27/24",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-19-number",
+      "topic": "fractions",
+      "expected": "5/14",
+      "answer": "13/90",
+      "correct": false
+    },
+    {
+      "id": "evaluation-fractions-20-number",
+      "topic": "fractions",
+      "expected": "11/24",
+      "answer": "17/24",
+      "correct": false
+    },
+    {
+      "id": "evaluation-percentages-21-number",
+      "topic": "percentages",
+      "expected": "24",
+      "answer": "24",
+      "correct": true
+    },
+    {
+      "id": "evaluation-percentages-22-number",
+      "topic": "percentages",
+      "expected": "28",
+      "answer": "28",
+      "correct": true
+    },
+    {
+      "id": "evaluation-percentages-23-number",
+      "topic": "percentages",
+      "expected": "30",
+      "answer": "30",
+      "correct": true
+    },
+    {
+      "id": "evaluation-percentages-24-number",
+      "topic": "percentages",
+      "expected": "90",
+      "answer": "90",
+      "correct": true
+    },
+    {
+      "id": "evaluation-linear-equations-25-number",
+      "topic": "linear-equations",
+      "expected": "7",
+      "answer": "12",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-26-number",
+      "topic": "linear-equations",
+      "expected": "5",
+      "answer": "17",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-27-number",
+      "topic": "linear-equations",
+      "expected": "3",
+      "answer": "14",
+      "correct": false
+    },
+    {
+      "id": "evaluation-linear-equations-28-number",
+      "topic": "linear-equations",
+      "expected": "6",
+      "answer": "23",
+      "correct": false
+    },
+    {
+      "id": "evaluation-powers-29-number",
+      "topic": "powers",
+      "expected": "27",
+      "answer": "27",
+      "correct": true
+    },
+    {
+      "id": "evaluation-powers-30-number",
+      "topic": "powers",
+      "expected": "64",
+      "answer": "64",
+      "correct": true
+    },
+    {
+      "id": "evaluation-powers-31-number",
+      "topic": "powers",
+      "expected": "125",
+      "answer": "125",
+      "correct": true
+    },
+    {
+      "id": "evaluation-powers-32-number",
+      "topic": "powers",
+      "expected": "49",
+      "answer": "49",
+      "correct": true
+    }
+  ],
+  "gate": {
+    "passed": false,
+    "correct": 21,
+    "total": 32,
+    "accuracy": 0.65625,
+    "per_topic": {
+      "addition": 3,
+      "subtraction": 3,
+      "multiplication": 4,
+      "division": 3,
+      "fractions": 0,
+      "percentages": 4,
+      "linear-equations": 0,
+      "powers": 4
+    },
+    "regressions": ["evaluation-fractions-17-number"],
+    "minimum_accuracy": 0.75,
+    "minimum_correct_per_topic": 2
+  },
+  "audit": {
+    "baseline": [
+      {
+        "id": "audit-addition-1-number",
+        "topic": "addition",
+        "expected": "15",
+        "answer": "Simplificada: 15/2",
+        "correct": false
+      },
+      {
+        "id": "audit-addition-2-number",
+        "topic": "addition",
+        "expected": "24",
+        "answer": "Simplificada: 24/2",
+        "correct": false
+      },
+      {
+        "id": "audit-addition-3-number",
+        "topic": "addition",
+        "expected": "25",
+        "answer": "Simplificada: 25/2",
+        "correct": false
+      },
+      {
+        "id": "audit-addition-4-number",
+        "topic": "addition",
+        "expected": "29",
+        "answer": "Simplificada: 23 + 6 = 29",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-5-number",
+        "topic": "subtraction",
+        "expected": "1",
+        "answer": "0.5",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-6-number",
+        "topic": "subtraction",
+        "expected": "6",
+        "answer": "0.5",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-7-number",
+        "topic": "subtraction",
+        "expected": "11",
+        "answer": "0.5",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-8-number",
+        "topic": "subtraction",
+        "expected": "17",
+        "answer": "0.7",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-9-number",
+        "topic": "multiplication",
+        "expected": "56",
+        "answer": "8/7",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-10-number",
+        "topic": "multiplication",
+        "expected": "135",
+        "answer": "15 × 9 = 135\n\nA resposta é 1",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-11-number",
+        "topic": "multiplication",
+        "expected": "126",
+        "answer": "18 × 7 = 126",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-12-number",
+        "topic": "multiplication",
+        "expected": "138",
+        "answer": "23 × 6 = 138",
+        "correct": false
+      },
+      {
+        "id": "audit-division-13-number",
+        "topic": "division",
+        "expected": "8/7",
+        "answer": "0.99999999999999",
+        "correct": false
+      },
+      {
+        "id": "audit-division-14-number",
+        "topic": "division",
+        "expected": "5/3",
+        "answer": "0.166666... (ou seja, 1/",
+        "correct": false
+      },
+      {
+        "id": "audit-division-15-number",
+        "topic": "division",
+        "expected": "18/7",
+        "answer": "0,285714285714",
+        "correct": false
+      },
+      {
+        "id": "audit-division-16-number",
+        "topic": "division",
+        "expected": "23/6",
+        "answer": "0.375",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-17-number",
+        "topic": "fractions",
+        "expected": "5/12",
+        "answer": "0.25",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-18-number",
+        "topic": "fractions",
+        "expected": "13/20",
+        "answer": "3/20",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-19-number",
+        "topic": "fractions",
+        "expected": "1/2",
+        "answer": "2/5",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-20-number",
+        "topic": "fractions",
+        "expected": "13/24",
+        "answer": "3/24",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-21-number",
+        "topic": "percentages",
+        "expected": "30",
+        "answer": "0.12",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-22-number",
+        "topic": "percentages",
+        "expected": "72",
+        "answer": "30/8",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-23-number",
+        "topic": "percentages",
+        "expected": "60",
+        "answer": "32/4",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-24-number",
+        "topic": "percentages",
+        "expected": "130",
+        "answer": "32.5%",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-25-number",
+        "topic": "linear-equations",
+        "expected": "7",
+        "answer": "A resposta é: 10/2\n\nExplicação:\nPrimeiro",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-26-number",
+        "topic": "linear-equations",
+        "expected": "8",
+        "answer": "A resposta é: 10/2\n\nExplicação:\n1.",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-27-number",
+        "topic": "linear-equations",
+        "expected": "6",
+        "answer": "A resposta é: 6\n\nExplicação:\n1. Subtrai",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-28-number",
+        "topic": "linear-equations",
+        "expected": "4",
+        "answer": "A resposta é: 9\n\nExplicação:\n10x +",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-29-number",
+        "topic": "powers",
+        "expected": "32",
+        "answer": "2^5 = 32",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-30-number",
+        "topic": "powers",
+        "expected": "216",
+        "answer": "100/4",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-31-number",
+        "topic": "powers",
+        "expected": "64",
+        "answer": "16/4",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-32-number",
+        "topic": "powers",
+        "expected": "81",
+        "answer": "180/100",
+        "correct": false
+      }
+    ],
+    "prior_candidate": [
+      {
+        "id": "audit-addition-1-number",
+        "topic": "addition",
+        "expected": "15",
+        "answer": "Simplificada: 15/2",
+        "correct": false
+      },
+      {
+        "id": "audit-addition-2-number",
+        "topic": "addition",
+        "expected": "24",
+        "answer": "Simplificada: 24/2",
+        "correct": false
+      },
+      {
+        "id": "audit-addition-3-number",
+        "topic": "addition",
+        "expected": "25",
+        "answer": "Simplificada: 25/2",
+        "correct": false
+      },
+      {
+        "id": "audit-addition-4-number",
+        "topic": "addition",
+        "expected": "29",
+        "answer": "Simplificada: 23 + 6 = 29",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-5-number",
+        "topic": "subtraction",
+        "expected": "1",
+        "answer": "0.5",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-6-number",
+        "topic": "subtraction",
+        "expected": "6",
+        "answer": "0.5",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-7-number",
+        "topic": "subtraction",
+        "expected": "11",
+        "answer": "0.5",
+        "correct": false
+      },
+      {
+        "id": "audit-subtraction-8-number",
+        "topic": "subtraction",
+        "expected": "17",
+        "answer": "0.7",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-9-number",
+        "topic": "multiplication",
+        "expected": "56",
+        "answer": "8/7",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-10-number",
+        "topic": "multiplication",
+        "expected": "135",
+        "answer": "15 × 9 = 135\n\nA resposta é 1",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-11-number",
+        "topic": "multiplication",
+        "expected": "126",
+        "answer": "18 × 7 = 126",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-12-number",
+        "topic": "multiplication",
+        "expected": "138",
+        "answer": "23 × 6 = 138",
+        "correct": false
+      },
+      {
+        "id": "audit-division-13-number",
+        "topic": "division",
+        "expected": "8/7",
+        "answer": "0.99999999999999",
+        "correct": false
+      },
+      {
+        "id": "audit-division-14-number",
+        "topic": "division",
+        "expected": "5/3",
+        "answer": "0.166666... (ou seja, 1/",
+        "correct": false
+      },
+      {
+        "id": "audit-division-15-number",
+        "topic": "division",
+        "expected": "18/7",
+        "answer": "0,285714285714",
+        "correct": false
+      },
+      {
+        "id": "audit-division-16-number",
+        "topic": "division",
+        "expected": "23/6",
+        "answer": "0.375",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-17-number",
+        "topic": "fractions",
+        "expected": "5/12",
+        "answer": "0.25",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-18-number",
+        "topic": "fractions",
+        "expected": "13/20",
+        "answer": "3/20",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-19-number",
+        "topic": "fractions",
+        "expected": "1/2",
+        "answer": "2/5",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-20-number",
+        "topic": "fractions",
+        "expected": "13/24",
+        "answer": "3/24",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-21-number",
+        "topic": "percentages",
+        "expected": "30",
+        "answer": "0.12",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-22-number",
+        "topic": "percentages",
+        "expected": "72",
+        "answer": "30/8",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-23-number",
+        "topic": "percentages",
+        "expected": "60",
+        "answer": "32/4",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-24-number",
+        "topic": "percentages",
+        "expected": "130",
+        "answer": "32.5%",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-25-number",
+        "topic": "linear-equations",
+        "expected": "7",
+        "answer": "A resposta é: 10/2\n\nExplicação:\nPrimeiro",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-26-number",
+        "topic": "linear-equations",
+        "expected": "8",
+        "answer": "A resposta é: 10/2\n\nExplicação:\n1.",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-27-number",
+        "topic": "linear-equations",
+        "expected": "6",
+        "answer": "A resposta é: 6\n\nExplicação:\n1. Subtrai",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-28-number",
+        "topic": "linear-equations",
+        "expected": "4",
+        "answer": "A resposta é: 9\n\nExplicação:\n10x +",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-29-number",
+        "topic": "powers",
+        "expected": "32",
+        "answer": "2^5 = 32",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-30-number",
+        "topic": "powers",
+        "expected": "216",
+        "answer": "100/4",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-31-number",
+        "topic": "powers",
+        "expected": "64",
+        "answer": "16/4",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-32-number",
+        "topic": "powers",
+        "expected": "81",
+        "answer": "180/100",
+        "correct": false
+      }
+    ],
+    "candidate": [
+      {
+        "id": "audit-addition-1-number",
+        "topic": "addition",
+        "expected": "15",
+        "answer": "15",
+        "correct": true
+      },
+      {
+        "id": "audit-addition-2-number",
+        "topic": "addition",
+        "expected": "24",
+        "answer": "24",
+        "correct": true
+      },
+      {
+        "id": "audit-addition-3-number",
+        "topic": "addition",
+        "expected": "25",
+        "answer": "25",
+        "correct": true
+      },
+      {
+        "id": "audit-addition-4-number",
+        "topic": "addition",
+        "expected": "29",
+        "answer": "29",
+        "correct": true
+      },
+      {
+        "id": "audit-subtraction-5-number",
+        "topic": "subtraction",
+        "expected": "1",
+        "answer": "1",
+        "correct": true
+      },
+      {
+        "id": "audit-subtraction-6-number",
+        "topic": "subtraction",
+        "expected": "6",
+        "answer": "6",
+        "correct": true
+      },
+      {
+        "id": "audit-subtraction-7-number",
+        "topic": "subtraction",
+        "expected": "11",
+        "answer": "11",
+        "correct": true
+      },
+      {
+        "id": "audit-subtraction-8-number",
+        "topic": "subtraction",
+        "expected": "17",
+        "answer": "17",
+        "correct": true
+      },
+      {
+        "id": "audit-multiplication-9-number",
+        "topic": "multiplication",
+        "expected": "56",
+        "answer": "56",
+        "correct": true
+      },
+      {
+        "id": "audit-multiplication-10-number",
+        "topic": "multiplication",
+        "expected": "135",
+        "answer": "135",
+        "correct": true
+      },
+      {
+        "id": "audit-multiplication-11-number",
+        "topic": "multiplication",
+        "expected": "126",
+        "answer": "12",
+        "correct": false
+      },
+      {
+        "id": "audit-multiplication-12-number",
+        "topic": "multiplication",
+        "expected": "138",
+        "answer": "138",
+        "correct": true
+      },
+      {
+        "id": "audit-division-13-number",
+        "topic": "division",
+        "expected": "8/7",
+        "answer": "1.428571428571...",
+        "correct": false
+      },
+      {
+        "id": "audit-division-14-number",
+        "topic": "division",
+        "expected": "5/3",
+        "answer": "1.5",
+        "correct": false
+      },
+      {
+        "id": "audit-division-15-number",
+        "topic": "division",
+        "expected": "18/7",
+        "answer": "2,5",
+        "correct": false
+      },
+      {
+        "id": "audit-division-16-number",
+        "topic": "division",
+        "expected": "23/6",
+        "answer": "3,5",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-17-number",
+        "topic": "fractions",
+        "expected": "5/12",
+        "answer": "3/12",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-18-number",
+        "topic": "fractions",
+        "expected": "13/20",
+        "answer": "9/20",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-19-number",
+        "topic": "fractions",
+        "expected": "1/2",
+        "answer": "7/10",
+        "correct": false
+      },
+      {
+        "id": "audit-fractions-20-number",
+        "topic": "fractions",
+        "expected": "13/24",
+        "answer": "37/96",
+        "correct": false
+      },
+      {
+        "id": "audit-percentages-21-number",
+        "topic": "percentages",
+        "expected": "30",
+        "answer": "30",
+        "correct": true
+      },
+      {
+        "id": "audit-percentages-22-number",
+        "topic": "percentages",
+        "expected": "72",
+        "answer": "72",
+        "correct": true
+      },
+      {
+        "id": "audit-percentages-23-number",
+        "topic": "percentages",
+        "expected": "60",
+        "answer": "60",
+        "correct": true
+      },
+      {
+        "id": "audit-percentages-24-number",
+        "topic": "percentages",
+        "expected": "130",
+        "answer": "130",
+        "correct": true
+      },
+      {
+        "id": "audit-linear-equations-25-number",
+        "topic": "linear-equations",
+        "expected": "7",
+        "answer": "10",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-26-number",
+        "topic": "linear-equations",
+        "expected": "8",
+        "answer": "10",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-27-number",
+        "topic": "linear-equations",
+        "expected": "6",
+        "answer": "12",
+        "correct": false
+      },
+      {
+        "id": "audit-linear-equations-28-number",
+        "topic": "linear-equations",
+        "expected": "4",
+        "answer": "5",
+        "correct": false
+      },
+      {
+        "id": "audit-powers-29-number",
+        "topic": "powers",
+        "expected": "32",
+        "answer": "32",
+        "correct": true
+      },
+      {
+        "id": "audit-powers-30-number",
+        "topic": "powers",
+        "expected": "216",
+        "answer": "216",
+        "correct": true
+      },
+      {
+        "id": "audit-powers-31-number",
+        "topic": "powers",
+        "expected": "64",
+        "answer": "64",
+        "correct": true
+      },
+      {
+        "id": "audit-powers-32-number",
+        "topic": "powers",
+        "expected": "81",
+        "answer": "81",
+        "correct": true
+      }
+    ],
+    "gate": {
+      "passed": false,
+      "correct": 19,
+      "total": 32,
+      "accuracy": 0.59375,
+      "per_topic": {
+        "addition": 4,
+        "subtraction": 4,
+        "multiplication": 3,
+        "division": 0,
+        "fractions": 0,
+        "percentages": 4,
+        "linear-equations": 0,
+        "powers": 4
+      },
+      "regressions": [],
+      "minimum_accuracy": 0.75,
+      "minimum_correct_per_topic": 2
+    }
+  },
+  "training_topics": {
+    "addition": 16,
+    "subtraction": 16,
+    "multiplication": 16,
+    "division": 16,
+    "fractions": 48,
+    "percentages": 16,
+    "linear-equations": 48,
+    "powers": 16
+  }
+}
