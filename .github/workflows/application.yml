@@ -34,7 +34,7 @@ jobs:
         run: node --test scripts/generate-system-updates.test.js
 
   e2e:
-    name: Desktop and mobile smoke tests (${{ matrix.project }})
+    name: Desktop and mobile smoke tests (${{ matrix.label }})
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -42,11 +42,20 @@ jobs:
       matrix:
         include:
           - project: desktop
+            label: desktop
             browser: chromium
             workers: 2
+            shard: 1/1
           - project: mobile
+            label: mobile shard 1/2
             browser: webkit
             workers: 1
+            shard: 1/2
+          - project: mobile
+            label: mobile shard 2/2
+            browser: webkit
+            workers: 1
+            shard: 2/2
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -72,10 +81,23 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
       - name: Run end-to-end tests
         timeout-minutes: 20
-        run: npm run test:e2e -- --project=${{ matrix.project }} --workers=${{ matrix.workers }}
+        run: npm run test:e2e -- --project=${{ matrix.project }} --workers=${{ matrix.workers }} --shard=${{ matrix.shard }}
       - name: Verify isolated Helena preview
         timeout-minutes: 5
-        run: npx playwright test --config playwright.helena.config.ts --project=${{ matrix.project }} --workers=1
+        run: npx playwright test --config playwright.helena.config.ts --project=${{ matrix.project }} --workers=1 --shard=${{ matrix.shard }}
+
+  # Preserva o check móvel histórico e exige aprovação de todas as partes.
+  mobile-result:
+    name: Desktop and mobile smoke tests (mobile)
+    needs: e2e
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require all mobile shards to pass
+        env:
+          E2E_RESULT: ${{ needs.e2e.result }}
+        run: test "$E2E_RESULT" = "success"
 
   # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
   e2e-result:

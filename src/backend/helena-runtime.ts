@@ -3,26 +3,7 @@ import { createFirebaseRealtimeStore } from "./firebase-realtime-store.js";
 import { createHelenaHandler } from "./helena-handler.js";
 import { createCloudflareTeacher } from "./helena-teacher.js";
 import { checkRateLimit } from "./rate-limit.js";
-import { createOlenaStudent, createProgressiveProvider } from "./olena-student.js";
-import type { HelenaCapability } from "../ai/helena-contract.js";
-
-const knownCapabilities: HelenaCapability[] = ["tutor", "explain", "summarize", "study-plan"];
-const approved =
-  process.env["OLENA_STUDENT_EVALUATED"] === "true"
-    ? (process.env["OLENA_STUDENT_CAPABILITIES"] ?? "")
-        .split(",")
-        .filter((item): item is HelenaCapability =>
-          knownCapabilities.includes(item as HelenaCapability),
-        )
-    : [];
-const student =
-  process.env["OLENA_STUDENT_ENDPOINT"] && process.env["OLENA_STUDENT_MODEL"]
-    ? createOlenaStudent(
-        process.env["OLENA_STUDENT_ENDPOINT"],
-        process.env["OLENA_STUDENT_MODEL"],
-        process.env["OLENA_STUDENT_TOKEN"] ?? "",
-      )
-    : undefined;
+import { createMathGroundedProvider } from "./helena-math-provider.js";
 
 const store = createFirebaseRealtimeStore({
   databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
@@ -49,14 +30,12 @@ const handler = createHelenaHandler({
       );
     },
   },
-  provider: createProgressiveProvider(
+  provider: createMathGroundedProvider(
     createCloudflareTeacher({
       accountId: process.env["CLOUDFLARE_ACCOUNT_ID"] ?? "",
       token: process.env["CLOUDFLARE_API_TOKEN"] ?? "",
       model: process.env["OLENA_TEACHER_MODEL"] ?? "@cf/meta/llama-3.1-8b-instruct-fp8-fast",
     }),
-    student,
-    approved,
   ),
 });
 

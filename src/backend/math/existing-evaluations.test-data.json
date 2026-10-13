@@ -1,0 +1,386 @@
+[
+  {
+    "id": "evaluation-addition-1-number",
+    "topic": "addition",
+    "prompt": "Quanto é 6 + 10? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "16"
+  },
+  {
+    "id": "evaluation-addition-2-number",
+    "topic": "addition",
+    "prompt": "Quanto é 12 + 8? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "20"
+  },
+  {
+    "id": "evaluation-addition-3-number",
+    "topic": "addition",
+    "prompt": "Quanto é 17 + 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "23"
+  },
+  {
+    "id": "evaluation-addition-4-number",
+    "topic": "addition",
+    "prompt": "Quanto é 19 + 5? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "24"
+  },
+  {
+    "id": "evaluation-subtraction-5-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 6 - 10? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "-4"
+  },
+  {
+    "id": "evaluation-subtraction-6-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 12 - 8? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "4"
+  },
+  {
+    "id": "evaluation-subtraction-7-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 17 - 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "11"
+  },
+  {
+    "id": "evaluation-subtraction-8-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 19 - 5? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "14"
+  },
+  {
+    "id": "evaluation-multiplication-9-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 6 × 10? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "60"
+  },
+  {
+    "id": "evaluation-multiplication-10-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 12 × 8? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "96"
+  },
+  {
+    "id": "evaluation-multiplication-11-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 17 × 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "102"
+  },
+  {
+    "id": "evaluation-multiplication-12-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 19 × 5? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "95"
+  },
+  {
+    "id": "evaluation-division-13-number",
+    "topic": "division",
+    "prompt": "Quanto é 6 ÷ 10? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "3/5"
+  },
+  {
+    "id": "evaluation-division-14-number",
+    "topic": "division",
+    "prompt": "Quanto é 12 ÷ 8? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "3/2"
+  },
+  {
+    "id": "evaluation-division-15-number",
+    "topic": "division",
+    "prompt": "Quanto é 17 ÷ 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "17/6"
+  },
+  {
+    "id": "evaluation-division-16-number",
+    "topic": "division",
+    "prompt": "Quanto é 19 ÷ 5? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "19/5"
+  },
+  {
+    "id": "evaluation-fractions-17-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 1/5 + 1/10? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "3/10"
+  },
+  {
+    "id": "evaluation-fractions-18-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 3/4 + 1/6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "11/12"
+  },
+  {
+    "id": "evaluation-fractions-19-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 2/7 + 1/14? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "5/14"
+  },
+  {
+    "id": "evaluation-fractions-20-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 3/8 + 1/12? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "11/24"
+  },
+  {
+    "id": "evaluation-percentages-21-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 15% de 160? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "24"
+  },
+  {
+    "id": "evaluation-percentages-22-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 35% de 80? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "28"
+  },
+  {
+    "id": "evaluation-percentages-23-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 60% de 50? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "30"
+  },
+  {
+    "id": "evaluation-percentages-24-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 75% de 120? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "90"
+  },
+  {
+    "id": "evaluation-linear-equations-25-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 4x + 7 = 35. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "7"
+  },
+  {
+    "id": "evaluation-linear-equations-26-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 8x + 3 = 43. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "5"
+  },
+  {
+    "id": "evaluation-linear-equations-27-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 9x + 5 = 32. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "3"
+  },
+  {
+    "id": "evaluation-linear-equations-28-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 11x + 4 = 70. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "6"
+  },
+  {
+    "id": "evaluation-powers-29-number",
+    "topic": "powers",
+    "prompt": "Quanto é 3^3? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "27"
+  },
+  {
+    "id": "evaluation-powers-30-number",
+    "topic": "powers",
+    "prompt": "Quanto é 4^3? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "64"
+  },
+  {
+    "id": "evaluation-powers-31-number",
+    "topic": "powers",
+    "prompt": "Quanto é 5^3? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "125"
+  },
+  {
+    "id": "evaluation-powers-32-number",
+    "topic": "powers",
+    "prompt": "Quanto é 7^2? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "49"
+  },
+  {
+    "id": "audit-addition-1-number",
+    "topic": "addition",
+    "prompt": "Quanto é 8 + 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "15"
+  },
+  {
+    "id": "audit-addition-2-number",
+    "topic": "addition",
+    "prompt": "Quanto é 15 + 9? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "24"
+  },
+  {
+    "id": "audit-addition-3-number",
+    "topic": "addition",
+    "prompt": "Quanto é 18 + 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "25"
+  },
+  {
+    "id": "audit-addition-4-number",
+    "topic": "addition",
+    "prompt": "Quanto é 23 + 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "29"
+  },
+  {
+    "id": "audit-subtraction-5-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 8 - 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "1"
+  },
+  {
+    "id": "audit-subtraction-6-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 15 - 9? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "6"
+  },
+  {
+    "id": "audit-subtraction-7-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 18 - 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "11"
+  },
+  {
+    "id": "audit-subtraction-8-number",
+    "topic": "subtraction",
+    "prompt": "Quanto é 23 - 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "17"
+  },
+  {
+    "id": "audit-multiplication-9-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 8 × 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "56"
+  },
+  {
+    "id": "audit-multiplication-10-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 15 × 9? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "135"
+  },
+  {
+    "id": "audit-multiplication-11-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 18 × 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "126"
+  },
+  {
+    "id": "audit-multiplication-12-number",
+    "topic": "multiplication",
+    "prompt": "Quanto é 23 × 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "138"
+  },
+  {
+    "id": "audit-division-13-number",
+    "topic": "division",
+    "prompt": "Quanto é 8 ÷ 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "8/7"
+  },
+  {
+    "id": "audit-division-14-number",
+    "topic": "division",
+    "prompt": "Quanto é 15 ÷ 9? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "5/3"
+  },
+  {
+    "id": "audit-division-15-number",
+    "topic": "division",
+    "prompt": "Quanto é 18 ÷ 7? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "18/7"
+  },
+  {
+    "id": "audit-division-16-number",
+    "topic": "division",
+    "prompt": "Quanto é 23 ÷ 6? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "23/6"
+  },
+  {
+    "id": "audit-fractions-17-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 1/6 + 1/4? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "5/12"
+  },
+  {
+    "id": "audit-fractions-18-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 2/5 + 1/4? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "13/20"
+  },
+  {
+    "id": "audit-fractions-19-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 3/10 + 1/5? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "1/2"
+  },
+  {
+    "id": "audit-fractions-20-number",
+    "topic": "fractions",
+    "prompt": "Quanto é 5/12 + 1/8? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "13/24"
+  },
+  {
+    "id": "audit-percentages-21-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 12% de 250? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "30"
+  },
+  {
+    "id": "audit-percentages-22-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 45% de 160? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "72"
+  },
+  {
+    "id": "audit-percentages-23-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 80% de 75? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "60"
+  },
+  {
+    "id": "audit-percentages-24-number",
+    "topic": "percentages",
+    "prompt": "Quanto é 65% de 200? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "130"
+  },
+  {
+    "id": "audit-linear-equations-25-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 3x + 8 = 29. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "7"
+  },
+  {
+    "id": "audit-linear-equations-26-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 5x + 9 = 49. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "8"
+  },
+  {
+    "id": "audit-linear-equations-27-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 7x + 3 = 45. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "6"
+  },
+  {
+    "id": "audit-linear-equations-28-number",
+    "topic": "linear-equations",
+    "prompt": "Resolva 10x + 6 = 46. Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "4"
+  },
+  {
+    "id": "audit-powers-29-number",
+    "topic": "powers",
+    "prompt": "Quanto é 2^5? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "32"
+  },
+  {
+    "id": "audit-powers-30-number",
+    "topic": "powers",
+    "prompt": "Quanto é 6^3? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "216"
+  },
+  {
+    "id": "audit-powers-31-number",
+    "topic": "powers",
+    "prompt": "Quanto é 8^2? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "64"
+  },
+  {
+    "id": "audit-powers-32-number",
+    "topic": "powers",
+    "prompt": "Quanto é 9^2? Responda somente o número ou a fração simplificada, sem explicação.",
+    "expected": "81"
+  }
+]
