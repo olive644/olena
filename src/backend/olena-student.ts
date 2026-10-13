@@ -1,6 +1,7 @@
 import { parseHelenaResponse, type HelenaCapability } from "../ai/helena-contract.js";
 import { HELENA_TEACHER_POLICY } from "./helena-teacher.js";
 import type { HelenaProvider } from "./helena-handler.js";
+import { helenaModelInput } from "./helena-model-input.js";
 import { readModelStream } from "../ai/event-stream.js";
 
 /** Promoção explícita por capacidade, nunca baseada em confiança declarada pela IA. */
@@ -85,12 +86,7 @@ export function createOlenaStudent(
             { role: "system", content: HELENA_TEACHER_POLICY },
             {
               role: "user",
-              content: JSON.stringify({
-                prompt: request.prompt,
-                capability: request.capability,
-                sources: request.sources,
-                subject: request.subject,
-              }),
+              content: helenaModelInput(request),
             },
           ],
         }),
@@ -121,12 +117,7 @@ export function createOlenaStudent(
             { role: "system", content: HELENA_TEACHER_POLICY },
             {
               role: "user",
-              content: JSON.stringify({
-                prompt: request.prompt,
-                capability: request.capability,
-                sources: request.sources,
-                subject: request.subject,
-              }),
+              content: helenaModelInput(request),
             },
           ],
           max_tokens: 700,

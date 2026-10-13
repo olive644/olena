@@ -34,11 +34,12 @@ describe("professor Cloudflare", () => {
     expect(init?.headers).toMatchObject({ Authorization: "Bearer server-secret" });
     const body = JSON.parse(String(init?.body));
     expect(body.messages[0].role).toBe("system");
-    expect(JSON.parse(body.messages[1].content)).toEqual({
+    expect(JSON.parse(body.messages[1].content)).toMatchObject({
       capability: "tutor",
       sources: [],
       prompt: "Explique divisão",
     });
+    expect(JSON.parse(body.messages[1].content).math.references[0].id).toBe("operations");
     expect(body.max_tokens).toBe(700);
     expect(init?.signal).toBeInstanceOf(AbortSignal);
   });
@@ -72,5 +73,31 @@ describe("professor Cloudflare", () => {
   ])("rejeita resposta inválida", async (payload) => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(payload)));
     await expect(createCloudflareTeacher(config, fetcher).generate(request)).rejects.toThrow();
+  });
+});
+
+it("grounds arithmetic in both generation and streaming without an extra API call", async () => {
+  const inputs: Record<string, unknown>[] = [];
+  const fetcher = vi.fn<typeof fetch>().mockImplementation(async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    inputs.push(JSON.parse(body.messages[1].content));
+    expect(body.messages[0].content).toContain("status=checked");
+    return body.stream
+      ? new Response('data: {"response":"O resultado é 1/2."}\n\ndata: [DONE]\n\n', {
+          headers: { "Content-Type": "text/event-stream" },
+        })
+      : new Response(JSON.stringify({ success: true, result: { response: "O resultado é 1/2." } }));
+  });
+  const provider = createCloudflareTeacher(config, fetcher);
+  const mathRequest = { ...request, prompt: "Explique 1/3+1/6" };
+  await provider.generate(mathRequest);
+  const deltas: string[] = [];
+  for await (const delta of provider.stream!(mathRequest, new AbortController().signal))
+    deltas.push(delta);
+  expect(deltas.join("")).toBe("O resultado é 1/2.");
+  expect(fetcher).toHaveBeenCalledTimes(2);
+  expect(inputs[0]).toEqual(inputs[1]);
+  expect(inputs[0]).toMatchObject({
+    math: { calculator: { status: "checked", exact: "1/2" }, references: [{ id: "fractions" }] },
   });
 });

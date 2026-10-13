@@ -7,8 +7,6 @@ on:
         description: Explicitly repeat the experiment even if corpus is unchanged
         type: boolean
         default: false
-  schedule:
-    - cron: "17 4 * * *"
 
 permissions:
   contents: read

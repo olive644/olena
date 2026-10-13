@@ -531,7 +531,7 @@ export function HelenaChat({
             <p>
               {preview
                 ? "Conversa demonstrativa. Nada é enviado ou salvo."
-                : "Ao enviar, sua mensagem e o contexto vão ao Cloudflare. Sem uso no treino da Olena. IA pode errar."}
+                : "Respostas de IA enviam sua mensagem e o contexto ao Cloudflare. Sem uso no treino da Olena. IA pode errar."}
             </p>
           </footer>
         </section>

@@ -2570,6 +2570,20 @@ A mascote gráfica mantém uma única instância ao abrir e recolher a conversa.
 
 A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque e 1,5 no desktop. No toque, materiais Standard preservam cor e iluminação sem as camadas físicas e o relevo invisível nesse tamanho. Animações ociosas móveis usam 18 quadros por segundo, com 30 nas transformações e interações. Não há solicitação de quadros enquanto o documento ou a mascote estão ocultos. Mudanças de texto no chat não reenviam estado gráfico, salvo quando realmente alteram a presença de um diálogo modal. O modelo e o bundle são carregados uma vez por instância, e redução de movimento continua usando imagem estática.
 
+### Referências matemáticas e cálculo da Helena (2026-10-12)
+
+`src/backend/helena-model-input.ts` acrescenta no servidor até três referências originais de 17 tópicos de matemática básica/ensino médio, selecionadas pelo pedido atual. Um parser racional limitado confere operações, porcentagens, igualdades e equações lineares explícitas. Resultados exatos, aproximações, operações inválidas e fora do escopo são distintos. Professor e futuro modelo aprovado recebem o mesmo contexto em geração e streaming, sem nova chamada externa. Não há alteração no corpus de treino, promoção do candidato, consentimento, retenção ou quotas. Conteúdo não é uma biblioteca completa, e a explicação gerada não é certificada pela ferramenta. Escopo, autoria, limites, ameaças e manutenção estão em `docs/HELENA_MATH_KNOWLEDGE.md`.
+
 ### Treinamento matemático candidato v2 (2026-10-12)
 
 Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.
+
+### Helena com cálculo determinístico e professor Cloudflare (2026-10-13)
+
+A integração preparada foi atualizada sobre a main atual. O chat usa `createMathGroundedProvider`: pedidos de conta explícita suportada recebem resultado e etapas do parser racional, sem usar texto gerado para definir a resposta. Pedidos somente numéricos mantêm esse formato. Teoria, conversa e operações fora do escopo usam Cloudflare, com as 17 referências originais e limites da ferramenta no contexto. Autenticação, consentimento e quotas permanecem antes dos dois caminhos. O aviso de privacidade refere o envio ao Cloudflare às respostas de IA.
+
+O runtime deixa de usar o modelo candidato, inclusive com antigas variáveis de promoção. O treino perde o cron diário e continua disponível por workflow_dispatch. Os exemplos de treinamento não foram ampliados. As mesmas 64 questões anteriores foram preservadas como testes do provedor e do streaming HTTP, sem usar suas respostas como implementação. Esse resultado mede a calculadora integrada, não aprendizado do modelo. Limites e manutenção em docs/HELENA_MATH_KNOWLEDGE.md.
+
+### CI móvel dividido para concluir a validação (2026-10-13)
+
+A execução 38334744926 interrompeu a suíte móvel de 150 testes ao atingir o limite de 20 minutos. A matriz passa a executar WebKit em duas partes paralelas, com um worker por parte e o mesmo limite. Desktop permanece em uma parte com dois workers. Os testes do preview da Helena também são particionados. Os checks históricos de desktop, mobile e resultado geral são preservados; os resumos exigem sucesso de toda a matriz. Nenhum teste, repetição, limite por caso ou condição de aprovação foi removido. A união das listagens dos dois shards deve ser idêntica à listagem completa e sem sobreposição.

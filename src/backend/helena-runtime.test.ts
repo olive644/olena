@@ -1,0 +1,77 @@
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({
+  identify: vi.fn(),
+  quota: vi.fn(),
+  teacher: vi.fn(),
+  student: vi.fn(),
+}));
+vi.mock("./firebase-account-identity", () => ({
+  createFirebaseAccountIdentity: () => mocks.identify,
+}));
+vi.mock("./firebase-realtime-store", () => ({ createFirebaseRealtimeStore: () => ({}) }));
+vi.mock("./rate-limit", () => ({ checkRateLimit: mocks.quota }));
+vi.mock("./helena-teacher", () => ({
+  createCloudflareTeacher: () => ({ generate: mocks.teacher }),
+}));
+vi.mock("./olena-student", () => ({
+  createOlenaStudent: mocks.student,
+  createProgressiveProvider: (_teacher: unknown, student: unknown) => student,
+}));
+
+beforeEach(() => {
+  vi.resetModules();
+  vi.clearAllMocks();
+  vi.stubEnv("HELENA_ALLOWED_ORIGINS", "https://olena.test");
+  vi.stubEnv("OLENA_STUDENT_EVALUATED", "true");
+  vi.stubEnv("OLENA_STUDENT_ENDPOINT", "https://unused.test");
+  vi.stubEnv("OLENA_STUDENT_MODEL", "experimental");
+  vi.stubEnv("OLENA_STUDENT_CAPABILITIES", "tutor");
+  mocks.identify.mockResolvedValue({ uid: "account" });
+  mocks.quota.mockResolvedValue(true);
+  mocks.teacher.mockResolvedValue({ answer: "Explicação do professor.", suggestions: [] });
+  mocks.student.mockReturnValue({ generate: async () => ({ answer: "999", suggestions: [] }) });
+});
+afterEach(() => vi.unstubAllEnvs());
+
+async function send(prompt: string) {
+  const { handleHelenaRuntime } = await import("./helena-runtime");
+  return handleHelenaRuntime(
+    new Request("https://olena.test/api/helena", {
+      method: "POST",
+      headers: { Origin: "https://olena.test", "Content-Type": "application/json" },
+      body: JSON.stringify({
+        version: 1,
+        capability: "tutor",
+        prompt,
+        sources: [],
+        privacy: { consent: true, retention: "none" },
+      }),
+    }),
+  );
+}
+
+it("the production runtime uses the exact calculator for supported arithmetic", async () => {
+  const response = await send("Quanto é 1/3 + 1/6?");
+  expect(response.status).toBe(200);
+  expect((await response.json()).answer).toContain("Resultado conferido: 1/2.");
+  expect(mocks.teacher).not.toHaveBeenCalled();
+  expect(mocks.student).not.toHaveBeenCalled();
+});
+
+it("legacy student promotion settings cannot replace the Cloudflare teacher", async () => {
+  const response = await send("Explique frações");
+  expect(response.status).toBe(200);
+  expect((await response.json()).answer).toBe("Explicação do professor.");
+  expect(mocks.teacher).toHaveBeenCalledOnce();
+  expect(mocks.student).not.toHaveBeenCalled();
+});
+
+it("the production calculator still requires authentication and quota", async () => {
+  mocks.identify.mockResolvedValue(undefined);
+  expect((await send("Quanto é 1/3 + 1/6?")).status).toBe(401);
+  mocks.identify.mockResolvedValue({ uid: "account" });
+  mocks.quota.mockResolvedValue(false);
+  expect((await send("Quanto é 1/3 + 1/6?")).status).toBe(429);
+  expect(mocks.teacher).not.toHaveBeenCalled();
+});
