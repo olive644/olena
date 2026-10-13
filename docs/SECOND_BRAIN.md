@@ -219,6 +219,13 @@ o nível atual e usa Web Animations; cópia decorativa temporária tem cleanup a
 ou desmontar. isMotionReduced evita o voo. Apenas Idiomas tem trilha disponível.
 
 Praticar: PracticeIslandCarousel exibe atual e vizinhas sem painel nem abas de matérias.
+A ilha Picos dos Padrões (Matemática) é animada por AnimatedIsland, carregado sob demanda
+(React.lazy): canvas por cima da arte, com análise por componentes de alfa em worker
+(island-analysis.worker.ts, com fallback na thread principal) e lógica pura em
+domain/island-motion.ts. A imagem parada continua no DOM como texto alternativo e
+alternativa, e só fica transparente após o primeiro quadro. O avatar acompanha a ilha via
+onShift. Movimento reduzido (preferência do app ou do sistema, useMotionReduced) mantém
+a imagem parada, sem baixar a arte nem montar canvas.
 Pointer Events compartilham mouse/toque, pan-y preserva rolagem vertical; teclado/setas
 continuam disponíveis. FocusPaperArrow é compartilhado com Foco.
 WebPs de ilhas têm 800/480 px em srcset; montar somente atual e vizinhas, sem

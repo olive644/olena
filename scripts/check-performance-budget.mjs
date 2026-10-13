@@ -261,7 +261,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Keep narrow bundler variance; initial entry and absolute ceilings remain unchanged.
 // Branded exports, palette, drag preview and cross-date search: measured 1309.7 KiB.
 // No new dependency; initial entry and absolute ceilings remain unchanged.
-const MAX_TOTAL_JS_BYTES = 1311 * 1024;
+// Ilha animada de Matemática (canvas e worker de análise), carregada sob demanda e sem nova
+// dependência: medido 1326.1 KiB. Entrada inicial e tetos absolutos não mudam.
+const MAX_TOTAL_JS_BYTES = 1328 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

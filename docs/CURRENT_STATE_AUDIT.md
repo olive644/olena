@@ -2573,3 +2573,13 @@ A renderização usa GPU de baixo consumo, resolução limitada a 1,25 no toque 
 ### Treinamento matemático candidato v2 (2026-10-12)
 
 Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, com 32 perguntas separadas em oito temas. O corpus diário de professor não é chamado nessa cadeia. Treino CPU limitado a 96 passos em Qwen 0,5B, LoRA rank 4, sem promoção automática. Apenas candidatos sem regressões, com pelo menos 75% global e 50% em cada tema, preservam pesos. Relatórios rejeitados são guardados separadamente e não entram na retomada. Retenção aceita apenas artefatos da main ou própria branch, hash/configuração de pesos e avaliação compatíveis; tentativas idênticas não são repetidas sem mudança ou pedido explícito. Detalhes e comandos em `docs/OLENA_LEARNING.md`.
+
+### Ilha animada de Matemática em Praticar (2026-10-12)
+
+A ilha Picos dos Padrões ganha animação local desenhada em canvas: peças já soltas na arte flutuam, o grupo balança de leve, o ouro brilha com faíscas e partículas, e um reflexo de luz cruza a ilha. Nada é gerado por IA nem enviado a serviços externos; a arte e o cálculo ficam no dispositivo.
+
+A arte é separada por componentes conexos de alfa, sem recortar o corpo da ilha. Cada peça só se move dentro do espaço livre medido em quatro direções, e a amplitude encolhe até que 180 instantes em quatro envelopes não toquem a ilha (teste exaustivo cobre isso). O ciclo de 6 s fecha sem emenda e um envelope suave liga e desliga o movimento, de modo que o primeiro quadro é idêntico à arte parada.
+
+A análise roda em um worker do mesmo domínio (CSP já permitia worker-src self), com fallback na thread principal. Módulos pesados são lazy. O avatar acompanha a ilha pelo deslocamento calculado. Movimento reduzido, pelo app ou pelo sistema (novo useMotionReduced), mantém a imagem parada e não baixa a arte. Sem sombra no chão, pois o palco corta o excedente.
+
+Orçamento de JS total sobe de 1311 para 1328 KiB (medido 1326,1 KiB, +16,4 KiB sob demanda). Sem dependências novas, entrada inicial e teto absoluto preservados.

@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 export const ACCESSIBILITY_KEY = "olena:accessibility:v1";
 export type AccessibilityPreferences = { reduceMotion: boolean; highlightSelections: boolean };
@@ -68,4 +68,21 @@ export function isMotionReduced() {
     current.reduceMotion ||
     (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false)
   );
+}
+
+/** Movimento reduzido por escolha do app ou do sistema, acompanhando as duas mudanças. */
+export function useMotionReduced(): boolean {
+  const { reduceMotion } = useAccessibility();
+  const [system, setSystem] = useState(
+    () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
+  );
+  useEffect(() => {
+    const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!media) return;
+    const update = () => setSystem(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  return reduceMotion || system;
 }

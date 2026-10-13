@@ -1,8 +1,21 @@
-import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { PracticeUserPortrait } from "./practice-user-portrait";
 import type { StoredProfile } from "../hooks/use-stored-profile";
+
+// A animação (canvas e análise da arte) só é baixada quando a ilha de Matemática aparece.
+const AnimatedIsland = lazy(() =>
+  import("./animated-island").then((module) => ({ default: module.AnimatedIsland })),
+);
 
 export function PracticeIslandCarousel({
   index,
@@ -18,7 +31,16 @@ export function PracticeIslandCarousel({
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
   const dragged = useRef(false);
   const [drag, setDrag] = useState(0);
+  const [animatedReady, setAnimatedReady] = useState(false);
+  const avatar = useRef<HTMLDivElement>(null);
   const currentIsland = PRACTICE_ISLANDS[index]!;
+
+  // O avatar é HTML por cima da ilha: acompanha o flutuar sem passar pelo React a cada quadro.
+  const followIsland = useCallback((shift: { x: number; y: number }) => {
+    const element = avatar.current;
+    if (!element) return;
+    element.style.translate = shift.x === 0 && shift.y === 0 ? "" : `${shift.x}px ${shift.y}px`;
+  }, []);
 
   function finish(event: PointerEvent<HTMLDivElement>, cancelled = false) {
     const start = gesture.current;
@@ -85,7 +107,7 @@ export function PracticeIslandCarousel({
               onClick={(event) => {
                 if (!dragged.current || event.detail === 0) onEnter?.();
               }}
-              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" ? " is-locked" : ""}`}
+              className={`practice-carousel-island${active ? " is-current" : " is-preview"}${island.id !== "mathematics" ? " is-locked" : ""}${island.id === "mathematics" && animatedReady ? " is-animated" : ""}`}
               aria-hidden={!active}
               style={
                 {
@@ -112,10 +134,22 @@ export function PracticeIslandCarousel({
                   fetchPriority={active ? "high" : "low"}
                 />
               )}
+              {Math.abs(offset) <= 1 && island.id === "mathematics" && (
+                <Suspense fallback={null}>
+                  <AnimatedIsland
+                    source={island.art}
+                    active={active}
+                    anchor={{ x: island.traveler.left / 100, y: island.traveler.top / 100 }}
+                    onReadyChange={setAnimatedReady}
+                    onShift={followIsland}
+                  />
+                </Suspense>
+              )}
             </button>
           );
         })}
         <div
+          ref={avatar}
           className="practice-island-avatar"
           style={{
             left: `calc(50% + ${currentIsland.traveler.left / 100 - 0.5} * var(--island-size) + var(--drag-x))`,
