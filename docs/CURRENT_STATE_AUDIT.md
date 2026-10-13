@@ -2554,3 +2554,7 @@ Workflow `olena-learning.yml` passa a usar 96 exemplos originais e verificados, 
 ### Segunda rodada de treinamento da Olena (2026-10-12)
 
 Corpus v3 tem 192 exemplos originais, com maior cobertura de frações e equações. Treino CPU limitado a 192 passos. Mantém 32 perguntas de desenvolvimento e acrescenta auditoria independente de 32 questões, sem sobreposição com o treino, inclusive frações equivalentes. Aceitação exige 75% global, mínimo por tema e ausência de regressões em ambos os conjuntos. A métrica é explicitamente valor exato com formato curto, não correção pedagógica geral. Artefatos e validação de retomada v3 guardam os dois gates e hashes; pesos rejeitados não são carregados nem promovidos. Ver `docs/OLENA_LEARNING.md`.
+
+### Ensino antes da tentativa independente (v3.2)
+
+O corpus permanece idêntico: 192 exemplos, sem novas questões ou respostas. O currículo apresenta primeiro as 96 soluções explicadas, depois 48 respostas com dicas gerais de método e finalmente 48 respostas sem dicas. Cada registro aparece uma única vez, em 192 passos. As dicas não contêm questões da avaliação. As duas avaliações permanecem independentes, sem dicas e com os mesmos critérios de aceitação; pesos rejeitados continuam bloqueados. O relatório registra os tamanhos das etapas e o hash da ordem. Esta mudança ensina procedimentos antes da prática, mas não garante aprovação ou promove o modelo para produção.

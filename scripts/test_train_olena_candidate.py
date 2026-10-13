@@ -16,6 +16,25 @@ def scores(correct=True, split="evaluation"):
 
 
 class TrainingTests(unittest.TestCase):
+    def test_teaching_precedes_guided_and_independent_without_new_examples(self):
+        from olena_teaching_curriculum import curriculum, teaching_messages
+        rows = records("train")
+        snapshot = json.dumps(rows, sort_keys=True)
+        plan = curriculum(rows)
+        self.assertEqual([p["stage"] for p in plan], ["teaching"] * 96 + ["guided"] * 48 + ["independent"] * 48)
+        self.assertEqual(sorted(p["index"] for p in plan), list(range(192)))
+        for item in plan:
+            row = rows[item["index"]]
+            messages = teaching_messages(row, item["stage"])
+            self.assertEqual(messages[-1], row["messages"][-1])
+            if item["stage"] == "independent":
+                self.assertEqual(messages, row["messages"])
+            else:
+                self.assertTrue(messages[-2]["content"].startswith("Método para este tema: "))
+        self.assertEqual(json.dumps(rows, sort_keys=True), snapshot)
+        with self.assertRaises(ValueError):
+            curriculum(records("evaluation"))
+
     def test_diverse_disjoint_corpus_and_known_answers(self):
         training, evaluation = records("train"), records("evaluation")
         self.assertEqual(len(training), 192)

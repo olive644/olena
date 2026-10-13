@@ -1,17 +1,17 @@
 """Bounded CPU LoRA training. Rejected weights are never retained as candidates."""
 import json
 import os
-import random
 import re
 import shutil
 from fractions import Fraction
 from pathlib import Path
 
 from olena_training_data import SCHEMA, TOPICS, digest, validate_rows
+from olena_teaching_curriculum import STAGES, curriculum, teaching_messages
 
 BASE = "Qwen/Qwen2.5-0.5B-Instruct"
 REVISION = "7ae557604adf67be50417f59c2c2f167def9a775"
-TRAINER_VERSION = "math-gate-v3.1"
+TRAINER_VERSION = "math-teaching-v3.2"
 ROOT = Path(".olena-learning")
 OUTPUT = ROOT / "candidate"
 REPORT = ROOT / "training-report.json"
@@ -184,12 +184,13 @@ def main():
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
     optimizer = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad), lr=0.00005)
-    order = list(range(len(rows)))
-    random.Random(42).shuffle(order)
+    plan = curriculum(rows)
+    order = [item["index"] for item in plan]
     losses = []
     model.train()
-    for index in order[:MAX_STEPS]:
-        messages = rows[index]["messages"]
+    for item in plan[:MAX_STEPS]:
+        index = item["index"]
+        messages = teaching_messages(rows[index], item["stage"])
         prefix = tokenizer.apply_chat_template(messages[:-1], tokenize=False, add_generation_prompt=True)
         full = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
         tokens = tokenizer(full, return_tensors="pt", truncation=True, max_length=384)
@@ -209,14 +210,16 @@ def main():
         torch.nn.utils.clip_grad_norm_((p for p in model.parameters() if p.requires_grad), 1.0)
         optimizer.step()
         losses.append(float(loss.detach()))
-        print(f"CPU step {len(losses)}/{min(len(rows), MAX_STEPS)} loss={losses[-1]:.4f}", flush=True)
+        print(f"CPU step {len(losses)}/{min(len(rows), MAX_STEPS)} stage={item['stage']} loss={losses[-1]:.4f}", flush=True)
     candidate = evaluate(evaluation)
     candidate_audit = evaluate(audit_rows)
     gate = quality_gate(baseline, prior_candidate, candidate)
     audit_gate = quality_gate(baseline_audit, prior_audit, candidate_audit)
     accepted = gate["passed"] and audit_gate["passed"]
     report = {**common, "status": "accepted" if accepted else "rejected", "trained_this_run": True,
-              "steps": len(losses), "losses": losses, "resumed_adapter": previous_report is not None,
+              "steps": len(losses), "losses": losses,
+              "curriculum": {"stages": {stage: sum(item["stage"] == stage for item in plan[:MAX_STEPS]) for stage in STAGES},
+                             "order_sha256": digest(json.dumps(plan, sort_keys=True).encode()), "evaluation_hints": False}, "resumed_adapter": previous_report is not None,
               "baseline": baseline, "prior_candidate": prior_candidate, "candidate": candidate, "gate": gate,
               "audit": {"baseline": baseline_audit, "prior_candidate": prior_audit, "candidate": candidate_audit, "gate": audit_gate},
               "training_topics": {topic: sum(rows[i]["topic"] == topic for i in order[:MAX_STEPS]) for topic in TOPICS}}
