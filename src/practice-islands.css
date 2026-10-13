@@ -50,6 +50,19 @@
   transform-origin: center bottom;
   pointer-events: none;
 }
+/* A animação desenha a ilha num canvas com margem para o brilho; a imagem fica por baixo, transparente,
+   e continua dando o texto alternativo. */
+.practice-island-canvas {
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  pointer-events: none;
+}
+.practice-carousel-island.is-animated .solo-island-art {
+  opacity: 0;
+}
 .practice-carousel-island.is-current {
   z-index: 2;
   pointer-events: auto;

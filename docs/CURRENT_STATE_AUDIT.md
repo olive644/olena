@@ -2587,3 +2587,13 @@ O runtime deixa de usar o modelo candidato, inclusive com antigas variáveis de 
 ### CI móvel dividido para concluir a validação (2026-10-13)
 
 A execução 38334744926 interrompeu a suíte móvel de 150 testes ao atingir o limite de 20 minutos. A matriz passa a executar WebKit em duas partes paralelas, com um worker por parte e o mesmo limite. Desktop permanece em uma parte com dois workers. Os testes do preview da Helena também são particionados. Os checks históricos de desktop, mobile e resultado geral são preservados; os resumos exigem sucesso de toda a matriz. Nenhum teste, repetição, limite por caso ou condição de aprovação foi removido. A união das listagens dos dois shards deve ser idêntica à listagem completa e sem sobreposição.
+
+### Ilha animada de Matemática em Praticar (2026-10-12)
+
+A ilha Picos dos Padrões ganha animação local desenhada em canvas: peças já soltas na arte flutuam, o grupo balança de leve, o ouro brilha com faíscas e partículas, e um reflexo de luz cruza a ilha. Nada é gerado por IA nem enviado a serviços externos; a arte e o cálculo ficam no dispositivo.
+
+A arte é separada por componentes conexos de alfa, sem recortar o corpo da ilha. Cada peça só se move dentro do espaço livre medido em quatro direções, e a amplitude encolhe até que 180 instantes em quatro envelopes não toquem a ilha (teste exaustivo cobre isso). O ciclo de 6 s fecha sem emenda e um envelope suave liga e desliga o movimento, de modo que o primeiro quadro é idêntico à arte parada.
+
+A análise roda em um worker do mesmo domínio (CSP já permitia worker-src self), com fallback na thread principal. Módulos pesados são lazy. O avatar acompanha a ilha pelo deslocamento calculado. Movimento reduzido, pelo app ou pelo sistema (novo useMotionReduced), mantém a imagem parada e não baixa a arte. Sem sombra no chão, pois o palco corta o excedente.
+
+Orçamento de JS total sobe de 1311 para 1328 KiB (medido 1326,1 KiB, +16,4 KiB sob demanda). Sem dependências novas, entrada inicial e teto absoluto preservados.
