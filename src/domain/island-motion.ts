@@ -354,11 +354,7 @@ function motesFrom(labels: Int32Array, size: number): Mote[] {
 }
 
 /** Analisa a arte (RGBA quadrado) e devolve tudo o que a animação precisa. */
-export function analyzeIsland(
-  rgba: Uint8ClampedArray,
-  size: number,
-  rig?: PlaceRig,
-): IslandModel {
+export function analyzeIsland(rgba: Uint8ClampedArray, size: number, rig?: PlaceRig): IslandModel {
   const { labels, solid, count } = labelPixels(rgba, size);
   const total = size * size;
   const solidMain = new Uint8Array(total);
