@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Data da conta no teste de reagendamento (2026-10-12)
+
+- CI desktop falhou após meia-noite UTC: teste esperava o dia do runner, enquanto a Agenda corretamente usava o fuso brasileiro da conta. Correção restrita ao teste, com relógio fixo e America/Sao_Paulo explícito. Casos 00:30 UTC (12/10 no Brasil) e 03:30 UTC (13/10 no Brasil) preservam a exigência de data exata, sem mudar produto ou afrouxar a asserção.
+
 ## Compartilhamento em papel e arraste visível (2026-10-12)
 
 - Paleta fixa reaproveita cores originais e check, substituindo seletor nativo. Adaptação do movimento Uiverse.io de Cobp, fornecido pelo usuário, mantém teclado, foco amarelo e movimento reduzido. Valores personalizados existentes não são reescritos automaticamente.

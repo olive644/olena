@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-12, teste de mover tarefa para hoje: não comparar data da conta com new Date() do runner UTC. Fixar relógio e fuso da conta no fixture e exigir datas literais antes/depois de meia-noite brasileira. Produto permanece inalterado.
+
 2026-10-12, busca da Agenda: botão/Enter ativam Lista de resultados sem limite do mês aberto. agendaSearchDate escolhe uma ocorrência válida por série, sem materializar rotinas infinitas; filtros compartilham normalização de acentos/caixa/espaços. Limpar volta aos próximos 30 dias. loadPaperExportMascot carrega e reutiliza /olena-favicon.png original no selo, sem redesenhar Helena; erros permitem tentar novamente.
 
 2026-10-12, exportação autoral: paper-export-art produz moldura de cópia, selo Helena/estrela e marca d'água; não usar no autosave. agenda-event-png gera cartão local e AgendaEventShare prepara prévia antes do clique nativo de compartilhar, com download alternativo. PNG restrito à Lista, sem e-mails/anexos/histórico; .ics da barra preservado. Paleta fixa mantém valores antigos sem migração. Grade mostra ghost do ponteiro, Escape cancela e alça de duração permanece dentro do bloco. Remoções de avisos e dicas não alteram contexto de Foco, sincronização ou acessibilidade da Helena.
