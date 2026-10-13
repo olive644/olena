@@ -2597,3 +2597,13 @@ A arte é separada por componentes conexos de alfa, sem recortar o corpo da ilha
 A análise roda em um worker do mesmo domínio (CSP já permitia worker-src self), com fallback na thread principal. Módulos pesados são lazy. O avatar acompanha a ilha pelo deslocamento calculado. Movimento reduzido, pelo app ou pelo sistema (novo useMotionReduced), mantém a imagem parada e não baixa a arte. Sem sombra no chão, pois o palco corta o excedente.
 
 Orçamento de JS total sobe de 1311 para 1328 KiB (medido 1326,1 KiB, +16,4 KiB sob demanda). Sem dependências novas, entrada inicial e teto absoluto preservados.
+
+### Partes animadas nos seis lugares de Matemática (2026-10-13)
+
+Pátio das Primeiras Contas, Oficina das Equações, Torre das Funções, Ponte das Tangentes, Porto das Integrais e Mirante dos Vetores ganham animação local em canvas, sobre a própria arte de cada lugar. Nada é gerado por IA nem enviado a serviços externos. A imagem parada continua no DOM e só some depois do primeiro quadro.
+
+Cada lugar é uma arte única, sem camadas. Cada parte (diamantes, moedas, contas do ábaco, cubos, compasso, braço da balança, setor da torre, braço de tangentes, barco, moldura e gema do Mirante, vetores, folhagem) é recortada por cor e região a partir de sementes em `src/data/place-rigs.ts`. A parte recebe movimento próprio (sobe e volta, desliza, gira em torno de um pivô, respira em escala) e o fundo mostra o que ficaria atrás: a cor vizinha onde havia arte e transparência onde havia ar, decidido por raios de vizinhança. Com o envelope em zero o desenho é a arte parada (diferença média abaixo de 0,2 por pixel nos seis lugares). O ouro pulsa com brilho, o Porto ganha reflexo ondulante na água e as faíscas acompanham as partes que se movem.
+
+Todos os movimentos fecham no ciclo de 6 s, têm amplitude curta e respeitam movimento reduzido (app ou sistema). A análise roda no mesmo worker da ilha das disciplinas, com fallback na thread principal, e o motor é carregado sob demanda. O avatar não se desloca nesses lugares. O fundo do jogo de Matemática permanece estático por decisão de produto, para não distrair durante as perguntas.
+
+Testes cobrem o recorte, o preenchimento do fundo, a pose (repouso, onda de um lado só, ciclo), as classes de cor, a validação das seis listas de partes e a montagem do componente. Validação offline: renderização dos quadros com o mesmo código de produção e verificação visual de cada lugar.

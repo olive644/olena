@@ -1,20 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useMotionReduced } from "../data/accessibility-preferences";
 import { stepEnvelope } from "../domain/island-motion";
+import type { PlaceRig } from "../domain/place-rig";
 import { buildIslandSprites, drawIsland, groupDelta, type IslandSprites } from "./island-sprites";
 
 /** Lado da arte das ilhas (public/practice-islands/*.webp). */
 const ART_SIZE = 800;
 const spritesBySource = new Map<string, Promise<IslandSprites | null>>();
 
-function loadSprites(source: string): Promise<IslandSprites | null> {
+function loadSprites(source: string, rig: PlaceRig | undefined): Promise<IslandSprites | null> {
   const cached = spritesBySource.get(source);
   if (cached) return cached;
   const promise = new Promise<IslandSprites | null>((resolve) => {
     const image = new Image();
     image.decoding = "async";
     image.onload = () => {
-      buildIslandSprites(image, ART_SIZE).then(resolve, () => resolve(null));
+      buildIslandSprites(image, ART_SIZE, undefined, rig).then(resolve, () => resolve(null));
     };
     image.onerror = () => resolve(null);
     image.src = source;
@@ -43,14 +44,20 @@ export type IslandShift = { x: number; y: number };
 export function AnimatedIsland({
   source,
   active,
-  anchor,
+  anchor = { x: 0.5, y: 0.5 },
+  rig,
+  className = "practice-island-canvas",
   onReadyChange,
   onShift,
 }: {
   source: string;
   active: boolean;
   /** Ponto da arte (0 a 1) que acompanha a ilha, por exemplo onde fica o avatar. */
-  anchor: { x: number; y: number };
+  anchor?: { x: number; y: number };
+  /** Partes móveis recortadas da arte (lugares da ilha de Matemática). Sem isto, é a ilha inteira. */
+  rig?: PlaceRig;
+  /** Classe do canvas, para o CSS de quem hospeda a animação. */
+  className?: string;
   onReadyChange?: (ready: boolean) => void;
   /** Deslocamento, em pixels da tela, do ponto de ancoragem neste quadro. */
   onShift?: (shift: IslandShift) => void;
@@ -74,7 +81,7 @@ export function AnimatedIsland({
     if (reduced) return;
     let cancelled = false;
     const cancelIdle = afterIdle(() => {
-      void loadSprites(source).then((loaded) => {
+      void loadSprites(source, rig).then((loaded) => {
         if (!cancelled) setSprites(loaded);
       });
     });
@@ -82,7 +89,7 @@ export function AnimatedIsland({
       cancelled = true;
       cancelIdle();
     };
-  }, [source, reduced]);
+  }, [source, rig, reduced]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -107,6 +114,8 @@ export function AnimatedIsland({
     const paint = (seconds: number, eased: number) => {
       fitCanvas();
       drawIsland(context, sprites, seconds, eased, canvas.width / sprites.logicalSize);
+      // Quando só as partes se mexem, o avatar não sai do lugar.
+      if (!sprites.model.group) return;
       const perArt = canvas.clientWidth / sprites.logicalSize;
       const delta = groupDelta(
         seconds,
@@ -160,5 +169,5 @@ export function AnimatedIsland({
   }, [sprites, reduced, anchor.x, anchor.y]);
 
   if (reduced || !sprites) return null;
-  return <canvas ref={canvasRef} className="practice-island-canvas" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }
