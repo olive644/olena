@@ -4,6 +4,7 @@ import { shownMathQuestion } from "./math-question";
 test("place points animate down to zero and up again without changing stored rewards", async ({
   page,
 }) => {
+  await page.clock.install();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem(
@@ -15,7 +16,6 @@ test("place points animate down to zero and up again without changing stored rew
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   const number = page.locator(".math-place-total .math-number");
   await expect(number).toHaveAttribute("aria-label", "530");
-  await page.clock.install();
   await page.clock.pauseAt(new Date(Date.now() + 1000));
   await page.getByRole("button", { name: "Próximo lugar" }).click();
   await page.clock.runFor(120);

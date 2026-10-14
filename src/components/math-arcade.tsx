@@ -26,6 +26,7 @@ import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-ico
 import { PaperDigits, PaperDigitsSource } from "./paper-digits";
 import paperDigitsSvg from "../../public/paper-digits.svg?raw";
 import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
+import { formatMathNotation } from "../domain/math-notation";
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
 import { COMMON_CHEST_POINTS, finishMathPlace, type MathChest } from "../data/math-place-rewards";
@@ -99,6 +100,7 @@ export function MathArcade({
   const finished =
     status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0 || completedCourse);
   const question = round.question;
+  const expression = question ? formatMathNotation(question.expression) : "";
   const questionClock = question
     ? Math.max(0, question.budget - round.elapsed * question.drain)
     : 0;
@@ -664,10 +666,10 @@ export function MathArcade({
                   </div>
                 )}
                 <h1
-                  className={question.expression.length > 24 ? "math-question-prompt" : undefined}
-                  aria-label={question.expression}
+                  className={expression.length > 24 ? "math-question-prompt" : undefined}
+                  aria-label={expression}
                 >
-                  <MathExpression value={question.expression} />
+                  <MathExpression value={expression} />
                   {!question.expression.includes("?") &&
                     !/[a-zA-ZÀ-ÿ]/.test(question.expression) && (
                       <>

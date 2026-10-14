@@ -967,6 +967,12 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
     expect(await history.locator(".agenda-pie-slice").first().getAttribute("d")).toContain(
       "A34 34",
     );
+    // Medir a geometria final, não o scaleY(0) transitório da entrada do gráfico.
+    await history.locator(".agenda-bar-track > span").evaluateAll(async (bars) => {
+      await Promise.all(
+        bars.flatMap((bar) => bar.getAnimations().map((animation) => animation.finished)),
+      );
+    });
     const heights = await history
       .locator(".agenda-bar-track > span")
       .evaluateAll((bars) => bars.map((bar) => bar.getBoundingClientRect().height));

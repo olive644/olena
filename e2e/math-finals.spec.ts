@@ -73,6 +73,13 @@ for (const [position, course] of MATH_COURSES.entries())
     await expect(page.getByRole("status", { name: /Desafio final, questão 1 de 5/ })).toBeVisible();
     const q = await shownMathQuestion(page, course.id);
     expect(q.seed).toBeGreaterThan(288);
+    if (course.id === "calculus1") {
+      await expect(page.getByRole("heading")).toContainText("x¹⁵");
+      await expect(page.getByRole("heading")).toHaveAttribute(
+        "aria-label",
+        "f(x)=x¹⁵. derivada de f, calculada em x=2: ?",
+      );
+    }
     for (const theme of ["light", "dark"]) {
       await page.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
       for (const answer of await page.getByRole("button", { name: /^Resposta/ }).all()) {

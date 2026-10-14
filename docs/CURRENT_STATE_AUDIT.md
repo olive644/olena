@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Notação matemática e estabilidade do CI (2026-10-14)
+
+- math-notation.ts normaliza somente apresentação: expoentes inteiros com sobrescrito, expoentes não representáveis entre parênteses, raiz explícita, multiplicação por x/y/z/t e limites inteiros de integrais. f'(x) é identificado como derivada; avaliação numérica de derivada é descrita em palavras. Quando valores da função aparecem na mesma pergunta, recebem indicação própria, sem confundir conceitos. Expoente com término ambíguo é sinalizado, não adivinhado. Não calcular, corrigir gabaritos nem interpretar texto arbitrário como expressão executável.
+- MathArcade usa a mesma versão legível no título visual e no nome acessível. Banco, sementes, alternativas, gabaritos, progresso e contratos antigos da API permanecem intactos.
+- CI: teste da tarefa passa a escolher Editar dentro da região Calendário, pois também existe editor legítimo no painel do dia. Teste dos pontos instala o relógio antes de qualquer animação, sem congelar o carregamento do módulo; assim não mistura bases de performance.now(). Teste móvel do gráfico aguarda animações terminarem antes de medir alturas, evitando 0/0 durante scaleY(0). Não modificar animações de produto para esconder instabilidade dos testes.
+- Prova: npm run verify aprova 1726 testes em 253 arquivos, build e desempenho; 20 cenários focados de navegador aprovados em PC/celular. A varredura de notação cobre as 2592 variantes sem alterar o banco. Entrada 285.9 KiB, total 1407.4 KiB, dentro dos orçamentos existentes.
+
 ## Retomada por erro e desafios finais v5 (2026-10-14)
 
 - Os seis lugares e suas 36 etapas compartilham treino, retomada e final. O treino conserva a cobertura v4; concluir uma etapa nova exige também quatro acertos em cinco perguntas reservadas. São 24 variantes autorais reservadas por etapa (864 adicionais), com quatro formatos, não 864 modelos independentes. A final mistura os quatro formatos e prioriza variantes não usadas em finais anteriores. Depois de esgotar um formato, suas variantes podem reaparecer.
