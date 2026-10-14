@@ -73,11 +73,7 @@ export function OliverCardCollection({
           <PaperCloseIcon />
         </button>
         <h1>{selected === OLIVER_TAROT.id ? "O arcano do Oliver" : "As lembranças do Oliver"}</h1>
-        {!selected && (
-          <p>
-            {OLIVER_CARDS.filter((card) => owned[card.id]).length}/10 descobertas · Todas comuns
-          </p>
-        )}
+        {!selected && <p>{OLIVER_CARDS.filter((card) => owned[card.id]).length}/10 descobertas</p>}
         {selected ? (
           <div className="oliver-collection-detail">
             <OliverCardInspection id={selected} />
@@ -132,16 +128,17 @@ export function OliverCardCollection({
                 <strong>XVII · A Estrela</strong>
                 <small>
                   {owned[OLIVER_TAROT.id]
-                    ? `${owned[OLIVER_TAROT.id]} ${owned[OLIVER_TAROT.id] === 1 ? "cópia" : "cópias"} · Baú arcano`
-                    : "Por descobrir · Baú arcano, 5% por partida elegível."}
+                    ? `${owned[OLIVER_TAROT.id]} ${owned[OLIVER_TAROT.id] === 1 ? "cópia" : "cópias"} · Lendária`
+                    : "Por descobrir · 5% das Poeiras cósmicas elegíveis."}
                 </small>
               </span>
             </button>
             <details className="oliver-card-chances">
-              <summary>Chances dos baús comuns</summary>
+              <summary>Chances da Poeira cósmica</summary>
               <p>
-                80% de chance de 1 carta; 20% de 2 cartas. Cada carta é sorteada independentemente.
-                Repetidas contam como cópias.
+                5% de A Estrela. Nos outros 95%: 80% de chance de 1 carta; 20% de 2 cartas. Cada
+                carta é sorteada independentemente. Repetidas contam como cópias. Os toques revelam
+                o resultado salvo, não alteram as chances.
               </p>
               <ul>
                 {OLIVER_CARDS.map((card) => (

@@ -19,6 +19,49 @@ function shownPoints() {
     document.querySelector(".math-place-total .math-number")?.getAttribute("aria-label"),
   );
 }
+it("animates completion down and up with its six pieces without changing earned progress", () => {
+  vi.useFakeTimers();
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  localStorage.setItem(
+    "helena.mathGame.v3",
+    JSON.stringify({
+      foundations: {
+        level: 5,
+        mastery: 5,
+        mastered: 63,
+        correct: 120,
+        best: 0,
+        solved: Array(6).fill(1048575),
+        seen: Array(6).fill(1048575),
+      },
+    }),
+  );
+  render(<MathIslandJourney onBack={() => {}} />);
+  const percentage = () =>
+    Number(
+      document.querySelector(".math-journey-completion .math-number")?.getAttribute("aria-label"),
+    );
+  expect(percentage()).toBe(100);
+  fireEvent.click(screen.getByRole("button", { name: "Próximo lugar" }));
+  expect(percentage()).toBe(100);
+  act(() => vi.advanceTimersByTime(160));
+  expect(percentage()).toBeGreaterThan(0);
+  expect(percentage()).toBeLessThan(100);
+  expect(
+    [...document.querySelectorAll<HTMLElement>(".math-journey-progress-pieces i")].some((piece) =>
+      /scaleX\(0\./.test(piece.style.transform),
+    ),
+  ).toBe(true);
+  act(() => vi.advanceTimersByTime(900));
+  expect(percentage()).toBe(0);
+  fireEvent.click(screen.getByRole("button", { name: "Lugar anterior" }));
+  act(() => vi.advanceTimersByTime(160));
+  expect(percentage()).toBeGreaterThan(0);
+  expect(percentage()).toBeLessThan(100);
+  act(() => vi.advanceTimersByTime(900));
+  expect(percentage()).toBe(100);
+  localStorage.removeItem("helena.mathGame.v3");
+});
 it("counts down to zero and back up from the previous place without changing saved points", () => {
   vi.useFakeTimers();
   vi.spyOn(performance, "now").mockImplementation(() => Date.now());

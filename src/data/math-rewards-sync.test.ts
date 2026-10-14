@@ -50,7 +50,7 @@ it("preserves cloud countdown, loot and reveals after a stale device returns", (
   const result = mergeSyncedItems(base, base, remote);
   applySyncedStorage(result.items);
   expect(mathPlaceRewards("foundations").chests[0]).toMatchObject({
-    unlockAt: 61000,
+    unlockAt: 11000,
     opened: true,
     revealed: 1,
     cards: ["first-star"],
@@ -102,7 +102,7 @@ it("syncs arcane identity, deadline and single tarot reveal without rerolling", 
     kind: "arcane",
     arcana: "oliver-star-tarot",
     opened: true,
-    unlockAt: 61000,
+    unlockAt: 11000,
     revealed: 1,
   });
   expect(mergeSyncedItems(merged.items, merged.items, base).items).toEqual(merged.items);

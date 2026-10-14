@@ -69,6 +69,24 @@ export function MathIslandJourney({
   const course = MATH_COURSES[index]!;
   const unlocked = unlockedMathCourse(course.id, progress);
   const completion = gameCompletion(mathGameLearning(course.id));
+  const [shownCompletion, setShownCompletion] = useState(completion.percent);
+  const completionOrigin = useRef(completion.percent);
+  useEffect(() => {
+    const from = completionOrigin.current,
+      start = performance.now();
+    let frame = 0;
+    function animate() {
+      const ratio = isMotionReduced()
+        ? 1
+        : Math.max(0, Math.min(1, (performance.now() - start) / 750));
+      const value = from + (completion.percent - from) * (1 - (1 - ratio) ** 3);
+      completionOrigin.current = value;
+      setShownCompletion(value);
+      if (ratio < 1) frame = requestAnimationFrame(animate);
+    }
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [completion.percent]);
   function visit(next: number) {
     const destination = Math.max(0, Math.min(MATH_COURSES.length - 1, next));
     if (phase === "map" && destination !== index) {
@@ -227,12 +245,16 @@ export function MathIslandJourney({
               aria-valuenow={completion.percent}
             >
               <strong>
-                <MathNumber value={completion.percent} />%
+                <MathNumber value={Math.round(shownCompletion)} />%
               </strong>
               <div className="math-journey-progress-pieces" aria-hidden="true">
                 {completion.counts.map((count, level) => (
                   <span key={level} className={count === 20 ? "is-complete" : ""}>
-                    <i style={{ transform: `scaleX(${count / 20})` }} />
+                    <i
+                      style={{
+                        transform: `scaleX(${Math.max(0, Math.min(1, (shownCompletion * 6) / 100 - level))})`,
+                      }}
+                    />
                   </span>
                 ))}
               </div>

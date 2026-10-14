@@ -1,11 +1,13 @@
 import { test, expect } from "@playwright/test";
 
-test("arcane chest shares the minute, reveals by dragging and inspects foil tarot", async ({
+test("legacy rewards become one cosmic dust, reveal saved rarity and inspect naturally", async ({
   page,
 }, info) => {
+  await page.clock.install();
   await page.addInitScript(() => {
     if (window !== window.top) return;
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    if (sessionStorage.getItem("dust-seeded")) return;
     localStorage.setItem(
       "helena.mathPlaceRewards.v1",
       JSON.stringify({
@@ -14,10 +16,10 @@ test("arcane chest shares the minute, reveals by dragging and inspects foil taro
           receipts: ["common", "arcane"],
           rounds: { common: 100, arcane: 100 },
           chests: [
-            { id: "common", unlockAt: null, opened: false },
+            { id: "common", unlockAt: 0, opened: true, cards: ["first-star"], revealed: 0 },
             {
               id: "arcane",
-              unlockAt: null,
+              unlockAt: Date.now() + 60_000,
               opened: false,
               kind: "arcane",
               arcana: "oliver-star-tarot",
@@ -26,69 +28,74 @@ test("arcane chest shares the minute, reveals by dragging and inspects foil taro
         },
       }),
     );
+    sessionStorage.setItem("dust-seeded", "1");
   });
   await page.goto("/aprender");
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
-  await expect(page.getByLabel("Espaço de baú vazio")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Destrancar baú arcano" })).toBeVisible();
-  await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
-  const island = (await page.locator(".math-journey-island.is-current").boundingBox())!;
-  const viewport = page.viewportSize()!;
-  const originalSize =
-    viewport.width <= 600
-      ? Math.min(viewport.width * 0.75, viewport.height * 0.48, viewport.height - 324)
-      : Math.min(440, viewport.width * 0.64, viewport.height * 0.56, viewport.height - 356);
-  expect(Math.abs(island.width - originalSize)).toBeLessThan(1);
-  await page.clock.install();
-  await page.getByRole("button", { name: "Destrancar baú arcano" }).click();
-  await page.clock.fastForward(30_000);
-  const bar = page.getByRole("progressbar", { name: "Destrancando baú" });
-  await expect(bar).toBeVisible();
-  await expect.poll(() => bar.getAttribute("value").then(Number)).toBeGreaterThanOrEqual(30);
-  const label = await page.locator(".is-unlocking .math-chest-label").boundingBox();
-  const progress = await bar.boundingBox();
-  expect(progress!.y).toBeGreaterThanOrEqual(label!.y + label!.height);
-  const dock = (await page.locator(".math-chest-dock").boundingBox())!;
-  const caption = (await page.locator(".math-journey-label").boundingBox())!;
-  expect(dock.y + dock.height + 4).toBeLessThanOrEqual(caption.y);
-  await page.screenshot({ path: info.outputPath("chests-waiting.png") });
-  await page.clock.fastForward(31_000);
-  await expect(bar).toHaveCount(0);
-  await page.getByRole("button", { name: "Abrir baú arcano" }).click();
+  await expect(page.getByLabel("Espaço de Poeira cósmica vazio")).toBeVisible();
+  const timer = page.getByRole("progressbar", { name: "Preparando Poeira cósmica" });
+  await expect(timer).toHaveAttribute("max", "10");
+  await page.clock.fastForward(11_000);
+  await page.getByRole("button", { name: "Abrir Poeira cósmica", exact: true }).click();
   await page.clock.fastForward(600);
-  await expect(page.getByRole("dialog", { name: "Carta do baú arcano" })).toBeVisible();
-  const card = page.getByRole("button", { name: "Revelar carta", exact: true });
-  await card.scrollIntoViewIfNeeded();
-  const box = (await card.boundingBox())!;
-  if (info.project.name === "mobile") {
-    await page.touchscreen.tap(box.x + 30, box.y + 100);
-  } else {
-    await page.mouse.move(box.x + 30, box.y + 100);
-    await page.mouse.down();
-    await page.mouse.move(box.x + 100, box.y + 105, { steps: 6 });
-    await page.mouse.up();
-  }
+  const dialog = page.getByRole("dialog", { name: "Poeira cósmica", exact: true });
+  for (let i = 1; i <= 4; i++)
+    await page.getByRole("button", { name: `Revelar raridade, toque ${i} de 4` }).click();
+  await expect(dialog).toHaveAttribute("data-rarity", "Lendária");
+  await expect(dialog).toHaveCSS("background-color", "rgb(89, 66, 10)");
+  await page.screenshot({ path: info.outputPath("cosmic-legendary.png") });
   await page.clock.fastForward(1000);
-  await expect(page.getByRole("heading", { name: "A Estrela" })).toBeVisible();
-  await page.getByRole("button", { name: "Inspecionar carta em 3D" }).click();
-  await expect
-    .poll(() =>
-      page
-        .locator(".oliver-tarot-front .oliver-card-art")
-        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
-    )
-    .toBeGreaterThan(0);
-  await page.locator(".oliver-tarot-front").screenshot({ path: info.outputPath("tarot-foil.png") });
+  await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
   const inspect = page.getByRole("button", { name: /Inspecionar carta em 360/ });
+  await expect(inspect).toBeVisible();
+  await expect(page.getByRole("button", { name: "Inspecionar carta em 3D" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "A Estrela" })).toBeVisible();
   await inspect.focus();
   for (let i = 0; i < 16; i++) await inspect.press("ArrowRight");
   await expect(page.locator(".oliver-inspection-turn")).toHaveAttribute(
     "style",
     /rotateY\(400deg\)/,
   );
-  await page.getByRole("button", { name: "Voltar à carta" }).click();
+  await inspect.press("Home");
+  await page.getByRole("button", { name: "Fechar cartas" }).click();
+  await expect(dialog).toHaveClass(/is-departing/);
+  await expect(page.locator(".oliver-store-flight")).toHaveCount(0);
+  await page.clock.fastForward(1000);
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Continuar Poeira cósmica" }).click();
+  for (let i = 1; i <= 4; i++)
+    await page.getByRole("button", { name: `Revelar raridade, toque ${i} de 4` }).click();
+  await expect(dialog).toHaveAttribute("data-rarity", "Comum");
+  await expect(dialog).toHaveCSS("background-color", "rgb(23, 75, 59)");
+  await page.clock.fastForward(1000);
+  await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
+  await page.clock.fastForward(700);
+  await expect(page.locator(".oliver-inspection.is-inline")).toHaveCSS(
+    "transform",
+    /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/,
+  );
+  await expect(page.getByLabel("Raridade comum")).toBeVisible();
+  await page.screenshot({ path: info.outputPath("cosmic-common-card.png") });
+  const box = (await inspect.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 100);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 60, box.y + 120, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.locator(".oliver-inspection-turn")).not.toHaveAttribute(
+    "style",
+    /rotateY\(0deg\)/,
+  );
   await page.getByRole("button", { name: "Guardar cartas" }).click();
+  await expect(page.locator(".oliver-store-flight > div")).toHaveCount(1);
   await page.clock.fastForward(1000);
   await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
-  await expect(page.getByText("1 cópia · Baú arcano")).toBeVisible();
+  await expect(page.getByText("1 cópia · Lendária")).toBeVisible();
+  await page.getByRole("button", { name: "Fechar coleção" }).click();
+  await page.reload();
+  const saved = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("helena.mathPlaceRewards.v1")!),
+  );
+  expect(saved.foundations.points).toBe(200);
+  expect(saved.foundations.chests.map((c: { revealed: number }) => c.revealed)).toEqual([1, 1]);
 });

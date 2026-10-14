@@ -4,8 +4,10 @@ import { OLIVER_TAROT, type OliverArtworkId } from "../data/oliver-tarot";
 import { OliverAttributeIcon } from "./oliver-card-icons";
 import { PaperDigits } from "./paper-digits";
 import { PaperCardTitle } from "./paper-card-title";
+import { COSMIC_RARITIES, oliverRarity } from "../data/oliver-rarity";
 export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: boolean }) {
   const card = OLIVER_CARDS.find((item) => item.id === id)!;
+  const rarity = COSMIC_RARITIES[oliverRarity(id)]!;
   if (back)
     return (
       <div
@@ -53,12 +55,21 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
   return (
     <article
       className="oliver-card-front"
-      style={{ "--card-accent": card.color } as CSSProperties}
+      style={
+        {
+          "--card-accent": card.color,
+          "--card-rarity": rarity.color,
+          "--card-rarity-light": rarity.light,
+        } as CSSProperties
+      }
       aria-label={card.title}
       onDragStart={(event) => event.preventDefault()}
     >
-      <span className="oliver-card-rarity" aria-label="Raridade comum">
-        COMUM
+      <span className="oliver-card-rarity" aria-label={`Raridade ${rarity.name.toLowerCase()}`}>
+        {rarity.name.toUpperCase()}
+      </span>
+      <span className="oliver-card-edition">
+        OLENA · {String(OLIVER_CARDS.indexOf(card) + 1).padStart(2, "0")}
       </span>
       <img
         className="oliver-card-art"

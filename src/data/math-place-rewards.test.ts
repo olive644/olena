@@ -18,6 +18,10 @@ it("stores totals separately, grants one chest at 100 points and deduplicates ro
   finishMathPlace("foundations", "two", 100, () => 0.5);
   expect(mathPlaceRewards("foundations").points).toBe(199);
   expect(mathPlaceRewards("foundations").chests).toHaveLength(1);
+  expect(mathPlaceRewards("foundations").chests[0]!.unlockAt! - Date.now()).toBeGreaterThan(9000);
+  expect(mathPlaceRewards("foundations").chests[0]!.unlockAt! - Date.now()).toBeLessThanOrEqual(
+    10000,
+  );
   expect(mathPlaceRewards("school").points).toBe(0);
 });
 it("draws arcana at five percent, shares slots and persists one tarot without rerolls", () => {
@@ -29,9 +33,9 @@ it("draws arcana at five percent, shares slots and persists one tarot without re
   finishMathPlace("school", "boundary", 100, () => 0.05);
   expect(mathPlaceRewards("school").chests[1]?.kind).toBeUndefined();
   unlockMathChest("school", "arcane", 0);
-  openMathChest("school", "arcane", 59999);
+  openMathChest("school", "arcane", 9999);
   expect(mathPlaceRewards("school").chests[0]?.opened).toBe(false);
-  openMathChest("school", "arcane", 60000, () => {
+  openMathChest("school", "arcane", 10000, () => {
     throw new Error("tarot needs no common roll");
   });
   expect(chestCards(mathPlaceRewards("school").chests[0]!)).toEqual(["oliver-star-tarot"]);
@@ -94,10 +98,10 @@ it("persists the minute and never opens early or restarts an unlock", () => {
   finishMathPlace("foundations", "one", 150, () => 0.5);
   unlockMathChest("foundations", "one", 1000);
   unlockMathChest("foundations", "one", 10000);
-  expect(mathPlaceRewards("foundations").chests[0]!.unlockAt).toBe(61000);
-  openMathChest("foundations", "one", 60999);
+  expect(mathPlaceRewards("foundations").chests[0]!.unlockAt).toBe(11000);
+  openMathChest("foundations", "one", 10999);
   expect(mathPlaceRewards("foundations").chests[0]!.opened).toBe(false);
-  openMathChest("foundations", "one", 61000);
+  openMathChest("foundations", "one", 11000);
   expect(mathPlaceRewards("foundations").chests[0]!.opened).toBe(true);
   expect(mathPlaceRewards("foundations").points).toBe(150);
 });

@@ -1,0 +1,287 @@
+.cosmic-dust-art {
+  width: 100%;
+  overflow: visible;
+}
+.math-chest-slot:focus-visible {
+  outline: none;
+  box-shadow: 0 4px #facc15;
+  text-decoration: underline;
+  text-decoration-color: #facc15;
+}
+.cosmic-dust-orbit {
+  transform-origin: 80px 80px;
+  animation: cosmic-orbit 18s linear infinite;
+}
+.cosmic-reveal {
+  background: var(--dust-shade);
+  isolation: isolate;
+  transition: background-color 350ms ease;
+}
+.cosmic-reveal::before {
+  content: "";
+  position: fixed;
+  inset: -40%;
+  z-index: -2;
+  background: var(--dust-color);
+  opacity: 0.25;
+  clip-path: polygon(50% 50%, 0 0, 45% 0, 50% 50%, 100% 30%, 100% 65%, 50% 50%, 65% 100%, 35% 100%);
+  animation: cosmic-orbit 55s linear infinite;
+}
+.cosmic-reveal-sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.cosmic-reveal-sky i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 35px;
+  background: var(--dust-light);
+  opacity: 0.35;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  rotate: calc(var(--ray) * 25.714deg);
+  transform-origin: center;
+  animation: cosmic-scatter 5s calc(var(--ray) * -350ms) ease-in-out infinite;
+}
+.cosmic-reveal-title {
+  font-size: clamp(22px, 5vw, 36px);
+  color: #fff9ef;
+  margin: 0;
+  text-align: center;
+}
+.cosmic-reveal .oliver-reveal-label {
+  color: #fff9ef;
+  background: var(--dust-shade);
+  padding: 4px 10px;
+  border-radius: 3px 9px 3px 3px;
+}
+.cosmic-dust-tap {
+  background: none;
+  border: 0;
+  padding: 0;
+  width: min(330px, 70vw);
+  aspect-ratio: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  flex-shrink: 0;
+  animation: cosmic-impact 600ms cubic-bezier(0.18, 0.8, 0.2, 1.2) both;
+  filter: drop-shadow(0 14px 0 #17132040);
+}
+.cosmic-dust-tap:disabled {
+  opacity: 1;
+}
+.cosmic-tap-pieces {
+  display: flex;
+  gap: 10px;
+}
+.cosmic-tap-pieces i {
+  width: 25px;
+  height: 12px;
+  background: #17132088;
+  clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+}
+.cosmic-tap-pieces .is-lit {
+  background: var(--dust-light);
+}
+.cosmic-reveal.is-departing {
+  animation: cosmic-dismiss 850ms both;
+  pointer-events: none;
+}
+.cosmic-reveal .oliver-flip-card.is-storing {
+  animation: cosmic-fold-away 850ms both;
+}
+.oliver-inspection.is-inline {
+  width: 100%;
+  height: 100%;
+  animation: cosmic-card-unfold 650ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+.oliver-inspection.is-inline .oliver-inspection-stage {
+  width: 100%;
+  height: 100%;
+}
+.oliver-inspection.is-inline .oliver-inspection-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: #fff9ef;
+  clip-path: polygon(0 0, 12% 0, 100% 88%, 100% 100%);
+  opacity: 0.06;
+  animation: cosmic-card-glint 6s ease-in-out infinite;
+}
+.oliver-card-front:not(.oliver-tarot-front) {
+  border: 6px solid var(--card-rarity, #2d8a67);
+  border-radius: 7px 24px 7px 16px;
+  box-shadow:
+    inset 3px 0 var(--card-rarity-light, #a6e6bd),
+    inset -3px 0 #29243240,
+    5px 8px #171320;
+  padding: 10px;
+  padding-top: 24px;
+}
+.oliver-card-front .oliver-card-rarity {
+  background: var(--card-rarity-light, #a6e6bd);
+  color: #292432;
+  top: 0;
+  left: 8px;
+  padding: 3px 10px;
+  letter-spacing: 0.12em;
+  font-size: 9px;
+  clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+}
+.oliver-card-edition {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: #292432;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+}
+.cosmic-reveal .oliver-cards-remaining .paper-digits {
+  --digit-face: #292432;
+  --digit-depth: #17131d;
+  --digit-fold: #51465d;
+  --digit-edge: #211b29;
+}
+.oliver-card-front .oliver-card-art {
+  border: 0;
+  border-radius: 3px 12px 3px 3px;
+  box-shadow: 0 3px var(--card-rarity, #59420a);
+}
+.oliver-card-stats div {
+  background: #ede4d2;
+  border-bottom: 3px solid var(--card-rarity, #2d8a67);
+  border-radius: 3px 10px 3px 3px;
+  padding: 5px 3px;
+  gap: 2px;
+}
+.oliver-card-stats div > svg {
+  padding: 3px;
+  width: 28px;
+  height: 28px;
+  background: var(--stat-color, #facc15);
+  border-radius: 4px 8px 3px 3px;
+  filter: drop-shadow(0 2px 0 #cbbb9b);
+}
+.oliver-card-stats div:nth-child(2) {
+  --stat-color: #ffb0bf;
+}
+.oliver-card-stats div:nth-child(3) {
+  --stat-color: #83d9cd;
+}
+.oliver-card-front h2 {
+  border-top: 1px dashed #cbbb9b;
+  padding-top: 7px;
+}
+.oliver-card-front .oliver-card-lore {
+  line-height: 1.45;
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop) .oliver-booster-close {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  padding: 10px;
+}
+:is(.oliver-booster-backdrop, .oliver-collection-backdrop)
+  :is(button, [role="button"]):focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: #facc15;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+  box-shadow: 0 4px 0 #facc15;
+}
+@keyframes cosmic-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes cosmic-scatter {
+  0%,
+  100% {
+    transform: translateY(-32vh) scale(0.5);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(-44vh) scale(1);
+    opacity: 0.5;
+  }
+}
+@keyframes cosmic-impact {
+  0% {
+    transform: scale(0.75) rotate(-10deg);
+  }
+  55% {
+    transform: scale(1.09) rotate(4deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes cosmic-card-unfold {
+  from {
+    transform: rotateY(-70deg) scale(0.85);
+    opacity: 0.3;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes cosmic-card-glint {
+  0%,
+  100% {
+    opacity: 0.03;
+    translate: -15px 0;
+  }
+  50% {
+    opacity: 0.12;
+    translate: 15px 0;
+  }
+}
+@keyframes cosmic-fold-away {
+  to {
+    transform: translateY(35px) rotate(5deg) scale(0.8);
+    opacity: 0;
+  }
+}
+@keyframes cosmic-dismiss {
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-dust-orbit,
+  .cosmic-reveal::before,
+  .cosmic-reveal-sky i,
+  .cosmic-dust-tap,
+  .cosmic-reveal.is-departing,
+  .cosmic-reveal .oliver-flip-card,
+  .oliver-inspection.is-inline,
+  .oliver-inspection.is-inline .oliver-inspection-front::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+html[data-reduce-motion="true"]
+  :is(
+    .cosmic-dust-orbit,
+    .cosmic-reveal::before,
+    .cosmic-reveal-sky i,
+    .cosmic-dust-tap,
+    .cosmic-reveal.is-departing,
+    .cosmic-reveal .oliver-flip-card,
+    .oliver-inspection.is-inline,
+    .oliver-inspection.is-inline .oliver-inspection-front::after
+  ) {
+  animation: none !important;
+  transition: none !important;
+}

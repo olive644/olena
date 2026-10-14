@@ -126,7 +126,7 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
   await expect(page.locator('.room-reward-notice [data-paper-editor-icon="close"]')).toBeVisible();
   await expect(page.locator(".room-reward-notice")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("math-result.png") });
-  await page.getByRole("button", { name: "Levar baú aos espaços da ilha" }).click();
+  await page.getByRole("button", { name: "Levar Poeira cósmica aos espaços da ilha" }).click();
   await expect(page.locator(".math-chest-flight")).toHaveCount(1);
   await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
   await page.getByRole("button", { name: "Explorar lugar" }).click();
@@ -135,21 +135,20 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
   await page.getByRole("button", { name: "Voltar às ilhas" }).click();
   await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toBeVisible();
   await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
-  await expect(page.getByRole("button", { name: "Destrancar baú comum" })).toBeVisible();
+  await expect(page.locator(".math-chest-slot")).toBeVisible();
   await expect(page.locator(".math-chest-slot")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("math-place-chest.png") });
   const sceneBottom = (await page.locator(".math-journey-island.is-current").boundingBox())!;
   const dock = (await page.locator(".math-chest-dock").boundingBox())!;
   expect(dock.y).toBeGreaterThan(sceneBottom.y + sceneBottom.height * 0.88);
-  await page.getByRole("button", { name: "Destrancar baú comum" }).click();
-  await expect(
-    page.getByRole("button", { name: /Baú comum, .* segundos restantes/ }),
-  ).toBeDisabled();
   await page.clock.install();
-  await page.clock.fastForward(61_000);
-  await page.getByRole("button", { name: "Abrir baú comum" }).click();
+  await page.clock.fastForward(11_000);
+  await page.getByRole("button", { name: "Abrir Poeira cósmica" }).click();
   await page.clock.fastForward(1000);
-  await expect(page.getByRole("dialog", { name: "Cartas do baú comum" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Poeira cósmica", exact: true })).toBeVisible();
+  for (let i = 1; i <= 4; i++)
+    await page.getByRole("button", { name: `Revelar raridade, toque ${i} de 4` }).click();
+  await page.clock.fastForward(1000);
   await expect(page.locator(".oliver-flip-card")).toHaveCSS("opacity", "1");
   await page.screenshot({ path: testInfo.outputPath("oliver-card-back.png") });
   const cardBox = (await page
@@ -168,22 +167,17 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
     )
     .toBeGreaterThan(0);
   await page.clock.fastForward(1000);
-  await expect(page.locator(".oliver-card-turn")).toHaveCSS(
-    "transform",
-    "matrix3d(-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)",
-  );
+  await expect(page.locator(".oliver-inspection-turn")).toHaveAttribute("style", /rotateY\(0deg\)/);
   await expect(page.getByText("Stamina", { exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("oliver-card-front.png") });
-  await page.getByRole("button", { name: "Inspecionar carta em 3D" }).click();
   await expect(page.getByRole("button", { name: /Inspecionar carta em 360/ })).toBeVisible();
-  await page.getByRole("button", { name: "Voltar à carta" }).click();
   if (await page.getByRole("button", { name: "Próxima carta" }).count()) {
     await page.getByRole("button", { name: "Próxima carta" }).click();
     await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
   }
-  await expect(page.getByLabel("0 cartas restantes no baú")).toBeVisible();
+  await expect(page.getByLabel("0 cartas restantes na Poeira cósmica")).toBeVisible();
   await page.getByRole("button", { name: "Guardar cartas" }).click();
-  await expect(page.getByLabel("Espaço de baú vazio")).toHaveCount(3);
+  await expect(page.getByLabel("Espaço de Poeira cósmica vazio")).toHaveCount(3);
   await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("oliver-collection.png") });
   await page.locator(".oliver-collection-item.is-owned").first().click();

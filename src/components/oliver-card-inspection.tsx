@@ -2,13 +2,19 @@ import { useRef, useState, type CSSProperties } from "react";
 import type { OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
 
-export function OliverCardInspection({ id }: { id: OliverArtworkId }) {
+export function OliverCardInspection({
+  id,
+  compact = false,
+}: {
+  id: OliverArtworkId;
+  compact?: boolean;
+}) {
   const [angle, setAngle] = useState({ x: 0, y: 0 });
   const [shine, setShine] = useState({ x: 50, y: 30 });
   const gesture = useRef<{ x: number; y: number; angle: typeof angle } | null>(null);
   const front = Math.cos((angle.y * Math.PI) / 180) >= 0;
   return (
-    <div className="oliver-inspection">
+    <div className={`oliver-inspection${compact ? " is-inline" : ""}`}>
       <div
         className="oliver-inspection-stage"
         style={{ "--foil-x": `${shine.x}%`, "--foil-y": `${shine.y}%` } as CSSProperties}
@@ -77,9 +83,11 @@ export function OliverCardInspection({ id }: { id: OliverArtworkId }) {
           </div>
         </div>
       </div>
-      <button className="secondary-button" onClick={() => setAngle({ x: 0, y: 0 })}>
-        Recentralizar carta
-      </button>
+      {!compact && (
+        <button className="secondary-button" onClick={() => setAngle({ x: 0, y: 0 })}>
+          Recentralizar carta
+        </button>
+      )}
     </div>
   );
 }
