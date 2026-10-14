@@ -2,10 +2,12 @@ import { isMathCourse, validMathProgress } from "../data/math-courses.js";
 import { mathChallenge, assessMath } from "../domain/adaptive-math.js";
 import { validMathGame } from "../domain/math-game-progress.js";
 import { requestMathGame } from "../domain/math-game.js";
+import { requestChallenge } from "../domain/math-challenge-engine.js";
+import { validChallengeProgress } from "../domain/math-challenge-progress.js";
 
 export async function mathResponse(
   request: Request,
-  version: 1 | 2 | 3 = 1,
+  version: 1 | 2 | 3 | 4 = 1,
 ): Promise<{ status: number; body: unknown }> {
   if (request.method !== "POST") return { status: 405, body: { error: "Método não permitido." } };
   if (!request.headers.get("content-type")?.startsWith("application/json"))
@@ -23,6 +25,25 @@ export async function mathResponse(
   if (!data || typeof data !== "object")
     return { status: 400, body: { error: "Pedido inválido." } };
   const input = data as Record<string, unknown>;
+  if (version === 4) {
+    if (
+      !isMathCourse(input["course"]) ||
+      !validChallengeProgress(input["progress"]) ||
+      !["question", "answer"].includes(String(input["action"]))
+    )
+      return { status: 400, body: { error: "Pedido inválido." } };
+    try {
+      return {
+        status: 200,
+        body: await requestChallenge(
+          input as Parameters<typeof requestChallenge>[0],
+          request.signal,
+        ),
+      };
+    } catch {
+      return { status: 400, body: { error: "Resposta inválida." } };
+    }
+  }
   if (version === 3) {
     if (
       !isMathCourse(input["course"]) ||

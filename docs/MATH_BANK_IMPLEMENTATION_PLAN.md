@@ -1,6 +1,6 @@
 # Banco misto de Matemática, preparação (2026-10-13)
 
-Estado: primeira implementação do minigame e progressão v3. Banco fechado com quatro formatos por etapa e seis variantes fixas, 864 entradas ao todo. Três são adaptações identificadas de Thompson, as demais são autorais. Isso não equivale a 864 raciocínios independentes, a um banco de provas recentes ou a uma validação pedagógica profissional. Revisão humana, ampliação de curadoria e calibração continuam pendentes.
+Estado: expansão do minigame e progressão v4. Banco fechado com oito formatos por etapa e seis variantes fixas, 1728 entradas ao todo. Três são adaptações identificadas de Thompson, as demais são autorais. Isso não equivale a 1728 raciocínios independentes, a um banco de provas recentes ou a uma validação pedagógica profissional. Revisão humana, ampliação de curadoria e calibração continuam pendentes. v3 permanece congelado para compatibilidade e migração preservadora; ver CURRENT_STATE_AUDIT.md e SECOND_BRAIN.md.
 
 ## Requisito confirmado
 
@@ -30,7 +30,7 @@ Para Fundamental e Médio, mapear habilidades específicas da BNCC. Pré-cálcul
 
 ## Critério implementado e limites
 
-O proprietário definiu ilhas como minigames, separadas da futura aba de ensinamentos. Só o Pátio inicia liberado. Cada etapa tem 24 IDs estáveis em quatro formatos. Vinte acertos distintos superam a etapa, com pelo menos dois acertos por formato por consequência da distribuição. Seis etapas concluídas liberam o lugar seguinte. A porcentagem indica conclusão do jogo, não domínio científico de uma disciplina. Avanço sobrevive a erros, repetição não conta duas vezes e acertos de aparelhos diferentes são unidos por ID. Pontos/baús antigos continuam intactos, mas não liberam o novo percurso.
+O proprietário definiu ilhas como minigames, separadas da futura aba de ensinamentos. Só o Pátio inicia liberado. Cada etapa tem 48 IDs estáveis em oito formatos; a seleção intercala formatos e três faixas editoriais de dificuldade, além de retomar erros com intervalo. Vinte acertos distintos superam a etapa. Seis etapas concluídas liberam o lugar seguinte. A porcentagem indica conclusão do jogo, não domínio científico de uma disciplina. Avanço sobrevive a erros, repetição não conta duas vezes e acertos de aparelhos diferentes são unidos por ID. Pontos/baús antigos continuam intactos; acertos v3 preservam crédito, sem fingir que são respostas aos itens extras.
 
 As regras abaixo são objetivos de qualidade para ampliar o banco, não recursos todos já entregues:
 

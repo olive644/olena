@@ -275,7 +275,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Banco fechado e progressão dos minigames v3: acréscimo medido de ~7 KiB,
 // carregado sob demanda. Entrada caiu para 285.8 KiB; sem nova dependência.
 // Margem estreita de CI, com os tetos absolutos e a entrada preservados.
-const MAX_TOTAL_JS_BYTES = 1376 * 1024;
+// Banco v4: oito formatos por etapa, revisão de alternativas e repetição espaçada.
+// Total medido 1395.2 KiB; entrada 285.9 KiB. Conteúdo permanece sob demanda,
+// sem dependências novas. Mantidos os tetos absolutos e o orçamento inicial.
+const MAX_TOTAL_JS_BYTES = 1400 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

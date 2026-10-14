@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MathArcade } from "./math-arcade";
 import { handleOlena } from "../backend/olena-handler";
 import { mathGameLearning as mathLearning } from "../data/math-game-learning";
-import { bankQuestion } from "../data/math-game-bank";
+import { challengeQuestion as bankQuestion } from "../data/math-challenge-bank";
 import { emptyMathGame } from "../domain/math-game-progress";
 import { updateAccessibility } from "../data/accessibility-preferences";
 import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
@@ -15,6 +15,7 @@ beforeEach(() => {
   localStorage.removeItem("helena.mathLearning.v1");
   localStorage.removeItem("helena.mathLearning.v2");
   localStorage.removeItem("helena.mathGame.v3");
+  localStorage.removeItem("helena.mathGame.v4");
   localStorage.removeItem("helena.room-xp.v1");
   localStorage.removeItem("helena.mathPlaceRewards.v1");
   vi.stubGlobal(
@@ -174,7 +175,7 @@ function correctAnswer() {
   const seed = Number(
     document.querySelector(".math-arcade-stage")?.getAttribute("data-question-seed"),
   );
-  return bankQuestion("foundations", Math.floor((seed - 1) / 24), (seed - 1) % 24).answer;
+  return bankQuestion("foundations", Math.floor((seed - 1) / 48), (seed - 1) % 48).answer;
 }
 
 it("uses the shared engine, scores once and retains progress on retry", async () => {
@@ -316,7 +317,7 @@ it("shows a timeout immediately without waiting for the server", async () => {
   await begin();
   play.mockClear();
   vi.mocked(fetch).mockImplementationOnce(() => new Promise<Response>(() => {}));
-  await tick(28100);
+  await tick(29100);
   await tick(1);
   expect(play).toHaveBeenCalledExactlyOnceWith("timeout");
   const reserve = screen.getByRole("progressbar").getAttribute("aria-valuenow");
@@ -335,7 +336,7 @@ it("treats an unanswered deadline separately, deducts four extra seconds and doe
   localStorage.setItem("helena.profile.v1", JSON.stringify({ photoUrl: "/my-photo.png" }));
   render(<MathArcade onBack={() => {}} />);
   await begin();
-  await tick(28100);
+  await tick(29100);
   await tick(1);
   expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
   expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();

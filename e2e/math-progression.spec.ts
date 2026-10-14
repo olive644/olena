@@ -17,7 +17,9 @@ test("locks later places and keeps the paper completion badge above the avatar i
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   const badge = page.getByRole("progressbar", { name: /Conclusão de Pátio/ });
   await expect(badge).toHaveAttribute("aria-valuenow", "0");
-  await expect(badge).toContainText("Faltam 100%");
+  await expect(badge).toContainText("0%");
+  await expect(badge.getByText(/Faltam/)).toHaveCount(0);
+  await expect(badge.locator(".math-journey-progress-pieces > span")).toHaveCount(6);
   await page.waitForTimeout(900);
   for (const theme of ["light", "dark"]) {
     await page.evaluate(
