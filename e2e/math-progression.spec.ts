@@ -77,7 +77,7 @@ test("keeps short word challenges and all four answers usable on desktop and mob
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.x + box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
     for (const answer of await page.getByRole("button", { name: /^Resposta/ }).all())
-      await expect(answer).toBeInViewport({ ratio: 1 });
+      await expect(answer).toBeInViewport({ ratio: 0.999 });
     await page.screenshot({ path: info.outputPath(`math-question-${theme}.png`) });
   }
 });

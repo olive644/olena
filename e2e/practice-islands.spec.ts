@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { shownMathQuestion } from "./math-question";
 test("mathematics islands use the shared adaptive engine and resume mastery", async ({
   page,
 }, testInfo) => {
@@ -81,24 +82,14 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
     58,
   );
   for (let index = 0; index < 6; index++) {
-    const question = page.locator(".math-game-question h1");
-    const text = await question.getAttribute("aria-label");
-    const nums = text!.match(/\d+/g)!.map(Number);
-    const answer = text!.includes("−")
-      ? nums[0]! - nums[1]!
-      : text!.includes("×")
-        ? nums[0]! * nums[1]!
-        : nums[0]! + nums[1]!;
+    const { answer } = await shownMathQuestion(page, "foundations");
     await page.getByRole("button", { name: "Resposta " + answer, exact: true }).click();
     await expect(page.locator(".math-answer-reaction")).toBeVisible();
     await expect(page.locator(".math-answer-reaction .practice-user-portrait")).toHaveCount(0);
     await expect(page.locator(".math-answer-reaction")).toHaveCount(0);
-    if (index === 5) {
-      await expect(page.getByRole("heading", { name: "Parabéns, você se superou!" })).toBeVisible();
-      await page.getByRole("button", { name: "Continuar explorando" }).click();
-    }
+    await expect(page.getByRole("heading", { name: "Parabéns, você se superou!" })).toHaveCount(0);
   }
-  await expect(page.getByText("Subtração", { exact: true })).toBeVisible();
+  await expect(page.getByText("Adição", { exact: true })).toBeVisible();
   await expect(page.getByText(/VOCÊ ESTÁ INSANO/)).toBeVisible();
   const audioProof = await page.evaluate(() => {
     const proof = (
@@ -121,13 +112,7 @@ test("mathematics islands use the shared adaptive engine and resume mastery", as
   expect(geometry!.x).toBeGreaterThanOrEqual(0);
   expect(geometry!.x + geometry!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   for (let index = 0; index < 3; index++) {
-    const text = await page.locator(".math-game-question h1").getAttribute("aria-label");
-    const nums = text!.match(/\d+/g)!.map(Number);
-    const value = text!.includes("−")
-      ? nums[0]! - nums[1]!
-      : text!.includes("+")
-        ? nums[0]! + nums[1]!
-        : nums[0]! * nums[1]!;
+    const { answer: value } = await shownMathQuestion(page, "foundations");
     const buttons = page.getByRole("button", { name: /^Resposta/ });
     const labels = await buttons.evaluateAll((items) =>
       items.map((item) => item.getAttribute("aria-label")),
