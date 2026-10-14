@@ -1,5 +1,12 @@
 # Identidade visual oficial OlenaStudy
 
+Percentual dos lugares de Matemática: placa compacta de papel acima do avatar,
+somente porcentagem em PaperDigits, sem texto de quanto falta. Seis recortes
+facetados correspondem às etapas, com base neutra e preenchimento roxo. Nada de
+faixa amarela contínua ou animação indeterminada: é progresso, não loading.
+Movimento só na alteração, desativado com movimento reduzido. Creme/grafite
+preservam contraste nos dois temas, sem sobrepor a pontuação ou o avatar.
+
 O padrão aprovado para a Helena, mundos, trilhas, ícones, botões e novos elementos visuais é **papel recortado**. Preservar silhuetas reconhecíveis, facetas geométricas, camadas de cores sólidas e pequenas sombras de sobreposição. Não substituir por ícones de contorno genéricos, plástico 3D, glassmorphism ou gradientes.
 
 - Tipografia: Manrope.

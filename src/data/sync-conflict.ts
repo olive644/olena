@@ -3,6 +3,11 @@ import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "./system-updates";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { isMathCourse, validMathProgress, type MathProgress } from "./math-courses";
 import { MATH_GAME_KEY, mergeMathGame, parseMathGame } from "../domain/math-game-progress";
+import {
+  CHALLENGE_KEY,
+  mergeChallengeProgress,
+  parseChallengeProgress,
+} from "../domain/math-challenge-progress";
 export type SyncedItems = Record<string, string>;
 
 export type SyncedMergeResult = {
@@ -31,6 +36,15 @@ export function mergeSyncedItems(
     const baseValue = valueAt(base, key);
     const localValue = valueAt(local, key);
     const remoteValue = valueAt(remote, key);
+    if (key === CHALLENGE_KEY) {
+      const left = parseChallengeProgress(localValue ?? "{}"),
+        right = parseChallengeProgress(remoteValue ?? "{}");
+      const merged = { ...left };
+      for (const [id, p] of Object.entries(right))
+        if (isMathCourse(id)) merged[id] = left[id] ? mergeChallengeProgress(left[id], p) : p;
+      items[key] = JSON.stringify(merged);
+      continue;
+    }
     if (key === MATH_GAME_KEY) {
       const left = parseMathGame(localValue ?? "{}"),
         right = parseMathGame(remoteValue ?? "{}");

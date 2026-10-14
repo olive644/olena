@@ -3,7 +3,10 @@ import { createPortal } from "react-dom";
 import { MATH_COURSES } from "../data/math-courses";
 import type { PracticeActivity } from "../domain/workspace";
 import { mathGameLearning, readMathGame } from "../data/math-game-learning";
-import { gameCompletion, unlockedMathCourse } from "../domain/math-game-progress";
+import {
+  challengeCompletion as gameCompletion,
+  unlockedChallengeCourse as unlockedMathCourse,
+} from "../domain/math-challenge-progress";
 import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import { isMotionReduced } from "../data/accessibility-preferences";
@@ -65,7 +68,7 @@ export function MathIslandJourney({
   }, []);
   const course = MATH_COURSES[index]!;
   const unlocked = unlockedMathCourse(course.id, progress);
-  const completion = gameCompletion(progress[course.id]?.solved ?? []);
+  const completion = gameCompletion(mathGameLearning(course.id));
   function visit(next: number) {
     const destination = Math.max(0, Math.min(MATH_COURSES.length - 1, next));
     if (phase === "map" && destination !== index) {
@@ -218,7 +221,7 @@ export function MathIslandJourney({
             <div
               className="math-journey-completion"
               role="progressbar"
-              aria-label={`Conclusão de ${course.title}, faltam ${100 - completion.percent}%`}
+              aria-label={`Conclusão de ${course.title}`}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={completion.percent}
@@ -226,10 +229,13 @@ export function MathIslandJourney({
               <strong>
                 <MathNumber value={completion.percent} />%
               </strong>
-              <small>
-                {completion.percent === 100 ? "Concluído" : `Faltam ${100 - completion.percent}%`}
-              </small>
-              <span style={{ width: `${completion.percent}%` }} />
+              <div className="math-journey-progress-pieces" aria-hidden="true">
+                {completion.counts.map((count, level) => (
+                  <span key={level} className={count === 20 ? "is-complete" : ""}>
+                    <i style={{ transform: `scaleX(${count / 20})` }} />
+                  </span>
+                ))}
+              </div>
             </div>
             <PracticeUserPortrait profile={profile} />
           </div>

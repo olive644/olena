@@ -3,16 +3,18 @@ import { createPortal } from "react-dom";
 import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
 import {
   mathGameLearning as mathLearning,
-  requestMathGame as requestMath,
   saveMathGame as saveMathLearning,
   readMathGame,
-  type MathGameResult as MathApiResult,
 } from "../data/math-game-learning";
 import {
-  unlockedMathCourse,
-  type MathGameProgress as MathProgress,
-} from "../domain/math-game-progress";
-import type { MathChallenge } from "../domain/adaptive-math";
+  requestChallenge as requestMath,
+  type ChallengeResult as MathApiResult,
+} from "../domain/math-challenge-engine";
+import {
+  unlockedChallengeCourse as unlockedMathCourse,
+  type ChallengeProgress as MathProgress,
+} from "../domain/math-challenge-progress";
+import type { QualityQuestion as MathChallenge } from "../data/math-challenge-bank";
 import type { PracticeActivity } from "../domain/workspace";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { createMathSound } from "../data/math-sound";

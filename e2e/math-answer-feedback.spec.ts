@@ -68,7 +68,7 @@ test("server disconnection cannot delay feedback or score an answer twice", asyn
   expect(answers).toBe(0);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathGame.v3")!).foundations.correct,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v4")!).foundations.correct,
     ),
   ).toBe(1);
   await expect(page.locator(".math-arcade-stage")).toHaveAttribute("aria-busy", "false");
@@ -135,7 +135,7 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await page.screenshot({ path: info.outputPath("math-mastery.png") });
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathGame.v3")!).foundations.mastered,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v4")!).foundations.mastered,
     ),
   ).toBe(63);
   await button.click();
@@ -145,7 +145,7 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await page.reload();
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathGame.v3")!).foundations.mastered,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v4")!).foundations.mastered,
     ),
   ).toBe(63);
 });

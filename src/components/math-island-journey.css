@@ -123,7 +123,7 @@
   z-index: 4;
   position: absolute;
   left: 50%;
-  top: calc(var(--math-scene-y) - var(--math-scene-size) * 0.25);
+  top: max(204px, calc(var(--math-scene-y) - var(--math-scene-size) * 0.25));
   width: clamp(56px, 12vw, 76px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
@@ -133,18 +133,27 @@
 }
 .math-journey-completion {
   position: absolute;
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 14px);
   left: 50%;
   transform: translateX(-50%);
-  width: 84px;
-  padding: 6px 10px 10px;
+  width: 90px;
+  padding: 5px 8px 7px;
   text-align: center;
   color: #292432;
   background: #fff9ef;
   border: 1px solid #d5c8b0;
-  border-radius: 4px 12px 3px 4px;
-  box-shadow: 0 4px #d5c8b0;
-  overflow: hidden;
+  border-radius: 3px 12px 3px 9px;
+  box-shadow: 0 3px #d5c8b0;
+}
+.math-journey-completion::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background: #ece3cf;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
 }
 .math-journey-completion strong {
   font-size: 16px;
@@ -155,24 +164,40 @@
   --digit-side: #51465d;
   height: 20px;
 }
-.math-journey-completion small {
-  display: block;
-  font-size: 10px;
-  white-space: nowrap;
+.math-journey-progress-pieces {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 3px;
+  margin-top: 5px;
 }
-.math-journey-completion > span {
+.math-journey-progress-pieces > span {
+  position: relative;
+  height: 7px;
+  background: #d5c8b0;
+  clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+}
+.math-journey-progress-pieces i {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 5px;
-  background: #facc15;
-  transition: width 350ms ease;
+  inset: 0;
+  background: #7c3aed;
+  transform-origin: left;
+  transition: transform 350ms ease;
+}
+.math-journey-progress-pieces .is-complete i {
+  background: #51259b;
+}
+.math-journey-progress-pieces i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #a779ef;
+  clip-path: polygon(0 0, 70% 0, 0 100%);
 }
 .math-journey-island.is-current.is-locked {
   opacity: 0.38;
 }
 @media (prefers-reduced-motion: reduce) {
-  .math-journey-completion > span {
+  .math-journey-progress-pieces i {
     transition: none;
   }
 }

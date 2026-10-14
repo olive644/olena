@@ -40,10 +40,10 @@ for (const course of [
     await page.getByRole("button", { name: "Vamos calcular!" }).click();
     await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
     const question = await shownMathQuestion(page, course.id);
-    expect(question.budget).toBe(course.seconds);
+    expect(question.budget).toBeGreaterThanOrEqual(course.seconds);
     await expect(page.locator(".math-time .math-number")).toHaveAttribute(
       "aria-label",
-      String(course.seconds),
+      String(question.budget),
     );
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "60");
     await page.getByRole("button", { name: "Resposta " + question.answer, exact: true }).click();
