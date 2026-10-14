@@ -2,6 +2,7 @@ import { mergeMathRewards } from "./math-rewards-sync";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "./system-updates";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { isMathCourse, validMathProgress, type MathProgress } from "./math-courses";
+import { MATH_GAME_KEY, mergeMathGame, parseMathGame } from "../domain/math-game-progress";
 export type SyncedItems = Record<string, string>;
 
 export type SyncedMergeResult = {
@@ -30,6 +31,17 @@ export function mergeSyncedItems(
     const baseValue = valueAt(base, key);
     const localValue = valueAt(local, key);
     const remoteValue = valueAt(remote, key);
+    if (key === MATH_GAME_KEY) {
+      const left = parseMathGame(localValue ?? "{}"),
+        right = parseMathGame(remoteValue ?? "{}");
+      const merged = { ...left };
+      for (const [id, progress] of Object.entries(right)) {
+        if (!isMathCourse(id)) continue;
+        merged[id] = left[id] ? mergeMathGame(left[id], progress) : progress;
+      }
+      items[key] = JSON.stringify(merged);
+      continue;
+    }
     if (key === "helena.mathLearning.v2") {
       const read = (raw: string | undefined): Record<string, MathProgress> => {
         try {

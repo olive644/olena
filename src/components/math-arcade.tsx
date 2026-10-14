@@ -1,12 +1,17 @@
 import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import { MATH_COURSES, type MathCourseId, type MathProgress } from "../data/math-courses";
+import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
 import {
-  mathLearning,
-  requestMath,
-  saveMathLearning,
-  type MathApiResult,
-} from "../data/math-learning";
+  mathGameLearning as mathLearning,
+  requestMathGame as requestMath,
+  saveMathGame as saveMathLearning,
+  readMathGame,
+  type MathGameResult as MathApiResult,
+} from "../data/math-game-learning";
+import {
+  unlockedMathCourse,
+  type MathGameProgress as MathProgress,
+} from "../domain/math-game-progress";
 import type { MathChallenge } from "../domain/adaptive-math";
 import type { PracticeActivity } from "../domain/workspace";
 import { isMotionReduced } from "../data/accessibility-preferences";
@@ -81,6 +86,7 @@ export function MathArcade({
   const [displayedScore, setDisplayedScore] = useState(0);
   const [reward, setReward] = useState<RoomXpReward | undefined>();
   const roundId = useRef("");
+  const answerSequence = useRef(0);
   const roundOwner = useRef<string | null>(null);
   const root = useRef<HTMLElement>(null);
   const controller = useRef<AbortController | null>(null);
@@ -201,6 +207,10 @@ export function MathArcade({
     return requestMath(input, AbortSignal.any([current.signal, AbortSignal.timeout(10000)]));
   }
   async function start() {
+    if (!unlockedMathCourse(courseId, readMathGame())) {
+      setError("Complete o lugar anterior para liberar esta partida.");
+      return;
+    }
     setEarnedChest(undefined);
     if (answerLock.current || pending) return;
     audio.current ??= createMathSound();
@@ -229,6 +239,7 @@ export function MathArcade({
       setFeedback(null);
       setReward(undefined);
       roundId.current = "math:" + courseId + ":" + crypto.randomUUID();
+      answerSequence.current = 0;
       setCountdown(3);
       setStatus("countdown");
       setDisplayedScore(0);
@@ -273,7 +284,7 @@ export function MathArcade({
       const progress = { ...result.progress, best: Math.max(result.progress.best, points) };
       setStorageWarning(!saveMathLearning(courseId, progress));
       onPractice?.({
-        id: `${roundId.current}:${question.seed}`,
+        id: `${roundId.current}:${question.seed}:${++answerSequence.current}`,
         islandId: `mathematics:${courseId}`,
         islandName: `Matemática · ${course.subject}`,
         completedAt: new Date().toISOString(),
@@ -464,10 +475,10 @@ export function MathArcade({
               </div>
               <h1>Parabéns, você se superou!</h1>
               <strong>{milestone.topic}</strong>
-              <p>Você concluiu 100% deste desafio com seis acertos seguidos.</p>
+              <p>Etapa superada: 20 desafios diferentes acertados!</p>
               {milestone.courseComplete ? (
                 <p>
-                  Você concluiu todos os temas de {course.subject}.{" "}
+                  Você concluiu as seis etapas deste lugar.{" "}
                   {nextCourse
                     ? `Próxima parada: ${nextCourse.title}.`
                     : "Você chegou ao último lugar desta ilha!"}
@@ -602,16 +613,20 @@ export function MathArcade({
               <div className="math-game-question">
                 <MathUserAvatar />
                 <span className="math-topic">{question.topic}</span>
-                <h1 aria-label={"Quanto é " + question.expression + "?"}>
+                <h1
+                  className={question.expression.length > 24 ? "math-question-prompt" : undefined}
+                  aria-label={question.expression}
+                >
                   <MathExpression value={question.expression} />
-                  {!question.expression.includes("?") && (
-                    <>
-                      <span aria-hidden="true" className="math-equals">
-                        =
-                      </span>
-                      <MathIcon name="question" />
-                    </>
-                  )}
+                  {!question.expression.includes("?") &&
+                    !/[a-zA-ZÀ-ÿ]/.test(question.expression) && (
+                      <>
+                        <span aria-hidden="true" className="math-equals">
+                          =
+                        </span>
+                        <MathIcon name="question" />
+                      </>
+                    )}
                 </h1>
                 {round.streak > 3 && (
                   <div className="math-insane" role="status">

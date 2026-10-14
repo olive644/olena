@@ -1,5 +1,16 @@
 # Auditoria do estado atual
 
+## Progressão dos minigames de Matemática (2026-10-13)
+
+- A ilha continua sendo minigame, não uma aula. Apenas Pátio das Primeiras Contas começa liberado. Os demais lugares podem ser vistos, mas entrar e iniciar partida exigem a conclusão de todos os anteriores.
+- Cada lugar tem seis etapas. Cada etapa tem 24 desafios fixos, intercalando quatro formatos com seis variantes editoriais. São 864 entradas no conjunto, não 864 modelos de raciocínio independentes. Vinte acertos em IDs diferentes superam uma etapa; repetição não aumenta conclusão e erro não apaga acertos. Seis etapas superadas liberam o próximo lugar. A porcentagem é conclusão do jogo, não certificação de domínio da disciplina.
+- Primeira combinação: conteúdo autoral e três adaptações identificadas de Calculus Made Easy, Silvanus P. Thompson, exercícios I, itens 1, 2 e 4, p. 24, com avaliação da derivada em 1. A fonte, o ID e a revisão acompanham a questão. Obra histórica original, sem tradução moderna incorporada. Não há conteúdo OpenStax NC nem questões de provas recentes. Ainda falta revisão pedagógica humana e ampliar a curadoria de fontes; não alegar banco profissional validado.
+- Novo contrato de Matemática v3 compartilha banco/correção determinística entre cliente e API. v1/v2 permanecem inalterados. Partida continua offline, com correção imediata, sons, combos e conquistas existentes. Prazos são 28 ou 40 segundos conforme comprimento do enunciado; velocidade afeta pontos, não o desbloqueio.
+- helena.mathGame.v3 armazena máscaras de IDs vistos/acertados por etapa, no fluxo automático da conta. União por identidade preserva acertos entre aparelhos sem duplicar evidência. Histórico v1/v2, XP, baús e pontos não são apagados nem convertidos em conclusão nova. Reversão: voltar ao leitor v2 sem apagar v3. Não há mudança de regras ou serviço Firebase.
+- Acima do avatar há placa pequena de papel com porcentagem concluída e quanto falta, nos dois temas e no celular. Lugares bloqueados ficam atenuados e informam qual lugar concluir. Navegação, arte e movimento reduzido são preservados.
+- Custo medido: JavaScript inicial 285.8 KiB (sem aumento), total 1371.4 KiB. Banco permanece nos chunks sob demanda. Orçamento normal total atualizado de 1364 para 1374 KiB, com margem estreita de CI e justificativa no verificador; tetos absolutos de 400/1500 KiB e orçamento inicial de 286.5 KiB preservados. Nenhuma dependência nova.
+- Regressões: math-game.test.ts, testes de MathArcade e MathIslandJourney, math-progression.spec.ts e math-answer-feedback.spec.ts. Cobrem conteúdo distinto por etapa, não repetição, progresso, migração preservadora, merge, API v3, bloqueio, recarga, feedback offline e posição/contraste da placa.
+
 ## Tarefas coloridas e navegação desktop (2026-10-13)
 
 - A faixa de tarefas e eventos de dia inteiro na grade reservava 44 px, cortando a base dos botões. Agora reserva altura compartilhada entre colunas, padding para a base e área de toque de 44 px; os horários do eixo acompanham essa altura. Até três itens ficam visíveis, com rolagem para os demais.

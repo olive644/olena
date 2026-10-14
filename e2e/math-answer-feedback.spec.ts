@@ -68,7 +68,7 @@ test("server disconnection cannot delay feedback or score an answer twice", asyn
   expect(answers).toBe(0);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathLearning.v2")!).foundations.correct,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v3")!).foundations.correct,
     ),
   ).toBe(1);
   await expect(page.locator(".math-arcade-stage")).toHaveAttribute("aria-busy", "false");
@@ -83,9 +83,17 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     if (!sessionStorage.getItem("mastery-seeded")) {
       localStorage.setItem(
-        "helena.mathLearning.v2",
+        "helena.mathGame.v3",
         JSON.stringify({
-          foundations: { level: 5, mastery: 5, mastered: 31, correct: 35, best: 500 },
+          foundations: {
+            level: 5,
+            mastery: 5,
+            mastered: 31,
+            correct: 119,
+            best: 500,
+            solved: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
+            seen: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
+          },
         }),
       );
       sessionStorage.setItem("mastery-seeded", "1");
@@ -127,7 +135,7 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await page.screenshot({ path: info.outputPath("math-mastery.png") });
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathLearning.v2")!).foundations.mastered,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v3")!).foundations.mastered,
     ),
   ).toBe(63);
   await button.click();
@@ -137,7 +145,7 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await page.reload();
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathLearning.v2")!).foundations.mastered,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v3")!).foundations.mastered,
     ),
   ).toBe(63);
 });

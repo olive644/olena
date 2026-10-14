@@ -85,15 +85,19 @@ it("navigates six places horizontally and clamps both ends", () => {
     "Mirante dos Vetores",
   ];
   for (const title of titles) {
-    fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), {
+    fireEvent.keyDown(screen.getByRole("button", { name: /Explorar lugar|Lugar bloqueado/ }), {
       key: "ArrowRight",
     });
     expect(screen.getByRole("heading", { name: title })).toBeTruthy();
   }
-  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), { key: "ArrowRight" });
+  fireEvent.keyDown(screen.getByRole("button", { name: /Explorar lugar|Lugar bloqueado/ }), {
+    key: "ArrowRight",
+  });
   expect(screen.getByRole("heading", { name: "Mirante dos Vetores" })).toBeTruthy();
   expect(screen.queryByRole("button", { name: "Próxima ilha de Matemática" })).toBeNull();
-  fireEvent.keyDown(screen.getByRole("button", { name: "Explorar lugar" }), { key: "ArrowLeft" });
+  fireEvent.keyDown(screen.getByRole("button", { name: /Explorar lugar|Lugar bloqueado/ }), {
+    key: "ArrowLeft",
+  });
   expect(screen.getByRole("heading", { name: "Porto das Integrais" })).toBeTruthy();
 });
 it("animates entering the island and restores it on game exit", () => {

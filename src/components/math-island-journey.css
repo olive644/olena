@@ -131,6 +131,51 @@
 .math-journey-avatar.is-moving-left {
   --avatar-from: -100px;
 }
+.math-journey-completion {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 84px;
+  padding: 6px 10px 10px;
+  text-align: center;
+  color: #292432;
+  background: #fff9ef;
+  border: 1px solid #d5c8b0;
+  border-radius: 4px 12px 3px 4px;
+  box-shadow: 0 4px #d5c8b0;
+  overflow: hidden;
+}
+.math-journey-completion strong {
+  font-size: 16px;
+  font-weight: 800;
+}
+.math-journey-completion .paper-digits {
+  --digit-face: #292432;
+  --digit-side: #51465d;
+  height: 20px;
+}
+.math-journey-completion small {
+  display: block;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.math-journey-completion > span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background: #facc15;
+  transition: width 350ms ease;
+}
+.math-journey-island.is-current.is-locked {
+  opacity: 0.38;
+}
+@media (prefers-reduced-motion: reduce) {
+  .math-journey-completion > span {
+    transition: none;
+  }
+}
 @keyframes math-avatar-travel {
   from {
     opacity: 0.4;
