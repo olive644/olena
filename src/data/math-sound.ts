@@ -8,9 +8,11 @@ export type MathSoundCue =
   | "chestUnlock"
   | "chestOpen"
   | "cardReveal"
+  | "cosmicTap"
   | "mastery";
 export type ArcaneSoundCue = "arcaneUnlock" | "arcaneOpen" | "tarotReveal";
 const NOTES: Record<MathSoundCue | ArcaneSoundCue, number[]> = {
+  cosmicTap: [440, 660, 880],
   mastery: [523, 659, 784, 1046, 1319, 1568],
   arcaneUnlock: [220, 330, 440, 660],
   arcaneOpen: [261, 392, 622, 784, 1046, 1568],

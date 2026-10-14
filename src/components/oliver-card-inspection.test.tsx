@@ -5,7 +5,7 @@ afterEach(cleanup);
 it("puts title above lore, rarity in the border and allows a full keyboard rotation", () => {
   render(<OliverCardInspection id="glass-seed" />);
   expect(screen.queryByText("Oliver · Comum")).toBeNull();
-  expect(screen.getByLabelText("Raridade comum")).toBeTruthy();
+  expect(screen.getByLabelText("Raridade rara")).toBeTruthy();
   const title = screen.getByRole("heading", { name: "Semente de vidro" });
   expect(title.nextElementSibling?.className).toBe("oliver-card-lore");
   const card = screen.getByRole("button", { name: /Inspecionar carta em 360/ });

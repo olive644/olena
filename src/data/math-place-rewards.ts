@@ -5,7 +5,7 @@ import { writeSyncedStorage } from "./synced-storage";
 
 export const MATH_PLACE_REWARDS_KEY = "helena.mathPlaceRewards.v1";
 export const COMMON_CHEST_POINTS = 100;
-export const COMMON_CHEST_WAIT = 60_000;
+export const COMMON_CHEST_WAIT = 10_000;
 export const MAX_MATH_CHESTS = 3;
 export const ARCANE_CHEST_CHANCE = 0.05;
 export type MathChest = {
@@ -132,7 +132,7 @@ export function finishMathPlace(
           ...value.chests,
           {
             id,
-            unlockAt: null,
+            unlockAt: Date.now() + COMMON_CHEST_WAIT,
             opened: false,
             ...(arcane ? { kind: "arcane" as const, arcana: OLIVER_TAROT.id } : {}),
           },
@@ -145,8 +145,8 @@ export function unlockMathChest(course: MathCourseId, id: string, now = Date.now
   return save(course, {
     ...value,
     chests: value.chests.map((chest) =>
-      chest.id === id && chest.unlockAt === null && !chest.opened
-        ? { ...chest, unlockAt: now + COMMON_CHEST_WAIT }
+      chest.id === id && !chest.opened
+        ? { ...chest, unlockAt: Math.min(chest.unlockAt ?? Infinity, now + COMMON_CHEST_WAIT) }
         : chest,
     ),
   });

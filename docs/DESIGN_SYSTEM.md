@@ -1,5 +1,14 @@
 # Identidade visual oficial OlenaStudy
 
+Poeira cósmica: um único símbolo vetorial de estrela facetada com fragmentos,
+sem importar arte de outro jogo. Quatro recortes indicam os toques; a raridade
+aparece por nome e fundo: comum verde #174B3B, rara azul #213F74, épica roxo
+#51259B, lendária dourado escuro #59420A, com texto creme #FFF9EF. Cartas usam
+moldura e selo de raridade, número real do catálogo e placas de atributos em
+papel. Inspeção direta por arraste, com setas/Home no teclado. X e Guardar
+compartilham saída animada, mas só Guardar apresenta voo para a coleção.
+Partículas limitadas, sem flashes; movimento reduzido remove efeitos automáticos.
+
 Desafio final de Matemática: cinco recortes pequenos, roxo para acerto, rosa para
 erro e amarelo para a pergunta atual. Texto compacto "Final: 4 acertos em 5";
 retomada usa "Revanche", sem transformar minigame em aula. Reutilizar números,

@@ -545,12 +545,10 @@ export function MathArcade({
                 <button
                   type="button"
                   className="math-earned-chest"
-                  aria-label="Levar baú aos espaços da ilha"
+                  aria-label="Levar Poeira cósmica aos espaços da ilha"
                   onClick={(event) => {
                     const rect = event.currentTarget.getBoundingClientRect();
-                    audio.current?.play(
-                      earnedChest.kind === "arcane" ? "arcaneUnlock" : "chestUnlock",
-                    );
+                    audio.current?.play("chestUnlock");
                     if (onChestReturn)
                       onChestReturn({
                         x: rect.x + rect.width / 2,
@@ -561,15 +559,13 @@ export function MathArcade({
                     else setStatus("leaving");
                   }}
                 >
-                  <CommonMathChest arcane={earnedChest.kind === "arcane"} />
-                  <span>
-                    Você ganhou um baú {earnedChest.kind === "arcane" ? "arcano" : "comum"}!
-                  </span>
+                  <CommonMathChest />
+                  <span>Você ganhou Poeira cósmica!</span>
                 </button>
               )}
               {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
                 <p className="math-result-topic">
-                  Os três espaços de baús estão ocupados. Seus pontos foram guardados.
+                  Os três espaços de Poeira cósmica estão ocupados. Seus pontos foram guardados.
                 </p>
               )}
               <button

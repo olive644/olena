@@ -23,31 +23,32 @@ it("refreshes rewards received from the account and closes stale boosters on log
   render(<MathPlaceTreasure course="foundations" />);
   act(() => applySyncedStorage(cloud));
   expect(screen.getByLabelText("180 pontos neste lugar")).toBeTruthy();
-  fireEvent.click(screen.getByRole("button", { name: "Revelar cartas do baú" }));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar Poeira cósmica" }));
   act(() => applySyncedStorage({}));
   expect(screen.queryByRole("dialog")).toBeNull();
-  expect(screen.getAllByLabelText("Espaço de baú vazio")).toHaveLength(3);
+  expect(screen.getAllByLabelText("Espaço de Poeira cósmica vazio")).toHaveLength(3);
 });
 it("counts points, survives remount during countdown and opens a backside booster", () => {
   vi.useFakeTimers();
   finishMathPlace("foundations", "round", 120, () => 0.5);
   const view = render(<MathPlaceTreasure course="foundations" />);
   expect(screen.getByLabelText("120 pontos neste lugar")).toBeTruthy();
-  expect(screen.getAllByLabelText("Espaço de baú vazio")).toHaveLength(2);
-  fireEvent.click(screen.getByRole("button", { name: "Destrancar baú comum" }));
+  expect(screen.getAllByLabelText("Espaço de Poeira cósmica vazio")).toHaveLength(2);
   expect(
-    screen.getByRole("button", { name: /60 segundos restantes/ }).hasAttribute("disabled"),
+    screen.getByRole("button", { name: /10 segundos restantes/ }).hasAttribute("disabled"),
   ).toBe(true);
-  act(() => vi.advanceTimersByTime(30000));
+  act(() => vi.advanceTimersByTime(5000));
   view.unmount();
   render(<MathPlaceTreasure course="foundations" />);
-  expect(screen.getByRole("button", { name: /30 segundos restantes/ })).toBeTruthy();
-  act(() => vi.advanceTimersByTime(30000));
-  fireEvent.click(screen.getByRole("button", { name: "Abrir baú comum" }));
-  expect(screen.queryByRole("progressbar", { name: "Destrancando baú" })).toBeNull();
-  expect(document.querySelector(".math-common-chest.is-open")).toBeTruthy();
+  expect(screen.getByRole("button", { name: /5 segundos restantes/ })).toBeTruthy();
+  act(() => vi.advanceTimersByTime(5000));
+  fireEvent.click(screen.getByRole("button", { name: "Abrir Poeira cósmica" }));
+  expect(screen.queryByRole("progressbar", { name: "Preparando Poeira cósmica" })).toBeNull();
   act(() => vi.advanceTimersByTime(900));
-  expect(screen.getByRole("dialog", { name: "Cartas do baú comum" })).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: "Poeira cósmica" })).toBeTruthy();
+  for (let i = 0; i < 4; i++)
+    fireEvent.click(screen.getByRole("button", { name: /Revelar raridade/ }));
+  act(() => vi.advanceTimersByTime(900));
   expect(screen.getByRole("button", { name: "Revelar carta" })).toBeTruthy();
 });
 it("counts each revealed copy once and resumes unrevealed cards on reopening", () => {
@@ -57,9 +58,14 @@ it("counts each revealed copy once and resumes unrevealed cards on reopening", (
   const rolls = [0.9, 0, 0];
   openMathChest("foundations", "round", 60000, () => rolls.shift()!);
   render(<MathPlaceTreasure course="foundations" />);
-  fireEvent.click(screen.getByRole("button", { name: "Revelar cartas do baú" }));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar Poeira cósmica" }));
+  for (let i = 0; i < 4; i++)
+    fireEvent.click(screen.getByRole("button", { name: /Revelar raridade/ }));
+  act(() => vi.advanceTimersByTime(900));
   const reveal = screen.getByRole("button", { name: "Revelar carta" });
   fireEvent.click(reveal);
+  expect(screen.getByRole("button", { name: /Inspecionar carta em 360/ })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Inspecionar carta em 3D" })).toBeNull();
   act(() => applySyncedStorage(readSyncedStorage()));
   const echo = readSyncedStorage();
   const current = JSON.parse(echo[MATH_PLACE_REWARDS_KEY]!).foundations;
@@ -72,17 +78,19 @@ it("counts each revealed copy once and resumes unrevealed cards on reopening", (
     },
   });
   act(() => applySyncedStorage(echo));
-  expect(screen.getByRole("dialog", { name: "Cartas do baú comum" })).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: "Poeira cósmica" })).toBeTruthy();
   fireEvent.click(reveal);
   expect(mathPlaceRewards("foundations").chests[0]!.revealed).toBe(1);
   fireEvent.click(screen.getByRole("button", { name: "Fechar cartas" }));
-  fireEvent.click(screen.getByRole("button", { name: "Revelar cartas do baú" }));
+  expect(document.querySelector(".oliver-store-flight")).toBeNull();
+  act(() => vi.advanceTimersByTime(900));
+  fireEvent.click(screen.getByRole("button", { name: "Continuar Poeira cósmica" }));
   fireEvent.click(screen.getByRole("button", { name: "Revelar carta" }));
-  expect(screen.getByLabelText("0 cartas restantes no baú")).toBeTruthy();
+  expect(screen.getByLabelText("0 cartas restantes na Poeira cósmica")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Guardar cartas" }));
   expect(document.querySelectorAll(".oliver-store-flight > div")).toHaveLength(2);
   act(() => vi.advanceTimersByTime(900));
-  expect(screen.getAllByLabelText("Espaço de baú vazio")).toHaveLength(3);
+  expect(screen.getAllByLabelText("Espaço de Poeira cósmica vazio")).toHaveLength(3);
   expect(screen.getByRole("dialog", { name: "Coleção do Oliver" })).toBeTruthy();
   expect(screen.getByRole("button", { name: "A primeira estrela, 2 cópias" })).toBeTruthy();
 });
