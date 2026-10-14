@@ -4,7 +4,11 @@ export const MATH_GAME_KEY = "helena.mathGame.v3";
 export const QUESTIONS_PER_STAGE = 24;
 export const STAGE_TARGET = 20;
 export const QUESTION_MASK = (1 << QUESTIONS_PER_STAGE) - 1;
-export type MathGameProgress = MathProgress & { solved: number[]; seen: number[] };
+export type MathGameProgress = MathProgress & {
+  mastered: number;
+  solved: number[];
+  seen: number[];
+};
 export function countSolved(mask: number): number {
   let count = 0;
   for (let bits = mask; bits; bits &= bits - 1) count++;
