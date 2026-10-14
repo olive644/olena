@@ -272,7 +272,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // manter pequena margem de CI, com os mesmos tetos absolutos e orçamento de entrada.
 // Helena em Rive: o componente do mascote e o carregador tipado do runtime (o runtime em si fica
 // fora do bundle): medido 1364.6 KiB. Entrada inicial e tetos absolutos sem mudança.
-const MAX_TOTAL_JS_BYTES = 1366 * 1024;
+// Banco fechado e progressão dos minigames v3: acréscimo medido de ~7 KiB,
+// carregado sob demanda. Entrada caiu para 285.8 KiB; sem nova dependência.
+// Margem estreita de CI, com os tetos absolutos e a entrada preservados.
+const MAX_TOTAL_JS_BYTES = 1376 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

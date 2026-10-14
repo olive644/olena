@@ -2,7 +2,9 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { MATH_COURSES } from "../data/math-courses";
 import type { PracticeActivity } from "../domain/workspace";
-import { mathLearning } from "../data/math-learning";
+import { mathGameLearning, readMathGame } from "../data/math-game-learning";
+import { gameCompletion, unlockedMathCourse } from "../domain/math-game-progress";
+import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { PracticeUserPortrait } from "./practice-user-portrait";
@@ -12,6 +14,7 @@ import { HelenaRoomIcon } from "./helena-room-icon";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { MathPlaceTreasure } from "./math-place-treasure";
 import { MathPlaceScene } from "./math-place-scene";
+import { MathNumber } from "./math-paper-art";
 import "./math-island-journey.css";
 
 export function MathIslandJourney({
@@ -31,6 +34,18 @@ export function MathIslandJourney({
     entryOrigin ? "arrive" : "map",
   );
   const [profile] = useStoredProfile();
+  const [progress, setProgress] = useState(readMathGame);
+  useEffect(() => {
+    const refresh = () => setProgress(readMathGame());
+    window.addEventListener("storage", refresh);
+    window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    window.addEventListener(SYNCED_STORAGE_EVENT, refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+      window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
+    };
+  }, []);
   const gesture = useRef<number | null>(null);
   const dragged = useRef(false);
   const [travel, setTravel] = useState({ direction: "right", key: 0 });
@@ -49,6 +64,8 @@ export function MathIslandJourney({
     };
   }, []);
   const course = MATH_COURSES[index]!;
+  const unlocked = unlockedMathCourse(course.id, progress);
+  const completion = gameCompletion(progress[course.id]?.solved ?? []);
   function visit(next: number) {
     const destination = Math.max(0, Math.min(MATH_COURSES.length - 1, next));
     if (phase === "map" && destination !== index) {
@@ -79,6 +96,7 @@ export function MathIslandJourney({
         onPractice={onPractice}
         courseId={course.id}
         onNextCourse={(next) => {
+          if (!unlockedMathCourse(next, readMathGame())) return;
           setIndex(MATH_COURSES.findIndex((item) => item.id === next));
           setChestDelivery(undefined);
           setPhase("return");
@@ -177,11 +195,13 @@ export function MathIslandJourney({
               key={item.id}
               type="button"
               aria-label={"Entrar em " + item.title}
-              disabled={position !== index || phase !== "map"}
+              disabled={
+                position !== index || phase !== "map" || !unlockedMathCourse(item.id, progress)
+              }
               onClick={(event) => {
                 if (!dragged.current || event.detail === 0) setPhase("enter");
               }}
-              className={`math-journey-island ${position === index ? "is-current" : "is-preview"}`}
+              className={`math-journey-island ${position === index ? "is-current" : "is-preview"} ${unlockedMathCourse(item.id, progress) ? "" : "is-locked"}`}
               aria-hidden={position !== index}
               style={
                 {
@@ -195,20 +215,42 @@ export function MathIslandJourney({
             </button>
           ))}
           <div key={travel.key} className={`math-journey-avatar is-moving-${travel.direction}`}>
+            <div
+              className="math-journey-completion"
+              role="progressbar"
+              aria-label={`Conclusão de ${course.title}, faltam ${100 - completion.percent}%`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={completion.percent}
+            >
+              <strong>
+                <MathNumber value={completion.percent} />%
+              </strong>
+              <small>
+                {completion.percent === 100 ? "Concluído" : `Faltam ${100 - completion.percent}%`}
+              </small>
+              <span style={{ width: `${completion.percent}%` }} />
+            </div>
             <PracticeUserPortrait profile={profile} />
           </div>
         </div>
         <div className="math-journey-label" aria-live="polite">
           <span>{course.subject}</span>
           <h1>{course.title}</h1>
-          <p>{course.topics[mathLearning(course.id).level]}</p>
+          <p>
+            {unlocked
+              ? course.topics[mathGameLearning(course.id).level]
+              : `Complete ${MATH_COURSES[index - 1]!.title} para liberar.`}
+          </p>
           <button
             className="primary-button math-place-start"
             type="button"
-            disabled={phase !== "map"}
-            onClick={() => setPhase("enter")}
+            disabled={phase !== "map" || !unlocked}
+            onClick={() => {
+              if (unlockedMathCourse(course.id, readMathGame())) setPhase("enter");
+            }}
           >
-            <HelenaRoomIcon name="play" /> Explorar lugar
+            <HelenaRoomIcon name="play" /> {unlocked ? "Explorar lugar" : "Lugar bloqueado"}
           </button>
         </div>
         <button

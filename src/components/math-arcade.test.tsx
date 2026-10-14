@@ -2,17 +2,19 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MathArcade } from "./math-arcade";
 import { handleOlena } from "../backend/olena-handler";
-import { mathLearning } from "../data/math-learning";
+import { mathGameLearning as mathLearning } from "../data/math-game-learning";
+import { bankQuestion } from "../data/math-game-bank";
+import { emptyMathGame } from "../domain/math-game-progress";
 import { updateAccessibility } from "../data/accessibility-preferences";
 import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
 import * as mathSound from "../data/math-sound";
-import { EMPTY_MATH_PROGRESS } from "../data/math-courses";
 
 beforeEach(() => {
   localStorage.removeItem(ACCOUNT_OWNER_KEY);
   vi.useFakeTimers();
   localStorage.removeItem("helena.mathLearning.v1");
   localStorage.removeItem("helena.mathLearning.v2");
+  localStorage.removeItem("helena.mathGame.v3");
   localStorage.removeItem("helena.room-xp.v1");
   localStorage.removeItem("helena.mathPlaceRewards.v1");
   vi.stubGlobal(
@@ -40,6 +42,14 @@ it("exits an active game when another account claims the device", async () => {
   });
   expect(back).toHaveBeenCalledOnce();
   expect(localStorage.getItem("helena.mathPlaceRewards.v1")).toBeNull();
+});
+it("cannot start a later place even when the arcade is opened directly", async () => {
+  render(<MathArcade courseId="school" onBack={() => {}} />);
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Vamos calcular!" }));
+  });
+  expect(screen.getByRole("alert").textContent).toContain("Complete o lugar anterior");
+  expect(screen.queryAllByRole("button", { name: /^Resposta/ })).toHaveLength(0);
 });
 async function click(name: string) {
   await act(async () => {
@@ -88,8 +98,15 @@ it("records dated island activity once after an assessed answer", async () => {
 });
 it("celebrates a mastered topic once, pauses the clock and continues with keyboard focus", async () => {
   localStorage.setItem(
-    "helena.mathLearning.v2",
-    JSON.stringify({ foundations: { ...EMPTY_MATH_PROGRESS, mastery: 5 } }),
+    "helena.mathGame.v3",
+    JSON.stringify({
+      foundations: {
+        ...emptyMathGame(),
+        mastery: 5,
+        solved: [524287, 0, 0, 0, 0, 0],
+        seen: [524287, 0, 0, 0, 0, 0],
+      },
+    }),
   );
   const play = vi.fn();
   vi.spyOn(mathSound, "createMathSound").mockReturnValue({
@@ -115,15 +132,22 @@ it("celebrates a mastered topic once, pauses the clock and continues with keyboa
 });
 it("settles the completed place once and recommends the real next place", async () => {
   localStorage.setItem(
-    "helena.mathLearning.v2",
-    JSON.stringify({ foundations: { ...EMPTY_MATH_PROGRESS, level: 5, mastery: 5, mastered: 31 } }),
+    "helena.mathGame.v3",
+    JSON.stringify({
+      foundations: {
+        ...emptyMathGame(),
+        level: 5,
+        mastery: 5,
+        mastered: 31,
+        solved: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
+        seen: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
+      },
+    }),
   );
   const next = vi.fn();
   render(<MathArcade onBack={() => {}} onNextCourse={next} />);
   await begin();
-  const expression = screen.getByRole("heading").getAttribute("aria-label")!;
-  const numbers = expression.match(/\d+/g)!.map(Number);
-  await click("Resposta " + (numbers[0]! * numbers[1]!) / 100);
+  await click("Resposta " + correctAnswer());
   await tick(650);
   await tick(1);
   expect(screen.getByText(/Próxima parada: Oficina das Equações/)).toBeTruthy();
@@ -147,13 +171,10 @@ it("does not show or record XP for a zero-point round", async () => {
   expect(localStorage.getItem("helena.room-xp.v1")).toBeNull();
 });
 function correctAnswer() {
-  const expression = screen.getByRole("heading").getAttribute("aria-label")!;
-  const values = expression.match(/\d+/g)!.map(Number);
-  return expression.includes("−")
-    ? values[0]! - values[1]!
-    : expression.includes("×")
-      ? values[0]! * values[1]!
-      : values[0]! + values[1]!;
+  const seed = Number(
+    document.querySelector(".math-arcade-stage")?.getAttribute("data-question-seed"),
+  );
+  return bankQuestion("foundations", Math.floor((seed - 1) / 24), (seed - 1) % 24).answer;
 }
 
 it("uses the shared engine, scores once and retains progress on retry", async () => {
@@ -295,7 +316,7 @@ it("shows a timeout immediately without waiting for the server", async () => {
   await begin();
   play.mockClear();
   vi.mocked(fetch).mockImplementationOnce(() => new Promise<Response>(() => {}));
-  await tick(14100);
+  await tick(28100);
   await tick(1);
   expect(play).toHaveBeenCalledExactlyOnceWith("timeout");
   const reserve = screen.getByRole("progressbar").getAttribute("aria-valuenow");
@@ -314,7 +335,7 @@ it("treats an unanswered deadline separately, deducts four extra seconds and doe
   localStorage.setItem("helena.profile.v1", JSON.stringify({ photoUrl: "/my-photo.png" }));
   render(<MathArcade onBack={() => {}} />);
   await begin();
-  await tick(14100);
+  await tick(28100);
   await tick(1);
   expect(screen.getByText("Putz! Perdeu a vez!")).toBeTruthy();
   expect(screen.getByLabelText("2 chances restantes")).toBeTruthy();
