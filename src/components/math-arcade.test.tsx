@@ -8,6 +8,8 @@ import { emptyMathGame } from "../domain/math-game-progress";
 import { updateAccessibility } from "../data/accessibility-preferences";
 import { ACCOUNT_OWNER_KEY, claimDeviceForAccount } from "../data/personal-data";
 import * as mathSound from "../data/math-sound";
+import { MASTERY_KEY, upgradeMasteryProgress } from "../domain/math-mastery-progress";
+import { upgradeChallengeProgress } from "../domain/math-challenge-progress";
 
 beforeEach(() => {
   localStorage.removeItem(ACCOUNT_OWNER_KEY);
@@ -68,6 +70,19 @@ async function begin() {
   await tick(1000);
   await tick(1000);
 }
+function seedFinal(level: number) {
+  const old = emptyMathGame();
+  for (let i = 0; i <= level; i++) old.solved[i] = old.seen[i] = 1048575;
+  old.mastered = (1 << (level + 1)) - 1;
+  old.level = Math.min(5, level + 1);
+  old.mastery = old.level === level ? 5 : 0;
+  const p = upgradeMasteryProgress(upgradeChallengeProgress(old));
+  p.confirmed = (1 << level) - 1;
+  p.attempts = 4;
+  p.finalSeen[level] = 266305;
+  p.final = { level, slots: [0, 6, 12, 18, 1], answered: 15, correct: 15 };
+  localStorage.setItem(MASTERY_KEY, JSON.stringify({ foundations: p }));
+}
 it("starts the reservation full only after all three countdown beats", async () => {
   vi.spyOn(performance, "now").mockImplementation(() => Date.now());
   render(<MathArcade onBack={() => {}} />);
@@ -119,17 +134,7 @@ it("shows the actual deadline when the round reserve is shorter than the questio
   expect(mathLearning("foundations").correct).toBe(correct);
 });
 it("celebrates a mastered topic once, pauses the clock and continues with keyboard focus", async () => {
-  localStorage.setItem(
-    "helena.mathGame.v3",
-    JSON.stringify({
-      foundations: {
-        ...emptyMathGame(),
-        mastery: 5,
-        solved: [524287, 0, 0, 0, 0, 0],
-        seen: [524287, 0, 0, 0, 0, 0],
-      },
-    }),
-  );
+  seedFinal(0);
   const play = vi.fn();
   vi.spyOn(mathSound, "createMathSound").mockReturnValue({
     play,
@@ -153,19 +158,7 @@ it("celebrates a mastered topic once, pauses the clock and continues with keyboa
   expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("60");
 });
 it("settles the completed place once and recommends the real next place", async () => {
-  localStorage.setItem(
-    "helena.mathGame.v3",
-    JSON.stringify({
-      foundations: {
-        ...emptyMathGame(),
-        level: 5,
-        mastery: 5,
-        mastered: 31,
-        solved: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
-        seen: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
-      },
-    }),
-  );
+  seedFinal(5);
   const next = vi.fn();
   render(<MathArcade onBack={() => {}} onNextCourse={next} />);
   await begin();
@@ -196,7 +189,9 @@ function correctAnswer() {
   const seed = Number(
     document.querySelector(".math-arcade-stage")?.getAttribute("data-question-seed"),
   );
-  return bankQuestion("foundations", Math.floor((seed - 1) / 48), (seed - 1) % 48).answer;
+  return seed > 288
+    ? bankQuestion("foundations", Math.floor((seed - 289) / 24), 48 + ((seed - 289) % 24)).answer
+    : bankQuestion("foundations", Math.floor((seed - 1) / 48), (seed - 1) % 48).answer;
 }
 
 it("uses the shared engine, scores once and retains progress on retry", async () => {

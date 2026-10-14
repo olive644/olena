@@ -4,9 +4,9 @@ import { MATH_COURSES } from "../data/math-courses";
 import type { PracticeActivity } from "../domain/workspace";
 import { mathGameLearning, readMathGame } from "../data/math-game-learning";
 import {
-  challengeCompletion as gameCompletion,
-  unlockedChallengeCourse as unlockedMathCourse,
-} from "../domain/math-challenge-progress";
+  masteryCompletion as gameCompletion,
+  unlockedMasteryCourse as unlockedMathCourse,
+} from "../domain/math-mastery-progress";
 import { SYNCED_STORAGE_APPLIED_EVENT, SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import { isMotionReduced } from "../data/accessibility-preferences";

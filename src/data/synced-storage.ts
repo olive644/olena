@@ -8,6 +8,7 @@ export const SYNCED_STORAGE_KEYS = [
   "helena.mathLearning.v2",
   "helena.mathGame.v3",
   "helena.mathGame.v4",
+  "helena.mathGame.v5",
   "helena.mathPlaceRewards.v1",
   "helena-study:word-frequency:v1",
   "noteoli.pomodoro-streak.v1",

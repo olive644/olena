@@ -962,11 +962,12 @@ export function challengeQuestion(
   index: number,
   shuffle = 1,
 ): QualityQuestion {
+  const final = index >= 48;
   const old = index < 24 ? bankQuestion(course, level, index) : null;
-  const extra = index - 24;
+  const extra = index - (final ? 48 : 24);
   const variant = (old ? index : extra) % 6;
   const format = old ? old.format : 4 + Math.floor(extra / 6);
-  const n = variant + 2;
+  const n = variant + (final ? 8 : 2);
   const entry = old ? null : EXTRA[course][level]![format - 4]!(n);
   let expression = old?.expression ?? entry![0];
   const answer = old?.answer ?? entry![1];
@@ -993,20 +994,24 @@ export function challengeQuestion(
     const j = state % (i + 1);
     [choices[i], choices[j]] = [choices[j]!, choices[i]!];
   }
-  const difficulty = variant < 2 ? 1 : variant < 4 ? 2 : 3;
+  const difficulty = final ? 3 : variant < 2 ? 1 : variant < 4 ? 2 : 3;
   const reading = Math.ceil(expression.length / 12);
   return {
-    id: old?.id ?? `${course}:${level}:extra:${extra}`,
+    id: old?.id ?? `${course}:${level}:${final ? "final" : "extra"}:${extra}`,
     revision: 3,
     format,
     expression,
     answer: round(answer),
     choices,
-    seed: level * 48 + index + 1,
+    seed: final ? 289 + level * 24 + extra : level * 48 + index + 1,
     topic: MATH_COURSES.find((item) => item.id === course)!.topics[level]!,
     budget: 28 + reading + (course.startsWith("calculus") ? 10 : 0) + (difficulty - 1) * 4,
     drain: 1,
-    source: old?.source ?? "Autoral OlenaStudy, expansão editorial v4.",
+    source:
+      old?.source ??
+      (final
+        ? "Autoral OlenaStudy, banco reservado do desafio final."
+        : "Autoral OlenaStudy, expansão editorial v4."),
     difficulty,
     review:
       entry?.[3] ?? "Resolva a operação indicada e confira sinais, unidades e ordem das operações.",

@@ -15,6 +15,26 @@ const user = rules.rules.users.$uid as {
 };
 
 describe("regras de /users/<uid>", () => {
+  it("rejects stale stateV2 replacements that omit published math v5, while permitting first writes and updates", () => {
+    const modern = rules.rules.users.$uid["stateV2"] as { ".validate": string };
+    const wire = Object.keys(encodeCloudItems({ "helena.mathGame.v5": "progress" }))[0]!;
+    expect(modern[".validate"]).toContain(`data.child('items/${wire}').exists()`);
+    expect(modern[".validate"]).toContain(`newData.child('items/${wire}').exists()`);
+    // Expressão estática do repositório, nunca entrada de usuário. A publicação
+    // no Firebase também valida a sintaxe; este modelo exercita as quatro combinações.
+    const evaluate = new Function("data", "newData", `return (${modern[".validate"]});`) as (
+      data: unknown,
+      newData: unknown,
+    ) => boolean;
+    const snapshot = (exists: boolean) => ({
+      hasChildren: () => true,
+      child: (path: string) => ({ exists: () => path === `items/${wire}` && exists, val: () => 2 }),
+    });
+    expect(evaluate(snapshot(false), snapshot(false))).toBe(true);
+    expect(evaluate(snapshot(false), snapshot(true))).toBe(true);
+    expect(evaluate(snapshot(true), snapshot(true))).toBe(true);
+    expect(evaluate(snapshot(true), snapshot(false))).toBe(false);
+  });
   it("accepts safe v2 wire names without changing the owner-only access or legacy node", () => {
     const modern = rules.rules.users.$uid["stateV2"] as {
       ".validate": string;

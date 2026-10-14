@@ -16,32 +16,58 @@ import {
   validChallengeProgress,
   type ChallengeProgress,
 } from "../domain/math-challenge-progress";
+import {
+  MASTERY_KEY,
+  mergeMasteryProgress,
+  parseMasteryProgress,
+  upgradeMasteryProgress,
+  validMasteryProgress,
+  type MasteryProgress,
+} from "../domain/math-mastery-progress";
 export { requestMathGame } from "../domain/math-game";
 export type { MathGameResult } from "../domain/math-game";
 
-export function readMathGame(): Partial<Record<MathCourseId, ChallengeProgress>> {
-  const modern = parseChallengeProgress(localStorage.getItem(CHALLENGE_KEY));
-  for (const [id, previous] of Object.entries(parseMathGame(localStorage.getItem(MATH_GAME_KEY)))) {
+export function readMathGame(): Partial<Record<MathCourseId, MasteryProgress>> {
+  const previous = parseChallengeProgress(localStorage.getItem(CHALLENGE_KEY));
+  for (const [id, old] of Object.entries(parseMathGame(localStorage.getItem(MATH_GAME_KEY)))) {
     const course = id as MathCourseId;
-    modern[course] = modern[course]
-      ? mergeChallengeProgress(modern[course], upgradeChallengeProgress(previous))
-      : upgradeChallengeProgress(previous);
+    previous[course] = previous[course]
+      ? mergeChallengeProgress(previous[course], upgradeChallengeProgress(old))
+      : upgradeChallengeProgress(old);
+  }
+  const modern = parseMasteryProgress(localStorage.getItem(MASTERY_KEY));
+  for (const [id, p] of Object.entries(previous)) {
+    const course = id as MathCourseId;
+    const old = upgradeMasteryProgress(p);
+    modern[course] = modern[course] ? mergeMasteryProgress(modern[course], old) : old;
   }
   return modern;
 }
-export function mathGameLearning(course: MathCourseId): ChallengeProgress {
-  return readMathGame()[course] ?? upgradeChallengeProgress(emptyMathGame(mathLearning(course)));
+export function mathGameLearning(course: MathCourseId): MasteryProgress {
+  return (
+    readMathGame()[course] ??
+    upgradeMasteryProgress(upgradeChallengeProgress(emptyMathGame(mathLearning(course))))
+  );
 }
 export function saveMathGame(
   course: MathCourseId,
-  progress: MathGameProgress | ChallengeProgress,
+  progress: MathGameProgress | ChallengeProgress | MasteryProgress,
 ): boolean {
-  if (!validChallengeProgress(progress) && !validMathGame(progress)) return false;
-  const value = validChallengeProgress(progress) ? progress : upgradeChallengeProgress(progress);
+  if (
+    !validMasteryProgress(progress) &&
+    !validChallengeProgress(progress) &&
+    !validMathGame(progress)
+  )
+    return false;
+  const value = validMasteryProgress(progress)
+    ? progress
+    : upgradeMasteryProgress(
+        validChallengeProgress(progress) ? progress : upgradeChallengeProgress(progress),
+      );
   try {
     const saved = readMathGame();
-    const merged = saved[course] ? mergeChallengeProgress(saved[course], value) : value;
-    writeSyncedStorage(CHALLENGE_KEY, JSON.stringify({ ...saved, [course]: merged }));
+    const merged = saved[course] ? mergeMasteryProgress(saved[course], value) : value;
+    writeSyncedStorage(MASTERY_KEY, JSON.stringify({ ...saved, [course]: merged }));
     return true;
   } catch {
     return false;
