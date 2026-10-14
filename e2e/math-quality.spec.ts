@@ -2,6 +2,53 @@ import { expect, test } from "@playwright/test";
 import { MATH_COURSES } from "../src/data/math-courses";
 import { shownMathQuestion } from "./math-question";
 
+test("subtraction offers plausible counts on desktop and mobile in both themes", async ({
+  page,
+}, info) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem(
+      "helena.mathGame.v4",
+      JSON.stringify({
+        foundations: {
+          level: 1,
+          mastery: 0,
+          mastered: 1,
+          correct: 20,
+          best: 0,
+          solved: [1048575, 0, 0, 0, 0, 0],
+          seen: [1048575, 16777215 ^ (1 << 4), 0, 0, 0, 0],
+          extraSolved: [0, 0, 0, 0, 0, 0],
+          extraSeen: [0, 16777215, 0, 0, 0, 0],
+          attempts: 0,
+          recent: [],
+          retry: [],
+        },
+      }),
+    );
+  });
+  await page.goto("/aprender");
+  await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
+  await page.getByRole("button", { name: "Explorar lugar", exact: true }).click();
+  await page.getByRole("button", { name: "Vamos calcular!" }).click();
+  await expect(page.getByRole("heading", { name: "33 − 9" })).toBeVisible();
+  for (const value of [23, 24, 25, 34])
+    await expect(
+      page.getByRole("button", { name: `Resposta ${value}`, exact: true }),
+    ).toBeVisible();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate(
+      (value) => document.documentElement.setAttribute("data-theme", value),
+      theme,
+    );
+    for (const answer of await page.getByRole("button", { name: /^Resposta/ }).all())
+      await expect(answer).toBeInViewport({ ratio: 0.999 });
+    await page.screenshot({ path: info.outputPath(`plausible-${theme}.png`) });
+  }
+  await page.getByRole("button", { name: "Resposta 24", exact: true }).click();
+  await expect(page.locator('.math-answer-button[data-feedback="correct"]')).toHaveCount(1);
+});
+
 for (const [position, course] of MATH_COURSES.entries())
   test(`new ${course.id} challenges remain readable and offline in both themes`, async ({
     page,

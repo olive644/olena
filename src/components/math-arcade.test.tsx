@@ -97,6 +97,27 @@ it("records dated island activity once after an assessed answer", async () => {
   await tick(650);
   expect(onPractice).toHaveBeenCalledOnce();
 });
+it("shows the actual deadline when the round reserve is shorter than the question allowance", async () => {
+  vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+  render(<MathArcade onBack={() => {}} />);
+  await begin();
+  // Duas respostas corretas lentas deixam a reserva abaixo do próximo prazo.
+  for (let i = 0; i < 2; i++) {
+    await tick(20000);
+    await click("Resposta " + correctAnswer());
+    await tick(650);
+  }
+  const reserve = Number(screen.getByRole("progressbar").getAttribute("aria-valuenow"));
+  expect(reserve).toBeLessThan(28);
+  const clock = screen.getByLabelText(/segundos restantes na rodada/);
+  expect(Number(clock.getAttribute("aria-label")!.split(" ")[0])).toBeLessThanOrEqual(reserve + 1);
+  const correct = mathLearning("foundations").correct;
+  await tick((reserve + 1) * 1000);
+  await tick(1);
+  expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeTruthy();
+  expect(screen.queryByText("Putz! Perdeu a vez!")).toBeNull();
+  expect(mathLearning("foundations").correct).toBe(correct);
+});
 it("celebrates a mastered topic once, pauses the clock and continues with keyboard focus", async () => {
   localStorage.setItem(
     "helena.mathGame.v3",

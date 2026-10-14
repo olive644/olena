@@ -129,13 +129,13 @@ it("reaches all difficulties before completing a stage, without a predictable an
   let progress = upgradeChallengeProgress(emptyMathGame());
   const difficulty = new Set<number>(),
     positions = new Set<number>();
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 22; i++) {
     const q = nextChallenge("foundations", progress);
     difficulty.add(q.difficulty);
     positions.add(q.choices.indexOf(q.answer));
     const result = assessChallenge("foundations", progress, q, q.answer, 1, 0);
     progress = result.progress;
-    expect(result.milestone !== null).toBe(i === 19);
+    expect(result.milestone !== null).toBe(i === 21);
   }
   expect(difficulty.size).toBe(3);
   expect(positions.size).toBe(4);

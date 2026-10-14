@@ -14,10 +14,25 @@ export type ChallengeProgress = MathGameProgress & {
   recent: number[];
   retry: { seed: number; due: number }[];
 };
-export function challengeCompletion(progress: Pick<ChallengeProgress, "solved" | "extraSolved">) {
-  const counts = progress.solved.map((mask, level) =>
-    Math.min(20, countSolved(mask) + countSolved(progress.extraSolved[level]!)),
-  );
+export function challengeCompletion(
+  progress: Pick<ChallengeProgress, "solved" | "extraSolved"> &
+    Partial<Pick<ChallengeProgress, "mastered">>,
+) {
+  const counts = progress.solved.map((mask, level) => {
+    const extra = progress.extraSolved[level]!;
+    const total = countSolved(mask) + countSolved(extra);
+    const formats = Array.from(
+      { length: 8 },
+      (_, format) => (((format < 4 ? mask : extra) >>> ((format % 4) * 6)) & 63) !== 0,
+    );
+    let hard = 0;
+    for (let index = 0; index < 48; index++)
+      if (index % 6 >= 4 && ((index < 24 ? mask : extra) & (1 << (index % 24))) !== 0) hard++;
+    // Conquistas publicadas e as 20 entradas v3 continuam reconhecidas.
+    // Novas etapas mistas precisam de amplitude e quatro variantes difíceis.
+    const previous = ((progress.mastered ?? 0) & (1 << level)) !== 0 || countSolved(mask) >= 20;
+    return Math.min(previous || (formats.every(Boolean) && hard >= 4) ? 20 : 19, total);
+  });
   const mastered = counts.reduce((bits, count, level) => bits | (count >= 20 ? 1 << level : 0), 0);
   return {
     mastered,
@@ -171,6 +186,7 @@ export function mergeChallengeProgress(
     .filter((item, index, list) => index === 0 || item.seed !== list[index - 1]!.seed);
   return normalizeChallenge({
     ...latest,
+    mastered: a.mastered | b.mastered,
     solved: a.solved.map((v, l) => v | b.solved[l]!),
     seen: a.seen.map((v, l) => v | b.seen[l]!),
     extraSolved: a.extraSolved.map((v, l) => v | b.extraSolved[l]!),
