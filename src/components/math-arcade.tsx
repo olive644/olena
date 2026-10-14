@@ -98,7 +98,11 @@ export function MathArcade({
   const finished =
     status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0 || completedCourse);
   const question = round.question;
-  const clock = question ? Math.max(0, question.budget - round.elapsed * question.drain) : 0;
+  const questionClock = question
+    ? Math.max(0, question.budget - round.elapsed * question.drain)
+    : 0;
+  // A rodada pode acabar antes do prazo individual. Mostrar sempre o prazo real.
+  const clock = Math.min(questionClock, round.bank);
   const audio = useRef<ReturnType<typeof createMathSound> | null>(null);
   const exitChangedAccount = useEffectEvent(onBack);
   useEffect(() => {
@@ -339,7 +343,7 @@ export function MathArcade({
   });
   useEffect(() => {
     if (
-      clock > 0 ||
+      questionClock > 0 ||
       !question ||
       status !== "playing" ||
       finished ||
@@ -353,7 +357,7 @@ export function MathArcade({
       expire();
     }, 0);
     return () => clearTimeout(timer);
-  }, [clock, question, status, finished, feedback, milestone, pending, error]);
+  }, [questionClock, question, status, finished, feedback, milestone, pending, error]);
   useEffect(() => {
     if (milestone)
       root.current?.querySelector<HTMLButtonElement>(".math-mastery-continue")?.focus();
@@ -576,7 +580,12 @@ export function MathArcade({
                 </div>
                 <div
                   className="math-time"
-                  aria-label={Math.ceil(clock) + " segundos para esta conta"}
+                  aria-label={
+                    Math.ceil(clock) +
+                    (round.bank < questionClock
+                      ? " segundos restantes na rodada"
+                      : " segundos para esta conta")
+                  }
                 >
                   <RoomClockIcon />
                   <MathNumber value={Math.ceil(clock)} />

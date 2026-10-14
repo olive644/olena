@@ -1,5 +1,6 @@
 import { MATH_COURSES, type MathCourseId } from "./math-courses.js";
 import { bankQuestion } from "./math-game-bank.js";
+import { choiceBounds, originalChoiceErrors } from "./math-choice-errors.js";
 import { type MathChallenge } from "../domain/adaptive-math.js";
 
 // Novos formatos autorais, avaliados em seis variantes fixas (n=2..7).
@@ -8,7 +9,7 @@ type Entry = readonly [prompt: string, answer: number, wrong: readonly number[],
 type Format = (n: number) => Entry;
 export type QualityQuestion = MathChallenge & {
   id: string;
-  revision: 2;
+  revision: 3;
   format: number;
   source: string;
   difficulty: number;
@@ -955,62 +956,6 @@ const EXTRA: Record<MathCourseId, readonly (readonly Format[])[]> = {
   ],
 };
 
-// Distratores específicos da habilidade para as entradas preservadas do banco v3.
-// Cada família representa erros de operação, sinal, escala ou troca de grandeza.
-const OLD_ERRORS: Record<
-  MathCourseId,
-  readonly ((n: number, answer: number) => readonly number[])[]
-> = {
-  foundations: [
-    (n, a) => [a - 10, a + 10, n + 8, n + 3, 2 * a],
-    (n, a) => [a + 2 * (n + 3), -a, 4 * n + 9, n + 3],
-    (n, a) => [2 * n + 5, a + n + 2, n + 3, a * 2],
-    (n, a) => [a * 4, a / 4, a * 2, a * 3],
-    (n, a) => [a * 4, a * 3, a / 2, a * 2],
-    (n, a) => [a / 100, a * 4, a * 3, a * 0.8],
-  ],
-  school: [
-    (n, a) => [-a, 2 * a, a + n + 2, 4 * n],
-    (n) => [3 * n, n * n, n ** 4, 2 * n],
-    (n, a) => [-a, a * 2, a - 3, 3 * n + 1],
-    (n) => [n * (n + 3), 2 * n + 3, 4 * n + 6, n * n],
-    (n, a) => [a - 3, a + 3, a * 3, 2 * n],
-    (n, a) => [100 - a, a / 100, 100, a * 2],
-  ],
-  advanced: [
-    (n, a) => [-a, a * n, a + 2 * n, n],
-    (n, a) => [2 ** n, 3 ** n, -a, a * 2],
-    (n, a) => [-a, 0, 2 * n, n / 2],
-    (n, a) => [n + 2, a * a, 2 * a, -a],
-    (n, a) => [(n + 2) ** 2, 2 * a, a + n, a * n],
-    (n, a) => [-a, 2 * a, a / 2, n * n],
-  ],
-  calculus1: [
-    (n, a) => [0, n * n, -a, 2 * a],
-    (n, a) => [n * n, 0, -a, a / 2],
-    (n, a) => [0, -a, a * 2, a / 2],
-    (n, a) => [a + n, a - n, 0, -a],
-    (n, a) => [n * n, 0, -a, a / 2],
-    (n, a) => [-a, a * a, 0, a * 2],
-  ],
-  calculus2: [
-    (n, a) => [a - 3, a + 3, 2 * a, -a],
-    (n, a) => [-a, 2 * a, a / 2, n],
-    (n, a) => [-a, 2 * a, a / 2, n],
-    (n, a) => [2 * a, -a, a / 2, a + n],
-    (n, a) => [a / 2, 2 * a, a / 3, n],
-    (n, a) => [2 * a, -a, a / 2, n],
-  ],
-  calculus3: [
-    (n, a) => [-a, a * n, a * 2, n * n],
-    (n, a) => [0, a / 2, 2 * a, n * n],
-    (n, a) => [0, a / 2, 2 * a, -a],
-    (n, a) => [0, -a, 2 * a, a * a],
-    (n, a) => [0, -a, 2 * a, 3 * n],
-    (n, a) => [a / 2, 2 * a, -a, n],
-  ],
-};
-
 export function challengeQuestion(
   course: MathCourseId,
   level: number,
@@ -1025,16 +970,22 @@ export function challengeQuestion(
   const entry = old ? null : EXTRA[course][level]![format - 4]!(n);
   let expression = old?.expression ?? entry![0];
   const answer = old?.answer ?? entry![1];
-  const candidates = old ? OLD_ERRORS[course][level]!(n, answer) : entry![2];
+  const candidates = old ? originalChoiceErrors(course, level, index, answer) : entry![2];
   const round = (value: number) => Number(value.toFixed(2));
   if (round(answer) !== answer) expression += " Arredonde a 2 casas decimais.";
-  const wrong = [...new Set(candidates.map(round))].filter(
-    (value) => value !== round(answer) && Number.isFinite(value),
+  const [min, max] = choiceBounds(course, level, format);
+  // Em colisões editoriais, deslizes de uma/duas unidades completam a lista.
+  // Nunca inserir negativos, probabilidades impossíveis ou um resto >= divisor.
+  const wrong = [
+    ...new Set([...candidates, answer - 1, answer + 1, answer - 2, answer + 2].map(round)),
+  ].filter(
+    (value) =>
+      value !== round(answer) &&
+      Number.isFinite(value) &&
+      value >= min &&
+      value <= max &&
+      !(course === "foundations" && level < 4 && !Number.isInteger(value)),
   );
-  // Raríssimas colisões em respostas 0/1 usam erros de escala, sem tornar ±1 o padrão.
-  for (const fallback of [0, 1, -1, 2, -2, 10, -10, 100])
-    if (wrong.length < 3 && fallback !== round(answer) && !wrong.includes(fallback))
-      wrong.push(fallback);
   const choices = [round(answer), ...wrong.slice(0, 3)];
   let state = ((shuffle + index * 97 + level * 389) % 2147483646) + 1;
   for (let i = 3; i > 0; i--) {
@@ -1046,7 +997,7 @@ export function challengeQuestion(
   const reading = Math.ceil(expression.length / 12);
   return {
     id: old?.id ?? `${course}:${level}:extra:${extra}`,
-    revision: 2,
+    revision: 3,
     format,
     expression,
     answer: round(answer),

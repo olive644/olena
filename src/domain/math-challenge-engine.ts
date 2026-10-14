@@ -1,6 +1,7 @@
 import { challengeQuestion, type QualityQuestion } from "../data/math-challenge-bank.js";
 import { isMathCourse, type MathCourseId } from "../data/math-courses.js";
 import { assessMath } from "./adaptive-math.js";
+import { countSolved } from "./math-game-progress.js";
 import {
   challengeCompletion,
   hasChallenge,
@@ -15,8 +16,13 @@ export function nextChallenge(course: MathCourseId, progress: ChallengeProgress)
   const recent = new Set(progress.recent),
     due = progress.retry.filter((item) => item.due <= progress.attempts && !recent.has(item.seed));
   let seed: number;
+  const review = seeds.filter((s) => hasChallenge(progress, s, true) && !recent.has(s));
   if (due.length && progress.attempts % 4 === 0)
     seed = due.sort((a, b) => a.due - b.due || a.seed - b.seed)[0]!.seed;
+  // Retoma um acerto depois de várias outras contas. Rever não duplica o crédito
+  // de uma questão e a janela recente continua valendo, inclusive entre partidas.
+  else if (progress.attempts > 0 && progress.attempts % 8 === 0 && review.length)
+    seed = review[(Math.floor(progress.attempts / 8) - 1) % review.length]!;
   else {
     const unseen = seeds.filter((s) => !hasChallenge(progress, s) && !recent.has(s));
     const unsolved = seeds.filter((s) => !hasChallenge(progress, s, true) && !recent.has(s));
@@ -25,7 +31,9 @@ export function nextChallenge(course: MathCourseId, progress: ChallengeProgress)
       : unsolved.length
         ? unsolved
         : seeds.filter((s) => !recent.has(s));
-    const desired = progress.attempts % 8;
+    const desired = unseen.length
+      ? (countSolved(progress.seen[level]!) + countSolved(progress.extraSeen[level]!)) % 8
+      : progress.attempts % 8;
     available.sort((a, b) => {
       const ai = (a - 1) % 48,
         bi = (b - 1) % 48;
