@@ -31,7 +31,7 @@
           "$other": { ".validate": false }
         },
         "stateV2": {
-          ".validate": "newData.hasChildren(['version', 'updatedAt']) && newData.child('version').val() === 2",
+          ".validate": "newData.hasChildren(['version', 'updatedAt']) && newData.child('version').val() === 2 && (!data.child('items/k_aGVsZW5hLm1hdGhHYW1lLnY1').exists() || newData.child('items/k_aGVsZW5hLm1hdGhHYW1lLnY1').exists())",
           "version": { ".validate": "newData.isNumber()" },
           "updatedAt": { ".validate": "newData.isNumber()" },
           "items": {

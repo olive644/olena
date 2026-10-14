@@ -4,5 +4,7 @@ import { type MathCourseId } from "../src/data/math-courses";
 
 export async function shownMathQuestion(page: Page, course: MathCourseId) {
   const seed = Number(await page.locator(".math-arcade-stage").getAttribute("data-question-seed"));
-  return bankQuestion(course, Math.floor((seed - 1) / 48), (seed - 1) % 48);
+  return seed > 288
+    ? bankQuestion(course, Math.floor((seed - 289) / 24), 48 + ((seed - 289) % 24))
+    : bankQuestion(course, Math.floor((seed - 1) / 48), (seed - 1) % 48);
 }

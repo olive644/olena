@@ -41,10 +41,13 @@ for (const course of [
     await expect(page.getByRole("button", { name: /^Resposta/ })).toHaveCount(4);
     const question = await shownMathQuestion(page, course.id);
     expect(question.budget).toBeGreaterThanOrEqual(course.seconds);
-    await expect(page.locator(".math-time .math-number")).toHaveAttribute(
-      "aria-label",
-      String(question.budget),
+    // O relógio já corre enquanto o navegador consulta a pergunta. Verificar o
+    // limite real, sem exigir que a primeira leitura caia no mesmo milissegundo.
+    const remaining = Number(
+      await page.locator(".math-time .math-number").getAttribute("aria-label"),
     );
+    expect(remaining).toBeGreaterThan(0);
+    expect(remaining).toBeLessThanOrEqual(question.budget);
     await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "60");
     await page.getByRole("button", { name: "Resposta " + question.answer, exact: true }).click();
     await expect(page.locator(".math-answer-reaction")).toBeVisible();

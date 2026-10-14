@@ -114,7 +114,7 @@ for (const [position, course] of MATH_COURSES.entries())
     await page.getByRole("button", { name: `Resposta ${q.answer}`, exact: true }).click();
     await expect(page.locator('.math-answer-button[data-feedback="correct"]')).toHaveCount(1);
     const stored = await page.evaluate(
-      (id) => JSON.parse(localStorage.getItem("helena.mathGame.v4")!)[id],
+      (id) => JSON.parse(localStorage.getItem("helena.mathGame.v5")!)[id],
       course.id,
     );
     expect(stored.extraSolved[5]).toBe(1 << 4);

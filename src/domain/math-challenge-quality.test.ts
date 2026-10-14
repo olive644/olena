@@ -11,6 +11,7 @@ import {
 import { emptyMathGame } from "./math-game-progress";
 import { requestChallenge } from "./math-challenge-engine";
 import { CHALLENGE_KEY } from "./math-challenge-progress";
+import { challengeEvidence, validMasteryProgress } from "./math-mastery-progress";
 import { readMathGame, saveMathGame } from "../data/math-game-learning";
 import { mergeSyncedItems } from "../data/sync-conflict";
 import { handleOlena } from "../backend/olena-handler";
@@ -155,14 +156,14 @@ it("merges mixed v3/v4 evidence from two devices without reset, double count or 
   expect(saveMathGame("foundations", b)).toBe(true);
   const merged = readMathGame().foundations!;
   expect(challengeCompletion(merged).counts[0]).toBe(2);
-  expect(validChallengeProgress(merged)).toBe(true);
+  expect(validMasteryProgress(merged)).toBe(true);
   expect(localStorage.getItem("helena.mathGame.v3")).toBe(raw);
   const result = mergeSyncedItems(
     {},
     { [CHALLENGE_KEY]: JSON.stringify({ foundations: a }) },
     { [CHALLENGE_KEY]: JSON.stringify({ foundations: b }) },
   );
-  expect(JSON.parse(result.items[CHALLENGE_KEY]!).foundations).toEqual(merged);
+  expect(JSON.parse(result.items[CHALLENGE_KEY]!).foundations).toEqual(challengeEvidence(merged));
   expect(mergeChallengeProgress(merged, a)).toEqual(merged);
   localStorage.clear();
 });

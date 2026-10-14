@@ -7,14 +7,15 @@ import {
   readMathGame,
 } from "../data/math-game-learning";
 import {
-  requestChallenge as requestMath,
-  type ChallengeResult as MathApiResult,
-} from "../domain/math-challenge-engine";
+  requestMastery as requestMath,
+  type MasteryResult as MathApiResult,
+} from "../domain/math-mastery-engine";
 import {
-  unlockedChallengeCourse as unlockedMathCourse,
-  type ChallengeProgress as MathProgress,
-} from "../domain/math-challenge-progress";
-import type { QualityQuestion as MathChallenge } from "../data/math-challenge-bank";
+  unlockedMasteryCourse as unlockedMathCourse,
+  masteryCompletion,
+  type MasteryProgress as MathProgress,
+} from "../domain/math-mastery-progress";
+import type { MasteryQuestion as MathChallenge } from "../domain/math-mastery-engine";
 import type { PracticeActivity } from "../domain/workspace";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { createMathSound } from "../data/math-sound";
@@ -25,6 +26,7 @@ import { RoomPointsIcon, RoomClockIcon, RoomSecondsUnit } from "./room-paper-ico
 import { PaperDigits, PaperDigitsSource } from "./paper-digits";
 import paperDigitsSvg from "../../public/paper-digits.svg?raw";
 import { MathNumber, MathExpression, MathIcon, MathUserAvatar } from "./math-paper-art";
+import { formatMathNotation } from "../domain/math-notation";
 import { HelenaLoading } from "./helena-loading";
 import { MathPlaceScene } from "./math-place-scene";
 import { COMMON_CHEST_POINTS, finishMathPlace, type MathChest } from "../data/math-place-rewards";
@@ -98,6 +100,7 @@ export function MathArcade({
   const finished =
     status === "playing" && !feedback && (round.lives === 0 || round.bank <= 0 || completedCourse);
   const question = round.question;
+  const expression = question ? formatMathNotation(question.expression) : "";
   const questionClock = question
     ? Math.max(0, question.budget - round.elapsed * question.drain)
     : 0;
@@ -305,11 +308,14 @@ export function MathArcade({
         points,
         streak: result.streak,
         lives: value.lives - Number(!result.correct),
-        bank: missed
-          ? Math.max(0, value.bank - 4)
-          : result.correct
-            ? Math.min(90, value.bank + (result.fast ? 3 : 2))
-            : value.bank,
+        bank:
+          result.question.phase === "final" && question.phase !== "final"
+            ? Math.max(60, value.bank)
+            : missed
+              ? Math.max(0, value.bank - 4)
+              : result.correct
+                ? Math.min(90, value.bank + (result.fast ? 3 : 2))
+                : value.bank,
       }));
       setFeedback({ ...result, choice: missed ? null : choice });
       retryChoice.current = null;
@@ -317,6 +323,8 @@ export function MathArcade({
         () => {
           setRound((value) => ({ ...value, question: result.question, elapsed: 0 }));
           setFeedback(null);
+          if (result.question.phase === "final" && question.phase !== "final")
+            audio.current?.play("start");
           if (result.milestone) {
             setMilestone(result.milestone);
             setCompletedCourse(result.milestone.courseComplete);
@@ -481,7 +489,7 @@ export function MathArcade({
               </div>
               <h1>Parabéns, você se superou!</h1>
               <strong>{milestone.topic}</strong>
-              <p>Etapa superada: 20 desafios diferentes acertados!</p>
+              <p>Etapa superada: treino variado e desafio final concluídos!</p>
               {milestone.courseComplete ? (
                 <p>
                   Você concluiu as seis etapas deste lugar.{" "}
@@ -490,7 +498,7 @@ export function MathArcade({
                     : "Você chegou ao último lugar desta ilha!"}
                 </p>
               ) : (
-                <p>Próximo tema: {course.topics[round.progress.level]}.</p>
+                <p>Próximo tema: {course.topics[masteryCompletion(round.progress).level]}.</p>
               )}
               <button
                 type="button"
@@ -520,7 +528,9 @@ export function MathArcade({
               <p>
                 {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
               </p>
-              <span className="math-result-topic">{course.topics[round.progress.level]}</span>
+              <span className="math-result-topic">
+                {course.topics[masteryCompletion(round.progress).level]}
+              </span>
               {completedCourse && nextCourse && onNextCourse && (
                 <button
                   type="button"
@@ -624,11 +634,42 @@ export function MathArcade({
               <div className="math-game-question">
                 <MathUserAvatar />
                 <span className="math-topic">{question.topic}</span>
+                {question.phase !== "practice" && (
+                  <div
+                    className="math-challenge-phase"
+                    role="status"
+                    aria-label={
+                      question.phase === "final"
+                        ? `Desafio final, questão ${question.position! + 1} de 5. Acerte quatro para avançar.`
+                        : "Revanche: outra questão para reforçar esta habilidade."
+                    }
+                  >
+                    <span>{question.phase === "final" ? "Final: 4 acertos em 5" : "Revanche"}</span>
+                    {question.phase === "final" && (
+                      <span className="math-final-pieces" aria-hidden="true">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <i
+                            key={i}
+                            className={
+                              i < question.position!
+                                ? ((round.progress.final?.correct ?? 0) & (1 << i)) !== 0
+                                  ? "is-complete"
+                                  : "is-missed"
+                                : i === question.position
+                                  ? "is-current"
+                                  : ""
+                            }
+                          />
+                        ))}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <h1
-                  className={question.expression.length > 24 ? "math-question-prompt" : undefined}
-                  aria-label={question.expression}
+                  className={expression.length > 24 ? "math-question-prompt" : undefined}
+                  aria-label={expression}
                 >
-                  <MathExpression value={question.expression} />
+                  <MathExpression value={expression} />
                   {!question.expression.includes("?") &&
                     !/[a-zA-ZÀ-ÿ]/.test(question.expression) && (
                       <>
@@ -664,6 +705,7 @@ export function MathArcade({
                       className="math-answer-button"
                       type="button"
                       data-tone={index}
+                      data-long-answer={String(choice).length > 4 || undefined}
                       data-feedback={
                         feedback?.choice === choice
                           ? feedback.correct

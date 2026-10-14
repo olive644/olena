@@ -4,6 +4,7 @@ import { shownMathQuestion } from "./math-question";
 test("place points animate down to zero and up again without changing stored rewards", async ({
   page,
 }) => {
+  await page.clock.install();
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem(
@@ -15,17 +16,20 @@ test("place points animate down to zero and up again without changing stored rew
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   const number = page.locator(".math-place-total .math-number");
   await expect(number).toHaveAttribute("aria-label", "530");
+  await page.clock.pauseAt(new Date(Date.now() + 1000));
   await page.getByRole("button", { name: "Próximo lugar" }).click();
-  await page.waitForTimeout(120);
+  await page.clock.runFor(120);
   const falling = Number(await number.getAttribute("aria-label"));
   expect(falling).toBeGreaterThan(0);
   expect(falling).toBeLessThan(530);
+  await page.clock.runFor(1000);
   await expect(number).toHaveAttribute("aria-label", "0");
   await page.getByRole("button", { name: "Lugar anterior" }).click();
-  await page.waitForTimeout(120);
+  await page.clock.runFor(120);
   const rising = Number(await number.getAttribute("aria-label"));
   expect(rising).toBeGreaterThan(0);
   expect(rising).toBeLessThan(530);
+  await page.clock.runFor(1000);
   await expect(number).toHaveAttribute("aria-label", "530");
   expect(
     await page.evaluate(
@@ -68,7 +72,7 @@ test("server disconnection cannot delay feedback or score an answer twice", asyn
   expect(answers).toBe(0);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathGame.v4")!).foundations.correct,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v5")!).foundations.correct,
     ),
   ).toBe(1);
   await expect(page.locator(".math-arcade-stage")).toHaveAttribute("aria-busy", "false");
@@ -83,16 +87,26 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     if (!sessionStorage.getItem("mastery-seeded")) {
       localStorage.setItem(
-        "helena.mathGame.v3",
+        "helena.mathGame.v5",
         JSON.stringify({
           foundations: {
             level: 5,
             mastery: 5,
-            mastered: 31,
+            mastered: 63,
+            confirmed: 31,
             correct: 119,
             best: 500,
-            solved: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
-            seen: [1048575, 1048575, 1048575, 1048575, 1048575, 524287],
+            solved: Array(6).fill(1048575),
+            seen: Array(6).fill(1048575),
+            extraSolved: Array(6).fill(0),
+            extraSeen: Array(6).fill(0),
+            attempts: 4,
+            recent: [],
+            retry: [],
+            recovery: [],
+            cooldown: 0,
+            finalSeen: [0, 0, 0, 0, 0, 266305],
+            final: { level: 5, slots: [0, 6, 12, 18, 1], answered: 15, correct: 15 },
           },
         }),
       );
@@ -135,7 +149,7 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await page.screenshot({ path: info.outputPath("math-mastery.png") });
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathGame.v4")!).foundations.mastered,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v5")!).foundations.confirmed,
     ),
   ).toBe(63);
   await button.click();
@@ -145,7 +159,7 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await page.reload();
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("helena.mathGame.v4")!).foundations.mastered,
+      () => JSON.parse(localStorage.getItem("helena.mathGame.v5")!).foundations.confirmed,
     ),
   ).toBe(63);
 });

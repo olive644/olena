@@ -29,7 +29,10 @@ test("task colors and unclipped day/week strips stay current on desktop and mobi
   const search = page.getByRole("searchbox", { name: "Buscar na agenda" });
   await search.fill("Revisão 1");
   await page.getByRole("button", { name: "Pesquisar", exact: true }).click();
-  await page.getByRole("button", { name: "Editar Revisão 1", exact: true }).click();
+  await page
+    .getByRole("region", { name: "Calendário", exact: true })
+    .getByRole("button", { name: "Editar Revisão 1", exact: true })
+    .click();
   const dialog = page.getByRole("dialog", { name: "Editar", exact: true });
   await expect(page.getByText("Cor da tarefa", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Cor Azul", exact: true }).click();

@@ -500,6 +500,9 @@
   --tone: #ffc099;
   --depth: #b36049;
 }
+.math-answer-button[data-long-answer="true"] {
+  font-size: clamp(20px, 6vw, 36px);
+}
 .math-answer-button[data-tone="2"] {
   --tone: #f9d66f;
   --depth: #b38b29;
@@ -904,4 +907,37 @@ html[data-reduce-motion="true"] .math-arcade * {
 .math-arcade .math-user-avatar {
   height: auto;
   aspect-ratio: 1;
+}
+.math-challenge-phase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff9ef;
+  font-size: clamp(10px, 1.4vw, 13px);
+  font-weight: 800;
+  min-height: 20px;
+}
+.math-final-pieces {
+  display: inline-flex;
+  gap: 3px;
+}
+.math-final-pieces i {
+  width: 11px;
+  height: 9px;
+  background: #51465d;
+  clip-path: polygon(15% 0, 100% 0, 100% 75%, 80% 100%, 0 100%, 0 20%);
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+.math-final-pieces .is-complete {
+  background: #a779ef;
+}
+.math-final-pieces .is-missed {
+  background: #ff7485;
+}
+.math-final-pieces .is-current {
+  background: #facc15;
+  transform: translateY(-2px);
 }

@@ -27,6 +27,20 @@ O estado principal da conta prevalece sobre um backup antigo para itens mutávei
 
 ## Formato de transporte e implantação segura
 
+Em 2026-10-14, somente a validação de stateV2 foi ampliada e publicada para
+preservar `items/k_aGVsZW5hLm1hdGhHYW1lLnY1` (helena.mathGame.v5). Quando a
+chave já existe, uma substituição não pode omiti-la. Isso impede que abas antigas
+apaguem o progresso novo ao enviar seu conjunto menor de chaves. A autorização
+continua privada ao dono. A guarda não bloqueia exclusão integral da conta nem
+valida semanticamente o conteúdo da chave. Abas antigas devem recarregar para
+voltar a salvar após a primeira gravação v5. A regra publicada foi relida e
+comparada integralmente ao candidato, preservando todos os outros caminhos.
+Backup local: output/firebase-math-finals/before.rules.json, fora do Git.
+Publicar essa guarda antes do cliente; rollback conserva a chave e o transporte
+v5. Não remover a guarda ou voltar a escritor que omite v5 sem procedimento
+explícito de backup e autorização. Teste entre contas/dispositivos reais continua
+sendo uma validação de produção distinta dos testes automatizados locais.
+
 Em 2026-10-12, a validação stateV2 foi publicada no projeto appstudyoli e relida
 com sucesso. Comparação estrutural comprovou que os demais caminhos não mudaram.
 Isso prepara o banco, mas não substitui a implantação do cliente atualizado nem

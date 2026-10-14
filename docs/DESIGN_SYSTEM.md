@@ -1,5 +1,11 @@
 # Identidade visual oficial OlenaStudy
 
+Desafio final de Matemática: cinco recortes pequenos, roxo para acerto, rosa para
+erro e amarelo para a pergunta atual. Texto compacto "Final: 4 acertos em 5";
+retomada usa "Revanche", sem transformar minigame em aula. Reutilizar números,
+fanfarra e facetas existentes nos seis lugares, nos dois temas. Movimento
+reduzido desativa transições; cor nunca substitui o anúncio acessível da etapa.
+
 Percentual dos lugares de Matemática: placa compacta de papel acima do avatar,
 somente porcentagem em PaperDigits, sem texto de quanto falta. Seis recortes
 facetados correspondem às etapas, com base neutra e preenchimento roxo. Nada de

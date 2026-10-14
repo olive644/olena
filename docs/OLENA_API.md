@@ -1,5 +1,23 @@
 # API oficial da Olena, versão 1
 
+## Matemática v5 (2026-10-14)
+
+POST `/api/olena?action=math&version=5` aceita `action: question | answer`,
+`course` e `progress: MasteryProgress`. Resposta usa `X-Olena-API-Version: 5`.
+Em `answer`, enviar a questão integral retornada, `choice`, `elapsed`, `streak`
+e, opcionalmente, `timedOut`. A seleção esperada, alternativas, prazo e progresso
+são validados; entrada adulterada retorna 400. Limite do corpo: 4096 bytes.
+
+O motor `requestMastery` compartilha a correção local com o minigame, incluindo
+retomadas por família de erro, final de cinco questões reservadas e resultado
+`finalOutcome: passed | retry | null`. `confirmed` registra etapas com final
+concluída; `final` permite continuar uma final parcial. Quatro acertos aprovam;
+reprovação conserva treino e exige quatro tentativas de reforço. Não há chamada
+HTTP por resposta na interface, geração por IA, persistência nesta rota ou
+certificação pedagógica. O cliente sincroniza o progresso privado pela conta.
+Contratos Matemática v1/v2/v3/v4 e catálogo versão 1 permanecem disponíveis.
+As regras de catálogo GET abaixo não substituem o contrato POST de Matemática.
+
 ## Escopo desta etapa
 
 A API é independente de fornecedor e prepara o catálogo de metodologias para as ilhas
