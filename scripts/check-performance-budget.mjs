@@ -284,7 +284,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Opções, progresso, exportação e permissões sob demanda: total medido 1413.2 KiB.
 // Margem normal ajustada para esta funcionalidade; sem dependência nova e sem mudar
 // o orçamento inicial ou os tetos absolutos abaixo.
-const MAX_TOTAL_JS_BYTES = 1418 * 1024;
+// Capa recolhível e trajetória do Perfil: +3.8 KiB na rota sob demanda,
+// total medido 1419.2 KiB; entrada permanece 281.1 KiB. Sem dependência nova.
+// Pequena margem de CI; orçamento inicial e teto absoluto permanecem iguais.
+const MAX_TOTAL_JS_BYTES = 1422 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

@@ -1,0 +1,11 @@
+# Capa compartilhada do Perfil
+
+Arquivo de produção: public/room-art/profile-people.webp (1800 × 600). Criado com imagegen integrado, não CLI, a partir das três referências fornecidas pelo usuário e do material visual dos avatares existentes. As fotos pessoais de referência não são incluídas no repositório. A capa é compartilhada; não representa a foto de perfil de quem está usando o aplicativo.
+
+Direção da geração: panorama 3:1 de jardim de estudo em papel recortado facetado, creme, roxo e verde-azulado. Três humanos pequenos de proporções fofinhas, cabeças maiores, olhos simples grandes e corpos compactos, não rostos realistas nem animais. Rapaz de cabelo preto ondulado, roupa verde e mochila lendo à esquerda; moça de cabelo castanho comprido com franja, roupa escura e livro roxo acenando; rapaz de cabelo preto encaracolado e camiseta branca escrevendo à direita. Espaço central livre para o avatar. Sem textos, marcas ou interface desenhada na arte.
+
+Edição final solicitada: manter todos os três sem boca; devolver somente os pequenos bigodes dos dois rapazes, preservando o cavanhaque existente, feições, poses, cenário e composição. Prompt final da edição:
+
+> Precise tiny edit. Image1 is EDIT TARGET: mouthless three human chibi papercraft study garden panoramic illustration. Image2 is REFERENCE ONLY for original mustaches on male characters. Restore ONLY the little black MUSTACHES on the boy at far left in green and the boy at far right in white, matching the original mustache shapes in image2 under each nose. Preserve left boy existing tiny goatee. All THREE characters must remain completely MOUTHLESS: no mouth line, no lips, no smile, no open mouth or tongue. Mustache is facial hair only, two tiny black tapered curved tufts directly beneath nose with clean matching skin below. Girl remains without mustache and without mouth. Preserve image1 absolutely everywhere else: eyes noses brows hair bodies clothing faces poses hands books background palette and folded paper facets crop and proportions. Do not restyle. Output same wide3:1 panorama.
+
+WebP otimizado a partir do PNG gerado. No celular o panorama inteiro permanece visível, sem recortar os personagens. Foto/nome reais vêm de useStoredProfile; Guest conserva sua identificação. Nenhuma foto de referência foi convertida em avatar do usuário.

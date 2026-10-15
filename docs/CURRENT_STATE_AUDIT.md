@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Protótipo de capa e trajetória no Perfil (2026-10-15)
+
+- Perfil fechado apresenta capa compartilhada original, avatar/nome existentes, progresso real e cinco sessões de foco mais recentes. Estado vazio honesto, sem posts, seguidores ou métricas inventadas. Configurações existentes permanecem na engrenagem e não montam dois painéis de progresso simultaneamente.
+- ProfileShowcase transforma a mesma identidade em barra sticky ao rolar e expande ao voltar, sem duplicar avatar nem alterar dados. requestAnimationFrame atualiza variável CSS sem render React por quadro; listeners são removidos. Movimento reduzido do dispositivo e do aplicativo troca a interpolação por estados fixos e desliga estrelas flutuantes.
+- Arte profile-people.webp usa três humanos pequenos e facetados inspirados nas referências fornecidas, sem boca e com bigodes dos dois rapazes. Referências pessoais não entram no Git. Registro de direção e prompt final em PROFILE_COVER_ART.md. Panorama inteiro no celular, papel/cores do tema na barra compacta.
+- Prova: npm run verify aprovado, 1744 testes em 258 arquivos, API, build e desempenho. Doze cenários de navegador sobre produção aprovados, incluindo claro/escuro, PC/celular, 320 px/tablet, perfil vazio, scroll reversível e movimento reduzido do app/sistema. Entrada estável em 281.1 KiB; rota adiciona 3.8 KiB, total 1419.2 KiB, com margem normal 1422 KiB e teto absoluto inalterado. Sem dependência nova. Capturas conferidas visualmente; teste de resize aguarda geometria final, não apenas atributo do estado anterior.
+
 ## Primeiro quadro do Rive e engrenagem no cabeçalho (2026-10-15)
 
 - Perfil passa seu controle como leadingAction de PageHeader, antes da aparência. Engrenagem sem texto visível, com nome acessível, estado expandido e placa creme nos dois temas. Retirado o botão grande abaixo do título, sem mudar as opções ou sua persistência.

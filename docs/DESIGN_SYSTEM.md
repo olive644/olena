@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, protótipo de capa (2026-10-15): capa compartilhada original em papel
+facetado, com três humanos pequenos sem boca e os bigodes dos rapazes. Avatar
+e nome reais compõem a identidade e se recolhem na mesma barra ao rolar, apenas
+no Perfil, sem recolocar foto nos cabeçalhos das outras abas. No celular manter
+os três personagens visíveis no panorama inteiro. Barra compacta usa superfície
+do tema, sem vidro; engrenagem e tema conservam suas placas creme. Movimento
+reduzido do aplicativo e do sistema elimina flutuação e interpolação contínua.
+
 Engrenagem do Perfil: somente ícone, à esquerda do seletor de tema, reutilizando
 a mesma placa creme do cabeçalho nos dois temas. Mascote: somente arte do Rive
 aprovado, incluindo a imagem do primeiro quadro durante carga/erro/movimento

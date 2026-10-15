@@ -5,6 +5,7 @@ import {
   type AccessibilityPreferences,
 } from "../data/accessibility-preferences";
 import { PageHeader } from "../components/app-navigation";
+import { ProfileShowcase, ProfileOverview } from "../components/profile-showcase";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import { PrivacyNotice } from "../components/privacy-notice";
 import { DeleteAccountPanel } from "../components/delete-account-panel";
@@ -110,21 +111,28 @@ export function ProfileView({
 
   return (
     <main className="main-content profile-view" id="main-content">
-      <PageHeader
-        leadingAction={
-          <button
-            className="appearance-picker__trigger profile-settings-toggle"
-            type="button"
-            aria-label={settingsOpen ? "Fechar configurações" : "Configurações"}
-            aria-expanded={settingsOpen}
-            aria-controls="profile-settings"
-            onClick={() => setSettingsOpen(!settingsOpen)}
-          >
-            <PaperEditorIcon name="settings" />
-          </button>
-        }
-      />
-      <header className="profile-settings-heading">
+      <ProfileShowcase
+        settingsOpen={settingsOpen}
+        guest={guest}
+        nameFallback={guest ? GUEST_NAME : cloud.displayName || "Seu perfil"}
+      >
+        <PageHeader
+          leadingAction={
+            <button
+              className="appearance-picker__trigger profile-settings-toggle"
+              type="button"
+              aria-label={settingsOpen ? "Fechar configurações" : "Configurações"}
+              aria-expanded={settingsOpen}
+              aria-controls="profile-settings"
+              onClick={() => setSettingsOpen(!settingsOpen)}
+            >
+              <PaperEditorIcon name="settings" />
+            </button>
+          }
+        />
+      </ProfileShowcase>
+      {!settingsOpen && <ProfileOverview workspace={workspace} />}
+      <header className="profile-settings-heading" hidden={!settingsOpen}>
         <span className="section-label">Perfil</span>
         <h1>Seu espaço, do seu jeito.</h1>
       </header>
