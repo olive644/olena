@@ -6,8 +6,9 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
-  await page.goto("/");
-  const profileMenu = page.locator(".page-header .profile-menu");
+  await page.goto("/perfil");
+  await page.getByRole("button", { name: "Configurações", exact: true }).click();
+  const profileMenu = page.locator(".profile-avatar-options");
   const avatars = [
     "Alice",
     "Soso Estrelinha",
@@ -53,12 +54,15 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     });
     await page.screenshot({ path: testInfo.outputPath(`avatares-${theme}.png`) });
     await profileMenu.getByRole("button", { name: "Leo", exact: true }).click();
-    await expect(profileMenu.locator("summary")).toHaveAttribute("aria-label", "Perfil de Leo");
-    await expect(profileMenu.locator("summary img")).toHaveAttribute(
+    await expect(page.getByAltText("Avatar atual")).toHaveAttribute(
       "src",
       "/profile-avatars/leo.svg",
     );
     await page.reload();
-    await expect(profileMenu.locator("summary")).toHaveAttribute("aria-label", "Perfil de Leo");
+    await page.getByRole("button", { name: "Configurações", exact: true }).click();
+    await expect(page.getByAltText("Avatar atual")).toHaveAttribute(
+      "src",
+      "/profile-avatars/leo.svg",
+    );
   }
 });

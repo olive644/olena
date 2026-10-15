@@ -1,5 +1,14 @@
 # Auditoria do estado atual
 
+## Cabeçalho, Perfil recolhido e privacidade (2026-10-15)
+
+- Sino de atualizações restrito ao Espaço do aluno por PageHeader.showUpdates. Foto e seletor de avatar removidos do cabeçalho; identidade continua editável em Perfil, Configurações, Conta. Aparência rápida permanece disponível em todas as telas.
+- Engrenagem abre e recolhe a central existente na própria página, preservando seleção e foco no botão. Mesmo conteúdo e preferências no PC e celular, sem nova rota ou janela modal.
+- HelenaMascot preserva integralmente o Rive 2D, seus ciclos de estrela/Helena, olhar, arraste e transformação. Apenas as imagens de reserva foram corrigidas: favicon-star.svg e helena-2d.png substituem star.png e helena.png 3D durante carga, erro e movimento reduzido. Arquivo .riv, máquina e ritmos permanecem inalterados.
+- Primeiro acesso após onboarding/login mostra aviso informativo de privacidade em papel. Não há analytics/publicidade no app, portanto não há toggles fictícios nem botão que autorize tudo. Voz continua pedindo permissão separadamente. Google Agenda não faz parte do fluxo atual e não é anunciado no aviso. Política e detalhes podem ser revisitados em Configurações, Privacidade e dados.
+- helena.privacyNotice.v1 guarda apenas a versão lida neste aparelho, sem substituir o aceite helena.privacy.v1, sincronizar dados ou ativar serviços. Prefixo pessoal existente apaga a marca ao sair/trocar conta. Nova versão da política reapresenta o aviso; bloqueio de armazenamento permite continuar nesta sessão. Nenhuma dependência, rastreador ou serviço adicionado.
+- Prova final: npm run verify aprova 1739 testes em 257 arquivos, lint sem erros, API, build e orçamento de desempenho. Validação local em Edge: 21 cenários de Perfil/cabeçalho/Helena/navegação, seis do Rive e dois do sino aprovados, com cinco cenários exclusivos de desktop omitidos no projeto móvel. Capturas dos dois temas verificadas. Fixture padrão representa usuário que já leu o resumo; onboarding e primeira entrada usam armazenamento vazio. Não executar builds concorrentes contra o mesmo dist durante testes de preview.
+
 ## Perfil como central do aplicativo (2026-10-14)
 
 - Perfil reúne Conta, Meu progresso, Aparência e acessibilidade, Estudo e foco, Cadernos, Agenda e notificações e Privacidade e dados. Navegação por assunto e painéis com largura, espaçamento e material compartilhados. Removidos os avisos de produção futura.

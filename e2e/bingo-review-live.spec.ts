@@ -73,6 +73,7 @@ for (const physical of [false, true])
         viewport: page.viewportSize()!,
         isMobile: testInfo.project.name === "mobile",
         hasTouch: testInfo.project.name === "mobile",
+        storageState: testInfo.project.use.storageState,
       });
       await configure(guest);
       guestContexts.push(guest);

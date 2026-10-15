@@ -68,13 +68,9 @@ it("com movimento reduzido nao carrega o Rive e mantem a pose estatica certa", (
   const view = render(<HelenaMascot {...props} />);
   expect(view.container.querySelector("canvas")).toBeNull();
   expect(created).toHaveLength(0);
-  expect(view.container.querySelector("img")?.getAttribute("src")).toBe(
-    "/helena-assistant/star.png",
-  );
+  expect(view.container.querySelector("img")?.getAttribute("src")).toBe("/favicon-star.svg");
   view.rerender(<HelenaMascot {...props} open />);
-  expect(view.container.querySelector("img")?.getAttribute("src")).toBe(
-    "/helena-assistant/helena.png",
-  );
+  expect(view.container.querySelector("img")?.getAttribute("src")).toBe("/helena-2d.png");
 });
 
 it("carrega o arquivo proprio na maquina Helena, com o WebAssembly do proprio site", async () => {

@@ -65,17 +65,15 @@ describe("App", () => {
     expect(within(sidebar).getByRole("button", { name: "Perfil" })).toBeTruthy();
   });
 
-  it("mostra o perfil Google no canto superior quando estiver disponível", () => {
+  it("não mostra a foto Google no cabeçalho mesmo quando estiver disponível", () => {
     localStorage.setItem(
       "helena.profile.v1",
       JSON.stringify({ name: "Ana", photoUrl: "https://example.com/ana.png" }),
     );
     render(<App />);
 
-    const profiles = screen.getAllByLabelText("Perfil de Ana");
-    for (const profile of profiles) {
-      expect(profile.querySelector("img")?.getAttribute("src")).toBe("https://example.com/ana.png");
-    }
+    expect(document.querySelector(".page-header .profile-menu")).toBeNull();
+    expect(screen.queryByLabelText("Perfil de Ana")).toBeNull();
   });
 
   it("mantém a estrela da Helena montada ao trocar de aba", async () => {
@@ -88,15 +86,12 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
   });
 
-  it("permite escolher um avatar oficial para o perfil", () => {
+  it("permite escolher um avatar oficial nas configurações do perfil", async () => {
     render(<App />);
-    const profileTrigger = screen.getAllByLabelText("Escolher perfil")[0]!;
-    fireEvent.click(profileTrigger);
-    fireEvent.click(
-      within(profileTrigger.closest("details")!).getByRole("button", { name: "Helena" }),
-    );
-
-    expect(screen.getAllByLabelText("Perfil de Helena").length).toBeGreaterThan(0);
+    navigate("Perfil");
+    fireEvent.click(await screen.findByRole("button", { name: "Configurações" }));
+    fireEvent.click(screen.getByText("Escolher avatar", { selector: "summary" }));
+    fireEvent.click(screen.getByRole("button", { name: "Helena" }));
     expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toEqual({
       name: "Helena",
       photoUrl: "/profile-avatars/helena.webp",
@@ -253,6 +248,7 @@ describe("App", () => {
     expect(
       await screen.findByRole("heading", { name: "Seu espaço, do seu jeito." }, { timeout: 5000 }),
     ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
     expect(
       screen.getByRole("heading", { name: "Seus estudos em todos os dispositivos" }),
     ).toBeTruthy();
@@ -277,6 +273,7 @@ describe("App", () => {
 
     navigate("Perfil");
     expect(await screen.findByRole("heading", { name: "Seu espaço, do seu jeito." })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
     fireEvent.click(screen.getByRole("button", { name: "Estudo e foco" }));
     fireEvent.click(screen.getByRole("button", { name: /50 minutos/i }));
     const profileLongBreak = screen.getByRole("button", {

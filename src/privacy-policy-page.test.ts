@@ -16,6 +16,9 @@ const csp =
     ?.headers.find((header) => header.key === "Content-Security-Policy")?.value ?? "";
 
 describe("página da Política de Privacidade", () => {
+  it("não anuncia a integração removida do Google Agenda", () => {
+    expect(text).not.toMatch(/Google Agenda|agenda do Google|acesso à sua agenda/i);
+  });
   it("fica no caminho que o aplicativo aponta e traz a mesma versão do código", () => {
     expect(PRIVACY_POLICY_PATH).toBe("/politica-de-privacidade.html");
     expect(html).toContain(`data-policy-version="${PRIVACY_POLICY_VERSION}"`);
@@ -129,7 +132,7 @@ describe("página da Política de Privacidade", () => {
       "content-firebaseappcheck.googleapis.com": "verificação de segurança",
       "identitytoolkit.googleapis.com": "entrar na conta",
       "securetoken.googleapis.com": "entrar na conta",
-      "www.googleapis.com": "Google Agenda",
+      "www.googleapis.com": "Google",
       "apis.google.com": "Google",
       "api.datamuse.com": "consulta de vocabulário",
       "www.google.com": "verificação de segurança",

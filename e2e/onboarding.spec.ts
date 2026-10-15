@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+test.use({ storageState: { cookies: [], origins: [] } });
 
 test("percorre as preferências e revisa respostas sem iniciar login", async ({ page }) => {
   await page.goto("/?onboarding=1");
@@ -45,6 +46,9 @@ test("entra como convidado no fim do onboarding e continua assim ao recarregar",
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toHaveCount(0);
   await expect(page.locator("#main-content")).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("helena.guest.v1"))).toBe("1");
+  const privacy = page.getByRole("region", { name: "Privacidade no OlenaStudy" });
+  await expect(privacy).toBeVisible();
+  await privacy.getByRole("button", { name: "Entendi" }).click();
 
   // O endereço sem ?onboarding=1 é o de quem volta ao app depois.
   await page.goto("/");
@@ -52,6 +56,7 @@ test("entra como convidado no fim do onboarding e continua assim ao recarregar",
   await expect(page.locator(".onboarding")).toHaveCount(0);
 
   await page.goto("/perfil");
+  await page.getByRole("button", { name: "Configurações", exact: true }).click();
   await expect(page.getByText("Guest (convidado)")).toBeVisible();
   await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("perfil-convidado.png") });

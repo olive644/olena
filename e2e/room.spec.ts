@@ -125,7 +125,7 @@ for (const activity of ["listening", "bingo"] as const) {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     });
     await page.goto("/sala");
-    await expect(page.locator(".page-header .user-profile")).toBeVisible();
+    await expect(page.locator(".page-header .user-profile")).toHaveCount(0);
     await expect(page.locator(".page-header__theme .appearance-picker__trigger")).toBeVisible();
     const preparation = page.locator(".local-room-preparation");
     await expect(preparation.locator(".local-room-activity")).toHaveCount(4);
@@ -490,9 +490,19 @@ for (const activity of ["listening", "bingo"] as const) {
         ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }
         : { viewport: { width: 1280, height: 900 }, isMobile: false };
     const contexts = await Promise.all([
-      browser.newContext(hostViewport),
-      browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }),
-      browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }),
+      browser.newContext({ ...hostViewport, storageState: testInfo.project.use.storageState }),
+      browser.newContext({
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
+        storageState: testInfo.project.use.storageState,
+      }),
+      browser.newContext({
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
+        storageState: testInfo.project.use.storageState,
+      }),
     ]);
     try {
       for (const context of contexts) {

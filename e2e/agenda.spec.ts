@@ -4,7 +4,9 @@ import { createInitialWorkspace } from "../src/domain/workspace";
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     if (!sessionStorage.getItem("agenda-test-initialized")) {
+      const privacyRead = localStorage.getItem("helena.privacyNotice.v1");
       localStorage.clear();
+      if (privacyRead) localStorage.setItem("helena.privacyNotice.v1", privacyRead);
       sessionStorage.setItem("agenda-test-initialized", "1");
     }
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
@@ -335,7 +337,7 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
     { id: 408, version: "beta.408", title: "Agenda publicada", date: "2026-10-11T12:00:00Z" },
   ];
   await page.route("**/system-updates.json", (route) => route.fulfill({ json: feed }));
-  await page.goto("/planejador");
+  await page.goto("/");
   const bell = page.locator(".system-updates-trigger");
   await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");
   const appearance = page.locator(".page-header__theme");

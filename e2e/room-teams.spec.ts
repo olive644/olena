@@ -24,8 +24,14 @@ test("participante escolhe equipe e anfitrião move com arraste ou botão", asyn
       viewport: mobile ? { width: 390, height: 844 } : { width: 1280, height: 900 },
       isMobile: mobile,
       hasTouch: mobile,
+      storageState: testInfo.project.use.storageState,
     }),
-    browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }),
+    browser.newContext({
+      viewport: { width: 390, height: 844 },
+      isMobile: true,
+      hasTouch: true,
+      storageState: testInfo.project.use.storageState,
+    }),
   ]);
   try {
     for (const context of contexts) {

@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { PRIVACY_POLICY_VERSION } from "./src/domain/privacy-policy";
 
 const port = Number(process.env["PLAYWRIGHT_PORT"] ?? 4173);
 
@@ -8,7 +9,21 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env["CI"] ? 2 : 0,
   reporter: process.env["CI"] ? "github" : "list",
-  use: { baseURL: `http://127.0.0.1:${port}`, trace: "on-first-retry" },
+  use: {
+    baseURL: `http://127.0.0.1:${port}`,
+    trace: "on-first-retry",
+    // Os fluxos existentes representam quem já leu o resumo. Primeira entrada
+    // é exercitada com storageState vazio nos testes de onboarding e privacidade.
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: `http://127.0.0.1:${port}`,
+          localStorage: [{ name: "helena.privacyNotice.v1", value: PRIVACY_POLICY_VERSION }],
+        },
+      ],
+    },
+  },
   projects: [
     {
       name: "desktop",

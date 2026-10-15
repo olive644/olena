@@ -21,6 +21,8 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
       localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
   }, seed);
   await page.goto("/perfil");
+  await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Configurações", exact: true }).click();
   const menu = page.getByRole("navigation", { name: "Seções do Perfil" });
   await expect(page.getByRole("heading", { name: "Seu espaço, do seu jeito." })).toBeVisible();
   await expect(page.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
@@ -82,6 +84,7 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   await page.getByRole("button", { name: "Exportar meus dados", exact: true }).click();
   expect((await downloadPromise).suggestedFilename()).toBe("olena-estudos.json");
   await page.reload();
+  await page.getByRole("button", { name: "Configurações", exact: true }).click();
   await menu.getByRole("button", { name: "Cadernos", exact: true }).click();
   await expect(page.getByRole("checkbox", { name: /Só caneta, dedo move/ })).toBeChecked();
   await menu.getByRole("button", { name: "Aparência e acessibilidade", exact: true }).click();
