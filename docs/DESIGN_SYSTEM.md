@@ -1,5 +1,12 @@
 # Identidade visual oficial OlenaStudy
 
+Cabeçalho (2026-10-15): sem foto ou seletor de perfil no topo; sino somente no
+Espaço do aluno e aparência disponível nas demais telas. Identidade e preferências
+ficam atrás da engrenagem Configurações do Perfil. Aviso de privacidade compacto
+usa papel creme/grafite, botão roxo e foco amarelo, sem categorias de rastreamento
+inexistentes. A Helena flutuante preserva o Rive 2D e seus ciclos; imagens de
+reserva também são 2D, sem estrela ou gata 3D durante carga/erro.
+
 Perfil: navegação de assuntos em recortes de papel, duas colunas de painéis com
 largura e espaçamento iguais no PC e uma coluna no celular. Reutilizar Manrope,
 ícones aprovados, superfícies creme/grafite e facetas roxo/amarelo. Não impor

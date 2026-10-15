@@ -19,6 +19,7 @@ function renderProfile(guest: boolean, onSignIn = vi.fn()) {
       onRestoreSnapshot={vi.fn()}
     />,
   );
+  fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
   return onSignIn;
 }
 

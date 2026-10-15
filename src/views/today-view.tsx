@@ -39,7 +39,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
 
   return (
     <main className="main-content" id="main-content">
-      <PageHeader />
+      <PageHeader showUpdates />
       <header className="view-heading view-heading--today">
         <div>
           <span className="section-label">Seu painel · {formatLongDate(now)}</span>

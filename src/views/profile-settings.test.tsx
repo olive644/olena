@@ -26,6 +26,8 @@ function openProfile() {
       onRestoreSnapshot={vi.fn()}
     />,
   );
+  expect(screen.queryByRole("navigation", { name: "Seções do Perfil" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
   return dispatch;
 }
 function section(name: string) {
@@ -47,12 +49,13 @@ it("organiza as opções reais sem placeholders e muda o Pomodoro pelo painel de
     preferences: { pomodoroMinutes: 50, longBreaks: true },
   });
 });
-it("edita a identidade sem trocar a conta Google e atualiza o cabeçalho", () => {
+it("edita a identidade sem trocar a conta Google nem recriar a foto no cabeçalho", () => {
   openProfile();
   fireEvent.change(screen.getByLabelText("Nome no aplicativo"), { target: { value: "Estudante" } });
   fireEvent.click(screen.getByRole("button", { name: "Salvar nome" }));
   expect(JSON.parse(localStorage.getItem("helena.profile.v1")!)).toEqual({ name: "Estudante" });
-  expect(screen.getByLabelText("Perfil de Estudante")).toBeTruthy();
+  expect(screen.getByText("Estudante", { selector: "strong" })).toBeTruthy();
+  expect(document.querySelector(".page-header .user-profile")).toBeNull();
 });
 it("compartilha tema com o cabeçalho e preserva as preferências do editor", () => {
   openProfile();

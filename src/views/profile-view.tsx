@@ -5,6 +5,8 @@ import {
   type AccessibilityPreferences,
 } from "../data/accessibility-preferences";
 import { PageHeader } from "../components/app-navigation";
+import { PaperEditorIcon } from "../components/paper-editor-icon";
+import { PrivacyNotice } from "../components/privacy-notice";
 import { DeleteAccountPanel } from "../components/delete-account-panel";
 import { accountConfirmationName } from "../data/account-deletion";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
@@ -58,6 +60,7 @@ export function ProfileView({
   onRestoreSnapshot,
 }: ProfileViewProps) {
   const [section, setSection] = useState("account");
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const accessibility = useAccessibility();
   const [accessibilityError, setAccessibilityError] = useState("");
   function changeAccessibility(update: Partial<AccessibilityPreferences>) {
@@ -111,8 +114,18 @@ export function ProfileView({
       <header className="profile-settings-heading">
         <span className="section-label">Perfil</span>
         <h1>Seu espaço, do seu jeito.</h1>
+        <button
+          className="secondary-button profile-settings-toggle"
+          type="button"
+          aria-expanded={settingsOpen}
+          aria-controls="profile-settings"
+          onClick={() => setSettingsOpen(!settingsOpen)}
+        >
+          <PaperEditorIcon name="settings" />
+          {settingsOpen ? "Fechar configurações" : "Configurações"}
+        </button>
       </header>
-      <div className="profile-settings-layout">
+      <div className="profile-settings-layout" id="profile-settings" hidden={!settingsOpen}>
         <nav className="profile-settings-nav" aria-label="Seções do Perfil">
           {SECTIONS.map((item) => (
             <button
@@ -143,6 +156,7 @@ export function ProfileView({
             {section === "notebooks" && <ProfileNotebookPreferences />}
             {section === "notifications" && <ProfileNotifications />}
             {section === "data" && <ProfileDataExport workspace={workspace} />}
+            {section === "data" && <PrivacyNotice embedded />}
             <section
               hidden={section !== "appearance"}
               className="accessibility-settings"

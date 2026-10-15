@@ -9,8 +9,7 @@ import {
 } from "react";
 import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
-import { writeSyncedStorage } from "../data/synced-storage";
-import { useStoredProfile, type StoredProfile } from "../hooks/use-stored-profile";
+import { type StoredProfile } from "../hooks/use-stored-profile";
 import { AppearanceToggle } from "./appearance-picker";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
 const SystemUpdates = lazy(() =>
@@ -367,18 +366,8 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
   );
 }
 
-export function PageHeader() {
-  const [profile, setProfile] = useStoredProfile();
+export function PageHeader({ showUpdates = false }: { showUpdates?: boolean }) {
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
-
-  function chooseProfile(nextProfile: StoredProfile) {
-    setProfile(nextProfile);
-    try {
-      writeSyncedStorage("helena.profile.v1", JSON.stringify(nextProfile));
-    } catch {
-      /* A escolha continua visível quando o armazenamento não está disponível. */
-    }
-  }
 
   return (
     <header className="page-header">
@@ -396,26 +385,14 @@ export function PageHeader() {
         <span aria-hidden="true" />
       </button>
       <div className="page-header__actions">
-        <Suspense fallback={null}>
-          <SystemUpdates />
-        </Suspense>
+        {showUpdates && (
+          <Suspense fallback={null}>
+            <SystemUpdates />
+          </Suspense>
+        )}
         <div className="page-header__theme">
           <AppearanceToggle />
         </div>
-        <details className="profile-menu">
-          <summary
-            className="user-profile"
-            aria-label={profile.name ? `Perfil de ${profile.name}` : "Escolher perfil"}
-          >
-            <img
-              src={profile.photoUrl ?? "/profile-avatars/helena.webp"}
-              alt=""
-              width="44"
-              height="44"
-            />
-          </summary>
-          <ProfileChoices onChoose={chooseProfile} />
-        </details>
       </div>
     </header>
   );

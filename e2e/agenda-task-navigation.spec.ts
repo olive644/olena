@@ -13,7 +13,9 @@ test.beforeEach(async ({ page }) => {
   }));
   await page.addInitScript((state) => {
     if (!sessionStorage.getItem("task-nav-seeded")) {
+      const privacyRead = localStorage.getItem("helena.privacyNotice.v1");
       localStorage.clear();
+      if (privacyRead) localStorage.setItem("helena.privacyNotice.v1", privacyRead);
       localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
       sessionStorage.setItem("task-nav-seeded", "1");
     }

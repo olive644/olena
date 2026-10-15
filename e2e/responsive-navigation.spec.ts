@@ -20,9 +20,7 @@ for (const width of [320, 360, 390, 768, 1280]) {
     const navigation = page.getByRole("navigation", {
       name: mobile ? "Navegação móvel" : "Navegação principal",
     });
-    const profile = mobile
-      ? navigation.getByRole("button", { name: "Perfil", exact: true })
-      : page.locator(".page-header .user-profile");
+    const profile = navigation.getByRole("button", { name: "Perfil", exact: true });
     if (mobile) {
       await expect(profile).toBeVisible();
       await expect(profile.locator("img").first()).toBeVisible();
@@ -38,19 +36,23 @@ for (const width of [320, 360, 390, 768, 1280]) {
       const agenda = navigation.getByRole("button", { name: "Agenda", exact: true });
       await practice.click();
       await expect(practice).toHaveAttribute("aria-current", "page");
+      await expect(page.locator(".loading-view")).toHaveCount(0);
+      await expect(page.getByRole("main")).toHaveCSS("opacity", "1");
       await expect(practice).not.toHaveClass(/mobile-nav__item--featured/);
       const practiceIcon = practice.locator(".mobile-nav__icon");
       const practiceBox = await practiceIcon.boundingBox();
       await expect(practiceIcon).toHaveCSS("margin-top", "0px");
       await agenda.click();
       await expect(agenda).toHaveAttribute("aria-current", "page");
+      await expect(page.locator(".loading-view")).toHaveCount(0);
+      await expect(page.getByRole("main")).toHaveCSS("opacity", "1");
       const agendaBox = await agenda.locator(".mobile-nav__icon").boundingBox();
       expect(practiceBox!.width).toBe(agendaBox!.width);
       expect(practiceBox!.height).toBe(agendaBox!.height);
       expect(practiceBox!.y).toBeCloseTo(agendaBox!.y, 0);
     } else {
       await expect(profile).toBeVisible();
-      await expect(profile).toHaveCSS("border-radius", "50%");
+      await expect(page.locator(".page-header .user-profile")).toHaveCount(0);
       const sidebarBox = await page
         .getByRole("complementary", { name: "", exact: true })
         .boundingBox();

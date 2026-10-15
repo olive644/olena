@@ -51,7 +51,9 @@ test.beforeEach(async ({ page }, info) => {
   }
   await page.addInitScript((state) => {
     if (!sessionStorage.getItem("calendar-seeded")) {
+      const privacyRead = localStorage.getItem("helena.privacyNotice.v1");
       localStorage.clear();
+      if (privacyRead) localStorage.setItem("helena.privacyNotice.v1", privacyRead);
       localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
       sessionStorage.setItem("calendar-seeded", "1");
     }

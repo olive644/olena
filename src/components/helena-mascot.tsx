@@ -221,7 +221,7 @@ export function HelenaMascot(props: MascotProps) {
       aria-hidden="true"
     >
       <img
-        src={`/helena-assistant/${props.open ? "helena" : "star"}.png`}
+        src={props.open ? "/helena-2d.png" : "/favicon-star.svg"}
         width="64"
         height="64"
         alt=""

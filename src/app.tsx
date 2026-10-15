@@ -10,6 +10,9 @@ import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
 import { TodayView } from "./views/today-view";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const PrivacyNotice = lazy(() =>
+  import("./components/privacy-notice").then((module) => ({ default: module.PrivacyNotice })),
+);
 const AgendaReminders = lazy(() =>
   import("./components/agenda-reminders").then((module) => ({ default: module.AgendaReminders })),
 );
@@ -152,6 +155,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         {!projectorCode && (
           <Suspense fallback={null}>
             <HelenaChat currentView={view} />
+            {(!cloud.enabled || cloud.authenticated === true || guest) && <PrivacyNotice />}
           </Suspense>
         )}
       </div>
