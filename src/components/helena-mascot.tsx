@@ -40,7 +40,7 @@ export function HelenaMascot(props: MascotProps) {
   const player = useRef<RivePlayer | null>(null);
   const inputs = useRef<Record<string, RiveInput>>({});
   const interaction = useRef(false);
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(() => !reducedMotion());
   const [ready, setReady] = useState(false);
   const [reduced, setReduced] = useState(false);
   // Com a conversa fechada, o botão alterna sozinho entre estrela e Helena.
@@ -54,7 +54,7 @@ export function HelenaMascot(props: MascotProps) {
   const aberta = props.open || showHelena;
 
   useEffect(() => {
-    if (props.open || !active || reduced) return;
+    if (props.open || !ready || reduced) return;
     if (!showHelena) {
       const timer = setTimeout(() => setShowHelena(true), STAR_SECONDS);
       return () => clearTimeout(timer);
@@ -62,7 +62,7 @@ export function HelenaMascot(props: MascotProps) {
     if (props.hover) return;
     const timer = setTimeout(() => setShowHelena(false), HELENA_SECONDS);
     return () => clearTimeout(timer);
-  }, [props.open, props.hover, showHelena, active, reduced]);
+  }, [props.open, props.hover, showHelena, ready, reduced]);
 
   // Entradas da máquina de estados, a cada mudança de estado visual.
   useEffect(() => {
@@ -221,7 +221,7 @@ export function HelenaMascot(props: MascotProps) {
       aria-hidden="true"
     >
       <img
-        src={props.open ? "/helena-2d.png" : "/favicon-star.svg"}
+        src={props.open ? "/helena-assistant/helena-rive.png" : "/helena-assistant/star-rive.png"}
         width="64"
         height="64"
         alt=""

@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
@@ -366,7 +367,13 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
   );
 }
 
-export function PageHeader({ showUpdates = false }: { showUpdates?: boolean }) {
+export function PageHeader({
+  showUpdates = false,
+  leadingAction,
+}: {
+  showUpdates?: boolean;
+  leadingAction?: ReactNode;
+}) {
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
 
   return (
@@ -390,6 +397,7 @@ export function PageHeader({ showUpdates = false }: { showUpdates?: boolean }) {
             <SystemUpdates />
           </Suspense>
         )}
+        {leadingAction}
         <div className="page-header__theme">
           <AppearanceToggle />
         </div>

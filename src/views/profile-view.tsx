@@ -110,20 +110,23 @@ export function ProfileView({
 
   return (
     <main className="main-content profile-view" id="main-content">
-      <PageHeader />
+      <PageHeader
+        leadingAction={
+          <button
+            className="appearance-picker__trigger profile-settings-toggle"
+            type="button"
+            aria-label={settingsOpen ? "Fechar configurações" : "Configurações"}
+            aria-expanded={settingsOpen}
+            aria-controls="profile-settings"
+            onClick={() => setSettingsOpen(!settingsOpen)}
+          >
+            <PaperEditorIcon name="settings" />
+          </button>
+        }
+      />
       <header className="profile-settings-heading">
         <span className="section-label">Perfil</span>
         <h1>Seu espaço, do seu jeito.</h1>
-        <button
-          className="secondary-button profile-settings-toggle"
-          type="button"
-          aria-expanded={settingsOpen}
-          aria-controls="profile-settings"
-          onClick={() => setSettingsOpen(!settingsOpen)}
-        >
-          <PaperEditorIcon name="settings" />
-          {settingsOpen ? "Fechar configurações" : "Configurações"}
-        </button>
       </header>
       <div className="profile-settings-layout" id="profile-settings" hidden={!settingsOpen}>
         <nav className="profile-settings-nav" aria-label="Seções do Perfil">

@@ -854,10 +854,13 @@ body:has([aria-modal="true"]) .helena-chat--application {
   pointer-events: none;
 }
 /* A arte do Rive tem folga em volta (faíscas e anel): o canvas passa um pouco da caixa do botão. */
-.helena-virtual-mascot canvas {
+.helena-virtual-mascot canvas,
+.helena-virtual-mascot > img {
   inset: -14%;
   width: 128%;
   height: 128%;
+}
+.helena-virtual-mascot canvas {
   opacity: 0;
 }
 .helena-virtual-mascot[data-ready="true"] canvas {

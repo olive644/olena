@@ -16,7 +16,11 @@ test("approved mascot loads under production CSP and reduced motion keeps chat u
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("request", (request) => {
-    if (/\/helena-assistant\/(star|helena)\.png/.test(request.url()))
+    if (
+      /(\/helena-assistant\/(star|helena)\.png|\/favicon-star\.svg|\/helena-2d\.png)/.test(
+        request.url(),
+      )
+    )
       legacyImages.push(request.url());
     if (/\/helena-assistant\/(rive\.js|rive\.wasm|helena\.riv)/.test(request.url()))
       graphics.push(request.url());
@@ -40,12 +44,13 @@ test("approved mascot loads under production CSP and reduced motion keeps chat u
   const mascot = page.locator(".helena-virtual-mascot");
   await expect(launcher).toBeVisible();
   await expect(mascot).toHaveAttribute("data-reduced", "true");
+  await expect(mascot.locator("img")).toHaveAttribute("src", "/helena-assistant/star-rive.png");
   await expect(mascot.locator("canvas")).toHaveCount(0);
   expect(graphics).toEqual([]);
   await launcher.focus();
   await launcher.press("Enter");
   await expect(page.getByRole("dialog", { name: "Helena" })).toBeVisible();
-  await expect(mascot.locator("img")).toHaveAttribute("src", "/helena-2d.png");
+  await expect(mascot.locator("img")).toHaveAttribute("src", "/helena-assistant/helena-rive.png");
   await page.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "no-preference" });
