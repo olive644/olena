@@ -461,7 +461,7 @@
   gap: 2px;
   min-height: 24px;
   touch-action: none;
-  cursor: grab !important;
+  cursor: var(--paper-cursor-grab, grab) !important;
 }
 .agenda-block-move .onboarding-paper-arrow {
   width: 12px;

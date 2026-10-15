@@ -28,10 +28,10 @@
   overflow: hidden;
   touch-action: pan-y;
   user-select: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
 }
 .practice-carousel-stage.is-dragging {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .practice-carousel-island {
   border: 0;

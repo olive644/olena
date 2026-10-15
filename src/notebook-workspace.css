@@ -295,12 +295,12 @@
   margin: auto;
 }
 .notebook-entry-preview .notebook-preview-book {
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   touch-action: pan-y;
   user-select: none;
 }
 .notebook-entry-preview .notebook-preview-book:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .notebook-entry-preview .notebook-preview-book:focus-visible {
   outline: 3px solid #facc15;
@@ -439,12 +439,12 @@
   --editor-icon-cutout: #fffaf0;
 }
 .notebook-page-book .page-book {
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   touch-action: pan-y;
   user-select: none;
 }
 .notebook-page-book .page-book:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 @media (max-width: 680px) {
   .capture-dialog.capture-dialog--handwriting {
@@ -968,7 +968,7 @@
 
 .notebook-page-index li.is-dragging .notebook-page-index__open {
   opacity: 0.45;
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 
 .notebook-page-index li.is-drop-target .notebook-page-index__open {

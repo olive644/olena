@@ -205,28 +205,17 @@ describe("workspaceReducer", () => {
     expect(minutesFocusedOn(focused, "2026-08-29")).toBe(25);
   });
 
-  it("marca e desmarca o mesmo hábito no dia", () => {
-    const withHabit = workspaceReducer(createInitialWorkspace(), {
-      type: "habit/added",
-      title: "Revisar flashcards",
+  it("preserva registros legados sem oferecer ações do módulo removido", () => {
+    const previous = {
+      ...createInitialWorkspace(),
+      habits: [{ id: "old", title: "Ler", completedDates: ["2026-08-29"] }],
+    };
+    const next = workspaceReducer(previous, {
+      type: "subject/added",
+      name: "Matemática",
+      color: "#7c3aed",
     });
-    const habit = withHabit.habits[0];
-    expect(habit).toBeDefined();
-    if (!habit) return;
-
-    const checked = workspaceReducer(withHabit, {
-      type: "habit/toggled",
-      id: habit.id,
-      date: "2026-08-29",
-    });
-    expect(checked.habits[0]?.completedDates).toEqual(["2026-08-29"]);
-
-    const unchecked = workspaceReducer(checked, {
-      type: "habit/toggled",
-      id: habit.id,
-      date: "2026-08-29",
-    });
-    expect(unchecked.habits[0]?.completedDates).toEqual([]);
+    expect(next.habits).toEqual(previous.habits);
   });
 
   it("agenda revisões de flashcards conforme a dificuldade", () => {

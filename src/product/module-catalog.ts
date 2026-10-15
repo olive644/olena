@@ -34,13 +34,6 @@ export const PRODUCT_MODULES = [
     entryView: "focus",
   },
   {
-    id: "habits",
-    name: "Hábitos",
-    purpose: "Acompanhar consistência diária.",
-    status: "available",
-    entryView: "habits",
-  },
-  {
     id: "notes",
     name: "Cadernos",
     purpose: "Criar e editar anotações locais.",

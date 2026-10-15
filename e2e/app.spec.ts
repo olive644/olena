@@ -330,7 +330,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
   await expect(toolsDialog).toBeHidden();
 
-  for (const label of ["Hábitos", "Cadernos", "Biblioteca"]) {
+  for (const label of ["Cadernos", "Biblioteca"]) {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     const more = page.getByRole("dialog", { name: "Mais ferramentas" });
     await expect(more).toBeVisible();

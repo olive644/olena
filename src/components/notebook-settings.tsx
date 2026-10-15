@@ -2,20 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { NotebookPreferences } from "../data/notebook-preferences";
 
-export function NotebookSettings({
+export function NotebookPreferenceFields({
   preferences,
   onChange,
 }: {
   preferences: NotebookPreferences;
   onChange: (key: keyof NotebookPreferences, value: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const element = dialog.current;
-    if (open) element?.showModal();
-    return () => element?.close();
-  }, [open]);
   const categories = [
     [
       "Escrita e toque",
@@ -64,6 +57,40 @@ export function NotebookSettings({
       ],
     ],
   ] as const;
+  return categories.map(([title, entries]) => (
+    <fieldset key={title}>
+      <legend>{title}</legend>
+      {entries.map(([key, label, hint]) => (
+        <label key={key}>
+          <span>
+            <strong>{label}</strong>
+            <small>{hint}</small>
+          </span>
+          <input
+            type="checkbox"
+            checked={preferences[key]}
+            onChange={(event) => onChange(key, event.target.checked)}
+          />
+        </label>
+      ))}
+    </fieldset>
+  ));
+}
+
+export function NotebookSettings({
+  preferences,
+  onChange,
+}: {
+  preferences: NotebookPreferences;
+  onChange: (key: keyof NotebookPreferences, value: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const element = dialog.current;
+    if (open) element?.showModal();
+    return () => element?.close();
+  }, [open]);
   return (
     <>
       <button
@@ -97,24 +124,7 @@ export function NotebookSettings({
               <PaperEditorIcon name="close" />
             </button>
           </header>
-          {categories.map(([title, entries]) => (
-            <fieldset key={title}>
-              <legend>{title}</legend>
-              {entries.map(([key, label, hint]) => (
-                <label key={key}>
-                  <span>
-                    <strong>{label}</strong>
-                    <small>{hint}</small>
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={preferences[key]}
-                    onChange={(event) => onChange(key, event.target.checked)}
-                  />
-                </label>
-              ))}
-            </fieldset>
-          ))}
+          <NotebookPreferenceFields preferences={preferences} onChange={onChange} />
         </dialog>
       )}
     </>

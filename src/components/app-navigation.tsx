@@ -21,7 +21,6 @@ export type AppView =
   | "today"
   | "planner"
   | "focus"
-  | "habits"
   | "notes"
   | "lesson-builder"
   | "learn"
@@ -65,7 +64,7 @@ const PROFILE_AVATARS = [
   profileAvatar("Leo", "/profile-avatars/leo.svg"),
 ] as const;
 
-function ProfileChoices({ onChoose }: { onChoose: (profile: StoredProfile) => void }) {
+export function ProfileChoices({ onChoose }: { onChoose: (profile: StoredProfile) => void }) {
   return (
     <section className="profile-picker">
       <div className="profile-picker__heading">
@@ -106,7 +105,6 @@ const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationI
     items: [
       { view: "library", label: "Biblioteca", icon: "library" },
       { view: "notes", label: "Cadernos", mobileLabel: "Cadernos", icon: "notes" },
-      { view: "habits", label: "Hábitos", icon: "habits" },
     ],
   },
 ];

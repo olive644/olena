@@ -1,6 +1,9 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { createMathSound } from "./math-sound";
+import { initializeAccessibility, updateAccessibility } from "./accessibility-preferences";
 afterEach(() => {
+  localStorage.clear();
+  initializeAccessibility()();
   vi.useRealTimers();
   vi.unstubAllGlobals();
 });
@@ -40,6 +43,10 @@ it("unlocks through a gesture, remains usable beyond three minutes and closes on
   expect(start).toHaveBeenCalledTimes(3);
   await vi.advanceTimersByTimeAsync(200000);
   sound.play("correct");
+  await Promise.resolve();
+  expect(start).toHaveBeenCalledTimes(6);
+  updateAccessibility({ soundEffects: false });
+  sound.play("wrong");
   await Promise.resolve();
   expect(start).toHaveBeenCalledTimes(6);
   expect(close).not.toHaveBeenCalled();

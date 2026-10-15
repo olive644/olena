@@ -5413,7 +5413,7 @@ body.local-room-active {
 }
 
 .handwriting-canvas--hand {
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
 }
 
 .handwriting-canvas--select {
@@ -5494,7 +5494,7 @@ body.local-room-active {
   min-width: 0;
   overflow: hidden;
   color: rgb(23 21 28 / 58%);
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -5517,7 +5517,7 @@ body.local-room-active {
   border: 0;
   color: #17151c;
   background: transparent;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   touch-action: none;
 }
 
@@ -6442,7 +6442,6 @@ body.local-room-active {
 
 .dashboard-grid,
 .planner-grid,
-.habits-layout,
 .focus-layout {
   display: grid;
   gap: 1rem;
@@ -6469,7 +6468,6 @@ body.local-room-active {
 }
 
 .module-heading h2,
-.habit-form-panel h2,
 .native-notice h2 {
   margin: 0;
   font-size: 1.08rem;
@@ -6529,8 +6527,7 @@ body.local-room-active {
 }
 
 .check-list,
-.schedule-list,
-.habit-list {
+.schedule-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -7456,66 +7453,6 @@ body.local-room-active {
   font-size: 0.9rem;
 }
 
-.habit-form-panel h2 {
-  margin-bottom: 0.25rem;
-}
-
-.habit-score {
-  font-size: 1.25rem;
-  letter-spacing: -0.04em;
-}
-
-.habit-list li {
-  border-bottom: 1px solid var(--line);
-}
-
-.habit-list li:last-child {
-  border-bottom: 0;
-}
-
-.habit-list button {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-height: 70px;
-  padding: 0;
-  border: 0;
-  gap: 0.75rem;
-  background: transparent;
-  text-align: left;
-}
-
-.habit-check {
-  display: grid;
-  flex: 0 0 auto;
-  width: 34px;
-  height: 34px;
-  border: 1px solid #c8c4cc;
-  border-radius: 50%;
-  color: transparent;
-  place-items: center;
-}
-
-.habit-list li.is-complete .habit-check {
-  color: #fff;
-  border-color: var(--violet-dark);
-  background: var(--violet-dark);
-}
-
-.habit-list button > span:last-child {
-  display: grid;
-  gap: 0.15rem;
-}
-
-.habit-list strong {
-  font-size: 0.8rem;
-}
-
-.habit-list small {
-  color: var(--muted);
-  font-size: 0.65rem;
-}
-
 .notes-layout {
   display: grid;
   min-height: 530px;
@@ -8113,7 +8050,7 @@ body.local-room-active {
 .handwriting-text-frame-handle--move {
   top: -42px;
   left: -4px;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
 }
 .handwriting-text-frame-size {
   position: absolute;
@@ -8901,8 +8838,7 @@ body.local-room-active {
     border-right: 0;
   }
 
-  .planner-grid,
-  .habits-layout {
+  .planner-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -10108,7 +10044,6 @@ select {
 
 .dashboard-grid,
 .planner-grid,
-.habits-layout,
 .focus-layout,
 .library-create-grid,
 .library-content-grid,
@@ -10138,20 +10073,17 @@ select {
 }
 
 .module-heading h2,
-.habit-form-panel h2,
 .native-notice h2 {
   font-size: 1.12rem;
 }
 
 .check-list li,
-.schedule-list li,
-.habit-list button {
+.schedule-list li {
   min-height: 68px;
 }
 
 .check-list strong,
 .schedule-list strong,
-.habit-list strong,
 .material-list strong,
 .flashcard-list strong,
 .goal-list strong {
@@ -10160,7 +10092,6 @@ select {
 
 .check-list small,
 .schedule-list small,
-.habit-list small,
 .material-list small,
 .flashcard-list small,
 .goal-list small {

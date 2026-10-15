@@ -1059,7 +1059,7 @@
 .agenda-island-drag {
   touch-action: pan-y;
   user-select: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -1121,7 +1121,7 @@
   }
 }
 .agenda-island-drag:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .agenda-island-drag img {
   width: min(100%, 80px);

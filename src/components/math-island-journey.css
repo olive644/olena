@@ -58,10 +58,10 @@
   position: absolute;
   inset: 0;
   touch-action: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
 }
 .math-journey-stage:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .math-journey-island {
   padding: 0;

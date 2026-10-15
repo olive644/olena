@@ -280,7 +280,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // sem dependências novas. Mantidos os tetos absolutos e o orçamento inicial.
 // Retomada por tipo de erro e finais reservadas v5: total medido 1406.3 KiB,
 // entrada mantida em 285.9 KiB. Sem dependência nova; tetos absolutos preservados.
-const MAX_TOTAL_JS_BYTES = 1410 * 1024;
+// Central do Perfil reutiliza formulários e remove Hábitos: entrada caiu para 281.5 KiB.
+// Opções, progresso, exportação e permissões sob demanda: total medido 1413.2 KiB.
+// Margem normal ajustada para esta funcionalidade; sem dependência nova e sem mudar
+// o orçamento inicial ou os tetos absolutos abaixo.
+const MAX_TOTAL_JS_BYTES = 1418 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

@@ -1,5 +1,17 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil: navegação de assuntos em recortes de papel, duas colunas de painéis com
+largura e espaçamento iguais no PC e uma coluna no celular. Reutilizar Manrope,
+ícones aprovados, superfícies creme/grafite e facetas roxo/amarelo. Não impor
+altura fixa ao conteúdo nem criar placeholders de recursos futuros. Preferências
+do dispositivo devem ser identificadas como tais. Transição curta entre seções,
+desativada com movimento reduzido; foco amarelo compartilhado, sem outline.
+
+Cursores de escrita e pegar usam os mesmos recortes roxo/grafite, base creme e
+acento amarelo dos cursores existentes. SVG nativo de 32 px e hotspot central,
+sem rastreador de posição. Aplicar apenas a mouse fino, sem cores forçadas;
+preservar crosshair de desenho, cursores específicos do editor e toque nativo.
+
 Poeira cósmica: um único símbolo vetorial de estrela facetada com fragmentos,
 sem importar arte de outro jogo. Quatro recortes indicam os toques; a raridade
 aparece por nome e fundo: comum verde #174B3B, rara azul #213F74, épica roxo

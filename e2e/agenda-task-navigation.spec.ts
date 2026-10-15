@@ -80,7 +80,7 @@ test("desktop rail stays compact with small paper labels in both themes", async 
     const mainBefore = await page.locator(".main-content").boundingBox();
     const rail = page.locator(".sidebar");
     await expect(rail).toHaveCSS("width", "84px");
-    const item = rail.getByRole("button", { name: "Hábitos", exact: true });
+    const item = rail.getByRole("button", { name: "Biblioteca", exact: true });
     const label = item.locator("span").last();
     await item.hover();
     await expect(rail).toHaveCSS("width", "84px");
@@ -138,7 +138,7 @@ test("desktop rail stays compact with small paper labels in both themes", async 
   await expect(
     page
       .locator(".sidebar")
-      .getByRole("button", { name: "Hábitos", exact: true })
+      .getByRole("button", { name: "Biblioteca", exact: true })
       .locator("span")
       .last(),
   ).toBeVisible();

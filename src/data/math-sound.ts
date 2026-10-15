@@ -1,3 +1,4 @@
+import { areSoundEffectsEnabled } from "./accessibility-preferences";
 export type MathSoundCue =
   | "start"
   | "correct"
@@ -32,6 +33,7 @@ export function createMathSound() {
   let context: AudioContext | undefined;
   let disposed = false;
   function unlock() {
+    if (!areSoundEffectsEnabled()) return;
     const Constructor =
       globalThis.AudioContext ??
       (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
@@ -52,12 +54,14 @@ export function createMathSound() {
     }
   }
   function play(cue: MathSoundCue | ArcaneSoundCue | 1 | 2 | 3) {
+    if (!areSoundEffectsEnabled()) return;
     const active = context;
     if (!active || disposed || active.state === "closed") return;
     void active
       .resume()
       .then(() => {
-        if (disposed || active.state !== "running" || document.hidden) return;
+        if (disposed || active.state !== "running" || document.hidden || !areSoundEffectsEnabled())
+          return;
         const notes =
           typeof cue === "number" ? [cue === 3 ? 440 : cue === 2 ? 554 : 659] : NOTES[cue];
         notes.forEach((frequency, index) => {

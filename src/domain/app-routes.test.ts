@@ -20,4 +20,8 @@ describe("rotas das abas", () => {
     expect(viewFromPath("/qualquer-coisa")).toBeNull();
     expect(viewFromPath("/sala/ABCDE/projetor")).toBeNull();
   });
+  it("encaminha o endereço antigo de hábitos ao Perfil", () => {
+    expect(viewFromPath("/habitos/")).toBe("profile");
+    expect(Object.values(VIEW_PATHS)).not.toContain("/habitos");
+  });
 });

@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Perfil como central do aplicativo (2026-10-14)
+
+- Perfil reúne Conta, Meu progresso, Aparência e acessibilidade, Estudo e foco, Cadernos, Agenda e notificações e Privacidade e dados. Navegação por assunto e painéis com largura, espaçamento e material compartilhados. Removidos os avisos de produção futura.
+- Reutiliza tema sincronizado, perfil, duração e pausa do Pomodoro, preferências de estudo e controles globais do editor de cadernos. Cabeçalho mantém atalhos rápidos; tema acompanha alterações entre instâncias e abas. Opções de um evento, documento ou atividade permanecem no item.
+- Nome no aplicativo e avatar não editam identidade, e-mail ou autenticação Google. Fuso brasileiro da conta é exibido sem novo seletor. Notificações solicitam permissão real por gesto e explicam bloqueio/indisponibilidade, sem prometer alertas com o app fechado. Exportação JSON inclui o estado atual carregado e preferências sincronizáveis disponíveis, não baixa arquivos remotos.
+- Progresso apresenta minutos de sessões encerradas, respostas corretas registradas, dias distintos de estudo no fuso da conta e tarefas concluídas. Não interpreta abertura da tela como estudo.
+- Acessibilidade e efeitos sonoros são preferências deste dispositivo. Desativar efeitos impede novas reproduções sintetizadas de matemática, recompensas, feedback da sala e Bingo Saturn, sem mutar vozes de exercícios ou gravações.
+- Hábitos saiu da navegação, dashboard, catálogo, tela, ações de escrita e estilos. /habitos abre Perfil para compatibilidade de links. Somente o campo legado habits continua legível e preservado em snapshots e merges v1, evitando invalidar contas ou apagar histórico de leitores antigos. Não migrar hábitos para compromissos sem escolha do proprietário; rollback reconhece os mesmos registros.
+- Cursores nativos de papel acrescentam escrita e pegar, com hotspots centrais, sem camada que capture movimentos. Arrastes existentes usam variáveis compartilhadas; touch e cores forçadas mantêm cursores nativos. Ferramentas de desenho mantêm crosshair e estados específicos.
+- Desempenho: após compartilhar formulários e remover código de Hábitos, entrada caiu de 285.9 para 281.5 KiB. Central sob demanda elevou o total de 1408.1 para aproximadamente 1413 KiB. Orçamento normal total ajustado de 1410 para 1418 KiB conforme o crescimento medido da funcionalidade; limite inicial e teto absoluto de 1500 KiB continuam intactos, sem dependências novas.
+- Prova: npm run verify aprova 1734 testes em 255 arquivos, lint sem erros, formatação, API, build e desempenho. Dezesseis cenários de navegador aprovados em PC/celular, com dois cenários exclusivos de desktop omitidos no celular. Cobertura de temas, limites geométricos dos painéis, recarga, exportação, cursores, navegação, cadernos e Foco/Pomodoro. Capturas verificadas com transições encerradas. Medição final: entrada 281.5 KiB e total 1413.2 KiB.
+
 ## Poeira cósmica e cartas de papel (2026-10-14)
 
 - Um único recipiente visual substitui os baús: Poeira cósmica. Regra de ganho preservada (ao menos 100 pontos na partida e espaço entre três pendências). O prazo de 10 segundos começa ao ganhar, sem precisar destrancar. Pendências legadas são preparadas ao carregar, preservando prazos já menores e encurtando os maiores, sem reiniciar. Pontos e recibos não mudam.

@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
+import {
+  SYNCED_STORAGE_APPLIED_EVENT,
+  SYNCED_STORAGE_EVENT,
+  writeSyncedStorage,
+} from "../data/synced-storage";
 
 export type Theme = "light" | "dark";
 export type ThemePreference = Theme | "system";
@@ -60,7 +64,13 @@ export function useTheme() {
       });
     };
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
-    return () => window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    window.addEventListener(SYNCED_STORAGE_EVENT, refresh);
+    window.addEventListener("storage", refresh);
+    return () => {
+      window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+      window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
+      window.removeEventListener("storage", refresh);
+    };
   }, []);
 
   function toggleTheme() {

@@ -184,6 +184,7 @@ export type WorkspaceState = {
   subjects: Subject[];
   tasks: StudyTask[];
   events: StudyEvent[];
+  /** Registros legados somente para leitura e compatibilidade de contas antigas. */
   habits: Habit[];
   notebooks: StudyNotebook[];
   notes: StudyNote[];
@@ -242,8 +243,6 @@ export type WorkspaceAction =
   | { type: "event/updated"; id: string; changes: Omit<StudyEvent, "id" | "completedDates"> }
   | { type: "event/removed"; id: string }
   | { type: "event/toggled"; id: string; date: string }
-  | { type: "habit/added"; title: string }
-  | { type: "habit/toggled"; id: string; date: string }
   | {
       type: "notebook/added";
       kind?: "folder" | "collection" | "note";
@@ -514,28 +513,6 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           ...state.events.filter((event) => !action.removeIds.includes(event.id)),
           ...action.events,
         ],
-      };
-    case "habit/added":
-      return {
-        ...state,
-        habits: [
-          ...state.habits,
-          { id: createId("habit"), title: action.title, completedDates: [] },
-        ],
-      };
-    case "habit/toggled":
-      return {
-        ...state,
-        habits: state.habits.map((habit) => {
-          if (habit.id !== action.id) return habit;
-          const completed = habit.completedDates.includes(action.date);
-          return {
-            ...habit,
-            completedDates: completed
-              ? habit.completedDates.filter((date) => date !== action.date)
-              : [...habit.completedDates, action.date],
-          };
-        }),
       };
     case "notebook/added":
       if (

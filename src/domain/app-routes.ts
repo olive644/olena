@@ -6,7 +6,6 @@ export const VIEW_PATHS: Record<AppView, string> = {
   today: "/",
   planner: "/planejador",
   focus: "/foco",
-  habits: "/habitos",
   notes: "/cadernos",
   "lesson-builder": "/aulas",
   learn: "/aprender",
@@ -24,6 +23,8 @@ function normalize(pathname: string): string {
 // Devolve a aba de um caminho, ou null se o caminho não for de nenhuma aba.
 export function viewFromPath(pathname: string): AppView | null {
   const path = normalize(pathname);
+  // Endereços antigos abrem o Perfil, sem ressuscitar o módulo removido.
+  if (path === "/habitos") return "profile";
   for (const [view, viewPath] of Object.entries(VIEW_PATHS) as [AppView, string][]) {
     if (viewPath === path) return view;
   }
