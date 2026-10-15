@@ -46,14 +46,7 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
     ]) {
       await menu.getByRole("button", { name: label, exact: true }).click();
       await expect(page.locator(".profile-section-title")).toHaveText(label);
-      await page.locator("main").evaluate(async (element) => {
-        await Promise.all(
-          element
-            .getAnimations({ subtree: true })
-            .filter((animation) => animation.effect?.getComputedTiming().iterations !== Infinity)
-            .map((animation) => animation.finished.catch(() => {})),
-        );
-      });
+      // A prontidão pertence ao painel visível, não a animações de toda a subárvore.
       await expect(page.locator("main")).toHaveCSS("opacity", "1");
       await expect(page.locator(".profile-settings-grid")).toHaveCSS("opacity", "1");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

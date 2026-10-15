@@ -14,6 +14,7 @@
 - CI completo identificou duas expectativas antigas fora da rodada focada: navegação com nove itens e título anterior do Perfil. Testes agora exigem oito itens, ausência de Hábitos e o título novo, sem alterar produto, tempos ou retries.
 - A rodada móvel também identificou duas contagens antigas de quatro ferramentas no menu Mais. Ambas agora exigem três ferramentas e a ausência explícita de Hábitos. Reexecutar o arquivo completo de navegação e rotas em PC/celular, sem modificar o produto.
 - Prova adicional: arquivos completos app.spec.ts e routes.spec.ts aprovam 24 cenários, com seis omissões previstas por plataforma, após atualizar as quatro referências antigas. Formatação e lint dos testes aprovados; código e bundle de produto permanecem idênticos à verificação geral de 1734 testes.
+- WebKit móvel identificou uma barreira de teste indevida: aguardar animation.finished de toda a subárvore do Perfil pode não terminar, mesmo após trocar a seção. O teste passa a aguardar apenas opacidade final de main e do painel visível, mantendo asserts de limites, larguras, persistência e screenshots sem transições. Não alterar timeout, retries ou animações do produto.
 
 ## Poeira cósmica e cartas de papel (2026-10-14)
 
