@@ -11,6 +11,7 @@
 - Cursores nativos de papel acrescentam escrita e pegar, com hotspots centrais, sem camada que capture movimentos. Arrastes existentes usam variáveis compartilhadas; touch e cores forçadas mantêm cursores nativos. Ferramentas de desenho mantêm crosshair e estados específicos.
 - Desempenho: após compartilhar formulários e remover código de Hábitos, entrada caiu de 285.9 para 281.5 KiB. Central sob demanda elevou o total de 1408.1 para aproximadamente 1413 KiB. Orçamento normal total ajustado de 1410 para 1418 KiB conforme o crescimento medido da funcionalidade; limite inicial e teto absoluto de 1500 KiB continuam intactos, sem dependências novas.
 - Prova: npm run verify aprova 1734 testes em 255 arquivos, lint sem erros, formatação, API, build e desempenho. Dezesseis cenários de navegador aprovados em PC/celular, com dois cenários exclusivos de desktop omitidos no celular. Cobertura de temas, limites geométricos dos painéis, recarga, exportação, cursores, navegação, cadernos e Foco/Pomodoro. Capturas verificadas com transições encerradas. Medição final: entrada 281.5 KiB e total 1413.2 KiB.
+- CI completo identificou duas expectativas antigas fora da rodada focada: navegação com nove itens e título anterior do Perfil. Testes agora exigem oito itens, ausência de Hábitos e o título novo, sem alterar produto, tempos ou retries.
 
 ## Poeira cósmica e cartas de papel (2026-10-14)
 

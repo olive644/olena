@@ -166,7 +166,8 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(9);
+  await expect(navigation.getByRole("button")).toHaveCount(8);
+  await expect(navigation.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toBeVisible();
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
     "aria-current",
