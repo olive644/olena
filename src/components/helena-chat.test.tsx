@@ -166,7 +166,7 @@ it("opens from the animated mascot and restores launcher focus with Escape", () 
   expect(document.querySelector(".helena-chat-welcome-art")).toBeNull();
   expect(document.querySelector(".helena-chat-header-mascot img")).toBeNull();
   expect(document.querySelector(".helena-virtual-mascot img")?.getAttribute("src")).toBe(
-    "/helena-2d.png",
+    "/helena-assistant/helena-rive.png",
   );
   fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
   expect(screen.queryByRole("dialog")).toBeNull();

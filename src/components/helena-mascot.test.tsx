@@ -55,7 +55,6 @@ afterEach(() => {
 
 async function activate(view: ReturnType<typeof render>) {
   await act(async () => {
-    vi.advanceTimersByTime(1500);
     await Promise.resolve();
   });
   const instance = created.at(-1)!;
@@ -68,9 +67,13 @@ it("com movimento reduzido nao carrega o Rive e mantem a pose estatica certa", (
   const view = render(<HelenaMascot {...props} />);
   expect(view.container.querySelector("canvas")).toBeNull();
   expect(created).toHaveLength(0);
-  expect(view.container.querySelector("img")?.getAttribute("src")).toBe("/favicon-star.svg");
+  expect(view.container.querySelector("img")?.getAttribute("src")).toBe(
+    "/helena-assistant/star-rive.png",
+  );
   view.rerender(<HelenaMascot {...props} open />);
-  expect(view.container.querySelector("img")?.getAttribute("src")).toBe("/helena-2d.png");
+  expect(view.container.querySelector("img")?.getAttribute("src")).toBe(
+    "/helena-assistant/helena-rive.png",
+  );
 });
 
 it("carrega o arquivo proprio na maquina Helena, com o WebAssembly do proprio site", async () => {
@@ -109,6 +112,24 @@ it("passa so o estado visual: aberta, arrasto com lado, atencao e olhar", async 
   expect(instance.value("atenta")).toBe(true);
   expect(instance.value("olharX")).toBe(-0.5);
   expect(instance.value("clique")).toBe(0);
+});
+
+it("inicia o carregamento imediatamente e só conta o ciclo depois de carregar", async () => {
+  vi.useFakeTimers();
+  vi.stubGlobal("matchMedia", () => ({ matches: false }));
+  render(<HelenaMascot {...props} />);
+  await act(async () => {
+    await Promise.resolve();
+  });
+  expect(created).toHaveLength(1);
+  const instance = created[0]!;
+  act(() => vi.advanceTimersByTime(10000));
+  act(() => instance.options.onLoad());
+  expect(instance.value("aberta")).toBe(false);
+  act(() => vi.advanceTimersByTime(2799));
+  expect(instance.value("aberta")).toBe(false);
+  act(() => vi.advanceTimersByTime(1));
+  expect(instance.value("aberta")).toBe(true);
 });
 
 it("recolhida, alterna estrela por 2,8 s e Helena por 13 s, e segura a Helena com o ponteiro por perto", async () => {

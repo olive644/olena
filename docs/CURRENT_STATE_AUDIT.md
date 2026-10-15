@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Primeiro quadro do Rive e engrenagem no cabeçalho (2026-10-15)
+
+- Perfil passa seu controle como leadingAction de PageHeader, antes da aparência. Engrenagem sem texto visível, com nome acessível, estado expandido e placa creme nos dois temas. Retirado o botão grande abaixo do título, sem mudar as opções ou sua persistência.
+- Imagens iniciais star-rive.png e helena-rive.png são quadros exportados do próprio helena.riv, não redesenhos. Mesmos limites e escala do canvas evitam troca de tamanho ao carregar. Nenhum favicon ou PNG de outro modelo aparece no assistente.
+- Runtime inicia imediatamente quando há movimento, sem atraso inicial de 1,5 s. O ciclo estrela/Helena só começa quando o arquivo está pronto, preservando a estrela inicial mesmo em rede lenta. Movimento reduzido e falha de carga mantêm o quadro exato do Rive, sem perder acesso à conversa. Arquivo, máquina, ritmos de 2,8/13 s e demais movimentos não foram alterados.
+- Regenerar quadros com servidor Vite ativo: node scripts/export-helena-poses.mjs http://127.0.0.1:4225. O script usa o runtime já vendorizado e Playwright instalado, sem serviço externo nem nova dependência.
+- Prova: npm run verify aprova 1740 testes em 257 arquivos, lint sem erros, API, build e desempenho. Entrada permanece 281.1 KiB, total 1415.4 KiB, sem aumentar orçamento. Dezoito cenários de navegador aprovados sobre build de produção em Edge PC/celular, incluindo CSP, carga lenta/falha e ambos os temas. Capturas verificadas visualmente.
+
 ## Cabeçalho, Perfil recolhido e privacidade (2026-10-15)
 
 - Sino de atualizações restrito ao Espaço do aluno por PageHeader.showUpdates. Foto e seletor de avatar removidos do cabeçalho; identidade continua editável em Perfil, Configurações, Conta. Aparência rápida permanece disponível em todas as telas.

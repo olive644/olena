@@ -38,6 +38,11 @@ for (const theme of ["light", "dark"]) {
       await expect(page.locator(".page-header .profile-menu")).toHaveCount(0);
     }
     const toggle = page.getByRole("button", { name: "Configurações", exact: true });
+    await expect(toggle).toHaveText("");
+    await expect(toggle).toHaveCSS("background-color", "rgb(255, 249, 239)");
+    const settingsBox = (await toggle.boundingBox())!;
+    const themeBox = (await page.locator(".page-header__theme").boundingBox())!;
+    expect(settingsBox.x + settingsBox.width).toBeLessThanOrEqual(themeBox.x);
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
     await toggle.click();
     await page.getByRole("button", { name: "Privacidade e dados", exact: true }).click();
@@ -52,7 +57,7 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
     await expect(page.locator(".helena-virtual-mascot > img")).toHaveAttribute(
       "src",
-      "/favicon-star.svg",
+      "/helena-assistant/star-rive.png",
     );
   });
 }

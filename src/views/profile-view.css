@@ -1,15 +1,16 @@
 .profile-view [hidden] {
   display: none !important;
 }
-.profile-settings-toggle {
-  gap: 0.6rem;
-  margin-top: 1rem;
-  color: var(--text);
-  background-color: var(--surface);
+.profile-view .page-header .profile-settings-toggle {
+  --editor-icon-cutout: #fff9ef;
+  margin: 0;
+  padding: 0;
+  color: #292432;
+  background-color: #fff9ef;
 }
 .profile-settings-toggle svg {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
 }
 .profile-view .profile-settings-heading {
   width: 100%;

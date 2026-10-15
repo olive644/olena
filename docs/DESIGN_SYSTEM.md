@@ -1,5 +1,11 @@
 # Identidade visual oficial OlenaStudy
 
+Engrenagem do Perfil: somente ícone, à esquerda do seletor de tema, reutilizando
+a mesma placa creme do cabeçalho nos dois temas. Mascote: somente arte do Rive
+aprovado, incluindo a imagem do primeiro quadro durante carga/erro/movimento
+reduzido. Mesmo tamanho e posição do canvas, sem trocar para favicon ou outro
+desenho de estrela. O .riv e os ciclos originais permanecem intactos.
+
 Cabeçalho (2026-10-15): sem foto ou seletor de perfil no topo; sino somente no
 Espaço do aluno e aparência disponível nas demais telas. Identidade e preferências
 ficam atrás da engrenagem Configurações do Perfil. Aviso de privacidade compacto
