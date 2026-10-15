@@ -1,8 +1,16 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 export const ACCESSIBILITY_KEY = "olena:accessibility:v1";
-export type AccessibilityPreferences = { reduceMotion: boolean; highlightSelections: boolean };
-const defaults: AccessibilityPreferences = { reduceMotion: false, highlightSelections: false };
+export type AccessibilityPreferences = {
+  reduceMotion: boolean;
+  highlightSelections: boolean;
+  soundEffects: boolean;
+};
+const defaults: AccessibilityPreferences = {
+  reduceMotion: false,
+  highlightSelections: false,
+  soundEffects: true,
+};
 let current = defaults;
 const listeners = new Set<() => void>();
 
@@ -13,6 +21,7 @@ function read(): AccessibilityPreferences {
       return {
         reduceMotion: "reduceMotion" in data && data["reduceMotion"] === true,
         highlightSelections: "highlightSelections" in data && data["highlightSelections"] === true,
+        soundEffects: !("soundEffects" in data) || data["soundEffects"] !== false,
       };
   } catch {
     /* Preferências indisponíveis: mantém a configuração padrão. */
@@ -68,6 +77,10 @@ export function isMotionReduced() {
     current.reduceMotion ||
     (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false)
   );
+}
+
+export function areSoundEffectsEnabled() {
+  return current.soundEffects;
 }
 
 /** Movimento reduzido por escolha do app ou do sistema, acompanhando as duas mudanças. */

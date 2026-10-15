@@ -27,7 +27,8 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
       const menu = page.getByRole("dialog", { name: "Mais ferramentas" });
       const secondary = menu.locator(".navigation-icon__variant:visible");
-      await expect(secondary).toHaveCount(4);
+      await expect(secondary).toHaveCount(3);
+      await expect(menu.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
       for (const icon of await secondary.all()) {
         await expect(icon).toHaveAttribute("src", /\/navigation-icons\/paper\/.*\.svg$/);
         await expect
@@ -166,7 +167,8 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   const sidebar = page.locator(".sidebar");
 
-  await expect(navigation.getByRole("button")).toHaveCount(9);
+  await expect(navigation.getByRole("button")).toHaveCount(8);
+  await expect(navigation.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(navigation.getByRole("button", { name: "Modo Sala", exact: true })).toBeVisible();
   await expect(navigation.getByRole("button", { name: "Espaço do aluno" })).toHaveAttribute(
     "aria-current",
@@ -314,7 +316,8 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await expect(toolsDialog).toBeVisible();
   await page.waitForTimeout(350);
   const toolItems = toolsDialog.locator(".more-item");
-  await expect(toolItems).toHaveCount(4);
+  await expect(toolItems).toHaveCount(3);
+  await expect(toolsDialog.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
 
   for (const item of await toolItems.all()) {
     const iconBox = await item.locator(".navigation-icon").boundingBox();
@@ -330,7 +333,7 @@ test("mantém os módulos acessíveis e sem rolagem horizontal no celular", asyn
   await toolsDialog.getByRole("button", { name: "Fechar menu" }).click();
   await expect(toolsDialog).toBeHidden();
 
-  for (const label of ["Hábitos", "Cadernos", "Biblioteca"]) {
+  for (const label of ["Cadernos", "Biblioteca"]) {
     await page.getByRole("button", { name: "Mais ferramentas", exact: true }).click();
     const more = page.getByRole("dialog", { name: "Mais ferramentas" });
     await expect(more).toBeVisible();

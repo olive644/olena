@@ -73,7 +73,7 @@
 .room-team-board__grip {
   min-width: 44px;
   touch-action: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   font-size: 24px;
 }
 .room-team-board__move {

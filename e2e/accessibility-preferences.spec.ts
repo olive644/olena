@@ -7,6 +7,7 @@ test("Perfil salva acessibilidade geral, aplica à sala e restaura após recarre
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/perfil");
+  await page.getByRole("button", { name: "Aparência e acessibilidade", exact: true }).click();
   const settings = page.getByRole("region", { name: "Acessibilidade", exact: true });
   await settings.getByRole("checkbox", { name: /Reduzir movimento/ }).check();
   await settings.getByRole("checkbox", { name: /Realçar seleções/ }).check();
@@ -18,6 +19,7 @@ test("Perfil salva acessibilidade geral, aplica à sala e restaura após recarre
   await expect(page.locator("html")).toHaveAttribute("data-reduce-motion", "true");
   await page.goto("/perfil");
   await page.reload();
+  await page.getByRole("button", { name: "Aparência e acessibilidade", exact: true }).click();
   await expect(settings.getByRole("checkbox", { name: /Reduzir movimento/ })).toBeChecked();
   await expect(settings.getByRole("checkbox", { name: /Realçar seleções/ })).toBeChecked();
   await settings.getByRole("checkbox", { name: /Reduzir movimento/ }).uncheck();

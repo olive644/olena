@@ -1,3 +1,4 @@
+import { areSoundEffectsEnabled } from "./accessibility-preferences";
 // Efeitos locais curtos, sem arquivos externos nem acesso ao microfone.
 let victoryContext: AudioContext | undefined;
 let victoryExpiry: ReturnType<typeof setTimeout> | undefined;
@@ -11,6 +12,7 @@ function keepRoomSoundAlive(context: AudioContext): void {
 }
 
 export function playRoomVictorySound(): void {
+  if (!areSoundEffectsEnabled()) return;
   if (typeof AudioContext === "undefined") return;
   try {
     const context =
@@ -48,6 +50,7 @@ export function playRoomVictorySound(): void {
 }
 
 export function prepareRoomFeedbackSound(): AudioContext | undefined {
+  if (!areSoundEffectsEnabled()) return;
   if (typeof AudioContext === "undefined") return;
   try {
     const context =
@@ -64,10 +67,12 @@ export function prepareRoomFeedbackSound(): AudioContext | undefined {
 }
 
 export function playRoomFeedbackSound(correct: boolean, context: AudioContext | undefined): void {
+  if (!areSoundEffectsEnabled()) return;
   if (!context || context.state === "closed") return;
   void context
     .resume()
     .then(() => {
+      if (!areSoundEffectsEnabled()) return;
       const gain = context.createGain();
       gain.connect(context.destination);
       gain.gain.setValueAtTime(correct ? 0.07 : 0.09, context.currentTime);

@@ -163,7 +163,7 @@
   opacity: 0;
 }
 .helena-chat[data-motion="dragging"] .helena-chat-launcher {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
   translate: none;
 }
 .helena-chat[data-motion="dragging"] .helena-chat-launcher-art {

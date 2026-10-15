@@ -12,7 +12,7 @@ function renderProfile(guest: boolean, onSignIn = vi.fn()) {
     <ProfileView
       workspace={createInitialWorkspace()}
       dispatch={vi.fn()}
-      cloud={cloud}
+      cloud={guest ? cloud : { ...cloud, status: "synced" }}
       guest={guest}
       onSignIn={onSignIn}
       history={[]}
@@ -43,11 +43,13 @@ it("oferece acessibilidade geral no Perfil e salva a escolha", () => {
   localStorage.removeItem(ACCESSIBILITY_KEY);
   const dispose = initializeAccessibility();
   renderProfile(true);
+  fireEvent.click(screen.getByRole("button", { name: "Aparência e acessibilidade" }));
   fireEvent.click(screen.getByRole("checkbox", { name: /Reduzir movimento/ }));
   fireEvent.click(screen.getByRole("checkbox", { name: /Realçar seleções/ }));
   expect(JSON.parse(localStorage.getItem(ACCESSIBILITY_KEY)!)).toEqual({
     reduceMotion: true,
     highlightSelections: true,
+    soundEffects: true,
   });
   expect(document.documentElement.dataset["reduceMotion"]).toBe("true");
   dispose();

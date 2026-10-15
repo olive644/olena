@@ -1,9 +1,11 @@
+import { areSoundEffectsEnabled } from "../data/accessibility-preferences";
 // Locally synthesized effects from the approved Saturn prototype.
 export function createSaturnSound() {
   let audio: AudioContext | null = null,
     audioMaster: GainNode | null = null;
   let mixNodes: { source: AudioScheduledSourceNode; gain: GainNode }[] = [];
   async function ensureAudio() {
+    if (!areSoundEffectsEnabled()) return false;
     const Constructor = globalThis.AudioContext;
     if (!Constructor) return false;
     try {
@@ -20,7 +22,7 @@ export function createSaturnSound() {
     }
   }
   function canSound() {
-    return audio && audio.state === "running" && !document.hidden;
+    return audio && audio.state === "running" && !document.hidden && areSoundEffectsEnabled();
   }
   function noise(duration: number, frequency: number, level: number, delay = 0, track = false) {
     if (!audio || !audioMaster || !canSound()) return;

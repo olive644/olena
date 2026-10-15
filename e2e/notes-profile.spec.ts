@@ -11,6 +11,7 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
     await page.locator(".page-header__theme .appearance-picker__trigger").click();
     await page.getByRole("button", { name: theme, exact: true }).click();
     await navigation.getByRole("button", { name: "Perfil", exact: true }).click();
+    await page.getByRole("button", { name: "Estudo e foco", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Preferências de estudo" })).toBeVisible();
     await expect(navigation.getByRole("button", { name: "Perfil", exact: true })).toHaveAttribute(
       "aria-current",

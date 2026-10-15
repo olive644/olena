@@ -56,7 +56,7 @@ const questions: readonly OnboardingQuestion[] = [
   {
     title: "O que você quer conquistar?",
     hint: "Vamos guardar seu objetivo, sem pressão.",
-    icon: "habits",
+    icon: "xp",
     options: [
       "Criar uma rotina",
       "Revisar para provas",

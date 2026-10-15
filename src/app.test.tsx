@@ -138,10 +138,9 @@ describe("App", () => {
 
     const moreMenu = screen.getByRole("dialog", { name: "Mais ferramentas" });
     expect(within(moreMenu).queryByLabelText("Trocar foto de perfil")).toBeNull();
-    fireEvent.click(within(moreMenu).getByRole("button", { name: "Hábitos" }));
-    expect(
-      screen.getByRole("heading", { name: /consistência antes de intensidade/i }),
-    ).toBeTruthy();
+    expect(within(moreMenu).queryByRole("button", { name: "Hábitos" })).toBeNull();
+    fireEvent.click(within(moreMenu).getByRole("button", { name: "Biblioteca" }));
+    expect(await screen.findByRole("main")).toBeTruthy();
     expect(screen.queryByRole("dialog", { name: "Mais ferramentas" })).toBeNull();
   });
 
@@ -166,7 +165,6 @@ describe("App", () => {
       ["Foco", "focus"],
       ["Praticar", "gamepad"],
       ["Biblioteca", "library"],
-      ["Hábitos", "habits"],
       ["Cadernos", "notes"],
     ] as const;
 
@@ -225,17 +223,9 @@ describe("App", () => {
     expect(screen.queryByText("Revisar phrasal verbs")).toBeNull();
   });
 
-  it("cria hábito e caderno usando o mesmo espaço local", async () => {
+  it("cria caderno sem exibir o módulo de hábitos removido", async () => {
     render(<App />);
-    navigate("Hábitos");
-    fireEvent.change(screen.getByLabelText(/nome do hábito/i), {
-      target: { value: "Ler em inglês" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /adicionar hábito/i }));
-    const habitButton = screen.getByRole("button", { name: /ler em inglês/i });
-    fireEvent.click(habitButton);
-    expect(habitButton.getAttribute("aria-pressed")).toBe("true");
-
+    expect(screen.queryByRole("button", { name: "Hábitos" })).toBeNull();
     navigate("Cadernos");
     fireEvent.click(await screen.findByRole("button", { name: "Crie" }, { timeout: 5000 }));
     expect(screen.queryByRole("button", { name: /Anotações/ })).toBeNull();
@@ -261,7 +251,7 @@ describe("App", () => {
     render(<App />);
     navigate("Perfil");
     expect(
-      await screen.findByRole("heading", { name: "Preferências de estudo" }, { timeout: 5000 }),
+      await screen.findByRole("heading", { name: "Seu espaço, do seu jeito." }, { timeout: 5000 }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Seus estudos em todos os dispositivos" }),
@@ -286,9 +276,8 @@ describe("App", () => {
     render(<App />);
 
     navigate("Perfil");
-    expect(
-      await screen.findByRole("heading", { name: /personalizar métodos de estudos/i }),
-    ).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: "Seu espaço, do seu jeito." })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Estudo e foco" }));
     fireEvent.click(screen.getByRole("button", { name: /50 minutos/i }));
     const profileLongBreak = screen.getByRole("button", {
       name: /pausa longa após 4 rodadas/i,

@@ -15,7 +15,7 @@ test("paper cursors use native assets only for mouse and preserve editing/tool s
     const fixture = document.createElement("div");
     fixture.id = "cursor-fixture";
     fixture.innerHTML =
-      '<button>Cursor action</button><button disabled>Disabled action</button><input aria-label="Cursor text"><textarea aria-label="Cursor note"></textarea><div contenteditable="true" aria-label="Cursor editor"></div><canvas style="cursor: crosshair"></canvas><div style="cursor: grab">Drag</div>';
+      '<button>Cursor action</button><button disabled>Disabled action</button><input aria-label="Cursor text"><textarea aria-label="Cursor note"></textarea><div contenteditable="true" aria-label="Cursor editor"></div><canvas style="cursor: crosshair"></canvas><div draggable="true">Drag</div>';
     document.body.append(fixture);
   });
   for (const theme of ["light", "dark"]) {
@@ -42,11 +42,18 @@ test("paper cursors use native assets only for mouse and preserve editing/tool s
     }
     if (mouse)
       for (const selector of ["input", "textarea", "[contenteditable]"])
-        await expect(page.locator(`#cursor-fixture ${selector}`)).toHaveCSS("cursor", "text");
+        await expect(page.locator(`#cursor-fixture ${selector}`)).toHaveCSS(
+          "cursor",
+          /paper-text\.svg/,
+        );
     await expect(page.locator("#cursor-fixture canvas")).toHaveCSS("cursor", "crosshair");
-    await expect(page.locator("#cursor-fixture div[style]")).toHaveCSS("cursor", "grab");
+    if (mouse)
+      await expect(page.locator("#cursor-fixture [draggable]")).toHaveCSS(
+        "cursor",
+        /paper-grab\.svg/,
+      );
   }
-  for (const name of ["arrow", "hand"]) {
+  for (const name of ["arrow", "hand", "text", "grab"]) {
     const response = await page.request.get(`/cursors/paper-${name}.svg`);
     expect(response.ok()).toBe(true);
     expect(await response.text()).toContain('width="32" height="32"');
@@ -55,9 +62,9 @@ test("paper cursors use native assets only for mouse and preserve editing/tool s
     const preview = document.createElement("div");
     preview.id = "cursor-art-preview";
     preview.style.cssText =
-      "position:relative;z-index:2147483647;display:flex;width:256px;padding:24px;gap:32px;background:#fff9ef";
+      "position:relative;z-index:2147483647;display:flex;flex-wrap:wrap;width:256px;padding:24px;gap:32px;background:#fff9ef";
     preview.innerHTML =
-      '<img src="/cursors/paper-arrow.svg" width="96" height="96" alt="Seta de papel"><img src="/cursors/paper-hand.svg" width="96" height="96" alt="Mão de papel">';
+      '<img src="/cursors/paper-arrow.svg" width="96" height="96" alt="Seta de papel"><img src="/cursors/paper-hand.svg" width="96" height="96" alt="Mão de papel"><img src="/cursors/paper-text.svg" width="96" height="96" alt="Escrita de papel"><img src="/cursors/paper-grab.svg" width="96" height="96" alt="Pegar de papel">';
     document.body.append(preview);
   });
   await expect

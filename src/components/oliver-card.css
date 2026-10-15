@@ -576,10 +576,10 @@ html[data-reduce-motion="true"] .oliver-tarot-front::after {
   height: 535px;
   perspective: 1400px;
   touch-action: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
 }
 .oliver-inspection-stage:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .oliver-inspection-stage:focus-visible {
   outline: 3px solid #7433e0;

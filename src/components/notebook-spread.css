@@ -536,10 +536,10 @@
   color: inherit;
   box-shadow: none;
   border-radius: 0;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
 }
 .notebook-sheet-open:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .notebook-sheet-open:hover,
 .notebook-sheet-open:focus-visible,
@@ -889,7 +889,7 @@
   box-shadow: 0 3px #d5ccba;
   font-size: 12px;
   touch-action: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   position: relative;
   overflow: visible;
   white-space: nowrap;
@@ -984,7 +984,7 @@
   box-shadow: none;
   pointer-events: auto;
   touch-action: none;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   overflow: visible;
   isolation: isolate;
   z-index: 1;
@@ -993,7 +993,7 @@
   z-index: 4;
 }
 .notebook-attached-tab:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .notebook-attached-tab::before {
   content: "";
@@ -1183,11 +1183,11 @@
   background: transparent;
   box-shadow: none;
   touch-action: pan-y;
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   user-select: none;
 }
 .notebook-concept-cover:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .notebook-concept-cover:focus-visible {
   outline: 3px solid #facc15;

@@ -32,9 +32,6 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   const today = toDateKey(now);
   const pendingTasks = workspace.tasks.filter((task) => !task.completed);
   const todayEvents = displayEventsOn(workspace.events, today);
-  const completedHabits = workspace.habits.filter((habit) =>
-    habit.completedDates.includes(today),
-  ).length;
   const focusMinutes = minutesFocusedOn(workspace, today);
   const studyRoute = buildStudyRoute(workspace, today);
   const subjectName = (subjectId: string) =>
@@ -77,11 +74,9 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           <small>minutos registrados</small>
         </article>
         <article>
-          <span>Hábitos</span>
-          <strong>
-            {completedHabits}/{workspace.habits.length}
-          </strong>
-          <small>concluídos hoje</small>
+          <span>Agenda</span>
+          <strong>{todayEvents.length}</strong>
+          <small>eventos de hoje</small>
         </article>
       </section>
 

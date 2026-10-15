@@ -7,7 +7,6 @@ import { isGuestSession, requiresLogin } from "./domain/guest-session";
 import { readLocalRoomCodeFromUrl, readLocalRoomProjectorCodeFromUrl } from "./domain/room-code";
 import { useWorkspace } from "./hooks/use-workspace";
 import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
-import { HabitsView } from "./views/habits-view";
 import { TodayView } from "./views/today-view";
 
 const LearnView = lazy(() => import("./views/learn-view"));
@@ -118,7 +117,6 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
             />
           )}
           {view === "focus" && <FocusView workspace={workspace} dispatch={dispatch} />}
-          {view === "habits" && <HabitsView workspace={workspace} dispatch={dispatch} />}
           {view === "notes" && (
             <NotesView workspace={workspace} dispatch={dispatch} cloud={cloud} />
           )}

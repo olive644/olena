@@ -3,6 +3,9 @@
   :root {
     --paper-cursor-arrow: url("/cursors/paper-arrow.svg") 3 3, default;
     --paper-cursor-hand: url("/cursors/paper-hand.svg") 13 3, pointer;
+    --paper-cursor-text: url("/cursors/paper-text.svg") 16 16, text;
+    --paper-cursor-grab: url("/cursors/paper-grab.svg") 16 16, grab;
+    --paper-cursor-grabbing: url("/cursors/paper-grab.svg") 16 16, grabbing;
   }
   html,
   body {
@@ -45,7 +48,32 @@
       input[type="date"],
       input[type="time"]
     ) {
-    cursor: text !important;
+    cursor: var(--paper-cursor-text) !important;
+  }
+  :root
+    body
+    :is(
+      [draggable="true"],
+      .oliver-inspection-stage,
+      .math-journey-stage,
+      .agenda-timeline-event,
+      .agenda-island-drag,
+      .practice-carousel-stage
+    ) {
+    cursor: var(--paper-cursor-grab) !important;
+  }
+  :root
+    body
+    :is(
+      [draggable="true"],
+      .oliver-inspection-stage,
+      .math-journey-stage,
+      .agenda-timeline-event,
+      .agenda-island-drag,
+      .practice-carousel-stage
+    ):active,
+  :root body .helena-chat[data-motion="dragging"] .helena-chat-launcher {
+    cursor: var(--paper-cursor-grabbing) !important;
   }
   :root
     body

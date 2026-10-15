@@ -165,11 +165,11 @@
   font-size: 14px;
 }
 .agenda-clock-hand {
-  cursor: grab;
+  cursor: var(--paper-cursor-grab, grab);
   transition: transform 120ms ease-out;
 }
 .agenda-clock-hand:active {
-  cursor: grabbing;
+  cursor: var(--paper-cursor-grabbing, grabbing);
 }
 .agenda-clock-hand:focus-visible {
   outline: none;
