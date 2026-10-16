@@ -1,5 +1,10 @@
 # Auditoria do estado atual
 
+## Avatar maior sem ampliar a barra (2026-10-15)
+
+- Foto do Perfil com 144 px expandida, 80 px compacta no PC/tablet e 64 px no celular. Alturas da barra preservadas: 88/136/152 px conforme breakpoint. Retrato fica fora do recorte da capa para não ser cortado; recorte de papel temático aparece atrás dele com a mesma variável de scroll, permitindo prolongamento local abaixo da barra no PC. Nome ajustado lateralmente, sem sobrepor menu, bio ou configurações. Nenhuma mudança de dados, arte ou ciclos Rive.
+- Prova: verify completo aprovado com 1765 testes, build e orçamento preservados. Regressão de navegador confere 144 px expandido, 80/64 px compacto, altura da barra inalterada, saliência desktop e ausência de sobreposição com bio em 320 a 1440 px, nos dois temas.
+
 ## Identidade sobreposta e capa de retratos (2026-10-15)
 
 - Capa compartilhada profile-heads.webp: três cabeças dos personagens originais, composição triangular de retrato coral, sem bocas e com bigodes preservados. Gerada com imagegen integrado a partir de profile-people.webp, sem fotos pessoais enviadas neste fluxo; WebP 1800x600. Prompt: somente três cabeças chibi humanas em papel facetado, menina acima ao centro, rapazes abaixo, fundo grafite/roxo, sem texto, corpos ou objetos, luz superior e identidades preservadas. A composição remete à referência Queen solicitada sem incorporar músicos ou arte alheia.

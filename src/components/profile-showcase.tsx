@@ -76,18 +76,6 @@ export function ProfileShowcase({
               fetchPriority="high"
             />
             <div className="profile-cover__shade" />
-            <img
-              className="profile-cover__avatar"
-              src={profile.photoUrl || "/profile-avatars/helena.webp"}
-              alt="Sua foto de perfil"
-              width="112"
-              height="112"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                if (!event.currentTarget.src.endsWith("/profile-avatars/helena.webp"))
-                  event.currentTarget.src = "/profile-avatars/helena.webp";
-              }}
-            />
             <h1 className="profile-cover__name" title={name}>
               {name}
             </h1>
@@ -143,6 +131,22 @@ export function ProfileShowcase({
               ✦
             </span>
           </section>
+        )}
+        {!settingsOpen && (
+          <div className="profile-cover__portrait">
+            <img
+              className="profile-cover__avatar"
+              src={profile.photoUrl || "/profile-avatars/helena.webp"}
+              alt="Sua foto de perfil"
+              width="144"
+              height="144"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                if (!event.currentTarget.src.endsWith("/profile-avatars/helena.webp"))
+                  event.currentTarget.src = "/profile-avatars/helena.webp";
+              }}
+            />
+          </div>
         )}
         {children}
       </div>

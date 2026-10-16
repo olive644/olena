@@ -9,7 +9,7 @@
   --cover-height: 530px;
   --compact-height: 88px;
   --avatar-left: 24px;
-  --name-left: 82px;
+  --name-left: 120px;
   position: sticky;
   top: 0;
   height: var(--compact-height);
@@ -68,12 +68,30 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   background: #17122410;
   opacity: calc(1 - var(--profile-collapse));
 }
-.profile-cover__avatar {
+.profile-cover__portrait {
   position: absolute;
-  top: calc(202px - 188px * var(--profile-collapse));
+  top: calc(174px - 160px * var(--profile-collapse));
   left: calc(32px + (var(--avatar-left) - 32px) * var(--profile-collapse));
-  width: calc(112px - 68px * var(--profile-collapse));
-  height: calc(112px - 68px * var(--profile-collapse));
+  width: calc(144px - 64px * var(--profile-collapse));
+  height: calc(144px - 64px * var(--profile-collapse));
+  z-index: 1;
+  pointer-events: none;
+}
+.profile-cover__portrait::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 1px solid var(--line);
+  border-radius: 12px 16px 42px 42px;
+  background: var(--surface);
+  box-shadow: 0 5px var(--line);
+  opacity: var(--profile-collapse);
+}
+.profile-cover__avatar {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border: 3px solid #fff9ef;
   border-radius: 50%;
@@ -193,7 +211,8 @@ html[data-theme] .profile-view .profile-chrome .page-header {
     top: calc(420px - 344px * var(--profile-collapse));
   }
   .profile-cover__bio {
-    top: calc(328px - 252px * var(--profile-collapse));
+    top: calc(328px - 220px * var(--profile-collapse));
+    -webkit-line-clamp: 1;
   }
   .profile-chrome[data-compact="true"] .profile-cover__bio {
     left: 24px;
@@ -442,7 +461,7 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   .profile-chrome {
     --profile-chrome-padding: 8px;
     --avatar-left: 62px;
-    --name-left: 114px;
+    --name-left: 154px;
   }
 }
 @media (max-width: 600px) {
@@ -450,7 +469,7 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
     --cover-height: 600px;
     --compact-height: 152px;
     --avatar-left: 62px;
-    --name-left: 114px;
+    --name-left: 138px;
   }
   .profile-cover-spacer {
     height: 468px;
@@ -464,15 +483,20 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   .profile-cover__shade {
     display: none;
   }
-  .profile-cover__avatar {
-    top: calc(148px - 134px * var(--profile-collapse));
+  .profile-cover__portrait {
+    top: calc(128px - 124px * var(--profile-collapse));
     left: calc(20px + (var(--avatar-left) - 20px) * var(--profile-collapse));
+    width: calc(144px - 80px * var(--profile-collapse));
+    height: calc(144px - 80px * var(--profile-collapse));
+  }
+  .profile-cover__portrait::before {
+    inset: -4px;
   }
   .profile-view .profile-cover__name {
     top: calc(278px - 264px * var(--profile-collapse));
     left: calc(20px + (var(--name-left) - 20px) * var(--profile-collapse));
     color: var(--text);
-    max-width: calc(90% - 165px * var(--profile-collapse));
+    max-width: calc(90% - 190px * var(--profile-collapse));
   }
   .profile-cover__edit {
     top: 360px;
@@ -491,7 +515,7 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   .profile-cover__handle {
     top: calc(320px - 280px * var(--profile-collapse));
     left: calc(20px + (var(--name-left) - 20px) * var(--profile-collapse));
-    max-width: calc(90% - 165px * var(--profile-collapse));
+    max-width: calc(90% - 190px * var(--profile-collapse));
     gap: 6px;
     font-size: 0.7rem;
   }

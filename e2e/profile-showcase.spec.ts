@@ -25,6 +25,11 @@ test("barra comporta cinco redes e dados longos sem cobrir a engrenagem", async 
     const chrome = page.locator(".profile-chrome");
     await expect(chrome).toHaveAttribute("data-compact", "true");
     const box = await chrome.boundingBox();
+    const portrait = await page.locator(".profile-cover__portrait").boundingBox();
+    const bio = await page.locator(".profile-cover__bio").boundingBox();
+    expect(
+      bio!.y >= portrait!.y + portrait!.height || bio!.x >= portrait!.x + portrait!.width,
+    ).toBe(true);
     const gear = await page
       .getByRole("button", { name: "Configurações", exact: true })
       .boundingBox();
@@ -102,7 +107,14 @@ for (const theme of ["light", "dark"]) {
     await expect(chrome.locator(".page-header")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect.poll(async () => (await chrome.boundingBox())?.y).toBeCloseTo(0, 0);
     const photoBox = await avatar.boundingBox();
-    expect(photoBox!.width).toBeCloseTo(44, 0);
+    const mobileWidth = (page.viewportSize()?.width ?? 1280) <= 600;
+    expect(photoBox!.width).toBeCloseTo(mobileWidth ? 64 : 80, 0);
+    expect((await chrome.boundingBox())!.height).toBe(mobileWidth ? 152 : 88);
+    if (!mobileWidth) {
+      const coverBox = await page.locator(".profile-cover").boundingBox();
+      expect(photoBox!.y + photoBox!.height).toBeGreaterThan(coverBox!.y + coverBox!.height);
+      await expect(page.locator(".profile-cover__portrait")).toHaveCSS("overflow", "visible");
+    }
     const nameBox = await page.locator(".profile-cover__name").boundingBox();
     const gearBox = await page
       .getByRole("button", { name: "Configurações", exact: true })
@@ -128,7 +140,7 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Fechar configurações" }).click();
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(chrome).toHaveAttribute("data-compact", "false");
-    await expect.poll(async () => (await avatar.boundingBox())?.width).toBeCloseTo(112, 0);
+    await expect.poll(async () => (await avatar.boundingBox())?.width).toBeCloseTo(144, 0);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.evaluate(() => window.scrollTo(0, 540));
     await expect(chrome).toHaveCSS("--profile-collapse", "1");
