@@ -11,6 +11,7 @@ import {
 import { PaperChoice } from "./agenda-paper-fields";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PROFILE_HANDLE_CHANGED, requestProfileHandle } from "../data/profile-handle";
 
 export function ProfilePaperIcon({ name }: { name: SocialNetwork | "followers" | "following" }) {
   return (
@@ -39,7 +40,7 @@ export function ProfileEditor({
   const dialog = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState<ProfileDraft>(() => ({
     name: guest ? "Guest" : profile.name || "",
-    username: profile.username || "",
+    username: guest ? "" : profile.username || "",
     bio: profile.bio || "",
     pronouns: profile.pronouns || "",
     socialLinks: profile.socialLinks?.length ? [...profile.socialLinks] : [""],
@@ -48,14 +49,17 @@ export function ProfileEditor({
     PRONOUNS.includes(draft.pronouns) ? draft.pronouns : "custom",
   );
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
     dialog.current?.showModal();
   }, []);
   function close() {
+    if (saving) return;
     dialog.current?.close();
     onClose();
   }
   function change(field: "name" | "username" | "bio" | "pronouns", value: string) {
+    if (guest && field === "username") return;
     setDraft((current) => ({ ...current, [field]: value }));
   }
   return (
@@ -80,20 +84,25 @@ export function ProfileEditor({
         </button>
       </header>
       <form
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
+          if (saving) return;
           const invalid = validateProfileDraft(draft);
           if (invalid) {
             setError(invalid);
             return;
           }
           try {
+            setSaving(true);
+            const handle = guest
+              ? { username: "" }
+              : await requestProfileHandle("POST", draft.username.trim());
             writeSyncedStorage(
               "helena.profile.v1",
               JSON.stringify({
                 ...readStoredProfile(),
                 name: draft.name.trim(),
-                username: draft.username.trim(),
+                username: handle.username,
                 bio: draft.bio.trim(),
                 pronouns: draft.pronouns.trim(),
                 socialLinks: draft.socialLinks
@@ -101,11 +110,17 @@ export function ProfileEditor({
                   .map((link) => recognizeSocialLink(link)!.url),
               }),
             );
-            close();
-          } catch {
+            window.dispatchEvent(new Event(PROFILE_HANDLE_CHANGED));
+            dialog.current?.close();
+            onClose();
+          } catch (cause) {
             setError(
-              "Não foi possível salvar o perfil. Suas alterações continuam aqui para tentar novamente.",
+              cause instanceof Error && cause.message
+                ? `${cause.message} Suas alterações continuam aqui para tentar novamente.`
+                : "Não foi possível salvar o perfil. Suas alterações continuam aqui para tentar novamente.",
             );
+          } finally {
+            setSaving(false);
           }
         }}
       >
@@ -125,6 +140,7 @@ export function ProfileEditor({
             <span id="profile-username-label">Nome</span>
             <input
               maxLength={30}
+              disabled={guest}
               value={draft.username}
               onChange={(event) => change("username", event.target.value.toLowerCase())}
               autoCapitalize="none"
@@ -134,7 +150,9 @@ export function ProfileEditor({
               aria-labelledby="profile-username-label"
             />
             <small id="profile-username-help">
-              Letras minúsculas, números, ponto e _. Não é um nome de usuário exclusivo.
+              {guest
+                ? "Entre na conta para criar um @."
+                : "Seu @ é exclusivo. Use letras minúsculas, números, ponto ou _."}
             </small>
           </label>
           <label className="field profile-editor__wide">
@@ -243,11 +261,11 @@ export function ProfileEditor({
         )}
         {error && <p role="alert">{error}</p>}
         <footer>
-          <button type="button" className="secondary-button" onClick={close}>
+          <button type="button" className="secondary-button" onClick={close} disabled={saving}>
             Cancelar
           </button>
-          <button className="primary-button" type="submit">
-            Salvar perfil
+          <button className="primary-button" type="submit" disabled={saving}>
+            {saving ? "Confirmando…" : "Salvar perfil"}
           </button>
         </footer>
       </form>

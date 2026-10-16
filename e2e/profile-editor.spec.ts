@@ -28,8 +28,7 @@ for (const theme of ["light", "dark"]) {
     await edit.click();
     const dialog = page.getByRole("dialog", { name: "Editar perfil", exact: true });
     await expect(dialog.getByLabel("Apelido")).toHaveAttribute("readonly", "");
-    await dialog.getByLabel("Nome", { exact: true }).fill("OLI_ESTUDA");
-    await expect(dialog.getByLabel("Nome", { exact: true })).toHaveValue("oli_estuda");
+    await expect(dialog.getByLabel("Nome", { exact: true })).toBeDisabled();
     await dialog.getByLabel("Bio", { exact: true }).fill("Uma descoberta de cada vez.");
     await dialog.getByRole("button", { name: "Pronomes", exact: true }).click();
     await page.getByRole("option", { name: "Personalizado", exact: true }).click();
@@ -63,7 +62,7 @@ for (const theme of ["light", "dark"]) {
     await expect(dialog).toHaveCount(0);
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(edit).toBeFocused();
-    await expect(page.getByText("@oli_estuda", { exact: true })).toBeVisible();
+    await expect(page.getByText("@oli_estuda", { exact: true })).toHaveCount(0);
     await expect(page.getByText("ele/dela", { exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
@@ -92,7 +91,7 @@ for (const theme of ["light", "dark"]) {
     );
     await page.getByRole("button", { name: "Configurações", exact: true }).click();
     await page.getByRole("button", { name: "Editar perfil", exact: true }).click();
-    await expect(dialog.getByLabel("Nome", { exact: true })).toHaveValue("oli_estuda");
+    await expect(dialog.getByLabel("Nome", { exact: true })).toBeDisabled();
     await expect(dialog.getByLabel("Pronomes personalizados")).toHaveValue("ele/dela");
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
     await expect(dialog).toHaveCount(0);

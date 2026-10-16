@@ -16,6 +16,9 @@ for (const [position, course] of MATH_COURSES.entries())
     page,
     context,
   }, info) => {
+    // Dois temas, offline, recarga e duas navegações completas compartilham este
+    // prazo. Preservar os limites individuais das esperas também no WebKit.
+    test.setTimeout(60_000);
     const level = course.id === "calculus1" ? 2 : 5;
     await page.addInitScript(
       ({ ids, position, level }) => {

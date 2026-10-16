@@ -2,11 +2,43 @@ import { afterEach, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { ProfileOverview, ProfileShowcase } from "./profile-showcase";
 import { createInitialWorkspace } from "../domain/workspace";
+const serverHandle = vi.hoisted(() => ({ username: "oli", creks: false }));
+vi.mock("../hooks/use-profile-handle", () => ({
+  useProfileHandle: (guest: boolean) => ({
+    handle: guest ? { username: "", creks: false } : serverHandle,
+    refresh: vi.fn(),
+  }),
+}));
 
 afterEach(() => {
+  serverHandle.username = "oli";
+  serverHandle.creks = false;
   cleanup();
   localStorage.clear();
   vi.restoreAllMocks();
+});
+it("mostra CREKS apenas da identidade do servidor, não de campos locais", () => {
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({ name: "Oli", username: "forjado", creks: true }),
+  );
+  serverHandle.username = "oliver644";
+  serverHandle.creks = true;
+  const { rerender } = render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.getByText("@oliver644")).toBeTruthy();
+  expect(screen.queryByText("@forjado")).toBeNull();
+  expect(screen.getByLabelText("Selo CREKS").className).toBe("profile-creks");
+  serverHandle.creks = false;
+  rerender(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
 });
 
 it("mostra identidade real com capa compartilhada e uma só foto", () => {
@@ -25,7 +57,7 @@ it("mostra identidade real com capa compartilhada e uma só foto", () => {
   );
   expect(container.querySelectorAll(".profile-cover__avatar")).toHaveLength(1);
   expect(container.querySelector(".profile-cover__art")?.getAttribute("src")).toBe(
-    "/room-art/profile-heads.webp",
+    "/room-art/profile-heads-wide.webp",
   );
 });
 

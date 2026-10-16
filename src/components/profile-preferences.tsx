@@ -13,6 +13,7 @@ import { PaperDigits } from "./paper-digits";
 import { downloadExportBlob } from "../data/paper-export-art";
 import { serializeWorkspace, WORKSPACE_STORAGE_KEY } from "../data/local-workspace";
 import { ProfileEditor } from "./profile-editor";
+import { profileAvatarSource } from "../domain/profile-avatars";
 
 export function ProfileIdentity({ guest }: { guest: boolean }) {
   const [profile, setProfile] = useStoredProfile();
@@ -33,7 +34,7 @@ export function ProfileIdentity({ guest }: { guest: boolean }) {
       <h2 id="profile-identity-title">Como você aparece</h2>
       <div className="profile-identity-preview">
         <img
-          src={profile.photoUrl ?? "/profile-avatars/helena.webp"}
+          src={profileAvatarSource(profile.photoUrl)}
           alt="Avatar atual"
           width="72"
           height="72"

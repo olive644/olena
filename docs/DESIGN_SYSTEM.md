@@ -1,5 +1,14 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, revisão de 16/10/2026: somente personagens oficiais no avatar e capa
+panorâmica fixa, sem escolha de arquivo. Galeria modal de papel, prévia e seleção
+amarela, Cancelar/Usar personagem. Lápis ao lado do apelido abaixo da foto. A base
+da foto se integra à barra por recorte facetado da mesma superfície, sem moldura
+separada e sem aumentar a altura da barra. Capa cobre as duas laterais sem esticar
+rostos. Streaks positivos ao lado de Seguindo: tomate Pomodoro, flor original da
+Agenda para Cronômetro, chama original das ilhas. Nenhum número fictício ou ícone
+alternativo de relógio para o streak de Cronômetro.
+
 Perfil, identidade sobreposta (2026-10-15): cabeças chibi humanas sem boca, bigodes
 preservados, fundo de papel grafite/roxo e composição triangular coral. Avatar
 cruza a borda da capa como uma ficha de identidade. Apelido, @ com pronomes à
