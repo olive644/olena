@@ -983,6 +983,7 @@ it("exclui a conta: confirma o login, apaga a nuvem e a conta e limpa o aparelho
 
   expect(calls).toEqual([
     "reauth",
+    "delete /api/profile-handle",
     "delete https://project.firebaseio.com/users/user-1.json",
     "user",
   ]);

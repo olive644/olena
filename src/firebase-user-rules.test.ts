@@ -15,6 +15,12 @@ const user = rules.rules.users.$uid as {
 };
 
 describe("regras de /users/<uid>", () => {
+  it("registro de @ não aceita leitura nem escrita direta pelo navegador", () => {
+    const all = JSON.parse(readFileSync("firebase-room.rules.json", "utf8")) as {
+      rules: Record<string, unknown>;
+    };
+    expect(all.rules["privateProfileHandles"]).toEqual({ ".read": false, ".write": false });
+  });
   it("rejects stale stateV2 replacements that omit published math v5, while permitting first writes and updates", () => {
     const modern = rules.rules.users.$uid["stateV2"] as { ".validate": string };
     const wire = Object.keys(encodeCloudItems({ "helena.mathGame.v5": "progress" }))[0]!;
