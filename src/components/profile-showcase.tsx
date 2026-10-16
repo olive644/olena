@@ -1,10 +1,12 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import type { WorkspaceState } from "../domain/workspace";
 import { ProfileProgress } from "./profile-preferences";
 import { NavigationIcon } from "./navigation-icon";
 import { useAccessibility } from "../data/accessibility-preferences";
 import { agendaTimeZone } from "../data/agenda-time-zone";
+import { ProfileEditor, ProfilePaperIcon } from "./profile-editor";
+import { recognizeSocialLink, SOCIAL_LABELS } from "../domain/profile-identity";
 
 export function ProfileShowcase({
   children,
@@ -18,9 +20,11 @@ export function ProfileShowcase({
   guest?: boolean;
 }) {
   const [profile] = useStoredProfile();
+  const [editing, setEditing] = useState(false);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
   const anchor = useRef<HTMLDivElement>(null);
+  const editButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const element = chrome.current;
     const origin = anchor.current;
@@ -40,6 +44,7 @@ export function ProfileShowcase({
         String(motion?.matches || reduceMotion ? Number(progress > 0.5) : progress),
       );
       element.dataset["compact"] = String(progress >= 1);
+      if (editButton.current) editButton.current.inert = progress > 0.2;
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -71,10 +76,6 @@ export function ProfileShowcase({
               fetchPriority="high"
             />
             <div className="profile-cover__shade" />
-            <div className="profile-cover__intro">
-              <span className="section-label">Perfil</span>
-              <h1>Seu espaço, do seu jeito.</h1>
-            </div>
             <img
               className="profile-cover__avatar"
               src={profile.photoUrl || "/profile-avatars/helena.webp"}
@@ -87,12 +88,27 @@ export function ProfileShowcase({
                   event.currentTarget.src = "/profile-avatars/helena.webp";
               }}
             />
-            <strong className="profile-cover__name" title={name}>
+            <h1 className="profile-cover__name" title={name}>
               {name}
-            </strong>
-            <span className="profile-cover__caption">
-              Cada descoberta faz parte da sua história.
-            </span>
+            </h1>
+            <button
+              ref={editButton}
+              type="button"
+              className="secondary-button profile-cover__edit"
+              onClick={() => setEditing(true)}
+            >
+              Editar perfil
+            </button>
+            <div className="profile-cover__connections" aria-label="Conexões do perfil">
+              <span>
+                <ProfilePaperIcon name="followers" />
+                Seguidores
+              </span>
+              <span>
+                <ProfilePaperIcon name="following" />
+                Seguindo
+              </span>
+            </div>
             <span className="profile-cover__spark profile-cover__spark--one" aria-hidden="true">
               ✦
             </span>
@@ -104,6 +120,36 @@ export function ProfileShowcase({
         {children}
       </div>
       {!settingsOpen && <div className="profile-cover-spacer" aria-hidden="true" />}
+      {!settingsOpen &&
+        (profile.username || profile.bio || profile.pronouns || profile.socialLinks?.length) && (
+          <section className="profile-about" aria-label="Sobre você">
+            {profile.username && <strong>@{profile.username}</strong>}
+            {profile.pronouns && (
+              <span className="profile-about__pronouns">{profile.pronouns}</span>
+            )}
+            {profile.bio && <p>{profile.bio}</p>}
+            <div className="profile-about__networks">
+              {profile.socialLinks?.map((link) => {
+                const social = recognizeSocialLink(link);
+                return social ? (
+                  <a
+                    key={social.network}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="secondary-button"
+                  >
+                    <ProfilePaperIcon name={social.network} />
+                    {SOCIAL_LABELS[social.network]}
+                  </a>
+                ) : null;
+              })}
+            </div>
+          </section>
+        )}
+      {editing && (
+        <ProfileEditor profile={profile} guest={guest} onClose={() => setEditing(false)} />
+      )}
     </>
   );
 }

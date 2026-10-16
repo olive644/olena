@@ -340,10 +340,9 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
   await page.goto("/");
   const bell = page.locator(".system-updates-trigger");
   await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");
-  const appearance = page.locator(".page-header__theme");
-  const bellBox = await bell.boundingBox(),
-    themeBox = await appearance.boundingBox();
-  expect(bellBox!.x + bellBox!.width).toBeLessThanOrEqual(themeBox!.x);
+  await expect(page.locator(".page-header__theme")).toHaveCount(0);
+  const bellBox = await bell.boundingBox();
+  expect(bellBox!.x + bellBox!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   const panel = page.getByRole("region", { name: "Notificações de atualização" });
   for (const theme of ["light", "dark"]) {
     await page.evaluate(

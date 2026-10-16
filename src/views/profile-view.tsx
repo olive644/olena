@@ -133,8 +133,7 @@ export function ProfileView({
       </ProfileShowcase>
       {!settingsOpen && <ProfileOverview workspace={workspace} />}
       <header className="profile-settings-heading" hidden={!settingsOpen}>
-        <span className="section-label">Perfil</span>
-        <h1>Seu espaço, do seu jeito.</h1>
+        <h1>Configurações</h1>
       </header>
       <div className="profile-settings-layout" id="profile-settings" hidden={!settingsOpen}>
         <nav className="profile-settings-nav" aria-label="Seções do Perfil">

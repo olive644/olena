@@ -51,13 +51,16 @@ it("organiza as opções reais sem placeholders e muda o Pomodoro pelo painel de
 });
 it("edita a identidade sem trocar a conta Google nem recriar a foto no cabeçalho", () => {
   openProfile();
-  fireEvent.change(screen.getByLabelText("Nome no aplicativo"), { target: { value: "Estudante" } });
-  fireEvent.click(screen.getByRole("button", { name: "Salvar nome" }));
-  expect(JSON.parse(localStorage.getItem("helena.profile.v1")!)).toEqual({ name: "Estudante" });
+  fireEvent.click(screen.getByRole("button", { name: "Editar perfil" }));
+  fireEvent.change(screen.getByLabelText("Apelido"), { target: { value: "Estudante" } });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar perfil" }));
+  expect(JSON.parse(localStorage.getItem("helena.profile.v1")!)).toMatchObject({
+    name: "Estudante",
+  });
   expect(screen.getByText("Estudante", { selector: "strong" })).toBeTruthy();
   expect(document.querySelector(".page-header .user-profile")).toBeNull();
 });
-it("compartilha tema com o cabeçalho e preserva as preferências do editor", () => {
+it("mantém tema somente nas configurações e preserva as preferências do editor", () => {
   openProfile();
   section("Aparência e acessibilidade");
   fireEvent.click(
@@ -66,7 +69,7 @@ it("compartilha tema com o cabeçalho e preserva as preferências do editor", ()
     }),
   );
   expect(document.documentElement.dataset["theme"]).toBe("dark");
-  expect(screen.getByLabelText(/Aparência: tema escuro/)).toBeTruthy();
+  expect(document.querySelector(".page-header__theme")).toBeNull();
   section("Cadernos");
   fireEvent.click(screen.getByRole("checkbox", { name: /Só caneta, dedo move/ }));
   expect(JSON.parse(localStorage.getItem(NOTEBOOK_PREFERENCES_KEY)!)).toMatchObject({

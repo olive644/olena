@@ -1,21 +1,30 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, ficha editável (2026-10-15): sem rótulo Perfil nem frases decorativas na
+capa. Foto, apelido, Editar perfil e indicadores Seguidores/Seguindo com símbolos
+de papel próprios. Esses indicadores não apresentam contagem enquanto não existe
+grafo social real. Bio, nome em minúsculas, pronomes e redes ficam na ficha, em
+diálogo de papel creme/grafite. Reconhecimento das cinco redes usa SVGs próprios
+profile-instagram/facebook/linkedin/github/tiktok, não ícones de contorno externos.
+O tema sai do cabeçalho de todas as abas e fica somente em Configurações,
+Aparência e acessibilidade. Engrenagem do Perfil mantém sua placa creme.
+
 Perfil, protótipo de capa (2026-10-15): capa compartilhada original em papel
 facetado, com três humanos pequenos sem boca e os bigodes dos rapazes. Avatar
 e nome reais compõem a identidade e se recolhem na mesma barra ao rolar, apenas
 no Perfil, sem recolocar foto nos cabeçalhos das outras abas. No celular manter
 os três personagens visíveis no panorama inteiro. Barra compacta usa superfície
-do tema, sem vidro; engrenagem e tema conservam suas placas creme. Movimento
+do tema, sem vidro; engrenagem conserva sua placa creme. Movimento
 reduzido do aplicativo e do sistema elimina flutuação e interpolação contínua.
 
-Engrenagem do Perfil: somente ícone, à esquerda do seletor de tema, reutilizando
+Engrenagem do Perfil: somente ícone no canto superior direito, reutilizando
 a mesma placa creme do cabeçalho nos dois temas. Mascote: somente arte do Rive
 aprovado, incluindo a imagem do primeiro quadro durante carga/erro/movimento
 reduzido. Mesmo tamanho e posição do canvas, sem trocar para favicon ou outro
 desenho de estrela. O .riv e os ciclos originais permanecem intactos.
 
 Cabeçalho (2026-10-15): sem foto ou seletor de perfil no topo; sino somente no
-Espaço do aluno e aparência disponível nas demais telas. Identidade e preferências
+Espaço do aluno e aparência restrita às configurações. Identidade e preferências
 ficam atrás da engrenagem Configurações do Perfil. Aviso de privacidade compacto
 usa papel creme/grafite, botão roxo e foco amarelo, sem categorias de rastreamento
 inexistentes. A Helena flutuante preserva o Rive 2D e seus ciclos; imagens de

@@ -24,7 +24,7 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
   const menu = page.getByRole("navigation", { name: "Seções do Perfil" });
-  await expect(page.getByRole("heading", { name: "Seu espaço, do seu jeito." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Configurações", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(page.getByText("Em produção", { exact: true })).toHaveCount(0);
   for (const theme of ["Claro", "Escuro"]) {
@@ -93,5 +93,5 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
     await page.evaluate(() => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).habits),
   ).toEqual(seed.habits);
   await page.goto("/habitos");
-  await expect(page.getByRole("heading", { name: "Seu espaço, do seu jeito." })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Seu perfil" })).toBeVisible();
 });

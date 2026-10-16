@@ -177,28 +177,27 @@ describe("App", () => {
     });
   });
 
-  it("usa a iconografia própria da Helena no seletor de aparência", () => {
+  it("troca aparência somente pelas configurações com iconografia própria", async () => {
     render(<App />);
-    const header = document.querySelector(".page-header__theme") as HTMLElement;
-    const appearanceTrigger = header.querySelector(".appearance-picker__trigger") as HTMLElement;
-    const lightArtwork = appearanceTrigger.querySelector('[data-icon="theme-dark"]');
+    expect(document.querySelector(".page-header__theme")).toBeNull();
+    navigate("Perfil");
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Configurações" }, { timeout: 5000 }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Aparência e acessibilidade" }));
+    const appearance = screen.getByRole("region", { name: "Seu papel, sua luz" });
+    const darkButton = within(appearance).getByRole("button", { name: "Escuro" });
+    const lightArtwork = darkButton.querySelector('[data-icon="theme-dark"]');
     expect(lightArtwork?.classList.contains("navigation-icon--brand")).toBe(true);
     expect(lightArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
     expect(
       lightArtwork?.querySelector('img[src="/navigation-icons/paper/claro/theme-dark.svg"]'),
     ).toBeTruthy();
 
-    fireEvent.click(appearanceTrigger);
-    fireEvent.click(within(header).getByRole("button", { name: "Escuro" }));
+    fireEvent.click(darkButton);
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-    const darkArtwork = (
-      header.querySelector(".appearance-picker__trigger") as HTMLElement
-    ).querySelector('[data-icon="theme-light"]');
-    expect(darkArtwork?.classList.contains("navigation-icon--brand")).toBe(true);
-    expect(darkArtwork?.querySelectorAll(".navigation-icon__variant")).toHaveLength(3);
-    expect(
-      darkArtwork?.querySelector('img[src="/navigation-icons/paper/escuro/theme-light.svg"]'),
-    ).toBeTruthy();
+    expect(darkButton.getAttribute("aria-pressed")).toBe("true");
+    expect(document.querySelector(".page-header__theme")).toBeNull();
   });
 
   it("cria uma tarefa, mostra no Espaço do aluno e permite concluí-la", async () => {
@@ -246,7 +245,7 @@ describe("App", () => {
     render(<App />);
     navigate("Perfil");
     expect(
-      await screen.findByRole("heading", { name: "Seu espaço, do seu jeito." }, { timeout: 5000 }),
+      await screen.findByRole("region", { name: "Seu perfil" }, { timeout: 5000 }),
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
     expect(
@@ -272,7 +271,7 @@ describe("App", () => {
     render(<App />);
 
     navigate("Perfil");
-    expect(await screen.findByRole("heading", { name: "Seu espaço, do seu jeito." })).toBeTruthy();
+    expect(await screen.findByRole("region", { name: "Seu perfil" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
     fireEvent.click(screen.getByRole("button", { name: "Estudo e foco" }));
     fireEvent.click(screen.getByRole("button", { name: /50 minutos/i }));

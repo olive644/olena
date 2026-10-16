@@ -11,7 +11,6 @@ import {
 import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
 import { type StoredProfile } from "../hooks/use-stored-profile";
-import { AppearanceToggle } from "./appearance-picker";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
 const SystemUpdates = lazy(() =>
   import("./system-updates").then((module) => ({ default: module.SystemUpdates })),
@@ -374,6 +373,7 @@ export function PageHeader({
   showUpdates?: boolean;
   leadingAction?: ReactNode;
 }) {
+  useTheme();
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
 
   return (
@@ -398,9 +398,6 @@ export function PageHeader({
           </Suspense>
         )}
         {leadingAction}
-        <div className="page-header__theme">
-          <AppearanceToggle />
-        </div>
       </div>
     </header>
   );

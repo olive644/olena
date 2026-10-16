@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { setTestTheme } from "./theme-setup";
 import { activateHandwritingPen } from "./notebook-helpers";
 
 test("celular distribui ações e recolhe as opções para liberar a folha", async ({ page }, info) => {
@@ -61,8 +62,7 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
   );
   await page.goto("/");
-  await page.locator(".page-header__theme .appearance-picker__trigger").click();
-  await page.getByRole("button", { name: "Escuro", exact: true }).click();
+  await setTestTheme(page, "dark");
   const nav = page.getByRole("navigation", { name: "Navegação móvel" });
   const header = page.locator(".page-header");
   await expect(nav).toHaveCSS("background-color", "rgb(41, 36, 50)");
