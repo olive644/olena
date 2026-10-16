@@ -57,7 +57,7 @@ html[data-theme] .profile-view .profile-chrome .page-header {
 }
 .profile-cover__art {
   height: calc(260px * (1 - var(--profile-collapse)));
-  object-fit: contain;
+  object-fit: cover;
   background: #292432;
   object-position: center;
   opacity: calc(1 - var(--profile-collapse));
@@ -75,17 +75,40 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   width: calc(144px - 64px * var(--profile-collapse));
   height: calc(144px - 64px * var(--profile-collapse));
   z-index: 1;
-  pointer-events: none;
 }
-.profile-cover__portrait::before {
-  content: "";
+:root body .profile-view .profile-chrome button.profile-cover__portrait {
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+.profile-cover__bridge {
   position: absolute;
-  inset: -8px;
-  border: 1px solid var(--line);
-  border-radius: 12px 16px 42px 42px;
-  background: var(--surface);
-  box-shadow: 0 5px var(--line);
+  top: 66px;
+  left: -8px;
+  width: 96px;
+  height: 32px;
+  pointer-events: none;
   opacity: var(--profile-collapse);
+}
+.profile-cover__edit {
+  width: 44px;
+  padding: 8px;
+}
+.profile-streak img,
+.profile-streak .agenda-week-flower {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+.profile-streak .streak-tomato {
+  display: block;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 24px;
+  margin: 0 0 0 2px;
 }
 .profile-cover__avatar {
   position: relative;
@@ -98,13 +121,15 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   background: #fff9ef;
   box-shadow: 0 4px 0 #19132940;
 }
-.profile-view .profile-cover__name {
+.profile-cover__identity {
   position: absolute;
   top: calc(328px - 314px * var(--profile-collapse));
   margin: 0;
   left: calc(32px + (var(--name-left) - 32px) * var(--profile-collapse));
   max-width: 34%;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: calc(28px - 12px * var(--profile-collapse));
@@ -112,11 +137,31 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   color: var(--text);
 }
 .profile-cover__edit {
-  position: absolute;
-  top: 406px;
-  left: 32px;
-  transform: translateY(calc(-12px * var(--profile-collapse)));
+  position: static;
+  flex: 0 0 44px;
   opacity: calc(1 - min(1, var(--profile-collapse) * 5));
+}
+.profile-view .profile-cover__name {
+  position: static;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:root body .profile-view .profile-cover__identity .profile-cover__edit {
+  flex-basis: calc(44px * (1 - var(--profile-collapse)));
+  width: calc(44px * (1 - var(--profile-collapse)));
+  height: calc(44px * (1 - var(--profile-collapse)));
+  min-width: 0;
+  min-height: 0;
+  padding: calc(8px * (1 - var(--profile-collapse)));
+  border-width: calc(1px * (1 - var(--profile-collapse)));
+}
+.profile-cover__identity {
+  gap: calc(10px * (1 - var(--profile-collapse)));
 }
 .profile-cover__connections {
   position: absolute;
@@ -207,6 +252,9 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   .profile-chrome {
     --compact-height: 136px;
   }
+  .profile-cover__bridge {
+    display: none;
+  }
   .profile-cover__networks {
     top: calc(420px - 344px * var(--profile-collapse));
   }
@@ -218,7 +266,7 @@ html[data-theme] .profile-view .profile-chrome .page-header {
     left: 24px;
     width: calc(100% - 340px);
   }
-  .profile-view .profile-cover__name,
+  .profile-cover__identity,
   .profile-cover__handle {
     max-width: 65%;
   }
@@ -477,7 +525,7 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   .profile-cover__art {
     top: 0;
     height: calc(200px * (1 - var(--profile-collapse)));
-    object-fit: contain;
+    object-fit: cover;
     transform: none;
   }
   .profile-cover__shade {
@@ -489,23 +537,22 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
     width: calc(144px - 80px * var(--profile-collapse));
     height: calc(144px - 80px * var(--profile-collapse));
   }
-  .profile-cover__portrait::before {
-    inset: -4px;
+  .profile-cover__bridge {
+    display: none;
   }
-  .profile-view .profile-cover__name {
+  .profile-cover__identity {
     top: calc(278px - 264px * var(--profile-collapse));
     left: calc(20px + (var(--name-left) - 20px) * var(--profile-collapse));
     color: var(--text);
     max-width: calc(90% - 190px * var(--profile-collapse));
   }
-  .profile-cover__edit {
-    top: 360px;
-    left: 20px;
-  }
   .profile-cover__connections {
     top: 422px;
     left: 20px;
     gap: 6px;
+    max-width: calc(100% - 40px);
+    overflow-x: auto;
+    padding-bottom: 6px;
   }
   .profile-cover__connections > span {
     padding: 6px;
@@ -546,6 +593,27 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   .profile-chrome .page-header__actions {
     gap: 6px;
   }
+}
+.profile-avatar-dialog__preview {
+  display: block;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--soft);
+}
+.profile-avatar-dialog .profile-picker {
+  position: static;
+  width: 100%;
+  max-height: 300px;
+  overflow: auto;
+  box-shadow: none;
+}
+.profile-avatar-dialog .profile-picker__options {
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+}
+.profile-avatar-dialog .profile-picker button[aria-pressed="true"] {
+  background: #facc15;
+  color: #292432;
+  border-color: #c9bba2;
 }
 @media (prefers-reduced-motion: reduce) {
   .profile-cover__networks a {
@@ -838,4 +906,22 @@ html[data-theme="dark"] .profile-settings-nav .profile-icon-dark-surface {
 }
 html[data-reduce-motion="true"] .profile-settings-grid {
   animation: none;
+}
+.profile-cover__handle .profile-creks {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  background: #19171e;
+  color: #fffdf7;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  flex: 0 0 auto;
+  clip-path: polygon(7% 0, 100% 0, 100% 75%, 93% 100%, 0 100%, 0 25%);
+  box-shadow: inset 0 -3px #514b5b;
+}
+[data-theme="dark"] .profile-cover__handle .profile-creks {
+  background: #fffdf7;
+  color: #19171e;
+  box-shadow: inset 0 -3px #cfc9bd;
 }

@@ -290,7 +290,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Ficha editável do Perfil, validação de redes e campos opcionais compatíveis:
 // total medido 1424.7 KiB. Remover seletor do topo reduz entrada a 279.5 KiB.
 // Mesma sincronização, nenhum serviço ou dependência nova, tetos absolutos intactos.
-const MAX_TOTAL_JS_BYTES = 1428 * 1024;
+// Galeria oficial modal, fontes de avatar restritas e streaks reais no Perfil:
+// total medido 1428.1 KiB, entrada 279.4 KiB. Sem dependências ou serviços novos.
+// Margem pequena de CI; tetos absolutos e orçamento inicial preservados.
+const MAX_TOTAL_JS_BYTES = 1432 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

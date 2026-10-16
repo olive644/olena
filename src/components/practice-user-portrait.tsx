@@ -1,4 +1,5 @@
 import type { StoredProfile } from "../hooks/use-stored-profile";
+import { profileAvatarSource } from "../domain/profile-avatars";
 export function PracticeUserPortrait({
   profile,
   className = "",
@@ -11,7 +12,7 @@ export function PracticeUserPortrait({
   return (
     <span className={`practice-user-portrait ${className}`}>
       <img
-        src={profile.photoUrl || "/profile-avatars/helena.webp"}
+        src={profileAvatarSource(profile.photoUrl)}
         alt={level ? `Sua foto no nível ${level}` : "Sua foto sobre a ilha"}
         draggable={false}
         onError={(event) => {

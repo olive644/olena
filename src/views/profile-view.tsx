@@ -112,6 +112,7 @@ export function ProfileView({
   return (
     <main className="main-content profile-view" id="main-content">
       <ProfileShowcase
+        workspace={workspace}
         settingsOpen={settingsOpen}
         guest={guest}
         nameFallback={guest ? GUEST_NAME : cloud.displayName || "Seu perfil"}

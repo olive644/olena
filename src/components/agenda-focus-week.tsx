@@ -1,6 +1,6 @@
 import { type pomodoroWeek } from "../domain/agenda-insights";
 
-function PaperFlower({ active }: { active: boolean }) {
+export function PaperFlower({ active }: { active: boolean }) {
   return (
     <svg
       viewBox="40 20 170 220"

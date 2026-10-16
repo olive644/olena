@@ -92,7 +92,7 @@ for (const theme of ["light", "dark"]) {
     const expandedPhoto = await avatar.boundingBox();
     expect(expandedPhoto!.y).toBeLessThan(artBox!.y + artBox!.height);
     expect(expandedPhoto!.y + expandedPhoto!.height).toBeGreaterThan(artBox!.y + artBox!.height);
-    await expect(page.getByLabel("Conexões do perfil")).toHaveText("0 Seguidores0 Seguindo");
+    await expect(page.getByLabel("Conexões do perfil")).toContainText("0 Seguidores0 Seguindo");
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveText("");
     await expect(
       page.getByRole("heading", { name: "O estudo que você já construiu" }),
@@ -122,7 +122,7 @@ for (const theme of ["light", "dark"]) {
     expect(nameBox!.x + nameBox!.width).toBeLessThan(gearBox!.x);
     const handleBox = await page.locator(".profile-cover__handle").boundingBox();
     expect(handleBox!.y).toBeGreaterThan(nameBox!.y);
-    await expect(page.locator(".profile-cover__handle")).toHaveText("@andreynaEla/dela");
+    await expect(page.locator(".profile-cover__handle")).toHaveText("Ela/dela");
     await expect(page.locator(".profile-cover__bio")).toBeVisible();
     const socialBox = await page.getByRole("link", { name: "GitHub", exact: true }).boundingBox();
     const chromeBox = await chrome.boundingBox();

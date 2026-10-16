@@ -361,7 +361,7 @@ it("treats an unanswered deadline separately, deducts four extra seconds and doe
   );
   expect(document.querySelector('.math-answer-button[data-feedback="wrong"]')).toBeNull();
   expect(document.querySelector(".math-user-avatar img")?.getAttribute("src")).toBe(
-    "/my-photo.png",
+    "/profile-avatars/helena.webp",
   );
   expect(document.querySelector(".math-user-avatar svg")).toBeNull();
   localStorage.removeItem("helena.profile.v1");

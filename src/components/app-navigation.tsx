@@ -12,6 +12,7 @@ import { MobileMenuContext } from "./mobile-menu-context";
 import { useTheme } from "../hooks/use-theme";
 import { type StoredProfile } from "../hooks/use-stored-profile";
 import { NavigationIcon, type NavigationIconName } from "./navigation-icon";
+import { PROFILE_AVATARS } from "../domain/profile-avatars";
 const SystemUpdates = lazy(() =>
   import("./system-updates").then((module) => ({ default: module.SystemUpdates })),
 );
@@ -40,30 +41,13 @@ type NavigationItem = {
   icon: NavigationIconName;
 };
 
-function profileAvatar(name: string, photoUrl: string): StoredProfile {
-  return { name, photoUrl };
-}
-
-const PROFILE_AVATARS = [
-  profileAvatar("Poliana", "/profile-avatars/poliana.webp"),
-  profileAvatar("Oliver", "/profile-avatars/oliver.webp"),
-  profileAvatar("Andreyna", "/profile-avatars/andreyna.webp"),
-  profileAvatar("Jairo", "/profile-avatars/jairo.webp"),
-  profileAvatar("Helena", "/profile-avatars/helena.webp"),
-  profileAvatar("Alice", "/profile-avatars/alice.svg"),
-  profileAvatar("Soso Estrelinha", "/profile-avatars/soso-estrelinha.svg"),
-  profileAvatar("Nicolas", "/profile-avatars/nicolas.svg"),
-  profileAvatar("Guilherme", "/profile-avatars/guilherme.svg"),
-  profileAvatar("Erick", "/profile-avatars/erick.svg"),
-  profileAvatar("Miau", "/profile-avatars/miau.svg"),
-  profileAvatar("Luizão", "/profile-avatars/luizao.svg"),
-  profileAvatar("Leticia", "/profile-avatars/leticia-coelho.svg"),
-  profileAvatar("Anonha", "/profile-avatars/anonha-panda.svg"),
-  profileAvatar("Moguel", "/profile-avatars/moguel-porquinho.svg"),
-  profileAvatar("Leo", "/profile-avatars/leo.svg"),
-] as const;
-
-export function ProfileChoices({ onChoose }: { onChoose: (profile: StoredProfile) => void }) {
+export function ProfileChoices({
+  onChoose,
+  selectedPhotoUrl,
+}: {
+  onChoose: (profile: StoredProfile) => void;
+  selectedPhotoUrl?: string;
+}) {
   return (
     <section className="profile-picker">
       <div className="profile-picker__heading">
@@ -73,6 +57,7 @@ export function ProfileChoices({ onChoose }: { onChoose: (profile: StoredProfile
         {PROFILE_AVATARS.map((avatar) => (
           <button
             type="button"
+            aria-pressed={selectedPhotoUrl ? selectedPhotoUrl === avatar.photoUrl : undefined}
             onClick={(event) => {
               onChoose(avatar);
               event.currentTarget.closest("details")?.removeAttribute("open");
