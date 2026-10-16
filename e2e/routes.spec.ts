@@ -23,7 +23,5 @@ test("abrir o link direto de uma aba funciona", async ({ page }) => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/perfil");
-  await expect(
-    page.getByRole("heading", { name: "Seu espaço, do seu jeito.", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("region", { name: "Seu perfil", exact: true })).toBeVisible();
 });

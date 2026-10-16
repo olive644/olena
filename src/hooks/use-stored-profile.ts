@@ -1,9 +1,21 @@
 import { useEffect, useState } from "react";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
-export type StoredProfile = { name?: string; photoUrl?: string };
-function readStoredProfile(): StoredProfile {
+import type { StoredProfile } from "../domain/profile-identity";
+export type { StoredProfile } from "../domain/profile-identity";
+export function readStoredProfile(): StoredProfile {
   try {
-    return JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}") as StoredProfile;
+    const value: unknown = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}");
+    if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+    const profile = { ...value } as StoredProfile;
+    for (const key of ["name", "photoUrl", "username", "bio", "pronouns"] as const) {
+      if (typeof profile[key] !== "string") delete profile[key];
+    }
+    if (!Array.isArray(profile.socialLinks)) delete profile.socialLinks;
+    else
+      profile.socialLinks = profile.socialLinks.filter(
+        (link): link is string => typeof link === "string",
+      );
+    return profile;
   } catch {
     return {};
   }

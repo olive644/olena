@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { setTestTheme } from "./theme-setup";
 
 test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Navegação lateral do desktop");
@@ -8,8 +9,7 @@ test("Perfil desktop e ícones dos Cadernos nos dois temas", async ({ page }, te
   await page.goto("/");
   const navigation = page.getByRole("navigation", { name: "Navegação principal" });
   for (const theme of ["Claro", "Escuro"]) {
-    await page.locator(".page-header__theme .appearance-picker__trigger").click();
-    await page.getByRole("button", { name: theme, exact: true }).click();
+    await setTestTheme(page, theme === "Claro" ? "light" : "dark");
     await navigation.getByRole("button", { name: "Perfil", exact: true }).click();
     await page.getByRole("button", { name: "Configurações", exact: true }).click();
     await page.getByRole("button", { name: "Estudo e foco", exact: true }).click();

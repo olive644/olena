@@ -12,16 +12,16 @@ import { NavigationIcon } from "./navigation-icon";
 import { PaperDigits } from "./paper-digits";
 import { downloadExportBlob } from "../data/paper-export-art";
 import { serializeWorkspace, WORKSPACE_STORAGE_KEY } from "../data/local-workspace";
+import { ProfileEditor } from "./profile-editor";
 
 export function ProfileIdentity({ guest }: { guest: boolean }) {
   const [profile, setProfile] = useStoredProfile();
-  const [name, setName] = useState(profile.name ?? "");
+  const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState("");
   function save(next: typeof profile) {
     try {
       writeSyncedStorage("helena.profile.v1", JSON.stringify(next));
       setProfile(next);
-      setName(next.name ?? "");
       setStatus("Perfil atualizado.");
     } catch {
       setStatus("Não foi possível salvar o perfil. Tente novamente.");
@@ -40,32 +40,21 @@ export function ProfileIdentity({ guest }: { guest: boolean }) {
         />
         <strong>{guest ? "Guest" : profile.name || "Seu perfil"}</strong>
       </div>
-      {!guest && (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (name.trim()) save({ ...profile, name: name.trim() });
-          }}
-        >
-          <label className="field">
-            <span>Nome no aplicativo</span>
-            <input
-              required
-              maxLength={60}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-            />
-          </label>
-          <button className="primary-button" type="submit">
-            Salvar nome
-          </button>
-        </form>
+      <button className="secondary-button" type="button" onClick={() => setEditing(true)}>
+        Editar perfil
+      </button>
+      {editing && (
+        <ProfileEditor profile={profile} guest={guest} onClose={() => setEditing(false)} />
       )}
       <details className="profile-avatar-options">
         <summary>Escolher avatar</summary>
         <ProfileChoices
           onChoose={(avatar) =>
-            save({ ...avatar, name: guest ? "Guest" : profile.name || avatar.name || "Aluno" })
+            save({
+              ...profile,
+              ...avatar,
+              name: guest ? "Guest" : profile.name || avatar.name || "Aluno",
+            })
           }
         />
       </details>

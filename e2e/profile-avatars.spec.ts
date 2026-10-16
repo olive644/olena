@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { setTestTheme } from "./theme-setup";
 
 test("novos avatares preservam transparência e seleção nos dois temas", async ({
   page,
@@ -20,8 +21,7 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     "Leo",
   ];
   for (const theme of ["Claro", "Escuro"]) {
-    await page.locator(".page-header__theme .appearance-picker__trigger").click();
-    await page.getByRole("button", { name: theme, exact: true }).click();
+    await setTestTheme(page, theme === "Claro" ? "light" : "dark");
     await profileMenu.locator("summary").click();
     for (const name of avatars) {
       const option = profileMenu

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { setTestTheme } from "./theme-setup";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -112,26 +113,9 @@ for (const width of [320, 360, 390, 768, 1280]) {
       });
       if (mode === "Cronômetro") await page.getByRole("button", { name: "Próximo modo" }).click();
     }
-    await page.locator(".page-header__theme .appearance-picker__trigger").click();
-    if (mobile) {
-      const appearanceBox = await page
-        .locator(".page-header__theme .appearance-picker__sheet")
-        .boundingBox();
-      expect(appearanceBox!.x).toBeGreaterThanOrEqual(0);
-      expect(appearanceBox!.x + appearanceBox!.width).toBeLessThanOrEqual(width);
-    }
-    await expect(
-      page
-        .locator('.page-header__theme .appearance-picker__sheet [data-icon="theme-light"] img')
-        .first(),
-    ).toBeVisible();
-    await page.getByRole("button", { name: "Escuro", exact: true }).click();
+    await expect(page.locator(".page-header__theme")).toHaveCount(0);
+    await setTestTheme(page, "dark");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await expect(
-      page.locator(
-        '.page-header__theme .appearance-picker__trigger [data-icon="theme-light"] img:visible',
-      ),
-    ).toBeVisible();
     await page.screenshot({
       path: testInfo.outputPath(`Pomodoro-${width}-dark.png`),
       fullPage: true,

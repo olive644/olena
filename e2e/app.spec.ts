@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { setTestTheme } from "./theme-setup";
 
 test("carrega os ícones de papel no desktop e mobile em ambos os temas", async ({
   page,
@@ -40,8 +41,7 @@ test("carrega os ícones de papel no desktop e mobile em ambos os temas", async 
       await menu.getByRole("button", { name: "Fechar menu" }).click();
     }
     if (theme === "light") {
-      await page.locator(".page-header__theme .appearance-picker__trigger").click();
-      await page.getByRole("button", { name: "Escuro", exact: true }).click();
+      await setTestTheme(page, "dark");
     }
   }
   await page.screenshot({ path: testInfo.outputPath("paper-icons.png"), fullPage: true });
@@ -98,8 +98,7 @@ test("usa o ícone grafite original em Começar prática", async ({ page }) => {
     ).toBeHidden();
 
     if (theme === "light") {
-      await page.locator(".page-header__theme .appearance-picker__trigger").click();
-      await page.getByRole("button", { name: "Escuro", exact: true }).click();
+      await setTestTheme(page, "dark");
     }
   }
 });
@@ -213,16 +212,21 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   );
 });
 
-test("troca o tema pelo seletor de aparência do cabeçalho", async ({ page }, testInfo) => {
+test("troca o tema somente pela acessibilidade do Perfil", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Contrato visual do seletor desktop.");
-  const toggle = page.locator(".page-header__theme .appearance-picker__trigger");
-  await expect(toggle).toHaveAccessibleName(/tema claro/i);
-  await expect(toggle.locator('[data-icon="theme-dark"]')).toBeVisible();
-  await toggle.click();
+  await expect(page.locator(".page-header__theme")).toHaveCount(0);
+  await page
+    .getByRole("navigation", { name: "Navegação principal" })
+    .getByRole("button", { name: "Perfil", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Configurações", exact: true }).click();
+  await page.getByRole("button", { name: "Aparência e acessibilidade", exact: true }).click();
   await page.getByRole("button", { name: "Escuro", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(toggle).toHaveAccessibleName(/tema escuro/i);
-  await expect(toggle.locator('[data-icon="theme-light"]')).toBeVisible();
+  await expect(page.getByRole("button", { name: "Escuro", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
   if (testInfo.project.name === "desktop") {
     const sidebar = page.locator(".sidebar");
     await expect(sidebar).toHaveCSS("background-color", "rgb(23, 21, 28)");
@@ -231,7 +235,6 @@ test("troca o tema pelo seletor de aparência do cabeçalho", async ({ page }, t
       "color",
       "rgb(255, 249, 239)",
     );
-    await toggle.click();
     await page.getByRole("button", { name: "Claro", exact: true }).click();
     await expect(sidebar.getByRole("button", { name: "Agenda" }).locator("span").last()).toHaveCSS(
       "color",
@@ -386,8 +389,7 @@ test("adapta a barra móvel ao tema e anima a troca de aba", async ({ page }, te
   );
   await expect(page.locator("main")).toHaveCSS("animation-name", "mobile-view-arrive");
 
-  await page.locator(".page-header__theme .appearance-picker__trigger").click();
-  await page.getByRole("button", { name: "Escuro", exact: true }).click();
+  await setTestTheme(page, "dark");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(navigation).toHaveCSS("background-color", "rgb(41, 36, 50)");
   const focusIcon = navigation

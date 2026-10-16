@@ -33,7 +33,7 @@ for (const theme of ["light", "dark"]) {
     });
     for (const tab of ["Agenda", "Foco", "Perfil"]) {
       await navigation.getByRole("button", { name: tab, exact: true }).click();
-      await expect(page.locator(".page-header__theme")).toBeVisible();
+      await expect(page.locator(".page-header__theme")).toHaveCount(0);
       await expect(page.getByLabel(/Atualizações do sistema/)).toHaveCount(0);
       await expect(page.locator(".page-header .profile-menu")).toHaveCount(0);
     }
@@ -41,8 +41,7 @@ for (const theme of ["light", "dark"]) {
     await expect(toggle).toHaveText("");
     await expect(toggle).toHaveCSS("background-color", "rgb(255, 249, 239)");
     const settingsBox = (await toggle.boundingBox())!;
-    const themeBox = (await page.locator(".page-header__theme").boundingBox())!;
-    expect(settingsBox.x + settingsBox.width).toBeLessThanOrEqual(themeBox.x);
+    expect(settingsBox.x + settingsBox.width).toBeLessThanOrEqual(page.viewportSize()!.width);
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
     await toggle.click();
     await page.getByRole("button", { name: "Privacidade e dados", exact: true }).click();
