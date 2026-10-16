@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Avatar maior sem ampliar a barra (2026-10-15)
+
+- Foto do Perfil com 144 px expandida, 80 px compacta no PC/tablet e 64 px no celular. Alturas da barra preservadas: 88/136/152 px conforme breakpoint. Retrato fica fora do recorte da capa para não ser cortado; recorte de papel temático aparece atrás dele com a mesma variável de scroll, permitindo prolongamento local abaixo da barra no PC. Nome ajustado lateralmente, sem sobrepor menu, bio ou configurações. Nenhuma mudança de dados, arte ou ciclos Rive.
+- Prova: verify completo aprovado com 1765 testes, build e orçamento preservados. Regressão de navegador confere 144 px expandido, 80/64 px compacto, altura da barra inalterada, saliência desktop e ausência de sobreposição com bio em 320 a 1440 px, nos dois temas.
+
+## Identidade sobreposta e capa de retratos (2026-10-15)
+
+- Capa compartilhada profile-heads.webp: três cabeças dos personagens originais, composição triangular de retrato coral, sem bocas e com bigodes preservados. Gerada com imagegen integrado a partir de profile-people.webp, sem fotos pessoais enviadas neste fluxo; WebP 1800x600. Prompt: somente três cabeças chibi humanas em papel facetado, menina acima ao centro, rapazes abaixo, fundo grafite/roxo, sem texto, corpos ou objetos, luz superior e identidades preservadas. A composição remete à referência Queen solicitada sem incorporar músicos ou arte alheia.
+- Avatar cruza a borda entre capa e ficha, com apelido, @ e pronomes no mesmo conjunto. Bio e links opcionais pertencem à mesma barra, sem duplicar a identidade em outro painel. Links apresentam somente ícones, com nome acessível e destino validado pelo reconhecedor existente. Scroll interpola as mesmas instâncias; PC compacto reserva espaço lateral, tablet e celular reservam linha adicional. Sem rastreamento de redes ou mudança no armazenamento.
+- Seguidores/Seguindo apresentam zero como estado inicial do protótipo. Não existe grafo social, ação de seguir nem contagens remotas; não tratar estes indicadores como integração social pronta.
+- Editor mantém diálogo nativo, cancelar sem gravar e regras da ficha. Superfície de papel creme/grafite, campos alinhados, recortes e sombras estruturais. Define localmente os tokens agenda-* exigidos por PaperChoice, corrigindo o seletor sem placa quando aberto diretamente no Perfil. Sem dependências novas. Movimento reduzido do app/sistema continua respeitado.
+- Prova: npm run verify aprovado, 1765 testes em 260 arquivos, lint sem erros (11 avisos existentes), API, formatação, build e orçamento. JavaScript inicial 279.5 KiB, total 1424.8 KiB, sem aumentar limites. Rodada final de produção com 19 testes aprovados e cinco skips intencionais da suíte de navegação; PC/celular, ambos os temas, edição/cancelamento, recolhimento/reversão, movimento reduzido, cinco redes e larguras 320/600/820/1050/1440. Imagens finais inspecionadas com dados fictícios de teste.
+
 ## Ficha editável e aparência somente nas configurações (2026-10-15)
 
 - PageHeader não apresenta mais seletor de tema em nenhuma aba. Mantém useTheme montado sem controle visual, preservando o ponto de aplicação anterior e a preferência da conta/sistema mesmo fora do Perfil. Claro/Escuro/Sistema permanecem em Configurações, Aparência e acessibilidade. Testes de outras telas preparam a preferência por theme-setup; o fluxo real continua coberto pela interface de configurações.
