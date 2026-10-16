@@ -20,7 +20,12 @@ async function publicKeys(): Promise<Map<string, PublicKey>> {
 }
 
 export function createFirebaseAccountIdentity(projectId: string) {
-  return async (request: Request): Promise<{ uid: string; name: string } | undefined> => {
+  return async (
+    request: Request,
+  ): Promise<
+    | { uid: string; name: string; email?: string; emailVerified: boolean; anonymous: boolean }
+    | undefined
+  > => {
     const authorization = request.headers.get("authorization");
     if (!projectId || !authorization?.startsWith("Bearer ")) return undefined;
     const token = authorization.slice(7);
@@ -46,7 +51,17 @@ export function createFirebaseAccountIdentity(projectId: string) {
           : typeof payload["email"] === "string"
             ? payload["email"]
             : "";
-      return name ? { uid: payload.sub, name } : undefined;
+      return name
+        ? {
+            uid: payload.sub,
+            name,
+            ...(typeof payload["email"] === "string" ? { email: payload["email"] } : {}),
+            emailVerified: payload["email_verified"] === true,
+            anonymous:
+              (payload["firebase"] as { sign_in_provider?: string } | undefined)
+                ?.sign_in_provider === "anonymous",
+          }
+        : undefined;
     } catch {
       return undefined;
     }

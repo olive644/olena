@@ -10,6 +10,10 @@ async function helenaMiddleware(request: IncomingMessage, response: ServerRespon
   const { handleHelenaRuntime } = await import("./src/backend/helena-runtime");
   await createVercelHandler("/api/helena", handleHelenaRuntime)(request, response);
 }
+async function profileHandleMiddleware(request: IncomingMessage, response: ServerResponse) {
+  const { handleProfileHandle } = await import("./src/backend/profile-handle-runtime");
+  await createVercelHandler("/api/profile-handle", handleProfileHandle)(request, response);
+}
 
 // O preview (e2e e teste local do build) serve os mesmos cabeçalhos de segurança da
 // produção, inclusive o CSP. Sem isso, algo que o CSP bloqueia só falha depois do deploy.
@@ -56,6 +60,12 @@ export default defineConfig({
     {
       name: "olena-local-api",
       configureServer(server) {
+        server.middlewares.use("/api/profile-handle", (request, response) => {
+          void profileHandleMiddleware(request, response).catch(() => {
+            response.statusCode = 503;
+            response.end();
+          });
+        });
         server.middlewares.use("/api/olena", olenaMiddleware);
         server.middlewares.use("/api/helena", (request, response) => {
           void helenaMiddleware(request, response).catch(() => {
@@ -65,6 +75,12 @@ export default defineConfig({
         });
       },
       configurePreviewServer(server) {
+        server.middlewares.use("/api/profile-handle", (request, response) => {
+          void profileHandleMiddleware(request, response).catch(() => {
+            response.statusCode = 503;
+            response.end();
+          });
+        });
         server.middlewares.use("/api/olena", olenaMiddleware);
         server.middlewares.use("/api/helena", (request, response) => {
           void helenaMiddleware(request, response).catch(() => {

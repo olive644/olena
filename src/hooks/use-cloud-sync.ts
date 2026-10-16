@@ -198,6 +198,11 @@ export function useCloudSync() {
                 },
                 deleteCloudData: async () => {
                   const token = await user.getIdToken(true);
+                  const handleResponse = await fetch("/api/profile-handle", {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                  });
+                  if (!handleResponse.ok) throw new Error("delete-handle");
                   const response = await fetch(
                     `${databaseURL}/users/${user.uid}.json?auth=${encodeURIComponent(token)}`,
                     { method: "DELETE" },
