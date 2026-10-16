@@ -25,8 +25,34 @@ it("mostra identidade real com capa compartilhada e uma só foto", () => {
   );
   expect(container.querySelectorAll(".profile-cover__avatar")).toHaveLength(1);
   expect(container.querySelector(".profile-cover__art")?.getAttribute("src")).toBe(
-    "/room-art/profile-people.webp",
+    "/room-art/profile-heads.webp",
   );
+});
+
+it("mantém dados opcionais na barra, redes somente por ícones e zero conexões iniciais", () => {
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({
+      name: "Oli",
+      username: "oli",
+      pronouns: "Ele/dele",
+      bio: "Uma descoberta",
+      socialLinks: ["https://github.com/oli", "javascript:alert(1)"],
+    }),
+  );
+  const { container } = render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      <button>Configurações</button>
+    </ProfileShowcase>,
+  );
+  expect(container.querySelector(".profile-cover__handle")?.textContent).toBe("@oliEle/dele");
+  expect(container.querySelector(".profile-cover__bio")?.textContent).toBe("Uma descoberta");
+  const link = screen.getByRole("link", { name: "GitHub" });
+  expect(link.textContent).toBe("");
+  expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+  expect(screen.getAllByRole("link")).toHaveLength(1);
+  expect(screen.getByLabelText("Conexões do perfil").textContent).toBe("0 Seguidores0 Seguindo");
+  expect(container.querySelector(".profile-about")).toBeNull();
 });
 
 it("conserva nome Guest e mantém ações quando configurações abrem", () => {

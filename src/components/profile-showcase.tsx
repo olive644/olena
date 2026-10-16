@@ -69,7 +69,7 @@ export function ProfileShowcase({
           <section className="profile-cover" aria-label="Seu perfil">
             <img
               className="profile-cover__art"
-              src="/room-art/profile-people.webp"
+              src="/room-art/profile-heads.webp"
               alt=""
               width="1800"
               height="600"
@@ -91,6 +91,33 @@ export function ProfileShowcase({
             <h1 className="profile-cover__name" title={name}>
               {name}
             </h1>
+            <div className="profile-cover__handle">
+              {profile.username && <strong>@{profile.username}</strong>}
+              {profile.pronouns && <span>{profile.pronouns}</span>}
+            </div>
+            {profile.bio && (
+              <p className="profile-cover__bio" title={profile.bio}>
+                {profile.bio}
+              </p>
+            )}
+            <nav className="profile-cover__networks" aria-label="Redes sociais do perfil">
+              {profile.socialLinks?.map((link) => {
+                const social = recognizeSocialLink(link);
+                return social ? (
+                  <a
+                    key={social.network}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="secondary-button"
+                    aria-label={SOCIAL_LABELS[social.network]}
+                    title={SOCIAL_LABELS[social.network]}
+                  >
+                    <ProfilePaperIcon name={social.network} />
+                  </a>
+                ) : null;
+              })}
+            </nav>
             <button
               ref={editButton}
               type="button"
@@ -102,11 +129,11 @@ export function ProfileShowcase({
             <div className="profile-cover__connections" aria-label="Conexões do perfil">
               <span>
                 <ProfilePaperIcon name="followers" />
-                Seguidores
+                <strong>0</strong> Seguidores
               </span>
               <span>
                 <ProfilePaperIcon name="following" />
-                Seguindo
+                <strong>0</strong> Seguindo
               </span>
             </div>
             <span className="profile-cover__spark profile-cover__spark--one" aria-hidden="true">
@@ -120,33 +147,6 @@ export function ProfileShowcase({
         {children}
       </div>
       {!settingsOpen && <div className="profile-cover-spacer" aria-hidden="true" />}
-      {!settingsOpen &&
-        (profile.username || profile.bio || profile.pronouns || profile.socialLinks?.length) && (
-          <section className="profile-about" aria-label="Sobre você">
-            {profile.username && <strong>@{profile.username}</strong>}
-            {profile.pronouns && (
-              <span className="profile-about__pronouns">{profile.pronouns}</span>
-            )}
-            {profile.bio && <p>{profile.bio}</p>}
-            <div className="profile-about__networks">
-              {profile.socialLinks?.map((link) => {
-                const social = recognizeSocialLink(link);
-                return social ? (
-                  <a
-                    key={social.network}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="secondary-button"
-                  >
-                    <ProfilePaperIcon name={social.network} />
-                    {SOCIAL_LABELS[social.network]}
-                  </a>
-                ) : null;
-              })}
-            </div>
-          </section>
-        )}
       {editing && (
         <ProfileEditor profile={profile} guest={guest} onClose={() => setEditing(false)} />
       )}

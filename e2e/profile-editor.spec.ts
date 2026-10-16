@@ -22,7 +22,7 @@ for (const theme of ["light", "dark"]) {
       page.getByText("Cada descoberta faz parte da sua história.", { exact: true }),
     ).toHaveCount(0);
     const connections = page.getByLabel("Conexões do perfil");
-    await expect(connections).toHaveText("SeguidoresSeguindo");
+    await expect(connections).toHaveText("0 Seguidores0 Seguindo");
     await expect(connections.getByRole("button")).toHaveCount(0);
     const edit = page.getByRole("button", { name: "Editar perfil", exact: true });
     await edit.click();

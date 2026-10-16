@@ -1,8 +1,16 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, identidade sobreposta (2026-10-15): cabeças chibi humanas sem boca, bigodes
+preservados, fundo de papel grafite/roxo e composição triangular coral. Avatar
+cruza a borda da capa como uma ficha de identidade. Apelido, @ com pronomes à
+direita, bio e ícones sociais opcionais se recolhem para a mesma barra. No celular
+há linha adicional para bio/redes, sem comprimir controles. Seguidores/Seguindo
+mostram zero como estado inicial do protótipo sem grafo social. Editor creme no
+claro, grafite no escuro, recortes nos campos e tokens PaperChoice locais.
+
 Perfil, ficha editável (2026-10-15): sem rótulo Perfil nem frases decorativas na
 capa. Foto, apelido, Editar perfil e indicadores Seguidores/Seguindo com símbolos
-de papel próprios. Esses indicadores não apresentam contagem enquanto não existe
+de papel próprios. Esses indicadores apresentam zero inicial enquanto não existe
 grafo social real. Bio, nome em minúsculas, pronomes e redes ficam na ficha, em
 diálogo de papel creme/grafite. Reconhecimento das cinco redes usa SVGs próprios
 profile-instagram/facebook/linkedin/github/tiktok, não ícones de contorno externos.
