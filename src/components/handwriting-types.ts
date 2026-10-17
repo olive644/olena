@@ -29,6 +29,7 @@ export type HandwritingTool =
   | "zoom-out"
   | "ruler"
   | "space"
+  | "curve"
   | "coordinates";
 export type PaperStyle = HandwritingPaper;
 export type Stroke = HandwritingStroke;

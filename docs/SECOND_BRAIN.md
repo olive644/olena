@@ -658,6 +658,12 @@ nele (`snapToAxis`, pivô no início do traço); retângulos usam a caixa dos ei
 menor retângulo girado acima disso, só se os quatro cantos tiverem tinta (barra elipse inclinada).
 Teste em `handwriting-shapes.test.ts` e `handwriting-axis-snap.spec.ts`.
 
+Curva: ferramenta `curve`. `handwriting-spline.ts` (`splinePoints`, `dedupeControls`) gera o traço
+por Catmull-Rom centrípeta; o editor guarda os pontos de controle (`curveControls`), marca por
+toque ou por Enter e conclui por toque duplo ou Shift com Enter, gerando um traço comum. A tecla
+Espaço é do atalho global de mão temporária e não deve ser usada nesta ferramenta. Teste em
+`handwriting-spline.test.ts` e `handwriting-curve.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita

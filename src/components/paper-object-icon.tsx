@@ -9,6 +9,7 @@ type ObjectIcon =
   | "ruler"
   | "coordinate-system"
   | "space"
+  | "curve"
   | "eraseArea"
   | "eraseStroke";
 const outlines: Record<ShapeKind, string> = {
@@ -76,6 +77,24 @@ export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
           <path d="m5 32 27-27 9 9-27 27Z" fill="#FACC15" />
           <path d="m10 27 4 4m2-10 5 5m2-11 5 5m2-11 4 4" stroke="#51465D" strokeWidth="2" />
           <path d="m8 30 3 3 24-24-3-3Z" fill="#FFE88D" />
+        </>
+      ) : name === "curve" ? (
+        <>
+          <path
+            d="M6 36C14 8 24 8 26 24s10 16 16-14"
+            fill="none"
+            stroke="#51259B"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+          <path
+            d="M6 34C14 6 24 6 26 22s10 16 16-14"
+            fill="none"
+            stroke="#A779EF"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path d="M3 31h6v6H3Zm17-17h6v6h-6Zm19 3h6v6h-6Z" fill="#FACC15" />
         </>
       ) : name === "space" ? (
         <>
