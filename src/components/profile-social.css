@@ -3,6 +3,66 @@
   height: 24px;
   flex-shrink: 0;
 }
+.profile-cover__actions {
+  position: absolute;
+  left: 32px;
+  top: 438px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: calc(1 - min(1, var(--profile-collapse) * 5));
+}
+:root body .profile-cover__actions .profile-cover__friends {
+  position: static;
+  opacity: 1;
+  order: 0;
+}
+.profile-cover__qr {
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+}
+.profile-qr-icon {
+  width: 26px;
+  height: 26px;
+}
+.profile-xp strong {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.profile-xp strong svg {
+  width: 18px;
+  height: 18px;
+}
+.social-share-brand,
+.social-share-card img,
+.social-directory img,
+.profile-cover__avatar {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.social-directory .paper-editor-icon {
+  color: var(--text);
+}
+:root body .profile-cover__connections > button {
+  background: var(--soft);
+  color: var(--text);
+  border: 0;
+  box-shadow: none;
+}
+.profile-cover img,
+.social-profile img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 600px) {
+  .profile-cover__actions {
+    position: static;
+    order: 2;
+    opacity: 1;
+  }
+}
 :root .social-directory {
   width: min(560px, calc(100vw - 24px));
   max-height: 90dvh;
@@ -175,13 +235,6 @@ html[data-reduce-motion="true"] .social-directory {
   top: 402px;
   opacity: calc(1 - min(1, var(--profile-collapse) * 5));
 }
-:root body .profile-view .social-directory .secondary-button,
-:root body .social-directory .secondary-button {
-  background: #fff9ef;
-  color: #292432;
-  border-color: #d7cfbb;
-  box-shadow: 0 4px #cfc4af;
-}
 .social-share-actions svg,
 .social-directory .onboarding-paper-arrow {
   width: 24px;
@@ -247,6 +300,8 @@ html[data-reduce-motion="true"] .social-directory {
   min-height: 44px;
   border-radius: 6px 12px 6px 8px;
   padding: 6px 10px;
+  border: 0;
+  box-shadow: none;
 }
 :root body .profile-cover .profile-cover__friends {
   min-height: 44px;

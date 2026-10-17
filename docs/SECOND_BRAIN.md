@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-17, refinamento do Perfil: profileLevel passa a usar XP do ledger de RoomRewardNotice, não pontos das ilhas. Custo por nível 500 + 250 por nível já concluído, sem alterar recibos ou total. Evento ROOM_XP_CHANGED atualiza a barra. Ledger existente continua sem sincronização remota, não prometer continuidade entre aparelhos. NotebookSpread tem readOnly para prévia do Perfil; Cadernos aceita folha apenas se pertencer ao caderno no próprio workspace. SystemUpdates mantém feed sem sino no Perfil e revela aviso temporário somente para novos eventos recebidos, nunca histórico inicial. Botão QR abre SocialDirectory com initialSharing.
+
 2026-10-17, rótulos de @pranksterbrain: ProfileLabels reutiliza as placas CREKS e BETA TESTER a partir do identificador confirmado, sem DEV, GALAXIA ou privilégios extras. Teste parametrizado junto a @eito cobre ficha e barra compacta, sem aceitar cache divergente.
 
 2026-10-17, integração de XP no perfil compacto: gap móvel de profile-cover__details é 6 px para conservar a ficha abaixo de 520 px com bio/rede no teste profile-covers, sem diminuir avatar ou alvos de toque.

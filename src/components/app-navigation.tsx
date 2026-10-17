@@ -377,11 +377,11 @@ export function PageHeader({
         <span aria-hidden="true" />
       </button>
       <div className="page-header__actions">
-        {showUpdates && (
+        {
           <Suspense fallback={null}>
-            <SystemUpdates />
+            <SystemUpdates hideBell={!showUpdates} />
           </Suspense>
-        )}
+        }
         {leadingAction}
       </div>
     </header>

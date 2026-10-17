@@ -1,5 +1,24 @@
 import type { RoomXpReward } from "../domain/local-room";
 export const ROOM_XP_KEY = "helena.room-xp.v1";
+export const ROOM_XP_CHANGED = "helena:room-xp-change";
+
+export function readRoomXp(): number {
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem(ROOM_XP_KEY) ?? "null");
+    if (
+      value &&
+      typeof value === "object" &&
+      "total" in value &&
+      typeof value.total === "number" &&
+      Number.isSafeInteger(value.total) &&
+      value.total >= 0
+    )
+      return value.total;
+  } catch {
+    /* Cache inválido não concede XP. */
+  }
+  return 0;
+}
 type Ledger = { total: number; receipts: string[] };
 export function recordRoomXp(
   reward: RoomXpReward,
@@ -36,5 +55,7 @@ export function recordRoomXp(
     ROOM_XP_KEY,
     JSON.stringify({ total, receipts: [...ledger.receipts, reward.id] }),
   );
+  if (typeof window !== "undefined" && storage === window.localStorage)
+    window.dispatchEvent(new Event(ROOM_XP_CHANGED));
   return { added: true, total };
 }

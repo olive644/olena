@@ -25,6 +25,7 @@ const SocialDirectory = lazy(() =>
 
 import { ProfileLabels } from "./profile-labels";
 import { ProfileXpBar, ProfileLevelBadge, ProfileStudyWidgets } from "./profile-study-widgets";
+import { ProfileQrIcon } from "./profile-qr-icon";
 
 export function ProfileShowcase({
   children,
@@ -47,6 +48,7 @@ export function ProfileShowcase({
   const [choosingAvatar, setChoosingAvatar] = useState(false);
   const [choosingCover, setChoosingCover] = useState(false);
   const [connectionList, setConnectionList] = useState<"followers" | "following">();
+  const [sharingProfile, setSharingProfile] = useState(false);
   const [friends, setFriends] = useState<string | undefined>(() => {
     const username = new URLSearchParams(window.location.search).get("usuario");
     return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
@@ -54,6 +56,7 @@ export function ProfileShowcase({
   const social = useSocialFeed(!guest && !!handle.username);
   useProfilePresentation(guest || !presentationReady ? "" : handle.username, nameFallback);
   const friendButton = useRef<HTMLButtonElement>(null);
+  const friendActions = useRef<HTMLDivElement>(null);
   const connections = useRef<HTMLDivElement>(null);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
@@ -91,6 +94,7 @@ export function ProfileShowcase({
       if (editButton.current) editButton.current.inert = !mobile && progress > 0.2;
       if (coverButton.current) coverButton.current.inert = !mobile && progress > 0.2;
       if (friendButton.current) friendButton.current.inert = !mobile && progress > 0.2;
+      if (friendActions.current) friendActions.current.inert = !mobile && progress > 0.2;
       if (connections.current) connections.current.inert = !mobile && progress > 0.2;
     };
     const schedule = () => {
@@ -173,18 +177,33 @@ export function ProfileShowcase({
                 {profile.pronouns && <span>{profile.pronouns}</span>}
               </div>
               <ProfileXpBar />
-              <button
-                ref={friendButton}
-                type="button"
-                className="secondary-button profile-cover__friends"
-                onClick={() => {
-                  setConnectionList(undefined);
-                  setFriends("");
-                }}
-              >
-                <FriendIcon />
-                Adicionar amigo
-              </button>
+              <div ref={friendActions} className="profile-cover__actions">
+                <button
+                  ref={friendButton}
+                  type="button"
+                  className="secondary-button profile-cover__friends"
+                  onClick={() => {
+                    setSharingProfile(false);
+                    setConnectionList(undefined);
+                    setFriends("");
+                  }}
+                >
+                  <FriendIcon />
+                  Adicionar amigo
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button profile-cover__qr"
+                  aria-label="Compartilhar perfil por QR code"
+                  onClick={() => {
+                    setSharingProfile(true);
+                    setConnectionList(undefined);
+                    setFriends("");
+                  }}
+                >
+                  <ProfileQrIcon />
+                </button>
+              </div>
               {profile.bio && (
                 <p className="profile-cover__bio" title={profile.bio}>
                   {profile.bio}
@@ -292,6 +311,7 @@ export function ProfileShowcase({
       {friends !== undefined && (
         <Suspense fallback={<HelenaLoading label="Abrindo amigos" compact />}>
           <SocialDirectory
+            initialSharing={sharingProfile}
             {...(connectionList ? { initialList: connectionList } : {})}
             initialUsername={friends}
             nameFallback={name}

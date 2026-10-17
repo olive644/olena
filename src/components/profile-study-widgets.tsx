@@ -7,13 +7,12 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import type { MathCourseId } from "../data/math-courses";
 import { PracticeIslandCarousel } from "./practice-island-carousel";
-import { NotebookCover } from "./notebook-cover";
-import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { TextNotePreview } from "./text-note";
 import { PaperDigits } from "./paper-digits";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { HelenaLoading } from "./helena-loading";
 import { PaperArrow } from "./paper-arrow";
+import { RoomPointsIcon } from "./room-paper-icons";
 import "../practice-islands.css";
 import "../solo-journey.css";
 import "./profile-study-widgets.css";
@@ -21,16 +20,21 @@ import "./profile-study-widgets.css";
 const MathJourney = lazy(() =>
   import("./math-island-journey").then((module) => ({ default: module.MathIslandJourney })),
 );
+const NotebookPreview = lazy(() =>
+  import("./notebook-spread").then((module) => ({ default: module.NotebookSpread })),
+);
 
 export function ProfileXpBar() {
   const stats = useProfileStudy();
   return (
     <div
       className="profile-xp"
-      title="Cada ponto conquistado nas ilhas conta como 1 XP de perfil. 500 XP por nível."
+      title="Nível baseado no XP recebido nas atividades. Primeiro nível: 500 XP; cada próximo nível exige mais 250 XP."
     >
       <div>
-        <strong>Nível {stats.level}</strong>
+        <strong>
+          <RoomPointsIcon xp /> Nível {stats.level}
+        </strong>
         <span>
           {stats.current} / {stats.next} XP
         </span>
@@ -198,41 +202,39 @@ export function ProfileStudyWidgets({
                 <span key={index}> / {title}</span>
               ))}
             </p>
-            <a
-              className="profile-notebook-preview"
-              href={`/cadernos?caderno=${encodeURIComponent(highlight.notebook.id)}`}
-              aria-label={`Abrir ${highlight.notebook.title}`}
-            >
+            <div className="profile-open-notebook">
               {highlight.notebook.kind === "note" ? (
                 <TextNotePreview
                   title={highlight.notebook.title}
                   content={highlight.page?.content ?? ""}
                 />
               ) : (
-                <NotebookCover
-                  title={highlight.notebook.title}
-                  subjectColor={
-                    workspace.subjects.find(
-                      (subject) => subject.id === highlight.notebook.subjectId,
-                    )?.color ?? "#7C3AED"
-                  }
-                  {...(highlight.notebook.coverStyle
-                    ? { coverStyle: highlight.notebook.coverStyle }
-                    : {})}
-                />
+                <Suspense fallback={<HelenaLoading label="Abrindo caderno" compact />}>
+                  <NotebookPreview
+                    key={highlight.notebook.id}
+                    readOnly
+                    notebook={highlight.notebook}
+                    pages={highlight.notebook.pageIds.flatMap((id) => {
+                      const page = workspace.notes.find((item) => item.id === id);
+                      return page ? [page] : [];
+                    })}
+                    subjects={workspace.subjects}
+                    dispatch={() => {}}
+                    onOpen={(id) => {
+                      window.location.assign(
+                        `/cadernos?caderno=${encodeURIComponent(highlight.notebook.id)}&folha=${encodeURIComponent(id)}`,
+                      );
+                    }}
+                    onCreate={() => {
+                      window.location.assign(
+                        `/cadernos?caderno=${encodeURIComponent(highlight.notebook.id)}`,
+                      );
+                    }}
+                    onRemove={() => {}}
+                  />
+                </Suspense>
               )}
-              {highlight.notebook.kind !== "note" && highlight.page && (
-                <span className="profile-notebook-page">
-                  <small>ÚLTIMA FOLHA EDITADA</small>
-                  <strong>{highlight.page.title}</strong>
-                  {highlight.page.assets[0] ? (
-                    <NotebookPageThumbnail asset={highlight.page.assets[0]} />
-                  ) : (
-                    <span>{highlight.page.content.slice(0, 180) || "Suas ideias em papel"}</span>
-                  )}
-                </span>
-              )}
-            </a>
+            </div>
             <h3>{highlight.notebook.title}</h3>
             <p>
               {highlight.count} {highlight.count === 1 ? "folha" : "folhas"} · Em destaque pelo
