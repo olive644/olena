@@ -293,7 +293,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Galeria oficial modal, fontes de avatar restritas e streaks reais no Perfil:
 // total medido 1428.1 KiB, entrada 279.4 KiB. Sem dependências ou serviços novos.
 // Margem pequena de CI; tetos absolutos e orçamento inicial preservados.
-const MAX_TOTAL_JS_BYTES = 1432 * 1024;
+// Perfil móvel em fluxo natural, seletor persistente de cinco capas e engrenagem compartilhada:
+// total medido 1433.9 KiB, entrada preservada em 279.5 KiB. Arte servida como SVG estático,
+// fora do JavaScript, sem dependência nova. Margem incremental estreita, tetos absolutos intactos.
+const MAX_TOTAL_JS_BYTES = 1436 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

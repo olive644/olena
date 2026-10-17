@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Perfil móvel, temas e ajustes (2026-10-16)
+
+- Avatar móvel reduzido para 112 px. Capa e ficha móveis seguem a altura real do conteúdo, sem o bloco fixo de 600 px; barra de ferramentas sticky separada. Desktop conserva recolhimento de identidade.
+- Seguidores/Seguindo restaurados a pedido do proprietário: zero inicial e dica de recurso social em desenvolvimento, sem backend ou botões fictícios. Streaks reais e trajetória preservados.
+- Cinco capas SVG estáticas autorais com facetas sólidas, sem dependência ou imagem externa. Fontes em scripts/profile-cover-art.tsx; regenerar com node scripts/build-profile-covers.mjs. cover é um ID permitido dentro de helena.profile.v1 e usa o fluxo de sincronização existente. Fallback Helena para valor desconhecido; Cancelar não grava, salvar mescla com a ficha atual. Arquivo da capa anterior preservado, mas não utilizado no Perfil.
+- Arte retirada do JavaScript após medição: total 1433,9 KiB, entrada preservada em 279,5 KiB. Orçamento incremental total 1436 KiB com margem estreita; tetos absolutos e orçamento inicial não mudam.
+- Campos renomeados para Nome e Nome de usuário. Lápis sem placa, preservando toque/foco. PaperEditorIcon settings redesenhado no componente compartilhado: Perfil e NotebookSettings recebem a mesma arte.
+
 ## Trajetória real do Perfil (2026-10-16)
 
 - Seguidores/Seguindo ficam ocultos até existir um grafo social real. Identidade, redes externas e streaks continuam intactos.
