@@ -2948,3 +2948,12 @@ visual. Helena aparece atrás do botão, com a parte inferior sobreposta por ele
 Bio, pronomes e redes são opcionais.
 Conclusão é derivada dos campos salvos, não concede XP e não cria armazenamento
 paralelo. Desktop amplo recebe o card à direita; telas menores, abaixo do perfil.
+
+# Conferência da jornada pela API, 17/10/2026
+
+GET /api/olena?action=profile-completion&version=1 confere o perfil persistido
+da própria conta e a reserva de @. Retorna somente etapas, total e próxima
+pendência. O card não aguarda a rede e não regride durante uma edição ainda
+em sincronização; conclusão só é confirmada quando API e cache coincidem.
+Falhas indicam confirmação pendente, sem fingir validação. Modelo de ameaça,
+limites e contrato em PROFILE_COMPLETION_API.md. Mudança autenticada em PR própria.

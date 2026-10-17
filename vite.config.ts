@@ -46,7 +46,16 @@ async function olenaMiddleware(request: IncomingMessage, response: ServerRespons
     const result = await handleOlena(
       new Request(new URL(request.url ?? "", "http://localhost/api/olena"), {
         method: request.method ?? "GET",
-        headers: { "Content-Type": request.headers["content-type"] ?? "" },
+        headers: {
+          "Content-Type": request.headers["content-type"] ?? "",
+          ...(request.headers.authorization
+            ? { Authorization: request.headers.authorization }
+            : {}),
+          ...(request.headers.origin ? { Origin: request.headers.origin } : {}),
+          ...(request.headers["sec-fetch-site"]
+            ? { "Sec-Fetch-Site": String(request.headers["sec-fetch-site"]) }
+            : {}),
+        },
         ...(body && request.method !== "GET" ? { body } : {}),
       }),
     );
