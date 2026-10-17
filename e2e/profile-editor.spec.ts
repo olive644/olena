@@ -21,9 +21,7 @@ for (const theme of ["light", "dark"]) {
     await expect(
       page.getByText("Cada descoberta faz parte da sua história.", { exact: true }),
     ).toHaveCount(0);
-    const connections = page.getByLabel("Conexões do perfil");
-    await expect(connections).toHaveText("0 Seguidores0 Seguindo");
-    await expect(connections.getByRole("button")).toHaveCount(0);
+    await expect(page.getByText(/Seguidores|Seguindo/)).toHaveCount(0);
     const edit = page.getByRole("button", { name: "Editar perfil", exact: true });
     await edit.click();
     const dialog = page.getByRole("dialog", { name: "Editar perfil", exact: true });

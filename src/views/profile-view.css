@@ -462,6 +462,8 @@ html[data-theme="dark"] .profile-editor {
 }
 .profile-activity li div {
   display: grid;
+  min-width: 0;
+  overflow-wrap: anywhere;
   gap: 5px;
   flex: 1;
 }

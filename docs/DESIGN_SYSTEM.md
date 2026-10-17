@@ -1,5 +1,11 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, trajetória real (2026-10-16): ocultar Seguidores/Seguindo enquanto não existir
+grafo social, substituindo os zeros de protótipo das revisões abaixo. Preservar
+streaks, capa fixa e personagens oficiais. Lista de trajetória compartilha os
+mesmos recortes e ícones originais para foco, práticas nas Ilhas e questionários,
+sem novo painel ou métricas fictícias.
+
 Perfil, revisão de 16/10/2026: somente personagens oficiais no avatar e capa
 panorâmica fixa, sem escolha de arquivo. Galeria modal de papel, prévia e seleção
 amarela, Cancelar/Usar personagem. Lápis ao lado do apelido abaixo da foto. A base

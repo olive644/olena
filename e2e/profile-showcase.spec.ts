@@ -60,6 +60,25 @@ for (const theme of ["light", "dark"]) {
       durationMinutes: 25,
       completedAt: `2026-10-${15 - index}T12:00:00Z`,
     }));
+    workspace.practiceActivities = [
+      {
+        id: "practice",
+        islandId: "math",
+        islandName: "Matemática",
+        answers: 10,
+        correct: 8,
+        completedAt: "2026-10-16T12:00:00Z",
+      },
+    ];
+    workspace.quizAttempts = [
+      {
+        id: "quiz",
+        subjectId: workspace.subjects[0]!.id,
+        correct: 3,
+        total: 4,
+        completedAt: "2026-10-16T11:00:00Z",
+      },
+    ];
     await page.addInitScript(
       ({ seed, appearance }) => {
         localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
@@ -92,7 +111,12 @@ for (const theme of ["light", "dark"]) {
     const expandedPhoto = await avatar.boundingBox();
     expect(expandedPhoto!.y).toBeLessThan(artBox!.y + artBox!.height);
     expect(expandedPhoto!.y + expandedPhoto!.height).toBeGreaterThan(artBox!.y + artBox!.height);
-    await expect(page.getByLabel("Conexões do perfil")).toContainText("0 Seguidores0 Seguindo");
+    await expect(page.getByText(/Seguidores|Seguindo/)).toHaveCount(0);
+    const activityItems = page.locator(".profile-activity li");
+    await expect(activityItems).toHaveCount(5);
+    await expect(activityItems.nth(0)).toContainText("Prática nas Ilhas: 8 de 10 respostas certas");
+    await expect(activityItems.nth(1)).toContainText("Questionário: 3 de 4 respostas certas");
+    await expect(activityItems.nth(2)).toContainText("25 min de foco");
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveText("");
     await expect(
       page.getByRole("heading", { name: "O estudo que você já construiu" }),
@@ -162,7 +186,7 @@ test("perfil vazio também se recolhe em tela alta e respeita movimento reduzido
   }, workspace);
   await page.goto("/perfil");
   await expect(page.locator("main")).toHaveCSS("opacity", "1");
-  await expect(page.getByText(/As sessões concluídas vão aparecer aqui/)).toBeVisible();
+  await expect(page.getByText(/questionários concluídos vão aparecer aqui/)).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "true");
   await expect(page.locator(".profile-chrome")).toHaveCSS("--profile-collapse", "1");
