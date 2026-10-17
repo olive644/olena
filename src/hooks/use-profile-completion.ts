@@ -3,7 +3,12 @@ import type { StoredProfile } from "../domain/profile-identity";
 import { profileCompletion } from "../domain/profile-completion";
 import { invalidateProfileCompletion, requestProfileCompletion } from "../data/profile-completion";
 
-export function useProfileCompletion(profile: StoredProfile, username: string, enabled: boolean) {
+export function useProfileCompletion(
+  profile: StoredProfile,
+  username: string,
+  enabled: boolean,
+  syncStatus?: string,
+) {
   const key = JSON.stringify([
     profile.name ?? "",
     profile.photoUrl ?? "",
@@ -18,6 +23,7 @@ export function useProfileCompletion(profile: StoredProfile, username: string, e
     let timer: ReturnType<typeof setTimeout>;
     let attempt = 0;
     const check = async () => {
+      if (!active) return;
       try {
         const result = await requestProfileCompletion(key);
         if (!active) return;
@@ -37,6 +43,7 @@ export function useProfileCompletion(profile: StoredProfile, username: string, e
       }
     };
     const retry = () => {
+      clearTimeout(timer);
       attempt = 0;
       invalidateProfileCompletion();
       void check();
@@ -50,6 +57,6 @@ export function useProfileCompletion(profile: StoredProfile, username: string, e
       window.removeEventListener("online", retry);
       window.removeEventListener("focus", retry);
     };
-  }, [key, expected, enabled]);
+  }, [key, expected, enabled, syncStatus]);
   return state?.key === key ? state.status : "pending";
 }

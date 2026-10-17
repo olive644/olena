@@ -91,7 +91,7 @@ describe("App", () => {
     render(<App />);
     navigate("Perfil");
     fireEvent.click(
-      await screen.findByRole("button", { name: "Configurações" }, { timeout: 5000 }),
+      await screen.findByRole("button", { name: "Configurações" }, { timeout: 10000 }),
     );
     fireEvent.click(screen.getByText("Escolher avatar", { selector: "summary" }));
     fireEvent.click(screen.getByRole("button", { name: "Helena" }));

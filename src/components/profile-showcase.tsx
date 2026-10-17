@@ -37,6 +37,7 @@ export function ProfileShowcase({
   guest = false,
   workspace,
   presentationReady = true,
+  syncStatus,
 }: {
   children: ReactNode;
   settingsOpen: boolean;
@@ -44,6 +45,7 @@ export function ProfileShowcase({
   guest?: boolean;
   workspace?: WorkspaceState;
   presentationReady?: boolean;
+  syncStatus?: string;
 }) {
   const [profile] = useStoredProfile();
   const { handle } = useProfileHandle(guest);
@@ -117,7 +119,12 @@ export function ProfileShowcase({
     };
   }, [settingsOpen, reduceMotion]);
   const name = guest ? nameFallback : profile.name?.trim() || nameFallback;
-  const verification = useProfileCompletion(profile, handle.username, !guest && presentationReady);
+  const verification = useProfileCompletion(
+    profile,
+    handle.username,
+    !guest && presentationReady,
+    syncStatus,
+  );
   const completion =
     !guest && presentationReady ? (
       <ProfileJourney

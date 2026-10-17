@@ -33,7 +33,8 @@ O card calcula imediatamente as etapas com a mesma regra pura, enquanto a API
 confere os valores realmente persistidos. A celebração final só é confirmada
 quando os estados coincidem. Edição ainda em sincronização não regride a etapa:
 há até quatro tentativas espaçadas. Sem confirmação, a interface informa
-CONFIRMAÇÃO PENDENTE; foco e recuperação da rede permitem nova conferência.
+CONFIRMAÇÃO PENDENTE; foco, recuperação da rede e mudança de estado da
+sincronização permitem nova conferência, inclusive após um envio demorado.
 Esse estado também cobre indisponibilidade, não afirma que o perfil está salvo.
 Não existe armazenamento separado de conclusão que possa contradizer os campos.
 

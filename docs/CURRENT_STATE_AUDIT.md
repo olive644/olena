@@ -2957,3 +2957,5 @@ pendência. O card não aguarda a rede e não regride durante uma edição ainda
 em sincronização; conclusão só é confirmada quando API e cache coincidem.
 Falhas indicam confirmação pendente, sem fingir validação. Modelo de ameaça,
 limites e contrato em PROFILE_COMPLETION_API.md. Mudança autenticada em PR própria.
+Rótulo visual CREKS também concedido ao @miauyw confirmado pelo servidor, sem
+alterar privilégios de conta nem confiar no username legado do cache local.

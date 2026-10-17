@@ -5,7 +5,7 @@ export function ProfileLabels({ creks, username }: { creks: boolean; username: s
       ? ["GALAXIA", "BETA TESTER"]
       : username === "eito" || username === "pranksterbrain"
         ? ["CREKS", "BETA TESTER"]
-        : creks
+        : creks || username === "miauyw"
           ? username === "oliver644"
             ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
             : ["CREKS"]

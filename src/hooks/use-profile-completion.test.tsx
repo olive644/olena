@@ -13,6 +13,42 @@ afterEach(() => {
   mocks.request.mockReset();
   mocks.invalidate.mockReset();
 });
+it("confere novamente quando uma sincronização lenta finalmente termina", async () => {
+  vi.useFakeTimers();
+  mocks.request
+    .mockRejectedValueOnce(new Error("offline"))
+    .mockResolvedValue(profileCompletion({}, ""));
+  const { result, rerender } = renderHook(
+    ({ status }) => useProfileCompletion({}, "", true, status),
+    { initialProps: { status: "offline" } },
+  );
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(500);
+  });
+  expect(result.current).toBe("offline");
+  rerender({ status: "synced" });
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(500);
+  });
+  expect(result.current).toBe("confirmed");
+});
+it("cancela tentativas anteriores ao recuperar foco e sair da aba", async () => {
+  vi.useFakeTimers();
+  mocks.request.mockResolvedValue(profileCompletion({}, ""));
+  const { unmount } = renderHook(() => useProfileCompletion({ name: "Oli" }, "oli", true));
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(500);
+  });
+  await act(async () => {
+    window.dispatchEvent(new Event("focus"));
+  });
+  expect(mocks.request).toHaveBeenCalledTimes(2);
+  unmount();
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(10000);
+  });
+  expect(mocks.request).toHaveBeenCalledTimes(2);
+});
 it("não bloqueia o primeiro render e confirma em segundo plano", async () => {
   vi.useFakeTimers();
   mocks.request.mockResolvedValue(profileCompletion({}, ""));
