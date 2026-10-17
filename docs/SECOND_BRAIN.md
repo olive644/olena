@@ -1398,6 +1398,12 @@ Limites por endereço usam `clientAddress` (cabeçalho `x-vercel-forwarded-for`,
 
 Códigos de sala são sempre aleatórios; `requestId` só serve para repetir a criação sem duplicar a sala (registro em `room-limits/create-<hash>`). O adaptador `vercel-adapter.ts` recusa corpos acima de 4,5 MB. Ao ligar um novo endpoint, não derive identificadores de valores que o cliente escolhe.
 
+# Recomendações do perfil: contrato vigente
+
+useProfileCompletion retorna status e completion confirmado para a mesma chave de campos. Usar completion.next/steps da resposta, não recalcular a sugestão no componente nem deixar uma conclusão permanente. Antes da resposta, em erro, após conclusão e após dispensar, não montar slot da jornada. ProfileJourney recebe só o resultado validado, lista apenas pendências e usa os editores existentes. X vale para a recomendação atual nesta abertura. A API e sua autenticação não mudaram.
+
+ProfileStudyWidgets conserva somente Minhas ilhas. Cadernos continuam na própria aba, com dados intactos; não importar prévia de caderno para o Perfil.
+
 ## Consumo do Realtime Database (2026-10-17)
 
 O plano gratuito limita download a cerca de 10 GB por mês. O envio da conta espera 4 s para juntar mudanças (`CLOUD_UPLOAD_DELAY_MS`) e usa `print=silent`; ao esconder a página o envio pendente sai na hora. Ao criar uma gravação frequente em dados sincronizados, lembre que cada salvamento custa o tamanho do estado inteiro em download. Veja o consumo na aba Uso do Realtime Database.

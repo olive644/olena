@@ -1,13 +1,11 @@
 import { lazy, Suspense, useState, type Dispatch } from "react";
-import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
-import { profileNotebook } from "../domain/profile-study";
+import type { WorkspaceAction } from "../domain/workspace";
 import { useProfileStudy } from "../hooks/use-profile-study";
 import { useStoredProfile, readStoredProfile } from "../hooks/use-stored-profile";
 import { writeSyncedStorage } from "../data/synced-storage";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import type { MathCourseId } from "../data/math-courses";
 import { PracticeIslandCarousel } from "./practice-island-carousel";
-import { TextNotePreview } from "./text-note";
 import { PaperDigits } from "./paper-digits";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { HelenaLoading } from "./helena-loading";
@@ -19,9 +17,6 @@ import "./profile-study-widgets.css";
 
 const MathJourney = lazy(() =>
   import("./math-island-journey").then((module) => ({ default: module.MathIslandJourney })),
-);
-const NotebookPreview = lazy(() =>
-  import("./notebook-spread").then((module) => ({ default: module.NotebookSpread })),
 );
 
 export function ProfileXpBar() {
@@ -53,10 +48,8 @@ export function ProfileLevelBadge() {
   );
 }
 export function ProfileStudyWidgets({
-  workspace,
   dispatch,
 }: {
-  workspace: WorkspaceState;
   dispatch?: Dispatch<WorkspaceAction> | undefined;
 }) {
   const stats = useProfileStudy();
@@ -74,7 +67,6 @@ export function ProfileStudyWidgets({
           stats.courses.reduce((sum, course) => sum + course.percent, 0) / stats.courses.length,
         )
       : 0;
-  const highlight = profileNotebook(workspace);
   function favoriteWorld() {
     try {
       writeSyncedStorage(
@@ -185,77 +177,6 @@ export function ProfileStudyWidgets({
           Ilha favorita: <strong>{favorite?.title ?? "Escolha a sua"}</strong>
         </p>
         {error && <p role="alert">{error}</p>}
-      </section>
-      <section
-        className="profile-card profile-notebook-widget"
-        aria-labelledby="profile-notebook-title"
-      >
-        <header className="profile-widget-heading">
-          <h2 id="profile-notebook-title">Meu cantinho de ideias</h2>
-          <small>Cadernos e Notes</small>
-        </header>
-        {highlight ? (
-          <>
-            <p className="profile-notebook-trail">
-              Cadernos
-              {highlight.trail.map((title, index) => (
-                <span key={index}> / {title}</span>
-              ))}
-            </p>
-            <div className="profile-open-notebook">
-              {highlight.notebook.kind === "note" ? (
-                <TextNotePreview
-                  title={highlight.notebook.title}
-                  content={highlight.page?.content ?? ""}
-                />
-              ) : (
-                <Suspense fallback={<HelenaLoading label="Abrindo caderno" compact />}>
-                  <NotebookPreview
-                    key={highlight.notebook.id}
-                    readOnly
-                    notebook={highlight.notebook}
-                    pages={highlight.notebook.pageIds.flatMap((id) => {
-                      const page = workspace.notes.find((item) => item.id === id);
-                      return page ? [page] : [];
-                    })}
-                    subjects={workspace.subjects}
-                    dispatch={() => {}}
-                    onOpen={(id) => {
-                      window.location.assign(
-                        `/cadernos?caderno=${encodeURIComponent(highlight.notebook.id)}&folha=${encodeURIComponent(id)}`,
-                      );
-                    }}
-                    onCreate={() => {
-                      window.location.assign(
-                        `/cadernos?caderno=${encodeURIComponent(highlight.notebook.id)}`,
-                      );
-                    }}
-                    onRemove={() => {}}
-                  />
-                </Suspense>
-              )}
-            </div>
-            <h3>{highlight.notebook.title}</h3>
-            <p>
-              {highlight.count} {highlight.count === 1 ? "folha" : "folhas"} · Em destaque pelo
-              conteúdo
-            </p>
-            <a
-              className="primary-button"
-              href={`/cadernos?caderno=${encodeURIComponent(highlight.notebook.id)}`}
-            >
-              Continuar aqui
-            </a>
-          </>
-        ) : (
-          <div className="profile-notebook-empty">
-            <img src="/notebook-covers/helena-estrelas.webp" alt="" width="140" height="180" />
-            <h3>Seu próximo capítulo</h3>
-            <a className="primary-button" href="/cadernos">
-              Criar meu caderno
-            </a>
-          </div>
-        )}
       </section>
       {journey && (
         <Suspense fallback={<HelenaLoading label="Abrindo sua ilha" />}>

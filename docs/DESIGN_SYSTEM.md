@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Recomendações de perfil (revisão vigente): ficha apenas com pendência confirmada pela Olena. Exibir somente etapas faltantes, Helena correspondente atrás do CTA e X colorido original para dispensar a sugestão nesta abertura. Perfil completo não renderiza ficha, celebração persistente, Revisar meu perfil ou espaço reservado. Consulta pendente/indisponível também não apresenta cobranças. Widget Meu cantinho de ideias removido somente do Perfil; Minhas ilhas ocupa a largura disponível.
+
 Correção da jornada (2026-10-17): uma única ficha por largura, sem textos repetidos em atualizações. Campos preenchidos não geram novas cobranças; conclusão remove a lista de etapas. Helena continua atrás e acima do botão. Aviso de seguidor fica sobre a página via portal, respeita safe area, tem entrada curta, foto visitável, ação à direita e barra de seis segundos. Movimento reduzido remove a entrada e a animação da barra.
 
 Listas sociais móveis: identificação ocupa a largura restante entre avatar e ação, com nome e @ em uma linha cada. Segue você fica abaixo do @ em texto secundário. Nomes longos usam reticências no limite, nunca quebra letra por letra; texto completo permanece no title e na visita ao perfil.
@@ -272,13 +274,13 @@ uma imagem quadrada sobre o texto. Prompts em PROFILE_JOURNEY_ART.md.
 Manter a arte inteira, sem deformar partes. A troca usa entrada curta e respeita
 movimento reduzido. O card aparece à direita em desktop acima de 1000 px e abaixo
 do perfil nas demais larguras. No scroll compacto desktop fica invisível e inert.
-Conclusão: FICOU ÓTIMO! Seu perfil está perfeito. Campos pessoais opcionais não
-fazem parte da exigência. Navegação pelas etapas permite revisar escolhas.
+Conclusão remove a ficha inteira, sem Revisar meu perfil ou mensagem persistente.
+Campos pessoais opcionais não fazem parte da exigência. A navegação lista somente
+pendências confirmadas; o X permite dispensar a recomendação nesta abertura.
 
 # Confirmação das etapas pela Olena
 
-O card preserva a renderização imediata. Enquanto a identidade não chegou, usa
-CONFERINDO COM A OLENA sem cobrar Nome/@. Com os campos preenchidos, celebra as
-escolhas e remove a lista de pendências. A API continua conferindo em segundo
-plano, sem reabrir cobranças durante sincronização. A celebração não equivale a
-um recibo de salvamento na conta. Pronomes, bio e redes continuam opcionais.
+O card recebe next e steps da resposta confirmada para os campos atuais. Consulta
+pendente, erro, conclusão ou dispensa não montam ficha nem espaço vazio. A API
+continua conferindo em segundo plano, sem cobrar campos durante sincronização.
+Pronomes, bio e redes continuam opcionais.
