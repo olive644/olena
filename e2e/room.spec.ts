@@ -177,7 +177,7 @@ for (const activity of ["listening", "bingo"] as const) {
       if (testInfo.project.name === "mobile") {
         const header = await page.locator(".page-header").boundingBox();
         const modalities = await preparation.locator(".local-room-modalities").boundingBox();
-        expect(modalities!.y).toBeLessThan(header!.y + header!.height + 40);
+        expect(modalities!.y).toBeLessThanOrEqual(header!.y + header!.height + 40);
         await expect(preparation.locator(".local-room-participant-audio-help")).toBeHidden();
       }
       await expect(

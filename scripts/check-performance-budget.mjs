@@ -313,7 +313,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // entrada 280.3 KiB. Reutiliza artes e componentes, sem dependências novas.
 // Consulta social compartilhada, cache por UID e invalidação segura: 1484.2 KiB.
 // Margem incremental de 1 KiB; teto absoluto de 1500 KiB permanece inalterado.
-const MAX_TOTAL_JS_BYTES = 1485 * 1024;
+// Jornada do perfil e identidade confirmada reutilizável: cerca de 1487 KiB,
+// sem dependências novas e sem alterar o teto absoluto de 1500 KiB.
+// Conferência autenticada das etapas na Olena: total medido 1490,2 KiB.
+// Regra compartilhada e cliente pequeno, sem dependências; teto absoluto preservado.
+const MAX_TOTAL_JS_BYTES = 1493 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

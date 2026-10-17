@@ -41,6 +41,7 @@ export function olenaCatalog() {
     service: "olena",
     capabilities: {
       catalog: "available",
+      profileCompletion: "authenticated",
       methodologies: "foundation",
       textGeneration: "not_configured",
       voice: "not_supported",
