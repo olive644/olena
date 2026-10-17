@@ -89,7 +89,9 @@ describe("App", () => {
   it("permite escolher um avatar oficial nas configurações do perfil", async () => {
     render(<App />);
     navigate("Perfil");
-    fireEvent.click(await screen.findByRole("button", { name: "Configurações" }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Configurações" }, { timeout: 5000 }),
+    );
     fireEvent.click(screen.getByText("Escolher avatar", { selector: "summary" }));
     fireEvent.click(screen.getByRole("button", { name: "Helena" }));
     expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toEqual({

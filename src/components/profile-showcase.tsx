@@ -132,15 +132,7 @@ export function ProfileShowcase({
                 ) : null;
               })}
             </nav>
-            <div className="profile-cover__connections" aria-label="Conexões do perfil">
-              <span>
-                <ProfilePaperIcon name="followers" />
-                <strong>0</strong> Seguidores
-              </span>
-              <span>
-                <ProfilePaperIcon name="following" />
-                <strong>0</strong> Seguindo
-              </span>
+            <div className="profile-cover__connections" aria-label="Sequências de estudo">
               {workspace && <ProfileStreaks workspace={workspace} />}
             </div>
             <span className="profile-cover__spark profile-cover__spark--one" aria-hidden="true">
@@ -194,8 +186,33 @@ export function ProfileShowcase({
 }
 
 export function ProfileOverview({ workspace }: { workspace: WorkspaceState }) {
-  const sessions = [...workspace.focusSessions]
-    .sort((a, b) => b.completedAt.localeCompare(a.completedAt))
+  const subjectName = (id: string) =>
+    workspace.subjects.find((subject) => subject.id === id)?.name || "Estudo";
+  const activities = [
+    ...workspace.focusSessions.map((session) => ({
+      id: `focus:${session.id}`,
+      completedAt: session.completedAt,
+      title: subjectName(session.subjectId),
+      description: `${session.durationMinutes} min de foco`,
+      icon: "focus" as const,
+    })),
+    ...(workspace.practiceActivities ?? []).map((activity) => ({
+      id: `practice:${activity.id}`,
+      completedAt: activity.completedAt,
+      title: activity.islandName,
+      description: `Prática nas Ilhas: ${activity.correct} de ${activity.answers} respostas certas`,
+      icon: "gamepad" as const,
+    })),
+    ...workspace.quizAttempts.map((attempt) => ({
+      id: `quiz:${attempt.id}`,
+      completedAt: attempt.completedAt,
+      title: subjectName(attempt.subjectId),
+      description: `Questionário: ${attempt.correct} de ${attempt.total} respostas certas`,
+      icon: "learn" as const,
+    })),
+  ]
+    .filter((activity) => Number.isFinite(Date.parse(activity.completedAt)))
+    .sort((a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt))
     .slice(0, 5);
   return (
     <div className="profile-overview">
@@ -205,20 +222,17 @@ export function ProfileOverview({ workspace }: { workspace: WorkspaceState }) {
       <section className="profile-activity" aria-labelledby="profile-activity-title">
         <span className="section-label">Sua trajetória</span>
         <h2 id="profile-activity-title">Pequenos passos, novas descobertas</h2>
-        {sessions.length ? (
+        {activities.length ? (
           <ol>
-            {sessions.map((session) => (
-              <li key={session.id}>
-                <NavigationIcon name="focus" />
+            {activities.map((activity) => (
+              <li key={activity.id}>
+                <NavigationIcon name={activity.icon} />
                 <div>
-                  <strong>
-                    {workspace.subjects.find((subject) => subject.id === session.subjectId)?.name ||
-                      "Estudo"}
-                  </strong>
-                  <span>{session.durationMinutes} min de foco</span>
+                  <strong>{activity.title}</strong>
+                  <span>{activity.description}</span>
                 </div>
-                <time dateTime={session.completedAt}>
-                  {new Date(session.completedAt).toLocaleDateString("pt-BR", {
+                <time dateTime={activity.completedAt}>
+                  {new Date(activity.completedAt).toLocaleDateString("pt-BR", {
                     day: "numeric",
                     month: "short",
                     timeZone: agendaTimeZone(),
@@ -231,8 +245,7 @@ export function ProfileOverview({ workspace }: { workspace: WorkspaceState }) {
           <div className="profile-activity__empty">
             <NavigationIcon name="focus" />
             <p>
-              Seu próximo passo começa com um momento de foco. As sessões concluídas vão aparecer
-              aqui.
+              Suas sessões de foco, práticas nas Ilhas e questionários concluídos vão aparecer aqui.
             </p>
           </div>
         )}

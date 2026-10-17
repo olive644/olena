@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Trajetória real do Perfil (2026-10-16)
+
+- Seguidores/Seguindo ficam ocultos até existir um grafo social real. Identidade, redes externas e streaks continuam intactos.
+- Trajetória intercala focusSessions, practiceActivities das Ilhas e quizAttempts em ordem cronológica inversa, com cinco registros no total. Mostra duração ou acertos reais, sem estimar XP nem criar atividades. Datas inválidas são ignoradas; matérias removidas usam Estudo. Nenhuma nova persistência ou alteração do histórico existente.
+- Capa fixa e seleção de personagens oficiais permanecem; personalização da capa não faz parte desta etapa.
+
 ## Identidade exclusiva e CREKS (2026-10-16)
 
 - Verificação final: 1786 testes unitários, build/lint/API/performance aprovados; 25 cenários de navegador aprovados e 5 skips previstos em PC/celular e claro/escuro. CI WebKit revelou orçamento total de 30 s apertado no cenário multiparte de cálculo final, expirando em etapas diferentes nas três tentativas. Reprodução móvel Chromium concluiu todas as mesmas assertivas em 22,4 s. Cenário completo recebe 60 s, sem relaxar nenhuma espera/assertiva individual; lógica e tempo de resposta do minigame permanecem intactos. Aprovação remota WebKit continua obrigatória antes de mesclar.

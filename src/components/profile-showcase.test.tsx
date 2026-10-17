@@ -61,7 +61,7 @@ it("mostra identidade real com capa compartilhada e uma só foto", () => {
   );
 });
 
-it("mantém dados opcionais na barra, redes somente por ícones e zero conexões iniciais", () => {
+it("mantém dados opcionais e redes sem mostrar contadores sociais fictícios", () => {
   localStorage.setItem(
     "helena.profile.v1",
     JSON.stringify({
@@ -83,7 +83,7 @@ it("mantém dados opcionais na barra, redes somente por ícones e zero conexões
   expect(link.textContent).toBe("");
   expect(link.getAttribute("rel")).toBe("noopener noreferrer");
   expect(screen.getAllByRole("link")).toHaveLength(1);
-  expect(screen.getByLabelText("Conexões do perfil").textContent).toBe("0 Seguidores0 Seguindo");
+  expect(screen.queryByText(/Seguidores|Seguindo/)).toBeNull();
   expect(container.querySelector(".profile-about")).toBeNull();
 });
 
@@ -125,7 +125,63 @@ it("não inventa atividade quando não há sessões", () => {
   const workspace = createInitialWorkspace();
   workspace.focusSessions = [];
   render(<ProfileOverview workspace={workspace} />);
-  expect(screen.getByText(/As sessões concluídas vão aparecer aqui/)).toBeTruthy();
+  expect(screen.getByText(/questionários concluídos vão aparecer aqui/)).toBeTruthy();
   expect(screen.queryByRole("list")).toBeNull();
   expect(screen.getByRole("link", { name: "Ir para o foco" }).getAttribute("href")).toBe("/foco");
+});
+
+it("intercala foco, Ilhas e questionários por instante, com limite global de cinco", () => {
+  const workspace = createInitialWorkspace();
+  const subjectId = workspace.subjects[0]!.id;
+  workspace.focusSessions = Array.from({ length: 5 }, (_, index) => ({
+    id: String(index),
+    subjectId,
+    durationMinutes: 25,
+    completedAt: `2026-10-${10 + index}T12:00:00Z`,
+  }));
+  workspace.practiceActivities = [
+    {
+      id: "0",
+      islandId: "math",
+      islandName: "Matemática",
+      completedAt: "2026-10-16T12:00:00Z",
+      answers: 10,
+      correct: 8,
+    },
+  ];
+  workspace.quizAttempts = [
+    {
+      id: "0",
+      subjectId: "removed",
+      completedAt: "2026-10-16T14:00:00+03:00",
+      correct: 0,
+      total: 4,
+    },
+  ];
+  const before = JSON.stringify(workspace);
+  const { container } = render(<ProfileOverview workspace={workspace} />);
+  const items = container.querySelectorAll(".profile-activity li");
+  expect(items).toHaveLength(5);
+  expect(items[0]?.textContent).toContain("MatemáticaPrática nas Ilhas: 8 de 10 respostas certas");
+  expect(items[1]?.textContent).toContain("EstudoQuestionário: 0 de 4 respostas certas");
+  expect(items[2]?.textContent).toContain("25 min de foco");
+  expect(JSON.stringify(workspace)).toBe(before);
+});
+
+it("mostra questionário sem foco e aceita workspace antigo sem práticas", () => {
+  const workspace = createInitialWorkspace();
+  workspace.focusSessions = [];
+  delete workspace.practiceActivities;
+  workspace.quizAttempts = [
+    {
+      id: "valid",
+      subjectId: "removed",
+      completedAt: "2026-10-16T12:00:00Z",
+      correct: 2,
+      total: 3,
+    },
+  ];
+  const { container } = render(<ProfileOverview workspace={workspace} />);
+  expect(container.querySelectorAll(".profile-activity li")).toHaveLength(1);
+  expect(screen.getByText("Questionário: 2 de 3 respostas certas")).toBeTruthy();
 });

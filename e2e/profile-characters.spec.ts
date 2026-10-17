@@ -43,7 +43,7 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(page.locator('input[type="file"]')).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Editar capa" })).toHaveCount(0);
-    const connections = page.getByLabel("Conexões do perfil");
+    const connections = page.getByLabel("Sequências de estudo");
     for (const name of ["Pomodoro", "Cronômetro", "Ilhas"])
       await expect(connections.getByLabel(`${name}: 1 dia seguido`)).toBeVisible();
     await expect(connections.locator(".agenda-week-flower.is-active")).toBeVisible();
