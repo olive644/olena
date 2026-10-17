@@ -293,7 +293,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Galeria oficial modal, fontes de avatar restritas e streaks reais no Perfil:
 // total medido 1428.1 KiB, entrada 279.4 KiB. Sem dependências ou serviços novos.
 // Margem pequena de CI; tetos absolutos e orçamento inicial preservados.
-const MAX_TOTAL_JS_BYTES = 1432 * 1024;
+// Espaço vertical do handwriting (regra pura, gesto, teclado e prévia no editor): total medido
+// 1435.2 KiB (+3.3 KiB sobre 1431.9). Código do editor sob demanda, entrada inicial intacta,
+// sem dependência nova. Margem estreita de CI; teto absoluto e orçamento inicial preservados.
+const MAX_TOTAL_JS_BYTES = 1438 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

@@ -648,6 +648,11 @@ caneta e é desenhado por `drawStroke` com espessura constante e o padrão de `d
 borracha e `strokeInkBounds` usam a mesma espessura. Teste em `handwriting-dash-style.test.ts` e
 `handwriting-dash.spec.ts`.
 
+Espaço vertical: ferramenta `space` (`HandwritingTool`). A regra de quem desce e de quanto dá para
+mover vive em `handwriting-vertical-space.ts` (`itemsBelowLine`, `clampSpaceShift`); o editor só
+captura o gesto e aplica com atualizações funcionais (`applySpaceShift`). Não grava campo novo na
+folha. Teste em `handwriting-vertical-space.test.ts` e `handwriting-vertical-space.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita

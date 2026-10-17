@@ -68,7 +68,16 @@ import { useSelectionGesture } from "../hooks/use-selection-gesture";
 import { usePinchZoom } from "../hooks/use-pinch-zoom";
 import { useEditorShortcuts } from "../hooks/use-editor-shortcuts";
 import { renderPageScene, type PageScene } from "./handwriting-page-scene";
-import { drawSelectionOverlay, type SelectionScene } from "./handwriting-selection-scene";
+import {
+  drawSelectionOverlay,
+  moveCoordinateSystems,
+  moveImages,
+  moveStickies,
+  moveStrokes,
+  moveTextFrame as shiftTextFrame,
+  type SelectionScene,
+} from "./handwriting-selection-scene";
+import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
 import {} from "./handwriting-selection-ops";
 import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
 import { pointerSamples } from "./handwriting-pointer";
@@ -322,6 +331,10 @@ export function HandwritingStudio({
     start: HandwritingPoint;
     end: HandwritingPoint;
   } | null>(null);
+  // Espaço vertical: `y` é a linha de corte e `shift` o quanto abrir (positivo) ou fechar.
+  const [spaceDrag, setSpaceDrag] = useState<{ y: number; shift: number } | null>(null);
+  const spaceDragRef = useRef<{ y: number; shift: number } | null>(null);
+  const [spaceGuide, setSpaceGuide] = useState<number | null>(null);
   const activePointerRef = useRef<number | null>(null);
   const panRef = useRef<{
     pointerId: number;
@@ -420,7 +433,7 @@ export function HandwritingStudio({
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
     setMobileDrawer(
-      ["pen", "eraser", "highlighter", "ruler", "coordinates", "select"].includes(next)
+      ["pen", "eraser", "highlighter", "ruler", "space", "coordinates", "select"].includes(next)
         ? "tool"
         : null,
     );
@@ -1301,6 +1314,14 @@ export function HandwritingStudio({
       setCoordinateMeasure({ start: point, end: point });
       return;
     }
+    if (effectiveTool === "space") {
+      remember();
+      const drag = { y: point.y, shift: 0 };
+      spaceDragRef.current = drag;
+      setSpaceDrag(drag);
+      setSpaceGuide(point.y);
+      return;
+    }
     if (effectiveTool === "select") {
       selectionGesture.begin(
         event,
@@ -1411,6 +1432,18 @@ export function HandwritingStudio({
           rulerMeasureRef.current = nextMeasurement;
           return nextMeasurement;
         });
+    }
+    if (activeToolRef.current === "space") {
+      const end = points.at(-1);
+      const drag = spaceDragRef.current;
+      if (end && drag) {
+        const next = {
+          y: drag.y,
+          shift: clampSpaceShift(selectionScene, drag.y, end.y - drag.y, PAGE_HEIGHT),
+        };
+        spaceDragRef.current = next;
+        setSpaceDrag(next);
+      }
     }
     if (activeToolRef.current === "coordinates") {
       const end = points.at(-1);
@@ -1527,6 +1560,16 @@ export function HandwritingStudio({
       return;
     }
     setRulerMeasure(null);
+    if (activeToolRef.current === "space") {
+      const drag = spaceDragRef.current;
+      spaceDragRef.current = null;
+      setSpaceDrag(null);
+      if (drag && Math.abs(drag.shift) >= 1) applySpaceShift(drag.y, drag.shift);
+      else setUndoStack((history) => history.slice(0, -1));
+      activePointerRef.current = null;
+      drawingRef.current = false;
+      return;
+    }
     if (activeToolRef.current === "coordinates" && coordinateMeasure) {
       const width = Math.abs(coordinateMeasure.end.x - coordinateMeasure.start.x);
       const height = Math.abs(coordinateMeasure.end.y - coordinateMeasure.start.y);
@@ -2357,10 +2400,48 @@ export function HandwritingStudio({
     viewportRef,
   );
 
+  // Move tudo o que está abaixo da linha. Usa os ids da folha de agora e atualizações funcionais,
+  // para não apagar um traço que um colega acrescentou enquanto a linha era arrastada.
+  function applySpaceShift(lineY: number, shift: number) {
+    const items = itemsBelowLine(selectionScene, lineY);
+    const page = { width: PAGE_WIDTH, height: PAGE_HEIGHT };
+    setStrokes((current) => moveStrokes(current, items.strokeIds, 0, shift, page));
+    setCoordinateSystems((current) =>
+      moveCoordinateSystems(current, items.coordinateIds, 0, shift, page),
+    );
+    setStickies((current) => moveStickies(current, items.stickyIds, 0, shift, page));
+    setImportedImages((current) => moveImages(current, items.imageIds, 0, shift, page));
+    if (items.moveText) setPageTextFrame((frame) => shiftTextFrame(frame, 0, shift, page));
+  }
+
+  const SPACE_GUIDE_STEP = 24;
+  const SPACE_KEY_SHIFT = 48;
+  const spaceGuideY = Math.max(0, Math.min(PAGE_HEIGHT, spaceGuide ?? Math.round(PAGE_HEIGHT / 3)));
+
+  function handleSpaceKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const direction = event.key === "ArrowDown" ? 1 : -1;
+    if (!event.shiftKey) {
+      setSpaceGuide(Math.max(0, Math.min(PAGE_HEIGHT, spaceGuideY + direction * SPACE_GUIDE_STEP)));
+      return;
+    }
+    const shift = clampSpaceShift(
+      selectionScene,
+      spaceGuideY,
+      direction * SPACE_KEY_SHIFT,
+      PAGE_HEIGHT,
+    );
+    if (Math.abs(shift) < 1) return;
+    remember();
+    applySpaceShift(spaceGuideY, shift);
+  }
+
   function handleCanvasKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
     const viewport = viewportRef.current;
     const canvas = canvasRef.current;
     if (!viewport || !canvas) return;
+    if (tool === "space") handleSpaceKeyDown(event);
     if (
       (tool === "zoom-in" || tool === "zoom-out") &&
       (event.key === "Enter" || event.key === " ")
@@ -3023,6 +3104,43 @@ export function HandwritingStudio({
                   </svg>
                 );
               })()}
+            {tool === "space" && !textMode && (
+              <svg
+                className="handwriting-ruler-overlay handwriting-space-overlay"
+                viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
+                aria-hidden="true"
+              >
+                {spaceDrag && spaceDrag.shift !== 0 && (
+                  <rect
+                    x="0"
+                    y={Math.min(spaceDrag.y, spaceDrag.y + spaceDrag.shift)}
+                    width={PAGE_WIDTH}
+                    height={Math.abs(spaceDrag.shift)}
+                    fill="#facc15"
+                    opacity="0.35"
+                  />
+                )}
+                <path
+                  d={`M0 ${spaceDrag ? spaceDrag.y : spaceGuideY}H${PAGE_WIDTH}`}
+                  fill="none"
+                  stroke="#7433e0"
+                  strokeWidth="4"
+                  strokeDasharray="18 12"
+                />
+                <rect
+                  x="0"
+                  y={(spaceDrag ? spaceDrag.y : spaceGuideY) - 14}
+                  width="28"
+                  height="28"
+                  fill="#7433e0"
+                />
+                {spaceDrag && spaceDrag.shift !== 0 && (
+                  <text x="44" y={spaceDrag.y - 12} fill="#51259b" fontSize="30" fontWeight="700">
+                    {spaceDrag.shift > 0 ? "Abrir espaço" : "Fechar espaço"}
+                  </text>
+                )}
+              </svg>
+            )}
             {coordinateMeasure && (
               <svg
                 className="handwriting-ruler-overlay"
@@ -3062,7 +3180,9 @@ export function HandwritingStudio({
                       ? "Arraste a folha para mover"
                       : tool === "select"
                         ? "Arraste para selecionar traços"
-                        : "Folha para escrita à mão com dedo ou caneta"
+                        : tool === "space"
+                          ? "Espaço vertical: arraste para abrir ou fechar espaço. Com o teclado, setas movem a linha e Shift com setas abre ou fecha espaço"
+                          : "Folha para escrita à mão com dedo ou caneta"
               }
               onPointerDown={start}
               onPointerMove={move}
