@@ -653,6 +653,11 @@ mover vive em `handwriting-vertical-space.ts` (`itemsBelowLine`, `clampSpaceShif
 captura o gesto e aplica com atualizações funcionais (`applySpaceShift`). Não grava campo novo na
 folha. Teste em `handwriting-vertical-space.test.ts` e `handwriting-vertical-space.spec.ts`.
 
+Reconhecimento de formas (`recognizeShape`): retas e cabos de seta a até 5 graus do eixo encaixam
+nele (`snapToAxis`, pivô no início do traço); retângulos usam a caixa dos eixos até 5 graus e o
+menor retângulo girado acima disso, só se os quatro cantos tiverem tinta (barra elipse inclinada).
+Teste em `handwriting-shapes.test.ts` e `handwriting-axis-snap.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita

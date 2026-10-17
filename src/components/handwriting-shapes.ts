@@ -11,6 +11,10 @@ export type RecognizedShape = { kind: ShapeKind; points: HandwritingPoint[] };
 const MIN_PATH = 90;
 // Espaçamento das amostras do traço gerado, para a tinta ficar lisa como a de um traço normal.
 const SPACING = 6;
+// Uma reta, o cabo de uma seta ou um retângulo que fogem do eixo por menos que isso (em graus)
+// são tidos como horizontais ou verticais, que é o que a mão quis fazer.
+const AXIS_SNAP_DEGREES = 5;
+const AXIS_SNAP = (AXIS_SNAP_DEGREES * Math.PI) / 180;
 
 type Vec = { x: number; y: number };
 
@@ -141,6 +145,71 @@ function isSimplePolygon(vertices: readonly Vec[]): boolean {
   return true;
 }
 
+// Encaixa `to` no eixo mais próximo em torno de `from`, mantendo o comprimento, quando o desvio é
+// de até AXIS_SNAP. O ponto de partida é o que a pessoa escolheu, por isso é ele o pivô. Fora da
+// tolerância devolve o próprio `to`, sem tocar (a igualdade de referência diz se houve encaixe).
+function snapToAxis(from: Vec, to: Vec): Vec {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = Math.hypot(dx, dy);
+  if (length === 0) return to;
+  const angle = Math.atan2(dy, dx);
+  const quarter = Math.PI / 2;
+  const nearest = Math.round(angle / quarter) * quarter;
+  if (Math.abs(angle - nearest) > AXIS_SNAP) return to;
+  return {
+    x: from.x + Math.round(Math.cos(nearest)) * length,
+    y: from.y + Math.round(Math.sin(nearest)) * length,
+  };
+}
+
+// Menor retângulo (por área) que contém os pontos, em qualquer ângulo. `tilt` é o desvio, em
+// graus, do eixo mais próximo (0 a 45).
+function orientedRectangle(points: readonly Vec[]) {
+  let best = { area: Infinity, degrees: 0 };
+  for (let degrees = 0; degrees < 90; degrees += 0.5) {
+    const radians = (degrees * Math.PI) / 180;
+    const c = Math.cos(radians);
+    const s = Math.sin(radians);
+    let minU = Infinity;
+    let maxU = -Infinity;
+    let minV = Infinity;
+    let maxV = -Infinity;
+    for (const point of points) {
+      const u = point.x * c + point.y * s;
+      const v = -point.x * s + point.y * c;
+      minU = Math.min(minU, u);
+      maxU = Math.max(maxU, u);
+      minV = Math.min(minV, v);
+      maxV = Math.max(maxV, v);
+    }
+    const area = (maxU - minU) * (maxV - minV);
+    if (area < best.area) best = { area, degrees };
+  }
+  const radians = (best.degrees * Math.PI) / 180;
+  const c = Math.cos(radians);
+  const s = Math.sin(radians);
+  let minU = Infinity;
+  let maxU = -Infinity;
+  let minV = Infinity;
+  let maxV = -Infinity;
+  for (const point of points) {
+    const u = point.x * c + point.y * s;
+    const v = -point.x * s + point.y * c;
+    minU = Math.min(minU, u);
+    maxU = Math.max(maxU, u);
+    minV = Math.min(minV, v);
+    maxV = Math.max(maxV, v);
+  }
+  const corner = (u: number, v: number): Vec => ({ x: u * c - v * s, y: u * s + v * c });
+  return {
+    corners: [corner(minU, minV), corner(maxU, minV), corner(maxU, maxV), corner(minU, maxV)],
+    width: maxU - minU,
+    height: maxV - minV,
+    tilt: Math.min(best.degrees, 90 - best.degrees),
+  };
+}
+
 // Menor diferença angular entre dois ângulos (em radianos, sempre entre 0 e π).
 function angleDelta(a: number, b: number): number {
   const delta = Math.abs(a - b) % (Math.PI * 2);
@@ -178,16 +247,20 @@ function recognizeArrow(
   const fit = polylineResidual(points, [tail, headA, barbA, headA, barbB]);
   if (fit.mean > length * 0.055) return null;
   const pressure = averagePressure(points);
-  const head = { x: (headA.x + headB.x) / 2, y: (headA.y + headB.y) / 2 };
+  const drawnHead = { x: (headA.x + headB.x) / 2, y: (headA.y + headB.y) / 2 };
+  // Cabo quase horizontal ou vertical vira exatamente horizontal ou vertical, com as farpas
+  // acompanhando.
+  const head = snapToAxis(tail, drawnHead);
+  const outAngle = head === drawnHead ? shaftAngle : Math.atan2(head.y - tail.y, head.x - tail.x);
   const barbLength = Math.min(shaftLength * 0.24, Math.max(20, (barbALength + barbBLength) / 2));
   const barbAngle = (Math.PI * 28) / 180;
   const tip1 = {
-    x: head.x + Math.cos(shaftAngle + Math.PI - barbAngle) * barbLength,
-    y: head.y + Math.sin(shaftAngle + Math.PI - barbAngle) * barbLength,
+    x: head.x + Math.cos(outAngle + Math.PI - barbAngle) * barbLength,
+    y: head.y + Math.sin(outAngle + Math.PI - barbAngle) * barbLength,
   };
   const tip2 = {
-    x: head.x + Math.cos(shaftAngle + Math.PI + barbAngle) * barbLength,
-    y: head.y + Math.sin(shaftAngle + Math.PI + barbAngle) * barbLength,
+    x: head.x + Math.cos(outAngle + Math.PI + barbAngle) * barbLength,
+    y: head.y + Math.sin(outAngle + Math.PI + barbAngle) * barbLength,
   };
   return { kind: "arrow", points: densify([tail, head, tip1, head, tip2], pressure, false) };
 }
@@ -207,7 +280,7 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
   if (chord >= MIN_PATH && chord / length > 0.9) {
     const deviation = polylineResidual(points, [first, last]);
     if (deviation.max <= chord * 0.07) {
-      return { kind: "line", points: densify([first, last], pressure, false) };
+      return { kind: "line", points: densify([first, snapToAxis(first, last)], pressure, false) };
     }
   }
 
@@ -222,7 +295,9 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
   const candidates: { kind: ShapeKind; vertices: Vec[]; score: number }[] = [];
   const perimeter = pathLength([...points, first]);
 
-  // Retângulo: os pontos ficam sobre o contorno da caixa.
+  // Retângulo: os pontos ficam sobre o contorno de um retângulo. Perto do eixo (até
+  // AXIS_SNAP_DEGREES) vale a caixa alinhada aos eixos; mais inclinado, o menor retângulo girado
+  // que os envolve. Assim um retângulo desenhado de lado também é reconhecido.
   const rectangle: Vec[] = [
     { x: box.minX, y: box.minY },
     { x: box.maxX, y: box.minY },
@@ -231,9 +306,30 @@ export function recognizeShape(points: readonly HandwritingPoint[]): RecognizedS
     { x: box.minX, y: box.minY },
   ];
   const rectangleFit = polylineResidual(points, rectangle);
-  const rectangleScore = rectangleFit.mean / Math.min(box.width, box.height);
-  if (rectangleFit.mean <= Math.min(box.width, box.height) * 0.07) {
-    candidates.push({ kind: "rectangle", vertices: rectangle.slice(0, 4), score: rectangleScore });
+  const tilted = orientedRectangle(points);
+  const minSide = Math.min(box.width, box.height);
+  if (tilted.tilt <= AXIS_SNAP_DEGREES && rectangleFit.mean <= minSide * 0.07) {
+    candidates.push({
+      kind: "rectangle",
+      vertices: rectangle.slice(0, 4),
+      score: rectangleFit.mean / minSide,
+    });
+  } else if (Math.min(tilted.width, tilted.height) >= 40) {
+    const turned = [...tilted.corners, tilted.corners[0]!];
+    const turnedFit = polylineResidual(points, turned);
+    const turnedSide = Math.min(tilted.width, tilted.height);
+    // Uma elipse inclinada também cabe justa em um retângulo girado, mas não tem tinta nos
+    // cantos: um retângulo de verdade tem, mesmo com os cantos arredondados.
+    const cornerGap = Math.max(
+      ...tilted.corners.map((corner) => Math.min(...points.map((point) => dist(point, corner)))),
+    );
+    if (turnedFit.mean <= turnedSide * 0.07 && cornerGap <= turnedSide * 0.22) {
+      candidates.push({
+        kind: "rectangle",
+        vertices: [...tilted.corners],
+        score: turnedFit.mean / turnedSide,
+      });
+    }
   }
 
   // Triângulo: três vértices que descrevem o contorno.
