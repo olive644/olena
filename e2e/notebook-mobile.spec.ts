@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { setTestTheme } from "./theme-setup";
 import { activateHandwritingPen } from "./notebook-helpers";
 
 test("celular distribui ações e recolhe as opções para liberar a folha", async ({ page }, info) => {
@@ -58,11 +57,12 @@ test("navegação escura e gavetas do caderno mantêm contraste e ações separa
   page,
 }, info) => {
   test.skip(info.project.name !== "mobile");
-  await page.addInitScript(() =>
-    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
-  );
+  // Establish the layout precondition before the theme hook mounts, including on WebKit.
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helenastudy.theme", "dark");
+  });
   await page.goto("/");
-  await setTestTheme(page, "dark");
   const nav = page.getByRole("navigation", { name: "Navegação móvel" });
   const header = page.locator(".page-header");
   await expect(nav).toHaveCSS("background-color", "rgb(41, 36, 50)");
