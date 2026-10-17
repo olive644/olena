@@ -109,7 +109,9 @@ export function NotesView({
   const [selectedNotebookIds, setSelectedNotebookIds] = useState<string[]>([]);
   const [folderPickerOpen, setFolderPickerOpen] = useState(false);
   const [activeNotebookId, setActiveNotebookId] = useState<string | null>(
-    initialNotebookId ?? null,
+    initialNotebookId ??
+      new URLSearchParams(window.location.search).get("caderno")?.slice(0, 160) ??
+      null,
   );
   const [sharedNotebookId, setSharedNotebookId] = useState(initialNotebookId ?? "");
   const [sharedDocument, setSharedDocument] = useState<{

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { useStoredProfile } from "../hooks/use-stored-profile";
-import type { WorkspaceState } from "../domain/workspace";
+import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
+import type { Dispatch } from "react";
 import { ProfileProgress } from "./profile-preferences";
 import { useAccessibility } from "../data/accessibility-preferences";
 import { ProfileEditor, ProfilePaperIcon } from "./profile-editor";
@@ -23,6 +24,7 @@ const SocialDirectory = lazy(() =>
 );
 
 import { ProfileLabels } from "./profile-labels";
+import { ProfileXpBar, ProfileLevelBadge, ProfileStudyWidgets } from "./profile-study-widgets";
 
 export function ProfileShowcase({
   children,
@@ -52,6 +54,7 @@ export function ProfileShowcase({
   const social = useSocialFeed(!guest && !!handle.username);
   useProfilePresentation(guest || !presentationReady ? "" : handle.username, nameFallback);
   const friendButton = useRef<HTMLButtonElement>(null);
+  const connections = useRef<HTMLDivElement>(null);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
   const anchor = useRef<HTMLDivElement>(null);
@@ -88,6 +91,7 @@ export function ProfileShowcase({
       if (editButton.current) editButton.current.inert = !mobile && progress > 0.2;
       if (coverButton.current) coverButton.current.inert = !mobile && progress > 0.2;
       if (friendButton.current) friendButton.current.inert = !mobile && progress > 0.2;
+      if (connections.current) connections.current.inert = !mobile && progress > 0.2;
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -168,6 +172,7 @@ export function ProfileShowcase({
                 <ProfileLabels creks={handle.creks} username={handle.username} />
                 {profile.pronouns && <span>{profile.pronouns}</span>}
               </div>
+              <ProfileXpBar />
               <button
                 ref={friendButton}
                 type="button"
@@ -203,7 +208,11 @@ export function ProfileShowcase({
                   ) : null;
                 })}
               </nav>
-              <div className="profile-cover__connections" aria-label="Conexões do perfil">
+              <div
+                ref={connections}
+                className="profile-cover__connections"
+                aria-label="Conexões do perfil"
+              >
                 <button
                   type="button"
                   onClick={() => {
@@ -266,6 +275,7 @@ export function ProfileShowcase({
                   event.currentTarget.src = "/profile-avatars/helena.webp";
               }}
             />
+            <ProfileLevelBadge />
           </button>
         )}
       </div>
@@ -296,11 +306,20 @@ export function ProfileShowcase({
   );
 }
 
-export function ProfileOverview({ workspace }: { workspace: WorkspaceState }) {
+export function ProfileOverview({
+  workspace,
+  dispatch,
+}: {
+  workspace: WorkspaceState;
+  dispatch?: Dispatch<WorkspaceAction> | undefined;
+}) {
   return (
     <div className="profile-overview">
       <div className="profile-settings-grid">
         <ProfileProgress workspace={workspace} />
+      </div>
+      <div className="profile-study-grid">
+        <ProfileStudyWidgets workspace={workspace} dispatch={dispatch} />
       </div>
     </div>
   );

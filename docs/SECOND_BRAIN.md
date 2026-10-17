@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+2026-10-17, rótulos públicos: ProfileLabels mostra GALAXIA e BETA TESTER para o identificador confirmado dreyxnn, incluindo ficha, barra recolhida e perfil visitado. Não concede CREKS, DEV ou permissões. Cache de nome de usuário não autoriza rótulos. Regressão em profile-showcase.test.tsx cobre cache divergente e a grafia distinta dreyxn.
+
 2026-10-16, revisão móvel: ProfileShowcase separa profile-toolbar sticky de profile-chrome; no celular a ficha usa fluxo natural e avatar 112 px, enquanto desktop mantém o recolhimento. ProfileCoverArt carrega cinco SVGs estáticos de public/profile-covers, sem imagens remotas ou arte dentro do JavaScript. Fonte vetorial em scripts/profile-cover-art.tsx, regeneração por node scripts/build-profile-covers.mjs. ProfileCoverDialog grava apenas cover permitido em helena.profile.v1 via writeSyncedStorage, mesclando com readStoredProfile no instante de salvar. Tipos/fallback em domain/profile-covers. Seguidores/Seguindo voltam como indicadores de zero inicial a pedido do proprietário, substituindo a ocultação da etapa anterior. Ícone settings é compartilhado no PaperEditorIcon com os cadernos.
 
 2026-10-16, trajetória real: ProfileOverview combina focusSessions, practiceActivities e quizAttempts, ordena por instante e limita a cinco no conjunto, sem mutar workspace. Chaves incluem a origem para evitar colisões. Sem grafo social, ProfileShowcase não mostra Seguidores/Seguindo; mantém streaks reais. Esta decisão substitui os zeros de protótipo descritos abaixo.
@@ -1346,3 +1348,7 @@ troca de conta e publica mudanças via SOCIAL_CHANGED. Rótulos em ProfileLabels
 # Conexões do Perfil, revisão de 17/10/2026
 
 GET /api/profile-social aceita list=followers|following, username opcional e offset paginado de 50. POST remove-follower atua somente no vínculo de entrada do usuário autenticado. A apresentação automática usa expectedUsername e helena.account.v1 para não misturar contas. Capa oficial integra a apresentação; dados de estudo, bio e e-mail continuam privados. Não há toggle de publicação na interface. Contas legadas atualizam sua apresentação ao abrir o próprio Perfil.
+
+# Painéis de estudo no Perfil, 17/10/2026
+
+useProfileStudy lê mathPlaceRewards e a mesma progressão mastery das ilhas; escuta eventos de cache sincronizado e troca de conta, sem gravar pontos. profileLevel define 1 ponto conquistado = 1 XP de perfil, 500 por nível. Não inclui o ledger independente de salas. Favorita usa favoriteIsland no perfil existente. profileNotebook seleciona conteúdo real, não inventa frequência de uso. Query caderno no endereço de Cadernos reabre apenas um ID existente no próprio workspace. MathIslandJourney aceita initialCourse e valida desbloqueio.

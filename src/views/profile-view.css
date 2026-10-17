@@ -694,17 +694,28 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   object-fit: cover;
 }
 .profile-cover-options button span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   position: absolute;
   inset: auto 0 0;
   padding: 18px 10px 10px;
   font-size: 0.8rem;
   color: #fff9ef;
-  background: linear-gradient(transparent, #17151cdd);
+  background: #292432;
+  clip-path: polygon(0 0, 95% 0, 100% 25%, 100% 100%, 0 100%);
   text-shadow: 0 2px #292432;
 }
 :root body .profile-view .profile-cover-options button[aria-pressed="true"] {
   background: #facc15;
   color: #292432;
+  box-shadow: 0 4px #b88c13;
+}
+:root body .profile-view .profile-cover-options button[aria-pressed="true"] span {
+  background: #facc15;
+  color: #292432;
+  text-shadow: none;
 }
 @media (max-width: 600px) {
   .profile-view.main-content {

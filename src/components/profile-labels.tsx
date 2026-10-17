@@ -1,13 +1,15 @@
 import "./profile-labels.css";
 export function ProfileLabels({ creks, username }: { creks: boolean; username: string }) {
   const labels =
-    username === "eito"
-      ? ["CREKS", "BETA TESTER"]
-      : creks
-        ? username === "oliver644"
-          ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
-          : ["CREKS"]
-        : [];
+    username === "dreyxnn"
+      ? ["GALAXIA", "BETA TESTER"]
+      : username === "eito"
+        ? ["CREKS", "BETA TESTER"]
+        : creks
+          ? username === "oliver644"
+            ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
+            : ["CREKS"]
+          : [];
   if (!labels.length) return null;
   return (
     <span className="profile-labels">

@@ -30,11 +30,17 @@ test("barra comporta cinco redes e dados longos sem cobrir a engrenagem", async 
         return chrome.getAttribute("data-compact");
       })
       .toBe("true");
-    const portrait = await page.locator(".profile-cover__portrait").boundingBox();
-    const bio = await page.locator(".profile-cover__bio").boundingBox();
-    expect(
-      bio!.y >= portrait!.y + portrait!.height || bio!.x >= portrait!.x + portrait!.width,
-    ).toBe(true);
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const portrait = document
+            .querySelector(".profile-cover__portrait")!
+            .getBoundingClientRect();
+          const bio = document.querySelector(".profile-cover__bio")!.getBoundingClientRect();
+          return bio.y >= portrait.bottom || bio.x >= portrait.right;
+        }),
+      )
+      .toBe(true);
     await expect
       .poll(() =>
         page.evaluate((viewportWidth) => {
@@ -129,9 +135,7 @@ for (const theme of ["light", "dark"]) {
     await expect(activityItems).toHaveCount(0);
     await expect(page.getByText("Sua trajetória", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveText("");
-    await expect(
-      page.getByRole("heading", { name: "O estudo que você já construiu" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toBeVisible();
     await page.screenshot({
       path: info.outputPath(`profile-expanded-${theme}.png`),
       fullPage: true,
@@ -216,7 +220,7 @@ test("perfil vazio também se recolhe em tela alta e respeita movimento reduzido
   }, workspace);
   await page.goto("/perfil");
   await expect(page.locator("main")).toHaveCSS("opacity", "1");
-  await expect(page.getByRole("heading", { name: "O estudo que você já construiu" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "true");
   await expect(page.locator(".profile-chrome")).toHaveCSS("--profile-collapse", "1");

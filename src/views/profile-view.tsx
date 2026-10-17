@@ -136,7 +136,7 @@ export function ProfileView({
           }
         />
       </ProfileShowcase>
-      {!settingsOpen && <ProfileOverview workspace={workspace} />}
+      {!settingsOpen && <ProfileOverview workspace={workspace} dispatch={dispatch} />}
       <header className="profile-settings-heading" hidden={!settingsOpen}>
         <h1>Configurações</h1>
       </header>

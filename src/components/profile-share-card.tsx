@@ -53,7 +53,20 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       if (!context) throw new Error();
       context.fillStyle = "#FFF9EF";
       context.fillRect(0, 0, 720, 960);
-      context.drawImage(cover, 0, 0, 720, 220);
+      const coverScale = Math.max(720 / cover.naturalWidth, 220 / cover.naturalHeight);
+      const coverWidth = 720 / coverScale,
+        coverHeight = 220 / coverScale;
+      context.drawImage(
+        cover,
+        (cover.naturalWidth - coverWidth) / 2,
+        (cover.naturalHeight - coverHeight) / 2,
+        coverWidth,
+        coverHeight,
+        0,
+        0,
+        720,
+        220,
+      );
       context.fillStyle = "#FFF9EF";
       context.font = "800 30px Manrope, sans-serif";
       context.fillText("OlenaStudy", 40, 64);
