@@ -798,7 +798,9 @@ antes de devolver o código da sala, evitando convites para uma folha ainda não
 O editor usa `NotebookFileActions` para salvar, exportar seleção e criar links de leitura.
 `?notebook-view=<token>` abre `NotebookReader`, sem ferramentas de edição. A API
 `notebook-collab` aceita `view-create` e `view-read`, guarda cópias por sete dias e limita
-criação a seis pedidos por minuto por endereço. O cron existente também limpa
+criação a seis pedidos por minuto por endereço. Desde 2026-10-17, `view-create` exige conta
+autenticada (não anônima), confere a assinatura real do arquivo (PNG, JPEG ou WebP) e tem cota
+de 5 por hora e 10 por dia por conta, mais 300 por dia no total. `view-read` continua público. O cron existente também limpa
 `notebook-collab` e `notebook-views`; seus índices nas regras Firebase foram publicados
 em 2026-10-02.
 

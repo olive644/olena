@@ -2931,3 +2931,14 @@ O "segurar para acertar" passa a juntar retas: quando uma reta recém-acertada f
 # Rótulos adicionais de perfil, 2026-10-17
 
 O identificador confirmado @dreyxnn recebe GALAXIA e BETA TESTER pelo componente compartilhado ProfileLabels. São rótulos de apresentação, sem privilégios ou alteração do cadastro. Teste de regressão valida ficha e barra recolhida, rejeita nome apenas no cache e não confunde @dreyxn com @dreyxnn. Arquivo profile-showcase.test.tsx validado com 13 testes aprovados.
+
+# Segurança: link de leitura e regras de conta, 2026-10-17
+
+Resultado da auditoria de segurança (itens 1 e 2 do relatório).
+
+- **`view-create` deixou de ser anônimo.** Antes, qualquer pessoa sem login criava até 4 MB por pedido (40 imagens), guardados por 7 dias no banco compartilhado, limitada apenas a 6 pedidos por minuto por endereço. Agora exige conta autenticada e não anônima (`401` com orientação para entrar), aplica cota por conta (5 por hora e 10 por dia) e global (300 por dia) com `checkRateLimit` (`429`), e confere a assinatura real de PNG, JPEG ou WebP, não só o formato do texto. `view-read` segue público e o link existente continua valendo.
+- **Cliente.** `NotebookFileActions` envia o token da conta; sem login mostra "Entre na sua conta para criar um link de visualização." e não envia as folhas.
+- **Regras de `users/$uid`.** Antes cada item aceitava até 20 milhões de caracteres e o número de chaves era ilimitado, para qualquer conta, inclusive anônima. Agora só as 17 chaves de `SYNCED_STORAGE_KEYS` entram (nomes brutos em `state`, codificados em `stateV2`), itens passam de 5 milhões de caracteres só na folha de trabalho (teto de 20 milhões) e contas anônimas não escrevem. O cliente nunca cria contas anônimas, então o fluxo legítimo não muda.
+- **Limite conhecido.** As regras do Realtime Database não somam tamanhos, então o pior caso por conta ainda é cerca de 100 MB (20 + 16 x 5). Reduzir mais exige dados reais de tamanho; vale configurar alerta de uso no Firebase.
+- **Publicação manual.** As regras só valem depois de publicadas no Firebase (ver `docs/ACCOUNT_SYNC_SETUP.md`). Até lá, o código novo do servidor já protege `view-create`, mas as regras antigas continuam abertas.
+- **Testes.** `notebook-collab-handler.test.ts` (conta, anônimo, cota, assinatura falsa), `notebook-file-actions.test.tsx` (token enviado e orientação sem login) e `firebase-user-rules.test.ts` (chaves permitidas, limites, escrita anônima).

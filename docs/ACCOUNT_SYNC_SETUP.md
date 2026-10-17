@@ -70,3 +70,7 @@ converter dados de volta sem um procedimento explícito de backup e migração.
 A tela de login também oferece "Entrar como convidado". O convidado se chama Guest, não tem conta nem sincronização e guarda tudo somente neste aparelho (chave local `helena.guest.v1`, que não é sincronizada). Ao entrar com Google depois, a marca some e o conteúdo local segue a regra de primeira conta: sobe para a nuvem se a conta ainda estiver vazia. O convite de edição de caderno continua exigindo login Google.
 
 No Modo Sala o convidado vê o campo "Seu apelido na sala", que começa em Guest. O apelido fica só neste aparelho (chave `helena.guest-nickname.v1`, também fora das chaves sincronizadas), vale apenas ali e some quando a pessoa entra com Google.
+
+## Regras endurecidas em 2026-10-17 (publicar antes do próximo deploy de sincronização)
+
+`firebase-room.rules.json` agora limita `users/$uid`: só as 17 chaves de `SYNCED_STORAGE_KEYS` (nomes brutos em `state`, nomes codificados em `stateV2`) são aceitas, cada item tem no máximo 5 milhões de caracteres (20 milhões só na folha de trabalho `helenastudy.workspace.v1`) e contas anônimas não escrevem. O teste `src/firebase-user-rules.test.ts` falha se uma chave nova for adicionada a `SYNCED_STORAGE_KEYS` sem atualizar as regras, então publique as regras junto com qualquer chave nova. Leia e faça backup das regras publicadas antes de publicar; esta mudança só estreita permissões.
