@@ -12,6 +12,9 @@ import { ProfileAvatarDialog } from "./profile-avatar-dialog";
 import { profileAvatarSource } from "../domain/profile-avatars";
 import { ProfileStreaks } from "./profile-streaks";
 import { useProfileHandle } from "../hooks/use-profile-handle";
+import { ProfileCoverArt } from "./profile-cover-art";
+import { ProfileCoverDialog } from "./profile-cover-dialog";
+import { profileCover } from "../domain/profile-covers";
 
 export function ProfileShowcase({
   children,
@@ -30,10 +33,13 @@ export function ProfileShowcase({
   const { handle } = useProfileHandle(guest);
   const [editing, setEditing] = useState(false);
   const [choosingAvatar, setChoosingAvatar] = useState(false);
+  const [choosingCover, setChoosingCover] = useState(false);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
   const anchor = useRef<HTMLDivElement>(null);
   const editButton = useRef<HTMLButtonElement>(null);
+  const coverButton = useRef<HTMLButtonElement>(null);
+  const toolbar = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const element = chrome.current;
     const origin = anchor.current;
@@ -53,7 +59,10 @@ export function ProfileShowcase({
         String(motion?.matches || reduceMotion ? Number(progress > 0.5) : progress),
       );
       element.dataset["compact"] = String(progress >= 1);
-      if (editButton.current) editButton.current.inert = progress > 0.2;
+      if (toolbar.current) toolbar.current.dataset["compact"] = String(distance > 32);
+      const mobile = window.matchMedia?.("(max-width: 600px)").matches ?? window.innerWidth <= 600;
+      if (editButton.current) editButton.current.inert = !mobile && progress > 0.2;
+      if (coverButton.current) coverButton.current.inert = !mobile && progress > 0.2;
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -73,67 +82,87 @@ export function ProfileShowcase({
   return (
     <>
       <div ref={anchor} className="profile-scroll-anchor" aria-hidden="true" />
+      <div ref={toolbar} className="profile-toolbar">
+        {children}
+      </div>
       <div ref={chrome} className="profile-chrome" data-settings={settingsOpen}>
         {!settingsOpen && (
           <section className="profile-cover" aria-label="Seu perfil">
-            <img
-              className="profile-cover__art"
-              src="/room-art/profile-heads-wide.webp"
-              alt=""
-              width="1800"
-              height="600"
-              fetchPriority="high"
-            />
+            <div className="profile-cover__art">
+              <ProfileCoverArt theme={profileCover(profile.cover)} />
+            </div>
+            <button
+              ref={coverButton}
+              className="secondary-button profile-cover__choose"
+              type="button"
+              onClick={() => setChoosingCover(true)}
+              aria-label="Editar capa"
+              title="Editar capa"
+            >
+              <PaperEditorIcon name="pen" />
+            </button>
             <div className="profile-cover__shade" />
-            <div className="profile-cover__identity">
-              <h1 className="profile-cover__name" title={name}>
-                {name}
-              </h1>
-              <button
-                ref={editButton}
-                type="button"
-                className="secondary-button profile-cover__edit"
-                aria-label="Editar perfil"
-                title="Editar perfil"
-                onClick={() => setEditing(true)}
-              >
-                <PaperEditorIcon name="pen" />
-              </button>
-            </div>
-            <div className="profile-cover__handle">
-              {handle.username && <strong>@{handle.username}</strong>}
-              {handle.creks && (
-                <span className="profile-creks" aria-label="Selo CREKS">
-                  CREKS
-                </span>
+            <div className="profile-cover__details">
+              <div className="profile-cover__identity">
+                <h1 className="profile-cover__name" title={name}>
+                  {name}
+                </h1>
+                <button
+                  ref={editButton}
+                  type="button"
+                  className="secondary-button profile-cover__edit"
+                  aria-label="Editar perfil"
+                  title="Editar perfil"
+                  onClick={() => setEditing(true)}
+                >
+                  <PaperEditorIcon name="pen" />
+                </button>
+              </div>
+              <div className="profile-cover__handle">
+                {handle.username && <strong>@{handle.username}</strong>}
+                {handle.creks && (
+                  <span className="profile-creks" aria-label="Selo CREKS">
+                    CREKS
+                  </span>
+                )}
+                {profile.pronouns && <span>{profile.pronouns}</span>}
+              </div>
+              {profile.bio && (
+                <p className="profile-cover__bio" title={profile.bio}>
+                  {profile.bio}
+                </p>
               )}
-              {profile.pronouns && <span>{profile.pronouns}</span>}
-            </div>
-            {profile.bio && (
-              <p className="profile-cover__bio" title={profile.bio}>
-                {profile.bio}
-              </p>
-            )}
-            <nav className="profile-cover__networks" aria-label="Redes sociais do perfil">
-              {profile.socialLinks?.map((link) => {
-                const social = recognizeSocialLink(link);
-                return social ? (
-                  <a
-                    key={social.network}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="secondary-button"
-                    aria-label={SOCIAL_LABELS[social.network]}
-                    title={SOCIAL_LABELS[social.network]}
-                  >
-                    <ProfilePaperIcon name={social.network} />
-                  </a>
-                ) : null;
-              })}
-            </nav>
-            <div className="profile-cover__connections" aria-label="Sequências de estudo">
-              {workspace && <ProfileStreaks workspace={workspace} />}
+              <nav className="profile-cover__networks" aria-label="Redes sociais do perfil">
+                {profile.socialLinks?.map((link) => {
+                  const social = recognizeSocialLink(link);
+                  return social ? (
+                    <a
+                      key={social.network}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="secondary-button"
+                      aria-label={SOCIAL_LABELS[social.network]}
+                      title={SOCIAL_LABELS[social.network]}
+                    >
+                      <ProfilePaperIcon name={social.network} />
+                    </a>
+                  ) : null;
+                })}
+              </nav>
+              <div className="profile-cover__connections" aria-label="Conexões do perfil">
+                <span title="Recurso social em desenvolvimento">
+                  <ProfilePaperIcon name="followers" />
+                  <strong>0</strong> Seguidores
+                </span>
+                <span title="Recurso social em desenvolvimento">
+                  <ProfilePaperIcon name="following" />
+                  <strong>0</strong> Seguindo
+                </span>
+                <div className="profile-cover__streaks" aria-label="Sequências de estudo">
+                  {workspace && <ProfileStreaks workspace={workspace} />}
+                </div>
+              </div>
             </div>
             <span className="profile-cover__spark profile-cover__spark--one" aria-hidden="true">
               ✦
@@ -170,7 +199,6 @@ export function ProfileShowcase({
             />
           </button>
         )}
-        {children}
       </div>
       {!settingsOpen && <div className="profile-cover-spacer" aria-hidden="true" />}
       {editing && (
@@ -181,6 +209,7 @@ export function ProfileShowcase({
         />
       )}
       {choosingAvatar && <ProfileAvatarDialog onClose={() => setChoosingAvatar(false)} />}
+      {choosingCover && <ProfileCoverDialog onClose={() => setChoosingCover(false)} />}
     </>
   );
 }

@@ -21,12 +21,12 @@ for (const theme of ["light", "dark"]) {
     await expect(
       page.getByText("Cada descoberta faz parte da sua história.", { exact: true }),
     ).toHaveCount(0);
-    await expect(page.getByText(/Seguidores|Seguindo/)).toHaveCount(0);
+    await expect(page.getByLabel("Conexões do perfil")).toContainText("0 Seguidores0 Seguindo");
     const edit = page.getByRole("button", { name: "Editar perfil", exact: true });
     await edit.click();
     const dialog = page.getByRole("dialog", { name: "Editar perfil", exact: true });
-    await expect(dialog.getByLabel("Apelido")).toHaveAttribute("readonly", "");
-    await expect(dialog.getByLabel("Nome", { exact: true })).toBeDisabled();
+    await expect(dialog.getByLabel("Nome", { exact: true })).toHaveAttribute("readonly", "");
+    await expect(dialog.getByLabel("Nome de usuário", { exact: true })).toBeDisabled();
     await dialog.getByLabel("Bio", { exact: true }).fill("Uma descoberta de cada vez.");
     await dialog.getByRole("button", { name: "Pronomes", exact: true }).click();
     await page.getByRole("option", { name: "Personalizado", exact: true }).click();
@@ -89,7 +89,7 @@ for (const theme of ["light", "dark"]) {
     );
     await page.getByRole("button", { name: "Configurações", exact: true }).click();
     await page.getByRole("button", { name: "Editar perfil", exact: true }).click();
-    await expect(dialog.getByLabel("Nome", { exact: true })).toBeDisabled();
+    await expect(dialog.getByLabel("Nome de usuário", { exact: true })).toBeDisabled();
     await expect(dialog.getByLabel("Pronomes personalizados")).toHaveValue("ele/dela");
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
     await expect(dialog).toHaveCount(0);

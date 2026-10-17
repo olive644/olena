@@ -56,12 +56,12 @@ it("mostra identidade real com capa compartilhada e uma só foto", () => {
     "/profile-avatars/andreyna.webp",
   );
   expect(container.querySelectorAll(".profile-cover__avatar")).toHaveLength(1);
-  expect(container.querySelector(".profile-cover__art")?.getAttribute("src")).toBe(
-    "/room-art/profile-heads-wide.webp",
+  expect(container.querySelector(".profile-cover__art img")?.getAttribute("data-cover")).toBe(
+    "helena",
   );
 });
 
-it("mantém dados opcionais e redes sem mostrar contadores sociais fictícios", () => {
+it("mantém dados opcionais, redes e os contadores sociais solicitados", () => {
   localStorage.setItem(
     "helena.profile.v1",
     JSON.stringify({
@@ -83,7 +83,9 @@ it("mantém dados opcionais e redes sem mostrar contadores sociais fictícios", 
   expect(link.textContent).toBe("");
   expect(link.getAttribute("rel")).toBe("noopener noreferrer");
   expect(screen.getAllByRole("link")).toHaveLength(1);
-  expect(screen.queryByText(/Seguidores|Seguindo/)).toBeNull();
+  expect(screen.getByLabelText("Conexões do perfil").textContent).toContain(
+    "0 Seguidores0 Seguindo",
+  );
   expect(container.querySelector(".profile-about")).toBeNull();
 });
 
