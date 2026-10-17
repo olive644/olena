@@ -57,6 +57,24 @@ for (const theme of ["light", "dark"]) {
     const avatar = page.getByRole("button", { name: "Abrir foto do perfil" });
     await avatar.click();
     const dialog = page.getByRole("dialog", { name: "Avatar do perfil", exact: true });
+    const transparent = await dialog
+      .locator(".profile-picker__options img")
+      .evaluateAll(async (images) => {
+        return Promise.all(
+          images.map(async (element) => {
+            const image = element as HTMLImageElement;
+            await image.decode();
+            const canvas = document.createElement("canvas");
+            canvas.width = canvas.height = 32;
+            const context = canvas.getContext("2d")!;
+            context.drawImage(image, 0, 0, 32, 32);
+            const pixels = context.getImageData(0, 0, 32, 32).data;
+            return pixels[3] === 0 && pixels[(32 * 32 - 1) * 4 + 3] === 0;
+          }),
+        );
+      });
+    expect(transparent).toHaveLength(16);
+    expect(transparent.every(Boolean)).toBe(true);
     await expect(dialog.locator('input[type="file"]')).toHaveCount(0);
     await dialog.getByRole("button", { name: "Jairo", exact: true }).click();
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();

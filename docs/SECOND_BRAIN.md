@@ -1308,3 +1308,12 @@ A execução 38334744926 interrompeu a suíte móvel de 150 testes ao atingir o 
 ## @ exclusivo e CREKS (2026-10-16)
 
 Perfil usa GET/POST/DELETE /api/profile-handle com Firebase Bearer. GET retorna identidade confirmada, POST reserva/troca/libera nome e DELETE libera na exclusão de conta. Registro privado permanente com CAS/ETag, teto 10 mil contas. Nomes locais legados são rascunhos, não identidades verificadas. Guests não criam @. CREKS_OWNER_EMAIL é e-mail de login verificado autorizado, configuração somente no servidor, sem valor pessoal versionado; protege oliver644 mesmo se não configurado. Configuração privada salva no Vercel olenastudy em 2026-10-16; a versão precisa ser publicada para efetivar a reserva autenticada. Preview sem credenciais administrativas Firebase falha fechado. Não há pagamento. Testes: profile-handle-handler.test.ts, profile-handle.test.ts e profile-editor.test.tsx. Origens exatas de HELENA_ALLOWED_ORIGINS e URLs confiáveis do deploy Vercel, nunca host arbitrário do cliente.
+
+# Perfil móvel, identidade compacta (2026-10-16)
+
+ProfileShowcase compartilha --profile-collapse com a barra móvel. A cópia visual
+aria-hidden contém só Nome/selo e @/pronomes, sem controles duplicados. A ficha
+expandida permanece em fluxo natural; movimento reduzido elimina interpolação.
+ProfileOverview mantém progresso, sem lista de trajetória e sem apagar histórico.
+Ao abrir ProfileEditor, usar o mesmo nome resolvido na capa ou em ProfileIdentity,
+incluindo o nome da conta quando profile.name ainda não existe.

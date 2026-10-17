@@ -161,7 +161,9 @@ export function ProfileView({
             {SECTIONS.find((item) => item.id === section)?.label}
           </h2>
           <div className="profile-settings-grid" key={section}>
-            {section === "account" && <ProfileIdentity guest={guest} />}
+            {section === "account" && (
+              <ProfileIdentity guest={guest} nameFallback={cloud.displayName || "Seu perfil"} />
+            )}
             {section === "progress" && <ProfileProgress workspace={workspace} />}
             {section === "appearance" && <ProfileAppearance />}
             {section === "notebooks" && <ProfileNotebookPreferences />}

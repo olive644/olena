@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, identidade móvel recolhida (2026-10-16): restaurar interpolação por scroll,
+com somente Nome e selo opcional na primeira linha e @ menor com pronomes opcionais
+na segunda. Sem avatar, redes, bio ou estatísticas na barra compacta móvel.
+Capa ocupa toda a largura móvel, sem margens laterais. Movimento reduzido troca
+diretamente entre estados. Remover a seção Sua trajetória, preservando os registros.
+Personagens oficiais passam a recortes transparentes, sem badges circulares ou
+molduras na foto e prévia. Preservar identidade, expressão, pose e acessórios.
+
 Perfil, revisão móvel e capas (2026-10-16): esta revisão substitui a capa fixa e
 a ocultação de conexões descritas abaixo. Cinco temas vetoriais nativos em papel
 recortado: Noite da Helena, Eclipse Solar, Aurora, Bosque e Oceano. Seleção com

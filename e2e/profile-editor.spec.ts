@@ -61,7 +61,9 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(edit).toBeFocused();
     await expect(page.getByText("@oli_estuda", { exact: true })).toHaveCount(0);
-    await expect(page.getByText("ele/dela", { exact: true })).toBeVisible();
+    await expect(
+      page.locator(".profile-cover__handle").getByText("ele/dela", { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
       "https://github.com/oli",
@@ -72,6 +74,8 @@ for (const theme of ["light", "dark"]) {
       animations: "disabled",
     });
     await page.reload();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "false");
     await expect(page.getByText("Uma descoberta de cada vez.", { exact: true })).toBeVisible();
     await edit.click();
     await dialog.getByLabel("Bio", { exact: true }).fill("Não salvar");
@@ -80,6 +84,8 @@ for (const theme of ["light", "dark"]) {
     await expect(dialog.getByRole("alert")).toBeVisible();
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
     await expect(page.getByText("Uma descoberta de cada vez.", { exact: true })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "false");
     await edit.click();
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);

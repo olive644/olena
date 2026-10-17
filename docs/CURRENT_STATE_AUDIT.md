@@ -2789,6 +2789,16 @@ O runtime oficial @rive-app/canvas 2.43.0 (MIT, sem avisos OSV) fica vendorizado
 
 O componente preserva a interface anterior (mesmas props, imagem estática de reserva, pausa em outras telas e em modais) e expõe data-form, data-state e data-behavior para os testes. Os testes unitários cobrem carregamento, entradas, ciclo estrela/Helena, pausa e falha de carregamento; os e2e do assistente verificam a CSP de produção e a instância única no cabeçalho. Orçamento: Helena Rive opcional 445 KiB de JS, 1,86 MiB de WASM e 829 KiB de .riv, separado; o JavaScript da aplicação sobe de 1364 para 1366 KiB (medido 1364,6), sem dependência npm nova. O three.js vendorizado, o GLB e o script de build do 3D saíram do repositório.
 
+# Perfil móvel e identidade (2026-10-16)
+
+Barra móvel volta a interpolar pelo scroll, com Nome/selo e @/pronomes somente.
+Capa sem margens laterais no celular. Sua trajetória foi removida da apresentação;
+focusSessions, practiceActivities e quizAttempts permanecem intactos no workspace.
+O editor recebia apenas profile.name, enquanto a capa usava cloud.displayName como
+alternativa. Agora ambos os pontos de edição recebem o mesmo nome apresentado,
+sem gravar uma alternativa até o usuário salvar. Avatares oficiais recebem recortes
+transparentes sem trocar seus identificadores persistidos.
+
 ### Linha tracejada e pontilhada no handwriting (2026-10-17)
 
 A caneta ganha o estilo da linha: contínua (como sempre), tracejada e pontilhada. A ideia veio de comparar o editor com o Xournal++ (GPL-2.0), lendo apenas o comportamento; nenhum código dele foi copiado ou portado, e o Olena não depende dele.

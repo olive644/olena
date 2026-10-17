@@ -15,8 +15,15 @@ import { serializeWorkspace, WORKSPACE_STORAGE_KEY } from "../data/local-workspa
 import { ProfileEditor } from "./profile-editor";
 import { profileAvatarSource } from "../domain/profile-avatars";
 
-export function ProfileIdentity({ guest }: { guest: boolean }) {
+export function ProfileIdentity({
+  guest,
+  nameFallback = "Seu perfil",
+}: {
+  guest: boolean;
+  nameFallback?: string;
+}) {
   const [profile, setProfile] = useStoredProfile();
+  const name = guest ? "Guest" : profile.name?.trim() || nameFallback;
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState("");
   function save(next: typeof profile) {
@@ -39,13 +46,17 @@ export function ProfileIdentity({ guest }: { guest: boolean }) {
           width="72"
           height="72"
         />
-        <strong>{guest ? "Guest" : profile.name || "Seu perfil"}</strong>
+        <strong>{name}</strong>
       </div>
       <button className="secondary-button" type="button" onClick={() => setEditing(true)}>
         Editar perfil
       </button>
       {editing && (
-        <ProfileEditor profile={profile} guest={guest} onClose={() => setEditing(false)} />
+        <ProfileEditor
+          profile={{ ...profile, name }}
+          guest={guest}
+          onClose={() => setEditing(false)}
+        />
       )}
       <details className="profile-avatar-options">
         <summary>Escolher avatar</summary>
