@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Avisos sociais por eventos autenticados
+
+Substituído o transporte primário de polling por SSE autenticado em profile-social?stream=1, com folha privada somente da conta e eventos sem dados pessoais. Polling permanece fallback, não é apresentado como tempo real. Removida a supressão de refollow por 48 horas; somente vínculo novo renova aviso, requisição repetida continua idempotente. Modelo de ameaça, limites e teste real ainda pendente em SOCIAL_REALTIME_SECURITY.md. Sem mudança de regras Firebase ou publicação automática de novas credenciais.
+
 ## Recomendações apenas quando faltam dados, 2026-10-17
 
 Causa da ficha permanente: ProfileJourney renderizava explicitamente a conclusão com Revisar meu perfil e useProfileCompletion descartava o resultado da API após conferir igualdade, retornando apenas status. Agora o hook disponibiliza o resultado validado para a mesma chave de campos; ProfileShowcase só monta ficha/slot quando a resposta confirmada contém next. ProfileJourney recebe as etapas dessa resposta e retorna null quando complete/next indicam conclusão. Não há cartão de espera, offline ou celebração permanente. Resposta antiga ou divergente continua descartada, sem cobrar dados já preenchidos durante sincronização. X dispensa a recomendação desta abertura; não cria nova preferência remota.

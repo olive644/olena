@@ -1403,3 +1403,12 @@ Códigos de sala são sempre aleatórios; `requestId` só serve para repetir a c
 useProfileCompletion retorna status e completion confirmado para a mesma chave de campos. Usar completion.next/steps da resposta, não recalcular a sugestão no componente nem deixar uma conclusão permanente. Antes da resposta, em erro, após conclusão e após dispensar, não montar slot da jornada. ProfileJourney recebe só o resultado validado, lista apenas pendências e usa os editores existentes. X vale para a recomendação atual nesta abertura. A API e sua autenticação não mudaram.
 
 ProfileStudyWidgets conserva somente Minhas ilhas. Cadernos continuam na própria aba, com dados intactos; não importar prévia de caderno para o Perfil.
+
+# Transporte de notificações sociais
+
+subscribeSocialUpdates compartilha SSE autenticado entre consumidores da conta.
+createProfileSocialEvents verifica identidade/origem/cota e transmite somente
+ready/changed. createFirebaseSocialWatcher observa a folha notices do UID
+confirmado e protege redirects, limites e cancelamento. Reutiliza o adaptador
+Vercel com streaming já existente. Não confundir o teste HTTP de duas identidades
+de teste com a validação em duas contas reais, registrada em SOCIAL_REALTIME_SECURITY.md.
