@@ -300,7 +300,10 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // 1438.1 KiB (+3.3 KiB sobre 1434.8 da main). Código do editor sob demanda, entrada inicial
 // intacta, sem dependência nova. Margem estreita de CI; teto absoluto e orçamento inicial
 // preservados.
-const MAX_TOTAL_JS_BYTES = 1441 * 1024;
+// Ferramenta de curva do handwriting (gerador Catmull-Rom, gesto de toque, teclado, prévia e
+// botão): total medido 1443.5 KiB (+4.3 KiB sobre 1439.2). Código do editor sob demanda,
+// entrada inicial intacta, sem dependência nova. Margem estreita de CI; teto absoluto preservado.
+const MAX_TOTAL_JS_BYTES = 1446 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
