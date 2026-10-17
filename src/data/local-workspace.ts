@@ -377,6 +377,9 @@ export function isHandwritingDocument(value: unknown): boolean {
       (stroke["tool"] === "pen" || stroke["tool"] === "highlighter") &&
       (stroke["brush"] === undefined ||
         ["fine", "ink", "soft"].includes(String(stroke["brush"]))) &&
+      (stroke["dash"] === undefined ||
+        stroke["dash"] === "dashed" ||
+        stroke["dash"] === "dotted") &&
       isString(stroke["color"]) &&
       /^#[0-9a-f]{6}$/i.test(stroke["color"]) &&
       typeof stroke["width"] === "number" &&

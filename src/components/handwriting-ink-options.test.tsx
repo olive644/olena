@@ -90,3 +90,45 @@ it("não mostra o modo da borracha para outras ferramentas nem sem o callback", 
   );
   expect(screen.queryByText("Modo da borracha")).toBeNull();
 });
+
+it("caneta: escolhe o estilo da linha e marca o selecionado", () => {
+  const onDashChange = vi.fn();
+  const props = {
+    tool: "pen" as const,
+    width: 5,
+    color: "#17151c",
+    onColorChange: vi.fn(),
+    onWidthChange: vi.fn(),
+    onDashChange,
+  };
+  const view = render(<HandwritingInkOptions {...props} />);
+  const solid = screen.getByRole("button", { name: "Linha contínua" });
+  expect(solid.getAttribute("aria-pressed")).toBe("true");
+  fireEvent.click(screen.getByRole("button", { name: "Linha tracejada" }));
+  expect(onDashChange).toHaveBeenLastCalledWith("dashed");
+  fireEvent.click(screen.getByRole("button", { name: "Linha pontilhada" }));
+  expect(onDashChange).toHaveBeenLastCalledWith("dotted");
+  fireEvent.click(solid);
+  expect(onDashChange).toHaveBeenLastCalledWith(undefined);
+  view.rerender(<HandwritingInkOptions {...props} dash="dotted" />);
+  expect(
+    screen.getByRole("button", { name: "Linha pontilhada" }).getAttribute("aria-pressed"),
+  ).toBe("true");
+  expect(solid.getAttribute("aria-pressed")).toBe("false");
+});
+
+for (const tool of ["highlighter", "eraser"] as const) {
+  it(`${tool}: não mostra o estilo da linha`, () => {
+    render(
+      <HandwritingInkOptions
+        tool={tool}
+        width={5}
+        color="#17151c"
+        onColorChange={vi.fn()}
+        onWidthChange={vi.fn()}
+        onDashChange={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "Linha tracejada" })).toBeNull();
+  });
+}

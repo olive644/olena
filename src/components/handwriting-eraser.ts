@@ -121,7 +121,7 @@ export function eraseStrokeArea(
   const radii =
     stroke.tool === "highlighter"
       ? stroke.points.map(() => stroke.width / 2)
-      : stroke.brush === "fine"
+      : stroke.brush === "fine" || stroke.dash
         ? stroke.points.map(() => (stroke.width * 0.65) / 2)
         : strokeRadii(stroke, stroke.points);
   const fragments: HandwritingPoint[][] = [];
@@ -196,7 +196,7 @@ function strokeIntersectsErase(
   const radii =
     stroke.tool === "highlighter"
       ? stroke.points.map(() => stroke.width / 2)
-      : stroke.brush === "fine"
+      : stroke.brush === "fine" || stroke.dash
         ? stroke.points.map(() => (stroke.width * 0.65) / 2)
         : strokeRadii(stroke, stroke.points);
   const count = Math.max(1, stroke.points.length - 1);

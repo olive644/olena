@@ -207,6 +207,7 @@ export function HandwritingStudio({
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
+  const [dash, setDash] = useState<Stroke["dash"]>(undefined);
   const [rulerUnit, setRulerUnit] = useState<RulerUnit>("cm");
   const [rulerKind, setRulerKind] = useState<RulerKind>("straight");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
@@ -1321,6 +1322,7 @@ export function HandwritingStudio({
       id: strokeId(),
       tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
       ...(effectiveTool === "pen" ? { brush } : {}),
+      ...(effectiveTool === "pen" && dash ? { dash } : {}),
       ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
       color,
       width: activeWidth,
@@ -2116,6 +2118,7 @@ export function HandwritingStudio({
       id: strokeId(),
       tool: "pen",
       brush,
+      ...(dash ? { dash } : {}),
       color,
       width,
       points: [writingPoint(event.nativeEvent)],
@@ -2584,6 +2587,8 @@ export function HandwritingStudio({
           onEraserWholeStrokeChange={setEraserWholeStroke}
           highlighterOpacity={highlighterOpacity}
           onHighlighterOpacityChange={setHighlighterOpacity}
+          dash={dash}
+          onDashChange={setDash}
         />
 
         <HandwritingHistoryBar

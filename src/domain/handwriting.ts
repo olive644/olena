@@ -17,6 +17,8 @@ export type HandwritingPaper =
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
   brush?: "fine" | "ink" | "soft";
+  // Sem o campo, a linha é contínua (traços antigos abrem iguais).
+  dash?: "dashed" | "dotted";
   id: string;
   tool: "pen" | "highlighter";
   color: string;

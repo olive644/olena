@@ -184,6 +184,13 @@ export function drawHoverPreview(
   context.restore();
 }
 
+// Pontas redondas alongam cada traço em uma espessura, então o padrão desconta esse excesso:
+// no tracejado o risco visível tem 3,6 espessuras e o vão 2,2; no pontilhado a bolinha é um
+// comprimento quase nulo e o vão visível é de 1,4.
+export function dashPattern(dash: NonNullable<Stroke["dash"]>, lineWidth: number): number[] {
+  return dash === "dashed" ? [lineWidth * 2.6, lineWidth * 3.2] : [0.01, lineWidth * 2.4];
+}
+
 export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   const first = stroke.points[0];
   if (!first) return;
@@ -194,8 +201,11 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
     stroke.tool === "highlighter" ? (stroke.opacity ?? 0.3) : stroke.brush === "soft" ? 0.3 : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
-  if (stroke.tool === "highlighter" || stroke.brush === "fine") {
+  // Linha tracejada ou pontilhada usa sempre a espessura constante: o contorno de largura
+  // variável dos outros pincéis é preenchido e não aceita padrão de traço.
+  if (stroke.tool === "highlighter" || stroke.brush === "fine" || stroke.dash) {
     context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
+    if (stroke.dash) context.setLineDash(dashPattern(stroke.dash, context.lineWidth));
     context.beginPath();
     strokeSmoothPath(context, stroke.points);
     if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
