@@ -311,7 +311,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Medido em 1466.2 KiB, entrada 279.9 KiB. Preservar os tetos absolutos.
 // Perfil com ilhas, cadernos e nível derivado dos pontos reais: 1479.3 KiB medidos,
 // entrada 280.3 KiB. Reutiliza artes e componentes, sem dependências novas.
-const MAX_TOTAL_JS_BYTES = 1484 * 1024;
+// Consulta social compartilhada, cache por UID e invalidação segura: 1484.2 KiB.
+// Margem incremental de 1 KiB; teto absoluto de 1500 KiB permanece inalterado.
+const MAX_TOTAL_JS_BYTES = 1485 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

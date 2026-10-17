@@ -36,9 +36,38 @@ const feed = (username: string): SocialFeed => ({
   notifications: [],
 });
 afterEach(() => {
+  act(() => mocks.listener?.(null));
   cleanup();
   mocks.request.mockReset();
   mocks.listener = undefined;
+});
+it("compartilha consulta em andamento entre sino e perfil", async () => {
+  let finish: ((value: SocialFeed) => void) | undefined;
+  mocks.request.mockImplementation(
+    () =>
+      new Promise<SocialFeed>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const first = renderHook(() => useSocialFeed(true));
+  const second = renderHook(() => useSocialFeed(true));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(1));
+  await act(async () => finish?.(feed("alice")));
+  expect(first.result.current?.self.username).toBe("alice");
+  expect(second.result.current?.self.username).toBe("alice");
+});
+it("reutiliza números confirmados ao reabrir e não os apaga se a atualização falhar", async () => {
+  mocks.request.mockResolvedValueOnce(feed("alice"));
+  const first = renderHook(() => useSocialFeed(true));
+  await waitFor(() => expect(first.result.current?.self.username).toBe("alice"));
+  first.unmount();
+  mocks.request.mockRejectedValueOnce(new Error("offline"));
+  const second = renderHook(() => useSocialFeed(true));
+  await waitFor(() => expect(second.result.current?.self.username).toBe("alice"));
+  await act(async () => {
+    window.dispatchEvent(new Event("olena:social-changed"));
+  });
+  expect(second.result.current?.self.username).toBe("alice");
 });
 it("troca de conta limpa o feed anterior e ignora resposta atrasada", async () => {
   let finishA: ((value: SocialFeed) => void) | undefined;
@@ -58,6 +87,23 @@ it("troca de conta limpa o feed anterior e ignora resposta atrasada", async () =
   expect(result.current?.self.username).toBe("bob");
   act(() => mocks.listener?.(null));
   expect(result.current).toBeUndefined();
+});
+it("refaz a consulta se uma alteração ocorrer durante a resposta antiga", async () => {
+  let finish: ((value: SocialFeed) => void) | undefined;
+  mocks.request
+    .mockImplementationOnce(
+      () =>
+        new Promise<SocialFeed>((resolve) => {
+          finish = resolve;
+        }),
+    )
+    .mockResolvedValueOnce(feed("updated"));
+  const { result } = renderHook(() => useSocialFeed(true));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(1));
+  act(() => window.dispatchEvent(new Event("olena:social-changed")));
+  await act(async () => finish?.(feed("old")));
+  await waitFor(() => expect(result.current?.self.username).toBe("updated"));
+  expect(mocks.request).toHaveBeenCalledTimes(2);
 });
 it("não consulta quando desativado", () => {
   renderHook(() => useSocialFeed(false));

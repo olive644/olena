@@ -143,7 +143,13 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
           <ProfileCoverArt theme={profileCover(person.cover)} />
         </div>
         <strong className="social-share-brand">OlenaStudy</strong>
-        <img src={person.photoUrl} alt={`Avatar de ${person.name}`} width="160" height="160" />
+        <img
+          draggable={false}
+          src={person.photoUrl}
+          alt={`Avatar de ${person.name}`}
+          width="160"
+          height="160"
+        />
         <h3>{person.name}</h3>
         <p>@{person.username}</p>
         <div ref={qrElement}>

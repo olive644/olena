@@ -23,7 +23,7 @@ for (const theme of ["light", "dark"]) {
         parentId: "profile-folder",
         subjectId,
         createdAt: "2026-10-17",
-        pageIds: ["profile-page"],
+        pageIds: ["profile-page", "profile-page-2", "profile-page-3"],
       },
     ];
     workspace.notes = [
@@ -36,12 +36,23 @@ for (const theme of ["light", "dark"]) {
         assets: [],
       },
     ];
+    workspace.notes.push(
+      ...[2, 3].map((number) => ({
+        ...workspace.notes[0]!,
+        id: `profile-page-${number}`,
+        title: `Folha ${number}`,
+      })),
+    );
     await page.addInitScript(
       ({ workspace, theme }) => {
         localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
         localStorage.setItem("helena.guest.v1", "1");
         localStorage.setItem("helenastudy.theme", theme);
         localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
+        localStorage.setItem(
+          "helena.room-xp.v1",
+          JSON.stringify({ total: 1500, receipts: ["test-xp"] }),
+        );
         localStorage.setItem(
           "helena.mathPlaceRewards.v1",
           JSON.stringify({ foundations: { points: 1250, receipts: ["test-round"], chests: [] } }),
@@ -60,6 +71,10 @@ for (const theme of ["light", "dark"]) {
       .getByRole("button", { name: "Adicionar amigo", exact: true })
       .boundingBox();
     expect(xp!.y + xp!.height).toBeLessThanOrEqual(friends!.y);
+    const qr = await page
+      .getByRole("button", { name: "Compartilhar perfil por QR code" })
+      .boundingBox();
+    expect(qr!.x).toBeGreaterThanOrEqual(friends!.x + friends!.width);
     await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toBeVisible();
     await expect(page.getByText("O estudo que você já construiu", { exact: true })).toHaveCount(0);
     const islands = page.locator(".profile-islands");
@@ -93,11 +108,15 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toHaveCount(0);
     const notebook = page.locator(".profile-notebook-widget");
     await expect(notebook.locator(".profile-notebook-trail")).toContainText("Ciências");
-    await expect(notebook.locator(".profile-notebook-page")).toContainText("Anotações de hoje");
+    await expect(notebook.getByLabel("Título da folha 1")).toHaveValue("Anotações de hoje");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
-    await notebook.getByRole("link", { name: "Continuar aqui", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "Meu laboratório", exact: true })).toBeVisible();
+    await notebook.getByRole("button", { name: "Próxima ›", exact: true }).click();
+    await expect(notebook.getByLabel("Título da folha 3")).toHaveValue("Folha 3");
+    await notebook
+      .getByRole("button", { name: "Abrir preview de Folha 3, folha 3", exact: true })
+      .click();
+    await expect(page).toHaveURL(/caderno=profile-book&folha=profile-page-3/);
   });
 }

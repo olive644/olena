@@ -1,0 +1,15 @@
+export function ProfileQrIcon() {
+  return (
+    <svg className="profile-qr-icon" viewBox="0 0 32 32" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M2 2h11v11H2Zm17 0h11v11H19ZM2 19h11v11H2Zm17 0h5v5h-5Zm6 6h5v5h-5Zm0-9h5v5h-5Zm-9 9h5v5h-5Z"
+      />
+      <path fill="var(--surface)" d="M5 5h5v5H5Zm17 0h5v5h-5ZM5 22h5v5H5Z" />
+      <path
+        fill="#a779ef"
+        d="M2 2h11l-3 3H5v5l-3 3Zm17 0h11l-3 3h-5v5l-3 3ZM2 19h11l-3 3H5v5l-3 3Z"
+      />
+    </svg>
+  );
+}

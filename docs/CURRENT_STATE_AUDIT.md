@@ -1,5 +1,18 @@
 # Auditoria do estado atual
 
+## Refinamento de perfil, XP e avisos (2026-10-17)
+
+- Complemento de carregamento validado com npm run verify: 1904 testes em 281 arquivos, lint sem erros, formatos, API, TypeScript, build e orçamento aprovados. Mais 16 cenários E2E de perfil, capas e estudos aprovados em desktop/celular nos dois temas.
+
+- Carregamento de contagens: consulta social começa sem esperar a resposta do identificador público. Sino e perfil compartilham requisição em andamento e cache somente em memória, por UID confirmado. Retorno ao perfil reaproveita valores confirmados enquanto atualiza; erro de rede não apaga números. Alterações invalidam cache e respostas antigas não vencem a atualização. Troca de conta/logout limpam dados compartilhados. Primeira consulta sem resposta não inventa zero nem mostra reticências. Streak é calculado imediatamente do workspace disponível, inclusive zero; dados de nuvem continuam sujeitos à sincronização existente. Medido 1484,2 KiB, orçamento normal incremental 1485 KiB, teto absoluto 1500 KiB preservado.
+
+- Validação: 1900 testes em 280 arquivos aprovados; 20 cenários de perfil/capas/social/estudos em desktop e celular, nos dois temas, aprovados. TypeScript, lint, formatação, API, build e orçamento conferidos. Entrada 280,4 KiB, total 1483,7 KiB, sem elevar orçamento nem adicionar dependências. Integração real com duas contas permanece pendente no ambiente publicado.
+
+- O perfil deixa de converter pontos das ilhas em XP e lê o ledger usado por RoomRewardNotice, preservando recibos e total. Nível 1 exige 500 XP, cada próximo nível mais 250 XP. Recalcula o nível sem regravar recompensas. Este ledger existente ainda não integra SYNCED_STORAGE_KEYS; não afirmar sincronização de XP entre aparelhos. Limpeza pessoal e troca de conta preservam o isolamento já existente. Expansão remota exige mudança própria.
+- Botão QR original ao lado de Adicionar amigo abre Compartilhar perfil. Botões voltam às variáveis de tema; ícones monocromáticos herdam o texto do tema. Seguidores voltam ao fundo suave, sem borda de botão. Avatar e marca no cartão não são selecionáveis nem arrastáveis, textos comuns permanecem selecionáveis.
+- Perfil reutiliza NotebookSpread carregado sob demanda, em modo de leitura, com folhear original. Abrir folha navega para Cadernos com caderno e folha validados no próprio workspace. Não permite renomear ou remover folhas pela prévia.
+- Avisos sociais colocam pessoa e ação na mesma linha, sem placa na pessoa. Novos eventos de seguir recebidos pelo feed abrem aviso de 6 segundos com avatar, visita e seguir de volta. Não reapresenta histórico inicial, respeita troca de conta e movimento reduzido. O sino continua oculto no Perfil, mas os avisos funcionam nele. Recebimento usa a consulta periódica/foco existente, não é push instantâneo.
+
 ## Perfil, ilhas e cantinho de ideias (2026-10-17)
 
 - Rótulos CREKS e BETA TESTER adicionados ao identificador confirmado @pranksterbrain pelo componente compartilhado, sem permissões extras ou confiança em username do cache. Regressão parametrizada com @eito em profile-showcase.test.tsx.

@@ -4,6 +4,7 @@ import { mathGameLearning, readMathGame } from "../data/math-game-learning";
 import { mathPlaceRewards } from "../data/math-place-rewards";
 import { masteryCompletion, unlockedMasteryCourse } from "../domain/math-mastery-progress";
 import { profileLevel } from "../domain/profile-study";
+import { readRoomXp, ROOM_XP_CHANGED } from "../data/room-xp";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 
 function snapshot() {
@@ -18,7 +19,7 @@ function snapshot() {
     (sum, course) => Math.min(Number.MAX_SAFE_INTEGER, sum + course.points),
     0,
   );
-  return { courses, totalPoints, ...profileLevel(totalPoints) };
+  return { courses, totalPoints, ...profileLevel(readRoomXp()) };
 }
 export function useProfileStudy() {
   const [value, setValue] = useState(snapshot);
@@ -27,10 +28,12 @@ export function useProfileStudy() {
     window.addEventListener(SYNCED_STORAGE_EVENT, refresh);
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
     window.addEventListener("storage", refresh);
+    window.addEventListener(ROOM_XP_CHANGED, refresh);
     return () => {
       window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
       window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
       window.removeEventListener("storage", refresh);
+      window.removeEventListener(ROOM_XP_CHANGED, refresh);
     };
   }, []);
   return value;

@@ -90,3 +90,98 @@
 :root[data-theme="dark"] .system-update-sheet .is-unread > strong {
   color: #ffe88d;
 }
+.system-update-sheet .social-follow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+:root body .social-notice-person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  text-align: left;
+}
+.social-notice-person span {
+  display: grid;
+  min-width: 0;
+}
+.social-notice-person strong,
+.social-notice-person small {
+  overflow-wrap: anywhere;
+}
+.social-notice-person img {
+  object-fit: contain;
+  flex-shrink: 0;
+  user-select: none;
+}
+.social-follow-row > .secondary-button {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 8px;
+}
+.social-follow-toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1600;
+  width: min(560px, calc(100vw - 24px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 6px 20px 6px 12px;
+  border-bottom: 5px solid var(--line);
+  overflow: hidden;
+}
+.social-follow-toast .social-notice-person {
+  flex: 1;
+}
+.social-follow-toast .secondary-button {
+  font-size: 11px;
+  padding: 8px;
+}
+:root body .social-follow-toast-close {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 4px;
+  min-width: 32px;
+}
+.social-follow-toast-close svg {
+  width: 22px;
+  height: 22px;
+}
+.social-follow-toast-countdown {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #7c3aed;
+  width: 100%;
+  transform-origin: left;
+  animation: social-toast-time 6s linear forwards;
+}
+@keyframes social-toast-time {
+  to {
+    transform: scaleX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .social-follow-toast-countdown {
+    animation: none;
+  }
+}
+html[data-reduce-motion="true"] .social-follow-toast-countdown {
+  animation: none;
+}

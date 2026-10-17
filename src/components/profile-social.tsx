@@ -38,18 +38,20 @@ export function SocialDirectory({
   onClose,
   nameFallback,
   initialList,
+  initialSharing = false,
 }: {
   initialUsername?: string;
   onClose(): void;
   nameFallback: string;
   initialList?: "followers" | "following";
+  initialSharing?: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [search, setSearch] = useState(initialUsername);
   const [feed, setFeed] = useState<SocialFeed>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
-  const [sharing, setSharing] = useState(false);
+  const [sharing, setSharing] = useState(initialSharing);
   const [status, setStatus] = useState("");
   const [list, setList] = useState<
     { kind: "followers" | "following"; owner: string } | undefined

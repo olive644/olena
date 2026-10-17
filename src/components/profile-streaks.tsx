@@ -23,6 +23,7 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
     days = [];
   }
   const streaks = profileStreaks(workspace, days, now, agendaTimeZone());
+  const hasStreak = Object.values(streaks).some((value) => value > 0);
   return (
     <>
       {(
@@ -33,7 +34,7 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
         ] as const
       ).map(
         ([key, label]) =>
-          streaks[key] > 0 && (
+          (streaks[key] > 0 || (!hasStreak && key === "islands")) && (
             <span
               className="profile-streak"
               key={key}

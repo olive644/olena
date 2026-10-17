@@ -26,6 +26,14 @@ afterEach(() => {
   mocks.request.mockReset();
 });
 
+it("abre diretamente o cartão pelo atalho de QR", async () => {
+  mocks.request.mockResolvedValue(feed);
+  render(<SocialDirectory initialSharing nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findByRole("heading", { name: "Compartilhar perfil" });
+  await screen.findByLabelText("QR code do perfil");
+  expect(screen.getByRole("button", { name: "Copiar link" })).toBeTruthy();
+});
+
 it("busca, visita um perfil e segue de volta com resultado real da API", async () => {
   mocks.request.mockImplementation(async (action, query) =>
     action

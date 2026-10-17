@@ -2,7 +2,16 @@ import type { WorkspaceState } from "./workspace";
 
 export function profileLevel(points: number) {
   const xp = Number.isSafeInteger(points) && points >= 0 ? points : 0;
-  return { xp, level: Math.floor(xp / 500) + 1, current: xp % 500, next: 500 };
+  let completed = Math.max(0, Math.floor((Math.sqrt(9 + (8 * xp) / 250) - 3) / 2));
+  const threshold = (count: number) => (250 * count * (count + 3)) / 2;
+  while (threshold(completed + 1) <= xp) completed++;
+  while (threshold(completed) > xp) completed--;
+  return {
+    xp,
+    level: completed + 1,
+    current: xp - threshold(completed),
+    next: 500 + completed * 250,
+  };
 }
 
 export function profileNotebook(workspace: WorkspaceState) {

@@ -1,11 +1,13 @@
 import { expect, it } from "vitest";
 import { profileLevel, profileNotebook } from "./profile-study";
 import { createInitialWorkspace } from "./workspace";
-it("nível usa somente pontos registrados e mantém os limites de 500 XP", () => {
+it("nível usa XP registrado e exige mais XP em cada nível", () => {
   expect(profileLevel(0)).toEqual({ xp: 0, level: 1, current: 0, next: 500 });
   expect(profileLevel(499)).toMatchObject({ level: 1, current: 499 });
-  expect(profileLevel(500)).toMatchObject({ level: 2, current: 0 });
-  expect(profileLevel(1250)).toMatchObject({ level: 3, current: 250 });
+  expect(profileLevel(500)).toMatchObject({ level: 2, current: 0, next: 750 });
+  expect(profileLevel(1249)).toMatchObject({ level: 2, current: 749, next: 750 });
+  expect(profileLevel(1250)).toMatchObject({ level: 3, current: 0, next: 1000 });
+  expect(profileLevel(5000)).toMatchObject({ level: 6, current: 0, next: 1750 });
   expect(profileLevel(-1).xp).toBe(0);
 });
 it("destaca conteúdo real, ignora folhas removidas e preserva a pasta sem ciclos", () => {

@@ -119,7 +119,14 @@ export function NotesView({
     document: HandwritingDocument;
     author?: string;
   }>();
-  const [activePageId, setActivePageId] = useState<string | null>(null);
+  const [activePageId, setActivePageId] = useState<string | null>(() => {
+    const id = new URLSearchParams(window.location.search).get("folha")?.slice(0, 160);
+    return id &&
+      workspace.notebooks.find((book) => book.id === activeNotebookId)?.pageIds.includes(id) &&
+      workspace.notes.some((page) => page.id === id)
+      ? id
+      : null;
+  });
   const [indexOpen, setIndexOpen] = useState(false);
   const [journey, setJourney] = useState<NotebookJourneyState | null>(null);
   const finishJourney = useCallback(() => setJourney(null), []);

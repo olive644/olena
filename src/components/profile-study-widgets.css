@@ -3,6 +3,26 @@
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 20px;
 }
+.profile-open-notebook {
+  margin-top: 20px;
+  min-width: 0;
+}
+.profile-xp .room-xp-icon {
+  color: #a779ef;
+  --points-depth: #51259b;
+  --points-fold: #e3d9ea;
+}
+.profile-notebook-widget {
+  align-self: start;
+}
+.profile-open-notebook .notebook-spread-workspace {
+  min-width: 0;
+}
+.is-readonly-preview .notebook-paper-toolbox,
+.is-readonly-preview .notebook-tool-hint,
+.is-readonly-preview .notebook-tab-inspector {
+  display: none;
+}
 .profile-study-grid > section {
   min-width: 0;
 }
@@ -312,12 +332,6 @@
 }
 :root body .profile-cover .profile-cover__friends {
   top: 438px;
-}
-:root body .profile-view .profile-cover .profile-cover__friends {
-  background: #fff9ef;
-  color: #292432;
-  border-color: #d7cfbb;
-  box-shadow: 0 4px #cfc4af;
 }
 .profile-view .profile-cover__connections {
   top: 496px;

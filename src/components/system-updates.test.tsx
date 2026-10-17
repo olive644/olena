@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { SystemUpdates } from "./system-updates";
 import { applySyncedStorage } from "../data/synced-storage";
@@ -23,6 +23,34 @@ afterEach(() => {
   social.feed = undefined;
   social.request.mockClear();
   social.visit.mockClear();
+});
+
+it("avisa somente sobre seguidores novos e permite visitar pelo aviso mesmo sem sino", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("[]")),
+  );
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.webp",
+    followers: 0,
+    following: 1,
+    followsYou: true,
+    followed: false,
+    shared: true,
+  };
+  social.feed = { self: { ...person, username: "bob" }, notifications: [] };
+  const { rerender } = render(<SystemUpdates hideBell />);
+  expect(document.querySelector("details")?.hidden).toBe(true);
+  expect(screen.queryByText("Alice te seguiu")).toBeNull();
+  social.feed = { ...social.feed, notifications: [{ person, at: Date.now(), read: false }] };
+  rerender(<SystemUpdates hideBell />);
+  await waitFor(() => expect(screen.getByText("Alice te seguiu")).toBeTruthy());
+  const toast = document.querySelector<HTMLElement>(".social-follow-toast")!;
+  fireEvent.click(within(toast).getByRole("button", { name: "Visitar perfil de @alice" }));
+  expect(social.visit).toHaveBeenCalledWith("alice");
+  expect(document.querySelector(".social-follow-toast")).toBeNull();
 });
 
 it("mostra seguidor real com visita, seguir de volta e leitura na conta", async () => {

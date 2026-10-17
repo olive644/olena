@@ -39,6 +39,7 @@ type Props = {
   onBack?: () => void;
   onIndex?: () => void;
   transitioning?: boolean;
+  readOnly?: boolean;
 };
 type Turn = {
   from: number;
@@ -80,6 +81,7 @@ export function NotebookSpread({
   onRemove,
   onIndex,
   transitioning = false,
+  readOnly = false,
 }: Props) {
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [showCover, setShowCover] = useState(false);
@@ -159,7 +161,7 @@ export function NotebookSpread({
   const back = turning ? pages[turning.to * 2 + (turning.direction > 0 ? 0 : 1)] : undefined;
   return (
     <div
-      className="notebook-spread-workspace"
+      className={`notebook-spread-workspace ${readOnly ? "is-readonly-preview" : ""}`}
       data-cover-style={notebook.coverStyle}
       style={
         {
@@ -285,7 +287,7 @@ export function NotebookSpread({
             subjects={subjects}
             visible={visible}
             dispatch={dispatch}
-            disabled={busy}
+            disabled={busy || readOnly}
             indexControl={
               onIndex && (
                 <button
@@ -447,6 +449,7 @@ export function NotebookSpread({
                           aria-label={`Título da folha ${pages.indexOf(page) + 1}`}
                           defaultValue={page.title}
                           maxLength={120}
+                          readOnly={readOnly}
                           disabled={busy}
                           onBlur={(event) => {
                             const title = event.currentTarget.value.trim() || page.title;
@@ -477,15 +480,17 @@ export function NotebookSpread({
                         </button>
                         <footer>
                           <span>{pages.indexOf(page) + 1}</span>
-                          <button
-                            className="notebook-sheet-remove"
-                            type="button"
-                            disabled={busy}
-                            aria-label={`Remover folha ${pages.indexOf(page) + 1}`}
-                            onClick={() => remove(page, side)}
-                          >
-                            <PaperEditorIcon name="close" />
-                          </button>
+                          {!readOnly && (
+                            <button
+                              className="notebook-sheet-remove"
+                              type="button"
+                              disabled={busy}
+                              aria-label={`Remover folha ${pages.indexOf(page) + 1}`}
+                              onClick={() => remove(page, side)}
+                            >
+                              <PaperEditorIcon name="close" />
+                            </button>
+                          )}
                         </footer>
                       </>
                     ) : side === 0 && pages.length === 0 ? (
@@ -551,6 +556,7 @@ export function NotebookSpread({
               type="button"
               disabled={busy}
               onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
+              hidden={readOnly && current === 0}
             >
               {current === 0 ? "‹ Capa" : "‹ Anterior"}
             </button>
@@ -570,7 +576,7 @@ export function NotebookSpread({
           </nav>
         </>
       )}
-      {!showCover && pages.length > 0 && (
+      {!readOnly && !showCover && pages.length > 0 && (
         <div className="notebook-preview-actions">
           <button
             className="notebook-preview-create"
