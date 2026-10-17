@@ -1,0 +1,139 @@
+.profile-journey {
+  position: relative;
+  isolation: isolate;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px 24px 8px 18px;
+  background: var(--soft);
+  box-shadow: 0 5px var(--line);
+  color: var(--text);
+}
+.profile-journey__copy {
+  padding-right: 130px;
+  min-height: 75px;
+}
+.profile-journey small {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+.profile-journey h2 {
+  margin: 5px 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.profile-journey p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.profile-journey > img {
+  position: absolute;
+  z-index: -1;
+  right: 12px;
+  bottom: 44px;
+  width: 148px;
+  height: 148px;
+  object-fit: contain;
+  user-select: none;
+}
+.profile-journey ol {
+  display: flex;
+  gap: 7px;
+  list-style: none;
+  margin: 6px 0 10px;
+  padding: 0;
+}
+:root body .profile-journey ol button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px 12px 4px 8px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 3px var(--line);
+}
+:root body .profile-journey ol button[data-done="true"],
+:root body .profile-journey ol button[aria-current="step"] {
+  background: #ffda19;
+  color: #292432;
+}
+:root body .profile-journey .profile-journey__continue {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 44px;
+  font-size: 0.8rem;
+}
+.profile-journey__copy,
+.profile-journey > img {
+  animation: profile-journey-in 350ms ease-out both;
+}
+.profile-journey-slot--side {
+  z-index: 3;
+  position: absolute;
+  right: 24px;
+  top: 330px;
+  width: min(40%, 390px);
+  opacity: calc(1 - min(1, var(--profile-collapse) * 5));
+}
+.profile-journey-slot--below {
+  display: none;
+}
+.profile-chrome:has(.profile-journey-slot--side) .profile-cover__bio {
+  width: 30%;
+  left: 38%;
+  top: calc(278px - 260px * var(--profile-collapse));
+}
+.profile-chrome:has(.profile-journey-slot--side) .profile-cover__networks {
+  top: calc(278px - 260px * var(--profile-collapse));
+}
+@keyframes profile-journey-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) rotate(-1deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 1000px) {
+  .profile-journey-slot--side {
+    display: none;
+  }
+  .profile-journey-slot--below {
+    display: block;
+    margin: 16px 0 8px;
+  }
+  .profile-chrome:has(.profile-journey-slot--side) .profile-cover__bio {
+    top: calc(328px - 310px * var(--profile-collapse));
+    left: 42%;
+    width: calc(52% - 24% * var(--profile-collapse));
+  }
+  .profile-chrome:has(.profile-journey-slot--side) .profile-cover__networks {
+    top: calc(420px - 402px * var(--profile-collapse));
+  }
+}
+@media (max-width: 600px) {
+  .profile-chrome:has(.profile-journey-slot--side) .profile-cover__bio {
+    width: auto;
+  }
+  .profile-journey-slot--below {
+    margin: 18px 12px 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-journey__copy,
+  .profile-journey > img {
+    animation: none;
+  }
+}
+html[data-reduce-motion="true"] .profile-journey__copy,
+html[data-reduce-motion="true"] .profile-journey > img {
+  animation: none;
+}

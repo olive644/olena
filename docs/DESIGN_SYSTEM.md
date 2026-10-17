@@ -259,3 +259,24 @@ scripts/helena-rive/README.md.
 # Rótulos de @dreyxnn
 
 GALAXIA e BETA TESTER reutilizam os recortes e cores de ProfileLabels na ficha, barra recolhida e perfil visitado. A atribuição depende do nome de usuário confirmado e não concede permissões.
+
+# Jornada do perfil
+
+Card de papel com dobra assimétrica, etapas amarelas numeradas e botão primário
+facetado. Helena usa quatro poses inéditas no estilo do onboarding: crachá para
+identidade, espelho para personagem, paisagem para capa e check na comemoração.
+Arte transparente atrás do botão, com parte inferior escondida por ele, nunca
+uma imagem quadrada sobre o texto. Prompts em PROFILE_JOURNEY_ART.md.
+Manter a arte inteira, sem deformar partes. A troca usa entrada curta e respeita
+movimento reduzido. O card aparece à direita em desktop acima de 1000 px e abaixo
+do perfil nas demais larguras. No scroll compacto desktop fica invisível e inert.
+Conclusão: FICOU ÓTIMO! Seu perfil está perfeito. Campos pessoais opcionais não
+fazem parte da exigência. Navegação pelas etapas permite revisar escolhas.
+
+# Confirmação das etapas pela Olena
+
+O card preserva a renderização imediata. A pequena linha superior informa
+CONFERINDO COM A OLENA ou CONFIRMAÇÃO PENDENTE enquanto não há confirmação da
+API. Não esconde as escolhas nem regride a etapa durante sincronização.
+A mensagem Seu perfil está perfeito só é confirmada com a leitura do servidor.
+Pronomes, bio e redes continuam opcionais.

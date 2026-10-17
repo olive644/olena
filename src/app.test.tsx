@@ -86,11 +86,12 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
   });
 
+  // Inclui importação fria da rota e seleção no diálogo, como os fluxos de caderno.
   it("permite escolher um avatar oficial nas configurações do perfil", async () => {
     render(<App />);
     navigate("Perfil");
     fireEvent.click(
-      await screen.findByRole("button", { name: "Configurações" }, { timeout: 5000 }),
+      await screen.findByRole("button", { name: "Configurações" }, { timeout: 10000 }),
     );
     fireEvent.click(screen.getByText("Escolher avatar", { selector: "summary" }));
     fireEvent.click(screen.getByRole("button", { name: "Helena" }));
@@ -98,7 +99,7 @@ describe("App", () => {
       name: "Helena",
       photoUrl: "/profile-avatars/helena.webp",
     });
-  });
+  }, 15000);
 
   it("evita o widget duplicado de matérias e metas na Agenda", async () => {
     render(<App />);

@@ -1365,6 +1365,25 @@ GET /api/profile-social aceita list=followers|following, username opcional e off
 
 useProfileStudy lê mathPlaceRewards e a mesma progressão mastery das ilhas; escuta eventos de cache sincronizado e troca de conta, sem gravar pontos. profileLevel define 1 ponto conquistado = 1 XP de perfil, 500 por nível. Não inclui o ledger independente de salas. Favorita usa favoriteIsland no perfil existente. profileNotebook seleciona conteúdo real, não inventa frequência de uso. Query caderno no endereço de Cadernos reabre apenas um ID existente no próprio workspace. MathIslandJourney aceita initialCourse e valida desbloqueio.
 
+# Jornada de apresentação do perfil
+
+ProfileJourney deriva três etapas dos dados existentes: nome e @ confirmado,
+avatar explícito e capa explícita. Botões abrem os diálogos existentes; cancelar
+não avança. Pronomes, bio e redes não bloqueiam conclusão. Poses reutilizam
+public/profile-journey/helena-{identity,avatar,cover,complete}.webp, poses inéditas
+geradas a partir da linguagem do onboarding, sem reutilizar as poses antigas.
+Prompts em PROFILE_JOURNEY_ART.md. Cache de useProfileHandle é somente memória,
+por UID autenticado, com consulta antecipada em AppContent e invalidação por
+PROFILE_HANDLE_CHANGED. Não persistir privilégios em helena.profile.v1.
+
+# Conferência remota de conclusão
+
+profileCompletion é a regra pura compartilhada por card e servidor.
+useProfileCompletion confere a API em segundo plano, trata edição em fila
+sem regredir etapas e repete ao recuperar rede/foco. Cliente não envia campos
+pessoais nem UID. Servidor lê somente o item stateV2 de perfil e a reserva de @
+do UID autenticado. Contrato e ameaças: PROFILE_COMPLETION_API.md.
+
 ## Limites de abuso (2026-10-17)
 
 Limites por endereço usam `clientAddress` (cabeçalho `x-vercel-forwarded-for`, IPv6 agrupado em /64). A voz individual (`/api/speech`) passa pelo mesmo guarda das salas e tem limites por minuto, por dia e um teto global diário (`src/backend/speech-quota.ts`). A Helena exige conta não anônima. Ao criar uma ação nova que gasta recurso pago, defina limite por quem chama e um teto global.

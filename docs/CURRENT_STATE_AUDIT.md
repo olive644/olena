@@ -2932,6 +2932,34 @@ O "segurar para acertar" passa a juntar retas: quando uma reta recém-acertada f
 
 O identificador confirmado @dreyxnn recebe GALAXIA e BETA TESTER pelo componente compartilhado ProfileLabels. São rótulos de apresentação, sem privilégios ou alteração do cadastro. Teste de regressão valida ficha e barra recolhida, rejeita nome apenas no cache e não confunde @dreyxn com @dreyxnn. Arquivo profile-showcase.test.tsx validado com 13 testes aprovados.
 
+# Perfil: identidade e jornada (2026-10-17)
+
+O @ e as tags usam cache em memória apenas de respostas autenticadas, associado
+ao UID confirmado. A consulta começa na sessão, antes de abrir Perfil, e visitas
+seguintes mantêm a identidade durante a revalidação. Troca de conta, saída e
+edição invalidam respostas antigas. Nenhum selo usa o username do cache local.
+Pronomes continuam no perfil sincronizado, com releitura após assinar os eventos
+para não perder uma hidratação entre render e efeito. A primeira carga sem cache
+ainda depende da rede e da sincronização da conta.
+
+Jornada com três etapas reais: nome/@, personagem e capa. Usa os editores
+existentes e quatro poses inéditas, com o onboarding apenas como referência
+visual. Helena aparece atrás do botão, com a parte inferior sobreposta por ele.
+Bio, pronomes e redes são opcionais.
+Conclusão é derivada dos campos salvos, não concede XP e não cria armazenamento
+paralelo. Desktop amplo recebe o card à direita; telas menores, abaixo do perfil.
+
+# Conferência da jornada pela API, 17/10/2026
+
+GET /api/olena?action=profile-completion&version=1 confere o perfil persistido
+da própria conta e a reserva de @. Retorna somente etapas, total e próxima
+pendência. O card não aguarda a rede e não regride durante uma edição ainda
+em sincronização; conclusão só é confirmada quando API e cache coincidem.
+Falhas indicam confirmação pendente, sem fingir validação. Modelo de ameaça,
+limites e contrato em PROFILE_COMPLETION_API.md. Mudança autenticada em PR própria.
+Rótulo visual CREKS também concedido ao @miauyw confirmado pelo servidor, sem
+alterar privilégios de conta nem confiar no username legado do cache local.
+
 # Segurança: tetos globais e identidade, 2026-10-17
 
 Resultado da auditoria de segurança (itens 3, 4 e 5 do relatório).

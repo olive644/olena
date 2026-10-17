@@ -8,6 +8,7 @@ import { readLocalRoomCodeFromUrl, readLocalRoomProjectorCodeFromUrl } from "./d
 import { useWorkspace } from "./hooks/use-workspace";
 import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
 import { TodayView } from "./views/today-view";
+import { useProfileHandle } from "./hooks/use-profile-handle";
 
 const LearnView = lazy(() => import("./views/learn-view"));
 const PrivacyNotice = lazy(() =>
@@ -53,6 +54,8 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const { workspace, storageFull, dispatch, history, restoreSnapshot } = useWorkspace();
   // Convidado só vale sem conta: quem entrou com Google nunca aparece como Guest.
   const guest = cloud.authenticated !== true && isGuestSession();
+  // A identidade confirmada fica pronta antes da primeira visita ao Perfil.
+  useProfileHandle(cloud.authenticated !== true);
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
     if (signedOut) return true;
