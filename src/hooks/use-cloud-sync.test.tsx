@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, configure, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { writeSyncedStorage } from "../data/synced-storage";
@@ -16,6 +16,10 @@ function notebook(id: string, title: string): WorkspaceState["notebooks"][number
 }
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
+
+// O envio à conta espera alguns segundos para juntar mudanças seguidas (CLOUD_UPLOAD_DELAY_MS).
+configure({ asyncUtilTimeout: 9000 });
+vi.setConfig({ testTimeout: 30000 });
 
 // jsdom não implementa EventSource. Este fake guarda os listeners registrados para os testes
 // poderem simular um evento "put" chegando do Firebase, como o navegador de verdade entregaria.
@@ -1007,4 +1011,87 @@ it("se o login for fechado, nada é apagado e os dados continuam no aparelho", a
 
   expect(calls).toEqual([]);
   expect(localStorage.getItem("helena.soloProgress")).toBe("9");
+});
+
+function signedInUser(uid: string) {
+  const user = { uid, getIdToken: vi.fn(async () => "token") };
+  localStorage.setItem("helena.account.v1", uid);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: { currentUser: user },
+    authApi: {
+      onIdTokenChanged: () => () => undefined,
+      onAuthStateChanged: (_: unknown, listener: (value: typeof user) => void) => {
+        listener(user);
+        return () => undefined;
+      },
+    },
+    databaseURL: "https://project.firebaseio.com",
+  } as never);
+}
+
+function accountServer() {
+  const calls: { method: string; url: string }[] = [];
+  let server = { updatedAt: 100, items: encodeCloudItems({ "helenastudy.theme": "light" }) };
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: unknown, init?: RequestInit) => {
+      const method = init?.method ?? "GET";
+      calls.push({ method, url: String(input) });
+      if (method === "PUT") {
+        server = JSON.parse(String(init?.body));
+        return new Response(null, { status: 204 });
+      }
+      return new Response(JSON.stringify(server));
+    }),
+  );
+  return { calls, puts: () => calls.filter((call) => call.method === "PUT") };
+}
+
+it("envia o estado com print=silent, para o Firebase não devolver tudo na resposta", async () => {
+  signedInUser("silent-user");
+  const { calls, puts } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  act(() => writeSyncedStorage("helenastudy.theme", "dark"));
+  await waitFor(() => expect(puts()).toHaveLength(1));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(puts()[0]!.url).toContain("&print=silent");
+  expect(
+    calls.filter((call) => call.method === "GET").every((call) => !call.url.includes("print=")),
+  ).toBe(true);
+});
+
+it("junta mudanças seguidas em um só envio em vez de subir o estado a cada uma", async () => {
+  signedInUser("burst-user");
+  const { puts } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  for (const value of ["dark", "light", "dark", "system"]) {
+    act(() => writeSyncedStorage("helenastudy.theme", value));
+    await new Promise((resolve) => setTimeout(resolve, 150));
+  }
+  expect(puts()).toHaveLength(0);
+  await waitFor(() => expect(puts()).toHaveLength(1));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await new Promise((resolve) => setTimeout(resolve, 600));
+  expect(puts()).toHaveLength(1);
+  expect(JSON.parse(String(vi.mocked(fetch).mock.calls.at(-1)?.[1]?.body)).items).toBeDefined();
+});
+
+it("envia na hora, sem esperar o intervalo, quando a página é escondida", async () => {
+  signedInUser("hidden-user");
+  const { puts } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  act(() => writeSyncedStorage("helenastudy.theme", "dark"));
+  expect(puts()).toHaveLength(0);
+  Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+  try {
+    act(() => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await waitFor(() => expect(puts()).toHaveLength(1), { timeout: 1500 });
+  } finally {
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+  }
 });

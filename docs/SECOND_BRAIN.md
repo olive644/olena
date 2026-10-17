@@ -1397,3 +1397,7 @@ SystemUpdates apresenta o toast social em document.body, fora de ancestrais tran
 Limites por endereço usam `clientAddress` (cabeçalho `x-vercel-forwarded-for`, IPv6 agrupado em /64). A voz individual (`/api/speech`) passa pelo mesmo guarda das salas e tem limites por minuto, por dia e um teto global diário (`src/backend/speech-quota.ts`). A Helena exige conta não anônima. Ao criar uma ação nova que gasta recurso pago, defina limite por quem chama e um teto global.
 
 Códigos de sala são sempre aleatórios; `requestId` só serve para repetir a criação sem duplicar a sala (registro em `room-limits/create-<hash>`). O adaptador `vercel-adapter.ts` recusa corpos acima de 4,5 MB. Ao ligar um novo endpoint, não derive identificadores de valores que o cliente escolhe.
+
+## Consumo do Realtime Database (2026-10-17)
+
+O plano gratuito limita download a cerca de 10 GB por mês. O envio da conta espera 4 s para juntar mudanças (`CLOUD_UPLOAD_DELAY_MS`) e usa `print=silent`; ao esconder a página o envio pendente sai na hora. Ao criar uma gravação frequente em dados sincronizados, lembre que cada salvamento custa o tamanho do estado inteiro em download. Veja o consumo na aba Uso do Realtime Database.
