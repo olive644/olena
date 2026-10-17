@@ -143,9 +143,11 @@ for (const theme of ["light", "dark"]) {
     } else {
       await expect(page.locator(".profile-compact-identity")).toHaveCSS("opacity", "1");
       await expect(page.locator(".profile-compact-identity")).toHaveText("GuestEla/dela");
-      await expect(
-        page.locator(".profile-compact-identity img, .profile-compact-identity nav"),
-      ).toHaveCount(0);
+      await expect(page.locator(".profile-compact-identity nav")).toHaveCount(0);
+      await expect(page.locator(".profile-compact-identity__avatar")).toHaveAttribute(
+        "src",
+        "/profile-avatars/andreyna.webp",
+      );
       await expect
         .poll(async () => (await page.locator(".profile-toolbar").boundingBox())?.y)
         .toBeCloseTo(0, 0);
@@ -155,7 +157,8 @@ for (const theme of ["light", "dark"]) {
     if (!mobileWidth) expect((await chrome.boundingBox())!.height).toBe(88);
     if (!mobileWidth) {
       const coverBox = await page.locator(".profile-cover").boundingBox();
-      expect(photoBox!.y + photoBox!.height).toBeGreaterThan(coverBox!.y + coverBox!.height);
+      expect(photoBox!.y).toBeGreaterThanOrEqual(coverBox!.y);
+      expect(photoBox!.y + photoBox!.height).toBeLessThanOrEqual(coverBox!.y + coverBox!.height);
       await expect(page.locator(".profile-cover__portrait")).toHaveCSS("overflow", "visible");
     }
     const nameBox = await page.locator(".profile-cover__name").boundingBox();

@@ -301,6 +301,30 @@ describe("opções de tinta", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Traço Forte" }));
     expect(props.onWidthChange).toHaveBeenCalledWith(8);
+    expect(
+      screen
+        .getByRole("button", { name: "Traço Regular" })
+        .querySelector(".ink-selection-mark .paper-check-icon"),
+    ).toBeTruthy();
+  });
+
+  it("identifica espessura personalizada sem marcar um preset incorreto", () => {
+    render(<HandwritingInkOptions {...inkProps({ width: 6.2 })} />);
+    expect(screen.getByText(/\(personalizada\)/)).toBeTruthy();
+    for (const label of ["Fino", "Regular", "Forte"])
+      expect(
+        screen.getByRole("button", { name: `Traço ${label}` }).getAttribute("aria-pressed"),
+      ).toBe("false");
+  });
+
+  it("marca o estilo selecionado com check e preserva o callback", () => {
+    const props = inkProps({ dash: "dotted", onDashChange: vi.fn() });
+    render(<HandwritingInkOptions {...props} />);
+    const selected = screen.getByRole("button", { name: "Linha pontilhada" });
+    expect(selected.getAttribute("aria-pressed")).toBe("true");
+    expect(selected.querySelector(".ink-selection-mark .paper-check-icon")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Linha tracejada" }));
+    expect(props.onDashChange).toHaveBeenCalledWith("dashed");
   });
 
   it("esconde a cor e permite ajustar a área da borracha", () => {

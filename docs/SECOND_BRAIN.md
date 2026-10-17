@@ -1317,3 +1317,16 @@ expandida permanece em fluxo natural; movimento reduzido elimina interpolação.
 ProfileOverview mantém progresso, sem lista de trajetória e sem apagar histórico.
 Ao abrir ProfileEditor, usar o mesmo nome resolvido na capa ou em ProfileIdentity,
 incluindo o nome da conta quando profile.name ainda não existe.
+
+# Perfil e tinta, revisão visual (2026-10-16)
+
+PageHeader mostra SystemUpdates por padrão; Perfil desativa explicitamente.
+recentSystemUpdates limita apresentação a 48 horas. O painel separa lista rolável
+de título e ação fixa de leitura, preservando recibos existentes.
+
+ProfileLabels centraliza placas da ficha e da barra móvel usando o handle confirmado.
+Mapeamento visual por identidade: oliver644 com CREKS/DEV/BETA TESTER/GALAXIA;
+eito com CREKS/BETA TESTER. Sem nova persistência, direitos ou valores do cache.
+PaperObjectIcon contém os recortes Espaço e Curva. HandwritingInkOptions preserva
+aria-pressed, acrescenta check e identifica espessura personalizada; seleção CSS
+é amarela e não depende de outline. Regressão: e2e/handwriting-ink-selection.spec.ts.

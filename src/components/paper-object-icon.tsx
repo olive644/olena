@@ -90,28 +90,28 @@ export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
       ) : name === "curve" ? (
         <>
           <path
-            d="M6 36C14 8 24 8 26 24s10 16 16-14"
-            fill="none"
-            stroke="#51259B"
-            strokeWidth="6"
-            strokeLinecap="round"
+            d="M5 38 10 18 19 8 27 10 31 28 35 32 40 12 46 14 40 39 32 41 24 34 21 17 16 20 11 41Z"
+            fill="#51259B"
           />
           <path
-            d="M6 34C14 6 24 6 26 22s10 16 16-14"
-            fill="none"
-            stroke="#A779EF"
-            strokeWidth="4"
-            strokeLinecap="round"
+            d="M4 35 9 15 18 5 26 7 30 25 34 29 39 9 45 11 39 36 31 38 23 31 20 14 15 17 10 38Z"
+            fill="#A779EF"
           />
-          <path d="M3 31h6v6H3Zm17-17h6v6h-6Zm19 3h6v6h-6Z" fill="#FACC15" />
+          <path d="m9 15 9-10 8 2-6 7-5 3-5 21-6-3Z" fill="#E9DAFB" />
+          <path
+            d="m3 32 6-2 4 5-3 6-6-1Zm15-25 5-3 5 3-1 6-6 1Zm20 3 5-3 5 3-1 6-6 1Z"
+            fill="#FACC15"
+          />
+          <path d="m3 32 6-2-1 5-4 5Zm15-25 5-3-2 5-3 2Zm20 3 5-3-2 5-3 2Z" fill="#FFE88D" />
         </>
       ) : name === "space" ? (
         <>
-          <path d="M5 8h38v8H5Z" fill="#51259B" />
-          <path d="M5 6h38v8H5Z" fill="#A779EF" />
-          <path d="M5 34h38v8H5Z" fill="#51259B" />
-          <path d="M5 32h38v8H5Z" fill="#A779EF" />
-          <path d="M24 16l6 6h-4v4h4l-6 6-6-6h4v-4h-4Z" fill="#FACC15" />
+          <path d="M4 5h34l6 6v8H4Zm0 28h40v12H10l-6-6Z" fill="#51259B" />
+          <path d="M4 2h34l6 6v8H4Zm0 28h40v12H10l-6-6Z" fill="#FFF9EF" />
+          <path d="M4 2h7v14H4Zm0 28h7v12l-7-6Zm34-28v6h6Z" fill="#A779EF" />
+          <path d="M14 7h17v3H14Zm0 27h20v3H14Z" fill="#C9BDD9" />
+          <path d="m24 13 8 8h-5v5h5l-8 8-8-8h5v-5h-5Z" fill="#FACC15" />
+          <path d="m24 13-8 8h5v5h-5l8 8v-8h-1v-5h1Z" fill="#FFE88D" />
         </>
       ) : name === "coordinate-system" ? (
         <>

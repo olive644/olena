@@ -1,5 +1,15 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil e escrita, revisão final (2026-10-16): avatar desktop recolhido termina
+dentro da barra. No celular, foto transparente de 40 px após o menu, identidade
+em duas linhas e placas opcionais em terceira linha, com entrada por scroll e
+movimento reduzido respeitado. CREKS usa placa grafite/creme, DEV roxo, BETA TESTER
+amarelo e GALAXIA azul noturno. @oliver644 confirmado recebe os quatro; @eito
+confirmado recebe CREKS e BETA TESTER. Rótulos são visuais, não permissões.
+Espaço e Curva usam silhuetas e facetas nativas em papel. Estilo e espessura ativos
+usam preenchimento amarelo, texto grafite e check, sem outline. Valores fora dos
+presets mostram espessura personalizada, sem selecionar um preset falso.
+
 Perfil, identidade móvel recolhida (2026-10-16): restaurar interpolação por scroll,
 com somente Nome e selo opcional na primeira linha e @ menor com pronomes opcionais
 na segunda. Sem avatar, redes, bio ou estatísticas na barra compacta móvel.

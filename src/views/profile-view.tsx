@@ -118,6 +118,7 @@ export function ProfileView({
         nameFallback={guest ? GUEST_NAME : cloud.displayName || "Seu perfil"}
       >
         <PageHeader
+          showUpdates={false}
           leadingAction={
             <button
               className="appearance-picker__trigger profile-settings-toggle"

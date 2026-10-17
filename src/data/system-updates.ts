@@ -1,6 +1,13 @@
 export const SYSTEM_UPDATES_READ_KEY = "helena.systemUpdates.read.v1";
 export type SystemUpdate = { id: number; version: string; title: string; date: string };
 
+export function recentSystemUpdates(updates: SystemUpdate[], now = Date.now()): SystemUpdate[] {
+  return updates.filter((update) => {
+    const age = now - Date.parse(update.date);
+    return age >= 0 && age < 48 * 60 * 60 * 1000;
+  });
+}
+
 export function parseReadUpdates(raw: string | undefined | null): number[] {
   try {
     const value: unknown = JSON.parse(raw ?? "[]");

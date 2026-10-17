@@ -352,7 +352,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
 }
 
 export function PageHeader({
-  showUpdates = false,
+  showUpdates = true,
   leadingAction,
 }: {
   showUpdates?: boolean;

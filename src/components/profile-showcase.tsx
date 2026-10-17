@@ -14,6 +14,31 @@ import { ProfileCoverArt } from "./profile-cover-art";
 import { ProfileCoverDialog } from "./profile-cover-dialog";
 import { profileCover } from "../domain/profile-covers";
 
+function ProfileLabels({ creks, username }: { creks: boolean; username: string }) {
+  const labels =
+    username === "eito"
+      ? ["CREKS", "BETA TESTER"]
+      : creks
+        ? username === "oliver644"
+          ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
+          : ["CREKS"]
+        : [];
+  if (!labels.length) return null;
+  return (
+    <span className="profile-labels">
+      {labels.map((label) => (
+        <span
+          key={label}
+          className={`profile-creks profile-label--${label.toLowerCase().replace(" ", "-")}`}
+          aria-label={`Selo ${label}`}
+        >
+          {label}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function ProfileShowcase({
   children,
   settingsOpen,
@@ -92,12 +117,20 @@ export function ProfileShowcase({
           <div className="profile-compact-identity" aria-hidden="true">
             <div>
               <strong>{name}</strong>
-              {handle.creks && <span className="profile-creks">CREKS</span>}
             </div>
             <div>
               {handle.username && <span>@{handle.username}</span>}
               {profile.pronouns && <span>{profile.pronouns}</span>}
             </div>
+            <ProfileLabels creks={handle.creks} username={handle.username} />
+            <img
+              className="profile-compact-identity__avatar"
+              src={profileAvatarSource(profile.photoUrl)}
+              alt=""
+              width="40"
+              height="40"
+              draggable={false}
+            />
           </div>
         )}
       </div>
@@ -136,11 +169,7 @@ export function ProfileShowcase({
               </div>
               <div className="profile-cover__handle">
                 {handle.username && <strong>@{handle.username}</strong>}
-                {handle.creks && (
-                  <span className="profile-creks" aria-label="Selo CREKS">
-                    CREKS
-                  </span>
-                )}
+                <ProfileLabels creks={handle.creks} username={handle.username} />
                 {profile.pronouns && <span>{profile.pronouns}</span>}
               </div>
               {profile.bio && (

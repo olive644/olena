@@ -1,8 +1,31 @@
 import { expect, it } from "vitest";
-import { parseReadUpdates, parseSystemUpdates, SYSTEM_UPDATES_READ_KEY } from "./system-updates";
+import {
+  parseReadUpdates,
+  parseSystemUpdates,
+  recentSystemUpdates,
+  SYSTEM_UPDATES_READ_KEY,
+} from "./system-updates";
 import { mergeSyncedItems } from "./sync-conflict";
 import { applySyncedStorage, readSyncedStorage, writeSyncedStorage } from "./synced-storage";
 import { clearPersonalData } from "./personal-data";
+
+it("oculta avisos após 48 horas sem apagar os registros de leitura", () => {
+  const now = Date.parse("2026-10-17T12:00:00Z");
+  const update = (id: number, age: number) => ({
+    id,
+    version: "beta",
+    title: "Aviso",
+    date: new Date(now - age).toISOString(),
+  });
+  const updates = [
+    update(1, 0),
+    update(2, 48 * 3600000 - 1),
+    update(3, 48 * 3600000),
+    update(4, -1000),
+  ];
+  expect(recentSystemUpdates(updates, now).map((item) => item.id)).toEqual([1, 2]);
+  expect(updates).toHaveLength(4);
+});
 
 it("merges independent read receipts and preserves them with older clients", () => {
   const key = SYSTEM_UPDATES_READ_KEY;
