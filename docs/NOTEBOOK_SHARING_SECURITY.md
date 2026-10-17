@@ -19,6 +19,12 @@ o caderno original, não contém credenciais da sala e não acompanha mudanças 
 Quem recebe o link pode copiar a imagem ou encaminhar o link. Não há revogação antecipada
 nesta versão. A API recusa tokens vencidos mesmo antes da limpeza programada.
 
+Criar o link exige conta autenticada, porque cada link guarda até 4 MB por sete dias no
+banco compartilhado. Sem login, a interface orienta a entrar e nada é enviado. A API recusa
+contas anônimas, confere a assinatura dos primeiros bytes de cada imagem (um texto que apenas
+se declara imagem é recusado) e aplica cota por conta (5 por hora, 10 por dia) e global
+(300 por dia). Ler um link continua público para quem tem o token.
+
 ## Proteções e implantação
 
 - Apenas POST, mesma origem quando o cabeçalho Origin estiver presente.

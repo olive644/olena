@@ -6,6 +6,12 @@ import type { StudyNote } from "../domain/workspace";
 
 vi.mock("../data/notebook-export", () => ({ downloadNotebookPdf: vi.fn(async () => {}) }));
 vi.mock("../data/room-app-check", () => ({ roomAppCheckToken: async () => undefined }));
+const signedIn = vi.hoisted(() => ({ token: "conta-token" as string | undefined }));
+vi.mock("../data/firebase-account", () => ({
+  getFirebaseAccountServices: async () => ({
+    auth: { currentUser: { getIdToken: async () => signedIn.token } },
+  }),
+}));
 const page: StudyNote = {
   id: "one",
   title: "Exercícios",
@@ -62,4 +68,19 @@ it("envia uma cópia somente após confirmação e mostra o link de leitura", as
     ).toContain("notebook-view=read-only-token"),
   );
   expect(fetchMock.mock.calls[0]?.[0]).toContain("action=view-create");
+  expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("authorization")).toBe(
+    "Bearer conta-token",
+  );
+});
+it("sem login, orienta a entrar e não envia as folhas", async () => {
+  signedIn.token = undefined;
+  const fetchMock = vi.fn<typeof fetch>(async () => Response.json({ token: "x" }));
+  vi.stubGlobal("fetch", fetchMock);
+  setup();
+  fireEvent.click(screen.getByRole("button", { name: "Compartilhar" }));
+  fireEvent.click(screen.getByRole("button", { name: "Link de visualização" }));
+  fireEvent.click(screen.getByRole("button", { name: "Criar link" }));
+  await waitFor(() => expect(screen.getByText(/Entre na sua conta/)).toBeTruthy());
+  expect(fetchMock).not.toHaveBeenCalled();
+  signedIn.token = "conta-token";
 });
