@@ -63,6 +63,19 @@ describe("handler de voz", () => {
     expect(await response.text()).not.toContain("segredo");
   });
 
+  it("aplica o mesmo guarda à voz individual (App Check e limite por endereço)", async () => {
+    const deps = dependencies();
+    deps.guardRoomRequest = vi.fn().mockResolvedValue(new Response(null, { status: 403 }));
+    expect((await createSpeechHandler(deps)(post(validRequest))).status).toBe(403);
+    expect(deps.provider.synthesize).not.toHaveBeenCalled();
+    deps.guardRoomRequest = vi.fn().mockRejectedValue(new Error("private failure"));
+    const failure = await createSpeechHandler(deps)(post(validRequest));
+    expect(failure.status).toBe(503);
+    expect(await failure.text()).not.toContain("private failure");
+    deps.guardRoomRequest = vi.fn().mockResolvedValue(undefined);
+    expect((await createSpeechHandler(deps)(post(validRequest))).status).toBe(200);
+  });
+
   it("exige credencial e proteção para áudio da sala sem repassar segredo ao provedor", async () => {
     const deps = dependencies();
     deps.authorizeRoom = vi.fn().mockResolvedValue(true);

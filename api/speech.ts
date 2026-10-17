@@ -3,6 +3,7 @@ import { createFirebaseRealtimeStore } from "../src/backend/firebase-realtime-st
 import { checkRateLimit } from "../src/backend/rate-limit.js";
 import { clientAddress } from "../src/backend/client-address.js";
 import { createSharedSpeechProvider } from "../src/backend/shared-speech-provider.js";
+import { createSpeechGenerationQuota } from "../src/backend/speech-quota.js";
 import { createSpeechHandler } from "../src/backend/speech-handler.js";
 import { createRoomAudioAuthorizer } from "../src/backend/room-audio-authorizer.js";
 import { createRoomGuard } from "../src/backend/room-guard.js";
@@ -43,11 +44,7 @@ const handler = createSpeechHandler({
       Number(process.env["TTS_TIMEOUT_MS"] ?? "8000"),
     ),
     rateLimitStore,
-    {
-      consume(clientId) {
-        return checkRateLimit(rateLimitStore, "speech-generation-rate-limit", clientId, 30, 60);
-      },
-    },
+    createSpeechGenerationQuota(rateLimitStore),
   ),
 });
 
