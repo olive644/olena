@@ -42,7 +42,7 @@ it("avisa somente sobre seguidores novos e permite visitar pelo aviso mesmo sem 
   };
   social.feed = { self: { ...person, username: "bob" }, notifications: [] };
   const { rerender } = render(<SystemUpdates hideBell />);
-  expect(document.querySelector("details")?.hidden).toBe(true);
+  expect(document.querySelector(".system-updates")).toBeNull();
   expect(screen.queryByText("Alice te seguiu")).toBeNull();
   social.feed = { ...social.feed, notifications: [{ person, at: Date.now(), read: false }] };
   rerender(<SystemUpdates hideBell />);

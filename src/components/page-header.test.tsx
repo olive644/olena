@@ -6,11 +6,9 @@ afterEach(cleanup);
 it("mostra notificações por padrão, com exclusão explícita no Perfil", async () => {
   const view = render(<PageHeader showUpdates={false} />);
   expect(view.container.querySelector(".profile-menu")).toBeNull();
-  const trigger = await screen.findByLabelText(/Atualizações/);
-  expect(trigger.closest("details")?.hidden).toBe(true);
+  expect(view.container.querySelector(".system-updates")).toBeNull();
   view.rerender(<PageHeader showUpdates />);
   expect(await screen.findByLabelText(/Atualizações/)).toBeTruthy();
-  expect(trigger.closest("details")?.hidden).toBe(false);
   view.rerender(<PageHeader showUpdates={false} />);
-  expect(trigger.closest("details")?.hidden).toBe(true);
+  expect(view.container.querySelector(".system-updates")).toBeNull();
 });

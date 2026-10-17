@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+2026-10-17, nomes em conexões móveis: Person coloca Segue você dentro da coluna de identidade, abaixo do @. Min-width zero na coluna, avatar/ação sem encolher e nomes/@ em linha única com ellipsis e title completo. Evita a quebra letra por letra provocada pela relação na terceira coluna do botão.
+
+2026-10-17, CI de notificações: hideBell em SystemUpdates omite details/painel do DOM, não o componente inteiro. Mantém feed, toast e SocialVisitListener ativos no Perfil, preservando contrato dos E2E notification-panel e profile-privacy-header sem alterar suas asserções.
+
 2026-10-17, latência de contagens do Perfil: useSocialFeed compartilha promessa e último resultado em memória por UID confirmado entre sino e Perfil, sem nova chave de armazenamento. Perfil deixa de serializar essa consulta após useProfileHandle. Eventos sociais invalidam cache uma vez por evento, enfileiram atualização quando necessário e rejeitam resultado anterior à invalidação. Falha conserva números já confirmados; logout/troca de UID limpam o cache. Sem resposta inicial, contagem fica ausente, não é zero inventado nem reticências. ProfileStreaks apresenta zero imediatamente quando não há sequência no workspace carregado.
 
 2026-10-17, refinamento do Perfil: profileLevel passa a usar XP do ledger de RoomRewardNotice, não pontos das ilhas. Custo por nível 500 + 250 por nível já concluído, sem alterar recibos ou total. Evento ROOM_XP_CHANGED atualiza a barra. Ledger existente continua sem sincronização remota, não prometer continuidade entre aparelhos. NotebookSpread tem readOnly para prévia do Perfil; Cadernos aceita folha apenas se pertencer ao caderno no próprio workspace. SystemUpdates mantém feed sem sino no Perfil e revela aviso temporário somente para novos eventos recebidos, nunca histórico inicial. Botão QR abre SocialDirectory com initialSharing.

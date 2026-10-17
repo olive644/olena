@@ -25,10 +25,10 @@ function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: 
     >
       <img src={person.photoUrl} alt="" width="44" height="44" />
       <span>
-        <strong>{person.name}</strong>
-        <small>@{person.username}</small>
+        <strong title={person.name}>{person.name}</strong>
+        <small title={`@${person.username}`}>@{person.username}</small>
+        {person.followsYou && <small className="social-person-relation">Segue você</small>}
       </span>
-      {person.followsYou && <small>Segue você</small>}
     </button>
   );
 }
