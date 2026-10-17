@@ -664,6 +664,11 @@ toque ou por Enter e conclui por toque duplo ou Shift com Enter, gerando um tra�
 Espaço é do atalho global de mão temporária e não deve ser usada nesta ferramenta. Teste em
 `handwriting-spline.test.ts` e `handwriting-curve.spec.ts`.
 
+Borracha de fundo: terceiro modo da borracha, que cria um traço com `cover: true` em vez de apagar
+tinta. `renderPage` desenha o fundo importado à parte, fura com `destination-out` pelos traços de
+cobertura e põe sobre o papel; a tinta não é tocada. Traço de cobertura nunca vai para a camada de
+tinta. Teste em `handwriting-background-erase.test.ts` e `handwriting-background-erase.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita

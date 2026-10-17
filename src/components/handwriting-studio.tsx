@@ -502,6 +502,9 @@ export function HandwritingStudio({
   const [width, setWidth] = useState(5);
   const [eraserWidth, setEraserWidth] = useState(10);
   const [eraserWholeStroke, setEraserWholeStroke] = useState(false);
+  const [eraserBackground, setEraserBackground] = useState(false);
+  // A borracha de fundo só faz sentido com uma página ou imagem importada na folha.
+  const backgroundAvailable = Boolean(background) || importedImages.length > 0;
   const [highlighterOpacity, setHighlighterOpacity] = useState(0.3);
   const [gestureRevision, setGestureRevision] = useState(0);
   const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
@@ -1266,11 +1269,11 @@ export function HandwritingStudio({
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
-    const effectiveTool: HandwritingTool = isPenEraserTip
-      ? "eraser"
-      : isPenBarrelButton
-        ? "hand"
-        : tool;
+    const rawTool: HandwritingTool = isPenEraserTip ? "eraser" : isPenBarrelButton ? "hand" : tool;
+    // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
+    // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
+    const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
+    const effectiveTool: HandwritingTool = coverErase ? "pen" : rawTool;
     activeToolRef.current = effectiveTool;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1354,16 +1357,26 @@ export function HandwritingStudio({
       return;
     }
     const activeWidth = effectiveTool === "highlighter" ? Math.min(100, width * 2.5) : width;
-    const nextStroke: Stroke = {
-      id: strokeId(),
-      tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
-      ...(effectiveTool === "pen" ? { brush } : {}),
-      ...(effectiveTool === "pen" && dash ? { dash } : {}),
-      ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
-      color,
-      width: activeWidth,
-      points: [point],
-    };
+    const nextStroke: Stroke = coverErase
+      ? {
+          id: strokeId(),
+          tool: "pen",
+          brush: "fine",
+          cover: true,
+          color: "#7433e0",
+          width: Math.min(100, eraserWidth * 6),
+          points: [point],
+        }
+      : {
+          id: strokeId(),
+          tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
+          ...(effectiveTool === "pen" ? { brush } : {}),
+          ...(effectiveTool === "pen" && dash ? { dash } : {}),
+          ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
+          color,
+          width: activeWidth,
+          points: [point],
+        };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler"
@@ -2780,6 +2793,9 @@ export function HandwritingStudio({
           onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
           eraserWholeStroke={eraserWholeStroke}
           onEraserWholeStrokeChange={setEraserWholeStroke}
+          eraserBackground={eraserBackground}
+          onEraserBackgroundChange={setEraserBackground}
+          backgroundAvailable={backgroundAvailable}
           highlighterOpacity={highlighterOpacity}
           onHighlighterOpacityChange={setHighlighterOpacity}
           dash={dash}
