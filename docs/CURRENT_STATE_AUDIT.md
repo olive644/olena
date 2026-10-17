@@ -2811,3 +2811,15 @@ Nova ferramenta "Espaço vertical" no grupo de instrumentos: uma linha horizonta
 - **Limites conhecidos.** A prévia mostra a faixa e não o conteúdo descendo; o conteúdo se move ao soltar. A linha é sempre horizontal e de largura inteira. Itens que cruzam a linha não se movem.
 - **Orçamento.** O JavaScript da aplicação passou de 1431,9 para 1435,2 KiB (+3,3 KiB, sob demanda); o teto de total subiu de 1432 para 1438 KiB, com a justificativa no script. Entrada inicial (279,6 KiB) e teto absoluto (1500 KiB) não mudaram.
 - **Testes.** `handwriting-vertical-space.test.ts` (9, regra de quem desce, limites e camadas ocultas), o botão novo em `handwriting-toolbar.test.tsx` e o e2e `handwriting-vertical-space.spec.ts`, que desenha dois traços na folha real, abre espaço com o mouse, abre e fecha com o teclado e desfaz.
+
+### Encaixe no eixo e retângulo em qualquer ângulo no handwriting (2026-10-17)
+
+O "segurar para acertar" (`recognizeShape`, em `handwriting-shapes.ts`) ganha duas regras. A comparação com o Xournal++ (GPL-2.0, só o comportamento; nenhum código dele foi copiado ou portado) apontou as duas. Setas e polígonos de 5 a 8 lados já eram reconhecidos antes deste trabalho; uma leitura anterior desta auditoria dizia o contrário e estava desatualizada.
+
+- **Encaixe no eixo.** Uma reta, ou o cabo de uma seta, que foge do eixo por até 5 graus vira exatamente horizontal ou vertical (`snapToAxis`). O pivô é o ponto onde a caneta começou, e o comprimento é mantido. Fora da tolerância a inclinação é respeitada, e uma diagonal de 45 graus não é puxada para eixo nenhum. As farpas da seta acompanham o cabo encaixado.
+- **Retângulo girado.** Além da caixa alinhada aos eixos, o reconhecedor testa o menor retângulo (por área) que envolve o traço em qualquer ângulo (`orientedRectangle`). Até 5 graus do eixo continua valendo a caixa alinhada, então retângulos quase retos saem exatamente como antes. Mais inclinado, sai o retângulo girado, e um losango (quadrado a 45 graus) passa a ser reconhecido.
+- **Guarda contra elipses.** O modelo de elipse é alinhado aos eixos, então uma elipse inclinada perdia para o retângulo girado. O retângulo girado só vale se os quatro cantos tiverem tinta perto (no máximo 22% do lado menor); uma elipse não tem, um retângulo de cantos arredondados tem. Elipse inclinada continua sem forma reconhecida, como antes.
+- **Sem mudança de formato.** Só o traço gerado muda; nada novo é gravado, então armazenamento, validação, colaboração e exportação não mudam. Interface sem mudança: a escolha segue sendo a de "ajuste inteligente".
+- **Orçamento.** O JavaScript da aplicação foi de 1435,2 para 1436,4 KiB (+1,2 KiB), sob o teto de 1438 KiB; nenhum teto mudou.
+- **Limites conhecidos.** Triângulos e polígonos não encaixam lados no eixo. A elipse inclinada não é reconhecida.
+- **Testes.** 11 casos novos em `handwriting-shapes.test.ts` (7 falham sem a mudança) e o e2e `handwriting-axis-snap.spec.ts`, que na folha real compara uma reta de 3 graus (fica horizontal) com uma de 10 graus (mantém a inclinação) e desenha um retângulo girado 30 graus com tremor, medindo a retidão da aresta.
