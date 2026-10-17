@@ -67,6 +67,8 @@ test("borracha de fundo apaga a página importada e deixa a tinta e a pauta", as
   const isPaper = (c: number[]) => c[0]! > 220 && c[1]! > 220 && c[2]! > 200;
   const isInk = (c: number[]) => c[0]! < 90 && c[1]! < 90 && c[2]! < 100;
   const drag = async (fromX: number, toX: number, py: number) => {
+    await sheet.focus();
+    await sheet.scrollIntoViewIfNeeded();
     const start = await toScreen(fromX, py);
     const end = await toScreen(toX, py);
     await page.mouse.move(start.x, start.y);
