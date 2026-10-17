@@ -6,11 +6,46 @@ import {
   type ProfileHandle,
 } from "../data/profile-handle";
 
+const empty: ProfileHandle = { username: "", creks: false };
+let cached: { uid: string; value: ProfileHandle } | undefined;
+let flight: { uid: string; promise: Promise<ProfileHandle> } | undefined;
+let epoch = 0;
+const changes = new WeakSet<Event>();
+
+function loadHandle(uid: string) {
+  if (flight?.uid === uid) return flight.promise;
+  const version = epoch;
+  const promise = requestProfileHandle("GET").then(async (value) => {
+    if (version !== epoch) return value;
+    const resolved =
+      !value.username && value.preferredUsername
+        ? await requestProfileHandle("POST", value.preferredUsername)
+        : value;
+    if (version === epoch) cached = { uid, value: resolved };
+    return resolved;
+  });
+  flight = { uid, promise };
+  void promise
+    .finally(() => {
+      if (flight?.promise === promise) flight = undefined;
+    })
+    .catch(() => {});
+  return promise;
+}
+
 export function useProfileHandle(guest: boolean) {
   const [state, setState] = useState<ProfileHandle>({ username: "", creks: false });
   const [revision, setRevision] = useState(0);
   useEffect(() => {
-    const refresh = () => setRevision((value) => value + 1);
+    const refresh = (event: Event) => {
+      if (!changes.has(event)) {
+        changes.add(event);
+        epoch++;
+        cached = undefined;
+        flight = undefined;
+      }
+      setRevision((value) => value + 1);
+    };
     window.addEventListener(PROFILE_HANDLE_CHANGED, refresh);
     return () => window.removeEventListener(PROFILE_HANDLE_CHANGED, refresh);
   }, []);
@@ -24,18 +59,23 @@ export function useProfileHandle(guest: boolean) {
         if (!alive) return;
         unsubscribe = authApi.onAuthStateChanged(auth, (user) => {
           const current = ++generation;
-          setState({ username: "", creks: false });
+          if (
+            !user ||
+            user.isAnonymous ||
+            (cached && cached.uid !== user.uid) ||
+            (flight && flight.uid !== user.uid)
+          ) {
+            epoch++;
+            cached = undefined;
+            flight = undefined;
+          }
+          setState(user && !user.isAnonymous && cached?.uid === user.uid ? cached.value : empty);
           if (!user || user.isAnonymous) return;
-          void requestProfileHandle("GET")
-            .then(async (value) => {
-              if (!alive || current !== generation) return;
-              // A reserva do dono foi solicitada explicitamente; nomes antigos de outras
-              // contas só são reservados ao confirmar o formulário.
-              const resolved =
-                !value.username && value.preferredUsername
-                  ? await requestProfileHandle("POST", value.preferredUsername)
-                  : value;
-              if (alive && current === generation) setState(resolved);
+          const version = epoch;
+          void loadHandle(user.uid)
+            .then((value) => {
+              if (!alive || current !== generation || version !== epoch) return;
+              setState(value);
             })
             .catch(() => {
               /* Sem confirmação, não exibir @ nem selo como verificados. */

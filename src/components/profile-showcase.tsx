@@ -26,6 +26,8 @@ const SocialDirectory = lazy(() =>
 import { ProfileLabels } from "./profile-labels";
 import { ProfileXpBar, ProfileLevelBadge, ProfileStudyWidgets } from "./profile-study-widgets";
 import { ProfileQrIcon } from "./profile-qr-icon";
+import { ProfileJourney } from "./profile-journey";
+import "./profile-journey.css";
 
 export function ProfileShowcase({
   children,
@@ -58,6 +60,7 @@ export function ProfileShowcase({
   const friendButton = useRef<HTMLButtonElement>(null);
   const friendActions = useRef<HTMLDivElement>(null);
   const connections = useRef<HTMLDivElement>(null);
+  const journey = useRef<HTMLDivElement>(null);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
   const anchor = useRef<HTMLDivElement>(null);
@@ -96,6 +99,7 @@ export function ProfileShowcase({
       if (friendButton.current) friendButton.current.inert = !mobile && progress > 0.2;
       if (friendActions.current) friendActions.current.inert = !mobile && progress > 0.2;
       if (connections.current) connections.current.inert = !mobile && progress > 0.2;
+      if (journey.current) journey.current.inert = progress > 0.2;
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -112,6 +116,18 @@ export function ProfileShowcase({
     };
   }, [settingsOpen, reduceMotion]);
   const name = guest ? nameFallback : profile.name?.trim() || nameFallback;
+  const completion =
+    !guest && presentationReady ? (
+      <ProfileJourney
+        profile={profile}
+        username={handle.username}
+        onChoose={(step) => {
+          if (step === "identity") setEditing(true);
+          else if (step === "avatar") setChoosingAvatar(true);
+          else setChoosingCover(true);
+        }}
+      />
+    ) : null;
   return (
     <>
       <div ref={anchor} className="profile-scroll-anchor" aria-hidden="true" />
@@ -139,6 +155,11 @@ export function ProfileShowcase({
         )}
       </div>
       <div ref={chrome} className="profile-chrome" data-settings={settingsOpen}>
+        {!settingsOpen && completion && (
+          <div ref={journey} className="profile-journey-slot--side">
+            {completion}
+          </div>
+        )}
         {!settingsOpen && (
           <section className="profile-cover" aria-label="Seu perfil">
             <div className="profile-cover__art">
@@ -293,6 +314,9 @@ export function ProfileShowcase({
         )}
       </div>
       {!settingsOpen && <div className="profile-cover-spacer" aria-hidden="true" />}
+      {!settingsOpen && completion && (
+        <div className="profile-journey-slot--below">{completion}</div>
+      )}
       {editing && (
         <ProfileEditor
           profile={{ ...profile, name, username: handle.username || profile.username || "" }}

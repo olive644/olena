@@ -2931,3 +2931,20 @@ O "segurar para acertar" passa a juntar retas: quando uma reta recém-acertada f
 # Rótulos adicionais de perfil, 2026-10-17
 
 O identificador confirmado @dreyxnn recebe GALAXIA e BETA TESTER pelo componente compartilhado ProfileLabels. São rótulos de apresentação, sem privilégios ou alteração do cadastro. Teste de regressão valida ficha e barra recolhida, rejeita nome apenas no cache e não confunde @dreyxn com @dreyxnn. Arquivo profile-showcase.test.tsx validado com 13 testes aprovados.
+
+# Perfil: identidade e jornada (2026-10-17)
+
+O @ e as tags usam cache em memória apenas de respostas autenticadas, associado
+ao UID confirmado. A consulta começa na sessão, antes de abrir Perfil, e visitas
+seguintes mantêm a identidade durante a revalidação. Troca de conta, saída e
+edição invalidam respostas antigas. Nenhum selo usa o username do cache local.
+Pronomes continuam no perfil sincronizado, com releitura após assinar os eventos
+para não perder uma hidratação entre render e efeito. A primeira carga sem cache
+ainda depende da rede e da sincronização da conta.
+
+Jornada com três etapas reais: nome/@, personagem e capa. Usa os editores
+existentes e quatro poses inéditas, com o onboarding apenas como referência
+visual. Helena aparece atrás do botão, com a parte inferior sobreposta por ele.
+Bio, pronomes e redes são opcionais.
+Conclusão é derivada dos campos salvos, não concede XP e não cria armazenamento
+paralelo. Desktop amplo recebe o card à direita; telas menores, abaixo do perfil.
