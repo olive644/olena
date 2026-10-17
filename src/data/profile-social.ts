@@ -1,5 +1,6 @@
 import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
+import { PROFILE_COVERS } from "../domain/profile-covers";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 export const SOCIAL_CHANGED = "olena:social-changed";
 export const SOCIAL_VISIT = "olena:social-visit";
@@ -14,6 +15,7 @@ function isProfile(value: unknown): value is SocialProfile {
     /^[a-z0-9._]{1,30}$/.test(item["username"]) &&
     typeof item["name"] === "string" &&
     item["name"].length <= 80 &&
+    (item["cover"] === undefined || PROFILE_COVERS.some((cover) => cover.id === item["cover"])) &&
     PROFILE_AVATARS.some((avatar) => avatar.photoUrl === item["photoUrl"]) &&
     ["followers", "following"].every(
       (field) => Number.isSafeInteger(item[field]) && Number(item[field]) >= 0,
@@ -46,6 +48,19 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
     );
   if (!body || typeof body !== "object") throw new Error("Resposta inválida de amigos.");
   const feed = body as SocialFeed;
+  if (
+    feed.connections !== undefined &&
+    (!["followers", "following"].includes(feed.connections.kind) ||
+      !/^[a-z0-9._]{1,30}$/.test(feed.connections.owner) ||
+      !Array.isArray(feed.connections.people) ||
+      feed.connections.people.length > 50 ||
+      !feed.connections.people.every(isProfile) ||
+      (feed.connections.next !== undefined &&
+        (!Number.isSafeInteger(feed.connections.next) ||
+          feed.connections.next < 0 ||
+          feed.connections.next > 1000)))
+  )
+    throw new Error("Lista de conexões inválida.");
   if (
     feed.suggestions !== undefined &&
     (!Array.isArray(feed.suggestions) ||

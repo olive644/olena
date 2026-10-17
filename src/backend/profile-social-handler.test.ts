@@ -4,6 +4,45 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("listas usam perspectiva do visitante e remover seguidor preserva o vínculo inverso", async () => {
+  const app = setup();
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "follow", username: "bob" });
+  const list = await app.feed("a", "list=followers");
+  expect(
+    list.connections?.people.map((person) => [person.username, person.followed, person.followsYou]),
+  ).toEqual([["bob", true, true]]);
+  expect(
+    (await app.feed("c", "username=alice&list=followers")).connections?.people[0]?.followed,
+  ).toBe(false);
+  await app.request("a", { action: "remove-follower", username: "bob" });
+  expect((await app.feed("a", "list=followers")).connections?.people).toEqual([]);
+  expect((await app.feed("a", "list=following")).connections?.people[0]?.username).toBe("bob");
+  expect((await app.feed("b")).self.following).toBe(0);
+  expect((await app.feed("a")).notifications).toEqual([]);
+  expect((await app.request("a", undefined, "list=unknown")).status).toBe(400);
+  expect((await app.request("a", undefined, "list=followers&offset=-1")).status).toBe(400);
+});
+it("apresentação automática aceita capa oficial e impede publicação na conta trocada", async () => {
+  const app = setup();
+  const presentation = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/oliver.webp",
+    cover: "ocean",
+    expectedUsername: "alice",
+  };
+  expect((await app.request("a", presentation)).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile).toMatchObject({
+    name: "Alice",
+    cover: "ocean",
+  });
+  expect((await app.request("b", presentation)).status).toBe(409);
+  expect(
+    (await app.request("a", { ...presentation, cover: "https://outside.test/cover" })).status,
+  ).toBe(400);
+});
 function setup() {
   let state: SocialState = { accounts: {} };
   let version = 0;

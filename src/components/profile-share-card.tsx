@@ -1,28 +1,26 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import qrcode from "qrcode-generator";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { SocialProfile } from "../domain/profile-social";
+import { ProfileCoverArt } from "./profile-cover-art";
+import { profileCover } from "../domain/profile-covers";
+import { RoomQrCode } from "./room-qr-code";
+import { RoomSocialIcon } from "./room-social-icon";
 
 export function ProfileShareCard({ person }: { person: SocialProfile }) {
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const qrElement = useRef<HTMLDivElement>(null);
   const url = new URL(
     `/perfil?usuario=${encodeURIComponent(person.username)}`,
     window.location.origin,
   ).href;
-  const qr = qrcode(0, "H");
-  qr.addData(url);
-  qr.make();
-  const modules = qr.getModuleCount();
-  let path = "";
-  for (let y = 0; y < modules; y++)
-    for (let x = 0; x < modules; x++) if (qr.isDark(y, x)) path += `M${x + 4} ${y + 4}h1v1h-1Z`;
   async function copy() {
     try {
       await navigator.clipboard.writeText(url);
       setStatus("Link copiado.");
     } catch {
-      setStatus("Não foi possível copiar. Selecione o link abaixo.");
+      setStatus("Não foi possível copiar. Tente novamente ou use Compartilhar.");
     }
   }
   async function share() {
@@ -45,6 +43,9 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       const avatar = new Image();
       avatar.src = person.photoUrl;
       await avatar.decode();
+      const cover = new Image();
+      cover.src = `/profile-covers/${profileCover(person.cover)}.svg`;
+      await cover.decode();
       const canvas = document.createElement("canvas");
       canvas.width = 720;
       canvas.height = 960;
@@ -52,20 +53,7 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       if (!context) throw new Error();
       context.fillStyle = "#FFF9EF";
       context.fillRect(0, 0, 720, 960);
-      context.fillStyle = "#7C3AED";
-      context.fillRect(0, 0, 720, 220);
-      context.fillStyle = "#A779EF";
-      context.beginPath();
-      context.moveTo(0, 0);
-      context.lineTo(230, 0);
-      context.lineTo(0, 170);
-      context.fill();
-      context.fillStyle = "#51259B";
-      context.beginPath();
-      context.moveTo(720, 90);
-      context.lineTo(720, 220);
-      context.lineTo(510, 220);
-      context.fill();
+      context.drawImage(cover, 0, 0, 720, 220);
       context.fillStyle = "#FFF9EF";
       context.font = "800 30px Manrope, sans-serif";
       context.fillText("OlenaStudy", 40, 64);
@@ -97,6 +85,19 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
               cell + 0.15,
               cell + 0.15,
             );
+      const svg = qrElement.current?.querySelector("svg")?.cloneNode(true) as
+        SVGSVGElement | undefined;
+      if (svg) {
+        const logo = await (await fetch("/favicon-star.svg")).text();
+        svg
+          .querySelector("image")
+          ?.setAttribute("href", `data:image/svg+xml;charset=utf-8,${encodeURIComponent(logo)}`);
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        const code = new Image();
+        code.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(svg))}`;
+        await code.decode();
+        context.drawImage(code, 430, 660, 240, 240);
+      }
       context.fillStyle = "#7C3AED";
       context.font = "800 24px Manrope, sans-serif";
       context.fillText("Compartilhar perfil", 40, 730);
@@ -125,25 +126,21 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
   return (
     <section className="social-share" aria-label="Compartilhar perfil">
       <div className="social-share-card">
+        <div className="social-share-cover">
+          <ProfileCoverArt theme={profileCover(person.cover)} />
+        </div>
         <strong className="social-share-brand">OlenaStudy</strong>
         <img src={person.photoUrl} alt={`Avatar de ${person.name}`} width="160" height="160" />
         <h3>{person.name}</h3>
         <p>@{person.username}</p>
-        <svg
-          role="img"
-          aria-label="QR code do perfil"
-          viewBox={`0 0 ${modules + 8} ${modules + 8}`}
-          width="160"
-          height="160"
-        >
-          <path fill="#FFF9EF" d={`M0 0h${modules + 8}v${modules + 8}H0Z`} />
-          <path d={path} fill="#292432" shapeRendering="crispEdges" />
-        </svg>
+        <div ref={qrElement}>
+          <RoomQrCode value={url} size={180} bare label="QR code do perfil" />
+        </div>
         <p>Vamos estudar juntos?</p>
       </div>
       <div className="social-share-actions">
         <button type="button" className="secondary-button" onClick={() => void copy()}>
-          <PaperEditorIcon name="copyLink" />
+          <RoomSocialIcon kind="copy" />
           Copiar link
         </button>
         {typeof navigator.share === "function" && (
@@ -162,10 +159,6 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
           {saving ? "Salvando..." : "Salvar cartão"}
         </button>
       </div>
-      <label className="social-share-url">
-        Link do perfil
-        <input value={url} readOnly onFocus={(event) => event.currentTarget.select()} />
-      </label>
       {status && <p role="status">{status}</p>}
     </section>
   );

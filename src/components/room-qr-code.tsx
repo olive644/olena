@@ -39,10 +39,14 @@ export function RoomQrCode({
   value,
   size = 152,
   bingo = false,
+  bare = false,
+  label = "QR code para entrar na sala",
 }: {
   value: string;
   size?: number;
   bingo?: boolean;
+  bare?: boolean;
+  label?: string;
 }) {
   const qr = qrcode(0, "H");
   qr.addData(value);
@@ -70,6 +74,38 @@ export function RoomQrCode({
   ] as const;
   const logoSize = qrSize * 0.24;
 
+  const code = (
+    <svg
+      viewBox={`0 0 ${size} ${size}`}
+      width={size}
+      height={size}
+      role="img"
+      aria-label={label}
+      data-qr-error-correction="H"
+    >
+      {bare && <path d={`M0 0h${size}v${size}H0Z`} fill="#FFF9EF" />}
+      <path d={modules} fill="#292432" shapeRendering="crispEdges" data-qr-modules />
+      {finderOrigins.map(([column, row]) => (
+        <FinderMark
+          key={`${row}-${column}`}
+          x={quietZone + column * cell}
+          y={quietZone + row * cell}
+          cell={cell}
+        />
+      ))}
+      <image
+        href="/favicon-star.svg"
+        x={(size - logoSize) / 2}
+        y={(size - logoSize) / 2}
+        width={logoSize}
+        height={logoSize}
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+        data-qr-logo
+      />
+    </svg>
+  );
+  if (bare) return code;
   return (
     <div className={"helena-room-qr helena-room-qr--holding" + (bingo ? " poliana-room-qr" : "")}>
       <img
@@ -80,34 +116,7 @@ export function RoomQrCode({
         fetchPriority="high"
         decoding="async"
       />
-      <svg
-        viewBox={`0 0 ${size} ${size}`}
-        width={size}
-        height={size}
-        role="img"
-        aria-label="QR code para entrar na sala"
-        data-qr-error-correction="H"
-      >
-        <path d={modules} fill="#292432" shapeRendering="crispEdges" data-qr-modules />
-        {finderOrigins.map(([column, row]) => (
-          <FinderMark
-            key={`${row}-${column}`}
-            x={quietZone + column * cell}
-            y={quietZone + row * cell}
-            cell={cell}
-          />
-        ))}
-        <image
-          href="/favicon-star.svg"
-          x={(size - logoSize) / 2}
-          y={(size - logoSize) / 2}
-          width={logoSize}
-          height={logoSize}
-          preserveAspectRatio="xMidYMid meet"
-          aria-hidden="true"
-          data-qr-logo
-        />
-      </svg>
+      {code}
     </div>
   );
 }

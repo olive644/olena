@@ -30,5 +30,21 @@ for (const theme of ["light", "dark"]) {
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
     await expect(open).toBeFocused();
+    await page.getByRole("button", { name: /0 Seguidores/ }).click();
+    await expect(
+      page.getByRole("dialog", { name: "Encontre seus amigos", exact: true }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "Editar capa", exact: true }).click();
+    const covers = page.getByRole("group", { name: "Temas de capa" });
+    const ocean = covers.getByRole("button", { name: "Oceano", exact: true });
+    const art = ocean.locator("img");
+    const frame = await ocean.boundingBox(),
+      image = await art.boundingBox();
+    expect(Math.abs(frame!.width - image!.width)).toBeLessThan(5);
+    await expect(ocean.locator("span")).toHaveCSS("position", "absolute");
+    await page
+      .getByRole("dialog", { name: "Capa do perfil" })
+      .screenshot({ path: info.outputPath(`capas-${theme}.png`) });
   });
 }

@@ -82,3 +82,9 @@ teclado, foco e estados sem conta nos dois temas e tamanhos.
 Rollback visual não deve apagar o grafo. Manter o endpoint e o gancho de limpeza
 na exclusão enquanto existirem fichas; clientes antigos continuam protegidos pelo
 servidor. Não reutilizar os nós sociais como armazenamento de estudos.
+
+# Revisão de 17/10/2026
+
+Substitui o opt-in descrito no histórico abaixo: nome/personagem/capa passam a compor naturalmente o perfil social quando o próprio usuário abre Perfil com conta sincronizada. A publicação automática exige dono do cache igual ao UID autenticado e expectedUsername igual ao handle corrente no servidor. Não migra dados privados de outras contas. Sem sincronização ou rede, apresentação anterior é preservada e tentada novamente na próxima visita.
+
+Listas de seguidores/seguindo são acessíveis a contas autenticadas, paginadas em 50, somente com nomes públicos e personagens/capas oficiais. Sem IDs internos ou estudos. remove-follower remove exclusivamente target.following[self] e o aviso de seguimento em self, sem tocar no vínculo inverso ou gerar nova notificação. Limites de taxa, CAS, origem e tamanho existentes continuam aplicáveis.

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { SocialFeed, SocialProfile } from "../domain/profile-social";
+import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 import { requestSocial, SOCIAL_VISIT } from "../data/profile-social";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { readStoredProfile } from "../hooks/use-stored-profile";
@@ -11,6 +11,9 @@ import { HelenaLoading } from "./helena-loading";
 
 import { FriendIcon } from "./profile-friend-icon";
 import { ProfileLabels } from "./profile-labels";
+import { PaperArrow } from "./paper-arrow";
+import { profileCover } from "../domain/profile-covers";
+import { ProfileCoverArt } from "./profile-cover-art";
 
 function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: string): void }) {
   return (
@@ -34,10 +37,12 @@ export function SocialDirectory({
   initialUsername = "",
   onClose,
   nameFallback,
+  initialList,
 }: {
   initialUsername?: string;
   onClose(): void;
   nameFallback: string;
+  initialList?: "followers" | "following";
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [search, setSearch] = useState(initialUsername);
@@ -46,6 +51,13 @@ export function SocialDirectory({
   const [busy, setBusy] = useState(true);
   const [sharing, setSharing] = useState(false);
   const [status, setStatus] = useState("");
+  const [list, setList] = useState<
+    { kind: "followers" | "following"; owner: string } | undefined
+  >();
+  const [confirmation, setConfirmation] = useState<{
+    person: SocialProfile;
+    action: "unfollow" | "remove-follower";
+  }>();
   const contacts = (
     navigator as Navigator & {
       contacts?: {
@@ -82,6 +94,7 @@ export function SocialDirectory({
     onClose();
   }
   async function load(username?: string) {
+    setList(undefined);
     const current = ++generation.current;
     setBusy(true);
     setFeed(undefined);
@@ -108,10 +121,14 @@ export function SocialDirectory({
     const current = ++generation.current;
     void requestSocial(
       undefined,
-      initialUsername ? `username=${encodeURIComponent(initialUsername)}` : "",
+      `${initialUsername ? `username=${encodeURIComponent(initialUsername)}` : ""}${initialList ? `${initialUsername ? "&" : ""}list=${initialList}` : ""}`,
     )
       .then((value) => {
-        if (active && current === generation.current) setFeed(value);
+        if (active && current === generation.current) {
+          setFeed(value);
+          if (initialList)
+            setList({ kind: initialList, owner: value.connections?.owner ?? value.self.username });
+        }
       })
       .catch((cause: unknown) => {
         if (active && current === generation.current)
@@ -123,42 +140,57 @@ export function SocialDirectory({
     return () => {
       active = false;
     };
-  }, [initialUsername]);
-  async function follow(person: SocialProfile) {
+  }, [initialUsername, initialList]);
+  async function loadList(kind: "followers" | "following", owner: string, offset = 0) {
+    const current = ++generation.current;
     setBusy(true);
     setError("");
-    const current = ++generation.current;
+    setList({ kind, owner });
     try {
-      const value = await requestSocial({
-        action: person.followed ? "unfollow" : "follow",
-        username: person.username,
-      });
-      if (current === generation.current) setFeed(value);
+      const value = await requestSocial(
+        undefined,
+        `username=${encodeURIComponent(owner)}&list=${kind}&offset=${offset}`,
+      );
+      if (current === generation.current)
+        setFeed((previous) =>
+          offset && previous?.connections
+            ? {
+                ...value,
+                connections: {
+                  ...value.connections!,
+                  people: [...previous.connections.people, ...value.connections!.people],
+                },
+              }
+            : value,
+        );
     } catch (cause) {
       if (current === generation.current)
-        setError(cause instanceof Error ? cause.message : "Não foi possível alterar a conexão.");
+        setError(cause instanceof Error ? cause.message : "Não foi possível abrir a lista.");
     } finally {
       if (current === generation.current) setBusy(false);
     }
   }
-  async function share(enabled: boolean) {
+  async function follow(person: SocialProfile) {
+    if (person.followed) {
+      setConfirmation({ person, action: "unfollow" });
+      return;
+    }
+    await mutate({ action: "follow", username: person.username });
+  }
+  async function mutate(action: SocialAction) {
     setBusy(true);
     setError("");
     const current = ++generation.current;
-    const profile = readStoredProfile();
     try {
-      const value = await requestSocial({
-        action: "share",
-        enabled,
-        name: profile.name?.trim() || nameFallback || feed?.self.name || "Aluno",
-        photoUrl: profileAvatarSource(profile.photoUrl),
-      });
-      if (current === generation.current) setFeed(value);
+      const value = await requestSocial(action);
+      if (current === generation.current) {
+        setConfirmation(undefined);
+        setFeed(value);
+        if (list) await loadList(list.kind, list.owner);
+      }
     } catch (cause) {
       if (current === generation.current)
-        setError(
-          cause instanceof Error ? cause.message : "Não foi possível alterar a apresentação.",
-        );
+        setError(cause instanceof Error ? cause.message : "Não foi possível alterar a conexão.");
     } finally {
       if (current === generation.current) setBusy(false);
     }
@@ -170,6 +202,7 @@ export function SocialDirectory({
         ...feed.self,
         name: ownProfile.name?.trim() || nameFallback || feed.self.name,
         photoUrl: profileAvatarSource(ownProfile.photoUrl),
+        cover: profileCover(ownProfile.cover),
       }
     : undefined;
   return (
@@ -193,24 +226,10 @@ export function SocialDirectory({
       {sharing && feed ? (
         <>
           <button type="button" className="secondary-button" onClick={() => setSharing(false)}>
-            <PaperEditorIcon name="undo" />
+            <PaperArrow back />
             Voltar para amigos
           </button>
           {ownCard && <ProfileShareCard person={ownCard} />}
-          <p className="social-support-note">
-            O cartão usa seu nome e personagem. No perfil visitado, eles só aparecem se você
-            permitir abaixo.
-          </p>
-          <button
-            type="button"
-            className="secondary-button"
-            disabled={busy}
-            onClick={() => void share(!feed.self.shared)}
-          >
-            {feed.self.shared
-              ? "Ocultar nome e personagem dos visitantes"
-              : "Mostrar nome e personagem aos visitantes"}
-          </button>
         </>
       ) : (
         <>
@@ -293,8 +312,82 @@ export function SocialDirectory({
           {error && <p role="alert">{error}</p>}
           {status && <p role="status">{status}</p>}
           {busy && <HelenaLoading label="Consultando amigos" compact />}
-          {person && (
+          {list && feed && (
+            <section className="social-connections" aria-label="Lista de conexões">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+                  setList(undefined);
+                  void load(list.owner === feed.self.username ? undefined : list.owner);
+                }}
+              >
+                <PaperArrow back />
+                Voltar
+              </button>
+              <nav aria-label="Seguidores e seguindo">
+                {(["following", "followers"] as const).map((kind) => (
+                  <button
+                    key={kind}
+                    type="button"
+                    className="secondary-button"
+                    aria-pressed={list.kind === kind}
+                    disabled={busy}
+                    onClick={() => void loadList(kind, list.owner)}
+                  >
+                    {kind === "following" ? "Seguindo" : "Seguidores"}
+                  </button>
+                ))}
+              </nav>
+              {feed.connections?.people.map((item) => (
+                <div key={item.username} className="social-connection-row">
+                  <Person person={item} onVisit={(username) => void load(username)} />
+                  {item.username !== feed.self.username &&
+                    (list.kind === "followers" && list.owner === feed.self.username ? (
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        disabled={busy}
+                        onClick={() => setConfirmation({ person: item, action: "remove-follower" })}
+                      >
+                        Remover
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        disabled={busy}
+                        onClick={() => void follow(item)}
+                      >
+                        {item.followed ? "Seguindo" : "Seguir"}
+                      </button>
+                    ))}
+                </div>
+              ))}
+              {!busy && !feed.connections?.people.length && (
+                <p role="status">
+                  {list.kind === "followers"
+                    ? "Nenhum seguidor ainda."
+                    : "Ainda não segue ninguém."}
+                </p>
+              )}
+              {feed.connections?.next !== undefined && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={busy}
+                  onClick={() => void loadList(list.kind, list.owner, feed.connections!.next)}
+                >
+                  Ver mais
+                </button>
+              )}
+            </section>
+          )}
+          {person && !list && (
             <section className="social-profile" aria-label={`Perfil de @${person.username}`}>
+              <div className="social-visit-cover">
+                <ProfileCoverArt theme={profileCover(person.cover)} />
+              </div>
               <img
                 src={person.photoUrl}
                 width="104"
@@ -304,9 +397,22 @@ export function SocialDirectory({
               <h3>{person.name}</h3>
               <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
               <p>@{person.username}</p>
-              <p>
-                {person.followers} seguidores · {person.following} seguindo
-              </p>
+              <div className="social-profile-counts">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => void loadList("followers", person.username)}
+                >
+                  {person.followers} Seguidores
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => void loadList("following", person.username)}
+                >
+                  {person.following} Seguindo
+                </button>
+              </div>
               {person.followsYou && <p>Segue você</p>}
               {person.username !== feed.self.username && (
                 <button
@@ -317,7 +423,7 @@ export function SocialDirectory({
                 >
                   <FriendIcon />
                   {person.followed
-                    ? "Deixar de seguir"
+                    ? "Seguindo"
                     : person.followsYou
                       ? "Seguir de volta"
                       : "Adicionar amigo"}
@@ -325,11 +431,16 @@ export function SocialDirectory({
               )}
             </section>
           )}
-          {feed?.results?.map((item) => (
-            <Person key={item.username} person={item} onVisit={(username) => void load(username)} />
-          ))}
+          {!list &&
+            feed?.results?.map((item) => (
+              <Person
+                key={item.username}
+                person={item}
+                onVisit={(username) => void load(username)}
+              />
+            ))}
           {feed?.results?.length === 0 && <p>Nenhuma pessoa encontrada com esse início de @.</p>}
-          {feed && !person && (
+          {feed && !person && !list && (
             <section aria-label="Sugestões de amigos">
               <h3>Sugestões de amigos</h3>
               {feed.suggestions?.length ? (
@@ -344,26 +455,41 @@ export function SocialDirectory({
               )}
             </section>
           )}
-          {feed && (
-            <section className="social-sharing">
-              <h3>Sua apresentação</h3>
-              <p>
-                Ao compartilhar, outras contas podem ver seu nome e personagem. Sem compartilhar,
-                aparece apenas seu @ e a Helena padrão. E-mail e estudos nunca aparecem aqui.
-              </p>
-              <button
-                type="button"
-                className="secondary-button"
-                disabled={busy}
-                onClick={() => void share(!feed.self.shared)}
-              >
-                <FriendIcon />
-                {feed.self.shared ? "Ocultar nome e personagem" : "Compartilhar nome e personagem"}
-              </button>
-            </section>
-          )}
         </>
       )}
+      {confirmation && (
+        <section
+          className="social-confirm"
+          role="alertdialog"
+          aria-label="Confirmar alteração da conexão"
+        >
+          <p>
+            {confirmation.action === "unfollow"
+              ? "Deixar de seguir"
+              : "Remover dos seus seguidores"}{" "}
+            @{confirmation.person.username}?
+          </p>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={busy}
+            onClick={() => setConfirmation(undefined)}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="primary-button"
+            disabled={busy}
+            onClick={() =>
+              void mutate({ action: confirmation.action, username: confirmation.person.username })
+            }
+          >
+            {confirmation.action === "unfollow" ? "Deixar de seguir" : "Remover seguidor"}
+          </button>
+        </section>
+      )}
+      {sharing && error && <p role="alert">{error}</p>}
     </dialog>
   );
 }

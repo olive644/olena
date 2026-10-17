@@ -48,7 +48,7 @@ test("borracha de fundo apaga a página importada e deixa a tinta e a pauta", as
   await sheet.scrollIntoViewIfNeeded();
 
   // Tudo é combinado em coordenadas da folha (1200 por 1600) e só convertido para a tela na hora
-  // de cada gesto, porque trocar de ferramenta muda a altura do painel e desloca a folha.
+  // de cada ponto, porque trocar de ferramenta ou receber foco pode deslocar a folha.
   const toScreen = async (px: number, py: number) => {
     const box = (await sheet.boundingBox())!;
     return { x: box.x + (px * box.width) / 1200, y: box.y + (py * box.height) / 1600 };
@@ -68,11 +68,11 @@ test("borracha de fundo apaga a página importada e deixa a tinta e a pauta", as
   const isInk = (c: number[]) => c[0]! < 90 && c[1]! < 90 && c[2]! < 100;
   const drag = async (fromX: number, toX: number, py: number) => {
     const start = await toScreen(fromX, py);
-    const end = await toScreen(toX, py);
     await page.mouse.move(start.x, start.y);
     await page.mouse.down();
     for (let step = 1; step <= 20; step += 1) {
-      await page.mouse.move(start.x + ((end.x - start.x) * step) / 20, start.y);
+      const point = await toScreen(fromX + ((toX - fromX) * step) / 20, py);
+      await page.mouse.move(point.x, point.y);
       await page.waitForTimeout(5);
     }
     await page.mouse.up();
