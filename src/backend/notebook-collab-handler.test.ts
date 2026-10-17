@@ -159,7 +159,7 @@ describe("notebook collaboration handler", () => {
     expect(invalid.status).toBe(400);
     const created = await handler(
       request("view-create", {
-        pages: [{ title: "Questão", image: "data:image/png;base64,aGVsbG8=" }],
+        pages: [{ title: "Questão", image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==" }],
       }),
     );
     expect(created.status).toBe(201);
@@ -179,6 +179,36 @@ describe("notebook collaboration handler", () => {
       ).status,
     ).toBe(400);
     expect((await handler(request("view-read", { token: "missing" }))).status).toBe(404);
+  });
+  describe("view-create protegido", () => {
+    const png = `data:image/png;base64,${Buffer.from("89504e470d0a1a0a0000000d", "hex").toString("base64")}`;
+    const as = (uid: string | undefined, anonymous = false) =>
+      createNotebookCollabHandler({
+        store: createMemoryRoomStore(),
+        publish: async () => {},
+        streamUrl: () => "",
+        authenticate: async (input) =>
+          input.headers.get("authorization") ? { uid: uid!, name: "Ana", anonymous } : undefined,
+        consumeViewCreate: async (id) => id !== "limitada",
+      });
+    const create = (headers: Record<string, string>, image = png) =>
+      new Request("https://helena.example/api/notebook-collab?action=view-create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify({ pages: [{ title: "X", image }] }),
+      });
+    it("exige conta, recusa anônimo e respeita a cota", async () => {
+      expect((await as("ana")(create({}))).status).toBe(401);
+      expect((await as("ana", true)(create({ Authorization: "Bearer t" }))).status).toBe(401);
+      expect((await as("limitada")(create({ Authorization: "Bearer t" }))).status).toBe(429);
+      expect((await as("ana")(create({ Authorization: "Bearer t" }))).status).toBe(201);
+    });
+    it("recusa texto que só se declara imagem", async () => {
+      const fake = `data:image/png;base64,${Buffer.from("<html>not an image</html>").toString("base64")}`;
+      expect((await as("ana")(create({ Authorization: "Bearer t" }, fake))).status).toBe(400);
+      const jpegAsPng = `data:image/png;base64,${Buffer.from("ffd8ffe000104a46", "hex").toString("base64")}`;
+      expect((await as("ana")(create({ Authorization: "Bearer t" }, jpegAsPng))).status).toBe(400);
+    });
   });
   it("creates, joins and broadcasts a document", async () => {
     const store = createMemoryRoomStore();
