@@ -2788,3 +2788,13 @@ A Helena 3D do assistente flutuante (three.js e modelo GLB em iframe) foi substi
 O runtime oficial @rive-app/canvas 2.43.0 (MIT, sem avisos OSV) fica vendorizado em public/helena-assistant e é carregado sob demanda, fora do bundle, dentro da CSP já existente (script-src self wasm-unsafe-eval, connect-src self). Nada vai a serviço externo nem é apresentado como IA. O arquivo helena.riv é gerado por código em scripts/helena-rive, de forma determinística, e não pelo editor do Rive. Movimento reduzido mantém as imagens estáticas e não baixa runtime nem arquivo.
 
 O componente preserva a interface anterior (mesmas props, imagem estática de reserva, pausa em outras telas e em modais) e expõe data-form, data-state e data-behavior para os testes. Os testes unitários cobrem carregamento, entradas, ciclo estrela/Helena, pausa e falha de carregamento; os e2e do assistente verificam a CSP de produção e a instância única no cabeçalho. Orçamento: Helena Rive opcional 445 KiB de JS, 1,86 MiB de WASM e 829 KiB de .riv, separado; o JavaScript da aplicação sobe de 1364 para 1366 KiB (medido 1364,6), sem dependência npm nova. O three.js vendorizado, o GLB e o script de build do 3D saíram do repositório.
+
+# Perfil móvel e identidade (2026-10-16)
+
+Barra móvel volta a interpolar pelo scroll, com Nome/selo e @/pronomes somente.
+Capa sem margens laterais no celular. Sua trajetória foi removida da apresentação;
+focusSessions, practiceActivities e quizAttempts permanecem intactos no workspace.
+O editor recebia apenas profile.name, enquanto a capa usava cloud.displayName como
+alternativa. Agora ambos os pontos de edição recebem o mesmo nome apresentado,
+sem gravar uma alternativa até o usuário salvar. Avatares oficiais recebem recortes
+transparentes sem trocar seus identificadores persistidos.

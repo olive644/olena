@@ -61,7 +61,9 @@ for (const theme of ["light", "dark"]) {
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(edit).toBeFocused();
     await expect(page.getByText("@oli_estuda", { exact: true })).toHaveCount(0);
-    await expect(page.getByText("ele/dela", { exact: true })).toBeVisible();
+    await expect(
+      page.locator(".profile-cover__handle").getByText("ele/dela", { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
       "https://github.com/oli",

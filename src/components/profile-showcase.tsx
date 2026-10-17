@@ -2,9 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import type { WorkspaceState } from "../domain/workspace";
 import { ProfileProgress } from "./profile-preferences";
-import { NavigationIcon } from "./navigation-icon";
 import { useAccessibility } from "../data/accessibility-preferences";
-import { agendaTimeZone } from "../data/agenda-time-zone";
 import { ProfileEditor, ProfilePaperIcon } from "./profile-editor";
 import { recognizeSocialLink, SOCIAL_LABELS } from "../domain/profile-identity";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -52,15 +50,21 @@ export function ProfileShowcase({
       const start = window.scrollY - distance;
       const availableScroll = document.documentElement.scrollHeight - window.innerHeight - start;
       const reservedHeight = element.nextElementSibling?.getBoundingClientRect().height ?? 398;
-      const range = Math.max(1, Math.min(reservedHeight, availableScroll));
+      const mobile = window.matchMedia?.("(max-width: 600px)").matches ?? window.innerWidth <= 600;
+      const range = Math.max(1, Math.min(mobile ? 168 : reservedHeight, availableScroll));
       const progress = Math.min(1, Math.max(0, distance / range));
       element.style.setProperty(
         "--profile-collapse",
         String(motion?.matches || reduceMotion ? Number(progress > 0.5) : progress),
       );
       element.dataset["compact"] = String(progress >= 1);
-      if (toolbar.current) toolbar.current.dataset["compact"] = String(distance > 32);
-      const mobile = window.matchMedia?.("(max-width: 600px)").matches ?? window.innerWidth <= 600;
+      if (toolbar.current) {
+        toolbar.current.dataset["compact"] = String(distance > 32);
+        toolbar.current.style.setProperty(
+          "--profile-collapse",
+          String(motion?.matches || reduceMotion ? Number(progress > 0.5) : progress),
+        );
+      }
       if (editButton.current) editButton.current.inert = !mobile && progress > 0.2;
       if (coverButton.current) coverButton.current.inert = !mobile && progress > 0.2;
     };
@@ -84,6 +88,18 @@ export function ProfileShowcase({
       <div ref={anchor} className="profile-scroll-anchor" aria-hidden="true" />
       <div ref={toolbar} className="profile-toolbar">
         {children}
+        {!settingsOpen && (
+          <div className="profile-compact-identity" aria-hidden="true">
+            <div>
+              <strong>{name}</strong>
+              {handle.creks && <span className="profile-creks">CREKS</span>}
+            </div>
+            <div>
+              {handle.username && <span>@{handle.username}</span>}
+              {profile.pronouns && <span>{profile.pronouns}</span>}
+            </div>
+          </div>
+        )}
       </div>
       <div ref={chrome} className="profile-chrome" data-settings={settingsOpen}>
         {!settingsOpen && (
@@ -180,10 +196,6 @@ export function ProfileShowcase({
             title="Foto do perfil"
             onClick={() => setChoosingAvatar(true)}
           >
-            <svg className="profile-cover__bridge" viewBox="0 0 96 32" aria-hidden="true">
-              <path fill="var(--line)" d="M0 5h96v8l-6 12-14 7H20L6 25 0 13Z" />
-              <path fill="var(--surface)" d="M0 0h96v8l-6 12-14 7H20L6 20 0 8Z" />
-            </svg>
             <img
               className="profile-cover__avatar"
               draggable={false}
@@ -203,7 +215,7 @@ export function ProfileShowcase({
       {!settingsOpen && <div className="profile-cover-spacer" aria-hidden="true" />}
       {editing && (
         <ProfileEditor
-          profile={{ ...profile, username: handle.username || profile.username || "" }}
+          profile={{ ...profile, name, username: handle.username || profile.username || "" }}
           guest={guest}
           onClose={() => setEditing(false)}
         />
@@ -215,74 +227,11 @@ export function ProfileShowcase({
 }
 
 export function ProfileOverview({ workspace }: { workspace: WorkspaceState }) {
-  const subjectName = (id: string) =>
-    workspace.subjects.find((subject) => subject.id === id)?.name || "Estudo";
-  const activities = [
-    ...workspace.focusSessions.map((session) => ({
-      id: `focus:${session.id}`,
-      completedAt: session.completedAt,
-      title: subjectName(session.subjectId),
-      description: `${session.durationMinutes} min de foco`,
-      icon: "focus" as const,
-    })),
-    ...(workspace.practiceActivities ?? []).map((activity) => ({
-      id: `practice:${activity.id}`,
-      completedAt: activity.completedAt,
-      title: activity.islandName,
-      description: `Prática nas Ilhas: ${activity.correct} de ${activity.answers} respostas certas`,
-      icon: "gamepad" as const,
-    })),
-    ...workspace.quizAttempts.map((attempt) => ({
-      id: `quiz:${attempt.id}`,
-      completedAt: attempt.completedAt,
-      title: subjectName(attempt.subjectId),
-      description: `Questionário: ${attempt.correct} de ${attempt.total} respostas certas`,
-      icon: "learn" as const,
-    })),
-  ]
-    .filter((activity) => Number.isFinite(Date.parse(activity.completedAt)))
-    .sort((a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt))
-    .slice(0, 5);
   return (
     <div className="profile-overview">
       <div className="profile-settings-grid">
         <ProfileProgress workspace={workspace} />
       </div>
-      <section className="profile-activity" aria-labelledby="profile-activity-title">
-        <span className="section-label">Sua trajetória</span>
-        <h2 id="profile-activity-title">Pequenos passos, novas descobertas</h2>
-        {activities.length ? (
-          <ol>
-            {activities.map((activity) => (
-              <li key={activity.id}>
-                <NavigationIcon name={activity.icon} />
-                <div>
-                  <strong>{activity.title}</strong>
-                  <span>{activity.description}</span>
-                </div>
-                <time dateTime={activity.completedAt}>
-                  {new Date(activity.completedAt).toLocaleDateString("pt-BR", {
-                    day: "numeric",
-                    month: "short",
-                    timeZone: agendaTimeZone(),
-                  })}
-                </time>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <div className="profile-activity__empty">
-            <NavigationIcon name="focus" />
-            <p>
-              Suas sessões de foco, práticas nas Ilhas e questionários concluídos vão aparecer aqui.
-            </p>
-          </div>
-        )}
-        <a className="secondary-button" href="/foco">
-          <NavigationIcon name="focus" />
-          Ir para o foco
-        </a>
-      </section>
     </div>
   );
 }

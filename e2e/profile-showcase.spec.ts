@@ -114,10 +114,8 @@ for (const theme of ["light", "dark"]) {
     expect(expandedPhoto!.y + expandedPhoto!.height).toBeGreaterThan(artBox!.y + artBox!.height);
     await expect(page.getByLabel("Conexões do perfil")).toContainText("0 Seguidores0 Seguindo");
     const activityItems = page.locator(".profile-activity li");
-    await expect(activityItems).toHaveCount(5);
-    await expect(activityItems.nth(0)).toContainText("Prática nas Ilhas: 8 de 10 respostas certas");
-    await expect(activityItems.nth(1)).toContainText("Questionário: 3 de 4 respostas certas");
-    await expect(activityItems.nth(2)).toContainText("25 min de foco");
+    await expect(activityItems).toHaveCount(0);
+    await expect(page.getByText("Sua trajetória", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveText("");
     await expect(
       page.getByRole("heading", { name: "O estudo que você já construiu" }),
@@ -137,6 +135,11 @@ for (const theme of ["light", "dark"]) {
       );
       await expect.poll(async () => (await chrome.boundingBox())?.y).toBeCloseTo(0, 0);
     } else {
+      await expect(page.locator(".profile-compact-identity")).toHaveCSS("opacity", "1");
+      await expect(page.locator(".profile-compact-identity")).toHaveText("GuestEla/dela");
+      await expect(
+        page.locator(".profile-compact-identity img, .profile-compact-identity nav"),
+      ).toHaveCount(0);
       await expect
         .poll(async () => (await page.locator(".profile-toolbar").boundingBox())?.y)
         .toBeCloseTo(0, 0);
@@ -187,7 +190,7 @@ for (const theme of ["light", "dark"]) {
 test("perfil vazio também se recolhe em tela alta e respeita movimento reduzido do app", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1440, height: 1080 });
+  await page.setViewportSize({ width: 1440, height: 800 });
   const workspace = createInitialWorkspace();
   workspace.focusSessions = [];
   await page.addInitScript((seed) => {
@@ -198,7 +201,7 @@ test("perfil vazio também se recolhe em tela alta e respeita movimento reduzido
   }, workspace);
   await page.goto("/perfil");
   await expect(page.locator("main")).toHaveCSS("opacity", "1");
-  await expect(page.getByText(/questionários concluídos vão aparecer aqui/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "O estudo que você já construiu" })).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "true");
   await expect(page.locator(".profile-chrome")).toHaveCSS("--profile-collapse", "1");

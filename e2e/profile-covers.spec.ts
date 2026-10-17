@@ -22,6 +22,8 @@ for (const theme of ["light", "dark"]) {
     const mobile = page.viewportSize()!.width <= 600;
     if (mobile) {
       const card = await page.locator(".profile-cover").boundingBox();
+      expect(card!.x).toBe(0);
+      expect(card!.width).toBe(page.viewportSize()!.width);
       expect(card!.height).toBeLessThan(520);
       expect((await page.locator(".profile-cover__portrait").boundingBox())!.width).toBe(112);
     }

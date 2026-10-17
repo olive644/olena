@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { ProfileOverview, ProfileShowcase } from "./profile-showcase";
 import { createInitialWorkspace } from "../domain/workspace";
 const serverHandle = vi.hoisted(() => ({ username: "oli", creks: false }));
@@ -29,7 +29,7 @@ it("mostra CREKS apenas da identidade do servidor, não de campos locais", () =>
       {null}
     </ProfileShowcase>,
   );
-  expect(screen.getByText("@oliver644")).toBeTruthy();
+  expect(screen.getAllByText("@oliver644")).toHaveLength(2);
   expect(screen.queryByText("@forjado")).toBeNull();
   expect(screen.getByLabelText("Selo CREKS").className).toBe("profile-creks");
   serverHandle.creks = false;
@@ -51,7 +51,7 @@ it("mostra identidade real com capa compartilhada e uma só foto", () => {
       <button>Configurações</button>
     </ProfileShowcase>,
   );
-  expect(screen.getByText("Andreyna")).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Andreyna" })).toBeTruthy();
   expect(screen.getByRole("img", { name: "Sua foto de perfil" }).getAttribute("src")).toBe(
     "/profile-avatars/andreyna.webp",
   );
@@ -96,7 +96,7 @@ it("conserva nome Guest e mantém ações quando configurações abrem", () => {
       <button>Configurações</button>
     </ProfileShowcase>,
   );
-  expect(screen.getByText("Guest")).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Guest" })).toBeTruthy();
   expect(screen.queryByText("Nome anterior")).toBeNull();
   rerender(
     <ProfileShowcase nameFallback="Guest" guest settingsOpen>
@@ -107,7 +107,7 @@ it("conserva nome Guest e mantém ações quando configurações abrem", () => {
   expect(screen.getByRole("button", { name: "Fechar configurações" })).toBeTruthy();
 });
 
-it("mostra somente as cinco sessões reais mais recentes sem alterar workspace", () => {
+it("remove trajetória sem alterar as sessões reais do workspace", () => {
   const workspace = createInitialWorkspace();
   workspace.focusSessions = Array.from({ length: 7 }, (_, index) => ({
     id: String(index),
@@ -118,8 +118,9 @@ it("mostra somente as cinco sessões reais mais recentes sem alterar workspace",
   const before = JSON.stringify(workspace);
   const { container } = render(<ProfileOverview workspace={workspace} />);
   const items = container.querySelectorAll(".profile-activity li");
-  expect(items).toHaveLength(5);
-  expect(items[0]?.textContent).toContain("26 min de foco");
+  expect(items).toHaveLength(0);
+  expect(screen.queryByText("Sua trajetória")).toBeNull();
+  expect(screen.getByRole("heading", { name: "O estudo que você já construiu" })).toBeTruthy();
   expect(JSON.stringify(workspace)).toBe(before);
 });
 
@@ -127,12 +128,12 @@ it("não inventa atividade quando não há sessões", () => {
   const workspace = createInitialWorkspace();
   workspace.focusSessions = [];
   render(<ProfileOverview workspace={workspace} />);
-  expect(screen.getByText(/questionários concluídos vão aparecer aqui/)).toBeTruthy();
+  expect(screen.queryByText(/questionários concluídos vão aparecer aqui/)).toBeNull();
   expect(screen.queryByRole("list")).toBeNull();
-  expect(screen.getByRole("link", { name: "Ir para o foco" }).getAttribute("href")).toBe("/foco");
+  expect(screen.queryByRole("link", { name: "Ir para o foco" })).toBeNull();
 });
 
-it("intercala foco, Ilhas e questionários por instante, com limite global de cinco", () => {
+it("preserva foco, Ilhas e questionários sem exibir a trajetória", () => {
   const workspace = createInitialWorkspace();
   const subjectId = workspace.subjects[0]!.id;
   workspace.focusSessions = Array.from({ length: 5 }, (_, index) => ({
@@ -163,10 +164,7 @@ it("intercala foco, Ilhas e questionários por instante, com limite global de ci
   const before = JSON.stringify(workspace);
   const { container } = render(<ProfileOverview workspace={workspace} />);
   const items = container.querySelectorAll(".profile-activity li");
-  expect(items).toHaveLength(5);
-  expect(items[0]?.textContent).toContain("MatemáticaPrática nas Ilhas: 8 de 10 respostas certas");
-  expect(items[1]?.textContent).toContain("EstudoQuestionário: 0 de 4 respostas certas");
-  expect(items[2]?.textContent).toContain("25 min de foco");
+  expect(items).toHaveLength(0);
   expect(JSON.stringify(workspace)).toBe(before);
 });
 
@@ -184,6 +182,34 @@ it("mostra questionário sem foco e aceita workspace antigo sem práticas", () =
     },
   ];
   const { container } = render(<ProfileOverview workspace={workspace} />);
-  expect(container.querySelectorAll(".profile-activity li")).toHaveLength(1);
-  expect(screen.getByText("Questionário: 2 de 3 respostas certas")).toBeTruthy();
+  expect(container.querySelectorAll(".profile-activity li")).toHaveLength(0);
+  expect(screen.queryByText("Questionário: 2 de 3 respostas certas")).toBeNull();
+});
+
+it("preenche o editor com o mesmo nome da conta exibido na capa", () => {
+  render(
+    <ProfileShowcase nameFallback="Nome da conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Editar perfil" }));
+  expect(screen.getByLabelText("Nome")).toHaveProperty("value", "Nome da conta");
+});
+
+it("barra compacta contém só identidade, com tag no nome e pronomes junto ao @", () => {
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({ name: "Oli", pronouns: "Ele/dele", bio: "Bio fora da barra" }),
+  );
+  serverHandle.creks = true;
+  const { container } = render(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  const compact = container.querySelector(".profile-compact-identity")!;
+  expect(compact.children[0]?.textContent).toBe("OliCREKS");
+  expect(compact.children[1]?.textContent).toBe("@oliEle/dele");
+  expect(compact.querySelector("img, button, nav")).toBeNull();
+  expect(compact.textContent).not.toContain("Bio fora da barra");
 });
