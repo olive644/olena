@@ -59,7 +59,7 @@ import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
-import { canonicalShape, recognizeShape } from "./handwriting-shapes";
+import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
@@ -77,6 +77,11 @@ import {
   moveTextFrame as shiftTextFrame,
   type SelectionScene,
 } from "./handwriting-selection-scene";
+import {
+  combineWithRecentLines,
+  pruneRecentLines,
+  type RecentLine,
+} from "./handwriting-multi-stroke";
 import { MAX_CONTROL_POINTS, dedupeControls, splinePoints } from "./handwriting-spline";
 import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
 import {} from "./handwriting-selection-ops";
@@ -369,6 +374,10 @@ export function HandwritingStudio({
   // rabisco e o resto do gesto é ignorado até a caneta ser solta.
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const shapeSnappedRef = useRef(false);
+  // Tipo da forma em que o "segurar para acertar" transformou o traço de agora, e as retas
+  // acertadas há pouco: uma nova reta pode fechar com elas um triângulo ou um retângulo.
+  const shapeKindRef = useRef<ShapeKind | null>(null);
+  const recentLinesRef = useRef<RecentLine[]>([]);
   // Ponta prevista pelo navegador: só é desenhada na tela, nunca entra no traço.
   const predictedRef = useRef<HandwritingPoint[]>([]);
   // Ponto onde a caneta paira sem tocar a folha (prévia da ponta); nulo quando não paira,
@@ -1387,6 +1396,7 @@ export function HandwritingStudio({
         : null;
     clearTimeout(holdTimerRef.current);
     shapeSnappedRef.current = false;
+    shapeKindRef.current = null;
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
     if (effectiveTool !== "ruler") {
       paintLive();
@@ -1545,6 +1555,7 @@ export function HandwritingStudio({
     liveStabilizerRef.current = null;
     predictedRef.current = [];
     shapeSnappedRef.current = true;
+    shapeKindRef.current = shape.kind;
     scheduleLivePaint();
   }
 
@@ -1670,8 +1681,28 @@ export function HandwritingStudio({
         y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
       })),
     );
-    commitLiveStroke({ ...liveStroke, points });
-    setStrokes((current) => [...current, { ...liveStroke, points }]);
+    const finished: Stroke = { ...liveStroke, points };
+    // Reta acertada de propósito: pode fechar uma forma com as retas acertadas logo antes. Tudo
+    // acontece neste mesmo gesto, então um passo de desfazer volta ao que havia antes desta reta.
+    const snappedLine = shapeSnappedRef.current && shapeKindRef.current === "line";
+    const now = performance.now();
+    const recent = pruneRecentLines(recentLinesRef.current, now, strokes);
+    const combined = snappedLine
+      ? combineWithRecentLines(strokes, recent, finished, strokeId)
+      : null;
+    if (combined) {
+      recentLinesRef.current = [];
+      commitLiveStroke(combined.stroke);
+      const removed = new Set(combined.remove);
+      setStrokes((current) => [
+        ...current.filter((stroke) => !removed.has(stroke.id)),
+        combined.stroke,
+      ]);
+      return;
+    }
+    recentLinesRef.current = snappedLine ? [...recent, { id: finished.id, time: now }] : [];
+    commitLiveStroke(finished);
+    setStrokes((current) => [...current, finished]);
   }
 
   function settleLiveStroke(points: HandwritingPoint[]): HandwritingPoint[] {
