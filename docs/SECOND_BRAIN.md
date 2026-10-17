@@ -645,6 +645,11 @@ a fila uma vez por frame e a escoa em pointerup. Testar mouse, pen e touch em
 `handwriting-area-ink.spec.ts`; percentuais, pastas e tema em
 `notebook-folders-ink.spec.ts`. Nenhuma medição sintética promete latência física.
 
+Estilo da linha: `HandwritingStroke.dash` (`dashed` ou `dotted`, ausente é contínua) vale só para a
+caneta e é desenhado por `drawStroke` com espessura constante e o padrão de `dashPattern`. A
+borracha e `strokeInkBounds` usam a mesma espessura. Teste em `handwriting-dash-style.test.ts` e
+`handwriting-dash.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita

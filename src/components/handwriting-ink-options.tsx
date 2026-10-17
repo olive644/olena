@@ -1,4 +1,4 @@
-import type { HandwritingTool } from "./handwriting-types";
+import type { HandwritingTool, Stroke } from "./handwriting-types";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { PaperObjectIcon } from "./paper-object-icon";
 
@@ -12,7 +12,15 @@ type HandwritingInkOptionsProps = {
   onEraserWholeStrokeChange?: (wholeStroke: boolean) => void;
   highlighterOpacity?: number;
   onHighlighterOpacityChange?: (opacity: number) => void;
+  dash?: Stroke["dash"];
+  onDashChange?: (dash: Stroke["dash"]) => void;
 };
+
+const DASH_CHOICES = [
+  [undefined, "Contínua", "Linha contínua", ""],
+  ["dashed", "Tracejada", "Linha tracejada", "9 8"],
+  ["dotted", "Pontilhada", "Linha pontilhada", "0.1 9"],
+] as const;
 
 export function HandwritingInkOptions({
   tool,
@@ -24,6 +32,8 @@ export function HandwritingInkOptions({
   onEraserWholeStrokeChange,
   highlighterOpacity = 0.3,
   onHighlighterOpacityChange,
+  dash,
+  onDashChange,
 }: HandwritingInkOptionsProps) {
   const percentage = Math.max(0, Math.min(100, Math.round(((width - 0.5) / 39.5) * 100)));
   return (
@@ -105,6 +115,32 @@ export function HandwritingInkOptions({
               onChange={(event) => onHighlighterOpacityChange(Number(event.target.value) / 100)}
             />
           </label>
+        </fieldset>
+      )}
+      {tool === "pen" && onDashChange && (
+        <fieldset className="stroke-palette dash-palette">
+          <legend>Estilo da linha</legend>
+          {DASH_CHOICES.map(([value, label, description, pattern]) => (
+            <button
+              type="button"
+              key={label}
+              aria-label={description}
+              aria-pressed={dash === value}
+              onClick={() => onDashChange(value)}
+            >
+              <svg viewBox="0 0 64 24" aria-hidden="true">
+                <path
+                  d="M6 12H58"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  {...(pattern ? { strokeDasharray: pattern } : {})}
+                />
+              </svg>
+              <span>{label}</span>
+            </button>
+          ))}
         </fieldset>
       )}
       <fieldset className="stroke-palette">
