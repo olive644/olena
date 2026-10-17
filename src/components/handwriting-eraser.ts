@@ -119,7 +119,7 @@ export function eraseStrokeArea(
   }
   if (!touches) return [stroke];
   const radii =
-    stroke.tool === "highlighter"
+    stroke.tool === "highlighter" || stroke.cover
       ? stroke.points.map(() => stroke.width / 2)
       : stroke.brush === "fine" || stroke.dash
         ? stroke.points.map(() => (stroke.width * 0.65) / 2)
@@ -194,7 +194,7 @@ function strokeIntersectsErase(
   }
   if (!touches) return false;
   const radii =
-    stroke.tool === "highlighter"
+    stroke.tool === "highlighter" || stroke.cover
       ? stroke.points.map(() => stroke.width / 2)
       : stroke.brush === "fine" || stroke.dash
         ? stroke.points.map(() => (stroke.width * 0.65) / 2)

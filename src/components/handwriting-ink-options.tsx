@@ -10,6 +10,11 @@ type HandwritingInkOptionsProps = {
   onWidthChange: (width: number) => void;
   eraserWholeStroke?: boolean;
   onEraserWholeStrokeChange?: (wholeStroke: boolean) => void;
+  // Terceiro modo da borracha: apaga só o fundo importado. Só funciona com página ou imagem
+  // importada na folha, por isso o botão fica desabilitado sem elas.
+  eraserBackground?: boolean;
+  onEraserBackgroundChange?: (background: boolean) => void;
+  backgroundAvailable?: boolean;
   highlighterOpacity?: number;
   onHighlighterOpacityChange?: (opacity: number) => void;
   dash?: Stroke["dash"];
@@ -30,6 +35,9 @@ export function HandwritingInkOptions({
   onWidthChange,
   eraserWholeStroke = false,
   onEraserWholeStrokeChange,
+  eraserBackground = false,
+  onEraserBackgroundChange,
+  backgroundAvailable = false,
   highlighterOpacity = 0.3,
   onHighlighterOpacityChange,
   dash,
@@ -45,8 +53,11 @@ export function HandwritingInkOptions({
             type="button"
             aria-label="Apagar só o trecho tocado"
             title="Apagar só o trecho tocado"
-            aria-pressed={!eraserWholeStroke}
-            onClick={() => onEraserWholeStrokeChange(false)}
+            aria-pressed={!eraserWholeStroke && !eraserBackground}
+            onClick={() => {
+              onEraserBackgroundChange?.(false);
+              onEraserWholeStrokeChange(false);
+            }}
           >
             <PaperObjectIcon name="eraseArea" />
             <span>Trecho</span>
@@ -55,12 +66,32 @@ export function HandwritingInkOptions({
             type="button"
             aria-label="Apagar o traço inteiro"
             title="Apagar o traço inteiro"
-            aria-pressed={eraserWholeStroke}
-            onClick={() => onEraserWholeStrokeChange(true)}
+            aria-pressed={eraserWholeStroke && !eraserBackground}
+            onClick={() => {
+              onEraserBackgroundChange?.(false);
+              onEraserWholeStrokeChange(true);
+            }}
           >
             <PaperObjectIcon name="eraseStroke" />
             <span>Traço inteiro</span>
           </button>
+          {onEraserBackgroundChange && (
+            <button
+              type="button"
+              aria-label="Apagar só o fundo importado"
+              title={
+                backgroundAvailable
+                  ? "Apagar só o fundo importado (página ou imagem), sem tocar na tinta"
+                  : "Disponível quando a folha tem uma página ou imagem importada"
+              }
+              aria-pressed={eraserBackground && backgroundAvailable}
+              disabled={!backgroundAvailable}
+              onClick={() => onEraserBackgroundChange(true)}
+            >
+              <PaperObjectIcon name="eraseBackground" />
+              <span>Fundo</span>
+            </button>
+          )}
         </fieldset>
       )}
       {tool !== "eraser" && (
