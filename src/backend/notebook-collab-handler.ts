@@ -29,6 +29,24 @@ import { safeEqual } from "./secure-compare.js";
 
 const MAX_REQUEST_BYTES = 900_000;
 
+// A regex do data URL só prova o formato do texto. Conferir a assinatura dos primeiros bytes
+// impede guardar por 7 dias qualquer coisa que apenas se declare imagem.
+function hasImageSignature(dataUrl: string): boolean {
+  const comma = dataUrl.indexOf(",");
+  const head = Buffer.from(dataUrl.slice(comma + 1, comma + 17), "base64");
+  const mime = /^data:image\/(png|jpeg|webp);/.exec(dataUrl)?.[1];
+  if (mime === "png")
+    return head.length >= 8 && head.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex"));
+  if (mime === "jpeg")
+    return head.length >= 3 && head.subarray(0, 3).equals(Buffer.from("ffd8ff", "hex"));
+  return (
+    mime === "webp" &&
+    head.length >= 12 &&
+    head.subarray(0, 4).toString("latin1") === "RIFF" &&
+    head.subarray(8, 12).toString("latin1") === "WEBP"
+  );
+}
+
 export type NotebookCollabHandlerDependencies = {
   store: KvStore;
   // Recebem o identificador público secreto do caderno, nunca o código curto (cadernos novos).
@@ -46,7 +64,11 @@ export type NotebookCollabHandlerDependencies = {
   randomPublicId?(): string;
   randomId?(): string;
   guard?(request: Request): Promise<Response | undefined>;
-  authenticate?(request: Request): Promise<{ uid: string; name: string } | undefined>;
+  authenticate?(
+    request: Request,
+  ): Promise<{ uid: string; name: string; anonymous?: boolean } | undefined>;
+  // Cota de criação de links de leitura (por conta e global). Sem ela, não há limite extra.
+  consumeViewCreate?(uid: string): Promise<boolean>;
   identity?: { uid: string; name: string };
   observe?(event: { action: string; status: number; durationMs: number }): void;
 };
@@ -144,7 +166,8 @@ function createAttempt(dependencies: NotebookCollabHandlerDependencies) {
             typeof item["title"] === "string" &&
             item["title"].length <= 200 &&
             typeof item["image"] === "string" &&
-            /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(item["image"])
+            /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(item["image"]) &&
+            hasImageSignature(item["image"])
           );
         })
       )
@@ -451,16 +474,22 @@ export function createNotebookCollabHandler(dependencies: NotebookCollabHandlerD
       const blocked = await dependencies.guard?.(request);
       if (blocked) return blocked;
       const identity =
-        action !== "view-read" && action !== "view-create"
-          ? await dependencies.authenticate?.(request)
-          : undefined;
-      if (
-        dependencies.authenticate &&
-        action !== "view-read" &&
-        action !== "view-create" &&
-        !identity
-      )
-        return jsonResponse(401, { error: "Entre na sua conta para editar este caderno." });
+        action !== "view-read" ? await dependencies.authenticate?.(request) : undefined;
+      if (dependencies.authenticate && action !== "view-read" && !identity)
+        return jsonResponse(401, {
+          error:
+            action === "view-create"
+              ? "Entre na sua conta para criar um link de visualização."
+              : "Entre na sua conta para editar este caderno.",
+        });
+      if (action === "view-create" && identity) {
+        if (identity.anonymous)
+          return jsonResponse(401, {
+            error: "Entre na sua conta para criar um link de visualização.",
+          });
+        if (dependencies.consumeViewCreate && !(await dependencies.consumeViewCreate(identity.uid)))
+          return jsonResponse(429, { error: "Muitos links criados. Tente novamente mais tarde." });
+      }
       for (let attempt = 0; attempt < 40; attempt += 1) {
         try {
           const result = await createAttempt({

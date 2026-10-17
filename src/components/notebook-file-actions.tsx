@@ -4,6 +4,7 @@ import { HelenaLoading } from "./helena-loading";
 import type { StudyNote } from "../domain/workspace";
 import { downloadNotebookPdf } from "../data/notebook-export";
 import { roomAppCheckToken } from "../data/room-app-check";
+import { getFirebaseAccountServices } from "../data/firebase-account";
 import type { ReactNode } from "react";
 
 type Props = {
@@ -67,10 +68,16 @@ export function NotebookFileActions({
         setSelection(null);
       } else {
         const token = await roomAppCheckToken();
+        const accountToken = await getFirebaseAccountServices()
+          .then(({ auth }) => auth.currentUser?.getIdToken())
+          .catch(() => undefined);
+        if (!accountToken)
+          throw new Error("Entre na sua conta para criar um link de visualização.");
         const response = await fetch("/api/notebook-collab?action=view-create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${accountToken}`,
             ...(token ? { "X-Firebase-AppCheck": token } : {}),
           },
           body: JSON.stringify({ pages: ready }),

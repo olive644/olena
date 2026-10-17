@@ -2,3 +2,9 @@
 # A constante foi renomeada (PRIVACY_CONSENT_ITEM); a impressão digital abaixo é do commit antigo,
 # que continua no histórico da branch e não pode ser reescrito.
 ca4ff273971c9b31c11a830b4e7a162239778f4f:src/domain/privacy-policy.ts:generic-api-key:5
+
+# Falso positivo conhecido do gitleaks: a lista de nomes de chave sincronizados (codificados em
+# base64) nas regras de users/$uid do Firebase, não um segredo. Os nomes saem de
+# SYNCED_STORAGE_KEYS e são públicos no código. A impressão digital é do commit que introduziu
+# a linha, que continua no histórico da branch e não pode ser reescrito.
+ee79bb74e804694242398fc5c251dc5756ce4bbb:firebase-room.rules.json:generic-api-key:41
