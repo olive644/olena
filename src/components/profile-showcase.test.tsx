@@ -259,6 +259,24 @@ it("concede GALAXIA e BETA TESTER somente ao @dreyxnn confirmado", () => {
   expect(screen.queryByLabelText("Selo DEV")).toBeNull();
 });
 
+it("concede CREKS ao @miauyw apenas após confirmar o @, não pelo cache local", () => {
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ username: "miauyw" }));
+  const { rerender } = render(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
+  serverHandle.username = "miauyw";
+  rerender(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.getAllByLabelText("Selo CREKS")).toHaveLength(2);
+  expect(screen.queryByLabelText("Selo BETA TESTER")).toBeNull();
+});
+
 it.each(["eito", "pranksterbrain"])(
   "concede CREKS e BETA TESTER ao @%s confirmado, sem herdar DEV ou GALAXIA",
   (username) => {

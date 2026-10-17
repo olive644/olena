@@ -28,6 +28,8 @@ export function useStoredProfile() {
     const refresh = () => setProfile(readStoredProfile());
     window.addEventListener(SYNCED_STORAGE_EVENT, refresh);
     window.addEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
+    // Captura também uma aplicação ocorrida entre o render e a assinatura.
+    refresh();
     return () => {
       window.removeEventListener(SYNCED_STORAGE_EVENT, refresh);
       window.removeEventListener(SYNCED_STORAGE_APPLIED_EVENT, refresh);
