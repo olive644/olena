@@ -798,7 +798,9 @@ antes de devolver o código da sala, evitando convites para uma folha ainda não
 O editor usa `NotebookFileActions` para salvar, exportar seleção e criar links de leitura.
 `?notebook-view=<token>` abre `NotebookReader`, sem ferramentas de edição. A API
 `notebook-collab` aceita `view-create` e `view-read`, guarda cópias por sete dias e limita
-criação a seis pedidos por minuto por endereço. O cron existente também limpa
+criação a seis pedidos por minuto por endereço. Desde 2026-10-17, `view-create` exige conta
+autenticada (não anônima), confere a assinatura real do arquivo (PNG, JPEG ou WebP) e tem cota
+de 5 por hora e 10 por dia por conta, mais 300 por dia no total. `view-read` continua público. O cron existente também limpa
 `notebook-collab` e `notebook-views`; seus índices nas regras Firebase foram publicados
 em 2026-10-02.
 
@@ -1389,3 +1391,7 @@ do UID autenticado. Contrato e ameaças: PROFILE_COMPLETION_API.md.
 ProfileShowcase escolhe uma só posição para ProfileJourney por matchMedia (1000px). Não duplicar a mesma árvore JSX em slots ocultos. Identidade pendente usa mensagem neutra, sem pedir campos já salvos. Perfil preenchido não apresenta passos para completar; conferência da API fica em segundo plano.
 
 SystemUpdates apresenta o toast social em document.body, fora de ancestrais transformados. useSocialFeed compartilha consultas e atualiza a cada dez segundos com aba visível e em visibilitychange. Manter intervalo acima do cache de dois segundos e abaixo do limite existente de trinta consultas/minuto por conta.
+
+## Limites de abuso (2026-10-17)
+
+Limites por endereço usam `clientAddress` (cabeçalho `x-vercel-forwarded-for`, IPv6 agrupado em /64). A voz individual (`/api/speech`) passa pelo mesmo guarda das salas e tem limites por minuto, por dia e um teto global diário (`src/backend/speech-quota.ts`). A Helena exige conta não anônima. Ao criar uma ação nova que gasta recurso pago, defina limite por quem chama e um teto global.

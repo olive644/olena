@@ -60,7 +60,9 @@ describe("regras de /users/<uid>", () => {
   });
   it("continuam limitando leitura e escrita ao próprio usuário autenticado", () => {
     expect(user[".read"]).toBe("auth != null && auth.uid === $uid");
-    expect(user[".write"]).toBe("auth != null && auth.uid === $uid");
+    expect(user[".write"]).toBe(
+      "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider != 'anonymous'",
+    );
   });
 
   it("só aceitam o nó state, com version e updatedAt (items é opcional: o Firebase descarta objeto vazio)", () => {
@@ -75,7 +77,35 @@ describe("regras de /users/<uid>", () => {
   it("cada item é um texto limitado, com nome de chave comum", () => {
     const rule = user.state.items.$key[".validate"];
     expect(rule).toContain("newData.isString()");
-    expect(rule).toMatch(/newData\.val\(\)\.length <= \d+/);
+    expect(rule).toMatch(/newData\.val\(\)\.length <= /);
+  });
+
+  it("só aceitam as chaves sincronizadas conhecidas, nas duas versões, e rejeitam o resto", () => {
+    const modern = rules.rules.users.$uid["stateV2"] as {
+      items: { $key: { ".validate": string } };
+    };
+    const keyPattern = (rule: string) => new RegExp(/matches\(\/(.+?)\/\)/.exec(rule)![1]!);
+    const legacyPattern = keyPattern(user.state.items.$key[".validate"]);
+    const modernPattern = keyPattern(modern.items.$key[".validate"]);
+    for (const name of SYNCED_STORAGE_KEYS) expect(legacyPattern.test(name)).toBe(true);
+    const wires = Object.keys(
+      encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.map((name) => [name, "v"]))),
+    );
+    expect(wires).toHaveLength(SYNCED_STORAGE_KEYS.length);
+    for (const wire of wires) expect(modernPattern.test(wire)).toBe(true);
+    for (const intruso of ["k_aaaa", "k_" + "A".repeat(98), "lixo", "x.y.z"]) {
+      expect(modernPattern.test(intruso)).toBe(false);
+      expect(legacyPattern.test(intruso)).toBe(false);
+    }
+  });
+
+  it("limita cada item (só a folha de trabalho passa de 5 milhões) e bloqueia contas anônimas", () => {
+    const modern = rules.rules.users.$uid["stateV2"] as {
+      items: { $key: { ".validate": string } };
+    };
+    const workspaceWire = Object.keys(encodeCloudItems({ [SYNCED_STORAGE_KEYS[0]]: "v" }))[0]!;
+    expect(modern.items.$key[".validate"]).toContain(`'${workspaceWire}') ? 20000000 : 5000000`);
+    expect(user[".write"]).toContain("auth.token.firebase.sign_in_provider != 'anonymous'");
   });
 
   it("aceitam o nome de toda chave que o aplicativo sincroniza hoje", () => {
@@ -85,10 +115,8 @@ describe("regras de /users/<uid>", () => {
     for (const key of SYNCED_STORAGE_KEYS) expect(pattern.test(key)).toBe(true);
     for (const key of Object.keys(
       encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.map((name) => [name, "value"]))),
-    )) {
-      expect(pattern.test(key)).toBe(true);
+    ))
       expect(key).not.toMatch(/[.$#[\]/]/);
-    }
     expect(pattern.test("a".repeat(101))).toBe(false);
     expect(pattern.test("com/barra")).toBe(false);
     expect(pattern.test("")).toBe(false);

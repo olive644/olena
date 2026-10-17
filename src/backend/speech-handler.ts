@@ -109,14 +109,16 @@ export function createSpeechHandler(dependencies: SpeechHandlerDependencies) {
     }
 
     scope = payload.roomCode ? "room" : "individual";
+    // O mesmo guarda (App Check quando exigido e limite por endereço) vale para a voz
+    // individual: ela chama o provedor pago sem login.
+    try {
+      const blocked = await dependencies.guardRoomRequest?.(request);
+      if (blocked) return finish(blocked);
+    } catch {
+      return finish(jsonError(503, "A proteção da voz está indisponível."));
+    }
     if (payload.roomCode) {
       if (payload.rate !== 1) return finish(jsonError(400, "A velocidade da voz da sala é fixa."));
-      try {
-        const blocked = await dependencies.guardRoomRequest?.(request);
-        if (blocked) return finish(blocked);
-      } catch {
-        return finish(jsonError(503, "A proteção da sala está indisponível."));
-      }
       if (!dependencies.authorizeRoom)
         return finish(jsonError(503, "A voz da sala está indisponível."));
       try {

@@ -140,11 +140,23 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
   await editor.getByRole("button", { name: "Link de visualização" }).click();
   const share = page.getByRole("dialog", { name: "Link de visualização" });
   await expect(share).toBeVisible();
+  // Sem login, criar o link orienta a entrar e não envia nenhuma folha.
   await share.getByRole("button", { name: "Criar link" }).click();
-  const link = share.getByRole("textbox", { name: "Link somente para leitura" });
-  await expect(link).toHaveValue(/notebook-view=/);
+  await expect(
+    share.getByText("Entre na sua conta para criar um link de visualização."),
+  ).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("link-de-leitura.png") });
-  const url = await link.inputValue();
+  // A leitura continua pública: um link criado por uma conta abre sem login.
+  const created = await handler(
+    new Request("https://helena.example/api/notebook-collab?action=view-create", {
+      method: "POST",
+      body: JSON.stringify({
+        pages: [{ title: "Folha", image: `data:image/png;base64,${ONE_PIXEL_PNG}` }],
+      }),
+    }),
+  );
+  const { token } = (await created.json()) as { token: string };
+  const url = `/?notebook-view=${token}`;
   await page.goto(url);
   await expect(page.getByRole("heading", { name: "Folhas compartilhadas" })).toBeVisible();
   await expect(page.locator(".notebook-reader img")).toHaveCount(1);
@@ -157,6 +169,10 @@ test("salva automaticamente e compartilha uma cópia somente para leitura", asyn
     )
     .toBeGreaterThan(0);
 });
+
+// PNG 1x1 real: o servidor confere a assinatura do arquivo antes de guardar o link.
+const ONE_PIXEL_PNG =
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 
 function twoPagePdf() {
   const streams = ["1 0 0 rg 0 0 300 400 re f", "0 0 1 rg 0 0 300 400 re f"];

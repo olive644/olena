@@ -20,14 +20,14 @@
     "users": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider != 'anonymous'",
         "state": {
           ".validate": "newData.hasChildren(['version', 'updatedAt'])",
           "version": { ".validate": "newData.isNumber()" },
           "updatedAt": { ".validate": "newData.isNumber()" },
           "items": {
             "$key": {
-              ".validate": "$key.matches(/^[A-Za-z0-9._:-]{1,100}$/) && newData.isString() && newData.val().length <= 20000000"
+              ".validate": "$key.matches(/^(helenastudy\\.workspace\\.v1|helenastudy\\.theme|helena\\.onboarding\\.v1|helena\\.profile\\.v1|helena\\.soloProgress|helena\\.mathLearning\\.v1|helena\\.mathLearning\\.v2|helena\\.mathGame\\.v3|helena\\.mathGame\\.v4|helena\\.mathGame\\.v5|helena\\.mathPlaceRewards\\.v1|helena-study:word-frequency:v1|noteoli\\.pomodoro-streak\\.v1|helena\\.notebookPreferences\\.v1|helena\\.systemUpdates\\.read\\.v1|olena\\.focus-session\\.v1|helena\\.agendaTimeZone\\.v1)$/) && newData.isString() && newData.val().length <= (($key === 'helenastudy.workspace.v1') ? 20000000 : 5000000)"
             }
           },
           "$other": { ".validate": false }
@@ -38,7 +38,7 @@
           "updatedAt": { ".validate": "newData.isNumber()" },
           "items": {
             "$key": {
-              ".validate": "$key.matches(/^k_[A-Za-z0-9_-]{1,98}$/) && newData.isString() && newData.val().length <= 20000000"
+              ".validate": "$key.matches(/^(k_aGVsZW5hc3R1ZHkud29ya3NwYWNlLnYx|k_aGVsZW5hc3R1ZHkudGhlbWU|k_aGVsZW5hLm9uYm9hcmRpbmcudjE|k_aGVsZW5hLnByb2ZpbGUudjE|k_aGVsZW5hLnNvbG9Qcm9ncmVzcw|k_aGVsZW5hLm1hdGhMZWFybmluZy52MQ|k_aGVsZW5hLm1hdGhMZWFybmluZy52Mg|k_aGVsZW5hLm1hdGhHYW1lLnYz|k_aGVsZW5hLm1hdGhHYW1lLnY0|k_aGVsZW5hLm1hdGhHYW1lLnY1|k_aGVsZW5hLm1hdGhQbGFjZVJld2FyZHMudjE|k_aGVsZW5hLXN0dWR5OndvcmQtZnJlcXVlbmN5OnYx|k_bm90ZW9saS5wb21vZG9yby1zdHJlYWsudjE|k_aGVsZW5hLm5vdGVib29rUHJlZmVyZW5jZXMudjE|k_aGVsZW5hLnN5c3RlbVVwZGF0ZXMucmVhZC52MQ|k_b2xlbmEuZm9jdXMtc2Vzc2lvbi52MQ|k_aGVsZW5hLmFnZW5kYVRpbWVab25lLnYx)$/) && newData.isString() && newData.val().length <= (($key === 'k_aGVsZW5hc3R1ZHkud29ya3NwYWNlLnYx') ? 20000000 : 5000000)"
             }
           },
           "$other": { ".validate": false }
