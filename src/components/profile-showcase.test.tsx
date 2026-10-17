@@ -2,6 +2,16 @@ import { afterEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { ProfileOverview, ProfileShowcase } from "./profile-showcase";
 import { createInitialWorkspace } from "../domain/workspace";
+import { profileCompletion, type ProfileCompletion } from "../domain/profile-completion";
+const recommendation = vi.hoisted(() => ({
+  completion: undefined as ProfileCompletion | undefined,
+}));
+vi.mock("../hooks/use-profile-completion", () => ({
+  useProfileCompletion: () => ({
+    status: recommendation.completion ? "confirmed" : "pending",
+    completion: recommendation.completion,
+  }),
+}));
 const serverHandle = vi.hoisted(() => ({ username: "oli", creks: false }));
 vi.mock("../hooks/use-social-feed", () => ({
   useSocialFeed: () => ({ self: { followers: 0, following: 0 } }),
@@ -16,11 +26,13 @@ vi.mock("../hooks/use-profile-handle", () => ({
 afterEach(() => {
   serverHandle.username = "oli";
   serverHandle.creks = false;
+  recommendation.completion = undefined;
   cleanup();
   localStorage.clear();
   vi.restoreAllMocks();
 });
 it.each([390, 1440])("monta somente uma jornada na largura %i", (width) => {
+  recommendation.completion = profileCompletion({}, "oli");
   vi.stubGlobal("innerWidth", width);
   const { container } = render(
     <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
@@ -32,6 +44,37 @@ it.each([390, 1440])("monta somente uma jornada na largura %i", (width) => {
   );
   expect(container.querySelector(".profile-journey-slot--below") !== null).toBe(width <= 1000);
   expect(container.querySelector(".profile-journey-slot--side") !== null).toBe(width > 1000);
+});
+it("não reserva espaço para jornada carregando, completa ou sem recomendação", () => {
+  const { rerender, container } = render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.queryByRole("region", { name: "Complete seu perfil" })).toBeNull();
+  recommendation.completion = profileCompletion(
+    { name: "Oli", photoUrl: "/profile-avatars/helena.webp", cover: "ocean" },
+    "oli",
+  );
+  rerender(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(container.querySelector('[class^="profile-journey-slot"]')).toBeNull();
+  expect(screen.queryByText("Revisar meu perfil")).toBeNull();
+});
+it("usa as pendências da API, permite dispensar e não mantém espaço vazio", () => {
+  recommendation.completion = profileCompletion({ name: "Oli", cover: "ocean" }, "oli");
+  const { container } = render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.getByRole("button", { name: "Escolher personagem" })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Escolher meu nome" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Dispensar recomendação de perfil" }));
+  expect(container.querySelector('[class^="profile-journey-slot"]')).toBeNull();
 });
 it("mostra CREKS apenas da identidade do servidor, não de campos locais", () => {
   localStorage.setItem(

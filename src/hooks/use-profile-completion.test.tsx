@@ -25,12 +25,12 @@ it("confere novamente quando uma sincronização lenta finalmente termina", asyn
   await act(async () => {
     await vi.advanceTimersByTimeAsync(500);
   });
-  expect(result.current).toBe("offline");
+  expect(result.current.status).toBe("offline");
   rerender({ status: "synced" });
   await act(async () => {
     await vi.advanceTimersByTimeAsync(500);
   });
-  expect(result.current).toBe("confirmed");
+  expect(result.current.status).toBe("confirmed");
 });
 it("cancela tentativas anteriores ao recuperar foco e sair da aba", async () => {
   vi.useFakeTimers();
@@ -53,11 +53,12 @@ it("não bloqueia o primeiro render e confirma em segundo plano", async () => {
   vi.useFakeTimers();
   mocks.request.mockResolvedValue(profileCompletion({}, ""));
   const { result } = renderHook(() => useProfileCompletion({}, "", true));
-  expect(result.current).toBe("pending");
+  expect(result.current.status).toBe("pending");
   await act(async () => {
     await vi.advanceTimersByTimeAsync(500);
   });
-  expect(result.current).toBe("confirmed");
+  expect(result.current.status).toBe("confirmed");
+  expect(result.current.completion).toEqual(profileCompletion({}, ""));
 });
 it("aguarda sincronização sem regredir a etapa e revalida após editar", async () => {
   vi.useFakeTimers();
@@ -71,13 +72,15 @@ it("aguarda sincronização sem regredir a etapa e revalida após editar", async
   await act(async () => {
     await vi.advanceTimersByTimeAsync(500);
   });
-  expect(result.current).toBe("pending");
+  expect(result.current.status).toBe("pending");
   await act(async () => {
     await vi.advanceTimersByTimeAsync(2000);
   });
-  expect(result.current).toBe("confirmed");
+  expect(result.current.status).toBe("confirmed");
+  expect(result.current.completion?.next).toBe("avatar");
   rerender({ name: "Outro" });
-  expect(result.current).toBe("pending");
+  expect(result.current.status).toBe("pending");
+  expect(result.current.completion).toBeUndefined();
 });
 it("não confirma erro de rede e tenta novamente ao recuperar conexão", async () => {
   vi.useFakeTimers();
@@ -88,11 +91,12 @@ it("não confirma erro de rede e tenta novamente ao recuperar conexão", async (
   await act(async () => {
     await vi.advanceTimersByTimeAsync(500);
   });
-  expect(result.current).toBe("offline");
+  expect(result.current.status).toBe("offline");
+  expect(result.current.completion).toBeUndefined();
   await act(async () => {
     window.dispatchEvent(new Event("online"));
   });
-  expect(result.current).toBe("confirmed");
+  expect(result.current.status).toBe("confirmed");
 });
 it("não consulta em modo convidado ou antes de carregar a conta", async () => {
   vi.useFakeTimers();

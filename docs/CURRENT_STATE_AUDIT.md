@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Recomendações apenas quando faltam dados, 2026-10-17
+
+Causa da ficha permanente: ProfileJourney renderizava explicitamente a conclusão com Revisar meu perfil e useProfileCompletion descartava o resultado da API após conferir igualdade, retornando apenas status. Agora o hook disponibiliza o resultado validado para a mesma chave de campos; ProfileShowcase só monta ficha/slot quando a resposta confirmada contém next. ProfileJourney recebe as etapas dessa resposta e retorna null quando complete/next indicam conclusão. Não há cartão de espera, offline ou celebração permanente. Resposta antiga ou divergente continua descartada, sem cobrar dados já preenchidos durante sincronização. X dispensa a recomendação desta abertura; não cria nova preferência remota.
+
+Meu cantinho de ideias removido com seus imports de prévia e CSS específico. Minhas ilhas passa a ocupar toda a coluna. Nenhum caderno, folha, pasta ou Note foi apagado ou alterado. E2E verifica ausência do widget e preservação do acesso pela aba Cadernos.
+
 ## Compatibilidade de notificações do Perfil (2026-10-17)
 
 - Validação: npm run verify com 1904 testes aprovado para a correção do sino; complemento de nomes validado por testes específicos, TypeScript, lint, build e orçamento. Oito E2E de notificações, privacidade e contrato visual das conexões aprovados em desktop e celular. Teste visual usa fixture declarada de layout, sem fingir autenticação ou conexões reais.

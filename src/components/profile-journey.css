@@ -12,8 +12,21 @@
   padding-right: 130px;
   min-height: 75px;
 }
-.profile-journey[data-complete="true"] {
-  min-height: 200px;
+:root body .profile-journey-close {
+  position: absolute;
+  z-index: 2;
+  top: 4px;
+  right: 4px;
+  width: 44px;
+  height: 44px;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.profile-journey-close :is(svg, img) {
+  width: 20px;
+  height: 20px;
 }
 .profile-journey small {
   color: var(--muted);

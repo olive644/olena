@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { StoredProfile } from "../domain/profile-identity";
-import { profileCompletion } from "../domain/profile-completion";
+import { profileCompletion, type ProfileCompletion } from "../domain/profile-completion";
 import { invalidateProfileCompletion, requestProfileCompletion } from "../data/profile-completion";
 
 export function useProfileCompletion(
@@ -16,7 +16,11 @@ export function useProfileCompletion(
     username,
   ]);
   const expected = JSON.stringify(profileCompletion(profile, username));
-  const [state, setState] = useState<{ key: string; status: "confirmed" | "offline" }>();
+  const [state, setState] = useState<{
+    key: string;
+    status: "confirmed" | "offline";
+    completion?: ProfileCompletion;
+  }>();
   useEffect(() => {
     if (!enabled) return;
     let active = true;
@@ -37,7 +41,7 @@ export function useProfileCompletion(
           setState({ key, status: "offline" });
           return;
         }
-        setState({ key, status: "confirmed" });
+        setState({ key, status: "confirmed", completion: result });
       } catch {
         if (active) setState({ key, status: "offline" });
       }
@@ -58,5 +62,9 @@ export function useProfileCompletion(
       window.removeEventListener("focus", retry);
     };
   }, [key, expected, enabled, syncStatus]);
-  return state?.key === key ? state.status : "pending";
+  const current = enabled && state?.key === key ? state : undefined;
+  return {
+    status: current?.status ?? "pending",
+    completion: current?.status === "confirmed" ? current.completion : undefined,
+  };
 }
