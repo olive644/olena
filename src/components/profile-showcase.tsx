@@ -28,6 +28,7 @@ import { ProfileXpBar, ProfileLevelBadge, ProfileStudyWidgets } from "./profile-
 import { ProfileQrIcon } from "./profile-qr-icon";
 import { ProfileJourney } from "./profile-journey";
 import "./profile-journey.css";
+import { useProfileCompletion } from "../hooks/use-profile-completion";
 
 export function ProfileShowcase({
   children,
@@ -116,9 +117,11 @@ export function ProfileShowcase({
     };
   }, [settingsOpen, reduceMotion]);
   const name = guest ? nameFallback : profile.name?.trim() || nameFallback;
+  const verification = useProfileCompletion(profile, handle.username, !guest && presentationReady);
   const completion =
     !guest && presentationReady ? (
       <ProfileJourney
+        verification={verification}
         profile={profile}
         username={handle.username}
         onChoose={(step) => {

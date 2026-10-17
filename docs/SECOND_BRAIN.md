@@ -1375,3 +1375,11 @@ geradas a partir da linguagem do onboarding, sem reutilizar as poses antigas.
 Prompts em PROFILE_JOURNEY_ART.md. Cache de useProfileHandle é somente memória,
 por UID autenticado, com consulta antecipada em AppContent e invalidação por
 PROFILE_HANDLE_CHANGED. Não persistir privilégios em helena.profile.v1.
+
+# Conferência remota de conclusão
+
+profileCompletion é a regra pura compartilhada por card e servidor.
+useProfileCompletion confere a API em segundo plano, trata edição em fila
+sem regredir etapas e repete ao recuperar rede/foco. Cliente não envia campos
+pessoais nem UID. Servidor lê somente o item stateV2 de perfil e a reserva de @
+do UID autenticado. Contrato e ameaças: PROFILE_COMPLETION_API.md.

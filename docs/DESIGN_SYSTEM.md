@@ -272,3 +272,11 @@ movimento reduzido. O card aparece à direita em desktop acima de 1000 px e abai
 do perfil nas demais larguras. No scroll compacto desktop fica invisível e inert.
 Conclusão: FICOU ÓTIMO! Seu perfil está perfeito. Campos pessoais opcionais não
 fazem parte da exigência. Navegação pelas etapas permite revisar escolhas.
+
+# Confirmação das etapas pela Olena
+
+O card preserva a renderização imediata. A pequena linha superior informa
+CONFERINDO COM A OLENA ou CONFIRMAÇÃO PENDENTE enquanto não há confirmação da
+API. Não esconde as escolhas nem regride a etapa durante sincronização.
+A mensagem Seu perfil está perfeito só é confirmada com a leitura do servidor.
+Pronomes, bio e redes continuam opcionais.

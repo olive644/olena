@@ -3,6 +3,26 @@ import { afterEach, expect, it, vi } from "vitest";
 import { ProfileJourney } from "./profile-journey";
 
 afterEach(cleanup);
+it("não anuncia confirmação final sem a conferência da API", () => {
+  const profile = {
+    name: "Oli",
+    photoUrl: "/profile-avatars/helena.webp",
+    cover: "ocean" as const,
+  };
+  const { rerender } = render(
+    <ProfileJourney profile={profile} username="oli" onChoose={vi.fn()} verification="pending" />,
+  );
+  expect(screen.queryByRole("heading", { name: "Seu perfil está perfeito." })).toBeNull();
+  expect(screen.getByText("CONFERINDO COM A OLENA")).toBeTruthy();
+  rerender(
+    <ProfileJourney profile={profile} username="oli" onChoose={vi.fn()} verification="offline" />,
+  );
+  expect(screen.getByText("CONFIRMAÇÃO PENDENTE")).toBeTruthy();
+  rerender(
+    <ProfileJourney profile={profile} username="oli" onChoose={vi.fn()} verification="confirmed" />,
+  );
+  expect(screen.getByRole("heading", { name: "Seu perfil está perfeito." })).toBeTruthy();
+});
 it("encaminha a etapa pendente para o editor correto e não aceita @ não confirmado", () => {
   const choose = vi.fn();
   const { rerender } = render(
