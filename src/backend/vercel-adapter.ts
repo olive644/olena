@@ -2,13 +2,27 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 
 export type VercelRequest = IncomingMessage & { body?: unknown };
 
+// Teto do corpo lido do fluxo: o limite de pedido da própria Vercel (4,5 MB). O maior pedido
+// legítimo (link de leitura do caderno) fica abaixo de 4 MB. Sem teto, um corpo enorme seria
+// acumulado inteiro na memória da função antes de qualquer validação do handler.
+export const MAX_REQUEST_BODY_BYTES = 4_718_592;
+
+export class RequestBodyTooLargeError extends Error {}
+
 async function readBody(request: VercelRequest): Promise<string | undefined> {
   if (request.body !== undefined) {
     return typeof request.body === "string" ? request.body : JSON.stringify(request.body);
   }
+  const declared = Number(request.headers["content-length"]);
+  if (Number.isFinite(declared) && declared > MAX_REQUEST_BODY_BYTES)
+    throw new RequestBodyTooLargeError();
   const chunks: Uint8Array[] = [];
+  let received = 0;
   for await (const chunk of request) {
-    chunks.push(typeof chunk === "string" ? new TextEncoder().encode(chunk) : chunk);
+    const bytes = typeof chunk === "string" ? new TextEncoder().encode(chunk) : chunk;
+    received += bytes.byteLength;
+    if (received > MAX_REQUEST_BODY_BYTES) throw new RequestBodyTooLargeError();
+    chunks.push(bytes);
   }
   return chunks.length === 0 ? undefined : Buffer.concat(chunks).toString("utf8");
 }
@@ -50,7 +64,24 @@ export function createVercelHandler(
     };
     response?.once("close", disconnected);
     try {
-      const result = await handler(await toWebRequest(request, defaultPath, abort.signal));
+      let webRequest: Request;
+      try {
+        webRequest = await toWebRequest(request, defaultPath, abort.signal);
+      } catch (error) {
+        if (!(error instanceof RequestBodyTooLargeError)) throw error;
+        const tooLarge = new Response(JSON.stringify({ error: "Pedido muito grande." }), {
+          status: 413,
+          headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+        });
+        if (!response) return tooLarge;
+        response.statusCode = 413;
+        response.setHeader("Content-Type", "application/json");
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Connection", "close");
+        response.end(await tooLarge.text());
+        return;
+      }
+      const result = await handler(webRequest);
       if (!response) return result;
       response.statusCode = result.status;
       result.headers.forEach((value, name) => {

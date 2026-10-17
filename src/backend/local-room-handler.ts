@@ -250,13 +250,14 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         roundSeconds: (body["settings"] as Partial<LocalRoomSettings>).roundSeconds ?? 30,
       };
       const requestId = typeof body["requestId"] === "string" ? body["requestId"] : "";
-      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      const code = requestId
-        ? Array.from(
-            createHash("sha256").update(requestId).digest().subarray(0, 5),
-            (byte) => alphabet[byte % alphabet.length],
-          ).join("")
-        : randomCode();
+      // O código da sala é sempre aleatório. Um pedido repetido (mesmo requestId) volta à mesma
+      // sala por um registro auxiliar, e não por um código derivado do requestId, que deixaria
+      // quem escolhe o requestId escolher também o código.
+      const requestKey = requestId
+        ? `room-limits/create-${createHash("sha256").update(requestId).digest("hex")}`
+        : "";
+      const mappedCode = requestKey ? await dependencies.store.get(requestKey) : undefined;
+      const code = mappedCode ?? randomCode();
       const existing = await loadRoom(dependencies.store, code);
       if (existing) {
         if (requestId && existing.createRequestId === requestId) {
@@ -283,6 +284,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       });
       if (requestId) state.createRequestId = requestId;
       state.publicId = randomPublicId();
+      if (requestKey) await dependencies.store.set(requestKey, code, ROOM_TTL_SECONDS);
       const publicState = await saveRoom(state);
       return jsonResponse(201, {
         code,

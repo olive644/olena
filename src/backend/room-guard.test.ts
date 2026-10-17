@@ -110,3 +110,18 @@ it("recusa quando o token do App Check é inválido", async () => {
   });
   expect((await guard(request))?.status).toBe(403);
 });
+
+it("avisa uma única vez quando o App Check não é exigido e fica quieto quando é", async () => {
+  const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  const ask = (guard: ReturnType<typeof createRoomGuard>) =>
+    guard(new Request("https://app.example/api/local-room?action=resume"));
+  const open = createRoomGuard(createMemoryRoomStore(), "project", "app", false);
+  await ask(open);
+  await ask(open);
+  expect(warn).toHaveBeenCalledTimes(1);
+  expect(String(warn.mock.calls[0]?.[0])).toContain("app_check_not_enforced");
+  warn.mockClear();
+  await ask(createRoomGuard(createMemoryRoomStore(), "project", "app", true));
+  expect(warn).not.toHaveBeenCalled();
+  warn.mockRestore();
+});
