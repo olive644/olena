@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Conexões e cartão do perfil (2026-10-17)
+
+- Seguidores/Seguindo abrem listas paginadas reais, com visita e perspectiva de quem consulta. Deixar de seguir remove somente o vínculo de saída; remover seguidor remove somente o de entrada e o aviso correspondente, sem notificação de remoção. Confirmação explícita antes de mutações, CAS e isolamento existentes preservados.
+- Apresentação passa a ser natural: ao abrir o próprio perfil após sincronização, nome, personagem oficial e capa são enviados à apresentação social, sem toggle. Confere dono do cache e handle esperado no servidor para evitar publicação na conta trocada. Contas antigas atualizam ao visitar o próprio perfil; não se lê conteúdo privado de terceiros para migrá-las.
+- Cartão reutiliza capa selecionada, QR facetado do Modo Sala e ícones de seta/copiar existentes. Botões creme, sem campo de URL nem avisos/toggles de apresentação. Capas da galeria ocupam o cartão inteiro com nome sobreposto; nenhuma imagem externa ou dependência adicionada.
+
 ## Amigos e compartilhar perfil (2026-10-17)
 
 - Mudança própria de armazenamento remoto, dependente da revisão de Perfil/tinta. API social autenticada reutiliza JWT/accounts:lookup, origem e credenciais existentes. Grafo privado com CAS, seguir/deixar de seguir, visita por @ e avisos reais com seguir de volta. Nome/avatar são opt-in; outros campos da conta não são expostos. Contagens do Perfil usam a resposta da conta.

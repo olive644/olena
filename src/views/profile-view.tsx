@@ -112,6 +112,9 @@ export function ProfileView({
   return (
     <main className="main-content profile-view" id="main-content">
       <ProfileShowcase
+        presentationReady={
+          cloud.ready && cloud.authenticated === true && cloud.status !== "loading"
+        }
         workspace={workspace}
         settingsOpen={settingsOpen}
         guest={guest}

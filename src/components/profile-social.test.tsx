@@ -37,7 +37,7 @@ it("busca, visita um perfil e segue de volta com resultado real da API", async (
           : feed,
   );
   render(<SocialDirectory nameFallback="Alice" onClose={vi.fn()} />);
-  await screen.findByText("Sua apresentação");
+  await screen.findByRole("heading", { name: "Sugestões de amigos" });
   await waitFor(() =>
     expect(screen.getByRole("button", { name: "Buscar" }).hasAttribute("disabled")).toBe(false),
   );
@@ -45,7 +45,7 @@ it("busca, visita um perfil e segue de volta com resultado real da API", async (
   fireEvent.click(screen.getByRole("button", { name: "Buscar" }));
   fireEvent.click(await screen.findByRole("button", { name: "Visitar perfil de @bob" }));
   fireEvent.click(await screen.findByRole("button", { name: "Seguir de volta" }));
-  await screen.findByRole("button", { name: "Deixar de seguir" });
+  await screen.findByRole("button", { name: /^Seguindo$/ });
   expect(mocks.request).toHaveBeenCalledWith({ action: "follow", username: "bob" });
 });
 it("compartilha cartão com identidade local, QR real e link de visita, sem publicar implicitamente", async () => {
@@ -65,8 +65,10 @@ it("compartilha cartão com identidade local, QR real e link de visita, sem publ
     "/profile-avatars/oliver.webp",
   );
   expect(
-    screen.getByRole("img", { name: "QR code do perfil" }).querySelectorAll("path"),
-  ).toHaveLength(2);
+    screen.getByRole("img", { name: "QR code do perfil" }).querySelectorAll("[data-qr-finder]"),
+  ).toHaveLength(3);
+  expect(screen.queryByLabelText("Link do perfil")).toBeNull();
+  expect(screen.queryByText("Sua apresentação")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Copiar link" }));
   await screen.findByText("Link copiado.");
   expect(copy).toHaveBeenCalledWith(expect.stringContaining("/perfil?usuario=alice"));
@@ -93,4 +95,26 @@ it("não inventa sugestões nem apresenta erro técnico quando a conta está ind
     "Entre na conta para adicionar amigos.",
   );
   expect(screen.queryByText("Talvez vocês se conheçam")).toBeNull();
+});
+it("abre seguidores, visita e confirma a remoção antes de alterar a conexão", async () => {
+  mocks.request.mockImplementation(async (action, query) =>
+    action
+      ? feed
+      : {
+          ...feed,
+          connections: {
+            kind: "followers",
+            owner: "alice",
+            people: query?.includes("offset") ? [] : [bob],
+          },
+        },
+  );
+  render(<SocialDirectory initialList="followers" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findByRole("button", { name: "Visitar perfil de @bob" });
+  fireEvent.click(screen.getByRole("button", { name: /^Remover$/ }));
+  expect(mocks.request).not.toHaveBeenCalledWith({ action: "remove-follower", username: "bob" });
+  fireEvent.click(screen.getByRole("button", { name: "Remover seguidor" }));
+  await waitFor(() =>
+    expect(mocks.request).toHaveBeenCalledWith({ action: "remove-follower", username: "bob" }),
+  );
 });

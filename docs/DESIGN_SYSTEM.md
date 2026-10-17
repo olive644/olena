@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil social (2026-10-17): cartão e ficha visitada reutilizam a capa oficial escolhida. QR com marcadores turquesa e estrela central do Modo Sala, preservando zona livre e correção H. Setas amarelas e copiar facetado existentes, botões creme nos dois temas. Capas da galeria preenchem toda a área, com nomes incorporados na base. Listas sociais têm alvos de toque de 44 px, confirmação e estados vazios reais.
+
 Amigos (2026-10-17): CTA Adicionar amigo com pessoa facetada roxa e adição amarela.
 Menu de papel com contatos, busca e Compartilhar perfil; lupa turquesa/coral e
 caderneta amarela próprias. Ficha visitável conserva foto transparente e placas

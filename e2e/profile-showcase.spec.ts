@@ -30,26 +30,32 @@ test("barra comporta cinco redes e dados longos sem cobrir a engrenagem", async 
         return chrome.getAttribute("data-compact");
       })
       .toBe("true");
-    const box = await chrome.boundingBox();
     const portrait = await page.locator(".profile-cover__portrait").boundingBox();
     const bio = await page.locator(".profile-cover__bio").boundingBox();
     expect(
       bio!.y >= portrait!.y + portrait!.height || bio!.x >= portrait!.x + portrait!.width,
     ).toBe(true);
-    const gear = await page
-      .getByRole("button", { name: "Configurações", exact: true })
-      .boundingBox();
-    for (const link of await page
-      .getByRole("navigation", { name: "Redes sociais do perfil" })
-      .getByRole("link")
-      .all()) {
-      const rect = await link.boundingBox();
-      expect(rect!.x).toBeGreaterThanOrEqual(box!.x);
-      expect(rect!.x + rect!.width).toBeLessThanOrEqual(box!.x + box!.width);
-      expect(rect!.y + rect!.height).toBeLessThanOrEqual(box!.y + box!.height);
-      if (width > 600)
-        expect(rect!.y >= gear!.y + gear!.height || rect!.x + rect!.width <= gear!.x).toBe(true);
-    }
+    await expect
+      .poll(() =>
+        page.evaluate((viewportWidth) => {
+          const bounds = document.querySelector(".profile-chrome")!.getBoundingClientRect();
+          const settings = document
+            .querySelector(".profile-settings-toggle")!
+            .getBoundingClientRect();
+          return Array.from(document.querySelectorAll(".profile-cover__networks a")).every(
+            (link) => {
+              const rect = link.getBoundingClientRect();
+              return (
+                rect.x >= bounds.x &&
+                rect.right <= bounds.right &&
+                rect.bottom <= bounds.bottom &&
+                (viewportWidth <= 600 || rect.y >= settings.bottom || rect.right <= settings.x)
+              );
+            },
+          );
+        }, width),
+      )
+      .toBe(true);
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
       .toBe(true);

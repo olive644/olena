@@ -15,6 +15,7 @@ import { ProfileCoverDialog } from "./profile-cover-dialog";
 import { profileCover } from "../domain/profile-covers";
 import { FriendIcon } from "./profile-friend-icon";
 import { useSocialFeed } from "../hooks/use-social-feed";
+import { useProfilePresentation } from "../hooks/use-profile-presentation";
 import { HelenaLoading } from "./helena-loading";
 import "./profile-social.css";
 const SocialDirectory = lazy(() =>
@@ -29,23 +30,27 @@ export function ProfileShowcase({
   nameFallback,
   guest = false,
   workspace,
+  presentationReady = true,
 }: {
   children: ReactNode;
   settingsOpen: boolean;
   nameFallback: string;
   guest?: boolean;
   workspace?: WorkspaceState;
+  presentationReady?: boolean;
 }) {
   const [profile] = useStoredProfile();
   const { handle } = useProfileHandle(guest);
   const [editing, setEditing] = useState(false);
   const [choosingAvatar, setChoosingAvatar] = useState(false);
   const [choosingCover, setChoosingCover] = useState(false);
+  const [connectionList, setConnectionList] = useState<"followers" | "following">();
   const [friends, setFriends] = useState<string | undefined>(() => {
     const username = new URLSearchParams(window.location.search).get("usuario");
     return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
   });
   const social = useSocialFeed(!guest && !!handle.username);
+  useProfilePresentation(guest || !presentationReady ? "" : handle.username, nameFallback);
   const friendButton = useRef<HTMLButtonElement>(null);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
@@ -167,7 +172,10 @@ export function ProfileShowcase({
                 ref={friendButton}
                 type="button"
                 className="secondary-button profile-cover__friends"
-                onClick={() => setFriends("")}
+                onClick={() => {
+                  setConnectionList(undefined);
+                  setFriends("");
+                }}
               >
                 <FriendIcon />
                 Adicionar amigo
@@ -196,20 +204,34 @@ export function ProfileShowcase({
                 })}
               </nav>
               <div className="profile-cover__connections" aria-label="Conexões do perfil">
-                <span title="Pessoas que seguem seu perfil">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setConnectionList("followers");
+                    setFriends("");
+                  }}
+                  title="Pessoas que seguem seu perfil"
+                >
                   <ProfilePaperIcon name="followers" />
                   <strong>
                     {social?.self.followers ?? (handle.username && !guest ? "..." : 0)}
                   </strong>{" "}
                   Seguidores
-                </span>
-                <span title="Pessoas que você segue">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setConnectionList("following");
+                    setFriends("");
+                  }}
+                  title="Pessoas que você segue"
+                >
                   <ProfilePaperIcon name="following" />
                   <strong>
                     {social?.self.following ?? (handle.username && !guest ? "..." : 0)}
                   </strong>{" "}
                   Seguindo
-                </span>
+                </button>
                 <div className="profile-cover__streaks" aria-label="Sequências de estudo">
                   {workspace && <ProfileStreaks workspace={workspace} />}
                 </div>
@@ -260,6 +282,7 @@ export function ProfileShowcase({
       {friends !== undefined && (
         <Suspense fallback={<HelenaLoading label="Abrindo amigos" compact />}>
           <SocialDirectory
+            {...(connectionList ? { initialList: connectionList } : {})}
             initialUsername={friends}
             nameFallback={name}
             onClose={() => {

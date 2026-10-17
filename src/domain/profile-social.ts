@@ -7,6 +7,7 @@ export type SocialProfile = {
   followsYou: boolean;
   followed: boolean;
   shared: boolean;
+  cover?: string;
 };
 export type SocialNotice = { person: SocialProfile; at: number; read: boolean };
 export type SocialFeed = {
@@ -15,8 +16,21 @@ export type SocialFeed = {
   results?: SocialProfile[];
   profile?: SocialProfile;
   suggestions?: (SocialProfile & { mutualCount: number })[];
+  connections?: {
+    kind: "followers" | "following";
+    owner: string;
+    people: SocialProfile[];
+    next?: number;
+  };
 };
 export type SocialAction =
-  | { action: "follow" | "unfollow"; username: string }
+  | { action: "follow" | "unfollow" | "remove-follower"; username: string }
   | { action: "read" }
-  | { action: "share"; enabled: boolean; name?: string; photoUrl?: string };
+  | {
+      action: "share";
+      enabled: boolean;
+      name?: string;
+      photoUrl?: string;
+      cover?: string;
+      expectedUsername?: string;
+    };

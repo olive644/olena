@@ -1,10 +1,11 @@
 import { createHash } from "node:crypto";
 import { PROFILE_AVATARS } from "../domain/profile-avatars.js";
+import { PROFILE_COVERS } from "../domain/profile-covers.js";
 import type { SocialFeed, SocialProfile } from "../domain/profile-social.js";
 import type { HandleIdentity, HandleRegistry } from "./profile-handle-handler.js";
 
 type Account = {
-  display?: { name: string; photoUrl: string };
+  display?: { name: string; photoUrl: string; cover?: string };
   following: Record<string, number>;
   notices: Record<string, { at: number; read: boolean }>;
 };
@@ -69,13 +70,17 @@ export function createProfileSocialHandler(options: {
         }
         const fields =
           body["action"] === "share"
-            ? ["action", "enabled", "name", "photoUrl"]
+            ? ["action", "enabled", "name", "photoUrl", "cover", "expectedUsername"]
             : body["action"] === "read"
               ? ["action"]
               : ["action", "username"];
         if (Object.keys(body).some((field) => !fields.includes(field)))
           return reply(400, { error: "Campos não permitidos." });
-        if (!["share", "read", "follow", "unfollow"].includes(String(body["action"])))
+        if (
+          !["share", "read", "follow", "unfollow", "remove-follower"].includes(
+            String(body["action"]),
+          )
+        )
           return reply(400, { error: "Ação inválida." });
         if (
           body["action"] === "share" &&
@@ -87,9 +92,25 @@ export function createProfileSocialHandler(options: {
                 !PROFILE_AVATARS.some((avatar) => avatar.photoUrl === body["photoUrl"]))))
         )
           return reply(400, { error: "Nome ou personagem inválido." });
+        if (
+          body["cover"] !== undefined &&
+          !PROFILE_COVERS.some((item) => item.id === body["cover"])
+        )
+          return reply(400, { error: "Capa inválida." });
+        if (body["expectedUsername"] !== undefined && body["expectedUsername"] !== username)
+          return reply(409, { error: "A conta mudou. Abra seu perfil novamente." });
       }
       const params = new URL(request.url).searchParams;
       const query = params.get("search");
+      const list = params.get("list");
+      const offset = Number(params.get("offset") ?? 0);
+      if (
+        (list !== null && !["followers", "following"].includes(list)) ||
+        !Number.isSafeInteger(offset) ||
+        offset < 0 ||
+        offset > 1000
+      )
+        return reply(400, { error: "Lista inválida." });
       const targetName = request.method === "GET" ? params.get("username") : body["username"];
       if (query !== null && !/^[\p{L}\p{M}\p{N} ._'-]{2,80}$/u.test(query))
         return reply(400, { error: "Busque com pelo menos duas letras do nome ou @." });
@@ -100,7 +121,10 @@ export function createProfileSocialHandler(options: {
         target = Object.keys(handles).find((id) => handles[id]?.username === targetName);
         if (!target) return reply(404, { error: "Perfil não encontrado." });
       }
-      if (["follow", "unfollow"].includes(String(body["action"])) && (!target || target === key))
+      if (
+        ["follow", "unfollow", "remove-follower"].includes(String(body["action"])) &&
+        (!target || target === key)
+      )
         return reply(400, { error: "Escolha outra pessoa para seguir." });
       for (let attempt = 0; attempt < 8; attempt++) {
         const snapshot = await options.store.read();
@@ -134,6 +158,7 @@ export function createProfileSocialHandler(options: {
             followsYou: account.following[key] !== undefined,
             followed: self.following[id] !== undefined,
             shared: !!account.display,
+            cover: account.display?.cover ?? "helena",
           };
         };
         const feed = (): SocialFeed => ({
@@ -173,6 +198,28 @@ export function createProfileSocialHandler(options: {
             .sort((a, b) => b.mutualCount - a.mutualCount)
             .slice(0, 10),
           ...(target ? { profile: profile(target) } : {}),
+          ...(list === "followers" || list === "following"
+            ? (() => {
+                const owner = target ?? key;
+                const ids = Object.keys(handles)
+                  .filter(
+                    (id) =>
+                      id !== owner &&
+                      (list === "followers"
+                        ? state.accounts[id]?.following[owner] !== undefined
+                        : state.accounts[owner]?.following[id] !== undefined),
+                  )
+                  .sort((a, b) => handles[a]!.username.localeCompare(handles[b]!.username));
+                return {
+                  connections: {
+                    kind: list,
+                    owner: handles[owner]!.username,
+                    people: ids.slice(offset, offset + 50).map(profile),
+                    ...(offset + 50 < ids.length ? { next: offset + 50 } : {}),
+                  },
+                };
+              })()
+            : {}),
         });
         if (request.method === "GET") return reply(200, feed());
         if (request.method === "DELETE") {
@@ -198,12 +245,17 @@ export function createProfileSocialHandler(options: {
               self.display = {
                 name: String(body["name"]).trim(),
                 photoUrl: String(body["photoUrl"]),
+                ...(body["cover"] !== undefined ? { cover: String(body["cover"]) } : {}),
               };
             else delete self.display;
           } else if (body["action"] === "read") {
             for (const notice of Object.values(self.notices)) notice.read = true;
           } else if (target) {
-            if (body["action"] === "unfollow") delete self.following[target];
+            if (body["action"] === "remove-follower") {
+              const other = state.accounts[target];
+              if (other) delete other.following[key];
+              delete self.notices[target];
+            } else if (body["action"] === "unfollow") delete self.following[target];
             else if (self.following[target] === undefined) {
               if (Object.keys(self.following).length >= 200)
                 return reply(409, { error: "Você pode seguir até 200 pessoas nesta versão." });

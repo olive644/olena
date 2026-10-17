@@ -1342,3 +1342,7 @@ SocialDirectory abre por Adicionar amigo, aviso de seguidor ou ?usuario= no Perf
 ProfileShareCard produz QR/link/PNG no aparelho. Contact Picker preenche apenas
 nome e espera confirmação de busca; Web Share é opcional. useSocialFeed limpa a
 troca de conta e publica mudanças via SOCIAL_CHANGED. Rótulos em ProfileLabels.
+
+# Conexões do Perfil, revisão de 17/10/2026
+
+GET /api/profile-social aceita list=followers|following, username opcional e offset paginado de 50. POST remove-follower atua somente no vínculo de entrada do usuário autenticado. A apresentação automática usa expectedUsername e helena.account.v1 para não misturar contas. Capa oficial integra a apresentação; dados de estudo, bio e e-mail continuam privados. Não há toggle de publicação na interface. Contas legadas atualizam sua apresentação ao abrir o próprio Perfil.
