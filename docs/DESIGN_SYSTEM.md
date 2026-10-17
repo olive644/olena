@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Contagens do Perfil: não usar reticências nem zero fictício enquanto a primeira consulta social está pendente. Reutilizar contagens confirmadas na sessão, atualizar sem apagar a apresentação anterior. Streak zero conserva o mesmo ícone e fundo do indicador existente, calculado do histórico disponível.
+
 Refinamento de Perfil (2026-10-17): Adicionar amigo, QR e ações de compartilhar usam as cores de superfície/texto do tema. Ícones share/download usam currentColor, creme no escuro. Seguidores usam fundo suave sem placa contornada. Ícone de XP reutiliza RoomPointsIcon xp, em lilás facetado. Prévia de caderno aberta usa NotebookSpread original, com folhear e sem ferramentas de edição. Aviso de seguidor usa recorte de papel, pessoa sem placa, ação à direita, X sem fundo e barra de duração de 6 segundos.
 
 Rótulos de @pranksterbrain: CREKS e BETA TESTER reutilizam as placas existentes de ProfileLabels, sem novas cores ou permissões. Perfil móvel com XP conserva gap de 6 px entre blocos, mantendo avatar e áreas de toque originais.

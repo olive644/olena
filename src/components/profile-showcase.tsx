@@ -53,7 +53,7 @@ export function ProfileShowcase({
     const username = new URLSearchParams(window.location.search).get("usuario");
     return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
   });
-  const social = useSocialFeed(!guest && !!handle.username);
+  const social = useSocialFeed(!guest);
   useProfilePresentation(guest || !presentationReady ? "" : handle.username, nameFallback);
   const friendButton = useRef<HTMLButtonElement>(null);
   const friendActions = useRef<HTMLDivElement>(null);
@@ -241,10 +241,7 @@ export function ProfileShowcase({
                   title="Pessoas que seguem seu perfil"
                 >
                   <ProfilePaperIcon name="followers" />
-                  <strong>
-                    {social?.self.followers ?? (handle.username && !guest ? "..." : 0)}
-                  </strong>{" "}
-                  Seguidores
+                  <strong>{social?.self.followers ?? (guest ? 0 : null)}</strong> Seguidores
                 </button>
                 <button
                   type="button"
@@ -255,10 +252,7 @@ export function ProfileShowcase({
                   title="Pessoas que você segue"
                 >
                   <ProfilePaperIcon name="following" />
-                  <strong>
-                    {social?.self.following ?? (handle.username && !guest ? "..." : 0)}
-                  </strong>{" "}
-                  Seguindo
+                  <strong>{social?.self.following ?? (guest ? 0 : null)}</strong> Seguindo
                 </button>
                 <div className="profile-cover__streaks" aria-label="Sequências de estudo">
                   {workspace && <ProfileStreaks workspace={workspace} />}
