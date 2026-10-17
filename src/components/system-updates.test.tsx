@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { SystemUpdates } from "./system-updates";
 import { applySyncedStorage } from "../data/synced-storage";
@@ -17,6 +17,7 @@ vi.mock("../data/profile-social", () => ({
 }));
 
 afterEach(() => {
+  vi.useRealTimers();
   cleanup();
   localStorage.clear();
   vi.unstubAllGlobals();
@@ -48,9 +49,41 @@ it("avisa somente sobre seguidores novos e permite visitar pelo aviso mesmo sem 
   rerender(<SystemUpdates hideBell />);
   await waitFor(() => expect(screen.getByText("Alice te seguiu")).toBeTruthy());
   const toast = document.querySelector<HTMLElement>(".social-follow-toast")!;
+  expect(toast.parentElement).toBe(document.body);
   fireEvent.click(within(toast).getByRole("button", { name: "Visitar perfil de @alice" }));
   expect(social.visit).toHaveBeenCalledWith("alice");
   expect(document.querySelector(".social-follow-toast")).toBeNull();
+});
+
+it("avisa sobre um seguidor recebido agora na primeira consulta e encerra em seis segundos", async () => {
+  vi.useFakeTimers();
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.webp",
+    followers: 0,
+    following: 1,
+    followsYou: true,
+    followed: false,
+    shared: true,
+  };
+  social.feed = {
+    self: { ...person, username: "bob" },
+    notifications: [{ person, at: Date.now(), read: false }],
+  };
+  const { container } = render(<SystemUpdates hideBell />);
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(1);
+  });
+  const toast = screen.getByRole("status");
+  expect(within(toast).getByText("Alice te seguiu")).toBeTruthy();
+  expect(within(toast).getByRole("button", { name: "Seguir de volta" })).toBeTruthy();
+  expect(container.contains(toast)).toBe(false);
+  expect(toast.querySelector("img")?.getAttribute("src")).toBe(person.photoUrl);
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(6000);
+  });
+  expect(screen.queryByText("Alice te seguiu")).toBeNull();
 });
 
 it("mostra seguidor real com visita, seguir de volta e leitura na conta", async () => {
@@ -70,7 +103,7 @@ it("mostra seguidor real com visita, seguir de volta e leitura na conta", async 
   };
   social.feed = {
     self: { ...person, username: "bob", name: "Bob" },
-    notifications: [{ person, at: Date.now(), read: false }],
+    notifications: [{ person, at: Date.now() - 60000, read: false }],
   };
   render(<SystemUpdates />);
   expect(screen.getByText("Começou a seguir você.")).toBeTruthy();

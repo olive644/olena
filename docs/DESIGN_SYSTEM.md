@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Correção da jornada (2026-10-17): uma única ficha por largura, sem textos repetidos em atualizações. Campos preenchidos não geram novas cobranças; conclusão remove a lista de etapas. Helena continua atrás e acima do botão. Aviso de seguidor fica sobre a página via portal, respeita safe area, tem entrada curta, foto visitável, ação à direita e barra de seis segundos. Movimento reduzido remove a entrada e a animação da barra.
+
 Listas sociais móveis: identificação ocupa a largura restante entre avatar e ação, com nome e @ em uma linha cada. Segue você fica abaixo do @ em texto secundário. Nomes longos usam reticências no limite, nunca quebra letra por letra; texto completo permanece no title e na visita ao perfil.
 
 Contagens do Perfil: não usar reticências nem zero fictício enquanto a primeira consulta social está pendente. Reutilizar contagens confirmadas na sessão, atualizar sem apagar a apresentação anterior. Streak zero conserva o mesmo ícone e fundo do indicador existente, calculado do histórico disponível.
@@ -275,8 +277,8 @@ fazem parte da exigência. Navegação pelas etapas permite revisar escolhas.
 
 # Confirmação das etapas pela Olena
 
-O card preserva a renderização imediata. A pequena linha superior informa
-CONFERINDO COM A OLENA ou CONFIRMAÇÃO PENDENTE enquanto não há confirmação da
-API. Não esconde as escolhas nem regride a etapa durante sincronização.
-A mensagem Seu perfil está perfeito só é confirmada com a leitura do servidor.
-Pronomes, bio e redes continuam opcionais.
+O card preserva a renderização imediata. Enquanto a identidade não chegou, usa
+CONFERINDO COM A OLENA sem cobrar Nome/@. Com os campos preenchidos, celebra as
+escolhas e remove a lista de pendências. A API continua conferindo em segundo
+plano, sem reabrir cobranças durante sincronização. A celebração não equivale a
+um recibo de salvamento na conta. Pronomes, bio e redes continuam opcionais.

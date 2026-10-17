@@ -2960,6 +2960,12 @@ limites e contrato em PROFILE_COMPLETION_API.md. Mudança autenticada em PR pró
 Rótulo visual CREKS também concedido ao @miauyw confirmado pelo servidor, sem
 alterar privilégios de conta nem confiar no username legado do cache local.
 
+# Correção de jornada e aviso social, 2026-10-17
+
+Jornada monta uma única instância por breakpoint, sem reutilizar o mesmo elemento em dois pais. Atualizações substituem texto e imagem sem remontagem por chave. Identidade ainda em consulta não cobra Nome/@; perfil preenchido celebra sem lista de pendências, mesmo com conferência remota em segundo plano. A API continua conferindo somente os dados da própria conta.
+
+Aviso de novo seguidor usa portal no body para escapar do cabeçalho transformado/sticky, entrada curta e seis segundos de duração. Consulta social compartilhada a cada dez segundos apenas com aba visível e ao retornar à aba. Primeira consulta admite aviso recém-recebido (quinze segundos), sem reproduzir histórico antigo. Atualização cancelada não consome os IDs antes de apresentar o aviso.
+
 # Segurança: link de leitura e regras de conta, 2026-10-17
 
 Resultado da auditoria de segurança (itens 1 e 2 do relatório).

@@ -66,10 +66,13 @@ for (const theme of ["light", "dark"]) {
         button.setAttribute("data-done", "true");
       }
     });
+    await card.locator("ol").evaluate((list) => list.remove());
+    await card.evaluate((element) => element.setAttribute("data-complete", "true"));
     await card.locator(".profile-journey__continue").evaluate((button) => {
       button.textContent = "Revisar meu perfil";
     });
     await expect(card.locator("img")).toHaveJSProperty("naturalWidth", 512);
+    await expect(card.getByRole("list", { name: "Etapas do perfil" })).toHaveCount(0);
     await card.screenshot({
       path: info.outputPath(`concluido-${theme}.png`),
       animations: "disabled",

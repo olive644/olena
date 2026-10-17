@@ -78,7 +78,10 @@ export function useSocialFeed(enabled: boolean) {
       .catch(() => {});
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") void refresh();
-    }, 60000);
+    }, 10000);
+    const visible = () => {
+      if (document.visibilityState === "visible") void refresh();
+    };
     const changed = (event: Event) => {
       if (!changes.has(event)) {
         changes.add(event);
@@ -90,12 +93,14 @@ export function useSocialFeed(enabled: boolean) {
     };
     window.addEventListener(SOCIAL_CHANGED, changed);
     window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", visible);
     return () => {
       alive = false;
       unsubscribe?.();
       window.clearInterval(timer);
       window.removeEventListener(SOCIAL_CHANGED, changed);
       window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", visible);
     };
   }, [enabled]);
   return enabled ? feed : undefined;

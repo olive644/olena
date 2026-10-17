@@ -48,6 +48,14 @@ export function ProfileShowcase({
   syncStatus?: string;
 }) {
   const [profile] = useStoredProfile();
+  const [belowJourney, setBelowJourney] = useState(() => window.innerWidth <= 1000);
+  useEffect(() => {
+    const media = window.matchMedia?.("(max-width: 1000px)");
+    if (!media) return;
+    const update = () => setBelowJourney(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   const { handle } = useProfileHandle(guest);
   const [editing, setEditing] = useState(false);
   const [choosingAvatar, setChoosingAvatar] = useState(false);
@@ -165,7 +173,7 @@ export function ProfileShowcase({
         )}
       </div>
       <div ref={chrome} className="profile-chrome" data-settings={settingsOpen}>
-        {!settingsOpen && completion && (
+        {!settingsOpen && completion && !belowJourney && (
           <div ref={journey} className="profile-journey-slot--side">
             {completion}
           </div>
@@ -324,7 +332,7 @@ export function ProfileShowcase({
         )}
       </div>
       {!settingsOpen && <div className="profile-cover-spacer" aria-hidden="true" />}
-      {!settingsOpen && completion && (
+      {!settingsOpen && completion && belowJourney && (
         <div className="profile-journey-slot--below">{completion}</div>
       )}
       {editing && (
