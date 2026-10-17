@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   parseReadUpdates,
   parseSystemUpdates,
+  recentSystemUpdates,
   SYSTEM_UPDATES_READ_KEY,
   type SystemUpdate,
 } from "../data/system-updates";
@@ -42,7 +43,7 @@ export function SystemUpdates() {
         if (!response.ok) throw new Error("updates");
         const data: unknown = await response.json();
         if (active) {
-          setUpdates(parseSystemUpdates(data));
+          setUpdates(recentSystemUpdates(parseSystemUpdates(data)));
           setStatus("Nenhuma atualização publicada por aqui ainda.");
         }
       } catch {
@@ -108,19 +109,22 @@ export function SystemUpdates() {
         <strong>
           Atualizações do sistema <small>Beta</small>
         </strong>
-        {updates.length === 0 && <p role="status">{status}</p>}
-        {updates.map((update) => (
-          <article key={update.id} className={read.includes(update.id) ? "is-read" : "is-unread"}>
-            <strong>Atualização do sistema</strong>
-            <small>
-              Versão {update.version} · {new Date(update.date).toLocaleDateString("pt-BR")}
-            </small>
-            <p>{update.title}</p>
-          </article>
-        ))}
-        {unread.length > 0 && (
+        <div className="system-update-list">
+          {updates.length === 0 && <p role="status">{status}</p>}
+          {updates.map((update) => (
+            <article key={update.id} className={read.includes(update.id) ? "is-read" : "is-unread"}>
+              <strong>Atualização do sistema</strong>
+              <small>
+                Versão {update.version} · {new Date(update.date).toLocaleDateString("pt-BR")}
+              </small>
+              <p>{update.title}</p>
+            </article>
+          ))}
+        </div>
+        {
           <button
             type="button"
+            disabled={unread.length === 0}
             className="secondary-button"
             onClick={() => {
               try {
@@ -140,7 +144,7 @@ export function SystemUpdates() {
           >
             Marcar como lidas
           </button>
-        )}
+        }
         {saveError && <p role="alert">{saveError}</p>}
       </section>
     </details>

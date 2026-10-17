@@ -170,6 +170,9 @@ export function HandwritingInkOptions({
                 />
               </svg>
               <span>{label}</span>
+              <span className="ink-selection-mark" aria-hidden="true">
+                <PaperCheckIcon size={12} />
+              </span>
             </button>
           ))}
         </fieldset>
@@ -179,6 +182,7 @@ export function HandwritingInkOptions({
         <label className="ink-size-control">
           <span>
             {tool === "eraser" ? "Tamanho da borracha" : "Espessura"}: {percentage}%
+            {![3, 5, 8].includes(width) && " (personalizada)"}
           </span>
           <input
             type="range"
@@ -215,6 +219,9 @@ export function HandwritingInkOptions({
               />
             </svg>
             <span>{label}</span>
+            <span className="ink-selection-mark" aria-hidden="true">
+              <PaperCheckIcon size={12} />
+            </span>
           </button>
         ))}
       </fieldset>

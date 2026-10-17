@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Perfil recolhido, rótulos e controles de tinta (2026-10-16)
+
+- Sino volta por padrão em PageHeader, com opt-out explícito no Perfil. Lista de avisos rola independentemente do botão Marcar como lidas. Avisos do sistema com 48 horas ou mais ficam ocultos sem apagar recibos de leitura. A parte social deve entrar em mudança própria de armazenamento remoto, não como notificações fabricadas.
+
+- Avatar desktop recolhido passa de top 14 para 4 px: seus 80 px cabem na barra de 88 px, sem cortar o personagem. No celular, cópia visual de 40 px aparece após o menu, interpolando escala e posição junto à identidade. Rótulos reutilizam a mesma placa nos dois estados.
+- @oliver644 recebe CREKS, DEV, BETA TESTER e GALAXIA; @eito recebe CREKS e BETA TESTER. Apresentação deriva apenas do handle confirmado por useProfileHandle, nunca de username/creks locais. Não concede autorização nem altera autenticação ou reserva de nomes.
+- Espaço/Curva recebem SVGs autorais em PaperObjectIcon. A mecânica existente com mouse, toque, teclado e desfazer é preservada. Seleção de espessura/estilo deixa de depender do outline suprimido pelo padrão global e recebe preenchimento amarelo e check. Slider personalizado é identificado explicitamente.
+
 ## Perfil móvel, temas e ajustes (2026-10-16)
 
 - Avatar móvel reduzido para 112 px. Capa e ficha móveis seguem a altura real do conteúdo, sem o bloco fixo de 600 px; barra de ferramentas sticky separada. Desktop conserva recolhimento de identidade.

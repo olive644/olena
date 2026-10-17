@@ -31,7 +31,7 @@ it("mostra CREKS apenas da identidade do servidor, não de campos locais", () =>
   );
   expect(screen.getAllByText("@oliver644")).toHaveLength(2);
   expect(screen.queryByText("@forjado")).toBeNull();
-  expect(screen.getByLabelText("Selo CREKS").className).toBe("profile-creks");
+  expect(screen.getAllByLabelText("Selo CREKS")[0]?.className).toContain("profile-creks");
   serverHandle.creks = false;
   rerender(
     <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
@@ -208,8 +208,49 @@ it("barra compacta contém só identidade, com tag no nome e pronomes junto ao @
     </ProfileShowcase>,
   );
   const compact = container.querySelector(".profile-compact-identity")!;
-  expect(compact.children[0]?.textContent).toBe("OliCREKS");
+  expect(compact.children[0]?.textContent).toBe("Oli");
+  expect(compact.querySelector(".profile-labels")?.textContent).toBe("CREKS");
   expect(compact.children[1]?.textContent).toBe("@oliEle/dele");
-  expect(compact.querySelector("img, button, nav")).toBeNull();
+  expect(compact.querySelector("button, nav")).toBeNull();
+  expect(compact.querySelector("img")?.getAttribute("src")).toBe("/profile-avatars/helena.webp");
   expect(compact.textContent).not.toContain("Bio fora da barra");
+});
+
+it("concede os rótulos extras só à identidade oliver644 confirmada pelo servidor", () => {
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ username: "oliver644", creks: true }));
+  const { rerender } = render(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.queryByLabelText("Selo DEV")).toBeNull();
+  serverHandle.username = "oliver644";
+  serverHandle.creks = true;
+  rerender(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  for (const label of ["CREKS", "DEV", "BETA TESTER", "GALAXIA"])
+    expect(screen.getAllByLabelText(`Selo ${label}`)).toHaveLength(2);
+});
+
+it("concede CREKS e BETA TESTER ao @eito confirmado, sem herdar DEV ou GALAXIA", () => {
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ username: "eito" }));
+  const { rerender } = render(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
+  serverHandle.username = "eito";
+  rerender(
+    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.getAllByLabelText("Selo CREKS")).toHaveLength(2);
+  expect(screen.getAllByLabelText("Selo BETA TESTER")).toHaveLength(2);
+  expect(screen.queryByLabelText("Selo DEV")).toBeNull();
+  expect(screen.queryByLabelText("Selo GALAXIA")).toBeNull();
 });

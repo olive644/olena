@@ -29,7 +29,23 @@
   right: 16px;
   width: min(360px, calc(100vw - 32px));
   max-height: calc(100dvh - 170px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overscroll-behavior: contain;
+}
+.system-update-sheet > strong {
+  order: -2;
+  flex-shrink: 0;
+}
+.system-update-sheet > button {
+  order: -1;
+  flex-shrink: 0;
+}
+.system-update-list {
   overflow: auto;
+  min-height: 0;
   overscroll-behavior: contain;
 }
 .system-update-sheet article {

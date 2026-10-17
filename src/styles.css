@@ -4332,9 +4332,32 @@ body.local-room-active {
   box-shadow: 0 3px 0 #4b209b;
   color: #fff9ef;
 }
-.stroke-palette button[aria-pressed="true"] {
-  outline: 2px solid #facc15;
-  outline-offset: 2px;
+:root body .handwriting-ink-options .stroke-palette > button {
+  position: relative;
+}
+:root body .handwriting-ink-options .stroke-palette > button[aria-pressed="true"] {
+  background: #facc15;
+  color: #292432;
+  border-color: #d4ad10;
+  box-shadow: 0 3px #a88708;
+}
+.stroke-palette .ink-selection-mark {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  pointer-events: none;
+}
+.stroke-palette [aria-pressed="true"] .ink-selection-mark {
+  opacity: 1;
+}
+.stroke-palette .ink-selection-mark svg {
+  width: 12px;
+  height: 12px;
 }
 .handwriting-export-actions button:focus-visible {
   outline: 3px solid #facc15;

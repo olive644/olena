@@ -16,8 +16,13 @@ it("counts unread updates, persists reading and reacts to account sync", async (
       async () =>
         new Response(
           JSON.stringify([
-            { id: 408, version: "beta.408", title: "Agenda", date: "2026-10-11T12:00:00Z" },
-            { id: 409, version: "beta.409", title: "Compactar", date: "2026-10-12T12:00:00Z" },
+            {
+              id: 408,
+              version: "beta.408",
+              title: "Agenda",
+              date: new Date(Date.now() - 3600000).toISOString(),
+            },
+            { id: 409, version: "beta.409", title: "Compactar", date: new Date().toISOString() },
           ]),
         ),
     ),
