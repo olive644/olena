@@ -38,9 +38,12 @@ export function ProfileJourney({
   ] as const;
   const next = steps.find((step) => !step.done);
   const completed = steps.filter((step) => step.done).length;
+  // O @ vazio durante a consulta não significa que o usuário deixou uma etapa em branco.
+  const checkingIdentity = !username && verification !== undefined && verification !== "confirmed";
+  const pending = checkingIdentity ? undefined : next;
   return (
     <section className="profile-journey" aria-label="Complete seu perfil" data-complete={!next}>
-      <div className="profile-journey__copy" key={next?.id ?? "complete"} aria-live="polite">
+      <div className="profile-journey__copy" aria-live="polite">
         <small
           title={
             verification === "offline"
@@ -48,54 +51,58 @@ export function ProfileJourney({
               : undefined
           }
         >
-          {verification === "pending"
+          {checkingIdentity
             ? "CONFERINDO COM A OLENA"
-            : verification === "offline"
-              ? "CONFIRMAÇÃO PENDENTE"
-              : next
-                ? `SEU PERFIL · ${completed} DE 3 ETAPAS`
-                : "FICOU ÓTIMO!"}
+            : next
+              ? `SEU PERFIL · ${completed} DE 3 ETAPAS`
+              : "FICOU ÓTIMO!"}
         </small>
         <h2>
-          {next?.title ??
-            (verification && verification !== "confirmed"
-              ? "Suas escolhas estão prontas."
-              : "Seu perfil está perfeito.")}
+          {checkingIdentity
+            ? "Carregando seu perfil"
+            : (next?.title ?? "Seu perfil está perfeito.")}
         </h2>
-        <p>{next?.detail ?? "Agora é só espalhar suas descobertas por aqui."}</p>
+        <p>
+          {checkingIdentity
+            ? "Suas escolhas salvas estão sendo conferidas."
+            : (next?.detail ?? "Agora é só espalhar suas descobertas por aqui.")}
+        </p>
       </div>
-      <img
-        key={next?.id ?? "complete"}
-        src={`/profile-journey/helena-${next?.id ?? "complete"}.webp`}
-        width="120"
-        height="120"
-        alt=""
-        draggable={false}
-      />
-      <ol aria-label="Etapas do perfil">
-        {steps.map((step) => (
-          <li key={step.id}>
-            <button
-              type="button"
-              aria-label={`${step.title} ${step.done ? "Concluído" : "Pendente"}`}
-              aria-current={next?.id === step.id ? "step" : undefined}
-              onClick={() => onChoose(step.id)}
-              data-done={step.done}
-            >
-              {step.done ? "✓" : steps.indexOf(step) + 1}
-            </button>
-          </li>
-        ))}
-      </ol>
-      {next ? (
+      {!checkingIdentity && (
+        <img
+          src={`/profile-journey/helena-${pending?.id ?? "complete"}.webp`}
+          width="120"
+          height="120"
+          alt=""
+          draggable={false}
+        />
+      )}
+      {pending && (
+        <ol aria-label="Etapas do perfil">
+          {steps.map((step) => (
+            <li key={step.id}>
+              <button
+                type="button"
+                aria-label={`${step.title} ${step.done ? "Concluído" : "Pendente"}`}
+                aria-current={next?.id === step.id ? "step" : undefined}
+                onClick={() => onChoose(step.id)}
+                data-done={step.done}
+              >
+                {step.done ? "✓" : steps.indexOf(step) + 1}
+              </button>
+            </li>
+          ))}
+        </ol>
+      )}
+      {pending ? (
         <button
           type="button"
           className="primary-button profile-journey__continue"
-          onClick={() => onChoose(next.id)}
+          onClick={() => onChoose(pending.id)}
         >
-          {next.action}
+          {pending.action}
         </button>
-      ) : (
+      ) : !checkingIdentity ? (
         <button
           type="button"
           className="primary-button profile-journey__continue"
@@ -103,7 +110,7 @@ export function ProfileJourney({
         >
           Revisar meu perfil
         </button>
-      )}
+      ) : null}
     </section>
   );
 }

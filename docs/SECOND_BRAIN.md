@@ -1383,3 +1383,9 @@ useProfileCompletion confere a API em segundo plano, trata edição em fila
 sem regredir etapas e repete ao recuperar rede/foco. Cliente não envia campos
 pessoais nem UID. Servidor lê somente o item stateV2 de perfil e a reserva de @
 do UID autenticado. Contrato e ameaças: PROFILE_COMPLETION_API.md.
+
+# Jornada do perfil e aviso social, correção
+
+ProfileShowcase escolhe uma só posição para ProfileJourney por matchMedia (1000px). Não duplicar a mesma árvore JSX em slots ocultos. Identidade pendente usa mensagem neutra, sem pedir campos já salvos. Perfil preenchido não apresenta passos para completar; conferência da API fica em segundo plano.
+
+SystemUpdates apresenta o toast social em document.body, fora de ancestrais transformados. useSocialFeed compartilha consultas e atualiza a cada dez segundos com aba visível e em visibilitychange. Manter intervalo acima do cache de dois segundos e abaixo do limite existente de trinta consultas/minuto por conta.

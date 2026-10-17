@@ -12,6 +12,9 @@
   padding-right: 130px;
   min-height: 75px;
 }
+.profile-journey[data-complete="true"] {
+  min-height: 200px;
+}
 .profile-journey small {
   color: var(--muted);
   font-size: 0.65rem;
@@ -68,6 +71,7 @@
   width: 100%;
   min-height: 44px;
   font-size: 0.8rem;
+  margin-top: 12px;
 }
 .profile-journey__copy,
 .profile-journey > img {

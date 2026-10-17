@@ -20,6 +20,19 @@ afterEach(() => {
   localStorage.clear();
   vi.restoreAllMocks();
 });
+it.each([390, 1440])("monta somente uma jornada na largura %i", (width) => {
+  vi.stubGlobal("innerWidth", width);
+  const { container } = render(
+    <ProfileShowcase nameFallback="Aluno" settingsOpen={false}>
+      {null}
+    </ProfileShowcase>,
+  );
+  expect(screen.getAllByRole("region", { name: "Complete seu perfil", hidden: true })).toHaveLength(
+    1,
+  );
+  expect(container.querySelector(".profile-journey-slot--below") !== null).toBe(width <= 1000);
+  expect(container.querySelector(".profile-journey-slot--side") !== null).toBe(width > 1000);
+});
 it("mostra CREKS apenas da identidade do servidor, não de campos locais", () => {
   localStorage.setItem(
     "helena.profile.v1",

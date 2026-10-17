@@ -30,12 +30,13 @@ um perfil vazio que finja ser uma validação bem-sucedida.
 ## Interface e sincronização
 
 O card calcula imediatamente as etapas com a mesma regra pura, enquanto a API
-confere os valores realmente persistidos. A celebração final só é confirmada
-quando os estados coincidem. Edição ainda em sincronização não regride a etapa:
-há até quatro tentativas espaçadas. Sem confirmação, a interface informa
-CONFIRMAÇÃO PENDENTE; foco, recuperação da rede e mudança de estado da
-sincronização permitem nova conferência, inclusive após um envio demorado.
-Esse estado também cobre indisponibilidade, não afirma que o perfil está salvo.
+confere os valores realmente persistidos. Perfil preenchido celebra as escolhas,
+sem repetir cobranças enquanto a conferência remota ocorre em segundo plano.
+A celebração não é um recibo de sincronização. A identidade ainda desconhecida
+usa uma mensagem neutra, sem pedir novamente Nome/@. Edição ainda em sincronização
+não regride a etapa: há até quatro tentativas espaçadas. Foco, recuperação da rede
+e mudança de estado da sincronização permitem nova conferência, inclusive após
+um envio demorado. O status de sincronização da conta continua separado.
 Não existe armazenamento separado de conclusão que possa contradizer os campos.
 
 A integração é entregue em PR própria sobre a PR visual, conforme a regra de

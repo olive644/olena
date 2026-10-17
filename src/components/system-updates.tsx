@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   parseReadUpdates,
   parseSystemUpdates,
@@ -38,17 +39,18 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
     }
     const ids = new Set(social.notifications.map((n) => `${n.person.username}:${n.at}`));
     const sameOwner = seen.current.owner === social.self.username;
-    const next = sameOwner
-      ? social.notifications.find(
-          (n) => !n.read && !seen.current.ids.has(`${n.person.username}:${n.at}`),
-        )
-      : undefined;
-    seen.current = { owner: social.self.username, ids };
-    if (next || !sameOwner) {
-      const update = window.setTimeout(() => setFollowToast(next), 0);
-      return () => window.clearTimeout(update);
-    }
-    return undefined;
+    const next = social.notifications.find(
+      (n) =>
+        !n.read &&
+        (sameOwner
+          ? !seen.current.ids.has(`${n.person.username}:${n.at}`)
+          : n.at >= Date.now() - 15000),
+    );
+    const update = window.setTimeout(() => {
+      seen.current = { owner: social.self.username, ids };
+      if (next || !sameOwner) setFollowToast(next);
+    }, 0);
+    return () => window.clearTimeout(update);
   }, [social]);
   useEffect(() => {
     if (!followToast) return;
@@ -236,7 +238,8 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
       {followToast &&
         social?.notifications.some(
           (n) => n.person.username === followToast.person.username && n.at === followToast.at,
-        ) && (
+        ) &&
+        createPortal(
           <aside
             key={`${followToast.person.username}:${followToast.at}`}
             className="social-follow-toast"
@@ -279,7 +282,10 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                 }
               }}
             >
-              Seguir de volta
+              {social.notifications.find((n) => n.person.username === followToast.person.username)
+                ?.person.followed
+                ? "Seguindo"
+                : "Seguir de volta"}
             </button>
             <button
               type="button"
@@ -290,7 +296,8 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
               <PaperCloseIcon />
             </button>
             <span className="social-follow-toast-countdown" aria-hidden="true" />
-          </aside>
+          </aside>,
+          document.body,
         )}
     </>
   );

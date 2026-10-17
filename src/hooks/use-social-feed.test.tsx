@@ -40,6 +40,17 @@ afterEach(() => {
   cleanup();
   mocks.request.mockReset();
   mocks.listener = undefined;
+  vi.restoreAllMocks();
+});
+it("consulta em dez segundos e atualiza ao voltar para uma aba visível", async () => {
+  const interval = vi.spyOn(window, "setInterval");
+  mocks.request.mockResolvedValue(feed("alice"));
+  renderHook(() => useSocialFeed(true));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(1));
+  expect(interval.mock.calls.some((call) => call[1] === 10000)).toBe(true);
+  vi.spyOn(Date, "now").mockReturnValue(Date.now() + 11000);
+  await act(async () => document.dispatchEvent(new Event("visibilitychange")));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalledTimes(2));
 });
 it("compartilha consulta em andamento entre sino e perfil", async () => {
   let finish: ((value: SocialFeed) => void) | undefined;
