@@ -208,6 +208,7 @@ html[data-reduce-motion="true"] .social-directory {
 .social-person span {
   display: grid;
   flex: 1;
+  min-width: 0;
 }
 .social-person img,
 .social-profile img {
@@ -261,10 +262,35 @@ html[data-reduce-motion="true"] .social-directory {
 }
 .social-connection-row .social-person {
   min-width: 0;
+  flex: 1;
+  width: auto;
 }
 .social-person strong,
 .social-person small {
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+.social-person img {
+  flex-shrink: 0;
+}
+.social-person-relation {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.social-connection-row > .secondary-button {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  :root body .social-directory .social-connection-row .social-person {
+    padding: 10px 6px;
+    gap: 8px;
+  }
+  .social-connection-row .social-person img {
+    width: 36px;
+    height: 36px;
+  }
 }
 .social-confirm {
   position: sticky;

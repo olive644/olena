@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Compatibilidade de notificações do Perfil (2026-10-17)
+
+- Validação: npm run verify com 1904 testes aprovado para a correção do sino; complemento de nomes validado por testes específicos, TypeScript, lint, build e orçamento. Oito E2E de notificações, privacidade e contrato visual das conexões aprovados em desktop e celular. Teste visual usa fixture declarada de layout, sem fingir autenticação ou conexões reais.
+
+- Lista de seguidores/seguindo: relação Segue você passa para baixo do @, sem ocupar uma coluna concorrente. Nome e @ usam linha única com reticências somente quando excedem a largura e texto completo no title e perfil visitado. Avatar e ação não encolhem; área de texto pode encolher sem quebrar palavras por letra. Ajuste móvel preserva área de toque.
+
+- Reproduzidos três E2E de desktop que exigem ausência do sino no DOM do Perfil. SystemUpdates com hideBell deixa de renderizar details e painel em vez de usar hidden. Hook social, listener de visita e aviso temporário continuam montados. E2E originais preservados, testes unitários voltam a exigir ausência estrutural e continuam cobrindo o aviso sem sino. Sem mudança de dados, autenticação ou contratos remotos.
+
 ## Refinamento de perfil, XP e avisos (2026-10-17)
 
 - Complemento de carregamento validado com npm run verify: 1904 testes em 281 arquivos, lint sem erros, formatos, API, TypeScript, build e orçamento aprovados. Mais 16 cenários E2E de perfil, capas e estudos aprovados em desktop/celular nos dois temas.

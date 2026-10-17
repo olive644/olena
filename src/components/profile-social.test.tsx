@@ -119,6 +119,12 @@ it("abre seguidores, visita e confirma a remoção antes de alterar a conexão",
   );
   render(<SocialDirectory initialList="followers" nameFallback="Alice" onClose={vi.fn()} />);
   await screen.findByRole("button", { name: "Visitar perfil de @bob" });
+  const person = screen.getByRole("button", { name: "Visitar perfil de @bob" });
+  const identity = person.querySelector("span")!;
+  expect(identity.querySelector("strong")?.title).toBe("Bob");
+  expect(identity.querySelector("small")?.title).toBe("@bob");
+  expect(identity.querySelector(".social-person-relation")?.textContent).toBe("Segue você");
+  expect(person.children).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: /^Remover$/ }));
   expect(mocks.request).not.toHaveBeenCalledWith({ action: "remove-follower", username: "bob" });
   fireEvent.click(screen.getByRole("button", { name: "Remover seguidor" }));
