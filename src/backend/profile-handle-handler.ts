@@ -20,6 +20,7 @@ export function createProfileHandleHandler(options: {
   allowedOrigins: string[];
   ownerEmail: string;
   consume(uid: string): Promise<boolean>;
+  afterDelete?(request: Request): Promise<void>;
 }) {
   return async (request: Request): Promise<Response> => {
     const reply = (status: number, body: unknown) =>
@@ -96,8 +97,10 @@ export function createProfileHandleHandler(options: {
         const next = { ...snapshot.value };
         if (username) next[key] = { username };
         else delete next[key];
-        if (await options.store.write(next, snapshot.version))
+        if (await options.store.write(next, snapshot.version)) {
+          if (request.method === "DELETE") await options.afterDelete?.(request);
           return reply(200, { username, creks: owner && username === "oliver644" });
+        }
       }
       return reply(503, { error: "Muitas alterações simultâneas. Tente novamente." });
     } catch {

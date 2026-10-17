@@ -1,0 +1,187 @@
+.profile-friend-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+:root .social-directory {
+  width: min(560px, calc(100vw - 24px));
+  max-height: 90dvh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px 28px 8px 16px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 7px var(--line);
+  animation: social-enter 180ms ease-out;
+}
+.social-directory::backdrop {
+  background: #17151cc9;
+}
+.social-directory input {
+  min-height: 44px;
+  padding: 10px;
+  background: var(--soft);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 5px 12px 5px 8px;
+}
+.social-directory-actions {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+}
+.social-directory-actions .secondary-button {
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 56px;
+}
+.social-directory-actions img {
+  object-fit: contain;
+}
+.social-support-note {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.social-share-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 20px auto;
+  padding: 24px;
+  border-radius: 5px 26px 5px 16px;
+  background: #fff9ef;
+  color: #292432;
+  border-bottom: 6px solid #cfc4af;
+  text-align: center;
+}
+.social-share-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 120px;
+  background: #7c3aed;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 35% 100%, 0 80%);
+}
+.social-share-brand {
+  color: #fff9ef;
+  display: block;
+  text-align: left;
+}
+.social-share-card > img {
+  display: block;
+  object-fit: contain;
+  margin: 16px auto 0;
+}
+.social-share-card h3,
+.social-share-card p {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.social-share-card svg {
+  margin-top: 12px;
+}
+.social-share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.social-share-url {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.8rem;
+}
+.social-share-url input {
+  width: 100%;
+}
+@keyframes social-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .social-directory {
+    animation: none;
+  }
+}
+html[data-reduce-motion="true"] .social-directory {
+  animation: none;
+}
+.social-directory header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.social-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.social-search-row input {
+  min-width: 0;
+  width: 100%;
+}
+:root body .social-directory .social-person {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  gap: 12px;
+  padding: 12px;
+  margin-top: 10px;
+  background: var(--surface);
+  color: var(--text);
+  border-bottom: 3px solid var(--line);
+  border-radius: 5px 14px 5px 10px;
+}
+.social-person span {
+  display: grid;
+  flex: 1;
+}
+.social-person img,
+.social-profile img {
+  object-fit: contain;
+}
+.social-profile {
+  text-align: center;
+  padding: 20px 8px;
+}
+.social-profile h3,
+.social-profile p {
+  margin: 6px 0;
+}
+.social-sharing {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 12px;
+}
+.social-sharing p {
+  font-size: 0.8rem;
+}
+.profile-cover__friends {
+  position: absolute;
+  left: 32px;
+  top: 402px;
+  opacity: calc(1 - min(1, var(--profile-collapse) * 5));
+}
+:root body .profile-cover .profile-cover__friends {
+  min-height: 44px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+}
+@media (max-width: 600px) {
+  .profile-cover__friends {
+    position: static;
+    order: 2;
+    align-self: flex-start;
+    opacity: 1;
+  }
+}

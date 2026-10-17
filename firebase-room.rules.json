@@ -1,6 +1,7 @@
 {
   "rules": {
     "privateProfileHandles": { ".read": false, ".write": false },
+    "privateProfileSocial": { ".read": false, ".write": false },
     "rooms": {
       ".indexOn": ["expiresAt"],
       "$code": {

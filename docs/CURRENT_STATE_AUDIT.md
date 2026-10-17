@@ -1,5 +1,12 @@
 # Auditoria do estado atual
 
+## Amigos e compartilhar perfil (2026-10-17)
+
+- Mudança própria de armazenamento remoto, dependente da revisão de Perfil/tinta. API social autenticada reutiliza JWT/accounts:lookup, origem e credenciais existentes. Grafo privado com CAS, seguir/deixar de seguir, visita por @ e avisos reais com seguir de volta. Nome/avatar são opt-in; outros campos da conta não são expostos. Contagens do Perfil usam a resposta da conta.
+- Adicionar amigo abre contatos por nome, busca e Compartilhar perfil. Cartão de papel, foto, nome, @, QR, link, compartilhamento nativo e PNG gerado no dispositivo. Sem importar agenda inteira ou serviço externo de QR. Sugestões somente de segundo grau; perfil/link exigem conta e @. Rótulos compartilham componente e placas também na ficha visitável.
+- Limpeza social integra DELETE do endpoint de @, inclusive para clientes antigos. Limites beta, retenção, modelo de ameaça, testes e rollback documentados em docs/PROFILE_SOCIAL.md. Sem dependências novas. Medido 1466,2 KiB total, 279,9 KiB inicial; orçamento normal total 1474 KiB, teto absoluto 1500 e orçamento inicial preservados.
+- Validação geral: 1888 testes em 277 arquivos, lint sem erros, formatos, Node ESM da API, build e orçamento aprovados. QR da prévia móvel decodificado para o link exato do perfil. Fluxos autenticados exercitados com identidades controladas nos testes; prova com duas contas reais deve ocorrer no ambiente publicado.
+
 ## Perfil recolhido, rótulos e controles de tinta (2026-10-16)
 
 - Sino volta por padrão em PageHeader, com opt-out explícito no Perfil. Lista de avisos rola independentemente do botão Marcar como lidas. Avisos do sistema com 48 horas ou mais ficam ocultos sem apagar recibos de leitura. A parte social deve entrar em mudança própria de armazenamento remoto, não como notificações fabricadas.

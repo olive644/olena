@@ -20,6 +20,7 @@ describe("regras de /users/<uid>", () => {
       rules: Record<string, unknown>;
     };
     expect(all.rules["privateProfileHandles"]).toEqual({ ".read": false, ".write": false });
+    expect(all.rules["privateProfileSocial"]).toEqual({ ".read": false, ".write": false });
   });
   it("rejects stale stateV2 replacements that omit published math v5, while permitting first writes and updates", () => {
     const modern = rules.rules.users.$uid["stateV2"] as { ".validate": string };
