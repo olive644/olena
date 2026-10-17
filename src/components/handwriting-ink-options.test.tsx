@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { HandwritingInkOptions } from "./handwriting-ink-options";
 
 for (const tool of ["pen", "highlighter", "eraser"] as const) {
@@ -89,4 +89,111 @@ it("não mostra o modo da borracha para outras ferramentas nem sem o callback", 
     />,
   );
   expect(screen.queryByText("Modo da borracha")).toBeNull();
+});
+
+it("caneta: escolhe o estilo da linha e marca o selecionado", () => {
+  const onDashChange = vi.fn();
+  const props = {
+    tool: "pen" as const,
+    width: 5,
+    color: "#17151c",
+    onColorChange: vi.fn(),
+    onWidthChange: vi.fn(),
+    onDashChange,
+  };
+  const view = render(<HandwritingInkOptions {...props} />);
+  const solid = screen.getByRole("button", { name: "Linha contínua" });
+  expect(solid.getAttribute("aria-pressed")).toBe("true");
+  fireEvent.click(screen.getByRole("button", { name: "Linha tracejada" }));
+  expect(onDashChange).toHaveBeenLastCalledWith("dashed");
+  fireEvent.click(screen.getByRole("button", { name: "Linha pontilhada" }));
+  expect(onDashChange).toHaveBeenLastCalledWith("dotted");
+  fireEvent.click(solid);
+  expect(onDashChange).toHaveBeenLastCalledWith(undefined);
+  view.rerender(<HandwritingInkOptions {...props} dash="dotted" />);
+  expect(
+    screen.getByRole("button", { name: "Linha pontilhada" }).getAttribute("aria-pressed"),
+  ).toBe("true");
+  expect(solid.getAttribute("aria-pressed")).toBe("false");
+});
+
+for (const tool of ["highlighter", "eraser"] as const) {
+  it(`${tool}: não mostra o estilo da linha`, () => {
+    render(
+      <HandwritingInkOptions
+        tool={tool}
+        width={5}
+        color="#17151c"
+        onColorChange={vi.fn()}
+        onWidthChange={vi.fn()}
+        onDashChange={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "Linha tracejada" })).toBeNull();
+  });
+}
+
+describe("borracha: modo de fundo", () => {
+  const base = {
+    tool: "eraser" as const,
+    width: 10,
+    color: "#17151c",
+    onColorChange: vi.fn(),
+    onWidthChange: vi.fn(),
+    eraserWholeStroke: false,
+  };
+
+  it("fica desabilitado sem página ou imagem importada, e explica por quê", () => {
+    render(
+      <HandwritingInkOptions
+        {...base}
+        onEraserWholeStrokeChange={vi.fn()}
+        onEraserBackgroundChange={vi.fn()}
+        backgroundAvailable={false}
+      />,
+    );
+    const button = screen.getByRole("button", { name: "Apagar só o fundo importado" });
+    expect(button.hasAttribute("disabled")).toBe(true);
+    expect(button.getAttribute("title")).toContain("importada");
+    expect(button.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("escolhe o fundo e os três modos são exclusivos", () => {
+    const onBackground = vi.fn();
+    const onWhole = vi.fn();
+    const view = render(
+      <HandwritingInkOptions
+        {...base}
+        onEraserWholeStrokeChange={onWhole}
+        onEraserBackgroundChange={onBackground}
+        backgroundAvailable
+      />,
+    );
+    const background = screen.getByRole("button", { name: "Apagar só o fundo importado" });
+    const partial = screen.getByRole("button", { name: "Apagar só o trecho tocado" });
+    const whole = screen.getByRole("button", { name: "Apagar o traço inteiro" });
+    expect(partial.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(background);
+    expect(onBackground).toHaveBeenLastCalledWith(true);
+    view.rerender(
+      <HandwritingInkOptions
+        {...base}
+        onEraserWholeStrokeChange={onWhole}
+        onEraserBackgroundChange={onBackground}
+        backgroundAvailable
+        eraserBackground
+      />,
+    );
+    expect(background.getAttribute("aria-pressed")).toBe("true");
+    expect(partial.getAttribute("aria-pressed")).toBe("false");
+    expect(whole.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(whole);
+    expect(onBackground).toHaveBeenLastCalledWith(false);
+    expect(onWhole).toHaveBeenLastCalledWith(true);
+  });
+
+  it("sem o recurso ligado, o botão de fundo nem aparece", () => {
+    render(<HandwritingInkOptions {...base} onEraserWholeStrokeChange={vi.fn()} />);
+    expect(screen.queryByRole("button", { name: "Apagar só o fundo importado" })).toBeNull();
+  });
 });

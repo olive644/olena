@@ -55,6 +55,26 @@ export function HandwritingToolGroup({
       </button>
       <button
         type="button"
+        className={!textMode && tool === "curve" ? "is-active" : ""}
+        aria-label="Curva"
+        title="Curva: toque para marcar pontos, a curva passa por todos. Toque duas vezes ou Shift com Enter para concluir"
+        aria-pressed={!textMode && tool === "curve"}
+        onClick={() => onSelectTool("curve")}
+      >
+        <PaperObjectIcon name="curve" /> <span>Curva</span>
+      </button>
+      <button
+        type="button"
+        className={!textMode && tool === "space" ? "is-active" : ""}
+        aria-label="Espaço vertical"
+        title="Espaço vertical: arraste para baixo para abrir espaço ou para cima para fechar"
+        aria-pressed={!textMode && tool === "space"}
+        onClick={() => onSelectTool("space")}
+      >
+        <PaperObjectIcon name="space" /> <span>Espaço</span>
+      </button>
+      <button
+        type="button"
         className={!textMode && tool === "coordinates" ? "is-active" : ""}
         aria-label="Sistema de coordenadas"
         title="Sistema de coordenadas: arraste da origem até o fim dos eixos"

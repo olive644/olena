@@ -79,9 +79,9 @@ export function strokeBounds(stroke: Stroke): SelectionBox {
 export function strokeInkBounds(stroke: Stroke): SelectionBox {
   const box = strokeBounds(stroke);
   const radii =
-    stroke.tool === "highlighter"
+    stroke.tool === "highlighter" || stroke.cover
       ? [stroke.width / 2]
-      : stroke.brush === "fine"
+      : stroke.brush === "fine" || stroke.dash
         ? [stroke.width * 0.325]
         : strokeRadii(stroke, stroke.points);
   const padding = radii.reduce((largest, next) => Math.max(largest, next), 0);

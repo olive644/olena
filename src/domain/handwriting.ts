@@ -17,6 +17,11 @@ export type HandwritingPaper =
 export type HandwritingPaperColor = "light" | "aged" | "night";
 export type HandwritingStroke = {
   brush?: "fine" | "ink" | "soft";
+  // Sem o campo, a linha é contínua (traços antigos abrem iguais).
+  dash?: "dashed" | "dotted";
+  // Traço da borracha de fundo: não deixa tinta, apaga o fundo importado (página ou imagem) por
+  // onde passa e revela o papel. Sem o campo, é tinta (traços antigos abrem iguais).
+  cover?: true;
   id: string;
   tool: "pen" | "highlighter";
   color: string;

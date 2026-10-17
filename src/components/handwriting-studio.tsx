@@ -59,7 +59,7 @@ import { shouldIgnoreTouch, type PalmState } from "./handwriting-palm";
 import { restoreStrokes } from "./handwriting-undo";
 import type { RemoteCursor } from "../hooks/use-notebook-collaboration";
 import { cursorColor } from "./handwriting-cursor";
-import { canonicalShape, recognizeShape } from "./handwriting-shapes";
+import { canonicalShape, recognizeShape, type ShapeKind } from "./handwriting-shapes";
 import { HandwritingShapeInsert, type InsertKind } from "./handwriting-shape-insert";
 import { predictedTail, withPredictedTail } from "./handwriting-prediction";
 import { compactPoints } from "./handwriting-precision";
@@ -68,7 +68,22 @@ import { useSelectionGesture } from "../hooks/use-selection-gesture";
 import { usePinchZoom } from "../hooks/use-pinch-zoom";
 import { useEditorShortcuts } from "../hooks/use-editor-shortcuts";
 import { renderPageScene, type PageScene } from "./handwriting-page-scene";
-import { drawSelectionOverlay, type SelectionScene } from "./handwriting-selection-scene";
+import {
+  drawSelectionOverlay,
+  moveCoordinateSystems,
+  moveImages,
+  moveStickies,
+  moveStrokes,
+  moveTextFrame as shiftTextFrame,
+  type SelectionScene,
+} from "./handwriting-selection-scene";
+import {
+  combineWithRecentLines,
+  pruneRecentLines,
+  type RecentLine,
+} from "./handwriting-multi-stroke";
+import { MAX_CONTROL_POINTS, dedupeControls, splinePoints } from "./handwriting-spline";
+import { clampSpaceShift, itemsBelowLine } from "./handwriting-vertical-space";
 import {} from "./handwriting-selection-ops";
 import { eraseInkArea, eraseWholeStrokes } from "./handwriting-eraser";
 import { pointerSamples } from "./handwriting-pointer";
@@ -207,6 +222,7 @@ export function HandwritingStudio({
   const viewportRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
+  const [dash, setDash] = useState<Stroke["dash"]>(undefined);
   const [rulerUnit, setRulerUnit] = useState<RulerUnit>("cm");
   const [rulerKind, setRulerKind] = useState<RulerKind>("straight");
   const [coordinateStep, setCoordinateStep] = useState<1 | 2 | 5 | 10>(1);
@@ -321,6 +337,16 @@ export function HandwritingStudio({
     start: HandwritingPoint;
     end: HandwritingPoint;
   } | null>(null);
+  // Espaço vertical: `y` é a linha de corte e `shift` o quanto abrir (positivo) ou fechar.
+  const [spaceDrag, setSpaceDrag] = useState<{ y: number; shift: number } | null>(null);
+  const spaceDragRef = useRef<{ y: number; shift: number } | null>(null);
+  const [spaceGuide, setSpaceGuide] = useState<number | null>(null);
+  // Curva: pontos de controle já marcados, o ponto em arrasto (ainda não marcado) e o cursor do
+  // teclado. `curveClickRef` guarda o último toque para reconhecer o toque duplo que conclui.
+  const [curveControls, setCurveControls] = useState<HandwritingPoint[]>([]);
+  const [curveDrag, setCurveDrag] = useState<HandwritingPoint | null>(null);
+  const [curveCursor, setCurveCursor] = useState<HandwritingPoint | null>(null);
+  const curveClickRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const activePointerRef = useRef<number | null>(null);
   const panRef = useRef<{
     pointerId: number;
@@ -348,6 +374,10 @@ export function HandwritingStudio({
   // rabisco e o resto do gesto é ignorado até a caneta ser solta.
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const shapeSnappedRef = useRef(false);
+  // Tipo da forma em que o "segurar para acertar" transformou o traço de agora, e as retas
+  // acertadas há pouco: uma nova reta pode fechar com elas um triângulo ou um retângulo.
+  const shapeKindRef = useRef<ShapeKind | null>(null);
+  const recentLinesRef = useRef<RecentLine[]>([]);
   // Ponta prevista pelo navegador: só é desenhada na tela, nunca entra no traço.
   const predictedRef = useRef<HandwritingPoint[]>([]);
   // Ponto onde a caneta paira sem tocar a folha (prévia da ponta); nulo quando não paira,
@@ -419,7 +449,9 @@ export function HandwritingStudio({
   const penInk = useRef(legacyPaperColor === "night" ? "#fff9ef" : "#17151c");
   function setTool(next: HandwritingTool) {
     setMobileDrawer(
-      ["pen", "eraser", "highlighter", "ruler", "coordinates", "select"].includes(next)
+      ["pen", "eraser", "highlighter", "ruler", "space", "curve", "coordinates", "select"].includes(
+        next,
+      )
         ? "tool"
         : null,
     );
@@ -429,6 +461,8 @@ export function HandwritingStudio({
     setWritingWindowOpen(false);
     setStickyMenuId(null);
     setStickyColorMenuId(null);
+    // Segurar Espaço troca para a mão (rolar a folha) e volta: a curva em andamento continua.
+    if (next !== "curve" && next !== "hand" && curveControls.length > 0) finishCurve();
     if (next === "highlighter" && tool !== "highlighter") {
       penInk.current = color;
       setColor("#facc15");
@@ -477,6 +511,9 @@ export function HandwritingStudio({
   const [width, setWidth] = useState(5);
   const [eraserWidth, setEraserWidth] = useState(10);
   const [eraserWholeStroke, setEraserWholeStroke] = useState(false);
+  const [eraserBackground, setEraserBackground] = useState(false);
+  // A borracha de fundo só faz sentido com uma página ou imagem importada na folha.
+  const backgroundAvailable = Boolean(background) || importedImages.length > 0;
   const [highlighterOpacity, setHighlighterOpacity] = useState(0.3);
   const [gestureRevision, setGestureRevision] = useState(0);
   const remoteBaseRef = useRef<HandwritingDocument | undefined>(initialDocument);
@@ -1241,11 +1278,11 @@ export function HandwritingStudio({
       penDetectedRef.current = true;
       changePreference("penOnly", true);
     }
-    const effectiveTool: HandwritingTool = isPenEraserTip
-      ? "eraser"
-      : isPenBarrelButton
-        ? "hand"
-        : tool;
+    const rawTool: HandwritingTool = isPenEraserTip ? "eraser" : isPenBarrelButton ? "hand" : tool;
+    // Borracha de fundo: em vez de apagar tinta, desenha um traço de cobertura que fura o fundo
+    // importado ao ser solto. Daí em diante o gesto é o de um traço comum.
+    const coverErase = rawTool === "eraser" && eraserBackground && backgroundAvailable;
+    const effectiveTool: HandwritingTool = coverErase ? "pen" : rawTool;
     activeToolRef.current = effectiveTool;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1300,6 +1337,18 @@ export function HandwritingStudio({
       setCoordinateMeasure({ start: point, end: point });
       return;
     }
+    if (effectiveTool === "curve") {
+      setCurveDrag(point);
+      return;
+    }
+    if (effectiveTool === "space") {
+      remember();
+      const drag = { y: point.y, shift: 0 };
+      spaceDragRef.current = drag;
+      setSpaceDrag(drag);
+      setSpaceGuide(point.y);
+      return;
+    }
     if (effectiveTool === "select") {
       selectionGesture.begin(
         event,
@@ -1317,15 +1366,26 @@ export function HandwritingStudio({
       return;
     }
     const activeWidth = effectiveTool === "highlighter" ? Math.min(100, width * 2.5) : width;
-    const nextStroke: Stroke = {
-      id: strokeId(),
-      tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
-      ...(effectiveTool === "pen" ? { brush } : {}),
-      ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
-      color,
-      width: activeWidth,
-      points: [point],
-    };
+    const nextStroke: Stroke = coverErase
+      ? {
+          id: strokeId(),
+          tool: "pen",
+          brush: "fine",
+          cover: true,
+          color: "#7433e0",
+          width: Math.min(100, eraserWidth * 6),
+          points: [point],
+        }
+      : {
+          id: strokeId(),
+          tool: effectiveTool === "ruler" ? "pen" : effectiveTool,
+          ...(effectiveTool === "pen" ? { brush } : {}),
+          ...(effectiveTool === "pen" && dash ? { dash } : {}),
+          ...(effectiveTool === "highlighter" ? { opacity: highlighterOpacity } : {}),
+          color,
+          width: activeWidth,
+          points: [point],
+        };
     if (effectiveTool !== "ruler") liveStrokeRef.current = nextStroke;
     liveStabilizerRef.current =
       stabilization && effectiveTool !== "ruler"
@@ -1336,6 +1396,7 @@ export function HandwritingStudio({
         : null;
     clearTimeout(holdTimerRef.current);
     shapeSnappedRef.current = false;
+    shapeKindRef.current = null;
     // O traço em andamento fica só na camada ao vivo; a folha o recebe ao soltar a caneta.
     if (effectiveTool !== "ruler") {
       paintLive();
@@ -1410,6 +1471,22 @@ export function HandwritingStudio({
           return nextMeasurement;
         });
     }
+    if (activeToolRef.current === "curve") {
+      const end = points.at(-1);
+      if (end) setCurveDrag(end);
+    }
+    if (activeToolRef.current === "space") {
+      const end = points.at(-1);
+      const drag = spaceDragRef.current;
+      if (end && drag) {
+        const next = {
+          y: drag.y,
+          shift: clampSpaceShift(selectionScene, drag.y, end.y - drag.y, PAGE_HEIGHT),
+        };
+        spaceDragRef.current = next;
+        setSpaceDrag(next);
+      }
+    }
     if (activeToolRef.current === "coordinates") {
       const end = points.at(-1);
       if (end)
@@ -1478,6 +1555,7 @@ export function HandwritingStudio({
     liveStabilizerRef.current = null;
     predictedRef.current = [];
     shapeSnappedRef.current = true;
+    shapeKindRef.current = shape.kind;
     scheduleLivePaint();
   }
 
@@ -1525,6 +1603,25 @@ export function HandwritingStudio({
       return;
     }
     setRulerMeasure(null);
+    if (activeToolRef.current === "curve") {
+      const canvas = canvasRef.current;
+      setCurveDrag(null);
+      // Um cancelamento (palma, perda do ponteiro) não marca ponto.
+      if (canvas && event.type === "pointerup") placeCurvePoint(canvasPoint(canvas, event));
+      activePointerRef.current = null;
+      drawingRef.current = false;
+      return;
+    }
+    if (activeToolRef.current === "space") {
+      const drag = spaceDragRef.current;
+      spaceDragRef.current = null;
+      setSpaceDrag(null);
+      if (drag && Math.abs(drag.shift) >= 1) applySpaceShift(drag.y, drag.shift);
+      else setUndoStack((history) => history.slice(0, -1));
+      activePointerRef.current = null;
+      drawingRef.current = false;
+      return;
+    }
     if (activeToolRef.current === "coordinates" && coordinateMeasure) {
       const width = Math.abs(coordinateMeasure.end.x - coordinateMeasure.start.x);
       const height = Math.abs(coordinateMeasure.end.y - coordinateMeasure.start.y);
@@ -1584,8 +1681,28 @@ export function HandwritingStudio({
         y: Math.max(0, Math.min(PAGE_HEIGHT, point.y)),
       })),
     );
-    commitLiveStroke({ ...liveStroke, points });
-    setStrokes((current) => [...current, { ...liveStroke, points }]);
+    const finished: Stroke = { ...liveStroke, points };
+    // Reta acertada de propósito: pode fechar uma forma com as retas acertadas logo antes. Tudo
+    // acontece neste mesmo gesto, então um passo de desfazer volta ao que havia antes desta reta.
+    const snappedLine = shapeSnappedRef.current && shapeKindRef.current === "line";
+    const now = performance.now();
+    const recent = pruneRecentLines(recentLinesRef.current, now, strokes);
+    const combined = snappedLine
+      ? combineWithRecentLines(strokes, recent, finished, strokeId)
+      : null;
+    if (combined) {
+      recentLinesRef.current = [];
+      commitLiveStroke(combined.stroke);
+      const removed = new Set(combined.remove);
+      setStrokes((current) => [
+        ...current.filter((stroke) => !removed.has(stroke.id)),
+        combined.stroke,
+      ]);
+      return;
+    }
+    recentLinesRef.current = snappedLine ? [...recent, { id: finished.id, time: now }] : [];
+    commitLiveStroke(finished);
+    setStrokes((current) => [...current, finished]);
   }
 
   function settleLiveStroke(points: HandwritingPoint[]): HandwritingPoint[] {
@@ -2116,6 +2233,7 @@ export function HandwritingStudio({
       id: strokeId(),
       tool: "pen",
       brush,
+      ...(dash ? { dash } : {}),
       color,
       width,
       points: [writingPoint(event.nativeEvent)],
@@ -2354,10 +2472,134 @@ export function HandwritingStudio({
     viewportRef,
   );
 
+  // Move tudo o que está abaixo da linha. Usa os ids da folha de agora e atualizações funcionais,
+  // para não apagar um traço que um colega acrescentou enquanto a linha era arrastada.
+  function applySpaceShift(lineY: number, shift: number) {
+    const items = itemsBelowLine(selectionScene, lineY);
+    const page = { width: PAGE_WIDTH, height: PAGE_HEIGHT };
+    setStrokes((current) => moveStrokes(current, items.strokeIds, 0, shift, page));
+    setCoordinateSystems((current) =>
+      moveCoordinateSystems(current, items.coordinateIds, 0, shift, page),
+    );
+    setStickies((current) => moveStickies(current, items.stickyIds, 0, shift, page));
+    setImportedImages((current) => moveImages(current, items.imageIds, 0, shift, page));
+    if (items.moveText) setPageTextFrame((frame) => shiftTextFrame(frame, 0, shift, page));
+  }
+
+  // Curva: marcar um ponto, concluir (gera um traço comum com a caneta de agora) e cancelar.
+  const CURVE_CURSOR_STEP = 12;
+  const curveCursorAt = curveCursor ?? {
+    x: Math.round(PAGE_WIDTH / 2),
+    y: Math.round(PAGE_HEIGHT / 3),
+    pressure: 0.5,
+  };
+
+  function finishCurve() {
+    const controls = dedupeControls(curveControls);
+    setCurveControls([]);
+    setCurveDrag(null);
+    curveClickRef.current = null;
+    if (controls.length < 2) return;
+    const points = splinePoints(controls, 0.5, { width: PAGE_WIDTH, height: PAGE_HEIGHT });
+    remember();
+    setStrokes((current) => [
+      ...current,
+      {
+        id: strokeId(),
+        tool: "pen",
+        brush,
+        ...(dash ? { dash } : {}),
+        color,
+        width,
+        points,
+      },
+    ]);
+  }
+
+  function placeCurvePoint(point: HandwritingPoint) {
+    const now = performance.now();
+    const last = curveClickRef.current;
+    setCurveCursor(point);
+    // Dois toques no mesmo lugar concluem a curva, sem marcar o ponto de novo.
+    if (
+      last &&
+      now - last.time < 400 &&
+      Math.hypot(point.x - last.x, point.y - last.y) < 14 &&
+      curveControls.length >= 2
+    ) {
+      finishCurve();
+      return;
+    }
+    curveClickRef.current = { x: point.x, y: point.y, time: now };
+    setCurveControls((current) =>
+      current.length >= MAX_CONTROL_POINTS ? current : [...current, point],
+    );
+  }
+
+  function handleCurveKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
+    const step = (event.shiftKey ? 4 : 1) * CURVE_CURSOR_STEP;
+    const moves: Record<string, [number, number]> = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, -step],
+      ArrowDown: [0, step],
+    };
+    const move = moves[event.key];
+    if (move) {
+      event.preventDefault();
+      setCurveCursor({
+        x: Math.max(0, Math.min(PAGE_WIDTH, curveCursorAt.x + move[0])),
+        y: Math.max(0, Math.min(PAGE_HEIGHT, curveCursorAt.y + move[1])),
+        pressure: 0.5,
+      });
+    } else if (event.key === "Enter" && event.shiftKey) {
+      event.preventDefault();
+      finishCurve();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      setCurveControls((current) =>
+        current.length >= MAX_CONTROL_POINTS ? current : [...current, curveCursorAt],
+      );
+    } else if (event.key === "Escape" && curveControls.length > 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      setCurveControls([]);
+      setCurveDrag(null);
+    } else if (event.key === "Backspace" || event.key === "Delete") {
+      event.preventDefault();
+      setCurveControls((current) => current.slice(0, -1));
+    }
+  }
+
+  const SPACE_GUIDE_STEP = 24;
+  const SPACE_KEY_SHIFT = 48;
+  const spaceGuideY = Math.max(0, Math.min(PAGE_HEIGHT, spaceGuide ?? Math.round(PAGE_HEIGHT / 3)));
+
+  function handleSpaceKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const direction = event.key === "ArrowDown" ? 1 : -1;
+    if (!event.shiftKey) {
+      setSpaceGuide(Math.max(0, Math.min(PAGE_HEIGHT, spaceGuideY + direction * SPACE_GUIDE_STEP)));
+      return;
+    }
+    const shift = clampSpaceShift(
+      selectionScene,
+      spaceGuideY,
+      direction * SPACE_KEY_SHIFT,
+      PAGE_HEIGHT,
+    );
+    if (Math.abs(shift) < 1) return;
+    remember();
+    applySpaceShift(spaceGuideY, shift);
+  }
+
   function handleCanvasKeyDown(event: ReactKeyboardEvent<HTMLCanvasElement>) {
     const viewport = viewportRef.current;
     const canvas = canvasRef.current;
     if (!viewport || !canvas) return;
+    if (tool === "space") handleSpaceKeyDown(event);
+    if (tool === "curve") handleCurveKeyDown(event);
     if (
       (tool === "zoom-in" || tool === "zoom-out") &&
       (event.key === "Enter" || event.key === " ")
@@ -2582,8 +2824,13 @@ export function HandwritingStudio({
           onWidthChange={tool === "eraser" ? setEraserWidth : setWidth}
           eraserWholeStroke={eraserWholeStroke}
           onEraserWholeStrokeChange={setEraserWholeStroke}
+          eraserBackground={eraserBackground}
+          onEraserBackgroundChange={setEraserBackground}
+          backgroundAvailable={backgroundAvailable}
           highlighterOpacity={highlighterOpacity}
           onHighlighterOpacityChange={setHighlighterOpacity}
+          dash={dash}
+          onDashChange={setDash}
         />
 
         <HandwritingHistoryBar
@@ -3018,6 +3265,106 @@ export function HandwritingStudio({
                   </svg>
                 );
               })()}
+            {tool === "curve" && !textMode && (
+              <svg
+                className="handwriting-ruler-overlay handwriting-curve-overlay"
+                viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
+                aria-hidden="true"
+              >
+                {(() => {
+                  const preview = splinePoints(
+                    curveDrag ? [...curveControls, curveDrag] : curveControls,
+                  );
+                  return preview.length > 1 ? (
+                    <path
+                      d={`M${preview.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join("L")}`}
+                      fill="none"
+                      stroke={color}
+                      strokeWidth={Math.max(2, width * 0.65)}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeDasharray={dash ? (dash === "dashed" ? "14 12" : "1 10") : undefined}
+                      opacity="0.85"
+                    />
+                  ) : null;
+                })()}
+                {curveControls.map((control, index) => (
+                  <rect
+                    key={`${control.x}-${control.y}-${index}`}
+                    x={control.x - 7}
+                    y={control.y - 7}
+                    width="14"
+                    height="14"
+                    fill="#7433e0"
+                    stroke="#fff9ef"
+                    strokeWidth="2"
+                  />
+                ))}
+                {curveDrag && (
+                  <rect
+                    x={curveDrag.x - 7}
+                    y={curveDrag.y - 7}
+                    width="14"
+                    height="14"
+                    fill="#facc15"
+                    stroke="#7433e0"
+                    strokeWidth="2"
+                  />
+                )}
+                {curveCursor && !curveDrag && (
+                  <path
+                    d={`M${curveCursor.x - 14} ${curveCursor.y}H${curveCursor.x + 14}M${curveCursor.x} ${curveCursor.y - 14}V${curveCursor.y + 14}`}
+                    stroke="#7433e0"
+                    strokeWidth="3"
+                  />
+                )}
+              </svg>
+            )}
+            {tool === "curve" && !textMode && curveControls.length > 0 && (
+              <p className="visually-hidden" role="status" aria-live="polite">
+                {curveControls.length === 1
+                  ? "1 ponto marcado"
+                  : `${curveControls.length} pontos marcados`}
+                . Shift com Enter conclui a curva.
+              </p>
+            )}
+            {tool === "space" && !textMode && (
+              <svg
+                className="handwriting-ruler-overlay handwriting-space-overlay"
+                viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
+                aria-hidden="true"
+              >
+                {spaceDrag && spaceDrag.shift !== 0 && (
+                  <rect
+                    x="0"
+                    y={Math.min(spaceDrag.y, spaceDrag.y + spaceDrag.shift)}
+                    width={PAGE_WIDTH}
+                    height={Math.abs(spaceDrag.shift)}
+                    fill="#facc15"
+                    opacity="0.35"
+                  />
+                )}
+                <path
+                  d={`M0 ${spaceDrag ? spaceDrag.y : spaceGuideY}H${PAGE_WIDTH}`}
+                  fill="none"
+                  stroke="#7433e0"
+                  strokeWidth="4"
+                  strokeDasharray="18 12"
+                />
+                <rect
+                  x="0"
+                  y={(spaceDrag ? spaceDrag.y : spaceGuideY) - 14}
+                  width="28"
+                  height="28"
+                  fill="#7433e0"
+                />
+                {spaceDrag && spaceDrag.shift !== 0 && (
+                  <text x="44" y={spaceDrag.y - 12} fill="#51259b" fontSize="30" fontWeight="700">
+                    {spaceDrag.shift > 0 ? "Abrir espaço" : "Fechar espaço"}
+                  </text>
+                )}
+              </svg>
+            )}
             {coordinateMeasure && (
               <svg
                 className="handwriting-ruler-overlay"
@@ -3057,7 +3404,11 @@ export function HandwritingStudio({
                       ? "Arraste a folha para mover"
                       : tool === "select"
                         ? "Arraste para selecionar traços"
-                        : "Folha para escrita à mão com dedo ou caneta"
+                        : tool === "curve"
+                          ? "Curva: toque para marcar pontos e toque duas vezes para concluir. Com o teclado, setas movem o cursor, Enter marca o ponto, Shift com Enter conclui, Backspace desfaz o último e Escape cancela"
+                          : tool === "space"
+                            ? "Espaço vertical: arraste para abrir ou fechar espaço. Com o teclado, setas movem a linha e Shift com setas abre ou fecha espaço"
+                            : "Folha para escrita à mão com dedo ou caneta"
               }
               onPointerDown={start}
               onPointerMove={move}

@@ -8,8 +8,11 @@ type ObjectIcon =
   | "shapes"
   | "ruler"
   | "coordinate-system"
+  | "space"
+  | "curve"
   | "eraseArea"
-  | "eraseStroke";
+  | "eraseStroke"
+  | "eraseBackground";
 const outlines: Record<ShapeKind, string> = {
   line: "M8 35 39 12",
   ellipse: "M40 24C40 13 32 8 24 8S8 13 8 24s8 16 16 16 16-5 16-16Z",
@@ -75,6 +78,40 @@ export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
           <path d="m5 32 27-27 9 9-27 27Z" fill="#FACC15" />
           <path d="m10 27 4 4m2-10 5 5m2-11 5 5m2-11 4 4" stroke="#51465D" strokeWidth="2" />
           <path d="m8 30 3 3 24-24-3-3Z" fill="#FFE88D" />
+        </>
+      ) : name === "eraseBackground" ? (
+        <>
+          <path d="M7 9h30v34H7Z" fill="#51259B" />
+          <path d="M7 6h30v34H7Z" fill="#A779EF" />
+          <path d="M12 12h20v10H12Zm0 14h12v8H12Z" fill="#7C3AED" />
+          <path d="M20 14c6-3 15 0 14 8s-9 11-16 8-4-13 2-16Z" fill="#FFF9EF" />
+          <path d="m31 27 12 4-3 11-12-4Z" fill="#FACC15" />
+        </>
+      ) : name === "curve" ? (
+        <>
+          <path
+            d="M6 36C14 8 24 8 26 24s10 16 16-14"
+            fill="none"
+            stroke="#51259B"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+          <path
+            d="M6 34C14 6 24 6 26 22s10 16 16-14"
+            fill="none"
+            stroke="#A779EF"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+          <path d="M3 31h6v6H3Zm17-17h6v6h-6Zm19 3h6v6h-6Z" fill="#FACC15" />
+        </>
+      ) : name === "space" ? (
+        <>
+          <path d="M5 8h38v8H5Z" fill="#51259B" />
+          <path d="M5 6h38v8H5Z" fill="#A779EF" />
+          <path d="M5 34h38v8H5Z" fill="#51259B" />
+          <path d="M5 32h38v8H5Z" fill="#A779EF" />
+          <path d="M24 16l6 6h-4v4h4l-6 6-6-6h4v-4h-4Z" fill="#FACC15" />
         </>
       ) : name === "coordinate-system" ? (
         <>

@@ -184,6 +184,31 @@ export function drawHoverPreview(
   context.restore();
 }
 
+// Pontas redondas alongam cada traço em uma espessura, então o padrão desconta esse excesso:
+// no tracejado o risco visível tem 3,6 espessuras e o vão 2,2; no pontilhado a bolinha é um
+// comprimento quase nulo e o vão visível é de 1,4.
+export function dashPattern(dash: NonNullable<Stroke["dash"]>, lineWidth: number): number[] {
+  return dash === "dashed" ? [lineWidth * 2.6, lineWidth * 3.2] : [0.01, lineWidth * 2.4];
+}
+
+// O traço da borracha de fundo como máscara: com `destination-out` no contexto, apaga o que
+// estiver por baixo, em largura constante.
+export function drawCoverMask(context: CanvasRenderingContext2D, stroke: Stroke) {
+  const first = stroke.points[0];
+  if (!first) return;
+  context.save();
+  context.strokeStyle = "#000000";
+  context.globalAlpha = 1;
+  context.lineWidth = stroke.width;
+  context.lineCap = "round";
+  context.lineJoin = "round";
+  context.beginPath();
+  strokeSmoothPath(context, stroke.points);
+  if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
+  context.stroke();
+  context.restore();
+}
+
 export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
   const first = stroke.points[0];
   if (!first) return;
@@ -194,8 +219,24 @@ export function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
     stroke.tool === "highlighter" ? (stroke.opacity ?? 0.3) : stroke.brush === "soft" ? 0.3 : 1;
   context.lineCap = "round";
   context.lineJoin = "round";
-  if (stroke.tool === "highlighter" || stroke.brush === "fine") {
+  // Traço da borracha de fundo: aqui é só a prévia (uma faixa roxa clara sobre a área que vai
+  // ser apagada); o efeito de verdade é o furo no fundo, feito em `renderPage`.
+  if (stroke.cover) {
+    context.strokeStyle = "#7433e0";
+    context.globalAlpha = 0.18;
+    context.lineWidth = stroke.width;
+    context.beginPath();
+    strokeSmoothPath(context, stroke.points);
+    if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
+    context.stroke();
+    context.restore();
+    return;
+  }
+  // Linha tracejada ou pontilhada usa sempre a espessura constante: o contorno de largura
+  // variável dos outros pincéis é preenchido e não aceita padrão de traço.
+  if (stroke.tool === "highlighter" || stroke.brush === "fine" || stroke.dash) {
     context.lineWidth = stroke.tool === "highlighter" ? stroke.width : stroke.width * 0.65;
+    if (stroke.dash) context.setLineDash(dashPattern(stroke.dash, context.lineWidth));
     context.beginPath();
     strokeSmoothPath(context, stroke.points);
     if (stroke.points.length === 1) context.lineTo(first.x + 0.1, first.y);
@@ -249,30 +290,56 @@ export function renderPage(
   const context = pageContext(canvas);
   if (!context) return;
   drawPaper(context, paper, paperColor);
-  if (layerVisibility.background && background)
-    context.drawImage(
-      background,
-      backgroundFrame.x,
-      backgroundFrame.y,
-      backgroundFrame.width,
-      backgroundFrame.height,
-    );
-  if (layerVisibility.background) {
-    for (const imported of importedImages) {
-      context.save();
-      const centerX = imported.frame.x + imported.frame.width / 2;
-      const centerY = imported.frame.y + imported.frame.height / 2;
-      context.translate(centerX, centerY);
-      context.rotate(((imported.rotation ?? 0) * Math.PI) / 180);
-      context.drawImage(
-        imported.image,
-        -imported.frame.width / 2,
-        -imported.frame.height / 2,
-        imported.frame.width,
-        imported.frame.height,
+  const drawBackdrop = (target: CanvasRenderingContext2D) => {
+    if (layerVisibility.background && background)
+      target.drawImage(
+        background,
+        backgroundFrame.x,
+        backgroundFrame.y,
+        backgroundFrame.width,
+        backgroundFrame.height,
       );
-      context.restore();
+    if (layerVisibility.background) {
+      for (const imported of importedImages) {
+        target.save();
+        const centerX = imported.frame.x + imported.frame.width / 2;
+        const centerY = imported.frame.y + imported.frame.height / 2;
+        target.translate(centerX, centerY);
+        target.rotate(((imported.rotation ?? 0) * Math.PI) / 180);
+        target.drawImage(
+          imported.image,
+          -imported.frame.width / 2,
+          -imported.frame.height / 2,
+          imported.frame.width,
+          imported.frame.height,
+        );
+        target.restore();
+      }
     }
+  };
+  // Borracha de fundo: o fundo (página e imagens) é desenhado à parte, furado pelos traços de
+  // `cover` e só então posto sobre o papel, que aparece pelos furos (a pauta e o quadriculado
+  // continuam, ao contrário de uma tinta branca por cima).
+  const covers = strokes.filter((stroke) => stroke.cover);
+  const scratch =
+    layerVisibility.background && covers.length > 0 && (background || importedImages.length > 0)
+      ? document.createElement("canvas")
+      : null;
+  const scratchContext = scratch?.getContext("2d") ?? null;
+  if (scratch && scratchContext) {
+    scratch.width = canvas.width;
+    scratch.height = canvas.height;
+    const scale = canvas.width / Number(canvas.dataset["pageWidth"] || PAGE_WIDTH);
+    scratchContext.setTransform(scale, 0, 0, scale, 0, 0);
+    drawBackdrop(scratchContext);
+    scratchContext.globalCompositeOperation = "destination-out";
+    for (const stroke of covers) drawCoverMask(scratchContext, stroke);
+    context.save();
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.drawImage(scratch, 0, 0);
+    context.restore();
+  } else {
+    drawBackdrop(context);
   }
   const drawStrokesLayer = () => {
     if (!layerVisibility.strokes) return;
@@ -281,9 +348,11 @@ export function renderPage(
       paperColor === "night" && (!background || !layerVisibility.background)
         ? "screen"
         : "multiply";
-    for (const stroke of strokes) if (stroke.tool === "highlighter") drawStroke(context, stroke);
+    for (const stroke of strokes)
+      if (stroke.tool === "highlighter" && !stroke.cover) drawStroke(context, stroke);
     context.restore();
-    for (const stroke of strokes) if (stroke.tool !== "highlighter") drawStroke(context, stroke);
+    for (const stroke of strokes)
+      if (stroke.tool !== "highlighter" && !stroke.cover) drawStroke(context, stroke);
   };
   const drawCoordinatesLayer = () => {
     if (!layerVisibility.coordinates) return;

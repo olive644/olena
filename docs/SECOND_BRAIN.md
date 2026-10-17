@@ -645,6 +645,39 @@ a fila uma vez por frame e a escoa em pointerup. Testar mouse, pen e touch em
 `handwriting-area-ink.spec.ts`; percentuais, pastas e tema em
 `notebook-folders-ink.spec.ts`. Nenhuma medição sintética promete latência física.
 
+Estilo da linha: `HandwritingStroke.dash` (`dashed` ou `dotted`, ausente é contínua) vale só para a
+caneta e é desenhado por `drawStroke` com espessura constante e o padrão de `dashPattern`. A
+borracha e `strokeInkBounds` usam a mesma espessura. Teste em `handwriting-dash-style.test.ts` e
+`handwriting-dash.spec.ts`.
+
+Espaço vertical: ferramenta `space` (`HandwritingTool`). A regra de quem desce e de quanto dá para
+mover vive em `handwriting-vertical-space.ts` (`itemsBelowLine`, `clampSpaceShift`); o editor só
+captura o gesto e aplica com atualizações funcionais (`applySpaceShift`). Não grava campo novo na
+folha. Teste em `handwriting-vertical-space.test.ts` e `handwriting-vertical-space.spec.ts`.
+
+Reconhecimento de formas (`recognizeShape`): retas e cabos de seta a até 5 graus do eixo encaixam
+nele (`snapToAxis`, pivô no início do traço); retângulos usam a caixa dos eixos até 5 graus e o
+menor retângulo girado acima disso, só se os quatro cantos tiverem tinta (barra elipse inclinada).
+Teste em `handwriting-shapes.test.ts` e `handwriting-axis-snap.spec.ts`.
+
+Curva: ferramenta `curve`. `handwriting-spline.ts` (`splinePoints`, `dedupeControls`) gera o traço
+por Catmull-Rom centrípeta; o editor guarda os pontos de controle (`curveControls`), marca por
+toque ou por Enter e conclui por toque duplo ou Shift com Enter, gerando um traço comum. A tecla
+Espaço é do atalho global de mão temporária e não deve ser usada nesta ferramenta. Teste em
+`handwriting-spline.test.ts` e `handwriting-curve.spec.ts`.
+
+Borracha de fundo: terceiro modo da borracha, que cria um traço com `cover: true` em vez de apagar
+tinta. `renderPage` desenha o fundo importado à parte, fura com `destination-out` pelos traços de
+cobertura e põe sobre o papel; a tinta não é tocada. Traço de cobertura nunca vai para a camada de
+tinta. Teste em `handwriting-background-erase.test.ts` e `handwriting-background-erase.spec.ts`.
+
+Formas com vários traços: `closeLines` (`handwriting-shapes.ts`) acha o triângulo, o retângulo ou o
+quadrilátero que a reta nova fecha com as retas acertadas há pouco; `handwriting-multi-stroke.ts`
+guarda essas retas (`pruneRecentLines`) e junta as de mesmo estilo (`combineWithRecentLines`). O
+editor só registra retas que o "segurar para acertar" endireitou e fecha a forma no mesmo gesto da
+última, para um passo de desfazer bastar. Teste em `handwriting-multi-stroke.test.ts` e
+`handwriting-multi-stroke.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita
