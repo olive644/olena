@@ -56,7 +56,7 @@ it("organiza as opções reais sem placeholders e muda o Pomodoro pelo painel de
 it("edita a identidade sem trocar a conta Google nem recriar a foto no cabeçalho", async () => {
   openProfile();
   fireEvent.click(screen.getByRole("button", { name: "Editar perfil" }));
-  fireEvent.change(screen.getByLabelText("Apelido"), { target: { value: "Estudante" } });
+  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Estudante" } });
   fireEvent.click(screen.getByRole("button", { name: "Salvar perfil" }));
   await waitFor(() =>
     expect(JSON.parse(localStorage.getItem("helena.profile.v1")!)).toMatchObject({

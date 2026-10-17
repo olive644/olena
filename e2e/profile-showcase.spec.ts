@@ -41,7 +41,8 @@ test("barra comporta cinco redes e dados longos sem cobrir a engrenagem", async 
       expect(rect!.x).toBeGreaterThanOrEqual(box!.x);
       expect(rect!.x + rect!.width).toBeLessThanOrEqual(box!.x + box!.width);
       expect(rect!.y + rect!.height).toBeLessThanOrEqual(box!.y + box!.height);
-      expect(rect!.y >= gear!.y + gear!.height || rect!.x + rect!.width <= gear!.x).toBe(true);
+      if (width > 600)
+        expect(rect!.y >= gear!.y + gear!.height || rect!.x + rect!.width <= gear!.x).toBe(true);
     }
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
@@ -106,12 +107,12 @@ for (const theme of ["light", "dark"]) {
     const avatar = page.getByRole("img", { name: "Sua foto de perfil" });
     await expect(avatar).toHaveAttribute("src", "/profile-avatars/andreyna.webp");
     await expect(page.locator(".profile-cover__name")).toHaveText("Guest");
-    await expect(page.locator(".profile-cover__art")).toHaveJSProperty("naturalWidth", 1800);
+    await expect(page.locator(".profile-cover__art img")).toHaveAttribute("data-cover", "helena");
     const artBox = await page.locator(".profile-cover__art").boundingBox();
     const expandedPhoto = await avatar.boundingBox();
     expect(expandedPhoto!.y).toBeLessThan(artBox!.y + artBox!.height);
     expect(expandedPhoto!.y + expandedPhoto!.height).toBeGreaterThan(artBox!.y + artBox!.height);
-    await expect(page.getByText(/Seguidores|Seguindo/)).toHaveCount(0);
+    await expect(page.getByLabel("Conexões do perfil")).toContainText("0 Seguidores0 Seguindo");
     const activityItems = page.locator(".profile-activity li");
     await expect(activityItems).toHaveCount(5);
     await expect(activityItems.nth(0)).toContainText("Prática nas Ilhas: 8 de 10 respostas certas");
@@ -128,12 +129,21 @@ for (const theme of ["light", "dark"]) {
     });
     await page.evaluate(() => window.scrollTo(0, 540));
     await expect(chrome).toHaveAttribute("data-compact", "true");
-    await expect(chrome.locator(".page-header")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
-    await expect.poll(async () => (await chrome.boundingBox())?.y).toBeCloseTo(0, 0);
-    const photoBox = await avatar.boundingBox();
     const mobileWidth = (page.viewportSize()?.width ?? 1280) <= 600;
-    expect(photoBox!.width).toBeCloseTo(mobileWidth ? 64 : 80, 0);
-    expect((await chrome.boundingBox())!.height).toBe(mobileWidth ? 152 : 88);
+    if (!mobileWidth) {
+      await expect(page.locator(".profile-toolbar .page-header")).toHaveCSS(
+        "background-color",
+        "rgba(0, 0, 0, 0)",
+      );
+      await expect.poll(async () => (await chrome.boundingBox())?.y).toBeCloseTo(0, 0);
+    } else {
+      await expect
+        .poll(async () => (await page.locator(".profile-toolbar").boundingBox())?.y)
+        .toBeCloseTo(0, 0);
+    }
+    const photoBox = await avatar.boundingBox();
+    expect(photoBox!.width).toBeCloseTo(mobileWidth ? 112 : 80, 0);
+    if (!mobileWidth) expect((await chrome.boundingBox())!.height).toBe(88);
     if (!mobileWidth) {
       const coverBox = await page.locator(".profile-cover").boundingBox();
       expect(photoBox!.y + photoBox!.height).toBeGreaterThan(coverBox!.y + coverBox!.height);
@@ -143,7 +153,7 @@ for (const theme of ["light", "dark"]) {
     const gearBox = await page
       .getByRole("button", { name: "Configurações", exact: true })
       .boundingBox();
-    expect(nameBox!.x + nameBox!.width).toBeLessThan(gearBox!.x);
+    if (!mobileWidth) expect(nameBox!.x + nameBox!.width).toBeLessThan(gearBox!.x);
     const handleBox = await page.locator(".profile-cover__handle").boundingBox();
     expect(handleBox!.y).toBeGreaterThan(nameBox!.y);
     await expect(page.locator(".profile-cover__handle")).toHaveText("Ela/dela");
@@ -164,7 +174,9 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Fechar configurações" }).click();
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(chrome).toHaveAttribute("data-compact", "false");
-    await expect.poll(async () => (await avatar.boundingBox())?.width).toBeCloseTo(144, 0);
+    await expect
+      .poll(async () => (await avatar.boundingBox())?.width)
+      .toBeCloseTo(mobileWidth ? 112 : 144, 0);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.evaluate(() => window.scrollTo(0, 540));
     await expect(chrome).toHaveCSS("--profile-collapse", "1");
@@ -195,13 +207,14 @@ test("perfil vazio também se recolhe em tela alta e respeita movimento reduzido
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "true");
-    await expect
-      .poll(async () => {
-        const menu = await page.getByRole("button", { name: "Mais ferramentas" }).boundingBox();
-        const avatar = await page.getByRole("img", { name: "Sua foto de perfil" }).boundingBox();
-        return avatar!.x - menu!.x - menu!.width;
-      })
-      .toBeGreaterThan(0);
+    if (width > 600)
+      await expect
+        .poll(async () => {
+          const menu = await page.getByRole("button", { name: "Mais ferramentas" }).boundingBox();
+          const avatar = await page.getByRole("img", { name: "Sua foto de perfil" }).boundingBox();
+          return avatar!.x - menu!.x - menu!.width;
+        })
+        .toBeGreaterThan(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

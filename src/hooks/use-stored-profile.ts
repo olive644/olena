@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import type { StoredProfile } from "../domain/profile-identity";
+import { profileCover } from "../domain/profile-covers";
 export type { StoredProfile } from "../domain/profile-identity";
 export function readStoredProfile(): StoredProfile {
   try {
     const value: unknown = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}");
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
     const profile = { ...value } as StoredProfile;
+    if ("cover" in profile) profile.cover = profileCover(profile.cover);
     for (const key of ["name", "photoUrl", "username", "bio", "pronouns"] as const) {
       if (typeof profile[key] !== "string") delete profile[key];
     }

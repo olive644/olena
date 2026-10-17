@@ -1,4 +1,6 @@
+import type { ProfileCover } from "./profile-covers";
 export type StoredProfile = {
+  cover?: ProfileCover;
   name?: string;
   photoUrl?: string;
   username?: string;
@@ -47,9 +49,9 @@ export type ProfileDraft = Required<
 
 export function validateProfileDraft(draft: ProfileDraft): string | null {
   if (!draft.name.trim() || draft.name.trim().length > 60)
-    return "Use um apelido de até 60 caracteres.";
+    return "Use um nome de até 60 caracteres.";
   if (draft.username && !/^[a-z0-9._]{1,30}$/.test(draft.username))
-    return "Nome: use até 30 letras minúsculas, números, ponto ou _.";
+    return "Nome de usuário: use até 30 letras minúsculas, números, ponto ou _.";
   if (draft.bio.length > 240) return "A bio pode ter até 240 caracteres.";
   if (draft.pronouns.length > 40) return "Os pronomes podem ter até 40 caracteres.";
   const links = draft.socialLinks.filter((link) => link.trim());
