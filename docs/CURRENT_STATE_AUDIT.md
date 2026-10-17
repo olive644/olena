@@ -1,5 +1,7 @@
 # Auditoria do estado atual
 
+- Validação pré-merge (2026-10-17): E2E de avisos usa datas atuais para respeitar expiração em 48 horas; cabeçalho exige sino fora do Perfil. Transparência dos avatares mantém cantos totalmente vazios e centro opaco com tolerância mínima de decodificação WebP (alpha >= 250).
+
 ## Perfil recolhido, rótulos e controles de tinta (2026-10-16)
 
 - Sino volta por padrão em PageHeader, com opt-out explícito no Perfil. Lista de avisos rola independentemente do botão Marcar como lidas. Avisos do sistema com 48 horas ou mais ficam ocultos sem apagar recibos de leitura. A parte social deve entrar em mudança própria de armazenamento remoto, não como notificações fabricadas.

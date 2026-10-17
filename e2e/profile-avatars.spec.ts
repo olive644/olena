@@ -47,7 +47,8 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
           center: context.getImageData(256, 256, 1, 1).data[3],
         };
       });
-      expect(pixels).toEqual({ width: 512, height: 512, corners: [0, 0, 0, 0], center: 255 });
+      expect(pixels).toMatchObject({ width: 512, height: 512, corners: [0, 0, 0, 0] });
+      expect(pixels.center).toBeGreaterThanOrEqual(250);
     }
     await profileMenu.locator(".profile-picker").evaluate((element) => {
       element.scrollTop = 0;
