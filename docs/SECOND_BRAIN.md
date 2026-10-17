@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+2026-10-17, rótulos de @pranksterbrain: ProfileLabels reutiliza as placas CREKS e BETA TESTER a partir do identificador confirmado, sem DEV, GALAXIA ou privilégios extras. Teste parametrizado junto a @eito cobre ficha e barra compacta, sem aceitar cache divergente.
+
+2026-10-17, integração de XP no perfil compacto: gap móvel de profile-cover__details é 6 px para conservar a ficha abaixo de 520 px com bio/rede no teste profile-covers, sem diminuir avatar ou alvos de toque.
+
 2026-10-17, rótulos públicos: ProfileLabels mostra GALAXIA e BETA TESTER para o identificador confirmado dreyxnn, incluindo ficha, barra recolhida e perfil visitado. Não concede CREKS, DEV ou permissões. Cache de nome de usuário não autoriza rótulos. Regressão em profile-showcase.test.tsx cobre cache divergente e a grafia distinta dreyxn.
 
 2026-10-16, revisão móvel: ProfileShowcase separa profile-toolbar sticky de profile-chrome; no celular a ficha usa fluxo natural e avatar 112 px, enquanto desktop mantém o recolhimento. ProfileCoverArt carrega cinco SVGs estáticos de public/profile-covers, sem imagens remotas ou arte dentro do JavaScript. Fonte vetorial em scripts/profile-cover-art.tsx, regeneração por node scripts/build-profile-covers.mjs. ProfileCoverDialog grava apenas cover permitido em helena.profile.v1 via writeSyncedStorage, mesclando com readStoredProfile no instante de salvar. Tipos/fallback em domain/profile-covers. Seguidores/Seguindo voltam como indicadores de zero inicial a pedido do proprietário, substituindo a ocultação da etapa anterior. Ícone settings é compartilhado no PaperEditorIcon com os cadernos.

@@ -811,7 +811,7 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   .profile-cover__details {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     padding: 68px 16px 20px;
   }
   .profile-cover__identity,

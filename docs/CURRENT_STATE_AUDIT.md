@@ -2,6 +2,11 @@
 
 ## Perfil, ilhas e cantinho de ideias (2026-10-17)
 
+- Rótulos CREKS e BETA TESTER adicionados ao identificador confirmado @pranksterbrain pelo componente compartilhado, sem permissões extras ou confiança em username do cache. Regressão parametrizada com @eito em profile-showcase.test.tsx.
+- Validação desta integração: npm run verify aprovado com 1898 testes em 280 arquivos; 16 cenários de capas, barra de perfil e painéis de estudo aprovados em desktop e celular nos dois temas. A asserção de altura móvel de 520 px foi preservada.
+
+- Integração pré-merge: espaçamento vertical móvel entre blocos reduzido de 12 para 6 px para acomodar XP sem exceder a ficha compacta de 520 px no cenário com bio e rede social. Avatar de 112 px e áreas de toque preservados; regressão existente profile-covers.spec.ts mantém o limite original, sem relaxar a asserção.
+
 - Meu progresso conserva contagens reais e remove os dois textos solicitados. Painéis de papel reutilizam carrossel/arte das ilhas, partes de Matemática com percentuais da mesma masteryCompletion e pontos do ledger existente. Somente Matemática está disponível; demais mundos continuam Em breve. Entrar em uma parte abre o mapa existente no curso correto, respeitando desbloqueios e registrando práticas no workspace.
 - Novo nível do Perfil deriva dos pontos conquistados nas ilhas: 1 ponto = 1 XP de perfil, 500 XP por nível. Leitura apenas, não credita recompensas, não altera os pontos e não mistura o ledger de XP de salas que ainda é separado. Barra acima de Adicionar amigo, nível pendurado na foto e ocultação no recolhimento desktop.
 - Ilha favorita é escolha explícita no perfil já sincronizado, sem nova chave remota. Painel de cadernos escolhe mais folhas reais, desempata por edição recente e informa a origem do destaque. Mostra trilha de pastas sem ciclos, capa original, Note ou última folha e abre /cadernos?caderno=ID. Não afirma tempo de uso inexistente. Conteúdo privado permanece somente no Perfil do dono.

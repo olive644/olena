@@ -3,7 +3,7 @@ export function ProfileLabels({ creks, username }: { creks: boolean; username: s
   const labels =
     username === "dreyxnn"
       ? ["GALAXIA", "BETA TESTER"]
-      : username === "eito"
+      : username === "eito" || username === "pranksterbrain"
         ? ["CREKS", "BETA TESTER"]
         : creks
           ? username === "oliver644"
