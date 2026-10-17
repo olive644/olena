@@ -206,8 +206,9 @@ export function ProfileProgress({ workspace }: { workspace: WorkspaceState }) {
   ).size;
   return (
     <section className="profile-card profile-card--wide" aria-labelledby="profile-progress-title">
-      <span className="section-label">Meu progresso</span>
-      <h2 id="profile-progress-title">O estudo que você já construiu</h2>
+      <h2 id="profile-progress-title" className="section-label">
+        Meu progresso
+      </h2>
       <dl className="profile-progress-metrics">
         {[
           [focus, "Minutos de foco"],
@@ -223,10 +224,6 @@ export function ProfileProgress({ workspace }: { workspace: WorkspaceState }) {
           </div>
         ))}
       </dl>
-      <p>
-        Contabiliza sessões encerradas e atividades registradas. Abrir uma tela não conta como
-        estudo.
-      </p>
     </section>
   );
 }

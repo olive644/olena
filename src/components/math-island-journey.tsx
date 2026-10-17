@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import { MATH_COURSES } from "../data/math-courses";
+import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
 import type { PracticeActivity } from "../domain/workspace";
 import { mathGameLearning, readMathGame } from "../data/math-game-learning";
 import {
@@ -24,12 +24,21 @@ export function MathIslandJourney({
   onBack,
   entryOrigin,
   onPractice,
+  initialCourse,
 }: {
   onBack: () => void;
   onPractice?: ((activity: PracticeActivity) => void) | undefined;
   entryOrigin?: { x: number; y: number; size: number } | undefined;
+  initialCourse?: MathCourseId;
 }) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() =>
+    initialCourse && unlockedMathCourse(initialCourse, readMathGame())
+      ? Math.max(
+          0,
+          MATH_COURSES.findIndex((course) => course.id === initialCourse),
+        )
+      : 0,
+  );
   const [chestDelivery, setChestDelivery] = useState<
     { x: number; y: number; size: number; id: string } | undefined
   >();

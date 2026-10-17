@@ -1,5 +1,9 @@
 # Identidade visual oficial OlenaStudy
 
+Rótulos de @pranksterbrain: CREKS e BETA TESTER reutilizam as placas existentes de ProfileLabels, sem novas cores ou permissões. Perfil móvel com XP conserva gap de 6 px entre blocos, mantendo avatar e áreas de toque originais.
+
+Perfil de estudo (2026-10-17): dois painéis de papel, carrossel original em miniatura com pontuação/percentual acima e partes da ilha; capa real do caderno com folha ao lado e trilha da pasta. Nível em bandeirola amarela junto à foto, barra roxa de XP antes de Adicionar amigo. Pontos do Perfil usam os mesmos números de papel. Favorita com preenchimento amarelo. Revelação curta dos painéis, flutuação original das ilhas, hover do caderno e respeito a movimento reduzido. Nomes das capas embutidos em faixa grafite recortada, sem faixa vazia nem gradiente.
+
 Perfil social (2026-10-17): cartão e ficha visitada reutilizam a capa oficial escolhida. QR com marcadores turquesa e estrela central do Modo Sala, preservando zona livre e correção H. Setas amarelas e copiar facetado existentes, botões creme nos dois temas. Capas da galeria preenchem toda a área, com nomes incorporados na base. Listas sociais têm alvos de toque de 44 px, confirmação e estados vazios reais.
 
 Amigos (2026-10-17): CTA Adicionar amigo com pessoa facetada roxa e adição amarela.
@@ -245,3 +249,7 @@ seguir o cursor com o olhar e reagir ao arraste. Fica restrita ao assistente; o 
 interface segue em papel recortado. O botão conserva 64px no desktop e 56px no celular.
 Movimento reduzido usa as imagens estáticas de estrela e Helena. Fonte e regras de edição em
 scripts/helena-rive/README.md.
+
+# Rótulos de @dreyxnn
+
+GALAXIA e BETA TESTER reutilizam os recortes e cores de ProfileLabels na ficha, barra recolhida e perfil visitado. A atribuição depende do nome de usuário confirmado e não concede permissões.

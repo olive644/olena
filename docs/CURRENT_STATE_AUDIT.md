@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Perfil, ilhas e cantinho de ideias (2026-10-17)
+
+- Rótulos CREKS e BETA TESTER adicionados ao identificador confirmado @pranksterbrain pelo componente compartilhado, sem permissões extras ou confiança em username do cache. Regressão parametrizada com @eito em profile-showcase.test.tsx.
+- Validação desta integração: npm run verify aprovado com 1898 testes em 280 arquivos; 16 cenários de capas, barra de perfil e painéis de estudo aprovados em desktop e celular nos dois temas. A asserção de altura móvel de 520 px foi preservada.
+
+- Integração pré-merge: espaçamento vertical móvel entre blocos reduzido de 12 para 6 px para acomodar XP sem exceder a ficha compacta de 520 px no cenário com bio e rede social. Avatar de 112 px e áreas de toque preservados; regressão existente profile-covers.spec.ts mantém o limite original, sem relaxar a asserção.
+
+- Meu progresso conserva contagens reais e remove os dois textos solicitados. Painéis de papel reutilizam carrossel/arte das ilhas, partes de Matemática com percentuais da mesma masteryCompletion e pontos do ledger existente. Somente Matemática está disponível; demais mundos continuam Em breve. Entrar em uma parte abre o mapa existente no curso correto, respeitando desbloqueios e registrando práticas no workspace.
+- Novo nível do Perfil deriva dos pontos conquistados nas ilhas: 1 ponto = 1 XP de perfil, 500 XP por nível. Leitura apenas, não credita recompensas, não altera os pontos e não mistura o ledger de XP de salas que ainda é separado. Barra acima de Adicionar amigo, nível pendurado na foto e ocultação no recolhimento desktop.
+- Ilha favorita é escolha explícita no perfil já sincronizado, sem nova chave remota. Painel de cadernos escolhe mais folhas reais, desempata por edição recente e informa a origem do destaque. Mostra trilha de pastas sem ciclos, capa original, Note ou última folha e abre /cadernos?caderno=ID. Não afirma tempo de uso inexistente. Conteúdo privado permanece somente no Perfil do dono.
+- Sem dependências ou novas artes raster. Total final 1479,3 KiB, entrada 280,3 KiB. Orçamento normal 1484 KiB, teto absoluto 1500 KiB e orçamento inicial preservados. Animações reutilizadas, transições respeitam movimento reduzido. Verificação geral: 1897 testes em 280 arquivos, lint sem erros, formatos, API, build e orçamento aprovados.
+
 ## Conexões e cartão do perfil (2026-10-17)
 
 - Seguidores/Seguindo abrem listas paginadas reais, com visita e perspectiva de quem consulta. Deixar de seguir remove somente o vínculo de saída; remover seguidor remove somente o de entrada e o aviso correspondente, sem notificação de remoção. Confirmação explícita antes de mutações, CAS e isolamento existentes preservados.
@@ -2894,3 +2906,7 @@ O "segurar para acertar" passa a juntar retas: quando uma reta recém-acertada f
 - **Limites conhecidos.** Só fecha formas de 3 e 4 lados, e só com retas acertadas pelo "segurar para acertar" (uma reta feita sem segurar não entra). Formas com mais lados, setas feitas de duas retas e cruzes continuam sendo feitas num traço só.
 - **Orçamento.** O JavaScript da aplicação passou de 1442,6 para 1445,6 KiB (+3,0 KiB, sob demanda); o teto de total subiu de 1444 para 1450 KiB, com a justificativa no script. Entrada inicial e teto absoluto (1500 KiB) não mudaram. A folga até o teto absoluto agora é de cerca de 54 KiB, então os próximos recursos precisam cuidar do peso.
 - **Testes.** `handwriting-multi-stroke.test.ts` (13: triângulo com folga e com retas que passam do canto, retângulo alinhado e girado, trapézio como polígono, reta perdida, casos que não fecham, estilo, cobertura e a lista de recentes) e o e2e `handwriting-multi-stroke.spec.ts`, que na folha real desenha três retas seguradas com folga de 24 unidades nos cantos, confere os cantos abertos com duas retas, fechados com a terceira, o interior vazio e que um passo de desfazer volta às duas retas.
+
+# Rótulos adicionais de perfil, 2026-10-17
+
+O identificador confirmado @dreyxnn recebe GALAXIA e BETA TESTER pelo componente compartilhado ProfileLabels. São rótulos de apresentação, sem privilégios ou alteração do cadastro. Teste de regressão valida ficha e barra recolhida, rejeita nome apenas no cache e não confunde @dreyxn com @dreyxnn. Arquivo profile-showcase.test.tsx validado com 13 testes aprovados.

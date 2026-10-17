@@ -309,7 +309,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // preservado.
 // Perfis sociais, busca, seguir/avisos e cartão QR reutilizam Firebase e QR existentes.
 // Medido em 1466.2 KiB, entrada 279.9 KiB. Preservar os tetos absolutos.
-const MAX_TOTAL_JS_BYTES = 1474 * 1024;
+// Perfil com ilhas, cadernos e nível derivado dos pontos reais: 1479.3 KiB medidos,
+// entrada 280.3 KiB. Reutiliza artes e componentes, sem dependências novas.
+const MAX_TOTAL_JS_BYTES = 1484 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

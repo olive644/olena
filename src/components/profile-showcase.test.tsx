@@ -123,7 +123,7 @@ it("remove trajetória sem alterar as sessões reais do workspace", () => {
   const items = container.querySelectorAll(".profile-activity li");
   expect(items).toHaveLength(0);
   expect(screen.queryByText("Sua trajetória")).toBeNull();
-  expect(screen.getByRole("heading", { name: "O estudo que você já construiu" })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Meu progresso" })).toBeTruthy();
   expect(JSON.stringify(workspace)).toBe(before);
 });
 
@@ -238,22 +238,46 @@ it("concede os rótulos extras só à identidade oliver644 confirmada pelo servi
     expect(screen.getAllByLabelText(`Selo ${label}`)).toHaveLength(2);
 });
 
-it("concede CREKS e BETA TESTER ao @eito confirmado, sem herdar DEV ou GALAXIA", () => {
-  localStorage.setItem("helena.profile.v1", JSON.stringify({ username: "eito" }));
-  const { rerender } = render(
+it("concede GALAXIA e BETA TESTER somente ao @dreyxnn confirmado", () => {
+  localStorage.setItem("helena.profile.v1", JSON.stringify({ username: "dreyxnn" }));
+  const profile = (
     <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
       {null}
-    </ProfileShowcase>,
+    </ProfileShowcase>
   );
-  expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
-  serverHandle.username = "eito";
-  rerender(
-    <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
-      {null}
-    </ProfileShowcase>,
-  );
-  expect(screen.getAllByLabelText("Selo CREKS")).toHaveLength(2);
-  expect(screen.getAllByLabelText("Selo BETA TESTER")).toHaveLength(2);
-  expect(screen.queryByLabelText("Selo DEV")).toBeNull();
+  const { rerender } = render(profile);
   expect(screen.queryByLabelText("Selo GALAXIA")).toBeNull();
+  expect(screen.queryByLabelText("Selo BETA TESTER")).toBeNull();
+  serverHandle.username = "dreyxn";
+  rerender(<div>{profile}</div>);
+  expect(screen.queryByLabelText("Selo GALAXIA")).toBeNull();
+  serverHandle.username = "dreyxnn";
+  rerender(profile);
+  expect(screen.getAllByLabelText("Selo GALAXIA")).toHaveLength(2);
+  expect(screen.getAllByLabelText("Selo BETA TESTER")).toHaveLength(2);
+  expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
+  expect(screen.queryByLabelText("Selo DEV")).toBeNull();
 });
+
+it.each(["eito", "pranksterbrain"])(
+  "concede CREKS e BETA TESTER ao @%s confirmado, sem herdar DEV ou GALAXIA",
+  (username) => {
+    localStorage.setItem("helena.profile.v1", JSON.stringify({ username }));
+    const { rerender } = render(
+      <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+        {null}
+      </ProfileShowcase>,
+    );
+    expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
+    serverHandle.username = username;
+    rerender(
+      <ProfileShowcase nameFallback="Conta" settingsOpen={false}>
+        {null}
+      </ProfileShowcase>,
+    );
+    expect(screen.getAllByLabelText("Selo CREKS")).toHaveLength(2);
+    expect(screen.getAllByLabelText("Selo BETA TESTER")).toHaveLength(2);
+    expect(screen.queryByLabelText("Selo DEV")).toBeNull();
+    expect(screen.queryByLabelText("Selo GALAXIA")).toBeNull();
+  },
+);

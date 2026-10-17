@@ -4,6 +4,7 @@ import { readStoredProfile } from "../hooks/use-stored-profile";
 import { writeSyncedStorage } from "../data/synced-storage";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { ProfileCoverArt } from "./profile-cover-art";
+import { PaperCheckIcon } from "./paper-check-icon";
 
 export function ProfileCoverDialog({ onClose }: { onClose(): void }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -45,7 +46,10 @@ export function ProfileCoverDialog({ onClose }: { onClose(): void }) {
             onClick={() => setChosen(cover.id)}
           >
             <ProfileCoverArt theme={cover.id} />
-            <span>{cover.name}</span>
+            <span>
+              {cover.name}
+              {chosen === cover.id && <PaperCheckIcon size={16} />}
+            </span>
           </button>
         ))}
       </div>
