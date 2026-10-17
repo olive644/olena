@@ -334,7 +334,7 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
   page,
 }, info) => {
   let feed = [
-    { id: 408, version: "beta.408", title: "Agenda publicada", date: "2026-10-11T12:00:00Z" },
+    { id: 408, version: "beta.408", title: "Agenda publicada", date: new Date().toISOString() },
   ];
   await page.route("**/system-updates.json", (route) => route.fulfill({ json: feed }));
   await page.goto("/");
@@ -369,7 +369,7 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
   await expect(page.locator(".system-update-badge")).toHaveCount(0);
   feed = [
     ...feed,
-    { id: 409, version: "beta.409", title: "Novidade publicada", date: "2026-10-12T12:00:00Z" },
+    { id: 409, version: "beta.409", title: "Novidade publicada", date: new Date().toISOString() },
   ];
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(bell).toHaveAccessibleName("Atualizações do sistema, 1 não lidas");

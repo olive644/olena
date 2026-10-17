@@ -7,6 +7,8 @@
 - Limpeza social integra DELETE do endpoint de @, inclusive para clientes antigos. Limites beta, retenção, modelo de ameaça, testes e rollback documentados em docs/PROFILE_SOCIAL.md. Sem dependências novas. Medido 1466,2 KiB total, 279,9 KiB inicial; orçamento normal total 1474 KiB, teto absoluto 1500 e orçamento inicial preservados.
 - Validação geral: 1888 testes em 277 arquivos, lint sem erros, formatos, Node ESM da API, build e orçamento aprovados. QR da prévia móvel decodificado para o link exato do perfil. Fluxos autenticados exercitados com identidades controladas nos testes; prova com duas contas reais deve ocorrer no ambiente publicado.
 
+- Validação pré-merge (2026-10-17): E2E de avisos usa datas atuais para respeitar expiração em 48 horas; cabeçalho exige sino fora do Perfil. Transparência dos avatares mantém cantos totalmente vazios e centro opaco com tolerância mínima de decodificação WebP (alpha >= 250).
+
 ## Perfil recolhido, rótulos e controles de tinta (2026-10-16)
 
 - Sino volta por padrão em PageHeader, com opt-out explícito no Perfil. Lista de avisos rola independentemente do botão Marcar como lidas. Avisos do sistema com 48 horas ou mais ficam ocultos sem apagar recibos de leitura. A parte social deve entrar em mudança própria de armazenamento remoto, não como notificações fabricadas.

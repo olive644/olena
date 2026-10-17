@@ -34,7 +34,9 @@ for (const theme of ["light", "dark"]) {
     for (const tab of ["Agenda", "Foco", "Perfil"]) {
       await navigation.getByRole("button", { name: tab, exact: true }).click();
       await expect(page.locator(".page-header__theme")).toHaveCount(0);
-      await expect(page.getByLabel(/Atualizações do sistema/)).toHaveCount(0);
+      await expect(page.getByLabel(/Atualizações do sistema/)).toHaveCount(
+        tab === "Perfil" ? 0 : 1,
+      );
       await expect(page.locator(".page-header .profile-menu")).toHaveCount(0);
     }
     const toggle = page.getByRole("button", { name: "Configurações", exact: true });
