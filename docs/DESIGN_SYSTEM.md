@@ -1,5 +1,16 @@
 # Identidade visual oficial OlenaStudy
 
+Perfil, revisão móvel e capas (2026-10-16): esta revisão substitui a capa fixa e
+a ocultação de conexões descritas abaixo. Cinco temas vetoriais nativos em papel
+recortado: Noite da Helena, Eclipse Solar, Aurora, Bosque e Oceano. Seleção com
+prévia, Cancelar/Usar capa e destaque amarelo, sem upload. Avatar móvel de 112 px;
+ficha em fluxo natural, sem altura reservada para bio ou redes ausentes. Somente
+a barra de ferramentas permanece sticky no celular; a ficha rola normalmente.
+Lápis de edição do nome e da capa sem texto/placa, com alvo de 44 px e foco amarelo. Campos Nome e Nome
+de usuário. Seguidores/Seguindo retornam com zero inicial e dica de recurso em
+desenvolvimento, sem ações sociais falsas. Ajustes usa engrenagem de oito dentes
+facetados em grafite/creme, com núcleo amarelo, compartilhada pelo Perfil e cadernos.
+
 Perfil, trajetória real (2026-10-16): ocultar Seguidores/Seguindo enquanto não existir
 grafo social, substituindo os zeros de protótipo das revisões abaixo. Preservar
 streaks, capa fixa e personagens oficiais. Lista de trajetória compartilha os
