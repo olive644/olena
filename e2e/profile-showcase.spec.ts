@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { createInitialWorkspace } from "../src/domain/workspace";
 
 test("barra comporta cinco redes e dados longos sem cobrir a engrenagem", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.addInitScript(() => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem("helena.guest.v1", "1");
