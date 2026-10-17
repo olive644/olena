@@ -19,9 +19,9 @@ it("salva campos juntos, normaliza nome e rede, preserva foto e dados existentes
   );
   const close = vi.fn();
   render(<ProfileEditor profile={readStoredProfile()} guest={false} onClose={close} />);
-  fireEvent.change(screen.getByLabelText("Apelido"), { target: { value: "Oliver" } });
-  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "OLI_ESTUDA" } });
-  expect((screen.getByLabelText("Nome") as HTMLInputElement).value).toBe("oli_estuda");
+  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Oliver" } });
+  fireEvent.change(screen.getByLabelText("Nome de usuário"), { target: { value: "OLI_ESTUDA" } });
+  expect((screen.getByLabelText("Nome de usuário") as HTMLInputElement).value).toBe("oli_estuda");
   fireEvent.change(screen.getByLabelText("Bio"), { target: { value: "Estudando matemática" } });
   fireEvent.change(screen.getByLabelText("Rede social 1"), { target: { value: "github.com/oli" } });
   expect(screen.getByText("GitHub")).toBeTruthy();
@@ -42,7 +42,7 @@ it("cancelar não altera o perfil e erro de armazenamento mantém o rascunho", a
   localStorage.setItem("helena.profile.v1", saved);
   const close = vi.fn();
   render(<ProfileEditor profile={readStoredProfile()} guest={false} onClose={close} />);
-  fireEvent.change(screen.getByLabelText("Apelido"), { target: { value: "Outro" } });
+  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Outro" } });
   vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
     throw new Error("Quota");
   });
@@ -69,11 +69,11 @@ it("conflito no servidor preserva o perfil e deixa o rascunho disponível", asyn
   vi.mocked(requestProfileHandle).mockRejectedValueOnce(new Error("Esse @ já está em uso."));
   const close = vi.fn();
   render(<ProfileEditor profile={readStoredProfile()} guest={false} onClose={close} />);
-  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "ocupado" } });
+  fireEvent.change(screen.getByLabelText("Nome de usuário"), { target: { value: "ocupado" } });
   fireEvent.click(screen.getByRole("button", { name: "Salvar perfil" }));
   await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("já está em uso"));
   expect(readStoredProfile().username).toBe("antigo");
-  expect((screen.getByLabelText("Nome") as HTMLInputElement).value).toBe("ocupado");
+  expect((screen.getByLabelText("Nome de usuário") as HTMLInputElement).value).toBe("ocupado");
   expect(close).not.toHaveBeenCalled();
 });
 it("guest não pode criar @ nem aproveita nome legado", async () => {
@@ -81,7 +81,7 @@ it("guest não pode criar @ nem aproveita nome legado", async () => {
   const close = vi.fn();
   const before = vi.mocked(requestProfileHandle).mock.calls.length;
   render(<ProfileEditor profile={readStoredProfile()} guest onClose={close} />);
-  expect((screen.getByLabelText("Nome") as HTMLInputElement).disabled).toBe(true);
+  expect((screen.getByLabelText("Nome de usuário") as HTMLInputElement).disabled).toBe(true);
   fireEvent.click(screen.getByRole("button", { name: "Salvar perfil" }));
   await waitFor(() => expect(close).toHaveBeenCalled());
   expect(readStoredProfile().username).toBe("");

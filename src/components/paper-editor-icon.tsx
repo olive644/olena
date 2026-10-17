@@ -1,5 +1,5 @@
 const shapes = {
-  settings: "M18 3h12l2 7 7 2 6 10-5 6 1 8-11 7-6-4-7 3L6 35l1-8-5-6 6-10 7-1Z",
+  settings: "M16 8h16l8 8v16l-8 8H16l-8-8V16Z",
   add: "M20 4h8v16h16v8H28v16h-8V28H4v-8h16Z",
   copyLink: "M5 14h24v29H5Z M15 4h24v29h-7V11H15Z",
   team: "M8 5h10l4 5-4 10H8L4 10Z M28 5h10l4 5-4 10H28l-4-10Z M5 24h16l4 17H1Z M27 24h16l4 17H25Z",
@@ -36,7 +36,7 @@ const shapes = {
 } as const;
 
 const facets: Record<keyof typeof shapes, string> = {
-  settings: "M18 3h12l-6 8-9 7-9 17 1-8-5-6 6-10 7-1Z",
+  settings: "M16 8h16l-8 7-9 9-7 8V16Z",
   add: "M20 4h4v20H4v-4h16Z",
   copyLink: "M5 14h5v29H5Z M15 4h24l-6 6H15Z",
   team: "M8 5h10l-4 7H4Z M28 5h10l-4 7H24Z M5 24h8L6 41H1Z M27 24h8l-5 17h-5Z",
@@ -89,10 +89,16 @@ export function PaperEditorIcon({ name }: { name: keyof typeof shapes }) {
     >
       {name === "settings" ? (
         <>
+          {Array.from({ length: 8 }, (_, tooth) => (
+            <g key={tooth} transform={`rotate(${tooth * 45} 24 24)`}>
+              <path d="M20 2h8l2 11H18Z" fill="currentColor" />
+              <path d="M20 2h4v11h-6Z" fill={light} />
+            </g>
+          ))}
           <path d={shapes.settings} fill="currentColor" />
           <path d={facets.settings} fill={light} />
-          <path d="m24 15 8 4v10l-8 4-8-4V19Z" fill={detail} />
-          <path d="m24 20 4 2v5l-4 2-4-2v-5Z" fill={light} />
+          <path d="m24 14 9 5v10l-9 5-9-5V19Z" fill="#FACC15" />
+          <path d="m24 18 5 3v6l-5 3-5-3v-6Z" fill={detail} />
         </>
       ) : name === "close" ? (
         <>
