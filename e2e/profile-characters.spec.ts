@@ -42,7 +42,7 @@ for (const theme of ["light", "dark"]) {
     await page.goto("/perfil");
     await expect(page.locator("main")).toHaveCSS("opacity", "1");
     await expect(page.locator('input[type="file"]')).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Editar capa" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Editar capa" })).toBeVisible();
     const connections = page.getByLabel("Sequências de estudo");
     for (const name of ["Pomodoro", "Cronômetro", "Ilhas"])
       await expect(connections.getByLabel(`${name}: 1 dia seguido`)).toBeVisible();
@@ -81,15 +81,21 @@ for (const theme of ["light", "dark"]) {
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "true");
     const compactName = await page.locator(".profile-cover__name").boundingBox();
-    const handle = await page.locator(".profile-cover__handle").boundingBox();
-    expect(handle!.y).toBeGreaterThan(compactName!.y + compactName!.height);
+    const mobile = (page.viewportSize()?.width ?? 1280) <= 600;
+    if (mobile) await expect(page.locator(".profile-cover__handle")).toBeHidden();
+    else {
+      const handle = await page.locator(".profile-cover__handle").boundingBox();
+      expect(handle!.y).toBeGreaterThan(compactName!.y + compactName!.height);
+    }
     await expect(page.locator(".profile-cover__portrait")).toHaveCSS("border-width", "0px");
     await expect(page.locator(".profile-cover__portrait")).toHaveCSS(
       "background-color",
       "rgba(0, 0, 0, 0)",
     );
-    const mobile = (page.viewportSize()?.width ?? 1280) <= 600;
-    expect((await page.locator(".profile-chrome").boundingBox())!.height).toBe(mobile ? 152 : 88);
+    if (mobile) {
+      expect((await avatar.boundingBox())!.width).toBe(112);
+      await expect(page.locator(".profile-toolbar")).toHaveCSS("position", "sticky");
+    } else expect((await page.locator(".profile-chrome").boundingBox())!.height).toBe(88);
     await page.screenshot({ path: info.outputPath(`barra-${theme}.png`), animations: "disabled" });
     await avatar.click();
     await page.keyboard.press("Escape");

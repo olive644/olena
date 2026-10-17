@@ -126,18 +126,18 @@ export function ProfileEditor({
       >
         <div className="profile-editor__fields">
           <label className="field">
-            <span>Apelido</span>
+            <span>Nome</span>
             <input
               required
               maxLength={60}
               value={draft.name}
               readOnly={guest}
               onChange={(event) => change("name", event.target.value)}
-              autoComplete="nickname"
+              autoComplete="name"
             />
           </label>
           <label className="field">
-            <span id="profile-username-label">Nome</span>
+            <span id="profile-username-label">Nome de usuário</span>
             <input
               maxLength={30}
               disabled={guest}
@@ -256,7 +256,7 @@ export function ProfileEditor({
         </fieldset>
         {guest && (
           <p className="profile-editor__hint">
-            No modo convidado, o apelido é Guest e as alterações ficam neste aparelho.
+            No modo convidado, o nome é Guest e as alterações ficam neste aparelho.
           </p>
         )}
         {error && <p role="alert">{error}</p>}
