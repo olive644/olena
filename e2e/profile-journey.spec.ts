@@ -46,6 +46,11 @@ for (const theme of ["light", "dark"]) {
       animations: "disabled",
       fullPage: true,
     });
+    if (page.viewportSize()!.width <= 600) {
+      await card.evaluate((element) =>
+        window.scrollBy(0, element.getBoundingClientRect().top - 100),
+      );
+    }
     await card.screenshot({ path: info.outputPath(`card-${theme}.png`), animations: "disabled" });
     await card.locator("img").evaluate((image) => {
       (image as HTMLImageElement).src = "/profile-journey/helena-complete.webp";
@@ -53,6 +58,16 @@ for (const theme of ["light", "dark"]) {
     await card.locator(".profile-journey__copy").evaluate((copy) => {
       copy.innerHTML =
         "<small>FICOU ÓTIMO!</small><h2>Seu perfil está perfeito.</h2><p>Agora é só espalhar suas descobertas por aqui.</p>";
+    });
+    await card.locator("ol button").evaluateAll((buttons) => {
+      for (const button of buttons) {
+        button.textContent = "✓";
+        button.removeAttribute("aria-current");
+        button.setAttribute("data-done", "true");
+      }
+    });
+    await card.locator(".profile-journey__continue").evaluate((button) => {
+      button.textContent = "Revisar meu perfil";
     });
     await expect(card.locator("img")).toHaveJSProperty("naturalWidth", 512);
     await card.screenshot({
