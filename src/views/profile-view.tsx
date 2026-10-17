@@ -112,6 +112,7 @@ export function ProfileView({
   return (
     <main className="main-content profile-view" id="main-content">
       <ProfileShowcase
+        syncStatus={cloud.status}
         presentationReady={
           cloud.ready && cloud.authenticated === true && cloud.status !== "loading"
         }
