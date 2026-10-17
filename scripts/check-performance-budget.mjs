@@ -303,7 +303,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Ferramenta de curva do handwriting (gerador Catmull-Rom, gesto de toque, teclado, prévia e
 // botão): total medido 1443.5 KiB (+4.3 KiB sobre 1439.2). Código do editor sob demanda,
 // entrada inicial intacta, sem dependência nova. Margem estreita de CI; teto absoluto preservado.
-const MAX_TOTAL_JS_BYTES = 1446 * 1024;
+// Formas com vários traços do handwriting (fechar retas em triângulo, retângulo ou quadrilátero e a
+// lista de retas acertadas): total medido 1448.5 KiB (+3.0 KiB sobre 1445.5). Código do editor sob
+// demanda, entrada inicial intacta, sem dependência nova. Margem estreita de CI; teto absoluto
+// preservado.
+const MAX_TOTAL_JS_BYTES = 1450 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

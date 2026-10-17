@@ -671,6 +671,13 @@ tinta. `renderPage` desenha o fundo importado à parte, fura com `destination-ou
 cobertura e põe sobre o papel; a tinta não é tocada. Traço de cobertura nunca vai para a camada de
 tinta. Teste em `handwriting-background-erase.test.ts` e `handwriting-background-erase.spec.ts`.
 
+Formas com vários traços: `closeLines` (`handwriting-shapes.ts`) acha o triângulo, o retângulo ou o
+quadrilátero que a reta nova fecha com as retas acertadas há pouco; `handwriting-multi-stroke.ts`
+guarda essas retas (`pruneRecentLines`) e junta as de mesmo estilo (`combineWithRecentLines`). O
+editor só registra retas que o "segurar para acertar" endireitou e fecha a forma no mesmo gesto da
+última, para um passo de desfazer bastar. Teste em `handwriting-multi-stroke.test.ts` e
+`handwriting-multi-stroke.spec.ts`.
+
 `notebook-binding-finish.css` concentra os acabamentos da encadernação, depois das
 regras estruturais de `notebook-spread.css`. A capa, o fecho aberto e sua cópia animada
 compartilham as mesmas classes. A guarda decorativa é renderizada na folha direita
