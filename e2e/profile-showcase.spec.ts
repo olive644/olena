@@ -23,7 +23,12 @@ test("barra comporta cinco redes e dados longos sem cobrir a engrenagem", async 
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const chrome = page.locator(".profile-chrome");
-    await expect(chrome).toHaveAttribute("data-compact", "true");
+    await expect
+      .poll(async () => {
+        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        return chrome.getAttribute("data-compact");
+      })
+      .toBe("true");
     const box = await chrome.boundingBox();
     const portrait = await page.locator(".profile-cover__portrait").boundingBox();
     const bio = await page.locator(".profile-cover__bio").boundingBox();
