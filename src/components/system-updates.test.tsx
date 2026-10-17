@@ -3,11 +3,57 @@ import { afterEach, expect, it, vi } from "vitest";
 import { SystemUpdates } from "./system-updates";
 import { applySyncedStorage } from "../data/synced-storage";
 import { SYSTEM_UPDATES_READ_KEY } from "../data/system-updates";
+import type { SocialFeed } from "../domain/profile-social";
+const social = vi.hoisted(() => ({
+  feed: undefined as SocialFeed | undefined,
+  request: vi.fn(async () => ({})),
+  visit: vi.fn(),
+}));
+vi.mock("../hooks/use-social-feed", () => ({ useSocialFeed: () => social.feed }));
+vi.mock("../data/profile-social", () => ({
+  requestSocial: social.request,
+  visitSocialProfile: social.visit,
+  SOCIAL_VISIT: "olena:social-visit",
+}));
 
 afterEach(() => {
   cleanup();
   localStorage.clear();
   vi.unstubAllGlobals();
+  social.feed = undefined;
+  social.request.mockClear();
+  social.visit.mockClear();
+});
+
+it("mostra seguidor real com visita, seguir de volta e leitura na conta", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("[]")),
+  );
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    followers: 0,
+    following: 1,
+    followsYou: true,
+    followed: false,
+    shared: true,
+  };
+  social.feed = {
+    self: { ...person, username: "bob", name: "Bob" },
+    notifications: [{ person, at: Date.now(), read: false }],
+  };
+  render(<SystemUpdates />);
+  expect(screen.getByText("Começou a seguir você.")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Visitar perfil de @alice" }));
+  expect(social.visit).toHaveBeenCalledWith("alice");
+  fireEvent.click(screen.getByRole("button", { name: "Seguir de volta" }));
+  await waitFor(() =>
+    expect(social.request).toHaveBeenCalledWith({ action: "follow", username: "alice" }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Marcar como lidas" }));
+  await waitFor(() => expect(social.request).toHaveBeenCalledWith({ action: "read" }));
 });
 it("counts unread updates, persists reading and reacts to account sync", async () => {
   vi.stubGlobal(

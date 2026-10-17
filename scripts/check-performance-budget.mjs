@@ -307,7 +307,9 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // lista de retas acertadas): total medido 1448.5 KiB (+3.0 KiB sobre 1445.5). Código do editor sob
 // demanda, entrada inicial intacta, sem dependência nova. Margem estreita de CI; teto absoluto
 // preservado.
-const MAX_TOTAL_JS_BYTES = 1450 * 1024;
+// Perfis sociais, busca, seguir/avisos e cartão QR reutilizam Firebase e QR existentes.
+// Medido em 1466.2 KiB, entrada 279.9 KiB. Preservar os tetos absolutos.
+const MAX_TOTAL_JS_BYTES = 1474 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;

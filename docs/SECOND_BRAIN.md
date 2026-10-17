@@ -1330,3 +1330,15 @@ eito com CREKS/BETA TESTER. Sem nova persistência, direitos ou valores do cache
 PaperObjectIcon contém os recortes Espaço e Curva. HandwritingInkOptions preserva
 aria-pressed, acrescenta check e identifica espessura personalizada; seleção CSS
 é amarela e não depende de outline. Regressão: e2e/handwriting-ink-selection.spec.ts.
+
+# Amigos e cartão de perfil (2026-10-17)
+
+Consultar docs/PROFILE_SOCIAL.md antes de alterar o contrato público ou o grafo.
+profile-social-handler contém operações CAS; profile-social-runtime reutiliza a
+identidade confirmada de profile-handle-runtime. Exclusão de @ aguarda limpeza
+social, protegendo clientes antigos. Não ler /users de outra pessoa para compor
+perfil público. Nome/personagem são uma apresentação separada e autorizada.
+SocialDirectory abre por Adicionar amigo, aviso de seguidor ou ?usuario= no Perfil.
+ProfileShareCard produz QR/link/PNG no aparelho. Contact Picker preenche apenas
+nome e espera confirmação de busca; Web Share é opcional. useSocialFeed limpa a
+troca de conta e publica mudanças via SOCIAL_CHANGED. Rótulos em ProfileLabels.

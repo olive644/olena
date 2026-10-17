@@ -3,6 +3,9 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { ProfileOverview, ProfileShowcase } from "./profile-showcase";
 import { createInitialWorkspace } from "../domain/workspace";
 const serverHandle = vi.hoisted(() => ({ username: "oli", creks: false }));
+vi.mock("../hooks/use-social-feed", () => ({
+  useSocialFeed: () => ({ self: { followers: 0, following: 0 } }),
+}));
 vi.mock("../hooks/use-profile-handle", () => ({
   useProfileHandle: (guest: boolean) => ({
     handle: guest ? { username: "", creks: false } : serverHandle,

@@ -1,0 +1,34 @@
+import { expect, test } from "@playwright/test";
+
+for (const theme of ["light", "dark"]) {
+  test(`amigos no Perfil mantém layout móvel e exige conta real: ${theme}`, async ({
+    page,
+  }, info) => {
+    await page.addInitScript((theme) => {
+      localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+      localStorage.setItem("helena.guest.v1", "1");
+      localStorage.setItem("helenastudy.theme", theme);
+    }, theme);
+    await page.goto("/perfil");
+    await expect(page.locator("main")).toHaveCSS("opacity", "1");
+    const open = page.getByRole("button", { name: "Adicionar amigo", exact: true });
+    await open.click();
+    const dialog = page.getByRole("dialog", { name: "Encontre seus amigos", exact: true });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Escolher nos contatos" })).toBeDisabled();
+    await expect(
+      dialog.getByRole("button", { name: "Compartilhar perfil", exact: true }),
+    ).toBeDisabled();
+    await expect(dialog.getByRole("alert")).toBeVisible();
+    expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+      true,
+    );
+    await dialog.screenshot({
+      path: info.outputPath(`amigos-${theme}.png`),
+      animations: "disabled",
+    });
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+    await expect(open).toBeFocused();
+  });
+}

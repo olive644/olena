@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import type { WorkspaceState } from "../domain/workspace";
 import { ProfileProgress } from "./profile-preferences";
@@ -13,31 +13,15 @@ import { useProfileHandle } from "../hooks/use-profile-handle";
 import { ProfileCoverArt } from "./profile-cover-art";
 import { ProfileCoverDialog } from "./profile-cover-dialog";
 import { profileCover } from "../domain/profile-covers";
+import { FriendIcon } from "./profile-friend-icon";
+import { useSocialFeed } from "../hooks/use-social-feed";
+import { HelenaLoading } from "./helena-loading";
+import "./profile-social.css";
+const SocialDirectory = lazy(() =>
+  import("./profile-social").then((module) => ({ default: module.SocialDirectory })),
+);
 
-function ProfileLabels({ creks, username }: { creks: boolean; username: string }) {
-  const labels =
-    username === "eito"
-      ? ["CREKS", "BETA TESTER"]
-      : creks
-        ? username === "oliver644"
-          ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
-          : ["CREKS"]
-        : [];
-  if (!labels.length) return null;
-  return (
-    <span className="profile-labels">
-      {labels.map((label) => (
-        <span
-          key={label}
-          className={`profile-creks profile-label--${label.toLowerCase().replace(" ", "-")}`}
-          aria-label={`Selo ${label}`}
-        >
-          {label}
-        </span>
-      ))}
-    </span>
-  );
-}
+import { ProfileLabels } from "./profile-labels";
 
 export function ProfileShowcase({
   children,
@@ -57,6 +41,12 @@ export function ProfileShowcase({
   const [editing, setEditing] = useState(false);
   const [choosingAvatar, setChoosingAvatar] = useState(false);
   const [choosingCover, setChoosingCover] = useState(false);
+  const [friends, setFriends] = useState<string | undefined>(() => {
+    const username = new URLSearchParams(window.location.search).get("usuario");
+    return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
+  });
+  const social = useSocialFeed(!guest && !!handle.username);
+  const friendButton = useRef<HTMLButtonElement>(null);
   const { reduceMotion } = useAccessibility();
   const chrome = useRef<HTMLDivElement>(null);
   const anchor = useRef<HTMLDivElement>(null);
@@ -92,6 +82,7 @@ export function ProfileShowcase({
       }
       if (editButton.current) editButton.current.inert = !mobile && progress > 0.2;
       if (coverButton.current) coverButton.current.inert = !mobile && progress > 0.2;
+      if (friendButton.current) friendButton.current.inert = !mobile && progress > 0.2;
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -172,6 +163,15 @@ export function ProfileShowcase({
                 <ProfileLabels creks={handle.creks} username={handle.username} />
                 {profile.pronouns && <span>{profile.pronouns}</span>}
               </div>
+              <button
+                ref={friendButton}
+                type="button"
+                className="secondary-button profile-cover__friends"
+                onClick={() => setFriends("")}
+              >
+                <FriendIcon />
+                Adicionar amigo
+              </button>
               {profile.bio && (
                 <p className="profile-cover__bio" title={profile.bio}>
                   {profile.bio}
@@ -196,13 +196,19 @@ export function ProfileShowcase({
                 })}
               </nav>
               <div className="profile-cover__connections" aria-label="Conexões do perfil">
-                <span title="Recurso social em desenvolvimento">
+                <span title="Pessoas que seguem seu perfil">
                   <ProfilePaperIcon name="followers" />
-                  <strong>0</strong> Seguidores
+                  <strong>
+                    {social?.self.followers ?? (handle.username && !guest ? "..." : 0)}
+                  </strong>{" "}
+                  Seguidores
                 </span>
-                <span title="Recurso social em desenvolvimento">
+                <span title="Pessoas que você segue">
                   <ProfilePaperIcon name="following" />
-                  <strong>0</strong> Seguindo
+                  <strong>
+                    {social?.self.following ?? (handle.username && !guest ? "..." : 0)}
+                  </strong>{" "}
+                  Seguindo
                 </span>
                 <div className="profile-cover__streaks" aria-label="Sequências de estudo">
                   {workspace && <ProfileStreaks workspace={workspace} />}
@@ -251,6 +257,18 @@ export function ProfileShowcase({
       )}
       {choosingAvatar && <ProfileAvatarDialog onClose={() => setChoosingAvatar(false)} />}
       {choosingCover && <ProfileCoverDialog onClose={() => setChoosingCover(false)} />}
+      {friends !== undefined && (
+        <Suspense fallback={<HelenaLoading label="Abrindo amigos" compact />}>
+          <SocialDirectory
+            initialUsername={friends}
+            nameFallback={name}
+            onClose={() => {
+              setFriends(undefined);
+              requestAnimationFrame(() => friendButton.current?.focus());
+            }}
+          />
+        </Suspense>
+      )}
     </>
   );
 }

@@ -1,5 +1,12 @@
 # Identidade visual oficial OlenaStudy
 
+Amigos (2026-10-17): CTA Adicionar amigo com pessoa facetada roxa e adição amarela.
+Menu de papel com contatos, busca e Compartilhar perfil; lupa turquesa/coral e
+caderneta amarela próprias. Ficha visitável conserva foto transparente e placas
+dos rótulos. Cartão de compartilhamento creme, faixa roxa recortada, nome, @ e QR
+grafite legível com zona livre. Sem estilos visuais de aplicativos da referência.
+Movimento reduzido remove entrada; diálogo fecha com X original e restaura foco.
+
 Perfil e escrita, revisão final (2026-10-16): avatar desktop recolhido termina
 dentro da barra. No celular, foto transparente de 40 px após o menu, identidade
 em duas linhas e placas opcionais em terceira linha, com entrada por scroll e

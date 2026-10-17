@@ -5,7 +5,7 @@ import {
   type HandleRegistry,
 } from "./profile-handle-handler";
 
-function setup() {
+function setup(afterDelete: (request: Request) => Promise<void> = async () => {}) {
   let value: HandleRegistry = {};
   let version = 0;
   const handler = createProfileHandleHandler({
@@ -23,6 +23,7 @@ function setup() {
       } satisfies HandleIdentity;
     },
     consume: async () => true,
+    afterDelete,
     store: {
       async read() {
         return { value: structuredClone(value), version: String(version) };
@@ -51,6 +52,20 @@ function setup() {
     );
   return { call, handler };
 }
+
+it("clientes antigos só recebem sucesso da exclusão depois da limpeza social", async () => {
+  let cleaned = false;
+  const app = setup(async () => {
+    cleaned = true;
+  });
+  await app.call("a", "alice");
+  expect((await app.call("a", undefined, "DELETE")).status).toBe(200);
+  expect(cleaned).toBe(true);
+  const failed = setup(async () => {
+    throw new Error("offline");
+  });
+  expect((await failed.call("a", undefined, "DELETE")).status).toBe(503);
+});
 
 it("reserva concorrente tem um único vencedor e repetição pelo dono é idempotente", async () => {
   const { call } = setup();
