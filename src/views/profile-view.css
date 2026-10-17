@@ -4,6 +4,12 @@
 .profile-scroll-anchor {
   height: 0;
 }
+.profile-toolbar {
+  position: sticky;
+  top: 0;
+  height: 0;
+  z-index: 14;
+}
 .profile-chrome {
   --profile-collapse: 0;
   --cover-height: 530px;
@@ -15,7 +21,7 @@
   height: var(--compact-height);
   z-index: 12;
 }
-html[data-theme] .profile-view .profile-chrome .page-header {
+html[data-theme] .profile-view .profile-toolbar .page-header {
   position: relative;
   z-index: 2;
   height: 72px;
@@ -27,12 +33,12 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   backdrop-filter: none;
   pointer-events: none;
 }
-.profile-chrome .page-header button,
-.profile-chrome .page-header__actions {
+.profile-toolbar .page-header button,
+.profile-toolbar .page-header__actions {
   pointer-events: auto;
 }
-.profile-chrome .page-header::before,
-.profile-chrome .page-header::after {
+.profile-toolbar .page-header::before,
+.profile-toolbar .page-header::after {
   display: none;
 }
 .profile-cover {
@@ -62,6 +68,32 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   object-position: center;
   opacity: calc(1 - var(--profile-collapse));
   transform: translateY(calc(-24px * var(--profile-collapse)));
+}
+.profile-cover__art > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile-cover__details {
+  display: contents;
+}
+.profile-view .profile-cover .profile-cover__choose {
+  position: absolute;
+  right: 20px;
+  top: 196px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 12px;
+  opacity: calc(1 - min(1, var(--profile-collapse) * 5));
+  z-index: 1;
+  font-size: 0.75rem;
+}
+.profile-cover__choose .paper-editor-icon {
+  width: 22px;
+  height: 22px;
 }
 .profile-cover__shade {
   height: 260px;
@@ -172,7 +204,8 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   gap: 10px;
   opacity: calc(1 - min(1, var(--profile-collapse) * 5));
 }
-.profile-cover__connections > span {
+.profile-cover__connections > span,
+.profile-cover__streaks > span {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -182,6 +215,10 @@ html[data-theme] .profile-view .profile-chrome .page-header {
   border-radius: 4px 12px 4px 8px;
   font-size: 0.8rem;
   white-space: nowrap;
+}
+.profile-cover__streaks {
+  display: flex;
+  gap: 6px;
 }
 .profile-paper-icon {
   width: 28px;
@@ -508,6 +545,9 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   transition: none;
 }
 @media (max-width: 899px) {
+  .profile-toolbar {
+    --profile-chrome-padding: 8px;
+  }
   .profile-chrome {
     --profile-chrome-padding: 8px;
     --avatar-left: 62px;
@@ -609,6 +649,15 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   overflow: auto;
   box-shadow: none;
 }
+:root body .profile-view .profile-cover .profile-cover__choose {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
 .profile-avatar-dialog .profile-picker__options {
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 }
@@ -656,6 +705,168 @@ html[data-reduce-motion="true"] .profile-cover__networks a {
   background-image: linear-gradient(135deg, var(--soft) 0 10px, transparent 10px);
   border-color: var(--line);
   box-shadow: 0 4px var(--line);
+}
+:root body .profile-view .profile-cover__identity .profile-cover__edit {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.profile-cover-preview {
+  aspect-ratio: 15 / 4;
+  overflow: hidden;
+  border-radius: 6px 18px 6px 12px;
+}
+.profile-cover-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.profile-cover-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.profile-cover-options button {
+  display: grid;
+  padding: 0 0 10px;
+  gap: 8px;
+  overflow: hidden;
+  text-align: left;
+}
+.profile-cover-options button img {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 15 / 4;
+}
+.profile-cover-options button span {
+  padding: 0 10px;
+  font-size: 0.8rem;
+}
+:root body .profile-view .profile-cover-options button[aria-pressed="true"] {
+  background: #facc15;
+  color: #292432;
+}
+@media (max-width: 600px) {
+  .profile-chrome {
+    position: relative;
+    height: auto;
+    --profile-chrome-padding: 8px;
+  }
+  html[data-theme] .profile-view .profile-toolbar .page-header {
+    height: 64px;
+    padding: 8px;
+    border-radius: 8px 20px 8px 14px;
+  }
+  html[data-theme] .profile-view .profile-toolbar[data-compact="true"] .page-header {
+    background: var(--surface);
+    box-shadow: 0 4px var(--line);
+  }
+  .profile-cover {
+    position: relative;
+    height: auto;
+  }
+  .profile-cover-spacer {
+    display: none;
+  }
+  .profile-cover__art {
+    position: static;
+    height: 168px;
+    opacity: 1;
+    transform: none;
+  }
+  .profile-cover__portrait {
+    top: 116px;
+    left: 16px;
+    width: 112px;
+    height: 112px;
+  }
+  .profile-cover__avatar {
+    border-width: 3px;
+  }
+  .profile-cover__details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 68px 16px 20px;
+  }
+  .profile-cover__identity,
+  .profile-cover__handle,
+  .profile-cover__bio,
+  .profile-cover__networks,
+  .profile-cover__connections {
+    position: static;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    transform: none;
+    opacity: 1;
+  }
+  .profile-cover__identity {
+    font-size: 24px;
+    gap: 6px;
+    order: 0;
+  }
+  .profile-cover__handle {
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+    white-space: normal;
+    order: 1;
+  }
+  .profile-cover__handle:empty {
+    display: none;
+  }
+  .profile-cover__connections {
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow: visible;
+    padding: 0;
+    order: 2;
+  }
+  .profile-cover__streaks {
+    flex-wrap: wrap;
+  }
+  .profile-cover__connections > span,
+  .profile-cover__streaks > span {
+    font-size: 0.7rem;
+    padding: 6px;
+    gap: 4px;
+  }
+  .profile-cover__connections .profile-paper-icon {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+  }
+  .profile-cover__bio {
+    order: 3;
+    font-size: 0.85rem;
+    -webkit-line-clamp: 3;
+  }
+  .profile-chrome[data-compact="true"] .profile-cover__bio {
+    width: auto;
+  }
+  .profile-cover__networks {
+    order: 4;
+    flex-wrap: wrap;
+  }
+  :root body .profile-view .profile-cover__identity .profile-cover__edit {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 8px;
+    opacity: 1;
+  }
+  .profile-view .profile-cover .profile-cover__choose {
+    top: 112px;
+    right: 12px;
+    opacity: 1;
+    padding: 6px 10px;
+  }
+  .profile-cover__spark {
+    display: none;
+  }
 }
 html .profile-view .profile-settings-nav [aria-current="page"] .navigation-icon__variant {
   display: none;
