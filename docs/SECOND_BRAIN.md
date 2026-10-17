@@ -1397,3 +1397,9 @@ SystemUpdates apresenta o toast social em document.body, fora de ancestrais tran
 Limites por endereço usam `clientAddress` (cabeçalho `x-vercel-forwarded-for`, IPv6 agrupado em /64). A voz individual (`/api/speech`) passa pelo mesmo guarda das salas e tem limites por minuto, por dia e um teto global diário (`src/backend/speech-quota.ts`). A Helena exige conta não anônima. Ao criar uma ação nova que gasta recurso pago, defina limite por quem chama e um teto global.
 
 Códigos de sala são sempre aleatórios; `requestId` só serve para repetir a criação sem duplicar a sala (registro em `room-limits/create-<hash>`). O adaptador `vercel-adapter.ts` recusa corpos acima de 4,5 MB. Ao ligar um novo endpoint, não derive identificadores de valores que o cliente escolhe.
+
+# Recomendações do perfil: contrato vigente
+
+useProfileCompletion retorna status e completion confirmado para a mesma chave de campos. Usar completion.next/steps da resposta, não recalcular a sugestão no componente nem deixar uma conclusão permanente. Antes da resposta, em erro, após conclusão e após dispensar, não montar slot da jornada. ProfileJourney recebe só o resultado validado, lista apenas pendências e usa os editores existentes. X vale para a recomendação atual nesta abertura. A API e sua autenticação não mudaram.
+
+ProfileStudyWidgets conserva somente Minhas ilhas. Cadernos continuam na própria aba, com dados intactos; não importar prévia de caderno para o Perfil.

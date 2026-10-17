@@ -48,6 +48,7 @@ export function ProfileShowcase({
   syncStatus?: string;
 }) {
   const [profile] = useStoredProfile();
+  const [dismissedRecommendation, setDismissedRecommendation] = useState<string>();
   const [belowJourney, setBelowJourney] = useState(() => window.innerWidth <= 1000);
   useEffect(() => {
     const media = window.matchMedia?.("(max-width: 1000px)");
@@ -133,12 +134,15 @@ export function ProfileShowcase({
     !guest && presentationReady,
     syncStatus,
   );
+  const recommendationKey = JSON.stringify([handle.username, verification.completion?.steps]);
   const completion =
-    !guest && presentationReady ? (
+    !guest &&
+    presentationReady &&
+    verification.completion?.next &&
+    dismissedRecommendation !== recommendationKey ? (
       <ProfileJourney
-        verification={verification}
-        profile={profile}
-        username={handle.username}
+        completion={verification.completion}
+        onDismiss={() => setDismissedRecommendation(recommendationKey)}
         onChoose={(step) => {
           if (step === "identity") setEditing(true);
           else if (step === "avatar") setChoosingAvatar(true);
@@ -375,7 +379,7 @@ export function ProfileOverview({
         <ProfileProgress workspace={workspace} />
       </div>
       <div className="profile-study-grid">
-        <ProfileStudyWidgets workspace={workspace} dispatch={dispatch} />
+        <ProfileStudyWidgets dispatch={dispatch} />
       </div>
     </div>
   );

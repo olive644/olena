@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { createInitialWorkspace } from "../src/domain/workspace";
 
 for (const theme of ["light", "dark"]) {
-  test(`perfil com XP real, ilha favorita, partes e caderno na pasta: ${theme}`, async ({
+  test(`perfil com XP real, ilha favorita, partes e sem widget de caderno: ${theme}`, async ({
     page,
   }, info) => {
     test.setTimeout(60000);
@@ -107,16 +107,12 @@ for (const theme of ["light", "dark"]) {
       .click();
     await expect(page.getByRole("region", { name: "Ilhas de Matemática" })).toHaveCount(0);
     const notebook = page.locator(".profile-notebook-widget");
-    await expect(notebook.locator(".profile-notebook-trail")).toContainText("Ciências");
-    await expect(notebook.getByLabel("Título da folha 1")).toHaveValue("Anotações de hoje");
+    await expect(notebook).toHaveCount(0);
+    await expect(page.getByText("Meu cantinho de ideias", { exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
-    await notebook.getByRole("button", { name: "Próxima ›", exact: true }).click();
-    await expect(notebook.getByLabel("Título da folha 3")).toHaveValue("Folha 3");
-    await notebook
-      .getByRole("button", { name: "Abrir preview de Folha 3, folha 3", exact: true })
-      .click();
-    await expect(page).toHaveURL(/caderno=profile-book&folha=profile-page-3/);
+    await page.goto("/cadernos");
+    await expect(page.getByText("Ciências", { exact: true }).first()).toBeVisible();
   });
 }
