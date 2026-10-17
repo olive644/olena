@@ -1364,3 +1364,5 @@ GET /api/profile-social aceita list=followers|following, username opcional e off
 # Painéis de estudo no Perfil, 17/10/2026
 
 useProfileStudy lê mathPlaceRewards e a mesma progressão mastery das ilhas; escuta eventos de cache sincronizado e troca de conta, sem gravar pontos. profileLevel define 1 ponto conquistado = 1 XP de perfil, 500 por nível. Não inclui o ledger independente de salas. Favorita usa favoriteIsland no perfil existente. profileNotebook seleciona conteúdo real, não inventa frequência de uso. Query caderno no endereço de Cadernos reabre apenas um ID existente no próprio workspace. MathIslandJourney aceita initialCourse e valida desbloqueio.
+
+Códigos de sala são sempre aleatórios; `requestId` só serve para repetir a criação sem duplicar a sala (registro em `room-limits/create-<hash>`). O adaptador `vercel-adapter.ts` recusa corpos acima de 4,5 MB. Ao ligar um novo endpoint, não derive identificadores de valores que o cliente escolhe.

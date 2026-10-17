@@ -2931,3 +2931,13 @@ O "segurar para acertar" passa a juntar retas: quando uma reta recém-acertada f
 # Rótulos adicionais de perfil, 2026-10-17
 
 O identificador confirmado @dreyxnn recebe GALAXIA e BETA TESTER pelo componente compartilhado ProfileLabels. São rótulos de apresentação, sem privilégios ou alteração do cadastro. Teste de regressão valida ficha e barra recolhida, rejeita nome apenas no cache e não confunde @dreyxn com @dreyxnn. Arquivo profile-showcase.test.tsx validado com 13 testes aprovados.
+
+# Segurança: códigos de sala, corpo de pedido e App Check, 2026-10-17
+
+Resultado da auditoria de segurança (itens 6, 7 e 8 do relatório).
+
+- **Código de sala sempre aleatório.** Quando o cliente mandava `requestId`, o código da sala saía de `sha256(requestId)`, então quem escolhia o `requestId` escolhia o código (reservar códigos alheios com cerca de 33 milhões de tentativas offline). Agora o código vem sempre de `crypto.getRandomValues`, e a repetição de um pedido (mesmo `requestId`, para tolerar falha de rede) volta à mesma sala por um registro auxiliar em `room-limits/create-<hash>` com validade da sala. Esse caminho já é só do servidor, indexado por `expiresAt` e varrido pela limpeza diária, então não há regra nova a publicar. A criação continua transacional: dois pedidos simultâneos com o mesmo `requestId` conflitam e o segundo reaproveita o primeiro.
+- **Teto do corpo no adaptador.** `createVercelHandler` lia o corpo inteiro antes de qualquer validação. Agora recusa com 413 pelo `content-length` declarado e interrompe a leitura do fluxo ao passar de 4,5 MB (o limite da própria Vercel; o maior pedido legítimo, o link de leitura do caderno, fica abaixo de 4 MB). Corpos já interpretados pela Vercel continuam limitados pela plataforma.
+- **App Check.** O guarda agora avisa uma vez por instância (`app_check_not_enforced`) quando `FIREBASE_APPCHECK_ENFORCE` não é `true`. Não mudei o padrão para exigir, porque isso derruba salas e voz se o reCAPTCHA não estiver ativo no ambiente. Cabe ao dono conferir o valor no painel da Vercel e ativar quando o registro de resultados (`room_protection`) mostrar tokens válidos.
+- **Limite conhecido.** O código continua com 5 caracteres (cerca de 33 milhões de combinações). Adivinhar uma sala exige entrar por `join`, limitado a 90 por minuto por endereço (agrupado em /64 na outra branch de segurança). Aumentar para 6 caracteres mexeria em campos, links e telas, e fica como decisão separada.
+- **Testes.** `local-room-create-request.test.ts` (código não derivado, repetição volta à mesma sala), `vercel-adapter.test.ts` (corpo normal, 413 por cabeçalho e por fluxo) e `room-guard.test.ts` (aviso único).

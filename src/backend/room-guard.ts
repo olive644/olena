@@ -15,7 +15,19 @@ export function createRoomGuard(
     status: number;
   }) => void = () => {},
 ) {
+  let warned = false;
   return async (request: Request): Promise<Response | undefined> => {
+    // Sem FIREBASE_APPCHECK_ENFORCE=true o App Check só é registrado, nunca exigido. Avisar
+    // uma vez por instância evita que a proteção fique desligada sem ninguém perceber.
+    if (!enforce && !warned) {
+      warned = true;
+      console.warn(
+        JSON.stringify({
+          event: "app_check_not_enforced",
+          note: "Defina FIREBASE_APPCHECK_ENFORCE=true para exigir App Check.",
+        }),
+      );
+    }
     const url = new URL(request.url);
     const requestedAction =
       url.pathname === "/api/speech" ? "speech" : url.searchParams.get("action");
