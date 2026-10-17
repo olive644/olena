@@ -31,6 +31,7 @@ describe("grupo de instrumentos", () => {
   it.each([
     ["Régua", "ruler"],
     ["Sistema de coordenadas", "coordinates"],
+    ["Espaço vertical", "space"],
     ["Caneta", "pen"],
     ["Marca-texto", "highlighter"],
     ["Borracha", "eraser"],

@@ -5420,6 +5420,10 @@ body.local-room-active {
   cursor: crosshair;
 }
 
+.handwriting-canvas--space {
+  cursor: row-resize;
+}
+
 .handwriting-canvas--zoom-in {
   cursor: zoom-in;
 }

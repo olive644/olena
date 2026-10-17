@@ -55,6 +55,16 @@ export function HandwritingToolGroup({
       </button>
       <button
         type="button"
+        className={!textMode && tool === "space" ? "is-active" : ""}
+        aria-label="Espaço vertical"
+        title="Espaço vertical: arraste para baixo para abrir espaço ou para cima para fechar"
+        aria-pressed={!textMode && tool === "space"}
+        onClick={() => onSelectTool("space")}
+      >
+        <PaperObjectIcon name="space" /> <span>Espaço</span>
+      </button>
+      <button
+        type="button"
         className={!textMode && tool === "coordinates" ? "is-active" : ""}
         aria-label="Sistema de coordenadas"
         title="Sistema de coordenadas: arraste da origem até o fim dos eixos"

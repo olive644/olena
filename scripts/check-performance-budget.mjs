@@ -296,7 +296,11 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // Perfil móvel em fluxo natural, seletor persistente de cinco capas e engrenagem compartilhada:
 // total medido 1433.9 KiB, entrada preservada em 279.5 KiB. Arte servida como SVG estático,
 // fora do JavaScript, sem dependência nova. Margem incremental estreita, tetos absolutos intactos.
-const MAX_TOTAL_JS_BYTES = 1436 * 1024;
+// Espaço vertical do handwriting (regra pura, gesto, teclado e prévia no editor): total medido
+// 1438.1 KiB (+3.3 KiB sobre 1434.8 da main). Código do editor sob demanda, entrada inicial
+// intacta, sem dependência nova. Margem estreita de CI; teto absoluto e orçamento inicial
+// preservados.
+const MAX_TOTAL_JS_BYTES = 1441 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.
 const HARD_CEILING_TOTAL_JS_BYTES = 1500 * 1024;
