@@ -75,3 +75,18 @@ it("the production calculator still requires authentication and quota", async ()
   expect((await send("Quanto é 1/3 + 1/6?")).status).toBe(429);
   expect(mocks.teacher).not.toHaveBeenCalled();
 });
+
+it("recusa conta anônima antes de gastar qualquer cota ou chamar o professor", async () => {
+  mocks.identify.mockResolvedValue({ uid: "anon", anonymous: true });
+  const response = await send("Explique frações.");
+  expect(response.status).toBe(401);
+  expect(mocks.quota).not.toHaveBeenCalled();
+  expect(mocks.teacher).not.toHaveBeenCalled();
+});
+
+it("aceita conta real marcada como não anônima", async () => {
+  mocks.identify.mockResolvedValue({ uid: "account", anonymous: false });
+  const response = await send("Explique frações.");
+  expect(response.status).toBe(200);
+  expect(mocks.quota).toHaveBeenCalled();
+});

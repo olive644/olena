@@ -19,7 +19,10 @@ const handler = createHelenaHandler({
     .map((value) => value.trim())
     .filter(Boolean),
   async identifyClient(request) {
-    return (await identity(request))?.uid ?? "";
+    // Contas anônimas são baratas de criar: com elas a cota por usuário não protegeria a cota
+    // global. A Helena exige conta de verdade, como o resto das ações da conta.
+    const account = await identity(request);
+    return account && !account.anonymous ? account.uid : "";
   },
   rateLimiter: {
     async consume(uid) {

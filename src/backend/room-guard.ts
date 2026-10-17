@@ -1,5 +1,6 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { KvStore } from "./kv-store.js";
+import { clientAddress } from "./client-address.js";
 import { checkRateLimit } from "./rate-limit.js";
 
 const keys = createRemoteJWKSet(new URL("https://firebaseappcheck.googleapis.com/v1/jwks"));
@@ -87,8 +88,7 @@ export function createRoomGuard(
       );
     }
     // Vercel supplies this header. Never use a caller-controlled id as the only abuse boundary.
-    const address =
-      request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const address = clientAddress(request) ?? "unknown";
     const limit =
       action === "create" || action === "view-create"
         ? 6

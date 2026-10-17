@@ -1385,3 +1385,7 @@ useProfileCompletion confere a API em segundo plano, trata edição em fila
 sem regredir etapas e repete ao recuperar rede/foco. Cliente não envia campos
 pessoais nem UID. Servidor lê somente o item stateV2 de perfil e a reserva de @
 do UID autenticado. Contrato e ameaças: PROFILE_COMPLETION_API.md.
+
+## Limites de abuso (2026-10-17)
+
+Limites por endereço usam `clientAddress` (cabeçalho `x-vercel-forwarded-for`, IPv6 agrupado em /64). A voz individual (`/api/speech`) passa pelo mesmo guarda das salas e tem limites por minuto, por dia e um teto global diário (`src/backend/speech-quota.ts`). A Helena exige conta não anônima. Ao criar uma ação nova que gasta recurso pago, defina limite por quem chama e um teto global.

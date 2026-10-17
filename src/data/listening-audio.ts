@@ -102,12 +102,12 @@ export class NaturalVoicePlayer {
       const timeout = window.setTimeout(() => controller.abort(), 20_000);
       try {
         if (roomCode && !roomCredential) throw new Error("Room credential unavailable");
-        const appCheckToken = roomCode ? await roomAppCheckToken() : undefined;
+        const appCheckToken = await roomAppCheckToken();
         const response = await fetch("/api/speech", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            ...(roomCode && appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
+            ...(appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
           },
           body: JSON.stringify({
             text,

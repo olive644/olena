@@ -2970,3 +2970,13 @@ Resultado da auditoria de segurança (itens 1 e 2 do relatório).
 - **Limite conhecido.** As regras do Realtime Database não somam tamanhos, então o pior caso por conta ainda é cerca de 100 MB (20 + 16 x 5). Reduzir mais exige dados reais de tamanho; vale configurar alerta de uso no Firebase.
 - **Publicação manual.** As regras só valem depois de publicadas no Firebase (ver `docs/ACCOUNT_SYNC_SETUP.md`). Até lá, o código novo do servidor já protege `view-create`, mas as regras antigas continuam abertas.
 - **Testes.** `notebook-collab-handler.test.ts` (conta, anônimo, cota, assinatura falsa), `notebook-file-actions.test.tsx` (token enviado e orientação sem login) e `firebase-user-rules.test.ts` (chaves permitidas, limites, escrita anônima).
+
+# Segurança: tetos globais e identidade, 2026-10-17
+
+Resultado da auditoria de segurança (itens 3, 4 e 5 do relatório).
+
+- **IPv6 por prefixo /64.** `clientAddress` agrupa endereços IPv6 pelo prefixo /64 (IPv4 mapeado vira IPv4). Antes, quem recebia um bloco /64 trocava de endereço a cada pedido e escapava de todo limite por endereço. O guarda das salas (`room-guard.ts`) passou a usar a mesma função, em vez de ler o cabeçalho por conta própria. Efeito colateral aceito: pessoas que dividem o mesmo /64 (rara) dividem o limite.
+- **Voz individual com teto global.** A geração de áudio, que custa na conta do Cloudflare e não exige login, tem agora limite por endereço (30 por minuto e 600 por dia) e teto global de 6000 gerações por dia (`speech-quota.ts`). Áudio já em cache não gera nova cobrança. O guarda de App Check e o limite por endereço, antes só da voz de sala, valem também para a voz individual, e o cliente envia o token nos dois casos. App Check continua só bloqueando quando `FIREBASE_APPCHECK_ENFORCE=true`.
+- **Helena recusa conta anônima.** `helena-runtime.ts` devolve identidade vazia (401 com orientação para entrar) quando o token é anônimo. Antes, contas anônimas baratas de criar esgotavam a cota global de 300 por dia para todos. O cliente nunca cria contas anônimas.
+- **Limites escolhidos.** 6000 por dia de voz e 600 por dia por endereço são estimativas conservadoras acima do uso normal de uma turma; ajustar em `speech-quota.ts` conforme o uso real e o custo observado no Cloudflare.
+- **Testes.** `client-address.test.ts` (/64, IPv4 mapeado, texto estranho), `speech-quota.test.ts` (três limites e recusa só pelo teto global), `speech-handler.test.ts` (guarda na voz individual) e `helena-runtime.test.ts` (anônimo recusado sem gastar cota). O teste do cliente de voz não roda neste ambiente local (limitação de `Blob.stream` no jsdom), só no CI.
