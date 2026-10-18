@@ -3018,6 +3018,12 @@ O console do Firebase mostrou 25,47 GB de download de 1 a 17 de outubro (limite 
 - **Efeito esperado, sem medição.** A resposta do `PUT` some (cerca de um terço do download por salvamento) e o agrupamento reduz o número de salvamentos em rajadas. Não é garantido ficar abaixo de 10 GB por mês. A confirmação é o consumo no console nos dias seguintes (aba Uso), ou `firebase database:profile` na CLI, que mostra o consumo por caminho.
 - **Testes.** `use-cloud-sync.test.tsx` ganhou três casos: `print=silent` no `PUT`, agrupamento de mudanças seguidas em um só envio e envio imediato ao esconder a página. O arquivo agora espera até 9 s por operação (o intervalo real é 4 s).
 
+# Configurações e auditoria de exportação (2026-10-17)
+
+Conta concentra identidade somente leitura, e-mail da identidade confirmada, fuso e saída/login. Exclusão migrou de Privacidade e dados para Conta, preservando confirmação digitada e reautenticação. Sem widgets Conta e sincronização/Recuperação local nem atalho Meu progresso; os dados e a sincronização continuam intactos. Transição de entrada e seta amarela original, seleções de estudo em papel amarelo com check e movimento reduzido.
+
+Exportar meus dados gera JSON exclusivamente no navegador. Lista permitida de preferências/estudos, sem enumerar localStorage ou incluir autenticação Firebase, caches de outras contas ou credenciais do Google. O estado atual substitui eventual cópia antiga do workspace. Bloqueado enquanto a conta está carregando/não confirmada; convidado exporta sua sessão pronta. Não baixa arquivos somente na nuvem, não é backup integral da conta e não criptografa o arquivo. Avisos explícitos na tela. Testes verificam bloqueio, erro de armazenamento, ausência de rede na ação, lista permitida e leitura real do download com recuperação dos registros.
+
 # Contrato societário removido do repositório, 2026-10-18
 
 - **Decisão da dona.** O arquivo `docs/CONTRATO_SOCIETARIO.md` deixou de ser versionado. Ele estava num repositório público, e o app terá planos pagos. O caminho entrou no `.gitignore` para que uma cópia local não volte por engano. Nenhum conteúdo do arquivo foi lido nem copiado por esta mudança.

@@ -1416,3 +1416,9 @@ de teste com a validação em duas contas reais, registrada em SOCIAL_REALTIME_S
 ## Consumo do Realtime Database (2026-10-17)
 
 O plano gratuito limita download a cerca de 10 GB por mês. O envio da conta espera 4 s para juntar mudanças (`CLOUD_UPLOAD_DELAY_MS`) e usa `print=silent`; ao esconder a página o envio pendente sai na hora. Ao criar uma gravação frequente em dados sincronizados, lembre que cada salvamento custa o tamanho do estado inteiro em download. Veja o consumo na aba Uso do Realtime Database.
+
+# Configurações: conta e exportação
+
+ProfileIdentity é somente leitura, editores continuam na ficha do Perfil. E-mail vem de cloud.email somente com authenticated confirmado. DeleteAccountPanel fica na seção Conta; não duplicar em Privacidade e dados nem remover reautenticação/confirmação. Remover a UI de recuperação não altera armazenamento do histórico ou sincronização.
+
+ProfileDataExport exige ready da conta (ou convidado pronto). createStudyDataExport repete a lista permitida de SYNCED_STORAGE_KEYS e serializa o workspace atual. Não trocar por Object.entries(localStorage), nem exportar tokens. JSON é arquivo pessoal sem criptografia e sem arquivos que só existem remotamente; não anunciar como exportação integral. E2E profile-settings lê o download e restaura o workspace com loadWorkspace, sem dados reais.

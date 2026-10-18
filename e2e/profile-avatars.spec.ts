@@ -8,8 +8,7 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
   });
   await page.goto("/perfil");
-  await page.getByRole("button", { name: "Configurações", exact: true }).click();
-  const profileMenu = page.locator(".profile-avatar-options");
+  const profileMenu = page.getByRole("dialog", { name: "Avatar do perfil" });
   const avatars = [
     "Alice",
     "Soso Estrelinha",
@@ -22,7 +21,7 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
   ];
   for (const theme of ["Claro", "Escuro"]) {
     await setTestTheme(page, theme === "Claro" ? "light" : "dark");
-    await profileMenu.locator("summary").click();
+    await page.getByRole("button", { name: "Abrir foto do perfil" }).click();
     for (const name of avatars) {
       const option = profileMenu
         .locator(".profile-picker")
@@ -55,13 +54,13 @@ test("novos avatares preservam transparência e seleção nos dois temas", async
     });
     await page.screenshot({ path: testInfo.outputPath(`avatares-${theme}.png`) });
     await profileMenu.getByRole("button", { name: "Leo", exact: true }).click();
-    await expect(page.getByAltText("Avatar atual")).toHaveAttribute(
+    await page.getByRole("button", { name: "Usar personagem" }).click();
+    await expect(page.getByAltText("Sua foto de perfil")).toHaveAttribute(
       "src",
       "/profile-avatars/leo.svg",
     );
     await page.reload();
-    await page.getByRole("button", { name: "Configurações", exact: true }).click();
-    await expect(page.getByAltText("Avatar atual")).toHaveAttribute(
+    await expect(page.getByAltText("Sua foto de perfil")).toHaveAttribute(
       "src",
       "/profile-avatars/leo.svg",
     );

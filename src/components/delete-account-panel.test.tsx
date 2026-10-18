@@ -16,7 +16,7 @@ function open(onDelete: () => Promise<void> = vi.fn(async () => undefined)) {
 describe("exclusão de conta no perfil", () => {
   it("começa fechada: só o botão da zona de perigo aparece", () => {
     render(<DeleteAccountPanel accountName="Helena" onDelete={vi.fn()} />);
-    expect(screen.getByRole("heading", { name: "Excluir esta conta" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Excluir conta" })).toBeTruthy();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 

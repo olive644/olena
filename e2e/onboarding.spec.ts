@@ -57,7 +57,7 @@ test("entra como convidado no fim do onboarding e continua assim ao recarregar",
 
   await page.goto("/perfil");
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
-  await expect(page.getByText("Guest (convidado)")).toBeVisible();
+  await expect(page.getByText("Sessão de convidado")).toBeVisible();
   await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("perfil-convidado.png") });
 });
