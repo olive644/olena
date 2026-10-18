@@ -3163,3 +3163,9 @@ Modal de exclusão era descendente de painel animado, com containing block trans
   2. No Google Cloud Console, em APIs e serviços, remover o escopo de Agenda da tela de consentimento e apagar o cliente OAuth usado pela integração (isso revoga os tokens emitidos por ele). Não apagar o cliente criado pelo Firebase para o login com Google.
   3. Quem quiser revogar a própria autorização também pode fazer em myaccount.google.com/permissions.
 - **Não verificado.** Se algum cliente OAuth da integração é compartilhado com o login do Firebase. Conferir o nome do cliente antes de apagar.
+
+# Termos de Uso, 2026-10-18
+
+- **O que é.** Nova página estática `public/termos-de-uso.html` (versão `2026-10-18`, em `src/domain/terms-of-use.ts`), no mesmo padrão da Política de Privacidade, com teste em `src/terms-of-use-page.test.ts`. A Política de Privacidade ganhou um link para os termos no rodapé, e o `sitemap.xml` lista a nova página. Detalhes em `docs/TERMOS_DE_USO.md`.
+- **O que não foi feito.** O aplicativo ainda não mostra o link dos termos na tela de entrada e não registra o aceite por versão. Ambos exigem mudança de interface, catálogo de idiomas e e2e, e ficam para PRs próprias.
+- **Em aberto (dona).** Canal de contato, CNPJ e foro (a página avisa "em definição" e não inventa dados) e revisão jurídica. O texto foi escrito por IA e não substitui um advogado, principalmente antes de cobrar por planos.

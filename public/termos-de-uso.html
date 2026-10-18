@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Termos de Uso do OlenaStudy</title>
+    <meta
+      name="description"
+      content="As regras de uso do OlenaStudy: o que o aplicativo oferece, o que esperamos de quem usa, o que é seu, o que é nosso e como tudo isso pode mudar."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://olenastudy.vercel.app/termos-de-uso.html" />
+    <link rel="icon" href="/olena-favicon-32.png" type="image/png" />
+    <meta name="color-scheme" content="light dark" />
+    <style>
+      :root {
+        --page: #fff9ef;
+        --paper: #ffffff;
+        --paper-edge: #e4dacb;
+        --paper-base: #e8dfd0;
+        --ink: #292432;
+        --muted: #5a5266;
+        --violet: #7c3aed;
+        --violet-deep: #51259b;
+        --violet-base: #51259b;
+        --summary: #7c3aed;
+        --summary-base: #51259b;
+        --on-violet: #fff9ef;
+        --lilac: #f3ecff;
+        --lilac-edge: #dccfee;
+        --yellow: #facc15;
+        --yellow-base: #c99a06;
+        --on-yellow: #292432;
+        --shadow: rgb(0 0 0 / 5%);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #211c29;
+          --paper: #2d2738;
+          --paper-edge: #443b52;
+          --paper-base: #191520;
+          --ink: #fff9ef;
+          --muted: #cfc6dc;
+          --violet: #a779ef;
+          --violet-deep: #cdb6f8;
+          --violet-base: #3b1c73;
+          --summary: #5b2fb0;
+          --summary-base: #3b1c73;
+          --on-violet: #fff9ef;
+          --lilac: #382f49;
+          --lilac-edge: #52476a;
+          --yellow: #facc15;
+          --yellow-base: #8f6d03;
+          --on-yellow: #292432;
+          --shadow: rgb(0 0 0 / 25%);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 1rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-600-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-700-normal.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Manrope";
+        font-style: normal;
+        font-weight: 800;
+        font-display: swap;
+        src: url("/fonts/manrope-latin-800-normal.woff2") format("woff2");
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family:
+          "Manrope",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        line-height: 1.7;
+      }
+      .wrap {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 1rem;
+      }
+      header.brand {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.4rem 0 1.4rem;
+      }
+      .logo {
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .logo span {
+        color: var(--violet);
+      }
+      .back {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        color: var(--violet-deep);
+        font-weight: 700;
+      }
+      /* Papel recortado: cantos assimétricos e base deslocada, como os cartões do app. */
+      .paper {
+        position: relative;
+        margin: 0 0 1.6rem;
+        padding: 1.4rem 1.4rem 1.6rem;
+        background: var(--paper);
+        border: 1px solid var(--paper-edge);
+        border-radius: 28px 28px 36px 12px;
+        box-shadow:
+          7px 9px 0 var(--paper-base),
+          0 16px 35px var(--shadow);
+      }
+      .paper > :first-child {
+        margin-top: 0;
+      }
+      .paper > :last-child {
+        margin-bottom: 0;
+      }
+      .hero h1 {
+        margin: 0 0 0.3rem;
+        font-size: 2rem;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+      }
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .summary {
+        background: var(--summary);
+        border-color: var(--summary-base);
+        color: var(--on-violet);
+        border-radius: 36px 12px 28px 28px;
+        box-shadow:
+          7px 9px 0 var(--summary-base),
+          0 16px 35px var(--shadow);
+      }
+      .summary h2 {
+        color: var(--on-violet);
+      }
+      .summary a {
+        color: var(--on-violet);
+      }
+      .summary strong {
+        color: #ffe88d;
+      }
+      .pending {
+        background: var(--yellow);
+        border-color: var(--yellow-base);
+        color: var(--on-yellow);
+        border-radius: 12px 28px 28px 28px;
+        box-shadow:
+          6px 8px 0 var(--yellow-base),
+          0 16px 35px var(--shadow);
+        font-weight: 700;
+      }
+      .toc {
+        background: var(--lilac);
+        border: 2px dashed var(--lilac-edge);
+        border-radius: 24px 12px 24px 24px;
+        box-shadow: none;
+      }
+      h2 {
+        margin: 0 0 0.6rem;
+        font-size: 1.3rem;
+        letter-spacing: -0.02em;
+        color: var(--violet-deep);
+      }
+      h3 {
+        margin: 1.3rem 0 0.4rem;
+        font-size: 1.02rem;
+      }
+      p,
+      li {
+        max-width: 66ch;
+      }
+      ul,
+      ol {
+        padding-left: 1.3rem;
+      }
+      .toc ol {
+        margin: 0.3rem 0 0;
+        columns: 2 240px;
+      }
+      .toc strong {
+        font-size: 1.05rem;
+      }
+      .table-scroll {
+        overflow-x: auto;
+        margin: 0.8rem 0 0.4rem;
+        border: 1px solid var(--lilac-edge);
+        border-radius: 18px 18px 22px 8px;
+        background: var(--paper);
+      }
+      table {
+        width: 100%;
+        min-width: 640px;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+      th,
+      td {
+        padding: 0.75rem 0.8rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--lilac-edge);
+      }
+      thead th {
+        background: var(--lilac);
+        font-size: 0.86rem;
+      }
+      tbody th {
+        background: transparent;
+        font-weight: 800;
+      }
+      tr:last-child th,
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      a {
+        color: var(--violet-deep);
+        text-underline-offset: 3px;
+      }
+      a:focus-visible {
+        outline: 3px solid var(--violet);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+      footer.brand-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin: 2.2rem 0 1rem;
+        padding-top: 1rem;
+        border-top: 1px dashed var(--paper-edge);
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-align: left;
+      }
+      footer.brand-footer img {
+        width: 30px;
+        height: 30px;
+        flex: none;
+      }
+      @media (max-width: 520px) {
+        .hero h1 {
+          font-size: 1.6rem;
+        }
+        .paper {
+          padding: 1.1rem 1rem 1.3rem;
+          box-shadow:
+            5px 7px 0 var(--paper-base),
+            0 12px 28px var(--shadow);
+        }
+      }
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .paper {
+          box-shadow: none;
+          border: 1px solid #999;
+        }
+        .back,
+        .toc {
+          display: none;
+        }
+      }
+      .brand-footer a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="brand">
+        <a class="logo" href="/">Olena<span>Study</span></a>
+        <a class="back" href="/">Voltar ao aplicativo</a>
+      </header>
+
+      <main data-terms-version="2026-10-18">
+        <section class="paper hero">
+          <h1>Termos de Uso</h1>
+          <p>
+            Versão de 18 de outubro de 2026. Estas são as regras de uso do OlenaStudy: o que você
+            pode esperar de nós, o que esperamos de você e o que acontece quando algo sai do
+            combinado. Como cuidamos dos seus dados fica na Política de Privacidade.
+          </p>
+        </section>
+
+        <section class="paper summary" aria-labelledby="resumo">
+          <h2 id="resumo">Resumo em poucas palavras</h2>
+          <ul>
+            <li>
+              O OlenaStudy é uma ferramenta para
+              <strong>organizar e praticar os seus estudos</strong>. Hoje o uso é gratuito.
+            </li>
+            <li>
+              O que você escreve, importa e cria <strong>é seu</strong>. Nós só usamos para o
+              aplicativo funcionar para você.
+            </li>
+            <li>
+              Nas salas e nos cadernos compartilhados, <strong>respeite as outras pessoas</strong>.
+              Quem abusa pode perder o acesso.
+            </li>
+            <li>
+              Respostas geradas por computador ou por inteligência artificial
+              <strong>podem errar</strong>. Confira antes de confiar.
+            </li>
+            <li>
+              Se um dia houver planos pagos, <strong>você verá o preço antes</strong> e só pagará se
+              confirmar.
+            </li>
+            <li>
+              Quem tem menos de 18 anos precisa do aval de um responsável. Você pode
+              <strong>encerrar a sua conta quando quiser</strong>.
+            </li>
+          </ul>
+        </section>
+
+        <nav class="paper toc" aria-label="Índice">
+          <strong>Nesta página</strong>
+          <ol>
+            <li><a href="#quem">Quem somos e o que são estes termos</a></li>
+            <li><a href="#servico">O que o aplicativo oferece</a></li>
+            <li><a href="#conta">Sua conta</a></li>
+            <li><a href="#respeito">Como usar o aplicativo</a></li>
+            <li><a href="#conteudo">O que é seu e o que é nosso</a></li>
+            <li><a href="#ia">Respostas automáticas e inteligência artificial</a></li>
+            <li><a href="#planos">Planos pagos no futuro</a></li>
+            <li><a href="#disponibilidade">Disponibilidade e mudanças no serviço</a></li>
+            <li><a href="#encerramento">Suspensão e encerramento</a></li>
+            <li><a href="#responsabilidade">Nossa responsabilidade</a></li>
+            <li><a href="#mudancas">Mudanças nestes termos</a></li>
+            <li><a href="#lei">Lei aplicável e contato</a></li>
+          </ol>
+        </nav>
+
+        <section class="paper" aria-labelledby="quem">
+          <h2 id="quem">1. Quem somos e o que são estes termos</h2>
+          <p>
+            O OlenaStudy é oferecido pela empresa <strong>Galeria.Oli</strong>, formada por José
+            Oliver, Helena Ferreira e Leo Bizzocchi. Estes termos são o acordo entre você e a
+            Galeria.Oli sobre o uso do aplicativo.
+          </p>
+          <p>
+            Ao criar uma conta, entrar com o Google ou simplesmente usar o aplicativo, você concorda
+            com estes termos. Se não concordar, não use o aplicativo. Como tratamos os seus dados
+            está na <a href="/politica-de-privacidade.html">Política de Privacidade</a>, que faz
+            parte deste acordo.
+          </p>
+          <p class="paper pending" role="note">
+            Em definição: o canal de atendimento e os dados da empresa (como o CNPJ) serão
+            publicados aqui. Enquanto isso, evite mandar informações pessoais por canais públicos.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="servico">
+          <h2 id="servico">2. O que o aplicativo oferece</h2>
+          <p>
+            O OlenaStudy ajuda você a estudar: organizar a agenda e os hábitos, registrar o foco,
+            escrever cadernos e anotações, praticar com cartões e exercícios, jogar em salas de
+            estudo com outras pessoas e compartilhar folhas de caderno. O que fica no seu aparelho e
+            o que vai para a nuvem está explicado na Política de Privacidade.
+          </p>
+          <p>
+            O aplicativo é uma <strong>ferramenta de apoio</strong>. Ele não substitui a escola, o
+            professor nem o seu próprio esforço, e não garante resultado em provas ou concursos.
+          </p>
+          <p>
+            O aplicativo está em evolução. Recursos podem ser adicionados, mudados ou retirados, e
+            alguns podem aparecer ainda em teste.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="conta">
+          <h2 id="conta">3. Sua conta</h2>
+          <ul>
+            <li>
+              Para guardar os estudos na nuvem, você entra com uma conta Google. O acesso à sua
+              conta Google é seu: não o compartilhe com ninguém.
+            </li>
+            <li>
+              Você responde pelo que acontece na sua conta. Se achar que alguém entrou nela sem
+              permissão, saia do aplicativo, troque a senha da conta Google e fale com a gente.
+            </li>
+            <li>
+              Os nomes de usuário (os @) são reservados por ordem de escolha. Não pode usar um @ que
+              se faça passar pela equipe do aplicativo, por outra pessoa ou por uma marca, como
+              “admin”, “suporte” ou “olena”.
+            </li>
+            <li>
+              Quem tem menos de 18 anos só deve usar o aplicativo com o aval de um responsável, que
+              passa a responder por esse uso. Se tomarmos conhecimento de uso sem esse aval, podemos
+              pedir a confirmação ou limitar o acesso.
+            </li>
+            <li>
+              Você pode encerrar a sua conta quando quiser, pelas Configurações do aplicativo. O que
+              acontece com os seus dados depois está na Política de Privacidade.
+            </li>
+          </ul>
+        </section>
+
+        <section class="paper" aria-labelledby="respeito">
+          <h2 id="respeito">4. Como usar o aplicativo</h2>
+          <p>Use o aplicativo com boa-fé e respeito. Em especial, não pode:</p>
+          <ul>
+            <li>
+              ofender, ameaçar, perseguir ou constranger outras pessoas, inclusive nos nomes que
+              você escolhe, nas salas de estudo e nos cadernos compartilhados;
+            </li>
+            <li>
+              publicar ou compartilhar conteúdo ilegal, que viole direitos de outras pessoas ou que
+              mostre dados pessoais de alguém sem permissão;
+            </li>
+            <li>
+              tentar invadir o aplicativo, explorar falhas, burlar limites de uso ou as proteções de
+              segurança, ou sobrecarregar o serviço de propósito;
+            </li>
+            <li>
+              usar robôs, scripts ou outros meios automáticos para acessar o aplicativo ou copiar o
+              seu conteúdo em massa;
+            </li>
+            <li>
+              criar várias contas para escapar de limites ou de uma suspensão, ou se passar por
+              outra pessoa;
+            </li>
+            <li>
+              usar o aplicativo para fins comerciais ou revendê-lo sem a nossa autorização prévia e
+              por escrito.
+            </li>
+          </ul>
+          <p>
+            <strong>Salas de estudo e cadernos compartilhados.</strong> Quem organiza uma sala
+            responde pela forma como a usa e pelo que leva a ela. Um link de leitura de caderno pode
+            ser aberto por qualquer pessoa que o receba, mesmo que você não a conheça. Compartilhe
+            só com quem você quer.
+          </p>
+          <p>
+            Se você achar uma falha de segurança, nos avise em privado, como explica o arquivo
+            SECURITY do projeto, e não a divulgue antes de corrigirmos.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="conteudo">
+          <h2 id="conteudo">5. O que é seu e o que é nosso</h2>
+          <h3>O que é seu</h3>
+          <p>
+            Os seus estudos, anotações, cadernos, folhas e arquivos que você cria ou importa
+            continuam sendo seus. Você nos autoriza apenas a guardar, copiar e mostrar esse conteúdo
+            na medida necessária para o aplicativo funcionar para você e para as pessoas que você
+            escolher, como em uma sala ou em um link de leitura. Não usamos o seu conteúdo para
+            publicidade.
+          </p>
+          <p>
+            Ao importar um material (um PDF, uma imagem, um livro), você declara que pode usá-lo. Se
+            ele pertence a outra pessoa ou a uma editora, respeite os direitos dela.
+          </p>
+          <h3>O que é nosso</h3>
+          <p>
+            O aplicativo, o código, o visual, as ilustrações, os personagens (como a Helena), os
+            textos, os bancos de exercícios e a marca OlenaStudy são da Galeria.Oli, com todos os
+            direitos reservados. Damos a você uma permissão pessoal, limitada, que não pode ser
+            passada adiante, para usar o aplicativo enquanto você respeitar estes termos. Não é
+            permitido copiar, modificar, distribuir ou fazer engenharia reversa do aplicativo, nem
+            usar a marca, sem autorização prévia e por escrito.
+          </p>
+          <h3>Sugestões</h3>
+          <p>
+            Se você nos mandar ideias ou sugestões, podemos usá-las sem pagar nada por isso, e sem
+            ter que dizer de quem partiu.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="ia">
+          <h2 id="ia">6. Respostas automáticas e inteligência artificial</h2>
+          <p>
+            Algumas partes do aplicativo geram respostas ou conteúdos por computador, e outras podem
+            usar inteligência artificial, como a voz que lê as frases na prática de escuta. Esses
+            recursos podem errar, ficar incompletos ou desatualizados. Use-os como apoio,
+            <strong>confira as informações</strong> importantes e não os trate como orientação
+            profissional de saúde, jurídica ou financeira.
+          </p>
+          <p>
+            Quais informações chegam a empresas parceiras para esses recursos, e quando isso depende
+            da sua permissão, está na Política de Privacidade.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="planos">
+          <h2 id="planos">7. Planos pagos no futuro</h2>
+          <p>
+            Hoje o uso do aplicativo é gratuito. No futuro, a Galeria.Oli poderá oferecer planos
+            pagos. Se isso acontecer:
+          </p>
+          <ul>
+            <li>
+              mostraremos o preço, o que está incluído e como cancelar <strong>antes</strong> de
+              qualquer cobrança, e só cobraremos depois da sua confirmação;
+            </li>
+            <li>
+              recursos que hoje são gratuitos poderão passar a fazer parte de um plano pago, com
+              aviso prévio;
+            </li>
+            <li>
+              valem os seus direitos de consumidor, inclusive o de desistir de uma compra feita pela
+              internet em até 7 dias, previsto no Código de Defesa do Consumidor (art. 49).
+            </li>
+          </ul>
+          <p>
+            As regras detalhadas de cada plano (pagamento, renovação, cancelamento e reembolso)
+            serão apresentadas na hora da contratação e passarão a fazer parte destes termos.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="disponibilidade">
+          <h2 id="disponibilidade">8. Disponibilidade e mudanças no serviço</h2>
+          <p>
+            Trabalhamos para o aplicativo funcionar bem, mas não prometemos que ele ficará sempre no
+            ar, sem erros ou sem interrupções. Ele depende de serviços de terceiros (como o Google e
+            a empresa que o hospeda), e esses serviços têm regras e limites próprios. Podemos fazer
+            manutenção, mudar recursos ou, se for preciso, encerrar o aplicativo ou uma parte dele.
+            Quando houver mudança importante, avisaremos com a antecedência possível.
+          </p>
+          <p>
+            Cuidamos para que seus estudos não se percam, mas nenhum sistema é perfeito.
+            <strong>Guarde cópias do que é importante para você.</strong>
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="encerramento">
+          <h2 id="encerramento">9. Suspensão e encerramento</h2>
+          <p>
+            Você pode parar de usar o aplicativo e excluir a sua conta quando quiser. Nós podemos
+            limitar, suspender ou encerrar o acesso de quem descumprir estes termos, abusar do
+            serviço, colocar outras pessoas em risco ou usar o aplicativo de forma ilegal. Sempre
+            que for possível, explicaremos o motivo e daremos a chance de você responder. Em casos
+            graves ou urgentes, o acesso pode ser suspenso antes do aviso.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="responsabilidade">
+          <h2 id="responsabilidade">10. Nossa responsabilidade</h2>
+          <p>
+            O aplicativo é oferecido como está, dentro do que a lei permite. Não nos
+            responsabilizamos por perdas indiretas, por decisões que você tome com base em respostas
+            do aplicativo, por falhas de serviços de terceiros nem por ações de outras pessoas que
+            usem o aplicativo. Isso não tira nenhum direito que a lei garante a você, em especial
+            como consumidor, nem nossa responsabilidade pelo que a lei não permite excluir.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="mudancas">
+          <h2 id="mudancas">11. Mudanças nestes termos</h2>
+          <p>
+            Podemos atualizar estes termos. A versão em vigor é a desta página, com a data no topo.
+            Em mudanças importantes, avisaremos no aplicativo e, quando a lei exigir, vamos pedir
+            que você confirme que concorda. Se você continuar usando o aplicativo depois de uma
+            mudança comunicada, entendemos que concorda com ela. Se não concordar, pare de usar e,
+            se quiser, exclua a sua conta.
+          </p>
+        </section>
+
+        <section class="paper" aria-labelledby="lei">
+          <h2 id="lei">12. Lei aplicável e contato</h2>
+          <p>
+            Estes termos seguem as leis do Brasil. Para resolver qualquer dúvida sobre eles, fale
+            primeiro conosco: tentaremos resolver de forma amigável. Quando a lei der a você o
+            direito de levar o assunto ao foro do seu domicílio, esse direito é mantido.
+          </p>
+          <p class="paper pending" role="note">
+            Em definição: o canal de atendimento e o foro dos demais casos serão publicados aqui.
+          </p>
+        </section>
+      </main>
+
+      <footer class="brand-footer">
+        <img src="/galeria-oli-icon.svg" alt="" width="30" height="30" />
+        <span>
+          Todos os direitos Galeria.Oli - OlenaStudy ·
+          <a href="/politica-de-privacidade.html">Política de Privacidade</a>
+        </span>
+      </footer>
+    </div>
+  </body>
+</html>
