@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 import { roomExpiryWarningMinutes } from "../domain/local-room";
 
@@ -12,6 +13,8 @@ export function RoomExpiryNotice({
   now: () => number;
   isHost?: boolean;
 }) {
+  useLanguage();
+
   const [, setTick] = useState(0);
   useEffect(() => {
     const timer = window.setInterval(() => setTick((value) => value + 1), 15_000);
@@ -21,8 +24,8 @@ export function RoomExpiryNotice({
   if (minutes === undefined) return null;
   return (
     <p className="local-room-reveal-warning" role="status" aria-live="polite">
-      Esta sala se encerra em menos de {minutes} {minutes === 1 ? "minuto" : "minutos"}.
-      {isHost ? " Para continuar depois, crie uma nova sala." : ""}
+      {uiText(964)} {minutes} {minutes === 1 ? uiText(1933) : uiText(1292)}.
+      {isHost ? uiText(965) : ""}
     </p>
   );
 }

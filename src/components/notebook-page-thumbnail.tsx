@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 import type { NoteAsset } from "../domain/workspace";
 import {
@@ -8,6 +9,8 @@ import {
 
 // Uma folha recebida ao vivo ainda não tem PNG local. Usa o mesmo desenho do editor.
 export function NotebookPageThumbnail({ asset }: { asset: NoteAsset }) {
+  useLanguage();
+
   const [preview, setPreview] = useState("");
   const document = asset.handwriting;
   const storedPreview = asset.dataUrl === SHARED_PAGE_PLACEHOLDER ? "" : asset.dataUrl;
@@ -66,6 +69,6 @@ export function NotebookPageThumbnail({ asset }: { asset: NoteAsset }) {
   return storedPreview || preview ? (
     <img draggable={false} src={storedPreview || preview} alt="" />
   ) : (
-    <span aria-hidden="true">Prévia da folha</span>
+    <span aria-hidden="true">{uiText(703)}</span>
   );
 }

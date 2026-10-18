@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 import { NotesView } from "./notes-view";
 import { useWorkspace } from "../hooks/use-workspace";
@@ -5,6 +6,8 @@ import { getFirebaseAccountServices } from "../data/firebase-account";
 import { useCloudSync } from "../hooks/use-cloud-sync";
 
 export default function NotebookCollaborationInvite({ code }: { code: string }) {
+  useLanguage();
+
   const cloud = useCloudSync();
   const { workspace, dispatch } = useWorkspace();
   const notebookId = `shared-${code}`;
@@ -14,7 +17,7 @@ export default function NotebookCollaborationInvite({ code }: { code: string }) 
       dispatch({
         type: "notebook/added",
         id: notebookId,
-        title: "Caderno compartilhado",
+        title: uiText(1332),
         subjectId: "",
         createdAt: new Date().toISOString(),
       });
@@ -41,7 +44,7 @@ export default function NotebookCollaborationInvite({ code }: { code: string }) 
           // Mostra o mesmo estado de erro para uma falha de rede ou redirecionamento.
         }
       }
-      setError("Não foi possível entrar. Verifique a conexão e tente novamente.");
+      setError(uiText(1331));
     } finally {
       setBusy(false);
     }
@@ -49,21 +52,21 @@ export default function NotebookCollaborationInvite({ code }: { code: string }) 
 
   return (
     <div className="notebook-invite-entry">
-      <h1>Caderno compartilhado</h1>
+      <h1>{uiText(1332)}</h1>
       {!cloud.ready ? (
-        <p>Preparando sua conta e o caderno…</p>
+        <p>{uiText(1333)}</p>
       ) : !cloud.authenticated ? (
         <section className="notebook-invite-signin">
-          <p>Entre com sua conta para editar junto. Seu nome e avatar aparecem para a equipe.</p>
+          <p>{uiText(1334)}</p>
           <button
             className="primary-button"
             type="button"
             disabled={busy || !cloud.enabled}
             onClick={() => void signIn()}
           >
-            {busy ? "Entrando…" : "Entrar com Google"}
+            {busy ? uiText(1747) : uiText(870)}
           </button>
-          {error && <p role="alert">{error}</p>}
+          {error && <p role="alert">{uiText(error)}</p>}
         </section>
       ) : exists ? (
         <NotesView
@@ -74,7 +77,7 @@ export default function NotebookCollaborationInvite({ code }: { code: string }) 
           initialJoinCode={code}
         />
       ) : (
-        <p>Abrindo caderno…</p>
+        <p>{uiText(1335)}</p>
       )}
     </div>
   );

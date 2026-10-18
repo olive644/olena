@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { MathCourseId } from "../data/math-courses";
@@ -55,6 +56,8 @@ export function MathPlaceTreasure({
   initialPoints?: number;
   onPointsChange?: (points: number) => void;
 }) {
+  useLanguage();
+
   const [value, setValue] = useState(() => mathPlaceRewards(course));
   const [now, setNow] = useState(Date.now);
   const [points, setPoints] = useState(initialPoints);
@@ -233,12 +236,12 @@ export function MathPlaceTreasure({
       }
       setWarning("");
     } catch {
-      setWarning("Não foi possível salvar a Poeira cósmica. Tente novamente.");
+      setWarning(uiText(623));
     }
   }
   return (
     <div className="math-place-treasure">
-      <div className="math-place-total" aria-label={`${value.points} pontos neste lugar`}>
+      <div className="math-place-total" aria-label={uiText(1795, [value.points])}>
         <RoomPointsIcon />
         <MathNumber value={points} />
       </div>
@@ -247,16 +250,12 @@ export function MathPlaceTreasure({
           <CommonMathChest />
         </div>
       )}
-      <div className="math-chest-dock" ref={dock} aria-label="Três espaços de Poeira cósmica">
+      <div className="math-chest-dock" ref={dock} aria-label={uiText(624)}>
         {Array.from({ length: 3 }, (_, index) => {
           const chest = chests[index];
           if (!chest)
             return (
-              <div
-                className="math-chest-empty"
-                key={`empty-${index}`}
-                aria-label="Espaço de Poeira cósmica vazio"
-              >
+              <div className="math-chest-empty" key={`empty-${index}`} aria-label={uiText(625)}>
                 <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="#138A91" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7Z" />
                   <path fill="#60CED3" d="M9 2h6l-2 3v6H2V9h7Z" />
@@ -274,33 +273,34 @@ export function MathPlaceTreasure({
               disabled={remaining > 0 || opening !== null}
               aria-label={
                 chest.opened
-                  ? "Continuar Poeira cósmica"
+                  ? uiText(626)
                   : chest.unlockAt === null
-                    ? "Preparar Poeira cósmica"
+                    ? uiText(627)
                     : remaining > 0
-                      ? `Poeira cósmica, ${remaining} segundos restantes`
-                      : "Abrir Poeira cósmica"
+                      ? uiText(1796, [remaining])
+                      : uiText(628)
               }
               onClick={() => action(chest, Date.now())}
             >
               <CommonMathChest />
               <span className="math-chest-label">
                 {chest.opened ? (
-                  "Cartas"
+                  uiText(633)
                 ) : chest.unlockAt === null ? (
-                  "Preparar"
+                  uiText(1797)
                 ) : remaining > 0 ? (
                   <>
-                    <RoomClockIcon /> {remaining}s
+                    <RoomClockIcon /> {remaining}
+                    {uiText(629)}
                   </>
                 ) : (
-                  "Abrir"
+                  uiText(630)
                 )}
               </span>
               {remaining > 0 && !chest.opened && (
                 <progress
                   className="math-chest-progress"
-                  aria-label="Preparando Poeira cósmica"
+                  aria-label={uiText(631)}
                   max={10}
                   value={Math.max(0, 10 - (chest.unlockAt! - now) / 1000)}
                 />
@@ -312,10 +312,10 @@ export function MathPlaceTreasure({
       <button
         className="math-card-library"
         onClick={() => setCollection(true)}
-        aria-label="Cartas do Oliver"
+        aria-label={uiText(632)}
       >
         <img src="/olena-favicon-32.png" alt="" width="24" height="24" />
-        <span>Cartas</span>
+        <span>{uiText(633)}</span>
       </button>
       {warning && (
         <p className="math-treasure-warning" role="alert">
@@ -340,7 +340,7 @@ export function MathPlaceTreasure({
                 acceptValue(saved);
                 return true;
               } catch {
-                setWarning("Não foi possível guardar a carta. Tente novamente.");
+                setWarning(uiText(634));
                 return false;
               }
             }}

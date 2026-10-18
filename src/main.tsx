@@ -1,7 +1,7 @@
+import { uiText, initializeLanguage } from "./i18n/runtime";
 import { StrictMode, lazy, Suspense } from "react";
 import { HelenaLoading } from "./components/helena-loading";
 import { createRoot } from "react-dom/client";
-import { App } from "./app";
 import "./styles.css";
 import "./local-room-flat.css";
 import "./paper-buttons.css";
@@ -26,21 +26,39 @@ const collaborationCode = params.get("notebook-collab");
 const root = document.getElementById("root");
 
 if (!root) {
-  throw new Error("Elemento #root não encontrado.");
+  throw new Error(uiText(1146));
 }
 
-createRoot(root).render(
-  <StrictMode>
-    {viewToken || collaborationCode ? (
-      <Suspense fallback={<HelenaLoading label="Abrindo caderno" />}>
-        {viewToken ? (
-          <NotebookReader token={viewToken} />
+const appRoot = createRoot(root);
+appRoot.render(<HelenaLoading label="Preparando / Preparing…" />);
+async function boot() {
+  try {
+    await initializeLanguage();
+    const { App } = await import("./app");
+    appRoot.render(
+      <StrictMode>
+        {viewToken || collaborationCode ? (
+          <Suspense fallback={<HelenaLoading label={uiText(1147)} />}>
+            {viewToken ? (
+              <NotebookReader token={viewToken} />
+            ) : (
+              <NotebookCollaborationInvite code={collaborationCode!} />
+            )}
+          </Suspense>
         ) : (
-          <NotebookCollaborationInvite code={collaborationCode!} />
+          <App />
         )}
-      </Suspense>
-    ) : (
-      <App />
-    )}
-  </StrictMode>,
-);
+      </StrictMode>,
+    );
+  } catch {
+    appRoot.render(
+      <main>
+        <p>Não foi possível carregar o idioma. / Could not load the language.</p>
+        <button type="button" onClick={() => void boot()}>
+          Tentar novamente / Retry
+        </button>
+      </main>,
+    );
+  }
+}
+void boot();

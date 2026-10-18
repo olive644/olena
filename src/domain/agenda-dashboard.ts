@@ -1,6 +1,7 @@
 import { dateForKey, shiftDate } from "./agenda";
 import { type AgendaRange } from "./agenda-history";
 import { toDateKey, type FocusSession, type WorkspaceState } from "./workspace";
+import { uiText, uiLocale } from "../i18n/runtime";
 
 export type AgendaCategory = "timer" | "notes" | "pomodoro" | "islands";
 export type ChartItem = { label: string; value: number };
@@ -11,6 +12,12 @@ export function agendaDashboard(
   sessions: FocusSession[] = workspace.focusSessions,
 ) {
   const inside = (date: string) => date >= range.start && date <= range.end;
+  const shortDate = (date: string) => {
+    const value = dateForKey(date);
+    return uiLocale() === "en-US"
+      ? `${value.getMonth() + 1}/${value.getDate()}`
+      : `${value.getDate()}/${value.getMonth() + 1}`;
+  };
   const valid = sessions.filter(
     (session) =>
       Number.isFinite(new Date(session.completedAt).getTime()) &&
@@ -35,16 +42,15 @@ export function agendaDashboard(
       const date = toDateKey(new Date(activity.completedAt));
       if (!inside(date)) continue;
       daily.set(date, (daily.get(date) ?? 0) + activity.answers);
-      subjects.set(
-        activity.islandName,
-        (subjects.get(activity.islandName) ?? 0) + activity.answers,
-      );
+      const islandName = uiText(activity.islandName);
+      subjects.set(islandName, (subjects.get(islandName) ?? 0) + activity.answers);
     }
   } else if (category === "notes") {
     for (const notebook of workspace.notebooks) {
       const date = new Date(notebook.createdAt);
       if (!Number.isFinite(date.getTime()) || !inside(toDateKey(date))) continue;
-      const label = notebook.kind === "note" ? "Notes" : notebook.kind ? "Pastas" : "Cadernos";
+      const label =
+        notebook.kind === "note" ? "Notes" : uiText(notebook.kind ? "Pastas" : "Cadernos");
       record(toDateKey(date), label, 1);
       entries.push({ id: notebook.id, title: notebook.title, label, date: toDateKey(date) });
     }
@@ -53,7 +59,7 @@ export function agendaDashboard(
       if (session.mode === category)
         record(
           toDateKey(new Date(session.completedAt)),
-          `${dateForKey(toDateKey(new Date(session.completedAt))).getDate()}/${new Date(session.completedAt).getMonth() + 1}`,
+          shortDate(toDateKey(new Date(session.completedAt))),
           session.durationMinutes,
         );
   }
@@ -63,11 +69,12 @@ export function agendaDashboard(
   const bars: ChartItem[] = [];
   for (let index = 0; index < dates.length; index += size) {
     const group = dates.slice(index, index + size);
-    const label = (date: string) =>
-      `${dateForKey(date).getDate()}/${dateForKey(date).getMonth() + 1}`;
+    const label = shortDate;
     bars.push({
       label:
-        group.length === 1 ? label(group[0]!) : `${label(group[0]!)} a ${label(group.at(-1)!)}`,
+        group.length === 1
+          ? label(group[0]!)
+          : `${label(group[0]!)} ${uiText("a")} ${label(group.at(-1)!)}`,
       value: group.reduce((sum, date) => sum + (daily.get(date) ?? 0), 0),
     });
   }
@@ -77,28 +84,31 @@ export function agendaDashboard(
   const pie = ranked.slice(0, 4);
   if (ranked.length > 4)
     pie.push({
-      label: "Outras",
+      label: uiText("Outras"),
       value: ranked.slice(4).reduce((sum, item) => sum + item.value, 0),
     });
   return {
     entries,
     bars,
     pie,
-    unit: category === "notes" ? "itens" : category === "islands" ? "respostas" : "min",
-    barTitle:
+    unit: uiText(category === "notes" ? "itens" : category === "islands" ? "respostas" : "min"),
+    barTitle: uiText(
       category === "notes"
         ? "Criações na estante"
         : category === "islands"
           ? "Respostas por período"
           : "Minutos por período",
-    pieTitle:
+    ),
+    pieTitle: uiText(
       category === "islands" ? "Por ilha" : category === "notes" ? "Tipos na estante" : "Por dia",
-    note:
+    ),
+    note: uiText(
       category === "islands"
         ? "Atividades registradas por dia. Progresso antigo sem data não entra no filtro."
         : category === "notes"
           ? "Cadernos, pastas e Notes criados no período. Não mede tempo de escrita."
           : "Sessões com modalidade registrada no intervalo.",
+    ),
     legacy: category === "notes" || category === "islands" ? 0 : legacy,
   };
 }

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import { HelenaLoading } from "./helena-loading";
@@ -19,7 +20,7 @@ function prepareImportedPage(
   canvas.width = crop ? width : 1200;
   canvas.height = crop ? height : 1600;
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("Não foi possível abrir a página.");
+  if (!context) throw new Error(uiText(792));
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, 1200, 1600);
   const scale = crop ? 1 : Math.min(1200 / width, 1600 / height) * (sizePercent / 100);
@@ -34,7 +35,7 @@ function prepareImportedPage(
     const result = canvas.toDataURL("image/jpeg", quality);
     if (result.length <= 500_000) return result;
   }
-  throw new Error("Esta imagem é muito detalhada. Importe uma versão menor.");
+  throw new Error(uiText(793));
 }
 
 export function PageImport({
@@ -46,6 +47,8 @@ export function PageImport({
   onImportMany?: (pages: ImportedPage[]) => void;
   onClose: () => void;
 }) {
+  const currentUiLanguage = useLanguage();
+
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [page, setPage] = useState(1);
   const [source, setSource] = useState<HTMLCanvasElement | null>(null);
@@ -86,11 +89,10 @@ export function PageImport({
     } catch (caught) {
       return {
         preview: "",
-        error:
-          caught instanceof Error ? caught.message : "Não foi possível redimensionar a imagem.",
+        error: caught instanceof Error ? caught.message : uiText(794),
       };
     }
-  }, [source, size]);
+  }, [source, size, currentUiLanguage]);
   const preview = prepared.preview;
 
   useEffect(() => {
@@ -113,7 +115,7 @@ export function PageImport({
         await job.promise;
         if (!cancelled) keepSource(canvas, canvas.width, canvas.height);
       } catch {
-        if (!cancelled) setError("Não foi possível ler esta página do PDF.");
+        if (!cancelled) setError(uiText(795));
       } finally {
         if (!cancelled) setBusy(false);
       }
@@ -135,7 +137,7 @@ export function PageImport({
       await taskRef.current?.destroy();
       taskRef.current = null;
       if (id !== generation.current) return;
-      if (file.size > 20 * 1024 * 1024) throw new Error("Escolha um arquivo de até 20 MB.");
+      if (file.size > 20 * 1024 * 1024) throw new Error(uiText(796));
       if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
         const [reader, worker] = await Promise.all([
           import("pdfjs-dist"),
@@ -148,7 +150,7 @@ export function PageImport({
         const task = reader.getDocument({ data });
         taskRef.current = task;
         task.onPassword = () => {
-          setError("Este PDF tem senha. Importe uma cópia desbloqueada.");
+          setError(uiText(797));
           setBusy(false);
           void task.destroy();
         };
@@ -161,7 +163,7 @@ export function PageImport({
         setPdf(loaded);
       } else {
         if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
-          throw new Error("Escolha PDF, PNG, JPEG ou WebP.");
+          throw new Error(uiText(1879));
         const bitmap = await createImageBitmap(file);
         try {
           if (id === generation.current) keepSource(bitmap, bitmap.width, bitmap.height);
@@ -171,7 +173,7 @@ export function PageImport({
       }
     } catch (caught) {
       if (id === generation.current)
-        setError(caught instanceof Error ? caught.message : "Não foi possível importar o arquivo.");
+        setError(caught instanceof Error ? caught.message : uiText(798));
     } finally {
       if (id === generation.current) setBusy(false);
     }
@@ -207,7 +209,7 @@ export function PageImport({
       }
       onImportMany(pages);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível importar o PDF.");
+      setError(caught instanceof Error ? caught.message : uiText(799));
     } finally {
       setBusy(false);
       setImportingAll(false);
@@ -217,7 +219,7 @@ export function PageImport({
   return (
     <section
       className="editor-file-panel"
-      aria-label="Importar página"
+      aria-label={uiText(800)}
       onKeyDown={(event) => {
         if (event.key === "Escape") {
           event.stopPropagation();
@@ -225,15 +227,12 @@ export function PageImport({
         }
       }}
     >
-      <h3>Importar página</h3>
-      <p>
-        Escolha uma imagem ou uma página de PDF para anotar por cima. Suas anotações atuais serão
-        mantidas. PDFs com várias páginas podem virar folhas separadas.
-      </p>
+      <h3>{uiText(800)}</h3>
+      <p>{uiText(801)}</p>
       <input
         ref={fileRef}
         type="file"
-        aria-label="Arquivo para importar"
+        aria-label={uiText(802)}
         accept=".pdf,image/png,image/jpeg,image/webp"
         disabled={busy}
         onChange={(event) => {
@@ -244,7 +243,7 @@ export function PageImport({
       />
       {pdf && (
         <label>
-          Página do PDF{" "}
+          {uiText(803)}{" "}
           <input
             type="number"
             min={1}
@@ -260,29 +259,27 @@ export function PageImport({
               setPage(next);
             }}
           />{" "}
-          de {pdf.numPages}
+          {uiText(72)} {pdf.numPages}
         </label>
       )}
-      {busy && (
-        <HelenaLoading label={importingAll ? "Importando páginas" : "Preparando página"} compact />
-      )}
+      {busy && <HelenaLoading label={importingAll ? uiText(804) : uiText(805)} compact />}
       {(error || prepared.error) && <p role="alert">{error || prepared.error}</p>}
       {source && (
         <label className="editor-import-size">
-          <span>Tamanho da imagem</span>
+          <span>{uiText(806)}</span>
           <input
             type="range"
             min={25}
             max={100}
             step={5}
             value={size}
-            aria-label="Tamanho da imagem"
+            aria-label={uiText(806)}
             onChange={(event) => setSize(Number(event.target.value))}
           />
           <output>{size}%</output>
         </label>
       )}
-      {preview && <img src={preview} alt="Prévia da página importada" />}
+      {preview && <img src={preview} alt={uiText(807)} />}
       <div>
         <button
           type="button"
@@ -301,19 +298,20 @@ export function PageImport({
                 height,
               });
             } catch (caught) {
-              setError(caught instanceof Error ? caught.message : "Não foi possível importar.");
+              setError(caught instanceof Error ? caught.message : uiText(808));
             }
           }}
         >
-          Usar esta página
+          {uiText(809)}
         </button>
         {pdf && pdf.numPages > 1 && onImportMany && (
           <button type="button" disabled={busy} onClick={() => void importAllPages()}>
-            Importar todas ({pdf.numPages})
+            {uiText(810)}
+            {pdf.numPages})
           </button>
         )}
         <button type="button" className="editor-import-cancel" onClick={onClose}>
-          Cancelar
+          {uiText(155)}
         </button>
       </div>
     </section>

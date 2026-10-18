@@ -2,8 +2,24 @@ import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { RiveInput } from "../data/rive-runtime";
 import { HelenaMascot } from "./helena-mascot";
+import portuguese from "../../public/locales/pt-BR.json";
+import { installUiCatalog } from "../i18n/runtime";
 
 const props = { open: false, motion: "idle", tilt: { x: 0, y: 0 }, hover: false };
+
+it("keeps the Rive state machine identifier independent of interface labels", async () => {
+  const labels = [...portuguese];
+  labels[381] = "A translated display label";
+  installUiCatalog("pt-BR", labels);
+  try {
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const view = render(<HelenaMascot {...props} />);
+    const { instance } = await activate(view);
+    expect(instance.options.stateMachines).toBe("Helena");
+  } finally {
+    installUiCatalog("pt-BR", portuguese);
+  }
+});
 
 type Options = {
   src: string;

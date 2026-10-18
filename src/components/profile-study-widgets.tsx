@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { lazy, Suspense, useState, type Dispatch } from "react";
 import type { WorkspaceAction } from "../domain/workspace";
 import { useProfileStudy } from "../hooks/use-profile-study";
@@ -20,29 +21,30 @@ const MathJourney = lazy(() =>
 );
 
 export function ProfileXpBar() {
+  useLanguage();
+
   const stats = useProfileStudy();
   return (
-    <div
-      className="profile-xp"
-      title="Nível baseado no XP recebido nas atividades. Primeiro nível: 500 XP; cada próximo nível exige mais 250 XP."
-    >
+    <div className="profile-xp" title={uiText(950)}>
       <div>
         <strong>
-          <RoomPointsIcon xp /> Nível {stats.level}
+          <RoomPointsIcon xp /> {uiText(449)} {stats.level}
         </strong>
         <span>
-          {stats.current} / {stats.next} XP
+          {stats.current} / {stats.next} {uiText(468)}
         </span>
       </div>
-      <progress aria-label="XP para o próximo nível" value={stats.current} max={stats.next} />
+      <progress aria-label={uiText(951)} value={stats.current} max={stats.next} />
     </div>
   );
 }
 export function ProfileLevelBadge() {
+  useLanguage();
+
   const { level } = useProfileStudy();
   return (
-    <span className="profile-level-badge" aria-label={`Nível ${level}`}>
-      <small>NV</small>
+    <span className="profile-level-badge" aria-label={uiText(1733, [level])}>
+      <small>{uiText(464)}</small>
       <PaperDigits value={String(level)} />
     </span>
   );
@@ -52,6 +54,8 @@ export function ProfileStudyWidgets({
 }: {
   dispatch?: Dispatch<WorkspaceAction> | undefined;
 }) {
+  useLanguage();
+
   const stats = useProfileStudy();
   const [profile] = useStoredProfile();
   const [island, setIsland] = useState(4);
@@ -75,7 +79,7 @@ export function ProfileStudyWidgets({
       );
       setError("");
     } catch {
-      setError("Não foi possível salvar sua ilha favorita.");
+      setError(uiText(952));
     }
   }
   return (
@@ -85,17 +89,17 @@ export function ProfileStudyWidgets({
         aria-labelledby="profile-islands-title"
       >
         <header className="profile-widget-heading">
-          <h2 id="profile-islands-title">Minhas ilhas</h2>
+          <h2 id="profile-islands-title">{uiText(953)}</h2>
           <span className="profile-points-total">
             <PaperDigits value={String(stats.totalPoints)} />
-            <small>pontos no total</small>
+            <small>{uiText(954)}</small>
           </span>
         </header>
         {parts ? (
           <>
             <button className="secondary-button" type="button" onClick={() => setParts(false)}>
               <PaperArrow back />
-              Voltar às ilhas
+              {uiText(598)}
             </button>
             <div className="profile-island-parts">
               {stats.courses.map((course) => (
@@ -105,10 +109,15 @@ export function ProfileStudyWidgets({
                   className="profile-island-part"
                   onClick={() => setJourney(course.id)}
                   disabled={!course.unlocked}
-                  aria-label={`${course.title}, ${course.percent}%, ${course.points} pontos${course.unlocked ? "" : ", bloqueada"}`}
+                  aria-label={uiText(1925, [
+                    course.title,
+                    course.percent,
+                    course.points,
+                    course.unlocked ? "" : uiText(1924),
+                  ])}
                 >
                   <span className="profile-part-score">
-                    {course.percent}% · {course.points} pontos
+                    {course.percent}% · {course.points} {uiText(466)}
                   </span>
                   <img
                     src={`/math-islands/places/${course.id}-small.webp`}
@@ -122,7 +131,7 @@ export function ProfileStudyWidgets({
                   <progress
                     value={course.percent}
                     max="100"
-                    aria-label={`Progresso em ${course.title}`}
+                    aria-label={uiText(1926, [course.title])}
                   />
                 </button>
               ))}
@@ -134,10 +143,12 @@ export function ProfileStudyWidgets({
               {world.id === "mathematics" ? (
                 <>
                   <strong>{percent}%</strong>
-                  <span>{stats.totalPoints} pontos</span>
+                  <span>
+                    {stats.totalPoints} {uiText(466)}
+                  </span>
                 </>
               ) : (
-                <span>Em breve</span>
+                <span>{uiText(955)}</span>
               )}
             </div>
             <PracticeIslandCarousel
@@ -159,7 +170,7 @@ export function ProfileStudyWidgets({
                 disabled={world.id !== "mathematics"}
                 onClick={() => setParts(true)}
               >
-                Explorar ilha
+                {uiText(956)}
               </button>
               <button
                 type="button"
@@ -168,18 +179,18 @@ export function ProfileStudyWidgets({
                 onClick={favoriteWorld}
               >
                 <PaperCheckIcon size={18} />
-                {favorite?.id === world.id ? "Favorita" : "Favoritar"}
+                {favorite?.id === world.id ? uiText(1927) : uiText(1928)}
               </button>
             </div>
           </>
         )}
         <p className="profile-favorite-label">
-          Ilha favorita: <strong>{favorite?.title ?? "Escolha a sua"}</strong>
+          {uiText(957)} <strong>{favorite?.title ?? uiText(2070)}</strong>
         </p>
-        {error && <p role="alert">{error}</p>}
+        {error && <p role="alert">{uiText(error)}</p>}
       </section>
       {journey && (
-        <Suspense fallback={<HelenaLoading label="Abrindo sua ilha" />}>
+        <Suspense fallback={<HelenaLoading label={uiText(958)} />}>
           <MathJourney
             initialCourse={journey}
             onBack={() => setJourney(undefined)}

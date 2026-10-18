@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { HandwritingPaperColor } from "../domain/handwriting";
 import type { PaperStyle } from "./handwriting-types";
 
@@ -18,19 +19,21 @@ export function HandwritingPaperPicker({
   onSelectPaper,
   onSelectPaperColor,
 }: HandwritingPaperPickerProps) {
+  useLanguage();
+
   return (
-    <aside className="handwriting-paper-picker" aria-label="Tipo e cor do papel">
+    <aside className="handwriting-paper-picker" aria-label={uiText(191)}>
       <section className="handwriting-paper-section handwriting-paper-section--type">
         <button
           type="button"
           className="handwriting-paper-section__toggle"
           aria-expanded={sectionsOpen.paper}
-          aria-label="Tipo de papel"
-          title="Tipo de papel"
+          aria-label={uiText(192)}
+          title={uiText(192)}
           onClick={() => onToggleSection("paper")}
         >
           <span className="paper-preview paper-preview--blank" aria-hidden="true" />
-          <span className="paper-picker-label">Tipo de papel</span>
+          <span className="paper-picker-label">{uiText(192)}</span>
           <span className="paper-picker-chevron" aria-hidden="true">
             ⌄
           </span>
@@ -41,12 +44,12 @@ export function HandwritingPaperPicker({
           type="button"
           className="handwriting-paper-section__toggle"
           aria-expanded={sectionsOpen.color}
-          aria-label="Cor da folha"
-          title="Cor da folha"
+          aria-label={uiText(193)}
+          title={uiText(193)}
           onClick={() => onToggleSection("color")}
         >
           <span className="paper-preview paper-preview--tone-aged" aria-hidden="true" />
-          <span className="paper-picker-label">Cor da folha</span>
+          <span className="paper-picker-label">{uiText(193)}</span>
           <span className="paper-picker-chevron" aria-hidden="true">
             ⌄
           </span>
@@ -57,15 +60,15 @@ export function HandwritingPaperPicker({
           {sectionsOpen.paper
             ? (
                 [
-                  ["board", "Quadro amplo"],
-                  ["ruled", "Pautado"],
-                  ["grid", "Quadriculado"],
-                  ["dots", "Pontilhado"],
-                  ["blank", "Em branco"],
-                  ["weekly", "Plano semanal"],
-                  ["calendar", "Calendário"],
-                  ["cornell", "Cornell"],
-                  ["staff", "Pauta musical"],
+                  ["board", uiText(1650)],
+                  ["ruled", uiText(1651)],
+                  ["grid", uiText(1652)],
+                  ["dots", uiText(1653)],
+                  ["blank", uiText(1654)],
+                  ["weekly", uiText(1655)],
+                  ["calendar", uiText(194)],
+                  ["cornell", uiText(1656)],
+                  ["staff", uiText(1657)],
                 ] as const
               ).map(([value, label]) => (
                 <button
@@ -83,9 +86,9 @@ export function HandwritingPaperPicker({
               ))
             : (
                 [
-                  ["light", "Clara"],
-                  ["aged", "Papel de livro"],
-                  ["night", "Escura"],
+                  ["light", uiText(1658)],
+                  ["aged", uiText(1659)],
+                  ["night", uiText(1660)],
                 ] as const
               ).map(([value, label]) => (
                 <button

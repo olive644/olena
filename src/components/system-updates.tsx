@@ -1,3 +1,4 @@
+import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -18,6 +19,7 @@ import { requestSocial, visitSocialProfile } from "../data/profile-social";
 import { SocialVisitListener } from "./profile-social";
 import type { SocialNotice } from "../domain/profile-social";
 import { PaperCloseIcon } from "./paper-close-icon";
+import { useNotificationPreferences } from "../data/notification-preferences";
 
 function storedReadUpdates() {
   try {
@@ -28,7 +30,11 @@ function storedReadUpdates() {
 }
 
 export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
+  useLanguage();
+
   const social = useSocialFeed(true);
+  const preferences = useNotificationPreferences();
+  const visibleNotifications = preferences.followers ? (social?.notifications ?? []) : [];
   const [followToast, setFollowToast] = useState<SocialNotice>();
   const seen = useRef<{ owner: string; ids: Set<string> }>({ owner: "", ids: new Set() });
   useEffect(() => {
@@ -39,28 +45,31 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
     }
     const ids = new Set(social.notifications.map((n) => `${n.person.username}:${n.at}`));
     const sameOwner = seen.current.owner === social.self.username;
-    const next = social.notifications.find(
-      (n) =>
-        !n.read &&
-        (sameOwner
-          ? !seen.current.ids.has(`${n.person.username}:${n.at}`)
-          : n.at >= Date.now() - 15000),
-    );
+    const next = preferences.followers
+      ? social.notifications.find(
+          (n) =>
+            !n.read &&
+            (sameOwner
+              ? !seen.current.ids.has(`${n.person.username}:${n.at}`)
+              : n.at >= Date.now() - 15000),
+        )
+      : undefined;
     const update = window.setTimeout(() => {
       seen.current = { owner: social.self.username, ids };
-      if (next || !sameOwner) setFollowToast(next);
+      if (next || !sameOwner || !preferences.followers) setFollowToast(next);
     }, 0);
     return () => window.clearTimeout(update);
-  }, [social]);
+  }, [social, preferences.followers]);
   useEffect(() => {
     if (!followToast) return;
     const timer = window.setTimeout(() => setFollowToast(undefined), 6000);
     return () => window.clearTimeout(timer);
   }, [followToast]);
-  const socialUnread = social?.notifications.filter((notice) => !notice.read).length ?? 0;
+  const socialUnread = visibleNotifications.filter((notice) => !notice.read).length;
   const [updates, setUpdates] = useState<SystemUpdate[]>([]);
+  const visibleUpdates = preferences.updates ? updates : [];
   const [read, setRead] = useState(storedReadUpdates);
-  const [status, setStatus] = useState("Buscando atualizações…");
+  const [status, setStatus] = useState(uiText(1023));
   const [saveError, setSaveError] = useState("");
   const panel = useRef<HTMLDetailsElement>(null);
   const trigger = useRef<HTMLElement>(null);
@@ -80,13 +89,10 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
         const data: unknown = await response.json();
         if (active) {
           setUpdates(recentSystemUpdates(parseSystemUpdates(data)));
-          setStatus("Nenhuma atualização publicada por aqui ainda.");
+          setStatus(uiText(1024));
         }
       } catch {
-        if (active)
-          setStatus(
-            "Não foi possível consultar as atualizações. Tente novamente quando estiver online.",
-          );
+        if (active) setStatus(uiText(1025));
       } finally {
         pending = false;
       }
@@ -119,7 +125,7 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
       document.removeEventListener("pointerdown", outside);
     };
   }, []);
-  const unread = updates.filter((update) => !read.includes(update.id));
+  const unread = visibleUpdates.filter((update) => !read.includes(update.id));
   return (
     <>
       {!hideBell && (
@@ -127,7 +133,7 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
           <summary
             className="appearance-picker__trigger system-updates-trigger"
             ref={trigger}
-            aria-label={`Atualizações do sistema, ${unread.length + socialUnread} não lidas`}
+            aria-label={uiText(1952, [unread.length + socialUnread])}
           >
             <svg className="system-bell" viewBox="0 0 32 32" aria-hidden="true">
               <path fill="currentColor" d="m14 3 4 0 1 4 5 4 1 10 4 3-1 3H4l-1-3 4-3 1-10 5-4z" />
@@ -142,13 +148,13 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
           </summary>
           <section
             className="appearance-picker__sheet system-update-sheet"
-            aria-label="Notificações de atualização"
+            aria-label={uiText(1026)}
           >
             <strong>
-              Notificações <small>Beta</small>
+              {uiText(1027)} <small>{uiText(1028)}</small>
             </strong>
             <div className="system-update-list">
-              {social?.notifications.map((notice) => (
+              {visibleNotifications.map((notice) => (
                 <article
                   key={`follow:${notice.person.username}:${notice.at}`}
                   className={`social-follow-row ${notice.read ? "is-read" : "is-unread"}`}
@@ -156,7 +162,7 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                   <button
                     type="button"
                     className="social-notice-person"
-                    aria-label={`Visitar perfil de @${notice.person.username}`}
+                    aria-label={uiText(1912, [notice.person.username])}
                     onClick={() => {
                       if (panel.current) panel.current.open = false;
                       visitSocialProfile(notice.person.username);
@@ -166,7 +172,7 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                     <span>
                       <strong>{notice.person.name}</strong>
                       <small>@{notice.person.username}</small>
-                      <small>Começou a seguir você.</small>
+                      <small>{uiText(1029)}</small>
                     </span>
                   </button>
                   <button
@@ -177,29 +183,26 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                       try {
                         await requestSocial({ action: "follow", username: notice.person.username });
                       } catch (cause) {
-                        setSaveError(
-                          cause instanceof Error
-                            ? cause.message
-                            : "Não foi possível seguir de volta.",
-                        );
+                        setSaveError(cause instanceof Error ? cause.message : uiText(1030));
                       }
                     }}
                   >
-                    {notice.person.followed ? "Seguindo" : "Seguir de volta"}
+                    {notice.person.followed ? uiText(918) : uiText(1917)}
                   </button>
                 </article>
               ))}
-              {updates.length === 0 && !social?.notifications.length && (
-                <p role="status">{status}</p>
+              {visibleUpdates.length === 0 && !visibleNotifications.length && (
+                <p role="status">{uiText(status)}</p>
               )}
-              {updates.map((update) => (
+              {visibleUpdates.map((update) => (
                 <article
                   key={update.id}
                   className={read.includes(update.id) ? "is-read" : "is-unread"}
                 >
-                  <strong>Atualização do sistema</strong>
+                  <strong>{uiText(1031)}</strong>
                   <small>
-                    Versão {update.version} · {new Date(update.date).toLocaleDateString("pt-BR")}
+                    {uiText(1032)} {update.version} ·{" "}
+                    {new Date(update.date).toLocaleDateString(uiLocale())}
                   </small>
                   <p>{update.title}</p>
                 </article>
@@ -215,7 +218,7 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                     const ids = parseReadUpdates(
                       JSON.stringify([
                         ...parseReadUpdates(localStorage.getItem(SYSTEM_UPDATES_READ_KEY)),
-                        ...updates.map((item) => item.id),
+                        ...visibleUpdates.map((item) => item.id),
                       ]),
                     );
                     writeSyncedStorage(SYSTEM_UPDATES_READ_KEY, JSON.stringify(ids));
@@ -223,19 +226,20 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                     if (socialUnread) await requestSocial({ action: "read" });
                     setSaveError("");
                   } catch {
-                    setSaveError("Não foi possível salvar a leitura neste dispositivo.");
+                    setSaveError(uiText(1033));
                   }
                 }}
               >
-                Marcar como lidas
+                {uiText(1034)}
               </button>
             }
-            {saveError && <p role="alert">{saveError}</p>}
+            {saveError && <p role="alert">{uiText(saveError)}</p>}
           </section>
         </details>
       )}
       <SocialVisitListener />
-      {followToast &&
+      {preferences.followers &&
+        followToast &&
         social?.notifications.some(
           (n) => n.person.username === followToast.person.username && n.at === followToast.at,
         ) &&
@@ -248,7 +252,7 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
             <button
               type="button"
               className="social-notice-person"
-              aria-label={`Visitar perfil de @${followToast.person.username}`}
+              aria-label={uiText(1912, [followToast.person.username])}
               onClick={() => {
                 visitSocialProfile(followToast.person.username);
                 setFollowToast(undefined);
@@ -262,7 +266,9 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                 alt=""
               />
               <span>
-                <strong>{followToast.person.name} te seguiu</strong>
+                <strong>
+                  {followToast.person.name} {uiText(1035)}
+                </strong>
                 <small>@{followToast.person.username}</small>
               </span>
             </button>
@@ -278,19 +284,19 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
                   await requestSocial({ action: "follow", username: followToast.person.username });
                   setFollowToast(undefined);
                 } catch {
-                  setSaveError("Não foi possível seguir de volta.");
+                  setSaveError(uiText(1030));
                 }
               }}
             >
               {social.notifications.find((n) => n.person.username === followToast.person.username)
                 ?.person.followed
-                ? "Seguindo"
-                : "Seguir de volta"}
+                ? uiText(918)
+                : uiText(1917)}
             </button>
             <button
               type="button"
               className="social-follow-toast-close"
-              aria-label="Fechar aviso de novo seguidor"
+              aria-label={uiText(1036)}
               onClick={() => setFollowToast(undefined)}
             >
               <PaperCloseIcon />

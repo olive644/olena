@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 
 type HandwritingWritingWindowProps = {
@@ -25,24 +26,26 @@ export function HandwritingWritingWindow({
   onAdvance,
   onNextLine,
 }: HandwritingWritingWindowProps) {
+  useLanguage();
+
   return (
-    <section className="handwriting-writing-window" aria-label="Janela de escrita ampliada">
+    <section className="handwriting-writing-window" aria-label={uiText(368)}>
       <div>
-        <strong>Escrita ampliada</strong>
-        <span>Escreva aqui. Ao chegar à borda, a janela avança pela folha.</span>
+        <strong>{uiText(370)}</strong>
+        <span>{uiText(371)}</span>
       </div>
       <canvas
         ref={canvasRef}
         width={600}
         height={220}
-        aria-label="Área ampliada para escrever com dedo ou caneta"
+        aria-label={uiText(372)}
         onPointerDown={onStart}
         onPointerMove={onMove}
         onPointerUp={onFinish}
         onPointerCancel={onFinish}
       />
       <p className="handwriting-writing-window__status" aria-live="polite">
-        {status}
+        {uiText(status)}
       </p>
       <div className="handwriting-writing-window__actions">
         <label>
@@ -51,16 +54,16 @@ export function HandwritingWritingWindow({
             checked={autoFollow}
             onChange={(event) => onAutoFollowChange(event.target.checked)}
           />
-          Acompanhar escrita
+          {uiText(373)}
         </label>
         <button type="button" onClick={onBack}>
-          Voltar
+          {uiText(374)}
         </button>
         <button type="button" onClick={onAdvance}>
-          Avançar
+          {uiText(375)}
         </button>
         <button type="button" onClick={onNextLine}>
-          Próxima linha
+          {uiText(376)}
         </button>
       </div>
     </section>

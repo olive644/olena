@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { PaperDigits } from "./paper-digits";
@@ -17,6 +18,8 @@ export function RoomStepSlider({
   onCommit(value: number): void;
   formatValue?: (value: number) => string;
 }) {
+  useLanguage();
+
   const uniqueId = useId();
   const formatted = (step: number) => formatValue?.(step) ?? `${step}${suffix}`;
   const current = steps.indexOf(value as number);
@@ -56,7 +59,7 @@ export function RoomStepSlider({
     <div className="local-room-step-slider">
       <div className="local-room-step-slider__heading">
         <label htmlFor={inputId}>{label}</label>
-        <strong>{shown === "all" ? "Todas" : formatted(shown!)}</strong>
+        <strong>{shown === "all" ? uiText(1724) : formatted(shown!)}</strong>
       </div>
       <input
         id={inputId}
@@ -68,7 +71,7 @@ export function RoomStepSlider({
         style={
           { "--room-slider-progress": `${(index / (steps.length - 1)) * 100}%` } as CSSProperties
         }
-        aria-valuetext={shown === "all" ? "Todas" : formatted(shown!)}
+        aria-valuetext={shown === "all" ? uiText(1724) : formatted(shown!)}
         onChange={(event) => {
           const next = Number(event.target.value);
           if (next !== index) navigator.vibrate?.(8);
@@ -90,10 +93,12 @@ export function RoomStepSlider({
 }
 
 export function CountdownOverlay({ value }: { value: number }) {
+  useLanguage();
+
   return (
     <div className="local-room-countdown" role="status" aria-live="assertive">
       <span key={value} className="local-room-countdown__value">
-        {value > 0 ? <PaperDigits value={String(value)} /> : "Vai!"}
+        {value > 0 ? <PaperDigits value={String(value)} /> : uiText(1734)}
       </span>
     </div>
   );
@@ -109,6 +114,8 @@ export function LocalRoomFullscreen({
   children: ReactNode;
   embedded?: boolean;
 }) {
+  useLanguage();
+
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (embedded) return;
@@ -132,7 +139,7 @@ export function LocalRoomFullscreen({
       className="local-room-fullscreen"
       role="dialog"
       aria-modal="true"
-      aria-label="Modo Sala"
+      aria-label={uiText(465)}
       tabIndex={-1}
       onKeyDown={(event) => {
         if (event.key !== "Tab") return;

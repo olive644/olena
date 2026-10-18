@@ -1,4 +1,5 @@
 import type { HandwritingPaperColor } from "../domain/handwriting";
+import { uiText } from "../i18n/runtime";
 
 // Papéis com layout fixo, iguais em qualquer folha (ao contrário do plano semanal e do
 // calendário, que têm data): o método Cornell, para anotar aula com pistas e resumo, e a
@@ -29,7 +30,7 @@ export function drawCornellPaper(
   context.font = "bold 32px Manrope, sans-serif";
   context.fillText("Cornell", 88, 118);
   context.font = "20px Manrope, sans-serif";
-  context.fillText("Tópico: ____________________    Data: ____________________", 380, 118);
+  context.fillText(uiText("Tópico: ____________________    Data: ____________________"), 380, 118);
 
   const cuesRight = 64 + 300;
   const notesTop = 196;
@@ -65,9 +66,9 @@ export function drawCornellPaper(
 
   context.fillStyle = ink;
   context.font = "bold 18px Manrope, sans-serif";
-  context.fillText("Pistas", 64, notesTop - 12);
-  context.fillText("Anotações", cuesRight + 16, notesTop - 12);
-  context.fillText("Resumo", 64, summaryTop - 12);
+  context.fillText(uiText("Pistas"), 64, notesTop - 12);
+  context.fillText(uiText("Anotações"), cuesRight + 16, notesTop - 12);
+  context.fillText(uiText("Resumo"), 64, summaryTop - 12);
   context.restore();
 }
 

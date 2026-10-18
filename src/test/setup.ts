@@ -1,5 +1,9 @@
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
+import portuguese from "../../public/locales/pt-BR.json";
+import { installUiCatalog } from "../i18n/runtime";
+
+installUiCatalog("pt-BR", portuguese);
 
 beforeEach(() => {
   // jsdom não executa rolagem; os testes de navegador validam o comportamento real.

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { HelenaLoading } from "./helena-loading";
@@ -34,6 +35,8 @@ export function NotebookFileActions({
   menuOpen,
   onMenuChange,
 }: Props) {
+  useLanguage();
+
   const [localMenu, setLocalMenu] = useState(false);
   const menu = menuOpen ?? localMenu;
   const setMenu = onMenuChange ?? setLocalMenu;
@@ -48,7 +51,7 @@ export function NotebookFileActions({
     if (selection && dialog && !dialog.open) dialog.showModal();
     return () => dialog?.close();
   }, [selection]);
-  const options = pages.length ? pages : [{ id: currentPageId, title: "Folha atual", assets: [] }];
+  const options = pages.length ? pages : [{ id: currentPageId, title: uiText(1804), assets: [] }];
 
   async function confirmSelection() {
     setBusy(true);
@@ -57,11 +60,10 @@ export function NotebookFileActions({
       const snapshots = options
         .filter((page) => selected.includes(page.id))
         .map((page) => ({
-          title: page.title || "Folha sem título",
+          title: page.title || uiText(2068),
           image: page.id === currentPageId ? currentImage() : page.assets[0]?.dataUrl,
         }));
-      if (!snapshots.length || snapshots.some((page) => !page.image))
-        throw new Error("Escolha folhas com conteúdo para continuar.");
+      if (!snapshots.length || snapshots.some((page) => !page.image)) throw new Error(uiText(672));
       const ready = snapshots.map((page) => ({ title: page.title, image: page.image! }));
       if (selection === "download") {
         await downloadNotebookPdf(ready.map((page) => page.image));
@@ -71,8 +73,7 @@ export function NotebookFileActions({
         const accountToken = await getFirebaseAccountServices()
           .then(({ auth }) => auth.currentUser?.getIdToken())
           .catch(() => undefined);
-        if (!accountToken)
-          throw new Error("Entre na sua conta para criar um link de visualização.");
+        if (!accountToken) throw new Error(uiText(673));
         const response = await fetch("/api/notebook-collab?action=view-create", {
           method: "POST",
           headers: {
@@ -83,14 +84,13 @@ export function NotebookFileActions({
           body: JSON.stringify({ pages: ready }),
         });
         const payload = (await response.json()) as { token?: string; error?: string };
-        if (!response.ok || !payload.token)
-          throw new Error(payload.error || "Não foi possível gerar o link.");
+        if (!response.ok || !payload.token) throw new Error(payload.error || uiText(2069));
         const url = new URL(window.location.origin);
         url.searchParams.set("notebook-view", payload.token);
         setLink(url.href);
       }
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível concluir.");
+      setError(caught instanceof Error ? caught.message : uiText(674));
     } finally {
       setBusy(false);
     }
@@ -105,34 +105,34 @@ export function NotebookFileActions({
   }
 
   return (
-    <div className="notebook-file-tools" role="group" aria-label="Arquivo">
-      <span className="notebook-file-tools__label">Arquivo</span>
+    <div className="notebook-file-tools" role="group" aria-label={uiText(675)}>
+      <span className="notebook-file-tools__label">{uiText(675)}</span>
       {settings}
-      <button type="button" aria-label="Upload" title="Upload" onClick={onUpload}>
+      <button type="button" aria-label={uiText(676)} title={uiText(676)} onClick={onUpload}>
         <PaperEditorIcon name="cloudUpload" />
-        <span>Upload</span>
+        <span>{uiText(676)}</span>
       </button>
       <button
         type="button"
-        aria-label="Compartilhar"
-        title="Compartilhar"
+        aria-label={uiText(677)}
+        title={uiText(677)}
         aria-expanded={menu}
         onClick={() => setMenu(!menu)}
       >
         <PaperEditorIcon name="share" />
-        <span>Compartilhar</span>
+        <span>{uiText(677)}</span>
       </button>
       <button
         type="button"
-        aria-label="Salvar caderno"
-        title="Salvar caderno"
+        aria-label={uiText(678)}
+        title={uiText(678)}
         onClick={() => {
           onSave();
           setMenu(false);
         }}
       >
         <PaperEditorIcon name="save" />
-        <span>Salvar caderno</span>
+        <span>{uiText(678)}</span>
       </button>
       {menu && (
         <div
@@ -152,7 +152,7 @@ export function NotebookFileActions({
                 setMenu(false);
               }}
             >
-              PNG
+              {uiText(679)}
             </button>
             <button
               type="button"
@@ -161,7 +161,7 @@ export function NotebookFileActions({
                 setMenu(false);
               }}
             >
-              Baixar PDF
+              {uiText(680)}
             </button>
             <button
               type="button"
@@ -170,19 +170,19 @@ export function NotebookFileActions({
                 setMenu(false);
               }}
             >
-              Imprimir
+              {uiText(681)}
             </button>
             {options.length > 1 && (
               <button type="button" onClick={() => openSelection("download")}>
-                Selecionar folhas para download
+                {uiText(682)}
               </button>
             )}
             <button type="button" onClick={() => openSelection("link")}>
-              Link de visualização
+              {uiText(683)}
             </button>
           </>
           <button type="button" onClick={() => setMenu(false)}>
-            Fechar menu
+            {uiText(123)}
           </button>
         </div>
       )}
@@ -195,9 +195,7 @@ export function NotebookFileActions({
             event.preventDefault();
             if (!busy) setSelection(null);
           }}
-          aria-label={
-            selection === "link" ? "Link de visualização" : "Selecionar folhas para download"
-          }
+          aria-label={selection === "link" ? uiText(683) : uiText(682)}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               event.stopPropagation();
@@ -205,15 +203,8 @@ export function NotebookFileActions({
             }
           }}
         >
-          <h3>
-            {selection === "link" ? "Compartilhar somente para leitura" : "Escolha as folhas"}
-          </h3>
-          {selection === "link" && (
-            <p>
-              Uma cópia das folhas escolhidas ficará disponível para quem tiver o link, por 7 dias.
-              O link não permite editar seu caderno.
-            </p>
-          )}
+          <h3>{selection === "link" ? uiText(684) : uiText(1806)}</h3>
+          {selection === "link" && <p>{uiText(685)}</p>}
           {!link && (
             <div className="notebook-pages-dialog__list">
               {options.map((page) => (
@@ -230,32 +221,32 @@ export function NotebookFileActions({
                       )
                     }
                   />
-                  {page.title || "Folha sem título"}
-                  {page.id === currentPageId ? " (atual)" : ""}
+                  {page.title || uiText(2068)}
+                  {page.id === currentPageId ? uiText(1807) : ""}
                 </label>
               ))}
             </div>
           )}
           {link && (
             <label>
-              Link somente para leitura
+              {uiText(686)}
               <input
-                aria-label="Link somente para leitura"
+                aria-label={uiText(686)}
                 value={link}
                 readOnly
                 onFocus={(event) => event.target.select()}
               />
             </label>
           )}
-          {error && <p role="alert">{error}</p>}
-          {busy && <HelenaLoading label="Preparando folhas" compact />}
+          {error && <p role="alert">{uiText(error)}</p>}
+          {busy && <HelenaLoading label={uiText(687)} compact />}
           {!link && (
             <button
               type="button"
               disabled={busy || !selected.length}
               onClick={() => void confirmSelection()}
             >
-              {selection === "link" ? "Criar link" : "Baixar PDF selecionado"}
+              {selection === "link" ? uiText(1808) : uiText(1809)}
             </button>
           )}
           {link && (
@@ -263,16 +254,15 @@ export function NotebookFileActions({
               type="button"
               onClick={() =>
                 void (
-                  navigator.clipboard?.writeText(link) ??
-                  Promise.reject(new Error("Clipboard indisponível"))
-                ).catch(() => setError("Selecione e copie o link acima."))
+                  navigator.clipboard?.writeText(link) ?? Promise.reject(new Error(uiText(688)))
+                ).catch(() => setError(uiText(1810)))
               }
             >
-              Copiar link
+              {uiText(461)}
             </button>
           )}
           <button type="button" disabled={busy} onClick={() => setSelection(null)}>
-            Fechar
+            {uiText(230)}
           </button>
         </dialog>
       )}

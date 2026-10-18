@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import qrcode from "qrcode-generator";
 
 function isFinderModule(row: number, column: number, count: number) {
@@ -12,6 +13,8 @@ function roundedCellPath(x: number, y: number, cell: number, radius: number) {
 }
 
 function FinderMark({ x, y, cell }: { x: number; y: number; cell: number }) {
+  useLanguage();
+
   return (
     <g aria-hidden="true" data-qr-finder>
       <rect x={x} y={y} width={cell * 7} height={cell * 7} rx={cell * 0.12} fill="#0B5C66" />
@@ -40,7 +43,7 @@ export function RoomQrCode({
   size = 152,
   bingo = false,
   bare = false,
-  label = "QR code para entrar na sala",
+  label = uiText(967),
 }: {
   value: string;
   size?: number;
@@ -48,6 +51,8 @@ export function RoomQrCode({
   bare?: boolean;
   label?: string;
 }) {
+  useLanguage();
+
   const qr = qrcode(0, "H");
   qr.addData(value);
   qr.make();
@@ -110,7 +115,7 @@ export function RoomQrCode({
     <div className={"helena-room-qr helena-room-qr--holding" + (bingo ? " poliana-room-qr" : "")}>
       <img
         src={bingo ? "/poliana-room-invite.webp" : "/helena-room-invite.webp"}
-        alt={(bingo ? "Poliana" : "Helena") + " erguendo a placa de convite da sala"}
+        alt={(bingo ? uiText(1936) : uiText(381)) + uiText(2298)}
         width="840"
         height="840"
         fetchPriority="high"

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState } from "react";
 import { MATH_COURSES } from "../data/math-courses";
 import { type PracticeActivity } from "../domain/workspace";
@@ -12,6 +13,8 @@ export function AgendaIslandProgress({
   selectedId: string | null;
   onSelect: (id: string) => void;
 }) {
+  useLanguage();
+
   const [offset, setOffset] = useState(0);
   const gesture = useRef<{ x: number; y: number } | null>(null);
   const courses = MATH_COURSES.filter((course) =>
@@ -36,11 +39,11 @@ export function AgendaIslandProgress({
     setOffset(0);
   };
   return (
-    <section className="agenda-island-progress" aria-label="Progresso das ilhas de Matemática">
+    <section className="agenda-island-progress" aria-label={uiText(62)}>
       <div
         className="agenda-island-carousel"
         role="group"
-        aria-label="Prévia das ilhas"
+        aria-label={uiText(63)}
         tabIndex={0}
         onKeyDown={(event) => {
           if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
@@ -58,7 +61,7 @@ export function AgendaIslandProgress({
         <button
           type="button"
           className="focus-mode-arrow"
-          aria-label="Ilha anterior"
+          aria-label={uiText(64)}
           disabled={selectedIndex === 0}
           onClick={() => visit(selectedIndex - 1)}
         >
@@ -96,7 +99,7 @@ export function AgendaIslandProgress({
           <img
             key={course.id}
             src={`/math-islands/places/${course.id}-small.webp`}
-            alt={`Prévia: ${course.title}`}
+            alt={uiText(1591, [course.title])}
             draggable={false}
             width={480}
             height={480}
@@ -107,14 +110,22 @@ export function AgendaIslandProgress({
               {course.subject} · {selectedIndex + 1}/{courses.length}
             </small>
             <h3>{course.title}</h3>
-            {answers > 0 && <p>{answers} respostas no período</p>}
-            {correct > 0 && <p>{correct} acertos no período</p>}
+            {answers > 0 && (
+              <p>
+                {answers} {uiText(65)}
+              </p>
+            )}
+            {correct > 0 && (
+              <p>
+                {correct} {uiText(66)}
+              </p>
+            )}
           </div>
         </div>
         <button
           type="button"
           className="focus-mode-arrow focus-mode-arrow--next"
-          aria-label="Próxima ilha"
+          aria-label={uiText(67)}
           disabled={selectedIndex === courses.length - 1}
           onClick={() => visit(selectedIndex + 1)}
         >

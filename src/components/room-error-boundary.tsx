@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime";
 import { Component, type ReactNode } from "react";
 
 export class RoomErrorBoundary extends Component<
@@ -11,15 +12,15 @@ export class RoomErrorBoundary extends Component<
   override render() {
     return this.state.failed ? (
       <section className="room-reconnect-error" role="alert">
-        <h3>Não foi possível exibir a sala</h3>
-        <p>Sua participação está salva nesta aba. Recarregue para tentar reconectar.</p>
+        <h3>{uiText(961)}</h3>
+        <p>{uiText(962)}</p>
         <button className="primary-button" onClick={() => window.location.reload()}>
           <img src="/room-icons/reconnect.svg" alt="" width="24" height="24" />
-          Reconectar
+          {uiText(963)}
         </button>
         {this.props.onExit && (
           <button className="secondary-button" type="button" onClick={this.props.onExit}>
-            Voltar ao aplicativo
+            {uiText(485)}
           </button>
         )}
       </section>

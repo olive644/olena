@@ -1,5 +1,59 @@
 # Auditoria do estado atual
 
+## Regressão da prévia após idiomas, 2026-10-18
+
+O HTML separado da prévia Helena importava a interface sem instalar o catálogo, gerando
+IDs numéricos no lugar dos rótulos. Agora initializeLanguage antecede a importação da
+prévia, como no App. Seleção visual da Agenda usa o ícone canônico planner, não o título
+traduzido. Os seis E2E originais da prévia passaram em desktop/celular no Edge.
+O identificador interno da máquina Rive Helena também voltou a ser literal canônico,
+independente dos rótulos e da disponibilidade do catálogo. Regressão unitária cobre isso.
+O cenário de retomada do estudo instala sua sessão de teste no novo documento, evitando
+que o salvamento legítimo do documento anterior sobrescreva a fixture ao recarregar.
+Validação da correção: npm run verify aprovado com 2.006 testes, TypeScript, lint sem
+erros, formato, APIs, build e orçamento. Dois E2E de retomada aprovados no Edge, desktop
+e celular, além dos seis cenários da prévia. Não muda permissões ou limites do CI.
+
+## Interface bilíngue, 2026-10-18
+
+Tradução global da interface implementada com 2.686 entradas locais pt-BR/en-US,
+troca pela bandeira sem recarregar, datas e acessibilidade localizadas. Conteúdo escrito
+pelo usuário, respostas e identificadores canônicos são preservados. Catálogos públicos
+versionados por hash, guard obrigatório i18n:check e testes de idioma. Detalhes em I18N.md.
+Esta entrada substitui a pendência de tradução global da seção histórica abaixo.
+Validação local: npm run verify passou com 2.005 testes em 307 arquivos, build,
+TypeScript, formatação, APIs e orçamento. Complemento final de salas/idiomas/datas passou
+com 21 testes. Total JavaScript 1.468,1 KiB, orçamento anterior de 1.493 e teto de 1.500
+preservados, sem dependências novas. Entrada 215,9 KiB, com catálogo obrigatório antes da
+importação do App; essa separação não significa eliminar o custo de carregar o aplicativo.
+Os cinco avisos em pseudoelementos CSS têm variante en-US. ROOM_ACTIVITY_OPTIONS usa
+localizeLabels para não congelar descrições e selos no idioma da primeira importação.
+Dois testes de importação fria ganharam espera explícita, sem mudar suas asserções.
+Teste real do atendimento entre contas e integração Discord não foram executados.
+E2E local no Edge: 23 cenários aprovados em desktop/celular, com cinco duplicatas de
+largura puladas pela configuração existente do spec móvel. Inclui idioma após importação
+da sala, pseudoelementos CSS, persistência após reload, navegação nos dois temas,
+onboarding, configurações e exclusão sem cortes. Capturas em inglês inspecionadas nas
+duas larguras. Não representa validação WebKit, CI Linux ou atendimento real em produção.
+
+## Base de atendimento externo, 2026-10-18
+
+Validação local deste conjunto em desenvolvimento: suíte geral com 1.997 testes aprovada,
+seis E2E de configurações em desktop/celular aprovados e testes adicionais de XP/chat aprovados.
+Build passou. A primeira checagem de peso falhou em 1.502,0 KiB; extração das mesmas artes
+de configurações para SVGs estáticos e deduplicação de navegação reduziram para 1.499,4 KiB.
+Orçamento incremental ajustado de 1.493 para 1.500 KiB, sem mudar o teto absoluto de 1.500.
+Entrada ficou em 281,6 KiB. Não há dependências novas. A margem é pequena: funcionalidades
+seguintes precisam otimização antes de crescer. Não declarar validação Linux/CI ou produção.
+Tradução global e teste real de atendimento entre contas ainda pendentes, sem publicação.
+
+Preparado contrato interno de eventos e transporte em support-integration.ts, desativado e
+sem chamadas externas ou vínculo ao runtime do chat. IDs estáveis por mensagem, projeção
+sem credenciais e bloqueio de eco de respostas da equipe têm testes próprios. Não existe
+bot ou entrega Discord ativa. SUPPORT_DISCORD_PLAN.md registra outbox atômica, autorização,
+privacidade, idempotência, limites e testes exigidos antes de ativar. Demais mudanças de
+configurações nesta branch continuam em desenvolvimento, sem declarar publicação ou CI completo.
+
 ## Avisos sociais por eventos autenticados
 
 Substituído o transporte primário de polling por SSE autenticado em profile-social?stream=1, com folha privada somente da conta e eventos sem dados pessoais. Polling permanece fallback, não é apresentado como tempo real. Removida a supressão de refollow por 48 horas; somente vínculo novo renova aviso, requisição repetida continua idempotente. Modelo de ameaça, limites e teste real ainda pendente em SOCIAL_REALTIME_SECURITY.md. Sem mudança de regras Firebase ou publicação automática de novas credenciais.

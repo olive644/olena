@@ -30,6 +30,10 @@ function error(status: number, code: OlenaErrorCode, message: string): Response 
 /** Catálogo e desafios matemáticos calculados, sem provedor de IA ou escrita no servidor. */
 export async function handleOlena(request: Request): Promise<Response> {
   const url = new URL(request.url);
+  if (url.searchParams.get("action") === "support") {
+    const { handleSupport } = await import("./support-runtime.js");
+    return handleSupport(request);
+  }
   if (url.searchParams.get("action") === "profile-completion") {
     const { handleProfileCompletion } = await import("./profile-completion-runtime.js");
     return handleProfileCompletion(request);
