@@ -80,6 +80,13 @@ it("mostra informações da conta sem duplicar os editores do perfil", () => {
   ).toBeNull();
   expect(screen.getByRole("heading", { name: "Excluir conta" })).toBeTruthy();
   section("Privacidade e dados");
+  expect(screen.getByRole("link", { name: "Termos de uso" }).getAttribute("href")).toBe(
+    "/termos-de-uso.html",
+  );
+  expect(screen.getByRole("link", { name: "Termos de uso" }).getAttribute("rel")).toBe(
+    "noopener noreferrer",
+  );
+  expect(screen.queryByText(/O rascunho está em revisão/)).toBeNull();
   expect(screen.queryByRole("heading", { name: "Excluir conta" })).toBeNull();
   expect(screen.queryByText("Recuperação local")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Voltar ao perfil" }));

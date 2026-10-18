@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+Termos publicados em 18/10/2026: Privacidade e dados agora abre TERMS_OF_USE_PATH em
+nova aba, com proteção noopener/noreferrer, substituindo o aviso antigo de rascunho.
+Texto legal incorporado da main sem reescrita e sem introduzir aceite obrigatório.
+
 ## Saída recuperável, vibração global, conquistas sociais e Espaço, 2026-10-18
 
 Sair não fica desabilitado por status de sincronização. A confirmação tenta

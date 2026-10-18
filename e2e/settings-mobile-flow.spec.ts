@@ -44,6 +44,13 @@ test("configurações móveis começam no menu e voltam sem rolagem herdada", as
   await expect(
     page.getByRole("link", { name: "Política de privacidade", exact: true }),
   ).toHaveAttribute("href", /privacidade/);
+  await expect(page.getByRole("link", { name: "Termos de uso", exact: true })).toHaveAttribute(
+    "href",
+    "/termos-de-uso.html",
+  );
+  const legal = await page.request.get("/termos-de-uso.html");
+  expect(legal.ok()).toBe(true);
+  expect(await legal.text()).toContain('data-terms-version="2026-10-18"');
 });
 
 test("preferências por tipo persistem e atendimento sem login não inventa conversa", async ({
