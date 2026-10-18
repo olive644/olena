@@ -24,6 +24,7 @@ import "./notebook-spread.css";
 import "./notebook-binding-finish.css";
 
 type Props = {
+  initialPageId?: string | undefined;
   participants?: {
     id: string;
     displayName: string;
@@ -74,6 +75,7 @@ function PageImage({
 }
 
 export function NotebookSpread({
+  initialPageId,
   participants,
   notebook,
   pages,
@@ -88,7 +90,9 @@ export function NotebookSpread({
 }: Props) {
   useLanguage();
 
-  const [spreadIndex, setSpreadIndex] = useState(0);
+  const [spreadIndex, setSpreadIndex] = useState(() =>
+    Math.max(0, Math.floor(pages.findIndex((page) => page.id === initialPageId) / 2)),
+  );
   const [showCover, setShowCover] = useState(false);
   const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
   const finishCoverJourney = useCallback(() => setCoverJourney(null), []);

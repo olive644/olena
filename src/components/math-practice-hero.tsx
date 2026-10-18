@@ -16,6 +16,18 @@ export function MathPracticeHero({
   useLanguage();
   const now = useWallClock();
   const streak = mathematicsStreak(workspace, new Date(now), agendaTimeZone());
+  const latest = Math.max(
+    0,
+    ...(workspace.practiceActivities ?? [])
+      .filter(
+        (item) =>
+          /^(math|mathematics)(:|$)/.test(item.islandId) &&
+          item.answers > 0 &&
+          Date.parse(item.completedAt) <= now,
+      )
+      .map((item) => Date.parse(item.completedAt)),
+  );
+  const minutesLeft = Math.max(0, Math.ceil((latest + 86400000 - now) / 60000));
   return (
     <section
       className="math-hero-carousel"
@@ -24,24 +36,25 @@ export function MathPracticeHero({
     >
       <article className="math-hero-slide" aria-label={uiText("Ilhas de Matemática")}>
         <div className="math-hero-copy">
-          <span className="section-label">{uiText("Uma aventura com Oliver")}</span>
           <h1>
             {uiText(streak > 0 ? "Seu fogo matemático está aceso!" : "A próxima descoberta é sua.")}
           </h1>
-          <p>
-            {streak > 0
-              ? uiText(
-                  "Continue sua ofensiva e mantenha o fogo azul vivo. Uma nova prática faz a diferença.",
-                )
-              : uiText(
-                  "Explore as ilhas de Matemática comigo. Cada resposta abre um novo caminho!",
-                )}
-          </p>
+          {streak === 0 ? (
+            <p>
+              {uiText("Explore as ilhas de Matemática comigo. Cada resposta abre um novo caminho!")}
+            </p>
+          ) : (
+            minutesLeft <= 60 && (
+              <p className="math-hero-warning" role="status">
+                {uiText("Seu fogo azul apaga em {0} min. Vamos praticar?", [minutesLeft])}
+              </p>
+            )
+          )}
           {streak > 0 && (
             <div className="math-hero-streak">
               <img src="/math-islands/flame.svg" width="32" height="40" alt="" />
               <PaperDigits value={String(streak)} />
-              <span>{uiText("dias de ofensiva")}</span>
+              <span>{uiText(streak === 1 ? "dia de ofensiva" : "dias de ofensiva")}</span>
             </div>
           )}
           <button type="button" className="primary-button" onClick={onPractice}>

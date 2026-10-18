@@ -1,5 +1,27 @@
 # Auditoria do estado atual
 
+## Continuidade do aluno, atividades e XP, 2026-10-18
+
+O Espaço retoma o curso praticado, o caderno e sua folha, e o modo de foco mais recente.
+Agenda e painel compartilham os nomes oficiais de matérias, cores e fuso da conta.
+Oliver mantém a arte otimizada e Rive, com composição móvel compacta e aviso de expiração
+somente na última hora da chama matemática. Os previews usam superfícies do tema.
+
+O sino abre /notificacoes, em Atividades por padrão, com retorno e aba Novidades.
+Práticas pequenas deixam de gerar posts individuais: resumos diários possuem ID estável,
+preservam curtidas e leitura, e módulos usam apenas curso e tópico oficiais. Seguidores
+acumulados e curtidas podem ser expandidos. A versão numérica vem do mesmo artefato
+app-version.json nas configurações e no sino, gerado junto às novidades da versão.
+
+O XP de salas antes existia apenas no cache local. Agora o ledger e seus recibos migram
+no perfil sincronizado já permitido, sem novas chaves Firebase nem publicação de regras.
+Conflitos unem recibos e preservam o piso de XP, sem creditar a mesma recompensa duas
+vezes. A curva passa a 100, 150, 200 XP e incrementos de 50. XP já apagado sem cópia
+ou recibos sobreviventes não pode ser reconstruído. Troca de conta limpa o cache local.
+
+Catálogos confirmados têm cache por versão e nova tentativa de rede; catálogos maiores
+compatíveis são aceitos. Falhas de inicialização do app não são rotuladas como idioma.
+
 ## Oliver, privacidade e ciclos reais de foco, 2026-10-18
 
 O Espaço abre com um carrossel de uma página, Oliver em PNG transparente e entrada

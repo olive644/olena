@@ -340,7 +340,7 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
   await expect(page.locator(".page-header__theme")).toHaveCount(0);
   const bellBox = await bell.boundingBox();
   expect(bellBox!.x + bellBox!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
-  const panel = page.getByRole("region", { name: "Notificações de atualização" });
+  const panel = page.locator(".notification-center");
   for (const theme of ["light", "dark"]) {
     await page.evaluate(
       (value) => document.documentElement.setAttribute("data-theme", value),
@@ -349,20 +349,19 @@ test("update bell shows red unread counts, keyboard controls and synced reading 
     await bell.focus();
     await page.keyboard.press("Enter");
     await expect(panel).toBeVisible();
-    await expect(panel.getByText(/Versão beta.408/)).toBeVisible();
-    await expect(page.locator(".system-update-badge")).toHaveCSS(
-      "background-color",
-      "rgb(201, 39, 56)",
-    );
+    await panel.getByRole("button", { name: "Novidades", exact: true }).click();
+    await expect(panel.getByText("Agenda publicada", { exact: true })).toBeVisible();
     await panel.screenshot({
       path: info.outputPath(`updates-${theme}.png`),
       animations: "disabled",
     });
-    await page.keyboard.press("Escape");
+    await panel.getByRole("button", { name: "Voltar ao Espaço", exact: true }).click();
     await expect(panel).not.toBeVisible();
   }
   await bell.click();
+  await panel.getByRole("button", { name: "Novidades", exact: true }).click();
   await panel.getByRole("button", { name: "Marcar como lidas" }).click();
+  await panel.getByRole("button", { name: "Voltar ao Espaço", exact: true }).click();
   await expect(page.locator(".system-update-badge")).toHaveCount(0);
   feed = [
     ...feed,

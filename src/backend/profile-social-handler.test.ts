@@ -4,6 +4,43 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("resumo acumulado preserva curtidas e não refaz aviso nem leitura", async () => {
+  const activity = {
+    id: "f".repeat(32),
+    kind: "practice" as const,
+    course: "foundations",
+    value: 10,
+    at: Date.parse("2026-10-17T12:00:01Z"),
+  };
+  const app = setup(async () => [activity]);
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  await app.request("b", { action: "follow", username: "alice" });
+  app.advance(2000);
+  await app.request("a", { action: "publish-activities" });
+  await app.request("b", {
+    action: "like-activity",
+    username: "alice",
+    activityId: activity.id,
+    liked: true,
+  });
+  await app.request("b", { action: "read" });
+  const before = (await app.feed("b")).notifications.find((item) => item.kind === "activity")!;
+  activity.value = 20;
+  activity.at += 1000;
+  app.advance(2000);
+  await app.request("a", { action: "publish-activities" });
+  const feed = await app.feed("b");
+  expect(feed.activities).toHaveLength(1);
+  expect(feed.activities?.[0]).toMatchObject({ value: 20, course: "foundations", liked: true });
+  expect(feed.activities?.[0]?.likes).toHaveLength(1);
+  expect(feed.notifications.filter((item) => item.kind === "activity")).toEqual([
+    expect.objectContaining({
+      at: before.at,
+      read: true,
+      activity: expect.objectContaining({ value: 20 }),
+    }),
+  ]);
+});
 it("padrão ativo publica novas conquistas sem republicar histórico nem reativar opt-out", async () => {
   const activities = [
     {

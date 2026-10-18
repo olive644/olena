@@ -43,6 +43,7 @@ async function generate() {
     const updates = updatesFromPulls(pulls, before, process.env.VERCEL_GIT_COMMIT_SHA);
     if (!updates.length) throw new Error("Nenhuma atualização confirmada");
     await writeFile("dist/system-updates.json", JSON.stringify(updates));
+    await writeFile("dist/app-version.json", JSON.stringify({ number: updates[0].id }));
     console.log(`${updates.length} atualizações públicas confirmadas no build.`);
   } catch (error) {
     // O manifesto conhecido copiado de public permanece disponível, sem inventar versões.

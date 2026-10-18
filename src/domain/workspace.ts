@@ -201,6 +201,7 @@ export type WorkspaceState = {
 };
 
 export type PracticeActivity = {
+  moduleLevel?: number;
   id: string;
   islandId: string;
   islandName: string;

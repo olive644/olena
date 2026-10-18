@@ -1,19 +1,15 @@
 import { expect, test } from "@playwright/test";
-
-test("sino fora do Perfil, avisos de 48 horas e leitura sempre visível", async ({ page }) => {
+test("sino abre página com atividades por padrão, novidades e retorno amarelo", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
-    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
     localStorage.setItem("helena.guest.v1", "1");
   });
   await page.route("**/system-updates.json", (route) =>
     route.fulfill({
       json: [
-        ...Array.from({ length: 20 }, (_, index) => ({
-          id: index + 1,
-          version: "beta",
-          title: `Aviso ${index}`,
-          date: new Date().toISOString(),
-        })),
+        { id: 408, version: "beta", title: "Aviso recente", date: new Date().toISOString() },
         {
           id: 30,
           version: "beta",
@@ -23,21 +19,31 @@ test("sino fora do Perfil, avisos de 48 horas e leitura sempre visível", async 
       ],
     }),
   );
-  await page.goto("/foco");
-  const bell = page.getByLabel("Atualizações do sistema, 20 não lidas", { exact: true });
-  await bell.click();
-  const panel = page.getByRole("region", { name: "Notificações de atualização" });
-  await expect(panel.getByText("Aviso expirado", { exact: true })).toHaveCount(0);
-  const read = panel.getByRole("button", { name: "Marcar como lidas" });
-  await expect(read).toBeVisible();
-  const before = await read.boundingBox();
-  await panel.locator(".system-update-list").evaluate((element) => {
-    element.scrollTop = element.scrollHeight;
+  await page.goto("/");
+  await page.getByRole("button", { name: /Atualizações do sistema/ }).click();
+  await expect(page).toHaveURL(/\/notificacoes$/);
+  await expect(page.getByRole("heading", { name: "Notificações", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Atividades", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(page.locator(".system-update-sheet")).toHaveCount(0);
+  await page.getByRole("button", { name: "Novidades", exact: true }).click();
+  await expect(page.getByText("Aviso recente", { exact: true })).toBeVisible();
+  await expect(page.getByText("Aviso expirado", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Marcar como lidas" }).click();
+  await expect(page.getByRole("button", { name: "Marcar como lidas" })).toBeDisabled();
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Atividades", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({
+    path: test.info().outputPath("notificacoes.png"),
+    fullPage: true,
+    animations: "disabled",
   });
-  expect((await read.boundingBox())!.y).toBeCloseTo(before!.y, 0);
-  await read.click();
-  await expect(read).toBeDisabled();
-  await page.goto("/perfil");
-  await expect(page.locator("main")).toHaveCSS("opacity", "1");
-  await expect(page.locator(".system-updates")).toHaveCount(0);
+  await page.getByRole("button", { name: "Voltar ao Espaço", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
 });

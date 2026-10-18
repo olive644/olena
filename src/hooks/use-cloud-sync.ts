@@ -12,6 +12,7 @@ import { mergeWorkspaceStates } from "../domain/workspace-sync-merge";
 import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "../data/system-updates";
 import { FOCUS_SESSION_KEY } from "../domain/focus-session";
+import { ACCOUNT_PROFILE_KEY, mergeProfileProgress } from "../domain/profile-progress";
 import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
@@ -340,6 +341,13 @@ export function useCloudSync() {
                 cloud.items[SYSTEM_UPDATES_READ_KEY],
               );
             const rewardsKey = "helena.mathPlaceRewards.v1";
+            const mergedProfile = mergeProfileProgress(
+              cloud.items[ACCOUNT_PROFILE_KEY] ?? localAfterGet[ACCOUNT_PROFILE_KEY],
+              localAfterGet[ACCOUNT_PROFILE_KEY],
+              localBeforeGet[ACCOUNT_PROFILE_KEY],
+              cloud.items[ACCOUNT_PROFILE_KEY],
+            );
+            if (mergedProfile) merged[ACCOUNT_PROFILE_KEY] = mergedProfile;
             const localRewards = localAfterGet[rewardsKey];
             if (localRewards !== undefined) {
               const rewardsMerge = await mergeItems(

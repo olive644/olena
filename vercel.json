@@ -5,7 +5,7 @@
     { "source": "/sala", "destination": "/index.html" },
     { "source": "/sala/:code/projetor", "destination": "/index.html" },
     {
-      "source": "/:view(planejador|foco|habitos|cadernos|aulas|aprender|biblioteca|atividades|perfil)",
+      "source": "/:view(planejador|foco|habitos|cadernos|aulas|aprender|biblioteca|atividades|perfil|notificacoes)",
       "destination": "/index.html"
     }
   ],
