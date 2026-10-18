@@ -144,8 +144,8 @@ com menos de um minuto não podem ser registradas. Ao atingir a duração planej
 ocorrência fica concluída. Registros parciais continuam visíveis na Agenda.
 
 Agenda e Espaço do aluno usam a mesma seleção de ocorrências, inclusive rotinas semanais.
-Google Agenda e Listas de estudo não aparecem mais nesta tela. A conexão e os dados
-existentes permanecem salvos, sem exclusão ou alteração da sincronização.
+Listas de estudo não aparecem mais nesta tela. A integração com o Google Agenda foi removida
+do projeto em 18/10/2026 (ver `docs/CURRENT_STATE_AUDIT.md`).
 
 Meu estudo agrega Foco por dia, nunca pela matéria padrão não escolhida.
 Caderno conta criações datadas na estante, separando cadernos, pastas e Notes

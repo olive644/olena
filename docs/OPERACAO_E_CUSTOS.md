@@ -90,7 +90,7 @@ O `.gitleaksignore` contém a impressão digital `ee79bb7…:firebase-room.rules
 1. Não mescle sem autorização explícita da dona. Mescle só com todos os checks verdes e a PR sem conflito, confirmando o estado do commit atual (eventos de commits antigos não valem).
 2. Use commit de mesclagem, não squash, nesta base (item 5).
 3. Não leia nem versione `docs/CONTRATO_SOCIETARIO.md`.
-4. Nunca coloque segredos no repositório. Não imprima nem exponha `FIREBASE_PRIVATE_KEY`, `FIREBASE_CLIENT_EMAIL`, `CLOUDFLARE_API_TOKEN`, `GOOGLE_CLIENT_SECRET` nem `GOOGLE_SESSION_SECRET`.
+4. Nunca coloque segredos no repositório. Não imprima nem exponha `FIREBASE_PRIVATE_KEY`, `FIREBASE_CLIENT_EMAIL` nem `CLOUDFLARE_API_TOKEN`.
 5. Mudança que gasta recurso pago precisa de limite por quem chama e de teto global.
 6. Antes de otimizar custo, meça. Registre o que descartou e por quê.
 7. Não afirme o que não verificou. Marque "não verificado" e diga como conferir.

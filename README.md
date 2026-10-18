@@ -56,7 +56,6 @@ dependem de configuração no ambiente seguro da Vercel, descrita em:
   `VITE_FIREBASE_*`, públicas por definição);
 - [`docs/ROOM_SETUP.md`](docs/ROOM_SETUP.md): Modo Sala, conta de serviço, App Check e limpeza
   automática;
-- [`docs/GOOGLE_CALENDAR_SETUP.md`](docs/GOOGLE_CALENDAR_SETUP.md): integração com o Google Agenda;
 - [`docs/OPERACAO_E_CUSTOS.md`](docs/OPERACAO_E_CUSTOS.md): segurança, regras do Firebase, consumo do
   banco, visibilidade do repositório e decisões que continuam com a dona;
 - [`docs/CI_MINUTOS.md`](docs/CI_MINUTOS.md): custo do CI em minutos, política de e2e e como medir;

@@ -12,9 +12,6 @@ test.beforeEach(async ({ page }) => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem("helena.guest.v1", "1");
   });
-  await page.route("**/api/google-calendar**", (route) =>
-    route.fulfill({ json: { connected: false } }),
-  );
 });
 
 test("compact agenda keeps seven days and three actions in one row and desktop columns", async ({

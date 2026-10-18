@@ -17,16 +17,6 @@ import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
 const SYNC_CONFLICT_STORAGE_KEY = "helenastudy.sync-conflict.v1";
 
-// O cookie de sessão do Google Agenda é HttpOnly: só o servidor consegue apagá-lo.
-// Ao sair da conta ele não pode continuar dando acesso à agenda da pessoa anterior.
-function disconnectGoogleCalendar() {
-  try {
-    void fetch("/api/google-calendar?action=disconnect", { method: "POST" }).catch(() => undefined);
-  } catch {
-    /* Sem rede, o cookie expira sozinho e a desconexão manual continua disponível. */
-  }
-}
-
 async function mergeItems(
   base: SyncedItems,
   local: SyncedItems,
@@ -191,7 +181,6 @@ export function useCloudSync() {
           const wipeDevice = () => {
             clearPersonalData(localStorage);
             clearPersonalData(sessionStorage);
-            disconnectGoogleCalendar();
             applySyncedStorage({});
           };
           const stopSyncing = () => {

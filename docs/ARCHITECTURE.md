@@ -70,7 +70,6 @@ O aplicativo é uma SPA estática na Vercel, mais funções em `api/` (Node ESM)
 | `api/room-recording.ts`  | falas gravadas pelo professor para a Escuta Coletiva                               |
 | `api/speech.ts`          | voz natural do quiz (Cloudflare Workers AI), com cache e limites                   |
 | `api/notebook-collab.ts` | colaboração e leitura de cadernos compartilhados                                   |
-| `api/google-calendar.ts` | leitura do Google Agenda, com sessão cifrada                                       |
 | `api/olena.ts`           | Olena API v1: catálogo de Praticar e desafio de Matemática, sem IA                 |
 | `api/room-cleanup.ts`    | limpeza diária (cron) de salas e dados vencidos, protegida por `CRON_SECRET`       |
 
