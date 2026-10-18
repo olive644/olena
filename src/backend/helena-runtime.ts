@@ -3,6 +3,7 @@ import { createFirebaseRealtimeStore } from "./firebase-realtime-store.js";
 import { createHelenaHandler } from "./helena-handler.js";
 import { createCloudflareTeacher } from "./helena-teacher.js";
 import { checkRateLimit } from "./rate-limit.js";
+import { clientAddress } from "./client-address.js";
 import { createMathGroundedProvider } from "./helena-math-provider.js";
 
 const store = createFirebaseRealtimeStore({
@@ -25,10 +26,15 @@ const handler = createHelenaHandler({
     return account && !account.anonymous ? account.uid : "";
   },
   rateLimiter: {
-    async consume(uid) {
+    async consume(uid, request) {
+      // O teto por endereço vem antes do global: sem ele, quem tem várias contas Google esgota os
+      // 300 pedidos do dia e a Helena fica fora do ar para todos. Uma turma atrás do mesmo
+      // endereço (30 alunos a 3 pedidos cada) ainda cabe em 100 por dia.
+      const address = clientAddress(request);
       return (
         (await checkRateLimit(store, "helena-user-minute", uid, 5, 60)) &&
         (await checkRateLimit(store, "helena-user-day", uid, 30, 86400)) &&
+        (!address || (await checkRateLimit(store, "helena-address-day", address, 100, 86400))) &&
         (await checkRateLimit(store, "helena-global-day", "all", 300, 86400))
       );
     },
