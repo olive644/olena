@@ -1416,3 +1416,7 @@ de teste com a validação em duas contas reais, registrada em SOCIAL_REALTIME_S
 ## Consumo do Realtime Database (2026-10-17)
 
 O plano gratuito limita download a cerca de 10 GB por mês. O envio da conta espera 4 s para juntar mudanças (`CLOUD_UPLOAD_DELAY_MS`) e usa `print=silent`; ao esconder a página o envio pendente sai na hora. Ao criar uma gravação frequente em dados sincronizados, lembre que cada salvamento custa o tamanho do estado inteiro em download. Veja o consumo na aba Uso do Realtime Database.
+
+## CI e minutos (2026-10-18)
+
+O e2e é a maior parte do custo do CI. `scripts/ci-scope.mjs` decide o escopo: pull request com código roda desktop e mobile, push na main roda só o desktop, pull request só de documentação não roda e2e, e há uma execução completa semanal. Os checks obrigatórios mantêm os nomes. Ao mexer no workflow, preserve a regra de que a decisão de escopo que falha nunca deixa um check passar. Teste com `node --test scripts/ci-scope.test.mjs`.

@@ -3017,3 +3017,18 @@ O console do Firebase mostrou 25,47 GB de download de 1 a 17 de outubro (limite 
 - **Não mudei** o `GET` de conferência antes do `PUT` nem o stream. Eles protegem contra sobrescrever dados de outro aparelho, e trocá-los por escrita condicional (ETag) ou por envio só das chaves alteradas exige testar com o Firebase real. Fica como próximo passo se o consumo continuar alto.
 - **Efeito esperado, sem medição.** A resposta do `PUT` some (cerca de um terço do download por salvamento) e o agrupamento reduz o número de salvamentos em rajadas. Não é garantido ficar abaixo de 10 GB por mês. A confirmação é o consumo no console nos dias seguintes (aba Uso), ou `firebase database:profile` na CLI, que mostra o consumo por caminho.
 - **Testes.** `use-cloud-sync.test.tsx` ganhou três casos: `print=silent` no `PUT`, agrupamento de mudanças seguidas em um só envio e envio imediato ao esconder a página. O arquivo agora espera até 9 s por operação (o intervalo real é 4 s).
+
+# CI com menos minutos faturáveis, 2026-10-18
+
+Motivo: o app terá planos pagos e o repositório deve ficar privado. Em repositório privado o plano gratuito do GitHub Actions tem um teto mensal de minutos (cerca de 2.000, valor a confirmar no GitHub). Em 17 e 18 de outubro foram 29 execuções do `application.yml` em cerca de 8 horas, e cada uma custa em torno de 45 a 50 minutos faturáveis (estimativa pela soma dos jobs), quase tudo de e2e, porque os jobs rodam em paralelo.
+
+- **Escopo do e2e por tipo de mudança** (`scripts/ci-scope.mjs`, testado em `scripts/ci-scope.test.mjs`):
+  - pull request com código, execução manual e execução semanal: desktop e mobile completos (como antes);
+  - push na main: só o desktop. O mesmo código já passou completo na pull request;
+  - pull request que só mexe em documentação (`docs/`, `*.md`, `LICENSE`, `.gitignore`, `.gitleaksignore`): nenhum e2e. Lint, testes, build, auditoria, varredura de segredos e análise estática continuam rodando sempre.
+- **Execução semanal** (segunda, 6h UTC) com e2e completo na main, para pegar o que o push só-desktop não pega.
+- **Checks obrigatórios intactos.** Os nomes dos checks não mudaram. Os jobs `Desktop and mobile smoke tests` e `Desktop and mobile smoke tests (mobile)` agora usam o gate do script: falham se a decisão de escopo falhar, e só aceitam e2e pulado quando o escopo é "só documentação". Na main, o gate móvel avisa que o mobile completo não roda de novo, em vez de fingir que rodou.
+- **Falha segura.** Qualquer dúvida (não conseguir listar os arquivos, evento desconhecido, nenhum arquivo) vira e2e completo.
+- **Economia estimada (não medida):** pull request só de documentação, de cerca de 50 para cerca de 10 minutos; push na main, de cerca de 50 para cerca de 20; pull request com código, sem mudança (cerca de 50). A execução semanal acrescenta cerca de 50 por semana.
+- **Limite.** Uma pull request com código continua custando cerca de 50 minutos a cada push. Com muitos pushes por dia (por exemplo, um commit de atualização da main a cada conflito), o teto mensal de um repositório privado ainda pode ser atingido. Reduzir isso depende de prática: juntar pushes, evitar re-execuções à toa e atualizar a branch com a main só quando necessário. Outras alavancas não aplicadas: cache do Playwright e e2e mobile só nos arquivos de interface.
+- **Testes.** `scripts/ci-scope.test.mjs` (11 casos: documentação, código, misto, dúvida, push, matriz, gate) roda no job `quality`. O caminho real de pull request (commit de mesclagem) foi simulado num repositório temporário: só docs resulta em `none`, código e misto em `full`, checkout raso em `full`.
