@@ -1,3 +1,4 @@
+import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useNotebookPreferences } from "../data/notebook-preferences";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { NotebookSettings } from "./notebook-settings";
@@ -196,6 +197,8 @@ export function HandwritingStudio({
   onCursorMove,
   collaborationActivity,
 }: HandwritingStudioProps) {
+  const currentUiLanguage = useLanguage();
+
   const [recovered] = useState(() => readDraft(draftKey, initialDocument));
   const startingDocument = recovered ?? initialDocument;
   const storedPaper = startingDocument?.paper as string | undefined;
@@ -323,7 +326,7 @@ export function HandwritingStudio({
   const renderableImportedImages = useMemo(
     () =>
       loadedImportedImages.filter((entry) => importedImages.some((image) => image.id === entry.id)),
-    [importedImages, loadedImportedImages],
+    [importedImages, loadedImportedImages, currentUiLanguage],
   );
   const importedImagesReady = importedImages.every((image) =>
     loadedImportedImages.some((entry) => entry.id === image.id),
@@ -536,8 +539,8 @@ export function HandwritingStudio({
   const [writingWindowY, setWritingWindowY] = useState(110);
   const setWritingWindowAutoFollow = (value: boolean) =>
     changePreference("writingWindowAutoFollow", value);
-  const [writingWindowStatus, setWritingWindowStatus] = useState("Coluna 1, linha 1");
-  const [draftStatus, setDraftStatus] = useState(recovered ? "Rascunho recuperado" : "");
+  const [writingWindowStatus, setWritingWindowStatus] = useState(uiText(1696));
+  const [draftStatus, setDraftStatus] = useState(recovered ? uiText(1697) : "");
   const [saveConfirmation, setSaveConfirmation] = useState(0);
   useEffect(() => {
     if (!saveConfirmation) return;
@@ -583,6 +586,7 @@ export function HandwritingStudio({
       layerOrder,
       background,
       backgroundFrame,
+      currentUiLanguage,
     ],
   );
   const baseline = JSON.stringify({
@@ -676,9 +680,7 @@ export function HandwritingStudio({
     setLayerOrder(reconciled.layers?.order ?? DEFAULT_HANDWRITING_LAYER_ORDER);
     setBackground(reconciled.background);
     setBackgroundFrame(reconciled.backgroundFrame);
-    setDraftStatus(
-      remoteAuthor ? `Atualizado por ${remoteAuthor}` : "Atualizado por um colaborador",
-    );
+    setDraftStatus(remoteAuthor ? uiText(1698, [remoteAuthor]) : uiText(1699));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remoteAuthor, remoteDocument, gestureRevision]);
 
@@ -703,13 +705,9 @@ export function HandwritingStudio({
       try {
         onAutosave(pageImage(), buildDocument());
         autosavedRef.current = serialized;
-        setDraftStatus("Folha salva automaticamente");
+        setDraftStatus(uiText(1700));
       } catch (caught) {
-        setDraftStatus(
-          caught instanceof Error
-            ? `Não foi possível salvar: ${caught.message}`
-            : "Não foi possível salvar a folha. Tente salvar novamente.",
-        );
+        setDraftStatus(caught instanceof Error ? uiText(1701, [caught.message]) : uiText(294));
       }
     };
   });
@@ -739,9 +737,9 @@ export function HandwritingStudio({
           `helenastudy.handwriting.draft.${draftKey}`,
           encodeHandwritingDraft(currentDocument, initialDocument),
         );
-        setDraftStatus("Rascunho salvo neste dispositivo");
+        setDraftStatus(uiText(1702));
       } catch {
-        setDraftStatus("Sem espaço para salvar rascunho neste dispositivo");
+        setDraftStatus(uiText(295));
       }
     }, 450);
     return () => window.clearTimeout(timeout);
@@ -794,6 +792,7 @@ export function HandwritingStudio({
       layerVisibility,
       layerOrder,
       renderableImportedImages,
+      currentUiLanguage,
     ],
   );
 
@@ -819,6 +818,7 @@ export function HandwritingStudio({
       pageTextSize,
       pageTextFrame,
       layerVisibility,
+      currentUiLanguage,
     ],
   );
 
@@ -1017,7 +1017,7 @@ export function HandwritingStudio({
     const contentHeight =
       pageTextLines(pageText, pageTextSize, nextWidth).length * pageTextSize * (40 / 28);
     if (drag.mode === "resize" && contentHeight > PAGE_HEIGHT - drag.frame.y) {
-      setError("O texto não cabe nesta largura. Aumente a caixa.");
+      setError(uiText(296));
       return;
     }
     setError("");
@@ -1844,7 +1844,7 @@ export function HandwritingStudio({
     );
     const bounds = unionBounds(selectedStrokes.map(strokeBounds));
     if (!bounds) {
-      setError("Selecione traços de uma expressão antes de reconhecer a fórmula.");
+      setError(uiText(297));
       return;
     }
     setError("");
@@ -1859,7 +1859,7 @@ export function HandwritingStudio({
       temporaryCanvas.width = Math.ceil((bounds.width + padding * 2) * scale);
       temporaryCanvas.height = Math.ceil((bounds.height + padding * 2) * scale);
       const context = temporaryCanvas.getContext("2d");
-      if (!context) throw new Error("Não foi possível preparar a seleção para OCR.");
+      if (!context) throw new Error(uiText(298));
       context.scale(scale, scale);
       context.fillStyle = "#ffffff";
       context.fillRect(0, 0, bounds.width + padding * 2, bounds.height + padding * 2);
@@ -1908,12 +1908,11 @@ export function HandwritingStudio({
           recognized = lineText;
         }
       }
-      if (!recognized)
-        throw new Error("O OCR não encontrou uma expressão legível. Revise ou digite a fórmula.");
+      if (!recognized) throw new Error(uiText(299));
       setFormulaDraft(recognized);
       setOcrProgress(100);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível reconhecer a fórmula.");
+      setError(caught instanceof Error ? caught.message : uiText(300));
     } finally {
       if (worker) await worker.terminate();
       setOcrBusy(false);
@@ -1989,7 +1988,7 @@ export function HandwritingStudio({
 
   function addSticky(kind?: "text" | "table") {
     if (stickies.length >= 40) {
-      setError("Esta folha chegou ao limite de 40 post-its.");
+      setError(uiText(1703));
       return;
     }
     remember();
@@ -2297,7 +2296,10 @@ export function HandwritingStudio({
     setWritingWindowX((current) => {
       const next = Math.max(0, current - 300);
       setWritingWindowStatus(
-        `Coluna ${Math.floor((next - 100) / 300) + 1}, linha ${Math.floor((writingWindowY - 110) / 48) + 1}`,
+        uiText(1704, [
+          Math.floor((next - 100) / 300) + 1,
+          Math.floor((writingWindowY - 110) / 48) + 1,
+        ]),
       );
       return next;
     });
@@ -2307,7 +2309,11 @@ export function HandwritingStudio({
     setWritingWindowX(100);
     setWritingWindowY((current) => Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48));
     setWritingWindowStatus(
-      `Coluna 1, linha ${Math.floor((Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, writingWindowY + 48) - 110) / 48) + 1}`,
+      uiText(1705, [
+        Math.floor(
+          (Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, writingWindowY + 48) - 110) / 48,
+        ) + 1,
+      ]),
     );
   }
 
@@ -2316,7 +2322,10 @@ export function HandwritingStudio({
       setWritingWindowX((current) => {
         const next = current + 300;
         setWritingWindowStatus(
-          `Coluna ${Math.floor((next - 100) / 300) + 1}, linha ${Math.floor((writingWindowY - 110) / 48) + 1}`,
+          uiText(1704, [
+            Math.floor((next - 100) / 300) + 1,
+            Math.floor((writingWindowY - 110) / 48) + 1,
+          ]),
         );
         return next;
       });
@@ -2324,7 +2333,7 @@ export function HandwritingStudio({
       setWritingWindowX(100);
       setWritingWindowY((current) => {
         const next = Math.min(PAGE_HEIGHT - WRITING_WINDOW_HEIGHT, current + 48);
-        setWritingWindowStatus(`Coluna 1, linha ${Math.floor((next - 110) / 48) + 1}`);
+        setWritingWindowStatus(uiText(1705, [Math.floor((next - 110) / 48) + 1]));
         return next;
       });
     }
@@ -2356,14 +2365,14 @@ export function HandwritingStudio({
       stickies,
     };
     if (!isHandwritingDocument(document)) {
-      throw new Error("A folha ficou grande demais. Divida suas anotações em outra folha.");
+      throw new Error(uiText(301));
     }
     return document;
   }
 
   function pageImage(): string {
-    if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
-    if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
+    if (background && !backgroundImage) throw new Error(uiText(302));
+    if (!importedImagesReady) throw new Error(uiText(1706));
     const canvas = document.createElement("canvas");
     sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
     renderPageScene(canvas, pageScene);
@@ -2373,33 +2382,33 @@ export function HandwritingStudio({
   async function exportPng() {
     try {
       const mascot = await loadPaperExportMascot();
-      if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
-      if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
+      if (background && !backgroundImage) throw new Error(uiText(302));
+      if (!importedImagesReady) throw new Error(uiText(1706));
       const canvas = canvasRef.current;
-      if (!canvas) throw new Error("Não foi possível preparar a folha.");
+      if (!canvas) throw new Error(uiText(303));
       renderPageScene(canvas, pageScene);
       const link = document.createElement("a");
       link.href = brandedExportCanvas(canvas, mascot).toDataURL("image/png");
       link.download = "folha-do-caderno.png";
       link.click();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível exportar a folha.");
+      setError(caught instanceof Error ? caught.message : uiText(304));
     }
   }
 
   async function printPage() {
     const printWindow = openPrintWindow();
     try {
-      if (!printWindow) throw new Error("Permita a janela de impressão para salvar em PDF.");
+      if (!printWindow) throw new Error(uiText(305));
       const mascot = await loadPaperExportMascot();
-      if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
-      if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
+      if (background && !backgroundImage) throw new Error(uiText(302));
+      if (!importedImagesReady) throw new Error(uiText(1706));
       const canvas = document.createElement("canvas");
       sizePageCanvas(canvas, 1, PAGE_WIDTH, PAGE_HEIGHT);
       renderPageScene(canvas, pageScene);
       const imageUrl = brandedExportCanvas(canvas, mascot).toDataURL("image/png");
       const image = printWindow.document.createElement("img");
-      image.alt = "Folha do caderno";
+      image.alt = uiText(2289);
       image.style.cssText = "display:block;width:100%;height:auto;max-width:210mm;margin:auto";
       image.onload = () => printWindow.print();
       printWindow.document.body.style.margin = "0";
@@ -2407,21 +2416,21 @@ export function HandwritingStudio({
       image.src = imageUrl;
     } catch (caught) {
       printWindow?.close();
-      setError(caught instanceof Error ? caught.message : "Não foi possível abrir a impressão.");
+      setError(caught instanceof Error ? caught.message : uiText(306));
     }
   }
 
   async function exportPdf() {
     try {
       const mascot = await loadPaperExportMascot();
-      if (background && !backgroundImage) throw new Error("Aguarde a página importada carregar.");
-      if (!importedImagesReady) throw new Error("Aguarde as imagens importadas carregarem.");
+      if (background && !backgroundImage) throw new Error(uiText(302));
+      if (!importedImagesReady) throw new Error(uiText(1706));
       const canvas = canvasRef.current;
-      if (!canvas) throw new Error("Não foi possível preparar a folha.");
+      if (!canvas) throw new Error(uiText(303));
       renderPageScene(canvas, pageScene);
       downloadCanvasAsPdf(brandedExportCanvas(canvas, mascot), "folha-do-caderno.pdf");
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível exportar o PDF.");
+      setError(caught instanceof Error ? caught.message : uiText(307));
     }
   }
 
@@ -2431,11 +2440,7 @@ export function HandwritingStudio({
       navigate();
       requestAnimationFrame(resetView);
     } catch (caught) {
-      setError(
-        caught instanceof Error
-          ? caught.message
-          : "Não foi possível salvar antes de trocar de folha.",
-      );
+      setError(caught instanceof Error ? caught.message : uiText(308));
     }
   }
 
@@ -2629,7 +2634,7 @@ export function HandwritingStudio({
     setSaveConfirmation(0);
     const canvas = canvasRef.current;
     if (!canvas) {
-      setError("Aguarde a folha carregar antes de salvar.");
+      setError(uiText(309));
       return;
     }
     try {
@@ -2642,12 +2647,12 @@ export function HandwritingStudio({
       if (localStorage.getItem(draftStorageKey) === draftBeforeSave)
         localStorage.removeItem(draftStorageKey);
       setSavedBaseline(savedSnapshot);
-      setDraftStatus("Folha salva no caderno");
+      setDraftStatus(uiText(342));
       setSaveConfirmation(Date.now());
       setError("");
       if (closeAfter) onClose();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível salvar a folha.");
+      setError(caught instanceof Error ? caught.message : uiText(310));
     }
   }
 
@@ -2703,14 +2708,14 @@ export function HandwritingStudio({
       data-tool={textMode ? "text" : tool}
     >
       {phoneLayout && (
-        <div className="notebook-mobile-dock" aria-label="Opções do editor">
+        <div className="notebook-mobile-dock" aria-label={uiText(311)}>
           <button
             type="button"
             aria-expanded={mobileDrawer === "tool"}
             onClick={() => setMobileDrawer(mobileDrawer === "tool" ? null : "tool")}
           >
             <PaperEditorIcon name="pen" />
-            <span>Opções</span>
+            <span>{uiText(312)}</span>
           </button>
           <button
             type="button"
@@ -2718,14 +2723,10 @@ export function HandwritingStudio({
             onClick={() => setMobileDrawer(mobileDrawer === "history" ? null : "history")}
           >
             <PaperEditorIcon name="undo" />
-            <span>Histórico e zoom</span>
+            <span>{uiText(313)}</span>
           </button>
           {mobileDrawer && (
-            <button
-              type="button"
-              aria-label="Recolher opções"
-              onClick={() => setMobileDrawer(null)}
-            >
+            <button type="button" aria-label={uiText(314)} onClick={() => setMobileDrawer(null)}>
               <PaperEditorIcon name="close" />
             </button>
           )}
@@ -2738,7 +2739,7 @@ export function HandwritingStudio({
       )}
       <div
         className="handwriting-commandbar"
-        aria-label="Ferramentas de escrita"
+        aria-label={uiText(315)}
         inert={fileAction === "import"}
       >
         <HandwritingToolGroup
@@ -2915,11 +2916,7 @@ export function HandwritingStudio({
         >
           {(tool === "hand" || tool === "zoom-in" || tool === "zoom-out") && (
             <span className="handwriting-viewport-hint" aria-hidden="true">
-              {tool === "hand"
-                ? "Arraste para mover"
-                : tool === "zoom-in"
-                  ? "Toque para ampliar"
-                  : "Toque para reduzir"}
+              {tool === "hand" ? uiText(316) : tool === "zoom-in" ? uiText(317) : uiText(318)}
             </span>
           )}
           <div
@@ -2998,7 +2995,7 @@ export function HandwritingStudio({
                   >
                     <button
                       type="button"
-                      aria-label="Mover imagem importada"
+                      aria-label={uiText(319)}
                       onKeyDown={(event) => {
                         const delta = {
                           ArrowLeft: [-10, 0],
@@ -3016,13 +3013,13 @@ export function HandwritingStudio({
                         });
                       }}
                     >
-                      Arraste para mover
+                      {uiText(316)}
                     </button>
                     <button
                       type="button"
                       data-resize
                       className="handwriting-import-resize"
-                      aria-label="Redimensionar imagem importada"
+                      aria-label={uiText(320)}
                       onKeyDown={(event) => {
                         if (
                           !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
@@ -3122,7 +3119,7 @@ export function HandwritingStudio({
                 >
                   <button
                     type="button"
-                    aria-label="Mover imagem importada"
+                    aria-label={uiText(319)}
                     onKeyDown={(event) => {
                       const delta = {
                         ArrowLeft: [-10, 0],
@@ -3152,13 +3149,13 @@ export function HandwritingStudio({
                       );
                     }}
                   >
-                    Arraste para mover
+                    {uiText(316)}
                   </button>
                   <button
                     type="button"
                     data-resize
                     className="handwriting-import-resize"
-                    aria-label="Redimensionar imagem importada"
+                    aria-label={uiText(320)}
                     onKeyDown={(event) => {
                       if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key))
                         return;
@@ -3197,7 +3194,7 @@ export function HandwritingStudio({
                   <svg
                     className="handwriting-ruler-overlay"
                     viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
-                    aria-label="Medição da régua"
+                    aria-label={uiText(321)}
                   >
                     {rulerKind === "circle" ? (
                       <g>
@@ -3322,10 +3319,8 @@ export function HandwritingStudio({
             )}
             {tool === "curve" && !textMode && curveControls.length > 0 && (
               <p className="visually-hidden" role="status" aria-live="polite">
-                {curveControls.length === 1
-                  ? "1 ponto marcado"
-                  : `${curveControls.length} pontos marcados`}
-                . Shift com Enter conclui a curva.
+                {curveControls.length === 1 ? uiText(1707) : uiText(1708, [curveControls.length])}
+                {uiText(2563)}
               </p>
             )}
             {tool === "space" && !textMode && (
@@ -3360,7 +3355,7 @@ export function HandwritingStudio({
                 />
                 {spaceDrag && spaceDrag.shift !== 0 && (
                   <text x="44" y={spaceDrag.y - 12} fill="#51259b" fontSize="30" fontWeight="700">
-                    {spaceDrag.shift > 0 ? "Abrir espaço" : "Fechar espaço"}
+                    {spaceDrag.shift > 0 ? uiText(322) : uiText(323)}
                   </text>
                 )}
               </svg>
@@ -3369,7 +3364,7 @@ export function HandwritingStudio({
               <svg
                 className="handwriting-ruler-overlay"
                 viewBox={`0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}`}
-                aria-label="Prévia do sistema de coordenadas"
+                aria-label={uiText(324)}
               >
                 <g opacity="0.9">
                   <path
@@ -3397,18 +3392,18 @@ export function HandwritingStudio({
               tabIndex={0}
               aria-label={
                 tool === "zoom-in"
-                  ? "Toque na folha para ampliar"
+                  ? uiText(325)
                   : tool === "zoom-out"
-                    ? "Toque na folha para reduzir"
+                    ? uiText(326)
                     : tool === "hand"
-                      ? "Arraste a folha para mover"
+                      ? uiText(327)
                       : tool === "select"
-                        ? "Arraste para selecionar traços"
+                        ? uiText(328)
                         : tool === "curve"
-                          ? "Curva: toque para marcar pontos e toque duas vezes para concluir. Com o teclado, setas movem o cursor, Enter marca o ponto, Shift com Enter conclui, Backspace desfaz o último e Escape cancela"
+                          ? uiText(329)
                           : tool === "space"
-                            ? "Espaço vertical: arraste para abrir ou fechar espaço. Com o teclado, setas movem a linha e Shift com setas abre ou fecha espaço"
-                            : "Folha para escrita à mão com dedo ou caneta"
+                            ? uiText(330)
+                            : uiText(331)
               }
               onPointerDown={start}
               onPointerMove={move}
@@ -3463,43 +3458,46 @@ export function HandwritingStudio({
                   type="button"
                   className="handwriting-text-frame-handle handwriting-text-frame-handle--move"
                   data-text-frame-handle="move"
-                  aria-label="Mover caixa de texto"
+                  aria-label={uiText(332)}
                   onKeyDown={adjustTextFrameWithKeyboard}
                 >
                   <PaperEditorIcon name="hand" />
                 </button>
-                <div className="handwriting-text-frame-size" aria-label="Tamanho do texto">
+                <div className="handwriting-text-frame-size" aria-label={uiText(333)}>
                   <button
                     type="button"
-                    aria-label="Diminuir tamanho do texto"
+                    aria-label={uiText(334)}
                     disabled={pageTextSize <= 16}
                     onClick={() => {
                       remember();
                       setPageTextSize((size) => Math.max(16, size - 2));
                     }}
                   >
-                    A−
+                    {uiText(335)}
                   </button>
-                  <span>{pageTextSize}px</span>
+                  <span>
+                    {pageTextSize}
+                    {uiText(219)}
+                  </span>
                   <button
                     type="button"
-                    aria-label="Aumentar tamanho do texto"
+                    aria-label={uiText(336)}
                     disabled={pageTextSize >= 72}
                     onClick={() => {
                       remember();
                       setPageTextSize((size) => Math.min(72, size + 2));
                     }}
                   >
-                    A+
+                    {uiText(337)}
                   </button>
                 </div>
                 <textarea
                   className="handwriting-full-page-text"
-                  aria-label="Texto da página inteira"
-                  placeholder="Escreva aqui. Arraste as alças para mover e ajustar a caixa."
+                  aria-label={uiText(338)}
+                  placeholder={uiText(339)}
                   value={pageText}
                   spellCheck
-                  lang="pt-BR"
+                  lang={uiLocale()}
                   autoCorrect="on"
                   autoCapitalize="sentences"
                   wrap="soft"
@@ -3526,7 +3524,7 @@ export function HandwritingStudio({
                     if (
                       lines.length > Math.floor(pageTextFrame.height / (pageTextSize * (40 / 28)))
                     ) {
-                      setError("Esta caixa está completa. Aumente-a ou crie outra folha.");
+                      setError(uiText(340));
                       return;
                     }
                     setError("");
@@ -3538,7 +3536,7 @@ export function HandwritingStudio({
                   type="button"
                   className="handwriting-text-frame-handle handwriting-text-frame-handle--resize"
                   data-text-frame-handle="resize"
-                  aria-label="Redimensionar caixa de texto"
+                  aria-label={uiText(341)}
                   onKeyDown={adjustTextFrameWithKeyboard}
                 >
                   <PaperEditorIcon name="resize" />
@@ -3642,11 +3640,11 @@ export function HandwritingStudio({
       {/Falha|Sem espaço/.test(draftStatus) && <p role="alert">{draftStatus}</p>}
       {saveConfirmation > 0 && (
         <p className="handwriting-save-status" role="status" aria-live="polite">
-          Folha salva no caderno
+          {uiText(342)}
         </p>
       )}
       {preferenceError && <p role="status">{preferenceError}</p>}
-      {error && <p className="capture-error">{error}</p>}
+      {error && <p className="capture-error">{uiText(error)}</p>}
       {onSelectPage && onCreatePage && (
         <NotebookPageBook
           pages={notebookPages}
@@ -3659,7 +3657,7 @@ export function HandwritingStudio({
         />
       )}
       {fileAction === "import" && (
-        <Suspense fallback={<HelenaLoading label="Abrindo importação" compact />}>
+        <Suspense fallback={<HelenaLoading label={uiText(343)} compact />}>
           <PageImport
             onClose={closeImport}
             onImportMany={(pages) => {
@@ -3669,7 +3667,7 @@ export function HandwritingStudio({
             onImport={(image, frame) => {
               if (!frame) return;
               if (importedImages.length >= 20) {
-                setError("Esta folha chegou ao limite de 20 imagens importadas.");
+                setError(uiText(1709));
                 closeImport();
                 return;
               }

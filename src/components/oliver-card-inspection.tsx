@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState, type CSSProperties } from "react";
 import type { OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
@@ -9,6 +10,8 @@ export function OliverCardInspection({
   id: OliverArtworkId;
   compact?: boolean;
 }) {
+  useLanguage();
+
   const [angle, setAngle] = useState({ x: 0, y: 0 });
   const [shine, setShine] = useState({ x: 50, y: 30 });
   const gesture = useRef<{ x: number; y: number; angle: typeof angle } | null>(null);
@@ -20,7 +23,7 @@ export function OliverCardInspection({
         style={{ "--foil-x": `${shine.x}%`, "--foil-y": `${shine.y}%` } as CSSProperties}
         role="button"
         tabIndex={0}
-        aria-label="Inspecionar carta em 360 graus. Arraste ou use as setas."
+        aria-label={uiText(782)}
         onKeyDown={(event) => {
           if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home"].includes(event.key))
             return;
@@ -85,7 +88,7 @@ export function OliverCardInspection({
       </div>
       {!compact && (
         <button className="secondary-button" onClick={() => setAngle({ x: 0, y: 0 })}>
-          Recentralizar carta
+          {uiText(783)}
         </button>
       )}
     </div>

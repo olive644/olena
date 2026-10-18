@@ -1,5 +1,8 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import "./profile-labels.css";
 export function ProfileLabels({ creks, username }: { creks: boolean; username: string }) {
+  useLanguage();
+
   const labels =
     username === "dreyxnn"
       ? ["GALAXIA", "BETA TESTER"]
@@ -17,7 +20,7 @@ export function ProfileLabels({ creks, username }: { creks: boolean; username: s
         <span
           key={label}
           className={`profile-creks profile-label--${label.toLowerCase().replace(" ", "-")}`}
-          aria-label={`Selo ${label}`}
+          aria-label={uiText(1899, [label])}
         >
           {label}
         </span>

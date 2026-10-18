@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import {
   useEffect,
   useLayoutEffect,
@@ -33,7 +34,7 @@ function constrain(position: Position) {
     y: Math.max(16, Math.min(window.innerHeight - size - (mobile ? 100 : 24), position.y)),
   };
 }
-const suggestions = ["Organizar meus estudos", "Me ajudar com uma dúvida", "Revisar uma matéria"];
+const suggestions = localizeLabels(() => [uiText(1710), uiText(377), uiText(378)]);
 
 /** Preview local; no aplicativo, envio externo somente ao enviar uma mensagem. */
 export function HelenaChat({
@@ -47,6 +48,8 @@ export function HelenaChat({
   previewReply?: (text: string) => string;
   currentView?: string;
 }) {
+  useLanguage();
+
   const [open, setOpen] = useState(initiallyOpen);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -266,7 +269,7 @@ export function HelenaChat({
       responseId.current = replyId;
       const previous = messages
         .slice(-6)
-        .map((item) => `${item.role === "user" ? "Aluno" : "Helena"}: ${item.text}`)
+        .map((item) => `${item.role === "user" ? uiText(1711) : uiText(381)}: ${item.text}`)
         .join("\n")
         .slice(-6000);
       void (async () => {
@@ -284,8 +287,8 @@ export function HelenaChat({
                 {
                   id: "current-screen",
                   kind: "note",
-                  title: "Tela e conversa atual",
-                  content: `Módulo aberto: ${currentView}. Histórico desta sessão:\n${previous || "Sem histórico."}`,
+                  title: uiText(1712),
+                  content: uiText(1713, [currentView, previous || uiText(2058)]),
                 },
               ],
               privacy: { consent: true, retention: "none" },
@@ -306,11 +309,7 @@ export function HelenaChat({
           );
         } catch (failure) {
           if (!abort.signal.aborted) {
-            setError(
-              failure instanceof HelenaClientError
-                ? failure.message
-                : "Entre na conta ou tente mais tarde.",
-            );
+            setError(failure instanceof HelenaClientError ? failure.message : uiText(379));
             setDraft(value);
             setMessages((items) =>
               items.map((item) => (item.id === replyId ? { ...item, interrupted: true } : item)),
@@ -330,7 +329,7 @@ export function HelenaChat({
     timer.current = setTimeout(() => {
       setMessages((items) => [
         ...items,
-        { id: ++nextId.current, role: "helena", text: previewReply?.(value) ?? "Preview local." },
+        { id: ++nextId.current, role: "helena", text: previewReply?.(value) ?? uiText(2290) },
       ]);
       setPending(false);
       sending.current = false;
@@ -359,7 +358,7 @@ export function HelenaChat({
   return (
     <aside
       className={`helena-chat${preview ? "" : " helena-chat--application"}`}
-      aria-label="Assistente Helena"
+      aria-label={uiText(380)}
       data-motion={motion}
       data-edge={position && position.x < window.innerWidth / 2 ? "left" : "right"}
       style={
@@ -405,19 +404,19 @@ export function HelenaChat({
           <header className="helena-chat-header">
             <div className="helena-chat-header-mascot" ref={headerMascot} aria-hidden="true" />
             <div>
-              <h2 id="helena-chat-title">Helena</h2>
-              <p>Sua companhia nos estudos</p>
+              <h2 id="helena-chat-title">{uiText(381)}</h2>
+              <p>{uiText(382)}</p>
             </div>
             <button
               className="helena-chat-tool"
               type="button"
               onClick={close}
-              aria-label="Recolher conversa"
+              aria-label={uiText(383)}
             >
               <PaperCloseIcon />
             </button>
           </header>
-          {preview && <span className="helena-chat-preview-tag">Preview</span>}
+          {preview && <span className="helena-chat-preview-tag">{uiText(384)}</span>}
           <div
             className="helena-chat-conversation"
             ref={conversation}
@@ -429,7 +428,7 @@ export function HelenaChat({
           >
             {messages.length === 0 ? (
               <div className="helena-chat-welcome">
-                <h3>Oi! Vamos pensar juntos?</h3>
+                <h3>{uiText(385)}</h3>
                 <div className="helena-chat-suggestions">
                   {suggestions.map((text, index) => (
                     <button
@@ -462,18 +461,18 @@ export function HelenaChat({
               <div
                 className="helena-chat-messages"
                 role="log"
-                aria-label="Mensagens"
+                aria-label={uiText(386)}
                 aria-live={pending ? "off" : "polite"}
                 aria-relevant="additions text"
               >
                 {messages.map((message) => (
                   <div key={message.id} className={`helena-chat-message is-${message.role}`}>
                     <span className="helena-chat-message-author">
-                      {message.role === "user" ? "Você" : "Helena"}
+                      {message.role === "user" ? uiText(387) : uiText(381)}
                     </span>
                     <p>{message.text}</p>
                     {message.interrupted && (
-                      <span className="helena-chat-interrupted">Resposta interrompida</span>
+                      <span className="helena-chat-interrupted">{uiText(388)}</span>
                     )}
                   </div>
                 ))}
@@ -481,21 +480,21 @@ export function HelenaChat({
             )}
             {pending && !hasPartialResponse && (
               <div className="helena-chat-thinking">
-                <HelenaLoading label="Helena está respondendo" compact />
+                <HelenaLoading label={uiText(389)} compact />
               </div>
             )}
           </div>
           <footer className="helena-chat-footer">
-            {error && <p role="alert">{error}</p>}
+            {error && <p role="alert">{uiText(error)}</p>}
             <form onSubmit={submit} className="helena-chat-composer">
               <textarea
                 ref={composer}
                 id="helena-chat-input"
-                aria-label="Escreva para a Helena"
+                aria-label={uiText(390)}
                 value={draft}
                 maxLength={2000}
                 rows={2}
-                placeholder="Escreva para a Helena…"
+                placeholder={uiText(391)}
                 onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
@@ -508,7 +507,7 @@ export function HelenaChat({
                 <button
                   type="button"
                   className="helena-chat-send secondary-button"
-                  aria-label="Interromper resposta"
+                  aria-label={uiText(392)}
                   onClick={stop}
                 >
                   <svg viewBox="0 0 24 24" aria-hidden="true" className="helena-chat-stop-icon">
@@ -521,18 +520,14 @@ export function HelenaChat({
                 <button
                   type="submit"
                   className="helena-chat-send primary-button"
-                  aria-label="Enviar mensagem"
+                  aria-label={uiText(393)}
                   disabled={!draft.trim()}
                 >
                   <PaperArrow />
                 </button>
               )}
             </form>
-            <p>
-              {preview
-                ? "Conversa demonstrativa. Nada é enviado ou salvo."
-                : "Respostas de IA enviam sua mensagem e o contexto ao Cloudflare. Sem uso no treino da Olena. IA pode errar."}
-            </p>
+            <p>{preview ? uiText(394) : uiText(395)}</p>
           </footer>
         </section>
       )}
@@ -540,7 +535,7 @@ export function HelenaChat({
         ref={launcher}
         type="button"
         className={`helena-chat-launcher${open ? " is-open" : ""}`}
-        aria-label={open ? "Recolher conversa com Helena" : "Conversar com Helena"}
+        aria-label={open ? uiText(396) : uiText(397)}
         aria-expanded={open}
         onClick={toggle}
         onPointerDown={pointerDown}

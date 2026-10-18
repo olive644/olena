@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime.js";
 import type { RoomXpReward } from "../domain/local-room";
 export const ROOM_XP_KEY = "helena.room-xp.v1";
 export const ROOM_XP_CHANGED = "helena:room-xp-change";
@@ -35,7 +36,7 @@ export function recordRoomXp(
       !Array.isArray(valid.receipts) ||
       !valid.receipts.every((id) => typeof id === "string"))
   )
-    throw new Error("Histórico de XP inválido.");
+    throw new Error(uiText("Histórico de XP inválido."));
   const ledger: Ledger = valid
     ? { total: valid.total!, receipts: valid.receipts! }
     : { total: 0, receipts: [] };
@@ -48,9 +49,9 @@ export function recordRoomXp(
     !Number.isSafeInteger(reward.place) ||
     reward.place < 1
   )
-    throw new Error("Recompensa inválida.");
+    throw new Error(uiText("Recompensa inválida."));
   const total = ledger.total + reward.xp;
-  if (!Number.isSafeInteger(total)) throw new Error("Total de XP inválido.");
+  if (!Number.isSafeInteger(total)) throw new Error(uiText("Total de XP inválido."));
   storage.setItem(
     ROOM_XP_KEY,
     JSON.stringify({ total, receipts: [...ledger.receipts, reward.id] }),

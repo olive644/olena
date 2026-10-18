@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import {
   RoomAudioIcon,
   RoomPointsIcon,
@@ -103,6 +104,8 @@ export function LocalRoom({
   accountLoading = false,
   requireAccount = false,
 }: LocalRoomProps) {
+  useLanguage();
+
   const connection = useLocalRoom(initialJoinCode);
   useEffect(() => {
     for (const result of ["correct", "wrong"]) {
@@ -195,7 +198,7 @@ export function LocalRoom({
     : accountName?.trim() || (!requireAccount ? profile.name : "");
   const nicknameField = isGuest ? (
     <div className="local-room-nickname">
-      <label htmlFor="local-room-nickname-input">Seu apelido na sala</label>
+      <label htmlFor="local-room-nickname-input">{uiText(480)}</label>
       <input
         id="local-room-nickname-input"
         value={guestNickname}
@@ -209,7 +212,7 @@ export function LocalRoom({
         }}
       />
       <small id="local-room-nickname-help">
-        Vale só aqui na sala. No resto do app você continua como {GUEST_NAME}.
+        {uiText(481)} {GUEST_NAME}.
       </small>
     </div>
   ) : null;
@@ -545,13 +548,7 @@ export function LocalRoom({
     const result = await room.submitAnswer(questionIndex, id);
     setMarkPending(false);
     setMarkFeedback(
-      !result
-        ? ""
-        : id === "pass"
-          ? "Resposta enviada."
-          : result.correct
-            ? "Marcado!"
-            : "Essa palavra não foi a sorteada.",
+      !result ? "" : id === "pass" ? uiText(1745) : result.correct ? uiText(1746) : uiText(482),
     );
   }
 
@@ -688,10 +685,10 @@ export function LocalRoom({
     return (
       <LocalRoomFullscreen>
         <div className="local-room-restoring">
-          <HelenaLoading compact label="Retomando sala…" />
-          <p>Reconectando você à atividade em andamento.</p>
+          <HelenaLoading compact label={uiText(483)} />
+          <p>{uiText(484)}</p>
           <button className="secondary-button" type="button" onClick={exitRoom}>
-            <PaperEditorIcon name="exit" /> Voltar ao aplicativo
+            <PaperEditorIcon name="exit" /> {uiText(485)}
           </button>
         </div>
       </LocalRoomFullscreen>
@@ -702,8 +699,8 @@ export function LocalRoom({
       <LocalRoomFullscreen>
         <div className="local-room-restoring" role="alert">
           <img src="/room-icons/projector.svg" alt="" width="48" height="48" />
-          <h3>Modo projetor protegido</h3>
-          <p>Abra esta tela pelo painel do professor que criou a sala.</p>
+          <h3>{uiText(486)}</h3>
+          <p>{uiText(487)}</p>
         </div>
       </LocalRoomFullscreen>
     );
@@ -717,12 +714,12 @@ export function LocalRoom({
             type="button"
             onClick={() => (initialJoinCode ? onExit?.() : room.setRole("choose"))}
           >
-            <HelenaRoomIcon name="back" /> Voltar
+            <HelenaRoomIcon name="back" /> {uiText(374)}
           </button>
-          <h3>Entrar em uma sala</h3>
-          <p>Use o código do professor. Você participa com o nome da sua conta.</p>
+          <h3>{uiText(488)}</h3>
+          <p>{uiText(489)}</p>
           {scanningQr && (
-            <Suspense fallback={<HelenaLoading compact label="Preparando leitor de QR code…" />}>
+            <Suspense fallback={<HelenaLoading compact label={uiText(490)} />}>
               <RoomQrScanner
                 onRead={(value) => {
                   setCode(value);
@@ -733,11 +730,11 @@ export function LocalRoom({
           )}
           {scanningQr && (
             <button type="button" className="secondary-button" onClick={() => setScanningQr(false)}>
-              Fechar câmera
+              {uiText(491)}
             </button>
           )}
           <label>
-            <span>Código</span>
+            <span>{uiText(492)}</span>
             <input
               value={code}
               onChange={(event) => setCode(normalizeLocalRoomCode(event.target.value).slice(0, 5))}
@@ -749,36 +746,28 @@ export function LocalRoom({
               autoComplete="off"
               inputMode="text"
               className="local-room-code-input"
-              placeholder="ABCDE"
+              placeholder={uiText(493)}
               required
             />
           </label>
           {nicknameField ?? (
             <div className="local-room-account">
               <PaperEditorIcon name="team" />
-              <span>
-                {name ||
-                  (accountLoading
-                    ? "Carregando sua conta…"
-                    : "Entre na sua conta para participar.")}
-              </span>
+              <span>{name || (accountLoading ? uiText(494) : uiText(495))}</span>
             </div>
           )}
           {requireAccount && !accountLoading && !name && onSignIn && (
             <button className="secondary-button" type="button" onClick={onSignIn}>
-              <PaperEditorIcon name="team" /> Entrar na conta
+              <PaperEditorIcon name="team" /> {uiText(496)}
             </button>
           )}
           {room.error && <p role="alert">{room.error}</p>}
           <button className="primary-button" type="submit" disabled={!canJoin}>
             <img src="/room-icons/join.svg" alt="" width="24" height="24" />
-            {room.busy ? "Entrando…" : "Entrar"}
+            {room.busy ? uiText(1747) : uiText(1748)}
           </button>
           {(room.busy || accountLoading) && (
-            <HelenaLoading
-              compact
-              label={room.busy ? "Entrando na sala…" : "Carregando sua conta…"}
-            />
+            <HelenaLoading compact label={room.busy ? uiText(1749) : uiText(494)} />
           )}
         </form>
       </LocalRoomFullscreen>
@@ -789,15 +778,13 @@ export function LocalRoom({
       <LocalRoomFullscreen>
         <div className="local-room-restoring">
           <NavigationIcon name="room" />
-          <h3>Vamos retomar sua sala</h3>
-          <p role="alert">
-            {room.error || "A conexão foi interrompida. Sua participação está salva nesta aba."}
-          </p>
+          <h3>{uiText(497)}</h3>
+          <p role="alert">{room.error || uiText(2063)}</p>
           <button className="primary-button" type="button" onClick={room.reconnect}>
-            <img src="/room-icons/reconnect.svg" alt="" width="24" height="24" /> Tentar novamente
+            <img src="/room-icons/reconnect.svg" alt="" width="24" height="24" /> {uiText(498)}
           </button>
           <button className="secondary-button" type="button" onClick={exitRoom}>
-            <PaperEditorIcon name="exit" /> Sair da sala
+            <PaperEditorIcon name="exit" /> {uiText(499)}
           </button>
         </div>
       </LocalRoomFullscreen>
@@ -809,11 +796,11 @@ export function LocalRoom({
   // silêncio. Não menciona a palavra, que é justamente o que o exercício de escuta esconde.
   const phaseAnnouncement =
     state.phase === "playing" && state.settings.activity !== "bingo" && state.totalQuestions > 0
-      ? `Pergunta ${state.questionIndex + 1} de ${state.totalQuestions}.`
+      ? uiText(1750, [state.questionIndex + 1, state.totalQuestions])
       : state.phase === "results"
-        ? "Atividade encerrada. Confira o resultado."
+        ? uiText(1751)
         : state.phase === "finished"
-          ? "Sala encerrada."
+          ? uiText(1752)
           : "";
   const answered = state.answeredParticipantIds.includes(room.participantId);
   const pool = localRoomPool(state.settings);
@@ -891,7 +878,7 @@ export function LocalRoom({
           .join("|"),
       );
     } else {
-      throw new Error("Não foi possível preparar os áudios. Tente enviar novamente.");
+      throw new Error(uiText(500));
     }
   }
 
@@ -907,7 +894,7 @@ export function LocalRoom({
     return (
       <LocalRoomFullscreen embedded>
         <section className="local-room-session room-return-hub">
-          <h2>Modalidades coletivas</h2>
+          <h2>{uiText(501)}</h2>
           <button
             className="secondary-button room-resume"
             type="button"
@@ -924,14 +911,14 @@ export function LocalRoom({
               alt=""
             />
             <span>
-              <strong>Retomar sala {state.code}</strong>
-              <small>
-                {state.phase === "finished" ? "Sala encerrada" : "Sua sala continua disponível"}
-              </small>
+              <strong>
+                {uiText(502)} {state.code}
+              </strong>
+              <small>{state.phase === "finished" ? uiText(592) : uiText(503)}</small>
             </span>
             <PaperArrow />
           </button>
-          <div className="local-room-activities" aria-label="Modalidades disponíveis">
+          <div className="local-room-activities" aria-label={uiText(504)}>
             {ROOM_ACTIVITY_OPTIONS.map((activity) => (
               <div className="local-room-activity room-activity-preview" key={activity.key}>
                 <picture className="local-room-activity__art">
@@ -952,7 +939,7 @@ export function LocalRoom({
               </div>
             ))}
           </div>
-          <p>Retome a sala para continuar ou sair antes de criar outra.</p>
+          <p>{uiText(505)}</p>
         </section>
       </LocalRoomFullscreen>
     );
@@ -975,7 +962,7 @@ export function LocalRoom({
         {!preparing && (
           <header className="local-room-session__header">
             <button type="button" className="secondary-button room-back" onClick={backToModalities}>
-              <PaperArrow back /> Voltar
+              <PaperArrow back /> {uiText(374)}
             </button>
             <div className="local-room-session__actions">
               {isHost && !preparing && (
@@ -984,19 +971,19 @@ export function LocalRoom({
                   type="button"
                   onClick={openProjector}
                 >
-                  <img className="room-paper-icon" src="/room-icons/projector.svg" alt="" /> Modo
-                  Projetor
+                  <img className="room-paper-icon" src="/room-icons/projector.svg" alt="" />{" "}
+                  {uiText(506)}
                 </button>
               )}
               <RoomConfirmButton
                 className="secondary-button local-room-exit"
                 needsConfirmation={hostSessionActive}
-                title="Sair e encerrar a sala?"
-                warning="Como anfitrião, sair encerra a sala para todos os participantes e não pode ser desfeito."
-                confirmLabel="Encerrar sala"
+                title={uiText(507)}
+                warning={uiText(2064)}
+                confirmLabel={uiText(579)}
                 onConfirm={exitRoom}
               >
-                <PaperEditorIcon name="exit" /> Sair da sala
+                <PaperEditorIcon name="exit" /> {uiText(499)}
               </RoomConfirmButton>
             </div>
           </header>
@@ -1013,16 +1000,12 @@ export function LocalRoom({
             <div className="local-room-connection">
               <HelenaLoading
                 compact
-                label={
-                  room.connectionStatus === "offline"
-                    ? "Sem conexão. Retomando sala…"
-                    : "Reconectando sala…"
-                }
+                label={room.connectionStatus === "offline" ? uiText(508) : uiText(1753)}
               />
             </div>
           )}
         {state.settings.teams && state.phase !== "lobby" && (
-          <div className="room-team-scores" aria-label="Placar por equipe">
+          <div className="room-team-scores" aria-label={uiText(509)}>
             {teamScores.map((t) => (
               <span key={t.team}>
                 <PaperMoonMark
@@ -1030,8 +1013,8 @@ export function LocalRoom({
                   motif={t.team === "Roxo" ? "moon" : "sun"}
                   className="room-side-icon"
                 />
-                {ROOM_TEAM_LABELS[t.team]} <PaperDigits value={String(t.score)} />
-                <span>pontos</span>
+                {uiText(ROOM_TEAM_LABELS[t.team])} <PaperDigits value={String(t.score)} />
+                <span>{uiText(466)}</span>
               </span>
             ))}
           </div>
@@ -1057,16 +1040,17 @@ export function LocalRoom({
                         aria-labelledby="participants-title"
                       >
                         <div className="local-room-section-heading">
-                          <h3 id="participants-title">Participantes</h3>
+                          <h3 id="participants-title">{uiText(38)}</h3>
                           <span>
                             {participantCount}/{MAX_ROOM_PARTICIPANTS}
                           </span>
                         </div>
                         {participantCount === 0 ? (
                           <div className="local-room-participants__empty">
-                            <strong>Aguardando participantes…</strong>
+                            <strong>{uiText(510)}</strong>
                             <p>
-                              Compartilhe o código {state.code}. A rodada começa com uma pessoa.
+                              {uiText(511)} {state.code}
+                              {uiText(2564)}
                             </p>
                           </div>
                         ) : (
@@ -1104,7 +1088,7 @@ export function LocalRoom({
                       onClick={() => setActivitiesExpanded((open) => !open)}
                     >
                       <img src="/room-icons/modalities.svg" alt="" width="36" height="36" />
-                      Modalidades coletivas
+                      {uiText(501)}
                       <span>
                         {
                           ROOM_ACTIVITY_OPTIONS.find(
@@ -1119,7 +1103,7 @@ export function LocalRoom({
                     className={`local-room-activities${!activitiesExpanded ? " local-room-activities--collapsed" : ""}`}
                     inert={!activitiesExpanded}
                     role="radiogroup"
-                    aria-label="Atividades da sala"
+                    aria-label={uiText(512)}
                   >
                     {ROOM_ACTIVITY_OPTIONS.map((activity) => (
                       <button
@@ -1159,7 +1143,7 @@ export function LocalRoom({
                       </button>
                     ))}
                   </div>
-                  {pendingActivity && <HelenaLoading compact label="Preparando atividade…" />}
+                  {pendingActivity && <HelenaLoading compact label={uiText(513)} />}
                   <div
                     className={
                       "local-room-join-actions" +
@@ -1176,7 +1160,7 @@ export function LocalRoom({
                       }}
                     >
                       <img src="/room-icons/join.svg" alt="" width="22" height="22" />
-                      Entrar com código
+                      {uiText(514)}
                     </button>
                     <button
                       type="button"
@@ -1187,7 +1171,7 @@ export function LocalRoom({
                       }}
                     >
                       <img src="/room-icons/join-qr.svg" alt="" width="22" height="22" />
-                      Entrar com QR code
+                      {uiText(515)}
                     </button>
                   </div>
                   {selectedActivity && (
@@ -1197,7 +1181,7 @@ export function LocalRoom({
                       aria-busy={pendingActivity !== null || readyApplying}
                     >
                       {state.settings.activity === "bingo" && (
-                        <Suspense fallback={<HelenaLoading compact label="Preparando bingo…" />}>
+                        <Suspense fallback={<HelenaLoading compact label={uiText(516)} />}>
                           <NumberBingo
                             state={state}
                             isHost={isHost}
@@ -1211,13 +1195,9 @@ export function LocalRoom({
                           />
                         </Suspense>
                       )}
-                      {state.settings.activity !== "bingo" && <h4>Banco de palavras</h4>}
+                      {state.settings.activity !== "bingo" && <h4>{uiText(517)}</h4>}
                       {state.settings.activity !== "bingo" && (
-                        <div
-                          className="local-room-source"
-                          role="group"
-                          aria-label="Banco de palavras"
-                        >
+                        <div className="local-room-source" role="group" aria-label={uiText(517)}>
                           <button
                             type="button"
                             className="local-room-source__option"
@@ -1231,7 +1211,7 @@ export function LocalRoom({
                             }
                           >
                             <img src="/room-icons/upload.svg" alt="" width="40" height="40" />
-                            <span>Enviar arquivos</span>
+                            <span>{uiText(518)}</span>
                           </button>
                           <button
                             type="button"
@@ -1255,7 +1235,7 @@ export function LocalRoom({
                             }}
                           >
                             <img src="/room-icons/word-bank.svg" alt="" width="40" height="40" />
-                            <span>Palavras prontas</span>
+                            <span>{uiText(519)}</span>
                           </button>
                           <button
                             type="button"
@@ -1276,18 +1256,15 @@ export function LocalRoom({
                               width="40"
                               height="40"
                             />
-                            <span>Palavras escolhidas pela Helena</span>
+                            <span>{uiText(520)}</span>
                           </button>
                         </div>
                       )}
                       {usesHelenaWords && (
                         <>
-                          <p className="local-room-helena-help">
-                            A Helena sorteia palavras do banco ao começar, sem repetir. Você também
-                            pode participar sem ver a lista antes.
-                          </p>
+                          <p className="local-room-helena-help">{uiText(521)}</p>
                           <RoomStepSlider
-                            label="Quantidade de palavras"
+                            label={uiText(522)}
                             value={state.settings.helenaWordCount ?? 10}
                             steps={HELENA_WORD_STEPS}
                             onCommit={(helenaWordCount) =>
@@ -1303,18 +1280,18 @@ export function LocalRoom({
                             className="local-room-ready-words__subject"
                             aria-expanded={readyWordsOpen}
                             aria-controls="room-english-words"
-                            aria-label="Inglês"
+                            aria-label={uiText(523)}
                             onClick={() => setReadyWordsOpen((open) => !open)}
                           >
                             <img src="/room-art/english-study.webp" alt="" width="48" height="48" />
                             <span className="local-room-ready-words__subject-label">
-                              <small>MATÉRIA</small>
-                              <strong>Inglês</strong>
+                              <small>{uiText(524)}</small>
+                              <strong>{uiText(523)}</strong>
                             </span>
                             <span>
                               {readyDraftIds.length > 0
-                                ? `${readyDraftIds.length} selecionadas`
-                                : `${READY_LISTENING_DECK.length} palavras com áudio`}
+                                ? uiText(1754, [readyDraftIds.length])
+                                : uiText(1755, [READY_LISTENING_DECK.length])}
                             </span>
                             <span className="local-room-ready-words__disclosure" aria-hidden="true">
                               <PaperActionIcon name="plus" />
@@ -1328,14 +1305,14 @@ export function LocalRoom({
                                   type="search"
                                   value={readySearch}
                                   onChange={(event) => setReadySearch(event.target.value)}
-                                  placeholder="Buscar em inglês ou português"
-                                  aria-label="Buscar palavras em inglês ou português"
+                                  placeholder={uiText(525)}
+                                  aria-label={uiText(526)}
                                 />
                               </label>
                               {(readyDraftIds.length > 0 || removingReadyIds.length > 0) && (
                                 <div
                                   className="local-room-ready-words__selected"
-                                  aria-label="Palavras selecionadas"
+                                  aria-label={uiText(527)}
                                 >
                                   {READY_LISTENING_DECK.filter(
                                     (card) =>
@@ -1363,29 +1340,31 @@ export function LocalRoom({
                                           !readySelected.has(card.id))
                                       }
                                       onClick={() => removeReadyWords([card.id])}
-                                      aria-label={`Remover ${card.front}`}
+                                      aria-label={uiText(1756, [card.front])}
                                     >
                                       <PaperEnglishWord value={card.front} />
-                                      <span aria-hidden="true">×</span>
+                                      <span aria-hidden="true">{uiText(289)}</span>
                                     </button>
                                   ))}
                                 </div>
                               )}
                               <div className="local-room-ready-words__tools">
-                                <strong>{readyDraftIds.length} selecionadas</strong>
+                                <strong>
+                                  {readyDraftIds.length} {uiText(528)}
+                                </strong>
                                 {readyDraftIds.length > 0 && (
                                   <button
                                     type="button"
                                     disabled={readyApplying}
                                     onClick={() => removeReadyWords(readyDraftIds)}
                                   >
-                                    Limpar
+                                    {uiText(171)}
                                   </button>
                                 )}
                               </div>
                               <div
                                 className="local-room-ready-words__results"
-                                aria-label="Resultados da busca"
+                                aria-label={uiText(5)}
                               >
                                 {readyMatches.map((card) => (
                                   <button
@@ -1424,10 +1403,10 @@ export function LocalRoom({
                                     </span>
                                   </button>
                                 ))}
-                                {readyMatches.length === 0 && <p>Nenhuma palavra encontrada.</p>}
+                                {readyMatches.length === 0 && <p>{uiText(529)}</p>}
                               </div>
                               <div className="local-room-ready-words__apply">
-                                <span>Todas as palavras selecionadas entram na rodada.</span>
+                                <span>{uiText(530)}</span>
                               </div>
                             </div>
                           )}
@@ -1436,29 +1415,27 @@ export function LocalRoom({
                       {state.settings.activity !== "bingo" && usesManualList && (
                         <div className="local-room-manual">
                           <div>
-                            <strong>Seus arquivos de áudio</strong>
+                            <strong>{uiText(531)}</strong>
                             <span>
-                              {manualDeck.length} válidas
-                              {manualErrors.length > 0
-                                ? ` · ${manualErrors.length} precisam de correção`
-                                : ""}
+                              {manualDeck.length} {uiText(532)}
+                              {manualErrors.length > 0 ? uiText(1757, [manualErrors.length]) : ""}
                             </span>
                           </div>
-                          <p>Envie o áudio e informe a palavra e a tradução de cada fala.</p>
+                          <p>{uiText(533)}</p>
                           <p className="local-room-manual__privacy">
-                            {preparing
-                              ? "Os arquivos ficam neste dispositivo até criar a sala."
-                              : "Os arquivos ficam nesta sala por até 4 horas. Eles não treinam a Olena."}
+                            {preparing ? uiText(534) : uiText(535)}
                           </p>
                           <div className="local-room-manual__rows">
                             {manualRows.map((row, index) => (
                               <div className="local-room-manual__row" key={row.id}>
                                 <div className="local-room-manual__row-heading">
-                                  <strong>Fala {index + 1}</strong>
+                                  <strong>
+                                    {uiText(536)} {index + 1}
+                                  </strong>
                                   <button
                                     type="button"
                                     className="local-room-manual__remove"
-                                    aria-label={`Remover fala ${index + 1}`}
+                                    aria-label={uiText(1758, [index + 1])}
                                     onClick={() => {
                                       setManualRows((rows) =>
                                         rows.length === 1
@@ -1468,7 +1445,7 @@ export function LocalRoom({
                                       setManualApplyStatus("");
                                     }}
                                   >
-                                    Remover
+                                    {uiText(44)}
                                   </button>
                                 </div>
                                 <RoomRecordingInput
@@ -1518,12 +1495,12 @@ export function LocalRoom({
                                 />
                                 <div className="local-room-manual__fields">
                                   <label>
-                                    <span>Palavra em inglês</span>
+                                    <span>{uiText(537)}</span>
                                     <input
-                                      aria-label={`Palavra em inglês da fala ${index + 1}`}
+                                      aria-label={uiText(1759, [index + 1])}
                                       value={row.word}
                                       maxLength={200}
-                                      placeholder="Ex.: school"
+                                      placeholder={uiText(538)}
                                       onChange={(event) => {
                                         setManualRows((rows) =>
                                           rows.map((item) =>
@@ -1537,12 +1514,12 @@ export function LocalRoom({
                                     />
                                   </label>
                                   <label>
-                                    <span>Tradução</span>
+                                    <span>{uiText(539)}</span>
                                     <input
-                                      aria-label={`Tradução da fala ${index + 1}`}
+                                      aria-label={uiText(1760, [index + 1])}
                                       value={row.translation}
                                       maxLength={600}
-                                      placeholder="Ex.: escola"
+                                      placeholder={uiText(540)}
                                       onChange={(event) => {
                                         setManualRows((rows) =>
                                           rows.map((item) =>
@@ -1589,14 +1566,14 @@ export function LocalRoom({
                               }
                             >
                               <img src="/room-icons/upload.svg" alt="" width="22" height="22" />
-                              Adicionar fala
+                              {uiText(541)}
                             </button>
                           </div>
                           {manualErrors.length > 0 && (
                             <ul className="local-room-manual__errors" aria-live="polite">
                               {manualErrors.map((line) => (
                                 <li key={line.lineNumber}>
-                                  Fala {line.lineNumber}: {line.error}.
+                                  {uiText(536)} {line.lineNumber}: {line.error}.
                                 </li>
                               ))}
                             </ul>
@@ -1605,12 +1582,14 @@ export function LocalRoom({
                             <p aria-live="polite">
                               {manualApplyStatus ||
                                 (manualSelectionPending && manualWords.trim()
-                                  ? "● Alterações ainda não aplicadas"
+                                  ? uiText(542)
                                   : manualDeckIsValid
-                                    ? `${countLabel(manualDeck.length, "fala pronta", "falas prontas")} para aplicar.`
+                                    ? uiText(1763, [
+                                        countLabel(manualDeck.length, uiText(1761), uiText(1762)),
+                                      ])
                                     : manualDeck.length && !recordingsReady
-                                      ? "Guarde o áudio de cada fala para continuar."
-                                      : "Adicione pelo menos uma palavra e sua tradução.")}
+                                      ? uiText(543)
+                                      : uiText(544))}
                             </p>
                             <button
                               className="secondary-button"
@@ -1635,38 +1614,44 @@ export function LocalRoom({
                                     setAppliedManualWords(manualWords);
                                     setAppliedRecordingSignature(recordingSignature);
                                     setManualApplyStatus(
-                                      `${countLabel(manualDeck.length, "fala adicionada", "falas adicionadas")} à rodada`,
+                                      uiText(1764, [
+                                        countLabel(
+                                          manualDeck.length,
+                                          "fala adicionada",
+                                          "falas adicionadas",
+                                        ),
+                                      ]),
                                     );
                                   });
                               }}
                             >
                               {manualApplyStatus ? (
                                 <>
-                                  Palavras aplicadas <PaperCheckIcon />
+                                  {uiText(545)} <PaperCheckIcon />
                                 </>
                               ) : (
-                                "Aplicar palavras"
+                                uiText(1765)
                               )}
                             </button>
                           </div>
                         </div>
                       )}
                       <label className="local-room-activity-native">
-                        <span>Atividade</span>
+                        <span>{uiText(546)}</span>
                         <select
                           value={state.settings.activity ?? "listening"}
                           onChange={(event) =>
                             selectActivity(event.target.value as "listening" | "bingo")
                           }
                         >
-                          <option value="listening">Quiz de escuta</option>
-                          <option value="bingo">Bingo de números</option>
+                          <option value="listening">{uiText(447)}</option>
+                          <option value="bingo">{uiText(547)}</option>
                         </select>
                       </label>
                       {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                         <>
                           <label>
-                            <span>Matéria / tema</span>
+                            <span>{uiText(548)}</span>
                             <select
                               value={state.settings.category ?? ""}
                               disabled={Boolean(state.settings.subjectName)}
@@ -1674,7 +1659,7 @@ export function LocalRoom({
                                 void room.updateSettings({ category: event.target.value })
                               }
                             >
-                              <option value="">Inglês · todos os temas</option>
+                              <option value="">{uiText(549)}</option>
                               {ROOM_CATEGORIES.map((category) => (
                                 <option key={category} value={category}>
                                   {category}
@@ -1683,10 +1668,10 @@ export function LocalRoom({
                             </select>
                           </label>
                           <p>
-                            {availableCount} questões disponíveis neste filtro. Prévia:{" "}
+                            {availableCount} {uiText(550)}{" "}
                             {(
                               state.content?.preview ?? pool.slice(0, 3).map((card) => card.front)
-                            ).join(", ") || "Nenhuma questão"}
+                            ).join(", ") || uiText(2065)}
                             .
                           </p>
                         </>
@@ -1695,16 +1680,14 @@ export function LocalRoom({
                         <div
                           className="local-room-response-options"
                           role="group"
-                          aria-label="Respostas"
+                          aria-label={uiText(551)}
                         >
                           {[false, true].map((teams) => (
                             <button
                               className="secondary-button"
                               type="button"
                               key={String(teams)}
-                              aria-label={
-                                teams ? "Responder em equipes" : "Responder individualmente"
-                              }
+                              aria-label={teams ? uiText(1766) : uiText(1767)}
                               aria-pressed={Boolean(state.settings.teams) === teams}
                               onClick={() => void room.updateSettings({ teams })}
                             >
@@ -1722,7 +1705,7 @@ export function LocalRoom({
                                   }
                                 />
                               </svg>
-                              <span>{teams ? "Em equipes" : "Cada pessoa"}</span>
+                              <span>{teams ? uiText(1768) : uiText(1769)}</span>
                             </button>
                           ))}
                         </div>
@@ -1737,12 +1720,12 @@ export function LocalRoom({
                                 void room.updateSettings({ shuffle: event.target.checked })
                               }
                             />{" "}
-                            Embaralhar questões
+                            {uiText(552)}
                           </label>
                         )}
                       {state.settings.activity === "bingo" && !state.settings.bingoMode && (
                         <label>
-                          <span>Dificuldade</span>
+                          <span>{uiText(553)}</span>
                           <select
                             value={state.settings.difficulty}
                             onChange={(event) =>
@@ -1752,22 +1735,22 @@ export function LocalRoom({
                             }
                           >
                             <option value="mixed">
-                              Misto ·{" "}
+                              {uiText(554)}{" "}
                               {state.content?.difficultyCounts?.mixed ??
                                 localRoomPool({ ...state.settings, difficulty: "mixed" }).length}
                             </option>
                             <option value="easy">
-                              Fácil ·{" "}
+                              {uiText(555)}{" "}
                               {state.content?.difficultyCounts?.easy ??
                                 localRoomPool({ ...state.settings, difficulty: "easy" }).length}
                             </option>
                             <option value="medium">
-                              Médio ·{" "}
+                              {uiText(556)}{" "}
                               {state.content?.difficultyCounts?.medium ??
                                 localRoomPool({ ...state.settings, difficulty: "medium" }).length}
                             </option>
                             <option value="hard">
-                              Difícil ·{" "}
+                              {uiText(557)}{" "}
                               {state.content?.difficultyCounts?.hard ??
                                 localRoomPool({ ...state.settings, difficulty: "hard" }).length}
                             </option>
@@ -1783,16 +1766,13 @@ export function LocalRoom({
                               void room.updateSettings({ participantAudio: event.target.checked })
                             }
                           />
-                          Áudio nos dispositivos dos participantes
-                          <small className="local-room-participant-audio-help">
-                            Ao ativar, o áudio toca automaticamente para todos que entrarem na sala,
-                            depois da contagem inicial.
-                          </small>
+                          {uiText(558)}
+                          <small className="local-room-participant-audio-help">{uiText(559)}</small>
                         </label>
                       )}
                       {!(state.settings.activity === "bingo" && state.settings.bingoMode) && (
                         <RoomStepSlider
-                          label="Tempo por pergunta"
+                          label={uiText(560)}
                           value={state.settings.roundSeconds}
                           steps={TIME_STEPS}
                           suffix="s"
@@ -1822,14 +1802,14 @@ export function LocalRoom({
                         prepareRoomFeedbackSound();
                         void room.setHostParticipation(
                           !room.hostPlaying,
-                          name || "Organizador",
+                          name || uiText(2291),
                           profile.avatarUrl,
                           isGuest ? 1 : accountLevel,
                         );
                       }}
                     >
                       <PaperEditorIcon name="team" />
-                      {room.hostPlaying ? "Participando da atividade" : "Também quero participar"}
+                      {room.hostPlaying ? uiText(1770) : uiText(561)}
                     </button>
                   )}
                   <div>
@@ -1864,9 +1844,7 @@ export function LocalRoom({
                                 await savePreparedRecordings(created.code, created.hostToken);
                             } catch (caught) {
                               setCreationError(
-                                caught instanceof Error
-                                  ? caught.message
-                                  : "Não foi possível preparar os áudios da sala.",
+                                caught instanceof Error ? caught.message : uiText(562),
                               );
                             } finally {
                               setCreating(false);
@@ -1889,17 +1867,17 @@ export function LocalRoom({
                       }
                     >
                       <HelenaRoomIcon name="play" size={18} />{" "}
-                      {preparing ? "Criar sala" : "Iniciar atividade"}
+                      {preparing ? uiText(1771) : uiText(1772)}
                     </button>
                     {!preparing &&
                       (participantCount === 0 || manualSelectionPending || usesReadyWords) && (
                         <small id="local-room-start-help">
                           {participantCount === 0
-                            ? "Aguarde pelo menos um aluno entrar"
+                            ? uiText(1773)
                             : manualSelectionPending
-                              ? "Guarde os áudios e aplique as palavras antes de iniciar"
+                              ? uiText(563)
                               : readySelectionPending
-                                ? "Aplique a seleção antes de iniciar"
+                                ? uiText(564)
                                 : ""}
                         </small>
                       )}
@@ -1917,22 +1895,17 @@ export function LocalRoom({
                         void savePreparedRecordings(state.code, credential)
                           .catch((caught: unknown) => {
                             setCreationError(
-                              caught instanceof Error
-                                ? caught.message
-                                : "Não foi possível enviar os áudios.",
+                              caught instanceof Error ? caught.message : uiText(565),
                             );
                           })
                           .finally(() => setCreating(false));
                       }}
                     >
-                      Tentar enviar áudios novamente
+                      {uiText(566)}
                     </button>
                   )}
                   {(creating || room.busy) && (
-                    <HelenaLoading
-                      compact
-                      label={preparing ? "Criando sala…" : "Preparando atividade…"}
-                    />
+                    <HelenaLoading compact label={preparing ? uiText(1774) : uiText(513)} />
                   )}
                   {creationError && <p role="alert">{creationError}</p>}
                 </div>
@@ -1941,11 +1914,13 @@ export function LocalRoom({
           ) : (
             <div className="local-room-waiting">
               <PaperEditorIcon name="team" />
-              <h3>Aguardando o início</h3>
-              <p>O organizador controla esta sala. Código: {state.code}</p>
+              <h3>{uiText(567)}</h3>
+              <p>
+                {uiText(568)} {state.code}
+              </p>
               {state.settings.participantAudio === true && (
                 <p className="local-room-audio-status" role="status">
-                  <RoomAudioIcon /> Áudio da sala ativado. A reprodução começa com a rodada.
+                  <RoomAudioIcon /> {uiText(569)}
                 </p>
               )}
               {state.settings.teams && (
@@ -1969,7 +1944,7 @@ export function LocalRoom({
         ) : state.phase === "playing" &&
           state.settings.activity === "bingo" &&
           state.settings.bingoMode ? (
-          <Suspense fallback={<HelenaLoading label="Carregando cartelas…" />}>
+          <Suspense fallback={<HelenaLoading label={uiText(570)} />}>
             <NumberBingo
               key={state.roundId}
               state={state}
@@ -1987,7 +1962,7 @@ export function LocalRoom({
           <div className="local-room-round">
             <div className="local-room-round__progress">
               <span>
-                Pergunta {state.questionIndex + 1} de {state.totalQuestions}
+                {uiText(476)} {state.questionIndex + 1} {uiText(72)} {state.totalQuestions}
               </span>
               <span className="local-room-round__timer">
                 <RoomClockIcon /> <PaperDigits value={String(secondsLeft)} />
@@ -2002,8 +1977,8 @@ export function LocalRoom({
                     {revealHostWord
                       ? state.currentQuestion.front
                       : naturalState.status === "playing"
-                        ? "Áudio reproduzindo"
-                        : "Áudio reproduzido"}
+                        ? uiText(571)
+                        : uiText(572)}
                   </span>
                 </div>
                 <button
@@ -2012,13 +1987,13 @@ export function LocalRoom({
                   disabled={roundAudioLocked || naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
-                  <RoomAudioIcon /> Reproduzir áudio
+                  <RoomAudioIcon /> {uiText(573)}
                 </button>
                 <button
                   className="secondary-button local-room-host-reveal"
                   type="button"
                   aria-pressed={revealHostWord}
-                  title="A palavra ficará visível para quem estiver vendo este painel."
+                  title={uiText(574)}
                   onClick={() => {
                     if (revealHostWord) {
                       setRevealHostWord(false);
@@ -2032,14 +2007,14 @@ export function LocalRoom({
                   }}
                 >
                   {revealHostWord
-                    ? "Ocultar palavra"
+                    ? uiText(1775)
                     : confirmRevealHostWord
-                      ? "Confirmar revelação"
-                      : "Revelar palavra"}
+                      ? uiText(575)
+                      : uiText(1776)}
                 </button>
                 {confirmRevealHostWord && (
                   <p className="local-room-reveal-warning" role="status">
-                    Confirme apenas se quiser mostrar a resposta para quem vê este painel.
+                    {uiText(576)}
                   </p>
                 )}
                 {naturalState.message && naturalState.status !== "ready" && (
@@ -2056,32 +2031,30 @@ export function LocalRoom({
                   />
                 )}
                 <p>
-                  {state.answeredParticipantIds.length} de {state.participants.length} já
-                  responderam. Quando todos responderem, o resultado permanece por três segundos.
+                  {state.answeredParticipantIds.length} {uiText(72)} {state.participants.length}{" "}
+                  {uiText(577)}
                 </p>
                 <Scoreboard participants={state.participants} questionIndex={state.questionIndex} />
                 <RoomConfirmButton
                   needsConfirmation={false}
-                  title="Encerrar a sala?"
-                  warning="Isso encerra a sala para todos os participantes e não pode ser desfeito."
-                  confirmLabel="Encerrar sala"
+                  title={uiText(578)}
+                  warning={uiText(2066)}
+                  confirmLabel={uiText(579)}
                   onConfirm={() => void room.endRoom()}
                 >
-                  Encerrar sala
+                  {uiText(579)}
                 </RoomConfirmButton>
               </>
             ) : state.settings.activity === "bingo" ? (
               <div className="local-room-bingo">
-                <h3>Complete sua cartela</h3>
-                <p>
-                  Ouça a palavra e marque a tradução correspondente. Vence quem completar a cartela.
-                </p>
+                <h3>{uiText(580)}</h3>
+                <p>{uiText(581)}</p>
                 <button
                   className="secondary-button"
                   disabled={roundAudioLocked || naturalState.status === "generating"}
                   onClick={() => playQuestionAudio(state.currentQuestion!.front)}
                 >
-                  <RoomAudioIcon /> Ouvir palavra
+                  <RoomAudioIcon /> {uiText(582)}
                 </button>
                 {naturalState.message && naturalState.status !== "ready" && (
                   <p className="local-room-audio-status" role="status">
@@ -2120,14 +2093,14 @@ export function LocalRoom({
                   disabled={markPending || answered || secondsLeft === 0}
                   onClick={() => void markBingoWord(state.questionIndex, "pass")}
                 >
-                  Não está na minha cartela
+                  {uiText(583)}
                 </button>
                 {markFeedback && (
                   <p className="local-room-audio-status" role="status">
                     {markFeedback}
                   </p>
                 )}
-                {markPending && <HelenaLoading compact label="Enviando…" />}
+                {markPending && <HelenaLoading compact label={uiText(584)} />}
               </div>
             ) : answered ? (
               <div
@@ -2145,10 +2118,10 @@ export function LocalRoom({
                 )}
                 <h3>
                   {feedbackCorrect === true
-                    ? "Correto!"
+                    ? uiText(1777)
                     : feedbackCorrect === false
-                      ? "Ainda não foi dessa vez"
-                      : "Resposta recebida"}
+                      ? uiText(585)
+                      : uiText(586)}
                 </h3>
                 {lastResult?.correct && <RoomConfetti />}
                 {lastResult?.correct && (
@@ -2159,7 +2132,7 @@ export function LocalRoom({
                 )}
                 {!lastResult?.correct && lastResult?.submittedAnswer && (
                   <p>
-                    Você respondeu: <strong>{lastResult.submittedAnswer}</strong>
+                    {uiText(443)} <strong>{lastResult.submittedAnswer}</strong>
                   </p>
                 )}
                 {lastResult?.question && (
@@ -2173,7 +2146,7 @@ export function LocalRoom({
                 {lastResult && lastResult.pointsChange !== 0 && (
                   <p className="local-room-xp-feedback">
                     <RoomPointsIcon /> {lastResult.pointsChange > 0 ? "+" : ""}
-                    {lastResult.pointsChange} pontos
+                    {lastResult.pointsChange} {uiText(466)}
                   </p>
                 )}
                 {lastResult?.question && (
@@ -2189,16 +2162,16 @@ export function LocalRoom({
                   >
                     <RoomAudioIcon />
                     {replayCooldownSeconds > 0
-                      ? `Ouvir novamente em ${replayCooldownSeconds}s`
-                      : "Ouvir novamente"}
+                      ? uiText(1778, [replayCooldownSeconds])
+                      : uiText(445)}
                   </button>
                 )}
                 {state.feedbackUntil !== undefined ? (
                   <div className="local-room-feedback-countdown">
                     <p>
                       {feedbackMsLeft > 0
-                        ? `Próxima pergunta em ${Math.ceil(feedbackMsLeft / 1_000)} segundos.`
-                        : "Atualizando pergunta…"}
+                        ? uiText(1779, [Math.ceil(feedbackMsLeft / 1_000)])
+                        : uiText(1780)}
                     </p>
                     <span aria-hidden="true">
                       <i style={{ transform: `scaleX(${feedbackMsLeft / ROOM_FEEDBACK_MS})` }} />
@@ -2207,9 +2180,9 @@ export function LocalRoom({
                 ) : (
                   <div className="local-room-answer-received">
                     <strong>
-                      Resposta recebida <PaperCheckIcon />
+                      {uiText(586)} <PaperCheckIcon />
                     </strong>
-                    <p>Aguardando a turma.</p>
+                    <p>{uiText(587)}</p>
                   </div>
                 )}
               </div>
@@ -2233,9 +2206,7 @@ export function LocalRoom({
                   onClick={() => replayQuestionAudio(state.currentQuestion!.front)}
                 >
                   <RoomAudioIcon />
-                  {replayCooldownSeconds > 0
-                    ? `Ouvir novamente em ${replayCooldownSeconds}s`
-                    : "Ouvir novamente"}
+                  {replayCooldownSeconds > 0 ? uiText(1778, [replayCooldownSeconds]) : uiText(445)}
                 </button>
                 {naturalState.message && naturalState.status !== "ready" && (
                   <p className="local-room-audio-status" role="status">
@@ -2243,7 +2214,7 @@ export function LocalRoom({
                   </p>
                 )}
                 <label>
-                  <span>Digite a tradução</span>
+                  <span>{uiText(588)}</span>
                   <input
                     ref={answerInputRef}
                     value={answer}
@@ -2261,9 +2232,9 @@ export function LocalRoom({
                   type="submit"
                   disabled={isSubmittingAnswer || room.serverNow() < state.questionStartedAt}
                 >
-                  {isSubmittingAnswer ? "Enviando…" : "Responder"}
+                  {isSubmittingAnswer ? uiText(584) : uiText(1781)}
                 </button>
-                {isSubmittingAnswer && <HelenaLoading compact label="Enviando resposta…" />}
+                {isSubmittingAnswer && <HelenaLoading compact label={uiText(589)} />}
               </form>
             )}
           </div>
@@ -2281,19 +2252,19 @@ export function LocalRoom({
                   disabled={!state.participants.some((p) => p.online !== false)}
                   onClick={room.repeatRound}
                 >
-                  <HelenaRoomIcon name="play" size={18} /> Repetir
+                  <HelenaRoomIcon name="play" size={18} /> {uiText(590)}
                 </button>
                 <button className="secondary-button" type="button" onClick={room.returnToLobby}>
-                  Trocar atividade
+                  {uiText(591)}
                 </button>
                 <RoomConfirmButton
                   needsConfirmation={false}
-                  title="Encerrar a sala?"
-                  warning="Isso encerra a sala para todos os participantes e não pode ser desfeito."
-                  confirmLabel="Encerrar sala"
+                  title={uiText(578)}
+                  warning={uiText(2066)}
+                  confirmLabel={uiText(579)}
                   onConfirm={() => void room.endRoom()}
                 >
-                  <HelenaRoomIcon name="close" size={18} /> Encerrar sala
+                  <HelenaRoomIcon name="close" size={18} /> {uiText(579)}
                 </RoomConfirmButton>
               </div>
             ) : null}
@@ -2302,11 +2273,11 @@ export function LocalRoom({
           <div className="local-room-finished">
             <div className="local-room-waiting" role="status">
               <HelenaRoomIcon name="close" size={24} />
-              <h3>Sala encerrada</h3>
+              <h3>{uiText(592)}</h3>
             </div>
             {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}
             <button className="secondary-button" type="button" onClick={room.reset}>
-              Sair
+              {uiText(593)}
             </button>
           </div>
         )}

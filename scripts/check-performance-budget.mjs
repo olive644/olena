@@ -317,6 +317,8 @@ const HARD_CEILING_INITIAL_JS_BYTES = 400 * 1024;
 // sem dependências novas e sem alterar o teto absoluto de 1500 KiB.
 // Conferência autenticada das etapas na Olena: total medido 1490,2 KiB.
 // Regra compartilhada e cliente pequeno, sem dependências; teto absoluto preservado.
+// Interface bilíngue e configurações: ícones estáticos e carregamento do App após o catálogo
+// mantêm o total medido em 1468 KiB. Preservado o orçamento anterior e o teto absoluto.
 const MAX_TOTAL_JS_BYTES = 1493 * 1024;
 // Mesma ideia do teto acima, para o total da aplicação: a soma de pequenas subidas
 // justificadas comentário por comentário não deveria crescer sem limite, sozinha.

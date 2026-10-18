@@ -1,5 +1,16 @@
 # Identidade visual oficial OlenaStudy
 
+Idiomas (2026-10-18): bandeiras recortadas existentes Brasil/EUA à esquerda da seta
+amarela nas configurações. Troca de textos preserva tema, arte e estado da tela, sem reload.
+Não reduzir alvos de toque para acomodar inglês; preservar quebra natural dos rótulos.
+Erro de carregamento é bilíngue e mantém o idioma anterior. Textos dos usuários não mudam.
+
+Configurações em desenvolvimento (2026-10-18): Segurança usa escudo facetado azul/amarelo,
+atendimento usa recorte de conversa lilás. Redes sociais centralizadas abaixo do menu,
+ícones originais e dicas acessíveis no hover/foco, versão lida do pacote. Sair abre dialog
+no top layer com ação vermelha e Cancelar, folha inferior no celular, respeitando movimento
+reduzido. Mensagens do atendimento permanecem texto em cartões do tema, sem interpretar HTML.
+
 Configurações móveis: menu vertical sem seleção inicial. Seção abre sozinha com entrada curta e seta amarela para retornar ao menu; foco volta à opção escolhida. Ícones autorais facetados: crachá turquesa, luz violeta/amarela, tomate rosa, caderno azul, sino dourado e escudo verde. Informações de Conta compactas, sem menu ocupando espaço acima. Política de privacidade acessível diretamente em Privacidade e dados, detalhes opcionais recolhidos. Exclusão usa dialog no top layer fora dos painéis transformados, altura limitada ao viewport dinâmico, ações acessíveis e fallback de rolagem somente em telas curtas/zoom/teclado. Movimento reduzido respeitado.
 
 Configurações (2026-10-17): entrada lateral curta de 18 px e fade, desativada pelo movimento reduzido do sistema/aplicativo. A engrenagem vira a seta amarela original para Voltar ao perfil, no mesmo canto direito. Conta apresenta identidade somente para leitura e Informações com e-mail confirmado e fuso. Exclusão fica em Conta, sem Zona de perigo. Sem painel de sincronização, recuperação local ou navegação Meu progresso. Estudo e foco usa botões de papel do tema; seleção amarela com check original, sem anel externo. Remover widgets não desliga sincronização nem apaga histórico.

@@ -18,8 +18,10 @@ describe("chegada por link de convite", () => {
   it("prepara o bingo sem configurações da escuta coletiva", async () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /^Bingo/ }));
-    await waitFor(() =>
-      expect(screen.getByRole("heading", { name: "Modo de partida" })).toBeTruthy(),
+    // Inclui a importação fria da configuração de bingo, não só o clique.
+    await waitFor(
+      () => expect(screen.getByRole("heading", { name: "Modo de partida" })).toBeTruthy(),
+      { timeout: 5000 },
     );
     expect(screen.queryByRole("button", { name: "Responder em equipes" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Responder individualmente" })).toBeNull();
@@ -31,7 +33,7 @@ describe("chegada por link de convite", () => {
     expect(screen.getByRole("button", { name: /^Criar sala$/ }).hasAttribute("disabled")).toBe(
       false,
     );
-  });
+  }, 10000);
 
   it("não leva equipes da escuta para o bingo e mantém os controles ao voltar", async () => {
     render(<LocalRoom accountName="Ana" />);

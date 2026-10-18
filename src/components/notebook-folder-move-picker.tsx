@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef } from "react";
 import type { StudyNotebook } from "../domain/workspace";
 
@@ -17,6 +18,8 @@ export function NotebookFolderMovePicker({
   onMove,
   onClose,
 }: NotebookFolderMovePickerProps) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const element = dialog.current;
@@ -28,22 +31,22 @@ export function NotebookFolderMovePicker({
     <dialog
       ref={dialog}
       className="notebook-folder-move-picker"
-      aria-label="Mover para pasta"
+      aria-label={uiText(689)}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
       }}
     >
       <header>
-        <h2>Mover para pasta</h2>
-        <button type="button" aria-label="Fechar" onClick={onClose}>
-          ×
+        <h2>{uiText(689)}</h2>
+        <button type="button" aria-label={uiText(230)} onClick={onClose}>
+          {uiText(289)}
         </button>
       </header>
       <p>
-        {count === 1 ? "1 item selecionado." : `${count} itens selecionados.`} Escolha o destino.
+        {count === 1 ? uiText(1811) : uiText(1812, [count])} {uiText(690)}
       </p>
-      <div className="notebook-folder-move-picker__list" role="group" aria-label="Pastas">
+      <div className="notebook-folder-move-picker__list" role="group" aria-label={uiText(691)}>
         <button
           type="button"
           onClick={() => {
@@ -51,7 +54,7 @@ export function NotebookFolderMovePicker({
             onClose();
           }}
         >
-          Vitrine (tirar da pasta)
+          {uiText(692)}
         </button>
         {folders.map((folder) => (
           <button
@@ -66,7 +69,7 @@ export function NotebookFolderMovePicker({
           </button>
         ))}
         {folders.length === 0 && (
-          <p className="notebook-folder-move-picker__empty">Sem pastas ainda.</p>
+          <p className="notebook-folder-move-picker__empty">{uiText(693)}</p>
         )}
       </div>
     </dialog>

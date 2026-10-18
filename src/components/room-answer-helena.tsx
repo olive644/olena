@@ -1,13 +1,14 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 
 export function RoomAnswerHelena({ correct }: { correct: boolean }) {
+  useLanguage();
+
   return (
     <div
       className={`room-answer-helena ${correct ? "is-correct" : "is-wrong"}`}
       role="img"
-      aria-label={
-        correct ? "Helena segurando o símbolo de correto" : "Helena triste segurando um X"
-      }
+      aria-label={correct ? uiText(959) : uiText(1929)}
     >
       <div className="room-answer-helena__frames" />
     </div>
@@ -15,6 +16,8 @@ export function RoomAnswerHelena({ correct }: { correct: boolean }) {
 }
 
 export function RoomSpeedNotice({ points }: { points: number }) {
+  useLanguage();
+
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     const timeout = window.setTimeout(() => setVisible(false), 1200);
@@ -24,12 +27,12 @@ export function RoomSpeedNotice({ points }: { points: number }) {
   return (
     <strong className="room-speed-label">
       {points >= 85
-        ? "MUITO RÁPIDO!"
+        ? uiText(960)
         : points >= 60
-          ? "BOM RITMO!"
+          ? uiText(1930)
           : points >= 40
-            ? "BOA RESPOSTA!"
-            : "MUITO DEVAGAR"}
+            ? uiText(1931)
+            : uiText(1932)}
     </strong>
   );
 }

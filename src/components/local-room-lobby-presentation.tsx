@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useState } from "react";
 import {
   buildLocalRoomJoinUrl,
@@ -20,6 +21,8 @@ export function ShareRoom({
   locked?: boolean;
   onLock?: (locked: boolean) => Promise<boolean>;
 }) {
+  useLanguage();
+
   const [copyStatus, setCopyStatus] = useState("");
   const joinUrl = buildLocalRoomJoinUrl(window.location.href, code);
 
@@ -28,7 +31,7 @@ export function ShareRoom({
       await navigator.clipboard.writeText(value);
       setCopyStatus(success);
     } catch {
-      setCopyStatus("Não foi possível copiar.");
+      setCopyStatus(uiText(454));
     }
     window.setTimeout(() => setCopyStatus(""), 2500);
   }
@@ -36,12 +39,12 @@ export function ShareRoom({
   return (
     <div className="local-room-share">
       <div className="local-room-share__code">
-        <strong aria-label="Código da sala">{code}</strong>
+        <strong aria-label={uiText(455)}>{code}</strong>
         <button
           className="icon-button"
           type="button"
-          onClick={() => void copy(code, "Código copiado")}
-          aria-label="Copiar código da sala"
+          onClick={() => void copy(code, uiText(456))}
+          aria-label={uiText(457)}
         >
           <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
             <RoomSocialIcon kind="copy" />
@@ -49,23 +52,23 @@ export function ShareRoom({
         </button>
       </div>
       <details className="local-room-share__qr" open>
-        <summary>Mostrar ou recolher QR code</summary>
+        <summary>{uiText(458)}</summary>
         <RoomQrCode value={joinUrl} bingo={bingo} />
       </details>
       <div className="local-room-share__link">
-        <p>Escaneie o QR code ou compartilhe o convite.</p>
-        <input aria-label="Link da sala" value={joinUrl} readOnly />
+        <p>{uiText(459)}</p>
+        <input aria-label={uiText(460)} value={joinUrl} readOnly />
         <div className="local-room-share__actions">
           <button
             className="secondary-button"
             type="button"
-            onClick={() => void copy(joinUrl, "Link copiado")}
+            onClick={() => void copy(joinUrl, uiText(1729))}
           >
             <span className="local-room-copy-label">
               <span className="local-room-copy-icon local-room-copy-icon--paper" aria-hidden="true">
                 <RoomSocialIcon kind="copy" />
               </span>
-              Copiar link
+              {uiText(461)}
             </span>
           </button>
           {onLock && <LobbyLockToggle locked={locked} onChange={onLock} />}
@@ -86,6 +89,8 @@ export function LobbyLockToggle({
   locked: boolean;
   onChange(locked: boolean): Promise<boolean>;
 }) {
+  useLanguage();
+
   const [busy, setBusy] = useState(false);
   async function toggle() {
     setBusy(true);
@@ -104,11 +109,11 @@ export function LobbyLockToggle({
         onClick={() => void toggle()}
       >
         <RoomSocialIcon kind={locked ? "open" : "lock"} />
-        {locked ? "Reabrir entrada" : "Fechar entrada"}
+        {locked ? uiText(1730) : uiText(462)}
       </button>
       {locked && (
         <p className="visually-hidden" role="status">
-          Entrada fechada: ninguém novo consegue entrar com o código.
+          {uiText(463)}
         </p>
       )}
     </div>
@@ -124,12 +129,14 @@ export function RemoveParticipantButton({
   disabled?: boolean;
   onRemove(): void;
 }) {
+  useLanguage();
+
   return (
     <button
       type="button"
       className="secondary-button local-room-remove"
       disabled={disabled}
-      aria-label={`Remover ${name} da sala`}
+      aria-label={uiText(1731, [name])}
       onClick={onRemove}
     >
       <RoomSocialIcon kind="remove" />
@@ -144,6 +151,8 @@ export function LobbyParticipants({
   participants: readonly LocalRoomParticipant[];
   onRemove?: (id: string) => Promise<boolean>;
 }) {
+  useLanguage();
+
   return (
     <ul className="local-room-participant-list">
       {participants.map((participant) => (
@@ -166,7 +175,7 @@ export function LobbyParticipants({
             <span className="local-room-participant-list__name">{participant.displayName}</span>
             <small className={participant.online === false ? "is-offline" : ""}>
               <RoomSocialIcon kind={participant.online === false ? "away" : "ready"} />
-              {participant.online === false ? "Ausente" : "Pronto"}
+              {participant.online === false ? uiText(1732) : uiText(718)}
             </small>
           </div>
           {onRemove && (
@@ -182,10 +191,12 @@ export function LobbyParticipants({
 }
 
 export function ParticipantLevel({ level = 1 }: { level?: number | undefined }) {
+  useLanguage();
+
   const safe = Number.isSafeInteger(level) && level >= 1 ? Math.min(level, 100) : 1;
   return (
-    <span className="room-participant-level" aria-label={`Nível ${safe}`}>
-      <small aria-hidden="true">NV</small>
+    <span className="room-participant-level" aria-label={uiText(1733, [safe])}>
+      <small aria-hidden="true">{uiText(464)}</small>
       <PaperDigits value={String(safe)} />
     </span>
   );

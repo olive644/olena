@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels, uiLocale } from "../i18n/runtime";
 import { Gauge, Headphones, Play, RotateCcw, Square, Volume2, X } from "lucide-react";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
@@ -22,12 +23,12 @@ type RoundState = "ready" | "countdown" | "answering" | "feedback" | "finished";
 type DifficultyFilter = "mixed" | WordDifficulty;
 type RoundLimit = 5 | 10 | 15 | "all";
 
-const DIFFICULTY_LABELS: Record<DifficultyFilter, string> = {
-  mixed: "Misto",
-  easy: "Fácil",
-  medium: "Médio",
-  hard: "Difícil",
-};
+const DIFFICULTY_LABELS: Record<DifficultyFilter, string> = localizeLabels(() => ({
+  mixed: uiText(1719),
+  easy: uiText(418),
+  medium: uiText(419),
+  hard: uiText(420),
+}));
 
 export function ListeningQuiz({
   flashcards,
@@ -36,7 +37,12 @@ export function ListeningQuiz({
   flashcards: readonly Flashcard[];
   onComplete?: () => void;
 }) {
-  const initialDeck = useMemo(() => buildListeningDeck(flashcards), [flashcards]);
+  const currentUiLanguage = useLanguage();
+
+  const initialDeck = useMemo(
+    () => buildListeningDeck(flashcards),
+    [flashcards, currentUiLanguage],
+  );
   const [deck, setDeck] = useState(initialDeck);
   const [index, setIndex] = useState(0);
   const [state, setState] = useState<RoundState>("ready");
@@ -116,8 +122,7 @@ export function ListeningQuiz({
       utteranceRef.current = speakEnglish(card.front, {
         voice,
         rate: speechRate,
-        onUnavailable: () =>
-          setNaturalState({ status: "error", message: "A reprodução de voz foi bloqueada." }),
+        onUnavailable: () => setNaturalState({ status: "error", message: uiText(421) }),
       });
     });
   }, [card, speechRate]);
@@ -222,22 +227,22 @@ export function ListeningQuiz({
           {correct}/{deck.length}
         </span>
         <div>
-          <span className="section-label">Sessão concluída</span>
-          <h3>{missed.length === 0 ? "Você reconheceu todas!" : "Boa prática. Vamos reforçar?"}</h3>
+          <span className="section-label">{uiText(422)}</span>
+          <h3>{missed.length === 0 ? uiText(423) : uiText(424)}</h3>
           <p>
             {missed.length === 0
-              ? "Seu ouvido acompanhou todo o vocabulário desta rodada."
-              : `${missed.length} ${missed.length === 1 ? "termo precisa" : "termos precisam"} de mais uma escuta.`}
+              ? uiText(425)
+              : uiText(1722, [missed.length, missed.length === 1 ? uiText(1720) : uiText(1721)])}
           </p>
         </div>
         <div className="listening-finish__actions">
           {missed.length > 0 && (
             <button className="primary-button" type="button" onClick={() => restart(missed)}>
-              <RotateCcw size={17} /> Repetir erros
+              <RotateCcw size={17} /> {uiText(426)}
             </button>
           )}
           <button className="secondary-button" type="button" onClick={() => restart()}>
-            Nova sessão
+            {uiText(427)}
           </button>
         </div>
       </div>
@@ -248,19 +253,23 @@ export function ListeningQuiz({
     <div className={`listening-quiz is-${state}`}>
       <div className="listening-topline">
         <span>
-          Escuta {index + 1} de {deck.length}
+          {uiText(428)} {index + 1} {uiText(72)} {deck.length}
         </span>
-        <span>{correct} acertos</span>
+        <span>
+          {correct} {uiText(429)}
+        </span>
       </div>
 
       {state === "ready" && (
         <div className="listening-setup">
           <section aria-labelledby="listening-level-title">
             <div className="listening-setting-heading">
-              <h3 id="listening-level-title">Escolha o nível</h3>
-              <span>{deck.length} palavras disponíveis</span>
+              <h3 id="listening-level-title">{uiText(430)}</h3>
+              <span>
+                {deck.length} {uiText(431)}
+              </span>
             </div>
-            <div className="listening-difficulty" aria-label="Dificuldade do vocabulário">
+            <div className="listening-difficulty" aria-label={uiText(432)}>
               {(Object.keys(DIFFICULTY_LABELS) as DifficultyFilter[]).map((filter) => {
                 const count = filter === "mixed" ? initialDeck.length : countDifficulty(filter);
                 return (
@@ -273,7 +282,7 @@ export function ListeningQuiz({
                     key={filter}
                   >
                     <span>{DIFFICULTY_LABELS[filter]}</span>
-                    <small>{classifying ? "…" : `${count} palavras`}</small>
+                    <small>{classifying ? "…" : uiText(1723, [count])}</small>
                   </button>
                 );
               })}
@@ -281,8 +290,8 @@ export function ListeningQuiz({
           </section>
 
           <section className="listening-session-settings" aria-labelledby="listening-session-title">
-            <h3 id="listening-session-title">Tamanho da rodada</h3>
-            <div className="listening-limit" role="group" aria-label="Quantidade de perguntas">
+            <h3 id="listening-session-title">{uiText(433)}</h3>
+            <div className="listening-limit" role="group" aria-label={uiText(434)}>
               {([5, 10, 15, "all"] as const).map((limit) => (
                 <button
                   type="button"
@@ -291,7 +300,7 @@ export function ListeningQuiz({
                   onClick={() => setRoundLimit(limit)}
                   key={limit}
                 >
-                  {limit === "all" ? "Todas" : limit}
+                  {limit === "all" ? uiText(1724) : limit}
                 </button>
               ))}
             </div>
@@ -303,7 +312,7 @@ export function ListeningQuiz({
 
           <details className="listening-audio-settings">
             <summary>
-              <Headphones size={18} /> Configurações de áudio
+              <Headphones size={18} /> {uiText(435)}
             </summary>
             {online.choice !== null && (
               <ListeningOnlineNotice
@@ -314,19 +323,19 @@ export function ListeningQuiz({
             )}
             <p className="listening-model-state" role="status">
               {naturalState.status === "idle"
-                ? "Voz feminina. O áudio é gerado quando você pede para ouvir."
+                ? uiText(436)
                 : naturalState.status === "error"
                   ? naturalState.message
                   : naturalState.status === "generating"
-                    ? (naturalState.message ?? "Preparando a pronúncia.")
+                    ? (naturalState.message ?? uiText(2059))
                     : naturalState.status === "playing"
-                      ? "Reproduzindo voz feminina…"
-                      : "Pronúncia pronta nesta sessão."}
+                      ? uiText(1725)
+                      : uiText(437)}
             </p>
             <div className="listening-voice-controls">
               <label>
                 <Gauge size={16} aria-hidden="true" />
-                <span>Velocidade</span>
+                <span>{uiText(438)}</span>
                 <select
                   value={speechRate}
                   onChange={(event) => setSpeechRate(Number(event.target.value))}
@@ -344,13 +353,13 @@ export function ListeningQuiz({
                 onClick={playAudio}
                 disabled={naturalState.status === "generating"}
               >
-                <Play size={16} /> Testar voz
+                <Play size={16} /> {uiText(439)}
               </button>
               <button
                 className="icon-button"
                 type="button"
                 onClick={stopAudio}
-                aria-label="Interromper voz"
+                aria-label={uiText(440)}
               >
                 <Square size={16} />
               </button>
@@ -362,7 +371,7 @@ export function ListeningQuiz({
       {state === "countdown" ? (
         <div className="listening-stage listening-stage--countdown" aria-live="polite">
           <span className="listening-digital">{countdown || "•"}</span>
-          <small>{countdown ? "Prepare sua resposta" : "Agora responda"}</small>
+          <small>{countdown ? uiText(441) : uiText(1726)}</small>
         </div>
       ) : state === "feedback" ? (
         <div
@@ -372,21 +381,21 @@ export function ListeningQuiz({
           <span className="listening-result-icon">
             {wasCorrect ? <PaperCheckIcon size={30} /> : <X size={30} />}
           </span>
-          <small>{wasCorrect ? "Resposta correta" : "Ainda não"}</small>
+          <small>{wasCorrect ? uiText(1727) : uiText(442)}</small>
           {!wasCorrect && (
             <p className="listening-user-answer">
-              Você respondeu: <strong>{submittedAnswer}</strong>
+              {uiText(443)} <strong>{submittedAnswer}</strong>
             </p>
           )}
-          {!wasCorrect && <span className="listening-correct-label">Resposta correta:</span>}
+          {!wasCorrect && <span className="listening-correct-label">{uiText(444)}</span>}
           <strong>{card.front}</strong>
           <p>{card.back}</p>
           <div className="listening-feedback-actions">
             <button className="secondary-button" type="button" onClick={playAudio}>
-              <Volume2 size={17} /> Ouvir novamente
+              <Volume2 size={17} /> {uiText(445)}
             </button>
             <button className="listening-next" type="button" onClick={nextRound}>
-              {index + 1 === deck.length ? "Ver resultado" : "Próxima palavra"}
+              {index + 1 === deck.length ? uiText(1728) : uiText(446)}
             </button>
           </div>
         </div>
@@ -396,29 +405,26 @@ export function ListeningQuiz({
             className="listening-speaker"
             type="button"
             onClick={playAudio}
-            aria-label="Ouvir novamente"
+            aria-label={uiText(445)}
           >
             <Volume2 size={30} />
           </button>
           {state === "ready" ? (
             <>
-              <span className="section-label">Quiz de escuta</span>
-              <h3>Ouça e descubra a palavra.</h3>
+              <span className="section-label">{uiText(447)}</span>
+              <h3>{uiText(448)}</h3>
               <p>
-                Nível {DIFFICULTY_LABELS[difficultyFilter].toLocaleLowerCase("pt-BR")}. A resposta
-                pode ser em português ou em inglês.
+                {uiText(449)} {DIFFICULTY_LABELS[difficultyFilter].toLocaleLowerCase(uiLocale())}
+                {uiText(2528)}
               </p>
-              <small className="listening-privacy-note">
-                Ao iniciar, você autoriza o envio somente do texto de cada pergunta ao Google para
-                gerar a pronúncia.
-              </small>
+              <small className="listening-privacy-note">{uiText(450)}</small>
               <button className="primary-button" type="button" onClick={beginRound}>
-                <Play size={17} /> Iniciar escuta
+                <Play size={17} /> {uiText(451)}
               </button>
             </>
           ) : (
             <form className="listening-answer" onSubmit={submit}>
-              <label htmlFor="listening-answer">O que você ouviu?</label>
+              <label htmlFor="listening-answer">{uiText(452)}</label>
               <div>
                 <input
                   ref={answerRef}
@@ -428,7 +434,7 @@ export function ListeningQuiz({
                   autoComplete="off"
                   required
                 />
-                <button type="submit">Confirmar</button>
+                <button type="submit">{uiText(453)}</button>
               </div>
             </form>
           )}

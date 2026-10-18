@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useState } from "react";
 import type { WorkspaceState } from "../domain/workspace";
 import { useTheme } from "../hooks/use-theme";
@@ -12,57 +13,64 @@ import { PaperDigits } from "./paper-digits";
 import { downloadExportBlob } from "../data/paper-export-art";
 import { createStudyDataExport } from "../data/study-data-export";
 import { profileAvatarSource } from "../domain/profile-avatars";
+import { SignOutButton } from "./sign-out-button";
+import {
+  useNotificationPreferences,
+  updateNotificationPreferences,
+} from "../data/notification-preferences";
 
 export function ProfileIdentity({
   guest,
-  nameFallback = "Seu perfil",
+  nameFallback = uiText(863),
   email,
   onSignIn,
   onSignOut,
+  signOutBlocked = false,
 }: {
   guest: boolean;
   nameFallback?: string;
   email?: string | undefined;
   onSignIn?: (() => void) | undefined;
   onSignOut?: (() => Promise<void>) | undefined;
+  signOutBlocked?: boolean;
 }) {
+  useLanguage();
+
   const [profile] = useStoredProfile();
-  const name = guest ? "Guest" : profile.name?.trim() || nameFallback;
+  const name = guest ? uiText(1890) : profile.name?.trim() || nameFallback;
   return (
     <section className="profile-card" aria-labelledby="profile-identity-title">
       <h2 id="profile-identity-title" className="section-label">
-        Sua identidade
+        {uiText(864)}
       </h2>
       <div className="profile-identity-preview">
         <img
           src={profileAvatarSource(profile.photoUrl)}
-          alt="Avatar atual"
+          alt={uiText(865)}
           width="72"
           height="72"
           draggable={false}
         />
         <strong>{name}</strong>
       </div>
-      <h3 className="profile-information-title">Informações</h3>
+      <h3 className="profile-information-title">{uiText(866)}</h3>
       <dl className="profile-information">
         <div>
-          <dt>E-mail</dt>
-          <dd>{email || (guest ? "Sessão de convidado" : "Nenhum e-mail conectado")}</dd>
+          <dt>{uiText(867)}</dt>
+          <dd>{email || (guest ? uiText(868) : uiText(1900))}</dd>
         </div>
         <div>
-          <dt>Fuso da conta</dt>
+          <dt>{uiText(869)}</dt>
           <dd>{agendaTimeZone().replace(/_/g, " ")}</dd>
         </div>
       </dl>
       <div className="profile-account-actions">
         {onSignOut ? (
-          <button className="secondary-button" type="button" onClick={() => void onSignOut()}>
-            Sair desta conta
-          </button>
+          <SignOutButton onSignOut={onSignOut} blocked={signOutBlocked} />
         ) : (
           onSignIn && (
             <button className="secondary-button" type="button" onClick={onSignIn}>
-              Entrar com Google
+              {uiText(870)}
             </button>
           )
         )}
@@ -72,18 +80,20 @@ export function ProfileIdentity({
 }
 
 export function ProfileAppearance() {
+  useLanguage();
+
   const { preference, setThemePreference } = useTheme();
   return (
     <section className="profile-card" aria-labelledby="profile-appearance-title">
-      <span className="section-label">Aparência</span>
-      <h2 id="profile-appearance-title">Seu papel, sua luz</h2>
+      <span className="section-label">{uiText(125)}</span>
+      <h2 id="profile-appearance-title">{uiText(871)}</h2>
       <fieldset className="profile-theme-options">
-        <legend>Tema do aplicativo</legend>
+        <legend>{uiText(872)}</legend>
         {(
           [
-            ["light", "Claro"],
-            ["dark", "Escuro"],
-            ["system", "Sistema"],
+            ["light", uiText(1616)],
+            ["dark", uiText(1617)],
+            ["system", uiText(1618)],
           ] as const
         ).map(([value, label]) => (
           <button
@@ -98,17 +108,19 @@ export function ProfileAppearance() {
           </button>
         ))}
       </fieldset>
-      <p>O tema acompanha sua conta. Sistema segue a aparência de cada dispositivo.</p>
+      <p>{uiText(873)}</p>
     </section>
   );
 }
 
 export function ProfileNotebookPreferences() {
+  useLanguage();
+
   const { preferences, changePreference, preferenceError } = useNotebookPreferences();
   return (
     <section className="profile-card profile-card--wide" aria-labelledby="profile-notebooks-title">
-      <span className="section-label">Cadernos</span>
-      <h2 id="profile-notebooks-title">Escrita e ferramentas</h2>
+      <span className="section-label">{uiText(652)}</span>
+      <h2 id="profile-notebooks-title">{uiText(874)}</h2>
       <div className="profile-notebook-fields">
         <NotebookPreferenceFields preferences={preferences} onChange={changePreference} />
       </div>
@@ -121,6 +133,9 @@ function notificationPermission() {
   return typeof Notification === "undefined" ? "unsupported" : Notification.permission;
 }
 export function ProfileNotifications() {
+  useLanguage();
+
+  const preferences = useNotificationPreferences();
   const [permission, setPermission] = useState(notificationPermission);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -129,30 +144,52 @@ export function ProfileNotifications() {
       className="profile-card profile-card--wide"
       aria-labelledby="profile-notifications-title"
     >
-      <span className="section-label">Agenda e notificações</span>
-      <h2 id="profile-notifications-title">Lembretes neste navegador</h2>
+      <span className="section-label">{uiText(875)}</span>
+      <h2 id="profile-notifications-title">{uiText(876)}</h2>
+      <fieldset className="notification-type-options">
+        <legend>{uiText(877)}</legend>
+        {(
+          [
+            ["followers", uiText(1901), uiText(878)],
+            ["agenda", uiText(93), uiText(1902)],
+            ["updates", uiText(1903), uiText(879)],
+            ["rewards", uiText(1904), uiText(880)],
+          ] as const
+        ).map(([key, label, hint]) => (
+          <label key={key}>
+            <span>
+              <strong>{label}</strong>
+              <small>{hint}</small>
+            </span>
+            <input
+              type="checkbox"
+              checked={preferences[key]}
+              onChange={(event) => {
+                try {
+                  updateNotificationPreferences({ [key]: event.target.checked });
+                  setError("");
+                } catch {
+                  setError(uiText(881));
+                }
+              }}
+            />
+          </label>
+        ))}
+      </fieldset>
       <p>
-        Estado:{" "}
+        {uiText(882)}{" "}
         <strong>
           {permission === "granted"
-            ? "Permitidos"
+            ? uiText(1905)
             : permission === "denied"
-              ? "Bloqueados pelo navegador"
+              ? uiText(1906)
               : permission === "unsupported"
-                ? "Não disponíveis neste navegador"
-                : "Permissão ainda não concedida"}
+                ? uiText(883)
+                : uiText(884)}
         </strong>
       </p>
-      <p>
-        Os lembretes funcionam enquanto o aplicativo estiver aberto. Escolha a antecedência dentro
-        de cada evento da Agenda.
-      </p>
-      {permission === "denied" && (
-        <p>
-          Para permitir, abra as configurações deste site no navegador. O aplicativo não pode
-          remover esse bloqueio.
-        </p>
-      )}
+      <p>{uiText(885)}</p>
+      {permission === "denied" && <p>{uiText(886)}</p>}
       <button
         className="secondary-button"
         type="button"
@@ -163,29 +200,29 @@ export function ProfileNotifications() {
           try {
             setPermission(await Notification.requestPermission());
           } catch {
-            setError(
-              "Não foi possível solicitar a permissão. Confira as configurações do navegador.",
-            );
+            setError(uiText(887));
           } finally {
             setBusy(false);
           }
         }}
       >
-        {busy ? "Solicitando permissão…" : "Permitir notificações"}
+        {busy ? uiText(888) : uiText(889)}
       </button>
       <button
         className="secondary-button"
         type="button"
         onClick={() => setPermission(notificationPermission())}
       >
-        Verificar permissão
+        {uiText(890)}
       </button>
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{uiText(error)}</p>}
     </section>
   );
 }
 
 export function ProfileProgress({ workspace }: { workspace: WorkspaceState }) {
+  useLanguage();
+
   const zone = agendaTimeZone();
   const focus = workspace.focusSessions.reduce((sum, session) => sum + session.durationMinutes, 0);
   const practices = workspace.practiceActivities ?? [];
@@ -200,14 +237,14 @@ export function ProfileProgress({ workspace }: { workspace: WorkspaceState }) {
   return (
     <section className="profile-card profile-card--wide" aria-labelledby="profile-progress-title">
       <h2 id="profile-progress-title" className="section-label">
-        Meu progresso
+        {uiText(891)}
       </h2>
       <dl className="profile-progress-metrics">
         {[
-          [focus, "Minutos de foco"],
-          [correct, "Respostas certas"],
-          [activeDays, "Dias com estudo registrado"],
-          [workspace.tasks.filter((task) => task.completed).length, "Tarefas concluídas"],
+          [focus, uiText(1907)],
+          [correct, uiText(1908)],
+          [activeDays, uiText(892)],
+          [workspace.tasks.filter((task) => task.completed).length, uiText(893)],
         ].map(([value, label]) => (
           <div key={label}>
             <dt>{label}</dt>
@@ -228,21 +265,16 @@ export function ProfileDataExport({
   workspace: WorkspaceState;
   ready: boolean;
 }) {
+  useLanguage();
+
   const [error, setError] = useState("");
   return (
     <section className="profile-card" aria-labelledby="profile-data-title">
-      <span className="section-label">Seus dados</span>
-      <h2 id="profile-data-title">Exportar uma cópia</h2>
-      <p>
-        Baixa os estudos e preferências disponíveis neste aparelho em JSON. Arquivos que existem
-        somente na nuvem não são baixados por esta ação.
-      </p>
-      <p>
-        A cópia contém seus textos e dados pessoais, sem criptografia. Guarde em um lugar seguro.
-      </p>
-      {!ready && (
-        <p role="status">Aguarde a conta carregar ou entre para exportar os dados corretos.</p>
-      )}
+      <span className="section-label">{uiText(894)}</span>
+      <h2 id="profile-data-title">{uiText(895)}</h2>
+      <p>{uiText(896)}</p>
+      <p>{uiText(897)}</p>
+      {!ready && <p role="status">{uiText(898)}</p>}
       <button
         className="secondary-button"
         type="button"
@@ -257,13 +289,13 @@ export function ProfileDataExport({
             );
             setError("");
           } catch {
-            setError("Não foi possível exportar seus dados. Tente novamente.");
+            setError(uiText(899));
           }
         }}
       >
-        Exportar meus dados
+        {uiText(900)}
       </button>
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{uiText(error)}</p>}
     </section>
   );
 }

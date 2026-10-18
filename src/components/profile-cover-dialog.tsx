@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { PROFILE_COVERS, profileCover } from "../domain/profile-covers";
 import { readStoredProfile } from "../hooks/use-stored-profile";
@@ -7,6 +8,8 @@ import { ProfileCoverArt } from "./profile-cover-art";
 import { PaperCheckIcon } from "./paper-check-icon";
 
 export function ProfileCoverDialog({ onClose }: { onClose(): void }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const [chosen, setChosen] = useState(() => profileCover(readStoredProfile().cover));
   const [error, setError] = useState("");
@@ -28,15 +31,15 @@ export function ProfileCoverDialog({ onClose }: { onClose(): void }) {
       }}
     >
       <header>
-        <h2 id="profile-cover-title">Capa do perfil</h2>
-        <button className="icon-button" type="button" aria-label="Fechar capas" onClick={close}>
+        <h2 id="profile-cover-title">{uiText(832)}</h2>
+        <button className="icon-button" type="button" aria-label={uiText(833)} onClick={close}>
           <PaperCloseIcon />
         </button>
       </header>
       <div className="profile-cover-preview">
         <ProfileCoverArt theme={chosen} />
       </div>
-      <div className="profile-cover-options" role="group" aria-label="Temas de capa">
+      <div className="profile-cover-options" role="group" aria-label={uiText(834)}>
         {PROFILE_COVERS.map((cover) => (
           <button
             key={cover.id}
@@ -53,10 +56,10 @@ export function ProfileCoverDialog({ onClose }: { onClose(): void }) {
           </button>
         ))}
       </div>
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{uiText(error)}</p>}
       <footer>
         <button className="secondary-button" type="button" onClick={close}>
-          Cancelar
+          {uiText(155)}
         </button>
         <button
           className="primary-button"
@@ -69,11 +72,11 @@ export function ProfileCoverDialog({ onClose }: { onClose(): void }) {
               );
               close();
             } catch {
-              setError("Não foi possível salvar. Sua escolha continua aqui para tentar novamente.");
+              setError(uiText(830));
             }
           }}
         >
-          Usar capa
+          {uiText(835)}
         </button>
       </footer>
     </dialog>

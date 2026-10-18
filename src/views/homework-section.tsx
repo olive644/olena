@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useState, type Dispatch, type FormEvent } from "react";
 import type { HomeworkList, WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { PaperActionIcon } from "../components/paper-action-icon";
@@ -14,6 +15,8 @@ function HomeworkListCard({
   list: HomeworkList;
   dispatch: Dispatch<WorkspaceAction>;
 }) {
+  useLanguage();
+
   const [itemTitle, setItemTitle] = useState("");
   const completed = list.items.filter((item) => item.completed).length;
   const progress = list.items.length === 0 ? 0 : Math.round((completed / list.items.length) * 100);
@@ -36,7 +39,7 @@ function HomeworkListCard({
         <button
           className="homework-card__delete"
           type="button"
-          aria-label={`Excluir lista ${list.title}`}
+          aria-label={uiText(1966, [list.title])}
           onClick={() => dispatch({ type: "homework-list/removed", id: list.id })}
         >
           <span aria-hidden="true">🗑</span>
@@ -58,12 +61,12 @@ function HomeworkListCard({
               </label>
               <button
                 type="button"
-                aria-label={`Remover ${item.title}`}
+                aria-label={uiText(1756, [item.title])}
                 onClick={() =>
                   dispatch({ type: "homework-item/removed", listId: list.id, itemId: item.id })
                 }
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true">{uiText(289)}</span>
               </button>
             </li>
           ))}
@@ -73,10 +76,10 @@ function HomeworkListCard({
         <input
           value={itemTitle}
           onChange={(event) => setItemTitle(event.target.value)}
-          placeholder="Novo item"
-          aria-label={`Novo item em ${list.title}`}
+          placeholder={uiText(1240)}
+          aria-label={uiText(1967, [list.title])}
         />
-        <button type="submit">+ Adicionar item</button>
+        <button type="submit">{uiText(1241)}</button>
       </form>
     </article>
   );
@@ -87,6 +90,8 @@ function HomeworkListCard({
 // porque duplicava a lista de tarefas da Agenda; aqui ela complementa em vez
 // de repetir.
 export function HomeworkSection({ workspace, dispatch }: HomeworkSectionProps) {
+  useLanguage();
+
   const [listTitle, setListTitle] = useState("");
   const defaultSubject = workspace.subjects[0];
 
@@ -108,27 +113,27 @@ export function HomeworkSection({ workspace, dispatch }: HomeworkSectionProps) {
   return (
     <section className="module-panel" aria-labelledby="homework-section-title">
       <div className="module-heading">
-        <h2 id="homework-section-title">Listas de estudo</h2>
+        <h2 id="homework-section-title">{uiText(1242)}</h2>
         <span>{workspace.homeworkLists.length}</span>
       </div>
       <form className="homework-new-list" onSubmit={addList}>
         <label className="field field--full">
-          <span>Nova lista</span>
+          <span>{uiText(1243)}</span>
           <input
             value={listTitle}
             onChange={(event) => setListTitle(event.target.value)}
-            placeholder="Ex.: Lição de casa da semana"
+            placeholder={uiText(1244)}
             required
           />
         </label>
         <button className="primary-button" type="submit">
-          <PaperActionIcon name="plus" /> <span>Adicionar lista</span>
+          <PaperActionIcon name="plus" /> <span>{uiText(1245)}</span>
         </button>
       </form>
 
       {workspace.homeworkLists.length === 0 ? (
         <div className="empty-state">
-          <p>Nenhuma lista de estudo ainda. Crie a primeira acima.</p>
+          <p>{uiText(1246)}</p>
         </div>
       ) : (
         <div className="homework-grid">

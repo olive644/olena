@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { formatCoordinateNumber, type CoordinateStats } from "../domain/coordinate-math";
 import type {
   HandwritingLayerKey,
@@ -16,18 +17,20 @@ type HandwritingBrushPanelProps = {
 };
 
 export function HandwritingBrushPanel({ brush, color, onBrushChange }: HandwritingBrushPanelProps) {
+  useLanguage();
+
   return (
-    <aside className="handwriting-brush-panel" aria-label="Pincéis da caneta">
+    <aside className="handwriting-brush-panel" aria-label={uiText(233)}>
       <header>
         <div>
-          <small>SEU ESTOJO</small>
+          <small>{uiText(234)}</small>
         </div>
       </header>
       {(
         [
-          ["fine", "Fineliner", 2],
-          ["ink", "Caneta-tinteiro", 7],
-          ["soft", "Pincel macio", 14],
+          ["fine", uiText(1667), 2],
+          ["ink", uiText(1668), 7],
+          ["soft", uiText(1669), 14],
         ] as const
       ).map(([value, title, size]) => (
         <button
@@ -67,31 +70,30 @@ export function HandwritingRulerPanel({
   onRulerUnitChange,
   onRulerKindChange,
 }: HandwritingRulerPanelProps) {
+  useLanguage();
+
   const rulers = [
-    ["straight", "Régua reta", "Linhas livres", "straight"],
-    ["triangle-45", "Esquadro 45°", "Ângulos de 45°", "triangle-45"],
-    ["triangle-30", "Esquadro 30°/60°", "Ângulos de 30°", "triangle-30"],
-    ["protractor", "Transferidor", "Ângulos de 15°", "protractor"],
-    ["circle", "Gabarito circular", "Círculos precisos", "circle"],
-    ["curve", "Curva francesa", "Curvas contínuas", "curve"],
+    ["straight", uiText(235), uiText(1670), "straight"],
+    ["triangle-45", uiText(1671), uiText(236), "triangle-45"],
+    ["triangle-30", uiText(1672), uiText(237), "triangle-30"],
+    ["protractor", uiText(1673), uiText(238), "protractor"],
+    ["circle", uiText(1674), uiText(239), "circle"],
+    ["curve", uiText(1675), uiText(240), "curve"],
   ] as const;
   return (
-    <aside
-      className="handwriting-brush-panel handwriting-ruler-panel"
-      aria-label="Estojo de réguas"
-    >
+    <aside className="handwriting-brush-panel handwriting-ruler-panel" aria-label={uiText(241)}>
       <header>
         <div>
-          <small>ESTOJO TÉCNICO</small>
+          <small>{uiText(242)}</small>
         </div>
       </header>
-      <fieldset className="ruler-unit-picker" aria-label="Unidades da régua">
-        <legend>Unidade</legend>
+      <fieldset className="ruler-unit-picker" aria-label={uiText(243)}>
+        <legend>{uiText(244)}</legend>
         {(["cm", "in", "px"] as const).map((unit) => (
           <button
             type="button"
             key={unit}
-            aria-label={unit === "cm" ? "Centímetros" : unit === "in" ? "Polegadas" : "Pixels"}
+            aria-label={unit === "cm" ? uiText(245) : unit === "in" ? uiText(1676) : uiText(1677)}
             aria-pressed={rulerUnit === unit}
             onClick={() => onRulerUnitChange(unit)}
           >
@@ -100,7 +102,7 @@ export function HandwritingRulerPanel({
           </button>
         ))}
       </fieldset>
-      <div className="ruler-case" role="group" aria-label="Tipos de régua">
+      <div className="ruler-case" role="group" aria-label={uiText(246)}>
         {rulers.map(([kind, title, description, drawing]) => (
           <button
             type="button"
@@ -116,7 +118,7 @@ export function HandwritingRulerPanel({
           </button>
         ))}
       </div>
-      <p>96 px equivalem a 1 polegada. A escala acompanha a folha, mesmo com zoom.</p>
+      <p>{uiText(247)}</p>
     </aside>
   );
 }
@@ -138,12 +140,14 @@ export function HandwritingCoordinatePanel({
   inspectedCoordinateStats,
   isLivePreview,
 }: HandwritingCoordinatePanelProps) {
+  useLanguage();
+
   return (
-    <aside className="handwriting-brush-panel" aria-label="Opções do sistema de coordenadas">
+    <aside className="handwriting-brush-panel" aria-label={uiText(248)}>
       <header>
         <div>
-          <small>MATEMÁTICA</small>
-          <h3>Sistema de coordenadas</h3>
+          <small>{uiText(249)}</small>
+          <h3>{uiText(250)}</h3>
         </div>
       </header>
       {([1, 2, 5, 10] as const).map((step) => (
@@ -153,7 +157,9 @@ export function HandwritingCoordinatePanel({
           aria-pressed={coordinateStep === step}
           onClick={() => onStepChange(step)}
         >
-          <span className="brush-card-title">Cada divisão vale {step}</span>
+          <span className="brush-card-title">
+            {uiText(251)} {step}
+          </span>
           <svg viewBox="0 0 180 44" aria-hidden="true">
             <path
               d="M18 36V8M18 36H166M18 12l-5 8m5-8 5 8m139 16-8-5m8 5-8 5"
@@ -168,18 +174,18 @@ export function HandwritingCoordinatePanel({
       ))}
       {inspectedCoordinateStats && (
         <section className="handwriting-coordinate-inspector" aria-live="polite">
-          <small>{isLivePreview ? "PRÉVIA DO GESTO" : "LEITURA DO EIXO"}</small>
+          <small>{isLivePreview ? uiText(252) : uiText(1678)}</small>
           <strong>
-            Δx {formatCoordinateNumber(inspectedCoordinateStats.deltaX)} · Δy{" "}
+            {uiText(253)} {formatCoordinateNumber(inspectedCoordinateStats.deltaX)} {uiText(254)}{" "}
             {formatCoordinateNumber(inspectedCoordinateStats.deltaY)}
           </strong>
           <dl>
             <div>
-              <dt>Distância</dt>
+              <dt>{uiText(255)}</dt>
               <dd>{formatCoordinateNumber(inspectedCoordinateStats.distance)}</dd>
             </div>
             <div>
-              <dt>Inclinação</dt>
+              <dt>{uiText(256)}</dt>
               <dd>
                 {inspectedCoordinateStats.slope === null
                   ? "vertical"
@@ -187,15 +193,11 @@ export function HandwritingCoordinatePanel({
               </dd>
             </div>
             <div>
-              <dt>Ângulo</dt>
+              <dt>{uiText(257)}</dt>
               <dd>{formatCoordinateNumber(inspectedCoordinateStats.angle)}°</dd>
             </div>
           </dl>
-          {isLivePreview ? (
-            <p>Solte para salvar este sistema. A prévia acompanha o arraste.</p>
-          ) : (
-            <p>Use Selecionar para inspecionar outro sistema desenhado.</p>
-          )}
+          {isLivePreview ? <p>{uiText(258)}</p> : <p>{uiText(259)}</p>}
         </section>
       )}
     </aside>
@@ -217,15 +219,14 @@ export function HandwritingLayerPanel({
   onToggleLayer,
   onMoveLayer,
 }: HandwritingLayerPanelProps) {
+  useLanguage();
+
   return (
-    <aside
-      className="handwriting-brush-panel handwriting-layer-panel"
-      aria-label="Camadas da folha"
-    >
+    <aside className="handwriting-brush-panel handwriting-layer-panel" aria-label={uiText(260)}>
       <header>
         <div>
-          <small>ORGANIZAÇÃO</small>
-          <h3>Camadas da folha</h3>
+          <small>{uiText(261)}</small>
+          <h3>{uiText(260)}</h3>
         </div>
       </header>
       {hasBackgroundLayer && (
@@ -236,17 +237,17 @@ export function HandwritingLayerPanel({
             onChange={() => onToggleLayer("background")}
           />
           <span>
-            <strong>Imagens</strong>
-            <small>Documentos e fotos importados</small>
+            <strong>{uiText(262)}</strong>
+            <small>{uiText(263)}</small>
           </span>
         </label>
       )}
       {visibleLayerOrder.map((layer, index) => {
         const labels: Record<HandwritingLayerKey, [string, string]> = {
-          coordinates: ["Coordenadas", "Eixos e medições"],
-          text: ["Texto", "Texto digitado na folha"],
-          strokes: ["Traços", "Caneta e marca-texto"],
-          stickies: ["Post-its", "Notas e checklists"],
+          coordinates: [uiText(352), uiText(264)],
+          text: [uiText(361), uiText(1679)],
+          strokes: [uiText(265), uiText(1680)],
+          stickies: ["Post-its", uiText(1681)],
         };
         const [title, description] = labels[layer];
         return (
@@ -255,7 +256,7 @@ export function HandwritingLayerPanel({
               type="checkbox"
               checked={layerVisibility[layer]}
               onChange={() => onToggleLayer(layer)}
-              aria-label={`Mostrar camada ${title}`}
+              aria-label={uiText(1682, [title])}
             />
             <span>
               <strong>{title}</strong>
@@ -263,7 +264,7 @@ export function HandwritingLayerPanel({
               <span className="handwriting-layer-reorder">
                 <button
                   type="button"
-                  aria-label={`Mover ${title} para cima`}
+                  aria-label={uiText(1683, [title])}
                   disabled={index === 0}
                   onClick={() => onMoveLayer(layer, -1)}
                 >
@@ -271,7 +272,7 @@ export function HandwritingLayerPanel({
                 </button>
                 <button
                   type="button"
-                  aria-label={`Mover ${title} para baixo`}
+                  aria-label={uiText(1684, [title])}
                   disabled={index === visibleLayerOrder.length - 1}
                   onClick={() => onMoveLayer(layer, 1)}
                 >
@@ -283,7 +284,7 @@ export function HandwritingLayerPanel({
         );
       })}
       {!hasBackgroundLayer && visibleLayerOrder.length === 0 && (
-        <p className="handwriting-layer-empty">Nenhuma camada adicionada ainda.</p>
+        <p className="handwriting-layer-empty">{uiText(266)}</p>
       )}
     </aside>
   );

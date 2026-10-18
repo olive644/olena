@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useRef, useState } from "react";
 import type { StudyEvent } from "../domain/workspace";
 import { PaperDateField, PaperTimeField } from "./agenda-paper-fields";
@@ -64,6 +65,8 @@ export function AgendaEventDetails({
   onAttachment: (asset: EventDetailsDraft["attachments"][number]) => void;
   allowAllDay?: boolean;
 }) {
+  useLanguage();
+
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -81,27 +84,27 @@ export function AgendaEventDetails({
     try {
       for (const file of files) {
         if (count >= 3) {
-          setError("Máximo de 3 anexos por evento.");
+          setError(uiText(26));
           break;
         }
         if (
           file.size > 300000 ||
           !["application/pdf", "image/png", "image/jpeg", "image/webp"].includes(file.type)
         ) {
-          setError("Escolha imagem ou PDF de até 300 KB. Máximo de 3 anexos.");
+          setError(uiText(27));
           continue;
         }
         const data = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => resolve(String(reader.result));
-          reader.onerror = () => reject(new Error("Falha na leitura"));
+          reader.onerror = () => reject(new Error(uiText(1579)));
           reader.readAsDataURL(file);
         });
         onAttachment({ id: crypto.randomUUID(), name: file.name, mime: file.type, data });
         count++;
       }
     } catch {
-      setError("Não foi possível ler o arquivo.");
+      setError(uiText(28));
     } finally {
       busy.current = false;
       setUploading(false);
@@ -117,19 +120,19 @@ export function AgendaEventDetails({
             checked={value.allDay}
             onChange={(event) => change("allDay", event.target.checked)}
           />{" "}
-          Dia inteiro
+          {uiText(29)}
         </label>
       )}
       <div className="field-row">
         <PaperDateField
-          label="Data de término"
+          label={uiText(30)}
           min={date}
           value={value.endDate}
           onChange={(next) => change("endDate", next)}
         />
         {!value.allDay && (
           <PaperTimeField
-            label="Término"
+            label={uiText(31)}
             value={value.endTime}
             onChange={(next) => change("endTime", next)}
           />
@@ -138,7 +141,7 @@ export function AgendaEventDetails({
       {repeating !== "none" && (
         <>
           <label className="field">
-            Repetir a cada
+            {uiText(32)}
             <input
               type="number"
               min={1}
@@ -146,11 +149,19 @@ export function AgendaEventDetails({
               value={value.interval}
               onChange={(event) => change("interval", Number(event.target.value))}
             />
-            <small>{recurrenceLabels[repeating as keyof typeof recurrenceLabels]}</small>
+            <small>{uiText(recurrenceLabels[repeating as keyof typeof recurrenceLabels])}</small>
           </label>
           {repeating === "weekly" && (
-            <div className="agenda-weekday-picks" role="group" aria-label="Dias da repetição">
-              {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((day, index) => (
+            <div className="agenda-weekday-picks" role="group" aria-label={uiText(33)}>
+              {[
+                uiText(1580),
+                uiText(1581),
+                uiText(1582),
+                uiText(1583),
+                uiText(1584),
+                uiText(1585),
+                uiText(34),
+              ].map((day, index) => (
                 <button
                   key={day}
                   type="button"
@@ -173,7 +184,7 @@ export function AgendaEventDetails({
         </>
       )}
       <label className="field">
-        Descrição
+        {uiText(35)}
         <textarea
           maxLength={4000}
           rows={3}
@@ -185,30 +196,30 @@ export function AgendaEventDetails({
       <div className="agenda-metadata-options">
         <AgendaMetadataField
           name="location"
-          label="Local"
+          label={uiText(36)}
           value={value.location}
           onChange={(next) => change("location", next)}
         />
         <AgendaMetadataField
           name="links"
-          label="Links"
+          label={uiText(37)}
           value={value.links}
           onChange={(next) => change("links", next)}
         />
         <AgendaMetadataField
           name="guests"
-          label="Participantes"
+          label={uiText(38)}
           value={value.guests}
           onChange={(next) => change("guests", next)}
         />
       </div>
       <div className="agenda-reminder-slider">
         <RoomStepSlider
-          label="Lembrar antes"
+          label={uiText(39)}
           value={Math.max(0, ...value.reminders)}
           steps={REMINDER_STEPS}
           formatValue={(minutes) =>
-            minutes === 0 ? "Na hora" : minutes === 1440 ? "1 dia" : `${minutes} min`
+            minutes === 0 ? uiText(1586) : minutes === 1440 ? "1 dia" : `${minutes} min`
           }
           onCommit={(minutes) => change("reminders", minutes === 0 ? [0] : [0, minutes])}
         />
@@ -227,20 +238,20 @@ export function AgendaEventDetails({
         }}
       >
         <AgendaDetailIcon name="attachment" />
-        <strong>Anexos</strong>
-        <p>Arraste imagens ou PDFs aqui</p>
+        <strong>{uiText(40)}</strong>
+        <p>{uiText(41)}</p>
         <button
           type="button"
           className="secondary-button"
           disabled={uploading || value.attachments.length >= 3}
           onClick={() => input.current?.click()}
         >
-          Selecionar arquivos
+          {uiText(42)}
         </button>
         <input
           ref={input}
           className="agenda-attachment-input"
-          aria-label="Anexos"
+          aria-label={uiText(40)}
           type="file"
           multiple
           accept="application/pdf,image/png,image/jpeg,image/webp"
@@ -251,9 +262,7 @@ export function AgendaEventDetails({
             void upload(files);
           }}
         />
-        <small>
-          Até 3 arquivos de 300 KB cada. Sincronizados com a conta, não incluídos no .ics.
-        </small>
+        <small>{uiText(43)}</small>
       </div>
       {value.attachments.map((asset) => (
         <div className="agenda-attachment" key={asset.id}>
@@ -268,14 +277,14 @@ export function AgendaEventDetails({
                 value.attachments.filter((item) => item.id !== asset.id),
               )
             }
-            aria-label={`Remover anexo ${asset.name}`}
+            aria-label={uiText(1587, [asset.name])}
           >
-            Remover
+            {uiText(44)}
           </button>
         </div>
       ))}
-      {uploading && <HelenaLoading label="Lendo anexos" compact />}
-      {error && <p role="alert">{error}</p>}
+      {uploading && <HelenaLoading label={uiText(45)} compact />}
+      {error && <p role="alert">{uiText(error)}</p>}
     </div>
   );
 }

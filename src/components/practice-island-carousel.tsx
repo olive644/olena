@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import {
   lazy,
   Suspense,
@@ -28,6 +29,8 @@ export function PracticeIslandCarousel({
   profile: StoredProfile;
   onEnter?: () => void;
 }) {
+  useLanguage();
+
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
   const dragged = useRef(false);
   const [drag, setDrag] = useState(0);
@@ -60,7 +63,7 @@ export function PracticeIslandCarousel({
   return (
     <section
       className="practice-carousel"
-      aria-label="Ilhas de estudo"
+      aria-label={uiText(811)}
       aria-roledescription="carrossel"
       tabIndex={0}
       onKeyDown={(event) => {
@@ -102,7 +105,7 @@ export function PracticeIslandCarousel({
             <button
               key={island.number}
               type="button"
-              aria-label={`Entrar em ${island.title}`}
+              aria-label={uiText(1880, [island.title])}
               disabled={!active || island.id !== "mathematics"}
               onClick={(event) => {
                 if (!dragged.current || event.detail === 0) onEnter?.();
@@ -126,7 +129,7 @@ export function PracticeIslandCarousel({
                   sizes={
                     active ? "(max-width: 600px) 66vw, 440px" : "(max-width: 600px) 32vw, 240px"
                   }
-                  alt={active ? `Mundo ${island.number}: ${island.subject}` : ""}
+                  alt={active ? uiText(1881, [island.number, island.subject]) : ""}
                   width="800"
                   height="800"
                   draggable={false}
@@ -163,7 +166,7 @@ export function PracticeIslandCarousel({
         className="focus-mode-arrow practice-carousel-arrow practice-carousel-arrow--previous"
         type="button"
         disabled={index === 0}
-        aria-label="Mundo anterior"
+        aria-label={uiText(812)}
         onClick={() => onVisit(index - 1)}
       >
         <FocusPaperArrow />
@@ -172,7 +175,7 @@ export function PracticeIslandCarousel({
         className="focus-mode-arrow focus-mode-arrow--next practice-carousel-arrow practice-carousel-arrow--next"
         type="button"
         disabled={index === PRACTICE_ISLANDS.length - 1}
-        aria-label="Próximo mundo"
+        aria-label={uiText(813)}
         onClick={() => onVisit(index + 1)}
       >
         <FocusPaperArrow />

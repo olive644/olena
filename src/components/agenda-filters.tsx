@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useId, useRef, useState } from "react";
 import { AgendaCloseIcon } from "./agenda-close-icon";
 import { PaperChoice } from "./agenda-paper-fields";
@@ -16,6 +17,8 @@ export function AgendaFilters({
   onSubject: (value: string) => void;
   onType: (value: string) => void;
 }) {
+  useLanguage();
+
   const id = useId();
   const panel = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -24,50 +27,50 @@ export function AgendaFilters({
       <button
         type="button"
         className="secondary-button agenda-tool"
-        aria-label="Filtros"
+        aria-label={uiText(53)}
         aria-expanded={open}
         aria-haspopup="dialog"
         popoverTarget={id}
         aria-pressed={Boolean(subject || type)}
       >
         <AgendaDetailIcon name="filter" />
-        <span>Filtros</span>
+        <span>{uiText(53)}</span>
       </button>
       <div
         id={id}
         ref={panel}
         popover="auto"
         role="dialog"
-        aria-label="Filtros da agenda"
+        aria-label={uiText(54)}
         className="agenda-field-popover agenda-filter-panel"
         onToggle={(event) => setOpen(event.currentTarget.matches(":popover-open"))}
       >
         <header>
-          <h3>Filtros</h3>
+          <h3>{uiText(53)}</h3>
           <button
             type="button"
             className="icon-button"
-            aria-label="Fechar filtros"
+            aria-label={uiText(55)}
             onClick={() => panel.current?.hidePopover()}
           >
             <AgendaCloseIcon />
           </button>
         </header>
         <PaperChoice
-          label="Filtrar matéria"
+          label={uiText(56)}
           value={subject}
           onChange={onSubject}
-          options={[{ value: "", label: "Todas as matérias" }, ...subjects]}
+          options={[{ value: "", label: uiText(57) }, ...subjects]}
         />
         <PaperChoice
-          label="Filtrar tipo"
+          label={uiText(58)}
           value={type}
           onChange={onType}
           options={[
-            { value: "", label: "Todos os tipos" },
-            { value: "appointment", label: "Compromissos" },
-            { value: "study", label: "Estudos" },
-            { value: "task", label: "Tarefas" },
+            { value: "", label: uiText(2542) },
+            { value: "appointment", label: uiText(2543) },
+            { value: "study", label: uiText(2544) },
+            { value: "task", label: uiText(2545) },
           ]}
         />
       </div>

@@ -58,9 +58,31 @@ export const handleProfileHandle = createProfileHandleHandler({
     const { handleProfileSocial } = await import("./profile-social-runtime.js");
     const response = await handleProfileSocial(request);
     if (!response.ok) throw new Error("delete-social");
+    const account = await identifyProfileAccount(request);
+    if (!account) throw new Error("support-delete-identity");
+    const { removeSupportAccount } = await import("./support-runtime.js");
+    await removeSupportAccount(account.uid);
   },
   consume: (uid) => checkRateLimit(rateStore, "profile-handles-minute", uid, 30, 60),
+  // Reservar ou apagar baixa o registro inteiro (cerca de 1 MB com 10 mil @). Por isso há teto por
+  // conta e um teto global por dia, para uma conta ou algumas poucas não gastarem o limite de
+  // download do banco. O teto global de 2.000 é um valor de proteção, ajustável pelo uso real.
+  async consumeWrite(uid) {
+    return (
+      (await checkRateLimit(rateStore, "profile-handles-write-minute", uid, 6, 60)) &&
+      (await checkRateLimit(rateStore, "profile-handles-write-day", uid, 60, 86400)) &&
+      (await checkRateLimit(rateStore, "profile-handles-write-global", "all", 2000, 86400))
+    );
+  },
   store: {
+    async readOne(key) {
+      const response = await fetch(`${config.databaseUrl}/privateProfileHandles/${key}.json`, {
+        headers: { Authorization: `Bearer ${await token()}` },
+      });
+      if (!response.ok) throw new Error("read");
+      const value = (await response.json()) as { username?: unknown } | null;
+      return typeof value?.username === "string" ? { username: value.username } : undefined;
+    },
     async read() {
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${await token()}`, "X-Firebase-ETag": "true" },

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef } from "react";
 import type { PublicLocalRoomState } from "../domain/local-room";
 import { RoomConfetti } from "./room-paper-icons";
@@ -13,6 +14,8 @@ export function BingoWinners({
   state: PublicLocalRoomState;
   participantId: string;
 }) {
+  useLanguage();
+
   const played = useRef(false);
   useEffect(() => {
     if (!played.current) {
@@ -24,9 +27,9 @@ export function BingoWinners({
     .slice(0, 3)
     .flatMap((id) => state.participants.filter((p) => p.id === id));
   return (
-    <section className="bingo-winners" aria-label="Ganhadores do bingo">
+    <section className="bingo-winners" aria-label={uiText(143)}>
       <RoomConfetti />
-      <h2>{winners.length === 1 ? "Bingo tem ganhador!" : "Bingo tem ganhadores!"}</h2>
+      <h2>{winners.length === 1 ? uiText(1633) : uiText(1634)}</h2>
       <Podium participants={winners} solar />
       <RoomRewardNotice
         bingo

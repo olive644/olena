@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime";
 import { useCallback, useEffect, useState } from "react";
 
 export type GoogleCalendarEvent = {
@@ -28,7 +29,7 @@ export function useGoogleCalendar() {
       setEvents(payload.events);
       setError("");
     } catch {
-      setError("Não foi possível carregar os eventos do Google Agenda agora.");
+      setError(uiText("Não foi possível carregar os eventos do Google Agenda agora."));
     }
   }, []);
 

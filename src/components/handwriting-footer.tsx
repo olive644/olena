@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 
 type HandwritingFooterProps = {
@@ -7,25 +8,23 @@ type HandwritingFooterProps = {
 };
 
 export function HandwritingFooter({ cloud, draftStatus, inert }: HandwritingFooterProps) {
+  useLanguage();
+
   return (
     <footer className="handwriting-footer" inert={inert}>
       <p>
         <strong>
           {cloud?.authenticated
             ? cloud.status === "synced"
-              ? "Sincronizado na sua conta"
+              ? uiText(157)
               : cloud.status === "offline"
-                ? "Sem conexão. Alterações aguardando sincronização"
+                ? uiText(158)
                 : cloud.status === "conflict"
-                  ? "Há alterações simultâneas para revisar na conta"
-                  : "Sincronizando com sua conta…"
-            : draftStatus || "Salvamento automático ativo"}
+                  ? uiText(159)
+                  : uiText(160)
+            : uiText(draftStatus) || uiText(2052)}
         </strong>
-        <span>
-          {cloud?.authenticated
-            ? "Computador e celular usam a mesma conta."
-            : "Entre na sua conta para sincronizar entre dispositivos."}
-        </span>
+        <span>{cloud?.authenticated ? uiText(161) : uiText(162)}</span>
       </p>
     </footer>
   );

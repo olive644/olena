@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime.js";
 import {
   WORKSPACE_VERSION,
   createInitialWorkspace,
@@ -838,7 +839,7 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
         notebook.id === primary.id
           ? {
               ...notebook,
-              title: "Meu caderno",
+              title: uiText("Meu caderno"),
               pageIds,
               ...(subjectIds.length ? { subjectIds } : {}),
               ...(bookmarkedPageIds.length ? { bookmarkedPageIds } : {}),

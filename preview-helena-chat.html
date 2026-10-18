@@ -12,7 +12,9 @@
       import React from "react";
       import { createRoot } from "react-dom/client";
       import "/src/styles.css";
-      import { HelenaChatPreviewPage } from "/src/views/helena-chat-preview-page.tsx";
+      import { initializeLanguage } from "/src/i18n/runtime.ts";
+      await initializeLanguage();
+      const { HelenaChatPreviewPage } = await import("/src/views/helena-chat-preview-page.tsx");
       createRoot(document.getElementById("root")).render(
         React.createElement(HelenaChatPreviewPage),
       );

@@ -1,4 +1,5 @@
 import type { HandwritingPaperColor } from "../domain/handwriting";
+import { uiText } from "../i18n/runtime";
 
 /** Modelos sem data: o calendário e a semana podem ser reutilizados em qualquer período. */
 export function drawPlannerPaper(
@@ -25,13 +26,15 @@ export function drawPlannerPaper(
   context.fill();
   context.fillStyle = "#FFF9EF";
   context.font = "bold 44px Manrope, sans-serif";
-  context.fillText(paper === "weekly" ? "Plano semanal" : "Calendário", 88, 132);
+  context.fillText(uiText(paper === "weekly" ? "Plano semanal" : "Calendário"), 88, 132);
   context.fillStyle = ink;
   context.font = "24px Manrope, sans-serif";
   context.fillText(
-    paper === "weekly"
-      ? "Semana de: ____________________"
-      : "Mês: ____________________    Ano: __________",
+    uiText(
+      paper === "weekly"
+        ? "Semana de: ____________________"
+        : "Mês: ____________________    Ano: __________",
+    ),
     64,
     236,
   );
@@ -44,7 +47,7 @@ export function drawPlannerPaper(
     context.fillRect(x + 1, y + 1, w - 2, 48);
     context.fillStyle = ink;
     context.font = "bold 22px Manrope, sans-serif";
-    context.fillText(label, x + 18, y + 32);
+    context.fillText(uiText(label), x + 18, y + 32);
   };
   if (paper === "weekly") {
     [...labels, "Prioridades e ideias"].forEach((label, index) => {

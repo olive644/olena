@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { PRIVACY_POLICY_PATH } from "../domain/privacy-policy";
 import type { ListeningOnlineChoice } from "../data/listening-consent";
 
@@ -18,36 +19,30 @@ export function ListeningOnlineNotice({
   variant = "card",
   roomAudio = false,
 }: ListeningOnlineNoticeProps) {
+  useLanguage();
+
   const compact = variant === "compact";
   const className = `listening-online-notice listening-online-notice--${variant}`;
 
   if (choice === null) {
     return (
       <section className={className} aria-labelledby={`listening-online-title-${variant}`}>
-        <h3 id={`listening-online-title-${variant}`}>
-          {roomAudio ? "Voz da sala (opcional)" : "Voz natural e vocabulário online (opcional)"}
-        </h3>
+        <h3 id={`listening-online-title-${variant}`}>{roomAudio ? uiText(1715) : uiText(404)}</h3>
         <p>
-          {roomAudio
-            ? "Para ouvir a gravação da sala, o texto curto da pergunta é enviado a uma empresa parceira de voz. Nada é ligado à sua conta."
-            : compact
-              ? "Para uma voz mais natural, o texto de cada frase é enviado a uma empresa parceira de voz, e cada palavra em inglês vai a um serviço de consulta de vocabulário. Nada é ligado à sua conta."
-              : "Para deixar a voz mais natural, o texto de cada frase (até 160 caracteres) é enviado a uma empresa parceira de voz. Para estimar a dificuldade das palavras, cada palavra em inglês é enviada a um serviço de consulta de vocabulário. Nada disso é ligado à sua conta e você pode mudar de ideia quando quiser."}{" "}
-          {roomAudio
-            ? "Na sala, a gravação fica disponível em armazenamento privado por 1 hora para todos ouvirem a mesma voz. Cópias vencidas são apagadas diariamente. Sem permissão, esta sala não reproduz áudio no seu aparelho."
-            : "Sem isso, usamos a voz do seu aparelho e uma estimativa própria de dificuldade."}{" "}
-          Saiba mais na{" "}
+          {roomAudio ? uiText(405) : compact ? uiText(406) : uiText(407)}{" "}
+          {roomAudio ? uiText(408) : uiText(409)} {uiText(410)}{" "}
           <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
-            Política de Privacidade<span className="sr-only"> (abre em uma nova aba)</span>
+            {uiText(411)}
+            <span className="sr-only"> {uiText(412)}</span>
           </a>
           .
         </p>
         <div className="listening-online-notice__actions">
           <button className="primary-button" type="button" onClick={() => onChoose("accepted")}>
-            Permitir
+            {uiText(413)}
           </button>
           <button className="secondary-button" type="button" onClick={() => onChoose("declined")}>
-            Agora não
+            {uiText(414)}
           </button>
         </div>
       </section>
@@ -60,18 +55,18 @@ export function ListeningOnlineNotice({
       <p>
         {accepted
           ? roomAudio
-            ? "Voz da sala: ativada."
-            : "Voz natural e vocabulário online: ativados."
+            ? uiText(1716)
+            : uiText(415)
           : roomAudio
-            ? "Voz natural desativada. Ative para ouvir o áudio da sala."
-            : "Voz natural e vocabulário online: desativados. Usamos a voz do seu aparelho."}
+            ? uiText(416)
+            : uiText(417)}
       </p>
       <button
         className="secondary-button"
         type="button"
         onClick={() => onChoose(accepted ? "declined" : "accepted")}
       >
-        {accepted ? "Desativar" : "Ativar"}
+        {accepted ? uiText(1717) : uiText(1718)}
       </button>
     </div>
   );

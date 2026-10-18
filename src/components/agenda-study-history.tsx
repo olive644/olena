@@ -1,3 +1,4 @@
+import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { dateForKey } from "../domain/agenda";
 import { historySummary, focusHistory, type AgendaRange } from "../domain/agenda-history";
 import { useEffect, useState } from "react";
@@ -13,10 +14,12 @@ import { AgendaFocusWeek } from "./agenda-focus-week";
 import { MATH_COURSES } from "../data/math-courses";
 
 function RangeDate({ date }: { date: string }) {
+  useLanguage();
+
   const value = dateForKey(date);
   return (
     <>
-      {value.getDate()} {value.toLocaleDateString("pt-BR", { month: "short" })}
+      {value.getDate()} {value.toLocaleDateString(uiLocale(), { month: "short" })}
     </>
   );
 }
@@ -31,6 +34,8 @@ export function AgendaStudyHistory({
   workspace: WorkspaceState;
   onNavigate?: (view: AppView) => void;
 }) {
+  useLanguage();
+
   const [section, setSection] = useState<"focus" | "notes" | "islands">("focus");
   const [focusMode, setFocusMode] = useState<"timer" | "pomodoro">("timer");
   const [islandId, setIslandId] = useState<string | null>(null);
@@ -87,20 +92,20 @@ export function AgendaStudyHistory({
     range,
   );
   return (
-    <section className="agenda-history module-panel" aria-label="Histórico de estudo">
+    <section className="agenda-history module-panel" aria-label={uiText(95)}>
       <header>
-        <h2>Meu estudo</h2>
+        <h2>{uiText(96)}</h2>
         <span>
           <RangeDate date={range.start} />
           {range.start !== range.end && (
             <>
               {" "}
-              a <RangeDate date={range.end} />
+              {uiText(97)} <RangeDate date={range.end} />
             </>
           )}
         </span>
       </header>
-      <div className="agenda-dashboard" role="group" aria-label="Categorias do estudo">
+      <div className="agenda-dashboard" role="group" aria-label={uiText(98)}>
         <button
           type="button"
           className="secondary-button"
@@ -113,7 +118,7 @@ export function AgendaStudyHistory({
             {...(section === "focus" ? { paperVariant: "escuro" as const } : {})}
           />
           <span>
-            <strong>Foco</strong>
+            <strong>{uiText(99)}</strong>
           </span>
         </button>
         <button
@@ -128,7 +133,7 @@ export function AgendaStudyHistory({
             {...(category === "notes" ? { paperVariant: "escuro" as const } : {})}
           />
           <span>
-            <strong>Caderno</strong>
+            <strong>{uiText(100)}</strong>
           </span>
         </button>
         <button
@@ -143,13 +148,13 @@ export function AgendaStudyHistory({
             {...(category === "islands" ? { paperVariant: "escuro" as const } : {})}
           />
           <span>
-            <strong>Praticar</strong>
+            <strong>{uiText(101)}</strong>
           </span>
         </button>
       </div>
       <div id="agenda-category-panel" className="agenda-category-panel">
         {section === "focus" && (
-          <div className="agenda-focus-modes" role="group" aria-label="Modalidades de foco">
+          <div className="agenda-focus-modes" role="group" aria-label={uiText(102)}>
             {(["timer", "pomodoro"] as const).map((mode) => (
               <button
                 key={mode}
@@ -158,7 +163,7 @@ export function AgendaStudyHistory({
                 aria-pressed={focusMode === mode}
                 onClick={() => setFocusMode(mode)}
               >
-                {mode === "timer" ? "Cronômetro" : "Pomodoro"}
+                {mode === "timer" ? uiText(103) : uiText(1606)}
               </button>
             ))}
           </div>
@@ -173,8 +178,7 @@ export function AgendaStudyHistory({
               {data.legacy > 0 && (
                 <>
                   {" "}
-                  {data.legacy} {data.legacy === 1 ? "sessão antiga" : "sessões antigas"} sem
-                  modalidade, fora destes gráficos.
+                  {data.legacy} {data.legacy === 1 ? uiText(104) : uiText(105)} {uiText(106)}
                 </>
               )}
             </small>
@@ -187,10 +191,10 @@ export function AgendaStudyHistory({
         {summary.minutes === 0 && (
           <p className="agenda-data-empty" role="status">
             {category === "islands"
-              ? "Nenhuma resposta registrada nas ilhas neste período. O progresso antigo sem data não entra neste filtro."
+              ? uiText(107)
               : category === "notes"
-                ? "Nenhum caderno, pasta ou Note criado neste período. Os seus itens continuam na estante."
-                : `Nenhuma sessão de ${category === "timer" ? "cronômetro" : "Pomodoro"} concluída neste período.`}
+                ? uiText(108)
+                : uiText(1607, [category === "timer" ? uiText(109) : uiText(1606)])}
           </p>
         )}
         <div
@@ -198,10 +202,10 @@ export function AgendaStudyHistory({
           key={`details:${category}:${range.start}:${range.end}`}
         >
           {category === "notes" && data.entries.length > 0 && (
-            <ul className="agenda-shelf-entries" aria-label="Itens da estante no período">
+            <ul className="agenda-shelf-entries" aria-label={uiText(110)}>
               {data.entries.map((entry) => (
                 <li key={entry.id}>
-                  <strong>{entry.title || "Sem título"}</strong>
+                  <strong>{entry.title || uiText(2046)}</strong>
                   <small>
                     {entry.label} · <RangeDate date={entry.date} />
                   </small>
@@ -211,8 +215,8 @@ export function AgendaStudyHistory({
           )}
           {section === "focus" && focusStats.days > 0 && (
             <p>
-              {focusStats.days} {focusStats.days === 1 ? "dia de foco" : "dias de foco"} no período
-              {focusStats.longest > 1 && ` · ${focusStats.longest} dias consecutivos`}
+              {focusStats.days} {focusStats.days === 1 ? uiText(1608) : uiText(1609)} {uiText(111)}
+              {focusStats.longest > 1 && uiText(2286, [focusStats.longest])}
             </p>
           )}
           {section === "focus" && <AgendaFocusWeek week={week} mode={focusMode} />}

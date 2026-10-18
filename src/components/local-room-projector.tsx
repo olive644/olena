@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import {
   buildLocalRoomJoinUrl,
@@ -37,6 +38,8 @@ export function Scoreboard({
   offset?: number;
   questionIndex?: number;
 }) {
+  useLanguage();
+
   const ranked = rankLocalRoomParticipants(participants);
   const list = useRef<HTMLOListElement>(null);
   const positions = useRef(new Map<string, number>());
@@ -73,7 +76,7 @@ export function Scoreboard({
           {questionIndex !== undefined &&
             participant.lastAnswer?.questionIndex === questionIndex && (
               <span className="room-answer-mark">
-                {participant.lastAnswer.correct ? "Acertou" : "Errou"}
+                {participant.lastAnswer.correct ? uiText(1735) : uiText(1736)}
                 {participant.lastAnswer.correct && <RoomConfetti compact />}
               </span>
             )}
@@ -84,13 +87,13 @@ export function Scoreboard({
           <span>
             {participant.displayName}
             {participant.team
-              ? ` · ${ROOM_TEAM_LABELS[participant.team as RoomTeam] ?? participant.team}`
+              ? ` · ${uiText(ROOM_TEAM_LABELS[participant.team as RoomTeam] ?? participant.team)}`
               : ""}
-            {participant.online === false ? " · ausente" : ""}
+            {participant.online === false ? uiText(1737) : ""}
           </span>
           <strong>
             <PaperDigits value={String(participant.score)} /> <RoomPointsIcon />
-            <span className="visually-hidden"> pontos</span>
+            <span className="visually-hidden"> {uiText(466)}</span>
           </strong>
         </li>
       ))}
@@ -107,6 +110,8 @@ function PodiumPlace({
   place: number;
   solar?: boolean;
 }) {
+  useLanguage();
+
   const [score, setScore] = useState(0);
   const [complete, setComplete] = useState(false);
   const target = participant.score;
@@ -138,12 +143,12 @@ function PodiumPlace({
         <div className="room-podium-inscription">
           <small className="room-eclipse-name">
             {solar
-              ? ["Saturno", "Júpiter", "Terra"][place - 1]
+              ? [uiText(1738), uiText(467), uiText(1739)][place - 1]
               : place === 1
-                ? "Eclipse Solar"
+                ? uiText(1740)
                 : place === 2
-                  ? "Eclipse Lunar"
-                  : "Lua Sangrenta"}
+                  ? uiText(1741)
+                  : uiText(1742)}
           </small>
           <span className="room-podium-rank">
             <PaperDigits value={String(participant.reward?.place ?? place)} />
@@ -151,13 +156,17 @@ function PodiumPlace({
           <span className="room-podium-name" title={participant.displayName}>
             {participant.displayName}
           </span>
-          <strong className="room-podium-score" aria-label={`${target} pontos`}>
+          <strong className="room-podium-score" aria-label={uiText(1743, [target])}>
             <span aria-hidden="true">
               <PaperDigits value={String(score)} />
             </span>
             <RoomPointsIcon />
           </strong>
-          {solar && <small>+{participant.reward?.xp ?? 0} XP</small>}
+          {solar && (
+            <small>
+              +{participant.reward?.xp ?? 0} {uiText(468)}
+            </small>
+          )}
         </div>
         {place === 1 && complete && <RoomConfetti />}
       </div>
@@ -172,6 +181,8 @@ export function Podium({
   participants: readonly LocalRoomParticipant[];
   solar?: boolean;
 }) {
+  useLanguage();
+
   const ranked = solar ? [...participants] : rankLocalRoomParticipants(participants);
   const top3 = ranked.slice(0, 3);
   const rest = ranked.slice(3);
@@ -187,8 +198,8 @@ export function Podium({
           />
         ))}
       </ol>
-      <section className="room-results-ranking" aria-label="Classificação final">
-        <h3>Classificação</h3>
+      <section className="room-results-ranking" aria-label={uiText(469)}>
+        <h3>{uiText(470)}</h3>
         {solar ? (
           <ol className="bingo-winners-order">
             {ranked.map((p, i) => (
@@ -198,7 +209,8 @@ export function Podium({
                 <span className="bingo-ranking-copy">
                   <strong>{p.displayName}</strong>
                   <small>
-                    {p.score} pontos · +{p.reward?.xp ?? 0} XP
+                    {p.score} {uiText(471)}
+                    {p.reward?.xp ?? 0} {uiText(468)}
                   </small>
                 </span>
               </li>
@@ -207,9 +219,7 @@ export function Podium({
         ) : (
           <Scoreboard participants={ranked} />
         )}
-        {rest.length > 0 && (
-          <span className="visually-hidden">Inclui participantes abaixo do top 3</span>
-        )}
+        {rest.length > 0 && <span className="visually-hidden">{uiText(472)}</span>}
       </section>
     </div>
   );
@@ -222,6 +232,8 @@ export function ProjectorRoom({
   state: PublicLocalRoomState;
   secondsLeft: number;
 }) {
+  useLanguage();
+
   const connected = state.participants.filter((participant) => participant.online !== false);
   const joinUrl = buildLocalRoomJoinUrl(window.location.origin, state.code);
 
@@ -237,16 +249,16 @@ export function ProjectorRoom({
           type="button"
           onClick={() => void document.documentElement.requestFullscreen?.()}
         >
-          <PaperEditorIcon name="expand" /> Tela cheia
+          <PaperEditorIcon name="expand" /> {uiText(473)}
         </button>
       </header>
 
       {state.phase === "lobby" ? (
         <main className="local-room-projector__lobby">
           <div>
-            <span>Entre na sala</span>
+            <span>{uiText(474)}</span>
             <strong>{state.code}</strong>
-            <p>Aponte a câmera para o QR code.</p>
+            <p>{uiText(475)}</p>
           </div>
           <RoomQrCode value={joinUrl} bingo={state.settings.activity === "bingo"} />
         </main>
@@ -254,7 +266,7 @@ export function ProjectorRoom({
         <main className="local-room-projector__round">
           <div className="local-room-round__progress">
             <span>
-              Pergunta {state.questionIndex + 1} de {state.totalQuestions}
+              {uiText(476)} {state.questionIndex + 1} {uiText(72)} {state.totalQuestions}
             </span>
             <span className="local-room-round__timer">
               <RoomClockIcon /> <PaperDigits value={String(secondsLeft)} />
@@ -265,11 +277,9 @@ export function ProjectorRoom({
             <NavigationIcon
               name={state.settings.activity === "bingo" ? "activity-bank" : "focus"}
             />
-            <h1>
-              {state.settings.activity === "bingo" ? "Marque sua cartela" : "Ouça com atenção"}
-            </h1>
+            <h1>{state.settings.activity === "bingo" ? uiText(477) : uiText(478)}</h1>
             <p>
-              {state.answeredParticipantIds.length} de {connected.length} respostas recebidas
+              {state.answeredParticipantIds.length} {uiText(72)} {connected.length} {uiText(479)}
             </p>
           </div>
           <Scoreboard participants={state.participants} questionIndex={state.questionIndex} />
@@ -277,7 +287,7 @@ export function ProjectorRoom({
       ) : (
         <main className="local-room-projector__results">
           <NavigationIcon name="medal-first" />
-          <h1>{state.phase === "finished" ? "Sala encerrada" : "Resultado da turma"}</h1>
+          <h1>{state.phase === "finished" ? uiText(592) : uiText(1744)}</h1>
           {state.settings.activity !== "bingo" && <Podium participants={state.participants} />}
         </main>
       )}

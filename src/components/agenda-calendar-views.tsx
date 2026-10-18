@@ -1,3 +1,4 @@
+import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import type { StudyEvent, StudyTask } from "../domain/workspace";
@@ -44,6 +45,8 @@ export function AgendaCalendarViews({
   renderEvent: (event: StudyEvent, date: string) => ReactNode;
   renderTask: (task: StudyTask) => ReactNode;
 }) {
+  useLanguage();
+
   const days =
     view === "week"
       ? weekDates(selected)
@@ -137,18 +140,15 @@ export function AgendaCalendarViews({
     };
   };
   const dated = (date: string) =>
-    new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", {
+    new Date(`${date}T12:00:00`).toLocaleDateString(uiLocale(), {
       weekday: "short",
       day: "numeric",
       month: "short",
     });
   if (view === "list")
     return (
-      <div
-        className="agenda-schedule-list"
-        aria-label={searchResults ? "Resultados da busca" : "Próximos 30 dias"}
-      >
-        {searchResults && <h3>Resultados da busca</h3>}
+      <div className="agenda-schedule-list" aria-label={searchResults ? uiText(5) : uiText(4)}>
+        {searchResults && <h3>{uiText(5)}</h3>}
         {(searchResults ? searchDates : days).map((date) => {
           const dayEvents = eventsFor(date).filter(
               (event) => !searchResults || searchDatesById.get(event.id) === date,
@@ -164,11 +164,11 @@ export function AgendaCalendarViews({
             </section>
           ) : null;
         })}
-        {searchResults && !searchDates.length && <p role="status">Nenhum resultado encontrado.</p>}
+        {searchResults && !searchDates.length && <p role="status">{uiText(6)}</p>}
         {!searchResults &&
           !days.some(
             (date) => eventsFor(date).length || tasks.some((task) => task.dueDate === date),
-          ) && <p>Nenhum item corresponde aos filtros nos próximos 30 dias.</p>}
+          ) && <p>{uiText(7)}</p>}
       </div>
     );
   return (
@@ -176,7 +176,7 @@ export function AgendaCalendarViews({
       ref={root}
       className="agenda-time-view"
       style={{ "--agenda-strip-height": `${stripHeight}px` } as CSSProperties}
-      aria-label={view === "week" ? "Grade semanal" : "Grade do dia"}
+      aria-label={view === "week" ? uiText(1560) : uiText(1561)}
       onKeyDown={(key) => {
         if (key.key === "Escape") {
           if (gesture.current) suppressGestureClick.current = true;
@@ -203,15 +203,18 @@ export function AgendaCalendarViews({
             y: pointer.clientY - active.offsetY,
             width: active.width,
             height: Math.max(44, active.height),
-            label: target
-              ? `${dated(target.date)} às ${target.time}`
-              : "Solte sobre um horário da grade",
+            label: target ? uiText(1562, [dated(target.date), target.time]) : uiText(8),
           });
         if (active.resize)
           setHint(
-            `Duração: ${Math.max(15, Math.round((((active.height + pointer.clientY - active.y) / 48) * 60) / 15) * 15)} min`,
+            uiText(1563, [
+              Math.max(
+                15,
+                Math.round((((active.height + pointer.clientY - active.y) / 48) * 60) / 15) * 15,
+              ),
+            ]),
           );
-        else if (target) setHint(`${dated(target.date)} às ${target.time}`);
+        else if (target) setHint(uiText(1562, [dated(target.date), target.time]));
       }}
       onPointerUp={(pointer) => {
         const active = gesture.current;
@@ -245,8 +248,7 @@ export function AgendaCalendarViews({
       }}
     >
       <p className="agenda-time-hint" role="status">
-        {hint ||
-          `Horários da conta (${timeZone.replace(/_/g, " ")}). Arraste o evento para mudar o horário.`}
+        {hint || uiText(2284, [timeZone.replace(/_/g, " ")])}
       </p>
       {preview &&
         createPortal(
@@ -274,7 +276,7 @@ export function AgendaCalendarViews({
           }}
         >
           <div className="agenda-hour-axis">
-            <span>Hora</span>
+            <span>{uiText(9)}</span>
             {Array.from({ length: 24 }, (_, hour) => (
               <small key={hour} style={{ top: 44 + stripHeight + hour * 48 }}>
                 {String(hour).padStart(2, "0")}:00
@@ -302,7 +304,7 @@ export function AgendaCalendarViews({
                         type="button"
                         className="secondary-button"
                         style={task.color ? { borderBottomColor: task.color } : undefined}
-                        aria-label={`Ver tarefa ${task.title}`}
+                        aria-label={uiText(1564, [task.title])}
                         onClick={() => onSelect(date)}
                       >
                         {task.completed && <PaperCheckIcon />}
@@ -334,7 +336,7 @@ export function AgendaCalendarViews({
                         type="button"
                         data-slot-date={date}
                         data-slot-time={time}
-                        aria-label={`Planejar ${dated(date)} às ${time}`}
+                        aria-label={uiText(1565, [dated(date), time])}
                         onClick={() => {
                           onCreate(date, time);
                         }}
@@ -375,7 +377,7 @@ export function AgendaCalendarViews({
                             data-event-time={event.time}
                             data-event-title={event.title}
                             data-event-id={event.id}
-                            aria-description="Arraste para mover. No teclado, Alt e setas ajustam o horário; Shift, Alt e setas mudam o dia. Enter abre os detalhes."
+                            aria-description={uiText(10)}
                             onKeyDown={(key) => {
                               if (
                                 !key.altKey ||
@@ -422,20 +424,20 @@ export function AgendaCalendarViews({
                                 offsetY: pointer.clientY - bounds.top,
                               };
                             }}
-                            title={`${event.title}, ${event.timeZone ?? "fuso do dispositivo"}`}
+                            title={`${event.title}, ${event.timeZone ?? uiText(2285)}`}
                           >
                             <strong>{event.title}</strong>
                             <AgendaAttachmentPreview attachments={event.attachments} compact />
                             <small>
                               {event.time} ·{" "}
-                              {event.timeZone?.split("/").at(-1)?.replace(/_/g, " ") ?? "Local"}
+                              {event.timeZone?.split("/").at(-1)?.replace(/_/g, " ") ?? uiText(36)}
                             </small>
                           </button>
                           {eventSpan(event) === 0 && (
                             <button
                               className="agenda-block-resize"
                               type="button"
-                              aria-label={`Ajustar duração de ${event.title}`}
+                              aria-label={uiText(1566, [event.title])}
                               onClick={() => {
                                 if (suppressGestureClick.current) {
                                   suppressGestureClick.current = false;

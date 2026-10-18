@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import {
   createProfileHandleHandler,
+  isReservedHandle,
   type HandleIdentity,
   type HandleRegistry,
 } from "./profile-handle-handler";
@@ -161,4 +162,97 @@ it("GET same-origin funciona sem Origin, como fetch do navegador", async () => {
       )
     ).status,
   ).toBe(403);
+});
+
+it("nomes que fingem ser da equipe ou do produto não podem ser reservados", async () => {
+  const app = setup();
+  for (const name of ["admin", "olena", "helena", "suporte", "equipe", "oficial", "olenastudy"]) {
+    expect((await app.call("a", name)).status, name).toBe(409);
+  }
+  expect((await app.call("a", "alice")).status).toBe(200);
+});
+
+it("variações com ponto, sublinhado e números parecidos também são reservadas", () => {
+  for (const name of [
+    "4dmin",
+    "o.lena",
+    "supor_te",
+    "h3lena",
+    "0lena",
+    "adm1n",
+    "equ1pe",
+    "s.u.p.o.r.t.e",
+  ])
+    expect(isReservedHandle(name), name).toBe(true);
+  for (const name of ["alice", "maria.silva", "olenafan", "admin_do_grupo", "helena2", "joao10"])
+    expect(isReservedHandle(name), name).toBe(false);
+});
+
+it("a consulta do próprio @ lê só a folha da conta, sem baixar o registro inteiro", async () => {
+  let fullReads = 0;
+  let oneReads = 0;
+  const handler = createProfileHandleHandler({
+    allowedOrigins: ["https://app.test"],
+    ownerEmail: "",
+    identify: async () => ({ uid: "a", anonymous: false, emailVerified: true }),
+    consume: async () => true,
+    store: {
+      async read() {
+        fullReads++;
+        return { value: {}, version: "0" };
+      },
+      async readOne() {
+        oneReads++;
+        return { username: "alice" };
+      },
+      async write() {
+        return true;
+      },
+    },
+  });
+  const response = await handler(
+    new Request("https://app.test/api/profile-handle", {
+      headers: { origin: "https://app.test", authorization: "a" },
+    }),
+  );
+  expect(await response.json()).toMatchObject({ username: "alice" });
+  expect({ fullReads, oneReads }).toEqual({ fullReads: 0, oneReads: 1 });
+});
+
+it("reservar e apagar passam pelo teto de escrita, e a consulta não", async () => {
+  const calls: string[] = [];
+  const handler = createProfileHandleHandler({
+    allowedOrigins: ["https://app.test"],
+    ownerEmail: "",
+    identify: async () => ({ uid: "a", anonymous: false, emailVerified: true }),
+    consume: async () => true,
+    consumeWrite: async () => {
+      calls.push("write");
+      return calls.length < 3;
+    },
+    store: {
+      async read() {
+        return { value: {}, version: "0" };
+      },
+      async write() {
+        return true;
+      },
+    },
+  });
+  const request = (method: string) =>
+    new Request("https://app.test/api/profile-handle", {
+      method,
+      headers: {
+        origin: "https://app.test",
+        authorization: "a",
+        "content-type": "application/json",
+      },
+      ...(method === "POST" ? { body: JSON.stringify({ username: "alice" }) } : {}),
+    });
+  expect((await handler(request("GET"))).status).toBe(200);
+  expect(calls).toEqual([]);
+  expect((await handler(request("POST"))).status).toBe(200);
+  expect((await handler(request("DELETE"))).status).toBe(200);
+  expect((await handler(request("POST"))).status).toBe(429);
+  expect(calls).toHaveLength(3);
 });

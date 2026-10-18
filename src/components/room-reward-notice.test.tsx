@@ -5,6 +5,27 @@ import { ROOM_XP_KEY } from "../data/room-xp";
 const reward = { id: "round:player", place: 2, xp: 75, completedAt: 1000 };
 describe("notificação final de XP", () => {
   beforeEach(() => localStorage.clear());
+  it("desativar o aviso não impede crédito de XP", async () => {
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({ notificationPreferences: { rewards: false } }),
+    );
+    render(<RoomRewardNotice reward={reward} />);
+    await waitFor(() => expect(JSON.parse(localStorage.getItem(ROOM_XP_KEY)!).total).toBe(75));
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+  it("erro ao salvar XP continua visível mesmo com avisos desativados", async () => {
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({ notificationPreferences: { rewards: false } }),
+    );
+    localStorage.setItem(ROOM_XP_KEY, "corrompido");
+    render(<RoomRewardNotice reward={reward} />);
+    await waitFor(() =>
+      expect(screen.getByRole("status").textContent).toContain("Não foi possível salvar"),
+    );
+    expect(localStorage.getItem(ROOM_XP_KEY)).toBe("corrompido");
+  });
   it("credita Matemática antes de exibir o aviso atrasado e preserva o recibo se sair", async () => {
     vi.useFakeTimers();
     try {

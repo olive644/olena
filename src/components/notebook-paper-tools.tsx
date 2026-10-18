@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import {
   useRef,
   useState,
@@ -64,6 +65,8 @@ export function notebookPaperTabs(
 export { PaperMoonMark } from "./paper-moon-mark";
 
 export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
+  useLanguage();
+
   if (kind === "bookmark") return <PaperMoonMark className="paper-tab-icon" compact />;
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className="paper-tab-icon">
@@ -106,6 +109,8 @@ export function NotebookPaperTools({
   indexControl,
   children,
 }: Props) {
+  useLanguage();
+
   const mount = useRef<HTMLDivElement>(null);
   const gesture = useRef<{
     kind: NotebookTab["kind"];
@@ -137,17 +142,13 @@ export function NotebookPaperTools({
     const inside =
       x >= rect.left - 12 && x <= rect.right + 70 && y >= rect.top - 12 && y <= rect.bottom + 55;
     if (!inside || (kind === "divider" && x < rect.left + rect.width * 0.65)) {
-      setMessage(
-        kind === "divider"
-          ? "Solte a divisória na borda direita."
-          : "Solte a fita sobre uma folha.",
-      );
+      setMessage(kind === "divider" ? uiText(704) : uiText(1829));
       return;
     }
     const side = x < rect.left + rect.width / 2 ? 0 : 1;
     const page = kind === "divider" ? (visible[1] ?? visible[0]) : visible[side];
     if (!page) {
-      setMessage("Crie essa folha antes de marcar.");
+      setMessage(uiText(1830));
       return;
     }
     const position =
@@ -162,14 +163,14 @@ export function NotebookPaperTools({
           kind,
           pageId: page.id,
           position,
-          label: kind === "divider" ? "Divisória" : "Marcador",
+          label: kind === "divider" ? uiText(705) : uiText(1831),
           color: kind === "divider" ? colors[0]! : colors[3]!,
         };
     save(previous ? tabs.map((tab) => (tab.id === id ? next : tab)) : [...tabs, next]);
     setSelectedId(next.id);
     setTool(null);
     setMessage(
-      `${kind === "divider" ? "Divisória" : "Marcador"} na folha ${pages.indexOf(page) + 1}.`,
+      `${kind === "divider" ? uiText(705) : uiText(1831)} na folha ${pages.indexOf(page) + 1}.`,
     );
   }
   function start(event: PointerEvent<HTMLButtonElement>, kind: NotebookTab["kind"], id?: string) {
@@ -227,7 +228,7 @@ export function NotebookPaperTools({
         }
       }}
     >
-      <div className="notebook-paper-toolbox" role="toolbar" aria-label="Ferramentas do caderno">
+      <div className="notebook-paper-toolbox" role="toolbar" aria-label={uiText(706)}>
         {backControl}
         {coverControl}
         {(["divider", "bookmark"] as const).map((kind) => (
@@ -237,8 +238,8 @@ export function NotebookPaperTools({
             className="notebook-paper-tool"
             disabled={!pages.length || disabled}
             aria-pressed={tool === kind}
-            aria-label={kind === "divider" ? "Colocar divisória" : "Colocar marcador"}
-            title="Arraste para o caderno ou selecione e toque na folha"
+            aria-label={kind === "divider" ? uiText(707) : uiText(1832)}
+            title={uiText(708)}
             onPointerDown={(event) => start(event, kind)}
             {...pointerHandlers}
             onClick={() =>
@@ -249,7 +250,7 @@ export function NotebookPaperTools({
             }
           >
             <PaperTabIcon kind={kind} />
-            <span>{kind === "divider" ? "Divisória" : "Marcador"}</span>
+            <span>{kind === "divider" ? uiText(705) : uiText(1831)}</span>
           </button>
         ))}
         <div className="notebook-toolbar-secondary">
@@ -257,8 +258,8 @@ export function NotebookPaperTools({
             type="button"
             className="notebook-paper-tool"
             aria-pressed={editing}
-            aria-label={editing ? "Concluir edição" : "Editar marcas"}
-            title={editing ? "Concluir edição" : "Editar marcas"}
+            aria-label={editing ? uiText(709) : uiText(1833)}
+            title={editing ? uiText(709) : uiText(1833)}
             disabled={!tabs.length || disabled}
             onClick={() => {
               setEditing(!editing);
@@ -267,37 +268,39 @@ export function NotebookPaperTools({
             }}
           >
             <PaperEditorIcon name={editing ? "save" : "pen"} />
-            <span>{editing ? "Concluir edição" : "Editar marcas"}</span>
+            <span>{editing ? uiText(709) : uiText(1833)}</span>
           </button>
           {indexControl}
         </div>
         <span className="notebook-tool-hint">
           {tool === "divider"
-            ? "Toque na borda direita"
+            ? uiText(1834)
             : tool === "bookmark"
-              ? "Toque na folha"
+              ? uiText(1835)
               : editing
-                ? "Toque na marca para editar"
-                : "Toque para ir à folha"}
+                ? uiText(710)
+                : uiText(711)}
         </span>
       </div>
       {selected && (
-        <div className="notebook-tab-inspector" role="group" aria-label="Ajustar marcação">
+        <div className="notebook-tab-inspector" role="group" aria-label={uiText(712)}>
           <label>
-            Nome
+            {uiText(713)}
             <input
-              aria-label="Nome da marcação"
+              aria-label={uiText(714)}
               maxLength={32}
               value={selected.label}
               onChange={(event) => update(selected, { label: event.target.value })}
             />
           </label>
-          <div className="notebook-tab-colors" role="group" aria-label="Cor da marcação">
+          <div className="notebook-tab-colors" role="group" aria-label={uiText(715)}>
             {colors.map((color, index) => (
               <button
                 type="button"
                 key={color}
-                aria-label={["Roxo", "Verde", "Rosa", "Amarelo", "Azul"][index]}
+                aria-label={
+                  [uiText(1568), uiText(1571), uiText(1570), uiText(1569), uiText(1572)][index]
+                }
                 aria-pressed={selected.color === color}
                 style={{ "--tab-color": color } as CSSProperties}
                 onClick={() => update(selected, { color })}
@@ -307,7 +310,7 @@ export function NotebookPaperTools({
             ))}
           </div>
           {selected.kind === "bookmark" && (
-            <div className="notebook-marker-motifs" role="group" aria-label="Modelo do marcador">
+            <div className="notebook-marker-motifs" role="group" aria-label={uiText(716)}>
               {(["moon", "sun"] as const).map((motif) => (
                 <button
                   type="button"
@@ -317,7 +320,7 @@ export function NotebookPaperTools({
                   onClick={() => update(selected, { motif })}
                 >
                   <PaperMoonMark compact motif={motif} className="paper-tab-icon" />
-                  {motif === "moon" ? "Lua" : "Sol"}
+                  {motif === "moon" ? uiText(1836) : uiText(1837)}
                 </button>
               ))}
             </div>
@@ -330,10 +333,10 @@ export function NotebookPaperTools({
                 setSelectedId(null);
               }}
             >
-              Remover marcação
+              {uiText(717)}
             </button>
             <button type="button" onClick={() => setSelectedId(null)}>
-              Pronto
+              {uiText(718)}
             </button>
           </div>
         </div>
@@ -366,7 +369,7 @@ export function NotebookPaperTools({
         {(tool || ghost) && (
           <div className={`notebook-drop-guide is-${tool ?? ghost?.kind}`} aria-hidden="true" />
         )}
-        <nav className="notebook-attached-tabs" aria-label="Divisórias e marcadores">
+        <nav className="notebook-attached-tabs" aria-label={uiText(719)}>
           {tabs.map((tab) => {
             const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
             const exposed = !disabled && visible.some((page) => page.id === tab.pageId);
@@ -387,8 +390,12 @@ export function NotebookPaperTools({
                     "--tab-side": pageIndex % 2,
                   } as CSSProperties
                 }
-                title={`${tab.label || "Marcador"}, folha ${pageIndex + 1}. Arraste para reposicionar.`}
-                aria-label={`${tab.kind === "divider" ? "Divisória" : "Marcador"} ${tab.label}, folha ${pageIndex + 1}`}
+                title={uiText(1838, [tab.label || uiText(1831), pageIndex + 1])}
+                aria-label={uiText(1839, [
+                  tab.kind === "divider" ? uiText(705) : uiText(1831),
+                  tab.label,
+                  pageIndex + 1,
+                ])}
                 onPointerDown={(event) => start(event, tab.kind, tab.id)}
                 {...pointerHandlers}
                 onClick={() =>
@@ -413,7 +420,7 @@ export function NotebookPaperTools({
                 }}
               >
                 {tab.kind === "divider" ? (
-                  <span>{tab.label || "Divisória"}</span>
+                  <span>{tab.label || uiText(705)}</span>
                 ) : (
                   <>
                     <span className="visually-hidden">{pageIndex + 1}</span>
