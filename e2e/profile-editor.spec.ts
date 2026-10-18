@@ -94,7 +94,8 @@ for (const theme of ["light", "dark"]) {
       true,
     );
     await page.getByRole("button", { name: "Configurações", exact: true }).click();
-    await page.getByRole("button", { name: "Editar perfil", exact: true }).click();
+    await page.getByRole("button", { name: "Voltar ao perfil", exact: true }).click();
+    await edit.click();
     await expect(dialog.getByLabel("Nome de usuário", { exact: true })).toBeDisabled();
     await expect(dialog.getByLabel("Pronomes personalizados")).toHaveValue("ele/dela");
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();

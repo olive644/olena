@@ -7,6 +7,8 @@ import {
 import { PageHeader } from "../components/app-navigation";
 import { ProfileShowcase, ProfileOverview } from "../components/profile-showcase";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
+import { PaperArrow } from "../components/paper-arrow";
+import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PrivacyNotice } from "../components/privacy-notice";
 import { DeleteAccountPanel } from "../components/delete-account-panel";
 import { accountConfirmationName } from "../data/account-deletion";
@@ -26,14 +28,12 @@ import {
   ProfileIdentity,
   ProfileNotebookPreferences,
   ProfileNotifications,
-  ProfileProgress,
   ProfileDataExport,
 } from "../components/profile-preferences";
 import "./profile-view.css";
 
 const SECTIONS: readonly { id: string; label: string; icon: NavigationIconName }[] = [
   { id: "account", label: "Conta", icon: "profile" },
-  { id: "progress", label: "Meu progresso", icon: "xp" },
   { id: "appearance", label: "Aparência e acessibilidade", icon: "theme-light" },
   { id: "study", label: "Estudo e foco", icon: "focus" },
   { id: "notebooks", label: "Cadernos", icon: "notes" },
@@ -57,8 +57,6 @@ export function ProfileView({
   cloud,
   guest = false,
   onSignIn,
-  history,
-  onRestoreSnapshot,
 }: ProfileViewProps) {
   const [section, setSection] = useState("account");
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -127,12 +125,12 @@ export function ProfileView({
             <button
               className="appearance-picker__trigger profile-settings-toggle"
               type="button"
-              aria-label={settingsOpen ? "Fechar configurações" : "Configurações"}
+              aria-label={settingsOpen ? "Voltar ao perfil" : "Configurações"}
               aria-expanded={settingsOpen}
               aria-controls="profile-settings"
               onClick={() => setSettingsOpen(!settingsOpen)}
             >
-              <PaperEditorIcon name="settings" />
+              {settingsOpen ? <PaperArrow back /> : <PaperEditorIcon name="settings" />}
             </button>
           }
         />
@@ -141,7 +139,12 @@ export function ProfileView({
       <header className="profile-settings-heading" hidden={!settingsOpen}>
         <h1>Configurações</h1>
       </header>
-      <div className="profile-settings-layout" id="profile-settings" hidden={!settingsOpen}>
+      <div
+        className="profile-settings-layout"
+        id="profile-settings"
+        hidden={!settingsOpen}
+        data-open={settingsOpen}
+      >
         <nav className="profile-settings-nav" aria-label="Seções do Perfil">
           {SECTIONS.map((item) => (
             <button
@@ -167,13 +170,27 @@ export function ProfileView({
           </h2>
           <div className="profile-settings-grid" key={section}>
             {section === "account" && (
-              <ProfileIdentity guest={guest} nameFallback={cloud.displayName || "Seu perfil"} />
+              <ProfileIdentity
+                guest={guest}
+                nameFallback={cloud.displayName || "Seu perfil"}
+                email={!guest && cloud.authenticated === true ? cloud.email : undefined}
+                onSignIn={onSignIn}
+                onSignOut={!guest && cloud.authenticated === true ? cloud.signOut : undefined}
+              />
             )}
-            {section === "progress" && <ProfileProgress workspace={workspace} />}
             {section === "appearance" && <ProfileAppearance />}
             {section === "notebooks" && <ProfileNotebookPreferences />}
             {section === "notifications" && <ProfileNotifications />}
-            {section === "data" && <ProfileDataExport workspace={workspace} />}
+            {section === "data" && (
+              <ProfileDataExport
+                workspace={workspace}
+                ready={
+                  cloud.ready &&
+                  cloud.status !== "loading" &&
+                  (guest || cloud.authenticated === true)
+                }
+              />
+            )}
             {section === "data" && <PrivacyNotice embedded />}
             <section
               hidden={section !== "appearance"}
@@ -227,141 +244,6 @@ export function ProfileView({
               {accessibilityError && <p role="alert">{accessibilityError}</p>}
             </section>
             <section
-              hidden={section !== "account"}
-              className="account-sync-settings"
-              aria-labelledby="account-sync-title"
-            >
-              <div>
-                <span className="section-label">Conta e sincronização</span>
-                <h2 id="account-sync-title">Seus estudos em todos os dispositivos</h2>
-                <p>
-                  {guest
-                    ? "Você está como convidado. Seus estudos ficam somente neste aparelho. Entre com Google para usá-los também em outros dispositivos."
-                    : cloud.status === "signed-out"
-                      ? "Entre com Google para sincronizar seus estudos com sua conta."
-                      : !cloud.enabled
-                        ? "A nuvem ainda não está configurada. Seus estudos continuam salvos somente neste dispositivo."
-                        : cloud.status === "offline"
-                          ? "Sem conexão. Suas alterações ficam neste dispositivo e serão enviadas quando a internet voltar."
-                          : cloud.status === "conflict"
-                            ? "Conflito conciliado: suas alterações locais foram preservadas e a versão remota foi guardada neste dispositivo."
-                            : cloud.status === "syncing" || cloud.status === "loading"
-                              ? "Sincronizando suas alterações com segurança…"
-                              : "Computador e celular usam a mesma conta Google e recebem as alterações automaticamente."}
-                </p>
-              </div>
-              <dl>
-                <div>
-                  <dt>Conta</dt>
-                  <dd>
-                    {guest
-                      ? `${GUEST_NAME} (convidado)`
-                      : cloud.enabled
-                        ? cloud.status === "signed-out"
-                          ? "Nenhuma conta conectada"
-                          : cloud.displayName || cloud.email || "Conta Google conectada"
-                        : "Somente neste dispositivo"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Estado</dt>
-                  <dd data-sync-status={cloud.status}>
-                    {guest
-                      ? "Somente neste aparelho"
-                      : !cloud.enabled
-                        ? "Nuvem indisponível"
-                        : cloud.status === "signed-out"
-                          ? "Aguardando login"
-                          : cloud.status === "offline"
-                            ? "Aguardando conexão"
-                            : cloud.status === "conflict"
-                              ? "Conflito preservado"
-                              : cloud.status === "syncing" || cloud.status === "loading"
-                                ? "Sincronizando"
-                                : "Sincronizado"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Última atualização</dt>
-                  <dd>
-                    {cloud.lastSyncedAt
-                      ? new Date(cloud.lastSyncedAt).toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : "Ainda não sincronizado"}
-                  </dd>
-                </div>
-              </dl>
-              <div className="account-sync-settings__actions">
-                {guest || cloud.status === "signed-out" ? (
-                  <button type="button" disabled={!onSignIn} onClick={onSignIn}>
-                    Entrar com Google
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      disabled={!cloud.syncNow || cloud.status === "syncing"}
-                      onClick={cloud.syncNow}
-                    >
-                      Sincronizar agora
-                    </button>
-                    <button
-                      type="button"
-                      className="secondary-button"
-                      disabled={!cloud.signOut}
-                      onClick={() => void cloud.signOut?.()}
-                    >
-                      Sair desta conta
-                    </button>
-                  </>
-                )}
-              </div>
-            </section>
-
-            <section
-              hidden={section !== "data"}
-              className="workspace-history-settings"
-              aria-labelledby="workspace-history-title"
-            >
-              <div>
-                <span className="section-label">Recuperação local</span>
-                <h2 id="workspace-history-title">Histórico dos estudos</h2>
-                <p>
-                  Guardamos até seis versões recentes neste dispositivo para recuperar uma versão
-                  anterior.
-                </p>
-              </div>
-              {history.length === 0 ? (
-                <p className="workspace-history-empty">
-                  O histórico será criado após a próxima alteração.
-                </p>
-              ) : (
-                <ol className="workspace-history-list">
-                  {history.map((entry, index) => (
-                    <li key={entry.id}>
-                      <div>
-                        <strong>{index === 0 ? "Versão atual" : `Versão anterior ${index}`}</strong>
-                        <small>
-                          {new Date(entry.savedAt).toLocaleString("pt-BR", {
-                            dateStyle: "short",
-                            timeStyle: "short",
-                          })}
-                        </small>
-                      </div>
-                      {index > 0 && (
-                        <button type="button" onClick={() => onRestoreSnapshot(entry)}>
-                          Restaurar
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </section>
-
-            <section
               hidden={section !== "study"}
               className="study-method-settings"
               aria-labelledby="study-method-title"
@@ -376,17 +258,14 @@ export function ProfileView({
                 <div>
                   {([25, 50] as const).map((minutes) => (
                     <button
-                      className={
-                        workspace.focusPreferences.pomodoroMinutes === minutes
-                          ? "is-active"
-                          : undefined
-                      }
+                      className="secondary-button"
                       type="button"
                       aria-label={`${minutes} minutos`}
                       aria-pressed={workspace.focusPreferences.pomodoroMinutes === minutes}
                       onClick={() => updatePomodoroMinutes(minutes)}
                       key={minutes}
                     >
+                      {workspace.focusPreferences.pomodoroMinutes === minutes && <PaperCheckIcon />}
                       {minutes} minutos
                     </button>
                   ))}
@@ -394,12 +273,14 @@ export function ProfileView({
               </fieldset>
 
               <button
-                className={`study-long-break${workspace.focusPreferences.longBreaks ? " is-active" : ""}`}
+                className="study-long-break secondary-button"
                 type="button"
                 aria-pressed={workspace.focusPreferences.longBreaks}
                 onClick={toggleLongBreaks}
               >
-                <i aria-hidden="true" />
+                <span className="study-long-break__check" aria-hidden="true">
+                  {workspace.focusPreferences.longBreaks && <PaperCheckIcon />}
+                </span>
                 <span>
                   <strong>Pausa longa após 4 rodadas</strong>
                   <small>15 minutos para descansar.</small>
@@ -428,13 +309,10 @@ export function ProfileView({
                       key={modality}
                       type="button"
                       aria-pressed={hasStudyModality(workspace.studyPreferences, modality)}
-                      className={
-                        hasStudyModality(workspace.studyPreferences, modality)
-                          ? "is-active"
-                          : undefined
-                      }
+                      className="secondary-button"
                       onClick={() => toggleModality(modality)}
                     >
+                      {hasStudyModality(workspace.studyPreferences, modality) && <PaperCheckIcon />}
                       {modalityLabels[modality]}
                     </button>
                   ))}
@@ -479,11 +357,10 @@ export function ProfileView({
                         key={value}
                         type="button"
                         aria-pressed={workspace.studyPreferences[key] === value}
-                        className={
-                          workspace.studyPreferences[key] === value ? "is-active" : undefined
-                        }
+                        className="secondary-button"
                         onClick={() => updateStudyPreferences({ [key]: value })}
                       >
+                        {workspace.studyPreferences[key] === value && <PaperCheckIcon />}
                         {label}
                       </button>
                     ))}
@@ -492,7 +369,9 @@ export function ProfileView({
               ))}
             </section>
 
-            {section === "data" &&
+            {section === "account" &&
+              !guest &&
+              cloud.authenticated === true &&
               cloud.enabled &&
               cloud.deleteAccount &&
               accountConfirmationName(cloud) && (

@@ -87,16 +87,15 @@ describe("App", () => {
   });
 
   // Inclui importação fria da rota e seleção no diálogo, como os fluxos de caderno.
-  it("permite escolher um avatar oficial nas configurações do perfil", async () => {
+  it("permite escolher um avatar oficial diretamente no perfil", async () => {
     render(<App />);
     navigate("Perfil");
     fireEvent.click(
-      await screen.findByRole("button", { name: "Configurações" }, { timeout: 10000 }),
+      await screen.findByRole("button", { name: "Abrir foto do perfil" }, { timeout: 10000 }),
     );
-    fireEvent.click(screen.getByText("Escolher avatar", { selector: "summary" }));
     fireEvent.click(screen.getByRole("button", { name: "Helena" }));
-    expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toEqual({
-      name: "Helena",
+    fireEvent.click(screen.getByRole("button", { name: "Usar personagem" }));
+    expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toMatchObject({
       photoUrl: "/profile-avatars/helena.webp",
     });
   }, 15000);
@@ -251,10 +250,8 @@ describe("App", () => {
       await screen.findByRole("region", { name: "Seu perfil" }, { timeout: 5000 }),
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
-    expect(
-      screen.getByRole("heading", { name: "Seus estudos em todos os dispositivos" }),
-    ).toBeTruthy();
-    expect(screen.getByText("Somente neste dispositivo")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Informações" })).toBeTruthy();
+    expect(screen.queryByText("Conta e sincronização")).toBeNull();
     const profile = within(
       screen.getByRole("navigation", { name: "Navegação principal" }),
     ).getByRole("button", { name: "Perfil" });

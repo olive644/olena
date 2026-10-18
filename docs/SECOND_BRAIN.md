@@ -1417,6 +1417,12 @@ de teste com a validação em duas contas reais, registrada em SOCIAL_REALTIME_S
 
 O plano gratuito limita download a cerca de 10 GB por mês. O envio da conta espera 4 s para juntar mudanças (`CLOUD_UPLOAD_DELAY_MS`) e usa `print=silent`; ao esconder a página o envio pendente sai na hora. Ao criar uma gravação frequente em dados sincronizados, lembre que cada salvamento custa o tamanho do estado inteiro em download. Veja o consumo na aba Uso do Realtime Database.
 
+# Configurações: conta e exportação
+
+ProfileIdentity é somente leitura, editores continuam na ficha do Perfil. E-mail vem de cloud.email somente com authenticated confirmado. DeleteAccountPanel fica na seção Conta; não duplicar em Privacidade e dados nem remover reautenticação/confirmação. Remover a UI de recuperação não altera armazenamento do histórico ou sincronização.
+
+ProfileDataExport exige ready da conta (ou convidado pronto). createStudyDataExport repete a lista permitida de SYNCED_STORAGE_KEYS e serializa o workspace atual. Não trocar por Object.entries(localStorage), nem exportar tokens. JSON é arquivo pessoal sem criptografia e sem arquivos que só existem remotamente; não anunciar como exportação integral. E2E profile-settings lê o download e restaura o workspace com loadWorkspace, sem dados reais.
+
 ## CI e minutos (2026-10-18)
 
 O e2e é a maior parte do custo do CI. `scripts/ci-scope.mjs` decide o escopo: pull request com código roda desktop e mobile, push na main roda só o desktop, pull request só de documentação não roda e2e, e há uma execução completa semanal. Os checks obrigatórios mantêm os nomes. Ao mexer no workflow, preserve a regra de que a decisão de escopo que falha nunca deixa um check passar. Teste com `node --test scripts/ci-scope.test.mjs`.

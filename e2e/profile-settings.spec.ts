@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 import { createInitialWorkspace } from "../src/domain/workspace";
+import { loadWorkspace, WORKSPACE_STORAGE_KEY } from "../src/data/local-workspace";
 
 test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábitos nos dois temas", async ({
   page,
@@ -17,6 +19,7 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   await page.addInitScript((workspace) => {
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
     localStorage.setItem("helena.guest.v1", "1");
+    localStorage.setItem("firebase:authUser:do-not-export", "credential-not-for-export");
     if (!localStorage.getItem("helenastudy.workspace.v1"))
       localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
   }, seed);
@@ -25,6 +28,12 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
   const menu = page.getByRole("navigation", { name: "Seções do Perfil" });
   await expect(page.getByRole("heading", { name: "Configurações", exact: true })).toBeVisible();
+  await expect(menu.getByRole("button", { name: "Meu progresso", exact: true })).toHaveCount(0);
+  await expect(page.getByText("Como você aparece", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Editar perfil", exact: true })).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Voltar ao perfil" }).locator("img"),
+  ).toHaveAttribute("src", "/paper-arrow.svg");
   await expect(page.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(page.getByText("Em produção", { exact: true })).toHaveCount(0);
   for (const theme of ["Claro", "Escuro"]) {
@@ -43,7 +52,6 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
       "Estudo e foco",
       "Cadernos",
       "Agenda e notificações",
-      "Meu progresso",
       "Privacidade e dados",
     ]) {
       await menu.getByRole("button", { name: label, exact: true }).click();
@@ -70,8 +78,6 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
         expect(panel.right).toBeLessThanOrEqual(page.viewportSize()!.width);
       if (label === "Cadernos")
         await page.getByRole("checkbox", { name: /Só caneta, dedo move/ }).check();
-      if (label === "Meu progresso")
-        await expect(page.getByText("25", { exact: true })).toBeVisible();
       if (label === "Conta" || label === "Estudo e foco")
         await page.screenshot({
           path: info.outputPath(`perfil-${label}-${theme}.png`),
@@ -82,7 +88,17 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   }
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exportar meus dados", exact: true }).click();
-  expect((await downloadPromise).suggestedFilename()).toBe("olena-estudos.json");
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("olena-estudos.json");
+  const downloaded = await readFile((await download.path())!, "utf8");
+  expect(downloaded).not.toContain("credential-not-for-export");
+  const exported = JSON.parse(downloaded) as { version: number; storage: Record<string, string> };
+  expect(exported.version).toBe(1);
+  expect(exported.storage[WORKSPACE_STORAGE_KEY]).toBeTruthy();
+  const restored = loadWorkspace({ getItem: (key) => exported.storage[key] ?? null });
+  expect(restored.focusSessions).toEqual(seed.focusSessions);
+  expect(restored.habits).toEqual(seed.habits);
+  await expect(page.getByText("Recuperação local", { exact: true })).toHaveCount(0);
   await page.reload();
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
   await menu.getByRole("button", { name: "Cadernos", exact: true }).click();
