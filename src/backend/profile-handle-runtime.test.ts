@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ identify: vi.fn() }));
 vi.mock("./firebase-account-identity", () => ({
@@ -45,11 +46,17 @@ it("consulta a conta atual, não confia no email do navegador e usa registro pri
     expect.stringContaining("accounts:lookup"),
     expect.objectContaining({ body: JSON.stringify({ idToken: "user-token" }) }),
   );
+  // A consulta lê só a folha da própria conta (sha256 do UID), nunca o registro inteiro.
+  const ownLeaf = `https://db.test/privateProfileHandles/${createHash("sha256").update("a").digest("hex")}.json`;
   expect(fetch).toHaveBeenCalledWith(
-    "https://db.test/privateProfileHandles.json",
+    ownLeaf,
     expect.objectContaining({
       headers: expect.objectContaining({ Authorization: "Bearer admin-token" }),
     }),
+  );
+  expect(fetch).not.toHaveBeenCalledWith(
+    "https://db.test/privateProfileHandles.json",
+    expect.anything(),
   );
 });
 it("conta removida, desativada ou UID divergente não acessa o registro", async () => {

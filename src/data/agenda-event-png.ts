@@ -1,3 +1,4 @@
+import { uiLocale } from "../i18n/runtime";
 import type { StudyEvent } from "../domain/workspace";
 import { brandedExportCanvas, loadPaperExportMascot } from "./paper-export-art";
 
@@ -41,7 +42,7 @@ export async function agendaEventPng(
   y += 18;
   text(subject, 20, 1);
   text(
-    new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", {
+    new Date(`${date}T12:00:00`).toLocaleDateString(uiLocale(), {
       weekday: "long",
       day: "numeric",
       month: "long",

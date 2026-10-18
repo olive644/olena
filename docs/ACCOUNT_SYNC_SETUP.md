@@ -74,3 +74,18 @@ No Modo Sala o convidado vê o campo "Seu apelido na sala", que começa em Guest
 ## Regras endurecidas em 2026-10-17 (publicar antes do próximo deploy de sincronização)
 
 `firebase-room.rules.json` agora limita `users/$uid`: só as 17 chaves de `SYNCED_STORAGE_KEYS` (nomes brutos em `state`, nomes codificados em `stateV2`) são aceitas, cada item tem no máximo 5 milhões de caracteres (20 milhões só na folha de trabalho `helenastudy.workspace.v1`) e contas anônimas não escrevem. O teste `src/firebase-user-rules.test.ts` falha se uma chave nova for adicionada a `SYNCED_STORAGE_KEYS` sem atualizar as regras, então publique as regras junto com qualquer chave nova. Leia e faça backup das regras publicadas antes de publicar; esta mudança só estreita permissões.
+
+## Regras endurecidas em 2026-10-18 (pentest): publicar junto com o deploy
+
+Duas mudanças em `users/$uid`, ambas em `firebase-room.rules.json`:
+
+1. **`state` (formato legado) fica somente para leitura.** O aplicativo só lê dele para migrar para `stateV2` e nunca grava lá (a migração chegou em 12/10/2026). Antes, as duas árvores aceitavam até 100 milhões de caracteres cada por conta. Quem ainda tem uma aba antiga aberta deixa de sincronizar até recarregar a página. Os dados antigos continuam legíveis, e a exclusão da conta continua funcionando.
+2. **Teto somado dos itens que não são a folha de trabalho.** Além do limite de 5 milhões por item, a soma dos 16 itens fora de `helenastudy.workspace.v1` não pode passar de 8 milhões de caracteres. O navegador guarda cerca de 5 milhões de caracteres por site, então nenhum uso legítimo chega perto. Com isso uma conta ocupa no máximo cerca de 28 milhões de caracteres, e não mais cerca de 200 milhões.
+
+**Como publicar e conferir (ação da dona, não é feita por código).** Cole o conteúdo de `firebase-room.rules.json` em Realtime Database, Regras, clique em Publicar e use o Simulador de regras com um usuário autenticado real (o UID precisa ser o mesmo do caminho):
+
+- `PUT /users/<uid>/stateV2` com `version: 2`, `updatedAt` numérico e `items` com `k_aGVsZW5hLm1hdGhHYW1lLnY1` (o item de matemática v5) e `k_aGVsZW5hc3R1ZHkudGhlbWU` com texto curto: deve ser **permitido**.
+- `PUT /users/<uid>/state` com `version: 1`, `updatedAt` numérico e `items` com `helenastudy.theme`: deve ser **negado**.
+- `GET /users/<uid>/state`: continua **permitido**.
+
+Não dá para testar o teto de 8 milhões no simulador (o texto seria enorme). Ele é coberto por `src/firebase-user-rules.test.ts`, que avalia a expressão publicada.

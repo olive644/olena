@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { isMotionReduced } from "../data/accessibility-preferences";
@@ -16,6 +17,8 @@ import { PracticeUserPortrait } from "./practice-user-portrait";
 import "./practice-subject-trail.css";
 
 function TrailEmblem({ id }: { id: TrailIslandId }) {
+  useLanguage();
+
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" className="practice-trail-emblem">
       {id === "portuguese" || id === "languages" ? (
@@ -65,6 +68,8 @@ function TrailEmblem({ id }: { id: TrailIslandId }) {
 }
 
 function TrailNumberPiece({ id, level }: { id: TrailIslandId; level: number }) {
+  useLanguage();
+
   return (
     <svg
       viewBox="0 0 100 100"
@@ -160,6 +165,8 @@ export function PracticeSubjectTrail({
   unlockedLevel?: number;
   onOpenLevel?: (level: number) => void;
 }) {
+  useLanguage();
+
   const [journey, setJourney] = useState({
     target: onOpenLevel ? Math.max(0, Math.min(unlockedLevel, 4) - 1) : 0,
     visit: 0,
@@ -195,7 +202,7 @@ export function PracticeSubjectTrail({
     <section
       ref={root}
       className={`practice-hub solo-world-enter practice-avatar-journey practice-subject-trail practice-subject-trail--${island.id}`}
-      aria-label={`Trilha de ${island.subject}`}
+      aria-label={uiText(1882, [island.subject])}
       style={
         {
           "--trail-color": trail.color,
@@ -204,18 +211,18 @@ export function PracticeSubjectTrail({
         } as CSSProperties
       }
     >
-      <header className="practice-trail-heading" aria-label="Navegação da trilha">
+      <header className="practice-trail-heading" aria-label={uiText(814)}>
         <button className="secondary-button" type="button" onClick={onBack}>
-          <PaperArrow back /> Voltar aos mundos
+          <PaperArrow back /> {uiText(815)}
         </button>
         <div>
           <TrailEmblem id={island.id} />
-          <h2>{island.id === "mathematics" ? "Matemática básica" : island.subject}</h2>
+          <h2>{island.id === "mathematics" ? uiText(816) : island.subject}</h2>
         </div>
       </header>
       <div
         className="solo-level-path practice-trail-map"
-        aria-label={`Caminho de ${island.subject}`}
+        aria-label={uiText(1883, [island.subject])}
         style={
           { "--scene-count": island.id === "mathematics" ? MATH_SCENE_COUNT : 1 } as CSSProperties
         }
@@ -274,7 +281,7 @@ export function PracticeSubjectTrail({
               }
               aria-pressed={selected === index}
               disabled={index + 1 > unlockedLevel}
-              aria-label={`${island.id === "languages" ? "Nível" : "Etapa"} ${index + 1}: ${item.title}. ${index + 1 > unlockedLevel ? "Bloqueado. Complete o nível anterior para desbloquear." : item.description}`}
+              aria-label={`${island.id === "languages" ? uiText(449) : uiText(1884)} ${index + 1}: ${item.title}. ${index + 1 > unlockedLevel ? uiText(817) : item.description}`}
               onClick={(event) => {
                 setJourney((current) => ({
                   target: index,
@@ -329,9 +336,9 @@ export function PracticeSubjectTrail({
       </div>
       <span className="practice-trail-status" role="status">
         {journey.phase === "travel"
-          ? `Indo para a etapa ${selected + 1}`
+          ? uiText(1885, [selected + 1])
           : journey.phase === "open" && journey.visit > 0 && !onOpenLevel
-            ? `Etapa ${selected + 1} selecionada. Exercícios em preparação.`
+            ? uiText(1886, [selected + 1])
             : ""}
       </span>
     </section>,

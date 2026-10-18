@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import type { BingoReviewDecision, PublicLocalRoomState } from "../domain/local-room";
 import { BINGO_FREE, BINGO_MODE_LABELS } from "../domain/number-bingo";
@@ -14,6 +15,8 @@ export function BingoReview({
   isHost: boolean;
   onReview?: ((claimId: string, decision: BingoReviewDecision) => Promise<void>) | undefined;
 }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const played = useRef("");
   const [busy, setBusy] = useState(false);
@@ -35,7 +38,7 @@ export function BingoReview({
     try {
       await onReview(claim.id, decision);
     } catch {
-      setError("Não foi possível concluir a conferência. Tente novamente.");
+      setError(uiText(132));
     } finally {
       setBusy(false);
     }
@@ -52,11 +55,13 @@ export function BingoReview({
         <RoomConfetti />
         <img src="/room-icons/bingo-claim.svg" alt="" width="84" height="84" />
         <h2 id="bingo-announcement" tabIndex={-1}>
-          {player.displayName} FEZ BINGO!
+          {player.displayName} {uiText(133)}
         </h2>
         <p>{BINGO_MODE_LABELS[state.settings.bingoMode ?? "line"]}</p>
         {!!state.bingoClaimQueue?.length && (
-          <p role="status">Mais {state.bingoClaimQueue.length} pedido(s) aguardando conferência.</p>
+          <p role="status">
+            {uiText(134)} {state.bingoClaimQueue.length} {uiText(135)}
+          </p>
         )}
       </div>
       {isHost ? (
@@ -66,18 +71,20 @@ export function BingoReview({
               <img src="/profile-avatars/poliana.webp" alt="" width="100" height="100" />
             </div>
             {!state.settings.bingoPhysical && (
-              <section className="bingo-solar-card" aria-label="Cartela para conferência">
+              <section className="bingo-solar-card" aria-label={uiText(136)}>
                 <header>
                   <h3>{player.displayName}</h3>
-                  <small>Cartela anunciada</small>
+                  <small>{uiText(137)}</small>
                 </header>
                 <div className="bingo-card-heading" aria-hidden="true">
-                  {["B", "I", "N", "G", "O"].map((letter, i) => (
-                    <div key={letter}>
-                      <BingoPlanet index={i} />
-                      <strong>{letter}</strong>
-                    </div>
-                  ))}
+                  {[uiText(1621), uiText(1622), uiText(1623), uiText(1624), uiText(1625)].map(
+                    (letter, i) => (
+                      <div key={letter}>
+                        <BingoPlanet index={i} />
+                        <strong>{letter}</strong>
+                      </div>
+                    ),
+                  )}
                 </div>
                 <div className="bingo-card-grid">
                   {player.bingoCard?.map((id, i) => {
@@ -92,8 +99,8 @@ export function BingoReview({
                         aria-pressed={marked}
                         aria-label={
                           id === BINGO_FREE
-                            ? "Sol, centro livre"
-                            : `${["B", "I", "N", "G", "O"][i % 5]} ${id}`
+                            ? uiText(1626)
+                            : `${[uiText(1621), uiText(1622), uiText(1623), uiText(1624), uiText(1625)][i % 5]} ${id}`
                         }
                       >
                         {id === BINGO_FREE ? (
@@ -112,15 +119,10 @@ export function BingoReview({
           <div className="bingo-review-actions">
             {(
               [
-                ["reject", "Foi engano!"],
-                ["continue", "Continuar partida"],
-                ["restart", "Recomeçar"],
-                [
-                  "finish",
-                  (state.bingoWinnerIds?.length ?? 0) > 0
-                    ? "Definir ganhadores"
-                    : "Definir ganhador",
-                ],
+                ["reject", uiText(1627)],
+                ["continue", uiText(1628)],
+                ["restart", uiText(138)],
+                ["finish", (state.bingoWinnerIds?.length ?? 0) > 0 ? uiText(1629) : uiText(1630)],
               ] as const
             ).map(([decision, label]) => (
               <button
@@ -135,11 +137,11 @@ export function BingoReview({
               </button>
             ))}
           </div>
-          {error && <p role="alert">{error}</p>}
+          {error && <p role="alert">{uiText(error)}</p>}
         </>
       ) : (
         <p className="bingo-review-wait" role="status">
-          O criador está conferindo a cartela. Aguarde para continuar.
+          {uiText(139)}
         </p>
       )}
     </dialog>

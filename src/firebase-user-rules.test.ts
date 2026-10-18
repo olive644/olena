@@ -65,10 +65,11 @@ describe("regras de /users/<uid>", () => {
     );
   });
 
-  it("só aceitam o nó state, com version e updatedAt (items é opcional: o Firebase descarta objeto vazio)", () => {
+  it("o nó legado state fica congelado: o aplicativo só lê dele para migrar e nunca grava", () => {
+    // Antes ele permitia até 100 milhões de caracteres por conta além do stateV2. A leitura
+    // (migração) e a exclusão (null não passa por validate) continuam funcionando.
+    expect(user.state[".validate"]).toBe(false);
     expect(user.$other[".validate"]).toBe(false);
-    expect(user.state[".validate"]).toContain("['version', 'updatedAt']");
-    expect(user.state[".validate"]).not.toContain("items");
     expect((user.state["version"] as Rule)[".validate"]).toBe("newData.isNumber()");
     expect((user.state["updatedAt"] as Rule)[".validate"]).toBe("newData.isNumber()");
     expect((user.state["$other"] as Rule)[".validate"]).toBe(false);
@@ -97,6 +98,40 @@ describe("regras de /users/<uid>", () => {
       expect(modernPattern.test(intruso)).toBe(false);
       expect(legacyPattern.test(intruso)).toBe(false);
     }
+  });
+
+  it("o teto somado dos itens que não são a folha de trabalho vale no stateV2", () => {
+    const modern = rules.rules.users.$uid["stateV2"] as { items: { ".validate": string } };
+    const workspaceWire = Object.keys(encodeCloudItems({ [SYNCED_STORAGE_KEYS[0]]: "v" }))[0]!;
+    const expression = modern.items[".validate"];
+    // A folha de trabalho tem teto próprio e não entra na soma.
+    expect(expression).not.toContain(workspaceWire);
+    const others = Object.keys(
+      encodeCloudItems(Object.fromEntries(SYNCED_STORAGE_KEYS.slice(1).map((name) => [name, "v"]))),
+    );
+    expect(others).toHaveLength(16);
+    for (const wire of others) expect(expression).toContain(`'${wire}'`);
+    // Expressão estática do repositório, nunca entrada de usuário.
+    const evaluate = new Function("newData", `return (${expression});`) as (
+      newData: unknown,
+    ) => boolean;
+    const withLengths = (lengths: Record<string, number>) => ({
+      child: (key: string) => ({
+        exists: () => key in lengths,
+        val: () => ({ length: lengths[key] }),
+      }),
+    });
+    const each = (length: number) => Object.fromEntries(others.map((wire) => [wire, length]));
+    expect(evaluate(withLengths({}))).toBe(true);
+    expect(evaluate(withLengths(each(500_000)))).toBe(true); // 8 milhões somados
+    expect(evaluate(withLengths(each(500_001)))).toBe(false);
+    expect(evaluate(withLengths({ [others[0]!]: 8_000_000 }))).toBe(true);
+    expect(evaluate(withLengths({ [others[0]!]: 8_000_001 }))).toBe(false);
+    // Uma conta com a folha de trabalho no teto (20 milhões) e o resto no limite do navegador
+    // (cerca de 5 milhões de caracteres) continua cabendo.
+    expect(evaluate(withLengths({ [workspaceWire]: 20_000_000, [others[3]!]: 5_000_000 }))).toBe(
+      true,
+    );
   });
 
   it("limita cada item (só a folha de trabalho passa de 5 milhões) e bloqueia contas anônimas", () => {

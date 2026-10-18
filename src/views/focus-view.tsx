@@ -1,3 +1,4 @@
+import { uiWeekdays, uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { Plus } from "lucide-react";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
@@ -34,20 +35,6 @@ const FULL_BLOOM_MINUTES = 60;
 const POMODORO_SHORT_BREAK_MINUTES = 5;
 const POMODORO_LONG_BREAK_MINUTES = 15;
 const POMODORO_STREAK_KEY = "noteoli.pomodoro-streak.v1";
-const MONTH_NAMES = [
-  "janeiro",
-  "fevereiro",
-  "março",
-  "abril",
-  "maio",
-  "junho",
-  "julho",
-  "agosto",
-  "setembro",
-  "outubro",
-  "novembro",
-  "dezembro",
-] as const;
 type TimerMode = "timer" | "pomodoro";
 type PomodoroPhase = "focus" | "shortBreak" | "longBreak";
 
@@ -110,12 +97,14 @@ function weekDays(reference = new Date()) {
 }
 
 function FocusRose({ progress, wilted }: { progress: number; wilted: boolean }) {
+  useLanguage();
+
   return (
     <svg
       className={`focus-rose${wilted ? " is-wilted" : ""}`}
       viewBox="0 0 300 330"
       role="img"
-      aria-label={wilted ? "Rosa de foco murcha" : "Rosa de foco crescendo"}
+      aria-label={wilted ? uiText(1955) : uiText(1956)}
       style={{ "--rose-growth": String(0.85 + progress * 0.15) } as CSSProperties}
     >
       <path
@@ -178,16 +167,13 @@ function FocusRose({ progress, wilted }: { progress: number; wilted: boolean }) 
 }
 
 function PomodoroTomato({ progress }: { progress: number }) {
+  useLanguage();
+
   const outline =
     "m140 78-32-11-35 9-29 23-17 34 1 41 17 36 30 29 65 15 65-15 30-29 17-36 1-41-17-34-29-23-35-9Z";
   const eaten = 1 - Math.max(0, Math.min(1, progress));
   return (
-    <svg
-      className="pomodoro-tomato"
-      viewBox="0 0 280 290"
-      role="img"
-      aria-label="Tomate Pomodoro em papel recortado"
-    >
+    <svg className="pomodoro-tomato" viewBox="0 0 280 290" role="img" aria-label={uiText(1158)}>
       <defs>
         <mask id="pomodoro-bites">
           <rect width="280" height="290" fill="white" />
@@ -221,6 +207,8 @@ function PomodoroTomato({ progress }: { progress: number }) {
 }
 
 function FocusPaperControlIcon({ paused }: { paused: boolean }) {
+  useLanguage();
+
   return (
     <svg
       className={`focus-paper-control-icon ${paused ? "is-pause" : "is-play"}`}
@@ -245,6 +233,8 @@ function FocusPaperControlIcon({ paused }: { paused: boolean }) {
 }
 
 export function FocusView({ workspace, dispatch }: FocusViewProps) {
+  useLanguage();
+
   const [deviceId] = useState(focusDeviceId);
   const sharedSnapshot = useRef("");
   const [restored] = useState(() => {
@@ -557,13 +547,13 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
               type="button"
               disabled={running || elapsedSeconds > 0}
               onClick={() => slideMode(-1)}
-              aria-label="Modo anterior"
+              aria-label={uiText(1159)}
             >
               <FocusPaperArrow />
             </button>
             <div className="focus-mode-viewport">
               <span className="focus-mode-name" aria-live="polite">
-                {mode === "timer" ? "Cronômetro" : "Pomodoro"}
+                {mode === "timer" ? uiText(103) : uiText(1606)}
               </span>
               <div
                 className={`focus-mode-slide${modeDirection < 0 ? " is-backward" : ""}`}
@@ -581,7 +571,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                         <h2 id="focus-timer-title" className="timer">
                           <PaperDigits value={formatTimer(secondsRemaining)} />
                         </h2>
-                        {pomodoroPhase !== "focus" && <p>Respire um pouco</p>}
+                        {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}
                       </div>
                     </div>
                   )}
@@ -589,35 +579,35 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     <span>
                       {mode === "pomodoro"
                         ? pomodoroPhase === "longBreak"
-                          ? "Pausa longa"
+                          ? uiText(1957)
                           : pomodoroPhase === "shortBreak"
-                            ? "Pausa curta"
+                            ? uiText(1958)
                             : ""
                         : caredToday
-                          ? "Cuidada hoje"
-                          : "Sua flor de foco"}
+                          ? uiText(1959)
+                          : uiText(1161)}
                     </span>
                     <strong>
                       {mode === "pomodoro"
                         ? pomodoroPhase === "longBreak"
-                          ? "Você completou quatro rodadas. Descanse por 15 minutos."
+                          ? uiText(1162)
                           : pomodoroPhase === "shortBreak"
-                            ? "Respire por 5 minutos. O próximo ciclo começa sozinho."
+                            ? uiText(1163)
                             : ""
                         : missedYesterday && !caredToday
-                          ? "Ela sentiu sua falta. Uma sessão faz a rosa florescer novamente."
+                          ? uiText(1164)
                           : caredToday
-                            ? "Ela está segura por hoje. Continue para vê-la crescer."
-                            : "Comece uma sessão hoje para manter a rosa viva."}
+                            ? uiText(1165)
+                            : uiText(1166)}
                     </strong>
                     {mode === "timer" ? (
                       <small>
                         {Math.min(FULL_BLOOM_MINUTES, Math.floor(todayMinutes + liveMinutes))}/
-                        {FULL_BLOOM_MINUTES} min até florescer por completo
+                        {FULL_BLOOM_MINUTES} {uiText(1167)}
                       </small>
                     ) : (
                       <div className="pomodoro-progress">
-                        <span>Pomodoros concluídos nesta semana</span>
+                        <span>{uiText(1168)}</span>
                         <div className="pomodoro-week">
                           {weekDays().map((day) => (
                             <span className="pomodoro-week__day" key={day.key}>
@@ -630,10 +620,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                           ))}
                         </div>
                         <small>
-                          {workspace.focusPreferences.pomodoroMinutes} min de foco · 5 min de pausa
-                          {workspace.focusPreferences.longBreaks
-                            ? " · 15 min após quatro rodadas"
-                            : " · sem pausa longa"}
+                          {workspace.focusPreferences.pomodoroMinutes} {uiText(1169)}
+                          {workspace.focusPreferences.longBreaks ? uiText(1170) : uiText(1171)}
                         </small>
                       </div>
                     )}
@@ -651,13 +639,13 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     onClick={toggleRunning}
                   >
                     <FocusPaperControlIcon paused={running} />
-                    {running ? "Pausar" : elapsedSeconds > 0 ? "Continuar" : "Começar"}
+                    {running ? uiText(1960) : elapsedSeconds > 0 ? uiText(1436) : uiText(1172)}
                   </button>
                   <button
                     className="icon-button"
                     type="button"
                     onClick={reset}
-                    aria-label="Reiniciar contador"
+                    aria-label={uiText(1173)}
                   >
                     <PaperEditorIcon name="reset" />
                   </button>
@@ -667,7 +655,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     onClick={finish}
                     disabled={elapsedSeconds < (restored?.agendaEventId ? 60 : 1)}
                   >
-                    Encerrar e registrar
+                    {uiText(1174)}
                   </button>
                 </div>
               </div>
@@ -677,7 +665,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
               type="button"
               disabled={running || elapsedSeconds > 0}
               onClick={() => slideMode(1)}
-              aria-label="Próximo modo"
+              aria-label={uiText(1175)}
             >
               <FocusPaperArrow />
             </button>
@@ -688,21 +676,21 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       <div className="learn-grid focus-goals focus-goals--hidden" style={{ display: "none" }}>
         <section className="module-panel" aria-labelledby="new-goal-title">
           <div className="module-heading">
-            <h2 id="new-goal-title">Nova meta de foco</h2>
+            <h2 id="new-goal-title">{uiText(1176)}</h2>
           </div>
           <form className="compact-form" onSubmit={addGoal}>
             <label className="field">
-              <span>Objetivo</span>
+              <span>{uiText(1059)}</span>
               <input
                 value={goalTitle}
                 onChange={(event) => setGoalTitle(event.target.value)}
-                placeholder="Ex.: Preparar prova final"
+                placeholder={uiText(1177)}
                 required
               />
             </label>
             <div className="focus-goal-grid">
               <label className="field focus-goal-amount">
-                <span>{mode === "pomodoro" ? "Meta em pomodoros" : "Meta em minutos"}</span>
+                <span>{mode === "pomodoro" ? uiText(1961) : uiText(1962)}</span>
                 <input
                   type="number"
                   min="1"
@@ -712,11 +700,11 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                   required
                 />
               </label>
-              <div className="paper-calendar" aria-label="Escolha o prazo">
+              <div className="paper-calendar" aria-label={uiText(1178)}>
                 <div className="paper-calendar__heading">
                   <button
                     type="button"
-                    aria-label="Mês anterior"
+                    aria-label={uiText(84)}
                     onClick={() =>
                       setCalendarMonth(
                         new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1),
@@ -726,11 +714,13 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     ‹
                   </button>
                   <strong>
-                    {MONTH_NAMES[calendarMonth.getMonth()]} de {calendarMonth.getFullYear()}
+                    {new Intl.DateTimeFormat(uiLocale(), { month: "long", year: "numeric" }).format(
+                      calendarMonth,
+                    )}
                   </strong>
                   <button
                     type="button"
-                    aria-label="Próximo mês"
+                    aria-label={uiText(85)}
                     onClick={() =>
                       setCalendarMonth(
                         new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1),
@@ -741,7 +731,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                   </button>
                 </div>
                 <div className="paper-calendar__week" aria-hidden="true">
-                  {["D", "S", "T", "Q", "Q", "S", "S"].map((day, index) => (
+                  {uiWeekdays().map((day, index) => (
                     <span key={`${day}-${index}`}>{day}</span>
                   ))}
                 </div>
@@ -755,7 +745,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                         className={`${outside ? "is-outside " : ""}${inRange ? "is-in-range " : ""}${dateKey === todayKey ? "is-start " : ""}${dateKey === deadline ? "is-end" : ""}`}
                         type="button"
                         disabled={dateKey < todayKey}
-                        aria-label={date.toLocaleDateString("pt-BR", {
+                        aria-label={date.toLocaleDateString(uiLocale(), {
                           day: "numeric",
                           month: "long",
                           year: "numeric",
@@ -769,25 +759,27 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     );
                   })}
                 </div>
-                <p>De hoje até {selectedDeadline.toLocaleDateString("pt-BR")}</p>
+                <p>
+                  {uiText(1179)} {selectedDeadline.toLocaleDateString(uiLocale())}
+                </p>
               </div>
             </div>
             <button className="secondary-button" type="submit">
-              <Plus size={16} /> Criar meta
+              <Plus size={16} /> {uiText(1180)}
             </button>
           </form>
         </section>
 
         <section className="module-panel goals-panel" aria-labelledby="goal-list-title">
           <div className="module-heading">
-            <h2 id="goal-list-title">Metas de foco</h2>
+            <h2 id="goal-list-title">{uiText(1181)}</h2>
             <span>
-              {focusedMinutes} min registrados em {subject.name}
+              {focusedMinutes} {uiText(1182)} {subject.name}
             </span>
           </div>
           {subjectGoals.length === 0 ? (
             <div className="empty-state">
-              <p>Crie uma meta para acompanhar seu tempo de foco.</p>
+              <p>{uiText(1183)}</p>
             </div>
           ) : (
             <ul className="goal-list">
@@ -800,7 +792,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                   <li className={goal.completed ? "is-complete" : undefined} key={goal.id}>
                     <button
                       type="button"
-                      aria-label={`${goal.completed ? "Reabrir" : "Concluir"} ${goal.title}`}
+                      aria-label={`${goal.completed ? uiText(1963) : uiText(25)} ${goal.title}`}
                       onClick={() => dispatch({ type: "goal/toggled", id: goal.id })}
                     >
                       <PaperCheckIcon size={15} />
@@ -808,7 +800,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     <div>
                       <strong>{goal.title}</strong>
                       <small>
-                        {progress}% · {focusedMinutes}/{goal.targetMinutes} min · até{" "}
+                        {progress}% · {focusedMinutes}/{goal.targetMinutes} {uiText(1184)}{" "}
                         {goal.deadline}
                       </small>
                       <span>

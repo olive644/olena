@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime.js";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { readEventStream } from "../ai/event-stream";
 import { SOCIAL_CHANGED } from "./profile-social";
@@ -58,7 +59,7 @@ export function subscribeSocialUpdates(uid: string) {
               throw new Error("social-event");
             if (event.type === "changed") {
               failures = 0;
-              console.info("[Olena] Atualização social recebida pelo canal em tempo real.");
+              console.info(uiText("[Olena] Atualização social recebida pelo canal em tempo real."));
               window.dispatchEvent(new Event(SOCIAL_CHANGED));
             }
           }

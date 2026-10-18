@@ -1,5 +1,5 @@
 import { it, expect, vi } from "vitest";
-import { createRoomGuard } from "./room-guard";
+import { createRoomGuard, ROOM_CREATE_DAILY_LIMIT } from "./room-guard";
 import { createMemoryRoomStore } from "./room-transaction";
 import { createHash } from "node:crypto";
 
@@ -124,4 +124,26 @@ it("avisa uma única vez quando o App Check não é exigido e fica quieto quando
   await ask(createRoomGuard(createMemoryRoomStore(), "project", "app", true));
   expect(warn).not.toHaveBeenCalled();
   warn.mockRestore();
+});
+
+it("o teto global de criações vale para todos os endereços somados, e só para criar", async () => {
+  const store = createMemoryRoomStore();
+  const guard = createRoomGuard(store, "project", "app", false);
+  const request = (ip: string, action: string) =>
+    new Request(`https://app.example/api/local-room?action=${action}`, {
+      headers: { "x-vercel-forwarded-for": ip },
+    });
+  // Esgota o teto global como se muitos endereços diferentes tivessem criado salas hoje.
+  const day = 86400;
+  const { checkRateLimit } = await import("./rate-limit");
+  for (let i = 0; i < ROOM_CREATE_DAILY_LIMIT; i++)
+    expect(
+      await checkRateLimit(store, "room-limits", "global:create-day", ROOM_CREATE_DAILY_LIMIT, day),
+    ).toBe(true);
+  const blocked = await guard(request("198.51.100.1", "create"));
+  expect(blocked?.status).toBe(429);
+  expect(await blocked?.json()).toMatchObject({ error: expect.stringContaining("hoje") });
+  // Outras ações não são afetadas pelo teto de criação.
+  expect(await guard(request("198.51.100.1", "join"))).toBeUndefined();
+  expect(await guard(request("198.51.100.2", "answer"))).toBeUndefined();
 });

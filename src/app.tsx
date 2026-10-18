@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "./i18n/runtime";
 import { lazy, Suspense, useState } from "react";
 import { useAppView } from "./hooks/use-app-view";
 import { MobileNavigation, Sidebar } from "./components/app-navigation";
@@ -45,6 +46,8 @@ function hasCompletedOnboarding() {
 }
 
 function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signedOut?: boolean }) {
+  useLanguage();
+
   const [moreOpen, setMoreOpen] = useState(false);
   const [projectorCode] = useState(() => readLocalRoomProjectorCodeFromUrl(window.location.href));
   const [joinCode] = useState(
@@ -69,7 +72,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
 
   if (onboarding)
     return (
-      <Suspense fallback={<HelenaLoading label="Preparando sua jornada…" />}>
+      <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <OnboardingView
           loginOnly={signedOut && hasCompletedOnboarding()}
           onFinish={(setup) => {
@@ -86,12 +89,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     <MobileMenuContext.Provider value={{ open: moreOpen, setOpen: setMoreOpen }}>
       <div className="app-shell">
         <a className="skip-link" href="#main-content">
-          Ir para o conteúdo
+          {uiText(1)}
         </a>
         {storageFull && (
           <p className="storage-full-banner" role="alert">
-            Este dispositivo está sem espaço para guardar seus estudos. As últimas alterações não
-            foram salvas aqui. Apague folhas ou cadernos que não usa mais para liberar espaço.
+            {uiText(2)}
           </p>
         )}
         <Sidebar view={view} onNavigate={setView} />
@@ -107,7 +109,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         <Suspense
           fallback={
             <div className="main-content loading-view">
-              <HelenaLoading label="Abrindo módulo…" />
+              <HelenaLoading label={uiText(3)} />
             </div>
           }
         >
@@ -167,6 +169,8 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
 }
 
 export function App() {
+  useLanguage();
+
   // Nunca bloqueia a primeira renderizacao esperando a sincronizacao com a
   // nuvem: isso fazia todo mundo (logado ou nao) esperar o SDK de auth do
   // Firebase baixar e responder antes de ver qualquer coisa. A tela renderiza

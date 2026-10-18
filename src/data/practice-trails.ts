@@ -1,10 +1,11 @@
+import { localizeResource, uiText } from "../i18n/runtime.js";
 import type { PRACTICE_ISLANDS } from "./practice-islands";
 
 export type PracticeIsland = (typeof PRACTICE_ISLANDS)[number];
 export type SubjectIslandId = Exclude<PracticeIsland["id"], "languages">;
 export type TrailIslandId = PracticeIsland["id"];
 
-export const BASIC_MATH_CHAPTERS = [
+export const BASIC_MATH_CHAPTERS = localizeResource([
   {
     topic: "Contagem",
     color: "#2456ba",
@@ -135,14 +136,14 @@ export const BASIC_MATH_CHAPTERS = [
       "Desafio final de matemática básica",
     ],
   },
-] as const;
+] as const);
 export const BASIC_MATH_LEVELS = BASIC_MATH_CHAPTERS.flatMap((chapter, chapterIndex) =>
   chapter.lessons.map((title, step) => ({
     title,
     topic: chapter.topic,
     chapter: chapterIndex,
     step,
-    description: "Matemática básica, exercícios em preparação.",
+    description: uiText("Matemática básica, exercícios em preparação."),
   })),
 );
 export const MATH_SCENE_COUNT = Math.ceil(BASIC_MATH_LEVELS.length / 4);
@@ -162,7 +163,7 @@ export const MOBILE_TRAIL_Y: Record<TrailIslandId, readonly number[]> = {
   programming: [86, 56, 31, 13],
 };
 
-export const SUBJECT_TRAILS = {
+export const SUBJECT_TRAILS = localizeResource({
   languages: {
     points: [
       { x: 50, y: 85 },
@@ -175,21 +176,25 @@ export const SUBJECT_TRAILS = {
     light: "#d7e8a2",
     stops: [
       {
-        title: "Primeiras palavras",
+        title: uiText("Primeiras palavras"),
         topic: "Vocabulário",
-        description: "Exercícios em preparação.",
+        description: uiText("Exercícios em preparação."),
       },
       {
-        title: "Sons do porto",
+        title: uiText("Sons do porto"),
         topic: "Escuta",
-        description: "Exercícios em preparação.",
+        description: uiText("Exercícios em preparação."),
       },
       {
-        title: "Pontes de conversa",
+        title: uiText("Pontes de conversa"),
         topic: "Conversação",
-        description: "Exercícios em preparação.",
+        description: uiText("Exercícios em preparação."),
       },
-      { title: "Histórias de viagem", topic: "Leitura", description: "Exercícios em preparação." },
+      {
+        title: uiText("Histórias de viagem"),
+        topic: "Leitura",
+        description: uiText("Exercícios em preparação."),
+      },
     ],
   },
   portuguese: {
@@ -204,24 +209,24 @@ export const SUBJECT_TRAILS = {
     light: "#ffb793",
     stops: [
       {
-        title: "Bosque das palavras",
+        title: uiText("Bosque das palavras"),
         topic: "Gramática",
-        description: "Palavras, frases e os caminhos que conectam nossas ideias.",
+        description: uiText("Palavras, frases e os caminhos que conectam nossas ideias."),
       },
       {
-        title: "Biblioteca de histórias",
+        title: uiText("Biblioteca de histórias"),
         topic: "Literatura",
-        description: "Autores, personagens e diferentes formas de contar histórias.",
+        description: uiText("Autores, personagens e diferentes formas de contar histórias."),
       },
       {
-        title: "Ponte dos sentidos",
+        title: uiText("Ponte dos sentidos"),
         topic: "Interpretação",
-        description: "Leitura atenta para descobrir sentidos e intenções em um texto.",
+        description: uiText("Leitura atenta para descobrir sentidos e intenções em um texto."),
       },
       {
-        title: "Ateliê da escrita",
+        title: uiText("Ateliê da escrita"),
         topic: "Escrita",
-        description: "Organização de ideias e construção dos seus próprios textos.",
+        description: uiText("Organização de ideias e construção dos seus próprios textos."),
       },
     ],
   },
@@ -237,24 +242,24 @@ export const SUBJECT_TRAILS = {
     light: "#8be2e8",
     stops: [
       {
-        title: "Portão dos elementos",
+        title: uiText("Portão dos elementos"),
         topic: "Elementos",
-        description: "Átomos e elementos, as peças que compõem a matéria.",
+        description: uiText("Átomos e elementos, as peças que compõem a matéria."),
       },
       {
-        title: "Ponte das moléculas",
+        title: uiText("Ponte das moléculas"),
         topic: "Moléculas",
-        description: "Como os átomos se conectam e formam novas estruturas.",
+        description: uiText("Como os átomos se conectam e formam novas estruturas."),
       },
       {
-        title: "Laboratório de mudanças",
+        title: uiText("Laboratório de mudanças"),
         topic: "Reações",
-        description: "Transformações da matéria e pistas de uma reação química.",
+        description: uiText("Transformações da matéria e pistas de uma reação química."),
       },
       {
-        title: "Fonte das misturas",
+        title: uiText("Fonte das misturas"),
         topic: "Misturas",
-        description: "Substâncias, misturas e maneiras de separar seus componentes.",
+        description: uiText("Substâncias, misturas e maneiras de separar seus componentes."),
       },
     ],
   },
@@ -270,24 +275,24 @@ export const SUBJECT_TRAILS = {
     light: "#b8e784",
     stops: [
       {
-        title: "Semente da vida",
+        title: uiText("Semente da vida"),
         topic: "Células",
-        description: "Células e estruturas que tornam a vida possível.",
+        description: uiText("Células e estruturas que tornam a vida possível."),
       },
       {
-        title: "Árvore das heranças",
+        title: uiText("Árvore das heranças"),
         topic: "Genética",
-        description: "Características e informações que passam entre gerações.",
+        description: uiText("Características e informações que passam entre gerações."),
       },
       {
-        title: "Vale dos encontros",
+        title: uiText("Vale dos encontros"),
         topic: "Ecologia",
-        description: "Relações entre seres vivos e os ambientes onde vivem.",
+        description: uiText("Relações entre seres vivos e os ambientes onde vivem."),
       },
       {
-        title: "Estufa das descobertas",
+        title: uiText("Estufa das descobertas"),
         topic: "Botânica",
-        description: "Plantas, suas estruturas e seus ciclos de vida.",
+        description: uiText("Plantas, suas estruturas e seus ciclos de vida."),
       },
     ],
   },
@@ -313,24 +318,24 @@ export const SUBJECT_TRAILS = {
     light: "#89d8e7",
     stops: [
       {
-        title: "Oficina Python",
+        title: uiText("Oficina Python"),
         topic: "Python",
-        description: "Primeiros passos de lógica e programação com Python.",
+        description: uiText("Primeiros passos de lógica e programação com Python."),
       },
       {
-        title: "Circuito JavaScript",
+        title: uiText("Circuito JavaScript"),
         topic: "JavaScript",
-        description: "Lógica e interações para dar comportamento às páginas.",
+        description: uiText("Lógica e interações para dar comportamento às páginas."),
       },
       {
-        title: "Fundação HTML",
+        title: uiText("Fundação HTML"),
         topic: "HTML",
-        description: "Elementos e estrutura semântica de uma página.",
+        description: uiText("Elementos e estrutura semântica de uma página."),
       },
       {
-        title: "Ateliê CSS",
+        title: uiText("Ateliê CSS"),
         topic: "CSS",
-        description: "Estilos, composição e layouts que se adaptam à tela.",
+        description: uiText("Estilos, composição e layouts que se adaptam à tela."),
       },
     ],
   },
@@ -343,4 +348,4 @@ export const SUBJECT_TRAILS = {
     light: string;
     stops: readonly { title: string; topic: string; description: string }[];
   }
->;
+>);

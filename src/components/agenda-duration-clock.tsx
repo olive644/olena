@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useId, useRef, useState } from "react";
 import { AgendaDetailIcon } from "./agenda-detail-icon";
 import { AgendaCloseIcon } from "./agenda-close-icon";
@@ -12,6 +13,8 @@ export function AgendaDurationClock({
   max: number;
   onChange: (minutes: number) => void;
 }) {
+  useLanguage();
+
   const id = useId(),
     panel = useRef<HTMLDivElement>(null);
   const drag = useRef<{ pointer: number; hand: "hours" | "minutes" } | null>(null);
@@ -22,18 +25,18 @@ export function AgendaDurationClock({
   const close = () => panel.current?.hidePopover();
   return (
     <div className="field agenda-paper-field">
-      <span>Duração</span>
+      <span>{uiText(17)}</span>
       <button
         type="button"
         className="agenda-field-trigger"
         popoverTarget={id}
-        aria-label="Duração em minutos"
+        aria-label={uiText(18)}
         aria-expanded={open}
         aria-haspopup="dialog"
       >
         <span>
-          {hours > 0 ? `${hours} h ` : ""}
-          {minutes} min
+          {hours > 0 ? uiText(1576, [hours]) : ""}
+          {minutes} {uiText(19)}
         </span>
         <AgendaDetailIcon name="clock" />
       </button>
@@ -42,7 +45,7 @@ export function AgendaDurationClock({
         ref={panel}
         popover="auto"
         role="dialog"
-        aria-label="Escolher duração"
+        aria-label={uiText(20)}
         className="agenda-field-popover agenda-clock-panel"
         onKeyDown={(event) => {
           if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
@@ -53,8 +56,8 @@ export function AgendaDurationClock({
         onToggle={(event) => setOpen(event.currentTarget.matches(":popover-open"))}
       >
         <header>
-          <h3>Gire os ponteiros</h3>
-          <button type="button" className="icon-button" aria-label="Fechar duração" onClick={close}>
+          <h3>{uiText(21)}</h3>
+          <button type="button" className="icon-button" aria-label={uiText(22)} onClick={close}>
             <AgendaCloseIcon />
           </button>
         </header>
@@ -120,7 +123,7 @@ export function AgendaDurationClock({
               key={hand}
               role="slider"
               tabIndex={0}
-              aria-label={hand === "hours" ? "Ponteiro das horas" : "Ponteiro dos minutos"}
+              aria-label={hand === "hours" ? uiText(1577) : uiText(1578)}
               aria-valuemin={0}
               aria-valuemax={hand === "hours" ? Math.floor(max / 60) : 59}
               aria-valuenow={hand === "hours" ? hours : minutes}
@@ -161,7 +164,7 @@ export function AgendaDurationClock({
         </svg>
         <div className="field-row">
           <label className="field">
-            Horas
+            {uiText(23)}
             <input
               type="number"
               min={0}
@@ -171,7 +174,7 @@ export function AgendaDurationClock({
             />
           </label>
           <label className="field">
-            Minutos
+            {uiText(24)}
             <input
               type="number"
               min={0}
@@ -182,7 +185,7 @@ export function AgendaDurationClock({
           </label>
         </div>
         <button type="button" className="primary-button" onClick={close}>
-          Concluir
+          {uiText(25)}
         </button>
       </div>
     </div>

@@ -1,38 +1,41 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useState } from "react";
 import { HelenaChat } from "../components/helena-chat";
 import { demonstrationReply } from "../data/helena-preview";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import "./helena-chat-preview-page.css";
 
-const navigation = [
-  { title: "Espaço", icon: "today", path: "/" },
-  { title: "Agenda", icon: "planner", path: "/agenda" },
-  { title: "Praticar", icon: "learn", path: "/aprender" },
-  { title: "Foco", icon: "focus", path: "/foco" },
-  { title: "Perfil", icon: "profile", path: "/perfil" },
-];
+const navigation = localizeLabels(() => [
+  { title: uiText(115), icon: "today", path: "/" },
+  { title: uiText(1550), icon: "planner", path: "/agenda" },
+  { title: uiText(101), icon: "learn", path: "/aprender" },
+  { title: uiText(99), icon: "focus", path: "/foco" },
+  { title: uiText(120), icon: "profile", path: "/perfil" },
+]);
 
 export function HelenaChatPreviewPage() {
+  useLanguage();
+
   const [day, setDay] = useState(3);
   const [completed, setCompleted] = useState(false);
   return (
     <div className="hc-preview-page">
-      <nav className="hc-preview-nav" aria-label="Navegação do aplicativo">
-        <a href="/" className="hc-preview-mark" aria-label="OlenaStudy">
+      <nav className="hc-preview-nav" aria-label={uiText(1217)}>
+        <a href="/" className="hc-preview-mark" aria-label={uiText(116)}>
           <img src="/olena-icon-outlined.svg" alt="" width="38" height="38" />
         </a>
         {navigation.map((item) => (
           <a
             href={item.path}
             key={item.title}
-            className={item.title === "Agenda" ? "is-active" : ""}
-            aria-current={item.title === "Agenda" ? "page" : undefined}
+            className={item.icon === "planner" ? "is-active" : ""}
+            aria-current={item.icon === "planner" ? "page" : undefined}
           >
             <img
               src={
                 item.icon === "profile"
                   ? "/navigation-icons/paper/profile.svg"
-                  : `/navigation-icons/paper/${item.title === "Agenda" ? "roxo" : "claro"}/${item.icon}.svg`
+                  : `/navigation-icons/paper/${item.icon === "planner" ? "roxo" : "claro"}/${item.icon}.svg`
               }
               alt=""
               width="32"
@@ -44,20 +47,28 @@ export function HelenaChatPreviewPage() {
       </nav>
       <main className="hc-preview-main">
         <header className="hc-preview-top">
-          <span>Seu espaço de estudos</span>
-          <span className="hc-preview-label">Preview da Helena</span>
+          <span>{uiText(1218)}</span>
+          <span className="hc-preview-label">{uiText(1219)}</span>
         </header>
         <div className="hc-preview-heading">
-          <span>AGENDA</span>
+          <span>{uiText(1220)}</span>
           <h1>
-            Um bom dia começa
+            {uiText(1221)}
             <br />
-            com um pequeno passo.
+            {uiText(1222)}
           </h1>
-          <p>Abra a Helena no canto para experimentar a conversa.</p>
+          <p>{uiText(1223)}</p>
         </div>
-        <section className="hc-preview-week" aria-label="Semana demonstrativa">
-          {["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map((title, index) => (
+        <section className="hc-preview-week" aria-label={uiText(1224)}>
+          {[
+            uiText(1581),
+            uiText(1582),
+            uiText(1583),
+            uiText(1584),
+            uiText(1585),
+            uiText(34),
+            uiText(1580),
+          ].map((title, index) => (
             <button
               key={title}
               type="button"
@@ -74,8 +85,8 @@ export function HelenaChatPreviewPage() {
         <div className="hc-preview-cards">
           <section className="hc-preview-day">
             <div className="hc-preview-section-title">
-              <h2>Seu plano do dia</h2>
-              <span>Exemplo</span>
+              <h2>{uiText(1225)}</h2>
+              <span>{uiText(1226)}</span>
             </div>
             <article>
               <time>14:00</time>
@@ -83,9 +94,9 @@ export function HelenaChatPreviewPage() {
                 <img src="/navigation-icons/paper/claro/learn.svg" alt="" />
               </div>
               <div>
-                <span>MATEMÁTICA</span>
-                <h3>Praticar as primeiras contas</h3>
-                <p>15 minutos para ganhar confiança.</p>
+                <span>{uiText(249)}</span>
+                <h3>{uiText(1227)}</h3>
+                <p>{uiText(1228)}</p>
               </div>
             </article>
             <article className={completed ? "is-complete" : ""}>
@@ -94,33 +105,33 @@ export function HelenaChatPreviewPage() {
                 <img src="/navigation-icons/paper/claro/library.svg" alt="" />
               </div>
               <div>
-                <span>REVISÃO</span>
-                <h3>Relembrar o que aprendi</h3>
-                <p>Separe suas dúvidas para a próxima sessão.</p>
+                <span>{uiText(1229)}</span>
+                <h3>{uiText(1230)}</h3>
+                <p>{uiText(1231)}</p>
               </div>
               <button
                 type="button"
                 className="hc-preview-check"
-                aria-label={completed ? "Reabrir revisão" : "Concluir revisão"}
+                aria-label={completed ? uiText(1232) : uiText(1233)}
                 aria-pressed={completed}
                 onClick={() => setCompleted(!completed)}
               >
                 <PaperCheckIcon />
               </button>
             </article>
-            <div className="hc-preview-day-note">Um plano leve também é um plano.</div>
+            <div className="hc-preview-day-note">{uiText(1234)}</div>
           </section>
           <section className="hc-preview-note">
             <img src="/navigation-icons/paper/claro/focus.svg" alt="" width="48" height="48" />
-            <span>NO SEU RITMO</span>
+            <span>{uiText(1235)}</span>
             <h2>
-              Reserve um tempo
+              {uiText(1236)}
               <br />
-              para você.
+              {uiText(1237)}
             </h2>
-            <p>Uma coisa por vez. Pequenas sessões deixam espaço para aprender e respirar.</p>
+            <p>{uiText(1238)}</p>
             <a href="/foco">
-              Abrir Foco <img src="/paper-arrow.svg" alt="" width="26" height="26" />
+              {uiText(1239)} <img src="/paper-arrow.svg" alt="" width="26" height="26" />
             </a>
           </section>
         </div>

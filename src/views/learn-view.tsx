@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { useCallback, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
@@ -33,42 +34,44 @@ const SOLO_LEVELS: Array<{
   title: string;
   description: string;
   icon: "learn" | "library" | "xp";
-}> = [
+}> = localizeLabels(() => [
   {
     mode: "listening",
     level: 1,
-    title: "Escuta",
-    description: "Ouça, reconheça e traduza palavras.",
+    title: uiText(428),
+    description: uiText(1247),
     icon: "learn",
   },
   {
     mode: "review",
     level: 2,
-    title: "Flashcards",
-    description: "Revise no seu ritmo e fortaleça a memória.",
+    title: uiText(1273),
+    description: uiText(1248),
     icon: "library",
   },
   {
     mode: "quiz",
     level: 3,
-    title: "Quiz",
-    description: "Responda desafios e acompanhe seus acertos.",
+    title: uiText(1968),
+    description: uiText(1969),
     icon: "xp",
   },
   {
     mode: "bingo",
     level: 4,
-    title: "Bingo",
-    description: "Complete a cartela com seus conteúdos.",
+    title: uiText(1275),
+    description: uiText(1249),
     icon: "learn",
   },
-];
+]);
 
 const SOLO_WORLDS = PRACTICE_ISLANDS;
 
 const SOLO_PROGRESS_KEY = "helena.soloProgress";
 
 function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
+  useLanguage();
+
   const [worldIndex, setWorldIndex] = useState(4);
   const [insideWorld, setInsideWorld] = useState(false);
   const [entryOrigin, setEntryOrigin] = useState<{ x: number; y: number; size: number }>();
@@ -120,7 +123,7 @@ function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
               <path d="M11 14h2v4h-2Z" fill="#333142" />
             </svg>
           )}
-          {available ? "Explorar Matemática" : "Ilha bloqueada"}
+          {available ? uiText(1250) : uiText(1970)}
         </button>
       </div>
     </div>
@@ -140,6 +143,8 @@ function ReviewSession({
   subjectId,
   onComplete,
 }: LearnViewProps & { subjectId: string; onComplete?: () => void }) {
+  useLanguage();
+
   const today = toDateKey(new Date());
   const [queue, setQueue] = useState(() =>
     dueFlashcards(workspace, today)
@@ -161,8 +166,8 @@ function ReviewSession({
     return (
       <div className="study-finished">
         <PaperCheckIcon size={22} />
-        <h3>Revisão em dia</h3>
-        <p>Nenhum cartão pendente para esta matéria.</p>
+        <h3>{uiText(1251)}</h3>
+        <p>{uiText(1252)}</p>
       </div>
     );
 
@@ -170,23 +175,24 @@ function ReviewSession({
     <div className="review-session">
       <div className="study-progress">
         <span>
-          {queue.length} pendente{queue.length === 1 ? "" : "s"}
+          {queue.length} {uiText(1253)}
+          {queue.length === 1 ? "" : "s"}
         </span>
       </div>
       <article className="review-card">
-        <span>{revealed ? "Resposta" : "Pergunta"}</span>
+        <span>{revealed ? uiText(1971) : uiText(476)}</span>
         <h3>{revealed ? card.back : card.front}</h3>
       </article>
       {revealed ? (
         <div className="rating-row">
           <button type="button" onClick={() => rate("again")}>
-            Errei
+            {uiText(1254)}
           </button>
           <button type="button" onClick={() => rate("hard")}>
-            Difícil
+            {uiText(420)}
           </button>
           <button type="button" onClick={() => rate("easy")}>
-            Fácil
+            {uiText(418)}
           </button>
         </div>
       ) : (
@@ -195,7 +201,7 @@ function ReviewSession({
           type="button"
           onClick={() => setRevealed(true)}
         >
-          Mostrar resposta
+          {uiText(1255)}
         </button>
       )}
     </div>
@@ -208,6 +214,8 @@ function QuizSession({
   subjectId,
   onComplete,
 }: LearnViewProps & { subjectId: string; onComplete?: () => void }) {
+  useLanguage();
+
   const cards = workspace.flashcards.filter((card) => card.subjectId === subjectId).slice(0, 5);
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -219,8 +227,8 @@ function QuizSession({
   if (cards.length === 0)
     return (
       <div className="study-finished">
-        <h3>Questionário indisponível</h3>
-        <p>Crie flashcards na Biblioteca para gerar perguntas locais.</p>
+        <h3>{uiText(1256)}</h3>
+        <p>{uiText(1257)}</p>
       </div>
     );
 
@@ -230,8 +238,8 @@ function QuizSession({
         <strong>
           {correct}/{cards.length}
         </strong>
-        <h3>Questionário concluído</h3>
-        <p>O resultado foi salvo no seu histórico local.</p>
+        <h3>{uiText(1258)}</h3>
+        <p>{uiText(1259)}</p>
       </div>
     );
   if (!card) return null;
@@ -268,12 +276,12 @@ function QuizSession({
     <form className="quiz-session" onSubmit={submit}>
       <div className="study-progress">
         <span>
-          Questão {index + 1} de {cards.length}
+          {uiText(1260)} {index + 1} {uiText(72)} {cards.length}
         </span>
       </div>
       <h3>{card.front}</h3>
       <label className="field">
-        <span>Sua resposta</span>
+        <span>{uiText(1261)}</span>
         <input
           value={answer}
           onChange={(event) => setAnswer(event.target.value)}
@@ -285,21 +293,19 @@ function QuizSession({
         <p
           className={feedback === "correct" ? "quiz-feedback is-correct" : "quiz-feedback is-wrong"}
         >
-          {feedback === "correct" ? "Resposta correta." : `Resposta esperada: ${card.back}`}
+          {feedback === "correct" ? uiText(1972) : uiText(1973, [card.back])}
         </p>
       )}
       <button className="secondary-button" type="submit">
-        {feedback
-          ? index + 1 === cards.length
-            ? "Ver resultado"
-            : "Próxima questão"
-          : "Responder"}
+        {feedback ? (index + 1 === cards.length ? uiText(1728) : uiText(1262)) : uiText(1781)}
       </button>
     </form>
   );
 }
 
 function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { subjectId: string }) {
+  useLanguage();
+
   const board = workspace.bingoBoards.find((item) => item.subjectId === subjectId);
   const fronts = workspace.flashcards
     .filter((card) => card.subjectId === subjectId)
@@ -317,10 +323,10 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
   if (!board)
     return (
       <div className="study-finished bingo-intro">
-        <h3>Seu bingo de estudos</h3>
-        <p>Complete uma linha, coluna ou diagonal. Os cartões da matéria entram como desafios.</p>
+        <h3>{uiText(1263)}</h3>
+        <p>{uiText(1264)}</p>
         <button className="primary-button" type="button" onClick={createBoard}>
-          Criar bingo
+          {uiText(1265)}
         </button>
       </div>
     );
@@ -331,17 +337,20 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
   return (
     <div className="bingo-session">
       <div className="study-progress">
-        <span>{completed}/9 desafios concluídos</span>
+        <span>
+          {completed}
+          {uiText(2568)}
+        </span>
         <button className="link-button" type="button" onClick={createBoard}>
-          Novo bingo
+          {uiText(1266)}
         </button>
       </div>
       {won && (
         <div className="bingo-success" role="status">
-          <PaperCheckIcon size={18} /> Bingo! Você completou uma sequência.
+          <PaperCheckIcon size={18} /> {uiText(1267)}
         </div>
       )}
-      <div className="bingo-grid" role="group" aria-label="Cartela de bingo">
+      <div className="bingo-grid" role="group" aria-label={uiText(1268)}>
         {board.cells.map((cell) => (
           <button
             className={cell.completed ? "is-complete" : undefined}
@@ -362,6 +371,8 @@ function BingoSession({ workspace, dispatch, subjectId }: LearnViewProps & { sub
 }
 
 export function LearnView({ workspace, dispatch }: LearnViewProps) {
+  useLanguage();
+
   const defaultSubject = workspace.subjects[0];
   const [subjectId, setSubjectId] = useState(defaultSubject?.id ?? "");
   const [mode, setMode] = useState<"hub" | SoloMode>("hub");
@@ -391,11 +402,11 @@ export function LearnView({ workspace, dispatch }: LearnViewProps) {
       {mode !== "hub" && (
         <header className="view-heading view-heading--with-action">
           <div>
-            <span className="section-label">Praticar</span>
-            <h1>Pratique para lembrar.</h1>
+            <span className="section-label">{uiText(101)}</span>
+            <h1>{uiText(1269)}</h1>
           </div>
           <label className="view-select">
-            <span>Matéria</span>
+            <span>{uiText(1270)}</span>
             <select
               value={selectedSubject.id}
               onChange={(event) => setSubjectId(event.target.value)}
@@ -411,45 +422,45 @@ export function LearnView({ workspace, dispatch }: LearnViewProps) {
       )}
 
       <div className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : ""}`}>
-        <section className="module-panel study-panel" aria-label="Praticar">
+        <section className="module-panel study-panel" aria-label={uiText(101)}>
           {mode === "hub" ? (
             <PracticeHub dispatch={dispatch} />
           ) : (
             <>
               <div className="module-heading solo-session-heading">
                 <button className="link-button" type="button" onClick={() => setMode("hub")}>
-                  <HelenaRoomIcon name="back" size={18} /> Voltar aos mundos
+                  <HelenaRoomIcon name="back" size={18} /> {uiText(815)}
                 </button>
-                <h2 id="study-mode-title">Minigame Solo</h2>
+                <h2 id="study-mode-title">{uiText(1271)}</h2>
               </div>
-              <div className="mode-switch" role="navigation" aria-label="Minigames Solo">
+              <div className="mode-switch" role="navigation" aria-label={uiText(1272)}>
                 <button
                   className={mode === "listening" ? "is-active" : undefined}
                   type="button"
                   onClick={() => setMode("listening")}
                 >
-                  Escuta
+                  {uiText(428)}
                 </button>
                 <button
                   className={mode === "review" ? "is-active" : undefined}
                   type="button"
                   onClick={() => setMode("review")}
                 >
-                  Flashcards
+                  {uiText(1273)}
                 </button>
                 <button
                   className={mode === "quiz" ? "is-active" : undefined}
                   type="button"
                   onClick={() => setMode("quiz")}
                 >
-                  Quizzes
+                  {uiText(1274)}
                 </button>
                 <button
                   className={mode === "bingo" ? "is-active" : undefined}
                   type="button"
                   onClick={() => setMode("bingo")}
                 >
-                  Bingo
+                  {uiText(1275)}
                 </button>
               </div>
               {mode === "review" ? (

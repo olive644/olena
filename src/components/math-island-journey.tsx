@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
@@ -31,6 +32,8 @@ export function MathIslandJourney({
   entryOrigin?: { x: number; y: number; size: number } | undefined;
   initialCourse?: MathCourseId;
 }) {
+  useLanguage();
+
   const [index, setIndex] = useState(() =>
     initialCourse && unlockedMathCourse(initialCourse, readMathGame())
       ? Math.max(
@@ -147,7 +150,7 @@ export function MathIslandJourney({
     <section
       ref={root}
       className={`math-journey is-${phase}`}
-      aria-label="Ilhas de Matemática"
+      aria-label={uiText(620)}
       style={
         {
           "--math-color": course.color,
@@ -196,7 +199,7 @@ export function MathIslandJourney({
           type="button"
           onClick={() => setPhase("exit")}
         >
-          <PaperArrow back /> Voltar às ilhas
+          <PaperArrow back /> {uiText(598)}
         </button>
         <div
           className="math-journey-stage"
@@ -224,7 +227,7 @@ export function MathIslandJourney({
             <button
               key={item.id}
               type="button"
-              aria-label={"Entrar em " + item.title}
+              aria-label={uiText(2295) + item.title}
               disabled={
                 position !== index || phase !== "map" || !unlockedMathCourse(item.id, progress)
               }
@@ -248,7 +251,7 @@ export function MathIslandJourney({
             <div
               className="math-journey-completion"
               role="progressbar"
-              aria-label={`Conclusão de ${course.title}`}
+              aria-label={uiText(1791, [course.title])}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={completion.percent}
@@ -277,7 +280,7 @@ export function MathIslandJourney({
           <p>
             {unlocked
               ? course.topics[mathGameLearning(course.id).level]
-              : `Complete ${MATH_COURSES[index - 1]!.title} para liberar.`}
+              : uiText(1792, [MATH_COURSES[index - 1]!.title])}
           </p>
           <button
             className="primary-button math-place-start"
@@ -287,12 +290,12 @@ export function MathIslandJourney({
               if (unlockedMathCourse(course.id, readMathGame())) setPhase("enter");
             }}
           >
-            <HelenaRoomIcon name="play" /> {unlocked ? "Explorar lugar" : "Lugar bloqueado"}
+            <HelenaRoomIcon name="play" /> {unlocked ? uiText(1793) : uiText(1794)}
           </button>
         </div>
         <button
           className="focus-mode-arrow math-place-arrow math-place-arrow--previous"
-          aria-label="Lugar anterior"
+          aria-label={uiText(621)}
           disabled={index === 0 || phase !== "map"}
           onClick={() => visit(index - 1)}
         >
@@ -300,7 +303,7 @@ export function MathIslandJourney({
         </button>
         <button
           className="focus-mode-arrow focus-mode-arrow--next math-place-arrow math-place-arrow--next"
-          aria-label="Próximo lugar"
+          aria-label={uiText(622)}
           disabled={index === MATH_COURSES.length - 1 || phase !== "map"}
           onClick={() => visit(index + 1)}
         >

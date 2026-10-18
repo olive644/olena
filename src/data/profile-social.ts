@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime.js";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
 import { PROFILE_COVERS } from "../domain/profile-covers";
@@ -25,11 +26,13 @@ function isProfile(value: unknown): value is SocialProfile {
 }
 export async function requestSocial(action?: SocialAction, query = ""): Promise<SocialFeed> {
   const { auth } = await getFirebaseAccountServices().catch(() => {
-    throw new Error("Não foi possível conectar sua conta. Entre novamente ou tente mais tarde.");
+    throw new Error(
+      uiText("Não foi possível conectar sua conta. Entre novamente ou tente mais tarde."),
+    );
   });
   await auth.authStateReady();
   const user = auth.currentUser;
-  if (!user || user.isAnonymous) throw new Error("Entre na conta para adicionar amigos.");
+  if (!user || user.isAnonymous) throw new Error(uiText("Entre na conta para adicionar amigos."));
   const token = await user.getIdToken();
   const response = await fetch(`/api/profile-social${query ? `?${query}` : ""}`, {
     method: action ? "POST" : "GET",
@@ -39,14 +42,14 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
   });
   const body: unknown = await response.json();
   if (auth.currentUser?.uid !== user.uid)
-    throw new Error("A conta mudou. Abra o perfil novamente.");
+    throw new Error(uiText("A conta mudou. Abra o perfil novamente."));
   if (!response.ok)
     throw new Error(
       body && typeof body === "object" && "error" in body && typeof body.error === "string"
         ? body.error
-        : "Não foi possível consultar amigos.",
+        : uiText("Não foi possível consultar amigos."),
     );
-  if (!body || typeof body !== "object") throw new Error("Resposta inválida de amigos.");
+  if (!body || typeof body !== "object") throw new Error(uiText("Resposta inválida de amigos."));
   const feed = body as SocialFeed;
   if (
     feed.connections !== undefined &&
@@ -60,7 +63,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
           feed.connections.next < 0 ||
           feed.connections.next > 1000)))
   )
-    throw new Error("Lista de conexões inválida.");
+    throw new Error(uiText("Lista de conexões inválida."));
   if (
     feed.suggestions !== undefined &&
     (!Array.isArray(feed.suggestions) ||
@@ -69,7 +72,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
         (item) => isProfile(item) && Number.isSafeInteger(item.mutualCount) && item.mutualCount > 0,
       ))
   )
-    throw new Error("Sugestões inválidas.");
+    throw new Error(uiText("Sugestões inválidas."));
   if (
     !isProfile(feed.self) ||
     !Array.isArray(feed.notifications) ||
@@ -84,7 +87,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
         !feed.results.every(isProfile))) ||
     (feed.profile !== undefined && !isProfile(feed.profile))
   )
-    throw new Error("Resposta inválida de amigos.");
+    throw new Error(uiText("Resposta inválida de amigos."));
   if (action) window.dispatchEvent(new Event(SOCIAL_CHANGED));
   return feed;
 }

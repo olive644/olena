@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { Plus } from "lucide-react";
 import { useState, type Dispatch, type FormEvent } from "react";
 import { PageHeader } from "../components/app-navigation";
@@ -18,6 +19,8 @@ function safeUrl(value: string): string | null {
 }
 
 export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
+  useLanguage();
+
   const defaultSubject = workspace.subjects[0];
   const [materialTitle, setMaterialTitle] = useState("");
   const [materialKind, setMaterialKind] = useState<"link" | "text">("link");
@@ -63,36 +66,36 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
   }
 
   const subjectName = (subjectId: string) =>
-    workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? "Sem matéria";
+    workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? uiText(2278);
 
   return (
     <main className="main-content" id="main-content">
       <PageHeader />
       <header className="view-heading">
-        <span className="section-label">Biblioteca</span>
-        <h1>Guarde o que vale revisar.</h1>
-        <p>Organize links, textos e cartões sem enviar seu conteúdo para serviços externos.</p>
+        <span className="section-label">{uiText(1311)}</span>
+        <h1>{uiText(1312)}</h1>
+        <p>{uiText(1313)}</p>
       </header>
 
       <div className="library-create-grid">
         <section className="module-panel" aria-labelledby="new-material-title">
           <div className="module-heading">
-            <h2 id="new-material-title">Novo material</h2>
+            <h2 id="new-material-title">{uiText(1314)}</h2>
           </div>
           <form className="compact-form" onSubmit={addMaterial}>
             <div className="field-row">
               <label className="field">
-                <span>Tipo</span>
+                <span>{uiText(1315)}</span>
                 <select
                   value={materialKind}
                   onChange={(event) => setMaterialKind(event.target.value as "link" | "text")}
                 >
-                  <option value="link">Link</option>
-                  <option value="text">Texto</option>
+                  <option value="link">{uiText(1316)}</option>
+                  <option value="text">{uiText(361)}</option>
                 </select>
               </label>
               <label className="field">
-                <span>Matéria</span>
+                <span>{uiText(1270)}</span>
                 <select
                   value={materialSubjectId}
                   onChange={(event) => setMaterialSubjectId(event.target.value)}
@@ -106,16 +109,16 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
               </label>
             </div>
             <label className="field">
-              <span>Título</span>
+              <span>{uiText(284)}</span>
               <input
                 value={materialTitle}
                 onChange={(event) => setMaterialTitle(event.target.value)}
-                placeholder="Ex.: Aula sobre tempos verbais"
+                placeholder={uiText(1317)}
                 required
               />
             </label>
             <label className="field">
-              <span>{materialKind === "link" ? "Endereço" : "Conteúdo"}</span>
+              <span>{materialKind === "link" ? uiText(1318) : uiText(1319)}</span>
               {materialKind === "link" ? (
                 <input
                   type="url"
@@ -128,25 +131,25 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
                 <textarea
                   value={materialContent}
                   onChange={(event) => setMaterialContent(event.target.value)}
-                  placeholder="Cole um trecho ou resumo..."
+                  placeholder={uiText(1320)}
                   rows={4}
                   required
                 />
               )}
             </label>
             <button className="secondary-button" type="submit">
-              <Plus size={16} /> Guardar material
+              <Plus size={16} /> {uiText(1321)}
             </button>
           </form>
         </section>
 
         <section className="module-panel" aria-labelledby="new-card-title">
           <div className="module-heading">
-            <h2 id="new-card-title">Novo flashcard</h2>
+            <h2 id="new-card-title">{uiText(1322)}</h2>
           </div>
           <form className="compact-form" onSubmit={addFlashcard}>
             <label className="field">
-              <span>Matéria</span>
+              <span>{uiText(1270)}</span>
               <select
                 value={cardSubjectId}
                 onChange={(event) => setCardSubjectId(event.target.value)}
@@ -159,27 +162,27 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
               </select>
             </label>
             <label className="field">
-              <span>Frente</span>
+              <span>{uiText(1323)}</span>
               <textarea
                 value={front}
                 onChange={(event) => setFront(event.target.value)}
-                placeholder="Ex.: O que significa improve?"
+                placeholder={uiText(1324)}
                 rows={3}
                 required
               />
             </label>
             <label className="field">
-              <span>Verso</span>
+              <span>{uiText(1325)}</span>
               <textarea
                 value={back}
                 onChange={(event) => setBack(event.target.value)}
-                placeholder="Ex.: Melhorar"
+                placeholder={uiText(1326)}
                 rows={3}
                 required
               />
             </label>
             <button className="primary-button" type="submit">
-              <Plus size={16} /> Criar flashcard
+              <Plus size={16} /> {uiText(1327)}
             </button>
           </form>
         </section>
@@ -188,12 +191,12 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
       <div className="library-content-grid">
         <section className="module-panel" aria-labelledby="material-list-title">
           <div className="module-heading">
-            <h2 id="material-list-title">Materiais</h2>
+            <h2 id="material-list-title">{uiText(1061)}</h2>
             <span>{workspace.materials.length}</span>
           </div>
           {workspace.materials.length === 0 ? (
             <div className="empty-state">
-              <p>Seus links e textos aparecerão aqui.</p>
+              <p>{uiText(1328)}</p>
             </div>
           ) : (
             <ul className="material-list">
@@ -201,14 +204,14 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
                 const href = material.kind === "link" ? safeUrl(material.content) : null;
                 return (
                   <li key={material.id}>
-                    <span>{material.kind === "link" ? "Link" : "Texto"}</span>
+                    <span>{material.kind === "link" ? uiText(1316) : uiText(361)}</span>
                     <div>
                       <strong>{material.title}</strong>
                       <small>{subjectName(material.subjectId)}</small>
                     </div>
                     {href ? (
                       <a href={href} target="_blank" rel="noreferrer">
-                        Abrir
+                        {uiText(630)}
                       </a>
                     ) : (
                       <p>{material.content}</p>
@@ -222,12 +225,12 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
 
         <section className="module-panel" aria-labelledby="card-list-title">
           <div className="module-heading">
-            <h2 id="card-list-title">Flashcards</h2>
+            <h2 id="card-list-title">{uiText(1273)}</h2>
             <span>{workspace.flashcards.length}</span>
           </div>
           {workspace.flashcards.length === 0 ? (
             <div className="empty-state">
-              <p>Os cartões criados aparecerão aqui.</p>
+              <p>{uiText(1329)}</p>
             </div>
           ) : (
             <ul className="flashcard-list">
@@ -236,7 +239,7 @@ export function LibraryView({ workspace, dispatch }: LibraryViewProps) {
                   <strong>{card.front}</strong>
                   <p>{card.back}</p>
                   <small>
-                    {subjectName(card.subjectId)} · próxima revisão {card.nextReview}
+                    {subjectName(card.subjectId)} {uiText(1330)} {card.nextReview}
                   </small>
                 </li>
               ))}

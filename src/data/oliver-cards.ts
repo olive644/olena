@@ -1,7 +1,8 @@
-export const OLIVER_CARDS = [
+import { localizeResource, uiText } from "../i18n/runtime.js";
+export const OLIVER_CARDS = localizeResource([
   {
     id: "first-star",
-    title: "A primeira estrela",
+    title: uiText("A primeira estrela"),
     power: 12,
     life: 64,
     stamina: 88,
@@ -11,7 +12,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "silent-bell",
-    title: "Sino sem eco",
+    title: uiText("Sino sem eco"),
     power: 18,
     life: 78,
     stamina: 62,
@@ -21,7 +22,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "chalk-map",
-    title: "Mapa de giz",
+    title: uiText("Mapa de giz"),
     power: 24,
     life: 58,
     stamina: 92,
@@ -31,7 +32,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "split-compass",
-    title: "Compasso partido",
+    title: uiText("Compasso partido"),
     power: 32,
     life: 72,
     stamina: 54,
@@ -41,7 +42,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "third-bridge",
-    title: "A terceira ponte",
+    title: uiText("A terceira ponte"),
     power: 36,
     life: 68,
     stamina: 76,
@@ -51,7 +52,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "glass-seed",
-    title: "Semente de vidro",
+    title: uiText("Semente de vidro"),
     power: 16,
     life: 96,
     stamina: 58,
@@ -61,7 +62,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "long-night",
-    title: "Vigília azul",
+    title: uiText("Vigília azul"),
     power: 28,
     life: 84,
     stamina: 48,
@@ -71,7 +72,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "river-memory",
-    title: "Memória do rio",
+    title: uiText("Memória do rio"),
     power: 22,
     life: 70,
     stamina: 94,
@@ -81,7 +82,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "last-note",
-    title: "A última nota",
+    title: uiText("A última nota"),
     power: 42,
     life: 82,
     stamina: 66,
@@ -91,7 +92,7 @@ export const OLIVER_CARDS = [
   },
   {
     id: "homeward",
-    title: "Caminho de volta",
+    title: uiText("Caminho de volta"),
     power: 30,
     life: 90,
     stamina: 80,
@@ -99,7 +100,7 @@ export const OLIVER_CARDS = [
     color: "#b36c3c",
     lore: "O compasso reparado repousa na oficina. À noite, a árvore de vidro soa baixinho. Há uma quarta marca surgindo no mapa.",
   },
-] as const;
+] as const);
 export type OliverCardId = (typeof OLIVER_CARDS)[number]["id"];
 export function isOliverCard(value: unknown): value is OliverCardId {
   return OLIVER_CARDS.some((card) => card.id === value);

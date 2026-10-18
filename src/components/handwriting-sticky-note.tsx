@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { reviewPortugueseText } from "../domain/text-review";
 import { PaperCheckIcon } from "./paper-check-icon";
 import type { HandwritingSticky } from "../domain/handwriting";
@@ -73,6 +74,8 @@ export function HandwritingStickyNote({
   onRemoveChecklistItem,
   onAddChecklistItem,
 }: HandwritingStickyNoteProps) {
+  useLanguage();
+
   return (
     <div
       className={`handwriting-sticky handwriting-sticky--${sticky.kind === "text" ? "text" : sticky.kind === "table" ? "table" : sticky.color}${sticky.formula ? " handwriting-sticky--formula" : ""}${isSelected ? " is-selected" : ""}`}
@@ -93,10 +96,10 @@ export function HandwritingStickyNote({
           tabIndex={0}
           aria-label={
             sticky.kind === "text"
-              ? "Mover texto"
+              ? uiText(1685)
               : sticky.kind === "table"
-                ? "Mover tabela"
-                : "Mover post-it"
+                ? uiText(1686)
+                : uiText(1687)
           }
           onKeyDown={(event) => {
             const movement: Record<string, [number, number]> = {
@@ -124,19 +127,19 @@ export function HandwritingStickyNote({
           }}
         >
           {sticky.formula
-            ? "Fórmula"
+            ? uiText(267)
             : sticky.kind === "text"
-              ? "Texto"
+              ? uiText(361)
               : sticky.kind === "table"
-                ? "Tabela"
+                ? uiText(366)
                 : sticky.checklist?.length
-                  ? "Checklist"
-                  : "Nota"}
+                  ? uiText(1688)
+                  : uiText(1689)}
         </span>
         <button
           type="button"
           className="handwriting-sticky__menu-trigger"
-          aria-label="Opções do post-it"
+          aria-label={uiText(268)}
           aria-haspopup="menu"
           aria-expanded={menuOpen}
           onPointerDown={(event) => event.stopPropagation()}
@@ -149,11 +152,11 @@ export function HandwritingStickyNote({
         <div
           className="handwriting-sticky__menu"
           role="menu"
-          aria-label="Opções do post-it"
+          aria-label={uiText(268)}
           onPointerDown={(event) => event.stopPropagation()}
         >
           <button type="button" onClick={() => onMoveMode()}>
-            <PaperEditorIcon name="hand" /> Mover
+            <PaperEditorIcon name="hand" /> {uiText(202)}
           </button>
           {sticky.kind === undefined && (
             <button
@@ -163,22 +166,28 @@ export function HandwritingStickyNote({
               onClick={onToggleChecklist}
             >
               <PaperEditorIcon name="review" />
-              {sticky.checklist?.length ? "Voltar para nota" : "Checklist"}
+              {sticky.checklist?.length ? uiText(269) : uiText(1688)}
             </button>
           )}
           {sticky.kind !== "text" && (
             <div className="handwriting-sticky__menu-group">
               <button type="button" aria-expanded={colorMenuOpen} onClick={onToggleColorMenu}>
-                <PaperEditorIcon name="sticky" /> Cores
+                <PaperEditorIcon name="sticky" /> {uiText(270)}
               </button>
               {colorMenuOpen && (
-                <div className="handwriting-sticky__menu-colors" aria-label="Cores disponíveis">
+                <div className="handwriting-sticky__menu-colors" aria-label={uiText(271)}>
                   {(["yellow", "blue", "lilac"] as const).map((nextColor) => (
                     <button
                       key={nextColor}
                       type="button"
                       className={sticky.color === nextColor ? "is-active" : ""}
-                      aria-label={`Usar cor ${nextColor === "yellow" ? "amarela" : nextColor === "blue" ? "azul" : "lilás"}`}
+                      aria-label={uiText(1691, [
+                        nextColor === "yellow"
+                          ? "amarela"
+                          : nextColor === "blue"
+                            ? "azul"
+                            : uiText(1690),
+                      ])}
                       onClick={() => onChangeColor(nextColor)}
                     />
                   ))}
@@ -189,15 +198,15 @@ export function HandwritingStickyNote({
           {sticky.kind !== "text" && (
             <>
               <button type="button" onClick={() => onLayer("front")}>
-                <PaperEditorIcon name="bringFront" /> Trazer para frente
+                <PaperEditorIcon name="bringFront" /> {uiText(272)}
               </button>
               <button type="button" onClick={() => onLayer("back")}>
-                <PaperEditorIcon name="sendBack" /> Enviar para trás
+                <PaperEditorIcon name="sendBack" /> {uiText(273)}
               </button>
             </>
           )}
           <button type="button" className="handwriting-sticky__menu-danger" onClick={onRemove}>
-            <PaperEditorIcon name="close" /> Remover
+            <PaperEditorIcon name="close" /> {uiText(44)}
           </button>
         </div>
       )}
@@ -210,7 +219,7 @@ export function HandwritingStickyNote({
                   {row.map((cell, columnIndex) => (
                     <td key={columnIndex}>
                       <textarea
-                        aria-label={`Célula linha ${rowIndex + 1}, coluna ${columnIndex + 1}`}
+                        aria-label={uiText(1692, [rowIndex + 1, columnIndex + 1])}
                         value={cell}
                         maxLength={200}
                         onFocus={() => onRemember()}
@@ -231,25 +240,21 @@ export function HandwritingStickyNote({
               ))}
             </tbody>
           </table>
-          <div
-            className="handwriting-sticky__table-controls"
-            role="group"
-            aria-label="Linhas e colunas"
-          >
+          <div className="handwriting-sticky__table-controls" role="group" aria-label={uiText(274)}>
             <button
               type="button"
-              aria-label="Adicionar linha"
+              aria-label={uiText(275)}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
                 onRemember();
                 onUpdate({ cells: tableAddRow(sticky.cells ?? [[""]]) });
               }}
             >
-              + Linha
+              {uiText(276)}
             </button>
             <button
               type="button"
-              aria-label="Remover linha"
+              aria-label={uiText(277)}
               disabled={(sticky.cells ?? [[""]]).length <= 1}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
@@ -257,22 +262,22 @@ export function HandwritingStickyNote({
                 onUpdate({ cells: tableRemoveRow(sticky.cells ?? [[""]]) });
               }}
             >
-              − Linha
+              {uiText(278)}
             </button>
             <button
               type="button"
-              aria-label="Adicionar coluna"
+              aria-label={uiText(279)}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
                 onRemember();
                 onUpdate({ cells: tableAddColumn(sticky.cells ?? [[""]]) });
               }}
             >
-              + Coluna
+              {uiText(280)}
             </button>
             <button
               type="button"
-              aria-label="Remover coluna"
+              aria-label={uiText(281)}
               disabled={(sticky.cells?.[0]?.length ?? 1) <= 1}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => {
@@ -280,26 +285,26 @@ export function HandwritingStickyNote({
                 onUpdate({ cells: tableRemoveColumn(sticky.cells ?? [[""]]) });
               }}
             >
-              − Coluna
+              {uiText(282)}
             </button>
           </div>
         </div>
       ) : sticky.checklist?.length ? (
         <div className="handwriting-sticky__checklist">
           <input
-            aria-label="Título do checklist"
+            aria-label={uiText(283)}
             value={sticky.text}
             maxLength={80}
             onFocus={() => onRemember()}
             onChange={(event) => onUpdate({ text: event.target.value })}
-            placeholder="Título"
+            placeholder={uiText(284)}
           />
           {sticky.checklist.map((item) => (
             <div className="handwriting-sticky__checklist-item" key={item.id}>
               <button
                 type="button"
                 className={item.done ? "is-done" : undefined}
-                aria-label={item.done ? "Marcar como pendente" : "Marcar como concluído"}
+                aria-label={item.done ? uiText(1693) : uiText(285)}
                 aria-pressed={item.done}
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => {
@@ -310,19 +315,19 @@ export function HandwritingStickyNote({
                 {item.done ? <PaperCheckIcon /> : null}
               </button>
               <input
-                aria-label="Item do checklist"
+                aria-label={uiText(286)}
                 value={item.text}
                 maxLength={120}
                 onChange={(event) => onUpdateChecklistItem(item.id, { text: event.target.value })}
-                placeholder="Próximo passo"
+                placeholder={uiText(287)}
               />
               <button
                 type="button"
-                aria-label="Remover item"
+                aria-label={uiText(288)}
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => onRemoveChecklistItem(item.id)}
               >
-                ×
+                {uiText(289)}
               </button>
             </div>
           ))}
@@ -332,12 +337,12 @@ export function HandwritingStickyNote({
             onPointerDown={(event) => event.stopPropagation()}
             onClick={() => onAddChecklistItem()}
           >
-            + Item
+            {uiText(290)}
           </button>
         </div>
       ) : (
         <textarea
-          aria-label={sticky.kind === "text" ? "Texto na folha" : "Texto do post-it"}
+          aria-label={sticky.kind === "text" ? uiText(1694) : uiText(1695)}
           value={sticky.text}
           maxLength={240}
           onFocus={() => onRemember()}
@@ -347,14 +352,14 @@ export function HandwritingStickyNote({
             if (corrected !== sticky.text) onUpdate({ text: corrected });
           }}
           onChange={(event) => onUpdate({ text: event.target.value })}
-          placeholder="Sua ideia aqui"
+          placeholder={uiText(291)}
         />
       )}
       <button
         type="button"
         className="handwriting-sticky__resize"
-        aria-label="Redimensionar post-it"
-        title="Arraste o canto para redimensionar"
+        aria-label={uiText(292)}
+        title={uiText(293)}
         onPointerDown={(event) => onResizeStart(event, sticky)}
         onPointerMove={(event) => onResizeMove(event, sticky)}
         onPointerUp={() => {

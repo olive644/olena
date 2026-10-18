@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { CSSProperties } from "react";
 import { OLIVER_CARDS } from "../data/oliver-cards";
 import { OLIVER_TAROT, type OliverArtworkId } from "../data/oliver-tarot";
@@ -6,6 +7,8 @@ import { PaperDigits } from "./paper-digits";
 import { PaperCardTitle } from "./paper-card-title";
 import { COSMIC_RARITIES, oliverRarity } from "../data/oliver-rarity";
 export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: boolean }) {
+  useLanguage();
+
   const card = OLIVER_CARDS.find((item) => item.id === id)!;
   const rarity = COSMIC_RARITIES[oliverRarity(id)]!;
   if (back)
@@ -18,7 +21,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
         <div className="oliver-back-orbit">
           <img src="/olena-favicon-180.png" alt="" width="180" height="180" draggable={false} />
         </div>
-        <span>OLENA</span>
+        <span>{uiText(784)}</span>
         <i className="oliver-back-star" />
       </div>
     );
@@ -26,7 +29,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
     return (
       <article
         className="oliver-card-front oliver-tarot-front"
-        aria-label="XVII, A Estrela"
+        aria-label={uiText(785)}
         onDragStart={(event) => event.preventDefault()}
       >
         <div className="oliver-tarot-crown">
@@ -39,7 +42,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
           src="/oliver-cards/oliver-star-tarot.webp"
           srcSet="/oliver-cards/oliver-star-tarot-small.webp 480w, /oliver-cards/oliver-star-tarot.webp 720w"
           sizes="330px"
-          alt="Oliver devolve a luz ao rio sob oito estrelas de papel"
+          alt={uiText(786)}
           width="720"
           height="1080"
           decoding="async"
@@ -49,7 +52,7 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
           <PaperCardTitle value={OLIVER_TAROT.title} />
         </h2>
         <p className="oliver-card-lore">{OLIVER_TAROT.lore}</p>
-        <span className="oliver-tarot-seal">OLENA · ARCANO XVII</span>
+        <span className="oliver-tarot-seal">{uiText(787)}</span>
       </article>
     );
   return (
@@ -65,18 +68,18 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
       aria-label={card.title}
       onDragStart={(event) => event.preventDefault()}
     >
-      <span className="oliver-card-rarity" aria-label={`Raridade ${rarity.name.toLowerCase()}`}>
+      <span className="oliver-card-rarity" aria-label={uiText(1877, [rarity.name.toLowerCase()])}>
         {rarity.name.toUpperCase()}
       </span>
       <span className="oliver-card-edition">
-        OLENA · {String(OLIVER_CARDS.indexOf(card) + 1).padStart(2, "0")}
+        {uiText(788)} {String(OLIVER_CARDS.indexOf(card) + 1).padStart(2, "0")}
       </span>
       <img
         className="oliver-card-art"
         src={`/oliver-cards/${id}.webp`}
         srcSet={`/oliver-cards/${id}-small.webp 480w, /oliver-cards/${id}.webp 720w`}
         sizes="330px"
-        alt={`Oliver em ${card.title}`}
+        alt={uiText(1878, [card.title])}
         width="720"
         height="1080"
         decoding="async"
@@ -85,21 +88,21 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
       <dl className="oliver-card-stats">
         <div>
           <OliverAttributeIcon kind="power" />
-          <dt>Poder</dt>
+          <dt>{uiText(789)}</dt>
           <dd>
             <PaperDigits value={String(card.power)} />
           </dd>
         </div>
         <div>
           <OliverAttributeIcon kind="life" />
-          <dt>Vida</dt>
+          <dt>{uiText(790)}</dt>
           <dd>
             <PaperDigits value={String(card.life)} />
           </dd>
         </div>
         <div>
           <OliverAttributeIcon kind="stamina" />
-          <dt>Stamina</dt>
+          <dt>{uiText(791)}</dt>
           <dd>
             <PaperDigits value={String(card.stamina)} />
           </dd>

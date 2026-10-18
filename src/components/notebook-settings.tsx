@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { NotebookPreferences } from "../data/notebook-preferences";
@@ -9,51 +10,26 @@ export function NotebookPreferenceFields({
   preferences: NotebookPreferences;
   onChange: (key: keyof NotebookPreferences, value: boolean) => void;
 }) {
+  useLanguage();
+
   const categories = [
     [
-      "Escrita e toque",
+      uiText(1842),
       [
-        [
-          "stabilization",
-          "Ajuste inteligente",
-          "Suaviza o movimento e endireita linhas quase retas.",
-        ],
-        [
-          "shapeSnap",
-          "Formas ao segurar",
-          "Segure a caneta parada no fim do traço para acertar retas, elipses, retângulos e triângulos.",
-        ],
-        [
-          "inkPrediction",
-          "Prever a ponta da caneta",
-          "Desenha um pedacinho à frente da caneta para a tinta parecer sair com menos atraso.",
-        ],
-        [
-          "penHoverPreview",
-          "Prévia ao pairar a caneta",
-          "Mostra onde a ponta vai pousar antes de tocar a folha, em canetas que avisam isso.",
-        ],
-        ["penOnly", "Só caneta, dedo move", "Use os dedos para navegar e a caneta para escrever."],
-        [
-          "writingWindowAutoFollow",
-          "Avanço da janela de escrita",
-          "A janela acompanha a escrita automaticamente.",
-        ],
+        ["stabilization", uiText(1843), uiText(1844)],
+        ["shapeSnap", uiText(1845), uiText(722)],
+        ["inkPrediction", uiText(1846), uiText(723)],
+        ["penHoverPreview", uiText(724), uiText(1847)],
+        ["penOnly", uiText(725), uiText(726)],
+        ["writingWindowAutoFollow", uiText(727), "A janela acompanha a escrita automaticamente."],
       ],
     ],
+    [uiText(361), [["textAutoCorrect", uiText(164), uiText(728)]]],
     [
-      "Texto",
-      [["textAutoCorrect", "Correção automática de texto", "Revisa acentos e início das frases."]],
-    ],
-    [
-      "Coordenadas",
+      uiText(352),
       [
-        ["coordinateMeasurements", "Medições nos eixos", "Mostra valores nas divisões dos eixos."],
-        [
-          "equalCoordinateAxes",
-          "Eixos com o mesmo tamanho",
-          "Mantém a mesma extensão horizontal e vertical.",
-        ],
+        ["coordinateMeasurements", uiText(729), uiText(730)],
+        ["equalCoordinateAxes", uiText(731), uiText(732)],
       ],
     ],
   ] as const;
@@ -84,6 +60,8 @@ export function NotebookSettings({
   preferences: NotebookPreferences;
   onChange: (key: keyof NotebookPreferences, value: boolean) => void;
 }) {
+  useLanguage();
+
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -95,30 +73,30 @@ export function NotebookSettings({
     <>
       <button
         type="button"
-        aria-label="Configurações do editor"
-        title="Configurações"
+        aria-label={uiText(733)}
+        title={uiText(734)}
         onClick={() => setOpen(true)}
       >
         <PaperEditorIcon name="settings" />
-        <span>Configurações</span>
+        <span>{uiText(734)}</span>
       </button>
       {open && (
         <dialog
           ref={dialog}
           className="notebook-settings"
-          aria-label="Configurações do editor"
+          aria-label={uiText(733)}
           onCancel={() => setOpen(false)}
           onKeyDown={(event) => event.stopPropagation()}
         >
           <header>
             <div>
-              <small>DO SEU JEITO</small>
-              <h2>Configurações</h2>
+              <small>{uiText(735)}</small>
+              <h2>{uiText(734)}</h2>
             </div>
             <button
               type="button"
               className="sheet-close"
-              aria-label="Fechar configurações"
+              aria-label={uiText(736)}
               onClick={() => setOpen(false)}
             >
               <PaperEditorIcon name="close" />

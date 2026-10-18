@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import {
   lazy,
   Suspense,
@@ -48,10 +49,12 @@ export function ProfileChoices({
   onChoose: (profile: StoredProfile) => void;
   selectedPhotoUrl?: string;
 }) {
+  useLanguage();
+
   return (
     <section className="profile-picker">
       <div className="profile-picker__heading">
-        <strong>Quem está estudando?</strong>
+        <strong>{uiText(112)}</strong>
       </div>
       <div className="profile-picker__options">
         {PROFILE_AVATARS.map((avatar) => (
@@ -73,32 +76,33 @@ export function ProfileChoices({
   );
 }
 
-const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationItem[] }[] = [
-  {
-    label: "Área do aluno",
-    items: [
-      { view: "today", label: "Espaço do aluno", mobileLabel: "Espaço", icon: "today" },
-      { view: "planner", label: "Agenda", icon: "planner" },
-      { view: "focus", label: "Foco", icon: "focus" },
-      { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "gamepad" },
-      { view: "room", label: "Modo Sala", icon: "room" },
-    ],
-  },
-  {
-    label: "Meus materiais",
-    items: [
-      { view: "library", label: "Biblioteca", icon: "library" },
-      { view: "notes", label: "Cadernos", mobileLabel: "Cadernos", icon: "notes" },
-    ],
-  },
-];
+const NAVIGATION_SECTIONS: readonly { label: string; items: readonly NavigationItem[] }[] =
+  localizeLabels(() => [
+    {
+      label: uiText(113),
+      items: [
+        { view: "today", label: uiText(114), mobileLabel: uiText(115), icon: "today" },
+        { view: "planner", label: uiText(1550), icon: "planner" },
+        { view: "focus", label: uiText(99), icon: "focus" },
+        { view: "learn", label: uiText(101), mobileLabel: uiText(101), icon: "gamepad" },
+        { view: "room", label: uiText(465), icon: "room" },
+      ],
+    },
+    {
+      label: uiText(1610),
+      items: [
+        { view: "library", label: uiText(1311), icon: "library" },
+        { view: "notes", label: uiText(652), mobileLabel: uiText(652), icon: "notes" },
+      ],
+    },
+  ]);
 
-const MOBILE_ITEMS: readonly NavigationItem[] = [
-  { view: "today", label: "Espaço do aluno", mobileLabel: "Espaço", icon: "today" },
-  { view: "planner", label: "Agenda", icon: "planner" },
-  { view: "learn", label: "Praticar", mobileLabel: "Praticar", icon: "gamepad" },
-  { view: "focus", label: "Foco", icon: "focus" },
-];
+const MOBILE_ITEMS: readonly NavigationItem[] = localizeLabels(() => [
+  { view: "today", label: uiText(114), mobileLabel: uiText(115), icon: "today" },
+  { view: "planner", label: uiText(1550), icon: "planner" },
+  { view: "learn", label: uiText(101), mobileLabel: uiText(101), icon: "gamepad" },
+  { view: "focus", label: uiText(99), icon: "focus" },
+]);
 
 const MORE_ITEMS = NAVIGATION_SECTIONS.flatMap((section) => section.items).filter(
   (item) =>
@@ -114,6 +118,8 @@ function NavigationButton({
   active: boolean;
   onSelect: () => void;
 }) {
+  useLanguage();
+
   return (
     <button
       className={active ? "nav-item nav-item--active" : "nav-item"}
@@ -133,15 +139,17 @@ function NavigationButton({
 }
 
 export function ThemeToggle({ showLabel }: { showLabel?: boolean }) {
+  useLanguage();
+
   const { theme, toggleTheme } = useTheme();
-  const label = theme === "dark" ? "Tema escuro" : "Tema claro";
+  const label = theme === "dark" ? uiText(1611) : uiText(1612);
   return (
     <button
       className="theme-toggle"
       type="button"
       data-theme={theme}
       onClick={toggleTheme}
-      aria-label={`${label}. Toque para trocar de tema.`}
+      aria-label={uiText(1613, [label])}
     >
       <span className="theme-toggle__track" aria-hidden="true">
         <span className="theme-toggle__celestial theme-toggle__moon">
@@ -158,6 +166,8 @@ export function ThemeToggle({ showLabel }: { showLabel?: boolean }) {
 }
 
 export function Sidebar({ view, onNavigate }: NavigationProps) {
+  useLanguage();
+
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -166,7 +176,7 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
         <button
           className="sidebar__toggle"
           type="button"
-          aria-label={expanded ? "Recolher menu lateral" : "Expandir menu lateral"}
+          aria-label={expanded ? uiText(1614) : uiText(1615)}
           aria-expanded={expanded}
           onClick={() => setExpanded((current) => !current)}
         >
@@ -175,14 +185,15 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
           <span aria-hidden="true" />
         </button>
         {expanded && (
-          <div className="sidebar__brand" aria-label="OlenaStudy">
+          <div className="sidebar__brand" aria-label={uiText(116)}>
             <strong>
-              Olena<span>Study</span>
+              {uiText(117)}
+              <span>{uiText(118)}</span>
             </strong>
           </div>
         )}
       </div>
-      <nav className="sidebar__nav" aria-label="Navegação principal">
+      <nav className="sidebar__nav" aria-label={uiText(119)}>
         {NAVIGATION_SECTIONS.map((section) => (
           <section className="nav-section" aria-label={section.label} key={section.label}>
             <span className="nav-section__label">{section.label}</span>
@@ -196,9 +207,9 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
             ))}
           </section>
         ))}
-        <section className="nav-section sidebar__profile" aria-label="Perfil">
+        <section className="nav-section sidebar__profile" aria-label={uiText(120)}>
           <NavigationButton
-            item={{ view: "profile", label: "Perfil", icon: "profile" }}
+            item={{ view: "profile", label: uiText(120), icon: "profile" }}
             active={view === "profile"}
             onSelect={() => onNavigate("profile")}
           />
@@ -209,6 +220,8 @@ export function Sidebar({ view, onNavigate }: NavigationProps) {
 }
 
 export function MobileNavigation({ view, onNavigate }: NavigationProps) {
+  useLanguage();
+
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
   const [dragX, setDragX] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -260,7 +273,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
           <button
             className="mobile-more-backdrop"
             type="button"
-            aria-label="Fechar mais opções"
+            aria-label={uiText(121)}
             onClick={() => setMoreOpen(false)}
           />
           <section
@@ -278,9 +291,10 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
             <header>
               <div>
                 <span>
-                  Olena<span>Study</span>
+                  {uiText(117)}
+                  <span>{uiText(118)}</span>
                 </span>
-                <h2 id="mobile-more-title">Mais ferramentas</h2>
+                <h2 id="mobile-more-title">{uiText(122)}</h2>
               </div>
             </header>
             <div className="mobile-more-grid">
@@ -301,7 +315,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
               ref={closeButtonRef}
               className="mobile-more-edge-close"
               type="button"
-              aria-label="Fechar menu"
+              aria-label={uiText(123)}
               onClick={() => setMoreOpen(false)}
             >
               <span aria-hidden="true">‹</span>
@@ -310,7 +324,7 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
         </div>
       )}
 
-      <nav className="mobile-nav" aria-label="Navegação móvel">
+      <nav className="mobile-nav" aria-label={uiText(124)}>
         {MOBILE_ITEMS.map((item) => {
           const active = view === item.view;
           return (
@@ -337,14 +351,14 @@ export function MobileNavigation({ view, onNavigate }: NavigationProps) {
               : "mobile-nav__item mobile-nav__profile"
           }
           type="button"
-          aria-label="Perfil"
+          aria-label={uiText(120)}
           aria-current={view === "profile" ? "page" : undefined}
           onClick={() => navigate("profile")}
         >
           <span className="mobile-nav__icon">
             <NavigationIcon name="profile" profileActive={view === "profile"} />
           </span>
-          <span>Perfil</span>
+          <span>{uiText(120)}</span>
         </button>
       </nav>
     </>
@@ -358,6 +372,8 @@ export function PageHeader({
   showUpdates?: boolean;
   leadingAction?: ReactNode;
 }) {
+  useLanguage();
+
   useTheme();
   const { open: moreOpen, setOpen: setMoreOpen } = useContext(MobileMenuContext);
 
@@ -366,7 +382,7 @@ export function PageHeader({
       <button
         className="mobile-more-trigger paper-menu"
         type="button"
-        aria-label="Mais ferramentas"
+        aria-label={uiText(122)}
         aria-expanded={moreOpen}
         aria-controls="mobile-more-panel"
         data-open={moreOpen}

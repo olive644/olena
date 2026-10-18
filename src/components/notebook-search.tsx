@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useDeferredValue, useId, useMemo, useState } from "react";
 import {
   MIN_QUERY_LENGTH,
@@ -7,14 +8,14 @@ import {
 } from "../domain/notebook-search";
 import type { WorkspaceState } from "../domain/workspace";
 
-const SOURCE_LABEL: Record<SearchSource, string> = {
-  caderno: "Caderno",
-  folha: "Folha",
-  texto: "Texto",
+const SOURCE_LABEL: Record<SearchSource, string> = localizeLabels(() => ({
+  caderno: uiText(100),
+  folha: uiText(698),
+  texto: uiText(361),
   "post-it": "Post-it",
-  lista: "Lista",
-  anexo: "Anexo",
-};
+  lista: uiText(1840),
+  anexo: uiText(1841),
+}));
 
 type NotebookSearchProps = {
   workspace: Pick<WorkspaceState, "notebooks" | "notes">;
@@ -22,19 +23,24 @@ type NotebookSearchProps = {
 };
 
 export function NotebookSearch({ workspace, onOpen }: NotebookSearchProps) {
+  const currentUiLanguage = useLanguage();
+
   const [query, setQuery] = useState("");
   const deferred = useDeferredValue(query);
-  const hits = useMemo(() => searchNotebooks(workspace, deferred), [workspace, deferred]);
+  const hits = useMemo(
+    () => searchNotebooks(workspace, deferred),
+    [workspace, deferred, currentUiLanguage],
+  );
   const resultsId = useId();
   const searching = Array.from(query.trim()).length >= MIN_QUERY_LENGTH;
 
   return (
-    <section className="notebook-search" aria-label="Buscar nos cadernos">
+    <section className="notebook-search" aria-label={uiText(720)}>
       <input
         type="search"
         value={query}
-        placeholder="Buscar nos cadernos"
-        aria-label="Buscar nos cadernos"
+        placeholder={uiText(720)}
+        aria-label={uiText(720)}
         aria-controls={resultsId}
         autoComplete="off"
         onChange={(event) => setQuery(event.target.value)}
@@ -43,16 +49,11 @@ export function NotebookSearch({ workspace, onOpen }: NotebookSearchProps) {
         }}
       />
       <div id={resultsId} role="region" aria-live="polite">
-        {searching && hits.length === 0 && (
-          <p className="notebook-search__empty">
-            Nada encontrado. A busca vê títulos, textos digitados, post-its e listas; a escrita à
-            mão em si é imagem e não entra.
-          </p>
-        )}
+        {searching && hits.length === 0 && <p className="notebook-search__empty">{uiText(721)}</p>}
         {hits.length > 0 && (
           <>
             <p className="notebook-search__count">
-              {hits.length} {hits.length === 1 ? "resultado" : "resultados"}
+              {hits.length} {uiText(hits.length === 1 ? "resultado" : "resultados")}
             </p>
             <ul>
               {hits.map((hit) => (

@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useState } from "react";
 import { PageHeader } from "../components/app-navigation";
 import { PaperArrow } from "../components/paper-arrow";
@@ -10,13 +11,15 @@ import {
 
 type FilterValue = ControlLevel | "all";
 
-const FILTERS: { value: FilterValue; label: string }[] = [
-  { value: "all", label: "Todas" },
+const FILTERS: { value: FilterValue; label: string }[] = localizeLabels(() => [
+  { value: "all", label: uiText(1724) },
   { value: "total-controlled", label: CONTROL_LEVEL_LABELS["total-controlled"] },
   { value: "semi-controlled", label: CONTROL_LEVEL_LABELS["semi-controlled"] },
-];
+]);
 
 function ActivityCard({ activity }: { activity: ActivityDefinition }) {
+  useLanguage();
+
   return (
     <article className="bank-card">
       <div className="bank-card__heading">
@@ -27,20 +30,22 @@ function ActivityCard({ activity }: { activity: ActivityDefinition }) {
       </div>
       <dl className="bank-card__meta">
         <div>
-          <dt>Time</dt>
-          <dd>{activity.time} min</dd>
+          <dt>{uiText(1148)}</dt>
+          <dd>
+            {activity.time} {uiText(19)}
+          </dd>
         </div>
         <div>
-          <dt>Topic</dt>
+          <dt>{uiText(1149)}</dt>
           <dd>{activity.topic}</dd>
         </div>
       </dl>
       <div className="bank-card__block">
-        <span>Goal</span>
+        <span>{uiText(1150)}</span>
         <p>{activity.goal}</p>
       </div>
       <div className="bank-card__block">
-        <span>Steps</span>
+        <span>{uiText(1151)}</span>
         <ol>
           {activity.steps.map((step) => (
             <li key={step}>{step}</li>
@@ -49,13 +54,13 @@ function ActivityCard({ activity }: { activity: ActivityDefinition }) {
       </div>
       {activity.supplies.length > 0 && (
         <div className="bank-card__block">
-          <span>Supplies</span>
+          <span>{uiText(1152)}</span>
           <p>{activity.supplies.join(", ")}</p>
         </div>
       )}
       {activity.links.length > 0 && (
         <div className="bank-card__block">
-          <span>Links</span>
+          <span>{uiText(37)}</span>
           <ul className="homework-links">
             {activity.links.map((link) => (
               <li key={link}>
@@ -72,6 +77,8 @@ function ActivityCard({ activity }: { activity: ActivityDefinition }) {
 }
 
 export function ActivityBankView({ onBack }: { onBack: () => void }) {
+  useLanguage();
+
   const [filter, setFilter] = useState<FilterValue>("all");
   const activities =
     filter === "all"
@@ -82,25 +89,19 @@ export function ActivityBankView({ onBack }: { onBack: () => void }) {
     <main className="main-content" id="main-content">
       <PageHeader />
       <header className="builder__header">
-        <button
-          className="back-button"
-          type="button"
-          onClick={onBack}
-          aria-label="Voltar para Hoje"
-        >
+        <button className="back-button" type="button" onClick={onBack} aria-label={uiText(1153)}>
           <PaperArrow back />
         </button>
         <div>
-          <span className="section-label">Planejamento</span>
-          <h1>Banco de atividades</h1>
+          <span className="section-label">{uiText(1154)}</span>
+          <h1>{uiText(1155)}</h1>
           <p>
-            {ACTIVITY_LIBRARY.length} atividades prontas para o Practice e a Extra Activity do plano
-            de aula, classificadas por Time, Topic, Steps, Goal, Supplies e Links.
+            {ACTIVITY_LIBRARY.length} {uiText(1156)}
           </p>
         </div>
       </header>
 
-      <div className="bank-filters" role="group" aria-label="Filtrar por nível de controle">
+      <div className="bank-filters" role="group" aria-label={uiText(1157)}>
         {FILTERS.map((option) => (
           <button
             key={option.value}

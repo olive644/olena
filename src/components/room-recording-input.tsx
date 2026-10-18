@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { MAX_ROOM_RECORDING_BYTES, uploadRoomRecording } from "../data/room-recording";
@@ -30,6 +31,8 @@ export function RoomRecordingInput({
   staged = false,
   stagedBlob,
 }: Props) {
+  useLanguage();
+
   const [blob, setBlob] = useState<Blob | undefined>(code ? stagedBlob : undefined);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -57,13 +60,13 @@ export function RoomRecordingInput({
       else onSaved(await uploadRoomRecording(code, credential, blob));
       setBlob(undefined);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível guardar o áudio.");
+      setError(caught instanceof Error ? caught.message : uiText(972));
     } finally {
       setSaving(false);
     }
   }
   return (
-    <div className="local-room-recording" aria-label={`Áudio de ${word}`}>
+    <div className="local-room-recording" aria-label={uiText(1937, [word])}>
       <div className="local-room-recording__heading">
         {showHeading && (
           <>
@@ -72,13 +75,7 @@ export function RoomRecordingInput({
           </>
         )}
         <small>
-          {blob
-            ? "Arquivo ainda não guardado"
-            : audioId
-              ? "Áudio guardado"
-              : staged
-                ? "Áudio preparado"
-                : "Áudio pendente"}
+          {blob ? uiText(973) : audioId ? uiText(974) : staged ? uiText(975) : uiText(976)}
           {!blob && (audioId || staged) && <PaperCheckIcon size={14} />}
         </small>
       </div>
@@ -89,15 +86,15 @@ export function RoomRecordingInput({
         onClick={() => inputRef.current?.click()}
       >
         <img src="/room-icons/upload.svg" alt="" width="22" height="22" />
-        Enviar arquivo
+        {uiText(977)}
       </button>
-      <small>MP3, WAV, OGG, MPEG, M4A ou WebM, até 256 KB por palavra.</small>
+      <small>{uiText(978)}</small>
       <input
         ref={inputRef}
         className="local-room-recording__file"
         type="file"
         accept="audio/webm,audio/ogg,audio/mp4,audio/mpeg,audio/wav,.m4a,.mp3,.wav,.ogg,.mpeg,.webm"
-        aria-label={`Enviar áudio de ${word}`}
+        aria-label={uiText(1938, [word])}
         onChange={(event) => {
           const file = event.target.files?.[0];
           event.target.value = "";
@@ -122,11 +119,11 @@ export function RoomRecordingInput({
             !type ||
             !["audio/webm", "audio/ogg", "audio/mp4", "audio/mpeg", "audio/wav"].includes(type)
           ) {
-            setError("Use áudio MP3, WAV, OGG, MPEG, M4A ou WebM.");
+            setError(uiText(979));
             return;
           }
           if (!file.size || file.size > MAX_ROOM_RECORDING_BYTES) {
-            setError("Envie um arquivo não vazio de até 256 KB.");
+            setError(uiText(980));
             return;
           }
           setBlob(new Blob([file], { type }));
@@ -136,21 +133,21 @@ export function RoomRecordingInput({
       />
       {previewUrl && blob && (
         <div className="local-room-recording__preview">
-          <audio controls src={previewUrl} aria-label={`Prévia de ${word}`} />
+          <audio controls src={previewUrl} aria-label={uiText(1939, [word])} />
           <button
             className="secondary-button"
             type="button"
             disabled={saving}
             onClick={() => void save()}
           >
-            {saving ? "Guardando…" : "Guardar áudio"}
+            {saving ? uiText(1940) : uiText(981)}
           </button>
         </div>
       )}
-      {saving && <HelenaLoading compact label="Guardando áudio…" />}
+      {saving && <HelenaLoading compact label={uiText(982)} />}
       {error && (
         <p className="local-room-recording__error" role="alert">
-          {error}
+          {uiText(error)}
         </p>
       )}
     </div>

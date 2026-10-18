@@ -1,6 +1,9 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { PAPER_BALL_FACES } from "./bingo-paper-geometry";
 
 export function PaperBallSkin({ number }: { number: string }) {
+  useLanguage();
+
   return (
     <svg className="bingo-ball-skin" viewBox="0 0 100 100" aria-hidden="true">
       {PAPER_BALL_FACES.map((face, i) => (
@@ -18,7 +21,11 @@ export function PaperBallSkin({ number }: { number: string }) {
       />
       <g fill="#292432" textAnchor="middle" fontFamily="Manrope, system-ui" fontWeight="800">
         <text x="49" y="39" fontSize="12">
-          {["B", "I", "N", "G", "O"][Math.floor((Number(number) - 1) / 15)]}
+          {
+            [uiText(1621), uiText(1622), uiText(1623), uiText(1624), uiText(1625)][
+              Math.floor((Number(number) - 1) / 15)
+            ]
+          }
         </text>
         <text x="49" y="65" fontSize="30">
           {number}

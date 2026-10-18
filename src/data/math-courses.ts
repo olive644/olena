@@ -1,8 +1,9 @@
-export const MATH_COURSES = [
+import { localizeResource, uiText } from "../i18n/runtime.js";
+export const MATH_COURSES = localizeResource([
   {
     id: "foundations",
     initialQuestionSeconds: 14,
-    title: "Pátio das Primeiras Contas",
+    title: uiText("Pátio das Primeiras Contas"),
     subject: "Ensino fundamental",
     color: "#167b85",
     shade: "#123f52",
@@ -12,7 +13,7 @@ export const MATH_COURSES = [
   {
     id: "school",
     initialQuestionSeconds: 16,
-    title: "Oficina das Equações",
+    title: uiText("Oficina das Equações"),
     subject: "Ensino médio",
     color: "#b84f39",
     shade: "#572e39",
@@ -22,7 +23,7 @@ export const MATH_COURSES = [
   {
     id: "advanced",
     initialQuestionSeconds: 18,
-    title: "Torre das Funções",
+    title: uiText("Torre das Funções"),
     subject: "Pré-cálculo",
     color: "#287b5b",
     shade: "#173d44",
@@ -39,7 +40,7 @@ export const MATH_COURSES = [
   {
     id: "calculus1",
     initialQuestionSeconds: 20,
-    title: "Ponte das Tangentes",
+    title: uiText("Ponte das Tangentes"),
     subject: "Cálculo I",
     color: "#326bb0",
     shade: "#19365d",
@@ -49,7 +50,7 @@ export const MATH_COURSES = [
   {
     id: "calculus2",
     initialQuestionSeconds: 22,
-    title: "Porto das Integrais",
+    title: uiText("Porto das Integrais"),
     subject: "Cálculo II",
     color: "#248e94",
     shade: "#134f60",
@@ -66,7 +67,7 @@ export const MATH_COURSES = [
   {
     id: "calculus3",
     initialQuestionSeconds: 24,
-    title: "Mirante dos Vetores",
+    title: uiText("Mirante dos Vetores"),
     subject: "Cálculo III",
     color: "#795088",
     shade: "#382d56",
@@ -80,7 +81,7 @@ export const MATH_COURSES = [
       "Integrais duplas",
     ],
   },
-] as const;
+] as const);
 export type MathCourseId = (typeof MATH_COURSES)[number]["id"];
 export type MathProgress = {
   level: number;

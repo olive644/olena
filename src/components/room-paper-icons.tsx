@@ -1,4 +1,7 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 export function RoomPointsIcon({ xp = false }: { xp?: boolean }) {
+  useLanguage();
+
   return (
     <svg
       className={`room-points-icon${xp ? " room-xp-icon" : ""}`}
@@ -13,6 +16,8 @@ export function RoomPointsIcon({ xp = false }: { xp?: boolean }) {
 }
 
 export function RoomAudioIcon({ playing = false }: { playing?: boolean }) {
+  useLanguage();
+
   return (
     <svg
       className={`room-audio-icon${playing ? " is-playing" : ""}`}
@@ -25,11 +30,13 @@ export function RoomAudioIcon({ playing = false }: { playing?: boolean }) {
 }
 
 export function RoomSecondsUnit() {
+  useLanguage();
+
   return (
     <svg
       className="room-seconds-unit room-points-icon"
       viewBox="0 0 66 98"
-      aria-label="segundos"
+      aria-label={uiText(966)}
       role="img"
     >
       <use href="/room-icons/room-stage.svg#seconds" />
@@ -38,6 +45,8 @@ export function RoomSecondsUnit() {
 }
 
 export function RoomClockIcon() {
+  useLanguage();
+
   return (
     <svg className="room-clock-icon room-points-icon" viewBox="0 0 64 64" aria-hidden="true">
       <use href="/room-icons/room-stage.svg#clock" />
@@ -46,6 +55,8 @@ export function RoomClockIcon() {
 }
 
 export function RoomConfetti({ compact = false }: { compact?: boolean }) {
+  useLanguage();
+
   return (
     <span className="room-confetti" aria-hidden="true">
       {Array.from({ length: 48 }, (_, i) => (
@@ -67,6 +78,8 @@ export function RoomConfetti({ compact = false }: { compact?: boolean }) {
 }
 
 export function RoomEclipseBanner({ place, solar = false }: { place: number; solar?: boolean }) {
+  useLanguage();
+
   return (
     <svg
       className="room-eclipse-banner"
@@ -88,6 +101,8 @@ export function RoomEclipseBanner({ place, solar = false }: { place: number; sol
 }
 
 export function RoomTrophyFrame({ place }: { place: number }) {
+  useLanguage();
+
   return (
     <svg className="room-trophy-frame" data-place={place} viewBox="0 0 240 240" aria-hidden="true">
       <use href="/room-icons/room-trophies.svg#ring" />
@@ -99,6 +114,8 @@ export function RoomTrophyFrame({ place }: { place: number }) {
 }
 
 export function RoomSolarTrophyFrame({ place }: { place: number }) {
+  useLanguage();
+
   const face = place === 1 ? "#a779ef" : place === 2 ? "#f0ba65" : "#50bdc4";
   const depth = place === 1 ? "#51259b" : place === 2 ? "#b87941" : "#147b83";
   return (

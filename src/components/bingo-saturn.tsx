@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   createApprovedSaturn,
@@ -58,6 +59,8 @@ function tossFrames(
   });
 }
 function Ball({ number }: { number: string }) {
+  useLanguage();
+
   return <PaperBallSkin number={number} />;
 }
 
@@ -76,6 +79,8 @@ function BingoSaturnView({
   onReveal?: (ids: readonly string[]) => void;
   children?: ReactNode;
 }) {
+  useLanguage();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<ApprovedSaturn | null>(null);
   const soundRef = useRef<SaturnSound | null>(null);
@@ -193,14 +198,14 @@ function BingoSaturnView({
       setAnimating(true);
       setTravelling(n);
       setFocus(false);
-      setCaption("Misturando as bolinhas…");
+      setCaption(uiText(1631));
       engine!.spin(true);
       sound?.mix();
       if (!(await wait(MIX_MS))) return;
       engine!.spin(false);
       sound?.stop();
       if (!(await wait(SETTLE_MS))) return;
-      setCaption("A bolinha está saindo");
+      setCaption(uiText(140));
       sound?.pick();
       timers.add(window.setTimeout(() => sound?.exit(), EXIT_TIMING.lift + EXIT_TIMING.hover));
       // A bolinha sobe, espera, cai pelo portão e rola pelo funil dentro do próprio globo. O motor
@@ -240,7 +245,7 @@ function BingoSaturnView({
       }
       engine!.finishExit();
       engine!.burst(goalX - rect.left, goalY - rect.top);
-      setCaption("Saiu " + letters[Math.floor((Number(n) - 1) / 15)] + " " + n + "!");
+      setCaption(uiText(2287) + letters[Math.floor((Number(n) - 1) / 15)] + " " + n + "!");
       setFocus(true);
       sound?.reveal();
       onRevealRef.current?.(ids);
@@ -328,7 +333,7 @@ function BingoSaturnView({
     >
       <div className="bingo-machine-column">
         <div className="bingo-saturn">
-          <canvas ref={canvasRef} aria-label="Globo Saturno com as bolinhas restantes" />
+          <canvas ref={canvasRef} aria-label={uiText(141)} />
           <div ref={targetRef} className="bingo-reveal-anchor" aria-hidden="true" />
           <div
             ref={flyRef}
@@ -345,11 +350,11 @@ function BingoSaturnView({
         <div className="bingo-history">
           <div className="bingo-history-heading">
             <h3>
-              Números sorteados <small>{visible.length}/75</small>
+              {uiText(130)} <small>{visible.length}/75</small>
             </h3>
             <BingoLatest number={latestVisible || undefined} />
           </div>
-          <div ref={historyRef} role="list" aria-label="Números sorteados">
+          <div ref={historyRef} role="list" aria-label={uiText(130)}>
             {visible.map((id) => (
               <span
                 role="listitem"
@@ -378,7 +383,7 @@ function BingoSaturnView({
                   await onDraw();
                 }}
               >
-                {animating ? "Girando…" : "Sortear próxima bolinha"}
+                {animating ? uiText(1632) : uiText(142)}
               </button>
             )}
           </div>

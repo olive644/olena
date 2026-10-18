@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useState, type PointerEvent } from "react";
 import "./room-team-board.css";
 import {
@@ -24,6 +25,8 @@ export function RoomTeamBoard({
   onAssign(id: string, team: RoomTeam): Promise<boolean>;
   onRemove?: (id: string) => Promise<boolean>;
 }) {
+  useLanguage();
+
   const [moving, setMoving] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [target, setTarget] = useState<RoomTeam | null>(null);
@@ -34,7 +37,10 @@ export function RoomTeamBoard({
     try {
       if (await onAssign(id, team))
         setStatus(
-          `${participants.find((p) => p.id === id)?.displayName ?? "Participante"} no ${ROOM_TEAM_LABELS[team]}.`,
+          uiText(2529, [
+            participants.find((p) => p.id === id)?.displayName ?? uiText(2299),
+            uiText(ROOM_TEAM_LABELS[team]),
+          ]),
         );
     } finally {
       setMoving(null);
@@ -47,20 +53,16 @@ export function RoomTeamBoard({
     return ROOM_TEAMS.find((team) => team === value) ?? null;
   }
   return (
-    <section className="room-team-board" aria-label="Organizar equipes">
-      <h3>{isHost ? "Organize as equipes" : "Escolha sua equipe"}</h3>
-      <p>
-        {isHost
-          ? "Arraste pelo puxador ou use os botões para mudar uma pessoa de lado."
-          : "Você pode mudar de lado antes de a atividade começar."}
-      </p>
+    <section className="room-team-board" aria-label={uiText(986)}>
+      <h3>{isHost ? uiText(1943) : uiText(987)}</h3>
+      <p>{isHost ? uiText(988) : uiText(989)}</p>
       <div className="room-team-board__sides">
         {ROOM_TEAMS.map((team) => (
           <section
             key={team}
             data-room-team={team}
             className={`room-team-board__side room-team-board__side--${team === "Roxo" ? "purple" : "yellow"}${target === team ? " is-target" : ""}`}
-            aria-label={ROOM_TEAM_LABELS[team]}
+            aria-label={uiText(ROOM_TEAM_LABELS[team])}
           >
             <h4>
               <PaperMoonMark
@@ -68,7 +70,7 @@ export function RoomTeamBoard({
                 motif={team === "Roxo" ? "moon" : "sun"}
                 className="room-side-icon"
               />
-              {ROOM_TEAM_LABELS[team]}{" "}
+              {uiText(ROOM_TEAM_LABELS[team])}{" "}
               <span>
                 <PaperDigits value={String(participants.filter((p) => p.team === team).length)} />
               </span>
@@ -82,7 +84,7 @@ export function RoomTeamBoard({
                 }
                 onClick={() => void move(participantId, team)}
               >
-                Entrar no {ROOM_TEAM_LABELS[team]}
+                {uiText(990)} {uiText(ROOM_TEAM_LABELS[team])}
               </button>
             )}
             <ul>
@@ -104,7 +106,7 @@ export function RoomTeamBoard({
                     />
                     <strong>
                       {participant.displayName}
-                      {participant.id === participantId ? " (você)" : ""}
+                      {participant.id === participantId ? uiText(991) : ""}
                     </strong>
                     {isHost && (
                       <>
@@ -112,7 +114,7 @@ export function RoomTeamBoard({
                           type="button"
                           className="secondary-button room-team-board__grip"
                           disabled={moving !== null}
-                          aria-label={`Arrastar ${participant.displayName}`}
+                          aria-label={uiText(1944, [participant.displayName])}
                           onPointerDown={(event) => {
                             if (event.button !== 0) return;
                             event.currentTarget.setPointerCapture(event.pointerId);
@@ -139,12 +141,15 @@ export function RoomTeamBoard({
                           type="button"
                           className="secondary-button room-team-board__move"
                           disabled={moving !== null}
-                          aria-label={`Mover ${participant.displayName} para ${ROOM_TEAM_LABELS[team === "Roxo" ? "Amarelo" : "Roxo"]}`}
+                          aria-label={uiText(1945, [
+                            participant.displayName,
+                            uiText(ROOM_TEAM_LABELS[team === "Roxo" ? "Amarelo" : "Roxo"]),
+                          ])}
                           onClick={() =>
                             void move(participant.id, team === "Roxo" ? "Amarelo" : "Roxo")
                           }
                         >
-                          Mudar de lado
+                          {uiText(992)}
                         </button>
                         {onRemove && (
                           <RemoveParticipantButton
@@ -158,12 +163,12 @@ export function RoomTeamBoard({
                   </li>
                 ))}
             </ul>
-            {participants.every((p) => p.team !== team) && <p>Aguardando participantes</p>}
+            {participants.every((p) => p.team !== team) && <p>{uiText(993)}</p>}
           </section>
         ))}
       </div>
       <p role="status" className="room-team-board__status">
-        {status}
+        {uiText(status)}
       </p>
     </section>
   );

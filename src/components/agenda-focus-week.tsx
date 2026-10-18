@@ -1,6 +1,9 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { type pomodoroWeek } from "../domain/agenda-insights";
 
 export function PaperFlower({ active }: { active: boolean }) {
+  useLanguage();
+
   return (
     <svg
       viewBox="40 20 170 220"
@@ -35,16 +38,18 @@ export function AgendaFocusWeek({
   week: ReturnType<typeof pomodoroWeek>;
   mode: "timer" | "pomodoro";
 }) {
+  useLanguage();
+
   return (
     <div className="agenda-study-metric agenda-focus-week">
-      <h3>{mode === "timer" ? "Seu jardim de foco" : "Sua semana de Pomodoro"}</h3>
+      <h3>{mode === "timer" ? uiText(59) : uiText(60)}</h3>
       <div className="agenda-pomodoro-week" role="list">
         {week.map((day) => (
           <span
             key={day.key}
             role="listitem"
             className={`agenda-pomodoro-day${day.active ? " is-active" : ""}`}
-            aria-label={`${day.label}, ${day.key}: ${day.active ? "concluído" : "sem registro no filtro"}`}
+            aria-label={`${day.label}, ${day.key}: ${day.active ? uiText(1590) : uiText(61)}`}
           >
             <span>{day.label}</span>
             {mode === "timer" ? (

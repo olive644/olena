@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import type { HandwritingTool, Stroke } from "./handwriting-types";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { PaperObjectIcon } from "./paper-object-icon";
@@ -21,11 +22,14 @@ type HandwritingInkOptionsProps = {
   onDashChange?: (dash: Stroke["dash"]) => void;
 };
 
-const DASH_CHOICES = [
-  [undefined, "Contínua", "Linha contínua", ""],
-  ["dashed", "Tracejada", "Linha tracejada", "9 8"],
-  ["dotted", "Pontilhada", "Linha pontilhada", "0.1 9"],
-] as const;
+const DASH_CHOICES = localizeLabels(
+  () =>
+    [
+      [undefined, uiText(172), uiText(173), ""],
+      ["dashed", uiText(1637), uiText(1638), "9 8"],
+      ["dotted", uiText(1639), uiText(1640), "0.1 9"],
+    ] as const,
+);
 
 export function HandwritingInkOptions({
   tool,
@@ -43,16 +47,18 @@ export function HandwritingInkOptions({
   dash,
   onDashChange,
 }: HandwritingInkOptionsProps) {
+  useLanguage();
+
   const percentage = Math.max(0, Math.min(100, Math.round(((width - 0.5) / 39.5) * 100)));
   return (
     <div className="handwriting-ink-options">
       {tool === "eraser" && onEraserWholeStrokeChange && (
         <fieldset className="eraser-mode paper-choice-row">
-          <legend>Modo da borracha</legend>
+          <legend>{uiText(174)}</legend>
           <button
             type="button"
-            aria-label="Apagar só o trecho tocado"
-            title="Apagar só o trecho tocado"
+            aria-label={uiText(175)}
+            title={uiText(175)}
             aria-pressed={!eraserWholeStroke && !eraserBackground}
             onClick={() => {
               onEraserBackgroundChange?.(false);
@@ -60,12 +66,12 @@ export function HandwritingInkOptions({
             }}
           >
             <PaperObjectIcon name="eraseArea" />
-            <span>Trecho</span>
+            <span>{uiText(176)}</span>
           </button>
           <button
             type="button"
-            aria-label="Apagar o traço inteiro"
-            title="Apagar o traço inteiro"
+            aria-label={uiText(177)}
+            title={uiText(177)}
             aria-pressed={eraserWholeStroke && !eraserBackground}
             onClick={() => {
               onEraserBackgroundChange?.(false);
@@ -73,43 +79,39 @@ export function HandwritingInkOptions({
             }}
           >
             <PaperObjectIcon name="eraseStroke" />
-            <span>Traço inteiro</span>
+            <span>{uiText(178)}</span>
           </button>
           {onEraserBackgroundChange && (
             <button
               type="button"
-              aria-label="Apagar só o fundo importado"
-              title={
-                backgroundAvailable
-                  ? "Apagar só o fundo importado (página ou imagem), sem tocar na tinta"
-                  : "Disponível quando a folha tem uma página ou imagem importada"
-              }
+              aria-label={uiText(179)}
+              title={backgroundAvailable ? uiText(180) : uiText(181)}
               aria-pressed={eraserBackground && backgroundAvailable}
               disabled={!backgroundAvailable}
               onClick={() => onEraserBackgroundChange(true)}
             >
               <PaperObjectIcon name="eraseBackground" />
-              <span>Fundo</span>
+              <span>{uiText(182)}</span>
             </button>
           )}
         </fieldset>
       )}
       {tool !== "eraser" && (
         <fieldset className="ink-palette">
-          <legend>Cor da tinta</legend>
+          <legend>{uiText(183)}</legend>
           {[
-            ["#17151c", "Grafite"],
-            ["#7c3aed", "Roxo"],
-            ["#ef476f", "Rosa"],
-            ["#2d8a67", "Verde"],
-            ["#facc15", "Amarelo"],
-            ["#fff9ef", "Creme"],
+            ["#17151c", uiText(1573)],
+            ["#7c3aed", uiText(1568)],
+            ["#ef476f", uiText(1570)],
+            ["#2d8a67", uiText(1571)],
+            ["#facc15", uiText(1569)],
+            ["#fff9ef", uiText(1641)],
           ].map(([ink, label]) => (
             <button
               key={ink}
               type="button"
               className="ink-swatch"
-              aria-label={`Tinta ${label}`}
+              aria-label={uiText(1642, [label])}
               aria-pressed={color.toLowerCase() === ink}
               style={{ backgroundColor: ink }}
               onClick={() => ink && onColorChange(ink)}
@@ -119,11 +121,11 @@ export function HandwritingInkOptions({
               </span>
             </button>
           ))}
-          <label className="ink-custom" title="Escolher outra cor">
-            <span>Outra</span>
+          <label className="ink-custom" title={uiText(184)}>
+            <span>{uiText(185)}</span>
             <input
               type="color"
-              aria-label="Cor da tinta"
+              aria-label={uiText(183)}
               value={color}
               onChange={(event) => onColorChange(event.target.value)}
             />
@@ -132,15 +134,17 @@ export function HandwritingInkOptions({
       )}
       {tool === "highlighter" && onHighlighterOpacityChange && (
         <fieldset className="highlighter-opacity">
-          <legend>Opacidade do marca-texto</legend>
+          <legend>{uiText(186)}</legend>
           <label className="ink-size-control">
-            <span>Opacidade: {Math.round(highlighterOpacity * 100)}%</span>
+            <span>
+              {uiText(187)} {Math.round(highlighterOpacity * 100)}%
+            </span>
             <input
               type="range"
               min="10"
               max="70"
               step="1"
-              aria-label="Opacidade do marca-texto"
+              aria-label={uiText(186)}
               aria-valuetext={`${Math.round(highlighterOpacity * 100)}%`}
               value={Math.round(highlighterOpacity * 100)}
               onChange={(event) => onHighlighterOpacityChange(Number(event.target.value) / 100)}
@@ -150,7 +154,7 @@ export function HandwritingInkOptions({
       )}
       {tool === "pen" && onDashChange && (
         <fieldset className="stroke-palette dash-palette">
-          <legend>Estilo da linha</legend>
+          <legend>{uiText(188)}</legend>
           {DASH_CHOICES.map(([value, label, description, pattern]) => (
             <button
               type="button"
@@ -178,18 +182,18 @@ export function HandwritingInkOptions({
         </fieldset>
       )}
       <fieldset className="stroke-palette">
-        <legend>{tool === "eraser" ? "Área da borracha" : "Espessura do traço"}</legend>
+        <legend>{tool === "eraser" ? uiText(189) : uiText(190)}</legend>
         <label className="ink-size-control">
           <span>
-            {tool === "eraser" ? "Tamanho da borracha" : "Espessura"}: {percentage}%
-            {![3, 5, 8].includes(width) && " (personalizada)"}
+            {tool === "eraser" ? uiText(1643) : uiText(1644)}: {percentage}%
+            {![3, 5, 8].includes(width) && uiText(2288)}
           </span>
           <input
             type="range"
             min="0"
             max="100"
             step="1"
-            aria-label={tool === "eraser" ? "Tamanho da borracha" : "Espessura do pincel"}
+            aria-label={tool === "eraser" ? uiText(1643) : uiText(1645)}
             aria-valuetext={`${percentage}%`}
             value={percentage}
             onChange={(event) => onWidthChange(0.5 + Number(event.target.value) * 0.395)}
@@ -197,15 +201,15 @@ export function HandwritingInkOptions({
         </label>
         {(
           [
-            [3, "Fino"],
-            [5, "Regular"],
-            [8, "Forte"],
+            [3, uiText(1646)],
+            [5, uiText(1647)],
+            [8, uiText(1648)],
           ] as const
         ).map(([size, label]) => (
           <button
             type="button"
             key={size}
-            aria-label={`Traço ${label}`}
+            aria-label={uiText(1649, [label])}
             aria-pressed={width === size}
             onClick={() => onWidthChange(size)}
           >

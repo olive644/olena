@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { PaperBallSkin } from "./bingo-paper-ball";
 import { createSaturnSound } from "./bingo-saturn-sound";
@@ -19,6 +20,8 @@ export function BingoParticipant({
   onDraw: () => Promise<void>;
   questionStartedAt?: number;
 }) {
+  useLanguage();
+
   const { reduceMotion } = useAccessibility();
   const previous = useRef(drawn.join(","));
   const reveal = useRef(onReveal);
@@ -115,7 +118,7 @@ export function BingoParticipant({
             />
             <path fill="#ffe88d" d="M2 55Q46 62 98 19L98 25Q50 72 2 60Z" />
           </svg>
-          <strong>GLOBO RODANDO</strong>
+          <strong>{uiText(128)}</strong>
           <span className="bingo-spin-stars" aria-hidden="true">
             ✦ ✦ ✦
           </span>
@@ -126,26 +129,26 @@ export function BingoParticipant({
           className="bingo-participant-reveal"
           style={paperBallStyle(drawn.at(-1) ?? "1")}
           role="status"
-          aria-label={"Saiu " + drawn.at(-1)}
+          aria-label={uiText(2287) + drawn.at(-1)}
         >
           <PaperBallSkin number={drawn.at(-1) ?? ""} />
         </div>
       )}
-      <section className="bingo-history" aria-label="Histórico do bingo">
+      <section className="bingo-history" aria-label={uiText(129)}>
         <div className="bingo-history-heading">
           <h3>
-            Números sorteados <small>{visible.length}/75</small>
+            {uiText(130)} <small>{visible.length}/75</small>
           </h3>
           <BingoLatest number={visible.at(-1)} />
         </div>
-        <div role="list" aria-label="Números sorteados">
+        <div role="list" aria-label={uiText(130)}>
           {visible.map((id) => (
             <span
               role="listitem"
               data-bingo-number={id}
               key={id}
               className={"bingo-participant-ball" + (id === visible.at(-1) ? " latest" : "")}
-              aria-label={`${id}${id === visible.at(-1) ? ", última bola" : ""}`}
+              aria-label={`${id}${id === visible.at(-1) ? uiText(131) : ""}`}
               style={paperBallStyle(id)}
             >
               <PaperBallSkin number={id} />

@@ -1,3 +1,4 @@
+import { uiWeekdays, uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { dateForKey, monthDates } from "../domain/agenda";
 import { toDateKey } from "../domain/workspace";
@@ -42,6 +43,8 @@ export function PaperChoice({
   onChange: (value: string) => void;
   disabled?: boolean;
 }) {
+  useLanguage();
+
   const id = useId();
   const panel = useRef<HTMLDivElement>(null),
     trigger = useRef<HTMLButtonElement>(null);
@@ -66,7 +69,7 @@ export function PaperChoice({
           }
         }}
       >
-        {options.find((option) => option.value === value)?.label ?? "Escolher"}
+        {options.find((option) => option.value === value)?.label ?? uiText(1852)}
         <PaperArrow />
       </button>
       <div
@@ -74,7 +77,7 @@ export function PaperChoice({
         ref={panel}
         popover="auto"
         role="listbox"
-        aria-label={`Opções de ${label}`}
+        aria-label={uiText(1595, [label])}
         className="agenda-field-popover agenda-choice-options"
         onKeyDown={navigateOptions}
         onToggle={(event) => setOpen(event.currentTarget.matches(":popover-open"))}
@@ -100,16 +103,23 @@ export function PaperChoice({
   );
 }
 
-function parsedDate(text: string) {
+function parsedDate(text: string, locale = uiLocale()) {
   const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(text);
   if (!match) return null;
-  const key = `${match[3]}-${match[2]}-${match[1]}`;
+  const key =
+    locale === "en-US"
+      ? `${match[3]}-${match[1]}-${match[2]}`
+      : `${match[3]}-${match[2]}-${match[1]}`;
   return Number.isFinite(dateForKey(key).getTime()) && toDateKey(dateForKey(key)) === key
     ? key
     : null;
 }
-function dateText(date: string) {
-  return date ? `${date.slice(8)}/${date.slice(5, 7)}/${date.slice(0, 4)}` : "";
+function dateText(date: string, locale = uiLocale()) {
+  return date
+    ? locale === "en-US"
+      ? `${date.slice(5, 7)}/${date.slice(8)}/${date.slice(0, 4)}`
+      : `${date.slice(8)}/${date.slice(5, 7)}/${date.slice(0, 4)}`
+    : "";
 }
 
 export function PaperDateField({
@@ -125,21 +135,31 @@ export function PaperDateField({
   min?: string;
   optional?: boolean;
 }) {
+  const language = useLanguage();
+
   const id = useId(),
     inputId = useId();
   const panel = useRef<HTMLDivElement>(null),
     input = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState(value || min || toDateKey(new Date()));
-  const [buffer, setBuffer] = useState({ source: value, text: dateText(value) });
+  const [buffer, setBuffer] = useState({
+    source: value,
+    text: dateText(value),
+    locale: uiLocale(),
+  });
+  const draft = buffer.source === value && buffer.text !== dateText(value, buffer.locale);
+  const inputLocale = draft ? buffer.locale : language;
   useEffect(() => {
+    const date = draft ? parsedDate(buffer.text, inputLocale) : value;
+    const invalidDraft = draft && !date && !(optional && !buffer.text);
     input.current?.setCustomValidity(
-      value && min && value < min ? "A data final deve ser igual ou posterior à data inicial." : "",
+      invalidDraft ? uiText(82) : date && min && date < min ? uiText(80) : "",
     );
-  }, [value, min]);
+  }, [value, min, language, draft, buffer.text, inputLocale, optional]);
   const choose = (date: string) => {
     input.current?.setCustomValidity("");
-    setBuffer({ source: date, text: dateText(date) });
+    setBuffer({ source: date, text: dateText(date), locale: language });
     onChange(date);
     panel.current?.hidePopover();
     input.current?.focus();
@@ -160,18 +180,22 @@ export function PaperDateField({
           type="text"
           inputMode="numeric"
           required={!optional}
-          placeholder="dd/mm/aaaa"
+          placeholder={
+            inputLocale === "en-US"
+              ? "mm/dd/yyyy"
+              : language === "pt-BR"
+                ? "dd/mm/aaaa"
+                : "dd/mm/yyyy"
+          }
           maxLength={10}
-          value={buffer.source === value ? buffer.text : dateText(value)}
+          value={draft ? buffer.text : dateText(value)}
           onChange={(event) => {
             const digits = event.target.value.replace(/\D/g, "").slice(0, 8);
             const text = `${digits.slice(0, 2)}${digits.length > 2 ? `/${digits.slice(2, 4)}` : ""}${digits.length > 4 ? `/${digits.slice(4)}` : ""}`,
-              date = parsedDate(text);
-            setBuffer({ source: value, text });
+              date = parsedDate(text, inputLocale);
+            setBuffer({ source: value, text, locale: inputLocale });
             const valid = date && (!min || date >= min);
-            event.currentTarget.setCustomValidity(
-              valid || (optional && !text) ? "" : "Escolha uma data válida no calendário.",
-            );
+            event.currentTarget.setCustomValidity(valid || (optional && !text) ? "" : uiText(82));
             if (valid) onChange(date);
             else if (optional && !text) onChange("");
           }}
@@ -179,7 +203,7 @@ export function PaperDateField({
         <button
           type="button"
           className="agenda-field-icon"
-          aria-label={`Escolher ${label.toLowerCase()}`}
+          aria-label={uiText(1596, [label.toLowerCase()])}
           aria-haspopup="dialog"
           aria-expanded={open}
           popoverTarget={id}
@@ -193,7 +217,7 @@ export function PaperDateField({
         id={id}
         popover="auto"
         role="dialog"
-        aria-label={`Calendário de ${label.toLowerCase()}`}
+        aria-label={uiText(1597, [label.toLowerCase()])}
         className="agenda-field-popover agenda-date-popover"
         onToggle={(event) => setOpen(event.currentTarget.matches(":popover-open"))}
       >
@@ -202,7 +226,7 @@ export function PaperDateField({
           <button
             type="button"
             className="icon-button"
-            aria-label="Fechar calendário da data"
+            aria-label={uiText(83)}
             popoverTarget={id}
             popoverTargetAction="hide"
           >
@@ -213,39 +237,40 @@ export function PaperDateField({
           <button
             type="button"
             className="secondary-button"
-            aria-label="Mês anterior"
+            aria-label={uiText(84)}
             onClick={() => move(-1)}
           >
             <PaperArrow back />
           </button>
           <strong>
-            {dateForKey(month).toLocaleDateString("pt-BR", { month: "long" })} {month.slice(0, 4)}
+            {dateForKey(month).toLocaleDateString(uiLocale(), { month: "long" })}{" "}
+            {month.slice(0, 4)}
           </strong>
           <button
             type="button"
             className="secondary-button"
-            aria-label="Próximo mês"
+            aria-label={uiText(85)}
             onClick={() => move(1)}
           >
             <PaperArrow />
           </button>
         </div>
         <div className="agenda-field-weekdays">
-          {["S", "T", "Q", "Q", "S", "S", "D"].map((day, index) => (
+          {uiWeekdays(true).map((day, index) => (
             <span key={index}>{day}</span>
           ))}
         </div>
         <div
           className="agenda-date-days"
           role="group"
-          aria-label="Escolher dia"
+          aria-label={uiText(86)}
           onKeyDown={(event) => navigateOptions(event, 7)}
         >
           {monthDates(month).map((date) => (
             <button
               type="button"
               key={date}
-              aria-label={dateForKey(date).toLocaleDateString("pt-BR", {
+              aria-label={dateForKey(date).toLocaleDateString(uiLocale(), {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -266,11 +291,11 @@ export function PaperDateField({
             disabled={Boolean(min && toDateKey(new Date()) < min)}
             onClick={() => choose(toDateKey(new Date()))}
           >
-            Hoje
+            {uiText(87)}
           </button>
           {optional && (
             <button type="button" className="secondary-button" onClick={() => choose("")}>
-              Sem data final
+              {uiText(88)}
             </button>
           )}
         </footer>
@@ -282,12 +307,14 @@ export function PaperDateField({
 export function PaperTimeField({
   value,
   onChange,
-  label = "Horário",
+  label = uiText(89),
 }: {
   value: string;
   onChange: (value: string) => void;
   label?: string;
 }) {
+  useLanguage();
+
   const id = useId(),
     inputId = useId();
   const panel = useRef<HTMLDivElement>(null),
@@ -324,7 +351,7 @@ export function PaperTimeField({
         <button
           type="button"
           className="agenda-field-icon"
-          aria-label={`Escolher ${label.toLocaleLowerCase("pt-BR")}`}
+          aria-label={uiText(1596, [label.toLocaleLowerCase("pt-BR")])}
           aria-haspopup="dialog"
           aria-expanded={open}
           popoverTarget={id}
@@ -337,7 +364,7 @@ export function PaperTimeField({
         ref={panel}
         popover="auto"
         role="dialog"
-        aria-label={`Escolher ${label.toLocaleLowerCase("pt-BR")}`}
+        aria-label={uiText(1596, [label.toLocaleLowerCase("pt-BR")])}
         className="agenda-field-popover agenda-time-popover"
         onToggle={(event) => {
           const visible = event.currentTarget.matches(":popover-open");
@@ -360,7 +387,7 @@ export function PaperTimeField({
           <button
             type="button"
             className="icon-button"
-            aria-label="Fechar horários"
+            aria-label={uiText(90)}
             popoverTarget={id}
             popoverTargetAction="hide"
           >
@@ -370,18 +397,18 @@ export function PaperTimeField({
         <div className="agenda-time-columns">
           {(["hour", "minute"] as const).map((part) => (
             <div key={part}>
-              <strong>{part === "hour" ? "Horas" : "Minutos"}</strong>
+              <strong>{part === "hour" ? uiText(23) : uiText(24)}</strong>
               <div
                 className="agenda-time-options"
                 role="group"
-                aria-label={part === "hour" ? "Horas" : "Minutos"}
+                aria-label={part === "hour" ? uiText(23) : uiText(24)}
                 onKeyDown={navigateOptions}
               >
                 {Array.from({ length: part === "hour" ? 24 : 60 }, (_, number) => (
                   <button
                     key={number}
                     type="button"
-                    aria-label={`${String(number).padStart(2, "0")} ${part === "hour" ? "horas" : "minutos"}`}
+                    aria-label={`${String(number).padStart(2, "0")} ${part === "hour" ? uiText(1602) : uiText(1292)}`}
                     aria-pressed={Number(value.split(":")[part === "hour" ? 0 : 1]) === number}
                     onClick={() => select(part, number)}
                   >
@@ -401,7 +428,7 @@ export function PaperTimeField({
               input.current?.focus();
             }}
           >
-            Confirmar horário <PaperArrow />
+            {uiText(91)} <PaperArrow />
           </button>
         </footer>
       </div>

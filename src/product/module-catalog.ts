@@ -1,3 +1,4 @@
+import { localizeResource, uiText } from "../i18n/runtime.js";
 import type { AppView } from "../components/app-navigation";
 import type { NavigationIconName } from "../components/navigation-icon";
 
@@ -11,7 +12,7 @@ export type ProductModule = {
   entryView?: AppView;
 };
 
-export const PRODUCT_MODULES = [
+export const PRODUCT_MODULES = localizeResource([
   {
     id: "student-space",
     name: "Espaço do aluno",
@@ -141,7 +142,7 @@ export const PRODUCT_MODULES = [
     status: "available",
     entryView: "room",
   },
-] as const satisfies readonly ProductModule[];
+] as const satisfies readonly ProductModule[]);
 
 export type StudentSpaceTool = {
   view: AppView;
@@ -150,20 +151,35 @@ export type StudentSpaceTool = {
   icon: NavigationIconName;
 };
 
-export const STUDENT_SPACE_TOOLS = [
-  { view: "focus", title: "Iniciar foco", description: "Abrir temporizador", icon: "focus" },
-  { view: "notes", title: "Novo caderno", description: "Abrir cadernos", icon: "notes" },
+export const STUDENT_SPACE_TOOLS = localizeResource([
+  {
+    view: "focus",
+    title: uiText("Iniciar foco"),
+    description: uiText("Abrir temporizador"),
+    icon: "focus",
+  },
+  {
+    view: "notes",
+    title: uiText("Novo caderno"),
+    description: uiText("Abrir cadernos"),
+    icon: "notes",
+  },
   {
     view: "planner",
-    title: "Planejar a semana",
-    description: "Abrir agenda",
+    title: uiText("Planejar a semana"),
+    description: uiText("Abrir agenda"),
     icon: "planner",
   },
-  { view: "learn", title: "Praticar", description: "Minigames e Modo Sala", icon: "learn" },
+  {
+    view: "learn",
+    title: uiText("Praticar"),
+    description: uiText("Minigames e Modo Sala"),
+    icon: "learn",
+  },
   {
     view: "library",
-    title: "Consultar materiais",
-    description: "Abrir biblioteca",
+    title: uiText("Consultar materiais"),
+    description: uiText("Abrir biblioteca"),
     icon: "library",
   },
-] as const satisfies readonly StudentSpaceTool[];
+] as const satisfies readonly StudentSpaceTool[]);

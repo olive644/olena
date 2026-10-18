@@ -78,13 +78,18 @@ describe("App", () => {
 
   it("mantém a estrela da Helena montada ao trocar de aba", async () => {
     render(<App />);
-    const star = await screen.findByRole("button", { name: "Conversar com Helena" });
+    // A primeira abertura inclui a importação fria da assistente.
+    const star = await screen.findByRole(
+      "button",
+      { name: "Conversar com Helena" },
+      { timeout: 5000 },
+    );
     expect(screen.getByRole("complementary", { name: "Assistente Helena" })).toBeTruthy();
     navigate("Agenda");
     expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
     navigate("Foco");
     expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
-  });
+  }, 10000);
 
   // Inclui importação fria da rota e seleção no diálogo, como os fluxos de caderno.
   it("permite escolher um avatar oficial diretamente no perfil", async () => {
