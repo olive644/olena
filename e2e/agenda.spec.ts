@@ -742,7 +742,8 @@ test("weekly study opens focus without completing, records real minutes and retu
     ),
   ).toBeUndefined();
   // Resume a genuinely elapsed minute, rather than waiting a minute in every browser run.
-  await page.evaluate(() => {
+  // Aplicar no novo documento, depois que o documento anterior terminar de salvar a sessão.
+  await page.addInitScript(() => {
     const key = "olena.focus-session.v1";
     const session = JSON.parse(localStorage.getItem(key)!);
     localStorage.setItem(

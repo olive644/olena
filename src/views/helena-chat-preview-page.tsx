@@ -28,14 +28,14 @@ export function HelenaChatPreviewPage() {
           <a
             href={item.path}
             key={item.title}
-            className={item.title === "Agenda" ? "is-active" : ""}
-            aria-current={item.title === "Agenda" ? "page" : undefined}
+            className={item.icon === "planner" ? "is-active" : ""}
+            aria-current={item.icon === "planner" ? "page" : undefined}
           >
             <img
               src={
                 item.icon === "profile"
                   ? "/navigation-icons/paper/profile.svg"
-                  : `/navigation-icons/paper/${item.title === "Agenda" ? "roxo" : "claro"}/${item.icon}.svg`
+                  : `/navigation-icons/paper/${item.icon === "planner" ? "roxo" : "claro"}/${item.icon}.svg`
               }
               alt=""
               width="32"

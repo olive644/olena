@@ -1,5 +1,19 @@
 # Auditoria do estado atual
 
+## Regressão da prévia após idiomas, 2026-10-18
+
+O HTML separado da prévia Helena importava a interface sem instalar o catálogo, gerando
+IDs numéricos no lugar dos rótulos. Agora initializeLanguage antecede a importação da
+prévia, como no App. Seleção visual da Agenda usa o ícone canônico planner, não o título
+traduzido. Os seis E2E originais da prévia passaram em desktop/celular no Edge.
+O identificador interno da máquina Rive Helena também voltou a ser literal canônico,
+independente dos rótulos e da disponibilidade do catálogo. Regressão unitária cobre isso.
+O cenário de retomada do estudo instala sua sessão de teste no novo documento, evitando
+que o salvamento legítimo do documento anterior sobrescreva a fixture ao recarregar.
+Validação da correção: npm run verify aprovado com 2.006 testes, TypeScript, lint sem
+erros, formato, APIs, build e orçamento. Dois E2E de retomada aprovados no Edge, desktop
+e celular, além dos seis cenários da prévia. Não muda permissões ou limites do CI.
+
 ## Interface bilíngue, 2026-10-18
 
 Tradução global da interface implementada com 2.686 entradas locais pt-BR/en-US,

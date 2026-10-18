@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Preview Helena: o HTML independente também precisa aguardar initializeLanguage antes de
+importar a interface. Não comparar títulos traduzidos para identificar a aba Agenda.
+Fixtures de retomada de Foco devem ser instaladas por addInitScript no próximo documento,
+não adulteradas antes de reload enquanto o documento atual ainda pode salvá-las.
+
 2026-10-18, idiomas: runtime em src/i18n, catálogos estáveis em public/locales.
 uiText para interface confiável, nunca dados pessoais ou texto livre. useLanguage atualiza
 componentes sem remontagem; localizeLabels evita congelamento no escopo de módulo.
