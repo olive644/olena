@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { SocialFeed } from "../domain/profile-social";
 import { requestSocial, SOCIAL_CHANGED } from "../data/profile-social";
 import { getFirebaseAccountServices } from "../data/firebase-account";
+import { subscribeSocialUpdates } from "../data/profile-social-events";
 
 // Só memória e UID confirmado: evita baixar o mesmo feed para sino e perfil.
 let cached: { uid: string; value: SocialFeed; at: number } | undefined;
@@ -34,6 +35,7 @@ export function useSocialFeed(enabled: boolean) {
     let queued = false;
     let uid = "";
     let unsubscribe: (() => void) | undefined;
+    let stopEvents: ((immediate?: boolean) => void) | undefined;
     const refresh = async () => {
       if (!uid) return;
       if (pending) {
@@ -62,6 +64,8 @@ export function useSocialFeed(enabled: boolean) {
       .then(({ auth, authApi }) => {
         if (!alive) return;
         unsubscribe = authApi.onAuthStateChanged(auth, (user) => {
+          stopEvents?.(true);
+          stopEvents = undefined;
           generation++;
           pending = false;
           queued = false;
@@ -73,6 +77,7 @@ export function useSocialFeed(enabled: boolean) {
           }
           setFeed(cached?.uid === uid ? cached.value : undefined);
           if (uid) void refresh();
+          if (uid) stopEvents = subscribeSocialUpdates(uid);
         });
       })
       .catch(() => {});
@@ -97,6 +102,7 @@ export function useSocialFeed(enabled: boolean) {
     return () => {
       alive = false;
       unsubscribe?.();
+      stopEvents?.();
       window.clearInterval(timer);
       window.removeEventListener(SOCIAL_CHANGED, changed);
       window.removeEventListener("focus", refresh);

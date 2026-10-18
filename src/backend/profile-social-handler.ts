@@ -263,8 +263,7 @@ export function createProfileSocialHandler(options: {
                 return reply(503, { error: "Novas conexões estão temporariamente indisponíveis." });
               self.following[target] = now;
               const other = (state.accounts[target] ??= empty());
-              if (!other.notices[key] || now - other.notices[key]!.at >= RETENTION)
-                other.notices[key] = { at: now, read: false };
+              other.notices[key] = { at: now, read: false };
               other.notices = Object.fromEntries(
                 Object.entries(other.notices)
                   .filter(([, value]) => now - value.at < RETENTION)

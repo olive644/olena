@@ -124,7 +124,7 @@ it("seguir é atômico, idempotente e gera aviso real com seguir de volta", asyn
   expect((await app.feed("a")).self.followers).toBe(1);
   expect(JSON.stringify(bob)).not.toContain(key("a"));
 });
-it("deixar de seguir reduz contagens sem permitir spam de notificações ao seguir novamente", async () => {
+it("seguir novamente renova o aviso sem duplicar requisições de um vínculo já existente", async () => {
   const app = setup();
   await app.request("a", { action: "follow", username: "bob" });
   await app.request("b", { action: "read" });
@@ -133,7 +133,11 @@ it("deixar de seguir reduz contagens sem permitir spam de notificações ao segu
   expect((await app.feed("b")).self.followers).toBe(0);
   await app.request("a", { action: "follow", username: "bob" });
   expect((await app.feed("b")).notifications).toHaveLength(1);
-  expect((await app.feed("b")).notifications[0]?.read).toBe(true);
+  const renewed = (await app.feed("b")).notifications[0]!;
+  expect(renewed.read).toBe(false);
+  app.advance(1000);
+  await app.request("a", { action: "follow", username: "bob" });
+  expect((await app.feed("b")).notifications[0]?.at).toBe(renewed.at);
 });
 it("avisos expiram em 48 horas, mas as conexões não expiram", async () => {
   const app = setup();

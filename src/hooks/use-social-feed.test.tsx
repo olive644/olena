@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   request: vi.fn(),
   listener: undefined as ((user: { uid: string; isAnonymous: boolean } | null) => void) | undefined,
 }));
+vi.mock("../data/profile-social-events", () => ({ subscribeSocialUpdates: () => () => {} }));
 vi.mock("../data/profile-social", () => ({
   requestSocial: mocks.request,
   SOCIAL_CHANGED: "olena:social-changed",

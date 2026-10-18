@@ -6,6 +6,8 @@ import { identifyProfileAccount, profileAllowedOrigins } from "./profile-handle-
 import { createProfileSocialHandler, type SocialState } from "./profile-social-handler.js";
 import type { HandleRegistry } from "./profile-handle-handler.js";
 import { checkRateLimit } from "./rate-limit.js";
+import { createFirebaseSocialWatcher } from "./firebase-social-events.js";
+import { createProfileSocialEvents } from "./profile-social-events.js";
 const config = {
   databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
   serviceAccount: {
@@ -16,7 +18,7 @@ const config = {
 const token = createFirebaseAccessTokenProvider(config);
 const rateStore = createFirebaseRealtimeStore(config);
 const url = `${config.databaseUrl}/privateProfileSocial.json`;
-export const handleProfileSocial = createProfileSocialHandler({
+const handleFeed = createProfileSocialHandler({
   allowedOrigins: profileAllowedOrigins,
   identify: identifyProfileAccount,
   consume: (uid) => checkRateLimit(rateStore, "profile-social-minute", uid, 30, 60),
@@ -53,3 +55,18 @@ export const handleProfileSocial = createProfileSocialHandler({
     },
   },
 });
+
+const handleEvents = createProfileSocialEvents({
+  allowedOrigins: profileAllowedOrigins,
+  identify: identifyProfileAccount,
+  consume: async (uid) =>
+    (await checkRateLimit(rateStore, "profile-social-stream-minute", uid, 6, 60)) &&
+    (await checkRateLimit(rateStore, "profile-social-stream-global", "all", 300, 60)),
+  watch: createFirebaseSocialWatcher({ databaseUrl: config.databaseUrl, token }),
+});
+
+export function handleProfileSocial(request: Request) {
+  return new URL(request.url).searchParams.has("stream")
+    ? handleEvents(request)
+    : handleFeed(request);
+}
