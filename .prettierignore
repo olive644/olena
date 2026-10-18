@@ -8,3 +8,5 @@ test-results
 package-lock.json
 # Código de terceiros e bundle reproduzível do renderizador da Helena.
 public/helena-assistant/rive.js
+# Saída gerada por scripts/oliver-rive/slice.cjs.
+scripts/oliver-rive/layers/layers.json

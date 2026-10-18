@@ -49,11 +49,33 @@
   position: absolute;
   width: 38%;
   height: calc(100% + 70px);
-  object-fit: contain;
   right: 1%;
   bottom: 5px;
   pointer-events: none;
   user-select: none;
+}
+.math-hero-oliver img,
+.math-hero-oliver canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.math-hero-oliver img {
+  object-fit: contain;
+}
+/* A imagem estática é o primeiro quadro; o canvas só entra por cima quando o Rive carrega e a pose
+   de repouso do arquivo é a mesma da imagem, então a troca não tem salto. */
+.math-hero-oliver canvas {
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+.math-hero-oliver[data-ready="true"] canvas {
+  opacity: 1;
+}
+.math-hero-oliver[data-ready="true"] img {
+  opacity: 0;
+  transition: opacity 0ms linear 200ms;
 }
 .math-hero-pagination {
   display: flex;
@@ -134,16 +156,6 @@
   }
   .student-space .metric-row article > .paper-action-icon {
     position: static;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-reduce-motion="true"]) .math-hero-oliver {
-    animation: oliver-hero-float 5s ease-in-out infinite;
-  }
-}
-@keyframes oliver-hero-float {
-  50% {
-    transform: translateY(-7px) rotate(1deg);
   }
 }
 .student-space .view-heading--today h1 {

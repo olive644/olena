@@ -5,6 +5,7 @@ import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { PaperArrow } from "./paper-arrow";
 import { PaperDigits } from "./paper-digits";
+import { OliverHeroArt } from "./oliver-hero-art";
 export function MathPracticeHero({
   workspace,
   onPractice,
@@ -47,15 +48,7 @@ export function MathPracticeHero({
             {uiText(streak > 0 ? "Continuar minha ofensiva" : "Explorar Matemática")} <PaperArrow />
           </button>
         </div>
-        <img
-          className="math-hero-oliver"
-          src="/oliver-math-islands.png"
-          width="720"
-          height="791"
-          fetchPriority="high"
-          alt={uiText("Oliver convidando você para explorar as ilhas de Matemática")}
-          draggable={false}
-        />
+        <OliverHeroArt />
       </article>
       <div className="math-hero-pagination" aria-label={uiText("Página 1 de 1")}>
         <span aria-current="true" />

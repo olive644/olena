@@ -404,3 +404,10 @@ console.log(
 if (mascotRuntime > 512 * 1024 || mascotWasm > 2.25 * 1024 * 1024 || mascotFile > 1024 * 1024) {
   throw new Error("Assets da Helena excederam 512 KiB de JS, 2,25 MiB de WASM ou 1 MiB de .riv.");
 }
+
+// A arte animada do Oliver (Espaço do aluno) reaproveita o runtime acima e só baixa o próprio
+// .riv depois do primeiro quadro, sem movimento reduzido. Medição: 323 KiB.
+const oliverFile = (await stat(new URL("../dist/oliver-math-islands/oliver.riv", import.meta.url)))
+  .size;
+console.log(`Oliver Rive opcional: ${(oliverFile / 1024).toFixed(1)} KiB .riv`);
+if (oliverFile > 512 * 1024) throw new Error("O oliver.riv excedeu 512 KiB.");
