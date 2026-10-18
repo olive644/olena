@@ -53,7 +53,7 @@ for (const theme of ["light", "dark"]) {
       fullPage: true,
       animations: "disabled",
     });
-    await page.getByRole("button", { name: "Fechar configurações" }).click();
+    await page.getByRole("button", { name: "Voltar ao perfil" }).click();
     await expect(toggle).toBeFocused();
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);
     await expect(page.locator(".helena-virtual-mascot > img")).toHaveAttribute(

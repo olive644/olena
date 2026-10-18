@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Configurações (2026-10-17): entrada lateral curta de 18 px e fade, desativada pelo movimento reduzido do sistema/aplicativo. A engrenagem vira a seta amarela original para Voltar ao perfil, no mesmo canto direito. Conta apresenta identidade somente para leitura e Informações com e-mail confirmado e fuso. Exclusão fica em Conta, sem Zona de perigo. Sem painel de sincronização, recuperação local ou navegação Meu progresso. Estudo e foco usa botões de papel do tema; seleção amarela com check original, sem anel externo. Remover widgets não desliga sincronização nem apaga histórico.
+
 Recomendações de perfil (revisão vigente): ficha apenas com pendência confirmada pela Olena. Exibir somente etapas faltantes, Helena correspondente atrás do CTA e X colorido original para dispensar a sugestão nesta abertura. Perfil completo não renderiza ficha, celebração persistente, Revisar meu perfil ou espaço reservado. Consulta pendente/indisponível também não apresenta cobranças. Widget Meu cantinho de ideias removido somente do Perfil; Minhas ilhas ocupa a largura disponível.
 
 Correção da jornada (2026-10-17): uma única ficha por largura, sem textos repetidos em atualizações. Campos preenchidos não geram novas cobranças; conclusão remove a lista de etapas. Helena continua atrás e acima do botão. Aviso de seguidor fica sobre a página via portal, respeita safe area, tem entrada curta, foto visitável, ação à direita e barra de seis segundos. Movimento reduzido remove a entrada e a animação da barra.

@@ -193,7 +193,7 @@ for (const theme of ["light", "dark"]) {
     });
     await page.getByRole("button", { name: "Configurações", exact: true }).click();
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toBeVisible();
-    await page.getByRole("button", { name: "Fechar configurações" }).click();
+    await page.getByRole("button", { name: "Voltar ao perfil" }).click();
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(chrome).toHaveAttribute("data-compact", "false");
     await expect

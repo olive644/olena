@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import { ProfileView } from "./profile-view";
 import { createInitialWorkspace } from "../domain/workspace";
 import { initializeAccessibility } from "../data/accessibility-preferences";
@@ -19,13 +20,15 @@ afterEach(() => {
   localStorage.clear();
   initializeAccessibility()();
 });
-function openProfile() {
+function openProfile(
+  cloud: CloudSyncState = { enabled: false, ready: true, revision: 0, status: "disabled" },
+) {
   const dispatch = vi.fn();
   render(
     <ProfileView
       workspace={createInitialWorkspace()}
       dispatch={dispatch}
-      cloud={{ enabled: false, ready: true, revision: 0, status: "disabled" }}
+      cloud={cloud}
       history={[]}
       onRestoreSnapshot={vi.fn()}
     />,
@@ -53,18 +56,48 @@ it("organiza as opções reais sem placeholders e muda o Pomodoro pelo painel de
     preferences: { pomodoroMinutes: 50, longBreaks: true },
   });
 });
-it("edita a identidade sem trocar a conta Google nem recriar a foto no cabeçalho", async () => {
-  openProfile();
-  fireEvent.click(screen.getByRole("button", { name: "Editar perfil" }));
-  fireEvent.change(screen.getByLabelText("Nome"), { target: { value: "Estudante" } });
-  fireEvent.click(screen.getByRole("button", { name: "Salvar perfil" }));
-  await waitFor(() =>
-    expect(JSON.parse(localStorage.getItem("helena.profile.v1")!)).toMatchObject({
-      name: "Estudante",
+it("mostra informações da conta sem duplicar os editores do perfil", () => {
+  openProfile({
+    enabled: true,
+    ready: true,
+    revision: 0,
+    status: "synced",
+    authenticated: true,
+    email: "aluno@example.test",
+    deleteAccount: vi.fn(),
+    displayName: "Estudante",
+  });
+  expect(screen.getByText("aluno@example.test")).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Informações" })).toBeTruthy();
+  expect(screen.queryByText("Como você aparece")).toBeNull();
+  expect(screen.queryByRole("button", { name: "Editar perfil" })).toBeNull();
+  expect(screen.queryByText("Escolher avatar")).toBeNull();
+  expect(screen.queryByText("Conta e sincronização")).toBeNull();
+  expect(
+    within(screen.getByRole("navigation", { name: "Seções do Perfil" })).queryByRole("button", {
+      name: "Meu progresso",
     }),
+  ).toBeNull();
+  expect(screen.getByRole("heading", { name: "Excluir conta" })).toBeTruthy();
+  section("Privacidade e dados");
+  expect(screen.queryByRole("heading", { name: "Excluir conta" })).toBeNull();
+  expect(screen.queryByText("Recuperação local")).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Voltar ao perfil" }));
+  expect(screen.getByRole("region", { name: "Seu perfil" })).toBeTruthy();
+});
+it("não apresenta e-mail antigo enquanto a identidade não foi confirmada", () => {
+  openProfile({
+    enabled: true,
+    ready: false,
+    revision: 0,
+    status: "loading",
+    email: "anterior@example.test",
+  });
+  expect(screen.queryByText("anterior@example.test")).toBeNull();
+  section("Privacidade e dados");
+  expect(screen.getByRole("button", { name: "Exportar meus dados" }).hasAttribute("disabled")).toBe(
+    true,
   );
-  expect(screen.getByText("Estudante", { selector: "strong" })).toBeTruthy();
-  expect(document.querySelector(".page-header .user-profile")).toBeNull();
 });
 it("mantém tema somente nas configurações e preserva as preferências do editor", () => {
   openProfile();

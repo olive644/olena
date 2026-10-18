@@ -2,78 +2,71 @@ import { useState } from "react";
 import type { WorkspaceState } from "../domain/workspace";
 import { useTheme } from "../hooks/use-theme";
 import { useStoredProfile } from "../hooks/use-stored-profile";
-import { readSyncedStorage, writeSyncedStorage } from "../data/synced-storage";
+import { readSyncedStorage } from "../data/synced-storage";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useNotebookPreferences } from "../data/notebook-preferences";
 import { zonedDateTime } from "../domain/agenda-calendar";
-import { ProfileChoices } from "./app-navigation";
 import { NotebookPreferenceFields } from "./notebook-settings";
 import { NavigationIcon } from "./navigation-icon";
 import { PaperDigits } from "./paper-digits";
 import { downloadExportBlob } from "../data/paper-export-art";
-import { serializeWorkspace, WORKSPACE_STORAGE_KEY } from "../data/local-workspace";
-import { ProfileEditor } from "./profile-editor";
+import { createStudyDataExport } from "../data/study-data-export";
 import { profileAvatarSource } from "../domain/profile-avatars";
 
 export function ProfileIdentity({
   guest,
   nameFallback = "Seu perfil",
+  email,
+  onSignIn,
+  onSignOut,
 }: {
   guest: boolean;
   nameFallback?: string;
+  email?: string | undefined;
+  onSignIn?: (() => void) | undefined;
+  onSignOut?: (() => Promise<void>) | undefined;
 }) {
-  const [profile, setProfile] = useStoredProfile();
+  const [profile] = useStoredProfile();
   const name = guest ? "Guest" : profile.name?.trim() || nameFallback;
-  const [editing, setEditing] = useState(false);
-  const [status, setStatus] = useState("");
-  function save(next: typeof profile) {
-    try {
-      writeSyncedStorage("helena.profile.v1", JSON.stringify(next));
-      setProfile(next);
-      setStatus("Perfil atualizado.");
-    } catch {
-      setStatus("Não foi possível salvar o perfil. Tente novamente.");
-    }
-  }
   return (
     <section className="profile-card" aria-labelledby="profile-identity-title">
-      <span className="section-label">Sua identidade</span>
-      <h2 id="profile-identity-title">Como você aparece</h2>
+      <h2 id="profile-identity-title" className="section-label">
+        Sua identidade
+      </h2>
       <div className="profile-identity-preview">
         <img
           src={profileAvatarSource(profile.photoUrl)}
           alt="Avatar atual"
           width="72"
           height="72"
+          draggable={false}
         />
         <strong>{name}</strong>
       </div>
-      <button className="secondary-button" type="button" onClick={() => setEditing(true)}>
-        Editar perfil
-      </button>
-      {editing && (
-        <ProfileEditor
-          profile={{ ...profile, name }}
-          guest={guest}
-          onClose={() => setEditing(false)}
-        />
-      )}
-      <details className="profile-avatar-options">
-        <summary>Escolher avatar</summary>
-        <ProfileChoices
-          onChoose={(avatar) =>
-            save({
-              ...profile,
-              ...avatar,
-              name: guest ? "Guest" : profile.name || avatar.name || "Aluno",
-            })
-          }
-        />
-      </details>
-      <p>
-        Fuso da conta: <strong>{agendaTimeZone().replace(/_/g, " ")}</strong>
-      </p>
-      {status && <p role="status">{status}</p>}
+      <h3 className="profile-information-title">Informações</h3>
+      <dl className="profile-information">
+        <div>
+          <dt>E-mail</dt>
+          <dd>{email || (guest ? "Sessão de convidado" : "Nenhum e-mail conectado")}</dd>
+        </div>
+        <div>
+          <dt>Fuso da conta</dt>
+          <dd>{agendaTimeZone().replace(/_/g, " ")}</dd>
+        </div>
+      </dl>
+      <div className="profile-account-actions">
+        {onSignOut ? (
+          <button className="secondary-button" type="button" onClick={() => void onSignOut()}>
+            Sair desta conta
+          </button>
+        ) : (
+          onSignIn && (
+            <button className="secondary-button" type="button" onClick={onSignIn}>
+              Entrar com Google
+            </button>
+          )
+        )}
+      </div>
     </section>
   );
 }
@@ -228,7 +221,13 @@ export function ProfileProgress({ workspace }: { workspace: WorkspaceState }) {
   );
 }
 
-export function ProfileDataExport({ workspace }: { workspace: WorkspaceState }) {
+export function ProfileDataExport({
+  workspace,
+  ready,
+}: {
+  workspace: WorkspaceState;
+  ready: boolean;
+}) {
   const [error, setError] = useState("");
   return (
     <section className="profile-card" aria-labelledby="profile-data-title">
@@ -238,18 +237,20 @@ export function ProfileDataExport({ workspace }: { workspace: WorkspaceState }) 
         Baixa os estudos e preferências disponíveis neste aparelho em JSON. Arquivos que existem
         somente na nuvem não são baixados por esta ação.
       </p>
+      <p>
+        A cópia contém seus textos e dados pessoais, sem criptografia. Guarde em um lugar seguro.
+      </p>
+      {!ready && (
+        <p role="status">Aguarde a conta carregar ou entre para exportar os dados corretos.</p>
+      )}
       <button
         className="secondary-button"
         type="button"
+        disabled={!ready}
         onClick={() => {
+          if (!ready) return;
           try {
-            const data = {
-              exportedAt: new Date().toISOString(),
-              storage: {
-                ...readSyncedStorage(),
-                [WORKSPACE_STORAGE_KEY]: serializeWorkspace(workspace),
-              },
-            };
+            const data = createStudyDataExport(workspace, readSyncedStorage());
             downloadExportBlob(
               new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
               "olena-estudos.json",
