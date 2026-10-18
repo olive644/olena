@@ -1,22 +1,21 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { Dispatch } from "react";
 import { PaperCheckIcon } from "../components/paper-check-icon";
-import {
-  minutesFocusedOn,
-  toDateKey,
-  type WorkspaceAction,
-  type WorkspaceState,
-} from "../domain/workspace";
+import { minutesFocusedOn, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
 import type { AppView } from "../components/app-navigation";
 import { PageHeader } from "../components/app-navigation";
 import { NavigationIcon } from "../components/navigation-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { MathPracticeHero } from "../components/math-practice-hero";
 import { PaperDigits } from "../components/paper-digits";
-import { PaperFlower } from "../components/agenda-focus-week";
+import { StudentDestinations } from "../components/student-destinations";
+import { agendaSubjectName, agendaItemColor } from "../domain/agenda-subjects";
+import { agendaTimeZone } from "../data/agenda-time-zone";
+import { useWallClock } from "../hooks/use-wall-clock";
 import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
-import { displayEventsOn } from "../domain/agenda-calendar";
+import { displayEventsOn, zonedDateTime } from "../domain/agenda-calendar";
 import "./today-view.css";
+import "../components/student-space-details.css";
 
 type TodayViewProps = {
   workspace: WorkspaceState;
@@ -27,13 +26,13 @@ type TodayViewProps = {
 export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   useLanguage();
 
-  const now = new Date();
-  const today = toDateKey(now);
+  const now = useWallClock();
+  const timeZone = agendaTimeZone();
+  const today = zonedDateTime(now, timeZone).date;
   const pendingTasks = workspace.tasks.filter((task) => !task.completed);
-  const todayEvents = displayEventsOn(workspace.events, today);
+  const todayEvents = displayEventsOn(workspace.events, today, timeZone);
   const focusMinutes = minutesFocusedOn(workspace, today);
-  const subjectName = (subjectId: string) =>
-    workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? uiText(2278);
+  const subjectName = (subjectId: string) => agendaSubjectName(workspace, subjectId);
 
   return (
     <main className="main-content student-space" id="main-content">
@@ -50,39 +49,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         }}
       />
 
-      <nav className="student-space-shortcuts" aria-label={uiText("Seu próximo destino")}>
-        {(
-          [
-            ["learn", "learn", uiText("Explorar as ilhas"), uiText("Uma descoberta de cada vez")],
-            ["notes", "notes", uiText("Meus cadernos"), uiText("Suas ideias ganham espaço")],
-            ["focus", "focus", uiText("Hora de focar"), uiText("Reserve um tempo para você")],
-            ["planner", "planner", uiText("Minha agenda"), uiText("Organize seus próximos passos")],
-          ] as const
-        ).map(([view, icon, title, hint]) => (
-          <button
-            type="button"
-            key={view}
-            className={`student-destination student-destination--${view}`}
-            onClick={() => onNavigate(view)}
-          >
-            {view === "focus" ? (
-              <span className="student-focus-icons" aria-hidden="true">
-                <PaperFlower active />
-                <i className="streak-tomato is-active" />
-              </span>
-            ) : view === "planner" ? (
-              <AgendaToolbarIcon name="month" />
-            ) : (
-              <NavigationIcon name={icon} />
-            )}
-            <span>
-              <strong>{title}</strong>
-              <small>{hint}</small>
-            </span>
-            <PaperArrow />
-          </button>
-        ))}
-      </nav>
+      <StudentDestinations workspace={workspace} dispatch={dispatch} onNavigate={onNavigate} />
 
       <section className="metric-row" aria-label={uiText(1546)}>
         <article>
@@ -117,7 +84,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
             <div>
               <span className="section-label">{uiText(1553)}</span>
               <h2 id="tasks-today-title">
-                <NavigationIcon name="planner" /> {uiText(1554)}
+                <PaperCheckIcon /> {uiText(1554)}
               </h2>
             </div>
             <button className="link-button" type="button" onClick={() => onNavigate("planner")}>
@@ -134,7 +101,10 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           ) : (
             <ul className="check-list">
               {pendingTasks.slice(0, 4).map((task) => (
-                <li key={task.id}>
+                <li
+                  key={task.id}
+                  style={{ borderInlineStart: `4px solid ${agendaItemColor(task)}` }}
+                >
                   <button
                     className="check-button"
                     type="button"
@@ -175,11 +145,17 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           ) : (
             <ul className="schedule-list">
               {todayEvents.map((event) => (
-                <li key={`${event.id}:${event.displayOccurrence}`}>
-                  <time>{event.allDay ? uiText(29) : event.time}</time>
+                <li
+                  key={`${event.id}:${event.displayOccurrence}`}
+                  style={{ borderInlineStart: `4px solid ${agendaItemColor(event)}` }}
+                >
+                  <time>{event.allDay ? uiText(29) : <PaperDigits value={event.time} />}</time>
                   <div>
                     <strong>{event.title}</strong>
-                    <small>{subjectName(event.subjectId)}</small>
+                    <small>
+                      {subjectName(event.subjectId)} ·{" "}
+                      {uiText(event.kind === "study" ? "Estudo" : "Compromisso")}
+                    </small>
                   </div>
                 </li>
               ))}

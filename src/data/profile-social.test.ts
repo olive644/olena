@@ -48,3 +48,40 @@ it("rejeita respostas malformadas e imagens externas", async () => {
   );
   await expect(requestSocial()).rejects.toThrow("Resposta inválida");
 });
+it("aceita conclusão de módulo oficial e recusa metadados arbitrários", async () => {
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/helena.webp",
+    followers: 0,
+    following: 0,
+    followed: false,
+    followsYou: true,
+    shared: true,
+  };
+  const activity = {
+    id: "a".repeat(32),
+    kind: "module",
+    value: 1,
+    at: Date.now(),
+    course: "foundations",
+    level: 0,
+    person,
+    liked: false,
+    likes: [],
+  };
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response(JSON.stringify({ self: person, notifications: [], activities: [activity] })),
+    ),
+  );
+  expect((await requestSocial()).activities?.[0]).toMatchObject({
+    kind: "module",
+    course: "foundations",
+    level: 0,
+  });
+  activity.course = "private-note-title";
+  await expect(requestSocial()).rejects.toThrow("Resposta inválida");
+});

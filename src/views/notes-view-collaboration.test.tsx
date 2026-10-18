@@ -4,6 +4,7 @@ import { expect, it, vi } from "vitest";
 import { NotesView } from "./notes-view";
 import { createInitialWorkspace, workspaceReducer, type WorkspaceState } from "../domain/workspace";
 import type { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
+import { readStudentResume } from "../data/student-resume";
 
 let options: Parameters<typeof useNotebookCollaboration>[0];
 vi.mock("../hooks/use-notebook-collaboration", () => ({
@@ -12,6 +13,36 @@ vi.mock("../hooks/use-notebook-collaboration", () => ({
     return { state: { code: "", status: "idle", error: "" }, join: vi.fn(), syncPages: vi.fn() };
   },
 }));
+
+it("receber uma cópia do workspace não refaz a visita nem cria loop de sincronização", () => {
+  localStorage.clear();
+  const workspace = workspaceReducer(createInitialWorkspace(), {
+    type: "notebook/added",
+    id: "resume-book",
+    title: "Caderno",
+    subjectId: "",
+    createdAt: "2026-10-18",
+  });
+  const clock = vi.spyOn(Date, "now").mockReturnValue(1000);
+  try {
+    const view = render(
+      <NotesView workspace={workspace} dispatch={vi.fn()} initialNotebookId="resume-book" />,
+    );
+    expect(readStudentResume().notebook?.at).toBe(1000);
+    clock.mockReturnValue(2000);
+    view.rerender(
+      <NotesView
+        workspace={{ ...workspace, notebooks: [...workspace.notebooks] }}
+        dispatch={vi.fn()}
+        initialNotebookId="resume-book"
+      />,
+    );
+    expect(readStudentResume().notebook?.at).toBe(1000);
+  } finally {
+    clock.mockRestore();
+    localStorage.clear();
+  }
+});
 
 it("convite na mesma conta isola IDs locais sem perder as folhas do caderno original", () => {
   let initial = createInitialWorkspace();

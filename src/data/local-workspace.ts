@@ -713,6 +713,10 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
             isString(activity["id"]) &&
             isString(activity["islandId"]) &&
             isString(activity["islandName"]) &&
+            (activity["moduleLevel"] === undefined ||
+              (Number.isInteger(activity["moduleLevel"]) &&
+                Number(activity["moduleLevel"]) >= 0 &&
+                Number(activity["moduleLevel"]) < 6)) &&
             isString(activity["completedAt"]) &&
             Number.isFinite(new Date(activity["completedAt"]).getTime()) &&
             typeof activity["answers"] === "number" &&

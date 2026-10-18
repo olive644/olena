@@ -1,3 +1,5 @@
+import { mergeXpLedgers, XP_LEDGER_KEY } from "../domain/xp-ledger";
+import { ACCOUNT_PROFILE_KEY, profileRecord } from "../domain/profile-progress";
 export const SYNCED_STORAGE_KEYS = [
   "helenastudy.workspace.v1",
   "helenastudy.theme",
@@ -27,12 +29,23 @@ export function writeSyncedStorage(key: string, value: string) {
 }
 
 export function readSyncedStorage(): Record<string, string> {
-  return Object.fromEntries(
+  const items = Object.fromEntries(
     SYNCED_STORAGE_KEYS.flatMap((key) => {
       const value = window.localStorage.getItem(key);
       return value === null ? [] : [[key, value]];
     }),
   );
+  const profile = profileRecord(items[ACCOUNT_PROFILE_KEY]);
+  const xp = mergeXpLedgers(
+    JSON.stringify(profile["xpLedger"]),
+    window.localStorage.getItem(XP_LEDGER_KEY),
+  );
+  if (xp)
+    items[ACCOUNT_PROFILE_KEY] = JSON.stringify({
+      ...profile,
+      xpLedger: JSON.parse(xp) as unknown,
+    });
+  return items;
 }
 
 export function applySyncedStorage(items: Record<string, string>) {
@@ -41,5 +54,8 @@ export function applySyncedStorage(items: Record<string, string>) {
     if (typeof value === "string") window.localStorage.setItem(key, value);
     else window.localStorage.removeItem(key);
   }
+  const xp = profileRecord(items[ACCOUNT_PROFILE_KEY])["xpLedger"];
+  if (xp) window.localStorage.setItem(XP_LEDGER_KEY, JSON.stringify(xp));
+  else window.localStorage.removeItem(XP_LEDGER_KEY);
   window.dispatchEvent(new Event(SYNCED_STORAGE_APPLIED_EVENT));
 }

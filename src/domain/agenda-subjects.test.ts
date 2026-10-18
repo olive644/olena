@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { agendaSubjects } from "./agenda-subjects";
+import { agendaSubjects, agendaSubjectName, agendaItemColor } from "./agenda-subjects";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
 import { createInitialWorkspace, workspaceReducer } from "./workspace";
 import { mergeWorkspaceStates } from "./workspace-sync-merge";
@@ -11,6 +11,7 @@ it("uses the island catalog and stable IDs without duplicate subjects across dev
     PRACTICE_ISLANDS.map((island) => island.subject),
   );
   expect(choices[0]?.value).toBe("subject-english");
+  expect(agendaSubjectName(base, "subject-english")).toBe("Idiomas");
   const math = choices.find((choice) => choice.label === "Matemática")!;
   const action = {
     type: "subject/added" as const,
@@ -26,4 +27,11 @@ it("uses the island catalog and stable IDs without duplicate subjects across dev
       (subject) => subject.id === math.value,
     ),
   ).toHaveLength(1);
+});
+
+it("usa a mesma paleta no planejador e no painel, respeitando a cor escolhida", () => {
+  expect(agendaItemColor({})).toBe("#38a4ad");
+  expect(agendaItemColor({ kind: "study" })).toBe("#a779ef");
+  expect(agendaItemColor({ kind: "appointment" })).toBe("#facc15");
+  expect(agendaItemColor({ kind: "study", color: "#ef476f" })).toBe("#ef476f");
 });

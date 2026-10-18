@@ -34,8 +34,10 @@ if (!root) {
 const appRoot = createRoot(root);
 appRoot.render(<HelenaLoading label="Preparando / Preparing…" />);
 async function boot() {
+  let languageReady = false;
   try {
     await initializeLanguage();
+    languageReady = true;
     const { App } = await import("./app");
     appRoot.render(
       <StrictMode>
@@ -54,9 +56,17 @@ async function boot() {
     );
   } catch {
     appRoot.render(
-      <main>
-        <p>Não foi possível carregar o idioma. / Could not load the language.</p>
-        <button type="button" onClick={() => void boot()}>
+      <main className="startup-error">
+        <p>
+          {languageReady
+            ? "Não foi possível abrir o aplicativo. Atualize para tentar novamente. / Could not open the app. Refresh to retry."
+            : "Não foi possível carregar o idioma. / Could not load the language."}
+        </p>
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => (languageReady ? location.reload() : void boot())}
+        >
           Tentar novamente / Retry
         </button>
       </main>,

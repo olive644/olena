@@ -49,7 +49,7 @@ it("curtida chega no aviso, mostra apoio no post e não oferece seguir de volta"
       { ...activity, person, liked: false, likes: [{ username: "carol", name: "Carol" }] },
     ],
   };
-  const { rerender } = render(<SystemUpdates />);
+  const { rerender } = render(<SystemUpdates page />);
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 5));
   });
@@ -67,7 +67,7 @@ it("curtida chega no aviso, mostra apoio no post e não oferece seguir de volta"
     ...social.feed,
     notifications: [{ person, at: Date.now(), read: false, kind: "like", activity }],
   };
-  rerender(<SystemUpdates />);
+  rerender(<SystemUpdates page />);
   await waitFor(() => expect(document.querySelector(".social-follow-toast")).toBeTruthy());
   const toast = document.querySelector<HTMLElement>(".social-follow-toast")!;
   expect(toast.textContent).toContain("Curtiu sua conquista.");
@@ -153,7 +153,7 @@ it("mostra seguidor real com visita, seguir de volta e leitura na conta", async 
     self: { ...person, username: "bob", name: "Bob" },
     notifications: [{ person, at: Date.now() - 60000, read: false }],
   };
-  render(<SystemUpdates />);
+  render(<SystemUpdates page />);
   expect(screen.getByText("Começou a seguir você.")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Visitar perfil de @alice" }));
   expect(social.visit).toHaveBeenCalledWith("alice");
@@ -182,13 +182,66 @@ it("counts unread updates, persists reading and reacts to account sync", async (
         ),
     ),
   );
-  render(<SystemUpdates />);
-  await waitFor(() => expect(screen.getByText("2")).toBeTruthy());
+  render(<SystemUpdates page />);
+  fireEvent.click(screen.getByRole("button", { name: "Novidades" }));
+  await waitFor(() => expect(screen.getByText("Agenda")).toBeTruthy());
   fireEvent.click(screen.getByText("Marcar como lidas"));
   expect(localStorage.getItem(SYSTEM_UPDATES_READ_KEY)).toBe("[408,409]");
-  expect(screen.queryByText("2")).toBeNull();
+  expect(screen.getByRole("button", { name: "Marcar como lidas" }).hasAttribute("disabled")).toBe(
+    true,
+  );
   fireEvent(window, new Event("focus"));
-  await waitFor(() => expect(screen.queryByText("2")).toBeNull());
+  await waitFor(() =>
+    expect(screen.getByRole("button", { name: "Marcar como lidas" }).hasAttribute("disabled")).toBe(
+      true,
+    ),
+  );
   applySyncedStorage({ [SYSTEM_UPDATES_READ_KEY]: "[408]" });
-  await waitFor(() => expect(screen.getByText("1")).toBeTruthy());
+  await waitFor(() =>
+    expect(screen.getByRole("button", { name: "Marcar como lidas" }).hasAttribute("disabled")).toBe(
+      false,
+    ),
+  );
+});
+
+it("sino navega em vez de abrir popup e a página inicia em atividades", async () => {
+  const open = vi.fn();
+  window.addEventListener("olena:open-notifications", open);
+  const { rerender } = render(<SystemUpdates />);
+  fireEvent.click(screen.getByRole("button", { name: /Atualizações do sistema/ }));
+  expect(open).toHaveBeenCalledOnce();
+  expect(document.querySelector(".system-update-sheet")).toBeNull();
+  rerender(<SystemUpdates page />);
+  expect(screen.getByRole("button", { name: "Atividades" }).getAttribute("aria-pressed")).toBe(
+    "true",
+  );
+  window.removeEventListener("olena:open-notifications", open);
+});
+
+it("agrupa quatro seguidores e permite inspecionar as contas ao expandir", () => {
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/helena.webp",
+    followers: 0,
+    following: 0,
+    followed: false,
+    followsYou: true,
+    shared: true,
+  };
+  social.feed = {
+    self: { ...person, username: "bob" },
+    notifications: Array.from({ length: 4 }, (_, i) => ({
+      person: { ...person, username: `alice${i}` },
+      at: Date.now() - 60000,
+      read: false,
+    })),
+  };
+  render(<SystemUpdates page />);
+  expect(screen.getByText("4 pessoas começaram a seguir você")).toBeTruthy();
+  const group = document.querySelector("details")!;
+  expect(group.open).toBe(false);
+  fireEvent.click(screen.getByText("4 pessoas começaram a seguir você"));
+  expect(group.open).toBe(true);
+  expect(screen.getAllByRole("button", { name: /Visitar perfil/ })).toHaveLength(4);
 });

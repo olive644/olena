@@ -20,7 +20,7 @@ it("lê pontos da conta sem gravar progresso e zera ao aplicar outra conta", () 
     JSON.stringify({ total: 600, receipts: ["xp-reward"] }),
   );
   const { result } = renderHook(() => useProfileStudy());
-  expect(result.current).toMatchObject({ totalPoints: 800, level: 2, current: 100, next: 750 });
+  expect(result.current).toMatchObject({ totalPoints: 800, level: 4, current: 150, next: 250 });
   expect(result.current.courses[0]?.percent).toBe(0);
   expect(localStorage.getItem("helena.mathPlaceRewards.v1")).toBe(before);
   act(() => {

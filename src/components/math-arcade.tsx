@@ -294,6 +294,11 @@ export function MathArcade({
       if (controller.current?.signal.aborted) return;
       const points = round.points + result.points;
       const progress = { ...result.progress, best: Math.max(result.progress.best, points) };
+      const completedModule = Array.from({ length: 6 }, (_, level) => level).find(
+        (level) =>
+          (progress.confirmed & (1 << level)) !== 0 &&
+          (round.progress.confirmed & (1 << level)) === 0,
+      );
       setStorageWarning(!saveMathLearning(courseId, progress));
       onPractice?.({
         id: `${roundId.current}:${question.seed}:${++answerSequence.current}`,
@@ -302,6 +307,7 @@ export function MathArcade({
         completedAt: new Date().toISOString(),
         answers: 1,
         correct: Number(result.correct),
+        ...(completedModule !== undefined ? { moduleLevel: completedModule } : {}),
       });
       const missed = result.timedOut;
       audio.current?.play(missed ? "timeout" : result.correct ? "correct" : "wrong");

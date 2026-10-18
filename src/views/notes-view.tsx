@@ -1,4 +1,5 @@
 import { uiText, useLanguage } from "../i18n/runtime";
+import { saveStudentResume } from "../data/student-resume";
 import { NotebookPageBook } from "../components/notebook-page-book";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { notebookShelves, SHELF_CAPACITY } from "../domain/notebook-shelves";
@@ -133,6 +134,23 @@ export function NotesView({
       : null;
   });
   const [indexOpen, setIndexOpen] = useState(false);
+  const resumeNotebookId = workspace.notebooks.find(
+    (book) =>
+      book.id === activeNotebookId &&
+      book.kind !== "folder" &&
+      book.kind !== "collection" &&
+      book.kind !== "note",
+  )?.id;
+  useEffect(() => {
+    if (resumeNotebookId)
+      saveStudentResume({
+        notebook: {
+          id: resumeNotebookId,
+          ...(activePageId ? { page: activePageId } : {}),
+          at: Date.now(),
+        },
+      });
+  }, [resumeNotebookId, activePageId]);
   const [journey, setJourney] = useState<NotebookJourneyState | null>(null);
   const finishJourney = useCallback(() => setJourney(null), []);
   const [pageJourney, setPageJourney] = useState<NotebookPageJourneyState | null>(null);

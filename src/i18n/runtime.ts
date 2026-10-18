@@ -94,24 +94,54 @@ function announce() {
 }
 async function load(locale: UiLanguage) {
   if (catalogs.has(locale)) return;
-  const response = await fetch(`/locales/${locale}.json?v=${CATALOG_VERSION}`, {
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!response.ok)
-    throw new Error(
-      "Não foi possível carregar o idioma. Tente novamente. / Could not load the language. Try again.",
-    );
-  const value: unknown = await response.json();
-  if (
-    !Array.isArray(value) ||
-    value.length !== CATALOG_SIZE ||
-    value.some((entry) => typeof entry !== "string")
-  )
-    throw new Error("Invalid language catalog");
-  const expected = catalogs.get("pt-BR")?.length;
-  if (expected !== undefined && value.length !== expected)
-    throw new Error("Incomplete language catalog");
-  installUiCatalog(locale, value);
+  // Os IDs são append-only. Um deploy mais novo pode servir entradas adicionais
+  // a uma aba antiga, sem invalidar os índices que ela já conhece.
+  const valid = (value: unknown): value is string[] =>
+    Array.isArray(value) &&
+    value.length >= CATALOG_SIZE &&
+    value.every((entry) => typeof entry === "string");
+  const cacheKey = `olena:ui-catalog:${locale}`;
+  try {
+    const cached: unknown = JSON.parse(localStorage.getItem(cacheKey) ?? "null");
+    if (
+      cached &&
+      typeof cached === "object" &&
+      "version" in cached &&
+      cached.version === CATALOG_VERSION &&
+      "messages" in cached &&
+      valid(cached.messages)
+    ) {
+      installUiCatalog(locale, cached.messages);
+      return;
+    }
+  } catch {
+    /* Cache inválido é substituído pela resposta validada. */
+  }
+  let failure: unknown;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch(`/locales/${locale}.json?v=${CATALOG_VERSION}`, {
+        cache: attempt ? "reload" : "no-cache",
+        signal: AbortSignal.timeout(6000),
+      });
+      if (!response.ok) throw new Error("Language request failed");
+      const value: unknown = await response.json();
+      if (!valid(value)) throw new Error("Invalid language catalog");
+      installUiCatalog(locale, value);
+      try {
+        localStorage.setItem(
+          cacheKey,
+          JSON.stringify({ version: CATALOG_VERSION, messages: value }),
+        );
+      } catch {
+        /* O idioma continua disponível mesmo sem espaço para cache. */
+      }
+      return;
+    } catch (cause) {
+      failure = cause;
+    }
+  }
+  throw failure;
 }
 export async function initializeLanguage() {
   await load("pt-BR");

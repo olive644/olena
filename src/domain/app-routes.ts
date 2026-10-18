@@ -4,6 +4,7 @@ import type { AppView } from "../components/app-navigation";
 // botão voltar ou abrir um link leve a pessoa à mesma tela.
 export const VIEW_PATHS: Record<AppView, string> = {
   today: "/",
+  notifications: "/notificacoes",
   planner: "/planejador",
   focus: "/foco",
   notes: "/cadernos",

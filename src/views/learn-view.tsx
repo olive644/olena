@@ -1,4 +1,5 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
+import { isMathCourse } from "../data/math-courses";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { useCallback, useEffect, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
@@ -73,13 +74,15 @@ function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
   useLanguage();
 
   const [worldIndex, setWorldIndex] = useState(4);
-  const [insideWorld, setInsideWorld] = useState(() => {
+  const [entryCourse] = useState(() => {
     try {
-      return sessionStorage.getItem("olena:enter-mathematics") === "1";
+      const value = sessionStorage.getItem("olena:enter-mathematics");
+      return value === "1" ? "foundations" : isMathCourse(value) ? value : undefined;
     } catch {
-      return false;
+      return undefined;
     }
   });
+  const [insideWorld, setInsideWorld] = useState(Boolean(entryCourse));
   useEffect(() => {
     try {
       sessionStorage.removeItem("olena:enter-mathematics");
@@ -106,6 +109,7 @@ function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
   if (insideWorld && available)
     return (
       <MathIslandJourney
+        {...(entryCourse ? { initialCourse: entryCourse } : {})}
         entryOrigin={entryOrigin}
         onBack={() => setInsideWorld(false)}
         onPractice={(activity) => dispatch({ type: "practice/recorded", activity })}

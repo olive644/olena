@@ -1,5 +1,5 @@
 import { uiText, useLanguage } from "./i18n/runtime";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppView } from "./hooks/use-app-view";
 import { MobileNavigation, Sidebar } from "./components/app-navigation";
 import { HelenaLoading } from "./components/helena-loading";
@@ -12,6 +12,9 @@ import { TodayView } from "./views/today-view";
 import { useProfileHandle } from "./hooks/use-profile-handle";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const NotificationsView = lazy(() =>
+  import("./components/system-updates").then((module) => ({ default: module.SystemUpdates })),
+);
 const SocialActivityPublisher = lazy(() =>
   import("./components/social-activity-publisher").then((module) => ({
     default: module.SocialActivityPublisher,
@@ -59,6 +62,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
   );
   const [view, setView] = useAppView(joinCode ? "room" : "today");
+  useEffect(() => {
+    const open = () => setView("notifications");
+    window.addEventListener("olena:open-notifications", open);
+    return () => window.removeEventListener("olena:open-notifications", open);
+  }, [setView]);
   const { workspace, storageFull, dispatch, history, restoreSnapshot } = useWorkspace();
   // Convidado só vale sem conta: quem entrou com Google nunca aparece como Guest.
   const guest = cloud.authenticated !== true && isGuestSession();
@@ -127,6 +135,9 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         >
           {view === "today" && (
             <TodayView workspace={workspace} dispatch={dispatch} onNavigate={setView} />
+          )}
+          {view === "notifications" && (
+            <NotificationsView page workspace={workspace} onBack={() => setView("today")} />
           )}
           {view === "planner" && (
             <PlannerView

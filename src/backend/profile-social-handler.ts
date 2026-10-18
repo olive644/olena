@@ -230,6 +230,8 @@ export function createProfileSocialHandler(options: {
                   kind: activity.kind,
                   value: activity.value,
                   at: activity.at,
+                  ...(activity.course ? { course: activity.course } : {}),
+                  ...(activity.level !== undefined ? { level: activity.level } : {}),
                   person: profile(id),
                   liked: activity.likes[key] !== undefined,
                   likes: Object.keys(activity.likes)
@@ -347,18 +349,23 @@ export function createProfileSocialHandler(options: {
               completed ??= (await options.completedActivities?.(identity.uid)) ?? [];
               self.activities ??= {};
               for (const activity of completed.slice(0, 12)) {
-                if (activity.at < self.activitySince || self.activities[activity.id]) continue;
-                self.activities[activity.id] = { ...activity, likes: {} };
+                if (activity.at < self.activitySince) continue;
+                const previous = self.activities[activity.id];
+                if (previous && previous.value === activity.value) continue;
+                self.activities[activity.id] = { ...activity, likes: previous?.likes ?? {} };
                 for (const [id, account] of Object.entries(state.accounts)) {
-                  if (id !== key && account.following[key] !== undefined)
-                    account.notices[`activity:${key}:${activity.id}`] = {
+                  if (id !== key && account.following[key] !== undefined) {
+                    const noticeKey = `activity:${key}:${activity.id}`;
+                    const existing = account.notices[noticeKey];
+                    account.notices[noticeKey] = {
                       actor: key,
                       owner: key,
                       kind: "activity",
                       activity,
-                      at: now,
-                      read: false,
+                      at: existing?.at ?? now,
+                      read: existing?.read ?? false,
                     };
+                  }
                 }
               }
               self.activities = Object.fromEntries(
@@ -391,6 +398,8 @@ export function createProfileSocialHandler(options: {
                     kind: activity.kind,
                     value: activity.value,
                     at: activity.at,
+                    ...(activity.course ? { course: activity.course } : {}),
+                    ...(activity.level !== undefined ? { level: activity.level } : {}),
                   },
                   at: now,
                   read: false,

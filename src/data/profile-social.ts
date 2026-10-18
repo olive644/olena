@@ -1,4 +1,5 @@
 import { uiText } from "../i18n/runtime.js";
+import { isMathCourse } from "./math-courses";
 import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
 import { PROFILE_COVERS } from "../domain/profile-covers";
@@ -11,7 +12,13 @@ function isActivity(value: unknown): boolean {
   return (
     typeof item["id"] === "string" &&
     /^[a-f0-9]{32}$/.test(item["id"]) &&
-    ["focus", "practice", "quiz", "streak"].includes(String(item["kind"])) &&
+    ["focus", "practice", "quiz", "streak", "module"].includes(String(item["kind"])) &&
+    (item["course"] === undefined || isMathCourse(item["course"])) &&
+    (item["level"] === undefined ||
+      (Number.isInteger(item["level"]) &&
+        Number(item["level"]) >= 0 &&
+        Number(item["level"]) < 6)) &&
+    (item["kind"] !== "module" || (isMathCourse(item["course"]) && item["level"] !== undefined)) &&
     Number.isSafeInteger(item["value"]) &&
     Number(item["value"]) > 0 &&
     Number(item["value"]) <= 10000 &&

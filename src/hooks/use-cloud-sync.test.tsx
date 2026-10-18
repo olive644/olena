@@ -5,6 +5,7 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { useCloudSync } from "./use-cloud-sync";
+import { recordRoomXp, readRoomXp, ROOM_XP_KEY } from "../data/room-xp";
 import {
   finishMathPlace,
   mathPlaceRewards,
@@ -1125,6 +1126,31 @@ function accountServer() {
   );
   return { calls, puts: () => calls.filter((call) => call.method === "PUT") };
 }
+
+it("migra XP legado ao perfil da conta e envia novas recompensas sem chaves não permitidas", async () => {
+  signedInUser("xp-user");
+  localStorage.setItem(ROOM_XP_KEY, JSON.stringify({ total: 100, receipts: ["old"] }));
+  const { puts } = accountServer();
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(readRoomXp()).toBe(100);
+  act(() => {
+    recordRoomXp({ id: "new", xp: 25, place: 1, completedAt: Date.now() });
+  });
+  await waitFor(() => expect(puts().length).toBeGreaterThan(0));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  const payload = JSON.parse(
+    String(
+      vi
+        .mocked(fetch)
+        .mock.calls.filter((call) => call[1]?.method === "PUT")
+        .at(-1)?.[1]?.body,
+    ),
+  );
+  const items = decodeCloudItems(payload.items);
+  expect(JSON.parse(items["helena.profile.v1"]!).xpLedger.total).toBe(125);
+  expect(items[ROOM_XP_KEY]).toBeUndefined();
+});
 
 it("envia o estado com print=silent, para o Firebase não devolver tudo na resposta", async () => {
   signedInUser("silent-user");

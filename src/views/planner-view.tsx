@@ -46,7 +46,7 @@ import {
 import { exportAgenda, importAgenda } from "../domain/agenda-ics";
 import { PaperDigits } from "../components/paper-digits";
 import { PaperChoice, PaperDateField, PaperTimeField } from "../components/agenda-paper-fields";
-import { agendaSubjects } from "../domain/agenda-subjects";
+import { agendaSubjects, agendaSubjectName, agendaItemColor } from "../domain/agenda-subjects";
 import { brazilianHoliday } from "../domain/brazilian-holidays";
 import { focusHistory, orderedRange, type AgendaRange } from "../domain/agenda-history";
 import { dateForKey, monthDates, overdueTasks, shiftDate } from "../domain/agenda";
@@ -199,10 +199,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     selectedSubject && !subjects.some((subject) => subject.value === selectedSubject.id)
       ? [...subjects, { value: selectedSubject.id, label: selectedSubject.name }]
       : subjects;
-  const subjectName = (id: string) =>
-    subjects.find((subject) => subject.value === id)?.label ??
-    workspace.subjects.find((subject) => subject.id === id)?.name ??
-    uiText(2278);
+  const subjectName = (id: string) => agendaSubjectName(workspace, id);
   function searchAgenda() {
     if (!query.trim()) {
       searchInput.current?.focus();
@@ -503,7 +500,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     return (
       <article
         className={`agenda-item agenda-item--task${task.completed ? " is-complete" : ""}`}
-        style={task.color ? { borderLeft: `4px solid ${task.color}` } : undefined}
+        style={{ borderLeft: `4px solid ${agendaItemColor(task)}` }}
         key={task.id}
       >
         <button
@@ -562,7 +559,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       <article
         className={`agenda-item agenda-item--timed${event.kind === "study" ? " agenda-item--study" : ""}${complete ? " is-complete" : ""}${reminder ? " is-due" : ""}`}
         key={`${event.id}:${date}`}
-        style={event.color ? { borderLeftColor: event.color } : undefined}
+        style={{ borderLeftColor: agendaItemColor(event) }}
       >
         <time>
           {event.allDay ? uiText(29) : <PaperDigits value={displayed?.time ?? event.time} />}

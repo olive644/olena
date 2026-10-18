@@ -20,6 +20,7 @@ const SystemUpdates = lazy(() =>
 
 export type AppView =
   | "today"
+  | "notifications"
   | "planner"
   | "focus"
   | "notes"

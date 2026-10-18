@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Continuidade no Espaço: ilha do último curso ultrapassa o cartão, caderno usa o próprio
+NotebookSpread somente leitura com paginação real, foco mostra só a última ferramenta.
+No celular Oliver usa arte de 150 px e título compacto; avisos de ofensiva somente perto
+da expiração. Cards recebem padrões discretos do céu e cores das superfícies do tema.
+Checks de tarefas são amarelos; cores de eventos e matérias são compartilhadas com Agenda.
+Central do sino é página com seta amarela, abas Atividades/Novidades e grupos expansíveis,
+entrada curta e respeito a prefers-reduced-motion, sem sheet sobre o conteúdo anterior.
+
 Carrossel do Espaço: Oliver recortado em PNG transparente ultrapassa a borda superior,
 com planos geométricos ciano, superfícies do tema e uma paginação discreta. Movimento
 respeita redução de animações. Chama matemática facetada azul, contadores em PaperDigits,

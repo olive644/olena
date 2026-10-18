@@ -62,10 +62,16 @@ for (const theme of ["light", "dark"]) {
     );
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/perfil");
-    await expect(page.locator(".profile-level-badge")).toHaveAttribute("aria-label", "Nível 3");
+    await expect(page.locator(".profile-level-badge")).toHaveAttribute("aria-label", "Nível 7");
     await expect(
       page.getByRole("progressbar", { name: "XP para o próximo nível" }),
-    ).toHaveAttribute("value", "250");
+    ).toHaveAttribute("value", "150");
+    await expect(
+      page.getByRole("progressbar", { name: "XP para o próximo nível" }),
+    ).toHaveAttribute("max", "400");
+    expect(
+      await page.evaluate(() => JSON.parse(localStorage.getItem("helena.room-xp.v1")!).total),
+    ).toBe(1500);
     const xp = await page.locator(".profile-xp").boundingBox();
     const friends = await page
       .getByRole("button", { name: "Adicionar amigo", exact: true })

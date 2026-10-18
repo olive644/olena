@@ -2,10 +2,17 @@ import { useState } from "react";
 import { uiText } from "../i18n/runtime";
 import { requestSocial, visitSocialProfile } from "../data/profile-social";
 import type { SocialActivity, SocialActivitySummary, SocialNotice } from "../domain/profile-social";
+import { MATH_COURSES } from "../data/math-courses";
 
 export function activityLabel(activity: SocialActivitySummary) {
+  const course = MATH_COURSES.find((item) => item.id === activity.course);
+  if (activity.kind === "module")
+    return uiText("Concluiu o módulo de {0} em {1}!", [
+      course?.topics[activity.level ?? -1] ?? uiText("Matemática"),
+      course?.title ?? uiText("Matemática"),
+    ]);
   const labels = {
-    practice: "Concluiu uma prática com {0} respostas.",
+    practice: "Avançou em Matemática: {0} respostas praticadas.",
     focus: "Completou {0} minutos de foco.",
     quiz: "Acertou {0} respostas em um questionário.",
     streak: "Alcançou uma sequência de {0} dias de estudo!",

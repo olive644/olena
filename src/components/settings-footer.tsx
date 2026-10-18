@@ -1,8 +1,9 @@
 import { uiText, useLanguage } from "../i18n/runtime";
-import { version } from "../../package.json";
+import { useAppRelease } from "../data/app-release";
 
 export function SettingsFooter() {
   useLanguage();
+  const version = useAppRelease();
 
   return (
     <footer className="settings-footer" aria-label={uiText(1001)}>

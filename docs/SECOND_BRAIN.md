@@ -1,5 +1,14 @@
 # OlenaStudy: Second Brain
 
+XP de salas: recibos canônicos em profile.xpLedger (helena.profile.v1); cache local não
+é fonte exclusiva. Mesclar por recibo, nunca somar totais de snapshots nem reduzir o piso.
+Não adicionar chave de sync sem allowlist. Curva de nível: 100 + 50 por nível concluído.
+Resume notebook/focus fica em profile.studentResume, vencendo timestamp mais recente.
+Versão global: número em app-version.json, gerado com system-updates.json; não usar
+package.json para rótulo público nem manter versão manual em cada componente.
+Sino é rota /notificacoes, Atividades por padrão. Publicar módulos oficiais e agregados
+diários estáveis, não respostas individuais; atualização preserva curtidas e leitura.
+
 Matemática: contar somente práticas math/mathematics válidas, nunca futuras. Chama
 azul some em 24 h sem prática. Flor: somente Cronômetro positivo salvo cuida da rosa;
 conta sem histórico começa murcha. Não congelar Date.now na montagem desses widgets.

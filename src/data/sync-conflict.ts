@@ -1,4 +1,9 @@
 import { mergeMathRewards } from "./math-rewards-sync";
+import {
+  ACCOUNT_PROFILE_KEY,
+  mergeProfileProgress,
+  profileRecord,
+} from "../domain/profile-progress";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "./system-updates";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { isMathCourse, validMathProgress, type MathProgress } from "./math-courses";
@@ -41,6 +46,28 @@ export function mergeSyncedItems(
     const baseValue = valueAt(base, key);
     const localValue = valueAt(local, key);
     const remoteValue = valueAt(remote, key);
+    if (
+      key === ACCOUNT_PROFILE_KEY &&
+      [baseValue, localValue, remoteValue].some((raw) => {
+        const profile = profileRecord(raw);
+        return profile["xpLedger"] || profile["studentResume"];
+      })
+    ) {
+      const identity = (raw: string | undefined) => {
+        const value = profileRecord(raw);
+        delete value["xpLedger"];
+        delete value["studentResume"];
+        return JSON.stringify(value);
+      };
+      const localChanged = identity(localValue) !== identity(baseValue);
+      const remoteChanged = identity(remoteValue) !== identity(baseValue);
+      const selected = localChanged ? localValue : remoteValue;
+      const merged = mergeProfileProgress(selected, baseValue, localValue, remoteValue);
+      if (merged !== undefined) items[key] = merged;
+      if (localChanged && remoteChanged && identity(localValue) !== identity(remoteValue))
+        conflicts.push(key);
+      continue;
+    }
     if (key === MASTERY_KEY) {
       const left = parseMasteryProgress(localValue ?? "{}"),
         right = parseMasteryProgress(remoteValue ?? "{}");

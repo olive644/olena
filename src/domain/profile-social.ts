@@ -11,7 +11,9 @@ export type SocialProfile = {
 };
 export type SocialActivitySummary = {
   id: string;
-  kind: "practice" | "focus" | "quiz" | "streak";
+  kind: "practice" | "focus" | "quiz" | "streak" | "module";
+  course?: string;
+  level?: number;
   value: number;
   at: number;
 };

@@ -1,4 +1,5 @@
 import { uiWeekdays, uiText, useLanguage, uiLocale } from "../i18n/runtime";
+import { readStudentResume, saveStudentResume } from "../data/student-resume";
 import { Plus } from "lucide-react";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
 import { focusFlowerState } from "../domain/focus-flower";
@@ -257,7 +258,12 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const defaultSubject =
     workspace.subjects.find((subject) => subject.id === restored?.subjectId) ??
     workspace.subjects[0];
-  const [mode, setMode] = useState<TimerMode>(restored?.mode ?? "timer");
+  const [mode, setMode] = useState<TimerMode>(
+    restored?.mode ?? readStudentResume().focus?.mode ?? "timer",
+  );
+  useEffect(() => {
+    saveStudentResume({ focus: { mode, at: Date.now() } });
+  }, [mode]);
   const [modeDirection, setModeDirection] = useState(1);
   const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>(restored?.phase ?? "focus");
   const [completedPomodoros, setCompletedPomodoros] = useState(restored?.completed ?? 0);
