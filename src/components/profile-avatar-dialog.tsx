@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { readStoredProfile } from "../hooks/use-stored-profile";
 import { profileAvatarSource } from "../domain/profile-avatars";
@@ -5,6 +6,8 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { ProfileChoices } from "./app-navigation";
 import { PaperCloseIcon } from "./paper-close-icon";
 export function ProfileAvatarDialog({ onClose }: { onClose(): void }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const [chosen, setChosen] = useState(() => profileAvatarSource(readStoredProfile().photoUrl));
   const [error, setError] = useState("");
@@ -26,8 +29,8 @@ export function ProfileAvatarDialog({ onClose }: { onClose(): void }) {
       }}
     >
       <header>
-        <h2 id="profile-avatar-title">Avatar do perfil</h2>
-        <button className="icon-button" type="button" aria-label="Fechar avatares" onClick={close}>
+        <h2 id="profile-avatar-title">{uiText(827)}</h2>
+        <button className="icon-button" type="button" aria-label={uiText(828)} onClick={close}>
           <PaperCloseIcon />
         </button>
       </header>
@@ -36,16 +39,16 @@ export function ProfileAvatarDialog({ onClose }: { onClose(): void }) {
         src={chosen}
         width="160"
         height="160"
-        alt="Personagem selecionado"
+        alt={uiText(829)}
       />
       <ProfileChoices
         selectedPhotoUrl={chosen}
         onChoose={(avatar) => setChosen(profileAvatarSource(avatar.photoUrl))}
       />
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{uiText(error)}</p>}
       <footer>
         <button className="secondary-button" type="button" onClick={close}>
-          Cancelar
+          {uiText(155)}
         </button>
         <button
           className="primary-button"
@@ -58,11 +61,11 @@ export function ProfileAvatarDialog({ onClose }: { onClose(): void }) {
               );
               close();
             } catch {
-              setError("Não foi possível salvar. Sua escolha continua aqui para tentar novamente.");
+              setError(uiText(830));
             }
           }}
         >
-          Usar personagem
+          {uiText(831)}
         </button>
       </footer>
     </dialog>

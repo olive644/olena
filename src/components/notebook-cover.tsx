@@ -1,10 +1,11 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { CSSProperties } from "react";
 import type { NotebookTab, StudyNotebook } from "../domain/workspace";
 import { PaperMoonMark } from "./notebook-paper-tools";
 
 export function NotebookCover({
   subjectColor,
-  title = "Ideias em papel",
+  title = uiText(1803),
   tabs = [],
   clasp = true,
   participants = [],
@@ -22,6 +23,8 @@ export function NotebookCover({
     online: boolean;
   }[];
 }) {
+  useLanguage();
+
   return (
     <span
       className="book-cover"

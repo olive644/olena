@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
@@ -47,6 +48,8 @@ export function ProfileShowcase({
   presentationReady?: boolean;
   syncStatus?: string;
 }) {
+  useLanguage();
+
   const [profile] = useStoredProfile();
   const [dismissedRecommendation, setDismissedRecommendation] = useState<string>();
   const [belowJourney, setBelowJourney] = useState(() => window.innerWidth <= 1000);
@@ -183,7 +186,7 @@ export function ProfileShowcase({
           </div>
         )}
         {!settingsOpen && (
-          <section className="profile-cover" aria-label="Seu perfil">
+          <section className="profile-cover" aria-label={uiText(863)}>
             <div className="profile-cover__art">
               <ProfileCoverArt theme={profileCover(profile.cover)} />
             </div>
@@ -192,8 +195,8 @@ export function ProfileShowcase({
               className="secondary-button profile-cover__choose"
               type="button"
               onClick={() => setChoosingCover(true)}
-              aria-label="Editar capa"
-              title="Editar capa"
+              aria-label={uiText(910)}
+              title={uiText(910)}
             >
               <PaperEditorIcon name="pen" />
             </button>
@@ -207,8 +210,8 @@ export function ProfileShowcase({
                   ref={editButton}
                   type="button"
                   className="secondary-button profile-cover__edit"
-                  aria-label="Editar perfil"
-                  title="Editar perfil"
+                  aria-label={uiText(836)}
+                  title={uiText(836)}
                   onClick={() => setEditing(true)}
                 >
                   <PaperEditorIcon name="pen" />
@@ -232,12 +235,12 @@ export function ProfileShowcase({
                   }}
                 >
                   <FriendIcon />
-                  Adicionar amigo
+                  {uiText(911)}
                 </button>
                 <button
                   type="button"
                   className="secondary-button profile-cover__qr"
-                  aria-label="Compartilhar perfil por QR code"
+                  aria-label={uiText(912)}
                   onClick={() => {
                     setSharingProfile(true);
                     setConnectionList(undefined);
@@ -252,7 +255,7 @@ export function ProfileShowcase({
                   {profile.bio}
                 </p>
               )}
-              <nav className="profile-cover__networks" aria-label="Redes sociais do perfil">
+              <nav className="profile-cover__networks" aria-label={uiText(913)}>
                 {profile.socialLinks?.map((link) => {
                   const social = recognizeSocialLink(link);
                   return social ? (
@@ -273,7 +276,7 @@ export function ProfileShowcase({
               <div
                 ref={connections}
                 className="profile-cover__connections"
-                aria-label="Conexões do perfil"
+                aria-label={uiText(914)}
               >
                 <button
                   type="button"
@@ -281,10 +284,10 @@ export function ProfileShowcase({
                     setConnectionList("followers");
                     setFriends("");
                   }}
-                  title="Pessoas que seguem seu perfil"
+                  title={uiText(915)}
                 >
                   <ProfilePaperIcon name="followers" />
-                  <strong>{social?.self.followers ?? (guest ? 0 : null)}</strong> Seguidores
+                  <strong>{social?.self.followers ?? (guest ? 0 : null)}</strong> {uiText(916)}
                 </button>
                 <button
                   type="button"
@@ -292,12 +295,12 @@ export function ProfileShowcase({
                     setConnectionList("following");
                     setFriends("");
                   }}
-                  title="Pessoas que você segue"
+                  title={uiText(917)}
                 >
                   <ProfilePaperIcon name="following" />
-                  <strong>{social?.self.following ?? (guest ? 0 : null)}</strong> Seguindo
+                  <strong>{social?.self.following ?? (guest ? 0 : null)}</strong> {uiText(918)}
                 </button>
-                <div className="profile-cover__streaks" aria-label="Sequências de estudo">
+                <div className="profile-cover__streaks" aria-label={uiText(919)}>
                   {workspace && <ProfileStreaks workspace={workspace} />}
                 </div>
               </div>
@@ -314,15 +317,15 @@ export function ProfileShowcase({
           <button
             type="button"
             className="profile-cover__portrait"
-            aria-label="Abrir foto do perfil"
-            title="Foto do perfil"
+            aria-label={uiText(920)}
+            title={uiText(921)}
             onClick={() => setChoosingAvatar(true)}
           >
             <img
               className="profile-cover__avatar"
               draggable={false}
               src={profileAvatarSource(profile.photoUrl)}
-              alt="Sua foto de perfil"
+              alt={uiText(922)}
               width="144"
               height="144"
               onError={(event) => {
@@ -349,7 +352,7 @@ export function ProfileShowcase({
       {choosingAvatar && <ProfileAvatarDialog onClose={() => setChoosingAvatar(false)} />}
       {choosingCover && <ProfileCoverDialog onClose={() => setChoosingCover(false)} />}
       {friends !== undefined && (
-        <Suspense fallback={<HelenaLoading label="Abrindo amigos" compact />}>
+        <Suspense fallback={<HelenaLoading label={uiText(923)} compact />}>
           <SocialDirectory
             initialSharing={sharingProfile}
             {...(connectionList ? { initialList: connectionList } : {})}
@@ -373,6 +376,8 @@ export function ProfileOverview({
   workspace: WorkspaceState;
   dispatch?: Dispatch<WorkspaceAction> | undefined;
 }) {
+  useLanguage();
+
   return (
     <div className="profile-overview">
       <div className="profile-settings-grid">

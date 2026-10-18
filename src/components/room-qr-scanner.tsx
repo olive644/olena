@@ -1,9 +1,12 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
 import { roomCodeFromQr } from "../domain/room-qr-invite";
 import { HelenaLoading } from "./helena-loading";
 
 export default function RoomQrScanner({ onRead }: { onRead(code: string): void }) {
+  useLanguage();
+
   const video = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
@@ -32,7 +35,7 @@ export default function RoomQrScanner({ onRead }: { onRead(code: string): void }
             onReadRef.current(code);
             return;
           }
-          setError("Esse QR code não é um convite do Olena. Aponte para o QR code da sala.");
+          setError(uiText(968));
         }
       }
       timer = setTimeout(scan, 200);
@@ -57,10 +60,7 @@ export default function RoomQrScanner({ onRead }: { onRead(code: string): void }
           }
         }
       } catch {
-        if (!stopped)
-          setError(
-            "Não foi possível abrir a câmera. Permita o acesso ou entre com o código da sala.",
-          );
+        if (!stopped) setError(uiText(969));
         stream?.getTracks().forEach((track) => track.stop());
       }
     })();
@@ -72,18 +72,9 @@ export default function RoomQrScanner({ onRead }: { onRead(code: string): void }
   }, []);
   return (
     <div className="room-qr-scanner">
-      <video
-        ref={video}
-        autoPlay
-        muted
-        playsInline
-        aria-label="Câmera para ler o QR code da sala"
-      />
-      {!ready && !error && <HelenaLoading compact label="Abrindo câmera…" />}
-      <p role={error ? "alert" : undefined}>
-        {error ||
-          "Aponte a câmera para o QR code da sala. A imagem fica somente neste dispositivo."}
-      </p>
+      <video ref={video} autoPlay muted playsInline aria-label={uiText(970)} />
+      {!ready && !error && <HelenaLoading compact label={uiText(971)} />}
+      <p role={error ? "alert" : undefined}>{error || uiText(2071)}</p>
     </div>
   );
 }

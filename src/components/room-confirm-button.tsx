@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
@@ -24,6 +25,8 @@ export function RoomConfirmButton({
   className?: string;
   needsConfirmation?: boolean;
 }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const cancel = useRef<HTMLButtonElement>(null);
   const confirm = useRef<HTMLButtonElement>(null);
@@ -73,7 +76,7 @@ export function RoomConfirmButton({
               type="button"
               onClick={() => setOpen(false)}
             >
-              Cancelar
+              {uiText(155)}
             </button>
             <button
               ref={confirm}

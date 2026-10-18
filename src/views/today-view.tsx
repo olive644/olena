@@ -1,3 +1,4 @@
+import { localizeResource, uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import type { Dispatch } from "react";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import {
@@ -20,7 +21,7 @@ type TodayViewProps = {
 };
 
 function formatLongDate(date: Date): string {
-  return new Intl.DateTimeFormat("pt-BR", {
+  return new Intl.DateTimeFormat(uiLocale(), {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -28,55 +29,57 @@ function formatLongDate(date: Date): string {
 }
 
 export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
+  useLanguage();
+
   const now = new Date();
   const today = toDateKey(now);
   const pendingTasks = workspace.tasks.filter((task) => !task.completed);
   const todayEvents = displayEventsOn(workspace.events, today);
   const focusMinutes = minutesFocusedOn(workspace, today);
-  const studyRoute = buildStudyRoute(workspace, today);
+  const studyRoute = localizeResource(buildStudyRoute(workspace, today));
   const subjectName = (subjectId: string) =>
-    workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? "Sem matéria";
+    workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? uiText(2278);
 
   return (
     <main className="main-content" id="main-content">
       <PageHeader showUpdates />
       <header className="view-heading view-heading--today">
         <div>
-          <span className="section-label">Seu painel · {formatLongDate(now)}</span>
-          <h1>Espaço do aluno</h1>
-          <p>
-            Seu próximo passo está aqui. Escolha uma prática curta ou organize o que vem depois.
-          </p>
+          <span className="section-label">
+            {uiText(1542)} {formatLongDate(now)}
+          </span>
+          <h1>{uiText(114)}</h1>
+          <p>{uiText(1543)}</p>
           <div className="today-hero-actions">
             <button
               className="today-hero-primary"
               type="button"
               onClick={() => onNavigate("learn")}
             >
-              <NavigationIcon name="learn" paperVariant="claro" /> Começar prática
+              <NavigationIcon name="learn" paperVariant="claro" /> {uiText(1544)}
             </button>
             <button type="button" onClick={() => onNavigate("planner")}>
-              Ver meu dia <PaperArrow />
+              {uiText(1545)} <PaperArrow />
             </button>
           </div>
         </div>
       </header>
 
-      <section className="metric-row" aria-label="Resumo de hoje">
+      <section className="metric-row" aria-label={uiText(1546)}>
         <article>
-          <span>Pendências</span>
+          <span>{uiText(1547)}</span>
           <strong>{pendingTasks.length}</strong>
-          <small>tarefas abertas</small>
+          <small>{uiText(1548)}</small>
         </article>
         <article>
-          <span>Foco</span>
+          <span>{uiText(99)}</span>
           <strong>{focusMinutes}</strong>
-          <small>minutos registrados</small>
+          <small>{uiText(1549)}</small>
         </article>
         <article>
-          <span>Agenda</span>
+          <span>{uiText(1550)}</span>
           <strong>{todayEvents.length}</strong>
-          <small>eventos de hoje</small>
+          <small>{uiText(1551)}</small>
         </article>
       </section>
 
@@ -85,7 +88,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           <span className="section-label">{studyRoute.label}</span>
           <h2 id="study-route-title">{studyRoute.title}</h2>
           <p>{studyRoute.description}</p>
-          <ol aria-label="Etapas da rota recomendada">
+          <ol aria-label={uiText(1552)}>
             {studyRoute.steps.map((step, index) => (
               <li key={step}>
                 <span aria-hidden="true">{index + 1}</span>
@@ -103,18 +106,18 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         <section className="module-panel module-panel--wide" aria-labelledby="tasks-today-title">
           <div className="module-heading">
             <div>
-              <span className="section-label">Prioridades</span>
-              <h2 id="tasks-today-title">Próximas tarefas</h2>
+              <span className="section-label">{uiText(1553)}</span>
+              <h2 id="tasks-today-title">{uiText(1554)}</h2>
             </div>
             <button className="link-button" type="button" onClick={() => onNavigate("planner")}>
-              Ver agenda <PaperArrow />
+              {uiText(1555)} <PaperArrow />
             </button>
           </div>
           {pendingTasks.length === 0 ? (
             <div className="empty-state">
-              <p>Nenhuma tarefa pendente.</p>
+              <p>{uiText(1556)}</p>
               <button type="button" onClick={() => onNavigate("planner")}>
-                Criar uma tarefa
+                {uiText(1557)}
               </button>
             </div>
           ) : (
@@ -124,7 +127,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
                   <button
                     className="check-button"
                     type="button"
-                    aria-label={`Concluir ${task.title}`}
+                    aria-label={uiText(2045, [task.title])}
                     onClick={() => dispatch({ type: "task/toggled", id: task.id })}
                   >
                     <PaperCheckIcon />
@@ -133,7 +136,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
                     <strong>{task.title}</strong>
                     <small>
                       {subjectName(task.subjectId)} ·{" "}
-                      {task.dueDate === today ? "Hoje" : task.dueDate}
+                      {task.dueDate === today ? uiText(87) : task.dueDate}
                     </small>
                   </div>
                 </li>
@@ -145,22 +148,22 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         <section className="module-panel" aria-labelledby="agenda-today-title">
           <div className="module-heading">
             <div>
-              <span className="section-label">Agenda</span>
-              <h2 id="agenda-today-title">Hoje</h2>
+              <span className="section-label">{uiText(1550)}</span>
+              <h2 id="agenda-today-title">{uiText(87)}</h2>
             </div>
           </div>
           {todayEvents.length === 0 ? (
             <div className="empty-state empty-state--compact">
-              <p>Seu dia ainda está livre.</p>
+              <p>{uiText(1558)}</p>
               <button type="button" onClick={() => onNavigate("planner")}>
-                Adicionar compromisso
+                {uiText(1559)}
               </button>
             </div>
           ) : (
             <ul className="schedule-list">
               {todayEvents.map((event) => (
                 <li key={`${event.id}:${event.displayOccurrence}`}>
-                  <time>{event.allDay ? "Dia inteiro" : event.time}</time>
+                  <time>{event.allDay ? uiText(29) : event.time}</time>
                   <div>
                     <strong>{event.title}</strong>
                     <small>{subjectName(event.subjectId)}</small>

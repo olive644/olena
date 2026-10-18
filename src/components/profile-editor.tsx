@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { readStoredProfile, type StoredProfile } from "../hooks/use-stored-profile";
 import { writeSyncedStorage } from "../data/synced-storage";
@@ -14,6 +15,8 @@ import { PaperEditorIcon } from "./paper-editor-icon";
 import { PROFILE_HANDLE_CHANGED, requestProfileHandle } from "../data/profile-handle";
 
 export function ProfilePaperIcon({ name }: { name: SocialNetwork | "followers" | "following" }) {
+  useLanguage();
+
   return (
     <img
       className="profile-paper-icon"
@@ -37,9 +40,11 @@ export function ProfileEditor({
   guest: boolean;
   onClose: () => void;
 }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState<ProfileDraft>(() => ({
-    name: guest ? "Guest" : profile.name || "",
+    name: guest ? uiText(1890) : profile.name || "",
     username: guest ? "" : profile.username || "",
     bio: profile.bio || "",
     pronouns: profile.pronouns || "",
@@ -73,13 +78,8 @@ export function ProfileEditor({
       }}
     >
       <header>
-        <h2 id="profile-editor-title">Editar perfil</h2>
-        <button
-          type="button"
-          className="icon-button"
-          aria-label="Fechar edição de perfil"
-          onClick={close}
-        >
+        <h2 id="profile-editor-title">{uiText(836)}</h2>
+        <button type="button" className="icon-button" aria-label={uiText(837)} onClick={close}>
           <PaperCloseIcon />
         </button>
       </header>
@@ -115,9 +115,7 @@ export function ProfileEditor({
             onClose();
           } catch (cause) {
             setError(
-              cause instanceof Error && cause.message
-                ? `${cause.message} Suas alterações continuam aqui para tentar novamente.`
-                : "Não foi possível salvar o perfil. Suas alterações continuam aqui para tentar novamente.",
+              cause instanceof Error && cause.message ? uiText(1891, [cause.message]) : uiText(838),
             );
           } finally {
             setSaving(false);
@@ -126,7 +124,7 @@ export function ProfileEditor({
       >
         <div className="profile-editor__fields">
           <label className="field">
-            <span>Nome</span>
+            <span>{uiText(713)}</span>
             <input
               required
               maxLength={60}
@@ -137,7 +135,7 @@ export function ProfileEditor({
             />
           </label>
           <label className="field">
-            <span id="profile-username-label">Nome de usuário</span>
+            <span id="profile-username-label">{uiText(839)}</span>
             <input
               maxLength={30}
               disabled={guest}
@@ -149,14 +147,10 @@ export function ProfileEditor({
               aria-describedby="profile-username-help"
               aria-labelledby="profile-username-label"
             />
-            <small id="profile-username-help">
-              {guest
-                ? "Entre na conta para criar um @."
-                : "Seu @ é exclusivo. Use letras minúsculas, números, ponto ou _."}
-            </small>
+            <small id="profile-username-help">{guest ? uiText(840) : uiText(841)}</small>
           </label>
           <label className="field profile-editor__wide">
-            <span id="profile-bio-label">Bio</span>
+            <span id="profile-bio-label">{uiText(842)}</span>
             <textarea
               maxLength={240}
               rows={3}
@@ -168,12 +162,12 @@ export function ProfileEditor({
           </label>
           <div className="profile-editor__wide">
             <PaperChoice
-              label="Pronomes"
+              label={uiText(843)}
               value={pronounChoice}
               options={[
-                { value: "", label: "Não informar" },
-                ...PRONOUNS.slice(1).map((value) => ({ value, label: value })),
-                { value: "custom", label: "Personalizado" },
+                { value: "", label: uiText(844) },
+                ...PRONOUNS.slice(1).map((value) => ({ value, label: uiText(value) })),
+                { value: "custom", label: uiText(2550) },
               ]}
               onChange={(value) => {
                 setPronounChoice(value);
@@ -182,32 +176,34 @@ export function ProfileEditor({
             />
             {pronounChoice === "custom" && (
               <label className="field">
-                <span>Pronomes personalizados</span>
+                <span>{uiText(845)}</span>
                 <input
                   maxLength={40}
                   value={draft.pronouns}
                   onChange={(event) => change("pronouns", event.target.value)}
-                  placeholder="Ex.: ele/dela"
+                  placeholder={uiText(846)}
                 />
               </label>
             )}
           </div>
         </div>
         <fieldset className="profile-editor__socials">
-          <legend>Redes sociais</legend>
+          <legend>{uiText(847)}</legend>
           {draft.socialLinks.map((link, index) => {
             const detected = recognizeSocialLink(link);
             return (
               <div className="profile-editor__social-row" key={index}>
                 <label className="field">
-                  <span id={`profile-social-${index}-label`}>Rede social {index + 1}</span>
+                  <span id={`profile-social-${index}-label`}>
+                    {uiText(848)} {index + 1}
+                  </span>
                   <input
                     type="text"
                     inputMode="url"
                     aria-labelledby={`profile-social-${index}-label`}
                     value={link}
                     maxLength={500}
-                    placeholder="Cole o link do seu perfil"
+                    placeholder={uiText(849)}
                     onChange={(event) =>
                       setDraft((current) => ({
                         ...current,
@@ -222,14 +218,14 @@ export function ProfileEditor({
                   {link && (
                     <small className="profile-editor__detected">
                       {detected && <ProfilePaperIcon name={detected.network} />}
-                      {detected ? SOCIAL_LABELS[detected.network] : "Link não reconhecido"}
+                      {detected ? SOCIAL_LABELS[detected.network] : uiText(850)}
                     </small>
                   )}
                 </label>
                 <button
                   className="secondary-button"
                   type="button"
-                  aria-label={`Remover rede social ${index + 1}`}
+                  aria-label={uiText(1892, [index + 1])}
                   onClick={() =>
                     setDraft((current) => ({
                       ...current,
@@ -251,21 +247,17 @@ export function ProfileEditor({
             }
           >
             <PaperEditorIcon name="add" />
-            Adicionar rede
+            {uiText(851)}
           </button>
         </fieldset>
-        {guest && (
-          <p className="profile-editor__hint">
-            No modo convidado, o nome é Guest e as alterações ficam neste aparelho.
-          </p>
-        )}
-        {error && <p role="alert">{error}</p>}
+        {guest && <p className="profile-editor__hint">{uiText(852)}</p>}
+        {error && <p role="alert">{uiText(error)}</p>}
         <footer>
           <button type="button" className="secondary-button" onClick={close} disabled={saving}>
-            Cancelar
+            {uiText(155)}
           </button>
           <button className="primary-button" type="submit" disabled={saving}>
-            {saving ? "Confirmando…" : "Salvar perfil"}
+            {saving ? uiText(1893) : uiText(853)}
           </button>
         </footer>
       </form>

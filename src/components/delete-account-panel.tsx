@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AccountDeletionError, isDeletionConfirmed } from "../data/account-deletion";
@@ -12,6 +13,8 @@ type Status = "idle" | "deleting" | "cancelled" | "failed";
 // Zona de perigo do perfil, no estilo do GitHub: o botão abre uma janela onde a pessoa lê o que
 // será apagado e precisa digitar o nome da conta para liberar a exclusão.
 export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanelProps) {
+  useLanguage();
+
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState("");
   const [status, setStatus] = useState<Status>("idle");
@@ -58,11 +61,8 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
   return (
     <section className="delete-account-panel" aria-labelledby={`${titleId}-zone`}>
       <div>
-        <h2 id={`${titleId}-zone`}>Excluir conta</h2>
-        <p>
-          Apaga para sempre a sua conta e os estudos guardados na nuvem, e limpa os dados deste
-          aparelho. Não dá para desfazer.
-        </p>
+        <h2 id={`${titleId}-zone`}>{uiText(144)}</h2>
+        <p>{uiText(145)}</p>
       </div>
       <button
         ref={opener}
@@ -70,7 +70,7 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
         className="delete-account-panel__open"
         onClick={() => setOpen(true)}
       >
-        Excluir minha conta
+        {uiText(146)}
       </button>
 
       {open &&
@@ -92,20 +92,16 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
               }
             }}
           >
-            <h2 id={titleId}>Tem certeza de que quer excluir a conta?</h2>
-            <p>Isto vai apagar para sempre:</p>
+            <h2 id={titleId}>{uiText(147)}</h2>
+            <p>{uiText(148)}</p>
             <ul>
-              <li>a sua conta e o acesso com o Google;</li>
-              <li>todos os estudos, cadernos e anotações guardados na nuvem;</li>
-              <li>os dados deste aparelho e a conexão com o Google Agenda.</li>
+              <li>{uiText(149)}</li>
+              <li>{uiText(150)}</li>
+              <li>{uiText(151)}</li>
             </ul>
-            <p>
-              Outros aparelhos com esta conta também deixam de ter acesso. Salas e cadernos
-              compartilhados já abertos expiram sozinhos.
-            </p>
+            <p>{uiText(152)}</p>
             <label htmlFor={inputId}>
-              Para confirmar, digite{" "}
-              <strong className="delete-account-dialog__name">{accountName}</strong>
+              {uiText(153)} <strong className="delete-account-dialog__name">{accountName}</strong>
             </label>
             <input
               ref={input}
@@ -127,18 +123,14 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
                 }
               }}
             />
-            <p className="delete-account-dialog__note">
-              Vamos pedir o login do Google mais uma vez para confirmar que é você.
-            </p>
+            <p className="delete-account-dialog__note">{uiText(154)}</p>
             <p className="delete-account-dialog__message" role="alert">
-              {status === "cancelled" &&
-                "O login foi fechado, então nada foi apagado. Tente de novo quando quiser."}
-              {status === "failed" &&
-                "Não foi possível concluir a exclusão agora. Confira a conexão e tente de novo."}
+              {status === "cancelled" && uiText(2047)}
+              {status === "failed" && uiText(2048)}
             </p>
             <div className="delete-account-dialog__actions">
               <button type="button" className="secondary-button" disabled={busy} onClick={close}>
-                Cancelar
+                {uiText(155)}
               </button>
               <button
                 type="button"
@@ -146,7 +138,7 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
                 disabled={!confirmed || busy}
                 onClick={() => void confirmDeletion()}
               >
-                {busy ? "Excluindo…" : "Excluir esta conta para sempre"}
+                {busy ? uiText(1636) : uiText(156)}
               </button>
             </div>
           </dialog>,

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { oliverCollection } from "../data/math-place-rewards";
 import { OLIVER_CARDS } from "../data/oliver-cards";
@@ -13,6 +14,8 @@ export function OliverCardCollection({
   onClose: () => void;
   incoming?: OliverArtworkId[] | undefined;
 }) {
+  useLanguage();
+
   const owned = oliverCollection();
   const [selected, setSelected] = useState<OliverArtworkId | null>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -31,7 +34,7 @@ export function OliverCardCollection({
       className="oliver-collection-backdrop"
       role="dialog"
       aria-modal="true"
-      aria-label="Coleção do Oliver"
+      aria-label={uiText(773)}
       ref={panel}
       onWheel={(event) => event.stopPropagation()}
       onKeyDown={(event) => {
@@ -64,7 +67,7 @@ export function OliverCardCollection({
       <section className="oliver-collection-panel">
         <button
           className="secondary-button oliver-booster-close"
-          aria-label={selected ? "Voltar à coleção" : "Fechar coleção"}
+          aria-label={selected ? uiText(774) : uiText(775)}
           onClick={() => {
             if (selected) setSelected(null);
             else onClose();
@@ -72,8 +75,13 @@ export function OliverCardCollection({
         >
           <PaperCloseIcon />
         </button>
-        <h1>{selected === OLIVER_TAROT.id ? "O arcano do Oliver" : "As lembranças do Oliver"}</h1>
-        {!selected && <p>{OLIVER_CARDS.filter((card) => owned[card.id]).length}/10 descobertas</p>}
+        <h1>{selected === OLIVER_TAROT.id ? uiText(1870) : uiText(776)}</h1>
+        {!selected && (
+          <p>
+            {OLIVER_CARDS.filter((card) => owned[card.id]).length}
+            {uiText(2565)}
+          </p>
+        )}
         {selected ? (
           <div className="oliver-collection-detail">
             <OliverCardInspection id={selected} />
@@ -87,7 +95,7 @@ export function OliverCardCollection({
                   key={card.id}
                   disabled={!owned[card.id]}
                   onClick={() => setSelected(card.id)}
-                  aria-label={`${card.title}, ${owned[card.id] ?? 0} cópias`}
+                  aria-label={uiText(1871, [card.title, owned[card.id] ?? 0])}
                 >
                   {incoming.includes(card.id) && (
                     <div className="oliver-arrival-back">
@@ -107,14 +115,14 @@ export function OliverCardCollection({
                     <OliverCard id={card.id} back />
                   )}
                   <strong>{card.title}</strong>
-                  <span>{owned[card.id] ? `×${owned[card.id]}` : "Por descobrir"}</span>
+                  <span>{owned[card.id] ? uiText(1872, [owned[card.id]]) : uiText(1873)}</span>
                 </button>
               ))}
             </div>
             <button
               className="oliver-tarot-showcase"
               onClick={() => setSelected(OLIVER_TAROT.id)}
-              aria-label="Ver tarot do Oliver, A Estrela"
+              aria-label={uiText(777)}
             >
               <img
                 src="/oliver-cards/oliver-star-tarot-small.webp"
@@ -125,21 +133,20 @@ export function OliverCardCollection({
                 draggable={false}
               />
               <span>
-                <strong>XVII · A Estrela</strong>
+                <strong>{uiText(778)}</strong>
                 <small>
                   {owned[OLIVER_TAROT.id]
-                    ? `${owned[OLIVER_TAROT.id]} ${owned[OLIVER_TAROT.id] === 1 ? "cópia" : "cópias"} · Lendária`
-                    : "Por descobrir · 5% das Poeiras cósmicas elegíveis."}
+                    ? uiText(1876, [
+                        owned[OLIVER_TAROT.id],
+                        owned[OLIVER_TAROT.id] === 1 ? uiText(1874) : uiText(1875),
+                      ])
+                    : uiText(779)}
                 </small>
               </span>
             </button>
             <details className="oliver-card-chances">
-              <summary>Chances da Poeira cósmica</summary>
-              <p>
-                5% de A Estrela. Nos outros 95%: 80% de chance de 1 carta; 20% de 2 cartas. Cada
-                carta é sorteada independentemente. Repetidas contam como cópias. Os toques revelam
-                o resultado salvo, não alteram as chances.
-              </p>
+              <summary>{uiText(780)}</summary>
+              <p>{uiText(781)}</p>
               <ul>
                 {OLIVER_CARDS.map((card) => (
                   <li key={card.id}>

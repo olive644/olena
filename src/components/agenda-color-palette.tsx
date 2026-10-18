@@ -1,23 +1,29 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { PaperCheckIcon } from "./paper-check-icon";
 
-const COLORS = [
-  ["#7c3aed", "Roxo"],
-  ["#facc15", "Amarelo"],
-  ["#ef476f", "Rosa"],
-  ["#2d8a67", "Verde"],
-  ["#4070c9", "Azul"],
-  ["#292432", "Grafite"],
-] as const;
+const COLORS = localizeLabels(
+  () =>
+    [
+      ["#7c3aed", uiText(1568)],
+      ["#facc15", uiText(1569)],
+      ["#ef476f", uiText(1570)],
+      ["#2d8a67", uiText(1571)],
+      ["#4070c9", uiText(1572)],
+      ["#292432", uiText(1573)],
+    ] as const,
+);
 
 export function AgendaColorPalette({
   value,
   onChange,
-  label = "Cor do evento",
+  label = uiText(1574),
 }: {
   value: string;
   onChange: (color: string) => void;
   label?: string;
 }) {
+  useLanguage();
+
   return (
     <fieldset className="agenda-color-palette">
       <legend>{label}</legend>
@@ -26,7 +32,7 @@ export function AgendaColorPalette({
           <button
             key={color}
             type="button"
-            aria-label={`Cor ${label}`}
+            aria-label={uiText(1575, [label])}
             title={label}
             aria-pressed={value.toLowerCase() === color}
             style={{ backgroundColor: color }}

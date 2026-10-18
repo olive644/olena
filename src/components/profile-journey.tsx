@@ -1,23 +1,24 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import type { ProfileCompletion, ProfileStep } from "../domain/profile-completion";
 import { PaperCloseIcon } from "./paper-close-icon";
 
-const recommendations = {
+const recommendations = localizeLabels(() => ({
   identity: {
-    title: "Quem é você?",
-    detail: "Seu nome e um @ só seu.",
-    action: "Escolher meu nome",
+    title: uiText(854),
+    detail: uiText(855),
+    action: uiText(1894),
   },
   avatar: {
-    title: "Qual é o seu personagem?",
-    detail: "Um companheiro com a sua cara.",
-    action: "Escolher personagem",
+    title: uiText(856),
+    detail: uiText(857),
+    action: uiText(1895),
   },
   cover: {
-    title: "Seu pequeno universo",
-    detail: "Escolha um cenário para chamar de seu.",
-    action: "Escolher minha capa",
+    title: uiText(858),
+    detail: uiText(859),
+    action: uiText(1896),
   },
-};
+}));
 
 export function ProfileJourney({
   completion,
@@ -28,22 +29,24 @@ export function ProfileJourney({
   onChoose: (step: ProfileStep) => void;
   onDismiss: () => void;
 }) {
+  useLanguage();
+
   if (completion.complete || !completion.next) return null;
   const pending = completion.steps.filter((step) => !step.done);
   const nextId = completion.next;
   const next = recommendations[nextId];
   return (
-    <section className="profile-journey" aria-label="Complete seu perfil">
+    <section className="profile-journey" aria-label={uiText(860)}>
       <button
         type="button"
         className="profile-journey-close"
-        aria-label="Dispensar recomendação de perfil"
+        aria-label={uiText(861)}
         onClick={onDismiss}
       >
         <PaperCloseIcon />
       </button>
       <div className="profile-journey__copy" aria-live="polite">
-        <small>{pending.length === 1 ? "FALTA 1 ETAPA" : `FALTAM ${pending.length} ETAPAS`}</small>
+        <small>{pending.length === 1 ? uiText(1897) : uiText(1898, [pending.length])}</small>
         <h2>{next.title}</h2>
         <p>{next.detail}</p>
       </div>
@@ -54,7 +57,7 @@ export function ProfileJourney({
         alt=""
         draggable={false}
       />
-      <ol aria-label="Etapas pendentes do perfil">
+      <ol aria-label={uiText(862)}>
         {pending.map((step, index) => (
           <li key={step.id}>
             <button

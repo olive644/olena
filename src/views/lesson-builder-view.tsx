@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useState, type FormEvent } from "react";
 import { PageHeader } from "../components/app-navigation";
 import { PaperArrow } from "../components/paper-arrow";
@@ -37,14 +38,16 @@ const TOTAL_CONTROLLED_ACTIVITIES = listActivitiesByControlLevel("total-controll
 const SEMI_CONTROLLED_ACTIVITIES = listActivitiesByControlLevel("semi-controlled");
 
 function DraftPreview({ draft }: { draft: LessonDraft | null }) {
+  useLanguage();
+
   if (!draft) {
     return (
       <aside className="preview preview--empty" aria-live="polite">
         <span className="preview-empty-mark" aria-hidden="true">
-          A
+          {uiText(1276)}
         </span>
-        <h2>Rascunho da aula</h2>
-        <p>Preencha os campos ao lado para visualizar a distribuição do tempo e das atividades.</p>
+        <h2>{uiText(1277)}</h2>
+        <p>{uiText(1278)}</p>
       </aside>
     );
   }
@@ -52,20 +55,22 @@ function DraftPreview({ draft }: { draft: LessonDraft | null }) {
   return (
     <aside className="preview" aria-live="polite" aria-labelledby="draft-title">
       <div className="preview__topline">
-        <span>Rascunho</span>
+        <span>{uiText(1279)}</span>
         <div className="draft-meta">
           <span>{draft.level}</span>
-          <span>{draft.duration} min</span>
+          <span>
+            {draft.duration} {uiText(19)}
+          </span>
         </div>
       </div>
       <h2 id="draft-title">{draft.title}</h2>
       <p className="draft-audience">{draft.audience}</p>
       <div className="objective">
-        <span>Aim</span>
+        <span>{uiText(1280)}</span>
         <p>{draft.aim}</p>
       </div>
       <div className="objective">
-        <span>Objective</span>
+        <span>{uiText(1281)}</span>
         <p>{draft.objective}</p>
       </div>
       <ol className="timeline">
@@ -75,7 +80,9 @@ function DraftPreview({ draft }: { draft: LessonDraft | null }) {
             <div className="timeline__content">
               <div>
                 <strong>{section.title}</strong>
-                <span>{section.minutes} min</span>
+                <span>
+                  {section.minutes} {uiText(19)}
+                </span>
               </div>
               <p>{section.guidance}</p>
               {section.activityIds?.map((activityId) => {
@@ -85,7 +92,7 @@ function DraftPreview({ draft }: { draft: LessonDraft | null }) {
                   <div className="activity-detail" key={activityId}>
                     <strong>{activity.name}</strong>
                     <span>
-                      {activity.time} min · {activity.topic}
+                      {activity.time} {uiText(1282)} {activity.topic}
                     </span>
                     <p>{activity.goal}</p>
                     <ol>
@@ -95,7 +102,7 @@ function DraftPreview({ draft }: { draft: LessonDraft | null }) {
                     </ol>
                     {activity.supplies.length > 0 && (
                       <p className="activity-detail__supplies">
-                        Material: {activity.supplies.join(", ")}
+                        {uiText(1283)} {activity.supplies.join(", ")}
                       </p>
                     )}
                   </div>
@@ -116,14 +123,14 @@ function DraftPreview({ draft }: { draft: LessonDraft | null }) {
           </li>
         ))}
       </ol>
-      <p className="preview__footnote">
-        Estrutura criada localmente. Você poderá editar cada etapa em uma próxima versão.
-      </p>
+      <p className="preview__footnote">{uiText(1284)}</p>
     </aside>
   );
 }
 
 export function LessonBuilderView({ onBack }: { onBack: () => void }) {
+  useLanguage();
+
   const [input, setInput] = useState<LessonInput>(INITIAL_INPUT);
   const [draft, setDraft] = useState<LessonDraft | null>(null);
 
@@ -136,18 +143,13 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
     <main className="main-content builder" id="main-content">
       <PageHeader />
       <header className="builder__header">
-        <button
-          className="back-button"
-          type="button"
-          onClick={onBack}
-          aria-label="Voltar para Hoje"
-        >
+        <button className="back-button" type="button" onClick={onBack} aria-label={uiText(1153)}>
           <PaperArrow back />
         </button>
         <div>
-          <span className="section-label">Planejamento</span>
-          <h1>Novo plano de aula</h1>
-          <p>Preencha apenas o que fizer sentido para sua turma.</p>
+          <span className="section-label">{uiText(1154)}</span>
+          <h1>{uiText(1285)}</h1>
+          <p>{uiText(1286)}</p>
         </div>
       </header>
 
@@ -156,23 +158,23 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
       <div className="builder-grid">
         <form className="lesson-form" onSubmit={submit}>
           <div className="form-heading">
-            <h2>Informações da aula</h2>
-            <span>* campo obrigatório</span>
+            <h2>{uiText(1287)}</h2>
+            <span>{uiText(1288)}</span>
           </div>
           <label className="field field--full">
-            <span>Tema da aula *</span>
+            <span>{uiText(1289)}</span>
             <input
               name="topic"
               value={input.topic}
               onChange={(event) => setInput({ ...input, topic: event.target.value })}
-              placeholder="Ex.: Simple Past"
+              placeholder={uiText(1290)}
               required
               autoComplete="off"
             />
           </label>
           <div className="field-row">
             <label className="field">
-              <span>Nível CEFR</span>
+              <span>{uiText(1291)}</span>
               <select
                 name="level"
                 value={input.level}
@@ -188,7 +190,7 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
               </select>
             </label>
             <label className="field">
-              <span>Duração</span>
+              <span>{uiText(17)}</span>
               <select
                 name="duration"
                 value={input.duration}
@@ -196,54 +198,50 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
               >
                 {[30, 45, 60, 90, 120].map((minutes) => (
                   <option key={minutes} value={minutes}>
-                    {minutes} minutos
+                    {minutes} {uiText(1292)}
                   </option>
                 ))}
               </select>
             </label>
           </div>
           <label className="field field--full">
-            <span>Perfil da turma</span>
+            <span>{uiText(1293)}</span>
             <input
               name="audience"
               value={input.audience}
               onChange={(event) => setInput({ ...input, audience: event.target.value })}
-              placeholder="Ex.: Adultos iniciantes"
+              placeholder={uiText(1294)}
               autoComplete="off"
             />
           </label>
           <label className="field field--full">
-            <span>Aim</span>
-            <small className="field-help">O que a aula representa: a intenção pedagógica.</small>
+            <span>{uiText(1280)}</span>
+            <small className="field-help">{uiText(1295)}</small>
             <textarea
               name="aim"
               value={input.aim}
               onChange={(event) => setInput({ ...input, aim: event.target.value })}
-              placeholder="Ex.: Ensinar o Simple Past para narrativas curtas"
+              placeholder={uiText(1296)}
               rows={2}
             />
           </label>
           <label className="field field--full">
-            <span>Objective</span>
-            <small className="field-help">
-              O que o aluno consegue fazer na prática, ao final da aula.
-            </small>
+            <span>{uiText(1281)}</span>
+            <small className="field-help">{uiText(1297)}</small>
             <textarea
               name="objective"
               value={input.objective}
               onChange={(event) => setInput({ ...input, objective: event.target.value })}
-              placeholder="Ex.: Relatar o que fez no fim de semana"
+              placeholder={uiText(1298)}
               rows={3}
             />
           </label>
           <fieldset className="method-fieldset">
-            <legend>Atividades da Prática</legend>
-            <small className="field-help">
-              Activity 01 é o livro didático; as atividades 02 e 03 vêm do banco de atividades.
-            </small>
+            <legend>{uiText(1299)}</legend>
+            <small className="field-help">{uiText(1300)}</small>
             <div className="field-row">
               <label className="field">
-                <span>Activity 02 · Total Controlled</span>
+                <span>{uiText(1301)}</span>
                 <select
                   name="practiceTotalControlledId"
                   value={input.practiceTotalControlledId}
@@ -251,7 +249,7 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
                     setInput({ ...input, practiceTotalControlledId: event.target.value })
                   }
                 >
-                  <option value="">Nenhuma</option>
+                  <option value="">{uiText(1302)}</option>
                   {TOTAL_CONTROLLED_ACTIVITIES.map((activity) => (
                     <option key={activity.id} value={activity.id}>
                       {activity.name}
@@ -260,7 +258,7 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
                 </select>
               </label>
               <label className="field">
-                <span>Activity 03 · Semi Controlled</span>
+                <span>{uiText(1303)}</span>
                 <select
                   name="practiceSemiControlledId"
                   value={input.practiceSemiControlledId}
@@ -268,7 +266,7 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
                     setInput({ ...input, practiceSemiControlledId: event.target.value })
                   }
                 >
-                  <option value="">Nenhuma</option>
+                  <option value="">{uiText(1302)}</option>
                   {SEMI_CONTROLLED_ACTIVITIES.map((activity) => (
                     <option key={activity.id} value={activity.id}>
                       {activity.name}
@@ -279,17 +277,14 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
             </div>
           </fieldset>
           <label className="field field--full">
-            <span>Extra Activity</span>
-            <small className="field-help">
-              Só aparece se sobrar tempo antes da produção. Não entra no cálculo padrão dos minutos
-              da aula.
-            </small>
+            <span>{uiText(1304)}</span>
+            <small className="field-help">{uiText(1305)}</small>
             <select
               name="extraActivityId"
               value={input.extraActivityId}
               onChange={(event) => setInput({ ...input, extraActivityId: event.target.value })}
             >
-              <option value="">Nenhuma</option>
+              <option value="">{uiText(1302)}</option>
               {ACTIVITY_LIBRARY.map((activity) => (
                 <option key={activity.id} value={activity.id}>
                   {activity.name}
@@ -298,7 +293,7 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
             </select>
           </label>
           <fieldset className="method-fieldset">
-            <legend>Como apresentar o conteúdo</legend>
+            <legend>{uiText(1306)}</legend>
             <div className="method-grid">
               {METHODOLOGIES.map((methodology) => (
                 <label className="method-option" key={methodology}>
@@ -309,13 +304,13 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
                     checked={input.methodology === methodology}
                     onChange={() => setInput({ ...input, methodology })}
                   />
-                  <span>{METHODOLOGY_LABELS[methodology]}</span>
+                  <span>{uiText(METHODOLOGY_LABELS[methodology])}</span>
                 </label>
               ))}
             </div>
           </fieldset>
           <fieldset className="method-fieldset">
-            <legend>Variante da Produção</legend>
+            <legend>{uiText(1307)}</legend>
             <div className="method-grid">
               {PRODUCTION_VARIANTS.map((variant) => (
                 <label className="method-option" key={variant}>
@@ -332,10 +327,8 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
             </div>
           </fieldset>
           <label className="field field--full">
-            <span>Links de apoio (Homework)</span>
-            <small className="field-help">
-              Um link por linha, começando com http:// ou https://.
-            </small>
+            <span>{uiText(1308)}</span>
+            <small className="field-help">{uiText(1309)}</small>
             <textarea
               name="homeworkLinksText"
               value={input.homeworkLinksText}
@@ -345,7 +338,7 @@ export function LessonBuilderView({ onBack }: { onBack: () => void }) {
             />
           </label>
           <button className="primary-button primary-button--wide" type="submit">
-            Criar rascunho
+            {uiText(1310)}
           </button>
         </form>
         <DraftPreview draft={draft} />

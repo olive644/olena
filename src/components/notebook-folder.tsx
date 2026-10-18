@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import type { StudyNotebook, WorkspaceState } from "../domain/workspace";
 import { NotebookCover } from "./notebook-cover";
@@ -29,6 +30,8 @@ export function NotebookFolder({
   selectionMode?: boolean;
   selected?: boolean;
 }) {
+  useLanguage();
+
   const books = notebooks.filter(
     (book) => book.parentId === folder.id && (!book.kind || book.kind === "note"),
   );
@@ -47,7 +50,7 @@ export function NotebookFolder({
               className={`paper-folder-book book-${index}`}
               key={book.id}
               data-notebook-drop={book.id}
-              aria-label={`Abrir ${book.title}`}
+              aria-label={uiText(1813, [book.title])}
               tabIndex={open ? 0 : -1}
               disabled={!open || selectionMode}
               {...drag.handlers(book.id)}
@@ -76,7 +79,10 @@ export function NotebookFolder({
             type="button"
             className="paper-folder-toggle"
             aria-expanded={open}
-            aria-label={`${selectionMode ? "Selecionar" : open ? "Fechar" : "Abrir"} pasta ${folder.title}`}
+            aria-label={uiText(1814, [
+              selectionMode ? uiText(359) : open ? uiText(230) : uiText(630),
+              folder.title,
+            ])}
             aria-pressed={selectionMode ? selected : undefined}
             onClick={onToggle}
           >
@@ -100,7 +106,8 @@ export function NotebookFolder({
       <div className="paper-folder-copy">
         <span>{folder.title}</span>
         <small>
-          {books.length} de 3 {books.some((book) => book.kind === "note") ? "itens" : "cadernos"}
+          {books.length} {uiText(694)}{" "}
+          {books.some((book) => book.kind === "note") ? uiText("itens") : uiText(1815)}
         </small>
       </div>
     </div>

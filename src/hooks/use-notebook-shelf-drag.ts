@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { StudyNotebook } from "../domain/workspace";
 
@@ -102,7 +103,7 @@ export function useNotebookShelfDrag(
                 setMessage(
                   `${book?.kind === "note" ? "Note guardada" : "Caderno guardado"} em ${notebooks.find((item) => item.id === folderId)?.title}.`,
                 );
-              } else setMessage("Esta pasta já tem três itens. Escolha outra pasta.");
+              } else setMessage(uiText("Esta pasta já tem três itens. Escolha outra pasta."));
             } else if (
               !folderId &&
               book?.parentId &&

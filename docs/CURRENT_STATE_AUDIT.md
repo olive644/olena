@@ -1,5 +1,59 @@
 # Auditoria do estado atual
 
+## Regressão da prévia após idiomas, 2026-10-18
+
+O HTML separado da prévia Helena importava a interface sem instalar o catálogo, gerando
+IDs numéricos no lugar dos rótulos. Agora initializeLanguage antecede a importação da
+prévia, como no App. Seleção visual da Agenda usa o ícone canônico planner, não o título
+traduzido. Os seis E2E originais da prévia passaram em desktop/celular no Edge.
+O identificador interno da máquina Rive Helena também voltou a ser literal canônico,
+independente dos rótulos e da disponibilidade do catálogo. Regressão unitária cobre isso.
+O cenário de retomada do estudo instala sua sessão de teste no novo documento, evitando
+que o salvamento legítimo do documento anterior sobrescreva a fixture ao recarregar.
+Validação da correção: npm run verify aprovado com 2.006 testes, TypeScript, lint sem
+erros, formato, APIs, build e orçamento. Dois E2E de retomada aprovados no Edge, desktop
+e celular, além dos seis cenários da prévia. Não muda permissões ou limites do CI.
+
+## Interface bilíngue, 2026-10-18
+
+Tradução global da interface implementada com 2.686 entradas locais pt-BR/en-US,
+troca pela bandeira sem recarregar, datas e acessibilidade localizadas. Conteúdo escrito
+pelo usuário, respostas e identificadores canônicos são preservados. Catálogos públicos
+versionados por hash, guard obrigatório i18n:check e testes de idioma. Detalhes em I18N.md.
+Esta entrada substitui a pendência de tradução global da seção histórica abaixo.
+Validação local: npm run verify passou com 2.005 testes em 307 arquivos, build,
+TypeScript, formatação, APIs e orçamento. Complemento final de salas/idiomas/datas passou
+com 21 testes. Total JavaScript 1.468,1 KiB, orçamento anterior de 1.493 e teto de 1.500
+preservados, sem dependências novas. Entrada 215,9 KiB, com catálogo obrigatório antes da
+importação do App; essa separação não significa eliminar o custo de carregar o aplicativo.
+Os cinco avisos em pseudoelementos CSS têm variante en-US. ROOM_ACTIVITY_OPTIONS usa
+localizeLabels para não congelar descrições e selos no idioma da primeira importação.
+Dois testes de importação fria ganharam espera explícita, sem mudar suas asserções.
+Teste real do atendimento entre contas e integração Discord não foram executados.
+E2E local no Edge: 23 cenários aprovados em desktop/celular, com cinco duplicatas de
+largura puladas pela configuração existente do spec móvel. Inclui idioma após importação
+da sala, pseudoelementos CSS, persistência após reload, navegação nos dois temas,
+onboarding, configurações e exclusão sem cortes. Capturas em inglês inspecionadas nas
+duas larguras. Não representa validação WebKit, CI Linux ou atendimento real em produção.
+
+## Base de atendimento externo, 2026-10-18
+
+Validação local deste conjunto em desenvolvimento: suíte geral com 1.997 testes aprovada,
+seis E2E de configurações em desktop/celular aprovados e testes adicionais de XP/chat aprovados.
+Build passou. A primeira checagem de peso falhou em 1.502,0 KiB; extração das mesmas artes
+de configurações para SVGs estáticos e deduplicação de navegação reduziram para 1.499,4 KiB.
+Orçamento incremental ajustado de 1.493 para 1.500 KiB, sem mudar o teto absoluto de 1.500.
+Entrada ficou em 281,6 KiB. Não há dependências novas. A margem é pequena: funcionalidades
+seguintes precisam otimização antes de crescer. Não declarar validação Linux/CI ou produção.
+Tradução global e teste real de atendimento entre contas ainda pendentes, sem publicação.
+
+Preparado contrato interno de eventos e transporte em support-integration.ts, desativado e
+sem chamadas externas ou vínculo ao runtime do chat. IDs estáveis por mensagem, projeção
+sem credenciais e bloqueio de eco de respostas da equipe têm testes próprios. Não existe
+bot ou entrega Discord ativa. SUPPORT_DISCORD_PLAN.md registra outbox atômica, autorização,
+privacidade, idempotência, limites e testes exigidos antes de ativar. Demais mudanças de
+configurações nesta branch continuam em desenvolvimento, sem declarar publicação ou CI completo.
+
 ## Avisos sociais por eventos autenticados
 
 Substituído o transporte primário de polling por SSE autenticado em profile-social?stream=1, com folha privada somente da conta e eventos sem dados pessoais. Polling permanece fallback, não é apresentado como tempo real. Removida a supressão de refollow por 48 horas; somente vínculo novo renova aviso, requisição repetida continua idempotente. Modelo de ameaça, limites e teste real ainda pendente em SOCIAL_REALTIME_SECURITY.md. Sem mudança de regras Firebase ou publicação automática de novas credenciais.
@@ -3058,6 +3112,20 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Dado para a próxima decisão.** O Playwright passa a listar no log do CI os 10 arquivos de teste mais lentos (`reportSlowTests`).
 - **Documentação para IA.** Novos `docs/CI_MINUTOS.md` (custo, medição, política, alternativas descartadas, regras) e `docs/OPERACAO_E_CUSTOS.md` (auditoria de segurança, publicação das regras do Firebase, consumo do banco, troca de banco, visibilidade do repositório, contrato, falso positivo do gitleaks, regras e decisões que continuam com a dona). `AGENTS.md` ganhou a seção "Custos, CI e operação" e o `README` os links.
 - **Limite.** O consumo mensal real de minutos ainda não foi medido (o repositório é público e não cobra). A medição deve ser refeita depois de privar.
+
+# Pentest: @ reservados e custo de leitura do registro, 2026-10-18
+
+- **Achado 1 (alta).** A reserva de @ aceitava `admin`, `olena`, `helena`, `suporte`, `equipe`, `oficial` e `olenastudy` (provado em simulação local). Com o chat com o time previsto, alguém poderia se passar pela equipe. Agora há lista de nomes reservados com normalização de variações, e teste.
+- **Achado 2 (média a alta).** Cada pedido de @, inclusive a consulta, baixava o registro inteiro. Simulação com 10 mil @: 0,95 MB por pedido, cerca de 1,7 GB por hora com uma conta no limite de 30 por minuto, o que gastaria o limite mensal de 10 GB do plano Spark em cerca de 6 horas. A consulta passou a ler só a folha da conta. Reservar e apagar ganharam teto por conta e global.
+- **Limite.** POST e DELETE ainda leem o registro inteiro. A correção estrutural (índice por nome) fica registrada em `docs/PROFILE_HANDLES.md` e não foi feita.
+- **Não verificado.** O tamanho real do registro hoje (é bem menor que 10 mil e o efeito é proporcional) e o consumo real no painel do Firebase.
+
+# Pentest: teto global de salas e da Helena por endereço, 2026-10-18
+
+- **Achado 3 (média), parte das salas.** A criação de sala era limitada só por endereço (6 por minuto). Sem teto global, quem usa vários endereços podia encher o armazenamento do banco: uma sala cheia ocupa cerca de 10 KB (medido em simulação, 30 participantes) e a limpeza roda uma vez por dia. `room-guard.ts` ganhou `ROOM_CREATE_DAILY_LIMIT` (3.000 criações por dia, somando todos os endereços e valendo para a ação `create`, que inclui o caderno colaborativo). O valor é de proteção e deve ser ajustado pelo uso real.
+- **Achado 4 (baixa a média).** A cota global da Helena (300 por dia) podia ser esgotada por quem tem várias contas. Entrou um teto por endereço de 100 por dia, avaliado antes do global, para que a conta que falha no teto do endereço não gaste a cota de todos. Uma turma atrás do mesmo endereço (30 alunos) ainda cabe. `rateLimiter.consume` agora recebe também a requisição.
+- **Limite.** Quem controla muitos endereços e muitas contas ainda consegue esgotar o teto global. O teto serve para encarecer o abuso, não para impedi-lo. A mudança de `FIREBASE_APPCHECK_ENFORCE` para `true` (ação da dona na Vercel) continua sendo a defesa mais forte.
+- **Não verificado.** O limite de armazenamento do plano Spark (1 GB) vem de memória. Conferir na tela de uso do Firebase.
 
 # Pentest: tetos de armazenamento por conta nas regras do Firebase, 2026-10-18
 

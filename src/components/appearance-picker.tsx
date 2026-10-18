@@ -1,18 +1,21 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useEffect, useRef } from "react";
 import { useTheme, type ThemePreference } from "../hooks/use-theme";
 import { NavigationIcon } from "./navigation-icon";
 
-const OPTIONS: readonly { value: ThemePreference; label: string }[] = [
-  { value: "light", label: "Claro" },
-  { value: "dark", label: "Escuro" },
-  { value: "system", label: "Sistema" },
-];
+const OPTIONS: readonly { value: ThemePreference; label: string }[] = localizeLabels(() => [
+  { value: "light", label: uiText(1616) },
+  { value: "dark", label: uiText(1617) },
+  { value: "system", label: uiText(1618) },
+]);
 
 /* Botão único de aparência: mostra o ícone do tema oposto ao ativo (convite
    para trocar) e abre a folha de papel com as três opções de aparência.
    "header" é o botão quadrado isolado do cabeçalho (desktop); "nav" imita um
    item comum da barra inferior móvel, com rótulo abaixo do ícone. */
 export function AppearanceToggle({ variant = "header" }: { variant?: "header" | "nav" }) {
+  useLanguage();
+
   const { theme, preference, setThemePreference } = useTheme();
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -25,7 +28,7 @@ export function AppearanceToggle({ variant = "header" }: { variant?: "header" | 
   }, []);
 
   const icon = <NavigationIcon name={theme === "dark" ? "theme-light" : "theme-dark"} />;
-  const label = `Aparência: tema ${theme === "dark" ? "escuro" : "claro"}. Toque para escolher.`;
+  const label = uiText(1619, [theme === "dark" ? "escuro" : "claro"]);
 
   return (
     <details
@@ -37,15 +40,15 @@ export function AppearanceToggle({ variant = "header" }: { variant?: "header" | 
       {variant === "nav" ? (
         <summary className="mobile-nav__item" aria-label={label}>
           <span className="mobile-nav__icon">{icon}</span>
-          <span>Aparência</span>
+          <span>{uiText(125)}</span>
         </summary>
       ) : (
         <summary className="appearance-picker__trigger" aria-label={label}>
           {icon}
         </summary>
       )}
-      <section className="appearance-picker__sheet" aria-label="Escolher aparência">
-        <strong>Aparência</strong>
+      <section className="appearance-picker__sheet" aria-label={uiText(126)}>
+        <strong>{uiText(125)}</strong>
         <div className="appearance-picker__options">
           {OPTIONS.map((option) => (
             <button

@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { roomAppCheckToken } from "../data/room-app-check";
@@ -170,7 +171,7 @@ export function normalizeRoomState(data: Partial<PublicLocalRoomState>): PublicL
           (word) => !word || typeof word.id !== "string" || typeof word.text !== "string",
         )))
   )
-    throw new Error("A sala enviou dados inválidos. Tente reconectar.");
+    throw new Error(uiText("A sala enviou dados inválidos. Tente reconectar."));
   return {
     ...(data.revision === undefined ? {} : { revision: data.revision }),
     ...(data.expiresAt === undefined ? {} : { expiresAt: data.expiresAt }),
@@ -258,7 +259,9 @@ async function sendRoom<T>(
       ]),
       new Promise<never>((_, reject) => {
         cancelTokenWait = () =>
-          reject(new DOMException("A conexão demorou demais. Tente novamente.", "AbortError"));
+          reject(
+            new DOMException(uiText("A conexão demorou demais. Tente novamente."), "AbortError"),
+          );
         combinedSignal.addEventListener("abort", cancelTokenWait, { once: true });
       }),
     ]);
@@ -284,7 +287,7 @@ async function sendRoom<T>(
     };
     if (!response.ok)
       throw new RoomRequestError(
-        payload.error ?? "Não foi possível falar com a sala agora.",
+        payload.error ?? uiText("Não foi possível falar com a sala agora."),
         response.status,
         payload.code === "invalid_session",
       );
@@ -410,7 +413,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     setParticipantId("");
     participantTokenRef.current = "";
     codeRef.current = "";
-    setError("O anfitrião removeu você desta sala.");
+    setError(uiText("O anfitrião removeu você desta sala."));
     return true;
   }
 
@@ -519,7 +522,7 @@ export function useLocalRoom(initialJoinCode?: string) {
           setConnectionStatus(navigator.onLine ? "reconnecting" : "offline");
           retryTimer = setTimeout(() => setRestoreAttempt((attempt) => attempt + 1), 5000);
         }
-        setError(roomErrorMessage(caught, "Não foi possível retomar a sala."));
+        setError(roomErrorMessage(caught, uiText("Não foi possível retomar a sala.")));
       })
       .finally(() => {
         if (active) setIsRestoring(false);
@@ -638,7 +641,7 @@ export function useLocalRoom(initialJoinCode?: string) {
     } catch (caught) {
       if (caught instanceof RoomRequestError && caught.status === 409)
         createRequestRef.current = crypto.randomUUID();
-      setError(roomErrorMessage(caught, "Não foi possível criar a sala."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível criar a sala.")));
       return undefined;
     } finally {
       pendingRef.current = false;
@@ -651,11 +654,11 @@ export function useLocalRoom(initialJoinCode?: string) {
     const roomCode = normalizeLocalRoomCode(code);
     const displayName = sanitizeDisplayName(name);
     if (!isValidLocalRoomCode(roomCode)) {
-      setError("Digite um código de sala válido com cinco caracteres.");
+      setError(uiText("Digite um código de sala válido com cinco caracteres."));
       return;
     }
     if (!displayName) {
-      setError("Entre na sua conta para participar da sala.");
+      setError(uiText("Entre na sua conta para participar da sala."));
       return;
     }
     if (pendingRef.current) return;
@@ -690,7 +693,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setHasSavedSession(true);
       startStreaming(payload.streamUrl);
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível entrar na sala."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível entrar na sala.")));
     } finally {
       pendingRef.current = false;
       setBusy(false);
@@ -720,7 +723,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setHostDeck(payload.sourceDeck);
       return true;
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível salvar."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível salvar.")));
       return false;
     }
   }
@@ -739,7 +742,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setError("");
       return true;
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível mudar de equipe."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível mudar de equipe.")));
       return false;
     }
   }
@@ -755,7 +758,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setError("");
       return true;
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível remover o participante."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível remover o participante.")));
       return false;
     }
   }
@@ -774,7 +777,9 @@ export function useLocalRoom(initialJoinCode?: string) {
       setError(
         roomErrorMessage(
           caught,
-          locked ? "Não foi possível fechar a entrada." : "Não foi possível reabrir a entrada.",
+          locked
+            ? uiText("Não foi possível fechar a entrada.")
+            : uiText("Não foi possível reabrir a entrada."),
         ),
       );
       return false;
@@ -789,7 +794,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível iniciar a rodada."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível iniciar a rodada.")));
     }
   }
 
@@ -804,7 +809,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       setError("");
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível avançar."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível avançar.")));
     }
   }
 
@@ -817,7 +822,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       stopStreaming();
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível encerrar a sala."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível encerrar a sala.")));
     }
   }
 
@@ -835,7 +840,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       setError("");
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível concluir a conferência."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível concluir a conferência.")));
       throw caught;
     }
   }
@@ -848,7 +853,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível repetir a atividade."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível repetir a atividade.")));
     }
   }
 
@@ -861,7 +866,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setState(payload.state);
       setError("");
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível definir os ganhadores."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível definir os ganhadores.")));
       throw caught;
     }
   }
@@ -874,7 +879,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       });
       setState(payload.state);
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível trocar a atividade."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível trocar a atividade.")));
     }
   }
 
@@ -911,7 +916,7 @@ export function useLocalRoom(initialJoinCode?: string) {
         ...(payload.question ? { question: payload.question } : {}),
       };
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível enviar a resposta."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível enviar a resposta.")));
       return undefined;
     }
   }
@@ -974,7 +979,7 @@ export function useLocalRoom(initialJoinCode?: string) {
       setError("");
       return true;
     } catch (caught) {
-      setError(roomErrorMessage(caught, "Não foi possível mudar sua participação."));
+      setError(roomErrorMessage(caught, uiText("Não foi possível mudar sua participação.")));
       return false;
     } finally {
       pendingRef.current = false;

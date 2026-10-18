@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime.js";
 import { roomAppCheckToken } from "./room-app-check";
 
 export type NaturalVoiceStatus = "idle" | "generating" | "playing" | "ready" | "error";
@@ -39,19 +40,19 @@ export class NaturalVoicePlayer {
       this.onState(
         fallback
           ? { status: "idle" }
-          : { status: "error", message: "Ative a voz natural para ouvir esta pergunta." },
+          : { status: "error", message: uiText("Ative a voz natural para ouvir esta pergunta.") },
       );
       fallback?.();
       return false;
     }
     const requestId = this.requestId;
-    this.onState({ status: "generating", message: "Preparando a pronúncia." });
+    this.onState({ status: "generating", message: uiText("Preparando a pronúncia.") });
 
     try {
       const { blob, provider } = await this.load(text, rate);
       if (requestId !== this.requestId) return false;
       if (provider && provider !== "kokoro") {
-        this.onState({ status: "generating", message: "Usando voz alternativa." });
+        this.onState({ status: "generating", message: uiText("Usando voz alternativa.") });
       }
       await this.playBlob(blob, requestId);
       return true;

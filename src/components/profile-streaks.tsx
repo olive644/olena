@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 import { profileStreaks } from "../domain/profile-streaks";
 import { agendaTimeZone } from "../data/agenda-time-zone";
@@ -5,6 +6,8 @@ import type { WorkspaceState } from "../domain/workspace";
 import { SYNCED_STORAGE_EVENT, SYNCED_STORAGE_APPLIED_EVENT } from "../data/synced-storage";
 import { PaperFlower } from "./agenda-focus-week";
 export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
+  useLanguage();
+
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const refresh = () => setNow(new Date());
@@ -28,9 +31,9 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
     <>
       {(
         [
-          ["pomodoro", "Pomodoro"],
-          ["timer", "Cronômetro"],
-          ["islands", "Ilhas"],
+          ["pomodoro", uiText(1606)],
+          ["timer", uiText(103)],
+          ["islands", uiText(1921)],
         ] as const
       ).map(
         ([key, label]) =>
@@ -38,8 +41,8 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
             <span
               className="profile-streak"
               key={key}
-              title={`${label}: ${streaks[key]} ${streaks[key] === 1 ? "dia seguido" : "dias seguidos"}`}
-              aria-label={`${label}: ${streaks[key]} ${streaks[key] === 1 ? "dia seguido" : "dias seguidos"}`}
+              title={`${label}: ${streaks[key]} ${streaks[key] === 1 ? uiText(1922) : uiText(1923)}`}
+              aria-label={`${label}: ${streaks[key]} ${streaks[key] === 1 ? uiText(1922) : uiText(1923)}`}
             >
               {key === "islands" ? (
                 <img src="/math-islands/flame.svg" alt="" width="28" height="28" />

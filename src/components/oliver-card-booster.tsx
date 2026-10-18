@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { chestCards, type MathChest } from "../data/math-place-rewards";
 import type { OliverArtworkId } from "../data/oliver-tarot";
@@ -24,6 +25,8 @@ export function OliverCardBooster({
   onStore?: ((cards: OliverArtworkId[]) => void) | undefined;
   pulse?: (() => void) | undefined;
 }) {
+  useLanguage();
+
   const cards = chestCards(chest);
   const rank = Math.max(...cards.map(oliverRarity));
   const [taps, setTaps] = useState(0);
@@ -80,7 +83,7 @@ export function OliverCardBooster({
     locked.current = true;
     if (!onReveal()) {
       locked.current = false;
-      setSaveError("Não foi possível guardar a carta. Toque novamente para tentar.");
+      setSaveError(uiText(765));
       return;
     }
     setSaveError("");
@@ -102,7 +105,7 @@ export function OliverCardBooster({
       }
       role="dialog"
       aria-modal="true"
-      aria-label="Poeira cósmica"
+      aria-label={uiText(766)}
       onWheel={(event) => event.stopPropagation()}
       onKeyDown={(event) => {
         event.stopPropagation();
@@ -135,7 +138,7 @@ export function OliverCardBooster({
       </div>
       <button
         className="secondary-button oliver-booster-close"
-        aria-label="Fechar cartas"
+        aria-label={uiText(767)}
         disabled={!!closing}
         onClick={() => close(false)}
       >
@@ -143,14 +146,14 @@ export function OliverCardBooster({
       </button>
       {!dustDone ? (
         <>
-          <h1 className="cosmic-reveal-title">Poeira cósmica</h1>
+          <h1 className="cosmic-reveal-title">{uiText(766)}</h1>
           <p className="oliver-reveal-label" role="status">
-            {taps === 4 ? rarity.name : "Toque para revelar a raridade"}
+            {taps === 4 ? rarity.name : uiText(768)}
           </p>
           <button
             className="cosmic-dust-tap"
             key={taps}
-            aria-label={`Revelar raridade, toque ${Math.min(4, taps + 1)} de 4`}
+            aria-label={uiText(1866, [Math.min(4, taps + 1)])}
             disabled={taps === 4 || !!closing}
             onClick={() => {
               if (taps >= 4) return;
@@ -173,8 +176,8 @@ export function OliverCardBooster({
         <>
           <p className="oliver-reveal-label" role="status">
             {flipped
-              ? `${COSMIC_RARITIES[oliverRarity(cards[index]!)]!.name} · Lembrança descoberta`
-              : "Toque ou arraste para revelar"}
+              ? uiText(1867, [COSMIC_RARITIES[oliverRarity(cards[index]!)]!.name])
+              : uiText(769)}
           </p>
           <div
             className={`oliver-flip-card${flipped ? " is-revealed" : ""}${closing ? " is-storing" : ""}`}
@@ -185,7 +188,7 @@ export function OliverCardBooster({
             ) : (
               <button
                 className="oliver-flip-button"
-                aria-label="Revelar carta"
+                aria-label={uiText(770)}
                 disabled={!!closing}
                 style={
                   {
@@ -226,7 +229,7 @@ export function OliverCardBooster({
             )}
             <span
               className="oliver-cards-remaining"
-              aria-label={`${cards.length - index - Number(flipped)} cartas restantes na Poeira cósmica`}
+              aria-label={uiText(1868, [cards.length - index - Number(flipped)])}
             >
               <PaperDigits value={String(cards.length - index - Number(flipped))} />
             </span>
@@ -239,7 +242,7 @@ export function OliverCardBooster({
             )}
           </div>
           <div className="oliver-booster-actions">
-            {saveError && <p role="alert">{saveError}</p>}
+            {saveError && <p role="alert">{uiText(saveError)}</p>}
             {flipped ? (
               <button
                 className="primary-button"
@@ -253,10 +256,10 @@ export function OliverCardBooster({
                   }
                 }}
               >
-                {index === cards.length - 1 ? "Guardar cartas" : "Próxima carta"}
+                {index === cards.length - 1 ? uiText(1869) : uiText(771)}
               </button>
             ) : (
-              <span>Uma lembrança do Oliver espera por você.</span>
+              <span>{uiText(772)}</span>
             )}
           </div>
         </>

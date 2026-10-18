@@ -1,8 +1,11 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 import { HelenaLoading } from "../components/helena-loading";
 import { roomAppCheckToken } from "../data/room-app-check";
 
 export default function NotebookReader({ token }: { token: string }) {
+  useLanguage();
+
   const [pages, setPages] = useState<{ title: string; image: string }[]>([]);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -23,12 +26,11 @@ export default function NotebookReader({ token }: { token: string }) {
           pages?: { title: string; image: string }[];
           error?: string;
         };
-        if (!response.ok || !result.pages)
-          throw new Error(result.error || "Não foi possível abrir o link.");
+        if (!response.ok || !result.pages) throw new Error(result.error || uiText(2279));
         setPages(result.pages);
       } catch (caught) {
         if (!controller.signal.aborted)
-          setError(caught instanceof Error ? caught.message : "Falha ao abrir as folhas.");
+          setError(caught instanceof Error ? caught.message : uiText(1336));
       }
     })();
     return () => controller.abort();
@@ -36,14 +38,14 @@ export default function NotebookReader({ token }: { token: string }) {
   return (
     <main className="notebook-reader">
       <header>
-        <span>CADERNOS</span>
-        <h1>Folhas compartilhadas</h1>
-        <p>Somente visualização</p>
+        <span>{uiText(1337)}</span>
+        <h1>{uiText(1338)}</h1>
+        <p>{uiText(1339)}</p>
       </header>
       {error ? (
-        <p role="alert">{error}</p>
+        <p role="alert">{uiText(error)}</p>
       ) : !pages.length ? (
-        <HelenaLoading label="Abrindo folhas" />
+        <HelenaLoading label={uiText(1340)} />
       ) : (
         pages.map((page, i) => (
           <figure key={i}>

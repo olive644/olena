@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useId, useRef, useState } from "react";
 import { AgendaDetailIcon } from "./agenda-detail-icon";
 import { AgendaCloseIcon } from "./agenda-close-icon";
@@ -12,6 +13,8 @@ export function AgendaMetadataField({
   value: string;
   onChange: (value: string) => void;
 }) {
+  useLanguage();
+
   const id = useId(),
     panel = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
@@ -20,13 +23,13 @@ export function AgendaMetadataField({
       <button
         type="button"
         className="secondary-button"
-        aria-label={`Preencher ${label}`}
+        aria-label={uiText(1592, [label])}
         aria-haspopup="dialog"
         aria-expanded={open}
         popoverTarget={id}
       >
         <AgendaDetailIcon name={name} />
-        <span>{name === "guests" ? "Participantes" : label}</span>
+        <span>{name === "guests" ? uiText(38) : label}</span>
       </button>
       {value && <p className="agenda-metadata-preview">{value}</p>}
       <div
@@ -49,7 +52,7 @@ export function AgendaMetadataField({
           <button
             type="button"
             className="icon-button"
-            aria-label={`Fechar ${label}`}
+            aria-label={uiText(1593, [label])}
             onClick={() => panel.current?.hidePopover()}
           >
             <AgendaCloseIcon />
@@ -57,11 +60,7 @@ export function AgendaMetadataField({
         </header>
         <label className="field">
           <span>
-            {name === "links"
-              ? "Um link por linha"
-              : name === "guests"
-                ? "E-mails separados por vírgula"
-                : "Onde será?"}
+            {name === "links" ? uiText(1594) : name === "guests" ? uiText(68) : uiText(69)}
           </span>
           {name === "links" ? (
             <textarea
@@ -81,13 +80,13 @@ export function AgendaMetadataField({
             />
           )}
         </label>
-        {name === "guests" && <small>Nenhum convite é enviado automaticamente.</small>}
+        {name === "guests" && <small>{uiText(70)}</small>}
         <button
           type="button"
           className="primary-button"
           onClick={() => panel.current?.hidePopover()}
         >
-          Concluir
+          {uiText(25)}
         </button>
       </div>
     </div>

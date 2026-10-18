@@ -302,6 +302,9 @@
   font-weight: 800;
   pointer-events: none;
 }
+html:lang(en-US) .solo-world-enter.is-switching-world::after {
+  content: "Loading world…";
+}
 .solo-path-mascot {
   position: absolute;
   width: 115px;

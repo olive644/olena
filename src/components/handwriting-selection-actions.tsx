@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { HandwritingTool, SelectionMode } from "./handwriting-types";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
@@ -72,142 +73,146 @@ export function HandwritingSelectionActions({
   onRecognizeFormula,
   onInsertFormula,
 }: HandwritingSelectionActionsProps) {
+  useLanguage();
+
   return (
-    <div className="handwriting-selection-actions" aria-label="Itens selecionados">
+    <div className="handwriting-selection-actions" aria-label={uiText(195)}>
       {tool === "select" && (
         <>
-          <span>Modo</span>
+          <span>{uiText(196)}</span>
           <button
             type="button"
             aria-pressed={selectionMode === "rectangle"}
             onClick={() => onSelectionModeChange("rectangle")}
           >
-            Retângulo
+            {uiText(197)}
           </button>
           <button
             type="button"
             aria-pressed={selectionMode === "lasso"}
             onClick={() => onSelectionModeChange("lasso")}
           >
-            Laço livre
+            {uiText(198)}
           </button>
           <button type="button" onClick={onSelectAll}>
-            Selecionar tudo
+            {uiText(199)}
           </button>
           <button type="button" disabled={!canPaste} onClick={onPaste}>
-            Colar
+            {uiText(200)}
           </button>
         </>
       )}
       {selectedIds.length > 0 && (
         <>
           <span role="status" aria-live="polite">
-            {selectedIds.length}{" "}
-            {selectedIds.length === 1 ? "item selecionado" : "itens selecionados"}
+            {selectedIds.length} {selectedIds.length === 1 ? uiText(1661) : uiText(1662)}
           </span>
           <button type="button" onClick={onCopy}>
-            Copiar
+            {uiText(201)}
           </button>
           <button type="button" aria-pressed={tool === "hand"} onClick={onMove}>
-            <PaperEditorIcon name="hand" /> Mover
+            <PaperEditorIcon name="hand" /> {uiText(202)}
           </button>
           <button type="button" onClick={onCut}>
-            Recortar
+            {uiText(203)}
           </button>
           <button type="button" onClick={onDuplicate}>
-            Duplicar
+            {uiText(204)}
           </button>
           <button type="button" disabled={!canAlign} onClick={onAlign}>
-            Alinhar
+            {uiText(205)}
           </button>
           {!hasSelectedImages && (
             <>
               <button type="button" onClick={() => onRotate(-1)}>
-                Girar −15°
+                {uiText(206)}
               </button>
               <button type="button" onClick={() => onRotate(1)}>
-                Girar +15°
+                {uiText(207)}
               </button>
             </>
           )}
           <button type="button" onClick={() => onScale(1.12)}>
-            Aumentar
+            {uiText(208)}
           </button>
           <button type="button" onClick={() => onScale(0.88)}>
-            Diminuir
+            {uiText(209)}
           </button>
           <button type="button" onClick={onDelete}>
-            Apagar seleção
+            {uiText(210)}
           </button>
         </>
       )}
       {selectedCoordinateIds.length > 0 && (
         <>
           <span role="status" aria-live="polite">
-            {selectedCoordinateIds.length} sistema
-            {selectedCoordinateIds.length === 1 ? "" : "s"} de coordenadas selecionado
+            {selectedCoordinateIds.length} {uiText(211)}
+            {selectedCoordinateIds.length === 1 ? "" : "s"} {uiText(212)}
             {selectedCoordinateIds.length === 1 ? "" : "s"}
           </span>
           <button type="button" onClick={onDelete}>
-            Apagar coordenadas
+            {uiText(213)}
           </button>
         </>
       )}
       {tool === "select" && hasBackground && (
         <>
-          <span>Imagem importada selecionada</span>
+          <span>{uiText(214)}</span>
           <button type="button" onClick={onRemoveBackground}>
-            Remover imagem
+            {uiText(215)}
           </button>
         </>
       )}
       {tool === "select" && hasSelectedImages && (
         <>
-          <span>Imagem(ns) importada(s) selecionada(s)</span>
+          <span>{uiText(216)}</span>
           <button type="button" onClick={onRemoveSelectedImages}>
-            Remover imagem(ns)
+            {uiText(217)}
           </button>
           <button type="button" onClick={() => onRotate(-1)}>
-            Girar −15°
+            {uiText(206)}
           </button>
           <button type="button" onClick={() => onRotate(1)}>
-            Girar +15°
+            {uiText(207)}
           </button>
         </>
       )}
       {tool === "select" && hasPageText && (
         <>
-          <span>Texto: {pageTextSize}px</span>
+          <span>
+            {uiText(218)} {pageTextSize}
+            {uiText(219)}
+          </span>
           <button type="button" disabled={pageTextSize <= 16} onClick={() => onChangeTextSize(-2)}>
-            Diminuir texto
+            {uiText(220)}
           </button>
           <button type="button" disabled={pageTextSize >= 72} onClick={() => onChangeTextSize(2)}>
-            Aumentar texto
+            {uiText(221)}
           </button>
         </>
       )}
       {tool === "select" && (hasSelectedCoordinateSystem || selectedStrokeCount > 0) && (
         <div className="handwriting-formula-assist">
-          <span>Assistente local</span>
+          <span>{uiText(222)}</span>
           <input
-            aria-label="Fórmula matemática"
+            aria-label={uiText(223)}
             value={formulaDraft}
             maxLength={240}
             onChange={(event) => onFormulaDraftChange(event.target.value)}
-            placeholder="Ex.: y = 2x + 1"
+            placeholder={uiText(224)}
           />
           {hasSelectedCoordinateSystem && (
             <button type="button" onClick={onUseCoordinateFormula}>
-              Usar leitura
+              {uiText(225)}
             </button>
           )}
           {selectedStrokeCount > 0 && (
             <button type="button" disabled={ocrBusy} onClick={() => void onRecognizeFormula()}>
-              {ocrBusy ? `OCR ${ocrProgress}%` : "Reconhecer OCR local"}
+              {ocrBusy ? uiText(1663, [ocrProgress]) : uiText(1664)}
             </button>
           )}
           <button type="button" disabled={!formulaDraft.trim()} onClick={onInsertFormula}>
-            Inserir fórmula
+            {uiText(226)}
           </button>
         </div>
       )}

@@ -3,6 +3,12 @@ import type { KvStore } from "./kv-store.js";
 import { clientAddress } from "./client-address.js";
 import { checkRateLimit } from "./rate-limit.js";
 
+// Teto global de salas e cadernos colaborativos criados por dia, somando todos os endereços.
+// O limite por endereço sozinho deixa quem usa vários endereços encher o armazenamento do banco
+// (cada sala ocupa cerca de 10 KB cheia, e a limpeza só roda uma vez por dia). O valor é de
+// proteção e pode ser ajustado pelo uso real.
+export const ROOM_CREATE_DAILY_LIMIT = 3000;
+
 const keys = createRemoteJWKSet(new URL("https://firebaseappcheck.googleapis.com/v1/jwks"));
 export function createRoomGuard(
   store: KvStore,
@@ -115,6 +121,19 @@ export function createRoomGuard(
     if (!allowed) {
       log("rate_limited", 429);
       return reject(429, "Muitas tentativas. Aguarde um minuto e tente novamente.");
+    }
+    if (action === "create") {
+      const underDailyCap = await checkRateLimit(
+        store,
+        "room-limits",
+        "global:create-day",
+        ROOM_CREATE_DAILY_LIMIT,
+        86400,
+      );
+      if (!underDailyCap) {
+        log("global_create_limit", 429);
+        return reject(429, "Muitas salas criadas hoje. Tente novamente mais tarde.");
+      }
     }
     if (action === "heartbeat") {
       const payload: unknown = await request

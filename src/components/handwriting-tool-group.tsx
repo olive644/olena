@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { PaperObjectIcon } from "./paper-object-icon";
 import type { HandwritingTool } from "./handwriting-types";
@@ -32,13 +33,15 @@ export function HandwritingToolGroup({
   onToggleWritingWindow,
   onOpenShapeInsert,
 }: HandwritingToolGroupProps) {
+  useLanguage();
+
   return (
-    <div className="handwriting-tool-group" aria-label="Instrumentos">
+    <div className="handwriting-tool-group" aria-label={uiText(344)}>
       <button
         type="button"
         className={!textMode && tool === "ruler" ? "is-active" : ""}
-        aria-label="Régua"
-        title="Régua: arraste para traçar uma linha reta"
+        aria-label={uiText(345)}
+        title={uiText(346)}
         aria-pressed={!textMode && tool === "ruler"}
         onClick={() => onSelectTool("ruler")}
       >
@@ -51,33 +54,33 @@ export function HandwritingToolGroup({
         <b className="ruler-tool-unit" aria-hidden="true">
           {rulerUnit}
         </b>
-        <span>Régua</span>
+        <span>{uiText(345)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "curve" ? "is-active" : ""}
-        aria-label="Curva"
-        title="Curva: toque para marcar pontos, a curva passa por todos. Toque duas vezes ou Shift com Enter para concluir"
+        aria-label={uiText(347)}
+        title={uiText(348)}
         aria-pressed={!textMode && tool === "curve"}
         onClick={() => onSelectTool("curve")}
       >
-        <PaperObjectIcon name="curve" /> <span>Curva</span>
+        <PaperObjectIcon name="curve" /> <span>{uiText(347)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "space" ? "is-active" : ""}
-        aria-label="Espaço vertical"
-        title="Espaço vertical: arraste para baixo para abrir espaço ou para cima para fechar"
+        aria-label={uiText(349)}
+        title={uiText(350)}
         aria-pressed={!textMode && tool === "space"}
         onClick={() => onSelectTool("space")}
       >
-        <PaperObjectIcon name="space" /> <span>Espaço</span>
+        <PaperObjectIcon name="space" /> <span>{uiText(115)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "coordinates" ? "is-active" : ""}
-        aria-label="Sistema de coordenadas"
-        title="Sistema de coordenadas: arraste da origem até o fim dos eixos"
+        aria-label={uiText(250)}
+        title={uiText(351)}
         aria-pressed={!textMode && tool === "coordinates"}
         onClick={() => onSelectTool("coordinates")}
       >
@@ -91,69 +94,69 @@ export function HandwritingToolGroup({
             strokeLinejoin="round"
           />
         </svg>
-        <span>Coordenadas</span>
+        <span>{uiText(352)}</span>
       </button>
       <button
         type="button"
         className={layersOpen ? "is-active" : ""}
-        aria-label="Camadas da folha"
+        aria-label={uiText(260)}
         aria-pressed={layersOpen}
-        title="Camadas da folha: mostrar, ocultar e ordenar elementos"
+        title={uiText(353)}
         onClick={() => onToggleLayers()}
       >
-        <PaperEditorIcon name="layers" /> <span>Camadas</span>
+        <PaperEditorIcon name="layers" /> <span>{uiText(354)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "pen" ? "is-active" : ""}
-        aria-label="Caneta"
+        aria-label={uiText(355)}
         aria-pressed={!textMode && tool === "pen"}
         onClick={() => onSelectTool("pen")}
       >
-        <PaperEditorIcon name="pen" /> <span>Caneta</span>
+        <PaperEditorIcon name="pen" /> <span>{uiText(355)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "highlighter" ? "is-active" : ""}
-        aria-label="Marca-texto"
+        aria-label={uiText(356)}
         aria-pressed={!textMode && tool === "highlighter"}
         onClick={() => onSelectTool("highlighter")}
       >
-        <PaperEditorIcon name="highlighter" /> <span>Marca-texto</span>
+        <PaperEditorIcon name="highlighter" /> <span>{uiText(356)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "eraser" ? "is-active" : ""}
-        aria-label="Borracha"
+        aria-label={uiText(357)}
         aria-pressed={!textMode && tool === "eraser"}
         onClick={() => onSelectTool("eraser")}
       >
-        <PaperEditorIcon name="eraser" /> <span>Borracha</span>
+        <PaperEditorIcon name="eraser" /> <span>{uiText(357)}</span>
       </button>
       <button
         type="button"
         className={!textMode && tool === "select" ? "is-active" : ""}
-        aria-label="Selecionar traços"
+        aria-label={uiText(358)}
         aria-pressed={!textMode && tool === "select"}
         onClick={() => onSelectTool("select")}
       >
-        <PaperEditorIcon name="select" /> <span>Selecionar</span>
+        <PaperEditorIcon name="select" /> <span>{uiText(359)}</span>
       </button>
       <button
         type="button"
-        aria-label="Texto na página inteira"
+        aria-label={uiText(360)}
         aria-pressed={textMode}
         onClick={() => onToggleText()}
       >
-        <PaperEditorIcon name="text" /> <span>Texto</span>
+        <PaperEditorIcon name="text" /> <span>{uiText(361)}</span>
       </button>
-      <button type="button" aria-label="Adicionar post-it" onClick={() => onAddSticky()}>
-        <PaperEditorIcon name="sticky" /> <span>Post-it</span>
+      <button type="button" aria-label={uiText(362)} onClick={() => onAddSticky()}>
+        <PaperEditorIcon name="sticky" /> <span>{uiText(363)}</span>
       </button>
       <button
         type="button"
-        aria-label="Adicionar tabela"
-        title="Tabela com células de texto, redimensionável em linhas e colunas"
+        aria-label={uiText(364)}
+        title={uiText(365)}
         onClick={() => onAddTable()}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
@@ -174,25 +177,25 @@ export function HandwritingToolGroup({
             strokeWidth="1.4"
           />
         </svg>
-        <span>Tabela</span>
+        <span>{uiText(366)}</span>
       </button>
       <button
         type="button"
-        aria-label="Inserir sem desenhar"
-        title="Forma, régua ou eixos prontos: alternativa a desenhar ou medir com o ponteiro"
+        aria-label={uiText(229)}
+        title={uiText(367)}
         onClick={() => onOpenShapeInsert()}
       >
         <PaperObjectIcon name="shapes" />
-        <span>Inserir sem desenhar</span>
+        <span>{uiText(229)}</span>
       </button>
       <button
         type="button"
         className={writingWindowOpen ? "is-active" : ""}
-        aria-label="Janela de escrita ampliada"
+        aria-label={uiText(368)}
         aria-pressed={writingWindowOpen}
         onClick={() => onToggleWritingWindow()}
       >
-        <PaperEditorIcon name="zoomIn" /> <span>Janela de escrita</span>
+        <PaperEditorIcon name="zoomIn" /> <span>{uiText(369)}</span>
       </button>
     </div>
   );

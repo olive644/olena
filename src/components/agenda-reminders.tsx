@@ -1,9 +1,11 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import type { StudyEvent } from "../domain/workspace";
 import { addDays, eventInstant, startsOn, validateCalendarEvent } from "../domain/agenda-calendar";
 import { toDateKey } from "../domain/workspace";
 import { AgendaCloseIcon } from "./agenda-close-icon";
 import "./agenda-reminders.css";
+import { useNotificationPreferences } from "../data/notification-preferences";
 
 type Alert = { key: string; title: string; due: number; snoozed: boolean };
 function readLocalList(key: string): unknown[] {
@@ -28,9 +30,12 @@ export function AgendaReminders({
   events: StudyEvent[];
   scope?: string;
 }) {
+  useLanguage();
+
   const firedKey = `agenda-local-reminders:${scope}:fired`,
     queueKey = `agenda-local-reminders:${scope}:queue`;
   const seen = useRef(new Set<string>());
+  const notificationPreferences = useNotificationPreferences();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const delayed = useRef(
     readLocalList(queueKey).flatMap((value) => {
@@ -49,6 +54,7 @@ export function AgendaReminders({
   );
   useEffect(() => {
     const check = () => {
+      if (!notificationPreferences.agenda) return;
       const now = Date.now(),
         today = toDateKey(new Date(now));
       const pending: Alert[] = [];
@@ -69,7 +75,7 @@ export function AgendaReminders({
             const remaining = Math.round((start - now) / 60000);
             const alert = {
               key,
-              title: `${event.title} · ${remaining > 0 ? `Em ${remaining} min` : remaining === 0 ? "Está na hora" : `Começou há ${Math.abs(remaining)} min`}`,
+              title: `${event.title} · ${remaining > 0 ? uiText(1603, [remaining]) : remaining === 0 ? uiText(92) : uiText(1604, [Math.abs(remaining)])}`,
               due,
               snoozed: false,
             };
@@ -113,10 +119,10 @@ export function AgendaReminders({
     check();
     const timer = setInterval(check, 30000);
     return () => clearInterval(timer);
-  }, [events, firedKey, queueKey]);
-  if (!alerts.length) return null;
+  }, [events, firedKey, queueKey, notificationPreferences.agenda]);
+  if (!notificationPreferences.agenda || !alerts.length) return null;
   return (
-    <aside className="agenda-live-reminders" aria-label="Lembretes da agenda" aria-live="polite">
+    <aside className="agenda-live-reminders" aria-label={uiText(93)} aria-live="polite">
       {alerts.map((alert) => (
         <article key={alert.key}>
           <strong>{alert.title}</strong>
@@ -133,12 +139,12 @@ export function AgendaReminders({
                 setAlerts((items) => items.filter((item) => item.key !== alert.key));
               }}
             >
-              Adiar 5 min
+              {uiText(94)}
             </button>
             <button
               type="button"
               className="icon-button"
-              aria-label={`Dispensar lembrete ${alert.title}`}
+              aria-label={uiText(1605, [alert.title])}
               onClick={() => setAlerts((items) => items.filter((item) => item.key !== alert.key))}
             >
               <AgendaCloseIcon />

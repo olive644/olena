@@ -22,3 +22,10 @@ Troca libera o anterior somente quando o novo foi reservado na mesma transação
 - Troca de conta no navegador durante uma requisição: resposta descartada antes de gravar perfil. Login legado não prova propriedade do @.
 
 Testes: profile-handle-handler.test.ts, profile-handle-runtime.test.ts, firebase-user-rules.test.ts e use-cloud-sync.test.tsx. Integração do editor acrescenta provas de conflitos, convidados e respostas atrasadas em profile-handle.test.ts e use-profile-handle.test.tsx. Sem dependências novas.
+
+## Nomes reservados e custo de leitura (pentest de 18/10/2026)
+
+- **Nomes reservados.** Nomes que fariam alguém parecer a equipe ou o produto (`admin`, `olena`, `helena`, `suporte`, `equipe`, `oficial` e semelhantes, lista em `RESERVED_HANDLES`) não podem ser reservados. A checagem ignora pontos e sublinhados e troca números parecidos com letras (`4dmin`, `o.lena`). Quem já tinha um desses nomes antes da regra continua com ele. O `oliver644` segue com regra própria da dona.
+- **Consulta barata.** O GET lê só a folha da conta em `privateProfileHandles/<sha256(uid)>.json` (`readOne`). Antes baixava o registro inteiro (cerca de 0,95 MB com 10 mil @, medido em simulação) a cada consulta, o que dava cerca de 1,7 GB por hora com uma só conta a 30 pedidos por minuto.
+- **Escrita com teto.** POST e DELETE ainda leem o registro inteiro para garantir exclusividade, então passam por `consumeWrite`: 6 por minuto e 60 por dia por conta, e 2.000 por dia no total. Os valores são de proteção e podem ser ajustados pelo uso real.
+- **Próximo passo estrutural.** Antes de o registro passar de cerca de 2 mil @, migrar para um índice por nome (uma folha por @, com gravação condicional `if-match: null_etag`), o que remove a leitura inteira. Exige migração dos dados existentes e não foi feito aqui.

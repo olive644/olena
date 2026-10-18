@@ -34,12 +34,16 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllEnvs());
 
-async function send(prompt: string) {
+async function send(prompt: string, address?: string) {
   const { handleHelenaRuntime } = await import("./helena-runtime");
   return handleHelenaRuntime(
     new Request("https://olena.test/api/helena", {
       method: "POST",
-      headers: { Origin: "https://olena.test", "Content-Type": "application/json" },
+      headers: {
+        Origin: "https://olena.test",
+        "Content-Type": "application/json",
+        ...(address ? { "x-vercel-forwarded-for": address } : {}),
+      },
       body: JSON.stringify({
         version: 1,
         capability: "tutor",
@@ -89,4 +93,30 @@ it("aceita conta real marcada como não anônima", async () => {
   const response = await send("Explique frações.");
   expect(response.status).toBe(200);
   expect(mocks.quota).toHaveBeenCalled();
+});
+
+it("o teto por endereço entra antes do global, para várias contas no mesmo endereço não esgotarem a cota de todos", async () => {
+  const buckets: string[] = [];
+  mocks.quota.mockImplementation(async (_store, bucket: string, key: string) => {
+    buckets.push(`${bucket}:${key}`);
+    return bucket !== "helena-address-day";
+  });
+  const response = await send("Explique frações.", "203.0.113.9");
+  expect(response.status).toBe(429);
+  expect(buckets).toEqual([
+    "helena-user-minute:account",
+    "helena-user-day:account",
+    "helena-address-day:203.0.113.9",
+  ]);
+  expect(mocks.teacher).not.toHaveBeenCalled();
+});
+
+it("sem endereço identificável, o teto por endereço é ignorado e o global continua valendo", async () => {
+  const buckets: string[] = [];
+  mocks.quota.mockImplementation(async (_store, bucket: string) => {
+    buckets.push(bucket);
+    return true;
+  });
+  expect((await send("Explique frações.")).status).toBe(200);
+  expect(buckets).toEqual(["helena-user-minute", "helena-user-day", "helena-global-day"]);
 });
