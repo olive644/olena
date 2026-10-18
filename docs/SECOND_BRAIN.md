@@ -891,7 +891,7 @@ Quem não quer logar usa "Entrar como convidado" na mesma tela: aparece como Gue
 
 ## Onboarding de prévia e padrão visual
 
-Consultar DESIGN_SYSTEM.md para papel recortado, marca e loading compartilhado. /?onboarding=1 abre a experiência aprovada; ainda não é uma barreira de entrada automática. Google Auth é independente da integração com Google Agenda. Estado atual, riscos e requisitos de configuração em CURRENT_STATE_AUDIT.md.
+Consultar DESIGN_SYSTEM.md para papel recortado, marca e loading compartilhado. /?onboarding=1 abre a experiência aprovada; ainda não é uma barreira de entrada automática. A integração com o Google Agenda foi removida. Estado atual, riscos e requisitos de configuração em CURRENT_STATE_AUDIT.md.
 
 ## Ícones de navegação, 14/09/2026
 

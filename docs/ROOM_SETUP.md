@@ -17,9 +17,8 @@ pelo Claude Code.
 ## 1. Criar (ou reaproveitar) o projeto e ativar o Realtime Database
 
 1. Acesse o [console do Firebase](https://console.firebase.google.com/).
-2. Se o projeto Google Cloud que você já usa para o Google Agenda
-   (`ideiasteam`, ou o que você tiver criado) ainda não tem o Firebase
-   ativado, clique em **Adicionar projeto** e selecione esse projeto
+2. Se você já tem um projeto Google Cloud (`ideiasteam`, ou o que você tiver criado) que ainda
+   não tem o Firebase ativado, clique em **Adicionar projeto** e selecione esse projeto
    existente em vez de criar um novo. Firebase e Google Cloud compartilham
    o mesmo projeto por baixo dos panos.
 3. No menu lateral, vá em **Build → Realtime Database** e clique em

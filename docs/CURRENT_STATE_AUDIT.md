@@ -3058,3 +3058,14 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Dado para a próxima decisão.** O Playwright passa a listar no log do CI os 10 arquivos de teste mais lentos (`reportSlowTests`).
 - **Documentação para IA.** Novos `docs/CI_MINUTOS.md` (custo, medição, política, alternativas descartadas, regras) e `docs/OPERACAO_E_CUSTOS.md` (auditoria de segurança, publicação das regras do Firebase, consumo do banco, troca de banco, visibilidade do repositório, contrato, falso positivo do gitleaks, regras e decisões que continuam com a dona). `AGENTS.md` ganhou a seção "Custos, CI e operação" e o `README` os links.
 - **Limite.** O consumo mensal real de minutos ainda não foi medido (o repositório é público e não cobra). A medição deve ser refeita depois de privar.
+
+# Integração com o Google Agenda removida, 2026-10-18
+
+- **Decisão da dona.** O projeto não usa mais o Google Agenda. O painel e o hook já não eram usados por nenhuma tela (a tela da Agenda não mostrava mais a integração), mas a rota e o código do servidor continuavam no ar, com cookie de sessão que guarda o token de atualização do Google.
+- **O que saiu.** `api/google-calendar.ts`, `src/backend/google-calendar-handler.ts`, `google-calendar-oauth.ts`, `google-session-cookie.ts` (com os testes), `src/hooks/use-google-calendar.ts`, `src/views/google-calendar-panel.tsx` e `docs/GOOGLE_CALENDAR_SETUP.md`. O logout deixou de chamar `/api/google-calendar?action=disconnect`, e a mensagem de exclusão de conta não cita mais a conexão com o Google Agenda. O login com o Google pelo Firebase não mudou.
+- **Pentest.** A remoção também elimina o achado 5 (limite de login do Google Agenda sem agrupar IPv6).
+- **O que continua com a dona (fora do repositório).** Quem chegou a conectar a agenda ainda tem, no navegador, o cookie `hs_google_session` (criptografado, expira sozinho em até 90 dias) e uma autorização ativa no Google. Para encerrar de vez:
+  1. Na Vercel, apagar as variáveis `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` e `GOOGLE_SESSION_SECRET`. Sem a chave de sessão, nenhum cookie antigo pode mais ser decifrado.
+  2. No Google Cloud Console, em APIs e serviços, remover o escopo de Agenda da tela de consentimento e apagar o cliente OAuth usado pela integração (isso revoga os tokens emitidos por ele). Não apagar o cliente criado pelo Firebase para o login com Google.
+  3. Quem quiser revogar a própria autorização também pode fazer em myaccount.google.com/permissions.
+- **Não verificado.** Se algum cliente OAuth da integração é compartilhado com o login do Firebase. Conferir o nome do cliente antes de apagar.

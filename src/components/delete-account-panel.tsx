@@ -97,7 +97,7 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
             <ul>
               <li>a sua conta e o acesso com o Google;</li>
               <li>todos os estudos, cadernos e anotações guardados na nuvem;</li>
-              <li>os dados deste aparelho e a conexão com o Google Agenda.</li>
+              <li>os dados deste aparelho.</li>
             </ul>
             <p>
               Outros aparelhos com esta conta também deixam de ter acesso. Salas e cadernos

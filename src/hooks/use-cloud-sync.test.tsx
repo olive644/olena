@@ -850,7 +850,7 @@ function signedInServices(user: { uid: string; displayName: string; email: strin
   return signOut;
 }
 
-it("ao sair, apaga histórico, rascunhos e sessões deste aparelho e desconecta o Google Agenda", async () => {
+it("ao sair, apaga histórico, rascunhos e sessões deste aparelho e não chama mais o Google Agenda", async () => {
   signedInServices({ uid: "ana", displayName: "Ana", email: "ana@example.com" });
   const fetchMock = vi.fn(async () => new Response("null", { status: 200 }));
   vi.stubGlobal("fetch", fetchMock);
@@ -875,9 +875,10 @@ it("ao sair, apaga histórico, rascunhos e sessões deste aparelho e desconecta 
   expect(localStorage.getItem("helena.account.v1")).toBeNull();
   expect(sessionStorage.getItem("helena:local-room-session:v1")).toBeNull();
   expect(localStorage.getItem("outro-app.token")).toBe("x");
-  expect(fetchMock).toHaveBeenCalledWith("/api/google-calendar?action=disconnect", {
-    method: "POST",
-  });
+  expect(fetchMock).not.toHaveBeenCalledWith(
+    expect.stringContaining("/api/google-calendar"),
+    expect.anything(),
+  );
 });
 
 it("outra conta no mesmo aparelho não recebe os dados da anterior", async () => {
