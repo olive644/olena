@@ -3058,3 +3058,12 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Dado para a próxima decisão.** O Playwright passa a listar no log do CI os 10 arquivos de teste mais lentos (`reportSlowTests`).
 - **Documentação para IA.** Novos `docs/CI_MINUTOS.md` (custo, medição, política, alternativas descartadas, regras) e `docs/OPERACAO_E_CUSTOS.md` (auditoria de segurança, publicação das regras do Firebase, consumo do banco, troca de banco, visibilidade do repositório, contrato, falso positivo do gitleaks, regras e decisões que continuam com a dona). `AGENTS.md` ganhou a seção "Custos, CI e operação" e o `README` os links.
 - **Limite.** O consumo mensal real de minutos ainda não foi medido (o repositório é público e não cobra). A medição deve ser refeita depois de privar.
+
+# Pentest: tetos de armazenamento por conta nas regras do Firebase, 2026-10-18
+
+- **Achado 3 (média), parte das contas.** `users/$uid` aceitava até 20 milhões de caracteres na folha de trabalho e 5 milhões em cada uma das outras 16 chaves, nas duas árvores (`state` e `stateV2`): cerca de 200 milhões por conta. Com o limite gratuito de 1 GB do Realtime Database (de memória, não verificado), cerca de 5 contas Google encheriam o banco e parariam a sincronização de todos.
+- **Mudança.** O nó legado `state` ficou somente para leitura (`.validate: false`, porque o cliente só lê dele para migrar) e `stateV2/items` ganhou um teto de 8 milhões de caracteres somados nos 16 itens que não são a folha de trabalho. O teto vem do limite do próprio navegador (cerca de 5 milhões de caracteres por site no `localStorage`), então não corta uso real. O máximo por conta caiu de cerca de 200 para cerca de 28 milhões, e o número de contas necessárias para encher 1 GB passa de cerca de 5 para cerca de 35. É um encarecimento, não uma garantia.
+- **Teste.** `src/firebase-user-rules.test.ts` avalia a expressão publicada com e sem excesso, e confere que o legado está congelado.
+- **Ação da dona.** Publicar as regras (passos e testes do simulador em `docs/ACCOUNT_SYNC_SETUP.md`). Mesclar esta PR não altera o banco por si só.
+- **Risco aceito.** Abas com versão anterior a 12/10/2026 perdem a sincronização até recarregar. Se aparecer reclamação, reverter só o congelamento do `state`.
+- **Pendente.** O teto da folha de trabalho (20 milhões) não foi reduzido porque o tamanho legítimo máximo (IndexedDB) não foi medido. Medir o maior espaço real antes de baixar.
