@@ -87,7 +87,7 @@ it("guest não pode criar @ nem aproveita nome legado", async () => {
   expect(readStoredProfile().username).toBe("");
   expect(vi.mocked(requestProfileHandle).mock.calls.length).toBe(before);
 });
-it("trocar avatar preserva a ficha e lê perfis legados sem migração destrutiva", () => {
+it("identidade é somente leitura e preserva perfis legados sem migração destrutiva", () => {
   localStorage.setItem(
     "helena.profile.v1",
     JSON.stringify({
@@ -98,11 +98,10 @@ it("trocar avatar preserva a ficha e lê perfis legados sem migração destrutiv
     }),
   );
   render(<ProfileIdentity guest={false} />);
-  fireEvent.click(screen.getByText("Escolher avatar", { selector: "summary" }));
-  fireEvent.click(screen.getByRole("button", { name: "Helena" }));
+  expect(screen.queryByText("Escolher avatar")).toBeNull();
+  expect(screen.getByText("Oli")).toBeTruthy();
   expect(readStoredProfile()).toMatchObject({
     name: "Oli",
-    photoUrl: "/profile-avatars/helena.webp",
     bio: "Bio",
     pronouns: "ele/dela",
     socialLinks: ["https://github.com/oli"],

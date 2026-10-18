@@ -12,7 +12,16 @@ function renderProfile(guest: boolean, onSignIn = vi.fn()) {
     <ProfileView
       workspace={createInitialWorkspace()}
       dispatch={vi.fn()}
-      cloud={guest ? cloud : { ...cloud, status: "synced" }}
+      cloud={
+        guest
+          ? cloud
+          : {
+              ...cloud,
+              status: "synced",
+              authenticated: true,
+              signOut: vi.fn().mockResolvedValue(undefined),
+            }
+      }
       guest={guest}
       onSignIn={onSignIn}
       history={[]}
@@ -23,19 +32,19 @@ function renderProfile(guest: boolean, onSignIn = vi.fn()) {
   return onSignIn;
 }
 
-it("mostra Guest, avisa que os estudos ficam no aparelho e oferece entrar com Google", () => {
+it("mostra Guest nas informações e oferece entrar com Google", () => {
   const signIn = renderProfile(true);
-  expect(screen.getByText("Guest (convidado)")).toBeTruthy();
-  expect(screen.getByText("Somente neste aparelho")).toBeTruthy();
+  expect(screen.getByText("Guest", { selector: "strong" })).toBeTruthy();
+  expect(screen.getByText("Sessão de convidado")).toBeTruthy();
   expect(screen.queryByRole("button", { name: "Sincronizar agora" })).toBeNull();
   expect(screen.queryByRole("button", { name: "Sair desta conta" })).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: "Entrar com Google" }));
   expect(signIn).toHaveBeenCalledOnce();
 });
 
-it("mantém sincronizar e sair para quem tem conta", () => {
+it("mantém sair sem o widget de sincronização para quem tem conta", () => {
   renderProfile(false);
-  expect(screen.getByRole("button", { name: "Sincronizar agora" })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Sincronizar agora" })).toBeNull();
   expect(screen.getByRole("button", { name: "Sair desta conta" })).toBeTruthy();
   expect(screen.queryByText("Guest (convidado)")).toBeNull();
 });

@@ -50,8 +50,7 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
   return (
     <section className="delete-account-panel" aria-labelledby={`${titleId}-zone`}>
       <div>
-        <span className="section-label">Zona de perigo</span>
-        <h2 id={`${titleId}-zone`}>Excluir esta conta</h2>
+        <h2 id={`${titleId}-zone`}>Excluir conta</h2>
         <p>
           Apaga para sempre a sua conta e os estudos guardados na nuvem, e limpa os dados deste
           aparelho. Não dá para desfazer.
