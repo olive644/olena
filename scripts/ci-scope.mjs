@@ -3,10 +3,16 @@
 // O e2e (WebKit e Chromium) responde por quase todos os minutos faturáveis de cada execução.
 // Em repositório privado o plano gratuito do GitHub tem um teto mensal de minutos, então o CI
 // roda só o que cada tipo de mudança exige:
-//   full    pull request com código, execução semanal e execução manual: desktop e mobile.
+//   full    pull request que mexe na interface ou em qualquer outra coisa, execução semanal e
+//           execução manual: desktop e mobile.
 //   desktop push na main: o mesmo código já passou completo na pull request.
 //   none    pull request que só mexe em documentação: nenhum e2e.
+//   desktop também vale para pull request que só mexe em backend e documentação: o mobile
+//           (WebKit) só difere do desktop em layout e toque, e o backend roda igual nos dois.
 // Em caso de dúvida (erro ao listar os arquivos, evento desconhecido) o escopo é "full".
+// Medição que embasa isto (execução completa de 18/10/2026, ver docs/CI_MINUTOS.md): o e2e é
+// cerca de 68% dos minutos faturáveis e o mobile sozinho cerca de metade; instalar os
+// navegadores custa só 22 a 44 s por job, então cache de navegador não compensa.
 import { execFileSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
@@ -31,14 +37,27 @@ const MATRIX = {
   },
 };
 
+// Somente o servidor e as regras do banco. Nada aqui é carregado pelo navegador. Padrão novo
+// entra por inclusão: o que não estiver nesta lista conta como interface e pede o mobile.
+const BACKEND_ONLY = [
+  /^api\//,
+  /^src\/backend\//,
+  /^firebase-room\.rules\.json$/,
+  /^src\/firebase-user-rules\.test\.ts$/,
+];
+
 export const isDocsFile = (file) => DOCS_ONLY.some((pattern) => pattern.test(file));
+export const isBackendFile = (file) => BACKEND_ONLY.some((pattern) => pattern.test(file));
 
 export function decideScope({ event, changedFiles }) {
   if (event === "push") return "desktop";
   if (event !== "pull_request") return "full";
   if (!Array.isArray(changedFiles)) return "full";
   const files = changedFiles.map((file) => file.trim()).filter(Boolean);
-  return files.length > 0 && files.every(isDocsFile) ? "none" : "full";
+  if (files.length === 0) return "full";
+  if (files.every(isDocsFile)) return "none";
+  if (files.every((file) => isDocsFile(file) || isBackendFile(file))) return "desktop";
+  return "full";
 }
 
 export function matrixFor(scope) {

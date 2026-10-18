@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { decideScope, evaluateGate, isDocsFile, matrixFor } from "./ci-scope.mjs";
+import { decideScope, evaluateGate, isBackendFile, isDocsFile, matrixFor } from "./ci-scope.mjs";
 
 test("pull request só com documentação não roda e2e", () => {
   assert.equal(
@@ -12,18 +12,60 @@ test("pull request só com documentação não roda e2e", () => {
   );
 });
 
-test("qualquer arquivo de código, de teste ou do CI na pull request pede o e2e completo", () => {
+test("qualquer arquivo de interface, de teste ou do CI na pull request pede o e2e completo", () => {
   for (const file of [
     "src/hooks/use-cloud-sync.ts",
-    "api/speech.ts",
+    "src/components/handwriting-studio.tsx",
+    "src/domain/handwriting.ts",
+    "src/styles.css",
     "e2e/room.spec.ts",
     "package.json",
-    "firebase-room.rules.json",
+    "vite.config.ts",
     ".github/workflows/application.yml",
     "scripts/ci-scope.mjs",
     "public/helena.png",
   ])
     assert.equal(decideScope({ event: "pull_request", changedFiles: ["docs/a.md", file] }), "full");
+});
+
+test("pull request só de backend e documentação roda só o desktop", () => {
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: ["api/speech.ts", "src/backend/speech-quota.ts", "docs/SECOND_BRAIN.md"],
+    }),
+    "desktop",
+  );
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: ["firebase-room.rules.json", "src/firebase-user-rules.test.ts"],
+    }),
+    "desktop",
+  );
+});
+
+test("um único arquivo de interface junto com backend volta ao e2e completo", () => {
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: ["src/backend/local-room-handler.ts", "src/components/local-room.tsx"],
+    }),
+    "full",
+  );
+  assert.equal(
+    decideScope({ event: "pull_request", changedFiles: ["src/backend/a.ts", "package.json"] }),
+    "full",
+  );
+});
+
+test("os padrões de backend não pegam arquivos de interface com nomes parecidos", () => {
+  assert.equal(isBackendFile("src/backend/x.ts"), true);
+  assert.equal(isBackendFile("api/x.ts"), true);
+  assert.equal(isBackendFile("src/components/backend-badge.tsx"), false);
+  assert.equal(isBackendFile("src/data/api/x.ts"), false);
+  assert.equal(isBackendFile("apis/x.ts"), false);
+  assert.equal(isBackendFile("src/backend-ui/x.ts"), false);
 });
 
 test("na dúvida, o e2e roda inteiro", () => {

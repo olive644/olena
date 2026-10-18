@@ -43,3 +43,14 @@ Estas regras herdam o padrão de engenharia do OliQualidade e valem para todo o 
 - Usar nomes honestos: recursos simulados ou locais não podem ser apresentados como IA, sincronização ou persistência em nuvem.
 - Manter o Espaço do aluno como início da experiência e integrar novos módulos ao workspace
   compartilhado. O planejador de aulas de inglês permanece como ferramenta existente.
+
+## Custos, CI e operação
+
+Leia `docs/CI_MINUTOS.md` e `docs/OPERACAO_E_CUSTOS.md` antes de mexer em `.github/workflows/`, em regras do Firebase, em limites de uso ou em qualquer coisa que gaste recurso pago.
+
+- Meça antes de propor economia e registre o que foi descartado e por quê. Não afirme o que não verificou: marque "não verificado" e diga como conferir.
+- O escopo do e2e é decidido por `scripts/ci-scope.mjs`. Nunca deixe um check obrigatório passar sem o teste ter rodado quando ele era necessário, e não mude os nomes dos checks.
+- Mescle com commit de mesclagem (não squash): o `.gitleaksignore` depende de um commit específico do histórico.
+- Não leia nem versione `docs/CONTRATO_SOCIETARIO.md`. Não exponha chaves de servidor.
+- Ações fora do repositório (publicar regras do Firebase, variáveis da Vercel, privar o repositório, planos pagos) são da dona do projeto: descreva o passo e confira o resultado, sem fazer sozinho.
+- Todo recurso que gasta dinheiro precisa de limite por quem chama e de teto global.
