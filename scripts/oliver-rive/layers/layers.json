@@ -22,12 +22,12 @@
     "island",
     "legL",
     "legR",
+    "armR",
+    "armL",
     "body",
     "mouth",
     "eyeL",
-    "eyeR",
-    "armL",
-    "armR"
+    "eyeR"
   ],
   "layers": {
     "rockL": {
@@ -239,6 +239,28 @@
         478
       ]
     },
+    "armR": {
+      "file": "armR.png",
+      "x0": 438,
+      "y0": 245,
+      "w": 171,
+      "h": 172,
+      "pivot": [
+        472,
+        342
+      ]
+    },
+    "armL": {
+      "file": "armL.png",
+      "x0": 80,
+      "y0": 358,
+      "w": 129,
+      "h": 142,
+      "pivot": [
+        184,
+        414
+      ]
+    },
     "body": {
       "file": "body.png",
       "x0": 135,
@@ -281,28 +303,6 @@
       "pivot": [
         386,
         300
-      ]
-    },
-    "armL": {
-      "file": "armL.png",
-      "x0": 80,
-      "y0": 382,
-      "w": 112,
-      "h": 118,
-      "pivot": [
-        184,
-        414
-      ]
-    },
-    "armR": {
-      "file": "armR.png",
-      "x0": 460,
-      "y0": 245,
-      "w": 149,
-      "h": 153,
-      "pivot": [
-        472,
-        342
       ]
     }
   }

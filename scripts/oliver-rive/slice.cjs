@@ -27,10 +27,15 @@ const POLY = {
     [492, 378],
     [472, 386],
   ],
+  // só o punho: o lobo escuro do corpo acima e à direita dele fica no corpo
   armL: [
     [60, 392],
-    [182, 392],
-    [182, 512],
+    [150, 392],
+    [158, 398],
+    [172, 418],
+    [166, 440],
+    [178, 458],
+    [178, 512],
     [60, 512],
   ],
   legL: [
@@ -296,6 +301,24 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
   put("island", islandRGBA, islandOut, { pivot: [330, 640] });
   put("legL", data, withBand("legL"), { pivot: [262, 508] });
   put("legR", data, withBand("legR"), { pivot: [425, 478] });
+  // Braços: ficam ATRÁS do corpo, cada um com uma aba (continuação do próprio braço, por
+  // difusão) enfiada sob o corpo. Ao girar, a aba se move escondida e a borda de corte do braço
+  // nunca aparece; uma faixa por cima do corpo, como nas pernas, girava junto, virava uma placa
+  // rígida com emenda e uma lasca solta na junta, e parecia quebrar o braço.
+  const TAB = 34;
+  for (const [name, pivot] of [
+    ["armR", [472, 342]],
+    ["armL", [184, 414]],
+  ]) {
+    const tab = T.minus(
+      T.and(T.and(T.dilate(exclusive[name], w, h, TAB), bodyExcl), T.erode(opaque, w, h, 2)),
+      exclusive[name],
+    );
+    const filled = T.inpaint(data, w, h, tab, 30, exclusive[name]);
+    const rgba = Uint8ClampedArray.from(filled);
+    for (let i = 0; i < N; i++) if (tab[i]) rgba[i * 4 + 3] = 255;
+    put(name, rgba, T.or(exclusive[name], tab), { pivot });
+  }
   put("body", bodyFilled, bodyMask, { pivot: [320, 500] });
   const eyeCenter = (info) => [
     Math.round((info.x0 + info.x1) / 2),
@@ -304,8 +327,6 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
   put("mouth", data, faceMasks.mouth, { pivot: eyeCenter(mouthInfo) });
   put("eyeL", data, faceMasks.eyeL, { pivot: eyeCenter(eyes[0]) });
   put("eyeR", data, faceMasks.eyeR, { pivot: eyeCenter(eyes[1]) });
-  put("armL", data, withBand("armL"), { pivot: [184, 414] });
-  put("armR", data, withBand("armR"), { pivot: [472, 342] });
   fs.writeFileSync(path.join(LAYERS, "layers.json"), JSON.stringify(manifest, null, 2) + "\n");
 
   // recomposição em repouso (ordem da pilha) para conferir contra a arte original
