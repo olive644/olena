@@ -3238,3 +3238,16 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Correção.** Os dois braços passam a ficar atrás do corpo, cada um com uma aba (continuação do próprio braço, por difusão) enfiada sob o corpo, então a junta nunca aparece. O recorte do braço esquerdo agora segue o contorno do punho. A amplitude do aceno caiu de cerca de 36 para 20 graus, com ritmo um pouco mais lento (ambiente: 0,8 s por balanço; reação: 0,6 s), para um aceno menos mecânico.
 - **Teste.** `src/data/oliver-layers.test.ts` falha com o recorte antigo e passa com o novo (ordem da pilha e profundidade da aba). O repouso renderizado segue com diferença máxima de 3/255 contra a arte original. Imagens verificadas em todas as animações e em poses extremas.
 - **Limite conhecido.** Com o punho esquerdo erguido, o lobo escuro do corpo fica à mostra com uma borda levemente serrilhada (é geometria do próprio corpo, só visível de perto).
+
+# Auditoria do desenho inteiro do Oliver, 2026-10-18
+
+- **Pedido.** O braço de trás (o esquerdo) aparecia deformado, e a verificação anterior só tinha olhado o braço da frente. Auditei todas as regiões em zoom, em todos os quadros de todas as animações, mais poses extremas somadas.
+- **Defeitos encontrados e corrigidos.**
+  1. Braço esquerdo: a aba enfiada sob o corpo era funda demais e saía para fora da silhueta quando o braço girava, formando uma "cauda" escura serrilhada pendurada no ombro. A aba agora é curta (14 px), só perto da junta e a 10 px da borda do corpo, e o levantar do punho esquerdo caiu de cerca de 31 para 20 graus. O recorte do punho segue o contorno e não corta mais o lobo escuro do corpo.
+  2. Ilha: uma linha branca vertical de 2 px (x 396 a 397) no chão ao lado do pé direito, visível até em repouso. O preenchimento agora emenda com o resto.
+  3. Ilha: o chão sob o pé esquerdo era uma covinha com contorno em arco; agora é um tom contínuo da grama ao redor.
+  4. Pontilhado ciano flutuando no ar quando o personagem pula: eram pixels de borda suavizada do Oliver que ficavam na camada da ilha. Passaram para a peça dona da borda. A soma em repouso continua igual à arte (um pixel com diferença de 48/255).
+  5. Pixels soltos do preenchimento da ilha (menos de 30 px) removidos.
+- **Sem defeito achado.** Rosto (piscadas e reações), pernas, adereços (mais, divisão, régua, chama e faíscas), braço direito em todo o aceno.
+- **Limite conhecido.** Um resíduo muito leve do preenchimento do rosto só aparece com contraste multiplicado por cinco. O lobo escuro do corpo fica à mostra, com a borda levemente serrilhada, quando o punho esquerdo sobe.
+- **Teste.** `src/data/oliver-layers.test.ts` agora também limita a profundidade da aba (6 a 30 px) e falha com a aba antiga.

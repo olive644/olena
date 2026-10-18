@@ -229,7 +229,9 @@ const armR = part(bodyRig, "bracoD", "armR");
 
 // A ordem de pintura vem de layers.json (de tras para frente), nao da ordem dos nos.
 pictures.sort((a, b) => ASSET_ORDER.indexOf(b[1]) - ASSET_ORDER.indexOf(a[1]));
-for (const [rigOf, layerName] of pictures) emitPicture(rigOf, layerName);
+const hidden = (process.env["OLIVER_HIDE"] ?? "").split(",");
+for (const [rigOf, layerName] of pictures)
+  if (!hidden.includes(layerName)) emitPicture(rigOf, layerName);
 
 // ---------- curvas ----------
 const TAU = Math.PI * 2;
@@ -364,7 +366,7 @@ const A_PULO = reactAnim("pulo", 1.3, (r) => {
   });
   r("bracoE", {
     rot: (t) =>
-      ((0.55 * (1 - Math.cos(Math.PI * smooth(0.2, 0.5, t)))) / 2) * (1 - smooth(0.9, 1.25, t)),
+      ((0.35 * (1 - Math.cos(Math.PI * smooth(0.2, 0.5, t)))) / 2) * (1 - smooth(0.9, 1.25, t)),
   });
   r("bracoD", { rot: (t) => -0.12 * Math.sin(Math.PI * smooth(0.2, 1.2, t)) });
   for (const side of ["olhoE", "olhoD"])
@@ -414,7 +416,7 @@ const A_ANIMO = reactAnim("animo", 1.7, (r) => {
     y: (t) => -26 * bounce(t),
     sy: (t) => 1 + 0.05 * (bounce(t) - 0.5) * (t < 1.5 ? 1 : 0),
   });
-  r("bracoE", { rot: (t) => 0.5 * smooth(0, 0.25, t) * (1 - smooth(1.4, 1.7, t)) });
+  r("bracoE", { rot: (t) => 0.35 * smooth(0, 0.25, t) * (1 - smooth(1.4, 1.7, t)) });
   r("bracoD", { rot: (t) => -0.08 * smooth(0, 0.25, t) * (1 - smooth(1.4, 1.7, t)) });
   r("ilha", { y: (t) => 4 * (1 - bounce(t)) * smooth(0, 0.1, t) * (1 - smooth(1.4, 1.7, t)) });
   for (const [name, dir] of [
