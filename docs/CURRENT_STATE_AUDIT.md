@@ -3044,3 +3044,11 @@ Motivo: o app terá planos pagos e o repositório deve ficar privado. Em reposit
 - **Decisão da dona.** O arquivo `docs/CONTRATO_SOCIETARIO.md` deixou de ser versionado. Ele estava num repositório público, e o app terá planos pagos. O caminho entrou no `.gitignore` para que uma cópia local não volte por engano. Nenhum conteúdo do arquivo foi lido nem copiado por esta mudança.
 - **Limite desta mudança.** Remover o arquivo da árvore atual **não o apaga do histórico do Git** nem de forks já existentes (há 1 fork). Trate o conteúdo como já exposto. Se isso for um problema, a saída é reescrever o histórico, o que altera todas as branches e PRs abertas e só deve ser feito com decisão explícita, depois de guardar uma cópia fora do repositório.
 - **Cópia.** Guarde o arquivo fora do repositório (por exemplo, num Drive privado) antes de mesclar esta PR.
+
+# Política de custo do CI e documentação de operação, 2026-10-18
+
+- **Medição.** Uma execução completa de pull request com código custa cerca de 47 minutos faturáveis. Os três e2e somam cerca de 68% e o mobile (WebKit) cerca de 55%. Instalar navegadores custa de 22 a 44 s por job, então cache de navegador foi descartado (hipótese anterior desfeita pela medição). Detalhes e a tabela em `docs/CI_MINUTOS.md`.
+- **Mudança.** `scripts/ci-scope.mjs`: pull request só de backend (`api/`, `src/backend/`, regras do Firebase) mais documentação roda só o desktop (cerca de 21 min em vez de 47). Qualquer arquivo fora das listas de documentação e de backend continua pedindo o e2e completo, e a dúvida vira completo. Testes ampliados para 14 casos, e o caminho real de pull request foi simulado.
+- **Dado para a próxima decisão.** O Playwright passa a listar no log do CI os 10 arquivos de teste mais lentos (`reportSlowTests`).
+- **Documentação para IA.** Novos `docs/CI_MINUTOS.md` (custo, medição, política, alternativas descartadas, regras) e `docs/OPERACAO_E_CUSTOS.md` (auditoria de segurança, publicação das regras do Firebase, consumo do banco, troca de banco, visibilidade do repositório, contrato, falso positivo do gitleaks, regras e decisões que continuam com a dona). `AGENTS.md` ganhou a seção "Custos, CI e operação" e o `README` os links.
+- **Limite.** O consumo mensal real de minutos ainda não foi medido (o repositório é público e não cobra). A medição deve ser refeita depois de privar.
