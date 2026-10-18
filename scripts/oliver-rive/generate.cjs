@@ -227,7 +227,9 @@ const eyeR = part(bodyRig, "olhoD", "eyeR");
 const armL = part(bodyRig, "bracoE", "armL");
 const armR = part(bodyRig, "bracoD", "armR");
 
-for (const [rigOf, layerName] of pictures.slice().reverse()) emitPicture(rigOf, layerName);
+// A ordem de pintura vem de layers.json (de tras para frente), nao da ordem dos nos.
+pictures.sort((a, b) => ASSET_ORDER.indexOf(b[1]) - ASSET_ORDER.indexOf(a[1]));
+for (const [rigOf, layerName] of pictures) emitPicture(rigOf, layerName);
 
 // ---------- curvas ----------
 const TAU = Math.PI * 2;
@@ -276,7 +278,7 @@ amb("corpo", {
 const wave = (t) => smooth(5, 5.4, t) * (1 - smooth(6.9, 7.4, t));
 amb("bracoD", {
   rot: (t) =>
-    0.03 * osc(t, 4, 0.25) - 0.1 * wave(t) + 0.2 * wave(t) * Math.sin(TAU * ((t - 5) / 0.6)),
+    0.03 * osc(t, 4, 0.25) - 0.06 * wave(t) + 0.15 * wave(t) * Math.sin(TAU * ((t - 5) / 0.8)),
 });
 amb("bracoE", { rot: (t) => 0.035 * osc(t, 4) });
 for (const side of ["olhoE", "olhoD"]) {
@@ -392,9 +394,9 @@ const A_PULO = reactAnim("pulo", 1.3, (r) => {
 const A_ACENO = reactAnim("aceno", 1.9, (r) => {
   const env = (t) => smooth(0, 0.3, t) * (1 - smooth(1.5, 1.9, t));
   r("bracoD", {
-    rot: (t) => -0.28 * env(t) + 0.34 * env(t) * Math.sin(TAU * (t / 0.5)),
+    rot: (t) => -0.14 * env(t) + 0.2 * env(t) * Math.sin(TAU * (t / 0.6)),
   });
-  r("corpo", { rot: (t) => -0.03 * env(t) + 0.012 * env(t) * Math.sin(TAU * (t / 0.5)) });
+  r("corpo", { rot: (t) => -0.02 * env(t) + 0.008 * env(t) * Math.sin(TAU * (t / 0.6)) });
   r("bracoE", { rot: (t) => 0.14 * env(t) });
   for (const side of ["olhoE", "olhoD"])
     r(
