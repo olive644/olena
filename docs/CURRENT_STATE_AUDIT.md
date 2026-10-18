@@ -3017,3 +3017,9 @@ O console do Firebase mostrou 25,47 GB de download de 1 a 17 de outubro (limite 
 - **Não mudei** o `GET` de conferência antes do `PUT` nem o stream. Eles protegem contra sobrescrever dados de outro aparelho, e trocá-los por escrita condicional (ETag) ou por envio só das chaves alteradas exige testar com o Firebase real. Fica como próximo passo se o consumo continuar alto.
 - **Efeito esperado, sem medição.** A resposta do `PUT` some (cerca de um terço do download por salvamento) e o agrupamento reduz o número de salvamentos em rajadas. Não é garantido ficar abaixo de 10 GB por mês. A confirmação é o consumo no console nos dias seguintes (aba Uso), ou `firebase database:profile` na CLI, que mostra o consumo por caminho.
 - **Testes.** `use-cloud-sync.test.tsx` ganhou três casos: `print=silent` no `PUT`, agrupamento de mudanças seguidas em um só envio e envio imediato ao esconder a página. O arquivo agora espera até 9 s por operação (o intervalo real é 4 s).
+
+# Contrato societário removido do repositório, 2026-10-18
+
+- **Decisão da dona.** O arquivo `docs/CONTRATO_SOCIETARIO.md` deixou de ser versionado. Ele estava num repositório público, e o app terá planos pagos. O caminho entrou no `.gitignore` para que uma cópia local não volte por engano. Nenhum conteúdo do arquivo foi lido nem copiado por esta mudança.
+- **Limite desta mudança.** Remover o arquivo da árvore atual **não o apaga do histórico do Git** nem de forks já existentes (há 1 fork). Trate o conteúdo como já exposto. Se isso for um problema, a saída é reescrever o histórico, o que altera todas as branches e PRs abertas e só deve ser feito com decisão explícita, depois de guardar uma cópia fora do repositório.
+- **Cópia.** Guarde o arquivo fora do repositório (por exemplo, num Drive privado) antes de mesclar esta PR.
