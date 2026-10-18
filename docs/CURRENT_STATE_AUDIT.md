@@ -3126,3 +3126,12 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Achado 4 (baixa a média).** A cota global da Helena (300 por dia) podia ser esgotada por quem tem várias contas. Entrou um teto por endereço de 100 por dia, avaliado antes do global, para que a conta que falha no teto do endereço não gaste a cota de todos. Uma turma atrás do mesmo endereço (30 alunos) ainda cabe. `rateLimiter.consume` agora recebe também a requisição.
 - **Limite.** Quem controla muitos endereços e muitas contas ainda consegue esgotar o teto global. O teto serve para encarecer o abuso, não para impedi-lo. A mudança de `FIREBASE_APPCHECK_ENFORCE` para `true` (ação da dona na Vercel) continua sendo a defesa mais forte.
 - **Não verificado.** O limite de armazenamento do plano Spark (1 GB) vem de memória. Conferir na tela de uso do Firebase.
+
+# Pentest: tetos de armazenamento por conta nas regras do Firebase, 2026-10-18
+
+- **Achado 3 (média), parte das contas.** `users/$uid` aceitava até 20 milhões de caracteres na folha de trabalho e 5 milhões em cada uma das outras 16 chaves, nas duas árvores (`state` e `stateV2`): cerca de 200 milhões por conta. Com o limite gratuito de 1 GB do Realtime Database (de memória, não verificado), cerca de 5 contas Google encheriam o banco e parariam a sincronização de todos.
+- **Mudança.** O nó legado `state` ficou somente para leitura (`.validate: false`, porque o cliente só lê dele para migrar) e `stateV2/items` ganhou um teto de 8 milhões de caracteres somados nos 16 itens que não são a folha de trabalho. O teto vem do limite do próprio navegador (cerca de 5 milhões de caracteres por site no `localStorage`), então não corta uso real. O máximo por conta caiu de cerca de 200 para cerca de 28 milhões, e o número de contas necessárias para encher 1 GB passa de cerca de 5 para cerca de 35. É um encarecimento, não uma garantia.
+- **Teste.** `src/firebase-user-rules.test.ts` avalia a expressão publicada com e sem excesso, e confere que o legado está congelado.
+- **Ação da dona.** Publicar as regras (passos e testes do simulador em `docs/ACCOUNT_SYNC_SETUP.md`). Mesclar esta PR não altera o banco por si só.
+- **Risco aceito.** Abas com versão anterior a 12/10/2026 perdem a sincronização até recarregar. Se aparecer reclamação, reverter só o congelamento do `state`.
+- **Pendente.** O teto da folha de trabalho (20 milhões) não foi reduzido porque o tamanho legítimo máximo (IndexedDB) não foi medido. Medir o maior espaço real antes de baixar.
