@@ -134,25 +134,23 @@ export function NotesView({
       : null;
   });
   const [indexOpen, setIndexOpen] = useState(false);
+  const resumeNotebookId = workspace.notebooks.find(
+    (book) =>
+      book.id === activeNotebookId &&
+      book.kind !== "folder" &&
+      book.kind !== "collection" &&
+      book.kind !== "note",
+  )?.id;
   useEffect(() => {
-    if (
-      activeNotebookId &&
-      workspace.notebooks.some(
-        (book) =>
-          book.id === activeNotebookId &&
-          book.kind !== "folder" &&
-          book.kind !== "collection" &&
-          book.kind !== "note",
-      )
-    )
+    if (resumeNotebookId)
       saveStudentResume({
         notebook: {
-          id: activeNotebookId,
+          id: resumeNotebookId,
           ...(activePageId ? { page: activePageId } : {}),
           at: Date.now(),
         },
       });
-  }, [activeNotebookId, activePageId, workspace.notebooks]);
+  }, [resumeNotebookId, activePageId]);
   const [journey, setJourney] = useState<NotebookJourneyState | null>(null);
   const finishJourney = useCallback(() => setJourney(null), []);
   const [pageJourney, setPageJourney] = useState<NotebookPageJourneyState | null>(null);

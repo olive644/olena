@@ -109,6 +109,7 @@ it("records dated island activity once after an assessed answer", async () => {
     correct: 1,
     completedAt: new Date().toISOString(),
   });
+  expect(onPractice.mock.calls[0]?.[0].moduleLevel).toBeUndefined();
   await tick(650);
   expect(onPractice).toHaveBeenCalledOnce();
 });
@@ -152,6 +153,10 @@ it("celebrates a mastered topic once, pauses the clock and continues with keyboa
   await tick(10000);
   expect(mathLearning("foundations")).toMatchObject({ level: 1, mastered: 1, correct: 1 });
   expect(onPractice).toHaveBeenCalledOnce();
+  expect(onPractice.mock.calls[0]?.[0]).toMatchObject({
+    islandId: "mathematics:foundations",
+    moduleLevel: 0,
+  });
   await click("Continuar explorando");
   expect(document.activeElement).toBe(screen.getAllByRole("button", { name: /^Resposta/ })[0]);
   expect(screen.getByText("Subtração")).toBeTruthy();
