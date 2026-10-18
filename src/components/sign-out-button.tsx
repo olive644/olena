@@ -7,7 +7,7 @@ export function SignOutButton({
   onSignOut,
   blocked = false,
 }: {
-  onSignOut(): Promise<void>;
+  onSignOut(discardPending?: boolean): Promise<void>;
   blocked?: boolean;
 }) {
   useLanguage();
@@ -15,6 +15,7 @@ export function SignOutButton({
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [discardPending, setDiscardPending] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -27,6 +28,7 @@ export function SignOutButton({
     if (busy) return;
     setOpen(false);
     setError("");
+    setDiscardPending(false);
     opener.current?.focus();
   }
   return (
@@ -51,22 +53,42 @@ export function SignOutButton({
             <h2 id="sign-out-title">{uiText(1004)}</h2>
             <p>{uiText(1005)}</p>
             <p>{uiText(1006)}</p>
-            {blocked && <p role="status">{uiText(1007)}</p>}
+            {blocked && (
+              <p role="status">{uiText("Vamos tentar enviar suas alterações antes de sair.")}</p>
+            )}
             {error && <p role="alert">{uiText(error)}</p>}
+            {error && (
+              <label className="sign-out-discard">
+                <input
+                  type="checkbox"
+                  checked={discardPending}
+                  onChange={(event) => setDiscardPending(event.target.checked)}
+                />
+                <span>
+                  {uiText(
+                    "Quero sair sem enviar. Alterações pendentes neste aparelho serão perdidas.",
+                  )}
+                </span>
+              </label>
+            )}
             <div className="sign-out-actions">
               <button
                 type="button"
                 className="sign-out-confirm"
-                disabled={busy || blocked}
+                disabled={busy}
                 onClick={async () => {
-                  if (busy || blocked) return;
+                  if (busy) return;
                   setBusy(true);
                   setError("");
                   try {
-                    await onSignOut();
+                    await onSignOut(discardPending);
                     setOpen(false);
                   } catch {
-                    setError(uiText(1008));
+                    setError(
+                      uiText(
+                        "Não foi possível enviar tudo. Seus dados continuam neste aparelho. Tente novamente ou escolha sair sem enviar.",
+                      ),
+                    );
                   } finally {
                     setBusy(false);
                   }

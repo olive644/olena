@@ -275,7 +275,9 @@ it("migrates local math rewards into an existing account without this key", asyn
   await waitFor(() =>
     expect(JSON.parse(uploaded[MATH_PLACE_REWARDS_KEY]!).foundations.points).toBe(250),
   );
-  await act(async () => result.current.signOut?.());
+  // O GET desta fixture continua devolvendo uma cópia antiga e gera conflito.
+  // Sair com descarte exige a escolha explícita apresentada no diálogo.
+  await act(async () => result.current.signOut?.(true));
   expect(localStorage.getItem(MATH_PLACE_REWARDS_KEY)).toBeNull();
 });
 
@@ -849,6 +851,82 @@ function signedInServices(user: { uid: string; displayName: string; email: strin
   } as never);
   return signOut;
 }
+
+it("tenta enviar alterações ao sair e conserva os dados se o envio falhar", async () => {
+  const signOut = signedInServices({
+    uid: "safe-exit",
+    displayName: "Ana",
+    email: "ana@example.com",
+  });
+  let fail = false;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (fail && init?.method === "PUT") throw new Error("offline");
+      return new Response("null", { status: 200 });
+    }),
+  );
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  fail = true;
+  act(() => writeSyncedStorage("helena.profile.v1", JSON.stringify({ name: "Novo nome" })));
+  await act(async () => {
+    await expect(result.current.signOut?.()).rejects.toThrow("sync-pending");
+  });
+  expect(signOut).not.toHaveBeenCalled();
+  expect(localStorage.getItem("helena.profile.v1")).toContain("Novo nome");
+  await act(async () => result.current.signOut?.(true));
+  expect(signOut).toHaveBeenCalledOnce();
+  expect(localStorage.getItem("helena.profile.v1")).toBeNull();
+});
+
+it("token travado deixa de mostrar carregamento infinito e permite descarte explícito", async () => {
+  const signOut = signedInServices({
+    uid: "token-exit",
+    displayName: "Ana",
+    email: "ana@example.com",
+  });
+  const services = await getFirebaseAccountServices();
+  vi.spyOn(services.auth.currentUser!, "getIdToken").mockImplementation(
+    () => new Promise<string>(() => {}),
+  );
+  const controller = new AbortController();
+  const timeout = vi.spyOn(AbortSignal, "timeout").mockReturnValue(controller.signal);
+  try {
+    const { result } = renderHook(() => useCloudSync());
+    await waitFor(() => expect(result.current.authenticated).toBe(true));
+    act(() => controller.abort());
+    await waitFor(() => expect(result.current.status).toBe("offline"));
+    await act(async () => {
+      await expect(result.current.signOut?.()).rejects.toThrow("sync-not-ready");
+    });
+    expect(signOut).not.toHaveBeenCalled();
+    await act(async () => result.current.signOut?.(true));
+    expect(signOut).toHaveBeenCalledOnce();
+  } finally {
+    timeout.mockRestore();
+  }
+});
+
+it("falha da autenticação ao sair não desliga a sincronização", async () => {
+  const signOut = signedInServices({
+    uid: "retry-exit",
+    displayName: "Ana",
+    email: "ana@example.com",
+  });
+  signOut.mockRejectedValueOnce(new Error("auth-failure"));
+  const fetchMock = vi.fn(async () => new Response("null", { status: 200 }));
+  vi.stubGlobal("fetch", fetchMock);
+  const { result } = renderHook(() => useCloudSync());
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  await act(async () => {
+    await expect(result.current.signOut?.()).rejects.toThrow("auth-failure");
+  });
+  const before = fetchMock.mock.calls.length;
+  act(() => writeSyncedStorage("helena.profile.v1", JSON.stringify({ name: "Depois da falha" })));
+  await waitFor(() => expect(result.current.status).toBe("synced"));
+  expect(fetchMock.mock.calls.length).toBeGreaterThan(before);
+});
 
 it("ao sair, apaga histórico, rascunhos e sessões deste aparelho e não chama mais o Google Agenda", async () => {
   signedInServices({ uid: "ana", displayName: "Ana", email: "ana@example.com" });

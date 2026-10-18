@@ -4,8 +4,20 @@ import {
   initializeAccessibility,
   isMotionReduced,
   updateAccessibility,
+  areHapticsEnabled,
 } from "./accessibility-preferences";
 let dispose: () => void;
+it("restaura vibração desligada e migra preferências antigas sem perder campos", () => {
+  expect(areHapticsEnabled()).toBe(true);
+  updateAccessibility({ haptics: false, soundEffects: false });
+  dispose();
+  dispose = initializeAccessibility();
+  expect(areHapticsEnabled()).toBe(false);
+  expect(JSON.parse(localStorage.getItem(ACCESSIBILITY_KEY)!)).toMatchObject({
+    haptics: false,
+    soundEffects: false,
+  });
+});
 beforeEach(() => {
   localStorage.clear();
   dispose = initializeAccessibility();

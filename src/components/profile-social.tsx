@@ -15,6 +15,7 @@ import { ProfileLabels } from "./profile-labels";
 import { PaperArrow } from "./paper-arrow";
 import { profileCover } from "../domain/profile-covers";
 import { ProfileCoverArt } from "./profile-cover-art";
+import { SocialActivityCard } from "./social-activity-card";
 
 function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: string): void }) {
   useLanguage();
@@ -404,6 +405,16 @@ export function SocialDirectory({
                 </button>
               </div>
               {person.followsYou && <p>{uiText(924)}</p>}
+              {feed.activities
+                ?.filter((activity) => activity.person.username === person.username)
+                .map((activity) => (
+                  <SocialActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    own={person.username === feed.self.username}
+                    onUpdated={() => void load(person.username)}
+                  />
+                ))}
               {person.username !== feed.self.username && (
                 <button
                   type="button"

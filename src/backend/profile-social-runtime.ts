@@ -8,6 +8,8 @@ import type { HandleRegistry } from "./profile-handle-handler.js";
 import { checkRateLimit } from "./rate-limit.js";
 import { createFirebaseSocialWatcher } from "./firebase-social-events.js";
 import { createProfileSocialEvents } from "./profile-social-events.js";
+import { studyActivitySummary } from "./study-activity-summary.js";
+import { resolveBrazilianZone } from "../data/agenda-time-zone.js";
 const config = {
   databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
   serviceAccount: {
@@ -21,7 +23,36 @@ const url = `${config.databaseUrl}/privateProfileSocial.json`;
 const handleFeed = createProfileSocialHandler({
   allowedOrigins: profileAllowedOrigins,
   identify: identifyProfileAccount,
-  consume: (uid) => checkRateLimit(rateStore, "profile-social-minute", uid, 30, 60),
+  consume: async (uid) =>
+    (await checkRateLimit(rateStore, "profile-social-minute", uid, 30, 60)) &&
+    (await checkRateLimit(rateStore, "profile-social-global-minute", "all", 3000, 60)),
+  async completedActivities(uid) {
+    if (
+      !(await checkRateLimit(rateStore, "profile-activities-minute", uid, 2, 60)) ||
+      !(await checkRateLimit(rateStore, "profile-activities-day", uid, 120, 86400)) ||
+      !(await checkRateLimit(rateStore, "profile-activities-global-day", "all", 10000, 86400))
+    )
+      throw new Error("activity-quota");
+    const workspaceKey = `k_${Buffer.from("helenastudy.workspace.v1").toString("base64url")}`;
+    const response = await fetch(
+      `${config.databaseUrl}/users/${uid}/stateV2/items/${workspaceKey}.json`,
+      { signal: AbortSignal.timeout(10000), headers: { Authorization: `Bearer ${await token()}` } },
+    );
+    if (!response.ok) throw new Error("activity-state");
+    const raw: unknown = await response.json();
+    const zoneKey = `k_${Buffer.from("helena.agendaTimeZone.v1").toString("base64url")}`;
+    const zoneResponse = await fetch(
+      `${config.databaseUrl}/users/${uid}/stateV2/items/${zoneKey}.json`,
+      { signal: AbortSignal.timeout(10000), headers: { Authorization: `Bearer ${await token()}` } },
+    );
+    if (!zoneResponse.ok) throw new Error("activity-zone");
+    const zone: unknown = await zoneResponse.json();
+    return studyActivitySummary(
+      typeof raw === "string" ? raw : null,
+      Date.now(),
+      resolveBrazilianZone(typeof zone === "string" ? zone : null, "America/Sao_Paulo"),
+    );
+  },
   async handles() {
     const response = await fetch(`${config.databaseUrl}/privateProfileHandles.json`, {
       headers: { Authorization: `Bearer ${await token()}` },

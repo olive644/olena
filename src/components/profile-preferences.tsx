@@ -31,7 +31,7 @@ export function ProfileIdentity({
   nameFallback?: string;
   email?: string | undefined;
   onSignIn?: (() => void) | undefined;
-  onSignOut?: (() => Promise<void>) | undefined;
+  onSignOut?: ((discardPending?: boolean) => Promise<void>) | undefined;
   signOutBlocked?: boolean;
 }) {
   useLanguage();
@@ -151,6 +151,11 @@ export function ProfileNotifications() {
         {(
           [
             ["followers", uiText(1901), uiText(878)],
+            [
+              "activities",
+              uiText("Atividades e curtidas"),
+              uiText("Conquistas de amigos e apoio às suas atividades."),
+            ],
             ["agenda", uiText(93), uiText(1902)],
             ["updates", uiText(1903), uiText(879)],
             ["rewards", uiText(1904), uiText(880)],

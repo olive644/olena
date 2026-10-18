@@ -14,8 +14,10 @@ import "./paper-cursor.css";
 import "./accessibility.css";
 import "./room-social.css";
 import { initializeAccessibility } from "./data/accessibility-preferences";
+import { initializeAppHaptics } from "./data/settings-haptics";
 
 initializeAccessibility();
+initializeAppHaptics();
 
 const NotebookReader = lazy(() => import("./views/notebook-reader"));
 const NotebookCollaborationInvite = lazy(() => import("./views/notebook-collaboration-invite"));

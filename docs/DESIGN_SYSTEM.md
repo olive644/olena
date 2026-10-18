@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Espaço do aluno: atalhos de papel para ilhas, cadernos, foco e agenda, ícones nativos,
+superfícies do tema e contadores sem valores inventados. Sem gradiente decorativo antigo
+no header, recorte de estrela amarelo suave. Entrada de 280 ms com deslocamento de 10 px,
+desligada por movimento reduzido. Grade de 4 destinos desktop, 2 no celular.
+Conquistas no sino com coração facetado coral, nomes de quem curtiu e avatar visitável.
+Preferência Vibrações em Acessibilidade governa feedback de 8 ms no aplicativo inteiro.
+Saída com falha mostra erro recuperável e descarte opcional explícito, nunca saída silenciosa.
+
 Configurações: feedback tátil curto de 8 ms em ações e escolhas, sem animação de tremer a
 tela, sem som e sem chamadas em carregamento. Sem vibração disponível, conservar o mesmo
 design e comportamento. Pronomes predefinidos acompanham o idioma na ficha e barra compacta;

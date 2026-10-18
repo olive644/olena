@@ -4,6 +4,42 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("atividades exigem consentimento e registros salvos; curtidas são idempotentes e revogáveis", async () => {
+  const activity = {
+    id: "a".repeat(32),
+    kind: "focus" as const,
+    value: 25,
+    at: Date.parse("2026-10-17T12:00:01Z"),
+  };
+  const app = setup(async () => [activity]);
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "publish-activities" });
+  expect((await app.feed("b")).activities).toEqual([]);
+  await app.request("a", { action: "activity-privacy", enabled: true });
+  app.advance(2000);
+  await app.request("a", { action: "publish-activities" });
+  expect((await app.feed("b")).activities).toHaveLength(1);
+  expect((await app.feed("c")).activities).toEqual([]);
+  expect((await app.feed("c", "username=alice")).activities).toHaveLength(1);
+  const like = { action: "like-activity", username: "alice", activityId: activity.id, liked: true };
+  await app.request("b", like);
+  await app.request("b", like);
+  expect(
+    (await app.feed("a")).notifications.filter((notice) => notice.kind === "like"),
+  ).toHaveLength(1);
+  expect((await app.feed("b")).activities?.[0]?.likes).toEqual([{ username: "bob", name: "bob" }]);
+  await app.request("b", { ...like, liked: false });
+  expect(
+    (await app.feed("a")).notifications.filter((notice) => notice.kind === "like"),
+  ).toHaveLength(0);
+  expect(
+    (await app.request("a", { action: "publish-activities", title: "inventado" })).status,
+  ).toBe(400);
+  await app.request("a", { action: "activity-privacy", enabled: false });
+  expect((await app.feed("b")).activities).toEqual([]);
+  expect((await app.feed("b")).notifications.filter((notice) => notice.kind)).toEqual([]);
+  expect((await app.request("b", like)).status).toBe(404);
+});
 it("listas usam perspectiva do visitante e remover seguidor preserva o vínculo inverso", async () => {
   const app = setup();
   await app.request("b", { action: "follow", username: "alice" });
@@ -43,7 +79,9 @@ it("apresentação automática aceita capa oficial e impede publicação na cont
     (await app.request("a", { ...presentation, cover: "https://outside.test/cover" })).status,
   ).toBe(400);
 });
-function setup() {
+function setup(
+  completedActivities?: () => Promise<import("./study-activity-summary").StudyActivity[]>,
+) {
   let state: SocialState = { accounts: {} };
   let version = 0;
   let now = Date.parse("2026-10-17T12:00:00Z");
@@ -55,6 +93,7 @@ function setup() {
     [key("c")]: { username: "carol" },
   };
   const handler = createProfileSocialHandler({
+    ...(completedActivities ? { completedActivities } : {}),
     allowedOrigins: ["https://app.test"],
     identify: async (request) => {
       const uid = request.headers.get("x-test-uid");

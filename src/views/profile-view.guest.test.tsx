@@ -60,8 +60,11 @@ it("oferece acessibilidade geral no Perfil e salva a escolha", () => {
     reduceMotion: true,
     highlightSelections: true,
     soundEffects: true,
+    haptics: true,
   });
   expect(document.documentElement.dataset["reduceMotion"]).toBe("true");
+  fireEvent.click(screen.getByRole("checkbox", { name: /^Vibrações/ }));
+  expect(JSON.parse(localStorage.getItem(ACCESSIBILITY_KEY)!).haptics).toBe(false);
   dispose();
   localStorage.removeItem(ACCESSIBILITY_KEY);
   initializeAccessibility()();

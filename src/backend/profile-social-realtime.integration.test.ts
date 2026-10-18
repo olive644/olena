@@ -7,12 +7,14 @@ import { createVercelHandler } from "./vercel-adapter";
 import { readEventStream } from "../ai/event-stream";
 import type { SocialFeed } from "../domain/profile-social";
 
-it("duas identidades de teste: seguir via HTTP entrega evento ao destinatário antes de qualquer polling", async () => {
+it("duas identidades de teste: seguir e curtir via HTTP entregam evento antes de qualquer polling", async () => {
   vi.unstubAllGlobals();
   const hash = (uid: string) => createHash("sha256").update(uid).digest("hex");
   let state: SocialState = { accounts: {} };
   let version = 0;
   let origin = "";
+  let now = Date.now();
+  const activityId = "a".repeat(32);
   const wake = new Map<string, () => void>();
   const identify = async (request: Request) => {
     const uid = request.headers.get("authorization")?.replace("Bearer test-", "");
@@ -24,6 +26,8 @@ it("duas identidades de teste: seguir via HTTP entrega evento ao destinatário a
     },
     identify,
     consume: async () => true,
+    now: () => now,
+    completedActivities: async () => [{ id: activityId, kind: "focus", value: 25, at: now }],
     handles: async () => ({ [hash("a")]: { username: "alice" }, [hash("b")]: { username: "bob" } }),
     store: {
       read: async () => ({ value: structuredClone(state), version: String(version) }),
@@ -74,7 +78,7 @@ it("duas identidades de teste: seguir via HTTP entrega evento ao destinatário a
   origin = `http://127.0.0.1:${address.port}`;
   const abort = new AbortController();
   let iterator: AsyncGenerator<string> | undefined;
-  const call = (uid: string, action?: Record<string, string>) =>
+  const call = (uid: string, action?: Record<string, unknown>) =>
     fetch(`${origin}/api/profile-social`, {
       method: action ? "POST" : "GET",
       headers: {
@@ -104,6 +108,22 @@ it("duas identidades de teste: seguir via HTTP entrega evento ao destinatário a
     expect(((await (await call("b")).json()) as SocialFeed).notifications[0]?.person.followed).toBe(
       true,
     );
+    expect((await call("b", { action: "activity-privacy", enabled: true })).status).toBe(200);
+    now += 1000;
+    expect((await call("b", { action: "publish-activities" })).status).toBe(200);
+    expect(((await (await call("a")).json()) as SocialFeed).activities?.[0]?.id).toBe(activityId);
+    const liked = iterator.next();
+    await vi.waitFor(() => expect(wake.has("b")).toBe(true));
+    expect(
+      (await call("a", { action: "like-activity", username: "bob", activityId, liked: true }))
+        .status,
+    ).toBe(200);
+    expect((await liked).value).toContain('"changed"');
+    const afterLike = (await (await call("b")).json()) as SocialFeed;
+    expect(afterLike.notifications.find((notice) => notice.kind === "like")?.person.username).toBe(
+      "alice",
+    );
+    expect(afterLike.activities?.[0]?.likes).toEqual([{ username: "alice", name: "alice" }]);
   } finally {
     abort.abort();
     await iterator?.return(undefined).catch(() => {});

@@ -13,6 +13,7 @@ import { NavigationIcon } from "../components/navigation-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { buildStudyRoute } from "../domain/study-route";
 import { displayEventsOn } from "../domain/agenda-calendar";
+import "./today-view.css";
 
 type TodayViewProps = {
   workspace: WorkspaceState;
@@ -41,7 +42,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
     workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? uiText(2278);
 
   return (
-    <main className="main-content" id="main-content">
+    <main className="main-content student-space" id="main-content">
       <PageHeader showUpdates />
       <header className="view-heading view-heading--today">
         <div>
@@ -65,18 +66,46 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         </div>
       </header>
 
+      <nav className="student-space-shortcuts" aria-label={uiText("Seu próximo destino")}>
+        {(
+          [
+            ["learn", "learn", uiText("Explorar as ilhas"), uiText("Uma descoberta de cada vez")],
+            ["notes", "notes", uiText("Meus cadernos"), uiText("Suas ideias ganham espaço")],
+            ["focus", "focus", uiText("Hora de focar"), uiText("Reserve um tempo para você")],
+            ["planner", "planner", uiText("Minha agenda"), uiText("Organize seus próximos passos")],
+          ] as const
+        ).map(([view, icon, title, hint]) => (
+          <button
+            type="button"
+            key={view}
+            className={`student-destination student-destination--${view}`}
+            onClick={() => onNavigate(view)}
+          >
+            <NavigationIcon name={icon} />
+            <span>
+              <strong>{title}</strong>
+              <small>{hint}</small>
+            </span>
+            <PaperArrow />
+          </button>
+        ))}
+      </nav>
+
       <section className="metric-row" aria-label={uiText(1546)}>
         <article>
+          <NavigationIcon name="planner" />
           <span>{uiText(1547)}</span>
           <strong>{pendingTasks.length}</strong>
           <small>{uiText(1548)}</small>
         </article>
         <article>
+          <NavigationIcon name="focus" />
           <span>{uiText(99)}</span>
           <strong>{focusMinutes}</strong>
           <small>{uiText(1549)}</small>
         </article>
         <article>
+          <NavigationIcon name="today" />
           <span>{uiText(1550)}</span>
           <strong>{todayEvents.length}</strong>
           <small>{uiText(1551)}</small>
@@ -84,6 +113,9 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
       </section>
 
       <section className="study-route" aria-labelledby="study-route-title">
+        <span className="student-route-art" aria-hidden="true">
+          <NavigationIcon name="learn" />
+        </span>
         <div>
           <span className="section-label">{studyRoute.label}</span>
           <h2 id="study-route-title">{studyRoute.title}</h2>
@@ -107,7 +139,9 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           <div className="module-heading">
             <div>
               <span className="section-label">{uiText(1553)}</span>
-              <h2 id="tasks-today-title">{uiText(1554)}</h2>
+              <h2 id="tasks-today-title">
+                <NavigationIcon name="planner" /> {uiText(1554)}
+              </h2>
             </div>
             <button className="link-button" type="button" onClick={() => onNavigate("planner")}>
               {uiText(1555)} <PaperArrow />
@@ -149,7 +183,9 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           <div className="module-heading">
             <div>
               <span className="section-label">{uiText(1550)}</span>
-              <h2 id="agenda-today-title">{uiText(87)}</h2>
+              <h2 id="agenda-today-title">
+                <NavigationIcon name="today" /> {uiText(87)}
+              </h2>
             </div>
           </div>
           {todayEvents.length === 0 ? (

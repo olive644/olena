@@ -1,5 +1,39 @@
 # Auditoria do estado atual
 
+## Saída recuperável, vibração global, conquistas sociais e Espaço, 2026-10-18
+
+Sair não fica desabilitado por status de sincronização. A confirmação tenta
+enviar pendências, com prazo de 15 s e requests de 12 s. Falha conserva dados e login;
+descarte exige checkbox explícito depois do erro. Falha do Firebase Auth preserva o envio.
+
+Vibração de 8 ms centralizada em eventos confiáveis de click/change do documento,
+incluindo portais. Preferência haptics em Acessibilidade, persistida no aparelho, padrão
+ativo. Sem pulsos no carregamento, digitação ou controles desabilitados. Sem promessa
+de suporte físico em navegadores que não implementam navigator.vibrate.
+
+Atividades públicas exigem consentimento registrado no servidor, desligado por padrão.
+Somente registros salvos na conta geram resumos numéricos de prática, foco, quiz e marcos
+de sequência. Nunca publicar título de tarefa, material, caderno ou conteúdo. Novas
+conquistas vão aos seguidores e ficam visitáveis no perfil. Desativar remove atividades,
+curtidas e avisos vinculados. Likes idempotentes, removíveis, com nomes visíveis e aviso
+de seis segundos via stream de notices já existente. Filtro próprio em Notificações.
+Janela de exibição de 48 h e limpeza nas operações, 12 conquistas por pessoa, 40 no feed,
+50 notices, 200 likes por item.
+Publicação coalescida por minuto e assinatura de registros, cotas de leitura 2/min e
+120/dia por conta, 10.000/dia globais, API social 30/min por conta e 3.000/min globais.
+Nenhuma regra ou variável externa publicada por esta alteração.
+
+Espaço do aluno: destinos úteis reais, painéis recortados do tema, ícones nativos,
+contadores preservados, entrada curta, foco por teclado e movimento reduzido.
+Testes físicos entre contas em produção ainda não verificados nesta mudança.
+
+Validação local: npm run verify passou com 307 arquivos e 2.006 testes, APIs ESM,
+catálogos, TypeScript, build e desempenho (216,8 KiB iniciais, 1.477,1 KiB do app,
+sem alterar tetos). Doze cenários E2E desktop/móvel passaram; Espaço repetido com
+capturas claro/escuro. Integração HTTP de duas identidades confirma evento de curtida
+no stream sem polling. Testes cobrem consentimento, revogação, like idempotente,
+dados preservados após falha, descarte explícito e token travado com saída recuperável.
+
 ## Pronomes salvos e feedback tátil nas configurações, 2026-10-18
 
 As opções canônicas Ela/dela, Ele/dele e Elu/delu passam a ser localizadas na apresentação
