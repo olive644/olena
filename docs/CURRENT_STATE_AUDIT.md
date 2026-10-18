@@ -3038,3 +3038,9 @@ Motivo: o app terá planos pagos e o repositório deve ficar privado. Em reposit
 - **Economia estimada (não medida):** pull request só de documentação, de cerca de 50 para cerca de 10 minutos; push na main, de cerca de 50 para cerca de 20; pull request com código, sem mudança (cerca de 50). A execução semanal acrescenta cerca de 50 por semana.
 - **Limite.** Uma pull request com código continua custando cerca de 50 minutos a cada push. Com muitos pushes por dia (por exemplo, um commit de atualização da main a cada conflito), o teto mensal de um repositório privado ainda pode ser atingido. Reduzir isso depende de prática: juntar pushes, evitar re-execuções à toa e atualizar a branch com a main só quando necessário. Outras alavancas não aplicadas: cache do Playwright e e2e mobile só nos arquivos de interface.
 - **Testes.** `scripts/ci-scope.test.mjs` (11 casos: documentação, código, misto, dúvida, push, matriz, gate) roda no job `quality`. O caminho real de pull request (commit de mesclagem) foi simulado num repositório temporário: só docs resulta em `none`, código e misto em `full`, checkout raso em `full`.
+
+# Contrato societário removido do repositório, 2026-10-18
+
+- **Decisão da dona.** O arquivo `docs/CONTRATO_SOCIETARIO.md` deixou de ser versionado. Ele estava num repositório público, e o app terá planos pagos. O caminho entrou no `.gitignore` para que uma cópia local não volte por engano. Nenhum conteúdo do arquivo foi lido nem copiado por esta mudança.
+- **Limite desta mudança.** Remover o arquivo da árvore atual **não o apaga do histórico do Git** nem de forks já existentes (há 1 fork). Trate o conteúdo como já exposto. Se isso for um problema, a saída é reescrever o histórico, o que altera todas as branches e PRs abertas e só deve ser feito com decisão explícita, depois de guardar uma cópia fora do repositório.
+- **Cópia.** Guarde o arquivo fora do repositório (por exemplo, num Drive privado) antes de mesclar esta PR.

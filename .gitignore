@@ -21,3 +21,6 @@ public/ocr
 # Python training scripts
 __pycache__/
 *.pyc
+
+# Contrato societário fora do repositório
+docs/CONTRATO_SOCIETARIO.md
