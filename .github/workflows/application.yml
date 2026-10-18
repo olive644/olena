@@ -5,6 +5,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Execução completa semanal na main (desktop e mobile), porque o push na main só roda o desktop.
+  schedule:
+    - cron: "0 6 * * 1"
 
 permissions:
   contents: read
@@ -32,30 +35,38 @@ jobs:
         run: npm run verify
       - name: Verify system update publication
         run: node --test scripts/generate-system-updates.test.js
+      - name: Verify CI scope decision
+        run: node --test scripts/ci-scope.test.mjs
+
+  # Decide quanto do e2e roda (ver scripts/ci-scope.mjs). Os checks de resultado abaixo falham
+  # se esta decisão falhar, então pular o e2e nunca faz um check obrigatório passar por engano.
+  changes:
+    name: Decide e2e scope
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      scope: ${{ steps.scope.outputs.scope }}
+      matrix: ${{ steps.scope.outputs.matrix }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 2
+      - name: Decide scope
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: node scripts/ci-scope.mjs scope
 
   e2e:
     name: Desktop and mobile smoke tests (${{ matrix.label }})
+    needs: changes
+    if: ${{ needs.changes.outputs.scope != 'none' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - project: desktop
-            label: desktop
-            browser: chromium
-            workers: 2
-            shard: 1/1
-          - project: mobile
-            label: mobile shard 1/2
-            browser: webkit
-            workers: 1
-            shard: 1/2
-          - project: mobile
-            label: mobile shard 2/2
-            browser: webkit
-            workers: 1
-            shard: 2/2
+      matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -86,33 +97,40 @@ jobs:
         timeout-minutes: 5
         run: npx playwright test --config playwright.helena.config.ts --project=${{ matrix.project }} --workers=1 --shard=${{ matrix.shard }}
 
-  # Preserva o check móvel histórico e exige aprovação de todas as partes.
+  # Preserva o check móvel histórico. Na main só o desktop roda (o mobile completo já passou na
+  # pull request), e o gate avisa isso em vez de fingir que o mobile rodou.
   mobile-result:
     name: Desktop and mobile smoke tests (mobile)
-    needs: e2e
+    needs: [changes, e2e]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Require all mobile shards to pass
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Require the mobile result the scope demands
         env:
+          SCOPE: ${{ needs.changes.outputs.scope }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
           E2E_RESULT: ${{ needs.e2e.result }}
-        run: test "$E2E_RESULT" = "success"
+        run: node scripts/ci-scope.mjs gate --job=mobile
 
   # Mantém o nome histórico do check, para quem exige "Desktop and mobile smoke tests".
   e2e-result:
     name: Desktop and mobile smoke tests
-    needs: e2e
+    needs: [changes, e2e]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Require desktop and mobile to pass
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Require the e2e result the scope demands
         env:
+          SCOPE: ${{ needs.changes.outputs.scope }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
           E2E_RESULT: ${{ needs.e2e.result }}
-        run: |
-          echo "Resultado do e2e: $E2E_RESULT"
-          test "$E2E_RESULT" = "success"
+        run: node scripts/ci-scope.mjs gate --job=e2e
 
   dependency-audit:
     name: Dependency audit and SBOM
