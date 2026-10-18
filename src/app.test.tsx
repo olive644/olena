@@ -28,7 +28,7 @@ describe("App", () => {
 
   it("apresenta a marca textual sem avisos ou mascote decorativa no cabeçalho", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "Espaço do aluno" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeTruthy();
     expect(screen.queryByText(/dados salvos neste dispositivo/i)).toBeNull();
     const sidebar = screen.getByRole("complementary", { name: "" });
     fireEvent.click(within(sidebar).getByRole("button", { name: "Expandir menu lateral" }));
@@ -38,16 +38,18 @@ describe("App", () => {
     expect(screen.queryByText(/by oli/i)).toBeNull();
   });
 
-  it("mostra uma rota de estudo recomendada e abre o próximo módulo", async () => {
+  it("mostra Oliver e abre diretamente as ilhas de Matemática", async () => {
     render(<App />);
+    expect(screen.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Explorar Matemática" }));
     expect(
-      screen.getByRole("heading", { name: "Dê um ponto de partida ao seu estudo" }),
+      await screen.findByRole(
+        "heading",
+        { name: "Pátio das Primeiras Contas" },
+        { timeout: 20000 },
+      ),
     ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Abrir Biblioteca" }));
-    expect(
-      await screen.findByRole("heading", { name: "Novo material" }, { timeout: 5000 }),
-    ).toBeTruthy();
-  });
+  }, 30000);
 
   it("expande a navegação lateral para revelar categorias e nomes", () => {
     render(<App />);
@@ -289,8 +291,8 @@ describe("App", () => {
 
     navigate("Foco");
 
-    expect(await screen.findByRole("img", { name: /rosa de foco crescendo/i })).toBeTruthy();
-    expect(screen.getByText(/comece uma sessão hoje para manter a rosa viva/i)).toBeTruthy();
+    expect(await screen.findByRole("img", { name: /rosa de foco murcha/i })).toBeTruthy();
+    expect(screen.getByText(/sua flor está adormecida/i)).toBeTruthy();
     expect(screen.getByText(/0\/60 min até florescer por completo/i)).toBeTruthy();
     expect(screen.getByRole("heading", { name: "00:00:00" })).toBeTruthy();
     expect(screen.getByText("Cronômetro")).toBeTruthy();

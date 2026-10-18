@@ -101,6 +101,7 @@
   transform: translateY(-3px) scale(1.04);
 }
 .agenda-color-check {
+  color: #292432;
   display: grid;
   place-items: center;
   width: 27px;
@@ -110,6 +111,8 @@
   border-radius: 3px 7px;
 }
 .agenda-color-check svg {
+  display: block;
+  flex: none;
   width: 21px;
   height: 21px;
 }

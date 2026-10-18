@@ -1,4 +1,4 @@
-import { localizeResource, uiText, useLanguage, uiLocale } from "../i18n/runtime";
+import { uiText, useLanguage } from "../i18n/runtime";
 import type { Dispatch } from "react";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import {
@@ -11,7 +11,10 @@ import type { AppView } from "../components/app-navigation";
 import { PageHeader } from "../components/app-navigation";
 import { NavigationIcon } from "../components/navigation-icon";
 import { PaperArrow } from "../components/paper-arrow";
-import { buildStudyRoute } from "../domain/study-route";
+import { MathPracticeHero } from "../components/math-practice-hero";
+import { PaperDigits } from "../components/paper-digits";
+import { PaperFlower } from "../components/agenda-focus-week";
+import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
 import { displayEventsOn } from "../domain/agenda-calendar";
 import "./today-view.css";
 
@@ -21,14 +24,6 @@ type TodayViewProps = {
   onNavigate: (view: AppView) => void;
 };
 
-function formatLongDate(date: Date): string {
-  return new Intl.DateTimeFormat(uiLocale(), {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(date);
-}
-
 export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   useLanguage();
 
@@ -37,34 +32,23 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   const pendingTasks = workspace.tasks.filter((task) => !task.completed);
   const todayEvents = displayEventsOn(workspace.events, today);
   const focusMinutes = minutesFocusedOn(workspace, today);
-  const studyRoute = localizeResource(buildStudyRoute(workspace, today));
   const subjectName = (subjectId: string) =>
     workspace.subjects.find((subject) => subject.id === subjectId)?.name ?? uiText(2278);
 
   return (
     <main className="main-content student-space" id="main-content">
       <PageHeader showUpdates />
-      <header className="view-heading view-heading--today">
-        <div>
-          <span className="section-label">
-            {uiText(1542)} {formatLongDate(now)}
-          </span>
-          <h1>{uiText(114)}</h1>
-          <p>{uiText(1543)}</p>
-          <div className="today-hero-actions">
-            <button
-              className="today-hero-primary"
-              type="button"
-              onClick={() => onNavigate("learn")}
-            >
-              <NavigationIcon name="learn" paperVariant="claro" /> {uiText(1544)}
-            </button>
-            <button type="button" onClick={() => onNavigate("planner")}>
-              {uiText(1545)} <PaperArrow />
-            </button>
-          </div>
-        </div>
-      </header>
+      <MathPracticeHero
+        workspace={workspace}
+        onPractice={() => {
+          try {
+            sessionStorage.setItem("olena:enter-mathematics", "1");
+          } catch {
+            /* O hub continua acessível sem armazenamento. */
+          }
+          onNavigate("learn");
+        }}
+      />
 
       <nav className="student-space-shortcuts" aria-label={uiText("Seu próximo destino")}>
         {(
@@ -81,7 +65,16 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
             className={`student-destination student-destination--${view}`}
             onClick={() => onNavigate(view)}
           >
-            <NavigationIcon name={icon} />
+            {view === "focus" ? (
+              <span className="student-focus-icons" aria-hidden="true">
+                <PaperFlower active />
+                <i className="streak-tomato is-active" />
+              </span>
+            ) : view === "planner" ? (
+              <AgendaToolbarIcon name="month" />
+            ) : (
+              <NavigationIcon name={icon} />
+            )}
             <span>
               <strong>{title}</strong>
               <small>{hint}</small>
@@ -95,43 +88,27 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         <article>
           <NavigationIcon name="planner" />
           <span>{uiText(1547)}</span>
-          <strong>{pendingTasks.length}</strong>
+          <strong>
+            <PaperDigits value={String(pendingTasks.length)} />
+          </strong>
           <small>{uiText(1548)}</small>
         </article>
         <article>
           <NavigationIcon name="focus" />
           <span>{uiText(99)}</span>
-          <strong>{focusMinutes}</strong>
+          <strong>
+            <PaperDigits value={String(focusMinutes)} />
+          </strong>
           <small>{uiText(1549)}</small>
         </article>
         <article>
-          <NavigationIcon name="today" />
+          <AgendaToolbarIcon name="month" />
           <span>{uiText(1550)}</span>
-          <strong>{todayEvents.length}</strong>
+          <strong>
+            <PaperDigits value={String(todayEvents.length)} />
+          </strong>
           <small>{uiText(1551)}</small>
         </article>
-      </section>
-
-      <section className="study-route" aria-labelledby="study-route-title">
-        <span className="student-route-art" aria-hidden="true">
-          <NavigationIcon name="learn" />
-        </span>
-        <div>
-          <span className="section-label">{studyRoute.label}</span>
-          <h2 id="study-route-title">{studyRoute.title}</h2>
-          <p>{studyRoute.description}</p>
-          <ol aria-label={uiText(1552)}>
-            {studyRoute.steps.map((step, index) => (
-              <li key={step}>
-                <span aria-hidden="true">{index + 1}</span>
-                {step}
-              </li>
-            ))}
-          </ol>
-        </div>
-        <button type="button" onClick={() => onNavigate(studyRoute.view)}>
-          {studyRoute.actionLabel} <PaperArrow />
-        </button>
       </section>
 
       <div className="dashboard-grid">
@@ -184,7 +161,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
             <div>
               <span className="section-label">{uiText(1550)}</span>
               <h2 id="agenda-today-title">
-                <NavigationIcon name="today" /> {uiText(87)}
+                <AgendaToolbarIcon name="month" /> {uiText(87)}
               </h2>
             </div>
           </div>

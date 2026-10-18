@@ -26,7 +26,7 @@ for (const theme of ["light", "dark"]) {
     });
     await notice.getByRole("button", { name: "Entendi" }).click();
     await page.reload();
-    await expect(page.getByRole("heading", { name: "Espaço do aluno" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeVisible();
     await expect(notice).toHaveCount(0);
     const navigation = page.getByRole("navigation", {
       name: info.project.name === "desktop" ? "Navegação principal" : "Navegação móvel",

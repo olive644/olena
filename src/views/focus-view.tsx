@@ -1,6 +1,9 @@
 import { uiWeekdays, uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { Plus } from "lucide-react";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
+import { focusFlowerState } from "../domain/focus-flower";
+import { useWallClock } from "../hooks/use-wall-clock";
+import { agendaTimeZone } from "../data/agenda-time-zone";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperDigits } from "../components/paper-digits";
@@ -19,7 +22,6 @@ import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced
 import { SYNCED_STORAGE_EVENT } from "../data/synced-storage";
 import { focusDeviceId } from "../data/focus-device";
 import {
-  minutesFocusedOn,
   minutesFocusedForSubject,
   toDateKey,
   type WorkspaceAction,
@@ -300,7 +302,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const [goalAmount, setGoalAmount] = useState(300);
   const [deadline, setDeadline] = useState(toDateKey(new Date()));
   const [calendarMonth, setCalendarMonth] = useState(() => dateFromKey(deadline));
-  const [openedAt] = useState(() => Date.now());
+  const now = useWallClock();
   const pomodoroElapsedSeconds = duration * 60 - secondsRemaining;
   const elapsedSeconds =
     mode === "timer" ? Math.floor(timerElapsedMilliseconds / 1000) : pomodoroElapsedSeconds;
@@ -508,17 +510,17 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     reset();
   }
 
-  const todayMinutes = minutesFocusedOn(workspace, toDateKey(new Date()));
   const liveMinutes = elapsedSeconds / 60;
-  const bloomProgress = Math.min(1, (todayMinutes + liveMinutes) / FULL_BLOOM_MINUTES);
-  const lastSession = workspace.focusSessions.reduce<Date | null>((latest, session) => {
-    const completedAt = new Date(session.completedAt);
-    return !latest || completedAt > latest ? completedAt : latest;
-  }, null);
-  const caredToday = todayMinutes > 0;
-  const missedYesterday = Boolean(
-    lastSession && openedAt - lastSession.getTime() >= 2 * 24 * 60 * 60 * 1000,
+  const flower = focusFlowerState(
+    workspace.focusSessions,
+    now,
+    agendaTimeZone(),
+    mode === "timer" && running ? liveMinutes : 0,
   );
+  const todayMinutes = flower.minutesToday;
+  const bloomProgress = flower.progress;
+  const caredToday = todayMinutes > 0;
+  const missedYesterday = flower.wilted;
   const focusedMinutes = minutesFocusedForSubject(workspace, subject.id);
   const subjectGoals = workspace.goals.filter((goal) => goal.subjectId === subject.id);
 
@@ -563,7 +565,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                   className={`focus-rose-stage${mode === "pomodoro" ? " focus-rose-stage--pomodoro" : ""}`}
                 >
                   {mode === "timer" ? (
-                    <FocusRose progress={bloomProgress} wilted={missedYesterday && !caredToday} />
+                    <FocusRose progress={bloomProgress} wilted={flower.wilted} />
                   ) : (
                     <div className="pomodoro-dial">
                       <PomodoroTomato progress={secondsRemaining / (duration * 60)} />
@@ -594,11 +596,15 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                           : pomodoroPhase === "shortBreak"
                             ? uiText(1163)
                             : ""
-                        : missedYesterday && !caredToday
-                          ? uiText(1164)
-                          : caredToday
-                            ? uiText(1165)
-                            : uiText(1166)}
+                        : !flower.hasHistory && !running
+                          ? uiText(
+                              "Sua flor está adormecida. Comece seu primeiro cronômetro para cuidar dela.",
+                            )
+                          : missedYesterday && !caredToday
+                            ? uiText(1164)
+                            : caredToday
+                              ? uiText(1165)
+                              : uiText(1166)}
                     </strong>
                     {mode === "timer" ? (
                       <small>

@@ -1,6 +1,151 @@
 .student-space {
   --student-accent: #a779ef;
 }
+.math-hero-carousel {
+  margin: 70px 0 24px;
+  position: relative;
+}
+.math-hero-slide {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38%;
+  align-items: center;
+  min-height: 300px;
+  padding: clamp(24px, 4vw, 48px);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-bottom: 6px solid var(--line);
+  border-radius: 10px 36px 10px 24px;
+  isolation: isolate;
+}
+.math-hero-slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #30bfc3;
+  opacity: 0.12;
+  clip-path: polygon(76% 0, 100% 0, 100% 100%, 55% 100%, 72% 72%, 61% 35%);
+  border-radius: inherit;
+}
+.math-hero-copy {
+  max-width: 650px;
+}
+.math-hero-copy h1 {
+  font-size: clamp(25px, 3.2vw, 44px);
+  line-height: 1.12;
+  margin: 14px 0;
+}
+.math-hero-copy p {
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 480px;
+}
+.math-hero-copy > button {
+  margin-top: 12px;
+}
+.math-hero-oliver {
+  position: absolute;
+  width: 38%;
+  height: calc(100% + 70px);
+  object-fit: contain;
+  right: 1%;
+  bottom: 5px;
+  pointer-events: none;
+  user-select: none;
+}
+.math-hero-pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+}
+.math-hero-pagination span {
+  width: 28px;
+  height: 7px;
+  background: #26bdd3;
+  border-radius: 2px 5px;
+}
+.math-hero-streak {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.math-hero-streak .paper-digits {
+  height: 32px;
+}
+.student-focus-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto !important;
+}
+.student-focus-icons svg {
+  width: 26px;
+  height: 36px;
+}
+.student-focus-icons .streak-tomato {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+}
+.student-space .student-destination > .paper-action-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+.student-space .metric-row article > .paper-action-icon {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 18px;
+  right: 18px;
+}
+.student-space .metric-row strong .paper-digits {
+  height: 40px;
+  width: auto;
+  display: inline-flex;
+}
+.student-space .metric-row strong .paper-digits svg {
+  height: 40px;
+  width: 27px;
+}
+.student-space .module-heading .paper-action-icon {
+  width: 28px;
+  height: 28px;
+}
+@media (max-width: 560px) {
+  .math-hero-carousel {
+    margin-top: 95px;
+  }
+  .math-hero-slide {
+    display: block;
+    padding: 175px 20px 24px;
+  }
+  .math-hero-oliver {
+    top: -90px;
+    bottom: auto;
+    height: 260px;
+    width: 70%;
+    right: 2%;
+  }
+  .math-hero-copy h1 {
+    font-size: 29px;
+  }
+  .student-space .metric-row article > .paper-action-icon {
+    position: static;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .math-hero-oliver {
+    animation: oliver-hero-float 5s ease-in-out infinite;
+  }
+}
+@keyframes oliver-hero-float {
+  50% {
+    transform: translateY(-7px) rotate(1deg);
+  }
+}
 .student-space .view-heading--today h1 {
   color: var(--text);
 }
@@ -67,7 +212,7 @@
     transform 180ms ease,
     background-color 180ms ease;
 }
-.student-destination > span:not(.navigation-icon) {
+.student-destination > span:not(.navigation-icon):not(.student-focus-icons) {
   display: grid;
   gap: 6px;
   flex: 1;
@@ -181,10 +326,7 @@
   .student-destination small {
     font-size: 10px;
   }
-  .student-destination > svg {
-    display: none;
-  }
-  .student-destination > span:not(.navigation-icon) {
+  .student-destination > span:not(.navigation-icon):not(.student-focus-icons) {
     flex-basis: 100%;
   }
   .student-space .metric-row article {
