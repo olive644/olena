@@ -28,7 +28,7 @@ Decisões que o texto reflete e que devem continuar valendo se o produto mudar:
 
 ## O que ainda não foi feito (próximos passos, cada um em PR própria)
 
-- **Link dentro do aplicativo.** Hoje os termos estão publicados e ligados à Política de Privacidade, mas a tela de entrada ainda só cita a política. Mostrar o link na tela de entrada exige novas frases nos catálogos de idioma (`public/locales/*.json`, com índice por número e `CATALOG_VERSION`) e teste e2e.
+- **Link na entrada.** Os termos já estão acessíveis em Configurações, Privacidade e dados, e ligados à Política de Privacidade. A tela de entrada ainda só cita a política. Mostrar o link na entrada exige novas frases nos catálogos de idioma (`public/locales/*.json`, com índice por número e `CATALOG_VERSION`) e teste e2e.
 - **Aceite registrado por versão.** A política já registra a versão aceita (`helena.privacy.v1`). Fazer o mesmo para os termos, e pedir novo aceite em mudança importante, é um passo à parte, com teste.
 - **Versão em inglês.** O aplicativo é bilíngue e as páginas legais ainda são só em português.
 

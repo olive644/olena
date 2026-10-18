@@ -12,6 +12,11 @@ import { TodayView } from "./views/today-view";
 import { useProfileHandle } from "./hooks/use-profile-handle";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const SocialActivityPublisher = lazy(() =>
+  import("./components/social-activity-publisher").then((module) => ({
+    default: module.SocialActivityPublisher,
+  })),
+);
 const PrivacyNotice = lazy(() =>
   import("./components/privacy-notice").then((module) => ({ default: module.PrivacyNotice })),
 );
@@ -88,6 +93,13 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   return (
     <MobileMenuContext.Provider value={{ open: moreOpen, setOpen: setMoreOpen }}>
       <div className="app-shell">
+        <Suspense fallback={null}>
+          <SocialActivityPublisher
+            authenticated={cloud.authenticated === true && cloud.status === "synced"}
+            savedAt={cloud.lastSyncedAt}
+            signature={`${workspace.focusSessions.length}:${workspace.practiceActivities?.length ?? 0}:${workspace.quizAttempts.length}`}
+          />
+        </Suspense>
         <a className="skip-link" href="#main-content">
           {uiText(1)}
         </a>

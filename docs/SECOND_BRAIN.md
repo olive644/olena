@@ -1,5 +1,21 @@
 # OlenaStudy: Second Brain
 
+Configurações: link Termos de uso em Privacidade e dados aponta para TERMS_OF_USE_PATH,
+não para o rascunho. Manter o caminho centralizado e preservar a navegação ao abrir.
+
+Saída: SignOutButton sempre permite tentar; useCloudSync valida envio antes do Auth signOut.
+Somente descarte explícito pode limpar pendências não confirmadas. Nunca desligar sync
+antes de Auth confirmar a saída. Requests com prazo e erro recuperável.
+
+Haptics global inicializado uma vez em main.tsx, não duplicar handlers em telas. Usar
+areHapticsEnabled e preferência local haptics de acessibilidade. Sem vibração em digitação.
+
+Conquistas: study-activity-summary lê apenas registros salvos no servidor; cliente não
+manda texto de post nem pontuação. ActivityPrivacy confirma consentimento servidor.
+SocialActivityPublisher agrega mudanças após upload; profile-social-handler faz CAS,
+limites, curtidas e revogação. Não expor UIDs/hashes ou conteúdo privado no feed.
+Avisos usam stream existente e socialNoticeId distingue follow, atividade e curtida.
+
 Pronomes: profilePronounsLabel traduz apenas os três valores predefinidos. Nunca aplicar
 uiText ao campo livre nem regravar helena.profile.v1 ao mudar idioma. Settings haptics usa
 eventos confiáveis de interação, com captura de clique para ações e de change para escolhas,

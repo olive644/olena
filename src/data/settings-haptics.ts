@@ -1,12 +1,26 @@
+import { areHapticsEnabled } from "./accessibility-preferences";
 type Interaction = { target: EventTarget | null; isTrusted: boolean };
 
 export function settingsPulse() {
   try {
-    if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function")
+    if (
+      areHapticsEnabled() &&
+      typeof navigator !== "undefined" &&
+      typeof navigator.vibrate === "function"
+    )
       navigator.vibrate(8);
   } catch {
     // Navegador sem suporte ou bloqueio do sistema não pode interromper a ação.
   }
+}
+
+export function initializeAppHaptics() {
+  document.addEventListener("click", settingsClickHaptic, true);
+  document.addEventListener("change", settingsChangeHaptic, true);
+  return () => {
+    document.removeEventListener("click", settingsClickHaptic, true);
+    document.removeEventListener("change", settingsChangeHaptic, true);
+  };
 }
 
 function controlFor(event: Interaction): Element | null {

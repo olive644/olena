@@ -58,7 +58,7 @@ export type CloudSyncState = {
   email?: string | undefined;
   lastSyncedAt?: number | undefined;
   syncNow?: (() => void) | undefined;
-  signOut?: (() => Promise<void>) | undefined;
+  signOut?: ((discardPending?: boolean) => Promise<void>) | undefined;
   // Apaga a conta e os estudos da nuvem. Rejeita com AccountDeletionError.
   deleteAccount?: (() => Promise<void>) | undefined;
 };
@@ -188,9 +188,26 @@ export function useCloudSync() {
             dirty = false;
             saveCloud = undefined;
           };
-          const signOut = async () => {
-            stopSyncing();
+          const signOutSync: { flush?: () => Promise<void> } = {};
+          const signOut = async (discardPending = false) => {
+            if (!discardPending) {
+              if (!signOutSync.flush) throw new Error("sync-not-ready");
+              let timer: ReturnType<typeof setTimeout> | undefined;
+              try {
+                await Promise.race([
+                  signOutSync.flush(),
+                  new Promise<never>((_, reject) => {
+                    timer = setTimeout(() => reject(new Error("sync-timeout")), 15000);
+                  }),
+                ]);
+              } finally {
+                clearTimeout(timer);
+              }
+            }
             await authApi.signOut(auth);
+            stopSyncing();
+            accountRevision++;
+            eventSource?.close();
             wipeDevice();
           };
           const deleteAccount = async () => {
@@ -240,9 +257,24 @@ export function useCloudSync() {
           const url = `${databaseURL}/users/${user.uid}/stateV2.json`;
           const legacyUrl = `${databaseURL}/users/${user.uid}/state.json`;
           const request = async (method: "GET" | "PUT", body?: CloudState, legacy = false) => {
-            const token = await user.getIdToken();
+            const signal = AbortSignal.timeout(12000);
+            const token = await new Promise<string>((resolve, reject) => {
+              const timeout = () => reject(new Error("sync-timeout"));
+              signal.addEventListener("abort", timeout, { once: true });
+              void user.getIdToken().then(
+                (value) => {
+                  signal.removeEventListener("abort", timeout);
+                  resolve(value);
+                },
+                (cause: unknown) => {
+                  signal.removeEventListener("abort", timeout);
+                  reject(cause);
+                },
+              );
+            });
+            signal.throwIfAborted();
             if (!currentAccount()) throw new Error("Account changed");
-            const init: RequestInit = { method };
+            const init: RequestInit = { method, signal };
             if (body) {
               init.body = JSON.stringify({ ...body, items: encodeCloudItems(body.items ?? {}) });
               init.headers = { "Content-Type": "application/json" };
@@ -463,6 +495,18 @@ export function useCloudSync() {
             } finally {
               saving = false;
             }
+          };
+
+          signOutSync.flush = async () => {
+            clearTimeout(uploadTimer);
+            const deadline = Date.now() + 12000;
+            while (saving) {
+              if (Date.now() >= deadline) throw new Error("sync-timeout");
+              await new Promise<void>((resolve) => setTimeout(resolve, 50));
+            }
+            if (!currentAccount()) throw new Error("account-changed");
+            await saveCloud?.();
+            if (dirty || conflictPending) throw new Error("sync-pending");
           };
 
           const receiveCloud = async (next: CloudState | null) => {

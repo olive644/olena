@@ -5,6 +5,19 @@ import { PROFILE_COVERS } from "../domain/profile-covers";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 export const SOCIAL_CHANGED = "olena:social-changed";
 export const SOCIAL_VISIT = "olena:social-visit";
+function isActivity(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false;
+  const item = value as Record<string, unknown>;
+  return (
+    typeof item["id"] === "string" &&
+    /^[a-f0-9]{32}$/.test(item["id"]) &&
+    ["focus", "practice", "quiz", "streak"].includes(String(item["kind"])) &&
+    Number.isSafeInteger(item["value"]) &&
+    Number(item["value"]) > 0 &&
+    Number(item["value"]) <= 10000 &&
+    Number.isFinite(item["at"])
+  );
+}
 export function visitSocialProfile(username: string) {
   window.dispatchEvent(new CustomEvent(SOCIAL_VISIT, { detail: username }));
 }
@@ -52,6 +65,28 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
   if (!body || typeof body !== "object") throw new Error(uiText("Resposta inválida de amigos."));
   const feed = body as SocialFeed;
   if (
+    (feed.activitySharing !== undefined && typeof feed.activitySharing !== "boolean") ||
+    (feed.activities !== undefined &&
+      (!Array.isArray(feed.activities) ||
+        feed.activities.length > 40 ||
+        !feed.activities.every(
+          (activity) =>
+            isActivity(activity) &&
+            isProfile(activity.person) &&
+            typeof activity.liked === "boolean" &&
+            Array.isArray(activity.likes) &&
+            activity.likes.length <= 200 &&
+            activity.likes.every(
+              (person) =>
+                typeof person.name === "string" &&
+                person.name.length <= 80 &&
+                typeof person.username === "string" &&
+                /^[a-z0-9._]{1,30}$/.test(person.username),
+            ),
+        )))
+  )
+    throw new Error(uiText("Resposta inválida de amigos."));
+  if (
     feed.connections !== undefined &&
     (!["followers", "following"].includes(feed.connections.kind) ||
       !/^[a-z0-9._]{1,30}$/.test(feed.connections.owner) ||
@@ -79,7 +114,11 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
     feed.notifications.length > 50 ||
     !feed.notifications.every(
       (notice) =>
-        isProfile(notice.person) && Number.isFinite(notice.at) && typeof notice.read === "boolean",
+        isProfile(notice.person) &&
+        Number.isFinite(notice.at) &&
+        typeof notice.read === "boolean" &&
+        (notice.kind === undefined ||
+          (["activity", "like"].includes(notice.kind) && isActivity(notice.activity))),
     ) ||
     (feed.results !== undefined &&
       (!Array.isArray(feed.results) ||

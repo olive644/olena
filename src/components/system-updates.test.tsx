@@ -26,6 +26,54 @@ afterEach(() => {
   social.visit.mockClear();
 });
 
+it("curtida chega no aviso, mostra apoio no post e não oferece seguir de volta", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("[]")),
+  );
+  const person = {
+    username: "alice",
+    name: "Alice",
+    photoUrl: "/profile-avatars/helena.webp",
+    followers: 0,
+    following: 1,
+    followsYou: true,
+    followed: false,
+    shared: true,
+  };
+  const activity = { id: "a".repeat(32), kind: "focus" as const, value: 25, at: Date.now() };
+  social.feed = {
+    self: { ...person, username: "bob" },
+    notifications: [],
+    activities: [
+      { ...activity, person, liked: false, likes: [{ username: "carol", name: "Carol" }] },
+    ],
+  };
+  const { rerender } = render(<SystemUpdates />);
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  });
+  expect(screen.getByText("Curtido por Carol")).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Curtir conquista" }));
+  await waitFor(() =>
+    expect(social.request).toHaveBeenCalledWith({
+      action: "like-activity",
+      username: "alice",
+      activityId: activity.id,
+      liked: true,
+    }),
+  );
+  social.feed = {
+    ...social.feed,
+    notifications: [{ person, at: Date.now(), read: false, kind: "like", activity }],
+  };
+  rerender(<SystemUpdates />);
+  await waitFor(() => expect(document.querySelector(".social-follow-toast")).toBeTruthy());
+  const toast = document.querySelector<HTMLElement>(".social-follow-toast")!;
+  expect(toast.textContent).toContain("Curtiu sua conquista.");
+  expect(within(toast).queryByRole("button", { name: "Seguir de volta" })).toBeNull();
+});
+
 it("avisa somente sobre seguidores novos e permite visitar pelo aviso mesmo sem sino", async () => {
   vi.stubGlobal(
     "fetch",

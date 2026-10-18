@@ -1,5 +1,4 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
-import { settingsPulse, settingsClickHaptic, settingsChangeHaptic } from "../data/settings-haptics";
 import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import {
   useAccessibility,
@@ -12,6 +11,8 @@ import { PaperEditorIcon } from "../components/paper-editor-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PrivacyNotice } from "../components/privacy-notice";
+import { ActivityPrivacy } from "../components/activity-privacy";
+import { TERMS_OF_USE_PATH } from "../domain/terms-of-use";
 import { DeleteAccountPanel } from "../components/delete-account-panel";
 import { accountConfirmationName } from "../data/account-deletion";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
@@ -151,16 +152,7 @@ export function ProfileView({
   };
 
   return (
-    <main
-      className="main-content profile-view"
-      id="main-content"
-      onClickCapture={(event) => {
-        if (settingsOpen) settingsClickHaptic(event);
-      }}
-      onChangeCapture={(event) => {
-        if (settingsOpen) settingsChangeHaptic(event);
-      }}
-    >
+    <main className="main-content profile-view" id="main-content">
       <ProfileShowcase
         syncStatus={cloud.status}
         presentationReady={
@@ -188,9 +180,7 @@ export function ProfileView({
                 }
                 aria-expanded={settingsOpen}
                 aria-controls="profile-settings"
-                data-settings-haptic-handled
-                onClick={(event) => {
-                  if (event.isTrusted) settingsPulse();
+                onClick={() => {
                   if (settingsOpen && mobile && mobileDetail) {
                     backToSettings();
                     return;
@@ -285,10 +275,20 @@ export function ProfileView({
             )}
             {section === "data" && <PrivacyNotice embedded />}
             {section === "data" && (
+              <ActivityPrivacy enabled={!guest && cloud.authenticated === true} />
+            )}
+            {section === "data" && (
               <section className="profile-card" aria-labelledby="settings-terms-title">
                 <span className="section-label">{uiText(1521)}</span>
                 <h2 id="settings-terms-title">{uiText(1522)}</h2>
-                <p>{uiText(1523)}</p>
+                <a
+                  className="secondary-button"
+                  href={TERMS_OF_USE_PATH}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {uiText(1522)} <PaperArrow />
+                </a>
               </section>
             )}
             <section
@@ -333,6 +333,19 @@ export function ProfileView({
                 />
               </label>
               {accessibilityError && <p role="alert">{uiText(accessibilityError)}</p>}
+              <label>
+                <span>
+                  <strong>{uiText("Vibrações")}</strong>
+                  <small>
+                    {uiText("Feedback tátil ao navegar e selecionar, quando o aparelho permitir.")}
+                  </small>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={accessibility.haptics}
+                  onChange={(event) => changeAccessibility({ haptics: event.target.checked })}
+                />
+              </label>
             </section>
             <section
               hidden={section !== "study"}

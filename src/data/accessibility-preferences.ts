@@ -5,11 +5,13 @@ export type AccessibilityPreferences = {
   reduceMotion: boolean;
   highlightSelections: boolean;
   soundEffects: boolean;
+  haptics: boolean;
 };
 const defaults: AccessibilityPreferences = {
   reduceMotion: false,
   highlightSelections: false,
   soundEffects: true,
+  haptics: true,
 };
 let current = defaults;
 const listeners = new Set<() => void>();
@@ -22,6 +24,7 @@ function read(): AccessibilityPreferences {
         reduceMotion: "reduceMotion" in data && data["reduceMotion"] === true,
         highlightSelections: "highlightSelections" in data && data["highlightSelections"] === true,
         soundEffects: !("soundEffects" in data) || data["soundEffects"] !== false,
+        haptics: !("haptics" in data) || data["haptics"] !== false,
       };
   } catch {
     /* Preferências indisponíveis: mantém a configuração padrão. */
@@ -81,6 +84,10 @@ export function isMotionReduced() {
 
 export function areSoundEffectsEnabled() {
   return current.soundEffects;
+}
+
+export function areHapticsEnabled() {
+  return current.haptics;
 }
 
 /** Movimento reduzido por escolha do app ou do sistema, acompanhando as duas mudanças. */

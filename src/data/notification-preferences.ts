@@ -10,12 +10,14 @@ export type NotificationPreferences = {
   agenda: boolean;
   updates: boolean;
   rewards: boolean;
+  activities: boolean;
 };
 const defaults: NotificationPreferences = {
   followers: true,
   agenda: true,
   updates: true,
   rewards: true,
+  activities: true,
 };
 export function readNotificationPreferences(): NotificationPreferences {
   try {
@@ -30,6 +32,7 @@ export function readNotificationPreferences(): NotificationPreferences {
         agenda: !("agenda" in value) || value.agenda !== false,
         updates: !("updates" in value) || value.updates !== false,
         rewards: !("rewards" in value) || value.rewards !== false,
+        activities: !("activities" in value) || value.activities !== false,
       };
   } catch {
     /* Sem preferências legíveis, manter os avisos existentes. */

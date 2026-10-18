@@ -17,6 +17,7 @@ it("salva por tipo preservando identidade e usa a chave já sincronizada", () =>
     agenda: true,
     updates: true,
     rewards: true,
+    activities: true,
   });
   expect(JSON.parse(localStorage.getItem("helena.profile.v1")!)).toMatchObject({
     name: "Aluno",

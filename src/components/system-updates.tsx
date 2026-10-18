@@ -20,6 +20,7 @@ import { SocialVisitListener } from "./profile-social";
 import type { SocialNotice } from "../domain/profile-social";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { useNotificationPreferences } from "../data/notification-preferences";
+import { SocialActivityCard, socialNoticeLabel, socialNoticeId } from "./social-activity-card";
 
 function storedReadUpdates() {
   try {
@@ -34,7 +35,9 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
 
   const social = useSocialFeed(true);
   const preferences = useNotificationPreferences();
-  const visibleNotifications = preferences.followers ? (social?.notifications ?? []) : [];
+  const noticeEnabled = (notice: SocialNotice) =>
+    notice.kind ? preferences.activities : preferences.followers;
+  const visibleNotifications = (social?.notifications ?? []).filter(noticeEnabled);
   const [followToast, setFollowToast] = useState<SocialNotice>();
   const seen = useRef<{ owner: string; ids: Set<string> }>({ owner: "", ids: new Set() });
   useEffect(() => {
@@ -43,23 +46,21 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
       const reset = window.setTimeout(() => setFollowToast(undefined), 0);
       return () => window.clearTimeout(reset);
     }
-    const ids = new Set(social.notifications.map((n) => `${n.person.username}:${n.at}`));
+    const ids = new Set(social.notifications.map(socialNoticeId));
     const sameOwner = seen.current.owner === social.self.username;
-    const next = preferences.followers
-      ? social.notifications.find(
-          (n) =>
-            !n.read &&
-            (sameOwner
-              ? !seen.current.ids.has(`${n.person.username}:${n.at}`)
-              : n.at >= Date.now() - 15000),
-        )
-      : undefined;
+    const next = social.notifications.find(
+      (n) =>
+        (n.kind ? preferences.activities : preferences.followers) &&
+        !n.read &&
+        (sameOwner ? !seen.current.ids.has(socialNoticeId(n)) : n.at >= Date.now() - 15000),
+    );
     const update = window.setTimeout(() => {
       seen.current = { owner: social.self.username, ids };
-      if (next || !sameOwner || !preferences.followers) setFollowToast(next);
+      if (next || !sameOwner || (!preferences.followers && !preferences.activities))
+        setFollowToast(next);
     }, 0);
     return () => window.clearTimeout(update);
-  }, [social, preferences.followers]);
+  }, [social, preferences.followers, preferences.activities]);
   useEffect(() => {
     if (!followToast) return;
     const timer = window.setTimeout(() => setFollowToast(undefined), 6000);
@@ -154,46 +155,63 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
               {uiText(1027)} <small>{uiText(1028)}</small>
             </strong>
             <div className="system-update-list">
-              {visibleNotifications.map((notice) => (
-                <article
-                  key={`follow:${notice.person.username}:${notice.at}`}
-                  className={`social-follow-row ${notice.read ? "is-read" : "is-unread"}`}
-                >
-                  <button
-                    type="button"
-                    className="social-notice-person"
-                    aria-label={uiText(1912, [notice.person.username])}
-                    onClick={() => {
-                      if (panel.current) panel.current.open = false;
-                      visitSocialProfile(notice.person.username);
-                    }}
+              {visibleNotifications
+                .filter((notice) => notice.kind !== "activity")
+                .map((notice) => (
+                  <article
+                    key={socialNoticeId(notice)}
+                    className={`social-follow-row ${notice.read ? "is-read" : "is-unread"}`}
                   >
-                    <img src={notice.person.photoUrl} alt="" width="40" height="40" />
-                    <span>
-                      <strong>{notice.person.name}</strong>
-                      <small>@{notice.person.username}</small>
-                      <small>{uiText(1029)}</small>
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className="secondary-button"
-                    disabled={notice.person.followed}
-                    onClick={async () => {
-                      try {
-                        await requestSocial({ action: "follow", username: notice.person.username });
-                      } catch (cause) {
-                        setSaveError(cause instanceof Error ? cause.message : uiText(1030));
-                      }
-                    }}
-                  >
-                    {notice.person.followed ? uiText(918) : uiText(1917)}
-                  </button>
-                </article>
-              ))}
-              {visibleUpdates.length === 0 && !visibleNotifications.length && (
-                <p role="status">{uiText(status)}</p>
-              )}
+                    <button
+                      type="button"
+                      className="social-notice-person"
+                      aria-label={uiText(1912, [notice.person.username])}
+                      onClick={() => {
+                        if (panel.current) panel.current.open = false;
+                        visitSocialProfile(notice.person.username);
+                      }}
+                    >
+                      <img src={notice.person.photoUrl} alt="" width="40" height="40" />
+                      <span>
+                        <strong>{notice.person.name}</strong>
+                        <small>@{notice.person.username}</small>
+                        <small>{socialNoticeLabel(notice)}</small>
+                      </span>
+                    </button>
+                    {!notice.kind && (
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        disabled={notice.person.followed}
+                        onClick={async () => {
+                          try {
+                            await requestSocial({
+                              action: "follow",
+                              username: notice.person.username,
+                            });
+                          } catch (cause) {
+                            setSaveError(cause instanceof Error ? cause.message : uiText(1030));
+                          }
+                        }}
+                      >
+                        {notice.person.followed ? uiText(918) : uiText(1917)}
+                      </button>
+                    )}
+                  </article>
+                ))}
+              {preferences.activities &&
+                social?.activities?.map((activity) => (
+                  <SocialActivityCard
+                    key={`${activity.person.username}:${activity.id}`}
+                    activity={activity}
+                    own={activity.person.username === social.self.username}
+                  />
+                ))}
+              {visibleUpdates.length === 0 &&
+                !visibleNotifications.length &&
+                !(preferences.activities && social?.activities?.length) && (
+                  <p role="status">{uiText(status)}</p>
+                )}
               {visibleUpdates.map((update) => (
                 <article
                   key={update.id}
@@ -238,17 +256,12 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
         </details>
       )}
       <SocialVisitListener />
-      {preferences.followers &&
+      {followToast &&
+        noticeEnabled(followToast) &&
         followToast &&
-        social?.notifications.some(
-          (n) => n.person.username === followToast.person.username && n.at === followToast.at,
-        ) &&
+        social?.notifications.some((n) => socialNoticeId(n) === socialNoticeId(followToast)) &&
         createPortal(
-          <aside
-            key={`${followToast.person.username}:${followToast.at}`}
-            className="social-follow-toast"
-            role="status"
-          >
+          <aside key={socialNoticeId(followToast)} className="social-follow-toast" role="status">
             <button
               type="button"
               className="social-notice-person"
@@ -267,32 +280,39 @@ export function SystemUpdates({ hideBell = false }: { hideBell?: boolean }) {
               />
               <span>
                 <strong>
-                  {followToast.person.name} {uiText(1035)}
+                  {followToast.person.name}{" "}
+                  {followToast.kind ? socialNoticeLabel(followToast) : uiText(1035)}
                 </strong>
                 <small>@{followToast.person.username}</small>
               </span>
             </button>
-            <button
-              type="button"
-              className="secondary-button"
-              disabled={
-                social?.notifications.find((n) => n.person.username === followToast.person.username)
-                  ?.person.followed
-              }
-              onClick={async () => {
-                try {
-                  await requestSocial({ action: "follow", username: followToast.person.username });
-                  setFollowToast(undefined);
-                } catch {
-                  setSaveError(uiText(1030));
+            {!followToast.kind && (
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={
+                  social?.notifications.find(
+                    (n) => n.person.username === followToast.person.username,
+                  )?.person.followed
                 }
-              }}
-            >
-              {social.notifications.find((n) => n.person.username === followToast.person.username)
-                ?.person.followed
-                ? uiText(918)
-                : uiText(1917)}
-            </button>
+                onClick={async () => {
+                  try {
+                    await requestSocial({
+                      action: "follow",
+                      username: followToast.person.username,
+                    });
+                    setFollowToast(undefined);
+                  } catch {
+                    setSaveError(uiText(1030));
+                  }
+                }}
+              >
+                {social.notifications.find((n) => n.person.username === followToast.person.username)
+                  ?.person.followed
+                  ? uiText(918)
+                  : uiText(1917)}
+              </button>
+            )}
             <button
               type="button"
               className="social-follow-toast-close"

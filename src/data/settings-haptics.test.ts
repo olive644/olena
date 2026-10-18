@@ -1,8 +1,19 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { settingsChangeHaptic, settingsClickHaptic, settingsPulse } from "./settings-haptics";
+import { updateAccessibility } from "./accessibility-preferences";
 
 afterEach(() => {
   document.body.replaceChildren();
+  updateAccessibility({ haptics: true });
+});
+it("respeita a opção de desligar vibração em todo o app", () => {
+  const vibrate = vi.fn();
+  vi.stubGlobal("navigator", { vibrate });
+  updateAccessibility({ haptics: false });
+  settingsClickHaptic(target("<button>Continue</button>"));
+  settingsChangeHaptic(target('<input type="checkbox">'));
+  settingsPulse();
+  expect(vibrate).not.toHaveBeenCalled();
 });
 
 function target(markup: string) {

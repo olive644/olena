@@ -61,6 +61,32 @@
 .social-notice-person img {
   object-fit: contain;
 }
+.social-activity-card {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.social-activity-reactions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.social-activity-reactions button {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.social-activity-reactions small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.sign-out-discard {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  text-align: left;
+  margin: 12px 0;
+  font-size: 13px;
+}
 .social-notice-person span {
   display: grid;
 }
