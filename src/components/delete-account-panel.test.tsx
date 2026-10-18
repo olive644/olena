@@ -23,6 +23,8 @@ describe("exclusão de conta no perfil", () => {
   it("a janela lista o que será apagado e o botão final começa bloqueado", () => {
     open();
     const dialog = screen.getByRole("dialog");
+    expect(dialog.tagName).toBe("DIALOG");
+    expect(dialog.parentElement).toBe(document.body);
     expect(dialog.getAttribute("aria-modal")).toBe("true");
     expect(dialog.textContent).toContain("Helena Ferreira");
     expect(dialog.textContent).toContain("nuvem");

@@ -36,8 +36,13 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   ).toHaveAttribute("src", "/paper-arrow.svg");
   await expect(page.getByRole("button", { name: "Hábitos", exact: true })).toHaveCount(0);
   await expect(page.getByText("Em produção", { exact: true })).toHaveCount(0);
+  async function choose(label: string) {
+    const back = page.getByRole("button", { name: "Voltar às configurações", exact: true });
+    if (await back.isVisible()) await back.click();
+    await menu.getByRole("button", { name: label, exact: true }).click();
+  }
   for (const theme of ["Claro", "Escuro"]) {
-    await menu.getByRole("button", { name: "Aparência e acessibilidade", exact: true }).click();
+    await choose("Aparência e acessibilidade");
     await page
       .getByRole("region", { name: "Seu papel, sua luz" })
       .getByRole("button", { name: theme, exact: true })
@@ -54,7 +59,7 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
       "Agenda e notificações",
       "Privacidade e dados",
     ]) {
-      await menu.getByRole("button", { name: label, exact: true }).click();
+      await choose(label);
       await expect(page.locator(".profile-section-title")).toHaveText(label);
       // A prontidão pertence ao painel visível, não a animações de toda a subárvore.
       await expect(page.locator("main")).toHaveCSS("opacity", "1");
@@ -101,9 +106,9 @@ test("Perfil centraliza preferências, mantém painéis alinhados e remove Hábi
   await expect(page.getByText("Recuperação local", { exact: true })).toHaveCount(0);
   await page.reload();
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
-  await menu.getByRole("button", { name: "Cadernos", exact: true }).click();
+  await choose("Cadernos");
   await expect(page.getByRole("checkbox", { name: /Só caneta, dedo move/ })).toBeChecked();
-  await menu.getByRole("button", { name: "Aparência e acessibilidade", exact: true }).click();
+  await choose("Aparência e acessibilidade");
   await expect(page.getByRole("checkbox", { name: /Efeitos sonoros/ })).not.toBeChecked();
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).habits),

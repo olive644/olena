@@ -14,7 +14,7 @@ export function PrivacyNotice({ embedded = false }: { embedded?: boolean }) {
       return true;
     }
   });
-  const [expanded, setExpanded] = useState(embedded);
+  const [expanded, setExpanded] = useState(false);
   if (!visible) return null;
   return (
     <section

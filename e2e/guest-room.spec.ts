@@ -52,6 +52,8 @@ test("o convidado escolhe um apelido só na sala e o perfil continua como Guest"
   // O apelido vale só na sala: o Perfil continua mostrando Guest.
   await page.goto("/perfil");
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
+  if (page.viewportSize()!.width <= 760)
+    await page.getByRole("button", { name: "Conta", exact: true }).click();
   await expect(page.getByText("Sessão de convidado")).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("helena.guest-nickname.v1"))).toBe("Poli");
 });

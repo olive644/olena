@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AccountDeletionError, isDeletionConfirmed } from "../data/account-deletion";
 
 type DeleteAccountPanelProps = {
@@ -16,13 +17,20 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
   const [status, setStatus] = useState<Status>("idle");
   const opener = useRef<HTMLButtonElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const inputId = useId();
   const busy = status === "deleting";
   const confirmed = isDeletionConfirmed(typed, accountName);
 
   useEffect(() => {
-    if (open) input.current?.focus();
+    if (!open) return;
+    const element = dialog.current;
+    element?.showModal();
+    input.current?.focus();
+    return () => {
+      element?.close();
+    };
   }, [open]);
 
   function close() {
@@ -65,18 +73,24 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
         Excluir minha conta
       </button>
 
-      {open && (
-        <div
-          className="delete-account-dialog__backdrop"
-          onKeyDown={(event) => {
-            if (event.key === "Escape") close();
-          }}
-        >
-          <div
+      {open &&
+        createPortal(
+          <dialog
+            ref={dialog}
             className="delete-account-dialog"
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
+            onCancel={(event) => {
+              event.preventDefault();
+              close();
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                event.preventDefault();
+                close();
+              }
+            }}
           >
             <h2 id={titleId}>Tem certeza de que quer excluir a conta?</h2>
             <p>Isto vai apagar para sempre:</p>
@@ -135,9 +149,9 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
                 {busy ? "Excluindo…" : "Excluir esta conta para sempre"}
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </dialog>,
+          document.body,
+        )}
     </section>
   );
 }

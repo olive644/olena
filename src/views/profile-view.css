@@ -998,6 +998,67 @@ html .profile-view .profile-settings-nav [aria-current="page"] .navigation-icon_
   position: sticky;
   top: 1rem;
 }
+.settings-paper-icon {
+  flex: 0 0 32px;
+}
+.settings-menu-chevron {
+  display: none;
+}
+@media (max-width: 760px) {
+  .profile-view .profile-settings-nav {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .profile-view .profile-settings-nav button {
+    min-height: 60px;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+  .settings-menu-chevron {
+    display: block;
+    margin-left: auto;
+    font-size: 1.7rem;
+    color: var(--muted);
+  }
+  .profile-view .profile-settings-heading {
+    margin: 0 0 14px;
+  }
+  .profile-view .profile-settings-grid {
+    gap: 12px;
+  }
+  .profile-view .profile-settings-grid > section {
+    padding: 14px;
+    gap: 10px;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .profile-identity-preview img {
+    width: 48px;
+    height: 48px;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .profile-information {
+    gap: 8px;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .profile-information > div {
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    align-items: baseline;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .profile-information-title {
+    margin: 0;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .profile-information dd {
+    font-size: 0.8rem;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .delete-account-panel p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  .profile-view .profile-settings-layout[data-section="account"] .profile-settings-grid h2 {
+    font-size: 1rem;
+  }
+  .profile-view .profile-settings-layout[data-detail="true"] .profile-section-title {
+    margin-bottom: 12px;
+  }
+}
 .profile-settings-nav button {
   width: 100%;
   min-height: 56px;
