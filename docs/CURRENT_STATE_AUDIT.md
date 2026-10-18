@@ -3039,6 +3039,12 @@ Motivo: o app terá planos pagos e o repositório deve ficar privado. Em reposit
 - **Limite.** Uma pull request com código continua custando cerca de 50 minutos a cada push. Com muitos pushes por dia (por exemplo, um commit de atualização da main a cada conflito), o teto mensal de um repositório privado ainda pode ser atingido. Reduzir isso depende de prática: juntar pushes, evitar re-execuções à toa e atualizar a branch com a main só quando necessário. Outras alavancas não aplicadas: cache do Playwright e e2e mobile só nos arquivos de interface.
 - **Testes.** `scripts/ci-scope.test.mjs` (11 casos: documentação, código, misto, dúvida, push, matriz, gate) roda no job `quality`. O caminho real de pull request (commit de mesclagem) foi simulado num repositório temporário: só docs resulta em `none`, código e misto em `full`, checkout raso em `full`.
 
+# Correção de navegação móvel e modal de exclusão
+
+No celular (até 760 px), Configurações começa na lista sem seleção; escolher um assunto oculta o menu e mostra apenas a seção, a partir do topo. Seta retorna ao menu e restaura foco. Desktop conserva navegação lateral. Ícones SettingsIcon são vetores locais próprios. Conta compactada e política existente acessível em Privacidade e dados, com detalhes recolhidos. Não cortar conteúdo ou impedir rolagem de segurança em telas menores/zoom.
+
+Modal de exclusão era descendente de painel animado, com containing block transformado. Agora createPortal em document.body e HTMLDialogElement.showModal colocam a confirmação no top layer com foco modal nativo, Escape/Cancelar e retorno ao disparador. Sem mudança na exclusão, reautenticação ou confirmação digitada. Teste de componente verifica portal; fixture visual sem conta real verifica altura e ações em viewport curta. Nenhuma conta é excluída nos testes.
+
 # Contrato societário removido do repositório, 2026-10-18
 
 - **Decisão da dona.** O arquivo `docs/CONTRATO_SOCIETARIO.md` deixou de ser versionado. Ele estava num repositório público, e o app terá planos pagos. O caminho entrou no `.gitignore` para que uma cópia local não volte por engano. Nenhum conteúdo do arquivo foi lido nem copiado por esta mudança.

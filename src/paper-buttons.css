@@ -1599,6 +1599,88 @@
   background: var(--surface);
   box-shadow: 0 6px 0 #e3b4b0;
   gap: 0.7rem;
+  margin: auto;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font: inherit;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  line-height: 1.4;
+}
+.delete-account-dialog::backdrop {
+  background: #14101caa;
+}
+.delete-account-dialog[open] {
+  animation: deletion-paper-enter 180ms ease-out;
+}
+.delete-account-dialog .secondary-button {
+  min-height: 44px;
+  padding: 10px 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 5px 13px 6px 11px;
+  box-shadow: 0 4px var(--line);
+  font: inherit;
+  font-weight: 800;
+}
+.delete-account-dialog button:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: #facc15;
+  text-underline-offset: 4px;
+}
+@keyframes deletion-paper-enter {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .delete-account-dialog[open] {
+    animation: none;
+  }
+}
+html[data-reduce-motion="true"] .delete-account-dialog[open] {
+  animation: none;
+}
+html:has(.delete-account-dialog[open]) {
+  overflow: hidden;
+}
+.delete-account-dialog h2 {
+  font-size: 1.1rem;
+}
+.delete-account-dialog__message:empty {
+  display: none;
+}
+.delete-account-dialog__actions {
+  position: sticky;
+  bottom: -1px;
+  background: var(--surface);
+  padding-block: 8px;
+}
+@media (max-width: 600px) {
+  .delete-account-dialog {
+    width: calc(100% - 20px);
+    padding: 14px;
+    gap: 8px;
+  }
+  .delete-account-dialog__note {
+    font-size: 0.8rem;
+  }
+  .delete-account-dialog__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  }
+  .delete-account-dialog__actions button {
+    font-size: 0.75rem;
+    padding: 8px;
+    min-height: 44px;
+  }
 }
 
 .delete-account-dialog h2,
@@ -1626,8 +1708,9 @@
 }
 
 .delete-account-dialog input:focus-visible {
-  outline: 3px solid #b3261e;
-  outline-offset: 2px;
+  outline: none;
+  border-bottom-color: #facc15;
+  box-shadow: 0 3px #facc15;
 }
 
 .delete-account-dialog__note {

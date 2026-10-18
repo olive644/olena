@@ -53,6 +53,8 @@ for (const theme of ["light", "dark"]) {
       fullPage: true,
       animations: "disabled",
     });
+    const back = page.getByRole("button", { name: "Voltar às configurações" });
+    if (await back.isVisible()) await back.click();
     await page.getByRole("button", { name: "Voltar ao perfil" }).click();
     await expect(toggle).toBeFocused();
     await expect(page.getByRole("navigation", { name: "Seções do Perfil" })).toHaveCount(0);

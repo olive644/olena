@@ -1,4 +1,4 @@
-import { useState, type Dispatch } from "react";
+import { useEffect, useRef, useState, type Dispatch } from "react";
 import {
   useAccessibility,
   updateAccessibility,
@@ -22,7 +22,7 @@ import {
 import { GUEST_NAME } from "../domain/guest-session";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import type { WorkspaceHistoryEntry } from "../data/workspace-history";
-import { NavigationIcon, type NavigationIconName } from "../components/navigation-icon";
+import { SettingsIcon, type SettingsIconName } from "../components/settings-icon";
 import {
   ProfileAppearance,
   ProfileIdentity,
@@ -32,13 +32,13 @@ import {
 } from "../components/profile-preferences";
 import "./profile-view.css";
 
-const SECTIONS: readonly { id: string; label: string; icon: NavigationIconName }[] = [
-  { id: "account", label: "Conta", icon: "profile" },
-  { id: "appearance", label: "Aparência e acessibilidade", icon: "theme-light" },
-  { id: "study", label: "Estudo e foco", icon: "focus" },
-  { id: "notebooks", label: "Cadernos", icon: "notes" },
-  { id: "notifications", label: "Agenda e notificações", icon: "planner" },
-  { id: "data", label: "Privacidade e dados", icon: "library" },
+const SECTIONS: readonly { id: string; label: string; icon: SettingsIconName }[] = [
+  { id: "account", label: "Conta", icon: "account" },
+  { id: "appearance", label: "Aparência e acessibilidade", icon: "appearance" },
+  { id: "study", label: "Estudo e foco", icon: "study" },
+  { id: "notebooks", label: "Cadernos", icon: "notebooks" },
+  { id: "notifications", label: "Agenda e notificações", icon: "notifications" },
+  { id: "data", label: "Privacidade e dados", icon: "data" },
 ];
 
 type ProfileViewProps = {
@@ -59,6 +59,37 @@ export function ProfileView({
   onSignIn,
 }: ProfileViewProps) {
   const [section, setSection] = useState("account");
+  const [mobileDetail, setMobileDetail] = useState(false);
+  const [mobile, setMobile] = useState(
+    () => window.matchMedia?.("(max-width: 760px)").matches ?? false,
+  );
+  const sectionTitle = useRef<HTMLHeadingElement>(null);
+  const settingsNav = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia?.("(max-width: 760px)");
+    if (!media) return;
+    const update = () => setMobile(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  function chooseSection(id: string) {
+    setSection(id);
+    setMobileDetail(true);
+    if (mobile)
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        sectionTitle.current?.focus({ preventScroll: true });
+      });
+  }
+  function backToSettings() {
+    setMobileDetail(false);
+    window.requestAnimationFrame(() => {
+      settingsNav.current
+        ?.querySelector<HTMLButtonElement>(`[data-section="${section}"]`)
+        ?.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: "instant" });
+    });
+  }
   const [settingsOpen, setSettingsOpen] = useState(false);
   const accessibility = useAccessibility();
   const [accessibilityError, setAccessibilityError] = useState("");
@@ -125,10 +156,24 @@ export function ProfileView({
             <button
               className="appearance-picker__trigger profile-settings-toggle"
               type="button"
-              aria-label={settingsOpen ? "Voltar ao perfil" : "Configurações"}
+              aria-label={
+                settingsOpen
+                  ? mobile && mobileDetail
+                    ? "Voltar às configurações"
+                    : "Voltar ao perfil"
+                  : "Configurações"
+              }
               aria-expanded={settingsOpen}
               aria-controls="profile-settings"
-              onClick={() => setSettingsOpen(!settingsOpen)}
+              onClick={() => {
+                if (settingsOpen && mobile && mobileDetail) {
+                  backToSettings();
+                  return;
+                }
+                setMobileDetail(false);
+                setSettingsOpen(!settingsOpen);
+                window.scrollTo({ top: 0, behavior: "instant" });
+              }}
             >
               {settingsOpen ? <PaperArrow back /> : <PaperEditorIcon name="settings" />}
             </button>
@@ -144,28 +189,39 @@ export function ProfileView({
         id="profile-settings"
         hidden={!settingsOpen}
         data-open={settingsOpen}
+        data-detail={mobileDetail}
+        data-section={section}
       >
-        <nav className="profile-settings-nav" aria-label="Seções do Perfil">
+        <nav
+          ref={settingsNav}
+          className="profile-settings-nav"
+          aria-label="Seções do Perfil"
+          hidden={mobile && mobileDetail}
+        >
           {SECTIONS.map((item) => (
             <button
               type="button"
-              className={section === item.id ? "primary-button" : "secondary-button"}
-              aria-current={section === item.id ? "page" : undefined}
+              className={!mobile && section === item.id ? "primary-button" : "secondary-button"}
+              aria-current={!mobile && section === item.id ? "page" : undefined}
               aria-controls="profile-settings-content"
-              onClick={() => setSection(item.id)}
+              onClick={() => chooseSection(item.id)}
+              data-section={item.id}
               key={item.id}
             >
-              <NavigationIcon
-                name={item.icon}
-                profileAdaptive
-                profileActive={section === item.id}
-              />
+              <SettingsIcon name={item.icon} />
               <span>{item.label}</span>
+              <span className="settings-menu-chevron" aria-hidden="true">
+                ›
+              </span>
             </button>
           ))}
         </nav>
-        <div className="profile-settings-content" id="profile-settings-content">
-          <h2 className="profile-section-title">
+        <div
+          className="profile-settings-content"
+          id="profile-settings-content"
+          hidden={mobile && !mobileDetail}
+        >
+          <h2 ref={sectionTitle} tabIndex={-1} className="profile-section-title">
             {SECTIONS.find((item) => item.id === section)?.label}
           </h2>
           <div className="profile-settings-grid" key={section}>

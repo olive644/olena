@@ -1427,6 +1427,12 @@ ProfileDataExport exige ready da conta (ou convidado pronto). createStudyDataExp
 
 O e2e é a maior parte do custo do CI. `scripts/ci-scope.mjs` decide o escopo: pull request com código roda desktop e mobile, push na main roda só o desktop, pull request só de documentação não roda e2e, e há uma execução completa semanal. Os checks obrigatórios mantêm os nomes. Ao mexer no workflow, preserve a regra de que a decisão de escopo que falha nunca deixa um check passar. Teste com `node --test scripts/ci-scope.test.mjs`.
 
+# Configurações responsivas
+
+mobileDetail separa menu inicial e seção em até 760 px. Não usar aria-current no menu inicial móvel nem renderizar seção visível antes da escolha. Setas têm dois destinos: Voltar às configurações na seção móvel, Voltar ao perfil no menu/desktop. chooseSection zera rolagem herdada e foca título; retorno foca opção do menu.
+
+DeleteAccountPanel monta dialog nativo por portal em body. Nunca recolocar overlay fixo dentro da grade animada: transform em ancestral recorta o viewport. Preservar showModal, cancelamento bloqueado durante exclusão, confirmação digitada e reautenticação. A política continua no documento oficial /politica-de-privacidade.html.
+
 ## Custos, CI e operação (2026-10-18)
 
 Antes de mexer no CI, nas regras do Firebase, em limites de uso ou na visibilidade do repositório, leia `docs/CI_MINUTOS.md` e `docs/OPERACAO_E_CUSTOS.md`. Eles guardam as medições, as decisões, o que foi descartado e o que continua com a dona do projeto. O escopo do e2e é decidido por `scripts/ci-scope.mjs` (teste: `node --test scripts/ci-scope.test.mjs`).
