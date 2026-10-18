@@ -1,3 +1,5 @@
+import { localizeResource } from "../i18n/runtime.js";
+
 export const CONTROL_LEVELS = ["total-controlled", "semi-controlled"] as const;
 export type ControlLevel = (typeof CONTROL_LEVELS)[number];
 
@@ -18,7 +20,7 @@ export type ActivityDefinition = {
   links: string[];
 };
 
-export const ACTIVITY_LIBRARY: ActivityDefinition[] = [
+export const ACTIVITY_LIBRARY: ActivityDefinition[] = localizeResource([
   {
     id: "bingo",
     name: "Bingo",
@@ -214,7 +216,7 @@ export const ACTIVITY_LIBRARY: ActivityDefinition[] = [
     supplies: ["Cartões de papel com os papéis"],
     links: [],
   },
-];
+]);
 
 export function findActivity(id: string): ActivityDefinition | undefined {
   return ACTIVITY_LIBRARY.find((activity) => activity.id === id);

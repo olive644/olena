@@ -1,5 +1,16 @@
 # OlenaStudy: Second Brain
 
+2026-10-18, idiomas: runtime em src/i18n, catálogos estáveis em public/locales.
+uiText para interface confiável, nunca dados pessoais ou texto livre. useLanguage atualiza
+componentes sem remontagem; localizeLabels evita congelamento no escopo de módulo.
+Não traduzir IDs, valores canônicos do onboarding ou respostas. Datas manuais variam entre
+dia/mês e mês/dia, armazenamento ISO permanece igual. Manutenção e testes em I18N.md.
+
+2026-10-18, futura ponte de atendimento: contrato server-only em support-integration.ts,
+desativado e sem runtime Discord. Plano e modelo de ameaça em SUPPORT_DISCORD_PLAN.md.
+Não ligar um envio externo direto depois do salvamento: implementação futura exige outbox
+atômica, revalidação de exclusão e autorização própria dos IDs de atendentes do Discord.
+
 2026-10-17, nomes em conexões móveis: Person coloca Segue você dentro da coluna de identidade, abaixo do @. Min-width zero na coluna, avatar/ação sem encolher e nomes/@ em linha única com ellipsis e title completo. Evita a quebra letra por letra provocada pela relação na terceira coluna do botão.
 
 2026-10-17, CI de notificações: hideBell em SystemUpdates omite details/painel do DOM, não o componente inteiro. Mantém feed, toast e SocialVisitListener ativos no Perfil, preservando contrato dos E2E notification-panel e profile-privacy-header sem alterar suas asserções.

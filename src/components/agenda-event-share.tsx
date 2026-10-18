@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import type { StudyEvent } from "../domain/workspace";
 import { agendaEventPng } from "../data/agenda-event-png";
@@ -15,6 +16,8 @@ export function AgendaEventShare({
   date: string;
   subject: string;
 }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null),
     trigger = useRef<HTMLButtonElement>(null);
   const [file, setFile] = useState<File | null>(null),
@@ -53,7 +56,7 @@ export function AgendaEventShare({
       setPreview(URL.createObjectURL(next));
     } catch (caught) {
       if (generation.current === current)
-        setError(caught instanceof Error ? caught.message : "Não foi possível preparar o PNG.");
+        setError(caught instanceof Error ? caught.message : uiText(46));
     } finally {
       if (generation.current === current) setBusy(false);
     }
@@ -69,8 +72,7 @@ export function AgendaEventShare({
       }
       await navigator.share({ files: [file], title: event.title });
     } catch (caught) {
-      if (!(caught instanceof DOMException && caught.name === "AbortError"))
-        setError("O navegador não abriu o compartilhamento. Use Baixar PNG.");
+      if (!(caught instanceof DOMException && caught.name === "AbortError")) setError(uiText(47));
     } finally {
       setBusy(false);
     }
@@ -81,38 +83,28 @@ export function AgendaEventShare({
         ref={trigger}
         type="button"
         className="secondary-button agenda-share-icon"
-        aria-label={`Compartilhar ${event.title}`}
-        title="Compartilhar PNG"
+        aria-label={uiText(1588, [event.title])}
+        title={uiText(48)}
         onClick={() => void prepare()}
       >
         <PaperEditorIcon name="share" />
       </button>
-      <dialog
-        ref={dialog}
-        className="agenda-share-dialog"
-        aria-label="Compartilhar evento"
-        onCancel={close}
-      >
+      <dialog ref={dialog} className="agenda-share-dialog" aria-label={uiText(49)} onCancel={close}>
         <header>
-          <h2>Compartilhar evento</h2>
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Fechar compartilhamento"
-            onClick={close}
-          >
+          <h2>{uiText(49)}</h2>
+          <button type="button" className="icon-button" aria-label={uiText(50)} onClick={close}>
             <AgendaCloseIcon />
           </button>
         </header>
-        {busy && <HelenaLoading label="Preparando compartilhamento" compact />}
-        {preview && <img src={preview} alt={`Prévia de ${event.title} com selo OlenaStudy`} />}
-        {error && <p role="alert">{error}</p>}
+        {busy && <HelenaLoading label={uiText(51)} compact />}
+        {preview && <img src={preview} alt={uiText(1589, [event.title])} />}
+        {error && <p role="alert">{uiText(error)}</p>}
         <footer>
           <button
             type="button"
             className="secondary-button agenda-share-icon"
-            aria-label="Baixar PNG"
-            title="Baixar PNG"
+            aria-label={uiText(52)}
+            title={uiText(52)}
             disabled={!file || busy}
             onClick={() => file && downloadExportBlob(file, file.name)}
           >
@@ -121,8 +113,8 @@ export function AgendaEventShare({
           <button
             type="button"
             className="secondary-button agenda-share-icon"
-            aria-label="Compartilhar PNG"
-            title="Compartilhar PNG"
+            aria-label={uiText(48)}
+            title={uiText(48)}
             disabled={!file || busy}
             onClick={() => void share()}
           >

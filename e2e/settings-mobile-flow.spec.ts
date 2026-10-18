@@ -9,6 +9,18 @@ test("configurações móveis começam no menu e voltam sem rolagem herdada", as
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
   const menu = page.getByRole("navigation", { name: "Seções do Perfil" });
   const mobile = page.viewportSize()!.width <= 760;
+  await expect(menu.getByRole("button", { name: "Segurança", exact: true })).toBeVisible();
+  await expect(
+    menu.getByRole("button", { name: "Conversar com o time", exact: true }),
+  ).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Instagram", exact: true })).toHaveAttribute(
+    "href",
+    "https://www.instagram.com/olenastudy.app/",
+  );
+  await expect(menu.getByRole("link", { name: "TikTok", exact: true })).toHaveAttribute(
+    "rel",
+    "noopener noreferrer",
+  );
   if (mobile) {
     await expect(menu.locator("[aria-current]")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "Informações" })).toHaveCount(0);
@@ -32,6 +44,36 @@ test("configurações móveis começam no menu e voltam sem rolagem herdada", as
   await expect(
     page.getByRole("link", { name: "Política de privacidade", exact: true }),
   ).toHaveAttribute("href", /privacidade/);
+});
+
+test("preferências por tipo persistem e atendimento sem login não inventa conversa", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.guest.v1", "1");
+  });
+  await page.goto("/perfil");
+  await page.getByRole("button", { name: "Configurações", exact: true }).click();
+  const menu = page.getByRole("navigation", { name: "Seções do Perfil" });
+  await menu.getByRole("button", { name: "Agenda e notificações", exact: true }).click();
+  const followers = page.getByRole("checkbox", { name: /Novos seguidores/ });
+  await expect(followers).toBeChecked();
+  await followers.uncheck();
+  await expect(followers).not.toBeChecked();
+  expect(
+    await page.evaluate(
+      () =>
+        JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}").notificationPreferences
+          .followers,
+    ),
+  ).toBe(false);
+  if (page.viewportSize()!.width <= 760)
+    await page.getByRole("button", { name: "Voltar às configurações" }).click();
+  await menu.getByRole("button", { name: "Conversar com o time", exact: true }).click();
+  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Sua mensagem" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Tickets do time" })).toHaveCount(0);
 });
 
 test("modal de exclusão fica no top layer sem corte em viewport curta", async ({ page }) => {

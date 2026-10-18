@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
 type HandwritingHistoryBarProps = {
@@ -25,35 +26,37 @@ export function HandwritingHistoryBar({
   canClear,
   onClear,
 }: HandwritingHistoryBarProps) {
+  useLanguage();
+
   return (
-    <div className="handwriting-history" aria-label="Histórico">
+    <div className="handwriting-history" aria-label={uiText(163)}>
       {textMode && (
         <button
           type="button"
           className={textAutoCorrect ? "is-active" : ""}
-          aria-label="Correção automática de texto"
+          aria-label={uiText(164)}
           aria-pressed={textAutoCorrect}
-          title="Corrige acentos comuns e início de frases ao sair da área de texto"
+          title={uiText(165)}
           onClick={() => onToggleAutoCorrect()}
         >
-          <PaperEditorIcon name="review" /> <span>Correção automática</span>
+          <PaperEditorIcon name="review" /> <span>{uiText(166)}</span>
         </button>
       )}
-      <output className="handwriting-zoom-value" aria-label="Zoom atual">
+      <output className="handwriting-zoom-value" aria-label={uiText(167)}>
         {Math.round(zoom * 100)}%
       </output>
       <span className="handwriting-commandbar__divider" />
-      <button type="button" aria-label="Desfazer" disabled={!canUndo} onClick={onUndo}>
+      <button type="button" aria-label={uiText(168)} disabled={!canUndo} onClick={onUndo}>
         <PaperEditorIcon name="undo" />
-        <span className="editor-action-label">Desfazer</span>
+        <span className="editor-action-label">{uiText(168)}</span>
       </button>
-      <button type="button" aria-label="Refazer" disabled={!canRedo} onClick={onRedo}>
+      <button type="button" aria-label={uiText(169)} disabled={!canRedo} onClick={onRedo}>
         <PaperEditorIcon name="redo" />
-        <span className="editor-action-label">Refazer</span>
+        <span className="editor-action-label">{uiText(169)}</span>
       </button>
-      <button type="button" aria-label="Limpar folha" disabled={!canClear} onClick={onClear}>
+      <button type="button" aria-label={uiText(170)} disabled={!canClear} onClick={onClear}>
         <PaperEditorIcon name="trash" />
-        <span className="editor-action-label">Limpar</span>
+        <span className="editor-action-label">{uiText(171)}</span>
       </button>
     </div>
   );

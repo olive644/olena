@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BINGO_MODES,
@@ -17,6 +18,8 @@ import { RoomConfetti } from "./room-paper-icons";
 import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
 
 function BingoIcon({ mode }: { mode: BingoMode }) {
+  useLanguage();
+
   return (
     <img
       className="bingo-mode-icon"
@@ -51,6 +54,8 @@ export default function NumberBingo({
   onPhysical?: ((value: boolean) => void) | undefined;
   onFinalize?: (() => Promise<void>) | undefined;
 }) {
+  useLanguage();
+
   const mode = state.settings.bingoMode ?? "line";
   const Machine = isHost ? BingoSaturn : BingoParticipant;
   const [pending, setPending] = useState(false);
@@ -101,8 +106,8 @@ export default function NumberBingo({
   if (state.phase === "lobby")
     return (
       <section className="bingo-settings">
-        <h3>Modo de partida</h3>
-        <div className="bingo-modes" role="group" aria-label="Modo de partida">
+        <h3>{uiText(747)}</h3>
+        <div className="bingo-modes" role="group" aria-label={uiText(747)}>
           {BINGO_MODES.map((item) => (
             <button
               key={item}
@@ -136,8 +141,8 @@ export default function NumberBingo({
         <label className="bingo-physical-setting secondary-button">
           <img src="/room-icons/bingo-corners.svg" width="32" height="32" alt="" />
           <span>
-            <strong>Bingo presencial</strong>
-            <small>Usar cartelas de papel, sem cartela digital.</small>
+            <strong>{uiText(748)}</strong>
+            <small>{uiText(749)}</small>
           </span>
           <input
             type="checkbox"
@@ -162,11 +167,7 @@ export default function NumberBingo({
       // pedido leva o sorteio atual em vez de ser recusado por um índice velho.
       const result = await onAnswer(indexRef.current, id).catch(() => undefined);
       if (!result?.correct) {
-        setMessage(
-          result
-            ? "Esse número ainda não pode ser marcado."
-            : "Não foi possível marcar. Tente de novo.",
-        );
+        setMessage(result ? uiText(750) : uiText(751));
       } else if (result.pointsChange > 0) {
         const card = cardRef.current;
         const cell = card?.querySelector<HTMLButtonElement>(`[data-number="${id}"]`);
@@ -196,19 +197,13 @@ export default function NumberBingo({
     try {
       await markQueue.current;
       const result = await onAnswer(indexRef.current, "bingo");
-      setMessage(
-        result?.correct
-          ? ""
-          : result
-            ? "Ainda não completou o objetivo. Confira sua cartela."
-            : "Não foi possível conferir. Tente novamente.",
-      );
+      setMessage(result?.correct ? "" : result ? uiText(752) : uiText(753));
     } finally {
       setPending(false);
     }
   }
   return (
-    <section className="number-bingo" aria-label="Bingo de números">
+    <section className="number-bingo" aria-label={uiText(547)}>
       <Machine
         drawn={drawn}
         isHost={isHost}
@@ -217,11 +212,11 @@ export default function NumberBingo({
         onReveal={reveal}
       >
         {!state.settings.bingoPhysical && !!participant?.bingoCard?.length && (
-          <section ref={cardRef} className="bingo-solar-card" aria-label="Minha cartela">
+          <section ref={cardRef} className="bingo-solar-card" aria-label={uiText(754)}>
             <header>
               <div>
-                <small>Sistema solar</small>
-                <h3>Minha cartela</h3>
+                <small>{uiText(755)}</small>
+                <h3>{uiText(754)}</h3>
               </div>
             </header>
             <svg
@@ -263,7 +258,9 @@ export default function NumberBingo({
                 <div key={letter}>
                   <BingoPlanet index={i} />
                   <strong>{letter}</strong>
-                  <small>{["Terra", "Marte", "Júpiter", "Saturno", "Netuno"][i]}</small>
+                  <small>
+                    {[uiText(1739), uiText(1861), uiText(467), uiText(1738), uiText(1862)][i]}
+                  </small>
                 </div>
               ))}
             </div>
@@ -287,13 +284,9 @@ export default function NumberBingo({
                     aria-pressed={marked}
                     data-orbit={i % 5}
                     data-number={id}
-                    aria-label={id === BINGO_FREE ? "Sol, centro livre" : `${letters[i % 5]} ${id}`}
+                    aria-label={id === BINGO_FREE ? uiText(1626) : `${letters[i % 5]} ${id}`}
                     aria-description={
-                      marked
-                        ? "Marcado"
-                        : revealed.includes(id)
-                          ? "Sorteado, pode marcar"
-                          : "Ainda não sorteado"
+                      marked ? uiText(1863) : revealed.includes(id) ? uiText(1864) : uiText(756)
                     }
                     disabled={
                       pending ||
@@ -319,7 +312,7 @@ export default function NumberBingo({
                           <path d="m22 14 21 2-14 12-18 3Z" fill="#fff9ef" />
                           <path d="m53 33-11 18-22-2 20-10 3-23Z" fill="#ffe88d" />
                         </svg>
-                        <small>Livre</small>
+                        <small>{uiText(757)}</small>
                       </>
                     ) : (
                       <>
@@ -336,12 +329,14 @@ export default function NumberBingo({
                 key={reaction.key}
                 className="bingo-ball-reaction"
                 role="status"
-                aria-label={`Bola ${reaction.number}: WOW! +${reaction.points} pontos!`}
+                aria-label={uiText(1865, [reaction.number, reaction.points])}
                 style={{ left: reaction.left, top: reaction.top }}
               >
                 <RoomConfetti compact />
-                <strong>WOW!</strong>
-                <small>+{reaction.points} pontos!</small>
+                <strong>{uiText(758)}</strong>
+                <small>
+                  +{reaction.points} {uiText(759)}
+                </small>
               </span>
             )}
           </section>
@@ -362,15 +357,15 @@ export default function NumberBingo({
             onClick={() => void claim()}
           >
             <img src="/room-icons/bingo-claim.svg" alt="" width="32" height="32" />
-            Bingo!
+            {uiText(760)}
           </button>
           <p role="status">
             {state.bingoWinnerIds?.includes(participantId)
-              ? "Seu Bingo foi confirmado. A partida continua!"
+              ? uiText(761)
               : state.bingoClaim?.participantId === participantId
-                ? "Seu pedido de Bingo está em conferência."
+                ? uiText(762)
                 : state.bingoClaimQueue?.some((claim) => claim.participantId === participantId)
-                  ? "Seu pedido de Bingo está na fila de conferência."
+                  ? uiText(763)
                   : message}
           </p>
         </div>
@@ -385,14 +380,14 @@ export default function NumberBingo({
             try {
               await onFinalize?.();
             } catch {
-              setMessage("Não foi possível definir os ganhadores. Tente novamente.");
+              setMessage(uiText(764));
             } finally {
               setPending(false);
             }
           }}
         >
           <img src="/room-icons/bingo-finish.svg" width="32" height="32" alt="" />
-          {state.bingoWinnerIds.length === 1 ? "Definir ganhador" : "Definir ganhadores"}
+          {state.bingoWinnerIds.length === 1 ? uiText(1630) : uiText(1629)}
         </button>
       )}
       {isHost && !participant && message && <p role="status">{message}</p>}

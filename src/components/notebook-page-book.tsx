@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import type { StudyNote } from "../domain/workspace";
@@ -28,6 +29,8 @@ export function NotebookPageBook({
   onToggleFavorite?: (id: string) => void;
   inert?: boolean;
 }) {
+  useLanguage();
+
   const drag = useRef<{ x: number; y: number; pointerId: number } | null>(null);
   const [indexOpen, setIndexOpen] = useState(false);
   const index = Math.max(
@@ -38,7 +41,7 @@ export function NotebookPageBook({
   return (
     <nav
       className="notebook-page-book"
-      aria-label="Folhear caderno"
+      aria-label={uiText(695)}
       inert={inert}
       onPointerDown={(event) => {
         if (event.button !== 0 || (event.target as HTMLElement).closest("button")) return;
@@ -62,7 +65,7 @@ export function NotebookPageBook({
       <button
         type="button"
         className="book-previous"
-        aria-label="Folha anterior"
+        aria-label={uiText(696)}
         disabled={index === 0}
         onClick={() => pages[index - 1] && onSelect(pages[index - 1]!.id)}
       >
@@ -72,7 +75,7 @@ export function NotebookPageBook({
         <button
           type="button"
           className="book-index"
-          aria-label="Abrir índice de folhas"
+          aria-label={uiText(697)}
           onClick={() => setIndexOpen(true)}
         >
           <NotebookToolIcon name="index" />
@@ -85,9 +88,9 @@ export function NotebookPageBook({
           <i />
         </span>
         <span className="page-book__right">
-          <strong>{page?.title || "Nova folha"}</strong>
+          <strong>{page?.title || uiText(746)}</strong>
           <small aria-live="polite">
-            Folha {index + 1} de {Math.max(1, pages.length)}
+            {uiText(698)} {index + 1} {uiText(72)} {Math.max(1, pages.length)}
           </small>
         </span>
         <span className="page-book__turn" aria-hidden="true" />
@@ -96,7 +99,7 @@ export function NotebookPageBook({
         <button
           type="button"
           className="book-remove"
-          aria-label={`Remover ${page.title || "folha"}`}
+          aria-label={uiText(1756, [page.title || uiText(1817)])}
           onClick={() => onRemove(page.id)}
         >
           <PaperEditorIcon name="trash" />
@@ -105,13 +108,13 @@ export function NotebookPageBook({
       {index < pages.length - 1 ? (
         <button
           type="button"
-          aria-label="Próxima folha"
+          aria-label={uiText(699)}
           onClick={() => onSelect(pages[index + 1]!.id)}
         >
           <PaperEditorIcon name="redo" />
         </button>
       ) : (
-        <button type="button" aria-label="Criar próxima folha" onClick={onCreate}>
+        <button type="button" aria-label={uiText(700)} onClick={onCreate}>
           <PaperActionIcon name="plus" />
         </button>
       )}

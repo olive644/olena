@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import {
@@ -58,6 +59,8 @@ function PageImage({
   page?: StudyNote | undefined;
   hideTitle?: boolean;
 }) {
+  useLanguage();
+
   return (
     <>
       {page?.assets[0] ? (
@@ -83,6 +86,8 @@ export function NotebookSpread({
   transitioning = false,
   readOnly = false,
 }: Props) {
+  useLanguage();
+
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [showCover, setShowCover] = useState(false);
   const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
@@ -176,27 +181,27 @@ export function NotebookSpread({
           <button
             type="button"
             className="notebook-paper-tool"
-            aria-label="Ver folhas"
+            aria-label={uiText(737)}
             disabled={busy}
             onClick={() => changeCover(false)}
           >
             <NotebookToolIcon name="index" />
-            <span>Ver folhas</span>
+            <span>{uiText(737)}</span>
           </button>
         </div>
       )}
       {showCover ? (
         <div className="notebook-cover-customizer">
-          <section className="notebook-cover-inventory" aria-label="Inventário de capas">
+          <section className="notebook-cover-inventory" aria-label={uiText(738)}>
             <div className="notebook-cover-inventory__heading">
-              <span>SUAS CAPAS</span>
-              <small>2 disponíveis</small>
+              <span>{uiText(739)}</span>
+              <small>{uiText(740)}</small>
             </div>
             <div className="notebook-cover-inventory__items">
               {(
                 [
-                  ["helena-estrelas", "Helena e as estrelas"],
-                  ["oliver-estrelas", "Oliver e as estrelas"],
+                  ["helena-estrelas", uiText(1848)],
+                  ["oliver-estrelas", uiText(1849)],
                 ] as const
               ).map(([style, label]) => {
                 const selected = (notebook.coverStyle ?? "helena-estrelas") === style;
@@ -205,7 +210,7 @@ export function NotebookSpread({
                     key={style}
                     type="button"
                     className="notebook-cover-inventory__item"
-                    aria-label={`Usar capa ${label}`}
+                    aria-label={uiText(1850, [label])}
                     aria-pressed={selected}
                     disabled={busy}
                     onClick={() =>
@@ -221,7 +226,7 @@ export function NotebookSpread({
                     </span>
                     <span className="notebook-cover-inventory__name">{label}</span>
                     <span className="notebook-cover-inventory__state">
-                      {selected ? "Em uso" : "Escolher"}
+                      {selected ? uiText(1851) : uiText(1852)}
                     </span>
                   </button>
                 );
@@ -232,7 +237,7 @@ export function NotebookSpread({
             type="button"
             className="notebook-concept-cover"
             disabled={busy}
-            aria-label={`Abrir caderno ${notebook.title} folheando a capa`}
+            aria-label={uiText(1853, [notebook.title])}
             onPointerDown={(event) => {
               if (busy || event.button !== 0) return;
               drag.current = {
@@ -295,11 +300,11 @@ export function NotebookSpread({
                   className="notebook-paper-tool"
                   disabled={busy}
                   onClick={onIndex}
-                  aria-label="Índice de folhas"
-                  title="Índice de folhas"
+                  aria-label={uiText(701)}
+                  title={uiText(701)}
                 >
                   <NotebookToolIcon name="index" />
-                  <span>Índice de folhas</span>
+                  <span>{uiText(701)}</span>
                 </button>
               )
             }
@@ -309,11 +314,11 @@ export function NotebookSpread({
                 className="notebook-paper-tool"
                 disabled={busy}
                 onClick={() => changeCover(true)}
-                aria-label="Personalizar"
-                title="Personalizar"
+                aria-label={uiText(741)}
+                title={uiText(741)}
               >
                 <NotebookToolIcon name="cover" />
-                <span className="notebook-cover-label">Personalizar</span>
+                <span className="notebook-cover-label">{uiText(741)}</span>
               </button>
             }
             onJump={(id) => turnTo(Math.floor(pages.findIndex((page) => page.id === id) / 2))}
@@ -321,7 +326,7 @@ export function NotebookSpread({
             <div
               className={`notebook-paper-spread ${turning ? "is-turning" : ""}`}
               tabIndex={0}
-              aria-label="Prévia folheável do caderno"
+              aria-label={uiText(742)}
               aria-busy={busy}
               onKeyDown={(event) => {
                 if (
@@ -446,7 +451,7 @@ export function NotebookSpread({
                         <input
                           key={page.id + page.title}
                           className="notebook-sheet-title"
-                          aria-label={`Título da folha ${pages.indexOf(page) + 1}`}
+                          aria-label={uiText(1854, [pages.indexOf(page) + 1])}
                           defaultValue={page.title}
                           maxLength={120}
                           readOnly={readOnly}
@@ -474,7 +479,7 @@ export function NotebookSpread({
                           type="button"
                           disabled={busy}
                           onClick={() => onOpen(page.id)}
-                          aria-label={`Abrir preview de ${page.title}, folha ${pages.indexOf(page) + 1}`}
+                          aria-label={uiText(1855, [page.title, pages.indexOf(page) + 1])}
                         >
                           <PageImage page={page} hideTitle />
                         </button>
@@ -485,7 +490,7 @@ export function NotebookSpread({
                               className="notebook-sheet-remove"
                               type="button"
                               disabled={busy}
-                              aria-label={`Remover folha ${pages.indexOf(page) + 1}`}
+                              aria-label={uiText(1856, [pages.indexOf(page) + 1])}
                               onClick={() => remove(page, side)}
                             >
                               <PaperEditorIcon name="close" />
@@ -494,17 +499,17 @@ export function NotebookSpread({
                         </footer>
                       </>
                     ) : side === 0 && pages.length === 0 ? (
-                      <div className="notebook-empty-paper" aria-label="Folha em branco" />
+                      <div className="notebook-empty-paper" aria-label={uiText(743)} />
                     ) : (
                       <button
                         type="button"
                         className="notebook-sheet-create"
                         disabled={busy}
                         onClick={() => onCreate(notebook.subjectId)}
-                        aria-label={pages.length ? "Criar próxima folha" : "Criar primeira folha"}
+                        aria-label={pages.length ? uiText(700) : uiText(1391)}
                       >
                         <PaperActionIcon name="plus" />
-                        <strong>{pages.length ? "Nova folha" : "Criar primeira folha"}</strong>
+                        <strong>{pages.length ? uiText(746) : uiText(1391)}</strong>
                       </button>
                     )}
                   </article>
@@ -550,7 +555,7 @@ export function NotebookSpread({
               )}
             </div>
           </NotebookPaperTools>
-          <nav className="notebook-preview-controls" aria-label="Folhear caderno">
+          <nav className="notebook-preview-controls" aria-label={uiText(695)}>
             <button
               className="secondary-button"
               type="button"
@@ -558,12 +563,16 @@ export function NotebookSpread({
               onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
               hidden={readOnly && current === 0}
             >
-              {current === 0 ? "‹ Capa" : "‹ Anterior"}
+              {current === 0 ? uiText(1857) : uiText(1858)}
             </button>
             <span aria-live="polite">
               {pages.length
-                ? `Folhas ${current * 2 + 1}${visible.length > 1 ? ` e ${current * 2 + 2}` : ""} de ${pages.length}`
-                : "Nenhuma folha ainda"}
+                ? uiText(1859, [
+                    current * 2 + 1,
+                    visible.length > 1 ? uiText(2570, [current * 2 + 2]) : "",
+                    pages.length,
+                  ])
+                : uiText(1860)}
             </span>
             <button
               className="secondary-button"
@@ -571,7 +580,7 @@ export function NotebookSpread({
               disabled={current >= lastSpread || busy}
               onClick={() => turnTo(current + 1)}
             >
-              Próxima ›
+              {uiText(744)}
             </button>
           </nav>
         </>
@@ -583,10 +592,10 @@ export function NotebookSpread({
             type="button"
             disabled={busy}
             onClick={() => onCreate(notebook.subjectId)}
-            aria-label="Criar nova folha"
+            aria-label={uiText(745)}
           >
             <PaperActionIcon name="plus" />
-            <span>Nova folha</span>
+            <span>{uiText(746)}</span>
           </button>
         </div>
       )}

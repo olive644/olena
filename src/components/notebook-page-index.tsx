@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import type { StudyNote } from "../domain/workspace";
 import { NotebookToolIcon } from "./notebook-tool-icon";
@@ -35,6 +36,8 @@ export function NotebookPageIndex({
   onToggleFavorite,
   onClose,
 }: NotebookPageIndexProps) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const element = dialog.current;
@@ -125,7 +128,7 @@ export function NotebookPageIndex({
       const target = dropIndex ?? active.fromIndex;
       if (target !== active.fromIndex) {
         onReorder?.(active.pageId, target);
-        setAnnouncement(`Folha movida para a posição ${target + 1}.`);
+        setAnnouncement(uiText(1816, [target + 1]));
       }
     }
     endDrag();
@@ -135,7 +138,7 @@ export function NotebookPageIndex({
     <dialog
       ref={dialog}
       className="notebook-page-index"
-      aria-label="Índice de folhas"
+      aria-label={uiText(701)}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -148,17 +151,17 @@ export function NotebookPageIndex({
       <header>
         <div>
           <NotebookToolIcon name="index" />
-          <h2>Índice de folhas</h2>
+          <h2>{uiText(701)}</h2>
           <p>
-            {entries.length} {entries.length === 1 ? "folha" : "folhas"}
-            {favoritesOnly ? (entries.length === 1 ? " favorita" : " favoritas") : ""}
+            {entries.length} {entries.length === 1 ? uiText(1817) : uiText(1818)}
+            {favoritesOnly ? (entries.length === 1 ? uiText(1819) : uiText(1820)) : ""}
           </p>
         </div>
         <button
           type="button"
           className="notebook-index-close"
           onClick={onClose}
-          aria-label="Fechar"
+          aria-label={uiText(230)}
         >
           <PaperEditorIcon name="close" />
         </button>
@@ -171,7 +174,7 @@ export function NotebookPageIndex({
           disabled={!favorites.length && !favoritesOnly}
           onClick={() => setFavoritesOnly((value) => !value)}
         >
-          {favoritesOnly ? "Ver todas as folhas" : "Só favoritas"}
+          {favoritesOnly ? uiText(1821) : uiText(702)}
         </button>
       )}
       <ol>
@@ -202,17 +205,11 @@ export function NotebookPageIndex({
                   type="button"
                   className="notebook-page-index__favorite"
                   aria-pressed={favorited}
-                  aria-label={
-                    favorited
-                      ? `Tirar a folha ${index + 1} dos favoritos`
-                      : `Favoritar a folha ${index + 1}`
-                  }
+                  aria-label={favorited ? uiText(1822, [index + 1]) : uiText(1823, [index + 1])}
                   onClick={() => {
                     onToggleFavorite(page.id);
                     setAnnouncement(
-                      favorited
-                        ? `Folha ${index + 1} não é mais favorita.`
-                        : `Folha ${index + 1} favoritada.`,
+                      favorited ? uiText(1824, [index + 1]) : uiText(1825, [index + 1]),
                     );
                   }}
                 >
@@ -223,7 +220,7 @@ export function NotebookPageIndex({
                 type="button"
                 className="notebook-page-index__open"
                 aria-current={current ? "page" : undefined}
-                aria-label={`Folha ${index + 1}: ${page.title || "Sem título"}`}
+                aria-label={uiText(1826, [index + 1, page.title || uiText(2046)])}
                 onPointerDown={(event) => pointerDown(event, page.id, index)}
                 onPointerMove={pointerMove}
                 onPointerUp={pointerUp}
@@ -241,34 +238,34 @@ export function NotebookPageIndex({
                   {thumbnail ? (
                     <NotebookPageThumbnail asset={thumbnail} />
                   ) : (
-                    <span aria-hidden="true">{page.content.slice(0, 80) || "Folha em branco"}</span>
+                    <span aria-hidden="true">{page.content.slice(0, 80) || uiText(743)}</span>
                   )}
                 </span>
                 <span className="notebook-page-index__label">
                   <strong>{index + 1}</strong>
-                  <span>{page.title || "Sem título"}</span>
+                  <span>{page.title || uiText(2046)}</span>
                 </span>
               </button>
               {onMove && (
                 <span className="notebook-page-index__move">
                   <button
                     type="button"
-                    aria-label={`Mover a folha ${index + 1} para trás`}
+                    aria-label={uiText(1827, [index + 1])}
                     disabled={index === 0}
                     onClick={() => {
                       onMove(page.id, -1);
-                      setAnnouncement(`Folha movida para a posição ${index}.`);
+                      setAnnouncement(uiText(1816, [index]));
                     }}
                   >
                     <img src="/paper-arrow.svg" alt="" className="is-previous" />
                   </button>
                   <button
                     type="button"
-                    aria-label={`Mover a folha ${index + 1} para frente`}
+                    aria-label={uiText(1828, [index + 1])}
                     disabled={index === pages.length - 1}
                     onClick={() => {
                       onMove(page.id, 1);
-                      setAnnouncement(`Folha movida para a posição ${index + 2}.`);
+                      setAnnouncement(uiText(1816, [index + 2]));
                     }}
                   >
                     <img src="/paper-arrow.svg" alt="" />

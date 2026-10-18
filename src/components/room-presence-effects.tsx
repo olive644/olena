@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import type { LocalRoomParticipant } from "../domain/local-room";
 import { playRoomFeedbackSound, prepareRoomFeedbackSound } from "../data/room-feedback-sound";
@@ -14,6 +15,8 @@ export function RoomPresenceEffects({
   code: string;
   participants: readonly LocalRoomParticipant[];
 }) {
+  useLanguage();
+
   const previous = useRef({ code, participants });
   const [events, setEvents] = useState<PresenceEvent[]>([]);
   const timers = useRef<number[]>([]);
@@ -61,7 +64,7 @@ export function RoomPresenceEffects({
         >
           <RoomSocialIcon kind={event.entering ? "ready" : "away"} />
           <span>
-            <strong>{event.name}</strong> {event.entering ? "entrou na sala!" : "saiu da sala"}
+            <strong>{event.name}</strong> {event.entering ? uiText(1934) : uiText(1935)}
           </span>
           <span className="room-presence-sparks" aria-hidden="true">
             ✦ ✦ ✦

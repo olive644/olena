@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type Dispatch } from "react";
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
+import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import {
   useAccessibility,
   updateAccessibility,
@@ -23,6 +24,13 @@ import { GUEST_NAME } from "../domain/guest-session";
 import type { CloudSyncState } from "../hooks/use-cloud-sync";
 import type { WorkspaceHistoryEntry } from "../data/workspace-history";
 import { SettingsIcon, type SettingsIconName } from "../components/settings-icon";
+import { SettingsFooter } from "../components/settings-footer";
+import { LanguageSwitch } from "../components/language-switch";
+import { SecuritySettings } from "../components/security-settings";
+import { HelenaLoading } from "../components/helena-loading";
+const SupportChat = lazy(() =>
+  import("../components/support-chat").then((module) => ({ default: module.SupportChat })),
+);
 import {
   ProfileAppearance,
   ProfileIdentity,
@@ -31,15 +39,20 @@ import {
   ProfileDataExport,
 } from "../components/profile-preferences";
 import "./profile-view.css";
+import "../components/settings-extras.css";
 
-const SECTIONS: readonly { id: string; label: string; icon: SettingsIconName }[] = [
-  { id: "account", label: "Conta", icon: "account" },
-  { id: "appearance", label: "Aparência e acessibilidade", icon: "appearance" },
-  { id: "study", label: "Estudo e foco", icon: "study" },
-  { id: "notebooks", label: "Cadernos", icon: "notebooks" },
-  { id: "notifications", label: "Agenda e notificações", icon: "notifications" },
-  { id: "data", label: "Privacidade e dados", icon: "data" },
-];
+const SECTIONS: readonly { id: string; label: string; icon: SettingsIconName }[] = localizeLabels(
+  () => [
+    { id: "account", label: uiText(1515), icon: "account" },
+    { id: "security", label: uiText(994), icon: "security" },
+    { id: "support", label: uiText(1011), icon: "support" },
+    { id: "appearance", label: uiText(1516), icon: "appearance" },
+    { id: "study", label: uiText(2040), icon: "study" },
+    { id: "notebooks", label: uiText(652), icon: "notebooks" },
+    { id: "notifications", label: uiText(875), icon: "notifications" },
+    { id: "data", label: uiText(2041), icon: "data" },
+  ],
+);
 
 type ProfileViewProps = {
   workspace: WorkspaceState;
@@ -58,6 +71,8 @@ export function ProfileView({
   guest = false,
   onSignIn,
 }: ProfileViewProps) {
+  useLanguage();
+
   const [section, setSection] = useState("account");
   const [mobileDetail, setMobileDetail] = useState(false);
   const [mobile, setMobile] = useState(
@@ -94,11 +109,7 @@ export function ProfileView({
   const accessibility = useAccessibility();
   const [accessibilityError, setAccessibilityError] = useState("");
   function changeAccessibility(update: Partial<AccessibilityPreferences>) {
-    setAccessibilityError(
-      updateAccessibility(update)
-        ? ""
-        : "Não foi possível salvar neste dispositivo. Tente novamente.",
-    );
+    setAccessibilityError(updateAccessibility(update) ? "" : uiText(1517));
   }
   function updatePomodoroMinutes(pomodoroMinutes: 25 | 50) {
     dispatch({
@@ -132,10 +143,10 @@ export function ProfileView({
   }
 
   const modalityLabels: Record<StudyModality, string> = {
-    visual: "Visual",
-    auditivo: "Ouvindo e conversando",
-    "leitura-escrita": "Lendo e escrevendo",
-    pratico: "Praticando",
+    visual: uiText(2010),
+    auditivo: uiText(2011),
+    "leitura-escrita": uiText(2012),
+    pratico: uiText(2013),
   };
 
   return (
@@ -148,41 +159,44 @@ export function ProfileView({
         workspace={workspace}
         settingsOpen={settingsOpen}
         guest={guest}
-        nameFallback={guest ? GUEST_NAME : cloud.displayName || "Seu perfil"}
+        nameFallback={guest ? GUEST_NAME : cloud.displayName || uiText(863)}
       >
         <PageHeader
           showUpdates={false}
           leadingAction={
-            <button
-              className="appearance-picker__trigger profile-settings-toggle"
-              type="button"
-              aria-label={
-                settingsOpen
-                  ? mobile && mobileDetail
-                    ? "Voltar às configurações"
-                    : "Voltar ao perfil"
-                  : "Configurações"
-              }
-              aria-expanded={settingsOpen}
-              aria-controls="profile-settings"
-              onClick={() => {
-                if (settingsOpen && mobile && mobileDetail) {
-                  backToSettings();
-                  return;
+            <div className="profile-header-actions">
+              {settingsOpen && <LanguageSwitch />}
+              <button
+                className="appearance-picker__trigger profile-settings-toggle"
+                type="button"
+                aria-label={
+                  settingsOpen
+                    ? mobile && mobileDetail
+                      ? uiText(1518)
+                      : uiText(1519)
+                    : uiText(734)
                 }
-                setMobileDetail(false);
-                setSettingsOpen(!settingsOpen);
-                window.scrollTo({ top: 0, behavior: "instant" });
-              }}
-            >
-              {settingsOpen ? <PaperArrow back /> : <PaperEditorIcon name="settings" />}
-            </button>
+                aria-expanded={settingsOpen}
+                aria-controls="profile-settings"
+                onClick={() => {
+                  if (settingsOpen && mobile && mobileDetail) {
+                    backToSettings();
+                    return;
+                  }
+                  setMobileDetail(false);
+                  setSettingsOpen(!settingsOpen);
+                  window.scrollTo({ top: 0, behavior: "instant" });
+                }}
+              >
+                {settingsOpen ? <PaperArrow back /> : <PaperEditorIcon name="settings" />}
+              </button>
+            </div>
           }
         />
       </ProfileShowcase>
       {!settingsOpen && <ProfileOverview workspace={workspace} dispatch={dispatch} />}
       <header className="profile-settings-heading" hidden={!settingsOpen}>
-        <h1>Configurações</h1>
+        <h1>{uiText(734)}</h1>
       </header>
       <div
         className="profile-settings-layout"
@@ -195,7 +209,7 @@ export function ProfileView({
         <nav
           ref={settingsNav}
           className="profile-settings-nav"
-          aria-label="Seções do Perfil"
+          aria-label={uiText(1520)}
           hidden={mobile && mobileDetail}
         >
           {SECTIONS.map((item) => (
@@ -215,6 +229,7 @@ export function ProfileView({
               </span>
             </button>
           ))}
+          <SettingsFooter />
         </nav>
         <div
           className="profile-settings-content"
@@ -228,13 +243,22 @@ export function ProfileView({
             {section === "account" && (
               <ProfileIdentity
                 guest={guest}
-                nameFallback={cloud.displayName || "Seu perfil"}
+                nameFallback={cloud.displayName || uiText(863)}
                 email={!guest && cloud.authenticated === true ? cloud.email : undefined}
                 onSignIn={onSignIn}
                 onSignOut={!guest && cloud.authenticated === true ? cloud.signOut : undefined}
+                signOutBlocked={["syncing", "loading", "offline", "conflict"].includes(
+                  cloud.status,
+                )}
               />
             )}
             {section === "appearance" && <ProfileAppearance />}
+            {section === "security" && <SecuritySettings cloud={cloud} />}
+            {section === "support" && (
+              <Suspense fallback={<HelenaLoading compact label={uiText(1014)} />}>
+                <SupportChat />
+              </Suspense>
+            )}
             {section === "notebooks" && <ProfileNotebookPreferences />}
             {section === "notifications" && <ProfileNotifications />}
             {section === "data" && (
@@ -248,21 +272,25 @@ export function ProfileView({
               />
             )}
             {section === "data" && <PrivacyNotice embedded />}
+            {section === "data" && (
+              <section className="profile-card" aria-labelledby="settings-terms-title">
+                <span className="section-label">{uiText(1521)}</span>
+                <h2 id="settings-terms-title">{uiText(1522)}</h2>
+                <p>{uiText(1523)}</p>
+              </section>
+            )}
             <section
               hidden={section !== "appearance"}
               className="accessibility-settings"
               aria-labelledby="accessibility-title"
             >
-              <span className="section-label">Aplicativo</span>
-              <h2 id="accessibility-title">Acessibilidade</h2>
-              <p>Vale para todo o aplicativo neste dispositivo.</p>
+              <span className="section-label">{uiText(1524)}</span>
+              <h2 id="accessibility-title">{uiText(1525)}</h2>
+              <p>{uiText(1526)}</p>
               <label>
                 <span>
-                  <strong>Reduzir movimento</strong>
-                  <small>
-                    Menos giros, saltos e efeitos animados. A preferência do sistema também é
-                    respeitada.
-                  </small>
+                  <strong>{uiText(1527)}</strong>
+                  <small>{uiText(1528)}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -272,10 +300,8 @@ export function ProfileView({
               </label>
               <label>
                 <span>
-                  <strong>Realçar seleções</strong>
-                  <small>
-                    Destaques mais fortes nas opções selecionadas, além das cores e dos símbolos.
-                  </small>
+                  <strong>{uiText(1529)}</strong>
+                  <small>{uiText(1530)}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -285,11 +311,8 @@ export function ProfileView({
               </label>
               <label>
                 <span>
-                  <strong>Efeitos sonoros</strong>
-                  <small>
-                    Sons de acerto, erro e recompensas nos minigames e na sala. Não altera as vozes
-                    dos exercícios.
-                  </small>
+                  <strong>{uiText(1531)}</strong>
+                  <small>{uiText(1532)}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -297,7 +320,7 @@ export function ProfileView({
                   onChange={(event) => changeAccessibility({ soundEffects: event.target.checked })}
                 />
               </label>
-              {accessibilityError && <p role="alert">{accessibilityError}</p>}
+              {accessibilityError && <p role="alert">{uiText(accessibilityError)}</p>}
             </section>
             <section
               hidden={section !== "study"}
@@ -305,24 +328,24 @@ export function ProfileView({
               aria-labelledby="study-method-title"
             >
               <div className="study-method-settings__header">
-                <span className="section-label">Método Pomodoro</span>
-                <h2 id="study-method-title">Seu ritmo de foco</h2>
+                <span className="section-label">{uiText(1533)}</span>
+                <h2 id="study-method-title">{uiText(1534)}</h2>
               </div>
 
               <fieldset className="study-duration-options">
-                <legend>Duração da rodada</legend>
+                <legend>{uiText(1535)}</legend>
                 <div>
                   {([25, 50] as const).map((minutes) => (
                     <button
                       className="secondary-button"
                       type="button"
-                      aria-label={`${minutes} minutos`}
+                      aria-label={uiText(2042, [minutes])}
                       aria-pressed={workspace.focusPreferences.pomodoroMinutes === minutes}
                       onClick={() => updatePomodoroMinutes(minutes)}
                       key={minutes}
                     >
                       {workspace.focusPreferences.pomodoroMinutes === minutes && <PaperCheckIcon />}
-                      {minutes} minutos
+                      {minutes} {uiText(1292)}
                     </button>
                   ))}
                 </div>
@@ -338,8 +361,8 @@ export function ProfileView({
                   {workspace.focusPreferences.longBreaks && <PaperCheckIcon />}
                 </span>
                 <span>
-                  <strong>Pausa longa após 4 rodadas</strong>
-                  <small>15 minutos para descansar.</small>
+                  <strong>{uiText(1536)}</strong>
+                  <small>{uiText(1537)}</small>
                 </span>
               </button>
             </section>
@@ -350,15 +373,13 @@ export function ProfileView({
               aria-labelledby="study-preference-title"
             >
               <div className="study-method-settings__header">
-                <span className="section-label">Seu jeito de estudar</span>
-                <h2 id="study-preference-title">Preferências de estudo</h2>
-                <p>
-                  Estas escolhas organizam recomendações futuras. Você pode combinar modalidades.
-                </p>
+                <span className="section-label">{uiText(1538)}</span>
+                <h2 id="study-preference-title">{uiText(1539)}</h2>
+                <p>{uiText(1540)}</p>
               </div>
 
               <fieldset className="study-preference-options">
-                <legend>Como você prefere aprender?</legend>
+                <legend>{uiText(1417)}</legend>
                 <div>
                   {studyModalities.map((modality) => (
                     <button
@@ -379,28 +400,28 @@ export function ProfileView({
                 [
                   [
                     "processing",
-                    "Como organizar o estudo?",
+                    uiText(2043),
                     [
-                      ["sequencial", "Passo a passo"],
-                      ["global", "Visão geral primeiro"],
+                      ["sequencial", uiText(2014)],
+                      ["global", uiText(1421)],
                     ],
                   ],
                   [
                     "rhythm",
-                    "Qual ritmo combina com você?",
+                    uiText(1541),
                     [
-                      ["focado", "Foco contínuo"],
-                      ["difuso", "Alternar estudo e pausas"],
+                      ["focado", uiText(1424)],
+                      ["difuso", uiText(2015)],
                     ],
                   ],
                   [
                     "programming",
-                    "Programação",
+                    uiText(1109),
                     [
-                      ["nenhum", "Agora não"],
-                      ["python", "Python"],
-                      ["javascript", "JavaScript"],
-                      ["python-javascript", "Python e JavaScript"],
+                      ["nenhum", uiText(414)],
+                      ["python", uiText(2016)],
+                      ["javascript", uiText(2044)],
+                      ["python-javascript", uiText(2017)],
                     ],
                   ],
                 ] as const

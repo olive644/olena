@@ -1,6 +1,31 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { PaperDateField, PaperTimeField } from "./agenda-paper-fields";
+import english from "../../public/locales/en-US.json";
+import { changeLanguage, installUiCatalog } from "../i18n/runtime";
+
+it("switches date presentation without changing ISO values and accepts US month/day", async () => {
+  installUiCatalog("en-US", english);
+  const change = vi.fn();
+  const view = render(<PaperDateField label="Date" value="2026-10-12" onChange={change} />);
+  const input = screen.getByLabelText("Date") as HTMLInputElement;
+  expect(input.value).toBe("12/10/2026");
+  try {
+    await act(async () => changeLanguage("en-US"));
+    expect(input.value).toBe("10/12/2026");
+    expect(change).not.toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: "10/13/2026" } });
+    expect(change).toHaveBeenCalledWith("2026-10-13");
+    fireEvent.change(input, { target: { value: "10/" } });
+    const draft = input.value;
+    await act(async () => changeLanguage("pt-BR"));
+    expect(input.value).toBe(draft);
+    expect(input.checkValidity()).toBe(false);
+  } finally {
+    view.unmount();
+    await act(async () => changeLanguage("pt-BR"));
+  }
+});
 
 it("revalidates the optional end date when the start date changes", () => {
   const { rerender } = render(

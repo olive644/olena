@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import "./helena-loading.css";
 
 type HelenaLoadingProps = {
@@ -5,10 +6,9 @@ type HelenaLoadingProps = {
   compact?: boolean;
 };
 
-export function HelenaLoading({
-  label = "Preparando seu espaço…",
-  compact = false,
-}: HelenaLoadingProps) {
+export function HelenaLoading({ label = uiText(398), compact = false }: HelenaLoadingProps) {
+  useLanguage();
+
   return (
     <div
       className={`helena-loading${compact ? " helena-loading--compact" : ""}`}

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useState, useRef } from "react";
 import qrcode from "qrcode-generator";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -8,6 +9,8 @@ import { RoomQrCode } from "./room-qr-code";
 import { RoomSocialIcon } from "./room-social-icon";
 
 export function ProfileShareCard({ person }: { person: SocialProfile }) {
+  useLanguage();
+
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
   const qrElement = useRef<HTMLDivElement>(null);
@@ -18,21 +21,20 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
   async function copy() {
     try {
       await navigator.clipboard.writeText(url);
-      setStatus("Link copiado.");
+      setStatus(uiText(1909));
     } catch {
-      setStatus("Não foi possível copiar. Tente novamente ou use Compartilhar.");
+      setStatus(uiText(901));
     }
   }
   async function share() {
     try {
       await navigator.share({
-        title: `${person.name} no OlenaStudy`,
-        text: "Vamos estudar juntos?",
+        title: uiText(2551, [person.name]),
+        text: uiText(908),
         url,
       });
     } catch (cause) {
-      if (!(cause instanceof DOMException && cause.name === "AbortError"))
-        setStatus("Não foi possível compartilhar. Você pode copiar o link.");
+      if (!(cause instanceof DOMException && cause.name === "AbortError")) setStatus(uiText(902));
     }
   }
   async function save() {
@@ -80,7 +82,7 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       context.font = "700 28px Manrope, sans-serif";
       context.fillText(`@${person.username}`, 40, 580);
       context.font = "600 22px Manrope, sans-serif";
-      context.fillText("Vamos estudar juntos?", 40, 636);
+      context.fillText(uiText(908), 40, 636);
       const qr = qrcode(0, "H");
       qr.addData(url);
       qr.make();
@@ -113,59 +115,59 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       }
       context.fillStyle = "#7C3AED";
       context.font = "800 24px Manrope, sans-serif";
-      context.fillText("Compartilhar perfil", 40, 730);
+      context.fillText(uiText(903), 40, 730);
       context.fillStyle = "#51465D";
       context.font = "500 17px Manrope, sans-serif";
       context.fillText(window.location.host, 40, 772);
       context.fillText(`@${person.username}`, 40, 802);
       context.font = "700 18px Manrope, sans-serif";
-      context.fillText("Escaneie para encontrar meu perfil", 40, 926);
+      context.fillText(uiText(904), 40, 926);
       const blob = await new Promise<Blob>((resolve, reject) =>
         canvas.toBlob((value) => (value ? resolve(value) : reject(new Error())), "image/png"),
       );
       const link = document.createElement("a");
       const download = URL.createObjectURL(blob);
       link.href = download;
-      link.download = `olena-perfil-${person.username}.png`;
+      link.download = uiText(2297, [person.username]);
       link.click();
       window.setTimeout(() => URL.revokeObjectURL(download), 1000);
-      setStatus("Cartão salvo.");
+      setStatus(uiText(905));
     } catch {
-      setStatus("Não foi possível salvar o cartão. Tente copiar o link.");
+      setStatus(uiText(906));
     } finally {
       setSaving(false);
     }
   }
   return (
-    <section className="social-share" aria-label="Compartilhar perfil">
+    <section className="social-share" aria-label={uiText(903)}>
       <div className="social-share-card">
         <div className="social-share-cover">
           <ProfileCoverArt theme={profileCover(person.cover)} />
         </div>
-        <strong className="social-share-brand">OlenaStudy</strong>
+        <strong className="social-share-brand">{uiText(116)}</strong>
         <img
           draggable={false}
           src={person.photoUrl}
-          alt={`Avatar de ${person.name}`}
+          alt={uiText(1910, [person.name])}
           width="160"
           height="160"
         />
         <h3>{person.name}</h3>
         <p>@{person.username}</p>
         <div ref={qrElement}>
-          <RoomQrCode value={url} size={180} bare label="QR code do perfil" />
+          <RoomQrCode value={url} size={180} bare label={uiText(907)} />
         </div>
-        <p>Vamos estudar juntos?</p>
+        <p>{uiText(908)}</p>
       </div>
       <div className="social-share-actions">
         <button type="button" className="secondary-button" onClick={() => void copy()}>
           <RoomSocialIcon kind="copy" />
-          Copiar link
+          {uiText(461)}
         </button>
         {typeof navigator.share === "function" && (
           <button type="button" className="secondary-button" onClick={() => void share()}>
             <PaperEditorIcon name="share" />
-            Compartilhar
+            {uiText(677)}
           </button>
         )}
         <button
@@ -175,10 +177,10 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
           onClick={() => void save()}
         >
           <PaperEditorIcon name="download" />
-          {saving ? "Salvando..." : "Salvar cartão"}
+          {saving ? uiText(1911) : uiText(909)}
         </button>
       </div>
-      {status && <p role="status">{status}</p>}
+      {status && <p role="status">{uiText(status)}</p>}
     </section>
   );
 }

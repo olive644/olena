@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { type ChartItem } from "../domain/agenda-dashboard";
 import { PaperDigits } from "./paper-digits";
 import { useId, useState } from "react";
@@ -28,6 +29,8 @@ export function AgendaCharts({
   barTitle: string;
   pieTitle: string;
 }) {
+  useLanguage();
+
   const inspectionId = useId();
   const bars = suppliedBars.filter((item) => Number.isFinite(item.value) && item.value > 0);
   const maximum = Math.max(1, ...bars.map((item) => item.value));
@@ -102,7 +105,7 @@ export function AgendaCharts({
             ))}
           </div>
           {!bars.some((item) => item.value > 0) && (
-            <small className="agenda-chart-empty">Nenhum registro neste período.</small>
+            <small className="agenda-chart-empty">{uiText(11)}</small>
           )}
         </figure>
       )}
@@ -118,7 +121,7 @@ export function AgendaCharts({
                 aria-label={
                   total
                     ? `${pieTitle}: ${slices.map((item) => `${item.label}: ${item.value} ${unit}`).join(", ")}`
-                    : "Sem dados para distribuição"
+                    : uiText(12)
                 }
               >
                 {!total && <path d={fullRing} fill="var(--agenda-fold)" fillRule="evenodd" />}
@@ -186,7 +189,7 @@ export function AgendaCharts({
                     <button
                       type="button"
                       className="agenda-legend-inspect"
-                      aria-label={`Inspecionar ${item.label}`}
+                      aria-label={uiText(1567, [item.label])}
                       onClick={() => setInspection({ source: "pie", label: item.label })}
                       onFocus={() => setInspection({ source: "pie", label: item.label })}
                     >
@@ -200,12 +203,10 @@ export function AgendaCharts({
                 ))}
               </ul>
             ) : (
-              <span className="agenda-chart-empty">Sem dados para distribuir.</span>
+              <span className="agenda-chart-empty">{uiText(13)}</span>
             )}
           </div>
-          {slices.length === 1 && (
-            <small className="agenda-chart-empty">Um grupo registrado: 100% do total.</small>
-          )}
+          {slices.length === 1 && <small className="agenda-chart-empty">{uiText(14)}</small>}
         </figure>
       )}
       <output id={inspectionId} className="agenda-chart-inspection" aria-live="polite">
@@ -217,13 +218,11 @@ export function AgendaCharts({
               {Math.round(
                 (inspected.value / ((inspection?.source === "bar" ? barTotal : total) || 1)) * 100,
               )}
-              % do total
+              {uiText(15)}
             </span>
           </>
         ) : (
-          <small>
-            Toque nas barras ou fatias para inspecionar. Nas barras, use também as setas do teclado.
-          </small>
+          <small>{uiText(16)}</small>
         )}
       </output>
     </div>

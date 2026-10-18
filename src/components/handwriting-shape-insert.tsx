@@ -1,3 +1,4 @@
+import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useEffect, useRef } from "react";
 import type { ShapeKind } from "./handwriting-shapes";
 import { PaperObjectIcon } from "./paper-object-icon";
@@ -10,16 +11,18 @@ type HandwritingShapeInsertProps = {
   onClose: () => void;
 };
 
-const SHAPES: { kind: InsertKind; label: string }[] = [
-  { kind: "ellipse", label: "Elipse" },
-  { kind: "rectangle", label: "Retângulo" },
-  { kind: "triangle", label: "Triângulo" },
-  { kind: "arrow", label: "Seta" },
-  { kind: "polygon", label: "Polígono" },
-];
+const SHAPES: { kind: InsertKind; label: string }[] = localizeLabels(() => [
+  { kind: "ellipse", label: uiText(1665) },
+  { kind: "rectangle", label: uiText(197) },
+  { kind: "triangle", label: uiText(227) },
+  { kind: "arrow", label: uiText(1666) },
+  { kind: "polygon", label: uiText(228) },
+]);
 
 // Alternativa por teclado ao desenho e à medição com ponteiro.
 export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeInsertProps) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const element = dialog.current;
@@ -31,7 +34,7 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
     <dialog
       ref={dialog}
       className="handwriting-shape-insert"
-      aria-label="Inserir sem desenhar"
+      aria-label={uiText(229)}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -39,13 +42,13 @@ export function HandwritingShapeInsert({ onInsert, onClose }: HandwritingShapeIn
       onKeyDown={(event) => event.stopPropagation()}
     >
       <header>
-        <h2>Inserir sem desenhar</h2>
-        <button type="button" aria-label="Fechar" onClick={onClose}>
+        <h2>{uiText(229)}</h2>
+        <button type="button" aria-label={uiText(230)} onClick={onClose}>
           <PaperEditorIcon name="close" />
         </button>
       </header>
-      <p>Escolha uma forma. Ela aparece pronta para mover e ajustar.</p>
-      <div className="handwriting-shape-insert__grid" role="group" aria-label="Formas">
+      <p>{uiText(231)}</p>
+      <div className="handwriting-shape-insert__grid" role="group" aria-label={uiText(232)}>
         {SHAPES.map(({ kind, label }) => (
           <button
             key={kind}

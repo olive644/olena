@@ -58,6 +58,10 @@ export const handleProfileHandle = createProfileHandleHandler({
     const { handleProfileSocial } = await import("./profile-social-runtime.js");
     const response = await handleProfileSocial(request);
     if (!response.ok) throw new Error("delete-social");
+    const account = await identifyProfileAccount(request);
+    if (!account) throw new Error("support-delete-identity");
+    const { removeSupportAccount } = await import("./support-runtime.js");
+    await removeSupportAccount(account.uid);
   },
   consume: (uid) => checkRateLimit(rateStore, "profile-handles-minute", uid, 30, 60),
   store: {

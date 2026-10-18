@@ -1,9 +1,10 @@
+import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useGoogleCalendar, type GoogleCalendarEvent } from "../hooks/use-google-calendar";
 import { HelenaLoading } from "../components/helena-loading";
 
 function formatGoogleEventWhen(event: GoogleCalendarEvent): string {
-  if (event.allDay) return new Date(`${event.start}T00:00:00`).toLocaleDateString("pt-BR");
-  return new Date(event.start).toLocaleString("pt-BR", {
+  if (event.allDay) return new Date(`${event.start}T00:00:00`).toLocaleDateString(uiLocale());
+  return new Date(event.start).toLocaleString(uiLocale(), {
     day: "2-digit",
     month: "2-digit",
     hour: "2-digit",
@@ -12,34 +13,31 @@ function formatGoogleEventWhen(event: GoogleCalendarEvent): string {
 }
 
 export function GoogleCalendarPanel() {
+  useLanguage();
+
   const googleCalendar = useGoogleCalendar();
 
   return (
     <section className="module-panel" aria-labelledby="google-calendar-title">
       <div className="module-heading">
-        <h2 id="google-calendar-title">Google Agenda</h2>
+        <h2 id="google-calendar-title">{uiText(1185)}</h2>
         {googleCalendar.status === "connected" && (
           <button
             className="icon-button"
             type="button"
             onClick={() => void googleCalendar.disconnect()}
           >
-            Desconectar
+            {uiText(1186)}
           </button>
         )}
       </div>
-      <p>
-        Eventos do Google são somente leitura aqui. Abra o evento no Google para alterar. Eles não
-        são copiados para sua agenda local.
-      </p>
-      {googleCalendar.status === "checking" && (
-        <HelenaLoading label="Verificando conexão…" compact />
-      )}
+      <p>{uiText(1187)}</p>
+      {googleCalendar.status === "checking" && <HelenaLoading label={uiText(1188)} compact />}
       {googleCalendar.status === "disconnected" && (
         <div className="empty-state">
-          <p>Conecte seu Google Agenda para ver seus próximos compromissos aqui.</p>
+          <p>{uiText(1189)}</p>
           <button className="secondary-button" type="button" onClick={googleCalendar.connect}>
-            Conectar Google Agenda
+            {uiText(1190)}
           </button>
         </div>
       )}
@@ -48,7 +46,7 @@ export function GoogleCalendarPanel() {
           {googleCalendar.error && <p role="alert">{googleCalendar.error}</p>}
           {googleCalendar.events.length === 0 ? (
             <div className="empty-state">
-              <p>Nenhum evento nos próximos 14 dias.</p>
+              <p>{uiText(1191)}</p>
             </div>
           ) : (
             <ul className="schedule-list schedule-list--dated">

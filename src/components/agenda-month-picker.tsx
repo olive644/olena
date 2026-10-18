@@ -1,9 +1,10 @@
+import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { useId, useRef, useState } from "react";
 import { PaperArrow } from "./paper-arrow";
 import { AgendaCloseIcon } from "./agenda-close-icon";
 
 const months = Array.from({ length: 12 }, (_, index) =>
-  new Date(2026, index, 1).toLocaleDateString("pt-BR", { month: "long" }),
+  new Date(2026, index, 1).toLocaleDateString(uiLocale(), { month: "long" }),
 );
 
 export function AgendaMonthPicker({
@@ -15,6 +16,8 @@ export function AgendaMonthPicker({
   today: string;
   onChange: (date: string) => void;
 }) {
+  useLanguage();
+
   const id = useId();
   const panel = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -31,7 +34,7 @@ export function AgendaMonthPicker({
         ref={trigger}
         type="button"
         className="secondary-button agenda-month-trigger agenda-calendar-toggle"
-        aria-label="Escolher mês"
+        aria-label={uiText(71)}
         aria-haspopup="dialog"
         aria-expanded={open}
         popoverTarget={id}
@@ -57,14 +60,14 @@ export function AgendaMonthPicker({
         </svg>
       </button>
       <span className="agenda-visible-month">
-        {months[Number(value.slice(5, 7)) - 1]} de {value.slice(0, 4)}
+        {months[Number(value.slice(5, 7)) - 1]} {uiText(72)} {value.slice(0, 4)}
       </span>
       <div
         ref={panel}
         id={id}
         popover="auto"
         role="dialog"
-        aria-label="Escolher mês e ano"
+        aria-label={uiText(73)}
         className="agenda-month-popover"
         onToggle={(event) => {
           const visible = event.currentTarget.matches(":popover-open");
@@ -72,11 +75,11 @@ export function AgendaMonthPicker({
         }}
       >
         <header>
-          <strong>Escolher mês</strong>
+          <strong>{uiText(71)}</strong>
           <button
             type="button"
             className="icon-button"
-            aria-label="Fechar seletor de mês"
+            aria-label={uiText(74)}
             popoverTarget={id}
             popoverTargetAction="hide"
           >
@@ -87,16 +90,16 @@ export function AgendaMonthPicker({
           <button
             type="button"
             className="secondary-button"
-            aria-label="Ano anterior"
+            aria-label={uiText(75)}
             disabled={year <= 1}
             onClick={() => setYear(year - 1)}
           >
             <PaperArrow back />
           </button>
           <label>
-            <span>Ano</span>
+            <span>{uiText(76)}</span>
             <input
-              aria-label="Ano"
+              aria-label={uiText(76)}
               type="text"
               inputMode="numeric"
               value={year}
@@ -110,14 +113,14 @@ export function AgendaMonthPicker({
           <button
             type="button"
             className="secondary-button"
-            aria-label="Próximo ano"
+            aria-label={uiText(77)}
             disabled={year >= 9999}
             onClick={() => setYear(year + 1)}
           >
             <PaperArrow />
           </button>
         </div>
-        <div className="agenda-month-options" role="group" aria-label="Meses do ano">
+        <div className="agenda-month-options" role="group" aria-label={uiText(78)}>
           {months.map((name, index) => {
             const date = `${String(year).padStart(4, "0")}-${String(index + 1).padStart(2, "0")}`;
             const selected = value.slice(0, 7) === date;
@@ -136,7 +139,7 @@ export function AgendaMonthPicker({
         </div>
         <footer>
           <button type="button" className="secondary-button" onClick={() => choose(today)}>
-            Este mês
+            {uiText(79)}
           </button>
         </footer>
       </div>

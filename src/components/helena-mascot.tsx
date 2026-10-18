@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-runtime";
 
@@ -35,6 +36,8 @@ function formOf(state: string): "star" | "helena" | "transforming" {
  * olharX). Nada da conversa ou da conta passa por aqui.
  */
 export function HelenaMascot(props: MascotProps) {
+  useLanguage();
+
   const host = useRef<HTMLSpanElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const player = useRef<RivePlayer | null>(null);
@@ -174,14 +177,14 @@ export function HelenaMascot(props: MascotProps) {
         const instance = new rive.Rive({
           src: RIVE_FILE,
           canvas: target,
-          stateMachines: "Helena",
+          stateMachines: uiText(381),
           autoplay: true,
           layout: new rive.Layout({ fit: rive.Fit.Contain }),
           onLoad: () => {
             if (cancelled) return;
             instance.resizeDrawingSurfaceToCanvas();
             const found: Record<string, RiveInput> = {};
-            for (const input of instance.stateMachineInputs("Helena") ?? [])
+            for (const input of instance.stateMachineInputs(uiText(381)) ?? [])
               found[input.name] = input;
             inputs.current = found;
             setReady(true);

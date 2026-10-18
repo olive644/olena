@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 import { requestSocial, SOCIAL_VISIT } from "../data/profile-social";
@@ -16,18 +17,20 @@ import { profileCover } from "../domain/profile-covers";
 import { ProfileCoverArt } from "./profile-cover-art";
 
 function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: string): void }) {
+  useLanguage();
+
   return (
     <button
       type="button"
       className="social-person"
-      aria-label={`Visitar perfil de @${person.username}`}
+      aria-label={uiText(1912, [person.username])}
       onClick={() => onVisit(person.username)}
     >
       <img src={person.photoUrl} alt="" width="44" height="44" />
       <span>
         <strong title={person.name}>{person.name}</strong>
         <small title={`@${person.username}`}>@{person.username}</small>
-        {person.followsYou && <small className="social-person-relation">Segue você</small>}
+        {person.followsYou && <small className="social-person-relation">{uiText(924)}</small>}
       </span>
     </button>
   );
@@ -46,6 +49,8 @@ export function SocialDirectory({
   initialList?: "followers" | "following";
   initialSharing?: boolean;
 }) {
+  useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const [search, setSearch] = useState(initialUsername);
   const [feed, setFeed] = useState<SocialFeed>();
@@ -74,13 +79,10 @@ export function SocialDirectory({
       const name = selected[0]?.name?.[0];
       if (name) {
         setSearch(name.slice(0, 80));
-        setStatus(
-          "Nome selecionado. Toque Buscar para procurar perfis que compartilham esse nome.",
-        );
+        setStatus(uiText(925));
       }
     } catch (cause) {
-      if (!(cause instanceof DOMException && cause.name === "AbortError"))
-        setError("Não foi possível abrir contatos. Use a busca por nome ou @.");
+      if (!(cause instanceof DOMException && cause.name === "AbortError")) setError(uiText(926));
     }
   }
   const generation = useRef(0);
@@ -113,7 +115,7 @@ export function SocialDirectory({
       if (current === generation.current) setFeed(value);
     } catch (cause) {
       if (current === generation.current)
-        setError(cause instanceof Error ? cause.message : "Não foi possível consultar amigos.");
+        setError(cause instanceof Error ? cause.message : uiText(927));
     } finally {
       if (current === generation.current) setBusy(false);
     }
@@ -134,7 +136,7 @@ export function SocialDirectory({
       })
       .catch((cause: unknown) => {
         if (active && current === generation.current)
-          setError(cause instanceof Error ? cause.message : "Não foi possível consultar amigos.");
+          setError(cause instanceof Error ? cause.message : uiText(927));
       })
       .finally(() => {
         if (active && current === generation.current) setBusy(false);
@@ -167,7 +169,7 @@ export function SocialDirectory({
         );
     } catch (cause) {
       if (current === generation.current)
-        setError(cause instanceof Error ? cause.message : "Não foi possível abrir a lista.");
+        setError(cause instanceof Error ? cause.message : uiText(928));
     } finally {
       if (current === generation.current) setBusy(false);
     }
@@ -192,7 +194,7 @@ export function SocialDirectory({
       }
     } catch (cause) {
       if (current === generation.current)
-        setError(cause instanceof Error ? cause.message : "Não foi possível alterar a conexão.");
+        setError(cause instanceof Error ? cause.message : uiText(929));
     } finally {
       if (current === generation.current) setBusy(false);
     }
@@ -218,10 +220,8 @@ export function SocialDirectory({
       }}
     >
       <header>
-        <h2 id="social-directory-title">
-          {sharing ? "Compartilhar perfil" : "Encontre seus amigos"}
-        </h2>
-        <button type="button" className="icon-button" aria-label="Fechar amigos" onClick={close}>
+        <h2 id="social-directory-title">{sharing ? uiText(903) : uiText(1913)}</h2>
+        <button type="button" className="icon-button" aria-label={uiText(930)} onClick={close}>
           <PaperCloseIcon />
         </button>
       </header>
@@ -229,13 +229,13 @@ export function SocialDirectory({
         <>
           <button type="button" className="secondary-button" onClick={() => setSharing(false)}>
             <PaperArrow back />
-            Voltar para amigos
+            {uiText(931)}
           </button>
           {ownCard && <ProfileShareCard person={ownCard} />}
         </>
       ) : (
         <>
-          <nav className="social-directory-actions" aria-label="Encontrar amigos">
+          <nav className="social-directory-actions" aria-label={uiText(932)}>
             <button
               type="button"
               className="secondary-button"
@@ -248,7 +248,7 @@ export function SocialDirectory({
                 <path d="M35 2h4v39h-4ZM2 10h10v4H2Zm0 12h10v4H2Zm0 12h10v4H2Z" fill="#FFF9EF" />
                 <path d="m21 8 8 2 3 7-6 5-8-3Zm-4 17h14l4 11H13Z" fill="#7C3AED" />
               </svg>
-              Escolher nos contatos
+              {uiText(933)}
             </button>
             <button
               type="button"
@@ -267,7 +267,7 @@ export function SocialDirectory({
                 <path fill="#EF7B72" d="m31 29 6-1 11 14-6 5-13-13Z" />
                 <path fill="#FFB2A3" d="m31 29 6-1 11 14-5-1Z" />
               </svg>
-              Buscar por nome
+              {uiText(934)}
             </button>
             <button
               type="button"
@@ -277,45 +277,37 @@ export function SocialDirectory({
             >
               {feed && <img src={feed.self.photoUrl} alt="" width="32" height="32" />}
               <PaperEditorIcon name="share" />
-              Compartilhar perfil
+              {uiText(903)}
             </button>
           </nav>
-          {!contacts && (
-            <p className="social-support-note">
-              Este navegador não oferece seleção de contatos. Use a busca ou compartilhe seu perfil.
-            </p>
-          )}
-          {contacts && (
-            <p className="social-support-note">
-              Somente o nome do contato escolhido é preenchido aqui. Não lemos telefones ou e-mails.
-            </p>
-          )}
+          {!contacts && <p className="social-support-note">{uiText(935)}</p>}
+          {contacts && <p className="social-support-note">{uiText(936)}</p>}
           <form
             onSubmit={(event) => {
               event.preventDefault();
               void load();
             }}
           >
-            <label htmlFor="social-search">Buscar por nome ou @</label>
+            <label htmlFor="social-search">{uiText(937)}</label>
             <div className="social-search-row">
               <input
                 id="social-search"
                 value={search}
                 maxLength={80}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Nome ou nome de usuário"
+                placeholder={uiText(938)}
                 autoComplete="off"
               />
               <button type="submit" className="secondary-button" disabled={busy}>
-                Buscar
+                {uiText(939)}
               </button>
             </div>
           </form>
-          {error && <p role="alert">{error}</p>}
-          {status && <p role="status">{status}</p>}
-          {busy && <HelenaLoading label="Consultando amigos" compact />}
+          {error && <p role="alert">{uiText(error)}</p>}
+          {status && <p role="status">{uiText(status)}</p>}
+          {busy && <HelenaLoading label={uiText(940)} compact />}
           {list && feed && (
-            <section className="social-connections" aria-label="Lista de conexões">
+            <section className="social-connections" aria-label={uiText(941)}>
               <button
                 type="button"
                 className="secondary-button"
@@ -325,9 +317,9 @@ export function SocialDirectory({
                 }}
               >
                 <PaperArrow back />
-                Voltar
+                {uiText(374)}
               </button>
-              <nav aria-label="Seguidores e seguindo">
+              <nav aria-label={uiText(942)}>
                 {(["following", "followers"] as const).map((kind) => (
                   <button
                     key={kind}
@@ -337,7 +329,7 @@ export function SocialDirectory({
                     disabled={busy}
                     onClick={() => void loadList(kind, list.owner)}
                   >
-                    {kind === "following" ? "Seguindo" : "Seguidores"}
+                    {kind === "following" ? uiText(918) : uiText(916)}
                   </button>
                 ))}
               </nav>
@@ -352,7 +344,7 @@ export function SocialDirectory({
                         disabled={busy}
                         onClick={() => setConfirmation({ person: item, action: "remove-follower" })}
                       >
-                        Remover
+                        {uiText(44)}
                       </button>
                     ) : (
                       <button
@@ -361,17 +353,13 @@ export function SocialDirectory({
                         disabled={busy}
                         onClick={() => void follow(item)}
                       >
-                        {item.followed ? "Seguindo" : "Seguir"}
+                        {item.followed ? uiText(918) : uiText(1914)}
                       </button>
                     ))}
                 </div>
               ))}
               {!busy && !feed.connections?.people.length && (
-                <p role="status">
-                  {list.kind === "followers"
-                    ? "Nenhum seguidor ainda."
-                    : "Ainda não segue ninguém."}
-                </p>
+                <p role="status">{list.kind === "followers" ? uiText(1915) : uiText(943)}</p>
               )}
               {feed.connections?.next !== undefined && (
                 <button
@@ -380,13 +368,13 @@ export function SocialDirectory({
                   disabled={busy}
                   onClick={() => void loadList(list.kind, list.owner, feed.connections!.next)}
                 >
-                  Ver mais
+                  {uiText(944)}
                 </button>
               )}
             </section>
           )}
           {person && !list && (
-            <section className="social-profile" aria-label={`Perfil de @${person.username}`}>
+            <section className="social-profile" aria-label={uiText(1916, [person.username])}>
               <div className="social-visit-cover">
                 <ProfileCoverArt theme={profileCover(person.cover)} />
               </div>
@@ -394,7 +382,7 @@ export function SocialDirectory({
                 src={person.photoUrl}
                 width="104"
                 height="104"
-                alt={`Avatar de ${person.name}`}
+                alt={uiText(1910, [person.name])}
               />
               <h3>{person.name}</h3>
               <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
@@ -405,17 +393,17 @@ export function SocialDirectory({
                   className="secondary-button"
                   onClick={() => void loadList("followers", person.username)}
                 >
-                  {person.followers} Seguidores
+                  {person.followers} {uiText(916)}
                 </button>
                 <button
                   type="button"
                   className="secondary-button"
                   onClick={() => void loadList("following", person.username)}
                 >
-                  {person.following} Seguindo
+                  {person.following} {uiText(918)}
                 </button>
               </div>
-              {person.followsYou && <p>Segue você</p>}
+              {person.followsYou && <p>{uiText(924)}</p>}
               {person.username !== feed.self.username && (
                 <button
                   type="button"
@@ -424,11 +412,7 @@ export function SocialDirectory({
                   onClick={() => void follow(person)}
                 >
                   <FriendIcon />
-                  {person.followed
-                    ? "Seguindo"
-                    : person.followsYou
-                      ? "Seguir de volta"
-                      : "Adicionar amigo"}
+                  {person.followed ? uiText(918) : person.followsYou ? uiText(1917) : uiText(911)}
                 </button>
               )}
             </section>
@@ -441,35 +425,31 @@ export function SocialDirectory({
                 onVisit={(username) => void load(username)}
               />
             ))}
-          {feed?.results?.length === 0 && <p>Nenhuma pessoa encontrada com esse início de @.</p>}
+          {feed?.results?.length === 0 && <p>{uiText(945)}</p>}
           {feed && !person && !list && (
-            <section aria-label="Sugestões de amigos">
-              <h3>Sugestões de amigos</h3>
+            <section aria-label={uiText(946)}>
+              <h3>{uiText(946)}</h3>
               {feed.suggestions?.length ? (
                 feed.suggestions.map((item) => (
                   <div key={item.username}>
                     <Person person={item} onVisit={(username) => void load(username)} />
-                    <small>{item.mutualCount} conexão em comum</small>
+                    <small>
+                      {item.mutualCount} {uiText(947)}
+                    </small>
                   </div>
                 ))
               ) : (
-                <p>As sugestões aparecem quando suas conexões seguirem outras pessoas.</p>
+                <p>{uiText(948)}</p>
               )}
             </section>
           )}
         </>
       )}
       {confirmation && (
-        <section
-          className="social-confirm"
-          role="alertdialog"
-          aria-label="Confirmar alteração da conexão"
-        >
+        <section className="social-confirm" role="alertdialog" aria-label={uiText(949)}>
           <p>
-            {confirmation.action === "unfollow"
-              ? "Deixar de seguir"
-              : "Remover dos seus seguidores"}{" "}
-            @{confirmation.person.username}?
+            {confirmation.action === "unfollow" ? uiText(1918) : uiText(1919)} @
+            {confirmation.person.username}?
           </p>
           <button
             type="button"
@@ -477,7 +457,7 @@ export function SocialDirectory({
             disabled={busy}
             onClick={() => setConfirmation(undefined)}
           >
-            Cancelar
+            {uiText(155)}
           </button>
           <button
             type="button"
@@ -487,16 +467,18 @@ export function SocialDirectory({
               void mutate({ action: confirmation.action, username: confirmation.person.username })
             }
           >
-            {confirmation.action === "unfollow" ? "Deixar de seguir" : "Remover seguidor"}
+            {confirmation.action === "unfollow" ? uiText(1918) : uiText(1920)}
           </button>
         </section>
       )}
-      {sharing && error && <p role="alert">{error}</p>}
+      {sharing && error && <p role="alert">{uiText(error)}</p>}
     </dialog>
   );
 }
 
 export function SocialVisitListener() {
+  useLanguage();
+
   const [username, setUsername] = useState("");
   useEffect(() => {
     const visit = (event: Event) => {

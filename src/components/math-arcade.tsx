@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
@@ -65,6 +66,8 @@ export function MathArcade({
   onChestReturn?:
     ((origin: { x: number; y: number; size: number; id: string }) => void) | undefined;
 }) {
+  useLanguage();
+
   const course = MATH_COURSES.find((item) => item.id === courseId)!;
   const [round, setRound] = useState<Round>(() => ({
     question: null,
@@ -217,7 +220,7 @@ export function MathArcade({
   }
   async function start() {
     if (!unlockedMathCourse(courseId, readMathGame())) {
-      setError("Complete o lugar anterior para liberar esta partida.");
+      setError(uiText(594));
       return;
     }
     setEarnedChest(undefined);
@@ -254,7 +257,7 @@ export function MathArcade({
       setDisplayedScore(0);
     } catch (cause) {
       if (!controller.current?.signal.aborted)
-        setError(cause instanceof Error ? cause.message : "Não foi possível preparar a conta.");
+        setError(cause instanceof Error ? cause.message : uiText(595));
     } finally {
       setPending(false);
     }
@@ -295,7 +298,7 @@ export function MathArcade({
       onPractice?.({
         id: `${roundId.current}:${question.seed}:${++answerSequence.current}`,
         islandId: `mathematics:${courseId}`,
-        islandName: `Matemática · ${course.subject}`,
+        islandName: uiText(1782, [course.subject]),
         completedAt: new Date().toISOString(),
         answers: 1,
         correct: Number(result.correct),
@@ -335,8 +338,7 @@ export function MathArcade({
         result.correct ? 650 : 1300,
       );
     } catch {
-      if (!controller.current?.signal.aborted)
-        setError("Não foi possível avaliar esta conta. Tente novamente ou volte à ilha.");
+      if (!controller.current?.signal.aborted) setError(uiText(596));
       answerLock.current = false;
     } finally {
       setPending(false);
@@ -383,7 +385,7 @@ export function MathArcade({
         className={
           "math-arcade math-arcade--adaptive is-" + status + (finished ? " is-finished" : "")
         }
-        aria-label="Desafio de Matemática"
+        aria-label={uiText(597)}
         style={
           {
             "--math-color": course.color,
@@ -438,17 +440,19 @@ export function MathArcade({
             setStatus("leaving");
           }}
         >
-          <PaperArrow back /> Voltar às ilhas
+          <PaperArrow back /> {uiText(598)}
         </button>
         <div className="math-game-landscape" aria-hidden="true">
           <MathPlaceScene course={courseId} />
         </div>
         <div className="math-background-symbols" aria-hidden="true">
-          {["+", "−", "×", "÷", "=", "%", "π", "√", "∑", "∞", "±", "∫"].map((symbol, index) => (
-            <span key={symbol} style={{ "--symbol": index } as CSSProperties}>
-              {symbol}
-            </span>
-          ))}
+          {["+", "−", uiText(289), uiText(1783), "=", "%", "π", "√", "∑", "∞", "±", "∫"].map(
+            (symbol, index) => (
+              <span key={symbol} style={{ "--symbol": index } as CSSProperties}>
+                {symbol}
+              </span>
+            ),
+          )}
         </div>
         <div className="math-game-floor" aria-hidden="true" />
         <main className="math-arcade-stage" aria-busy={pending} data-question-seed={question?.seed}>
@@ -465,7 +469,7 @@ export function MathArcade({
                 disabled={pending}
                 onClick={() => void start()}
               >
-                <MathIcon name="start" /> Vamos calcular!
+                <MathIcon name="start" /> {uiText(599)}
               </button>
             </div>
           ) : status === "countdown" ? (
@@ -487,18 +491,17 @@ export function MathArcade({
                 <RoomPointsIcon />
                 <MathNumber value={100} />%
               </div>
-              <h1>Parabéns, você se superou!</h1>
+              <h1>{uiText(600)}</h1>
               <strong>{milestone.topic}</strong>
-              <p>Etapa superada: treino variado e desafio final concluídos!</p>
+              <p>{uiText(601)}</p>
               {milestone.courseComplete ? (
                 <p>
-                  Você concluiu as seis etapas deste lugar.{" "}
-                  {nextCourse
-                    ? `Próxima parada: ${nextCourse.title}.`
-                    : "Você chegou ao último lugar desta ilha!"}
+                  {uiText(602)} {nextCourse ? uiText(1784, [nextCourse.title]) : uiText(603)}
                 </p>
               ) : (
-                <p>Próximo tema: {course.topics[masteryCompletion(round.progress).level]}.</p>
+                <p>
+                  {uiText(604)} {course.topics[masteryCompletion(round.progress).level]}.
+                </p>
               )}
               <button
                 type="button"
@@ -508,7 +511,7 @@ export function MathArcade({
                   setMilestone(null);
                 }}
               >
-                {milestone.courseComplete ? "Ver minha conquista" : "Continuar explorando"}
+                {milestone.courseComplete ? uiText(1785) : uiText(1786)}
                 <PaperArrow />
               </button>
             </div>
@@ -520,14 +523,12 @@ export function MathArcade({
                 ))}
               </div>
               <MathUserAvatar mood="finished" />
-              <h1 className="visually-hidden">{round.points + " pontos"}</h1>
+              <h1 className="visually-hidden">{round.points + uiText(2292)}</h1>
               <div className="math-result-score" aria-hidden="true">
                 <RoomPointsIcon />
                 <MathNumber value={displayedScore} />
               </div>
-              <p>
-                {round.points > 0 ? "Você mandou bem!" : "A próxima tentativa é uma nova chance!"}
-              </p>
+              <p>{round.points > 0 ? uiText(605) : uiText(606)}</p>
               <span className="math-result-topic">
                 {course.topics[masteryCompletion(round.progress).level]}
               </span>
@@ -537,7 +538,7 @@ export function MathArcade({
                   className="secondary-button"
                   onClick={() => onNextCourse(nextCourse.id)}
                 >
-                  Explorar {nextCourse.title}
+                  {uiText(607)} {nextCourse.title}
                   <PaperArrow />
                 </button>
               )}
@@ -545,7 +546,7 @@ export function MathArcade({
                 <button
                   type="button"
                   className="math-earned-chest"
-                  aria-label="Levar Poeira cósmica aos espaços da ilha"
+                  aria-label={uiText(608)}
                   onClick={(event) => {
                     const rect = event.currentTarget.getBoundingClientRect();
                     audio.current?.play("chestUnlock");
@@ -560,13 +561,11 @@ export function MathArcade({
                   }}
                 >
                   <CommonMathChest />
-                  <span>Você ganhou Poeira cósmica!</span>
+                  <span>{uiText(609)}</span>
                 </button>
               )}
               {!earnedChest && round.points >= COMMON_CHEST_POINTS && !storageWarning && (
-                <p className="math-result-topic">
-                  Os três espaços de Poeira cósmica estão ocupados. Seus pontos foram guardados.
-                </p>
+                <p className="math-result-topic">{uiText(610)}</p>
               )}
               <button
                 className="primary-button math-start-button"
@@ -574,30 +573,27 @@ export function MathArcade({
                 disabled={pending}
                 onClick={() => void start()}
               >
-                <MathIcon name="retry" /> Tentar de novo
+                <MathIcon name="retry" /> {uiText(611)}
               </button>
             </div>
           ) : question ? (
             <>
               <div className="math-game-stats">
-                <div className="math-score" aria-label={round.points + " pontos"}>
+                <div className="math-score" aria-label={round.points + uiText(2292)}>
                   <RoomPointsIcon />
                   <MathNumber value={round.points} />
                 </div>
                 <div
                   className="math-time"
                   aria-label={
-                    Math.ceil(clock) +
-                    (round.bank < questionClock
-                      ? " segundos restantes na rodada"
-                      : " segundos para esta conta")
+                    Math.ceil(clock) + (round.bank < questionClock ? uiText(1787) : uiText(612))
                   }
                 >
                   <RoomClockIcon />
                   <MathNumber value={Math.ceil(clock)} />
                   <RoomSecondsUnit />
                 </div>
-                <div className="math-hearts" aria-label={round.lives + " chances restantes"}>
+                <div className="math-hearts" aria-label={round.lives + uiText(2293)}>
                   {Array.from({ length: 3 }, (_, index) => (
                     <span
                       key={index}
@@ -620,7 +616,7 @@ export function MathArcade({
               <div
                 className="math-reserve"
                 role="progressbar"
-                aria-label="Reserva de tempo"
+                aria-label={uiText(613)}
                 aria-valuemin={0}
                 aria-valuemax={60}
                 aria-valuenow={Math.min(60, Math.round(round.bank))}
@@ -629,18 +625,18 @@ export function MathArcade({
               </div>
               <div className="math-game-question">
                 <MathUserAvatar />
-                <span className="math-topic">{question.topic}</span>
+                <span className="math-topic">{uiText(question.topic)}</span>
                 {question.phase !== "practice" && (
                   <div
                     className="math-challenge-phase"
                     role="status"
                     aria-label={
                       question.phase === "final"
-                        ? `Desafio final, questão ${question.position! + 1} de 5. Acerte quatro para avançar.`
-                        : "Revanche: outra questão para reforçar esta habilidade."
+                        ? uiText(1788, [question.position! + 1])
+                        : uiText(614)
                     }
                   >
-                    <span>{question.phase === "final" ? "Final: 4 acertos em 5" : "Revanche"}</span>
+                    <span>{question.phase === "final" ? uiText(1789) : uiText(1790)}</span>
                     {question.phase === "final" && (
                       <span className="math-final-pieces" aria-hidden="true">
                         {Array.from({ length: 5 }, (_, i) => (
@@ -680,13 +676,17 @@ export function MathArcade({
                   <div className="math-insane" role="status">
                     <MathIcon name="flame" />
                     <span>
-                      VOCÊ ESTÁ INSANO! <b>{round.streak}×</b>
+                      {uiText(615)}{" "}
+                      <b>
+                        {round.streak}
+                        {uiText(289)}
+                      </b>
                     </span>
                   </div>
                 )}
                 {feedback?.timedOut && (
                   <div className="math-timeout-reaction" role="status">
-                    <b>{feedback.message}</b>
+                    <b>{uiText(feedback.message)}</b>
                     <span>
                       −<MathNumber value={4} />
                       <RoomSecondsUnit />
@@ -709,7 +709,7 @@ export function MathArcade({
                             : "wrong"
                           : undefined
                       }
-                      aria-label={"Resposta " + choice}
+                      aria-label={uiText(2294) + choice}
                       aria-disabled={pending || !!feedback || !!error}
                       onClick={() => {
                         if (!pending && !error) {
@@ -732,14 +732,14 @@ export function MathArcade({
                         role="status"
                       >
                         <div>
-                          <b>{feedback.message}</b>
+                          <b>{uiText(feedback.message)}</b>
                           {feedback.correct ? (
                             <span>
                               <RoomPointsIcon />+<MathNumber value={feedback.points} />
                             </span>
                           ) : (
                             <span>
-                              Era <MathNumber value={question.answer} />
+                              {uiText(616)} <MathNumber value={question.answer} />
                             </span>
                           )}
                         </div>
@@ -752,13 +752,13 @@ export function MathArcade({
           ) : null}
           {pending && status === "ready" && (
             <div className="math-api-loading">
-              <HelenaLoading compact label="Preparando conta" />
-              <span className="visually-hidden">Preparando conta com a Olena</span>
+              <HelenaLoading compact label={uiText(617)} />
+              <span className="visually-hidden">{uiText(618)}</span>
             </div>
           )}
           {error && (
             <div role="alert" className="math-api-error">
-              <p>{error}</p>
+              <p>{uiText(error)}</p>
               <button
                 className="secondary-button"
                 type="button"
@@ -769,13 +769,13 @@ export function MathArcade({
                     : void answer(retryChoice.current.choice, retryChoice.current.timedOut)
                 }
               >
-                Tentar novamente
+                {uiText(498)}
               </button>
             </div>
           )}
           {storageWarning && (
             <p role="alert" className="math-storage-warning">
-              Não foi possível salvar seu avanço neste aparelho.
+              {uiText(619)}
             </p>
           )}
         </main>

@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { Camera, RotateCw } from "lucide-react";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -44,7 +45,7 @@ async function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("Não foi possível abrir esta imagem."));
+    image.onerror = () => reject(new Error(uiText(635)));
     image.src = url;
   });
 }
@@ -55,15 +56,15 @@ function exportWithinLimit(canvas: HTMLCanvasElement, kind: "image/jpeg" | "imag
     const dataUrl = canvas.toDataURL(kind, quality);
     if (dataUrl.length <= MAX_NOTE_ASSET_DATA_URL_LENGTH) return dataUrl;
   }
-  throw new Error(
-    "A imagem ainda ficou grande demais. Fotografe uma área menor e tente novamente.",
-  );
+  throw new Error(uiText(636));
 }
 
 function Scanner({
   onSave,
   onClose,
 }: Pick<NoteCaptureToolsProps, "onSave"> & { onClose: () => void }) {
+  useLanguage();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [source, setSource] = useState<{ url: string; name: string } | null>(null);
@@ -98,7 +99,7 @@ function Scanner({
         context.restore();
       })
       .catch((caught: unknown) => {
-        setError(caught instanceof Error ? caught.message : "Não foi possível abrir esta imagem.");
+        setError(caught instanceof Error ? caught.message : uiText(635));
       });
     return () => {
       cancelled = true;
@@ -116,15 +117,15 @@ function Scanner({
     setError("");
     if (!file) return;
     if (!/^image\/(?:jpeg|png|webp)$/.test(file.type)) {
-      setError("Use uma imagem JPEG, PNG ou WebP.");
+      setError(uiText(1798));
       return;
     }
     if (file.size > 12 * 1024 * 1024) {
-      setError("A imagem original deve ter no máximo 12 MB.");
+      setError(uiText(637));
       return;
     }
     if (source) URL.revokeObjectURL(source.url);
-    setSource({ url: URL.createObjectURL(file), name: file.name || "Documento digitalizado" });
+    setSource({ url: URL.createObjectURL(file), name: file.name || uiText(2296) });
     setRotation(0);
   }
 
@@ -135,7 +136,7 @@ function Scanner({
       onSave("scan", source.name, exportWithinLimit(canvas, "image/jpeg"));
       onClose();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Não foi possível salvar a imagem.");
+      setError(caught instanceof Error ? caught.message : uiText(638));
     }
   }
 
@@ -147,14 +148,14 @@ function Scanner({
         type="file"
         accept="image/jpeg,image/png,image/webp"
         capture="environment"
-        aria-label="Fotografar ou escolher documento"
+        aria-label={uiText(639)}
         onChange={(event) => chooseFile(event.target.files?.[0])}
       />
       {!source ? (
         <button className="scanner-drop" type="button" onClick={() => inputRef.current?.click()}>
           <Camera size={28} />
-          <strong>Fotografar ou escolher uma imagem</strong>
-          <span>No celular, a câmera traseira será oferecida quando o navegador permitir.</span>
+          <strong>{uiText(640)}</strong>
+          <span>{uiText(641)}</span>
         </button>
       ) : (
         <>
@@ -164,7 +165,7 @@ function Scanner({
               type="button"
               onClick={() => setRotation((value) => (value + 90) % 360)}
             >
-              <RotateCw size={16} /> Girar
+              <RotateCw size={16} /> {uiText(642)}
             </button>
             <label className="capture-check">
               <input
@@ -172,27 +173,25 @@ function Scanner({
                 checked={grayscale}
                 onChange={(event) => setGrayscale(event.target.checked)}
               />
-              <span>Realçar documento</span>
+              <span>{uiText(643)}</span>
             </label>
             <button
               className="secondary-button"
               type="button"
               onClick={() => inputRef.current?.click()}
             >
-              Trocar imagem
+              {uiText(644)}
             </button>
           </div>
-          <canvas ref={canvasRef} className="scanner-canvas" aria-label="Prévia do documento" />
+          <canvas ref={canvasRef} className="scanner-canvas" aria-label={uiText(645)} />
         </>
       )}
-      {error && <p className="capture-error">{error}</p>}
+      {error && <p className="capture-error">{uiText(error)}</p>}
       {source && (
         <div className="capture-footer">
-          <small>
-            A imagem é reduzida e permanece somente neste dispositivo. Esta fase não usa OCR.
-          </small>
+          <small>{uiText(646)}</small>
           <button className="primary-button" type="button" onClick={save}>
-            Salvar digitalização
+            {uiText(647)}
           </button>
         </div>
       )}
@@ -220,6 +219,8 @@ export function NoteCaptureTools({
   onCloseEditing,
   onClosePage,
 }: NoteCaptureToolsProps) {
+  useLanguage();
+
   const [mode, setMode] = useState<"scan" | "drawing" | null>(
     initialJoinCode || autoOpen ? "drawing" : null,
   );
@@ -261,7 +262,7 @@ export function NoteCaptureTools({
         : null);
     if (id) onUpdate?.(id, dataUrl, handwriting);
     else {
-      const created = onSave("drawing", "Folha manuscrita", dataUrl, handwriting);
+      const created = onSave("drawing", uiText(1799), dataUrl, handwriting);
       if (created) {
         savedAssetIdRef.current = created;
         try {
@@ -414,9 +415,9 @@ export function NoteCaptureTools({
 
   return (
     <>
-      <div className="note-capture-actions" aria-label="Ferramentas da anotação">
+      <div className="note-capture-actions" aria-label={uiText(648)}>
         <button className="secondary-button" type="button" onClick={() => setMode("scan")}>
-          <PaperActionIcon name="scan" /> <span>Digitalizar</span>
+          <PaperActionIcon name="scan" /> <span>{uiText(649)}</span>
         </button>
         <button
           className="secondary-button"
@@ -426,7 +427,7 @@ export function NoteCaptureTools({
             setMode("drawing");
           }}
         >
-          <PaperActionIcon name="handwriting" /> <span>Escrever à mão</span>
+          <PaperActionIcon name="handwriting" /> <span>{uiText(650)}</span>
         </button>
       </div>
 
@@ -436,7 +437,7 @@ export function NoteCaptureTools({
             <button
               className="capture-backdrop"
               type="button"
-              aria-label="Fechar ferramenta"
+              aria-label={uiText(651)}
               onClick={() => close()}
             />
             <section
@@ -452,25 +453,25 @@ export function NoteCaptureTools({
             >
               <header>
                 <div>
-                  <span>Cadernos</span>
+                  <span>{uiText(652)}</span>
                   <h2 id="capture-title">
                     {currentMode === "scan"
-                      ? "Digitalizar documento"
+                      ? uiText(1800)
                       : editingAsset
-                        ? "Folha manuscrita"
-                        : "Escrever à mão"}
+                        ? uiText(1799)
+                        : uiText(650)}
                   </h2>
                 </div>
                 <div className="capture-header-actions">
                   {currentMode === "drawing" && (
-                    <div className="notebook-team" role="group" aria-label="Equipe de edição">
+                    <div className="notebook-team" role="group" aria-label={uiText(653)}>
                       {(collaboration.state.room?.participants.length
                         ? collaboration.state.room.participants
                         : cloud?.authenticated
                           ? [
                               {
                                 id: "current-account",
-                                displayName: cloud.displayName || cloud.email || "Sua conta",
+                                displayName: cloud.displayName || cloud.email || uiText(2067),
                                 avatarUrl: collaborationAvatar,
                                 online: true,
                               },
@@ -482,7 +483,7 @@ export function NoteCaptureTools({
                           <span
                             key={participant.id}
                             className={`notebook-team__avatar notebook-team__avatar--${index % 3}${participant.online ? " is-online" : ""}`}
-                            title={`${participant.displayName}${participant.online ? " · online" : " · ausente"}`}
+                            title={`${participant.displayName}${participant.online ? uiText(1801) : uiText(1737)}`}
                             aria-label={participant.displayName}
                           >
                             {participant.avatarUrl ? (
@@ -501,11 +502,7 @@ export function NoteCaptureTools({
                       <button
                         type="button"
                         className="notebook-team__add"
-                        aria-label={
-                          collaboration.state.code
-                            ? "Adicionar pessoa ao caderno"
-                            : "Compartilhar caderno"
-                        }
+                        aria-label={collaboration.state.code ? uiText(1802) : uiText(654)}
                         aria-expanded={collaborationPanelOpen}
                         onClick={() => setCollaborationPanelOpen((open) => !open)}
                       >
@@ -516,7 +513,7 @@ export function NoteCaptureTools({
                   <button
                     className="sheet-close"
                     type="button"
-                    aria-label="Fechar"
+                    aria-label={uiText(230)}
                     onClick={() => close()}
                   >
                     <PaperEditorIcon name="close" />
@@ -524,30 +521,27 @@ export function NoteCaptureTools({
                 </div>
               </header>
               {currentMode === "drawing" && collaborationPanelOpen && (
-                <section className="notebook-collaboration-panel" aria-label="Compartilhar caderno">
+                <section className="notebook-collaboration-panel" aria-label={uiText(654)}>
                   <div className="notebook-collaboration-panel__heading">
                     <div>
-                      <span>COLABORAÇÃO</span>
+                      <span>{uiText(655)}</span>
                     </div>
                     <button
                       type="button"
                       className="sheet-close"
-                      aria-label="Fechar painel de colaboração"
+                      aria-label={uiText(656)}
                       onClick={() => setCollaborationPanelOpen(false)}
                     >
                       <PaperEditorIcon name="close" />
                     </button>
                   </div>
                   {!cloud?.authenticated ? (
-                    <p>
-                      Entre na sua conta para escrever com outras pessoas. O nome e o avatar vêm do
-                      seu perfil sincronizado.
-                    </p>
+                    <p>{uiText(657)}</p>
                   ) : collaboration.state.status === "idle" ||
                     collaboration.state.status === "error" ? (
                     <>
                       <p className="notebook-collaboration-identity">
-                        Você aparece como <strong>{cloud.displayName || cloud.email}</strong>.
+                        {uiText(658)} <strong>{cloud.displayName || cloud.email}</strong>.
                       </p>
                       <div className="notebook-collaboration-panel__actions">
                         <button
@@ -561,7 +555,7 @@ export function NoteCaptureTools({
                             )
                           }
                         >
-                          Criar link de edição
+                          {uiText(659)}
                         </button>
                       </div>
                     </>
@@ -569,7 +563,7 @@ export function NoteCaptureTools({
                     <>
                       <div className="notebook-collaboration-code">
                         <label>
-                          Link para editar juntos
+                          {uiText(660)}
                           <input
                             readOnly
                             value={collaborationInviteUrl()}
@@ -581,7 +575,7 @@ export function NoteCaptureTools({
                           className="icon-button"
                           onClick={() => void copyCollaborationInvite()}
                         >
-                          <PaperEditorIcon name="copyLink" /> <span>Copiar link</span>
+                          <PaperEditorIcon name="copyLink" /> <span>{uiText(461)}</span>
                         </button>
                       </div>
                       <div className="notebook-collaboration-people">
@@ -601,8 +595,8 @@ export function NoteCaptureTools({
                       <button
                         className="notebook-collaboration-leave"
                         type="button"
-                        aria-label="Sair da colaboração"
-                        title="Sair da colaboração"
+                        aria-label={uiText(661)}
+                        title={uiText(661)}
                         onClick={() => void collaboration.leave()}
                       >
                         <PaperEditorIcon name="exit" />
@@ -612,17 +606,14 @@ export function NoteCaptureTools({
                   {collaboration.state.error && (
                     <p className="capture-error">{collaboration.state.error}</p>
                   )}
-                  {collaboration.state.status === "connecting" && <p>Conectando ao caderno…</p>}
+                  {collaboration.state.status === "connecting" && <p>{uiText(662)}</p>}
                 </section>
               )}
               {currentMode === "scan" ? (
                 <Scanner onSave={onSave} onClose={() => close(true)} />
               ) : editingAsset && !editingAsset.handwriting ? (
                 <div className="handwriting-legacy-preview">
-                  <p>
-                    Esta folha antiga foi salva como imagem. Os traços não podem ser editados, mas
-                    você pode consultá-la aqui.
-                  </p>
+                  <p>{uiText(663)}</p>
                   <img src={editingAsset.dataUrl} alt={editingAsset.name} />
                 </div>
               ) : (
@@ -665,23 +656,23 @@ export function NoteCaptureTools({
                 <div
                   className="handwriting-close-confirm"
                   role="alertdialog"
-                  aria-label="Fechar folha com alterações"
+                  aria-label={uiText(664)}
                 >
                   <p>
                     {draftWriteFailed
-                      ? "Não foi possível guardar o rascunho. Salve a folha antes de sair ou feche sem salvar."
+                      ? uiText(665)
                       : closingSavedDraft
-                        ? "Sua folha foi salva no caderno."
+                        ? uiText(666)
                         : cloud?.authenticated
-                          ? "Há alterações guardadas como rascunho neste dispositivo."
-                          : "Sua folha está salva neste dispositivo. Entre na sua conta para sincronizar com o computador e o celular."}
+                          ? uiText(667)
+                          : uiText(668)}
                   </p>
                   <div>
                     <button type="button" onClick={() => setConfirmClose(false)}>
-                      Continuar editando
+                      {uiText(669)}
                     </button>
                     <button type="button" onClick={() => close(true)}>
-                      {draftWriteFailed ? "Fechar sem salvar" : "Fechar e manter rascunho"}
+                      {draftWriteFailed ? uiText(670) : uiText(671)}
                     </button>
                   </div>
                 </div>

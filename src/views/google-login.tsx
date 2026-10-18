@@ -1,3 +1,4 @@
+import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { BrandFooter } from "../components/brand-footer";
 import { HelenaLoading } from "../components/helena-loading";
@@ -25,14 +26,11 @@ function isPopupBlockedError(cause: unknown): boolean {
 
 function googleLoginError(cause: unknown): string {
   const code = cause && typeof cause === "object" && "code" in cause ? cause.code : "";
-  if (code === "auth/popup-closed-by-user")
-    return "A janela foi fechada. Você pode tentar novamente.";
-  if (code === "auth/popup-blocked")
-    return "Permita a janela de login no navegador e tente novamente.";
-  if (code === "auth/network-request-failed") return "Confira sua conexão e tente novamente.";
-  if (code === "auth/unauthorized-domain")
-    return "Este endereço ainda não está liberado para login. Acesse pelo endereço oficial da OlenaStudy.";
-  return "Não foi possível entrar agora. Tente novamente em instantes.";
+  if (code === "auth/popup-closed-by-user") return uiText(1192);
+  if (code === "auth/popup-blocked") return uiText(1964);
+  if (code === "auth/network-request-failed") return uiText(1193);
+  if (code === "auth/unauthorized-domain") return uiText(1194);
+  return uiText(1195);
 }
 
 function applyGoogleLogin(answers: readonly (string | string[])[]) {
@@ -65,6 +63,8 @@ export function GoogleLogin({
   onFinish: () => void;
   onBack?: () => void;
 }) {
+  useLanguage();
+
   const [services, setServices] =
     useState<Awaited<ReturnType<typeof getFirebaseAccountServices>>>();
   const [error, setError] = useState("");
@@ -100,7 +100,7 @@ export function GoogleLogin({
       })
       .catch(() => {
         if (active) {
-          setError("O login está sendo preparado. Tente novamente mais tarde.");
+          setError(uiText(1196));
           setBusy(false);
         }
       });
@@ -167,20 +167,18 @@ export function GoogleLogin({
   }
 
   return (
-    <main className="onboarding login-page" id="main-content" aria-label="Entrar na OlenaStudy">
-      <h1 className="sr-only">
-        OlenaStudy: agenda de estudos, pomodoro, flashcards e quizzes para ENEM, vestibular e
-        concursos
-      </h1>
+    <main className="onboarding login-page" id="main-content" aria-label={uiText(1197)}>
+      <h1 className="sr-only">{uiText(1198)}</h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          Olena<span>Study</span>
+          {uiText(117)}
+          <span>{uiText(118)}</span>
         </span>
-        <span className="onboarding__eyebrow">SEU PRÓXIMO PASSO COMEÇA AQUI</span>
+        <span className="onboarding__eyebrow">{uiText(1199)}</span>
       </header>
       <div className="login-page__layout">
-        <section className="login-page__scene" aria-label="Sua companheira de estudos">
-          <span className="login-page__note">Vamos nessa, juntos?</span>
+        <section className="login-page__scene" aria-label={uiText(1200)}>
+          <span className="login-page__note">{uiText(1201)}</span>
           <span className="login-page__star login-page__star--one" aria-hidden="true">
             ✦
           </span>
@@ -188,34 +186,31 @@ export function GoogleLogin({
             ✦
           </span>
           <p>
-            Um pouco de curiosidade.
+            {uiText(1202)}
             <br />
-            <strong>Um mundo de descobertas.</strong>
+            <strong>{uiText(1203)}</strong>
           </p>
         </section>
         <section className="login-page__card">
           <img
             className="login-page__perched"
             src="/helena-login-peeking.png"
-            alt="Helena espiando sobre o cartão de login, com as patinhas na borda"
+            alt={uiText(1204)}
             width="640"
             height="640"
             fetchPriority="high"
           />
-          <span className="login-page__eyebrow">BEM-VINDO AO SEU ESPAÇO</span>
-          <h2>Vamos começar?</h2>
+          <span className="login-page__eyebrow">{uiText(1205)}</span>
+          <h2>{uiText(1206)}</h2>
           <p className="login-page__intro">
-            A Helena já está por aqui.
+            {uiText(1207)}
             <br />
-            Só falta você para essa jornada.
+            {uiText(1208)}
           </p>
           {(busy || (!services && !error)) && (
-            <HelenaLoading
-              compact
-              label={busy ? "Aguardando o Google…" : "Preparando seu login…"}
-            />
+            <HelenaLoading compact label={busy ? uiText(1965) : uiText(1209)} />
           )}
-          {error && <p role="alert">{error}</p>}
+          {error && <p role="alert">{uiText(error)}</p>}
           <label className="login-page__consent">
             <input
               type="checkbox"
@@ -224,15 +219,16 @@ export function GoogleLogin({
               onChange={(event) => setAccepted(event.target.checked)}
             />
             <span>
-              Li e concordo com a{" "}
+              {uiText(1210)}{" "}
               <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer">
-                Política de Privacidade<span className="sr-only"> (abre em uma nova aba)</span>
+                {uiText(411)}
+                <span className="sr-only"> {uiText(412)}</span>
               </a>
-              . Tenho 18 anos ou mais, ou a autorização de quem é responsável por mim.
+              {uiText(2567)}
             </span>
           </label>
           <p id="login-consent-help" className="login-page__consent-help">
-            {accepted ? "" : "Marque a concordância para poder entrar."}
+            {accepted ? "" : uiText(1211)}
           </p>
           <div className="onboarding__actions login-page__actions">
             <button
@@ -241,30 +237,29 @@ export function GoogleLogin({
               aria-describedby="login-consent-help"
               onClick={() => void login()}
             >
-              Entrar com Google
+              {uiText(870)}
               <PaperArrow />
             </button>
           </div>
-          <p className="login-page__local">Seus estudos ficam sincronizados na sua conta.</p>
+          <p className="login-page__local">{uiText(1212)}</p>
           <div className="login-page__guest">
             <button type="button" disabled={signingIn} onClick={continueAsGuest}>
-              Entrar como convidado
+              {uiText(1213)}
             </button>
             <p>
-              Como convidado, você aparece como {GUEST_NAME} e seus estudos ficam somente neste
-              aparelho.
+              {uiText(1214)} {GUEST_NAME} {uiText(1215)}
             </p>
           </div>
           <div className="login-page__divider" />
           {onBack && (
             <button className="login-page__back" type="button" disabled={busy} onClick={onBack}>
               <PaperArrow back />
-              Voltar
+              {uiText(374)}
             </button>
           )}
         </section>
       </div>
-      <footer className="login-page__footer">No seu tempo. Do seu jeito. Com a Helena.</footer>
+      <footer className="login-page__footer">{uiText(1216)}</footer>
       <BrandFooter />
     </main>
   );
