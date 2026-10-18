@@ -58,6 +58,8 @@ dependem de configuração no ambiente seguro da Vercel, descrita em:
   automática;
 - [`docs/OPERACAO_E_CUSTOS.md`](docs/OPERACAO_E_CUSTOS.md): segurança, regras do Firebase, consumo do
   banco, visibilidade do repositório e decisões que continuam com a dona;
+- [`docs/TERMOS_DE_USO.md`](docs/TERMOS_DE_USO.md): Termos de Uso publicados, decisões e o que falta
+  (contato, foro, revisão jurídica, link e aceite no aplicativo);
 - [`docs/CI_MINUTOS.md`](docs/CI_MINUTOS.md): custo do CI em minutos, política de e2e e como medir;
 - voz natural: `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_TOKEN`, somente no ambiente da Vercel.
 

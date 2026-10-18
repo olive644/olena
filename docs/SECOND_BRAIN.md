@@ -1470,3 +1470,7 @@ DeleteAccountPanel monta dialog nativo por portal em body. Nunca recolocar overl
 ## Custos, CI e operação (2026-10-18)
 
 Antes de mexer no CI, nas regras do Firebase, em limites de uso ou na visibilidade do repositório, leia `docs/CI_MINUTOS.md` e `docs/OPERACAO_E_CUSTOS.md`. Eles guardam as medições, as decisões, o que foi descartado e o que continua com a dona do projeto. O escopo do e2e é decidido por `scripts/ci-scope.mjs` (teste: `node --test scripts/ci-scope.test.mjs`).
+
+## Termos de Uso (2026-10-18)
+
+Página estática `public/termos-de-uso.html`, versão em `src/domain/terms-of-use.ts` (`TERMS_OF_USE_VERSION`, igual a `data-terms-version`, conferida por `src/terms-of-use-page.test.ts`). Sem script nem recurso externo, sem travessões. A Política de Privacidade liga para ela no rodapé. Ainda não há link na tela de entrada nem aceite registrado por versão. Contato, CNPJ e foro seguem "em definição" e o texto precisa de revisão jurídica. Ver `docs/TERMOS_DE_USO.md`.
