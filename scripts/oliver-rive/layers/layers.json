@@ -1,0 +1,309 @@
+{
+  "source": "public/oliver-math-islands.png",
+  "width": 720,
+  "height": 791,
+  "order": [
+    "rockL",
+    "chipL",
+    "rockR",
+    "chipR",
+    "flameSparkA",
+    "flameSparkB",
+    "flameSparkC",
+    "flame",
+    "shardA",
+    "shardB",
+    "shardC",
+    "plus",
+    "divDotTop",
+    "divDotBottom",
+    "divBar",
+    "ruler",
+    "island",
+    "legL",
+    "legR",
+    "body",
+    "mouth",
+    "eyeL",
+    "eyeR",
+    "armL",
+    "armR"
+  ],
+  "layers": {
+    "rockL": {
+      "file": "rockL.png",
+      "x0": 55,
+      "y0": 548,
+      "w": 80,
+      "h": 80,
+      "pivot": [
+        96,
+        583
+      ]
+    },
+    "chipL": {
+      "file": "chipL.png",
+      "x0": 116,
+      "y0": 633,
+      "w": 30,
+      "h": 29,
+      "pivot": [
+        132,
+        645
+      ]
+    },
+    "rockR": {
+      "file": "rockR.png",
+      "x0": 588,
+      "y0": 601,
+      "w": 63,
+      "h": 69,
+      "pivot": [
+        615,
+        631
+      ]
+    },
+    "chipR": {
+      "file": "chipR.png",
+      "x0": 562,
+      "y0": 651,
+      "w": 23,
+      "h": 25,
+      "pivot": [
+        573,
+        661
+      ]
+    },
+    "flameSparkA": {
+      "file": "flameSparkA.png",
+      "x0": 71,
+      "y0": 193,
+      "w": 12,
+      "h": 22,
+      "pivot": [
+        77,
+        204
+      ]
+    },
+    "flameSparkB": {
+      "file": "flameSparkB.png",
+      "x0": 89,
+      "y0": 139,
+      "w": 13,
+      "h": 21,
+      "pivot": [
+        95,
+        150
+      ]
+    },
+    "flameSparkC": {
+      "file": "flameSparkC.png",
+      "x0": 166,
+      "y0": 168,
+      "w": 17,
+      "h": 37,
+      "pivot": [
+        173,
+        186
+      ]
+    },
+    "flame": {
+      "file": "flame.png",
+      "x0": 87,
+      "y0": 135,
+      "w": 89,
+      "h": 137,
+      "pivot": [
+        131,
+        214
+      ]
+    },
+    "shardA": {
+      "file": "shardA.png",
+      "x0": 433,
+      "y0": 195,
+      "w": 41,
+      "h": 52,
+      "pivot": [
+        454,
+        217
+      ]
+    },
+    "shardB": {
+      "file": "shardB.png",
+      "x0": 574,
+      "y0": 65,
+      "w": 42,
+      "h": 63,
+      "pivot": [
+        592,
+        89
+      ]
+    },
+    "shardC": {
+      "file": "shardC.png",
+      "x0": 502,
+      "y0": 215,
+      "w": 28,
+      "h": 51,
+      "pivot": [
+        514,
+        234
+      ]
+    },
+    "plus": {
+      "file": "plus.png",
+      "x0": 419,
+      "y0": 44,
+      "w": 142,
+      "h": 153,
+      "pivot": [
+        491,
+        120
+      ]
+    },
+    "divDotTop": {
+      "file": "divDotTop.png",
+      "x0": 622,
+      "y0": 125,
+      "w": 50,
+      "h": 52,
+      "pivot": [
+        646,
+        150
+      ]
+    },
+    "divDotBottom": {
+      "file": "divDotBottom.png",
+      "x0": 580,
+      "y0": 217,
+      "w": 46,
+      "h": 46,
+      "pivot": [
+        602,
+        239
+      ]
+    },
+    "divBar": {
+      "file": "divBar.png",
+      "x0": 572,
+      "y0": 154,
+      "w": 111,
+      "h": 89,
+      "pivot": [
+        627,
+        198
+      ]
+    },
+    "ruler": {
+      "file": "ruler.png",
+      "x0": 577,
+      "y0": 247,
+      "w": 124,
+      "h": 172,
+      "pivot": [
+        653,
+        339
+      ]
+    },
+    "island": {
+      "file": "island.png",
+      "x0": 117,
+      "y0": 347,
+      "w": 462,
+      "h": 422,
+      "pivot": [
+        330,
+        640
+      ]
+    },
+    "legL": {
+      "file": "legL.png",
+      "x0": 182,
+      "y0": 452,
+      "w": 130,
+      "h": 139,
+      "pivot": [
+        262,
+        508
+      ]
+    },
+    "legR": {
+      "file": "legR.png",
+      "x0": 358,
+      "y0": 438,
+      "w": 180,
+      "h": 146,
+      "pivot": [
+        425,
+        478
+      ]
+    },
+    "body": {
+      "file": "body.png",
+      "x0": 135,
+      "y0": 189,
+      "w": 345,
+      "h": 327,
+      "pivot": [
+        320,
+        500
+      ]
+    },
+    "mouth": {
+      "file": "mouth.png",
+      "x0": 222,
+      "y0": 304,
+      "w": 229,
+      "h": 128,
+      "pivot": [
+        336,
+        368
+      ]
+    },
+    "eyeL": {
+      "file": "eyeL.png",
+      "x0": 232,
+      "y0": 274,
+      "w": 94,
+      "h": 84,
+      "pivot": [
+        279,
+        316
+      ]
+    },
+    "eyeR": {
+      "file": "eyeR.png",
+      "x0": 348,
+      "y0": 265,
+      "w": 77,
+      "h": 71,
+      "pivot": [
+        386,
+        300
+      ]
+    },
+    "armL": {
+      "file": "armL.png",
+      "x0": 80,
+      "y0": 382,
+      "w": 112,
+      "h": 118,
+      "pivot": [
+        184,
+        414
+      ]
+    },
+    "armR": {
+      "file": "armR.png",
+      "x0": 460,
+      "y0": 245,
+      "w": 149,
+      "h": 153,
+      "pivot": [
+        472,
+        342
+      ]
+    }
+  }
+}

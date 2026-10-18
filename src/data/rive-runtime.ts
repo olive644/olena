@@ -21,7 +21,7 @@ type RiveOptions = {
   layout: object;
   onLoad: () => void;
   onLoadError: () => void;
-  onStateChange: (event: { data?: unknown }) => void;
+  onStateChange?: (event: { data?: unknown }) => void;
 };
 
 export type RiveRuntime = {
