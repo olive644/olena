@@ -73,6 +73,12 @@ export type CloudSyncState = {
   deleteAccount?: (() => Promise<void>) | undefined;
 };
 
+// O estado inteiro da conta sobe a cada salvamento e volta pelo stream em tempo real, então cada
+// salvamento custa o tamanho do estado em download no Realtime Database (plano gratuito: 10 GB
+// por mês). Juntar as mudanças de poucos segundos num só envio corta esse consumo, e o envio
+// imediato ao esconder a página impede que a espera perca o que foi feito.
+const CLOUD_UPLOAD_DELAY_MS = 4000;
+
 export function useCloudSync() {
   const enabled =
     !import.meta.env["VITEST"] &&
@@ -139,9 +145,20 @@ export function useCloudSync() {
       changeRevision += 1;
       clearTimeout(uploadTimer);
       setState((current) => ({ ...current, status: "syncing" }));
-      uploadTimer = setTimeout(() => void saveCloud?.(), 350);
+      uploadTimer = setTimeout(() => void saveCloud?.(), CLOUD_UPLOAD_DELAY_MS);
     }
     window.addEventListener(SYNCED_STORAGE_EVENT, scheduleUpload);
+    // Ao sair ou esconder a página, não espera o intervalo: envia o que estiver pendente agora.
+    const flushPending = () => {
+      if (!dirty || !saveCloud) return;
+      clearTimeout(uploadTimer);
+      void saveCloud();
+    };
+    const flushWhenHidden = () => {
+      if (document.visibilityState === "hidden") flushPending();
+    };
+    document.addEventListener("visibilitychange", flushWhenHidden);
+    window.addEventListener("pagehide", flushPending);
 
     void getFirebaseAccountServices()
       .then(({ auth, authApi, databaseURL }) => {
@@ -241,11 +258,14 @@ export function useCloudSync() {
               init.body = JSON.stringify({ ...body, items: encodeCloudItems(body.items ?? {}) });
               init.headers = { "Content-Type": "application/json" };
             }
+            // print=silent: sem isso o Firebase devolve o estado inteiro na resposta do PUT, que
+            // conta como download e ninguém lê.
             const response = await fetch(
-              `${legacy ? legacyUrl : url}?auth=${encodeURIComponent(token)}`,
+              `${legacy ? legacyUrl : url}?auth=${encodeURIComponent(token)}${method === "PUT" ? "&print=silent" : ""}`,
               init,
             );
             if (!response.ok) throw new Error("sync");
+            if (method === "PUT") return null;
             const result = (await response.json()) as CloudState | null;
             if (!currentAccount()) throw new Error("Account changed");
             return result?.items ? { ...result, items: decodeCloudItems(result.items) } : result;
@@ -447,7 +467,7 @@ export function useCloudSync() {
               }));
               if (dirty) {
                 clearTimeout(uploadTimer);
-                uploadTimer = setTimeout(() => void saveCloud?.(), 350);
+                uploadTimer = setTimeout(() => void saveCloud?.(), CLOUD_UPLOAD_DELAY_MS);
               }
             } catch {
               if (currentAccount()) setState((current) => ({ ...current, status: "offline" }));
@@ -599,6 +619,8 @@ export function useCloudSync() {
       if (onlineListener) window.removeEventListener("online", onlineListener);
       stopAuth?.();
       window.removeEventListener(SYNCED_STORAGE_EVENT, scheduleUpload);
+      document.removeEventListener("visibilitychange", flushWhenHidden);
+      window.removeEventListener("pagehide", flushPending);
     };
   }, [enabled]);
 
