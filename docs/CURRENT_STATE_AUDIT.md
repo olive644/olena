@@ -3112,3 +3112,10 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Dado para a próxima decisão.** O Playwright passa a listar no log do CI os 10 arquivos de teste mais lentos (`reportSlowTests`).
 - **Documentação para IA.** Novos `docs/CI_MINUTOS.md` (custo, medição, política, alternativas descartadas, regras) e `docs/OPERACAO_E_CUSTOS.md` (auditoria de segurança, publicação das regras do Firebase, consumo do banco, troca de banco, visibilidade do repositório, contrato, falso positivo do gitleaks, regras e decisões que continuam com a dona). `AGENTS.md` ganhou a seção "Custos, CI e operação" e o `README` os links.
 - **Limite.** O consumo mensal real de minutos ainda não foi medido (o repositório é público e não cobra). A medição deve ser refeita depois de privar.
+
+# Pentest: @ reservados e custo de leitura do registro, 2026-10-18
+
+- **Achado 1 (alta).** A reserva de @ aceitava `admin`, `olena`, `helena`, `suporte`, `equipe`, `oficial` e `olenastudy` (provado em simulação local). Com o chat com o time previsto, alguém poderia se passar pela equipe. Agora há lista de nomes reservados com normalização de variações, e teste.
+- **Achado 2 (média a alta).** Cada pedido de @, inclusive a consulta, baixava o registro inteiro. Simulação com 10 mil @: 0,95 MB por pedido, cerca de 1,7 GB por hora com uma conta no limite de 30 por minuto, o que gastaria o limite mensal de 10 GB do plano Spark em cerca de 6 horas. A consulta passou a ler só a folha da conta. Reservar e apagar ganharam teto por conta e global.
+- **Limite.** POST e DELETE ainda leem o registro inteiro. A correção estrutural (índice por nome) fica registrada em `docs/PROFILE_HANDLES.md` e não foi feita.
+- **Não verificado.** O tamanho real do registro hoje (é bem menor que 10 mil e o efeito é proporcional) e o consumo real no painel do Firebase.
