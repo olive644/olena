@@ -3044,3 +3044,9 @@ Motivo: o app terá planos pagos e o repositório deve ficar privado. Em reposit
 No celular (até 760 px), Configurações começa na lista sem seleção; escolher um assunto oculta o menu e mostra apenas a seção, a partir do topo. Seta retorna ao menu e restaura foco. Desktop conserva navegação lateral. Ícones SettingsIcon são vetores locais próprios. Conta compactada e política existente acessível em Privacidade e dados, com detalhes recolhidos. Não cortar conteúdo ou impedir rolagem de segurança em telas menores/zoom.
 
 Modal de exclusão era descendente de painel animado, com containing block transformado. Agora createPortal em document.body e HTMLDialogElement.showModal colocam a confirmação no top layer com foco modal nativo, Escape/Cancelar e retorno ao disparador. Sem mudança na exclusão, reautenticação ou confirmação digitada. Teste de componente verifica portal; fixture visual sem conta real verifica altura e ações em viewport curta. Nenhuma conta é excluída nos testes.
+
+# Contrato societário removido do repositório, 2026-10-18
+
+- **Decisão da dona.** O arquivo `docs/CONTRATO_SOCIETARIO.md` deixou de ser versionado. Ele estava num repositório público, e o app terá planos pagos. O caminho entrou no `.gitignore` para que uma cópia local não volte por engano. Nenhum conteúdo do arquivo foi lido nem copiado por esta mudança.
+- **Limite desta mudança.** Remover o arquivo da árvore atual **não o apaga do histórico do Git** nem de forks já existentes (há 1 fork). Trate o conteúdo como já exposto. Se isso for um problema, a saída é reescrever o histórico, o que altera todas as branches e PRs abertas e só deve ser feito com decisão explícita, depois de guardar uma cópia fora do repositório.
+- **Cópia.** Guarde o arquivo fora do repositório (por exemplo, num Drive privado) antes de mesclar esta PR.
