@@ -18,7 +18,7 @@ export type HelenaProvider = {
 };
 
 export type HelenaRateLimiter = {
-  consume(clientId: string): Promise<boolean>;
+  consume(clientId: string, request: Request): Promise<boolean>;
 };
 
 export type HelenaHandlerDependencies = {
@@ -96,7 +96,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
         "invalid_request",
         "Entre na sua conta para conversar com a Helena.",
       );
-    if (!(await dependencies.rateLimiter.consume(clientId))) {
+    if (!(await dependencies.rateLimiter.consume(clientId, request))) {
       return errorResponse(
         429,
         "rate_limited",

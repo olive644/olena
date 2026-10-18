@@ -3119,3 +3119,10 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Achado 2 (média a alta).** Cada pedido de @, inclusive a consulta, baixava o registro inteiro. Simulação com 10 mil @: 0,95 MB por pedido, cerca de 1,7 GB por hora com uma conta no limite de 30 por minuto, o que gastaria o limite mensal de 10 GB do plano Spark em cerca de 6 horas. A consulta passou a ler só a folha da conta. Reservar e apagar ganharam teto por conta e global.
 - **Limite.** POST e DELETE ainda leem o registro inteiro. A correção estrutural (índice por nome) fica registrada em `docs/PROFILE_HANDLES.md` e não foi feita.
 - **Não verificado.** O tamanho real do registro hoje (é bem menor que 10 mil e o efeito é proporcional) e o consumo real no painel do Firebase.
+
+# Pentest: teto global de salas e da Helena por endereço, 2026-10-18
+
+- **Achado 3 (média), parte das salas.** A criação de sala era limitada só por endereço (6 por minuto). Sem teto global, quem usa vários endereços podia encher o armazenamento do banco: uma sala cheia ocupa cerca de 10 KB (medido em simulação, 30 participantes) e a limpeza roda uma vez por dia. `room-guard.ts` ganhou `ROOM_CREATE_DAILY_LIMIT` (3.000 criações por dia, somando todos os endereços e valendo para a ação `create`, que inclui o caderno colaborativo). O valor é de proteção e deve ser ajustado pelo uso real.
+- **Achado 4 (baixa a média).** A cota global da Helena (300 por dia) podia ser esgotada por quem tem várias contas. Entrou um teto por endereço de 100 por dia, avaliado antes do global, para que a conta que falha no teto do endereço não gaste a cota de todos. Uma turma atrás do mesmo endereço (30 alunos) ainda cabe. `rateLimiter.consume` agora recebe também a requisição.
+- **Limite.** Quem controla muitos endereços e muitas contas ainda consegue esgotar o teto global. O teto serve para encarecer o abuso, não para impedi-lo. A mudança de `FIREBASE_APPCHECK_ENFORCE` para `true` (ação da dona na Vercel) continua sendo a defesa mais forte.
+- **Não verificado.** O limite de armazenamento do plano Spark (1 GB) vem de memória. Conferir na tela de uso do Firebase.

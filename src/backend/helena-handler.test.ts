@@ -57,7 +57,10 @@ describe("handler da Helena", () => {
       suggestions: ["Revise amanhã"],
       generatedAt: "2026-08-30T00:00:00.000Z",
     });
-    expect(deps.rateLimiter.consume).toHaveBeenCalledWith("anonymous:test-client");
+    expect(deps.rateLimiter.consume).toHaveBeenCalledWith(
+      "anonymous:test-client",
+      expect.any(Request),
+    );
     expect(deps.provider.generate).toHaveBeenCalledWith(validRequest, expect.any(AbortSignal));
   });
 
