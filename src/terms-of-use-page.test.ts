@@ -44,7 +44,7 @@ describe("página dos Termos de Uso", () => {
 
   it("identifica a empresa e avisa que contato e foro ainda estão em definição, sem inventar dados", () => {
     expect(text).toContain("Galeria.Oli");
-    expect(text).toMatch(/em definição/);
+    expect(text).toMatch(/em definição/i);
     expect(text).not.toMatch(/CNPJ\s*[:nº]*\s*\d/);
     expect(text).not.toMatch(/[\w.+-]+@[\w-]+\.[a-z]{2,}/i);
   });
@@ -55,12 +55,34 @@ describe("página dos Termos de Uso", () => {
     expect(text).toMatch(/poderá oferecer planos pagos/);
     expect(text).toMatch(/antes de qualquer cobrança/);
     expect(text).toMatch(/Código de Defesa do Consumidor/);
-    // Menores: a mesma regra da política (ciência e autorização de quem é responsável).
+    // Menores: o aval de um responsável, sem repetir o texto da Política de Privacidade.
     expect(text).toMatch(/menos de 18 anos/);
-    expect(text).toMatch(/autorização de quem é responsável/);
+    expect(text).toMatch(/aval de um responsável/);
     expect(policy).toMatch(/autorização de quem é responsável/);
     // Não anuncia a integração removida do Google Agenda.
     expect(text).not.toMatch(/Google Agenda|agenda do Google/i);
+  });
+
+  it("não copia a Política de Privacidade: o que é de dados fica lá, e os termos só apontam para ela", () => {
+    const words = (value: string) => value.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+    const own = words(text);
+    const other = words(policy.replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " "));
+    const SIZE = 8;
+    const known = new Set<string>();
+    for (let i = 0; i + SIZE <= other.length; i++) known.add(other.slice(i, i + SIZE).join(" "));
+    const repeated: string[] = [];
+    for (let i = 0; i + SIZE <= own.length; i++) {
+      const piece = own.slice(i, i + SIZE).join(" ");
+      if (known.has(piece)) repeated.push(piece);
+    }
+    // Só cabeçalho e rodapé das páginas, e os nomes da equipe, podem se repetir.
+    for (const piece of repeated)
+      expect(
+        /olenastudy olena study voltar|josé oliver helena ferreira|todos os direitos galeria|study voltar ao aplicativo/.test(
+          piece,
+        ),
+        piece,
+      ).toBe(true);
   });
 
   it("os dois documentos apontam um para o outro, e o mapa do site lista os termos", () => {

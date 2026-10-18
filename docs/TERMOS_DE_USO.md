@@ -2,6 +2,10 @@
 
 Página pública em `public/termos-de-uso.html`, publicada em `/termos-de-uso.html`. Versão em `src/domain/terms-of-use.ts` (`TERMS_OF_USE_VERSION`), igual ao atributo `data-terms-version` da página (um teste confere). Segue o mesmo padrão visual e as mesmas regras da Política de Privacidade: página estática, sem script nem recurso externo, sem travessões, com índice e tema claro e escuro.
 
+## Termos e política não se repetem
+
+A Política de Privacidade veio primeiro e é a fonte de tudo que é dado: o que fica no aparelho, o que vai para a nuvem, prazos de guarda, parceiros, exclusão da conta e direitos da LGPD. Os termos tratam do **contrato**: o que o app oferece, conduta, conteúdo, planos pagos, responsabilidade e encerramento. Onde o assunto é dado, os termos só apontam para a política. Um teste (`src/terms-of-use-page.test.ts`) falha se os termos repetirem trechos de 8 palavras da política, fora cabeçalho, rodapé e os nomes da equipe. Ao editar os termos, não copie frases da política: aponte para ela.
+
 ## O que os termos dizem
 
 Doze seções: quem somos, o que o aplicativo oferece, sua conta, como usar (condutas proibidas, salas e cadernos compartilhados), o que é do usuário e o que é da Galeria.Oli, respostas automáticas e inteligência artificial, planos pagos no futuro, disponibilidade, suspensão e encerramento, responsabilidade, mudanças e lei aplicável.
@@ -11,7 +15,7 @@ Decisões que o texto reflete e que devem continuar valendo se o produto mudar:
 - **Uso gratuito hoje, planos pagos só como possibilidade.** O texto promete preço e condições antes de qualquer cobrança, confirmação do usuário e o direito de arrependimento de 7 dias (Código de Defesa do Consumidor, art. 49). Quando um plano existir, as regras dele entram nestes termos.
 - **O conteúdo é do usuário.** A Galeria.Oli só recebe a permissão necessária para o aplicativo funcionar e mostrar o conteúdo a quem o usuário escolher. Não há uso para publicidade.
 - **O produto é da Galeria.Oli.** Coerente com a `LICENSE` (software proprietário): permissão pessoal, limitada e intransferível de uso.
-- **Menores de 18 anos** usam com a ciência e a autorização de quem é responsável, a mesma regra da Política de Privacidade.
+- **Menores de 18 anos** precisam do aval de um responsável, que responde pelo uso. É a mesma regra da Política de Privacidade, escrita do ponto de vista do contrato, sem copiar o texto dela.
 - **@ que imita a equipe** não é permitido (ligado à lista de nomes reservados em `profile-handle-handler.ts`).
 - **Respostas automáticas e IA podem errar.** O texto é condicional (não afirma que há IA em tudo) e diz que o envio de conteúdo a parceiros depende de permissão, como na Política de Privacidade.
 
