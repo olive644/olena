@@ -9,6 +9,9 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env["CI"] ? 2 : 0,
   reporter: process.env["CI"] ? "github" : "list",
+  // No CI, lista no log os arquivos de teste mais lentos: é o dado para decidir o que otimizar
+  // ou dividir quando for preciso gastar menos minutos (ver docs/CI_MINUTOS.md).
+  reportSlowTests: process.env["CI"] ? { max: 10, threshold: 30_000 } : null,
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     trace: "on-first-retry",
