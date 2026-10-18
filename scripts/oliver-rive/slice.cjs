@@ -34,8 +34,8 @@ const POLY = {
     [158, 398],
     [172, 418],
     [166, 440],
-    [178, 458],
-    [178, 512],
+    [176, 440],
+    [176, 512],
     [60, 512],
   ],
   legL: [
@@ -133,7 +133,22 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
 
   // ---- ilha: componente principal sem o Oliver, com o chão sob os pés preenchido ----
   const mainMask = T.maskOfLabel(all.lab, mainId);
-  const islandMask = T.minus(mainMask, oliver);
+  // Borda suavizada do Oliver (alfa parcial, ainda fora da máscara ciano): vai para a peça dona
+  // da borda, e não para a ilha, senão ficaria como um pontilhado ciano flutuando no ar quando o
+  // personagem pula. A soma em repouso continua igual à arte.
+  const fringeAll = T.minus(T.and(T.minus(T.dilate(oliver, w, h, 3), opaque), mainMask), oliver);
+  const fringe = {};
+  {
+    let left = fringeAll;
+    for (const k of Object.keys(POLY)) {
+      fringe[k] = T.and(left, T.dilate(exclusive[k], w, h, 3));
+      left = T.minus(left, fringe[k]);
+    }
+    fringe.body = left;
+  }
+  // A borda suavizada do Oliver (alfa parcial, cor de Oliver) não entra na ilha: ficaria como um
+  // pontilhado ciano flutuando quando o personagem pula.
+  const islandMask = T.minus(T.minus(mainMask, oliver), fringeAll);
   // Só o pé esquerdo cobre a grama: a borda de trás do plano de grama passa por baixo dele, de
   // (172, 568) a (278, 562) (medido na arte). O pé direito termina onde o plano da frente começa,
   // então não esconde nada da ilha e atrás dele só há céu.
@@ -154,9 +169,9 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
   // personagem pula, então vale preencher com facetas chapadas, no estilo de papel recortado.
   const rightHole = T.minus(
     T.polyMask(w, h, [
-      [398, 562],
+      [394, 562],
       [520, 568],
-      [398, 586],
+      [394, 586],
     ]),
     islandMask,
   );
@@ -182,10 +197,10 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
   };
   // direita: crista clara no topo e faceta escura por baixo, cores medidas ao lado do corte
   const strip = T.polyMask(w, h, [
-    [398, 562],
+    [394, 562],
     [520, 568],
     [520, 570],
-    [398, 567],
+    [394, 567],
   ]);
   paint(T.minus(rightHole, strip), sample(384, 570, 394, 580));
   paint(T.and(rightHole, strip), sample(384, 561, 394, 564));
@@ -196,9 +211,60 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
     [330, 600],
     [240, 600],
   ]);
-  paint(T.minus(footHole, splitDark), sample(176, 578, 186, 586));
-  paint(T.and(footHole, splitDark), sample(274, 568, 284, 576));
-  const islandOut = T.or(islandMask, islandHole);
+  // pé esquerdo: cada coluna do buraco continua para cima a cor da grama logo abaixo dele, com as
+  // cores suavizadas na horizontal (janela larga) para não virar listras. O chão sob o pé emenda
+  // com o resto em vez de virar uma covinha.
+  {
+    const colors = new Map();
+    for (let x = 0; x < w; x++) {
+      let bottom = -1;
+      for (let y = 0; y < h; y++) if (footHole[y * w + x]) bottom = y;
+      if (bottom < 0) continue;
+      const ch = [[], [], []];
+      for (let y = bottom + 2; y <= bottom + 5; y++) {
+        const i = y * w + x;
+        if (!islandMask[i]) continue;
+        for (let k = 0; k < 3; k++) ch[k].push(data[i * 4 + k]);
+      }
+      if (ch[0].length)
+        colors.set(
+          x,
+          ch.map((a) => a.reduce((p, q) => p + q, 0) / a.length),
+        );
+    }
+    const WIN = 12;
+    for (const x of colors.keys()) {
+      const acc = [0, 0, 0];
+      let n = 0;
+      for (let dx = -WIN; dx <= WIN; dx++) {
+        const c = colors.get(x + dx);
+        if (!c) continue;
+        for (let k = 0; k < 3; k++) acc[k] += c[k];
+        n++;
+      }
+      const c = acc.map((v) => Math.round(v / n));
+      for (let y = 0; y < h; y++) {
+        const i = y * w + x;
+        if (!footHole[i]) continue;
+        islandRGBA[i * 4] = c[0];
+        islandRGBA[i * 4 + 1] = c[1];
+        islandRGBA[i * 4 + 2] = c[2];
+      }
+    }
+  }
+  let islandOut = T.or(islandMask, islandHole);
+  {
+    // pixels soltos do preenchimento (menos de 30 px) viram sujeira flutuando quando o personagem pula
+    const parts = T.components(islandOut, w, h);
+    for (const part of parts.list) {
+      if (part.n >= 30) continue;
+      let original = false;
+      for (let i = 0; i < N && !original; i++)
+        if (parts.lab[i] === part.id && islandMask[i]) original = true;
+      if (original) continue;
+      for (let i = 0; i < N; i++) if (parts.lab[i] === part.id) islandOut[i] = 0;
+    }
+  }
   for (let i = 0; i < N; i++) if (!islandOut[i]) islandRGBA[i * 4 + 3] = 0;
   // pixels preenchidos ficam opacos; os originais da ilha mantêm a opacidade
   for (let i = 0; i < N; i++) if (islandHole[i] && !islandMask[i]) islandRGBA[i * 4 + 3] = 255;
@@ -299,27 +365,47 @@ const BAND = { armR: 12, armL: 10, legL: 14, legR: 14 };
     put(k, data, named[k].mask, { pivot: named[k].centroid });
   }
   put("island", islandRGBA, islandOut, { pivot: [330, 640] });
-  put("legL", data, withBand("legL"), { pivot: [262, 508] });
-  put("legR", data, withBand("legR"), { pivot: [425, 478] });
+  put("legL", data, T.or(withBand("legL"), fringe.legL), { pivot: [262, 508] });
+  put("legR", data, T.or(withBand("legR"), fringe.legR), { pivot: [425, 478] });
   // Braços: ficam ATRÁS do corpo, cada um com uma aba (continuação do próprio braço, por
   // difusão) enfiada sob o corpo. Ao girar, a aba se move escondida e a borda de corte do braço
   // nunca aparece; uma faixa por cima do corpo, como nas pernas, girava junto, virava uma placa
   // rígida com emenda e uma lasca solta na junta, e parecia quebrar o braço.
-  const TAB = 34;
-  for (const [name, pivot] of [
-    ["armR", [472, 342]],
-    ["armL", [184, 414]],
+  // A aba só existe perto da junta real (disco em volta do ponto de contato com o corpo) e longe
+  // da borda do corpo, para nunca aparecer para fora da silhueta quando o braço gira.
+  const TAB = 14;
+  const disk = (cx, cy, r) => {
+    const m = new Uint8Array(N);
+    for (let y = Math.max(0, cy - r); y <= Math.min(h - 1, cy + r); y++)
+      for (let x = Math.max(0, cx - r); x <= Math.min(w - 1, cx + r); x++)
+        if ((x - cx) ** 2 + (y - cy) ** 2 <= r * r) m[y * w + x] = 1;
+    return m;
+  };
+  const inner = T.erode(opaque, w, h, 10);
+  for (const [name, pivot, contact, radius] of [
+    ["armR", [472, 342], [476, 346], 38],
+    ["armL", [184, 414], [176, 424], 30],
   ]) {
     const tab = T.minus(
-      T.and(T.and(T.dilate(exclusive[name], w, h, TAB), bodyExcl), T.erode(opaque, w, h, 2)),
+      T.and(
+        T.and(T.and(T.dilate(exclusive[name], w, h, TAB), bodyExcl), inner),
+        disk(contact[0], contact[1], radius),
+      ),
       exclusive[name],
     );
     const filled = T.inpaint(data, w, h, tab, 30, exclusive[name]);
     const rgba = Uint8ClampedArray.from(filled);
     for (let i = 0; i < N; i++) if (tab[i]) rgba[i * 4 + 3] = 255;
-    put(name, rgba, T.or(exclusive[name], tab), { pivot });
+    put(name, rgba, T.or(T.or(exclusive[name], tab), fringe[name]), { pivot });
   }
-  put("body", bodyFilled, bodyMask, { pivot: [320, 500] });
+  for (let i = 0; i < N; i++)
+    if (fringe.body[i]) {
+      bodyFilled[i * 4] = data[i * 4];
+      bodyFilled[i * 4 + 1] = data[i * 4 + 1];
+      bodyFilled[i * 4 + 2] = data[i * 4 + 2];
+      bodyFilled[i * 4 + 3] = data[i * 4 + 3];
+    }
+  put("body", bodyFilled, T.or(bodyMask, fringe.body), { pivot: [320, 500] });
   const eyeCenter = (info) => [
     Math.round((info.x0 + info.x1) / 2),
     Math.round((info.y0 + info.y1) / 2),

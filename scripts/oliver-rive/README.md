@@ -24,10 +24,13 @@ A arte é uma imagem só, então cada peça sai por cor (Oliver, ilha, adereços
 1. Junta escondida. As pernas mantêm uma faixa de pixels opacos sob o corpo, por cima dele, então
    um giro pequeno não abre fresta (só entram pixels com alfa 250 ou mais: o interior da arte tem
    252 a 254, nunca 255, e um limiar de 255 deixaria as faixas vazias). Os braços são diferentes:
-   ficam ATRÁS do corpo, com uma aba (continuação do próprio braço, por difusão) enfiada sob
-   ele. Uma faixa por cima do corpo girava junto, virava uma placa rígida com emenda e uma lasca
+   ficam ATRÁS do corpo, com uma aba curta (continuação do próprio braço, por difusão) enfiada
+   sob ele, só perto da junta e longe da borda do corpo (uma aba funda saía para fora da silhueta
+   quando o braço girava). Uma faixa por cima do corpo girava junto, virava uma placa rígida com emenda e uma lasca
    solta na junta, e parecia quebrar o braço; a aba atrás do corpo gira escondida.
-2. O que uma peça escondia é refeito na peça de baixo: o rosto sob olhos e boca (preenchimento por
+2. A borda suavizada do Oliver (alfa parcial) vai para a peça dona da borda, nunca para a ilha:
+   na ilha ela viraria um pontilhado ciano flutuando quando o personagem pula.
+3. O que uma peça escondia é refeito na peça de baixo: o rosto sob olhos e boca (preenchimento por
    difusão) e a ilha sob os pés, com facetas chapadas no estilo de papel recortado, para quando
    o personagem pula e deixa o chão à mostra.
 

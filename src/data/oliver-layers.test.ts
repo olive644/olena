@@ -22,17 +22,16 @@ it("os braços ficam atrás do corpo, para a junta nunca aparecer quando eles gi
   }
 });
 
-it("cada braço tem uma aba enfiada sob o corpo, funda o bastante para cobrir o giro", () => {
-  const body = layer("body");
-  const overlap = (arm: Layer, side: "left" | "right") =>
-    side === "right" ? body.x0 + body.w - arm.x0 : arm.x0 + arm.w - body.x0;
-  // braço esquerdo sai pela esquerda do corpo, o direito pela direita
+it("cada braço tem uma aba curta sob o corpo: cobre o giro e não sobra para fora da silhueta", () => {
+  // o braço esquerdo sai pela esquerda do corpo (junta em x 176), o direito pela direita (x 472)
   const armL = layer("armL");
   const armR = layer("armR");
-  expect(armL.x0 + armL.w).toBeGreaterThan(182 + 20);
-  expect(armR.x0).toBeLessThan(472 - 20);
-  expect(overlap(armR, "right")).toBeGreaterThan(20);
-  expect(overlap(armL, "left")).toBeGreaterThan(20);
+  const leftReach = armL.x0 + armL.w - 176;
+  const rightReach = 472 - armR.x0;
+  expect(leftReach).toBeGreaterThan(6);
+  expect(leftReach).toBeLessThan(30);
+  expect(rightReach).toBeGreaterThan(6);
+  expect(rightReach).toBeLessThan(30);
 });
 
 it("a ilha, as pernas e os braços ficam abaixo do rosto na pilha", () => {
