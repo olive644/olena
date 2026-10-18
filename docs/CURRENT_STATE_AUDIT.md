@@ -1,5 +1,22 @@
 # Auditoria do estado atual
 
+## Pronomes salvos e feedback tátil nas configurações, 2026-10-18
+
+As opções canônicas Ela/dela, Ele/dele e Elu/delu passam a ser localizadas na apresentação
+do perfil completo, barra compacta e seletor. O valor salvo continua igual; texto personalizado
+não passa pelo tradutor. Helper restrito em i18n/profile-pronouns.ts, sem migração de dados.
+
+Configurações emitem pulso de 8 ms nas ações de entrada, retorno, botões e seleção de
+checkbox/radio/select/range. Captura no Perfil cobre controles e diálogos por portal;
+o botão de navegação é tratado uma vez separadamente. Não vibra em montagem, digitação,
+foco, controles desabilitados ou eventos programáticos. Falta de suporte, bloqueio ou erro
+na API de vibração não interrompe ações. Não simular suporte físico nos dispositivos que
+não oferecem a API. Testes instrumentados verificam chamadas, não vibração física real.
+Validação local: npm run verify aprovado com 2.010 testes em 309 arquivos, APIs,
+TypeScript, lint sem erros, formato, build e orçamento. Dez E2E de pronomes, acionamentos
+táteis e configurações passaram no Edge em desktop/celular. Total JavaScript 1.468,9 KiB,
+sem aumentar orçamento ou dependências. Hardware real não foi utilizado no teste tátil.
+
 ## Regressão da prévia após idiomas, 2026-10-18
 
 O HTML separado da prévia Helena importava a interface sem instalar o catálogo, gerando

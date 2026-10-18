@@ -1,5 +1,10 @@
 # Identidade visual oficial OlenaStudy
 
+Configurações: feedback tátil curto de 8 ms em ações e escolhas, sem animação de tremer a
+tela, sem som e sem chamadas em carregamento. Sem vibração disponível, conservar o mesmo
+design e comportamento. Pronomes predefinidos acompanham o idioma na ficha e barra compacta;
+pronomes personalizados mantêm o texto original.
+
 Idiomas (2026-10-18): bandeiras recortadas existentes Brasil/EUA à esquerda da seta
 amarela nas configurações. Troca de textos preserva tema, arte e estado da tela, sem reload.
 Não reduzir alvos de toque para acomodar inglês; preservar quebra natural dos rótulos.

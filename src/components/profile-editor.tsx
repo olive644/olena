@@ -1,4 +1,5 @@
 import { uiText, useLanguage } from "../i18n/runtime";
+import { PROFILE_PRONOUN_PRESETS, profilePronounsLabel } from "../i18n/profile-pronouns";
 import { useEffect, useRef, useState } from "react";
 import { readStoredProfile, type StoredProfile } from "../hooks/use-stored-profile";
 import { writeSyncedStorage } from "../data/synced-storage";
@@ -29,7 +30,7 @@ export function ProfilePaperIcon({ name }: { name: SocialNetwork | "followers" |
   );
 }
 
-const PRONOUNS = ["", "Ela/dela", "Ele/dele", "Elu/delu"];
+const PRONOUNS: readonly string[] = ["", ...PROFILE_PRONOUN_PRESETS];
 
 export function ProfileEditor({
   profile,
@@ -166,7 +167,10 @@ export function ProfileEditor({
               value={pronounChoice}
               options={[
                 { value: "", label: uiText(844) },
-                ...PRONOUNS.slice(1).map((value) => ({ value, label: uiText(value) })),
+                ...PRONOUNS.slice(1).map((value) => ({
+                  value,
+                  label: profilePronounsLabel(value),
+                })),
                 { value: "custom", label: uiText(2550) },
               ]}
               onChange={(value) => {

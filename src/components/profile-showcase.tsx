@@ -1,4 +1,5 @@
 import { uiText, useLanguage } from "../i18n/runtime";
+import { profilePronounsLabel } from "../i18n/profile-pronouns";
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
@@ -165,7 +166,7 @@ export function ProfileShowcase({
             </div>
             <div>
               {handle.username && <span>@{handle.username}</span>}
-              {profile.pronouns && <span>{profile.pronouns}</span>}
+              {profile.pronouns && <span>{profilePronounsLabel(profile.pronouns)}</span>}
             </div>
             <ProfileLabels creks={handle.creks} username={handle.username} />
             <img
@@ -220,7 +221,7 @@ export function ProfileShowcase({
               <div className="profile-cover__handle">
                 {handle.username && <strong>@{handle.username}</strong>}
                 <ProfileLabels creks={handle.creks} username={handle.username} />
-                {profile.pronouns && <span>{profile.pronouns}</span>}
+                {profile.pronouns && <span>{profilePronounsLabel(profile.pronouns)}</span>}
               </div>
               <ProfileXpBar />
               <div ref={friendActions} className="profile-cover__actions">
