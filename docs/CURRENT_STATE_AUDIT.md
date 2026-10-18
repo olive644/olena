@@ -3058,3 +3058,10 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Dado para a próxima decisão.** O Playwright passa a listar no log do CI os 10 arquivos de teste mais lentos (`reportSlowTests`).
 - **Documentação para IA.** Novos `docs/CI_MINUTOS.md` (custo, medição, política, alternativas descartadas, regras) e `docs/OPERACAO_E_CUSTOS.md` (auditoria de segurança, publicação das regras do Firebase, consumo do banco, troca de banco, visibilidade do repositório, contrato, falso positivo do gitleaks, regras e decisões que continuam com a dona). `AGENTS.md` ganhou a seção "Custos, CI e operação" e o `README` os links.
 - **Limite.** O consumo mensal real de minutos ainda não foi medido (o repositório é público e não cobra). A medição deve ser refeita depois de privar.
+
+# Plano do painel admin e da ponte com o Discord, 2026-10-18
+
+- **O que é.** Novo `docs/PAINEL_ADMIN_E_DISCORD.md`: plano em PRs pequenas para o segundo dev construir um chat do aluno com o time, ligado ao Discord, mais avisos de eventos e contagens. É só planejamento. Nenhum código, regra do Firebase, variável de ambiente ou serviço externo foi criado ou alterado.
+- **Decisões de arquitetura propostas.** Conversas só pelo servidor (regras negam o navegador, como `privateProfileSocial`). Entrega no app por SSE no mesmo padrão de `docs/SOCIAL_REALTIME_SECURITY.md`. Resposta do time por interações HTTP do Discord (cabe na Vercel), porque um bot ligado ao Gateway exige processo sempre ligado e custo. Eventos de progresso nascem no app, já que o servidor não os vê e gatilhos do Firebase exigem plano pago, então são informativos e nunca concedem nada.
+- **Pendente da dona.** Decisões D1 a D8 do documento (servidor do Discord, o que o aviso identifica, consentimento, retenção, lista de políticas, administradores, custo).
+- **Não verificado.** Limites e assinatura do Discord, custo do banco com presença e chat, termos comerciais do plano Hobby da Vercel.

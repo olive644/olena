@@ -59,6 +59,8 @@ dependem de configuração no ambiente seguro da Vercel, descrita em:
 - [`docs/GOOGLE_CALENDAR_SETUP.md`](docs/GOOGLE_CALENDAR_SETUP.md): integração com o Google Agenda;
 - [`docs/OPERACAO_E_CUSTOS.md`](docs/OPERACAO_E_CUSTOS.md): segurança, regras do Firebase, consumo do
   banco, visibilidade do repositório e decisões que continuam com a dona;
+- [`docs/PAINEL_ADMIN_E_DISCORD.md`](docs/PAINEL_ADMIN_E_DISCORD.md): plano do painel admin, do chat
+  com o time e dos avisos no Discord (ainda não implementado).
 - [`docs/CI_MINUTOS.md`](docs/CI_MINUTOS.md): custo do CI em minutos, política de e2e e como medir;
 - voz natural: `CLOUDFLARE_ACCOUNT_ID` e `CLOUDFLARE_API_TOKEN`, somente no ambiente da Vercel.
 
