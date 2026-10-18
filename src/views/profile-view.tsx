@@ -1,4 +1,5 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
+import { settingsPulse, settingsClickHaptic, settingsChangeHaptic } from "../data/settings-haptics";
 import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import {
   useAccessibility,
@@ -150,7 +151,16 @@ export function ProfileView({
   };
 
   return (
-    <main className="main-content profile-view" id="main-content">
+    <main
+      className="main-content profile-view"
+      id="main-content"
+      onClickCapture={(event) => {
+        if (settingsOpen) settingsClickHaptic(event);
+      }}
+      onChangeCapture={(event) => {
+        if (settingsOpen) settingsChangeHaptic(event);
+      }}
+    >
       <ProfileShowcase
         syncStatus={cloud.status}
         presentationReady={
@@ -178,7 +188,9 @@ export function ProfileView({
                 }
                 aria-expanded={settingsOpen}
                 aria-controls="profile-settings"
-                onClick={() => {
+                data-settings-haptic-handled
+                onClick={(event) => {
+                  if (event.isTrusted) settingsPulse();
                   if (settingsOpen && mobile && mobileDetail) {
                     backToSettings();
                     return;

@@ -1,5 +1,10 @@
 # OlenaStudy: Second Brain
 
+Pronomes: profilePronounsLabel traduz apenas os três valores predefinidos. Nunca aplicar
+uiText ao campo livre nem regravar helena.profile.v1 ao mudar idioma. Settings haptics usa
+eventos confiáveis de interação, com captura de clique para ações e de change para escolhas,
+evitando duplicar a vibração do checkbox. Cabeçalho tem marcador de tratamento próprio.
+
 Preview Helena: o HTML independente também precisa aguardar initializeLanguage antes de
 importar a interface. Não comparar títulos traduzidos para identificar a aba Agenda.
 Fixtures de retomada de Foco devem ser instaladas por addInitScript no próximo documento,
