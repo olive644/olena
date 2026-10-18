@@ -1,5 +1,12 @@
 # Identidade visual oficial OlenaStudy
 
+Carrossel do Espaço: Oliver recortado em PNG transparente ultrapassa a borda superior,
+com planos geométricos ciano, superfícies do tema e uma paginação discreta. Movimento
+respeita redução de animações. Chama matemática facetada azul, contadores em PaperDigits,
+flor e tomate nos atalhos de foco e calendário original na agenda. Check sobre placa
+creme sempre usa grafite explícito, sem herdar a tinta creme do tema escuro.
+Arte e prompt: [Oliver Matemática](OLIVER_MATH_ART.md).
+
 Espaço do aluno: atalhos de papel para ilhas, cadernos, foco e agenda, ícones nativos,
 superfícies do tema e contadores sem valores inventados. Sem gradiente decorativo antigo
 no header, recorte de estrela amarelo suave. Entrada de 280 ms com deslocamento de 10 px,

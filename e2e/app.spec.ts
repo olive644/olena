@@ -87,15 +87,14 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("usa o ícone grafite original em Começar prática", async ({ page }) => {
+test("mostra Oliver e o convite de Matemática nos dois temas", async ({ page }) => {
   for (const theme of ["light", "dark"]) {
-    const action = page.getByRole("button", { name: "Começar prática", exact: true });
     await expect(
-      action.locator('[data-icon="learn"] .navigation-icon__variant--claro'),
+      page.getByRole("button", { name: "Explorar Matemática", exact: true }),
     ).toBeVisible();
-    await expect(
-      action.locator('[data-icon="learn"] .navigation-icon__variant--escuro'),
-    ).toBeHidden();
+    const art = page.getByAltText("Oliver convidando você para explorar as ilhas de Matemática");
+    await expect(art).toBeVisible();
+    await expect(art).toHaveAttribute("src", "/oliver-math-islands.png");
 
     if (theme === "light") {
       await setTestTheme(page, "dark");
@@ -176,10 +175,8 @@ test("concentra as ferramentas na navegação lateral", async ({ page }, testInf
   await expect(sidebar.getByText("Espaço do aluno", { exact: true })).toBeHidden();
   await expect(page.getByRole("region", { name: "Ferramentas do Espaço do aluno" })).toHaveCount(0);
 
-  const heroDecoration = await page
-    .locator(".view-heading--today")
-    .evaluate((element) => getComputedStyle(element, "::before").content);
-  expect(heroDecoration).toBe("none");
+  await expect(page.locator(".view-heading--today")).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Descobertas com Oliver" })).toBeVisible();
 
   const metricDecorations = await page
     .locator(".metric-row article")
@@ -255,7 +252,7 @@ test("troca o tema somente pela acessibilidade do Perfil", async ({ page }, test
 });
 
 test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, testInfo) => {
-  await expect(page.getByRole("heading", { name: "Espaço do aluno" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeVisible();
   await expect(page.getByText("Dados salvos neste dispositivo")).toHaveCount(0);
   await expect(page.getByAltText(/rosto da helena/i)).toHaveCount(0);
   await expect(page.getByAltText("Helena, a mascote do OlenaStudy")).toHaveCount(0);

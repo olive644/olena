@@ -20,6 +20,7 @@ type Account = {
     }
   >;
   activitySince?: number;
+  activitySharing?: boolean;
   activities?: Record<string, StudyActivity & { likes: Record<string, number> }>;
 };
 export type SocialState = { accounts: Record<string, Account> };
@@ -210,7 +211,7 @@ export function createProfileSocialHandler(options: {
         };
         const feed = (): SocialFeed => ({
           self: profile(key),
-          activitySharing: self.activitySince !== undefined,
+          activitySharing: self.activitySharing !== false,
           activities: Object.entries(state.accounts)
             .filter(
               ([id, account]) =>
@@ -331,6 +332,7 @@ export function createProfileSocialHandler(options: {
             ),
           );
           if (body["action"] === "activity-privacy") {
+            self.activitySharing = body["enabled"] === true;
             if (body["enabled"] === true) self.activitySince ??= now;
             else {
               delete self.activitySince;
@@ -340,7 +342,8 @@ export function createProfileSocialHandler(options: {
                   if (notice.owner === key) delete account.notices[id];
             }
           } else if (body["action"] === "publish-activities") {
-            if (self.activitySince !== undefined) {
+            if (self.activitySharing !== false) {
+              self.activitySince ??= now;
               completed ??= (await options.completedActivities?.(identity.uid)) ?? [];
               self.activities ??= {};
               for (const activity of completed.slice(0, 12)) {

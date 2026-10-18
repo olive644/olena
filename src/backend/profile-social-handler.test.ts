@@ -4,7 +4,33 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
-it("atividades exigem consentimento e registros salvos; curtidas são idempotentes e revogáveis", async () => {
+it("padrão ativo publica novas conquistas sem republicar histórico nem reativar opt-out", async () => {
+  const activities = [
+    {
+      id: "c".repeat(32),
+      kind: "focus" as const,
+      value: 10,
+      at: Date.parse("2026-10-17T11:59:00Z"),
+    },
+  ];
+  const app = setup(async () => activities);
+  await app.request("b", { action: "follow", username: "alice" });
+  await app.request("a", { action: "publish-activities" });
+  expect((await app.feed("b")).activities).toEqual([]);
+  app.advance(2000);
+  activities.push({
+    ...activities[0]!,
+    id: "d".repeat(32),
+    at: Date.parse("2026-10-17T12:00:01Z"),
+  });
+  await app.request("a", { action: "publish-activities" });
+  expect((await app.feed("b")).activities).toHaveLength(1);
+  await app.request("a", { action: "activity-privacy", enabled: false });
+  await app.request("a", { action: "publish-activities" });
+  expect((await app.feed("a")).activitySharing).toBe(false);
+  expect((await app.feed("b")).activities).toEqual([]);
+});
+it("atividades respeitam a desativação e registros salvos; curtidas são idempotentes e revogáveis", async () => {
   const activity = {
     id: "a".repeat(32),
     kind: "focus" as const,
@@ -12,6 +38,8 @@ it("atividades exigem consentimento e registros salvos; curtidas são idempotent
     at: Date.parse("2026-10-17T12:00:01Z"),
   };
   const app = setup(async () => [activity]);
+  expect((await app.feed("a")).activitySharing).toBe(true);
+  await app.request("a", { action: "activity-privacy", enabled: false });
   await app.request("b", { action: "follow", username: "alice" });
   await app.request("a", { action: "publish-activities" });
   expect((await app.feed("b")).activities).toEqual([]);
@@ -36,6 +64,7 @@ it("atividades exigem consentimento e registros salvos; curtidas são idempotent
     (await app.request("a", { action: "publish-activities", title: "inventado" })).status,
   ).toBe(400);
   await app.request("a", { action: "activity-privacy", enabled: false });
+  expect((await app.feed("a")).activitySharing).toBe(false);
   expect((await app.feed("b")).activities).toEqual([]);
   expect((await app.feed("b")).notifications.filter((notice) => notice.kind)).toEqual([]);
   expect((await app.request("b", like)).status).toBe(404);

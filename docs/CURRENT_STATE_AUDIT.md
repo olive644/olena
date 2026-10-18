@@ -1,5 +1,19 @@
 # Auditoria do estado atual
 
+## Oliver, privacidade e ciclos reais de foco, 2026-10-18
+
+O Espaço abre com um carrossel de uma página, Oliver em PNG transparente e entrada
+direta nas ilhas de Matemática. A recomendação de visão geral foi removida; métricas
+usam algarismos de papel e atalhos usam os ícones originais de flor, tomate e calendário.
+A chama matemática azul expira exatamente após 24 horas sem prática, inclusive com
+a tela aberta. A rosa começa murcha sem histórico de Cronômetro; Pomodoro não a rega.
+O relógio revalida ao recuperar foco e a cada segundo. Datas futuras e inválidas não contam.
+
+Compartilhamento de atividades tem padrão ativo no servidor, com marcador explícito
+para novas desativações. Registros legados sem marcador usam o novo padrão; a primeira
+publicação estabelece o corte temporal, sem despejar conquistas antigas. O link de
+privacidade usa botão temático com seta, e o check da paleta tem contraste no modo escuro.
+
 Termos publicados em 18/10/2026: Privacidade e dados agora abre TERMS_OF_USE_PATH em
 nova aba, com proteção noopener/noreferrer, substituindo o aviso antigo de rascunho.
 Texto legal incorporado da main sem reescrita e sem introduzir aceite obrigatório.

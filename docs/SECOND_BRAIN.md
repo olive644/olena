@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Matemática: contar somente práticas math/mathematics válidas, nunca futuras. Chama
+azul some em 24 h sem prática. Flor: somente Cronômetro positivo salvo cuida da rosa;
+conta sem histórico começa murcha. Não congelar Date.now na montagem desses widgets.
+Privacidade social: activitySharing ausente significa ativo; false explícito impede publicação.
+O carrossel de Oliver substitui o cabeçalho antigo e abre diretamente Matemática.
+
 Configurações: link Termos de uso em Privacidade e dados aponta para TERMS_OF_USE_PATH,
 não para o rascunho. Manter o caminho centralizado e preservar a navegação ao abrir.
 

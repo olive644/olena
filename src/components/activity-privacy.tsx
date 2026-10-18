@@ -25,7 +25,7 @@ export function ActivityPrivacy({ enabled }: { enabled: boolean }) {
         <input
           type="checkbox"
           disabled={!feed || busy}
-          checked={feed?.activitySharing === true}
+          checked={feed?.activitySharing ?? true}
           onChange={async (event) => {
             setBusy(true);
             setError("");

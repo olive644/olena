@@ -1,6 +1,6 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { PaperCheckIcon } from "../components/paper-check-icon";
-import { useCallback, useState, type Dispatch, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type Dispatch, type FormEvent } from "react";
 import { HelenaRoomIcon } from "../components/helena-room-icon";
 import { PageHeader } from "../components/app-navigation";
 import { ListeningQuiz } from "../components/listening-quiz";
@@ -73,7 +73,20 @@ function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
   useLanguage();
 
   const [worldIndex, setWorldIndex] = useState(4);
-  const [insideWorld, setInsideWorld] = useState(false);
+  const [insideWorld, setInsideWorld] = useState(() => {
+    try {
+      return sessionStorage.getItem("olena:enter-mathematics") === "1";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      sessionStorage.removeItem("olena:enter-mathematics");
+    } catch {
+      /* Sem armazenamento, manter o hub normal. */
+    }
+  }, []);
   const [entryOrigin, setEntryOrigin] = useState<{ x: number; y: number; size: number }>();
   const [profile] = useStoredProfile();
   const world = SOLO_WORLDS[worldIndex]!;

@@ -2,6 +2,7 @@ import { uiText, useLanguage } from "../i18n/runtime";
 import { useState } from "react";
 import { PRIVACY_POLICY_PATH, PRIVACY_POLICY_VERSION } from "../domain/privacy-policy";
 import "./privacy-notice.css";
+import { PaperArrow } from "./paper-arrow";
 
 // É uma confirmação de leitura, não autoriza IA, voz ou serviços opcionais.
 export const PRIVACY_NOTICE_KEY = "helena.privacyNotice.v1";
@@ -44,8 +45,13 @@ export function PrivacyNotice({ embedded = false }: { embedded?: boolean }) {
         </div>
       )}
       <footer>
-        <a href={PRIVACY_POLICY_PATH} target="_blank" rel="noreferrer">
-          {uiText(825)}
+        <a
+          className="secondary-button"
+          href={PRIVACY_POLICY_PATH}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {uiText(825)} <PaperArrow />
         </a>
         {!embedded && (
           <button
