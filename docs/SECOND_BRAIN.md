@@ -1412,3 +1412,7 @@ ready/changed. createFirebaseSocialWatcher observa a folha notices do UID
 confirmado e protege redirects, limites e cancelamento. Reutiliza o adaptador
 Vercel com streaming já existente. Não confundir o teste HTTP de duas identidades
 de teste com a validação em duas contas reais, registrada em SOCIAL_REALTIME_SECURITY.md.
+
+## Consumo do Realtime Database (2026-10-17)
+
+O plano gratuito limita download a cerca de 10 GB por mês. O envio da conta espera 4 s para juntar mudanças (`CLOUD_UPLOAD_DELAY_MS`) e usa `print=silent`; ao esconder a página o envio pendente sai na hora. Ao criar uma gravação frequente em dados sincronizados, lembre que cada salvamento custa o tamanho do estado inteiro em download. Veja o consumo na aba Uso do Realtime Database.
