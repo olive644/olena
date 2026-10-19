@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Layout do Espaço aprovado por preview, 2026-10-19
+
+Prateleira retirada do Espaço nos dois layouts, sem apagar favoritos ou cadernos.
+StudentDestinations usa Foco acima da Ilha à esquerda e caderno largo à direita.
+Folheamento, capa, abertura de folhas e ausência de criação/personalização preservados.
+Não depende de detecção JS da largura; grade responsiva em CSS. Molduras ajustadas
+para facetas e cantos originais, sem grande caixa arredondada. Prioridades e Agenda
+Hoje são montados somente quando há tarefas pendentes/eventos do dia. Indicadores
+numéricos permanecem informativos. Preview desktop/mobile aprovado antes do merge.
+Testes cobrem dados vazios, só tarefas, só eventos, ambos, conclusão da última tarefa,
+navegação, proporção do livro e posição relativa dos três destinos.
+
 ## Favoritos na prateleira móvel, 2026-10-18
 
 Mobile recebe StudentFavoritesShelf abaixo do Oliver; desktop mantém o preview anterior.
