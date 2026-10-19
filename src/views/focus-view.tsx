@@ -2,7 +2,9 @@ import { uiWeekdays, uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { readStudentResume, saveStudentResume } from "../data/student-resume";
 import { Plus } from "lucide-react";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
-import { FocusRose, PomodoroTomato } from "../components/focus-art";
+import { FocusRose } from "../components/focus-art";
+import { AnimatedPomodoroTomato } from "../components/pomodoro-tomato";
+import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { focusFlowerState } from "../domain/focus-flower";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { agendaTimeZone } from "../data/agenda-time-zone";
@@ -327,6 +329,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     restored,
   ]);
 
+  const tomatoStage = useDisplayedTomatoStage(pomodoroPhase, secondsRemaining / (duration * 60));
   if (!defaultSubject) return null;
   const subject = defaultSubject;
 
@@ -458,7 +461,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     <FocusRose progress={bloomProgress} wilted={flower.wilted} />
                   ) : (
                     <div className="pomodoro-dial">
-                      <PomodoroTomato progress={secondsRemaining / (duration * 60)} />
+                      <AnimatedPomodoroTomato stage={tomatoStage} />
                       <div className="pomodoro-dial__time">
                         <h2 id="focus-timer-title" className="timer">
                           <PaperDigits value={formatTimer(secondsRemaining)} />
