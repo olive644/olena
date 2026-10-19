@@ -166,10 +166,9 @@ for (const theme of ["light", "dark"]) {
       });
     const before = await pixels();
     await expect.poll(pixels).not.toBe(before);
-    await expect(popup.locator(".paper-digits use").first()).toHaveAttribute(
-      "href",
-      /^\/paper-digits.svg#digit-/,
-    );
+    await expect(popup.locator(".paper-digits use").first()).toHaveAttribute("href", /^#digit-/);
+    // sprite embutido na janela flutuante: o dígito novo pinta na hora, sem sumir a cada segundo
+    await expect(popup.locator(".pomodoro-sprite symbol")).toHaveCount(10);
     expect(
       await popup
         .locator(".paper-digits use")

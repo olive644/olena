@@ -21,6 +21,12 @@ export async function openPomodoroWindow(): Promise<Window> {
     doc.head.append(sheet.cloneNode(true));
   }
   doc.body.className = "pomodoro-mini-page";
+  // Os dígitos de papel vêm de um sprite. Como arquivo externo, cada dígito novo demorava para
+  // pintar na janela flutuante e o número sumia por instantes; embutido, o desenho é imediato.
+  const sprite = await fetch("/paper-digits.svg")
+    .then((response) => response.text())
+    .catch(() => "");
+  doc.body.insertAdjacentHTML("afterbegin", `<div class="pomodoro-sprite">${sprite}</div>`);
   const syncAppearance = () => {
     const source = document.documentElement;
     const root = doc.documentElement;
