@@ -20,6 +20,7 @@ export default function StudentNotebookPreview({
   return (
     <NotebookSpread
       readOnly
+      compactPreview
       initialPageId={readStudentResume().notebook?.page}
       notebook={notebook}
       pages={pages}

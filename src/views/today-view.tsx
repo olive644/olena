@@ -4,7 +4,7 @@ import { PaperCheckIcon } from "../components/paper-check-icon";
 import { minutesFocusedOn, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
 import type { AppView } from "../components/app-navigation";
 import { PageHeader } from "../components/app-navigation";
-import { NavigationIcon } from "../components/navigation-icon";
+import { StudentMetricIcon } from "../components/student-metric-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import { MathPracticeHero } from "../components/math-practice-hero";
 import { PaperDigits } from "../components/paper-digits";
@@ -53,7 +53,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
 
       <section className="metric-row" aria-label={uiText(1546)}>
         <article>
-          <NavigationIcon name="planner" />
+          <StudentMetricIcon name="pending" />
           <span>{uiText(1547)}</span>
           <strong>
             <PaperDigits value={String(pendingTasks.length)} />
@@ -61,28 +61,20 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           <small>{uiText(1548)}</small>
         </article>
         <article>
-          <NavigationIcon name="focus" />
+          <StudentMetricIcon name="focus" />
           <span>{uiText(99)}</span>
           <strong>
             <PaperDigits value={String(focusMinutes)} />
           </strong>
           <small>{uiText(1549)}</small>
         </article>
-        <article className="student-agenda-metric">
-          <button
-            className="student-metric-link"
-            type="button"
-            onClick={() => onNavigate("planner")}
-            aria-label={uiText("Ver agenda")}
-          >
-            <AgendaToolbarIcon name="month" />
-            <span>{uiText(1550)}</span>
-            <strong>
-              <PaperDigits value={String(todayEvents.length)} />
-            </strong>
-            <small>{uiText(1551)}</small>
-            <PaperArrow />
-          </button>
+        <article>
+          <StudentMetricIcon name="agenda" />
+          <span>{uiText(1550)}</span>
+          <strong>
+            <PaperDigits value={String(todayEvents.length)} />
+          </strong>
+          <small>{uiText(1551)}</small>
         </article>
       </section>
 
@@ -120,7 +112,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
                     aria-label={uiText(2045, [task.title])}
                     onClick={() => dispatch({ type: "task/toggled", id: task.id })}
                   >
-                    {task.completed && <PaperCheckIcon />}
+                    <PaperCheckIcon />
                   </button>
                   <div>
                     <strong>{task.title}</strong>
@@ -135,7 +127,13 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           )}
         </section>
 
-        <section className="module-panel" aria-labelledby="agenda-today-title">
+        <section className="module-panel student-agenda-panel" aria-labelledby="agenda-today-title">
+          <button
+            className="student-agenda-open"
+            type="button"
+            aria-label={uiText("Ver agenda")}
+            onClick={() => onNavigate("planner")}
+          />
           <div className="module-heading">
             <div>
               <span className="section-label">{uiText(1550)}</span>
@@ -147,9 +145,6 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           {todayEvents.length === 0 ? (
             <div className="empty-state empty-state--compact">
               <p>{uiText(1558)}</p>
-              <button type="button" onClick={() => onNavigate("planner")}>
-                {uiText(1559)}
-              </button>
             </div>
           ) : (
             <ul className="schedule-list">

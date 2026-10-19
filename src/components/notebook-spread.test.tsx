@@ -5,6 +5,53 @@ import { createInitialWorkspace, workspaceReducer } from "../domain/workspace";
 import { isHandwritingDocument, loadWorkspace } from "../data/local-workspace";
 import { notebookPaperTabs } from "./notebook-paper-tools";
 
+it.each([0, 1])("preview compacto com %i folhas não oferece criação", (count) => {
+  const state = fixture();
+  const view = render(
+    <NotebookSpread
+      readOnly
+      compactPreview
+      notebook={state.notebooks[0]!}
+      pages={state.notes.slice(0, count)}
+      subjects={state.subjects}
+      dispatch={vi.fn()}
+      onOpen={vi.fn()}
+      onCreate={vi.fn()}
+      onRemove={vi.fn()}
+    />,
+  );
+  expect(view.container.querySelector(".notebook-sheet-create")).toBeNull();
+  expect(view.container.querySelector('.paper-action-icon[data-paper-icon="plus"]')).toBeNull();
+});
+
+it("preview compacto folheia até a capa sem permitir personalização", () => {
+  const state = fixture();
+  const dispatch = vi.fn();
+  const view = render(
+    <NotebookSpread
+      readOnly
+      compactPreview
+      notebook={state.notebooks[0]!}
+      pages={state.notes}
+      subjects={state.subjects}
+      dispatch={dispatch}
+      onOpen={vi.fn()}
+      onCreate={vi.fn()}
+      onRemove={vi.fn()}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "‹ Capa" }));
+  expect(view.container.querySelector(".book-cover")).not.toBeNull();
+  expect(view.container.querySelector(".notebook-cover-inventory")).toBeNull();
+  expect(dispatch).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: /^Próxima/ }));
+  expect(view.container.querySelector(".notebook-paper-spread")).not.toBeNull();
+  expect(view.container.querySelector(".notebook-sheet-create")).toBeNull();
+  expect(
+    view.container.querySelector(".notebook-preview-controls .focus-paper-arrow"),
+  ).not.toBeNull();
+});
+
 it("preview somente leitura não abre capa ou personalização pelo teclado", () => {
   const state = fixture();
   const notebook = state.notebooks[0]!;

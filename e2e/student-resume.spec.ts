@@ -81,8 +81,7 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
   await expect(agenda.getByText("Inglês", { exact: true })).toHaveCount(0);
   await expect(agenda.locator("li")).toHaveCSS("border-inline-start-color", "rgb(239, 71, 111)");
   await expect(page.locator(".check-button")).toHaveAttribute("aria-pressed", "false");
-  await expect(page.locator(".check-button svg")).toHaveCount(0);
-  await expect(page.locator(".check-button")).toHaveCSS("border-top-color", "rgb(250, 204, 21)");
+  await expect(page.locator(".check-button svg")).toHaveCSS("opacity", "0.45");
   await expect(page.locator(".student-focus-art .pomodoro-tomato")).toBeVisible();
   await expect(page.locator(".student-destination--planner")).toHaveCount(0);
   const bookBox = await page
@@ -91,14 +90,24 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
   expect(bookBox!.width / bookBox!.height).toBeCloseTo(1.4, 1);
   const preview = page.locator(".student-notebook-preview");
   await expect(preview.locator(".notebook-paper-spread")).toBeVisible();
-  await expect(preview.getByRole("button", { name: /Capa/ })).toHaveCount(0);
-  await preview.locator(".notebook-paper-spread").press("ArrowLeft");
+  await preview.getByRole("button", { name: /Capa/ }).click();
+  await expect(preview.locator(".book-cover")).toBeVisible();
   await expect(preview.locator(".notebook-cover-inventory")).toHaveCount(0);
   await preview.getByRole("button", { name: /^Próxima/ }).click();
+  await preview.getByRole("button", { name: /^Próxima/ }).click();
   await expect(preview.getByRole("button", { name: /folha 3/i })).toBeVisible();
+  await expect(preview.locator(".notebook-sheet-create")).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   if (page.viewportSize()!.width <= 560)
     expect((await page.locator(".math-hero-slide").boundingBox())!.height).toBeLessThan(420);
+  const cards = await page.locator(".student-destination").all();
+  const boxes = await Promise.all(cards.map((card) => card.boundingBox()));
+  expect(boxes).toHaveLength(3);
+  expect(Math.abs(boxes[0]!.y - boxes[2]!.y)).toBeLessThan(3);
+  expect(boxes[0]!.height).toBeLessThan(200);
+  await expect(page.locator(".student-space-shortcuts .onboarding-paper-arrow")).toHaveCount(0);
+  await expect(page.getByText(/^(Explorar as ilhas|Meus cadernos|Hora de focar)$/)).toHaveCount(0);
+  await expect(page.locator(".metric-row button")).toHaveCount(0);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
     path: test.info().outputPath("painel-retomada.png"),
@@ -137,9 +146,7 @@ test("sino e configurações usam o mesmo número de publicação", async ({ pag
   await expect(page.locator(".settings-footer")).toContainText("beta.999");
 });
 
-test("check do Espaço e Agenda representam a mesma tarefa e Agenda numérica navega", async ({
-  page,
-}) => {
+test("check do Espaço e Agenda representam a mesma tarefa e card Hoje navega", async ({ page }) => {
   const workspace = createInitialWorkspace();
   workspace.tasks = [
     {
@@ -163,14 +170,19 @@ test("check do Espaço e Agenda representam a mesma tarefa e Agenda numérica na
   await page.goto("/");
   const check = page.locator(".check-button");
   await expect(check).toHaveAttribute("aria-pressed", "false");
-  await expect(check.locator("svg")).toHaveCount(0);
-  await page.locator(".student-metric-link").click();
+  await expect(check.locator("svg")).toHaveCSS("opacity", "0.45");
+  await expect(page.locator(".check-list li")).toHaveCSS("padding-left", "12px");
+  await expect(page.locator(".check-list li")).toHaveCSS("column-gap", "12px");
+  const checkBackground = await check.evaluate((el) => getComputedStyle(el).backgroundColor);
+  await expect(page.locator(".metric-row button")).toHaveCount(0);
+  await page.locator(".student-agenda-open").click();
   await expect(page).toHaveURL(/\/planejador$/);
   const agendaCheck = page
     .locator(".agenda-item--task")
     .filter({ hasText: "Tarefa consistente" })
     .locator(".agenda-check");
   await expect(agendaCheck).toHaveAttribute("aria-pressed", "false");
+  await expect(agendaCheck).toHaveCSS("background-color", checkBackground);
   await agendaCheck.click();
   await expect(agendaCheck).toHaveAttribute("aria-pressed", "true");
   await page
