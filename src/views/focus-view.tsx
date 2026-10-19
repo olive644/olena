@@ -1,7 +1,9 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { readStudentResume, saveStudentResume } from "../data/student-resume";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
-import { FocusRose, PomodoroTomato } from "../components/focus-art";
+import { FocusRose } from "../components/focus-art";
+import { AnimatedPomodoroTomato } from "../components/pomodoro-tomato";
+import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { focusFlowerState } from "../domain/focus-flower";
 import { PomodoroFloating } from "../components/pomodoro-floating";
 import { PomodoroControls } from "../components/pomodoro-controls";
@@ -318,6 +320,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     restored,
   ]);
 
+  const tomatoStage = useDisplayedTomatoStage(pomodoroPhase, secondsRemaining / (duration * 60));
   if (!defaultSubject) return null;
   const subject = defaultSubject;
 
@@ -471,9 +474,21 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     <FocusRose progress={bloomProgress} wilted={flower.wilted} />
                   ) : (
                     <div className="pomodoro-dial">
-                      <PomodoroTomato progress={secondsRemaining / (duration * 60)} />
+                      <AnimatedPomodoroTomato stage={tomatoStage} />
                       <div className="pomodoro-dial__time">
-                        <h2 id="focus-timer-title" className="timer">
+                        <img
+                          className="pomodoro-worm"
+                          src="/pomodoro-tomato/minhoca.svg"
+                          alt=""
+                          aria-hidden="true"
+                          width="320"
+                          height="120"
+                          draggable={false}
+                        />
+                        <h2
+                          id="focus-timer-title"
+                          className={`timer${secondsRemaining >= 3600 ? " timer--hours" : ""}`}
+                        >
                           <PaperDigits value={formatTimer(secondsRemaining)} />
                         </h2>
                         {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}
@@ -570,7 +585,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
             <>
               <PomodoroFloating
                 time={formatTimer(secondsRemaining)}
-                progress={secondsRemaining / (duration * 60)}
+                stage={tomatoStage}
                 controls={pomodoroControls}
               />
               {notificationStatus === "denied" && (

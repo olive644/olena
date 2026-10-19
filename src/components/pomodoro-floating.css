@@ -38,16 +38,16 @@ body.pomodoro-mini-page {
 .pomodoro-mini .pomodoro-dial {
   width: min(190px, 66vw);
   height: auto;
-  aspect-ratio: 280 / 290;
+  aspect-ratio: 454 / 430;
   margin: 0;
 }
 .pomodoro-mini .pomodoro-tomato {
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 .pomodoro-mini .pomodoro-dial__time .timer {
-  font-size: clamp(1.6rem, 10vw, 2.5rem);
-  margin: 0;
+  font-size: clamp(1rem, 6vw, 1.45rem);
+  margin: 0 16% 0 0;
 }
 .pomodoro-mini button {
   min-height: 44px;

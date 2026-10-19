@@ -6819,8 +6819,37 @@ body.local-room-active {
 
 .pomodoro-tomato {
   width: 100%;
+  height: auto;
   display: block;
-  overflow: visible;
+}
+
+/* O Rive desenha numa prancheta maior que o tomate, para o pedaço e as migalhas voarem sem
+   corte: o canvas cobre a prancheta inteira, posicionado por cima da imagem estática. As medidas
+   vêm de TOMATO_ART (src/domain/pomodoro-tomato.ts). */
+.pomodoro-tomato-live {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.pomodoro-tomato-live > canvas {
+  position: absolute;
+  width: 189.43%;
+  height: 186.05%;
+  left: -44.71%;
+  top: -58.6%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms linear;
+}
+
+.pomodoro-tomato-live[data-ready="true"] > canvas {
+  opacity: 1;
+}
+
+.pomodoro-tomato-live[data-ready="true"] > .pomodoro-tomato {
+  opacity: 0;
+  transition: opacity 0ms linear 200ms;
 }
 
 .focus-rose-stage--pomodoro {
@@ -6837,49 +6866,55 @@ body.local-room-active {
   --tomato-depth: #a52c29;
 }
 
+/* O tempo fica sobre uma minhoca de papel recortado colada no tomate: o tomate é comido por inteiro
+   e o relógio continua legível até o fim. A minhoca cobre toda a área do relógio. */
 .pomodoro-dial__time {
   position: absolute;
-  inset: 50% 15% auto;
-  transform: translateY(-50%);
+  left: 50%;
+  top: 58%;
+  width: 84%;
+  aspect-ratio: 320 / 120;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
   text-align: center;
 }
 
+.pomodoro-worm {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 .pomodoro-dial__time .timer {
-  margin: 0;
-  font-size: clamp(2.5rem, 8vw, 3.75rem);
+  position: relative;
+  margin: 0 16% 0 0;
+}
+
+.pomodoro-dial__time p {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 0.2rem 0.8rem 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 5px 11px 6px 9px;
+  background: var(--surface);
+  box-shadow: 0 3px 0 var(--line);
+}
+
+.pomodoro-dial__time .timer {
+  font-size: clamp(2.1rem, 6.4vw, 3.1rem);
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
 }
 
-.pomodoro-dial__time p {
-  margin: 0.7rem 0 0;
-  font-size: 0.85rem;
-}
-
-.pomodoro-tomato__depth,
-.pomodoro-tomato__track,
-.pomodoro-tomato__progress {
-  fill: none;
-  stroke-width: 22px;
-  stroke-linejoin: bevel;
-  stroke-linecap: butt;
-}
-
-.pomodoro-tomato__depth {
-  stroke: var(--tomato-depth);
-}
-
-.pomodoro-tomato__track {
-  stroke: #782e29;
-}
-
-.pomodoro-tomato__progress {
-  stroke: var(--tomato-color);
-  transition: stroke-dasharray 0.5s linear;
-}
-
-.pomodoro-tomato__facet {
-  fill: #ff8c70;
+/* durações de horas mostram h:mm:ss, mais largo que mm:ss */
+.pomodoro-dial__time .timer--hours {
+  font-size: clamp(1.5rem, 4.6vw, 2.2rem);
 }
 
 .pomodoro-progress {
@@ -6983,20 +7018,6 @@ body.local-room-active {
 }
 .streak-tomato.is-active::after {
   background: #62bd67;
-}
-
-.pomodoro-tomato__leaf {
-  fill: #62bd67;
-}
-
-.pomodoro-tomato__leaf-fold {
-  fill: #287543;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pomodoro-tomato__progress {
-    transition: none;
-  }
 }
 
 .focus-rose__plant {
@@ -12082,21 +12103,6 @@ select {
   fill: #e4a35f;
 }
 
-.pomodoro-tomato__bites {
-  fill: none;
-  stroke: black;
-  stroke-width: 35px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke-dasharray 420ms ease;
-}
-
-.pomodoro-tomato > g[mask] {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pomodoro-tomato-breathe 2.4s ease-in-out infinite;
-}
-
 .focus-rose-copy > :empty {
   display: none;
 }
@@ -12152,12 +12158,6 @@ select {
   margin-top: 1.25rem;
 }
 
-@keyframes pomodoro-tomato-breathe {
-  50% {
-    transform: scale(0.985);
-  }
-}
-
 @media (max-width: 640px) {
   .focus-rose {
     width: min(62%, 220px);
@@ -12172,21 +12172,15 @@ select {
   }
 
   .pomodoro-dial__time .timer {
-    font-size: clamp(2.2rem, 10vw, 3.75rem);
+    font-size: clamp(1.8rem, 8.4vw, 3.1rem);
+  }
+
+  .pomodoro-dial__time .timer--hours {
+    font-size: clamp(1.3rem, 6vw, 2.2rem);
   }
 
   .focus-mode-slide > .timer-controls {
     margin-top: 0.75rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pomodoro-tomato > g[mask] {
-    animation: none;
-  }
-
-  .pomodoro-tomato__bites {
-    transition: none;
   }
 }
 

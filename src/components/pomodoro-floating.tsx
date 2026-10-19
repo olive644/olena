@@ -2,18 +2,18 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { openPomodoroWindow, supportsPomodoroPictureInPicture } from "../data/pomodoro-window";
 import { uiText, useLanguage } from "../i18n/runtime";
-import { PomodoroTomato } from "./focus-art";
+import { AnimatedPomodoroTomato } from "./pomodoro-tomato";
 import { PaperDigits } from "./paper-digits";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import "./pomodoro-floating.css";
 
 export function PomodoroFloating({
   time,
-  progress,
+  stage,
   controls,
 }: {
   time: string;
-  progress: number;
+  stage: number;
   controls: ReactNode;
 }) {
   useLanguage();
@@ -87,8 +87,14 @@ export function PomodoroFloating({
         createPortal(
           <main className="app-shell pomodoro-mini" aria-label={uiText("Mini Pomodoro")}>
             <div className="pomodoro-dial">
-              <PomodoroTomato progress={progress} />
+              <AnimatedPomodoroTomato stage={stage} />
               <div className="pomodoro-dial__time">
+                <img
+                  className="pomodoro-worm"
+                  src="/pomodoro-tomato/minhoca.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
                 <h1 className="timer" aria-label={uiText("Tempo restante: {0}", [time])}>
                   <PaperDigits value={time} />
                 </h1>

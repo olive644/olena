@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+PomodoroFloating recebe stage de useDisplayedTomatoStage do Foco e usa AnimatedPomodoroTomato com minhoca, sem uma segunda lógica de progresso. Canvas escuta resize no ownerDocument.defaultView para funcionar no documento flutuante.
+
 Miniatura compacta: 320 por 340 px, somente tomate, dígitos e controles recolhíveis. Resumo semanal fica no Foco principal, não é enviado ao portal. Fundo CSS transparente remove a decoração, mas não oferece transparência da janela sobre o sistema operacional.
 
 Mini Pomodoro: PomodoroFloating é portal no documento retornado por pomodoro-window.ts. Recebe relógio, progresso e PomodoroControls de FocusView, nunca roda outra sessão. Uma seta original roxa girada para baixo expande os três botões em linha na aba e na miniatura. PiP nativo mantém a janela no topo; fallback window.open pode ficar atrás de outras janelas. Fecha na desmontagem da aba Foco e conserva o contador ao fechar só a miniatura. Notificações: pomodoro-notifications.ts pede permissão durante clique de início e avisa transições recentes. Não é bloqueio de notificações externas. Testes: pomodoro-floating.spec.ts, pomodoro-controls.test.tsx, pomodoro-window.test.ts e pomodoro-notifications.test.ts.
@@ -1526,3 +1528,5 @@ Antes de mexer no CI, nas regras do Firebase, em limites de uso ou na visibilida
 ## Termos de Uso (2026-10-18)
 
 Página estática `public/termos-de-uso.html`, versão em `src/domain/terms-of-use.ts` (`TERMS_OF_USE_VERSION`, igual a `data-terms-version`, conferida por `src/terms-of-use-page.test.ts`). Sem script nem recurso externo, sem travessões. A Política de Privacidade liga para ela no rodapé. Ainda não há link na tela de entrada nem aceite registrado por versão. Contato, CNPJ e foro seguem "em definição" e o texto precisa de revisão jurídica. Ver `docs/TERMOS_DE_USO.md`.
+
+2026-10-19, tomate do Pomodoro em Rive: AnimatedPomodoroTomato (aba Foco) toca public/pomodoro-tomato/tomato.riv sobre o quadro estático estagio-N.webp, que segue como elemento acessível. A etapa (0 a 8) vem de tomatoStage(restante/duração), uma mordida por oitavo do tempo escolhido; useDisplayedTomatoStage segura a última mordida 2,6 s antes de brotar. Máquina "Tomate" com entradas etapa e instante. Gerado por scripts/tomato-rive (art.cjs desenha as camadas, generate.cjs monta o binário). Comandos: node scripts/tomato-rive/art.cjs e node scripts/tomato-rive/generate.cjs. Teto do arquivo em performance:check: 700 KiB. O relógio fica sobre public/pomodoro-tomato/minhoca.svg (minhoca de papel recortado, gerada por scripts/tomato-rive/worm.cjs). Movimento reduzido não baixa o .riv.

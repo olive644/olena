@@ -57,6 +57,8 @@ test("avisos nativos acompanham estudo e pausa sem duplicar", async ({ page }) =
 
 for (const theme of ["light", "dark"]) {
   test(`mini Pomodoro compartilha contador e controles: ${theme}`, async ({ page }, info) => {
+    await page.clock.install();
+    await page.clock.resume();
     const workspace = createInitialWorkspace();
     workspace.focusPreferences.pomodoroMinutes = 1;
     await page.addInitScript(
@@ -100,6 +102,10 @@ for (const theme of ["light", "dark"]) {
     const popup = await popupPromise;
     await expect(popup.getByRole("main", { name: "Mini Pomodoro" })).toBeVisible();
     await expect(popup.locator("html")).toHaveAttribute("data-theme", theme);
+    const tomato = popup.locator(".pomodoro-tomato-live");
+    await expect(tomato).toHaveAttribute("data-ready", "true", { timeout: 20_000 });
+    await expect(tomato.locator("canvas")).toBeVisible();
+    await expect(popup.locator(".pomodoro-worm")).toBeVisible();
     await expect(
       popup.locator(".pomodoro-progress, .pomodoro-week, main p, main small"),
     ).toHaveCount(0);
@@ -124,6 +130,9 @@ for (const theme of ["light", "dark"]) {
     await popup.getByRole("button", { name: "Começar", exact: true }).click();
     await expect(page.getByRole("button", { name: "Pausar", exact: true })).toBeVisible();
     await expect(page.getByText(/Os avisos estão bloqueados/)).toBeVisible();
+    await page.clock.fastForward(16000);
+    await expect(tomato).toHaveAttribute("data-stage", "2");
+    await expect(page.locator(".pomodoro-tomato-live")).toHaveAttribute("data-stage", "2");
     await expect
       .poll(async () =>
         page.evaluate(
