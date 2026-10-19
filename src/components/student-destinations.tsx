@@ -1,25 +1,20 @@
-import { lazy, Suspense, type Dispatch } from "react";
+import { lazy, Suspense } from "react";
 import { uiText } from "../i18n/runtime";
 import type { AppView } from "./app-navigation";
-import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
+import type { WorkspaceState } from "../domain/workspace";
 import { MATH_COURSES } from "../data/math-courses";
 import { readStudentResume } from "../data/student-resume";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { FocusRose, PomodoroTomato } from "./focus-art";
 import { focusFlowerState } from "../domain/focus-flower";
 import { agendaTimeZone } from "../data/agenda-time-zone";
-import { HelenaLoading } from "./helena-loading";
-import { PaperActionIcon } from "./paper-action-icon";
 import { useWallClock } from "../hooks/use-wall-clock";
-const NotebookPreview = lazy(() => import("./student-notebook-preview"));
 const IslandPreview = lazy(() => import("./student-island-preview"));
 export function StudentDestinations({
   workspace,
-  dispatch,
   onNavigate,
 }: {
   workspace: WorkspaceState;
-  dispatch: Dispatch<WorkspaceAction>;
   onNavigate(view: AppView): void;
 }) {
   const resume = readStudentResume();
@@ -34,30 +29,6 @@ export function StudentDestinations({
     .sort((a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt))[0];
   const course =
     MATH_COURSES.find((item) => last?.islandId === `mathematics:${item.id}`) ?? MATH_COURSES[0]!;
-  const books = workspace.notebooks.filter(
-    (item) => item.kind !== "folder" && item.kind !== "collection" && item.kind !== "note",
-  );
-  const book =
-    books.find((item) => item.id === resume.notebook?.id) ??
-    [...books].sort((a, b) => {
-      const changed = (ids: string[], created: string) =>
-        Math.max(
-          Date.parse(created) || 0,
-          ...workspace.notes
-            .filter((note) => ids.includes(note.id))
-            .map((note) => Date.parse(note.updatedAt) || 0),
-        );
-      return changed(b.pageIds, b.createdAt) - changed(a.pageIds, a.createdAt);
-    })[0];
-  function openBook(page?: string) {
-    onNavigate("notes");
-    if (book)
-      window.history.replaceState(
-        null,
-        "",
-        `/cadernos?caderno=${encodeURIComponent(book.id)}${page ? `&folha=${encodeURIComponent(page)}` : ""}`,
-      );
-  }
   const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), now);
   const mode = session?.mode ?? resume.focus?.mode;
   const flower = focusFlowerState(workspace.focusSessions, now, agendaTimeZone());
@@ -90,34 +61,6 @@ export function StudentDestinations({
           <IslandPreview key={course.id} course={course.id} />
         </Suspense>
       </button>
-      <section
-        className={`student-destination student-destination--notes${book ? " has-notebook" : ""}`}
-        aria-label={uiText("Meus cadernos")}
-      >
-        {!book && (
-          <span className="student-empty-notebook" aria-hidden="true">
-            <PaperActionIcon name="book" />
-          </span>
-        )}
-        {book && (
-          <div className="student-notebook-preview">
-            <Suspense fallback={<HelenaLoading compact />}>
-              <NotebookPreview
-                notebook={book}
-                workspace={workspace}
-                dispatch={dispatch}
-                onOpen={openBook}
-              />
-            </Suspense>
-          </div>
-        )}
-        <button
-          type="button"
-          className="student-resume-open"
-          aria-label={uiText("Meus cadernos")}
-          onClick={() => openBook(resume.notebook?.page)}
-        ></button>
-      </section>
       <button
         type="button"
         className="student-destination student-destination--focus student-destination--art"

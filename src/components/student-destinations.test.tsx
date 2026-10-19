@@ -31,9 +31,7 @@ it("retoma a última parte matemática praticada e usa somente a última modalid
   );
   saveStudentResume({ focus: { mode: "pomodoro", at: Date.now() } });
   const navigate = vi.fn();
-  const { container } = render(
-    <StudentDestinations workspace={workspace} dispatch={vi.fn()} onNavigate={navigate} />,
-  );
+  const { container } = render(<StudentDestinations workspace={workspace} onNavigate={navigate} />);
   expect(container.querySelector(".student-island-art")?.getAttribute("src")).toContain(
     "school-small.webp",
   );

@@ -49,7 +49,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         }}
       />
 
-      <StudentDestinations workspace={workspace} dispatch={dispatch} onNavigate={onNavigate} />
+      <StudentDestinations workspace={workspace} onNavigate={onNavigate} />
 
       <section className="metric-row" aria-label={uiText(1546)}>
         <article>

@@ -3338,3 +3338,9 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **Sem defeito achado.** Rosto (piscadas e reações), pernas, adereços (mais, divisão, régua, chama e faíscas), braço direito em todo o aceno.
 - **Limite conhecido.** Um resíduo muito leve do preenchimento do rosto só aparece com contraste multiplicado por cinco. O lobo escuro do corpo fica à mostra, com a borda levemente serrilhada, quando o punho esquerdo sobe.
 - **Teste.** `src/data/oliver-layers.test.ts` agora também limita a profundidade da aba (6 a 30 px) e falha com a aba antiga.
+
+# Espaço do aluno sem o widget de caderno, 2026-10-19
+
+- **O que mudou.** O widget de caderno (prévia folheável no meio da fileira de atalhos) saiu do Espaço do aluno. Sobraram os dois atalhos de arte, ilha e foco, que agora ficam lado a lado em duas colunas iguais, com a mesma altura, no desktop (220 px, na largura do herói e das métricas) e no celular (130 a 200 px conforme a largura), e a arte centralizada dentro de cada cartão. Antes, o foco e a ilha ficavam empilhados à esquerda do caderno e o celular ficava com uma coluna estreita demais para a ilha.
+- **Código.** `StudentDestinations` perdeu o caderno, a leitura dos cadernos e a prop `dispatch`, que só ele usava. O CSS de `student-destination--notes`, `student-resume-open` e `student-empty-notebook` foi removido. A retomada do último caderno (`studentResume.notebook`) continua sendo gravada pela tela de Cadernos, e a prévia `student-notebook-preview` segue existindo para `student-favorites-shelf`, que hoje não é usada em nenhuma tela (não verificado se havia plano de ligá-la ao Espaço).
+- **Teste.** `e2e/student-resume.spec.ts` deixou de exercitar o caderno e agora confere que ele não existe, que ilha e foco têm o mesmo tamanho e a mesma linha, ficam abaixo do herói, dentro da largura da página e com a arte dentro do cartão, em desktop e mobile.

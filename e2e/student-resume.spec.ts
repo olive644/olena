@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { createInitialWorkspace } from "../src/domain/workspace";
-test("painel usa agenda real, caderno folheável, último foco e Oliver compacto", async ({
+test("painel usa agenda real, último foco, ilha e foco lado a lado e Oliver compacto", async ({
   page,
 }) => {
   const workspace = createInitialWorkspace();
@@ -85,35 +85,35 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
   await expect(page.locator(".check-button svg")).toHaveCSS("opacity", "0.45");
   await expect(page.locator(".student-focus-art .pomodoro-tomato")).toBeVisible();
   await expect(page.locator(".student-destination--planner")).toHaveCount(0);
-  const bookBox = await page
-    .locator(".student-notebook-preview .notebook-spread-shell")
-    .boundingBox();
-  expect(bookBox!.width / bookBox!.height).toBeCloseTo(1.4, 1);
-  const notebookCard = (await page.locator(".student-destination--notes").boundingBox())!;
-  const hero = (await page.locator(".math-hero-carousel").boundingBox())!;
-  expect(bookBox!.y).toBeGreaterThanOrEqual(notebookCard.y);
-  expect(bookBox!.y + bookBox!.height).toBeLessThanOrEqual(notebookCard.y + notebookCard.height);
-  expect(notebookCard.y).toBeGreaterThan(hero.y + hero.height);
-  const preview = page.locator(".student-notebook-preview");
-  await expect(preview.locator(".notebook-paper-spread")).toBeVisible();
-  await preview.getByRole("button", { name: /Capa/ }).click();
-  await expect(preview.locator(".book-cover")).toBeVisible();
-  await expect(preview.locator(".notebook-cover-inventory")).toHaveCount(0);
-  await preview.getByRole("button", { name: /^Próxima/ }).click();
-  await preview.getByRole("button", { name: /^Próxima/ }).click();
-  await expect(preview.getByRole("button", { name: /folha 3/i })).toBeVisible();
-  await expect(preview.locator(".notebook-sheet-create")).toHaveCount(0);
+  // o widget de caderno saiu do Espaço do aluno
+  await expect(page.locator(".student-destination--notes")).toHaveCount(0);
+  await expect(page.locator(".student-notebook-preview")).toHaveCount(0);
+  await expect(page.locator(".student-empty-notebook")).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   if (page.viewportSize()!.width <= 560)
     expect((await page.locator(".math-hero-slide").boundingBox())!.height).toBeLessThan(420);
+  // ilha e foco ficam lado a lado, com o mesmo tamanho, dentro da largura da página
   const cards = await page.locator(".student-destination").all();
   const boxes = await Promise.all(cards.map((card) => card.boundingBox()));
-  expect(boxes).toHaveLength(3);
-  expect(boxes[2]!.y).toBeLessThan(boxes[0]!.y);
-  expect(Math.abs(boxes[1]!.y - boxes[2]!.y)).toBeLessThanOrEqual(4);
-  expect(boxes[1]!.x).toBeGreaterThan(boxes[0]!.x + boxes[0]!.width);
-  expect(boxes[1]!.width).toBeGreaterThan(boxes[0]!.width * 1.8);
-  expect(boxes[0]!.height).toBeLessThan(200);
+  expect(boxes).toHaveLength(2);
+  expect(Math.abs(boxes[0]!.y - boxes[1]!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(boxes[0]!.width - boxes[1]!.width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(boxes[0]!.height - boxes[1]!.height)).toBeLessThanOrEqual(1);
+  expect(boxes[1]!.x).toBeGreaterThan(boxes[0]!.x + boxes[0]!.width - 1);
+  expect(boxes[0]!.height).toBeGreaterThanOrEqual(120);
+  expect(boxes[0]!.height).toBeLessThanOrEqual(260);
+  const hero = (await page.locator(".math-hero-carousel").boundingBox())!;
+  expect(boxes[0]!.y).toBeGreaterThan(hero.y + hero.height);
+  expect(boxes[1]!.x + boxes[1]!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  // a arte de cada cartão fica dentro dele
+  for (const art of [".student-island-art", ".student-focus-art"]) {
+    const box = (await page.locator(art).boundingBox())!;
+    const card = boxes[art === ".student-island-art" ? 0 : 1]!;
+    expect(box.x).toBeGreaterThanOrEqual(card.x - 1);
+    expect(box.x + box.width).toBeLessThanOrEqual(card.x + card.width + 1);
+    expect(box.y).toBeGreaterThanOrEqual(card.y - 1);
+    expect(box.y + box.height).toBeLessThanOrEqual(card.y + card.height + 1);
+  }
   await expect(page.locator(".student-space-shortcuts .onboarding-paper-arrow")).toHaveCount(0);
   await expect(page.getByText(/^(Explorar as ilhas|Meus cadernos|Hora de focar)$/)).toHaveCount(0);
   await expect(page.locator(".metric-row button")).toHaveCount(0);
@@ -124,8 +124,6 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
     animations: "disabled",
     style: ".mobile-nav { visibility: hidden !important; }",
   });
-  await preview.getByRole("button", { name: /folha 3/i }).click();
-  await expect(page).toHaveURL(/\/cadernos\?caderno=book&folha=three/);
 });
 
 test("sino e configurações usam o mesmo número de publicação", async ({ page }) => {
