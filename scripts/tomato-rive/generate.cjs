@@ -1,5 +1,5 @@
 // Gera public/pomodoro-tomato/tomato.riv a partir das camadas de art.cjs: o tomate inteiro, um
-// estagio por mordida, a peca arrancada, a folha, a mandibula e as particulas. A maquina de estados
+// estagio por mordida, a peca arrancada, a folha e as particulas. A maquina de estados
 // "Tomate" tem a entrada numerica "etapa" (0 a 8, a mordida em que o tempo esta): cada aumento toca
 // a animacao da mordida seguinte; voltar a 0 faz o tomate brotar de novo. Formato binario do
 // runtime oficial do Rive, versao 7. Uso: node scripts/tomato-rive/generate.cjs
@@ -143,7 +143,7 @@ function comp(type, props) {
   comps.push({ type, props });
   return comps.length - 1;
 }
-// margem em volta da arte para a boca entrar e sair e as migalhas voarem sem serem cortadas
+// margem em volta da arte para o pedaço arrancado e as migalhas voarem sem serem cortadas
 const MARGIN = { x: 150, top: 90, bottom: 70 };
 comp(T.Artboard, [
   [K.name, S, "Tomate"],
@@ -202,16 +202,6 @@ const LF = layers.folha;
 const folhaPivot = [LF.x0 + LF.w / 2, LF.y0 + LF.h * 0.75];
 const folha = rig(corpo.a, "folha", folhaPivot, C);
 picture(folha.a, "folha", "folha", folhaPivot);
-// boca: dobradica na origem; maxilar em cima e queixo espelhado embaixo
-const boca = rig(root, "boca", [0, 0], ZERO, 0);
-const JW = layers.mandibula;
-const hinge = [24, 144];
-const jawPivot = [JW.x0 + JW.w / 2 - 0, JW.y0 + JW.h / 2 - 0];
-const maxilar = rig(boca.a, "maxilar", ZERO, ZERO);
-picture(maxilar.a, "maxilar", "mandibula", [hinge[0] - 0, hinge[1] - 0]);
-const queixoRig = rig(boca.a, "queixo", ZERO, ZERO);
-const queixoFlip = node(queixoRig.a, "queixo-espelho", 0, 0, [[K.scaleY, D, -1]]);
-picture(queixoFlip, "queixo", "mandibula", [hinge[0], hinge[1]]);
 // particulas (soltas na raiz, sem herdar o amasso do tomate)
 const bits = [];
 function addBits(kind, count) {
@@ -232,7 +222,6 @@ const order = (p) => {
   if (p.name.startsWith("estagio")) return 0 + Number(p.name.slice(7)) * 0.01;
   if (p.name.startsWith("peca")) return 1;
   if (p.name === "folha") return 2;
-  if (p.name === "maxilar" || p.name === "queixo") return 3;
   return 4;
 };
 pictures.sort((a, b) => order(b) - order(a));
@@ -267,7 +256,7 @@ const stageOpacity = (list, shown, fnOverride = {}) => {
 };
 const hideEffects = (list) => {
   // zera tudo o que a mordida mexe: o fim de cada animacao deixa o repouso
-  for (const part of [boca, ...pieces, ...bits.map((b) => b.r)]) track(list, part.r, "op", () => 0);
+  for (const part of [...pieces, ...bits.map((b) => b.r)]) track(list, part.r, "op", () => 0);
 };
 
 // ---------- ambiente ----------
@@ -287,11 +276,10 @@ for (let k = 0; k <= BITES; k++) {
 
 // ---------- mordidas ----------
 const FPS = 60;
-const BITE_SECONDS = 1.25;
-const T_OPEN = 0.3,
-  T_SNAP = 0.4,
-  T_SWAP = 0.42,
-  T_LEAVE = 0.8;
+const BITE_SECONDS = 1.0;
+const T_OPEN = 0.12,
+  T_SNAP = 0.2,
+  T_SWAP = 0.22;
 const bite = [];
 for (let k = 0; k < BITES; k++) {
   const info = meta.biteInfo[k];
@@ -299,50 +287,28 @@ for (let k = 0; k < BITES; k++) {
   const d = info.dir;
   const u = [-d[0], -d[1]];
   const rot0 = Math.atan2(u[1], u[0]);
-  const ms = 0.8 + 0.04 * k;
   const list = [];
   // estagios: troca seca no instante da mordida
   stageOpacity(list, k, {
     [k]: (t) => (t < T_SWAP ? 1 : 0),
     [k + 1]: (t) => (t < T_SWAP ? 0 : 1),
   });
-  // boca
-  const off = (t) =>
-    t < T_OPEN
-      ? 330 * (1 - outCubic(t / T_OPEN))
-      : t < T_LEAVE
-        ? 0
-        : 330 * smooth(T_LEAVE, T_LEAVE + 0.3, t);
-  const hingePos = (t) => [cx + d[0] * (130 * ms + off(t)), cy + d[1] * (130 * ms + off(t))];
-  track(list, boca.r, "x", (t) => hingePos(t)[0]);
-  track(list, boca.r, "y", (t) => hingePos(t)[1]);
-  track(list, boca.r, "rot", () => rot0);
-  track(list, boca.r, "sx", () => ms);
-  track(list, boca.r, "sy", () => ms);
-  track(list, boca.r, "op", (t) => (t < 0.03 ? 0 : t < T_LEAVE + 0.3 ? 1 : 0));
-  const open = (t) => {
-    if (t < T_OPEN) return 0.73 * outCubic(t / T_OPEN);
-    if (t < T_SNAP) return 0.73;
-    if (t < T_SWAP + 0.02) return 0.73 * (1 - smooth(T_SNAP, T_SWAP + 0.02, t));
-    // mastiga duas vezes
-    const c = t - (T_SWAP + 0.02);
-    return t < T_LEAVE
-      ? 0.2 * Math.abs(Math.sin((Math.PI * c) / 0.19)) * (1 - smooth(0.2, 0.36, c))
-      : 0.1 * smooth(T_LEAVE, T_LEAVE + 0.2, t);
-  };
-  track(list, maxilar.r, "rot", (t) => -open(t));
-  track(list, queixoRig.r, "rot", (t) => open(t));
-  // peca arrancada: entra no lugar exato e e engolida pela boca
+  // peca arrancada: salta do tomate para fora, gira e cai desfazendo-se
   const piece = pieces[k];
-  const shrink = (t) => smooth(T_SWAP + 0.02, T_SWAP + 0.24, t);
+  const fly = (t) => Math.max(0, t - T_SWAP);
   track(list, piece.r, "op", (t) =>
-    t < T_SWAP ? 0 : t < T_SWAP + 0.2 ? 1 : 1 - smooth(T_SWAP + 0.2, T_SWAP + 0.28, t),
+    t < T_SWAP ? 0 : fly(t) < 0.45 ? 1 : 1 - smooth(0.45, 0.6, fly(t)),
   );
-  track(list, piece.r, "x", (t) => d[0] * 30 * shrink(t) - 0);
-  track(list, piece.r, "y", (t) => d[1] * 30 * shrink(t));
-  track(list, piece.r, "sx", (t) => 1 - 0.8 * shrink(t));
-  track(list, piece.r, "sy", (t) => 1 - 0.8 * shrink(t));
-  track(list, piece.r, "rot", (t) => 0.5 * shrink(t));
+  track(list, piece.r, "x", (t) => d[0] * 260 * outCubic(Math.min(1, fly(t) / 0.5)));
+  track(
+    list,
+    piece.r,
+    "y",
+    (t) => d[1] * 260 * outCubic(Math.min(1, fly(t) / 0.5)) - 150 * fly(t) + 900 * fly(t) * fly(t),
+  );
+  track(list, piece.r, "sx", (t) => 1 - 0.55 * smooth(0, 0.55, fly(t)));
+  track(list, piece.r, "sy", (t) => 1 - 0.55 * smooth(0, 0.55, fly(t)));
+  track(list, piece.r, "rot", (t) => (d[0] >= 0 ? 1 : -1) * 3.2 * fly(t));
   // tomate: amassa, recua e balanca
   track(list, corpo.r, "x", (t) => spring(t, T_SWAP, -d[0] * 14, 24, 7));
   track(list, corpo.r, "y", (t) => spring(t, T_SWAP, -d[1] * 14, 24, 7));

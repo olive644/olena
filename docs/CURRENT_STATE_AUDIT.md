@@ -3347,8 +3347,8 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 
 # Tomate do Pomodoro em Rive, 2026-10-19
 
-- **O que mudou.** O tomate de SVG com anel que sumia saiu. A aba Foco mostra um tomate de papel recortado que é comido por oito mordidas, com boca, migalhas, sementes, gotas e brilhos, e brota de novo no fim da fase de foco.
+- **O que mudou.** O tomate de SVG com anel que sumia saiu. A aba Foco mostra um tomate de papel recortado que é comido por oito mordidas, com pedaço que salta, migalhas, sementes, gotas e brilhos, e brota de novo no fim da fase de foco.
 - **Sincronia.** `tomatoStage` dá uma mordida a cada oitavo da duração escolhida, então 25 ou 50 minutos seguem a mesma sequência. Ao fim do foco a última mordida fica 2,6 s e o tomate volta inteiro. Reiniciar o contador também devolve o tomate inteiro.
 - **Código.** `AnimatedPomodoroTomato` carrega `public/pomodoro-tomato/tomato.riv` depois do primeiro quadro (`estagio-N.webp`), que segue como imagem acessível. `PomodoroTomato` estático também serve ao Espaço do aluno. O relógio ganhou uma etiqueta de papel porque o tomate agora é sólido.
-- **Custo.** O .riv tem cerca de 598 KiB e só baixa sem movimento reduzido. Teto em `performance:check`: 700 KiB.
+- **Custo.** O .riv tem cerca de 571 KiB e só baixa sem movimento reduzido. Teto em `performance:check`: 700 KiB.
 - **Teste.** `e2e/pomodoro-tomato.spec.ts` e testes de unidade. Gerador documentado em `scripts/tomato-rive/README.md`.

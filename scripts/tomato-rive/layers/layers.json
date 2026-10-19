@@ -130,13 +130,6 @@
       "w": 278,
       "h": 144
     },
-    "mandibula": {
-      "file": "mandibula.png",
-      "x0": 23,
-      "y0": 25,
-      "w": 254,
-      "h": 145
-    },
     "migalha": {
       "file": "migalha.png",
       "x0": 6,
@@ -219,7 +212,6 @@
     "peca6",
     "peca7",
     "folha",
-    "mandibula",
     "migalha",
     "semente",
     "gota",

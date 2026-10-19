@@ -14,7 +14,7 @@ export function tomatoStage(remainingFraction: number): number {
 /**
  * Medidas da arte, em pixels, geradas por scripts/tomato-rive/art.cjs (conferidas contra
  * layers.json em pomodoro-tomato.test.ts): a imagem estática do tomate e a prancheta do Rive,
- * que é maior para a boca entrar e as migalhas voarem sem corte.
+ * que é maior para o pedaço e as migalhas voarem sem corte.
  */
 export const TOMATO_ART = {
   staticWidth: 454,

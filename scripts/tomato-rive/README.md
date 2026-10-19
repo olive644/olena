@@ -1,7 +1,7 @@
 # Tomate do Pomodoro em Rive
 
 Gera a animação do tomate da aba Foco: ele é comido por oito mordidas de verdade, uma a cada
-oitavo do tempo escolhido, com boca, partículas e brotar de novo no fim.
+oitavo do tempo escolhido, com pedaço que salta, partículas e brotar de novo no fim.
 
 ## Comandos
 

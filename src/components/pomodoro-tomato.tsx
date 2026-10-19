@@ -30,7 +30,7 @@ export function PomodoroTomato({ progress }: { progress: number }) {
 }
 
 /**
- * O tomate do Pomodoro em Rive, comido de verdade: uma boca de papel dá uma mordida a cada oitavo
+ * O tomate do Pomodoro em Rive, comido de verdade: uma mordida real arranca um pedaço a cada oitavo
  * do tempo escolhido, com a peça arrancada, sementes e migalhas, e o tomate brota de novo quando o
  * ciclo recomeça. A imagem estática da etapa é o quadro inicial e o que fica com movimento
  * reduzido; abrir a tela no meio do tempo pula direto para a etapa certa, sem repetir mordidas.

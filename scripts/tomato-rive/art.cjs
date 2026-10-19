@@ -1,6 +1,6 @@
 // Gera a arte do tomate do Pomodoro em camadas de papel recortado, por codigo (sem imagem de
 // origem): o corpo inteiro, um estagio por mordida (cada um com a polpa e as sementes expostas
-// na borda da mordida), a peca que cada mordida arranca, a folha, a mandibula e as particulas.
+// na borda da mordida), a peca que cada mordida arranca, a folha e as particulas.
 // Saida: scripts/tomato-rive/layers/*.png + layers.json e public/pomodoro-tomato/estagio-N.webp
 // (o quadro estatico usado com movimento reduzido e no cartao do Espaco do aluno).
 // Uso: node scripts/tomato-rive/art.cjs
@@ -13,7 +13,7 @@ const PUBLIC = path.join(__dirname, "..", "..", "public", "pomodoro-tomato");
 const W = 560;
 const H = 640;
 const S = 2; // fator sobre a arte original (280 x 290)
-const OY = 70; // deslocamento vertical: espaco para a folha e para a mandibula
+const OY = 70; // deslocamento vertical: espaco para a folha
 const BITES = 8;
 
 // contorno original do tomate (em unidades da arte de 280 x 290)
@@ -307,88 +307,6 @@ function renderLeaf() {
   return cv;
 }
 
-function renderJaw() {
-  // mandibula superior: dobradica na origem (esquerda), dentes voltados para baixo no eixo x.
-  // Cupula de papel em facetas, gengiva escura na base e dentes triangulares.
-  const w = 300,
-    h = 170;
-  const cv = createCanvas(w, h);
-  const g = cv.getContext("2d");
-  g.translate(24, h - 26);
-  const cx = 126,
-    base = -6,
-    steps = 10;
-  const dome = [];
-  for (let i = 0; i <= steps; i++) {
-    const t = (i / steps) * Math.PI;
-    dome.push([cx - Math.cos(t) * 126, base - Math.sin(t) * 112]);
-  }
-  const shade = [
-    "#f06c8e",
-    "#e85478",
-    "#df4569",
-    "#d83a64",
-    "#cf3260",
-    "#c52b58",
-    "#b8244f",
-    "#ab1f48",
-    "#9e1a41",
-    "#92163b",
-  ];
-  for (let i = 0; i < steps; i++) {
-    poly(g, [[cx, base], dome[i], dome[i + 1]], shade[i], shade[i]);
-  }
-  // brilho de papel
-  poly(g, [dome[1], dome[2], dome[3], [cx - 30, base - 70]], "rgba(255,200,215,0.35)");
-  // gengiva
-  poly(
-    g,
-    [
-      [0, base],
-      [252, base],
-      [246, base + 2],
-      [8, base + 2],
-    ],
-    "#6b1535",
-  );
-  poly(
-    g,
-    [
-      [6, base - 22],
-      [246, base - 22],
-      [252, base],
-      [0, base],
-    ],
-    "#8c1a43",
-  );
-  // dentes
-  const n = 7;
-  for (let i = 0; i < n; i++) {
-    const x = 20 + i * (212 / (n - 1)) - 16;
-    const len = 26 + (i === 1 || i === 5 ? 6 : 0) + (i === 3 ? 10 : 0);
-    poly(
-      g,
-      [
-        [x, base - 2],
-        [x + 32, base - 2],
-        [x + 16, base + len],
-      ],
-      "#fffaf0",
-      "#e4d6bd",
-    );
-    poly(
-      g,
-      [
-        [x + 16, base - 2],
-        [x + 32, base - 2],
-        [x + 16, base + len],
-      ],
-      "#eadfca",
-    );
-  }
-  return cv;
-}
-
 function renderBits() {
   const out = {};
   // migalha (triangulo vermelho), semente, gota e brilho
@@ -524,14 +442,12 @@ for (let k = 0; k < BITES; k++) {
   manifest.biteInfo.push({ center: b.center, dir: b.dir });
 }
 put("folha", renderLeaf());
-put("mandibula", renderJaw());
 const bits = renderBits();
 for (const [name, cv] of Object.entries(bits)) put(name, cv);
 manifest.order = [
   ...Array.from({ length: BITES + 1 }, (_, k) => "estagio" + k),
   ...Array.from({ length: BITES }, (_, k) => "peca" + k),
   "folha",
-  "mandibula",
   "migalha",
   "semente",
   "gota",

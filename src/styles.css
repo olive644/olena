@@ -6823,7 +6823,7 @@ body.local-room-active {
   display: block;
 }
 
-/* O Rive desenha numa prancheta maior que o tomate, para a boca entrar e as migalhas voarem sem
+/* O Rive desenha numa prancheta maior que o tomate, para o pedaço e as migalhas voarem sem
    corte: o canvas cobre a prancheta inteira, posicionado por cima da imagem estática. As medidas
    vêm de TOMATO_ART (src/domain/pomodoro-tomato.ts). */
 .pomodoro-tomato-live {
