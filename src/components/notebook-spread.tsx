@@ -97,7 +97,7 @@ export function NotebookSpread({
   const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
   const finishCoverJourney = useCallback(() => setCoverJourney(null), []);
   function changeCover(next: boolean) {
-    if (busy || next === showCover) return;
+    if (readOnly || busy || next === showCover) return;
     suppressClick.current = false;
     const source = document.querySelector<HTMLElement>(
       next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
@@ -560,15 +560,16 @@ export function NotebookSpread({
             </div>
           </NotebookPaperTools>
           <nav className="notebook-preview-controls" aria-label={uiText(695)}>
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={busy}
-              onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
-              hidden={readOnly && current === 0}
-            >
-              {current === 0 ? uiText(1857) : uiText(1858)}
-            </button>
+            {(!readOnly || current > 0) && (
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={busy}
+                onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
+              >
+                {current === 0 ? uiText(1857) : uiText(1858)}
+              </button>
+            )}
             <span aria-live="polite">
               {pages.length
                 ? uiText(1859, [

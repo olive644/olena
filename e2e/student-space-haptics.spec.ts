@@ -16,8 +16,10 @@ test("espaço responsivo navega com vibração global e respeita acessibilidade"
   });
   await page.goto("/");
   await expect(page.getByRole("navigation", { name: "Seu próximo destino" })).toBeVisible();
+  await expect(page.locator(".student-focus-art .focus-rose.is-wilted")).toBeVisible();
+  await expect(page.locator(".student-focus-art .focus-rose__dome-glass")).toHaveCount(1);
   await expect(
-    page.locator('.student-destination--planner [data-paper-icon="agenda-month"]'),
+    page.locator('.student-agenda-metric [data-paper-icon="agenda-month"]'),
   ).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({
@@ -71,4 +73,47 @@ test("Oliver abre diretamente Matemática sem transbordar no celular", async ({ 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("button", { name: "Explorar Matemática", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeVisible();
+});
+
+test("ilha animada e Oliver continuam visíveis ao entrar e voltar duas vezes", async ({ page }) => {
+  test.setTimeout(60000);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
+    localStorage.setItem("helena.guest.v1", "1");
+  });
+  await page.goto("/");
+  for (let visit = 0; visit < 2; visit++) {
+    await expect(page.locator(".student-island-art canvas")).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".student-island-art")).toHaveAttribute("data-ready", "true");
+    const card = await page.locator(".student-destination--learn").boundingBox();
+    const art = await page.locator(".student-island-art").boundingBox();
+    expect(Math.abs(card!.x + card!.width / 2 - art!.x - art!.width / 2)).toBeLessThan(2);
+    await page.getByRole("button", { name: /Explorar as ilhas/ }).click();
+    await expect(page.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeVisible();
+    await page.getByRole("button", { name: "Voltar às ilhas", exact: true }).click();
+    const home = page.getByRole("button", {
+      name: page.viewportSize()!.width <= 760 ? "Espaço" : "Espaço do aluno",
+      exact: true,
+    });
+    await home.click();
+    await expect(page.locator(".math-hero-slide")).toBeVisible();
+    await expect(page.locator(".math-hero-oliver img")).toHaveJSProperty("complete", true);
+    await expect(page.locator(".math-hero-oliver")).toHaveAttribute("data-ready", "true", {
+      timeout: 15000,
+    });
+    await expect
+      .poll(() =>
+        page.locator(".math-hero-oliver canvas").evaluate((canvas: HTMLCanvasElement) => {
+          const context = canvas.getContext("2d");
+          if (!context) return false;
+          return context
+            .getImageData(0, 0, canvas.width, canvas.height)
+            .data.some((value, index) => index % 4 === 3 && value > 0);
+        }),
+      )
+      .toBe(true);
+    await expect(page.locator(".student-island-art canvas")).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(".student-island-art")).toHaveAttribute("data-ready", "true");
+  }
 });

@@ -34,11 +34,11 @@ it("retoma a última parte matemática praticada e usa somente a última modalid
   const { container } = render(
     <StudentDestinations workspace={workspace} dispatch={vi.fn()} onNavigate={navigate} />,
   );
-  expect(container.querySelector(".student-resume-island")?.getAttribute("src")).toContain(
+  expect(container.querySelector(".student-island-art")?.getAttribute("src")).toContain(
     "school-small.webp",
   );
-  expect(container.querySelector(".student-focus-icons .streak-tomato")).toBeTruthy();
-  expect(container.querySelector(".student-focus-icons svg")).toBeNull();
+  expect(container.querySelector(".student-focus-art .pomodoro-tomato")).toBeTruthy();
+  expect(container.querySelector(".student-focus-art .focus-rose")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: /Explorar as ilhas/ }));
   expect(navigate).toHaveBeenCalledWith("learn");
   expect(sessionStorage.getItem("olena:enter-mathematics")).toBe("school");

@@ -1,5 +1,24 @@
 # Auditoria do estado atual
 
+## Correção das miniaturas e estados do Espaço, 2026-10-18
+
+Tarefa pendente não desenha check: borda amarela indica a ação e aria-pressed reflete
+o registro. Próximas tarefas usa a lista original da Agenda. O atalho Minha agenda
+duplicado foi removido e o indicador numérico Agenda é um botão para o planejador.
+Destinos usam três cartões compactos no PC e uma coluna no celular, sem depender
+de alturas impostas ao livro. O caderno mantém proporção 1.4 e largura máxima de
+250 px, paginação e abertura da folha, sem personalizar capa no preview. readOnly
+agora bloqueia também capa por teclado e gesto; o botão Capa não é montado.
+
+Flor no vidro e tomate são os mesmos componentes usados em Foco, extraídos sem
+mudar a arte. O estado da flor vem do mesmo histórico e expiração. Máscara do
+tomate usa ID por instância. Ilha centralizada usa AnimatedPlace sob demanda,
+mantendo a imagem otimizada até o primeiro quadro e em movimento reduzido.
+
+Central de notificações tem contêiner interno centralizado no espaço útil do PC,
+abas facetadas e destaque amarelo. Ofensivas têm botão de inspeção por toque ou
+teclado, com nome e contagem visíveis, sem depender de tooltip nativo.
+
 ## Continuidade do aluno, atividades e XP, 2026-10-18
 
 O Espaço retoma o curso praticado, o caderno e sua folha, e o modo de foco mais recente.
