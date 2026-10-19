@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Espaço aprovado em 2026-10-19: grade CSS de duas colunas, Foco/Ilha empilhados à
+esquerda e NotebookSpread à direita abrangendo duas linhas, também no mobile.
+Sem montar StudentFavoritesShelf. Dados de favoritos permanecem preservados.
+Prioridades só com pendingTasks; Agenda Hoje só com todayEvents. Regressão:
+e2e/student-wide-notebook.spec.ts e e2e/student-resume.spec.ts.
+
 Favoritos móveis: homeFavorite em StudyNotebook, ação notebook/favorite-toggled e helpers
 em notebook-shelves.ts. Cap de três itens no total e uma pasta, também após merge/importação.
 StudentFavoritesShelf carrega sob demanda só em largura até 760 px. Não montar no desktop.

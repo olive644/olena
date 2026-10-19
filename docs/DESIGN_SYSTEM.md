@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Revisão aprovada do Espaço (2026-10-19): Foco acima da Ilha na coluna esquerda,
+caderno à direita ocupando duas linhas, tanto no PC quanto no celular. Proporção
+1:2 no desktop e 1:2.2 no mobile. Sem prateleira no Espaço. Capa e folheamento
+somente leitura, sem criação/personalização. Cards usam cantos e facetas do papel
+aprovado, base deslocada e padrões discretos. Prioridades aparece só com tarefas
+pendentes; Agenda Hoje só com eventos do dia. Painel único ocupa a largura útil.
+Esta revisão substitui a prateleira móvel e o trio de previews descritos abaixo.
+
 Prateleira móvel do Espaço: abaixo de Oliver e acima do par Ilha/Foco, usando as capas,
 Notes, pasta e trilho de papel da estante. Até três favoritos no total, sendo uma pasta
 no máximo. O sinal + abre a estante de seleção, não cria páginas. Tocar em um favorito

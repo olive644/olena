@@ -1,11 +1,39 @@
 .student-space .student-space-shortcuts {
   width: 100%;
-  max-width: 1120px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 980px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   align-items: start;
-  gap: 28px;
-  margin: 56px 0 28px;
+  gap: 20px;
+  margin: 28px 0 28px;
   margin-inline: auto;
+}
+.student-space .student-destination--notes {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  height: auto;
+  min-height: 290px;
+  padding: 24px 48px;
+}
+.student-destination--notes .student-notebook-preview {
+  width: min(100%, 500px);
+  margin: 0 auto;
+}
+.student-destination--notes .notebook-preview-controls {
+  inset: 50% -40px auto;
+  transform: translateY(-50%);
+}
+.student-destination--notes .notebook-cover-customizer {
+  min-height: 260px;
+}
+.student-destination--notes .notebook-concept-cover {
+  width: 160px;
+  height: 240px;
+}
+.student-destination--notes .notebook-empty-paper p {
+  font-size: 10px;
+}
+.student-data-panels > .module-panel:only-child {
+  grid-column: 1 / -1;
 }
 .student-space .student-destination {
   position: relative;
@@ -300,6 +328,66 @@ html[data-theme="dark"] .student-space .check-button {
 .student-space .schedule-list time .paper-digits {
   font-size: 20px;
 }
+.student-space .student-space-shortcuts .student-destination--notes {
+  height: auto;
+  min-height: 0;
+  padding: 20px 48px;
+  justify-content: center;
+  align-self: stretch;
+}
+.student-space .student-destination--focus {
+  grid-column: 1;
+  grid-row: 1;
+}
+.student-space .student-destination--learn {
+  grid-column: 1;
+  grid-row: 2;
+}
+.student-space .student-space-shortcuts .student-destination,
+.student-space .metric-row article,
+.student-space .student-data-panels .module-panel {
+  border-radius: 5px 13px 6px 11px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  box-shadow: 0 4px 0 var(--line);
+  background-color: var(--surface);
+}
+.student-space .student-space-shortcuts .student-destination::after,
+.student-space .metric-row article::after,
+.student-space .student-data-panels .module-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: var(--soft);
+  clip-path: polygon(
+    0 0,
+    28px 0,
+    0 28px,
+    0 0,
+    100% 100%,
+    calc(100% - 34px) 100%,
+    100% calc(100% - 34px),
+    100% 100%
+  );
+}
+.student-space .student-destination::before,
+.student-space .module-panel::before {
+  opacity: 0.055;
+}
+.student-space .student-space-shortcuts .student-destination--notes::after {
+  background: #a779ef;
+  opacity: 0.18;
+}
+.student-space .student-space-shortcuts .student-destination--learn::after {
+  background: #26bdd3;
+  opacity: 0.18;
+}
+.student-space .student-space-shortcuts .student-destination--focus::after {
+  background: #facc15;
+  opacity: 0.18;
+}
 .student-space .schedule-list time .paper-digits svg {
   width: 13px;
   height: 20px;
@@ -322,7 +410,7 @@ html[data-theme="dark"] .student-space .check-button {
 }
 @media (max-width: 760px) {
   .student-space .student-space-shortcuts {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
     gap: 8px;
     margin-top: 24px;
   }
@@ -341,13 +429,34 @@ html[data-theme="dark"] .student-space .check-button {
     top: -8%;
   }
   .student-focus-art {
-    width: 90%;
-    height: 105%;
-    top: -6%;
+    width: min(85%, 150px);
+    height: 150px;
+    top: 0;
+  }
+  .student-space .student-destination--learn,
+  .student-space .student-destination--focus {
+    height: 130px;
+  }
+  .student-space .student-space-shortcuts .student-destination--notes {
+    padding: 18px 28px;
+  }
+  .student-space .student-focus-art {
+    width: 100%;
+    height: 125px;
+  }
+  .student-space .student-island-art {
+    width: 110%;
+    height: 135px;
+    top: -4px;
+  }
+  .student-destination--notes .notebook-preview-controls {
+    inset-inline: -30px;
   }
   .student-space .student-destination--notes {
-    min-height: 110px;
-    padding-bottom: 36px;
+    max-width: none;
+    height: auto;
+    min-height: 200px;
+    padding: 18px 36px;
   }
   .student-notebook-preview {
     width: calc(100% - 12px);
@@ -370,6 +479,22 @@ html[data-theme="dark"] .student-space .check-button {
   .student-notebook-preview .notebook-concept-cover {
     width: 42px;
     height: 64px;
+  }
+  .student-destination--notes .student-notebook-preview {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .student-destination--notes .notebook-preview-controls {
+    inset: 50% -34px auto;
+    transform: translateY(-50%);
+  }
+  .student-destination--notes .notebook-cover-customizer {
+    min-height: 200px;
+  }
+  .student-destination--notes .notebook-concept-cover {
+    width: 120px;
+    height: 180px;
   }
 }
 @media (max-width: 560px) {
