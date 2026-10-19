@@ -35,6 +35,7 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
     {
       id: "book",
       title: "Caderno recente",
+      homeFavorite: true,
       subjectId: "subject-english",
       createdAt: now.toISOString(),
       pageIds: ["one", "two", "three"],
@@ -84,6 +85,8 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
   await expect(page.locator(".check-button svg")).toHaveCSS("opacity", "0.45");
   await expect(page.locator(".student-focus-art .pomodoro-tomato")).toBeVisible();
   await expect(page.locator(".student-destination--planner")).toHaveCount(0);
+  const mobile = page.viewportSize()!.width <= 760;
+  if (mobile) await page.getByRole("button", { name: "Ver Caderno recente", exact: true }).click();
   const bookBox = await page
     .locator(".student-notebook-preview .notebook-spread-shell")
     .boundingBox();
@@ -102,8 +105,8 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
     expect((await page.locator(".math-hero-slide").boundingBox())!.height).toBeLessThan(420);
   const cards = await page.locator(".student-destination").all();
   const boxes = await Promise.all(cards.map((card) => card.boundingBox()));
-  expect(boxes).toHaveLength(3);
-  expect(Math.abs(boxes[0]!.y - boxes[2]!.y)).toBeLessThan(3);
+  expect(boxes).toHaveLength(mobile ? 2 : 3);
+  expect(Math.abs(boxes[0]!.y - boxes[boxes.length - 1]!.y)).toBeLessThan(3);
   expect(boxes[0]!.height).toBeLessThan(200);
   await expect(page.locator(".student-space-shortcuts .onboarding-paper-arrow")).toHaveCount(0);
   await expect(page.getByText(/^(Explorar as ilhas|Meus cadernos|Hora de focar)$/)).toHaveCount(0);

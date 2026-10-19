@@ -88,7 +88,12 @@ export function NotesView({
   const createDialog = useRef<HTMLDialogElement>(null);
   const [createDialogVersion, setCreateDialogVersion] = useState(0);
   const [previewPageIndex, setPreviewPageIndex] = useState(0);
-  const [openFolderIds, setOpenFolderIds] = useState<string[]>([]);
+  const [openFolderIds, setOpenFolderIds] = useState<string[]>(() => {
+    const id = new URLSearchParams(window.location.search).get("pasta");
+    return id && workspace.notebooks.some((item) => item.id === id && item.kind === "collection")
+      ? [id]
+      : [];
+  });
   const bookDrag = useNotebookShelfDrag(workspace.notebooks, (id, folderId) =>
     dispatch({ type: "notebook/stored", id, folderId }),
   );
@@ -181,7 +186,11 @@ export function NotesView({
     setActivePageId(id);
   }
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
-  const [notebookSection, setNotebookSection] = useState<"pages" | "notes">("pages");
+  const [notebookSection, setNotebookSection] = useState<"pages" | "notes">(() =>
+    workspace.notebooks.find((item) => item.id === activeNotebookId)?.kind === "folder"
+      ? "notes"
+      : "pages",
+  );
 
   useEffect(() => {
     if (navigator.userAgent.includes("jsdom")) return;

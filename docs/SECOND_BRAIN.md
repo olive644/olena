@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+Favoritos móveis: homeFavorite em StudyNotebook, ação notebook/favorite-toggled e helpers
+em notebook-shelves.ts. Cap de três itens no total e uma pasta, também após merge/importação.
+StudentFavoritesShelf carrega sob demanda só em largura até 760 px. Não montar no desktop.
+Prateleira com capas compactas; preview aberto tem largura própria, não o mini preview
+do trio desktop. O + seleciona favoritos e nunca cria folhas. Notes/pastas usam arte existente.
+
 Miniaturas do Espaço: readOnly bloqueia personalização, enquanto compactPreview
 permite navegar à capa sem montar o inventário. Outros previews continuam sem capa.
 Livro com proporção 1.4, max-width 210px e altura automática. Não deformar páginas.

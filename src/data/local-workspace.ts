@@ -1,4 +1,5 @@
 import { uiText } from "../i18n/runtime.js";
+import { normalizeNotebookFavorites } from "../domain/notebook-shelves.js";
 import {
   WORKSPACE_VERSION,
   createInitialWorkspace,
@@ -454,6 +455,7 @@ function isNotebook(value: unknown): boolean {
       value["kind"] === "folder" ||
       value["kind"] === "collection" ||
       value["kind"] === "note") &&
+    (value["homeFavorite"] === undefined || typeof value["homeFavorite"] === "boolean") &&
     (value["coverStyle"] === undefined ||
       value["coverStyle"] === "helena-estrelas" ||
       value["coverStyle"] === "oliver-estrelas") &&
@@ -845,6 +847,7 @@ function mergeRepeatedDefaultNotebooks(workspace: WorkspaceState): WorkspaceStat
               ...notebook,
               title: uiText("Meu caderno"),
               pageIds,
+              ...(candidates.some((item) => item.homeFavorite) ? { homeFavorite: true } : {}),
               ...(subjectIds.length ? { subjectIds } : {}),
               ...(bookmarkedPageIds.length ? { bookmarkedPageIds } : {}),
               ...(candidates.some((item) => item.paperTabs)
@@ -959,7 +962,10 @@ export function loadWorkspace(
   try {
     // Aceita traços no formato compacto e no antigo.
     const parsed: unknown = unpackWorkspace(JSON.parse(serialized));
-    if (isWorkspaceState(parsed)) return mergeRepeatedDefaultNotebooks(parsed);
+    if (isWorkspaceState(parsed)) {
+      const workspace = mergeRepeatedDefaultNotebooks(parsed);
+      return { ...workspace, notebooks: normalizeNotebookFavorites(workspace.notebooks) };
+    }
     if (isWorkspaceV6(parsed)) return migrateWorkspaceV6(parsed);
     if (isWorkspaceV5(parsed)) return migrateWorkspaceV5(parsed);
     if (isWorkspaceV4(parsed)) return migrateWorkspaceV4(parsed);

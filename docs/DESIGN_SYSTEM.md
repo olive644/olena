@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Prateleira móvel do Espaço: abaixo de Oliver e acima do par Ilha/Foco, usando as capas,
+Notes, pasta e trilho de papel da estante. Até três favoritos no total, sendo uma pasta
+no máximo. O sinal + abre a estante de seleção, não cria páginas. Tocar em um favorito
+abre prévia larga abaixo da prateleira. Caderno conserva proporção 1.4, setas originais,
+capa e folhas existentes, sem inventário ou criação. Desktop conserva o trio anterior.
+Alvos de toque de 44 px, sem setas cobrindo o centro das folhas. Diálogo no top layer,
+Escape e retorno do foco ao +. Movimento reduzido respeitado.
+
 Revisão dos previews: três destinos compactos na mesma linha também no mobile,
 sem textos visíveis ou setas amarelas, mantendo nomes acessíveis. Ilha animada
 centralizada, livro proporcional (1.4) de até 210 px. Setas roxas originais do Foco

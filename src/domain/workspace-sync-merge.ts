@@ -1,4 +1,5 @@
 import type { WorkspaceState } from "./workspace.js";
+import { normalizeNotebookFavorites } from "./notebook-shelves.js";
 import { validateCalendarEvent } from "./agenda-calendar";
 
 // Compara dois valores por conteúdo, não por referência nem por ordem de chaves (duas cópias
@@ -146,7 +147,7 @@ export function mergeWorkspaceStates(
       return result.items;
     })(),
     habits: list(base.habits, local.habits, remote.habits),
-    notebooks: list(base.notebooks, local.notebooks, remote.notebooks),
+    notebooks: normalizeNotebookFavorites(list(base.notebooks, local.notebooks, remote.notebooks)),
     notes: list(base.notes, local.notes, remote.notes),
     // Completed focus entries are immutable history, never a shorter-device snapshot deletion.
     focusSessions: list([], local.focusSessions, remote.focusSessions),

@@ -2744,5 +2744,14 @@
   "Your friends' achievements and connections appear here.",
   "Activities",
   "What's new",
-  "Study"
+  "Study",
+  "Your shelf",
+  "Choose favorites",
+  "View {0}",
+  "Choose up to three favorites for this shelf.",
+  "This folder is empty.",
+  "Up to three items in total, with no more than one folder.",
+  "{0} of 3 favorites",
+  "Favorite: {0}",
+  "No notebooks or Notes available."
 ]
