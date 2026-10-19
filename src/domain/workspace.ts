@@ -11,8 +11,10 @@ import {
 export const WORKSPACE_VERSION = 7 as const;
 
 export type FocusPreferences = {
-  pomodoroMinutes: 25 | 50;
+  pomodoroMinutes: number;
   longBreaks: boolean;
+  shortBreakMinutes?: number;
+  longBreakMinutes?: number;
 };
 
 export type Subject = {

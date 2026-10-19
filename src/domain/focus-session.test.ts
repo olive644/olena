@@ -13,6 +13,16 @@ const session: FocusSession = {
   savedAt: 10_000,
 };
 describe("sessão local de Foco", () => {
+  it("restaura uma duração personalizada e recusa durações fora do relógio", () => {
+    const custom = {
+      ...session,
+      duration: 90,
+      secondsRemaining: 5400,
+      pomodoroDeadline: 5_410_000,
+    };
+    expect(readFocusSession(JSON.stringify(custom), 10_000)?.duration).toBe(90);
+    expect(readFocusSession(JSON.stringify({ ...custom, duration: 6000 }), 10_000)).toBeUndefined();
+  });
   it("restores another device's snapshot paused without losing elapsed time", () => {
     const timer = {
       ...session,

@@ -1,4 +1,5 @@
 import { uiText } from "../i18n/runtime.js";
+import { isPomodoroDuration } from "../domain/pomodoro-duration.js";
 import { normalizeNotebookFavorites } from "../domain/notebook-shelves.js";
 import {
   WORKSPACE_VERSION,
@@ -626,7 +627,9 @@ type WorkspaceV6 = Omit<WorkspaceState, "version" | "notebooks"> & { version: 6 
 function isFocusPreferences(value: unknown): value is FocusPreferences {
   return (
     isRecord(value) &&
-    (value["pomodoroMinutes"] === 25 || value["pomodoroMinutes"] === 50) &&
+    isPomodoroDuration(value["pomodoroMinutes"]) &&
+    (value["shortBreakMinutes"] === undefined || isPomodoroDuration(value["shortBreakMinutes"])) &&
+    (value["longBreakMinutes"] === undefined || isPomodoroDuration(value["longBreakMinutes"])) &&
     typeof value["longBreaks"] === "boolean"
   );
 }

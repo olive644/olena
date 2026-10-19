@@ -1,3 +1,4 @@
+import { isPomodoroDuration } from "./pomodoro-duration.js";
 export const FOCUS_SESSION_KEY = "olena.focus-session.v1";
 export type FocusSession = {
   mode: "timer" | "pomodoro";
@@ -39,7 +40,7 @@ export function readFocusSession(
       !["timer", "pomodoro"].includes(s.mode ?? "") ||
       !["focus", "shortBreak", "longBreak"].includes(s.phase ?? "") ||
       typeof s.running !== "boolean" ||
-      ![5, 15, 25, 50].includes(s.duration ?? 0) ||
+      !isPomodoroDuration(s.duration) ||
       typeof s.completed !== "number" ||
       !Number.isInteger(s.completed) ||
       s.completed < 0 ||
