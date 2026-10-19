@@ -7,6 +7,7 @@
 const fs = require("fs");
 const path = require("path");
 const { createCanvas } = require("@napi-rs/canvas");
+const { wormParts, WIDTH: WORM_W, HEIGHT: WORM_H } = require("./worm.cjs");
 
 const LAYERS = path.join(__dirname, "layers");
 const PUBLIC = path.join(__dirname, "..", "..", "public", "pomodoro-tomato");
@@ -408,7 +409,8 @@ function crop(cv) {
 fs.mkdirSync(LAYERS, { recursive: true });
 fs.mkdirSync(PUBLIC, { recursive: true });
 for (const f of fs.readdirSync(LAYERS)) fs.unlinkSync(path.join(LAYERS, f));
-for (const f of fs.readdirSync(PUBLIC)) fs.unlinkSync(path.join(PUBLIC, f));
+for (const f of fs.readdirSync(PUBLIC))
+  if (/^estagio-/.test(f)) fs.unlinkSync(path.join(PUBLIC, f));
 
 const manifest = { width: W, height: H, bites: BITES, center: CENTER, layers: {}, biteInfo: [] };
 planBites();
@@ -442,12 +444,39 @@ for (let k = 0; k < BITES; k++) {
   manifest.biteInfo.push({ center: b.center, dir: b.dir });
 }
 put("folha", renderLeaf());
+// minhoca sob o relogio: cada gomo, os olhos e a boca viram camadas para o Rive ondular
+const WORM = { cx: 280, cy: 411, k: 1.192 }; // centro e escala sobre a imagem estatica (84% da largura)
+manifest.worm = WORM;
+function renderWormPart(shapes) {
+  const cv = createCanvas(W, H);
+  const g = cv.getContext("2d");
+  g.translate(WORM.cx, WORM.cy);
+  g.scale(WORM.k, WORM.k);
+  g.translate(-WORM_W / 2, -WORM_H / 2);
+  for (const shape of shapes) {
+    g.fillStyle = shape.fill;
+    g.beginPath();
+    if (shape.kind === "poly") {
+      shape.points.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
+      g.closePath();
+    } else g.ellipse(shape.cx, shape.cy, shape.rx, shape.ry, 0, 0, Math.PI * 2);
+    g.fill();
+  }
+  return cv;
+}
+const worm = wormParts();
+worm.segments.forEach((shapes, i) => put("minhoca" + i, renderWormPart(shapes)));
+put("minhoca-olhos", renderWormPart(worm.eyes));
+put("minhoca-boca", renderWormPart(worm.mouth));
 const bits = renderBits();
 for (const [name, cv] of Object.entries(bits)) put(name, cv);
 manifest.order = [
   ...Array.from({ length: BITES + 1 }, (_, k) => "estagio" + k),
   ...Array.from({ length: BITES }, (_, k) => "peca" + k),
   "folha",
+  ...worm.segments.map((_, i) => "minhoca" + i),
+  "minhoca-olhos",
+  "minhoca-boca",
   "migalha",
   "semente",
   "gota",

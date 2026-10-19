@@ -6,6 +6,7 @@ import { FocusRose } from "../components/focus-art";
 import { AnimatedPomodoroTomato } from "../components/pomodoro-tomato";
 import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { focusFlowerState } from "../domain/focus-flower";
+import { playPomodoroSound } from "../data/pomodoro-sfx";
 import { formatFocusDuration } from "../domain/pomodoro-duration";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { agendaTimeZone } from "../data/agenda-time-zone";
@@ -365,6 +366,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function reset() {
+    playPomodoroSound("reiniciar");
     ownsSession.current = true;
     setRunning(false);
     pomodoroDeadline.current = null;
@@ -377,6 +379,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function toggleRunning() {
+    playPomodoroSound(running ? "pausar" : "comecar");
     ownsSession.current = true;
     const next = !running;
     if (!next && mode === "timer" && timerStartedAt.current !== null) {
@@ -480,10 +483,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                           height="120"
                           draggable={false}
                         />
-                        <h2
-                          id="focus-timer-title"
-                          className={`timer${secondsRemaining >= 3600 ? " timer--hours" : ""}`}
-                        >
+                        <h2 id="focus-timer-title" className="timer">
                           <PaperDigits value={formatTimer(secondsRemaining)} />
                         </h2>
                         {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}
