@@ -16,7 +16,7 @@ Ao iniciar manualmente o Pomodoro, solicita permissão nativa de envio de notifi
 
 Fontes técnicas: https://developer.chrome.com/docs/web-platform/document-picture-in-picture e https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API. Testes cobrem seleção PiP/fallback, pop-up bloqueado, permissão concedida/negada/indisponível e projeção do contador/controles em PC e celular nos dois temas.
 
-Desempenho: removido somente o formulário legado de metas permanentemente oculto por display:none na aba Foco, junto com seus cálculos de calendário não apresentados. Dados, ações de domínio e metas salvas permanecem intactos. Isso mantém a aplicação em 1499,5 KiB sob o teto existente de 1500 KiB, sem elevar limites ou incluir dependências. O DOM não conserva controles inacessíveis de uma função desativada.
+Desempenho: removido somente o formulário legado de metas permanentemente oculto por display:none na aba Foco, junto com seus cálculos de calendário não apresentados. Dados, ações de domínio e metas salvas permanecem intactos. Mensagens por ID, mostrador compartilhado e formatação de tempo reutilizada mantêm a aplicação dentro do teto existente de 1500 KiB, sem elevar limites ou incluir dependências. A medição arredondada é 1500,0 KiB, com entrada de 217,4 KiB. O DOM não conserva controles inacessíveis de uma função desativada.
 
 ## Dispositivos, Pomodoro e personagens, 2026-10-19
 
