@@ -2,6 +2,7 @@ import { uiWeekdays, uiText, useLanguage, uiLocale } from "../i18n/runtime";
 import { readStudentResume, saveStudentResume } from "../data/student-resume";
 import { Plus } from "lucide-react";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
+import { FocusRose, PomodoroTomato } from "../components/focus-art";
 import { focusFlowerState } from "../domain/focus-flower";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { agendaTimeZone } from "../data/agenda-time-zone";
@@ -10,14 +11,7 @@ import { PaperCheckIcon } from "../components/paper-check-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import "../components/paper-object-controls.css";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type Dispatch,
-  type FormEvent,
-} from "react";
+import { useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
 import { PageHeader } from "../components/app-navigation";
 import { SYNCED_STORAGE_APPLIED_EVENT, writeSyncedStorage } from "../data/synced-storage";
 import { SYNCED_STORAGE_EVENT } from "../data/synced-storage";
@@ -97,116 +91,6 @@ function weekDays(reference = new Date()) {
     date.setDate(monday.getDate() + index);
     return { key: toDateKey(date), label: "STQQSSD"[index] };
   });
-}
-
-function FocusRose({ progress, wilted }: { progress: number; wilted: boolean }) {
-  useLanguage();
-
-  return (
-    <svg
-      className={`focus-rose${wilted ? " is-wilted" : ""}`}
-      viewBox="0 0 300 330"
-      role="img"
-      aria-label={wilted ? uiText(1955) : uiText(1956)}
-      style={{ "--rose-growth": String(0.85 + progress * 0.15) } as CSSProperties}
-    >
-      <path
-        className="focus-rose__dome-back"
-        d="M45 262V141C45 67 89 25 150 25s105 42 105 116v121Z"
-      />
-      <path className="focus-rose__shadow" d="m82 263 69-18 67 20-67 16Z" />
-      <g transform="translate(25 35)">
-        <g className="focus-rose__plant">
-          <path className="focus-rose__stem-shadow" d="m118 211 15-116 13 3-13 116Z" />
-          <path className="focus-rose__stem" d="m111 211 14-118 12 4-13 117Z" />
-          <path
-            className="focus-rose__leaf focus-rose__leaf--left"
-            d="m119 164-56-39 10 48 45 17Z"
-          />
-          <path
-            className="focus-rose__leaf-fold focus-rose__leaf-fold--left"
-            d="m63 125 56 39-46 9Z"
-          />
-          <path
-            className="focus-rose__leaf focus-rose__leaf--right"
-            d="m130 143 53-38-9 48-45 18Z"
-          />
-          <path
-            className="focus-rose__leaf-fold focus-rose__leaf-fold--right"
-            d="m183 105-53 38 44 10Z"
-          />
-          <g className="focus-rose__bloom">
-            <path
-              className="focus-rose__petal focus-rose__petal--back"
-              d="m72 77 22-43 37 27 30-36 19 47-26 28-51 2Z"
-            />
-            <path
-              className="focus-rose__petal focus-rose__petal--left"
-              d="m67 74 45-18 12 47-35 25-28-29Z"
-            />
-            <path
-              className="focus-rose__petal focus-rose__petal--right"
-              d="m124 57 43 8 22 34-31 31-39-27Z"
-            />
-            <path
-              className="focus-rose__petal focus-rose__petal--front"
-              d="m89 82 37-24 35 27-7 42-47 5-25-28Z"
-            />
-            <path className="focus-rose__petal-fold" d="m89 82 37 20 35-17-35-27Z" />
-            <path className="focus-rose__center" d="m107 82 20-11 20 14-7 24-25-2Z" />
-          </g>
-        </g>
-      </g>
-      <path
-        className="focus-rose__dome-glass"
-        d="M45 262V141C45 67 89 25 150 25s105 42 105 116v121"
-      />
-      <path className="focus-rose__dome-shine" d="M73 210v-66c0-47 18-79 49-94" />
-      <path className="focus-rose__base-depth" d="m29 272 19-18h205l19 18-18 31H48Z" />
-      <path className="focus-rose__base" d="m25 264 23-18h205l22 18-20 28H46Z" />
-      <path className="focus-rose__base-fold" d="m25 264 23-18h205l-19 18Z" />
-    </svg>
-  );
-}
-
-function PomodoroTomato({ progress }: { progress: number }) {
-  useLanguage();
-
-  const outline =
-    "m140 78-32-11-35 9-29 23-17 34 1 41 17 36 30 29 65 15 65-15 30-29 17-36 1-41-17-34-29-23-35-9Z";
-  const eaten = 1 - Math.max(0, Math.min(1, progress));
-  return (
-    <svg className="pomodoro-tomato" viewBox="0 0 280 290" role="img" aria-label={uiText(1158)}>
-      <defs>
-        <mask id="pomodoro-bites">
-          <rect width="280" height="290" fill="white" />
-          <path
-            className="pomodoro-tomato__bites"
-            d="m258 108-23 24 24 24-23 24 12 23-24 21-26 18-31 15"
-            pathLength="100"
-            strokeDasharray={`${eaten * 100} 100`}
-          />
-        </mask>
-      </defs>
-      <g mask="url(#pomodoro-bites)">
-        <path className="pomodoro-tomato__depth" d={outline} transform="translate(0 7)" />
-        <path className="pomodoro-tomato__track" d={outline} />
-        <path className="pomodoro-tomato__progress" d={outline} />
-        <path
-          className="pomodoro-tomato__facet"
-          d="m31 128 20-29 33-17-21 27Z M191 239l32-31 15-35-2 37-29 28Z"
-        />
-      </g>
-      <path
-        className="pomodoro-tomato__leaf"
-        d="m140 66-35-20 9 25-43 9 42 13-15 25 42-24 39 24-13-26 44-12-42-9 8-25Z"
-      />
-      <path
-        className="pomodoro-tomato__leaf-fold"
-        d="m140 78-42 40 42-24 39 24-13-26 44-12-48 3 14-37Z"
-      />
-    </svg>
-  );
 }
 
 function FocusPaperControlIcon({ paused }: { paused: boolean }) {

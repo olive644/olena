@@ -1,0 +1,56 @@
+.profile-streak-inspection {
+  position: relative;
+  display: inline-flex;
+}
+.profile-streak-inspection .profile-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: var(--soft);
+  color: var(--text);
+  border: 0;
+  border-radius: 6px 14px;
+  box-shadow: 0 3px var(--line);
+}
+.profile-streak-inspection .profile-streak img,
+.profile-streak-inspection .profile-streak .agenda-week-flower {
+  width: 28px;
+  height: 28px;
+}
+.profile-streak-inspection .streak-tomato {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.profile-streak-detail {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 8px);
+  left: 0;
+  width: max-content;
+  max-width: 240px;
+  padding: 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-bottom: 4px solid #facc15;
+  border-radius: 5px 14px;
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion="true"]) .profile-streak-detail {
+    animation: streak-inspect 160ms ease-out;
+  }
+}
+@keyframes streak-inspect {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

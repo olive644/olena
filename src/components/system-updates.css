@@ -241,7 +241,10 @@ html[data-reduce-motion="true"] .social-follow-toast {
   animation: none;
 }
 .notification-center {
-  max-width: 1100px;
+  max-width: none;
+}
+.notification-center-body {
+  width: min(100%, 980px);
   margin-inline: auto;
 }
 .notification-center-heading {
@@ -257,19 +260,20 @@ html[data-reduce-motion="true"] .social-follow-toast {
   display: flex;
   gap: 12px;
   margin: 20px 0;
+  justify-content: center;
 }
 .notification-tabs button {
-  flex: 1;
+  flex: 0 1 240px;
   min-height: 48px;
-  background: var(--surface);
-  color: var(--text);
-  border-bottom: 5px solid var(--line);
-  border-radius: 7px 16px;
 }
 .notification-tabs button[aria-pressed="true"] {
   background: #facc15;
   color: #292432;
   border-bottom-color: #ad8500;
+}
+.notification-tabs button[aria-pressed="false"] {
+  background: var(--surface);
+  color: var(--text);
 }
 .notification-center-content {
   position: relative;

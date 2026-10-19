@@ -5,6 +5,28 @@ import { createInitialWorkspace, workspaceReducer } from "../domain/workspace";
 import { isHandwritingDocument, loadWorkspace } from "../data/local-workspace";
 import { notebookPaperTabs } from "./notebook-paper-tools";
 
+it("preview somente leitura não abre capa ou personalização pelo teclado", () => {
+  const state = fixture();
+  const notebook = state.notebooks[0]!;
+  const dispatch = vi.fn();
+  const view = render(
+    <NotebookSpread
+      readOnly
+      notebook={notebook}
+      pages={state.notes}
+      subjects={state.subjects}
+      dispatch={dispatch}
+      onOpen={vi.fn()}
+      onCreate={vi.fn()}
+      onRemove={vi.fn()}
+    />,
+  );
+  expect(screen.queryByRole("button", { name: "‹ Capa" })).toBeNull();
+  fireEvent.keyDown(view.container.querySelector(".notebook-paper-spread")!, { key: "ArrowLeft" });
+  expect(view.container.querySelector(".notebook-cover-inventory")).toBeNull();
+  expect(dispatch).not.toHaveBeenCalled();
+});
+
 it("conserva a capa Oliver ao salvar e recarregar o caderno", () => {
   const original = fixture();
   const state = workspaceReducer(original, {

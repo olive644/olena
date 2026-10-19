@@ -80,11 +80,20 @@ test("painel usa agenda real, caderno folheável, último foco e Oliver compacto
   await expect(agenda.getByText("Idiomas", { exact: false })).toBeVisible();
   await expect(agenda.getByText("Inglês", { exact: true })).toHaveCount(0);
   await expect(agenda.locator("li")).toHaveCSS("border-inline-start-color", "rgb(239, 71, 111)");
-  await expect(page.locator(".check-button")).toHaveCSS("background-color", "rgb(250, 204, 21)");
-  await expect(page.locator(".student-focus-icons .streak-tomato")).toBeVisible();
-  await expect(page.locator(".student-focus-icons svg")).toHaveCount(0);
+  await expect(page.locator(".check-button")).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".check-button svg")).toHaveCount(0);
+  await expect(page.locator(".check-button")).toHaveCSS("border-top-color", "rgb(250, 204, 21)");
+  await expect(page.locator(".student-focus-art .pomodoro-tomato")).toBeVisible();
+  await expect(page.locator(".student-destination--planner")).toHaveCount(0);
+  const bookBox = await page
+    .locator(".student-notebook-preview .notebook-spread-shell")
+    .boundingBox();
+  expect(bookBox!.width / bookBox!.height).toBeCloseTo(1.4, 1);
   const preview = page.locator(".student-notebook-preview");
   await expect(preview.locator(".notebook-paper-spread")).toBeVisible();
+  await expect(preview.getByRole("button", { name: /Capa/ })).toHaveCount(0);
+  await preview.locator(".notebook-paper-spread").press("ArrowLeft");
+  await expect(preview.locator(".notebook-cover-inventory")).toHaveCount(0);
   await preview.getByRole("button", { name: /^Próxima/ }).click();
   await expect(preview.getByRole("button", { name: /folha 3/i })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -126,4 +135,59 @@ test("sino e configurações usam o mesmo número de publicação", async ({ pag
   await page.goto("/perfil");
   await page.getByRole("button", { name: "Configurações", exact: true }).click();
   await expect(page.locator(".settings-footer")).toContainText("beta.999");
+});
+
+test("check do Espaço e Agenda representam a mesma tarefa e Agenda numérica navega", async ({
+  page,
+}) => {
+  const workspace = createInitialWorkspace();
+  workspace.tasks = [
+    {
+      id: "same-task",
+      title: "Tarefa consistente",
+      subjectId: "subject-english",
+      completed: false,
+      dueDate: new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Sao_Paulo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date()),
+    },
+  ];
+  await page.addInitScript((state) => {
+    localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
+    localStorage.setItem("helena.guest.v1", "1");
+    localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(state));
+  }, workspace);
+  await page.goto("/");
+  const check = page.locator(".check-button");
+  await expect(check).toHaveAttribute("aria-pressed", "false");
+  await expect(check.locator("svg")).toHaveCount(0);
+  await page.locator(".student-metric-link").click();
+  await expect(page).toHaveURL(/\/planejador$/);
+  const agendaCheck = page
+    .locator(".agenda-item--task")
+    .filter({ hasText: "Tarefa consistente" })
+    .locator(".agenda-check");
+  await expect(agendaCheck).toHaveAttribute("aria-pressed", "false");
+  await agendaCheck.click();
+  await expect(agendaCheck).toHaveAttribute("aria-pressed", "true");
+  await page
+    .getByRole("button", {
+      name: page.viewportSize()!.width <= 760 ? "Espaço" : "Espaço do aluno",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.locator(".check-list li").filter({ hasText: "Tarefa consistente" }),
+  ).toHaveCount(0);
+  expect(
+    await page.evaluate(
+      () =>
+        JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks.find(
+          (task: { id: string }) => task.id === "same-task",
+        ).completed,
+    ),
+  ).toBe(true);
 });

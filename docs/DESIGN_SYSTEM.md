@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+Revisão dos previews: três destinos compactos no desktop e uma coluna no mobile,
+ilha animada centralizada ultrapassando o topo, livro proporcional (1.4) de até 250 px.
+Sem controles de capa no Espaço. Foco mostra a flor real no vidro ou o tomate original,
+com estado confirmado. Tarefa pendente usa caixa vazia com borda amarela, nunca check.
+Agenda numérica clicável substitui Minha agenda. Abas do sino usam as facetas oficiais
+e seleção amarela; conteúdo centralizado na área útil. Ofensivas inspecionáveis por
+toque e teclado. Animações respeitam movimento reduzido do app e do sistema.
+
 Continuidade no Espaço: ilha do último curso ultrapassa o cartão, caderno usa o próprio
 NotebookSpread somente leitura com paginação real, foco mostra só a última ferramenta.
 No celular Oliver usa arte de 150 px e título compacto; avisos de ofensiva somente perto

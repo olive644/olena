@@ -28,6 +28,18 @@ test("sino abre página com atividades por padrão, novidades e retorno amarelo"
     "true",
   );
   await expect(page.locator(".system-update-sheet")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Atividades", exact: true })).toHaveClass(
+    /primary-button/,
+  );
+  const centered = await page.evaluate(() => {
+    const main = document.querySelector(".notification-center")!.getBoundingClientRect();
+    const body = document.querySelector(".notification-center-body")!.getBoundingClientRect();
+    const style = getComputedStyle(document.querySelector(".notification-center")!);
+    const left = main.left + parseFloat(style.paddingLeft);
+    const right = main.right - parseFloat(style.paddingRight);
+    return Math.abs((body.left + body.right) / 2 - (left + right) / 2) < 2;
+  });
+  expect(centered).toBe(true);
   await page.getByRole("button", { name: "Novidades", exact: true }).click();
   await expect(page.getByText("Aviso recente", { exact: true })).toBeVisible();
   await expect(page.getByText("Aviso expirado", { exact: true })).toHaveCount(0);

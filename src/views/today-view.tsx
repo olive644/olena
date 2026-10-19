@@ -68,13 +68,21 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           </strong>
           <small>{uiText(1549)}</small>
         </article>
-        <article>
-          <AgendaToolbarIcon name="month" />
-          <span>{uiText(1550)}</span>
-          <strong>
-            <PaperDigits value={String(todayEvents.length)} />
-          </strong>
-          <small>{uiText(1551)}</small>
+        <article className="student-agenda-metric">
+          <button
+            className="student-metric-link"
+            type="button"
+            onClick={() => onNavigate("planner")}
+            aria-label={uiText("Ver agenda")}
+          >
+            <AgendaToolbarIcon name="month" />
+            <span>{uiText(1550)}</span>
+            <strong>
+              <PaperDigits value={String(todayEvents.length)} />
+            </strong>
+            <small>{uiText(1551)}</small>
+            <PaperArrow />
+          </button>
         </article>
       </section>
 
@@ -84,7 +92,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
             <div>
               <span className="section-label">{uiText(1553)}</span>
               <h2 id="tasks-today-title">
-                <PaperCheckIcon /> {uiText(1554)}
+                <AgendaToolbarIcon name="list" /> {uiText(1554)}
               </h2>
             </div>
             <button className="link-button" type="button" onClick={() => onNavigate("planner")}>
@@ -108,10 +116,11 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
                   <button
                     className="check-button"
                     type="button"
+                    aria-pressed={task.completed}
                     aria-label={uiText(2045, [task.title])}
                     onClick={() => dispatch({ type: "task/toggled", id: task.id })}
                   >
-                    <PaperCheckIcon />
+                    {task.completed && <PaperCheckIcon />}
                   </button>
                   <div>
                     <strong>{task.title}</strong>

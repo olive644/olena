@@ -4,8 +4,11 @@ import { agendaTimeZone } from "../data/agenda-time-zone";
 import type { WorkspaceState } from "../domain/workspace";
 import { PaperFlower } from "./agenda-focus-week";
 import { useWallClock } from "../hooks/use-wall-clock";
+import { useState } from "react";
+import "./profile-streak-inspection.css";
 export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
   useLanguage();
+  const [inspecting, setInspecting] = useState("");
 
   const clockNow = useWallClock();
   let days: unknown;
@@ -26,20 +29,28 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
       ).map(
         ([key, label]) =>
           streaks[key] > 0 && (
-            <span
-              className="profile-streak"
-              key={key}
-              title={`${label}: ${streaks[key]} ${streaks[key] === 1 ? uiText(1922) : uiText(1923)}`}
-              aria-label={`${label}: ${streaks[key]} ${streaks[key] === 1 ? uiText(1922) : uiText(1923)}`}
-            >
-              {key === "islands" ? (
-                <img src="/math-islands/flame.svg" alt="" width="28" height="28" />
-              ) : key === "pomodoro" ? (
-                <i className="streak-tomato is-active" aria-hidden="true" />
-              ) : (
-                <PaperFlower active />
+            <span className="profile-streak-inspection" key={key}>
+              <button
+                type="button"
+                className="profile-streak"
+                aria-expanded={inspecting === key}
+                onClick={() => setInspecting(inspecting === key ? "" : key)}
+                aria-label={`${label}: ${streaks[key]} ${streaks[key] === 1 ? uiText(1922) : uiText(1923)}`}
+              >
+                {key === "islands" ? (
+                  <img src="/math-islands/flame.svg" alt="" width="28" height="28" />
+                ) : key === "pomodoro" ? (
+                  <i className="streak-tomato is-active" aria-hidden="true" />
+                ) : (
+                  <PaperFlower active />
+                )}
+                <strong>{streaks[key]}</strong>
+              </button>
+              {inspecting === key && (
+                <span className="profile-streak-detail" role="status">
+                  {label}: {streaks[key]} {streaks[key] === 1 ? uiText(1922) : uiText(1923)}
+                </span>
               )}
-              <strong>{streaks[key]}</strong>
             </span>
           ),
       )}

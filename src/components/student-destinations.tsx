@@ -4,13 +4,16 @@ import type { AppView } from "./app-navigation";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import { MATH_COURSES } from "../data/math-courses";
 import { readStudentResume } from "../data/student-resume";
-import { FOCUS_SESSION_KEY } from "../domain/focus-session";
-import { PaperFlower } from "./agenda-focus-week";
-import { AgendaToolbarIcon } from "./agenda-toolbar-icon";
+import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
+import { FocusRose, PomodoroTomato } from "./focus-art";
+import { focusFlowerState } from "../domain/focus-flower";
+import { agendaTimeZone } from "../data/agenda-time-zone";
 import { PaperArrow } from "./paper-arrow";
 import { HelenaLoading } from "./helena-loading";
+import { PaperActionIcon } from "./paper-action-icon";
 import { useWallClock } from "../hooks/use-wall-clock";
 const NotebookPreview = lazy(() => import("./student-notebook-preview"));
+const IslandPreview = lazy(() => import("./student-island-preview"));
 export function StudentDestinations({
   workspace,
   dispatch,
@@ -56,19 +59,9 @@ export function StudentDestinations({
         `/cadernos?caderno=${encodeURIComponent(book.id)}${page ? `&folha=${encodeURIComponent(page)}` : ""}`,
       );
   }
-  let mode = resume.focus?.mode;
-  try {
-    const saved: unknown = JSON.parse(localStorage.getItem(FOCUS_SESSION_KEY) ?? "null");
-    if (
-      saved &&
-      typeof saved === "object" &&
-      "mode" in saved &&
-      (saved.mode === "timer" || saved.mode === "pomodoro")
-    )
-      mode = saved.mode;
-  } catch {
-    /* Usar a última modalidade confirmada. */
-  }
+  const session = readFocusSession(localStorage.getItem(FOCUS_SESSION_KEY), now);
+  const mode = session?.mode ?? resume.focus?.mode;
+  const flower = focusFlowerState(workspace.focusSessions, now, agendaTimeZone());
   return (
     <nav className="student-space-shortcuts" aria-label={uiText("Seu próximo destino")}>
       <button
@@ -83,14 +76,19 @@ export function StudentDestinations({
           onNavigate("learn");
         }}
       >
-        <img
-          className="student-resume-island"
-          src={`/math-islands/places/${course.id}-small.webp`}
-          alt=""
-          width="160"
-          height="160"
-          decoding="async"
-        />
+        <Suspense
+          fallback={
+            <img
+              className="student-island-art"
+              src={`/math-islands/places/${course.id}-small.webp`}
+              alt=""
+              width="180"
+              height="180"
+            />
+          }
+        >
+          <IslandPreview key={course.id} course={course.id} />
+        </Suspense>
         <span>
           <strong>{uiText("Explorar as ilhas")}</strong>
           <small>{course.title}</small>
@@ -101,6 +99,11 @@ export function StudentDestinations({
         className={`student-destination student-destination--notes${book ? " has-notebook" : ""}`}
         aria-label={uiText("Meus cadernos")}
       >
+        {!book && (
+          <span className="student-empty-notebook" aria-hidden="true">
+            <PaperActionIcon name="book" />
+          </span>
+        )}
         {book && (
           <div className="student-notebook-preview">
             <Suspense fallback={<HelenaLoading compact />}>
@@ -130,24 +133,18 @@ export function StudentDestinations({
         className="student-destination student-destination--focus student-destination--art"
         onClick={() => onNavigate("focus")}
       >
-        <span className="student-focus-icons" aria-hidden="true">
-          {mode === "pomodoro" ? <i className="streak-tomato is-active" /> : <PaperFlower active />}
+        <span className="student-focus-art" aria-hidden="true">
+          {mode === "pomodoro" ? (
+            <PomodoroTomato
+              progress={session ? session.secondsRemaining / (session.duration * 60) : 1}
+            />
+          ) : (
+            <FocusRose progress={flower.progress} wilted={flower.wilted} />
+          )}
         </span>
         <span>
           <strong>{uiText("Hora de focar")}</strong>
           <small>{uiText(mode === "pomodoro" ? "Pomodoro" : "Cronômetro")}</small>
-        </span>
-        <PaperArrow />
-      </button>
-      <button
-        type="button"
-        className="student-destination student-destination--planner"
-        onClick={() => onNavigate("planner")}
-      >
-        <AgendaToolbarIcon name="month" />
-        <span>
-          <strong>{uiText("Minha agenda")}</strong>
-          <small>{uiText("Organize seus próximos passos")}</small>
         </span>
         <PaperArrow />
       </button>

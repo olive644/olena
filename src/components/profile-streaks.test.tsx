@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { ProfileStreaks } from "./profile-streaks";
 import { createInitialWorkspace } from "../domain/workspace";
@@ -27,6 +27,10 @@ it("remove o fogo sem recarregar quando completa 24h", () => {
     },
   ];
   const { container } = render(<ProfileStreaks workspace={workspace} />);
+  const inspect = screen.getByRole("button", { name: /Ilhas: 1/ });
+  fireEvent.click(inspect);
+  expect(inspect.getAttribute("aria-expanded")).toBe("true");
+  expect(screen.getByRole("status").textContent).toContain("Ilhas: 1");
   expect(container.querySelector('img[src="/math-islands/flame.svg"]')).not.toBeNull();
   act(() => vi.advanceTimersByTime(1000));
   expect(container.querySelector('img[src="/math-islands/flame.svg"]')).toBeNull();

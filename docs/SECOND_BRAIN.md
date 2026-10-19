@@ -1,5 +1,12 @@
 # OlenaStudy: Second Brain
 
+Miniaturas do Espaço: readOnly do NotebookSpread deve bloquear changeCover, não
+apenas esconder controles com hidden, que pode ser sobrescrito por CSS global.
+Livro com proporção 1.4, max-width 250px e altura automática. Não deformar páginas.
+Foco e miniatura compartilham focus-art.tsx e focusFlowerState; ilha usa AnimatedPlace
+com fallback otimizado. O cartão numérico Agenda é o único atalho dedicado.
+Notificações: centralizar contêiner interno, não o main que herda o deslocamento do rail.
+
 XP de salas: recibos canônicos em profile.xpLedger (helena.profile.v1); cache local não
 é fonte exclusiva. Mesclar por recibo, nunca somar totais de snapshots nem reduzir o piso.
 Não adicionar chave de sync sem allowlist. Curva de nível: 100 + 50 por nível concluído.

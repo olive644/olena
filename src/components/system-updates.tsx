@@ -237,113 +237,117 @@ export function SystemUpdates({
       )}
       {page && (
         <main className="main-content notification-center" id="main-content">
-          <header className="notification-center-heading">
-            <div>
-              <h1>{uiText("Notificações")}</h1>
-              <small>
-                {uiText(1002)} {version}
-              </small>
-            </div>
+          <div className="notification-center-body">
+            <header className="notification-center-heading">
+              <div>
+                <h1>{uiText("Notificações")}</h1>
+                <small>
+                  {uiText(1002)} {version}
+                </small>
+              </div>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={onBack}
+                aria-label={uiText("Voltar ao Espaço")}
+              >
+                <PaperArrow back />
+              </button>
+            </header>
+            <nav className="notification-tabs" aria-label={uiText("Categorias de notificações")}>
+              <button
+                type="button"
+                className={tab === "activities" ? "primary-button" : "secondary-button"}
+                aria-pressed={tab === "activities"}
+                onClick={() => setTab("activities")}
+              >
+                {uiText("Atividades")}
+              </button>
+              <button
+                type="button"
+                className={tab === "updates" ? "primary-button" : "secondary-button"}
+                aria-pressed={tab === "updates"}
+                onClick={() => setTab("updates")}
+              >
+                {uiText("Novidades")}
+              </button>
+            </nav>
+            <section
+              key={tab}
+              className="notification-center-content"
+              aria-label={uiText(tab === "activities" ? "Atividades" : "Novidades")}
+            >
+              {tab === "activities" ? (
+                <>
+                  {workspace && (
+                    <section className="notification-streaks" aria-label={uiText("Suas ofensivas")}>
+                      <h2>{uiText("Suas ofensivas")}</h2>
+                      <ProfileStreaks workspace={workspace} />
+                    </section>
+                  )}
+                  {groups.map((group) => (
+                    <NoticeGroup
+                      key={group.map(socialNoticeId).join(":")}
+                      notices={group}
+                      onError={setSaveError}
+                    />
+                  ))}
+                  {activities.map((activity) => (
+                    <SocialActivityCard
+                      key={`${activity.person.username}:${activity.id}`}
+                      activity={activity}
+                      own={activity.person.username === social?.self.username}
+                    />
+                  ))}
+                  {!groups.length && !activities.length && (
+                    <p>{uiText("As conquistas e conexões dos seus amigos aparecem aqui.")}</p>
+                  )}
+                </>
+              ) : (
+                <>
+                  {visibleUpdates.map((update) => (
+                    <article
+                      key={update.id}
+                      className={read.includes(update.id) ? "is-read" : "is-unread"}
+                    >
+                      <strong>{uiText(1031)}</strong>
+                      <small>
+                        {uiText(1032)} {releaseLabel(update.id)} ·{" "}
+                        {new Date(update.date).toLocaleDateString(uiLocale())}
+                      </small>
+                      <p>{update.title}</p>
+                    </article>
+                  ))}
+                  {!visibleUpdates.length && <p role="status">{uiText(status)}</p>}
+                </>
+              )}
+            </section>
             <button
               type="button"
               className="secondary-button"
-              onClick={onBack}
-              aria-label={uiText("Voltar ao Espaço")}
+              disabled={tab === "updates" ? !unread.length : !socialUnread}
+              onClick={async () => {
+                try {
+                  if (tab === "updates") {
+                    const ids = parseReadUpdates(
+                      JSON.stringify([
+                        ...storedReadUpdates(),
+                        ...visibleUpdates.map((item) => item.id),
+                      ]),
+                    );
+                    writeSyncedStorage(SYSTEM_UPDATES_READ_KEY, JSON.stringify(ids));
+                    setRead(ids);
+                  } else await requestSocial({ action: "read" });
+                  setSaveError("");
+                } catch {
+                  setSaveError(uiText(1033));
+                }
+              }}
             >
-              <PaperArrow back />
+              {uiText(1034)}
             </button>
-          </header>
-          <nav className="notification-tabs" aria-label={uiText("Categorias de notificações")}>
-            <button
-              type="button"
-              aria-pressed={tab === "activities"}
-              onClick={() => setTab("activities")}
-            >
-              {uiText("Atividades")}
-            </button>
-            <button
-              type="button"
-              aria-pressed={tab === "updates"}
-              onClick={() => setTab("updates")}
-            >
-              {uiText("Novidades")}
-            </button>
-          </nav>
-          <section
-            key={tab}
-            className="notification-center-content"
-            aria-label={uiText(tab === "activities" ? "Atividades" : "Novidades")}
-          >
-            {tab === "activities" ? (
-              <>
-                {workspace && (
-                  <section className="notification-streaks" aria-label={uiText("Suas ofensivas")}>
-                    <h2>{uiText("Suas ofensivas")}</h2>
-                    <ProfileStreaks workspace={workspace} />
-                  </section>
-                )}
-                {groups.map((group) => (
-                  <NoticeGroup
-                    key={group.map(socialNoticeId).join(":")}
-                    notices={group}
-                    onError={setSaveError}
-                  />
-                ))}
-                {activities.map((activity) => (
-                  <SocialActivityCard
-                    key={`${activity.person.username}:${activity.id}`}
-                    activity={activity}
-                    own={activity.person.username === social?.self.username}
-                  />
-                ))}
-                {!groups.length && !activities.length && (
-                  <p>{uiText("As conquistas e conexões dos seus amigos aparecem aqui.")}</p>
-                )}
-              </>
-            ) : (
-              <>
-                {visibleUpdates.map((update) => (
-                  <article
-                    key={update.id}
-                    className={read.includes(update.id) ? "is-read" : "is-unread"}
-                  >
-                    <strong>{uiText(1031)}</strong>
-                    <small>
-                      {uiText(1032)} {releaseLabel(update.id)} ·{" "}
-                      {new Date(update.date).toLocaleDateString(uiLocale())}
-                    </small>
-                    <p>{update.title}</p>
-                  </article>
-                ))}
-                {!visibleUpdates.length && <p role="status">{uiText(status)}</p>}
-              </>
-            )}
-          </section>
-          <button
-            type="button"
-            className="secondary-button"
-            disabled={tab === "updates" ? !unread.length : !socialUnread}
-            onClick={async () => {
-              try {
-                if (tab === "updates") {
-                  const ids = parseReadUpdates(
-                    JSON.stringify([
-                      ...storedReadUpdates(),
-                      ...visibleUpdates.map((item) => item.id),
-                    ]),
-                  );
-                  writeSyncedStorage(SYSTEM_UPDATES_READ_KEY, JSON.stringify(ids));
-                  setRead(ids);
-                } else await requestSocial({ action: "read" });
-                setSaveError("");
-              } catch {
-                setSaveError(uiText(1033));
-              }
-            }}
-          >
-            {uiText(1034)}
-          </button>
-          {saveError && <p role="alert">{saveError}</p>}
+            {saveError && <p role="alert">{saveError}</p>}
+          </div>
         </main>
       )}
       <SocialVisitListener />
