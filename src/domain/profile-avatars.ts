@@ -2,7 +2,7 @@ export const PROFILE_AVATARS = [
   ["Poliana", "poliana.webp"],
   ["Oliver", "oliver.webp"],
   ["Andreyna", "andreyna.webp"],
-  ["Jairo", "jairo.webp"],
+  ["Ninho", "jairo.webp"],
   ["Helena", "helena.webp"],
   ["Alice", "alice.svg"],
   ["Soso Estrelinha", "soso-estrelinha.svg"],

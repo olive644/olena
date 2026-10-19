@@ -1,5 +1,21 @@
 # Auditoria do estado atual
 
+## Dispositivos, Pomodoro e personagens, 2026-10-19
+
+CI encontrou dimensões intrínsecas ausentes nos SVG de Nicolas e Guilherme. Corrigidos width/height de 512 px, conservando viewBox, transparência e arte. Mantida a asserção E2E original de 512 por 512, sem reduzir proteção para aceitar o fallback de 150 px dos navegadores.
+
+Segurança ganha Dispositivos conectados, Mostrar/Ocultar e listagem autenticada de navegadores que acessaram o app. Registro começa nesta versão: aparelhos antigos aparecem ao voltar. Não é inventário retroativo do Firebase nem presença online, e não oferece revogação remota. Sem IP, geolocalização ou fingerprint: somente UUID aleatório por navegador/conta, família de navegador/sistema e horário do servidor. Sair remove o registro atual sem bloquear logout por falha de rede; registro que não pôde ser removido pode permanecer até expirar. Limpar dados ou reinstalar cria outro registro.
+
+Modelo de ameaça: origem permitida e conta Firebase não anônima verificada no servidor, UID derivado do token, chave SHA-256 por conta, respostas no-store, CAS com quatro tentativas, até 30 dispositivos por conta e retenção de 90 dias. Metadados do cliente são informativos, nunca autorização. Reutiliza room-limits privado e indexado, envelope expiresAt e limpeza agendada existente. Conta: 6 chamadas/minuto e 120/dia; global: 20.000/dia. Sem novas regras, variáveis ou serviços. Exclusão da conta remove os registros. Rollback: retirar publicação/consulta do registro sem alterar autenticação ou dados de estudo. Testes cobrem conta alheia, visitante, origem, quota, deduplicação, expiração e saída.
+
+Pomodoro mantém presets 25/50 e defaults de pausa 5/15, com slider RoomStepSlider da Escuta coletiva e edição em horas/minutos para estudo, pausa curta e longa. Duração válida de 1 minuto a 99 h 59 min, evitando valores nulos/infinito. Campos opcionais preservam leitura de preferências antigas. Recuperação de sessão aceita durações personalizadas; não reinicia contador de outro aparelho. Relógio usa HH:MM:SS acima de uma hora e resumo usa h/min. Versões anteriores do app não entendem valores de estudo diferentes de 25/50: não orientar downgrade sem exportar dados e restaurar um preset compatível primeiro.
+
+Nicolas usa a raposa original e Guilherme o gato cinza dos previews de 19/10, ambos transparentes sem moldura. Conversão WebP em SVG mantém caminhos e seleções já salvas. Nenhuma arte nova gerada nesta etapa; originais aprovados foram preparados anteriormente com imagegen. Ninho conserva jairo.webp.
+
+## Urso Ninho, 2026-10-19
+
+Nome exibido do avatar do urso alterado de Jairo para Ninho no catálogo compartilhado. Arte aprovada e caminho /profile-avatars/jairo.webp preservados para não invalidar perfis salvos. Testes conferem rótulo novo, seleção anterior e ausência do nome antigo no seletor. Referências históricas abaixo descrevem os nomes na época.
+
 ## Layout do Espaço aprovado por preview, 2026-10-19
 
 Prateleira retirada do Espaço nos dois layouts, sem apagar favoritos ou cadernos.

@@ -7,6 +7,7 @@ import { AnimatedPomodoroTomato } from "../components/pomodoro-tomato";
 import { PomodoroWorm } from "../components/pomodoro-worm";
 import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { focusFlowerState } from "../domain/focus-flower";
+import { formatFocusDuration } from "../domain/pomodoro-duration";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
@@ -42,14 +43,16 @@ export function nextPomodoroStep(
   phase: PomodoroPhase,
   completed: number,
   longBreaks = true,
-  focusMinutes: 25 | 50 = 25,
+  focusMinutes = 25,
+  shortBreakMinutes = POMODORO_SHORT_BREAK_MINUTES,
+  longBreakMinutes = POMODORO_LONG_BREAK_MINUTES,
 ) {
   if (phase === "focus") {
     const nextCompleted = completed + 1;
     const longBreak = longBreaks && nextCompleted % 4 === 0;
     return {
       phase: longBreak ? ("longBreak" as const) : ("shortBreak" as const),
-      duration: longBreak ? POMODORO_LONG_BREAK_MINUTES : POMODORO_SHORT_BREAK_MINUTES,
+      duration: longBreak ? longBreakMinutes : shortBreakMinutes,
       completed: nextCompleted,
     };
   }
@@ -73,6 +76,7 @@ function calendarDays(month: Date): Date[] {
 }
 
 function formatTimer(totalSeconds: number): string {
+  if (totalSeconds >= 3600) return formatStopwatch(totalSeconds * 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
@@ -297,6 +301,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
           completed,
           workspace.focusPreferences.longBreaks,
           workspace.focusPreferences.pomodoroMinutes,
+          workspace.focusPreferences.shortBreakMinutes ?? 5,
+          workspace.focusPreferences.longBreakMinutes ?? 15,
         );
         phase = next.phase;
         completed = next.completed;
@@ -327,6 +333,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     pomodoroDays,
     workspace.focusPreferences.longBreaks,
     workspace.focusPreferences.pomodoroMinutes,
+    workspace.focusPreferences.shortBreakMinutes,
+    workspace.focusPreferences.longBreakMinutes,
     restored,
   ]);
 
@@ -521,8 +529,13 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                           ))}
                         </div>
                         <small>
-                          {workspace.focusPreferences.pomodoroMinutes} {uiText(1169)}
-                          {workspace.focusPreferences.longBreaks ? uiText(1170) : uiText(1171)}
+                          {uiText("{0} de estudo · {1} de pausa", [
+                            formatFocusDuration(workspace.focusPreferences.pomodoroMinutes),
+                            formatFocusDuration(workspace.focusPreferences.shortBreakMinutes ?? 5),
+                          ])}
+                          {workspace.focusPreferences.longBreaks
+                            ? ` · ${uiText("{0} após quatro rodadas", [formatFocusDuration(workspace.focusPreferences.longBreakMinutes ?? 15)])}`
+                            : uiText(1171)}
                         </small>
                       </div>
                     )}

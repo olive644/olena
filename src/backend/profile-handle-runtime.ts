@@ -62,6 +62,8 @@ export const handleProfileHandle = createProfileHandleHandler({
     if (!account) throw new Error("support-delete-identity");
     const { removeSupportAccount } = await import("./support-runtime.js");
     await removeSupportAccount(account.uid);
+    const { removeAccountDevices } = await import("./account-devices-runtime.js");
+    await removeAccountDevices(account.uid);
   },
   consume: (uid) => checkRateLimit(rateStore, "profile-handles-minute", uid, 30, 60),
   // Reservar ou apagar baixa o registro inteiro (cerca de 1 MB com 10 mil @). Por isso há teto por
