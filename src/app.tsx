@@ -10,6 +10,7 @@ import { useWorkspace } from "./hooks/use-workspace";
 import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
 import { TodayView } from "./views/today-view";
 import { useProfileHandle } from "./hooks/use-profile-handle";
+import { useAccountDevice } from "./hooks/use-account-device";
 
 const LearnView = lazy(() => import("./views/learn-view"));
 const NotificationsView = lazy(() =>
@@ -200,6 +201,7 @@ export function App() {
   // com os dados locais na hora; quando a sincronizacao resolve, a troca de
   // `key` remonta com os dados corretos (sincronizados ou anonimos).
   const cloud = useCloudSync();
+  useAccountDevice(cloud.authenticated === true && cloud.ready, cloud.email);
   return (
     <AppContent
       key={cloud.revision}

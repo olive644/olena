@@ -3,6 +3,88 @@
   align-items: center;
   gap: 8px;
 }
+.connected-devices__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.connected-devices__heading h2 {
+  margin: 0;
+}
+.connected-devices__note {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.connected-devices__list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+}
+.connected-devices__list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.connected-devices__list h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.connected-devices__list time {
+  display: block;
+}
+.connected-devices__list li > div > span {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.connected-devices__current {
+  padding: 7px 12px;
+  background: var(--surface);
+  border-bottom: 3px solid #ffd800;
+  border-radius: 3px 10px 3px 8px;
+  font-size: 0.8125rem;
+}
+.pomodoro-duration {
+  margin-top: 24px;
+  min-width: 0;
+}
+.pomodoro-duration__clock {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.pomodoro-duration__clock label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.8125rem;
+}
+.pomodoro-duration__clock input {
+  width: 80px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px 12px 4px 8px;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  font-size: 1.125rem;
+  font-variant-numeric: tabular-nums;
+}
+.pomodoro-duration__clock > span {
+  align-self: center;
+  padding-top: 20px;
+}
+.pomodoro-duration .local-room-step-slider__ticks {
+  display: flex;
+  justify-content: space-between;
+}
+.pomodoro-duration .local-room-step-slider__ticks span:not(:first-child):not(:last-child) {
+  display: none;
+}
 .language-switch {
   position: relative;
 }

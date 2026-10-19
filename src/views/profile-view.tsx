@@ -1,4 +1,6 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
+import { PomodoroDurationPicker } from "../components/pomodoro-duration-picker";
+import { formatFocusDuration } from "../domain/pomodoro-duration";
 import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
 import {
   useAccessibility,
@@ -113,7 +115,7 @@ export function ProfileView({
   function changeAccessibility(update: Partial<AccessibilityPreferences>) {
     setAccessibilityError(updateAccessibility(update) ? "" : uiText(1517));
   }
-  function updatePomodoroMinutes(pomodoroMinutes: 25 | 50) {
+  function updatePomodoroMinutes(pomodoroMinutes: number) {
     dispatch({
       type: "focus/preferences-updated",
       preferences: { ...workspace.focusPreferences, pomodoroMinutes },
@@ -387,9 +389,39 @@ export function ProfileView({
                 </span>
                 <span>
                   <strong>{uiText(1536)}</strong>
-                  <small>{uiText(1537)}</small>
+                  <small>
+                    {formatFocusDuration(workspace.focusPreferences.longBreakMinutes ?? 15)}
+                  </small>
                 </span>
               </button>
+              <PomodoroDurationPicker
+                key={`focus-${workspace.focusPreferences.pomodoroMinutes}`}
+                label={uiText("Tempo de estudo")}
+                value={workspace.focusPreferences.pomodoroMinutes}
+                onChange={updatePomodoroMinutes}
+              />
+              <PomodoroDurationPicker
+                key={`short-${workspace.focusPreferences.shortBreakMinutes ?? 5}`}
+                label={uiText("Pausa curta")}
+                value={workspace.focusPreferences.shortBreakMinutes ?? 5}
+                onChange={(shortBreakMinutes) =>
+                  dispatch({
+                    type: "focus/preferences-updated",
+                    preferences: { ...workspace.focusPreferences, shortBreakMinutes },
+                  })
+                }
+              />
+              <PomodoroDurationPicker
+                key={`long-${workspace.focusPreferences.longBreakMinutes ?? 15}`}
+                label={uiText("Pausa longa")}
+                value={workspace.focusPreferences.longBreakMinutes ?? 15}
+                onChange={(longBreakMinutes) =>
+                  dispatch({
+                    type: "focus/preferences-updated",
+                    preferences: { ...workspace.focusPreferences, longBreakMinutes },
+                  })
+                }
+              />
             </section>
 
             <section

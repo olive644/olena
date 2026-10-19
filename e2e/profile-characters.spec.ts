@@ -76,13 +76,13 @@ for (const theme of ["light", "dark"]) {
     expect(transparent).toHaveLength(16);
     expect(transparent.every(Boolean)).toBe(true);
     await expect(dialog.locator('input[type="file"]')).toHaveCount(0);
-    await dialog.getByRole("button", { name: "Jairo", exact: true }).click();
+    await dialog.getByRole("button", { name: "Ninho", exact: true }).click();
     await dialog.getByRole("button", { name: "Cancelar", exact: true }).click();
     await expect(avatar).toBeFocused();
     await expect(avatar.locator("img")).toHaveAttribute("src", "/profile-avatars/oliver.webp");
     await avatar.click();
-    await dialog.getByRole("button", { name: "Jairo", exact: true }).click();
-    await expect(dialog.getByRole("button", { name: "Jairo", exact: true })).toHaveAttribute(
+    await dialog.getByRole("button", { name: "Ninho", exact: true }).click();
+    await expect(dialog.getByRole("button", { name: "Ninho", exact: true })).toHaveAttribute(
       "aria-pressed",
       "true",
     );

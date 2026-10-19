@@ -205,6 +205,10 @@ export function useCloudSync() {
                 clearTimeout(timer);
               }
             }
+            // Remover o registro não revoga tokens nem pode impedir a saída.
+            await import("../data/account-devices")
+              .then(({ requestAccountDevices }) => requestAccountDevices("DELETE"))
+              .catch(() => {});
             await authApi.signOut(auth);
             stopSyncing();
             accountRevision++;
