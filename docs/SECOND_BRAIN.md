@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+Segurança, 2026-10-19: /api/account-devices registra/lista acessos autenticados, não revoga sessões Firebase. Registro por navegador/conta em room-limits/account-devices-<hash>, até 30 e 90 dias, limpeza existente por expiresAt. useAccountDevice registra ao entrar e a cada 30 minutos visíveis; configurações consultam sob demanda. Dispositivos anteriores à atualização não são recuperáveis até novo acesso. Sem IP/localização. Saída remove somente o registro deste navegador; excluir conta apaga o conjunto. Não confundir remover registro com encerrar autenticação remota.
+
+Pomodoro: focusPreferences aceita pomodoroMinutes numérico, shortBreakMinutes/longBreakMinutes opcionais com defaults 5/15. pomodoro-duration.ts centraliza limites 1..5999 e formato h/min. Perfil usa RoomStepSlider existente e relógio editável. Sessão recuperada conserva duração e histórico. Testes: pomodoro-duration, pomodoro-duration-picker, account-devices-handler, connected-devices e e2e/pomodoro-custom.spec.ts. Avatares Nicolas=raposa e Guilherme=gato cinza atualizados sem trocar URLs.
+
 Em 2026-10-19, o urso do catálogo passou a se chamar Ninho. O arquivo jairo.webp permanece igual para compatibilidade com avatares já salvos. A única fonte do nome exibido é src/domain/profile-avatars.ts.
 
 Espaço aprovado em 2026-10-19: grade CSS de duas colunas, Foco/Ilha empilhados à
