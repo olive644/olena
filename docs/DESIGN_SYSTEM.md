@@ -1,10 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
-Revisão dos previews: três destinos compactos no desktop e uma coluna no mobile,
-ilha animada centralizada ultrapassando o topo, livro proporcional (1.4) de até 250 px.
-Sem controles de capa no Espaço. Foco mostra a flor real no vidro ou o tomate original,
-com estado confirmado. Tarefa pendente usa caixa vazia com borda amarela, nunca check.
-Agenda numérica clicável substitui Minha agenda. Abas do sino usam as facetas oficiais
+Revisão dos previews: três destinos compactos na mesma linha também no mobile,
+sem textos visíveis ou setas amarelas, mantendo nomes acessíveis. Ilha animada
+centralizada, livro proporcional (1.4) de até 210 px. Setas roxas originais do Foco
+folheiam até a capa, sem inventário, personalização ou criação de folhas. Foco mostra a flor real no
+vidro ou o tomate original. Prioridades usa o mesmo check da Agenda: símbolo discreto
+quando pendente, papel amarelo quando concluído. Agenda numérica é informativa;
+o cartão Hoje abaixo é clicável sem seta amarela. Só os indicadores Pendências,
+Foco e Agenda recebem novos recortes exclusivos. Abas do sino usam as facetas oficiais
 e seleção amarela; conteúdo centralizado na área útil. Ofensivas inspecionáveis por
 toque e teclado. Animações respeitam movimento reduzido do app e do sistema.
 

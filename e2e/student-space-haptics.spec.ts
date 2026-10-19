@@ -19,7 +19,7 @@ test("espaço responsivo navega com vibração global e respeita acessibilidade"
   await expect(page.locator(".student-focus-art .focus-rose.is-wilted")).toBeVisible();
   await expect(page.locator(".student-focus-art .focus-rose__dome-glass")).toHaveCount(1);
   await expect(
-    page.locator('.student-agenda-metric [data-paper-icon="agenda-month"]'),
+    page.locator('.metric-row .student-metric-icon[src$="student-agenda.svg"]'),
   ).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({

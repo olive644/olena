@@ -17,6 +17,7 @@ import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
+import { FocusPaperArrow } from "./focus-paper-arrow";
 import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
@@ -42,6 +43,7 @@ type Props = {
   onIndex?: () => void;
   transitioning?: boolean;
   readOnly?: boolean;
+  compactPreview?: boolean;
 };
 type Turn = {
   from: number;
@@ -87,6 +89,7 @@ export function NotebookSpread({
   onIndex,
   transitioning = false,
   readOnly = false,
+  compactPreview = false,
 }: Props) {
   useLanguage();
 
@@ -97,13 +100,13 @@ export function NotebookSpread({
   const [coverJourney, setCoverJourney] = useState<NotebookJourneyState | null>(null);
   const finishCoverJourney = useCallback(() => setCoverJourney(null), []);
   function changeCover(next: boolean) {
-    if (readOnly || busy || next === showCover) return;
+    if ((readOnly && !compactPreview) || busy || next === showCover) return;
     suppressClick.current = false;
     const source = document.querySelector<HTMLElement>(
       next ? ".notebook-spread-shell" : ".notebook-concept-cover .book-cover",
     );
     const rect = source?.getBoundingClientRect();
-    if (rect && canAnimateNotebook())
+    if (rect && !compactPreview && canAnimateNotebook())
       setCoverJourney({
         notebook,
         tabs: notebookPaperTabs(notebook, pages, subjects),
@@ -196,47 +199,49 @@ export function NotebookSpread({
       )}
       {showCover ? (
         <div className="notebook-cover-customizer">
-          <section className="notebook-cover-inventory" aria-label={uiText(738)}>
-            <div className="notebook-cover-inventory__heading">
-              <span>{uiText(739)}</span>
-              <small>{uiText(740)}</small>
-            </div>
-            <div className="notebook-cover-inventory__items">
-              {(
-                [
-                  ["helena-estrelas", uiText(1848)],
-                  ["oliver-estrelas", uiText(1849)],
-                ] as const
-              ).map(([style, label]) => {
-                const selected = (notebook.coverStyle ?? "helena-estrelas") === style;
-                return (
-                  <button
-                    key={style}
-                    type="button"
-                    className="notebook-cover-inventory__item"
-                    aria-label={uiText(1850, [label])}
-                    aria-pressed={selected}
-                    disabled={busy}
-                    onClick={() =>
-                      dispatch({
-                        type: "notebook/organized",
-                        id: notebook.id,
-                        changes: { coverStyle: style },
-                      })
-                    }
-                  >
-                    <span className="notebook-cover-inventory__art">
-                      <img src={`/notebook-covers/${style}.webp`} alt="" loading="lazy" />
-                    </span>
-                    <span className="notebook-cover-inventory__name">{label}</span>
-                    <span className="notebook-cover-inventory__state">
-                      {selected ? uiText(1851) : uiText(1852)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
+          {!readOnly && (
+            <section className="notebook-cover-inventory" aria-label={uiText(738)}>
+              <div className="notebook-cover-inventory__heading">
+                <span>{uiText(739)}</span>
+                <small>{uiText(740)}</small>
+              </div>
+              <div className="notebook-cover-inventory__items">
+                {(
+                  [
+                    ["helena-estrelas", uiText(1848)],
+                    ["oliver-estrelas", uiText(1849)],
+                  ] as const
+                ).map(([style, label]) => {
+                  const selected = (notebook.coverStyle ?? "helena-estrelas") === style;
+                  return (
+                    <button
+                      key={style}
+                      type="button"
+                      className="notebook-cover-inventory__item"
+                      aria-label={uiText(1850, [label])}
+                      aria-pressed={selected}
+                      disabled={busy}
+                      onClick={() =>
+                        dispatch({
+                          type: "notebook/organized",
+                          id: notebook.id,
+                          changes: { coverStyle: style },
+                        })
+                      }
+                    >
+                      <span className="notebook-cover-inventory__art">
+                        <img src={`/notebook-covers/${style}.webp`} alt="" loading="lazy" />
+                      </span>
+                      <span className="notebook-cover-inventory__name">{label}</span>
+                      <span className="notebook-cover-inventory__state">
+                        {selected ? uiText(1851) : uiText(1852)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
           <button
             type="button"
             className="notebook-concept-cover"
@@ -287,6 +292,19 @@ export function NotebookSpread({
               tabs={notebookPaperTabs(notebook, pages, subjects)}
             />
           </button>
+          {compactPreview && (
+            <nav className="notebook-preview-controls" aria-label={uiText(695)}>
+              <button
+                type="button"
+                className="student-page-arrow is-next"
+                aria-label={uiText(744)}
+                disabled={busy}
+                onClick={() => changeCover(false)}
+              >
+                <FocusPaperArrow />
+              </button>
+            </nav>
+          )}
         </div>
       ) : (
         <>
@@ -502,7 +520,7 @@ export function NotebookSpread({
                           )}
                         </footer>
                       </>
-                    ) : side === 0 && pages.length === 0 ? (
+                    ) : compactPreview || (side === 0 && pages.length === 0) ? (
                       <div className="notebook-empty-paper" aria-label={uiText(743)} />
                     ) : (
                       <button
@@ -560,14 +578,15 @@ export function NotebookSpread({
             </div>
           </NotebookPaperTools>
           <nav className="notebook-preview-controls" aria-label={uiText(695)}>
-            {(!readOnly || current > 0) && (
+            {(!readOnly || compactPreview || current > 0) && (
               <button
-                className="secondary-button"
+                className={compactPreview ? "student-page-arrow" : "secondary-button"}
+                aria-label={current === 0 ? uiText(1857) : uiText(1858)}
                 type="button"
                 disabled={busy}
                 onClick={() => (current === 0 ? changeCover(true) : turnTo(current - 1))}
               >
-                {current === 0 ? uiText(1857) : uiText(1858)}
+                {compactPreview ? <FocusPaperArrow /> : current === 0 ? uiText(1857) : uiText(1858)}
               </button>
             )}
             <span aria-live="polite">
@@ -580,12 +599,13 @@ export function NotebookSpread({
                 : uiText(1860)}
             </span>
             <button
-              className="secondary-button"
+              className={compactPreview ? "student-page-arrow is-next" : "secondary-button"}
+              aria-label={uiText(744)}
               type="button"
               disabled={current >= lastSpread || busy}
               onClick={() => turnTo(current + 1)}
             >
-              {uiText(744)}
+              {compactPreview ? <FocusPaperArrow /> : uiText(744)}
             </button>
           </nav>
         </>

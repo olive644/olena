@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Revisão compacta do Espaço, 2026-10-18
+
+Substitui a apresentação descrita na revisão anterior: três previews em uma linha
+também no celular, sem textos ou setas amarelas. Nomes permanecem acessíveis.
+NotebookSpread recebe compactPreview opcional para folhear até a capa em readOnly;
+o inventário e a criação de folhas não são montados; a navegação usa FocusPaperArrow. Previews somente leitura
+sem essa opção preservam seu comportamento anterior. Nenhuma edição é liberada.
+Agenda numérica volta a ser informativa. O cartão Hoje inteiro abre o planejador,
+inclusive por teclado, sem seta e sem botões aninhados. Check de Prioridades reproduz
+o estado visual aprovado da Agenda. Três novos SVGs exclusivos dos indicadores,
+sem substituir ícones compartilhados nem aumentar dependências.
+
 ## Correção das miniaturas e estados do Espaço, 2026-10-18
 
 Tarefa pendente não desenha check: borda amarela indica a ação e aria-pressed reflete

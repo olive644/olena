@@ -8,7 +8,6 @@ import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { FocusRose, PomodoroTomato } from "./focus-art";
 import { focusFlowerState } from "../domain/focus-flower";
 import { agendaTimeZone } from "../data/agenda-time-zone";
-import { PaperArrow } from "./paper-arrow";
 import { HelenaLoading } from "./helena-loading";
 import { PaperActionIcon } from "./paper-action-icon";
 import { useWallClock } from "../hooks/use-wall-clock";
@@ -67,6 +66,7 @@ export function StudentDestinations({
       <button
         type="button"
         className="student-destination student-destination--learn student-destination--art"
+        aria-label={uiText("Explorar as ilhas")}
         onClick={() => {
           try {
             sessionStorage.setItem("olena:enter-mathematics", course.id);
@@ -89,11 +89,6 @@ export function StudentDestinations({
         >
           <IslandPreview key={course.id} course={course.id} />
         </Suspense>
-        <span>
-          <strong>{uiText("Explorar as ilhas")}</strong>
-          <small>{course.title}</small>
-        </span>
-        <PaperArrow />
       </button>
       <section
         className={`student-destination student-destination--notes${book ? " has-notebook" : ""}`}
@@ -119,18 +114,14 @@ export function StudentDestinations({
         <button
           type="button"
           className="student-resume-open"
+          aria-label={uiText("Meus cadernos")}
           onClick={() => openBook(resume.notebook?.page)}
-        >
-          <span>
-            <strong>{uiText("Meus cadernos")}</strong>
-            <small>{book?.title ?? uiText("Abra um caderno para continuar por aqui.")}</small>
-          </span>
-          <PaperArrow />
-        </button>
+        ></button>
       </section>
       <button
         type="button"
         className="student-destination student-destination--focus student-destination--art"
+        aria-label={uiText("Hora de focar")}
         onClick={() => onNavigate("focus")}
       >
         <span className="student-focus-art" aria-hidden="true">
@@ -142,11 +133,6 @@ export function StudentDestinations({
             <FocusRose progress={flower.progress} wilted={flower.wilted} />
           )}
         </span>
-        <span>
-          <strong>{uiText("Hora de focar")}</strong>
-          <small>{uiText(mode === "pomodoro" ? "Pomodoro" : "Cronômetro")}</small>
-        </span>
-        <PaperArrow />
       </button>
     </nav>
   );

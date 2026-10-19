@@ -1,10 +1,11 @@
 # OlenaStudy: Second Brain
 
-Miniaturas do Espaço: readOnly do NotebookSpread deve bloquear changeCover, não
-apenas esconder controles com hidden, que pode ser sobrescrito por CSS global.
-Livro com proporção 1.4, max-width 250px e altura automática. Não deformar páginas.
+Miniaturas do Espaço: readOnly bloqueia personalização, enquanto compactPreview
+permite navegar à capa sem montar o inventário. Outros previews continuam sem capa.
+Livro com proporção 1.4, max-width 210px e altura automática. Não deformar páginas.
 Foco e miniatura compartilham focus-art.tsx e focusFlowerState; ilha usa AnimatedPlace
-com fallback otimizado. O cartão numérico Agenda é o único atalho dedicado.
+com fallback otimizado. Só o cartão Hoje abaixo é clicável, não o indicador numérico.
+Três previews na mesma linha no mobile, sem textos visíveis e com nomes acessíveis.
 Notificações: centralizar contêiner interno, não o main que herda o deslocamento do rail.
 
 XP de salas: recibos canônicos em profile.xpLedger (helena.profile.v1); cache local não
