@@ -1,5 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
-import type { Dispatch } from "react";
+import { lazy, Suspense, type Dispatch } from "react";
+import { useMobileLayout } from "../hooks/use-mobile-layout";
+import { HelenaLoading } from "../components/helena-loading";
 import { PaperCheckIcon } from "../components/paper-check-icon";
 import { minutesFocusedOn, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
 import type { AppView } from "../components/app-navigation";
@@ -22,9 +24,11 @@ type TodayViewProps = {
   dispatch: Dispatch<WorkspaceAction>;
   onNavigate: (view: AppView) => void;
 };
+const FavoritesShelf = lazy(() => import("../components/student-favorites-shelf"));
 
 export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
   useLanguage();
+  const mobile = useMobileLayout();
 
   const now = useWallClock();
   const timeZone = agendaTimeZone();
@@ -49,7 +53,17 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
         }}
       />
 
-      <StudentDestinations workspace={workspace} dispatch={dispatch} onNavigate={onNavigate} />
+      {mobile && (
+        <Suspense fallback={<HelenaLoading compact />}>
+          <FavoritesShelf workspace={workspace} dispatch={dispatch} onNavigate={onNavigate} />
+        </Suspense>
+      )}
+      <StudentDestinations
+        workspace={workspace}
+        dispatch={dispatch}
+        onNavigate={onNavigate}
+        showNotebook={!mobile}
+      />
 
       <section className="metric-row" aria-label={uiText(1546)}>
         <article>

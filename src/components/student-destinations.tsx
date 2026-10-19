@@ -17,10 +17,12 @@ export function StudentDestinations({
   workspace,
   dispatch,
   onNavigate,
+  showNotebook = true,
 }: {
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
   onNavigate(view: AppView): void;
+  showNotebook?: boolean;
 }) {
   const resume = readStudentResume();
   const now = useWallClock();
@@ -62,7 +64,10 @@ export function StudentDestinations({
   const mode = session?.mode ?? resume.focus?.mode;
   const flower = focusFlowerState(workspace.focusSessions, now, agendaTimeZone());
   return (
-    <nav className="student-space-shortcuts" aria-label={uiText("Seu próximo destino")}>
+    <nav
+      className={`student-space-shortcuts${showNotebook ? "" : " student-space-shortcuts--pair"}`}
+      aria-label={uiText("Seu próximo destino")}
+    >
       <button
         type="button"
         className="student-destination student-destination--learn student-destination--art"
@@ -90,34 +95,36 @@ export function StudentDestinations({
           <IslandPreview key={course.id} course={course.id} />
         </Suspense>
       </button>
-      <section
-        className={`student-destination student-destination--notes${book ? " has-notebook" : ""}`}
-        aria-label={uiText("Meus cadernos")}
-      >
-        {!book && (
-          <span className="student-empty-notebook" aria-hidden="true">
-            <PaperActionIcon name="book" />
-          </span>
-        )}
-        {book && (
-          <div className="student-notebook-preview">
-            <Suspense fallback={<HelenaLoading compact />}>
-              <NotebookPreview
-                notebook={book}
-                workspace={workspace}
-                dispatch={dispatch}
-                onOpen={openBook}
-              />
-            </Suspense>
-          </div>
-        )}
-        <button
-          type="button"
-          className="student-resume-open"
+      {showNotebook && (
+        <section
+          className={`student-destination student-destination--notes${book ? " has-notebook" : ""}`}
           aria-label={uiText("Meus cadernos")}
-          onClick={() => openBook(resume.notebook?.page)}
-        ></button>
-      </section>
+        >
+          {!book && (
+            <span className="student-empty-notebook" aria-hidden="true">
+              <PaperActionIcon name="book" />
+            </span>
+          )}
+          {book && (
+            <div className="student-notebook-preview">
+              <Suspense fallback={<HelenaLoading compact />}>
+                <NotebookPreview
+                  notebook={book}
+                  workspace={workspace}
+                  dispatch={dispatch}
+                  onOpen={openBook}
+                />
+              </Suspense>
+            </div>
+          )}
+          <button
+            type="button"
+            className="student-resume-open"
+            aria-label={uiText("Meus cadernos")}
+            onClick={() => openBook(resume.notebook?.page)}
+          ></button>
+        </section>
+      )}
       <button
         type="button"
         className="student-destination student-destination--focus student-destination--art"

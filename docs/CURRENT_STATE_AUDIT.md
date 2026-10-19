@@ -1,5 +1,27 @@
 # Auditoria do estado atual
 
+## Favoritos na prateleira móvel, 2026-10-18
+
+Mobile recebe StudentFavoritesShelf abaixo do Oliver; desktop mantém o preview anterior.
+As capas favoritas abrem preview largo, em vez do caderno comprimido entre três destinos.
+Seleção pelo + reutiliza as artes e o trilho da estante. Notes e pastas são aceitos.
+homeFavorite opcional em StudyNotebook pertence ao workspace sincronizado, sem nova chave
+de armazenamento ou serviço remoto. notebook/favorite-toggled aplica três favoritos e uma
+pasta no máximo. Normalização no carregamento, substituição e merge preserva os itens
+e limita combinações concorrentes, sem apagar folhas. Favoritos de folhas não mudam.
+Folheamento e capa são somente leitura, sem criação; abrir uma folha leva aos Cadernos.
+Pasta abre sua estante original em Cadernos, sem duplicar um navegador de pastas.
+Entrada direta de pasta antiga seleciona a seção de notas.
+
+Desempenho medido: JavaScript da aplicação passou de 1492.9 para 1499.5 KiB
+(+6.6 KiB); entrada preservada em 217.4 KiB. Seletor/prévia carregam sob demanda
+só no mobile e reutilizam arte/folheamento existentes. Sem novas dependências.
+Orçamento normal limitado a 1500 KiB; teto absoluto intacto.
+Primeira medição foi 1499.9 KiB; reutilizar a abertura original de pastas reduziu
+o total em 0.4 KiB. Sem duplicar navegador de pastas no Espaço.
+Não remover validações de limites, duplicar editores ou excluir artificialmente o
+chunk do orçamento: essas opções mascarariam o custo ou aumentariam o risco.
+
 ## Revisão compacta do Espaço, 2026-10-18
 
 Substitui a apresentação descrita na revisão anterior: três previews em uma linha

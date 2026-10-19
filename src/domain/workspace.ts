@@ -2,6 +2,11 @@ import { defaultStudyPreferences, type StudyPreferences } from "./study-preferen
 import type { HandwritingDocument } from "./handwriting";
 import { SHARED_PAGE_PLACEHOLDER } from "./handwriting.js";
 import { occurrenceDuration } from "./agenda-calendar.js";
+import {
+  isNotebookFolder,
+  normalizeNotebookFavorites,
+  studentNotebookFavorites,
+} from "./notebook-shelves.js";
 
 export const WORKSPACE_VERSION = 7 as const;
 
@@ -81,6 +86,7 @@ export type NotebookTab = {
 };
 
 export type StudyNotebook = {
+  homeFavorite?: boolean;
   coverStyle?: "helena-estrelas" | "oliver-estrelas";
   paperTabs?: NotebookTab[];
   subjectIds?: string[];
@@ -211,6 +217,7 @@ export type PracticeActivity = {
 };
 
 export type WorkspaceAction =
+  | { type: "notebook/favorite-toggled"; id: string }
   | { type: "practice/recorded"; activity: PracticeActivity }
   | { type: "workspace/replaced"; workspace: WorkspaceState }
   | { type: "subject/added"; id?: string; name: string; color: string }
@@ -398,7 +405,28 @@ function addDays(dateKey: string, days: number): string {
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
   switch (action.type) {
     case "workspace/replaced":
-      return action.workspace;
+      return {
+        ...action.workspace,
+        notebooks: normalizeNotebookFavorites(action.workspace.notebooks),
+      };
+    case "notebook/favorite-toggled": {
+      const item = state.notebooks.find((book) => book.id === action.id);
+      if (!item) return state;
+      const favorites = studentNotebookFavorites(state.notebooks);
+      if (
+        !item.homeFavorite &&
+        (favorites.length >= 3 || (isNotebookFolder(item) && favorites.some(isNotebookFolder)))
+      )
+        return state;
+      return {
+        ...state,
+        notebooks: normalizeNotebookFavorites(
+          state.notebooks.map((book) =>
+            book.id === item.id ? { ...book, homeFavorite: !book.homeFavorite } : book,
+          ),
+        ),
+      };
+    }
     case "subject/added":
       if (action.id && state.subjects.some((subject) => subject.id === action.id)) return state;
       return {
