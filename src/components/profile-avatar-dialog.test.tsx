@@ -3,6 +3,16 @@ import { expect, it, vi } from "vitest";
 import { ProfileAvatarDialog } from "./profile-avatar-dialog";
 import { readStoredProfile } from "../hooks/use-stored-profile";
 import { profileAvatarSource } from "../domain/profile-avatars";
+it("exibe o urso como Ninho e preserva a imagem dos perfis existentes", () => {
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({ photoUrl: "/profile-avatars/jairo.webp" }),
+  );
+  render(<ProfileAvatarDialog onClose={vi.fn()} />);
+  expect(screen.getByRole("button", { name: "Ninho" }).getAttribute("aria-pressed")).toBe("true");
+  expect(screen.queryByRole("button", { name: "Jairo" })).toBeNull();
+  expect(profileAvatarSource(readStoredProfile().photoUrl)).toBe("/profile-avatars/jairo.webp");
+});
 it("só permite personagens e só grava na confirmação, preservando a identidade", () => {
   localStorage.setItem(
     "helena.profile.v1",

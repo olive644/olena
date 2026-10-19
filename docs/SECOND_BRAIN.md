@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+Em 2026-10-19, o urso do catálogo passou a se chamar Ninho. O arquivo jairo.webp permanece igual para compatibilidade com avatares já salvos. A única fonte do nome exibido é src/domain/profile-avatars.ts.
+
 Espaço aprovado em 2026-10-19: grade CSS de duas colunas, Foco/Ilha empilhados à
 esquerda e NotebookSpread à direita abrangendo duas linhas, também no mobile.
 Sem montar StudentFavoritesShelf. Dados de favoritos permanecem preservados.

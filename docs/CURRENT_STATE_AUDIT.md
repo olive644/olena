@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Urso Ninho, 2026-10-19
+
+Nome exibido do avatar do urso alterado de Jairo para Ninho no catálogo compartilhado. Arte aprovada e caminho /profile-avatars/jairo.webp preservados para não invalidar perfis salvos. Testes conferem rótulo novo, seleção anterior e ausência do nome antigo no seletor. Referências históricas abaixo descrevem os nomes na época.
+
 ## Layout do Espaço aprovado por preview, 2026-10-19
 
 Prateleira retirada do Espaço nos dois layouts, sem apagar favoritos ou cadernos.
