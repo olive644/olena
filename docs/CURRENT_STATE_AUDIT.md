@@ -2,6 +2,8 @@
 
 ## Dispositivos, Pomodoro e personagens, 2026-10-19
 
+CI encontrou dimensões intrínsecas ausentes nos SVG de Nicolas e Guilherme. Corrigidos width/height de 512 px, conservando viewBox, transparência e arte. Mantida a asserção E2E original de 512 por 512, sem reduzir proteção para aceitar o fallback de 150 px dos navegadores.
+
 Segurança ganha Dispositivos conectados, Mostrar/Ocultar e listagem autenticada de navegadores que acessaram o app. Registro começa nesta versão: aparelhos antigos aparecem ao voltar. Não é inventário retroativo do Firebase nem presença online, e não oferece revogação remota. Sem IP, geolocalização ou fingerprint: somente UUID aleatório por navegador/conta, família de navegador/sistema e horário do servidor. Sair remove o registro atual sem bloquear logout por falha de rede; registro que não pôde ser removido pode permanecer até expirar. Limpar dados ou reinstalar cria outro registro.
 
 Modelo de ameaça: origem permitida e conta Firebase não anônima verificada no servidor, UID derivado do token, chave SHA-256 por conta, respostas no-store, CAS com quatro tentativas, até 30 dispositivos por conta e retenção de 90 dias. Metadados do cliente são informativos, nunca autorização. Reutiliza room-limits privado e indexado, envelope expiresAt e limpeza agendada existente. Conta: 6 chamadas/minuto e 120/dia; global: 20.000/dia. Sem novas regras, variáveis ou serviços. Exclusão da conta remove os registros. Rollback: retirar publicação/consulta do registro sem alterar autenticação ou dados de estudo. Testes cobrem conta alheia, visitante, origem, quota, deduplicação, expiração e saída.

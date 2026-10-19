@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+SVG de avatar exige width/height explícitos de 512 px, além de viewBox. Sem eles Chromium/WebKit podem assumir tamanho intrínseco de 150 px. e2e/profile-avatars.spec.ts verifica o contrato e a transparência.
+
 Segurança, 2026-10-19: /api/account-devices registra/lista acessos autenticados, não revoga sessões Firebase. Registro por navegador/conta em room-limits/account-devices-<hash>, até 30 e 90 dias, limpeza existente por expiresAt. useAccountDevice registra ao entrar e a cada 30 minutos visíveis; configurações consultam sob demanda. Dispositivos anteriores à atualização não são recuperáveis até novo acesso. Sem IP/localização. Saída remove somente o registro deste navegador; excluir conta apaga o conjunto. Não confundir remover registro com encerrar autenticação remota.
 
 Pomodoro: focusPreferences aceita pomodoroMinutes numérico, shortBreakMinutes/longBreakMinutes opcionais com defaults 5/15. pomodoro-duration.ts centraliza limites 1..5999 e formato h/min. Perfil usa RoomStepSlider existente e relógio editável. Sessão recuperada conserva duração e histórico. Testes: pomodoro-duration, pomodoro-duration-picker, account-devices-handler, connected-devices e e2e/pomodoro-custom.spec.ts. Avatares Nicolas=raposa e Guilherme=gato cinza atualizados sem trocar URLs.
