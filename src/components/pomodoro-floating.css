@@ -8,6 +8,14 @@
   width: 24px;
   height: 24px;
 }
+/* Sprite dos dígitos embutido na janela flutuante: fora de vista, mas não display:none, que
+   quebraria os recortes (clipPath) dos símbolos. */
+.pomodoro-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
 html:has(.pomodoro-mini-page),
 html[data-theme]:has(.pomodoro-mini-page) body.pomodoro-mini-page {
   min-width: 220px;

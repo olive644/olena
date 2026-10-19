@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Número do mini Pomodoro sumindo a cada segundo, 2026-10-19
+
+Um vídeo do celular (Chrome, janela about:blank) mostrou o último dígito do relógio do pop-up sumindo por cerca de 170 ms a cada segundo (por exemplo 23:28, 23:2, 23:27), o que deslocava o número por ele ser centralizado. Causa: cada dígito novo é um `<svg><use>` recriado e apontava para o sprite externo `/paper-digits.svg`, que na janela flutuante demora para pintar. Correção: ao abrir a janela, `openPomodoroWindow` embute o sprite (10 símbolos) em um bloco fora de vista (`.pomodoro-sprite`, não `display:none`, que quebraria os recortes) e a janela usa `PaperDigitsSource` com `#`; se o arquivo não carregar, volta ao sprite externo. A aba original não muda. Conferido por captura ampliada: os dígitos saem idênticos aos da aba, com os recortes corretos. Não consegui reproduzir o sumiço no Chromium de teste (nem com CPU limitada), então a confirmação é no aparelho. O JS da aplicação ficou 22 bytes abaixo do teto de 1500 KiB.
+
 ## Correção da miniatura do Pomodoro, 2026-10-19
 
 Foco volta a mostrar os três controles diretamente; a seta expansível pertence somente ao pop-up. Abrir/fechar miniatura usa um único PaperEditorIcon com nome acessível e tooltip. Somente o pop-up recebe papel vermelho-claro (#f9b4a7) com tomatinhos facetados, como alternativa escolhida pelo usuário à transparência real indisponível no Document PiP. Removidas as barras horizontal e vertical, com mostrador adaptável à altura disponível.
