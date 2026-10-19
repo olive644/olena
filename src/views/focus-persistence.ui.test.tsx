@@ -13,12 +13,14 @@ describe("persistência semanal e dígitos do Foco", () => {
     const props = { workspace: createInitialWorkspace(), dispatch: vi.fn() };
     const view = render(<FocusView {...props} />);
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Expandir controles do Pomodoro" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     view.unmount();
     vi.setSystemTime(new Date(2026, 9, 2, 12, 2));
     render(<FocusView {...props} />);
     act(() => vi.advanceTimersByTime(1000));
     expect(screen.getByRole("heading", { name: "22:59" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Expandir controles do Pomodoro" }));
     expect(screen.getByRole("button", { name: "Pausar" })).toBeTruthy();
   });
   afterEach(() => vi.useRealTimers());
@@ -57,6 +59,7 @@ describe("persistência semanal e dígitos do Foco", () => {
     vi.setSystemTime(new Date(2026, 9, 2, 12));
     render(<FocusView workspace={createInitialWorkspace()} dispatch={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Expandir controles do Pomodoro" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     vi.setSystemTime(new Date(2026, 9, 2, 12, 1));
     act(() => vi.advanceTimersByTime(1000));
@@ -80,6 +83,7 @@ describe("persistência semanal e dígitos do Foco", () => {
     const dispatch = vi.fn();
     render(<FocusView workspace={createInitialWorkspace()} dispatch={dispatch} />);
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Expandir controles do Pomodoro" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     const advanceSeconds = (seconds: number) => {
       vi.setSystemTime(Date.now() + seconds * 1000);

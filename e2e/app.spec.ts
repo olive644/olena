@@ -146,6 +146,7 @@ test("troca os modos de foco pelas setas laterais", async ({ page }, testInfo) =
   await expect(page.locator(".focus-mode-slide")).toHaveCSS("animation-name", "focus-mode-arrive");
   const bites = page.locator(".pomodoro-tomato__bites");
   await expect(bites).toHaveAttribute("stroke-dasharray", "0 100");
+  await page.getByRole("button", { name: "Expandir controles do Pomodoro" }).click();
   await page.getByRole("button", { name: "Começar" }).click();
   await expect(bites).not.toHaveAttribute("stroke-dasharray", "0 100");
   await page.getByRole("button", { name: "Pausar" }).click();

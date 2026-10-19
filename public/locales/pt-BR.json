@@ -2772,5 +2772,19 @@
   "Pausa curta",
   "Pausa longa",
   "{0} de estudo · {1} de pausa",
-  "{0} após quatro rodadas"
+  "{0} após quatro rodadas",
+  "A pausa terminou. Hora de voltar ao estudo.",
+  "Rodada concluída. Hora de descansar.",
+  "Fechar mini Pomodoro",
+  "Abrir mini Pomodoro",
+  "A miniatura fica sobre outras janelas. Mantenha a aba Foco aberta.",
+  "Neste navegador, abre uma janela separada, sem garantia de ficar por cima. Mantenha a aba Foco aberta.",
+  "Não foi possível abrir a miniatura. Permita pop-ups para este site e tente novamente.",
+  "Mini Pomodoro",
+  "Tempo restante: {0}",
+  "Voltar ao Foco",
+  "Os avisos estão bloqueados no navegador. Você pode permiti-los nas configurações deste site; o contador continua funcionando.",
+  "Este navegador não oferece os avisos solicitados. O contador continua funcionando.",
+  "Recolher controles do Pomodoro",
+  "Expandir controles do Pomodoro"
 ]

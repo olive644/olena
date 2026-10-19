@@ -2772,5 +2772,19 @@
   "Short break",
   "Long break",
   "{0} study · {1} break",
-  "{0} after four rounds"
+  "{0} after four rounds",
+  "Your break is over. Time to return to studying.",
+  "Round completed. Time to take a break.",
+  "Close mini Pomodoro",
+  "Open mini Pomodoro",
+  "The mini timer stays above other windows. Keep the Focus tab open.",
+  "This browser opens a separate window that may not stay on top. Keep the Focus tab open.",
+  "The mini timer could not be opened. Allow pop-ups for this site and try again.",
+  "Mini Pomodoro",
+  "Time remaining: {0}",
+  "Back to Focus",
+  "Notifications are blocked in your browser. You can allow them in this site's settings; the timer keeps working.",
+  "This browser does not support the requested notifications. The timer keeps working.",
+  "Collapse Pomodoro controls",
+  "Expand Pomodoro controls"
 ]
