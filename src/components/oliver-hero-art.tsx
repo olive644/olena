@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-runtime";
 import { uiText } from "../i18n/runtime";
+import { reducedMotion, watchReducedMotion } from "../data/reduced-motion";
 
 const RIVE_FILE = "/oliver-math-islands/oliver.riv?v=1";
 /** Espera o primeiro quadro estático pintar antes de baixar o runtime e o arquivo. */
@@ -13,13 +14,6 @@ const LEAN_EASE = 0.14;
 const INTERACTIVE = "button, a, input, select, textarea, summary, [role=button], [role=link]";
 
 const clamp = (value: number) => Math.max(-1, Math.min(1, value));
-
-function reducedMotion(): boolean {
-  return (
-    (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? true) ||
-    document.documentElement.dataset["reduceMotion"] === "true"
-  );
-}
 
 /**
  * A arte do Oliver do Espaço do aluno, animada em Rive. A imagem estática continua sendo o
@@ -48,19 +42,12 @@ export function OliverHeroArt() {
         timer = setTimeout(() => setActive(true), ACTIVATION_DELAY);
       }
     };
-    const preferences = new MutationObserver(refresh);
-    preferences.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-reduce-motion"],
-    });
-    const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    media?.addEventListener?.("change", refresh);
+    const unwatch = watchReducedMotion(refresh);
     document.addEventListener("visibilitychange", refresh);
     refresh();
     return () => {
       if (timer) clearTimeout(timer);
-      preferences.disconnect();
-      media?.removeEventListener?.("change", refresh);
+      unwatch();
       document.removeEventListener("visibilitychange", refresh);
     };
   }, []);

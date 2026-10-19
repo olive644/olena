@@ -6912,6 +6912,11 @@ body.local-room-active {
   font-variant-numeric: tabular-nums;
 }
 
+/* durações de horas mostram h:mm:ss, mais largo que mm:ss */
+.pomodoro-dial__time .timer--hours {
+  font-size: clamp(1.5rem, 4.6vw, 2.2rem);
+}
+
 .pomodoro-progress {
   min-width: 0;
   display: grid;
@@ -12168,6 +12173,10 @@ select {
 
   .pomodoro-dial__time .timer {
     font-size: clamp(1.8rem, 8.4vw, 3.1rem);
+  }
+
+  .pomodoro-dial__time .timer--hours {
+    font-size: clamp(1.3rem, 6vw, 2.2rem);
   }
 
   .focus-mode-slide > .timer-controls {

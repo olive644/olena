@@ -4,7 +4,6 @@ import { Plus } from "lucide-react";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
 import { FocusRose } from "../components/focus-art";
 import { AnimatedPomodoroTomato } from "../components/pomodoro-tomato";
-import { PomodoroWorm } from "../components/pomodoro-worm";
 import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { focusFlowerState } from "../domain/focus-flower";
 import { formatFocusDuration } from "../domain/pomodoro-duration";
@@ -472,8 +471,19 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                     <div className="pomodoro-dial">
                       <AnimatedPomodoroTomato stage={tomatoStage} />
                       <div className="pomodoro-dial__time">
-                        <PomodoroWorm />
-                        <h2 id="focus-timer-title" className="timer">
+                        <img
+                          className="pomodoro-worm"
+                          src="/pomodoro-tomato/minhoca.svg"
+                          alt=""
+                          aria-hidden="true"
+                          width="320"
+                          height="120"
+                          draggable={false}
+                        />
+                        <h2
+                          id="focus-timer-title"
+                          className={`timer${secondsRemaining >= 3600 ? " timer--hours" : ""}`}
+                        >
                           <PaperDigits value={formatTimer(secondsRemaining)} />
                         </h2>
                         {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-runtime";
-import { reducedMotion } from "../data/reduced-motion";
+import { reducedMotion, watchReducedMotion } from "../data/reduced-motion";
 import { TOMATO_ART, tomatoStage } from "../domain/pomodoro-tomato";
-import { uiText, useLanguage } from "../i18n/runtime";
+import { uiText } from "../i18n/runtime";
 
 const RIVE_FILE = "/pomodoro-tomato/tomato.riv?v=1";
 /** Tempo que a entrada "instante" fica ligada para a máquina pular direto para a etapa. */
@@ -14,7 +14,6 @@ function staticSource(stage: number) {
 
 /** Quadro estático do tomate para uma fração de tempo restante (cartão do Espaço do aluno). */
 export function PomodoroTomato({ progress }: { progress: number }) {
-  useLanguage();
   const stage = tomatoStage(progress);
   return (
     <img
@@ -36,13 +35,12 @@ export function PomodoroTomato({ progress }: { progress: number }) {
  * reduzido; abrir a tela no meio do tempo pula direto para a etapa certa, sem repetir mordidas.
  */
 export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
-  useLanguage();
   const canvas = useRef<HTMLCanvasElement>(null);
   const inputs = useRef<Record<string, RiveInput>>({});
   const latest = useRef(stage);
   const applied = useRef(stage);
   const instantTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const [quiet, setQuiet] = useState(() => reducedMotion());
+  const [quiet, setQuiet] = useState(reducedMotion);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     latest.current = stage;
@@ -59,24 +57,7 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
     }, INSTANT_MS);
   };
 
-  useEffect(() => {
-    const refresh = () => {
-      const now = reducedMotion();
-      setQuiet(now);
-      if (now) setReady(false);
-    };
-    const preferences = new MutationObserver(refresh);
-    preferences.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-reduce-motion"],
-    });
-    const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    media?.addEventListener?.("change", refresh);
-    return () => {
-      preferences.disconnect();
-      media?.removeEventListener?.("change", refresh);
-    };
-  }, []);
+  useEffect(() => watchReducedMotion(() => setQuiet(reducedMotion())), []);
 
   useEffect(() => {
     const target = canvas.current;
@@ -91,6 +72,7 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
           canvas: target,
           stateMachines: "Tomate",
           autoplay: false,
+          onLoadError: () => undefined,
           layout: new rive.Layout({ fit: rive.Fit.Contain }),
           onLoad: () => {
             if (cancelled) return;
@@ -104,15 +86,10 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
             created.play();
             setReady(true);
           },
-          onLoadError: () => {
-            if (!cancelled) setReady(false);
-          },
         });
         instance = created;
       })
-      .catch(() => {
-        if (!cancelled) setReady(false);
-      });
+      .catch(() => undefined);
     const resize = () => instance?.resizeDrawingSurfaceToCanvas();
     window.addEventListener("resize", resize);
     return () => {
@@ -150,8 +127,6 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
         width={TOMATO_ART.staticWidth}
         height={TOMATO_ART.staticHeight}
         alt=""
-        aria-hidden="true"
-        draggable={false}
       />
       {!quiet && <canvas ref={canvas} aria-hidden="true" />}
     </span>

@@ -15,7 +15,7 @@ it("a etapa segue a fração de tempo que passou, de 0 (inteiro) a 8 (só o miol
 });
 
 it("a sequência é a mesma para qualquer duração escolhida: a mordida vem a cada oitavo do tempo", () => {
-  for (const minutes of [1, 5, 25, 50, 90]) {
+  for (const minutes of [1, 5, 25, 50, 90, 5999]) {
     const total = minutes * 60;
     const stageAt = (elapsed: number) => tomatoStage((total - elapsed) / total);
     expect(stageAt(0)).toBe(0);
@@ -29,21 +29,24 @@ it("a sequência é a mesma para qualquer duração escolhida: a mordida vem a c
   }
 });
 
+const manifest = JSON.parse(readFileSync("scripts/tomato-rive/layers/layers.json", "utf8")) as {
+  width: number;
+  height: number;
+  bites: number;
+  static: { x0: number; y0: number; w: number; h: number };
+};
+// a prancheta tem 150 px de margem dos lados, 90 em cima e 70 embaixo (generate.cjs)
+const BOARD = {
+  width: manifest.width + 300,
+  height: manifest.height + 160,
+  offsetX: manifest.static.x0 + 150,
+  offsetY: manifest.static.y0 + 90,
+};
+
 it("as medidas da arte conferem com as camadas geradas por scripts/tomato-rive", () => {
-  const manifest = JSON.parse(readFileSync("scripts/tomato-rive/layers/layers.json", "utf8")) as {
-    width: number;
-    height: number;
-    bites: number;
-    static: { x0: number; y0: number; w: number; h: number };
-  };
   expect(manifest.bites).toBe(TOMATO_BITES);
   expect(TOMATO_ART.staticWidth).toBe(manifest.static.w);
   expect(TOMATO_ART.staticHeight).toBe(manifest.static.h);
-  // a prancheta tem 150 px de margem dos lados, 90 em cima e 70 embaixo (generate.cjs)
-  expect(TOMATO_ART.boardWidth).toBe(manifest.width + 300);
-  expect(TOMATO_ART.boardHeight).toBe(manifest.height + 160);
-  expect(TOMATO_ART.offsetX).toBe(manifest.static.x0 + 150);
-  expect(TOMATO_ART.offsetY).toBe(manifest.static.y0 + 90);
 });
 
 it("o canvas do Rive cobre a prancheta inteira sobre a imagem estática (medidas do CSS)", () => {
@@ -51,8 +54,8 @@ it("o canvas do Rive cobre a prancheta inteira sobre a imagem estática (medidas
   const block = /\.pomodoro-tomato-live > canvas \{([^}]*)\}/.exec(css)?.[1] ?? "";
   const value = (property: string) =>
     Number(new RegExp(`${property}: (-?[\\d.]+)%`).exec(block)?.[1] ?? Number.NaN);
-  expect(value("width")).toBeCloseTo((TOMATO_ART.boardWidth / TOMATO_ART.staticWidth) * 100, 1);
-  expect(value("height")).toBeCloseTo((TOMATO_ART.boardHeight / TOMATO_ART.staticHeight) * 100, 1);
-  expect(value("left")).toBeCloseTo(-(TOMATO_ART.offsetX / TOMATO_ART.staticWidth) * 100, 1);
-  expect(value("top")).toBeCloseTo(-(TOMATO_ART.offsetY / TOMATO_ART.staticHeight) * 100, 1);
+  expect(value("width")).toBeCloseTo((BOARD.width / TOMATO_ART.staticWidth) * 100, 1);
+  expect(value("height")).toBeCloseTo((BOARD.height / TOMATO_ART.staticHeight) * 100, 1);
+  expect(value("left")).toBeCloseTo(-(BOARD.offsetX / TOMATO_ART.staticWidth) * 100, 1);
+  expect(value("top")).toBeCloseTo(-(BOARD.offsetY / TOMATO_ART.staticHeight) * 100, 1);
 });
