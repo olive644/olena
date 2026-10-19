@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+Pop-up corrigido: PomodoroControls só recolhe com collapsible=true no portal; no Foco fica aberto sem seta. loadRiveRuntime(owner=window) mantém cache WeakMap por janela: Rive do pop-up não escuta visibilitychange da origem. Timer instante também usa a janela dona. PaperDigits mantém seu SVG original; a chave por posição/caractere recria apenas o glifo alterado. Duplicar símbolos na janela foi descartado por distorcer seus recortes. Fundo vermelho-claro com tomatinhos só na miniatura, sem rolagem. API PiP não oferece transparência nativa; clique chama requestWindow real, sem simular permissões.
+
 Miniatura acompanha o tomate da PR #495 (ocioso e minhoca no Rive). AnimatedPomodoroTomato aceita sound=false somente no portal: o Foco original continua sendo a fonte do som de mordida. Não criar outra trilha ou outro contador para o pop-up.
 
 PomodoroDial compartilha arte, minhoca e relógio entre Foco e portal. Mensagens usam IDs do catálogo já carregado, sem duplicar os textos no JavaScript. Formato do Pomodoro reutiliza o formatador do cronômetro, com horas somente a partir de uma hora.

@@ -35,37 +35,38 @@ export type RiveRuntime = {
 export const RIVE_SCRIPT = "/helena-assistant/rive.js?v=2.43.0";
 export const RIVE_WASM = "/helena-assistant/rive.wasm?v=2.43.0";
 
-let loading: Promise<RiveRuntime> | null = null;
+const loading = new WeakMap<Window, Promise<RiveRuntime>>();
 
-function current(): RiveRuntime | undefined {
-  return (window as Window & { rive?: RiveRuntime }).rive;
+function current(owner: Window): RiveRuntime | undefined {
+  return (owner as Window & { rive?: RiveRuntime }).rive;
 }
 
-export function loadRiveRuntime(): Promise<RiveRuntime> {
-  const ready = current();
+export async function loadRiveRuntime(owner = window): Promise<RiveRuntime> {
+  const ready = current(owner);
   if (ready) {
     ready.RuntimeLoader.setWasmUrl(RIVE_WASM);
-    return Promise.resolve(ready);
+    return ready;
   }
-  if (loading) return loading;
-  loading = new Promise<RiveRuntime>((resolve, reject) => {
-    const script = document.createElement("script");
+  const pending = loading.get(owner);
+  if (pending) return pending;
+  const request = new Promise<RiveRuntime>((resolve, reject) => {
+    const script = owner.document.createElement("script");
     script.src = RIVE_SCRIPT;
-    script.async = true;
     script.onload = () => {
-      const runtime = current();
+      const runtime = current(owner);
       if (!runtime) {
-        reject(new Error("Runtime do Rive ausente"));
+        reject(new Error("Rive indisponível"));
         return;
       }
       runtime.RuntimeLoader.setWasmUrl(RIVE_WASM);
       resolve(runtime);
     };
-    script.onerror = () => reject(new Error("Falha ao carregar o runtime do Rive"));
-    document.head.appendChild(script);
+    script.onerror = () => reject(new Error("Rive indisponível"));
+    owner.document.head.appendChild(script);
   }).catch((error: unknown) => {
-    loading = null; // uma próxima ativação tenta de novo
+    loading.delete(owner); // uma próxima ativação tenta de novo
     throw error;
   });
-  return loading;
+  loading.set(owner, request);
+  return request;
 }

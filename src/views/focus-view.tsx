@@ -408,8 +408,9 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const bloomProgress = flower.progress;
   const caredToday = todayMinutes > 0;
   const missedYesterday = flower.wilted;
-  const pomodoroControls = (
+  const pomodoroControls = (collapsible?: boolean) => (
     <PomodoroControls
+      collapsible={Boolean(collapsible)}
       label={running ? uiText(1960) : elapsedSeconds > 0 ? uiText(1436) : uiText(1172)}
       icon={<FocusPaperControlIcon paused={running} />}
       finishDisabled={elapsedSeconds < (restored?.agendaEventId ? 60 : 1)}
@@ -522,7 +523,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                   </h2>
                 )}
                 {mode === "pomodoro" ? (
-                  pomodoroControls
+                  pomodoroControls()
                 ) : (
                   <div className="timer-controls">
                     <button
@@ -568,7 +569,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
               <PomodoroFloating
                 time={formatTimer(secondsRemaining)}
                 stage={tomatoStage}
-                controls={pomodoroControls}
+                controls={pomodoroControls(true)}
               />
               {(notificationStatus === "denied" || notificationStatus === "unsupported") && (
                 <p className="pomodoro-notification-note">

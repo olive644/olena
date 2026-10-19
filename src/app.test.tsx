@@ -312,7 +312,6 @@ describe("App", () => {
     expect(screen.queryByRole("button", { name: /pausa longa após 4 rodadas/i })).toBeNull();
     expect(screen.queryByLabelText(/escolha o prazo/i)).toBeNull();
     expect(screen.queryByRole("heading", { name: /um período de cada vez/i })).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Expandir controles do Pomodoro" }));
     fireEvent.click(screen.getByRole("button", { name: /começar/i }));
     expect(screen.getByRole("button", { name: /pausar/i })).toBeTruthy();
   });

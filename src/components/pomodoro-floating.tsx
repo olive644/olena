@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { openPomodoroWindow, supportsPomodoroPictureInPicture } from "../data/pomodoro-window";
+import { openPomodoroWindow } from "../data/pomodoro-window";
 import { uiText } from "../i18n/runtime";
 import { PomodoroDial } from "./pomodoro-dial";
 import { PaperEditorIcon } from "./paper-editor-icon";
@@ -20,6 +20,7 @@ export function PomodoroFloating({
   const [status, setStatus] = useState(0);
   const owned = useRef<Window | null>(null);
   const alive = useRef(true);
+  const label = uiText(floating ? 2776 : 2777);
   useEffect(() => {
     alive.current = true;
     return () => {
@@ -56,15 +57,15 @@ export function PomodoroFloating({
     <div className="pomodoro-floating-launcher">
       <button
         type="button"
-        className="secondary-button"
+        className="icon-button"
+        aria-label={label}
+        title={label}
         disabled={status === 1}
         aria-pressed={Boolean(floating)}
         onClick={() => (floating ? floating.close() : void open())}
       >
-        <PaperEditorIcon name="expand" />
-        {uiText(floating ? 2776 : 2777)}
+        <PaperEditorIcon name={floating ? "collapse" : "expand"} />
       </button>
-      <small>{uiText(supportsPomodoroPictureInPicture() ? 2778 : 2779)}</small>
       {status === 2 && <p role="alert">{uiText(2780)}</p>}
       {floating &&
         createPortal(

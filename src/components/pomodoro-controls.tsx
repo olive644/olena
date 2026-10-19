@@ -10,6 +10,7 @@ export function PomodoroControls({
   onToggle,
   onReset,
   onFinish,
+  collapsible = false,
 }: {
   label: string;
   icon: ReactNode;
@@ -17,22 +18,29 @@ export function PomodoroControls({
   onToggle(): void;
   onReset(): void;
   onFinish(): void;
+  collapsible?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const id = useId();
   return (
     <div className="pomodoro-controls">
-      <button
-        className="focus-mode-arrow pomodoro-controls__toggle"
-        type="button"
-        aria-label={uiText(expanded ? 2786 : 2787)}
-        aria-expanded={expanded}
-        aria-controls={id}
-        onClick={() => setExpanded((value) => !value)}
+      {collapsible && (
+        <button
+          className="focus-mode-arrow pomodoro-controls__toggle"
+          type="button"
+          aria-label={uiText(expanded ? 2786 : 2787)}
+          aria-expanded={expanded}
+          aria-controls={id}
+          onClick={() => setExpanded((value) => !value)}
+        >
+          <FocusPaperArrow />
+        </button>
+      )}
+      <div
+        className="timer-controls pomodoro-controls__row"
+        id={id}
+        hidden={collapsible && !expanded}
       >
-        <FocusPaperArrow />
-      </button>
-      <div className="timer-controls pomodoro-controls__row" id={id} hidden={!expanded}>
         <button className="primary-button timer-primary" type="button" onClick={onToggle}>
           {icon}
           {label}
