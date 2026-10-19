@@ -1528,3 +1528,5 @@ Página estática `public/termos-de-uso.html`, versão em `src/domain/terms-of-u
 2026-10-19, animação parada do tomate: a camada Ambiente do tomate.riv anima o tomate (respira, balança) e a minhoca (onda, piscada, mastigada); a minhoca estática minhoca.svg fica como quadro inicial e para movimento reduzido. Comandos: node scripts/tomato-rive/art.cjs, node scripts/tomato-rive/worm.cjs e node scripts/tomato-rive/generate.cjs, nessa ordem.
 
 2026-10-19, som das mordidas: AnimatedPomodoroTomato toca public/pomodoro-tomato/mordida.wav a cada etapa seguinte da sequência, se os efeitos sonoros estiverem ligados. Gerado por node scripts/tomato-rive/sound.cjs (síntese determinística).
+
+2026-10-19, botões do Pomodoro: sons comecar/pausar/reiniciar em public/pomodoro-tomato (gerados por scripts/tomato-rive/sound.cjs) tocados por playPomodoroSound; efeito visual só em CSS (src/styles.css, bloco logo antes de .focus-aside): afundar do botão, pulinho do tomate e confete ao soltar, via :active e transições.

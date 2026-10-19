@@ -8,7 +8,7 @@ oitavo do tempo escolhido, com pedaço que salta, partículas e brotar de novo n
 - `node scripts/tomato-rive/art.cjs`: desenha as camadas em papel recortado (`layers/*.png`,
   `layers.json`) e os quadros estáticos `public/pomodoro-tomato/estagio-0..8.webp`.
 - `node scripts/tomato-rive/worm.cjs`: gera `public/pomodoro-tomato/minhoca.svg`, o quadro estático da minhoca. `art.cjs` usa as mesmas formas para recortar os gomos, os olhos e a boca em camadas.
-- `node scripts/tomato-rive/sound.cjs`: sintetiza `public/pomodoro-tomato/mordida.wav` (sem amostras de terceiros), o som de cada mordida. O estalo principal cai em 0,22 s, o instante da troca de estágio na animação (`T_SWAP`).
+- `node scripts/tomato-rive/sound.cjs`: sintetiza os sons em `public/pomodoro-tomato/` (sem amostras de terceiros): `mordida.wav` (cada mordida) e `comecar.wav`, `pausar.wav` e `reiniciar.wav` (botões do contador). O estalo principal cai em 0,22 s, o instante da troca de estágio na animação (`T_SWAP`).
 - `node scripts/tomato-rive/generate.cjs`: monta `public/pomodoro-tomato/tomato.riv`.
   `TOMATO_OUT` troca o destino, útil para depuração.
 

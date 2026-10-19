@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-runtime";
-import { areSoundEffectsEnabled } from "../data/accessibility-preferences";
+import { playPomodoroSound } from "../data/pomodoro-sfx";
 import { reducedMotion, watchReducedMotion } from "../data/reduced-motion";
 import { TOMATO_ART, tomatoStage } from "../domain/pomodoro-tomato";
 import { uiText } from "../i18n/runtime";
 
 const RIVE_FILE = "/pomodoro-tomato/tomato.riv?v=1";
-/** O estalo principal do som cai em 0,22 s, junto da troca de estágio da animação. */
-const BITE_SOUND = "/pomodoro-tomato/mordida.wav";
 /** Tempo que a entrada "instante" fica ligada para a máquina pular direto para a etapa. */
 const INSTANT_MS = 150;
 
@@ -43,7 +41,6 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
   const latest = useRef(stage);
   const applied = useRef(stage);
   const instantTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const sound = useRef<HTMLAudioElement | undefined>(undefined);
   const previous = useRef(stage);
   const [quiet, setQuiet] = useState(reducedMotion);
   const [ready, setReady] = useState(false);
@@ -66,10 +63,8 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
   useEffect(() => {
     const before = previous.current;
     previous.current = stage;
-    if (stage !== before + 1 || !areSoundEffectsEnabled()) return;
-    const audio = (sound.current ??= new Audio(BITE_SOUND));
-    audio.currentTime = 0;
-    audio.play().catch(() => undefined);
+    // o estalo do som cai junto da troca de estágio da animação (0,22 s)
+    if (stage === before + 1) playPomodoroSound("mordida");
   }, [stage]);
 
   useEffect(() => watchReducedMotion(() => setQuiet(reducedMotion())), []);
@@ -104,7 +99,7 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
         });
         instance = created;
       })
-      .catch(() => undefined);
+      .catch(() => 0);
     const resize = () => instance?.resizeDrawingSurfaceToCanvas();
     window.addEventListener("resize", resize);
     return () => {

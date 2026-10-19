@@ -66,7 +66,10 @@ test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de n
   // a primeira mordida toca o som da mordida, uma vez, sob a CSP de produção
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { plays: string[] }).plays))
-    .toEqual([expect.stringContaining("/pomodoro-tomato/mordida.wav")]);
+    .toEqual([
+      expect.stringContaining("/pomodoro-tomato/comecar.wav"),
+      expect.stringContaining("/pomodoro-tomato/mordida.wav"),
+    ]);
   await page.clock.fastForward("09:30");
   await expect(tomato).toHaveAttribute("data-stage", "4");
   await page.clock.fastForward("11:50");
@@ -91,6 +94,12 @@ test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de n
   await page.getByRole("button", { name: "Pausar" }).click();
   await page.getByRole("button", { name: "Reiniciar contador" }).click();
   await expect(tomato).toHaveAttribute("data-stage", "0");
+  // cada botão tem o seu som
+  const plays = await page.evaluate(() => (window as unknown as { plays: string[] }).plays);
+  expect(plays.slice(-2).map((src) => src.split("/").pop())).toEqual([
+    "pausar.wav",
+    "reiniciar.wav",
+  ]);
   expect(errors).toEqual([]);
 });
 

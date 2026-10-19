@@ -33,12 +33,11 @@ class FakeRive {
 const played: string[] = [];
 class FakeAudio {
   src: string;
-  currentTime = 1;
   constructor(src: string) {
     this.src = src;
   }
   play() {
-    played.push(`${this.src}@${this.currentTime}`);
+    played.push(this.src);
     return Promise.resolve();
   }
 }
@@ -181,11 +180,11 @@ it("sem ter chegado ao fim do foco, a pausa mostra o tomate inteiro na hora", ()
   expect(result.current).toBe(0);
 });
 
-it("cada mordida da sequência toca o som, do começo; saltos, volta a zero e a etapa inicial ficam mudos", () => {
+it("cada mordida da sequência toca o som; saltos, volta a zero e a etapa inicial ficam mudos", () => {
   const view = render(<AnimatedPomodoroTomato stage={0} />);
   expect(played).toEqual([]);
   view.rerender(<AnimatedPomodoroTomato stage={1} />);
-  expect(played).toEqual(["/pomodoro-tomato/mordida.wav@0"]);
+  expect(played).toEqual(["/pomodoro-tomato/mordida.wav"]);
   view.rerender(<AnimatedPomodoroTomato stage={2} />);
   expect(played).toHaveLength(2);
   view.rerender(<AnimatedPomodoroTomato stage={6} />);
