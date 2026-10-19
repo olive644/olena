@@ -17,6 +17,7 @@ class FakeRive {
   pause = vi.fn();
   cleanup = vi.fn();
   resizeDrawingSurfaceToCanvas = vi.fn();
+  resizeToCanvas = vi.fn();
   constructor(options: Options) {
     this.options = options;
     created.push(this);
@@ -121,6 +122,33 @@ it("expõe a etapa e libera o Rive ao sair da tela", async () => {
   expect(root.getAttribute("data-stage")).toBe("2");
   view.unmount();
   expect(instance.cleanup).toHaveBeenCalledTimes(1);
+});
+
+it("dimensiona o canvas de outra janela sem usar o instanceof do helper do Rive", async () => {
+  const frame = document.createElement("iframe");
+  document.body.append(frame);
+  const container = frame.contentDocument!.createElement("div");
+  frame.contentDocument!.body.append(container);
+  const view = render(<AnimatedPomodoroTomato stage={0} />, { container });
+  const target = container.querySelector("canvas")!;
+  vi.spyOn(target, "getBoundingClientRect").mockReturnValue({
+    width: 200,
+    height: 100,
+    x: 0,
+    y: 0,
+    top: 0,
+    left: 0,
+    right: 200,
+    bottom: 100,
+    toJSON: () => ({}),
+  });
+  const { instance } = await load(view);
+  expect(target.width).toBe(200);
+  expect(target.height).toBe(100);
+  expect(instance.resizeToCanvas).toHaveBeenCalled();
+  expect(instance.resizeDrawingSurfaceToCanvas).not.toHaveBeenCalled();
+  view.unmount();
+  frame.remove();
 });
 
 it("se o arquivo não carrega, a imagem estática continua valendo", async () => {

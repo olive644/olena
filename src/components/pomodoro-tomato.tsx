@@ -64,6 +64,17 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
     if (quiet || !target) return;
     let cancelled = false;
     let instance: RivePlayer | undefined;
+    const owner = target.ownerDocument.defaultView ?? window;
+    const resizePlayer = (player: RivePlayer) => {
+      if (owner === window) player.resizeDrawingSurfaceToCanvas();
+      else {
+        // O helper do Rive ignora canvas de outra janela por usar instanceof do documento original.
+        const box = target.getBoundingClientRect();
+        target.width = Math.round(box.width * owner.devicePixelRatio);
+        target.height = Math.round(box.height * owner.devicePixelRatio);
+        player.resizeToCanvas();
+      }
+    };
     loadRiveRuntime()
       .then((rive) => {
         if (cancelled) return;
@@ -76,7 +87,7 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
           layout: new rive.Layout({ fit: rive.Fit.Contain }),
           onLoad: () => {
             if (cancelled) return;
-            created.resizeDrawingSurfaceToCanvas();
+            resizePlayer(created);
             const found: Record<string, RiveInput> = {};
             for (const input of created.stateMachineInputs("Tomate") ?? [])
               found[input.name] = input;
@@ -90,12 +101,16 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
         instance = created;
       })
       .catch(() => undefined);
-    const resize = () => instance?.resizeDrawingSurfaceToCanvas();
-    const owner = target.ownerDocument.defaultView ?? window;
+    const resize = () => {
+      if (instance) resizePlayer(instance);
+    };
     owner.addEventListener("resize", resize);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
+    observer?.observe(target);
     return () => {
       cancelled = true;
       owner.removeEventListener("resize", resize);
+      observer?.disconnect();
       clearTimeout(instantTimer.current);
       inputs.current = {};
       instance?.cleanup();

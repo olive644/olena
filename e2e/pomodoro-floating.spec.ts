@@ -105,6 +105,14 @@ for (const theme of ["light", "dark"]) {
     const tomato = popup.locator(".pomodoro-tomato-live");
     await expect(tomato).toHaveAttribute("data-ready", "true", { timeout: 20_000 });
     await expect(tomato.locator("canvas")).toBeVisible();
+    await expect
+      .poll(() =>
+        tomato.locator("canvas").evaluate((canvas: HTMLCanvasElement) => {
+          const box = canvas.getBoundingClientRect();
+          return Math.abs(canvas.width / canvas.height - box.width / box.height);
+        }),
+      )
+      .toBeLessThan(0.03);
     await expect(popup.locator(".pomodoro-worm")).toBeVisible();
     await expect(
       popup.locator(".pomodoro-progress, .pomodoro-week, main p, main small"),

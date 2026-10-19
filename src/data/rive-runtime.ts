@@ -10,6 +10,7 @@ export type RivePlayer = {
   pause(): void;
   cleanup(): void;
   resizeDrawingSurfaceToCanvas(): void;
+  resizeToCanvas(): void;
   stateMachineInputs(name: string): RiveInput[] | undefined;
 };
 

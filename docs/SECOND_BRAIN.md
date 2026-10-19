@@ -2,6 +2,8 @@
 
 PomodoroFloating recebe stage de useDisplayedTomatoStage do Foco e usa AnimatedPomodoroTomato com minhoca, sem uma segunda lógica de progresso. Canvas escuta resize no ownerDocument.defaultView para funcionar no documento flutuante.
 
+Canvas em outra janela não passa no instanceof interno do Rive. AnimatedPomodoroTomato dimensiona o buffer com a janela dona e usa resizeToCanvas nesse caso; ResizeObserver acompanha o layout. Não corrigir distorção mudando proporções da arte.
+
 Miniatura compacta: 320 por 340 px, somente tomate, dígitos e controles recolhíveis. Resumo semanal fica no Foco principal, não é enviado ao portal. Fundo CSS transparente remove a decoração, mas não oferece transparência da janela sobre o sistema operacional.
 
 Mini Pomodoro: PomodoroFloating é portal no documento retornado por pomodoro-window.ts. Recebe relógio, progresso e PomodoroControls de FocusView, nunca roda outra sessão. Uma seta original roxa girada para baixo expande os três botões em linha na aba e na miniatura. PiP nativo mantém a janela no topo; fallback window.open pode ficar atrás de outras janelas. Fecha na desmontagem da aba Foco e conserva o contador ao fechar só a miniatura. Notificações: pomodoro-notifications.ts pede permissão durante clique de início e avisa transições recentes. Não é bloqueio de notificações externas. Testes: pomodoro-floating.spec.ts, pomodoro-controls.test.tsx, pomodoro-window.test.ts e pomodoro-notifications.test.ts.
