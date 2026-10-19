@@ -35,7 +35,13 @@ export function PomodoroTomato({ progress }: { progress: number }) {
  * ciclo recomeça. A imagem estática da etapa é o quadro inicial e o que fica com movimento
  * reduzido; abrir a tela no meio do tempo pula direto para a etapa certa, sem repetir mordidas.
  */
-export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
+export function AnimatedPomodoroTomato({
+  stage,
+  sound = true,
+}: {
+  stage: number;
+  sound?: boolean;
+}) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const inputs = useRef<Record<string, RiveInput>>({});
   const latest = useRef(stage);
@@ -64,8 +70,8 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
     const before = previous.current;
     previous.current = stage;
     // o estalo do som cai junto da troca de estágio da animação (0,22 s)
-    if (stage === before + 1) playPomodoroSound("mordida");
-  }, [stage]);
+    if (sound && stage === before + 1) playPomodoroSound("mordida");
+  }, [stage, sound]);
 
   useEffect(() => watchReducedMotion(() => setQuiet(reducedMotion())), []);
 
@@ -74,6 +80,17 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
     if (quiet || !target) return;
     let cancelled = false;
     let instance: RivePlayer | undefined;
+    const owner = target.ownerDocument.defaultView ?? window;
+    const resizePlayer = (player: RivePlayer) => {
+      if (owner === window) player.resizeDrawingSurfaceToCanvas();
+      else {
+        // O helper do Rive ignora canvas de outra janela por usar instanceof do documento original.
+        const box = target.getBoundingClientRect();
+        target.width = box.width * owner.devicePixelRatio;
+        target.height = box.height * owner.devicePixelRatio;
+        player.resizeToCanvas();
+      }
+    };
     loadRiveRuntime()
       .then((rive) => {
         if (cancelled) return;
@@ -86,7 +103,7 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
           layout: new rive.Layout({ fit: rive.Fit.Contain }),
           onLoad: () => {
             if (cancelled) return;
-            created.resizeDrawingSurfaceToCanvas();
+            resizePlayer(created);
             const found: Record<string, RiveInput> = {};
             for (const input of created.stateMachineInputs("Tomate") ?? [])
               found[input.name] = input;
@@ -100,11 +117,16 @@ export function AnimatedPomodoroTomato({ stage }: { stage: number }) {
         instance = created;
       })
       .catch(() => 0);
-    const resize = () => instance?.resizeDrawingSurfaceToCanvas();
-    window.addEventListener("resize", resize);
+    const resize = () => {
+      if (instance) resizePlayer(instance);
+    };
+    owner.addEventListener("resize", resize);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
+    observer?.observe(target);
     return () => {
       cancelled = true;
-      window.removeEventListener("resize", resize);
+      owner.removeEventListener("resize", resize);
+      observer?.disconnect();
       clearTimeout(instantTimer.current);
       inputs.current = {};
       instance?.cleanup();

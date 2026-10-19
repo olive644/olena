@@ -41,6 +41,7 @@ async function openPomodoro(page: Page, requests: string[] = [], errors: string[
   await page.clock.install({ time: new Date("2026-10-19T12:00:00") });
   await page.clock.resume();
   await page.goto("/foco");
+  await page.getByRole("button", { name: "Expandir controles do Pomodoro" }).click();
 }
 
 test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de novo", async ({

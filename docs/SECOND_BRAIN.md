@@ -1,5 +1,17 @@
 # OlenaStudy: Second Brain
 
+Miniatura acompanha o tomate da PR #495 (ocioso e minhoca no Rive). AnimatedPomodoroTomato aceita sound=false somente no portal: o Foco original continua sendo a fonte do som de mordida. Não criar outra trilha ou outro contador para o pop-up.
+
+PomodoroDial compartilha arte, minhoca e relógio entre Foco e portal. Mensagens usam IDs do catálogo já carregado, sem duplicar os textos no JavaScript. Formato do Pomodoro reutiliza o formatador do cronômetro, com horas somente a partir de uma hora.
+
+PomodoroFloating recebe stage de useDisplayedTomatoStage do Foco e usa AnimatedPomodoroTomato com minhoca, sem uma segunda lógica de progresso. Canvas escuta resize no ownerDocument.defaultView para funcionar no documento flutuante.
+
+Canvas em outra janela não passa no instanceof interno do Rive. AnimatedPomodoroTomato dimensiona o buffer com a janela dona e usa resizeToCanvas nesse caso; ResizeObserver acompanha o layout. Não corrigir distorção mudando proporções da arte.
+
+Miniatura compacta: 320 por 340 px, somente tomate, dígitos e controles recolhíveis. Resumo semanal fica no Foco principal, não é enviado ao portal. Fundo CSS transparente remove a decoração, mas não oferece transparência da janela sobre o sistema operacional.
+
+Mini Pomodoro: PomodoroFloating é portal no documento retornado por pomodoro-window.ts. Recebe relógio, progresso e PomodoroControls de FocusView, nunca roda outra sessão. Uma seta original roxa girada para baixo expande os três botões em linha na aba e na miniatura. PiP nativo mantém a janela no topo; fallback window.open pode ficar atrás de outras janelas. Fecha na desmontagem da aba Foco e conserva o contador ao fechar só a miniatura. Notificações: pomodoro-notifications.ts pede permissão durante clique de início e avisa transições recentes. Não é bloqueio de notificações externas. Testes: pomodoro-floating.spec.ts, pomodoro-controls.test.tsx, pomodoro-window.test.ts e pomodoro-notifications.test.ts.
+
 SVG de avatar exige width/height explícitos de 512 px, além de viewBox. Sem eles Chromium/WebKit podem assumir tamanho intrínseco de 150 px. e2e/profile-avatars.spec.ts verifica o contrato e a transparência.
 
 Segurança, 2026-10-19: /api/account-devices registra/lista acessos autenticados, não revoga sessões Firebase. Registro por navegador/conta em room-limits/account-devices-<hash>, até 30 e 90 dias, limpeza existente por expiresAt. useAccountDevice registra ao entrar e a cada 30 minutos visíveis; configurações consultam sob demanda. Dispositivos anteriores à atualização não são recuperáveis até novo acesso. Sem IP/localização. Saída remove somente o registro deste navegador; excluir conta apaga o conjunto. Não confundir remover registro com encerrar autenticação remota.

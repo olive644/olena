@@ -1,0 +1,102 @@
+.pomodoro-floating-launcher {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+.pomodoro-floating-launcher small {
+  max-width: 420px;
+  text-align: center;
+  color: var(--muted);
+}
+.pomodoro-floating-launcher .paper-editor-icon {
+  width: 24px;
+  height: 24px;
+}
+html:has(.pomodoro-mini-page),
+html[data-theme]:has(.pomodoro-mini-page) body.pomodoro-mini-page {
+  min-width: 220px;
+  min-height: 100%;
+  background: transparent;
+  background-image: none;
+}
+body.pomodoro-mini-page {
+  margin: 0;
+  color: var(--text);
+}
+.pomodoro-mini {
+  background: transparent;
+  background-image: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-content: center;
+  min-height: 100dvh;
+  padding: 12px;
+  gap: 4px;
+}
+.pomodoro-mini .pomodoro-dial {
+  width: min(190px, 66vw);
+  height: auto;
+  aspect-ratio: 454 / 430;
+  margin: 0;
+}
+.pomodoro-mini .pomodoro-tomato {
+  width: 100%;
+  height: auto;
+}
+.pomodoro-mini .pomodoro-dial__time .timer {
+  font-size: clamp(1rem, 6vw, 1.45rem);
+  margin: 0 16% 0 0;
+}
+.pomodoro-mini .pomodoro-dial__time .timer:has(.paper-digits > :nth-child(9)) {
+  font-size: 1rem;
+}
+.pomodoro-mini button {
+  min-height: 44px;
+}
+.pomodoro-controls {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  gap: 8px;
+}
+.pomodoro-controls .pomodoro-controls__toggle {
+  position: static;
+  width: 48px;
+  height: 44px;
+}
+.pomodoro-controls .pomodoro-controls__toggle .focus-paper-arrow {
+  transform: rotate(-90deg);
+}
+.pomodoro-controls .pomodoro-controls__toggle[aria-expanded="true"] .focus-paper-arrow {
+  transform: rotate(90deg);
+}
+.pomodoro-controls .pomodoro-controls__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1.2fr);
+  width: min(100%, 430px);
+  gap: 8px;
+}
+.pomodoro-controls .pomodoro-controls__row[hidden] {
+  display: none;
+}
+.pomodoro-controls .pomodoro-controls__row > button {
+  min-width: 0;
+  margin: 0;
+  padding: 8px;
+  white-space: normal;
+}
+.pomodoro-mini .pomodoro-controls__row > button {
+  font-size: 0.75rem;
+}
+.pomodoro-mini .focus-paper-control-icon {
+  width: 18px;
+  height: 18px;
+}
+.pomodoro-notification-note {
+  color: var(--muted);
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+}

@@ -1,5 +1,23 @@
 # Auditoria do estado atual
 
+## Mini Pomodoro e avisos nativos, 2026-10-19
+
+Incorporada também a PR #495: animação ociosa, minhoca animada e sons atuais. Miniatura reutiliza o mesmo componente e a etapa do Foco, com som de mordida desativado somente na projeção para não duplicar o áudio. Botões usam os callbacks compartilhados com sons de iniciar, pausar e reiniciar.
+
+Miniatura atualizada para AnimatedPomodoroTomato da PR #494, com Rive e minhoca originais. Recebe a mesma etapa calculada no Foco, inclusive a última mordida na transição para a pausa. Redimensionamento do canvas acompanha a janela que contém o elemento, inclusive pop-up/PiP. Mantém os três controles e a ausência de resumo e decoração de fundo.
+
+Corrigida distorção entre documentos: resizeDrawingSurfaceToCanvas do Rive usa instanceof HTMLCanvasElement da janela original e ignora o canvas do pop-up. Nesse caso, aplicamos dimensões reais e devicePixelRatio da janela dona ao buffer e chamamos resizeToCanvas. ResizeObserver acompanha mudanças de layout. Teste reproduziu diferença de proporção de 0,925 antes e exige diferença abaixo de 0,03; há também regressão unitária com iframe.
+
+A miniatura solicita 320 por 340 px e mostra somente tomate, relógio, seta e controles. Resumo semanal e textos de duração permanecem apenas na aba Foco. HTML, body e painel da miniatura não desenham fundo nem padrão decorativo. Isso não torna a janela nativa transparente sobre outros programas: o navegador continua responsável pela superfície e moldura da janela.
+
+Foco ganha Abrir mini Pomodoro: Document Picture-in-Picture quando disponível, janela separada como fallback, sem prometer sempre no topo neste caso. Conteúdo usa portal React com os mesmos dados e callbacks da aba Foco, tomate e números originais. Os dois locais usam PomodoroControls: uma seta roxa original girada para baixo expande Começar/Pausar, Reiniciar e Encerrar e registrar, sempre em uma linha. Nenhum botão extra substitui os controles originais. Não cria outro contador, registro de estudo ou chave sincronizada. Fechar miniatura mantém o contador; sair da aba Foco fecha a miniatura. Tema, idioma e preferências de movimento/destaque acompanham a origem. O navegador pode limitar tamanho, posição e suporte. A aba Foco precisa continuar aberta.
+
+Ao iniciar manualmente o Pomodoro, solicita permissão nativa de envio de notificações se ainda não decidida. Recusa ou indisponibilidade não impede início. Transições avisam fim do estudo ou pausa, com no máximo um aviso recente por atualização, sem despejar ciclos antigos ao retomar. Não bloqueia notificações do navegador, de outros sites ou do sistema. Usuário decidiu deixar esse bloqueio para depois. Sem extensão, serviço externo ou permissão nova além do pedido opcional de notificações.
+
+Fontes técnicas: https://developer.chrome.com/docs/web-platform/document-picture-in-picture e https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API. Testes cobrem seleção PiP/fallback, pop-up bloqueado, permissão concedida/negada/indisponível e projeção do contador/controles em PC e celular nos dois temas.
+
+Desempenho: removido somente o formulário legado de metas permanentemente oculto por display:none na aba Foco, junto com seus cálculos de calendário não apresentados. Dados, ações de domínio e metas salvas permanecem intactos. Mensagens por ID, mostrador compartilhado e formatação de tempo reutilizada mantêm a aplicação dentro do teto existente de 1500 KiB, sem elevar limites ou incluir dependências. A medição arredondada é 1500,0 KiB, com entrada de 217,4 KiB. O DOM não conserva controles inacessíveis de uma função desativada.
+
 ## Dispositivos, Pomodoro e personagens, 2026-10-19
 
 CI encontrou dimensões intrínsecas ausentes nos SVG de Nicolas e Guilherme. Corrigidos width/height de 512 px, conservando viewBox, transparência e arte. Mantida a asserção E2E original de 512 por 512, sem reduzir proteção para aceitar o fallback de 150 px dos navegadores.
