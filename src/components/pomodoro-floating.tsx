@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { openPomodoroWindow, supportsPomodoroPictureInPicture } from "../data/pomodoro-window";
-import { uiText, useLanguage } from "../i18n/runtime";
-import { AnimatedPomodoroTomato } from "./pomodoro-tomato";
-import { PaperDigits } from "./paper-digits";
+import { uiText } from "../i18n/runtime";
+import { PomodoroDial } from "./pomodoro-dial";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import "./pomodoro-floating.css";
 
@@ -16,10 +15,9 @@ export function PomodoroFloating({
   stage: number;
   controls: ReactNode;
 }) {
-  useLanguage();
   const [floating, setFloating] = useState<Window | null>(null);
-  const [opening, setOpening] = useState(false);
-  const [error, setError] = useState(false);
+  // 0: pronto, 1: abrindo, 2: bloqueado pelo navegador.
+  const [status, setStatus] = useState(0);
   const owned = useRef<Window | null>(null);
   const alive = useRef(true);
   useEffect(() => {
@@ -27,12 +25,10 @@ export function PomodoroFloating({
     return () => {
       alive.current = false;
       owned.current?.close();
-      owned.current = null;
     };
   }, []);
   async function open() {
-    setOpening(true);
-    setError(false);
+    setStatus(1);
     try {
       const next = await openPomodoroWindow();
       if (!alive.current) {
@@ -51,10 +47,9 @@ export function PomodoroFloating({
         },
         { once: true },
       );
+      setStatus(0);
     } catch {
-      if (alive.current) setError(true);
-    } finally {
-      if (alive.current) setOpening(false);
+      if (alive.current) setStatus(2);
     }
   }
   return (
@@ -62,44 +57,19 @@ export function PomodoroFloating({
       <button
         type="button"
         className="secondary-button"
-        disabled={opening}
+        disabled={status === 1}
         aria-pressed={Boolean(floating)}
         onClick={() => (floating ? floating.close() : void open())}
       >
         <PaperEditorIcon name="expand" />
-        {uiText(floating ? "Fechar mini Pomodoro" : "Abrir mini Pomodoro")}
+        {uiText(floating ? 2776 : 2777)}
       </button>
-      <small>
-        {uiText(
-          supportsPomodoroPictureInPicture()
-            ? "A miniatura fica sobre outras janelas. Mantenha a aba Foco aberta."
-            : "Neste navegador, abre uma janela separada, sem garantia de ficar por cima. Mantenha a aba Foco aberta.",
-        )}
-      </small>
-      {error && (
-        <p role="alert">
-          {uiText(
-            "Não foi possível abrir a miniatura. Permita pop-ups para este site e tente novamente.",
-          )}
-        </p>
-      )}
+      <small>{uiText(supportsPomodoroPictureInPicture() ? 2778 : 2779)}</small>
+      {status === 2 && <p role="alert">{uiText(2780)}</p>}
       {floating &&
         createPortal(
-          <main className="app-shell pomodoro-mini" aria-label={uiText("Mini Pomodoro")}>
-            <div className="pomodoro-dial">
-              <AnimatedPomodoroTomato stage={stage} />
-              <div className="pomodoro-dial__time">
-                <img
-                  className="pomodoro-worm"
-                  src="/pomodoro-tomato/minhoca.svg"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <h1 className="timer" aria-label={uiText("Tempo restante: {0}", [time])}>
-                  <PaperDigits value={time} />
-                </h1>
-              </div>
-            </div>
+          <main className="app-shell pomodoro-mini" aria-label={uiText(2781)}>
+            <PomodoroDial stage={stage} time={time} mini />
             {controls}
           </main>,
           floating.document.body,

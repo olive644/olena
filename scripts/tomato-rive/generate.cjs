@@ -202,6 +202,23 @@ const LF = layers.folha;
 const folhaPivot = [LF.x0 + LF.w / 2, LF.y0 + LF.h * 0.75];
 const folha = rig(corpo.a, "folha", folhaPivot, C);
 picture(folha.a, "folha", "folha", folhaPivot);
+// minhoca sob o relogio: gomos em fila (cada um com o seu pivo), olhos e boca presos a cabeca
+const wormRigs = [];
+for (let i = 0; layers["minhoca" + i]; i++) {
+  const L = layers["minhoca" + i];
+  const pivot = [L.x0 + L.w / 2, L.y0 + L.h / 2];
+  const r = rig(root, "minhoca" + i, pivot, ZERO);
+  picture(r.a, "minhoca" + i, "minhoca" + i, pivot);
+  wormRigs.push(r);
+}
+const wormHead = wormRigs[wormRigs.length - 1];
+const wormFace = {};
+for (const part of ["olhos", "boca"]) {
+  const L = layers["minhoca-" + part];
+  const pivot = [L.x0 + L.w / 2, L.y0 + L.h / 2];
+  wormFace[part] = rig(wormHead.a, "minhoca-" + part, pivot, wormHead.pivot);
+  picture(wormFace[part].a, "minhoca-" + part, "minhoca-" + part, pivot);
+}
 // particulas (soltas na raiz, sem herdar o amasso do tomate)
 const bits = [];
 function addBits(kind, count) {
@@ -221,6 +238,8 @@ addBits("brilho", 3);
 const order = (p) => {
   if (p.name.startsWith("estagio")) return 0 + Number(p.name.slice(7)) * 0.01;
   if (p.name.startsWith("peca")) return 1;
+  if (p.name === "minhoca-olhos" || p.name === "minhoca-boca") return 1.9;
+  if (p.name.startsWith("minhoca")) return 1.5 + Number(p.name.slice(7)) * 0.01;
   if (p.name === "folha") return 2;
   return 4;
 };
@@ -260,11 +279,44 @@ const hideEffects = (list) => {
 };
 
 // ---------- ambiente ----------
+// Parado, o tomate respira e balanca devagar e a folha acompanha; a minhoca ondula em onda da
+// cauda para a cabeca, pisca e mastiga de leve. Tudo em ciclos de 12 s para repetir sem emenda.
 const ambient = [];
-track(ambient, corpo.a, "sy", (t) => 1 + 0.012 * osc(t, 3));
-track(ambient, corpo.a, "sx", (t) => 1 - 0.006 * osc(t, 3));
-track(ambient, folha.a, "rot", (t) => 0.035 * osc(t, 4));
-const A_AMBIENTE = anim("ambiente", 12, 30, 1, ambient);
+track(ambient, corpo.a, "sy", (t) => 1 + 0.03 * osc(t, 3));
+track(ambient, corpo.a, "sx", (t) => 1 - 0.02 * osc(t, 3));
+track(ambient, corpo.a, "y", (t) => -5 * osc(t, 3, 0.25));
+track(ambient, corpo.a, "rot", (t) => 0.022 * osc(t, 6));
+track(ambient, folha.a, "rot", (t) => 0.1 * osc(t, 3, 0.1) + 0.04 * osc(t, 4));
+const wave = (t, i) => Math.sin(TAU * (t / 2.4 - i * 0.11));
+wormRigs.forEach((w, i) => {
+  track(ambient, w.a, "y", (t) => 7 * (wave(t, i) - wave(0, i)));
+  track(
+    ambient,
+    w.a,
+    "rot",
+    (t) => 0.07 * (Math.cos(TAU * (t / 2.4 - i * 0.11)) - Math.cos(TAU * -i * 0.11)),
+  );
+  track(
+    ambient,
+    w.a,
+    "sx",
+    (t) => 1 + 0.045 * (Math.cos(TAU * (t / 2.4 - i * 0.11)) - Math.cos(TAU * -i * 0.11)),
+  );
+  track(
+    ambient,
+    w.a,
+    "sy",
+    (t) => 1 - 0.045 * (Math.cos(TAU * (t / 2.4 - i * 0.11)) - Math.cos(TAU * -i * 0.11)),
+  );
+});
+// piscada (duas vezes por ciclo, uma dupla) e mastigada
+const blink = (t, at) => Math.max(0, 1 - Math.abs(t - at) / 0.09);
+track(ambient, wormFace.olhos.a, "sy", (t) =>
+  Math.max(0.08, 1 - 0.92 * Math.max(blink(t, 3.1), blink(t, 8.6), blink(t, 9.1))),
+);
+track(ambient, wormFace.boca.a, "sy", (t) => 1 + 0.35 * Math.max(0, Math.sin(TAU * (t / 2.4))));
+track(ambient, wormFace.boca.a, "y", (t) => 1.5 * Math.max(0, Math.sin(TAU * (t / 2.4))));
+const A_AMBIENTE = anim("ambiente", 12, 15, 1, ambient);
 
 // ---------- repouso de cada etapa ----------
 const holds = [];

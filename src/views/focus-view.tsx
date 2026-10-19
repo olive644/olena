@@ -2,12 +2,13 @@ import { uiText, useLanguage } from "../i18n/runtime";
 import { readStudentResume, saveStudentResume } from "../data/student-resume";
 import { FocusPaperArrow } from "../components/focus-paper-arrow";
 import { FocusRose } from "../components/focus-art";
-import { AnimatedPomodoroTomato } from "../components/pomodoro-tomato";
+import { PomodoroDial } from "../components/pomodoro-dial";
 import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { focusFlowerState } from "../domain/focus-flower";
 import { PomodoroFloating } from "../components/pomodoro-floating";
 import { PomodoroControls } from "../components/pomodoro-controls";
 import { requestPomodoroNotifications, notifyPomodoroPhase } from "../data/pomodoro-notifications";
+import { playPomodoroSound } from "../data/pomodoro-sfx";
 import { formatFocusDuration } from "../domain/pomodoro-duration";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { agendaTimeZone } from "../data/agenda-time-zone";
@@ -55,10 +56,7 @@ export function nextPomodoroStep(
 }
 
 function formatTimer(totalSeconds: number): string {
-  if (totalSeconds >= 3600) return formatStopwatch(totalSeconds * 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  return formatStopwatch(totalSeconds * 1000).slice(totalSeconds >= 3600 ? 0 : 3);
 }
 
 function formatStopwatch(totalMilliseconds: number): string {
@@ -347,6 +345,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function reset() {
+    playPomodoroSound("reiniciar");
     ownsSession.current = true;
     setRunning(false);
     pomodoroDeadline.current = null;
@@ -359,6 +358,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function toggleRunning() {
+    playPomodoroSound(running ? "pausar" : "comecar");
     ownsSession.current = true;
     const next = !running;
     if (next && mode === "pomodoro" && !askedNotification.current) {
@@ -433,12 +433,12 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
         ))}
       </div>
       <small>
-        {uiText("{0} de estudo · {1} de pausa", [
+        {uiText(2772, [
           formatFocusDuration(workspace.focusPreferences.pomodoroMinutes),
           formatFocusDuration(workspace.focusPreferences.shortBreakMinutes ?? 5),
         ])}
         {workspace.focusPreferences.longBreaks
-          ? ` · ${uiText("{0} após quatro rodadas", [formatFocusDuration(workspace.focusPreferences.longBreakMinutes ?? 15)])}`
+          ? ` · ${uiText(2773, [formatFocusDuration(workspace.focusPreferences.longBreakMinutes ?? 15)])}`
           : uiText(1171)}
       </small>
     </div>
@@ -473,27 +473,9 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                   {mode === "timer" ? (
                     <FocusRose progress={bloomProgress} wilted={flower.wilted} />
                   ) : (
-                    <div className="pomodoro-dial">
-                      <AnimatedPomodoroTomato stage={tomatoStage} />
-                      <div className="pomodoro-dial__time">
-                        <img
-                          className="pomodoro-worm"
-                          src="/pomodoro-tomato/minhoca.svg"
-                          alt=""
-                          aria-hidden="true"
-                          width="320"
-                          height="120"
-                          draggable={false}
-                        />
-                        <h2
-                          id="focus-timer-title"
-                          className={`timer${secondsRemaining >= 3600 ? " timer--hours" : ""}`}
-                        >
-                          <PaperDigits value={formatTimer(secondsRemaining)} />
-                        </h2>
-                        {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}
-                      </div>
-                    </div>
+                    <PomodoroDial stage={tomatoStage} time={formatTimer(secondsRemaining)}>
+                      {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}
+                    </PomodoroDial>
                   )}
                   <div className="focus-rose-copy">
                     <span>
@@ -588,18 +570,9 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                 stage={tomatoStage}
                 controls={pomodoroControls}
               />
-              {notificationStatus === "denied" && (
+              {(notificationStatus === "denied" || notificationStatus === "unsupported") && (
                 <p className="pomodoro-notification-note">
-                  {uiText(
-                    "Os avisos estão bloqueados no navegador. Você pode permiti-los nas configurações deste site; o contador continua funcionando.",
-                  )}
-                </p>
-              )}
-              {notificationStatus === "unsupported" && (
-                <p className="pomodoro-notification-note">
-                  {uiText(
-                    "Este navegador não oferece os avisos solicitados. O contador continua funcionando.",
-                  )}
+                  {uiText(notificationStatus === "denied" ? 2784 : 2785)}
                 </p>
               )}
             </>

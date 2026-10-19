@@ -130,6 +130,69 @@
       "w": 278,
       "h": 144
     },
+    "minhoca0": {
+      "file": "minhoca0.png",
+      "x0": 84,
+      "y0": 388,
+      "w": 70,
+      "h": 72
+    },
+    "minhoca1": {
+      "file": "minhoca1.png",
+      "x0": 120,
+      "y0": 360,
+      "w": 89,
+      "h": 90
+    },
+    "minhoca2": {
+      "file": "minhoca2.png",
+      "x0": 163,
+      "y0": 374,
+      "w": 98,
+      "h": 99
+    },
+    "minhoca3": {
+      "file": "minhoca3.png",
+      "x0": 209,
+      "y0": 353,
+      "w": 103,
+      "h": 103
+    },
+    "minhoca4": {
+      "file": "minhoca4.png",
+      "x0": 256,
+      "y0": 372,
+      "w": 103,
+      "h": 103
+    },
+    "minhoca5": {
+      "file": "minhoca5.png",
+      "x0": 304,
+      "y0": 353,
+      "w": 103,
+      "h": 103
+    },
+    "minhoca6": {
+      "file": "minhoca6.png",
+      "x0": 345,
+      "y0": 358,
+      "w": 117,
+      "h": 116
+    },
+    "minhoca-olhos": {
+      "file": "minhoca-olhos.png",
+      "x0": 393,
+      "y0": 384,
+      "w": 53,
+      "h": 42
+    },
+    "minhoca-boca": {
+      "file": "minhoca-boca.png",
+      "x0": 409,
+      "y0": 432,
+      "w": 31,
+      "h": 18
+    },
     "migalha": {
       "file": "migalha.png",
       "x0": 6,
@@ -193,6 +256,11 @@
       "dir": [0.3420201433256688, 0.9396926207859083]
     }
   ],
+  "worm": {
+    "cx": 280,
+    "cy": 411,
+    "k": 1.192
+  },
   "order": [
     "estagio0",
     "estagio1",
@@ -212,6 +280,15 @@
     "peca6",
     "peca7",
     "folha",
+    "minhoca0",
+    "minhoca1",
+    "minhoca2",
+    "minhoca3",
+    "minhoca4",
+    "minhoca5",
+    "minhoca6",
+    "minhoca-olhos",
+    "minhoca-boca",
     "migalha",
     "semente",
     "gota",

@@ -1,7 +1,7 @@
 import { useId, useState, type ReactNode } from "react";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { PaperEditorIcon } from "./paper-editor-icon";
-import { uiText, useLanguage } from "../i18n/runtime";
+import { uiText } from "../i18n/runtime";
 
 export function PomodoroControls({
   label,
@@ -18,7 +18,6 @@ export function PomodoroControls({
   onReset(): void;
   onFinish(): void;
 }) {
-  useLanguage();
   const [expanded, setExpanded] = useState(false);
   const id = useId();
   return (
@@ -26,9 +25,7 @@ export function PomodoroControls({
       <button
         className="focus-mode-arrow pomodoro-controls__toggle"
         type="button"
-        aria-label={uiText(
-          expanded ? "Recolher controles do Pomodoro" : "Expandir controles do Pomodoro",
-        )}
+        aria-label={uiText(expanded ? 2786 : 2787)}
         aria-expanded={expanded}
         aria-controls={id}
         onClick={() => setExpanded((value) => !value)}

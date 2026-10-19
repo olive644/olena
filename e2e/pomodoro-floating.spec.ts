@@ -113,7 +113,8 @@ for (const theme of ["light", "dark"]) {
         }),
       )
       .toBeLessThan(0.03);
-    await expect(popup.locator(".pomodoro-worm")).toBeVisible();
+    await expect(popup.locator(".pomodoro-worm")).toHaveCount(1);
+    await expect(popup.locator(".pomodoro-worm")).toHaveCSS("opacity", "0");
     await expect(
       popup.locator(".pomodoro-progress, .pomodoro-week, main p, main small"),
     ).toHaveCount(0);

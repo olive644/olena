@@ -6880,6 +6880,11 @@ body.local-room-active {
   text-align: center;
 }
 
+/* quando o Rive carrega, a minhoca animada do canvas substitui este quadro estático */
+.pomodoro-dial:has(.pomodoro-tomato-live[data-ready="true"]) .pomodoro-worm {
+  opacity: 0;
+}
+
 .pomodoro-worm {
   position: absolute;
   inset: 0;
@@ -6913,7 +6918,8 @@ body.local-room-active {
 }
 
 /* durações de horas mostram h:mm:ss, mais largo que mm:ss */
-.pomodoro-dial__time .timer--hours {
+/* h:mm:ss tem 8 caracteres: o hidden + 8 = 9 filhos */
+.pomodoro-dial__time .timer:has(.paper-digits > :nth-child(9)) {
   font-size: clamp(1.5rem, 4.6vw, 2.2rem);
 }
 
@@ -7465,6 +7471,88 @@ body.local-room-active {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.55rem;
+}
+
+/* Botões do contador: afundam ao apertar e, ao soltar, o tomate dá um pulinho elástico e um
+   estouro de confete de papel abre em volta dele. Só transições, sem JavaScript: o estado :active
+   é o gatilho, então teclado (Enter e Espaço), mouse e toque funcionam igual. */
+.timer-controls > button {
+  transition: transform 460ms cubic-bezier(0.3, 1.9, 0.5, 1);
+}
+
+.timer-controls > button:active:not(:disabled) {
+  transform: translateY(3px) scale(0.94);
+  transition-duration: 60ms;
+}
+
+.pomodoro-dial {
+  transition: transform 520ms cubic-bezier(0.3, 1.8, 0.5, 1);
+}
+
+.pomodoro-dial::after {
+  content: "";
+  position: absolute;
+  inset: -14% -18%;
+  background:
+    linear-gradient(#ffcf4a, #ffcf4a) 50% 0 / 16px 16px no-repeat,
+    linear-gradient(#f26b5b, #f26b5b) 80% 6% / 12px 12px no-repeat,
+    linear-gradient(#62bd67, #62bd67) 96% 28% / 15px 15px no-repeat,
+    linear-gradient(#a78bfa, #a78bfa) 100% 54% / 12px 12px no-repeat,
+    linear-gradient(#ffcf4a, #ffcf4a) 92% 82% / 14px 14px no-repeat,
+    linear-gradient(#f26b5b, #f26b5b) 66% 100% / 16px 16px no-repeat,
+    linear-gradient(#62bd67, #62bd67) 34% 100% / 12px 12px no-repeat,
+    linear-gradient(#a78bfa, #a78bfa) 8% 82% / 15px 15px no-repeat,
+    linear-gradient(#ffcf4a, #ffcf4a) 0 54% / 12px 12px no-repeat,
+    linear-gradient(#f26b5b, #f26b5b) 4% 28% / 14px 14px no-repeat,
+    linear-gradient(#62bd67, #62bd67) 20% 6% / 16px 16px no-repeat,
+    linear-gradient(#a78bfa, #a78bfa) 36% 0 / 12px 12px no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.12) rotate(24deg);
+  transition:
+    transform 620ms cubic-bezier(0.1, 0.7, 0.3, 1),
+    opacity 620ms ease-in;
+}
+
+.focus-mode-slide:has(.timer-controls > button:active:not(:disabled)) .pomodoro-dial {
+  transform: scale(0.955);
+  transition-duration: 80ms;
+}
+
+.focus-mode-slide:has(.timer-controls > button:active:not(:disabled)) .pomodoro-dial::after {
+  opacity: 1;
+  transform: scale(0.55) rotate(0deg);
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-controls > button,
+  .pomodoro-dial {
+    transition: none;
+  }
+
+  .pomodoro-dial::after {
+    display: none;
+  }
+
+  .focus-mode-slide:has(.timer-controls > button:active:not(:disabled)) .pomodoro-dial {
+    transform: none;
+  }
+}
+
+html[data-reduce-motion="true"] .timer-controls > button,
+html[data-reduce-motion="true"] .pomodoro-dial {
+  transition: none;
+}
+
+html[data-reduce-motion="true"] .pomodoro-dial::after {
+  display: none;
+}
+
+html[data-reduce-motion="true"]
+  .focus-mode-slide:has(.timer-controls > button:active:not(:disabled))
+  .pomodoro-dial {
+  transform: none;
 }
 
 .focus-aside {
@@ -12175,7 +12263,7 @@ select {
     font-size: clamp(1.8rem, 8.4vw, 3.1rem);
   }
 
-  .pomodoro-dial__time .timer--hours {
+  .pomodoro-dial__time .timer:has(.paper-digits > :nth-child(9)) {
     font-size: clamp(1.3rem, 6vw, 2.2rem);
   }
 

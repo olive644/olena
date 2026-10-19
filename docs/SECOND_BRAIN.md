@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+Miniatura acompanha o tomate da PR #495 (ocioso e minhoca no Rive). AnimatedPomodoroTomato aceita sound=false somente no portal: o Foco original continua sendo a fonte do som de mordida. Não criar outra trilha ou outro contador para o pop-up.
+
+PomodoroDial compartilha arte, minhoca e relógio entre Foco e portal. Mensagens usam IDs do catálogo já carregado, sem duplicar os textos no JavaScript. Formato do Pomodoro reutiliza o formatador do cronômetro, com horas somente a partir de uma hora.
+
 PomodoroFloating recebe stage de useDisplayedTomatoStage do Foco e usa AnimatedPomodoroTomato com minhoca, sem uma segunda lógica de progresso. Canvas escuta resize no ownerDocument.defaultView para funcionar no documento flutuante.
 
 Canvas em outra janela não passa no instanceof interno do Rive. AnimatedPomodoroTomato dimensiona o buffer com a janela dona e usa resizeToCanvas nesse caso; ResizeObserver acompanha o layout. Não corrigir distorção mudando proporções da arte.
@@ -1532,3 +1536,9 @@ Antes de mexer no CI, nas regras do Firebase, em limites de uso ou na visibilida
 Página estática `public/termos-de-uso.html`, versão em `src/domain/terms-of-use.ts` (`TERMS_OF_USE_VERSION`, igual a `data-terms-version`, conferida por `src/terms-of-use-page.test.ts`). Sem script nem recurso externo, sem travessões. A Política de Privacidade liga para ela no rodapé. Ainda não há link na tela de entrada nem aceite registrado por versão. Contato, CNPJ e foro seguem "em definição" e o texto precisa de revisão jurídica. Ver `docs/TERMOS_DE_USO.md`.
 
 2026-10-19, tomate do Pomodoro em Rive: AnimatedPomodoroTomato (aba Foco) toca public/pomodoro-tomato/tomato.riv sobre o quadro estático estagio-N.webp, que segue como elemento acessível. A etapa (0 a 8) vem de tomatoStage(restante/duração), uma mordida por oitavo do tempo escolhido; useDisplayedTomatoStage segura a última mordida 2,6 s antes de brotar. Máquina "Tomate" com entradas etapa e instante. Gerado por scripts/tomato-rive (art.cjs desenha as camadas, generate.cjs monta o binário). Comandos: node scripts/tomato-rive/art.cjs e node scripts/tomato-rive/generate.cjs. Teto do arquivo em performance:check: 700 KiB. O relógio fica sobre public/pomodoro-tomato/minhoca.svg (minhoca de papel recortado, gerada por scripts/tomato-rive/worm.cjs). Movimento reduzido não baixa o .riv.
+
+2026-10-19, animação parada do tomate: a camada Ambiente do tomate.riv anima o tomate (respira, balança) e a minhoca (onda, piscada, mastigada); a minhoca estática minhoca.svg fica como quadro inicial e para movimento reduzido. Comandos: node scripts/tomato-rive/art.cjs, node scripts/tomato-rive/worm.cjs e node scripts/tomato-rive/generate.cjs, nessa ordem.
+
+2026-10-19, som das mordidas: AnimatedPomodoroTomato toca public/pomodoro-tomato/mordida.wav a cada etapa seguinte da sequência, se os efeitos sonoros estiverem ligados. Gerado por node scripts/tomato-rive/sound.cjs (síntese determinística).
+
+2026-10-19, botões do Pomodoro: sons comecar/pausar/reiniciar em public/pomodoro-tomato (gerados por scripts/tomato-rive/sound.cjs) tocados por playPomodoroSound; efeito visual só em CSS (src/styles.css, bloco logo antes de .focus-aside): afundar do botão, pulinho do tomate e confete ao soltar, via :active e transições.

@@ -49,6 +49,9 @@ body.pomodoro-mini-page {
   font-size: clamp(1rem, 6vw, 1.45rem);
   margin: 0 16% 0 0;
 }
+.pomodoro-mini .pomodoro-dial__time .timer:has(.paper-digits > :nth-child(9)) {
+  font-size: 1rem;
+}
 .pomodoro-mini button {
   min-height: 44px;
 }

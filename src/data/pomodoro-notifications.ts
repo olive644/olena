@@ -16,10 +16,7 @@ export function notifyPomodoroPhase(phase: "focus" | "shortBreak" | "longBreak")
   if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
   try {
     new Notification("OlenaStudy · Pomodoro", {
-      body:
-        phase === "focus"
-          ? uiText("A pausa terminou. Hora de voltar ao estudo.")
-          : uiText("Rodada concluída. Hora de descansar."),
+      body: uiText(phase === "focus" ? 2774 : 2775),
       icon: "/olena-favicon-32.png",
       tag: "olena-pomodoro-phase",
     });

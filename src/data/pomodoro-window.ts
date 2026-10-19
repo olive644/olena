@@ -5,9 +5,7 @@ type PictureInPictureWindow = Window & {
 };
 
 export function supportsPomodoroPictureInPicture() {
-  return (
-    typeof (window as PictureInPictureWindow).documentPictureInPicture?.requestWindow === "function"
-  );
+  return Boolean((window as PictureInPictureWindow).documentPictureInPicture?.requestWindow);
 }
 
 // A miniatura é uma projeção React do contador original, nunca uma segunda sessão.

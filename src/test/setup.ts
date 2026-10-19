@@ -9,6 +9,8 @@ beforeEach(() => {
   // jsdom não executa rolagem; os testes de navegador validam o comportamento real.
   HTMLElement.prototype.scrollIntoView = vi.fn();
   HTMLElement.prototype.hidePopover = vi.fn();
+  // jsdom não toca áudio: os sons só precisam devolver a promessa que o navegador devolve.
+  HTMLMediaElement.prototype.play = vi.fn().mockResolvedValue(undefined);
   HTMLDialogElement.prototype.showModal = function () {
     this.setAttribute("open", "");
   };
