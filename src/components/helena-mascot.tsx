@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-runtime";
+import { reducedMotion, watchReducedMotion } from "../data/reduced-motion";
 
 type MascotProps = {
   open: boolean;
@@ -15,13 +16,6 @@ const ACTIVATION_DELAY = 1500;
 const RIVE_FILE = "/helena-assistant/helena.riv?v=1";
 
 const clamp = (value: number) => Math.max(-1, Math.min(1, value));
-
-function reducedMotion(): boolean {
-  return (
-    (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? true) ||
-    document.documentElement.dataset["reduceMotion"] === "true"
-  );
-}
 
 /** Forma visível a partir do estado da máquina do Rive: serve aos testes e ao CSS. */
 function formOf(state: string): "star" | "helena" | "transforming" {
@@ -126,11 +120,7 @@ export function HelenaMascot(props: MascotProps) {
     const approach = (event: Event) => {
       if (event.target instanceof Element && event.target.closest(".helena-chat")) input(event);
     };
-    const preferences = new MutationObserver(refresh);
-    preferences.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-reduce-motion"],
-    });
+    const unwatch = watchReducedMotion(refresh);
     const dialogs = new MutationObserver(sync);
     dialogs.observe(document.body, {
       childList: true,
@@ -138,9 +128,7 @@ export function HelenaMascot(props: MascotProps) {
       attributes: true,
       attributeFilter: ["open", "aria-modal"],
     });
-    const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     const resize = () => player.current?.resizeDrawingSurfaceToCanvas();
-    media?.addEventListener?.("change", refresh);
     document.addEventListener("visibilitychange", refresh);
     window.addEventListener("resize", resize);
     window.addEventListener("pointerdown", input, true);
@@ -151,9 +139,8 @@ export function HelenaMascot(props: MascotProps) {
     return () => {
       if (activation) clearTimeout(activation);
       if (resume) clearTimeout(resume);
-      preferences.disconnect();
+      unwatch();
       dialogs.disconnect();
-      media?.removeEventListener?.("change", refresh);
       document.removeEventListener("visibilitychange", refresh);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointerdown", input, true);

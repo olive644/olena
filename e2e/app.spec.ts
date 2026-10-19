@@ -144,10 +144,11 @@ test("troca os modos de foco pelas setas laterais", async ({ page }, testInfo) =
   await expect(page.getByRole("img", { name: "Tomate Pomodoro em papel recortado" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("pomodoro-tomato.png") });
   await expect(page.locator(".focus-mode-slide")).toHaveCSS("animation-name", "focus-mode-arrive");
-  const bites = page.locator(".pomodoro-tomato__bites");
-  await expect(bites).toHaveAttribute("stroke-dasharray", "0 100");
+  const tomato = page.getByRole("img", { name: "Tomate Pomodoro em papel recortado" });
+  await expect(tomato).toHaveAttribute("data-stage", "0");
   await page.getByRole("button", { name: "Começar" }).click();
-  await expect(bites).not.toHaveAttribute("stroke-dasharray", "0 100");
+  // a primeira mordida só chega depois de um oitavo do tempo escolhido
+  await expect(tomato).toHaveAttribute("data-stage", "0");
   await page.getByRole("button", { name: "Pausar" }).click();
   await page.getByRole("button", { name: "Reiniciar contador" }).click();
   await page.getByRole("button", { name: "Modo anterior" }).click();
