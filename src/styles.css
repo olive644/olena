@@ -6880,6 +6880,11 @@ body.local-room-active {
   text-align: center;
 }
 
+/* quando o Rive carrega, a minhoca animada do canvas substitui este quadro estático */
+.pomodoro-dial:has(.pomodoro-tomato-live[data-ready="true"]) .pomodoro-worm {
+  opacity: 0;
+}
+
 .pomodoro-worm {
   position: absolute;
   inset: 0;
@@ -6913,7 +6918,8 @@ body.local-room-active {
 }
 
 /* durações de horas mostram h:mm:ss, mais largo que mm:ss */
-.pomodoro-dial__time .timer--hours {
+/* h:mm:ss tem 8 caracteres: o hidden + 8 = 9 filhos */
+.pomodoro-dial__time .timer:has(.paper-digits > :nth-child(9)) {
   font-size: clamp(1.5rem, 4.6vw, 2.2rem);
 }
 
@@ -12175,7 +12181,7 @@ select {
     font-size: clamp(1.8rem, 8.4vw, 3.1rem);
   }
 
-  .pomodoro-dial__time .timer--hours {
+  .pomodoro-dial__time .timer:has(.paper-digits > :nth-child(9)) {
     font-size: clamp(1.3rem, 6vw, 2.2rem);
   }
 

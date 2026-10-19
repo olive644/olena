@@ -416,7 +416,7 @@ console.log(`Oliver Rive opcional: ${(oliverFile / 1024).toFixed(1)} KiB .riv`);
 if (oliverFile > 512 * 1024) throw new Error("O oliver.riv excedeu 512 KiB.");
 
 // O tomate do Pomodoro (aba Foco) também reaproveita o runtime e só baixa o .riv depois do
-// primeiro quadro estático. Medição: 571 KiB (oito peças de mordida, mandíbula e partículas).
+// primeiro quadro estático. Medição: 662 KiB (oito peças de mordida, minhoca animada e partículas).
 const tomatoFile = (await stat(new URL("../dist/pomodoro-tomato/tomato.riv", import.meta.url)))
   .size;
 console.log(`Tomate Rive opcional: ${(tomatoFile / 1024).toFixed(1)} KiB .riv`);

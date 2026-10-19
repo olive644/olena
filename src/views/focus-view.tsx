@@ -480,10 +480,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                           height="120"
                           draggable={false}
                         />
-                        <h2
-                          id="focus-timer-title"
-                          className={`timer${secondsRemaining >= 3600 ? " timer--hours" : ""}`}
-                        >
+                        <h2 id="focus-timer-title" className="timer">
                           <PaperDigits value={formatTimer(secondsRemaining)} />
                         </h2>
                         {pomodoroPhase !== "focus" && <p>{uiText(1160)}</p>}

@@ -23,6 +23,13 @@ async function openPomodoro(page: Page, requests: string[] = [], errors: string[
     } else await route.continue();
   });
   await page.addInitScript(() => {
+    // registra os sons tocados sem depender do dispositivo de áudio
+    const plays: string[] = [];
+    Object.assign(window, { plays });
+    HTMLMediaElement.prototype.play = function () {
+      plays.push(this.src);
+      return Promise.resolve();
+    };
     localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
     localStorage.setItem("helena.guest.v1", "1");
     localStorage.setItem(
@@ -45,6 +52,8 @@ test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de n
   const tomato = page.getByRole("img", { name: "Tomate Pomodoro em papel recortado" });
   await expect(tomato).toHaveAttribute("data-ready", "true", { timeout: 20_000 });
   await expect(tomato.locator("canvas")).toBeVisible();
+  // a minhoca do canvas (que ondula parada) substitui o quadro estático
+  await expect(page.locator(".pomodoro-worm")).toHaveCSS("opacity", "0");
   expect(requests.length).toBeGreaterThan(0);
   await expect(tomato).toHaveAttribute("data-stage", "0");
 
@@ -54,6 +63,10 @@ test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de n
   await expect(tomato).toHaveAttribute("data-stage", "0");
   await page.clock.fastForward("00:12");
   await expect(tomato).toHaveAttribute("data-stage", "1");
+  // a primeira mordida toca o som da mordida, uma vez, sob a CSP de produção
+  await expect
+    .poll(() => page.evaluate(() => (window as unknown as { plays: string[] }).plays))
+    .toEqual([expect.stringContaining("/pomodoro-tomato/mordida.wav")]);
   await page.clock.fastForward("09:30");
   await expect(tomato).toHaveAttribute("data-stage", "4");
   await page.clock.fastForward("11:50");
@@ -90,6 +103,7 @@ test("com movimento reduzido o tomate é a imagem da etapa e nada de Rive é bai
   const tomato = page.getByRole("img", { name: "Tomate Pomodoro em papel recortado" });
   await expect(tomato).toHaveAttribute("data-stage", "0");
   await expect(tomato.locator("canvas")).toHaveCount(0);
+  await expect(page.locator(".pomodoro-worm")).toHaveCSS("opacity", "1");
   await page.getByRole("button", { name: "Começar" }).click();
   await page.clock.fastForward("12:40");
   await expect(tomato).toHaveAttribute("data-stage", "4");

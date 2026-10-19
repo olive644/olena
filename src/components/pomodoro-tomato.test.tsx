@@ -1,5 +1,6 @@
 import { act, cleanup, render, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { updateAccessibility } from "../data/accessibility-preferences";
 import type { RiveInput } from "../data/rive-runtime";
 import { useDisplayedTomatoStage } from "../hooks/use-displayed-tomato-stage";
 import { AnimatedPomodoroTomato, PomodoroTomato } from "./pomodoro-tomato";
@@ -29,8 +30,24 @@ class FakeRive {
   }
 }
 
+const played: string[] = [];
+class FakeAudio {
+  src: string;
+  currentTime = 1;
+  constructor(src: string) {
+    this.src = src;
+  }
+  play() {
+    played.push(`${this.src}@${this.currentTime}`);
+    return Promise.resolve();
+  }
+}
+
 beforeEach(() => {
   created = [];
+  played.length = 0;
+  updateAccessibility({ soundEffects: true });
+  vi.stubGlobal("Audio", FakeAudio);
   vi.useFakeTimers();
   vi.stubGlobal("matchMedia", () => ({ matches: false }));
   vi.stubGlobal("rive", {
@@ -162,4 +179,23 @@ it("sem ter chegado ao fim do foco, a pausa mostra o tomate inteiro na hora", ()
   expect(result.current).toBe(2);
   rerender({ phase: "shortBreak", remaining: 1 });
   expect(result.current).toBe(0);
+});
+
+it("cada mordida da sequência toca o som, do começo; saltos, volta a zero e a etapa inicial ficam mudos", () => {
+  const view = render(<AnimatedPomodoroTomato stage={0} />);
+  expect(played).toEqual([]);
+  view.rerender(<AnimatedPomodoroTomato stage={1} />);
+  expect(played).toEqual(["/pomodoro-tomato/mordida.wav@0"]);
+  view.rerender(<AnimatedPomodoroTomato stage={2} />);
+  expect(played).toHaveLength(2);
+  view.rerender(<AnimatedPomodoroTomato stage={6} />);
+  view.rerender(<AnimatedPomodoroTomato stage={0} />);
+  expect(played).toHaveLength(2);
+});
+
+it("com os efeitos sonoros desligados nenhuma mordida toca", () => {
+  updateAccessibility({ soundEffects: false });
+  const view = render(<AnimatedPomodoroTomato stage={0} />);
+  view.rerender(<AnimatedPomodoroTomato stage={1} />);
+  expect(played).toEqual([]);
 });
