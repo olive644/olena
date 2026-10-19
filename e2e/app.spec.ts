@@ -146,7 +146,6 @@ test("troca os modos de foco pelas setas laterais", async ({ page }, testInfo) =
   await expect(page.locator(".focus-mode-slide")).toHaveCSS("animation-name", "focus-mode-arrive");
   const tomato = page.getByRole("img", { name: "Tomate Pomodoro em papel recortado" });
   await expect(tomato).toHaveAttribute("data-stage", "0");
-  await page.getByRole("button", { name: "Expandir controles do Pomodoro" }).click();
   await page.getByRole("button", { name: "Começar" }).click();
   // a primeira mordida só chega depois de um oitavo do tempo escolhido
   await expect(tomato).toHaveAttribute("data-stage", "0");

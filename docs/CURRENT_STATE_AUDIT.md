@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Correção da miniatura do Pomodoro, 2026-10-19
+
+Foco volta a mostrar os três controles diretamente; a seta expansível pertence somente ao pop-up. Abrir/fechar miniatura usa um único PaperEditorIcon com nome acessível e tooltip. Somente o pop-up recebe papel vermelho-claro (#f9b4a7) com tomatinhos facetados, como alternativa escolhida pelo usuário à transparência real indisponível no Document PiP. Removidas as barras horizontal e vertical, com mostrador adaptável à altura disponível.
+
+Causa da pausa: o runtime Rive anterior era da aba original e seu listener de visibilitychange cancelava o RAF ao ocultá-la. Rive agora é carregado e deduplicado por Window, no documento dono do canvas. ResizeObserver e timer da entrada instante também acompanham essa janela. Não cria outro contador ou registro. Dígitos conservam o SVG original, com identidade por posição e caractere para renovar somente o número alterado, largura fixa e camada de pintura isolada. A tentativa de duplicar os símbolos no documento flutuante foi descartada após inspeção ampliada apontar recortes incorretos.
+
+Permissão real: requestWindow é chamado pelo clique do usuário, deixando ao navegador conceder ou negar a abertura. Não existe pedido de transparência nem é solicitada permissão de notificações como se autorizasse PiP. Falha de abertura mantém mensagem recuperável de permitir pop-ups. Sem alterar configurações do navegador ou do sistema.
+
 ## Mini Pomodoro e avisos nativos, 2026-10-19
 
 Incorporada também a PR #495: animação ociosa, minhoca animada e sons atuais. Miniatura reutiliza o mesmo componente e a etapa do Foco, com som de mordida desativado somente na projeção para não duplicar o áudio. Botões usam os callbacks compartilhados com sons de iniciar, pausar e reiniciar.

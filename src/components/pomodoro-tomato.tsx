@@ -46,7 +46,7 @@ export function AnimatedPomodoroTomato({
   const inputs = useRef<Record<string, RiveInput>>({});
   const latest = useRef(stage);
   const applied = useRef(stage);
-  const instantTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const instantTimer = useRef<number | undefined>(undefined);
   const previous = useRef(stage);
   const [quiet, setQuiet] = useState(reducedMotion);
   const [ready, setReady] = useState(false);
@@ -59,8 +59,9 @@ export function AnimatedPomodoroTomato({
     if (!input["instante"] || !input["etapa"]) return;
     input["instante"].value = true;
     input["etapa"].value = value;
-    clearTimeout(instantTimer.current);
-    instantTimer.current = setTimeout(() => {
+    const owner = canvas.current?.ownerDocument.defaultView ?? window;
+    owner.clearTimeout(instantTimer.current);
+    instantTimer.current = owner.setTimeout(() => {
       if (input["instante"]) input["instante"].value = false;
     }, INSTANT_MS);
   };
@@ -81,17 +82,8 @@ export function AnimatedPomodoroTomato({
     let cancelled = false;
     let instance: RivePlayer | undefined;
     const owner = target.ownerDocument.defaultView ?? window;
-    const resizePlayer = (player: RivePlayer) => {
-      if (owner === window) player.resizeDrawingSurfaceToCanvas();
-      else {
-        // O helper do Rive ignora canvas de outra janela por usar instanceof do documento original.
-        const box = target.getBoundingClientRect();
-        target.width = box.width * owner.devicePixelRatio;
-        target.height = box.height * owner.devicePixelRatio;
-        player.resizeToCanvas();
-      }
-    };
-    loadRiveRuntime()
+    // O runtime pertence à janela do canvas, para seu RAF não parar junto com a aba original.
+    loadRiveRuntime(owner)
       .then((rive) => {
         if (cancelled) return;
         const created: RivePlayer = new rive.Rive({
@@ -99,11 +91,11 @@ export function AnimatedPomodoroTomato({
           canvas: target,
           stateMachines: "Tomate",
           autoplay: false,
-          onLoadError: () => undefined,
+          onLoadError: () => 0,
           layout: new rive.Layout({ fit: rive.Fit.Contain }),
           onLoad: () => {
             if (cancelled) return;
-            resizePlayer(created);
+            created.resizeDrawingSurfaceToCanvas();
             const found: Record<string, RiveInput> = {};
             for (const input of created.stateMachineInputs("Tomate") ?? [])
               found[input.name] = input;
@@ -118,7 +110,7 @@ export function AnimatedPomodoroTomato({
       })
       .catch(() => 0);
     const resize = () => {
-      if (instance) resizePlayer(instance);
+      instance?.resizeDrawingSurfaceToCanvas();
     };
     owner.addEventListener("resize", resize);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
@@ -127,7 +119,7 @@ export function AnimatedPomodoroTomato({
       cancelled = true;
       owner.removeEventListener("resize", resize);
       observer?.disconnect();
-      clearTimeout(instantTimer.current);
+      owner.clearTimeout(instantTimer.current);
       inputs.current = {};
       instance?.cleanup();
       setReady(false);

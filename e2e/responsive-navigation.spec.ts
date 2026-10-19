@@ -76,8 +76,6 @@ for (const width of [320, 360, 390, 768, 1280]) {
       const timerBox = await page.locator(".timer").boundingBox();
       expect(digitsBox!.width).toBeLessThanOrEqual(timerBox!.width + 1);
       const startButton = page.getByRole("button", { name: "Começar", exact: true });
-      if (mode === "Pomodoro")
-        await page.getByRole("button", { name: "Expandir controles do Pomodoro" }).click();
       await expect(startButton.locator(".focus-paper-control-icon.is-play")).toBeVisible();
       await expect(startButton.locator(".focus-paper-control-icon__face")).toHaveCSS(
         "fill",

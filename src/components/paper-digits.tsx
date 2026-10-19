@@ -15,7 +15,7 @@ export function PaperDigits({ value }: { value: string }) {
         character === ":" ? (
           <span key={index} className="paper-digits__colon" aria-hidden="true" />
         ) : (
-          <svg key={index} viewBox="0 0 66 98" aria-hidden="true">
+          <svg key={index + character} viewBox="0 0 66 98" aria-hidden="true">
             <use href={`${source}digit-${character}`} />
           </svg>
         ),

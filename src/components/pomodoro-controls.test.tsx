@@ -7,6 +7,7 @@ it("uma seta expande e recolhe os três controles originais", () => {
   const onFinish = vi.fn();
   render(
     <PomodoroControls
+      collapsible
       label="Começar"
       icon={null}
       finishDisabled={false}
@@ -25,4 +26,19 @@ it("uma seta expande e recolhe os três controles originais", () => {
   expect(onFinish).toHaveBeenCalledOnce();
   fireEvent.click(screen.getByRole("button", { name: "Recolher controles do Pomodoro" }));
   expect(screen.queryByRole("button", { name: "Começar" })).toBeNull();
+});
+
+it("no Foco os três botões aparecem diretamente, sem seta", () => {
+  render(
+    <PomodoroControls
+      label="Começar"
+      icon={null}
+      finishDisabled={false}
+      onToggle={vi.fn()}
+      onReset={vi.fn()}
+      onFinish={vi.fn()}
+    />,
+  );
+  expect(screen.getByRole("button", { name: "Começar" })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Expandir controles do Pomodoro" })).toBeNull();
 });
