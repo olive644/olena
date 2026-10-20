@@ -73,7 +73,7 @@ for (const theme of ["light", "dark"]) {
           }),
         );
       });
-    expect(transparent).toHaveLength(16);
+    expect(transparent).toHaveLength(15);
     expect(transparent.every(Boolean)).toBe(true);
     await expect(dialog.locator('input[type="file"]')).toHaveCount(0);
     await dialog.getByRole("button", { name: "Ninho", exact: true }).click();
