@@ -58,7 +58,7 @@ describe("página da Política de Privacidade", () => {
 
   it("identifica a empresa responsável e a equipe, e avisa que o contato ainda está em definição", () => {
     expect(text).toContain("Galeria.Oli");
-    for (const pessoa of ["José Oliver", "Helena Ferreira", "Leo Bizzocchi"]) {
+    for (const pessoa of ["José Oliver", "Leo Bizzocchi"]) {
       expect(text).toContain(pessoa);
     }
     expect(text).not.toContain("pessoa física");

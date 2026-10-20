@@ -78,7 +78,7 @@ describe("página dos Termos de Uso", () => {
     // Só cabeçalho e rodapé das páginas, e os nomes da equipe, podem se repetir.
     for (const piece of repeated)
       expect(
-        /olenastudy olena study voltar|josé oliver helena ferreira|todos os direitos galeria|study voltar ao aplicativo/.test(
+        /olenastudy olena study voltar|josé oliver leo bizzocchi|todos os direitos galeria|study voltar ao aplicativo/.test(
           piece,
         ),
         piece,

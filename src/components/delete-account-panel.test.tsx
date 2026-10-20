@@ -8,14 +8,14 @@ afterEach(cleanup);
 const CONFIRM = "Excluir esta conta para sempre";
 
 function open(onDelete: () => Promise<void> = vi.fn(async () => undefined)) {
-  render(<DeleteAccountPanel accountName="Helena Ferreira" onDelete={onDelete} />);
+  render(<DeleteAccountPanel accountName="Ana Souza" onDelete={onDelete} />);
   fireEvent.click(screen.getByRole("button", { name: "Excluir minha conta" }));
   return { onDelete, input: screen.getByLabelText(/Para confirmar, digite/) as HTMLInputElement };
 }
 
 describe("exclusão de conta no perfil", () => {
   it("começa fechada: só o botão da zona de perigo aparece", () => {
-    render(<DeleteAccountPanel accountName="Helena" onDelete={vi.fn()} />);
+    render(<DeleteAccountPanel accountName="Ana" onDelete={vi.fn()} />);
     expect(screen.getByRole("heading", { name: "Excluir conta" })).toBeTruthy();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
@@ -26,7 +26,7 @@ describe("exclusão de conta no perfil", () => {
     expect(dialog.tagName).toBe("DIALOG");
     expect(dialog.parentElement).toBe(document.body);
     expect(dialog.getAttribute("aria-modal")).toBe("true");
-    expect(dialog.textContent).toContain("Helena Ferreira");
+    expect(dialog.textContent).toContain("Ana Souza");
     expect(dialog.textContent).toContain("nuvem");
     expect((screen.getByRole("button", { name: CONFIRM }) as HTMLButtonElement).disabled).toBe(
       true,
@@ -36,16 +36,16 @@ describe("exclusão de conta no perfil", () => {
   it("só libera com o nome exato, com maiúsculas e minúsculas", () => {
     const { input } = open();
     const confirm = screen.getByRole("button", { name: CONFIRM }) as HTMLButtonElement;
-    fireEvent.change(input, { target: { value: "helena ferreira" } });
+    fireEvent.change(input, { target: { value: "ana souza" } });
     expect(confirm.disabled).toBe(true);
-    fireEvent.change(input, { target: { value: "Helena Ferreira" } });
+    fireEvent.change(input, { target: { value: "Ana Souza" } });
     expect(confirm.disabled).toBe(false);
   });
 
   it("não exclui sem o nome, nem por Enter", () => {
     const onDelete = vi.fn(async () => undefined);
     const { input } = open(onDelete);
-    fireEvent.change(input, { target: { value: "Helena" } });
+    fireEvent.change(input, { target: { value: "Ana" } });
     fireEvent.keyDown(input, { key: "Enter" });
     expect(onDelete).not.toHaveBeenCalled();
   });
@@ -59,7 +59,7 @@ describe("exclusão de conta no perfil", () => {
         }),
     );
     const { input } = open(onDelete);
-    fireEvent.change(input, { target: { value: "Helena Ferreira" } });
+    fireEvent.change(input, { target: { value: "Ana Souza" } });
     const confirm = screen.getByRole("button", { name: CONFIRM });
     fireEvent.click(confirm);
     fireEvent.click(confirm);
@@ -77,7 +77,7 @@ describe("exclusão de conta no perfil", () => {
       .mockRejectedValueOnce(new AccountDeletionError("cancelled"))
       .mockRejectedValueOnce(new AccountDeletionError("failed"));
     const { input } = open(onDelete);
-    fireEvent.change(input, { target: { value: "Helena Ferreira" } });
+    fireEvent.change(input, { target: { value: "Ana Souza" } });
     fireEvent.click(screen.getByRole("button", { name: CONFIRM }));
     await waitFor(() =>
       expect(screen.getByRole("alert").textContent).toContain("login foi fechado"),
@@ -91,7 +91,7 @@ describe("exclusão de conta no perfil", () => {
   it("Escape e Cancelar fecham a janela sem excluir e devolvem o foco ao botão", () => {
     const onDelete = vi.fn(async () => undefined);
     const { input } = open(onDelete);
-    fireEvent.change(input, { target: { value: "Helena Ferreira" } });
+    fireEvent.change(input, { target: { value: "Ana Souza" } });
     fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
     const opener = screen.getByRole("button", { name: "Excluir minha conta" });
