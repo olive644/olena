@@ -40,7 +40,7 @@ test("approved mascot loads under production CSP and reduced motion keeps chat u
     localStorage.setItem("helena.guest.v1", "1");
   });
   await page.goto("/aprender");
-  const launcher = page.getByRole("button", { name: "Conversar com Helena" });
+  const launcher = page.getByRole("button", { name: "Conversar com Olena" });
   const mascot = page.locator(".helena-virtual-mascot");
   await expect(launcher).toBeVisible();
   await expect(mascot).toHaveAttribute("data-reduced", "true");
@@ -49,7 +49,7 @@ test("approved mascot loads under production CSP and reduced motion keeps chat u
   expect(graphics).toEqual([]);
   await launcher.focus();
   await launcher.press("Enter");
-  await expect(page.getByRole("dialog", { name: "Helena" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Olena" })).toBeVisible();
   await expect(mascot.locator("img")).toHaveAttribute("src", "/helena-assistant/helena-rive.png");
   await page.getByRole("button", { name: "Recolher conversa", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -60,7 +60,7 @@ test("approved mascot loads under production CSP and reduced motion keeps chat u
   expect(graphics.some((url) => url.includes("/helena-assistant/rive.wasm"))).toBe(true);
   expect(graphics.some((url) => url.includes("/helena-assistant/helena.riv"))).toBe(true);
   await launcher.click();
-  await expect(page.getByRole("dialog", { name: "Helena" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Olena" })).toBeVisible();
   expect(errors).toEqual([]);
   expect(legacyImages).toEqual([]);
 });

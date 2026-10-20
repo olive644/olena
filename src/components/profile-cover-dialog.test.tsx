@@ -44,7 +44,7 @@ it("mantém a seleção e avisa quando falha o armazenamento", () => {
   write.mockRestore();
 });
 
-it("capa legada ou desconhecida usa Helena sem apagar os demais campos", () => {
+it("capa legada ou desconhecida usa Olena sem apagar os demais campos", () => {
   expect(profileCover(undefined)).toBe("helena");
   expect(profileCover("https://untrusted.example/image.svg")).toBe("helena");
   localStorage.setItem(

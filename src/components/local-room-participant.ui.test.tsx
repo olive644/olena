@@ -177,7 +177,7 @@ describe("resposta do participante", () => {
     vi.useRealTimers();
   });
 
-  it("mostra a Helena enquanto envia e impede outro envio", async () => {
+  it("mostra a Olena enquanto envia e impede outro envio", async () => {
     mocks.submitAnswer.mockReturnValue(new Promise(() => {}));
     render(<LocalRoom />);
     fireEvent.change(screen.getByLabelText("Digite a tradução"), {

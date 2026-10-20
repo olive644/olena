@@ -833,8 +833,8 @@ for (const [instant, today] of [
     await page.goto("/planejador");
     await page.getByRole("button", { name: "Mover Entrega pendente para hoje" }).click();
     await expect(page.getByRole("button", { name: "Concluir Entrega pendente" })).toBeVisible();
-    await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Planejar com Helena" })).toHaveCount(0);
+    await expect(page.getByRole("dialog", { name: "Olena", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Planejar com Olena" })).toHaveCount(0);
     expect(
       await page.evaluate(
         () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).tasks[0].dueDate,

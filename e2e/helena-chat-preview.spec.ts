@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-test("onboarding Helena chat fits, sends locally and minimizes on desktop and mobile", async ({
+test("onboarding Olena chat fits, sends locally and minimizes on desktop and mobile", async ({
   page,
 }, testInfo) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/preview-helena-chat.html?open");
-  const dialog = page.getByRole("dialog", { name: "Helena" });
+  const dialog = page.getByRole("dialog", { name: "Olena" });
   await expect(dialog).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   expect(
@@ -59,7 +59,7 @@ test("onboarding Helena chat fits, sends locally and minimizes on desktop and mo
   await page.screenshot({
     path: testInfo.outputPath(`helena-chat-${testInfo.project.name}-closed.png`),
   });
-  await page.getByRole("button", { name: "Conversar com Helena" }).click();
+  await page.getByRole("button", { name: "Conversar com Olena" }).click();
   await expect(page.getByText("Preciso de ajuda com matemática")).toBeVisible();
   await page.getByRole("textbox").press("Escape");
   await expect(dialog).toHaveCount(0);
@@ -70,7 +70,7 @@ test("star animates while dragged, docks without opening and keeps the chat insi
   page,
 }) => {
   await page.goto("/preview-helena-chat.html");
-  const star = page.getByRole("button", { name: "Conversar com Helena" });
+  const star = page.getByRole("button", { name: "Conversar com Olena" });
   const shell = page.locator(".helena-chat");
   const bounds = (await star.boundingBox())!;
   await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
@@ -139,7 +139,7 @@ test("one live mascot moves to the header and returns without reloading its mode
   await mascot
     .locator("canvas")
     .evaluate((element) => element.setAttribute("data-instance", "original"));
-  await page.getByRole("button", { name: "Conversar com Helena" }).click();
+  await page.getByRole("button", { name: "Conversar com Olena" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.locator(".helena-chat-welcome-art")).toHaveCount(0);
   await expect(mascot).toHaveCount(1);
@@ -160,7 +160,7 @@ test("one live mascot moves to the header and returns without reloading its mode
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(mascot.locator("canvas")).toHaveAttribute("data-instance", "original");
   await expect(mascot).toHaveAttribute("data-form", "star", { timeout: 15000 });
-  await expect(page.getByRole("button", { name: "Conversar com Helena" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Conversar com Olena" })).toBeVisible();
   expect(models).toHaveLength(1);
   expect(shaderErrors).toEqual([]);
 });

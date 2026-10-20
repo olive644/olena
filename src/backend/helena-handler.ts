@@ -94,7 +94,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       return errorResponse(
         401,
         "invalid_request",
-        "Entre na sua conta para conversar com a Helena.",
+        "Entre na sua conta para conversar com a Olena.",
       );
     if (!(await dependencies.rateLimiter.consume(clientId, request))) {
       return errorResponse(
@@ -188,7 +188,7 @@ export function createHelenaHandler(dependencies: HelenaHandlerDependencies) {
       if (!validated.ok) throw new Error(validated.message);
       return jsonResponse(200, validated.value);
     } catch {
-      return errorResponse(503, "provider_unavailable", "A Helena está indisponível no momento.");
+      return errorResponse(503, "provider_unavailable", "A Olena está indisponível no momento.");
     }
   };
 }

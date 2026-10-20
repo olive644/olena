@@ -884,7 +884,7 @@ body:has([aria-modal="true"]) .helena-chat--application {
   }
 }
 
-/* Uma única Helena se desloca para a identificação do chat e retorna ao recolher. */
+/* Uma única Olena se desloca para a identificação do chat e retorna ao recolher. */
 .helena-chat-launcher {
   transform-origin: top left;
   transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);

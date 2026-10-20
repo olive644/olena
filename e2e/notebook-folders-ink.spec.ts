@@ -218,7 +218,7 @@ test("salvamento confirmado, índice legível e capa personalizável", async ({ 
   expect(coverBounds).not.toBeNull();
   expect(inventoryBounds!.x + inventoryBounds!.width).toBeLessThanOrEqual(coverBounds!.x + 2);
   await expect(
-    inventory.getByRole("button", { name: "Usar capa Helena e as estrelas" }),
+    inventory.getByRole("button", { name: "Usar capa Olena e as estrelas" }),
   ).toHaveAttribute("aria-pressed", "true");
   await inventory.getByRole("button", { name: "Usar capa Oliver e as estrelas" }).click();
   await expect(

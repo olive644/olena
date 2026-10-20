@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("Helena appears in the real app, keeps history between tabs and stays above mobile navigation", async ({
+test("Olena appears in the real app, keeps history between tabs and stays above mobile navigation", async ({
   page,
 }, testInfo) => {
   await page.addInitScript(() => {
@@ -8,7 +8,7 @@ test("Helena appears in the real app, keeps history between tabs and stays above
     localStorage.setItem("helena.guest.v1", "1");
   });
   await page.goto("/aprender");
-  const launcher = page.getByRole("button", { name: "Conversar com Helena" });
+  const launcher = page.getByRole("button", { name: "Conversar com Olena" });
   await expect(launcher).toBeVisible();
   await expect(page.locator(".loading-view")).toHaveCount(0);
   await page.evaluate(() => document.fonts.ready);
@@ -20,7 +20,7 @@ test("Helena appears in the real app, keeps history between tabs and stays above
   }
   await page.screenshot({ path: testInfo.outputPath("helena-in-app.png") });
   await launcher.click();
-  const dialog = page.getByRole("dialog", { name: "Helena" });
+  const dialog = page.getByRole("dialog", { name: "Olena" });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByText("Preview", { exact: true })).toHaveCount(0);
   const suggestions = dialog.locator(".helena-chat-suggestions button");
@@ -71,10 +71,10 @@ test("Helena appears in the real app, keeps history between tabs and stays above
 
 test("does not overlay onboarding", async ({ page }) => {
   await page.goto("/?onboarding=1&login=1");
-  await expect(page.getByRole("button", { name: "Conversar com Helena" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Conversar com Olena" })).toHaveCount(0);
 });
 
 test("does not overlay the classroom projector", async ({ page }) => {
   await page.goto("/sala/ABCDE/projetor");
-  await expect(page.getByRole("button", { name: "Conversar com Helena" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Conversar com Olena" })).toHaveCount(0);
 });

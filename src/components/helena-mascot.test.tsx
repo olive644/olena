@@ -148,7 +148,7 @@ it("inicia o carregamento imediatamente e só conta o ciclo depois de carregar",
   expect(instance.value("aberta")).toBe(true);
 });
 
-it("recolhida, alterna estrela por 2,8 s e Helena por 13 s, e segura a Helena com o ponteiro por perto", async () => {
+it("recolhida, alterna estrela por 2,8 s e Olena por 13 s, e segura a Olena com o ponteiro por perto", async () => {
   vi.useFakeTimers();
   vi.stubGlobal("matchMedia", () => ({ matches: false }));
   const view = render(<HelenaMascot {...props} />);

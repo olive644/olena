@@ -256,7 +256,7 @@ test("organiza uma tarefa e mantém o dado após recarregar", async ({ page }, t
   await expect(page.getByRole("heading", { name: "A próxima descoberta é sua." })).toBeVisible();
   await expect(page.getByText("Dados salvos neste dispositivo")).toHaveCount(0);
   await expect(page.getByAltText(/rosto da helena/i)).toHaveCount(0);
-  await expect(page.getByAltText("Helena, a mascote do OlenaStudy")).toHaveCount(0);
+  await expect(page.getByAltText("Olena, a mascote do OlenaStudy")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Agenda", exact: true }).click();
   await page.getByRole("button", { name: "Criar tarefa", exact: true }).click();

@@ -64,7 +64,7 @@ export const PRODUCT_MODULES = localizeResource([
   },
   {
     id: "helena-ai",
-    name: "Helena inteligente",
+    name: "Olena inteligente",
     purpose: "Apoiar o estudo com fontes escolhidas e consentimento explícito.",
     status: "foundation",
   },

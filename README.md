@@ -25,7 +25,7 @@ quem não quer logar pode entrar como convidado.
 - **Olena API (versão 1):** catálogo somente leitura das ilhas e metodologias de
   Praticar e o desafio calculado do minigame de Matemática. Veja [`docs/OLENA_API.md`](docs/OLENA_API.md).
 
-A fronteira segura da futura Helena inteligente já possui contrato e testes, mas permanece sem
+A fronteira segura da futura Olena inteligente já possui contrato e testes, mas permanece sem
 provedor conectado. Consulte [`docs/AI_BACKEND.md`](docs/AI_BACKEND.md) para o fluxo de dados, o
 modelo de ameaça e as decisões necessárias antes da ativação.
 

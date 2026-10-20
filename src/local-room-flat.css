@@ -1,4 +1,4 @@
-/* Modo Sala flat: mantém os recursos aprovados da Helena e simplifica o lobby. */
+/* Modo Sala flat: mantém os recursos aprovados da Olena e simplifica o lobby. */
 .local-room-fullscreen:has(.local-room-session) {
   align-items: flex-start;
   padding: 0;

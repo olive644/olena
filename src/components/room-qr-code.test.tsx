@@ -13,7 +13,7 @@ describe("RoomQrCode", () => {
     expect(container.querySelectorAll("[data-qr-finder]")).toHaveLength(3);
     expect(container.querySelector("svg")?.getAttribute("data-qr-error-correction")).toBe("H");
   });
-  it("renderiza um QR transparente com a Helena integrada e três marcadores", () => {
+  it("renderiza um QR transparente com a Olena integrada e três marcadores", () => {
     const { container } = render(
       <RoomQrCode value="https://olenastudy.vercel.app/?sala=ABCDE" size={120} />,
     );

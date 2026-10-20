@@ -1,7 +1,7 @@
 /**
  * Runtime oficial do Rive (@rive-app/canvas 2.43.0, MIT), vendorizado em public/helena-assistant.
  * Fica fora do bundle do React: o script e o WebAssembly só são buscados quando a animação da
- * Helena entra, sempre do próprio site (CSP com script-src e connect-src 'self').
+ * Olena entra, sempre do próprio site (CSP com script-src e connect-src 'self').
  */
 export type RiveInput = { name: string; value: number | boolean };
 

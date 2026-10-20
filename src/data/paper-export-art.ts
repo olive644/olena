@@ -11,7 +11,7 @@ export function loadPaperExportMascot(): Promise<HTMLImageElement> {
       return image;
     })().catch(() => {
       mascotPromise = null;
-      throw new Error("Não foi possível carregar a Helena do selo. Tente novamente.");
+      throw new Error("Não foi possível carregar a Olena do selo. Tente novamente.");
     });
   return mascotPromise;
 }
@@ -24,7 +24,7 @@ function polygon(context: CanvasRenderingContext2D, points: number[][], color: s
   context.fill();
 }
 
-/** Arte autoral de papel: selo de Helena e estrela, não uma certificação. */
+/** Arte autoral de papel: selo da Olena e estrela, não uma certificação. */
 export function drawPaperExportSeal(
   context: CanvasRenderingContext2D,
   x: number,
