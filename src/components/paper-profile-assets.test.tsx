@@ -5,6 +5,14 @@ import { PaperFlower } from "./agenda-focus-week";
 import { FriendIcon } from "./profile-friend-icon";
 import { ProfileQrIcon } from "./profile-qr-icon";
 
+const unsafeSvg = /<script|https?:\/\/(?!www\.w3\.org\/)/;
+
+it("aceita somente o host exato do namespace SVG, sem domínios parecidos", () => {
+  expect('xmlns="http://www.w3.org/2000/svg"').not.toMatch(unsafeSvg);
+  for (const host of ["wwwXw3.org", "www.w3Xorg", "www.w3.org.evil.test"])
+    expect(`https://${host}/image.svg`).toMatch(unsafeSvg);
+});
+
 it.each([true, false])("flor conserva facetas, cores e rotação originais: %s", (active) => {
   const { container } = render(<PaperFlower active={active} />);
   const image = container.querySelector("img")!;
@@ -31,6 +39,6 @@ it("ícones de amigos e QR usam a arte original como recurso cacheável", () => 
   for (const name of ["profile-friend", "profile-contacts", "profile-search", "profile-qr"]) {
     const art = readFileSync(`public/navigation-icons/paper/${name}.svg`, "utf8");
     expect(art).toContain("<path");
-    expect(art).not.toMatch(/<script|https?:\/\/(?!www.w3.org)/);
+    expect(art).not.toMatch(unsafeSvg);
   }
 });
