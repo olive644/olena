@@ -1,6 +1,7 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { cleanup, renderHook, waitFor } from "@testing-library/react";
 import { useProfilePresentation } from "./use-profile-presentation";
+import { createInitialWorkspace } from "../domain/workspace";
 const mocks = vi.hoisted(() => ({
   request: vi.fn(),
   user: { uid: "alice-id", isAnonymous: false },
@@ -15,6 +16,22 @@ afterEach(() => {
   cleanup();
   localStorage.clear();
   mocks.request.mockReset();
+});
+it("publica nível, streaks e redes sem enviar registros privados", async () => {
+  mocks.request.mockResolvedValue({});
+  localStorage.setItem("helena.account.v1", "alice-id");
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({ name: "Alice", socialLinks: ["github.com/alice", "javascript:alert(1)"] }),
+  );
+  renderHook(() => useProfilePresentation("alice", "Aluno", createInitialWorkspace()));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalled());
+  expect(mocks.request.mock.calls[0]?.[0].details).toEqual({
+    level: 1,
+    streaks: { islands: 0, timer: 0, pomodoro: 0 },
+    socialLinks: ["github.com/alice"],
+  });
+  expect(mocks.request.mock.calls[0]?.[0].workspace).toBeUndefined();
 });
 it("publica nome, personagem e capa sem toggle quando os dados pertencem à conta", async () => {
   mocks.request.mockResolvedValue({});

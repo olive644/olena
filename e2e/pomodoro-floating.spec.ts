@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { advanceFocusClock } from "./focus-clock";
 import { createInitialWorkspace } from "../src/domain/workspace";
 
 test("avisos nativos acompanham estudo e pausa sem duplicar", async ({ page }) => {
@@ -41,7 +42,7 @@ test("avisos nativos acompanham estudo e pausa sem duplicar", async ({ page }) =
       ),
     )
     .toEqual(["Rodada concluída. Hora de descansar."]);
-  await page.clock.fastForward(300000);
+  await advanceFocusClock(page, 300000);
   await expect
     .poll(() =>
       page.evaluate(

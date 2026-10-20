@@ -36,6 +36,7 @@ it("retoma a última parte matemática praticada e usa somente a última modalid
     "school-small.webp",
   );
   expect(container.querySelector(".student-focus-art .pomodoro-tomato")).toBeTruthy();
+  expect(container.querySelector(".student-focus-art .pomodoro-tomato-live")).toBeTruthy();
   expect(container.querySelector(".student-focus-art .focus-rose")).toBeNull();
   fireEvent.click(screen.getByRole("button", { name: /Explorar as ilhas/ }));
   expect(navigate).toHaveBeenCalledWith("learn");

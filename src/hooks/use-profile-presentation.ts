@@ -5,12 +5,31 @@ import { useStoredProfile } from "./use-stored-profile";
 import { profileAvatarSource } from "../domain/profile-avatars";
 import { profileCover } from "../domain/profile-covers";
 import { ACCOUNT_OWNER_KEY } from "../data/personal-data";
+import type { WorkspaceState } from "../domain/workspace";
+import { profileStreaks } from "../domain/profile-streaks";
+import { profileLevel } from "../domain/profile-study";
+import { readRoomXp } from "../data/room-xp";
+import { agendaTimeZone } from "../data/agenda-time-zone";
+import { recognizeSocialLink } from "../domain/profile-identity";
 
-export function useProfilePresentation(username: string, fallback: string) {
+export function useProfilePresentation(
+  username: string,
+  fallback: string,
+  workspace?: WorkspaceState,
+) {
   const [profile] = useStoredProfile();
   const name = profile.name?.trim() || fallback;
   const photoUrl = profileAvatarSource(profile.photoUrl);
   const cover = profileCover(profile.cover);
+  const details = workspace
+    ? JSON.stringify({
+        level: profileLevel(readRoomXp()).level,
+        streaks: profileStreaks(workspace, [], new Date(), agendaTimeZone()),
+        socialLinks: (profile.socialLinks ?? [])
+          .filter((link) => recognizeSocialLink(link))
+          .slice(0, 5),
+      })
+    : "";
   useEffect(() => {
     if (!username || !name) return;
     let owner: string | null;
@@ -38,11 +57,18 @@ export function useProfilePresentation(username: string, fallback: string) {
           photoUrl,
           cover,
           expectedUsername: username,
+          ...(details
+            ? {
+                details: JSON.parse(
+                  details,
+                ) as import("../domain/social-profile-details").SocialProfileDetails,
+              }
+            : {}),
         });
       })
       .catch(() => {});
     return () => {
       active = false;
     };
-  }, [username, name, photoUrl, cover]);
+  }, [username, name, photoUrl, cover, details]);
 }

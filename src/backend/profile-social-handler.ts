@@ -4,9 +4,15 @@ import { PROFILE_COVERS } from "../domain/profile-covers.js";
 import type { SocialFeed, SocialProfile } from "../domain/profile-social.js";
 import type { HandleIdentity, HandleRegistry } from "./profile-handle-handler.js";
 import type { StudyActivity } from "./study-activity-summary.js";
+import {
+  validSocialProfileDetails,
+  type SocialProfileDetails,
+} from "../domain/social-profile-details.js";
+import { recognizeSocialLink } from "../domain/profile-identity.js";
 
 type Account = {
   display?: { name: string; photoUrl: string; cover?: string };
+  details?: SocialProfileDetails;
   following: Record<string, number>;
   notices: Record<
     string,
@@ -74,7 +80,7 @@ export function createProfileSocialHandler(options: {
         if (!request.headers.get("content-type")?.startsWith("application/json"))
           return reply(415, { error: "Envie JSON." });
         const raw = await request.text();
-        if (new TextEncoder().encode(raw).length > 2048)
+        if (new TextEncoder().encode(raw).length > 4096)
           return reply(413, { error: "Requisição muito longa." });
         try {
           const parsed: unknown = JSON.parse(raw);
@@ -91,7 +97,15 @@ export function createProfileSocialHandler(options: {
               : body["action"] === "like-activity"
                 ? ["action", "username", "activityId", "liked"]
                 : body["action"] === "share"
-                  ? ["action", "enabled", "name", "photoUrl", "cover", "expectedUsername"]
+                  ? [
+                      "action",
+                      "enabled",
+                      "name",
+                      "photoUrl",
+                      "cover",
+                      "expectedUsername",
+                      "details",
+                    ]
                   : body["action"] === "read"
                     ? ["action"]
                     : ["action", "username"];
@@ -136,6 +150,8 @@ export function createProfileSocialHandler(options: {
           return reply(400, { error: "Capa inválida." });
         if (body["expectedUsername"] !== undefined && body["expectedUsername"] !== username)
           return reply(409, { error: "A conta mudou. Abra seu perfil novamente." });
+        if (body["details"] !== undefined && !validSocialProfileDetails(body["details"]))
+          return reply(400, { error: "Dados públicos do perfil inválidos." });
       }
       const params = new URL(request.url).searchParams;
       const query = params.get("search");
@@ -207,6 +223,7 @@ export function createProfileSocialHandler(options: {
             followed: self.following[id] !== undefined,
             shared: !!account.display,
             cover: account.display?.cover ?? "helena",
+            ...(account.display && account.details ? { details: account.details } : {}),
           };
         };
         const feed = (): SocialFeed => ({
@@ -410,6 +427,21 @@ export function createProfileSocialHandler(options: {
               delete owner.notices[noticeId];
             }
           } else if (body["action"] === "share") {
+            if (validSocialProfileDetails(body["details"])) {
+              const details = body["details"];
+              self.details = {
+                level: details.level,
+                streaks: {
+                  pomodoro: details.streaks.pomodoro,
+                  timer: details.streaks.timer,
+                  islands: details.streaks.islands,
+                },
+                socialLinks: [
+                  ...new Set(details.socialLinks.map((link) => recognizeSocialLink(link)!.url)),
+                ],
+                updatedAt: now,
+              };
+            }
             if (body["enabled"])
               self.display = {
                 name: String(body["name"]).trim(),

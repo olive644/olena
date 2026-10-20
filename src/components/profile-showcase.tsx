@@ -7,7 +7,7 @@ import type { Dispatch } from "react";
 import { ProfileProgress } from "./profile-preferences";
 import { useAccessibility } from "../data/accessibility-preferences";
 import { ProfileEditor, ProfilePaperIcon } from "./profile-editor";
-import { recognizeSocialLink, SOCIAL_LABELS } from "../domain/profile-identity";
+import { ProfileNetworks } from "./profile-networks";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { ProfileAvatarDialog } from "./profile-avatar-dialog";
 import { profileAvatarSource } from "../domain/profile-avatars";
@@ -72,7 +72,11 @@ export function ProfileShowcase({
     return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
   });
   const social = useSocialFeed(!guest);
-  useProfilePresentation(guest || !presentationReady ? "" : handle.username, nameFallback);
+  useProfilePresentation(
+    guest || !presentationReady ? "" : handle.username,
+    nameFallback,
+    workspace,
+  );
   const friendButton = useRef<HTMLButtonElement>(null);
   const friendActions = useRef<HTMLDivElement>(null);
   const connections = useRef<HTMLDivElement>(null);
@@ -257,22 +261,7 @@ export function ProfileShowcase({
                 </p>
               )}
               <nav className="profile-cover__networks" aria-label={uiText(913)}>
-                {profile.socialLinks?.map((link) => {
-                  const social = recognizeSocialLink(link);
-                  return social ? (
-                    <a
-                      key={social.network}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="secondary-button"
-                      aria-label={SOCIAL_LABELS[social.network]}
-                      title={SOCIAL_LABELS[social.network]}
-                    >
-                      <ProfilePaperIcon name={social.network} />
-                    </a>
-                  ) : null;
-                })}
+                <ProfileNetworks links={profile.socialLinks ?? []} />
               </nav>
               <div
                 ref={connections}

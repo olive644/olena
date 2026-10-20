@@ -4,6 +4,35 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("compartilha somente metadados públicos validados da própria conta", async () => {
+  const app = setup();
+  const action = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    details: {
+      level: 7,
+      streaks: { islands: 4, timer: 0, pomodoro: 1 },
+      socialLinks: ["github.com/alice"],
+    },
+  };
+  expect((await app.request("a", action)).status).toBe(200);
+  const visited = await app.feed("b", "username=alice");
+  expect(visited.profile?.details).toMatchObject({
+    level: 7,
+    streaks: action.details.streaks,
+    socialLinks: ["https://github.com/alice"],
+  });
+  expect((await app.feed("b")).self.details).toBeUndefined();
+  for (const details of [
+    { ...action.details, level: -1 },
+    { ...action.details, socialLinks: ["javascript:alert(1)"] },
+    { ...action.details, streaks: { islands: -1, timer: 0, pomodoro: 0 } },
+  ]) {
+    expect((await app.request("a", { ...action, details })).status).toBe(400);
+  }
+});
 it("resumo acumulado preserva curtidas e não refaz aviso nem leitura", async () => {
   const activity = {
     id: "f".repeat(32),

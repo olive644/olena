@@ -15,7 +15,8 @@ import { ProfileLabels } from "./profile-labels";
 import { PaperArrow } from "./paper-arrow";
 import { profileCover } from "../domain/profile-covers";
 import { ProfileCoverArt } from "./profile-cover-art";
-import { SocialActivityCard } from "./social-activity-card";
+import { ProfileNetworks } from "./profile-networks";
+import { ProfileStreakValues } from "./profile-streaks";
 
 function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: string): void }) {
   useLanguage();
@@ -243,12 +244,13 @@ export function SocialDirectory({
               disabled={!contacts || !feed}
               onClick={() => void chooseContact()}
             >
-              <svg className="profile-friend-icon" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M9 5h30l5 5v34H9Z" fill="#B88C13" />
-                <path d="M7 2h30l5 5v34H7Z" fill="#FACC15" />
-                <path d="M35 2h4v39h-4ZM2 10h10v4H2Zm0 12h10v4H2Zm0 12h10v4H2Z" fill="#FFF9EF" />
-                <path d="m21 8 8 2 3 7-6 5-8-3Zm-4 17h14l4 11H13Z" fill="#7C3AED" />
-              </svg>
+              <img
+                className="profile-friend-icon"
+                src="/navigation-icons/paper/profile-contacts.svg"
+                width="24"
+                height="24"
+                alt=""
+              />
               {uiText(933)}
             </button>
             <button
@@ -258,16 +260,13 @@ export function SocialDirectory({
                 dialog.current?.querySelector<HTMLInputElement>("#social-search")?.focus()
               }
             >
-              <svg className="profile-friend-icon" viewBox="0 0 48 48" aria-hidden="true">
-                <path
-                  fill="#0B5C66"
-                  fillRule="evenodd"
-                  d="m15 3 14 3 8 12-5 14-15 5L4 28 2 14Zm1 7-7 7 1 8 9 5 9-3 3-9-5-7Z"
-                />
-                <path fill="#62CED0" d="m15 1 14 3 8 12-6 1-6-8-10-2-7 7 1 11-5 1-2-14Z" />
-                <path fill="#EF7B72" d="m31 29 6-1 11 14-6 5-13-13Z" />
-                <path fill="#FFB2A3" d="m31 29 6-1 11 14-5-1Z" />
-              </svg>
+              <img
+                className="profile-friend-icon"
+                src="/navigation-icons/paper/profile-search.svg"
+                width="24"
+                height="24"
+                alt=""
+              />
               {uiText(934)}
             </button>
             <button
@@ -388,6 +387,20 @@ export function SocialDirectory({
               <h3>{person.name}</h3>
               <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
               <p>@{person.username}</p>
+              {person.details && (
+                <p>
+                  {uiText("Nível")} {person.details.level}
+                </p>
+              )}
+              <div className="social-profile-streaks" aria-label={uiText(919)}>
+                {person.details?.updatedAt !== undefined &&
+                  Date.now() - person.details.updatedAt < 86_400_000 && (
+                    <ProfileStreakValues streaks={person.details.streaks} />
+                  )}
+              </div>
+              <nav className="social-profile-networks" aria-label={uiText(913)}>
+                <ProfileNetworks links={person.details?.socialLinks ?? []} />
+              </nav>
               <div className="social-profile-counts">
                 <button
                   type="button"
@@ -405,16 +418,6 @@ export function SocialDirectory({
                 </button>
               </div>
               {person.followsYou && <p>{uiText(924)}</p>}
-              {feed.activities
-                ?.filter((activity) => activity.person.username === person.username)
-                .map((activity) => (
-                  <SocialActivityCard
-                    key={activity.id}
-                    activity={activity}
-                    own={person.username === feed.self.username}
-                    onUpdated={() => void load(person.username)}
-                  />
-                ))}
               {person.username !== feed.self.username && (
                 <button
                   type="button"

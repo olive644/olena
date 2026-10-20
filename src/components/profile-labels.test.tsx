@@ -2,6 +2,14 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
 import { ProfileLabels } from "./profile-labels";
 afterEach(cleanup);
+it("concede somente DEV, GALAXIA e BETA TESTER ao @bizzok exato", () => {
+  const view = render(<ProfileLabels username="bizzok" creks={false} />);
+  for (const label of ["DEV", "GALAXIA", "BETA TESTER"])
+    expect(screen.getByLabelText(`Selo ${label}`)).toBeTruthy();
+  expect(screen.queryByLabelText("Selo CREKS")).toBeNull();
+  view.rerender(<ProfileLabels username="bizzok.fake" creks={false} />);
+  expect(view.container.textContent).toBe("");
+});
 it("exibe somente CREKS para o @miauyw confirmado", () => {
   render(<ProfileLabels username="miauyw" creks={false} />);
   expect(screen.getByLabelText("Selo CREKS")).toBeTruthy();

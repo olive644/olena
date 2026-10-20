@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { advanceFocusClock } from "./focus-clock";
 
 const config = JSON.parse(readFileSync("vercel.json", "utf8")) as {
   headers: { source: string; headers: { key: string; value: string }[] }[];
@@ -7,6 +8,30 @@ const config = JSON.parse(readFileSync("vercel.json", "utf8")) as {
 const policy = config.headers[0]!.headers.find(
   (header) => header.key === "Content-Security-Policy",
 )!.value;
+
+test("widget do Espaço usa o tomate Rive atual, sem som", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", '{"completed":true}');
+    localStorage.setItem("helena.guest.v1", "1");
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({ studentResume: { focus: { mode: "pomodoro", at: Date.now() } } }),
+    );
+    const sounds: string[] = [];
+    Object.assign(window, { widgetSounds: sounds });
+    HTMLMediaElement.prototype.play = function () {
+      sounds.push(this.src);
+      return Promise.resolve();
+    };
+  });
+  await page.goto("/");
+  const tomato = page.locator(".student-focus-art .pomodoro-tomato-live");
+  await expect(tomato).toHaveAttribute("data-ready", "true", { timeout: 20000 });
+  await expect(tomato.locator("canvas")).toBeVisible();
+  expect(
+    await page.evaluate(() => (window as unknown as { widgetSounds: string[] }).widgetSounds),
+  ).toEqual([]);
+});
 
 async function openPomodoro(page: Page, requests: string[] = [], errors: string[] = []) {
   page.on("pageerror", (error) => errors.push(error.message));
@@ -59,7 +84,7 @@ test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de n
 
   await page.getByRole("button", { name: "Começar" }).click();
   // 25 minutos: a primeira mordida chega em 3 min 7,5 s
-  await page.clock.fastForward("03:00");
+  await advanceFocusClock(page, 180_000);
   await expect(tomato).toHaveAttribute("data-stage", "0");
   await page.clock.fastForward("00:12");
   await expect(tomato).toHaveAttribute("data-stage", "1");
@@ -70,9 +95,9 @@ test("o tomate é comido em oito mordidas sincronizadas com o tempo e brota de n
       expect.stringContaining("/pomodoro-tomato/comecar.wav"),
       expect.stringContaining("/pomodoro-tomato/mordida.wav"),
     ]);
-  await page.clock.fastForward("09:30");
+  await advanceFocusClock(page, 570_000);
   await expect(tomato).toHaveAttribute("data-stage", "4");
-  await page.clock.fastForward("11:50");
+  await advanceFocusClock(page, 710_000);
   await expect(tomato).toHaveAttribute("data-stage", "7");
 
   // o canvas desenha o tomate comido: sobram pixels opacos
@@ -114,7 +139,7 @@ test("com movimento reduzido o tomate é a imagem da etapa e nada de Rive é bai
   await expect(tomato.locator("canvas")).toHaveCount(0);
   await expect(page.locator(".pomodoro-worm")).toHaveCSS("opacity", "1");
   await page.getByRole("button", { name: "Começar" }).click();
-  await page.clock.fastForward("12:40");
+  await advanceFocusClock(page, 760_000);
   await expect(tomato).toHaveAttribute("data-stage", "4");
   await expect(tomato.locator("img")).toHaveAttribute("src", "/pomodoro-tomato/estagio-4.webp");
   expect(requests).toEqual([]);
