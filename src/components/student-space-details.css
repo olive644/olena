@@ -21,6 +21,9 @@
   min-height: 0;
   padding: 14px;
 }
+.student-space .student-destination--focus {
+  overflow: clip;
+}
 .student-space .student-destination::before,
 .student-space .module-panel::before,
 .notification-center-content::before {

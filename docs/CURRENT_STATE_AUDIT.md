@@ -2,6 +2,8 @@
 
 ## Foco após desligar e inspeção pública, 2026-10-19
 
+Regressão WebKit mobile corrigida: a prancheta ampliada do Rive podia criar rolagem horizontal no Espaço. O cartão de Foco limita somente o excesso de pintura com overflow: clip, sem mudar a proporção do tomate ou a animação no Foco/pop-up. O E2E do widget também verifica ausência de rolagem após carregar o canvas.
+
 Orçamento preservado sem aumentar limites: ProfileStreakValues e ProfileNetworks compartilham a renderização entre perfil e inspeção. Desenhos existentes de amigos, contatos, busca, QR e flor passam para SVGs cacheáveis com os mesmos paths/cores. A apresentação pública atualiza quando o dono abre o próprio perfil; enquanto não houver resumo, não inventar nível nem streak. Foram descartadas novas leituras integrais de contas visitadas para evitar tráfego extra e exposição de dados privados.
 
 Confirmado: o prazo salvo era restaurado como rodando por até 24 h e o laço de transições registrava todas as rodadas vencidas durante a ausência. Snapshot sem heartbeat por mais de 120 s agora retoma pausado no último progresso. O mesmo guarda atua antes de qualquer cálculo em execução após suspensão; pagehide persiste a pausa. A tolerância permite o throttling de abas em segundo plano sem tratar mera troca de aba como desligamento. Testes distinguem avanço vivo em passos curtos de suspensão longa. Não remover histórico antigo automaticamente, pois ele pode conter sessões legítimas.

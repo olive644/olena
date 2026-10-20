@@ -28,6 +28,8 @@ test("widget do Espaço usa o tomate Rive atual, sem som", async ({ page }) => {
   const tomato = page.locator(".student-focus-art .pomodoro-tomato-live");
   await expect(tomato).toHaveAttribute("data-ready", "true", { timeout: 20000 });
   await expect(tomato.locator("canvas")).toBeVisible();
+  await expect(page.locator(".student-destination--focus")).toHaveCSS("overflow-x", "clip");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   expect(
     await page.evaluate(() => (window as unknown as { widgetSounds: string[] }).widgetSounds),
   ).toEqual([]);
