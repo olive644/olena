@@ -21,8 +21,8 @@ function steps(overrides: Partial<AccountDeletionSteps> = {}) {
 
 describe("nome de confirmação", () => {
   it("usa o nome da conta e, sem nome, o e-mail", () => {
-    expect(accountConfirmationName({ displayName: " Helena Ferreira ", email: "h@x.com" })).toBe(
-      "Helena Ferreira",
+    expect(accountConfirmationName({ displayName: " Ana Souza ", email: "h@x.com" })).toBe(
+      "Ana Souza",
     );
     expect(accountConfirmationName({ email: "h@x.com" })).toBe("h@x.com");
     expect(accountConfirmationName({ displayName: "  ", email: "h@x.com" })).toBe("h@x.com");
@@ -30,10 +30,10 @@ describe("nome de confirmação", () => {
   });
 
   it("exige o nome exato, com maiúsculas e minúsculas, e nunca confirma nome vazio", () => {
-    expect(isDeletionConfirmed("Helena Ferreira", "Helena Ferreira")).toBe(true);
-    expect(isDeletionConfirmed("  Helena Ferreira ", "Helena Ferreira")).toBe(true);
-    expect(isDeletionConfirmed("helena ferreira", "Helena Ferreira")).toBe(false);
-    expect(isDeletionConfirmed("Helena", "Helena Ferreira")).toBe(false);
+    expect(isDeletionConfirmed("Ana Souza", "Ana Souza")).toBe(true);
+    expect(isDeletionConfirmed("  Ana Souza ", "Ana Souza")).toBe(true);
+    expect(isDeletionConfirmed("ana souza", "Ana Souza")).toBe(false);
+    expect(isDeletionConfirmed("Ana", "Ana Souza")).toBe(false);
     expect(isDeletionConfirmed("", "")).toBe(false);
   });
 });

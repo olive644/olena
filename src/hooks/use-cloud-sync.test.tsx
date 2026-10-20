@@ -405,7 +405,7 @@ it("migrates to safe Firebase keys on stateV2 without writing over the legacy ac
 it("mantém alteração pendente após falha e permite tentar a sincronização novamente", async () => {
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
@@ -459,7 +459,7 @@ it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busc
   // a marca de conclusao que acabou de ser salva.
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
@@ -589,7 +589,7 @@ it("prioriza o estado da conta sobre um backup local antigo e preserva só a mud
 it("concilia alterações simultâneas por chave e preserva o conflito local", async () => {
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
@@ -646,7 +646,7 @@ it("mescla cadernos adicionados em cada dispositivo, em vez de descartar um dos 
   // espaço de estudos inteiro como um bloco só e um dos dois cadernos desaparecia.
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
@@ -705,7 +705,7 @@ it("mescla cadernos adicionados em cada dispositivo, em vez de descartar um dos 
 it("recebe uma mudança de outro dispositivo pelo stream do Firebase, sem esperar nenhum polling", async () => {
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
@@ -752,7 +752,7 @@ it("recebe uma mudança de outro dispositivo pelo stream do Firebase, sem espera
 it("reabre o stream com um token novo quando o login renova (onIdTokenChanged)", async () => {
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token-1"),
   };
@@ -796,7 +796,7 @@ it("reabre o stream com um token novo quando o login renova (onIdTokenChanged)",
 it("tenta subir de novo uma mudança que falhou por falta de rede quando a conexão volta", async () => {
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
@@ -1023,7 +1023,7 @@ it("a mesma conta voltando ao aparelho mantém o que já estava nele", async () 
 function deletionSetup(overrides: { reauthenticateWithPopup?: () => Promise<unknown> } = {}) {
   const user = {
     uid: "user-1",
-    displayName: "Helena",
+    displayName: "Ana",
     email: "helena@example.com",
     getIdToken: vi.fn(async () => "token"),
   };
