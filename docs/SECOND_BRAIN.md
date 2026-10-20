@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+ProfileStreakValues e ProfileNetworks são compartilhados com a inspeção de amigos. Ícones de amigos/contatos/busca/QR e flor conservam a arte original em navigation-icons/paper, evitando repetir paths no JavaScript. O resumo público é atualizado na apresentação do próprio perfil, sem leituras adicionais do estado de contas visitadas. Resumo ausente não implica nível 1.
+
+Foco sem tempo fantasma: readFocusSession pausa snapshots sem heartbeat por mais de 120 s. FocusView detecta o mesmo intervalo antes de calcular tempo ou percorrer ciclos, preservando o último progresso. pagehide salva a sessão pausada; abas em segundo plano continuam contando com execução viva. Não apagar sessões concluídas antigas automaticamente. Widget do Espaço usa AnimatedPomodoroTomato com sound=false.
+
+Inspeção de amigos não renderiza atividades, que continuam no sino. useProfilePresentation publica somente nível, contadores de streak e links reconhecidos junto da apresentação da conta confirmada. O servidor valida, normaliza links e carimba updatedAt; visita não recebe workspace nem registros privados. Metadados de exibição não concedem XP ou plano. Streaks com resumo de mais de 24 h não são exibidos. ProfileLabels reserva DEV/GALAXIA/BETA TESTER ao @bizzok exato.
+
 Pop-up corrigido: PomodoroControls só recolhe com collapsible=true no portal; no Foco fica aberto sem seta. loadRiveRuntime(owner=window) mantém cache WeakMap por janela: Rive do pop-up não escuta visibilitychange da origem. Timer instante também usa a janela dona. PaperDigits mantém seu SVG original; a chave por posição/caractere recria apenas o glifo alterado. Duplicar símbolos na janela foi descartado por distorcer seus recortes. Fundo vermelho-claro com tomatinhos só na miniatura, sem rolagem. API PiP não oferece transparência nativa; clique chama requestWindow real, sem simular permissões.
 
 Miniatura acompanha o tomate da PR #495 (ocioso e minhoca no Rive). AnimatedPomodoroTomato aceita sound=false somente no portal: o Foco original continua sendo a fonte do som de mordida. Não criar outra trilha ou outro contador para o pop-up.

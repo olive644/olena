@@ -19,6 +19,43 @@ const alice: SocialProfile = {
 };
 const bob: SocialProfile = { ...alice, username: "bob", name: "Bob", followsYou: true };
 const feed: SocialFeed = { self: alice, notifications: [], suggestions: [] };
+it("inspeção mostra nível, streak e redes, mas deixa atividades somente no sino", async () => {
+  mocks.request.mockResolvedValue({
+    ...feed,
+    profile: {
+      ...bob,
+      details: {
+        level: 7,
+        streaks: { islands: 4, pomodoro: 0, timer: 2 },
+        socialLinks: ["https://github.com/bob"],
+        updatedAt: Date.now(),
+      },
+    },
+    activities: [
+      {
+        id: "a".repeat(32),
+        person: bob,
+        kind: "focus",
+        value: 400,
+        at: Date.now(),
+        liked: false,
+        likes: [],
+      },
+    ],
+  });
+  render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findByText("Nível 7");
+  expect(screen.getByRole("link", { name: "GitHub" }).getAttribute("href")).toBe(
+    "https://github.com/bob",
+  );
+  expect(
+    [...document.querySelectorAll(".social-profile-streaks strong")]
+      .map((node) => node.textContent)
+      .sort(),
+  ).toEqual(["2", "4"]);
+  expect(document.querySelectorAll(".social-profile-streaks strong")).toHaveLength(2);
+  expect(screen.queryByText(/400/)).toBeNull();
+});
 afterEach(() => {
   cleanup();
   localStorage.clear();

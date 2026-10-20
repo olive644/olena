@@ -65,7 +65,13 @@ describe("sessão local de Foco", () => {
     ).toBeUndefined();
     expect(readFocusSession(JSON.stringify({ ...session, completed: -1 }), 60_000)).toBeUndefined();
   });
-  it("retoma pausada após mais de 24 horas", () => {
+  it("retoma pausada sem heartbeat recente, preservando o progresso", () => {
+    expect(readFocusSession(JSON.stringify(session), 400 * 60_000)).toMatchObject({
+      running: false,
+      secondsRemaining: 1490,
+      completed: 0,
+      pomodoroDeadline: null,
+    });
     expect(readFocusSession(JSON.stringify(session), 90_000_000)?.running).toBe(false);
   });
 });

@@ -4,6 +4,7 @@ import { getFirebaseAccountServices } from "./firebase-account";
 import { PROFILE_AVATARS } from "../domain/profile-avatars";
 import { PROFILE_COVERS } from "../domain/profile-covers";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
+import { validSocialProfileDetails } from "../domain/social-profile-details";
 export const SOCIAL_CHANGED = "olena:social-changed";
 export const SOCIAL_VISIT = "olena:social-visit";
 function isActivity(value: unknown): boolean {
@@ -36,6 +37,7 @@ function isProfile(value: unknown): value is SocialProfile {
     /^[a-z0-9._]{1,30}$/.test(item["username"]) &&
     typeof item["name"] === "string" &&
     item["name"].length <= 80 &&
+    (item["details"] === undefined || validSocialProfileDetails(item["details"])) &&
     (item["cover"] === undefined || PROFILE_COVERS.some((cover) => cover.id === item["cover"])) &&
     PROFILE_AVATARS.some((avatar) => avatar.photoUrl === item["photoUrl"]) &&
     ["followers", "following"].every(

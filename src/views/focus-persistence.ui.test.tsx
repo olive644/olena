@@ -7,7 +7,7 @@ import { FocusView } from "./focus-view";
 const streakKey = "noteoli.pomodoro-streak.v1";
 
 describe("persistência semanal e dígitos do Foco", () => {
-  it("retoma um Pomodoro em andamento após remontar sem perder o tempo real", () => {
+  it("recupera pausado após desligar, sem registrar os minutos ausentes", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 9, 2, 12));
     const props = { workspace: createInitialWorkspace(), dispatch: vi.fn() };
@@ -15,11 +15,12 @@ describe("persistência semanal e dígitos do Foco", () => {
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     view.unmount();
-    vi.setSystemTime(new Date(2026, 9, 2, 12, 2));
+    vi.setSystemTime(new Date(2026, 9, 2, 18, 40));
     render(<FocusView {...props} />);
     act(() => vi.advanceTimersByTime(1000));
-    expect(screen.getByRole("heading", { name: "22:59" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Pausar" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "25:00" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Começar" })).toBeTruthy();
+    expect(props.dispatch).not.toHaveBeenCalled();
   });
   afterEach(() => vi.useRealTimers());
 
@@ -58,9 +59,9 @@ describe("persistência semanal e dígitos do Foco", () => {
     render(<FocusView workspace={createInitialWorkspace()} dispatch={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
-    vi.setSystemTime(new Date(2026, 9, 2, 12, 1));
+    vi.setSystemTime(new Date(2026, 9, 2, 12, 0, 30));
     act(() => vi.advanceTimersByTime(1000));
-    expect(screen.getByRole("heading", { name: "23:59" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "24:29" })).toBeTruthy();
   });
 
   it("não perde o histórico na segunda-feira, mas inicia uma nova semana visual", () => {
@@ -82,8 +83,10 @@ describe("persistência semanal e dígitos do Foco", () => {
     fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
     fireEvent.click(screen.getByRole("button", { name: "Começar" }));
     const advanceSeconds = (seconds: number) => {
-      vi.setSystemTime(Date.now() + seconds * 1000);
-      act(() => vi.advanceTimersByTime(250));
+      for (let elapsed = 0; elapsed < seconds; elapsed += 30) {
+        vi.setSystemTime(Date.now() + Math.min(30, seconds - elapsed) * 1000 - 250);
+        act(() => vi.advanceTimersByTime(250));
+      }
     };
     advanceSeconds(1500);
     expect(JSON.parse(localStorage.getItem(streakKey)!)).toEqual(["2026-10-02"]);
@@ -93,4 +96,32 @@ describe("persistência semanal e dígitos do Foco", () => {
     expect(dispatch).toHaveBeenCalledTimes(1);
     expect(JSON.parse(localStorage.getItem(streakKey)!)).toEqual(["2026-10-02"]);
   });
+});
+
+it.each(["timer", "pomodoro"])("pausa %s após suspensão sem criar ciclos", (mode) => {
+  vi.useFakeTimers();
+  try {
+    vi.setSystemTime(new Date(2026, 9, 19, 12));
+    const dispatch = vi.fn();
+    render(<FocusView workspace={createInitialWorkspace()} dispatch={dispatch} />);
+    if (mode === "pomodoro") fireEvent.click(screen.getByRole("button", { name: "Próximo modo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Começar" }));
+    act(() => vi.advanceTimersByTime(10_000));
+    const before = screen.getByRole("heading", {
+      name: mode === "pomodoro" ? "24:50" : "00:00:10",
+    }).textContent;
+    vi.setSystemTime(Date.now() + 400 * 60_000);
+    act(() => vi.advanceTimersByTime(250));
+    expect(screen.getByRole("button", { name: "Continuar" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: mode === "pomodoro" ? "24:50" : "00:00:10" }).textContent,
+    ).toBe(before);
+    expect(dispatch).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+    act(() => vi.advanceTimersByTime(1000));
+    expect(screen.getByRole("button", { name: "Pausar" })).toBeTruthy();
+    expect(dispatch).not.toHaveBeenCalled();
+  } finally {
+    vi.useRealTimers();
+  }
 });

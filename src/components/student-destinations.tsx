@@ -6,7 +6,8 @@ import { MATH_COURSES } from "../data/math-courses";
 import { readStudentResume } from "../data/student-resume";
 import { FOCUS_SESSION_KEY, readFocusSession } from "../domain/focus-session";
 import { FocusRose } from "./focus-art";
-import { PomodoroTomato } from "./pomodoro-tomato";
+import { AnimatedPomodoroTomato } from "./pomodoro-tomato";
+import { tomatoStage } from "../domain/pomodoro-tomato";
 import { focusFlowerState } from "../domain/focus-flower";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
@@ -70,8 +71,9 @@ export function StudentDestinations({
       >
         <span className="student-focus-art" aria-hidden="true">
           {mode === "pomodoro" ? (
-            <PomodoroTomato
-              progress={session ? session.secondsRemaining / (session.duration * 60) : 1}
+            <AnimatedPomodoroTomato
+              stage={tomatoStage(session ? session.secondsRemaining / (session.duration * 60) : 1)}
+              sound={false}
             />
           ) : (
             <FocusRose progress={flower.progress} wilted={flower.wilted} />

@@ -1,3 +1,4 @@
+import type { SocialProfileDetails } from "./social-profile-details.js";
 export type SocialProfile = {
   username: string;
   name: string;
@@ -8,6 +9,7 @@ export type SocialProfile = {
   followed: boolean;
   shared: boolean;
   cover?: string;
+  details?: SocialProfileDetails;
 };
 export type SocialActivitySummary = {
   id: string;
@@ -57,4 +59,5 @@ export type SocialAction =
       photoUrl?: string;
       cover?: string;
       expectedUsername?: string;
+      details?: SocialProfileDetails;
     };

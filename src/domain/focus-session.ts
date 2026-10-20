@@ -1,5 +1,7 @@
 import { isPomodoroDuration } from "./pomodoro-duration.js";
 export const FOCUS_SESSION_KEY = "olena.focus-session.v1";
+// Tolera o throttling de um minuto de abas em segundo plano, não suspensão do aparelho.
+export const FOCUS_HEARTBEAT_LIMIT = 120_000;
 export type FocusSession = {
   mode: "timer" | "pomodoro";
   phase: "focus" | "shortBreak" | "longBreak";
@@ -72,8 +74,8 @@ export function readFocusSession(
     )
       return;
     const session = s as FocusSession;
-    // Sessions older than a day resume paused rather than registering unattended cycles.
-    return now - session.savedAt > 86_400_000 ||
+    // Sem heartbeat recente, preservar o último progresso sem contar o tempo ausente.
+    return now - session.savedAt > FOCUS_HEARTBEAT_LIMIT ||
       (deviceId !== undefined && session.deviceId !== undefined && session.deviceId !== deviceId)
       ? { ...session, running: false, timerStartedAt: null, pomodoroDeadline: null }
       : session;

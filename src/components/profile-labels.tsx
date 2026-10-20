@@ -4,15 +4,17 @@ export function ProfileLabels({ creks, username }: { creks: boolean; username: s
   useLanguage();
 
   const labels =
-    username === "dreyxnn"
-      ? ["GALAXIA", "BETA TESTER"]
-      : username === "eito" || username === "pranksterbrain"
-        ? ["CREKS", "BETA TESTER"]
-        : creks || username === "miauyw"
-          ? username === "oliver644"
-            ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
-            : ["CREKS"]
-          : [];
+    username === "bizzok"
+      ? ["DEV", "GALAXIA", "BETA TESTER"]
+      : username === "dreyxnn"
+        ? ["GALAXIA", "BETA TESTER"]
+        : username === "eito" || username === "pranksterbrain"
+          ? ["CREKS", "BETA TESTER"]
+          : creks || username === "miauyw"
+            ? username === "oliver644"
+              ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
+              : ["CREKS"]
+            : [];
   if (!labels.length) return null;
   return (
     <span className="profile-labels">

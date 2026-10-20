@@ -12,7 +12,12 @@ import { playPomodoroSound } from "../data/pomodoro-sfx";
 import { formatFocusDuration } from "../domain/pomodoro-duration";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { agendaTimeZone } from "../data/agenda-time-zone";
-import { FOCUS_SESSION_KEY, readFocusSession, type FocusSession } from "../domain/focus-session";
+import {
+  FOCUS_SESSION_KEY,
+  FOCUS_HEARTBEAT_LIMIT,
+  readFocusSession,
+  type FocusSession,
+} from "../domain/focus-session";
 import { PaperDigits } from "../components/paper-digits";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import "../components/paper-object-controls.css";
@@ -149,6 +154,10 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   const timerStartedAt = useRef<number | null>(restored?.timerStartedAt ?? null);
   const pomodoroDeadline = useRef<number | null>(restored?.pomodoroDeadline ?? null);
   const [running, setRunning] = useState(restored?.running ?? false);
+  const lastHeartbeat = useRef(0);
+  useEffect(() => {
+    if (running) lastHeartbeat.current = Date.now();
+  }, [running]);
   const askedNotification = useRef(false);
   const [notificationStatus, setNotificationStatus] = useState<
     NotificationPermission | "unsupported" | ""
@@ -233,17 +242,44 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   ]);
   useEffect(() => {
     const publish = () => window.dispatchEvent(new Event(SYNCED_STORAGE_EVENT));
-    window.addEventListener("pagehide", publish);
-    return () => {
-      window.removeEventListener("pagehide", publish);
+    const leave = () => {
+      if (ownsSession.current) {
+        const snapshot = readFocusSession(
+          localStorage.getItem(FOCUS_SESSION_KEY),
+          Date.now(),
+          deviceId,
+        );
+        if (snapshot && (!snapshot.deviceId || snapshot.deviceId === deviceId)) {
+          localStorage.setItem(
+            FOCUS_SESSION_KEY,
+            JSON.stringify({
+              ...snapshot,
+              running: false,
+              timerStartedAt: null,
+              pomodoroDeadline: null,
+            }),
+          );
+        }
+      }
       publish();
     };
-  }, []);
+    window.addEventListener("pagehide", leave);
+    return () => {
+      window.removeEventListener("pagehide", leave);
+      publish();
+    };
+  }, [deviceId]);
 
   useEffect(() => {
     if (!running || mode !== "timer") return;
     timerStartedAt.current ??= Date.now();
     const timer = window.setInterval(() => {
+      if (Date.now() - lastHeartbeat.current > FOCUS_HEARTBEAT_LIMIT) {
+        timerStartedAt.current = null;
+        setRunning(false);
+        return;
+      }
+      lastHeartbeat.current = Date.now();
       setTimerElapsedMilliseconds(Date.now() - (timerStartedAt.current ?? Date.now()));
     }, 250);
     return () => window.clearInterval(timer);
@@ -254,6 +290,12 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     pomodoroDeadline.current ??= Date.now() + secondsRemaining * 1000;
     const timer = window.setInterval(() => {
       const now = Date.now();
+      if (now - lastHeartbeat.current > FOCUS_HEARTBEAT_LIMIT) {
+        pomodoroDeadline.current = null;
+        setRunning(false);
+        return;
+      }
+      lastHeartbeat.current = now;
       let deadline = pomodoroDeadline.current!;
       let phase = pomodoroPhase;
       let completed = completedPomodoros;
@@ -361,6 +403,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     playPomodoroSound(running ? "pausar" : "comecar");
     ownsSession.current = true;
     const next = !running;
+    lastHeartbeat.current = Date.now();
     if (next && mode === "pomodoro" && !askedNotification.current) {
       askedNotification.current = true;
       void requestPomodoroNotifications().then(setNotificationStatus);

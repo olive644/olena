@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { advanceFocusClock } from "./focus-clock";
 
 test("opening another device's focus snapshot keeps it paused until explicit continuation", async ({
   page,
@@ -42,9 +43,7 @@ test("opening another device's focus snapshot keeps it paused until explicit con
   ).toBe(true);
 });
 
-test("timer survives reload while running and keeps recorded minutes after two reloads", async ({
-  page,
-}) => {
+test("timer reloads paused and keeps recorded minutes after two reloads", async ({ page }) => {
   await page.clock.install({ time: new Date("2026-10-12T12:00:00Z") });
   await page.addInitScript(() =>
     localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true })),
@@ -52,7 +51,7 @@ test("timer survives reload while running and keeps recorded minutes after two r
   await page.goto("/foco");
   await page.getByRole("button", { name: "Começar", exact: true }).click();
   await expect(page.getByRole("button", { name: "Pausar", exact: true })).toBeVisible();
-  await page.clock.fastForward(65000);
+  await advanceFocusClock(page, 65000);
   await expect
     .poll(() =>
       page.evaluate(
@@ -65,7 +64,7 @@ test("timer survives reload while running and keeps recorded minutes after two r
   );
   expect(before).toBeGreaterThanOrEqual(60000);
   await page.reload();
-  await expect(page.getByRole("button", { name: "Pausar", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continuar", exact: true })).toBeVisible();
   const restored = await page.evaluate(
     () => JSON.parse(localStorage.getItem("olena.focus-session.v1")!).elapsedMilliseconds,
   );
@@ -106,7 +105,7 @@ test("Pomodoro retoma ao voltar à aba e após recarregar", async ({ page }, tes
   await expect(page.getByRole("button", { name: "Pausar", exact: true })).toBeVisible();
   await page.reload();
   await expect(page.locator(".focus-mode-name")).toHaveText("Pomodoro");
-  await expect(page.getByRole("button", { name: "Pausar", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continuar", exact: true })).toBeVisible();
   expect(
     await page.evaluate(
       () =>
@@ -116,5 +115,26 @@ test("Pomodoro retoma ao voltar à aba e após recarregar", async ({ page }, tes
           }
         ).pomodoroDeadline,
     ),
-  ).toBe(deadline);
+  ).toBeNull();
+  expect(deadline).toBeGreaterThan(0);
+});
+
+test("suspensão longa pausa sem fabricar ciclos nem minutos", async ({ page }) => {
+  await page.clock.install();
+  await page.addInitScript(() =>
+    localStorage.setItem("helena.onboarding.v1", '{"completed":true}'),
+  );
+  await page.goto("/foco");
+  await page.getByRole("button", { name: "Próximo modo" }).click();
+  await page.getByRole("button", { name: "Começar", exact: true }).click();
+  await page.clock.fastForward(10_000);
+  const before = await page.locator("#focus-timer-title").textContent();
+  await page.clock.fastForward(400 * 60_000);
+  await expect(page.getByRole("button", { name: "Continuar", exact: true })).toBeVisible();
+  expect(await page.locator("#focus-timer-title").textContent()).toBe(before);
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions.length,
+    ),
+  ).toBe(0);
 });

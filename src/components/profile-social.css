@@ -317,6 +317,15 @@ html[data-reduce-motion="true"] .social-directory {
 .social-profile > img {
   position: relative;
 }
+.social-profile-streaks,
+.social-profile-networks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
 .profile-cover__connections > button {
   display: inline-flex;
   align-items: center;

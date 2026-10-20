@@ -7,9 +7,6 @@ import { useWallClock } from "../hooks/use-wall-clock";
 import { useState } from "react";
 import "./profile-streak-inspection.css";
 export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
-  useLanguage();
-  const [inspecting, setInspecting] = useState("");
-
   const clockNow = useWallClock();
   let days: unknown;
   try {
@@ -18,6 +15,12 @@ export function ProfileStreaks({ workspace }: { workspace: WorkspaceState }) {
     days = [];
   }
   const streaks = profileStreaks(workspace, days, new Date(clockNow), agendaTimeZone());
+  return <ProfileStreakValues streaks={streaks} />;
+}
+
+export function ProfileStreakValues({ streaks }: { streaks: ReturnType<typeof profileStreaks> }) {
+  useLanguage();
+  const [inspecting, setInspecting] = useState("");
   return (
     <>
       {(
