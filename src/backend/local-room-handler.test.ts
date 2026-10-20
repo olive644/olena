@@ -51,7 +51,7 @@ async function createRoomViaApi(roundSeconds: 15 | 30 | 45 | 60 = 15) {
 }
 
 describe("handler da sala local", () => {
-  it("permite o criador na escuta somente com a seleção da Helena", async () => {
+  it("permite o criador na escuta somente com a seleção da Olena", async () => {
     const { code, hostToken } = await createRoomViaApi();
     expect((await handler(post("host-player", { code, hostToken, active: true }))).status).toBe(
       409,
@@ -92,7 +92,7 @@ describe("handler da sala local", () => {
         .status,
     ).toBe(409);
   });
-  it("recusa sorteio da Helena no bingo e fonte própria misturada ao sorteio", async () => {
+  it("recusa sorteio da Olena no bingo e fonte própria misturada ao sorteio", async () => {
     expect(
       (
         await handler(

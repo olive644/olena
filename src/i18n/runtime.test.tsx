@@ -32,14 +32,14 @@ it("translates resource labels and messages without changing identifiers or exer
     prompt: "Conta",
     answer: "Conta",
     topics: ["Adição"],
-    title: "Noite da Helena",
+    title: "Noite da Olena",
   };
   const resource = localizeResource(original);
   try {
     await changeLanguage("en-US");
     expect(resource.name).toBe("Math");
     expect(resource.topics[0]).toBe("Addition");
-    expect(resource.title).toBe("Helena's Night");
+    expect(resource.title).toBe("Olena's Night");
     expect(resource.id).toBe("Conta");
     expect(resource.prompt).toBe("Conta");
     expect(resource.answer).toBe("Conta");

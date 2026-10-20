@@ -71,13 +71,13 @@ describe("chegada por link de convite", () => {
     expect(screen.getByRole("slider", { name: "Tempo por pergunta" })).toBeTruthy();
   });
 
-  it("seleção da Helena dispensa escolher palavras manualmente", async () => {
+  it("seleção da Olena dispensa escolher palavras manualmente", async () => {
     render(<LocalRoom accountName="Ana" />);
     fireEvent.click(screen.getByRole("radio", { name: /Escuta coletiva/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Palavras escolhidas pela Helena" }));
+    fireEvent.click(screen.getByRole("button", { name: "Palavras escolhidas pela Olena" }));
     expect(
       screen
-        .getByRole("button", { name: "Palavras escolhidas pela Helena" })
+        .getByRole("button", { name: "Palavras escolhidas pela Olena" })
         .querySelector("img")
         ?.getAttribute("src"),
     ).toBe("/room-icons/helena-word-choice.svg");

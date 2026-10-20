@@ -9,7 +9,7 @@ type MascotProps = {
   hover: boolean;
 };
 
-/** Ritmo do botão recolhido, o mesmo da versão anterior: estrela por 2,8 s e Helena por 13 s. */
+/** Ritmo do botão recolhido, o mesmo da versão anterior: estrela por 2,8 s e Olena por 13 s. */
 const STAR_SECONDS = 2800;
 const HELENA_SECONDS = 13000;
 const ACTIVATION_DELAY = 1500;
@@ -24,7 +24,7 @@ function formOf(state: string): "star" | "helena" | "transforming" {
 }
 
 /**
- * A Helena do assistente, em Rive. O botão pai mantém foco, clique e arraste; aqui só se desenha.
+ * A Olena do assistente, em Rive. O botão pai mantém foco, clique e arraste; aqui só se desenha.
  * O estado visual chega pelas entradas da máquina "Helena" (aberta, arrastando, atenta, lado e
  * olharX). Nada da conversa ou da conta passa por aqui.
  */
@@ -37,7 +37,7 @@ export function HelenaMascot(props: MascotProps) {
   const [active, setActive] = useState(() => !reducedMotion());
   const [ready, setReady] = useState(false);
   const [reduced, setReduced] = useState(false);
-  // Com a conversa fechada, o botão alterna sozinho entre estrela e Helena.
+  // Com a conversa fechada, o botão alterna sozinho entre estrela e Olena.
   const [showHelena, setShowHelena] = useState(false);
   // Abrir ou recolher a conversa recomeça o ciclo pela estrela: ao recolher, ela vira estrela na hora.
   const [lastOpen, setLastOpen] = useState(props.open);

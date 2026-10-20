@@ -26,7 +26,7 @@ test("a primeira estrela é a arte do Rive, mesmo com carga lenta ou falha", asy
   await firstFrame.screenshot({ path: info.outputPath("estrela-primeiro-quadro.png") });
   release();
   await expect(firstFrame).toBeVisible();
-  await page.getByRole("button", { name: "Conversar com Helena", exact: true }).click();
-  await expect(page.getByRole("dialog", { name: "Helena", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Conversar com Olena", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Olena", exact: true })).toBeVisible();
   await expect(firstFrame).toHaveAttribute("src", "/helena-assistant/helena-rive.png");
 });

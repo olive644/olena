@@ -39,7 +39,7 @@ test("convites ficam visíveis sem escolher modalidade e câmera tem alternativa
   await expect(page.getByLabel("Câmera para ler o QR code da sala")).toHaveCount(0);
 });
 
-test("Helena sorteia 50 palavras e libera o criador para responder", async ({ page }, testInfo) => {
+test("Olena sorteia 50 palavras e libera o criador para responder", async ({ page }, testInfo) => {
   const store = createMemoryRoomStore();
   const handler = createLocalRoomHandler({
     store,
@@ -71,7 +71,7 @@ test("Helena sorteia 50 palavras e libera o criador para responder", async ({ pa
   });
   await page.goto("/sala");
   await page.getByRole("radio", { name: /Escuta coletiva/ }).click();
-  await page.getByRole("button", { name: "Palavras escolhidas pela Helena" }).click();
+  await page.getByRole("button", { name: "Palavras escolhidas pela Olena" }).click();
   const count = page.getByRole("slider", { name: "Quantidade de palavras" });
   await count.fill("9");
   await count.press("End");
@@ -819,7 +819,7 @@ for (const activity of ["listening", "bingo"] as const) {
                 "background-image",
                 /linear-gradient/,
               );
-              await expect(feedback.getByRole("img", { name: /Helena/ })).toBeVisible();
+              await expect(feedback.getByRole("img", { name: /Olena/ })).toBeVisible();
               await expect(feedback.locator(".room-answer-helena")).toHaveCSS(
                 "clip-path",
                 "inset(0px 2%)",

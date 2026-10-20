@@ -21,14 +21,14 @@ const handler = createHelenaHandler({
     .filter(Boolean),
   async identifyClient(request) {
     // Contas anônimas são baratas de criar: com elas a cota por usuário não protegeria a cota
-    // global. A Helena exige conta de verdade, como o resto das ações da conta.
+    // global. A Olena exige conta de verdade, como o resto das ações da conta.
     const account = await identity(request);
     return account && !account.anonymous ? account.uid : "";
   },
   rateLimiter: {
     async consume(uid, request) {
       // O teto por endereço vem antes do global: sem ele, quem tem várias contas Google esgota os
-      // 300 pedidos do dia e a Helena fica fora do ar para todos. Uma turma atrás do mesmo
+      // 300 pedidos do dia e a Olena fica fora do ar para todos. Uma turma atrás do mesmo
       // endereço (30 alunos a 3 pedidos cada) ainda cabe em 100 por dia.
       const address = clientAddress(request);
       return (
@@ -56,7 +56,7 @@ export async function handleHelenaRuntime(request: Request) {
     return new Response(
       JSON.stringify({
         version: 1,
-        error: { code: "provider_unavailable", message: "A Helena está indisponível no momento." },
+        error: { code: "provider_unavailable", message: "A Olena está indisponível no momento." },
       }),
       { status: 503, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } },
     );

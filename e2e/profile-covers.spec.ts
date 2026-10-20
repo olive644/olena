@@ -38,7 +38,7 @@ for (const theme of ["light", "dark"]) {
     await editCover.click();
     const dialog = page.getByRole("dialog", { name: "Capa do perfil", exact: true });
     await expect(dialog.getByRole("group").getByRole("button")).toHaveCount(5);
-    for (const name of ["Noite da Helena", "Eclipse Solar", "Aurora", "Bosque", "Oceano"]) {
+    for (const name of ["Noite da Olena", "Eclipse Solar", "Aurora", "Bosque", "Oceano"]) {
       await dialog.getByRole("button", { name, exact: true }).click();
       await expect(dialog.locator(".profile-cover-preview img")).toHaveJSProperty(
         "naturalWidth",

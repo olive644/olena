@@ -29,7 +29,7 @@ beforeEach(() => {
 it("keeps the launcher accessible without a hover instruction balloon", () => {
   const view = render(<HelenaChatPreview currentView="planner" />);
   expect(view.container.querySelector(".helena-chat-hint")).toBeNull();
-  expect(screen.getByRole("button", { name: /Helena/ })).toBeTruthy();
+  expect(screen.getByRole("button", { name: /Olena/ })).toBeTruthy();
 });
 
 it("accepts a planning draft without contacting the provider and rejects oversized context", () => {
@@ -39,7 +39,7 @@ it("accepts a planning draft without contacting the provider and rejects oversiz
       new CustomEvent(HELENA_PLAN_DRAFT_EVENT, { detail: "Planeje sem alterar minha agenda." }),
     ),
   );
-  expect(screen.getByRole("textbox").getAttribute("aria-label")).toBe("Escreva para a Helena");
+  expect(screen.getByRole("textbox").getAttribute("aria-label")).toBe("Escreva para a Olena");
   expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).toBe(
     "Planeje sem alterar minha agenda.",
   );
@@ -57,7 +57,7 @@ it("removes the obsolete copy and does not send anything merely on opening", () 
   render(<HelenaChatPreview initiallyOpen />);
   expect(screen.queryByRole("checkbox")).toBeNull();
   expect(screen.queryByText("Um passo de cada vez.")).toBeNull();
-  expect(screen.queryByText("Mensagem para Helena")).toBeNull();
+  expect(screen.queryByText("Mensagem para Olena")).toBeNull();
   expect(screen.queryByText(/Por onde começamos/)).toBeNull();
   expect(ask).not.toHaveBeenCalled();
   expect(account).not.toHaveBeenCalled();
@@ -146,7 +146,7 @@ it("interrupts on closing without deleting the partial conversation", async () =
     fireEvent.click(screen.getByRole("button", { name: /^Recolher conversa$/ })),
   );
   expect(abort).toHaveBeenCalledOnce();
-  fireEvent.click(screen.getByRole("button", { name: "Conversar com Helena" }));
+  fireEvent.click(screen.getByRole("button", { name: "Conversar com Olena" }));
   expect(screen.getByText("Texto parcial")).toBeTruthy();
 });
 afterEach(() => {
@@ -157,10 +157,10 @@ afterEach(() => {
 
 it("opens from the animated mascot and restores launcher focus with Escape", () => {
   render(<HelenaChatPreview />);
-  const launcher = screen.getByRole("button", { name: "Conversar com Helena" });
+  const launcher = screen.getByRole("button", { name: "Conversar com Olena" });
   expect(screen.queryByRole("dialog")).toBeNull();
   fireEvent.click(launcher);
-  expect(screen.getByRole("dialog", { name: "Helena" })).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: "Olena" })).toBeTruthy();
   expect(screen.getByRole("textbox")).toBe(document.activeElement);
   expect(document.querySelectorAll(".helena-virtual-mascot")).toHaveLength(1);
   expect(document.querySelector(".helena-chat-welcome-art")).toBeNull();
@@ -185,12 +185,12 @@ it("finishes the closing animation before unmounting the chat", () => {
   expect(screen.getByRole("dialog")).toBeTruthy();
   act(() => vi.advanceTimersByTime(1));
   expect(screen.queryByRole("dialog")).toBeNull();
-  expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(document.activeElement);
+  expect(screen.getByRole("button", { name: "Conversar com Olena" })).toBe(document.activeElement);
 });
 
 it("captures a touch drag, animates it and suppresses the release click", () => {
   render(<HelenaChatPreview />);
-  const star = screen.getByRole("button", { name: "Conversar com Helena" });
+  const star = screen.getByRole("button", { name: "Conversar com Olena" });
   Object.assign(star, {
     setPointerCapture: vi.fn(),
     hasPointerCapture: () => true,
@@ -223,7 +223,7 @@ it("sends a local demonstration, locks duplicates and preserves history when min
   vi.stubGlobal("fetch", network);
   render(<HelenaChatPreview initiallyOpen preview previewReply={demonstrationReply} />);
   fireEvent.click(screen.getByRole("button", { name: "Organizar meus estudos" }));
-  expect(screen.getByRole("status").textContent).toContain("Helena está respondendo");
+  expect(screen.getByRole("status").textContent).toContain("Olena está respondendo");
   const input = screen.getByRole("textbox");
   fireEvent.change(input, { target: { value: "segunda mensagem" } });
   fireEvent.keyDown(input, { key: "Enter" });
@@ -234,7 +234,7 @@ it("sends a local demonstration, locks duplicates and preserves history when min
   expect(screen.getByText(/Qual matéria você quer estudar/)).toBeTruthy();
   expect(network).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: /^Recolher conversa$/ }));
-  fireEvent.click(screen.getByRole("button", { name: "Conversar com Helena" }));
+  fireEvent.click(screen.getByRole("button", { name: "Conversar com Olena" }));
   expect(screen.getByText("Organizar meus estudos")).toBeTruthy();
 });
 it("does not send blank text and lets Shift Enter insert a line break", () => {

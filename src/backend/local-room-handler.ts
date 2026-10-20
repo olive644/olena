@@ -274,7 +274,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
       const hostToken = randomId();
       if (settings.helenaWords && settings.activity === "bingo")
         return jsonResponse(400, {
-          error: "A seleção da Helena está disponível na escuta coletiva.",
+          error: "A seleção da Olena está disponível na escuta coletiva.",
         });
       const state = createRoom(settings, {
         code,
@@ -427,7 +427,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         state.settings.helenaWords !== true
       )
         return jsonResponse(409, {
-          error: "Ative Palavras escolhidas pela Helena para participar da escuta.",
+          error: "Ative Palavras escolhidas pela Olena para participar da escuta.",
         });
       let updated = { ...state };
       if (body["active"] && !state.participants.some((p) => p.id === state.hostParticipantId)) {
@@ -631,7 +631,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         updated.settings.helenaWords === true &&
         (updated.settings.activity === "bingo" || body["sourceDeck"] !== undefined)
       )
-        return jsonResponse(400, { error: "A seleção da Helena usa somente o banco de escuta." });
+        return jsonResponse(400, { error: "A seleção da Olena usa somente o banco de escuta." });
       if (updated.settings.helenaWords === true) {
         delete updated.sourceDeck;
         updated.settings.readyWordIds = [];
@@ -714,7 +714,7 @@ function createRoomAttempt(dependencies: LocalRoomHandlerDependencies, identity:
         !state.settings.helenaWords
       )
         return jsonResponse(409, {
-          error: "O criador só participa da escuta com palavras escolhidas pela Helena.",
+          error: "O criador só participa da escuta com palavras escolhidas pela Olena.",
         });
       if (
         (state.settings.activity ?? "listening") === "listening" &&

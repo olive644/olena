@@ -34,7 +34,7 @@ describe("App", () => {
     fireEvent.click(within(sidebar).getByRole("button", { name: "Expandir menu lateral" }));
     expect(within(sidebar).getByLabelText("OlenaStudy")).toBeTruthy();
     expect(screen.queryByAltText(/rosto da helena/i)).toBeNull();
-    expect(screen.queryByAltText("Helena, a mascote do OlenaStudy")).toBeNull();
+    expect(screen.queryByAltText("Olena, a mascote do OlenaStudy")).toBeNull();
     expect(screen.queryByText(/by oli/i)).toBeNull();
   });
 
@@ -78,19 +78,19 @@ describe("App", () => {
     expect(screen.queryByLabelText("Perfil de Ana")).toBeNull();
   });
 
-  it("mantém a estrela da Helena montada ao trocar de aba", async () => {
+  it("mantém a estrela da Olena montada ao trocar de aba", async () => {
     render(<App />);
     // A primeira abertura inclui a importação fria da assistente.
     const star = await screen.findByRole(
       "button",
-      { name: "Conversar com Helena" },
+      { name: "Conversar com Olena" },
       { timeout: 5000 },
     );
-    expect(screen.getByRole("complementary", { name: "Assistente Helena" })).toBeTruthy();
+    expect(screen.getByRole("complementary", { name: "Assistente Olena" })).toBeTruthy();
     navigate("Agenda");
-    expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
+    expect(screen.getByRole("button", { name: "Conversar com Olena" })).toBe(star);
     navigate("Foco");
-    expect(screen.getByRole("button", { name: "Conversar com Helena" })).toBe(star);
+    expect(screen.getByRole("button", { name: "Conversar com Olena" })).toBe(star);
   }, 10000);
 
   // Inclui importação fria da rota e seleção no diálogo, como os fluxos de caderno.
@@ -100,7 +100,7 @@ describe("App", () => {
     fireEvent.click(
       await screen.findByRole("button", { name: "Abrir foto do perfil" }, { timeout: 10000 }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "Helena" }));
+    fireEvent.click(screen.getByRole("button", { name: "Olena" }));
     fireEvent.click(screen.getByRole("button", { name: "Usar personagem" }));
     expect(JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}")).toMatchObject({
       photoUrl: "/profile-avatars/helena.webp",
@@ -160,7 +160,7 @@ describe("App", () => {
     expect(practice.className).toBe("mobile-nav__item mobile-nav__item--active");
   });
 
-  it("usa a iconografia própria da Helena em todas as abas", () => {
+  it("usa a iconografia própria da Olena em todas as abas", () => {
     render(<App />);
     const navigation = screen.getByRole("navigation", { name: "Navegação principal" });
     const icons = [

@@ -33,7 +33,7 @@ Estas regras herdam o padrão de engenharia do OliQualidade e valem para todo o 
 
 - Progresso, agenda, histórico de Cronômetro/Pomodoro e recuperação da sessão de Foco pertencem à conta autenticada e devem sincronizar automaticamente. Armazenamento do dispositivo é cache e fila de recuperação offline, nunca um modo separado chamado sincronização local. Não substituir registros já concluídos por cópias antigas ou vazias após atualizar. Sem conexão, informar que o envio à conta está pendente; sem login, orientar a entrar, sem fingir que houve salvamento em nuvem. Preservar isolamento entre contas e não iniciar automaticamente em outro aparelho um contador recuperado.
 
-- Seguir docs/DESIGN_SYSTEM.md: Helena, ícones e novos elementos visuais usam o padrão aprovado de papel recortado. Loadings usam HelenaLoading.
+- Seguir docs/DESIGN_SYSTEM.md: Olena, ícones e novos elementos visuais usam o padrão aprovado de papel recortado. Loadings usam HelenaLoading.
 - São proibidas molduras de foco/seleção por outline e contornos automáticos roxos ou pretos. Usar a regra compartilhada de foco em papel: sublinhado e destaque amarelo, sem ocultar a indicação de navegação por teclado. Bordas estruturais dos cartões não são molduras de foco.
 - Controles de fechar com X colorido usam o recorte aprovado sem placa, fundo ou sombra de botão. Preservar área de toque e sublinhado amarelo no teclado. Não alterar os X monocromáticos grafite/creme de PaperEditorIcon.
 

@@ -45,7 +45,7 @@ export function approvedTrainingRows(drafts, reviews) {
         {
           role: "system",
           content:
-            "Você é Helena, tutora da OlenaStudy. Ensine em português brasileiro, por etapas, sem inventar informações.",
+            "Você é Olena, tutora da OlenaStudy. Ensine em português brasileiro, por etapas, sem inventar informações.",
         },
         { role: "user", content: draft.prompt },
         { role: "assistant", content: draft.answer },

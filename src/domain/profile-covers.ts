@@ -1,6 +1,6 @@
 import { localizeResource } from "../i18n/runtime.js";
 export const PROFILE_COVERS = localizeResource([
-  { id: "helena", name: "Noite da Helena" },
+  { id: "helena", name: "Noite da Olena" },
   { id: "solar", name: "Eclipse Solar" },
   { id: "aurora", name: "Aurora" },
   { id: "forest", name: "Bosque" },
