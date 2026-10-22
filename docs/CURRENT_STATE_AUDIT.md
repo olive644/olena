@@ -3428,3 +3428,9 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 
 - **O que mudou.** O nome de Helena Ferreira saiu da equipe listada nos termos de uso e na política de privacidade (agora José Oliver e Leo Bizzocchi), do registro histórico da política neste arquivo e dos testes, que passaram a usar nomes fictícios (Ana Souza). Nenhuma outra ocorrência no repositório rastreado.
 - **Limites.** O histórico do Git continua com o nome antigo (não se reescreve histórico). A versão da política de privacidade não mudou, então ninguém é solicitado a aceitar de novo; se a mudança deve contar como alteração da política, a versão precisa subir em uma mudança própria. O arquivo `docs/CONTRATO_SOCIETARIO.md` não foi lido nem alterado, como manda o `AGENTS.md`; se ele citar o nome, isso é com a proprietária.
+
+# Vite atualizado por aviso de segurança, 2026-10-22
+
+- **O que mudou.** `npm audit fix` subiu o Vite de 8.3.2 para 8.3.5 e dependências de build (`rolldown`, `launch-editor` e afins, 6 pacotes) só no `package-lock.json`. Nenhuma versão em `package.json` mudou e nenhum código de produto mudou.
+- **Por quê.** O check obrigatório "Dependency audit and SBOM" falhava na `main` e em todo PR por 6 avisos novos do Vite e do `launch-editor` (severidade alta). Eles afetam o servidor de desenvolvimento e o servidor de preview, não o código entregue aos usuários.
+- **Verificação.** `npm audit --audit-level=high` sem vulnerabilidades, `tsc` limpo, build ok e JavaScript da aplicação em 1499,1 KiB (953 bytes abaixo do teto de 1500 KiB, mais folga que antes).
