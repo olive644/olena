@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { PROFILE_AVATARS, profileAvatarSource } from "../domain/profile-avatars.js";
-import { PROFILE_COVERS } from "../domain/profile-covers.js";
+import { PROFILE_COVERS, profileCover } from "../domain/profile-covers.js";
 import type { SocialFeed, SocialProfile } from "../domain/profile-social.js";
 import type { HandleIdentity, HandleRegistry } from "./profile-handle-handler.js";
 import type { StudyActivity } from "./study-activity-summary.js";
@@ -222,7 +222,7 @@ export function createProfileSocialHandler(options: {
             followsYou: account.following[key] !== undefined,
             followed: self.following[id] !== undefined,
             shared: !!account.display,
-            cover: account.display?.cover ?? "helena",
+            cover: profileCover(account.display?.cover),
             ...(account.display && account.details ? { details: account.details } : {}),
           };
         };

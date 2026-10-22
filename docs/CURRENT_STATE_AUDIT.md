@@ -3444,4 +3444,5 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 # Lista de conexões tolera perfis fora do padrão, 2026-10-22
 
 - **O que mudou.** O erro "Lista de conexões inválida." voltou depois da correção do avatar aposentado. Em vez de caçar cada dado inválido por conta, o cliente (`requestSocial`) passa a descartar da lista de conexões só o perfil que não passa na validação, e a lista inteira deixa de ser recusada. `self`, resultados de busca e sugestões continuam estritos. Teste novo em `profile-social.test.ts`.
+- **Servidor.** A capa de cada perfil também passa por `profileCover(...)`, então uma capa aposentada gravada em conta antiga volta como a capa padrão em vez de invalidar o perfil. O erro apareceu ao abrir Seguidores e Seguindo.
 - **Limite.** Um perfil inválido fica invisível na lista, sem aviso. A causa nos dados de produção não foi identificada: sem acesso às contas, a hipótese principal é um avatar aposentado ou um campo de detalhes inválido em alguma conta seguida. Se uma pessoa específica não aparecer, é esse o motivo.

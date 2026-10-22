@@ -46,6 +46,17 @@ it("avatar aposentado gravado em conta antiga volta como avatar padrão", async 
     "/profile-avatars/helena.webp",
   );
 });
+it("capa aposentada gravada em conta antiga volta como a capa padrão", async () => {
+  const app = setup();
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+  });
+  app.state().accounts[key("a")]!.display!.cover = "capa-antiga";
+  expect((await app.feed("b", "username=alice")).profile?.cover).toBe("helena");
+});
 it("resumo acumulado preserva curtidas e não refaz aviso nem leitura", async () => {
   const activity = {
     id: "f".repeat(32),
