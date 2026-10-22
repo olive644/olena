@@ -126,6 +126,15 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     }
     return session;
   });
+  // O vínculo com a agenda vale só para a sessão recém-aberta pela agenda. Vínculo de dia antigo ou já
+  // encerrado não pode exigir 1 minuto nem registrar em outro compromisso.
+  const [agendaLink, setAgendaLink] = useState(() =>
+    restored?.agendaEventId &&
+    restored.agendaDate &&
+    restored.agendaDate >= toDateKey(new Date(Date.now() - 86_400_000))
+      ? restored
+      : undefined,
+  );
   const hasSession = useRef(Boolean(restored));
   const ownsSession = useRef(!restored?.deviceId || restored.deviceId === deviceId);
   const defaultSubject =
@@ -214,12 +223,12 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       pomodoroDeadline: pomodoroDeadline.current,
       savedAt: Date.now(),
       deviceId,
-      ...(restored?.agendaEventId
+      ...(agendaLink?.agendaEventId
         ? {
-            agendaEventId: restored.agendaEventId,
-            agendaDate: restored.agendaDate,
-            subjectId: restored.subjectId,
-            plannedMinutes: restored.plannedMinutes,
+            agendaEventId: agendaLink.agendaEventId,
+            agendaDate: agendaLink.agendaDate,
+            subjectId: agendaLink.subjectId,
+            plannedMinutes: agendaLink.plannedMinutes,
           }
         : {}),
     };
@@ -237,7 +246,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     secondsRemaining,
     persistedTimerSeconds,
     running,
-    restored,
+    agendaLink,
     deviceId,
   ]);
   useEffect(() => {
@@ -311,8 +320,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
             subjectId: defaultSubject?.id ?? "",
             durationMinutes: minutes,
             completedAt: new Date(deadline).toISOString(),
-            ...(restored?.agendaEventId
-              ? { agendaEventId: restored.agendaEventId, agendaDate: restored.agendaDate }
+            ...(agendaLink?.agendaEventId
+              ? { agendaEventId: agendaLink.agendaEventId, agendaDate: agendaLink.agendaDate }
               : {}),
           });
           days.push(toDateKey(new Date(deadline)));
@@ -357,7 +366,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     workspace.focusPreferences.pomodoroMinutes,
     workspace.focusPreferences.shortBreakMinutes,
     workspace.focusPreferences.longBreakMinutes,
-    restored,
+    agendaLink,
   ]);
 
   const tomatoStage = useDisplayedTomatoStage(pomodoroPhase, secondsRemaining / (duration * 60));
@@ -422,21 +431,22 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }
 
   function finish() {
-    if (elapsedSeconds < (restored?.agendaEventId ? 60 : 1)) return;
+    if (elapsedSeconds < (agendaLink ? 60 : 1)) return;
     if (mode === "timer" || pomodoroPhase === "focus") {
       dispatch({
         type: "focus/recorded",
         mode,
         subjectId: subject.id,
-        durationMinutes: restored?.agendaEventId
+        durationMinutes: agendaLink
           ? Math.floor(elapsedSeconds / 60)
           : Math.max(1, Math.round(elapsedSeconds / 60)),
         completedAt: new Date().toISOString(),
-        ...(restored?.agendaEventId
-          ? { agendaEventId: restored.agendaEventId, agendaDate: restored.agendaDate }
+        ...(agendaLink?.agendaEventId
+          ? { agendaEventId: agendaLink.agendaEventId, agendaDate: agendaLink.agendaDate }
           : {}),
       });
     }
+    setAgendaLink(undefined);
     reset();
   }
 
@@ -456,7 +466,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       collapsible={Boolean(collapsible)}
       label={running ? uiText(1960) : elapsedSeconds > 0 ? uiText(1436) : uiText(1172)}
       icon={<FocusPaperControlIcon paused={running} />}
-      finishDisabled={elapsedSeconds < (restored?.agendaEventId ? 60 : 1)}
+      finishDisabled={elapsedSeconds < (agendaLink ? 60 : 1)}
       onToggle={toggleRunning}
       onReset={reset}
       onFinish={finish}
@@ -589,7 +599,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                       className="secondary-button"
                       type="button"
                       onClick={finish}
-                      disabled={elapsedSeconds < (restored?.agendaEventId ? 60 : 1)}
+                      disabled={elapsedSeconds < (agendaLink ? 60 : 1)}
                     >
                       {uiText(1174)}
                     </button>

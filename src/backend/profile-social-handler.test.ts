@@ -33,6 +33,19 @@ it("compartilha somente metadados públicos validados da própria conta", async 
     expect((await app.request("a", { ...action, details })).status).toBe(400);
   }
 });
+it("avatar aposentado gravado em conta antiga volta como avatar padrão", async () => {
+  const app = setup();
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+  });
+  app.state().accounts[key("a")]!.display!.photoUrl = "/profile-avatars/leticia-coelho.svg";
+  expect((await app.feed("b", "username=alice")).profile?.photoUrl).toBe(
+    "/profile-avatars/helena.webp",
+  );
+});
 it("resumo acumulado preserva curtidas e não refaz aviso nem leitura", async () => {
   const activity = {
     id: "f".repeat(32),
