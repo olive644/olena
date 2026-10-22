@@ -35,12 +35,20 @@ it("publica conquistas visuais conhecidas e preserva-as no formato do Firebase",
     name: "Alice",
     photoUrl: "/profile-avatars/alice.svg",
     achievements: ["correct-1"],
+    achievementDates: { "correct-1": "2026-10-22T12:00:00Z", "correct-10": "2026-10-22T13:00:00Z" },
   };
   expect((await app.request("a", share)).status).toBe(200);
   expect((await app.feed("b", "username=alice")).profile?.achievements).toEqual(["correct-1"]);
+  expect((await app.feed("b", "username=alice")).profile?.achievementDates).toEqual({
+    "correct-1": "2026-10-22T12:00:00Z",
+  });
+  expect(
+    (await app.request("a", { ...share, achievementDates: { "correct-1": "invalid" } })).status,
+  ).toBe(400);
   expect((await app.request("a", { ...share, achievements: ["not-real"] })).status).toBe(400);
   await app.request("b", { action: "block", username: "alice" });
   expect((await app.feed("b", "username=alice")).profile?.achievements).toBeUndefined();
+  expect((await app.feed("b", "username=alice")).profile?.achievementDates).toBeUndefined();
 });
 it("compartilha somente metadados públicos validados da própria conta", async () => {
   const app = setup();

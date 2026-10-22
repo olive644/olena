@@ -435,7 +435,12 @@ export function SocialDirectory({
               )}
               {!person.blocked &&
                 (person.achievements !== undefined ? (
-                  <AchievementCollection ids={person.achievements} compact />
+                  <AchievementCollection
+                    ids={person.achievements}
+                    dates={person.achievementDates}
+                    ownerName={person.name}
+                    compact
+                  />
                 ) : (
                   <p>{uiText("Conquistas ainda não compartilhadas.")}</p>
                 ))}

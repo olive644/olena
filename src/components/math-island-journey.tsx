@@ -20,7 +20,6 @@ import { MathPlaceTreasure } from "./math-place-treasure";
 import { MathPlaceScene } from "./math-place-scene";
 import { MathNumber } from "./math-paper-art";
 import "./math-island-journey.css";
-import { IslandAchievementBook } from "./math-achievements";
 
 export function MathIslandJourney({
   onBack,
@@ -277,7 +276,6 @@ export function MathIslandJourney({
             <PracticeUserPortrait profile={profile} />
           </div>
         </div>
-        <IslandAchievementBook key={course.id} courseId={course.id} />
         <div className="math-journey-label" aria-live="polite">
           <span>{course.subject}</span>
           <h1>{course.title}</h1>

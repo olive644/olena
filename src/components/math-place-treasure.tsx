@@ -309,14 +309,6 @@ export function MathPlaceTreasure({
           );
         })}
       </div>
-      <button
-        className="math-card-library"
-        onClick={() => setCollection(true)}
-        aria-label={uiText(632)}
-      >
-        <img src="/olena-favicon-32.png" alt="" width="24" height="24" />
-        <span>{uiText(633)}</span>
-      </button>
       {warning && (
         <p className="math-treasure-warning" role="alert">
           {warning}

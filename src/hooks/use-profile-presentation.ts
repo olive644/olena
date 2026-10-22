@@ -23,10 +23,16 @@ export function useProfilePresentation(
   const name = profile.name?.trim() || fallback;
   const photoUrl = profileAvatarSource(profile.photoUrl);
   const cover = profileCover(profile.cover);
-  const achievements = JSON.stringify(
-    mathAchievements(readMathGame(), workspace?.practiceActivities, agendaTimeZone())
-      .filter((item) => item.earned)
-      .map((item) => item.id),
+  const earned = mathAchievements(
+    readMathGame(),
+    workspace?.practiceActivities,
+    agendaTimeZone(),
+  ).filter((item) => item.earned);
+  const achievements = JSON.stringify(earned.map((item) => item.id));
+  const achievementDates = JSON.stringify(
+    Object.fromEntries(
+      earned.filter((item) => item.earnedAt).map((item) => [item.id, item.earnedAt]),
+    ),
   );
   const details = workspace
     ? JSON.stringify({
@@ -65,6 +71,7 @@ export function useProfilePresentation(
           cover,
           expectedUsername: username,
           achievements: JSON.parse(achievements) as string[],
+          achievementDates: JSON.parse(achievementDates) as Record<string, string>,
           ...(details
             ? {
                 details: JSON.parse(
@@ -78,5 +85,5 @@ export function useProfilePresentation(
     return () => {
       active = false;
     };
-  }, [username, name, photoUrl, cover, details, achievements]);
+  }, [username, name, photoUrl, cover, details, achievements, achievementDates]);
 }

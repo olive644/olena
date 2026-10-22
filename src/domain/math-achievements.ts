@@ -79,6 +79,21 @@ export function validAchievementIds(value: unknown): value is string[] {
     new Set(value).size === value.length
   );
 }
+export function validAchievementDates(value: unknown): value is Record<string, string> {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.entries(value).length <= MATH_ACHIEVEMENTS.length &&
+    Object.entries(value).every(
+      ([id, date]) =>
+        isAchievementId(id) &&
+        typeof date === "string" &&
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(date) &&
+        Number.isFinite(Date.parse(date)),
+    )
+  );
+}
 
 // Acertos e etapas vêm dos registros sincronizados existentes, sem criar um segundo saldo.
 export function mathAchievements(
@@ -132,6 +147,40 @@ export function mathAchievements(
     stages: courses.reduce((sum, item) => sum + item.stages, 0),
     islands: courses.filter((item) => item.stages === 6).length,
   };
+  // Datas só vêm de recibos datados. Progresso legado sem recibo não ganha data inventada.
+  const dates = new Map<string, string>();
+  const rounds = new Set<string>(),
+    days = new Set<string>();
+  const history = new Map<MathCourseId, { correct: number; stages: Set<number> }>();
+  for (const record of [...records].sort(
+    (a, b) => Date.parse(a.completedAt) - Date.parse(b.completedAt),
+  )) {
+    const id = record.islandId.slice(12) as MathCourseId;
+    const course = history.get(id) ?? { correct: 0, stages: new Set<number>() };
+    course.correct += record.correct;
+    if (Number.isInteger(record.moduleLevel) && record.moduleLevel! >= 0 && record.moduleLevel! < 6)
+      course.stages.add(record.moduleLevel!);
+    history.set(id, course);
+    rounds.add(record.id.replace(/:\d+:\d+$/, ""));
+    days.add(zonedDateTime(Date.parse(record.completedAt), zone).date);
+    const snapshot = [...history.values()];
+    const counters = {
+      correct: snapshot.reduce((sum, item) => sum + item.correct, 0),
+      stages: snapshot.reduce((sum, item) => sum + item.stages.size, 0),
+      islands: snapshot.filter((item) => item.stages.size === 6).length,
+      rounds: rounds.size,
+      days: days.size,
+    };
+    for (const goal of MATH_ACHIEVEMENTS) {
+      const own = goal.course ? history.get(goal.course) : undefined;
+      const amount = goal.course
+        ? goal.metric === "correct"
+          ? (own?.correct ?? 0)
+          : (own?.stages.size ?? 0)
+        : counters[goal.metric];
+      if (amount >= goal.target && !dates.has(goal.id)) dates.set(goal.id, record.completedAt);
+    }
+  }
   return MATH_ACHIEVEMENTS.map((achievement) => {
     const course = courses.find((item) => item.id === achievement.course);
     const value =
@@ -142,6 +191,7 @@ export function mathAchievements(
       ...achievement,
       value: Math.min(achievement.target, value),
       earned: value >= achievement.target,
+      earnedAt: dates.get(achievement.id),
     };
   });
 }

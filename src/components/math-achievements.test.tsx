@@ -23,6 +23,22 @@ it("exibe objetivos bloqueados e permite fechar a inspeção", () => {
 });
 it("mantém a prévia limitada às conquistas públicas recebidas", () => {
   render(<AchievementCollection ids={["correct-1"]} compact />);
+  expect(document.querySelectorAll(".achievement-tile")).toHaveLength(3);
   expect(screen.getByRole("button", { name: /Constelação de acertos 1\./ })).toBeTruthy();
   expect(screen.queryByRole("button", { name: /Cartógrafo/ })).toBeNull();
+});
+it("mostra data real e não oferece compartilhar objetivos bloqueados", () => {
+  render(
+    <AchievementCollection
+      ids={["correct-1"]}
+      dates={{ "correct-1": "2026-10-22T12:00:00Z" }}
+      compact
+      initialId="correct-1"
+    />,
+  );
+  expect(document.querySelector("time")?.dateTime).toBe("2026-10-22T12:00:00Z");
+  expect(screen.getByRole("button", { name: "Compartilhar conquista" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Fechar conquista" }));
+  fireEvent.click(screen.getByRole("button", { name: /Explorador das contas 1\./ }));
+  expect(screen.queryByRole("button", { name: "Compartilhar conquista" })).toBeNull();
 });

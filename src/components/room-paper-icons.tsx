@@ -8,9 +8,7 @@ export function RoomPointsIcon({ xp = false }: { xp?: boolean }) {
       viewBox="0 0 48 48"
       aria-hidden="true"
     >
-      <path fill="var(--points-depth)" d="m24 4 7 13 14 3-10 11 1 15-12-7-14 7 3-15L3 20l15-3Z" />
-      <path fill="currentColor" d="m24 1 7 13 14 3-10 11 1 15-12-7-14 7 3-15L3 17l15-3Z" />
-      <path fill="var(--points-fold)" d="m24 1 0 24-21-8 15-3Zm0 24 12 18-1-15 10-11Z" />
+      <use href="/room-icons/points.svg#points" />
     </svg>
   );
 }
@@ -114,10 +112,6 @@ export function RoomTrophyFrame({ place }: { place: number }) {
 }
 
 export function RoomSolarTrophyFrame({ place }: { place: number }) {
-  useLanguage();
-
-  const face = place === 1 ? "#a779ef" : place === 2 ? "#f0ba65" : "#50bdc4";
-  const depth = place === 1 ? "#51259b" : place === 2 ? "#b87941" : "#147b83";
   return (
     <svg
       className="room-trophy-frame room-solar-trophy"
@@ -125,36 +119,7 @@ export function RoomSolarTrophyFrame({ place }: { place: number }) {
       viewBox="0 0 240 240"
       aria-hidden="true"
     >
-      <use href="/room-icons/room-trophies.svg#ring" />
-      <path
-        fill="var(--trophy-depth)"
-        d="m50 106-33-31 4 38 29 20Zm0 42-39-16 12 35 33 7Zm17 38-42-1 25 29 29-8Zm123-80 33-31-4 38-29 20Zm0 42 39-16-12 35-33 7Zm-17 38 42-1-25 29-29-8Z"
-      />
-      <path
-        fill="var(--trophy-face)"
-        d="m17 75 33 31-1 21Zm-6 57 39 16 6 20Zm214-57-35 31 1 21Zm4 57-39 16-6 20Z"
-      />
-      <path fill={depth} d="m101 15 27-5 24 16 4 29-23 21-29-4-20-23 3-22Z" />
-      <path fill={face} d="m101 9 27-5 24 16 4 29-23 21-29-4-20-23 3-22Z" />
-      <path fill="#fff9ef" opacity=".4" d="m101 9 27-5-16 16-25 7Z" />
-      <path fill={depth} d="m152 20 4 29-23 21-29-4 27-12 10-27Z" />
-      {place === 1 ? (
-        <>
-          <path fill="#c99a00" d="m72 53 77-38 18 10-79 45Z" />
-          <path fill="#facc15" d="m72 48 77-38 18 10-79 45-16-5 75-39Z" />
-        </>
-      ) : place === 2 ? (
-        <>
-          <path fill="#fff0c7" d="m89 27 63 4 4 11-69-7Zm10 23 55 2-11 11-37-5Z" />
-          <path fill="#c95649" d="m130 46 14 3-3 8-13-2Z" />
-        </>
-      ) : (
-        <path fill="#b8dc7b" d="m105 17 15-1 4 11-14 13-12-6-4-10Zm17 29 17-6 6 13-16 11-7-6Z" />
-      )}
-      <path
-        fill="#ffe88d"
-        d="m60 30 5 11 12 3-12 6-5 12-5-12-12-6 12-3Zm116 37 4 8 9 3-9 4-4 9-4-9-9-4 9-3Z"
-      />
+      <use href={`/room-icons/solar-frames.svg#p${place === 1 ? 1 : place === 2 ? 2 : 3}`} />
     </svg>
   );
 }
