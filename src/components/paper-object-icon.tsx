@@ -1,29 +1,26 @@
-import type { ShapeKind } from "./handwriting-shapes";
 import "./paper-object-controls.css";
-
-type ObjectIcon =
-  | "notebook"
-  | "note"
-  | "folder"
-  | "shapes"
-  | "ruler"
-  | "coordinate-system"
-  | "space"
-  | "curve"
-  | "eraseArea"
-  | "eraseStroke"
-  | "eraseBackground";
-const outlines: Record<ShapeKind, string> = {
-  line: "M8 35 39 12",
-  ellipse: "M40 24C40 13 32 8 24 8S8 13 8 24s8 16 16 16 16-5 16-16Z",
-  rectangle: "M8 10h32v29H8Z",
-  triangle: "M24 7 42 39H6Z",
-  arrow: "M7 35 38 12m-16 0h16v16",
-  polygon: "M15 7h18l11 17-11 17H15L4 24Z",
-};
-
-export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
-  const shape = name in outlines ? outlines[name as ShapeKind] : null;
+export function PaperObjectIcon({
+  name,
+}: {
+  name:
+    | "line"
+    | "ellipse"
+    | "rectangle"
+    | "triangle"
+    | "arrow"
+    | "polygon"
+    | "eraseArea"
+    | "eraseStroke"
+    | "folder"
+    | "shapes"
+    | "ruler"
+    | "eraseBackground"
+    | "curve"
+    | "space"
+    | "coordinate-system"
+    | "notebook"
+    | "note";
+}) {
   return (
     <svg
       className="paper-object-icon"
@@ -31,123 +28,7 @@ export function PaperObjectIcon({ name }: { name: ObjectIcon | ShapeKind }) {
       aria-hidden="true"
       data-paper-object={name}
     >
-      {shape ? (
-        <>
-          <path d={shape} fill="none" stroke="#51465D" strokeWidth="5" transform="translate(1 2)" />
-          <path d={shape} fill="none" stroke="#A779EF" strokeWidth="4" strokeLinejoin="bevel" />
-          <path d="M6 36h6v6H6Z" fill="#FACC15" />
-        </>
-      ) : name === "eraseArea" || name === "eraseStroke" ? (
-        <>
-          <path
-            d={
-              name === "eraseArea" ? "M3 35 9 28l7 4m16 0 6 3 7-8" : "M3 35 9 28l14 8 10-7 6 6 6-8"
-            }
-            fill="none"
-            stroke={name === "eraseArea" ? "#51465D" : "#C9BDD9"}
-            strokeWidth="4"
-            strokeLinejoin="bevel"
-          />
-          <path d="m14 20 15-16 13 12-15 17Z" fill="#51259B" />
-          <path d="m14 17 15-16 13 12-15 17Z" fill="#A779EF" />
-          <path d="m14 17 7-8 13 12-7 9Z" fill="#FFF9EF" />
-          <path d="m29 1 4 4-15 16-4-4Z" fill="#E9DAFB" />
-          {name === "eraseStroke" && (
-            <path d="m19 36 5 5 9-11" fill="none" stroke="#7C3AED" strokeWidth="3" />
-          )}
-        </>
-      ) : name === "folder" ? (
-        <>
-          <path d="M4 10h15l5 6h20v26H4Z" fill="#A779EF" />
-          <path d="M9 6h23l6 6v24H9Z" fill="#FFF9EF" />
-          <path d="M3 21h42l-4 23H6Z" fill="#7C3AED" />
-          <path d="M3 21h42l-8 6H4Z" fill="#A779EF" />
-          <path d="m28 28 2 4 5 1-4 3 1 5-4-2-4 2 1-5-4-3 5-1Z" fill="#FACC15" />
-        </>
-      ) : name === "shapes" ? (
-        <>
-          <path d="M4 24h23v21H4Z" fill="#51259B" />
-          <path d="M4 21h23v21H4Z" fill="#A779EF" />
-          <path d="m4 21 6 5v16H4Z" fill="#E9DAFB" />
-          <path d="m32 3 14 24H18Z" fill="#FACC15" />
-          <path d="m32 3-6 18-8 6Z" fill="#FFE88D" />
-        </>
-      ) : name === "ruler" ? (
-        <>
-          <path d="m5 35 29-29 9 9-29 29Z" fill="#51259B" />
-          <path d="m5 32 27-27 9 9-27 27Z" fill="#FACC15" />
-          <path d="m10 27 4 4m2-10 5 5m2-11 5 5m2-11 4 4" stroke="#51465D" strokeWidth="2" />
-          <path d="m8 30 3 3 24-24-3-3Z" fill="#FFE88D" />
-        </>
-      ) : name === "eraseBackground" ? (
-        <>
-          <path d="M7 9h30v34H7Z" fill="#51259B" />
-          <path d="M7 6h30v34H7Z" fill="#A779EF" />
-          <path d="M12 12h20v10H12Zm0 14h12v8H12Z" fill="#7C3AED" />
-          <path d="M20 14c6-3 15 0 14 8s-9 11-16 8-4-13 2-16Z" fill="#FFF9EF" />
-          <path d="m31 27 12 4-3 11-12-4Z" fill="#FACC15" />
-        </>
-      ) : name === "curve" ? (
-        <>
-          <path
-            d="M5 38 10 18 19 8 27 10 31 28 35 32 40 12 46 14 40 39 32 41 24 34 21 17 16 20 11 41Z"
-            fill="#51259B"
-          />
-          <path
-            d="M4 35 9 15 18 5 26 7 30 25 34 29 39 9 45 11 39 36 31 38 23 31 20 14 15 17 10 38Z"
-            fill="#A779EF"
-          />
-          <path d="m9 15 9-10 8 2-6 7-5 3-5 21-6-3Z" fill="#E9DAFB" />
-          <path
-            d="m3 32 6-2 4 5-3 6-6-1Zm15-25 5-3 5 3-1 6-6 1Zm20 3 5-3 5 3-1 6-6 1Z"
-            fill="#FACC15"
-          />
-          <path d="m3 32 6-2-1 5-4 5Zm15-25 5-3-2 5-3 2Zm20 3 5-3-2 5-3 2Z" fill="#FFE88D" />
-        </>
-      ) : name === "space" ? (
-        <>
-          <path d="M4 5h34l6 6v8H4Zm0 28h40v12H10l-6-6Z" fill="#51259B" />
-          <path d="M4 2h34l6 6v8H4Zm0 28h40v12H10l-6-6Z" fill="#FFF9EF" />
-          <path d="M4 2h7v14H4Zm0 28h7v12l-7-6Zm34-28v6h6Z" fill="#A779EF" />
-          <path d="M14 7h17v3H14Zm0 27h20v3H14Z" fill="#C9BDD9" />
-          <path d="m24 13 8 8h-5v5h5l-8 8-8-8h5v-5h-5Z" fill="#FACC15" />
-          <path d="m24 13-8 8h5v5h-5l8 8v-8h-1v-5h1Z" fill="#FFE88D" />
-        </>
-      ) : name === "coordinate-system" ? (
-        <>
-          <path
-            d="M9 5v34h34"
-            fill="none"
-            stroke="#51259B"
-            strokeWidth="6"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M9 5v34h34"
-            fill="none"
-            stroke="#A779EF"
-            strokeWidth="4"
-            strokeLinejoin="round"
-          />
-          <path d="M9 15h5M19 34v5M9 25h5M29 34v5" stroke="#FACC15" strokeWidth="3" />
-          <path d="m6 9 3-5 3 5m27 27 5 3-5 3" fill="#FACC15" />
-        </>
-      ) : (
-        <>
-          <path d="M8 6h25l8 8v31H8Z" fill="#CABDA5" />
-          <path d="M8 3h25l8 8v31H8Z" fill={name === "notebook" ? "#7C3AED" : "#FFF9EF"} />
-          <path d="M33 3v10h8Z" fill={name === "notebook" ? "#A779EF" : "#E4DAC6"} />
-          {name === "notebook" ? (
-            <>
-              <path d="M6 3h7v39H6Z" fill="#51465D" />
-              <path d="M3 11h12v3H3Zm0 12h12v3H3Zm0 12h12v3H3Z" fill="#E9DAFB" />
-              <path d="m27 17 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z" fill="#FACC15" />
-            </>
-          ) : (
-            <path d="M15 20h18v3H15Zm0 7h18v3H15Zm0 7h12v3H15Z" fill="#51465D" />
-          )}
-        </>
-      )}
+      <use href={`/navigation-icons/paper/paper-object-icon.svg#${name}`} />
     </svg>
   );
 }

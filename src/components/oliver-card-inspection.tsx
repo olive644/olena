@@ -1,7 +1,6 @@
-import { uiText, useLanguage } from "../i18n/runtime";
-import { useRef, useState, type CSSProperties } from "react";
 import type { OliverArtworkId } from "../data/oliver-tarot";
 import { OliverCard } from "./oliver-card";
+import { PaperArtInspection } from "./paper-art-inspection";
 
 export function OliverCardInspection({
   id,
@@ -10,87 +9,11 @@ export function OliverCardInspection({
   id: OliverArtworkId;
   compact?: boolean;
 }) {
-  useLanguage();
-
-  const [angle, setAngle] = useState({ x: 0, y: 0 });
-  const [shine, setShine] = useState({ x: 50, y: 30 });
-  const gesture = useRef<{ x: number; y: number; angle: typeof angle } | null>(null);
-  const front = Math.cos((angle.y * Math.PI) / 180) >= 0;
   return (
-    <div className={`oliver-inspection${compact ? " is-inline" : ""}`}>
-      <div
-        className="oliver-inspection-stage"
-        style={{ "--foil-x": `${shine.x}%`, "--foil-y": `${shine.y}%` } as CSSProperties}
-        role="button"
-        tabIndex={0}
-        aria-label={uiText(782)}
-        onKeyDown={(event) => {
-          if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home"].includes(event.key))
-            return;
-          event.preventDefault();
-          event.stopPropagation();
-          setAngle((value) =>
-            event.key === "Home"
-              ? { x: 0, y: 0 }
-              : {
-                  x: Math.max(
-                    -40,
-                    Math.min(
-                      40,
-                      value.x +
-                        (event.key === "ArrowUp" ? 10 : event.key === "ArrowDown" ? -10 : 0),
-                    ),
-                  ),
-                  y:
-                    value.y +
-                    (event.key === "ArrowRight" ? 25 : event.key === "ArrowLeft" ? -25 : 0),
-                },
-          );
-        }}
-        onPointerDown={(event) => {
-          if (!event.isPrimary || event.button !== 0) return;
-          event.preventDefault();
-          event.currentTarget.focus({ preventScroll: true });
-          gesture.current = { x: event.clientX, y: event.clientY, angle };
-          event.currentTarget.setPointerCapture(event.pointerId);
-        }}
-        onPointerMove={(event) => {
-          const rect = event.currentTarget.getBoundingClientRect();
-          setShine({
-            x: Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100)),
-            y: Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100)),
-          });
-          const start = gesture.current;
-          if (!start) return;
-          setAngle({
-            x: Math.max(-40, Math.min(40, start.angle.x - (event.clientY - start.y) * 0.25)),
-            y: start.angle.y + (event.clientX - start.x) * 0.9,
-          });
-        }}
-        onPointerUp={() => {
-          gesture.current = null;
-        }}
-        onPointerCancel={() => {
-          gesture.current = null;
-        }}
-      >
-        <div
-          className="oliver-inspection-turn"
-          style={{ transform: `rotateX(${angle.x}deg) rotateY(${angle.y}deg)` }}
-        >
-          <div className="oliver-inspection-front" aria-hidden={!front}>
-            <OliverCard id={id} />
-          </div>
-          <div className="oliver-inspection-back" aria-hidden={front}>
-            <OliverCard id={id} back />
-          </div>
-        </div>
-      </div>
-      {!compact && (
-        <button className="secondary-button" onClick={() => setAngle({ x: 0, y: 0 })}>
-          {uiText(783)}
-        </button>
-      )}
-    </div>
+    <PaperArtInspection
+      compact={compact}
+      artwork={<OliverCard id={id} />}
+      backArtwork={<OliverCard id={id} back />}
+    />
   );
 }

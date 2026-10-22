@@ -135,7 +135,10 @@ for (const theme of ["light", "dark"]) {
     await expect(activityItems).toHaveCount(0);
     await expect(page.getByText("Sua trajetória", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveText("");
-    await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("region", { name: "Conquistas de matemática", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toHaveCount(0);
     await page.screenshot({
       path: info.outputPath(`profile-expanded-${theme}.png`),
       fullPage: true,
@@ -220,7 +223,10 @@ test("perfil vazio também se recolhe em tela alta e respeita movimento reduzido
   }, workspace);
   await page.goto("/perfil");
   await expect(page.locator("main")).toHaveCSS("opacity", "1");
-  await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Conquistas de matemática", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toHaveCount(0);
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await expect(page.locator(".profile-chrome")).toHaveAttribute("data-compact", "true");
   await expect(page.locator(".profile-chrome")).toHaveCSS("--profile-collapse", "1");

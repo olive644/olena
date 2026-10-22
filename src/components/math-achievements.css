@@ -1,0 +1,197 @@
+.math-achievements header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.math-achievements h2 {
+  font-size: 1.15rem;
+  margin: 8px 0 16px;
+}
+.math-achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.achievement-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  min-width: 0;
+  color: var(--text);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 6px 18px 6px 12px;
+  box-shadow: 0 4px var(--line);
+}
+.achievement-tile strong {
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.achievement-tile small {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.math-achievement-art {
+  --achievement-base: #36a5b5;
+  --achievement-light: #8cdee4;
+  --achievement-shade: #177781;
+  display: block;
+  position: relative;
+  width: 110px;
+  aspect-ratio: 160/180;
+  flex-shrink: 0;
+}
+.math-achievement-art svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.math-achievement-art.is-uncommon {
+  --achievement-base: #a779ef;
+  --achievement-light: #d7baff;
+  --achievement-shade: #51259b;
+}
+.math-achievement-art.is-rare {
+  --achievement-base: #facc15;
+  --achievement-light: #ffe88d;
+  --achievement-shade: #b78a12;
+}
+.math-achievement-art.is-rare:not(.is-locked) {
+  filter: drop-shadow(0 0 5px #facc1566);
+}
+.math-achievement-art b {
+  position: absolute;
+  bottom: 13%;
+  left: 0;
+  width: 100%;
+  color: #292432;
+  text-align: center;
+  font-size: 0.85rem;
+}
+.math-achievement-art.is-locked {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+.achievement-spark {
+  transform-origin: center;
+  animation: achievement-glint 2.8s ease-in-out infinite;
+}
+@keyframes achievement-glint {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+:root .achievement-inspection {
+  width: min(480px, calc(100vw - 24px));
+  max-height: 90dvh;
+  overflow: auto;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px 24px 8px 16px;
+  padding: 20px;
+}
+.achievement-inspection::backdrop {
+  background: #17151cc9;
+}
+.achievement-inspection header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.achievement-inspection .oliver-inspection-stage {
+  width: min(270px, 65vw);
+  height: auto;
+  aspect-ratio: 160/180;
+  margin: auto;
+  touch-action: none;
+}
+.achievement-inspection .oliver-inspection-stage:focus-visible {
+  outline: none;
+  box-shadow: 0 4px #facc15;
+}
+.achievement-inspection .math-achievement-art {
+  width: 100%;
+}
+.achievement-inspection .oliver-inspection-turn {
+  width: 100%;
+  height: 100%;
+}
+.achievement-reverse {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 8px 26px 8px 16px;
+  padding: 16px;
+}
+.achievement-reverse .math-achievement-art {
+  width: 65%;
+}
+.achievement-inspection progress {
+  width: 100%;
+  accent-color: #7c3aed;
+}
+.achievement-notice {
+  position: fixed;
+  bottom: calc(90px + env(safe-area-inset-bottom));
+  right: 20px;
+  z-index: 140;
+  width: min(370px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px 22px 6px 12px;
+  box-shadow: 0 5px var(--line);
+}
+.achievement-notice .math-achievement-art {
+  width: 70px;
+}
+.achievement-island-book {
+  width: min(720px, calc(100vw - 24px));
+  max-height: 85dvh;
+  overflow: auto;
+  padding: 20px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px 24px 8px 16px;
+}
+.achievement-island-book::backdrop {
+  background: #17151cc9;
+}
+.island-achievement-open {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 4;
+  max-width: calc(100vw - 180px);
+}
+.achievement-notice strong,
+.achievement-notice small {
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .achievement-spark {
+    animation: none;
+  }
+}
+:root[data-reduce-motion="true"] .achievement-spark,
+body.reduce-motion .achievement-spark {
+  animation: none;
+}

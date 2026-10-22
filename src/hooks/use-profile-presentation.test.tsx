@@ -1,7 +1,8 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { cleanup, renderHook, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, renderHook, waitFor } from "@testing-library/react";
 import { useProfilePresentation } from "./use-profile-presentation";
 import { createInitialWorkspace } from "../domain/workspace";
+import { upgradeMasteryProgress } from "../domain/math-mastery-progress";
 const mocks = vi.hoisted(() => ({
   request: vi.fn(),
   user: { uid: "alice-id", isAnonymous: false },
@@ -49,7 +50,25 @@ it("publica nome, personagem e capa sem toggle quando os dados pertencem à cont
       photoUrl: "/profile-avatars/alice.svg",
       cover: "ocean",
       expectedUsername: "alice",
+      achievements: [],
     }),
+  );
+});
+it("publica conquistas novas durante a sessão sem abrir a interface do perfil", async () => {
+  mocks.request.mockResolvedValue({});
+  localStorage.setItem("helena.account.v1", "alice-id");
+  renderHook(() => useProfilePresentation("alice", "Alice"));
+  await waitFor(() => expect(mocks.request).toHaveBeenCalled());
+  mocks.request.mockClear();
+  localStorage.setItem(
+    "helena.mathGame.v5",
+    JSON.stringify({ foundations: { ...upgradeMasteryProgress(), correct: 1 } }),
+  );
+  fireEvent(window, new Event("helena:synced-storage-change"));
+  await waitFor(() =>
+    expect(mocks.request).toHaveBeenCalledWith(
+      expect.objectContaining({ achievements: ["correct-1"] }),
+    ),
   );
 });
 it("não publica dados de outro dono nem de guest", async () => {

@@ -4,6 +4,44 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("bloqueio é bilateral, remove conexões e impede novas interações", async () => {
+  const app = setup();
+  await app.request("a", { action: "follow", username: "bob" });
+  await app.request("b", { action: "follow", username: "alice" });
+  expect((await app.request("a", { action: "block", username: "bob" })).status).toBe(200);
+  expect((await app.feed("a", "username=bob")).profile).toMatchObject({
+    blocked: true,
+    followed: false,
+    followsYou: false,
+  });
+  expect((await app.feed("a", "list=followers")).connections?.people).toEqual([]);
+  expect((await app.request("b", { action: "follow", username: "alice" })).status).toBe(404);
+  expect((await app.request("a", { action: "follow", username: "bob" })).status).toBe(403);
+  expect((await app.feed("b", "search=alice")).results).toEqual([]);
+  expect((await app.request("a", { action: "unblock", username: "bob" })).status).toBe(200);
+  expect((await app.feed("a", "username=bob")).profile?.followed).toBe(false);
+  expect((await app.request("b", { action: "follow", username: "alice" })).status).toBe(200);
+});
+it("não permite bloquear a si mesmo nem agir como visitante", async () => {
+  const app = setup();
+  expect((await app.request("a", { action: "block", username: "alice" })).status).toBe(400);
+  expect((await app.request("guest", { action: "block", username: "alice" })).status).toBe(401);
+});
+it("publica conquistas visuais conhecidas e preserva-as no formato do Firebase", async () => {
+  const app = setup();
+  const share = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ["correct-1"],
+  };
+  expect((await app.request("a", share)).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile?.achievements).toEqual(["correct-1"]);
+  expect((await app.request("a", { ...share, achievements: ["not-real"] })).status).toBe(400);
+  await app.request("b", { action: "block", username: "alice" });
+  expect((await app.feed("b", "username=alice")).profile?.achievements).toBeUndefined();
+});
 it("compartilha somente metadados públicos validados da própria conta", async () => {
   const app = setup();
   const action = {
@@ -59,6 +97,23 @@ it("detalhes inválidos gravados em conta antiga não invalidam o perfil", async
   const profile = (await app.feed("b", "username=alice")).profile;
   expect(profile?.username).toBe("alice");
   expect(profile?.details).toBeUndefined();
+});
+it("lista vazia omitida pelo Firebase preserva nível e streaks públicos", async () => {
+  const app = setup();
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    details: { level: 3, streaks: { islands: 2, timer: 0, pomodoro: 0 }, socialLinks: [] },
+  });
+  const details = app.state().accounts[key("a")]!.details!;
+  Reflect.deleteProperty(details, "socialLinks");
+  expect((await app.feed("b", "username=alice")).profile?.details).toMatchObject({
+    level: 3,
+    streaks: { islands: 2 },
+    socialLinks: [],
+  });
 });
 it("capa aposentada gravada em conta antiga volta como a capa padrão", async () => {
   const app = setup();

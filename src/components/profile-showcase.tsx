@@ -4,7 +4,6 @@ import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "rea
 import { useStoredProfile } from "../hooks/use-stored-profile";
 import type { WorkspaceAction, WorkspaceState } from "../domain/workspace";
 import type { Dispatch } from "react";
-import { ProfileProgress } from "./profile-preferences";
 import { useAccessibility } from "../data/accessibility-preferences";
 import { ProfileEditor, ProfilePaperIcon } from "./profile-editor";
 import { ProfileNetworks } from "./profile-networks";
@@ -18,11 +17,13 @@ import { ProfileCoverDialog } from "./profile-cover-dialog";
 import { profileCover } from "../domain/profile-covers";
 import { FriendIcon } from "./profile-friend-icon";
 import { useSocialFeed } from "../hooks/use-social-feed";
-import { useProfilePresentation } from "../hooks/use-profile-presentation";
 import { HelenaLoading } from "./helena-loading";
 import "./profile-social.css";
 const SocialDirectory = lazy(() =>
   import("./profile-social").then((module) => ({ default: module.SocialDirectory })),
+);
+const MathAchievements = lazy(() =>
+  import("./math-achievements").then((module) => ({ default: module.MathAchievements })),
 );
 
 import { ProfileLabels } from "./profile-labels";
@@ -72,11 +73,6 @@ export function ProfileShowcase({
     return username && /^[a-z0-9._]{1,30}$/.test(username) ? username : undefined;
   });
   const social = useSocialFeed(!guest);
-  useProfilePresentation(
-    guest || !presentationReady ? "" : handle.username,
-    nameFallback,
-    workspace,
-  );
   const friendButton = useRef<HTMLButtonElement>(null);
   const friendActions = useRef<HTMLDivElement>(null);
   const connections = useRef<HTMLDivElement>(null);
@@ -371,7 +367,9 @@ export function ProfileOverview({
   return (
     <div className="profile-overview">
       <div className="profile-settings-grid">
-        <ProfileProgress workspace={workspace} />
+        <Suspense fallback={<HelenaLoading label={uiText("Carregando conquistas")} />}>
+          <MathAchievements workspace={workspace} />
+        </Suspense>
       </div>
       <div className="profile-study-grid">
         <ProfileStudyWidgets dispatch={dispatch} />

@@ -166,7 +166,7 @@ it("conserva nome Guest e mantém ações quando configurações abrem", () => {
   expect(screen.getByRole("button", { name: "Fechar configurações" })).toBeTruthy();
 });
 
-it("remove trajetória sem alterar as sessões reais do workspace", () => {
+it("substitui progresso por conquistas sem alterar as sessões reais do workspace", async () => {
   const workspace = createInitialWorkspace();
   workspace.focusSessions = Array.from({ length: 7 }, (_, index) => ({
     id: String(index),
@@ -179,7 +179,8 @@ it("remove trajetória sem alterar as sessões reais do workspace", () => {
   const items = container.querySelectorAll(".profile-activity li");
   expect(items).toHaveLength(0);
   expect(screen.queryByText("Sua trajetória")).toBeNull();
-  expect(screen.getByRole("heading", { name: "Meu progresso" })).toBeTruthy();
+  expect(await screen.findByRole("region", { name: "Conquistas de matemática" })).toBeTruthy();
+  expect(screen.queryByRole("heading", { name: "Meu progresso" })).toBeNull();
   expect(JSON.stringify(workspace)).toBe(before);
 });
 

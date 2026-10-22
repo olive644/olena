@@ -13,6 +13,11 @@ import { useProfileHandle } from "./hooks/use-profile-handle";
 import { useAccountDevice } from "./hooks/use-account-device";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const AchievementAnnouncer = lazy(() =>
+  import("./components/achievement-announcer").then((module) => ({
+    default: module.AchievementAnnouncer,
+  })),
+);
 const NotificationsView = lazy(() =>
   import("./components/system-updates").then((module) => ({ default: module.SystemUpdates })),
 );
@@ -72,7 +77,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   // Convidado só vale sem conta: quem entrou com Google nunca aparece como Guest.
   const guest = cloud.authenticated !== true && isGuestSession();
   // A identidade confirmada fica pronta antes da primeira visita ao Perfil.
-  useProfileHandle(cloud.authenticated !== true);
+  const { handle } = useProfileHandle(cloud.authenticated !== true);
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
     if (signedOut) return true;
@@ -102,6 +107,18 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   return (
     <MobileMenuContext.Provider value={{ open: moreOpen, setOpen: setMoreOpen }}>
       <div className="app-shell">
+        {cloud.ready && (
+          <Suspense fallback={null}>
+            <AchievementAnnouncer
+              key={cloud.email ?? "guest"}
+              workspace={workspace}
+              username={
+                !guest && cloud.authenticated && cloud.status !== "loading" ? handle.username : ""
+              }
+              nameFallback={cloud.displayName ?? ""}
+            />
+          </Suspense>
+        )}
         <Suspense fallback={null}>
           <SocialActivityPublisher
             authenticated={cloud.authenticated === true && cloud.status === "synced"}

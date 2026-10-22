@@ -1,5 +1,7 @@
 import type { SocialProfileDetails } from "./social-profile-details.js";
 export type SocialProfile = {
+  blocked?: boolean;
+  achievements?: string[];
   username: string;
   name: string;
   photoUrl: string;
@@ -47,6 +49,7 @@ export type SocialFeed = {
   };
 };
 export type SocialAction =
+  | { action: "block" | "unblock"; username: string }
   | { action: "activity-privacy"; enabled: boolean }
   | { action: "publish-activities" }
   | { action: "like-activity"; username: string; activityId: string; liked: boolean }
@@ -60,4 +63,5 @@ export type SocialAction =
       cover?: string;
       expectedUsername?: string;
       details?: SocialProfileDetails;
+      achievements?: string[];
     };
