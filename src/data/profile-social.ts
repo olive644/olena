@@ -1,7 +1,7 @@
 import { uiText } from "../i18n/runtime.js";
 import { isMathCourse } from "./math-courses";
 import { getFirebaseAccountServices } from "./firebase-account";
-import { PROFILE_AVATARS, profileAvatarSource } from "../domain/profile-avatars";
+import { PROFILE_AVATARS } from "../domain/profile-avatars";
 import { PROFILE_COVERS } from "../domain/profile-covers";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 import { validSocialProfileDetails } from "../domain/social-profile-details";
@@ -46,33 +46,6 @@ function isProfile(value: unknown): value is SocialProfile {
     ["followsYou", "followed", "shared"].every((field) => typeof item[field] === "boolean")
   );
 }
-// Avatares aposentados (como o da Letícia) continuam gravados em contas antigas. Em vez de invalidar a
-// lista inteira, caem no avatar padrão. Endereços fora de /profile-avatars/ seguem recusados.
-function retireLegacyAvatars(feed: unknown) {
-  const fix = (person: unknown) => {
-    if (!person || typeof person !== "object") return;
-    const item = person as Record<string, unknown>;
-    if (
-      typeof item["photoUrl"] === "string" &&
-      /^\/profile-avatars\/[a-z0-9._-]+$/i.test(item["photoUrl"])
-    )
-      item["photoUrl"] = profileAvatarSource(item["photoUrl"]);
-  };
-  if (!feed || typeof feed !== "object") return;
-  const body = feed as Record<string, unknown>;
-  const each = (list: unknown, pick: (value: unknown) => unknown = (value) => value) => {
-    if (Array.isArray(list)) for (const entry of list) fix(pick(entry));
-  };
-  const field = (value: unknown, key: string) =>
-    value && typeof value === "object" ? (value as Record<string, unknown>)[key] : undefined;
-  fix(body["self"]);
-  fix(body["profile"]);
-  each(body["results"]);
-  each(body["suggestions"]);
-  each(body["notifications"], (entry) => field(entry, "person"));
-  each(body["activities"], (entry) => field(entry, "person"));
-  each(field(body["connections"], "people"));
-}
 export async function requestSocial(action?: SocialAction, query = ""): Promise<SocialFeed> {
   const { auth } = await getFirebaseAccountServices().catch(() => {
     throw new Error(
@@ -99,7 +72,6 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
         : uiText("Não foi possível consultar amigos."),
     );
   if (!body || typeof body !== "object") throw new Error(uiText("Resposta inválida de amigos."));
-  retireLegacyAvatars(body);
   const feed = body as SocialFeed;
   if (
     (feed.activitySharing !== undefined && typeof feed.activitySharing !== "boolean") ||

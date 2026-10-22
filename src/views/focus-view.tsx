@@ -128,18 +128,13 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   });
   // O vínculo com a agenda vale só para a sessão recém-aberta pela agenda. Vínculo de dia antigo ou já
   // encerrado não pode exigir 1 minuto nem registrar em outro compromisso.
-  const [agendaLink, setAgendaLink] = useState(() => {
-    if (!restored?.agendaEventId || !restored.agendaDate) return undefined;
-    const day = 86_400_000;
-    const recent = [new Date(), new Date(Date.now() - day)].map(toDateKey);
-    if (!recent.includes(restored.agendaDate)) return undefined;
-    return {
-      eventId: restored.agendaEventId,
-      date: restored.agendaDate,
-      subjectId: restored.subjectId,
-      plannedMinutes: restored.plannedMinutes,
-    };
-  });
+  const [agendaLink, setAgendaLink] = useState(() =>
+    restored?.agendaEventId &&
+    restored.agendaDate &&
+    restored.agendaDate >= toDateKey(new Date(Date.now() - 86_400_000))
+      ? restored
+      : undefined,
+  );
   const hasSession = useRef(Boolean(restored));
   const ownsSession = useRef(!restored?.deviceId || restored.deviceId === deviceId);
   const defaultSubject =
@@ -228,10 +223,10 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       pomodoroDeadline: pomodoroDeadline.current,
       savedAt: Date.now(),
       deviceId,
-      ...(agendaLink
+      ...(agendaLink?.agendaEventId
         ? {
-            agendaEventId: agendaLink.eventId,
-            agendaDate: agendaLink.date,
+            agendaEventId: agendaLink.agendaEventId,
+            agendaDate: agendaLink.agendaDate,
             subjectId: agendaLink.subjectId,
             plannedMinutes: agendaLink.plannedMinutes,
           }
@@ -325,8 +320,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
             subjectId: defaultSubject?.id ?? "",
             durationMinutes: minutes,
             completedAt: new Date(deadline).toISOString(),
-            ...(agendaLink
-              ? { agendaEventId: agendaLink.eventId, agendaDate: agendaLink.date }
+            ...(agendaLink?.agendaEventId
+              ? { agendaEventId: agendaLink.agendaEventId, agendaDate: agendaLink.agendaDate }
               : {}),
           });
           days.push(toDateKey(new Date(deadline)));
@@ -446,7 +441,9 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
           ? Math.floor(elapsedSeconds / 60)
           : Math.max(1, Math.round(elapsedSeconds / 60)),
         completedAt: new Date().toISOString(),
-        ...(agendaLink ? { agendaEventId: agendaLink.eventId, agendaDate: agendaLink.date } : {}),
+        ...(agendaLink?.agendaEventId
+          ? { agendaEventId: agendaLink.agendaEventId, agendaDate: agendaLink.agendaDate }
+          : {}),
       });
     }
     setAgendaLink(undefined);

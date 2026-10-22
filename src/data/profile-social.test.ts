@@ -85,34 +85,3 @@ it("aceita conclusão de módulo oficial e recusa metadados arbitrários", async
   activity.course = "private-note-title";
   await expect(requestSocial()).rejects.toThrow("Resposta inválida");
 });
-it("avatar aposentado de um amigo não invalida a lista de conexões", async () => {
-  const person = (username: string, photoUrl: string) => ({
-    username,
-    name: username,
-    photoUrl,
-    followers: 0,
-    following: 0,
-    followed: false,
-    followsYou: true,
-    shared: true,
-  });
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(
-      async () =>
-        new Response(
-          JSON.stringify({
-            self: person("eu", "/profile-avatars/helena.webp"),
-            notifications: [],
-            connections: {
-              kind: "followers",
-              owner: "eu",
-              people: [person("ana", "/profile-avatars/leticia-coelho.svg")],
-            },
-          }),
-        ),
-    ),
-  );
-  const feed = await requestSocial();
-  expect(feed.connections?.people[0]?.photoUrl).toBe("/profile-avatars/helena.webp");
-});
