@@ -3440,3 +3440,8 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 - **O que mudou.** `npm audit fix` subiu o Vite de 8.3.2 para 8.3.5 e dependências de build (`rolldown`, `launch-editor` e afins, 6 pacotes) só no `package-lock.json`. Nenhuma versão em `package.json` mudou e nenhum código de produto mudou.
 - **Por quê.** O check obrigatório "Dependency audit and SBOM" falhava na `main` e em todo PR por 6 avisos novos do Vite e do `launch-editor` (severidade alta). Eles afetam o servidor de desenvolvimento e o servidor de preview, não o código entregue aos usuários.
 - **Verificação.** `npm audit --audit-level=high` sem vulnerabilidades, `tsc` limpo, build ok e JavaScript da aplicação em 1499,1 KiB (953 bytes abaixo do teto de 1500 KiB, mais folga que antes).
+
+# Lista de conexões tolera perfis fora do padrão, 2026-10-22
+
+- **O que mudou.** O erro "Lista de conexões inválida." voltou depois da correção do avatar aposentado. Em vez de caçar cada dado inválido por conta, o cliente (`requestSocial`) passa a descartar da lista de conexões só o perfil que não passa na validação, e a lista inteira deixa de ser recusada. `self`, resultados de busca e sugestões continuam estritos. Teste novo em `profile-social.test.ts`.
+- **Limite.** Um perfil inválido fica invisível na lista, sem aviso. A causa nos dados de produção não foi identificada: sem acesso às contas, a hipótese principal é um avatar aposentado ou um campo de detalhes inválido em alguma conta seguida. Se uma pessoa específica não aparecer, é esse o motivo.
