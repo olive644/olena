@@ -46,6 +46,20 @@ it("avatar aposentado gravado em conta antiga volta como avatar padrão", async 
     "/profile-avatars/helena.webp",
   );
 });
+it("detalhes inválidos gravados em conta antiga não invalidam o perfil", async () => {
+  const app = setup();
+  await app.request("a", {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    details: { level: 3, streaks: { islands: 1, timer: 0, pomodoro: 0 }, socialLinks: [] },
+  });
+  app.state().accounts[key("a")]!.details!.socialLinks = ["@alice"];
+  const profile = (await app.feed("b", "username=alice")).profile;
+  expect(profile?.username).toBe("alice");
+  expect(profile?.details).toBeUndefined();
+});
 it("capa aposentada gravada em conta antiga volta como a capa padrão", async () => {
   const app = setup();
   await app.request("a", {
