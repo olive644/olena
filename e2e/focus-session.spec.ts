@@ -138,3 +138,50 @@ test("suspensão longa pausa sem fabricar ciclos nem minutos", async ({ page }) 
     ),
   ).toBe(0);
 });
+
+test("vínculo antigo da agenda não trava Encerrar e registrar nem se repete na sessão seguinte", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    if (sessionStorage.getItem("seeded")) return;
+    sessionStorage.setItem("seeded", "1");
+    localStorage.setItem(
+      "olena.focus-session.v1",
+      JSON.stringify({
+        mode: "timer",
+        phase: "focus",
+        completed: 0,
+        duration: 25,
+        secondsRemaining: 1500,
+        elapsedMilliseconds: 0,
+        running: false,
+        timerStartedAt: null,
+        pomodoroDeadline: null,
+        savedAt: Date.now() - 1000,
+        agendaEventId: "evento-antigo",
+        agendaDate: "2026-01-01",
+        subjectId: "subject-english",
+        plannedMinutes: 25,
+      }),
+    );
+  });
+  await page.goto("/foco");
+  await page.getByRole("button", { name: /^(Começar|Continuar)$/ }).click();
+  const finish = page.getByRole("button", { name: "Encerrar e registrar", exact: true });
+  await expect(finish).toBeEnabled({ timeout: 5000 });
+  await finish.click();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions.length,
+      ),
+    )
+    .toBe(1);
+  const record = await page.evaluate(
+    () => JSON.parse(localStorage.getItem("helenastudy.workspace.v1")!).focusSessions[0],
+  );
+  expect(record.agendaEventId).toBeUndefined();
+  const saved = await page.evaluate(() => localStorage.getItem("olena.focus-session.v1"));
+  expect(saved === null || !JSON.parse(saved).agendaEventId).toBe(true);
+});

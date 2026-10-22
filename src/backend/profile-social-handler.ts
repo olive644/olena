@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { PROFILE_AVATARS } from "../domain/profile-avatars.js";
+import { PROFILE_AVATARS, profileAvatarSource } from "../domain/profile-avatars.js";
 import { PROFILE_COVERS } from "../domain/profile-covers.js";
 import type { SocialFeed, SocialProfile } from "../domain/profile-social.js";
 import type { HandleIdentity, HandleRegistry } from "./profile-handle-handler.js";
@@ -214,7 +214,7 @@ export function createProfileSocialHandler(options: {
           return {
             username: handles[id]?.username ?? "",
             name: account.display?.name ?? handles[id]?.username ?? "",
-            photoUrl: account.display?.photoUrl ?? "/profile-avatars/helena.webp",
+            photoUrl: profileAvatarSource(account.display?.photoUrl),
             followers: Object.entries(state.accounts).filter(
               ([other, value]) => live(other) && value.following[id] !== undefined,
             ).length,
