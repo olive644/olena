@@ -213,7 +213,7 @@ export function createProfileSocialHandler(options: {
           const account = state.accounts[id] ?? empty();
           return {
             username: handles[id]?.username ?? "",
-            name: account.display?.name ?? handles[id]?.username ?? "",
+            name: (account.display?.name ?? handles[id]?.username ?? "").slice(0, 80),
             photoUrl: profileAvatarSource(account.display?.photoUrl),
             followers: Object.entries(state.accounts).filter(
               ([other, value]) => live(other) && value.following[id] !== undefined,
@@ -223,7 +223,9 @@ export function createProfileSocialHandler(options: {
             followed: self.following[id] !== undefined,
             shared: !!account.display,
             cover: profileCover(account.display?.cover),
-            ...(account.display && account.details ? { details: account.details } : {}),
+            ...(account.display && validSocialProfileDetails(account.details)
+              ? { details: account.details }
+              : {}),
           };
         };
         const feed = (): SocialFeed => ({
