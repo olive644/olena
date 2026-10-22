@@ -6,11 +6,16 @@ import type { HandleIdentity, HandleRegistry } from "./profile-handle-handler.js
 import type { StudyActivity } from "./study-activity-summary.js";
 import {
   validSocialProfileDetails,
+  publicProfileDetails,
   type SocialProfileDetails,
 } from "../domain/social-profile-details.js";
 import { recognizeSocialLink } from "../domain/profile-identity.js";
+import { isAchievementId, validAchievementIds } from "../domain/math-achievements.js";
 
 type Account = {
+  blocked?: Record<string, number>;
+  achievements?: Record<string, true>;
+  achievementsUpdatedAt?: number;
   display?: { name: string; photoUrl: string; cover?: string };
   details?: SocialProfileDetails;
   following: Record<string, number>;
@@ -105,6 +110,7 @@ export function createProfileSocialHandler(options: {
                       "cover",
                       "expectedUsername",
                       "details",
+                      "achievements",
                     ]
                   : body["action"] === "read"
                     ? ["action"]
@@ -114,6 +120,8 @@ export function createProfileSocialHandler(options: {
         if (
           ![
             "share",
+            "block",
+            "unblock",
             "read",
             "follow",
             "unfollow",
@@ -152,6 +160,8 @@ export function createProfileSocialHandler(options: {
           return reply(409, { error: "A conta mudou. Abra seu perfil novamente." });
         if (body["details"] !== undefined && !validSocialProfileDetails(body["details"]))
           return reply(400, { error: "Dados públicos do perfil inválidos." });
+        if (body["achievements"] !== undefined && !validAchievementIds(body["achievements"]))
+          return reply(400, { error: "Conquistas inválidas." });
       }
       const params = new URL(request.url).searchParams;
       const query = params.get("search");
@@ -175,7 +185,9 @@ export function createProfileSocialHandler(options: {
         if (!target) return reply(404, { error: "Perfil não encontrado." });
       }
       if (
-        ["follow", "unfollow", "remove-follower"].includes(String(body["action"])) &&
+        ["follow", "unfollow", "remove-follower", "block", "unblock"].includes(
+          String(body["action"]),
+        ) &&
         (!target || target === key)
       )
         return reply(400, { error: "Escolha outra pessoa para seguir." });
@@ -188,6 +200,7 @@ export function createProfileSocialHandler(options: {
               id,
               {
                 ...account,
+                blocked: { ...account.blocked },
                 following: { ...account.following },
                 notices: { ...account.notices },
                 activities: Object.fromEntries(
@@ -209,8 +222,20 @@ export function createProfileSocialHandler(options: {
             return reply(409, { error: "O perfil mudou. Busque novamente antes de seguir." });
         }
         const self = state.accounts[key] ?? empty();
+        const blocked = (id: string) =>
+          self.blocked?.[id] !== undefined || state.accounts[id]?.blocked?.[key] !== undefined;
+        if (target && state.accounts[target]?.blocked?.[key] !== undefined)
+          return reply(404, { error: "Perfil indisponível." });
+        if (
+          target &&
+          blocked(target) &&
+          ["follow", "like-activity"].includes(String(body["action"]))
+        )
+          return reply(403, { error: "Desbloqueie esta pessoa antes de interagir." });
         const profile = (id: string): SocialProfile => {
           const account = state.accounts[id] ?? empty();
+          const details =
+            !blocked(id) && account.display ? publicProfileDetails(account.details) : undefined;
           return {
             username: handles[id]?.username ?? "",
             name: (account.display?.name ?? handles[id]?.username ?? "").slice(0, 80),
@@ -223,9 +248,11 @@ export function createProfileSocialHandler(options: {
             followed: self.following[id] !== undefined,
             shared: !!account.display,
             cover: profileCover(account.display?.cover),
-            ...(account.display && validSocialProfileDetails(account.details)
-              ? { details: account.details }
+            blocked: self.blocked?.[id] !== undefined,
+            ...(!blocked(id) && account.display && account.achievementsUpdatedAt !== undefined
+              ? { achievements: Object.keys(account.achievements ?? {}).filter(isAchievementId) }
               : {}),
+            ...(details ? { details } : {}),
           };
         };
         const feed = (): SocialFeed => ({
@@ -235,6 +262,7 @@ export function createProfileSocialHandler(options: {
             .filter(
               ([id, account]) =>
                 live(id) &&
+                !blocked(id) &&
                 account.activitySince !== undefined &&
                 (id === key || self.following[id] !== undefined || id === target),
             )
@@ -254,7 +282,7 @@ export function createProfileSocialHandler(options: {
                   person: profile(id),
                   liked: activity.likes[key] !== undefined,
                   likes: Object.keys(activity.likes)
-                    .filter(live)
+                    .filter((id) => live(id) && !blocked(id))
                     .map((actor) => ({
                       username: profile(actor).username,
                       name: profile(actor).name,
@@ -267,6 +295,8 @@ export function createProfileSocialHandler(options: {
             .filter(
               ([id, notice]) =>
                 live(notice.actor ?? id) &&
+                !blocked(notice.actor ?? id) &&
+                (!notice.owner || !blocked(notice.owner)) &&
                 (!notice.owner || state.accounts[notice.owner]?.activitySince !== undefined) &&
                 now - notice.at >= 0 &&
                 now - notice.at < RETENTION,
@@ -285,6 +315,7 @@ export function createProfileSocialHandler(options: {
                   .filter(
                     (id) =>
                       id !== key &&
+                      state.accounts[id]?.blocked?.[key] === undefined &&
                       (handles[id]!.username.startsWith(query) ||
                         state.accounts[id]?.display?.name
                           .toLocaleLowerCase("pt-BR")
@@ -295,7 +326,7 @@ export function createProfileSocialHandler(options: {
               }
             : {}),
           suggestions: Object.keys(handles)
-            .filter((id) => id !== key && self.following[id] === undefined)
+            .filter((id) => id !== key && !blocked(id) && self.following[id] === undefined)
             .map((id) => ({
               ...profile(id),
               mutualCount: Object.keys(self.following).filter(
@@ -313,6 +344,7 @@ export function createProfileSocialHandler(options: {
                   .filter(
                     (id) =>
                       id !== owner &&
+                      !blocked(id) &&
                       (list === "followers"
                         ? state.accounts[id]?.following[owner] !== undefined
                         : state.accounts[owner]?.following[id] !== undefined),
@@ -334,6 +366,7 @@ export function createProfileSocialHandler(options: {
           delete state.accounts[key];
           for (const account of Object.values(state.accounts)) {
             delete account.following[key];
+            if (account.blocked) delete account.blocked[key];
             delete account.notices[key];
             for (const [id, notice] of Object.entries(account.notices))
               if (notice.actor === key || notice.owner === key) delete account.notices[id];
@@ -429,6 +462,12 @@ export function createProfileSocialHandler(options: {
               delete owner.notices[noticeId];
             }
           } else if (body["action"] === "share") {
+            if (body["achievements"] !== undefined) {
+              self.achievements = Object.fromEntries(
+                (body["achievements"] as string[]).map((id) => [id, true as const]),
+              );
+              self.achievementsUpdatedAt = now;
+            }
             if (validSocialProfileDetails(body["details"])) {
               const details = body["details"];
               self.details = {
@@ -454,7 +493,29 @@ export function createProfileSocialHandler(options: {
           } else if (body["action"] === "read") {
             for (const notice of Object.values(self.notices)) notice.read = true;
           } else if (target) {
-            if (body["action"] === "remove-follower") {
+            if (body["action"] === "block") {
+              self.blocked ??= {};
+              if (self.blocked[target] === undefined && Object.keys(self.blocked).length >= 200)
+                return reply(409, { error: "Limite de 200 bloqueios atingido." });
+              self.blocked[target] = now;
+              delete self.following[target];
+              const other = state.accounts[target];
+              if (other) delete other.following[key];
+              for (const [owner, account] of [
+                [key, self],
+                [target, other],
+              ] as const) {
+                if (!account) continue;
+                const opposite = owner === key ? target : key;
+                for (const [id, notice] of Object.entries(account.notices))
+                  if (id === opposite || notice.actor === opposite || notice.owner === opposite)
+                    delete account.notices[id];
+                for (const activity of Object.values(account.activities ?? {}))
+                  delete activity.likes[opposite];
+              }
+            } else if (body["action"] === "unblock") {
+              if (self.blocked) delete self.blocked[target];
+            } else if (body["action"] === "remove-follower") {
               const other = state.accounts[target];
               if (other) delete other.following[key];
               delete self.notices[target];

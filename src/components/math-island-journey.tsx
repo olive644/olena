@@ -20,6 +20,7 @@ import { MathPlaceTreasure } from "./math-place-treasure";
 import { MathPlaceScene } from "./math-place-scene";
 import { MathNumber } from "./math-paper-art";
 import "./math-island-journey.css";
+import { IslandAchievementBook } from "./math-achievements";
 
 export function MathIslandJourney({
   onBack,
@@ -162,6 +163,7 @@ export function MathIslandJourney({
         } as CSSProperties
       }
       onKeyDown={(event) => {
+        if (event.target instanceof Element && event.target.closest("dialog[open]")) return;
         if (event.key === "Tab") {
           const buttons =
             root.current?.querySelectorAll<HTMLButtonElement>("button:not([disabled])");
@@ -181,6 +183,7 @@ export function MathIslandJourney({
         }
       }}
       onWheel={(event) => {
+        if (event.target instanceof Element && event.target.closest("dialog[open]")) return;
         if (
           Math.abs(event.deltaY) >= Math.abs(event.deltaX) &&
           event.currentTarget.scrollHeight > event.currentTarget.clientHeight
@@ -274,6 +277,7 @@ export function MathIslandJourney({
             <PracticeUserPortrait profile={profile} />
           </div>
         </div>
+        <IslandAchievementBook key={course.id} courseId={course.id} />
         <div className="math-journey-label" aria-live="polite">
           <span>{course.subject}</span>
           <h1>{course.title}</h1>

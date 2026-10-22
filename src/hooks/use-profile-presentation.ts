@@ -11,6 +11,8 @@ import { profileLevel } from "../domain/profile-study";
 import { readRoomXp } from "../data/room-xp";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { recognizeSocialLink } from "../domain/profile-identity";
+import { mathAchievements } from "../domain/math-achievements";
+import { readMathGame } from "../data/math-game-learning";
 
 export function useProfilePresentation(
   username: string,
@@ -21,6 +23,11 @@ export function useProfilePresentation(
   const name = profile.name?.trim() || fallback;
   const photoUrl = profileAvatarSource(profile.photoUrl);
   const cover = profileCover(profile.cover);
+  const achievements = JSON.stringify(
+    mathAchievements(readMathGame(), workspace?.practiceActivities, agendaTimeZone())
+      .filter((item) => item.earned)
+      .map((item) => item.id),
+  );
   const details = workspace
     ? JSON.stringify({
         level: profileLevel(readRoomXp()).level,
@@ -57,6 +64,7 @@ export function useProfilePresentation(
           photoUrl,
           cover,
           expectedUsername: username,
+          achievements: JSON.parse(achievements) as string[],
           ...(details
             ? {
                 details: JSON.parse(
@@ -70,5 +78,5 @@ export function useProfilePresentation(
     return () => {
       active = false;
     };
-  }, [username, name, photoUrl, cover, details]);
+  }, [username, name, photoUrl, cover, details, achievements]);
 }

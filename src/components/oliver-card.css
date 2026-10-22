@@ -563,44 +563,6 @@ html[data-reduce-motion="true"] .oliver-tarot-front::after {
   justify-content: space-between;
   gap: 15px;
 }
-.oliver-inspection {
-  display: grid;
-  justify-items: center;
-  gap: 16px;
-}
-.oliver-inspection-stage {
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  width: min(310px, 78vw);
-  height: 535px;
-  perspective: 1400px;
-  touch-action: none;
-  cursor: var(--paper-cursor-grab, grab);
-}
-.oliver-inspection-stage:active {
-  cursor: var(--paper-cursor-grabbing, grabbing);
-}
-.oliver-inspection-stage:focus-visible {
-  outline: 3px solid #7433e0;
-  outline-offset: 8px;
-}
-.oliver-inspection-turn {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-}
-.oliver-inspection-front,
-.oliver-inspection-back {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.oliver-inspection-back {
-  transform: rotateY(180deg);
-}
 .oliver-arrival-back {
   position: absolute;
   top: 0;

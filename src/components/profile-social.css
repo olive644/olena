@@ -78,6 +78,78 @@
 .social-directory::backdrop {
   background: #17151cc9;
 }
+:root .social-directory[data-inspecting="true"] {
+  width: min(780px, calc(100vw - 24px));
+}
+.social-profile .social-visit-cover {
+  height: 180px;
+}
+.social-profile > img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-top: -70px;
+  position: relative;
+}
+.social-profile h3 {
+  margin: 6px 0;
+  font-size: 1.3rem;
+}
+.social-profile .math-achievements {
+  width: 100%;
+  text-align: left;
+  margin-top: 22px;
+}
+.social-profile .math-achievement-grid {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+}
+.profile-safety {
+  width: 100%;
+  text-align: left;
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 12px;
+}
+.profile-safety summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.profile-safety summary svg {
+  width: 26px;
+  height: 26px;
+}
+.profile-safety-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.profile-safety-confirm {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: var(--soft);
+  border-radius: 6px 18px 6px 12px;
+  margin-top: 12px;
+}
+.profile-safety-confirm textarea {
+  width: 100%;
+  min-height: 100px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 12px;
+}
+.achievement-notice-collection {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  max-height: 55dvh;
+  width: 100%;
+  overflow: auto;
+}
 .social-directory input {
   min-height: 44px;
   padding: 10px;

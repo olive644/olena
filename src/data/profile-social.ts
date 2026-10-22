@@ -5,12 +5,15 @@ import { PROFILE_AVATARS } from "../domain/profile-avatars";
 import { PROFILE_COVERS } from "../domain/profile-covers";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 import { validSocialProfileDetails } from "../domain/social-profile-details";
+import { validAchievementIds } from "../domain/math-achievements";
 export const SOCIAL_CHANGED = "olena:social-changed";
 export const SOCIAL_VISIT = "olena:social-visit";
 function isActivity(value: unknown): boolean {
   if (!value || typeof value !== "object") return false;
   const item = value as Record<string, unknown>;
   return (
+    (item["blocked"] === undefined || typeof item["blocked"] === "boolean") &&
+    (item["achievements"] === undefined || validAchievementIds(item["achievements"])) &&
     typeof item["id"] === "string" &&
     /^[a-f0-9]{32}$/.test(item["id"]) &&
     ["focus", "practice", "quiz", "streak", "module"].includes(String(item["kind"])) &&

@@ -26,3 +26,11 @@ export function validSocialProfileDetails(value: unknown): value is SocialProfil
     item.socialLinks.every((link) => typeof link === "string" && !!recognizeSocialLink(link))
   );
 }
+
+// O Realtime Database omite listas vazias. Ausência de links não apaga nível ou streaks.
+export function publicProfileDetails(value: unknown): SocialProfileDetails | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const record = value as Record<string, unknown>;
+  const normalized = { ...record, socialLinks: record["socialLinks"] ?? [] };
+  return validSocialProfileDetails(normalized) ? normalized : undefined;
+}

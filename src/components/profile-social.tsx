@@ -17,6 +17,8 @@ import { profileCover } from "../domain/profile-covers";
 import { ProfileCoverArt } from "./profile-cover-art";
 import { ProfileNetworks } from "./profile-networks";
 import { ProfileStreakValues } from "./profile-streaks";
+import { ProfileSafety } from "./profile-safety";
+import { AchievementCollection } from "./math-achievements";
 
 function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: string): void }) {
   useLanguage();
@@ -215,6 +217,7 @@ export function SocialDirectory({
     <dialog
       ref={dialog}
       className="profile-editor social-directory"
+      data-inspecting={!!person && !list}
       aria-labelledby="social-directory-title"
       onCancel={(event) => {
         event.preventDefault();
@@ -418,7 +421,8 @@ export function SocialDirectory({
                 </button>
               </div>
               {person.followsYou && <p>{uiText(924)}</p>}
-              {person.username !== feed.self.username && (
+              {person.blocked && <p role="status">{uiText("Você bloqueou esta pessoa.")}</p>}
+              {person.username !== feed.self.username && !person.blocked && (
                 <button
                   type="button"
                   className="secondary-button"
@@ -428,6 +432,15 @@ export function SocialDirectory({
                   <FriendIcon />
                   {person.followed ? uiText(918) : person.followsYou ? uiText(1917) : uiText(911)}
                 </button>
+              )}
+              {!person.blocked &&
+                (person.achievements !== undefined ? (
+                  <AchievementCollection ids={person.achievements} compact />
+                ) : (
+                  <p>{uiText("Conquistas ainda não compartilhadas.")}</p>
+                ))}
+              {person.username !== feed.self.username && (
+                <ProfileSafety key={person.username} person={person} onChange={setFeed} />
               )}
             </section>
           )}
