@@ -101,13 +101,14 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
       !/^[a-z0-9._]{1,30}$/.test(feed.connections.owner) ||
       !Array.isArray(feed.connections.people) ||
       feed.connections.people.length > 50 ||
-      !feed.connections.people.every(isProfile) ||
       (feed.connections.next !== undefined &&
         (!Number.isSafeInteger(feed.connections.next) ||
           feed.connections.next < 0 ||
           feed.connections.next > 1000)))
   )
     throw new Error(uiText("Lista de conexões inválida."));
+  // Uma conta com dados fora do padrão some da lista, em vez de derrubar a lista inteira.
+  if (feed.connections) feed.connections.people = feed.connections.people.filter(isProfile);
   if (
     feed.suggestions !== undefined &&
     (!Array.isArray(feed.suggestions) ||

@@ -85,3 +85,37 @@ it("aceita conclusão de módulo oficial e recusa metadados arbitrários", async
   activity.course = "private-note-title";
   await expect(requestSocial()).rejects.toThrow("Resposta inválida");
 });
+it("um perfil inválido some da lista de conexões sem derrubar os outros", async () => {
+  const person = (username: string, photoUrl: string) => ({
+    username,
+    name: username,
+    photoUrl,
+    followers: 0,
+    following: 0,
+    followed: false,
+    followsYou: true,
+    shared: true,
+  });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            self: person("eu", "/profile-avatars/helena.webp"),
+            notifications: [],
+            connections: {
+              kind: "followers",
+              owner: "eu",
+              people: [
+                person("ana", "/profile-avatars/leticia-coelho.svg"),
+                person("bia", "/profile-avatars/alice.svg"),
+              ],
+            },
+          }),
+        ),
+    ),
+  );
+  const feed = await requestSocial();
+  expect(feed.connections?.people.map((item) => item.username)).toEqual(["bia"]);
+});
