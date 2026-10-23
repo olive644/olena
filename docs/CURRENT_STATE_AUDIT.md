@@ -3509,3 +3509,13 @@ Validação: npm run verify aprovado, 331 arquivos e 2127 testes; 42 testes foca
 - Causa confirmada do resumo ausente do bizzok: campo socialLinks vazio omitido no banco. publicProfileDetails normaliza somente a ausência de links, mantendo nível e ofensivas, mas continua recusando detalhes realmente inválidos. Regressão reproduz a omissão do campo, sem gravar em produção.
 - Peso: primeiro build 1514,8 KiB, acima do teto de 1500. Artes existentes de quatro famílias de ícones foram extraídas sem redesenho para sprites SVG cacheáveis, preservando facetas, cores e atributos acessíveis. Build seguinte 1495,3 KiB; entrada 217,5 KiB. Nenhum teto foi aumentado. Mecanismo 3D foi separado das artes/cartas para evitar acoplamento do catálogo nas conquistas.
 - Verificação concluída na branch feat/math-achievements-profile: npm run verify aprovado, 331 arquivos e 2124 testes. Vinte E2E de regressão passaram em Edge desktop/mobile, claro/escuro; após compactar a prévia da coleção, mais dez E2E focados passaram. Build final: aplicação 1495,8 KiB, entrada 217,5 KiB, abaixo dos limites existentes. WebKit aguarda CI. Dados reais de seguidores e perfis não foram modificados. Mesclagem depende de autorização explícita e CI verde.
+
+## Conquistas abrem rápido e teto de JavaScript em 1600 KiB (2026-10-23)
+
+- Causa medida: a galeria baixava até 58 selos WebP de 512 px (cerca de 40 KiB cada, 4,8 MiB no total das duas pastas) para mostrá-los com cerca de 100 px, sem cabeçalho de cache.
+- Cada selo ganhou uma miniatura de 256 px (cerca de 15 KiB) em `public/achievement-badges/{math,general}/thumb/`. Só os cartões da grade usam a miniatura; a inspeção e o cartão de compartilhamento continuam com a arte completa.
+- As miniaturas da categoria atual são aquecidas em ociosidade antes de abrir a galeria, e as da outra aba depois, para a troca de abas não esperar rede.
+- Cartões fora da tela usam `content-visibility: auto`, o que evita pintar e animar o brilho de dezenas de selos invisíveis.
+- `vercel.json`: `/achievement-badges/*` com `Cache-Control: public, max-age=604800, stale-while-revalidate=86400`. Como os nomes não têm hash, uma arte trocada pode levar até uma semana para chegar a quem já abriu. Para forçar, renomear o arquivo.
+- Teto de JavaScript total e teto absoluto subiram de 1500 para 1600 KiB por decisão da dona do projeto. A entrada inicial segue com seu orçamento próprio.
+- Não verificado: o ganho em tempo real em aparelho móvel. Conferir no preview com o painel de rede do navegador (bytes transferidos ao abrir Conquistas).

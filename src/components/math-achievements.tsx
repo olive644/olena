@@ -32,8 +32,17 @@ const title = (item: Achievement) =>
       ? " · " + materialName(item)
       : ""
     : " " + item.target);
-export function AchievementArt({ item, locked = false }: { item: Achievement; locked?: boolean }) {
+export function AchievementArt({
+  item,
+  locked = false,
+  thumb = false,
+}: {
+  item: Achievement;
+  locked?: boolean;
+  thumb?: boolean;
+}) {
   const general = item.category === "general";
+  const folder = (general ? "general/" : "math/") + (thumb ? "thumb/" : "");
   return (
     <span
       className={
@@ -47,10 +56,10 @@ export function AchievementArt({ item, locked = false }: { item: Achievement; lo
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" aria-hidden="true">
         {general ? (
-          <GeneralAchievementScene item={item} />
+          <GeneralAchievementScene item={item} thumb={thumb} />
         ) : (
           <image
-            href={"/achievement-badges/math/" + item.id + ".webp"}
+            href={"/achievement-badges/" + folder + item.id + ".webp"}
             width="160"
             height="160"
             preserveAspectRatio="xMidYMid meet"
@@ -82,10 +91,7 @@ export function AchievementArt({ item, locked = false }: { item: Achievement; lo
       {(item.rarity === "rare" || (general && item.tier)) && !locked && (
         <span
           className="achievement-foil"
-          style={{
-            maskImage:
-              "url(/achievement-badges/" + (general ? "general/" : "math/") + item.id + ".webp)",
-          }}
+          style={{ maskImage: "url(/achievement-badges/" + folder + item.id + ".webp)" }}
           aria-hidden="true"
         />
       )}
@@ -117,6 +123,8 @@ export function AchievementCollection({
   const [selected, setSelected] = useState(() =>
     ALL_ACHIEVEMENTS.find((item) => item.id === initialId),
   );
+  // Sentido da troca de etapa: a arte nova entra pelo lado de onde a etapa vem.
+  const [direction, setDirection] = useState<"up" | "down">("up");
   const [gallery, setGallery] = useState(!compact);
   const [category, setCategory] = useState<"mathematics" | "general">(
     initialId?.startsWith("general-") ? "general" : "mathematics",
@@ -153,6 +161,25 @@ export function AchievementCollection({
   useEffect(() => {
     if (gallery) book.current?.showModal();
   }, [gallery]);
+  // Aquece o cache das miniaturas em ociosidade: a categoria atual antes de abrir a galeria
+  // e a outra aba depois, para a troca de abas não esperar rede.
+  useEffect(() => {
+    const wanted = groups.filter(
+      (item) => ((item.category ?? "mathematics") === category) !== gallery,
+    );
+    const timer = window.setTimeout(() => {
+      for (const item of wanted) {
+        new Image().src =
+          "/achievement-badges/" +
+          (item.category === "general" ? "general/" : "math/") +
+          "thumb/" +
+          item.id +
+          ".webp";
+      }
+    }, 300);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gallery, category, courseId]);
   useEffect(
     () => () => {
       if (preview) URL.revokeObjectURL(preview);
@@ -239,7 +266,7 @@ export function AchievementCollection({
             }}
             aria-label={title(item) + ". " + uiText(earned.has(item.id) ? 2792 : 2793)}
           >
-            <AchievementArt item={item} locked={!earned.has(item.id)} />
+            <AchievementArt item={item} locked={!earned.has(item.id)} thumb />
             <strong>{uiText(item.name)}</strong>
             {!summary && (
               <span className={"achievement-rarity is-" + item.rarity}>
@@ -489,10 +516,14 @@ export function AchievementCollection({
               </div>
             ) : (
               <>
-                <div ref={art} className="achievement-static-art">
-                  <AchievementArt item={selected} locked={!earned.has(selected.id)} />
+                <div ref={art} className="achievement-static-art" data-direction={direction}>
+                  <AchievementArt
+                    key={selected.id}
+                    item={selected}
+                    locked={!earned.has(selected.id)}
+                  />
                 </div>
-                <p className="achievement-status">
+                <p key={selected.id} className="achievement-status">
                   <span className={"achievement-rarity is-" + selected.rarity}>
                     {rarityName(selected.rarity)}
                   </span>
@@ -558,6 +589,7 @@ export function AchievementCollection({
                         aria-pressed={item.id === selected.id}
                         aria-label={uiText(2864, [materialName(item) || item.target])}
                         onClick={() => {
+                          setDirection(item.target < selected.target ? "down" : "up");
                           setSelected(item);
                           setError("");
                         }}

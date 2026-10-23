@@ -665,3 +665,95 @@ body.reduce-motion .math-achievement-art[data-tier] .achievement-foil,
 body.reduce-motion .achievement-inspection [data-tier] .achievement-foil::after {
   animation: none;
 }
+.achievement-tile {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 190px;
+}
+.achievement-static-art > .math-achievement-art {
+  --tier-from: 36px;
+  animation: achievement-tier-in 560ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+}
+.achievement-static-art[data-direction="down"] > .math-achievement-art {
+  --tier-from: -36px;
+}
+.achievement-static-art > .math-achievement-art::before {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #facc1566, transparent 68%);
+  animation: achievement-tier-glow 700ms ease-out both;
+}
+.achievement-inspection .achievement-status {
+  animation: achievement-tier-text 380ms ease-out 120ms both;
+}
+.achievement-tier-steps button {
+  transition:
+    transform 160ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+.achievement-tier-steps button:active {
+  transform: translateY(2px);
+}
+.achievement-tier-steps .is-selected {
+  transform: translateY(-2px);
+}
+@keyframes achievement-tier-in {
+  0% {
+    opacity: 0;
+    transform: translateX(var(--tier-from)) scale(0.8) rotate(-7deg);
+    filter: brightness(1.6);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(0) scale(1.06) rotate(2deg);
+    filter: brightness(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes achievement-tier-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+@keyframes achievement-tier-text {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .achievement-static-art > .math-achievement-art,
+  .achievement-static-art > .math-achievement-art::before,
+  .achievement-inspection .achievement-status,
+  .achievement-tier-steps button {
+    animation: none;
+    transition: none;
+  }
+}
+:root[data-reduce-motion="true"] .achievement-static-art > .math-achievement-art,
+:root[data-reduce-motion="true"] .achievement-static-art > .math-achievement-art::before,
+:root[data-reduce-motion="true"] .achievement-inspection .achievement-status,
+body.reduce-motion .achievement-static-art > .math-achievement-art,
+body.reduce-motion .achievement-static-art > .math-achievement-art::before,
+body.reduce-motion .achievement-inspection .achievement-status {
+  animation: none;
+}
