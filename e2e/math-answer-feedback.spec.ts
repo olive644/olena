@@ -126,11 +126,17 @@ test("mastery celebrates offline, retains progress after reload and opens the ne
   await expect
     .poll(() =>
       page
-        .locator(".math-mastery-seal use")
+        .locator(".math-mastery-seal .paper-digits use")
         .first()
         .evaluate((element) => (element as SVGGraphicsElement).getBBox().width),
     )
     .toBeGreaterThan(0);
+  expect(
+    await page
+      .locator(".math-mastery-seal .room-points-icon path")
+      .first()
+      .evaluate((element) => (element as SVGGraphicsElement).getBBox().width),
+  ).toBeGreaterThan(0);
   const button = page.getByRole("button", { name: "Ver minha conquista" });
   await expect(button).toBeFocused();
   await expect(button).toBeInViewport({ ratio: 1 });

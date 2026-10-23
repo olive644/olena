@@ -8,7 +8,9 @@ export function RoomPointsIcon({ xp = false }: { xp?: boolean }) {
       viewBox="0 0 48 48"
       aria-hidden="true"
     >
-      <use href="/room-icons/points.svg#points" />
+      <path fill="var(--points-depth)" d="m24 4 7 13 14 3-10 11 1 15-12-7-14 7 3-15L3 20l15-3Z" />
+      <path fill="currentColor" d="m24 1 7 13 14 3-10 11 1 15-12-7-14 7 3-15L3 17l15-3Z" />
+      <path fill="var(--points-fold)" d="m24 1 0 24-21-8 15-3Zm0 24 12 18-1-15 10-11Z" />
     </svg>
   );
 }

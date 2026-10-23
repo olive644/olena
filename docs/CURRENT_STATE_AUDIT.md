@@ -3455,6 +3455,16 @@ Modal de exclusão era descendente de painel animado, com containing block trans
 
 # Conquistas matemáticas e segurança social, 2026-10-22
 
+## Correção das regressões do CI, 2026-10-22
+
+Validação final da correção: npm run verify aprovado, 331 arquivos e 2130 testes. São 22 execuções E2E aprovadas, 16 dos fluxos afetados e seis do sino. Teste unitário dos pontos: vermelho antes e cinco testes do arquivo verdes depois. Aplicação final 1499,7 KiB de 1500 KiB. Mesclagem continua condicionada aos checks do novo head.
+
+As duas falhas desktop foram reproduzidas antes da correção. card-integrity procurava Cartas do Oliver, atalho removido por solicitação do proprietário. O teste agora continua uma Poeira cósmica, revela e guarda a carta para abrir a coleção pelo fluxo real; mantém a inspeção e os gestos de todas as cartas e confirma a ausência do atalho antigo.
+
+A estrela de pontos da conclusão offline tinha geometria vazia após a extração para SVG externo. RoomPointsIcon volta a embutir somente seus três paths originais, preservando facetas e cores em todos os consumidores. Teste unitário falhou antes e passou depois, comparando os paths e preenchimentos com a fonte original nas variantes pontos/XP. E2E verifica separadamente a geometria dos dígitos e da estrela enquanto o navegador está offline. As artes aprovadas das conquistas não mudam.
+
+Dezesseis E2E focados Edge desktop/mobile passaram. O teste do sino, que oscilou no CI, passou em seis execuções locais, três por projeto, sem alterar seu comportamento ou expectativas. Build medido em 1499,7 KiB, sem alterar limite. No CI anterior, WebKit shard 2 excedeu 15 minutos instalando o navegador e shard 1 atingiu 20 minutos executando testes, inclusive as regressões acima. Nova tentativa local de instalar WebKit falhou no download. Nenhum workflow, timeout, escopo de testes ou configuração externa foi alterado; WebKit exige o CI do novo commit.
+
 ## Refinamento da galeria e compartilhamento, 2026-10-22
 
 Direção aprovada pelo proprietário: badges fechadas inspiradas nas ilhas atuais de Matemática, com pedra creme, rochas cobalto, vegetação facetada e pequenos detalhes dourados. Cada objetivo recebe uma cena matemática própria; as onze raras preservam o Oliver original, com olhos de coração. As tentativas vetoriais, ilustração solta e moldura ornamental foram descartadas. Artes geradas pelo imagegen integrado com referências locais aprovadas e convertidas em WebP transparente de 512 px em public/achievement-badges/math. Números usam os símbolos originais de paper-digits.svg em grafite sobre a placa, sem texto gerado. Exportação incorpora somente a badge do objetivo e os dígitos locais antes de rasterizar, sem enviar dados do usuário.

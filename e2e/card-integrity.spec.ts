@@ -14,11 +14,11 @@ test("all Oliver cards rotate as one surface without dragging art or selecting l
         foundations: {
           points: 1100,
           receipts: cards,
-          chests: cards.map((id) => ({
+          chests: cards.map((id, index) => ({
             id,
             opened: true,
             unlockAt: 0,
-            revealed: 1,
+            revealed: index === 0 ? 0 : 1,
             ...(id === "oliver-star-tarot" ? { kind: "arcane", arcana: id } : { cards: [id] }),
           })),
         },
@@ -27,7 +27,13 @@ test("all Oliver cards rotate as one surface without dragging art or selecting l
   }, ids);
   await page.goto("/aprender");
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
-  await page.getByRole("button", { name: "Cartas do Oliver" }).click();
+  await expect(page.getByRole("button", { name: "Cartas do Oliver", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Continuar Poeira cósmica" }).click();
+  for (let i = 1; i <= 4; i++)
+    await page.getByRole("button", { name: `Revelar raridade, toque ${i} de 4` }).click();
+  await page.getByRole("button", { name: "Revelar carta", exact: true }).click();
+  await page.getByRole("button", { name: "Guardar cartas" }).click();
+  await expect(page.getByRole("dialog", { name: "Coleção do Oliver" })).toBeVisible();
   const labels = [
     ...OLIVER_CARDS.map((card) => `${card.title}, 1 cópias`),
     "Ver tarot do Oliver, A Estrela",

@@ -4,7 +4,29 @@ import { expect, it } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 import { PaperObjectIcon } from "./paper-object-icon";
 import { PaperActionIcon } from "./paper-action-icon";
+import { RoomPointsIcon } from "./room-paper-icons";
 import { MATH_ACHIEVEMENTS } from "../domain/math-achievements";
+it("estrela de pontos e XP preserva a arte sem depender da rede", () => {
+  const source = new DOMParser().parseFromString(
+    readFileSync("public/room-icons/points.svg", "utf8"),
+    "image/svg+xml",
+  );
+  const expected = [...source.querySelectorAll("path")].map((path) => [
+    path.getAttribute("d"),
+    path.getAttribute("fill"),
+  ]);
+  for (const xp of [false, true]) {
+    const { container, unmount } = render(<RoomPointsIcon xp={xp} />);
+    expect(container.querySelector("use, image")).toBeNull();
+    expect(
+      [...container.querySelectorAll("path")].map((path) => [
+        path.getAttribute("d"),
+        path.getAttribute("fill"),
+      ]),
+    ).toEqual(expected);
+    unmount();
+  }
+});
 it("sprites de papel preservam símbolos locais, sem scripts ou recursos remotos", () => {
   for (const file of [
     "paper-editor-icon",
