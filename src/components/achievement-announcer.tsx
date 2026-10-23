@@ -19,7 +19,7 @@ export function AchievementAnnouncer({
 }) {
   useLanguage();
   const values = useMathAchievements(workspace);
-  useProfilePresentation(username, nameFallback, workspace);
+  useProfilePresentation(username, nameFallback, workspace, values);
   const earned = values.filter((item) => item.earned);
   const signature = earned.map((item) => item.id).join(",");
   const previous = useRef<Set<string> | null>(null);

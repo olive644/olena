@@ -81,9 +81,7 @@ for (const theme of ["light", "dark"]) {
       .getByRole("button", { name: "Compartilhar perfil por QR code" })
       .boundingBox();
     expect(qr!.x).toBeGreaterThanOrEqual(friends!.x + friends!.width);
-    await expect(
-      page.getByRole("region", { name: "Conquistas de matemática", exact: true }),
-    ).toBeVisible();
+    await expect(page.getByRole("region", { name: "Conquistas", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Meu progresso", exact: true })).toHaveCount(0);
     await expect(page.getByText("O estudo que você já construiu", { exact: true })).toHaveCount(0);
     const islands = page.locator(".profile-islands");

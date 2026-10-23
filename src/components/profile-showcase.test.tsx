@@ -179,7 +179,7 @@ it("substitui progresso por conquistas sem alterar as sessões reais do workspac
   const items = container.querySelectorAll(".profile-activity li");
   expect(items).toHaveLength(0);
   expect(screen.queryByText("Sua trajetória")).toBeNull();
-  expect(await screen.findByRole("region", { name: "Conquistas de matemática" })).toBeTruthy();
+  expect(await screen.findByRole("region", { name: "Conquistas" })).toBeTruthy();
   expect(screen.queryByRole("heading", { name: "Meu progresso" })).toBeNull();
   expect(JSON.stringify(workspace)).toBe(before);
 });

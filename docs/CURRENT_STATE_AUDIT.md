@@ -1,5 +1,17 @@
 # Auditoria do estado atual
 
+## Conquistas gerais e destaques, 2026-10-23
+
+Revisão artística aprovada: 56 artes gerais próprias, incluindo os quatro níveis da Horta do Foco. As outras 52 foram geradas individualmente, sem falhas, preservadas em PNG no workspace e codificadas para WebP 512 com alpha, total de 2.404.744 bytes no app. Cada família conta uma história e evolui a cena por material, sem ícones reaproveitados ou cenário da ilha matemática. Prompts em docs/achievement-general-art-prompts.json, HORTA_PROMPTS.md e README da pasta general. PaperDigits permanece original, ajustado à placa geral. Reflexos por data-tier: cobre discreto, prata frio, dourado e verde esmeralda. Máscara usa alpha da própria imagem; bloqueadas não brilham; redução de movimento interrompe as duas camadas. Matemática e seus assets permanecem intactos.
+
+Validação após a revisão artística: 332 arquivos e 2143 testes unitários aprovados. O primeiro gate de desempenho falhou em 1513,4 KiB. Extração fiel dos desenhos estáticos de Agenda, marcadores, planetas, ferramentas do caderno, atributos e partes dos baús para sprites, mais reutilização de IDs já existentes do catálogo bilíngue, reduziu JavaScript a 1499,6 KiB. Entrada 217,5 KiB. Nenhum limite, workflow, tradução ou dependência alterado. RoomPointsIcon permanece inline para o modo offline. Não foi mantida a tentativa de extrair a trilha sem uso no produto, pois não reduziu o bundle. Fixtures comparam paths, cores e transforms originais; textos reaproveitados são comparados em português e inglês. Verify integral e E2E final precisam da execução conclusiva após esses ajustes.
+
+Regressão dos três destaques preenchidos corrigida: o X decorativo agora fica dentro de um span, evitando a regra global que limitava o cartão inteiro a 44 px e bloqueava a aba Gerais no celular. Dois E2E focados Edge desktop/mobile passaram, com clique normal e verificação de que os cartões não ultrapassam a área dos destaques.
+
+Adicionadas 56 metas gerais em 12 famílias de quatro materiais e oito especiais, derivadas de registros existentes. A galeria agrupa níveis e separa Matemática/Gerais. Até três favoritos obtidos são sincronizados no perfil e publicados com validação, ordem e remoção explícita. Histórico geral preserva obtenções após exclusões, sem inventar datas. Insígnias deixam o 3D, cartas permanecem intactas. Cards PNG usam paletas por assunto e alfabeto original. Contrato visual documentado em ACHIEVEMENT_DESIGN.md.
+
+Validação parcial: 20 E2E no Edge desktop/mobile aprovados, cobrindo galeria, PNG real, favoritos após recarga e perfis nos dois temas. A suíte completa passou 2137 testes e revelou duas regressões por adicionar histórico vazio a perfis legados. A leitura foi corrigida para não introduzir campo ausente; os 11 testes dos três arquivos afetados passaram depois. Tipos, API ESM, idiomas e formatação aprovados. Não afirmar verify completo: a última medição da aplicação ficou em 1515,1 KiB para teto de 1500. Separar catálogo e cálculo evitou acoplar derivação ao armazenamento, mas não resolveu o orçamento. Nenhum limite, workflow ou escopo foi alterado. Publicação pendente da redução e nova validação integral.
+
 ## Foco após desligar e inspeção pública, 2026-10-19
 
 Regressão WebKit mobile corrigida: a prancheta ampliada do Rive podia criar rolagem horizontal no Espaço. O cartão de Foco limita somente o excesso de pintura com overflow: clip, sem mudar a proporção do tomate ou a animação no Foco/pop-up. O E2E do widget também verifica ausência de rolagem após carregar o canvas.

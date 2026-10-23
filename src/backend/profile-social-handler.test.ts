@@ -4,6 +4,37 @@ import { createProfileSocialHandler, type SocialState } from "./profile-social-h
 import type { HandleRegistry } from "./profile-handle-handler";
 import type { SocialFeed } from "../domain/profile-social";
 const key = (uid: string) => createHash("sha256").update(uid).digest("hex");
+it("publica até três destaques conquistados, permite limpar e oculta após bloqueio", async () => {
+  const app = setup();
+  const share = {
+    action: "share",
+    enabled: true,
+    name: "Alice",
+    photoUrl: "/profile-avatars/alice.svg",
+    achievements: ["correct-1", "general-pomodoro-bronze"],
+    achievementFavorites: ["general-pomodoro-bronze", "correct-1", "correct-10"],
+  };
+  expect((await app.request("a", share)).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile?.achievementFavorites).toEqual([
+    "general-pomodoro-bronze",
+    "correct-1",
+  ]);
+  expect(
+    (await app.request("a", { ...share, achievementFavorites: ["correct-1", "correct-1"] })).status,
+  ).toBe(400);
+  expect(
+    (
+      await app.request("a", {
+        ...share,
+        achievementFavorites: ["correct-1", "correct-10", "correct-50", "correct-100"],
+      })
+    ).status,
+  ).toBe(400);
+  expect((await app.request("a", { ...share, achievementFavorites: [] })).status).toBe(200);
+  expect((await app.feed("b", "username=alice")).profile?.achievementFavorites).toEqual([]);
+  await app.request("b", { action: "block", username: "alice" });
+  expect((await app.feed("b", "username=alice")).profile?.achievementFavorites).toBeUndefined();
+});
 it("bloqueio é bilateral, remove conexões e impede novas interações", async () => {
   const app = setup();
   await app.request("a", { action: "follow", username: "bob" });

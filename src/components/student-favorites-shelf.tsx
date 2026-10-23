@@ -76,15 +76,15 @@ export default function StudentFavoritesShelf({
     );
   }
   return (
-    <section className="student-favorites" aria-label={uiText("Sua prateleira")}>
+    <section className="student-favorites" aria-label={uiText(2746)}>
       <header>
-        <h2>{uiText("Sua prateleira")}</h2>
+        <h2>{uiText(2746)}</h2>
         <button
           ref={add}
           type="button"
           className="student-favorites-add"
           onClick={() => setSelecting(true)}
-          aria-label={uiText("Escolher favoritos")}
+          aria-label={uiText(2747)}
         >
           <PaperActionIcon name="plus" />
         </button>
@@ -96,7 +96,7 @@ export default function StudentFavoritesShelf({
               type="button"
               key={item.id}
               className="favorite-book"
-              aria-label={uiText("Ver {0}", [item.title])}
+              aria-label={uiText(2748, [item.title])}
               aria-pressed={activeId === item.id}
               onClick={() =>
                 isNotebookFolder(item)
@@ -110,17 +110,13 @@ export default function StudentFavoritesShelf({
           ))}
         </div>
         <div className="notebook-shelf__rail" aria-hidden="true" />
-        {!favorites.length && <p>{uiText("Escolha até três favoritos para esta prateleira.")}</p>}
+        {!favorites.length && <p>{uiText(2749)}</p>}
       </div>
       {active && (
         <section className="student-favorite-preview" key={active.id} aria-label={active.title}>
           <header>
             <h3>{active.title}</h3>
-            <button
-              type="button"
-              aria-label={uiText("Fechar")}
-              onClick={() => setActiveId(undefined)}
-            >
+            <button type="button" aria-label={uiText(230)} onClick={() => setActiveId(undefined)}>
               <PaperCloseIcon />
             </button>
           </header>
@@ -133,7 +129,7 @@ export default function StudentFavoritesShelf({
                 }
               />
               <button type="button" onClick={() => open(active)}>
-                {uiText("Abrir")}
+                {uiText(630)}
               </button>
             </div>
           ) : (
@@ -159,13 +155,13 @@ export default function StudentFavoritesShelf({
           }}
         >
           <header>
-            <h2 id="student-favorites-title">{uiText("Escolher favoritos")}</h2>
-            <button type="button" aria-label={uiText("Fechar")} onClick={() => setSelecting(false)}>
+            <h2 id="student-favorites-title">{uiText(2747)}</h2>
+            <button type="button" aria-label={uiText(230)} onClick={() => setSelecting(false)}>
               <PaperCloseIcon />
             </button>
           </header>
-          <p>{uiText("Até três itens no total, com no máximo uma pasta.")}</p>
-          <p role="status">{uiText("{0} de 3 favoritos", [favorites.length])}</p>
+          <p>{uiText(2751)}</p>
+          <p role="status">{uiText(2752, [favorites.length])}</p>
           <div className="student-favorites-picker-shelves">
             {notebookShelves(
               workspace.notebooks.map((item) => {
@@ -193,7 +189,7 @@ export default function StudentFavoritesShelf({
                           className="favorite-book"
                           type="button"
                           key={item.id}
-                          aria-label={uiText("Favorito: {0}", [item.title])}
+                          aria-label={uiText(2753, [item.title])}
                           aria-pressed={selected}
                           disabled={disabled}
                           onClick={() =>
@@ -210,7 +206,7 @@ export default function StudentFavoritesShelf({
                   <div className="notebook-shelf__rail" aria-hidden="true" />
                 </section>
               ))}
-            {!workspace.notebooks.length && <p>{uiText("Nenhum caderno ou Note disponível.")}</p>}
+            {!workspace.notebooks.length && <p>{uiText(2754)}</p>}
           </div>
           <footer>
             <button
@@ -221,10 +217,10 @@ export default function StudentFavoritesShelf({
                 onNavigate("notes");
               }}
             >
-              {uiText("Meus cadernos")}
+              {uiText(1364)}
             </button>
             <button type="button" className="primary-button" onClick={() => setSelecting(false)}>
-              {uiText("Concluir")}
+              {uiText(25)}
             </button>
           </footer>
         </dialog>

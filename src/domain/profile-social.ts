@@ -3,6 +3,7 @@ export type SocialProfile = {
   blocked?: boolean;
   achievements?: string[];
   achievementDates?: Record<string, string>;
+  achievementFavorites?: string[];
   username: string;
   name: string;
   photoUrl: string;
@@ -66,4 +67,5 @@ export type SocialAction =
       details?: SocialProfileDetails;
       achievements?: string[];
       achievementDates?: Record<string, string>;
+      achievementFavorites?: string[];
     };

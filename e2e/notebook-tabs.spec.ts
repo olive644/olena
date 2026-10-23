@@ -31,6 +31,13 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
     .getByRole("dialog", { name: "Escrever à mão" })
     .getByRole("button", { name: "Fechar", exact: true })
     .click();
+  const notice = page.getByRole("complementary", { name: "Nova conquista" });
+  await expect(notice).toBeVisible();
+  await expect(notice).toHaveCSS("pointer-events", "none");
+  await expect(notice.getByRole("button", { name: "Fechar conquista" })).toHaveCSS(
+    "pointer-events",
+    "auto",
+  );
   await preview.getByRole("button", { name: "Criar nova folha" }).click();
   await page
     .getByRole("dialog", { name: "Escrever à mão" })

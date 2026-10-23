@@ -183,11 +183,7 @@ async function request<T>(action: string, body: Record<string, unknown>): Promis
     body: JSON.stringify(body),
   });
   const payload = (await response.json().catch(() => ({}))) as T & { error?: string };
-  if (!response.ok)
-    throw new CollabRequestError(
-      payload.error ?? uiText("Não foi possível conectar o caderno."),
-      response.status,
-    );
+  if (!response.ok) throw new CollabRequestError(payload.error ?? uiText(2302), response.status);
   return payload;
 }
 
@@ -343,7 +339,7 @@ export function useNotebookCollaboration({
           participantId: "",
           displayName: "",
           status: "idle",
-          error: uiText("Você saiu desta colaboração."),
+          error: uiText(1137),
         });
         return;
       }
@@ -570,7 +566,7 @@ export function useNotebookCollaboration({
           setState((current) => ({
             ...current,
             status: "error",
-            error: caught instanceof Error ? caught.message : uiText("Não foi possível conectar."),
+            error: caught instanceof Error ? caught.message : uiText(1138),
           }));
         return false;
       }
@@ -585,7 +581,7 @@ export function useNotebookCollaboration({
         setState((current) => ({
           ...current,
           status: "error",
-          error: uiText("Informe seu nome para compartilhar."),
+          error: uiText(1139),
         }));
         return false;
       }
@@ -624,7 +620,7 @@ export function useNotebookCollaboration({
         setState((current) => ({
           ...current,
           status: "error",
-          error: uiText("Informe o código e seu nome."),
+          error: uiText(1140),
         }));
         return false;
       }
@@ -691,10 +687,7 @@ export function useNotebookCollaboration({
             setState((current) => ({
               ...current,
               status: "error",
-              error:
-                caught instanceof Error
-                  ? caught.message
-                  : uiText("Não foi possível compartilhar a alteração."),
+              error: caught instanceof Error ? caught.message : uiText(1141),
             }));
         }
       } finally {
@@ -722,8 +715,7 @@ export function useNotebookCollaboration({
         setState((current) => ({
           ...current,
           status: isTransient(cause) ? "offline" : current.status,
-          error:
-            cause instanceof Error ? cause.message : uiText("Não foi possível atualizar o índice."),
+          error: cause instanceof Error ? cause.message : uiText(1142),
         }));
       }
     },
@@ -917,13 +909,11 @@ export function useNotebookCollaboration({
 
   const notice =
     state.status === "offline"
-      ? uiText(
-          "Sem conexão. Suas alterações ficam neste aparelho e serão enviadas quando a internet voltar.",
-        )
+      ? uiText(1143)
       : state.status === "reconnecting"
         ? "Reconectando ao caderno…"
         : hasPending && state.status === "online"
-          ? uiText("Enviando alterações…")
+          ? uiText(1144)
           : "";
 
   return {

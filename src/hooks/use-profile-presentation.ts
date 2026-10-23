@@ -13,21 +13,22 @@ import { agendaTimeZone } from "../data/agenda-time-zone";
 import { recognizeSocialLink } from "../domain/profile-identity";
 import { mathAchievements } from "../domain/math-achievements";
 import { readMathGame } from "../data/math-game-learning";
+import type { AchievementProgress } from "./use-math-achievements";
 
 export function useProfilePresentation(
   username: string,
   fallback: string,
   workspace?: WorkspaceState,
+  values?: readonly AchievementProgress[],
 ) {
   const [profile] = useStoredProfile();
   const name = profile.name?.trim() || fallback;
   const photoUrl = profileAvatarSource(profile.photoUrl);
   const cover = profileCover(profile.cover);
-  const earned = mathAchievements(
-    readMathGame(),
-    workspace?.practiceActivities,
-    agendaTimeZone(),
+  const earned = (
+    values ?? mathAchievements(readMathGame(), workspace?.practiceActivities, agendaTimeZone())
   ).filter((item) => item.earned);
+  const favorites = JSON.stringify(profile.achievementFavorites ?? null);
   const achievements = JSON.stringify(earned.map((item) => item.id));
   const achievementDates = JSON.stringify(
     Object.fromEntries(
@@ -72,6 +73,9 @@ export function useProfilePresentation(
           expectedUsername: username,
           achievements: JSON.parse(achievements) as string[],
           achievementDates: JSON.parse(achievementDates) as Record<string, string>,
+          ...(favorites !== "null"
+            ? { achievementFavorites: JSON.parse(favorites) as string[] }
+            : {}),
           ...(details
             ? {
                 details: JSON.parse(
@@ -85,5 +89,5 @@ export function useProfilePresentation(
     return () => {
       active = false;
     };
-  }, [username, name, photoUrl, cover, details, achievements, achievementDates]);
+  }, [username, name, photoUrl, cover, details, achievements, achievementDates, favorites]);
 }

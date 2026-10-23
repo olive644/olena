@@ -18,7 +18,7 @@ export function ConnectedDevices() {
       setResult(await requestAccountDevices());
     } catch {
       setResult(undefined);
-      setError(uiText("Não foi possível carregar os dispositivos. Tente novamente."));
+      setError(uiText(2760));
     } finally {
       setLoading(false);
     }
@@ -27,13 +27,9 @@ export function ConnectedDevices() {
     <section className="profile-card connected-devices" aria-labelledby="devices-title">
       <div className="connected-devices__heading">
         <SettingsIcon name="security" />
-        <h2 id="devices-title">{uiText("Dispositivos conectados")}</h2>
+        <h2 id="devices-title">{uiText(2755)}</h2>
       </div>
-      <p>
-        {uiText(
-          "Veja os navegadores que acessaram sua conta neste aplicativo nos últimos 90 dias.",
-        )}
-      </p>
+      <p>{uiText(2756)}</p>
       <button
         type="button"
         className="secondary-button"
@@ -45,17 +41,13 @@ export function ConnectedDevices() {
       </button>
       {open && (
         <div id="connected-device-list" aria-busy={loading}>
-          <p className="connected-devices__note">
-            {uiText(
-              "Aparelhos usados antes desta atualização aparecem quando você acessar o app neles novamente. Último acesso não significa que o aparelho está online.",
-            )}
-          </p>
+          <p className="connected-devices__note">{uiText(2759)}</p>
           {loading && <HelenaLoading />}
           {error && (
             <div role="alert">
               <p>{error}</p>
               <button type="button" className="secondary-button" onClick={() => void load()}>
-                {uiText("Tentar novamente")}
+                {uiText(498)}
               </button>
             </div>
           )}
@@ -66,11 +58,9 @@ export function ConnectedDevices() {
                   <div>
                     <h3>
                       {device.browser === "Browser" ? uiText("Navegador") : device.browser} ·{" "}
-                      {device.system === "Other"
-                        ? uiText("Sistema não identificado")
-                        : device.system}
+                      {device.system === "Other" ? uiText(2761) : device.system}
                     </h3>
-                    <span>{uiText("Último acesso ao app")}</span>
+                    <span>{uiText(2762)}</span>
                     <time dateTime={new Date(device.lastSeen).toISOString()}>
                       {new Intl.DateTimeFormat(uiLocale(), {
                         dateStyle: "medium",
@@ -79,15 +69,13 @@ export function ConnectedDevices() {
                     </time>
                   </div>
                   {device.id === result.currentId && (
-                    <span className="connected-devices__current">{uiText("Este dispositivo")}</span>
+                    <span className="connected-devices__current">{uiText(2763)}</span>
                   )}
                 </li>
               ))}
             </ul>
           )}
-          {!loading && result?.devices.length === 0 && (
-            <p>{uiText("Nenhum dispositivo registrado neste período.")}</p>
-          )}
+          {!loading && result?.devices.length === 0 && <p>{uiText(2764)}</p>}
         </div>
       )}
     </section>

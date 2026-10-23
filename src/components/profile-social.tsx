@@ -438,6 +438,7 @@ export function SocialDirectory({
                   <AchievementCollection
                     ids={person.achievements}
                     dates={person.achievementDates}
+                    favorites={person.achievementFavorites}
                     ownerName={person.name}
                     compact
                   />
