@@ -112,3 +112,33 @@ it("permite destacar uma conquista obtida e recusa a quarta favorita", () => {
   expect(change).not.toHaveBeenCalled();
   expect(screen.getByRole("alert").textContent).toContain("até três conquistas");
 });
+it("a galeria usa miniaturas leves e a inspeção mantém a arte completa", () => {
+  render(<AchievementCollection ids={["correct-1"]} />);
+  const tile = document.querySelector(".achievement-tile image");
+  expect(tile?.getAttribute("href")).toMatch(/^\/achievement-badges\/math\/thumb\/.+\.webp$/);
+  fireEvent.click(screen.getByRole("button", { name: /Constelação de acertos 1\./ }));
+  const full = document.querySelector(".achievement-inspection image");
+  expect(full?.getAttribute("href")).toBe("/achievement-badges/math/correct-1.webp");
+});
+it("toda conquista tem miniatura leve ao lado da arte completa", async () => {
+  const { existsSync, statSync } = await import("node:fs");
+  for (const item of [...MATH_ACHIEVEMENTS, ...GENERAL_ACHIEVEMENTS]) {
+    const folder = item.category === "general" ? "general" : "math";
+    const thumb = `public/achievement-badges/${folder}/thumb/${item.id}.webp`;
+    expect(existsSync(thumb), thumb).toBe(true);
+    expect(statSync(thumb).size).toBeLessThan(25_000);
+  }
+});
+it("troca de etapa remonta a arte e indica o sentido da transição", () => {
+  render(
+    <AchievementCollection ids={["general-pomodoro-bronze"]} initialId="general-pomodoro-bronze" />,
+  );
+  const stage = () => document.querySelector(".achievement-static-art");
+  expect(stage()?.getAttribute("data-direction")).toBe("up");
+  const before = stage()?.querySelector(".math-achievement-art");
+  fireEvent.click(screen.getByRole("button", { name: "Ver etapa Prata" }));
+  expect(stage()?.querySelector(".math-achievement-art")).not.toBe(before);
+  expect(stage()?.getAttribute("data-direction")).toBe("up");
+  fireEvent.click(screen.getByRole("button", { name: "Ver etapa Bronze" }));
+  expect(stage()?.getAttribute("data-direction")).toBe("down");
+});
