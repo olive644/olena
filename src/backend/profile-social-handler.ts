@@ -10,11 +10,16 @@ import {
   type SocialProfileDetails,
 } from "../domain/social-profile-details.js";
 import { recognizeSocialLink } from "../domain/profile-identity.js";
-import { isAchievementId, validAchievementIds } from "../domain/math-achievements.js";
+import {
+  isAchievementId,
+  validAchievementIds,
+  validAchievementDates,
+} from "../domain/math-achievements.js";
 
 type Account = {
   blocked?: Record<string, number>;
   achievements?: Record<string, true>;
+  achievementDates?: Record<string, string>;
   achievementsUpdatedAt?: number;
   display?: { name: string; photoUrl: string; cover?: string };
   details?: SocialProfileDetails;
@@ -111,6 +116,7 @@ export function createProfileSocialHandler(options: {
                       "expectedUsername",
                       "details",
                       "achievements",
+                      "achievementDates",
                     ]
                   : body["action"] === "read"
                     ? ["action"]
@@ -161,6 +167,11 @@ export function createProfileSocialHandler(options: {
         if (body["details"] !== undefined && !validSocialProfileDetails(body["details"]))
           return reply(400, { error: "Dados públicos do perfil inválidos." });
         if (body["achievements"] !== undefined && !validAchievementIds(body["achievements"]))
+          return reply(400, { error: "Conquistas inválidas." });
+        if (
+          body["achievementDates"] !== undefined &&
+          !validAchievementDates(body["achievementDates"])
+        )
           return reply(400, { error: "Conquistas inválidas." });
       }
       const params = new URL(request.url).searchParams;
@@ -250,7 +261,18 @@ export function createProfileSocialHandler(options: {
             cover: profileCover(account.display?.cover),
             blocked: self.blocked?.[id] !== undefined,
             ...(!blocked(id) && account.display && account.achievementsUpdatedAt !== undefined
-              ? { achievements: Object.keys(account.achievements ?? {}).filter(isAchievementId) }
+              ? {
+                  achievements: Object.keys(account.achievements ?? {}).filter(isAchievementId),
+                  ...(validAchievementDates(account.achievementDates)
+                    ? {
+                        achievementDates: Object.fromEntries(
+                          Object.entries(account.achievementDates).filter(
+                            ([id]) => account.achievements?.[id],
+                          ),
+                        ),
+                      }
+                    : {}),
+                }
               : {}),
             ...(details ? { details } : {}),
           };
@@ -467,6 +489,12 @@ export function createProfileSocialHandler(options: {
                 (body["achievements"] as string[]).map((id) => [id, true as const]),
               );
               self.achievementsUpdatedAt = now;
+              if (validAchievementDates(body["achievementDates"]))
+                self.achievementDates = Object.fromEntries(
+                  Object.entries(body["achievementDates"]).filter(
+                    ([id]) => self.achievements?.[id],
+                  ),
+                );
             }
             if (validSocialProfileDetails(body["details"])) {
               const details = body["details"];

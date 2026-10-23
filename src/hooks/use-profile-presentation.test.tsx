@@ -51,6 +51,7 @@ it("publica nome, personagem e capa sem toggle quando os dados pertencem à cont
       cover: "ocean",
       expectedUsername: "alice",
       achievements: [],
+      achievementDates: {},
     }),
   );
 });

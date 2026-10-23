@@ -9,6 +9,7 @@ test("math places fit without scrolling, clipped controls or separated backgroun
   await page.goto("/aprender");
   await page.getByRole("button", { name: "Entrar em Picos dos Padrões" }).click();
   await expect(page.locator(".math-journey")).toHaveClass(/is-map/);
+  await expect(page.locator(".math-card-library, .island-achievement-open")).toHaveCount(0);
   const sizes =
     info.project.name === "mobile"
       ? [

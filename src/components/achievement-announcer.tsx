@@ -61,7 +61,13 @@ export function AchievementAnnouncer({
       </button>
       {inspect && (
         <div className="achievement-notice-collection">
-          <AchievementCollection ids={[item.id]} compact initialId={item.id} />
+          <AchievementCollection
+            ids={[item.id]}
+            values={values}
+            ownerName={nameFallback}
+            compact
+            initialId={item.id}
+          />
         </div>
       )}
     </aside>

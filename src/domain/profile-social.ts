@@ -2,6 +2,7 @@ import type { SocialProfileDetails } from "./social-profile-details.js";
 export type SocialProfile = {
   blocked?: boolean;
   achievements?: string[];
+  achievementDates?: Record<string, string>;
   username: string;
   name: string;
   photoUrl: string;
@@ -64,4 +65,5 @@ export type SocialAction =
       expectedUsername?: string;
       details?: SocialProfileDetails;
       achievements?: string[];
+      achievementDates?: Record<string, string>;
     };
