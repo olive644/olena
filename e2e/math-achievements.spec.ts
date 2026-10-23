@@ -1,32 +1,210 @@
 import { expect, test } from "@playwright/test";
 import { upgradeMasteryProgress } from "../src/domain/math-mastery-progress";
 import { createInitialWorkspace } from "../src/domain/workspace";
+import { GENERAL_ACHIEVEMENTS } from "../src/domain/general-achievement-catalog";
+
+test("brilho de material, máscara própria e redução de movimento", async ({ page }, info) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.guest.v1", "1");
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({
+        name: "Oliver",
+        achievementHistory: Object.fromEntries(
+          ["bronze", "silver", "gold", "emerald"].map((tier) => [`general-pomodoro-${tier}`, ""]),
+        ),
+      }),
+    );
+  });
+  await page.goto("/perfil");
+  await page
+    .getByRole("region", { name: "Conquistas", exact: true })
+    .getByRole("button", { name: "Ver todas as conquistas" })
+    .click();
+  const gallery = page.getByRole("dialog", { name: "Todas as conquistas", exact: true });
+  await gallery.getByRole("tab", { name: "Gerais", exact: true }).click();
+  await gallery.getByRole("button", { name: /Horta do foco · Esmeralda\./ }).click();
+  const inspection = page.locator(".achievement-inspection");
+  const colors = new Set<string>();
+  for (const [tier, label] of [
+    ["bronze", "Bronze"],
+    ["silver", "Prata"],
+    ["gold", "Ouro"],
+    ["emerald", "Esmeralda"],
+  ] as const) {
+    await inspection.getByRole("button", { name: `Ver etapa ${label}`, exact: true }).click();
+    const art = inspection.locator(".achievement-static-art .math-achievement-art");
+    await expect(art).toHaveAttribute("data-tier", tier!);
+    await expect(art.locator("image")).toHaveAttribute(
+      "href",
+      `/achievement-badges/general/general-pomodoro-${tier}.webp`,
+    );
+    await expect(art.locator(".achievement-foil")).toHaveCSS(
+      "mask-image",
+      new RegExp(`general-pomodoro-${tier}\\.webp`),
+    );
+    colors.add(
+      await art.evaluate((node) => getComputedStyle(node).getPropertyValue("--tier-sheen").trim()),
+    );
+    const glow = {
+      bronze: "193, 138, 83",
+      silver: "185, 214, 237",
+      gold: "250, 204, 21",
+      emerald: "50, 188, 146",
+    }[tier!];
+    expect(await art.evaluate((node) => getComputedStyle(node).filter)).toContain(glow);
+    await inspection.screenshot({
+      path: info.outputPath(`horta-${tier}.png`),
+      animations: "disabled",
+    });
+  }
+  expect(colors.size).toBe(4);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const foil = inspection.locator(".achievement-static-art .achievement-foil");
+  await expect(foil).toHaveCSS("animation-name", "none");
+  expect(await foil.evaluate((node) => getComputedStyle(node, "::after").animationName)).toBe(
+    "none",
+  );
+});
+
+test("todas as 56 artes gerais são próprias e carregam na galeria", async ({ page }, info) => {
+  const ids = GENERAL_ACHIEVEMENTS.map((item) => item.id);
+  await page.addInitScript((ids) => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.guest.v1", "1");
+    localStorage.setItem(
+      "helena.profile.v1",
+      JSON.stringify({
+        name: "Oliver",
+        achievementHistory: Object.fromEntries(ids.map((id) => [id, ""])),
+      }),
+    );
+  }, ids);
+  await page.goto("/perfil");
+  const sizes = await page.evaluate(
+    async (ids) =>
+      Promise.all(
+        ids.map(async (id) => {
+          const image = new Image();
+          image.src = `/achievement-badges/general/${id}.webp`;
+          await image.decode();
+          const canvas = document.createElement("canvas");
+          canvas.width = canvas.height = 512;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(image, 0, 0);
+          return [image.naturalWidth, image.naturalHeight, ctx.getImageData(0, 0, 1, 1).data[3]];
+        }),
+      ),
+    ids,
+  );
+  expect(sizes).toHaveLength(56);
+  expect(
+    sizes.every(([width, height, alpha]) => width === 512 && height === 512 && alpha === 0),
+  ).toBe(true);
+  await page
+    .getByRole("region", { name: "Conquistas", exact: true })
+    .getByRole("button", { name: "Ver todas as conquistas" })
+    .click();
+  const gallery = page.getByRole("dialog", { name: "Todas as conquistas", exact: true });
+  const filledSlots = gallery.locator(".achievement-feature-slot.is-filled");
+  await expect(filledSlots).toHaveCount(3);
+  const tabBox = await gallery.getByRole("tab", { name: "Gerais", exact: true }).boundingBox();
+  for (const slot of await filledSlots.all()) {
+    const box = await slot.boundingBox();
+    expect(box!.y + box!.height).toBeLessThanOrEqual(tabBox!.y);
+  }
+  await gallery.getByRole("tab", { name: "Gerais", exact: true }).click();
+  await expect(gallery.locator(".achievement-tile")).toHaveCount(20);
+  await expect(gallery.locator(".is-locked")).toHaveCount(0);
+  await gallery.screenshot({
+    path: info.outputPath("galeria-geral-artes-originais.png"),
+    animations: "disabled",
+  });
+});
+
+test("conquistas gerais, destaques persistentes e PNG temático", async ({ page }, info) => {
+  const seed = createInitialWorkspace();
+  seed.focusSessions = Array.from({ length: 10 }, (_, index) => ({
+    id: `focus-${index}`,
+    subjectId: "math",
+    durationMinutes: 25,
+    mode: "pomodoro" as const,
+    completedAt: `2026-10-${String(index + 1).padStart(2, "0")}T12:00:00Z`,
+  }));
+  await page.addInitScript((workspace) => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.guest.v1", "1");
+    localStorage.setItem("helenastudy.workspace.v1", JSON.stringify(workspace));
+    if (!localStorage.getItem("helena.profile.v1"))
+      localStorage.setItem(
+        "helena.profile.v1",
+        JSON.stringify({ name: "Oliver", username: "oliver", achievementFavorites: [] }),
+      );
+  }, seed);
+  await page.goto("/perfil");
+  const profile = page.getByRole("region", { name: "Conquistas", exact: true });
+  await profile.getByRole("button", { name: "Ver todas as conquistas" }).click();
+  const gallery = page.getByRole("dialog", { name: "Todas as conquistas", exact: true });
+  await gallery.getByRole("tab", { name: "Gerais", exact: true }).click();
+  await expect(gallery.locator(".achievement-tile")).toHaveCount(20);
+  await gallery.screenshot({
+    path: info.outputPath("conquistas-gerais.png"),
+    animations: "disabled",
+  });
+  await gallery.getByRole("button", { name: /Horta do foco · Prata\./ }).click();
+  const inspection = page.getByRole("dialog", { name: "Horta do foco · Prata", exact: true });
+  await expect(inspection.locator("time .paper-digits").first()).toBeVisible();
+  await expect(inspection.locator(".achievement-rarity")).toHaveText("Incomum");
+  await inspection.getByRole("button", { name: "Destacar no perfil", exact: true }).click();
+  await expect(inspection.getByRole("button", { name: "Remover dos destaques" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await inspection.screenshot({
+    path: info.outputPath("conquista-geral-inspecao.png"),
+    animations: "disabled",
+  });
+  await inspection.getByRole("button", { name: "Compartilhar conquista" }).click();
+  const card = inspection.getByRole("img", { name: "Card da conquista para compartilhar" });
+  await expect(card).toBeVisible();
+  for (const name of ["Compartilhar", "Voltar à conquista"])
+    await expect(inspection.getByRole("button", { name, exact: true })).toHaveText("");
+  await expect(inspection.getByRole("link", { name: "Salvar imagem" })).toHaveText("");
+  await inspection.screenshot({ path: info.outputPath("conquista-geral-compartilhar.png") });
+  const download = page.waitForEvent("download");
+  await inspection.getByRole("link", { name: "Salvar imagem" }).click();
+  await (await download).saveAs(info.outputPath("card-foco.png"));
+  await page.reload();
+  await expect(profile.locator(".achievement-tile")).toHaveCount(1);
+  await expect(profile.getByRole("button", { name: /Horta do foco · Prata\./ })).toBeVisible();
+});
 
 for (const theme of ["light", "dark"]) {
-  test(`conquistas de papel têm inspeção 3D e aviso real: ${theme}`, async ({ page }, info) => {
+  test(`conquistas de papel têm inspeção estática e aviso real: ${theme}`, async ({
+    page,
+  }, info) => {
     await page.addInitScript((theme) => {
       localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
       localStorage.setItem("helena.guest.v1", "1");
       localStorage.setItem("helenastudy.theme", theme);
     }, theme);
     await page.goto("/perfil");
-    const collection = page.getByRole("region", { name: "Conquistas de matemática" });
+    const collection = page.getByRole("region", { name: "Conquistas", exact: true });
     await expect(collection).toBeVisible();
-    await expect(collection.locator(".achievement-tile")).toHaveCount(3);
+    await expect(collection.locator(".achievement-empty")).toHaveCount(3);
     await collection.getByRole("button", { name: "Ver todas as conquistas" }).click();
     const gallery = page.getByRole("dialog", { name: "Todas as conquistas", exact: true });
-    await expect(gallery.locator(".achievement-tile")).toHaveCount(57);
+    await expect(gallery.locator(".achievement-tile")).toHaveCount(17);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
-    await gallery.getByRole("button", { name: /Cartógrafo do infinito 6\./ }).click();
+    await gallery.getByRole("button", { name: /Cartógrafo do infinito 1\./ }).click();
+    await page.getByRole("button", { name: "Ver etapa 6", exact: true }).click();
     const dialog = page.getByRole("dialog", { name: "Cartógrafo do infinito 6", exact: true });
     await expect(dialog).toBeVisible();
-    const stage = dialog.getByRole("button", { name: /Girar conquista/ });
-    await stage.focus();
-    await page.keyboard.press("ArrowRight");
-    await expect(stage.locator(".oliver-inspection-turn")).toHaveCSS("transform", /matrix3d/);
-    await page.keyboard.press("Home");
+    await expect(dialog.getByRole("button", { name: /Girar conquista/ })).toHaveCount(0);
+    await expect(dialog.locator(".achievement-static-art")).toBeVisible();
     await expect(dialog.locator(".math-achievement-art").first()).toHaveClass(/is-locked/);
     await dialog.screenshot({
       path: info.outputPath(`conquista-3d-${theme}.png`),
@@ -34,7 +212,6 @@ for (const theme of ["light", "dark"]) {
     });
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
-    await expect(gallery.getByRole("button", { name: /Cartógrafo do infinito 6\./ })).toBeFocused();
     await page.keyboard.press("Escape");
     await page.evaluate(
       (progress) => {
@@ -75,7 +252,7 @@ test("galeria compacta, data real, Oliver shiny e card compartilhável", async (
     );
   }, workspace);
   await page.goto("/perfil");
-  const preview = page.getByRole("region", { name: "Conquistas de matemática" });
+  const preview = page.getByRole("region", { name: "Conquistas", exact: true });
   await expect(preview.locator(".achievement-tile")).toHaveCount(3);
   await expect(preview).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));

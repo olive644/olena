@@ -53,9 +53,7 @@ export function SignOutButton({
             <h2 id="sign-out-title">{uiText(1004)}</h2>
             <p>{uiText(1005)}</p>
             <p>{uiText(1006)}</p>
-            {blocked && (
-              <p role="status">{uiText("Vamos tentar enviar suas alterações antes de sair.")}</p>
-            )}
+            {blocked && <p role="status">{uiText(2686)}</p>}
             {error && <p role="alert">{uiText(error)}</p>}
             {error && (
               <label className="sign-out-discard">
@@ -64,11 +62,7 @@ export function SignOutButton({
                   checked={discardPending}
                   onChange={(event) => setDiscardPending(event.target.checked)}
                 />
-                <span>
-                  {uiText(
-                    "Quero sair sem enviar. Alterações pendentes neste aparelho serão perdidas.",
-                  )}
-                </span>
+                <span>{uiText(2687)}</span>
               </label>
             )}
             <div className="sign-out-actions">
@@ -84,11 +78,7 @@ export function SignOutButton({
                     await onSignOut(discardPending);
                     setOpen(false);
                   } catch {
-                    setError(
-                      uiText(
-                        "Não foi possível enviar tudo. Seus dados continuam neste aparelho. Tente novamente ou escolha sair sem enviar.",
-                      ),
-                    );
+                    setError(uiText(2688));
                   } finally {
                     setBusy(false);
                   }

@@ -1,4 +1,5 @@
 import { mergeXpLedgers } from "./xp-ledger";
+import { generalAchievementHistory } from "./general-achievement-catalog";
 export const ACCOUNT_PROFILE_KEY = "helena.profile.v1";
 export function profileRecord(raw: string | null | undefined): Record<string, unknown> {
   try {
@@ -17,7 +18,20 @@ export function mergeProfileProgress(
   if (selected === undefined && sources.every((raw) => raw === undefined)) return;
   const result = profileRecord(selected);
   const profiles = [selected, ...sources].map(profileRecord);
-  if (!profiles.some((profile) => profile["xpLedger"] || profile["studentResume"])) return selected;
+  if (
+    !profiles.some(
+      (profile) => profile["xpLedger"] || profile["studentResume"] || profile["achievementHistory"],
+    )
+  )
+    return selected;
+  const history: Record<string, string> = {};
+  for (const profile of profiles)
+    for (const [id, date] of Object.entries(
+      generalAchievementHistory(profile["achievementHistory"]),
+    )) {
+      if (!(id in history) || !history[id] || (date && date < history[id]!)) history[id] = date;
+    }
+  if (Object.keys(history).length) result["achievementHistory"] = history;
   const xp = mergeXpLedgers(...profiles.map((profile) => JSON.stringify(profile["xpLedger"])));
   if (xp) result["xpLedger"] = JSON.parse(xp) as unknown;
   const resume: Record<string, unknown> = {};

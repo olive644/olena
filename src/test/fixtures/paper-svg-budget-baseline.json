@@ -1,0 +1,1943 @@
+[
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "clock"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m24 3 15 6 6 15-6 15-15 6-15-6-6-15L9 9Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m24 7 12 5 5 12-5 12-12 5-12-5-5-12 5-12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M22 12h4v12h12v4H22Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M22 21h4v8h-4Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "location"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m24 3 14 6 5 14-19 23L5 23 5 9Z",
+          "fill": "#51259B"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m24 3 14 6 5 14-19 23V30L12 20 15 9Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m24 12 7 4 1 8-8 5-8-5 1-8Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m24 16 4 3v4l-4 2-4-2v-4Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "links"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m4 28 14-15 11 1 5 7-6 7-5-5-3-1-9 9 1 3 4 1 4-4 6 6-8 7-11-1Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m44 20-14 15-11-1-5-7 6-7 5 5 3 1 9-9-1-3-4-1-4 4-6-6 8-7 11 1Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m16 27 13-13 4 4-13 13Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "guests"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m7 7 10-2 6 8-4 10H9L4 15Zm22-1 10 1 5 8-5 9H29l-5-10Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M8 26h13l4 18H2Zm21 0h12l5 18H24Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m18 35 6-5 6 5-6 9Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M8 26h5L6 44H2Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "attachment"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M8 6h25l9 10v26H8Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 10h19v10h7v18H12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M16 30 23 20l8 12H16Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 14 5-1 2 5-5 3-4-3Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "print"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m5 18 33-2 7 7-2 16H5L2 24Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M7 17h33v19H7Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 4h23l4 5v12H12Z",
+          "fill": "#D8CDB9"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 4h20v15H12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M32 22h6v5h-6Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 29h23v15H12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m35 29 4 4-4 11Z",
+          "fill": "#D8CDB9"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M17 33h13v3H17Zm0 6h10v2H17Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "filter"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M4 6h40v8L28 30v12l-9-4V30L4 14Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M4 6h40l-6 6H10Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m20 26 8 4v12l-8-4Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaDetailIcon",
+    "props": {
+      "name": "search"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m18 3 12 4 7 13-5 12-13 5-12-6L3 18 8 8Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m18 9 9 3 4 8-4 8-9 3-8-5-2-8 5-7Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m30 28 15 13-5 6-15-15Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m35 33 10 8-3 3-10-8Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaToolbarIcon",
+    "props": {
+      "name": "day"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m8 9 31-1 4 5-2 28-32 2-4-6Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m8 9 5 5-4 29-4-6Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 19h25v18H12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M15 4h5v12h-5Zm14 0h5v12h-5Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M22 22h6v12h-6Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaToolbarIcon",
+    "props": {
+      "name": "week"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m8 9 31-1 4 5-2 28-32 2-4-6Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m8 9 5 5-4 29-4-6Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 19h25v18H12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M15 4h5v12h-5Zm14 0h5v12h-5Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M15 23h4v11h-4Zm7 0h4v11h-4Zm7 0h4v11h-4Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaToolbarIcon",
+    "props": {
+      "name": "month"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m8 9 31-1 4 5-2 28-32 2-4-6Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m8 9 5 5-4 29-4-6Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M12 19h25v18H12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M15 4h5v12h-5Zm14 0h5v12h-5Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M15 22h5v5h-5Zm8 0h5v5h-5Zm8 0h3v5h-3ZM15 30h5v4h-5Zm8 0h5v4h-5Zm8 0h3v4h-3Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaToolbarIcon",
+    "props": {
+      "name": "list"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m10 7 24-3 8 10-3 28-27 2-5-5Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M8 7h22l9 9v25H8Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M13 12h14v8h8v16H13Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m27 12 8 8h-8Z",
+          "fill": "#D8CDB9"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M15 23h17v3H15Zm0 7h17v3H15Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "AgendaToolbarIcon",
+    "props": {
+      "name": "reminders"
+    },
+    "viewBox": "0 0 48 48",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m19 39 6-2 5 3-3 5-6-1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m21 5 7 1 2 7 7 7-1 13 6 5-3 4-32-3 1-5 6-5 1-13 6-5Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m21 5 3 9-5 19-11 1 6-5 1-13 6-5Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m27 14 7 7-1 12-6-2Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "moon",
+      "compact": true,
+      "stitched": false
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m37 4-21 7L4 27l2 20 15 15 17 2 15-6 9-13-17 4-13-9-6-14 3-12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 9 8 4-10 1-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "moon",
+      "compact": true,
+      "stitched": true
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m37 4-21 7L4 27l2 20 15 15 17 2 15-6 9-13-17 4-13-9-6-14 3-12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 9 8 4-10 1-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m22 15-9 14 1 14 10 11 13 4 11-5-7 1-15-9-9-17 1-10Z",
+          "fill": "none",
+          "stroke": "#fff9ef",
+          "stroke-dasharray": "2.4 2.4",
+          "stroke-linecap": "round",
+          "stroke-width": "1.6"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "moon",
+      "compact": false,
+      "stitched": false
+    },
+    "viewBox": "0 0 64 180",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M15 46h36v130l-18-6-18 6Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "M19 48h28v123l-14-5-14 5Z",
+          "fill": "#51259B"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 28 14v74l-28 25Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 116 9 8-9 15Zm28 19-11 10 11 10Z",
+          "fill": "var(--tab-color, #FACC15)"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 8 5v48l-8 8Z",
+          "fill": "#A779EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 96 5 12-10 12 7 20",
+          "fill": "none",
+          "stroke": "#D8BEFA",
+          "stroke-width": "1.4"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m37 4-21 7L4 27l2 20 15 15 17 2 15-6 9-13-17 4-13-9-6-14 3-12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z",
+          "fill": "#FACC15"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 9 8 4-10 1-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "moon",
+      "compact": false,
+      "stitched": true
+    },
+    "viewBox": "0 0 64 180",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M15 46h36v130l-18-6-18 6Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "M19 48h28v123l-14-5-14 5Z",
+          "fill": "#51259B"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 28 14v74l-28 25Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 116 9 8-9 15Zm28 19-11 10 11 10Z",
+          "fill": "var(--tab-color, #FACC15)"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 8 5v48l-8 8Z",
+          "fill": "#A779EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 96 5 12-10 12 7 20",
+          "fill": "none",
+          "stroke": "#D8BEFA",
+          "stroke-width": "1.4"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m37 4-21 7L4 27l2 20 15 15 17 2 15-6 9-13-17 4-13-9-6-14 3-12Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 2 16 11 13 16 4 13-6 7-8-14 3-15-8-7-16 1-11Z",
+          "fill": "#FACC15"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m29 9-13 7-8 13 9 8 4-10 1-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m10 45 11 13 16 4 13-6 7-8-14 3-15-8 6 12Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m43 19 3 7 8 3-8 3-3 8-3-8-8-3 8-3Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m22 15-9 14 1 14 10 11 13 4 11-5-7 1-15-9-9-17 1-10Z",
+          "fill": "none",
+          "stroke": "#fff9ef",
+          "stroke-dasharray": "2.4 2.4",
+          "stroke-linecap": "round",
+          "stroke-width": "1.6"
+        },
+        "transforms": ["translate(0 116)"]
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "sun",
+      "compact": true,
+      "stitched": false
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m32 0 9 10 14-1 1 14 8 9-9 10 1 14-15-1-9 9-9-9-14 1 1-14L0 32l10-9L9 9l14 1Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 5 8 10 11-2-1 12 9 7-9 8 1 11-12-1-7 9-8-9-11 1 1-12-9-7 10-8-2-11 12 1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 32 27 0-9 8 1 11-12-1-7 9-8-9-11 1Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 16 12 5 5 11-5 12-12 5-12-5-5-12 5-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 20 12 12-12 13-12-13Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 20 0 12-12 0Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "sun",
+      "compact": true,
+      "stitched": true
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m32 0 9 10 14-1 1 14 8 9-9 10 1 14-15-1-9 9-9-9-14 1 1-14L0 32l10-9L9 9l14 1Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 5 8 10 11-2-1 12 9 7-9 8 1 11-12-1-7 9-8-9-11 1 1-12-9-7 10-8-2-11 12 1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 32 27 0-9 8 1 11-12-1-7 9-8-9-11 1Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 16 12 5 5 11-5 12-12 5-12-5-5-12 5-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 20 12 12-12 13-12-13Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 20 0 12-12 0Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m32 9 7 9 9-2-1 10 8 6-8 7 1 9-10-1-6 8-7-8-9 1 1-10-8-6 9-7-2-9 10 1Z",
+          "fill": "none",
+          "stroke": "#fff9ef",
+          "stroke-dasharray": "2.4 2.4",
+          "stroke-linecap": "round",
+          "stroke-width": "1.6"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "sun",
+      "compact": false,
+      "stitched": false
+    },
+    "viewBox": "0 0 64 180",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M15 46h36v130l-18-6-18 6Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "M19 48h28v123l-14-5-14 5Z",
+          "fill": "#51259B"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 28 14v74l-28 25Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 116 9 8-9 15Zm28 19-11 10 11 10Z",
+          "fill": "var(--tab-color, #FACC15)"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 8 5v48l-8 8Z",
+          "fill": "#A779EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 96 5 12-10 12 7 20",
+          "fill": "none",
+          "stroke": "#D8BEFA",
+          "stroke-width": "1.4"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 0 9 10 14-1 1 14 8 9-9 10 1 14-15-1-9 9-9-9-14 1 1-14L0 32l10-9L9 9l14 1Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 5 8 10 11-2-1 12 9 7-9 8 1 11-12-1-7 9-8-9-11 1 1-12-9-7 10-8-2-11 12 1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 32 27 0-9 8 1 11-12-1-7 9-8-9-11 1Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 16 12 5 5 11-5 12-12 5-12-5-5-12 5-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 20 12 12-12 13-12-13Z",
+          "fill": "#FACC15"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 20 0 12-12 0Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      }
+    ]
+  },
+  {
+    "component": "PaperMoonMark",
+    "props": {
+      "motif": "sun",
+      "compact": false,
+      "stitched": true
+    },
+    "viewBox": "0 0 64 180",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M15 46h36v130l-18-6-18 6Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "M19 48h28v123l-14-5-14 5Z",
+          "fill": "#51259B"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 28 14v74l-28 25Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 116 9 8-9 15Zm28 19-11 10 11 10Z",
+          "fill": "var(--tab-color, #FACC15)"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m19 48 8 5v48l-8 8Z",
+          "fill": "#A779EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 76 3 6 7 2-6 4-1 7-5-5-7 1 3-6-2-7 6 2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m33 96 5 12-10 12 7 20",
+          "fill": "none",
+          "stroke": "#D8BEFA",
+          "stroke-width": "1.4"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m38 104 3 4-3 4-3-4Zm-10 13 3 3-3 3-3-3Zm7 20 3 4-3 4-3-4Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m31 151 2 4 4 2-4 2-2 4-2-4-4-2 4-2Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 -44)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 0 9 10 14-1 1 14 8 9-9 10 1 14-15-1-9 9-9-9-14 1 1-14L0 32l10-9L9 9l14 1Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 5 8 10 11-2-1 12 9 7-9 8 1 11-12-1-7 9-8-9-11 1 1-12-9-7 10-8-2-11 12 1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 32 27 0-9 8 1 11-12-1-7 9-8-9-11 1Z",
+          "fill": "#D7A80A"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 16 12 5 5 11-5 12-12 5-12-5-5-12 5-11Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 20 12 12-12 13-12-13Z",
+          "fill": "#FACC15"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 20 0 12-12 0Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": ["translate(0 116)"]
+      },
+      {
+        "attrs": {
+          "d": "m32 9 7 9 9-2-1 10 8 6-8 7 1 9-10-1-6 8-7-8-9 1 1-10-8-6 9-7-2-9 10 1Z",
+          "fill": "none",
+          "stroke": "#fff9ef",
+          "stroke-dasharray": "2.4 2.4",
+          "stroke-linecap": "round",
+          "stroke-width": "1.6"
+        },
+        "transforms": ["translate(0 116)"]
+      }
+    ]
+  },
+  {
+    "component": "BingoPlanet",
+    "props": {
+      "index": 0
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m19 10 23-2 16 17-3 22-20 12-22-10-8-21Z",
+          "fill": "#50bdc4"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m42 8 16 17-3 22-20 12-22-10 23-5 12-19Z",
+          "fill": "#147b83"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 10 23-2-9 9-18 4-10 7Z",
+          "fill": "#fff9ef",
+          "opacity": ".4"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m20 16 10-1 3 9-8 8-10-4-1-7Zm12 22 9-4 6 8-8 9-5-2Z",
+          "fill": "#b8dc7b"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "BingoPlanet",
+    "props": {
+      "index": 1
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m19 10 23-2 16 17-3 22-20 12-22-10-8-21Z",
+          "fill": "#ff8e77"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m42 8 16 17-3 22-20 12-22-10 23-5 12-19Z",
+          "fill": "#c95649"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 10 23-2-9 9-18 4-10 7Z",
+          "fill": "#fff9ef",
+          "opacity": ".4"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 24 9-3 4 8-7 5-8-4Zm16 15 8-2 4 6-6 5Z",
+          "fill": "#f4b694"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m24 43 6-2 3 4-5 3Z",
+          "fill": "#8e383e"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "BingoPlanet",
+    "props": {
+      "index": 2
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m19 10 23-2 16 17-3 22-20 12-22-10-8-21Z",
+          "fill": "#f0ba65"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m42 8 16 17-3 22-20 12-22-10 23-5 12-19Z",
+          "fill": "#b87941"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 10 23-2-9 9-18 4-10 7Z",
+          "fill": "#fff9ef",
+          "opacity": ".4"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m9 24 46 2 3 7-47-3Zm5 14 40 2-2 8-33-3Z",
+          "fill": "#fff0c7"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m35 37 9 1 5 5-8 4-7-3Z",
+          "fill": "#c95649"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "BingoPlanet",
+    "props": {
+      "index": 3
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M5 40 47 13 61 19 19 49Z",
+          "fill": "#c99a00"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 10 23-2 16 17-3 22-20 12-22-10-8-21Z",
+          "fill": "#7c3aed"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m42 8 16 17-3 22-20 12-22-10 23-5 12-19Z",
+          "fill": "#51259b"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 10 23-2-9 9-18 4-10 7Z",
+          "fill": "#fff9ef",
+          "opacity": ".4"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m3 39 51-24 8 4-51 29-8-3 46-25Z",
+          "fill": "#facc15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "BingoPlanet",
+    "props": {
+      "index": 4
+    },
+    "viewBox": "0 0 64 64",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m19 10 23-2 16 17-3 22-20 12-22-10-8-21Z",
+          "fill": "#6996df"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m42 8 16 17-3 22-20 12-22-10 23-5 12-19Z",
+          "fill": "#345580"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 10 23-2-9 9-18 4-10 7Z",
+          "fill": "#fff9ef",
+          "opacity": ".4"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m12 25 39-5 6 6-44 7Zm7 14 33-5-3 8-22 4Z",
+          "fill": "#a4e8eb"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "NotebookToolIcon",
+    "props": {
+      "name": "cover"
+    },
+    "viewBox": "0 0 40 40",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M6 4h23l5 4v27l-5 3H6Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M10 30h21v5H10Z",
+          "fill": "#D5CCBA"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M9 3h21l3 4v26H9Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M9 3h21L9 24Z",
+          "fill": "#A779EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m21 26 12-11v18H9Z",
+          "fill": "#51259B"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M5 4h5v31H5Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m29 13 2 4 5 1-3 3 1 5-5-2-4 2 1-5-3-3 4-1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M14 9h10v3H14Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "NotebookToolIcon",
+    "props": {
+      "name": "index"
+    },
+    "viewBox": "0 0 40 40",
+    "paths": [
+      {
+        "attrs": {
+          "d": "M5 6h25v30H5Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M8 5h24v29H8Z",
+          "fill": "#D5CCBA"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M10 3h23v29H10Z",
+          "fill": "#FFF9EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M29 7h7v7h-7Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M29 16h7v6h-7Z",
+          "fill": "#A779EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M29 24h7v6h-7Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M14 9h3v3h-3Zm6 0h6v3h-6Zm-6 8h3v3h-3Zm6 0h6v3h-6Zm-6 8h3v3h-3Zm6 0h6v3h-6Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "OliverAttributeIcon",
+    "props": {
+      "kind": "power"
+    },
+    "viewBox": "0 0 32 32",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m17 2 10 3-1 10-9 9-4-5 9-9-2-3-9 9-5-4Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 4 8 2-1 8-9 8-5-6Z",
+          "fill": "#f3c44d"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 4 8 2-15 10Z",
+          "fill": "#fff1b7"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m4 22 5-5 6 6-5 6Z",
+          "fill": "#805239"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "OliverAttributeIcon",
+    "props": {
+      "kind": "life"
+    },
+    "viewBox": "0 0 32 32",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m3 8 6-4 7 4 7-4 6 4-1 12-12 10L3 20Z",
+          "fill": "#a84250"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m3 8 6-4 7 4v20L3 18Z",
+          "fill": "#ff8b9c"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m16 8 7-4 6 4-1 10-12 10Z",
+          "fill": "#ed6076"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m3 8 6-4 7 4-7 7Z",
+          "fill": "#ffc2b8"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "OliverAttributeIcon",
+    "props": {
+      "kind": "stamina"
+    },
+    "viewBox": "0 0 32 32",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m17 1 10 3-8 11 7 1-14 15-7-3 8-13-7-1Z",
+          "fill": "#267f83"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 1 10 3-12 14-9-4Z",
+          "fill": "#89d7cf"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m15 18 11-2-14 15-7-3Z",
+          "fill": "#4db2b2"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "MathChestPart",
+    "props": {
+      "name": "common-body"
+    },
+    "viewBox": "0 0 96 88",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m9 78 63-4 18 6-59 7Z",
+          "fill": "#292432",
+          "opacity": ".15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m8 38 66-3 14 9-3 29-12 8-62-5Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m12 44 61-1-1 32-60-4Z",
+          "fill": "#79695F"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m12 44 61-1-34 13-27 15Z",
+          "fill": "#AA9780"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m73 43 15-7-3 37-13 8Z",
+          "fill": "#211D29"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M17 43h8v29l-8-1Zm45 0h8v32l-8-1Z",
+          "fill": "#9299A1"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 43 4 0v28l-4 0Zm45 0h4v31h-4Z",
+          "fill": "#D3D7D8"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "MathChestPart",
+    "props": {
+      "name": "common-lid"
+    },
+    "viewBox": "0 0 96 88",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m8 42 6-23 9-7 48-1 14 9 4 23-16 8-65-3Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 23 8-7h40l12 8 3 14-67 3Z",
+          "fill": "#AA9780"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 23 8-7h40L41 40l-26 1Z",
+          "fill": "#D5C8B0"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m27 16 7 0-5 24-8 1Zm34 0h6l5 23h-8Z",
+          "fill": "#9299A1"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m9 41 65-3 15-7v12l-16 8-65-3Z",
+          "fill": "#D3D7D8"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m9 45 64 1 16-6v3l-16 8-65-3Z",
+          "fill": "#9299A1"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "MathChestPart",
+    "props": {
+      "name": "common-lock"
+    },
+    "viewBox": "0 0 96 88",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m36 41 16 0 5 5-1 16-9 5-12-4Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m39 44 11 0 3 3-1 13-7 4-8-3Z",
+          "fill": "#D3D7D8"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m45 49 5 3-3 4v4h-4v-5l-2-3Z",
+          "fill": "#51465D"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "MathChestPart",
+    "props": {
+      "name": "arcane-body"
+    },
+    "viewBox": "0 0 96 88",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m9 78 63-4 18 6-59 7Z",
+          "fill": "#292432",
+          "opacity": ".15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m8 38 66-3 14 9-3 29-12 8-62-5Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m12 44 61-1-1 32-60-4Z",
+          "fill": "#51259B"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m12 44 61-1-34 13-27 15Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m73 43 15-7-3 37-13 8Z",
+          "fill": "#211D29"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "M17 43h8v29l-8-1Zm45 0h8v32l-8-1Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m17 43 4 0v28l-4 0Zm45 0h4v31h-4Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "MathChestPart",
+    "props": {
+      "name": "arcane-lid"
+    },
+    "viewBox": "0 0 96 88",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m8 42 6-23 9-7 48-1 14 9 4 23-16 8-65-3Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 23 8-7h40l12 8 3 14-67 3Z",
+          "fill": "#7C3AED"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m19 23 8-7h40L41 40l-26 1Z",
+          "fill": "#A779EF"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m27 16 7 0-5 24-8 1Zm34 0h6l5 23h-8Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m9 41 65-3 15-7v12l-16 8-65-3Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m9 45 64 1 16-6v3l-16 8-65-3Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      }
+    ]
+  },
+  {
+    "component": "MathChestPart",
+    "props": {
+      "name": "arcane-lock"
+    },
+    "viewBox": "0 0 96 88",
+    "paths": [
+      {
+        "attrs": {
+          "d": "m45 39 6 8 11 2-8 8 1 11-11-5-10 5 2-12-8-7 12-2Z",
+          "fill": "#292432"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m45 40 3 10 10 0-8 6 3 10-9-6-8 6 3-10-8-6h10Z",
+          "fill": "#FACC15"
+        },
+        "transforms": []
+      },
+      {
+        "attrs": {
+          "d": "m45 40 0 20-9 6 3-10-8-6h10Z",
+          "fill": "#FFE88D"
+        },
+        "transforms": []
+      }
+    ]
+  }
+]

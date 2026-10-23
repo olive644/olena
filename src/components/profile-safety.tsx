@@ -29,9 +29,7 @@ export function ProfileSafety({
           text: `Denúncia de usuário @${person.username}\n${reason.trim()}`,
           requestId: requestId.current,
         });
-        setStatus(
-          uiText("Denúncia enviada ao time. Acompanhe em Conversar com o time nas configurações."),
-        );
+        setStatus(uiText(2831));
       } else {
         onChange(
           await requestSocial({
@@ -49,21 +47,17 @@ export function ProfileSafety({
       }
       setMode(undefined);
     } catch (cause) {
-      setStatus(
-        cause instanceof Error
-          ? cause.message
-          : uiText("Não foi possível concluir. Tente novamente."),
-      );
+      setStatus(cause instanceof Error ? cause.message : uiText(2834));
     } finally {
       setBusy(false);
     }
   }
   return (
-    <section className="profile-safety" aria-label={uiText("Segurança do perfil")}>
+    <section className="profile-safety" aria-label={uiText(2823)}>
       <details>
         <summary>
           <SettingsIcon name="security" />
-          {uiText("Segurança do perfil")}
+          {uiText(2823)}
         </summary>
         <div className="profile-safety-actions">
           <button
@@ -83,7 +77,7 @@ export function ProfileSafety({
               requestId.current = "";
             }}
           >
-            {uiText("Denunciar usuário")}
+            {uiText(2826)}
           </button>
         </div>
       </details>
@@ -107,7 +101,7 @@ export function ProfileSafety({
           </h3>
           {mode === "report" ? (
             <>
-              <label htmlFor="profile-report-reason">{uiText("O que aconteceu?")}</label>
+              <label htmlFor="profile-report-reason">{uiText(2827)}</label>
               <textarea
                 id="profile-report-reason"
                 required
@@ -116,18 +110,10 @@ export function ProfileSafety({
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
               />
-              <p>
-                {uiText(
-                  "Não inclua senhas ou informações sensíveis. A denúncia será avaliada pelo time, sem punição automática.",
-                )}
-              </p>
+              <p>{uiText(2828)}</p>
             </>
           ) : (
-            <p>
-              {uiText(
-                "O bloqueio remove as conexões e impede novas interações. Desbloquear não volta a seguir automaticamente.",
-              )}
-            </p>
+            <p>{uiText(2829)}</p>
           )}
           <button
             className="secondary-button"
@@ -135,7 +121,7 @@ export function ProfileSafety({
             disabled={busy}
             onClick={() => setMode(undefined)}
           >
-            {uiText("Cancelar")}
+            {uiText(155)}
           </button>
           <button
             className="primary-button"

@@ -8,13 +8,13 @@ export async function requestProfileHandle(
   username = "",
 ): Promise<ProfileHandle> {
   const { auth } = await getFirebaseAccountServices().catch(() => {
-    throw new Error(uiText("Não foi possível conectar sua conta. Tente novamente."));
+    throw new Error(uiText(1072));
   });
   await auth.authStateReady();
   const user = auth.currentUser;
-  if (!user || user.isAnonymous) throw new Error(uiText("Entre na conta para criar um @."));
+  if (!user || user.isAnonymous) throw new Error(uiText(840));
   const token = await user.getIdToken().catch(() => {
-    throw new Error(uiText("Entre novamente para confirmar seu @."));
+    throw new Error(uiText(1073));
   });
   const response = await fetch("/api/profile-handle", {
     method,
@@ -22,22 +22,19 @@ export async function requestProfileHandle(
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     ...(method === "POST" ? { body: JSON.stringify({ username }) } : {}),
   }).catch(() => {
-    throw new Error(
-      uiText("Não foi possível confirmar o @. Verifique sua conexão e tente novamente."),
-    );
+    throw new Error(uiText(1074));
   });
   const body = (await response.json().catch(() => {
-    throw new Error(uiText("Não foi possível confirmar o @. Tente novamente."));
+    throw new Error(uiText(1075));
   })) as Partial<ProfileHandle> & { error?: string };
-  if (auth.currentUser?.uid !== user.uid)
-    throw new Error(uiText("A conta mudou. Abra o perfil novamente."));
-  if (!response.ok) throw new Error(body.error || uiText("Não foi possível confirmar o @."));
+  if (auth.currentUser?.uid !== user.uid) throw new Error(uiText(1076));
+  if (!response.ok) throw new Error(body.error || uiText(2300));
   if (
     typeof body.username !== "string" ||
     !/^[a-z0-9._]{0,30}$/.test(body.username) ||
     typeof body.creks !== "boolean"
   )
-    throw new Error(uiText("Resposta inválida ao confirmar o @."));
+    throw new Error(uiText(1077));
   return {
     username: body.username,
     creks: body.creks,

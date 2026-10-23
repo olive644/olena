@@ -5,7 +5,11 @@ import { PROFILE_AVATARS } from "../domain/profile-avatars";
 import { PROFILE_COVERS } from "../domain/profile-covers";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 import { validSocialProfileDetails } from "../domain/social-profile-details";
-import { validAchievementIds, validAchievementDates } from "../domain/math-achievements";
+import {
+  validAchievementIds,
+  validAchievementDates,
+  validAchievementFavorites,
+} from "../domain/math-achievements";
 export const SOCIAL_CHANGED = "olena:social-changed";
 export const SOCIAL_VISIT = "olena:social-visit";
 function isActivity(value: unknown): boolean {
@@ -37,6 +41,8 @@ function isProfile(value: unknown): value is SocialProfile {
     (item["blocked"] === undefined || typeof item["blocked"] === "boolean") &&
     (item["achievements"] === undefined || validAchievementIds(item["achievements"])) &&
     (item["achievementDates"] === undefined || validAchievementDates(item["achievementDates"])) &&
+    (item["achievementFavorites"] === undefined ||
+      validAchievementFavorites(item["achievementFavorites"])) &&
     typeof item["username"] === "string" &&
     /^[a-z0-9._]{1,30}$/.test(item["username"]) &&
     typeof item["name"] === "string" &&
@@ -52,13 +58,11 @@ function isProfile(value: unknown): value is SocialProfile {
 }
 export async function requestSocial(action?: SocialAction, query = ""): Promise<SocialFeed> {
   const { auth } = await getFirebaseAccountServices().catch(() => {
-    throw new Error(
-      uiText("Não foi possível conectar sua conta. Entre novamente ou tente mais tarde."),
-    );
+    throw new Error(uiText(1079));
   });
   await auth.authStateReady();
   const user = auth.currentUser;
-  if (!user || user.isAnonymous) throw new Error(uiText("Entre na conta para adicionar amigos."));
+  if (!user || user.isAnonymous) throw new Error(uiText(1080));
   const token = await user.getIdToken();
   const response = await fetch(`/api/profile-social${query ? `?${query}` : ""}`, {
     method: action ? "POST" : "GET",
@@ -67,15 +71,14 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
     ...(action ? { body: JSON.stringify(action) } : {}),
   });
   const body: unknown = await response.json();
-  if (auth.currentUser?.uid !== user.uid)
-    throw new Error(uiText("A conta mudou. Abra o perfil novamente."));
+  if (auth.currentUser?.uid !== user.uid) throw new Error(uiText(1076));
   if (!response.ok)
     throw new Error(
       body && typeof body === "object" && "error" in body && typeof body.error === "string"
         ? body.error
-        : uiText("Não foi possível consultar amigos."),
+        : uiText(927),
     );
-  if (!body || typeof body !== "object") throw new Error(uiText("Resposta inválida de amigos."));
+  if (!body || typeof body !== "object") throw new Error(uiText(1081));
   const feed = body as SocialFeed;
   if (
     (feed.activitySharing !== undefined && typeof feed.activitySharing !== "boolean") ||
@@ -98,7 +101,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
             ),
         )))
   )
-    throw new Error(uiText("Resposta inválida de amigos."));
+    throw new Error(uiText(1081));
   if (
     feed.connections !== undefined &&
     (!["followers", "following"].includes(feed.connections.kind) ||
@@ -110,7 +113,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
           feed.connections.next < 0 ||
           feed.connections.next > 1000)))
   )
-    throw new Error(uiText("Lista de conexões inválida."));
+    throw new Error(uiText(1082));
   // Uma conta com dados fora do padrão some da lista, em vez de derrubar a lista inteira.
   if (feed.connections) feed.connections.people = feed.connections.people.filter(isProfile);
   if (
@@ -121,7 +124,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
         (item) => isProfile(item) && Number.isSafeInteger(item.mutualCount) && item.mutualCount > 0,
       ))
   )
-    throw new Error(uiText("Sugestões inválidas."));
+    throw new Error(uiText(1083));
   if (
     !isProfile(feed.self) ||
     !Array.isArray(feed.notifications) ||
@@ -140,7 +143,7 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
         !feed.results.every(isProfile))) ||
     (feed.profile !== undefined && !isProfile(feed.profile))
   )
-    throw new Error(uiText("Resposta inválida de amigos."));
+    throw new Error(uiText(1081));
   if (action) window.dispatchEvent(new Event(SOCIAL_CHANGED));
   return feed;
 }

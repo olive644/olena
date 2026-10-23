@@ -14,12 +14,15 @@ import {
   isAchievementId,
   validAchievementIds,
   validAchievementDates,
+  validAchievementFavorites,
 } from "../domain/math-achievements.js";
 
 type Account = {
   blocked?: Record<string, number>;
   achievements?: Record<string, true>;
   achievementDates?: Record<string, string>;
+  achievementFavorites?: Record<string, number>;
+  achievementFavoritesUpdatedAt?: number;
   achievementsUpdatedAt?: number;
   display?: { name: string; photoUrl: string; cover?: string };
   details?: SocialProfileDetails;
@@ -117,6 +120,7 @@ export function createProfileSocialHandler(options: {
                       "details",
                       "achievements",
                       "achievementDates",
+                      "achievementFavorites",
                     ]
                   : body["action"] === "read"
                     ? ["action"]
@@ -167,6 +171,11 @@ export function createProfileSocialHandler(options: {
         if (body["details"] !== undefined && !validSocialProfileDetails(body["details"]))
           return reply(400, { error: "Dados públicos do perfil inválidos." });
         if (body["achievements"] !== undefined && !validAchievementIds(body["achievements"]))
+          return reply(400, { error: "Conquistas inválidas." });
+        if (
+          body["achievementFavorites"] !== undefined &&
+          !validAchievementFavorites(body["achievementFavorites"])
+        )
           return reply(400, { error: "Conquistas inválidas." });
         if (
           body["achievementDates"] !== undefined &&
@@ -263,6 +272,22 @@ export function createProfileSocialHandler(options: {
             ...(!blocked(id) && account.display && account.achievementsUpdatedAt !== undefined
               ? {
                   achievements: Object.keys(account.achievements ?? {}).filter(isAchievementId),
+                  ...(account.achievementFavoritesUpdatedAt !== undefined
+                    ? {
+                        achievementFavorites: Object.entries(account.achievementFavorites ?? {})
+                          .filter(
+                            ([id, rank]) =>
+                              isAchievementId(id) &&
+                              account.achievements?.[id] &&
+                              Number.isInteger(rank) &&
+                              rank > 0 &&
+                              rank <= 3,
+                          )
+                          .sort((a, b) => a[1] - b[1])
+                          .slice(0, 3)
+                          .map(([id]) => id),
+                      }
+                    : {}),
                   ...(validAchievementDates(account.achievementDates)
                     ? {
                         achievementDates: Object.fromEntries(
@@ -495,6 +520,14 @@ export function createProfileSocialHandler(options: {
                     ([id]) => self.achievements?.[id],
                   ),
                 );
+            }
+            if (validAchievementFavorites(body["achievementFavorites"])) {
+              self.achievementFavorites = Object.fromEntries(
+                body["achievementFavorites"]
+                  .filter((id) => self.achievements?.[id])
+                  .map((id, index) => [id, index + 1]),
+              );
+              self.achievementFavoritesUpdatedAt = now;
             }
             if (validSocialProfileDetails(body["details"])) {
               const details = body["details"];

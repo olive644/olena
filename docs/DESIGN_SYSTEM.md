@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Conquistas: seguir o contrato específico em [ACHIEVEMENT_DESIGN.md](ACHIEVEMENT_DESIGN.md), incluindo materiais, temas, dígitos originais, favoritos e inspeção estática.
+
 Revisão aprovada do Espaço (2026-10-19): Foco acima da Ilha na coluna esquerda,
 caderno à direita ocupando duas linhas, tanto no PC quanto no celular. Proporção
 1:2 no desktop e 1:2.2 no mobile. Sem prateleira no Espaço. Capa e folheamento

@@ -1,0 +1,772 @@
+[
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2180,
+    "text": "Matemática básica, exercícios em preparação."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2332,
+    "text": "Primeiras palavras"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2181,
+    "text": "Exercícios em preparação."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2333,
+    "text": "Sons do porto"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2181,
+    "text": "Exercícios em preparação."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2334,
+    "text": "Pontes de conversa"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2181,
+    "text": "Exercícios em preparação."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2182,
+    "text": "Histórias de viagem"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2181,
+    "text": "Exercícios em preparação."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2335,
+    "text": "Bosque das palavras"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2336,
+    "text": "Palavras, frases e os caminhos que conectam nossas ideias."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2183,
+    "text": "Biblioteca de histórias"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2184,
+    "text": "Autores, personagens e diferentes formas de contar histórias."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2337,
+    "text": "Ponte dos sentidos"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2185,
+    "text": "Leitura atenta para descobrir sentidos e intenções em um texto."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2186,
+    "text": "Ateliê da escrita"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2187,
+    "text": "Organização de ideias e construção dos seus próprios textos."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2188,
+    "text": "Portão dos elementos"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2189,
+    "text": "Átomos e elementos, as peças que compõem a matéria."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2190,
+    "text": "Ponte das moléculas"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2191,
+    "text": "Como os átomos se conectam e formam novas estruturas."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2192,
+    "text": "Laboratório de mudanças"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2193,
+    "text": "Transformações da matéria e pistas de uma reação química."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2338,
+    "text": "Fonte das misturas"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2194,
+    "text": "Substâncias, misturas e maneiras de separar seus componentes."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2339,
+    "text": "Semente da vida"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2195,
+    "text": "Células e estruturas que tornam a vida possível."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2196,
+    "text": "Árvore das heranças"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2197,
+    "text": "Características e informações que passam entre gerações."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2340,
+    "text": "Vale dos encontros"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2198,
+    "text": "Relações entre seres vivos e os ambientes onde vivem."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2341,
+    "text": "Estufa das descobertas"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2342,
+    "text": "Plantas, suas estruturas e seus ciclos de vida."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2343,
+    "text": "Oficina Python"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2199,
+    "text": "Primeiros passos de lógica e programação com Python."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2344,
+    "text": "Circuito JavaScript"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2200,
+    "text": "Lógica e interações para dar comportamento às páginas."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2201,
+    "text": "Fundação HTML"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2202,
+    "text": "Elementos e estrutura semântica de uma página."
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2203,
+    "text": "Ateliê CSS"
+  },
+  {
+    "file": "src/data/practice-trails.ts",
+    "id": 2204,
+    "text": "Estilos, composição e layouts que se adaptam à tela."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1115,
+    "text": "A sala enviou dados inválidos. Tente reconectar."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1116,
+    "text": "A conexão demorou demais. Tente novamente."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 2301,
+    "text": "Não foi possível falar com a sala agora."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1117,
+    "text": "O anfitrião removeu você desta sala."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1118,
+    "text": "Não foi possível retomar a sala."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1119,
+    "text": "Não foi possível criar a sala."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1120,
+    "text": "Digite um código de sala válido com cinco caracteres."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1121,
+    "text": "Entre na sua conta para participar da sala."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1122,
+    "text": "Não foi possível entrar na sala."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1123,
+    "text": "Não foi possível salvar."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1124,
+    "text": "Não foi possível mudar de equipe."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1125,
+    "text": "Não foi possível remover o participante."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1126,
+    "text": "Não foi possível fechar a entrada."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1127,
+    "text": "Não foi possível reabrir a entrada."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1128,
+    "text": "Não foi possível iniciar a rodada."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1129,
+    "text": "Não foi possível avançar."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1130,
+    "text": "Não foi possível encerrar a sala."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1131,
+    "text": "Não foi possível concluir a conferência."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1132,
+    "text": "Não foi possível repetir a atividade."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1133,
+    "text": "Não foi possível definir os ganhadores."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1134,
+    "text": "Não foi possível trocar a atividade."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1135,
+    "text": "Não foi possível enviar a resposta."
+  },
+  {
+    "file": "src/hooks/use-local-room.ts",
+    "id": 1136,
+    "text": "Não foi possível mudar sua participação."
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2760,
+    "text": "Não foi possível carregar os dispositivos. Tente novamente."
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2755,
+    "text": "Dispositivos conectados"
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2756,
+    "text": "Veja os navegadores que acessaram sua conta neste aplicativo nos últimos 90 dias."
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2759,
+    "text": "Aparelhos usados antes desta atualização aparecem quando você acessar o app neles novamente. Último acesso não significa que o aparelho está online."
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 498,
+    "text": "Tentar novamente"
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2761,
+    "text": "Sistema não identificado"
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2762,
+    "text": "Último acesso ao app"
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2763,
+    "text": "Este dispositivo"
+  },
+  {
+    "file": "src/components/connected-devices.tsx",
+    "id": 2764,
+    "text": "Nenhum dispositivo registrado neste período."
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2831,
+    "text": "Denúncia enviada ao time. Acompanhe em Conversar com o time nas configurações."
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2834,
+    "text": "Não foi possível concluir. Tente novamente."
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2823,
+    "text": "Segurança do perfil"
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2823,
+    "text": "Segurança do perfil"
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2826,
+    "text": "Denunciar usuário"
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2827,
+    "text": "O que aconteceu?"
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2828,
+    "text": "Não inclua senhas ou informações sensíveis. A denúncia será avaliada pelo time, sem punição automática."
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 2829,
+    "text": "O bloqueio remove as conexões e impede novas interações. Desbloquear não volta a seguir automaticamente."
+  },
+  {
+    "file": "src/components/profile-safety.tsx",
+    "id": 155,
+    "text": "Cancelar"
+  },
+  {
+    "file": "src/components/activity-privacy.tsx",
+    "id": 2691,
+    "text": "Suas atividades"
+  },
+  {
+    "file": "src/components/activity-privacy.tsx",
+    "id": 2692,
+    "text": "Mostrar atividades para todo mundo"
+  },
+  {
+    "file": "src/components/activity-privacy.tsx",
+    "id": 2693,
+    "text": "Compartilhe novas conquistas de prática, foco e sequências. Conteúdo dos seus estudos nunca é publicado. Ao desativar, as atividades e curtidas são removidas."
+  },
+  {
+    "file": "src/components/activity-privacy.tsx",
+    "id": 2694,
+    "text": "Não foi possível atualizar a privacidade. Tente novamente."
+  },
+  {
+    "file": "src/components/activity-privacy.tsx",
+    "id": 2695,
+    "text": "Entre na conta para gerenciar atividades compartilhadas."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1079,
+    "text": "Não foi possível conectar sua conta. Entre novamente ou tente mais tarde."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1080,
+    "text": "Entre na conta para adicionar amigos."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1076,
+    "text": "A conta mudou. Abra o perfil novamente."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 927,
+    "text": "Não foi possível consultar amigos."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1081,
+    "text": "Resposta inválida de amigos."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1081,
+    "text": "Resposta inválida de amigos."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1082,
+    "text": "Lista de conexões inválida."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1083,
+    "text": "Sugestões inválidas."
+  },
+  {
+    "file": "src/data/profile-social.ts",
+    "id": 1081,
+    "text": "Resposta inválida de amigos."
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2315,
+    "text": "Porto das Vozes"
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2316,
+    "text": "Um porto de palavras, conversas e novas descobertas."
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2140,
+    "text": "Vale das Histórias"
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2141,
+    "text": "Bibliotecas, histórias e caminhos para se expressar."
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2320,
+    "text": "Ilhas dos Elementos"
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2145,
+    "text": "Um laboratório de elementos, moléculas e transformações."
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2323,
+    "text": "Jardim da Vida"
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2148,
+    "text": "Um jardim vivo para explorar a natureza."
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2152,
+    "text": "Picos dos Padrões"
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2153,
+    "text": "Das primeiras contas à matemática básica do dia a dia."
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2155,
+    "text": "Oficina do Código"
+  },
+  {
+    "file": "src/data/practice-islands.ts",
+    "id": 2156,
+    "text": "Uma oficina de código para construir suas ideias."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 2302,
+    "text": "Não foi possível conectar o caderno."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1137,
+    "text": "Você saiu desta colaboração."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1138,
+    "text": "Não foi possível conectar."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1139,
+    "text": "Informe seu nome para compartilhar."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1140,
+    "text": "Informe o código e seu nome."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1141,
+    "text": "Não foi possível compartilhar a alteração."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1142,
+    "text": "Não foi possível atualizar o índice."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1143,
+    "text": "Sem conexão. Suas alterações ficam neste aparelho e serão enviadas quando a internet voltar."
+  },
+  {
+    "file": "src/hooks/use-notebook-collaboration.ts",
+    "id": 1144,
+    "text": "Enviando alterações…"
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 1072,
+    "text": "Não foi possível conectar sua conta. Tente novamente."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 840,
+    "text": "Entre na conta para criar um @."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 1073,
+    "text": "Entre novamente para confirmar seu @."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 1074,
+    "text": "Não foi possível confirmar o @. Verifique sua conexão e tente novamente."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 1075,
+    "text": "Não foi possível confirmar o @. Tente novamente."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 1076,
+    "text": "A conta mudou. Abra o perfil novamente."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 2300,
+    "text": "Não foi possível confirmar o @."
+  },
+  {
+    "file": "src/data/profile-handle.ts",
+    "id": 1077,
+    "text": "Resposta inválida ao confirmar o @."
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2746,
+    "text": "Sua prateleira"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2746,
+    "text": "Sua prateleira"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2747,
+    "text": "Escolher favoritos"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2748,
+    "text": "Ver {0}"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2749,
+    "text": "Escolha até três favoritos para esta prateleira."
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 230,
+    "text": "Fechar"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 630,
+    "text": "Abrir"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2747,
+    "text": "Escolher favoritos"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 230,
+    "text": "Fechar"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2751,
+    "text": "Até três itens no total, com no máximo uma pasta."
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2752,
+    "text": "{0} de 3 favoritos"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2753,
+    "text": "Favorito: {0}"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 2754,
+    "text": "Nenhum caderno ou Note disponível."
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 1364,
+    "text": "Meus cadernos"
+  },
+  {
+    "file": "src/components/student-favorites-shelf.tsx",
+    "id": 25,
+    "text": "Concluir"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2546,
+    "text": "Escuta coletiva"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2060,
+    "text": "Reproduza áudios e receba respostas em tempo real."
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2685,
+    "text": "Recomendado"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2547,
+    "text": "Flashcards em grupo"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2061,
+    "text": "Revise conceitos e acompanhe o domínio da turma."
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 955,
+    "text": "Em breve"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2548,
+    "text": "Quiz competitivo"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2062,
+    "text": "Perguntas com tempo, pontuação e ranking."
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 955,
+    "text": "Em breve"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 1275,
+    "text": "Bingo"
+  },
+  {
+    "file": "src/components/local-room-config.ts",
+    "id": 2549,
+    "text": "Cartelas individuais e sorteio sincronizado."
+  },
+  {
+    "file": "src/components/sign-out-button.tsx",
+    "id": 2686,
+    "text": "Vamos tentar enviar suas alterações antes de sair."
+  },
+  {
+    "file": "src/components/sign-out-button.tsx",
+    "id": 2687,
+    "text": "Quero sair sem enviar. Alterações pendentes neste aparelho serão perdidas."
+  },
+  {
+    "file": "src/components/sign-out-button.tsx",
+    "id": 2688,
+    "text": "Não foi possível enviar tudo. Seus dados continuam neste aparelho. Tente novamente ou escolha sair sem enviar."
+  }
+]

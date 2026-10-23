@@ -7,6 +7,8 @@ export type StoredProfile = {
   bio?: string;
   pronouns?: string;
   socialLinks?: string[];
+  achievementFavorites?: string[];
+  achievementHistory?: Record<string, string>;
 };
 
 export const SOCIAL_NETWORKS = ["instagram", "facebook", "linkedin", "github", "tiktok"] as const;

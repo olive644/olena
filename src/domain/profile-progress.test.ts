@@ -1,6 +1,32 @@
 import { expect, it } from "vitest";
 import { mergeProfileProgress } from "./profile-progress";
 import { mergeSyncedItems } from "../data/sync-conflict";
+it("conquistas históricas se unem entre aparelhos sem sobrescrever a escolha dos destaques", () => {
+  const selected = JSON.stringify({
+    name: "Atual",
+    achievementFavorites: [],
+    achievementHistory: {
+      "general-following-bronze": "",
+      "general-streak-bronze": "2026-10-22T12:00:00Z",
+    },
+  });
+  const other = JSON.stringify({
+    achievementFavorites: ["correct-1"],
+    achievementHistory: {
+      "general-streak-bronze": "2026-10-21T12:00:00Z",
+      "general-notebooks-bronze": "2026-10-20T12:00:00Z",
+      admin: "2026-10-20T12:00:00Z",
+    },
+  });
+  const result = JSON.parse(mergeProfileProgress(selected, other)!);
+  expect(result.name).toBe("Atual");
+  expect(result.achievementFavorites).toEqual([]);
+  expect(result.achievementHistory).toEqual({
+    "general-following-bronze": "",
+    "general-streak-bronze": "2026-10-21T12:00:00Z",
+    "general-notebooks-bronze": "2026-10-20T12:00:00Z",
+  });
+});
 it("perfil remoto preserva identidade e não apaga XP nem retomada de uma cópia mais recente", () => {
   const local = JSON.stringify({
     name: "Antigo",

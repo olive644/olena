@@ -3,8 +3,10 @@ import type { MasteryProgress } from "./math-mastery-progress.js";
 import { countSolved } from "./math-game-progress.js";
 import type { PracticeActivity } from "./workspace.js";
 import { zonedDateTime } from "./agenda-calendar.js";
+import { GENERAL_ACHIEVEMENTS, type GeneralAchievement } from "./general-achievement-catalog.js";
 
-export type Achievement = {
+export type MathAchievement = {
+  category?: "mathematics";
   id: string;
   name: string;
   description: string;
@@ -14,7 +16,8 @@ export type Achievement = {
   course?: MathCourseId;
   art: number;
 };
-const milestones: readonly [Achievement["metric"], string, string, readonly number[]][] = [
+export type Achievement = MathAchievement | GeneralAchievement;
+const milestones: readonly [MathAchievement["metric"], string, string, readonly number[]][] = [
   [
     "rounds",
     "Explorador das contas",
@@ -36,9 +39,9 @@ const milestones: readonly [Achievement["metric"], string, string, readonly numb
   ],
   ["islands", "Cartógrafo do infinito", "Conclua {0} ilhas de matemática.", [1, 3, 6]],
 ];
-export const MATH_ACHIEVEMENTS: readonly Achievement[] = [
+export const MATH_ACHIEVEMENTS: readonly MathAchievement[] = [
   ...milestones.flatMap(([metric, name, description, targets], art) =>
-    targets.map((target, tier): Achievement => ({
+    targets.map((target, tier): MathAchievement => ({
       id: `${metric}-${target}`,
       name,
       description,
@@ -55,7 +58,7 @@ export const MATH_ACHIEVEMENTS: readonly Achievement[] = [
       { metric: "stages" as const, target: 1, name: "Primeira travessia" },
       { metric: "stages" as const, target: 3, name: "Meia jornada" },
       { metric: "stages" as const, target: 6, name: "Domínio da ilha" },
-    ].map((entry, tier): Achievement => ({
+    ].map((entry, tier): MathAchievement => ({
       ...entry,
       id: `${course.id}-${entry.metric}-${entry.target}`,
       course: course.id,
@@ -68,13 +71,20 @@ export const MATH_ACHIEVEMENTS: readonly Achievement[] = [
     })),
   ),
 ];
+export const ALL_ACHIEVEMENTS: readonly Achievement[] = [
+  ...MATH_ACHIEVEMENTS,
+  ...GENERAL_ACHIEVEMENTS,
+];
+export function validAchievementFavorites(value: unknown): value is string[] {
+  return validAchievementIds(value) && value.length <= 3;
+}
 export function isAchievementId(value: unknown): value is string {
-  return typeof value === "string" && MATH_ACHIEVEMENTS.some((item) => item.id === value);
+  return typeof value === "string" && ALL_ACHIEVEMENTS.some((item) => item.id === value);
 }
 export function validAchievementIds(value: unknown): value is string[] {
   return (
     Array.isArray(value) &&
-    value.length <= MATH_ACHIEVEMENTS.length &&
+    value.length <= ALL_ACHIEVEMENTS.length &&
     value.every(isAchievementId) &&
     new Set(value).size === value.length
   );
@@ -84,7 +94,7 @@ export function validAchievementDates(value: unknown): value is Record<string, s
     !!value &&
     typeof value === "object" &&
     !Array.isArray(value) &&
-    Object.entries(value).length <= MATH_ACHIEVEMENTS.length &&
+    Object.entries(value).length <= ALL_ACHIEVEMENTS.length &&
     Object.entries(value).every(
       ([id, date]) =>
         isAchievementId(id) &&
