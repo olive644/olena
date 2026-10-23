@@ -293,6 +293,7 @@ export function AchievementCollection({
           </button>
         ))}
         {summary &&
+          onFavoritesChange &&
           Array.from({ length: Math.max(0, 3 - items.length) }, (_, i) => (
             <button
               key={"empty-" + i}

@@ -119,3 +119,37 @@ it("um perfil inválido some da lista de conexões sem derrubar os outros", asyn
   const feed = await requestSocial();
   expect(feed.connections?.people.map((item) => item.username)).toEqual(["bia"]);
 });
+it("troca o erro cru de rede por orientação e repete só a leitura", async () => {
+  const fetch = vi.fn(async () => {
+    throw new TypeError("Failed to fetch");
+  });
+  vi.stubGlobal("fetch", fetch);
+  await expect(requestSocial(undefined, "search=ana")).rejects.toThrow(
+    "Confira sua conexão e tente novamente.",
+  );
+  expect(fetch).toHaveBeenCalledTimes(2);
+  fetch.mockClear();
+  await expect(requestSocial({ action: "follow", username: "ana" })).rejects.toThrow(
+    "Confira sua conexão",
+  );
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
+it("a leitura se recupera quando a segunda tentativa chega", async () => {
+  const fetch = vi
+    .fn()
+    .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+    .mockResolvedValueOnce(
+      new Response(JSON.stringify({ self: { username: "ana", name: "Ana", photoUrl: "" } })),
+    );
+  vi.stubGlobal("fetch", fetch);
+  await expect(requestSocial(undefined, "search=ana")).rejects.not.toThrow("conexão");
+  expect(fetch).toHaveBeenCalledTimes(2);
+});
+it("resposta sem JSON não vaza o erro do navegador", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("<html>erro</html>", { status: 500 })),
+  );
+  const failure = await requestSocial().catch((cause: Error) => cause.message);
+  expect(failure).not.toMatch(/JSON|Unexpected|token/i);
+});

@@ -3527,3 +3527,10 @@ O e2e `handwriting-studio` ("escreve, ajusta e salva") passou a falhar no CI des
 ## zod atualizado por aviso de segurança (2026-10-23)
 
 O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) atingiu o `zod`, que entra só como dependência transitiva de desenvolvimento do `eslint-plugin-react-hooks`. `npm audit fix` atualizou apenas o `package-lock.json`; `package.json` e código do produto não mudaram. `npm audit` voltou a zero vulnerabilidades. Não afeta o bundle publicado.
+
+## Busca de amigos sem erro cru de rede e destaques da visita (2026-10-23)
+
+- A busca de amigos mostrava "Failed to fetch", a mensagem crua do navegador quando a requisição nem chega ao servidor (sem rede, rede móvel instável). `requestSocial` agora repete uma vez as leituras (GET, sem efeito no servidor) e troca a falha pelas mensagens já existentes do catálogo ("Confira sua conexão e tente novamente." ou "A conexão demorou demais."). Ações (seguir, bloquear) não são repetidas, para nunca executar duas vezes. Resposta sem JSON (por exemplo erro 500 em HTML) também não vaza mais o erro do navegador.
+- Não verificado: a causa real da falha no aparelho. O erro cru indica que a requisição não chegou ao servidor; se persistir com boa conexão, conferir os logs da função `/api/profile-social` na Vercel.
+- Na inspeção de perfil de outra pessoa, a coleção compacta mostra somente os destaques que ela escolheu, sem os espaços vazios com "+" (que só fazem sentido para o dono, que pode escolher). Os destaques já eram enviados e lidos pelo servidor; o dono continua vendo os espaços para escolher.
+- Não verificado: se os destaques de uma conta específica já foram sincronizados. A sincronização do perfil é única (nome, foto, conquistas, destaques e dados públicos) e falhas dela são silenciosas; um dado público inválido derruba tudo. Conferir no Firebase os campos `achievementFavorites` e `achievementFavoritesUpdatedAt` da conta.
