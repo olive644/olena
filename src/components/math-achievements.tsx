@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { uiLocale, uiText, useLanguage } from "../i18n/runtime";
 import { MATH_COURSES, type MathCourseId } from "../data/math-courses";
@@ -9,47 +9,54 @@ import { useStoredProfile } from "../hooks/use-stored-profile";
 import { PaperCloseIcon } from "./paper-close-icon";
 import { PaperArtInspection } from "./paper-art-inspection";
 import { PaperEditorIcon } from "./paper-editor-icon";
+import { PaperArrow } from "./paper-arrow";
 import "./math-achievements.css";
 
 const rarityName = (rarity: Achievement["rarity"]) =>
   uiText(rarity === "rare" ? "Rara" : rarity === "uncommon" ? "Incomum" : "Comum");
 
 export function AchievementArt({ item, locked = false }: { item: Achievement; locked?: boolean }) {
-  const index = MATH_ACHIEVEMENTS.findIndex((entry) => entry.id === item.id);
   return (
     <span
       className={`math-achievement-art is-${item.rarity}${locked ? " is-locked" : ""}`}
       data-art={item.id}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 180" aria-hidden="true">
-        <use href={`/navigation-icons/paper/achievement-objects.svg#a${index}`} />
-        {item.rarity === "rare" && (
-          <image href="/oliver-math-islands.png" x="28" y="5" width="108" height="137" />
-        )}
-        <use
-          href={`/navigation-icons/paper/achievement-objects.svg#a${(index + 17) % 57}`}
-          x="99"
-          y="96"
-          width="52"
-          height="58"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" aria-hidden="true">
+        <image
+          href={`/achievement-badges/math/${item.id}.webp`}
+          width="160"
+          height="160"
+          preserveAspectRatio="xMidYMid meet"
         />
-        <text
-          x="80"
-          y="157"
-          textAnchor="middle"
-          fill="#FFF9EF"
-          stroke="#292432"
-          strokeWidth=".8"
-          paintOrder="stroke"
-          fontFamily="Manrope, sans-serif"
-          fontSize="13"
-          fontWeight="900"
+        <g
+          className="achievement-paper-number"
+          style={
+            {
+              "--digit-face": "#292432",
+              "--digit-depth": "#17131D",
+              "--digit-fold": "#51465D",
+              "--digit-edge": "#211B29",
+            } as CSSProperties
+          }
         >
-          {item.target}
-        </text>
+          {[...String(item.target)].map((digit, i, all) => (
+            <use
+              key={i}
+              href={`/paper-digits.svg#digit-${digit}`}
+              x={80 - all.length * 7 + i * 14}
+              y="115"
+              width="14"
+              height="21"
+            />
+          ))}
+        </g>
       </svg>
       {item.rarity === "rare" && !locked && (
-        <span className="achievement-foil" aria-hidden="true" />
+        <span
+          className="achievement-foil"
+          style={{ maskImage: `url(/achievement-badges/math/${item.id}.webp)` }}
+          aria-hidden="true"
+        />
       )}
     </span>
   );
@@ -205,7 +212,7 @@ export function AchievementCollection({
           <span>
             {catalog.filter((item) => earned.has(item.id)).length}/{catalog.length}
           </span>
-          <span aria-hidden="true">›</span>
+          <PaperArrow />
         </button>
       </header>
       {compact && tiles(sorted.slice(0, 3), true)}
@@ -241,7 +248,7 @@ export function AchievementCollection({
             </header>
             {tiles(sorted)}
           </dialog>,
-          document.body,
+          document.querySelector(".app-shell") ?? document.body,
         )}
       {selected &&
         createPortal(
@@ -280,10 +287,16 @@ export function AchievementCollection({
               <div className="achievement-share-preview">
                 <img src={preview} alt={uiText("Card da conquista para compartilhar")} />
                 <div>
-                  <button className="secondary-button" type="button" onClick={() => void share()}>
+                  <button className="primary-button" type="button" onClick={() => void share()}>
+                    <PaperEditorIcon name="share" />
                     {uiText("Compartilhar")}
                   </button>
-                  <a className="secondary-button" href={preview} download={file?.name}>
+                  <a
+                    className="secondary-button achievement-save"
+                    href={preview}
+                    download={file?.name}
+                  >
+                    <PaperEditorIcon name="download" />
                     {uiText("Salvar imagem")}
                   </a>
                   <button
@@ -294,6 +307,7 @@ export function AchievementCollection({
                       setFile(undefined);
                     }}
                   >
+                    <PaperArrow back />
                     {uiText("Voltar à conquista")}
                   </button>
                 </div>
@@ -367,7 +381,7 @@ export function AchievementCollection({
             {sharing && <p role="status">{uiText("Preparando card…")}</p>}
             {error && <p role="alert">{error}</p>}
           </dialog>,
-          document.body,
+          document.querySelector(".app-shell") ?? document.body,
         )}
     </section>
   );

@@ -92,9 +92,16 @@ test("galeria compacta, data real, Oliver shiny e card compartilhável", async (
   const inspection = page.getByRole("dialog", { name: "Constelação de acertos 2500", exact: true });
   await expect(inspection.locator("time")).toHaveAttribute("datetime", "2026-10-14T12:00:00Z");
   await expect(inspection.locator(".achievement-foil").first()).toBeVisible();
-  await expect(inspection.locator("image").first()).toHaveAttribute(
+  await expect(
+    inspection.locator('image[href="/achievement-badges/math/correct-2500.webp"]').first(),
+  ).toBeVisible();
+  await expect(inspection.locator(".math-achievement-art > svg").first()).toHaveAttribute(
+    "viewBox",
+    "0 0 160 160",
+  );
+  await expect(inspection.locator(".achievement-paper-number use").first()).toHaveAttribute(
     "href",
-    "/oliver-math-islands.png",
+    "/paper-digits.svg#digit-2",
   );
   await inspection.screenshot({
     path: info.outputPath("conquista-oliver-shiny.png"),
@@ -102,14 +109,45 @@ test("galeria compacta, data real, Oliver shiny e card compartilhável", async (
   });
   await inspection.getByRole("button", { name: "Compartilhar conquista" }).click();
   const card = inspection.getByRole("img", { name: "Card da conquista para compartilhar" });
+  await expect(inspection.getByRole("button", { name: "Compartilhar", exact: true })).toHaveCSS(
+    "background-color",
+    "rgb(116, 51, 224)",
+  );
   await expect(card).toBeVisible();
   await expect
     .poll(() => card.evaluate((node) => (node as HTMLImageElement).naturalWidth))
     .toBe(1080);
+  const pixels = await card.evaluate((node) => {
+    const image = node as HTMLImageElement;
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const ctx = canvas.getContext("2d")!;
+    ctx.drawImage(image, 0, 0);
+    const { data } = ctx.getImageData(270, 190, 540, 540);
+    let cobalt = 0,
+      turquoise = 0,
+      number = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]!,
+        g = data[i + 1]!,
+        b = data[i + 2]!;
+      if (b > 130 && r < 80 && g < 150) cobalt++;
+      if (g > 150 && b > 150 && r < 140) turquoise++;
+      const y = Math.floor(i / 4 / 540);
+      if (y > 390 && y < 460 && r < 100 && g < 100 && b < 110) number++;
+    }
+    return { cobalt, turquoise, number };
+  });
+  expect(pixels.cobalt).toBeGreaterThan(1000);
+  expect(pixels.turquoise).toBeGreaterThan(1000);
+  expect(pixels.number).toBeGreaterThan(100);
   await inspection.screenshot({ path: info.outputPath("conquista-compartilhar.png") });
   const download = page.waitForEvent("download");
   await inspection.getByRole("link", { name: "Salvar imagem" }).click();
-  expect((await download).suggestedFilename()).toBe("olena-conquista-correct-2500.png");
+  const saved = await download;
+  expect(saved.suggestedFilename()).toBe("olena-conquista-correct-2500.png");
+  await saved.saveAs(info.outputPath("card-olena-conquista.png"));
   await page.evaluate(() =>
     Object.defineProperty(navigator, "canShare", { configurable: true, value: () => false }),
   );

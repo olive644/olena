@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
 import { render, cleanup } from "@testing-library/react";
 import { PaperObjectIcon } from "./paper-object-icon";
 import { PaperActionIcon } from "./paper-action-icon";
+import { MATH_ACHIEVEMENTS } from "../domain/math-achievements";
 it("sprites de papel preservam símbolos locais, sem scripts ou recursos remotos", () => {
   for (const file of [
     "paper-editor-icon",
@@ -19,6 +21,20 @@ it("sprites de papel preservam símbolos locais, sem scripts ou recursos remotos
     expect(doc.querySelector("script,foreignObject")).toBeNull();
     expect(raw).not.toMatch(/https?:\/\/(?!www\.w3\.org\/)/);
   }
+});
+it("cada conquista tem uma badge própria, leve, quadrada e transparente", () => {
+  const hashes = MATH_ACHIEVEMENTS.map((item) => {
+    const bytes = readFileSync(`public/achievement-badges/math/${item.id}.webp`);
+    expect(bytes.toString("ascii", 0, 4)).toBe("RIFF");
+    expect(bytes.toString("ascii", 8, 12)).toBe("WEBP");
+    expect(bytes.toString("ascii", 12, 16)).toBe("VP8X");
+    expect(bytes[20]! & 0x10).toBe(0x10);
+    expect(bytes.readUIntLE(24, 3) + 1).toBe(512);
+    expect(bytes.readUIntLE(27, 3) + 1).toBe(512);
+    expect(bytes.length).toBeLessThan(150_000);
+    return createHash("sha256").update(bytes).digest("hex");
+  });
+  expect(new Set(hashes).size).toBe(57);
 });
 it("oferece 57 composições distintas e preserva os seis ícones de sala", () => {
   const doc = new DOMParser().parseFromString(
