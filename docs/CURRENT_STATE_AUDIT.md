@@ -3519,3 +3519,11 @@ Validação: npm run verify aprovado, 331 arquivos e 2127 testes; 42 testes foca
 - `vercel.json`: `/achievement-badges/*` com `Cache-Control: public, max-age=604800, stale-while-revalidate=86400`. Como os nomes não têm hash, uma arte trocada pode levar até uma semana para chegar a quem já abriu. Para forçar, renomear o arquivo.
 - Teto de JavaScript total e teto absoluto subiram de 1500 para 1600 KiB por decisão da dona do projeto. A entrada inicial segue com seu orçamento próprio.
 - Não verificado: o ganho em tempo real em aparelho móvel. Conferir no preview com o painel de rede do navegador (bytes transferidos ao abrir Conquistas).
+
+## Teste de manuscrito fecha o aviso de conquista antes de arrastar (2026-10-23)
+
+O e2e `handwriting-studio` ("escreve, ajusta e salva") passou a falhar no CI desde o merge do #508: o arraste da alça "Redimensionar imagem importada" não mudava a largura. Hipótese: salvar o caderno desbloqueia conquistas gerais, e o aviso `.achievement-notice` (fixo no canto inferior direito, `z-index` 140) cobre a alça da página grande vinda do PDF. O teste agora fecha os avisos de conquista visíveis antes do arraste. Nenhum código do produto mudou. Verificado: o trecho do arraste passa localmente com imagem no lugar do PDF; a importação de PDF não roda no meu ambiente local, então a confirmação final é o CI. Não verificado: que a causa seja só o aviso.
+
+## zod atualizado por aviso de segurança (2026-10-23)
+
+O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) atingiu o `zod`, que entra só como dependência transitiva de desenvolvimento do `eslint-plugin-react-hooks`. `npm audit fix` atualizou apenas o `package-lock.json`; `package.json` e código do produto não mudaram. `npm audit` voltou a zero vulnerabilidades. Não afeta o bundle publicado.

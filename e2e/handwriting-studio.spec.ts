@@ -468,6 +468,10 @@ test("escreve, ajusta e salva uma folha manuscrita", async ({ page }, testInfo) 
   const beforeMove = await imported.boundingBox();
   await reopened.getByRole("button", { name: "Mover imagem importada" }).press("ArrowRight");
   await expect.poll(async () => (await imported.boundingBox())!.x).toBeGreaterThan(beforeMove!.x);
+  // Salvar o caderno pode desbloquear conquistas, e o aviso fixo no canto cobre a alça.
+  const notice = page.getByRole("complementary", { name: "Nova conquista" });
+  while (await notice.first().isVisible())
+    await notice.first().getByRole("button", { name: "Fechar conquista" }).click();
   await reopened
     .getByRole("button", { name: "Redimensionar imagem importada" })
     .scrollIntoViewIfNeeded();
