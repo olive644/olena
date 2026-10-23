@@ -112,7 +112,6 @@ it("permite destacar uma conquista obtida e recusa a quarta favorita", () => {
   expect(change).not.toHaveBeenCalled();
   expect(screen.getByRole("alert").textContent).toContain("até três conquistas");
 });
-<<<<<<< HEAD
 it("visita mostra só os destaques escolhidos, sem espaços vazios; o dono mantém os espaços", () => {
   const ids = ["correct-1", "correct-10", "general-pomodoro-bronze", "islands-1"];
   const favorites = ["general-pomodoro-bronze", "correct-10"];
@@ -130,7 +129,7 @@ it("visita mostra só os destaques escolhidos, sem espaços vazios; o dono mant�
     <AchievementCollection ids={ids} favorites={favorites} onFavoritesChange={() => {}} compact />,
   );
   expect(document.querySelectorAll(".achievement-empty")).toHaveLength(1);
-=======
+});
 it("a galeria usa miniaturas leves e a inspeção mantém a arte completa", () => {
   render(<AchievementCollection ids={["correct-1"]} />);
   const tile = document.querySelector(".achievement-tile image");
@@ -160,5 +159,4 @@ it("troca de etapa remonta a arte e indica o sentido da transição", () => {
   expect(stage()?.getAttribute("data-direction")).toBe("up");
   fireEvent.click(screen.getByRole("button", { name: "Ver etapa Bronze" }));
   expect(stage()?.getAttribute("data-direction")).toBe("down");
->>>>>>> origin/main
 });
