@@ -64,13 +64,23 @@ export async function requestSocial(action?: SocialAction, query = ""): Promise<
   const user = auth.currentUser;
   if (!user || user.isAnonymous) throw new Error(uiText(1080));
   const token = await user.getIdToken();
-  const response = await fetch(`/api/profile-social${query ? `?${query}` : ""}`, {
-    method: action ? "POST" : "GET",
-    signal: AbortSignal.timeout(15000),
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    ...(action ? { body: JSON.stringify(action) } : {}),
-  });
-  const body: unknown = await response.json();
+  const send = () =>
+    fetch(`/api/profile-social${query ? `?${query}` : ""}`, {
+      method: action ? "POST" : "GET",
+      signal: AbortSignal.timeout(15000),
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      ...(action ? { body: JSON.stringify(action) } : {}),
+    });
+  // Falha de rede chega do navegador como "Failed to fetch". Leitura é repetida uma vez
+  // (nada muda no servidor); ação não, para nunca seguir ou bloquear duas vezes.
+  const response = await send()
+    .catch((cause: unknown) => (action ? Promise.reject(cause) : send()))
+    .catch((cause: unknown) => {
+      throw new Error(
+        uiText(cause instanceof DOMException && cause.name === "TimeoutError" ? 1116 : 1193),
+      );
+    });
+  const body: unknown = await response.json().catch(() => undefined);
   if (auth.currentUser?.uid !== user.uid) throw new Error(uiText(1076));
   if (!response.ok)
     throw new Error(

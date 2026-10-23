@@ -56,7 +56,7 @@ it("exibe objetivos bloqueados e permite fechar a inspeção", () => {
 it("mantém a prévia limitada às conquistas públicas recebidas", () => {
   render(<AchievementCollection ids={["correct-1"]} compact />);
   expect(document.querySelectorAll(".achievement-tile")).toHaveLength(1);
-  expect(document.querySelectorAll(".achievement-empty")).toHaveLength(2);
+  expect(document.querySelectorAll(".achievement-empty")).toHaveLength(0);
   expect(screen.getByRole("button", { name: /Constelação de acertos 1\./ })).toBeTruthy();
   expect(screen.queryByRole("button", { name: /Cartógrafo/ })).toBeNull();
 });
@@ -111,4 +111,22 @@ it("permite destacar uma conquista obtida e recusa a quarta favorita", () => {
   fireEvent.click(screen.getByRole("button", { name: "Destacar no perfil" }));
   expect(change).not.toHaveBeenCalled();
   expect(screen.getByRole("alert").textContent).toContain("até três conquistas");
+});
+it("visita mostra só os destaques escolhidos, sem espaços vazios; o dono mantém os espaços", () => {
+  const ids = ["correct-1", "correct-10", "general-pomodoro-bronze", "islands-1"];
+  const favorites = ["general-pomodoro-bronze", "correct-10"];
+  const { unmount } = render(
+    <AchievementCollection ids={ids} favorites={favorites} ownerName="Ana" compact />,
+  );
+  const tiles = [...document.querySelectorAll(".achievement-tile")];
+  expect(tiles).toHaveLength(2);
+  expect(tiles[0]?.querySelector("image")?.getAttribute("href")).toContain(
+    "general-pomodoro-bronze",
+  );
+  expect(document.querySelectorAll(".achievement-empty")).toHaveLength(0);
+  unmount();
+  render(
+    <AchievementCollection ids={ids} favorites={favorites} onFavoritesChange={() => {}} compact />,
+  );
+  expect(document.querySelectorAll(".achievement-empty")).toHaveLength(1);
 });
