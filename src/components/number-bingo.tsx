@@ -225,16 +225,7 @@ export default function NumberBingo({
               preserveAspectRatio="xMidYMid slice"
               aria-hidden="true"
             >
-              <path
-                d="m-45 420 95-214 158-56 162 15 146 143-36 182-180 109-194-39Z"
-                fill="#312663"
-              />
-              <path d="m-45 420 95-214 158-56 162 15-159 53-114 119Z" fill="#7661ae" />
-              <path d="m-43 423 121-85 190-89 217-14 38 40-232 27-201 103Z" fill="#a779ef" />
-              <path d="m-43 423 133-18 201-103 232-27-10 39-214 24-178 94Z" fill="#e7bc88" />
-              <path d="m119 380 44-151 157-29 117 109-60 159-157 49Z" fill="#241c4d" />
-              <path d="m119 380 44-151 157-29-108 73-53 110Z" fill="#403579" />
-              <path d="m-7 466 123 37 190-13 191-94-26 71-170 76-190-3Z" fill="#7661ae" />
+              <use href="/navigation-icons/paper/bingo-scenery-0.svg#art" />
             </svg>
             <svg
               className="bingo-card-orbits"
@@ -242,16 +233,7 @@ export default function NumberBingo({
               preserveAspectRatio="none"
               aria-hidden="true"
             >
-              <path
-                d="M-70 390Q220-80 510 390M-60 440Q220-20 500 440M-60 490Q220 40 500 490"
-                fill="none"
-                stroke="#a779ef"
-                strokeWidth="2"
-              />
-              <path
-                d="m26 120 4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1ZM403 245l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1Z"
-                fill="#ffe88d"
-              />
+              <use href="/navigation-icons/paper/bingo-scenery-1.svg#art" />
             </svg>
             <div className="bingo-card-heading" aria-hidden="true">
               {letters.map((letter, i) => (
@@ -304,13 +286,7 @@ export default function NumberBingo({
                     {id === BINGO_FREE ? (
                       <>
                         <svg className="bingo-card-sun" viewBox="0 0 64 64" aria-hidden="true">
-                          <path
-                            d="m32 0 6 14 14-7-3 16 15 9-15 8 3 17-14-7-6 14-6-14-14 7 3-17L0 32l15-9-3-16 14 7Z"
-                            fill="#c99a00"
-                          />
-                          <path d="m22 14 21 2 10 17-11 18-22-2L11 31Z" fill="#fff0c7" />
-                          <path d="m22 14 21 2-14 12-18 3Z" fill="#fff9ef" />
-                          <path d="m53 33-11 18-22-2 20-10 3-23Z" fill="#ffe88d" />
+                          <use href="/navigation-icons/paper/bingo-scenery-2.svg#art" />
                         </svg>
                         <small>{uiText(757)}</small>
                       </>

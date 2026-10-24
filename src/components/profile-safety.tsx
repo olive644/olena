@@ -62,22 +62,26 @@ export function ProfileSafety({
         <div className="profile-safety-actions">
           <button
             type="button"
-            className="secondary-button"
+            className="achievement-bare-action"
+            aria-label={uiText(person.blocked ? "Desbloquear usuário" : "Bloquear usuário")}
+            title={uiText(person.blocked ? "Desbloquear usuário" : "Bloquear usuário")}
             disabled={busy}
             onClick={() => setMode("block")}
           >
-            {uiText(person.blocked ? "Desbloquear usuário" : "Bloquear usuário")}
+            <img src="/navigation-icons/paper/profile-block.svg" width="36" height="36" alt="" />
           </button>
           <button
             type="button"
-            className="secondary-button"
+            className="achievement-bare-action"
+            aria-label={uiText(2826)}
+            title={uiText(2826)}
             disabled={busy}
             onClick={() => {
               setMode("report");
               requestId.current = "";
             }}
           >
-            {uiText(2826)}
+            <img src="/navigation-icons/paper/profile-report.svg" width="36" height="36" alt="" />
           </button>
         </div>
       </details>

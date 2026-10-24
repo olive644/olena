@@ -35,11 +35,11 @@ export function StudentDestinations({
   const mode = session?.mode ?? resume.focus?.mode;
   const flower = focusFlowerState(workspace.focusSessions, now, agendaTimeZone());
   return (
-    <nav className="student-space-shortcuts" aria-label={uiText("Seu próximo destino")}>
+    <nav className="student-space-shortcuts" aria-label={uiText(2708)}>
       <button
         type="button"
         className="student-destination student-destination--learn student-destination--art"
-        aria-label={uiText("Explorar as ilhas")}
+        aria-label={uiText(2709)}
         onClick={() => {
           try {
             sessionStorage.setItem("olena:enter-mathematics", course.id);
@@ -66,7 +66,7 @@ export function StudentDestinations({
       <button
         type="button"
         className="student-destination student-destination--focus student-destination--art"
-        aria-label={uiText("Hora de focar")}
+        aria-label={uiText(2713)}
         onClick={() => onNavigate("focus")}
       >
         <span className="student-focus-art" aria-hidden="true">

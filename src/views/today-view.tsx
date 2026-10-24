@@ -141,7 +141,7 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
               <button
                 className="student-agenda-open"
                 type="button"
-                aria-label={uiText("Ver agenda")}
+                aria-label={uiText(1555)}
                 onClick={() => onNavigate("planner")}
               />
               <div className="module-heading">

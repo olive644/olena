@@ -337,10 +337,8 @@ export function ProfileView({
               {accessibilityError && <p role="alert">{uiText(accessibilityError)}</p>}
               <label>
                 <span>
-                  <strong>{uiText("Vibrações")}</strong>
-                  <small>
-                    {uiText("Feedback tátil ao navegar e selecionar, quando o aparelho permitir.")}
-                  </small>
+                  <strong>{uiText(2689)}</strong>
+                  <small>{uiText(2690)}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -396,13 +394,13 @@ export function ProfileView({
               </button>
               <PomodoroDurationPicker
                 key={`focus-${workspace.focusPreferences.pomodoroMinutes}`}
-                label={uiText("Tempo de estudo")}
+                label={uiText(2769)}
                 value={workspace.focusPreferences.pomodoroMinutes}
                 onChange={updatePomodoroMinutes}
               />
               <PomodoroDurationPicker
                 key={`short-${workspace.focusPreferences.shortBreakMinutes ?? 5}`}
-                label={uiText("Pausa curta")}
+                label={uiText(1958)}
                 value={workspace.focusPreferences.shortBreakMinutes ?? 5}
                 onChange={(shortBreakMinutes) =>
                   dispatch({
@@ -413,7 +411,7 @@ export function ProfileView({
               />
               <PomodoroDurationPicker
                 key={`long-${workspace.focusPreferences.longBreakMinutes ?? 15}`}
-                label={uiText("Pausa longa")}
+                label={uiText(1957)}
                 value={workspace.focusPreferences.longBreakMinutes ?? 15}
                 onChange={(longBreakMinutes) =>
                   dispatch({

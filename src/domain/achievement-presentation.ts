@@ -51,6 +51,19 @@ export function achievementFamily(item: Achievement) {
     ? item.family
     : `${item.course ?? "mathematics"}-${item.metric}`;
 }
+export function placeAchievementFavorite(
+  favorites: readonly string[],
+  id: string,
+  slot: number,
+  earned: ReadonlySet<string>,
+): string[] {
+  if (!earned.has(id)) return [...favorites];
+  const next = favorites.filter((value) => value !== id);
+  const index = Math.max(0, Math.min(2, slot, next.length));
+  if (next.length === 3) next.splice(index, 1);
+  next.splice(index, 0, id);
+  return next.slice(0, 3);
+}
 export function achievementFamilies(catalog: readonly Achievement[], earned: ReadonlySet<string>) {
   const groups = new Map<string, Achievement[]>();
   for (const item of catalog) {

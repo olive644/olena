@@ -31,22 +31,20 @@ export function MathPracticeHero({
   return (
     <section
       className="math-hero-carousel"
-      aria-label={uiText("Descobertas com Oliver")}
-      aria-roledescription={uiText("Carrossel")}
+      aria-label={uiText(2717)}
+      aria-roledescription={uiText(2718)}
     >
-      <article className="math-hero-slide" aria-label={uiText("Ilhas de Matemática")}>
+      <article className="math-hero-slide" aria-label={uiText(620)}>
         <div className="math-hero-copy">
           <h1>
             {uiText(streak > 0 ? "Seu fogo matemático está aceso!" : "A próxima descoberta é sua.")}
           </h1>
           {streak === 0 ? (
-            <p>
-              {uiText("Explore as ilhas de Matemática comigo. Cada resposta abre um novo caminho!")}
-            </p>
+            <p>{uiText(2724)}</p>
           ) : (
             minutesLeft <= 60 && (
               <p className="math-hero-warning" role="status">
-                {uiText("Seu fogo azul apaga em {0} min. Vamos praticar?", [minutesLeft])}
+                {uiText(2732, [minutesLeft])}
               </p>
             )
           )}
@@ -63,7 +61,7 @@ export function MathPracticeHero({
         </div>
         <OliverHeroArt />
       </article>
-      <div className="math-hero-pagination" aria-label={uiText("Página 1 de 1")}>
+      <div className="math-hero-pagination" aria-label={uiText(2729)}>
         <span aria-current="true" />
       </div>
     </section>

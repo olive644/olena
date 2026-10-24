@@ -16,21 +16,27 @@ export const PRODUCT_MODULES = localizeResource([
   {
     id: "student-space",
     name: "Espaço do aluno",
-    purpose: "Reunir prioridades, progresso e atalhos em um ponto de partida único.",
+    get purpose() {
+      return uiText(2252);
+    },
     status: "available",
     entryView: "today",
   },
   {
     id: "planner",
     name: "Agenda e planner",
-    purpose: "Organizar tarefas, compromissos, listas de homework e o planejamento de estudos.",
+    get purpose() {
+      return uiText(2304);
+    },
     status: "available",
     entryView: "planner",
   },
   {
     id: "focus",
     name: "Foco",
-    purpose: "Cronometrar sessões e registrar tempo de estudo sem prometer bloqueio nativo.",
+    get purpose() {
+      return uiText(2253);
+    },
     status: "available",
     entryView: "focus",
   },
@@ -44,101 +50,128 @@ export const PRODUCT_MODULES = localizeResource([
   {
     id: "library",
     name: "Biblioteca",
-    purpose: "Reunir materiais, links, textos e flashcards.",
+    get purpose() {
+      return uiText(2305);
+    },
     status: "available",
     entryView: "library",
   },
   {
     id: "learn",
     name: "Revisão e quizzes",
-    purpose: "Revisar flashcards, praticar escuta, responder quizzes locais e acompanhar metas.",
+    get purpose() {
+      return uiText(2306);
+    },
     status: "available",
     entryView: "learn",
   },
   {
     id: "lesson-plans",
     name: "Planos de aula",
-    purpose: "Montar rascunhos determinísticos de aulas de inglês.",
+    get purpose() {
+      return uiText(2256);
+    },
     status: "available",
     entryView: "lesson-builder",
   },
   {
     id: "helena-ai",
     name: "Olena inteligente",
-    purpose: "Apoiar o estudo com fontes escolhidas e consentimento explícito.",
+    get purpose() {
+      return uiText(2257);
+    },
     status: "foundation",
   },
   {
     id: "activity-bank",
     name: "Banco de atividades",
-    purpose: "Reunir atividades de prática classificadas por controle, tempo e material.",
+    get purpose() {
+      return uiText(2258);
+    },
     status: "available",
     entryView: "activity-bank",
   },
   {
     id: "exams",
     name: "Vestibulares e simulados",
-    purpose: "Planejar provas, diagnósticos e simulados por edital.",
+    get purpose() {
+      return uiText(2259);
+    },
     status: "planned",
   },
   {
     id: "question-bank",
     name: "Banco de questões",
-    purpose: "Filtrar questões, registrar respostas e formar um caderno de erros.",
+    get purpose() {
+      return uiText(2261);
+    },
     status: "planned",
   },
   {
     id: "scanner",
     name: "Digitalização",
-    purpose: "Fotografar, realçar e anexar páginas a uma anotação local.",
+    get purpose() {
+      return uiText(2262);
+    },
     status: "available",
     entryView: "notes",
   },
   {
     id: "handwriting",
     name: "Escrita à mão",
-    purpose:
-      "Desenhar e selecionar traços, com assistente de fórmulas e OCR local opcional da seleção.",
+    get purpose() {
+      return uiText(2263);
+    },
     status: "available",
     entryView: "notes",
   },
   {
     id: "ocr",
     name: "Reconhecimento de texto em digitalizações",
-    purpose:
-      "Extrair texto de páginas digitalizadas com revisão humana antes de salvar. Hoje só existe o OCR local da seleção de traços.",
+    get purpose() {
+      return uiText(2265);
+    },
     status: "planned",
   },
   {
     id: "documents",
     name: "Documentos",
-    purpose: "Editar textos longos, trabalhos e resumos com histórico de versões.",
+    get purpose() {
+      return uiText(2266);
+    },
     status: "planned",
   },
   {
     id: "content-maps",
     name: "Mapas de conteúdo",
-    purpose: "Conectar blocos de conhecimento e visualizar relações entre assuntos.",
+    get purpose() {
+      return uiText(2268);
+    },
     status: "planned",
   },
   {
     id: "culture",
     name: "Cultura e repertório",
-    purpose: "Construir repertório acadêmico com referências e autoria respeitadas.",
+    get purpose() {
+      return uiText(2270);
+    },
     status: "planned",
   },
   {
     id: "bingo",
     name: "Bingo de estudos",
-    purpose: "Transformar revisão e metas em atividades leves e opcionais.",
+    get purpose() {
+      return uiText(2271);
+    },
     status: "available",
     entryView: "learn",
   },
   {
     id: "room",
     name: "Modo Sala",
-    purpose:
-      "Atividades ao vivo em sala, com código: escuta coletiva e bingo, em vários dispositivos.",
+    get purpose() {
+      return uiText(2272);
+    },
     status: "available",
     entryView: "room",
   },

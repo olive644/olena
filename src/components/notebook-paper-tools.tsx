@@ -70,14 +70,7 @@ export function PaperTabIcon({ kind }: { kind: NotebookTab["kind"] }) {
   if (kind === "bookmark") return <PaperMoonMark className="paper-tab-icon" compact />;
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className="paper-tab-icon">
-      <path fill="#51465D" d="M3 5h25v32H3z" />
-      <path fill="#D5CCBA" d="M6 7h20v27H6z" />
-      <path fill="#FFF9EF" d="M8 3h18v28H8z" />
-      <path fill="#D5CCBA" d="M11 8h12v2H11Zm0 5h12v2H11Zm0 10h12v2H11Z" />
-      <path fill="currentColor" d="M19 10h15l4 5v15H19z" />
-      <path fill="#FFFFFF" opacity=".3" d="m19 10 15 0-8 8h-7z" />
-      <path fill="#292432" opacity=".3" d="m31 23 7-8v15H19l5-7z" />
-      <path fill="#292432" opacity=".18" d="M19 10h4v20h-4z" />
+      <use href="/navigation-icons/paper/notebook-divider-0.svg#art" />
     </svg>
   );
 }

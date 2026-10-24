@@ -1133,7 +1133,7 @@ export function NotesView({
                                 <small>
                                   {notebook.kind === "note" ? uiText(1992) : ""}
                                   {notebook.pageIds.length}{" "}
-                                  {notebook.kind === "folder" ? uiText("nota") : uiText(1817)}
+                                  {notebook.kind === "folder" ? uiText(2592) : uiText(1817)}
                                   {notebook.pageIds.length === 1 ? "" : "s"}
                                 </small>
                               </span>

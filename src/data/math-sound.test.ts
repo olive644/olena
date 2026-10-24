@@ -100,5 +100,26 @@ it("gives arcane opening and tarot reveal their own timbre and note sequences", 
   await Promise.resolve();
   expect(tones.slice(10)).toHaveLength(5);
   expect(tones[10]!.frequency.setValueAtTime).toHaveBeenCalledWith(523, 0);
+  const sequences: number[][] = [];
+  for (const cue of [
+    "achievementCommon",
+    "achievementUncommon",
+    "achievementRare",
+    "achievementPlace",
+  ] as const) {
+    const offset = tones.length;
+    sound.play(cue);
+    await Promise.resolve();
+    sequences.push(
+      tones.slice(offset).map((tone) => tone.frequency.setValueAtTime.mock.calls[0]![0] as number),
+    );
+  }
+  expect(new Set(sequences.map((sequence) => JSON.stringify(sequence))).size).toBe(4);
+  expect(sequences[2]).toHaveLength(6);
+  const beforeMute = tones.length;
+  updateAccessibility({ soundEffects: false });
+  sound.play("achievementRare");
+  await Promise.resolve();
+  expect(tones).toHaveLength(beforeMute);
   sound.dispose();
 });

@@ -768,5 +768,640 @@
     "file": "src/components/sign-out-button.tsx",
     "id": 2688,
     "text": "Não foi possível enviar tudo. Seus dados continuam neste aparelho. Tente novamente ou escolha sair sem enviar."
+  },
+  {
+    "file": "src/components/achievement-announcer.tsx",
+    "id": 2802,
+    "text": "Nova conquista"
+  },
+  {
+    "file": "src/components/achievement-announcer.tsx",
+    "id": 2803,
+    "text": "Parabéns! Conquista desbloqueada"
+  },
+  {
+    "file": "src/components/achievement-announcer.tsx",
+    "id": 2804,
+    "text": "Inspecionar"
+  },
+  {
+    "file": "src/components/achievement-announcer.tsx",
+    "id": 2797,
+    "text": "Fechar conquista"
+  },
+  {
+    "file": "src/components/handwriting-template-paper.ts",
+    "id": 2585,
+    "text": "Pistas"
+  },
+  {
+    "file": "src/components/handwriting-template-paper.ts",
+    "id": 1372,
+    "text": "Anotações"
+  },
+  {
+    "file": "src/components/handwriting-template-paper.ts",
+    "id": 2586,
+    "text": "Resumo"
+  },
+  {
+    "file": "src/components/math-practice-hero.tsx",
+    "id": 2717,
+    "text": "Descobertas com Oliver"
+  },
+  {
+    "file": "src/components/math-practice-hero.tsx",
+    "id": 2718,
+    "text": "Carrossel"
+  },
+  {
+    "file": "src/components/math-practice-hero.tsx",
+    "id": 620,
+    "text": "Ilhas de Matemática"
+  },
+  {
+    "file": "src/components/math-practice-hero.tsx",
+    "id": 2724,
+    "text": "Explore as ilhas de Matemática comigo. Cada resposta abre um novo caminho!"
+  },
+  {
+    "file": "src/components/math-practice-hero.tsx",
+    "id": 2732,
+    "text": "Seu fogo azul apaga em {0} min. Vamos praticar?"
+  },
+  {
+    "file": "src/components/math-practice-hero.tsx",
+    "id": 2729,
+    "text": "Página 1 de 1"
+  },
+  {
+    "file": "src/components/notebook-folder.tsx",
+    "id": 2587,
+    "text": "itens"
+  },
+  {
+    "file": "src/components/oliver-hero-art.tsx",
+    "id": 2728,
+    "text": "Oliver convidando você para explorar as ilhas de Matemática"
+  },
+  {
+    "file": "src/components/pomodoro-duration-picker.tsx",
+    "id": 23,
+    "text": "Horas"
+  },
+  {
+    "file": "src/components/pomodoro-duration-picker.tsx",
+    "id": 24,
+    "text": "Minutos"
+  },
+  {
+    "file": "src/components/pomodoro-duration-picker.tsx",
+    "id": 2767,
+    "text": "Usar duração"
+  },
+  {
+    "file": "src/components/pomodoro-duration-picker.tsx",
+    "id": 2768,
+    "text": "Escolha de 1 minuto a 99 h 59 min, com minutos entre 0 e 59."
+  },
+  {
+    "file": "src/components/profile-preferences.tsx",
+    "id": 2706,
+    "text": "Atividades e curtidas"
+  },
+  {
+    "file": "src/components/profile-preferences.tsx",
+    "id": 2707,
+    "text": "Conquistas de amigos e apoio às suas atividades."
+  },
+  {
+    "file": "src/components/profile-showcase.tsx",
+    "id": 2805,
+    "text": "Carregando conquistas"
+  },
+  {
+    "file": "src/components/profile-social.tsx",
+    "id": 2830,
+    "text": "Você bloqueou esta pessoa."
+  },
+  {
+    "file": "src/components/profile-social.tsx",
+    "id": 2837,
+    "text": "Conquistas ainda não compartilhadas."
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 2734,
+    "text": "Concluiu o módulo de {0} em {1}!"
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 1406,
+    "text": "Matemática"
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 1406,
+    "text": "Matemática"
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 2700,
+    "text": "Curtiu sua conquista."
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 2703,
+    "text": "Não foi possível atualizar a curtida."
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 2704,
+    "text": "Curtido por {0}"
+  },
+  {
+    "file": "src/components/social-activity-card.tsx",
+    "id": 2705,
+    "text": "Seja o primeiro a apoiar esta conquista."
+  },
+  {
+    "file": "src/components/student-destinations.tsx",
+    "id": 2708,
+    "text": "Seu próximo destino"
+  },
+  {
+    "file": "src/components/student-destinations.tsx",
+    "id": 2709,
+    "text": "Explorar as ilhas"
+  },
+  {
+    "file": "src/components/student-destinations.tsx",
+    "id": 2713,
+    "text": "Hora de focar"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2738,
+    "text": "Ver quem são"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 1027,
+    "text": "Notificações"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2739,
+    "text": "Voltar ao Espaço"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2740,
+    "text": "Categorias de notificações"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2743,
+    "text": "Atividades"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2744,
+    "text": "Novidades"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2741,
+    "text": "Suas ofensivas"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2741,
+    "text": "Suas ofensivas"
+  },
+  {
+    "file": "src/components/system-updates.tsx",
+    "id": 2742,
+    "text": "As conquistas e conexões dos seus amigos aparecem aqui."
+  },
+  {
+    "file": "src/data/listening-audio.ts",
+    "id": 2079,
+    "text": "Ative a voz natural para ouvir esta pergunta."
+  },
+  {
+    "file": "src/data/listening-audio.ts",
+    "id": 2059,
+    "text": "Preparando a pronúncia."
+  },
+  {
+    "file": "src/data/listening-audio.ts",
+    "id": 2552,
+    "text": "Usando voz alternativa."
+  },
+  {
+    "file": "src/data/local-workspace.ts",
+    "id": 1974,
+    "text": "Meu caderno"
+  },
+  {
+    "file": "src/data/math-courses.ts",
+    "id": 2082,
+    "text": "Pátio das Primeiras Contas"
+  },
+  {
+    "file": "src/data/math-courses.ts",
+    "id": 2088,
+    "text": "Oficina das Equações"
+  },
+  {
+    "file": "src/data/math-courses.ts",
+    "id": 2093,
+    "text": "Torre das Funções"
+  },
+  {
+    "file": "src/data/math-courses.ts",
+    "id": 2350,
+    "text": "Ponte das Tangentes"
+  },
+  {
+    "file": "src/data/math-courses.ts",
+    "id": 2356,
+    "text": "Porto das Integrais"
+  },
+  {
+    "file": "src/data/math-courses.ts",
+    "id": 2360,
+    "text": "Mirante dos Vetores"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2365,
+    "text": "A primeira estrela"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2110,
+    "text": "Oliver encontrou esta estrela no leito seco do rio. Ela vibrou três vezes, como o sino que ainda não conhecia."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2111,
+    "text": "Sino sem eco"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2112,
+    "text": "Na torre, faltava a última batida. O badalo havia caído no rio; o silêncio parecia esperar por uma mão pequena."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2366,
+    "text": "Mapa de giz"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2113,
+    "text": "Três pontes, duas margens, um caminho apagado. No mapa de Oliver, a estrela marcou a ponte que ninguém lembrava."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2367,
+    "text": "Compasso partido"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2114,
+    "text": "O compasso do antigo guardião abriu o mapa e se partiu. Uma ponta apontava para a torre; a outra, para o rio."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2368,
+    "text": "A terceira ponte"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2115,
+    "text": "Oliver atravessou a ponte sem contar os passos. Sob o arco dourado, ouviu a batida perdida seguir a correnteza."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2369,
+    "text": "Semente de vidro"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2116,
+    "text": "Na outra margem, uma semente guardava a luz da estrela. Oliver a plantou onde a água ainda lembrava o som do sino."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2117,
+    "text": "Vigília azul"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2118,
+    "text": "A lanterna ficou acesa até a última estrela. A pequena árvore de vidro inclinou seus ramos na direção do porto."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2119,
+    "text": "Memória do rio"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2120,
+    "text": "Um barco de papel trouxe o badalo. Quem o dobrou deixou apenas três marcas: as mesmas que faltavam no mapa."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2121,
+    "text": "A última nota"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2122,
+    "text": "Ao voltar à torre, Oliver devolveu o badalo. A terceira batida não veio do sino, mas da estrela em sua mão."
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2370,
+    "text": "Caminho de volta"
+  },
+  {
+    "file": "src/data/oliver-cards.ts",
+    "id": 2123,
+    "text": "O compasso reparado repousa na oficina. À noite, a árvore de vidro soa baixinho. Há uma quarta marca surgindo no mapa."
+  },
+  {
+    "file": "src/data/oliver-tarot.ts",
+    "id": 2373,
+    "text": "A Estrela"
+  },
+  {
+    "file": "src/data/oliver-tarot.ts",
+    "id": 2126,
+    "text": "O sino encontrou sua terceira nota. Oliver devolveu ao rio a luz que guardava: uma corrente acordou as raízes, a outra mostrou o caminho de volta. Nenhuma estrela precisava ser sua para iluminar alguém."
+  },
+  {
+    "file": "src/data/profile-social-events.ts",
+    "id": 1078,
+    "text": "[Olena] Atualização social recebida pelo canal em tempo real."
+  },
+  {
+    "file": "src/data/room-xp.ts",
+    "id": 1084,
+    "text": "Histórico de XP inválido."
+  },
+  {
+    "file": "src/data/room-xp.ts",
+    "id": 1085,
+    "text": "Recompensa inválida."
+  },
+  {
+    "file": "src/data/room-xp.ts",
+    "id": 1086,
+    "text": "Total de XP inválido."
+  },
+  {
+    "file": "src/data/speech-voice.ts",
+    "id": 2553,
+    "text": "Devagar"
+  },
+  {
+    "file": "src/data/speech-voice.ts",
+    "id": 2554,
+    "text": "Natural"
+  },
+  {
+    "file": "src/data/speech-voice.ts",
+    "id": 2555,
+    "text": "Rápida"
+  },
+  {
+    "file": "src/data/support.ts",
+    "id": 1087,
+    "text": "Entre na conta para conversar com o time."
+  },
+  {
+    "file": "src/data/support.ts",
+    "id": 1088,
+    "text": "A conta mudou. Abra o atendimento novamente."
+  },
+  {
+    "file": "src/data/support.ts",
+    "id": 1088,
+    "text": "A conta mudou. Abra o atendimento novamente."
+  },
+  {
+    "file": "src/data/support.ts",
+    "id": 1089,
+    "text": "Não foi possível conectar ao atendimento."
+  },
+  {
+    "file": "src/data/support.ts",
+    "id": 1090,
+    "text": "Resposta inválida do atendimento."
+  },
+  {
+    "file": "src/domain/agenda-dashboard.ts",
+    "id": 97,
+    "text": "a"
+  },
+  {
+    "file": "src/domain/agenda-dashboard.ts",
+    "id": 2593,
+    "text": "Outras"
+  },
+  {
+    "file": "src/hooks/use-notebook-shelf-drag.ts",
+    "id": 1145,
+    "text": "Esta pasta já tem três itens. Escolha outra pasta."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2252,
+    "text": "Reunir prioridades, progresso e atalhos em um ponto de partida único."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2304,
+    "text": "Organizar tarefas, compromissos, listas de homework e o planejamento de estudos."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2253,
+    "text": "Cronometrar sessões e registrar tempo de estudo sem prometer bloqueio nativo."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2305,
+    "text": "Reunir materiais, links, textos e flashcards."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2306,
+    "text": "Revisar flashcards, praticar escuta, responder quizzes locais e acompanhar metas."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2256,
+    "text": "Montar rascunhos determinísticos de aulas de inglês."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2257,
+    "text": "Apoiar o estudo com fontes escolhidas e consentimento explícito."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2258,
+    "text": "Reunir atividades de prática classificadas por controle, tempo e material."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2259,
+    "text": "Planejar provas, diagnósticos e simulados por edital."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2261,
+    "text": "Filtrar questões, registrar respostas e formar um caderno de erros."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2262,
+    "text": "Fotografar, realçar e anexar páginas a uma anotação local."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2263,
+    "text": "Desenhar e selecionar traços, com assistente de fórmulas e OCR local opcional da seleção."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2265,
+    "text": "Extrair texto de páginas digitalizadas com revisão humana antes de salvar. Hoje só existe o OCR local da seleção de traços."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2266,
+    "text": "Editar textos longos, trabalhos e resumos com histórico de versões."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2268,
+    "text": "Conectar blocos de conhecimento e visualizar relações entre assuntos."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2270,
+    "text": "Construir repertório acadêmico com referências e autoria respeitadas."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2271,
+    "text": "Transformar revisão e metas em atividades leves e opcionais."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2272,
+    "text": "Atividades ao vivo em sala, com código: escuta coletiva e bingo, em vários dispositivos."
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2311,
+    "text": "Iniciar foco"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2273,
+    "text": "Abrir temporizador"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 1987,
+    "text": "Novo caderno"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2274,
+    "text": "Abrir cadernos"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2312,
+    "text": "Planejar a semana"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2275,
+    "text": "Abrir agenda"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 101,
+    "text": "Praticar"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2313,
+    "text": "Minigames e Modo Sala"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2314,
+    "text": "Consultar materiais"
+  },
+  {
+    "file": "src/product/module-catalog.ts",
+    "id": 2276,
+    "text": "Abrir biblioteca"
+  },
+  {
+    "file": "src/views/focus-view.tsx",
+    "id": 2730,
+    "text": "Sua flor está adormecida. Comece seu primeiro cronômetro para cuidar dela."
+  },
+  {
+    "file": "src/views/notes-view.tsx",
+    "id": 2592,
+    "text": "nota"
+  },
+  {
+    "file": "src/views/planner-view.tsx",
+    "id": 2587,
+    "text": "itens"
+  },
+  {
+    "file": "src/views/profile-view.tsx",
+    "id": 2689,
+    "text": "Vibrações"
+  },
+  {
+    "file": "src/views/profile-view.tsx",
+    "id": 2690,
+    "text": "Feedback tátil ao navegar e selecionar, quando o aparelho permitir."
+  },
+  {
+    "file": "src/views/profile-view.tsx",
+    "id": 2769,
+    "text": "Tempo de estudo"
+  },
+  {
+    "file": "src/views/profile-view.tsx",
+    "id": 1958,
+    "text": "Pausa curta"
+  },
+  {
+    "file": "src/views/profile-view.tsx",
+    "id": 1957,
+    "text": "Pausa longa"
+  },
+  {
+    "file": "src/views/today-view.tsx",
+    "id": 1555,
+    "text": "Ver agenda"
   }
 ]

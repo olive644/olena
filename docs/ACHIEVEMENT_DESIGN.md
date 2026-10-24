@@ -15,13 +15,24 @@ Artes gerais ficam em `public/achievement-badges/general/{id}.webp`, quadradas, 
 - Duas categorias: Matemática e Gerais. Uma peça por família na galeria, mostrando o maior nível obtido ou a primeira etapa bloqueada. Todas as etapas continuam acessíveis na inspeção.
 - Celular usa três colunas. As peças ficam sem fundo individual. O perfil destaca até três conquistas obtidas escolhidas pelo usuário, na ordem escolhida.
 - Preferência ausente usa três conquistas obtidas como sugestão. Lista vazia significa que o usuário removeu os destaques; não repopular silenciosamente.
-- Insígnias têm inspeção estática. Não adicionar rotação, verso, arraste ou controles 3D. Cartas do Oliver continuam com sua inspeção própria.
+- Insígnias têm inspeção estática. Não adicionar rotação, verso ou controles 3D. O arraste na galeria apenas organiza destaques. Cartas do Oliver continuam com sua inspeção própria.
 - Avisos de desbloqueio são não modais: a área decorativa não intercepta cliques. Somente os controles de inspecionar, fechar e a coleção aberta recebem eventos. O aviso não pode bloquear a criação de folhas ou outras ações do app.
 - Matemáticas raras obtidas mantêm seu brilho aprovado. Gerais com níveis recebem reflexo do respectivo material: bronze cobre discreto, prata frio, ouro dourado e esmeralda verde. Reflexo sempre recortado pelo alpha da própria arte, nunca por uma máscara genérica. Bloqueadas não brilham. Respeitar redução de movimento, com informação de nível legível sem animação.
 - Raridade tem texto e cor, nunca somente cor: comum turquesa, incomum roxo, rara dourado, com variantes legíveis no escuro.
 - Data da inspeção usa PaperDigits e um nome acessível completo. Data desconhecida mostra informação explícita, nunca a data atual inventada.
 
 ## Compartilhamento
+
+### Interações e carregamento
+
+- Destaques aceitam arraste de peças obtidas por mouse ou toque. Cada um dos três espaços é um destino explícito; soltar fora cancela. Reordenar não duplica IDs. O botão de favorito mantém a alternativa acessível por teclado.
+- O arraste tem fantasma, realce do destino, encaixe e som próprio. Redução de movimento desliga balanço, partículas e transições, não a informação de destino.
+- Categorias usam ícones facetados próprios, sem rótulo visível, com nome acessível e foco amarelo. Favorito, compartilhar, salvar, voltar, bloquear e denunciar são ícones sem placa; manter aria-label, title e alvo de toque de pelo menos 44 px.
+- Entrada das peças ocorre uma vez ao entrar na área visível da galeria. Não ocultar conteúdo se IntersectionObserver estiver indisponível ou movimento reduzido estiver ativo.
+- Miniatura WebP permanece sob a arte completa durante a decodificação. Antecipar as etapas da família inspecionada. PNG exportado usa somente a arte completa, nunca amplia a miniatura.
+- Aviso de conquista ocupa o centro visual sem modal nem captura de foco. Raridades comum, incomum e rara têm sequências sonoras distintas pelo motor existente, respeitando gesto inicial, mute e aba oculta. Tempo de dez segundos pausa durante foco e inspeção. Não repetir conquistas já reconhecidas nesta sessão.
+- Visita a outro perfil usa diálogo próprio, sem formulário de encontrar amigos. Nível público usa o mesmo selo sobre o avatar do perfil normal. Ações de segurança ficam centralizadas e mantêm confirmação antes da mutação.
+- Cards de compartilhamento têm cenários SVG próprios por assunto e favicon antes do alfabeto facetado OlenaStudy. Voltar fica no topo direito, alinhado ao X. Exportação continua local e sem serviços externos.
 
 PNG de 1080 por 1350, preparado no navegador, sem envio de dados a terceiros. Cada assunto usa sua paleta e motivos: matemática azul e amarelo, foco tomate e folha, cadernos roxo e papel, amigos turquesa, rotina dourado. A assinatura OlenaStudy usa o alfabeto facetado original, não texto comum. Arte, objetivo, dono e data precisam permanecer legíveis. Compartilhar, voltar e salvar usam somente ícones visíveis, com aria-label e title.
 

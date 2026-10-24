@@ -123,8 +123,29 @@
 }
 .profile-safety-actions {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
+}
+.profile-safety summary {
+  justify-content: center;
+}
+:root .profile-visit-dialog > header {
+  justify-content: flex-end;
+}
+.social-visit-avatar {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: -70px auto 12px;
+}
+.social-visit-avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.social-visit-avatar .profile-level-badge {
+  opacity: 1;
 }
 .profile-safety-confirm {
   display: grid;

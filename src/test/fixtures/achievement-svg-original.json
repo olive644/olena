@@ -1,0 +1,52 @@
+[
+  {
+    "file": "src/components/number-bingo.tsx",
+    "path": "public/navigation-icons/paper/bingo-scenery-0.svg",
+    "markup": "<svg class=\"bingo-card-blackhole\" viewBox=\"0 0 480 580\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><path d=\"m-45 420 95-214 158-56 162 15 146 143-36 182-180 109-194-39Z\" fill=\"#312663\"></path><path d=\"m-45 420 95-214 158-56 162 15-159 53-114 119Z\" fill=\"#7661ae\"></path><path d=\"m-43 423 121-85 190-89 217-14 38 40-232 27-201 103Z\" fill=\"#a779ef\"></path><path d=\"m-43 423 133-18 201-103 232-27-10 39-214 24-178 94Z\" fill=\"#e7bc88\"></path><path d=\"m119 380 44-151 157-29 117 109-60 159-157 49Z\" fill=\"#241c4d\"></path><path d=\"m119 380 44-151 157-29-108 73-53 110Z\" fill=\"#403579\"></path><path d=\"m-7 466 123 37 190-13 191-94-26 71-170 76-190-3Z\" fill=\"#7661ae\"></path></svg>"
+  },
+  {
+    "file": "src/components/number-bingo.tsx",
+    "path": "public/navigation-icons/paper/bingo-scenery-1.svg",
+    "markup": "<svg class=\"bingo-card-orbits\" viewBox=\"0 0 440 520\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M-70 390Q220-80 510 390M-60 440Q220-20 500 440M-60 490Q220 40 500 490\" fill=\"none\" stroke=\"#a779ef\" stroke-width=\"2\"></path><path d=\"m26 120 4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1ZM403 245l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1Z\" fill=\"#ffe88d\"></path></svg>"
+  },
+  {
+    "file": "src/components/number-bingo.tsx",
+    "path": "public/navigation-icons/paper/bingo-scenery-2.svg",
+    "markup": "<svg class=\"bingo-card-sun\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"m32 0 6 14 14-7-3 16 15 9-15 8 3 17-14-7-6 14-6-14-14 7 3-17L0 32l15-9-3-16 14 7Z\" fill=\"#c99a00\"></path><path d=\"m22 14 21 2 10 17-11 18-22-2L11 31Z\" fill=\"#fff0c7\"></path><path d=\"m22 14 21 2-14 12-18 3Z\" fill=\"#fff9ef\"></path><path d=\"m53 33-11 18-22-2 20-10 3-23Z\" fill=\"#ffe88d\"></path></svg>"
+  },
+  {
+    "file": "src/components/notebook-paper-tools.tsx",
+    "path": "public/navigation-icons/paper/notebook-divider-0.svg",
+    "markup": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\" class=\"paper-tab-icon\"><path fill=\"#51465D\" d=\"M3 5h25v32H3z\"></path><path fill=\"#D5CCBA\" d=\"M6 7h20v27H6z\"></path><path fill=\"#FFF9EF\" d=\"M8 3h18v28H8z\"></path><path fill=\"#D5CCBA\" d=\"M11 8h12v2H11Zm0 5h12v2H11Zm0 10h12v2H11Z\"></path><path fill=\"currentColor\" d=\"M19 10h15l4 5v15H19z\"></path><path fill=\"#FFFFFF\" opacity=\".3\" d=\"m19 10 15 0-8 8h-7z\"></path><path fill=\"#292432\" opacity=\".3\" d=\"m31 23 7-8v15H19l5-7z\"></path><path fill=\"#292432\" opacity=\".18\" d=\"M19 10h4v20h-4z\"></path></svg>"
+  },
+  {
+    "file": "src/components/handwriting-tool-group.tsx",
+    "path": "public/navigation-icons/paper/handwriting-static-0.svg",
+    "markup": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"#B88C13\" d=\"m2 15 14-13 7 7-14 14Z\"></path><path fill=\"#FACC15\" d=\"m2 13 14-12 6 6L8 20Z\"></path><path fill=\"#FFE88D\" d=\"m2 13 14-12 2 2L4 15Z\"></path><path stroke=\"#51465D\" stroke-width=\"1.5\" d=\"m6 10 2 2m1-5 3 3m0-6 2 2m1-5 3 3\"></path></svg>"
+  },
+  {
+    "file": "src/components/handwriting-tool-group.tsx",
+    "path": "public/navigation-icons/paper/handwriting-static-1.svg",
+    "markup": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>"
+  },
+  {
+    "file": "src/components/handwriting-tool-group.tsx",
+    "path": "public/navigation-icons/paper/handwriting-static-2.svg",
+    "markup": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"1.5\" fill=\"#FFF9EF\" stroke=\"currentColor\" stroke-width=\"1.6\"></rect><path d=\"M3 10h18M3 16h18M9 4v16M15 4v16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"></path></svg>"
+  },
+  {
+    "file": "src/components/cosmic-dust-art.tsx",
+    "path": "public/navigation-icons/paper/cosmic-dust.svg",
+    "markup": "<svg class=\"cosmic-dust-art math-common-chest\" viewBox=\"0 0 160 160\" aria-hidden=\"true\"><g class=\"cosmic-dust-orbit\" fill=\"var(--dust-light, #dcc6ff)\"><path d=\"m30 30 8-12 5 18-7 5Z\"></path><path d=\"m129 29 15 8-11 11-9-8Z\"></path><path d=\"m18 98 13-6 3 14-9 5Z\"></path><path d=\"m122 127 12-12 7 16-11 7Z\"></path><path d=\"m73 10 6-8 7 9-7 6Z\"></path><path d=\"m63 143 10-6 3 13-9 6Z\"></path></g><path fill=\"var(--dust-shade, #51259b)\" d=\"m80 30 15 30 34 6-24 25 6 36-31-15-31 15 6-36-24-25 34-6Z\"></path><path fill=\"var(--dust-color, #7c3aed)\" d=\"m80 23 15 30 34 6-24 25 6 36-31-15-31 15 6-36-24-25 34-6Z\"></path><path fill=\"var(--dust-light, #dcc6ff)\" d=\"m80 23-1 52-48-16 34-6Zm-1 52 32 45-6-36 24-25Z\"></path><path fill=\"#fff9ef\" d=\"m79 61 6 12 13 2-9 10 2 14-12-7-12 7 2-14-9-10 13-2Z\"></path></svg>"
+  },
+  {
+    "file": "src/components/agenda-month-picker.tsx",
+    "path": "public/navigation-icons/paper/agenda-month-calendar.svg",
+    "markup": "<svg viewBox=\"0 0 48 48\" width=\"34\" height=\"34\" aria-hidden=\"true\" data-icon=\"agenda-calendar\"><path fill=\"#17131d\" d=\"M7 12h34v29l-5 4H7Z\"></path><path fill=\"#292432\" d=\"M5 9h36v29l-5 4H5Z\"></path><path fill=\"#51465d\" d=\"M5 9h36l-5 6H5Z\"></path><path fill=\"#fff9ef\" d=\"M9 20h28v15l-4 3H9Z\"></path><path fill=\"#d8cdb9\" d=\"m33 38 4-3h-4Z\"></path><path fill=\"#facc15\" d=\"M12 4h5v11h-5Zm18 0h5v11h-5Z\"></path><path fill=\"#292432\" d=\"M13 23h5v4h-5Zm9 0h5v4h-5Zm-9 8h5v4h-5Z\"></path><path fill=\"#7c3aed\" d=\"M22 30h6v6h-6Z\"></path></svg>"
+  },
+  {
+    "file": "src/components/bingo-participant.tsx",
+    "path": "public/navigation-icons/paper/bingo-mini-saturn.svg",
+    "markup": "<svg class=\"bingo-mini-saturn\" viewBox=\"0 0 100 80\" aria-hidden=\"true\"><g class=\"bingo-mini-core\"><path fill=\"#50bdc4\" d=\"m50 7 23 10 10 22-11 23-25 8-23-12-7-23 13-22Z\"></path><path fill=\"#a4e8eb\" d=\"m50 7 23 10-26 11-30 7 13-22Z\"></path><path fill=\"#147b83\" d=\"m83 39-11 23-25 8 12-30 14-23Z\"></path><path fill=\"#fff9ef\" d=\"m25 42 48-13 4 8-48 14Z\"></path><circle cx=\"38\" cy=\"27\" r=\"5\" fill=\"#ff8e77\"></circle><circle cx=\"56\" cy=\"54\" r=\"5\" fill=\"#ffe88d\"></circle></g><path fill=\"#facc15\" fill-rule=\"evenodd\" d=\"M2 55Q45 19 97 19L98 28Q49 70 2 65ZM10 56Q46 62 89 29Q43 29 10 56Z\"></path><path fill=\"#ffe88d\" d=\"M2 55Q46 62 98 19L98 25Q50 72 2 60Z\"></path></svg>"
+  }
+]

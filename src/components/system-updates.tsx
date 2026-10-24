@@ -102,7 +102,7 @@ function NoticeGroup({
             )}
           </strong>
           <small>
-            {uiText("Ver quem são")} <PaperArrow />
+            {uiText(2738)} <PaperArrow />
           </small>
         </span>
       </summary>
@@ -240,7 +240,7 @@ export function SystemUpdates({
           <div className="notification-center-body">
             <header className="notification-center-heading">
               <div>
-                <h1>{uiText("Notificações")}</h1>
+                <h1>{uiText(1027)}</h1>
                 <small>
                   {uiText(1002)} {version}
                 </small>
@@ -249,19 +249,19 @@ export function SystemUpdates({
                 type="button"
                 className="secondary-button"
                 onClick={onBack}
-                aria-label={uiText("Voltar ao Espaço")}
+                aria-label={uiText(2739)}
               >
                 <PaperArrow back />
               </button>
             </header>
-            <nav className="notification-tabs" aria-label={uiText("Categorias de notificações")}>
+            <nav className="notification-tabs" aria-label={uiText(2740)}>
               <button
                 type="button"
                 className={tab === "activities" ? "primary-button" : "secondary-button"}
                 aria-pressed={tab === "activities"}
                 onClick={() => setTab("activities")}
               >
-                {uiText("Atividades")}
+                {uiText(2743)}
               </button>
               <button
                 type="button"
@@ -269,7 +269,7 @@ export function SystemUpdates({
                 aria-pressed={tab === "updates"}
                 onClick={() => setTab("updates")}
               >
-                {uiText("Novidades")}
+                {uiText(2744)}
               </button>
             </nav>
             <section
@@ -280,8 +280,8 @@ export function SystemUpdates({
               {tab === "activities" ? (
                 <>
                   {workspace && (
-                    <section className="notification-streaks" aria-label={uiText("Suas ofensivas")}>
-                      <h2>{uiText("Suas ofensivas")}</h2>
+                    <section className="notification-streaks" aria-label={uiText(2741)}>
+                      <h2>{uiText(2741)}</h2>
                       <ProfileStreaks workspace={workspace} />
                     </section>
                   )}
@@ -299,9 +299,7 @@ export function SystemUpdates({
                       own={activity.person.username === social?.self.username}
                     />
                   ))}
-                  {!groups.length && !activities.length && (
-                    <p>{uiText("As conquistas e conexões dos seus amigos aparecem aqui.")}</p>
-                  )}
+                  {!groups.length && !activities.length && <p>{uiText(2742)}</p>}
                 </>
               ) : (
                 <>

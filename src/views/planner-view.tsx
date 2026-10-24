@@ -1144,7 +1144,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                           <PaperDigits value={String(count)} />
                           <span className="agenda-count-desktop">
                             {" "}
-                            {count === 1 ? "item" : uiText("itens")}
+                            {count === 1 ? "item" : uiText(2587)}
                           </span>
                         </small>
                       )}

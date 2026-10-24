@@ -22,7 +22,10 @@ it("só bloqueia após confirmar e propaga a resposta do servidor", async () => 
   const onChange = vi.fn();
   mocks.social.mockResolvedValue({ profile: { ...person, blocked: true } });
   render(<ProfileSafety person={person} onChange={onChange} />);
-  fireEvent.click(screen.getByText("Bloquear usuário"));
+  fireEvent.click(screen.getByText("Segurança do perfil"));
+  const block = screen.getByRole("button", { name: "Bloquear usuário" });
+  expect(block.textContent).toBe("");
+  fireEvent.click(block);
   expect(mocks.social).not.toHaveBeenCalled();
   fireEvent.click(screen.getByText("Confirmar"));
   await waitFor(() => expect(onChange).toHaveBeenCalled());
@@ -31,7 +34,10 @@ it("só bloqueia após confirmar e propaga a resposta do servidor", async () => 
 it("envia denúncia ao atendimento e não anuncia sucesso em falha", async () => {
   mocks.support.mockRejectedValueOnce(new Error("Sem conexão"));
   render(<ProfileSafety person={person} onChange={vi.fn()} />);
-  fireEvent.click(screen.getByText("Denunciar usuário"));
+  fireEvent.click(screen.getByText("Segurança do perfil"));
+  const report = screen.getByRole("button", { name: "Denunciar usuário" });
+  expect(report.textContent).toBe("");
+  fireEvent.click(report);
   fireEvent.change(screen.getByLabelText("O que aconteceu?"), {
     target: { value: "Perfil enviou mensagens ofensivas." },
   });

@@ -8,7 +8,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 88,
     chance: 18,
     color: "#247b9d",
-    lore: "Oliver encontrou esta estrela no leito seco do rio. Ela vibrou três vezes, como o sino que ainda não conhecia.",
+    get lore() {
+      return uiText(2110);
+    },
   },
   {
     id: "silent-bell",
@@ -18,7 +20,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 62,
     chance: 15,
     color: "#3d5d9e",
-    lore: "Na torre, faltava a última batida. O badalo havia caído no rio; o silêncio parecia esperar por uma mão pequena.",
+    get lore() {
+      return uiText(2112);
+    },
   },
   {
     id: "chalk-map",
@@ -28,7 +32,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 92,
     chance: 13,
     color: "#258578",
-    lore: "Três pontes, duas margens, um caminho apagado. No mapa de Oliver, a estrela marcou a ponte que ninguém lembrava.",
+    get lore() {
+      return uiText(2113);
+    },
   },
   {
     id: "split-compass",
@@ -38,7 +44,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 54,
     chance: 12,
     color: "#9a6534",
-    lore: "O compasso do antigo guardião abriu o mapa e se partiu. Uma ponta apontava para a torre; a outra, para o rio.",
+    get lore() {
+      return uiText(2114);
+    },
   },
   {
     id: "third-bridge",
@@ -48,7 +56,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 76,
     chance: 10,
     color: "#2863b0",
-    lore: "Oliver atravessou a ponte sem contar os passos. Sob o arco dourado, ouviu a batida perdida seguir a correnteza.",
+    get lore() {
+      return uiText(2115);
+    },
   },
   {
     id: "glass-seed",
@@ -58,7 +68,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 58,
     chance: 9,
     color: "#3b855c",
-    lore: "Na outra margem, uma semente guardava a luz da estrela. Oliver a plantou onde a água ainda lembrava o som do sino.",
+    get lore() {
+      return uiText(2116);
+    },
   },
   {
     id: "long-night",
@@ -68,7 +80,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 48,
     chance: 8,
     color: "#344974",
-    lore: "A lanterna ficou acesa até a última estrela. A pequena árvore de vidro inclinou seus ramos na direção do porto.",
+    get lore() {
+      return uiText(2118);
+    },
   },
   {
     id: "river-memory",
@@ -78,7 +92,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 94,
     chance: 6,
     color: "#197f94",
-    lore: "Um barco de papel trouxe o badalo. Quem o dobrou deixou apenas três marcas: as mesmas que faltavam no mapa.",
+    get lore() {
+      return uiText(2120);
+    },
   },
   {
     id: "last-note",
@@ -88,7 +104,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 66,
     chance: 5,
     color: "#a07929",
-    lore: "Ao voltar à torre, Oliver devolveu o badalo. A terceira batida não veio do sino, mas da estrela em sua mão.",
+    get lore() {
+      return uiText(2122);
+    },
   },
   {
     id: "homeward",
@@ -98,7 +116,9 @@ export const OLIVER_CARDS = localizeResource([
     stamina: 80,
     chance: 4,
     color: "#b36c3c",
-    lore: "O compasso reparado repousa na oficina. À noite, a árvore de vidro soa baixinho. Há uma quarta marca surgindo no mapa.",
+    get lore() {
+      return uiText(2123);
+    },
   },
 ] as const);
 export type OliverCardId = (typeof OLIVER_CARDS)[number]["id"];

@@ -44,7 +44,11 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
     ],
   });
   render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
-  await screen.findByText("Nível 7");
+  const badge = await screen.findByLabelText("Nível 7");
+  expect(badge.classList.contains("profile-level-badge")).toBe(true);
+  expect(badge.closest(".social-visit-avatar")).not.toBeNull();
+  expect(screen.queryByRole("textbox", { name: "Buscar por nome ou @" })).toBeNull();
+  expect(screen.getByRole("dialog", { name: "Perfil de @bob" })).toBeTruthy();
   expect(screen.getByRole("link", { name: "GitHub" }).getAttribute("href")).toBe(
     "https://github.com/bob",
   );
