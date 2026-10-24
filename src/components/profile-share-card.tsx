@@ -14,12 +14,13 @@ import { useProfileStudy } from "../hooks/use-profile-study";
 import { AchievementArt } from "./math-achievements";
 import { ALL_ACHIEVEMENTS } from "../domain/math-achievements";
 
-// Cores das etiquetas no papel creme do cartão (as mesmas do perfil, tema claro).
-const LABEL_COLORS: Record<string, [string, string]> = {
-  CREKS: ["#19171E", "#FFFDF7"],
-  DEV: ["#7C3AED", "#FFF9EF"],
-  "BETA TESTER": ["#FACC15", "#292432"],
-  GALAXIA: ["#25416C", "#FFF9EF"],
+// Etiquetas e selo de nível desenhados com as mesmas formas e cores do perfil (profile-labels.css
+// e profile-study-widgets.css). Fundo, texto e sombra interna de cada etiqueta, no papel creme.
+const LABEL_COLORS: Record<string, [string, string, string]> = {
+  CREKS: ["#19171E", "#FFFDF7", "#514B5B"],
+  DEV: ["#7C3AED", "#FFF9EF", "#51259B"],
+  "BETA TESTER": ["#FACC15", "#292432", "#B88C13"],
+  GALAXIA: ["#25416C", "#FFF9EF", "#172A48"],
 };
 
 export function ProfileShareCard({
@@ -99,30 +100,69 @@ export function ProfileShareCard({
       context.font = "800 30px Manrope, sans-serif";
       context.fillText("OlenaStudy", 40, 64);
       context.drawImage(avatar, 180, 120, 360, 360);
-      // Selo de nível no canto da foto, como no perfil.
-      context.save();
-      context.translate(468, 420);
-      context.scale(0.82, 0.82);
-      context.beginPath();
-      context.moveTo(14, 0);
-      context.lineTo(130, 0);
-      context.lineTo(144, 70);
-      context.lineTo(72, 104);
-      context.lineTo(0, 70);
-      context.closePath();
-      context.fillStyle = "#B88C13";
-      context.fill();
-      context.translate(0, -6);
-      context.fill();
-      context.fillStyle = "#FACC15";
-      context.fill();
-      context.fillStyle = "#292432";
-      context.textAlign = "center";
-      context.font = "900 20px Manrope, sans-serif";
-      context.fillText("NV", 40, 56);
-      context.font = "900 54px Manrope, sans-serif";
-      context.fillText(String(level), 96, 68);
-      context.restore();
+      // Selo de nível no canto da foto, igual ao do perfil: pentágono amarelo com sombra,
+      // "NV" pequeno e os dígitos de papel.
+      {
+        const scale = 360 / 140;
+        const digits = [...String(level)];
+        const digitHeight = 22 * scale;
+        const digitWidth = (digitHeight * 66) / 98;
+        context.font = `900 ${0.55 * 16 * scale}px Manrope, sans-serif`;
+        const nvWidth = context.measureText(uiText(464)).width;
+        const content = nvWidth + 3 * scale + digits.length * digitWidth;
+        const width = Math.max(44 * scale, content + 16 * scale);
+        const height = 42 * scale;
+        const left = 540 + 9 * scale - width;
+        const top = 480 + 5 * scale - height;
+        const pentagon = (shift: number) => {
+          context.beginPath();
+          context.moveTo(left + width * 0.12, top + shift);
+          context.lineTo(left + width * 0.9, top + shift);
+          context.lineTo(left + width, top + height * 0.7 + shift);
+          context.lineTo(left + width * 0.5, top + height + shift);
+          context.lineTo(left, top + height * 0.7 + shift);
+          context.closePath();
+        };
+        pentagon(3 * scale);
+        context.fillStyle = "#B88C13";
+        context.fill();
+        pentagon(0);
+        context.fillStyle = "#FACC15";
+        context.fill();
+        const start = left + (width - content) / 2;
+        context.fillStyle = "#292432";
+        context.textBaseline = "middle";
+        context.fillText(uiText(464), start, top + height / 2);
+        context.textBaseline = "alphabetic";
+        const layer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        layer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        layer.setAttribute("viewBox", `0 0 ${digits.length * 66} 98`);
+        layer.setAttribute(
+          "style",
+          "--digit-face:#292432;--digit-depth:#17131D;--digit-fold:#51465D;--digit-edge:#211B29",
+        );
+        digits.forEach((digit, index) => {
+          const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+          use.setAttribute("href", `/paper-digits.svg#digit-${digit}`);
+          use.setAttribute("x", String(index * 66));
+          use.setAttribute("y", "0");
+          use.setAttribute("width", "66");
+          use.setAttribute("height", "98");
+          layer.append(use);
+        });
+        const { inlineAchievementArt } = await import("../data/achievement-png");
+        await inlineAchievementArt(layer, () => false);
+        const digitImage = new Image();
+        digitImage.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(layer))}`;
+        await digitImage.decode();
+        context.drawImage(
+          digitImage,
+          start + nvWidth + 3 * scale,
+          top + (height - digitHeight) / 2,
+          digits.length * digitWidth,
+          digitHeight,
+        );
+      }
       context.textAlign = "left";
       context.fillStyle = "#292432";
       let size = 44;
@@ -134,18 +174,40 @@ export function ProfileShareCard({
       context.fillText(`@${person.username}`, 40, 580);
       let tagY = 636;
       if (labels.length) {
-        context.font = "900 16px Manrope, sans-serif";
+        // Etiquetas do perfil: canto recortado, sombra interna inferior e espaçamento de 0,1em.
+        const unit = 2.2;
+        const font = 9 * unit;
+        context.font = `900 ${font}px Manrope, sans-serif`;
+        context.letterSpacing = `${0.1 * font}px`;
         let x = 40;
         for (const label of labels) {
-          const [background, color] = LABEL_COLORS[label] ?? LABEL_COLORS["CREKS"]!;
-          const width = context.measureText(label).width + 36 + label.length * 1.6;
+          const [background, color, shade] = LABEL_COLORS[label] ?? LABEL_COLORS["CREKS"]!;
+          const width = context.measureText(label).width + 14 * unit;
+          const height = font * 1.2 + 6 * unit;
+          const top = 598;
+          context.save();
+          context.beginPath();
+          context.moveTo(x + width * 0.07, top);
+          context.lineTo(x + width, top);
+          context.lineTo(x + width, top + height * 0.75);
+          context.lineTo(x + width * 0.93, top + height);
+          context.lineTo(x, top + height);
+          context.lineTo(x, top + height * 0.25);
+          context.closePath();
+          context.clip();
           context.fillStyle = background;
-          context.fillRect(x, 600, width, 30);
+          context.fillRect(x, top, width, height);
+          context.fillStyle = shade;
+          context.fillRect(x, top + height - 3 * unit, width, 3 * unit);
+          context.restore();
           context.fillStyle = color;
-          context.fillText(label.split("").join("\u200A"), x + 18, 621);
-          x += width + 10;
+          context.textBaseline = "middle";
+          context.fillText(label, x + 7 * unit, top + (height - 3 * unit) / 2 + 1);
+          context.textBaseline = "alphabetic";
+          x += width + 4 * unit;
         }
-        tagY = 672;
+        context.letterSpacing = "0px";
+        tagY = 686;
       }
       context.fillStyle = "#292432";
       context.font = "600 22px Manrope, sans-serif";

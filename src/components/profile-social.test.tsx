@@ -262,3 +262,33 @@ it("cartão sem destaques escolhidos não reserva espaço para eles", async () =
   await screen.findByLabelText("QR code do perfil");
   expect(document.querySelector(".social-share-highlights")).toBeNull();
 });
+it("inspeção mostra logo abaixo do nome só os destaques que a pessoa escolheu", async () => {
+  mocks.request.mockResolvedValue({
+    ...feed,
+    profile: {
+      ...bob,
+      achievements: ["correct-1", "correct-10", "general-pomodoro-gold"],
+      achievementFavorites: ["general-pomodoro-gold", "correct-10"],
+    },
+  });
+  render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByRole("heading", { name: "Bob" });
+  const profile = document.querySelector(".social-profile")!;
+  const tiles = [...profile.querySelectorAll(".achievement-tile")];
+  expect(tiles).toHaveLength(2);
+  expect(tiles[0]?.querySelector("image")?.getAttribute("href")).toContain("general-pomodoro-gold");
+  expect(profile.querySelector(".achievement-empty")).toBeNull();
+  const streaks = profile.querySelector(".social-profile-streaks")!;
+  expect(
+    tiles[0]!.compareDocumentPosition(streaks) & Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
+});
+it("inspeção não inventa destaques quando a pessoa não escolheu nenhum", async () => {
+  mocks.request.mockResolvedValue({
+    ...feed,
+    profile: { ...bob, achievements: ["correct-1", "correct-10"] },
+  });
+  render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByRole("heading", { name: "Bob" });
+  expect(document.querySelectorAll(".social-profile .achievement-tile")).toHaveLength(0);
+});

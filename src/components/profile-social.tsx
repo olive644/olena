@@ -339,6 +339,18 @@ export function SocialDirectory({
           <h3>{person.name}</h3>
           <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
           <p>@{person.username}</p>
+          {!person.blocked &&
+            (person.achievements !== undefined ? (
+              <AchievementCollection
+                ids={person.achievements}
+                dates={person.achievementDates}
+                favorites={person.achievementFavorites ?? []}
+                ownerName={person.name}
+                compact
+              />
+            ) : (
+              <p>{uiText(2837)}</p>
+            ))}
           <div className="social-profile-streaks" aria-label={uiText(919)}>
             {person.details?.updatedAt !== undefined &&
               openedAt - person.details.updatedAt < 86_400_000 && (
@@ -377,18 +389,6 @@ export function SocialDirectory({
               {person.followed ? uiText(918) : person.followsYou ? uiText(1917) : uiText(911)}
             </button>
           )}
-          {!person.blocked &&
-            (person.achievements !== undefined ? (
-              <AchievementCollection
-                ids={person.achievements}
-                dates={person.achievementDates}
-                favorites={person.achievementFavorites}
-                ownerName={person.name}
-                compact
-              />
-            ) : (
-              <p>{uiText(2837)}</p>
-            ))}
           {person.username !== feed.self.username && (
             <ProfileSafety key={person.username} person={person} onChange={setFeed} />
           )}

@@ -3562,3 +3562,9 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Nenhum texto novo no catálogo de idiomas: foram reaproveitadas as mensagens existentes.
 - Não verificado: o botão nativo Compartilhar, que só existe em navegadores com `navigator.share` (celular). Em desktop o cartão mostra Copiar link e Salvar cartão.
 - Prévia visual feita com o app real e uma API simulada (conta e lista de seguidores de mentira), em largura de celular.
+
+### Ajuste: destaques na inspeção e cartão no desenho do perfil (2026-10-24)
+
+- Inspeção de perfil: a coleção compacta sobe para logo abaixo do nome, das etiquetas e do @, e mostra somente os destaques que a pessoa escolheu, sempre 3 lado a lado e menores. Antes, sem escolha, o app exibia os 3 primeiros ganhos por conta própria, e a grade caía em 2 colunas no celular.
+- PNG do cartão: o selo de nível e as etiquetas passam a ser desenhados com as formas e cores do perfil (pentágono amarelo com sombra, "NV" e dígitos de papel, etiquetas com canto recortado, sombra interna inferior e espaçamento de 0,1em), no lugar de retângulos e fonte comum.
+- Cartão na tela: o papel é creme nos dois temas, então a etiqueta CREKS mantém as cores claras do tema claro também no escuro. O "NV" do selo fica grafite em qualquer tema (no escuro a cor global de textos pequenos o deixava cinza sobre o amarelo).

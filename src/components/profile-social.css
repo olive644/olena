@@ -516,3 +516,23 @@ html[data-reduce-motion="true"] .social-directory {
 .social-share-actions {
   justify-content: center;
 }
+/* O cartão tem papel creme nos dois temas: etiquetas e dígitos mantêm o desenho do perfil. */
+:root body .social-share-card .profile-labels .profile-label--creks {
+  background: #19171e;
+  color: #fffdf7;
+  box-shadow: inset 0 -3px #514b5b;
+}
+.social-share-card .profile-level-badge svg {
+  margin-top: 0;
+}
+/* Destaques na inspeção: sempre 3 lado a lado, menores, para não empurrar o resto do perfil. */
+.social-profile .math-achievement-grid.is-preview {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.social-profile .math-achievement-grid.is-preview .math-achievement-art {
+  width: min(84px, 100%);
+}
+.social-profile .math-achievement-grid.is-preview .achievement-tile strong {
+  font-size: 0.72rem;
+}
