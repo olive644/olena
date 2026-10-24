@@ -445,10 +445,8 @@ html[data-reduce-motion="true"] .social-directory {
   }
 }
 /* Voltar do perfil visitado: seta amarela à esquerda, na mesma linha do X, sem placa. */
-:root .profile-visit-dialog > header {
-  justify-content: space-between;
-}
 :root body .profile-visit-dialog .social-visit-back {
+  margin-right: auto;
   background: transparent !important;
   background-image: none !important;
   box-shadow: none !important;
