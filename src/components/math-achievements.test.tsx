@@ -11,7 +11,9 @@ it.each(["bronze", "silver", "gold", "emerald"])(
     const { container, rerender } = render(<AchievementArt item={item} />);
     expect(container.querySelector(".math-achievement-art")?.getAttribute("data-tier")).toBe(tier);
     const path = `/achievement-badges/general/${item.id}.webp`;
-    expect(container.querySelector("image")?.getAttribute("href")).toBe(path);
+    expect(
+      container.querySelector("image:not([data-achievement-preview])")?.getAttribute("href"),
+    ).toBe(path);
     expect(container.querySelector(".achievement-foil")?.getAttribute("style")).toContain(path);
     expect(container.querySelector(".achievement-paper-number use")?.getAttribute("y")).toBe("109");
     expect(container.querySelector('use[href*="paper-editor-icon"]')).toBeNull();
@@ -23,9 +25,9 @@ it("preserva badge quadrada, dígitos originais na placa e brilho só nas raras 
   const item = MATH_ACHIEVEMENTS.find((entry) => entry.id === "correct-2500")!;
   const { container, rerender } = render(<AchievementArt item={item} />);
   expect(container.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 160 160");
-  expect(container.querySelector("image")?.getAttribute("href")).toBe(
-    "/achievement-badges/math/correct-2500.webp",
-  );
+  expect(
+    container.querySelector("image:not([data-achievement-preview])")?.getAttribute("href"),
+  ).toBe("/achievement-badges/math/correct-2500.webp");
   const digits = [...container.querySelectorAll(".achievement-paper-number use")];
   expect(digits.map((digit) => digit.getAttribute("href"))).toEqual(
     [..."2500"].map((digit) => `/paper-digits.svg#digit-${digit}`),
@@ -135,7 +137,9 @@ it("a galeria usa miniaturas leves e a inspeção mantém a arte completa", () =
   const tile = document.querySelector(".achievement-tile image");
   expect(tile?.getAttribute("href")).toMatch(/^\/achievement-badges\/math\/thumb\/.+\.webp$/);
   fireEvent.click(screen.getByRole("button", { name: /Constelação de acertos 1\./ }));
-  const full = document.querySelector(".achievement-inspection image");
+  const full = document.querySelector(
+    ".achievement-inspection image:not([data-achievement-preview])",
+  );
   expect(full?.getAttribute("href")).toBe("/achievement-badges/math/correct-1.webp");
 });
 it("toda conquista tem miniatura leve ao lado da arte completa", async () => {

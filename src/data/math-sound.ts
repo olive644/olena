@@ -11,8 +11,14 @@ export type MathSoundCue =
   | "cardReveal"
   | "cosmicTap"
   | "mastery";
+export type AchievementSoundCue =
+  "achievementCommon" | "achievementUncommon" | "achievementRare" | "achievementPlace";
 export type ArcaneSoundCue = "arcaneUnlock" | "arcaneOpen" | "tarotReveal";
-const NOTES: Record<MathSoundCue | ArcaneSoundCue, number[]> = {
+const NOTES: Record<MathSoundCue | ArcaneSoundCue | AchievementSoundCue, number[]> = {
+  achievementCommon: [587, 740, 880],
+  achievementUncommon: [494, 659, 988, 1319],
+  achievementRare: [392, 587, 784, 1175, 1568, 2093],
+  achievementPlace: [880, 1175, 1568],
   cosmicTap: [440, 660, 880],
   mastery: [523, 659, 784, 1046, 1319, 1568],
   arcaneUnlock: [220, 330, 440, 660],
@@ -28,8 +34,11 @@ const NOTES: Record<MathSoundCue | ArcaneSoundCue, number[]> = {
   finish: [523, 659, 784, 1046],
   xp: [784, 1046, 1319],
 };
-/** Contexto exclusivo da partida, liberado pelo clique e fechado somente ao sair. */
+let sharedContext: AudioContext | undefined;
+const owners = new Set<object>();
+/** Um contexto para os efeitos ativos, fechado quando o último dono sai. */
 export function createMathSound() {
+  const owner = {};
   let context: AudioContext | undefined;
   let disposed = false;
   function unlock() {
@@ -39,7 +48,11 @@ export function createMathSound() {
       (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (disposed || !Constructor) return;
     try {
-      if (!context || context.state === "closed") context = new Constructor();
+      if (!context || context.state === "closed") {
+        if (!sharedContext || sharedContext.state === "closed") sharedContext = new Constructor();
+        context = sharedContext;
+        owners.add(owner);
+      }
       // A source started inside the gesture also unlocks audio on mobile Safari.
       if (context.createBuffer && context.createBufferSource) {
         const source = context.createBufferSource();
@@ -53,7 +66,7 @@ export function createMathSound() {
       /* O jogo continua disponível sem saída de áudio. */
     }
   }
-  function play(cue: MathSoundCue | ArcaneSoundCue | 1 | 2 | 3) {
+  function play(cue: MathSoundCue | ArcaneSoundCue | AchievementSoundCue | 1 | 2 | 3) {
     if (!areSoundEffectsEnabled()) return;
     const active = context;
     if (!active || disposed || active.state === "closed") return;
@@ -92,7 +105,11 @@ export function createMathSound() {
     play,
     dispose() {
       disposed = true;
-      if (context && context.state !== "closed") void context.close().catch(() => {});
+      owners.delete(owner);
+      if (!owners.size && sharedContext) {
+        if (sharedContext.state !== "closed") void sharedContext.close().catch(() => {});
+        sharedContext = undefined;
+      }
     },
   };
 }

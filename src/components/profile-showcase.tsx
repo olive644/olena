@@ -367,7 +367,7 @@ export function ProfileOverview({
   return (
     <div className="profile-overview">
       <div className="profile-settings-grid">
-        <Suspense fallback={<HelenaLoading label={uiText("Carregando conquistas")} />}>
+        <Suspense fallback={<HelenaLoading label={uiText(2805)} />}>
           <MathAchievements workspace={workspace} />
         </Suspense>
       </div>

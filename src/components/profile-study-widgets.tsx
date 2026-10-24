@@ -38,10 +38,11 @@ export function ProfileXpBar() {
     </div>
   );
 }
-export function ProfileLevelBadge() {
+export function ProfileLevelBadge({ level: publicLevel }: { level?: number } = {}) {
   useLanguage();
 
-  const { level } = useProfileStudy();
+  const { level: ownLevel } = useProfileStudy();
+  const level = publicLevel ?? ownLevel;
   return (
     <span className="profile-level-badge" aria-label={uiText(1733, [level])}>
       <small>{uiText(464)}</small>

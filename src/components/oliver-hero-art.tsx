@@ -190,7 +190,7 @@ export function OliverHeroArt() {
         width="720"
         height="791"
         fetchPriority="high"
-        alt={uiText("Oliver convidando você para explorar as ilhas de Matemática")}
+        alt={uiText(2728)}
         draggable={false}
       />
       {active && <canvas ref={canvas} aria-hidden="true" />}

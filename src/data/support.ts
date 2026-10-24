@@ -35,11 +35,9 @@ export async function requestSupport(
   const { auth } = await getFirebaseAccountServices();
   await auth.authStateReady();
   const user = auth.currentUser;
-  if (!user || user.isAnonymous)
-    throw new Error(uiText("Entre na conta para conversar com o time."));
+  if (!user || user.isAnonymous) throw new Error(uiText(1087));
   const token = await user.getIdToken();
-  if (auth.currentUser?.uid !== user.uid)
-    throw new Error(uiText("A conta mudou. Abra o atendimento novamente."));
+  if (auth.currentUser?.uid !== user.uid) throw new Error(uiText(1088));
   const query = new URLSearchParams({ action: "support" });
   if (options.ticket) query.set("ticket", options.ticket);
   if (options.inbox) query.set("inbox", "1");
@@ -53,13 +51,12 @@ export async function requestSupport(
       : {}),
   });
   const body: unknown = await response.json();
-  if (auth.currentUser?.uid !== user.uid)
-    throw new Error(uiText("A conta mudou. Abra o atendimento novamente."));
+  if (auth.currentUser?.uid !== user.uid) throw new Error(uiText(1088));
   if (!response.ok)
     throw new Error(
       body && typeof body === "object" && "error" in body && typeof body.error === "string"
         ? body.error
-        : uiText("Não foi possível conectar ao atendimento."),
+        : uiText(1089),
     );
   if (
     !body ||
@@ -82,6 +79,6 @@ export async function requestSupport(
           ),
         )))
   )
-    throw new Error(uiText("Resposta inválida do atendimento."));
+    throw new Error(uiText(1090));
   return body as SupportFeed;
 }

@@ -59,7 +59,7 @@ export function subscribeSocialUpdates(uid: string) {
               throw new Error("social-event");
             if (event.type === "changed") {
               failures = 0;
-              console.info(uiText("[Olena] Atualização social recebida pelo canal em tempo real."));
+              console.info(uiText(1078));
               window.dispatchEvent(new Event(SOCIAL_CHANGED));
             }
           }

@@ -7,9 +7,9 @@ import { MATH_COURSES } from "../data/math-courses";
 export function activityLabel(activity: SocialActivitySummary) {
   const course = MATH_COURSES.find((item) => item.id === activity.course);
   if (activity.kind === "module")
-    return uiText("Concluiu o módulo de {0} em {1}!", [
-      course?.topics[activity.level ?? -1] ?? uiText("Matemática"),
-      course?.title ?? uiText("Matemática"),
+    return uiText(2734, [
+      course?.topics[activity.level ?? -1] ?? uiText(1406),
+      course?.title ?? uiText(1406),
     ]);
   const labels = {
     practice: "Avançou em Matemática: {0} respostas praticadas.",
@@ -21,7 +21,7 @@ export function activityLabel(activity: SocialActivitySummary) {
 }
 export function socialNoticeLabel(notice: SocialNotice) {
   return notice.kind === "like"
-    ? uiText("Curtiu sua conquista.")
+    ? uiText(2700)
     : notice.kind === "activity" && notice.activity
       ? activityLabel(notice.activity)
       : uiText(1029);
@@ -73,7 +73,7 @@ export function SocialActivityCard({
               });
               onUpdated?.();
             } catch {
-              setError(uiText("Não foi possível atualizar a curtida."));
+              setError(uiText(2703));
             } finally {
               setBusy(false);
             }
@@ -90,13 +90,13 @@ export function SocialActivityCard({
         </button>
         <small>
           {activity.likes.length
-            ? uiText("Curtido por {0}", [
+            ? uiText(2704, [
                 activity.likes
                   .map((person) => person.name)
                   .slice(0, 3)
                   .join(", "),
               ])
-            : uiText("Seja o primeiro a apoiar esta conquista.")}
+            : uiText(2705)}
         </small>
       </div>
       {error && <p role="alert">{error}</p>}

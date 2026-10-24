@@ -107,7 +107,7 @@ export function NotebookFolder({
         <span>{folder.title}</span>
         <small>
           {books.length} {uiText(694)}{" "}
-          {books.some((book) => book.kind === "note") ? uiText("itens") : uiText(1815)}
+          {books.some((book) => book.kind === "note") ? uiText(2587) : uiText(1815)}
         </small>
       </div>
     </div>

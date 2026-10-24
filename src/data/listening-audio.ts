@@ -37,22 +37,18 @@ export class NaturalVoicePlayer {
   async generate(text: string, rate: number, fallback?: () => void): Promise<boolean> {
     this.stopPlayback();
     if (!this.isAllowed()) {
-      this.onState(
-        fallback
-          ? { status: "idle" }
-          : { status: "error", message: uiText("Ative a voz natural para ouvir esta pergunta.") },
-      );
+      this.onState(fallback ? { status: "idle" } : { status: "error", message: uiText(2079) });
       fallback?.();
       return false;
     }
     const requestId = this.requestId;
-    this.onState({ status: "generating", message: uiText("Preparando a pronúncia.") });
+    this.onState({ status: "generating", message: uiText(2059) });
 
     try {
       const { blob, provider } = await this.load(text, rate);
       if (requestId !== this.requestId) return false;
       if (provider && provider !== "kokoro") {
-        this.onState({ status: "generating", message: uiText("Usando voz alternativa.") });
+        this.onState({ status: "generating", message: uiText(2552) });
       }
       await this.playBlob(blob, requestId);
       return true;

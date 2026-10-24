@@ -1,5 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { ProfileLevelBadge } from "./profile-study-widgets";
 import type { SocialAction, SocialFeed, SocialProfile } from "../domain/profile-social";
 import { requestSocial, SOCIAL_VISIT } from "../data/profile-social";
 import { PaperCloseIcon } from "./paper-close-icon";
@@ -19,6 +21,52 @@ import { ProfileNetworks } from "./profile-networks";
 import { ProfileStreakValues } from "./profile-streaks";
 import { ProfileSafety } from "./profile-safety";
 import { AchievementCollection } from "./math-achievements";
+
+function ProfileVisitDialog({
+  person,
+  children,
+  onClose,
+}: {
+  person: SocialProfile;
+  children: ReactNode;
+  onClose(): void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const node = dialog.current;
+    node?.showModal();
+    return () => {
+      if (node?.open) node.close();
+    };
+  }, []);
+  return createPortal(
+    <dialog
+      ref={dialog}
+      className="profile-editor social-directory profile-visit-dialog"
+      data-inspecting="true"
+      aria-label={uiText(1916, [person.username])}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+    >
+      <header>
+        <h2 className="visually-hidden">{person.name}</h2>
+        <button
+          type="button"
+          className="icon-button"
+          aria-label={uiText(230)}
+          title={uiText(230)}
+          onClick={onClose}
+        >
+          <PaperCloseIcon />
+        </button>
+      </header>
+      {children}
+    </dialog>,
+    document.querySelector(".app-shell") ?? document.body,
+  );
+}
 
 function Person({ person, onVisit }: { person: SocialProfile; onVisit(username: string): void }) {
   useLanguage();
@@ -69,6 +117,8 @@ export function SocialDirectory({
     person: SocialProfile;
     action: "unfollow" | "remove-follower";
   }>();
+  const [openedAt] = useState(Date.now);
+  const inspecting = !!feed?.profile && !list && !sharing;
   const contacts = (
     navigator as Navigator & {
       contacts?: {
@@ -91,12 +141,13 @@ export function SocialDirectory({
   }
   const generation = useRef(0);
   useEffect(() => {
+    if (inspecting) return;
     const element = dialog.current;
     element?.showModal();
     return () => {
       if (element?.open) element.close();
     };
-  }, []);
+  }, [inspecting]);
   function close() {
     dialog.current?.close();
     onClose();
@@ -213,6 +264,113 @@ export function SocialDirectory({
         cover: profileCover(ownProfile.cover),
       }
     : undefined;
+  const confirmationPanel = confirmation && (
+    <section className="social-confirm" role="alertdialog" aria-label={uiText(949)}>
+      <p>
+        {confirmation.action === "unfollow" ? uiText(1918) : uiText(1919)} @
+        {confirmation.person.username}?
+      </p>
+      <button
+        type="button"
+        className="secondary-button"
+        disabled={busy}
+        onClick={() => setConfirmation(undefined)}
+      >
+        {uiText(155)}
+      </button>
+      <button
+        type="button"
+        className="primary-button"
+        disabled={busy}
+        onClick={() =>
+          void mutate({ action: confirmation.action, username: confirmation.person.username })
+        }
+      >
+        {confirmation.action === "unfollow" ? uiText(1918) : uiText(1920)}
+      </button>
+    </section>
+  );
+  if (person && feed && !list && !sharing)
+    return (
+      <ProfileVisitDialog
+        person={person}
+        onClose={() => {
+          setConfirmation(undefined);
+          if (initialUsername) close();
+          else void load();
+        }}
+      >
+        {" "}
+        <section className="social-profile" aria-label={uiText(1916, [person.username])}>
+          <div className="social-visit-cover">
+            <ProfileCoverArt theme={profileCover(person.cover)} />
+          </div>
+          <div className="social-visit-avatar">
+            <img src={person.photoUrl} width="140" height="140" alt={uiText(1910, [person.name])} />
+            {person.details && <ProfileLevelBadge level={person.details.level} />}
+          </div>
+          <h3>{person.name}</h3>
+          <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
+          <p>@{person.username}</p>
+          <div className="social-profile-streaks" aria-label={uiText(919)}>
+            {person.details?.updatedAt !== undefined &&
+              openedAt - person.details.updatedAt < 86_400_000 && (
+                <ProfileStreakValues streaks={person.details.streaks} />
+              )}
+          </div>
+          <nav className="social-profile-networks" aria-label={uiText(913)}>
+            <ProfileNetworks links={person.details?.socialLinks ?? []} />
+          </nav>
+          <div className="social-profile-counts">
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => void loadList("followers", person.username)}
+            >
+              {person.followers} {uiText(916)}
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => void loadList("following", person.username)}
+            >
+              {person.following} {uiText(918)}
+            </button>
+          </div>
+          {person.followsYou && <p>{uiText(924)}</p>}
+          {person.blocked && <p role="status">{uiText(2830)}</p>}
+          {person.username !== feed.self.username && !person.blocked && (
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={busy}
+              onClick={() => void follow(person)}
+            >
+              <FriendIcon />
+              {person.followed ? uiText(918) : person.followsYou ? uiText(1917) : uiText(911)}
+            </button>
+          )}
+          {!person.blocked &&
+            (person.achievements !== undefined ? (
+              <AchievementCollection
+                ids={person.achievements}
+                dates={person.achievementDates}
+                favorites={person.achievementFavorites}
+                ownerName={person.name}
+                compact
+              />
+            ) : (
+              <p>{uiText(2837)}</p>
+            ))}
+          {person.username !== feed.self.username && (
+            <ProfileSafety key={person.username} person={person} onChange={setFeed} />
+          )}
+        </section>
+        {error && <p role="alert">{uiText(error)}</p>}
+        {busy && <HelenaLoading label={uiText(940)} compact />}
+        {confirmationPanel}
+      </ProfileVisitDialog>
+    );
   return (
     <dialog
       ref={dialog}
@@ -225,7 +383,9 @@ export function SocialDirectory({
       }}
     >
       <header>
-        <h2 id="social-directory-title">{sharing ? uiText(903) : uiText(1913)}</h2>
+        <h2 id="social-directory-title">
+          {sharing ? uiText(903) : initialUsername ? uiText(1916, [initialUsername]) : uiText(1913)}
+        </h2>
         <button type="button" className="icon-button" aria-label={uiText(930)} onClick={close}>
           <PaperCloseIcon />
         </button>
@@ -240,72 +400,76 @@ export function SocialDirectory({
         </>
       ) : (
         <>
-          <nav className="social-directory-actions" aria-label={uiText(932)}>
-            <button
-              type="button"
-              className="secondary-button"
-              disabled={!contacts || !feed}
-              onClick={() => void chooseContact()}
-            >
-              <img
-                className="profile-friend-icon"
-                src="/navigation-icons/paper/profile-contacts.svg"
-                width="24"
-                height="24"
-                alt=""
-              />
-              {uiText(933)}
-            </button>
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() =>
-                dialog.current?.querySelector<HTMLInputElement>("#social-search")?.focus()
-              }
-            >
-              <img
-                className="profile-friend-icon"
-                src="/navigation-icons/paper/profile-search.svg"
-                width="24"
-                height="24"
-                alt=""
-              />
-              {uiText(934)}
-            </button>
-            <button
-              type="button"
-              className="secondary-button"
-              disabled={!feed}
-              onClick={() => setSharing(true)}
-            >
-              {feed && <img src={feed.self.photoUrl} alt="" width="32" height="32" />}
-              <PaperEditorIcon name="share" />
-              {uiText(903)}
-            </button>
-          </nav>
-          {!contacts && <p className="social-support-note">{uiText(935)}</p>}
-          {contacts && <p className="social-support-note">{uiText(936)}</p>}
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              void load();
-            }}
-          >
-            <label htmlFor="social-search">{uiText(937)}</label>
-            <div className="social-search-row">
-              <input
-                id="social-search"
-                value={search}
-                maxLength={80}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={uiText(938)}
-                autoComplete="off"
-              />
-              <button type="submit" className="secondary-button" disabled={busy}>
-                {uiText(939)}
-              </button>
-            </div>
-          </form>
+          {!initialUsername && (
+            <>
+              <nav className="social-directory-actions" aria-label={uiText(932)}>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={!contacts || !feed}
+                  onClick={() => void chooseContact()}
+                >
+                  <img
+                    className="profile-friend-icon"
+                    src="/navigation-icons/paper/profile-contacts.svg"
+                    width="24"
+                    height="24"
+                    alt=""
+                  />
+                  {uiText(933)}
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() =>
+                    dialog.current?.querySelector<HTMLInputElement>("#social-search")?.focus()
+                  }
+                >
+                  <img
+                    className="profile-friend-icon"
+                    src="/navigation-icons/paper/profile-search.svg"
+                    width="24"
+                    height="24"
+                    alt=""
+                  />
+                  {uiText(934)}
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={!feed}
+                  onClick={() => setSharing(true)}
+                >
+                  {feed && <img src={feed.self.photoUrl} alt="" width="32" height="32" />}
+                  <PaperEditorIcon name="share" />
+                  {uiText(903)}
+                </button>
+              </nav>
+              {!contacts && <p className="social-support-note">{uiText(935)}</p>}
+              {contacts && <p className="social-support-note">{uiText(936)}</p>}
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void load();
+                }}
+              >
+                <label htmlFor="social-search">{uiText(937)}</label>
+                <div className="social-search-row">
+                  <input
+                    id="social-search"
+                    value={search}
+                    maxLength={80}
+                    onChange={(event) => setSearch(event.target.value)}
+                    placeholder={uiText(938)}
+                    autoComplete="off"
+                  />
+                  <button type="submit" className="secondary-button" disabled={busy}>
+                    {uiText(939)}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
           {error && <p role="alert">{uiText(error)}</p>}
           {status && <p role="status">{uiText(status)}</p>}
           {busy && <HelenaLoading label={uiText(940)} compact />}
@@ -376,80 +540,6 @@ export function SocialDirectory({
               )}
             </section>
           )}
-          {person && !list && (
-            <section className="social-profile" aria-label={uiText(1916, [person.username])}>
-              <div className="social-visit-cover">
-                <ProfileCoverArt theme={profileCover(person.cover)} />
-              </div>
-              <img
-                src={person.photoUrl}
-                width="104"
-                height="104"
-                alt={uiText(1910, [person.name])}
-              />
-              <h3>{person.name}</h3>
-              <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
-              <p>@{person.username}</p>
-              {person.details && (
-                <p>
-                  {uiText("Nível")} {person.details.level}
-                </p>
-              )}
-              <div className="social-profile-streaks" aria-label={uiText(919)}>
-                {person.details?.updatedAt !== undefined &&
-                  Date.now() - person.details.updatedAt < 86_400_000 && (
-                    <ProfileStreakValues streaks={person.details.streaks} />
-                  )}
-              </div>
-              <nav className="social-profile-networks" aria-label={uiText(913)}>
-                <ProfileNetworks links={person.details?.socialLinks ?? []} />
-              </nav>
-              <div className="social-profile-counts">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => void loadList("followers", person.username)}
-                >
-                  {person.followers} {uiText(916)}
-                </button>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => void loadList("following", person.username)}
-                >
-                  {person.following} {uiText(918)}
-                </button>
-              </div>
-              {person.followsYou && <p>{uiText(924)}</p>}
-              {person.blocked && <p role="status">{uiText("Você bloqueou esta pessoa.")}</p>}
-              {person.username !== feed.self.username && !person.blocked && (
-                <button
-                  type="button"
-                  className="secondary-button"
-                  disabled={busy}
-                  onClick={() => void follow(person)}
-                >
-                  <FriendIcon />
-                  {person.followed ? uiText(918) : person.followsYou ? uiText(1917) : uiText(911)}
-                </button>
-              )}
-              {!person.blocked &&
-                (person.achievements !== undefined ? (
-                  <AchievementCollection
-                    ids={person.achievements}
-                    dates={person.achievementDates}
-                    favorites={person.achievementFavorites}
-                    ownerName={person.name}
-                    compact
-                  />
-                ) : (
-                  <p>{uiText("Conquistas ainda não compartilhadas.")}</p>
-                ))}
-              {person.username !== feed.self.username && (
-                <ProfileSafety key={person.username} person={person} onChange={setFeed} />
-              )}
-            </section>
-          )}
           {!list &&
             feed?.results?.map((item) => (
               <Person
@@ -478,32 +568,7 @@ export function SocialDirectory({
           )}
         </>
       )}
-      {confirmation && (
-        <section className="social-confirm" role="alertdialog" aria-label={uiText(949)}>
-          <p>
-            {confirmation.action === "unfollow" ? uiText(1918) : uiText(1919)} @
-            {confirmation.person.username}?
-          </p>
-          <button
-            type="button"
-            className="secondary-button"
-            disabled={busy}
-            onClick={() => setConfirmation(undefined)}
-          >
-            {uiText(155)}
-          </button>
-          <button
-            type="button"
-            className="primary-button"
-            disabled={busy}
-            onClick={() =>
-              void mutate({ action: confirmation.action, username: confirmation.person.username })
-            }
-          >
-            {confirmation.action === "unfollow" ? uiText(1918) : uiText(1920)}
-          </button>
-        </section>
-      )}
+      {confirmationPanel}
       {sharing && error && <p role="alert">{uiText(error)}</p>}
     </dialog>
   );

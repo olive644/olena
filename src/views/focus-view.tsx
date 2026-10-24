@@ -551,9 +551,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
                             ? uiText(1163)
                             : ""
                         : !flower.hasHistory && !running
-                          ? uiText(
-                              "Sua flor está adormecida. Comece seu primeiro cronômetro para cuidar dela.",
-                            )
+                          ? uiText(2730)
                           : missedYesterday && !caredToday
                             ? uiText(1164)
                             : caredToday

@@ -74,7 +74,7 @@ export function agendaDashboard(
       label:
         group.length === 1
           ? label(group[0]!)
-          : `${label(group[0]!)} ${uiText("a")} ${label(group.at(-1)!)}`,
+          : `${label(group[0]!)} ${uiText(97)} ${label(group.at(-1)!)}`,
       value: group.reduce((sum, date) => sum + (daily.get(date) ?? 0), 0),
     });
   }
@@ -84,7 +84,7 @@ export function agendaDashboard(
   const pie = ranked.slice(0, 4);
   if (ranked.length > 4)
     pie.push({
-      label: uiText("Outras"),
+      label: uiText(2593),
       value: ranked.slice(4).reduce((sum, item) => sum + item.value, 0),
     });
   return {

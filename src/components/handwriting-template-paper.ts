@@ -66,9 +66,9 @@ export function drawCornellPaper(
 
   context.fillStyle = ink;
   context.font = "bold 18px Manrope, sans-serif";
-  context.fillText(uiText("Pistas"), 64, notesTop - 12);
-  context.fillText(uiText("Anotações"), cuesRight + 16, notesTop - 12);
-  context.fillText(uiText("Resumo"), 64, summaryTop - 12);
+  context.fillText(uiText(2585), 64, notesTop - 12);
+  context.fillText(uiText(1372), cuesRight + 16, notesTop - 12);
+  context.fillText(uiText(2586), 64, summaryTop - 12);
   context.restore();
 }
 

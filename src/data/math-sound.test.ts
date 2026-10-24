@@ -50,11 +50,20 @@ it("unlocks through a gesture, remains usable beyond three minutes and closes on
   await Promise.resolve();
   expect(start).toHaveBeenCalledTimes(6);
   expect(close).not.toHaveBeenCalled();
+  updateAccessibility({ soundEffects: true });
+  const celebration = createMathSound();
+  celebration.unlock();
+  expect(construct).toHaveBeenCalledOnce();
   sound.dispose();
+  expect(close).not.toHaveBeenCalled();
+  celebration.play("achievementCommon");
+  await Promise.resolve();
+  expect(start).toHaveBeenCalledTimes(9);
+  celebration.dispose();
   expect(close).toHaveBeenCalledOnce();
   sound.play("xp");
   await Promise.resolve();
-  expect(start).toHaveBeenCalledTimes(6);
+  expect(start).toHaveBeenCalledTimes(9);
 });
 it("gives arcane opening and tarot reveal their own timbre and note sequences", async () => {
   const tones: { type: string; frequency: { setValueAtTime: ReturnType<typeof vi.fn> } }[] = [];
@@ -100,5 +109,26 @@ it("gives arcane opening and tarot reveal their own timbre and note sequences", 
   await Promise.resolve();
   expect(tones.slice(10)).toHaveLength(5);
   expect(tones[10]!.frequency.setValueAtTime).toHaveBeenCalledWith(523, 0);
+  const sequences: number[][] = [];
+  for (const cue of [
+    "achievementCommon",
+    "achievementUncommon",
+    "achievementRare",
+    "achievementPlace",
+  ] as const) {
+    const offset = tones.length;
+    sound.play(cue);
+    await Promise.resolve();
+    sequences.push(
+      tones.slice(offset).map((tone) => tone.frequency.setValueAtTime.mock.calls[0]![0] as number),
+    );
+  }
+  expect(new Set(sequences.map((sequence) => JSON.stringify(sequence))).size).toBe(4);
+  expect(sequences[2]).toHaveLength(6);
+  const beforeMute = tones.length;
+  updateAccessibility({ soundEffects: false });
+  sound.play("achievementRare");
+  await Promise.resolve();
+  expect(tones).toHaveLength(beforeMute);
   sound.dispose();
 });

@@ -46,10 +46,7 @@ export function HandwritingToolGroup({
         onClick={() => onSelectTool("ruler")}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#B88C13" d="m2 15 14-13 7 7-14 14Z" />
-          <path fill="#FACC15" d="m2 13 14-12 6 6L8 20Z" />
-          <path fill="#FFE88D" d="m2 13 14-12 2 2L4 15Z" />
-          <path stroke="#51465D" strokeWidth="1.5" d="m6 10 2 2m1-5 3 3m0-6 2 2m1-5 3 3" />
+          <use href="/navigation-icons/paper/handwriting-static-0.svg#art" />
         </svg>
         <b className="ruler-tool-unit" aria-hidden="true">
           {rulerUnit}
@@ -85,14 +82,7 @@ export function HandwritingToolGroup({
         onClick={() => onSelectTool("coordinates")}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M4 3v17h17M4 8h3M9 17v3M4 4l-2 3m2-3 3 2m13 14-3-2m3 2-2 3"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          <use href="/navigation-icons/paper/handwriting-static-1.svg#art" />
         </svg>
         <span>{uiText(352)}</span>
       </button>
@@ -160,22 +150,7 @@ export function HandwritingToolGroup({
         onClick={() => onAddTable()}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <rect
-            x="3"
-            y="4"
-            width="18"
-            height="16"
-            rx="1.5"
-            fill="#FFF9EF"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          />
-          <path
-            d="M3 10h18M3 16h18M9 4v16M15 4v16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
+          <use href="/navigation-icons/paper/handwriting-static-2.svg#art" />
         </svg>
         <span>{uiText(366)}</span>
       </button>

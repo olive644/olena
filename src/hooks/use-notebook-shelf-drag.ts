@@ -103,7 +103,7 @@ export function useNotebookShelfDrag(
                 setMessage(
                   `${book?.kind === "note" ? "Note guardada" : "Caderno guardado"} em ${notebooks.find((item) => item.id === folderId)?.title}.`,
                 );
-              } else setMessage(uiText("Esta pasta já tem três itens. Escolha outra pasta."));
+              } else setMessage(uiText(1145));
             } else if (
               !folderId &&
               book?.parentId &&

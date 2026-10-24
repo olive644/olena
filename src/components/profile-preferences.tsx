@@ -151,11 +151,7 @@ export function ProfileNotifications() {
         {(
           [
             ["followers", uiText(1901), uiText(878)],
-            [
-              "activities",
-              uiText("Atividades e curtidas"),
-              uiText("Conquistas de amigos e apoio às suas atividades."),
-            ],
+            ["activities", uiText(2706), uiText(2707)],
             ["agenda", uiText(93), uiText(1902)],
             ["updates", uiText(1903), uiText(879)],
             ["rewards", uiText(1904), uiText(880)],

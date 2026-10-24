@@ -1,8 +1,8 @@
 import { uiText } from "../i18n/runtime.js";
 export const SPEECH_RATE_OPTIONS = [
-  { value: 0.72, label: uiText("Devagar") },
-  { value: 0.86, label: uiText("Natural") },
-  { value: 1, label: uiText("Rápida") },
+  { value: 0.72, label: uiText(2553) },
+  { value: 0.86, label: uiText(2554) },
+  { value: 1, label: uiText(2555) },
 ] as const;
 
 const PREMIUM_HINTS = [

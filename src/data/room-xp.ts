@@ -31,7 +31,7 @@ export function recordRoomXp(
       ? JSON.stringify(profileRecord(localStorage.getItem(ACCOUNT_PROFILE_KEY))["xpLedger"])
       : undefined;
   const valid = parseXpLedger(mergeXpLedgers(raw, profileXp) ?? raw);
-  if (raw !== null && !valid) throw new Error(uiText("Histórico de XP inválido."));
+  if (raw !== null && !valid) throw new Error(uiText(1084));
   const ledger: XpLedger = valid ?? {
     total: 0,
     receipts: [],
@@ -48,9 +48,9 @@ export function recordRoomXp(
     !Number.isSafeInteger(reward.place) ||
     reward.place < 1
   )
-    throw new Error(uiText("Recompensa inválida."));
+    throw new Error(uiText(1085));
   const total = ledger.total + reward.xp;
-  if (!Number.isSafeInteger(total)) throw new Error(uiText("Total de XP inválido."));
+  if (!Number.isSafeInteger(total)) throw new Error(uiText(1086));
   storage.setItem(
     ROOM_XP_KEY,
     JSON.stringify({

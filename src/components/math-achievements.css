@@ -3,6 +3,40 @@
   color: var(--text);
   min-width: 0;
 }
+
+/* Controles recortados sem placa; a indicação de teclado continua amarela. */
+:root body .app-shell .achievement-bare-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+  color: var(--text);
+}
+:root body .app-shell .achievement-bare-action:hover:not(:disabled) {
+  background: transparent;
+  box-shadow: none;
+  translate: 0 -2px;
+}
+:root body .app-shell .achievement-bare-action:focus-visible {
+  outline: none;
+  box-shadow: 0 3px #facc15;
+}
+.achievement-bare-action :is(svg, img) {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .achievement-bare-action svg.paper-editor-icon {
+  filter: brightness(3);
+}
 .achievement-counter,
 .achievement-earned-date time > span {
   display: inline-flex;

@@ -36,7 +36,7 @@ test("brilho de material, máscara própria e redução de movimento", async ({ 
     await inspection.getByRole("button", { name: `Ver etapa ${label}`, exact: true }).click();
     const art = inspection.locator(".achievement-static-art .math-achievement-art");
     await expect(art).toHaveAttribute("data-tier", tier!);
-    await expect(art.locator("image")).toHaveAttribute(
+    await expect(art.locator("image:not([data-achievement-preview])")).toHaveAttribute(
       "href",
       `/achievement-badges/general/general-pomodoro-${tier}.webp`,
     );
@@ -288,7 +288,7 @@ test("galeria compacta, data real, Oliver shiny e card compartilhável", async (
   const card = inspection.getByRole("img", { name: "Card da conquista para compartilhar" });
   await expect(inspection.getByRole("button", { name: "Compartilhar", exact: true })).toHaveCSS(
     "background-color",
-    "rgb(116, 51, 224)",
+    "rgba(0, 0, 0, 0)",
   );
   await expect(card).toBeVisible();
   await expect

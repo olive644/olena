@@ -49,14 +49,7 @@ export function AgendaMonthPicker({
           aria-hidden="true"
           data-icon="agenda-calendar"
         >
-          <path fill="#17131d" d="M7 12h34v29l-5 4H7Z" />
-          <path fill="#292432" d="M5 9h36v29l-5 4H5Z" />
-          <path fill="#51465d" d="M5 9h36l-5 6H5Z" />
-          <path fill="#fff9ef" d="M9 20h28v15l-4 3H9Z" />
-          <path fill="#d8cdb9" d="m33 38 4-3h-4Z" />
-          <path fill="#facc15" d="M12 4h5v11h-5Zm18 0h5v11h-5Z" />
-          <path fill="#292432" d="M13 23h5v4h-5Zm9 0h5v4h-5Zm-9 8h5v4h-5Z" />
-          <path fill="#7c3aed" d="M22 30h6v6h-6Z" />
+          <use href="/navigation-icons/paper/agenda-month-calendar.svg#art" />
         </svg>
       </button>
       <span className="agenda-visible-month">

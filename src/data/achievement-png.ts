@@ -15,6 +15,7 @@ export async function achievementPng(
 ): Promise<File> {
   await document.fonts?.ready;
   const svg = source.cloneNode(true) as SVGSVGElement;
+  svg.querySelectorAll("[data-achievement-preview]").forEach((node) => node.remove());
   for (const badge of svg.querySelectorAll("image")) {
     const path = badge.getAttribute("href") ?? "";
     if (
@@ -78,88 +79,13 @@ export async function achievementPng(
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas unavailable");
     const theme = ACHIEVEMENT_THEMES[achievementTheme(achievement)];
-    ctx.fillStyle = theme.paper;
-    ctx.fillRect(0, 0, 1080, 1350);
-    ctx.fillStyle = theme.face;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(1080, 0);
-    ctx.lineTo(1080, 110);
-    ctx.lineTo(0, 185);
-    ctx.fill();
-    ctx.fillStyle = theme.depth;
-    ctx.beginPath();
-    ctx.moveTo(0, 185);
-    ctx.lineTo(1080, 110);
-    ctx.lineTo(1080, 125);
-    ctx.lineTo(0, 200);
-    ctx.fill();
-    ctx.fillStyle = theme.accent;
+    const background = new Image();
+    background.src = `/achievement-badges/cards/${achievementTheme(achievement)}.svg`;
+    await background.decode();
+    ctx.drawImage(background, 0, 0, 1080, 1350);
+    ctx.fillStyle = "#fff9ef";
     ctx.font = "700 28px Manrope, sans-serif";
     ctx.fillText(uiText(theme.label), 55, 70);
-    // Cada assunto carrega seu próprio vocabulário visual, sem substituir as artes.
-    ctx.save();
-    ctx.globalAlpha = 0.12;
-    ctx.strokeStyle = theme.face;
-    ctx.lineWidth = 9;
-    const kind = achievementTheme(achievement);
-    for (const x of [65, 915]) {
-      if (kind === "notebooks") {
-        ctx.strokeRect(x, 420, 95, 140);
-        for (const y of [450, 480, 510]) {
-          ctx.beginPath();
-          ctx.moveTo(x + 20, y);
-          ctx.lineTo(x + 75, y);
-          ctx.stroke();
-        }
-      } else if (kind === "focus") {
-        ctx.beginPath();
-        ctx.arc(x + 48, 480, 45, 0, Math.PI * 2);
-        ctx.moveTo(x + 48, 445);
-        ctx.lineTo(x + 48, 480);
-        ctx.lineTo(x + 73, 490);
-        ctx.stroke();
-      } else if (kind === "friends") {
-        for (const dx of [25, 70]) {
-          ctx.beginPath();
-          ctx.arc(x + dx, 450, 20, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        ctx.beginPath();
-        ctx.moveTo(x, 520);
-        ctx.quadraticCurveTo(x + 48, 465, x + 95, 520);
-        ctx.stroke();
-      } else if (kind === "routine") {
-        ctx.strokeRect(x, 430, 95, 100);
-        ctx.beginPath();
-        ctx.moveTo(x + 15, 480);
-        ctx.lineTo(x + 37, 505);
-        ctx.lineTo(x + 80, 455);
-        ctx.stroke();
-      } else {
-        ctx.beginPath();
-        ctx.moveTo(x, 480);
-        ctx.lineTo(x + 95, 480);
-        ctx.moveTo(x + 48, 430);
-        ctx.lineTo(x + 48, 530);
-        ctx.stroke();
-      }
-    }
-    ctx.restore();
-    ctx.fillStyle = theme.accent;
-    for (const [x, y, size] of [
-      [115, 370, 25],
-      [930, 690, 40],
-      [170, 780, 16],
-      [920, 235, 18],
-    ]) {
-      ctx.beginPath();
-      ctx.moveTo(x!, y! - size!);
-      ctx.lineTo(x! + size!, y!);
-      ctx.lineTo(x!, y! + size!);
-      ctx.lineTo(x! - size!, y!);
-      ctx.fill();
-    }
     ctx.drawImage(image, 270, 190, 540, 540);
     ctx.textAlign = "center";
     ctx.fillStyle = "#292432";
@@ -211,7 +137,11 @@ export async function achievementPng(
     try {
       logo.src = logoUrl;
       await logo.decode();
-      ctx.drawImage(logo, 290, 1170, 500, 79);
+      const mark = new Image();
+      mark.src = "/olena-favicon-180.png";
+      await mark.decode();
+      ctx.drawImage(mark, 220, 1162, 90, 90);
+      ctx.drawImage(logo, 330, 1170, 530, 84);
     } finally {
       URL.revokeObjectURL(logoUrl);
     }

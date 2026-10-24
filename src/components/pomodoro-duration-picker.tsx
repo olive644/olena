@@ -54,7 +54,7 @@ export function PomodoroDurationPicker({
       />
       <div className="pomodoro-duration__clock" role="group" aria-label={label}>
         <label htmlFor={`${id}-hours`}>
-          {uiText("Horas")}
+          {uiText(23)}
           <input
             id={`${id}-hours`}
             type="number"
@@ -67,7 +67,7 @@ export function PomodoroDurationPicker({
         </label>
         <span aria-hidden="true">:</span>
         <label htmlFor={`${id}-minutes`}>
-          {uiText("Minutos")}
+          {uiText(24)}
           <input
             id={`${id}-minutes`}
             type="number"
@@ -79,12 +79,10 @@ export function PomodoroDurationPicker({
           />
         </label>
         <button className="secondary-button" type="submit">
-          {uiText("Usar duração")}
+          {uiText(2767)}
         </button>
       </div>
-      {error && (
-        <p role="alert">{uiText("Escolha de 1 minuto a 99 h 59 min, com minutos entre 0 e 59.")}</p>
-      )}
+      {error && <p role="alert">{uiText(2768)}</p>}
     </form>
   );
 }

@@ -104,19 +104,9 @@ export function BingoParticipant({
         >
           <svg className="bingo-mini-saturn" viewBox="0 0 100 80" aria-hidden="true">
             <g className="bingo-mini-core">
-              <path fill="#50bdc4" d="m50 7 23 10 10 22-11 23-25 8-23-12-7-23 13-22Z" />
-              <path fill="#a4e8eb" d="m50 7 23 10-26 11-30 7 13-22Z" />
-              <path fill="#147b83" d="m83 39-11 23-25 8 12-30 14-23Z" />
-              <path fill="#fff9ef" d="m25 42 48-13 4 8-48 14Z" />
-              <circle cx="38" cy="27" r="5" fill="#ff8e77" />
-              <circle cx="56" cy="54" r="5" fill="#ffe88d" />
+              <use href="/navigation-icons/paper/bingo-mini-saturn.svg#core" />
             </g>
-            <path
-              fill="#facc15"
-              fillRule="evenodd"
-              d="M2 55Q45 19 97 19L98 28Q49 70 2 65ZM10 56Q46 62 89 29Q43 29 10 56Z"
-            />
-            <path fill="#ffe88d" d="M2 55Q46 62 98 19L98 25Q50 72 2 60Z" />
+            <use href="/navigation-icons/paper/bingo-mini-saturn.svg#ring" />
           </svg>
           <strong>{uiText(128)}</strong>
           <span className="bingo-spin-stars" aria-hidden="true">
