@@ -17,6 +17,7 @@ vi.mock("../data/math-sound", () => ({
   createMathSound: () => ({ play: mocks.play, unlock: mocks.unlock, dispose: mocks.dispose }),
 }));
 afterEach(() => {
+  document.querySelector(".handwriting-studio")?.remove();
   vi.useRealTimers();
   mocks.values = [];
   vi.clearAllMocks();
@@ -43,4 +44,24 @@ it("celebra só o novo desbloqueio, toca a raridade e pausa a saída durante foc
   expect(screen.queryByLabelText("Nova conquista")).toBeNull();
   unmount();
   expect(mocks.dispose).toHaveBeenCalled();
+});
+it("guarda a celebração enquanto a folha está aberta e a mostra somente ao sair", async () => {
+  vi.useFakeTimers();
+  const editor = document.createElement("div");
+  editor.className = "handwriting-studio";
+  document.body.append(editor);
+  const props = { workspace: createInitialWorkspace(), username: "", nameFallback: "Ana" };
+  const { rerender } = render(<AchievementAnnouncer {...props} />);
+  const item = GENERAL_ACHIEVEMENTS[0]!;
+  mocks.values = [{ ...item, value: item.target, earned: true, earnedAt: undefined }];
+  rerender(<AchievementAnnouncer {...props} />);
+  expect(screen.queryByLabelText("Nova conquista")).toBeNull();
+  expect(mocks.play).not.toHaveBeenCalled();
+  act(() => vi.advanceTimersByTime(20000));
+  await act(async () => {
+    editor.remove();
+    await Promise.resolve();
+  });
+  expect(screen.getByLabelText("Nova conquista")).toBeTruthy();
+  expect(mocks.play).toHaveBeenCalledOnce();
 });

@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Correção dos gates da PR 513, 2026-10-24
+
+Auditoria do head 89237f2 identificou undici 8.10.2, dependência de desenvolvimento transitiva do jsdom. Atualizado somente esse registro do lockfile para 8.12.3, dentro da faixa já permitida, sem dependência nova ou override. npm audit passou de um pacote vulnerável para zero. Referências: GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472 e GHSA-xjj6-f33q-929c.
+
+Falhas de navegador reproduzidas localmente com os testes originais. A celebração criava um segundo AudioContext; createMathSound agora compartilha o contexto entre donos ativos e fecha somente após o último dispose. Prova unitária vermelha antes e verde depois, incluindo uso da celebração após a saída do jogo. As notas e preferências de som não mudaram.
+
+A rotação não falhava por geometria: a estimativa de clique estava a menos de dois pixels da alça desenhada. O botão Inspecionar da celebração estava ativo sobre a folha e recebeu o clique. AchievementAnnouncer aguarda a saída de handwriting-studio para apresentar a fila e tocar o som, sem consumir os dez segundos durante a edição. Prova unitária verifica retenção por vinte segundos e exibição ao sair. Instrumentação temporária foi removida; e2e/selection-tools.spec.ts e suas expectativas permanecem intactos.
+
+Validação local final: npm audit com zero vulnerabilidades; npm run verify aprovado com 338 arquivos e 2204 testes, lint sem erros (23 avisos), formatação, API, idiomas, build e desempenho verdes. JavaScript de aplicação 1499,1 KiB de 1500 e entrada 217,5 KiB, sem alterar limites ou CI. Rodada Edge desktop/mobile de ilhas, seleção, cartas, celebração e arraste teve 16 aprovações e quatro exclusões móveis já existentes da seleção exclusiva de desktop. WebKit local não baixado; aguardar obrigatoriamente CI real do novo head antes de mesclar.
+
 ## Conquistas, movimento e visita de perfil, 2026-10-23
 
 Na branch feat/achievement-motion-profile, preservadas as 113 artes aprovadas. Destaques aceitam arraste por mouse e toque, substituição no destino e reordenação sem duplicação, mantendo favorito por teclado. Galeria usa ícones próprios de categoria e entrada por IntersectionObserver. Inspeção mantém miniatura WebP sob a imagem completa e antecipa as etapas da família. Compartilhamento ganhou cenários SVG por assunto, favicon e assinatura original, ações sem placa e voltar no cabeçalho. Visita de perfil é diálogo separado da busca, com selo de nível público sobre o avatar e segurança centralizada por ícones.

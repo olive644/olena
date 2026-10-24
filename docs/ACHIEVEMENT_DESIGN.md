@@ -31,6 +31,7 @@ Artes gerais ficam em `public/achievement-badges/general/{id}.webp`, quadradas, 
 - Entrada das peças ocorre uma vez ao entrar na área visível da galeria. Não ocultar conteúdo se IntersectionObserver estiver indisponível ou movimento reduzido estiver ativo.
 - Miniatura WebP permanece sob a arte completa durante a decodificação. Antecipar as etapas da família inspecionada. PNG exportado usa somente a arte completa, nunca amplia a miniatura.
 - Aviso de conquista ocupa o centro visual sem modal nem captura de foco. Raridades comum, incomum e rara têm sequências sonoras distintas pelo motor existente, respeitando gesto inicial, mute e aba oculta. Tempo de dez segundos pausa durante foco e inspeção. Não repetir conquistas já reconhecidas nesta sessão.
+- Durante a edição da folha, aguardar o fechamento de handwriting-studio antes de mostrar o aviso ou tocar seu som. Preservar a fila e pausar o prazo; nem mesmo Inspecionar pode ocupar a área de uma alça do editor. Efeitos usam o AudioContext compartilhado do motor e só o último dono o encerra.
 - Visita a outro perfil usa diálogo próprio, sem formulário de encontrar amigos. Nível público usa o mesmo selo sobre o avatar do perfil normal. Ações de segurança ficam centralizadas e mantêm confirmação antes da mutação.
 - Cards de compartilhamento têm cenários SVG próprios por assunto e favicon antes do alfabeto facetado OlenaStudy. Voltar fica no topo direito, alinhado ao X. Exportação continua local e sem serviços externos.
 

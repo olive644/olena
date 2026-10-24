@@ -28,7 +28,15 @@ export function AchievementAnnouncer({
   const [queue, setQueue] = useState<Achievement[]>([]);
   const [inspect, setInspect] = useState(false);
   const [held, setHeld] = useState(false);
+  const [editing, setEditing] = useState(false);
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
+  useEffect(() => {
+    const sync = () => setEditing(!!document.querySelector(".handwriting-studio"));
+    const observer = new MutationObserver(sync);
+    observer.observe(document.body, { childList: true, subtree: true });
+    sync();
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     const audio = createMathSound();
     sound.current = audio;
@@ -52,7 +60,7 @@ export function AchievementAnnouncer({
   }, [signature, values]);
   const item = queue[0];
   useEffect(() => {
-    if (item)
+    if (item && !editing)
       sound.current?.play(
         item.rarity === "rare"
           ? "achievementRare"
@@ -60,13 +68,13 @@ export function AchievementAnnouncer({
             ? "achievementUncommon"
             : "achievementCommon",
       );
-  }, [item]);
+  }, [item, editing]);
   useEffect(() => {
-    if (!item || inspect || held) return;
+    if (!item || inspect || held || editing) return;
     const timer = window.setTimeout(() => setQueue((old) => old.slice(1)), 10000);
     return () => clearTimeout(timer);
-  }, [item, inspect, held]);
-  if (!item) return null;
+  }, [item, inspect, held, editing]);
+  if (!item || editing) return null;
   return (
     <aside className="achievement-notice" data-rarity={item.rarity} aria-label={uiText(2802)}>
       <div

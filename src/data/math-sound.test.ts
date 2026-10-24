@@ -50,11 +50,20 @@ it("unlocks through a gesture, remains usable beyond three minutes and closes on
   await Promise.resolve();
   expect(start).toHaveBeenCalledTimes(6);
   expect(close).not.toHaveBeenCalled();
+  updateAccessibility({ soundEffects: true });
+  const celebration = createMathSound();
+  celebration.unlock();
+  expect(construct).toHaveBeenCalledOnce();
   sound.dispose();
+  expect(close).not.toHaveBeenCalled();
+  celebration.play("achievementCommon");
+  await Promise.resolve();
+  expect(start).toHaveBeenCalledTimes(9);
+  celebration.dispose();
   expect(close).toHaveBeenCalledOnce();
   sound.play("xp");
   await Promise.resolve();
-  expect(start).toHaveBeenCalledTimes(6);
+  expect(start).toHaveBeenCalledTimes(9);
 });
 it("gives arcane opening and tarot reveal their own timbre and note sequences", async () => {
   const tones: { type: string; frequency: { setValueAtTime: ReturnType<typeof vi.fn> } }[] = [];

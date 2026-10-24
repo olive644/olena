@@ -34,8 +34,11 @@ const NOTES: Record<MathSoundCue | ArcaneSoundCue | AchievementSoundCue, number[
   finish: [523, 659, 784, 1046],
   xp: [784, 1046, 1319],
 };
-/** Contexto exclusivo da partida, liberado pelo clique e fechado somente ao sair. */
+let sharedContext: AudioContext | undefined;
+const owners = new Set<object>();
+/** Um contexto para os efeitos ativos, fechado quando o último dono sai. */
 export function createMathSound() {
+  const owner = {};
   let context: AudioContext | undefined;
   let disposed = false;
   function unlock() {
@@ -45,7 +48,11 @@ export function createMathSound() {
       (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (disposed || !Constructor) return;
     try {
-      if (!context || context.state === "closed") context = new Constructor();
+      if (!context || context.state === "closed") {
+        if (!sharedContext || sharedContext.state === "closed") sharedContext = new Constructor();
+        context = sharedContext;
+        owners.add(owner);
+      }
       // A source started inside the gesture also unlocks audio on mobile Safari.
       if (context.createBuffer && context.createBufferSource) {
         const source = context.createBufferSource();
@@ -98,7 +105,11 @@ export function createMathSound() {
     play,
     dispose() {
       disposed = true;
-      if (context && context.state !== "closed") void context.close().catch(() => {});
+      owners.delete(owner);
+      if (!owners.size && sharedContext) {
+        if (sharedContext.state !== "closed") void sharedContext.close().catch(() => {});
+        sharedContext = undefined;
+      }
     },
   };
 }
