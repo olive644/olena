@@ -26,10 +26,12 @@ function ProfileVisitDialog({
   person,
   children,
   onClose,
+  onBack,
 }: {
   person: SocialProfile;
   children: ReactNode;
   onClose(): void;
+  onBack?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -52,6 +54,17 @@ function ProfileVisitDialog({
     >
       <header>
         <h2 className="visually-hidden">{person.name}</h2>
+        {onBack && (
+          <button
+            type="button"
+            className="icon-button social-visit-back"
+            aria-label={uiText(374)}
+            title={uiText(374)}
+            onClick={onBack}
+          >
+            <PaperArrow back />
+          </button>
+        )}
         <button
           type="button"
           className="icon-button"
@@ -140,6 +153,8 @@ export function SocialDirectory({
     }
   }
   const generation = useRef(0);
+  // Lista de onde o perfil foi aberto: o voltar retorna a ela em vez de recomeçar a busca.
+  const [origin, setOrigin] = useState<{ kind: "followers" | "following"; owner: string }>();
   useEffect(() => {
     if (inspecting) return;
     const element = dialog.current;
@@ -153,6 +168,7 @@ export function SocialDirectory({
     onClose();
   }
   async function load(username?: string) {
+    if (username === undefined) setOrigin(undefined);
     setList(undefined);
     const current = ++generation.current;
     setBusy(true);
@@ -296,9 +312,20 @@ export function SocialDirectory({
         person={person}
         onClose={() => {
           setConfirmation(undefined);
-          if (initialUsername) close();
-          else void load();
+          close();
         }}
+        {...(!initialUsername || origin
+          ? {
+              onBack: () => {
+                setConfirmation(undefined);
+                if (origin) {
+                  const from = origin;
+                  setOrigin(undefined);
+                  void loadList(from.kind, from.owner);
+                } else void load();
+              },
+            }
+          : {})}
       >
         {" "}
         <section className="social-profile" aria-label={uiText(1916, [person.username])}>
@@ -396,7 +423,14 @@ export function SocialDirectory({
             <PaperArrow back />
             {uiText(931)}
           </button>
-          {ownCard && <ProfileShareCard person={ownCard} />}
+          {ownCard && (
+            <ProfileShareCard
+              person={ownCard}
+              featured={(ownProfile.achievementFavorites ?? []).filter(
+                (id) => !feed.self.achievements || feed.self.achievements.includes(id),
+              )}
+            />
+          )}
         </>
       ) : (
         <>
@@ -502,7 +536,13 @@ export function SocialDirectory({
               </nav>
               {feed.connections?.people.map((item) => (
                 <div key={item.username} className="social-connection-row">
-                  <Person person={item} onVisit={(username) => void load(username)} />
+                  <Person
+                    person={item}
+                    onVisit={(username) => {
+                      setOrigin(list);
+                      void load(username);
+                    }}
+                  />
                   {item.username !== feed.self.username &&
                     (list.kind === "followers" && list.owner === feed.self.username ? (
                       <button

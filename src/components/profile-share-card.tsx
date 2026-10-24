@@ -7,9 +7,35 @@ import { ProfileCoverArt } from "./profile-cover-art";
 import { profileCover } from "../domain/profile-covers";
 import { RoomQrCode } from "./room-qr-code";
 import { RoomSocialIcon } from "./room-social-icon";
+import { ProfileLabels } from "./profile-labels";
+import { profileLabelNames } from "../domain/profile-labels";
+import { ProfileLevelBadge } from "./profile-study-widgets";
+import { useProfileStudy } from "../hooks/use-profile-study";
+import { AchievementArt } from "./math-achievements";
+import { ALL_ACHIEVEMENTS } from "../domain/math-achievements";
 
-export function ProfileShareCard({ person }: { person: SocialProfile }) {
+// Cores das etiquetas no papel creme do cartão (as mesmas do perfil, tema claro).
+const LABEL_COLORS: Record<string, [string, string]> = {
+  CREKS: ["#19171E", "#FFFDF7"],
+  DEV: ["#7C3AED", "#FFF9EF"],
+  "BETA TESTER": ["#FACC15", "#292432"],
+  GALAXIA: ["#25416C", "#FFF9EF"],
+};
+
+export function ProfileShareCard({
+  person,
+  featured = [],
+}: {
+  person: SocialProfile;
+  featured?: readonly string[];
+}) {
   useLanguage();
+
+  const { level } = useProfileStudy();
+  const labels = profileLabelNames(person.username, person.username === "oliver644");
+  const highlights = featured
+    .flatMap((id) => ALL_ACHIEVEMENTS.find((item) => item.id === id) ?? [])
+    .slice(0, 3);
 
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
@@ -73,6 +99,31 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       context.font = "800 30px Manrope, sans-serif";
       context.fillText("OlenaStudy", 40, 64);
       context.drawImage(avatar, 180, 120, 360, 360);
+      // Selo de nível no canto da foto, como no perfil.
+      context.save();
+      context.translate(468, 420);
+      context.scale(0.82, 0.82);
+      context.beginPath();
+      context.moveTo(14, 0);
+      context.lineTo(130, 0);
+      context.lineTo(144, 70);
+      context.lineTo(72, 104);
+      context.lineTo(0, 70);
+      context.closePath();
+      context.fillStyle = "#B88C13";
+      context.fill();
+      context.translate(0, -6);
+      context.fill();
+      context.fillStyle = "#FACC15";
+      context.fill();
+      context.fillStyle = "#292432";
+      context.textAlign = "center";
+      context.font = "900 20px Manrope, sans-serif";
+      context.fillText("NV", 40, 56);
+      context.font = "900 54px Manrope, sans-serif";
+      context.fillText(String(level), 96, 68);
+      context.restore();
+      context.textAlign = "left";
       context.fillStyle = "#292432";
       let size = 44;
       do {
@@ -81,8 +132,24 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       context.fillText(person.name, 40, 536);
       context.font = "700 28px Manrope, sans-serif";
       context.fillText(`@${person.username}`, 40, 580);
+      let tagY = 636;
+      if (labels.length) {
+        context.font = "900 16px Manrope, sans-serif";
+        let x = 40;
+        for (const label of labels) {
+          const [background, color] = LABEL_COLORS[label] ?? LABEL_COLORS["CREKS"]!;
+          const width = context.measureText(label).width + 36 + label.length * 1.6;
+          context.fillStyle = background;
+          context.fillRect(x, 600, width, 30);
+          context.fillStyle = color;
+          context.fillText(label.split("").join("\u200A"), x + 18, 621);
+          x += width + 10;
+        }
+        tagY = 672;
+      }
+      context.fillStyle = "#292432";
       context.font = "600 22px Manrope, sans-serif";
-      context.fillText(uiText(908), 40, 636);
+      context.fillText(uiText(908), 40, tagY);
       const qr = qrcode(0, "H");
       qr.addData(url);
       qr.make();
@@ -120,6 +187,27 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
       context.font = "500 17px Manrope, sans-serif";
       context.fillText(window.location.host, 40, 772);
       context.fillText(`@${person.username}`, 40, 802);
+      if (highlights.length) {
+        // Destaques menores, na coluna do texto, sem tomar o espaço do QR.
+        const arts = [
+          ...(qrElement.current
+            ?.closest(".social-share-card")
+            ?.querySelectorAll(".social-share-highlights .math-achievement-art > svg") ?? []),
+        ] as SVGSVGElement[];
+        const { inlineAchievementArt } = await import("../data/achievement-png");
+        for (const [index, art] of arts.entries()) {
+          const clone = art.cloneNode(true) as SVGSVGElement;
+          await inlineAchievementArt(clone, (path) =>
+            /^\/achievement-badges\/(math|general)\/thumb\/[a-z0-9-]+\.webp$/.test(path),
+          );
+          clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+          const badge = new Image();
+          badge.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(clone))}`;
+          await badge.decode();
+          context.drawImage(badge, 40 + index * 98, 816, 88, 88);
+        }
+      }
+      context.fillStyle = "#51465D";
       context.font = "700 18px Manrope, sans-serif";
       context.fillText(uiText(904), 40, 926);
       const blob = await new Promise<Blob>((resolve, reject) =>
@@ -145,39 +233,61 @@ export function ProfileShareCard({ person }: { person: SocialProfile }) {
           <ProfileCoverArt theme={profileCover(person.cover)} />
         </div>
         <strong className="social-share-brand">{uiText(116)}</strong>
-        <img
-          draggable={false}
-          src={person.photoUrl}
-          alt={uiText(1910, [person.name])}
-          width="160"
-          height="160"
-        />
+        <div className="social-share-avatar">
+          <img
+            draggable={false}
+            src={person.photoUrl}
+            alt={uiText(1910, [person.name])}
+            width="160"
+            height="160"
+          />
+          <ProfileLevelBadge />
+        </div>
         <h3>{person.name}</h3>
+        <ProfileLabels username={person.username} creks={person.username === "oliver644"} />
         <p>@{person.username}</p>
+        {highlights.length > 0 && (
+          <div className="social-share-highlights" aria-label={uiText(2854)}>
+            {highlights.map((item) => (
+              <AchievementArt key={item.id} item={item} thumb />
+            ))}
+          </div>
+        )}
         <div ref={qrElement}>
           <RoomQrCode value={url} size={180} bare label={uiText(907)} />
         </div>
         <p>{uiText(908)}</p>
       </div>
       <div className="social-share-actions">
-        <button type="button" className="secondary-button" onClick={() => void copy()}>
+        <button
+          type="button"
+          className="secondary-button icon-only"
+          aria-label={uiText(461)}
+          title={uiText(461)}
+          onClick={() => void copy()}
+        >
           <RoomSocialIcon kind="copy" />
-          {uiText(461)}
         </button>
         {typeof navigator.share === "function" && (
-          <button type="button" className="secondary-button" onClick={() => void share()}>
+          <button
+            type="button"
+            className="secondary-button icon-only"
+            aria-label={uiText(677)}
+            title={uiText(677)}
+            onClick={() => void share()}
+          >
             <PaperEditorIcon name="share" />
-            {uiText(677)}
           </button>
         )}
         <button
           type="button"
-          className="secondary-button"
+          className="secondary-button icon-only"
+          aria-label={saving ? uiText(1911) : uiText(909)}
+          title={saving ? uiText(1911) : uiText(909)}
           disabled={saving}
           onClick={() => void save()}
         >
           <PaperEditorIcon name="download" />
-          {saving ? uiText(1911) : uiText(909)}
         </button>
       </div>
       {status && <p role="status">{uiText(status)}</p>}

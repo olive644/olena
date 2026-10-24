@@ -6,25 +6,15 @@ import {
   achievementTheme,
 } from "../domain/achievement-presentation";
 
-// Rasteriza somente a arte estática do próprio app. Nenhum dado sai no preparo do card.
-export async function achievementPng(
-  source: SVGSVGElement,
-  achievement: Achievement,
-  owner: string,
-  earnedAt?: string,
-): Promise<File> {
-  await document.fonts?.ready;
-  const svg = source.cloneNode(true) as SVGSVGElement;
+// Embute no SVG clonado a arte do selo e os dígitos de papel, para rasterizar sem rede.
+export async function inlineAchievementArt(
+  svg: SVGSVGElement,
+  allowed: (path: string) => boolean,
+): Promise<void> {
   svg.querySelectorAll("[data-achievement-preview]").forEach((node) => node.remove());
   for (const badge of svg.querySelectorAll("image")) {
     const path = badge.getAttribute("href") ?? "";
-    if (
-      ![
-        `/achievement-badges/math/${achievement.id}.webp`,
-        `/achievement-badges/general/${achievement.id}.webp`,
-      ].includes(path)
-    )
-      throw new Error("Artwork unavailable");
+    if (!allowed(path)) throw new Error("Artwork unavailable");
     const response = await fetch(path);
     if (!response.ok) throw new Error("Artwork unavailable");
     const blob = await response.blob();
@@ -66,6 +56,22 @@ export async function achievementPng(
       use.replaceWith(group);
     }
   }
+}
+// Rasteriza somente a arte estática do próprio app. Nenhum dado sai no preparo do card.
+export async function achievementPng(
+  source: SVGSVGElement,
+  achievement: Achievement,
+  owner: string,
+  earnedAt?: string,
+): Promise<File> {
+  await document.fonts?.ready;
+  const svg = source.cloneNode(true) as SVGSVGElement;
+  await inlineAchievementArt(svg, (path) =>
+    [
+      `/achievement-badges/math/${achievement.id}.webp`,
+      `/achievement-badges/general/${achievement.id}.webp`,
+    ].includes(path),
+  );
   const image = new Image();
   const url = URL.createObjectURL(
     new Blob([new XMLSerializer().serializeToString(svg)], { type: "image/svg+xml" }),

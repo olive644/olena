@@ -444,3 +444,75 @@ html[data-reduce-motion="true"] .social-directory {
     opacity: 1;
   }
 }
+/* Voltar do perfil visitado: seta amarela à esquerda, na mesma linha do X, sem placa. */
+:root .profile-visit-dialog > header {
+  justify-content: space-between;
+}
+:root body .profile-visit-dialog .social-visit-back {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 8px;
+  display: inline-grid;
+  place-items: center;
+}
+.profile-visit-dialog .social-visit-back .onboarding-paper-arrow {
+  width: 32px;
+  height: 32px;
+  transition: transform 160ms ease;
+}
+.profile-visit-dialog .social-visit-back:hover .onboarding-paper-arrow {
+  transform: rotate(180deg) scale(1.08);
+}
+:root body .profile-visit-dialog .social-visit-back:focus-visible {
+  border-bottom: 3px solid #facc15 !important;
+  border-radius: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-visit-dialog .social-visit-back .onboarding-paper-arrow {
+    transition: none;
+  }
+}
+/* Cartão de compartilhar: nível na foto, etiquetas e destaques, como no perfil. */
+.social-share-avatar {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 16px auto 0;
+}
+.social-share-card .social-share-avatar > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: contain;
+}
+.social-share-avatar .profile-level-badge {
+  opacity: 1;
+}
+.social-share-card .profile-labels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin: 6px 0;
+}
+.social-share-highlights {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.social-share-card .social-share-highlights .math-achievement-art {
+  width: 56px;
+}
+.social-share-card .social-share-highlights svg {
+  margin-top: 0;
+}
+.social-share-actions {
+  justify-content: center;
+}
