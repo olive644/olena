@@ -220,6 +220,10 @@
   font-weight: 900;
   font-size: 0.55rem;
 }
+:root body .profile-level-badge,
+:root body .profile-level-badge small {
+  color: #292432;
+}
 .profile-level-badge .paper-digits {
   height: 22px;
   font-size: 24px;

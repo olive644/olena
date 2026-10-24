@@ -48,3 +48,35 @@ for (const theme of ["light", "dark"]) {
     await dialog.screenshot({ path: info.outputPath(`perfil-${theme}.png`) });
   });
 }
+
+test("seta de voltar fica à esquerda, na mesma linha do X", async ({ page }) => {
+  // Sem a animação de entrada do diálogo, as posições medidas em instantes diferentes coincidem.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    localStorage.setItem("helena.onboarding.v1", JSON.stringify({ completed: true }));
+    localStorage.setItem("helena.guest.v1", "1");
+  });
+  await page.goto("/perfil");
+  await expect(page.locator(".profile-level-badge").first()).toBeVisible();
+  // Fixture de layout, como no teste acima: o componente real tem teste de integração Vitest.
+  await page.evaluate(() => {
+    const dialog = document.createElement("dialog");
+    dialog.className = "profile-editor social-directory profile-visit-dialog";
+    dialog.dataset.inspecting = "true";
+    dialog.setAttribute("aria-label", "Perfil de teste visual");
+    dialog.innerHTML = `<header><button class="icon-button social-visit-back" aria-label="Voltar"><img class="onboarding-paper-arrow is-back" src="/paper-arrow.svg" alt=""></button><button class="icon-button" aria-label="Fechar"><img class="paper-editor-icon agenda-close-icon" src="/navigation-icons/paper/agenda-close.svg" width="32" height="32" alt=""></button></header><section class="social-profile"><h3>Perfil de teste visual</h3></section>`;
+    document.querySelector(".app-shell")!.append(dialog);
+    dialog.showModal();
+  });
+  const dialog = page.getByRole("dialog", { name: "Perfil de teste visual" });
+  const header = (await dialog.locator("header").boundingBox())!;
+  const back = (await dialog.getByRole("button", { name: "Voltar", exact: true }).boundingBox())!;
+  const close = (await dialog.getByRole("button", { name: "Fechar", exact: true }).boundingBox())!;
+  expect(back.x - header.x).toBeLessThan(2);
+  expect(Math.abs(close.x + close.width - header.x - header.width)).toBeLessThan(2);
+  expect(Math.abs(back.y + back.height / 2 - (close.y + close.height / 2))).toBeLessThan(2);
+  await expect(dialog.getByRole("button", { name: "Voltar", exact: true })).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
+});

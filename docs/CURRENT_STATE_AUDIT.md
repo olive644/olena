@@ -3552,3 +3552,20 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Não verificado: a causa real da falha no aparelho. O erro cru indica que a requisição não chegou ao servidor; se persistir com boa conexão, conferir os logs da função `/api/profile-social` na Vercel.
 - Na inspeção de perfil de outra pessoa, a coleção compacta mostra somente os destaques que ela escolheu, sem os espaços vazios com "+" (que só fazem sentido para o dono, que pode escolher). Os destaques já eram enviados e lidos pelo servidor; o dono continua vendo os espaços para escolher.
 - Não verificado: se os destaques de uma conta específica já foram sincronizados. A sincronização do perfil é única (nome, foto, conquistas, destaques e dados públicos) e falhas dela são silenciosas; um dado público inválido derruba tudo. Conferir no Firebase os campos `achievementFavorites` e `achievementFavoritesUpdatedAt` da conta.
+
+## Inspeção de perfil com voltar e cartão de compartilhar completo (2026-10-24)
+
+- Inspeção de perfil de outra pessoa: seta amarela de voltar no canto esquerdo do cabeçalho, na mesma linha do X, sem placa e com sublinhado amarelo no teclado. A seta aparece só quando há para onde voltar. O X passa a fechar tudo.
+- Bug de voltar: ao abrir um perfil a partir de Seguidores ou Seguindo, o voltar recomeçava a busca e a lista sumia. O diálogo agora lembra a lista de origem (tipo e dono) e o voltar a recarrega do servidor. Perfil aberto por link não tem voltar, só fechar.
+- Cartão do próprio perfil: botões Copiar link, Compartilhar e Salvar cartão só com ícone (nome acessível e dica preservados). O cartão na tela e o PNG salvo mostram o nível no canto da foto, as etiquetas do perfil (CREKS, DEV, BETA TESTER, GALAXIA) e, se a pessoa escolheu, os destaques de conquista em tamanho menor (até 3, miniaturas). Sem destaques, nada é reservado para eles.
+- A rasterização dos selos reaproveita a função extraída de `achievement-png.ts` (`inlineAchievementArt`), que continua aceitando só caminhos da arte oficial. A lista de etiquetas por conta foi movida para `src/domain/profile-labels.ts`, usada pelo perfil e pelo cartão.
+- Nenhum texto novo no catálogo de idiomas: foram reaproveitadas as mensagens existentes.
+- Não verificado: o botão nativo Compartilhar, que só existe em navegadores com `navigator.share` (celular). Em desktop o cartão mostra Copiar link e Salvar cartão.
+- Prévia visual feita com o app real e uma API simulada (conta e lista de seguidores de mentira), em largura de celular.
+
+### Ajuste: destaques na inspeção e cartão no desenho do perfil (2026-10-24)
+
+- Inspeção de perfil: a coleção compacta sobe para logo abaixo do nome, das etiquetas e do @, e mostra somente os destaques que a pessoa escolheu, sempre 3 lado a lado e menores. Antes, sem escolha, o app exibia os 3 primeiros ganhos por conta própria, e a grade caía em 2 colunas no celular.
+- PNG do cartão: o selo de nível e as etiquetas passam a ser desenhados com as formas e cores do perfil (pentágono amarelo com sombra, "NV" e dígitos de papel, etiquetas com canto recortado, sombra interna inferior e espaçamento de 0,1em), no lugar de retângulos e fonte comum.
+- Cartão na tela: o papel é creme nos dois temas, então a etiqueta CREKS mantém as cores claras do tema claro também no escuro. O "NV" do selo fica grafite em qualquer tema (no escuro a cor global de textos pequenos o deixava cinza sobre o amarelo).
+- Regressão corrigida antes do merge: o cabeçalho da inspeção passou a `space-between` e jogou o X sozinho para a esquerda quando o perfil abre por link (sem seta). O X volta ao canto direito e só a seta é empurrada para a esquerda (`margin-right: auto`). O e2e `profile-visit-layout` ganhou o caso com a seta (esquerda, mesma linha do X, sem placa).

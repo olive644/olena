@@ -1,20 +1,10 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import "./profile-labels.css";
+import { profileLabelNames } from "../domain/profile-labels";
 export function ProfileLabels({ creks, username }: { creks: boolean; username: string }) {
   useLanguage();
 
-  const labels =
-    username === "bizzok"
-      ? ["DEV", "GALAXIA", "BETA TESTER"]
-      : username === "dreyxnn"
-        ? ["GALAXIA", "BETA TESTER"]
-        : username === "eito" || username === "pranksterbrain"
-          ? ["CREKS", "BETA TESTER"]
-          : creks || username === "miauyw"
-            ? username === "oliver644"
-              ? ["CREKS", "DEV", "BETA TESTER", "GALAXIA"]
-              : ["CREKS"]
-            : [];
+  const labels = profileLabelNames(username, creks);
   if (!labels.length) return null;
   return (
     <span className="profile-labels">

@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { SocialDirectory } from "./profile-social";
 import type { SocialFeed, SocialProfile } from "../domain/profile-social";
 const mocks = vi.hoisted(() => ({ request: vi.fn() }));
@@ -44,7 +44,8 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
     ],
   });
   render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
-  const badge = await screen.findByLabelText("Nível 7");
+  // Primeiro teste do arquivo: paga o carregamento dos módulos do perfil em cache frio.
+  const badge = await screen.findByLabelText("Nível 7", {}, { timeout: 5000 });
   expect(badge.classList.contains("profile-level-badge")).toBe(true);
   expect(badge.closest(".social-visit-avatar")).not.toBeNull();
   expect(screen.queryByRole("textbox", { name: "Buscar por nome ou @" })).toBeNull();
@@ -172,4 +173,122 @@ it("abre seguidores, visita e confirma a remoção antes de alterar a conexão",
   await waitFor(() =>
     expect(mocks.request).toHaveBeenCalledWith({ action: "remove-follower", username: "bob" }),
   );
+});
+it("voltar do perfil visitado retorna à lista de onde veio, e o X fecha tudo", async () => {
+  const onClose = vi.fn();
+  mocks.request.mockImplementation(async (_action, query) =>
+    query?.includes("list=")
+      ? {
+          ...feed,
+          connections: { kind: "followers", owner: "alice", people: [bob] },
+        }
+      : query === "username=bob"
+        ? { ...feed, profile: bob }
+        : feed,
+  );
+  render(<SocialDirectory initialList="followers" nameFallback="Alice" onClose={onClose} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Visitar perfil de @bob" }));
+  const visit = await screen.findByRole("dialog", { name: "Perfil de @bob" });
+  const header = visit.querySelector("header")!;
+  const buttons = [...header.querySelectorAll("button")];
+  expect(buttons.map((button) => button.getAttribute("aria-label"))).toEqual(["Voltar", "Fechar"]);
+  fireEvent.click(buttons[0]!);
+  expect(await screen.findByRole("button", { name: "Visitar perfil de @bob" })).toBeTruthy();
+  expect(onClose).not.toHaveBeenCalled();
+  fireEvent.click(await screen.findByRole("button", { name: "Visitar perfil de @bob" }));
+  fireEvent.click(
+    within(await screen.findByRole("dialog", { name: "Perfil de @bob" })).getByRole("button", {
+      name: "Fechar",
+    }),
+  );
+  expect(onClose).toHaveBeenCalledTimes(1);
+});
+it("perfil aberto por link não oferece voltar, só fechar", async () => {
+  mocks.request.mockResolvedValue({ ...feed, profile: bob });
+  render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByRole("heading", { name: "Bob" });
+  const visit = screen.getByRole("dialog", { name: "Perfil de @bob" });
+  expect(within(visit).queryByRole("button", { name: "Voltar" })).toBeNull();
+  expect(within(visit).getByRole("button", { name: "Fechar" })).toBeTruthy();
+});
+it("cartão próprio mostra nível, etiquetas e destaques, com ações só de ícone", async () => {
+  vi.stubGlobal("navigator", { clipboard: { writeText: vi.fn() } });
+  localStorage.setItem(
+    "helena.profile.v1",
+    JSON.stringify({
+      name: "Oliver",
+      achievementFavorites: ["correct-10", "general-pomodoro-gold"],
+    }),
+  );
+  mocks.request.mockResolvedValue({
+    ...feed,
+    self: {
+      ...alice,
+      username: "oliver644",
+      achievements: ["correct-10", "general-pomodoro-gold", "correct-1"],
+    },
+  });
+  render(<SocialDirectory initialSharing nameFallback="Alice" onClose={vi.fn()} />);
+  const card = (await screen.findByLabelText("QR code do perfil")).closest(
+    ".social-share-card",
+  ) as HTMLElement;
+  expect(
+    within(card)
+      .getByLabelText(/^Nível \d+$/)
+      .closest(".social-share-avatar"),
+  ).not.toBeNull();
+  expect([...card.querySelectorAll(".profile-creks")].map((tag) => tag.textContent)).toEqual([
+    "CREKS",
+    "DEV",
+    "BETA TESTER",
+    "GALAXIA",
+  ]);
+  const highlights = within(card).getByLabelText("Destaques do perfil");
+  expect(highlights.querySelectorAll(".math-achievement-art")).toHaveLength(2);
+  expect(highlights.querySelector("image")?.getAttribute("href")).toContain("/thumb/");
+  const actions = card.parentElement!.querySelector(".social-share-actions")!;
+  for (const button of actions.querySelectorAll("button")) {
+    expect(button.textContent?.trim()).toBe("");
+    expect(button.getAttribute("aria-label")).toBeTruthy();
+  }
+  expect(within(actions as HTMLElement).getByRole("button", { name: "Copiar link" })).toBeTruthy();
+  expect(
+    within(actions as HTMLElement).getByRole("button", { name: "Salvar cartão" }),
+  ).toBeTruthy();
+});
+it("cartão sem destaques escolhidos não reserva espaço para eles", async () => {
+  mocks.request.mockResolvedValue({ ...feed, self: { ...alice, achievements: ["correct-1"] } });
+  render(<SocialDirectory initialSharing nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findByLabelText("QR code do perfil");
+  expect(document.querySelector(".social-share-highlights")).toBeNull();
+});
+it("inspeção mostra logo abaixo do nome só os destaques que a pessoa escolheu", async () => {
+  mocks.request.mockResolvedValue({
+    ...feed,
+    profile: {
+      ...bob,
+      achievements: ["correct-1", "correct-10", "general-pomodoro-gold"],
+      achievementFavorites: ["general-pomodoro-gold", "correct-10"],
+    },
+  });
+  render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByRole("heading", { name: "Bob" });
+  const profile = document.querySelector(".social-profile")!;
+  const tiles = [...profile.querySelectorAll(".achievement-tile")];
+  expect(tiles).toHaveLength(2);
+  expect(tiles[0]?.querySelector("image")?.getAttribute("href")).toContain("general-pomodoro-gold");
+  expect(profile.querySelector(".achievement-empty")).toBeNull();
+  const streaks = profile.querySelector(".social-profile-streaks")!;
+  expect(
+    tiles[0]!.compareDocumentPosition(streaks) & Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
+});
+it("inspeção não inventa destaques quando a pessoa não escolheu nenhum", async () => {
+  mocks.request.mockResolvedValue({
+    ...feed,
+    profile: { ...bob, achievements: ["correct-1", "correct-10"] },
+  });
+  render(<SocialDirectory initialUsername="bob" nameFallback="Alice" onClose={vi.fn()} />);
+  await screen.findAllByRole("heading", { name: "Bob" });
+  expect(document.querySelectorAll(".social-profile .achievement-tile")).toHaveLength(0);
 });
