@@ -393,10 +393,13 @@ describe("App", () => {
     localStorage.setItem("helena.soloProgress", "2");
     render(<App />);
     navigate("Biblioteca");
+    fireEvent.click(await screen.findByRole("button", { name: "Criar flashcard" }));
     const front = await screen.findByLabelText("Frente");
     fireEvent.change(front, { target: { value: "Improve" } });
     fireEvent.change(screen.getByLabelText("Verso"), { target: { value: "Melhorar" } });
-    fireEvent.click(screen.getByRole("button", { name: /criar flashcard/i }));
+    fireEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", { name: /criar flashcard/i }),
+    );
     expect(screen.getByText("Improve")).toBeTruthy();
 
     navigate("Praticar");

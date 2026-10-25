@@ -114,6 +114,7 @@ export type NoteAsset = {
 };
 
 export type FocusSession = {
+  materialId?: string;
   id: string;
   subjectId: string;
   durationMinutes: number;
@@ -127,14 +128,27 @@ export type StudyMaterial = {
   id: string;
   subjectId: string;
   title: string;
-  kind: "link" | "text";
+  kind: "link" | "text" | "pdf";
   content: string;
   createdAt: string;
+  favorite?: boolean;
+  archived?: boolean;
+  tags?: string[];
+  collectionId?: string | undefined;
+  openedAt?: string;
+  page?: number;
+  scroll?: number;
+  bookmarks?: number[];
+  annotations?: { id: string; page: number; quote: string; note: string }[];
 };
+
+export type LibraryCollection = { id: string; title: string; motif: "moon" | "sun" | "book" };
 
 export type FlashcardRating = "again" | "hard" | "easy";
 
 export type Flashcard = {
+  materialId?: string;
+  sourcePage?: number;
   id: string;
   subjectId: string;
   front: string;
@@ -188,6 +202,7 @@ export type HomeworkList = {
 };
 
 export type WorkspaceState = {
+  libraryCollections?: LibraryCollection[];
   version: typeof WORKSPACE_VERSION;
   subjects: Subject[];
   tasks: StudyTask[];
@@ -219,6 +234,14 @@ export type PracticeActivity = {
 };
 
 export type WorkspaceAction =
+  | { type: "library/collection-saved"; collection: LibraryCollection }
+  | { type: "library/collection-removed"; id: string }
+  | {
+      type: "material/updated";
+      id: string;
+      changes: Partial<Omit<StudyMaterial, "id" | "createdAt">>;
+    }
+  | { type: "material/removed"; id: string }
   | { type: "notebook/favorite-toggled"; id: string }
   | { type: "practice/recorded"; activity: PracticeActivity }
   | { type: "workspace/replaced"; workspace: WorkspaceState }
@@ -308,6 +331,7 @@ export type WorkspaceAction =
   | { type: "note/asset-removed"; noteId: string; assetId: string; updatedAt: string }
   | {
       type: "focus/recorded";
+      materialId?: string;
       subjectId: string;
       durationMinutes: number;
       completedAt: string;
@@ -319,6 +343,9 @@ export type WorkspaceAction =
   | { type: "study/preferences-updated"; preferences: StudyPreferences }
   | {
       type: "material/added";
+      id?: string;
+      tags?: string[];
+      collectionId?: string | undefined;
       subjectId: string;
       title: string;
       kind: StudyMaterial["kind"];
@@ -327,6 +354,8 @@ export type WorkspaceAction =
     }
   | {
       type: "flashcard/added";
+      materialId?: string;
+      sourcePage?: number;
       subjectId: string;
       front: string;
       back: string;
@@ -882,6 +911,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             id: createId("focus"),
             subjectId: action.subjectId,
             durationMinutes: action.durationMinutes,
+            ...(action.materialId ? { materialId: action.materialId } : {}),
             completedAt: action.completedAt,
             ...(action.mode ? { mode: action.mode } : {}),
             ...(action.agendaEventId
@@ -909,12 +939,41 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             : state.subjects,
       };
     }
+    case "library/collection-saved":
+      return {
+        ...state,
+        libraryCollections: [
+          ...(state.libraryCollections ?? []).filter((item) => item.id !== action.collection.id),
+          action.collection,
+        ],
+      };
+    case "library/collection-removed":
+      return {
+        ...state,
+        libraryCollections: (state.libraryCollections ?? []).filter(
+          (item) => item.id !== action.id,
+        ),
+        materials: state.materials.map((item) =>
+          item.collectionId === action.id ? { ...item, collectionId: undefined } : item,
+        ),
+      };
+    case "material/updated":
+      return {
+        ...state,
+        materials: state.materials.map((item) =>
+          item.id === action.id ? { ...item, ...action.changes } : item,
+        ),
+      };
+    case "material/removed":
+      return { ...state, materials: state.materials.filter((item) => item.id !== action.id) };
     case "material/added":
       return {
         ...state,
         materials: [
           {
-            id: createId("material"),
+            id: action.id ?? createId("material"),
+            ...(action.tags ? { tags: action.tags } : {}),
+            collectionId: action.collectionId,
             subjectId: action.subjectId,
             title: action.title,
             kind: action.kind,
@@ -931,6 +990,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           ...state.flashcards,
           {
             id: createId("flashcard"),
+            ...(action.materialId ? { materialId: action.materialId } : {}),
+            ...(action.sourcePage ? { sourcePage: action.sourcePage } : {}),
             subjectId: action.subjectId,
             front: action.front,
             back: action.back,

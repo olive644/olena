@@ -1,4 +1,5 @@
 import { uiText } from "../i18n/runtime.js";
+import { validLibraryMetadata } from "../domain/library.js";
 import { isPomodoroDuration } from "../domain/pomodoro-duration.js";
 import { normalizeNotebookFavorites } from "../domain/notebook-shelves.js";
 import {
@@ -483,6 +484,7 @@ function isFocusSession(value: unknown): boolean {
     isRecord(value) &&
     isString(value["id"]) &&
     isString(value["subjectId"]) &&
+    (value["materialId"] === undefined || isString(value["materialId"])) &&
     typeof value["durationMinutes"] === "number" &&
     Number.isFinite(value["durationMinutes"]) &&
     value["durationMinutes"] > 0 &&
@@ -499,7 +501,8 @@ function isMaterial(value: unknown): boolean {
     isString(value["id"]) &&
     isString(value["subjectId"]) &&
     isString(value["title"]) &&
-    (value["kind"] === "link" || value["kind"] === "text") &&
+    (value["kind"] === "link" || value["kind"] === "text" || value["kind"] === "pdf") &&
+    validLibraryMetadata(value) &&
     isString(value["content"]) &&
     isString(value["createdAt"])
   );
@@ -510,6 +513,9 @@ function isFlashcard(value: unknown): boolean {
     isRecord(value) &&
     isString(value["id"]) &&
     isString(value["subjectId"]) &&
+    (value["materialId"] === undefined || isString(value["materialId"])) &&
+    (value["sourcePage"] === undefined ||
+      (Number.isSafeInteger(value["sourcePage"]) && Number(value["sourcePage"]) > 0)) &&
     isString(value["front"]) &&
     isString(value["back"]) &&
     typeof value["intervalDays"] === "number" &&
@@ -708,6 +714,18 @@ function isWorkspaceV3(value: unknown): value is WorkspaceV3 {
 
 export function isWorkspaceState(value: unknown): value is WorkspaceState {
   if (!isRecord(value) || value["version"] !== WORKSPACE_VERSION) return false;
+  if (
+    value["libraryCollections"] !== undefined &&
+    (!Array.isArray(value["libraryCollections"]) ||
+      !value["libraryCollections"].every(
+        (item: unknown) =>
+          isRecord(item) &&
+          isString(item["id"]) &&
+          isString(item["title"]) &&
+          ["moon", "sun", "book"].includes(String(item["motif"])),
+      ))
+  )
+    return false;
 
   return (
     (value["practiceActivities"] === undefined ||
