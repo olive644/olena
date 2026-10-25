@@ -22,12 +22,9 @@ it("English labels keep canonical onboarding answers and preferences", async () 
       "15 minutes",
     ];
     for (const choice of choices) {
-      fireEvent.click(
-        screen.getByRole(choice === "Listening and talking" ? "checkbox" : "radio", {
-          name: choice,
-        }),
-      );
-      fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+      fireEvent.click(screen.getByRole("button", { name: choice }));
+      if (choice === "Listening and talking")
+        fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     }
     fireEvent.click(screen.getByRole("button", { name: "Sign in with Google" }));
     await waitFor(() =>

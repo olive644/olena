@@ -1,5 +1,6 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
+import { reducedMotion } from "../data/reduced-motion";
 import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import "./onboarding.css";
@@ -97,6 +98,22 @@ const questions: readonly OnboardingQuestion[] = localizeLabels(
     ] as const,
 );
 
+/** Falas da Olena depois de cada resposta, na ordem das perguntas. Roteiro local, sem IA nem rede. */
+const reactions = localizeLabels(
+  () =>
+    [
+      uiText("Boa! Já dá para montar um começo sob medida."),
+      uiText("Anotado! Vou deixar isso por perto."),
+      uiText("Legal, vou lembrar disso."),
+      uiText("Esse é um ótimo objetivo."),
+      uiText("Combinado, vou pensar nesse jeito de aprender."),
+      uiText("Entendi. Vou explicar do seu jeito."),
+      uiText("Perfeito, ritmo definido."),
+      uiText("Certo, já separei isso aqui."),
+      uiText("Fechado! Tempo por dia anotado."),
+    ] as const,
+);
+
 const onboardingIconNames = [
   ["school", "book", "graduate", "compass", "teacher"],
   ["chat", "calculator", "science", "globe", "art", "compass"],
@@ -146,6 +163,42 @@ function buildSetup(answers: OnboardingAnswer[]): OnboardingSetup {
   };
 }
 
+/** Tempos da conversa em milissegundos. Com movimento reduzido tudo aparece de uma vez. */
+const TYPING_MS = 650;
+const FIRST_TYPING_MS = 1500;
+const REPLY_MS = 700;
+const LEAVE_MS = 380;
+
+type Stage = "typing" | "ask" | "reacting";
+
+function answerText(answer: OnboardingAnswer | undefined): string {
+  if (!answer) return "";
+  return Array.isArray(answer) ? answer.map((item) => uiText(item)).join(", ") : uiText(answer);
+}
+
+function poseFor(step: number): number {
+  return Math.min(Math.floor(step / 2), 4);
+}
+
+function poseSource(pose: number): string {
+  return pose === 4
+    ? "/helena-onboarding-step-5-v3.webp"
+    : `/helena-onboarding-step-${pose + 1}.webp`;
+}
+
+function TypingDots() {
+  return (
+    <div className="onboarding__message onboarding__message--olena" role="status">
+      <span className="sr-only">{uiText("Olena está digitando")}</span>
+      <span className="onboarding__typing" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+    </div>
+  );
+}
+
 export default function OnboardingView({
   onFinish,
   loginOnly = false,
@@ -155,38 +208,131 @@ export default function OnboardingView({
 }) {
   useLanguage();
 
-  const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<OnboardingAnswer[]>(() =>
     hasPendingGoogleRedirect() ? [...readPendingGoogleAnswers()] : [],
   );
+  // Quem volta do Google já respondeu tudo: a conversa reabre na despedida da Olena.
+  const [step, setStep] = useState(() => (hasPendingGoogleRedirect() ? questions.length : 0));
+  const [stage, setStage] = useState<Stage>(() => (hasPendingGoogleRedirect() ? "ask" : "typing"));
+  const [leaving, setLeaving] = useState(false);
   const [showLogin, setShowLogin] = useState(
     () =>
       loginOnly ||
       new URLSearchParams(window.location.search).has("login") ||
       hasPendingGoogleRedirect(),
   );
-  const title = useRef<HTMLHeadingElement>(null);
+  const seen = useRef(new Set<number>(hasPendingGoogleRedirect() ? [questions.length] : []));
+  const latest = useRef<HTMLDivElement>(null);
+  const focusTarget = useRef<HTMLHeadingElement>(null);
+  const choices = useRef<HTMLFieldSetElement>(null);
   const question = questions[step];
-  const poseIndex = question ? Math.min(step, 4) : 3;
+  const pose = poseFor(step);
   const poseDescriptions = [uiText(2019), uiText(1429), uiText(1430), uiText(1431), uiText(1432)];
+  const talking = stage !== "ask" && !showLogin;
+
+  // A Olena "digita" antes de cada pergunta. Perguntas já vistas, ao voltar, abrem direto.
   useEffect(() => {
-    if (step >= 4) return;
+    if (stage !== "typing") return;
+    if (reducedMotion() || seen.current.has(step)) {
+      seen.current.add(step);
+      setStage("ask");
+      return;
+    }
+    const timer = window.setTimeout(
+      () => {
+        seen.current.add(step);
+        setStage("ask");
+      },
+      step === 0 ? FIRST_TYPING_MS : TYPING_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [stage, step]);
+
+  // Depois da resposta, a Olena reage e a próxima pergunta entra.
+  useEffect(() => {
+    if (stage !== "reacting") return;
+    const next = () => {
+      setStep((value) => value + 1);
+      setStage("typing");
+    };
+    if (reducedMotion()) {
+      next();
+      return;
+    }
+    const timer = window.setTimeout(next, REPLY_MS);
+    return () => window.clearTimeout(timer);
+  }, [stage]);
+
+  // Leva o foco para a pergunta nova e mantém a última mensagem à vista.
+  useEffect(() => {
+    if (stage === "ask") focusTarget.current?.focus({ preventScroll: true });
+    const behavior = reducedMotion() ? "auto" : "smooth";
+    latest.current?.scrollIntoView?.({ block: "end", behavior });
+    // No celular as respostas ficam abaixo da conversa: traz a página até elas.
+    if (stage === "ask") choices.current?.scrollIntoView?.({ block: "nearest", behavior });
+  }, [stage, step]);
+
+  useEffect(() => {
+    if (step >= 8) return;
     const nextPose = new Image();
-    nextPose.src =
-      step === 3 ? "/helena-onboarding-step-5-v3.webp" : `/helena-onboarding-step-${step + 2}.webp`;
+    nextPose.src = poseSource(poseFor(step + 1));
   }, [step]);
-  useEffect(() => {
-    title.current?.focus();
-  }, [step]);
+
+  function answer(value: OnboardingAnswer) {
+    setAnswers((previous) => {
+      const next = [...previous];
+      next[step] = value;
+      return next;
+    });
+  }
+
+  function choose(option: string) {
+    if (stage !== "ask" || !question) return;
+    if (question.multiple) {
+      const selected = Array.isArray(answers[step]) ? answers[step] : [];
+      answer(
+        selected.includes(option)
+          ? selected.filter((item) => item !== option)
+          : [...selected, option],
+      );
+      return;
+    }
+    answer(option);
+    setStage("reacting");
+  }
+
+  function goBack() {
+    if (step === 0 || stage === "reacting") return;
+    seen.current.add(step - 1);
+    setStep(step - 1);
+    setStage("ask");
+  }
+
+  function openLogin() {
+    if (reducedMotion()) {
+      setShowLogin(true);
+      return;
+    }
+    setLeaving(true);
+    window.setTimeout(() => setShowLogin(true), LEAVE_MS);
+  }
 
   if (showLogin)
     return (
       <GoogleLogin
         answers={answers}
         onFinish={() => onFinish(buildSetup(answers))}
-        {...(!loginOnly && { onBack: () => setShowLogin(false) })}
+        {...(!loginOnly && {
+          onBack: () => {
+            setLeaving(false);
+            setShowLogin(false);
+          },
+        })}
       />
     );
+
+  const finished = !question;
+  const multipleReady = Array.isArray(answers[step]) && answers[step].length > 0;
 
   return (
     <main className="onboarding" id="main-content">
@@ -198,7 +344,7 @@ export default function OnboardingView({
         </span>
         <span className="onboarding__eyebrow">{uiText(1433)}</span>
       </header>
-      <section className="onboarding__form">
+      <section className={leaving ? "onboarding__form is-leaving" : "onboarding__form"}>
         <div className="onboarding__progress">
           <p aria-live="polite">
             {question ? uiText(2020, [step + 1, questions.length]) : uiText(1434)}
@@ -209,105 +355,110 @@ export default function OnboardingView({
             aria-label={uiText(1435)}
           />
         </div>
-        <div className="onboarding__conversation">
-          <div className="onboarding__bubble">
-            <h2 ref={title} tabIndex={-1}>
-              {question?.title ?? uiText(2281)}
-            </h2>
-            <p>{question?.hint ?? uiText(2282)}</p>
-          </div>
+        <div className="onboarding__stage">
           <img
-            src={
-              poseIndex === 4
-                ? "/helena-onboarding-step-5-v3.webp"
-                : `/helena-onboarding-step-${poseIndex + 1}.webp`
-            }
-            alt={poseDescriptions[poseIndex]}
+            key={pose}
+            src={poseSource(pose)}
+            alt={poseDescriptions[pose]}
             width={640}
             height={640}
             decoding="async"
-            className="onboarding__helena"
+            className={talking ? "onboarding__helena is-talking" : "onboarding__helena"}
           />
         </div>
-        <div className="onboarding__answers">
-          {showLogin ? (
-            <GoogleLogin answers={answers} onFinish={onFinish} onBack={() => setShowLogin(false)} />
-          ) : (
-            <>
-              {question ? (
-                <fieldset className="onboarding__choices">
-                  <legend className="sr-only">{question.title}</legend>
-                  {question.options.map((option, index) => (
-                    <label
-                      key={option}
-                      className={selectedAnswer(answers[step], option) ? "is-selected" : ""}
-                    >
-                      <input
-                        type={question.multiple ? "checkbox" : "radio"}
-                        name={`step-${step}`}
-                        checked={selectedAnswer(answers[step], option)}
-                        onChange={() =>
-                          setAnswers((previous) => {
-                            const next = [...previous];
-                            if (question.multiple) {
-                              const selected = Array.isArray(previous[step]) ? previous[step] : [];
-                              next[step] = selected.includes(option)
-                                ? selected.filter((item) => item !== option)
-                                : [...selected, option];
-                            } else {
-                              next[step] = option;
-                            }
-                            return next;
-                          })
-                        }
-                      />
-                      {question.icon && (
-                        <OnboardingPaperIcon
-                          name={onboardingIconNames[step]?.[index] ?? "compass"}
-                        />
-                      )}
-                      <span>{uiText(option)}</span>
-                    </label>
-                  ))}
-                </fieldset>
-              ) : (
-                <ul className="onboarding__summary">
-                  {answers.map((answer, index) => (
-                    <li key={index}>
-                      {Array.isArray(answer)
-                        ? answer.map((item) => uiText(item)).join(", ")
-                        : uiText(answer)}
-                    </li>
-                  ))}
-                </ul>
+        <div className="onboarding__chat" role="group" aria-label={uiText("Conversa com a Olena")}>
+          <div className="onboarding__messages">
+            <p className="onboarding__message onboarding__message--olena">
+              {uiText("Oi! Eu sou a Olena, sua assistente de estudos.")}
+            </p>
+            <p className="onboarding__message onboarding__message--olena onboarding__message--second">
+              {uiText(
+                "Vou te fazer {0} perguntas rápidas para deixar o OlenaStudy com o seu jeito.",
+                [questions.length],
               )}
-              <div className="onboarding__actions">
+            </p>
+            {questions.map((item, index) => {
+              if (index > step) return null;
+              const current = index === step;
+              const replied = index < step || (current && stage === "reacting");
+              if (current && stage === "typing") return null;
+              return (
+                <div className="onboarding__turn" key={index}>
+                  <div className="onboarding__message onboarding__message--olena">
+                    <h2 ref={current ? focusTarget : undefined} tabIndex={-1}>
+                      {item.title}
+                    </h2>
+                    <p>{item.hint}</p>
+                  </div>
+                  {replied && (
+                    <p className="onboarding__message onboarding__message--you">
+                      <span className="sr-only">{uiText("Sua resposta")}: </span>
+                      {answerText(answers[index])}
+                    </p>
+                  )}
+                  {index < step && (
+                    <p className="onboarding__message onboarding__message--olena onboarding__message--reaction">
+                      {reactions[index]}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+            {(stage === "typing" || stage === "reacting") && !finished && <TypingDots />}
+            {finished && (
+              <p className="onboarding__message onboarding__message--olena onboarding__message--reaction">
+                {uiText("Prontinho! Falta só entrar com o Google para começar.")}
+              </p>
+            )}
+            <div ref={latest} aria-hidden="true" />
+          </div>
+          {question && stage === "ask" && (
+            <fieldset className="onboarding__choices" key={step} ref={choices}>
+              <legend className="sr-only">{question.title}</legend>
+              {question.options.map((option, index) => (
                 <button
+                  key={option}
                   type="button"
-                  disabled={step === 0}
-                  onClick={() => setStep((value) => value - 1)}
+                  style={{ animationDelay: `${index * 60}ms` }}
+                  className={selectedAnswer(answers[step], option) ? "is-selected" : ""}
+                  aria-pressed={
+                    question.multiple ? selectedAnswer(answers[step], option) : undefined
+                  }
+                  onClick={() => choose(option)}
                 >
-                  <PaperArrow back /> {uiText(374)}
+                  {question.icon && (
+                    <OnboardingPaperIcon name={onboardingIconNames[step]?.[index] ?? "compass"} />
+                  )}
+                  <span>{uiText(option)}</span>
                 </button>
-                {question ? (
-                  <button
-                    type="button"
-                    disabled={
-                      !answers[step] || (Array.isArray(answers[step]) && answers[step].length === 0)
-                    }
-                    onClick={() => setStep((value) => value + 1)}
-                  >
-                    {uiText(1436)} <PaperArrow />
-                  </button>
-                ) : (
-                  <button type="button" onClick={() => setShowLogin(true)}>
-                    {uiText(870)}
-                    <PaperArrow />
-                  </button>
-                )}
-              </div>
-            </>
+              ))}
+            </fieldset>
           )}
+          <div className="onboarding__actions onboarding__actions--chat">
+            {step > 0 && !showLogin && (
+              <button type="button" disabled={stage === "reacting"} onClick={goBack}>
+                <PaperArrow back /> {uiText(374)}
+              </button>
+            )}
+            {question && stage === "ask" && question.multiple && (
+              <button
+                type="button"
+                className="is-primary"
+                disabled={!multipleReady}
+                onClick={() => {
+                  setStage("reacting");
+                }}
+              >
+                {uiText(1436)} <PaperArrow />
+              </button>
+            )}
+            {finished && (
+              <button type="button" className="is-primary" onClick={openLogin}>
+                {uiText(870)}
+                <PaperArrow />
+              </button>
+            )}
+          </div>
           <p className="onboarding__privacy">{uiText(1437)}</p>
         </div>
       </section>

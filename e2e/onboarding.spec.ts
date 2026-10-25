@@ -1,42 +1,70 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 test.use({ storageState: { cookies: [], origins: [] } });
 
-test("percorre as preferências e revisa respostas sem iniciar login", async ({ page }) => {
-  await page.goto("/?onboarding=1");
+/** Responde a conversa da Olena: a primeira opção de cada pergunta, até a despedida. */
+async function answerAll(page: Page, onStep?: (step: number) => Promise<void>) {
   for (let step = 1; step <= 9; step++) {
+    const chips = page.locator(".onboarding__choices button");
+    await chips.first().waitFor();
+    if (onStep) await onStep(step);
+    await chips.first().click();
+    if (step === 5) await page.getByRole("button", { name: "Continuar", exact: true }).click();
+  }
+}
+
+test("a Olena conduz as perguntas em conversa até o login com Google", async ({ page }) => {
+  await page.goto("/?onboarding=1");
+  await expect(page.getByText("Oi! Eu sou a Olena, sua assistente de estudos.")).toBeVisible();
+  await answerAll(page, async (step) => {
     const image = page.locator(".onboarding__helena");
-    await expect(image).toHaveAttribute("src", new RegExp(`step-${Math.min(step, 5)}`));
+    await expect(image).toHaveAttribute(
+      "src",
+      new RegExp(`step-${Math.min(Math.floor((step - 1) / 2) + 1, 5)}`),
+    );
     await expect(image).toBeVisible();
     await expect
       .poll(() => image.evaluate((element) => (element as HTMLImageElement).naturalWidth))
       .toBeGreaterThan(0);
-    await page
-      .getByRole(step === 5 ? "checkbox" : "radio")
-      .first()
-      .check();
-    await page.getByRole("button", { name: "Continuar", exact: true }).click();
-  }
-  await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
-  await expect(page.locator(".onboarding__summary li")).toHaveCount(9);
+    await expect(page.locator(".onboarding__message--you")).toHaveCount(step - 1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  });
+  await expect(
+    page.getByText("Prontinho! Falta só entrar com o Google para começar."),
+  ).toBeVisible();
+  await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
+  await page.screenshot({ path: test.info().outputPath("conversa-final.png") });
   await page.getByRole("button", { name: "Entrar com Google" }).click();
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
   await page.getByRole("button", { name: "Voltar", exact: true }).click();
-  await expect(page.locator(".onboarding__summary li")).toHaveCount(9);
+  await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
+  await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
+});
+
+test("Voltar refaz uma resposta e o foco do teclado usa o sublinhado amarelo", async ({ page }) => {
+  await page.goto("/?onboarding=1");
+  const first = page.locator(".onboarding__choices button").first();
+  await first.waitFor();
+  await first.focus();
+  await expect(first).toHaveCSS("outline-style", "none");
+  await expect(first).toHaveCSS("text-decoration-line", "underline");
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: "Qual matéria desperta sua curiosidade?" }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Voltar", exact: true }).click();
-  await expect(page.getByRole("radio").first()).toBeChecked();
+  await expect(
+    page.getByRole("heading", { name: "Em que fase dos estudos você está?" }),
+  ).toBeVisible();
+  await expect(page.locator(".onboarding__choices .is-selected")).toHaveCount(1);
 });
 
 test("entra como convidado no fim do onboarding e continua assim ao recarregar", async ({
   page,
 }) => {
   await page.goto("/?onboarding=1");
-  for (let step = 1; step <= 9; step++) {
-    await page
-      .getByRole(step === 5 ? "checkbox" : "radio")
-      .first()
-      .check();
-    await page.getByRole("button", { name: "Continuar", exact: true }).click();
-  }
+  await answerAll(page);
   await page.getByRole("button", { name: "Entrar com Google" }).click();
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
   await expect(page.getByText(/você aparece como Guest/)).toBeVisible();
