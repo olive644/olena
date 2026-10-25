@@ -12,6 +12,8 @@ export async function libraryFile(
   id: string,
   value?: Blob | null,
 ): Promise<Blob | undefined> {
+  // WebKit rejects Blob/File records in ephemeral sessions; bytes work in both modes.
+  const bytes = value instanceof Blob ? await value.arrayBuffer() : undefined;
   const db = await database();
   try {
     return await new Promise((resolve, reject) => {
@@ -23,10 +25,15 @@ export async function libraryFile(
           ? store.get(key)
           : value === null
             ? store.delete(key)
-            : store.put(value, key);
+            : store.put(bytes, key);
       let result: Blob | undefined;
       request.onsuccess = () => {
-        result = request.result instanceof Blob ? request.result : undefined;
+        result =
+          request.result instanceof ArrayBuffer
+            ? new Blob([request.result], { type: "application/pdf" })
+            : request.result instanceof Blob
+              ? request.result
+              : undefined;
       };
       tx.oncomplete = () => resolve(result);
       tx.onerror = () => reject(tx.error);

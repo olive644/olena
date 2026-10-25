@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Correção dos checks da PR 518, 2026-10-24
+
+CI identificou o E2E antigo de flashcards preenchendo Frente sem abrir o novo diálogo. Reproduzido no Edge desktop/mobile; o teste agora abre Criar flashcard e mantém a verificação de persistência após Matemática. Seis cenários focados passaram, incluindo compartilhamento claro/escuro, que havia apresentado duas repetições no CI; sem mudança de timeout ou expectativa do PNG.
+
+O WebKit real também falhou ao salvar PDF. WebKit documenta rejeição de Blob/File no IndexedDB de sessões efêmeras (bug 286561), compatível com esse sintoma. libraryFile agora grava ArrayBuffer e reconstrói application/pdf na leitura, preservando leitura de Blob legado, chaves por conta e limpeza. Prova unitária falhou antes e passou depois com armazenamento que recusa Blob, incluindo leitura legada, isolamento e exclusão. A confirmação do caso específico no WebKit real depende do novo CI; não instalado navegador local e nenhuma configuração de CI alterada.
+
+Validação da correção: npm run verify aprovado, 343 arquivos e 2220 testes, zero erros de lint (23 avisos existentes), formatação, API, idiomas, build e desempenho verdes. Aplicação 1532,4 KiB no teto existente de 1600, entrada 217,7 KiB. Edge desktop/mobile: 33 testes aprovados e cinco skips exclusivos de celular no projeto desktop, cobrindo app, Biblioteca/PDF, caderno/Foco e arraste/compartilhamento de conquistas claro/escuro. Nenhuma expectativa de persistência, dimensão do PNG ou tempo de espera foi removida ou ampliada.
+
 ## Biblioteca integrada, 2026-10-24
 
 Branch feat/library-study-hub parte de origin/main e preserva as conquistas mescladas. Biblioteca tem coleções com capas próprias, busca por conteúdo/etiquetas, filtros, ordenação, favoritos, arquivo, edição, exclusão confirmada e retomada. Revisão revela o verso antes de avaliar e conserva o agendamento existente. Trechos guardam fonte no caderno e no flashcard. Foco associa material e matéria sem início automático ou substituição da sessão recuperada.

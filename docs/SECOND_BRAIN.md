@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+Biblioteca e WebKit: gravar bytes ArrayBuffer no IndexedDB, não Blob/File, pois sessões efêmeras do WebKit rejeitam esses registros (https://bugs.webkit.org/show_bug.cgi?id=286561). libraryFile devolve Blob application/pdf e continua lendo Blob legado sem migração destrutiva. Não mudar nome, versão ou chaves do banco. O E2E de persistência de flashcard deve abrir Criar flashcard e preencher o diálogo antes de visitar Matemática.
+
 Biblioteca: seguir LIBRARY_DESIGN.md. Metadados opcionais em StudyMaterial e libraryCollections preservam a versão do workspace. Filtro/validação em domain/library; PDFs em data/library-files, IndexedDB por conta/material, hash SHA-256 e sem envio de binário à conta. PDF.js/worker sob demanda. Outro aparelho pede o original novamente. Dialog nativo, capas SVG próprias, PaperChoice com tokens do tema e NotebookSpread original. Fonte acompanha folhas e flashcards. Foco recebe materialId e conserva sessão recuperada sem início automático. Testes library de domínio, view e E2E. Discord em SettingsFooter não amplia as redes pessoais do editor de perfil.
 
 Teste de diálogo social: esperar findByRole pelo dialog aberto antes das verificações de conteúdo. A legenda de nível pode aparecer no DOM antes do efeito showModal, sem que a ficha esteja acessível ainda. Não substituir essa espera por remoção de expectativas. Biblioteca não descarta anotações antigas para impor um limite silencioso; os limites de armazenamento existentes continuam responsáveis por avisar falhas.

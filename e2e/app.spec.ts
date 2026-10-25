@@ -277,9 +277,12 @@ test("oculta por enquanto as ferramentas do professor", async ({ page }) => {
 
 test("preserva um flashcard ao explorar o protótipo", async ({ page }, testInfo) => {
   await navigateToTool(page, testInfo.project.name, "Biblioteca", "Biblioteca");
-  await page.getByLabel("Frente").fill("Improve");
-  await page.getByLabel("Verso").fill("Melhorar");
-  await page.getByRole("button", { name: /criar flashcard/i }).click();
+  await page.getByRole("button", { name: "Criar flashcard", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Criar flashcard", exact: true });
+  await dialog.getByLabel("Frente").fill("Improve");
+  await dialog.getByLabel("Verso").fill("Melhorar");
+  await dialog.getByRole("button", { name: "Criar flashcard", exact: true }).click();
+  await expect(dialog).toHaveCount(0);
   await expect(page.getByText("Improve", { exact: true })).toBeVisible();
   await studentSpaceButton(page, testInfo.project.name).click();
   await page
