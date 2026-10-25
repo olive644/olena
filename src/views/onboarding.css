@@ -74,8 +74,6 @@
   background: #7c3aed;
 }
 .onboarding__stage {
-  /* A página é creme: o fundo aqui deixa o darken da pose funcionar dentro do contexto sticky. */
-  background: #fff9ef;
   position: sticky;
   top: 24px;
   display: flex;
@@ -85,16 +83,11 @@
 .onboarding__helena {
   background: transparent;
   box-shadow: none;
-  /* Lift the ivory image backdrop above the page color before darken blending. */
-  filter: brightness(1.07);
   display: block;
   width: min(340px, 100%);
   height: auto;
   aspect-ratio: 1;
   object-fit: contain;
-  mix-blend-mode: darken;
-  /* A arte tem uma linha clara na borda que aparece sobre o creme. */
-  clip-path: inset(3px);
   transform-origin: 50% 90%;
   animation: onboarding-pose-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
 }
@@ -503,4 +496,31 @@ html[data-reduce-motion="true"] .onboarding__form {
 }
 .onboarding__actions--chat button:last-child:not(.is-primary):active:not(:disabled) {
   box-shadow: 0 2px 0 #ddd2be;
+}
+
+.onboarding__guest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: -6px;
+  text-align: center;
+}
+.onboarding__guest button {
+  border: 0;
+  background: none;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 800;
+  color: #51259b;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  text-decoration-color: #d7cbb7;
+  cursor: pointer;
+}
+.onboarding__guest p {
+  margin: 0;
+  font-size: 12px;
+  color: #62576e;
 }

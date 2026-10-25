@@ -5,7 +5,13 @@ import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
 import "./onboarding.css";
 import { BrandFooter } from "../components/brand-footer";
-import { GoogleLogin, hasPendingGoogleRedirect, readPendingGoogleAnswers } from "./google-login";
+import {
+  GoogleLogin,
+  enterAsGuest,
+  hasPendingGoogleRedirect,
+  readPendingGoogleAnswers,
+} from "./google-login";
+import { GUEST_NAME } from "../domain/guest-session";
 import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
 
 type OnboardingAnswer = string | string[];
@@ -182,8 +188,8 @@ function poseFor(step: number): number {
 
 function poseSource(pose: number): string {
   return pose === 4
-    ? "/helena-onboarding-step-5-v3.webp"
-    : `/helena-onboarding-step-${pose + 1}.webp`;
+    ? "/helena-onboarding-step-5-v3-cutout.webp"
+    : `/helena-onboarding-step-${pose + 1}-cutout.webp`;
 }
 
 function TypingDots() {
@@ -459,6 +465,22 @@ export default function OnboardingView({
               </button>
             )}
           </div>
+          {finished && (
+            <div className="onboarding__guest">
+              <button
+                type="button"
+                onClick={() => {
+                  enterAsGuest(answers);
+                  onFinish(buildSetup(answers));
+                }}
+              >
+                {uiText(1213)}
+              </button>
+              <p>
+                {uiText(1214)} {GUEST_NAME} {uiText(1215)}
+              </p>
+            </div>
+          )}
           <p className="onboarding__privacy">{uiText(1437)}</p>
         </div>
       </section>

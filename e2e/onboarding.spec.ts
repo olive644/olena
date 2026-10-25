@@ -34,6 +34,10 @@ test("a Olena conduz as perguntas em conversa até o login com Google", async ({
     page.getByText("Prontinho! Falta só entrar com o Google para começar."),
   ).toBeVisible();
   await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
+  await expect(page.getByRole("button", { name: "Entrar como convidado" })).toBeVisible();
+  // A pose é PNG recortado: nada de caixa clara atrás da Olena nem mistura de cor.
+  await expect(page.locator(".onboarding__helena")).toHaveCSS("mix-blend-mode", "normal");
+  await expect(page.locator(".onboarding__helena")).toHaveCSS("filter", "none");
   await page.screenshot({ path: test.info().outputPath("conversa-final.png") });
   await page.getByRole("button", { name: "Entrar com Google" }).click();
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
@@ -90,4 +94,12 @@ test("entra como convidado no fim do onboarding e continua assim ao recarregar",
   await expect(page.getByText("Sessão de convidado")).toBeVisible();
   await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("perfil-convidado.png") });
+});
+
+test("entra como convidado direto da despedida da Olena", async ({ page }) => {
+  await page.goto("/?onboarding=1");
+  await answerAll(page);
+  await page.getByRole("button", { name: "Entrar como convidado" }).click();
+  await expect(page.locator(".onboarding")).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem("helena.guest.v1"))).toBe("1");
 });

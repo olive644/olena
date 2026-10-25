@@ -73,4 +73,27 @@ describe("conversa da Olena", () => {
     expect(screen.getByText("Prontinho! Falta só entrar com o Google para começar.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeTruthy();
   });
+
+  it("mantém Entrar como convidado já na despedida da Olena, sem passar pelo Google", () => {
+    const finish = vi.fn();
+    render(<OnboardingView onFinish={finish} />);
+    for (const choice of ["Ensino médio", "Matemática", "Inglês", "Criar uma rotina", "Visual"]) {
+      fireEvent.click(screen.getByRole("button", { name: choice }));
+      if (choice === "Visual") fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+    }
+    for (const choice of ["Passo a passo", "Foco contínuo", "Agora não", "15 minutos"])
+      fireEvent.click(screen.getByRole("button", { name: choice }));
+    fireEvent.click(screen.getByRole("button", { name: "Entrar como convidado" }));
+    expect(finish).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem("helena.guest.v1")).toBe("1");
+    expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}").completed).toBe(true);
+    localStorage.removeItem("helena.guest.v1");
+  });
+
+  it("a Olena usa arte recortada, sem fundo marfim nem mistura de cor", () => {
+    const { container } = render(<OnboardingView onFinish={vi.fn()} />);
+    expect(container.querySelector(".onboarding__helena")?.getAttribute("src")).toMatch(
+      /-cutout\.webp$/,
+    );
+  });
 });
