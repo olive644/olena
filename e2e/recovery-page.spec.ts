@@ -71,10 +71,9 @@ test("404 estática respeita inglês sem depender do aplicativo", async ({ page 
 test("falha ao baixar o aplicativo mostra recuperação de papel e tentar novamente", async ({
   page,
 }) => {
-  let attempts = 0;
-  await page.route(/\/assets\/app-[^/]+\.js$/, (route) => {
-    attempts++;
-    return route.abort();
+  const applicationChunk = /\/assets\/app-[^/]+\.js$/;
+  await page.route(applicationChunk, (route) => {
+    return route.fulfill({ status: 503, contentType: "text/javascript", body: "" });
   });
   await page.goto("/");
   await expect(
@@ -82,11 +81,12 @@ test("falha ao baixar o aplicativo mostra recuperação de papel e tentar novame
   ).toBeVisible();
   await expect(page.locator(".paper-recovery__code")).toContainText("Ops");
   await expect(page.locator(".paper-digits")).toHaveCount(0);
+  await page.unroute(applicationChunk);
+  const navigation = page.waitForEvent("domcontentloaded");
   await page.getByRole("button", { name: "Tentar novamente" }).click();
-  await expect.poll(() => attempts).toBeGreaterThanOrEqual(2);
-  await expect(
-    page.getByRole("heading", { name: "Não foi possível abrir seu espaço." }),
-  ).toBeVisible();
+  await navigation;
+  await expect(page.locator(".onboarding")).toBeVisible();
+  await expect(page.locator(".paper-recovery")).toHaveCount(0);
   await page.screenshot({
     path: test.info().outputPath("falha-inicializacao.png"),
     fullPage: true,
