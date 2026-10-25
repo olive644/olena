@@ -3,15 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { reducedMotion } from "../data/reduced-motion";
 import { OnboardingPaperIcon } from "../components/onboarding-paper-icon";
 import { PaperArrow } from "../components/paper-arrow";
+import { PaperCardTitle } from "../components/paper-card-title";
 import "./onboarding.css";
 import { BrandFooter } from "../components/brand-footer";
-import {
-  GoogleLogin,
-  enterAsGuest,
-  hasPendingGoogleRedirect,
-  readPendingGoogleAnswers,
-} from "./google-login";
-import { GUEST_NAME } from "../domain/guest-session";
+import { GoogleLogin, hasPendingGoogleRedirect, readPendingGoogleAnswers } from "./google-login";
 import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
 
 type OnboardingAnswer = string | string[];
@@ -23,7 +18,6 @@ type OnboardingSetup = {
 type OnboardingQuestion = {
   title: string;
   hint: string;
-  icon?: string;
   options: readonly string[];
   multiple?: boolean;
 };
@@ -34,7 +28,6 @@ const questions: readonly OnboardingQuestion[] = localizeLabels(
       {
         title: uiText(1399),
         hint: uiText(1400),
-        icon: "library",
         options: [
           "Ensino fundamental",
           "Ensino médio",
@@ -46,10 +39,12 @@ const questions: readonly OnboardingQuestion[] = localizeLabels(
       {
         title: uiText(1403),
         hint: uiText(1404),
-        icon: "notes",
         options: [
-          "Línguas",
+          "Idiomas",
+          "Português",
           "Matemática",
+          "Química",
+          "Biologia",
           "Ciências",
           "História e geografia",
           "Artes e tecnologia",
@@ -60,13 +55,19 @@ const questions: readonly OnboardingQuestion[] = localizeLabels(
       {
         title: uiText(1409),
         hint: uiText(1410),
-        icon: "learn",
-        options: ["Inglês", "Português", "Espanhol", "Outro idioma", "Não é meu foco agora"],
+        options: [
+          "Inglês",
+          "Português",
+          "Espanhol",
+          "Japonês",
+          "Chinês",
+          "Outro idioma",
+          "Não é meu foco agora",
+        ],
       },
       {
         title: uiText(1413),
         hint: uiText(1414),
-        icon: "xp",
         options: [
           "Criar uma rotina",
           "Revisar para provas",
@@ -98,7 +99,6 @@ const questions: readonly OnboardingQuestion[] = localizeLabels(
       {
         title: uiText(1427),
         hint: uiText(1428),
-        icon: "focus",
         options: ["5 minutos", "15 minutos", "30 minutos", "Prefiro decidir a cada dia"],
       },
     ] as const,
@@ -122,13 +122,24 @@ const reactions = localizeLabels(
 
 const onboardingIconNames = [
   ["school", "book", "graduate", "compass", "teacher"],
-  ["chat", "calculator", "science", "globe", "art", "compass"],
-  ["flag-us", "flag-br", "flag-es", "globe", "pause"],
+  [
+    "chat",
+    "grammar",
+    "calculator",
+    "chemistry",
+    "biology",
+    "science",
+    "globe",
+    "art",
+    "code",
+    "compass",
+  ],
+  ["flag-us", "flag-br", "flag-es", "flag-jp", "flag-cn", "languages", "pause"],
   ["calendar", "exam", "bulb", "group"],
-  [],
-  [],
-  [],
-  [],
+  ["visual", "audio", "writing", "practice"],
+  ["steps", "overview"],
+  ["focus", "breaks"],
+  ["python", "javascript", "code-pair", "later"],
   ["clock-5", "clock-15", "clock-30", "calendar"],
 ] as const;
 
@@ -228,9 +239,8 @@ export default function OnboardingView({
       hasPendingGoogleRedirect(),
   );
   const seen = useRef(new Set<number>(hasPendingGoogleRedirect() ? [questions.length] : []));
-  const latest = useRef<HTMLDivElement>(null);
+  const messages = useRef<HTMLDivElement>(null);
   const focusTarget = useRef<HTMLHeadingElement>(null);
-  const choices = useRef<HTMLFieldSetElement>(null);
   const question = questions[step];
   const pose = poseFor(step);
   const poseDescriptions = [uiText(2019), uiText(1429), uiText(1430), uiText(1431), uiText(1432)];
@@ -273,9 +283,7 @@ export default function OnboardingView({
   useEffect(() => {
     if (stage === "ask") focusTarget.current?.focus({ preventScroll: true });
     const behavior = reducedMotion() ? "auto" : "smooth";
-    latest.current?.scrollIntoView?.({ block: "end", behavior });
-    // No celular as respostas ficam abaixo da conversa: traz a página até elas.
-    if (stage === "ask") choices.current?.scrollIntoView?.({ block: "nearest", behavior });
+    messages.current?.scrollTo?.({ top: messages.current.scrollHeight, behavior });
   }, [stage, step]);
 
   useEffect(() => {
@@ -345,12 +353,13 @@ export default function OnboardingView({
       <h1 className="sr-only">{uiText(1198)}</h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          {uiText(117)}
-          <span>{uiText(118)}</span>
+          <PaperCardTitle value="OlenaStudy" />
         </span>
-        <span className="onboarding__eyebrow">{uiText(1433)}</span>
       </header>
-      <section className={leaving ? "onboarding__form is-leaving" : "onboarding__form"}>
+      <section
+        className={leaving ? "onboarding__form is-leaving" : "onboarding__form"}
+        data-finished={finished}
+      >
         <div className="onboarding__progress">
           <p aria-live="polite">
             {question ? uiText(2020, [step + 1, questions.length]) : uiText(1434)}
@@ -373,11 +382,11 @@ export default function OnboardingView({
           />
         </div>
         <div className="onboarding__chat" role="group" aria-label={uiText("Conversa com a Olena")}>
-          <div className="onboarding__messages">
-            <p className="onboarding__message onboarding__message--olena">
+          <div className="onboarding__messages" ref={messages}>
+            <p className="onboarding__message onboarding__message--olena onboarding__intro">
               {uiText("Oi! Eu sou a Olena, sua assistente de estudos.")}
             </p>
-            <p className="onboarding__message onboarding__message--olena onboarding__message--second">
+            <p className="onboarding__message onboarding__message--olena onboarding__message--second onboarding__intro">
               {uiText(
                 "Vou te fazer {0} perguntas rápidas para deixar o OlenaStudy com o seu jeito.",
                 [questions.length],
@@ -389,7 +398,7 @@ export default function OnboardingView({
               const replied = index < step || (current && stage === "reacting");
               if (current && stage === "typing") return null;
               return (
-                <div className="onboarding__turn" key={index}>
+                <div className="onboarding__turn" data-current={current} key={index}>
                   <div className="onboarding__message onboarding__message--olena">
                     <h2 ref={current ? focusTarget : undefined} tabIndex={-1}>
                       {item.title}
@@ -413,13 +422,12 @@ export default function OnboardingView({
             {(stage === "typing" || stage === "reacting") && !finished && <TypingDots />}
             {finished && (
               <p className="onboarding__message onboarding__message--olena onboarding__message--reaction">
-                {uiText("Prontinho! Falta só entrar com o Google para começar.")}
+                {uiText("Prontinho! Seu começo está preparado. Vamos criar seu espaço?")}
               </p>
             )}
-            <div ref={latest} aria-hidden="true" />
           </div>
           {question && stage === "ask" && (
-            <fieldset className="onboarding__choices" key={step} ref={choices}>
+            <fieldset className="onboarding__choices" key={step}>
               <legend className="sr-only">{question.title}</legend>
               {question.options.map((option, index) => (
                 <button
@@ -432,9 +440,9 @@ export default function OnboardingView({
                   }
                   onClick={() => choose(option)}
                 >
-                  {question.icon && (
-                    <OnboardingPaperIcon name={onboardingIconNames[step]?.[index] ?? "compass"} />
-                  )}
+                  <OnboardingPaperIcon
+                    name={`journey-${onboardingIconNames[step]?.[index] ?? "compass"}`}
+                  />
                   <span>{uiText(option)}</span>
                 </button>
               ))}
@@ -460,31 +468,15 @@ export default function OnboardingView({
             )}
             {finished && (
               <button type="button" className="is-primary" onClick={openLogin}>
-                {uiText(870)}
+                {uiText("Registre-se")}
                 <PaperArrow />
               </button>
             )}
           </div>
-          {finished && (
-            <div className="onboarding__guest">
-              <button
-                type="button"
-                onClick={() => {
-                  enterAsGuest(answers);
-                  onFinish(buildSetup(answers));
-                }}
-              >
-                {uiText(1213)}
-              </button>
-              <p>
-                {uiText(1214)} {GUEST_NAME} {uiText(1215)}
-              </p>
-            </div>
-          )}
           <p className="onboarding__privacy">{uiText(1437)}</p>
         </div>
       </section>
-      <BrandFooter />
+      <BrandFooter withOlena />
     </main>
   );
 }

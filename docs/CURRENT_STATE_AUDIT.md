@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Onboarding com papel original, 2026-10-25
+
+Branch feat/onboarding-paper-flow. Quarenta ícones SVG próprios para todas as respostas, incluindo bandeiras recortadas de Japão e China. Escolhas incluem as seis matérias das ilhas e mantêm as opções gerais anteriores; nenhum conteúdo futuro foi habilitado. Japonês e Chinês são preferências de estudo, com valores canônicos e rótulos PT/EN, sem novos idiomas de interface. Marca usa o alfabeto de papel original; favicon da Olena precede o ícone existente da Galeria.Oli no rodapé dessas telas.
+
+Removidos slogan e convite lateral. Registre-se abre o acesso centralizado; Google e convidado aparecem somente na tela final, com convidado em link sublinhado e sem placa. Consentimento, redirecionamento, recuperação de respostas e persistência local permanecem. Móvel mostra a pergunta atual em duas colunas de escolhas; desktop mantém a conversa anterior com rolagem interna. Sem travar altura ou esconder transbordamento da página, para permitir ampliação de texto e telas atípicas.
+
+Validação final: npm run verify aprovado, 345 arquivos e 2240 testes, lint sem erros (24 avisos), formatação, API, catálogos PT/EN com 3051 entradas, build e desempenho verdes. Aplicação 1553,8 KiB de 1600, entrada 218,1 KiB; nenhuma dependência ou limite alterado. Trinta e três testes focados passaram antes da suíte completa. Vinte e quatro cenários Edge desktop/mobile passaram na versão final, com doze skips previstos para verificações de privacidade exclusivas de desktop. Todas as nove perguntas, despedida e acesso cabem em 320x568 e 360x640 sem rolagem e com botões de pelo menos 44 px. Capturas móveis e acesso centralizado desktop inspecionados, incluindo o aviso de indisponibilidade do Google na prévia local. Testes de autenticação cobrem consentimento, popup, redirecionamento e preservação das respostas. WebKit real fica a cargo do CI, sem download local. Entrega por PR, sem mesclagem nesta etapa.
+
 ## Biblioteca conectada e revisão, 2026-10-25
 
 Branch feat/library-connected-review parte da main após a PR 518. Cartões recebem edição/exclusão confirmada, baralho por tema, busca/filtro, TSV local com prévia e deduplicação e estatísticas reais. Agendamento adaptado de SM-2 em flashcard-study conserva o primeiro Fácil de três dias, calcula facilidade individual e coloca Errei no dia seguinte. Limite de novos por dia usa firstReviewedOn da conta inteira, sem limitar revisões antigas. Novos campos opcionais preservam dados anteriores e a versão 7; nenhuma chave Firebase nova.

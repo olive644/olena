@@ -1,6 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { BrandFooter } from "../components/brand-footer";
+import { PaperCardTitle } from "../components/paper-card-title";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
@@ -176,26 +177,10 @@ export function GoogleLogin({
       <h1 className="sr-only">{uiText(1198)}</h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          {uiText(117)}
-          <span>{uiText(118)}</span>
+          <PaperCardTitle value="OlenaStudy" />
         </span>
-        <span className="onboarding__eyebrow">{uiText(1199)}</span>
       </header>
       <div className="login-page__layout">
-        <section className="login-page__scene" aria-label={uiText(1200)}>
-          <span className="login-page__note">{uiText(1201)}</span>
-          <span className="login-page__star login-page__star--one" aria-hidden="true">
-            ✦
-          </span>
-          <span className="login-page__star login-page__star--two" aria-hidden="true">
-            ✦
-          </span>
-          <p>
-            {uiText(1202)}
-            <br />
-            <strong>{uiText(1203)}</strong>
-          </p>
-        </section>
         <section className="login-page__card">
           <img
             className="login-page__perched"
@@ -265,7 +250,7 @@ export function GoogleLogin({
         </section>
       </div>
       <footer className="login-page__footer">{uiText(1216)}</footer>
-      <BrandFooter />
+      <BrandFooter withOlena />
     </main>
   );
 }

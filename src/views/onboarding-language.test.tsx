@@ -4,7 +4,10 @@ import OnboardingView from "./onboarding-view";
 import english from "../../public/locales/en-US.json";
 import { changeLanguage, installUiCatalog } from "../i18n/runtime";
 
-it("English labels keep canonical onboarding answers and preferences", async () => {
+it.each([
+  ["Japanese", "Japonês"],
+  ["Chinese", "Chinês"],
+])("English %s keeps canonical onboarding answers and preferences", async (language, canonical) => {
   installUiCatalog("en-US", english);
   await changeLanguage("en-US");
   const finish = vi.fn();
@@ -13,7 +16,7 @@ it("English labels keep canonical onboarding answers and preferences", async () 
     const choices = [
       "High school",
       "Programming",
-      "English",
+      language,
       "Build a routine",
       "Listening and talking",
       "Big picture first",
@@ -26,7 +29,7 @@ it("English labels keep canonical onboarding answers and preferences", async () 
       if (choice === "Listening and talking")
         fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     }
-    fireEvent.click(screen.getByRole("button", { name: "Sign in with Google" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Continue as guest" })).toBeTruthy(),
     );
@@ -42,6 +45,9 @@ it("English labels keep canonical onboarding answers and preferences", async () 
     expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}").answers[4]).toEqual([
       "Ouvindo e conversando",
     ]);
+    expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}").answers[2]).toBe(
+      canonical,
+    );
   } finally {
     view.unmount();
     await act(async () => changeLanguage("pt-BR"));
