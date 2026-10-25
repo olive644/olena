@@ -9,6 +9,7 @@ import { AgendaDurationClock } from "../components/agenda-duration-clock";
 import { AgendaFilters } from "../components/agenda-filters";
 import { AgendaEventShare } from "../components/agenda-event-share";
 import { AgendaDetailIcon } from "../components/agenda-detail-icon";
+import { LibraryLinks } from "../components/library-links";
 import { PaperEditorIcon } from "../components/paper-editor-icon";
 import { AgendaAttachmentPreview } from "../components/agenda-attachment-preview";
 import { agendaTimeZone, AGENDA_ZONE_KEY } from "../data/agenda-time-zone";
@@ -380,6 +381,11 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
       );
     } else {
       const changes: StudyEvent = {
+        ...(draft.id
+          ? {
+              materialIds: workspace.events.find((item) => item.id === draft.id)?.materialIds ?? [],
+            }
+          : {}),
         id: draft.id ?? crypto.randomUUID(),
         title,
         subjectId: draft.subjectId,
@@ -514,6 +520,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
         </button>
         <div className="agenda-item-copy">
           <strong>{task.title}</strong>
+          <LibraryLinks workspace={workspace} dispatch={dispatch} kind="task" item={task} />
           <small>
             {subjectName(task.subjectId)} {uiText(1444)}
           </small>
@@ -588,6 +595,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
             </small>
           )}
           <AgendaAttachmentPreview attachments={event.attachments} />
+          <LibraryLinks workspace={workspace} dispatch={dispatch} kind="event" item={event} />
           {event.description || event.location || event.links?.length || event.guests?.length ? (
             <div className="agenda-event-info">
               {event.description && <p>{event.description}</p>}

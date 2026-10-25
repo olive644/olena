@@ -1,0 +1,33 @@
+.library-linked-materials,
+.library-note-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+.library-note-tools {
+  padding: 12px;
+}
+.library-linked-materials a {
+  overflow-wrap: anywhere;
+}
+.library-linked-materials .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+.library-linked-materials svg {
+  width: 24px;
+  height: 24px;
+}
+.library-linked-materials .library-icon {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-grid;
+  place-items: center;
+}

@@ -161,6 +161,15 @@ export function mergeWorkspaceStates(
         }
       : {}),
     materials: list(base.materials, local.materials, remote.materials),
+    ...(base.libraryCollections || local.libraryCollections || remote.libraryCollections
+      ? {
+          libraryCollections: list(
+            base.libraryCollections ?? [],
+            local.libraryCollections ?? base.libraryCollections ?? [],
+            remote.libraryCollections ?? base.libraryCollections ?? [],
+          ),
+        }
+      : {}),
     flashcards: list(base.flashcards, local.flashcards, remote.flashcards),
     goals: list(base.goals, local.goals, remote.goals),
     quizAttempts: list(base.quizAttempts, local.quizAttempts, remote.quizAttempts),

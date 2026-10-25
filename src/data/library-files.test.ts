@@ -68,5 +68,11 @@ it("stores PDF bytes without Blob support and still reads legacy Blobs", async (
   expect(await libraryFile("alice", "legacy")).toBe(pdf);
   await libraryFile("alice", "pdf", null);
   expect(await libraryFile("alice", "pdf")).toBeUndefined();
-  expect(close).toHaveBeenCalledTimes(6);
+  const image = new Blob([bytes], { type: "image/png" });
+  Object.assign(image, { arrayBuffer: async () => bytes.buffer });
+  await libraryFile("alice", "image", image);
+  const storedImage = await libraryFile("alice", "image");
+  expect(storedImage?.type).toBe("image/png");
+  expect(storedImage?.size).toBe(image.size);
+  expect(close).toHaveBeenCalledTimes(8);
 });

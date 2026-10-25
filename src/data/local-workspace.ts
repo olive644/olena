@@ -1,5 +1,6 @@
 import { uiText } from "../i18n/runtime.js";
-import { validLibraryMetadata } from "../domain/library.js";
+import { validLibraryMetadata, validMaterialLinks } from "../domain/library.js";
+import { validFlashcardStudy } from "../domain/flashcard-study.js";
 import { isPomodoroDuration } from "../domain/pomodoro-duration.js";
 import { normalizeNotebookFavorites } from "../domain/notebook-shelves.js";
 import {
@@ -46,6 +47,7 @@ function isSubject(value: unknown): boolean {
 function isTask(value: unknown): boolean {
   return (
     isRecord(value) &&
+    validMaterialLinks(value) &&
     isString(value["id"]) &&
     isString(value["title"]) &&
     isString(value["subjectId"]) &&
@@ -58,6 +60,7 @@ function isTask(value: unknown): boolean {
 function isEvent(value: unknown): boolean {
   return (
     isRecord(value) &&
+    validMaterialLinks(value) &&
     isString(value["id"]) &&
     isString(value["title"]) &&
     isString(value["subjectId"]) &&
@@ -428,6 +431,7 @@ function isNote(value: unknown): boolean {
   return (
     isLegacyNote(value) &&
     isRecord(value) &&
+    validMaterialLinks(value) &&
     Array.isArray(value["assets"]) &&
     value["assets"].every(isNoteAsset)
   );
@@ -501,7 +505,7 @@ function isMaterial(value: unknown): boolean {
     isString(value["id"]) &&
     isString(value["subjectId"]) &&
     isString(value["title"]) &&
-    (value["kind"] === "link" || value["kind"] === "text" || value["kind"] === "pdf") &&
+    ["link", "text", "pdf", "image"].includes(String(value["kind"])) &&
     validLibraryMetadata(value) &&
     isString(value["content"]) &&
     isString(value["createdAt"])
@@ -511,6 +515,7 @@ function isMaterial(value: unknown): boolean {
 function isFlashcard(value: unknown): boolean {
   return (
     isRecord(value) &&
+    validFlashcardStudy(value) &&
     isString(value["id"]) &&
     isString(value["subjectId"]) &&
     (value["materialId"] === undefined || isString(value["materialId"])) &&
@@ -643,6 +648,10 @@ function isFocusPreferences(value: unknown): value is FocusPreferences {
 function isStudyPreferences(value: unknown): value is StudyPreferences {
   return (
     isRecord(value) &&
+    (value["flashcardNewLimit"] === undefined ||
+      (Number.isSafeInteger(value["flashcardNewLimit"]) &&
+        Number(value["flashcardNewLimit"]) >= 0 &&
+        Number(value["flashcardNewLimit"]) <= 100)) &&
     Array.isArray(value["modalities"]) &&
     value["modalities"].every(
       (modality) =>

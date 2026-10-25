@@ -16,6 +16,8 @@ import { streamHelena, HelenaClientError } from "../data/helena-client";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { HELENA_PLAN_DRAFT_EVENT } from "../domain/agenda";
 import "./helena-chat.css";
+import type { StudyMaterial } from "../domain/workspace";
+import { PaperChoice } from "./agenda-paper-fields";
 
 type Message = { id: number; role: "user" | "helena"; text: string; interrupted?: boolean };
 type Position = { x: number; y: number };
@@ -42,16 +44,21 @@ export function HelenaChat({
   preview = false,
   previewReply,
   currentView = "today",
+  materials = [],
 }: {
   initiallyOpen?: boolean;
   preview?: boolean;
   previewReply?: (text: string) => string;
   currentView?: string;
+  materials?: readonly StudyMaterial[];
 }) {
   useLanguage();
 
   const [open, setOpen] = useState(initiallyOpen);
   const [draft, setDraft] = useState("");
+  const [materialId, setMaterialId] = useState("");
+  const [sourceConsent, setSourceConsent] = useState(false);
+  const material = materials.find((item) => item.id === materialId && item.kind === "text");
   const [messages, setMessages] = useState<Message[]>([]);
   const [pending, setPending] = useState(false);
   const [hasPartialResponse, setHasPartialResponse] = useState(false);
@@ -255,6 +262,19 @@ export function HelenaChat({
   function send(text: string) {
     const value = text.trim();
     if (!value || sending.current) return;
+    if (material && !sourceConsent) {
+      setError(uiText("Autorize o envio deste material nesta pergunta."));
+      return;
+    }
+    const source = material
+      ? {
+          id: material.id,
+          kind: "material" as const,
+          title: material.title.slice(0, 160),
+          content: material.content.slice(0, 8000),
+        }
+      : undefined;
+    setSourceConsent(false);
     setError("");
     followResponse.current = true;
     sending.current = true;
@@ -284,6 +304,7 @@ export function HelenaChat({
               capability: "tutor",
               prompt: value,
               sources: [
+                ...(source ? [source] : []),
                 {
                   id: "current-screen",
                   kind: "note",
@@ -485,6 +506,40 @@ export function HelenaChat({
             )}
           </div>
           <footer className="helena-chat-footer">
+            {!!materials.filter((item) => item.kind === "text" && !item.archived).length && (
+              <div className="helena-chat-material">
+                <PaperChoice
+                  label={uiText("Material para esta pergunta")}
+                  value={materialId}
+                  onChange={(id) => {
+                    setMaterialId(id);
+                    setSourceConsent(false);
+                  }}
+                  options={[
+                    { value: "", label: uiText("Sem material") },
+                    ...materials
+                      .filter((item) => item.kind === "text" && !item.archived)
+                      .map((item) => ({ value: item.id, label: item.title })),
+                  ]}
+                />
+                {material && (
+                  <>
+                    <details>
+                      <summary>{uiText("Prévia do conteúdo enviado")}</summary>
+                      <p>{material.content.slice(0, 8000)}</p>
+                    </details>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={sourceConsent}
+                        onChange={(event) => setSourceConsent(event.target.checked)}
+                      />
+                      {uiText("Autorizo enviar este trecho nesta pergunta, sem retenção.")}
+                    </label>
+                  </>
+                )}
+              </div>
+            )}
             {error && <p role="alert">{uiText(error)}</p>}
             <form onSubmit={submit} className="helena-chat-composer">
               <textarea

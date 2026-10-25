@@ -1,4 +1,5 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
+import { reviewSchedule, reviewQueue } from "./flashcard-study.js";
 import type { HandwritingDocument } from "./handwriting";
 import { SHARED_PAGE_PLACEHOLDER } from "./handwriting.js";
 import { occurrenceDuration } from "./agenda-calendar.js";
@@ -24,6 +25,7 @@ export type Subject = {
 };
 
 export type StudyTask = {
+  materialIds?: string[];
   color?: string;
   id: string;
   title: string;
@@ -33,6 +35,7 @@ export type StudyTask = {
 };
 
 export type StudyEvent = {
+  materialIds?: string[];
   color?: string;
   id: string;
   title: string;
@@ -68,6 +71,7 @@ export type Habit = {
 };
 
 export type StudyNote = {
+  materialIds?: string[];
   id: string;
   title: string;
   content: string;
@@ -128,7 +132,8 @@ export type StudyMaterial = {
   id: string;
   subjectId: string;
   title: string;
-  kind: "link" | "text" | "pdf";
+  kind: "link" | "text" | "pdf" | "image";
+  status?: "unread" | "reading" | "read";
   content: string;
   createdAt: string;
   favorite?: boolean;
@@ -147,6 +152,15 @@ export type LibraryCollection = { id: string; title: string; motif: "moon" | "su
 export type FlashcardRating = "again" | "hard" | "easy";
 
 export type Flashcard = {
+  deck?: string;
+  noteId?: string;
+  ease?: number;
+  repetitions?: number;
+  reviews?: number;
+  correct?: number;
+  lapses?: number;
+  firstReviewedOn?: string;
+  lastReviewedOn?: string;
   materialId?: string;
   sourcePage?: number;
   id: string;
@@ -234,6 +248,25 @@ export type PracticeActivity = {
 };
 
 export type WorkspaceAction =
+  | {
+      type: "library/linked";
+      kind: "note" | "task" | "event";
+      id: string;
+      materialId: string;
+      remove?: boolean;
+    }
+  | {
+      type: "flashcard/updated";
+      id: string;
+      changes: Pick<Flashcard, "front" | "back" | "subjectId"> & { deck?: string };
+    }
+  | { type: "flashcard/removed"; id: string }
+  | {
+      type: "flashcards/imported";
+      cards: { front: string; back: string; deck: string }[];
+      subjectId: string;
+      createdOn: string;
+    }
   | { type: "library/collection-saved"; collection: LibraryCollection }
   | { type: "library/collection-removed"; id: string }
   | {
@@ -354,6 +387,8 @@ export type WorkspaceAction =
     }
   | {
       type: "flashcard/added";
+      deck?: string;
+      noteId?: string;
       materialId?: string;
       sourcePage?: number;
       subjectId: string;
@@ -957,6 +992,28 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           item.collectionId === action.id ? { ...item, collectionId: undefined } : item,
         ),
       };
+    case "library/linked": {
+      if (!state.materials.some((material) => material.id === action.materialId)) return state;
+      const link = <T extends { id: string; materialIds?: string[] }>(items: T[]) =>
+        items.map((item) =>
+          item.id !== action.id
+            ? item
+            : {
+                ...item,
+                materialIds: action.remove
+                  ? (item.materialIds ?? []).filter((id) => id !== action.materialId)
+                  : [...new Set([...(item.materialIds ?? []), action.materialId])],
+              },
+        );
+      return {
+        ...state,
+        ...(action.kind === "note"
+          ? { notes: link(state.notes) }
+          : action.kind === "task"
+            ? { tasks: link(state.tasks) }
+            : { events: link(state.events) }),
+      };
+    }
     case "material/updated":
       return {
         ...state,
@@ -983,6 +1040,36 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           ...state.materials,
         ],
       };
+    case "flashcard/updated":
+      return {
+        ...state,
+        flashcards: state.flashcards.map((card) =>
+          card.id === action.id ? { ...card, ...action.changes } : card,
+        ),
+      };
+    case "flashcard/removed":
+      return { ...state, flashcards: state.flashcards.filter((card) => card.id !== action.id) };
+    case "flashcards/imported": {
+      let next = state;
+      for (const card of action.cards) {
+        if (
+          !next.flashcards.some(
+            (item) =>
+              item.subjectId === action.subjectId &&
+              item.front === card.front &&
+              item.back === card.back &&
+              (item.deck ?? "") === card.deck,
+          )
+        )
+          next = workspaceReducer(next, {
+            type: "flashcard/added",
+            ...card,
+            subjectId: action.subjectId,
+            createdOn: action.createdOn,
+          });
+      }
+      return next;
+    }
     case "flashcard/added":
       return {
         ...state,
@@ -990,6 +1077,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           ...state.flashcards,
           {
             id: createId("flashcard"),
+            ...(action.deck ? { deck: action.deck } : {}),
+            ...(action.noteId ? { noteId: action.noteId } : {}),
             ...(action.materialId ? { materialId: action.materialId } : {}),
             ...(action.sourcePage ? { sourcePage: action.sourcePage } : {}),
             subjectId: action.subjectId,
@@ -1005,18 +1094,17 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         ...state,
         flashcards: state.flashcards.map((card) => {
           if (card.id !== action.id) return card;
-          const intervalDays =
-            action.rating === "again"
-              ? 0
-              : action.rating === "hard"
-                ? Math.max(1, card.intervalDays)
-                : card.intervalDays === 0
-                  ? 3
-                  : card.intervalDays * 2;
+          const schedule = reviewSchedule(card, action.rating);
           return {
             ...card,
-            intervalDays,
-            nextReview: addDays(action.reviewedOn, intervalDays),
+            ...schedule,
+            ...(card.firstReviewedOn
+              ? { firstReviewedOn: card.firstReviewedOn }
+              : !card.reviews && card.intervalDays === 0
+                ? { firstReviewedOn: action.reviewedOn }
+                : {}),
+            lastReviewedOn: action.reviewedOn,
+            nextReview: addDays(action.reviewedOn, schedule.intervalDays),
           };
         }),
       };
@@ -1198,5 +1286,5 @@ export function minutesFocusedForSubject(state: WorkspaceState, subjectId: strin
 }
 
 export function dueFlashcards(state: WorkspaceState, dateKey: string): Flashcard[] {
-  return state.flashcards.filter((card) => card.nextReview <= dateKey);
+  return reviewQueue(state.flashcards, dateKey, state.studyPreferences.flashcardNewLimit ?? 20);
 }
