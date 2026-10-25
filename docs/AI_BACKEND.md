@@ -2,6 +2,8 @@
 
 ## Estado da decisão
 
+A preparação do onboarding usa POST `/api/olena?action=onboarding&version=1`, com regras explícitas sobre as respostas selecionadas. Não chama a tutora nem um fornecedor de geração: configura preferências, meta diária, Foco e matéria inicial. Contrato, limites, persistência e fallback em OLENA_API.md. As regras de consentimento para envio de materiais à tutora abaixo permanecem.
+
 A API oficial da Olena começa em `GET /api/olena`, com catálogo e consultas de metodologias
 independentes de fornecedor. Veja [OLENA_API.md](OLENA_API.md). Essa base não executa
 o contrato da tutora abaixo, não gera respostas nem possui voz. A Olena será somente texto;

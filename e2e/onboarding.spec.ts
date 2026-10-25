@@ -164,6 +164,7 @@ for (const viewport of [
       }
     });
     await page.getByRole("button", { name: "Registre-se" }).waitFor();
+    await expect(page.getByRole("button", { name: "Registre-se" })).toBeEnabled();
     await fits();
     await page.getByRole("button", { name: "Registre-se" }).click();
     await expect(page.getByRole("button", { name: "Entrar como convidado" })).toBeVisible();

@@ -375,3 +375,7 @@ html[data-reduce-motion="true"] .student-space *::after {
 .workspace-search small {
   margin-inline-start: 12px;
 }
+.student-space .metric-row small.student-daily-goal {
+  display: block;
+  line-height: 1.4;
+}

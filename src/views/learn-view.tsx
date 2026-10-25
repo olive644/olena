@@ -70,10 +70,21 @@ const SOLO_WORLDS = PRACTICE_ISLANDS;
 
 const SOLO_PROGRESS_KEY = "helena.soloProgress";
 
-function PracticeHub({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
+function PracticeHub({ dispatch, workspace }: LearnViewProps) {
   useLanguage();
 
-  const [worldIndex, setWorldIndex] = useState(4);
+  const [worldIndex, setWorldIndex] = useState(() => {
+    try {
+      const entry = sessionStorage.getItem("olena:enter-mathematics");
+      if (entry === "1" || isMathCourse(entry)) return 4;
+    } catch {
+      /* Preferência do workspace continua disponível sem sessionStorage. */
+    }
+    const index = PRACTICE_ISLANDS.findIndex(
+      (island) => island.id === workspace.studyPreferences.initialIslandId,
+    );
+    return index < 0 ? 4 : index;
+  });
   const [entryCourse] = useState(() => {
     try {
       const value = sessionStorage.getItem("olena:enter-mathematics");
@@ -441,7 +452,7 @@ export function LearnView({ workspace, dispatch }: LearnViewProps) {
       <div className={`learn-grid${mode === "hub" ? " learn-grid--practice-hub" : ""}`}>
         <section className="module-panel study-panel" aria-label={uiText(101)}>
           {mode === "hub" ? (
-            <PracticeHub dispatch={dispatch} />
+            <PracticeHub dispatch={dispatch} workspace={workspace} />
           ) : (
             <>
               <div className="module-heading solo-session-heading">

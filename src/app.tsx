@@ -11,6 +11,9 @@ import { useCloudSync, type CloudSyncState } from "./hooks/use-cloud-sync";
 import { TodayView } from "./views/today-view";
 import { useProfileHandle } from "./hooks/use-profile-handle";
 import { useAccountDevice } from "./hooks/use-account-device";
+import { readPendingOnboardingConfiguration } from "./data/onboarding-client";
+import { ACCOUNT_OWNER_KEY } from "./data/personal-data";
+import { writeSyncedStorage } from "./data/synced-storage";
 
 const LearnView = lazy(() => import("./views/learn-view"));
 const AchievementAnnouncer = lazy(() =>
@@ -94,6 +97,35 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     }
   });
 
+  useEffect(() => {
+    if (onboarding || !cloud.ready || (!guest && cloud.authenticated !== true)) return;
+    try {
+      const raw = localStorage.getItem("helena.onboarding.v1");
+      const configuration = readPendingOnboardingConfiguration(
+        raw,
+        guest ? "guest" : localStorage.getItem(ACCOUNT_OWNER_KEY),
+      );
+      if (configuration) {
+        if (workspace.studyPreferences.onboardingSetupId !== configuration.id)
+          dispatch({ type: "onboarding/configured", configuration });
+        else
+          writeSyncedStorage(
+            "helena.onboarding.v1",
+            JSON.stringify({ ...JSON.parse(raw!), configurationPending: false }),
+          );
+      }
+    } catch {
+      /* A entrada continua utilizável sem acesso ao armazenamento. */
+    }
+  }, [
+    onboarding,
+    cloud.ready,
+    cloud.authenticated,
+    guest,
+    workspace.studyPreferences.onboardingSetupId,
+    dispatch,
+  ]);
+
   if (view === null)
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
@@ -108,7 +140,9 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
           loginOnly={signedOut && hasCompletedOnboarding()}
           onFinish={(setup) => {
             if (setup) {
-              dispatch({ type: "study/preferences-updated", preferences: setup.preferences });
+              if (setup.configuration)
+                dispatch({ type: "onboarding/configured", configuration: setup.configuration });
+              else dispatch({ type: "study/preferences-updated", preferences: setup.preferences });
             }
             setOnboarding(false);
           }}

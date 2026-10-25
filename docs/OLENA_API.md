@@ -1,5 +1,21 @@
 # API oficial da Olena, versão 1
 
+## Preparação do onboarding (2026-10-25)
+
+POST `/api/olena?action=onboarding&version=1` recebe somente `{ answers }`, com as nove respostas canônicas em português na ordem de ONBOARDING_OPTIONS. A quinta resposta é a lista de modalidades, sem duplicatas; as demais são escolhas únicas. Interface e validação compartilham esse catálogo tipado em domain/onboarding-configuration. Não aceita texto livre, workspace, identidade ou campos extras.
+
+A preparação é determinística, sem chamada a modelo, fornecedor ou treinamento. Meta diária corresponde aos 5, 15 ou 30 minutos escolhidos; decidir a cada dia não cria meta. O bloco de Foco fica limitado ao tempo escolhido e a 25 minutos quando há pausas, ou 30 quando o foco é contínuo. Sem tempo fixo, conserva o padrão de 25 minutos. Modalidades, organização, ritmo e programação seguem as escolhas explícitas, sem diagnosticar estilos de aprendizagem. A matéria inicial acompanha a escolha; em Idiomas, os cinco idiomas explícitos viram a disciplina correspondente. Ainda estou descobrindo não inventa uma matéria.
+
+Retorna versão, ID estável derivado das escolhas, study preferences, focus preferences e uma disciplina opcional. Não cria tarefas, horários, progresso ou XP. As seis ilhas usam IDs estáveis; campos gerais sem ilha correspondente conservam somente a disciplina. Ilhas futuras continuam em prévia. Papel de professor no questionário não concede permissão.
+
+Proteções: somente POST com JSON; origem da mesma implantação (ou o par localhost/127.0.0.1 no preview local), versão e parâmetros únicos, corpo limitado a 4096 bytes durante leitura, enumeração estrita de respostas, no-store, nosniff e sem CORS. Não há escrita no servidor, registro de respostas em log ou chamada paga de geração. O endpoint é público porque só calcula preferências a partir de escolhas limitadas, sem ler contas ou conceder acesso. A hospedagem continua responsável pelo tráfego público.
+
+O cliente mostra o resumo antes do acesso e informa o uso das respostas no onboarding. Timeout de dez segundos permite tentar novamente ou continuar sem configuração automática, sem inventar uma resposta bem-sucedida da API. Login/redirect e convidado conservam a configuração no registro já existente de onboarding; objetos antigos que guardam somente respostas continuam válidos. Aplicação atômica no workspace cria/reutiliza a disciplina e marca onboardingSetupId, para não desfazer edições posteriores ao recarregar. Se a conta substituir o workspace durante o login, a configuração pendente é aplicada após cloud.ready. Nenhuma nova chave sincronizada ou regra Firebase.
+
+configurationOwner identifica a conta escolhida no Google (ou guest), e configurationPending permanece true até a aplicação ao workspace pronto. Um GET anterior não substitui essa preparação quando o dono é a própria conta; preparações de outra conta nunca recebem essa prioridade. Depois de persistir o ID no workspace, o cliente marca a preparação como concluída. Voltar a entrar sem responder ao questionário não redefine preferências. A API recebe somente as escolhas, nunca o identificador do dono. Ajustes existentes de pausas e sessões em andamento são preservados.
+
+Meta e matéria inicial são editáveis em Estudo e foco; a duração usa o controle original do Pomodoro. O Espaço compara os minutos reais concluídos com a meta. Foco respeita sessão recuperada e modo escolhido anteriormente, sem iniciar contagem. Praticar abre a ilha preferida, enquanto a ação explícita Explorar Matemática conserva prioridade.
+
 ## Matemática v5 (2026-10-14)
 
 POST `/api/olena?action=math&version=5` aceita `action: question | answer`,
@@ -79,7 +95,7 @@ Capacidades no catálogo:
 
 ## Contrato e segurança
 
-- Somente GET. Escrita, envio de conteúdo e execução retornam 405 com `Allow: GET`.
+- Somente GET para o catálogo. As rotas POST de Matemática e preparação de onboarding seguem os contratos específicos acima; outros envios retornam 405 com `Allow: GET`.
 - Parâmetros desconhecidos, repetidos ou filtro usado fora da consulta de metodologias retornam 400.
 - Versões não suportadas retornam 400. Capacidades inexistentes, inclusive `speech` e `generate`, retornam 404.
 - Erros JSON têm `version` e `error: { code, message }`, sem ecoar dados do pedido.

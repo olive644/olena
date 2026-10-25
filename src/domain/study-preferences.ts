@@ -2,6 +2,10 @@ export const studyModalities = ["visual", "auditivo", "leitura-escrita", "pratic
 export type StudyModality = (typeof studyModalities)[number];
 
 export type StudyPreferences = {
+  dailyGoalMinutes?: number | undefined;
+  initialSubjectName?: string | undefined;
+  initialIslandId?: string | undefined;
+  onboardingSetupId?: string | undefined;
   flashcardNewLimit?: number;
   modalities: StudyModality[];
   processing: "sequencial" | "global";

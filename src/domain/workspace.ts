@@ -1,4 +1,5 @@
 import { defaultStudyPreferences, type StudyPreferences } from "./study-preferences.js";
+import type { OnboardingConfiguration } from "./onboarding-configuration.js";
 import { reviewSchedule, reviewQueue } from "./flashcard-study.js";
 import type { HandwritingDocument } from "./handwriting";
 import { SHARED_PAGE_PLACEHOLDER } from "./handwriting.js";
@@ -374,6 +375,7 @@ export type WorkspaceAction =
     }
   | { type: "focus/preferences-updated"; preferences: FocusPreferences }
   | { type: "study/preferences-updated"; preferences: StudyPreferences }
+  | { type: "onboarding/configured"; configuration: OnboardingConfiguration }
   | {
       type: "material/added";
       id?: string;
@@ -955,12 +957,47 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           },
         ],
       };
+    case "onboarding/configured": {
+      const setup = action.configuration;
+      if (state.studyPreferences.onboardingSetupId === setup.id) return state;
+      const prepared = workspaceReducer(state, {
+        type: "study/preferences-updated",
+        preferences: {
+          ...state.studyPreferences,
+          ...setup.preferences,
+          dailyGoalMinutes: setup.preferences.dailyGoalMinutes,
+          initialSubjectName: setup.preferences.initialSubjectName,
+          initialIslandId: setup.preferences.initialIslandId,
+          onboardingSetupId: setup.id,
+        },
+      });
+      const existing =
+        setup.subject &&
+        prepared.subjects.find(
+          (subject) =>
+            subject.id === setup.subject!.id ||
+            subject.name.toLocaleLowerCase("pt-BR") ===
+              setup.subject!.name.toLocaleLowerCase("pt-BR"),
+        );
+      return {
+        ...prepared,
+        studyPreferences: {
+          ...prepared.studyPreferences,
+          initialSubjectName: existing?.name ?? setup.preferences.initialSubjectName,
+        },
+        subjects:
+          setup.subject && !existing ? [...prepared.subjects, setup.subject] : prepared.subjects,
+        focusPreferences: { ...state.focusPreferences, ...setup.focusPreferences },
+      };
+    }
     case "focus/preferences-updated":
       return { ...state, focusPreferences: action.preferences };
     case "study/preferences-updated": {
       const hasProgramming = action.preferences.programming !== "nenhum";
       const alreadyHasProgramming = state.subjects.some(
-        (subject) => subject.name.toLocaleLowerCase("pt-BR") === "programação",
+        (subject) =>
+          subject.id === "subject-programming" ||
+          subject.name.toLocaleLowerCase("pt-BR") === "programação",
       );
       return {
         ...state,

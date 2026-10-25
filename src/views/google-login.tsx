@@ -9,6 +9,11 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { GUEST_NAME, endGuestSession, startGuestSession } from "../domain/guest-session";
 import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
+import {
+  parseOnboardingAnswers,
+  type OnboardingConfiguration,
+} from "../domain/onboarding-configuration";
+import { readStoredOnboardingConfiguration } from "../data/onboarding-client";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
 
@@ -34,20 +39,38 @@ function googleLoginError(cause: unknown): string {
   return uiText(1195);
 }
 
-function applyGoogleLogin(answers: readonly (string | string[])[]) {
-  writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ answers, completed: true }));
+function applyGoogleLogin(
+  answers: readonly (string | string[])[],
+  configuration?: OnboardingConfiguration,
+  configurationOwner?: string,
+) {
+  writeSyncedStorage(
+    "helena.onboarding.v1",
+    JSON.stringify({
+      answers,
+      completed: true,
+      ...(configuration ? { configuration, configurationOwner, configurationPending: true } : {}),
+    }),
+  );
 }
 
 /** Entrada como convidado: nada vai a servidor algum, as respostas ficam só neste aparelho. */
-export function enterAsGuest(answers: readonly (string | string[])[]) {
+export function enterAsGuest(
+  answers: readonly (string | string[])[],
+  configuration?: OnboardingConfiguration,
+) {
   startGuestSession();
-  applyGoogleLogin(answers);
+  applyGoogleLogin(answers, configuration, "guest");
 }
 
 export function readPendingGoogleAnswers(): readonly (string | string[])[] {
   try {
     const raw = window.sessionStorage.getItem(PENDING_ANSWERS_KEY);
-    return raw ? (JSON.parse(raw) as (string | string[])[]) : [];
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(parsed)) return parsed as (string | string[])[];
+    return parsed && typeof parsed === "object" && "answers" in parsed
+      ? (parseOnboardingAnswers(parsed.answers) ?? [])
+      : [];
   } catch {
     return [];
   }
@@ -63,10 +86,12 @@ function clearPendingAnswers() {
 
 export function GoogleLogin({
   answers,
+  configuration,
   onFinish,
   onBack,
 }: {
   answers: readonly (string | string[])[];
+  configuration?: OnboardingConfiguration | undefined;
   onFinish: () => void;
   onBack?: () => void;
 }) {
@@ -93,7 +118,13 @@ export function GoogleLogin({
         if (hasPendingGoogleRedirect()) {
           if (loaded.redirectResult) {
             endGuestSession();
-            applyGoogleLogin(readPendingGoogleAnswers());
+            applyGoogleLogin(
+              readPendingGoogleAnswers(),
+              readStoredOnboardingConfiguration(
+                window.sessionStorage.getItem(PENDING_ANSWERS_KEY),
+              ) ?? undefined,
+              loaded.redirectResult.user.uid,
+            );
             clearPendingAnswers();
             if (active) onFinish();
             return;
@@ -129,9 +160,9 @@ export function GoogleLogin({
     const provider = new services.authApi.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
     try {
-      await services.authApi.signInWithPopup(services.auth, provider);
+      const credential = await services.authApi.signInWithPopup(services.auth, provider);
       endGuestSession();
-      applyGoogleLogin(answers);
+      applyGoogleLogin(answers, configuration, credential?.user?.uid);
       onFinish();
     } catch (cause) {
       if (isPopupBlockedError(cause)) {
@@ -139,7 +170,10 @@ export function GoogleLogin({
         // janela do Google mesmo em um clique legítimo. O redirecionamento
         // de página inteira não depende de pop-up e funciona nesses casos.
         try {
-          window.sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
+          window.sessionStorage.setItem(
+            PENDING_ANSWERS_KEY,
+            JSON.stringify(configuration ? { answers, configuration } : answers),
+          );
         } catch {
           /* Sem sessionStorage, o redirecionamento ainda funciona, só perde as respostas do onboarding. */
         }
@@ -168,7 +202,7 @@ export function GoogleLogin({
   // não há aceite de política a registrar como no login com Google.
   function continueAsGuest() {
     if (pending.current) return;
-    enterAsGuest(answers);
+    enterAsGuest(answers, configuration);
     onFinish();
   }
 

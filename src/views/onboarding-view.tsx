@@ -8,11 +8,19 @@ import "./onboarding.css";
 import { BrandFooter } from "../components/brand-footer";
 import { GoogleLogin, hasPendingGoogleRedirect, readPendingGoogleAnswers } from "./google-login";
 import type { StudyModality, StudyPreferences } from "../domain/study-preferences";
+import {
+  ONBOARDING_OPTIONS,
+  type OnboardingConfiguration,
+} from "../domain/onboarding-configuration";
+import { requestOnboardingConfiguration } from "../data/onboarding-client";
+import { HelenaLoading } from "../components/helena-loading";
+import { PaperDigits } from "../components/paper-digits";
 
 type OnboardingAnswer = string | string[];
 
 type OnboardingSetup = {
   preferences: StudyPreferences;
+  configuration?: OnboardingConfiguration;
 };
 
 type OnboardingQuestion = {
@@ -28,78 +36,48 @@ const questions: readonly OnboardingQuestion[] = localizeLabels(
       {
         title: uiText(1399),
         hint: uiText(1400),
-        options: [
-          "Ensino fundamental",
-          "Ensino médio",
-          "Ensino superior",
-          "Estudo por conta própria",
-          "Sou professor",
-        ],
+        options: ONBOARDING_OPTIONS[0]!,
       },
       {
         title: uiText(1403),
         hint: uiText(1404),
-        options: [
-          "Idiomas",
-          "Português",
-          "Matemática",
-          "Química",
-          "Biologia",
-          "Ciências",
-          "História e geografia",
-          "Artes e tecnologia",
-          "Programação",
-          "Ainda estou descobrindo",
-        ],
+        options: ONBOARDING_OPTIONS[1]!,
       },
       {
         title: uiText(1409),
         hint: uiText(1410),
-        options: [
-          "Inglês",
-          "Português",
-          "Espanhol",
-          "Japonês",
-          "Chinês",
-          "Outro idioma",
-          "Não é meu foco agora",
-        ],
+        options: ONBOARDING_OPTIONS[2]!,
       },
       {
         title: uiText(1413),
         hint: uiText(1414),
-        options: [
-          "Criar uma rotina",
-          "Revisar para provas",
-          "Aprender algo novo",
-          "Praticar com minha turma",
-        ],
+        options: ONBOARDING_OPTIONS[3]!,
       },
       {
         title: uiText(1417),
         hint: uiText(1418),
-        options: ["Visual", "Ouvindo e conversando", "Lendo e escrevendo", "Praticando"],
+        options: ONBOARDING_OPTIONS[4]!,
         multiple: true,
       },
       {
         title: uiText(1419),
         hint: uiText(1420),
-        options: ["Passo a passo", "Visão geral primeiro"],
+        options: ONBOARDING_OPTIONS[5]!,
       },
       {
         title: uiText(1422),
         hint: uiText(1423),
-        options: ["Foco contínuo", "Alternar estudo e pausas"],
+        options: ONBOARDING_OPTIONS[6]!,
       },
       {
         title: uiText(1425),
         hint: uiText(1426),
-        options: ["Python", "JavaScript", "Python e JavaScript", "Agora não"],
+        options: ONBOARDING_OPTIONS[7]!,
       },
       {
         title: uiText(1427),
         hint: uiText(1428),
-        options: ["5 minutos", "15 minutos", "30 minutos", "Prefiro decidir a cada dia"],
+        options: ONBOARDING_OPTIONS[8]!,
       },
     ] as const,
 );
@@ -166,9 +144,7 @@ function buildSetup(answers: OnboardingAnswer[]): OnboardingSetup {
         ? "javascript"
         : programmingAnswer === "Python e JavaScript"
           ? "python-javascript"
-          : answers[1] === "Programação"
-            ? "python-javascript"
-            : "nenhum";
+          : "nenhum";
 
   return {
     preferences: {
@@ -232,6 +208,10 @@ export default function OnboardingView({
   const [step, setStep] = useState(() => (hasPendingGoogleRedirect() ? questions.length : 0));
   const [stage, setStage] = useState<Stage>(() => (hasPendingGoogleRedirect() ? "ask" : "typing"));
   const [leaving, setLeaving] = useState(false);
+  const [prepared, setPrepared] = useState<{ key: string; value: OnboardingConfiguration }>();
+  const [preparationFailed, setPreparationFailed] = useState(false);
+  const [skipPreparation, setSkipPreparation] = useState(false);
+  const [retryPreparation, setRetryPreparation] = useState(0);
   const [showLogin, setShowLogin] = useState(
     () =>
       loginOnly ||
@@ -245,6 +225,31 @@ export default function OnboardingView({
   const pose = poseFor(step);
   const poseDescriptions = [uiText(2019), uiText(1429), uiText(1430), uiText(1431), uiText(1432)];
   const talking = stage !== "ask" && !showLogin;
+  const answersKey = JSON.stringify(answers);
+  const configuration = prepared?.key === answersKey ? prepared.value : undefined;
+  useEffect(() => {
+    if (step !== questions.length || showLogin || configuration || skipPreparation) return;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 10_000);
+    void requestOnboardingConfiguration(
+      JSON.parse(answersKey) as OnboardingAnswer[],
+      controller.signal,
+    )
+      .then((value) => {
+        if (!controller.signal.aborted) setPrepared({ key: answersKey, value });
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setPreparationFailed(true);
+      })
+      .finally(() => window.clearTimeout(timeout));
+    const timedOut = () => setPreparationFailed(true);
+    controller.signal.addEventListener("abort", timedOut, { once: true });
+    return () => {
+      controller.signal.removeEventListener("abort", timedOut);
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
+  }, [answersKey, step, showLogin, configuration, skipPreparation, retryPreparation]);
 
   // A Olena "digita" antes de cada pergunta. Perguntas já vistas, ao voltar, abrem direto.
   useEffect(() => {
@@ -293,6 +298,8 @@ export default function OnboardingView({
   }, [step]);
 
   function answer(value: OnboardingAnswer) {
+    setPreparationFailed(false);
+    setSkipPreparation(false);
     setAnswers((previous) => {
       const next = [...previous];
       next[step] = value;
@@ -335,7 +342,14 @@ export default function OnboardingView({
     return (
       <GoogleLogin
         answers={answers}
-        onFinish={() => onFinish(buildSetup(answers))}
+        configuration={configuration}
+        onFinish={() =>
+          onFinish(
+            answers.length === questions.length
+              ? { ...buildSetup(answers), ...(configuration ? { configuration } : {}) }
+              : undefined,
+          )
+        }
         {...(!loginOnly && {
           onBack: () => {
             setLeaving(false);
@@ -448,6 +462,65 @@ export default function OnboardingView({
               ))}
             </fieldset>
           )}
+          {finished && !configuration && !preparationFailed && !skipPreparation && (
+            <HelenaLoading compact label={uiText("A Olena está preparando suas preferências…")} />
+          )}
+          {finished && preparationFailed && !skipPreparation && (
+            <div className="onboarding-preparation-error" role="alert">
+              <p>{uiText("Não foi possível preparar suas preferências agora.")}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreparationFailed(false);
+                  setRetryPreparation((value) => value + 1);
+                }}
+              >
+                {uiText("Tentar novamente")}
+              </button>
+              <button type="button" onClick={() => setSkipPreparation(true)}>
+                {uiText("Continuar sem configuração automática")}
+              </button>
+            </div>
+          )}
+          {finished && configuration && (
+            <dl className="onboarding-preparation" aria-label={uiText("Preparado pela Olena")}>
+              <div>
+                <dt>{uiText("Meta diária")}</dt>
+                <dd>
+                  {configuration.preferences.dailyGoalMinutes ? (
+                    <>
+                      <PaperDigits value={String(configuration.preferences.dailyGoalMinutes)} />{" "}
+                      {uiText("minutos por dia")}
+                    </>
+                  ) : (
+                    uiText("Sem meta fixa")
+                  )}
+                </dd>
+              </div>
+              <div>
+                <dt>{uiText("Foco")}</dt>
+                <dd>
+                  <PaperDigits value={String(configuration.focusPreferences.pomodoroMinutes)} />{" "}
+                  {uiText("minutos")} ·{" "}
+                  {configuration.preferences.rhythm === "difuso"
+                    ? uiText("Com pausas")
+                    : uiText("Foco contínuo")}
+                </dd>
+              </div>
+              <div>
+                <dt>{uiText("Matéria inicial")}</dt>
+                <dd>
+                  {configuration.subject
+                    ? uiText(configuration.subject.name)
+                    : uiText("Escolher depois")}
+                </dd>
+              </div>
+              <div>
+                <dt>{uiText("Preferências")}</dt>
+                <dd>{uiText(String(answers[5]))}</dd>
+              </div>
+            </dl>
+          )}
           <div className="onboarding__actions onboarding__actions--chat">
             {step > 0 && !showLogin && (
               <button type="button" disabled={stage === "reacting"} onClick={goBack}>
@@ -467,13 +540,20 @@ export default function OnboardingView({
               </button>
             )}
             {finished && (
-              <button type="button" className="is-primary" onClick={openLogin}>
+              <button
+                type="button"
+                className="is-primary"
+                disabled={!configuration && !skipPreparation}
+                onClick={openLogin}
+              >
                 {uiText("Registre-se")}
                 <PaperArrow />
               </button>
             )}
           </div>
-          <p className="onboarding__privacy">{uiText(1437)}</p>
+          <p className="onboarding__privacy">
+            {uiText("A Olena configura seu espaço com estas respostas.")}
+          </p>
         </div>
       </section>
       <BrandFooter withOlena />

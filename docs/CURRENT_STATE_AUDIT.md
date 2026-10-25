@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Preparação personalizada do onboarding, 2026-10-25
+
+Mesclagem da PR 521 suspensa para incluir a solicitação do proprietário: preferências, meta diária, duração de Foco e matéria inicial. Não inclui plano, tarefas ou horários. Nova ação POST de /api/olena aplica regras determinísticas às nove escolhas limitadas e retorna configuração validada; sem modelo, credencial adicional, treinamento ou escrita no servidor. Origem, versão, parâmetros, enumeração e corpo de 4096 bytes validados.
+
+Resumo em papel antes de Registre-se, com carregamento original, timeout de dez segundos, cancelamento, nova tentativa e opção explícita de continuar sem configuração automática. Persistência reaproveita onboarding existente e workspace versão 7, com metadados opcionais, disciplina reutilizada por ID/nome e marca estável de aplicação única. Registro legado de redirect continua legível. Conta pronta aplica configuração pendente após a troca de workspace; edições posteriores permanecem. Meta aparece no Espaço e é editável em Estudo e foco, assim como a matéria inicial. Foco mantém sessão/modo recuperados e não inicia sozinho. Ilha inicial em Praticar respeita atalhos explícitos para Matemática e mantém futuras atividades bloqueadas.
+
+Validação final: npm run verify aprovado com 348 arquivos e 2263 testes; lint sem erros (24 avisos existentes), formatação, API ESM, catálogos PT/EN com 3070 entradas, build e desempenho verdes. Aplicação 1566,7 KiB de 1600; entrada 220,7 KiB, sem mudar teto ou dependências. Quarenta e quatro cenários Edge desktop/mobile passaram sem skips na versão final: preparação pela API real do preview, resumo legível em ambos os temas, edição de meta/matéria persistente após reload, fallback sem simular sucesso, todas as perguntas e acesso em 320x568 e 360x640, retomada/suspensão do Foco, Pomodoro personalizado, configurações e 404.
+
+Provas de regressão vermelhas antes e verdes depois para preservação de pausas, login sem questionário, escolha explícita Agora não em programação e dígitos do resumo no tema escuro. Três casos de sincronização cobrem configuração salva antes/durante GET e dono diferente; configuração pendente só recebe prioridade para o próprio UID e é consumida depois da aplicação ao workspace. Esse ajuste não muda regras, chaves, configurações externas nem fluxo de login. Capturas finais claras/escuras no PC/celular inspecionadas. WebKit real aguarda CI, sem download local. Atualização na PR 521, com mesclagem suspensa a pedido do proprietário.
+
 ## Página 404 e recuperação de abertura, 2026-10-25
 
 Adição na mesma branch/PR 521 do onboarding. PaperRecoveryPage reaproveita os dígitos e alfabeto de papel originais, a Olena aprovada e a seta original; folha com dobra, CTA recortado e superfície dos dois temas, responsiva no PC e celular. Rota desconhecida deixa de virar início silenciosamente. Mantidos caminhos conhecidos, /habitos e convite/projetor da Sala. A 404 aparece antes do onboarding sem exigir conta.

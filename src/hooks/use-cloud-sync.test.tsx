@@ -5,6 +5,7 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { useCloudSync } from "./use-cloud-sync";
+import { ONBOARDING_OPTIONS, prepareOnboarding } from "../domain/onboarding-configuration";
 import { recordRoomXp, readRoomXp, ROOM_XP_KEY } from "../data/room-xp";
 import {
   finishMathPlace,
@@ -450,79 +451,100 @@ it("mantém alteração pendente após falha e permite tentar a sincronização 
   expect(localStorage.getItem("helena.soloProgress")).toBeNull();
 });
 
-it("não deixa um GET antigo sobrescrever uma escrita local feita durante a busca na nuvem", async () => {
-  // Reproduz o login com Google: assim que a pessoa autentica,
-  // onAuthStateChanged dispara e o hook busca o estado na nuvem (GET) ao
-  // mesmo tempo em que GoogleLogin acabou de gravar localmente que o
-  // onboarding foi concluido. Se o GET (rede, mais lento) responder DEPOIS
-  // dessa gravacao com um instantaneo antigo da nuvem, ele nao pode apagar
-  // a marca de conclusao que acabou de ser salva.
-  const user = {
-    uid: "user-1",
-    displayName: "Ana",
-    email: "helena@example.com",
-    getIdToken: vi.fn(async () => "token"),
-  };
-  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
-    auth: { currentUser: user },
-    authApi: {
-      onIdTokenChanged: () => () => undefined,
-      onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
-        listener(user);
-        return () => undefined;
+it.each(["during", "before", "another-account"] as const)(
+  "não deixa um GET antigo apagar configuração pendente da própria conta: %s",
+  async (timing) => {
+    // Reproduz o login com Google: assim que a pessoa autentica,
+    // onAuthStateChanged dispara e o hook busca o estado na nuvem (GET) ao
+    // mesmo tempo em que GoogleLogin acabou de gravar localmente que o
+    // onboarding foi concluido. Se o GET (rede, mais lento) responder DEPOIS
+    // dessa gravacao com um instantaneo antigo da nuvem, ele nao pode apagar
+    // a marca de conclusao que acabou de ser salva.
+    const user = {
+      uid: "user-1",
+      displayName: "Ana",
+      email: "helena@example.com",
+      getIdToken: vi.fn(async () => "token"),
+    };
+    vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+      auth: { currentUser: user },
+      authApi: {
+        onIdTokenChanged: () => () => undefined,
+        onAuthStateChanged: (_auth: unknown, listener: (current: typeof user) => void) => {
+          listener(user);
+          return () => undefined;
+        },
+        signOut: vi.fn(),
       },
-      signOut: vi.fn(),
-    },
-    databaseURL: "https://project.firebaseio.com",
-  } as never);
+      databaseURL: "https://project.firebaseio.com",
+    } as never);
 
-  let resolveGet: (value: Response) => void = () => undefined;
-  let cloudResponse: Response | undefined;
-  const puts: string[] = [];
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
-      if (init?.method === "GET") {
-        if (cloudResponse) return cloudResponse.clone();
-        return new Promise<Response>((resolve) => {
-          resolveGet = (response) => {
-            cloudResponse = response.clone();
-            resolve(response);
-          };
-        });
-      }
-      puts.push(init?.body as string);
-      return new Response("null", { status: 200 });
-    }),
-  );
+    let resolveGet: (value: Response) => void = () => undefined;
+    let cloudResponse: Response | undefined;
+    const puts: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+        if (init?.method === "GET") {
+          if (cloudResponse) return cloudResponse.clone();
+          return new Promise<Response>((resolve) => {
+            resolveGet = (response) => {
+              cloudResponse = response.clone();
+              resolve(response);
+            };
+          });
+        }
+        puts.push(init?.body as string);
+        return new Response("null", { status: 200 });
+      }),
+    );
 
-  const { result } = renderHook(() => useCloudSync());
-  await waitFor(() => expect(result.current.status).toBe("loading"));
+    const answers = ONBOARDING_OPTIONS.map((options, index) =>
+      index === 4 ? [options[0]!] : options[0]!,
+    );
+    const localOnboarding = JSON.stringify(
+      timing === "during"
+        ? { completed: true }
+        : {
+            completed: true,
+            answers,
+            configuration: prepareOnboarding(answers, "onboarding-v1-0123456789abcdef01234567"),
+            configurationOwner: timing === "another-account" ? "other-user" : user.uid,
+            configurationPending: true,
+          },
+    );
+    if (timing !== "during") localStorage.setItem("helena.onboarding.v1", localOnboarding);
+    const { result } = renderHook(() => useCloudSync());
+    await waitFor(() => expect(result.current.status).toBe("loading"));
 
-  // A gravacao local (equivalente a GoogleLogin concluindo o onboarding)
-  // acontece ENQUANTO o GET ainda esta pendente.
-  act(() => writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ completed: true })));
+    // A gravacao local (equivalente a GoogleLogin concluindo o onboarding)
+    // acontece ENQUANTO o GET ainda esta pendente.
+    if (timing === "during") act(() => writeSyncedStorage("helena.onboarding.v1", localOnboarding));
 
-  // A nuvem responde com um instantaneo antigo, sem o onboarding concluido.
-  act(() =>
-    resolveGet(
-      new Response(
-        JSON.stringify({ items: { "helena.onboarding.v1": JSON.stringify({ completed: false }) } }),
-        { status: 200 },
+    // A nuvem responde com um instantaneo antigo, sem o onboarding concluido.
+    act(() =>
+      resolveGet(
+        new Response(
+          JSON.stringify({
+            items: { "helena.onboarding.v1": JSON.stringify({ completed: false }) },
+          }),
+          { status: 200 },
+        ),
       ),
-    ),
-  );
+    );
 
-  await waitFor(() => expect(result.current.status).toBe("synced"));
+    await waitFor(() => expect(result.current.status).toBe("synced"));
 
-  expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}")).toEqual({
-    completed: true,
-  });
-  expect(puts).toHaveLength(1);
-  expect(decodeCloudItems(JSON.parse(puts[0]!).items)["helena.onboarding.v1"]).toBe(
-    JSON.stringify({ completed: true }),
-  );
-});
+    expect(JSON.parse(localStorage.getItem("helena.onboarding.v1") ?? "{}")).toEqual(
+      timing === "another-account" ? { completed: false } : JSON.parse(localOnboarding),
+    );
+    expect(puts).toHaveLength(timing === "another-account" ? 0 : 1);
+    if (timing !== "another-account")
+      expect(decodeCloudItems(JSON.parse(puts[0]!).items)["helena.onboarding.v1"]).toBe(
+        localOnboarding,
+      );
+  },
+);
 
 it("prioriza o estado da conta sobre um backup local antigo e preserva só a mudança nova", async () => {
   const user = {

@@ -1312,3 +1312,11 @@ html[data-reduce-motion="true"]
     line-height: 1;
   }
 }
+.onboarding-initial-subject {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}
+.onboarding-initial-subject select {
+  min-height: 44px;
+}

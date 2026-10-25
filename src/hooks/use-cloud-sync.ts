@@ -13,6 +13,7 @@ import type { SyncedItems, SyncedMergeResult } from "../data/sync-conflict";
 import { mergeReadUpdates, SYSTEM_UPDATES_READ_KEY } from "../data/system-updates";
 import { FOCUS_SESSION_KEY } from "../domain/focus-session";
 import { ACCOUNT_PROFILE_KEY, mergeProfileProgress } from "../domain/profile-progress";
+import { readPendingOnboardingConfiguration } from "../data/onboarding-client";
 import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 
 type CloudState = { version?: number; updatedAt?: number; items?: Record<string, string> };
@@ -315,6 +316,9 @@ export function useCloudSync() {
           let lastItems = "";
           if (cloud?.items) {
             const merged = { ...cloud.items };
+            const pendingOnboarding = localAfterGet["helena.onboarding.v1"];
+            if (readPendingOnboardingConfiguration(pendingOnboarding ?? null, user.uid))
+              merged["helena.onboarding.v1"] = pendingOnboarding!;
             // Recorded focus is append-only. A stale account snapshot must not erase
             // sessions completed offline before this page was reloaded.
             const localWorkspace = localAfterGet[WORKSPACE_STORAGE_KEY];

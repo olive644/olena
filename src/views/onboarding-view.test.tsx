@@ -2,6 +2,13 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import OnboardingView from "./onboarding-view";
 import { PRACTICE_ISLANDS } from "../data/practice-islands";
+import { prepareOnboarding, type OnboardingAnswers } from "../domain/onboarding-configuration";
+vi.mock("../data/onboarding-client", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../data/onboarding-client")>()),
+  requestOnboardingConfiguration: vi.fn(async (answers: OnboardingAnswers) =>
+    prepareOnboarding(answers, "onboarding-v1-0123456789abcdef01234567"),
+  ),
+}));
 
 it("mostra o nome OlenaStudy na marca do onboarding", () => {
   const { container } = render(<OnboardingView onFinish={vi.fn()} />);
@@ -20,6 +27,12 @@ it("mostra o rodapé da Galeria.Oli com o ícone em todos os passos", () => {
 });
 
 describe("conversa da Olena", () => {
+  it("entrar novamente sem questionário não redefine preferências existentes", async () => {
+    const finish = vi.fn();
+    render(<OnboardingView loginOnly onFinish={finish} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Entrar como convidado" }));
+    expect(finish).toHaveBeenCalledWith(undefined);
+  });
   it("oferece todas as matérias das ilhas e idiomas asiáticos com ícones próprios", () => {
     const { container } = render(<OnboardingView onFinish={vi.fn()} />);
     expect(container.querySelector(".onboarding__eyebrow")).toBeNull();
@@ -78,7 +91,7 @@ describe("conversa da Olena", () => {
     expect(screen.queryByRole("button", { name: "Voltar" })).toBeNull();
   });
 
-  it("depois da última pergunta mostra Registre-se sem antecipar o acesso", () => {
+  it("depois da última pergunta mostra Registre-se sem antecipar o acesso", async () => {
     render(<OnboardingView onFinish={vi.fn()} />);
     for (const choice of ["Ensino médio", "Matemática", "Inglês", "Criar uma rotina", "Visual"]) {
       fireEvent.click(screen.getByRole("button", { name: choice }));
@@ -92,6 +105,7 @@ describe("conversa da Olena", () => {
     expect(screen.getByRole("button", { name: "Registre-se" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Entrar com Google" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
+    expect(await screen.findByText("Meta diária")).toBeTruthy();
   });
 
   it("oferece convidado somente na tela final e preserva as respostas", async () => {
@@ -104,6 +118,11 @@ describe("conversa da Olena", () => {
     for (const choice of ["Passo a passo", "Foco contínuo", "Agora não", "15 minutos"])
       fireEvent.click(screen.getByRole("button", { name: choice }));
     expect(screen.queryByRole("button", { name: "Entrar como convidado" })).toBeNull();
+    await waitFor(() =>
+      expect(
+        (screen.getByRole("button", { name: "Registre-se" }) as HTMLButtonElement).disabled,
+      ).toBe(false),
+    );
     fireEvent.click(screen.getByRole("button", { name: "Registre-se" }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Entrar como convidado" })).toBeTruthy(),
