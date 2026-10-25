@@ -37,6 +37,7 @@ const HelenaChat = lazy(() =>
 );
 const RoomView = lazy(() => import("./views/room-view"));
 const OnboardingView = lazy(() => import("./views/onboarding-view"));
+const NotFoundView = lazy(() => import("./views/not-found-view"));
 const LibraryView = lazy(() => import("./views/library-view"));
 const LessonBuilderView = lazy(() => import("./views/lesson-builder-view"));
 const NotesView = lazy(() => import("./views/notes-view"));
@@ -92,6 +93,13 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
       return true;
     }
   });
+
+  if (view === null)
+    return (
+      <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
+        <NotFoundView />
+      </Suspense>
+    );
 
   if (onboarding)
     return (

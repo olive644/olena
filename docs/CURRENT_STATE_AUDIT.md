@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Página 404 e recuperação de abertura, 2026-10-25
+
+Adição na mesma branch/PR 521 do onboarding. PaperRecoveryPage reaproveita os dígitos e alfabeto de papel originais, a Olena aprovada e a seta original; folha com dobra, CTA recortado e superfície dos dois temas, responsiva no PC e celular. Rota desconhecida deixa de virar início silenciosamente. Mantidos caminhos conhecidos, /habitos e convite/projetor da Sala. A 404 aparece antes do onboarding sem exigir conta.
+
+A captura do proprietário era o catch de inicialização em main, não uma 404. Esse catch recebe o mesmo acabamento com Ops, mensagem de falha e Tentar novamente preservado, sem afirmar que a causa de rede/download foi resolvida. public/404.html funciona sem o bundle e sem JavaScript; CSS independente e script externo pequeno leem tema/idioma quando disponíveis. Rótulos estáticos acompanham os catálogos PT/EN e são comparados em teste. Não há rewrite genérico que converta APIs ou arquivos ausentes em HTML. A saída 404.html é o mecanismo oficial de página não encontrada estática da Vercel (https://vercel.com/kb/guide/custom-404-page); o status HTTP publicado será conferido na prévia, não inferido do servidor SPA local.
+
+Validação final: teste de caminho desconhecido vermelho antes da correção; 12 testes focados verdes depois, incluindo retorno/popstate, projetor e favicon antes do Oliver no rodapé React/estático. npm run verify passou com 346 arquivos e 2245 testes; lint sem erros (24 avisos), formatação, API, 3057 entradas em cada catálogo, build e orçamento verdes. Aplicação 1557,9 KiB de 1600, entrada 220,7 KiB, sem mudar tetos ou dependências. Ajuste final decorativo de rodapé também teve lint/formatação e testes focados repetidos.
+
+Vinte e sete cenários Edge desktop/mobile passaram na versão final, com cinco skips previstos nas larguras de navegação exclusivas de desktop. Cobertura de recuperação, onboarding e navegação responsiva, incluindo falha simulada do chunk do aplicativo e nova tentativa de download, versão estática sem JavaScript em 320x568, inglês, ambos os temas e paridade da cor dos dígitos na versão estática. Ordem e posição do favicon à esquerda do Oliver verificadas no navegador. Capturas finais claras/escuras desktop/mobile inspecionadas. WebKit e status HTTP na Vercel aguardam o CI/prévia publicada. Nenhum workflow, rewrite, serviço externo ou armazenamento alterado. Incluído na mesma PR 521, sem mesclagem nesta etapa.
+
 ## Onboarding com papel original, 2026-10-25
 
 Branch feat/onboarding-paper-flow. Quarenta ícones SVG próprios para todas as respostas, incluindo bandeiras recortadas de Japão e China. Escolhas incluem as seis matérias das ilhas e mantêm as opções gerais anteriores; nenhum conteúdo futuro foi habilitado. Japonês e Chinês são preferências de estudo, com valores canônicos e rótulos PT/EN, sem novos idiomas de interface. Marca usa o alfabeto de papel original; favicon da Olena precede o ícone existente da Galeria.Oli no rodapé dessas telas.
