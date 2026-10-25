@@ -231,7 +231,7 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
         <MobileNavigation view={view} onNavigate={setView} />
         {!projectorCode && (
           <Suspense fallback={null}>
-            <HelenaChat currentView={view} />
+            <HelenaChat currentView={view} materials={workspace.materials} />
             {(!cloud.enabled || cloud.authenticated === true || guest) && <PrivacyNotice />}
           </Suspense>
         )}

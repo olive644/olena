@@ -7,6 +7,7 @@ import { PaperObjectIcon } from "../components/paper-object-icon";
 import { NotebookSearch } from "../components/notebook-search";
 import { NotebookFolder } from "../components/notebook-folder";
 import { TextNoteEditor, TextNotePreview } from "../components/text-note";
+import { NoteFlashcardTools } from "../components/library-links";
 import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
@@ -688,6 +689,16 @@ export function NotesView({
       {journey && <NotebookJourney journey={journey} onDone={finishJourney} />}
       {pageJourney && <NotebookPageJourney journey={pageJourney} onDone={finishPageJourney} />}
       <PageHeader />
+      {(() => {
+        const note = workspace.notes.find(
+          (item) =>
+            item.id ===
+            (activePage?.id ?? (activeNotebook?.kind === "note" ? activeNotebook.pageIds[0] : "")),
+        );
+        return note ? (
+          <NoteFlashcardTools key={note.id} note={note} workspace={workspace} dispatch={dispatch} />
+        ) : null;
+      })()}
       {initialJoinCode && collaboration.state.error && (
         <div role="alert">
           <p>{collaboration.state.error}</p>

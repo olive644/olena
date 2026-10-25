@@ -229,34 +229,6 @@
 .library-flashcards small {
   color: var(--muted);
 }
-.library-dialog {
-  width: min(1100px, calc(100vw - 32px));
-  max-height: calc(100dvh - 32px);
-  border: 1px solid var(--line);
-  border-radius: 5px 24px 6px 18px;
-  padding: 24px;
-  color: var(--text);
-  background: var(--surface);
-  box-shadow: 0 9px 0 var(--soft);
-  overflow-y: auto;
-}
-.library-dialog:has(> form),
-.library-dialog:has(.library-review) {
-  max-width: 620px;
-}
-.library-dialog::backdrop {
-  background: #171320b8;
-}
-.library-dialog > header {
-  margin-bottom: 18px;
-}
-.library-dialog > header h2 {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-.library-dialog .field {
-  min-width: 0;
-}
 .library-review {
   display: grid;
   gap: 24px;
@@ -403,4 +375,11 @@
 }
 html[data-reduce-motion="true"] :is(.library-material, .library-answer) {
   animation: none;
+}
+.library-image-reader img {
+  display: block;
+  max-width: 100%;
+  max-height: 65dvh;
+  object-fit: contain;
+  margin-inline: auto;
 }

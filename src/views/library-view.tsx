@@ -7,8 +7,10 @@ import { PaperObjectIcon } from "../components/paper-object-icon";
 import { PaperDigits } from "../components/paper-digits";
 import { LibraryDialog } from "../components/library-dialog";
 import { HelenaLoading } from "../components/helena-loading";
-import { libraryFile, pdfFingerprint } from "../data/library-files";
+import { libraryFile, pdfFingerprint, imageFingerprint } from "../data/library-files";
 import { filterMaterials, safeMaterialUrl } from "../domain/library";
+import { reviewQueue } from "../domain/flashcard-study";
+import LibraryFlashcards from "../components/library-flashcards";
 import {
   createWorkspaceId,
   toDateKey,
@@ -45,6 +47,7 @@ export function LibraryView({
   const [archived, setArchived] = useState(false);
   const [favorites, setFavorites] = useState(false);
   const [sort, setSort] = useState("recent");
+  const [status, setStatus] = useState("");
   const [activeId, setActiveId] = useState(initialMaterialId ?? "");
   const [creating, setCreating] = useState<"" | "material" | "card" | "collection">("");
   const [editingId, setEditingId] = useState("");
@@ -66,6 +69,8 @@ export function LibraryView({
   const [reviewed, setReviewed] = useState<string[]>([]);
   const [front, setFront] = useState("");
   const [back, setBack] = useState("");
+  const [deck, setDeck] = useState("");
+  const [draftDeck, setDraftDeck] = useState("");
   const [source, setSource] = useState<{ id: string; page: number }>();
   const fileInput = useRef<HTMLInputElement>(null);
   const active = workspace.materials.find((item) => item.id === activeId);
@@ -78,9 +83,15 @@ export function LibraryView({
     archived,
     favorites,
     sort,
+    status,
   });
-  const due = workspace.flashcards.filter(
-    (card) => card.nextReview <= today && (!subject || card.subjectId === subject),
+  const due = reviewQueue(
+    workspace.flashcards.filter(
+      (card) => (!subject || card.subjectId === subject) && (!deck || card.deck === deck),
+    ),
+    today,
+    workspace.studyPreferences.flashcardNewLimit ?? 20,
+    workspace.flashcards.filter((card) => card.firstReviewedOn === today).length,
   );
   const review = due.find((card) => !reviewed.includes(card.id));
   const last = [...workspace.materials]
@@ -101,7 +112,7 @@ export function LibraryView({
     setMaterialKind(item?.kind ?? "link");
     setDraftSubject(item?.subjectId ?? (subject || workspace.subjects[0]?.id || ""));
     setDraftCollection(item?.collectionId ?? collection);
-    setEditingId(item?.id ?? "");
+    setEditingId(type === "material" ? (item?.id ?? "") : "");
     setFile(undefined);
     setCreating(type);
   }
@@ -114,9 +125,9 @@ export function LibraryView({
       let body = content.trim();
       if (materialKind === "link" && !safeMaterialUrl(body))
         throw new Error(uiText("Use um link http ou https válido."));
-      if (materialKind === "pdf" && !editingId) {
+      if ((materialKind === "pdf" || materialKind === "image") && !editingId) {
         if (!file) throw new Error(uiText("Selecione um PDF com até 20 MB."));
-        body = await pdfFingerprint(file);
+        body = await (materialKind === "image" ? imageFingerprint(file) : pdfFingerprint(file));
         await libraryFile(scope, id, file);
       }
       if (!body) return;
@@ -142,11 +153,13 @@ export function LibraryView({
       setMessage(uiText("Material salvo."));
     } catch (caught) {
       setError(
-        caught instanceof Error && !caught.message.startsWith("PDF_")
-          ? caught.message
-          : uiText(
-              "Não foi possível salvar. Use um PDF válido de até 20 MB e confira o espaço do dispositivo.",
-            ),
+        caught instanceof Error && caught.message.startsWith("IMAGE_")
+          ? uiText("Selecione a mesma imagem original, PNG, JPEG ou WebP de até 5 MB.")
+          : caught instanceof Error && !caught.message.startsWith("PDF_")
+            ? caught.message
+            : uiText(
+                "Não foi possível salvar. Use um PDF válido de até 20 MB e confira o espaço do dispositivo.",
+              ),
       );
     } finally {
       setBusy(false);
@@ -209,6 +222,7 @@ export function LibraryView({
                 onClick={() => {
                   setFront("");
                   setBack("");
+                  setDraftDeck(deck);
                   setSource(undefined);
                   startCreate("card");
                 }}
@@ -297,6 +311,7 @@ export function LibraryView({
               { value: "link", label: uiText("Link") },
               { value: "text", label: uiText("Texto") },
               { value: "pdf", label: "PDF" },
+              { value: "image", label: uiText("Imagem") },
             ]}
           />
           <PaperChoice
@@ -307,10 +322,22 @@ export function LibraryView({
               { value: "recent", label: uiText("Mais recentes") },
               { value: "title", label: uiText("Título") },
               { value: "opened", label: uiText("Últimos abertos") },
+              { value: "subject", label: uiText("Matéria") },
             ]}
           />
         </div>
         <div className="library-tools">
+          <PaperChoice
+            label={uiText("Status da leitura")}
+            value={status}
+            onChange={setStatus}
+            options={[
+              { value: "", label: uiText("Todos os status") },
+              { value: "unread", label: uiText("A ler") },
+              { value: "reading", label: uiText("Lendo") },
+              { value: "read", label: uiText("Lido") },
+            ]}
+          />
           <button
             className="secondary-button"
             aria-pressed={favorites}
@@ -333,13 +360,22 @@ export function LibraryView({
                 <PaperObjectIcon name={item.kind === "link" ? "note" : "notebook"} />
                 <small>
                   {nameOf(item.subjectId)} ·{" "}
-                  {item.kind === "pdf" ? "PDF" : uiText(item.kind === "link" ? "Link" : "Texto")}
+                  {item.kind === "pdf"
+                    ? "PDF"
+                    : uiText(
+                        item.kind === "image" ? "Imagem" : item.kind === "link" ? "Link" : "Texto",
+                      )}
                 </small>
                 <h3>{item.title}</h3>
                 <p>
-                  {item.kind === "pdf"
+                  {item.kind === "pdf" || item.kind === "image"
                     ? uiText("Arquivo neste dispositivo")
-                    : item.content.slice(0, 110)}
+                    : item.kind === "link"
+                      ? (() => {
+                          const url = safeMaterialUrl(item.content);
+                          return url ? new URL(url).hostname : uiText("Link inválido");
+                        })()
+                      : item.content.slice(0, 110)}
                 </p>
                 <span className="library-tags">
                   {item.tags?.map((tag) => (
@@ -396,38 +432,34 @@ export function LibraryView({
           </div>
         )}
       </section>
-      {!!workspace.flashcards.length && (
-        <section className="library-flashcards">
-          <h2>{uiText("Flashcards")}</h2>
-          <ul>
-            {workspace.flashcards.map((card) => (
-              <li key={card.id}>
-                <strong>{card.front}</strong>
-                <small>
-                  {nameOf(card.subjectId)} · {uiText("Próxima revisão")}: {card.nextReview}
-                </small>
-                {card.materialId &&
-                  workspace.materials.some((item) => item.id === card.materialId) && (
-                    <button
-                      className="text-button"
-                      onClick={() => {
-                        const material = workspace.materials.find(
-                          (item) => item.id === card.materialId,
-                        );
-                        if (material) {
-                          openMaterial(material);
-                          if (card.sourcePage) update(material.id, { page: card.sourcePage });
-                        }
-                      }}
-                    >
-                      {uiText("Ver fonte")}
-                    </button>
-                  )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <LibraryFlashcards
+        workspace={workspace}
+        dispatch={dispatch}
+        query={query}
+        subject={subject}
+        deck={deck}
+        onDeck={setDeck}
+        onEdit={(card) => {
+          startCreate("card");
+          setEditingId(card.id);
+          setFront(card.front);
+          setBack(card.back);
+          setDraftSubject(card.subjectId);
+          setDraftDeck(card.deck ?? "");
+        }}
+        onSource={(card) => {
+          if (card.noteId) {
+            const book = workspace.notebooks.find((item) => item.pageIds.includes(card.noteId!));
+            if (book) onNotebook?.(book.id, card.noteId);
+          } else {
+            const material = workspace.materials.find((item) => item.id === card.materialId);
+            if (material) {
+              openMaterial(material);
+              if (card.sourcePage) update(material.id, { page: card.sourcePage });
+            }
+          }
+        }}
+      />
       {creating && (
         <LibraryDialog
           title={uiText(
@@ -436,7 +468,9 @@ export function LibraryView({
                 ? "Editar material"
                 : "Adicionar material"
               : creating === "card"
-                ? "Criar flashcard"
+                ? editingId
+                  ? "Editar flashcard"
+                  : "Criar flashcard"
                 : "Criar coleção",
           )}
           onClose={() => {
@@ -461,14 +495,27 @@ export function LibraryView({
                 setCreating("");
               } else {
                 if (!front.trim() || !back.trim() || !draftSubject) return;
-                dispatch({
-                  type: "flashcard/added",
-                  front: front.trim(),
-                  back: back.trim(),
-                  subjectId: draftSubject,
-                  createdOn: today,
-                  ...(source ? { materialId: source.id, sourcePage: source.page } : {}),
-                });
+                if (editingId)
+                  dispatch({
+                    type: "flashcard/updated",
+                    id: editingId,
+                    changes: {
+                      front: front.trim(),
+                      back: back.trim(),
+                      subjectId: draftSubject,
+                      deck: draftDeck.trim(),
+                    },
+                  });
+                else
+                  dispatch({
+                    type: "flashcard/added",
+                    deck: draftDeck.trim(),
+                    front: front.trim(),
+                    back: back.trim(),
+                    subjectId: draftSubject,
+                    createdOn: today,
+                    ...(source ? { materialId: source.id, sourcePage: source.page } : {}),
+                  });
                 setCreating("");
                 setMessage(uiText("Flashcard criado."));
               }
@@ -516,17 +563,28 @@ export function LibraryView({
                     { value: "link", label: uiText("Link") },
                     { value: "text", label: uiText("Texto") },
                     { value: "pdf", label: "PDF" },
+                    { value: "image", label: uiText("Imagem") },
                   ]}
                 />
-                {materialKind === "pdf" ? (
+                {materialKind === "pdf" || materialKind === "image" ? (
                   !editingId && (
                     <label className="field">
-                      <span>{uiText("PDF, até 20 MB")}</span>
+                      <span>
+                        {uiText(
+                          materialKind === "image"
+                            ? "Imagem PNG, JPEG ou WebP, até 5 MB"
+                            : "PDF, até 20 MB",
+                        )}
+                      </span>
                       <input
                         ref={fileInput}
                         required
                         type="file"
-                        accept="application/pdf,.pdf"
+                        accept={
+                          materialKind === "image"
+                            ? "image/png,image/jpeg,image/webp"
+                            : "application/pdf,.pdf"
+                        }
                         onChange={(event) => setFile(event.target.files?.[0])}
                       />
                       <small>
@@ -577,6 +635,14 @@ export function LibraryView({
             {creating === "card" && (
               <>
                 <label className="field">
+                  <span>{uiText("Baralho")}</span>
+                  <input
+                    maxLength={160}
+                    value={draftDeck}
+                    onChange={(event) => setDraftDeck(event.target.value)}
+                  />
+                </label>
+                <label className="field">
                   <span>{uiText("Frente")}</span>
                   <textarea
                     required
@@ -599,7 +665,7 @@ export function LibraryView({
             {error && <p role="alert">{error}</p>}
             {busy && <HelenaLoading compact label={uiText("Salvando material")} />}
             <button className="primary-button" disabled={busy} type="submit">
-              {uiText(creating === "card" ? "Criar flashcard" : "Salvar")}
+              {uiText(creating === "card" && !editingId ? "Criar flashcard" : "Salvar")}
             </button>
           </form>
         </LibraryDialog>
@@ -634,7 +700,8 @@ export function LibraryView({
                 if (removing) {
                   setBusy(true);
                   try {
-                    if (removing.kind === "pdf") await libraryFile(scope, removing.id, null);
+                    if (removing.kind === "pdf" || removing.kind === "image")
+                      await libraryFile(scope, removing.id, null);
                     dispatch({ type: "material/removed", id: removing.id });
                     setRemoving(undefined);
                     setMessage(uiText("Material excluído."));
@@ -719,6 +786,7 @@ export function LibraryView({
             onFlashcard={(text, page) => {
               setFront(text);
               setBack("");
+              setDraftDeck(deck);
               setSource({ id: active.id, page });
               startCreate("card", active);
             }}

@@ -364,3 +364,14 @@ html[data-reduce-motion="true"] .student-space *::after {
     animation: none;
   }
 }
+.workspace-search ul {
+  display: grid;
+  gap: 10px;
+  padding-inline-start: 20px;
+}
+.workspace-search li {
+  overflow-wrap: anywhere;
+}
+.workspace-search small {
+  margin-inline-start: 12px;
+}

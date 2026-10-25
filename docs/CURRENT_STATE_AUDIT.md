@@ -1,5 +1,15 @@
 # Auditoria do estado atual
 
+## Biblioteca conectada e revisão, 2026-10-25
+
+Branch feat/library-connected-review parte da main após a PR 518. Cartões recebem edição/exclusão confirmada, baralho por tema, busca/filtro, TSV local com prévia e deduplicação e estatísticas reais. Agendamento adaptado de SM-2 em flashcard-study conserva o primeiro Fácil de três dias, calcula facilidade individual e coloca Errei no dia seguinte. Limite de novos por dia usa firstReviewedOn da conta inteira, sem limitar revisões antigas. Novos campos opcionais preservam dados anteriores e a versão 7; nenhuma chave Firebase nova.
+
+Notes e folhas criam cartões de trechos editáveis com noteId; Notes, tarefas e eventos vinculam/desvinculam materiais e abrem a fonte interna. Busca do Espaço pesquisa o workspace local, incluindo o acervo. Leitura ganha status e hostname sem fetch externo. Imagens PNG/JPEG/WebP até 5 MB ficam no mesmo IndexedDB por conta, com bytes/MIME validados e hash; PDF legado continua legível. Nenhum binário é sincronizado. Tutora existente aceita material textual com prévia e consentimento renovado por pergunta, sem anexar PDF/imagem, mudar serviço, cotas ou backend.
+
+Investigação de regressão: criação de cartão a partir de material herdava editingId do material. O formulário passava a editar um cartão inexistente. startCreate usa esse ID somente para material; edição de cartão atribui o próprio ID explicitamente. Prova E2E original de fonte/caderno/Pomodoro passou sem alterar expectativas. Coleções da Biblioteca faltavam no mergeWorkspaceStates; incluídas aditivamente com baseline e merge por ID, preservando clientes anteriores.
+
+Validação final: npm run verify aprovado, 345 arquivos e 2230 testes, lint sem erros (23 avisos existentes), formatação, API, catálogos PT/EN com 3032 entradas, build e desempenho verdes. Aplicação 1550,5 KiB de 1600 e entrada 218,1 KiB, sem mudar tetos. Quarenta e quatro cenários Edge desktop/mobile passaram na versão final, com seis skips previstos por plataforma, mais quatro cenários de metadados/edição da Agenda. Cobertura inclui PDF, imagem local persistente, TSV, limite diário, Notes com fonte, busca, caderno, Pomodoro, navegação e ambos os temas. Prévia clara desktop e escura mobile inspecionadas. Estilo do LibraryDialog pertence ao componente, para conservar o papel ao abrir diretamente em Notes. dueFlashcards compartilha o limite com Praticar e a rota de estudo. Cartões legados já estudados não consomem novos na primeira revisão após a atualização. Nenhuma dependência, CI, regra, chave Firebase, serviço ou limite alterado; WebKit real depende do CI da PR, sem download local. Entrega por PR, sem mesclagem nesta etapa.
+
 ## Correção dos checks da PR 518, 2026-10-24
 
 CI identificou o E2E antigo de flashcards preenchendo Frente sem abrir o novo diálogo. Reproduzido no Edge desktop/mobile; o teste agora abre Criar flashcard e mantém a verificação de persistência após Matemática. Seis cenários focados passaram, incluindo compartilhamento claro/escuro, que havia apresentado duas repetições no CI; sem mudança de timeout ou expectativa do PNG.

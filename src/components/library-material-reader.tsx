@@ -13,6 +13,7 @@ import { PaperChoice } from "./agenda-paper-fields";
 import { PaperEditorIcon } from "./paper-editor-icon";
 
 const PdfReader = lazy(() => import("./library-pdf-reader"));
+const ImageReader = lazy(() => import("./library-image-reader"));
 const NotebookSpread = lazy(() =>
   import("./notebook-spread").then((module) => ({ default: module.NotebookSpread })),
 );
@@ -102,6 +103,16 @@ export default function MaterialReader({
         onClose();
       }}
     >
+      <PaperChoice
+        label={uiText("Status da leitura")}
+        value={material.status ?? "unread"}
+        onChange={(value) => update({ status: value as "unread" | "reading" | "read" })}
+        options={[
+          { value: "unread", label: uiText("A ler") },
+          { value: "reading", label: uiText("Lendo") },
+          { value: "read", label: uiText("Lido") },
+        ]}
+      />
       <div className={`library-study-layout ${notebook ? "with-notebook" : ""}`}>
         <div
           className="library-reader"
@@ -125,7 +136,11 @@ export default function MaterialReader({
               </button>
             )}
           </div>
-          {material.kind === "pdf" ? (
+          {material.kind === "image" ? (
+            <Suspense fallback={<HelenaLoading compact label={uiText("Abrindo material")} />}>
+              <ImageReader material={material} scope={scope} />
+            </Suspense>
+          ) : material.kind === "pdf" ? (
             <Suspense fallback={<HelenaLoading compact label={uiText("Abrindo PDF")} />}>
               <PdfReader
                 onReady={restorePdfScroll}

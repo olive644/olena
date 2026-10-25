@@ -897,6 +897,14 @@ body:has([aria-modal="true"]) .helena-chat--application {
 .helena-chat[data-motion="closing"] .helena-chat-launcher {
   transform: none;
 }
+.helena-chat-material {
+  max-height: 180px;
+  overflow-y: auto;
+}
+.helena-chat-material details p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 @media (max-width: 899px) {
   .helena-chat {
     width: 56px;

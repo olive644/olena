@@ -2,6 +2,7 @@ export const studyModalities = ["visual", "auditivo", "leitura-escrita", "pratic
 export type StudyModality = (typeof studyModalities)[number];
 
 export type StudyPreferences = {
+  flashcardNewLimit?: number;
   modalities: StudyModality[];
   processing: "sequencial" | "global";
   rhythm: "focado" | "difuso";

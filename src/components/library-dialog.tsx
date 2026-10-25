@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { uiText } from "../i18n/runtime";
 import { PaperCloseIcon } from "./paper-close-icon";
+import "./library-dialog.css";
 
 export function LibraryDialog({
   title,

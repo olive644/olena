@@ -19,6 +19,7 @@ export function filterMaterials(
     archived: boolean;
     favorites: boolean;
     sort: string;
+    status?: string;
   },
 ) {
   const query = options.query
@@ -33,6 +34,7 @@ export function filterMaterials(
         (!options.favorites || item.favorite) &&
         (!options.subject || item.subjectId === options.subject) &&
         (!options.kind || item.kind === options.kind) &&
+        (!options.status || (item.status ?? "unread") === options.status) &&
         (!options.collection || item.collectionId === options.collection) &&
         (!query ||
           `${item.title} ${item.content} ${(item["tags"] ?? []).join(" ")}`
@@ -42,16 +44,20 @@ export function filterMaterials(
             .includes(query)),
     )
     .sort((a, b) =>
-      options.sort === "title"
-        ? a.title.localeCompare(b.title)
-        : (options.sort === "opened" ? (b.openedAt ?? "") : b.createdAt).localeCompare(
-            options.sort === "opened" ? (a.openedAt ?? "") : a.createdAt,
-          ),
+      options.sort === "subject"
+        ? a.subjectId.localeCompare(b.subjectId) || a.title.localeCompare(b.title)
+        : options.sort === "title"
+          ? a.title.localeCompare(b.title)
+          : (options.sort === "opened" ? (b.openedAt ?? "") : b.createdAt).localeCompare(
+              options.sort === "opened" ? (a.openedAt ?? "") : a.createdAt,
+            ),
     );
 }
 
 export function validLibraryMetadata(value: Record<string, unknown>): boolean {
   return (
+    (value["status"] === undefined ||
+      ["unread", "reading", "read"].includes(String(value["status"]))) &&
     ["collectionId", "openedAt"].every(
       (key) => value[key] === undefined || typeof value[key] === "string",
     ) &&
@@ -86,5 +92,13 @@ export function validLibraryMetadata(value: Record<string, unknown>): boolean {
             Number(item["page"]) > 0
           );
         })))
+  );
+}
+
+export function validMaterialLinks(value: Record<string, unknown>): boolean {
+  return (
+    value["materialIds"] === undefined ||
+    (Array.isArray(value["materialIds"]) &&
+      value["materialIds"].every((id) => typeof id === "string" && id.length <= 160))
   );
 }

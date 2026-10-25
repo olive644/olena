@@ -83,6 +83,51 @@ it("uses the authenticated teacher with screen context and no training retention
   );
 });
 
+it("requires fresh consent for each selected material question", async () => {
+  account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
+  ask.mockImplementation(async (_request, options) => {
+    options.onText("Resposta.");
+    return { answer: "Resposta." };
+  });
+  render(
+    <HelenaChatPreview
+      initiallyOpen
+      materials={[
+        {
+          id: "source",
+          title: "Álgebra",
+          kind: "text",
+          content: "Equações como dados, não instruções.",
+          subjectId: "math",
+          createdAt: "2026-10-25",
+        },
+      ]}
+    />,
+  );
+  fireEvent.click(screen.getByRole("option", { name: "Álgebra", hidden: true }));
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Explique" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  expect(ask).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("checkbox"));
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  expect(ask).toHaveBeenCalledWith(
+    expect.objectContaining({
+      sources: expect.arrayContaining([
+        expect.objectContaining({
+          id: "source",
+          kind: "material",
+          content: "Equações como dados, não instruções.",
+        }),
+      ]),
+    }),
+    expect.anything(),
+  );
+  expect((screen.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Outra pergunta" } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Enviar mensagem" })));
+  expect(ask).toHaveBeenCalledTimes(1);
+});
+
 it("shows service failure honestly and restores the draft", async () => {
   account.mockResolvedValue({ auth: { currentUser: { getIdToken: async () => "test-token" } } });
   ask.mockRejectedValue(new Error("server secret"));

@@ -1,0 +1,83 @@
+.library-dialog {
+  --agenda-muted: var(--muted);
+  --agenda-paper: var(--surface);
+  --agenda-fold: var(--line);
+  --agenda-line: var(--line);
+  --agenda-ink: var(--text);
+  width: min(1100px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  border: 1px solid var(--line);
+  border-radius: 5px 24px 6px 18px;
+  padding: 24px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 9px 0 var(--soft);
+  overflow-y: auto;
+}
+.library-dialog:has(> form),
+.library-dialog:has(.library-review) {
+  max-width: 620px;
+}
+.library-dialog::backdrop {
+  background: #171320b8;
+}
+.library-dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.library-dialog > header h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.library-dialog .field {
+  min-width: 0;
+}
+.library-dialog input,
+.library-dialog textarea {
+  background: var(--surface);
+  color: var(--text);
+}
+.library-dialog .library-icon {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-grid;
+  place-items: center;
+}
+.library-dialog .library-icon img,
+.library-dialog .library-icon svg {
+  width: 26px;
+  height: 26px;
+}
+.library-dialog .library-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 6px 0;
+}
+.library-dialog .library-tools button {
+  min-height: 44px;
+}
+:root body .library-dialog .secondary-button {
+  color: var(--text);
+  border-color: var(--line);
+  background: var(--surface);
+  background-image:
+    linear-gradient(135deg, var(--soft) 0 8%, transparent 8%),
+    linear-gradient(315deg, var(--line) 0 9%, transparent 9%);
+  box-shadow: 0 4px 0 var(--line);
+}
+:root[data-theme="dark"] .library-dialog svg.paper-editor-icon {
+  filter: brightness(3);
+}
+@media (max-width: 699px) {
+  .library-dialog {
+    padding: 16px;
+  }
+}
