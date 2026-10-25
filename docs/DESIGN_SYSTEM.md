@@ -1,5 +1,7 @@
 # Identidade visual oficial OlenaStudy
 
+Biblioteca: seguir [LIBRARY_DESIGN.md](LIBRARY_DESIGN.md), incluindo capas de coleções, revisão, leitura de PDF, fontes dos trechos e vínculo com cadernos/Foco.
+
 Conquistas: seguir o contrato específico em [ACHIEVEMENT_DESIGN.md](ACHIEVEMENT_DESIGN.md), incluindo materiais, temas, dígitos originais, favoritos e inspeção estática.
 
 Revisão aprovada do Espaço (2026-10-19): Foco acima da Ilha na coluna esquerda,

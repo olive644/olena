@@ -29,6 +29,8 @@ import { focusDeviceId } from "../data/focus-device";
 import { toDateKey, type WorkspaceAction, type WorkspaceState } from "../domain/workspace";
 
 type FocusViewProps = {
+  initialMaterialId?: string;
+  onMaterial?: (id: string) => void;
   workspace: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
 };
@@ -108,7 +110,7 @@ function FocusPaperControlIcon({ paused }: { paused: boolean }) {
   );
 }
 
-export function FocusView({ workspace, dispatch }: FocusViewProps) {
+export function FocusView({ workspace, dispatch, initialMaterialId, onMaterial }: FocusViewProps) {
   useLanguage();
 
   const [deviceId] = useState(focusDeviceId);
@@ -136,12 +138,17 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       : undefined,
   );
   const hasSession = useRef(Boolean(restored));
+  const [materialId] = useState(
+    restored?.materialId ?? (!restored ? initialMaterialId : undefined),
+  );
+  const material = workspace.materials.find((item) => item.id === materialId);
   const ownsSession = useRef(!restored?.deviceId || restored.deviceId === deviceId);
   const defaultSubject =
     workspace.subjects.find((subject) => subject.id === restored?.subjectId) ??
+    workspace.subjects.find((subject) => subject.id === material?.subjectId) ??
     workspace.subjects[0];
   const [mode, setMode] = useState<TimerMode>(
-    restored?.mode ?? readStudentResume().focus?.mode ?? "timer",
+    restored?.mode ?? (material ? "pomodoro" : (readStudentResume().focus?.mode ?? "timer")),
   );
   useEffect(() => {
     saveStudentResume({ focus: { mode, at: Date.now() } });
@@ -212,6 +219,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
       return;
     hasSession.current = true;
     const session: FocusSession = {
+      ...(materialId ? { materialId } : {}),
+      ...(defaultSubject ? { subjectId: defaultSubject.id } : {}),
       mode,
       phase: pomodoroPhase,
       completed: completedPomodoros,
@@ -248,6 +257,8 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     running,
     agendaLink,
     deviceId,
+    defaultSubject,
+    materialId,
   ]);
   useEffect(() => {
     const publish = () => window.dispatchEvent(new Event(SYNCED_STORAGE_EVENT));
@@ -316,6 +327,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
         if (phase === "focus") {
           dispatch({
             type: "focus/recorded",
+            ...(materialId ? { materialId } : {}),
             mode: "pomodoro",
             subjectId: defaultSubject?.id ?? "",
             durationMinutes: minutes,
@@ -355,6 +367,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   }, [
     completedPomodoros,
     defaultSubject?.id,
+    materialId,
     dispatch,
     duration,
     mode,
@@ -435,6 +448,7 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
     if (mode === "timer" || pomodoroPhase === "focus") {
       dispatch({
         type: "focus/recorded",
+        ...(materialId ? { materialId } : {}),
         mode,
         subjectId: subject.id,
         durationMinutes: agendaLink
@@ -501,6 +515,16 @@ export function FocusView({ workspace, dispatch }: FocusViewProps) {
   return (
     <main className="main-content focus-page" id="main-content">
       <PageHeader />
+      {material && (
+        <section className="module-panel">
+          <strong>{material.title}</strong>
+          {onMaterial && (
+            <button className="secondary-button" onClick={() => onMaterial(material.id)}>
+              {uiText("Voltar ao material")}
+            </button>
+          )}
+        </section>
+      )}
       <div className="focus-layout">
         <section className="focus-card" aria-labelledby="focus-timer-title">
           <div className="focus-mode-carousel">

@@ -12,6 +12,7 @@ export function SettingsFooter() {
         {[
           [uiText(1946), "https://www.instagram.com/olenastudy.app/", "instagram"],
           [uiText(1947), "https://www.tiktok.com/@olena.app", "tiktok"],
+          ["Discord", "https://discord.gg/EHh6VpGUd", "discord"],
         ].map(([label, href, icon]) => (
           <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
             <img

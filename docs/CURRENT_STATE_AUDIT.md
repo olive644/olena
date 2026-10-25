@@ -1,5 +1,23 @@
 # Auditoria do estado atual
 
+## Correção dos checks da PR 518, 2026-10-24
+
+CI identificou o E2E antigo de flashcards preenchendo Frente sem abrir o novo diálogo. Reproduzido no Edge desktop/mobile; o teste agora abre Criar flashcard e mantém a verificação de persistência após Matemática. Seis cenários focados passaram, incluindo compartilhamento claro/escuro, que havia apresentado duas repetições no CI; sem mudança de timeout ou expectativa do PNG.
+
+O WebKit real também falhou ao salvar PDF. WebKit documenta rejeição de Blob/File no IndexedDB de sessões efêmeras (bug 286561), compatível com esse sintoma. libraryFile agora grava ArrayBuffer e reconstrói application/pdf na leitura, preservando leitura de Blob legado, chaves por conta e limpeza. Prova unitária falhou antes e passou depois com armazenamento que recusa Blob, incluindo leitura legada, isolamento e exclusão. A confirmação do caso específico no WebKit real depende do novo CI; não instalado navegador local e nenhuma configuração de CI alterada.
+
+Validação da correção: npm run verify aprovado, 343 arquivos e 2220 testes, zero erros de lint (23 avisos existentes), formatação, API, idiomas, build e desempenho verdes. Aplicação 1532,4 KiB no teto existente de 1600, entrada 217,7 KiB. Edge desktop/mobile: 33 testes aprovados e cinco skips exclusivos de celular no projeto desktop, cobrindo app, Biblioteca/PDF, caderno/Foco e arraste/compartilhamento de conquistas claro/escuro. Nenhuma expectativa de persistência, dimensão do PNG ou tempo de espera foi removida ou ampliada.
+
+## Biblioteca integrada, 2026-10-24
+
+Branch feat/library-study-hub parte de origin/main e preserva as conquistas mescladas. Biblioteca tem coleções com capas próprias, busca por conteúdo/etiquetas, filtros, ordenação, favoritos, arquivo, edição, exclusão confirmada e retomada. Revisão revela o verso antes de avaliar e conserva o agendamento existente. Trechos guardam fonte no caderno e no flashcard. Foco associa material e matéria sem início automático ou substituição da sessão recuperada.
+
+PDF.js existente lê documentos locais de até 20 MB, com busca, páginas, marcadores e anotações. Binários ficam no IndexedDB por conta/material; hash e organização seguem o workspace. Em outro aparelho, selecionar novamente o original, sem promessa de backup em nuvem do PDF. Contrato em LIBRARY_DESIGN.md. Configurações recebeu o convite Discord solicitado e ícone próprio de papel.
+
+Validação final: npm run verify aprovado com 342 arquivos e 2219 testes, lint sem erros (23 avisos existentes), idiomas, API, build e desempenho verdes. Vinte e quatro execuções Edge desktop/mobile passaram nos temas claro/escuro, incluindo pesquisa, marcador, posição após reload, reanexação pelo hash, recusa do arquivo errado, fonte no caderno/flashcard, Pomodoro parado e regressões de Foco e Configurações. Entrada medida em 217,7 KiB e aplicação em 1532,3 KiB, dentro dos tetos já vigentes na main, sem alterá-los. Sem novas dependências, alterações de CI ou download local de WebKit; o navegador real fica para o CI da PR.
+
+A verificação identificou uma corrida no teste já existente de perfil social: a legenda da insígnia era encontrada antes do efeito que abre o dialog. O teste aguarda agora o mesmo papel e nome acessíveis com findByRole, preservando todas as expectativas. Nenhum código de produto do perfil foi alterado. Testes adicionais cobrem limpeza dos PDFs com dados pessoais, rejeição de documento protegido por senha sem perder a explicação e preservação de materiais com mais de quinhentas anotações, sem descartar notas antigas.
+
 ## Correção dos gates da PR 513, 2026-10-24
 
 Auditoria do head 89237f2 identificou undici 8.10.2, dependência de desenvolvimento transitiva do jsdom. Atualizado somente esse registro do lockfile para 8.12.3, dentro da faixa já permitida, sem dependência nova ou override. npm audit passou de um pacote vulnerável para zero. Referências: GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472 e GHSA-xjj6-f33q-929c.

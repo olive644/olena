@@ -34,6 +34,18 @@ export function clearPersonalData(storage: Storage, keep: readonly string[] = []
       /* Sem acesso ao armazenamento não há o que apagar. */
     }
   }
+  // Os PDFs da Biblioteca também são dados pessoais, não apenas metadados.
+  if (
+    typeof window !== "undefined" &&
+    storage === window.localStorage &&
+    typeof indexedDB !== "undefined"
+  ) {
+    try {
+      indexedDB.deleteDatabase("olena-library-files");
+    } catch {
+      /* Um bloqueio do navegador não pode impedir a saída da conta. */
+    }
+  }
 }
 
 // Registra a conta dona dos dados deste aparelho. Se outra conta já era a dona,

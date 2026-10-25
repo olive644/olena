@@ -3,6 +3,7 @@ export const FOCUS_SESSION_KEY = "olena.focus-session.v1";
 // Tolera o throttling de um minuto de abas em segundo plano, não suspensão do aparelho.
 export const FOCUS_HEARTBEAT_LIMIT = 120_000;
 export type FocusSession = {
+  materialId?: string;
   mode: "timer" | "pomodoro";
   phase: "focus" | "shortBreak" | "longBreak";
   completed: number;
@@ -34,6 +35,7 @@ export function readFocusSession(
       (s.agendaEventId !== undefined && typeof s.agendaEventId !== "string") ||
       (s.agendaDate !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(s.agendaDate)) ||
       (s.subjectId !== undefined && typeof s.subjectId !== "string") ||
+      (s.materialId !== undefined && typeof s.materialId !== "string") ||
       (s.plannedMinutes !== undefined &&
         (!Number.isFinite(s.plannedMinutes) || s.plannedMinutes < 1 || s.plannedMinutes > 180))
     )

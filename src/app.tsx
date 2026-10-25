@@ -63,6 +63,10 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   useLanguage();
 
   const [moreOpen, setMoreOpen] = useState(false);
+  const [libraryMaterialId, setLibraryMaterialId] = useState(
+    () => new URLSearchParams(window.location.search).get("material")?.slice(0, 160) ?? "",
+  );
+  const [focusMaterialId, setFocusMaterialId] = useState("");
   const [projectorCode] = useState(() => readLocalRoomProjectorCodeFromUrl(window.location.href));
   const [joinCode] = useState(
     () => projectorCode ?? readLocalRoomCodeFromUrl(window.location.href),
@@ -165,7 +169,17 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
               cloud={cloud}
             />
           )}
-          {view === "focus" && <FocusView workspace={workspace} dispatch={dispatch} />}
+          {view === "focus" && (
+            <FocusView
+              workspace={workspace}
+              dispatch={dispatch}
+              initialMaterialId={focusMaterialId}
+              onMaterial={(id) => {
+                setLibraryMaterialId(id);
+                setView("library");
+              }}
+            />
+          )}
           {view === "notes" && (
             <NotesView workspace={workspace} dispatch={dispatch} cloud={cloud} />
           )}
@@ -183,7 +197,24 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
               onSignIn={() => setOnboarding(true)}
             />
           )}
-          {view === "library" && <LibraryView workspace={workspace} dispatch={dispatch} />}
+          {view === "library" && (
+            <LibraryView
+              workspace={workspace}
+              dispatch={dispatch}
+              scope={cloud.email ?? "guest"}
+              initialMaterialId={libraryMaterialId}
+              onFocus={(id) => {
+                setFocusMaterialId(id);
+                setView("focus");
+              }}
+              onNotebook={(id, page) => {
+                setView("notes");
+                const params = new URLSearchParams({ caderno: id });
+                if (page) params.set("folha", page);
+                window.history.replaceState(null, "", `/cadernos?${params}`);
+              }}
+            />
+          )}
           {view === "activity-bank" && <ActivityBankView onBack={() => setView("today")} />}
           {view === "profile" && (
             <ProfileView

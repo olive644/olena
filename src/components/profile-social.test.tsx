@@ -49,7 +49,8 @@ it("inspeção mostra nível, streak e redes, mas deixa atividades somente no si
   expect(badge.classList.contains("profile-level-badge")).toBe(true);
   expect(badge.closest(".social-visit-avatar")).not.toBeNull();
   expect(screen.queryByRole("textbox", { name: "Buscar por nome ou @" })).toBeNull();
-  expect(screen.getByRole("dialog", { name: "Perfil de @bob" })).toBeTruthy();
+  // A insígnia existe antes do efeito que abre o dialog nativo.
+  expect(await screen.findByRole("dialog", { name: "Perfil de @bob" })).toBeTruthy();
   expect(screen.getByRole("link", { name: "GitHub" }).getAttribute("href")).toBe(
     "https://github.com/bob",
   );
