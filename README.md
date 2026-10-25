@@ -74,11 +74,12 @@ o preview da Vercel.
 ## Testes de ponta a ponta
 
 ```bash
-npx playwright install --with-deps chromium webkit
+npx playwright install --with-deps chromium
 npm run test:e2e
 ```
 
-O projeto mobile usa WebKit. No GitHub Actions, os projetos desktop e mobile rodam em jobs
+Os projetos desktop e mobile usam Chromium pelo Playwright. O mobile conserva viewport,
+toque e emulação de dispositivo, sem cobertura do motor Safari. No GitHub Actions, rodam em jobs
 separados e em paralelo.
 
 ## Verificação completa

@@ -1,5 +1,13 @@
 # CI e minutos do GitHub Actions
 
+## Navegadores vigentes, decisão de 25/10/2026
+
+Por solicitação explícita do proprietário, Playwright usa somente Chromium nos projetos desktop e mobile, inclusive no preview isolado da Olena. Removida a seleção/instalação de WebKit da matriz. O mobile conserva as dimensões, escala, toque e emulação já existentes, mas não valida o motor Safari. Mantidos os dois shards móveis, workers, seleção de escopo, checks obrigatórios e seus nomes, gates e timeouts. Nenhum teste foi removido ou pulado para fazer a mudança passar.
+
+Evidência mais recente: Application CI 40242294622, head 17de88a, shard móvel 2 iniciou 22:54:04 UTC e foi cancelado às 23:19:21 pelo limite de 25 minutos. O navegador e dependências ficaram prontos somente às 23:08:57; os 134 testes começaram às 23:09:04. A referência de instalação de 22 a 44 segundos em 18/10 não descreve esse incidente. Não foi feito rerun para contornar o cancelamento, nem aumentado limite. A economia de tempo da troca para Chromium ainda não foi medida em CI; não tratar a medição histórica abaixo como previsão atual.
+
+Validação da seleção: scripts/ci-scope.test.mjs exige Chromium em todas as entradas; playwright-browser-config.test.ts confere desktop/mobile e herança do preview, mantendo viewport/toque. Rollback possível revertendo a configuração e a matriz, sem alteração de dados do usuário ou dependências.
+
 Este documento é para quem for mexer no CI, seja pessoa ou IA. Ele explica o que o CI custa, o que já foi medido, o que foi decidido e por quê, e como decidir o próximo passo sem repetir os erros de raciocínio já corrigidos. Leia a seção "Regras" antes de editar qualquer arquivo em `.github/workflows/`.
 
 ## Por que isso importa
@@ -44,7 +52,7 @@ O escopo do e2e é decidido por `scripts/ci-scope.mjs` (testado em `scripts/ci-s
 
 Lint, testes, build, auditoria de dependências, varredura de segredos e análise estática rodam sempre.
 
-Por que backend roda só o desktop: o mobile (WebKit) difere do desktop em layout e toque, e o backend roda igual nos dois. A execução semanal e o push na `main` (desktop) continuam cobrindo o resto. Por que o push na `main` roda só o desktop: o mesmo código já passou completo na pull request.
+Por que backend roda só o desktop: o mobile Chromium difere do desktop em layout e toque, e o backend roda igual nos dois. A execução semanal e o push na `main` (desktop) continuam cobrindo o resto. Por que o push na `main` roda só o desktop: o mesmo código já passou completo na pull request. Os custos da tabela são a referência histórica, ainda sem nova medição após a troca do navegador.
 
 Estimativas por mês, com 2.000 minutos: cerca de 42 execuções completas, ou cerca de 95 só de backend, ou cerca de 200 só de documentação. A execução semanal consome cerca de 200 minutos por mês. Esses números são aritmética sobre a medição acima, não consumo medido do mês.
 

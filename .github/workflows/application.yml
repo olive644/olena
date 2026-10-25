@@ -77,9 +77,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      # Os pacotes do WebKit (cerca de 180, 115 MB) vêm do espelho do Ubuntu e o download já
-      # parou por minutos. Com tempo máximo e repetição por arquivo, uma parada vira nova
-      # tentativa em vez de travar o job (matar o processo não serve: o apt filho segura o lock).
+      # As dependências do Chromium vêm do espelho do Ubuntu. Conservar repetição por arquivo
+      # e limite de espera para que uma conexão parada não prenda o apt.
       - name: Make apt downloads resilient
         run: |
           sudo tee /etc/apt/apt.conf.d/80-ci-downloads >/dev/null <<'APT'

@@ -1,6 +1,6 @@
 // Decide quanto do e2e o CI precisa rodar e se os checks de resultado devem passar.
 //
-// O e2e (WebKit e Chromium) responde por quase todos os minutos faturáveis de cada execução.
+// O e2e Chromium, em desktop e mobile, responde por quase todos os minutos de cada execução.
 // Em repositório privado o plano gratuito do GitHub tem um teto mensal de minutos, então o CI
 // roda só o que cada tipo de mudança exige:
 //   full    pull request que mexe na interface ou em qualquer outra coisa, execução semanal e
@@ -8,7 +8,7 @@
 //   desktop push na main: o mesmo código já passou completo na pull request.
 //   none    pull request que só mexe em documentação: nenhum e2e.
 //   desktop também vale para pull request que só mexe em backend e documentação: o mobile
-//           (WebKit) só difere do desktop em layout e toque, e o backend roda igual nos dois.
+//           só difere do desktop em layout e toque, e o backend roda igual nos dois.
 // Em caso de dúvida (erro ao listar os arquivos, evento desconhecido) o escopo é "full".
 // Medição que embasa isto (execução completa de 18/10/2026, ver docs/CI_MINUTOS.md): o e2e é
 // cerca de 68% dos minutos faturáveis e o mobile sozinho cerca de metade; instalar os
@@ -24,14 +24,14 @@ const MATRIX = {
   mobile1: {
     project: "mobile",
     label: "mobile shard 1/2",
-    browser: "webkit",
+    browser: "chromium",
     workers: 1,
     shard: "1/2",
   },
   mobile2: {
     project: "mobile",
     label: "mobile shard 2/2",
-    browser: "webkit",
+    browser: "chromium",
     workers: 1,
     shard: "2/2",
   },
