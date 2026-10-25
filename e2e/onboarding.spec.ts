@@ -46,13 +46,21 @@ test("a Olena conduz as perguntas em conversa até o login com Google", async ({
   await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
 });
 
-test("Voltar refaz uma resposta e o foco do teclado usa o sublinhado amarelo", async ({ page }) => {
+test("Voltar refaz uma resposta e o foco do teclado não usa realce amarelo", async ({ page }) => {
   await page.goto("/?onboarding=1");
   const first = page.locator(".onboarding__choices button").first();
   await first.waitFor();
   await first.focus();
   await expect(first).toHaveCSS("outline-style", "none");
   await expect(first).toHaveCSS("text-decoration-line", "underline");
+  // O realce amarelo é opção das configurações, não padrão do onboarding.
+  expect(await first.evaluate((el) => getComputedStyle(el).textDecorationColor)).not.toBe(
+    "rgb(250, 204, 21)",
+  );
+  await expect(first).toHaveCSS("filter", "none");
+  const title = page.getByRole("heading", { level: 2 }).first();
+  await expect(title).toHaveCSS("text-decoration-line", "none");
+  await expect(title).toHaveCSS("filter", "none");
   await page.keyboard.press("Enter");
   await expect(
     page.getByRole("heading", { name: "Qual matéria desperta sua curiosidade?" }),
