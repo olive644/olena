@@ -37,6 +37,12 @@ function applyGoogleLogin(answers: readonly (string | string[])[]) {
   writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ answers, completed: true }));
 }
 
+/** Entrada como convidado: nada vai a servidor algum, as respostas ficam só neste aparelho. */
+export function enterAsGuest(answers: readonly (string | string[])[]) {
+  startGuestSession();
+  applyGoogleLogin(answers);
+}
+
 export function readPendingGoogleAnswers(): readonly (string | string[])[] {
   try {
     const raw = window.sessionStorage.getItem(PENDING_ANSWERS_KEY);
@@ -161,8 +167,7 @@ export function GoogleLogin({
   // não há aceite de política a registrar como no login com Google.
   function continueAsGuest() {
     if (pending.current) return;
-    startGuestSession();
-    applyGoogleLogin(answers);
+    enterAsGuest(answers);
     onFinish();
   }
 

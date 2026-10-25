@@ -1017,7 +1017,7 @@ Quem não quer logar usa "Entrar como convidado" na mesma tela: aparece como Gue
 
 ## Onboarding de prévia e padrão visual
 
-Consultar DESIGN_SYSTEM.md para papel recortado, marca e loading compartilhado. /?onboarding=1 abre a experiência aprovada; ainda não é uma barreira de entrada automática. A integração com o Google Agenda foi removida. Estado atual, riscos e requisitos de configuração em CURRENT_STATE_AUDIT.md.
+Consultar DESIGN_SYSTEM.md para papel recortado, marca e loading compartilhado. /?onboarding=1 abre a experiência aprovada; ainda não é uma barreira de entrada automática. O onboarding é uma conversa com a Olena (`src/views/onboarding-view.tsx`): balões de papel, respostas rápidas, reações e transição até o login com Google. O roteiro é local e fixo, sem IA nem rede; falas novas entram nos dois catálogos de idiomas. A integração com o Google Agenda foi removida. Estado atual, riscos e requisitos de configuração em CURRENT_STATE_AUDIT.md.
 
 ## Ícones de navegação, 14/09/2026
 
