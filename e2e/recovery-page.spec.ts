@@ -81,12 +81,14 @@ test("falha ao baixar o aplicativo mostra recuperação de papel e tentar novame
   ).toBeVisible();
   await expect(page.locator(".paper-recovery__code")).toContainText("Ops");
   await expect(page.locator(".paper-digits")).toHaveCount(0);
+  await expect(page.locator('link[rel="modulepreload"][href*="/app-"]')).toHaveCount(0);
   await page.unroute(applicationChunk);
   const navigation = page.waitForEvent("domcontentloaded");
   await page.getByRole("button", { name: "Tentar novamente" }).click();
   await navigation;
   await expect(page.locator(".onboarding")).toBeVisible();
   await expect(page.locator(".paper-recovery")).toHaveCount(0);
+  await expect(page).toHaveURL("/");
   await page.screenshot({
     path: test.info().outputPath("falha-inicializacao.png"),
     fullPage: true,
