@@ -120,4 +120,15 @@ describe("API oficial da Olena", () => {
       });
     },
   );
+
+  it("encaminha action=discord-interactions ao endpoint do Discord, que falha fechado sem chave", async () => {
+    const response = await handleOlena(
+      new Request(`${origin}/api/olena?action=discord-interactions`, {
+        method: "POST",
+        body: "{}",
+      }),
+    );
+    // Sem DISCORD_PUBLIC_KEY nos testes: 503 do endpoint, e não o 405 do catálogo.
+    expect(response.status).toBe(503);
+  });
 });

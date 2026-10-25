@@ -3619,3 +3619,12 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Limite do modelo: sem conexão contínua, o bot não lê mensagens comuns, presença, entradas nem voz.
 - Mapa de canais proposto (a confirmar). Canais de LOG de conta e conquista dependem de aviso de privacidade e consentimento.
 - Não verificado: limites de execução e termos do plano gratuito da Vercel para as funções do bot.
+
+## Endpoint de interações do Discord, etapa 1 (2026-10-25)
+
+- Adicionado `POST /api/olena?action=discord-interactions`: valida a assinatura Ed25519 do Discord com `node:crypto`, recusa reenvio (janela de 5 minutos), corpo grande e configuração ausente, responde ao PING e recusa servidores fora de `DISCORD_ALLOWED_GUILD_IDS`. Reaproveita a função `api/olena.ts`, sem função nova.
+- Só a base do "Receber": nenhum ticket é enviado ao Discord, nenhum comando existe e o token do bot ainda não é lido. O transporte de suporte segue `enabled: false`.
+- Variáveis criadas na Vercel (produção, sensíveis) pela proprietária em 25/10/2026: `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`, `DISCORD_BOT_TOKEN`. Falta criar `DISCORD_ALLOWED_GUILD_IDS`. Os valores não ficam no repositório.
+- O token do bot foi colado no chat da sessão de desenvolvimento e deve ser redefinido no portal do Discord, com o novo valor atualizado na Vercel pela proprietária.
+- Pendências antes de ligar o atendimento: teto global e limite por origem no endpoint, fila de envio atômica, comandos e testes com o servidor de testes.
+- Não verificado: o PING real do portal contra a URL publicada; a rede desta sessão não alcança o Discord.
