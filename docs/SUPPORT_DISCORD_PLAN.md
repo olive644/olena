@@ -59,3 +59,83 @@ entrega duplicada e retenção após exclusão. O contrato preparado não resolv
 sozinho. A ativação exige os controles e testes acima e uma mudança própria revisada.
 
 Nenhuma infraestrutura deve ser criada ou ativada automaticamente nesta etapa.
+
+## Decisão de 25/10/2026: bot por requisição, sem processo ligado
+
+Decisão da proprietária: o bot funciona por requisições HTTP, sem servidor ligado 24 horas.
+Continua sendo preparação. Nenhum bot, token, endereço de interações ou canal foi criado.
+
+### Por que não um bot sempre ligado
+
+Pesquisa de 25/10/2026, feita em guias de terceiros (não em páginas oficiais, salvo onde dito).
+O que cada opção gratuita ofereceria, e por que não vale a pena para o atendimento:
+
+| Opção                         | Situação segundo as fontes                                 | Problema para este uso                                                                                                                                                                   |
+| ----------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Oracle Cloud Always Free      | Máquina Linux sempre ligada                                | Pode parar por ociosidade (uso abaixo de 20% por 7 dias), oferta ARM reduzida em 2026 com datas divergentes entre fontes, cadastro às vezes recusado, exige cartão e manutenção do Linux |
+| Google Cloud e2-micro         | Uma VM gratuita em três regiões dos EUA                    | IPv4 externo pode custar cerca de US$ 3,65 por mês, exige cartão e manutenção; página oficial não conferida                                                                              |
+| Fly.io                        | Sem plano gratuito para contas novas desde outubro de 2024 | Menor máquina sempre ligada custa cerca de US$ 2,19 por mês                                                                                                                              |
+| Koyeb, Render, Replit, Glitch | Planos gratuitos dormem                                    | Não mantêm conexão 24 horas                                                                                                                                                              |
+| Hosts de bot de terceiros     | Oferta dos próprios vendedores, não verificada             | Muitos exigem renovação a cada 1 a 7 dias                                                                                                                                                |
+
+Todos os valores e limites acima são **não verificados** em fonte oficial. Conferir na página de cada
+provedor antes de qualquer decisão paga.
+
+### Como funciona por requisição
+
+- **Enviar:** o servidor chama a API REST do Discord (mensagem no canal ou conversa privada do
+  ticket). É uma chamada comum, sem conexão aberta. Parte da outbox descrita acima.
+- **Receber:** o Discord chama um endereço do servidor (Interactions Endpoint URL) a cada botão,
+  comando de barra ou formulário. A função confere a assinatura Ed25519 do corpo bruto
+  (cabeçalhos `X-Signature-Ed25519` e `X-Signature-Timestamp`), recusa timestamp antigo, responde
+  ao PING de verificação e responde à interação em até 3 segundos, usando resposta adiada quando o
+  trabalho for maior. Conferir esses detalhes na documentação atual do Discord ao implementar.
+- A função roda no mesmo projeto da Vercel das demais rotas `/api`, só quando algo acontece.
+
+```mermaid
+flowchart LR
+  App[Aplicativo OlenaStudy] -->|1 ticket novo| Outbox[Outbox no banco]
+  Outbox -->|2 ENVIAR via REST| Discord[(Servidor Discord)]
+  Discord -->|3 clique, comando ou formulário assinado| Endpoint[Função de interações na Vercel]
+  Endpoint -->|4 valida e grava resposta uma vez| App
+```
+
+### O que este modelo não faz
+
+Por não manter conexão com o Discord, o bot **não lê mensagens comuns** de canais como `general`,
+não vê quem está online, não reage a entradas no servidor e não toca voz. Moderação automática
+de chat não é possível assim. Se um dia isso for necessário, será um serviço próprio, com os
+custos e riscos da tabela acima, em mudança separada.
+
+### Mapa proposto dos canais (a confirmar pela proprietária)
+
+Os papéis abaixo vieram dos nomes dos canais e não de uma decisão registrada.
+
+| Canal                                           | Papel proposto                                                                 | Mecanismo                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `ticket` (SUPPORT)                              | Um ticket vira uma conversa privada; a equipe responde por botão ou formulário | Enviar e receber                                                  |
+| `support` (LOG)                                 | Aviso de ticket novo para a equipe                                             | Enviar                                                            |
+| `verify`                                        | Botão Verificar concede o cargo de membro                                      | Receber                                                           |
+| `commands` (GERAL)                              | Comandos de barra, como /ajuda                                                 | Receber                                                           |
+| `updates` (BOARD)                               | Novidades do app publicadas pelo bot                                           | Enviar                                                            |
+| `account`, `cards`, `achievement`, `tags` (LOG) | Eventos agregados do app                                                       | Enviar, **somente depois** de aprovar a informação de privacidade |
+| `general`, `images`, `partner`                  | Livres, sem bot                                                                | Nenhum                                                            |
+
+Regra para os canais de LOG: nunca nome, e-mail, UID ou conteúdo de caderno. Evento de conta e de
+conquista identifica a pessoa e exige o aviso de privacidade e o consentimento do item 2 acima.
+
+### Ordem de entrega
+
+1. **Proprietária (fora do repositório):** criar o servidor de testes, o aplicativo do bot e as
+   permissões mínimas, guardar token e chave pública em variáveis protegidas da Vercel. Uma IA
+   descreve o passo e confere o resultado, sem criar nem expor credenciais.
+2. **Mudança própria e revisada:** outbox atômica, função de interações, limites por conta e
+   globais, revisão de privacidade e os testes do item 8. Só o fluxo de tickets na primeira etapa.
+3. Ensaio em servidor de testes, depois ativação para usuários.
+
+### Custos e limites
+
+Toda chamada ao Discord e toda função de interações precisa de limite por quem chama e teto
+global (ver `docs/OPERACAO_E_CUSTOS.md`). Não verificado: limites de execução e termos do plano
+gratuito da Vercel para este uso. O uso comercial do plano gratuito já é uma pergunta aberta da
+proprietária em `docs/OPERACAO_E_CUSTOS.md`.

@@ -3611,3 +3611,11 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Quem volta do redirecionamento do Google reabre a conversa na despedida da Olena, com as respostas restauradas.
 - Testes: unitários da conversa (abertura, resposta com reação, várias respostas, voltar, despedida), idioma inglês e e2e do fluxo completo, foco por teclado e convidado. Prévia visual feita com o app real em desktop e celular.
 - Não verificado: a leitura por leitor de tela real do fluxo. A pergunta recebe foco a cada passo e o indicador de digitação tem texto oculto; conferir com VoiceOver ou TalkBack.
+
+## Bot do Discord por requisição, sem servidor ligado (2026-10-25)
+
+- Decisão da proprietária registrada em `docs/SUPPORT_DISCORD_PLAN.md`: o bot usa REST para enviar e um endereço de interações assinadas para receber, sem processo 24 horas. Só documentação: nenhum bot, token, endereço ou canal foi criado e o transporte segue `enabled: false`.
+- Pesquisa de hospedagem gratuita sempre ligada feita em guias de terceiros. Resultado: Oracle e Google e2-micro são as únicas máquinas realmente gratuitas, com ressalvas de ociosidade, cartão e manutenção; Fly.io, Koyeb, Render, Replit e Glitch não servem. Valores e limites **não verificados** em fonte oficial.
+- Limite do modelo: sem conexão contínua, o bot não lê mensagens comuns, presença, entradas nem voz.
+- Mapa de canais proposto (a confirmar). Canais de LOG de conta e conquista dependem de aviso de privacidade e consentimento.
+- Não verificado: limites de execução e termos do plano gratuito da Vercel para as funções do bot.
