@@ -9,6 +9,18 @@ const PING = 1;
 const PONG = 1;
 const CHANNEL_MESSAGE = 4;
 const EPHEMERAL = 64;
+const APPLICATION_COMMAND = 2;
+const CHAT_INPUT = 1;
+
+/**
+ * Respostas dos comandos de barra. Os nomes e as descrições registrados no Discord ficam em
+ * scripts/discord-commands.json, e um teste garante que as duas listas andam juntas.
+ */
+export const DISCORD_COMMAND_REPLIES: Readonly<Record<string, string>> = {
+  ajuda:
+    "Sou o bot de atendimento do OlenaStudy. Comandos: /ajuda mostra esta mensagem e /status mostra se estou respondendo. O atendimento por tickets ainda não está ativo.",
+  status: "Estou respondendo. O atendimento por aqui ainda não está ativo.",
+};
 
 export type DiscordInteractionsOptions = {
   /** Chave pública do aplicativo (64 caracteres hexadecimais). Ausente ou inválida recusa tudo. */
@@ -84,10 +96,22 @@ export function createDiscordInteractionsHandler(options: DiscordInteractionsOpt
     const { type, guild_id: guildId } = interaction as { type?: unknown; guild_id?: unknown };
     if (type === PING) return reply(200, { type: PONG });
     if (typeof type !== "number") return reply(400, { error: "Interação inválida." });
+    // Só quem chamou vê a resposta, e nenhuma menção é processada, mesmo que o texto tenha uma.
     const refuse = (content: string) =>
-      reply(200, { type: CHANNEL_MESSAGE, data: { content, flags: EPHEMERAL } });
+      reply(200, {
+        type: CHANNEL_MESSAGE,
+        data: { content, flags: EPHEMERAL, allowed_mentions: { parse: [] } },
+      });
     if (typeof guildId !== "string" || !options.allowedGuildIds.includes(guildId))
       return refuse("Este bot não atende este servidor.");
+    if (type === APPLICATION_COMMAND) {
+      const { data } = interaction as { data?: { type?: unknown; name?: unknown } };
+      const name = data && typeof data.name === "string" ? data.name : "";
+      const known = Object.hasOwn(DISCORD_COMMAND_REPLIES, name);
+      if (known && (data?.type === undefined || data.type === CHAT_INPUT))
+        return refuse(DISCORD_COMMAND_REPLIES[name]!);
+      return refuse("Comando desconhecido.");
+    }
     return refuse("O atendimento por aqui ainda não está ativo.");
   };
 }

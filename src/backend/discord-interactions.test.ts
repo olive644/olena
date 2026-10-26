@@ -1,6 +1,11 @@
+import { readFileSync } from "node:fs";
 import { generateKeyPairSync, sign } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { createDiscordInteractionsHandler, verifyDiscordSignature } from "./discord-interactions";
+import {
+  DISCORD_COMMAND_REPLIES,
+  createDiscordInteractionsHandler,
+  verifyDiscordSignature,
+} from "./discord-interactions";
 
 const { publicKey, privateKey } = generateKeyPairSync("ed25519");
 // Os 32 bytes finais do SPKI DER são a chave pública crua, que o Discord mostra em hexadecimal.
@@ -125,14 +130,73 @@ describe("interações do Discord", () => {
     );
   });
 
-  it("no servidor atendido responde, de forma honesta, que o atendimento ainda não está ativo", async () => {
-    const body = JSON.stringify({ type: 2, guild_id: GUILD, data: { name: "ajuda" } });
-    const response = await handler()(signed(body));
-    const parsed = (await response.json()) as {
-      type: number;
+  it("interação que não é comando, no servidor atendido, responde que o atendimento não está ativo", async () => {
+    const body = JSON.stringify({ type: 3, guild_id: GUILD, data: { custom_id: "x" } });
+    const parsed = (await (await handler()(signed(body))).json()) as {
       data: { content: string; flags: number };
     };
     expect(parsed.data.flags).toBe(64);
     expect(parsed.data.content).toBe("O atendimento por aqui ainda não está ativo.");
+  });
+
+  it.each(["ajuda", "status"])(
+    "responde ao comando /%s só para quem chamou, sem menções",
+    async (name) => {
+      const body = JSON.stringify({ type: 2, guild_id: GUILD, data: { type: 1, name } });
+      const response = await handler()(signed(body));
+      const parsed = (await response.json()) as {
+        type: number;
+        data: { content: string; flags: number; allowed_mentions: { parse: string[] } };
+      };
+      expect(parsed.type).toBe(4);
+      expect(parsed.data.flags).toBe(64);
+      expect(parsed.data.allowed_mentions).toEqual({ parse: [] });
+      expect(parsed.data.content).toBe(DISCORD_COMMAND_REPLIES[name]);
+      expect(parsed.data.content).toContain("ainda não está ativo");
+    },
+  );
+
+  it("recusa comando desconhecido e nomes que imitam propriedades do objeto", async () => {
+    for (const name of ["inexistente", "constructor", "__proto__", "toString", ""]) {
+      const body = JSON.stringify({ type: 2, guild_id: GUILD, data: { type: 1, name } });
+      const parsed = (await (await handler()(signed(body))).json()) as {
+        data: { content: string };
+      };
+      expect(parsed.data.content).toBe("Comando desconhecido.");
+    }
+    const user = JSON.stringify({ type: 2, guild_id: GUILD, data: { type: 2, name: "ajuda" } });
+    expect(
+      ((await (await handler()(signed(user))).json()) as { data: { content: string } }).data
+        .content,
+    ).toBe("Comando desconhecido.");
+  });
+
+  it("comando de servidor fora da lista continua recusado, mesmo sendo conhecido", async () => {
+    const body = JSON.stringify({
+      type: 2,
+      guild_id: "999999999999999999",
+      data: { type: 1, name: "ajuda" },
+    });
+    expect(
+      ((await (await handler()(signed(body))).json()) as { data: { content: string } }).data
+        .content,
+    ).toBe("Este bot não atende este servidor.");
+  });
+
+  it("os comandos registrados no Discord e as respostas do código andam juntos", () => {
+    const registered = JSON.parse(readFileSync("scripts/discord-commands.json", "utf8")) as {
+      name: string;
+      description: string;
+      type: number;
+    }[];
+    expect(registered.map((command) => command.name).sort()).toEqual(
+      Object.keys(DISCORD_COMMAND_REPLIES).sort(),
+    );
+    for (const command of registered) {
+      expect(command.type).toBe(1);
+      expect(command.name).toMatch(/^[a-z0-9_-]{1,32}$/);
+      expect(command.description.length).toBeGreaterThan(0);
+      expect(command.description.length).toBeLessThanOrEqual(100);
+    }
   });
 });

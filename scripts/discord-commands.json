@@ -1,0 +1,4 @@
+[
+  { "name": "ajuda", "description": "Mostra como usar o bot do OlenaStudy", "type": 1 },
+  { "name": "status", "description": "Mostra se o bot está respondendo", "type": 1 }
+]

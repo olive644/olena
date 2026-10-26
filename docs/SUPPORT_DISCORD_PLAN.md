@@ -166,3 +166,20 @@ Entregue só a base do "Receber". Ainda não há envio de tickets, comandos nem 
   Vercel Firewall é a camada atual. Ficam como pendência antes de ligar o atendimento.
 - Não verificado: o PING real do portal do Discord contra o endereço publicado e os limites de
   execução do plano gratuito da Vercel.
+
+### Etapa 1b: comandos /ajuda e /status (2026-10-26)
+
+- O endpoint responde aos comandos de barra `/ajuda` e `/status` só para quem chamou (mensagem
+  efêmera) e com `allowed_mentions` vazio, então nenhuma menção é processada. A resposta continua
+  dizendo que o atendimento por aqui ainda não está ativo.
+- Comando fora da lista, nomes que imitam propriedades de objeto e comandos de usuário ou de
+  mensagem recebem "Comando desconhecido.". Servidor fora de `DISCORD_ALLOWED_GUILD_IDS` segue
+  recusado antes de qualquer comando.
+- Os comandos registrados no Discord ficam em `scripts/discord-commands.json`. Um teste garante
+  que o JSON e `DISCORD_COMMAND_REPLIES` têm os mesmos nomes.
+- Registro: `scripts/register-discord-commands.mjs`, rodado **pela proprietária** no computador
+  dela (a rede das sessões de desenvolvimento não alcança o Discord). Usa `DISCORD_BOT_TOKEN`,
+  `DISCORD_APPLICATION_ID` e `DISCORD_GUILD_ID` de variáveis de ambiente, nunca imprime o token e
+  substitui a lista de comandos daquele servidor. Registro por servidor aparece na hora.
+- Não verificado: o registro e os comandos funcionando no servidor de testes, até a proprietária
+  rodar o script e testar.
