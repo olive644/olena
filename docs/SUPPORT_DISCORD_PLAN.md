@@ -211,6 +211,12 @@ canal. Sem conversa (thread) por ticket.
 - **Quem é a equipe:** quem tem um dos cargos de `DISCORD_STAFF_ROLE_IDS` (por ID do cargo) e age
   no canal configurado. O cargo é dado só pela proprietária. Nome, papel e custom_id vindos da
   interação nunca são prova de autorização por si só.
+- **Canal precisa ser privado:** antes de cada envio o servidor lê o canal e só posta se o cargo
+  @everyone tiver "Ver canal" negado nele. Se o canal estiver aberto, ou se o Discord não
+  responder, nada é enviado: a mensagem fica pendente e a entrega aparece como pendente ou falha
+  para a pessoa (falha fechada). Resultado positivo vale 10 minutos, negativo 30 segundos. A
+  checagem não prova que nenhum outro cargo amplo (como "Membro") enxerga o canal: conferir isso
+  nas permissões do canal antes de ligar.
 - **Aviso:** com a ponte ligada, o servidor só aceita a mensagem se ela trouxer a confirmação do
   aviso na versão atual (`relayConsent`); sem isso responde 409 e não grava nem envia nada.
 - **Exclusão de conta:** apaga do canal as mensagens do ticket e depois o ticket. Falha do Discord

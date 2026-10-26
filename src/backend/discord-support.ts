@@ -17,6 +17,9 @@ const MAX_PER_FLUSH = 5;
 const MAX_TEAM_TEXT = 1800;
 const MAX_MESSAGES = 100;
 const CLOSE_BUDGET_MS = 2200;
+const VIEW_CHANNEL = 1n << 10n;
+const PRIVACY_OK_MS = 10 * 60_000;
+const PRIVACY_RECHECK_MS = 30_000;
 const COMPONENT = 3;
 const MODAL_SUBMIT = 5;
 const RESPONSE_MESSAGE = 4;
@@ -127,6 +130,27 @@ export function createDiscordSupport(options: DiscordSupportOptions) {
   const { store, rest, channelId, staffRoleIds } = options;
   const now = options.now ?? Date.now;
 
+  // O canal recebe o texto que as pessoas escrevem. Enquanto @everyone puder vê-lo, nada é enviado.
+  let privacy: { ok: boolean; until: number } | undefined;
+  async function channelIsPrivate(): Promise<boolean> {
+    if (privacy && privacy.until > now()) return privacy.ok;
+    let ok = false;
+    try {
+      const channel = await rest.getChannel(channelId);
+      // O cargo @everyone tem o mesmo ID do servidor. Só vale se o canal negar "Ver canal" a ele.
+      ok = channel.overwrites.some(
+        (item) =>
+          item.id === channel.guildId &&
+          item.type === 0 &&
+          (BigInt(item.deny) & VIEW_CHANNEL) !== 0n,
+      );
+    } catch {
+      ok = false;
+    }
+    privacy = { ok, until: now() + (ok ? PRIVACY_OK_MS : PRIVACY_RECHECK_MS) };
+    return ok;
+  }
+
   // Lê, altera e grava o ticket com checagem de versão, repetindo se houver concorrência.
   async function mutate<T>(
     id: string,
@@ -194,6 +218,17 @@ export function createDiscordSupport(options: DiscordSupportOptions) {
           const relay = ticket.relay;
           if (!relay || relay.pending.length === 0) return;
           if (relay.lease && relay.lease > now()) return;
+          if (!(await channelIsPrivate())) {
+            // Canal visível a todos: não envia e conta como falha, a mensagem segue pendente.
+            relay.failures += 1;
+            await store.compareAndSet!(
+              ticketKey(ticketId),
+              JSON.stringify(ticket),
+              TICKET_TTL_SECONDS,
+              snapshot.version,
+            );
+            return;
+          }
           relay.lease = now() + LEASE_MS;
           if (
             !(await store.compareAndSet!(

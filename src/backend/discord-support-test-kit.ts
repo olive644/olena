@@ -33,8 +33,20 @@ export function fakeRest() {
     posted: [] as { channelId: string; id: string; body: DiscordMessageBody }[],
     deleted: [] as string[],
     failCreate: false,
+    /** Canal privado por padrão: @everyone sem "Ver canal". Os testes podem abri-lo. */
+    privateChannel: true,
+    channelError: false,
     failDelete: new Set<string>(),
     createDelay: 0,
+    async getChannel(_channelId: string) {
+      if (rest.channelError) throw new Error("Discord fora do ar");
+      return {
+        guildId: "1562664412530085908",
+        overwrites: rest.privateChannel
+          ? [{ id: "1562664412530085908", type: 0, deny: String(1 << 10) }]
+          : [],
+      };
+    },
     async createMessage(channelId: string, body: DiscordMessageBody) {
       if (rest.createDelay) await new Promise((resolve) => setTimeout(resolve, rest.createDelay));
       if (rest.failCreate) throw new Error("Discord fora do ar");

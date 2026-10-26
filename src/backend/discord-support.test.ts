@@ -11,7 +11,7 @@ import { publicTicket, ticketKey, type StoredSupportTicket } from "./support-key
 const TICKET = "a".repeat(64);
 const CHANNEL = "1562664412530085999";
 const STAFF_ROLE = "1562665632481284097";
-const clock = 1_800_000_000_000;
+let clock = 1_800_000_000_000;
 
 function setup(options: { consume?: () => Promise<boolean> } = {}) {
   const { store, data } = memoryStore();
@@ -100,6 +100,32 @@ describe("envio da conversa ao Discord", () => {
     expect(relay.posted).toEqual([post.id]);
     expect(relay.lease).toBeUndefined();
     expect(relay.consent?.version).toBe(SUPPORT_NOTICE_VERSION);
+  });
+
+  it("não envia nada enquanto o canal for visível a todos e envia quando ele ficar privado", async () => {
+    const ctx = setup();
+    await queue(ctx);
+    ctx.rest.privateChannel = false;
+    await ctx.support.flush(TICKET);
+    expect(ctx.rest.posted).toEqual([]);
+    expect(ctx.read().relay!.pending).toHaveLength(1);
+    expect(ctx.read().relay!.failures).toBe(1);
+    // Corrigido o canal, a conferência é refeita depois da janela curta e a mensagem segue.
+    ctx.rest.privateChannel = true;
+    clock += 31_000;
+    await ctx.support.flush(TICKET);
+    expect(ctx.rest.posted).toHaveLength(1);
+    expect(ctx.read().relay!.pending).toEqual([]);
+    clock -= 31_000;
+  });
+
+  it("falha fechado quando não consegue ler o canal", async () => {
+    const ctx = setup();
+    await queue(ctx);
+    ctx.rest.channelError = true;
+    await ctx.support.flush(TICKET);
+    expect(ctx.rest.posted).toEqual([]);
+    expect(ctx.read().relay!.pending).toHaveLength(1);
   });
 
   it("mantém pendente quando o Discord falha e tenta de novo depois", async () => {

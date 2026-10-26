@@ -12,7 +12,14 @@ export class DiscordRestError extends Error {
   }
 }
 
+export type DiscordChannelInfo = {
+  guildId: string;
+  overwrites: { id: string; type: number; deny: string }[];
+};
+
 export interface DiscordRest {
+  /** Lê o canal para conferir quem pode vê-lo. Exige a permissão de ver o canal. */
+  getChannel(channelId: string): Promise<DiscordChannelInfo>;
   createMessage(channelId: string, body: DiscordMessageBody): Promise<{ id: string }>;
   deleteMessage(channelId: string, messageId: string): Promise<void>;
 }
@@ -47,6 +54,28 @@ export function createDiscordRest(token: string, fetchImpl: typeof fetch = fetch
     return response;
   }
   return {
+    async getChannel(channelId) {
+      if (!/^\d{5,25}$/.test(channelId)) throw new DiscordRestError(0, "canal inválido");
+      const response = await call("GET", `/channels/${channelId}`);
+      if (!response.ok)
+        throw new DiscordRestError(response.status, `Discord respondeu ${response.status}`);
+      const channel = (await response.json()) as {
+        guild_id?: unknown;
+        permission_overwrites?: unknown;
+      };
+      if (typeof channel.guild_id !== "string" || !Array.isArray(channel.permission_overwrites))
+        throw new DiscordRestError(0, "resposta inesperada do Discord");
+      return {
+        guildId: channel.guild_id,
+        overwrites: (channel.permission_overwrites as Record<string, unknown>[]).flatMap((item) =>
+          typeof item["id"] === "string" &&
+          typeof item["type"] === "number" &&
+          typeof item["deny"] === "string"
+            ? [{ id: item["id"], type: item["type"], deny: item["deny"] }]
+            : [],
+        ),
+      };
+    },
     async createMessage(channelId, body) {
       if (!/^\d{5,25}$/.test(channelId)) throw new DiscordRestError(0, "canal inválido");
       // Nenhuma menção é processada, mesmo que o texto da pessoa tenha @everyone ou @cargo.
