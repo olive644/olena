@@ -3681,3 +3681,11 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Novo `scripts/register-discord-commands.mjs`, que a proprietária roda localmente para registrar os comandos no servidor de testes. O token só passa por variável de ambiente e nunca é impresso.
 - A etapa 1 foi confirmada pela proprietária: o portal do Discord aceitou o endereço de interações (PING respondido). Não verificado por esta sessão, que não alcança o Discord.
 - Não verificado: o registro dos comandos e a resposta no servidor de testes.
+
+## Texto de privacidade do atendimento com Discord (2026-10-26)
+
+- Novo `docs/SUPPORT_PRIVACIDADE_DISCORD.md`: proposta de redação da política (resumo, tabela de dados, compartilhamento, prazos e direitos) e do aviso na tela do atendimento. Só documentação para aprovação; a política publicada e o aplicativo não mudaram.
+- Achado: a política vigente (2026-10-19) não menciona o chat de atendimento, que guarda mensagens na conta por até 30 dias. Precisa ser corrigida antes de publicar o atendimento.
+- Achado: a expiração de 30 dias do banco é lógica (o `firebase-realtime-store` confere a validade na leitura e só apaga a chave quando lida depois de vencida). Uma promessa de apagamento em 30 dias, no app e no Discord, exige um processo de limpeza que ainda não existe.
+- Variável `DISCORD_BOT_TOKEN` na Vercel: pela data de edição, continua o valor de 25/10/2026 (o token que foi redefinido no portal). Precisa ser atualizada pela proprietária antes do fluxo de tickets. Nenhum código usa o token ainda.
+- Não verificado: revisão jurídica do texto.

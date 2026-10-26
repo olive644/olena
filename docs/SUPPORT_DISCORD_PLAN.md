@@ -183,3 +183,10 @@ Entregue só a base do "Receber". Ainda não há envio de tickets, comandos nem 
   substitui a lista de comandos daquele servidor. Registro por servidor aparece na hora.
 - Não verificado: o registro e os comandos funcionando no servidor de testes, até a proprietária
   rodar o script e testar.
+
+### Etapa 2: texto de privacidade proposto (2026-10-26)
+
+A redação da política e o aviso na tela do atendimento estão em `docs/SUPPORT_PRIVACIDADE_DISCORD.md`,
+para aprovação da proprietária. Não foram aplicados à política publicada: ela só muda no mesmo
+lançamento que ativa o envio ao Discord, com uma única troca de versão. O texto também corrige uma
+lacuna existente: a política vigente não menciona o chat de atendimento do aplicativo.
