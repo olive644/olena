@@ -42,13 +42,13 @@ Leituras que decidem o que fazer:
 
 O escopo do e2e é decidido por `scripts/ci-scope.mjs` (testado em `scripts/ci-scope.test.mjs`) e usado pelo job `Decide e2e scope` em `.github/workflows/application.yml`.
 
-| Situação                                                                                                            | e2e                        | Custo aproximado |
-| ------------------------------------------------------------------------------------------------------------------- | -------------------------- | ---------------- |
-| Pull request que mexe em interface ou em qualquer coisa fora das listas abaixo                                      | desktop e mobile completos | 47 min           |
-| Pull request só de backend (`api/`, `src/backend/`, `firebase-room.rules.json`, teste das regras) mais documentação | só desktop                 | 21 min           |
-| Pull request só de documentação (`docs/`, `*.md`, `LICENSE`, `.gitignore`, `.gitleaksignore`)                       | nenhum                     | 10 min           |
-| Push na `main`                                                                                                      | só desktop                 | 21 min           |
-| Execução semanal (segunda, 6h UTC) e execução manual                                                                | completo                   | 47 min           |
+| Situação                                                                                                                                                                                       | e2e                        | Custo aproximado |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ---------------- |
+| Pull request que mexe em interface ou em qualquer coisa fora das listas abaixo                                                                                                                 | desktop e mobile completos | 47 min           |
+| Pull request só de backend (`api/`, `src/backend/`, `firebase-room.rules.json`, teste das regras, `scripts/discord-commands.json` e `scripts/register-discord-commands.mjs`) mais documentação | só desktop                 | 21 min           |
+| Pull request só de documentação (`docs/`, `*.md`, `LICENSE`, `.gitignore`, `.gitleaksignore`)                                                                                                  | nenhum                     | 10 min           |
+| Push na `main`                                                                                                                                                                                 | só desktop                 | 21 min           |
+| Execução semanal (segunda, 6h UTC) e execução manual                                                                                                                                           | completo                   | 47 min           |
 
 Lint, testes, build, auditoria de dependências, varredura de segredos e análise estática rodam sempre.
 
@@ -119,3 +119,5 @@ Falhas de gate em execuções antigas aparecem como "failure" quando o e2e foi c
 
 - 18/10/2026, #472: escopo do e2e por tipo de mudança, execução semanal e gates seguros.
 - 18/10/2026: medição de referência, escopo "só backend roda só o desktop" e relatório de testes lentos no log.
+
+- 26/10/2026: os dois arquivos do bot do Discord em `scripts/` entram na lista de só backend, por caminho exato. Antes, um PR só com esses arquivos, o backend e a documentação rodava o mobile à toa (cerca de 26 minutos a mais) porque `scripts/` conta como interface. Qualquer outro arquivo de `scripts/` continua pedindo o e2e completo.

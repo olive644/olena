@@ -66,6 +66,14 @@ test("os padrões de backend não pegam arquivos de interface com nomes parecido
   assert.equal(isBackendFile("src/data/api/x.ts"), false);
   assert.equal(isBackendFile("apis/x.ts"), false);
   assert.equal(isBackendFile("src/backend-ui/x.ts"), false);
+  // Bot do Discord: só os dois arquivos exatos contam como backend.
+  assert.equal(isBackendFile("scripts/discord-commands.json"), true);
+  assert.equal(isBackendFile("scripts/register-discord-commands.mjs"), true);
+  assert.equal(isBackendFile("scripts/ci-scope.mjs"), false);
+  assert.equal(isBackendFile("scripts/generate-system-updates.mjs"), false);
+  assert.equal(isBackendFile("scripts/discord-commands.json.bak"), false);
+  assert.equal(isBackendFile("scripts/sub/discord-commands.json"), false);
+  assert.equal(isBackendFile("scripts/register-discord-commands.mjs.js"), false);
 });
 
 test("na dúvida, o e2e roda inteiro", () => {
@@ -148,4 +156,33 @@ test("na main o gate móvel avisa que o mobile completo não roda de novo", () =
   });
   assert.equal(result.ok, true);
   assert.match(result.message, /pull request/);
+});
+
+test("comandos do Discord com backend e documentação rodam só o desktop, e com interface rodam tudo", () => {
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: [
+        "scripts/discord-commands.json",
+        "scripts/register-discord-commands.mjs",
+        "src/backend/discord-interactions.ts",
+        "docs/SUPPORT_DISCORD_PLAN.md",
+      ],
+    }),
+    "desktop",
+  );
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: ["scripts/register-discord-commands.mjs", "src/components/x.tsx"],
+    }),
+    "full",
+  );
+  assert.equal(
+    decideScope({
+      event: "pull_request",
+      changedFiles: ["scripts/register-discord-commands.mjs", "scripts/ci-scope.mjs"],
+    }),
+    "full",
+  );
 });

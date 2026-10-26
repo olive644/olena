@@ -37,13 +37,18 @@ const MATRIX = {
   },
 };
 
-// Somente o servidor e as regras do banco. Nada aqui é carregado pelo navegador. Padrão novo
+// Somente o servidor, as regras do banco e os arquivos do bot do Discord. Nada aqui é carregado
+// pelo navegador. Padrão novo
 // entra por inclusão: o que não estiver nesta lista conta como interface e pede o mobile.
 const BACKEND_ONLY = [
   /^api\//,
   /^src\/backend\//,
   /^firebase-room\.rules\.json$/,
   /^src\/firebase-user-rules\.test\.ts$/,
+  // Comandos do bot do Discord: um JSON e um script Node rodado pela proprietária. O navegador
+  // não carrega nenhum dos dois. Caminhos exatos, para outros arquivos de scripts/ não entrarem.
+  /^scripts\/discord-commands\.json$/,
+  /^scripts\/register-discord-commands\.mjs$/,
 ];
 
 export const isDocsFile = (file) => DOCS_ONLY.some((pattern) => pattern.test(file));
