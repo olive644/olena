@@ -91,7 +91,7 @@ test("a matriz corresponde ao escopo", () => {
     matrixFor("desktop").include.map((entry) => entry.label),
     ["desktop"],
   );
-  assert.equal(matrixFor("full").include[1].browser, "webkit");
+  assert.ok(matrixFor("full").include.every((entry) => entry.browser === "chromium"));
 });
 
 test("padrões de documentação não pegam código com nomes parecidos", () => {

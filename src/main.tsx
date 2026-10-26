@@ -15,6 +15,7 @@ import "./accessibility.css";
 import "./room-social.css";
 import { initializeAccessibility } from "./data/accessibility-preferences";
 import { initializeAppHaptics } from "./data/settings-haptics";
+import { PaperRecoveryPage } from "./components/paper-recovery-page";
 
 initializeAccessibility();
 initializeAppHaptics();
@@ -56,20 +57,21 @@ async function boot() {
     );
   } catch {
     appRoot.render(
-      <main className="startup-error">
-        <p>
-          {languageReady
-            ? "Não foi possível abrir o aplicativo. Atualize para tentar novamente. / Could not open the app. Refresh to retry."
-            : "Não foi possível carregar o idioma. / Could not load the language."}
-        </p>
-        <button
-          className="primary-button"
-          type="button"
-          onClick={() => (languageReady ? location.reload() : void boot())}
-        >
-          Tentar novamente / Retry
-        </button>
-      </main>,
+      <PaperRecoveryPage
+        title={
+          languageReady
+            ? uiText("Não foi possível abrir seu espaço.")
+            : "Não foi possível carregar o idioma. / Could not load the language."
+        }
+        description={
+          languageReady
+            ? uiText("Tente novamente ou volte ao início para continuar.")
+            : "Tente novamente. / Please try again."
+        }
+        homeLabel={languageReady ? uiText("Voltar ao início") : "Voltar ao início / Go home"}
+        retryLabel={languageReady ? uiText("Tentar novamente") : "Tentar novamente / Retry"}
+        onRetry={() => (languageReady ? location.reload() : void boot())}
+      />,
     );
   }
 }

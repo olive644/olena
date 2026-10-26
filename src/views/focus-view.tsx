@@ -146,9 +146,16 @@ export function FocusView({ workspace, dispatch, initialMaterialId, onMaterial }
   const defaultSubject =
     workspace.subjects.find((subject) => subject.id === restored?.subjectId) ??
     workspace.subjects.find((subject) => subject.id === material?.subjectId) ??
+    workspace.subjects.find(
+      (subject) => subject.name === workspace.studyPreferences.initialSubjectName,
+    ) ??
     workspace.subjects[0];
   const [mode, setMode] = useState<TimerMode>(
-    restored?.mode ?? (material ? "pomodoro" : (readStudentResume().focus?.mode ?? "timer")),
+    restored?.mode ??
+      (material
+        ? "pomodoro"
+        : (readStudentResume().focus?.mode ??
+          (workspace.studyPreferences.rhythm === "difuso" ? "pomodoro" : "timer"))),
   );
   useEffect(() => {
     saveStudentResume({ focus: { mode, at: Date.now() } });

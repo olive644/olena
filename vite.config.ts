@@ -145,6 +145,18 @@ export default defineConfig({
   },
   // sourcemap fica desligado no build de produção: um .map publicado exporia o
   // código-fonte original (não só o bundle minificado) a qualquer visitante.
-  build: { target: "es2022", sourcemap: false, manifest: true },
+  build: {
+    target: "es2022",
+    sourcemap: false,
+    manifest: true,
+    modulePreload: {
+      // WebKit pode manter preloads que falharam mesmo após reload (bug 270357).
+      // No bootstrap, deixe import() carregar o JS; conserve CSS e os demais preloads.
+      resolveDependencies: (filename, dependencies) =>
+        /^assets\/app-[^/]+\.js$/.test(filename)
+          ? dependencies.filter((dependency) => !dependency.endsWith(".js"))
+          : dependencies,
+    },
+  },
   preview: { headers: productionHeaders },
 });

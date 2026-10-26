@@ -68,7 +68,18 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
           <strong>
             <PaperDigits value={String(focusMinutes)} />
           </strong>
-          <small>{uiText(1549)}</small>
+          <small
+            className={
+              workspace.studyPreferences.dailyGoalMinutes ? "student-daily-goal" : undefined
+            }
+          >
+            {workspace.studyPreferences.dailyGoalMinutes
+              ? uiText("{0} de {1} minutos da meta diária", [
+                  focusMinutes,
+                  workspace.studyPreferences.dailyGoalMinutes,
+                ])
+              : uiText(1549)}
+          </small>
         </article>
         <article>
           <StudentMetricIcon name="agenda" />

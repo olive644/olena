@@ -93,6 +93,9 @@ test("painel usa agenda real, último foco, ilha e foco lado a lado e Oliver com
   if (page.viewportSize()!.width <= 560)
     expect((await page.locator(".math-hero-slide").boundingBox())!.height).toBeLessThan(420);
   // ilha e foco ficam lado a lado, com o mesmo tamanho, dentro da largura da página
+  await page.locator(".student-space-shortcuts").evaluate(async (element) => {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+  });
   const cards = await page.locator(".student-destination").all();
   const boxes = await Promise.all(cards.map((card) => card.boundingBox()));
   expect(boxes).toHaveLength(2);

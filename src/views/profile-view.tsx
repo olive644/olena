@@ -358,6 +358,59 @@ export function ProfileView({
               </div>
 
               <fieldset className="study-duration-options">
+                <legend>{uiText("Meta diária")}</legend>
+                <div>
+                  {[0, 5, 15, 30, 60].map((minutes) => (
+                    <button
+                      key={minutes}
+                      type="button"
+                      className="secondary-button"
+                      aria-pressed={(workspace.studyPreferences.dailyGoalMinutes ?? 0) === minutes}
+                      onClick={() =>
+                        updateStudyPreferences({ dailyGoalMinutes: minutes || undefined })
+                      }
+                    >
+                      {minutes ? uiText("{0} minutos", [minutes]) : uiText("Sem meta fixa")}
+                      {(workspace.studyPreferences.dailyGoalMinutes ?? 0) === minutes && (
+                        <PaperCheckIcon />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+              <label className="onboarding-initial-subject">
+                {uiText("Matéria inicial")}
+                <select
+                  value={workspace.studyPreferences.initialSubjectName ?? ""}
+                  onChange={(event) => {
+                    const name = event.target.value;
+                    const islands: Record<string, string> = {
+                      Matemática: "mathematics",
+                      Português: "portuguese",
+                      Química: "chemistry",
+                      Biologia: "biology",
+                      Programação: "programming",
+                      Inglês: "languages",
+                      Espanhol: "languages",
+                      Japonês: "languages",
+                      Chinês: "languages",
+                      Idiomas: "languages",
+                    };
+                    updateStudyPreferences({
+                      initialSubjectName: name || undefined,
+                      initialIslandId: islands[name],
+                    });
+                  }}
+                >
+                  <option value="">{uiText("Escolher depois")}</option>
+                  {workspace.subjects.map((subject) => (
+                    <option key={subject.id} value={subject.name}>
+                      {uiText(subject.name)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <fieldset className="study-duration-options">
                 <legend>{uiText(1535)}</legend>
                 <div>
                   {([25, 50] as const).map((minutes) => (

@@ -648,6 +648,21 @@ function isFocusPreferences(value: unknown): value is FocusPreferences {
 function isStudyPreferences(value: unknown): value is StudyPreferences {
   return (
     isRecord(value) &&
+    (value["dailyGoalMinutes"] === undefined ||
+      (Number.isInteger(value["dailyGoalMinutes"]) &&
+        Number(value["dailyGoalMinutes"]) >= 1 &&
+        Number(value["dailyGoalMinutes"]) <= 300)) &&
+    (value["initialSubjectName"] === undefined ||
+      (typeof value["initialSubjectName"] === "string" &&
+        value["initialSubjectName"].length <= 80)) &&
+    (value["initialIslandId"] === undefined ||
+      (typeof value["initialIslandId"] === "string" &&
+        ["languages", "portuguese", "chemistry", "biology", "mathematics", "programming"].includes(
+          String(value["initialIslandId"]),
+        ))) &&
+    (value["onboardingSetupId"] === undefined ||
+      (typeof value["onboardingSetupId"] === "string" &&
+        /^onboarding-v1-[a-f0-9]{24}$/.test(value["onboardingSetupId"]))) &&
     (value["flashcardNewLimit"] === undefined ||
       (Number.isSafeInteger(value["flashcardNewLimit"]) &&
         Number(value["flashcardNewLimit"]) >= 0 &&

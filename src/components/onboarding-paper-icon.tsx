@@ -12,7 +12,13 @@ export function OnboardingPaperIcon({ name }: { name: string }) {
       aria-hidden="true"
       data-paper-icon={name}
     >
-      <use href={`/navigation-icons/paper/onboarding-paper-icon.svg#${variant}`} />
+      <use
+        href={
+          name.startsWith("journey-")
+            ? `/navigation-icons/paper/onboarding-journey.svg#${name.slice(8)}`
+            : `/navigation-icons/paper/onboarding-paper-icon.svg#${variant}`
+        }
+      />
     </svg>
   );
 }

@@ -10,6 +10,23 @@ const symbols = new DOMParser().parseFromString(
 );
 
 afterEach(cleanup);
+it("uses original journey symbols without changing icons shared by other screens", () => {
+  const journey = new DOMParser().parseFromString(
+    readFileSync("public/navigation-icons/paper/onboarding-journey.svg", "utf8"),
+    "image/svg+xml",
+  );
+  const icons = [...journey.querySelectorAll("symbol")];
+  expect(icons).toHaveLength(40);
+  expect(new Set(icons.map((icon) => icon.innerHTML)).size).toBe(40);
+  for (const icon of icons) {
+    expect(icon.querySelectorAll("path").length).toBeGreaterThanOrEqual(2);
+    const view = render(<OnboardingPaperIcon name={`journey-${icon.id}`} />);
+    expect(view.container.querySelector("use")?.getAttribute("href")).toBe(
+      `/navigation-icons/paper/onboarding-journey.svg#${icon.id}`,
+    );
+    view.unmount();
+  }
+});
 it("keeps paper fills isolated from navigation line-icon styles", () => {
   const { container } = render(<OnboardingPaperIcon name="science" />);
   expect(container.querySelector(".navigation-icon")).toBeNull();

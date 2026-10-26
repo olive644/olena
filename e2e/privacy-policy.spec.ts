@@ -168,13 +168,17 @@ test("o rodapé da Galeria.Oli aparece no onboarding e no login", async ({ page 
   const onboarding = page.locator("footer.brand-footer");
   await expect(onboarding).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");
   expect(
-    await onboarding.locator("img").evaluate((image: HTMLImageElement) => image.naturalWidth),
+    await onboarding
+      .locator('img[src="/galeria-oli-icon.svg"]')
+      .evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBeGreaterThan(0);
   await page.goto("/?onboarding=1&login=1");
   const login = page.locator("footer.brand-footer");
   await expect(login).toContainText("Todos os direitos Galeria.Oli - OlenaStudy");
   expect(
-    await login.locator("img").evaluate((image: HTMLImageElement) => image.naturalWidth),
+    await login
+      .locator('img[src="/galeria-oli-icon.svg"]')
+      .evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBeGreaterThan(0);
 });
 

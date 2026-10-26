@@ -14,7 +14,7 @@ async function answerAll(page: Page, onStep?: (step: number) => Promise<void>) {
 
 test("a Olena conduz as perguntas em conversa até o login com Google", async ({ page }) => {
   await page.goto("/?onboarding=1");
-  await expect(page.getByText("Oi! Eu sou a Olena, sua assistente de estudos.")).toBeVisible();
+  await expect(page.getByText("Oi! Eu sou a Olena, sua assistente de estudos.")).toBeAttached();
   await answerAll(page, async (step) => {
     const image = page.locator(".onboarding__helena");
     await expect(image).toHaveAttribute(
@@ -31,18 +31,18 @@ test("a Olena conduz as perguntas em conversa até o login com Google", async ({
     );
   });
   await expect(
-    page.getByText("Prontinho! Falta só entrar com o Google para começar."),
+    page.getByText("Prontinho! Seu começo está preparado. Vamos criar seu espaço?"),
   ).toBeVisible();
   await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
-  await expect(page.getByRole("button", { name: "Entrar como convidado" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Entrar como convidado" })).toHaveCount(0);
   // A pose é PNG recortado: nada de caixa clara atrás da Olena nem mistura de cor.
   await expect(page.locator(".onboarding__helena")).toHaveCSS("mix-blend-mode", "normal");
   await expect(page.locator(".onboarding__helena")).toHaveCSS("filter", "none");
   await page.screenshot({ path: test.info().outputPath("conversa-final.png") });
-  await page.getByRole("button", { name: "Entrar com Google" }).click();
+  await page.getByRole("button", { name: "Registre-se" }).click();
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
   await page.getByRole("button", { name: "Voltar", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Entrar com Google" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Registre-se" })).toBeVisible();
   await expect(page.locator(".onboarding__message--you")).toHaveCount(9);
 });
 
@@ -77,7 +77,7 @@ test("entra como convidado no fim do onboarding e continua assim ao recarregar",
 }) => {
   await page.goto("/?onboarding=1");
   await answerAll(page);
-  await page.getByRole("button", { name: "Entrar com Google" }).click();
+  await page.getByRole("button", { name: "Registre-se" }).click();
   await expect(page.getByRole("heading", { name: "Vamos começar?" })).toBeVisible();
   await expect(page.getByText(/você aparece como Guest/)).toBeVisible();
   await page.screenshot({ path: test.info().outputPath("login-convidado.png") });
@@ -104,10 +104,73 @@ test("entra como convidado no fim do onboarding e continua assim ao recarregar",
   await page.screenshot({ path: test.info().outputPath("perfil-convidado.png") });
 });
 
-test("entra como convidado direto da despedida da Olena", async ({ page }) => {
+test("Registre-se abre o acesso final sem concluir a sessão antes da escolha", async ({ page }) => {
   await page.goto("/?onboarding=1");
   await answerAll(page);
+  await expect(page.getByRole("button", { name: "Entrar como convidado" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Registre-se" }).click();
+  expect(await page.evaluate(() => localStorage.getItem("helena.guest.v1"))).toBeNull();
   await page.getByRole("button", { name: "Entrar como convidado" }).click();
   await expect(page.locator(".onboarding")).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem("helena.guest.v1"))).toBe("1");
 });
+
+for (const viewport of [
+  { width: 320, height: 568 },
+  { width: 360, height: 640 },
+]) {
+  test(`todas as escolhas e o acesso cabem em ${viewport.width}x${viewport.height}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/?onboarding=1");
+    async function fits() {
+      expect(
+        await page.evaluate(() => ({
+          width: document.documentElement.scrollWidth <= innerWidth,
+          height: document.documentElement.scrollHeight <= innerHeight + 1,
+        })),
+      ).toEqual({ width: true, height: true });
+      for (const button of await page
+        .locator(
+          ".onboarding__choices button, .onboarding__actions button, .login-page__guest button",
+        )
+        .all()) {
+        const box = await button.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box!.y).toBeGreaterThanOrEqual(0);
+        expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height);
+        expect(box!.height).toBeGreaterThanOrEqual(44);
+      }
+    }
+    await answerAll(page, async (step) => {
+      await fits();
+      if (step === 2) {
+        await page.screenshot({ path: test.info().outputPath("materias-mobile.png") });
+        for (const subject of [
+          "Idiomas",
+          "Português",
+          "Química",
+          "Biologia",
+          "Matemática",
+          "Programação",
+        ])
+          await expect(page.getByRole("button", { name: subject, exact: true })).toBeVisible();
+      }
+      if (step === 3) {
+        await expect(page.getByRole("button", { name: "Japonês" })).toBeVisible();
+        await expect(page.getByRole("button", { name: "Chinês" })).toBeVisible();
+      }
+    });
+    await page.getByRole("button", { name: "Registre-se" }).waitFor();
+    await expect(page.getByRole("button", { name: "Registre-se" })).toBeEnabled();
+    await fits();
+    await page.getByRole("button", { name: "Registre-se" }).click();
+    await expect(page.getByRole("button", { name: "Entrar como convidado" })).toBeVisible();
+    await expect(page.getByRole("checkbox")).not.toBeChecked();
+    await fits();
+    await expect(page.locator(".login-page__scene")).toHaveCount(0);
+    await page.screenshot({ path: test.info().outputPath("acesso-mobile.png") });
+  });
+}

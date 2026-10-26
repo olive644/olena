@@ -1,6 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useRef, useState } from "react";
 import { BrandFooter } from "../components/brand-footer";
+import { PaperCardTitle } from "../components/paper-card-title";
 import { HelenaLoading } from "../components/helena-loading";
 import { PaperArrow } from "../components/paper-arrow";
 import { getFirebaseAccountServices } from "../data/firebase-account";
@@ -8,6 +9,11 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { GUEST_NAME, endGuestSession, startGuestSession } from "../domain/guest-session";
 import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
+import {
+  parseOnboardingAnswers,
+  type OnboardingConfiguration,
+} from "../domain/onboarding-configuration";
+import { readStoredOnboardingConfiguration } from "../data/onboarding-client";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
 
@@ -33,20 +39,38 @@ function googleLoginError(cause: unknown): string {
   return uiText(1195);
 }
 
-function applyGoogleLogin(answers: readonly (string | string[])[]) {
-  writeSyncedStorage("helena.onboarding.v1", JSON.stringify({ answers, completed: true }));
+function applyGoogleLogin(
+  answers: readonly (string | string[])[],
+  configuration?: OnboardingConfiguration,
+  configurationOwner?: string,
+) {
+  writeSyncedStorage(
+    "helena.onboarding.v1",
+    JSON.stringify({
+      answers,
+      completed: true,
+      ...(configuration ? { configuration, configurationOwner, configurationPending: true } : {}),
+    }),
+  );
 }
 
 /** Entrada como convidado: nada vai a servidor algum, as respostas ficam só neste aparelho. */
-export function enterAsGuest(answers: readonly (string | string[])[]) {
+export function enterAsGuest(
+  answers: readonly (string | string[])[],
+  configuration?: OnboardingConfiguration,
+) {
   startGuestSession();
-  applyGoogleLogin(answers);
+  applyGoogleLogin(answers, configuration, "guest");
 }
 
 export function readPendingGoogleAnswers(): readonly (string | string[])[] {
   try {
     const raw = window.sessionStorage.getItem(PENDING_ANSWERS_KEY);
-    return raw ? (JSON.parse(raw) as (string | string[])[]) : [];
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(parsed)) return parsed as (string | string[])[];
+    return parsed && typeof parsed === "object" && "answers" in parsed
+      ? (parseOnboardingAnswers(parsed.answers) ?? [])
+      : [];
   } catch {
     return [];
   }
@@ -62,10 +86,12 @@ function clearPendingAnswers() {
 
 export function GoogleLogin({
   answers,
+  configuration,
   onFinish,
   onBack,
 }: {
   answers: readonly (string | string[])[];
+  configuration?: OnboardingConfiguration | undefined;
   onFinish: () => void;
   onBack?: () => void;
 }) {
@@ -92,7 +118,13 @@ export function GoogleLogin({
         if (hasPendingGoogleRedirect()) {
           if (loaded.redirectResult) {
             endGuestSession();
-            applyGoogleLogin(readPendingGoogleAnswers());
+            applyGoogleLogin(
+              readPendingGoogleAnswers(),
+              readStoredOnboardingConfiguration(
+                window.sessionStorage.getItem(PENDING_ANSWERS_KEY),
+              ) ?? undefined,
+              loaded.redirectResult.user.uid,
+            );
             clearPendingAnswers();
             if (active) onFinish();
             return;
@@ -128,9 +160,9 @@ export function GoogleLogin({
     const provider = new services.authApi.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
     try {
-      await services.authApi.signInWithPopup(services.auth, provider);
+      const credential = await services.authApi.signInWithPopup(services.auth, provider);
       endGuestSession();
-      applyGoogleLogin(answers);
+      applyGoogleLogin(answers, configuration, credential?.user?.uid);
       onFinish();
     } catch (cause) {
       if (isPopupBlockedError(cause)) {
@@ -138,7 +170,10 @@ export function GoogleLogin({
         // janela do Google mesmo em um clique legítimo. O redirecionamento
         // de página inteira não depende de pop-up e funciona nesses casos.
         try {
-          window.sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
+          window.sessionStorage.setItem(
+            PENDING_ANSWERS_KEY,
+            JSON.stringify(configuration ? { answers, configuration } : answers),
+          );
         } catch {
           /* Sem sessionStorage, o redirecionamento ainda funciona, só perde as respostas do onboarding. */
         }
@@ -167,7 +202,7 @@ export function GoogleLogin({
   // não há aceite de política a registrar como no login com Google.
   function continueAsGuest() {
     if (pending.current) return;
-    enterAsGuest(answers);
+    enterAsGuest(answers, configuration);
     onFinish();
   }
 
@@ -176,26 +211,10 @@ export function GoogleLogin({
       <h1 className="sr-only">{uiText(1198)}</h1>
       <header className="onboarding__header">
         <span className="onboarding__brand">
-          {uiText(117)}
-          <span>{uiText(118)}</span>
+          <PaperCardTitle value="OlenaStudy" />
         </span>
-        <span className="onboarding__eyebrow">{uiText(1199)}</span>
       </header>
       <div className="login-page__layout">
-        <section className="login-page__scene" aria-label={uiText(1200)}>
-          <span className="login-page__note">{uiText(1201)}</span>
-          <span className="login-page__star login-page__star--one" aria-hidden="true">
-            ✦
-          </span>
-          <span className="login-page__star login-page__star--two" aria-hidden="true">
-            ✦
-          </span>
-          <p>
-            {uiText(1202)}
-            <br />
-            <strong>{uiText(1203)}</strong>
-          </p>
-        </section>
         <section className="login-page__card">
           <img
             className="login-page__perched"
@@ -265,7 +284,7 @@ export function GoogleLogin({
         </section>
       </div>
       <footer className="login-page__footer">{uiText(1216)}</footer>
-      <BrandFooter />
+      <BrandFooter withOlena />
     </main>
   );
 }

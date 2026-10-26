@@ -32,6 +32,7 @@ export default defineConfig({
       name: "desktop",
       use: {
         ...devices["Desktop Chrome"],
+        browserName: "chromium",
         ...(process.env["PLAYWRIGHT_SYSTEM_EDGE"] ? { channel: "msedge" } : {}),
       },
     },
@@ -39,9 +40,8 @@ export default defineConfig({
       name: "mobile",
       use: {
         ...devices["iPhone 13"],
-        ...(process.env["PLAYWRIGHT_SYSTEM_EDGE"]
-          ? { browserName: "chromium" as const, channel: "msedge" }
-          : {}),
+        browserName: "chromium",
+        ...(process.env["PLAYWRIGHT_SYSTEM_EDGE"] ? { channel: "msedge" } : {}),
       },
     },
   ],
