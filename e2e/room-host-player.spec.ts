@@ -82,6 +82,12 @@ test("organizador joga, contador centralizado e API recupera sala sem stream", a
   await page.getByRole("button", { name: "Iniciar atividade", exact: true }).click();
   const countdown = page.locator(".local-room-countdown");
   await expect(countdown).toBeVisible();
+  // Medir o tamanho final, depois da animação de entrada do número.
+  await countdown.evaluate(async (element) => {
+    await Promise.all(
+      element.getAnimations({ subtree: true }).map((animation) => animation.finished),
+    );
+  });
   await expect(page.getByRole("button", { name: "Ouvir novamente", exact: true })).toBeDisabled();
   const viewport = page.viewportSize()!;
   const overlay = await countdown.boundingBox();

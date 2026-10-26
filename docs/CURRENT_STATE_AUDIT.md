@@ -1,5 +1,9 @@
 # Auditoria do estado atual
 
+## Medições de layout após animações, 2026-10-25
+
+Application CI 40246639095 encontrou uma falha móvel na contagem regressiva: o SVG foi medido com altura de 33,6 ou 47,9 px durante o scale de entrada, antes de atingir seu tamanho final. O teste de Espaço do aluno também apresentou leitura transitória entre a posição do cartão e sua arte durante student-reveal. Os dois testes aguardam as animações responsáveis pela medição usando Animation.finished, sem sleeps fixos, sem alterar os efeitos do produto ou as expectativas de tamanho e contenção. Validação: 16 execuções E2E Edge Chromium PC/mobile aprovadas, em duas repetições, e npm run verify integral aprovado. Aplicação 1566,5 KiB e entrada 220,4 KiB, sem mudança. A cobertura Chromium PC/mobile permanece obrigatória antes da mesclagem.
+
 ## Playwright somente com Chromium, 2026-10-25
 
 O proprietário pediu explicitamente remover WebKit e manter Playwright. Desktop e mobile agora declaram browserName chromium; o mobile conserva o descritor de iPhone para viewport, escala, toque e isMobile, sem selecionar o motor do Safari. playwright.helena.config herda os dois projetos e também passa a usar Chromium. Matriz de ci-scope mantém desktop e dois shards móveis com os mesmos nomes, workers e gates; só o navegador foi substituído. Instalação dinâmica do workflow recebe chromium em todas as entradas. README atualizado para instalar somente chromium. Nenhuma alteração em timeouts, critérios, dependências ou redução de testes.
