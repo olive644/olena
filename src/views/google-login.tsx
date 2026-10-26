@@ -15,8 +15,45 @@ import {
 } from "../domain/onboarding-configuration";
 import { readStoredOnboardingConfiguration } from "../data/onboarding-client";
 import { rememberReturningVisitor } from "../data/returning-visitor";
+import { EmailAuthForm } from "../components/email-auth-form";
+import { accountAuthError, setAccountLanguage } from "../data/account-auth";
+import type { AccountServices } from "../data/account-auth";
+import type { UserCredential } from "firebase/auth";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
+let discordExchange:
+  { code: string; expiresAt: number; promise: Promise<UserCredential> } | undefined;
+function exchangeDiscord(code: string, services: AccountServices): Promise<UserCredential> {
+  if (discordExchange?.code === code && discordExchange.expiresAt > Date.now())
+    return discordExchange.promise;
+  const promise = (async () => {
+    const response = await fetch(
+      `/api/olena?action=account-auth&step=exchange&code=${encodeURIComponent(code)}`,
+      { method: "POST", credentials: "same-origin" },
+    );
+    if (!response.ok) throw new Error("discord-exchange");
+    const payload: unknown = await response.json();
+    if (
+      !payload ||
+      typeof payload !== "object" ||
+      !("token" in payload) ||
+      typeof payload.token !== "string"
+    )
+      throw new Error("discord-exchange");
+    return services.authApi.signInWithCustomToken(services.auth, payload.token);
+  })();
+  discordExchange = { code, expiresAt: Date.now() + 60000, promise };
+  return promise;
+}
+function pendingConfiguration() {
+  try {
+    return (
+      readStoredOnboardingConfiguration(sessionStorage.getItem(PENDING_ANSWERS_KEY)) ?? undefined
+    );
+  } catch {
+    return undefined;
+  }
+}
 
 export function hasPendingGoogleRedirect(): boolean {
   try {
@@ -113,11 +150,40 @@ export function GoogleLogin({
   const [accepted, setAccepted] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
   const pending = useRef(false);
+  const discordCode = useRef(new URL(window.location.href).searchParams.get("discord"));
+  const discordIntent = useRef({
+    answers: readPendingGoogleAnswers(),
+    configuration: pendingConfiguration(),
+  });
 
   useEffect(() => {
     let active = true;
     void getFirebaseAccountServices()
-      .then((loaded) => {
+      .then(async (loaded) => {
+        if (!active) return;
+        const url = new URL(window.location.href);
+        const discord = discordCode.current;
+        if (discord) {
+          const credential = await exchangeDiscord(discord, loaded);
+          if (!active) return;
+          endGuestSession();
+          applyGoogleLogin(
+            discordIntent.current.answers,
+            discordIntent.current.configuration,
+            credential.user.uid,
+          );
+          clearPendingAnswers();
+          window.history.replaceState(null, "", url.pathname);
+          if (discordExchange?.code === discord) discordExchange = undefined;
+          if (active) onFinish();
+          return;
+        }
+        if (url.searchParams.has("authError")) {
+          window.history.replaceState(null, "", url.pathname);
+          clearPendingAnswers();
+          if (active)
+            setError(uiText("A autorização do Discord não foi concluída. Tente novamente."));
+        }
         // Retorno de um login que precisou de redirecionamento de página
         // inteira (pop-up bloqueado): completa o fluxo com as respostas que
         // ficaram guardadas antes de sair da página. O resultado já vem
@@ -156,7 +222,40 @@ export function GoogleLogin({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function login() {
+  async function startDiscord() {
+    if (!services || pending.current || !accepted) return;
+    pending.current = true;
+    setSigningIn(true);
+    setError("");
+    try {
+      recordPrivacyConsent(window.localStorage);
+      sessionStorage.setItem(
+        PENDING_ANSWERS_KEY,
+        JSON.stringify(configuration ? { answers, configuration } : answers),
+      );
+      const response = await fetch("/api/olena?action=account-auth&step=start", {
+        method: "POST",
+        credentials: "same-origin",
+      });
+      if (!response.ok) throw new Error("discord-start");
+      const payload = (await response.json()) as { url?: unknown };
+      const url = typeof payload.url === "string" ? new URL(payload.url) : undefined;
+      if (!url || url.origin !== "https://discord.com" || url.pathname !== "/oauth2/authorize")
+        throw new Error("discord-start");
+      window.location.assign(url.toString());
+    } catch {
+      clearPendingAnswers();
+      pending.current = false;
+      setSigningIn(false);
+      setError(
+        uiText(
+          "O acesso com Discord está indisponível. Tente outro método ou tente novamente mais tarde.",
+        ),
+      );
+    }
+  }
+
+  async function login(method: "google" | "apple" = "google") {
     if (!services || pending.current || !accepted) return;
     pending.current = true;
     setSigningIn(true);
@@ -165,8 +264,16 @@ export function GoogleLogin({
     recordPrivacyConsent(window.localStorage);
     setBusy(true);
     setError("");
-    const provider = new services.authApi.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: "select_account" });
+    setAccountLanguage(services);
+    const provider =
+      method === "apple"
+        ? new services.authApi.OAuthProvider("apple.com")
+        : new services.authApi.GoogleAuthProvider();
+    if (method === "google") provider.setCustomParameters({ prompt: "select_account" });
+    else {
+      provider.addScope("email");
+      provider.addScope("name");
+    }
     try {
       const credential = await services.authApi.signInWithPopup(services.auth, provider);
       endGuestSession();
@@ -192,14 +299,16 @@ export function GoogleLogin({
           // Sem isto, uma falha aqui (domínio não autorizado, rede) ficava sem tratamento: a
           // pessoa via o botão parado em "Aguardando o Google…" para sempre, sem nenhum aviso.
           clearPendingAnswers();
-          setError(googleLoginError(redirectCause));
+          setError(
+            method === "google" ? googleLoginError(redirectCause) : accountAuthError(redirectCause),
+          );
           pending.current = false;
           setSigningIn(false);
           setBusy(false);
           return;
         }
       }
-      setError(googleLoginError(cause));
+      setError(method === "google" ? googleLoginError(cause) : accountAuthError(cause));
       pending.current = false;
       setSigningIn(false);
       setBusy(false);
@@ -241,11 +350,9 @@ export function GoogleLogin({
           <p className="login-page__intro">
             {returning ? uiText("Seu espaço de estudos espera por você.") : uiText(1207)}
             <br />
-            {returning ? uiText("Entre para continuar de onde parou.") : uiText(1208)}
+            {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
           </p>
-          {(busy || (!services && !error)) && (
-            <HelenaLoading compact label={busy ? uiText(1965) : uiText(1209)} />
-          )}
+          {(busy || (!services && !error)) && <HelenaLoading compact label={uiText(1209)} />}
           {error && <p role="alert">{uiText(error)}</p>}
           <label className="login-page__consent">
             <input
@@ -266,17 +373,59 @@ export function GoogleLogin({
           <p id="login-consent-help" className="login-page__consent-help">
             {accepted ? "" : uiText(1211)}
           </p>
-          <div className="onboarding__actions login-page__actions">
-            <button
-              type="button"
-              disabled={!services || busy || !accepted}
-              aria-describedby="login-consent-help"
-              onClick={() => void login()}
-            >
-              {uiText(870)}
-              <PaperArrow />
-            </button>
+          <div className="login-page__social">
+            <div className="onboarding__actions login-page__actions">
+              <button
+                data-provider="google"
+                aria-label={uiText(870)}
+                type="button"
+                disabled={!services || busy || signingIn || !accepted}
+                aria-describedby="login-consent-help"
+                onClick={() => void login()}
+              >
+                {uiText(870)}
+                <PaperArrow />
+              </button>
+            </div>
+            <div className="login-page__providers">
+              <button
+                data-provider="apple"
+                aria-label={uiText("Entrar com Apple")}
+                type="button"
+                disabled={!services || busy || signingIn || !accepted}
+                onClick={() => void login("apple")}
+              >
+                {uiText("Entrar com Apple")}
+              </button>
+              <button
+                data-provider="discord"
+                aria-label={uiText("Entrar com Discord")}
+                type="button"
+                disabled={!services || busy || signingIn || !accepted}
+                onClick={() => void startDiscord()}
+              >
+                <img
+                  src="/navigation-icons/paper/profile-discord.svg"
+                  alt=""
+                  width="24"
+                  height="24"
+                />
+                {uiText("Entrar com Discord")}
+              </button>
+            </div>
           </div>
+          <EmailAuthForm
+            services={busy || signingIn ? undefined : services}
+            accepted={accepted}
+            initialRegister={!returning && answers.length > 0}
+            onBusy={setSigningIn}
+            onAuthenticated={(user) => {
+              recordPrivacyConsent(window.localStorage);
+              endGuestSession();
+              applyGoogleLogin(answers, configuration, user.uid);
+              onFinish();
+            }}
+          />
           <p className="login-page__local">{uiText(1212)}</p>
           <div className="login-page__guest">
             <button type="button" disabled={signingIn} onClick={continueAsGuest}>

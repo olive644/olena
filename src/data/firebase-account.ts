@@ -1,4 +1,14 @@
-export async function getFirebaseAccountServices() {
+let pending: ReturnType<typeof loadFirebaseAccountServices> | undefined;
+
+export function getFirebaseAccountServices() {
+  pending ??= loadFirebaseAccountServices().catch((cause: unknown) => {
+    pending = undefined;
+    throw cause;
+  });
+  return pending;
+}
+
+async function loadFirebaseAccountServices() {
   const apiKey = import.meta.env["VITE_FIREBASE_API_KEY"];
   const authDomain = import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"];
   const projectId = import.meta.env["VITE_FIREBASE_PROJECT_ID"];

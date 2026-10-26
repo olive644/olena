@@ -405,3 +405,114 @@
     top: -86px;
   }
 }
+.login-page__providers,
+.email-auth__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+.login-page__providers button,
+.email-auth button {
+  min-height: 44px;
+}
+.login-page__providers button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1 1 140px;
+}
+.email-auth form,
+.email-auth form > label:not(.email-auth__show) {
+  display: grid;
+  gap: 6px;
+}
+.email-auth form {
+  gap: 12px;
+}
+.email-auth input:not([type="checkbox"]) {
+  width: 100%;
+  min-height: 44px;
+  background: #fff9ef;
+  color: #25202e;
+  border: 1px solid #d9cdb5;
+  border-bottom-width: 4px;
+  border-radius: 6px 16px 6px 10px;
+  padding: 10px;
+}
+.email-auth__show {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.email-auth__link {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: #51259b;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.email-auth p {
+  margin: 0;
+  font-size: 12px;
+}
+.login-page__card:has(.email-auth[data-open="true"]) > .login-page__providers,
+.login-page__card:has(.email-auth[data-open="true"]) > .login-page__social,
+.login-page__card:has(.email-auth[data-open="true"]) > .login-page__actions,
+.login-page__card:has(.email-auth[data-open="true"]) > .login-page__guest,
+.login-page__card:has(.email-auth[data-open="true"]) > .login-page__local {
+  display: none;
+}
+
+@media (max-width: 719px) {
+  .login-page__social {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 6px 0 10px;
+  }
+  .login-page__social .login-page__actions,
+  .login-page__social .login-page__providers {
+    display: contents;
+  }
+  .login-page .login-page__social button {
+    min-height: 44px;
+    padding: 8px;
+    font-size: 0;
+  }
+  .login-page__social button .onboarding-paper-arrow {
+    display: none;
+  }
+  .login-page__social [data-provider="google"]::before {
+    content: "Google";
+    font-size: 14px;
+  }
+  .login-page__social [data-provider="apple"]::before {
+    content: "Apple";
+    font-size: 14px;
+  }
+  .login-page__social [data-provider="discord"]::before {
+    content: "Discord";
+    font-size: 14px;
+  }
+  .login-page__social [data-provider="discord"] img {
+    display: none;
+  }
+  .email-auth:not([data-open="true"]) > button {
+    width: 100%;
+  }
+}
+@media (max-width: 719px) and (max-height: 650px) {
+  .login-page__eyebrow {
+    display: none;
+  }
+  .login-page__card > .login-page__local {
+    display: none;
+  }
+  .login-page__card .login-page__guest p {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+}

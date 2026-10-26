@@ -1,4 +1,5 @@
 import { uiText, useLanguage, localizeLabels } from "../i18n/runtime";
+import { AccountAccessPanel } from "../components/account-access-panel";
 import { PomodoroDurationPicker } from "../components/pomodoro-duration-picker";
 import { formatFocusDuration } from "../domain/pomodoro-duration";
 import { lazy, Suspense, useEffect, useRef, useState, type Dispatch } from "react";
@@ -554,6 +555,7 @@ export function ProfileView({
               ))}
             </section>
 
+            {section === "account" && cloud.authenticated === true && <AccountAccessPanel />}
             {section === "account" &&
               !guest &&
               cloud.authenticated === true &&
@@ -563,6 +565,7 @@ export function ProfileView({
                 <DeleteAccountPanel
                   accountName={accountConfirmationName(cloud)}
                   onDelete={cloud.deleteAccount}
+                  needsPassword={cloud.passwordAccount}
                 />
               )}
           </div>
