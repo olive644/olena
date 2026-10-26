@@ -3674,3 +3674,10 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - O token do bot foi colado no chat da sessão de desenvolvimento e deve ser redefinido no portal do Discord, com o novo valor atualizado na Vercel pela proprietária.
 - Pendências antes de ligar o atendimento: teto global e limite por origem no endpoint, fila de envio atômica, comandos e testes com o servidor de testes.
 - Não verificado: o PING real do portal contra a URL publicada; a rede desta sessão não alcança o Discord.
+
+## Comandos /ajuda e /status do bot do Discord (2026-10-26)
+
+- O endpoint de interações responde a `/ajuda` e `/status` (efêmeros, sem menções) e recusa comandos desconhecidos. Nenhum ticket é enviado ao Discord e o token do bot continua sem uso no código do servidor.
+- Novo `scripts/register-discord-commands.mjs`, que a proprietária roda localmente para registrar os comandos no servidor de testes. O token só passa por variável de ambiente e nunca é impresso.
+- A etapa 1 foi confirmada pela proprietária: o portal do Discord aceitou o endereço de interações (PING respondido). Não verificado por esta sessão, que não alcança o Discord.
+- Não verificado: o registro dos comandos e a resposta no servidor de testes.
