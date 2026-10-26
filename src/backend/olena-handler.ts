@@ -34,6 +34,10 @@ export async function handleOlena(request: Request): Promise<Response> {
     const { handleOnboarding } = await import("./onboarding-handler.js");
     return handleOnboarding(request);
   }
+  if (url.searchParams.get("action") === "discord-interactions") {
+    const { handleDiscordInteractions } = await import("./discord-interactions-runtime.js");
+    return handleDiscordInteractions(request);
+  }
   if (url.searchParams.get("action") === "support") {
     const { handleSupport } = await import("./support-runtime.js");
     return handleSupport(request);

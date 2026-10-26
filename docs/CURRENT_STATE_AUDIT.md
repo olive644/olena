@@ -2,6 +2,8 @@
 
 ## Medições de layout após animações, 2026-10-25
 
+Atualização da base: PRs 522 e 523 adicionaram a ação discord-interactions enquanto o onboarding estava aberto. Resolvido o único conflito em olena-handler preservando as duas rotas independentes, onboarding e discord-interactions, com os imports sob demanda e sem mudar os contratos.
+
 Application CI 40246639095 encontrou uma falha móvel na contagem regressiva: o SVG foi medido com altura de 33,6 ou 47,9 px durante o scale de entrada, antes de atingir seu tamanho final. O teste de Espaço do aluno também apresentou leitura transitória entre a posição do cartão e sua arte durante student-reveal. Os dois testes aguardam as animações responsáveis pela medição usando Animation.finished, sem sleeps fixos, sem alterar os efeitos do produto ou as expectativas de tamanho e contenção. Validação: 16 execuções E2E Edge Chromium PC/mobile aprovadas, em duas repetições, e npm run verify integral aprovado. Aplicação 1566,5 KiB e entrada 220,4 KiB, sem mudança. A cobertura Chromium PC/mobile permanece obrigatória antes da mesclagem.
 
 ## Playwright somente com Chromium, 2026-10-25
@@ -3655,3 +3657,20 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Quem volta do redirecionamento do Google reabre a conversa na despedida da Olena, com as respostas restauradas.
 - Testes: unitários da conversa (abertura, resposta com reação, várias respostas, voltar, despedida), idioma inglês e e2e do fluxo completo, foco por teclado e convidado. Prévia visual feita com o app real em desktop e celular.
 - Não verificado: a leitura por leitor de tela real do fluxo. A pergunta recebe foco a cada passo e o indicador de digitação tem texto oculto; conferir com VoiceOver ou TalkBack.
+
+## Bot do Discord por requisição, sem servidor ligado (2026-10-25)
+
+- Decisão da proprietária registrada em `docs/SUPPORT_DISCORD_PLAN.md`: o bot usa REST para enviar e um endereço de interações assinadas para receber, sem processo 24 horas. Só documentação: nenhum bot, token, endereço ou canal foi criado e o transporte segue `enabled: false`.
+- Pesquisa de hospedagem gratuita sempre ligada feita em guias de terceiros. Resultado: Oracle e Google e2-micro são as únicas máquinas realmente gratuitas, com ressalvas de ociosidade, cartão e manutenção; Fly.io, Koyeb, Render, Replit e Glitch não servem. Valores e limites **não verificados** em fonte oficial.
+- Limite do modelo: sem conexão contínua, o bot não lê mensagens comuns, presença, entradas nem voz.
+- Mapa de canais proposto (a confirmar). Canais de LOG de conta e conquista dependem de aviso de privacidade e consentimento.
+- Não verificado: limites de execução e termos do plano gratuito da Vercel para as funções do bot.
+
+## Endpoint de interações do Discord, etapa 1 (2026-10-25)
+
+- Adicionado `POST /api/olena?action=discord-interactions`: valida a assinatura Ed25519 do Discord com `node:crypto`, recusa reenvio (janela de 5 minutos), corpo grande e configuração ausente, responde ao PING e recusa servidores fora de `DISCORD_ALLOWED_GUILD_IDS`. Reaproveita a função `api/olena.ts`, sem função nova.
+- Só a base do "Receber": nenhum ticket é enviado ao Discord, nenhum comando existe e o token do bot ainda não é lido. O transporte de suporte segue `enabled: false`.
+- Variáveis criadas na Vercel (produção, sensíveis) pela proprietária em 25/10/2026: `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`, `DISCORD_BOT_TOKEN`. Falta criar `DISCORD_ALLOWED_GUILD_IDS`. Os valores não ficam no repositório.
+- O token do bot foi colado no chat da sessão de desenvolvimento e deve ser redefinido no portal do Discord, com o novo valor atualizado na Vercel pela proprietária.
+- Pendências antes de ligar o atendimento: teto global e limite por origem no endpoint, fila de envio atômica, comandos e testes com o servidor de testes.
+- Não verificado: o PING real do portal contra a URL publicada; a rede desta sessão não alcança o Discord.

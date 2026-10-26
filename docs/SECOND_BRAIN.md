@@ -134,7 +134,7 @@ Não traduzir IDs, valores canônicos do onboarding ou respostas. Datas manuais 
 dia/mês e mês/dia, armazenamento ISO permanece igual. Manutenção e testes em I18N.md.
 
 2026-10-18, futura ponte de atendimento: contrato server-only em support-integration.ts,
-desativado e sem runtime Discord. Plano e modelo de ameaça em SUPPORT_DISCORD_PLAN.md.
+desativado e sem runtime Discord. Plano e modelo de ameaça em SUPPORT_DISCORD_PLAN.md. Decisão de 25/10/2026: bot por requisição (REST para enviar, interações assinadas para receber), sem processo ligado; ver a seção da decisão no mesmo arquivo.
 Não ligar um envio externo direto depois do salvamento: implementação futura exige outbox
 atômica, revalidação de exclusão e autorização própria dos IDs de atendentes do Discord.
 
