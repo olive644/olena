@@ -893,6 +893,9 @@ export function HandwritingStudio({
     sizePageCanvas(canvas, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
     if (liveCanvasRef.current)
       sizePageCanvas(liveCanvasRef.current, renderScale, PAGE_WIDTH, PAGE_HEIGHT);
+    // Redimensionar o bitmap apaga a tinta ainda pressionada. Repinta no mesmo
+    // efeito para preservar a ponta mesmo quando o zoom muda durante o gesto.
+    if (liveStrokeRef.current) paintLiveRef.current();
     // O traço em andamento fica só na camada ao vivo até a caneta ser solta.
     const hidden = new Set(revealsRef.current.map((reveal) => reveal.stroke.id));
     const liveId = liveStrokeRef.current?.id;
