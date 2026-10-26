@@ -791,3 +791,14 @@ html[data-reduce-motion="true"] .onboarding__form {
     padding-bottom: 0;
   }
 }
+/* Entrada direta preserva o questionário para quem está criando uma conta. */
+.onboarding__existing-account {
+  min-height: 44px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  font-size: 13px;
+}

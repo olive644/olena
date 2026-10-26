@@ -6,7 +6,7 @@ export type AccountIdentity = {
   email?: string | undefined;
 };
 
-// O nome que a pessoa deve digitar: o nome da conta Google e, se não houver, o e-mail.
+// O nome que a pessoa deve digitar: o nome da conta e, se não houver, o e-mail.
 export function accountConfirmationName(identity: AccountIdentity): string {
   return (identity.displayName?.trim() || identity.email?.trim() || "").trim();
 }
@@ -17,7 +17,7 @@ export function isDeletionConfirmed(typed: string, expected: string): boolean {
 }
 
 export type AccountDeletionSteps = {
-  // Pede o login do Google de novo. A exclusão é irreversível, então sempre confirma a identidade.
+  // Confirma a identidade pelo método de acesso antes de qualquer remoção de dados.
   reauthenticate: () => Promise<void>;
   // Apaga os estudos guardados na nuvem.
   deleteCloudData: () => Promise<void>;

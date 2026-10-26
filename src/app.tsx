@@ -14,8 +14,14 @@ import { useAccountDevice } from "./hooks/use-account-device";
 import { readPendingOnboardingConfiguration } from "./data/onboarding-client";
 import { ACCOUNT_OWNER_KEY } from "./data/personal-data";
 import { writeSyncedStorage } from "./data/synced-storage";
+import { isReturningVisitor } from "./data/returning-visitor";
 
 const LearnView = lazy(() => import("./views/learn-view"));
+const AccountVerification = lazy(() =>
+  import("./components/account-access-panel").then((module) => ({
+    default: module.AccountAccessPanel,
+  })),
+);
 const AchievementAnnouncer = lazy(() =>
   import("./components/achievement-announcer").then((module) => ({
     default: module.AchievementAnnouncer,
@@ -89,7 +95,8 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   const [onboarding, setOnboarding] = useState(() => {
     if (joinCode) return false;
     if (signedOut) return true;
-    if (new URLSearchParams(window.location.search).has("onboarding")) return true;
+    const entry = new URLSearchParams(window.location.search);
+    if (entry.has("onboarding") || entry.has("login")) return true;
     try {
       return !hasCompletedOnboarding();
     } catch {
@@ -137,7 +144,10 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <OnboardingView
-          loginOnly={signedOut && hasCompletedOnboarding()}
+          loginOnly={
+            (signedOut && hasCompletedOnboarding()) ||
+            (cloud.authenticated !== true && isReturningVisitor())
+          }
           onFinish={(setup) => {
             if (setup) {
               if (setup.configuration)
@@ -153,6 +163,11 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
   return (
     <MobileMenuContext.Provider value={{ open: moreOpen, setOpen: setMoreOpen }}>
       <div className="app-shell">
+        {cloud.authenticated === true && (
+          <Suspense fallback={null}>
+            <AccountVerification verificationOnly />
+          </Suspense>
+        )}
         {cloud.ready && (
           <Suspense fallback={null}>
             <AchievementAnnouncer

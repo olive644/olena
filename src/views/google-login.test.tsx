@@ -8,8 +8,98 @@ import {
 } from "../domain/privacy-policy";
 import { GUEST_SESSION_KEY, isGuestSession, startGuestSession } from "../domain/guest-session";
 import { GoogleLogin } from "./google-login";
+import { StrictMode } from "react";
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
+
+it("uses the native Apple provider and required scopes after consent", async () => {
+  class AppleProvider {
+    scopes: string[] = [];
+    constructor(readonly providerId: string) {}
+    addScope(scope: string) {
+      this.scopes.push(scope);
+    }
+  }
+  const signInWithPopup = vi.fn(async () => ({ user: { uid: "apple-user" } }));
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: { OAuthProvider: AppleProvider, signInWithPopup },
+    redirectResult: null,
+  } as never);
+  const finish = vi.fn();
+  render(<GoogleLogin answers={[]} onFinish={finish} />);
+  fireEvent.click(screen.getByRole("checkbox", { name: /Li e concordo/ }));
+  const button = screen.getByRole("button", { name: "Entrar com Apple" });
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(button);
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(signInWithPopup).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.objectContaining({ providerId: "apple.com", scopes: ["email", "name"] }),
+  );
+});
+
+it("consumes a Discord exchange once even under StrictMode", async () => {
+  window.history.replaceState(null, "", "/?login=1&discord=unique-discord-callback");
+  const signInWithCustomToken = vi.fn(async () => ({ user: { uid: "discord-user" } }));
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: { signInWithCustomToken },
+    redirectResult: null,
+  } as never);
+  const request = vi.fn(async () => Response.json({ token: "custom-token" }));
+  vi.stubGlobal("fetch", request);
+  const finish = vi.fn();
+  render(
+    <StrictMode>
+      <GoogleLogin answers={[]} onFinish={finish} />
+    </StrictMode>,
+  );
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(signInWithCustomToken).toHaveBeenCalledTimes(1);
+  expect(window.location.search).toBe("");
+});
+
+it("keeps a pending Discord return recoverable when authentication remounts the view", async () => {
+  window.history.replaceState(null, "", "/?login=1&discord=remounted-discord-callback");
+  const answers = [
+    "Ensino médio",
+    "Matemática",
+    "Inglês",
+    "Revisar para provas",
+    ["Praticando"],
+    "Passo a passo",
+    "Foco contínuo",
+    "Agora não",
+    "15 minutos",
+  ];
+  sessionStorage.setItem("helena.pending-google-answers", JSON.stringify(answers));
+  const signInWithCustomToken = vi.fn(async () => ({ user: { uid: "discord-return-owner" } }));
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: { signInWithCustomToken },
+    redirectResult: null,
+  } as never);
+  let release: (response: Response) => void = () => {};
+  const request = vi.fn(
+    () =>
+      new Promise<Response>((resolve) => {
+        release = resolve;
+      }),
+  );
+  vi.stubGlobal("fetch", request);
+  const finish = vi.fn();
+  const view = render(<GoogleLogin key="first" answers={[]} onFinish={finish} />);
+  await waitFor(() => expect(request).toHaveBeenCalledOnce());
+  expect(window.location.search).toContain("discord=");
+  view.rerender(<GoogleLogin key="second" answers={[]} onFinish={finish} />);
+  release(Response.json({ token: "custom-token" }));
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(signInWithCustomToken).toHaveBeenCalledOnce();
+  expect(JSON.parse(localStorage.getItem("helena.onboarding.v1")!).answers).toEqual(answers);
+  expect(window.location.search).toBe("");
+});
 
 it("does not complete login when Firebase configuration is unavailable", async () => {
   vi.stubEnv("VITE_FIREBASE_API_KEY", "");
@@ -41,6 +131,29 @@ class FakeGoogleAuthProvider {
     /* not needed for these tests */
   }
 }
+
+it("login de retorno não sobrescreve respostas ou configurações da conta", async () => {
+  const saved = JSON.stringify({ completed: true, answers: ["Matemática"] });
+  localStorage.setItem("helena.onboarding.v1", saved);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: {
+      GoogleAuthProvider: FakeGoogleAuthProvider,
+      signInWithPopup: vi.fn().mockResolvedValue({ user: { uid: "returning-user" } }),
+    },
+    redirectResult: null,
+  } as never);
+  const finish = vi.fn();
+  render(<GoogleLogin returning answers={[]} onFinish={finish} />);
+  expect(screen.getByRole("heading", { name: "Boas-vindas de volta!" })).toBeTruthy();
+  const button = screen.getByRole("button", { name: "Entrar com Google" });
+  fireEvent.click(screen.getByRole("checkbox", { name: /Li e concordo/ }));
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(button);
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(saved);
+  expect(localStorage.getItem("olena.returning.v1")).toBe("1");
+});
 
 describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
   beforeEach(() => {

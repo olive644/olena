@@ -218,6 +218,7 @@ export default function OnboardingView({
       new URLSearchParams(window.location.search).has("login") ||
       hasPendingGoogleRedirect(),
   );
+  const [directLogin, setDirectLogin] = useState(loginOnly);
   const seen = useRef(new Set<number>(hasPendingGoogleRedirect() ? [questions.length] : []));
   const messages = useRef<HTMLDivElement>(null);
   const focusTarget = useRef<HTMLHeadingElement>(null);
@@ -341,21 +342,27 @@ export default function OnboardingView({
   if (showLogin)
     return (
       <GoogleLogin
-        answers={answers}
-        configuration={configuration}
+        returning={directLogin}
+        onCreateAccount={() => {
+          setDirectLogin(false);
+          setShowLogin(false);
+        }}
+        answers={directLogin ? [] : answers}
+        configuration={directLogin ? undefined : configuration}
         onFinish={() =>
           onFinish(
-            answers.length === questions.length
+            !directLogin && answers.length === questions.length
               ? { ...buildSetup(answers), ...(configuration ? { configuration } : {}) }
               : undefined,
           )
         }
-        {...(!loginOnly && {
-          onBack: () => {
-            setLeaving(false);
-            setShowLogin(false);
-          },
-        })}
+        {...(!loginOnly &&
+          !directLogin && {
+            onBack: () => {
+              setLeaving(false);
+              setShowLogin(false);
+            },
+          })}
       />
     );
 
@@ -369,6 +376,18 @@ export default function OnboardingView({
         <span className="onboarding__brand">
           <PaperCardTitle value="OlenaStudy" />
         </span>
+        {step === 0 && (
+          <button
+            className="onboarding__existing-account"
+            type="button"
+            onClick={() => {
+              setDirectLogin(true);
+              setShowLogin(true);
+            }}
+          >
+            {uiText("Já tenho uma conta")}
+          </button>
+        )}
       </header>
       <section
         className={leaving ? "onboarding__form is-leaving" : "onboarding__form"}

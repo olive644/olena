@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { rememberReturningVisitor } from "../data/returning-visitor";
+import { reauthenticateAccount } from "../data/account-auth";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { deleteAccountEverywhere } from "../data/account-deletion";
 import { claimDeviceForAccount, clearPersonalData } from "../data/personal-data";
@@ -62,7 +64,8 @@ export type CloudSyncState = {
   syncNow?: (() => void) | undefined;
   signOut?: ((discardPending?: boolean) => Promise<void>) | undefined;
   // Apaga a conta e os estudos da nuvem. Rejeita com AccountDeletionError.
-  deleteAccount?: (() => Promise<void>) | undefined;
+  deleteAccount?: ((password?: string) => Promise<void>) | undefined;
+  passwordAccount?: boolean | undefined;
 };
 
 // O estado inteiro da conta sobe a cada salvamento e volta pelo stream em tempo real, então cada
@@ -177,6 +180,10 @@ export function useCloudSync() {
             return;
           }
 
+          const accessProvider = user.getIdTokenResult
+            ? (await user.getIdTokenResult()).signInProvider
+            : user.providerData?.[0]?.providerId;
+          if (!currentAccount()) return;
           // Em computador compartilhado, nada da pessoa que saiu pode ficar visível
           // para a próxima: histórico de versões, rascunhos do caderno, progresso,
           // perfil e sessões de sala, não só as chaves sincronizadas.
@@ -211,19 +218,24 @@ export function useCloudSync() {
               .then(({ requestAccountDevices }) => requestAccountDevices("DELETE"))
               .catch(() => {});
             await authApi.signOut(auth);
+            rememberReturningVisitor();
             stopSyncing();
             accountRevision++;
             eventSource?.close();
             wipeDevice();
           };
-          const deleteAccount = async () => {
+          const deleteAccount = async (password?: string) => {
             // Durante a exclusão nada novo pode ser enviado; se ela falhar, a sincronização volta.
             const resume = saveCloud;
             stopSyncing();
             try {
               await deleteAccountEverywhere({
                 reauthenticate: async () => {
-                  await authApi.reauthenticateWithPopup(user, new authApi.GoogleAuthProvider());
+                  await reauthenticateAccount(
+                    { auth, authApi, databaseURL, redirectResult: null },
+                    user,
+                    password,
+                  );
                 },
                 deleteCloudData: async () => {
                   const token = await user.getIdToken(true);
@@ -238,7 +250,16 @@ export function useCloudSync() {
                   );
                   if (!response.ok) throw new Error("delete");
                 },
-                deleteAuthUser: () => authApi.deleteUser(user),
+                deleteAuthUser: async () => {
+                  const deletionToken = await user.getIdToken();
+                  await authApi.deleteUser(user);
+                  // O acesso já foi excluído; falha de limpeza não pode deixar dados no aparelho.
+                  await fetch("/api/olena?action=account-auth&step=cleanup", {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${deletionToken}` },
+                    signal: AbortSignal.timeout(5000),
+                  }).catch(() => {});
+                },
                 wipeLocal: wipeDevice,
               });
             } catch (cause) {
@@ -256,6 +277,7 @@ export function useCloudSync() {
             email: user.email ?? undefined,
             signOut,
             deleteAccount,
+            passwordAccount: accessProvider === "password",
           }));
           // Outra conta já usou este aparelho: os dados dela não podem ir para a conta nova.
           if (claimDeviceForAccount(localStorage, user.uid))

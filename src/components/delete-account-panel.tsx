@@ -5,18 +5,24 @@ import { AccountDeletionError, isDeletionConfirmed } from "../data/account-delet
 
 type DeleteAccountPanelProps = {
   accountName: string;
-  onDelete: () => Promise<void>;
+  onDelete: (password?: string) => Promise<void>;
+  needsPassword?: boolean | undefined;
 };
 
 type Status = "idle" | "deleting" | "cancelled" | "failed";
 
 // Zona de perigo do perfil, no estilo do GitHub: o botão abre uma janela onde a pessoa lê o que
 // será apagado e precisa digitar o nome da conta para liberar a exclusão.
-export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanelProps) {
+export function DeleteAccountPanel({
+  accountName,
+  onDelete,
+  needsPassword = false,
+}: DeleteAccountPanelProps) {
   useLanguage();
 
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const opener = useRef<HTMLButtonElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -24,7 +30,7 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
   const titleId = useId();
   const inputId = useId();
   const busy = status === "deleting";
-  const confirmed = isDeletionConfirmed(typed, accountName);
+  const confirmed = isDeletionConfirmed(typed, accountName) && (!needsPassword || !!password);
 
   useEffect(() => {
     if (!open) return;
@@ -40,6 +46,7 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
     if (busy) return;
     setOpen(false);
     setTyped("");
+    setPassword("");
     setStatus("idle");
     opener.current?.focus();
   }
@@ -48,7 +55,8 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
     if (!confirmed || busy) return;
     setStatus("deleting");
     try {
-      await onDelete();
+      if (needsPassword) await onDelete(password);
+      else await onDelete();
     } catch (cause) {
       setStatus(
         cause instanceof AccountDeletionError && cause.reason === "cancelled"
@@ -123,7 +131,21 @@ export function DeleteAccountPanel({ accountName, onDelete }: DeleteAccountPanel
                 }
               }}
             />
-            <p className="delete-account-dialog__note">{uiText(154)}</p>
+            {needsPassword && (
+              <label>
+                {uiText("Senha atual")}
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  autoComplete="current-password"
+                  disabled={busy}
+                />
+              </label>
+            )}
+            <p className="delete-account-dialog__note">
+              {uiText("Vamos confirmar sua identidade novamente antes de excluir a conta.")}
+            </p>
             <p className="delete-account-dialog__message" role="alert">
               {status === "cancelled" && uiText(2047)}
               {status === "failed" && uiText(2048)}
