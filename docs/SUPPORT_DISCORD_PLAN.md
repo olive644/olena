@@ -183,3 +183,55 @@ Entregue só a base do "Receber". Ainda não há envio de tickets, comandos nem 
   substitui a lista de comandos daquele servidor. Registro por servidor aparece na hora.
 - Não verificado: o registro e os comandos funcionando no servidor de testes, até a proprietária
   rodar o script e testar.
+
+### Etapa 3a: ponte do atendimento com o Discord, só servidor (2026-10-26)
+
+Entregue desligada por padrão. Sem as variáveis abaixo, o atendimento funciona exatamente como
+antes, só dentro do aplicativo. Esta etapa não muda a tela do aplicativo.
+
+**Fluxo decidido pela proprietária:** a pessoa escreve no chat do aplicativo, a mensagem chega a um
+canal privado do Discord, qualquer pessoa da equipe responde pelo Discord e a resposta aparece para a
+pessoa dentro do aplicativo, com o nome de quem respondeu. Ao encerrar, o bot apaga as mensagens do
+canal. Sem conversa (thread) por ticket.
+
+- **Envio:** a mensagem da pessoa é gravada no ticket e marcada como pendente na **mesma gravação**
+  atômica (fila durável embutida no ticket). Depois, o servidor tenta postar no canal por até 2,5 s.
+  Se falhar, fica pendente e é reenviada quando a pessoa consulta a conversa (o aplicativo consulta a
+  cada 20 s com a tela aberta). Uma reserva de 20 s impede dois envios ao mesmo tempo. A entrega é
+  pelo menos uma vez: uma queda entre postar e gravar pode repetir a mensagem no canal.
+- **Mensagem no canal:** um quadro com o código do ticket (8 primeiros caracteres do identificador
+  embaralhado, sem nome nem e-mail), o texto com formatação neutralizada e os botões **Responder**,
+  **Assumir** e **Encerrar**. Nenhuma menção é processada (`allowed_mentions` vazio).
+- **Responder:** abre um formulário. A resposta vai para o ticket com o nome de quem respondeu, que
+  vira o atendente. Repetir a mesma interação não duplica (identificador derivado da interação).
+- **Assumir:** define o atendente. O último a assumir vale.
+- **Encerrar:** marca o fim, tira o atendente e apaga do canal todas as mensagens que o bot postou.
+  O que não for apagado em ~2 s fica registrado para nova tentativa. Uma mensagem nova da pessoa
+  reabre a conversa.
+- **Quem é a equipe:** quem tem um dos cargos de `DISCORD_STAFF_ROLE_IDS` (por ID do cargo) e age
+  no canal configurado. O cargo é dado só pela proprietária. Nome, papel e custom_id vindos da
+  interação nunca são prova de autorização por si só.
+- **Aviso:** com a ponte ligada, o servidor só aceita a mensagem se ela trouxer a confirmação do
+  aviso na versão atual (`relayConsent`); sem isso responde 409 e não grava nem envia nada.
+- **Exclusão de conta:** apaga do canal as mensagens do ticket e depois o ticket. Falha do Discord
+  não impede a exclusão da conta.
+- **A pessoa nunca recebe o estado da ponte:** só `assignee`, `closedAt` e `delivery`
+  (pendente, entregue ou falha). Identificadores do Discord ficam só no servidor.
+- **Teto:** as ações da equipe passam por um limite global de 120 por minuto (`checkRateLimit`).
+
+**Para ativar (passos da proprietária):**
+
+1. Criar o canal privado `#ticket`, dar ao bot _Ver canal_, _Enviar mensagens_ e _Inserir links_
+   nele, e dar acesso só ao cargo da equipe.
+2. Na Vercel (produção): `DISCORD_SUPPORT_CHANNEL_ID` (ID do canal), `DISCORD_STAFF_ROLE_IDS`
+   (já criada) e, por último, `DISCORD_SUPPORT_ENABLED=true`.
+3. Só ligar depois de: texto de privacidade aprovado e publicado, aviso na tela do aplicativo
+   (próxima etapa), limpeza por inatividade e ensaio no servidor de testes.
+
+**Ainda não verificado:** o comportamento real de botões, formulário e apagamento no Discord
+(a rede da sessão de desenvolvimento não alcança o Discord), os limites de taxa da API ao apagar
+muitas mensagens, e o custo de execuções no plano gratuito da Vercel.
+
+**Pendências antes de ligar:** aviso e identificação do atendente na tela do aplicativo; limpeza
+de conversas sem atividade (hoje só o botão Encerrar apaga do canal; a expiração do banco continua
+lógica); limite por origem no endpoint de interações; revisão do texto de privacidade.

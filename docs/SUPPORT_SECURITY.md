@@ -25,7 +25,7 @@ na lista. Não registrar o UID original, tokens ou conteúdo de mensagens em log
 - Cliente confirma UID antes e após cada requisição, ignora respostas de outra geração e
   limpa conversa/draft ao receber troca de conta. Atualiza a cada 20 segundos apenas com
   tela aberta e visível; não representa push nem atendimento 24 horas.
-- Nenhuma chamada ao Discord. Preparação futura em SUPPORT_DISCORD_PLAN.md.
+- Chamada ao Discord só com a ponte ligada (`DISCORD_SUPPORT_ENABLED=true`), desligada por padrão. Fluxo, autorização da equipe por cargo e ativação em SUPPORT_DISCORD_PLAN.md.
 
 ## Riscos residuais e critérios de publicação
 

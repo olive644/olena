@@ -199,4 +199,39 @@ describe("interações do Discord", () => {
       expect(command.description.length).toBeLessThanOrEqual(100);
     }
   });
+
+  it("botões e formulários só vão ao atendimento em servidor atendido, e sem atendimento recebem o aviso", async () => {
+    const calls: unknown[] = [];
+    const support = {
+      handleInteraction: async (interaction: unknown) => {
+        calls.push(interaction);
+        return { type: 4, data: { content: "do atendimento", flags: 64 } };
+      },
+    };
+    const click = JSON.stringify({ type: 3, guild_id: GUILD, data: { custom_id: "sup:reply:x" } });
+    const submit = JSON.stringify({ type: 5, guild_id: GUILD, data: { custom_id: "sup:send:x" } });
+    for (const body of [click, submit]) {
+      const response = await handler({ support })(signed(body));
+      expect(((await response.json()) as { data: { content: string } }).data.content).toBe(
+        "do atendimento",
+      );
+    }
+    expect(calls).toHaveLength(2);
+    // Servidor fora da lista nunca chega ao atendimento.
+    const other = JSON.stringify({
+      type: 3,
+      guild_id: "999999999999999999",
+      data: { custom_id: "sup:reply:x" },
+    });
+    const refused = await handler({ support })(signed(other));
+    expect(((await refused.json()) as { data: { content: string } }).data.content).toBe(
+      "Este bot não atende este servidor.",
+    );
+    expect(calls).toHaveLength(2);
+    // Sem atendimento configurado, o botão recebe o aviso de sempre.
+    const without = await handler()(signed(click));
+    expect(((await without.json()) as { data: { content: string } }).data.content).toBe(
+      "O atendimento por aqui ainda não está ativo.",
+    );
+  });
 });

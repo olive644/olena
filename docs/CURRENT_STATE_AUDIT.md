@@ -3681,3 +3681,12 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - Novo `scripts/register-discord-commands.mjs`, que a proprietária roda localmente para registrar os comandos no servidor de testes. O token só passa por variável de ambiente e nunca é impresso.
 - A etapa 1 foi confirmada pela proprietária: o portal do Discord aceitou o endereço de interações (PING respondido). Não verificado por esta sessão, que não alcança o Discord.
 - Não verificado: o registro dos comandos e a resposta no servidor de testes.
+
+## Ponte do atendimento com o Discord, servidor (2026-10-26)
+
+- Novo fluxo, desligado por padrão: mensagem do chat do aplicativo vira um quadro com botões no canal privado do Discord, a equipe responde por botão e formulário e a resposta volta ao aplicativo com o nome de quem respondeu. Detalhes e passos de ativação em `docs/SUPPORT_DISCORD_PLAN.md` (etapa 3a).
+- Código: `discord-rest.ts` (cliente mínimo, token só no servidor), `discord-support.ts` (envio, botões, formulário, encerrar), `support-keys.ts` (chaves, estado da ponte e projeção pública), `discord-support-runtime.ts` (liga só com `DISCORD_SUPPORT_ENABLED=true`, canal, cargo e token) e `support-store-runtime.ts`. `support-handler.ts` ganhou o gancho opcional `relay`, a exigência do aviso (`relayConsent`) e a projeção pública do ticket; `discord-interactions.ts` encaminha botões e formulários ao atendimento só em servidor autorizado.
+- Sem as variáveis, o atendimento segue idêntico ao anterior (testado).
+- Variáveis na Vercel (produção, não secretas): `DISCORD_STAFF_ROLE_IDS`. Faltam `DISCORD_SUPPORT_CHANNEL_ID` e `DISCORD_SUPPORT_ENABLED`.
+- Não verificado em ambiente real: botões, formulário e apagamento no Discord.
+- Pendências: tela do aplicativo (aviso e atendente), limpeza por inatividade, limite por origem no endpoint, texto de privacidade e revisão jurídica.

@@ -1,4 +1,5 @@
 import { createDiscordInteractionsHandler } from "./discord-interactions.js";
+import { discordSupport } from "./discord-support-runtime.js";
 
 // IDs dos servidores atendidos (oficial e de testes), separados por vírgula. Não são segredos.
 const allowedGuildIds = (process.env["DISCORD_ALLOWED_GUILD_IDS"] ?? "")
@@ -9,4 +10,5 @@ const allowedGuildIds = (process.env["DISCORD_ALLOWED_GUILD_IDS"] ?? "")
 export const handleDiscordInteractions = createDiscordInteractionsHandler({
   publicKey: process.env["DISCORD_PUBLIC_KEY"],
   allowedGuildIds,
+  ...(discordSupport ? { support: discordSupport } : {}),
 });

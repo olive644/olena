@@ -1,15 +1,9 @@
-import { createFirebaseRealtimeStore } from "./firebase-realtime-store.js";
+import { discordSupport } from "./discord-support-runtime.js";
 import { identifyProfileAccount, profileAllowedOrigins } from "./profile-handle-runtime.js";
 import { checkRateLimit } from "./rate-limit.js";
 import { createSupportHandler, deleteSupportAccount } from "./support-handler.js";
+import { store } from "./support-store-runtime.js";
 
-const store = createFirebaseRealtimeStore({
-  databaseUrl: process.env["FIREBASE_DATABASE_URL"] ?? "",
-  serviceAccount: {
-    clientEmail: process.env["FIREBASE_CLIENT_EMAIL"] ?? "",
-    privateKey: (process.env["FIREBASE_PRIVATE_KEY"] ?? "").replace(/\\n/g, "\n"),
-  },
-});
 // Identidade fixa autorizada pelo proprietário. Nunca dar papel de atendente por @ editável.
 const STAFF_HASHES = ["b1f899ba2ec489824196d6dfa851c7216e75843a99d1fbd421d02f32a5dfa26a"];
 export const handleSupport = createSupportHandler({
@@ -17,6 +11,7 @@ export const handleSupport = createSupportHandler({
   identify: identifyProfileAccount,
   allowedOrigins: profileAllowedOrigins,
   staffHashes: STAFF_HASHES,
+  ...(discordSupport ? { relay: discordSupport } : {}),
   consume: async (uid, write) =>
     (await checkRateLimit(
       store,
@@ -30,5 +25,5 @@ export const handleSupport = createSupportHandler({
     (!write || (await checkRateLimit(store, "support-global-write-day", "all", 2000, 86400))),
 });
 export function removeSupportAccount(uid: string) {
-  return deleteSupportAccount(store, uid);
+  return deleteSupportAccount(store, uid, discordSupport);
 }

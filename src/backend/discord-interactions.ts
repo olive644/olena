@@ -1,4 +1,5 @@
 import { createPublicKey, verify } from "node:crypto";
+import type { SupportInteraction } from "./discord-support.js";
 
 // Prefixo DER (SPKI) de uma chave pública Ed25519; os 32 bytes da chave vêm logo depois.
 const ED25519_SPKI_PREFIX = Buffer.from("302a300506032b6570032100", "hex");
@@ -10,6 +11,8 @@ const PONG = 1;
 const CHANNEL_MESSAGE = 4;
 const EPHEMERAL = 64;
 const APPLICATION_COMMAND = 2;
+const COMPONENT = 3;
+const MODAL_SUBMIT = 5;
 const CHAT_INPUT = 1;
 
 /**
@@ -27,6 +30,8 @@ export type DiscordInteractionsOptions = {
   publicKey: string | undefined;
   /** IDs dos servidores atendidos. Interações de outros servidores recebem recusa. */
   allowedGuildIds: readonly string[];
+  /** Atendimento por tickets: botões e formulários da equipe. Ausente, o bot só responde comandos. */
+  support?: { handleInteraction(interaction: SupportInteraction): Promise<unknown> };
   now?: () => number;
 };
 
@@ -112,6 +117,8 @@ export function createDiscordInteractionsHandler(options: DiscordInteractionsOpt
         return refuse(DISCORD_COMMAND_REPLIES[name]!);
       return refuse("Comando desconhecido.");
     }
+    if ((type === COMPONENT || type === MODAL_SUBMIT) && options.support)
+      return reply(200, await options.support.handleInteraction(interaction as SupportInteraction));
     return refuse("O atendimento por aqui ainda não está ativo.");
   };
 }
