@@ -391,3 +391,17 @@
     display: none;
   }
 }
+.login-page .login-page__perched--returning {
+  clip-path: none;
+  width: 200px;
+  height: 200px;
+  top: -185px;
+  object-fit: contain;
+}
+@media (max-width: 719px) {
+  .login-page .login-page__card .login-page__perched--returning {
+    width: 100px;
+    height: 100px;
+    top: -86px;
+  }
+}

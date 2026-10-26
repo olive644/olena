@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { rememberReturningVisitor } from "../data/returning-visitor";
 import { getFirebaseAccountServices } from "../data/firebase-account";
 import { deleteAccountEverywhere } from "../data/account-deletion";
 import { claimDeviceForAccount, clearPersonalData } from "../data/personal-data";
@@ -211,6 +212,7 @@ export function useCloudSync() {
               .then(({ requestAccountDevices }) => requestAccountDevices("DELETE"))
               .catch(() => {});
             await authApi.signOut(auth);
+            rememberReturningVisitor();
             stopSyncing();
             accountRevision++;
             eventSource?.close();

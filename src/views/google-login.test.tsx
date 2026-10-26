@@ -42,6 +42,29 @@ class FakeGoogleAuthProvider {
   }
 }
 
+it("login de retorno não sobrescreve respostas ou configurações da conta", async () => {
+  const saved = JSON.stringify({ completed: true, answers: ["Matemática"] });
+  localStorage.setItem("helena.onboarding.v1", saved);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: {
+      GoogleAuthProvider: FakeGoogleAuthProvider,
+      signInWithPopup: vi.fn().mockResolvedValue({ user: { uid: "returning-user" } }),
+    },
+    redirectResult: null,
+  } as never);
+  const finish = vi.fn();
+  render(<GoogleLogin returning answers={[]} onFinish={finish} />);
+  expect(screen.getByRole("heading", { name: "Boas-vindas de volta!" })).toBeTruthy();
+  const button = screen.getByRole("button", { name: "Entrar com Google" });
+  fireEvent.click(screen.getByRole("checkbox", { name: /Li e concordo/ }));
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(button);
+  await waitFor(() => expect(finish).toHaveBeenCalledOnce());
+  expect(localStorage.getItem("helena.onboarding.v1")).toBe(saved);
+  expect(localStorage.getItem("olena.returning.v1")).toBe("1");
+});
+
 describe("fallback de redirecionamento quando o pop-up é bloqueado", () => {
   beforeEach(() => {
     sessionStorage.clear();

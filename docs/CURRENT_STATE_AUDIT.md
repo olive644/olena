@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Entrada de retorno, 2026-10-25
+
+A entrada oferece Já tenho uma conta sem exigir as nove perguntas. Um navegador que concluiu login ou saiu de uma conta guarda somente olena.returning.v1=1, fora dos dados pessoais e da sincronização, para abrir Boas-vindas de volta. A marca não contém nome, UID, e-mail, IP ou impressão digital e não autentica ninguém. A limpeza de dados pessoais ao sair permanece integral. Sem a marca, o atalho de login continua disponível. Criar conta retorna ao questionário original; Google e convidado conservam consentimento e fluxos existentes.
+
+Login Google direto com respostas vazias não grava helena.onboarding.v1: a conclusão e as preferências são recuperadas da conta pela sincronização existente. Conta nova sem conclusão recebe o questionário após a hidratação; não é marcada como concluída artificialmente. Entrar diretamente depois de respostas parciais não aplica essas respostas ou uma configuração anterior. Nenhum serviço, geolocalização, rastreamento ou chave sincronizada foi adicionado.
+
+Nova pose de papel da Olena criada a partir das referências do onboarding, acenando com pata no peito, exclusiva da entrada de retorno. WebP transparente de 112 KB, sem dependências novas. Validação integral passou 2285 testes, aplicação 1567,3 KiB de 1600, entrada 220,4 KiB. Dezoito cenários E2E Chromium desktop/mobile passaram, incluindo retorno claro/escuro e onboarding em 320x568 e 360x640. Login real com Google depende das credenciais do ambiente; os testes de integração usam o serviço de autenticação simulado e comprovam que o retorno preserva respostas existentes.
+
 ## Medições de layout após animações, 2026-10-25
 
 Atualização da base: PRs 522 e 523 adicionaram a ação discord-interactions enquanto o onboarding estava aberto. Resolvido o único conflito em olena-handler preservando as duas rotas independentes, onboarding e discord-interactions, com os imports sob demanda e sem mudar os contratos.

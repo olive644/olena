@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+Retorno: data/returning-visitor guarda apenas olena.returning.v1=1 no navegador, sem identidade e sem sincronização. GoogleLogin registra após sucesso e useCloudSync na saída; a marca sobrevive à limpeza dos dados pessoais. Não usar IP para reconhecer conta. Onboarding oferece Já tenho uma conta; login direto passa answers vazio e não escreve conclusão, deixando a conta recuperar sua própria configuração. Conta nova continua no questionário após hidratação. Criar conta reabre onboarding. Preservar consentimento e os caminhos popup/redirect/convidado.
+
+Arte do retorno: public/helena-welcome-back.webp, pose nova transparente baseada nas Olena do onboarding, acenando com a outra pata no peito. Usar somente quando returning=true; cadastro mantém helena-login-peeking.png. Não aplicar o clip-path das patas apoiadas à pose nova. WebP de aproximadamente 112 KB preserva transparência, sem dependência no runtime.
+
 E2E de geometria: aguardar Animation.finished da entrada responsável antes de comparar boundingBox. A contagem regressiva começa em scale(0.4) e student-space-shortcuts usa translateY; medir durante esses efeitos gera resultados transitórios no Chromium móvel. Preservar animações, limiares e verificações de contenção, sem sleeps fixos.
 
 Decisão vigente de navegadores (25/10): proprietário removeu WebKit dos testes. Playwright permanece com browserName chromium explícito em desktop e mobile; descritor iPhone conserva somente emulação/viewport/toque. Preview da Olena herda essa configuração. scripts/ci-scope.mjs tem Chromium nas três entradas, com nomes, escopo, shards e gates intactos. Instalar somente chromium; nenhum download local de WebKit. Não exigir WebKit para mesclar as novas revisões, mas continuar exigindo todos os checks Chromium, inclusive mobile e gates. Histórico e correções de compatibilidade Safari não significam cobertura ativa desse motor.

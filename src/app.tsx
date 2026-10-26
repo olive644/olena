@@ -14,6 +14,7 @@ import { useAccountDevice } from "./hooks/use-account-device";
 import { readPendingOnboardingConfiguration } from "./data/onboarding-client";
 import { ACCOUNT_OWNER_KEY } from "./data/personal-data";
 import { writeSyncedStorage } from "./data/synced-storage";
+import { isReturningVisitor } from "./data/returning-visitor";
 
 const LearnView = lazy(() => import("./views/learn-view"));
 const AchievementAnnouncer = lazy(() =>
@@ -137,7 +138,10 @@ function AppContent({ cloud, signedOut = false }: { cloud: CloudSyncState; signe
     return (
       <Suspense fallback={<HelenaLoading label={uiText(0)} />}>
         <OnboardingView
-          loginOnly={signedOut && hasCompletedOnboarding()}
+          loginOnly={
+            (signedOut && hasCompletedOnboarding()) ||
+            (cloud.authenticated !== true && isReturningVisitor())
+          }
           onFinish={(setup) => {
             if (setup) {
               if (setup.configuration)

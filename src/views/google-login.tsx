@@ -14,6 +14,7 @@ import {
   type OnboardingConfiguration,
 } from "../domain/onboarding-configuration";
 import { readStoredOnboardingConfiguration } from "../data/onboarding-client";
+import { rememberReturningVisitor } from "../data/returning-visitor";
 
 const PENDING_ANSWERS_KEY = "helena.pending-google-answers";
 
@@ -44,6 +45,9 @@ function applyGoogleLogin(
   configuration?: OnboardingConfiguration,
   configurationOwner?: string,
 ) {
+  rememberReturningVisitor();
+  // Login direto não cria conclusão fictícia nem substitui respostas da conta.
+  if (answers.length === 0 && configurationOwner !== "guest") return;
   writeSyncedStorage(
     "helena.onboarding.v1",
     JSON.stringify({
@@ -89,11 +93,15 @@ export function GoogleLogin({
   configuration,
   onFinish,
   onBack,
+  returning = false,
+  onCreateAccount,
 }: {
   answers: readonly (string | string[])[];
   configuration?: OnboardingConfiguration | undefined;
   onFinish: () => void;
   onBack?: () => void;
+  returning?: boolean;
+  onCreateAccount?: () => void;
 }) {
   useLanguage();
 
@@ -217,19 +225,23 @@ export function GoogleLogin({
       <div className="login-page__layout">
         <section className="login-page__card">
           <img
-            className="login-page__perched"
-            src="/helena-login-peeking.png"
+            className={
+              returning
+                ? "login-page__perched login-page__perched--returning"
+                : "login-page__perched"
+            }
+            src={returning ? "/helena-welcome-back.webp" : "/helena-login-peeking.png"}
             alt={uiText(1204)}
             width="640"
             height="640"
             fetchPriority="high"
           />
           <span className="login-page__eyebrow">{uiText(1205)}</span>
-          <h2>{uiText(1206)}</h2>
+          <h2>{returning ? uiText("Boas-vindas de volta!") : uiText(1206)}</h2>
           <p className="login-page__intro">
-            {uiText(1207)}
+            {returning ? uiText("Seu espaço de estudos espera por você.") : uiText(1207)}
             <br />
-            {uiText(1208)}
+            {returning ? uiText("Entre para continuar de onde parou.") : uiText(1208)}
           </p>
           {(busy || (!services && !error)) && (
             <HelenaLoading compact label={busy ? uiText(1965) : uiText(1209)} />
@@ -275,6 +287,17 @@ export function GoogleLogin({
             </p>
           </div>
           <div className="login-page__divider" />
+          {returning && onCreateAccount && (
+            <button
+              className="login-page__back"
+              type="button"
+              disabled={signingIn}
+              onClick={onCreateAccount}
+            >
+              {uiText("Primeira vez por aqui? Crie sua conta")}
+              <PaperArrow />
+            </button>
+          )}
           {onBack && (
             <button className="login-page__back" type="button" disabled={busy} onClick={onBack}>
               <PaperArrow back />
