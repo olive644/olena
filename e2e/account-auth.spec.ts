@@ -8,7 +8,9 @@ for (const theme of ["light", "dark"]) {
     if (isMobile) await page.setViewportSize({ width: 320, height: 568 });
     await page.addInitScript((value) => localStorage.setItem("helenastudy.theme", value), theme);
     await page.goto("/?onboarding=1&login=1");
-    await expect(page.getByRole("button", { name: "Entrar com Apple", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Entrar com Google", exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Entrar com Discord", exact: true }),
     ).toBeVisible();
@@ -43,6 +45,8 @@ for (const theme of ["light", "dark"]) {
     await expect(page.getByRole("button", { name: "Enviar recuperação" })).toBeVisible();
     await expect(password).toHaveCount(0);
     await page.getByRole("button", { name: "Outros métodos de acesso" }).click();
-    await expect(page.getByRole("button", { name: "Entrar com Apple", exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Entrar com Google", exact: true }),
+    ).toBeVisible();
   });
 }

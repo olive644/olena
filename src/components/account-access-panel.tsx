@@ -109,7 +109,7 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
             )}
           </label>
           <div className="login-page__providers">
-            {(["google.com", "apple.com"] as const)
+            {(["google.com"] as const)
               .filter(
                 (provider) => !user.providerData.some((entry) => entry.providerId === provider),
               )

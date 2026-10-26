@@ -436,21 +436,6 @@ export function GoogleLogin({
             </div>
             <div className="login-page__providers">
               <button
-                data-provider="apple"
-                aria-label={uiText("Entrar com Apple")}
-                type="button"
-                disabled={!services || busy || signingIn || !accepted}
-                onClick={() => void login("apple")}
-              >
-                <span className="sr-only">{uiText("Entrar com Apple")}</span>
-                <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28">
-                  <path
-                    fill="currentColor"
-                    d="M16.7 2c.1 1.4-.4 2.6-1.2 3.5-.8.9-2 1.5-3.2 1.4-.2-1.3.4-2.6 1.2-3.4.8-.9 2.1-1.5 3.2-1.5ZM20.3 17.1c-.5 1.2-.8 1.8-1.5 2.9-1 1.4-2.3 3.1-3.9 3.1-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.5 0-2.8-1.5-3.8-2.9-2.7-3.9-3-8.5-1.3-10.9 1.2-1.7 3.1-2.7 4.8-2.7 1.5 0 2.5.9 3.7.9 1.1 0 2-.9 3.7-.9 1.5 0 3.1.8 4.3 2.1-3.8 2.1-3.2 7.4 1.4 8.4Z"
-                  />
-                </svg>
-              </button>
-              <button
                 data-provider="discord"
                 aria-label={uiText("Entrar com Discord")}
                 type="button"

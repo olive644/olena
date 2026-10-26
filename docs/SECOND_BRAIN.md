@@ -1,5 +1,7 @@
 # OlenaStudy: Second Brain
 
+Direção vigente de acesso: Apple não é mais oferecido na entrada nem na associação, por pedido do proprietário em 26/10. Preservar tratamento de vínculos antigos na exclusão/reautenticação. Proprietário decidiu não adicionar Microsoft. Métodos oferecidos: email/senha, Google e Discord.
+
 Acesso visual: auth-paper.css contém ação principal email, provedores por ícones e formulário compacto. Manter o consentimento explícito antes de abrir email; onOpenChange recolhe a política, não concede aceite. Checkbox universal nativo com className paper-checkbox, contrato em DESIGN_SYSTEM.md e desenho em paper-controls.css. Medidor/composição local em data/password-strength.ts, nunca enviar digitação. Exigir também política equivalente no Firebase, pois cliente não substitui servidor. Discord status=false confirma configuração indisponível, não corrigir isso fingindo um redirecionamento.
 
 Canvas de escrita: sizePageCanvas altera width/height e apaga o bitmap quando a escala muda. O efeito de dimensionamento do HandwritingStudio deve repintar também liveStrokeRef na camada viva, no mesmo efeito, para preservar a ponta pressionada após ajuste de resolução. Esperar mais quadros no E2E não resolve bitmap apagado; manter verificações originais de tinta, borracha, desfazer e rascunho.

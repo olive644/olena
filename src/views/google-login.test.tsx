@@ -35,30 +35,32 @@ it("explains a disabled Discord provider without pretending a redirect succeeded
   vi.unstubAllGlobals();
 });
 
-it("uses the native Apple provider and required scopes after consent", async () => {
-  class AppleProvider {
+it("keeps Google login after consent and removes Apple from the offered methods", async () => {
+  class GoogleProvider {
     scopes: string[] = [];
-    constructor(readonly providerId: string) {}
+    readonly providerId = "google.com";
+    setCustomParameters = vi.fn();
     addScope(scope: string) {
       this.scopes.push(scope);
     }
   }
-  const signInWithPopup = vi.fn(async () => ({ user: { uid: "apple-user" } }));
+  const signInWithPopup = vi.fn(async () => ({ user: { uid: "google-user" } }));
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: {},
-    authApi: { OAuthProvider: AppleProvider, signInWithPopup },
+    authApi: { GoogleAuthProvider: GoogleProvider, signInWithPopup },
     redirectResult: null,
   } as never);
   const finish = vi.fn();
   render(<GoogleLogin answers={[]} onFinish={finish} />);
   fireEvent.click(screen.getByRole("checkbox", { name: /Li e concordo/ }));
-  const button = screen.getByRole("button", { name: "Entrar com Apple" });
+  const button = screen.getByRole("button", { name: "Entrar com Google" });
+  expect(screen.queryByRole("button", { name: "Entrar com Apple" })).toBeNull();
   await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
   fireEvent.click(button);
   await waitFor(() => expect(finish).toHaveBeenCalledOnce());
   expect(signInWithPopup).toHaveBeenCalledWith(
     expect.anything(),
-    expect.objectContaining({ providerId: "apple.com", scopes: ["email", "name"] }),
+    expect.objectContaining({ providerId: "google.com", scopes: [] }),
   );
 });
 
