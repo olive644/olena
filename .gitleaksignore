@@ -8,3 +8,7 @@ ca4ff273971c9b31c11a830b4e7a162239778f4f:src/domain/privacy-policy.ts:generic-ap
 # SYNCED_STORAGE_KEYS e são públicos no código. A impressão digital é do commit que introduziu
 # a linha, que continua no histórico da branch e não pode ser reescrito.
 ee79bb74e804694242398fc5c251dc5756ce4bbb:firebase-room.rules.json:generic-api-key:41
+
+# Nome público de uma preferência booleana do navegador (olena.returning.v1), não credencial.
+# Constante renomeada para ITEM; exceção limitada à linha introduzida no histórico da PR 526.
+02f1b66e12bbfb5a26ccb3c139e74285870bafa8:src/data/returning-visitor.ts:generic-api-key:2

@@ -3,7 +3,7 @@ import { clearPersonalData } from "./personal-data";
 import {
   isReturningVisitor,
   rememberReturningVisitor,
-  RETURNING_VISITOR_KEY,
+  RETURNING_VISITOR_ITEM,
 } from "./returning-visitor";
 
 afterEach(() => localStorage.clear());
@@ -15,5 +15,5 @@ it("lembra apenas o retorno e conserva a marca ao limpar dados pessoais na saíd
   clearPersonalData(localStorage);
   expect(isReturningVisitor()).toBe(true);
   expect(localStorage.getItem("helena.onboarding.v1")).toBeNull();
-  expect(localStorage.getItem(RETURNING_VISITOR_KEY)).toBe("1");
+  expect(localStorage.getItem(RETURNING_VISITOR_ITEM)).toBe("1");
 });
