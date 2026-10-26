@@ -38,7 +38,7 @@ export function fakeRest() {
     channelError: false,
     failDelete: new Set<string>(),
     createDelay: 0,
-    async getChannel(_channelId: string) {
+    async getChannel() {
       if (rest.channelError) throw new Error("Discord fora do ar");
       return {
         guildId: "1562664412530085908",

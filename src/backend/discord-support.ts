@@ -134,19 +134,18 @@ export function createDiscordSupport(options: DiscordSupportOptions) {
   let privacy: { ok: boolean; until: number } | undefined;
   async function channelIsPrivate(): Promise<boolean> {
     if (privacy && privacy.until > now()) return privacy.ok;
-    let ok = false;
-    try {
-      const channel = await rest.getChannel(channelId);
-      // O cargo @everyone tem o mesmo ID do servidor. Só vale se o canal negar "Ver canal" a ele.
-      ok = channel.overwrites.some(
-        (item) =>
-          item.id === channel.guildId &&
-          item.type === 0 &&
-          (BigInt(item.deny) & VIEW_CHANNEL) !== 0n,
-      );
-    } catch {
-      ok = false;
-    }
+    const ok = await rest
+      .getChannel(channelId)
+      .then((channel) =>
+        // O cargo @everyone tem o mesmo ID do servidor. Só vale se o canal negar "Ver canal" a ele.
+        channel.overwrites.some(
+          (item) =>
+            item.id === channel.guildId &&
+            item.type === 0 &&
+            (BigInt(item.deny) & VIEW_CHANNEL) !== 0n,
+        ),
+      )
+      .catch(() => false);
     privacy = { ok, until: now() + (ok ? PRIVACY_OK_MS : PRIVACY_RECHECK_MS) };
     return ok;
   }
