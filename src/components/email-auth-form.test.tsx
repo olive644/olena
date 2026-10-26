@@ -34,13 +34,13 @@ it("creates an account, sends verification and never stores the password", async
   const s = setup(true);
   s.fill("Seu nome", "Learner");
   s.fill("E-mail", "learner@example.test");
-  s.fill("Senha", "A unique long password");
-  s.fill("Confirmar senha", "A unique long password");
+  s.fill("Senha", "A unique long passphrase 42!");
+  s.fill("Confirmar senha", "A unique long passphrase 42!");
   fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
   await waitFor(() => expect(s.complete).toHaveBeenCalledOnce());
   expect(s.api.sendEmailVerification).toHaveBeenCalledWith(s.user);
   expect(s.api.updateProfile).toHaveBeenCalledWith(s.user, { displayName: "Learner" });
-  expect(JSON.stringify(localStorage)).not.toContain("A unique long password");
+  expect(JSON.stringify(localStorage)).not.toContain("A unique long passphrase 42!");
   expect((screen.getByLabelText("Senha", { exact: true }) as HTMLInputElement).value).toBe("");
 });
 
@@ -53,9 +53,17 @@ it("does not complete against a different active account after the credential re
   await screen.findByText("Não foi possível entrar. Confira seus dados e tente novamente.");
   expect(s.complete).not.toHaveBeenCalled();
 });
+it("rejects incomplete composition before contacting Firebase and exposes the local meter", () => {
+  const s = setup(true);
+  s.fill("Senha", "a long lowercase phrase");
+  s.fill("Confirmar senha", "a long lowercase phrase");
+  fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
+  expect(s.api.validatePassword).not.toHaveBeenCalled();
+  expect(screen.getByRole("meter", { name: "Força da senha" }).getAttribute("value")).toBe("1");
+});
 it("rejects mismatched passwords before any request", async () => {
   const s = setup(true);
-  s.fill("Senha", "A unique long password");
+  s.fill("Senha", "A unique long passphrase 42!");
   s.fill("Confirmar senha", "different");
   fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
   expect(screen.getByText("As senhas precisam ser iguais.")).toBeTruthy();
@@ -63,7 +71,11 @@ it("rejects mismatched passwords before any request", async () => {
 });
 it("does not submit login without consent", () => {
   const s = setup(false, false);
-  fireEvent.submit(screen.getByRole("button", { name: "Entrar com e-mail" }).closest("form")!);
+  expect(
+    screen
+      .getByRole("button", { name: "Entrar ou criar conta com e-mail" })
+      .hasAttribute("disabled"),
+  ).toBe(true);
   expect(s.api.signInWithEmailAndPassword).not.toHaveBeenCalled();
 });
 it("password recovery does not disclose whether an account exists", async () => {

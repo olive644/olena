@@ -5,6 +5,7 @@ import { accountAuthError, type AccountServices } from "../data/account-auth";
 import { EmailAuthForm } from "./email-auth-form";
 import "./account-access.css";
 import "../views/google-login.css";
+import "../views/auth-paper.css";
 
 export function AccountAccessPanel({ verificationOnly = false }: { verificationOnly?: boolean }) {
   const [services, setServices] = useState<AccountServices>();
@@ -108,7 +109,7 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
             )}
           </label>
           <div className="login-page__providers">
-            {(["google.com", "apple.com"] as const)
+            {(["google.com"] as const)
               .filter(
                 (provider) => !user.providerData.some((entry) => entry.providerId === provider),
               )

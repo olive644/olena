@@ -35,7 +35,7 @@ it("resends verification with a cooldown and checks the refreshed Firebase user"
   expect(user.getIdToken).toHaveBeenCalledWith(true);
 });
 
-it("requires separate consent before linking Apple to the current UID", async () => {
+it("requires separate consent before linking Google to the current UID", async () => {
   const user = {
     uid: "same-owner",
     email: "owner@example.test",
@@ -43,22 +43,23 @@ it("requires separate consent before linking Apple to the current UID", async ()
     providerData: [{ providerId: "password" }],
   };
   class Provider {
-    constructor(readonly providerId: string) {}
+    readonly providerId = "google.com";
   }
   const linkWithPopup = vi.fn(async () => ({ user }));
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: { currentUser: user },
-    authApi: { linkWithPopup, OAuthProvider: Provider },
+    authApi: { linkWithPopup, GoogleAuthProvider: Provider },
   } as never);
   render(<AccountAccessPanel />);
-  const apple = await screen.findByRole("button", { name: "Associar Apple" });
-  expect(apple.hasAttribute("disabled")).toBe(true);
+  const google = await screen.findByRole("button", { name: "Associar Google" });
+  expect(screen.queryByRole("button", { name: "Associar Apple" })).toBeNull();
+  expect(google.hasAttribute("disabled")).toBe(true);
   fireEvent.click(screen.getByRole("checkbox", { name: /Autorizo associar/ }));
-  fireEvent.click(apple);
+  fireEvent.click(google);
   await screen.findByText("Método associado à sua conta.");
   expect(linkWithPopup).toHaveBeenCalledWith(
     user,
-    expect.objectContaining({ providerId: "apple.com" }),
+    expect.objectContaining({ providerId: "google.com" }),
   );
   expect(user.uid).toBe("same-owner");
 });

@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+## Checkbox universal
+
+Todo checkbox usa input nativo type=checkbox e a regra compartilhada em src/paper-controls.css. Em novos fluxos, marcar também className=paper-checkbox para identificar o contrato. Caixa de 22 px com cantos de papel, fundo da superfície e borda estrutural. Marcado: amarelo #facc15, base #a98200 e o recorte original /room-icons/check.svg. Foco por sublinhado amarelo, nunca outline roxo/preto. Não substituir por emoji, caractere de check, SVG diferente ou controle sem semântica. O label deve ampliar a área clicável e ter altura mínima de 44 px quando estiver isolado. Mostrar senha, consentimento e Configurações compartilham o mesmo desenho e estados checked/disabled/focus-visible. A regra global atende o login antes de a sessão carregar.
+
+## Entrada e cadastro
+
+Seguir src/views/auth-paper.css: e-mail é a ação principal roxa com facetas; abaixo, selos de papel com ícones Google/Discord, nome acessível e alvo de toque de 44 px. Consentimento é explícito antes de abrir e-mail e fica recolhido enquanto o formulário está aberto, sem perder o aceite. Abas de papel com seleção amarela, campos em duas colunas compactas e navegação de recuperação/outros métodos centralizada. Não herdar botões genéricos do navegador. O formulário entra como folha desdobrada e respeita movimento reduzido. Não ocultar overflow para fingir que coube: verificar a altura real de entrada/cadastro em 320x568 e desktop, claro/escuro. Com teclado virtual ou zoom de acessibilidade, permitir a rolagem necessária para alcançar os campos.
+
 Biblioteca: seguir [LIBRARY_DESIGN.md](LIBRARY_DESIGN.md), incluindo capas de coleções, revisão, leitura de PDF, fontes dos trechos e vínculo com cadernos/Foco.
 
 Conquistas: seguir o contrato específico em [ACHIEVEMENT_DESIGN.md](ACHIEVEMENT_DESIGN.md), incluindo materiais, temas, dígitos originais, favoritos e inspeção estática.

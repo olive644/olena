@@ -1,6 +1,7 @@
 import { useId, useRef, useState } from "react";
 import { uiText } from "../i18n/runtime";
 import { accountAuthError, setAccountLanguage, type AccountServices } from "../data/account-auth";
+import { passwordChecks, passwordStrength } from "../data/password-strength";
 
 export function EmailAuthForm({
   services,
@@ -9,6 +10,7 @@ export function EmailAuthForm({
   onBusy,
   initialRegister = false,
   linkToCurrent = false,
+  onOpenChange,
 }: {
   services: AccountServices | undefined;
   accepted: boolean;
@@ -16,6 +18,7 @@ export function EmailAuthForm({
   onBusy: (busy: boolean) => void;
   initialRegister?: boolean;
   linkToCurrent?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const id = useId();
   const [open, setOpen] = useState(linkToCurrent);
@@ -32,6 +35,8 @@ export function EmailAuthForm({
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const pending = useRef(false);
+  const checks = passwordChecks(password);
+  const strength = passwordStrength(password);
   function change(next: typeof mode) {
     setMode(next);
     setPassword("");
@@ -50,6 +55,10 @@ export function EmailAuthForm({
     }
     if (mode === "register" && password !== confirmation) {
       setMessage(uiText("As senhas precisam ser iguais."));
+      return;
+    }
+    if (mode === "register" && !checks.every(Boolean)) {
+      setMessage(uiText("Use 12 caracteres, maiúscula, minúscula, número e símbolo."));
       return;
     }
     pending.current = true;
@@ -126,7 +135,14 @@ export function EmailAuthForm({
   return (
     <section className="email-auth" data-open={open} aria-label={uiText("Acesso por e-mail")}>
       {!open ? (
-        <button type="button" onClick={() => setOpen(true)}>
+        <button
+          type="button"
+          disabled={!accepted}
+          onClick={() => {
+            setOpen(true);
+            onOpenChange?.(true);
+          }}
+        >
           {uiText("Entrar ou criar conta com e-mail")}
         </button>
       ) : (
@@ -204,9 +220,23 @@ export function EmailAuthForm({
                 </label>
                 {mode === "register" && (
                   <>
-                    <p id={`${id}-policy`}>
-                      {uiText("Use pelo menos 12 caracteres. Prefira uma frase única e longa.")}
-                    </p>
+                    <div className="email-auth__strength" id={`${id}-policy`}>
+                      <meter
+                        min={0}
+                        max={3}
+                        low={1}
+                        high={2}
+                        optimum={3}
+                        value={strength}
+                        aria-label={uiText("Força da senha")}
+                      />
+                      <strong>
+                        {uiText(strength < 2 ? "Fraca" : strength === 2 ? "Razoável" : "Forte")}
+                      </strong>
+                      <span>
+                        {uiText("Use 12 caracteres, maiúscula, minúscula, número e símbolo.")}
+                      </span>
+                    </div>
                     <label htmlFor={`${id}-confirm`}>
                       {uiText("Confirmar senha")}
                       <input
@@ -225,6 +255,7 @@ export function EmailAuthForm({
                 <label className="email-auth__show">
                   <input
                     type="checkbox"
+                    className="paper-checkbox"
                     checked={visible}
                     onChange={(e) => setVisible(e.target.checked)}
                   />
@@ -246,30 +277,33 @@ export function EmailAuthForm({
                       ? uiText("Enviar recuperação")
                       : uiText("Entrar com e-mail")}
             </button>
-            {mode !== "reset" && !linkToCurrent && (
+          </form>
+          {!linkToCurrent && (
+            <div className="email-auth__navigation">
+              {mode !== "reset" && (
+                <button
+                  type="button"
+                  className="email-auth__link"
+                  disabled={busy}
+                  onClick={() => change("reset")}
+                >
+                  {uiText("Esqueci minha senha")}
+                </button>
+              )}
               <button
                 type="button"
                 className="email-auth__link"
                 disabled={busy}
-                onClick={() => change("reset")}
+                onClick={() => {
+                  setOpen(false);
+                  onOpenChange?.(false);
+                  setPassword("");
+                  setConfirmation("");
+                }}
               >
-                {uiText("Esqueci minha senha")}
+                {uiText("Outros métodos de acesso")}
               </button>
-            )}
-          </form>
-          {!linkToCurrent && (
-            <button
-              type="button"
-              className="email-auth__link"
-              disabled={busy}
-              onClick={() => {
-                setOpen(false);
-                setPassword("");
-                setConfirmation("");
-              }}
-            >
-              {uiText("Outros métodos de acesso")}
-            </button>
+            </div>
           )}
         </>
       )}

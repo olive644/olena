@@ -1,0 +1,390 @@
+/* Acesso em uma folha: ação principal por e-mail, selos dos provedores abaixo. */
+.onboarding.login-page {
+  padding: 8px 16px;
+  min-height: 100svh;
+  background: var(--page, #fff9ef);
+  color: var(--text, #25202e);
+}
+.login-page .login-page__card h2 {
+  color: var(--text);
+}
+.login-page .login-page__consent {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--line);
+}
+.login-page .login-page__consent a {
+  color: var(--auth-accent, #51259b);
+}
+:root[data-theme="dark"] .login-page {
+  --auth-accent: #c7acff;
+}
+:root[data-theme="dark"] .login-page__card {
+  box-shadow: 7px 9px 0 #15121b;
+}
+:root[data-theme="dark"] .login-page .login-page__social button,
+:root[data-theme="dark"] .email-auth__tabs button {
+  background-image:
+    linear-gradient(135deg, #51465d 0 9%, transparent 9%),
+    linear-gradient(315deg, #3a3245 0 12%, transparent 12%);
+  box-shadow: 0 4px 0 #15121b;
+}
+:root[data-theme="dark"] .email-auth__tabs button[aria-pressed="true"] {
+  color: #25202e;
+}
+.login-page .login-page__layout {
+  max-width: 520px;
+  padding: 0;
+  gap: 0;
+  margin: auto;
+}
+.login-page .login-page__card {
+  margin-top: 76px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface, #fffdf8);
+  color: var(--text, #25202e);
+  border-color: var(--line, #d9cdb5);
+}
+.login-page .login-page__perched,
+.login-page .login-page__card .login-page__perched--returning {
+  width: 140px;
+  height: 140px;
+  top: -82px;
+}
+.login-page .login-page__card .login-page__perched--returning {
+  top: -118px;
+}
+.login-page__card h2 {
+  margin: 4px 0 8px;
+  font-size: 23px;
+}
+.login-page .login-page__intro {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.login-page .login-page__consent {
+  margin-top: 12px;
+  font-size: 12px;
+  padding: 8px;
+}
+.login-page__consent[hidden],
+.login-page__consent-help[hidden] {
+  display: none;
+}
+.login-page__card > .email-auth {
+  order: 1;
+}
+.login-page__card > .login-page__social {
+  order: 2;
+}
+.login-page__card > .login-page__local,
+.login-page__card > .login-page__guest,
+.login-page__card > .login-page__divider,
+.login-page__card > .login-page__back {
+  order: 3;
+}
+.login-page .login-page__social {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 14px 0 4px;
+}
+.login-page .login-page__social .login-page__actions,
+.login-page .login-page__social .login-page__providers {
+  display: contents;
+}
+.login-page .login-page__social button,
+.email-auth button:not(.email-auth__link) {
+  position: relative;
+  min-height: 44px;
+  border: 1px solid var(--line, #d9cdb5);
+  border-radius: 5px 13px 6px 11px;
+  background: var(--surface, #fffdf8);
+  background-image:
+    linear-gradient(135deg, #f9efd9 0 9%, transparent 9%),
+    linear-gradient(315deg, #e7ddc8 0 12%, transparent 12%);
+  box-shadow: 0 4px 0 #ddd2be;
+  color: var(--text, #25202e);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+.login-page .login-page__social button {
+  width: 52px;
+  height: 48px;
+  min-height: 44px;
+  flex: 0 0 52px;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 0;
+}
+.login-page .login-page__social button::before,
+.login-page .login-page__social button::after {
+  display: none;
+}
+.login-page .login-page__social button img {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+.login-page .login-page__social button:hover:not(:disabled),
+.email-auth button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.login-page .login-page__social button:active:not(:disabled),
+.email-auth button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #b9a98f;
+}
+.email-auth > button:not(.email-auth__link),
+.email-auth button[type="submit"] {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: #7433e0;
+  background-image:
+    linear-gradient(135deg, #9558ed 0 9%, transparent 9%),
+    linear-gradient(315deg, #5924b4 0 12%, transparent 12%);
+  color: #fff9ef;
+  border-color: #7433e0;
+  box-shadow: 0 4px 0 #4b209b;
+  font-size: 13px;
+}
+.email-auth button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.email-auth__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 0 12px;
+}
+.email-auth__tabs button[aria-pressed="true"] {
+  background-color: #facc15;
+  color: #25202e;
+  box-shadow: 0 4px 0 #ba9400;
+}
+.email-auth .email-auth__link {
+  display: block;
+  min-height: 44px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--auth-accent, #7433e0);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.email-auth[data-open="true"] {
+  animation: auth-paper-unfold 240ms ease both;
+}
+.email-auth form {
+  gap: 6px;
+}
+.email-auth__navigation {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.email-auth__navigation .email-auth__link {
+  margin: 0;
+  flex: 1;
+}
+.email-auth__strength {
+  grid-template-columns: 1fr auto;
+}
+.email-auth__strength span {
+  grid-column: 1 / -1;
+}
+.email-auth input:not([type="checkbox"]) {
+  background: var(--surface, #fff9ef);
+  color: var(--text, #25202e);
+  font: inherit;
+  min-width: 0;
+}
+.email-auth__strength {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 3px;
+  font-size: 10px;
+}
+.email-auth__strength meter {
+  width: 100%;
+  height: 10px;
+  accent-color: #159b73;
+  border: 0;
+  border-radius: 2px;
+  background: var(--line);
+}
+.email-auth__strength meter::-webkit-meter-bar {
+  border: 0;
+  background: var(--line);
+  border-radius: 2px;
+}
+.email-auth__strength meter::-webkit-meter-optimum-value {
+  background: #159b73;
+}
+.email-auth__strength meter::-webkit-meter-suboptimum-value {
+  background: #d6a800;
+}
+.email-auth__strength meter::-webkit-meter-even-less-good-value {
+  background: #e36975;
+}
+.email-auth__show {
+  min-height: 44px;
+  font-size: 12px;
+}
+.email-auth [role="status"]:empty {
+  display: none;
+}
+.login-page .login-page__local {
+  margin: 6px 0;
+  font-size: 11px;
+}
+.login-page .login-page__guest {
+  gap: 0;
+  margin: 0;
+}
+.login-page .login-page__guest p {
+  font-size: 10px;
+  margin: 0;
+}
+.login-page .login-page__divider {
+  display: none;
+}
+.login-page .login-page__back {
+  margin-top: 0;
+}
+.login-page .login-page__footer {
+  display: none;
+}
+.login-page__card:has(.email-auth[data-open="true"])
+  > :is(.login-page__eyebrow, .login-page__intro) {
+  display: none;
+}
+.login-page__card:has(.email-auth[data-open="true"]) .email-auth form {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.email-auth form > label:not(.email-auth__show) {
+  font-size: 12px;
+}
+.email-auth form > label:has(input[autocomplete="name"]) {
+  grid-column: 1;
+  grid-row: 1;
+}
+.email-auth form > label:has(input[type="email"]) {
+  grid-column: 1 / -1;
+}
+.email-auth form:has(input[autocomplete="name"]) > label:has(input[type="email"]) {
+  grid-column: 2;
+  grid-row: 1;
+}
+.email-auth form > label:has(input[autocomplete="new-password"]):not(:has(input[id$="confirm"])) {
+  grid-column: 1;
+  grid-row: 2;
+}
+.email-auth form > label:has(input[id$="confirm"]) {
+  grid-column: 2;
+  grid-row: 2;
+}
+.email-auth form > :is(.email-auth__show, [role="status"], button),
+.email-auth form > label:has(input[autocomplete="current-password"]) {
+  grid-column: 1 / -1;
+}
+.login-page__card:has(.email-auth[data-open="true"])
+  > :is(.login-page__back, .login-page__divider) {
+  display: none;
+}
+.login-page > .brand-footer {
+  padding: 4px 0;
+  margin: 8px auto 0;
+  border: 0;
+  min-height: 30px;
+}
+.login-page__card > [role="alert"] {
+  font-size: 11px;
+  margin: 2px 0 6px;
+}
+.login-page:has(.email-auth[data-open="true"]) > .brand-footer {
+  display: none;
+}
+@keyframes auth-paper-unfold {
+  from {
+    opacity: 0;
+    transform: translateY(8px) rotate(-0.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 719px), (max-height: 740px) {
+  .login-page .login-page__card {
+    padding: 12px 16px;
+    margin-top: 52px;
+  }
+  .login-page .login-page__card:has(.email-auth[data-open="true"]) {
+    margin-top: 16px;
+  }
+  .login-page__card:has(.email-auth[data-open="true"]) .login-page__perched {
+    display: none;
+  }
+  .login-page .login-page__perched {
+    width: 100px;
+    height: 100px;
+    top: -58px;
+  }
+  .login-page .login-page__card .login-page__perched--returning {
+    width: 86px;
+    height: 86px;
+    top: -72px;
+  }
+  .login-page__card h2 {
+    font-size: 20px;
+    margin: 3px 0 6px;
+  }
+  .login-page .login-page__intro,
+  .login-page__eyebrow,
+  .login-page .login-page__local {
+    display: none;
+  }
+  .login-page .login-page__consent {
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .email-auth input:not([type="checkbox"]) {
+    padding: 6px;
+    font-size: 14px;
+  }
+  .email-auth__tabs {
+    margin-bottom: 8px;
+  }
+  .login-page .login-page__consent-help {
+    margin: 4px 0;
+    font-size: 10px;
+    min-height: 14px;
+  }
+  .login-page > .brand-footer {
+    margin: 8px auto 0;
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .email-auth[data-open="true"] {
+    animation: none;
+  }
+  .email-auth button,
+  .login-page .login-page__social button {
+    transition: none;
+  }
+}
+html[data-reduce-motion="true"] .email-auth[data-open="true"] {
+  animation: none;
+}
