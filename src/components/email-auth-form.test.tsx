@@ -13,7 +13,8 @@ function setup(register = false, accepted = true) {
     sendEmailVerification: vi.fn(async () => {}),
     updateProfile: vi.fn(async () => {}),
   };
-  const services = { auth: {}, authApi: api } as unknown as AccountServices;
+  const authState = { currentUser: user };
+  const services = { auth: authState, authApi: api } as unknown as AccountServices;
   const complete = vi.fn();
   render(
     <EmailAuthForm
@@ -27,7 +28,7 @@ function setup(register = false, accepted = true) {
   fireEvent.click(screen.getByRole("button", { name: "Entrar ou criar conta com e-mail" }));
   const fill = (label: string, value: string) =>
     fireEvent.change(screen.getByLabelText(label, { exact: true }), { target: { value } });
-  return { api, complete, fill, services, user };
+  return { api, complete, fill, services, user, authState };
 }
 it("creates an account, sends verification and never stores the password", async () => {
   const s = setup(true);
@@ -36,11 +37,21 @@ it("creates an account, sends verification and never stores the password", async
   s.fill("Senha", "A unique long password");
   s.fill("Confirmar senha", "A unique long password");
   fireEvent.submit(screen.getByRole("button", { name: "Criar conta com e-mail" }).closest("form")!);
-  await waitFor(() => expect(s.complete).toHaveBeenCalledWith(s.user));
+  await waitFor(() => expect(s.complete).toHaveBeenCalledOnce());
   expect(s.api.sendEmailVerification).toHaveBeenCalledWith(s.user);
   expect(s.api.updateProfile).toHaveBeenCalledWith(s.user, { displayName: "Learner" });
   expect(JSON.stringify(localStorage)).not.toContain("A unique long password");
   expect((screen.getByLabelText("Senha", { exact: true }) as HTMLInputElement).value).toBe("");
+});
+
+it("does not complete against a different active account after the credential returns", async () => {
+  const s = setup();
+  s.fill("E-mail", "learner@example.test");
+  s.fill("Senha", "a password");
+  s.authState.currentUser = { ...s.user, uid: "different-owner" };
+  fireEvent.submit(screen.getByRole("button", { name: "Entrar com e-mail" }).closest("form")!);
+  await screen.findByText("Não foi possível entrar. Confira seus dados e tente novamente.");
+  expect(s.complete).not.toHaveBeenCalled();
 });
 it("rejects mismatched passwords before any request", async () => {
   const s = setup(true);

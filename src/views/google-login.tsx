@@ -419,7 +419,12 @@ export function GoogleLogin({
             accepted={accepted}
             initialRegister={!returning && answers.length > 0}
             onBusy={setSigningIn}
-            onAuthenticated={(user) => {
+            onAuthenticated={() => {
+              const user = services?.auth.currentUser;
+              if (!user) {
+                setError(accountAuthError(null));
+                return;
+              }
               recordPrivacyConsent(window.localStorage);
               endGuestSession();
               applyGoogleLogin(answers, configuration, user.uid);

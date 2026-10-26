@@ -1,5 +1,4 @@
 import { useId, useRef, useState } from "react";
-import type { User } from "firebase/auth";
 import { uiText } from "../i18n/runtime";
 import { accountAuthError, setAccountLanguage, type AccountServices } from "../data/account-auth";
 
@@ -13,7 +12,7 @@ export function EmailAuthForm({
 }: {
   services: AccountServices | undefined;
   accepted: boolean;
-  onAuthenticated: (user: User) => void;
+  onAuthenticated: () => void;
   onBusy: (busy: boolean) => void;
   initialRegister?: boolean;
   linkToCurrent?: boolean;
@@ -110,7 +109,11 @@ export function EmailAuthForm({
         }
         setPassword("");
         setConfirmation("");
-        onAuthenticated(credential.user);
+        // Só a identidade ativa confirmada pode finalizar a entrada. O resultado
+        // com credenciais não é encaminhado para o restante da interface.
+        if (services.auth.currentUser?.uid !== credential.user.uid)
+          throw new Error("auth/user-mismatch");
+        onAuthenticated();
       }
     } catch (cause) {
       setMessage(accountAuthError(cause));
