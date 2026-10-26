@@ -139,3 +139,30 @@ Toda chamada ao Discord e toda função de interações precisa de limite por qu
 global (ver `docs/OPERACAO_E_CUSTOS.md`). Não verificado: limites de execução e termos do plano
 gratuito da Vercel para este uso. O uso comercial do plano gratuito já é uma pergunta aberta da
 proprietária em `docs/OPERACAO_E_CUSTOS.md`.
+\n
+
+### Etapa 1 entregue: endpoint de interações (2026-10-25)
+
+Entregue só a base do "Receber". Ainda não há envio de tickets, comandos nem moderação.
+
+- Endereço: `POST /api/olena?action=discord-interactions`. Reaproveita a função `api/olena.ts`
+  (mesmo padrão do suporte), então não cria uma função nova na Vercel.
+- Código: `src/backend/discord-interactions.ts` (validação e respostas) e
+  `src/backend/discord-interactions-runtime.ts` (lê as variáveis). Assinatura Ed25519 conferida
+  com `node:crypto`, sem dependência nova.
+- Ordem das checagens: método POST, chave pública configurada (sem ela responde 503 e recusa
+  tudo), tamanho do corpo (16 KiB), assinatura (401), janela do carimbo de tempo de 5 minutos
+  contra reenvio (401), JSON, e só então o tipo da interação. PING recebe PONG.
+- Servidores: interação de servidor que não está em `DISCORD_ALLOWED_GUILD_IDS`, ou de mensagem
+  direta, recebe uma resposta só para quem chamou dizendo que o bot não atende ali.
+- Nesta etapa, no servidor atendido, a resposta é "O atendimento por aqui ainda não está ativo."
+- Variáveis na Vercel (produção): `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`,
+  `DISCORD_BOT_TOKEN` (já criadas pela proprietária; o token ainda não é usado por este código) e
+  `DISCORD_ALLOWED_GUILD_IDS` (IDs dos servidores, separados por vírgula, **ainda a criar**).
+- Passo da proprietária depois do deploy: colar a URL completa em _Interactions Endpoint URL_ no
+  portal do Discord. O portal envia um PING e só salva se a resposta for válida.
+- Custo e limite: o pedido inválido é recusado antes de tocar em banco, então só gasta uma
+  execução curta. Ainda **não há teto global de execuções** nem limite por origem no endpoint; a
+  Vercel Firewall é a camada atual. Ficam como pendência antes de ligar o atendimento.
+- Não verificado: o PING real do portal do Discord contra o endereço publicado e os limites de
+  execução do plano gratuito da Vercel.
