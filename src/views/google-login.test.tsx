@@ -12,6 +12,29 @@ import { StrictMode } from "react";
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
 
+it("explains a disabled Discord provider without pretending a redirect succeeded", async () => {
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: {},
+    redirectResult: null,
+  } as never);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () => new Response(JSON.stringify({ error: "provider-unavailable" }), { status: 503 }),
+    ),
+  );
+  render(<GoogleLogin answers={[]} onFinish={vi.fn()} />);
+  fireEvent.click(screen.getByRole("checkbox", { name: /Li e concordo/ }));
+  const button = screen.getByRole("button", { name: "Entrar com Discord" });
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(button);
+  expect((await screen.findByRole("alert")).textContent).toContain(
+    "Este método de acesso ainda não está configurado. Use outro método.",
+  );
+  vi.unstubAllGlobals();
+});
+
 it("uses the native Apple provider and required scopes after consent", async () => {
   class AppleProvider {
     scopes: string[] = [];

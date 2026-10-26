@@ -9,6 +9,7 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { GUEST_NAME, endGuestSession, startGuestSession } from "../domain/guest-session";
 import { PRIVACY_POLICY_PATH, recordPrivacyConsent } from "../domain/privacy-policy";
 import "./google-login.css";
+import "./auth-paper.css";
 import {
   parseOnboardingAnswers,
   type OnboardingConfiguration,
@@ -149,6 +150,7 @@ export function GoogleLogin({
   // Nunca vem marcada: o aceite da política precisa ser um ato da pessoa.
   const [accepted, setAccepted] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const pending = useRef(false);
   const discordCode = useRef(new URL(window.location.href).searchParams.get("discord"));
   const discordIntent = useRef({
@@ -237,20 +239,32 @@ export function GoogleLogin({
         method: "POST",
         credentials: "same-origin",
       });
-      if (!response.ok) throw new Error("discord-start");
+      if (!response.ok) {
+        const failure: unknown = await response.json().catch(() => null);
+        if (
+          failure &&
+          typeof failure === "object" &&
+          "error" in failure &&
+          failure.error === "provider-unavailable"
+        )
+          throw { code: "auth/operation-not-allowed" };
+        throw new Error("discord-start");
+      }
       const payload = (await response.json()) as { url?: unknown };
       const url = typeof payload.url === "string" ? new URL(payload.url) : undefined;
       if (!url || url.origin !== "https://discord.com" || url.pathname !== "/oauth2/authorize")
         throw new Error("discord-start");
       window.location.assign(url.toString());
-    } catch {
+    } catch (cause) {
       clearPendingAnswers();
       pending.current = false;
       setSigningIn(false);
       setError(
-        uiText(
-          "O acesso com Discord está indisponível. Tente outro método ou tente novamente mais tarde.",
-        ),
+        cause && typeof cause === "object" && "code" in cause
+          ? accountAuthError(cause)
+          : uiText(
+              "O acesso com Discord está indisponível. Tente outro método ou tente novamente mais tarde.",
+            ),
       );
     }
   }
@@ -354,9 +368,10 @@ export function GoogleLogin({
           </p>
           {(busy || (!services && !error)) && <HelenaLoading compact label={uiText(1209)} />}
           {error && <p role="alert">{uiText(error)}</p>}
-          <label className="login-page__consent">
+          <label className="login-page__consent" hidden={emailOpen}>
             <input
               type="checkbox"
+              className="paper-checkbox"
               checked={accepted}
               aria-describedby="login-consent-help"
               onChange={(event) => setAccepted(event.target.checked)}
@@ -370,9 +385,27 @@ export function GoogleLogin({
               {uiText(2567)}
             </span>
           </label>
-          <p id="login-consent-help" className="login-page__consent-help">
+          <p id="login-consent-help" className="login-page__consent-help" hidden={emailOpen}>
             {accepted ? "" : uiText(1211)}
           </p>
+          <EmailAuthForm
+            services={busy || signingIn ? undefined : services}
+            accepted={accepted}
+            initialRegister={!returning && answers.length > 0}
+            onBusy={setSigningIn}
+            onOpenChange={setEmailOpen}
+            onAuthenticated={() => {
+              const user = services?.auth.currentUser;
+              if (!user) {
+                setError(accountAuthError(null));
+                return;
+              }
+              recordPrivacyConsent(window.localStorage);
+              endGuestSession();
+              applyGoogleLogin(answers, configuration, user.uid);
+              onFinish();
+            }}
+          />
           <div className="login-page__social">
             <div className="onboarding__actions login-page__actions">
               <button
@@ -383,8 +416,22 @@ export function GoogleLogin({
                 aria-describedby="login-consent-help"
                 onClick={() => void login()}
               >
-                {uiText(870)}
-                <PaperArrow />
+                <span className="sr-only">{uiText(870)}</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28">
+                  <path
+                    fill="#4285f4"
+                    d="M21.8 12.2c0-.7-.1-1.4-.2-2.2H12v4.2h5.5c-.3 1.3-1 2.3-2.1 3v2.5h3.4c2-1.9 3-4.3 3-7.5Z"
+                  />
+                  <path
+                    fill="#34a853"
+                    d="M12 22c2.8 0 5.1-.9 6.8-2.3l-3.4-2.5c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.8-5.6-4.1H3v2.6C4.7 19.8 8.1 22 12 22Z"
+                  />
+                  <path fill="#fbbc05" d="M6.4 14a6 6 0 0 1 0-4V7.4H3a10 10 0 0 0 0 9.2Z" />
+                  <path
+                    fill="#ea4335"
+                    d="M12 5.9c1.5 0 2.8.5 3.8 1.5L18.7 4A10 10 0 0 0 3 7.4L6.4 10c.8-2.3 3-4.1 5.6-4.1Z"
+                  />
+                </svg>
               </button>
             </div>
             <div className="login-page__providers">
@@ -395,7 +442,13 @@ export function GoogleLogin({
                 disabled={!services || busy || signingIn || !accepted}
                 onClick={() => void login("apple")}
               >
-                {uiText("Entrar com Apple")}
+                <span className="sr-only">{uiText("Entrar com Apple")}</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28">
+                  <path
+                    fill="currentColor"
+                    d="M16.7 2c.1 1.4-.4 2.6-1.2 3.5-.8.9-2 1.5-3.2 1.4-.2-1.3.4-2.6 1.2-3.4.8-.9 2.1-1.5 3.2-1.5ZM20.3 17.1c-.5 1.2-.8 1.8-1.5 2.9-1 1.4-2.3 3.1-3.9 3.1-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.5 0-2.8-1.5-3.8-2.9-2.7-3.9-3-8.5-1.3-10.9 1.2-1.7 3.1-2.7 4.8-2.7 1.5 0 2.5.9 3.7.9 1.1 0 2-.9 3.7-.9 1.5 0 3.1.8 4.3 2.1-3.8 2.1-3.2 7.4 1.4 8.4Z"
+                  />
+                </svg>
               </button>
               <button
                 data-provider="discord"
@@ -410,27 +463,10 @@ export function GoogleLogin({
                   width="24"
                   height="24"
                 />
-                {uiText("Entrar com Discord")}
+                <span className="sr-only">{uiText("Entrar com Discord")}</span>
               </button>
             </div>
           </div>
-          <EmailAuthForm
-            services={busy || signingIn ? undefined : services}
-            accepted={accepted}
-            initialRegister={!returning && answers.length > 0}
-            onBusy={setSigningIn}
-            onAuthenticated={() => {
-              const user = services?.auth.currentUser;
-              if (!user) {
-                setError(accountAuthError(null));
-                return;
-              }
-              recordPrivacyConsent(window.localStorage);
-              endGuestSession();
-              applyGoogleLogin(answers, configuration, user.uid);
-              onFinish();
-            }}
-          />
           <p className="login-page__local">{uiText(1212)}</p>
           <div className="login-page__guest">
             <button type="button" disabled={signingIn} onClick={continueAsGuest}>

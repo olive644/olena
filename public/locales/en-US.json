@@ -3120,5 +3120,11 @@
   "Sign in with Apple",
   "Sign in with Discord",
   "We will confirm your identity again before deleting the account.",
-  "Use the same sign-in method as your account."
+  "Use the same sign-in method as your account.",
+  "Use 12 characters, uppercase, lowercase, a number and a symbol.",
+  "Password strength",
+  "Requirements met. Prefer a long, unique password.",
+  "Complete the requirements to continue.",
+  "Weak",
+  "Fair"
 ]

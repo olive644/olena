@@ -1,14 +1,24 @@
 import { expect, test } from "@playwright/test";
 
 for (const theme of ["light", "dark"]) {
-  test(`email registration, recovery and provider controls work on ${theme}`, async ({ page }) => {
+  test(`email registration, recovery and provider controls work on ${theme}`, async ({
+    page,
+    isMobile,
+  }) => {
+    if (isMobile) await page.setViewportSize({ width: 320, height: 568 });
     await page.addInitScript((value) => localStorage.setItem("helenastudy.theme", value), theme);
     await page.goto("/?onboarding=1&login=1");
     await expect(page.getByRole("button", { name: "Entrar com Apple", exact: true })).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Entrar com Discord", exact: true }),
     ).toBeVisible();
+    await page.screenshot({ path: test.info().outputPath("initial.png"), fullPage: true });
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),
+    ).toBe(true);
+    await page.locator(".login-page__consent input").check();
     await page.getByRole("button", { name: "Entrar ou criar conta com e-mail" }).click();
+    await expect(page.locator(".login-page__consent")).toBeHidden();
     await page.getByRole("button", { name: "Criar conta", exact: true }).click();
     await page.getByLabel("Seu nome", { exact: true }).fill("Learner");
     await page.getByLabel("E-mail", { exact: true }).fill("learner@example.test");
@@ -21,6 +31,10 @@ for (const theme of ["light", "dark"]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),
+    ).toBe(true);
+    await expect(page.getByRole("meter", { name: "Força da senha" })).toBeVisible();
     await page.screenshot({
       path: test.info().outputPath("email-registration.png"),
       fullPage: true,
