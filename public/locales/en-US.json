@@ -3144,5 +3144,18 @@
   "Your studies remain in this account. Use the method that stays linked. Signing in again with the removed method may create another account.",
   "Add another sign-in method before unlinking this one.",
   "Method unlinked. Your studies have been preserved.",
-  "Unlink"
+  "Unlink",
+  "View all cards",
+  "Choose up to three favorite cards.",
+  "Could not save favorite cards. Try again.",
+  "Inspect card {0}",
+  "Choose a favorite card",
+  "Remove card from highlights",
+  "Highlight card on profile",
+  "Obtained on",
+  "Date not recorded",
+  "Copies: {0}",
+  "Choose up to three cards from your collection to highlight on your profile.",
+  "Not yet obtained",
+  "Oliver peeks from behind the Mathematics widget"
 ]

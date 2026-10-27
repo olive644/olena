@@ -110,9 +110,13 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("dialog").getByRole("button", { name: "Fechar", exact: true }).click();
     await expect(page.getByRole("button", { name: "Ver fonte", exact: true })).toBeVisible();
     await page.goto("/");
-    await page.getByRole("searchbox", { name: "Buscar no Espaço", exact: true }).fill("algebra");
     await expect(
-      page.getByRole("link", { name: "Material de álgebra", exact: true }),
+      page.getByRole("searchbox", { name: "Buscar no Espaço", exact: true }),
+    ).toHaveCount(0);
+    await page.goto("/biblioteca");
+    await page.getByLabel("Buscar no acervo").fill("algebra");
+    await expect(
+      page.getByRole("heading", { name: "Material de álgebra", exact: true }),
     ).toBeVisible();
     await page.screenshot({
       path: info.outputPath(`busca-biblioteca-${theme}.png`),

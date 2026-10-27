@@ -14,6 +14,7 @@ export type MathChest = {
   opened: boolean;
   cards?: OliverCardId[];
   revealed?: number;
+  revealedAt?: (number | null)[];
   kind?: "common" | "arcane";
   arcana?: typeof OLIVER_TAROT.id;
 };
@@ -63,6 +64,14 @@ export function parseMathRewards(
               chest &&
               typeof chest.id === "string" &&
               typeof chest.opened === "boolean" &&
+              (chest.revealedAt === undefined ||
+                (Array.isArray(chest.revealedAt) &&
+                  chest.revealedAt.length <= 2 &&
+                  chest.revealedAt.every(
+                    (at) =>
+                      at === null ||
+                      (Number.isSafeInteger(at) && at >= 0 && at <= 8640000000000000),
+                  ))) &&
               (chest.kind === undefined || chest.kind === "common" || chest.kind === "arcane") &&
               (chest.arcana === undefined ||
                 (chest.kind === "arcane" &&
@@ -172,13 +181,25 @@ export function openMathChest(
     ),
   });
 }
-export function revealMathCard(course: MathCourseId, id: string) {
+export function revealMathCard(course: MathCourseId, id: string, now = Date.now()) {
+  if (!Number.isSafeInteger(now) || now < 0 || now > 8640000000000000)
+    throw new Error("Data inválida.");
   const value = mathPlaceRewards(course);
   return save(course, {
     ...value,
     chests: value.chests.map((chest) =>
       chest.id === id && chest.opened && (chest.revealed ?? 0) < chestCards(chest).length
-        ? { ...chest, revealed: (chest.revealed ?? 0) + 1 }
+        ? {
+            ...chest,
+            revealed: (chest.revealed ?? 0) + 1,
+            revealedAt: [
+              ...Array.from(
+                { length: chest.revealed ?? 0 },
+                (_, i) => chest.revealedAt?.[i] ?? null,
+              ),
+              now,
+            ],
+          }
         : chest,
     ),
   });
@@ -191,4 +212,18 @@ export function oliverCollection(): Partial<Record<OliverArtworkId, number>> {
         collection[card] = (collection[card] ?? 0) + 1;
     }
   return collection;
+}
+export function oliverCardDates(): Partial<Record<OliverArtworkId, number>> {
+  const dates: Partial<Record<OliverArtworkId, number>> = {};
+  for (const place of Object.values(readAll()))
+    for (const chest of place.chests) {
+      chestCards(chest)
+        .slice(0, chest.revealed ?? 0)
+        .forEach((id, index) => {
+          const at = chest.revealedAt?.[index];
+          if (typeof at === "number" && (dates[id] === undefined || at < dates[id]!))
+            dates[id] = at;
+        });
+    }
+  return dates;
 }

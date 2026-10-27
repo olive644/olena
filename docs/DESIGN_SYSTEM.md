@@ -1,5 +1,13 @@
 # Identidade visual oficial OlenaStudy
 
+## Cartas no perfil e Oliver na base do widget, 27/10/2026
+
+O perfil substitui o bloco Minhas ilhas por Cartas do Oliver, com exatamente três posições de destaque. Não apagar a preferência antiga favoriteIsland ao mudar a apresentação. Reutilizar a própria OliverCard para miniaturas, com SVG/foreignObject e imagem WebP pequena, preservando moldura, título, atributos e números originais. As posições não recebem placas adicionais. A galeria tem três colunas no celular e cinco no PC, com versos bloqueados para cartas ainda não reveladas. Favoritar usa a estrela original em dourado, no máximo três e somente cartas obtidas. Seleção vazia explícita permanece vazia.
+
+Inspeção reutiliza OliverCardInspection/PaperArtInspection com giro, verso, brilho e controle por teclado/toque. Data usa PaperDigits separados pelos sinais do formato local; datas antigas ausentes recebem Data não registrada. Modal de papel mantém fechar acessível, volta ao início ao trocar galeria/inspeção, oferece retorno à coleção e respeita movimento reduzido. Sons vêm de createMathSound e respeitam a configuração de áudio. Nenhuma carta nova é concedida pela galeria.
+
+O novo Oliver do Espaço usa oliver-peeking-widget.webp, uma nova pose aprovada com olhos de coração e mãos apoiadas na borda. Os três raios amarelos foram retirados por direção do proprietário. Preservar rosto, facetas e símbolos restantes. A arte é transparente, 900x600 e aproximadamente 71 KiB; CSS apoia a arte na base do widget, sem interceptar o convite. Não colocar miniatura da ilha dentro desse widget: decoração usa sólidos, diagrama de fração, malha geométrica e faixa de papel azul na base. Esta pose não é o quadro inicial do rig Rive anterior: a nova apresentação usa entrada CSS, sem carregar o antigo arquivo Oliver. Não sobrepor a pose antiga à nova arte após o carregamento.
+
 ## Confirmação de desvinculação de acesso
 
 Provedores associados continuam botões verdes com check e nome. Clicar abre LibraryDialog de papel, com ícone do provedor, efeito de entrada curto, aviso de acesso e ações Cancelar/Desvincular. A mutação só começa na confirmação e mostra HelenaLoading; falhas permanecem no diálogo e não anunciam sucesso. Sons usam createMathSound e respeitam a preferência de áudio; movimento reduzido desativa animação e transições. O diálogo conserva navegação de teclado, foco devolvido ao botão de origem e ações visíveis no toque. Verificar PC/celular e claro/escuro, inclusive cancelamento, falha, máscara de senha e último acesso.

@@ -25,9 +25,12 @@ const SocialDirectory = lazy(() =>
 const MathAchievements = lazy(() =>
   import("./math-achievements").then((module) => ({ default: module.MathAchievements })),
 );
+const ProfileCards = lazy(() =>
+  import("./profile-cards").then((module) => ({ default: module.ProfileCards })),
+);
 
 import { ProfileLabels } from "./profile-labels";
-import { ProfileXpBar, ProfileLevelBadge, ProfileStudyWidgets } from "./profile-study-widgets";
+import { ProfileXpBar, ProfileLevelBadge } from "./profile-study-widgets";
 import { ProfileQrIcon } from "./profile-qr-icon";
 import { ProfileJourney } from "./profile-journey";
 import "./profile-journey.css";
@@ -357,7 +360,6 @@ export function ProfileShowcase({
 
 export function ProfileOverview({
   workspace,
-  dispatch,
 }: {
   workspace: WorkspaceState;
   dispatch?: Dispatch<WorkspaceAction> | undefined;
@@ -372,7 +374,9 @@ export function ProfileOverview({
         </Suspense>
       </div>
       <div className="profile-study-grid">
-        <ProfileStudyWidgets dispatch={dispatch} />
+        <Suspense fallback={<HelenaLoading label={uiText("Cartas do Oliver")} />}>
+          <ProfileCards />
+        </Suspense>
       </div>
     </div>
   );

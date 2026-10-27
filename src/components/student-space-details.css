@@ -374,11 +374,11 @@ html[data-theme="dark"] .student-space .check-button {
 }
 @media (max-width: 560px) {
   .math-hero-carousel {
-    margin-top: 38px;
+    margin-top: 24px;
     margin-bottom: 14px;
   }
   .math-hero-slide {
-    padding: 100px 18px 18px;
+    padding: 24px 18px 200px;
     min-height: 0;
   }
   .math-hero-oliver {

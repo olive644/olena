@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+## Cartas e widget Matemática
+
+Cartas do perfil leem a mesma coleção dos baús. cardFavorites fica no perfil sincronizado existente, máximo três IDs válidos/obtidos; array vazio não recebe fallback. revealedAt é lista opcional por posição em MathChest, gravada somente na revelação; null/ausente significa sem data, não usar unlockAt como data de aquisição. Merge da mesma recompensa preserva a menor data conhecida. Inspeção é a original em 3D, nunca recriar outra. Miniaturas usam a própria OliverCard com thumbnail para baixar somente WebP pequeno.
+
+O Espaço não mostra mais WorkspaceSearch; a busca da Biblioteca continua. Oliver aprovado fica em public/oliver-peeking-widget.webp, sem raios amarelos, apoiado na base do widget. Não colocar a ilha novamente dentro do convite; tema matemático usa diagramas e formas de papel. Entrada CSS substitui somente a apresentação do antigo OliverHeroArt no Espaço, não converter a nova pose em quadro do Rive antigo. DESIGN_SYSTEM.md registra geometria, tamanhos, temas e interação.
+
 ## Acesso: logout, senha e remoção de provedor
 
 Logout mantém helena.accountAccess.v1 para o mesmo UID; exclusão/troca direta limpa. providerData pode omitir senha e conservar provedor removido: methods consulta o usuário Firebase com o token dele e retorna booleanos, nunca hash. Remover Google/Discord passa pelo servidor, sessão recente, guarda do último método e trava por UID. Não usar somente estado visual, contagem no cliente ou timestamp histórico de senha para autorizar remoção. Reutilizar LibraryDialog, createMathSound e tokens claro/escuro. Detalhes e cotas em AUTHENTICATION.md.

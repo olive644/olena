@@ -16,7 +16,6 @@ import { AgendaToolbarIcon } from "../components/agenda-toolbar-icon";
 import { displayEventsOn, zonedDateTime } from "../domain/agenda-calendar";
 import "./today-view.css";
 import "../components/student-space-details.css";
-import { WorkspaceSearch } from "../components/workspace-search";
 
 type TodayViewProps = {
   workspace: WorkspaceState;
@@ -51,7 +50,6 @@ export function TodayView({ workspace, dispatch, onNavigate }: TodayViewProps) {
       />
 
       <StudentDestinations workspace={workspace} onNavigate={onNavigate} />
-      <WorkspaceSearch workspace={workspace} />
 
       <section className="metric-row" aria-label={uiText(1546)}>
         <article>

@@ -65,11 +65,11 @@ test("Oliver abre diretamente Matemática sem transbordar no celular", async ({ 
     localStorage.setItem("helena.guest.v1", "1");
   });
   await page.goto("/");
-  const oliver = page.getByRole("img", { name: /Oliver convidando/ });
+  const oliver = page.getByRole("img", { name: /Oliver aparece por trás/ });
   await expect(oliver).toBeVisible();
   await expect
     .poll(() => oliver.evaluate((image: HTMLImageElement) => image.naturalWidth))
-    .toBe(720);
+    .toBe(900);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("button", { name: "Explorar Matemática", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Pátio das Primeiras Contas" })).toBeVisible();
@@ -98,21 +98,12 @@ test("ilha animada e Oliver continuam visíveis ao entrar e voltar duas vezes", 
     });
     await home.click();
     await expect(page.locator(".math-hero-slide")).toBeVisible();
-    await expect(page.locator(".math-hero-oliver img")).toHaveJSProperty("complete", true);
-    await expect(page.locator(".math-hero-oliver")).toHaveAttribute("data-ready", "true", {
-      timeout: 15000,
-    });
+    await expect(page.locator(".math-hero-peek img")).toHaveJSProperty("complete", true);
     await expect
       .poll(() =>
-        page.locator(".math-hero-oliver canvas").evaluate((canvas: HTMLCanvasElement) => {
-          const context = canvas.getContext("2d");
-          if (!context) return false;
-          return context
-            .getImageData(0, 0, canvas.width, canvas.height)
-            .data.some((value, index) => index % 4 === 3 && value > 0);
-        }),
+        page.locator(".math-hero-peek img").evaluate((img: HTMLImageElement) => img.naturalWidth),
       )
-      .toBe(true);
+      .toBe(900);
     await expect(page.locator(".student-island-art canvas")).toBeVisible({ timeout: 20000 });
     await expect(page.locator(".student-island-art")).toHaveAttribute("data-ready", "true");
   }

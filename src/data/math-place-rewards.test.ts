@@ -9,8 +9,21 @@ import {
   MATH_PLACE_REWARDS_KEY,
   revealMathCard,
   oliverCollection,
+  oliverCardDates,
 } from "./math-place-rewards";
 beforeEach(() => localStorage.removeItem(MATH_PLACE_REWARDS_KEY));
+it("dates only actual revelations and keeps the earliest known copy without fabricating old dates", () => {
+  finishMathPlace("foundations", "dated", 100, () => 0.5);
+  unlockMathChest("foundations", "dated", 0);
+  const rolls = [0.9, 0, 0];
+  openMathChest("foundations", "dated", 60000, () => rolls.shift()!);
+  expect(oliverCardDates()).toEqual({});
+  revealMathCard("foundations", "dated", 1000);
+  revealMathCard("foundations", "dated", 2000);
+  revealMathCard("foundations", "dated", 3000);
+  expect(oliverCardDates()).toEqual({ "first-star": 1000 });
+  expect(mathPlaceRewards("foundations").chests[0]?.revealedAt).toEqual([1000, 2000]);
+});
 it("stores totals separately, grants one chest at 100 points and deduplicates rounds", () => {
   finishMathPlace("foundations", "one", 99, () => 0.5);
   expect(mathPlaceRewards("foundations").chests).toHaveLength(0);

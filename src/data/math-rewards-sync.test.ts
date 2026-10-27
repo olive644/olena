@@ -10,6 +10,41 @@ import {
 import { mergeSyncedItems } from "./sync-conflict";
 import { applySyncedStorage, readSyncedStorage, SYNCED_STORAGE_EVENT } from "./synced-storage";
 beforeEach(() => localStorage.clear());
+it("preserves earliest known reveal dates while merging partial and legacy collections", () => {
+  const make = (revealed: number, revealedAt?: (number | null)[]) =>
+    JSON.stringify({
+      foundations: {
+        points: 100,
+        receipts: ["one"],
+        chests: [
+          {
+            id: "one",
+            opened: true,
+            unlockAt: 0,
+            cards: ["first-star", "silent-bell"],
+            revealed,
+            ...(revealedAt ? { revealedAt } : {}),
+          },
+        ],
+      },
+    });
+  const result = mergeSyncedItems(
+    {},
+    { [MATH_PLACE_REWARDS_KEY]: make(1, [1000]) },
+    { [MATH_PLACE_REWARDS_KEY]: make(2, [900, 2000]) },
+  );
+  const saved = JSON.parse(result.items[MATH_PLACE_REWARDS_KEY]!).foundations.chests[0];
+  expect(saved.revealed).toBe(2);
+  expect(saved.revealedAt).toEqual([900, 2000]);
+  const legacy = mergeSyncedItems(
+    {},
+    { [MATH_PLACE_REWARDS_KEY]: make(1) },
+    { [MATH_PLACE_REWARDS_KEY]: make(2, [null, 2000]) },
+  );
+  expect(
+    JSON.parse(legacy.items[MATH_PLACE_REWARDS_KEY]!).foundations.chests[0].revealedAt,
+  ).toEqual([null, 2000]);
+});
 function snapshot() {
   return readSyncedStorage();
 }
