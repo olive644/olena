@@ -6,6 +6,12 @@ Cartas do perfil leem a mesma coleção dos baús. cardFavorites fica no perfil 
 
 O Espaço não mostra mais WorkspaceSearch; a busca da Biblioteca continua. Oliver aprovado fica em public/oliver-peeking-widget.webp, sem raios amarelos, apoiado na base do widget. Não colocar a ilha novamente dentro do convite; tema matemático usa diagramas e formas de papel. Entrada CSS substitui somente a apresentação do antigo OliverHeroArt no Espaço, não converter a nova pose em quadro do Rive antigo. DESIGN_SYSTEM.md registra geometria, tamanhos, temas e interação.
 
+## Gestos da folha e intervalo da Agenda
+
+`useMiddleMousePan` captura somente mouse com botão auxiliar pressionado na viewport do editor. Não altera ferramenta, seleção ou documento; usa scrollLeft/scrollTop e libera captura no fim, cancelamento ou perda do botão. Clique primário, caneta e toque continuam nos manipuladores existentes. O ícone do menu de post-it mantém tinta escura mesmo no tema escuro, pois sua superfície é clara.
+
+Na grade mensal, arraste de intervalo exige 350 ms de pressão. Movimento maior que 8 px antes desse tempo cancela a tentativa; wheel, scroll, blur, segundo ponteiro e pointercancel também cancelam. Não capturar nem impedir rolagem no pointerdown. Toque continua com pan-y/pinch-zoom; touchmove não passivo impede rolagem somente após a pressão longa. Cliques, Shift + clique e o botão Selecionar intervalo preservam alternativas sem arraste. Referências: [buttons do mouse](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons) e [touch-action](https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action).
+
 ## Acesso: logout, senha e remoção de provedor
 
 Logout mantém helena.accountAccess.v1 para o mesmo UID; exclusão/troca direta limpa. providerData pode omitir senha e conservar provedor removido: methods consulta o usuário Firebase com o token dele e retorna booleanos, nunca hash. Remover Google/Discord passa pelo servidor, sessão recente, guarda do último método e trava por UID. Não usar somente estado visual, contagem no cliente ou timestamp histórico de senha para autorizar remoção. Reutilizar LibraryDialog, createMathSound e tokens claro/escuro. Detalhes e cotas em AUTHENTICATION.md.

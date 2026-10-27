@@ -5577,6 +5577,19 @@ body.local-room-active {
   transform: rotate(1deg);
 }
 
+:root[data-theme="dark"]
+  .capture-dialog--handwriting
+  .handwriting-sticky__menu-trigger
+  .paper-editor-icon {
+  color: #17151c;
+  --editor-icon-facet: #51485e;
+  --editor-icon-cutout: #fff9ef;
+}
+
+.handwriting-viewport[data-middle-pan] * {
+  cursor: grabbing !important;
+}
+
 .handwriting-sticky__menu-trigger:hover,
 .handwriting-sticky__menu-trigger:focus-visible {
   border-radius: 5px;
