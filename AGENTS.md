@@ -31,6 +31,8 @@ Estas regras herdam o padrão de engenharia do OliQualidade e valem para todo o 
 
 ## Produto e documentação
 
+- Toda interface nova ou alterada precisa ser validada nos modos claro e escuro, no PC e no celular. Conferir contraste, estados de foco/seleção/erro, carregamento e rolagem, registrando as provas e limites em docs/CURRENT_STATE_AUDIT.md.
+
 - Progresso, agenda, histórico de Cronômetro/Pomodoro e recuperação da sessão de Foco pertencem à conta autenticada e devem sincronizar automaticamente. Armazenamento do dispositivo é cache e fila de recuperação offline, nunca um modo separado chamado sincronização local. Não substituir registros já concluídos por cópias antigas ou vazias após atualizar. Sem conexão, informar que o envio à conta está pendente; sem login, orientar a entrar, sem fingir que houve salvamento em nuvem. Preservar isolamento entre contas e não iniciar automaticamente em outro aparelho um contador recuperado.
 
 - Seguir docs/DESIGN_SYSTEM.md: Olena, ícones e novos elementos visuais usam o padrão aprovado de papel recortado. Loadings usam HelenaLoading.

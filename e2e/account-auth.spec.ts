@@ -14,6 +14,23 @@ for (const theme of ["light", "dark"]) {
     await expect(
       page.getByRole("button", { name: "Entrar com Discord", exact: true }),
     ).toBeVisible();
+    const google = page.getByRole("button", { name: "Entrar com Google", exact: true });
+    const discord = page.getByRole("button", { name: "Entrar com Discord", exact: true });
+    await expect(google.locator("img")).toHaveAttribute(
+      "src",
+      "/navigation-icons/paper/profile-google.svg",
+    );
+    expect((await google.boundingBox())!.width).toBeLessThanOrEqual(68);
+    expect((await discord.boundingBox())!.width).toBeLessThanOrEqual(68);
+    expect(
+      await page
+        .locator(".login-page")
+        .evaluate((element) => getComputedStyle(element).backgroundImage),
+    ).toContain(theme === "dark" ? "paper-sky-pattern.svg" : "paper-sky-pattern-light.svg");
+    if (theme === "dark")
+      expect(await discord.evaluate((element) => getComputedStyle(element).backgroundColor)).toBe(
+        "rgb(116, 51, 224)",
+      );
     await page.screenshot({ path: test.info().outputPath("initial.png"), fullPage: true });
     expect(
       await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1),

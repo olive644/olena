@@ -206,3 +206,50 @@ it("checks Discord session age on the server rather than the device clock", asyn
     expect(await response.json()).toEqual({ recent: expected });
   }
 });
+
+it("reports only a confirmed Discord association owned by the authenticated account", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", { localId: "existing-owner", displayName: "Owner" });
+  const request = () =>
+    s.handleDiscordAuth(
+      new Request("https://olena.test/api/olena?action=account-auth&step=methods", {
+        method: "POST",
+        headers: { origin: "https://olena.test", authorization: "Bearer owner" },
+      }),
+    );
+  expect(await (await request()).json()).toEqual({ discord: { linked: false } });
+  await s.login("Bearer owner");
+  expect(await (await request()).json()).toEqual({ discord: { linked: true, name: "Learner" } });
+  const binding = [...s.values].find(([path]) => path.includes("/privateAuthDiscord/"))!;
+  s.values.set(binding[0], {
+    value: { uid: "other-owner", ready: true },
+    version: binding[1].version + 1,
+  });
+  expect(await (await request()).json()).toEqual({ discord: { linked: false } });
+  s.accounts.get("existing-owner")!.disabled = true;
+  expect((await request()).status).toBe(403);
+});
+
+it("refuses association status requests from an unapproved origin", async () => {
+  const s = await setup();
+  const response = await s.handleDiscordAuth(
+    new Request("https://olena.test/api/olena?action=account-auth&step=methods", {
+      method: "POST",
+      headers: { origin: "https://attacker.test", authorization: "Bearer owner" },
+    }),
+  );
+  expect(response.status).toBe(403);
+});
+it("limits authenticated association reads before exposing additional metadata", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", { localId: "existing-owner", displayName: "Owner" });
+  const request = () =>
+    s.handleDiscordAuth(
+      new Request("https://olena.test/api/olena?action=account-auth&step=methods", {
+        method: "POST",
+        headers: { origin: "https://olena.test", authorization: "Bearer owner" },
+      }),
+    );
+  for (let i = 0; i < 30; i++) expect((await request()).status).toBe(200);
+  expect((await request()).status).toBe(429);
+});
