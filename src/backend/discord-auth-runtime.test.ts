@@ -34,7 +34,16 @@ async function setup() {
   vi.stubEnv("DISCORD_CLIENT_ID", "client");
   vi.stubEnv("DISCORD_CLIENT_SECRET", "secret");
   const values = new Map<string, { value: unknown; version: number }>();
-  const accounts = new Map<string, { localId: string; displayName: string; disabled?: boolean }>();
+  const accounts = new Map<
+    string,
+    {
+      localId: string;
+      displayName: string;
+      disabled?: boolean;
+      passwordHash?: string;
+      providerUserInfo?: { providerId: string }[];
+    }
+  >();
   const fetcher = vi.fn<typeof fetch>(async (input, init) => {
     const url = String(input);
     const body = init?.body
@@ -47,9 +56,19 @@ async function setup() {
       return Response.json({ access_token: "discord-token", token_type: "Bearer" });
     if (url === "https://discord.com/api/v10/users/@me")
       return Response.json({ id: "123456789012345678", username: "Learner" });
-    if (url.endsWith("/accounts:lookup")) {
-      const id = (body["localId"] as string[])[0]!;
+    if (url.endsWith("/accounts:lookup") || url.includes("/accounts:lookup?")) {
+      const id = body["idToken"] ? "existing-owner" : (body["localId"] as string[])[0]!;
       return Response.json({ users: accounts.has(id) ? [accounts.get(id)] : [] });
+    }
+    if (url.includes("/accounts:update?")) {
+      expect(body["idToken"]).toBeTruthy();
+      expect(body["localId"]).toBeUndefined();
+      const target = accounts.get("existing-owner");
+      if (!target) return Response.json({}, { status: 400 });
+      target.providerUserInfo = (target.providerUserInfo ?? []).filter(
+        (p) => !(body["deleteProvider"] as string[]).includes(p.providerId),
+      );
+      return Response.json({ localId: body["localId"] });
     }
     if (url === "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=public-test-key") {
       expect(body["targetProjectId"]).toBe("project");
@@ -217,15 +236,27 @@ it("reports only a confirmed Discord association owned by the authenticated acco
         headers: { origin: "https://olena.test", authorization: "Bearer owner" },
       }),
     );
-  expect(await (await request()).json()).toEqual({ discord: { linked: false } });
+  expect(await (await request()).json()).toEqual({
+    password: false,
+    google: false,
+    discord: { linked: false },
+  });
   await s.login("Bearer owner");
-  expect(await (await request()).json()).toEqual({ discord: { linked: true, name: "Learner" } });
+  expect(await (await request()).json()).toEqual({
+    password: false,
+    google: false,
+    discord: { linked: true, name: "Learner" },
+  });
   const binding = [...s.values].find(([path]) => path.includes("/privateAuthDiscord/"))!;
   s.values.set(binding[0], {
     value: { uid: "other-owner", ready: true },
     version: binding[1].version + 1,
   });
-  expect(await (await request()).json()).toEqual({ discord: { linked: false } });
+  expect(await (await request()).json()).toEqual({
+    password: false,
+    google: false,
+    discord: { linked: false },
+  });
   s.accounts.get("existing-owner")!.disabled = true;
   expect((await request()).status).toBe(403);
 });
@@ -252,4 +283,116 @@ it("limits authenticated association reads before exposing additional metadata",
     );
   for (let i = 0; i < 30; i++) expect((await request()).status).toBe(200);
   expect((await request()).status).toBe(429);
+});
+function sessionToken(offset = 0) {
+  return `eyJhbGciOiJSUzI1NiJ9.${Buffer.from(JSON.stringify({ auth_time: Math.floor(Date.now() / 1000) + offset })).toString("base64url")}.signature`;
+}
+function methodRequest(step: string, offset = 0) {
+  return new Request(`https://olena.test/api/olena?action=account-auth&step=${step}`, {
+    method: "POST",
+    headers: { origin: "https://olena.test", authorization: `Bearer ${sessionToken(offset)}` },
+  });
+}
+it("reports password presence even when providerUserInfo omits password, without exposing credential material", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    passwordHash: "redacted",
+    providerUserInfo: [{ providerId: "google.com" }],
+  });
+  const response = await s.handleDiscordAuth(methodRequest("methods"));
+  expect(await response.json()).toEqual({
+    password: true,
+    google: true,
+    discord: { linked: false },
+  });
+});
+it("requires recent authentication and another method before unlinking", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    providerUserInfo: [{ providerId: "google.com" }],
+  });
+  expect((await s.handleDiscordAuth(methodRequest("unlink-google", -300))).status).toBe(401);
+  expect((await s.handleDiscordAuth(methodRequest("unlink-google", 60))).status).toBe(401);
+  const blocked = await s.handleDiscordAuth(methodRequest("unlink-google"));
+  expect(blocked.status).toBe(409);
+  expect(await blocked.json()).toEqual({ error: "last-method" });
+  expect(s.accounts.get("existing-owner")!.providerUserInfo).toHaveLength(1);
+});
+it("unlinks Google while retaining Discord and refuses removing the remaining access", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    providerUserInfo: [{ providerId: "google.com" }],
+  });
+  await s.login("Bearer owner");
+  expect((await s.handleDiscordAuth(methodRequest("unlink-google"))).status).toBe(200);
+  expect((await s.handleDiscordAuth(methodRequest("unlink-discord"))).status).toBe(409);
+  expect((await (await s.handleDiscordAuth(methodRequest("methods"))).json()).discord.linked).toBe(
+    true,
+  );
+});
+it("serializes concurrent removals and preserves at least one login method", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    providerUserInfo: [{ providerId: "google.com" }],
+  });
+  await s.login("Bearer owner");
+  const results = await Promise.all(
+    ["unlink-google", "unlink-discord"].map((step) => s.handleDiscordAuth(methodRequest(step))),
+  );
+  expect(results.map((r) => r.status).sort()).toEqual([200, 409]);
+  const body = await (await s.handleDiscordAuth(methodRequest("methods"))).json();
+  expect(
+    body.discord.linked || s.accounts.get("existing-owner")!.providerUserInfo!.length > 0,
+  ).toBe(true);
+});
+it("removes only this account Discord link and allows subsequent access through password", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    passwordHash: "redacted",
+  });
+  await s.login("Bearer owner");
+  expect((await s.handleDiscordAuth(methodRequest("unlink-discord"))).status).toBe(200);
+  expect(await (await s.handleDiscordAuth(methodRequest("methods"))).json()).toEqual({
+    password: true,
+    google: false,
+    discord: { linked: false },
+  });
+  expect([...s.values.keys()].filter((p) => p.includes("/privateAuthDiscord"))).toHaveLength(0);
+});
+it("does not count an obsolete sign-in method as a remaining supported access", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    providerUserInfo: [{ providerId: "google.com" }, { providerId: "apple.com" }],
+  });
+  expect((await s.handleDiscordAuth(methodRequest("unlink-google"))).status).toBe(409);
+});
+it("never unlinks an account when Firebase returns a different UID", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", {
+    localId: "existing-owner",
+    displayName: "Owner",
+    passwordHash: "redacted",
+  });
+  const previous = fetch;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input, init) =>
+      String(input).includes("/accounts:lookup?")
+        ? Response.json({ users: [{ localId: "another-owner", passwordHash: "redacted" }] })
+        : previous(input, init),
+    ),
+  );
+  expect((await s.handleDiscordAuth(methodRequest("unlink-google"))).status).toBe(503);
 });

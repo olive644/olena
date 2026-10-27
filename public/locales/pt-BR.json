@@ -3138,5 +3138,11 @@
   "Verificando associação…",
   "Senha cadastrada",
   "Confira seu e-mail",
-  "Solicitação de recuperação enviada. Se o e-mail não aparecer, confira Spam ou Lixo eletrônico. Aguarde um minuto antes de reenviar."
+  "Solicitação de recuperação enviada. Se o e-mail não aparecer, confira Spam ou Lixo eletrônico. Aguarde um minuto antes de reenviar.",
+  "Desvincular método de acesso?",
+  "Você deixará de entrar nesta conta com {0}.",
+  "Seus estudos continuam nesta conta. Entre pelo método que permanecer associado. Entrar novamente com o método removido pode criar outra conta.",
+  "Adicione outro método de acesso antes de desvincular este.",
+  "Método desvinculado. Seus estudos foram preservados.",
+  "Desvincular"
 ]

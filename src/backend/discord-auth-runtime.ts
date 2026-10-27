@@ -69,22 +69,33 @@ async function forgetOwner(uid: string, id: string) {
   });
   if (!removed.ok && removed.status !== 412) throw new Error("owner-delete");
 }
-async function account(uid: string): Promise<{ disabled?: boolean } | undefined> {
+type Account = {
+  disabled?: boolean;
+  passwordHash?: string;
+  providerUserInfo?: { providerId?: string }[];
+};
+const hasPassword = (value: Account) =>
+  !!value.passwordHash || value.providerUserInfo?.some((p) => p.providerId === "password") === true;
+async function account(uid: string, idToken?: string): Promise<Account | undefined> {
   const response = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/projects/${encodeURIComponent(project)}/accounts:lookup`,
+    idToken
+      ? `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(apiKey)}`
+      : `https://identitytoolkit.googleapis.com/v1/projects/${encodeURIComponent(project)}/accounts:lookup`,
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${await adminToken()}`,
+        ...(idToken ? {} : { Authorization: `Bearer ${await adminToken()}` }),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ localId: [uid] }),
+      body: JSON.stringify(idToken ? { idToken } : { localId: [uid] }),
       signal: AbortSignal.timeout(10000),
     },
   );
   if (!response.ok) throw new Error("account-lookup");
-  const body = (await response.json()) as { users?: { disabled?: boolean }[] };
-  return body.users?.[0];
+  const body = (await response.json()) as { users?: (Account & { localId?: string })[] };
+  const current = body.users?.[0];
+  if (idToken && current?.localId !== uid) throw new Error("account-mismatch");
+  return current;
 }
 const oauthHandler = createDiscordAuthHandler({
   clientId:
@@ -219,7 +230,14 @@ const oauthHandler = createDiscordAuthHandler({
 const verifyDeletedOwner = createFirebaseAccountIdentity(project);
 export async function handleDiscordAuth(request: Request): Promise<Response> {
   const step = new URL(request.url).searchParams.get("step");
-  if (step !== "cleanup" && step !== "recent" && step !== "methods") return oauthHandler(request);
+  if (
+    step !== "cleanup" &&
+    step !== "recent" &&
+    step !== "methods" &&
+    step !== "unlink-google" &&
+    step !== "unlink-discord"
+  )
+    return oauthHandler(request);
   const headers = { "Cache-Control": "no-store", "Content-Type": "application/json" };
   if (
     request.method !== "POST" ||
@@ -230,6 +248,95 @@ export async function handleDiscordAuth(request: Request): Promise<Response> {
     // O token assinado comprova a antiga propriedade; a conta precisa já estar removida.
     const owner = await verifyDeletedOwner(request);
     if (!owner || owner.anonymous) return new Response("{}", { status: 403, headers });
+    if (step === "unlink-google" || step === "unlink-discord") {
+      const claims = decodeJwt(request.headers.get("authorization")!.slice(7));
+      const age = Date.now() / 1000 - Number(claims["auth_time"]);
+      if (!Number.isFinite(age) || age < 0 || age >= 240)
+        return new Response("{}", { status: 401, headers });
+      if (
+        !(await checkRateLimit(rateStore, "room-limits", `auth-unlink:${owner.uid}`, 10, 3600)) ||
+        !(await checkRateLimit(rateStore, "room-limits", "auth-unlink:global", 1000, 86400))
+      )
+        return new Response("{}", { status: 429, headers });
+      // Ambas remoções usam a mesma exclusão mútua, inclusive em abas/instâncias distintas.
+      const lockPath = `room-limits/auth-unlink-lock-${createHash("sha256").update(owner.uid).digest("hex")}`;
+      const began = Date.now();
+      const lease = randomUUID();
+      const snapshot = await rateStore.readVersion!(lockPath);
+      if (
+        snapshot.value ||
+        !(await rateStore.compareAndSet!(lockPath, lease, 120, snapshot.version))
+      )
+        return new Response("{}", { status: 409, headers });
+      try {
+        const current = await account(owner.uid, request.headers.get("authorization")!.slice(7));
+        if (!current || current.disabled) return new Response("{}", { status: 403, headers });
+        const dbHeaders = { Authorization: `Bearer ${await dbToken()}` };
+        const index = await fetch(ownerPath(owner.uid), {
+          headers: dbHeaders,
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!index.ok) throw new Error("owner-read");
+        const entry = (await index.json()) as { id?: string } | null;
+        const path =
+          entry?.id && /^\d{17,20}$/.test(entry.id)
+            ? `${config.databaseUrl}/privateAuthDiscord/${entry.id}.json`
+            : undefined;
+        const binding = path
+          ? await fetch(path, {
+              headers: { ...dbHeaders, "X-Firebase-ETag": "true" },
+              signal: AbortSignal.timeout(10000),
+            })
+          : undefined;
+        if (binding && !binding.ok) throw new Error("identity-read");
+        const saved = binding
+          ? ((await binding.json()) as { uid?: string; ready?: boolean } | null)
+          : undefined;
+        const discord = saved?.uid === owner.uid && saved.ready === true;
+        const providers = current.providerUserInfo ?? [];
+        const google = providers.some((p) => p.providerId === "google.com");
+        if (
+          !(step === "unlink-google"
+            ? hasPassword(current) || discord
+            : hasPassword(current) || google)
+        )
+          return new Response(JSON.stringify({ error: "last-method" }), { status: 409, headers });
+        if (Date.now() - began > 60000) throw new Error("lease-expired");
+        if (step === "unlink-google" && google) {
+          const removed = await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${encodeURIComponent(apiKey)}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                idToken: request.headers.get("authorization")!.slice(7),
+                deleteProvider: ["google.com"],
+              }),
+              signal: AbortSignal.timeout(10000),
+            },
+          );
+          if (!removed.ok) throw new Error("provider-unlink");
+        } else if (step === "unlink-discord" && discord && path && entry?.id) {
+          const version = binding!.headers.get("etag");
+          if (!version) throw new Error("identity-version");
+          const removed = await fetch(path, {
+            method: "DELETE",
+            headers: { ...dbHeaders, "if-match": version },
+            signal: AbortSignal.timeout(10000),
+          });
+          if (!removed.ok) throw new Error("identity-delete");
+          await forgetOwner(owner.uid, entry.id);
+        }
+        return new Response("{}", { status: 200, headers });
+      } finally {
+        // Não liberar uma concessão que já poderia pertencer a outro pedido.
+        const held = await rateStore.readVersion!(lockPath);
+        if (held.value === lease)
+          await rateStore.compareAndSet!(lockPath, "released", 0, held.version);
+      }
+    }
     if (step === "methods") {
       if (
         !(await checkRateLimit(rateStore, "room-limits", `auth-methods:${owner.uid}`, 30, 3600)) ||
@@ -238,7 +345,7 @@ export async function handleDiscordAuth(request: Request): Promise<Response> {
         return new Response("{}", { status: 429, headers });
       const dbHeaders = { Authorization: `Bearer ${await dbToken()}` };
       const [current, index] = await Promise.all([
-        account(owner.uid),
+        account(owner.uid, request.headers.get("authorization")!.slice(7)),
         fetch(ownerPath(owner.uid), { headers: dbHeaders, signal: AbortSignal.timeout(10000) }),
       ]);
       if (!current || current.disabled) return new Response("{}", { status: 403, headers });
@@ -256,6 +363,8 @@ export async function handleDiscordAuth(request: Request): Promise<Response> {
       }
       return new Response(
         JSON.stringify({
+          password: hasPassword(current),
+          google: current.providerUserInfo?.some((p) => p.providerId === "google.com") === true,
           discord: {
             linked,
             ...(linked && typeof entry?.name === "string" ? { name: entry.name.slice(0, 80) } : {}),

@@ -228,3 +228,78 @@ it("does not show a previous account's reset notice after the active UID changes
   expect(screen.queryByText("Confira seu e-mail")).toBeNull();
   expect(localStorage.getItem("helena.accountAccess.v1")).toBeNull();
 });
+it("masks a password after re-entry when Firebase providerData omits the password provider", async () => {
+  accountSetup(false);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => Response.json({ password: true, google: true, discord: { linked: false } })),
+  );
+  render(<AccountAccessPanel />);
+  expect((await screen.findByLabelText("Senha cadastrada")).textContent).toBe("********");
+  expect(screen.queryByRole("button", { name: "Adicionar senha à minha conta" })).toBeNull();
+});
+it("opens confirmation and cancels without unlinking either provider", async () => {
+  accountSetup(false, true);
+  render(<AccountAccessPanel />);
+  fireEvent.click(await screen.findByRole("button", { name: "Discord associado" }));
+  expect(await screen.findByRole("dialog", { name: "Desvincular método de acesso?" })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+  expect(screen.queryByRole("dialog")).toBeNull();
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes("unlink-"))).toBe(false);
+});
+it("reauthenticates the current account and refreshes the unlinked Google state after confirmation", async () => {
+  const s = accountSetup(false, true);
+  const reauthenticateWithPopup = vi.fn(async () => ({ user: s.user }));
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    ...s.services,
+    authApi: { ...s.services.authApi, reauthenticateWithPopup, GoogleAuthProvider: class {} },
+  } as never);
+  let unlinked = false;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url) => {
+      if (String(url).includes("unlink-google")) {
+        unlinked = true;
+        return Response.json({});
+      }
+      return Response.json({
+        password: true,
+        google: !unlinked,
+        discord: { linked: true, name: "learner" },
+      });
+    }),
+  );
+  render(<AccountAccessPanel />);
+  await screen.findByText("@learner");
+  fireEvent.click(screen.getByRole("button", { name: "Google associado" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Desvincular" }));
+  await screen.findByText("Método desvinculado. Seus estudos foram preservados.");
+  await screen.findByRole("button", { name: "Associar Google" });
+  expect(reauthenticateWithPopup).toHaveBeenCalledOnce();
+  expect(s.user.uid).toBe("settings-owner");
+});
+it("keeps the confirmation open and shows the last-method safeguard without announcing success", async () => {
+  const s = accountSetup(false, true);
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    ...s.services,
+    authApi: {
+      ...s.services.authApi,
+      reauthenticateWithPopup: vi.fn(async () => ({ user: s.user })),
+      GoogleAuthProvider: class {},
+    },
+  } as never);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url) =>
+      String(url).includes("unlink-discord")
+        ? Response.json({ error: "last-method" }, { status: 409 })
+        : Response.json({ password: false, google: true, discord: { linked: true } }),
+    ),
+  );
+  render(<AccountAccessPanel />);
+  fireEvent.click(await screen.findByRole("button", { name: "Discord associado" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Desvincular" }));
+  await screen.findAllByText("Adicione outro método de acesso antes de desvincular este.");
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  expect(screen.queryByText("Método desvinculado. Seus estudos foram preservados.")).toBeNull();
+});

@@ -1,5 +1,11 @@
 # Auditoria do estado atual
 
+## Persistência de acesso e desvinculação, 26/10/2026
+
+Causas reproduzidas: logout apagava o aceite junto aos dados de estudo; providerData não é prova suficiente da presença de senha depois de outra forma de login. Teste do logout e teste de senha na reentrada falharam ao recolocar os respectivos comportamentos antigos e passaram com a correção. O logout agora preserva somente a preferência de acesso, isolada por UID, sem manter conteúdo de estudo. Exclusão de conta continua limpando tudo.
+
+methods confere a conta atual no Firebase e retorna somente presença de senha e estado Google, além do vínculo Discord privado já existente. Google/Discord associados permitem desvincular com modal original, cancelamento, reautenticação, aviso de conta distinta, movimento reduzido e sons conforme preferência. Servidor protege último método, simultaneidade, origem, identidade, sessão recente e quotas, sem alterar configurações externas ou dependências. npm run verify passou 2342 testes em 359 arquivos, lint sem erros/24 avisos existentes, idiomas/formatação/API/build/desempenho verdes. Aplicação 1589,8 KiB de 1600, entrada 220,4 KiB. Rodada final de 35 testes focados, TypeScript e API repetidos passou, incluindo dois testes adicionais de método legado e UID divergente. Dez E2E Chromium PC/mobile de acesso/retorno passaram. Quatro cenários isolados com componente/CSS reais e Firebase simulado validaram claro/escuro no PC/mobile, aceite após reload, máscara, cancelamento sem mutação, remoção Google/Discord com reautenticação e uma chamada por confirmação. Screenshots inspecionadas após Animation.finished. Logs unlink-verify.log, unlink-final-focused.log, unlink-e2e.log e unlink-visual.log fora do repositório. OAuth, remoção externa e entrega real de e-mail não verificados.
+
 ## Estados de acesso, decoração e recuperação, 2026-10-26
 
 Login restaura paper-sky-pattern claro/escuro, ícone Google próprio com facetas e profundidade compartilhado com Configurações, botão de criar conta em papel, Discord roxo no escuro e HelenaLoading também no preparo/retorno. Mantidas áreas de toque e dimensões dos ícones, sem botão Google ocupar a largura da linha. Removido o caminho Apple sem uso do login; compatibilidade da exclusão de contas antigas permanece.
