@@ -17,6 +17,7 @@ import {
 import { readStoredOnboardingConfiguration } from "../data/onboarding-client";
 import { rememberReturningVisitor } from "../data/returning-visitor";
 import { EmailAuthForm } from "../components/email-auth-form";
+import { AccountProviderIcon } from "../components/account-provider-icon";
 import { accountAuthError, setAccountLanguage } from "../data/account-auth";
 import type { AccountServices } from "../data/account-auth";
 import type { UserCredential } from "firebase/auth";
@@ -269,7 +270,7 @@ export function GoogleLogin({
     }
   }
 
-  async function login(method: "google" | "apple" = "google") {
+  async function login() {
     if (!services || pending.current || !accepted) return;
     pending.current = true;
     setSigningIn(true);
@@ -279,15 +280,8 @@ export function GoogleLogin({
     setBusy(true);
     setError("");
     setAccountLanguage(services);
-    const provider =
-      method === "apple"
-        ? new services.authApi.OAuthProvider("apple.com")
-        : new services.authApi.GoogleAuthProvider();
-    if (method === "google") provider.setCustomParameters({ prompt: "select_account" });
-    else {
-      provider.addScope("email");
-      provider.addScope("name");
-    }
+    const provider = new services.authApi.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
     try {
       const credential = await services.authApi.signInWithPopup(services.auth, provider);
       endGuestSession();
@@ -313,16 +307,14 @@ export function GoogleLogin({
           // Sem isto, uma falha aqui (domínio não autorizado, rede) ficava sem tratamento: a
           // pessoa via o botão parado em "Aguardando o Google…" para sempre, sem nenhum aviso.
           clearPendingAnswers();
-          setError(
-            method === "google" ? googleLoginError(redirectCause) : accountAuthError(redirectCause),
-          );
+          setError(googleLoginError(redirectCause));
           pending.current = false;
           setSigningIn(false);
           setBusy(false);
           return;
         }
       }
-      setError(method === "google" ? googleLoginError(cause) : accountAuthError(cause));
+      setError(googleLoginError(cause));
       pending.current = false;
       setSigningIn(false);
       setBusy(false);
@@ -366,7 +358,11 @@ export function GoogleLogin({
             <br />
             {returning ? uiText("Use o mesmo método de acesso da sua conta.") : uiText(1208)}
           </p>
-          {(busy || (!services && !error)) && <HelenaLoading compact label={uiText(1209)} />}
+          {(busy || signingIn || (!services && !error)) && (
+            <div className="login-page__loading">
+              <HelenaLoading compact label={uiText("Preparando seu login…")} />
+            </div>
+          )}
           {error && <p role="alert">{uiText(error)}</p>}
           <label className="login-page__consent" hidden={emailOpen}>
             <input
@@ -417,21 +413,7 @@ export function GoogleLogin({
                 onClick={() => void login()}
               >
                 <span className="sr-only">{uiText(870)}</span>
-                <svg aria-hidden="true" viewBox="0 0 24 24" width="28" height="28">
-                  <path
-                    fill="#4285f4"
-                    d="M21.8 12.2c0-.7-.1-1.4-.2-2.2H12v4.2h5.5c-.3 1.3-1 2.3-2.1 3v2.5h3.4c2-1.9 3-4.3 3-7.5Z"
-                  />
-                  <path
-                    fill="#34a853"
-                    d="M12 22c2.8 0 5.1-.9 6.8-2.3l-3.4-2.5c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.8-5.6-4.1H3v2.6C4.7 19.8 8.1 22 12 22Z"
-                  />
-                  <path fill="#fbbc05" d="M6.4 14a6 6 0 0 1 0-4V7.4H3a10 10 0 0 0 0 9.2Z" />
-                  <path
-                    fill="#ea4335"
-                    d="M12 5.9c1.5 0 2.8.5 3.8 1.5L18.7 4A10 10 0 0 0 3 7.4L6.4 10c.8-2.3 3-4.1 5.6-4.1Z"
-                  />
-                </svg>
+                <AccountProviderIcon provider="google" />
               </button>
             </div>
             <div className="login-page__providers">

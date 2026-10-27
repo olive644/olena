@@ -12,6 +12,34 @@ import { StrictMode } from "react";
 
 vi.mock("../data/firebase-account", () => ({ getFirebaseAccountServices: vi.fn() }));
 
+it("shows the original loading while Discord prepares the external redirect", async () => {
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    auth: {},
+    authApi: {},
+    redirectResult: null,
+  } as never);
+  let finishRequest: (response: Response) => void = () => {};
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      () =>
+        new Promise<Response>((resolve) => {
+          finishRequest = resolve;
+        }),
+    ),
+  );
+  render(<GoogleLogin answers={[]} onFinish={vi.fn()} />);
+  fireEvent.click(screen.getByRole("checkbox", { name: /Li e concordo/ }));
+  const button = screen.getByRole("button", { name: "Entrar com Discord" });
+  await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+  fireEvent.click(button);
+  expect(await screen.findByText("Preparando seu login…")).toBeTruthy();
+  expect(document.querySelector(".login-page__loading .helena-pencil")).toBeTruthy();
+  finishRequest(Response.json({ error: "provider-unavailable" }, { status: 503 }));
+  await screen.findByRole("alert");
+  expect(document.querySelector(".login-page__loading")).toBeNull();
+});
+
 it("explains a disabled Discord provider without pretending a redirect succeeded", async () => {
   vi.mocked(getFirebaseAccountServices).mockResolvedValue({
     auth: {},

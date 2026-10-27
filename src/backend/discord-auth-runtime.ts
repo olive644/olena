@@ -26,7 +26,7 @@ const adminToken = createGoogleAccessTokenProvider(config.serviceAccount, [
 const rateStore = createFirebaseRealtimeStore(config, fetch, () => Date.now(), dbToken);
 const ownerPath = (uid: string) =>
   `${config.databaseUrl}/privateAuthDiscordOwners/${createHash("sha256").update(uid).digest("hex")}.json`;
-async function rememberOwner(uid: string, id: string) {
+async function rememberOwner(uid: string, id: string, name: string) {
   const url = ownerPath(uid);
   const headers = { Authorization: `Bearer ${await dbToken()}` };
   const response = await fetch(url, {
@@ -34,15 +34,15 @@ async function rememberOwner(uid: string, id: string) {
     signal: AbortSignal.timeout(10000),
   });
   if (!response.ok) throw new Error("owner-read");
-  const saved = (await response.json()) as { id?: string } | null;
+  const saved = (await response.json()) as { id?: string; name?: string } | null;
   if (saved?.id && saved.id !== id) throw new Error("discord-already-linked");
-  if (saved?.id === id) return;
+  if (saved?.id === id && saved.name === name) return;
   const version = response.headers.get("etag");
   if (!version) throw new Error("owner-version");
   const write = await fetch(url, {
     method: "PUT",
     headers: { ...headers, "if-match": version, "Content-Type": "application/json" },
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ id, name }),
     signal: AbortSignal.timeout(10000),
   });
   if (write.status === 412) {
@@ -141,7 +141,7 @@ const oauthHandler = createDiscordAuthHandler({
           if (ready.status === 412) continue;
           if (!ready.ok) throw new Error("identity-commit");
         }
-        await rememberOwner(saved.uid, profile.id);
+        await rememberOwner(saved.uid, profile.id, profile.name);
         return saved.uid;
       }
       if (saved?.uid && !saved.ready) {
@@ -175,14 +175,14 @@ const oauthHandler = createDiscordAuthHandler({
         });
         if (committed.status === 412) continue;
         if (!committed.ok) throw new Error("identity-commit");
-        await rememberOwner(saved.uid, profile.id);
+        await rememberOwner(saved.uid, profile.id, profile.name);
         return saved.uid;
       }
       const uid = linkUid ?? `discord-${randomUUID()}`;
       if (linkUid) {
         const target = await account(linkUid);
         if (!target || target.disabled) throw new Error("missing-account");
-        await rememberOwner(linkUid, profile.id);
+        await rememberOwner(linkUid, profile.id, profile.name);
       }
       const version = response.headers.get("etag");
       if (!version) throw new Error("version");
@@ -219,7 +219,7 @@ const oauthHandler = createDiscordAuthHandler({
 const verifyDeletedOwner = createFirebaseAccountIdentity(project);
 export async function handleDiscordAuth(request: Request): Promise<Response> {
   const step = new URL(request.url).searchParams.get("step");
-  if (step !== "cleanup" && step !== "recent") return oauthHandler(request);
+  if (step !== "cleanup" && step !== "recent" && step !== "methods") return oauthHandler(request);
   const headers = { "Cache-Control": "no-store", "Content-Type": "application/json" };
   if (
     request.method !== "POST" ||
@@ -230,6 +230,40 @@ export async function handleDiscordAuth(request: Request): Promise<Response> {
     // O token assinado comprova a antiga propriedade; a conta precisa já estar removida.
     const owner = await verifyDeletedOwner(request);
     if (!owner || owner.anonymous) return new Response("{}", { status: 403, headers });
+    if (step === "methods") {
+      if (
+        !(await checkRateLimit(rateStore, "room-limits", `auth-methods:${owner.uid}`, 30, 3600)) ||
+        !(await checkRateLimit(rateStore, "room-limits", "auth-methods:global", 2000, 86400))
+      )
+        return new Response("{}", { status: 429, headers });
+      const dbHeaders = { Authorization: `Bearer ${await dbToken()}` };
+      const [current, index] = await Promise.all([
+        account(owner.uid),
+        fetch(ownerPath(owner.uid), { headers: dbHeaders, signal: AbortSignal.timeout(10000) }),
+      ]);
+      if (!current || current.disabled) return new Response("{}", { status: 403, headers });
+      if (!index.ok) throw new Error("owner-read");
+      const entry = (await index.json()) as { id?: string; name?: string } | null;
+      let linked = false;
+      if (entry?.id && /^\d{17,20}$/.test(entry.id)) {
+        const response = await fetch(`${config.databaseUrl}/privateAuthDiscord/${entry.id}.json`, {
+          headers: dbHeaders,
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!response.ok) throw new Error("identity-read");
+        const saved = (await response.json()) as { uid?: string; ready?: boolean } | null;
+        linked = saved?.uid === owner.uid && saved.ready === true;
+      }
+      return new Response(
+        JSON.stringify({
+          discord: {
+            linked,
+            ...(linked && typeof entry?.name === "string" ? { name: entry.name.slice(0, 80) } : {}),
+          },
+        }),
+        { status: 200, headers },
+      );
+    }
     if (step === "recent") {
       if (
         !(await checkRateLimit(rateStore, "room-limits", `auth-recent:${owner.uid}`, 10, 3600)) ||

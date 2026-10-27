@@ -1,5 +1,9 @@
 # Identidade visual oficial OlenaStudy
 
+Regra universal: toda UI nova ou alterada deve ser validada em claro e escuro, no PC e no celular. Conferir repouso, foco, seleção, erro, estado desabilitado, carregamento e movimento reduzido. Registrar evidências e limitações em CURRENT_STATE_AUDIT.md. Não considerar o escuro validado só por herdar tokens: inspecionar o resultado no navegador.
+
+Segurança e acesso: ícones compartilhados em AccountProviderIcon, Google de papel em profile-google.svg. Associação confirmada usa botão verde com check, não associado usa vermelho e texto, estado desconhecido usa superfície neutra com opção de repetir a consulta. A cor nunca é a única indicação. Nomes vêm dos provedores da conta, sem inventar usuário Discord a partir de apelido do perfil. Senha existente usa máscara fixa de oito asteriscos, nunca valor real ou tamanho real. Aviso de recuperação é uma notificação de papel, cooldown de 60 segundos por conta neste aparelho e orientação para conferir spam, sem prometer entrega na caixa de entrada.
+
 ## Checkbox universal
 
 Todo checkbox usa input nativo type=checkbox e a regra compartilhada em src/paper-controls.css. Em novos fluxos, marcar também className=paper-checkbox para identificar o contrato. Caixa de 22 px com cantos de papel, fundo da superfície e borda estrutural. Marcado: amarelo #facc15, base #a98200 e o recorte original /room-icons/check.svg. Foco por sublinhado amarelo, nunca outline roxo/preto. Não substituir por emoji, caractere de check, SVG diferente ou controle sem semântica. O label deve ampliar a área clicável e ter altura mínima de 44 px quando estiver isolado. Mostrar senha, consentimento e Configurações compartilham o mesmo desenho e estados checked/disabled/focus-visible. A regra global atende o login antes de a sessão carregar.

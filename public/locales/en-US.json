@@ -3126,5 +3126,17 @@
   "Requirements met. Prefer a long, unique password.",
   "Complete the requirements to continue.",
   "Weak",
-  "Fair"
+  "Fair",
+  "I authorize linking new sign-in methods to my account.",
+  "Google linked",
+  "Google",
+  "Not linked",
+  "Discord linked",
+  "Discord",
+  "Linked",
+  "Could not verify this connection.",
+  "Checking connection…",
+  "Password set",
+  "Check your email",
+  "Password reset requested. If the email does not appear, check Spam or Junk. Wait one minute before requesting another."
 ]
