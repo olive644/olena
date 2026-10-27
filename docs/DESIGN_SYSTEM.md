@@ -1,5 +1,9 @@
 # Identidade visual oficial OlenaStudy
 
+## Confirmação de desvinculação de acesso
+
+Provedores associados continuam botões verdes com check e nome. Clicar abre LibraryDialog de papel, com ícone do provedor, efeito de entrada curto, aviso de acesso e ações Cancelar/Desvincular. A mutação só começa na confirmação e mostra HelenaLoading; falhas permanecem no diálogo e não anunciam sucesso. Sons usam createMathSound e respeitam a preferência de áudio; movimento reduzido desativa animação e transições. O diálogo conserva navegação de teclado, foco devolvido ao botão de origem e ações visíveis no toque. Verificar PC/celular e claro/escuro, inclusive cancelamento, falha, máscara de senha e último acesso.
+
 Regra universal: toda UI nova ou alterada deve ser validada em claro e escuro, no PC e no celular. Conferir repouso, foco, seleção, erro, estado desabilitado, carregamento e movimento reduzido. Registrar evidências e limitações em CURRENT_STATE_AUDIT.md. Não considerar o escuro validado só por herdar tokens: inspecionar o resultado no navegador.
 
 Segurança e acesso: ícones compartilhados em AccountProviderIcon, Google de papel em profile-google.svg. Associação confirmada usa botão verde com check, não associado usa vermelho e texto, estado desconhecido usa superfície neutra com opção de repetir a consulta. A cor nunca é a única indicação. Nomes vêm dos provedores da conta, sem inventar usuário Discord a partir de apelido do perfil. Senha existente usa máscara fixa de oito asteriscos, nunca valor real ou tamanho real. Aviso de recuperação é uma notificação de papel, cooldown de 60 segundos por conta neste aparelho e orientação para conferir spam, sem prometer entrega na caixa de entrada.

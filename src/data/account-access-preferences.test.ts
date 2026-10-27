@@ -1,5 +1,15 @@
 import { expect, it } from "vitest";
 import { readAccessPreferences, writeAccessPreferences } from "./account-access-preferences";
+import { clearPersonalData } from "./personal-data";
+
+it("retains only the explicit account consent across a logout, not an account deletion", () => {
+  writeAccessPreferences(localStorage, "returning", { consent: true, resetSentAt: 123 });
+  clearPersonalData(localStorage, ["helena.accountAccess.v1"]);
+  expect(readAccessPreferences(localStorage, "returning").consent).toBe(true);
+  expect(readAccessPreferences(localStorage, "someone-else").consent).toBe(false);
+  clearPersonalData(localStorage);
+  expect(readAccessPreferences(localStorage, "returning").consent).toBe(false);
+});
 
 it("keeps explicit consent and cooldown for the same owner without sharing them with another", () => {
   expect(readAccessPreferences(localStorage, "a").consent).toBe(false);

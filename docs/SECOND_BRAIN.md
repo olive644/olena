@@ -1,5 +1,9 @@
 # OlenaStudy: Second Brain
 
+## Acesso: logout, senha e remoção de provedor
+
+Logout mantém helena.accountAccess.v1 para o mesmo UID; exclusão/troca direta limpa. providerData pode omitir senha e conservar provedor removido: methods consulta o usuário Firebase com o token dele e retorna booleanos, nunca hash. Remover Google/Discord passa pelo servidor, sessão recente, guarda do último método e trava por UID. Não usar somente estado visual, contagem no cliente ou timestamp histórico de senha para autorizar remoção. Reutilizar LibraryDialog, createMathSound e tokens claro/escuro. Detalhes e cotas em AUTHENTICATION.md.
+
 Segurança e acesso: não deduzir Discord de providerData custom. POST account-auth/step=methods confere JWT, origem, conta ativa, índice reverso e binding ready ao mesmo UID; desconhecido não é não associado. Nome Discord é o username verificado no OAuth, mantido no índice privado; vínculos antigos sem nome aguardam nova autorização. Google/senha vêm do SDK com reload e observador de token. Após associar senha, esconder formulário e mostrar oito asteriscos fixos, nunca recuperar/guardar senha ou comprimento.
 
 account-access-preferences é cache não sincronizado por UID para consentimento explícito e cooldown de reset (60s), apagado pela limpeza pessoal. Não reutilizar aceite entre contas nem migrar um aceite antigo que não foi registrado. Popup após sendPasswordResetEmail resolver informa solicitação e orienta Spam, não promete entrega. SVG Google compartilhado em AccountProviderIcon. Toda UI nova/alterada exige prova claro/escuro PC/mobile em AGENTS.md e DESIGN_SYSTEM.md. OAuth lento recebe HelenaLoading; não cortar validação/state/PKCE para fingir desempenho.

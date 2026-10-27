@@ -8,6 +8,8 @@ import { EmailAuthForm } from "./email-auth-form";
 import { AccountProviderIcon } from "./account-provider-icon";
 import { PaperCheckIcon } from "./paper-check-icon";
 import { HelenaLoading } from "./helena-loading";
+import { LibraryDialog } from "./library-dialog";
+import { createMathSound } from "../data/math-sound";
 import "./account-access.css";
 import "../views/google-login.css";
 import "../views/auth-paper.css";
@@ -24,9 +26,19 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
   const [clock, setClock] = useState(() => Date.now());
   const [notice, setNotice] = useState(false);
   const [passwordOwner, setPasswordOwner] = useState<string>();
+  const [googleStatus, setGoogleStatus] = useState<{ uid: string; linked: boolean }>();
   const [verified, setVerified] = useState(false);
   const [discord, setDiscord] = useState<DiscordLink>();
   const [statusRefresh, setStatusRefresh] = useState(0);
+  const [unlink, setUnlink] = useState<{ uid: string; provider: "google" | "discord" }>();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
+  useEffect(() => () => sound.current?.dispose(), []);
+  function cue(success = false) {
+    sound.current ??= createMathSound();
+    sound.current.unlock();
+    sound.current.play(success ? "correct" : "start");
+  }
   const pending = useRef(false);
   useEffect(() => {
     let active = true;
@@ -44,9 +56,12 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
           if (uid === previousUid) return;
           previousUid = uid;
           setPasswordOwner(undefined);
+          setGoogleStatus(undefined);
           setVerified(false);
           setDiscord(undefined);
           setNotice(false);
+          setUnlink(undefined);
+          setConfirmPassword("");
           if (!uid) {
             setConsentOwner(undefined);
             return;
@@ -75,6 +90,15 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
                   typeof result.linked !== "boolean"
                 )
                   throw new Error("methods");
+                if (active && value.auth.currentUser?.uid === uid)
+                  if ("password" in payload && payload.password === true) setPasswordOwner(uid);
+                if (
+                  active &&
+                  value.auth.currentUser?.uid === uid &&
+                  "google" in payload &&
+                  typeof payload.google === "boolean"
+                )
+                  setGoogleStatus({ uid, linked: payload.google });
                 if (active && value.auth.currentUser?.uid === uid)
                   setDiscord({
                     uid,
@@ -122,7 +146,13 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
   const password =
     user?.providerData.some((entry) => entry.providerId === "password") ||
     (!!user && passwordOwner === user.uid);
-  const google = user?.providerData.find((entry) => entry.providerId === "google.com");
+  const google =
+    googleStatus?.uid === user?.uid && !googleStatus?.linked
+      ? undefined
+      : (user?.providerData.find((entry) => entry.providerId === "google.com") ??
+        (googleStatus?.uid === user?.uid && googleStatus?.linked
+          ? { displayName: uiText("Associado"), email: "" }
+          : undefined));
   const discordState = discord?.uid === user?.uid ? discord : undefined;
   const cooling = resetSentAt > 0 && clock - resetSentAt < 60000;
   if (!user || (verificationOnly && !needsVerification)) return null;
@@ -220,17 +250,23 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
                 className="account-access__provider-button"
                 data-linked={!!google}
                 aria-label={uiText(google ? "Google associado" : "Associar Google")}
-                disabled={busy || !!google || !accepted}
-                onClick={() =>
+                disabled={busy || (!google && !accepted)}
+                onClick={() => {
+                  if (google) {
+                    cue();
+                    setUnlink({ uid: user.uid, provider: "google" });
+                    return;
+                  }
                   void run(async () => {
                     await services!.authApi.linkWithPopup(
                       user,
                       new services!.authApi.GoogleAuthProvider(),
                     );
                     await services!.authApi.reload(user);
+                    setStatusRefresh((n) => n + 1);
                     setMessage(uiText("Método associado à sua conta."));
-                  })
-                }
+                  });
+                }}
               >
                 <AccountProviderIcon provider="google" />
                 {google && (
@@ -257,9 +293,17 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
                       : "Associar Discord",
                 )}
                 disabled={
-                  busy || (!discordState?.failed && (!accepted || discordState?.linked !== false))
+                  busy ||
+                  (!discordState?.failed &&
+                    !discordState?.linked &&
+                    (!accepted || discordState?.linked !== false))
                 }
                 onClick={() => {
+                  if (discordState?.linked) {
+                    cue();
+                    setUnlink({ uid: user.uid, provider: "discord" });
+                    return;
+                  }
                   if (discordState?.failed) {
                     setStatusRefresh((n) => n + 1);
                     return;
@@ -372,6 +416,108 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
         </>
       )}
       {busy && <HelenaLoading compact label={uiText("Aguarde…")} />}
+      {unlink?.uid === user.uid && (
+        <LibraryDialog
+          title={uiText("Desvincular método de acesso?")}
+          onClose={() => {
+            if (!busy) {
+              setUnlink(undefined);
+              setConfirmPassword("");
+            }
+          }}
+        >
+          <div className="account-access account-access__unlink">
+            <AccountProviderIcon provider={unlink.provider} />
+            <p>
+              {uiText("Você deixará de entrar nesta conta com {0}.", [
+                unlink.provider === "google" ? "Google" : "Discord",
+              ])}
+            </p>
+            <p>
+              {uiText(
+                "Seus estudos continuam nesta conta. Entre pelo método que permanecer associado. Entrar novamente com o método removido pode criar outra conta.",
+              )}
+            </p>
+            {!google && password && (
+              <label>
+                {uiText("Senha")}
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={busy}
+                />
+              </label>
+            )}
+            <div className="account-access__unlink-actions">
+              <button
+                className="account-access__action"
+                disabled={busy}
+                onClick={() => {
+                  setUnlink(undefined);
+                  setConfirmPassword("");
+                }}
+              >
+                {uiText("Cancelar")}
+              </button>
+              <button
+                className="account-access__action"
+                disabled={busy || (!google && password && !confirmPassword)}
+                onClick={() =>
+                  void run(async () => {
+                    if (google)
+                      await services!.authApi.reauthenticateWithPopup(
+                        user,
+                        new services!.authApi.GoogleAuthProvider(),
+                      );
+                    else if (password && user.email)
+                      await services!.authApi.reauthenticateWithCredential(
+                        user,
+                        services!.authApi.EmailAuthProvider.credential(user.email, confirmPassword),
+                      );
+                    if (services!.auth.currentUser?.uid !== unlink.uid)
+                      throw new Error("owner-changed");
+                    const token = await user.getIdToken(true);
+                    if (services!.auth.currentUser?.uid !== unlink.uid)
+                      throw new Error("owner-changed");
+                    const response = await fetch(
+                      `/api/olena?action=account-auth&step=unlink-${unlink.provider}`,
+                      { method: "POST", headers: { Authorization: `Bearer ${token}` } },
+                    );
+                    if (!response.ok) {
+                      const payload: unknown = await response.json().catch(() => null);
+                      if (
+                        payload &&
+                        typeof payload === "object" &&
+                        "error" in payload &&
+                        payload.error === "last-method"
+                      ) {
+                        setMessage(
+                          uiText("Adicione outro método de acesso antes de desvincular este."),
+                        );
+                        return;
+                      }
+                      throw new Error("unlink-failed");
+                    }
+                    if (services!.auth.currentUser?.uid !== unlink.uid) return;
+                    await services!.authApi.reload(user);
+                    setUnlink(undefined);
+                    setConfirmPassword("");
+                    setStatusRefresh((n) => n + 1);
+                    setMessage(uiText("Método desvinculado. Seus estudos foram preservados."));
+                    cue(true);
+                  })
+                }
+              >
+                {uiText("Desvincular")}
+              </button>
+            </div>
+            {busy && <HelenaLoading compact label={uiText("Aguarde…")} />}
+            <p role="status">{message}</p>
+          </div>
+        </LibraryDialog>
+      )}
       <p role="status" aria-live="polite">
         {message}
       </p>

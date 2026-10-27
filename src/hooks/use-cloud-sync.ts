@@ -187,8 +187,8 @@ export function useCloudSync() {
           // Em computador compartilhado, nada da pessoa que saiu pode ficar visível
           // para a próxima: histórico de versões, rascunhos do caderno, progresso,
           // perfil e sessões de sala, não só as chaves sincronizadas.
-          const wipeDevice = () => {
-            clearPersonalData(localStorage);
+          const wipeDevice = (keepAccessConsent = false) => {
+            clearPersonalData(localStorage, keepAccessConsent ? ["helena.accountAccess.v1"] : []);
             clearPersonalData(sessionStorage);
             applySyncedStorage({});
           };
@@ -222,7 +222,7 @@ export function useCloudSync() {
             stopSyncing();
             accountRevision++;
             eventSource?.close();
-            wipeDevice();
+            wipeDevice(true);
           };
           const deleteAccount = async (password?: string) => {
             // Durante a exclusão nada novo pode ser enviado; se ela falhar, a sincronização volta.

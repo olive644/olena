@@ -5,6 +5,7 @@ import { writeSyncedStorage } from "../data/synced-storage";
 import { encodeCloudItems, decodeCloudItems } from "../data/cloud-state-codec";
 import { createInitialWorkspace, type WorkspaceState } from "../domain/workspace";
 import { useCloudSync } from "./use-cloud-sync";
+import { readAccessPreferences, writeAccessPreferences } from "../data/account-access-preferences";
 import { ONBOARDING_OPTIONS, prepareOnboarding } from "../domain/onboarding-configuration";
 import { recordRoomXp, readRoomXp, ROOM_XP_KEY } from "../data/room-xp";
 import {
@@ -446,9 +447,12 @@ it("mantém alteração pendente após falha e permite tentar a sincronização 
   await waitFor(() => expect(result.current.status).toBe("synced"));
   expect(writeCount).toBe(3);
 
+  writeAccessPreferences(localStorage, user.uid, { consent: true });
   await act(async () => result.current.signOut?.());
   expect(signOut).toHaveBeenCalledOnce();
   expect(localStorage.getItem("helena.soloProgress")).toBeNull();
+  expect(readAccessPreferences(localStorage, user.uid).consent).toBe(true);
+  expect(readAccessPreferences(localStorage, "another-account").consent).toBe(false);
 });
 
 it.each(["during", "before", "another-account"] as const)(

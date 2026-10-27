@@ -7,6 +7,70 @@
   background: var(--surface);
   color: var(--text);
 }
+.library-dialog:has(.account-access__unlink) {
+  max-width: 560px;
+  animation: access-unlink-enter 240ms ease-out both;
+}
+.account-access__unlink {
+  margin: 0;
+}
+.account-access__unlink > img {
+  display: block;
+  margin: 0 auto;
+  width: 52px;
+  height: 52px;
+}
+.account-access__unlink label {
+  display: grid;
+  gap: 8px;
+}
+.account-access__unlink input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-bottom-width: 4px;
+  border-radius: 5px 16px 5px 12px;
+}
+.account-access__unlink-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.account-access__provider-button {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+.account-access__provider-button:not(:disabled):hover {
+  transform: translateY(-3px) rotate(-2deg);
+}
+@keyframes access-unlink-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotate(-1deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .library-dialog:has(.account-access__unlink) {
+    animation: none;
+  }
+  .account-access__provider-button {
+    transition: none;
+  }
+}
+:root[data-reduced-motion="true"] .library-dialog:has(.account-access__unlink) {
+  animation: none;
+}
+:root[data-reduced-motion="true"] .account-access__provider-button {
+  transition: none;
+}
 .account-access > label {
   display: flex;
   gap: 10px;
