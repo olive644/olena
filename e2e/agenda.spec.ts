@@ -904,12 +904,20 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
   const b = await last.boundingBox();
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2);
   await page.mouse.down();
+  // Moving before the deliberate hold must leave the range untouched.
+  await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 2 });
+  await page.mouse.up();
+  await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(0);
+  await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2);
+  await page.mouse.down();
+  await page.waitForTimeout(380); // Intentional user hold, not a loading wait.
   await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 });
   await page.mouse.up();
   await expect(page.locator(".agenda-month-grid .is-in-range")).toHaveCount(4);
   await expect(history.locator(".agenda-chart-heading > strong")).toHaveText("65 min");
   await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2);
   await page.mouse.down();
+  await page.waitForTimeout(380);
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2, { steps: 6 });
   await page.keyboard.press("Escape");
   await page.mouse.up();
@@ -1017,6 +1025,7 @@ test("agenda selects ranges by drag and clicks and shows only real focus history
       type: "touchStart",
       touchPoints: [{ x: from!.x + from!.width / 2, y: from!.y + from!.height / 2, id: 1 }],
     });
+    await page.waitForTimeout(380); // Deliberate long press before selecting dates.
     for (let step = 1; step <= 6; step++) {
       await touch.send("Input.dispatchTouchEvent", {
         type: "touchMove",

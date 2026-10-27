@@ -719,7 +719,7 @@
   font-size: 11px;
 }
 .agenda-month-grid {
-  touch-action: none;
+  touch-action: pan-y pinch-zoom;
   user-select: none;
 }
 .agenda-page .agenda-month-grid button {

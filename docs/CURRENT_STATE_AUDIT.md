@@ -1,5 +1,13 @@
 # Auditoria do estado atual
 
+## Post-it, navegação da folha e intervalo, 2026-10-27
+
+Rodada final concluída: verify verde, 2349 testes/360 arquivos, aplicação 1591,8 KiB de 1600. E2E final passou 12 cenários, incluindo escrita/salvamento e recuperação de rascunho existentes; dois skips móveis dessas regressões já existiam por dependerem de mouse. Os dez cenários próprios de gesto/contraste/rolagem passaram sem skips. Tema escuro conferido pela raiz da página após a montagem e nas screenshots, além dos estados claros. Log notebook-gestures-release-e2e.log fora do repositório.
+
+Menu do post-it usa tinta escura sobre sua superfície clara, incluindo tema escuro. Captura do botão do meio na viewport move somente a rolagem nos dois eixos, preserva ferramenta e bitmap, e encerra ao soltar/cancelar/perder captura. Cinco testes unitários cobrem captura, eixos, cancelamento, perda de botão e preservação do mouse primário/caneta. Agenda exige pressão de 350 ms antes do arraste, cancela intenção com movimento antecipado maior que 8 px, scroll/wheel/blur/segundo ponteiro, e permite rolagem vertical nativa. Transferência de captura implícita do SVG do dia para a grade não cancela a seleção. Dica em PT/EN documenta pressão e alternativas por botão/teclado.
+
+Provas Chromium/Edge: seis cenários de caderno e intervalo passaram, PC/mobile claro/escuro, verificando menu, manutenção da ferramenta/bitmap no PC, intervalo por mouse e toque, Escape, Shift e alternativas por clique. Quatro cenários adicionais de rolagem real passaram nos dois temas e tamanhos: dedo move a página sem selecionar; wheel com botão pressionado também não seleciona. Screenshots sticky-light/sticky-dark e dashboard-light/dashboard-dark em test-results, logs notebook-gestures-e2e3.log e agenda-scroll-final.log fora do repositório. Mouse auxiliar é validado no PC, contraste/menu no celular; não houve teste em aparelho físico. Verify inicial passou 2349 testes/360 arquivos, lint sem erros e 24 avisos existentes, API/idiomas/formatação/build/desempenho. Aplicação 1591,7 KiB de 1600 e entrada 220,4 KiB. Revalidação final integral após tratamento de captura e nova dica registrada no log notebook-gestures-final-verify.log.
+
 ## Persistência de acesso e desvinculação, 26/10/2026
 
 Causas reproduzidas: logout apagava o aceite junto aos dados de estudo; providerData não é prova suficiente da presença de senha depois de outra forma de login. Teste do logout e teste de senha na reentrada falharam ao recolocar os respectivos comportamentos antigos e passaram com a correção. O logout agora preserva somente a preferência de acesso, isolada por UID, sem manter conteúdo de estudo. Exclusão de conta continua limpando tudo.

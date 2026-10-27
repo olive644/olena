@@ -1,4 +1,5 @@
 import { uiText, useLanguage, uiLocale } from "../i18n/runtime";
+import { useMiddleMousePan } from "../hooks/use-middle-mouse-pan";
 import { useNotebookPreferences } from "../data/notebook-preferences";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { NotebookSettings } from "./notebook-settings";
@@ -223,6 +224,7 @@ export function HandwritingStudio({
   const revealsRef = useRef<RevealingStroke[]>([]);
   const writingPointerRef = useRef<number | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const middleMousePan = useMiddleMousePan();
   const drawingRef = useRef(false);
   const [brush, setBrush] = useState<NonNullable<Stroke["brush"]>>("fine");
   const [dash, setDash] = useState<Stroke["dash"]>(undefined);
@@ -2916,6 +2918,7 @@ export function HandwritingStudio({
         <div
           className={`handwriting-viewport${paper === "board" ? " handwriting-viewport--board" : ""}`}
           ref={viewportRef}
+          {...middleMousePan}
         >
           {(tool === "hand" || tool === "zoom-in" || tool === "zoom-out") && (
             <span className="handwriting-viewport-hint" aria-hidden="true">

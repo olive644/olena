@@ -3144,5 +3144,6 @@
   "Your studies remain in this account. Use the method that stays linked. Signing in again with the removed method may create another account.",
   "Add another sign-in method before unlinking this one.",
   "Method unlinked. Your studies have been preserved.",
-  "Unlink"
+  "Unlink",
+  "Hold briefly, then drag to select a range. You can also use Select range or Shift + click."
 ]

@@ -128,7 +128,36 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
     start: string;
     end: string;
     previous: AgendaRange | null;
+    since: number;
+    x: number;
+    y: number;
+    armed: boolean;
   } | null>(null);
+  const monthGrid = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const grid = monthGrid.current;
+    if (!grid) return;
+    const holdScroll = (event: TouchEvent) => {
+      const active = drag.current;
+      if (active && performance.now() - active.since >= 350 && event.touches.length === 1)
+        event.preventDefault();
+    };
+    const cancel = () => {
+      if (drag.current?.armed) setRange(drag.current.previous);
+      drag.current = null;
+    };
+    grid.addEventListener("touchmove", holdScroll, { passive: false });
+    window.addEventListener("scroll", cancel, true);
+    window.addEventListener("wheel", cancel, { passive: true });
+    window.addEventListener("blur", cancel);
+    return () => {
+      grid.removeEventListener("touchmove", holdScroll);
+      window.removeEventListener("scroll", cancel, true);
+      window.removeEventListener("wheel", cancel);
+      window.removeEventListener("blur", cancel);
+      drag.current = null;
+    };
+  }, []);
   const suppressClick = useRef(false);
   const history = useMemo(
     () => focusHistory(workspace.focusSessions),
@@ -1008,7 +1037,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                     {uiText(1486)}
                   </button>
                 )}
-                <small id="agenda-range-hint">{uiText(1487)}</small>
+                <small id="agenda-range-hint">{uiText(3146)}</small>
               </div>
               <div className="agenda-weekdays" hidden={calendarView !== "month"}>
                 {[
@@ -1025,9 +1054,15 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
               </div>
               <div
                 className="agenda-month-grid"
+                ref={monthGrid}
                 hidden={calendarView !== "month"}
                 aria-describedby="agenda-range-hint"
                 onPointerDown={(event) => {
+                  if (!event.isPrimary) {
+                    if (drag.current?.armed) setRange(drag.current.previous);
+                    drag.current = null;
+                    return;
+                  }
                   if (!drag.current) suppressClick.current = false;
                   if (
                     event.button !== 0 ||
@@ -1042,20 +1077,30 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   );
                   const date = button?.dataset["date"];
                   if (!date) return;
-                  event.preventDefault();
-                  button.focus();
                   suppressClick.current = false;
                   drag.current = {
                     pointer: event.pointerId,
                     start: date,
                     end: date,
                     previous: range,
+                    since: performance.now(),
+                    x: event.clientX,
+                    y: event.clientY,
+                    armed: false,
                   };
-                  event.currentTarget.setPointerCapture(event.pointerId);
                 }}
                 onPointerMove={(event) => {
                   const active = drag.current;
                   if (!active || active.pointer !== event.pointerId) return;
+                  if (!active.armed) {
+                    if (performance.now() - active.since < 350) {
+                      if (Math.hypot(event.clientX - active.x, event.clientY - active.y) > 8)
+                        drag.current = null;
+                      return;
+                    }
+                    active.armed = true;
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                  }
                   const button = document
                     .elementFromPoint(event.clientX, event.clientY)
                     ?.closest<HTMLButtonElement>("button[data-date]");
@@ -1068,6 +1113,7 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                   const active = drag.current;
                   if (!active || active.pointer !== event.pointerId) return;
                   drag.current = null;
+                  if (!active.armed) return;
                   suppressClick.current = true;
                   window.setTimeout(() => {
                     suppressClick.current = false;
@@ -1077,12 +1123,16 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                     active.start === active.end ? null : orderedRange(active.start, active.end),
                   );
                   setDayOpen(active.start === active.end);
-                  event.currentTarget.releasePointerCapture(event.pointerId);
+                  if (event.currentTarget.hasPointerCapture(event.pointerId))
+                    event.currentTarget.releasePointerCapture(event.pointerId);
                 }}
                 onPointerCancel={() => {
                   if (drag.current) setRange(drag.current.previous);
                   drag.current = null;
                   suppressClick.current = true;
+                }}
+                onPointerLeave={() => {
+                  if (drag.current && !drag.current.armed) drag.current = null;
                 }}
                 onKeyDown={(event) => {
                   if (event.key !== "Escape") return;
@@ -1091,12 +1141,16 @@ export function PlannerView({ workspace, dispatch, onNavigate, cloud }: Props) {
                     drag.current = null;
                     suppressClick.current = true;
                     setRange(active.previous);
-                    event.currentTarget.releasePointerCapture(active.pointer);
+                    if (event.currentTarget.hasPointerCapture(active.pointer))
+                      event.currentTarget.releasePointerCapture(active.pointer);
                   }
                   setIntervalMode(false);
                   setIntervalStart(null);
                 }}
-                onLostPointerCapture={() => {
+                onLostPointerCapture={(event) => {
+                  // Touch starts with implicit capture on the date artwork. Its
+                  // release bubbles when the deliberate drag captures the grid.
+                  if (event.target !== event.currentTarget) return;
                   if (drag.current) {
                     setRange(drag.current.previous);
                     suppressClick.current = true;
