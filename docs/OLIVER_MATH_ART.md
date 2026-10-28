@@ -13,3 +13,7 @@ Use case: stylized-concept. Asset type: transparent PNG character illustration f
 ## Animação em Rive
 
 A arte é animada por `public/oliver-math-islands/oliver.riv` (323 KiB), gerado por `scripts/oliver-rive` a partir de 25 camadas recortadas da própria imagem, sem redesenho. O PNG continua sendo o primeiro quadro e o único elemento acessível; o canvas o substitui só quando o arquivo carrega, e a pose de repouso do arquivo é a mesma do PNG (diferença máxima de 3/255 ao renderizar), então a troca não tem salto. Movimento reduzido (sistema ou preferência do app) mantém só o PNG e não baixa runtime nem arquivo. Detalhes do corte, do rig e da verificação em `scripts/oliver-rive/README.md`.
+
+## Situação atual
+
+Desde 2026-10-27 o Espaço do aluno usa a pose nova `public/oliver-peeking-widget.webp`, animada por `public/oliver-peeking-widget/oliver.riv` (veja `scripts/oliver-peek-rive/README.md`). Esta arte da ilha e o rig `public/oliver-math-islands/oliver.riv` não são mais carregados pelo app.

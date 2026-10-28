@@ -3,6 +3,7 @@ import type { WorkspaceState } from "../domain/workspace";
 import { mathematicsStreak } from "../domain/profile-streaks";
 import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
+import { OliverHeroArt } from "./oliver-hero-art";
 import { PaperArrow } from "./paper-arrow";
 import { PaperDigits } from "./paper-digits";
 export function MathPracticeHero({
@@ -80,16 +81,7 @@ export function MathPracticeHero({
             {uiText(streak > 0 ? "Continuar minha ofensiva" : "Explorar Matemática")} <PaperArrow />
           </button>
         </div>
-        <span className="math-hero-peek">
-          <img
-            src="/oliver-peeking-widget.webp"
-            width="900"
-            height="600"
-            alt={uiText("Oliver aparece por trás do widget de Matemática")}
-            fetchPriority="high"
-            draggable={false}
-          />
-        </span>
+        <OliverHeroArt />
       </article>
       <div className="math-hero-pagination" aria-label={uiText(2729)}>
         <span aria-current="true" />
