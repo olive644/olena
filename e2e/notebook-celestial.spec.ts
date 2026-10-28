@@ -49,7 +49,6 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   const toolbar = page.getByRole("toolbar", { name: "Ferramentas do caderno" });
   await expect(toolbar.getByRole("button")).toHaveText([
-    "Personalizar",
     "Divisória",
     "Marcador",
     "Editar marcas",
@@ -137,7 +136,9 @@ test("títulos, marcadores celestes e viagem entre vitrine e preview", async ({
     ).toBe(true);
   }
   await page.screenshot({ path: testInfo.outputPath("marcas-sob-folhas.png") });
-  await page.getByRole("button", { name: "Personalizar", exact: true }).click();
+  await page.getByRole("button", { name: "‹ Anterior", exact: true }).click();
+  await expect(book).toHaveAttribute("aria-busy", "false");
+  await page.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(page.locator(".notebook-journey")).toBeVisible();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await expect(page.locator(".notebook-concept-cover .book-cover")).toBeVisible();

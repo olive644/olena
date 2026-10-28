@@ -192,7 +192,7 @@ for (const count of [1, 3]) {
   });
 }
 
-test("salvamento confirmado, índice legível e capa personalizável", async ({ page }, info) => {
+test("salvamento confirmado, índice legível e capa única", async ({ page }, info) => {
   await page.evaluate(() => localStorage.setItem("helenastudy.theme", "dark"));
   await page.reload();
   await page.getByRole("button", { name: "Abrir Caderno 1", exact: true }).click();
@@ -209,32 +209,15 @@ test("salvamento confirmado, índice legível e capa personalizável", async ({ 
   );
   await page.screenshot({ path: info.outputPath("indice-legivel.png") });
   await index.getByRole("button", { name: "Fechar", exact: true }).click();
-  await page.getByRole("button", { name: "Personalizar", exact: true }).click();
-  const inventory = page.getByRole("region", { name: "Inventário de capas" });
-  await expect(inventory.locator(".notebook-cover-inventory__item")).toHaveCount(2);
-  const inventoryBounds = await inventory.boundingBox();
-  const coverBounds = await page.locator(".notebook-concept-cover").boundingBox();
-  expect(inventoryBounds).not.toBeNull();
-  expect(coverBounds).not.toBeNull();
-  expect(inventoryBounds!.x + inventoryBounds!.width).toBeLessThanOrEqual(coverBounds!.x + 2);
-  await expect(
-    inventory.getByRole("button", { name: "Usar capa Olena e as estrelas" }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await inventory.getByRole("button", { name: "Usar capa Oliver e as estrelas" }).click();
-  await expect(
-    inventory.getByRole("button", { name: "Usar capa Oliver e as estrelas" }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Personalizar", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "‹ Capa", exact: true }).click();
+  await expect(page.locator(".notebook-cover-inventory")).toHaveCount(0);
   await expect(page.locator(".notebook-concept-cover .book-cover__concept")).toHaveAttribute(
     "src",
-    "/notebook-covers/oliver-estrelas.webp",
+    "/notebook-covers/olena-arco.webp",
   );
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  await page.screenshot({ path: info.outputPath("capa-oliver.png") });
-  await page.reload();
-  await expect(page.locator('[data-notebook-drop="book-1"] .book-cover__concept')).toHaveAttribute(
-    "src",
-    "/notebook-covers/oliver-estrelas.webp",
-  );
+  await page.screenshot({ path: info.outputPath("capa-fixa.png") });
 });
 
 test("tamanho percentual e fundos corretos no modo escuro", async ({ page }, info) => {
