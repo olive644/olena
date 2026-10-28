@@ -14,8 +14,19 @@ import "./account-access.css";
 import "../views/google-login.css";
 import "../views/auth-paper.css";
 
+// Login considerado recente: o servidor exige menos de 240 s; aqui vale menos, para não falhar na ida.
+function recentLogin(authTime: string | undefined): boolean {
+  const at = authTime ? Date.parse(authTime) : NaN;
+  return Number.isFinite(at) && Date.now() - at >= 0 && Date.now() - at < 200000;
+}
 type DiscordLink = { uid: string; linked?: boolean; name?: string; failed?: boolean };
-export function AccountAccessPanel({ verificationOnly = false }: { verificationOnly?: boolean }) {
+export function AccountAccessPanel({
+  verificationOnly = false,
+  onSignOut,
+}: {
+  verificationOnly?: boolean;
+  onSignOut?: () => Promise<void>;
+}) {
   const [services, setServices] = useState<AccountServices>();
   const [, refresh] = useState(0);
   const [message, setMessage] = useState("");
@@ -32,6 +43,8 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
   const [statusRefresh, setStatusRefresh] = useState(0);
   const [unlink, setUnlink] = useState<{ uid: string; provider: "google" | "discord" }>();
   const [confirmPassword, setConfirmPassword] = useState("");
+  // Vincular um método e encerrar sessões exigem um login recente, como desvincular.
+  const [reauth, setReauth] = useState<{ uid: string; action: "discord" | "sessions" }>();
   const sound = useRef<ReturnType<typeof createMathSound> | null>(null);
   useEffect(() => () => sound.current?.dispose(), []);
   function cue(success = false) {
@@ -172,6 +185,52 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
       setBusy(false);
     }
   }
+  async function startDiscord(token: string) {
+    if (!user || services?.auth.currentUser?.uid !== user.uid) throw new Error("owner-changed");
+    const response = await fetch("/api/olena?action=account-auth&step=start", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (response.status === 401) {
+      const failure: unknown = await response.json().catch(() => null);
+      if (
+        failure &&
+        typeof failure === "object" &&
+        "error" in failure &&
+        failure.error === "recent-login"
+      ) {
+        setReauth({ uid: user.uid, action: "discord" });
+        return;
+      }
+    }
+    if (!response.ok) throw new Error("discord-link");
+    const payload: unknown = await response.json();
+    if (
+      !payload ||
+      typeof payload !== "object" ||
+      !("url" in payload) ||
+      typeof payload.url !== "string"
+    )
+      throw new Error("discord-link");
+    const target = new URL(payload.url);
+    if (target.origin !== "https://discord.com" || target.pathname !== "/oauth2/authorize")
+      throw new Error("discord-link");
+    window.location.assign(target.toString());
+  }
+  async function reconfirm() {
+    if (!user) return;
+    if (google)
+      await services!.authApi.reauthenticateWithPopup(
+        user,
+        new services!.authApi.GoogleAuthProvider(),
+      );
+    else if (password && user.email)
+      await services!.authApi.reauthenticateWithCredential(
+        user,
+        services!.authApi.EmailAuthProvider.credential(user.email, confirmPassword),
+      );
+  }
   return (
     <section
       className={
@@ -309,30 +368,12 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
                     return;
                   }
                   void run(async () => {
-                    const token = await user.getIdToken();
-                    if (services!.auth.currentUser?.uid !== user.uid)
-                      throw new Error("owner-changed");
-                    const response = await fetch("/api/olena?action=account-auth&step=start", {
-                      method: "POST",
-                      credentials: "same-origin",
-                      headers: { Authorization: `Bearer ${token}` },
-                    });
-                    if (!response.ok) throw new Error("discord-link");
-                    const payload: unknown = await response.json();
-                    if (
-                      !payload ||
-                      typeof payload !== "object" ||
-                      !("url" in payload) ||
-                      typeof payload.url !== "string"
-                    )
-                      throw new Error("discord-link");
-                    const target = new URL(payload.url);
-                    if (
-                      target.origin !== "https://discord.com" ||
-                      target.pathname !== "/oauth2/authorize"
-                    )
-                      throw new Error("discord-link");
-                    window.location.assign(target.toString());
+                    const session = await user.getIdTokenResult();
+                    if (!recentLogin(session.authTime)) {
+                      setReauth({ uid: user.uid, action: "discord" });
+                      return;
+                    }
+                    await startDiscord(session.token);
                   });
                 }}
               >
@@ -416,6 +457,103 @@ export function AccountAccessPanel({ verificationOnly = false }: { verificationO
         </>
       )}
       {busy && <HelenaLoading compact label={uiText("Aguarde…")} />}
+      {!verificationOnly && onSignOut && (
+        <button
+          type="button"
+          className="account-access__action"
+          disabled={busy}
+          onClick={() => {
+            cue();
+            setReauth({ uid: user.uid, action: "sessions" });
+          }}
+        >
+          {uiText("Sair de todos os aparelhos")}
+        </button>
+      )}
+      {reauth?.uid === user.uid && (
+        <LibraryDialog
+          title={uiText("Confirme que é você")}
+          onClose={() => {
+            if (!busy) {
+              setReauth(undefined);
+              setConfirmPassword("");
+            }
+          }}
+        >
+          <div className="account-access account-access__unlink">
+            <p>
+              {reauth.action === "discord"
+                ? uiText("Por segurança, confirme seu acesso antes de associar o Discord.")
+                : uiText(
+                    "Isto encerra todas as sessões desta conta, inclusive neste aparelho. Seus estudos continuam salvos.",
+                  )}
+            </p>
+            {!google && password && (
+              <label>
+                {uiText("Senha")}
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={busy}
+                />
+              </label>
+            )}
+            <div className="account-access__unlink-actions">
+              <button
+                className="account-access__action"
+                disabled={busy}
+                onClick={() => {
+                  setReauth(undefined);
+                  setConfirmPassword("");
+                }}
+              >
+                {uiText("Cancelar")}
+              </button>
+              <button
+                className="account-access__action"
+                disabled={busy || (!google && password && !confirmPassword)}
+                onClick={() =>
+                  void run(async () => {
+                    await reconfirm();
+                    if (services!.auth.currentUser?.uid !== reauth.uid)
+                      throw new Error("owner-changed");
+                    const token = await user.getIdToken(true);
+                    if (services!.auth.currentUser?.uid !== reauth.uid)
+                      throw new Error("owner-changed");
+                    if (reauth.action === "discord") {
+                      setReauth(undefined);
+                      setConfirmPassword("");
+                      await startDiscord(token);
+                      return;
+                    }
+                    const response = await fetch(
+                      "/api/olena?action=account-auth&step=revoke-sessions",
+                      { method: "POST", headers: { Authorization: `Bearer ${token}` } },
+                    );
+                    if (!response.ok) {
+                      setMessage(
+                        uiText(
+                          "Não foi possível encerrar as sessões agora. Tente novamente em instantes.",
+                        ),
+                      );
+                      return;
+                    }
+                    setReauth(undefined);
+                    setConfirmPassword("");
+                    await onSignOut?.();
+                  })
+                }
+              >
+                {uiText("Continuar")}
+              </button>
+            </div>
+            {busy && <HelenaLoading compact label={uiText("Aguarde…")} />}
+            <p role="status">{message}</p>
+          </div>
+        </LibraryDialog>
+      )}
       {unlink?.uid === user.uid && (
         <LibraryDialog
           title={uiText("Desvincular método de acesso?")}

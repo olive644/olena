@@ -23,7 +23,14 @@ export function createFirebaseAccountIdentity(projectId: string) {
   return async (
     request: Request,
   ): Promise<
-    | { uid: string; name: string; email?: string; emailVerified: boolean; anonymous: boolean }
+    | {
+        uid: string;
+        name: string;
+        email?: string;
+        emailVerified: boolean;
+        anonymous: boolean;
+        authTime: number;
+      }
     | undefined
   > => {
     const authorization = request.headers.get("authorization");
@@ -55,6 +62,7 @@ export function createFirebaseAccountIdentity(projectId: string) {
         ? {
             uid: payload.sub,
             name,
+            authTime: payload["auth_time"],
             ...(typeof payload["email"] === "string" ? { email: payload["email"] } : {}),
             emailVerified: payload["email_verified"] === true,
             anonymous:

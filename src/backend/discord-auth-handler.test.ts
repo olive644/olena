@@ -14,7 +14,12 @@ function setup() {
       ? Response.json({ access_token: "discord-secret", token_type: "Bearer" })
       : Response.json({ id: "123456789012345678", username: "learner" }),
   );
-  const identify = vi.fn(async () => ({ uid: "existing-owner" }));
+  const identify = vi.fn<
+    (request: Request) => Promise<{ uid: string; authTime?: number } | undefined>
+  >(async () => ({
+    uid: "existing-owner",
+    authTime: Math.floor(now / 1000) - 30,
+  }));
   const handler = createDiscordAuthHandler({
     clientId: "client",
     clientSecret: "secret",
@@ -143,9 +148,48 @@ describe("Discord OAuth", () => {
     );
     expect(s.mint).not.toHaveBeenCalled();
   });
-  it("limits attempts across serverless instances through the shared store", async () => {
+  it("limits starts per address across serverless instances through the shared store", async () => {
     const s = setup();
-    for (let index = 0; index < 30; index++) expect((await s.request("start")).status).toBe(200);
-    expect((await s.request("start")).status).toBe(429);
+    const caller = { "x-vercel-forwarded-for": "203.0.113.7" };
+    for (let index = 0; index < 60; index++)
+      expect((await s.request("start", caller)).status).toBe(200);
+    expect((await s.request("start", caller)).status).toBe(429);
+    expect((await s.request("start", { "x-vercel-forwarded-for": "203.0.113.8" })).status).toBe(
+      200,
+    );
+  });
+  it("does not spend the per-address limit on callbacks and exchanges, so a classroom can log in", async () => {
+    const s = setup();
+    const caller = { "x-vercel-forwarded-for": "203.0.113.7" };
+    for (let index = 0; index < 59; index++) await s.request("start", caller);
+    for (let index = 0; index < 120; index++) {
+      const response = await s.request("exchange", caller);
+      expect(response.status).not.toBe(429);
+    }
+  });
+  it("refuses to link a method with a stale login and stores no state", async () => {
+    const s = setup();
+    s.identify.mockResolvedValueOnce({
+      uid: "existing-owner",
+      authTime: Math.floor(Date.now() / 1000) - 600,
+    });
+    const response = await s.request("start", { authorization: "Bearer old-session" });
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({ error: "recent-login" });
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+  it("refuses a token without auth_time or from the future when linking", async () => {
+    const s = setup();
+    s.identify.mockResolvedValueOnce({ uid: "existing-owner" });
+    expect((await s.request("start", { authorization: "Bearer a" })).status).toBe(401);
+    s.identify.mockResolvedValueOnce({
+      uid: "existing-owner",
+      authTime: Math.floor(Date.now() / 1000) + 600,
+    });
+    expect((await s.request("start", { authorization: "Bearer b" })).status).toBe(401);
+  });
+  it("still lets a fresh login start without linking", async () => {
+    const s = setup();
+    expect((await s.request("start")).status).toBe(200);
   });
 });

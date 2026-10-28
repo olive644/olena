@@ -1,5 +1,15 @@
 # Acesso e segurança da conta
 
+## Vínculo com login recente e sessões, 28/10/2026
+
+Associar um método (Discord, e-mail e senha) dá acesso permanente à conta, então passou a exigir o mesmo login recente da desvinculação. O passo start com Authorization recusa com 401 e error recent-login quando o auth_time do token verificado tem 240 segundos ou mais, está no futuro ou falta; nenhum estado nem cookie é criado. O cliente confere o authTime antes (menos de 200 segundos segue direto) e, se estiver velho ou o servidor recusar, abre a confirmação "Confirme que é você": reautentica com Google ou senha, renova o ID token e só então inicia o fluxo. Sem isso, uma sessão esquecida ou um refresh token roubado associava o Discord do invasor e entrava na conta para sempre.
+
+Novo passo revoke-sessions (botão "Sair de todos os aparelhos" em Segurança e acesso): POST de origem permitida, token verificado, auth_time recente, conta ativa, cinco por conta/hora e quinhentos global/dia. Grava validSince com a conta de serviço (accounts:update administrativo), que invalida os tokens de renovação emitidos antes e faz o servidor recusar ID tokens antigos na consulta de conta. O cliente só sai do aparelho depois da resposta, com o fluxo normal de saída (que envia o que estiver pendente). Limite conhecido: as regras do Realtime Database só conferem auth != null, então um ID token já emitido continua valendo no banco até expirar (até uma hora); as rotas do servidor recusam na hora. Trocar a senha já revoga os tokens de renovação no Firebase.
+
+O limite por endereço do Discord passou a contar só o início de cada login (60 a cada dez minutos por IP ou bloco IPv6 /64). Retorno e troca dependem de um estado aleatório de uso único criado no início, e contar os três passos fazia uma turma atrás do mesmo IP esgotar o limite com poucos logins. Sem o cabeçalho de IP, vale só o teto global de 2.000 por dia, em vez de um balde compartilhado "unknown".
+
+Decisão registrada: o código ?discord= continua na URL durante a troca. O teste "keeps a pending Discord return recoverable" depende disso para o login sobreviver a uma remontagem da tela. O código é de uso único, preso ao cookie do navegador e vale 60 segundos.
+
 ## Retorno à conta e desvinculação, 26/10/2026
 
 O logout preserva exclusivamente helena.accountAccess.v1, ainda protegido por comparação exata de UID. Progresso, perfil e demais dados pessoais continuam apagados do aparelho. Exclusão de conta e troca direta de conta mantêm a limpeza completa. O aceite continua explícito, revogável e local ao aparelho; nunca herda o aceite de outro UID.
