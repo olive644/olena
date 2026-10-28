@@ -11,7 +11,12 @@ import { NoteFlashcardTools } from "../components/library-links";
 import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
-import { notebook3dCoverRect, useNotebook3d } from "../components/notebook-3d/notebook-3d-support";
+import {
+  closeNotebook3d,
+  notebook3dCoverRect,
+  prefetchNotebook3d,
+  useNotebook3d,
+} from "../components/notebook-3d/notebook-3d-support";
 import { NotebookPageIndex } from "../components/notebook-page-index";
 import { NotebookFolderMovePicker } from "../components/notebook-folder-move-picker";
 import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
@@ -142,6 +147,12 @@ export function NotesView({
   });
   const [indexOpen, setIndexOpen] = useState(false);
   const notebook3d = useNotebook3d();
+  const onShelf = !activeNotebookId;
+  useEffect(() => {
+    if (!notebook3d || !onShelf) return;
+    const timer = window.setTimeout(() => prefetchNotebook3d(), 1500);
+    return () => window.clearTimeout(timer);
+  }, [notebook3d, onShelf]);
   // Ao sair de uma folha, o caderno reabre nela (o 3D faz a folha voltar para o lugar).
   const [returnedPageId, setReturnedPageId] = useState<string>();
   const [pageJump, setPageJump] = useState<{ pageId: string; nonce: number }>();
@@ -177,10 +188,18 @@ export function NotesView({
       sheet.className = "notebook-empty-paper";
       paper.append(sheet);
     }
+    const background = preview.cloneNode(true) as HTMLElement;
+    // Canvas copiado sai em branco: o caderno 3D deixa uma foto do quadro para o fundo.
+    for (const scene of background.querySelectorAll<HTMLCanvasElement>("canvas[data-snapshot]")) {
+      const photo = document.createElement("img");
+      photo.src = scene.dataset["snapshot"] ?? "";
+      photo.className = scene.className;
+      scene.replaceWith(photo);
+    }
     setPageJourney({
       from: source.getBoundingClientRect(),
       paper,
-      background: { element: preview.cloneNode(true) as HTMLElement, x, y, width, height },
+      background: { element: background, x, y, width, height },
     });
   }
   function openPreviewPage(id: string) {
@@ -413,15 +432,20 @@ export function NotesView({
     if (journey) return;
     const scene3d = document.querySelector<HTMLElement>("[data-notebook-3d] .notebook-3d");
     if (activeNotebook && scene3d && canAnimateNotebook()) {
-      setJourney({
-        notebook: activeNotebook,
-        returning: true,
-        closed: true,
-        tabs: notebookPaperTabs(activeNotebook, notebookPages, workspace.subjects),
-        from: notebook3dCoverRect(scene3d),
-      });
-      setActiveNotebookId(null);
+      const notebook = activeNotebook;
+      const tabs = notebookPaperTabs(notebook, notebookPages, workspace.subjects);
       setIndexOpen(false);
+      // O caderno 3D folheia até a capa e fecha; a capa fechada é que viaja até a estante.
+      void closeNotebook3d().then((rect) => {
+        setJourney({
+          notebook,
+          returning: true,
+          closed: true,
+          tabs,
+          from: rect ?? notebook3dCoverRect(scene3d),
+        });
+        setActiveNotebookId(null);
+      });
       return;
     }
     const spread = document.querySelector<HTMLElement>(".notebook-paper-spread");

@@ -115,6 +115,7 @@ export function NotebookSpread3d({
             view={view}
             placing={tools.tool}
             editingTabs={tools.editing}
+            selectedTabId={tools.selectedId}
             busy={Boolean(transitioning)}
             returningFromPageId={returningFromPageId}
             jump={jump}

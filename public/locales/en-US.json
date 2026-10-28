@@ -3164,7 +3164,7 @@
   "For your security, confirm your access before linking Discord.",
   "This ends every session on this account, including this device. Your studies stay saved.",
   "We could not end the sessions right now. Please try again shortly.",
-  "OLENA STUDY NOTEBOOK",
+  "STUDY NOTEBOOK",
   "THIS NOTEBOOK BELONGS TO",
   "PAGE {0}",
   "Back cover",
@@ -3177,5 +3177,7 @@
   "3D notebook. Tap a page to write, drag the corner to turn and move along the stack edge to peek.",
   "Loading 3D notebook",
   "Untitled",
-  "Closed cover"
+  "Closed cover",
+  "Place here · page {0}",
+  "Edit mark: {0}"
 ]

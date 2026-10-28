@@ -1,25 +1,22 @@
 # Capa do caderno
 
-Existe uma única capa, igual na estante, na vitrine 2D e no caderno 3D. Não há mais
-inventário de capas nem o botão Personalizar.
+Existe uma única capa, igual na estante, na vitrine 2D e no caderno 3D. Não há inventário de
+capas nem o botão Personalizar, e a capa não tem personagens.
 
-Arquivo de produção: `public/notebook-covers/olena-arco.webp`, 1200 por 1600
-pixels. O arco, a bússola, o ticket e o carimbo são desenhados em papel recortado
-sobre fundo roxo, sem texto fixo na imagem. O título do caderno é texto vivo sobre
-a etiqueta (HTML na vitrine 2D, textura desenhada na cena 3D). A constante
-`NOTEBOOK_COVER_ART` em `src/components/notebook-cover-art.ts` é a única fonte do
-caminho.
+O desenho fica em `src/components/notebook-3d/notebook-cover-paint.ts`, em papel recortado:
+couro roxo com grão, painel colado com costura tracejada creme, céu noturno com lua crescente,
+constelação e estrelas amarelas, colinas de papel em três tons, cantoneiras amarelas com dobra
+nos cantos de fora e a assinatura "OLENA STUDY". A faixa de baixo fica livre para a etiqueta do
+título, que é texto vivo (HTML na vitrine 2D, textura desenhada na cena 3D).
 
-A contracapa do 3D usa `public/notebook-covers/olena-mesa.webp`, recorte da arte da
-Olena na mesa fornecida pelo proprietário.
+- Cena 3D: a capa e a contracapa são desenhadas na hora pelo mesmo módulo, com os cantos de fora
+  arredondados (a lombada fica reta). A contracapa traz o medalhão da lua e a etiqueta "Este
+  caderno pertence a".
+- Estante e vitrine 2D: `public/notebook-covers/capa-estrelas.webp` (1200 por 1624 pixels), gerada
+  pelo mesmo desenho com `node scripts/notebook-cover-art/generate.mjs`. O script usa
+  `@napi-rs/canvas`, que já vem instalado como dependência opcional do leitor PDF. A constante
+  `NOTEBOOK_COVER_ART` em `src/components/notebook-cover-art.ts` é a única fonte do caminho.
 
-As capas antigas Helena e Oliver (`helena-estrelas.webp`, `oliver-estrelas.webp`)
-foram removidas do site. O campo `coverStyle` continua aceito nos dados salvos
-(`src/domain/workspace.ts` e `src/data/local-workspace.ts`) só para não invalidar
-cadernos já guardados; ele não muda mais o desenho.
-
-## Como a arte foi feita
-
-Desenhada por um script local de canvas (não versionado) e convertida para WebP.
-Para trocar a arte, gerar outra imagem de 1200 por 1600 com a faixa da etiqueta
-livre na parte de baixo e as quinas respeitando o recorte da vitrine.
+Para mudar a arte, editar `notebook-cover-paint.ts`, rodar o script e conferir a capa nas duas
+vitrines. O campo `coverStyle` continua aceito nos dados salvos só para não invalidar cadernos
+antigos; ele não muda o desenho.

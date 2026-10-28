@@ -214,7 +214,7 @@ test("salvamento confirmado, índice legível e capa única", async ({ page }, i
   await expect(page.locator(".notebook-cover-inventory")).toHaveCount(0);
   await expect(page.locator(".notebook-concept-cover .book-cover__concept")).toHaveAttribute(
     "src",
-    "/notebook-covers/olena-arco.webp",
+    "/notebook-covers/capa-estrelas.webp",
   );
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("capa-fixa.png") });
