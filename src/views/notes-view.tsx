@@ -11,7 +11,11 @@ import { NoteFlashcardTools } from "../components/library-links";
 import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
-import { notebook3dCoverRect, useNotebook3d } from "../components/notebook-3d/notebook-3d-support";
+import {
+  notebook3dCoverRect,
+  prefetchNotebook3d,
+  useNotebook3d,
+} from "../components/notebook-3d/notebook-3d-support";
 import { NotebookPageIndex } from "../components/notebook-page-index";
 import { NotebookFolderMovePicker } from "../components/notebook-folder-move-picker";
 import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
@@ -142,6 +146,12 @@ export function NotesView({
   });
   const [indexOpen, setIndexOpen] = useState(false);
   const notebook3d = useNotebook3d();
+  const onShelf = !activeNotebookId;
+  useEffect(() => {
+    if (!notebook3d || !onShelf) return;
+    const timer = window.setTimeout(() => prefetchNotebook3d(), 1500);
+    return () => window.clearTimeout(timer);
+  }, [notebook3d, onShelf]);
   // Ao sair de uma folha, o caderno reabre nela (o 3D faz a folha voltar para o lugar).
   const [returnedPageId, setReturnedPageId] = useState<string>();
   const [pageJump, setPageJump] = useState<{ pageId: string; nonce: number }>();

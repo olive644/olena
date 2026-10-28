@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   BOOK,
+  bendSheet,
   flippedFor,
   leafCount,
   leafOfPage,
@@ -111,5 +112,24 @@ describe("física das folhas", () => {
     expect(shallow?.depth).toBe(0);
     expect(deep?.depth).toBe(5);
     expect(deep?.angles).toHaveLength(5);
+  });
+});
+
+describe("curva da folha", () => {
+  it("reescreve as linhas recebidas no lugar e dá o mesmo resultado de uma chamada nova", () => {
+    const fresh = bendSheet(1.2, 0.4, 0.5, 0.3);
+    const reused = bendSheet(0.2, -0.1, 0.1, 0.0);
+    const again = bendSheet(1.2, 0.4, 0.5, 0.3, reused);
+    expect(again).toBe(reused);
+    expect(again).toEqual(fresh);
+  });
+
+  it("nunca passa do plano da mesa nas pontas", () => {
+    for (const row of bendSheet(Math.PI, 2, 1, 0)) {
+      for (const point of row) {
+        expect(point[2]).toBeLessThanOrEqual(Math.PI + 0.0151);
+        expect(point[2]).toBeGreaterThanOrEqual(-0.0151);
+      }
+    }
   });
 });

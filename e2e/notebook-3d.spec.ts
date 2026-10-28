@@ -32,6 +32,21 @@ test("caderno em 3D abre a capa, cria folhas e volta da folha 2D", async ({ page
   await openNewNotebook(page, info.project.name === "mobile");
   const scene = page.locator("[data-notebook-3d] .notebook-3d__canvas");
   await expect(scene).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
+  // Parada, a cena não desenha quadros: sem gasto de CPU, GPU nem bateria.
+  const frames = () =>
+    scene.evaluate(
+      (canvas) => (canvas as unknown as { nb3dStats: () => { frames: number } }).nb3dStats().frames,
+    );
+  await expect
+    .poll(
+      async () => {
+        const before = await frames();
+        await page.waitForTimeout(1200);
+        return (await frames()) - before;
+      },
+      { timeout: 40_000 },
+    )
+    .toBe(0);
   const bounds = await scene.boundingBox();
   expect(bounds!.width).toBeGreaterThan(250);
   expect(bounds!.height).toBeGreaterThan(250);

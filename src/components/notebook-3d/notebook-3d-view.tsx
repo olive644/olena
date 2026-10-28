@@ -34,6 +34,8 @@ export type Notebook3dProps = {
   resolverRef?: RefObject<PlacementResolver | null> | undefined;
 };
 
+const PREVIEW_REACH = 8;
+
 type Proxy = { pageId: string; rect: DOMRect; image: string };
 
 function loadImage(src: string) {
@@ -61,6 +63,7 @@ export function Notebook3dView(props: Notebook3dProps) {
   const [proxy, setProxy] = useState<Proxy | null>(null);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const opening = useRef(false);
+  const cache = useRef(new Set<string>());
 
   useEffect(() => {
     let cancelled = false;
@@ -111,26 +114,50 @@ export function Notebook3dView(props: Notebook3dProps) {
     // A cena nasce uma vez por caderno; as mudanças de dados chegam pelos efeitos abaixo.
   }, []);
 
-  // Miniaturas reais das folhas, desenhadas pelo mesmo renderizador do editor.
+  // Miniaturas reais das folhas, desenhadas pelo mesmo renderizador do editor. Só as folhas perto
+  // da dupla aberta são desenhadas, uma por vez e começando pelas mais próximas: abrir um caderno
+  // grande não trava a tela, e as folhas distantes nem ocupam memória.
+  const center = props.view.cover
+    ? 0
+    : props.view.back
+      ? props.pages.length - 1
+      : props.view.spread * 2;
   useEffect(() => {
     let cancelled = false;
-    for (const page of props.pages) {
-      const asset = page.assets[0];
-      if (!asset) continue;
-      const key = `${page.id}:${page.updatedAt}`;
-      if (previews[key] !== undefined) continue;
-      renderPagePreview(asset, 900)
-        .then((url) => {
-          if (!cancelled) setPreviews((current) => ({ ...current, [key]: url }));
-        })
-        .catch(() => {
-          if (!cancelled) setPreviews((current) => ({ ...current, [key]: "" }));
-        });
-    }
+    const wanted = props.pages
+      .map((page, index) => ({ page, index }))
+      .filter(({ index }) => Math.abs(index - center) <= PREVIEW_REACH)
+      .sort((a, b) => Math.abs(a.index - center) - Math.abs(b.index - center));
+    const keys = new Set(wanted.map(({ page }) => `${page.id}:${page.updatedAt}`));
+    const seen = cache.current;
+    // Junto de cada miniatura nova saem as que ficaram fora da janela.
+    const keep = (current: Record<string, string>, key: string, url: string) => {
+      const next: Record<string, string> = { [key]: url };
+      for (const [name, value] of Object.entries(current)) if (keys.has(name)) next[name] = value;
+      return next;
+    };
+    void (async () => {
+      for (const { page } of wanted) {
+        if (cancelled) return;
+        const asset = page.assets[0];
+        const key = `${page.id}:${page.updatedAt}`;
+        if (!asset || seen.has(key)) continue;
+        seen.add(key);
+        try {
+          const url = await renderPagePreview(asset, 768);
+          if (!cancelled) setPreviews((current) => keep(current, key, url));
+        } catch {
+          if (!cancelled) setPreviews((current) => keep(current, key, ""));
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 24));
+      }
+    })();
     return () => {
       cancelled = true;
+      // O que não terminou volta para a fila na próxima janela.
+      for (const key of [...seen]) if (!keys.has(key)) seen.delete(key);
     };
-  }, [props.pages, previews]);
+  }, [props.pages, center]);
 
   useEffect(() => {
     scene.current?.setReducedMotion(reduced);
@@ -192,17 +219,26 @@ export function Notebook3dView(props: Notebook3dProps) {
     if (!instance || !page || opening.current || latest.current.busy) return;
     opening.current = true;
     sound.current?.play("enter");
-    void instance.focusPage(index).then(() => {
+    // O arquivo da imagem é gerado enquanto a câmera desce sobre a folha.
+    const image = instance.pageImageUrl(index);
+    void instance.focusPage(index).then(async () => {
       const rect = instance.pageScreenRect(index);
       if (!rect) {
         opening.current = false;
         latest.current.onOpen(page.id);
         return;
       }
-      setProxy({ pageId: page.id, rect, image: instance.pageImage(index) });
+      setProxy({ pageId: page.id, rect, image: await image });
     });
   }
   // A jornada da folha até o editor parte do cartão posicionado sobre a folha da cena.
+  useEffect(() => {
+    const url = proxy?.image;
+    // A jornada copia a imagem logo ao abrir; o arquivo temporário sai depois que ela terminou.
+    return () => {
+      if (url?.startsWith("blob:")) window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    };
+  }, [proxy?.image]);
   useEffect(() => {
     if (!proxy) return;
     const frame = requestAnimationFrame(() => {

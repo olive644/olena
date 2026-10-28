@@ -78,22 +78,34 @@ export type BendPoint = [x: number, y: number, angle: number];
  * Curva da folha: cada linha da malha dobra um pouco diferente, então o canto puxado vai na frente
  * e a dobra fica levemente diagonal. O ângulo nunca passa do plano da mesa.
  */
-export function bendSheet(theta: number, curl: number, bias: number, hingeY: number) {
-  const rows: BendPoint[][] = [];
+export function bendSheet(
+  theta: number,
+  curl: number,
+  bias: number,
+  hingeY: number,
+  /** Linhas de uma chamada anterior: são reescritas no lugar, sem criar lixo a cada quadro. */
+  rows: BendPoint[][] = [],
+) {
   const step = BOOK.pageWidth / BOOK.segmentsX;
   for (let row = 0; row <= BOOK.segmentsZ; row++) {
     const weight = 1 + 0.55 * bias * ((row / BOOK.segmentsZ) * 2 - 1);
     let x = 0;
     let y = hingeY;
-    const points: BendPoint[] = [[x, y, theta]];
+    const points = (rows[row] ??= []);
+    const first = (points[0] ??= [0, 0, 0]);
+    first[0] = x;
+    first[1] = y;
+    first[2] = theta;
     for (let index = 1; index <= BOOK.segmentsX; index++) {
       const fraction = index / BOOK.segmentsX;
       const angle = clamp(theta + curl * weight * fraction ** 1.25, -0.015, Math.PI + 0.015);
       x += Math.cos(angle) * step;
       y += Math.sin(angle) * step;
-      points.push([x, y, angle]);
+      const point = (points[index] ??= [0, 0, 0]);
+      point[0] = x;
+      point[1] = y;
+      point[2] = angle;
     }
-    rows.push(points);
   }
   return rows;
 }

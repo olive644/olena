@@ -33,3 +33,17 @@ export function notebook3dCoverRect(scene: HTMLElement) {
   const width = height * 0.74;
   return { x: rect.x + (rect.width - width) / 2, y: rect.y + rect.height * 0.08, width, height };
 }
+
+let prefetched = false;
+/**
+ * Baixa a cena e a tela do 3D antes de serem pedidas. Na estante isso roda em silêncio, depois
+ * que a página assentou; com "economizar dados" ligado só baixa quando o caderno realmente abre.
+ */
+export function prefetchNotebook3d(force = false) {
+  if (prefetched) return;
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  if (connection?.saveData && !force) return;
+  prefetched = true;
+  void import("./notebook-3d-scene");
+  void import("./notebook-3d-book");
+}

@@ -15,8 +15,8 @@ import {
   HemisphereLight,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
-  PCFSoftShadowMap,
+  MeshLambertMaterial,
+  PCFShadowMap,
   PerspectiveCamera,
   Plane,
   PlaneGeometry,
@@ -122,8 +122,8 @@ type Sheet = Omit<Board, "kind" | "pivot"> & {
   geometry: BufferGeometry;
   front: Mesh;
   back: Mesh;
-  frontMaterial: MeshStandardMaterial;
-  backMaterial: MeshStandardMaterial;
+  frontMaterial: MeshLambertMaterial;
+  backMaterial: MeshLambertMaterial;
   rows: BendPoint[][];
   bias: number;
   lead: number;
@@ -134,7 +134,6 @@ type Drive = { from: number; to: number; start: number; duration: number };
 type PageTexture = {
   canvas: HTMLCanvasElement;
   front: CanvasTexture;
-  mirror: CanvasTexture;
   key: string;
 };
 type Spark = { mesh: Mesh; velocity: Vector3; spin: number; life: number };
@@ -151,8 +150,9 @@ function texture(source: HTMLCanvasElement, anisotropy: number) {
   value.anisotropy = anisotropy;
   return value;
 }
-function standard(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
-  return new MeshStandardMaterial({ roughness: 0.86, metalness: 0, ...options });
+/** Papel e couro são foscos: Lambert dá o mesmo difuso do PBR com bem menos custo por pixel. */
+function standard(options: ConstructorParameters<typeof MeshLambertMaterial>[0]) {
+  return new MeshLambertMaterial(options);
 }
 function quad(
   x0: number,
@@ -203,7 +203,16 @@ function sheetGeometry() {
   geometry.setAttribute("position", new BufferAttribute(new Float32Array(count * 3), 3));
   geometry.setAttribute("uv", new BufferAttribute(uv, 2));
   geometry.setIndex(index);
+  geometry.computeVertexNormals();
   return geometry;
+}
+function mirroredUv(source: BufferAttribute) {
+  const uv = new Float32Array(source.array.length);
+  for (let i = 0; i < uv.length; i += 2) {
+    uv[i] = 1 - (source.array[i] as number);
+    uv[i + 1] = source.array[i + 1] as number;
+  }
+  return new BufferAttribute(uv, 2);
 }
 function disposeTree(root: Object3D) {
   root.traverse((node) => {
@@ -212,7 +221,7 @@ function disposeTree(root: Object3D) {
     mesh.geometry.dispose();
     const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
     for (const material of materials) {
-      const map = (material as MeshStandardMaterial).map;
+      const map = (material as MeshLambertMaterial).map;
       if (map && map.userData["owned"]) map.dispose();
       material.dispose();
     }
@@ -229,6 +238,9 @@ export class NotebookScene {
   private readonly pointer = new Vector2();
   private readonly table = new Plane(new Vector3(0, 1, 0), -0.1);
   private readonly anisotropy: number;
+  private readonly onVisibility = () => {
+    if (!document.hidden) this.wake();
+  };
   private leaves: Leaf[] = [];
   private pages: ScenePage[] = [];
   private tabs: SceneTab[] = [];
@@ -240,6 +252,25 @@ export class NotebookScene {
   private frame = 0;
   private last = 0;
   private disposed = false;
+  /** Só há quadros enquanto algo se move: parado, a cena não gasta CPU nem GPU. */
+  private running = false;
+  private moving = false;
+  private idleFrames = 0;
+  private size = { width: 1, height: 1 };
+  private ratio = 1;
+  private maxRatio = 1;
+  private slowFrames = 0;
+  private averageDelta = 0;
+  private shadows = true;
+  private releaseTimer = 0;
+  private fitKey = "";
+  private fitCache = { high: 14, targetX: 0, targetZ: 0 };
+  private readonly corners = Array.from({ length: 16 }, () => new Vector3());
+  private readonly scratch = { right: new Vector3(), up: new Vector3(), point: new Vector3() };
+  private sun!: DirectionalLight;
+  private resizeObserver: ResizeObserver | null = null;
+  private readonly stars: { map: CanvasTexture; material: MeshBasicMaterial }[] = [];
+  private readonly starGeometry = new PlaneGeometry(0.22, 0.22);
   private flapOpen = 0;
   private readonly pageTextures = new Map<string, PageTexture>();
   private readonly previews = new Map<string, HTMLImageElement>();
@@ -252,7 +283,7 @@ export class NotebookScene {
   private readonly edgeTexture: CanvasTexture;
   private readonly createTexture: CanvasTexture;
   private readonly blank: CanvasTexture;
-  private readonly boardSide = standard({ color: "#51259b", roughness: 0.7 });
+  private readonly boardSide = standard({ color: "#51259b" });
   private readonly spineGeometry = new BufferGeometry();
   private readonly spine: Mesh;
   private readonly rightBlock: Mesh;
@@ -262,7 +293,7 @@ export class NotebookScene {
   private flapMeshes: Mesh[] = [];
   private readonly createCard: Mesh;
   private leaf0: Mesh | null = null;
-  private readonly leaf0Material = standard({ roughness: 0.92 });
+  private readonly leaf0Material = standard({});
   private title = "";
   private camState = {
     yaw: 0,
@@ -295,23 +326,25 @@ export class NotebookScene {
     peek?: number;
   } | null = null;
   private peekState: { spread: number } | null = null;
-  private readonly onResize = () => this.resize();
 
   constructor(
     private readonly canvasElement: HTMLCanvasElement,
     private readonly assets: SceneAssets,
     private readonly callbacks: SceneCallbacks,
   ) {
+    const device = window.devicePixelRatio || 1;
+    // Acima de 1,5 a pessoa não percebe os pixels extras, mas a placa de vídeo paga por eles.
+    this.maxRatio = this.ratio = Math.min(1.5, device);
     this.renderer = new WebGLRenderer({
       canvas: canvasElement,
-      antialias: true,
+      antialias: device < 1.5,
       alpha: true,
-      preserveDrawingBuffer: true,
+      powerPreference: "high-performance",
     });
-    this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    this.renderer.setPixelRatio(this.ratio);
     this.renderer.outputColorSpace = SRGBColorSpace;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = PCFSoftShadowMap;
+    this.renderer.shadowMap.type = PCFShadowMap;
     this.renderer.setClearColor(new Color(0x000000), 0);
     this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
     this.scene.add(this.book);
@@ -326,17 +359,18 @@ export class NotebookScene {
     const sun = new DirectionalLight(0xfff4e2, 1.9);
     sun.position.set(-5, 11, 6);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
-    Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8, near: 1, far: 34 });
+    sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 4, far: 26 });
     sun.shadow.bias = -0.0005;
-    sun.shadow.radius = 5;
+    sun.shadow.radius = 3;
+    this.sun = sun;
     const fill = new DirectionalLight(0xd9c8ff, 0.6);
     fill.position.set(6, 4, -4);
     this.scene.add(sun, fill);
     const owned = (value: CanvasTexture) => ((value.userData["owned"] = false), value);
-    const coverCanvas = canvas(1240, Math.round((1240 * BH) / BW));
+    const coverCanvas = canvas(1024, Math.round((1024 * BH) / BW));
     this.coverTexture = owned(texture(coverCanvas, this.anisotropy));
-    const backCanvas = canvas(1240, Math.round((1240 * BH) / BW));
+    const backCanvas = canvas(1024, Math.round((1024 * BH) / BW));
     drawBackCover(backCanvas.getContext("2d")!, backCanvas.width, backCanvas.height, assets.olena);
     this.backTexture = owned(texture(backCanvas, this.anisotropy));
     const end = canvas(512, 680);
@@ -375,12 +409,12 @@ export class NotebookScene {
     this.spineGeometry.setIndex(spineIndex);
     this.spine = new Mesh(
       this.spineGeometry,
-      standard({ map: this.spineTexture, roughness: 0.8, side: DoubleSide }),
+      standard({ map: this.spineTexture, side: DoubleSide }),
     );
     this.spine.castShadow = true;
     this.book.add(this.spine);
-    const edge = standard({ map: this.edgeTexture, roughness: 0.95 });
-    const cream = standard({ color: "#fbf4e6", roughness: 0.95 });
+    const edge = standard({ map: this.edgeTexture });
+    const cream = standard({ color: "#fbf4e6" });
     this.rightBlock = new Mesh(new BoxGeometry(1, 1, 1), [edge, cream, cream, cream, edge, edge]);
     this.leftBlock = new Mesh(new BoxGeometry(1, 1, 1), [cream, edge, cream, cream, edge, edge]);
     for (const block of [this.rightBlock, this.leftBlock]) {
@@ -402,10 +436,32 @@ export class NotebookScene {
     this.canvasElement.addEventListener("pointercancel", this.pointerCancel);
     this.canvasElement.addEventListener("pointerleave", this.pointerLeave);
     this.canvasElement.addEventListener("wheel", this.wheel, { passive: false });
-    window.addEventListener("resize", this.onResize);
-    this.resize();
+    document.addEventListener("visibilitychange", this.onVisibility);
+    this.syncSize();
+    this.resizeObserver = new ResizeObserver(() => this.syncSize());
+    this.resizeObserver.observe(canvasElement);
+    this.wake();
+    // Contadores da cena (quadros, chamadas de desenho, texturas) para medir desempenho e testar.
+    Object.assign(canvasElement, { nb3dStats: () => this.stats() });
+  }
+  frames = 0;
+  /** Acorda o laço de quadros; ele volta a dormir sozinho quando nada mais se move. */
+  private wake() {
+    if (this.disposed || this.running) return;
+    this.running = true;
+    this.idleFrames = 0;
     this.last = performance.now();
     this.frame = requestAnimationFrame(this.tick);
+  }
+  stats() {
+    const info = this.renderer.info;
+    return {
+      frames: this.frames,
+      calls: info.render.calls,
+      triangles: info.render.triangles,
+      textures: info.memory.textures,
+      geometries: info.memory.geometries,
+    };
   }
 
   // ------------------------------------------------------------------ dados
@@ -413,6 +469,7 @@ export class NotebookScene {
     if (title === this.title) return;
     this.title = title;
     this.drawCoverTexture();
+    this.wake();
   }
   setReducedMotion(reduced: boolean) {
     this.reduced = reduced;
@@ -420,18 +477,23 @@ export class NotebookScene {
   setPlacing(kind: "divider" | "bookmark" | null) {
     this.placing = kind;
     this.clearPeek();
+    this.wake();
   }
   setPages(pages: ScenePage[]) {
     const countChanged = pages.length !== this.pages.length || !this.leaves.length;
     this.pages = pages;
-    for (const page of pages) this.loadPreview(page);
     if (countChanged) this.rebuildLeaves();
-    else this.refreshTextures();
+    else {
+      // Mesma quantidade de folhas: só as texturas mudam (uma miniatura nova, um título editado).
+      this.syncPages();
+      this.wake();
+    }
   }
   setTabs(tabs: SceneTab[], editing: boolean) {
     this.tabs = tabs;
     this.editingTabs = editing;
     this.rebuildTabs();
+    this.wake();
   }
   /** Leva o caderno ao estado pedido. Pular várias folhas folheia em sequência, uma atrás da outra. */
   setView(view: BookView, options: { instant?: boolean } = {}) {
@@ -440,6 +502,8 @@ export class NotebookScene {
     const from = this.flipped;
     this.flipped = next;
     this.clearPeek();
+    this.syncPages();
+    this.wake();
     const selectedSide = visiblePages(next, this.pages.length);
     this.selected = selectedSide[1] ?? selectedSide[0] ?? 0;
     if (options.instant || this.reduced) {
@@ -490,6 +554,7 @@ export class NotebookScene {
   /** Câmera desce sobre a folha até ela ficar de frente, como se a pessoa aproximasse o rosto. */
   focusPage(index: number): Promise<void> {
     this.selected = index;
+    this.wake();
     return new Promise((resolve) => {
       if (this.reduced) {
         this.focus = { index, amount: 1, target: 1, resolve: null };
@@ -503,6 +568,7 @@ export class NotebookScene {
   startFromPage(index: number) {
     this.selected = index;
     this.focus = { index, amount: this.reduced ? 0 : 1, target: 0, resolve: null };
+    this.wake();
   }
   /** Retângulo da folha na tela, para a jornada da folha até o editor começar no lugar certo. */
   pageScreenRect(index: number) {
@@ -528,30 +594,44 @@ export class NotebookScene {
       Math.max(...ys) - Math.min(...ys),
     );
   }
-  pageImage(index: number) {
+  /** Imagem da folha para a jornada ao editor. O codec roda fora da thread principal (toBlob). */
+  pageImageUrl(index: number): Promise<string> {
     const page = this.pages[index];
-    return page ? (this.pageTextures.get(page.id)?.canvas.toDataURL("image/webp", 0.85) ?? "") : "";
+    if (!page) return Promise.resolve("");
+    this.paintPage(page);
+    const entry = this.textureFor(page);
+    return new Promise((resolve) =>
+      entry.canvas.toBlob(
+        (blob) => resolve(blob ? URL.createObjectURL(blob) : ""),
+        "image/webp",
+        0.85,
+      ),
+    );
   }
   /** Brilho de estrelas de papel quando a capa abre ou uma folha nova aparece. */
   burst(at: Vector3 = new Vector3(W * 0.9, 0.4, CLASP.z), count = 18) {
     if (this.reduced) return;
+    if (!this.stars.length)
+      for (const [seed, fill] of [
+        [0.3, "#FACC15"],
+        [1.1, "#ffe88d"],
+        [1.7, "#FACC15"],
+      ] as const) {
+        const star = canvas(64, 64);
+        paperStar(star.getContext("2d")!, 32, 32, 26, seed, fill, "#B88C13");
+        const map = texture(star, 1);
+        this.stars.push({
+          map,
+          material: new MeshBasicMaterial({
+            map,
+            transparent: true,
+            depthWrite: false,
+            side: DoubleSide,
+          }),
+        });
+      }
     for (let index = 0; index < count; index++) {
-      const star = canvas(64, 64);
-      paperStar(
-        star.getContext("2d")!,
-        32,
-        32,
-        26,
-        Math.random() * 2,
-        index % 3 ? "#FACC15" : "#ffe88d",
-        "#B88C13",
-      );
-      const map = texture(star, 1);
-      map.userData["owned"] = true;
-      const mesh = new Mesh(
-        new PlaneGeometry(0.22, 0.22),
-        new MeshBasicMaterial({ map, transparent: true, depthWrite: false, side: DoubleSide }),
-      );
+      const mesh = new Mesh(this.starGeometry, this.stars[index % 3]!.material);
       mesh.position.copy(at);
       mesh.rotation.x = -Math.PI / 2;
       this.scene.add(mesh);
@@ -567,6 +647,7 @@ export class NotebookScene {
         life: 1,
       });
     }
+    this.wake();
   }
   newPageBurst() {
     const [left, right] = visiblePages(this.flipped, this.pages.length);
@@ -585,12 +666,16 @@ export class NotebookScene {
     this.canvasElement.removeEventListener("pointercancel", this.pointerCancel);
     this.canvasElement.removeEventListener("pointerleave", this.pointerLeave);
     this.canvasElement.removeEventListener("wheel", this.wheel);
-    window.removeEventListener("resize", this.onResize);
     disposeTree(this.scene);
-    for (const value of this.pageTextures.values()) {
-      value.front.dispose();
-      value.mirror.dispose();
+    for (const value of this.pageTextures.values()) value.front.dispose();
+    for (const star of this.stars) {
+      star.map.dispose();
+      star.material.dispose();
     }
+    this.starGeometry.dispose();
+    window.clearTimeout(this.releaseTimer);
+    this.resizeObserver?.disconnect();
+    document.removeEventListener("visibilitychange", this.onVisibility);
     for (const value of [
       this.coverTexture,
       this.backTexture,
@@ -615,9 +700,11 @@ export class NotebookScene {
     const image = new Image();
     image.decoding = "async";
     image.onload = () => {
-      if (this.disposed) return;
+      // A folha pode ter saído da janela enquanto a imagem carregava.
+      if (this.disposed || !this.pageTextures.has(page.id)) return;
       this.previews.set(page.id, image);
       this.paintPage(page);
+      this.wake();
     };
     image.src = page.preview;
   }
@@ -625,15 +712,63 @@ export class NotebookScene {
     let entry = this.pageTextures.get(page.id);
     if (!entry) {
       const element = canvas(TEXTURE.width, TEXTURE.height);
-      const front = texture(element, this.anisotropy);
-      const mirror = texture(element, this.anisotropy);
-      mirror.wrapS = RepeatWrapping;
-      mirror.repeat.x = -1;
-      mirror.offset.x = 1;
-      entry = { canvas: element, front, mirror, key: "" };
+      entry = { canvas: element, front: texture(element, this.anisotropy), key: "" };
       this.pageTextures.set(page.id, entry);
     }
     return entry;
+  }
+  /**
+   * Só as folhas perto da dupla aberta têm textura (de 1024 por 1365 pixels cada uma). As demais
+   * usam o papel em branco até o caderno chegar perto delas: a memória não cresce com as folhas.
+   */
+  private pageWindow(margin: number): Set<number> {
+    const total = this.pages.length;
+    const first = this.flipped >= 1 ? (this.flipped - 1) * 2 : 0;
+    const near = new Set<number>();
+    for (let index = first - margin; index <= first + 1 + margin; index++)
+      if (index >= 0 && index < total) near.add(index);
+    if (first - margin <= 2 && total) near.add(0);
+    return near;
+  }
+  private syncPages() {
+    for (const index of this.pageWindow(3)) {
+      const page = this.pages[index]!;
+      this.loadPreview(page);
+      this.paintPage(page);
+    }
+    this.assignPages();
+    window.clearTimeout(this.releaseTimer);
+    // Depois que o folheio assenta, libera a memória das folhas que ficaram longe.
+    this.releaseTimer = window.setTimeout(() => this.releaseFar(), 1500);
+  }
+  private releaseFar() {
+    if (this.disposed) return;
+    const keep = new Set([...this.pageWindow(5)].map((index) => this.pages[index]?.id));
+    for (const [id, entry] of this.pageTextures) {
+      if (keep.has(id)) continue;
+      entry.front.dispose();
+      entry.canvas.width = entry.canvas.height = 0;
+      this.pageTextures.delete(id);
+      this.previews.delete(id);
+    }
+    this.assignPages();
+    this.wake();
+  }
+  private assignPages() {
+    const mapFor = (page: ScenePage | undefined) =>
+      (page && this.pageTextures.get(page.id)?.front) ?? this.blank;
+    for (const leaf of this.leaves) {
+      if (leaf.kind !== "sheet") continue;
+      leaf.frontMaterial.map = mapFor(this.pages[2 * leaf.index + 1]);
+      leaf.backMaterial.map = mapFor(this.pages[2 * leaf.index + 2]);
+      leaf.frontMaterial.needsUpdate = leaf.backMaterial.needsUpdate = true;
+    }
+    const first = this.pages[0];
+    if (this.leaf0) {
+      this.leaf0.visible = Boolean(first);
+      this.leaf0Material.map = mapFor(first);
+      this.leaf0Material.needsUpdate = true;
+    }
   }
   private paintPage(page: ScenePage) {
     const index = this.pages.indexOf(page);
@@ -653,28 +788,15 @@ export class NotebookScene {
       0,
     );
     drawPage(context, { title: page.title, index, content: page.content, preview });
-    entry.front.needsUpdate = entry.mirror.needsUpdate = true;
+    entry.front.needsUpdate = true;
   }
   private refreshTextures() {
-    this.pages.forEach((page) => this.paintPage(page));
-    for (const leaf of this.leaves) {
-      if (leaf.kind !== "sheet") continue;
-      const front = this.pages[2 * leaf.index + 1];
-      const back = this.pages[2 * leaf.index + 2];
-      leaf.frontMaterial.map = front ? this.textureFor(front).front : this.blank;
-      leaf.backMaterial.map = back ? this.textureFor(back).mirror : this.blank;
-      leaf.frontMaterial.needsUpdate = leaf.backMaterial.needsUpdate = true;
-    }
-    const first = this.pages[0];
-    if (this.leaf0) {
-      this.leaf0.visible = Boolean(first);
-      if (first) this.leaf0Material.map = this.textureFor(first).front;
-      this.leaf0Material.needsUpdate = true;
-    }
+    this.syncPages();
     const context = (this.createTexture.image as HTMLCanvasElement).getContext("2d")!;
     drawCreateCard(context, TEXTURE.width, TEXTURE.height, this.pages.length === 0);
     this.createTexture.needsUpdate = true;
     this.rebuildTabs();
+    this.wake();
   }
 
   // ------------------------------------------------------------------ geometria
@@ -688,13 +810,13 @@ export class NotebookScene {
       quad(-0.04, BW - 0.04, -BH / 2, BH / 2, BT / 2 + 0.001, true, (x, z) =>
         kind === "front" ? [(x + 0.04) / BW, 0.5 - z / BH] : [(x / 0.6) % 1, z / 0.8],
       ),
-      standard({ map: kind === "front" ? this.coverTexture : this.endTexture, roughness: 0.6 }),
+      standard({ map: kind === "front" ? this.coverTexture : this.endTexture }),
     );
     const bottom = new Mesh(
       quad(-0.04, BW - 0.04, -BH / 2, BH / 2, -BT / 2 - 0.001, false, (x, z) =>
         kind === "back" ? [1 - (x + 0.04) / BW, 0.5 - z / BH] : [(x / 0.6) % 1, z / 0.8],
       ),
-      standard({ map: kind === "back" ? this.backTexture : this.endTexture, roughness: 0.6 }),
+      standard({ map: kind === "back" ? this.backTexture : this.endTexture }),
     );
     top.receiveShadow = bottom.receiveShadow = true;
     const tabs = new Group();
@@ -716,10 +838,17 @@ export class NotebookScene {
   }
   private makeSheet(index: number): Sheet {
     const geometry = sheetGeometry();
-    const frontMaterial = standard({ roughness: 0.92 });
-    const backMaterial = standard({ roughness: 0.92, side: BackSide });
+    const frontMaterial = standard({});
+    const backMaterial = standard({ side: BackSide });
+    // O verso divide posições e normais com a frente e só espelha o UV: uma textura por folha.
+    const backGeometry = new BufferGeometry();
+    backGeometry.setAttribute("position", geometry.getAttribute("position"));
+    backGeometry.setAttribute("normal", geometry.getAttribute("normal"));
+    backGeometry.setAttribute("uv", mirroredUv(geometry.getAttribute("uv") as BufferAttribute));
+    backGeometry.setIndex(geometry.getIndex());
     const front = new Mesh(geometry, frontMaterial);
-    const back = new Mesh(geometry, backMaterial);
+    const back = new Mesh(backGeometry, backMaterial);
+    back.frustumCulled = false;
     front.castShadow = back.castShadow = front.receiveShadow = back.receiveShadow = true;
     front.userData["page"] = 2 * index + 1;
     back.userData["page"] = 2 * index + 2;
@@ -793,7 +922,7 @@ export class NotebookScene {
     for (let k = 0; k < this.leaves.length; k++)
       total += k === 0 || k === this.leaves.length - 1 ? BT : BOOK.sheetThickness;
     const length = total - BT / 2 + 0.03;
-    const material = standard({ color: "#51259b", roughness: 0.65 });
+    const material = standard({ color: "#51259b" });
     const strap = new Mesh(new BoxGeometry(length, 0.04, CLASP.depth), material);
     strap.position.x = length / 2;
     strap.castShadow = true;
@@ -821,10 +950,7 @@ export class NotebookScene {
     drawClaspStrap(strapArt.getContext("2d")!, strapArt.width, strapArt.height);
     const strapTexture = texture(strapArt, this.anisotropy);
     strapTexture.userData["owned"] = true;
-    const plate = new Mesh(plateGeometry, [
-      standard({ map: strapTexture, roughness: 0.6 }),
-      material,
-    ]);
+    const plate = new Mesh(plateGeometry, [standard({ map: strapTexture }), material]);
     plate.castShadow = true;
     this.flapB.add(plate);
     const size = 0.27;
@@ -855,8 +981,8 @@ export class NotebookScene {
     });
     buttonGeometry.rotateX(Math.PI / 2);
     const button = new Mesh(buttonGeometry, [
-      standard({ color: "#FACC15", roughness: 0.4, flatShading: true }),
-      standard({ color: "#b68b16", roughness: 0.5, flatShading: true }),
+      standard({ color: "#FACC15", flatShading: true }),
+      standard({ color: "#b68b16", flatShading: true }),
     ]);
     button.position.set(CLASP.length * 0.55, -0.02, 0);
     button.castShadow = true;
@@ -946,13 +1072,10 @@ export class NotebookScene {
           0.5 - z / DIVIDER.height,
         ],
       );
-      const front = new Mesh(
-        geometry,
-        standard({ map: make(onCover), transparent: true, roughness: 0.7 }),
-      );
+      const front = new Mesh(geometry, standard({ map: make(onCover), transparent: true }));
       const back = new Mesh(
         geometry.clone(),
-        standard({ map: make(!onCover), transparent: true, side: BackSide, roughness: 0.7 }),
+        standard({ map: make(!onCover), transparent: true, side: BackSide }),
       );
       front.castShadow = true;
       group.add(front, back);
@@ -981,7 +1104,6 @@ export class NotebookScene {
           transparent: true,
           alphaTest: 0.05,
           side: DoubleSide,
-          roughness: 0.6,
           color: buried ? "#c9c2d6" : "#ffffff",
         }),
       );
@@ -1016,15 +1138,59 @@ export class NotebookScene {
   // ------------------------------------------------------------------ quadro a quadro
   private readonly tick = (now: number) => {
     if (this.disposed) return;
-    const dt = Math.min(0.05, (now - this.last) / 1000);
+    if (document.hidden) {
+      this.running = false;
+      return;
+    }
+    const delta = (now - this.last) / 1000;
+    const dt = Math.min(0.05, delta);
     this.last = now;
+    this.moving = false;
     this.step(dt, now);
     this.layout(false);
     this.updateSparks(dt);
     this.updateCamera(dt);
     this.renderer.render(this.scene, this.camera);
+    this.frames++;
+    if (this.moving || this.sparks.length) {
+      this.idleFrames = 0;
+      this.watchSpeed(delta);
+    } else {
+      this.slowFrames = 0;
+      // Dois quadros extras deixam texturas e sombras assentarem antes de dormir.
+      if (++this.idleFrames >= 2) {
+        this.running = false;
+        return;
+      }
+    }
     this.frame = requestAnimationFrame(this.tick);
   };
+  /** Aparelho fraco: baixa a resolução e depois as sombras, em vez de entregar quadros lentos. */
+  private watchSpeed(delta: number) {
+    if (delta > 0.25) return;
+    this.averageDelta = this.averageDelta ? this.averageDelta * 0.9 + delta * 0.1 : delta;
+    if (this.averageDelta < 0.027) {
+      this.slowFrames = 0;
+      return;
+    }
+    if (++this.slowFrames < 24) return;
+    this.slowFrames = 0;
+    this.averageDelta = 0;
+    if (this.ratio > 1) {
+      this.ratio = Math.max(1, this.ratio - 0.25);
+      this.renderer.setPixelRatio(this.ratio);
+      this.renderer.setSize(this.size.width, this.size.height, false);
+    } else if (this.shadows) {
+      this.shadows = false;
+      this.renderer.shadowMap.enabled = false;
+      this.sun.castShadow = false;
+      this.scene.traverse((object) => {
+        const material = (object as Mesh).material;
+        for (const item of Array.isArray(material) ? material : material ? [material] : [])
+          item.needsUpdate = true;
+      });
+    }
+  }
   private step(dt: number, now: number) {
     for (const leaf of this.leaves) {
       let goal = leaf.target;
@@ -1041,6 +1207,7 @@ export class NotebookScene {
       }
       if (leaf.dragTheta !== undefined) goal = leaf.dragTheta;
       else if (leaf.peek !== undefined && !leaf.drive) goal = leaf.peek;
+      if (leaf.drive || leaf.dragTheta !== undefined) this.moving = true;
       const sheet = leaf.kind === "sheet";
       const next = stepLeaf(leaf, goal, dt, {
         dragging: leaf.dragTheta !== undefined,
@@ -1052,12 +1219,21 @@ export class NotebookScene {
         (Math.abs(next.theta - leaf.theta) > 1e-5 || Math.abs(next.curl - leaf.curl) > 1e-5)
       )
         leaf.dirty = true;
+      if (
+        Math.abs(goal - next.theta) > 1e-3 ||
+        Math.abs(next.omega) > 1e-2 ||
+        Math.abs(next.curlSpeed) > 1e-2 ||
+        Math.abs(next.curl - leaf.curl) > 1e-4
+      )
+        this.moving = true;
       Object.assign(leaf, next);
     }
     const front = this.leaves[0];
     const wantOpen = this.flipped >= 1 || (front !== undefined && front.theta > 0.04) ? 1 : 0;
     this.flapOpen += (wantOpen - this.flapOpen) * Math.min(1, dt * 9);
+    if (Math.abs(wantOpen - this.flapOpen) > 1e-3) this.moving = true;
     if (this.focus) {
+      if (this.focus.amount !== this.focus.target) this.moving = true;
       const focus = this.focus;
       const speed = dt * 3.2;
       focus.amount += clamp(focus.target - focus.amount, -speed, speed);
@@ -1090,7 +1266,7 @@ export class NotebookScene {
       }
       if (!leaf.dirty && !force) return;
       leaf.dirty = false;
-      leaf.rows = bendSheet(leaf.theta, leaf.curl, leaf.bias, leaf.hingeY);
+      leaf.rows = bendSheet(leaf.theta, leaf.curl, leaf.bias, leaf.hingeY, leaf.rows);
       const position = leaf.geometry.attributes["position"] as BufferAttribute;
       for (let i = 0; i <= NX; i++)
         for (let r = 0; r <= NZ; r++) {
@@ -1107,6 +1283,15 @@ export class NotebookScene {
     const restLeft = sheets.filter(
       (leaf) => leaf.theta > Math.PI - 0.004 && leaf.target === Math.PI,
     );
+    // Folhas paradas sob a de cima não aparecem (o bloco de papel já as representa): menos desenho.
+    const topRest = restRight.length ? Math.min(...restRight.map((leaf) => leaf.index)) : -1;
+    const topLeftRest = restLeft.length ? Math.max(...restLeft.map((leaf) => leaf.index)) : -1;
+    for (const sheet of sheets) {
+      const buried =
+        (sheet.theta < 0.004 && sheet.target === 0 && sheet.index !== topRest) ||
+        (sheet.theta > Math.PI - 0.004 && sheet.target === Math.PI && sheet.index !== topLeftRest);
+      sheet.front.visible = sheet.back.visible = !buried;
+    }
     const back = this.leaves[count - 1]!;
     const front = this.leaves[0]!;
     const baseRight = back.theta < 0.01 ? BT : 0;
@@ -1178,33 +1363,33 @@ export class NotebookScene {
       spark.velocity.y -= 6 * dt;
       spark.mesh.position.addScaledVector(spark.velocity, dt);
       spark.mesh.rotation.z += spark.spin * dt;
-      (spark.mesh.material as MeshBasicMaterial).opacity = clamp(spark.life * 1.4, 0, 1);
+      // Material e geometria são compartilhados: a estrela some encolhendo, sem alterar os outros.
+      spark.mesh.scale.setScalar(clamp(spark.life * 1.4, 0, 1));
       if (spark.life <= 0 || spark.mesh.position.y < 0) {
         this.scene.remove(spark.mesh);
-        disposeTree(spark.mesh);
         this.sparks.splice(index, 1);
       }
     }
   }
 
   // ------------------------------------------------------------------ câmera
-  private resize() {
+  private syncSize() {
     const rect = this.canvasElement.getBoundingClientRect();
-    const ratio = this.renderer.getPixelRatio();
-    if (
-      this.canvasElement.width !== Math.round(rect.width * ratio) ||
-      this.canvasElement.height !== Math.round(rect.height * ratio)
-    )
-      this.renderer.setSize(rect.width, rect.height, false);
+    if (!rect.width || !rect.height) return;
+    if (rect.width === this.size.width && rect.height === this.size.height) return;
+    this.size = { width: rect.width, height: rect.height };
+    this.renderer.setSize(rect.width, rect.height, false);
+    this.fitKey = "";
+    this.wake();
   }
   /** Procura a distância em que o caderno inteiro cabe na tela; de perto, a folha escolhida fica de frente. */
   private updateCamera(dt: number) {
-    this.resize();
-    const rect = this.canvasElement.getBoundingClientRect();
-    const aspect = Math.max(0.3, rect.width / Math.max(1, rect.height));
-    this.camera.aspect = this.probe.aspect = aspect;
-    this.probe.fov = this.camera.fov;
-    this.probe.updateProjectionMatrix();
+    const aspect = Math.max(0.3, this.size.width / Math.max(1, this.size.height));
+    if (this.camera.aspect !== aspect) {
+      this.camera.aspect = this.probe.aspect = aspect;
+      this.probe.fov = this.camera.fov;
+      this.probe.updateProjectionMatrix();
+    }
     const count = this.leaves.length;
     const closedFront = this.flipped === 0;
     const closedBack = this.flipped === count && count > 0;
@@ -1229,6 +1414,13 @@ export class NotebookScene {
       this.camState.tiltNow = tilt;
       this.camState.yawNow = yaw;
     }
+    const before = {
+      x: this.camState.x,
+      z: this.camState.z,
+      distance: this.camState.distance,
+      tilt: this.camState.tiltNow,
+      yaw: this.camState.yawNow,
+    };
     this.camState.tiltNow += (tilt - this.camState.tiltNow) * (this.focus ? 1 : smoothing);
     this.camState.yawNow += (yaw - this.camState.yawNow) * (this.focus ? 1 : smoothing);
     const direction = new Vector3(
@@ -1238,10 +1430,62 @@ export class NotebookScene {
     );
     const centerX = (xr[0] + xr[1]) / 2;
     const centerZ = (zr[0] + zr[1]) / 2;
-    const corners: Vector3[] = [];
+    // A busca da distância ideal só roda quando o enquadramento muda; parado, vem do cache.
+    const key = [
+      aspect.toFixed(3),
+      xr[0].toFixed(3),
+      xr[1].toFixed(3),
+      zr[0].toFixed(3),
+      zr[1].toFixed(3),
+      focus.toFixed(3),
+      this.camState.tiltNow.toFixed(4),
+      this.camState.yawNow.toFixed(4),
+    ].join("|");
+    if (key !== this.fitKey) {
+      this.fitKey = key;
+      this.fitCache = this.fitFrame(xr, zr, direction, centerX, centerZ, focus, aspect);
+    }
+    const { high, targetX, targetZ } = this.fitCache;
+    const distance = high / (this.camState.zoom * (1 - focus) + focus);
+    if (!this.camState.ready) {
+      Object.assign(this.camState, { x: targetX, z: targetZ, distance, ready: true });
+      this.moving = true;
+    }
+    const k = this.focus ? 1 : smoothing;
+    this.camState.x += (targetX - this.camState.x) * k;
+    this.camState.z += (targetZ - this.camState.z) * k;
+    this.camState.distance += (distance - this.camState.distance) * k;
+    if (
+      // Abaixo disso a câmera se mexe menos que um centésimo de pixel por quadro.
+      Math.abs(this.camState.x - before.x) > 1e-3 ||
+      Math.abs(this.camState.z - before.z) > 1e-3 ||
+      Math.abs(this.camState.distance - before.distance) > 1e-3 ||
+      Math.abs(this.camState.tiltNow - before.tilt) > 1e-4 ||
+      Math.abs(this.camState.yawNow - before.yaw) > 1e-4
+    )
+      this.moving = true;
+    this.camera.position.set(
+      this.camState.x + direction.x * this.camState.distance,
+      direction.y * this.camState.distance,
+      this.camState.z + direction.z * this.camState.distance,
+    );
+    this.camera.lookAt(this.camState.x, 0.1, this.camState.z);
+    this.camera.updateProjectionMatrix();
+  }
+  private fitFrame(
+    xr: [number, number],
+    zr: [number, number],
+    direction: Vector3,
+    centerX: number,
+    centerZ: number,
+    focus: number,
+    aspect: number,
+  ) {
+    let used = 0;
     for (const x of xr)
-      for (const z of zr) for (const y of [0, 0.4]) corners.push(new Vector3(x, y, z));
+      for (const z of zr) for (const y of [0, 0.4]) this.corners[used++]!.set(x, y, z);
     const limit = { x: 0.95 - focus * 0.05, y: 0.9 - focus * 0.04 };
+    const point = this.scratch.point;
     const fit = (distance: number) => {
       this.probe.position.set(
         centerX + direction.x * distance,
@@ -1254,8 +1498,8 @@ export class NotebookScene {
       let maxX = -9;
       let minY = 9;
       let maxY = -9;
-      for (const corner of corners) {
-        const point = corner.clone().project(this.probe);
+      for (let index = 0; index < used; index++) {
+        point.copy(this.corners[index]!).project(this.probe);
         minX = Math.min(minX, point.x);
         maxX = Math.max(maxX, point.x);
         minY = Math.min(minY, point.y);
@@ -1265,37 +1509,26 @@ export class NotebookScene {
     };
     let low = 3;
     let high = 60;
-    for (let index = 0; index < 16; index++) {
+    for (let index = 0; index < 12; index++) {
       const middle = (low + high) / 2;
       const box = fit(middle);
       if (box.maxX - box.minX <= limit.x * 2 && box.maxY - box.minY <= limit.y * 2) high = middle;
       else low = middle;
     }
     const box = fit(high);
-    const right = new Vector3().setFromMatrixColumn(this.probe.matrixWorld, 0);
-    const up = new Vector3().setFromMatrixColumn(this.probe.matrixWorld, 1);
+    const { right, up } = this.scratch;
+    right.setFromMatrixColumn(this.probe.matrixWorld, 0);
+    up.setFromMatrixColumn(this.probe.matrixWorld, 1);
     const halfHeight = high * Math.tan((this.camera.fov * Math.PI) / 360);
     const shiftX = -((box.minX + box.maxX) / 2) * halfHeight * aspect;
     const shiftY = -((box.minY + box.maxY) / 2) * halfHeight;
-    const targetX = centerX - (right.x * shiftX + up.x * shiftY);
-    const targetZ =
-      centerZ -
-      (right.z * shiftX + up.z * shiftY) / Math.max(0.35, Math.cos(this.camState.tiltNow));
-    const distance = high / (this.camState.zoom * (1 - focus) + focus);
-    if (!this.camState.ready) {
-      Object.assign(this.camState, { x: targetX, z: targetZ, distance, ready: true });
-    }
-    const k = this.focus ? 1 : smoothing;
-    this.camState.x += (targetX - this.camState.x) * k;
-    this.camState.z += (targetZ - this.camState.z) * k;
-    this.camState.distance += (distance - this.camState.distance) * k;
-    this.camera.position.set(
-      this.camState.x + direction.x * this.camState.distance,
-      direction.y * this.camState.distance,
-      this.camState.z + direction.z * this.camState.distance,
-    );
-    this.camera.lookAt(this.camState.x, 0.1, this.camState.z);
-    this.camera.updateProjectionMatrix();
+    return {
+      high,
+      targetX: centerX - (right.x * shiftX + up.x * shiftY),
+      targetZ:
+        centerZ -
+        (right.z * shiftX + up.z * shiftY) / Math.max(0.35, Math.cos(this.camState.tiltNow)),
+    };
   }
 
   // ------------------------------------------------------------------ ponteiro
@@ -1340,6 +1573,7 @@ export class NotebookScene {
   }
   private readonly pointerDown = (event: PointerEvent) => {
     if (event.button !== 0 || this.focus?.target === 1) return;
+    this.wake();
     this.canvasElement.setPointerCapture(event.pointerId);
     const point = this.hitTable(event);
     const closed = this.flipped === 0 || this.flipped === this.leaves.length;
@@ -1371,6 +1605,7 @@ export class NotebookScene {
     if (!drag) return this.updatePeek(event);
     if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 6) drag.moved = true;
     if (!drag.moved) return;
+    this.wake();
     if (drag.mode === "peek") {
       this.clearPeek();
       drag.mode = drag.alternate ?? "orbit";
@@ -1415,6 +1650,7 @@ export class NotebookScene {
     const drag = this.drag;
     this.drag = null;
     if (!drag) return;
+    this.wake();
     const point = this.hitTable(event);
     const visible = visiblePages(this.flipped, this.pages.length);
     if (drag.mode === "tab" && drag.tab) {
@@ -1446,6 +1682,7 @@ export class NotebookScene {
       if (next > 0 && next < count && next - 1 > spreadCount(this.pages.length) - 1)
         next = forward ? count : spreadCount(this.pages.length);
       this.flipped = forward ? index + 1 : index;
+      this.syncPages();
       const view = viewFor(next, this.pages.length);
       if (next !== this.flipped) this.setView(view);
       else this.rebuildTabs();
@@ -1486,17 +1723,20 @@ export class NotebookScene {
   private readonly pointerCancel = () => {
     if (this.drag?.leaf) this.drag.leaf.dragTheta = undefined;
     this.drag = null;
+    this.wake();
   };
   private readonly pointerLeave = () => this.clearPeek();
   private readonly wheel = (event: WheelEvent) => {
     event.preventDefault();
     this.camState.zoom = clamp(this.camState.zoom * (event.deltaY > 0 ? 0.9 : 1.1), 0.6, 3);
+    this.wake();
   };
   private clearPeek() {
     if (!this.peekState) return;
     for (const leaf of this.leaves) leaf.peek = undefined;
     this.peekState = null;
     this.callbacks.onPeek(null);
+    this.wake();
   }
   /** Espiar: o ponteiro na borda da pilha levanta as folhas de cima em leque até a folha apontada. */
   private updatePeek(event: PointerEvent) {
@@ -1521,7 +1761,10 @@ export class NotebookScene {
     const target = stack[fan.depth]!;
     const page = right ? 2 * target.index + 1 : 2 * target.index + 2;
     const spread = right ? target.index : target.index + 1;
-    if (this.peekState?.spread !== spread) this.callbacks.onSound("riffle");
+    if (this.peekState?.spread !== spread) {
+      this.callbacks.onSound("riffle");
+      this.wake();
+    }
     this.peekState = { spread };
     const info = this.pages[page];
     if (info)
