@@ -21,6 +21,23 @@
   display: block;
   animation: math-peek-arrive 600ms ease-out both;
 }
+/* A imagem é o primeiro quadro; o canvas do Rive só entra por cima quando o arquivo carrega, e a
+   pose de repouso do arquivo é a da imagem, então a troca não tem salto. */
+.math-hero-peek > canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+.math-hero-peek[data-ready="true"] > canvas {
+  opacity: 1;
+}
+.math-hero-peek[data-ready="true"] > img {
+  opacity: 0;
+  transition: opacity 0ms linear 200ms;
+}
 .math-hero-math-decoration {
   position: absolute;
   inset: 0 1% 0 auto;
@@ -113,38 +130,6 @@
 .math-hero-copy > button {
   margin-top: 12px;
 }
-.math-hero-oliver {
-  position: absolute;
-  width: 38%;
-  height: calc(100% + 70px);
-  right: 1%;
-  bottom: 5px;
-  pointer-events: none;
-  user-select: none;
-}
-.math-hero-oliver img,
-.math-hero-oliver canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.math-hero-oliver img {
-  object-fit: contain;
-}
-/* A imagem estática é o primeiro quadro; o canvas só entra por cima quando o Rive carrega e a pose
-   de repouso do arquivo é a mesma da imagem, então a troca não tem salto. */
-.math-hero-oliver canvas {
-  opacity: 0;
-  transition: opacity 120ms linear;
-}
-.math-hero-oliver[data-ready="true"] canvas {
-  opacity: 1;
-}
-.math-hero-oliver[data-ready="true"] img {
-  opacity: 0;
-  transition: opacity 0ms linear 200ms;
-}
 .math-hero-pagination {
   display: flex;
   justify-content: center;
@@ -224,13 +209,6 @@
 
   .math-hero-slide--peek::before {
     opacity: 0.06;
-  }
-  .math-hero-oliver {
-    top: -90px;
-    bottom: auto;
-    height: 260px;
-    width: 70%;
-    right: 2%;
   }
   .math-hero-copy h1 {
     font-size: 29px;
