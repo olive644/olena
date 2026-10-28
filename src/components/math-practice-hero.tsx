@@ -5,7 +5,6 @@ import { agendaTimeZone } from "../data/agenda-time-zone";
 import { useWallClock } from "../hooks/use-wall-clock";
 import { PaperArrow } from "./paper-arrow";
 import { PaperDigits } from "./paper-digits";
-import { OliverHeroArt } from "./oliver-hero-art";
 export function MathPracticeHero({
   workspace,
   onPractice,
@@ -34,7 +33,29 @@ export function MathPracticeHero({
       aria-label={uiText(2717)}
       aria-roledescription={uiText(2718)}
     >
-      <article className="math-hero-slide" aria-label={uiText(620)}>
+      <article className="math-hero-slide math-hero-slide--peek" aria-label={uiText(620)}>
+        <div className="math-hero-math-decoration" aria-hidden="true">
+          <svg viewBox="0 0 280 200" fill="none">
+            <path
+              d="M0 40H280M0 80H280M0 120H280M0 160H280M40 0V200M80 0V200M120 0V200M160 0V200M200 0V200M240 0V200"
+              stroke="currentColor"
+              opacity=".15"
+            />
+            <path
+              d="m32 164 54-96 55 96H32Zm147-29 47-64 33 85-80-21Z"
+              stroke="currentColor"
+              strokeWidth="3"
+            />
+            <circle cx="86" cy="68" r="6" fill="currentColor" />
+            <g transform="translate(178 20)">
+              <circle cx="28" cy="28" r="26" stroke="currentColor" strokeWidth="3" />
+              <path d="M28 2v26h26A26 26 0 0 0 28 2Z" fill="#facc15" />
+              <path d="M28 28 10 47M28 28 46 47" stroke="currentColor" strokeWidth="2" />
+            </g>
+            <path d="m12 35 14-8 14 8v18l-14 8-14-8V35Z" fill="#2563d9" />
+            <path d="m12 35 14 8 14-8m-14 8v18" stroke="#a8dbea" strokeWidth="2" />
+          </svg>
+        </div>
         <div className="math-hero-copy">
           <h1>
             {uiText(streak > 0 ? "Seu fogo matemático está aceso!" : "A próxima descoberta é sua.")}
@@ -59,7 +80,16 @@ export function MathPracticeHero({
             {uiText(streak > 0 ? "Continuar minha ofensiva" : "Explorar Matemática")} <PaperArrow />
           </button>
         </div>
-        <OliverHeroArt />
+        <span className="math-hero-peek">
+          <img
+            src="/oliver-peeking-widget.webp"
+            width="900"
+            height="600"
+            alt={uiText("Oliver aparece por trás do widget de Matemática")}
+            fetchPriority="high"
+            draggable={false}
+          />
+        </span>
       </article>
       <div className="math-hero-pagination" aria-label={uiText(2729)}>
         <span aria-current="true" />

@@ -8,6 +8,7 @@ export type StoredProfile = {
   pronouns?: string;
   socialLinks?: string[];
   achievementFavorites?: string[];
+  cardFavorites?: string[];
   achievementHistory?: Record<string, string>;
 };
 

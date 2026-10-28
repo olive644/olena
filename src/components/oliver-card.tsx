@@ -6,7 +6,15 @@ import { OliverAttributeIcon } from "./oliver-card-icons";
 import { PaperDigits } from "./paper-digits";
 import { PaperCardTitle } from "./paper-card-title";
 import { COSMIC_RARITIES, oliverRarity } from "../data/oliver-rarity";
-export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: boolean }) {
+export function OliverCard({
+  id,
+  back = false,
+  thumbnail = false,
+}: {
+  id: OliverArtworkId;
+  back?: boolean;
+  thumbnail?: boolean;
+}) {
   useLanguage();
 
   const card = OLIVER_CARDS.find((item) => item.id === id)!;
@@ -39,8 +47,17 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
         </div>
         <img
           className="oliver-card-art"
-          src="/oliver-cards/oliver-star-tarot.webp"
-          srcSet="/oliver-cards/oliver-star-tarot-small.webp 480w, /oliver-cards/oliver-star-tarot.webp 720w"
+          src={
+            thumbnail
+              ? "/oliver-cards/oliver-star-tarot-small.webp"
+              : "/oliver-cards/oliver-star-tarot.webp"
+          }
+          srcSet={
+            thumbnail
+              ? undefined
+              : "/oliver-cards/oliver-star-tarot-small.webp 480w, /oliver-cards/oliver-star-tarot.webp 720w"
+          }
+          loading={thumbnail ? "lazy" : undefined}
           sizes="330px"
           alt={uiText(786)}
           width="720"
@@ -76,8 +93,13 @@ export function OliverCard({ id, back = false }: { id: OliverArtworkId; back?: b
       </span>
       <img
         className="oliver-card-art"
-        src={`/oliver-cards/${id}.webp`}
-        srcSet={`/oliver-cards/${id}-small.webp 480w, /oliver-cards/${id}.webp 720w`}
+        src={`/oliver-cards/${id}${thumbnail ? "-small" : ""}.webp`}
+        srcSet={
+          thumbnail
+            ? undefined
+            : `/oliver-cards/${id}-small.webp 480w, /oliver-cards/${id}.webp 720w`
+        }
+        loading={thumbnail ? "lazy" : undefined}
         sizes="330px"
         alt={uiText(1878, [card.title])}
         width="720"

@@ -1,5 +1,11 @@
 # OlenaStudy: Second Brain
 
+## Cartas e widget Matemática
+
+Cartas do perfil leem a mesma coleção dos baús. cardFavorites fica no perfil sincronizado existente, máximo três IDs válidos/obtidos; array vazio não recebe fallback. revealedAt é lista opcional por posição em MathChest, gravada somente na revelação; null/ausente significa sem data, não usar unlockAt como data de aquisição. Merge da mesma recompensa preserva a menor data conhecida. Inspeção é a original em 3D, nunca recriar outra. Miniaturas usam a própria OliverCard com thumbnail para baixar somente WebP pequeno.
+
+O Espaço não mostra mais WorkspaceSearch; a busca da Biblioteca continua. Oliver aprovado fica em public/oliver-peeking-widget.webp, sem raios amarelos, apoiado na base do widget. Não colocar a ilha novamente dentro do convite; tema matemático usa diagramas e formas de papel. Entrada CSS substitui somente a apresentação do antigo OliverHeroArt no Espaço, não converter a nova pose em quadro do Rive antigo. DESIGN_SYSTEM.md registra geometria, tamanhos, temas e interação.
+
 ## Gestos da folha e intervalo da Agenda
 
 `useMiddleMousePan` captura somente mouse com botão auxiliar pressionado na viewport do editor. Não altera ferramenta, seleção ou documento; usa scrollLeft/scrollTop e libera captura no fim, cancelamento ou perda do botão. Clique primário, caneta e toque continuam nos manipuladores existentes. O ícone do menu de post-it mantém tinta escura mesmo no tema escuro, pois sua superfície é clara.

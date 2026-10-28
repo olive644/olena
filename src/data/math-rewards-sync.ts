@@ -83,6 +83,21 @@ export function mergeMathRewards(baseRaw: string | undefined, localRaw: string, 
       );
       chests.set(chest.id, {
         ...selected,
+        ...(!differentLoot && (previous.revealedAt || chest.revealedAt)
+          ? {
+              revealedAt: Array.from(
+                { length: Math.max(previous.revealed ?? 0, chest.revealed ?? 0) },
+                (_, index) => {
+                  const times = [previous, chest].flatMap((value) =>
+                    index < (value.revealed ?? 0) && typeof value.revealedAt?.[index] === "number"
+                      ? [value.revealedAt[index]!]
+                      : [],
+                  );
+                  return times.length ? Math.min(...times) : null;
+                },
+              ),
+            }
+          : {}),
         opened: previous.opened || chest.opened,
         unlockAt: deadlines.length ? Math.min(...deadlines) : null,
         ...(chestCards(selected).length

@@ -2,8 +2,76 @@
   --student-accent: #a779ef;
 }
 .math-hero-carousel {
-  margin: 70px 0 24px;
+  margin: 24px 0;
   position: relative;
+}
+.math-hero-peek {
+  position: absolute;
+  width: min(430px, 43%);
+  aspect-ratio: 3/2;
+  bottom: -24px;
+  right: 1%;
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+}
+.math-hero-peek > img {
+  width: 100%;
+  height: auto;
+  display: block;
+  animation: math-peek-arrive 600ms ease-out both;
+}
+.math-hero-math-decoration {
+  position: absolute;
+  inset: 0 1% 0 auto;
+  width: 36%;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  color: #24acba;
+}
+.math-hero-math-decoration > svg {
+  position: absolute;
+  inset: 15% 0 auto;
+  width: 100%;
+  height: 80%;
+  opacity: 0.55;
+}
+
+.math-hero-slide--peek {
+  overflow: clip;
+}
+.math-hero-slide--peek::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 58%;
+  bottom: 0;
+  height: 14px;
+  background: #184db3;
+  opacity: 0.65;
+  clip-path: polygon(0 70%, 12% 20%, 38% 45%, 55% 0, 76% 45%, 100% 20%, 100% 100%, 0 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes math-peek-arrive {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .math-hero-peek > img {
+    animation: none;
+  }
+}
+:root[data-reduce-motion="true"] .math-hero-peek > img {
+  animation: none;
 }
 .math-hero-slide {
   position: relative;
@@ -138,11 +206,24 @@
 }
 @media (max-width: 560px) {
   .math-hero-carousel {
-    margin-top: 95px;
+    margin-top: 24px;
   }
   .math-hero-slide {
     display: block;
-    padding: 175px 20px 24px;
+    padding: 24px 20px 184px;
+  }
+  .math-hero-peek {
+    width: min(310px, 88%);
+    bottom: -18px;
+    right: 0;
+  }
+  .math-hero-math-decoration {
+    width: 100%;
+    opacity: 0.4;
+  }
+
+  .math-hero-slide--peek::before {
+    opacity: 0.06;
   }
   .math-hero-oliver {
     top: -90px;

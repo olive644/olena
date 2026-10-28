@@ -4,12 +4,22 @@ import type { StoredProfile } from "../domain/profile-identity";
 import { profileCover } from "../domain/profile-covers";
 import { validAchievementFavorites } from "../domain/math-achievements";
 import { generalAchievementHistory } from "../domain/general-achievement-catalog";
+import { isOliverCard } from "../data/oliver-cards";
+import { OLIVER_TAROT } from "../data/oliver-tarot";
 export type { StoredProfile } from "../domain/profile-identity";
 export function readStoredProfile(): StoredProfile {
   try {
     const value: unknown = JSON.parse(localStorage.getItem("helena.profile.v1") ?? "{}");
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
     const profile = { ...value } as StoredProfile;
+    if (
+      "cardFavorites" in profile &&
+      (!Array.isArray(profile.cardFavorites) ||
+        profile.cardFavorites.length > 3 ||
+        new Set(profile.cardFavorites).size !== profile.cardFavorites.length ||
+        !profile.cardFavorites.every((id) => isOliverCard(id) || id === OLIVER_TAROT.id))
+    )
+      delete profile.cardFavorites;
     if (!validAchievementFavorites(profile.achievementFavorites))
       delete profile.achievementFavorites;
     if ("achievementHistory" in profile)

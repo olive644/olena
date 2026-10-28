@@ -92,9 +92,9 @@ test("mostra Oliver e o convite de Matemática nos dois temas", async ({ page })
     await expect(
       page.getByRole("button", { name: "Explorar Matemática", exact: true }),
     ).toBeVisible();
-    const art = page.getByAltText("Oliver convidando você para explorar as ilhas de Matemática");
+    const art = page.getByAltText("Oliver aparece por trás do widget de Matemática");
     await expect(art).toBeVisible();
-    await expect(art).toHaveAttribute("src", "/oliver-math-islands.png");
+    await expect(art).toHaveAttribute("src", "/oliver-peeking-widget.webp");
 
     if (theme === "light") {
       await setTestTheme(page, "dark");
