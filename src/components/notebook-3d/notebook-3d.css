@@ -2,7 +2,7 @@
 .notebook-3d {
   position: relative;
   width: 100%;
-  height: clamp(360px, min(64vh, 52vw), 720px);
+  height: clamp(360px, min(62vh, 60vw), 760px);
   touch-action: none;
   user-select: none;
 }
@@ -51,7 +51,7 @@
 }
 @media (max-width: 700px) {
   .notebook-3d {
-    height: clamp(280px, min(80vw, 60vh), 520px);
+    height: clamp(260px, 84vw, 500px);
   }
 }
 /* As marcas ficam desenhadas na cena; os botões continuam disponíveis para o teclado. */
@@ -81,33 +81,6 @@
   right: auto;
   bottom: auto;
 }
-.notebook-preview-open {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.notebook-preview-open:focus-visible {
-  position: static;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  width: auto;
-  height: auto;
-  overflow: visible;
-  clip-path: none;
-}
-/* Setas de papel do Foco para capa, folhas e contracapa. */
-.notebook-preview-controls.is-3d {
-  align-items: center;
-}
-.notebook-3d-arrow:focus-visible {
-  outline: none;
-  border-bottom: 3px solid #facc15;
-  background: rgb(250 204 21 / 18%);
-}
 /* Em 3D o caderno usa a largura da vitrine: a cena calcula o enquadramento sozinha. */
 .notebook-spread-workspace.is-3d .notebook-workbench {
   width: min(100%, 1120px);
@@ -122,4 +95,120 @@
 .notebook-3d__peek.is-warn {
   border-color: #ac365e;
   box-shadow: 2px 3px 0 #ac365e;
+}
+
+/* Barra de baixo: seta que mostra as ferramentas, as ferramentas só com ícone e o "+" de nova folha. */
+.notebook-3d-dock {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 4px 0 0;
+}
+.notebook-3d-status {
+  margin: 0;
+  color: var(--muted, #6f6682);
+  font-size: 13px;
+  font-weight: 700;
+}
+.notebook-3d-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+}
+:root .notebook-3d-tools-toggle {
+  position: static;
+  display: grid;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  place-items: center;
+}
+.notebook-3d-tools-toggle .focus-paper-arrow {
+  width: 44px;
+  height: 44px;
+  transform: rotate(90deg);
+}
+.notebook-3d-tools-toggle[aria-expanded="true"] .focus-paper-arrow {
+  transform: rotate(-90deg);
+}
+.notebook-3d-tools-toggle:focus-visible {
+  outline: none;
+  border-bottom: 3px solid #facc15;
+  background: rgb(250 204 21 / 18%);
+}
+.notebook-3d-tray {
+  display: contents;
+}
+.notebook-3d-tray[hidden] {
+  display: none;
+}
+.notebook-3d-tray .notebook-paper-toolbox {
+  display: contents;
+}
+/* Só ícones: o nome fica no aria-label e na dica do ponteiro. */
+.notebook-3d-tray .notebook-paper-toolbox .notebook-paper-tool > span:not(.paper-tab-icon) {
+  display: none;
+}
+.notebook-3d-tray .notebook-toolbar-secondary {
+  display: contents;
+}
+.notebook-3d-tray .notebook-tool-hint {
+  position: absolute;
+  inset: auto 0 calc(100% + 6px) 0;
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  pointer-events: none;
+}
+.notebook-3d-dock {
+  position: relative;
+}
+.notebook-preview-create.is-icon {
+  display: grid;
+  width: 52px;
+  min-height: 52px;
+  padding: 0;
+  place-items: center;
+  border-radius: 8px 16px 8px 12px;
+}
+.notebook-preview-create.is-icon .paper-action-icon {
+  width: 36px;
+  height: 36px;
+}
+/* Teclado e leitor de tela: viram os botões visíveis só quando recebem foco. */
+.notebook-3d-keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.notebook-3d-keys button {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+}
+.notebook-3d-keys button:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  overflow: visible;
+  opacity: 1;
+  border: 0;
+  border-bottom: 3px solid #facc15;
+  border-radius: 8px;
+  background: #fffdf7;
+  color: #292432;
+  font: 800 12px var(--font-display, "Manrope", sans-serif);
+  outline: none;
+}
+.notebook-3d-keys button:disabled {
+  display: none;
 }

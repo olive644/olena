@@ -98,6 +98,10 @@ export type PaperToolsScene = {
   tool: NotebookTab["kind"] | null;
   editing: boolean;
   selectedId: string | null;
+  /** A caixa de ferramentas pronta, para o caderno 3D encaixar onde quiser. */
+  toolbar: ReactNode;
+  /** Sai de qualquer ferramenta ativa (marcar, editar). */
+  cancel: () => void;
   placeResolved: (kind: NotebookTab["kind"], result: PlacementResult, id?: string) => void;
   activateTab: (id: string) => void;
 };
@@ -263,6 +267,66 @@ export function NotebookPaperTools({
       suppressClick.current = true;
     },
   };
+  const toolbox = (
+    <div
+      className={`notebook-paper-toolbox${scene ? " is-scene" : ""}`}
+      role="toolbar"
+      aria-label={uiText(706)}
+    >
+      {backControl}
+      {coverControl}
+      {(["divider", "bookmark"] as const).map((kind) => (
+        <button
+          key={kind}
+          type="button"
+          className="notebook-paper-tool"
+          disabled={!pages.length || disabled}
+          aria-pressed={tool === kind}
+          aria-label={kind === "divider" ? uiText(707) : uiText(1832)}
+          title={uiText(708)}
+          onPointerDown={(event) => start(event, kind)}
+          {...pointerHandlers}
+          onClick={() =>
+            click(() => {
+              setTool(tool === kind ? null : kind);
+              setSelectedId(null);
+            })
+          }
+        >
+          <PaperTabIcon kind={kind} />
+          <span>{kind === "divider" ? uiText(705) : uiText(1831)}</span>
+        </button>
+      ))}
+      <div className="notebook-toolbar-secondary">
+        <button
+          type="button"
+          className="notebook-paper-tool"
+          aria-pressed={editing}
+          aria-label={editing ? uiText(709) : uiText(1833)}
+          title={editing ? uiText(709) : uiText(1833)}
+          disabled={!tabs.length || disabled}
+          onClick={() => {
+            setEditing(!editing);
+            setSelectedId(null);
+            setTool(null);
+          }}
+        >
+          <PaperEditorIcon name={editing ? "save" : "pen"} />
+          <span>{editing ? uiText(709) : uiText(1833)}</span>
+        </button>
+        {indexControl}
+      </div>
+      <span className="notebook-tool-hint">
+        {tool === "divider"
+          ? uiText(1834)
+          : tool === "bookmark"
+            ? uiText(1835)
+            : editing
+              ? uiText(710)
+              : uiText(711)}
+      </span>
+    </div>
+  );
   return (
     <div
       className="notebook-workbench"
@@ -275,60 +339,7 @@ export function NotebookPaperTools({
         }
       }}
     >
-      <div className="notebook-paper-toolbox" role="toolbar" aria-label={uiText(706)}>
-        {backControl}
-        {coverControl}
-        {(["divider", "bookmark"] as const).map((kind) => (
-          <button
-            key={kind}
-            type="button"
-            className="notebook-paper-tool"
-            disabled={!pages.length || disabled}
-            aria-pressed={tool === kind}
-            aria-label={kind === "divider" ? uiText(707) : uiText(1832)}
-            title={uiText(708)}
-            onPointerDown={(event) => start(event, kind)}
-            {...pointerHandlers}
-            onClick={() =>
-              click(() => {
-                setTool(tool === kind ? null : kind);
-                setSelectedId(null);
-              })
-            }
-          >
-            <PaperTabIcon kind={kind} />
-            <span>{kind === "divider" ? uiText(705) : uiText(1831)}</span>
-          </button>
-        ))}
-        <div className="notebook-toolbar-secondary">
-          <button
-            type="button"
-            className="notebook-paper-tool"
-            aria-pressed={editing}
-            aria-label={editing ? uiText(709) : uiText(1833)}
-            title={editing ? uiText(709) : uiText(1833)}
-            disabled={!tabs.length || disabled}
-            onClick={() => {
-              setEditing(!editing);
-              setSelectedId(null);
-              setTool(null);
-            }}
-          >
-            <PaperEditorIcon name={editing ? "save" : "pen"} />
-            <span>{editing ? uiText(709) : uiText(1833)}</span>
-          </button>
-          {indexControl}
-        </div>
-        <span className="notebook-tool-hint">
-          {tool === "divider"
-            ? uiText(1834)
-            : tool === "bookmark"
-              ? uiText(1835)
-              : editing
-                ? uiText(710)
-                : uiText(711)}
-        </span>
-      </div>
+      {!scene && toolbox}
       {selected && (
         <div className="notebook-tab-inspector" role="group" aria-label={uiText(712)}>
           <label>
@@ -418,6 +429,12 @@ export function NotebookPaperTools({
               tool,
               editing,
               selectedId,
+              toolbar: toolbox,
+              cancel: () => {
+                setTool(null);
+                setSelectedId(null);
+                setEditing(false);
+              },
               placeResolved,
               activateTab,
             })
