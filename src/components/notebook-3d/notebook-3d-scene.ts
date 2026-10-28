@@ -266,13 +266,13 @@ export class NotebookScene {
   private readonly leaf0Material = standard({ roughness: 0.92 });
   private title = "";
   private camState = {
-    yaw: 0.1,
-    tilt: 0.86,
+    yaw: 0,
+    tilt: 0.5,
     zoom: 1,
     x: 0,
     z: 0,
     distance: 14,
-    tiltNow: 0.86,
+    tiltNow: 0.5,
     yawNow: 0.1,
     ready: false,
   };
@@ -1215,19 +1215,13 @@ export class NotebookScene {
     const count = this.leaves.length;
     const closedFront = this.flipped === 0;
     const closedBack = this.flipped === count && count > 0;
-    const narrow = aspect < 0.85;
-    const leftSelected = this.selected % 2 === 0;
     let xr: [number, number] = closedFront
       ? [-0.4, BW + 0.75]
       : closedBack
         ? [-BW - 0.75, 0.4]
-        : narrow
-          ? leftSelected
-            ? [-W - 0.7, 0.55]
-            : [-0.55, W + 0.8]
-          : [-W - 0.75, W + 0.85];
+        : [-W - 0.85, W + 0.85];
     let zr: [number, number] =
-      closedFront || closedBack ? [-BH / 2 - 0.15, BH / 2 + 0.55] : [-H / 2 - 0.25, H / 2 + 0.75];
+      closedFront || closedBack ? [-BH / 2 - 0.15, BH / 2 + 0.55] : [-H / 2 - 0.35, H / 2 + 0.45];
     const focus = this.focus ? easeInOut(this.focus.amount) : 0;
     if (focus > 0 && this.focus) {
       const side = this.focus.index % 2 === 0 ? -1 : 1;

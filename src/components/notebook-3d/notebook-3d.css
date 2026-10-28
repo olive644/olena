@@ -2,7 +2,7 @@
 .notebook-3d {
   position: relative;
   width: 100%;
-  height: clamp(420px, 64vh, 780px);
+  height: clamp(360px, min(64vh, 52vw), 720px);
   touch-action: none;
   user-select: none;
 }
@@ -51,7 +51,7 @@
 }
 @media (max-width: 700px) {
   .notebook-3d {
-    height: clamp(360px, 58vh, 620px);
+    height: clamp(280px, min(80vw, 60vh), 520px);
   }
 }
 /* As marcas ficam desenhadas na cena; os botões continuam disponíveis para o teclado. */
@@ -82,7 +82,40 @@
   bottom: auto;
 }
 .notebook-preview-open {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.notebook-preview-open:focus-visible {
+  position: static;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+}
+/* Setas de papel do Foco para capa, folhas e contracapa. */
+.notebook-preview-controls.is-3d {
+  align-items: center;
+}
+.notebook-3d-arrow:focus-visible {
+  outline: none;
+  border-bottom: 3px solid #facc15;
+  background: rgb(250 204 21 / 18%);
+}
+/* Em 3D o caderno usa a largura da vitrine: a cena calcula o enquadramento sozinha. */
+.notebook-spread-workspace.is-3d .notebook-workbench {
+  width: min(100%, 1120px);
+  max-height: none;
+  padding: 0 0 18px;
+}
+.notebook-spread-workspace.is-3d .notebook-spread-shell {
+  aspect-ratio: auto;
+  height: auto;
+  perspective: none;
 }

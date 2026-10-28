@@ -217,6 +217,8 @@ export function NotebookSpread({
       if (!next.cover && !next.back) setSpreadIndex(Math.max(0, Math.min(lastSpread, next.spread)));
     };
     const closed = showCover || showBack;
+    const previousLabel = showBack ? uiText(3170) : current === 0 ? uiText(1857) : uiText(1858);
+    const nextLabel = !showCover && current >= lastSpread ? uiText(3169) : uiText(744);
     return (
       <div className="notebook-spread-workspace is-3d" data-notebook-3d="">
         <NotebookPaperTools
@@ -278,11 +280,13 @@ export function NotebookSpread({
             />
           )}
         </NotebookPaperTools>
-        <nav className="notebook-preview-controls" aria-label={uiText(695)}>
+        <nav className="notebook-preview-controls is-3d" aria-label={uiText(695)}>
           <button
-            className="secondary-button"
+            className="focus-mode-arrow focus-mode-arrow--previous notebook-3d-arrow"
             type="button"
             disabled={showCover || Boolean(transitioning)}
+            aria-label={previousLabel}
+            title={previousLabel}
             onClick={() =>
               showBack
                 ? setShowBack(false)
@@ -291,7 +295,7 @@ export function NotebookSpread({
                   : setSpreadIndex(current - 1)
             }
           >
-            {showBack ? uiText(3170) : current === 0 ? uiText(1857) : uiText(1858)}
+            <FocusPaperArrow />
           </button>
           <span aria-live="polite">
             {showCover
@@ -307,9 +311,11 @@ export function NotebookSpread({
                   : uiText(1860)}
           </span>
           <button
-            className="secondary-button"
+            className="focus-mode-arrow focus-mode-arrow--next notebook-3d-arrow"
             type="button"
             disabled={showBack || Boolean(transitioning)}
+            aria-label={nextLabel}
+            title={nextLabel}
             onClick={() =>
               showCover
                 ? setShowCover(false)
@@ -318,10 +324,11 @@ export function NotebookSpread({
                   : setSpreadIndex(current + 1)
             }
           >
-            {!showCover && current >= lastSpread ? uiText(3169) : uiText(744)}
+            <FocusPaperArrow />
           </button>
         </nav>
         <div className="notebook-preview-actions">
+          {/* Abrir é tocar na folha; estes botões só aparecem para quem navega pelo teclado. */}
           {!closed &&
             visible.map((page) => (
               <button

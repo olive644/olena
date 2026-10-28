@@ -384,9 +384,11 @@ export function drawPage(x: Ctx, page: PageArt | null) {
     x.fillStyle = "#7b6f8c";
     x.font = `800 24px ${FONT}`;
     x.letterSpacing = "5px";
-    x.textAlign = side ? "right" : "left";
-    x.fillText(uiText(3167, [String(page.index + 1).padStart(2, "0")]), side ? width - 70 : 90, 60);
+    // O rótulo fica sempre no canto de fora, longe do título.
+    x.textAlign = "right";
+    x.fillText(uiText(3167, [String(page.index + 1).padStart(2, "0")]), width - 70, 60);
     x.letterSpacing = "0px";
+    x.textAlign = side ? "right" : "left";
     x.font = `800 28px ${FONT}`;
     x.fillText(String(page.index + 1), side ? width - 80 : 80, height - 50);
     x.textAlign = "left";
