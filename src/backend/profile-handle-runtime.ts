@@ -45,6 +45,7 @@ export async function identifyProfileAccount(request: Request) {
   if (!user || user.localId !== verified.uid || user.disabled) return undefined;
   return {
     uid: verified.uid,
+    authTime: verified.authTime,
     anonymous: false,
     emailVerified: user.emailVerified === true,
     ...(user.email ? { email: user.email } : {}),

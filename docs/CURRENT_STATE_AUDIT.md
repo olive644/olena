@@ -3755,3 +3755,11 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - `OliverHeroArt` volta a ser usado por `MathPracticeHero` e passa a renderizar `.math-hero-peek` (imagem como primeiro quadro, canvas por cima). Movimento reduzido (sistema ou app) mantém só a imagem e não baixa runtime nem arquivo. As regras CSS `.math-hero-oliver` e a arte da ilha antiga (`oliver-math-islands`) deixaram de ser usadas; os arquivos continuam no repositório e podem ser removidos em uma limpeza própria.
 - `performance:check` passa a medir `dist/oliver-peeking-widget/oliver.riv` (teto de 512 KiB).
 - Verificação feita no runtime oficial em Chromium: repouso igual à arte (diferença máxima 3/255), laço de 12 s sem salto, varredura de frestas nos quadros do ambiente e das três reações, e zoom nas juntas e nas bordas. Mobile e WebKit ficam para o CI. Detalhes em `scripts/oliver-peek-rive/README.md`.
+
+## Segurança do login: vínculo recente e sessões, 2026-10-28
+
+- Revisão de segurança do código de login, do servidor e das regras do banco (leitura de código; nada foi testado contra produção). Achados corrigidos nesta mudança: vincular Discord sem login recente, ausência de encerramento global de sessões e limite por IP que contava três passos por login.
+- Servidor: start com Authorization exige auth_time de menos de 240 s (401 recent-login); novo passo revoke-sessions; limite por IP só no start. firebase-account-identity devolve authTime. Testes em discord-auth-handler.test.ts e discord-auth-runtime.test.ts (login velho, token sem auth_time ou do futuro, revogação, limites, origem cruzada).
+- Cliente: confirmação "Confirme que é você" antes de associar o Discord e para sair de todos os aparelhos; testes em account-access-panel.test.tsx. Seis textos novos nos catálogos.
+- Não verificado: login real Discord/Google, o efeito de validSince no Firebase de produção e a revogação de ID tokens no banco (continuam valendo até expirar). Para conferir: entrar em dois navegadores, usar "Sair de todos os aparelhos" num deles e ver o outro cair na próxima chamada ao servidor.
+- Fora do repositório (da dona do projeto): conferir no console Firebase a proteção contra enumeração de e-mails, a política de senha obrigatória, App Check no Realtime Database e no Auth, e AUTH_PUBLIC_ORIGIN na Vercel.

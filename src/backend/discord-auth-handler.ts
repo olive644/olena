@@ -12,11 +12,14 @@ type Dependencies = {
   allowedOrigins: readonly string[];
   store: KvStore;
   fetchImpl?: typeof fetch;
-  identify: (request: Request) => Promise<{ uid: string } | undefined>;
+  identify: (request: Request) => Promise<{ uid: string; authTime?: number } | undefined>;
+  now?: () => number;
   resolve: (profile: DiscordIdentity, linkUid?: string) => Promise<string>;
   mint: (uid: string) => Promise<string>;
 };
 const COOKIE = "__Host-olena_discord_oauth";
+// Vincular um método dá acesso permanente à conta, então exige o mesmo login recente da desvinculação.
+const RECENT_LOGIN_SECONDS = 240;
 const nonce = () => randomBytes(32).toString("base64url");
 const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 const isNonce = (value: string | null): value is string =>
@@ -24,6 +27,7 @@ const isNonce = (value: string | null): value is string =>
 
 export function createDiscordAuthHandler(deps: Dependencies) {
   const fetcher = deps.fetchImpl ?? fetch;
+  const clock = deps.now ?? Date.now;
   const configured = !!deps.clientId && !!deps.clientSecret && /^https:\/\//.test(deps.origin);
   const callback = `${deps.origin}/api/olena?action=account-auth&step=callback`;
   const headers = {
@@ -62,14 +66,14 @@ export function createDiscordAuthHandler(deps: Dependencies) {
         .find((part) => part.startsWith(`${COOKIE}=`))
         ?.slice(COOKIE.length + 1) ?? "";
     try {
+      // O limite por endereço conta só o início de cada login: o retorno e a troca dependem de um
+      // estado aleatório de uso único criado ali. Contar os três passos fazia uma turma inteira
+      // atrás do mesmo IP esgotar o limite depois de poucos logins. O teto global vale para todos.
+      const address = clientAddress(request);
       if (
-        !(await checkRateLimit(
-          deps.store,
-          "room-limits",
-          `account-auth:${clientAddress(request) ?? "unknown"}`,
-          30,
-          600,
-        )) ||
+        (step === "start" &&
+          address !== undefined &&
+          !(await checkRateLimit(deps.store, "room-limits", `account-auth:${address}`, 60, 600))) ||
         !(await checkRateLimit(deps.store, "room-limits", "account-auth:global", 2000, 86400))
       )
         return json(429, { error: "rate-limit" });
@@ -80,6 +84,15 @@ export function createDiscordAuthHandler(deps: Dependencies) {
           : undefined;
         if (request.headers.has("authorization") && !identity)
           return json(401, { error: "identity" });
+        if (
+          identity &&
+          !(
+            typeof identity.authTime === "number" &&
+            identity.authTime <= clock() / 1000 &&
+            clock() / 1000 - identity.authTime < RECENT_LOGIN_SECONDS
+          )
+        )
+          return json(401, { error: "recent-login" });
         const state = nonce();
         const secret = nonce();
         const verifier = nonce();
