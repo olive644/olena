@@ -97,6 +97,7 @@ type Props = {
 export type PaperToolsScene = {
   tool: NotebookTab["kind"] | null;
   editing: boolean;
+  selectedId: string | null;
   placeResolved: (kind: NotebookTab["kind"], result: PlacementResult, id?: string) => void;
   activateTab: (id: string) => void;
 };
@@ -416,6 +417,7 @@ export function NotebookPaperTools({
           ? children({
               tool,
               editing,
+              selectedId,
               placeResolved,
               activateTab,
             })

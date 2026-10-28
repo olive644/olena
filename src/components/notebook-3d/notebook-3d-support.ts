@@ -47,3 +47,17 @@ export function prefetchNotebook3d(force = false) {
   void import("./notebook-3d-scene");
   void import("./notebook-3d-book");
 }
+
+type Closer = () => Promise<DOMRect | null>;
+let closer: Closer | null = null;
+/** O caderno 3D aberto se registra para a estante pedir que ele feche antes de a capa viajar. */
+export function registerNotebook3dCloser(value: Closer) {
+  closer = value;
+  return () => {
+    if (closer === value) closer = null;
+  };
+}
+/** Fecha o caderno 3D aberto e devolve onde a capa ficou na tela; sem caderno 3D, devolve null. */
+export function closeNotebook3d(): Promise<DOMRect | null> {
+  return closer ? closer() : Promise.resolve(null);
+}

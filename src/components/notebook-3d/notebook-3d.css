@@ -119,3 +119,7 @@
   height: auto;
   perspective: none;
 }
+.notebook-3d__peek.is-warn {
+  border-color: #ac365e;
+  box-shadow: 2px 3px 0 #ac365e;
+}

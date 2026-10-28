@@ -2,76 +2,21 @@
 // roxos do caderno, creme, amarelo e cantoneiras com dobra.
 import { uiText } from "../../i18n/runtime";
 import { DIVIDER } from "./notebook-3d-model";
+import {
+  COVER_CORNER,
+  COVER_UNITS,
+  paintBackArt,
+  paintCoverArt,
+  paperStar,
+  seeded,
+} from "./notebook-cover-paint";
+
+export { paperStar } from "./notebook-cover-paint";
 
 export const PAGE_UNITS = { width: 1200, height: 1600 } as const;
 type Ctx = CanvasRenderingContext2D;
 const FONT = '"Manrope", "Segoe UI", system-ui, sans-serif';
 const HAND = '"Nunito", "Segoe UI", system-ui, sans-serif';
-
-function seeded(seed: number) {
-  let value = seed;
-  return () => (value = (value * 16807) % 2147483647) / 2147483647;
-}
-
-export function paperStar(
-  x: Ctx,
-  cx: number,
-  cy: number,
-  radius: number,
-  rotation: number,
-  fill = "#FACC15",
-  fold = "#B88C13",
-) {
-  x.beginPath();
-  for (let index = 0; index < 10; index++) {
-    const angle = rotation - Math.PI / 2 + (index * Math.PI) / 5;
-    const length = index % 2 ? radius * 0.46 : radius;
-    x.lineTo(cx + Math.cos(angle) * length, cy + Math.sin(angle) * length);
-  }
-  x.closePath();
-  x.fillStyle = fill;
-  x.fill();
-  x.save();
-  x.clip();
-  x.globalAlpha = 0.35;
-  x.fillStyle = fold;
-  x.beginPath();
-  x.moveTo(cx, cy);
-  x.lineTo(cx + radius * 2, cy - radius * 0.2);
-  x.lineTo(cx + radius * 2, cy + radius * 2);
-  x.lineTo(cx - radius * 0.3, cy + radius * 2);
-  x.closePath();
-  x.fill();
-  x.restore();
-}
-
-function corners(x: Ctx, width: number, height: number, onLeft: boolean) {
-  for (const bottom of [false, true]) {
-    x.save();
-    if (onLeft) {
-      x.translate(width, 0);
-      x.scale(-1, 1);
-    }
-    if (bottom) {
-      x.translate(0, height);
-      x.scale(1, -1);
-    }
-    x.fillStyle = "#51259b";
-    x.beginPath();
-    x.moveTo(width - 250, 0);
-    x.lineTo(width, 0);
-    x.lineTo(width, 250);
-    x.closePath();
-    x.fill();
-    x.strokeStyle = "#a779ef";
-    x.lineWidth = 7;
-    x.beginPath();
-    x.moveTo(width - 238, 7);
-    x.lineTo(width - 7, 238);
-    x.stroke();
-    x.restore();
-  }
-}
 
 function fitText(x: Ctx, text: string, maxWidth: number) {
   let value = text;
@@ -81,143 +26,77 @@ function fitText(x: Ctx, text: string, maxWidth: number) {
 }
 
 /** Capa: arte fixa da Olena no arco, cantoneiras, vinco da lombada e a etiqueta com o nome do caderno. */
-export function drawCover(
-  x: Ctx,
-  width: number,
-  height: number,
-  art: CanvasImageSource | null,
-  title: string,
-) {
-  x.fillStyle = "#4f22a6";
-  x.fillRect(0, 0, width, height);
-  if (art) x.drawImage(art, 0, 0, width, height);
-  const groove = x.createLinearGradient(0, 0, 90, 0);
-  groove.addColorStop(0, "rgba(12,4,30,0.55)");
-  groove.addColorStop(1, "rgba(12,4,30,0)");
-  x.fillStyle = groove;
-  x.fillRect(0, 0, 90, height);
-  x.fillStyle = "rgba(255,255,255,0.08)";
-  x.fillRect(70, 0, 3, height);
-  corners(x, width, height, false);
-  const k = width / 1240;
+/** Etiqueta de papel com fita amarela, a mesma da vitrine 2D (.book-cover__label). */
+function label(x: Ctx, title: string, caption: string) {
   x.save();
-  x.translate(560 * k, height - 270 * k);
-  x.scale(k, k);
-  x.rotate(-0.018);
+  x.rotate(-0.026);
   x.fillStyle = "#51259b";
-  x.fillRect(-402, -86, 820, 192);
-  x.fillStyle = "#fffdf7";
-  x.fillRect(-410, -96, 820, 192);
+  x.fillRect(-392, -84, 820, 196);
+  x.fillStyle = "#fff9ef";
+  x.fillRect(-410, -100, 820, 196);
   x.strokeStyle = "#d5ccba";
   x.lineWidth = 3;
-  x.strokeRect(-404, -90, 808, 180);
+  x.strokeRect(-404, -94, 808, 184);
   x.fillStyle = "#ffe88d";
-  x.fillRect(-120, -112, 240, 34);
+  x.beginPath();
+  x.moveTo(-130, -118);
+  x.lineTo(140, -114);
+  x.lineTo(134, -82);
+  x.lineTo(-136, -86);
+  x.closePath();
+  x.fill();
   x.fillStyle = "#292432";
   x.textAlign = "left";
-  x.font = `800 70px ${FONT}`;
-  x.fillText(fitText(x, title || uiText(3177), 740), -370, 18);
+  // Título longo: diminui um pouco e, se ainda não couber, quebra em duas linhas.
+  let size = 72;
+  x.font = `800 ${size}px ${FONT}`;
+  while (x.measureText(title).width > 740 && size > 58) {
+    size -= 2;
+    x.font = `800 ${size}px ${FONT}`;
+  }
+  if (x.measureText(title).width <= 740) x.fillText(title, -370, 14);
+  else {
+    size = 50;
+    x.font = `800 ${size}px ${FONT}`;
+    const lines = wrap(x, title, 740);
+    x.fillText(fitText(x, lines[0] ?? "", 740), -370, -16);
+    x.fillText(fitText(x, lines.slice(1).join(" "), 740), -370, 34);
+  }
   x.fillStyle = "#7b6f8c";
   x.font = `800 24px ${FONT}`;
   x.letterSpacing = "4px";
-  x.fillText(fitText(x, uiText(3165), 740), -370, 66);
+  x.fillText(fitText(x, caption, 740), -370, 76);
   x.letterSpacing = "0px";
   x.restore();
 }
 
-function leather(x: Ctx, width: number, height: number, seed: number) {
-  const random = seeded(seed);
-  const gradient = x.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, "#6c37cf");
-  gradient.addColorStop(0.45, "#4f22a6");
-  gradient.addColorStop(1, "#2c1566");
-  x.fillStyle = gradient;
-  x.fillRect(0, 0, width, height);
-  for (let index = 0; index < 12000; index++) {
-    x.fillStyle = random() < 0.5 ? "rgba(255,255,255,0.035)" : "rgba(10,0,30,0.05)";
-    x.fillRect(random() * width, random() * height, 2, 2);
-  }
-  return random;
+/** Capa: arte de papel recortado (sem personagens) e a etiqueta com o título vivo. */
+export function drawCover(x: Ctx, width: number, height: number, title: string) {
+  x.save();
+  x.scale(width / COVER_UNITS.width, height / COVER_UNITS.height);
+  paintCoverArt(x);
+  x.translate(COVER_UNITS.width * 0.5 + 40, COVER_UNITS.height - 250);
+  label(x, title || uiText(3177), uiText(3165));
+  x.restore();
 }
 
-/** Contracapa: a lombada fica à direita quando ela está virada para cima. */
-export function drawBackCover(
-  x: Ctx,
-  width: number,
-  height: number,
-  olena: CanvasImageSource | null,
-) {
-  const random = leather(x, width, height, 21);
+/** Contracapa: medalhão da lua e etiqueta "Este caderno pertence a", com linhas para o nome. */
+export function drawBackCover(x: Ctx, width: number, height: number) {
   x.save();
-  x.strokeStyle = "rgba(196,166,255,0.85)";
-  x.lineWidth = 4;
-  x.setLineDash([16, 11]);
-  x.beginPath();
-  x.roundRect(36, 36, width - 128, height - 72, 28);
-  x.stroke();
-  x.restore();
-  const groove = x.createLinearGradient(width, 0, width - 90, 0);
-  groove.addColorStop(0, "rgba(12,4,30,0.55)");
-  groove.addColorStop(1, "rgba(12,4,30,0)");
-  x.fillStyle = groove;
-  x.fillRect(width - 90, 0, 90, height);
-  corners(x, width, height, true);
-  const cx = width * 0.47;
-  const cy = height * 0.36;
-  const radius = width * 0.24;
-  x.fillStyle = "#1a0d3d";
-  x.beginPath();
-  x.arc(cx + 10, cy + 14, radius, 0, Math.PI * 2);
-  x.fill();
-  x.fillStyle = "#FFF9EF";
-  x.beginPath();
-  x.arc(cx, cy, radius, 0, Math.PI * 2);
-  x.fill();
-  x.fillStyle = "#FACC15";
-  x.beginPath();
-  x.arc(cx, cy, radius * 0.94, 0, Math.PI * 2);
-  x.fill();
-  const sky = x.createRadialGradient(cx, cy - radius * 0.2, 20, cx, cy, radius * 0.92);
-  sky.addColorStop(0, "#4b2f8a");
-  sky.addColorStop(1, "#241650");
-  x.fillStyle = sky;
-  x.beginPath();
-  x.arc(cx, cy, radius * 0.92, 0, Math.PI * 2);
-  x.fill();
-  x.save();
-  x.beginPath();
-  x.arc(cx, cy, radius * 0.92, 0, Math.PI * 2);
-  x.clip();
-  for (let index = 0; index < 40; index++) {
-    x.fillStyle = `rgba(255,246,214,${0.3 + random() * 0.6})`;
-    x.beginPath();
-    x.arc(
-      cx - radius + random() * radius * 2,
-      cy - radius + random() * radius * 1.2,
-      1.5 + random() * 2.4,
-      0,
-      Math.PI * 2,
-    );
-    x.fill();
-  }
-  if (olena)
-    x.drawImage(olena, cx - radius * 0.78, cy - radius * 0.72, radius * 1.56, radius * 1.96);
-  x.restore();
-  paperStar(x, cx - radius * 0.9, cy - radius * 0.8, 40, 0.3);
-  paperStar(x, cx + radius * 0.86, cy + radius * 0.7, 30, -0.2);
-  x.save();
-  x.translate(cx, height * 0.7);
-  x.rotate(0.015);
-  const labelWidth = width * 0.63;
+  x.scale(width / COVER_UNITS.width, height / COVER_UNITS.height);
+  paintBackArt(x);
+  x.translate(COVER_UNITS.width * 0.47, COVER_UNITS.height * 0.74);
+  x.rotate(0.016);
+  const labelWidth = 760;
   x.fillStyle = "#51259b";
-  x.fillRect(-labelWidth / 2 + 8, -86, labelWidth, 220);
+  x.fillRect(-labelWidth / 2 + 10, -88, labelWidth, 236);
   x.fillStyle = "#fffdf7";
-  x.fillRect(-labelWidth / 2, -96, labelWidth, 220);
+  x.fillRect(-labelWidth / 2, -100, labelWidth, 236);
   x.strokeStyle = "#d5ccba";
   x.lineWidth = 3;
-  x.strokeRect(-labelWidth / 2 + 6, -90, labelWidth - 12, 208);
+  x.strokeRect(-labelWidth / 2 + 6, -94, labelWidth - 12, 224);
   x.fillStyle = "#a779ef";
-  x.fillRect(-110, -112, 220, 34);
+  x.fillRect(-110, -118, 220, 34);
   x.fillStyle = "#7b6f8c";
   x.font = `800 26px ${FONT}`;
   x.letterSpacing = "4px";
@@ -225,39 +104,59 @@ export function drawBackCover(
   x.fillText(fitText(x, uiText(3166), labelWidth - 80), -labelWidth / 2 + 40, -30);
   x.letterSpacing = "0px";
   x.strokeStyle = "#cfc6dc";
-  for (const y of [40, 100]) {
+  x.lineWidth = 3;
+  for (const y of [44, 104]) {
     x.beginPath();
     x.moveTo(-labelWidth / 2 + 40, y);
     x.lineTo(labelWidth / 2 - 40, y);
     x.stroke();
   }
   x.restore();
-  for (const [sx, sy, r] of [
-    [width * 0.2, height * 0.88, 24],
-    [width * 0.74, height * 0.9, 18],
-    [width * 0.84, height * 0.12, 22],
-  ] as const)
-    paperStar(x, sx, sy, r, random() * 2);
 }
 
+/**
+ * Guarda (verso das capas): papel lilás com estrelas e luas recortadas. Os cantos de fora são
+ * arredondados como a capa; o lado da lombada fica à esquerda (u = 0).
+ */
 export function drawEndpaper(x: Ctx, width: number, height: number) {
+  const radius = (COVER_CORNER / COVER_UNITS.width) * width;
+  x.clearRect(0, 0, width, height);
+  x.save();
+  x.beginPath();
+  x.moveTo(0, 0);
+  x.lineTo(width - radius, 0);
+  x.quadraticCurveTo(width, 0, width, radius);
+  x.lineTo(width, height - radius);
+  x.quadraticCurveTo(width, height, width - radius, height);
+  x.lineTo(0, height);
+  x.closePath();
+  x.clip();
   x.fillStyle = "#ece2ff";
   x.fillRect(0, 0, width, height);
   const random = seeded(3);
-  for (let y = 0; y < height; y += 120)
-    for (let column = (y / 120) % 2 ? 60 : 0; column < width; column += 120) {
-      if (random() < 0.5) paperStar(x, column + 30, y + 30, 16, random(), "#d6c3ff", "#b99cf2");
+  const step = width / 6;
+  for (let y = 0; y < height + step; y += step)
+    for (let column = (y / step) % 2 ? step / 2 : 0; column < width + step; column += step) {
+      if (random() < 0.5)
+        paperStar(x, column + 24, y + 24, step * 0.13, random(), "#d6c3ff", "#b99cf2");
       else {
         x.fillStyle = "#d6c3ff";
         x.beginPath();
-        x.arc(column + 30, y + 30, 14, 0, Math.PI * 2);
+        x.arc(column + 24, y + 24, step * 0.12, 0, Math.PI * 2);
         x.fill();
         x.fillStyle = "#ece2ff";
         x.beginPath();
-        x.arc(column + 24, y + 25, 12, 0, Math.PI * 2);
+        x.arc(column + 18, y + 19, step * 0.1, 0, Math.PI * 2);
         x.fill();
       }
     }
+  // A guarda é colada: perto da lombada o papel escurece de leve.
+  const hinge = x.createLinearGradient(0, 0, width * 0.12, 0);
+  hinge.addColorStop(0, "rgba(60,30,110,0.28)");
+  hinge.addColorStop(1, "rgba(60,30,110,0)");
+  x.fillStyle = hinge;
+  x.fillRect(0, 0, width * 0.12, height);
+  x.restore();
 }
 
 /** Lombada escura com costura tracejada e as três alças inclinadas da vitrine 2D. */
@@ -287,13 +186,14 @@ export function drawSpine(x: Ctx, width: number, height: number) {
   }
 }
 
+/** Lateral da pilha: uma faixa por folha, com a linha fina entre elas que mostra quantas são. */
 export function drawPageEdges(x: Ctx, width: number, height: number) {
-  x.fillStyle = "#fffdf7";
+  x.fillStyle = "#fbf3e2";
   x.fillRect(0, 0, width, height);
-  x.fillStyle = "#e3d8c4";
-  x.fillRect(0, height - 8, width, 8);
-  x.fillStyle = "#f3ecdf";
-  x.fillRect(0, height / 2 - 3, width, 3);
+  x.fillStyle = "#fffdf7";
+  x.fillRect(0, height * 0.18, width, height * 0.5);
+  x.fillStyle = "#d8c8ab";
+  x.fillRect(0, height - height * 0.14, width, height * 0.14);
 }
 
 export function drawClaspStrap(x: Ctx, width: number, height: number) {
@@ -347,11 +247,17 @@ function wrap(x: Ctx, text: string, maxWidth: number) {
 export function drawPage(x: Ctx, page: PageArt | null) {
   const { width, height } = PAGE_UNITS;
   const side = page ? page.index % 2 : 1;
-  x.fillStyle = "#fffdf7";
+  x.fillStyle = "#fffaf0";
   x.fillRect(0, 0, width, height);
+  // Grão leve do papel, sempre igual para a mesma folha.
+  const random = seeded(17 + (page?.index ?? 0) * 31);
+  for (let index = 0; index < 2600; index++) {
+    x.fillStyle = random() < 0.5 ? "rgba(120,96,60,0.05)" : "rgba(255,255,255,0.5)";
+    x.fillRect(random() * width, random() * height, 2, 2);
+  }
   if (page) {
     const top = 150;
-    const box = { x: 40, y: top, w: width - 80, h: height - top - 110 };
+    const box = { x: 40, y: top, w: width - 80, h: height - top - 120 };
     if (page.preview) {
       const source = page.preview as HTMLImageElement;
       const sw = source.naturalWidth || source.width || 1;
@@ -364,23 +270,39 @@ export function drawPage(x: Ctx, page: PageArt | null) {
         sw * scale,
         sh * scale,
       );
-    } else if (page.content) {
-      x.fillStyle = "#3a3346";
-      x.font = `700 40px ${HAND}`;
-      let y = top + 70;
-      for (const line of wrap(x, page.content, box.w - 60)) {
-        if (y > box.y + box.h - 20) break;
-        x.fillText(line, box.x + 30, y);
-        y += 60;
+    } else {
+      // Folha ainda sem desenho: pauta clara e a margem, como o papel pautado do editor.
+      x.strokeStyle = "rgba(124,111,180,0.22)";
+      x.lineWidth = 3;
+      for (let y = top + 90; y < height - 140; y += 72) {
+        x.beginPath();
+        x.moveTo(70, y);
+        x.lineTo(width - 70, y);
+        x.stroke();
+      }
+      x.strokeStyle = "rgba(226,104,140,0.35)";
+      x.beginPath();
+      x.moveTo(side ? 170 : width - 170, top + 20);
+      x.lineTo(side ? 170 : width - 170, height - 140);
+      x.stroke();
+      if (page.content) {
+        x.fillStyle = "#3a3346";
+        x.font = `700 40px ${HAND}`;
+        let y = top + 82;
+        for (const line of wrap(x, page.content, box.w - 220)) {
+          if (y > box.y + box.h - 20) break;
+          x.fillText(line, side ? 196 : 110, y);
+          y += 72;
+        }
       }
     }
     x.fillStyle = "#292432";
     x.font = `800 54px ${FONT}`;
     x.textAlign = "left";
-    const title = fitText(x, page.title || uiText(3177), width - 320);
-    x.fillText(title, side ? 70 : 90, 96);
+    const title = fitText(x, page.title || uiText(3177), width - 360);
+    x.fillText(title, side ? 70 : 100, 96);
     x.fillStyle = "#FACC15";
-    x.fillRect(side ? 70 : 90, 112, Math.min(width - 320, x.measureText(title).width) * 0.6, 10);
+    x.fillRect(side ? 70 : 100, 112, Math.min(width - 360, x.measureText(title).width) * 0.6, 10);
     x.fillStyle = "#7b6f8c";
     x.font = `800 24px ${FONT}`;
     x.letterSpacing = "5px";
@@ -388,20 +310,51 @@ export function drawPage(x: Ctx, page: PageArt | null) {
     x.textAlign = "right";
     x.fillText(uiText(3167, [String(page.index + 1).padStart(2, "0")]), width - 70, 60);
     x.letterSpacing = "0px";
-    x.textAlign = side ? "right" : "left";
-    x.font = `800 28px ${FONT}`;
-    x.fillText(String(page.index + 1), side ? width - 80 : 80, height - 50);
+    // Número da folha numa bolinha de papel no canto de fora, embaixo.
+    const nx = side ? width - 96 : 96;
+    const ny = height - 76;
+    x.fillStyle = "rgba(81,37,155,0.18)";
+    x.beginPath();
+    x.arc(nx + 4, ny + 6, 40, 0, Math.PI * 2);
+    x.fill();
+    x.fillStyle = "#ece2ff";
+    x.beginPath();
+    x.arc(nx, ny, 40, 0, Math.PI * 2);
+    x.fill();
+    x.fillStyle = "#51259b";
+    x.font = `800 32px ${FONT}`;
+    x.textAlign = "center";
+    x.textBaseline = "middle";
+    x.fillText(String(page.index + 1), nx, ny + 2);
+    x.textBaseline = "alphabetic";
     x.textAlign = "left";
   }
+  // Sombra da dobra na lombada e um leve escurecer na borda de fora.
   const edge = side ? 0 : width;
-  const fold = x.createLinearGradient(edge, 0, side ? 120 : width - 120, 0);
-  fold.addColorStop(0, "rgba(60,40,90,0.22)");
+  const fold = x.createLinearGradient(edge, 0, side ? 150 : width - 150, 0);
+  fold.addColorStop(0, "rgba(60,40,90,0.28)");
   fold.addColorStop(1, "rgba(0,0,0,0)");
   x.fillStyle = fold;
-  x.fillRect(side ? 0 : width - 120, 0, 120, height);
+  x.fillRect(side ? 0 : width - 150, 0, 150, height);
+  const outer = x.createLinearGradient(side ? width : 0, 0, side ? width - 60 : 60, 0);
+  outer.addColorStop(0, "rgba(120,96,60,0.12)");
+  outer.addColorStop(1, "rgba(120,96,60,0)");
+  x.fillStyle = outer;
+  x.fillRect(side ? width - 60 : 0, 0, 60, height);
 }
 
-/** Cartão "Nova folha" sobre a guarda quando o lado direito está vazio. */
+/** Moldura de destaque da folha que abre com o toque: sublinhado amarelo do app, em volta. */
+export function drawHoverFrame(x: Ctx, width: number, height: number) {
+  x.clearRect(0, 0, width, height);
+  x.fillStyle = "rgba(250,204,21,0.07)";
+  x.fillRect(0, 0, width, height);
+  x.strokeStyle = "rgba(250,204,21,0.95)";
+  x.lineWidth = 7;
+  x.beginPath();
+  x.roundRect(5, 5, width - 10, height - 10, 10);
+  x.stroke();
+}
+
 /** Mesmo convite da vitrine 2D: ícone "+" de papel e o nome em roxo, centralizados na folha. */
 export function drawCreateCard(x: Ctx, width: number, height: number, first: boolean) {
   x.clearRect(0, 0, width, height);

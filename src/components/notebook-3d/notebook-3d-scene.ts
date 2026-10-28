@@ -2,7 +2,6 @@
 import {
   AmbientLight,
   BackSide,
-  Box3,
   BoxGeometry,
   BufferAttribute,
   BufferGeometry,
@@ -20,6 +19,8 @@ import {
   PerspectiveCamera,
   Plane,
   PlaneGeometry,
+  Quaternion,
+  Euler,
   Raycaster,
   RepeatWrapping,
   Scene,
@@ -32,6 +33,7 @@ import {
   type Object3D,
 } from "three";
 import type { NotebookTab } from "../../domain/workspace";
+import { uiText } from "../../i18n/runtime";
 import type { NotebookSoundCue } from "../../data/notebook-sound";
 import {
   BOOK,
@@ -49,6 +51,7 @@ import {
   pointAlong,
   restHeight,
   sheetCount,
+  sheetThickness,
   spreadCount,
   stepLeaf,
   viewFor,
@@ -63,6 +66,7 @@ import {
   drawClaspStrap,
   drawCover,
   drawCreateCard,
+  drawHoverFrame,
   drawDivider,
   drawEndpaper,
   drawPage,
@@ -74,10 +78,9 @@ import {
 export type ScenePage = { id: string; title: string; content: string; preview: string };
 export type SceneTab = NotebookTab & { pageIndex: number };
 export type SceneAssets = {
-  cover: HTMLImageElement | null;
-  olena: HTMLImageElement | null;
   bookmarkSprite: string;
 };
+export type SceneHint = { text: string; x: number; y: number; warn?: boolean };
 export type SceneCallbacks = {
   onView: (view: BookView) => void;
   onOpenPage: (index: number) => void;
@@ -85,7 +88,8 @@ export type SceneCallbacks = {
   onTabActivate: (tabId: string) => void;
   onTabMoved: (tabId: string, result: PlacementResult) => void;
   onPlace: (kind: "divider" | "bookmark", result: PlacementResult) => void;
-  onPeek: (peek: { page: number; title: string; x: number; y: number } | null) => void;
+  /** Dica curta junto do ponteiro: o que o toque faz ali (abrir, espiar, pôr marca, editar). */
+  onHint: (hint: SceneHint | null) => void;
   onSound: (cue: NotebookSoundCue) => void;
 };
 
@@ -182,6 +186,31 @@ function quad(
   geometry.computeVertexNormals();
   return geometry;
 }
+/** Corpo da capa: retângulo com os dois cantos de fora arredondados, extrudado na espessura. */
+function boardGeometry() {
+  const radius = (BOOK.boardWidth * 46) / 1200;
+  const x0 = -0.04;
+  const x1 = BOOK.boardWidth - 0.04;
+  const z0 = -BOOK.boardHeight / 2;
+  const z1 = BOOK.boardHeight / 2;
+  const shape = new Shape();
+  shape.moveTo(x0, z0);
+  shape.lineTo(x1 - radius, z0);
+  shape.quadraticCurveTo(x1, z0, x1, z0 + radius);
+  shape.lineTo(x1, z1 - radius);
+  shape.quadraticCurveTo(x1, z1, x1 - radius, z1);
+  shape.lineTo(x0, z1);
+  shape.closePath();
+  const geometry = new ExtrudeGeometry(shape, {
+    depth: BOOK.boardThickness,
+    bevelEnabled: false,
+    curveSegments: 6,
+  });
+  // A forma é desenhada em x/z; a extrusão vira a espessura (y).
+  geometry.rotateX(Math.PI / 2);
+  geometry.translate(0, BOOK.boardThickness / 2, 0);
+  return geometry;
+}
 function sheetGeometry() {
   const geometry = new BufferGeometry();
   const count = (NX + 1) * (NZ + 1);
@@ -231,8 +260,8 @@ function disposeTree(root: Object3D) {
 export class NotebookScene {
   private readonly renderer: WebGLRenderer;
   private readonly scene = new Scene();
-  private readonly camera = new PerspectiveCamera(30, 1, 0.1, 100);
-  private readonly probe = new PerspectiveCamera(30, 1, 0.1, 100);
+  private readonly camera = new PerspectiveCamera(20, 1, 0.1, 200);
+  private readonly probe = new PerspectiveCamera(20, 1, 0.1, 200);
   private readonly book = new Group();
   private readonly ray = new Raycaster();
   private readonly pointer = new Vector2();
@@ -268,9 +297,36 @@ export class NotebookScene {
   private readonly corners = Array.from({ length: 16 }, () => new Vector3());
   private readonly scratch = { right: new Vector3(), up: new Vector3(), point: new Vector3() };
   private sun!: DirectionalLight;
+  private lights: { light: { intensity: number }; base: number }[] = [];
+  /** Folha que sai do caderno até a frente da câmera (ou volta para ele). */
+  private flight: {
+    mesh: Mesh;
+    shadow: Mesh;
+    start: number;
+    duration: number;
+    from: { position: Vector3; quaternion: Quaternion };
+    to: { position: Vector3; quaternion: Quaternion };
+    entering: boolean;
+    resolve: (() => void) | null;
+    hidden: { material: MeshLambertMaterial; map: CanvasTexture | null } | null;
+    wobble: number;
+  } | null = null;
+  private settleWaiters: (() => void)[] = [];
   private resizeObserver: ResizeObserver | null = null;
   private readonly stars: { map: CanvasTexture; material: MeshBasicMaterial }[] = [];
   private readonly starGeometry = new PlaneGeometry(0.22, 0.22);
+  /** Altura do topo de cada pilha, para a moldura de destaque e o fantasma das marcas. */
+  private stackTop = { left: 0, right: 0 };
+  private hoverPage: number | null = null;
+  private hoverTab: string | null = null;
+  private selectedTab: string | null = null;
+  private readonly hoverFrame: Mesh;
+  private readonly ghosts = new Map<"divider" | "bookmark", Group>();
+  /** Recorte amarelo por baixo da marca apontada (claro) e da escolhida (forte). */
+  private readonly marks = {
+    hover: new MeshBasicMaterial({ color: "#fde68a", side: DoubleSide }),
+    selected: new MeshBasicMaterial({ color: "#FACC15", side: DoubleSide }),
+  };
   private flapOpen = 0;
   private readonly pageTextures = new Map<string, PageTexture>();
   private readonly previews = new Map<string, HTMLImageElement>();
@@ -297,13 +353,13 @@ export class NotebookScene {
   private title = "";
   private camState = {
     yaw: 0,
-    tilt: 0.5,
+    tilt: 0.48,
     zoom: 1,
     x: 0,
     z: 0,
     distance: 14,
-    tiltNow: 0.5,
-    yawNow: 0.1,
+    tiltNow: 0.48,
+    yawNow: 0,
     ready: false,
   };
   private focus: {
@@ -316,8 +372,8 @@ export class NotebookScene {
     x: number;
     y: number;
     moved: boolean;
-    mode: "tab" | "place" | "cover" | "backcover" | "fwd" | "back" | "orbit" | "peek";
-    alternate?: "fwd" | "back" | "orbit";
+    mode: "tab" | "place" | "cover" | "backcover" | "fwd" | "back" | "none" | "peek";
+    alternate?: "fwd" | "back" | "none";
     tab?: SceneTab;
     leaf?: Leaf;
     bias: number;
@@ -355,7 +411,9 @@ export class NotebookScene {
     desk.rotation.x = -Math.PI / 2;
     desk.receiveShadow = true;
     this.scene.add(desk);
-    this.scene.add(new HemisphereLight(0xffffff, 0xd9ccb6, 1.6), new AmbientLight(0xffffff, 0.35));
+    const hemisphere = new HemisphereLight(0xffffff, 0xd9ccb6, 1.6);
+    const ambient = new AmbientLight(0xffffff, 0.35);
+    this.scene.add(hemisphere, ambient);
     const sun = new DirectionalLight(0xfff4e2, 1.9);
     sun.position.set(-5, 11, 6);
     sun.castShadow = true;
@@ -367,16 +425,19 @@ export class NotebookScene {
     const fill = new DirectionalLight(0xd9c8ff, 0.6);
     fill.position.set(6, 4, -4);
     this.scene.add(sun, fill);
+    this.lights = [hemisphere, ambient, sun, fill].map((light) => ({
+      light,
+      base: light.intensity,
+    }));
     const owned = (value: CanvasTexture) => ((value.userData["owned"] = false), value);
     const coverCanvas = canvas(1024, Math.round((1024 * BH) / BW));
     this.coverTexture = owned(texture(coverCanvas, this.anisotropy));
     const backCanvas = canvas(1024, Math.round((1024 * BH) / BW));
-    drawBackCover(backCanvas.getContext("2d")!, backCanvas.width, backCanvas.height, assets.olena);
+    drawBackCover(backCanvas.getContext("2d")!, backCanvas.width, backCanvas.height);
     this.backTexture = owned(texture(backCanvas, this.anisotropy));
-    const end = canvas(512, 680);
+    const end = canvas(512, Math.round((512 * BH) / BW));
     drawEndpaper(end.getContext("2d")!, end.width, end.height);
     this.endTexture = owned(texture(end, this.anisotropy));
-    this.endTexture.wrapS = this.endTexture.wrapT = RepeatWrapping;
     const spineCanvas = canvas(128, 1024);
     drawSpine(spineCanvas.getContext("2d")!, spineCanvas.width, spineCanvas.height);
     this.spineTexture = owned(texture(spineCanvas, this.anisotropy));
@@ -429,20 +490,36 @@ export class NotebookScene {
       ]),
       new MeshBasicMaterial({ map: this.createTexture, transparent: true }),
     );
+    const frameArt = canvas(300, 400);
+    drawHoverFrame(frameArt.getContext("2d")!, frameArt.width, frameArt.height);
+    this.hoverFrame = new Mesh(
+      new PlaneGeometry(W - 0.04, H - 0.04),
+      new MeshBasicMaterial({
+        map: owned(texture(frameArt, 1)),
+        transparent: true,
+        depthWrite: false,
+      }),
+    );
+    this.hoverFrame.rotation.x = -Math.PI / 2;
+    this.hoverFrame.visible = false;
+    this.hoverFrame.renderOrder = 2;
+    this.book.add(this.hoverFrame);
     this.drawCoverTexture();
     this.canvasElement.addEventListener("pointerdown", this.pointerDown);
     this.canvasElement.addEventListener("pointermove", this.pointerMove);
     this.canvasElement.addEventListener("pointerup", this.pointerUp);
     this.canvasElement.addEventListener("pointercancel", this.pointerCancel);
     this.canvasElement.addEventListener("pointerleave", this.pointerLeave);
-    this.canvasElement.addEventListener("wheel", this.wheel, { passive: false });
     document.addEventListener("visibilitychange", this.onVisibility);
     this.syncSize();
     this.resizeObserver = new ResizeObserver(() => this.syncSize());
     this.resizeObserver.observe(canvasElement);
     this.wake();
     // Contadores da cena (quadros, chamadas de desenho, texturas) para medir desempenho e testar.
-    Object.assign(canvasElement, { nb3dStats: () => this.stats() });
+    Object.assign(canvasElement, {
+      nb3dStats: () => this.stats(),
+      nb3dProject: (x: number, y: number, z: number) => this.projectToScreen(x, y, z),
+    });
   }
   frames = 0;
   /** Acorda o laço de quadros; ele volta a dormir sozinho quando nada mais se move. */
@@ -452,6 +529,15 @@ export class NotebookScene {
     this.idleFrames = 0;
     this.last = performance.now();
     this.frame = requestAnimationFrame(this.tick);
+  }
+  /** Ponto do caderno em coordenadas da tela: usado pelos testes para tocar no lugar certo. */
+  projectToScreen(x: number, y: number, z: number) {
+    const rect = this.canvasElement.getBoundingClientRect();
+    const point = new Vector3(x, y, z).project(this.camera);
+    return {
+      x: rect.x + ((point.x + 1) / 2) * rect.width,
+      y: rect.y + ((1 - point.y) / 2) * rect.height,
+    };
   }
   stats() {
     const info = this.renderer.info;
@@ -477,6 +563,7 @@ export class NotebookScene {
   setPlacing(kind: "divider" | "bookmark" | null) {
     this.placing = kind;
     this.clearPeek();
+    this.clearHover();
     this.wake();
   }
   setPages(pages: ScenePage[]) {
@@ -488,6 +575,13 @@ export class NotebookScene {
       this.syncPages();
       this.wake();
     }
+  }
+  /** Marca escolhida na edição: fica maior e acesa para a pessoa saber qual vai mudar ou sair. */
+  setSelectedTab(id: string | null) {
+    if (id === this.selectedTab) return;
+    this.selectedTab = id;
+    this.highlightTabs();
+    this.wake();
   }
   setTabs(tabs: SceneTab[], editing: boolean) {
     this.tabs = tabs;
@@ -551,47 +645,235 @@ export class NotebookScene {
   }
 
   // ------------------------------------------------------------------ entrar e sair da folha
-  /** Câmera desce sobre a folha até ela ficar de frente, como se a pessoa aproximasse o rosto. */
-  focusPage(index: number): Promise<void> {
+  /** Resolve quando nada mais se move (folheio, câmera, estrelas). */
+  whenSettled(): Promise<void> {
+    if (!this.running) return Promise.resolve();
+    return new Promise((resolve) => this.settleWaiters.push(resolve));
+  }
+  /**
+   * Entrar na folha: ela se solta do caderno, sobe girando até ficar de frente para a pessoa e
+   * o caderno escurece atrás. Resolve com o retângulo da folha na tela, de onde o editor continua.
+   */
+  liftPage(index: number): Promise<DOMRect | null> {
+    const pose = this.pagePose(index);
+    if (!pose) return Promise.resolve(null);
     this.selected = index;
-    this.wake();
+    this.clearPeek();
+    this.clearHover();
+    this.callbacks.onHint(null);
+    const map = this.pageMap(index);
+    this.startFlight(index, map, pose, this.frontPose(), true, this.reduced ? 1 : 620);
+    this.burst(new Vector3(pose.position.x, pose.position.y + 0.1, pose.position.z), 10);
     return new Promise((resolve) => {
-      if (this.reduced) {
-        this.focus = { index, amount: 1, target: 1, resolve: null };
-        resolve();
-        return;
-      }
-      this.focus = { index, amount: this.focus?.amount ?? 0, target: 1, resolve };
+      this.flight!.resolve = () => resolve(this.flightRect());
     });
   }
-  /** Volta da folha: começa de frente para ela e sobe até a vista do caderno. */
-  startFromPage(index: number) {
+  /** Voltar da folha: ela desce da frente da câmera e se encaixa no lugar dela no caderno. */
+  returnPage(index: number) {
+    const pose = this.pagePose(index);
+    if (!pose) return;
     this.selected = index;
-    this.focus = { index, amount: this.reduced ? 0 : 1, target: 0, resolve: null };
-    this.wake();
+    this.startFlight(
+      index,
+      this.pageMap(index),
+      this.frontPose(),
+      pose,
+      false,
+      this.reduced ? 1 : 680,
+    );
   }
-  /** Retângulo da folha na tela, para a jornada da folha até o editor começar no lugar certo. */
-  pageScreenRect(index: number) {
+  private pagePose(index: number) {
     const [left, right] = visiblePages(this.flipped, this.pages.length);
     if (index !== left && index !== right) return null;
-    const x0 = index === left ? -W : 0;
-    const box = new Box3(new Vector3(x0, 0, -H / 2), new Vector3(x0 + W, 0.3, H / 2));
-    const rect = this.canvasElement.getBoundingClientRect();
-    const corners = [
-      [box.min.x, box.min.z],
-      [box.max.x, box.min.z],
-      [box.min.x, box.max.z],
-      [box.max.x, box.max.z],
-    ].map(([x, z]) =>
-      new Vector3(x, restHeight(1, false, this.leaves.length), z).project(this.camera),
+    const side = index === right ? 1 : 0;
+    const top = side ? this.stackTop.right : this.stackTop.left;
+    return {
+      position: new Vector3(side ? W / 2 : -W / 2, top + 0.02, 0),
+      quaternion: new Quaternion().setFromEuler(new Euler(-Math.PI / 2, 0, 0)),
+    };
+  }
+  /** De frente para a câmera, ocupando quase toda a altura (ou largura) da área do caderno. */
+  private frontPose() {
+    this.camera.updateMatrixWorld();
+    const half = Math.tan((this.camera.fov * Math.PI) / 360);
+    const distance = Math.max(H / (0.86 * 2 * half), W / (0.9 * 2 * half * this.camera.aspect));
+    const forward = new Vector3();
+    this.camera.getWorldDirection(forward);
+    return {
+      position: this.camera.position.clone().addScaledVector(forward, distance),
+      quaternion: this.camera.quaternion.clone(),
+    };
+  }
+  private pageMap(index: number) {
+    const page = this.pages[index];
+    if (!page) return this.blank;
+    this.paintPage(page);
+    return this.pageTextures.get(page.id)?.front ?? this.blank;
+  }
+  private materialOf(index: number): MeshLambertMaterial | null {
+    if (index === 0) return this.leaf0Material;
+    const leaf = this.leaves[1 + Math.floor((index - 1) / 2)];
+    if (!leaf || leaf.kind !== "sheet") return null;
+    return index % 2 === 1 ? leaf.frontMaterial : leaf.backMaterial;
+  }
+  private startFlight(
+    index: number,
+    map: CanvasTexture,
+    from: { position: Vector3; quaternion: Quaternion },
+    to: { position: Vector3; quaternion: Quaternion },
+    entering: boolean,
+    duration: number,
+  ) {
+    this.endFlight(true);
+    const mesh = new Mesh(
+      new PlaneGeometry(W, H),
+      new MeshBasicMaterial({ map, side: DoubleSide }),
     );
-    const xs = corners.map((point) => rect.x + ((point.x + 1) / 2) * rect.width);
-    const ys = corners.map((point) => rect.y + ((1 - point.y) / 2) * rect.height);
+    mesh.position.copy(from.position);
+    mesh.quaternion.copy(from.quaternion);
+    mesh.renderOrder = 3;
+    const shadowArt = canvas(128, 160);
+    const context = shadowArt.getContext("2d")!;
+    const gradient = context.createRadialGradient(64, 80, 10, 64, 80, 80);
+    gradient.addColorStop(0, "rgba(41,20,80,0.55)");
+    gradient.addColorStop(1, "rgba(41,20,80,0)");
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 128, 160);
+    const shadowMap = texture(shadowArt, 1);
+    shadowMap.userData["owned"] = true;
+    const shadow = new Mesh(
+      new PlaneGeometry(W * 1.1, H * 1.06),
+      new MeshBasicMaterial({ map: shadowMap, transparent: true, depthWrite: false, opacity: 0 }),
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    const pose = this.pagePose(index);
+    shadow.position.copy(pose ? pose.position : from.position);
+    shadow.position.y -= 0.01;
+    this.scene.add(shadow, mesh);
+    // Enquanto a folha está fora, o lugar dela no caderno mostra o papel de baixo.
+    const material = this.materialOf(index);
+    const hidden = material ? { material, map: material.map as CanvasTexture | null } : null;
+    if (material) {
+      material.map = this.blank;
+      material.needsUpdate = true;
+    }
+    this.flight = {
+      mesh,
+      shadow,
+      start: performance.now(),
+      duration,
+      from,
+      to,
+      entering,
+      resolve: null,
+      hidden,
+      wobble: index % 2 ? 1 : -1,
+    };
+    this.callbacks.onSound(entering ? "enter" : "exit");
+    this.wake();
+  }
+  private updateFlight(now: number) {
+    const flight = this.flight;
+    if (!flight) return;
+    this.moving = true;
+    const t = clamp((now - flight.start) / flight.duration, 0, 1);
+    // Sobe rápido e desacelera no fim, com um leve balanço do papel no meio do caminho.
+    const eased = flight.entering
+      ? 1 - (1 - t) ** 3
+      : t < 0.5
+        ? 4 * t ** 3
+        : 1 - (-2 * t + 2) ** 3 / 2;
+    const arc = Math.sin(t * Math.PI);
+    flight.mesh.position.lerpVectors(flight.from.position, flight.to.position, eased);
+    flight.mesh.position.y += arc * 0.9;
+    flight.mesh.quaternion.slerpQuaternions(flight.from.quaternion, flight.to.quaternion, eased);
+    flight.mesh.rotateZ(arc * 0.12 * flight.wobble);
+    const lifted = flight.entering ? eased : 1 - eased;
+    (flight.shadow.material as MeshBasicMaterial).opacity =
+      Math.min(1, lifted * 2.2) * (1 - lifted * 0.6);
+    // O caderno escurece atrás da folha que sai.
+    for (const { light, base } of this.lights) light.intensity = base * (1 - 0.38 * lifted);
+    if (t < 1) return;
+    const resolve = flight.resolve;
+    if (flight.entering) {
+      flight.resolve = null;
+      resolve?.();
+    } else this.endFlight(false);
+  }
+  /** Tira a folha voadora; ao voltar, ela devolve a textura ao lugar dela no caderno. */
+  private endFlight(abort: boolean) {
+    const flight = this.flight;
+    if (!flight) return;
+    this.flight = null;
+    this.scene.remove(flight.mesh, flight.shadow);
+    flight.mesh.geometry.dispose();
+    (flight.mesh.material as MeshBasicMaterial).dispose();
+    disposeTree(flight.shadow);
+    if (flight.hidden) {
+      flight.hidden.material.map = flight.hidden.map;
+      flight.hidden.material.needsUpdate = true;
+    }
+    for (const { light, base } of this.lights) light.intensity = base;
+    if (abort) flight.resolve?.();
+    this.wake();
+  }
+  private flightRect() {
+    const flight = this.flight;
+    if (!flight) return null;
+    flight.mesh.updateMatrixWorld();
+    const rect = this.canvasElement.getBoundingClientRect();
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const [x, y] of [
+      [-W / 2, -H / 2],
+      [W / 2, -H / 2],
+      [-W / 2, H / 2],
+      [W / 2, H / 2],
+    ] as const) {
+      const point = new Vector3(x, y, 0).applyMatrix4(flight.mesh.matrixWorld).project(this.camera);
+      xs.push(rect.x + ((point.x + 1) / 2) * rect.width);
+      ys.push(rect.y + ((1 - point.y) / 2) * rect.height);
+    }
     return new DOMRect(
       Math.min(...xs),
       Math.min(...ys),
       Math.max(...xs) - Math.min(...xs),
       Math.max(...ys) - Math.min(...ys),
+    );
+  }
+  /** Retângulo da capa fechada na tela, de onde a capa segue até a estante. */
+  coverScreenRect() {
+    const rect = this.canvasElement.getBoundingClientRect();
+    const top = restHeight(0, false, this.leaves.length) + BT / 2;
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const [x, z] of [
+      [-0.04, -BH / 2],
+      [BW - 0.04, -BH / 2],
+      [-0.04, BH / 2],
+      [BW - 0.04, BH / 2],
+    ] as const) {
+      const point = new Vector3(x, top, z).project(this.camera);
+      xs.push(rect.x + ((point.x + 1) / 2) * rect.width);
+      ys.push(rect.y + ((1 - point.y) / 2) * rect.height);
+    }
+    return new DOMRect(
+      Math.min(...xs),
+      Math.min(...ys),
+      Math.max(...xs) - Math.min(...xs),
+      Math.max(...ys) - Math.min(...ys),
+    );
+  }
+  /** Foto do quadro atual (para o fundo da jornada da folha não ficar em branco). */
+  snapshot(): Promise<string> {
+    if (this.flight) this.flight.mesh.visible = false;
+    this.renderer.render(this.scene, this.camera);
+    if (this.flight) this.flight.mesh.visible = true;
+    return new Promise((resolve) =>
+      this.canvasElement.toBlob(
+        (blob) => resolve(blob ? URL.createObjectURL(blob) : ""),
+        "image/png",
+      ),
     );
   }
   /** Imagem da folha para a jornada ao editor. O codec roda fora da thread principal (toBlob). */
@@ -659,13 +941,13 @@ export class NotebookScene {
 
   dispose() {
     this.disposed = true;
+    this.endFlight(true);
     cancelAnimationFrame(this.frame);
     this.canvasElement.removeEventListener("pointerdown", this.pointerDown);
     this.canvasElement.removeEventListener("pointermove", this.pointerMove);
     this.canvasElement.removeEventListener("pointerup", this.pointerUp);
     this.canvasElement.removeEventListener("pointercancel", this.pointerCancel);
     this.canvasElement.removeEventListener("pointerleave", this.pointerLeave);
-    this.canvasElement.removeEventListener("wheel", this.wheel);
     disposeTree(this.scene);
     for (const value of this.pageTextures.values()) value.front.dispose();
     for (const star of this.stars) {
@@ -673,6 +955,8 @@ export class NotebookScene {
       star.material.dispose();
     }
     this.starGeometry.dispose();
+    this.marks.hover.dispose();
+    this.marks.selected.dispose();
     window.clearTimeout(this.releaseTimer);
     this.resizeObserver?.disconnect();
     document.removeEventListener("visibilitychange", this.onVisibility);
@@ -692,7 +976,7 @@ export class NotebookScene {
   // ------------------------------------------------------------------ texturas
   private drawCoverTexture() {
     const source = this.coverTexture.image as HTMLCanvasElement;
-    drawCover(source.getContext("2d")!, source.width, source.height, this.assets.cover, this.title);
+    drawCover(source.getContext("2d")!, source.width, source.height, this.title);
     this.coverTexture.needsUpdate = true;
   }
   private loadPreview(page: ScenePage) {
@@ -803,20 +1087,23 @@ export class NotebookScene {
   private makeBoard(kind: "front" | "back"): Board {
     const pivot = new Group();
     this.book.add(pivot);
-    const body = new Mesh(new BoxGeometry(BW, BT, BH), this.boardSide);
-    body.position.x = BW / 2 - 0.04;
+    // Capa dura com os cantos de fora arredondados (a lombada fica reta) e as faces recortadas
+    // pela transparência das texturas, no mesmo raio.
+    const body = new Mesh(boardGeometry(), this.boardSide);
     body.castShadow = body.receiveShadow = true;
+    const faceUv = (x: number, z: number, mirror: boolean): [number, number] => {
+      const u = (x + 0.04) / BW;
+      return [mirror ? 1 - u : u, 0.5 - z / BH];
+    };
     const top = new Mesh(
-      quad(-0.04, BW - 0.04, -BH / 2, BH / 2, BT / 2 + 0.001, true, (x, z) =>
-        kind === "front" ? [(x + 0.04) / BW, 0.5 - z / BH] : [(x / 0.6) % 1, z / 0.8],
-      ),
-      standard({ map: kind === "front" ? this.coverTexture : this.endTexture }),
+      quad(-0.04, BW - 0.04, -BH / 2, BH / 2, BT / 2 + 0.001, true, (x, z) => faceUv(x, z, false)),
+      standard({ map: kind === "front" ? this.coverTexture : this.endTexture, alphaTest: 0.5 }),
     );
     const bottom = new Mesh(
       quad(-0.04, BW - 0.04, -BH / 2, BH / 2, -BT / 2 - 0.001, false, (x, z) =>
-        kind === "back" ? [1 - (x + 0.04) / BW, 0.5 - z / BH] : [(x / 0.6) % 1, z / 0.8],
+        faceUv(x, z, kind === "back"),
       ),
-      standard({ map: kind === "back" ? this.backTexture : this.endTexture }),
+      standard({ map: kind === "back" ? this.backTexture : this.endTexture, alphaTest: 0.5 }),
     );
     top.receiveShadow = bottom.receiveShadow = true;
     const tabs = new Group();
@@ -920,7 +1207,7 @@ export class NotebookScene {
     }
     let total = 0;
     for (let k = 0; k < this.leaves.length; k++)
-      total += k === 0 || k === this.leaves.length - 1 ? BT : BOOK.sheetThickness;
+      total += k === 0 || k === this.leaves.length - 1 ? BT : sheetThickness(this.leaves.length);
     const length = total - BT / 2 + 0.03;
     const material = standard({ color: "#51259b" });
     const strap = new Mesh(new BoxGeometry(length, 0.04, CLASP.depth), material);
@@ -1039,6 +1326,7 @@ export class NotebookScene {
       }
     }
     for (const leaf of this.leaves) if (leaf.kind === "sheet") this.placeTabs(leaf);
+    this.highlightTabs();
   }
   private makeTab(tab: SceneTab, buried: boolean, onCover: boolean) {
     const group = new Group();
@@ -1150,6 +1438,7 @@ export class NotebookScene {
     this.layout(false);
     this.updateSparks(dt);
     this.updateCamera(dt);
+    this.updateFlight(now);
     this.renderer.render(this.scene, this.camera);
     this.frames++;
     if (this.moving || this.sparks.length) {
@@ -1160,6 +1449,9 @@ export class NotebookScene {
       // Dois quadros extras deixam texturas e sombras assentarem antes de dormir.
       if (++this.idleFrames >= 2) {
         this.running = false;
+        const waiters = this.settleWaiters;
+        this.settleWaiters = [];
+        for (const resolve of waiters) resolve();
         return;
       }
     }
@@ -1298,12 +1590,16 @@ export class NotebookScene {
     const baseLeft = front.theta > Math.PI - 0.01 ? BT : 0;
     const topRight = restRight.length
       ? restHeight(1 + Math.min(...restRight.map((leaf) => leaf.index)), false, count) -
-        BOOK.sheetThickness * 0.5
+        sheetThickness(count) * 0.5
       : baseRight;
     const topLeft = restLeft.length
       ? restHeight(1 + Math.max(...restLeft.map((leaf) => leaf.index)), true, count) -
-        BOOK.sheetThickness * 0.5
+        sheetThickness(count) * 0.5
       : baseLeft;
+    this.stackTop = {
+      right: restRight.length ? topRight + sheetThickness(count) * 0.5 : baseRight + BT,
+      left: restLeft.length ? topLeft + sheetThickness(count) * 0.5 : baseLeft + BT,
+    };
     const heightRight = Math.max(0.0001, topRight - baseRight);
     const heightLeft = Math.max(0.0001, topLeft - baseLeft);
     this.rightBlock.visible = restRight.length > 1;
@@ -1312,7 +1608,7 @@ export class NotebookScene {
     this.leftBlock.visible = restLeft.length > 1;
     this.leftBlock.scale.set(W - 0.03, heightLeft, H - 0.01);
     this.leftBlock.position.set(-W / 2 - 0.005, baseLeft + heightLeft / 2, 0);
-    this.edgeTexture.repeat.set(1, Math.max(1, Math.round(heightRight / BOOK.sheetThickness)));
+    this.edgeTexture.repeat.set(1, Math.max(1, Math.round(heightRight / sheetThickness(count))));
     this.flapA.rotation.z = (Math.PI / 2) * (1 - this.flapOpen);
     this.flapB.rotation.z = (Math.PI / 2) * (1 - this.flapOpen);
     const pages = this.pages.length;
@@ -1397,7 +1693,7 @@ export class NotebookScene {
       ? [-0.4, BW + 0.75]
       : closedBack
         ? [-BW - 0.75, 0.4]
-        : [-W - 0.85, W + 0.85];
+        : [-BW - 0.85, BW + 0.85];
     let zr: [number, number] =
       closedFront || closedBack ? [-BH / 2 - 0.15, BH / 2 + 0.55] : [-H / 2 - 0.35, H / 2 + 0.45];
     const focus = this.focus ? easeInOut(this.focus.amount) : 0;
@@ -1585,9 +1881,9 @@ export class NotebookScene {
       yaw: this.camState.yaw,
       tilt: this.camState.tilt,
     };
+    if (this.placing) return void (this.drag = { ...base, mode: "place" });
     const tab = closed ? null : this.pickTab(event);
     if (tab) return void (this.drag = { ...base, mode: "tab", tab });
-    if (this.placing) return void (this.drag = { ...base, mode: "place" });
     if (this.flipped === 0) return void (this.drag = { ...base, mode: "cover" });
     if (this.flipped === this.leaves.length)
       return void (this.drag = { ...base, mode: "backcover" });
@@ -1595,20 +1891,22 @@ export class NotebookScene {
       point !== null && point.x > 0 && point.x < W + 0.15 && Math.abs(point.z) < H / 2 + 0.15;
     const onLeft =
       point !== null && point.x < 0 && point.x > -W - 0.15 && Math.abs(point.z) < H / 2 + 0.15;
-    const alternate = onRight ? "fwd" : onLeft ? "back" : "orbit";
+    const alternate = onRight ? "fwd" : onLeft ? "back" : "none";
     if (this.peekState)
       this.drag = { ...base, mode: "peek", alternate, peek: this.peekState.spread };
     else this.drag = { ...base, mode: alternate };
   };
   private readonly pointerMove = (event: PointerEvent) => {
     const drag = this.drag;
-    if (!drag) return this.updatePeek(event);
+    if (!drag) return this.updateHover(event);
     if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 6) drag.moved = true;
     if (!drag.moved) return;
     this.wake();
+    // No toque não há "passar por cima": o fantasma da marca segue o dedo até soltar.
+    if (drag.mode === "place") return this.updateHover(event);
     if (drag.mode === "peek") {
       this.clearPeek();
-      drag.mode = drag.alternate ?? "orbit";
+      drag.mode = drag.alternate ?? "none";
     }
     const point = this.hitTable(event);
     if (
@@ -1641,10 +1939,6 @@ export class NotebookScene {
       drag.leaf = leaf;
       return;
     }
-    if (drag.mode === "orbit") {
-      this.camState.yaw = clamp(drag.yaw + (event.clientX - drag.x) * 0.004, -0.7, 0.7);
-      this.camState.tilt = clamp(drag.tilt + (event.clientY - drag.y) * 0.003, 0.2, 1.15);
-    }
   };
   private readonly pointerUp = (event: PointerEvent) => {
     const drag = this.drag;
@@ -1659,8 +1953,11 @@ export class NotebookScene {
       else this.callbacks.onTabActivate(drag.tab.id);
       return;
     }
-    if (drag.mode === "place" && this.placing && point)
+    if (drag.mode === "place" && this.placing && point) {
+      this.hideGhosts();
+      this.callbacks.onHint(null);
       return this.callbacks.onPlace(this.placing, placeTab(this.placing, point, visible));
+    }
     if (drag.mode === "peek" && !drag.moved && drag.peek !== undefined) {
       this.clearPeek();
       return this.callbacks.onView({ cover: false, back: false, spread: drag.peek });
@@ -1725,24 +2022,260 @@ export class NotebookScene {
     this.drag = null;
     this.wake();
   };
-  private readonly pointerLeave = () => this.clearPeek();
-  private readonly wheel = (event: WheelEvent) => {
-    event.preventDefault();
-    this.camState.zoom = clamp(this.camState.zoom * (event.deltaY > 0 ? 0.9 : 1.1), 0.6, 3);
-    this.wake();
+  private readonly pointerLeave = () => {
+    this.clearPeek();
+    this.clearHover();
+    this.callbacks.onHint(null);
   };
   private clearPeek() {
     if (!this.peekState) return;
     for (const leaf of this.leaves) leaf.peek = undefined;
     this.peekState = null;
-    this.callbacks.onPeek(null);
+    this.callbacks.onHint(null);
     this.wake();
+  }
+  // ------------------------------------------------------------------ dicas e destaques
+  private setCursor(value: string) {
+    if (this.canvasElement.style.cursor !== value) this.canvasElement.style.cursor = value;
+  }
+  private hint(text: string, event: PointerEvent, warn = false) {
+    this.callbacks.onHint({ text, x: event.clientX, y: event.clientY, warn });
+  }
+  private clearHover() {
+    this.hideGhosts();
+    this.setHoverTab(null);
+    if (this.hoverPage !== null || this.hoverFrame.visible) {
+      this.hoverPage = null;
+      this.hoverFrame.visible = false;
+      this.wake();
+    }
+    this.setCursor("");
+  }
+  /** O que acontece se a pessoa tocar ali: o ponteiro e a dica mostram antes do toque. */
+  private updateHover(event: PointerEvent) {
+    const point = this.hitTable(event);
+    const count = this.leaves.length;
+    const closed = this.flipped === 0 || this.flipped === count;
+    if (this.focus || !point) {
+      this.clearPeek();
+      this.clearHover();
+      this.callbacks.onHint(null);
+      return;
+    }
+    if (closed) {
+      this.clearHover();
+      const onBook =
+        Math.abs(point.z) < BH / 2 && (this.flipped === 0 ? point.x > -0.1 : point.x < 0.1);
+      this.setCursor(onBook ? "pointer" : "");
+      if (onBook) this.hint(this.flipped === 0 ? uiText(744) : uiText(3170), event);
+      else this.callbacks.onHint(null);
+      return;
+    }
+    const visible = visiblePages(this.flipped, this.pages.length);
+    if (this.placing) {
+      this.clearPeek();
+      this.setPageHover(null);
+      this.setHoverTab(null);
+      const result = placeTab(this.placing, point, visible);
+      const onBook = Math.abs(point.x) < W + 0.9 && Math.abs(point.z) < H / 2 + 0.6;
+      if (result.ok) {
+        this.showGhost(this.placing, result);
+        this.setCursor("copy");
+        this.hint(uiText(3179, [result.page + 1]), event);
+      } else {
+        this.hideGhosts();
+        this.setCursor(onBook ? "not-allowed" : "");
+        if (onBook)
+          this.hint(
+            result.reason === "divider-edge"
+              ? uiText(704)
+              : result.reason === "bookmark-sheet"
+                ? uiText(1829)
+                : uiText(1830),
+            event,
+            true,
+          );
+        else this.callbacks.onHint(null);
+      }
+      return;
+    }
+    this.hideGhosts();
+    const tab = this.pickTab(event);
+    if (tab) {
+      this.clearPeek();
+      this.setPageHover(null);
+      this.setHoverTab(tab.id);
+      this.setCursor("pointer");
+      const name = tab.label || (tab.kind === "divider" ? uiText(705) : uiText(1831));
+      this.hint(this.editingTabs ? uiText(3180, [name]) : name, event);
+      return;
+    }
+    this.setHoverTab(null);
+    if (this.editingTabs) {
+      this.clearPeek();
+      this.setPageHover(null);
+      this.setCursor("");
+      this.callbacks.onHint(null);
+      return;
+    }
+    this.updatePeek(event);
+    if (this.peekState) {
+      this.setPageHover(null);
+      this.setCursor("pointer");
+      return;
+    }
+    const right = point.x >= 0;
+    const inside = Math.abs(point.z) < H / 2 && Math.abs(point.x) < W;
+    if (!inside) {
+      this.setPageHover(null);
+      this.setCursor("");
+      this.callbacks.onHint(null);
+      return;
+    }
+    // A borda de fora vira a folha; o resto abre a folha tocada.
+    if (Math.abs(point.x) > W * 0.84) {
+      this.setPageHover(null);
+      this.setCursor("pointer");
+      this.hint(right ? uiText(744) : uiText(1858), event);
+      return;
+    }
+    if (this.createCard.visible && right) {
+      this.setPageHover(1);
+      this.setCursor("pointer");
+      this.hint(this.pages.length ? uiText(746) : uiText(1391), event);
+      return;
+    }
+    const index = visible[right ? 1 : 0];
+    if (index === null || index === undefined) {
+      this.setPageHover(null);
+      this.setCursor("");
+      this.callbacks.onHint(null);
+      return;
+    }
+    this.setPageHover(right ? 1 : 0);
+    this.setCursor("pointer");
+    const page = this.pages[index];
+    this.hint(`${uiText(3171, [index + 1])} · ${page?.title || uiText(3177)}`, event);
+  }
+  /** Moldura amarela sobre a folha que abre com o toque. */
+  private setPageHover(side: 0 | 1 | null) {
+    if (side === this.hoverPage) return;
+    this.hoverPage = side;
+    this.hoverFrame.visible = side !== null;
+    if (side !== null) {
+      const top = side ? this.stackTop.right : this.stackTop.left;
+      this.hoverFrame.position.set(side ? W / 2 : -W / 2, top + 0.012, 0);
+    }
+    this.wake();
+  }
+  private setHoverTab(id: string | null) {
+    if (id === this.hoverTab) return;
+    this.hoverTab = id;
+    this.highlightTabs();
+    this.wake();
+  }
+  /** A marca apontada ganha um recorte amarelo claro por baixo; a escolhida, amarelo forte e maior. */
+  private highlightTabs() {
+    for (const leaf of this.leaves)
+      for (const object of leaf.tabs.children) {
+        const tab = object.userData["tab"] as SceneTab;
+        const selected = tab.id === this.selectedTab;
+        const hovered = tab.id === this.hoverTab;
+        const old = object.userData["mark"] as Mesh | undefined;
+        if (old) {
+          object.remove(old);
+          old.geometry.dispose();
+          delete object.userData["mark"];
+        }
+        for (const mesh of (object.userData["pick"] as Mesh[] | undefined) ?? [])
+          (mesh.material as MeshLambertMaterial).emissive.setHex(
+            this.editingTabs && !selected ? 0x0d0a00 : 0,
+          );
+        if (!selected && !hovered) continue;
+        const pad = selected ? 0.07 : 0.045;
+        const geometry =
+          tab.kind === "divider"
+            ? quad(
+                -DIVIDER.inside - pad,
+                DIVIDER.outside + pad,
+                -DIVIDER.height / 2 - pad,
+                DIVIDER.height / 2 + pad,
+                -0.002,
+                true,
+                () => [0, 0],
+              )
+            : quad(
+                -RIBBON.width / 2 - pad,
+                RIBBON.width / 2 + pad,
+                H / 2 + RIBBON.outside - RIBBON.length - pad,
+                H / 2 + RIBBON.outside + pad,
+                -0.002,
+                true,
+                () => [0, 0],
+              );
+        const mark = new Mesh(geometry, selected ? this.marks.selected : this.marks.hover);
+        object.add(mark);
+        object.userData["mark"] = mark;
+      }
+  }
+  private ghostFor(kind: "divider" | "bookmark") {
+    let ghost = this.ghosts.get(kind);
+    if (!ghost) {
+      ghost = this.makeTab(
+        {
+          id: `ghost-${kind}`,
+          kind,
+          pageId: "",
+          pageIndex: -1,
+          position: 0.5,
+          label: kind === "divider" ? uiText(705) : "",
+          color: "#7C3AED",
+        },
+        false,
+        false,
+      );
+      for (const mesh of (ghost.userData["pick"] as Mesh[] | undefined) ?? []) {
+        const material = mesh.material as MeshLambertMaterial;
+        material.transparent = true;
+        material.opacity = 0.78;
+        material.emissive.setHex(0x2a1a00);
+      }
+      ghost.visible = false;
+      this.book.add(ghost);
+      this.ghosts.set(kind, ghost);
+    }
+    return ghost;
+  }
+  /** Fantasma da marca no lugar exato onde ela vai ficar se a pessoa soltar ali. */
+  private showGhost(kind: "divider" | "bookmark", result: { page: number; position: number }) {
+    const other = this.ghosts.get(kind === "divider" ? "bookmark" : "divider");
+    if (other) other.visible = false;
+    const ghost = this.ghostFor(kind);
+    const visible = visiblePages(this.flipped, this.pages.length);
+    const right = result.page === visible[1];
+    const top = right ? this.stackTop.right : this.stackTop.left;
+    if (kind === "divider") ghost.position.set(W, top + 0.006, dividerCenterZ(result.position));
+    else {
+      const along = (0.14 + 0.72 * result.position) * W;
+      ghost.position.set(right ? along : along - W, top + 0.008, 0);
+    }
+    ghost.visible = true;
+    this.wake();
+  }
+  private hideGhosts() {
+    let changed = false;
+    for (const ghost of this.ghosts.values())
+      if (ghost.visible) {
+        ghost.visible = false;
+        changed = true;
+      }
+    if (changed) this.wake();
   }
   /** Espiar: o ponteiro na borda da pilha levanta as folhas de cima em leque até a folha apontada. */
   private updatePeek(event: PointerEvent) {
     const point = this.hitTable(event);
     const closed = this.flipped === 0 || this.flipped === this.leaves.length;
-    if (closed || !point || this.placing || this.focus) return this.clearPeek();
+    if (closed || !point || this.placing || this.editingTabs || this.focus) return this.clearPeek();
     const right = point.x > W - 0.4 && point.x < W + 0.7;
     const left = point.x < -W + 0.4 && point.x > -W - 0.7;
     if ((!right && !left) || Math.abs(point.z) > H / 2 + 0.05) return this.clearPeek();
@@ -1768,6 +2301,10 @@ export class NotebookScene {
     this.peekState = { spread };
     const info = this.pages[page];
     if (info)
-      this.callbacks.onPeek({ page, title: info.title, x: event.clientX, y: event.clientY });
+      this.callbacks.onHint({
+        text: uiText(3174, [page + 1, info.title || uiText(3177)]),
+        x: event.clientX,
+        y: event.clientY,
+      });
   }
 }

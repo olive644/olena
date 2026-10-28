@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   BOOK,
+  DIVIDER,
   bendSheet,
   flippedFor,
   leafCount,
@@ -8,6 +9,7 @@ import {
   peekFan,
   placeTab,
   sheetCount,
+  sheetThickness,
   spreadCount,
   stepLeaf,
   viewFor,
@@ -131,5 +133,21 @@ describe("curva da folha", () => {
         expect(point[2]).toBeGreaterThanOrEqual(-0.0151);
       }
     }
+  });
+});
+
+describe("espessura da pilha", () => {
+  it("cadernos finos têm folhas mais grossas e o bloco cresce devagar nos grossos", () => {
+    expect(sheetThickness(4)).toBe(BOOK.sheetThickness);
+    expect(sheetThickness(200)).toBeCloseTo(0.012);
+    for (const leaves of [6, 20, 40]) {
+      const total = sheetThickness(leaves) * (leaves - 2);
+      expect(total).toBeLessThanOrEqual(0.7 + 1e-9);
+    }
+    expect(sheetThickness(120) * 118).toBeLessThan(1.5);
+  });
+
+  it("a divisória entra pouco na folha, para não atravessar as folhas de cima", () => {
+    expect(DIVIDER.inside).toBeLessThan(0.1);
   });
 });

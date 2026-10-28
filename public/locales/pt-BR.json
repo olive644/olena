@@ -3164,7 +3164,7 @@
   "Por segurança, confirme seu acesso antes de associar o Discord.",
   "Isto encerra todas as sessões desta conta, inclusive neste aparelho. Seus estudos continuam salvos.",
   "Não foi possível encerrar as sessões agora. Tente novamente em instantes.",
-  "CADERNO DE ESTUDOS DA OLENA",
+  "CADERNO DE ESTUDOS",
   "ESTE CADERNO PERTENCE A",
   "FOLHA {0}",
   "Contracapa",
@@ -3177,5 +3177,7 @@
   "Caderno 3D. Toque numa folha para escrever, arraste a ponta para virar e passe na borda da pilha para espiar.",
   "Carregando caderno 3D",
   "Sem título",
-  "Capa fechada"
+  "Capa fechada",
+  "Pôr aqui · folha {0}",
+  "Editar marca: {0}"
 ]
