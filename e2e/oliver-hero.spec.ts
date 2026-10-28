@@ -12,7 +12,7 @@ const ALT = "Oliver aparece por trás do widget de Matemática";
 async function open(page: import("@playwright/test").Page, requests: string[], errors: string[]) {
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("request", (request) => {
-    if (/\/oliver-math-islands\/|\/helena-assistant\/rive\./.test(request.url()))
+    if (/\/oliver-peeking-widget\/|\/helena-assistant\/rive\./.test(request.url()))
       requests.push(request.url());
   });
   await page.route("**/*", async (route) => {
