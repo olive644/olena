@@ -5,6 +5,7 @@ import {
   isMotionReduced,
   updateAccessibility,
   areHapticsEnabled,
+  isNotebook3dPreferred,
 } from "./accessibility-preferences";
 let dispose: () => void;
 it("restaura vibração desligada e migra preferências antigas sem perder campos", () => {
@@ -56,4 +57,16 @@ it("acompanha a configuração alterada em outra aba", () => {
   localStorage.setItem(ACCESSIBILITY_KEY, JSON.stringify({ highlightSelections: true }));
   window.dispatchEvent(new StorageEvent("storage", { key: ACCESSIBILITY_KEY }));
   expect(document.documentElement.dataset["highlightSelections"]).toBe("true");
+});
+
+it("liga o caderno 3D por padrão e lembra quando a pessoa desliga", () => {
+  expect(isNotebook3dPreferred()).toBe(true);
+  localStorage.setItem(ACCESSIBILITY_KEY, JSON.stringify({ soundEffects: true }));
+  dispose();
+  dispose = initializeAccessibility();
+  expect(isNotebook3dPreferred()).toBe(true);
+  updateAccessibility({ notebook3d: false });
+  dispose();
+  dispose = initializeAccessibility();
+  expect(isNotebook3dPreferred()).toBe(false);
 });

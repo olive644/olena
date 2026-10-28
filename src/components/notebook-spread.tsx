@@ -15,12 +15,19 @@ import type {
 } from "../domain/workspace";
 import { PaperActionIcon } from "./paper-action-icon";
 import { PaperEditorIcon } from "./paper-editor-icon";
-import { NotebookPaperTools, notebookPaperTabs } from "./notebook-paper-tools";
+import {
+  NotebookPaperTools,
+  notebookPaperTabs,
+  type PlacementResolver,
+} from "./notebook-paper-tools";
 import { NotebookCover } from "./notebook-cover";
 import { FocusPaperArrow } from "./focus-paper-arrow";
 import { NotebookPageThumbnail } from "./notebook-page-thumbnail";
 import { NotebookToolIcon } from "./notebook-tool-icon";
 import { NOTEBOOK_TURN_MS, NOTEBOOK_TURN_EASING } from "./notebook-motion";
+import { useNotebook3d } from "./notebook-3d/notebook-3d-support";
+import { Notebook3dView } from "./notebook-3d/notebook-3d-view";
+import type { BookView } from "./notebook-3d/notebook-3d-model";
 import "./notebook-spread.css";
 import "./notebook-binding-finish.css";
 
@@ -44,6 +51,10 @@ type Props = {
   transitioning?: boolean;
   readOnly?: boolean;
   compactPreview?: boolean;
+  /** Folha de onde a pessoa acabou de sair, para o caderno voltar nela. */
+  returningFromPageId?: string | undefined;
+  /** Pedido do índice: folhear até a folha e entrar nela. */
+  jump?: { pageId: string; nonce: number } | undefined;
 };
 type Turn = {
   from: number;
@@ -90,8 +101,16 @@ export function NotebookSpread({
   transitioning = false,
   readOnly = false,
   compactPreview = false,
+  returningFromPageId,
+  jump,
 }: Props) {
   useLanguage();
+  const prefers3d = useNotebook3d();
+  const [unavailable3d, setUnavailable3d] = useState(false);
+  const use3d = prefers3d && !unavailable3d && !compactPreview && !readOnly;
+  const [showBack, setShowBack] = useState(false);
+  const sceneResolver = useRef<PlacementResolver | null>(null);
+  const [openRequest, setOpenRequest] = useState<{ pageId: string; nonce: number } | undefined>();
 
   const [spreadIndex, setSpreadIndex] = useState(() =>
     Math.max(0, Math.floor(pages.findIndex((page) => page.id === initialPageId) / 2)),
@@ -158,6 +177,26 @@ export function NotebookSpread({
       automatic: true,
     });
   }
+  const handledJump = useRef(jump?.nonce);
+  useEffect(() => {
+    if (!jump || use3d || handledJump.current === jump.nonce) return;
+    handledJump.current = jump.nonce;
+    const index = pages.findIndex((page) => page.id === jump.pageId);
+    if (index < 0) return;
+    const target = Math.floor(index / 2);
+    const wait = target === current || reducedMotion() ? 60 : NOTEBOOK_TURN_MS + 100;
+    // A virada começa no próximo quadro para o estado vir de um evento, não do efeito.
+    const start = window.setTimeout(() => {
+      setShowCover(false);
+      turnTo(target);
+    }, 0);
+    const timer = window.setTimeout(() => onOpen(jump.pageId), wait);
+    return () => {
+      window.clearTimeout(start);
+      window.clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jump?.nonce, use3d]);
   function remove(page: StudyNote, side: number) {
     if (busy) return;
     if (!reducedMotion()) setRemoving({ page, side });
@@ -170,6 +209,152 @@ export function NotebookSpread({
       ]
     : [visible[0], visible[1]];
   const front = turning ? pages[turning.from * 2 + (turning.direction > 0 ? 1 : 0)] : undefined;
+  if (use3d) {
+    const view: BookView = { cover: showCover, back: showBack, spread: current };
+    const setView = (next: BookView) => {
+      setShowCover(next.cover);
+      setShowBack(next.back);
+      if (!next.cover && !next.back) setSpreadIndex(Math.max(0, Math.min(lastSpread, next.spread)));
+    };
+    const closed = showCover || showBack;
+    return (
+      <div className="notebook-spread-workspace is-3d" data-notebook-3d="">
+        <NotebookPaperTools
+          notebook={notebook}
+          pages={pages}
+          subjects={subjects}
+          visible={closed ? [] : visible}
+          dispatch={dispatch}
+          disabled={Boolean(transitioning) || closed}
+          scene
+          resolverRef={sceneResolver}
+          indexControl={
+            onIndex && (
+              <button
+                type="button"
+                className="notebook-paper-tool"
+                disabled={Boolean(transitioning)}
+                onClick={onIndex}
+                aria-label={uiText(701)}
+                title={uiText(701)}
+              >
+                <NotebookToolIcon name="index" />
+                <span>{uiText(701)}</span>
+              </button>
+            )
+          }
+          coverControl={null}
+          onJump={(id) => {
+            setShowCover(false);
+            setShowBack(false);
+            setSpreadIndex(Math.floor(pages.findIndex((page) => page.id === id) / 2));
+          }}
+        >
+          {(tools) => (
+            <Notebook3dView
+              title={notebook.title}
+              pages={pages}
+              tabs={notebookPaperTabs(notebook, pages, subjects)}
+              view={view}
+              placing={tools.tool}
+              editingTabs={tools.editing}
+              busy={Boolean(transitioning)}
+              returningFromPageId={returningFromPageId}
+              jump={jump}
+              openRequest={openRequest}
+              resolverRef={sceneResolver}
+              onView={setView}
+              onOpen={onOpen}
+              onCreate={() => onCreate(notebook.subjectId)}
+              onTabActivate={tools.activateTab}
+              onTabMoved={(id, result) => {
+                const tab = notebookPaperTabs(notebook, pages, subjects).find(
+                  (item) => item.id === id,
+                );
+                if (tab) tools.placeResolved(tab.kind, result, id);
+              }}
+              onPlace={(kind, result) => tools.placeResolved(kind, result)}
+              onUnavailable={() => setUnavailable3d(true)}
+            />
+          )}
+        </NotebookPaperTools>
+        <nav className="notebook-preview-controls" aria-label={uiText(695)}>
+          <button
+            className="secondary-button"
+            type="button"
+            disabled={showCover || Boolean(transitioning)}
+            onClick={() =>
+              showBack
+                ? setShowBack(false)
+                : current === 0
+                  ? setShowCover(true)
+                  : setSpreadIndex(current - 1)
+            }
+          >
+            {showBack ? uiText(3170) : current === 0 ? uiText(1857) : uiText(1858)}
+          </button>
+          <span aria-live="polite">
+            {showCover
+              ? uiText(3178)
+              : showBack
+                ? uiText(3168)
+                : pages.length
+                  ? uiText(1859, [
+                      current * 2 + 1,
+                      visible.length > 1 ? uiText(2570, [current * 2 + 2]) : "",
+                      pages.length,
+                    ])
+                  : uiText(1860)}
+          </span>
+          <button
+            className="secondary-button"
+            type="button"
+            disabled={showBack || Boolean(transitioning)}
+            onClick={() =>
+              showCover
+                ? setShowCover(false)
+                : current >= lastSpread
+                  ? setShowBack(true)
+                  : setSpreadIndex(current + 1)
+            }
+          >
+            {!showCover && current >= lastSpread ? uiText(3169) : uiText(744)}
+          </button>
+        </nav>
+        <div className="notebook-preview-actions">
+          {!closed &&
+            visible.map((page) => (
+              <button
+                key={page.id}
+                className="notebook-preview-open"
+                type="button"
+                disabled={Boolean(transitioning)}
+                aria-label={uiText(1855, [page.title, pages.indexOf(page) + 1])}
+                onClick={() =>
+                  setOpenRequest((previous) => ({
+                    pageId: page.id,
+                    nonce: (previous?.nonce ?? 0) + 1,
+                  }))
+                }
+              >
+                <PaperEditorIcon name="pen" />
+                <span>{uiText(3171, [pages.indexOf(page) + 1])}</span>
+              </button>
+            ))}
+          <button
+            className="notebook-preview-create"
+            type="button"
+            disabled={Boolean(transitioning)}
+            onClick={() => onCreate(notebook.subjectId)}
+            aria-label={pages.length ? uiText(745) : uiText(1391)}
+          >
+            <PaperActionIcon name="plus" />
+            <span>{pages.length ? uiText(746) : uiText(1391)}</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
   const back = turning ? pages[turning.to * 2 + (turning.direction > 0 ? 0 : 1)] : undefined;
   return (
     <div
@@ -199,49 +384,6 @@ export function NotebookSpread({
       )}
       {showCover ? (
         <div className="notebook-cover-customizer">
-          {!readOnly && (
-            <section className="notebook-cover-inventory" aria-label={uiText(738)}>
-              <div className="notebook-cover-inventory__heading">
-                <span>{uiText(739)}</span>
-                <small>{uiText(740)}</small>
-              </div>
-              <div className="notebook-cover-inventory__items">
-                {(
-                  [
-                    ["helena-estrelas", uiText(1848)],
-                    ["oliver-estrelas", uiText(1849)],
-                  ] as const
-                ).map(([style, label]) => {
-                  const selected = (notebook.coverStyle ?? "helena-estrelas") === style;
-                  return (
-                    <button
-                      key={style}
-                      type="button"
-                      className="notebook-cover-inventory__item"
-                      aria-label={uiText(1850, [label])}
-                      aria-pressed={selected}
-                      disabled={busy}
-                      onClick={() =>
-                        dispatch({
-                          type: "notebook/organized",
-                          id: notebook.id,
-                          changes: { coverStyle: style },
-                        })
-                      }
-                    >
-                      <span className="notebook-cover-inventory__art">
-                        <img src={`/notebook-covers/${style}.webp`} alt="" loading="lazy" />
-                      </span>
-                      <span className="notebook-cover-inventory__name">{label}</span>
-                      <span className="notebook-cover-inventory__state">
-                        {selected ? uiText(1851) : uiText(1852)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-          )}
           <button
             type="button"
             className="notebook-concept-cover"
@@ -288,7 +430,6 @@ export function NotebookSpread({
               {...(participants ? { participants } : {})}
               subjectColor="#7C3AED"
               title={notebook.title}
-              coverStyle={notebook.coverStyle}
               tabs={notebookPaperTabs(notebook, pages, subjects)}
             />
           </button>
@@ -330,19 +471,7 @@ export function NotebookSpread({
                 </button>
               )
             }
-            coverControl={
-              <button
-                type="button"
-                className="notebook-paper-tool"
-                disabled={busy}
-                onClick={() => changeCover(true)}
-                aria-label={uiText(741)}
-                title={uiText(741)}
-              >
-                <NotebookToolIcon name="cover" />
-                <span className="notebook-cover-label">{uiText(741)}</span>
-              </button>
-            }
+            coverControl={null}
             onJump={(id) => turnTo(Math.floor(pages.findIndex((page) => page.id === id) / 2))}
           >
             <div

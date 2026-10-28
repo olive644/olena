@@ -6,12 +6,14 @@ export type AccessibilityPreferences = {
   highlightSelections: boolean;
   soundEffects: boolean;
   haptics: boolean;
+  notebook3d: boolean;
 };
 const defaults: AccessibilityPreferences = {
   reduceMotion: false,
   highlightSelections: false,
   soundEffects: true,
   haptics: true,
+  notebook3d: true,
 };
 let current = defaults;
 const listeners = new Set<() => void>();
@@ -25,6 +27,7 @@ function read(): AccessibilityPreferences {
         highlightSelections: "highlightSelections" in data && data["highlightSelections"] === true,
         soundEffects: !("soundEffects" in data) || data["soundEffects"] !== false,
         haptics: !("haptics" in data) || data["haptics"] !== false,
+        notebook3d: !("notebook3d" in data) || data["notebook3d"] !== false,
       };
   } catch {
     /* Preferências indisponíveis: mantém a configuração padrão. */
@@ -84,6 +87,10 @@ export function isMotionReduced() {
 
 export function areSoundEffectsEnabled() {
   return current.soundEffects;
+}
+
+export function isNotebook3dPreferred() {
+  return current.notebook3d;
 }
 
 export function areHapticsEnabled() {

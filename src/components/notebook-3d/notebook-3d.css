@@ -1,0 +1,88 @@
+/* Caderno 3D: a cena ocupa a área da vitrine; o fundo é transparente para mostrar o céu do app. */
+.notebook-3d {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 64vh, 780px);
+  touch-action: none;
+  user-select: none;
+}
+.notebook-3d__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+.notebook-3d.is-placing .notebook-3d__canvas {
+  cursor: crosshair;
+}
+.notebook-3d__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.notebook-3d__peek {
+  position: fixed;
+  z-index: 30;
+  transform: translate(-50%, -140%);
+  padding: 5px 9px;
+  border: 2px solid #292432;
+  border-radius: 8px 10px 7px 9px;
+  background: #fff9ef;
+  color: #292432;
+  box-shadow: 2px 3px 0 #292432;
+  font: 800 12px var(--font-display, "Manrope", sans-serif);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.notebook-3d__proxy {
+  position: fixed;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.notebook-3d__proxy .notebook-sheet-open,
+.notebook-3d__proxy img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 700px) {
+  .notebook-3d {
+    height: clamp(360px, 58vh, 620px);
+  }
+}
+/* As marcas ficam desenhadas na cena; os botões continuam disponíveis para o teclado. */
+.notebook-attached-tabs.is-scene {
+  position: absolute;
+  inset: auto 0 0 auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.notebook-attached-tabs.is-scene:focus-within {
+  inset: auto 8px 8px 8px;
+  width: auto;
+  height: auto;
+  clip-path: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  pointer-events: auto;
+}
+.notebook-attached-tabs.is-scene .notebook-attached-tab {
+  position: relative;
+  inset: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+}
+.notebook-preview-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

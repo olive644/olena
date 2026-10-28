@@ -65,7 +65,6 @@ export function NotebookFolder({
                 <NotebookCover
                   subjectColor="#7c3aed"
                   title={book.title}
-                  coverStyle={book.coverStyle}
                   tabs={notebookPaperTabs(
                     book,
                     book.pageIds.flatMap((id) => pages.find((page) => page.id === id) ?? []),

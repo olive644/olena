@@ -6,6 +6,7 @@ import {
   type Dispatch,
   type PointerEvent,
   type ReactNode,
+  type RefObject,
 } from "react";
 import {
   createWorkspaceId,
@@ -17,6 +18,7 @@ import {
 } from "../domain/workspace";
 import { PaperEditorIcon } from "./paper-editor-icon";
 import { PaperMoonMark } from "./paper-moon-mark";
+import type { PlacementResult } from "./notebook-3d/notebook-3d-model";
 
 const colors = ["#7C3AED", "#287D69", "#AC365E", "#FACC15", "#5887C9"];
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
@@ -86,8 +88,23 @@ type Props = {
   coverControl: ReactNode;
   backControl?: ReactNode;
   indexControl?: ReactNode;
-  children: ReactNode;
+  /** No caderno 3D, a cena desenha as marcas e resolve onde cada toque cai. */
+  scene?: boolean;
+  resolverRef?: RefObject<PlacementResolver | null>;
+  children: ReactNode | ((scene: PaperToolsScene) => ReactNode);
 };
+
+export type PaperToolsScene = {
+  tool: NotebookTab["kind"] | null;
+  editing: boolean;
+  placeResolved: (kind: NotebookTab["kind"], result: PlacementResult, id?: string) => void;
+  activateTab: (id: string) => void;
+};
+export type PlacementResolver = (
+  kind: NotebookTab["kind"],
+  x: number,
+  y: number,
+) => PlacementResult | null;
 
 export function NotebookPaperTools({
   notebook,
@@ -100,6 +117,8 @@ export function NotebookPaperTools({
   coverControl,
   backControl,
   indexControl,
+  scene = false,
+  resolverRef,
   children,
 }: Props) {
   useLanguage();
@@ -129,7 +148,38 @@ export function NotebookPaperTools({
   function update(tab: NotebookTab, changes: Partial<NotebookTab>) {
     save(tabs.map((item) => (item.id === tab.id ? { ...item, ...changes } : item)));
   }
+  function placeResolved(kind: NotebookTab["kind"], result: PlacementResult, id?: string) {
+    if (disabled) return;
+    if (!result.ok) {
+      setMessage(
+        result.reason === "divider-edge"
+          ? uiText(704)
+          : result.reason === "bookmark-sheet"
+            ? uiText(1829)
+            : uiText(1830),
+      );
+      return;
+    }
+    const page = pages[result.page];
+    if (!page) {
+      setMessage(uiText(1830));
+      return;
+    }
+    commit(kind, page, result.position, id);
+  }
+  function activateTab(id: string) {
+    const tab = tabs.find((item) => item.id === id);
+    if (!tab) return;
+    setTool(null);
+    if (editing) setSelectedId(tab.id);
+    else {
+      setSelectedId(null);
+      onJump(tab.pageId);
+    }
+  }
   function place(kind: NotebookTab["kind"], x: number, y: number, id?: string) {
+    const resolved = resolverRef?.current?.(kind, x, y);
+    if (resolved) return placeResolved(kind, resolved, id);
     const rect = mount.current?.getBoundingClientRect();
     if (!rect || !visible.length || disabled) return;
     const inside =
@@ -148,6 +198,9 @@ export function NotebookPaperTools({
       kind === "divider"
         ? clamp((y - rect.top - 22) / Math.max(1, rect.height - 66))
         : clamp((((x - rect.left) / rect.width) * 2 - side - 0.14) / 0.72);
+    commit(kind, page, position, id);
+  }
+  function commit(kind: NotebookTab["kind"], page: StudyNote, position: number, id?: string) {
     const previous = tabs.find((tab) => tab.id === id);
     const next: NotebookTab = previous
       ? { ...previous, pageId: page.id, position }
@@ -335,13 +388,14 @@ export function NotebookPaperTools({
         </div>
       )}
       <div
-        className={`notebook-spread-shell ${tool || ghost ? "is-placing" : ""}`}
+        className={`notebook-spread-shell ${tool || ghost ? "is-placing" : ""} ${scene ? "is-scene" : ""}`}
         ref={mount}
         onPointerDownCapture={(event) => {
-          if (tool) event.stopPropagation();
+          if (tool && !scene) event.stopPropagation();
         }}
         onClickCapture={(event) => {
-          if (!tool || (event.target as HTMLElement).closest(".notebook-attached-tab")) return;
+          if (scene || !tool || (event.target as HTMLElement).closest(".notebook-attached-tab"))
+            return;
           event.preventDefault();
           event.stopPropagation();
           const rect =
@@ -358,11 +412,21 @@ export function NotebookPaperTools({
             );
         }}
       >
-        {children}
-        {(tool || ghost) && (
+        {typeof children === "function"
+          ? children({
+              tool,
+              editing,
+              placeResolved,
+              activateTab,
+            })
+          : children}
+        {!scene && (tool || ghost) && (
           <div className={`notebook-drop-guide is-${tool ?? ghost?.kind}`} aria-hidden="true" />
         )}
-        <nav className="notebook-attached-tabs" aria-label={uiText(719)}>
+        <nav
+          className={`notebook-attached-tabs ${scene ? "is-scene" : ""}`}
+          aria-label={uiText(719)}
+        >
           {tabs.map((tab) => {
             const pageIndex = pages.findIndex((page) => page.id === tab.pageId);
             const exposed = !disabled && visible.some((page) => page.id === tab.pageId);
