@@ -1,5 +1,6 @@
 import { PaperCardTitle } from "./paper-card-title";
 import { PaperDigits } from "./paper-digits";
+import { uiText } from "../i18n/runtime";
 import { type CSSProperties } from "react";
 import "./arcana-card-prototype.css";
 
@@ -23,12 +24,12 @@ export function ArcanaCardPrototype({
     return (
       <article
         className="arcana-paper arcana-paper--back"
-        aria-label="Verso das cartas de arcano Olena"
+        aria-label={uiText("Verso das cartas de arcano Olena")}
       >
         <svg
           viewBox="0 0 334 584"
           role="img"
-          aria-label="Verso simétrico com luas e estrela de papel"
+          aria-label={uiText("Verso simétrico com luas e estrela de papel")}
         >
           <path fill="#17151c" d="M0 0h334v584H0Z" />
           <path fill="none" stroke="#6d28d9" strokeWidth="2" d="M13 13h308v558H13Z" />
