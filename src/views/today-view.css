@@ -34,7 +34,10 @@
 .math-hero-peek[data-ready="true"] > canvas {
   opacity: 1;
 }
+/* A animação de chegada mantém opacity 1 (fill-mode both) e vence a regra normal: sem desligá-la, a
+   imagem ficava visível atrás do canvas. */
 .math-hero-peek[data-ready="true"] > img {
+  animation: none;
   opacity: 0;
   transition: opacity 0ms linear 200ms;
 }
