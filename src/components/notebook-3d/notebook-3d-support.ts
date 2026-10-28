@@ -9,8 +9,7 @@ export function supportsNotebook3d(): boolean {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
     cached = Boolean(context);
-    if (context && "getExtension" in context)
-      context.getExtension("WEBGL_lose_context")?.loseContext();
+    context?.getExtension("WEBGL_lose_context")?.loseContext();
   } catch {
     cached = false;
   }

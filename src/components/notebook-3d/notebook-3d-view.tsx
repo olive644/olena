@@ -2,7 +2,7 @@ import { uiText, useLanguage } from "../../i18n/runtime";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { NotebookTab, StudyNote } from "../../domain/workspace";
 import { useMotionReduced } from "../../data/accessibility-preferences";
-import { createNotebookSound } from "../../data/notebook-sound";
+import type { createNotebookSound } from "../../data/notebook-sound";
 import { HelenaLoading } from "../helena-loading";
 import { NOTEBOOK_COVER_ART } from "../notebook-cover-art";
 import { renderPagePreview } from "../notebook-page-preview";
@@ -64,12 +64,12 @@ export function Notebook3dView(props: Notebook3dProps) {
 
   useEffect(() => {
     let cancelled = false;
-    const notebookSound = createNotebookSound();
-    sound.current = notebookSound;
+    let disposeSound: (() => void) | null = null;
     void (async () => {
       try {
-        const [module, cover, olena, sprite] = await Promise.all([
+        const [module, soundModule, cover, olena, sprite] = await Promise.all([
           import("./notebook-3d-scene"),
+          import("../../data/notebook-sound"),
           loadImage(NOTEBOOK_COVER_ART),
           loadImage("/notebook-covers/olena-mesa.webp"),
           fetch("/navigation-icons/paper/paper-bookmark.svg")
@@ -78,6 +78,9 @@ export function Notebook3dView(props: Notebook3dProps) {
           document.fonts?.ready,
         ]);
         if (cancelled || !canvas.current) return;
+        const notebookSound = soundModule.createNotebookSound();
+        sound.current = notebookSound;
+        disposeSound = () => notebookSound.dispose();
         const instance = new module.NotebookScene(
           canvas.current,
           { cover, olena, bookmarkSprite: sprite },
@@ -102,7 +105,8 @@ export function Notebook3dView(props: Notebook3dProps) {
       cancelled = true;
       scene.current?.dispose();
       scene.current = null;
-      notebookSound.dispose();
+      disposeSound?.();
+      sound.current = null;
     };
     // A cena nasce uma vez por caderno; as mudanças de dados chegam pelos efeitos abaixo.
   }, []);
