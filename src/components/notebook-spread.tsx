@@ -186,26 +186,6 @@ export function NotebookSpread({
       automatic: true,
     });
   }
-  const handledJump = useRef(jump?.nonce);
-  useEffect(() => {
-    if (!jump || use3d || handledJump.current === jump.nonce) return;
-    handledJump.current = jump.nonce;
-    const index = pages.findIndex((page) => page.id === jump.pageId);
-    if (index < 0) return;
-    const target = Math.floor(index / 2);
-    const wait = target === current || reducedMotion() ? 60 : NOTEBOOK_TURN_MS + 100;
-    // A virada começa no próximo quadro para o estado vir de um evento, não do efeito.
-    const start = window.setTimeout(() => {
-      setShowCover(false);
-      turnTo(target);
-    }, 0);
-    const timer = window.setTimeout(() => onOpen(jump.pageId), wait);
-    return () => {
-      window.clearTimeout(start);
-      window.clearTimeout(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jump?.nonce, use3d]);
   function remove(page: StudyNote, side: number) {
     if (busy) return;
     if (!reducedMotion()) setRemoving({ page, side });

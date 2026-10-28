@@ -1218,6 +1218,8 @@ export function NotesView({
               pages={notebookPages}
               currentPageId=""
               onSelect={(pageId) => {
+                // No 3D o caderno folheia até a folha; na vitrine 2D a folha abre direto, como antes.
+                if (!notebook3d) return setActivePageId(pageId);
                 setIndexOpen(false);
                 setPageJump((current) => ({ pageId, nonce: (current?.nonce ?? 0) + 1 }));
               }}
