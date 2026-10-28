@@ -39,7 +39,7 @@ function Artwork({ item, workspace }: { item: StudyNotebook; workspace: Workspac
         content={workspace.notes.find((page) => page.id === item.pageIds[0])?.content ?? ""}
       />
     );
-  return <NotebookCover subjectColor="#7c3aed" title={item.title} coverStyle={item.coverStyle} />;
+  return <NotebookCover subjectColor="#7c3aed" title={item.title} />;
 }
 
 export default function StudentFavoritesShelf({

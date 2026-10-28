@@ -12,7 +12,7 @@ const ALT = "Oliver aparece por trás do widget de Matemática";
 async function open(page: import("@playwright/test").Page, requests: string[], errors: string[]) {
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("request", (request) => {
-    if (/\/oliver-math-islands\/|\/helena-assistant\/rive\./.test(request.url()))
+    if (/\/oliver-peeking-widget\/|\/helena-assistant\/rive\./.test(request.url()))
       requests.push(request.url());
   });
   await page.route("**/*", async (route) => {
@@ -67,7 +67,11 @@ test("Oliver espreita por trás do widget sob CSP com imagem transparente e conv
   await expect(
     page.getByRole("button", { name: "Explorar Matemática", exact: true }),
   ).toBeVisible();
-  expect(requests.some((url) => url.includes("/oliver-math-islands/oliver.riv"))).toBe(false);
+  // Sem movimento reduzido, a animação entra sozinha depois do primeiro quadro, sob a CSP de produção.
+  await expect(page.locator(".math-hero-peek")).toHaveAttribute("data-ready", "true", {
+    timeout: 15000,
+  });
+  expect(requests.some((url) => url.includes("/oliver-peeking-widget/oliver.riv"))).toBe(true);
   expect(errors).toEqual([]);
 });
 
@@ -82,6 +86,6 @@ test("com movimento reduzido Oliver continua só como imagem e nada de Rive é b
   await expect(page.getByAltText(ALT)).toHaveCSS("animation-name", "none");
   await expect(page.locator(".math-hero-peek canvas")).toHaveCount(0);
   expect(requests.filter((url) => !url.includes("/helena-assistant/rive."))).toEqual([]);
-  expect(requests.some((url) => url.includes("/oliver-math-islands/oliver.riv"))).toBe(false);
+  expect(requests.some((url) => url.includes("/oliver-peeking-widget/oliver.riv"))).toBe(false);
   expect(errors).toEqual([]);
 });

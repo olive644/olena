@@ -22,7 +22,11 @@ export default defineConfig({
       origins: [
         {
           origin: `http://127.0.0.1:${port}`,
-          localStorage: [{ name: "helena.privacyNotice.v1", value: PRIVACY_POLICY_VERSION }],
+          localStorage: [
+            { name: "helena.privacyNotice.v1", value: PRIVACY_POLICY_VERSION },
+            // As suítes do caderno cobrem a vitrine 2D; o caderno 3D tem a suíte própria notebook-3d.spec.ts.
+            { name: "olena:accessibility:v1", value: JSON.stringify({ notebook3d: false }) },
+          ],
         },
       ],
     },

@@ -1,3 +1,4 @@
+import { notebook3dCoverRect } from "./notebook-3d/notebook-3d-support";
 import { useLayoutEffect, useRef } from "react";
 import { isMotionReduced } from "../data/accessibility-preferences";
 import { createPortal } from "react-dom";
@@ -56,11 +57,19 @@ export function NotebookJourney({
   const lining = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const element = carrier.current;
-    const target = journey.returning
-      ? journey.destination === "cover"
-        ? document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover")
-        : notebookShelfCover(journey.notebook.id)
-      : document.querySelector<HTMLElement>(".notebook-spread-shell");
+    // No caderno 3D a capa só viaja fechada; quem abre é a própria cena.
+    const scene3d = journey.returning
+      ? null
+      : document.querySelector<HTMLElement>("[data-notebook-3d] .notebook-3d");
+    const closed = Boolean(journey.closed || scene3d);
+    if (element && scene3d) element.dataset["closed"] = "true";
+    const target = scene3d
+      ? scene3d
+      : journey.returning
+        ? journey.destination === "cover"
+          ? document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover")
+          : notebookShelfCover(journey.notebook.id)
+        : document.querySelector<HTMLElement>(".notebook-spread-shell");
     if (!element || !target || !canAnimateNotebook()) {
       onDone();
       return;
@@ -87,14 +96,16 @@ export function NotebookJourney({
       if (journey.returning && journey.destination !== "cover")
         target.scrollIntoView({ block: "nearest", behavior: "instant" });
       const rect = target.getBoundingClientRect();
-      const destination = journey.returning
-        ? rect
-        : {
-            x: rect.x + rect.width / 2,
-            y: rect.y,
-            width: rect.width / 2,
-            height: rect.height,
-          };
+      const destination = scene3d
+        ? notebook3dCoverRect(scene3d)
+        : journey.returning
+          ? rect
+          : {
+              x: rect.x + rect.width / 2,
+              y: rect.y,
+              width: rect.width / 2,
+              height: rect.height,
+            };
       const { from } = journey;
       const transport = `translate(${destination.x - from.x}px, ${destination.y - from.y}px) scale(${destination.width / from.width}, ${destination.height / from.height})`;
       const duration = NOTEBOOK_TURN_MS + 480;
@@ -104,7 +115,7 @@ export function NotebookJourney({
       const timing: KeyframeAnimationOptions = { duration, fill: "both" };
       const animate = (node: Element | null, frames: Keyframe[]) => {
         if (node) {
-          if (journey.closed && node !== element) {
+          if (closed && node !== element) {
             if (node === paper.current) (node as HTMLElement).style.display = "none";
             else (node as HTMLElement).style.transform = "none";
             return;
@@ -119,7 +130,7 @@ export function NotebookJourney({
               { transform: "none" },
               {
                 transform: "none",
-                offset: journey.closed ? 0 : 0.65,
+                offset: closed ? 0 : 0.65,
                 easing: "cubic-bezier(.45,0,.2,1)",
               },
               { transform: transport },
@@ -209,7 +220,6 @@ export function NotebookJourney({
   return createPortal(
     <div
       className="notebook-journey"
-      data-cover-style={journey.notebook.coverStyle}
       data-returning={journey.returning}
       data-closed={journey.closed ?? false}
       ref={carrier}
@@ -226,7 +236,6 @@ export function NotebookJourney({
         <NotebookCover
           subjectColor="#7C3AED"
           title={journey.notebook.title}
-          coverStyle={journey.notebook.coverStyle}
           tabs={journey.tabs}
           clasp={false}
         />

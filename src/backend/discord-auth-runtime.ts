@@ -234,6 +234,7 @@ export async function handleDiscordAuth(request: Request): Promise<Response> {
     step !== "cleanup" &&
     step !== "recent" &&
     step !== "methods" &&
+    step !== "revoke-sessions" &&
     step !== "unlink-google" &&
     step !== "unlink-discord"
   )
@@ -248,6 +249,39 @@ export async function handleDiscordAuth(request: Request): Promise<Response> {
     // O token assinado comprova a antiga propriedade; a conta precisa já estar removida.
     const owner = await verifyDeletedOwner(request);
     if (!owner || owner.anonymous) return new Response("{}", { status: 403, headers });
+    if (step === "revoke-sessions") {
+      // Encerra todas as sessões da conta: os tokens de renovação emitidos antes de agora deixam de
+      // valer, e o servidor passa a recusar os ID tokens antigos na consulta de conta. Exige login
+      // recente, como vincular e desvincular, para que uma sessão esquecida não o use contra o dono.
+      const claims = decodeJwt(request.headers.get("authorization")!.slice(7));
+      const age = Date.now() / 1000 - Number(claims["auth_time"]);
+      if (!Number.isFinite(age) || age < 0 || age >= 240)
+        return new Response("{}", { status: 401, headers });
+      if (
+        !(await checkRateLimit(rateStore, "room-limits", `auth-revoke:${owner.uid}`, 5, 3600)) ||
+        !(await checkRateLimit(rateStore, "room-limits", "auth-revoke:global", 500, 86400))
+      )
+        return new Response("{}", { status: 429, headers });
+      const current = await account(owner.uid, request.headers.get("authorization")!.slice(7));
+      if (!current || current.disabled) return new Response("{}", { status: 403, headers });
+      const revoked = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/projects/${encodeURIComponent(project)}/accounts:update`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${await adminToken()}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            localId: owner.uid,
+            validSince: String(Math.floor(Date.now() / 1000)),
+          }),
+          signal: AbortSignal.timeout(10000),
+        },
+      );
+      if (!revoked.ok) throw new Error("revoke-sessions");
+      return new Response("{}", { status: 200, headers });
+    }
     if (step === "unlink-google" || step === "unlink-discord") {
       const claims = decodeJwt(request.headers.get("authorization")!.slice(7));
       const age = Date.now() / 1000 - Number(claims["auth_time"]);

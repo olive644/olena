@@ -1,0 +1,135 @@
+{
+  "source": "public/oliver-peeking-widget.webp",
+  "width": 900,
+  "height": 600,
+  "order": [
+    "body",
+    "mouth",
+    "eyeL",
+    "eyeR",
+    "handL",
+    "handR",
+    "pulsePlus",
+    "pulseDiv",
+    "glowPlus",
+    "glowDiv",
+    "plus",
+    "divDotTop",
+    "divDotBottom",
+    "divBar"
+  ],
+  "layers": {
+    "body": {
+      "file": "body.png",
+      "x0": 194,
+      "y0": 112,
+      "w": 478,
+      "h": 412,
+      "pivot": [450, 535]
+    },
+    "mouth": {
+      "file": "mouth.png",
+      "x0": 313,
+      "y0": 283,
+      "w": 285,
+      "h": 146,
+      "pivot": [463, 373]
+    },
+    "eyeL": {
+      "file": "eyeL.png",
+      "x0": 319,
+      "y0": 255,
+      "w": 109,
+      "h": 89,
+      "pivot": [375, 299]
+    },
+    "eyeR": {
+      "file": "eyeR.png",
+      "x0": 468,
+      "y0": 224,
+      "w": 104,
+      "h": 94,
+      "pivot": [520, 266]
+    },
+    "handL": {
+      "file": "handL.png",
+      "x0": 45,
+      "y0": 376,
+      "w": 254,
+      "h": 170,
+      "pivot": [172, 545]
+    },
+    "handR": {
+      "file": "handR.png",
+      "x0": 605,
+      "y0": 377,
+      "w": 250,
+      "h": 168,
+      "pivot": [730, 544]
+    },
+    "pulsePlus": {
+      "file": "pulsePlus.png",
+      "x0": 603,
+      "y0": 84,
+      "w": 199,
+      "h": 210,
+      "pivot": [697, 189]
+    },
+    "pulseDiv": {
+      "file": "pulseDiv.png",
+      "x0": 718,
+      "y0": 197,
+      "w": 161,
+      "h": 178,
+      "pivot": [797, 287]
+    },
+    "glowPlus": {
+      "file": "glowPlus.png",
+      "x0": 603,
+      "y0": 84,
+      "w": 199,
+      "h": 210,
+      "pivot": [697, 189]
+    },
+    "glowDiv": {
+      "file": "glowDiv.png",
+      "x0": 718,
+      "y0": 197,
+      "w": 161,
+      "h": 178,
+      "pivot": [797, 287]
+    },
+    "plus": {
+      "file": "plus.png",
+      "x0": 622,
+      "y0": 115,
+      "w": 149,
+      "h": 150,
+      "pivot": [697, 189]
+    },
+    "divDotTop": {
+      "file": "divDotTop.png",
+      "x0": 789,
+      "y0": 228,
+      "w": 44,
+      "h": 43,
+      "pivot": [811, 249]
+    },
+    "divDotBottom": {
+      "file": "divDotBottom.png",
+      "x0": 757,
+      "y0": 302,
+      "w": 43,
+      "h": 42,
+      "pivot": [778, 322]
+    },
+    "divBar": {
+      "file": "divBar.png",
+      "x0": 747,
+      "y0": 250,
+      "w": 102,
+      "h": 75,
+      "pivot": [797, 287]
+    }
+  }
+}

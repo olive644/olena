@@ -54,12 +54,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   if (testInfo.project.name === "mobile") {
     await page.setViewportSize({ width: 320, height: 640 });
     await page.keyboard.press("Tab");
-    for (const name of [
-      "Personalizar",
-      "Colocar divisória",
-      "Colocar marcador",
-      "Índice de folhas",
-    ]) {
+    for (const name of ["Colocar divisória", "Colocar marcador", "Índice de folhas"]) {
       const control = preview.getByRole("button", { name, exact: true });
       await control.focus();
       await expect
@@ -248,9 +243,9 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
   );
   await editor.getByRole("button", { name: "Fechar", exact: true }).click();
   await expect(editor).toHaveCount(0);
-  await preview.getByRole("button", { name: "Personalizar", exact: true }).click();
+  await preview.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(page.locator(".notebook-journey")).toHaveCount(0);
-  await page.screenshot({ path: testInfo.outputPath("capa-helena.png") });
+  await page.screenshot({ path: testInfo.outputPath("capa-fixa.png") });
   if (testInfo.project.name === "mobile") {
     for (const size of [
       { width: 390, height: 720 },
@@ -270,7 +265,7 @@ test("folhas duplas e divisórias reordenáveis persistem no caderno", async ({
       expect(spread!.width).toBeLessThan(size.width);
       const create = await preview.getByRole("button", { name: "Criar nova folha" }).boundingBox();
       expect(create!.y + create!.height).toBeLessThan(size.height);
-      await preview.getByRole("button", { name: "Personalizar" }).click();
+      await preview.getByRole("button", { name: "‹ Capa", exact: true }).click();
       await expect(page.locator(".notebook-journey")).toHaveCount(0);
     }
   }

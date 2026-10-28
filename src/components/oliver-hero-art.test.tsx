@@ -76,8 +76,8 @@ it("com movimento reduzido mantém só a imagem e não baixa nada", () => {
   act(() => vi.advanceTimersByTime(5000));
   expect(view.container.querySelector("canvas")).toBeNull();
   expect(created).toHaveLength(0);
-  const art = view.getByAltText("Oliver convidando você para explorar as ilhas de Matemática");
-  expect(art.getAttribute("src")).toBe("/oliver-math-islands.png");
+  const art = view.getByAltText("Oliver aparece por trás do widget de Matemática");
+  expect(art.getAttribute("src")).toBe("/oliver-peeking-widget.webp");
 });
 
 it("a preferência do app por menos movimento também mantém a imagem estática", () => {
@@ -97,15 +97,13 @@ it("espera o primeiro quadro e carrega o arquivo na máquina Oliver, do próprio
   expect(created).toHaveLength(0);
   expect(view.container.querySelector("canvas")).toBeNull();
   const { instance, stage } = await activate(view);
-  expect(instance.options.src).toBe("/oliver-math-islands/oliver.riv?v=1");
+  expect(instance.options.src).toBe("/oliver-peeking-widget/oliver.riv?v=1");
   expect(instance.options.stateMachines).toBe("Oliver");
   expect(wasm).toHaveBeenCalledWith("/helena-assistant/rive.wasm?v=2.43.0");
   expect(stage.getAttribute("data-ready")).toBe("true");
   expect(view.container.querySelector("canvas")?.getAttribute("aria-hidden")).toBe("true");
   // a imagem continua sendo o elemento acessível
-  expect(
-    view.getByAltText("Oliver convidando você para explorar as ilhas de Matemática"),
-  ).toBeTruthy();
+  expect(view.getByAltText("Oliver aparece por trás do widget de Matemática")).toBeTruthy();
 });
 
 it("cumprimenta uma vez ao ficar pronto e volta a entrada ao repouso", async () => {
@@ -207,9 +205,7 @@ it("se o arquivo não carrega, a imagem estática continua valendo", async () =>
   act(() => created.at(-1)!.options.onLoadError());
   const stage = view.container.firstElementChild as HTMLElement;
   expect(stage.getAttribute("data-ready")).toBe("false");
-  expect(
-    view.getByAltText("Oliver convidando você para explorar as ilhas de Matemática"),
-  ).toBeTruthy();
+  expect(view.getByAltText("Oliver aparece por trás do widget de Matemática")).toBeTruthy();
 });
 
 it("libera o Rive ao sair da tela", async () => {

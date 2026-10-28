@@ -3,10 +3,10 @@ import { loadRiveRuntime, type RiveInput, type RivePlayer } from "../data/rive-r
 import { uiText } from "../i18n/runtime";
 import { reducedMotion, watchReducedMotion } from "../data/reduced-motion";
 
-const RIVE_FILE = "/oliver-math-islands/oliver.riv?v=1";
+const RIVE_FILE = "/oliver-peeking-widget/oliver.riv?v=1";
 /** Espera o primeiro quadro estático pintar antes de baixar o runtime e o arquivo. */
 const ACTIVATION_DELAY = 900;
-/** Reações da máquina "Oliver": 1 pulo, 2 aceno, 3 ânimo. */
+/** Reações da máquina "Oliver": 1 pulo, 2 balanço, 3 coração. */
 const REACTIONS = [1, 2, 3] as const;
 const GREETING = 2;
 const REACTION_PULSE = 90;
@@ -16,7 +16,7 @@ const INTERACTIVE = "button, a, input, select, textarea, summary, [role=button],
 const clamp = (value: number) => Math.max(-1, Math.min(1, value));
 
 /**
- * A arte do Oliver do Espaço do aluno, animada em Rive. A imagem estática continua sendo o
+ * A arte do Oliver espiando atrás do widget de Matemática, animada em Rive. A imagem estática continua sendo o
  * elemento acessível e o quadro inicial: o canvas só a substitui quando o arquivo carrega, e a
  * pose de repouso do arquivo é a da imagem, então a troca não tem salto. A arte é decorativa:
  * não recebe foco nem intercepta toques. Ela acompanha o mouse com uma leve inclinação e reage
@@ -184,13 +184,13 @@ export function OliverHeroArt() {
   }, [ready]);
 
   return (
-    <span ref={stage} className="math-hero-oliver" data-ready={ready ? "true" : "false"}>
+    <span ref={stage} className="math-hero-peek" data-ready={ready ? "true" : "false"}>
       <img
-        src="/oliver-math-islands.png"
-        width="720"
-        height="791"
+        src="/oliver-peeking-widget.webp"
+        width="900"
+        height="600"
         fetchPriority="high"
-        alt={uiText(2728)}
+        alt={uiText("Oliver aparece por trás do widget de Matemática")}
         draggable={false}
       />
       {active && <canvas ref={canvas} aria-hidden="true" />}

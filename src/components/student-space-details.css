@@ -381,12 +381,6 @@ html[data-theme="dark"] .student-space .check-button {
     padding: 24px 18px 184px;
     min-height: 0;
   }
-  .math-hero-oliver {
-    top: -38px;
-    height: 150px;
-    width: 47%;
-    right: 1%;
-  }
   .math-hero-copy h1 {
     font-size: 23px;
     line-height: 1.18;

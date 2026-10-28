@@ -303,3 +303,108 @@ it("keeps the confirmation open and shows the last-method safeguard without anno
   expect(screen.getByRole("dialog")).toBeTruthy();
   expect(screen.queryByText("Método desvinculado. Seus estudos foram preservados.")).toBeNull();
 });
+
+function reauthSetup(authTime: string) {
+  const s = accountSetup(false, false);
+  const reauthenticateWithPopup = vi.fn(async () => ({ user: s.user }));
+  Object.assign(s.user, {
+    getIdTokenResult: vi.fn(async () => ({ authTime, token: "owned-token" })),
+    getIdToken: vi.fn(async () => "fresh-token"),
+  });
+  vi.mocked(getFirebaseAccountServices).mockResolvedValue({
+    ...s.services,
+    authApi: { ...s.services.authApi, reauthenticateWithPopup, GoogleAuthProvider: class {} },
+  } as never);
+  const calls: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url, init) => {
+      const text = String(url);
+      calls.push(
+        `${text} ${(init?.headers as Record<string, string> | undefined)?.["Authorization"] ?? ""}`,
+      );
+      if (text.includes("step=start"))
+        return Response.json({ url: "https://example.test/blocked" });
+      if (text.includes("revoke-sessions")) return Response.json({});
+      return Response.json({ password: false, google: true, discord: { linked: false } });
+    }),
+  );
+  return { ...s, reauthenticateWithPopup, calls };
+}
+const startCalls = (calls: string[]) => calls.filter((call) => call.includes("step=start"));
+
+it("asks the person to confirm their access before linking Discord with an old login", async () => {
+  const s = reauthSetup(new Date(Date.now() - 3600_000).toUTCString());
+  render(<AccountAccessPanel />);
+  fireEvent.click(await screen.findByRole("checkbox", { name: /Autorizo associar/ }));
+  fireEvent.click(await screen.findByRole("button", { name: "Associar Discord" }));
+  expect(await screen.findByRole("dialog", { name: "Confirme que é você" })).toBeTruthy();
+  expect(startCalls(s.calls)).toHaveLength(0);
+  expect(s.reauthenticateWithPopup).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  await waitFor(() => expect(startCalls(s.calls)).toHaveLength(1));
+  expect(s.reauthenticateWithPopup).toHaveBeenCalledOnce();
+  expect(startCalls(s.calls)[0]).toContain("Bearer fresh-token");
+});
+
+it("links Discord straight away after a recent login, without a second prompt", async () => {
+  const s = reauthSetup(new Date(Date.now() - 20_000).toUTCString());
+  render(<AccountAccessPanel />);
+  fireEvent.click(await screen.findByRole("checkbox", { name: /Autorizo associar/ }));
+  fireEvent.click(await screen.findByRole("button", { name: "Associar Discord" }));
+  await waitFor(() => expect(startCalls(s.calls)).toHaveLength(1));
+  expect(screen.queryByRole("dialog", { name: "Confirme que é você" })).toBeNull();
+  expect(s.reauthenticateWithPopup).not.toHaveBeenCalled();
+});
+
+it("opens the confirmation when the server says the login is too old", async () => {
+  const s = reauthSetup(new Date(Date.now() - 20_000).toUTCString());
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url) =>
+      String(url).includes("step=start")
+        ? Response.json({ error: "recent-login" }, { status: 401 })
+        : Response.json({ password: false, google: true, discord: { linked: false } }),
+    ),
+  );
+  render(<AccountAccessPanel />);
+  fireEvent.click(await screen.findByRole("checkbox", { name: /Autorizo associar/ }));
+  fireEvent.click(await screen.findByRole("button", { name: "Associar Discord" }));
+  expect(await screen.findByRole("dialog", { name: "Confirme que é você" })).toBeTruthy();
+  expect(s.reauthenticateWithPopup).not.toHaveBeenCalled();
+});
+
+it("signs out of every device only after confirming access, then leaves this device", async () => {
+  const s = reauthSetup(new Date(Date.now() - 3600_000).toUTCString());
+  const onSignOut = vi.fn(async () => {});
+  render(<AccountAccessPanel onSignOut={onSignOut} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Sair de todos os aparelhos" }));
+  expect(await screen.findByRole("dialog", { name: "Confirme que é você" })).toBeTruthy();
+  expect(onSignOut).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Continuar" }));
+  await waitFor(() => expect(onSignOut).toHaveBeenCalledOnce());
+  expect(s.reauthenticateWithPopup).toHaveBeenCalledOnce();
+  expect(
+    s.calls.some((call) => call.includes("revoke-sessions") && call.includes("fresh-token")),
+  ).toBe(true);
+});
+
+it("keeps this device signed in when the server refuses to end the sessions", async () => {
+  reauthSetup(new Date(Date.now() - 3600_000).toUTCString());
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url) =>
+      String(url).includes("revoke-sessions")
+        ? new Response("{}", { status: 429 })
+        : Response.json({ password: false, google: true, discord: { linked: false } }),
+    ),
+  );
+  const onSignOut = vi.fn(async () => {});
+  render(<AccountAccessPanel onSignOut={onSignOut} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Sair de todos os aparelhos" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Continuar" }));
+  await screen.findAllByText(
+    "Não foi possível encerrar as sessões agora. Tente novamente em instantes.",
+  );
+  expect(onSignOut).not.toHaveBeenCalled();
+});
