@@ -382,3 +382,9 @@ O card recebe next e steps da resposta confirmada para os campos atuais. Consult
 pendente, erro, conclusão ou dispensa não montam ficha nem espaço vazio. A API
 continua conferindo em segundo plano, sem cobrar campos durante sincronização.
 Pronomes, bio e redes continuam opcionais.
+
+Cartas de arcano em estudo: seguir [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIGN.md). Arte de A Estrela aprovada; moldura e verso em preview isolado, sem substituir a coleção atual.
+
+## Padrão vigente das cartas, aprovado em 28/10/2026
+
+Cartas de arcano seguem exclusivamente [ARCANA_CARD_DESIGN.md](ARCANA_CARD_DESIGN.md). Arte nova contida em preto #17151c, amarelo #facc15 e roxos #6d28d9/#8b5cf6. Moldura sólida amarela de papel, título preto na faixa amarela, índice amarelo, base e recorte roxos. Referência atual: mago-ink-v1.webp no ArcanaCardPrototype. Estudos multicoloridos e colagens de avatar anteriores não representam o padrão vigente. Apenas uma arte pronta nesta direção, catálogo de 78 ainda é planejamento.

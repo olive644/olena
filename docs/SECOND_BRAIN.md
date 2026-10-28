@@ -1634,3 +1634,13 @@ Refinamento: AchievementCollection usa prévia de três artes sem placas, galeri
 Catálogo: src/domain/math-achievements.ts (57 objetivos). Derivação sobre MasteryProgress confirmado e PracticeActivity deduplicadas, sem novo armazenamento de saldo. UI: MathAchievements, AchievementCollection e IslandAchievementBook. AchievementAnnouncer monta após recuperação da conta, mostra avisos de novos desbloqueios e publica o resumo público pela sessão, não só na visita ao próprio perfil. Fila de avisos dura a sessão; histórico existente é reconhecido sem celebrar novamente. Categorias de raridade são editoriais, não percentuais globais. PaperArtInspection compartilha inspeção 3D com as cartas. Artes atuais em public/achievement-badges/math; prompts e referências no README dessa pasta. Ícones antigos extraídos para sprites preservam os desenhos e reduzem JavaScript.
 
 Segurança: ProfileSafety confirma block/unblock em profile-social-handler, com mapa privado e remoção bilateral de vínculos. Denúncias entram no requestSupport existente e ficam disponíveis ao time, sem sanções automáticas. Bloqueio cobre o domínio social do perfil, não os participantes de salas. Conquistas públicas são metadados visuais limitados ao catálogo, nunca credencial de plano ou saldo de XP. publicProfileDetails normaliza socialLinks ausente por lista vazia para compatibilidade com Realtime Database. Testes: src/domain/math-achievements.test.ts, src/components/math-achievements.test.tsx, src/components/profile-safety.test.tsx, src/backend/profile-social-handler.test.ts e e2e/math-achievements.spec.ts.
+
+## Cartas de arcano em preview
+
+Contrato visual: docs/ARCANA_CARD_DESIGN.md. Preview Vite: /previews/arcana.html. ArcanaCardPrototype aceita back para o verso SVG; frente preserva a ilustração WebP aprovada e usa PaperCardTitle. Ainda não integrado ao catálogo de cartas ou à inspeção da coleção.
+
+## Cartas: contrato vigente aprovado em 28/10/2026
+
+Fonte de verdade: docs/ARCANA_CARD_DESIGN.md, reescrito para remover direções contraditórias. Referência mago-ink-v1.webp com moldura sólida amarela e título preto. Paleta preta/roxos/amarelo; sem cenário multicolorido, colagem de avatar ou moldura frontal de fios. Verso compartilhado SVG, luas opostas e estrela, mesma moldura. Preview isolado /previews/arcana.html; 78 no catálogo são planejamento, somente O Mago disponível. Continuar ilustrações novas individualmente, checando identidade e montagem real antes de expandir.
+
+Preview arcano completo: 78 cartas em previews/arcana.html, manifesto com prioridade style-v3 > detail-v2 > anatomy-v2 > versões específicas > base. Miau conserva duas asas e silhueta de coruja. Não há migração da coleção de produção nesta entrega.
