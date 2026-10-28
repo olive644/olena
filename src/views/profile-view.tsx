@@ -555,7 +555,11 @@ export function ProfileView({
               ))}
             </section>
 
-            {section === "account" && cloud.authenticated === true && <AccountAccessPanel />}
+            {section === "account" && cloud.authenticated === true && (
+              <AccountAccessPanel
+                {...(cloud.signOut ? { onSignOut: () => cloud.signOut!() } : {})}
+              />
+            )}
             {section === "account" &&
               !guest &&
               cloud.authenticated === true &&

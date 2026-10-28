@@ -14,7 +14,10 @@ vi.mock("./firebase-account-identity.js", () => ({
 }));
 vi.mock("./profile-handle-runtime.js", () => ({
   profileAllowedOrigins: ["https://olena.test"],
-  identifyProfileAccount: async () => ({ uid: "existing-owner" }),
+  identifyProfileAccount: async () => ({
+    uid: "existing-owner",
+    authTime: Math.floor(Date.now() / 1000),
+  }),
 }));
 const key = generateKeyPairSync("rsa", { modulusLength: 2048 })
   .privateKey.export({ format: "pem", type: "pkcs8" })
@@ -44,6 +47,7 @@ async function setup() {
       providerUserInfo?: { providerId: string }[];
     }
   >();
+  const revoked: Record<string, unknown>[] = [];
   const fetcher = vi.fn<typeof fetch>(async (input, init) => {
     const url = String(input);
     const body = init?.body
@@ -59,6 +63,11 @@ async function setup() {
     if (url.endsWith("/accounts:lookup") || url.includes("/accounts:lookup?")) {
       const id = body["idToken"] ? "existing-owner" : (body["localId"] as string[])[0]!;
       return Response.json({ users: accounts.has(id) ? [accounts.get(id)] : [] });
+    }
+    if (url === "https://identitytoolkit.googleapis.com/v1/projects/project/accounts:update") {
+      expect(init?.headers).toMatchObject({ Authorization: "Bearer admin-token" });
+      revoked.push(body);
+      return Response.json({ localId: body["localId"] });
     }
     if (url.includes("/accounts:update?")) {
       expect(body["idToken"]).toBeTruthy();
@@ -115,7 +124,7 @@ async function setup() {
     );
     return { callback, cookie };
   }
-  return { handleDiscordAuth, login, accounts, values };
+  return { handleDiscordAuth, login, accounts, values, revoked };
 }
 
 it("keeps one Firebase UID across repeated and concurrent Discord logins", async () => {
@@ -395,4 +404,33 @@ it("never unlinks an account when Firebase returns a different UID", async () =>
     ),
   );
   expect((await s.handleDiscordAuth(methodRequest("unlink-google"))).status).toBe(503);
+});
+it("signs the account out of every device only after a recent login, and limits how often", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", { localId: "existing-owner", displayName: "Owner" });
+  expect((await s.handleDiscordAuth(methodRequest("revoke-sessions", -600))).status).toBe(401);
+  expect(s.revoked).toHaveLength(0);
+  const before = Math.floor(Date.now() / 1000);
+  expect((await s.handleDiscordAuth(methodRequest("revoke-sessions"))).status).toBe(200);
+  expect(s.revoked).toHaveLength(1);
+  expect(s.revoked[0]).toMatchObject({ localId: "existing-owner" });
+  expect(Number(s.revoked[0]!["validSince"])).toBeGreaterThanOrEqual(before);
+  s.accounts.get("existing-owner")!.disabled = true;
+  expect((await s.handleDiscordAuth(methodRequest("revoke-sessions"))).status).toBe(403);
+  s.accounts.get("existing-owner")!.disabled = false;
+  for (let i = 0; i < 3; i++)
+    expect((await s.handleDiscordAuth(methodRequest("revoke-sessions"))).status).toBe(200);
+  expect((await s.handleDiscordAuth(methodRequest("revoke-sessions"))).status).toBe(429);
+});
+it("does not revoke sessions through a cross-origin request", async () => {
+  const s = await setup();
+  s.accounts.set("existing-owner", { localId: "existing-owner", displayName: "Owner" });
+  const response = await s.handleDiscordAuth(
+    new Request("https://olena.test/api/olena?action=account-auth&step=revoke-sessions", {
+      method: "POST",
+      headers: { origin: "https://evil.test", authorization: `Bearer ${sessionToken()}` },
+    }),
+  );
+  expect(response.status).toBe(403);
+  expect(s.revoked).toHaveLength(0);
 });
