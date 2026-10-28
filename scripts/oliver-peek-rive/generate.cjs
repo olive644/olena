@@ -259,8 +259,10 @@ const ambient = [];
 const amb = (name, fns) => tr(ambient, R[name], "a", fns);
 // respiração do corpo: o pivô é o chão, então ele cresce para cima e a base não se mexe
 amb("corpo", {
-  sy: (t) => 1 + 0.013 * osc(t, 3),
-  sx: (t) => 1 - 0.006 * osc(t, 3),
+  // o corpo é um sólido: respira subindo e descendo, quase sem escala, para não parecer esticado
+  y: (t) => -2.5 * osc(t, 3),
+  sy: (t) => 1 + 0.003 * osc(t, 3),
+  sx: (t) => 1 - 0.0015 * osc(t, 3),
   rot: (t) => 0.005 * osc(t, 12),
   x: (t) => 1 * osc(t, 6),
 });
@@ -326,14 +328,14 @@ const A_PULO = reactAnim("pulo", 1.4, (r) => {
   r("personagem", {
     y: (t) => -air(t),
     sy: (t) => {
-      if (t < 0.2) return 1 - 0.07 * smooth(0, 0.2, t);
-      if (t < 0.7) return 0.93 + 0.12 * smooth(0.2, 0.3, t) - 0.07 * smooth(0.55, 0.7, t);
-      return 1 + spring(t, 0.7, -0.07, 24, 7);
+      if (t < 0.2) return 1 - 0.035 * smooth(0, 0.2, t);
+      if (t < 0.7) return 0.965 + 0.06 * smooth(0.2, 0.3, t) - 0.035 * smooth(0.55, 0.7, t);
+      return 1 + spring(t, 0.7, -0.035, 24, 7);
     },
     sx: (t) => {
-      if (t < 0.2) return 1 + 0.035 * smooth(0, 0.2, t);
-      if (t < 0.7) return 1.035 - 0.05 * smooth(0.2, 0.3, t) + 0.025 * smooth(0.55, 0.7, t);
-      return 1 - spring(t, 0.7, -0.03, 24, 7);
+      if (t < 0.2) return 1 + 0.018 * smooth(0, 0.2, t);
+      if (t < 0.7) return 1.018 - 0.025 * smooth(0.2, 0.3, t) + 0.012 * smooth(0.55, 0.7, t);
+      return 1 - spring(t, 0.7, -0.015, 24, 7);
     },
   });
   for (const side of ["olhoE", "olhoD"])
@@ -373,7 +375,7 @@ const A_CORACAO = reactAnim("coracao", 1.8, (r) => {
       sy: (t) => 1 + 0.28 * beat(t),
     });
   r("boca", { sx: (t) => 1 + 0.05 * beat(t), sy: (t) => 1 + 0.22 * beat(t) });
-  r("personagem", { sy: (t) => 1 + 0.025 * beat(t), sx: (t) => 1 - 0.01 * beat(t) });
+  r("personagem", { sy: (t) => 1 + 0.01 * beat(t), sx: (t) => 1 - 0.004 * beat(t) });
   r("mais", {
     rot: (t) => TAU * smooth(0.1, 1.3, t),
     ...scaleBoth((t) => 1 + 0.1 * bump(t, 0.1, 1.3)),
