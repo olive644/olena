@@ -35,8 +35,8 @@ No repouso a soma das camadas é a arte original (diferença máxima de 3/255 no
 
 ## Máquina de estados `Oliver`
 
-| Camada | Estados                                                                     |
-| ------ | --------------------------------------------------------------------------- |
+| Camada | Estados                                                                      |
+| ------ | ---------------------------------------------------------------------------- |
 | Base   | `ambiente`: ciclo de 12 s (respiração, piscadas, batimentos, mãos, símbolos) |
 | Reacao | `repouso`, `pulo` (1), `balanco` (2), `coracao` (3), disparados por `clique` |
 | Olhar  | mistura 1D por `olharX` (-1 a 1): inclina corpo, olhos, boca e símbolos      |
