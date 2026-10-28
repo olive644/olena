@@ -26,7 +26,20 @@ export async function openPomodoroWindow(): Promise<Window> {
   const sprite = await fetch("/paper-digits.svg")
     .then((response) => response.text())
     .catch(() => "");
-  doc.body.insertAdjacentHTML("afterbegin", `<div class="pomodoro-sprite">${sprite}</div>`);
+  // O sprite é lido como SVG e só entra se for um <svg> sem script nem foreignObject: nada do
+  // texto buscado é interpretado como HTML na janela flutuante.
+  const holder = doc.createElement("div");
+  holder.className = "pomodoro-sprite";
+  const parsed = sprite
+    ? new DOMParser().parseFromString(sprite, "image/svg+xml").documentElement
+    : undefined;
+  if (
+    parsed?.localName === "svg" &&
+    !parsed.querySelector("script, foreignObject") &&
+    !parsed.querySelector("parsererror")
+  )
+    holder.append(doc.importNode(parsed, true));
+  doc.body.prepend(holder);
   const syncAppearance = () => {
     const source = document.documentElement;
     const root = doc.documentElement;

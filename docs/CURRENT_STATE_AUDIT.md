@@ -3756,6 +3756,18 @@ O aviso GHSA-mrhx-c7xc-m3w5 (alta, consumo de memória em coleções grandes) at
 - `performance:check` passa a medir `dist/oliver-peeking-widget/oliver.riv` (teto de 512 KiB).
 - Verificação feita no runtime oficial em Chromium: repouso igual à arte (diferença máxima 3/255), laço de 12 s sem salto, varredura de frestas nos quadros do ambiente e das três reações, e zoom nas juntas e nas bordas. Mobile e WebKit ficam para o CI. Detalhes em `scripts/oliver-peek-rive/README.md`.
 
+## Segurança: CI e janela do Pomodoro, 2026-10-28
+
+- O Secret scan baixava o gitleaks 8.30.0 sem conferir o arquivo. Agora usa `curl -f` e confere o SHA-256 publicado pelo projeto (o hash foi conferido baixando o arquivo oficial). Ao trocar a versão, atualizar o hash junto; ele confirma só que o binário é o da versão, não que a versão é confiável.
+- A janela flutuante do Pomodoro inseria o texto de `/paper-digits.svg` com insertAdjacentHTML. Agora o sprite é lido como SVG e só entra se for um `<svg>` sem script nem foreignObject e sem erro de leitura. O arquivo é do próprio site, então o risco real era baixo; a mudança tira a interpretação como HTML.
+- Não alterados, de propósito, por falta de verificação: `frame-src https://*.firebaseapp.com https://*.web.app` no CSP (o ideal é o domínio exato do projeto, que é o VITE_FIREBASE_AUTH_DOMAIN configurado na Vercel; trocar sem conferir pode quebrar o popup do Google) e `script-src https://apis.google.com` (o SDK do Firebase carrega o gapi para o popup; remover quebra o login). Passo da dona: ler o valor de VITE_FIREBASE_AUTH_DOMAIN na Vercel, trocar o curinga pelo domínio exato no vercel.json e testar o login com Google num deploy de preview. Não foram adicionados Cross-Origin-Embedder-Policy (quebra popups e reCAPTCHA) nem `preload` no HSTS (só vale depois de submeter o domínio à lista).
+
+### Revisão de segurança: o que ficou como decisão da dona
+
+- Gravação no banco por contas de e-mail e senha sem verificação: `users/$uid` aceita escrita de qualquer conta não anônima, com até 8 milhões de caracteres. Criar contas por e-mail é grátis, então um abuso em massa pode gastar armazenamento e download do Realtime Database (não medido). Proposta, que muda o comportamento hoje documentado (sincronizar sem e-mail verificado) e por isso não foi aplicada: no `.write` de `users/$uid`, acrescentar `&& (auth.token.firebase.sign_in_provider != 'password' || auth.token.email_verified == true)`. Contas Google e Discord não mudam; contas de e-mail precisariam verificar o endereço antes de sincronizar, e o cliente teria de mostrar o aviso "confirme seu e-mail para sincronizar" em vez de falhar em silêncio. Regras só valem depois de publicadas pela dona. Alternativa com menos impacto: limite menor de tamanho enquanto o e-mail não for verificado. No console: App Check no Realtime Database e no Auth, e limites de cadastro.
+- Código da sala de 5 letras: não é problema. `public-stream-id.ts` já publica cada sala por um identificador aleatório de 128 bits, entregue só a quem entra pela API; o código curto não dá acesso à leitura direta do banco. A avaliação inicial desta revisão errou aqui por não ter lido esse arquivo.
+- Cadastro por e-mail revela se o endereço existe ("Entre pelo método que já utiliza"). A correção é do console Firebase (proteção contra enumeração de e-mails); o recurso não está no código.
+
 ## Segurança do login: vínculo recente e sessões, 2026-10-28
 
 - Revisão de segurança do código de login, do servidor e das regras do banco (leitura de código; nada foi testado contra produção). Achados corrigidos nesta mudança: vincular Discord sem login recente, ausência de encerramento global de sessões e limite por IP que contava três passos por login.
