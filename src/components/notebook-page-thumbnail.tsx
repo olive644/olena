@@ -1,11 +1,7 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import { useEffect, useState } from "react";
 import type { NoteAsset } from "../domain/workspace";
-import {
-  DEFAULT_HANDWRITING_LAYER_VISIBILITY,
-  DEFAULT_HANDWRITING_LAYER_ORDER,
-  SHARED_PAGE_PLACEHOLDER,
-} from "../domain/handwriting";
+import { renderPagePreview, storedPagePreview } from "./notebook-page-preview";
 
 // Uma folha recebida ao vivo ainda não tem PNG local. Usa o mesmo desenho do editor.
 export function NotebookPageThumbnail({ asset }: { asset: NoteAsset }) {
@@ -13,53 +9,18 @@ export function NotebookPageThumbnail({ asset }: { asset: NoteAsset }) {
 
   const [preview, setPreview] = useState("");
   const document = asset.handwriting;
-  const storedPreview = asset.dataUrl === SHARED_PAGE_PLACEHOLDER ? "" : asset.dataUrl;
+  const storedPreview = storedPagePreview(asset);
   const serialized = document ? JSON.stringify(document) : "";
   useEffect(() => {
     if (storedPreview || !document) return;
     let cancelled = false;
-    const load = async (source: string | undefined) => {
-      if (!source) return undefined;
-      const image = new Image();
-      image.src = source;
-      await image.decode();
-      return image;
-    };
-    void (async () => {
-      const { renderPage, sizePageCanvas } = await import("./handwriting-canvas");
-      const background = await load(document.background);
-      const images = await Promise.all(
-        (document.images ?? []).map(async (item) => ({
-          image: (await load(item.dataUrl))!,
-          frame: item,
-          ...(item.rotation !== undefined ? { rotation: item.rotation } : {}),
-        })),
-      );
-      if (cancelled) return;
-      const canvas = window.document.createElement("canvas");
-      const size = document.canvasSize ?? { width: 1200, height: 1600 };
-      sizePageCanvas(canvas, 320 / size.width, size.width, size.height);
-      renderPage(
-        canvas,
-        document.strokes,
-        document.paper,
-        document.paperColor ?? "light",
-        document.stickies ?? [],
-        false,
-        document.pageText ?? "",
-        document.pageTextSize ?? 28,
-        document.coordinateSystems ?? [],
-        background,
-        document.backgroundFrame,
-        { ...DEFAULT_HANDWRITING_LAYER_VISIBILITY, ...document.layers?.visibility },
-        document.layers?.order ?? DEFAULT_HANDWRITING_LAYER_ORDER,
-        images,
-        document.pageTextFrame,
-      );
-      setPreview(canvas.toDataURL("image/png"));
-    })().catch(() => {
-      /* A folha continua disponível para abrir mesmo sem miniatura. */
-    });
+    renderPagePreview(asset)
+      .then((url) => {
+        if (!cancelled) setPreview(url);
+      })
+      .catch(() => {
+        /* A folha continua disponível para abrir mesmo sem miniatura. */
+      });
     return () => {
       cancelled = true;
     };

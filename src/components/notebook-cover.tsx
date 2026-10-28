@@ -1,7 +1,9 @@
 import { uiText, useLanguage } from "../i18n/runtime";
 import type { CSSProperties } from "react";
-import type { NotebookTab, StudyNotebook } from "../domain/workspace";
+import type { NotebookTab } from "../domain/workspace";
+
 import { PaperMoonMark } from "./notebook-paper-tools";
+import { NOTEBOOK_COVER_ART } from "./notebook-cover-art";
 
 export function NotebookCover({
   subjectColor,
@@ -9,10 +11,8 @@ export function NotebookCover({
   tabs = [],
   clasp = true,
   participants = [],
-  coverStyle = "helena-estrelas",
 }: {
   subjectColor: string;
-  coverStyle?: StudyNotebook["coverStyle"];
   title?: string;
   tabs?: NotebookTab[];
   clasp?: boolean;
@@ -28,12 +28,7 @@ export function NotebookCover({
   return (
     <span
       className="book-cover"
-      data-cover-style={coverStyle}
-      style={
-        {
-          "--notebook-accent": coverStyle === "oliver-estrelas" ? "#087ebc" : subjectColor,
-        } as CSSProperties
-      }
+      style={{ "--notebook-accent": subjectColor } as CSSProperties}
       aria-hidden="true"
     >
       <span className="book-cover__backboard" />
@@ -41,7 +36,7 @@ export function NotebookCover({
       <span className="book-cover__face">
         <img
           className="book-cover__concept"
-          src={`/notebook-covers/${coverStyle}.webp`}
+          src={NOTEBOOK_COVER_ART}
           alt=""
           draggable={false}
           loading="lazy"

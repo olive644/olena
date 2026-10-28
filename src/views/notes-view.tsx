@@ -11,6 +11,7 @@ import { NoteFlashcardTools } from "../components/library-links";
 import { useNotebookShelfDrag } from "../hooks/use-notebook-shelf-drag";
 import { useNotebookCollaboration } from "../hooks/use-notebook-collaboration";
 import { mergeNotebookPages, type NotebookCollabPage } from "../domain/notebook-collab";
+import { notebook3dCoverRect, useNotebook3d } from "../components/notebook-3d/notebook-3d-support";
 import { NotebookPageIndex } from "../components/notebook-page-index";
 import { NotebookFolderMovePicker } from "../components/notebook-folder-move-picker";
 import { NotebookPageThumbnail } from "../components/notebook-page-thumbnail";
@@ -140,6 +141,10 @@ export function NotesView({
       : null;
   });
   const [indexOpen, setIndexOpen] = useState(false);
+  const notebook3d = useNotebook3d();
+  // Ao sair de uma folha, o caderno reabre nela (o 3D faz a folha voltar para o lugar).
+  const [returnedPageId, setReturnedPageId] = useState<string>();
+  const [pageJump, setPageJump] = useState<{ pageId: string; nonce: number }>();
   const resumeNotebookId = workspace.notebooks.find(
     (book) =>
       book.id === activeNotebookId &&
@@ -373,6 +378,8 @@ export function NotesView({
     setActiveNotebookId(notebook.id);
     setSharedNotebookId(notebook.id);
     setActivePageId(null);
+    setReturnedPageId(undefined);
+    setPageJump(undefined);
     setNotebookSection(notebook.kind === "folder" ? "notes" : "pages");
     setPreviewPageIndex(0);
   }
@@ -404,6 +411,19 @@ export function NotesView({
 
   function returnToShelf() {
     if (journey) return;
+    const scene3d = document.querySelector<HTMLElement>("[data-notebook-3d] .notebook-3d");
+    if (activeNotebook && scene3d && canAnimateNotebook()) {
+      setJourney({
+        notebook: activeNotebook,
+        returning: true,
+        closed: true,
+        tabs: notebookPaperTabs(activeNotebook, notebookPages, workspace.subjects),
+        from: notebook3dCoverRect(scene3d),
+      });
+      setActiveNotebookId(null);
+      setIndexOpen(false);
+      return;
+    }
     const spread = document.querySelector<HTMLElement>(".notebook-paper-spread");
     const cover = document.querySelector<HTMLElement>(".notebook-concept-cover .book-cover");
     const rect = (spread ?? cover)?.getBoundingClientRect();
@@ -925,10 +945,6 @@ export function NotesView({
                 ) : (
                   <NotebookArtwork
                     subjectColor="#7c3aed"
-                    coverStyle={
-                      workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)
-                        ?.coverStyle
-                    }
                     title={
                       workspace.notebooks.find((book) => book.id === bookDrag.moving?.id)?.title ??
                       uiText(100)
@@ -1129,7 +1145,6 @@ export function NotesView({
                                     "#7C3AED"
                                   }
                                   title={notebook.title}
-                                  coverStyle={notebook.coverStyle}
                                   tabs={notebookPaperTabs(
                                     notebook,
                                     notebook.pageIds.flatMap(
@@ -1202,7 +1217,12 @@ export function NotesView({
             <NotebookPageIndex
               pages={notebookPages}
               currentPageId=""
-              onSelect={setActivePageId}
+              onSelect={(pageId) => {
+                // No 3D o caderno folheia até a folha; na vitrine 2D a folha abre direto, como antes.
+                if (!notebook3d) return setActivePageId(pageId);
+                setIndexOpen(false);
+                setPageJump((current) => ({ pageId, nonce: (current?.nonce ?? 0) + 1 }));
+              }}
               onMove={movePage}
               onReorder={reorderPage}
               favoritePageIds={activeNotebook.bookmarkedPageIds ?? []}
@@ -1217,7 +1237,15 @@ export function NotesView({
             pages={notebookPages}
             subjects={workspace.subjects}
             dispatch={dispatch}
-            onOpen={openPreviewPage}
+            onOpen={(pageId) => {
+              setPageJump(undefined);
+              setReturnedPageId(undefined);
+              openPreviewPage(pageId);
+            }}
+            // Só o caderno 3D reabre na dupla da folha de onde a pessoa saiu; a vitrine 2D segue como era.
+            initialPageId={notebook3d ? returnedPageId : undefined}
+            returningFromPageId={returnedPageId}
+            jump={pageJump}
             transitioning={Boolean(journey)}
             onCreate={(subjectId) => addPage(true, subjectId)}
             onRemove={removePage}
@@ -1228,7 +1256,14 @@ export function NotesView({
       ) : activePage ? (
         <>
           <header className="notebook-inner-heading">
-            <button className="back-button" type="button" onClick={() => setActivePageId(null)}>
+            <button
+              className="back-button"
+              type="button"
+              onClick={() => {
+                setReturnedPageId(activePage.id);
+                setActivePageId(null);
+              }}
+            >
               <span aria-hidden="true">‹</span>{" "}
               {activePage.kind === "note" ? uiText(1372) : uiText(1995)}
             </button>
@@ -1274,6 +1309,7 @@ export function NotesView({
                   onClosePage={() => {
                     finishPageJourney();
                     setEditingAssetId(null);
+                    setReturnedPageId(activePage.id);
                     setActivePageId(null);
                   }}
                 />

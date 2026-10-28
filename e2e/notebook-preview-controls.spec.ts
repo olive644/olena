@@ -22,7 +22,7 @@ test("o botão do preview cresce com o rótulo dentro e a navegação retorna à
     }
   }
   if (info.project.name === "mobile") await expect(page.locator(".mobile-nav")).toBeHidden();
-  const button = preview.getByRole("button", { name: "Personalizar", exact: true });
+  const button = preview.getByRole("button", { name: "Índice de folhas", exact: true });
   await expect(button).toBeEnabled();
   const heading = await preview.locator(".notebook-preview-heading h1").boundingBox();
   const back = await preview
@@ -38,7 +38,7 @@ test("o botão do preview cresce com o rótulo dentro e a navegação retorna à
     .toBeGreaterThan(compact + 35);
   const positions = await button.evaluate((element) => {
     const bounds = element.getBoundingClientRect();
-    const label = element.querySelector(".notebook-cover-label")!.getBoundingClientRect();
+    const label = element.querySelector("span")!.getBoundingClientRect();
     return {
       left: bounds.left,
       right: bounds.right,
@@ -49,7 +49,7 @@ test("o botão do preview cresce com o rótulo dentro e a navegação retorna à
   expect(positions.labelLeft).toBeGreaterThan(positions.left);
   expect(positions.labelRight).toBeLessThanOrEqual(positions.right);
   await page.screenshot({ path: info.outputPath("preview-expandido.png") });
-  await button.click();
+  await preview.getByRole("button", { name: "‹ Capa", exact: true }).click();
   await expect(preview.getByRole("button", { name: "Criar nova folha" })).toHaveCount(0);
   const leaves = preview.getByRole("button", { name: "Ver folhas", exact: true });
   await expect(leaves.locator("svg")).toBeVisible();
