@@ -68,11 +68,10 @@ export function Notebook3dView(props: Notebook3dProps) {
     sound.current = notebookSound;
     void (async () => {
       try {
-        const [module, cover, olena, pencil, sprite] = await Promise.all([
+        const [module, cover, olena, sprite] = await Promise.all([
           import("./notebook-3d-scene"),
           loadImage(NOTEBOOK_COVER_ART),
           loadImage("/notebook-covers/olena-mesa.webp"),
-          loadImage("/helena-onboarding-step-2-cutout.webp"),
           fetch("/navigation-icons/paper/paper-bookmark.svg")
             .then((response) => (response.ok ? response.text() : ""))
             .catch(() => ""),
@@ -81,7 +80,7 @@ export function Notebook3dView(props: Notebook3dProps) {
         if (cancelled || !canvas.current) return;
         const instance = new module.NotebookScene(
           canvas.current,
-          { cover, olena, pencil, bookmarkSprite: sprite },
+          { cover, olena, bookmarkSprite: sprite },
           {
             onView: (view) => latest.current.onView(view),
             onOpenPage: (index) => open(index),

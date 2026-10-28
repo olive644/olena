@@ -76,7 +76,6 @@ export type SceneTab = NotebookTab & { pageIndex: number };
 export type SceneAssets = {
   cover: HTMLImageElement | null;
   olena: HTMLImageElement | null;
-  pencil: HTMLImageElement | null;
   bookmarkSprite: string;
 };
 export type SceneCallbacks = {
@@ -673,13 +672,7 @@ export class NotebookScene {
       this.leaf0Material.needsUpdate = true;
     }
     const context = (this.createTexture.image as HTMLCanvasElement).getContext("2d")!;
-    drawCreateCard(
-      context,
-      TEXTURE.width,
-      TEXTURE.height,
-      this.pages.length === 0,
-      this.assets.pencil,
-    );
+    drawCreateCard(context, TEXTURE.width, TEXTURE.height, this.pages.length === 0);
     this.createTexture.needsUpdate = true;
     this.rebuildTabs();
   }

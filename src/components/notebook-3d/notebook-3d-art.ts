@@ -402,32 +402,73 @@ export function drawPage(x: Ctx, page: PageArt | null) {
 }
 
 /** Cartão "Nova folha" sobre a guarda quando o lado direito está vazio. */
-export function drawCreateCard(
-  x: Ctx,
-  width: number,
-  height: number,
-  first: boolean,
-  pencil: CanvasImageSource | null,
-) {
+/** Mesmo convite da vitrine 2D: ícone de papel "+" e o texto roxo, sobre uma folha em branco recortada. */
+export function drawCreateCard(x: Ctx, width: number, height: number, first: boolean) {
   x.clearRect(0, 0, width, height);
-  x.fillStyle = "rgba(255,253,247,0.78)";
+  const cx = width / 2;
+  const cy = height / 2 - 150;
+  // Folha nova em papel recortado, levemente girada, com pauta e canto dobrado.
+  x.save();
+  x.translate(cx, cy);
+  x.rotate(-0.06);
+  const sheet = { w: 300, h: 380 };
+  x.fillStyle = "rgba(81,37,155,0.16)";
   x.beginPath();
-  x.roundRect(30, 30, width - 60, height - 60, 30);
-  x.fill();
-  x.strokeStyle = "#7433E0";
-  x.lineWidth = 6;
-  x.setLineDash([22, 16]);
-  x.stroke();
-  x.setLineDash([]);
-  if (pencil) x.drawImage(pencil, width / 2 - 190, height / 2 - 430, 380, 380);
-  x.fillStyle = "#7433E0";
-  x.beginPath();
-  x.roundRect(width / 2 - 250, height / 2 + 10, 500, 110, 26);
+  x.moveTo(-sheet.w / 2 + 14, -sheet.h / 2 + 18);
+  x.lineTo(sheet.w / 2 + 14, -sheet.h / 2 + 18);
+  x.lineTo(sheet.w / 2 + 14, sheet.h / 2 + 18);
+  x.lineTo(-sheet.w / 2 + 14, sheet.h / 2 + 18);
+  x.closePath();
   x.fill();
   x.fillStyle = "#fff9ef";
-  x.font = `800 44px ${FONT}`;
+  x.strokeStyle = "#292432";
+  x.lineWidth = 6;
+  x.beginPath();
+  x.moveTo(-sheet.w / 2, -sheet.h / 2 + 6);
+  x.lineTo(sheet.w / 2 - 70, -sheet.h / 2);
+  x.lineTo(sheet.w / 2, -sheet.h / 2 + 70);
+  x.lineTo(sheet.w / 2 - 4, sheet.h / 2);
+  x.lineTo(-sheet.w / 2 + 6, sheet.h / 2 - 4);
+  x.closePath();
+  x.fill();
+  x.stroke();
+  x.fillStyle = "#e9dcc4";
+  x.beginPath();
+  x.moveTo(sheet.w / 2 - 70, -sheet.h / 2);
+  x.lineTo(sheet.w / 2 - 66, -sheet.h / 2 + 66);
+  x.lineTo(sheet.w / 2, -sheet.h / 2 + 70);
+  x.closePath();
+  x.fill();
+  x.stroke();
+  x.strokeStyle = "#cdbfe8";
+  x.lineWidth = 5;
+  for (let line = 0; line < 6; line++) {
+    const y = -sheet.h / 2 + 110 + line * 42;
+    x.beginPath();
+    x.moveTo(-sheet.w / 2 + 34, y);
+    x.lineTo(sheet.w / 2 - 34 - (line === 5 ? 90 : 0), y);
+    x.stroke();
+  }
+  x.restore();
+  // Ícone "+" de papel, o mesmo desenho de /navigation-icons/paper/paper-action-icon.svg#plus.
+  x.save();
+  x.translate(cx + 110, cy + 130);
+  x.scale(4.6, 4.6);
+  x.translate(-24, -24);
+  for (const [fill, path] of [
+    ["#292432", "M8 10 14 5h24l5 6-2 27-6 5H11l-6-6Z"],
+    ["#51465D", "m8 10 6-5 4 7-5 24-8 1Z"],
+    ["#FFF9EF", "M21 14h7v8h8v7h-8v8h-7v-8h-8v-7h8Z"],
+    ["#FACC15", "m28 14 4 4-4 4Z"],
+  ] as const) {
+    x.fillStyle = fill;
+    x.fill(new Path2D(path));
+  }
+  x.restore();
+  x.fillStyle = "#51259b";
+  x.font = `800 58px ${FONT}`;
   x.textAlign = "center";
-  x.fillText(first ? uiText(1391) : `+ ${uiText(746)}`, width / 2, height / 2 + 82);
+  x.fillText(first ? uiText(1391) : uiText(746), cx, cy + 330);
   x.textAlign = "left";
 }
 
