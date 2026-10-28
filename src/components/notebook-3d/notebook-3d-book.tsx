@@ -63,7 +63,8 @@ export function NotebookSpread3d({
   onUnavailable,
 }: NotebookSpread3dProps) {
   const sceneResolver = useRef<PlacementResolver | null>(null);
-  const [toolsOpen, setToolsOpen] = useState(false);
+  // Sem folhas a barra já abre, para o "+" de criar a primeira folha estar à vista.
+  const [toolsOpen, setToolsOpen] = useState(pages.length === 0);
   const toolsId = useId();
   const [openRequest, setOpenRequest] = useState<{ pageId: string; nonce: number } | undefined>();
   const view: BookView = { cover: showCover, back: showBack, spread: current };
@@ -124,6 +125,18 @@ export function NotebookSpread3d({
             </button>
           )
         }
+        endControl={
+          <button
+            type="button"
+            className="notebook-paper-tool"
+            disabled={Boolean(transitioning)}
+            onClick={() => onCreate(notebook.subjectId)}
+            aria-label={pages.length ? uiText(745) : uiText(1391)}
+            title={pages.length ? uiText(745) : uiText(1391)}
+          >
+            <PaperActionIcon name="plus" />
+          </button>
+        }
         coverControl={null}
         onJump={(id) => {
           setShowCover(false);
@@ -181,16 +194,6 @@ export function NotebookSpread3d({
                 <div className="notebook-3d-tray" id={toolsId} hidden={!toolsOpen}>
                   {tools.toolbar}
                 </div>
-                <button
-                  className="notebook-preview-create is-icon"
-                  type="button"
-                  disabled={Boolean(transitioning)}
-                  onClick={() => onCreate(notebook.subjectId)}
-                  aria-label={pages.length ? uiText(745) : uiText(1391)}
-                  title={pages.length ? uiText(745) : uiText(1391)}
-                >
-                  <PaperActionIcon name="plus" />
-                </button>
               </div>
               {/* Virar a folha é arrastar ou tocar na borda; estes botões servem ao teclado e ao leitor de tela. */}
               <nav className="notebook-3d-keys" aria-label={uiText(695)}>

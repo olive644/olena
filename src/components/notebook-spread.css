@@ -856,6 +856,11 @@
   gap: 10px;
   max-width: 100%;
 }
+/* No caderno 3D o título sai e a seta amarela de voltar fica no canto esquerdo. */
+.notebook-preview-heading.is-3d {
+  width: 100%;
+  justify-content: flex-start;
+}
 .notebook-preview-heading h1 {
   min-width: 0;
   overflow-wrap: anywhere;

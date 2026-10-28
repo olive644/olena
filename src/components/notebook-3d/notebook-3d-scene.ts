@@ -353,12 +353,12 @@ export class NotebookScene {
   private title = "";
   private camState = {
     yaw: 0,
-    tilt: 0.8,
+    tilt: 0.3,
     zoom: 1,
     x: 0,
     z: 0,
     distance: 14,
-    tiltNow: 0.8,
+    tiltNow: 0.3,
     yawNow: 0,
     ready: false,
   };

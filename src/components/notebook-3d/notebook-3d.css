@@ -166,17 +166,10 @@
 .notebook-3d-dock {
   position: relative;
 }
-.notebook-preview-create.is-icon {
-  display: grid;
-  width: 52px;
-  min-height: 52px;
-  padding: 0;
-  place-items: center;
-  border-radius: 8px 16px 8px 12px;
-}
-.notebook-preview-create.is-icon .paper-action-icon {
-  width: 36px;
-  height: 36px;
+.notebook-3d-tray .notebook-paper-toolbox .notebook-paper-tool > .paper-action-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
 }
 /* Teclado e leitor de tela: viram os botões visíveis só quando recebem foco. */
 .notebook-3d-keys {
@@ -211,4 +204,32 @@
 }
 .notebook-3d-keys button:disabled {
   display: none;
+}
+/* Celular: a barra encosta à esquerda e fica mais compacta para não passar por baixo do mascote. */
+@media (max-width: 700px) {
+  .notebook-3d-bar {
+    justify-content: flex-start;
+    gap: 4px;
+    width: 100%;
+  }
+  :root .notebook-3d-tools-toggle {
+    width: 44px;
+    height: 44px;
+  }
+  .notebook-3d-tools-toggle .focus-paper-arrow {
+    width: 38px;
+    height: 38px;
+  }
+  :root .notebook-3d-tray .notebook-paper-toolbox .notebook-paper-tool:not(.notebook-back-tool) {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 2px 4px;
+  }
+  .notebook-3d-tray .notebook-paper-toolbox .notebook-paper-tool .paper-tab-icon,
+  .notebook-3d-tray .notebook-paper-toolbox .notebook-paper-tool > .paper-editor-icon,
+  .notebook-3d-tray .notebook-paper-toolbox .notebook-paper-tool > .paper-action-icon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
 }

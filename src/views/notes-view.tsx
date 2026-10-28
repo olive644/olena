@@ -1221,7 +1221,7 @@ export function NotesView({
         />
       ) : !activePage && activeNotebook.kind !== "folder" ? (
         <section className="notebook-entry-preview" aria-label={uiText(1370)}>
-          <div className="notebook-preview-heading">
+          <div className={`notebook-preview-heading${notebook3d ? " is-3d" : ""}`}>
             <button
               type="button"
               className="notebook-paper-tool notebook-back-tool"

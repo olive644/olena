@@ -88,6 +88,8 @@ type Props = {
   coverControl: ReactNode;
   backControl?: ReactNode;
   indexControl?: ReactNode;
+  /** Último botão da caixa de ferramentas (no caderno 3D, o de nova folha). */
+  endControl?: ReactNode;
   /** No caderno 3D, a cena desenha as marcas e resolve onde cada toque cai. */
   scene?: boolean;
   resolverRef?: RefObject<PlacementResolver | null>;
@@ -122,6 +124,7 @@ export function NotebookPaperTools({
   coverControl,
   backControl,
   indexControl,
+  endControl,
   scene = false,
   resolverRef,
   children,
@@ -315,6 +318,7 @@ export function NotebookPaperTools({
           <span>{editing ? uiText(709) : uiText(1833)}</span>
         </button>
         {indexControl}
+        {endControl}
       </div>
       <span className="notebook-tool-hint">
         {tool === "divider"
